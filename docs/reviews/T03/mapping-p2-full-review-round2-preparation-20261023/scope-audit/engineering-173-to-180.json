@@ -1,0 +1,5002 @@
+{
+  "schema": "T03-P2-R2-173-TO-180-EXACT-MAPPING/1",
+  "reviewHead": "c1e44f81723f9c616f669f56481d1b1ada7e57f2",
+  "product": "da1795b20c3c0d47ae975fe3371e802092a4b429",
+  "inputs": [
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/legacy-fixed-package/mapping-S1-fixed-inputs.json",
+      "bytes": 241447,
+      "sha256": "ddbeeb2177a5ca9a3f070f50db15239e12dab760c7f85f8bc58aab7c98476995"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/dispatch-v2/full-candidate-tree.json",
+      "bytes": 273638,
+      "sha256": "a8afd3637dcc7fb613c95bd3009d20294e815a96b2043ed108a67afdef673eb4"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/complete-scope-freeze.json",
+      "bytes": 37462,
+      "sha256": "039a783ee1a6028632f61564187a6f238fd2b2bc043d8fd04c7e4cc15d0617a2"
+    }
+  ],
+  "counts": {
+    "originalEngineering": 173,
+    "currentEngineering": 180,
+    "originalNonDocs": 138,
+    "currentNonDocs": 138,
+    "originalDocsEngineering": 35,
+    "currentDocsEngineering": 42,
+    "retainedPaths": 173,
+    "retainedSameOldBlob": 171,
+    "retainedChangedBlob": 2,
+    "addedPaths": 7,
+    "removedPaths": 0,
+    "reclassifiedPaths": 0
+  },
+  "addedSeven": [
+    {
+      "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/independent-review/audit.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b8f311579e8cd372781a4605c63b64b536aad008",
+      "bytes": 8583,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/verify-packaged-boundaries.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b675d1913ed1129b28ca3db84227083f240e9fec",
+      "bytes": 11054,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/.gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e4e939d2d5e4a74c5318c98d97c8cd0aca70b695",
+      "bytes": 87,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/freeze-scope.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "0df752d5c81b123ce085273f316861e616ccb6df",
+      "bytes": 4553,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/make-dispatch.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e23e6754dc2fbd808ed607ff225fc48e07afab9f",
+      "bytes": 5006,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/prepare-environment.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "2c6dd37e4b8ce8aeebc2f0a69f120e1bc4cea8ee",
+      "bytes": 4289,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/p2-original-raw/build/mapping-p2-boundaries-20261023/run-command.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d3a57541fc9fcbf55ce1463e1da91b315f044b89",
+      "bytes": 4711,
+      "kind": "engineering"
+    }
+  ],
+  "removed": [],
+  "kindChanges": [],
+  "allOriginal173Mappings": [
+    {
+      "path": ".editorconfig",
+      "original": {
+        "path": ".editorconfig",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7bce64974d19850cb95d39cb6b9a8bb46be00141",
+        "bytes": 137,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".editorconfig",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7bce64974d19850cb95d39cb6b9a8bb46be00141",
+        "bytes": 137,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".gitattributes",
+      "original": {
+        "path": ".gitattributes",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "46850b6cef6cfd5554df5205007a883616dcb4ca",
+        "bytes": 57,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".gitattributes",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "46850b6cef6cfd5554df5205007a883616dcb4ca",
+        "bytes": 57,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug.yml",
+      "original": {
+        "path": ".github/ISSUE_TEMPLATE/bug.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "0429a312172ec77d52d932d39c1116b0e70be473",
+        "bytes": 404,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".github/ISSUE_TEMPLATE/bug.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "0429a312172ec77d52d932d39c1116b0e70be473",
+        "bytes": 404,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "original": {
+        "path": ".github/dependabot.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3b6ee4a507d5538f681998e00daeac0e360e4570",
+        "bytes": 279,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".github/dependabot.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3b6ee4a507d5538f681998e00daeac0e360e4570",
+        "bytes": 279,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "original": {
+        "path": ".github/pull_request_template.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4622b5caa75f2df779dd456b942d2511144d6d12",
+        "bytes": 274,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".github/pull_request_template.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4622b5caa75f2df779dd456b942d2511144d6d12",
+        "bytes": 274,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "original": {
+        "path": ".github/workflows/ci.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3c38c8dfed04502802d407536f3f85714b089faa",
+        "bytes": 6860,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".github/workflows/ci.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3c38c8dfed04502802d407536f3f85714b089faa",
+        "bytes": 6860,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".gitignore",
+      "original": {
+        "path": ".gitignore",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "507fe198bc2f022cc505c8ae031f3775a68400c3",
+        "bytes": 248,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".gitignore",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "507fe198bc2f022cc505c8ae031f3775a68400c3",
+        "bytes": 248,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".node-version",
+      "original": {
+        "path": ".node-version",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a45fd52cc5891570d6299fab38643103c3955474",
+        "bytes": 3,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".node-version",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a45fd52cc5891570d6299fab38643103c3955474",
+        "bytes": 3,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".npmrc",
+      "original": {
+        "path": ".npmrc",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cffe8cdef132f31903a4971117f33f60cd9a56e6",
+        "bytes": 16,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".npmrc",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cffe8cdef132f31903a4971117f33f60cd9a56e6",
+        "bytes": 16,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".prettierignore",
+      "original": {
+        "path": ".prettierignore",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8e9319e932c215afdaab575b19a1dd61edcf5e95",
+        "bytes": 442,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".prettierignore",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8e9319e932c215afdaab575b19a1dd61edcf5e95",
+        "bytes": 442,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".prettierrc.json",
+      "original": {
+        "path": ".prettierrc.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d7dadf59ea8ee49a31dc80c5d7af312573c4e45d",
+        "bytes": 90,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".prettierrc.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d7dadf59ea8ee49a31dc80c5d7af312573c4e45d",
+        "bytes": 90,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": ".python-version",
+      "original": {
+        "path": ".python-version",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+        "bytes": 5,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": ".python-version",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+        "bytes": 5,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "AGENTS.md",
+      "original": {
+        "path": "AGENTS.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f3876f6690b11ae58f633d1bcb96db05a429d58b",
+        "bytes": 1056,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "AGENTS.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f3876f6690b11ae58f633d1bcb96db05a429d58b",
+        "bytes": 1056,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "original": {
+        "path": "CONTRIBUTING.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5c2db046cc119a6a067e6423f50a5967e572957a",
+        "bytes": 1157,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "CONTRIBUTING.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5c2db046cc119a6a067e6423f50a5967e572957a",
+        "bytes": 1157,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "README.md",
+      "original": {
+        "path": "README.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "07946b72b12c9e8b013266bdeca7b92175382476",
+        "bytes": 2783,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "README.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "07946b72b12c9e8b013266bdeca7b92175382476",
+        "bytes": 2783,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "SECURITY.md",
+      "original": {
+        "path": "SECURITY.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "1614b7afbe3559b890ded8a80c33bc0c9e88020b",
+        "bytes": 961,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "SECURITY.md",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "1614b7afbe3559b890ded8a80c33bc0c9e88020b",
+        "bytes": 961,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/electron-builder.yml",
+      "original": {
+        "path": "apps/desktop/electron-builder.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b8f5746ad3c01d1bac5b08460c54c5dbb20da07a",
+        "bytes": 389,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/electron-builder.yml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b8f5746ad3c01d1bac5b08460c54c5dbb20da07a",
+        "bytes": 389,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/electron.vite.config.ts",
+      "original": {
+        "path": "apps/desktop/electron.vite.config.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "952e2310b9f7dea9ffcafc2b60b022caf2bffa42",
+        "bytes": 1202,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/electron.vite.config.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "952e2310b9f7dea9ffcafc2b60b022caf2bffa42",
+        "bytes": 1202,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "original": {
+        "path": "apps/desktop/package.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4bd9e4ad83cfddf07a903155548f8deb0923a482",
+        "bytes": 491,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/package.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4bd9e4ad83cfddf07a903155548f8deb0923a482",
+        "bytes": 491,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/csp.ts",
+      "original": {
+        "path": "apps/desktop/src/csp.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "95a74c7d7da8a9838631b45027ac8b042c983d0a",
+        "bytes": 1065,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/csp.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "95a74c7d7da8a9838631b45027ac8b042c983d0a",
+        "bytes": 1065,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/engine.ts",
+      "original": {
+        "path": "apps/desktop/src/main/engine.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cb1c821f57002c08e49d2309d9447032bb1a3580",
+        "bytes": 18569,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/engine.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cb1c821f57002c08e49d2309d9447032bb1a3580",
+        "bytes": 18569,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/index.ts",
+      "original": {
+        "path": "apps/desktop/src/main/index.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3d5cbbc209aca658a48cd70063774816045b22cb",
+        "bytes": 6769,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/index.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3d5cbbc209aca658a48cd70063774816045b22cb",
+        "bytes": 6769,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/jsonl.ts",
+      "original": {
+        "path": "apps/desktop/src/main/jsonl.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "665c972f0401109bbeeffb8642685a4ac9ae5e62",
+        "bytes": 4774,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/jsonl.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "665c972f0401109bbeeffb8642685a4ac9ae5e62",
+        "bytes": 4774,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "original": {
+        "path": "apps/desktop/src/main/task-service.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "166032eb77ef6d70033e369adfb47a3505023a77",
+        "bytes": 32727,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/task-service.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "166032eb77ef6d70033e369adfb47a3505023a77",
+        "bytes": 32727,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/trusted-document.ts",
+      "original": {
+        "path": "apps/desktop/src/main/trusted-document.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fedde8a70d898e30bb500dffc94c099950e808f7",
+        "bytes": 388,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/trusted-document.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fedde8a70d898e30bb500dffc94c099950e808f7",
+        "bytes": 388,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/view-navigation.ts",
+      "original": {
+        "path": "apps/desktop/src/main/view-navigation.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d0e37aafdb00f2615e9db7fea6a387ed3e69fdd1",
+        "bytes": 446,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/view-navigation.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d0e37aafdb00f2615e9db7fea6a387ed3e69fdd1",
+        "bytes": 446,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/window-recovery.ts",
+      "original": {
+        "path": "apps/desktop/src/main/window-recovery.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f3aa65097c0f4b1e9df310c6e88bf718dc090046",
+        "bytes": 1993,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/window-recovery.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f3aa65097c0f4b1e9df310c6e88bf718dc090046",
+        "bytes": 1993,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/main/window-security.ts",
+      "original": {
+        "path": "apps/desktop/src/main/window-security.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "78788fbdc14c4f6f8550d6f8ca23a8fa21f9573d",
+        "bytes": 886,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/main/window-security.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "78788fbdc14c4f6f8550d6f8ca23a8fa21f9573d",
+        "bytes": 886,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "original": {
+        "path": "apps/desktop/src/preload/index.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e43ddeab6e4c056a93f959400896f03de1a0a632",
+        "bytes": 1230,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/preload/index.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e43ddeab6e4c056a93f959400896f03de1a0a632",
+        "bytes": 1230,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/index.html",
+      "original": {
+        "path": "apps/desktop/src/renderer/index.html",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "2846b68b16514136242809a69a9f35ed9b1d4ac2",
+        "bytes": 306,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/index.html",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "2846b68b16514136242809a69a9f35ed9b1d4ac2",
+        "bytes": 306,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/App.tsx",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "62834d0a855f990ad2fc5fb697a365370d1af98c",
+        "bytes": 14413,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/App.tsx",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "62834d0a855f990ad2fc5fb697a365370d1af98c",
+        "bytes": 14413,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/env.d.ts",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/env.d.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "281aacbde4bc56da9508c78b5d32f20c498c1316",
+        "bytes": 132,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/env.d.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "281aacbde4bc56da9508c78b5d32f20c498c1316",
+        "bytes": 132,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/main.tsx",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/main.tsx",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "db15cda19722ada98e9291302d3fea408f7a0bef",
+        "bytes": 230,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/main.tsx",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "db15cda19722ada98e9291302d3fea408f7a0bef",
+        "bytes": 230,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/MappingPage.tsx",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/mapping/MappingPage.tsx",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d897ff7d38eb2f69fe939922b4e0cbc4d334d903",
+        "bytes": 14585,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/mapping/MappingPage.tsx",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d897ff7d38eb2f69fe939922b4e0cbc4d334d903",
+        "bytes": 14585,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/mapping.css",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/mapping/mapping.css",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b7fda1f72f47478b3f07e0fd72511b76a184bb28",
+        "bytes": 1305,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/mapping/mapping.css",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b7fda1f72f47478b3f07e0fd72511b76a184bb28",
+        "bytes": 1305,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/model.ts",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/mapping/model.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3a383bcd956c0a89f6e6ccab607b2fcd36533ea4",
+        "bytes": 4631,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/mapping/model.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3a383bcd956c0a89f6e6ccab607b2fcd36533ea4",
+        "bytes": 4631,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/style.css",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/style.css",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "ea2fcf1ce5f49c81d7ab8b1cb4c6bd5c668580ed",
+        "bytes": 5279,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/style.css",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "ea2fcf1ce5f49c81d7ab8b1cb4c6bd5c668580ed",
+        "bytes": 5279,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-presentation.ts",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/task-presentation.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e6ab7bda420b7207ccb7c566eefb0d248b0d3194",
+        "bytes": 8446,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/task-presentation.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e6ab7bda420b7207ccb7c566eefb0d248b0d3194",
+        "bytes": 8446,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-progress.ts",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/task-progress.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fb89b0bceb73407a9a53e9c82accc0448effd195",
+        "bytes": 2254,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/task-progress.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fb89b0bceb73407a9a53e9c82accc0448effd195",
+        "bytes": 2254,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/tokens.css",
+      "original": {
+        "path": "apps/desktop/src/renderer/src/tokens.css",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "ab72919112182a167551b22bddc263d482363577",
+        "bytes": 226,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/src/renderer/src/tokens.css",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "ab72919112182a167551b22bddc263d482363577",
+        "bytes": 226,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "apps/desktop/tsconfig.json",
+      "original": {
+        "path": "apps/desktop/tsconfig.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6caf5b235dbf40b93280c8a5ed957ef515d33976",
+        "bytes": 396,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "apps/desktop/tsconfig.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6caf5b235dbf40b93280c8a5ed957ef515d33976",
+        "bytes": 396,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "design/prototypes/OntoLearn-Studio-Prototype.pen",
+      "original": {
+        "path": "design/prototypes/OntoLearn-Studio-Prototype.pen",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c9be4fc94cbc9beabb2a5755cb46f0d387838630",
+        "bytes": 1457069,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "design/prototypes/OntoLearn-Studio-Prototype.pen",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c9be4fc94cbc9beabb2a5755cb46f0d387838630",
+        "bytes": 1457069,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/iterations/T03/verify-packaged-probe.py",
+      "original": {
+        "path": "docs/iterations/T03/verify-packaged-probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "99e5b3ade28161d27eb04994ea6078c07cc5e25b",
+        "bytes": 2897,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/iterations/T03/verify-packaged-probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "99e5b3ade28161d27eb04994ea6078c07cc5e25b",
+        "bytes": 2897,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I02/native-dialog-probe/driver.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I02/native-dialog-probe/driver.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d0a101887d418745f95d622265102bfddcc7fd57",
+        "bytes": 4922,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I02/native-dialog-probe/driver.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d0a101887d418745f95d622265102bfddcc7fd57",
+        "bytes": 4922,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic-user.sh",
+      "original": {
+        "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic-user.sh",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f7815c35c1510fc8631d47f9ca17f0c2db89206c",
+        "bytes": 432,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic-user.sh",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f7815c35c1510fc8631d47f9ca17f0c2db89206c",
+        "bytes": 432,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic.sh",
+      "original": {
+        "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic.sh",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c86360942bc8a8a476a47a61ddf2fb45aee351e7",
+        "bytes": 516,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic.sh",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c86360942bc8a8a476a47a61ddf2fb45aee351e7",
+        "bytes": 516,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-extra-probe.mjs",
+      "original": {
+        "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-extra-probe.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "14e87977fe2ab2761b36a91a8c8ea2bd6bd08c0e",
+        "bytes": 2728,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-extra-probe.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "14e87977fe2ab2761b36a91a8c8ea2bd6bd08c0e",
+        "bytes": 2728,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe.mjs",
+      "original": {
+        "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "68e255887b5d7f148beff3509c3aebb4a1f3de98",
+        "bytes": 1828,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "68e255887b5d7f148beff3509c3aebb4a1f3de98",
+        "bytes": 1828,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe2.mjs",
+      "original": {
+        "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe2.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6a61959270622b01b94fd74e795212c14028f8ea",
+        "bytes": 1995,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe2.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6a61959270622b01b94fd74e795212c14028f8ea",
+        "bytes": 1995,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I02/round-3/zcode-runtime/i02-r3-zcode-glm53-pushstate-probe.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I02/round-3/zcode-runtime/i02-r3-zcode-glm53-pushstate-probe.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c1187a4a18882a7dc5f86516e51307629574a4de",
+        "bytes": 844,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I02/round-3/zcode-runtime/i02-r3-zcode-glm53-pushstate-probe.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c1187a4a18882a7dc5f86516e51307629574a4de",
+        "bytes": 844,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/initial-isolated-controls.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/dispatcher-runtime/initial-isolated-controls.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "00e82cf686166111a2c64cadbe9267242ab26cbd",
+        "bytes": 1759,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/dispatcher-runtime/initial-isolated-controls.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "00e82cf686166111a2c64cadbe9267242ab26cbd",
+        "bytes": 1759,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/isolated-controls.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/dispatcher-runtime/isolated-controls.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6f267407a6544f9b33ab827d15769fa4cd01c044",
+        "bytes": 1940,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/dispatcher-runtime/isolated-controls.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6f267407a6544f9b33ab827d15769fa4cd01c044",
+        "bytes": 1940,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5-contract.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5-contract.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f7c19921fe34e629bbf49c069618ac10491eb0d6",
+        "bytes": 7868,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5-contract.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f7c19921fe34e629bbf49c069618ac10491eb0d6",
+        "bytes": 7868,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "02a92b62eacdb3007e7ad5a27227ea998232bbaa",
+        "bytes": 2932,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "02a92b62eacdb3007e7ad5a27227ea998232bbaa",
+        "bytes": 2932,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a1a92d4eef63fb26da84c36d6719d9de297f494e",
+        "bytes": 3461,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a1a92d4eef63fb26da84c36d6719d9de297f494e",
+        "bytes": 3461,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6-i05-handoff.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6-i05-handoff.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c10e18761cbf2eff11c07d8427a56c369d1d0f64",
+        "bytes": 5752,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6-i05-handoff.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c10e18761cbf2eff11c07d8427a56c369d1d0f64",
+        "bytes": 5752,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6b-i05-handoff.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6b-i05-handoff.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6a4d469d4a77f5ecf215d0963a6c949300bc0764",
+        "bytes": 5947,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6b-i05-handoff.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6a4d469d4a77f5ecf215d0963a6c949300bc0764",
+        "bytes": 5947,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6c-i05-handoff.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6c-i05-handoff.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c8db7bcbf36fa467626ae728b8e275fdbe3c9e23",
+        "bytes": 6293,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6c-i05-handoff.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c8db7bcbf36fa467626ae728b8e275fdbe3c9e23",
+        "bytes": 6293,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch7-s1-guards.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch7-s1-guards.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "09c4b75bc01b02ac3bc2c032f2683a2225d21d13",
+        "bytes": 4858,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch7-s1-guards.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "09c4b75bc01b02ac3bc2c032f2683a2225d21d13",
+        "bytes": 4858,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8-structure.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8-structure.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a2028a82f8d2d35ca4de1fbe80c0ab2079988fee",
+        "bytes": 6306,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8-structure.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a2028a82f8d2d35ca4de1fbe80c0ab2079988fee",
+        "bytes": 6306,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8b-structure.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8b-structure.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "15dd31c3fab3e98482e6ffe98b7c0071adbbed75",
+        "bytes": 6597,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8b-structure.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "15dd31c3fab3e98482e6ffe98b7c0071adbbed75",
+        "bytes": 6597,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5c8e9605fc729324d0b0d1867effe01d5b178bd8",
+        "bytes": 1192,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5c8e9605fc729324d0b0d1867effe01d5b178bd8",
+        "bytes": 1192,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare2.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare2.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b60a574e0d55952688dfb2a2362175e992d5f431",
+        "bytes": 1215,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare2.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b60a574e0d55952688dfb2a2362175e992d5f431",
+        "bytes": 1215,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/f3-injection.sh.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/f3-injection.sh.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "782a909bfe4d19974d71aaa233e738a78badfe69",
+        "bytes": 2755,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/f3-injection.sh.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "782a909bfe4d19974d71aaa233e738a78badfe69",
+        "bytes": 2755,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b7016e168d6b17b863f264ed06e1a145983c1638",
+        "bytes": 3933,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b7016e168d6b17b863f264ed06e1a145983c1638",
+        "bytes": 3933,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases2.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases2.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b2d12bcdcb6f519ec306af390ecf6f19b5d95e49",
+        "bytes": 4566,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases2.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b2d12bcdcb6f519ec306af390ecf6f19b5d95e49",
+        "bytes": 4566,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases3.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases3.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "67b6224590a00f4dafd962d48201d6c860dcc1e0",
+        "bytes": 2456,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases3.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "67b6224590a00f4dafd962d48201d6c860dcc1e0",
+        "bytes": 2456,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/hooks.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/hooks.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7c166ea5237b13765f2a1241eb889fd2f5eed3e6",
+        "bytes": 1169,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/hooks.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7c166ea5237b13765f2a1241eb889fd2f5eed3e6",
+        "bytes": 1169,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/register.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/register.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6b20fc4d2629507de3144b7f984658789adf1f67",
+        "bytes": 102,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/register.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6b20fc4d2629507de3144b7f984658789adf1f67",
+        "bytes": 102,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "91dbb0aaab12f17c757def85db8a26ddd6f40aaa",
+        "bytes": 2138,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "91dbb0aaab12f17c757def85db8a26ddd6f40aaa",
+        "bytes": 2138,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py2.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py2.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "521d24ce2e61240a054359f45e8e96e7ce24a9fa",
+        "bytes": 1527,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py2.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "521d24ce2e61240a054359f45e8e96e7ce24a9fa",
+        "bytes": 1527,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4ac5addf7b82d9bff4d98558b827f2de38344780",
+        "bytes": 1804,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4ac5addf7b82d9bff4d98558b827f2de38344780",
+        "bytes": 1804,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts2.mjs.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts2.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "72e6042a056b3ee09bec39c2e4129d219b80a394",
+        "bytes": 1191,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts2.mjs.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "72e6042a056b3ee09bec39c2e4129d219b80a394",
+        "bytes": 1191,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_py.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_py.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "af0a17118194d5106bb01c06cb9e7560d74a965e",
+        "bytes": 5445,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_py.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "af0a17118194d5106bb01c06cb9e7560d74a965e",
+        "bytes": 5445,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_ts.test.ts.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_ts.test.ts.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "48aa5be708ff93b54a9c1f8ab7dd05b364d1256b",
+        "bytes": 4427,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_ts.test.ts.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "48aa5be708ff93b54a9c1f8ab7dd05b364d1256b",
+        "bytes": 4427,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-first-storage-probe/storage_probe.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-first-storage-probe/storage_probe.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "407f1485e1caacb72846e62dd1f0377a8ad87378",
+        "bytes": 4974,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-first-storage-probe/storage_probe.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "407f1485e1caacb72846e62dd1f0377a8ad87378",
+        "bytes": 4974,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-python-probe-at-first-observation/py_probe.py.txt",
+      "original": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-python-probe-at-first-observation/py_probe.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4dc37c6c4686e50868a349b0824f96ba571bb5db",
+        "bytes": 5587,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-python-probe-at-first-observation/py_probe.py.txt",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4dc37c6c4686e50868a349b0824f96ba571bb5db",
+        "bytes": 5587,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "original": {
+        "path": "eslint.config.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "84a06e8ac23090db20b0c535b0f82ae60328ef81",
+        "bytes": 631,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "eslint.config.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "84a06e8ac23090db20b0c535b0f82ae60328ef81",
+        "bytes": 631,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "package-lock.json",
+      "original": {
+        "path": "package-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "99bf9de3805a29713d92c155c12f6de23c80e9f3",
+        "bytes": 224331,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "package-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "99bf9de3805a29713d92c155c12f6de23c80e9f3",
+        "bytes": 224331,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "package.json",
+      "original": {
+        "path": "package.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "0f83067f90b3da1eecb16af8ddcf99e18c99e082",
+        "bytes": 1953,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "package.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "0f83067f90b3da1eecb16af8ddcf99e18c99e082",
+        "bytes": 1953,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "original": {
+        "path": "packages/contracts/package.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c56f1532d5ea282c7e5ac7ff3b337cd3284e00f8",
+        "bytes": 291,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/package.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c56f1532d5ea282c7e5ac7ff3b337cd3284e00f8",
+        "bytes": 291,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "original": {
+        "path": "packages/contracts/python/contract_v2.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79",
+        "bytes": 20174,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/python/contract_v2.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79",
+        "bytes": 20174,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/src/dependencies-v2.ts",
+      "original": {
+        "path": "packages/contracts/src/dependencies-v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "210de680cccf92923d390dbe1a480b5acb705159",
+        "bytes": 2205,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/src/dependencies-v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "210de680cccf92923d390dbe1a480b5acb705159",
+        "bytes": 2205,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/src/design-v2.ts",
+      "original": {
+        "path": "packages/contracts/src/design-v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "295581510e22b92d4117898aaefd6cbb823412c0",
+        "bytes": 153,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/src/design-v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "295581510e22b92d4117898aaefd6cbb823412c0",
+        "bytes": 153,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "original": {
+        "path": "packages/contracts/src/index.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8ba81e6e92a6009f62d42564f70962a72402fd28",
+        "bytes": 4881,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/src/index.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8ba81e6e92a6009f62d42564f70962a72402fd28",
+        "bytes": 4881,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/src/states-v2.ts",
+      "original": {
+        "path": "packages/contracts/src/states-v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "153a617c9fe3242161e5c59a2cfc76f556424746",
+        "bytes": 578,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/src/states-v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "153a617c9fe3242161e5c59a2cfc76f556424746",
+        "bytes": 578,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/src/v2.ts",
+      "original": {
+        "path": "packages/contracts/src/v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d749c44d3a0b9f5a9a33b419924627dd66d6eb0d",
+        "bytes": 20514,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/src/v2.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d749c44d3a0b9f5a9a33b419924627dd66d6eb0d",
+        "bytes": 20514,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/tsconfig.json",
+      "original": {
+        "path": "packages/contracts/tsconfig.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "36786a3aee4e5b711d0b8417f3bbf5c2b6784ab9",
+        "bytes": 291,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/tsconfig.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "36786a3aee4e5b711d0b8417f3bbf5c2b6784ab9",
+        "bytes": 291,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/binding-regressions.json",
+      "original": {
+        "path": "packages/contracts/v2/binding-regressions.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fa27812aaf40202c5f17971c9a9783b5dd680597",
+        "bytes": 123964,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/binding-regressions.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fa27812aaf40202c5f17971c9a9783b5dd680597",
+        "bytes": 123964,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/dependencies.json",
+      "original": {
+        "path": "packages/contracts/v2/dependencies.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e",
+        "bytes": 1438,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/dependencies.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e",
+        "bytes": 1438,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/errors.json",
+      "original": {
+        "path": "packages/contracts/v2/errors.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b",
+        "bytes": 14400,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/errors.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b",
+        "bytes": 14400,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/fixtures.json",
+      "original": {
+        "path": "packages/contracts/v2/fixtures.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "37847c27a082db388042e280db61719dbab8f61d",
+        "bytes": 472098,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/fixtures.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "37847c27a082db388042e280db61719dbab8f61d",
+        "bytes": 472098,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/frame-fixtures.json",
+      "original": {
+        "path": "packages/contracts/v2/frame-fixtures.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2",
+        "bytes": 17537,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/frame-fixtures.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2",
+        "bytes": 17537,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/registry.json",
+      "original": {
+        "path": "packages/contracts/v2/registry.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3a6705a00217f5e55d130bd2a231a6aad233b3fe",
+        "bytes": 13039,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/registry.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3a6705a00217f5e55d130bd2a231a6aad233b3fe",
+        "bytes": 13039,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/schema.json",
+      "original": {
+        "path": "packages/contracts/v2/schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4",
+        "bytes": 122889,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4",
+        "bytes": 122889,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/contracts/v2/states.json",
+      "original": {
+        "path": "packages/contracts/v2/states.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "bb6161a5a27c317ba073efbf50599fabace903ee",
+        "bytes": 716,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/contracts/v2/states.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "bb6161a5a27c317ba073efbf50599fabace903ee",
+        "bytes": 716,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "original": {
+        "path": "packages/engine/entrypoint.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fd9e7f7cb77d9ff77b4d296df1b95300e60674cd",
+        "bytes": 1232,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/entrypoint.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fd9e7f7cb77d9ff77b4d296df1b95300e60674cd",
+        "bytes": 1232,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "original": {
+        "path": "packages/engine/pyproject.toml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "49424f0aeba2eec1a3337e6075d1d9ae3dcc6f0b",
+        "bytes": 424,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/pyproject.toml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "49424f0aeba2eec1a3337e6075d1d9ae3dcc6f0b",
+        "bytes": 424,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__init__.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/__init__.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "aea2f9eaf2ec7427494596a52c40bb8333b8943e",
+        "bytes": 101,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/__init__.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "aea2f9eaf2ec7427494596a52c40bb8333b8943e",
+        "bytes": 101,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__main__.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/__main__.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4ddb44e71712d3d357afe8e28eb5921e547b6e39",
+        "bytes": 489,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/__main__.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4ddb44e71712d3d357afe8e28eb5921e547b6e39",
+        "bytes": 489,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a6ae1a0d637d76f832250e490ff085bbda2e8352",
+        "bytes": 2334,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a6ae1a0d637d76f832250e490ff085bbda2e8352",
+        "bytes": 2334,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6",
+        "bytes": 29559,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6",
+        "bytes": 29559,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "aa95429d8b5f99ab839a4fd286991298288e7187",
+        "bytes": 1745,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "aa95429d8b5f99ab839a4fd286991298288e7187",
+        "bytes": 1745,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3d640f37ea26f329d5670f6b1738a309a6c8c203",
+        "bytes": 1329,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3d640f37ea26f329d5670f6b1738a309a6c8c203",
+        "bytes": 1329,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/job_store.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fdf213b225954c1257a8a1e00eebe676a86e2398",
+        "bytes": 64853,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/job_store.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fdf213b225954c1257a8a1e00eebe676a86e2398",
+        "bytes": 64853,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c8f56196063791d09ad37e11cc762a4d9d979128",
+        "bytes": 81,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c8f56196063791d09ad37e11cc762a4d9d979128",
+        "bytes": 81,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d32a56ca682612e6c435b76ac965215c80551597",
+        "bytes": 14608,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d32a56ca682612e6c435b76ac965215c80551597",
+        "bytes": 14608,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a273cb2b778c768d603af7fb6cf4a4402eb66a81",
+        "bytes": 6878,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "faa9c0b6d2fb0e92ec16d7c185d2bd63b521d558",
+        "bytes": 13911,
+        "kind": "engineering"
+      },
+      "relation": "CHANGED_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cce201beecae31bbafdbe5d9dc8d9762dfa832fd",
+        "bytes": 10399,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cce201beecae31bbafdbe5d9dc8d9762dfa832fd",
+        "bytes": 10399,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3901e311f145590277893b4b68debb2893c35bc8",
+        "bytes": 7851,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3901e311f145590277893b4b68debb2893c35bc8",
+        "bytes": 7851,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "dd8fb7c25526f157d61998b3091b0230fc68d4eb",
+        "bytes": 741,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "dd8fb7c25526f157d61998b3091b0230fc68d4eb",
+        "bytes": 741,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/protocol.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/protocol.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "943cecb8a264da12f3ec0500c9d1816c431e4330",
+        "bytes": 3770,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/protocol.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "943cecb8a264da12f3ec0500c9d1816c431e4330",
+        "bytes": 3770,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3bb9bab51d701c952a1d91c64c569640f7d5125e",
+        "bytes": 2530,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3bb9bab51d701c952a1d91c64c569640f7d5125e",
+        "bytes": 2530,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "db107e7404b29f8bd81730f30666e173cf0276cd",
+        "bytes": 2415,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "db107e7404b29f8bd81730f30666e173cf0276cd",
+        "bytes": 2415,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/storage.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123",
+        "bytes": 55364,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/storage.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123",
+        "bytes": 55364,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "bd11499b284100b1587057a7c24cf56def7a69a6",
+        "bytes": 5611,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "bd11499b284100b1587057a7c24cf56def7a69a6",
+        "bytes": 5611,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/worker.py",
+      "original": {
+        "path": "packages/engine/src/ontolearn_engine/worker.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c",
+        "bytes": 9314,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/src/ontolearn_engine/worker.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c",
+        "bytes": 9314,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/storage_baselines.py",
+      "original": {
+        "path": "packages/engine/tests/storage_baselines.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e472eed095e9cdcf614dcc3860b6a2b8785cda37",
+        "bytes": 7478,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/storage_baselines.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e472eed095e9cdcf614dcc3860b6a2b8785cda37",
+        "bytes": 7478,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_binding_regressions.py",
+      "original": {
+        "path": "packages/engine/tests/test_binding_regressions.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "51cf72561c788e3f3bf22263baa6c5832f326ed9",
+        "bytes": 474,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_binding_regressions.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "51cf72561c788e3f3bf22263baa6c5832f326ed9",
+        "bytes": 474,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_contract_v2.py",
+      "original": {
+        "path": "packages/engine/tests/test_contract_v2.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "64a8421436e7f231b14eace94f3c3d3904455003",
+        "bytes": 12262,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_contract_v2.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "64a8421436e7f231b14eace94f3c3d3904455003",
+        "bytes": 12262,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_coordinator_control.py",
+      "original": {
+        "path": "packages/engine/tests/test_coordinator_control.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "96c2d98f8d4e326ca647aa1824bf88e12b204499",
+        "bytes": 5103,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_coordinator_control.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "96c2d98f8d4e326ca647aa1824bf88e12b204499",
+        "bytes": 5103,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_frame_corpus.py",
+      "original": {
+        "path": "packages/engine/tests/test_frame_corpus.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b2031380285748aaa9494bd7b7520a9732eef2c3",
+        "bytes": 3101,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_frame_corpus.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b2031380285748aaa9494bd7b7520a9732eef2c3",
+        "bytes": 3101,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_handshake_deadline.py",
+      "original": {
+        "path": "packages/engine/tests/test_handshake_deadline.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f9d98888a8f85db95a99b8d9e704c0deea11c3f8",
+        "bytes": 3479,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_handshake_deadline.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f9d98888a8f85db95a99b8d9e704c0deea11c3f8",
+        "bytes": 3479,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+      "original": {
+        "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4a25f8277b93e1f6d41010a0d718fc2f860cd4a1",
+        "bytes": 17211,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4a25f8277b93e1f6d41010a0d718fc2f860cd4a1",
+        "bytes": 17211,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_i04_progress.py",
+      "original": {
+        "path": "packages/engine/tests/test_i04_progress.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f01164fb191e0697ff3dc3b59ab6cb703e2b17a0",
+        "bytes": 11276,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_i04_progress.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f01164fb191e0697ff3dc3b59ab6cb703e2b17a0",
+        "bytes": 11276,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_i04_round_faults.py",
+      "original": {
+        "path": "packages/engine/tests/test_i04_round_faults.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c18f678b54cd6ebacb05bb85c8f8ff06cf6a6072",
+        "bytes": 12069,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_i04_round_faults.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c18f678b54cd6ebacb05bb85c8f8ff06cf6a6072",
+        "bytes": 12069,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_job_store.py",
+      "original": {
+        "path": "packages/engine/tests/test_job_store.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5bc415287b93f7bd67644f4f1160235c4de45f41",
+        "bytes": 57441,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_job_store.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5bc415287b93f7bd67644f4f1160235c4de45f41",
+        "bytes": 57441,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_entrypoint.py",
+      "original": {
+        "path": "packages/engine/tests/test_mapping_entrypoint.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "41c25bdb04bc1c94c721bef25bd865ae59707a15",
+        "bytes": 2915,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_mapping_entrypoint.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "47999650d630e85069fd5cac1b5c50dc6c8a11cc",
+        "bytes": 5647,
+        "kind": "engineering"
+      },
+      "relation": "CHANGED_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_plan.py",
+      "original": {
+        "path": "packages/engine/tests/test_mapping_plan.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d3ef910f69d6b97e968da475dc9812b9d480e5db",
+        "bytes": 11071,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_mapping_plan.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d3ef910f69d6b97e968da475dc9812b9d480e5db",
+        "bytes": 11071,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_recovery.py",
+      "original": {
+        "path": "packages/engine/tests/test_mapping_recovery.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7a687442b0a66b835483f8d34763a9648425c32b",
+        "bytes": 6676,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_mapping_recovery.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7a687442b0a66b835483f8d34763a9648425c32b",
+        "bytes": 6676,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_source.py",
+      "original": {
+        "path": "packages/engine/tests/test_mapping_source.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7ad708db551b8ef98a1d69efdf7d02708aa5f601",
+        "bytes": 10361,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_mapping_source.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7ad708db551b8ef98a1d69efdf7d02708aa5f601",
+        "bytes": 10361,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_memory_guard_exit.py",
+      "original": {
+        "path": "packages/engine/tests/test_memory_guard_exit.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "1b9694b7b2499e790af2b072ba2efe1c04db7e85",
+        "bytes": 1953,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_memory_guard_exit.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "1b9694b7b2499e790af2b072ba2efe1c04db7e85",
+        "bytes": 1953,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_protocol.py",
+      "original": {
+        "path": "packages/engine/tests/test_protocol.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d4fe68c48ba3098c70b3c700a803e7aa8efbea0b",
+        "bytes": 1985,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_protocol.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d4fe68c48ba3098c70b3c700a803e7aa8efbea0b",
+        "bytes": 1985,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_resident_runtime.py",
+      "original": {
+        "path": "packages/engine/tests/test_resident_runtime.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "21fed41c6bb509feafd30dcd37f1c7a33d06cb6c",
+        "bytes": 20364,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_resident_runtime.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "21fed41c6bb509feafd30dcd37f1c7a33d06cb6c",
+        "bytes": 20364,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_runtime_bounds.py",
+      "original": {
+        "path": "packages/engine/tests/test_runtime_bounds.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "97a4d00b11a2eddea63f86617153d3eddb939f58",
+        "bytes": 2620,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_runtime_bounds.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "97a4d00b11a2eddea63f86617153d3eddb939f58",
+        "bytes": 2620,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_session_page_limits.py",
+      "original": {
+        "path": "packages/engine/tests/test_session_page_limits.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5f7558a7aeb8805a0f32bbc6e3f905f00e5f0842",
+        "bytes": 4475,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_session_page_limits.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5f7558a7aeb8805a0f32bbc6e3f905f00e5f0842",
+        "bytes": 4475,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_stdio_session_shutdown.py",
+      "original": {
+        "path": "packages/engine/tests/test_stdio_session_shutdown.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "61a54c19faaf135ad6b0f47431a60633a8aee182",
+        "bytes": 9085,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_stdio_session_shutdown.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "61a54c19faaf135ad6b0f47431a60633a8aee182",
+        "bytes": 9085,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_storage.py",
+      "original": {
+        "path": "packages/engine/tests/test_storage.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4d8149f71e546e6428e4e786c81b1e2ce2462c0e",
+        "bytes": 49233,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_storage.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4d8149f71e546e6428e4e786c81b1e2ce2462c0e",
+        "bytes": 49233,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_worker_owner_bootstrap.py",
+      "original": {
+        "path": "packages/engine/tests/test_worker_owner_bootstrap.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cf6c37ea0592723a5f7d4cf70567a2522cd9d113",
+        "bytes": 9489,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_worker_owner_bootstrap.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cf6c37ea0592723a5f7d4cf70567a2522cd9d113",
+        "bytes": 9489,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "packages/engine/tests/test_worker_parent.py",
+      "original": {
+        "path": "packages/engine/tests/test_worker_parent.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4ab16810e2d30fa46d3ae8f7a98788f21f53bee7",
+        "bytes": 4197,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "packages/engine/tests/test_worker_parent.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "4ab16810e2d30fa46d3ae8f7a98788f21f53bee7",
+        "bytes": 4197,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "playwright.config.ts",
+      "original": {
+        "path": "playwright.config.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fcc1eb121ddc431bf0bfdbb0dde1bcc2379e901f",
+        "bytes": 212,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "playwright.config.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "fcc1eb121ddc431bf0bfdbb0dde1bcc2379e901f",
+        "bytes": 212,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "pyproject.toml",
+      "original": {
+        "path": "pyproject.toml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "08d9cf0fa862356e0f5c6cc0039aebe25c6e861c",
+        "bytes": 494,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "pyproject.toml",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "08d9cf0fa862356e0f5c6cc0039aebe25c6e861c",
+        "bytes": 494,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "original": {
+        "path": "scripts/build-engine.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cf7e3d2bc68ea62b610f7b12991d3c1612731225",
+        "bytes": 1349,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "scripts/build-engine.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "cf7e3d2bc68ea62b610f7b12991d3c1612731225",
+        "bytes": 1349,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "scripts/i04_matrix_evidence.py",
+      "original": {
+        "path": "scripts/i04_matrix_evidence.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b8f9cb3611fc96b1344a23fce8fab93e41faaac7",
+        "bytes": 19832,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "scripts/i04_matrix_evidence.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "b8f9cb3611fc96b1344a23fce8fab93e41faaac7",
+        "bytes": 19832,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "scripts/prepare-i04-fixture.py",
+      "original": {
+        "path": "scripts/prepare-i04-fixture.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6f36750ea745d43186d28ea97104bc7315aa3945",
+        "bytes": 3873,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "scripts/prepare-i04-fixture.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "6f36750ea745d43186d28ea97104bc7315aa3945",
+        "bytes": 3873,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "scripts/verify-i01.py",
+      "original": {
+        "path": "scripts/verify-i01.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3f5e02f55c76340e4937fbf9d603cc8597a994c0",
+        "bytes": 4595,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "scripts/verify-i01.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3f5e02f55c76340e4937fbf9d603cc8597a994c0",
+        "bytes": 4595,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "scripts/verify-i04-package.py",
+      "original": {
+        "path": "scripts/verify-i04-package.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "34f0137af8ae8c15c529ce3c19f66a768b417474",
+        "bytes": 3290,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "scripts/verify-i04-package.py",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "34f0137af8ae8c15c529ce3c19f66a768b417474",
+        "bytes": 3290,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "scripts/verify-sources.mjs",
+      "original": {
+        "path": "scripts/verify-sources.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "ac2540d4aee6c25bdabbeea7ca158d7c57cf47cd",
+        "bytes": 528,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "scripts/verify-sources.mjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "ac2540d4aee6c25bdabbeea7ca158d7c57cf47cd",
+        "bytes": 528,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/e2e/csp-lifecycle.spec.ts",
+      "original": {
+        "path": "tests/e2e/csp-lifecycle.spec.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "0c3f4cbae6f20c955b95852440719e44d03428fb",
+        "bytes": 14104,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/e2e/csp-lifecycle.spec.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "0c3f4cbae6f20c955b95852440719e44d03428fb",
+        "bytes": 14104,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/e2e/desktop.spec.ts",
+      "original": {
+        "path": "tests/e2e/desktop.spec.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "70e1081b53808f5b24742e6151e35d3f696e3148",
+        "bytes": 7194,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/e2e/desktop.spec.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "70e1081b53808f5b24742e6151e35d3f696e3148",
+        "bytes": 7194,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/e2e/i04-jobs.spec.ts",
+      "original": {
+        "path": "tests/e2e/i04-jobs.spec.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c2b721844dbb1b43dfa820e4259520a01706bbcf",
+        "bytes": 23914,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/e2e/i04-jobs.spec.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c2b721844dbb1b43dfa820e4259520a01706bbcf",
+        "bytes": 23914,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/e2e/native-driver.ts",
+      "original": {
+        "path": "tests/e2e/native-driver.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "9d5ca8183d3bf89689cb7a683f9c93b5a991d83f",
+        "bytes": 3887,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/e2e/native-driver.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "9d5ca8183d3bf89689cb7a683f9c93b5a991d83f",
+        "bytes": 3887,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/e2e/native-recovery.cjs",
+      "original": {
+        "path": "tests/e2e/native-recovery.cjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5811866877888dac9363373d8b0f53e798e8d1cf",
+        "bytes": 4728,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/e2e/native-recovery.cjs",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "5811866877888dac9363373d8b0f53e798e8d1cf",
+        "bytes": 4728,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/fixtures/mapping/equipment.csv",
+      "original": {
+        "path": "tests/fixtures/mapping/equipment.csv",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "68b3cb85e60337946db1d1bf81eef90f8015cdb5",
+        "bytes": 52,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/fixtures/mapping/equipment.csv",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "68b3cb85e60337946db1d1bf81eef90f8015cdb5",
+        "bytes": 52,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/binding-regressions.test.ts",
+      "original": {
+        "path": "tests/unit/binding-regressions.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7dea8f21fb61c289812abb5e3634d2d202bb6f7e",
+        "bytes": 483,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/binding-regressions.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "7dea8f21fb61c289812abb5e3634d2d202bb6f7e",
+        "bytes": 483,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/contract-v2.test.ts",
+      "original": {
+        "path": "tests/unit/contract-v2.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f89f0217f92162929e97b41a18c6c0c7a9afc8b9",
+        "bytes": 10907,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/contract-v2.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f89f0217f92162929e97b41a18c6c0c7a9afc8b9",
+        "bytes": 10907,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/contract.test.ts",
+      "original": {
+        "path": "tests/unit/contract.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3e3e5950c7931c4d4ee50758bfca54d590aa3770",
+        "bytes": 2131,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/contract.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "3e3e5950c7931c4d4ee50758bfca54d590aa3770",
+        "bytes": 2131,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/csp.test.ts",
+      "original": {
+        "path": "tests/unit/csp.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8351575018d4695e757101e09db90b9747ae531e",
+        "bytes": 1007,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/csp.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8351575018d4695e757101e09db90b9747ae531e",
+        "bytes": 1007,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/engine-connection-state.test.ts",
+      "original": {
+        "path": "tests/unit/engine-connection-state.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c75c52f75664decc403e4ed55129a36a466034a6",
+        "bytes": 8676,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/engine-connection-state.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c75c52f75664decc403e4ed55129a36a466034a6",
+        "bytes": 8676,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/engine-environment.test.ts",
+      "original": {
+        "path": "tests/unit/engine-environment.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c7dcf932c5a53aa7278d2922e8b04b883c04b94d",
+        "bytes": 4542,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/engine-environment.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "c7dcf932c5a53aa7278d2922e8b04b883c04b94d",
+        "bytes": 4542,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/jsonl.test.ts",
+      "original": {
+        "path": "tests/unit/jsonl.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e04800ad78a7a5ae703ef39deefd6e6d248fa29f",
+        "bytes": 4447,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/jsonl.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "e04800ad78a7a5ae703ef39deefd6e6d248fa29f",
+        "bytes": 4447,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/native-driver.test.ts",
+      "original": {
+        "path": "tests/unit/native-driver.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "63224f1441409dfe51112ce167c7d9173dfbd525",
+        "bytes": 2672,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/native-driver.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "63224f1441409dfe51112ce167c7d9173dfbd525",
+        "bytes": 2672,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/supervisor.test.ts",
+      "original": {
+        "path": "tests/unit/supervisor.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d7459dae9a2e31b32197dcaaadf6a8b68a7d3583",
+        "bytes": 8920,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/supervisor.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "d7459dae9a2e31b32197dcaaadf6a8b68a7d3583",
+        "bytes": 8920,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/t03-mapping-state.test.ts",
+      "original": {
+        "path": "tests/unit/t03-mapping-state.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "bc42de219610d374875b37fb94213f53ed0e4449",
+        "bytes": 5494,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/t03-mapping-state.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "bc42de219610d374875b37fb94213f53ed0e4449",
+        "bytes": 5494,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/task-progress.test.ts",
+      "original": {
+        "path": "tests/unit/task-progress.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "96ccc662d46d610b8f94a058d82c2e2aeec7c2e4",
+        "bytes": 4072,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/task-progress.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "96ccc662d46d610b8f94a058d82c2e2aeec7c2e4",
+        "bytes": 4072,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/task-runtime.test.ts",
+      "original": {
+        "path": "tests/unit/task-runtime.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8bc5fe2141d409f1157d7153efd13a342f71fae1",
+        "bytes": 26406,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/task-runtime.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "8bc5fe2141d409f1157d7153efd13a342f71fae1",
+        "bytes": 26406,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/task-service.test.ts",
+      "original": {
+        "path": "tests/unit/task-service.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "95a7476988b0adf287b3cfd5537f0195f1769ee9",
+        "bytes": 45315,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/task-service.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "95a7476988b0adf287b3cfd5537f0195f1769ee9",
+        "bytes": 45315,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/task-update-boundary.test.ts",
+      "original": {
+        "path": "tests/unit/task-update-boundary.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f0b9f1efd84ea849e9dad03a884533ff450298b7",
+        "bytes": 1469,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/task-update-boundary.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "f0b9f1efd84ea849e9dad03a884533ff450298b7",
+        "bytes": 1469,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/view-navigation.test.ts",
+      "original": {
+        "path": "tests/unit/view-navigation.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "9c7150a541f565ca522d7349adde697632ac44d0",
+        "bytes": 4588,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/view-navigation.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "9c7150a541f565ca522d7349adde697632ac44d0",
+        "bytes": 4588,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tests/unit/window-recovery.test.ts",
+      "original": {
+        "path": "tests/unit/window-recovery.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "49caa59fd9b033170c9ab596cff275cdfea6d9db",
+        "bytes": 2335,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tests/unit/window-recovery.test.ts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "49caa59fd9b033170c9ab596cff275cdfea6d9db",
+        "bytes": 2335,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "tsconfig.unit.json",
+      "original": {
+        "path": "tsconfig.unit.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a5f4665fde80a6ac8640bb9b35ff61e51af106cd",
+        "bytes": 141,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "tsconfig.unit.json",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "a5f4665fde80a6ac8640bb9b35ff61e51af106cd",
+        "bytes": 141,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "uv.lock",
+      "original": {
+        "path": "uv.lock",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "87cb915a5c66a98832edc1756cb8a056cf5cfc4b",
+        "bytes": 23393,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "uv.lock",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "87cb915a5c66a98832edc1756cb8a056cf5cfc4b",
+        "bytes": 23393,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    },
+    {
+      "path": "vitest.config.mts",
+      "original": {
+        "path": "vitest.config.mts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "845e04b86d7f08b6034e1eb0976789efd0ca4643",
+        "bytes": 125,
+        "kind": "engineering"
+      },
+      "current": {
+        "path": "vitest.config.mts",
+        "mode": "100644",
+        "type": "blob",
+        "gitBlobOID": "845e04b86d7f08b6034e1eb0976789efd0ca4643",
+        "bytes": 125,
+        "kind": "engineering"
+      },
+      "relation": "SAME_BLOB"
+    }
+  ],
+  "allCurrent180": [
+    {
+      "path": ".editorconfig",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "7bce64974d19850cb95d39cb6b9a8bb46be00141",
+      "bytes": 137,
+      "kind": "engineering"
+    },
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "46850b6cef6cfd5554df5205007a883616dcb4ca",
+      "bytes": 57,
+      "kind": "engineering"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug.yml",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "0429a312172ec77d52d932d39c1116b0e70be473",
+      "bytes": 404,
+      "kind": "engineering"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3b6ee4a507d5538f681998e00daeac0e360e4570",
+      "bytes": 279,
+      "kind": "engineering"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4622b5caa75f2df779dd456b942d2511144d6d12",
+      "bytes": 274,
+      "kind": "engineering"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3c38c8dfed04502802d407536f3f85714b089faa",
+      "bytes": 6860,
+      "kind": "engineering"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "507fe198bc2f022cc505c8ae031f3775a68400c3",
+      "bytes": 248,
+      "kind": "engineering"
+    },
+    {
+      "path": ".node-version",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "a45fd52cc5891570d6299fab38643103c3955474",
+      "bytes": 3,
+      "kind": "engineering"
+    },
+    {
+      "path": ".npmrc",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "cffe8cdef132f31903a4971117f33f60cd9a56e6",
+      "bytes": 16,
+      "kind": "engineering"
+    },
+    {
+      "path": ".prettierignore",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "8e9319e932c215afdaab575b19a1dd61edcf5e95",
+      "bytes": 442,
+      "kind": "engineering"
+    },
+    {
+      "path": ".prettierrc.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d7dadf59ea8ee49a31dc80c5d7af312573c4e45d",
+      "bytes": 90,
+      "kind": "engineering"
+    },
+    {
+      "path": ".python-version",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+      "bytes": 5,
+      "kind": "engineering"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f3876f6690b11ae58f633d1bcb96db05a429d58b",
+      "bytes": 1056,
+      "kind": "engineering"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "5c2db046cc119a6a067e6423f50a5967e572957a",
+      "bytes": 1157,
+      "kind": "engineering"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "07946b72b12c9e8b013266bdeca7b92175382476",
+      "bytes": 2783,
+      "kind": "engineering"
+    },
+    {
+      "path": "SECURITY.md",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "1614b7afbe3559b890ded8a80c33bc0c9e88020b",
+      "bytes": 961,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/electron-builder.yml",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b8f5746ad3c01d1bac5b08460c54c5dbb20da07a",
+      "bytes": 389,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/electron.vite.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "952e2310b9f7dea9ffcafc2b60b022caf2bffa42",
+      "bytes": 1202,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4bd9e4ad83cfddf07a903155548f8deb0923a482",
+      "bytes": 491,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/csp.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "95a74c7d7da8a9838631b45027ac8b042c983d0a",
+      "bytes": 1065,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/engine.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "cb1c821f57002c08e49d2309d9447032bb1a3580",
+      "bytes": 18569,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3d5cbbc209aca658a48cd70063774816045b22cb",
+      "bytes": 6769,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/jsonl.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "665c972f0401109bbeeffb8642685a4ac9ae5e62",
+      "bytes": 4774,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "166032eb77ef6d70033e369adfb47a3505023a77",
+      "bytes": 32727,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/trusted-document.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "fedde8a70d898e30bb500dffc94c099950e808f7",
+      "bytes": 388,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/view-navigation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d0e37aafdb00f2615e9db7fea6a387ed3e69fdd1",
+      "bytes": 446,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/window-recovery.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f3aa65097c0f4b1e9df310c6e88bf718dc090046",
+      "bytes": 1993,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/main/window-security.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "78788fbdc14c4f6f8550d6f8ca23a8fa21f9573d",
+      "bytes": 886,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e43ddeab6e4c056a93f959400896f03de1a0a632",
+      "bytes": 1230,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "2846b68b16514136242809a69a9f35ed9b1d4ac2",
+      "bytes": 306,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "62834d0a855f990ad2fc5fb697a365370d1af98c",
+      "bytes": 14413,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/env.d.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "281aacbde4bc56da9508c78b5d32f20c498c1316",
+      "bytes": 132,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/main.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "db15cda19722ada98e9291302d3fea408f7a0bef",
+      "bytes": 230,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/MappingPage.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d897ff7d38eb2f69fe939922b4e0cbc4d334d903",
+      "bytes": 14585,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/mapping.css",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b7fda1f72f47478b3f07e0fd72511b76a184bb28",
+      "bytes": 1305,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/model.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3a383bcd956c0a89f6e6ccab607b2fcd36533ea4",
+      "bytes": 4631,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/style.css",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "ea2fcf1ce5f49c81d7ab8b1cb4c6bd5c668580ed",
+      "bytes": 5279,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-presentation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e6ab7bda420b7207ccb7c566eefb0d248b0d3194",
+      "bytes": 8446,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-progress.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "fb89b0bceb73407a9a53e9c82accc0448effd195",
+      "bytes": 2254,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/tokens.css",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "ab72919112182a167551b22bddc263d482363577",
+      "bytes": 226,
+      "kind": "engineering"
+    },
+    {
+      "path": "apps/desktop/tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "6caf5b235dbf40b93280c8a5ed957ef515d33976",
+      "bytes": 396,
+      "kind": "engineering"
+    },
+    {
+      "path": "design/prototypes/OntoLearn-Studio-Prototype.pen",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c9be4fc94cbc9beabb2a5755cb46f0d387838630",
+      "bytes": 1457069,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/iterations/T03/verify-packaged-probe.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "99e5b3ade28161d27eb04994ea6078c07cc5e25b",
+      "bytes": 2897,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I02/native-dialog-probe/driver.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d0a101887d418745f95d622265102bfddcc7fd57",
+      "bytes": 4922,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic-user.sh",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f7815c35c1510fc8631d47f9ca17f0c2db89206c",
+      "bytes": 432,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic.sh",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c86360942bc8a8a476a47a61ddf2fb45aee351e7",
+      "bytes": 516,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-extra-probe.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "14e87977fe2ab2761b36a91a8c8ea2bd6bd08c0e",
+      "bytes": 2728,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "68e255887b5d7f148beff3509c3aebb4a1f3de98",
+      "bytes": 1828,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe2.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "6a61959270622b01b94fd74e795212c14028f8ea",
+      "bytes": 1995,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I02/round-3/zcode-runtime/i02-r3-zcode-glm53-pushstate-probe.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c1187a4a18882a7dc5f86516e51307629574a4de",
+      "bytes": 844,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/initial-isolated-controls.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "00e82cf686166111a2c64cadbe9267242ab26cbd",
+      "bytes": 1759,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/isolated-controls.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "6f267407a6544f9b33ab827d15769fa4cd01c044",
+      "bytes": 1940,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5-contract.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f7c19921fe34e629bbf49c069618ac10491eb0d6",
+      "bytes": 7868,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "02a92b62eacdb3007e7ad5a27227ea998232bbaa",
+      "bytes": 2932,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "a1a92d4eef63fb26da84c36d6719d9de297f494e",
+      "bytes": 3461,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6-i05-handoff.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c10e18761cbf2eff11c07d8427a56c369d1d0f64",
+      "bytes": 5752,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6b-i05-handoff.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "6a4d469d4a77f5ecf215d0963a6c949300bc0764",
+      "bytes": 5947,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6c-i05-handoff.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c8db7bcbf36fa467626ae728b8e275fdbe3c9e23",
+      "bytes": 6293,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch7-s1-guards.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "09c4b75bc01b02ac3bc2c032f2683a2225d21d13",
+      "bytes": 4858,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8-structure.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "a2028a82f8d2d35ca4de1fbe80c0ab2079988fee",
+      "bytes": 6306,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8b-structure.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "15dd31c3fab3e98482e6ffe98b7c0071adbbed75",
+      "bytes": 6597,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "5c8e9605fc729324d0b0d1867effe01d5b178bd8",
+      "bytes": 1192,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare2.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b60a574e0d55952688dfb2a2362175e992d5f431",
+      "bytes": 1215,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/f3-injection.sh.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "782a909bfe4d19974d71aaa233e738a78badfe69",
+      "bytes": 2755,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b7016e168d6b17b863f264ed06e1a145983c1638",
+      "bytes": 3933,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases2.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b2d12bcdcb6f519ec306af390ecf6f19b5d95e49",
+      "bytes": 4566,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases3.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "67b6224590a00f4dafd962d48201d6c860dcc1e0",
+      "bytes": 2456,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/hooks.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "7c166ea5237b13765f2a1241eb889fd2f5eed3e6",
+      "bytes": 1169,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/register.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "6b20fc4d2629507de3144b7f984658789adf1f67",
+      "bytes": 102,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "91dbb0aaab12f17c757def85db8a26ddd6f40aaa",
+      "bytes": 2138,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py2.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "521d24ce2e61240a054359f45e8e96e7ce24a9fa",
+      "bytes": 1527,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4ac5addf7b82d9bff4d98558b827f2de38344780",
+      "bytes": 1804,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts2.mjs.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "72e6042a056b3ee09bec39c2e4129d219b80a394",
+      "bytes": 1191,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_py.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "af0a17118194d5106bb01c06cb9e7560d74a965e",
+      "bytes": 5445,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_ts.test.ts.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "48aa5be708ff93b54a9c1f8ab7dd05b364d1256b",
+      "bytes": 4427,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-first-storage-probe/storage_probe.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "407f1485e1caacb72846e62dd1f0377a8ad87378",
+      "bytes": 4974,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-python-probe-at-first-observation/py_probe.py.txt",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4dc37c6c4686e50868a349b0824f96ba571bb5db",
+      "bytes": 5587,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/independent-review/audit.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b8f311579e8cd372781a4605c63b64b536aad008",
+      "bytes": 8583,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/verify-packaged-boundaries.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b675d1913ed1129b28ca3db84227083f240e9fec",
+      "bytes": 11054,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/.gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e4e939d2d5e4a74c5318c98d97c8cd0aca70b695",
+      "bytes": 87,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/freeze-scope.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "0df752d5c81b123ce085273f316861e616ccb6df",
+      "bytes": 4553,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/make-dispatch.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e23e6754dc2fbd808ed607ff225fc48e07afab9f",
+      "bytes": 5006,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/prepare-environment.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "2c6dd37e4b8ce8aeebc2f0a69f120e1bc4cea8ee",
+      "bytes": 4289,
+      "kind": "engineering"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/p2-original-raw/build/mapping-p2-boundaries-20261023/run-command.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d3a57541fc9fcbf55ce1463e1da91b315f044b89",
+      "bytes": 4711,
+      "kind": "engineering"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "84a06e8ac23090db20b0c535b0f82ae60328ef81",
+      "bytes": 631,
+      "kind": "engineering"
+    },
+    {
+      "path": "package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "99bf9de3805a29713d92c155c12f6de23c80e9f3",
+      "bytes": 224331,
+      "kind": "engineering"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "0f83067f90b3da1eecb16af8ddcf99e18c99e082",
+      "bytes": 1953,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c56f1532d5ea282c7e5ac7ff3b337cd3284e00f8",
+      "bytes": 291,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79",
+      "bytes": 20174,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/src/dependencies-v2.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "210de680cccf92923d390dbe1a480b5acb705159",
+      "bytes": 2205,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/src/design-v2.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "295581510e22b92d4117898aaefd6cbb823412c0",
+      "bytes": 153,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "8ba81e6e92a6009f62d42564f70962a72402fd28",
+      "bytes": 4881,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/src/states-v2.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "153a617c9fe3242161e5c59a2cfc76f556424746",
+      "bytes": 578,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/src/v2.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d749c44d3a0b9f5a9a33b419924627dd66d6eb0d",
+      "bytes": 20514,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "36786a3aee4e5b711d0b8417f3bbf5c2b6784ab9",
+      "bytes": 291,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/binding-regressions.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "fa27812aaf40202c5f17971c9a9783b5dd680597",
+      "bytes": 123964,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/dependencies.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e",
+      "bytes": 1438,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/errors.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b",
+      "bytes": 14400,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/fixtures.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "37847c27a082db388042e280db61719dbab8f61d",
+      "bytes": 472098,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/frame-fixtures.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2",
+      "bytes": 17537,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/registry.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3a6705a00217f5e55d130bd2a231a6aad233b3fe",
+      "bytes": 13039,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/schema.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4",
+      "bytes": 122889,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/contracts/v2/states.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "bb6161a5a27c317ba073efbf50599fabace903ee",
+      "bytes": 716,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "fd9e7f7cb77d9ff77b4d296df1b95300e60674cd",
+      "bytes": 1232,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "49424f0aeba2eec1a3337e6075d1d9ae3dcc6f0b",
+      "bytes": 424,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "aea2f9eaf2ec7427494596a52c40bb8333b8943e",
+      "bytes": 101,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__main__.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4ddb44e71712d3d357afe8e28eb5921e547b6e39",
+      "bytes": 489,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "a6ae1a0d637d76f832250e490ff085bbda2e8352",
+      "bytes": 2334,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6",
+      "bytes": 29559,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "aa95429d8b5f99ab839a4fd286991298288e7187",
+      "bytes": 1745,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3d640f37ea26f329d5670f6b1738a309a6c8c203",
+      "bytes": 1329,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "fdf213b225954c1257a8a1e00eebe676a86e2398",
+      "bytes": 64853,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c8f56196063791d09ad37e11cc762a4d9d979128",
+      "bytes": 81,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d32a56ca682612e6c435b76ac965215c80551597",
+      "bytes": 14608,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "faa9c0b6d2fb0e92ec16d7c185d2bd63b521d558",
+      "bytes": 13911,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "cce201beecae31bbafdbe5d9dc8d9762dfa832fd",
+      "bytes": 10399,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3901e311f145590277893b4b68debb2893c35bc8",
+      "bytes": 7851,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "dd8fb7c25526f157d61998b3091b0230fc68d4eb",
+      "bytes": 741,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/protocol.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "943cecb8a264da12f3ec0500c9d1816c431e4330",
+      "bytes": 3770,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3bb9bab51d701c952a1d91c64c569640f7d5125e",
+      "bytes": 2530,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "db107e7404b29f8bd81730f30666e173cf0276cd",
+      "bytes": 2415,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123",
+      "bytes": 55364,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "bd11499b284100b1587057a7c24cf56def7a69a6",
+      "bytes": 5611,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/worker.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c",
+      "bytes": 9314,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/storage_baselines.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e472eed095e9cdcf614dcc3860b6a2b8785cda37",
+      "bytes": 7478,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_binding_regressions.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "51cf72561c788e3f3bf22263baa6c5832f326ed9",
+      "bytes": 474,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_contract_v2.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "64a8421436e7f231b14eace94f3c3d3904455003",
+      "bytes": 12262,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_coordinator_control.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "96c2d98f8d4e326ca647aa1824bf88e12b204499",
+      "bytes": 5103,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_frame_corpus.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b2031380285748aaa9494bd7b7520a9732eef2c3",
+      "bytes": 3101,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_handshake_deadline.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f9d98888a8f85db95a99b8d9e704c0deea11c3f8",
+      "bytes": 3479,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4a25f8277b93e1f6d41010a0d718fc2f860cd4a1",
+      "bytes": 17211,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_i04_progress.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f01164fb191e0697ff3dc3b59ab6cb703e2b17a0",
+      "bytes": 11276,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_i04_round_faults.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c18f678b54cd6ebacb05bb85c8f8ff06cf6a6072",
+      "bytes": 12069,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_job_store.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "5bc415287b93f7bd67644f4f1160235c4de45f41",
+      "bytes": 57441,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_entrypoint.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "47999650d630e85069fd5cac1b5c50dc6c8a11cc",
+      "bytes": 5647,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_plan.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d3ef910f69d6b97e968da475dc9812b9d480e5db",
+      "bytes": 11071,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_recovery.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "7a687442b0a66b835483f8d34763a9648425c32b",
+      "bytes": 6676,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_source.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "7ad708db551b8ef98a1d69efdf7d02708aa5f601",
+      "bytes": 10361,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_memory_guard_exit.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "1b9694b7b2499e790af2b072ba2efe1c04db7e85",
+      "bytes": 1953,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_protocol.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d4fe68c48ba3098c70b3c700a803e7aa8efbea0b",
+      "bytes": 1985,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_resident_runtime.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "21fed41c6bb509feafd30dcd37f1c7a33d06cb6c",
+      "bytes": 20364,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_runtime_bounds.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "97a4d00b11a2eddea63f86617153d3eddb939f58",
+      "bytes": 2620,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_session_page_limits.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "5f7558a7aeb8805a0f32bbc6e3f905f00e5f0842",
+      "bytes": 4475,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_stdio_session_shutdown.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "61a54c19faaf135ad6b0f47431a60633a8aee182",
+      "bytes": 9085,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_storage.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4d8149f71e546e6428e4e786c81b1e2ce2462c0e",
+      "bytes": 49233,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_worker_owner_bootstrap.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "cf6c37ea0592723a5f7d4cf70567a2522cd9d113",
+      "bytes": 9489,
+      "kind": "engineering"
+    },
+    {
+      "path": "packages/engine/tests/test_worker_parent.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "4ab16810e2d30fa46d3ae8f7a98788f21f53bee7",
+      "bytes": 4197,
+      "kind": "engineering"
+    },
+    {
+      "path": "playwright.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "fcc1eb121ddc431bf0bfdbb0dde1bcc2379e901f",
+      "bytes": 212,
+      "kind": "engineering"
+    },
+    {
+      "path": "pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "08d9cf0fa862356e0f5c6cc0039aebe25c6e861c",
+      "bytes": 494,
+      "kind": "engineering"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "cf7e3d2bc68ea62b610f7b12991d3c1612731225",
+      "bytes": 1349,
+      "kind": "engineering"
+    },
+    {
+      "path": "scripts/i04_matrix_evidence.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "b8f9cb3611fc96b1344a23fce8fab93e41faaac7",
+      "bytes": 19832,
+      "kind": "engineering"
+    },
+    {
+      "path": "scripts/prepare-i04-fixture.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "6f36750ea745d43186d28ea97104bc7315aa3945",
+      "bytes": 3873,
+      "kind": "engineering"
+    },
+    {
+      "path": "scripts/verify-i01.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3f5e02f55c76340e4937fbf9d603cc8597a994c0",
+      "bytes": 4595,
+      "kind": "engineering"
+    },
+    {
+      "path": "scripts/verify-i04-package.py",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "34f0137af8ae8c15c529ce3c19f66a768b417474",
+      "bytes": 3290,
+      "kind": "engineering"
+    },
+    {
+      "path": "scripts/verify-sources.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "ac2540d4aee6c25bdabbeea7ca158d7c57cf47cd",
+      "bytes": 528,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/e2e/csp-lifecycle.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "0c3f4cbae6f20c955b95852440719e44d03428fb",
+      "bytes": 14104,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/e2e/desktop.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "70e1081b53808f5b24742e6151e35d3f696e3148",
+      "bytes": 7194,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/e2e/i04-jobs.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c2b721844dbb1b43dfa820e4259520a01706bbcf",
+      "bytes": 23914,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/e2e/native-driver.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "9d5ca8183d3bf89689cb7a683f9c93b5a991d83f",
+      "bytes": 3887,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/e2e/native-recovery.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "5811866877888dac9363373d8b0f53e798e8d1cf",
+      "bytes": 4728,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/fixtures/mapping/equipment.csv",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "68b3cb85e60337946db1d1bf81eef90f8015cdb5",
+      "bytes": 52,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/binding-regressions.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "7dea8f21fb61c289812abb5e3634d2d202bb6f7e",
+      "bytes": 483,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/contract-v2.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f89f0217f92162929e97b41a18c6c0c7a9afc8b9",
+      "bytes": 10907,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/contract.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "3e3e5950c7931c4d4ee50758bfca54d590aa3770",
+      "bytes": 2131,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/csp.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "8351575018d4695e757101e09db90b9747ae531e",
+      "bytes": 1007,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/engine-connection-state.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c75c52f75664decc403e4ed55129a36a466034a6",
+      "bytes": 8676,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/engine-environment.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "c7dcf932c5a53aa7278d2922e8b04b883c04b94d",
+      "bytes": 4542,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/jsonl.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "e04800ad78a7a5ae703ef39deefd6e6d248fa29f",
+      "bytes": 4447,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/native-driver.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "63224f1441409dfe51112ce167c7d9173dfbd525",
+      "bytes": 2672,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/supervisor.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "d7459dae9a2e31b32197dcaaadf6a8b68a7d3583",
+      "bytes": 8920,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/t03-mapping-state.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "bc42de219610d374875b37fb94213f53ed0e4449",
+      "bytes": 5494,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/task-progress.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "96ccc662d46d610b8f94a058d82c2e2aeec7c2e4",
+      "bytes": 4072,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/task-runtime.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "8bc5fe2141d409f1157d7153efd13a342f71fae1",
+      "bytes": 26406,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/task-service.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "95a7476988b0adf287b3cfd5537f0195f1769ee9",
+      "bytes": 45315,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/task-update-boundary.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "f0b9f1efd84ea849e9dad03a884533ff450298b7",
+      "bytes": 1469,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/view-navigation.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "9c7150a541f565ca522d7349adde697632ac44d0",
+      "bytes": 4588,
+      "kind": "engineering"
+    },
+    {
+      "path": "tests/unit/window-recovery.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "49caa59fd9b033170c9ab596cff275cdfea6d9db",
+      "bytes": 2335,
+      "kind": "engineering"
+    },
+    {
+      "path": "tsconfig.unit.json",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "a5f4665fde80a6ac8640bb9b35ff61e51af106cd",
+      "bytes": 141,
+      "kind": "engineering"
+    },
+    {
+      "path": "uv.lock",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "87cb915a5c66a98832edc1756cb8a056cf5cfc4b",
+      "bytes": 23393,
+      "kind": "engineering"
+    },
+    {
+      "path": "vitest.config.mts",
+      "mode": "100644",
+      "type": "blob",
+      "gitBlobOID": "845e04b86d7f08b6034e1eb0976789efd0ca4643",
+      "bytes": 125,
+      "kind": "engineering"
+    }
+  ],
+  "AGENTSOverlay": "Git identity here is the tracked1056B blob; actual15147B/de15 overlay is separate and still protected unstaged.",
+  "policy": "All180 are in new complete review; added7 are real docs tools/config, never an exclusion shortcut."
+}

@@ -1,0 +1,117 @@
+"""Independent preparation audit: stdlib, fixed Git/text/hash/stat only; no imports of candidate."""
+import collections
+import hashlib
+import json
+import stat
+import subprocess
+from pathlib import Path
+
+ROOT = Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-p2-boundaries')
+PACK = ROOT / 'docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023'
+OUT = PACK / 'independent-preparation-review'
+REF = 'c1e44f81723f9c616f669f56481d1b1ada7e57f2'
+HISTORY = '2417110d071a3c62b781e2909bdcb0a62baea2db'
+checks = []
+
+def check(name, value, detail=None):
+    checks.append({'check': name, 'passed': bool(value), 'detail': detail})
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+def load(path):
+    return json.loads(path.read_bytes())
+
+def git(*args, cwd=ROOT):
+    return subprocess.check_output(['git', *args], cwd=cwd)
+
+def fixed(path, ref=REF):
+    assert 'T03-native-location-N0-build' not in path
+    return git('show', f'{ref}:{path}')
+
+def identities(rows):
+    return {r['path']: r for r in rows}
+
+index = load(PACK / 'full-candidate-tree-c1e44f81.json')
+current = identities(index['completeTrackedTree'])
+git_rows = {}
+for entry in git('ls-tree', '-rlz', REF).split(b'\0'):
+    if entry:
+        meta, path = entry.split(b'\t', 1)
+        mode, kind, oid, size = meta.decode().split()
+        git_rows[path.decode()] = dict(mode=mode, type=kind, gitBlobOID=oid, bytes=int(size))
+check('full1028-exact-Git-metadata', len(current) == len(git_rows) == 1028 and current.keys() == git_rows.keys() and all(all(r[k] == v for k, v in git_rows[p].items()) for p, r in current.items()))
+legacy_path = 'docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/legacy-fixed-package/mapping-S1-fixed-inputs.json'
+legacy = identities(json.loads(fixed(legacy_path))['completeTrackedTree'])
+old_eng = {p: r for p, r in legacy.items() if r['kind'] == 'engineering'}
+new_eng = {p: r for p, r in current.items() if r['kind'] == 'engineering'}
+added = sorted(new_eng.keys() - old_eng.keys())
+removed = sorted(old_eng.keys() - new_eng.keys())
+kind_changes = [p for p in legacy.keys() & current.keys() if legacy[p]['kind'] != current[p]['kind']]
+changed = sorted(p for p in old_eng if old_eng[p]['gitBlobOID'] != new_eng[p]['gitBlobOID'])
+check('866legacy-173to180-exactset', len(legacy) == 866 and len(old_eng) == 173 and len(new_eng) == 180 and len(added) == 7 and not removed and not kind_changes, {'added': added, 'removed': removed, 'reclassified': kind_changes})
+check('171same-two-authorized-changed', len(changed) == 2 and changed == sorted(['packages/engine/src/ontolearn_engine/mapping/probe.py', 'packages/engine/tests/test_mapping_entrypoint.py']), changed)
+mapdoc = load(PACK / 'scope-audit/engineering-173-to-180.json')
+check('mapping-all173-and180-exact-original-current', identities(mapdoc['allCurrent180']) == new_eng and len(mapdoc['allOriginal173Mappings']) == 173 and all(row['original'] == old_eng[row['path']] and row['current'] == new_eng[row['path']] for row in mapdoc['allOriginal173Mappings']) and identities(mapdoc['addedSeven']) == {p:new_eng[p] for p in added})
+eofs = load(PACK / 'engineering-eof-tasks.json')['rows']
+check('all180-EOF-navigation-set', len(eofs) == 180 and {r['path'] for r in eofs} == new_eng.keys() and all(r['newReadStatus'] == 'NOT_STARTED' and r['requiredReadThrough'] == 'EOF' and r['requiredStartLine'] == 1 for r in eofs))
+line_checks=[]
+for row in eofs:
+    p=row['path']
+    raw=(ROOT/'AGENTS.md').read_bytes() if p == 'AGENTS.md' else fixed(p)
+    line_checks.append(len(raw) == row['effectiveReviewBytes'] and sha(raw) == row['effectiveReviewSHA256'] and len(raw.decode().splitlines()) == row['requiredLastContentLine'])
+check('all180-effective-bytes-SHA-lines', all(line_checks))
+provenance=load(PACK/'history/copy-provenance.json')
+check('history-six-fixed241711-exact', len(provenance['sources']) == 6 and all(r['sourceRef'] == HISTORY and (PACK/'history'/r['file']).read_bytes() == fixed(r['sourcePath'], HISTORY) and len((PACK/'history'/r['file']).read_bytes()) == r['bytes'] and sha((PACK/'history'/r['file']).read_bytes()) == r['sha256'] for r in provenance['sources']))
+ledger=load(PACK/'history/previous-29-findings-and-static-evidence.json')
+ids=[r['id'] for r in ledger['historicalLedger']+ledger['newObservationLedger']]
+expected={f'Z{i}' for i in range(1,8)} | {f'F{i:02}' for i in range(1,12)} | {f'Obs-{i}' for i in range(1,5)} | {f'N{i:02}' for i in range(1,8)}
+check('29-exact-unique-history-ID-set', len(ids)==29 and len(set(ids))==29 and set(ids)==expected, ids)
+m=load(PACK/'scope-audit/minimax-own-prior153-notfull.json')
+check('minimax153-original-rows-notes-exact', m['rowsOriginalLevelAndNoteVerbatim']==ledger['engineeringNotFullRows'] and collections.Counter(r['coverage'] for r in m['rowsOriginalLevelAndNoteVerbatim'])=={'METADATA':144,'PARTIAL':8,'UNREAD':1})
+z=load(PACK/'scope-audit/zcode-own-prior-gaps-eof.json')
+unit={p for p in new_eng if p.startswith('tests/unit/') and p != 'tests/unit/t03-mapping-state.test.ts'}
+e2e={p for p in new_eng if p.startswith('tests/e2e/')}
+old_tools={p for p in old_eng if p.startswith('docs/')} - {'docs/reviews/T03/mapping-lifecycle/verify-packaged-mapping.py'}
+# The explicitly EOF-read prior verifier is the one named in the prior report; exact exclusion below.
+ztools={r['path'] for r in z['historicalDocsToolCandidates34']}
+old_docs_eng={p for p in old_eng if p.startswith('docs/')}
+excluded=sorted(old_docs_eng-ztools)
+check('z15unit-5e2e-exactsets', {r['path'] for r in z['fifteenUnitCandidates']} == unit and len(unit)==15 and {r['path'] for r in z['fiveE2E']} == e2e and len(e2e)==5)
+check('z34-old35-tools-one-explicit-exclusion', len(old_docs_eng)==35 and len(ztools)==34 and ztools < old_docs_eng and len(excluded)==1, excluded)
+check('z18partial-848docs-complete', len(z['otherExplicitPartial'])==18 and len(z['historicalDocsFullScope848'])==848 and {r['path'] for r in z['historicalDocsFullScope848']} == {p for p,r in current.items() if r['kind']=='documentation_or_evidence'})
+check('848-doc-rows-allow-exact-authorized-exception', all('exact authorized exception' in r['round2ReadRequirement'] and 'requiredReadThrough' not in r and 'round2Requirement' not in r for r in z['historicalDocsFullScope848']))
+roles=[]
+index_dispatch=load(PACK/'dispatch-index.json')
+expected_prompts={'zcode':(66551,'cb63ac1a0b10ebb74b8031600208624aea5e605f509d99ab2866f397f382adda'), 'minimax':(82586,'99d487cafed02acf7701a07565e02cf717fa7c4eb172d62fc87457dae6b7bacf')}
+for request in index_dispatch['roles']:
+    role=request['role']; own=Path(request['tree']); inp=own/'build/review-session/round-2/input'
+    name=f'mapping-P2-{role}-round-2-full-input.md'
+    raw=(PACK/name).read_bytes(); manifest_path=inp/'input-manifest.json'; manifest=load(manifest_path)
+    canonical_manifest=(PACK/f'{role}-input-manifest.json').read_bytes()
+    members={r['path'] for r in manifest['files']}
+    actual_members={str(p.relative_to(inp)) for p in inp.rglob('*') if p.is_file()}
+    check(f'{role}-prompt-canonical-and-own-exact', (len(raw),sha(raw))==expected_prompts[role] and (inp/name).read_bytes()==raw)
+    check(f'{role}-manifest24-plus-self-exact', manifest_path.read_bytes()==canonical_manifest and manifest['selfExcluded'] and len(members)==24 and actual_members==members|{'input-manifest.json'} and all(len((inp/r['path']).read_bytes())==r['bytes'] and sha((inp/r['path']).read_bytes())==r['sha256'] for r in manifest['files']))
+    check(f'{role}-outer-dispatch-binds-input', request['promptBytes']==len(raw) and request['promptSHA256']==sha(raw) and request['inputManifestIdentity']['bytes']==len(canonical_manifest) and request['inputManifestIdentity']['sha256']==sha(canonical_manifest))
+    appendix=manifest['priorOwnPromptAppendix']; old_path=f'docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/dispatch-v2/mapping-P2-{role}-full-prompt.md'
+    old=fixed(old_path,HISTORY)
+    check(f'{role}-prior-appendix-exact-frozen-Git', raw[appendix['offset']:]==old and len(old)==appendix['bytes'] and sha(old)==appendix['sha256'])
+    prepared=load(inp/'prepared-request-only.json')
+    check(f'{role}-actual-null-request-only', all(prepared[k] is None for k in ('sessionId','turnId','actualSettings','GUILease')) and not prepared['accepted'] and prepared['status']=='PREPARED_NO_ACTUAL_TASK' and manifest['newTaskActualIdentity'] is None)
+    state=git('status','--porcelain','--untracked-files=normal',cwd=own).decode().splitlines()
+    check(f'{role}-HEAD-detached-onlyAGENTS', git('rev-parse','HEAD',cwd=own).decode().strip()==REF and git('rev-parse','--abbrev-ref','HEAD',cwd=own).decode().strip()=='HEAD' and state==[' M AGENTS.md'],state)
+    agents=(own/'AGENTS.md').read_bytes()
+    check(f'{role}-AGENTS-exact-manager', agents==(ROOT/'AGENTS.md').read_bytes() and len(agents)==15147)
+    env=[]
+    for directory in ('.venv','node_modules'):
+        st=(own/directory).lstat(); env.append(dict(name=directory,device=st.st_dev,inode=st.st_ino,isDirectory=stat.S_ISDIR(st.st_mode),isSymlink=stat.S_ISLNK(st.st_mode)))
+    check(f'{role}-own-env-entity-directories',all(r['isDirectory'] and not r['isSymlink'] for r in env))
+    ui=own/'build/review-session/round-2/metadata/operator-own-ui-pre-submit.json'
+    roles.append(dict(role=role,promptBytes=len(raw),promptSHA256=sha(raw),lines=len(raw.decode().splitlines()),ownInput=str(inp),manifestSHA256=sha(canonical_manifest),appendixOffset=appendix['offset'],environment=env,operatorOwnUiReceiptExists=ui.exists(),operatorActualIdentity='UNKNOWN; no UI readback performed'))
+check('two-own-env-top-entities-distinct', all((roles[0]['environment'][i]['device'],roles[0]['environment'][i]['inode']) != (roles[1]['environment'][i]['device'],roles[1]['environment'][i]['inode']) for i in range(2)))
+check('dispatch-preparation-not-task-or-runtime', index_dispatch['actualTasksCreated']==0 and not index_dispatch['GUIUsed'] and not index_dispatch['productExecuted'] and not index_dispatch['environmentInstalled'])
+result=dict(format='Independent-R2-preparation-static-audit/1',reviewHead=REF,managerHeadObserved=git('rev-parse','HEAD').decode().strip(),historyRef=HISTORY,checks=checks,allChecksPassed=all(c['passed'] for c in checks),roles=roles,productOrTestImportedOrExecuted=False,toolchainOrInstallExecuted=False,GUIOrTasksUsed=False,STOPPayloadRead=False,notes=['Git show of 180 engineering blobs was used for identity/line navigation only, not a claim of semantic product review.','No old/current operator task-actual content read; own future UI receipt existence only.','No entity subtree/full inode scan or fresh environment validation.'])
+(OUT/'static-evidence.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps(result,ensure_ascii=False,indent=2))
+raise SystemExit(0 if result['allChecksPassed'] else 1)

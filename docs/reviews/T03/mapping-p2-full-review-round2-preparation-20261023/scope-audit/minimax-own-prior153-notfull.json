@@ -1,0 +1,1095 @@
+{
+  "schema": "T03-P2-R2-MINIMAX-PRIOR153-NOTFULL/1",
+  "sourceLedger": {
+    "path": "docs/reviews/T03/mapping-p2-designated-completed-20261023/independent/static-evidence-and-ledger.json",
+    "bytes": 79944,
+    "sha256": "d2ca71975bcec5962b8bc314489150a944f7562ca9cd5c81473ddac9ff12f502"
+  },
+  "sourceReport": {
+    "path": "docs/reviews/T03/mapping-p2-designated-completed-20261023/owner/minimax/mapping-P2-minimax-full-report.md",
+    "bytes": 42120,
+    "sha256": "886d6934b6c35a7acb4a37836a00aa5fc99972731813c39183bf3fde5bb6f178"
+  },
+  "reviewHead": "c1e44f81723f9c616f669f56481d1b1ada7e57f2",
+  "counts": {
+    "METADATA": 144,
+    "PARTIAL": 8,
+    "UNREAD": 1
+  },
+  "rowsOriginalLevelAndNoteVerbatim": [
+    {
+      "path": ".editorconfig",
+      "bytes": 137,
+      "gitBlobOID": "7bce64974d19850cb95d39cb6b9a8bb46be00141",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 57,
+      "gitBlobOID": "46850b6cef6cfd5554df5205007a883616dcb4ca",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug.yml",
+      "bytes": 404,
+      "gitBlobOID": "0429a312172ec77d52d932d39c1116b0e70be473",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "bytes": 279,
+      "gitBlobOID": "3b6ee4a507d5538f681998e00daeac0e360e4570",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "bytes": 274,
+      "gitBlobOID": "4622b5caa75f2df779dd456b942d2511144d6d12",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 6860,
+      "gitBlobOID": "3c38c8dfed04502802d407536f3f85714b089faa",
+      "coverage": "PARTIAL",
+      "note": "读 1–40 行（quality job/ubuntu-latest/npm ci/uv sync/check/verify:sources）"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 248,
+      "gitBlobOID": "507fe198bc2f022cc505c8ae031f3775a68400c3",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".node-version",
+      "bytes": 3,
+      "gitBlobOID": "a45fd52cc5891570d6299fab38643103c3955474",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".npmrc",
+      "bytes": 16,
+      "gitBlobOID": "cffe8cdef132f31903a4971117f33f60cd9a56e6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".prettierrc.json",
+      "bytes": 90,
+      "gitBlobOID": "d7dadf59ea8ee49a31dc80c5d7af312573c4e45d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".python-version",
+      "bytes": 5,
+      "gitBlobOID": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 1056,
+      "gitBlobOID": "f3876f6690b11ae58f633d1bcb96db05a429d58b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 1157,
+      "gitBlobOID": "5c2db046cc119a6a067e6423f50a5967e572957a",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "README.md",
+      "bytes": 2783,
+      "gitBlobOID": "07946b72b12c9e8b013266bdeca7b92175382476",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 961,
+      "gitBlobOID": "1614b7afbe3559b890ded8a80c33bc0c9e88020b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/electron.vite.config.ts",
+      "bytes": 1202,
+      "gitBlobOID": "952e2310b9f7dea9ffcafc2b60b022caf2bffa42",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "bytes": 491,
+      "gitBlobOID": "4bd9e4ad83cfddf07a903155548f8deb0923a482",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/engine.ts",
+      "bytes": 18569,
+      "gitBlobOID": "cb1c821f57002c08e49d2309d9447032bb1a3580",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/index.ts",
+      "bytes": 6769,
+      "gitBlobOID": "3d5cbbc209aca658a48cd70063774816045b22cb",
+      "coverage": "PARTIAL",
+      "note": "读 34–95、170–190（whenReady/CSP/窗口创建/IPC 路由）；其余未逐行"
+    },
+    {
+      "path": "apps/desktop/src/main/jsonl.ts",
+      "bytes": 4774,
+      "gitBlobOID": "665c972f0401109bbeeffb8642685a4ac9ae5e62",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "bytes": 32727,
+      "gitBlobOID": "166032eb77ef6d70033e369adfb47a3505023a77",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/trusted-document.ts",
+      "bytes": 388,
+      "gitBlobOID": "fedde8a70d898e30bb500dffc94c099950e808f7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/view-navigation.ts",
+      "bytes": 446,
+      "gitBlobOID": "d0e37aafdb00f2615e9db7fea6a387ed3e69fdd1",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/window-recovery.ts",
+      "bytes": 1993,
+      "gitBlobOID": "f3aa65097c0f4b1e9df310c6e88bf718dc090046",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/window-security.ts",
+      "bytes": 886,
+      "gitBlobOID": "78788fbdc14c4f6f8550d6f8ca23a8fa21f9573d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "bytes": 1230,
+      "gitBlobOID": "e43ddeab6e4c056a93f959400896f03de1a0a632",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/index.html",
+      "bytes": 306,
+      "gitBlobOID": "2846b68b16514136242809a69a9f35ed9b1d4ac2",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "bytes": 14413,
+      "gitBlobOID": "62834d0a855f990ad2fc5fb697a365370d1af98c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/env.d.ts",
+      "bytes": 132,
+      "gitBlobOID": "281aacbde4bc56da9508c78b5d32f20c498c1316",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/main.tsx",
+      "bytes": 230,
+      "gitBlobOID": "db15cda19722ada98e9291302d3fea408f7a0bef",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/mapping.css",
+      "bytes": 1305,
+      "gitBlobOID": "b7fda1f72f47478b3f07e0fd72511b76a184bb28",
+      "coverage": "PARTIAL",
+      "note": "读 1–40/70 行；样式无语义分支"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/style.css",
+      "bytes": 5279,
+      "gitBlobOID": "ea2fcf1ce5f49c81d7ab8b1cb4c6bd5c668580ed",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-presentation.ts",
+      "bytes": 8446,
+      "gitBlobOID": "e6ab7bda420b7207ccb7c566eefb0d248b0d3194",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-progress.ts",
+      "bytes": 2254,
+      "gitBlobOID": "fb89b0bceb73407a9a53e9c82accc0448effd195",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/tokens.css",
+      "bytes": 226,
+      "gitBlobOID": "ab72919112182a167551b22bddc263d482363577",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/tsconfig.json",
+      "bytes": 396,
+      "gitBlobOID": "6caf5b235dbf40b93280c8a5ed957ef515d33976",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "design/prototypes/OntoLearn-Studio-Prototype.pen",
+      "bytes": 1457069,
+      "gitBlobOID": "c9be4fc94cbc9beabb2a5755cb46f0d387838630",
+      "coverage": "UNREAD",
+      "note": ""
+    },
+    {
+      "path": "docs/iterations/T03/verify-packaged-probe.py",
+      "bytes": 2897,
+      "gitBlobOID": "99e5b3ade28161d27eb04994ea6078c07cc5e25b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/native-dialog-probe/driver.mjs.txt",
+      "bytes": 4922,
+      "gitBlobOID": "d0a101887d418745f95d622265102bfddcc7fd57",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic-user.sh",
+      "bytes": 432,
+      "gitBlobOID": "f7815c35c1510fc8631d47f9ca17f0c2db89206c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic.sh",
+      "bytes": 516,
+      "gitBlobOID": "c86360942bc8a8a476a47a61ddf2fb45aee351e7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-extra-probe.mjs",
+      "bytes": 2728,
+      "gitBlobOID": "14e87977fe2ab2761b36a91a8c8ea2bd6bd08c0e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe.mjs",
+      "bytes": 1828,
+      "gitBlobOID": "68e255887b5d7f148beff3509c3aebb4a1f3de98",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe2.mjs",
+      "bytes": 1995,
+      "gitBlobOID": "6a61959270622b01b94fd74e795212c14028f8ea",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-3/zcode-runtime/i02-r3-zcode-glm53-pushstate-probe.mjs.txt",
+      "bytes": 844,
+      "gitBlobOID": "c1187a4a18882a7dc5f86516e51307629574a4de",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/initial-isolated-controls.mjs.txt",
+      "bytes": 1759,
+      "gitBlobOID": "00e82cf686166111a2c64cadbe9267242ab26cbd",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/isolated-controls.mjs.txt",
+      "bytes": 1940,
+      "gitBlobOID": "6f267407a6544f9b33ab827d15769fa4cd01c044",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5-contract.mjs.txt",
+      "bytes": 7868,
+      "gitBlobOID": "f7c19921fe34e629bbf49c069618ac10491eb0d6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.mjs.txt",
+      "bytes": 2932,
+      "gitBlobOID": "02a92b62eacdb3007e7ad5a27227ea998232bbaa",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.py.txt",
+      "bytes": 3461,
+      "gitBlobOID": "a1a92d4eef63fb26da84c36d6719d9de297f494e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6-i05-handoff.py.txt",
+      "bytes": 5752,
+      "gitBlobOID": "c10e18761cbf2eff11c07d8427a56c369d1d0f64",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6b-i05-handoff.py.txt",
+      "bytes": 5947,
+      "gitBlobOID": "6a4d469d4a77f5ecf215d0963a6c949300bc0764",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6c-i05-handoff.py.txt",
+      "bytes": 6293,
+      "gitBlobOID": "c8db7bcbf36fa467626ae728b8e275fdbe3c9e23",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch7-s1-guards.py.txt",
+      "bytes": 4858,
+      "gitBlobOID": "09c4b75bc01b02ac3bc2c032f2683a2225d21d13",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8-structure.py.txt",
+      "bytes": 6306,
+      "gitBlobOID": "a2028a82f8d2d35ca4de1fbe80c0ab2079988fee",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8b-structure.py.txt",
+      "bytes": 6597,
+      "gitBlobOID": "15dd31c3fab3e98482e6ffe98b7c0071adbbed75",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare.mjs.txt",
+      "bytes": 1192,
+      "gitBlobOID": "5c8e9605fc729324d0b0d1867effe01d5b178bd8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare2.mjs.txt",
+      "bytes": 1215,
+      "gitBlobOID": "b60a574e0d55952688dfb2a2362175e992d5f431",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/f3-injection.sh.txt",
+      "bytes": 2755,
+      "gitBlobOID": "782a909bfe4d19974d71aaa233e738a78badfe69",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases.mjs.txt",
+      "bytes": 3933,
+      "gitBlobOID": "b7016e168d6b17b863f264ed06e1a145983c1638",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases2.mjs.txt",
+      "bytes": 4566,
+      "gitBlobOID": "b2d12bcdcb6f519ec306af390ecf6f19b5d95e49",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases3.mjs.txt",
+      "bytes": 2456,
+      "gitBlobOID": "67b6224590a00f4dafd962d48201d6c860dcc1e0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/hooks.mjs.txt",
+      "bytes": 1169,
+      "gitBlobOID": "7c166ea5237b13765f2a1241eb889fd2f5eed3e6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/register.mjs.txt",
+      "bytes": 102,
+      "gitBlobOID": "6b20fc4d2629507de3144b7f984658789adf1f67",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py.py.txt",
+      "bytes": 2138,
+      "gitBlobOID": "91dbb0aaab12f17c757def85db8a26ddd6f40aaa",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py2.py.txt",
+      "bytes": 1527,
+      "gitBlobOID": "521d24ce2e61240a054359f45e8e96e7ce24a9fa",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts.mjs.txt",
+      "bytes": 1804,
+      "gitBlobOID": "4ac5addf7b82d9bff4d98558b827f2de38344780",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts2.mjs.txt",
+      "bytes": 1191,
+      "gitBlobOID": "72e6042a056b3ee09bec39c2e4129d219b80a394",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_py.py.txt",
+      "bytes": 5445,
+      "gitBlobOID": "af0a17118194d5106bb01c06cb9e7560d74a965e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_ts.test.ts.txt",
+      "bytes": 4427,
+      "gitBlobOID": "48aa5be708ff93b54a9c1f8ab7dd05b364d1256b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-first-storage-probe/storage_probe.py.txt",
+      "bytes": 4974,
+      "gitBlobOID": "407f1485e1caacb72846e62dd1f0377a8ad87378",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-python-probe-at-first-observation/py_probe.py.txt",
+      "bytes": 5587,
+      "gitBlobOID": "4dc37c6c4686e50868a349b0824f96ba571bb5db",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/independent-review/audit.py",
+      "bytes": 8583,
+      "gitBlobOID": "b8f311579e8cd372781a4605c63b64b536aad008",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/.gitattributes",
+      "bytes": 87,
+      "gitBlobOID": "e4e939d2d5e4a74c5318c98d97c8cd0aca70b695",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/freeze-scope.py",
+      "bytes": 4553,
+      "gitBlobOID": "0df752d5c81b123ce085273f316861e616ccb6df",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/make-dispatch.py",
+      "bytes": 5006,
+      "gitBlobOID": "e23e6754dc2fbd808ed607ff225fc48e07afab9f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/prepare-environment.py",
+      "bytes": 4289,
+      "gitBlobOID": "2c6dd37e4b8ce8aeebc2f0a69f120e1bc4cea8ee",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/p2-original-raw/build/mapping-p2-boundaries-20261023/run-command.py",
+      "bytes": 4711,
+      "gitBlobOID": "d3a57541fc9fcbf55ce1463e1da91b315f044b89",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "gitBlobOID": "99bf9de3805a29713d92c155c12f6de23c80e9f3",
+      "coverage": "METADATA",
+      "note": "224331B 锁产物；以 candidate-binding 记录 sha256 逐字节核对一致，未逐行读"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 291,
+      "gitBlobOID": "c56f1532d5ea282c7e5ac7ff3b337cd3284e00f8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "bytes": 20174,
+      "gitBlobOID": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/dependencies-v2.ts",
+      "bytes": 2205,
+      "gitBlobOID": "210de680cccf92923d390dbe1a480b5acb705159",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/design-v2.ts",
+      "bytes": 153,
+      "gitBlobOID": "295581510e22b92d4117898aaefd6cbb823412c0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "bytes": 4881,
+      "gitBlobOID": "8ba81e6e92a6009f62d42564f70962a72402fd28",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/states-v2.ts",
+      "bytes": 578,
+      "gitBlobOID": "153a617c9fe3242161e5c59a2cfc76f556424746",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/v2.ts",
+      "bytes": 20514,
+      "gitBlobOID": "d749c44d3a0b9f5a9a33b419924627dd66d6eb0d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/tsconfig.json",
+      "bytes": 291,
+      "gitBlobOID": "36786a3aee4e5b711d0b8417f3bbf5c2b6784ab9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/binding-regressions.json",
+      "bytes": 123964,
+      "gitBlobOID": "fa27812aaf40202c5f17971c9a9783b5dd680597",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/dependencies.json",
+      "bytes": 1438,
+      "gitBlobOID": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/errors.json",
+      "bytes": 14400,
+      "gitBlobOID": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/fixtures.json",
+      "bytes": 472098,
+      "gitBlobOID": "37847c27a082db388042e280db61719dbab8f61d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/frame-fixtures.json",
+      "bytes": 17537,
+      "gitBlobOID": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/registry.json",
+      "bytes": 13039,
+      "gitBlobOID": "3a6705a00217f5e55d130bd2a231a6aad233b3fe",
+      "coverage": "PARTIAL",
+      "note": "读 productRuntime 与 mapping.commit 条目（341–356）；其余能力条目未逐行"
+    },
+    {
+      "path": "packages/contracts/v2/schema.json",
+      "bytes": 122889,
+      "gitBlobOID": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/states.json",
+      "bytes": 716,
+      "gitBlobOID": "bb6161a5a27c317ba073efbf50599fabace903ee",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__init__.py",
+      "bytes": 101,
+      "gitBlobOID": "aea2f9eaf2ec7427494596a52c40bb8333b8943e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+      "bytes": 2334,
+      "gitBlobOID": "a6ae1a0d637d76f832250e490ff085bbda2e8352",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "bytes": 29559,
+      "gitBlobOID": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6",
+      "coverage": "PARTIAL",
+      "note": "读 240–262（job.create 能力白名单）；其余未逐行"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+      "bytes": 1745,
+      "gitBlobOID": "aa95429d8b5f99ab839a4fd286991298288e7187",
+      "coverage": "PARTIAL",
+      "note": "经 invalidation.py 消费路径确认（family/staleReason 映射），未逐行读 JSON"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "bytes": 64853,
+      "gitBlobOID": "fdf213b225954c1257a8a1e00eebe676a86e2398",
+      "coverage": "PARTIAL",
+      "note": "读 85–120（_application 有界 ownership 转换）与 700–745（commit_job）；其余未逐行"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+      "bytes": 7851,
+      "gitBlobOID": "3901e311f145590277893b4b68debb2893c35bc8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "bytes": 55364,
+      "gitBlobOID": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123",
+      "coverage": "PARTIAL",
+      "note": "读 1–1007/1230 行；commit/_check_slot/_replace_mapping/snapshot/publish 段全文，未读尾部 SCHEMA 与快照清理段"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+      "bytes": 5611,
+      "gitBlobOID": "bd11499b284100b1587057a7c24cf56def7a69a6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/worker.py",
+      "bytes": 9314,
+      "gitBlobOID": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/storage_baselines.py",
+      "bytes": 7478,
+      "gitBlobOID": "e472eed095e9cdcf614dcc3860b6a2b8785cda37",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_binding_regressions.py",
+      "bytes": 474,
+      "gitBlobOID": "51cf72561c788e3f3bf22263baa6c5832f326ed9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_contract_v2.py",
+      "bytes": 12262,
+      "gitBlobOID": "64a8421436e7f231b14eace94f3c3d3904455003",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_coordinator_control.py",
+      "bytes": 5103,
+      "gitBlobOID": "96c2d98f8d4e326ca647aa1824bf88e12b204499",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_frame_corpus.py",
+      "bytes": 3101,
+      "gitBlobOID": "b2031380285748aaa9494bd7b7520a9732eef2c3",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_handshake_deadline.py",
+      "bytes": 3479,
+      "gitBlobOID": "f9d98888a8f85db95a99b8d9e704c0deea11c3f8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+      "bytes": 17211,
+      "gitBlobOID": "4a25f8277b93e1f6d41010a0d718fc2f860cd4a1",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_i04_progress.py",
+      "bytes": 11276,
+      "gitBlobOID": "f01164fb191e0697ff3dc3b59ab6cb703e2b17a0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_i04_round_faults.py",
+      "bytes": 12069,
+      "gitBlobOID": "c18f678b54cd6ebacb05bb85c8f8ff06cf6a6072",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_job_store.py",
+      "bytes": 57441,
+      "gitBlobOID": "5bc415287b93f7bd67644f4f1160235c4de45f41",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_memory_guard_exit.py",
+      "bytes": 1953,
+      "gitBlobOID": "1b9694b7b2499e790af2b072ba2efe1c04db7e85",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_protocol.py",
+      "bytes": 1985,
+      "gitBlobOID": "d4fe68c48ba3098c70b3c700a803e7aa8efbea0b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_resident_runtime.py",
+      "bytes": 20364,
+      "gitBlobOID": "21fed41c6bb509feafd30dcd37f1c7a33d06cb6c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_runtime_bounds.py",
+      "bytes": 2620,
+      "gitBlobOID": "97a4d00b11a2eddea63f86617153d3eddb939f58",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_session_page_limits.py",
+      "bytes": 4475,
+      "gitBlobOID": "5f7558a7aeb8805a0f32bbc6e3f905f00e5f0842",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_stdio_session_shutdown.py",
+      "bytes": 9085,
+      "gitBlobOID": "61a54c19faaf135ad6b0f47431a60633a8aee182",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_storage.py",
+      "bytes": 49233,
+      "gitBlobOID": "4d8149f71e546e6428e4e786c81b1e2ce2462c0e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_worker_owner_bootstrap.py",
+      "bytes": 9489,
+      "gitBlobOID": "cf6c37ea0592723a5f7d4cf70567a2522cd9d113",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_worker_parent.py",
+      "bytes": 4197,
+      "gitBlobOID": "4ab16810e2d30fa46d3ae8f7a98788f21f53bee7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "playwright.config.ts",
+      "bytes": 212,
+      "gitBlobOID": "fcc1eb121ddc431bf0bfdbb0dde1bcc2379e901f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/i04_matrix_evidence.py",
+      "bytes": 19832,
+      "gitBlobOID": "b8f9cb3611fc96b1344a23fce8fab93e41faaac7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/prepare-i04-fixture.py",
+      "bytes": 3873,
+      "gitBlobOID": "6f36750ea745d43186d28ea97104bc7315aa3945",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/verify-i01.py",
+      "bytes": 4595,
+      "gitBlobOID": "3f5e02f55c76340e4937fbf9d603cc8597a994c0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/verify-i04-package.py",
+      "bytes": 3290,
+      "gitBlobOID": "34f0137af8ae8c15c529ce3c19f66a768b417474",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/verify-sources.mjs",
+      "bytes": 528,
+      "gitBlobOID": "ac2540d4aee6c25bdabbeea7ca158d7c57cf47cd",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/csp-lifecycle.spec.ts",
+      "bytes": 14104,
+      "gitBlobOID": "0c3f4cbae6f20c955b95852440719e44d03428fb",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/desktop.spec.ts",
+      "bytes": 7194,
+      "gitBlobOID": "70e1081b53808f5b24742e6151e35d3f696e3148",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/i04-jobs.spec.ts",
+      "bytes": 23914,
+      "gitBlobOID": "c2b721844dbb1b43dfa820e4259520a01706bbcf",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/native-driver.ts",
+      "bytes": 3887,
+      "gitBlobOID": "9d5ca8183d3bf89689cb7a683f9c93b5a991d83f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/native-recovery.cjs",
+      "bytes": 4728,
+      "gitBlobOID": "5811866877888dac9363373d8b0f53e798e8d1cf",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/fixtures/mapping/equipment.csv",
+      "bytes": 52,
+      "gitBlobOID": "68b3cb85e60337946db1d1bf81eef90f8015cdb5",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/binding-regressions.test.ts",
+      "bytes": 483,
+      "gitBlobOID": "7dea8f21fb61c289812abb5e3634d2d202bb6f7e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/contract-v2.test.ts",
+      "bytes": 10907,
+      "gitBlobOID": "f89f0217f92162929e97b41a18c6c0c7a9afc8b9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/contract.test.ts",
+      "bytes": 2131,
+      "gitBlobOID": "3e3e5950c7931c4d4ee50758bfca54d590aa3770",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/csp.test.ts",
+      "bytes": 1007,
+      "gitBlobOID": "8351575018d4695e757101e09db90b9747ae531e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/engine-connection-state.test.ts",
+      "bytes": 8676,
+      "gitBlobOID": "c75c52f75664decc403e4ed55129a36a466034a6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/engine-environment.test.ts",
+      "bytes": 4542,
+      "gitBlobOID": "c7dcf932c5a53aa7278d2922e8b04b883c04b94d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/jsonl.test.ts",
+      "bytes": 4447,
+      "gitBlobOID": "e04800ad78a7a5ae703ef39deefd6e6d248fa29f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/native-driver.test.ts",
+      "bytes": 2672,
+      "gitBlobOID": "63224f1441409dfe51112ce167c7d9173dfbd525",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/supervisor.test.ts",
+      "bytes": 8920,
+      "gitBlobOID": "d7459dae9a2e31b32197dcaaadf6a8b68a7d3583",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-progress.test.ts",
+      "bytes": 4072,
+      "gitBlobOID": "96ccc662d46d610b8f94a058d82c2e2aeec7c2e4",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-runtime.test.ts",
+      "bytes": 26406,
+      "gitBlobOID": "8bc5fe2141d409f1157d7153efd13a342f71fae1",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-service.test.ts",
+      "bytes": 45315,
+      "gitBlobOID": "95a7476988b0adf287b3cfd5537f0195f1769ee9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-update-boundary.test.ts",
+      "bytes": 1469,
+      "gitBlobOID": "f0b9f1efd84ea849e9dad03a884533ff450298b7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/view-navigation.test.ts",
+      "bytes": 4588,
+      "gitBlobOID": "9c7150a541f565ca522d7349adde697632ac44d0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/window-recovery.test.ts",
+      "bytes": 2335,
+      "gitBlobOID": "49caa59fd9b033170c9ab596cff275cdfea6d9db",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tsconfig.unit.json",
+      "bytes": 141,
+      "gitBlobOID": "a5f4665fde80a6ac8640bb9b35ff61e51af106cd",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 23393,
+      "gitBlobOID": "87cb915a5c66a98832edc1756cb8a056cf5cfc4b",
+      "coverage": "METADATA",
+      "note": "23393B 锁产物；以 candidate-binding 记录 sha256 逐字节核对一致（openpyxl/defusedxml 版本经 pyproject 与 probe 断言双向确认）"
+    },
+    {
+      "path": "vitest.config.mts",
+      "bytes": 125,
+      "gitBlobOID": "845e04b86d7f08b6034e1eb0976789efd0ca4643",
+      "coverage": "METADATA",
+      "note": ""
+    }
+  ],
+  "originalBlankNotesPreserved": true,
+  "newTaskReadStatus": "PENDING_FULL_NEW_REVIEW_OF_ALL180_ENGINEERING",
+  "warning": "153 is previous gaps navigation, never an exemption for27 previousFULL paths; previous PARTIAL ranges are not new read limits."
+}

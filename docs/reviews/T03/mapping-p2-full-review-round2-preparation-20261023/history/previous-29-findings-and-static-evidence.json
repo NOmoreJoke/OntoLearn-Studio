@@ -1,0 +1,1603 @@
+{
+  "format": "T03-P2-DESIGNATED-COMPLETED-INDEPENDENT-STATIC/1",
+  "recordedUtc": "2026-10-22T21:12:20.257263+00:00",
+  "reviewHead": "c1e44f81723f9c616f669f56481d1b1ada7e57f2",
+  "reports": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+      "bytes": 27632,
+      "sha256": "bbe0d321270f4eb40ffdac3cc508077f35bceb7a935f9d498bfe1493d12fc6a1"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+      "bytes": 42120,
+      "sha256": "886d6934b6c35a7acb4a37836a00aa5fc99972731813c39183bf3fde5bb6f178"
+    }
+  ],
+  "prompts": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/metadata/dispatch-prompt.md",
+      "bytes": 44835,
+      "sha256": "8106610dac75122b6846c8050e5352f51bd90319179dee838c26ffc372fc1abf"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/metadata/dispatch-prompt.md",
+      "bytes": 44876,
+      "sha256": "48839f37ed03a220ea1f82cf97e67528a4a82fd7f0ee769be47b213e55288662"
+    }
+  ],
+  "index": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/metadata/full-candidate-tree-c1e44f81.json",
+    "bytes": 273638,
+    "sha256": "a8afd3637dcc7fb613c95bd3009d20294e815a96b2043ed108a67afdef673eb4"
+  },
+  "register": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/raw/path-coverage-register.json",
+    "bytes": 216254,
+    "sha256": "45f8d3eb40ad7fe90461c4e02d69a66972eb906a5682c1cf85f9a453a1ecd547"
+  },
+  "coverageCounts": {
+    "METADATA": 964,
+    "PARTIAL": 19,
+    "FULL": 44,
+    "UNREAD": 1
+  },
+  "coverageByKind": {
+    "documentation_or_evidence": {
+      "METADATA": 820,
+      "FULL": 17,
+      "PARTIAL": 11
+    },
+    "engineering": {
+      "METADATA": 144,
+      "PARTIAL": 8,
+      "FULL": 27,
+      "UNREAD": 1
+    }
+  },
+  "blankMetadataPerPathNotes": 962,
+  "engineeringNotFullRows": [
+    {
+      "path": ".editorconfig",
+      "bytes": 137,
+      "gitBlobOID": "7bce64974d19850cb95d39cb6b9a8bb46be00141",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 57,
+      "gitBlobOID": "46850b6cef6cfd5554df5205007a883616dcb4ca",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug.yml",
+      "bytes": 404,
+      "gitBlobOID": "0429a312172ec77d52d932d39c1116b0e70be473",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "bytes": 279,
+      "gitBlobOID": "3b6ee4a507d5538f681998e00daeac0e360e4570",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "bytes": 274,
+      "gitBlobOID": "4622b5caa75f2df779dd456b942d2511144d6d12",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 6860,
+      "gitBlobOID": "3c38c8dfed04502802d407536f3f85714b089faa",
+      "coverage": "PARTIAL",
+      "note": "读 1–40 行（quality job/ubuntu-latest/npm ci/uv sync/check/verify:sources）"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 248,
+      "gitBlobOID": "507fe198bc2f022cc505c8ae031f3775a68400c3",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".node-version",
+      "bytes": 3,
+      "gitBlobOID": "a45fd52cc5891570d6299fab38643103c3955474",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".npmrc",
+      "bytes": 16,
+      "gitBlobOID": "cffe8cdef132f31903a4971117f33f60cd9a56e6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".prettierrc.json",
+      "bytes": 90,
+      "gitBlobOID": "d7dadf59ea8ee49a31dc80c5d7af312573c4e45d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": ".python-version",
+      "bytes": 5,
+      "gitBlobOID": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 1056,
+      "gitBlobOID": "f3876f6690b11ae58f633d1bcb96db05a429d58b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 1157,
+      "gitBlobOID": "5c2db046cc119a6a067e6423f50a5967e572957a",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "README.md",
+      "bytes": 2783,
+      "gitBlobOID": "07946b72b12c9e8b013266bdeca7b92175382476",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 961,
+      "gitBlobOID": "1614b7afbe3559b890ded8a80c33bc0c9e88020b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/electron.vite.config.ts",
+      "bytes": 1202,
+      "gitBlobOID": "952e2310b9f7dea9ffcafc2b60b022caf2bffa42",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "bytes": 491,
+      "gitBlobOID": "4bd9e4ad83cfddf07a903155548f8deb0923a482",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/engine.ts",
+      "bytes": 18569,
+      "gitBlobOID": "cb1c821f57002c08e49d2309d9447032bb1a3580",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/index.ts",
+      "bytes": 6769,
+      "gitBlobOID": "3d5cbbc209aca658a48cd70063774816045b22cb",
+      "coverage": "PARTIAL",
+      "note": "读 34–95、170–190（whenReady/CSP/窗口创建/IPC 路由）；其余未逐行"
+    },
+    {
+      "path": "apps/desktop/src/main/jsonl.ts",
+      "bytes": 4774,
+      "gitBlobOID": "665c972f0401109bbeeffb8642685a4ac9ae5e62",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "bytes": 32727,
+      "gitBlobOID": "166032eb77ef6d70033e369adfb47a3505023a77",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/trusted-document.ts",
+      "bytes": 388,
+      "gitBlobOID": "fedde8a70d898e30bb500dffc94c099950e808f7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/view-navigation.ts",
+      "bytes": 446,
+      "gitBlobOID": "d0e37aafdb00f2615e9db7fea6a387ed3e69fdd1",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/window-recovery.ts",
+      "bytes": 1993,
+      "gitBlobOID": "f3aa65097c0f4b1e9df310c6e88bf718dc090046",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/main/window-security.ts",
+      "bytes": 886,
+      "gitBlobOID": "78788fbdc14c4f6f8550d6f8ca23a8fa21f9573d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "bytes": 1230,
+      "gitBlobOID": "e43ddeab6e4c056a93f959400896f03de1a0a632",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/index.html",
+      "bytes": 306,
+      "gitBlobOID": "2846b68b16514136242809a69a9f35ed9b1d4ac2",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "bytes": 14413,
+      "gitBlobOID": "62834d0a855f990ad2fc5fb697a365370d1af98c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/env.d.ts",
+      "bytes": 132,
+      "gitBlobOID": "281aacbde4bc56da9508c78b5d32f20c498c1316",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/main.tsx",
+      "bytes": 230,
+      "gitBlobOID": "db15cda19722ada98e9291302d3fea408f7a0bef",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/mapping/mapping.css",
+      "bytes": 1305,
+      "gitBlobOID": "b7fda1f72f47478b3f07e0fd72511b76a184bb28",
+      "coverage": "PARTIAL",
+      "note": "读 1–40/70 行；样式无语义分支"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/style.css",
+      "bytes": 5279,
+      "gitBlobOID": "ea2fcf1ce5f49c81d7ab8b1cb4c6bd5c668580ed",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-presentation.ts",
+      "bytes": 8446,
+      "gitBlobOID": "e6ab7bda420b7207ccb7c566eefb0d248b0d3194",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/task-progress.ts",
+      "bytes": 2254,
+      "gitBlobOID": "fb89b0bceb73407a9a53e9c82accc0448effd195",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/tokens.css",
+      "bytes": 226,
+      "gitBlobOID": "ab72919112182a167551b22bddc263d482363577",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "apps/desktop/tsconfig.json",
+      "bytes": 396,
+      "gitBlobOID": "6caf5b235dbf40b93280c8a5ed957ef515d33976",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "design/prototypes/OntoLearn-Studio-Prototype.pen",
+      "bytes": 1457069,
+      "gitBlobOID": "c9be4fc94cbc9beabb2a5755cb46f0d387838630",
+      "coverage": "UNREAD",
+      "note": ""
+    },
+    {
+      "path": "docs/iterations/T03/verify-packaged-probe.py",
+      "bytes": 2897,
+      "gitBlobOID": "99e5b3ade28161d27eb04994ea6078c07cc5e25b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/native-dialog-probe/driver.mjs.txt",
+      "bytes": 4922,
+      "gitBlobOID": "d0a101887d418745f95d622265102bfddcc7fd57",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic-user.sh",
+      "bytes": 432,
+      "gitBlobOID": "f7815c35c1510fc8631d47f9ca17f0c2db89206c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/docker-diagnostic/diagnostic.sh",
+      "bytes": 516,
+      "gitBlobOID": "c86360942bc8a8a476a47a61ddf2fb45aee351e7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-extra-probe.mjs",
+      "bytes": 2728,
+      "gitBlobOID": "14e87977fe2ab2761b36a91a8c8ea2bd6bd08c0e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe.mjs",
+      "bytes": 1828,
+      "gitBlobOID": "68e255887b5d7f148beff3509c3aebb4a1f3de98",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-nav-probe2.mjs",
+      "bytes": 1995,
+      "gitBlobOID": "6a61959270622b01b94fd74e795212c14028f8ea",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I02/round-3/zcode-runtime/i02-r3-zcode-glm53-pushstate-probe.mjs.txt",
+      "bytes": 844,
+      "gitBlobOID": "c1187a4a18882a7dc5f86516e51307629574a4de",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/initial-isolated-controls.mjs.txt",
+      "bytes": 1759,
+      "gitBlobOID": "00e82cf686166111a2c64cadbe9267242ab26cbd",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/dispatcher-runtime/isolated-controls.mjs.txt",
+      "bytes": 1940,
+      "gitBlobOID": "6f267407a6544f9b33ab827d15769fa4cd01c044",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5-contract.mjs.txt",
+      "bytes": 7868,
+      "gitBlobOID": "f7c19921fe34e629bbf49c069618ac10491eb0d6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.mjs.txt",
+      "bytes": 2932,
+      "gitBlobOID": "02a92b62eacdb3007e7ad5a27227ea998232bbaa",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch5b-enum-dynamic.py.txt",
+      "bytes": 3461,
+      "gitBlobOID": "a1a92d4eef63fb26da84c36d6719d9de297f494e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6-i05-handoff.py.txt",
+      "bytes": 5752,
+      "gitBlobOID": "c10e18761cbf2eff11c07d8427a56c369d1d0f64",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6b-i05-handoff.py.txt",
+      "bytes": 5947,
+      "gitBlobOID": "6a4d469d4a77f5ecf215d0963a6c949300bc0764",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch6c-i05-handoff.py.txt",
+      "bytes": 6293,
+      "gitBlobOID": "c8db7bcbf36fa467626ae728b8e275fdbe3c9e23",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch7-s1-guards.py.txt",
+      "bytes": 4858,
+      "gitBlobOID": "09c4b75bc01b02ac3bc2c032f2683a2225d21d13",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8-structure.py.txt",
+      "bytes": 6306,
+      "gitBlobOID": "a2028a82f8d2d35ca4de1fbe80c0ab2079988fee",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/batch8b-structure.py.txt",
+      "bytes": 6597,
+      "gitBlobOID": "15dd31c3fab3e98482e6ffe98b7c0071adbbed75",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare.mjs.txt",
+      "bytes": 1192,
+      "gitBlobOID": "5c8e9605fc729324d0b0d1867effe01d5b178bd8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/compare2.mjs.txt",
+      "bytes": 1215,
+      "gitBlobOID": "b60a574e0d55952688dfb2a2362175e992d5f431",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/f3-injection.sh.txt",
+      "bytes": 2755,
+      "gitBlobOID": "782a909bfe4d19974d71aaa233e738a78badfe69",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases.mjs.txt",
+      "bytes": 3933,
+      "gitBlobOID": "b7016e168d6b17b863f264ed06e1a145983c1638",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases2.mjs.txt",
+      "bytes": 4566,
+      "gitBlobOID": "b2d12bcdcb6f519ec306af390ecf6f19b5d95e49",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/gen-cases3.mjs.txt",
+      "bytes": 2456,
+      "gitBlobOID": "67b6224590a00f4dafd962d48201d6c860dcc1e0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/hooks.mjs.txt",
+      "bytes": 1169,
+      "gitBlobOID": "7c166ea5237b13765f2a1241eb889fd2f5eed3e6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/register.mjs.txt",
+      "bytes": 102,
+      "gitBlobOID": "6b20fc4d2629507de3144b7f984658789adf1f67",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py.py.txt",
+      "bytes": 2138,
+      "gitBlobOID": "91dbb0aaab12f17c757def85db8a26ddd6f40aaa",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-py2.py.txt",
+      "bytes": 1527,
+      "gitBlobOID": "521d24ce2e61240a054359f45e8e96e7ce24a9fa",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts.mjs.txt",
+      "bytes": 1804,
+      "gitBlobOID": "4ac5addf7b82d9bff4d98558b827f2de38344780",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/minimax-runtime/probe/run-ts2.mjs.txt",
+      "bytes": 1191,
+      "gitBlobOID": "72e6042a056b3ee09bec39c2e4129d219b80a394",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_py.py.txt",
+      "bytes": 5445,
+      "gitBlobOID": "af0a17118194d5106bb01c06cb9e7560d74a965e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/raw/batch2/batch2_ts.test.ts.txt",
+      "bytes": 4427,
+      "gitBlobOID": "48aa5be708ff93b54a9c1f8ab7dd05b364d1256b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-first-storage-probe/storage_probe.py.txt",
+      "bytes": 4974,
+      "gitBlobOID": "407f1485e1caacb72846e62dd1f0377a8ad87378",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/I03/round-2/zcode-runtime/retained-failures/zcode-python-probe-at-first-observation/py_probe.py.txt",
+      "bytes": 5587,
+      "gitBlobOID": "4dc37c6c4686e50868a349b0824f96ba571bb5db",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/independent-review/audit.py",
+      "bytes": 8583,
+      "gitBlobOID": "b8f311579e8cd372781a4605c63b64b536aad008",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/.gitattributes",
+      "bytes": 87,
+      "gitBlobOID": "e4e939d2d5e4a74c5318c98d97c8cd0aca70b695",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/freeze-scope.py",
+      "bytes": 4553,
+      "gitBlobOID": "0df752d5c81b123ce085273f316861e616ccb6df",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/make-dispatch.py",
+      "bytes": 5006,
+      "gitBlobOID": "e23e6754dc2fbd808ed607ff225fc48e07afab9f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/owner/prepare-environment.py",
+      "bytes": 4289,
+      "gitBlobOID": "2c6dd37e4b8ce8aeebc2f0a69f120e1bc4cea8ee",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/p2-original-raw/build/mapping-p2-boundaries-20261023/run-command.py",
+      "bytes": 4711,
+      "gitBlobOID": "d3a57541fc9fcbf55ce1463e1da91b315f044b89",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "gitBlobOID": "99bf9de3805a29713d92c155c12f6de23c80e9f3",
+      "coverage": "METADATA",
+      "note": "224331B 锁产物；以 candidate-binding 记录 sha256 逐字节核对一致，未逐行读"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 291,
+      "gitBlobOID": "c56f1532d5ea282c7e5ac7ff3b337cd3284e00f8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "bytes": 20174,
+      "gitBlobOID": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/dependencies-v2.ts",
+      "bytes": 2205,
+      "gitBlobOID": "210de680cccf92923d390dbe1a480b5acb705159",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/design-v2.ts",
+      "bytes": 153,
+      "gitBlobOID": "295581510e22b92d4117898aaefd6cbb823412c0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "bytes": 4881,
+      "gitBlobOID": "8ba81e6e92a6009f62d42564f70962a72402fd28",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/states-v2.ts",
+      "bytes": 578,
+      "gitBlobOID": "153a617c9fe3242161e5c59a2cfc76f556424746",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/src/v2.ts",
+      "bytes": 20514,
+      "gitBlobOID": "d749c44d3a0b9f5a9a33b419924627dd66d6eb0d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/tsconfig.json",
+      "bytes": 291,
+      "gitBlobOID": "36786a3aee4e5b711d0b8417f3bbf5c2b6784ab9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/binding-regressions.json",
+      "bytes": 123964,
+      "gitBlobOID": "fa27812aaf40202c5f17971c9a9783b5dd680597",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/dependencies.json",
+      "bytes": 1438,
+      "gitBlobOID": "af4e4f2e3813dd11b1b2d2e6ac27a792f6ddcb2e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/errors.json",
+      "bytes": 14400,
+      "gitBlobOID": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/fixtures.json",
+      "bytes": 472098,
+      "gitBlobOID": "37847c27a082db388042e280db61719dbab8f61d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/frame-fixtures.json",
+      "bytes": 17537,
+      "gitBlobOID": "21193f5d5db1685c412cf4d8e37a8b2cce78b9d2",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/registry.json",
+      "bytes": 13039,
+      "gitBlobOID": "3a6705a00217f5e55d130bd2a231a6aad233b3fe",
+      "coverage": "PARTIAL",
+      "note": "读 productRuntime 与 mapping.commit 条目（341–356）；其余能力条目未逐行"
+    },
+    {
+      "path": "packages/contracts/v2/schema.json",
+      "bytes": 122889,
+      "gitBlobOID": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/contracts/v2/states.json",
+      "bytes": 716,
+      "gitBlobOID": "bb6161a5a27c317ba073efbf50599fabace903ee",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/__init__.py",
+      "bytes": 101,
+      "gitBlobOID": "aea2f9eaf2ec7427494596a52c40bb8333b8943e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+      "bytes": 2334,
+      "gitBlobOID": "a6ae1a0d637d76f832250e490ff085bbda2e8352",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "bytes": 29559,
+      "gitBlobOID": "8e62479cb0d91b44e0ecdc5b72e253e5b54539c6",
+      "coverage": "PARTIAL",
+      "note": "读 240–262（job.create 能力白名单）；其余未逐行"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+      "bytes": 1745,
+      "gitBlobOID": "aa95429d8b5f99ab839a4fd286991298288e7187",
+      "coverage": "PARTIAL",
+      "note": "经 invalidation.py 消费路径确认（family/staleReason 映射），未逐行读 JSON"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "bytes": 64853,
+      "gitBlobOID": "fdf213b225954c1257a8a1e00eebe676a86e2398",
+      "coverage": "PARTIAL",
+      "note": "读 85–120（_application 有界 ownership 转换）与 700–745（commit_job）；其余未逐行"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+      "bytes": 7851,
+      "gitBlobOID": "3901e311f145590277893b4b68debb2893c35bc8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "bytes": 55364,
+      "gitBlobOID": "b77b71ddda9e5473b2fd9102a4cdef6e98f76123",
+      "coverage": "PARTIAL",
+      "note": "读 1–1007/1230 行；commit/_check_slot/_replace_mapping/snapshot/publish 段全文，未读尾部 SCHEMA 与快照清理段"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+      "bytes": 5611,
+      "gitBlobOID": "bd11499b284100b1587057a7c24cf56def7a69a6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/worker.py",
+      "bytes": 9314,
+      "gitBlobOID": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/storage_baselines.py",
+      "bytes": 7478,
+      "gitBlobOID": "e472eed095e9cdcf614dcc3860b6a2b8785cda37",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_binding_regressions.py",
+      "bytes": 474,
+      "gitBlobOID": "51cf72561c788e3f3bf22263baa6c5832f326ed9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_contract_v2.py",
+      "bytes": 12262,
+      "gitBlobOID": "64a8421436e7f231b14eace94f3c3d3904455003",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_coordinator_control.py",
+      "bytes": 5103,
+      "gitBlobOID": "96c2d98f8d4e326ca647aa1824bf88e12b204499",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_frame_corpus.py",
+      "bytes": 3101,
+      "gitBlobOID": "b2031380285748aaa9494bd7b7520a9732eef2c3",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_handshake_deadline.py",
+      "bytes": 3479,
+      "gitBlobOID": "f9d98888a8f85db95a99b8d9e704c0deea11c3f8",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_i04_lifecycle_boundaries.py",
+      "bytes": 17211,
+      "gitBlobOID": "4a25f8277b93e1f6d41010a0d718fc2f860cd4a1",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_i04_progress.py",
+      "bytes": 11276,
+      "gitBlobOID": "f01164fb191e0697ff3dc3b59ab6cb703e2b17a0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_i04_round_faults.py",
+      "bytes": 12069,
+      "gitBlobOID": "c18f678b54cd6ebacb05bb85c8f8ff06cf6a6072",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_job_store.py",
+      "bytes": 57441,
+      "gitBlobOID": "5bc415287b93f7bd67644f4f1160235c4de45f41",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_memory_guard_exit.py",
+      "bytes": 1953,
+      "gitBlobOID": "1b9694b7b2499e790af2b072ba2efe1c04db7e85",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_protocol.py",
+      "bytes": 1985,
+      "gitBlobOID": "d4fe68c48ba3098c70b3c700a803e7aa8efbea0b",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_resident_runtime.py",
+      "bytes": 20364,
+      "gitBlobOID": "21fed41c6bb509feafd30dcd37f1c7a33d06cb6c",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_runtime_bounds.py",
+      "bytes": 2620,
+      "gitBlobOID": "97a4d00b11a2eddea63f86617153d3eddb939f58",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_session_page_limits.py",
+      "bytes": 4475,
+      "gitBlobOID": "5f7558a7aeb8805a0f32bbc6e3f905f00e5f0842",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_stdio_session_shutdown.py",
+      "bytes": 9085,
+      "gitBlobOID": "61a54c19faaf135ad6b0f47431a60633a8aee182",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_storage.py",
+      "bytes": 49233,
+      "gitBlobOID": "4d8149f71e546e6428e4e786c81b1e2ce2462c0e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_worker_owner_bootstrap.py",
+      "bytes": 9489,
+      "gitBlobOID": "cf6c37ea0592723a5f7d4cf70567a2522cd9d113",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "packages/engine/tests/test_worker_parent.py",
+      "bytes": 4197,
+      "gitBlobOID": "4ab16810e2d30fa46d3ae8f7a98788f21f53bee7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "playwright.config.ts",
+      "bytes": 212,
+      "gitBlobOID": "fcc1eb121ddc431bf0bfdbb0dde1bcc2379e901f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/i04_matrix_evidence.py",
+      "bytes": 19832,
+      "gitBlobOID": "b8f9cb3611fc96b1344a23fce8fab93e41faaac7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/prepare-i04-fixture.py",
+      "bytes": 3873,
+      "gitBlobOID": "6f36750ea745d43186d28ea97104bc7315aa3945",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/verify-i01.py",
+      "bytes": 4595,
+      "gitBlobOID": "3f5e02f55c76340e4937fbf9d603cc8597a994c0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/verify-i04-package.py",
+      "bytes": 3290,
+      "gitBlobOID": "34f0137af8ae8c15c529ce3c19f66a768b417474",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "scripts/verify-sources.mjs",
+      "bytes": 528,
+      "gitBlobOID": "ac2540d4aee6c25bdabbeea7ca158d7c57cf47cd",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/csp-lifecycle.spec.ts",
+      "bytes": 14104,
+      "gitBlobOID": "0c3f4cbae6f20c955b95852440719e44d03428fb",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/desktop.spec.ts",
+      "bytes": 7194,
+      "gitBlobOID": "70e1081b53808f5b24742e6151e35d3f696e3148",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/i04-jobs.spec.ts",
+      "bytes": 23914,
+      "gitBlobOID": "c2b721844dbb1b43dfa820e4259520a01706bbcf",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/native-driver.ts",
+      "bytes": 3887,
+      "gitBlobOID": "9d5ca8183d3bf89689cb7a683f9c93b5a991d83f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/e2e/native-recovery.cjs",
+      "bytes": 4728,
+      "gitBlobOID": "5811866877888dac9363373d8b0f53e798e8d1cf",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/fixtures/mapping/equipment.csv",
+      "bytes": 52,
+      "gitBlobOID": "68b3cb85e60337946db1d1bf81eef90f8015cdb5",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/binding-regressions.test.ts",
+      "bytes": 483,
+      "gitBlobOID": "7dea8f21fb61c289812abb5e3634d2d202bb6f7e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/contract-v2.test.ts",
+      "bytes": 10907,
+      "gitBlobOID": "f89f0217f92162929e97b41a18c6c0c7a9afc8b9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/contract.test.ts",
+      "bytes": 2131,
+      "gitBlobOID": "3e3e5950c7931c4d4ee50758bfca54d590aa3770",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/csp.test.ts",
+      "bytes": 1007,
+      "gitBlobOID": "8351575018d4695e757101e09db90b9747ae531e",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/engine-connection-state.test.ts",
+      "bytes": 8676,
+      "gitBlobOID": "c75c52f75664decc403e4ed55129a36a466034a6",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/engine-environment.test.ts",
+      "bytes": 4542,
+      "gitBlobOID": "c7dcf932c5a53aa7278d2922e8b04b883c04b94d",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/jsonl.test.ts",
+      "bytes": 4447,
+      "gitBlobOID": "e04800ad78a7a5ae703ef39deefd6e6d248fa29f",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/native-driver.test.ts",
+      "bytes": 2672,
+      "gitBlobOID": "63224f1441409dfe51112ce167c7d9173dfbd525",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/supervisor.test.ts",
+      "bytes": 8920,
+      "gitBlobOID": "d7459dae9a2e31b32197dcaaadf6a8b68a7d3583",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-progress.test.ts",
+      "bytes": 4072,
+      "gitBlobOID": "96ccc662d46d610b8f94a058d82c2e2aeec7c2e4",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-runtime.test.ts",
+      "bytes": 26406,
+      "gitBlobOID": "8bc5fe2141d409f1157d7153efd13a342f71fae1",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-service.test.ts",
+      "bytes": 45315,
+      "gitBlobOID": "95a7476988b0adf287b3cfd5537f0195f1769ee9",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/task-update-boundary.test.ts",
+      "bytes": 1469,
+      "gitBlobOID": "f0b9f1efd84ea849e9dad03a884533ff450298b7",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/view-navigation.test.ts",
+      "bytes": 4588,
+      "gitBlobOID": "9c7150a541f565ca522d7349adde697632ac44d0",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tests/unit/window-recovery.test.ts",
+      "bytes": 2335,
+      "gitBlobOID": "49caa59fd9b033170c9ab596cff275cdfea6d9db",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "tsconfig.unit.json",
+      "bytes": 141,
+      "gitBlobOID": "a5f4665fde80a6ac8640bb9b35ff61e51af106cd",
+      "coverage": "METADATA",
+      "note": ""
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 23393,
+      "gitBlobOID": "87cb915a5c66a98832edc1756cb8a056cf5cfc4b",
+      "coverage": "METADATA",
+      "note": "23393B 锁产物；以 candidate-binding 记录 sha256 逐字节核对一致（openpyxl/defusedxml 版本经 pyproject 与 probe 断言双向确认）"
+    },
+    {
+      "path": "vitest.config.mts",
+      "bytes": 125,
+      "gitBlobOID": "845e04b86d7f08b6034e1eb0976789efd0ca4643",
+      "coverage": "METADATA",
+      "note": ""
+    }
+  ],
+  "historicalLedger": [
+    {
+      "id": "Z1",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 108,
+        "rawRow": "| Z1（首报P3→续报P4） | `storage.py:620–627`：`reserved_id=digest([s,p,v])`，同槽他 owner 行 id 等价即抛 ownership Conflict，**不受墓碑 object=None 影响**——跨 owner 同值墓碑复活在事务内整批拒绝成立（`_replace_mapping`:684–691 于 commit 事务内先 `_check_slot`）。**续报残余说法证伪**：`plan.py:310–329` 循环中 `candidate[\"id\"]==fact[\"id\"]`（:314）在 `fact[\"object\"] is not None` 的 or 右支之外，preview 层对同 ID 墓碑同样报 OWNERSHIP_CONFLICT——两层都有同 ID 判定 | 报告纠正项（残余表述不成立）；产品无需修改；原严重度与改判历史原样保留 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 134,
+        "rawRow": "| **Z1** | 首报 P3；续报改判 P4；残余称\"preview 不预显、commit 才发现\" | **残余说法不成立**。`plan.py:310–317` 的 `candidate[\"id\"] == fact[\"id\"]` 判定位于 `fact[\"object\"] is not None` 分支**之外**，故跨 owner 墓碑（object=None）同值复活在 **preview 层即报 OWNERSHIP_CONFLICT**；`storage.py:620–627` 的 `reserved_id = digest([subject,predicate,value])` 比较构成第二层独立拒绝 | 原严重度与改判历史**原样保留**；残余说法属**报告纠正项**，不改产品 |"
+      },
+      "independentDisposition": "报告残余判断纠正；preview同ID墓碑拒绝，严重度历史保留，不改产品。"
+    },
+    {
+      "id": "Z2",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 109,
+        "rawRow": "| Z2（P3 维持） | `model.ts:119–144 mappingDraftValid`：检查列存在（`names.has`）、IRI 形式、keys 唯一/存在、referenceColumns 存在——确无重复 predicate 与重复 referenceColumns 预检；`plan.py:118–119`（`predicate in targets` 拒绝）与 `:130–138`（reference_columns 去重校验）引擎硬拒 | **维持 P3**：私有 UI 预览前提示局限，后端 fail-closed，无越权/错误提交路径；T00/T01 wire 字段级错误映射待办。原 Z 报告\"终段无 P3 遗留\"与\"Z2 维持 P3\"的内部矛盾按历史保留，本轮以维持 P3 为准 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 307,
+        "rawRow": "| Z2（P3） | T03 owner + T00/T01 接线 owner | UI 重复 predicate 预检与正式 wire 字段级错误映射；**改 UI 即须新候选与原双新审** |"
+      },
+      "independentDisposition": "P3维持；后端fail-closed；普通checkbox不主动制造重复referenceColumns，非任意state证明；旧终段矛盾待对齐。"
+    },
+    {
+      "id": "Z3",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 110,
+        "rawRow": "| Z3（P4） | `source.py:268` `fs._worksheet_path` 私有 API 属实；依赖钉死 3.1.5 + 回归限定 | 维护性观察，留作升级断点；本轮无实际不兼容证据 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 136,
+        "rawRow": "| **Z3** | P4（openpyxl 私有 `fs._worksheet_path`） | 成立：`source.py:268` 确用 `fs._worksheet_path`；当前钉死 openpyxl 3.1.5，无实际不兼容证据 | 维持 P4（升级断点观察） |"
+      },
+      "independentDisposition": "P4升级维护观察，未证当次不兼容。"
+    },
+    {
+      "id": "Z4",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 111,
+        "rawRow": "| Z4（P4） | `parse_xlsx`:258/261 两次 `_open_xlsx` + :268 iterparse 扫描属实；\"三遍\"为概括描述 | 资源/性能观察，未测量不量化；Q5 未设线 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 137,
+        "rawRow": "| **Z4** | P4（XLSX\"三遍\"读取） | 成立为 I/O 概括：`parse_xlsx` 两次 `_open_xlsx`（258、261）+ 一次选中表缓存扫描（268）；非实测性能数字 | 维持 P4，**不量化**时延/RSS |"
+      },
+      "independentDisposition": "P4资源观察，不量化未测性能。"
+    },
+    {
+      "id": "Z5",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 112,
+        "rawRow": "| Z5（P4，原报称闭环） | ruff 计数为工具输出口径 | 无产品差异；不追认 182/207 全体解释 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 138,
+        "rawRow": "| **Z5** | P4（ruff 计数口径；原报告称闭环） | 成立为工具输出口径；本轮**未复跑 ruff**，不追认 182/207 的全体解释 | 维持 P4（报告引用方保留命令与版本） |"
+      },
+      "independentDisposition": "P4工具计数口径，不追认旧182/207解释。"
+    },
+    {
+      "id": "Z6",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 113,
+        "rawRow": "| Z6（P4） | CSV `_table`:96–97 `ROW_WIDTH` 严格等宽 vs XLSX :283–286 稀疏补空——两种宽度处理确不同 | 已声明有意解析差异；文档说明事项 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 139,
+        "rawRow": "| **Z6** | P4（CSV 严格行宽 vs XLSX 补稀疏尾空） | 成立：`source.py:96–97` 要求实际行宽等于标题宽（`ROW_WIDTH`），`source.py:283–286` 对稀疏行补空 | 维持 P4（已声明的解析差异） |"
+      },
+      "independentDisposition": "P4已声明格式解析差异。"
+    },
+    {
+      "id": "Z7",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 114,
+        "rawRow": "| Z7（P4） | `storage.py:41–48` code 映射确无 ownership（落 INTERNAL_ERROR）；`job_store.py:94–110 _application` 将 ownership Conflict 转有界 `OWNERSHIP_CONFLICT/detailRef`（新事务落 job_details，无原文/值/路径） | 与 F11 同一接线约束；私有服务不提交，无现行跨界缺陷 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 308,
+        "rawRow": "| Z7 / F11 / F10 | T01 / 受信应用服务 owner | 正式 mapping 写入经 `JobStore.commit_job` 路由（取得有界 `OWNERSHIP_CONFLICT` + `detailRef`）；definition id 字符集与契约层对齐 |"
+      },
+      "independentDisposition": "P4正式错误适配约束，与F11同一责任。"
+    },
+    {
+      "id": "F01",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 115,
+        "rawRow": "| F01（低） | `docs/iterations/T03/verify-packaged-probe.py:15–16` 回写 stdout/stderr 两受跟踪件 + :66 回写 verification.json，路径写死无出参——属实 | 证据工具可复查性问题；**新 P2 verifier 已按新输出目录模式纠正该实践**；本轮未执行旧脚本 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 309,
+        "rawRow": "| F01 | T03 owner | `verify-packaged-probe.py` 输出目录参数化（新增 P2 verifier 已不回写受跟踪文件，可作参照） |"
+      },
+      "independentDisposition": "低；旧脚本仍回写原件；新verifier采用新目录不等于旧脚本本体修复。"
+    },
+    {
+      "id": "F02",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 116,
+        "rawRow": "| F02（低） | `MappingPage.tsx:40–44` setField 将编辑字段移至数组尾；`model.ts:65–67` draftKey=JSON.stringify 顺序敏感；`currentPreview`:69–81 因 key 不匹配拒绝旧预览 | fail-closed UX 局限，非授权缺陷；修规范化须新候选+双新审 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 310,
+        "rawRow": "| F02 | T03 owner | 草稿字段稳定排序或按字段名规范化 `draftKey` |"
+      },
+      "independentDisposition": "低；fail-closed草稿UX，未改产品。"
+    },
+    {
+      "id": "F03",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 117,
+        "rawRow": "| F03（信息） | 我方实读 registry：`mapping.commit` = formal-write + requiresChangeSet/Confirmation + agentEligible:true + **implementation:design-only**；`productRuntime:['health']`；`v2Runtime` 无 mapping 方法；`coordinator.py:248–254` job.create 仅 test_mode 且限 test.read/test.atomic/test.rounds | 设计态注册元数据观察；不可派发能力成立；归 contracts owner 正式启用前统一 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 311,
+        "rawRow": "| F03 | contracts owner | `mapping.commit` 的 `agentEligible` 与 `design-only` 表述一致性 |"
+      },
+      "independentDisposition": "信息；design-only不可由agentEligible单字段提升为可派发。"
+    },
+    {
+      "id": "F04",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 118,
+        "rawRow": "| F04（信息） | `eslint.config.mjs` ignores 不含 docs；`.prettierignore` 含 docs/reviews——实测属实 | 工具链策略不对称，非执行失败 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 312,
+        "rawRow": "| F04 | 工具链 owner | ESLint ignores 与 `.prettierignore` 对 `docs/reviews` 的处置统一 |"
+      },
+      "independentDisposition": "信息；工具链策略不对称，不是已证执行失败。"
+    },
+    {
+      "id": "F05",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 119,
+        "rawRow": "| F05（验证观察） | 正面探针结果保留 | 非待修缺陷；\"preview 与 Store 一致\"仅限已核分支 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 145,
+        "rawRow": "| **F05** | 验证观察（preview 与 Store 所有权判定一致） | 成立为正面观察：`plan.py:289–329` 与 `storage.py:608–633`/`635–652`/`692–699` 双层设防；`test_mapping_plan.py::test_shared_fact_and_reserved_identity_block_ownership` 实测 preview 报 `OWNERSHIP_CONFLICT` | 非待修缺陷；结论仅在已核输入与分支内使用 |"
+      },
+      "independentDisposition": "正面验证观察，非待修缺陷，限已核分支。"
+    },
+    {
+      "id": "F06",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 120,
+        "rawRow": "| F06（验证观察+**普遍结论证伪**） | 三个普通转义样例正面结果保留；但\"合法 XML 文本 `<` 必然转义故 part 不可能有字面 DOCTYPE\"的普遍结论**不成立**：XML CDATA（如 `<t><![CDATA[<!DOCTYPE html>]]></t>`）可承载字面文本，而 `source.py:181–186` 对原始 part 字节做无上下文子串拦截 | 报告纠正项：区分已测普通转义样例与未测 CDATA；**未制作/运行 fixture，不宣称已证产品误拒**；DOCTYPE/ENTITY 闸为 fail-closed 安全控制，本轮不建议改动；是否属必须接收的合法输入由 root/T03 决策 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 146,
+        "rawRow": "| **F06** | 验证观察（\"合法 XML 文本中的 `<` 必然转义，故 part 中不可能出现字面 DOCTYPE\"，据此称闸门无假阳性） | **普遍结论不成立（须纠正）**。XML **元素文本节点与属性值**必须转义 `<`，但 **CDATA 段可承载字面文本**（如 `<t><![CDATA[<!DOCTYPE html>]]></t>`）；`source.py:181–186` 对**原始 part 字节**作无上下文子串拦截（`value.replace(b\"\\x00\",b\"\").upper()` 后查 `<!DOCTYPE`/`<!ENTITY`），故含 CDATA 字面 DOCTYPE 的 part 会被判 `UNSAFE_XML`。历史实测仅覆盖三个普通单元格文本变体（正常解析），**未覆盖 CDATA** | 保留\"验证观察\"性质；**明确要求纠正普遍结论**；**本轮未制作/运行 CDATA fixture，不宣称产品已误拒**，亦**不擅改 DOCTYPE 闸**；是否属必须接收的合法输入属 root/T03 产品决定 |"
+      },
+      "independentDisposition": "普遍XML断言纠正；未运行CDATA，不宣称已证产品误拒或改闸。"
+    },
+    {
+      "id": "F07",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 121,
+        "rawRow": "| F07（信息） | `csp.ts:15–17` 非法 dev origin/nonce throw；`main/index.ts` whenReady 异步回调调用且至文件尾无 catch，窗口创建在其后——静态可达 dev-only 未捕获 rejection 成立；两文件 base→HEAD 未变 | 继承开发态诊断问题；交 desktop owner；非本候选引入 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 313,
+        "rawRow": "| F07 | desktop/main owner | 开发态 CSP 校验失败的显式诊断 |"
+      },
+      "independentDisposition": "继承dev诊断信息，未实测宿主异常表现。"
+    },
+    {
+      "id": "F08",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 122,
+        "rawRow": "| F08（信息） | `test_i04_lifecycle_boundaries.py:235/295/343` 恰三处 `skipif(sys.platform!=\"darwin\")`；CI quality 为 ubuntu-latest（ci.yml 实读） | \"macOS 当次 1110/0skip\"成立，不得发 Linux 零 skip 证书 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 314,
+        "rawRow": "| F08 | 报告引用方 | 引用检查结果时标注主机平台 |"
+      },
+      "independentDisposition": "平台引用边界，macOS零skip不升级为Linux证据。"
+    },
+    {
+      "id": "F09",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 123,
+        "rawRow": "| F09（信息） | `check-registered-scope.txt`:90 collected 1110；:112–115 明列 entrypoint 6/plan 22/recovery 9/source 21（=58 mapping）；:130 总 1110 passed | **原报告统计错误证实**：1110 已含 mapping 58，正确表述为\"总 1110（旧），其中 mapping 58；新候选总 1116\"；仅报告更正 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 149,
+        "rawRow": "| **F09** | 信息（\"继承套件 1110 不含 mapping 专项\"） | **原报告统计错误已证实**：`check-registered-scope.txt:90` 为 `collected 1110 items`；`:112–115` 明列 mapping 四文件点数 entrypoint 6 / plan 22 / recovery 9 / source 21 = **58**；`:130` 为 `1110 passed`。即 **1110 已含 58 mapping**，其余继承为 1052。**本候选静态计数**：entrypoint 12（6 旧 + 6 新）/ plan 22 / recovery 9 / source 21 = **64**，与 \"1116 = 1110 + 6\" 自洽 | 维持\"信息/报告更正\"；总数与专项必须分列引用 |"
+      },
+      "independentDisposition": "旧1110含58mapping；新1116/专项64分列，报告更正。"
+    },
+    {
+      "id": "F10",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 124,
+        "rawRow": "| F10（信息） | `plan.py:102–108` identity 限 `[A-Za-z0-9_.-]{1,128}`（T03 路径拒非法 id）；`storage.py:344–350` 内部定义 id 仅非空校验为事实 | T03 假设消解；存储/契约粒度差异归正式接线 owner |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 150,
+        "rawRow": "| **F10** | 信息（`dependencyKey` 字符集缺口对 T03 不可达） | 成立：`plan.py:102–108` 强制 `[A-Za-z0-9_.-]{1,128}` 并抛 `ValueError`；`storage.py:344–350` 对 definition id 仅校验非空字符串（较宽） | 维持\"信息\"；T03 假设消解，非 T03 调用方的约束归存储/契约 owner |"
+      },
+      "independentDisposition": "T03假设消解，非T03存储边界由正式owner处置。"
+    },
+    {
+      "id": "F11",
+      "zcode": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "line": 125,
+        "rawRow": "| F11（信息） | `job_store.py:716–754 commit_job` 经 `_application` 调 `super().commit`；:372 writing 集合含 mapping.commit；与 Z7 形成真实代码链 | 正式写入错误适配约束成立；mapping.commit 未正式接线；T01 集成时经 JobStore.commit_job 路由 |"
+      },
+      "minimax": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "line": 151,
+        "rawRow": "| **F11** | 信息（正式写入错误适配约束） | 成立：`job_store.py` `commit_job`（约 714–735）确在 `_application` 包裹内调用 `super().commit(...)`，与 `:95–110` 的有界 ownership 转换形成真实代码链；裸 `Store.commit` 的 ownership 冲突会降级 `INTERNAL_ERROR` 且 message 含 slot/predicate/owner/source_row（内部诊断） | 维持\"信息\"；未证明 `mapping.commit` 已正式接线；归 T01/受信应用服务 owner |"
+      },
+      "independentDisposition": "有界错误链不等于mapping正式接线；仍待T01。"
+    }
+  ],
+  "newObservationLedger": [
+    {
+      "id": "Obs-1",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "lineStart": 133,
+        "lineEnd": 133,
+        "rawText": "| Obs-1 | 信息（登记完备性） | `candidate-binding.json` sourceIdentities | 11 条 identity 含根 `pyproject.toml` 但未单列 `packages/engine/pyproject.toml`（T03 责任文件，424B/`09b4f2c2…`）。经 git 实测该文件 303→da1795→HEAD 逐 blob 未变，无完整性影响；建议未来 binding 对 T03 责任路径逐条单列，避免依赖 git diff 间接证明 |"
+      },
+      "independentDisposition": "登记建议成立，未单列engine pyproject由Git可证未变；不回填旧收据。"
+    },
+    {
+      "id": "Obs-2",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "lineStart": 134,
+        "lineEnd": 134,
+        "rawText": "| Obs-2 | 信息（测试-文档耦合） | `packages/engine/tests/test_mapping_entrypoint.py:15–20` | 测试从 `docs/reviews/T03/mapping-p2-boundaries-20261023/fixed-probe-v2-expected.json` 加载完整 oracle——该 docs 文件成为测试套件的载荷输入，移动/更名该评审包会破坏 `npm run check`。单一事实源是有意设计，但建议在包 README 标注此依赖方向 |"
+      },
+      "independentDisposition": "docs oracle依赖成立；维护说明即可评估，不是必改产品缺陷。"
+    },
+    {
+      "id": "Obs-3",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "lineStart": 135,
+        "lineEnd": 135,
+        "rawText": "| Obs-3 | 信息（标签语义） | `verify-packaged-boundaries.py:214` / receipt 17 行 | `guardCallsAtEndOfSameInvocation` 取自 csv-row-limit-located 的累积快照而非字面\"最后\"时刻；全零下数值等价，仅标签略宽。未来可取末 case 快照或改为终检计数 |"
+      },
+      "independentDisposition": "不是最后case快照的判断不成立；row-limit是当前最后解析case，JSON排序不是执行顺序。"
+    },
+    {
+      "id": "Obs-4",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/reports/mapping-P2-zcode-full-report.md",
+        "lineStart": 136,
+        "lineEnd": 136,
+        "rawText": "| Obs-4 | 确认项（非缺陷） | engine 包证据来源 | 4622464B/`c4c8d80c…` 引擎及全部包内执行均发生在原 P2 树；本树无 pack/check 新结果。各方表述不得写成\"新树 fresh 包\"；本轮所有引用均已按此口径 |"
+      },
+      "independentDisposition": "证据来源确认项，原P2树实测不是新审树fresh包。"
+    },
+    {
+      "id": "N01",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "lineStart": 208,
+        "lineEnd": 215,
+        "rawText": "### N01 — 信息 — 证据域表述不精确：`defusedxml` 首次 import 发生在 socket guard 窗口内\n\n- 位置：`packages/engine/src/ontolearn_engine/mapping/probe.py:39`、`:236`、`:346–353`\n- 触发：`run()` 先 `import_module(\"openpyxl\")`（guard 前），再进入 `_socket_guard()`；`_legacy_cases` → `_variant` 的 `from defusedxml.ElementTree import fromstring` 与 `_empty_formula_caches` 的 `iterparse` 均在 guard 内首次触发 `defusedxml` 导入。\n- 影响：派发提示与 `delivery.md` 的\"依赖 import 在 guard 前\"\"证据域不包括依赖 import\"对 `defusedxml` **不成立**。方向上 guard 覆盖了更多（若该导入触发 socket 会被计数并使 probe 失败），因此**不削弱**\"零调用\"结论；但作为对外证据口径应按实际执行描述，避免被引为\"依赖导入期不在测量域\"。\n- 证据：probe.py 上述行号；`actual-receipt.json.socketMeasurementDomain` 亦写\"dependency import happens before guard\"。\n- 建议：证据文案改为\"openpyxl 于 guard 前导入；defusedxml 首次导入发生在 guard 窗口内\"。**不改产品**；若要严格表达\"依赖导入不计入\"，可在 guard 前预导入 defusedxml（属产品改动，需新候选与双新审，本轮不建议）。\n"
+      },
+      "independentDisposition": "局部import执行点在guard内；首次实际时刻UNKNOWN；已安装openpyxl提供guard前导入链静态反证。"
+    },
+    {
+      "id": "N02",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "lineStart": 216,
+        "lineEnd": 222,
+        "rawText": "### N02 — 信息 — 两个外部引用 case 的 `column` 是硬编码字面量而非解析派生值\n\n- 位置：`probe.py:288–295`（`\"column\": 2`）\n- 事实：`sheet` 取自 `table.sheet`、`row` 取自 `table.rows[0].number`（均派生），唯 `column` 写死为 2。\n- 影响：不影响本轮判定（cells 断言 `[\"001\", value]` 已钉住内容与位置），但该列值**不构成解析器列定位的独立观测**，只是已知 B2 fixture 坐标；若 fixture 形状变化，记录会静默保持 2。\n- 建议：与 §8.4 一致地按\"已知 B2 坐标\"引用；若需升级为定位证据，改为由解析结果派生列号（产品改动，需新候选）。\n"
+      },
+      "independentDisposition": "已知B2坐标边界，非独立parser列定位，非新增缺陷。"
+    },
+    {
+      "id": "N03",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "lineStart": 223,
+        "lineEnd": 228,
+        "rawText": "### N03 — 信息/正向观察 — 四类 CSV 上限在 303 基线已有单元级覆盖，P2 的增量价值在\"包内可执行 + 完整定位\"\n\n- 位置：`packages/engine/tests/test_mapping_source.py` 的 `test_csv_file_column_cell_and_row_limits_are_enforced_with_locations`（与新增 probe 四例同输入同期望）；新增在 `probe.py:296–342`\n- 影响：把\"仅单元级语义\"提升为\"**打包后 CLI 实际执行**的固定 17 项之一，且补齐 sheet 维度并与执行前 oracle 整体比对\"，是实质证据升级；同时提示引用时不应把它表述为\"首次覆盖该语义\"。\n- 建议：交付文案按此口径表述；不改产品。\n"
+      },
+      "independentDisposition": "303已有单元语义，P2提升到包内固定CLI及完整定位，不称首次语义覆盖。"
+    },
+    {
+      "id": "N04",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "lineStart": 229,
+        "lineEnd": 235,
+        "rawText": "### N04 — 信息 — 440 项 inventory 实际无 symlink 条目\n\n- 位置：`docs/reviews/T03/mapping-p2-boundaries-20261023/actual-engine-inventory.json`；verifier `verify-packaged-boundaries.py:136–149`\n- 事实：440 项 = file 391 + directory 49 + symlink **0**；verifier 具备 symlink 分支与 `PACKAGE_SYMLINK_ESCAPE` 检查，但本包未命中。\n- 影响：本地 Codex 独审中\"symlink target 均核对\"一句在本包无对应对象，属**表述超出实际对象**（非产品问题）。\n- 建议：引用时改为\"逐项核对 391 文件 + 49 目录的字节身份与种类，无 symlink 条目\"。\n"
+      },
+      "independentDisposition": "391文件49目录0symlink，引用实际对象数量；空symlink集合不新增验证对象。"
+    },
+    {
+      "id": "N05",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "lineStart": 236,
+        "lineEnd": 242,
+        "rawText": "### N05 — 信息/纠正性 — F06 的普遍结论须按精确表述纠正（CDATA 边界）\n\n- 位置：`packages/engine/src/ontolearn_engine/mapping/source.py:181–186`\n- 事实：精确表述应为\"XML **元素文本与属性值**中的 `<` 必须转义，故正常单元格文本不会在 part 字节中形成字面 `<!DOCTYPE`；但 **CDATA 段**可承载字面文本，而闸门是无上下文原始字节子串匹配\"。因此\"合法 XML 中不可能出现字面 DOCTYPE\"这一**普遍**命题为假。\n- 影响：闸门对含 CDATA 字面 DOCTYPE 的 part 会判 `UNSAFE_XML`（潜在过拒）；**本轮未制作/运行 CDATA fixture，不宣称产品已误拒**，也不判定该输入是否属必须接收。\n- 建议：原报告侧纠正普遍结论并区分已测普通转义样例与未测 CDATA；是否属必须接收输入与是否需要一次最小验证由 root/T03 决定。**不得据此自行放宽或加严安全闸。**\n"
+      },
+      "independentDisposition": "与F06同一CDATA边界，不重复计产品缺陷。"
+    },
+    {
+      "id": "N06",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "lineStart": 243,
+        "lineEnd": 249,
+        "rawText": "### N06 — 信息 — 运行发生在 repair base HEAD + 等候选产品字节，引用时不得写成\"在候选提交上实测\"\n\n- 位置：`docs/reviews/T03/mapping-p2-boundaries-20261023/actual-receipt.json` 的 `runtimeHead: 30319412…`；`candidate-binding.json` 的 `runtimeState`\n- 事实：实测时 HEAD 为 `30319412`，两产品文件内容已等于候选（`candidate-binding.sourceIdentities` 11/11 与当前 HEAD 工作区逐字节一致）；候选提交在其后产生。\n- 影响：证据**适用于**候选字节（字节同一已证），但表述必须区分\"提交后 HEAD 上的实测\"与\"提交前工作区（内容等同候选）的实测\"。\n- 建议：报告/交付统一采用后一口径，并附字节同一性证明。\n"
+      },
+      "independentDisposition": "HEAD303+候选同字节dirty工作区实测，后提交；不称提交后HEAD实测。"
+    },
+    {
+      "id": "N07",
+      "source": {
+        "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+        "lineStart": 250,
+        "lineEnd": 258,
+        "rawText": "### N07 — 信息 — Z2 的\"维持 P3\"与原续报终段\"无任何 P1/P2/P3 遗留\"仍并存\n\n- 位置：历史 Z 报告 §3 各条处置与 §6 终态\n- 事实：Z2 条目写\"P3（维持）\"，终态写\"无任何 P1/P2/P3 遗留\"，二者对 Z2 不自洽；主控草案亦要求\"原 Z 对齐\"。\n- 影响：报告内部一致性缺陷，非产品缺陷。\n- 建议：由原 Z 侧明确对齐后归档；本轮不代签、不改其历史原件。\n\n---\n"
+      },
+      "independentDisposition": "与Z2同一历史报告矛盾，不改历史原件或代原模型签。"
+    }
+  ],
+  "installedOpenpyxlImportChainStaticFragments": [
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/.venv/lib/python3.12/site-packages/openpyxl/__init__.py",
+        "bytes": 603,
+        "sha256": "b36b17729f138575c7b3035287e52e422e411eca1ab2e7335328cd373d15ba97"
+      },
+      "lineStart": 1,
+      "lineEnd": 19,
+      "text": "# Copyright (c) 2010-2024 openpyxl\n\nDEBUG = False\n\nfrom openpyxl.compat.numbers import NUMPY\nfrom openpyxl.xml import DEFUSEDXML, LXML\nfrom openpyxl.workbook import Workbook\nfrom openpyxl.reader.excel import load_workbook as open\nfrom openpyxl.reader.excel import load_workbook\nimport openpyxl._constants as constants\n\n# Expose constants especially the version number\n\n__author__ = constants.__author__\n__author_email__ = constants.__author_email__\n__license__ = constants.__license__\n__maintainer_email__ = constants.__maintainer_email__\n__url__ = constants.__url__\n__version__ = constants.__version__"
+    },
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/.venv/lib/python3.12/site-packages/openpyxl/xml/__init__.py",
+        "bytes": 1016,
+        "sha256": "0392a3d065a4e5723ecc9c5b00be6f229a55fc08041cb46f786bbc44ae5ced4d"
+      },
+      "lineStart": 22,
+      "lineEnd": 42,
+      "text": "def lxml_env_set():\n    return os.environ.get(\"OPENPYXL_LXML\", \"True\") == \"True\"\n\n\nLXML = lxml_available() and lxml_env_set()\n\n\ndef defusedxml_available():\n    try:\n        import defusedxml # noqa\n    except ImportError:\n        return False\n    else:\n        return True\n\n\ndef defusedxml_env_set():\n    return os.environ.get(\"OPENPYXL_DEFUSEDXML\", \"True\") == \"True\"\n\n\nDEFUSEDXML = defusedxml_available() and defusedxml_env_set()"
+    },
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/.venv/lib/python3.12/site-packages/openpyxl/xml/functions.py",
+        "bytes": 2025,
+        "sha256": "8c1b5f6bcfffc388019443c61cb18202d26268d28fca28532ec7e68a0caadbf4"
+      },
+      "lineStart": 11,
+      "lineEnd": 42,
+      "text": "from openpyxl import DEFUSEDXML, LXML\n\nif LXML is True:\n    from lxml.etree import (\n    Element,\n    SubElement,\n    register_namespace,\n    QName,\n    xmlfile,\n    XMLParser,\n    )\n    from lxml.etree import fromstring, tostring\n    # do not resolve entities\n    safe_parser = XMLParser(resolve_entities=False)\n    fromstring = partial(fromstring, parser=safe_parser)\n\nelse:\n    from xml.etree.ElementTree import (\n    Element,\n    SubElement,\n    fromstring,\n    tostring,\n    QName,\n    register_namespace\n    )\n    from et_xmlfile import xmlfile\n    if DEFUSEDXML is True:\n        from defusedxml.ElementTree import fromstring\n\nfrom xml.etree.ElementTree import iterparse\nif DEFUSEDXML is True:\n    from defusedxml.ElementTree import iterparse"
+    },
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/.venv/lib/python3.12/site-packages/openpyxl/workbook/__init__.py",
+        "bytes": 68,
+        "sha256": "c8a32290df15aa855925ca194955b7a7d4a6b7cf226dea8dabd347846049a843"
+      },
+      "lineStart": 1,
+      "lineEnd": 4,
+      "text": "# Copyright (c) 2010-2024 openpyxl\n\n\nfrom .workbook import Workbook"
+    },
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/.venv/lib/python3.12/site-packages/openpyxl/workbook/workbook.py",
+        "bytes": 13232,
+        "sha256": "a1a12bbd21f5a94a615003ce6530878f6507c8a783aac8f60f270a083720a3b3"
+      },
+      "lineStart": 1,
+      "lineEnd": 35,
+      "text": "# Copyright (c) 2010-2024 openpyxl\n\n\"\"\"Workbook is the top-level container for all document information.\"\"\"\nfrom copy import copy\n\nfrom openpyxl.compat import deprecated\nfrom openpyxl.worksheet.worksheet import Worksheet\nfrom openpyxl.worksheet._read_only import ReadOnlyWorksheet\nfrom openpyxl.worksheet._write_only import WriteOnlyWorksheet\nfrom openpyxl.worksheet.copier import WorksheetCopy\n\nfrom openpyxl.utils import quote_sheetname\nfrom openpyxl.utils.indexed_list import IndexedList\nfrom openpyxl.utils.datetime  import WINDOWS_EPOCH, MAC_EPOCH\nfrom openpyxl.utils.exceptions import ReadOnlyWorkbookException\n\nfrom openpyxl.writer.excel import save_workbook\n\nfrom openpyxl.styles.cell_style import StyleArray\nfrom openpyxl.styles.named_styles import NamedStyle\nfrom openpyxl.styles.differential import DifferentialStyleList\nfrom openpyxl.styles.alignment import Alignment\nfrom openpyxl.styles.borders import DEFAULT_BORDER\nfrom openpyxl.styles.fills import DEFAULT_EMPTY_FILL, DEFAULT_GRAY_FILL\nfrom openpyxl.styles.fonts import DEFAULT_FONT\nfrom openpyxl.styles.protection import Protection\nfrom openpyxl.styles.colors import COLOR_INDEX\nfrom openpyxl.styles.named_styles import NamedStyleList\nfrom openpyxl.styles.table import TableStyleList\n\nfrom openpyxl.chartsheet import Chartsheet\nfrom .defined_name import DefinedName, DefinedNameDict\nfrom openpyxl.packaging.core import DocumentProperties\nfrom openpyxl.packaging.custom import CustomPropertyList\nfrom openpyxl.packaging.relationship import RelationshipList"
+    },
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/.venv/lib/python3.12/site-packages/openpyxl/packaging/core.py",
+        "bytes": 4061,
+        "sha256": "3926d214666b298719b337077b72e1404ca201fd96ca5c319b8ffa37c58ef98a"
+      },
+      "lineStart": 1,
+      "lineEnd": 18,
+      "text": "# Copyright (c) 2010-2024 openpyxl\n\nimport datetime\n\nfrom openpyxl.descriptors import (\n    DateTime,\n    Alias,\n)\nfrom openpyxl.descriptors.serialisable import Serialisable\nfrom openpyxl.descriptors.nested import NestedText\nfrom openpyxl.xml.functions import (\n    Element,\n    QName,\n)\nfrom openpyxl.xml.constants import (\n    COREPROPS_NS,\n    DCORE_NS,\n    XSI_NS,"
+    },
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/.venv/lib/python3.12/site-packages/openpyxl/_constants.py",
+        "bytes": 306,
+        "sha256": "ae139e43ac0d1fa8f0ef71b8236e3656d6e6c8cf1fbdd355c0eb0e8c9949e935"
+      },
+      "lineStart": 1,
+      "lineEnd": 13,
+      "text": "# Copyright (c) 2010-2024 openpyxl\n\n\"\"\"\nPackage metadata\n\"\"\"\n\n__author__ = \"See AUTHORS\"\n__author_email__ = \"charlie.clark@clark-consulting.eu\"\n__license__ = \"MIT\"\n__maintainer_email__ = \"openpyxl-users@googlegroups.com\"\n__url__ = \"https://openpyxl.readthedocs.io\"\n__version__ = \"3.1.5\"\n__python__ = \"3.8\""
+    }
+  ],
+  "probeStaticFragments": [
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/packages/engine/src/ontolearn_engine/mapping/probe.py",
+        "bytes": 13911,
+        "sha256": "219d65813b0f77f2b5f60952fab4ad45007ca4290a59b40031bc3f15062b20bb"
+      },
+      "lineStart": 278,
+      "lineEnd": 364,
+      "text": "def _boundary_cases(calls: dict) -> dict:\n    evidence = {}\n    for name, value in (\n        (\"external-cached-formula\", \"只读已保存值\"),\n        (\"external-hyperlink\", \"显示文本\"),\n    ):\n        table = parse_xlsx(_external_workbook(name), sheet=\"设备\")\n        cells = [cell.text for cell in table.rows[0].cells]\n        _require(cells == [\"001\", value], \"EXTERNAL_REFERENCE_VALUE_MISMATCH\")\n        _require(not any(calls.values()), \"MAPPING_PROBE_NETWORK_ATTEMPT\")\n        evidence[name] = {\n            \"cells\": cells,\n            \"code\": \"\",\n            \"sheet\": table.sheet,\n            \"row\": table.rows[0].number,\n            \"column\": 2,\n            \"socketCalls\": dict(calls),\n        }\n    csv_cases = (\n        (\"csv-file-limit-located\", b\"x\" * (MAX_BYTES + 1), \"SOURCE_LIMIT\", \"\", 0, 0),\n        (\n            \"csv-column-limit-located\",\n            (\",\".join(f\"c{i}\" for i in range(MAX_COLUMNS + 1)) + \"\\n\").encode(),\n            \"SOURCE_LIMIT\",\n            \"CSV\",\n            1,\n            0,\n        ),\n        (\n            \"csv-cell-limit-located\",\n            (\"id\\n\" + \"x\" * (MAX_CELL + 1) + \"\\n\").encode(),\n            \"INVALID_CELL\",\n            \"CSV\",\n            2,\n            1,\n        ),\n        (\n            \"csv-row-limit-located\",\n            (\"id\\n\" + \"x\\n\" * (MAX_ROWS + 1)).encode(),\n            \"SOURCE_LIMIT\",\n            \"CSV\",\n            MAX_ROWS + 2,\n            0,\n        ),\n    )\n    for name, data, code, sheet, row, column in csv_cases:\n        try:\n            parse_csv(data)\n        except SourceError as error:\n            issue = error.issue\n            _require(\n                (issue.code, issue.sheet, issue.row, issue.column) == (code, sheet, row, column),\n                \"CSV_BOUNDARY_LOCATION_MISMATCH\",\n            )\n            _require(not any(calls.values()), \"MAPPING_PROBE_NETWORK_ATTEMPT\")\n            evidence[name] = {\n                \"cells\": [],\n                \"code\": issue.code,\n                \"sheet\": issue.sheet,\n                \"row\": issue.row,\n                \"column\": issue.column,\n                \"socketCalls\": dict(calls),\n            }\n        else:\n            raise RuntimeError(\"CSV_BOUNDARY_REFUSAL_MISSING\")\n    return evidence\n\n\ndef run() -> dict:\n    # Dependency import is not a network-attempt measurement. The guard covers\n    # all fixed parsing and input construction, including the six new cases.\n    import_module(\"openpyxl\")\n    with _socket_guard() as calls:\n        result = _legacy_cases()\n        _require(not any(calls.values()), \"MAPPING_PROBE_NETWORK_ATTEMPT\")\n        evidence = _boundary_cases(calls)\n        result[\"cases\"].update({name: row[\"code\"] or \"passed\" for name, row in evidence.items()})\n        result[\"boundaryEvidence\"] = evidence\n        result[\"boundaryVersion\"] = 1\n        result[\"limits\"] = {\n            \"maxBytes\": MAX_BYTES,\n            \"maxExpanded\": MAX_EXPANDED,\n            \"maxRows\": MAX_ROWS,\n            \"maxColumns\": MAX_COLUMNS,\n            \"maxCell\": MAX_CELL,\n        }\n    return result"
+    },
+    {
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/packages/engine/src/ontolearn_engine/mapping/source.py",
+        "bytes": 10399,
+        "sha256": "93bf09e10723c8522f1e9fbb8e170ffece596143c5e00ddcf7be950d15e1ddc8"
+      },
+      "lineStart": 232,
+      "lineEnd": 241,
+      "text": "def _empty_formula_caches(data: bytes, path: str) -> set[str]:\n    # openpyxl returns None for a cached empty string and for an absent cache.\n    # Inspect only the selected worksheet; never evaluate a formula. This uses\n    # the pinned candidate's worksheet path, with no URL/file dereferencing.\n    from defusedxml.ElementTree import iterparse\n\n    ns = \"{http://schemas.openxmlformats.org/spreadsheetml/2006/main}\"\n    result = set()\n    with zipfile.ZipFile(io.BytesIO(data)) as archive, archive.open(path.lstrip(\"/\")) as xml:\n        for _, element in iterparse(xml, events=(\"end\",)):"
+    }
+  ],
+  "csvExecutionTupleOrderFromAST": [
+    "csv-file-limit-located",
+    "csv-column-limit-located",
+    "csv-cell-limit-located",
+    "csv-row-limit-located"
+  ],
+  "actualHistoricalFirstImportTime": "UNKNOWN",
+  "installedLibraryImportedOrExecuted": false,
+  "productOrTestExecuted": false,
+  "GUIAPIOrNativeUsed": false,
+  "gate": "FULL_DESIGNATED_REVIEW_INCOMPLETE_NO_FULL_DUAL_PASS"
+}

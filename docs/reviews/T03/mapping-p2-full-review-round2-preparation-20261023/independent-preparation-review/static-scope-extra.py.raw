@@ -1,0 +1,43 @@
+"""Extra bounded Git/JSON/path checks; no candidate execution or external payload read."""
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+ROOT=Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-p2-boundaries')
+P=ROOT/'docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023'
+O=P/'independent-preparation-review'
+H='c1e44f81723f9c616f669f56481d1b1ada7e57f2'
+def git(*a): return subprocess.check_output(['git',*a],cwd=ROOT)
+def data(path,ref=H): return git('show',f'{ref}:{path}')
+def js(path,ref=H): return json.loads(data(path,ref))
+def sha(b): return hashlib.sha256(b).hexdigest()
+legacy=js('docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/legacy-fixed-package/mapping-S1-fixed-inputs.json')
+old={r['path']:r for r in legacy['completeTrackedTree']}
+cur={r['path']:r for r in json.loads((P/'full-candidate-tree-c1e44f81.json').read_bytes())['completeTrackedTree']}
+source_names={s.decode() for s in git('ls-tree','-rz','--name-only','4ec492f07d261164283a939c65b5e835c30e561e').split(b'\0') if s}
+restored=sorted(old.keys()-source_names)
+results=[]
+def check(name,ok,detail=None): results.append(dict(check=name,passed=bool(ok),detail=detail))
+check('all866-retained-in1028',old.keys()<=cur.keys())
+check('exact11-absent4ec-restored-original-blob',len(restored)==11 and all(p.startswith('docs/reviews/T03/') and all(cur[p][k]==old[p][k] for k in ('mode','type','bytes','gitBlobOID')) for p in restored),restored)
+prd=data('docs/prd/PRD-本体学习与落地Agent工作台.md')
+m0=data('docs/iterations/I01/inputs/m0-review-and-update-plan-2026-10-19.md')
+check('fullPRD1255bytesSHA-M0sixsections207',len(prd)==93584 and sha(prd)=='7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb' and len(prd.decode().splitlines())==1255 and len(m0.decode().splitlines())==207,{'PRD':dict(bytes=len(prd),lines=len(prd.decode().splitlines()),sha256=sha(prd)),'M0':dict(bytes=len(m0),lines=len(m0.decode().splitlines()),sha256=sha(m0))})
+receipt=js('docs/reviews/T03/mapping-p2-boundaries-20261023/actual-receipt.json')
+expected=js('docs/reviews/T03/mapping-p2-boundaries-20261023/fixed-probe-v2-expected.json')
+new={r['id'] for r in receipt['newBoundaryCases']};allids={r['id'] for r in receipt['allCaseRecords']}
+check('17-old11-new6-and-no-percase-exit-in-fixedreceipt',len(allids)==17 and allids==set(expected['cases']) and len(new)==6 and len(allids-new)==11 and all(r['independentPerCaseProcessExit'] is None for r in receipt['allCaseRecords']),{'all17':sorted(allids),'new6':sorted(new)})
+manager=ROOT/'docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023'
+owner=json.loads((manager/'owner/preparation-readback.json').read_bytes())
+for r in owner['environment']:
+ b=Path(r['setupReceipt']['path']).read_bytes()
+ check(r['role']+'-old-setup-receipt-exact-identity',len(b)==r['setupReceipt']['bytes'] and sha(b)==r['setupReceipt']['sha256'])
+for r in json.loads((P/'dispatch-index.json').read_bytes())['roles']:
+ own=Path(r['tree']);rounddir=own/'build/review-session/round-2'
+ check(r['role']+'-authorized-output-parentdirs-exist',all((rounddir/p).is_dir() for p in ('input','reports','raw','scratch','tmp','metadata')))
+ check(r['role']+'-operator-receipt-intentionally-absent',not (rounddir/'metadata/operator-own-ui-pre-submit.json').exists())
+check('history-shared-not-peer-runtime',json.loads((P/'history/copy-provenance.json').read_bytes())['currentPeerData'] is False)
+output=dict(format='Independent-R2-scope-extra-static/1',allChecksPassed=all(r['passed'] for r in results),checks=results,readingMethod='Exact fixed Git JSON/text bytes and explicitly authorized old setup receipt only; identity/navigation not semantic product acceptance',productRun=False)
+(O/'static-scope-extra.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps(output,ensure_ascii=False,indent=2))
+raise SystemExit(0 if output['allChecksPassed'] else 1)

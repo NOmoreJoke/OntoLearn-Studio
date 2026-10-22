@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-p2-boundaries/docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023/independent-preparation-review/static-audit.py.raw", line 96, in <module>
+    check(f'{role}-outer-dispatch-binds-input', request['promptBytes']==len(raw) and request['promptSHA256']==sha(raw) and request['inputManifestBytes']==len(canonical_manifest) and request['inputManifestSHA256']==sha(canonical_manifest))
+KeyError: 'inputManifestBytes'

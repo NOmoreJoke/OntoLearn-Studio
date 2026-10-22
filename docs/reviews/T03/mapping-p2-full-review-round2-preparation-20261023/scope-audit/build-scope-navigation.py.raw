@@ -1,0 +1,181 @@
+"""Static fixed-index reconciliation; no product, setup or test execution."""
+
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+OUT = Path(__file__).resolve().parent
+ROOT = OUT.parents[4]
+PACKET = ROOT / "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023"
+COMPLETED = ROOT / "docs/reviews/T03/mapping-p2-designated-completed-20261023"
+HEAD = "c1e44f81723f9c616f669f56481d1b1ada7e57f2"
+
+
+def ident(path):
+    raw = path.read_bytes()
+    return {"path": str(path.relative_to(ROOT)), "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def save(name, value):
+    (OUT / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+
+def eof_task(record, old_status, note, report_line=None):
+    # Exact Git blob text only, no evaluation/import. Never open any STOP tree.
+    path = record["path"]
+    assert "T03-native-location-N0-build" not in path
+    raw = subprocess.check_output(["git", "show", f"{HEAD}:{path}"], cwd=ROOT)
+    assert len(raw) == record["bytes"]
+    text = raw.decode("utf-8")
+    return {**record, "readFrom": f"{HEAD}:{path}", "requiredStartLine": 1,
+            "requiredLastContentLine": len(text.splitlines()), "requiredReadThrough": "EOF",
+            "priorZStatus": old_status, "note": note, "priorReportLine": report_line,
+            "round2Requirement": "FULL_NEW_SEMANTIC_REVIEW; prior reads do not exempt this path",
+            "staticLineCountOnlyNotSemanticReadClaim": True}
+
+
+def main():
+    old_path = PACKET / "legacy-fixed-package/mapping-S1-fixed-inputs.json"
+    new_path = PACKET / "dispatch-v2/full-candidate-tree.json"
+    freeze_path = PACKET / "complete-scope-freeze.json"
+    old = json.loads(old_path.read_text())
+    new = json.loads(new_path.read_text())
+    freeze = json.loads(freeze_path.read_text())
+    assert new["reviewHead"] == HEAD
+    old_all = {r["path"]: r for r in old["completeTrackedTree"]}
+    current_all = {r["path"]: r for r in new["completeTrackedTree"]}
+    original = {p: r for p, r in old_all.items() if r["kind"] == "engineering"}
+    current = {p: r for p, r in current_all.items() if r["kind"] == "engineering"}
+    frozen173 = {r["path"]: r for r in freeze["originalEngineeringCurrentIdentities"]}
+    assert len(original) == len(frozen173) == 173 and len(current) == 180
+    assert original.keys() == frozen173.keys() and not original.keys() - current.keys()
+    for path, record in frozen173.items():
+        for field in ("mode", "type", "bytes", "gitBlobOID"):
+            assert record[field] == current[path][field]
+    # Match all fixed Git identities, using NUL records for Chinese paths.
+    git_rows = {}
+    for row in subprocess.check_output(["git", "ls-tree", "-rlz", HEAD], cwd=ROOT).split(b"\0"):
+        if row:
+            meta, name = row.split(b"\t", 1)
+            mode, kind, oid, size = meta.decode().split()
+            git_rows[name.decode()] = {"mode": mode, "type": kind, "gitBlobOID": oid, "bytes": int(size)}
+    assert len(git_rows) == 1028 and git_rows.keys() == current_all.keys()
+    for path, record in current_all.items():
+        assert all(record[k] == v for k, v in git_rows[path].items())
+    added = sorted(current.keys() - original.keys())
+    removed = sorted(original.keys() - current.keys())
+    kind_changes = [p for p in old_all.keys() & current_all.keys() if old_all[p]["kind"] != current_all[p]["kind"]]
+    changed = [p for p in original if original[p]["gitBlobOID"] != current[p]["gitBlobOID"]]
+    assert len(added) == 7 and not removed and not kind_changes
+    assert set(changed) == {"packages/engine/src/ontolearn_engine/mapping/probe.py", "packages/engine/tests/test_mapping_entrypoint.py"}
+    mapping = {
+        "schema": "T03-P2-R2-173-TO-180-EXACT-MAPPING/1", "reviewHead": HEAD,
+        "product": "da1795b20c3c0d47ae975fe3371e802092a4b429",
+        "inputs": [ident(p) for p in (old_path, new_path, freeze_path)],
+        "counts": {"originalEngineering": 173, "currentEngineering": 180,
+                   "originalNonDocs": 138, "currentNonDocs": 138,
+                   "originalDocsEngineering": 35, "currentDocsEngineering": 42,
+                   "retainedPaths": 173, "retainedSameOldBlob": 171, "retainedChangedBlob": 2,
+                   "addedPaths": 7, "removedPaths": 0, "reclassifiedPaths": 0},
+        "addedSeven": [current[p] for p in added], "removed": removed, "kindChanges": kind_changes,
+        "allOriginal173Mappings": [{"path": p, "original": original[p], "current": current[p],
+                                     "relation": "CHANGED_BLOB" if p in changed else "SAME_BLOB"}
+                                    for p in sorted(original)],
+        "allCurrent180": [current[p] for p in sorted(current)],
+        "AGENTSOverlay": "Git identity here is the tracked1056B blob; actual15147B/de15 overlay is separate and still protected unstaged.",
+        "policy": "All180 are in new complete review; added7 are real docs tools/config, never an exclusion shortcut."
+    }
+    save("engineering-173-to-180.json", mapping)
+
+    unit_paths = sorted(p for p in current if p.startswith("tests/unit/") and p != "tests/unit/t03-mapping-state.test.ts")
+    e2e_paths = sorted(p for p in current if p.startswith("tests/e2e/"))
+    assert len(unit_paths) == 15 and len(e2e_paths) == 5
+    explicit = {
+        "apps/desktop/src/renderer/src/task-presentation.ts": ("STRUCTURAL", "Z称纯展示映射结构读；完整内容语义仍须从1至EOF", 55),
+        "packages/contracts/v2/schema.json": ("STRUCTURAL_SAMPLED", "Z仅键/枚举/关键defs抽验，非完整载荷语义", 56),
+        "packages/contracts/v2/fixtures.json": ("STRUCTURAL_SAMPLED", "Z仅键/枚举/关键defs抽验，非完整载荷语义", 56),
+        "packages/contracts/v2/binding-regressions.json": ("STRUCTURAL_SAMPLED", "Z仅键/枚举/关键defs抽验，非完整载荷语义", 56),
+        "packages/contracts/v2/frame-fixtures.json": ("STRUCTURAL_SAMPLED", "Z仅键/枚举/关键defs抽验，非完整载荷语义", 56),
+        "scripts/i04_matrix_evidence.py": ("STRUCTURAL", "Z结构级，未完整语义读", 57),
+        "uv.lock": ("IDENTITY_ONLY", "锁字节身份相同不等于完整依赖/锁语义审查", 57),
+        "package-lock.json": ("IDENTITY_ONLY", "锁字节身份相同不等于完整依赖/锁语义审查", 57),
+        "design/prototypes/OntoLearn-Studio-Prototype.pen": ("STRUCTURAL", "结构/身份级；完整结构语义可按实际方式登记，不因设计资产自行删范围", 60),
+    }
+    for path in ("docs/architecture/0001-desktop-framework.md", "docs/architecture/0003-resident-coordinator-and-jobs.md",
+                 "docs/iterations/I01/ADR-0002-storage.md", "docs/iterations/I03/ADR-0003-design.md"):
+        assert path in current_all
+        explicit[path] = ("STRUCTURAL_OR_PRIOR_SCOPE_UNSPECIFIED", "Z称ADR0001/0002/0003/0004未逐字读；按索引实际路径保留，不能猜不存在的ADR0004路径", 74)
+    for name in ("plan.md", "tasks.json", "controller-handoff.md", "review.md"):
+        path = "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/control-snapshots/" + name
+        assert path in current_all
+        explicit[path] = ("STRUCTURAL_REGISTERED", "Z称plan/tasks/controller-handoff/review结构登记；须读固定快照全文，旧STOP路径只作历史来源", 73)
+    path = "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/legacy-fixed-package/coverage-matrix.json"
+    assert path in current_all
+    explicit[path] = ("STRUCTURAL_PRIOR_SCOPE_UNSPECIFIED", "Z称1.1MB历史矩阵结构级并引用既往轮次；本轮完整关系与字段语义须重新覆盖", 67)
+    historical_tools = sorted(p for p in original if p.startswith("docs/") and p != "docs/iterations/T03/verify-packaged-probe.py")
+    assert len(historical_tools) == 34
+    z_navigation = {
+        "schema": "T03-P2-R2-ZCODE-PRIOR-GAPS-NAVIGATION/1",
+        "sourceReport": ident(COMPLETED / "owner/zcode/mapping-P2-zcode-full-report.md"),
+        "reviewHead": HEAD,
+        "uncertainty": "Z原稿第59行声称14 unit，但索引除明确全文t03-mapping-state后有15候选；哪一件另已全文UNKNOWN，不能猜删一项。全部15保留新读任务。",
+        "fifteenUnitCandidates": [eof_task(current[p], "NOT_FULL_OR_UNKNOWN_ONE_OF15", "保留全部15；不将作者14计数当精确名单", 59) for p in unit_paths],
+        "fiveE2E": [eof_task(current[p], "NOT_FULL_REPORTED", "源码静态全文，不运行Electron/测试/native helper", 59) for p in e2e_paths],
+        "otherExplicitPartial": [eof_task(current_all[p], *args) for p, args in explicit.items()],
+        "historicalDocsToolCandidates34": [eof_task(current[p], "PER_PATH_UNKNOWN_IN_UNSPECIFIED_HISTORICAL_GROUP",
+                                                     "Z第61行称约25件历史工具仅登记，但未列精确25；完整旧35扣明确EOF的T03旧verifier后34全部保留，不猜剩余9已读", 61)
+                                             for p in historical_tools],
+        "historicalDocsFullScope848": [{**row, "previousZPerPathReadDepth": "UNKNOWN_FROM_GROUP_REPORT",
+                                         "round2ReadRequirement": "Full allowed content/structured semantics or exact authorized exception; no payload execution/decoding beyond authority"}
+                                        for row in current_all.values() if row["kind"] == "documentation_or_evidence"],
+        "ADR0004ExactPathInIndex": None,
+        "ADR0004Status": "No path bearingADR0004 in fixed1028 index; do not invent a filename or search other WIP trees.",
+        "round2Rule": "This is navigation only. Both new tasks re-read all180 engineering and complete allowed historical/requirements inputs; not only prior gaps."
+    }
+    assert len(z_navigation["historicalDocsFullScope848"]) == 848
+    save("zcode-own-prior-gaps-eof.json", z_navigation)
+
+    ledger_path = COMPLETED / "independent/static-evidence-and-ledger.json"
+    ledger = json.loads(ledger_path.read_text())
+    m_rows = ledger["engineeringNotFullRows"]
+    assert len(m_rows) == 153
+    for row in m_rows:
+        assert row["path"] in current
+        assert row["bytes"] == current[row["path"]]["bytes"]
+        assert row["gitBlobOID"] == current[row["path"]]["gitBlobOID"]
+    minimax = {"schema": "T03-P2-R2-MINIMAX-PRIOR153-NOTFULL/1", "sourceLedger": ident(ledger_path),
+               "sourceReport": ident(COMPLETED / "owner/minimax/mapping-P2-minimax-full-report.md"),
+               "reviewHead": HEAD, "counts": {"METADATA": 144, "PARTIAL": 8, "UNREAD": 1},
+               "rowsOriginalLevelAndNoteVerbatim": m_rows,
+               "originalBlankNotesPreserved": True,
+               "newTaskReadStatus": "PENDING_FULL_NEW_REVIEW_OF_ALL180_ENGINEERING",
+               "warning": "153 is previous gaps navigation, never an exemption for27 previousFULL paths; previous PARTIAL ranges are not new read limits."}
+    save("minimax-own-prior153-notfull.json", minimax)
+
+    md = ["# Round 2 scope 对账与上轮缺读导航", "",
+          "本次仅固定索引/原报告静态文本处理，没有审查产品语义或运行任何setup/产品/测试。两新任务仍须按c1e44/da1795完整工程、新旧历史和全部需求独立审读，不是补缺读后继承旧Pass。", "",
+          "## 173→180真实映射", "",
+          "原173条全部仍为engineering；无删除、无分类变化。138非docs保持138；docs工程35→42。173中171旧blob未变，两处probe/test改blob。新增7项都是真实docs工具/配置，必须纳入，不存在猜测的排除7项。", "",
+          "| 新增路径 | bytes | Git blob |", "| --- | --- | --- |"]
+    md.extend(f"| {r['path']} | {r['bytes']} | `{r['gitBlobOID']}` |" for r in mapping["addedSeven"])
+    md += ["", "全部173逐项old/new与180完整清单见engineering-173-to-180.json。AGENTS tracked1056B仅Git身份，15147B/de15保护overlay另列，不能把两者混称。", "",
+           "## Z自身缺读：15 unit + 5 e2e全部保留", "",
+           z_navigation["uncertainty"], "", "以下只给静态阅读任务，禁止执行测试或native helper；各精确blob/EOF行数在zcode-own-prior-gaps-eof.json。", ""]
+    md += [f"- `{p}` → 1–EOF。" for p in unit_paths + e2e_paths]
+    md += ["", "其他明确partial/身份级（完整到EOF或完整结构语义，不按上轮片段封顶）：", ""]
+    md += [f"- `{p}`：{values[0]}；{values[1]}。" for p, values in explicit.items()]
+    md += ["", "Z称约25个历史docs工具登记但未给名单；旧engineering docs35中仅T03旧verifier明确全文。其余34候选全部逐path列出，哪9另已读仍UNKNOWN，不能猜删；完整允许历史docs848逐path也保留。ADR0004未在固定索引发现对应文件，登记UNKNOWN而非创造文件名。", "",
+           "## M自身153 notFULL", "",
+           "minimax-own-prior153-notfull.json逐path原样保留144 METADATA、8 PARTIAL、1 UNREAD及原note（空note仍空，不补造理由）。此前27 FULL同样须在新任务重新全文语义读；153不是新的完整范围。", "",
+           "## 当前材料分发规则", "",
+           "最新根授权允许把241711封存的两个上一轮completed原报告和29项台账共同作为两新任务的历史输入；覆盖旧combined不发限制。本轮任何新peer意见/进度/raw/metadata仍严禁读取和互传。旧报告的本轮一词按其历史时点解读，不能误当新Round2禁读该已授权历史。", "",
+           "当前只准备输入：未创建task/CUA/Goal、未安装、未执行产品/mock/setup/测试/包/native/库；STOP/private payload没有读取扫描。主会将写full prompts，本scope作者不自审最终提示，应另由独立agent审稿。"]
+    (OUT / "scope-audit.md").write_text("\n".join(md) + "\n")
+    print(json.dumps({"added": added, "173retained": len(original), "180current": len(current),
+                      "zUnit": len(unit_paths), "zE2E": len(e2e_paths), "zOtherPartial": len(explicit),
+                      "zHistoricalToolCandidates": len(historical_tools), "mNotFull": len(m_rows)}, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()

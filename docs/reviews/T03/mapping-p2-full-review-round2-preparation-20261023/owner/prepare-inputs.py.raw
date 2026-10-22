@@ -1,0 +1,159 @@
+"""Static packet creation only: bytes/Git reads and own ignored input copies."""
+
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+
+ROOT = Path.cwd()
+PACKET = ROOT / "docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023"
+REVIEW = "c1e44f81723f9c616f669f56481d1b1ada7e57f2"
+PREVIOUS = "2417110d071a3c62b781e2909bdcb0a62baea2db"
+OLD = "docs/reviews/T03/mapping-p2-designated-completed-20261023/"
+
+
+def dump(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+
+def identify(path):
+    raw = path.read_bytes()
+    return {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+history = PACKET / "history"
+history.mkdir(exist_ok=False)
+sources = {
+    "previous-zcode-full-report.md": OLD + "owner/zcode/mapping-P2-zcode-full-report.md",
+    "previous-minimax-full-report.md": OLD + "owner/minimax/mapping-P2-minimax-full-report.md",
+    "previous-29-findings-and-static-evidence.json": OLD + "independent/static-evidence-and-ledger.json",
+    "previous-independent-intake-review.md": OLD + "independent/review.md",
+    "previous-owner-disposition.md": OLD + "owner-disposition.md",
+    "previous-intake-closure.json": OLD + "closure.json",
+}
+provenance = []
+for name, source in sources.items():
+    raw = subprocess.check_output(["git", "show", PREVIOUS + ":" + source])
+    (history / name).write_bytes(raw)
+    provenance.append({"file": name, "sourceRef": PREVIOUS, "sourcePath": source,
+                       **identify(history / name)})
+dump(history / "copy-provenance.json", {"format": "R2-previous-completed-history/1",
+     "sharedHistoricalInputForBothNewTasks": True, "sources": provenance,
+     "currentPeerData": False, "originalVerdictsUnchanged": True})
+
+scope = PACKET / "scope-audit"
+mapping = json.loads((scope / "engineering-173-to-180.json").read_text())
+z_gaps = json.loads((scope / "zcode-own-prior-gaps-eof.json").read_text())
+m_gaps = json.loads((scope / "minimax-own-prior153-notfull.json").read_text())
+eof_rows = []
+for row in mapping["allCurrent180"]:
+    raw = subprocess.check_output(["git", "show", REVIEW + ":" + row["path"]])
+    if row["path"] == "AGENTS.md":
+        raw = (ROOT / "AGENTS.md").read_bytes()
+    try:
+        raw.decode("utf-8")
+        total = len(raw.splitlines())
+        method = "NEW_FULL_EOF_OR_COMPLETE_STRUCTURED_SEMANTIC_REVIEW"
+    except UnicodeDecodeError:
+        total = None
+        method = "PERMISSION_PRESERVING_BINARY_BOUNDARY; do not decode restricted payloads"
+    eof_rows.append({**row, "effectiveReviewBytes": len(raw),
+                     "effectiveReviewSHA256": hashlib.sha256(raw).hexdigest(),
+                     "requiredStartLine": 1 if total else None,
+                     "requiredLastContentLine": total, "requiredReadThrough": "EOF",
+                     "reviewRequirement": method, "newReadStatus": "NOT_STARTED",
+                     "lineCountIsStaticNavigationOnly": True})
+assert len(eof_rows) == 180
+dump(PACKET / "engineering-eof-tasks.json", {"format": "R2-all180-EOF-navigation/1",
+     "reviewHead": REVIEW, "rows": eof_rows, "semanticReviewActuallyDone": False,
+     "protectedActualAGENTSOverlaySeparatelyIdentified": True})
+index = ROOT / "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/dispatch-v2/full-candidate-tree.json"
+assert identify(index) == {"bytes": 273638,
+       "sha256": "a8afd3637dcc7fb613c95bd3009d20294e815a96b2043ed108a67afdef673eb4"}
+shutil.copyfile(index, PACKET / "full-candidate-tree-c1e44f81.json")
+template = (PACKET / "owner/full-input-template.md.raw").read_text()
+rows_by_path = {row["path"]: row for row in eof_rows}
+dispatch = []
+
+for role, settings in [("zcode", "GLM-5.3 / highest thinking(max) / permission.mode=yolo"),
+                       ("minimax", "M3.1-Flash / xhigh / permissionMode=bypassPermissions")]:
+    tree = ROOT.parent / f"T03-mapping-P2-{role}-review-da1795"
+    round_dir = tree / "build/review-session/round-2"
+    assert not round_dir.exists()
+    own_input = round_dir / "input"
+    own_input.mkdir(parents=True)
+    for name in ["reports", "raw", "scratch", "tmp", "metadata"]:
+        (round_dir / name).mkdir()
+    assert subprocess.check_output(["git", "-C", str(tree), "rev-parse", "HEAD"], text=True).strip() == REVIEW
+    assert subprocess.check_output(["git", "-C", str(tree), "status", "--short"], text=True).splitlines() == [" M AGENTS.md"]
+    assert (tree / ".venv").is_dir() and not (tree / ".venv").is_symlink()
+    assert (tree / "node_modules").is_dir() and not (tree / "node_modules").is_symlink()
+    for directory in [history, scope]:
+        shutil.copytree(directory, own_input / directory.name)
+    tools = own_input / "preparation-tools"
+    tools.mkdir()
+    for name in ["full-input-template.md.raw", "prepare-inputs.py.raw"]:
+        shutil.copyfile(PACKET / "owner" / name, tools / name)
+    for name in ["engineering-eof-tasks.json", "full-candidate-tree-c1e44f81.json"]:
+        shutil.copyfile(PACKET / name, own_input / name)
+    if role == "zcode":
+        nav = [z_gaps["uncertainty"], "\n以下20项逐件从1读至真实EOF（静态行数不是已读）："]
+        for row in z_gaps["fifteenUnitCandidates"] + z_gaps["fiveE2E"]:
+            nav.append(f'- `{row["path"]}`：1–{row["requiredLastContentLine"]}，继续确认EOF。')
+        nav.append("\n其他明确partial/结构/身份级，仍须新完整语义（精确原note见自己的scope JSON）：")
+        for row in z_gaps["otherExplicitPartial"]:
+            nav.append(f'- `{row["path"]}`：{row["priorZStatus"]} → 本轮完整EOF/完整结构语义。')
+        nav.append("\n旧35个docs工程工具除明确全文旧T03 verifier外，另外34候选全部列于自己的scope JSON；不能从“约25未读”猜删9项。ADR0004没有索引对应路径，保持UNKNOWN，不捏路径或搜其他WIP。历史848完整导航保留，引用按正文如实标。")
+    else:
+        nav = ["自己的scope JSON原样保留上轮144 METADATA、8 PARTIAL、1 UNREAD共153工程notFULL；空note不补造。以下153项全从1至EOF/完整结构语义，不按旧片段封顶："]
+        for row in m_gaps["rowsOriginalLevelAndNoteVerbatim"]:
+            total = rows_by_path[row["path"]]["requiredLastContentLine"]
+            nav.append(f'- `{row["path"]}`：旧{row["coverage"]}；1–{total} / EOF（结构数据完整语义，非行数计数）。')
+        nav.append("\nstorage尾、job_store/coordinator/main/registry/CI等旧partial均须完整到EOF，非只读旧范围。此前27 FULL也不是本新轮FULL，全部180重新语义审读。")
+    old_prompt = ROOT / f"docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/dispatch-v2/mapping-P2-{role}-full-prompt.md"
+    old_raw = old_prompt.read_bytes()
+    report_name = f"mapping-P2-{role}-round-2-full-report.md"
+    replacements = {"@@ROLE@@": role, "@@SETTINGS@@": settings, "@@TREE@@": str(tree),
+                    "@@INPUT@@": str(own_input), "@@ROUND@@": str(round_dir),
+                    "@@REPORT_NAME@@": report_name, "@@ROLE_EOF@@": "\n".join(nav),
+                    "@@LEGACY_BYTES@@": str(len(old_raw)),
+                    "@@LEGACY_SHA@@": hashlib.sha256(old_raw).hexdigest()}
+    body = template
+    for key, value in replacements.items():
+        body = body.replace(key, value)
+    assert "@@" not in body
+    full = body.encode() + old_raw
+    prompt_name = f"mapping-P2-{role}-round-2-full-input.md"
+    (PACKET / prompt_name).write_bytes(full)
+    (own_input / prompt_name).write_bytes(full)
+    prepared = {"format": "T03-P2-round2-prepared-request-only/1", "role": role,
+                "status": "PREPARED_NO_ACTUAL_TASK", "reviewHead": REVIEW,
+                "product": "da1795b20c3c0d47ae975fe3371e802092a4b429",
+                "requestedSettings": settings, "sessionId": None, "turnId": None,
+                "actualSettings": None, "accepted": False, "GUILease": None,
+                "tree": str(tree), "input": str(own_input / prompt_name),
+                "report": str(round_dir / "reports" / report_name),
+                "operatorMetadataReadOnly": True, "modelMetadata": str(round_dir / "metadata/model-observation.json"),
+                "newTaskCreated": False, "newInstallOrProductValidation": False,
+                "environment": "Reuse exact own locked entity directories; no new fresh install claim"}
+    dump(own_input / "prepared-request-only.json", prepared)
+    members = []
+    for path in sorted(own_input.rglob("*")):
+        if path.is_file():
+            members.append({"path": str(path.relative_to(own_input)), **identify(path)})
+    manifest = {"format": "T03-P2-round2-own-input-manifest/1", "role": role,
+                "reviewHead": REVIEW, "selfExcluded": True, "files": members,
+                "priorOwnPromptAppendix": {"offset": len(body.encode()), **identify(old_prompt)},
+                "newTaskActualIdentity": None, "previousRoundBothReportsAreAuthorizedCommonHistory": True}
+    dump(own_input / "input-manifest.json", manifest)
+    dump(PACKET / f"{role}-input-manifest.json", manifest)
+    dispatch.append({**prepared, "promptBytes": len(full), "promptSHA256": hashlib.sha256(full).hexdigest(),
+                     "inputManifest": str(own_input / "input-manifest.json"),
+                     "inputManifestIdentity": identify(own_input / "input-manifest.json"),
+                     "preparedInputMemberCount": len(members)})
+dump(PACKET / "dispatch-index.json", {"format": "T03-P2-round2-preparation-only/1",
+     "reviewHead": REVIEW, "actualTasksCreated": 0, "GUIUsed": False,
+     "productExecuted": False, "environmentInstalled": False, "roles": dispatch})
+print(json.dumps([{key: row[key] for key in ["role", "promptBytes", "promptSHA256",
+                       "preparedInputMemberCount"]} for row in dispatch], ensure_ascii=False))

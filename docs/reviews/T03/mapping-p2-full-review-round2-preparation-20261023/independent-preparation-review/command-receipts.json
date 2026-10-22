@@ -1,0 +1,38 @@
+{
+  "format": "independent-static-command-receipts/1",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023/independent-preparation-review/static-audit.py.raw"
+      ],
+      "exitCode": 1,
+      "stdout": "static-audit.stdout.log",
+      "stderr": "static-audit.stderr.log",
+      "failure": "reviewer script wrong JSON key; original retained; no product execution"
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023/independent-preparation-review/static-audit-v2.py.raw"
+      ],
+      "exitCode": 0,
+      "stdout": "static-audit-v2.stdout.log",
+      "stderr": "static-audit-v2.stderr.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "docs/reviews/T03/mapping-p2-full-review-round2-preparation-20261023/independent-preparation-review/static-scope-extra.py.raw"
+      ],
+      "exitCode": 0,
+      "stdout": "static-scope-extra.stdout.log",
+      "stderr": "static-scope-extra.stderr.log"
+    }
+  ],
+  "timing": "No exact start/end wallclock receipt claimed; actual exits and captured streams only",
+  "candidateRun": false
+}
