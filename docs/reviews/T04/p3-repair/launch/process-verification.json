@@ -1,0 +1,73 @@
+{
+  "reasonForFullCheck": "A process-only reviewer command receipt helper was added after product507; AGENTS requires check for code. No product/runtime/test/fixture acceptance change.",
+  "fullCheck": {
+    "exitCode": 0,
+    "typescriptFiles": 18,
+    "typescriptPassed": 719,
+    "pythonPassed": 1167,
+    "ruffFiles": 195
+  },
+  "commands": [
+    {
+      "label": "review-helper-lint",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "check",
+        "docs/reviews/T04/p3-repair/launch/run-review-command.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:55:29.519191+00:00",
+      "finishedAt": "2026-10-22T16:55:29.667723+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/review-helper-lint.log",
+      "rawBytes": 19,
+      "rawSHA256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "label": "launch-package-format",
+      "argv": [
+        "npx",
+        "prettier",
+        "--write",
+        "--ignore-path",
+        "/dev/null",
+        "docs/reviews/T04/p3-repair/launch/product-manifest.json",
+        "docs/reviews/T04/p3-repair/launch/historical-files.json",
+        "docs/reviews/T04/p3-repair/launch/t09-provenance-files.json",
+        "docs/reviews/T04/p3-repair/launch/policy-sources.json",
+        "docs/reviews/T04/p3-repair/launch/setup-zcode.json",
+        "docs/reviews/T04/p3-repair/launch/setup-minimax.json",
+        "docs/reviews/T04/p3-repair/launch/full-zcode-input.md",
+        "docs/reviews/T04/p3-repair/launch/full-minimax-input.md",
+        "docs/reviews/T04/p3-repair/post-freeze-review.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:55:29.714538+00:00",
+      "finishedAt": "2026-10-22T16:55:30.239272+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/launch-package-format.log",
+      "rawBytes": 588,
+      "rawSHA256": "3706b17a03593211a226647d7a8e9b7dcee0ea04133ddc3b01a9b756949de77a"
+    },
+    {
+      "label": "launch-helper-full-check",
+      "argv": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:55:30.276261+00:00",
+      "finishedAt": "2026-10-22T16:56:32.323266+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/launch-helper-full-check.log",
+      "rawBytes": 5376,
+      "rawSHA256": "666ab16180d3e1dd7c5379190b691db7c90fb7e8f860040d77b705cba912f3da"
+    }
+  ],
+  "rawArchive": {
+    "path": "docs/reviews/T04/p3-repair/launch/process-check-raw.tar.gz",
+    "bytes": 2410,
+    "sha256": "21aee689e698320fca787e009d7f2dd4e294794b7d06884315c07d28a4296609"
+  },
+  "helperFirstLint": "The initial direct ruff check fixed import order and reported E501; subsequent ruff format resolved wrapping and captured review-helper-lint returned0. This was process helper lint, not product regression; original tool output remains in owner chat."
+}
