@@ -1,0 +1,193 @@
+{
+  "status": "design_only_not_permission_to_create_or_push_branch",
+  "reviewBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "reviewCandidate": "66cc15200611d592d3da2877961f9e079eb05277",
+  "sourcePrivateProcessHEAD": "9eb3034b7f1425f5d7d6f2bf83ec9f0b46e79185",
+  "approvedPublicBase": null,
+  "publicHEAD": null,
+  "controllerSourceThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "controllerInstruction": "Keep original225/review candidate fixed; plan only in a new T10 process prefix; create clean public branch only after controller dependency/dualPass/CI gate confirmation",
+  "gateOrder": [
+    "Collect both real formal terminals and complete independent round2 reports without cross-feeding",
+    "Evaluate all findings; preserve unresolved/deferred states and original failures; obtain required independent Pass on exact candidate",
+    "Controller explicitly confirms final dependency/parent gates, both independent Pass, CI creation/push admission gates and actual approved develop/base plus creation window. Preserve the controller CI gate as required; do not infer a waiver or claim future publicHEAD CI already exists.",
+    "If approved develop differs from reviewBase, or any product/config/dependency/runtime-reviewed input changes: new candidate, necessary validation and both fresh complete independent reviews; no projection exemption",
+    "After explicit authorization only: original owner creates clean branch from approved develop; never merge/cherry-pick private evidence commits or transfer their ancestor chain",
+    "Copy exactly 18 mapped reviewed implementation/test/tool files including original Git modes; inherit unchanged baseline/context; do not rewrite executable tooling as documentation",
+    "Build only individually allowlisted public docs/evidence; preserve complete substantive reports and all findings; record every redaction, field extraction and omitted private source",
+    "Validate actual base/candidate/publicHEAD blob and byte equivalence and exact allowed path delta; no changed implementation/config/dependency/base may pass as documentation projection",
+    "Verify newly introduced ancestry and reachable new blobs contain no private raw/context/credential/business data; no recursive directory copy or all-source tar upload",
+    "Only after explicit controller creation/push admission gates, exact identity/privacy checks and required local validation: authorized owner pushes the clean public branch and creates the normal PR. No merge is authorized by this step.",
+    "Trigger and verify real remote CI for the exact new publicHEAD and complete required platform/remaining acceptance gates. Record actual PR, CI run IDs, commit identities and platform evidence; old/local check results are not this publicHEAD remote CI.",
+    "Normal merge only after all original merge gates and exact publicHEAD CI/platform approvals; then verify remote branch/merge identities. Goal remains incomplete until all original required work is achieved."
+  ],
+  "identityRules": {
+    "reviewedFiles": "For all18 exact same path,Git mode,Git blob,SHA256 and bytes at publicHEAD as candidate. No text normalization or cherry-pick conflict resolution may change them.",
+    "unchangedContext": "All6 exact base/candidate/public identity. Also compare all inherited non-projection tracked inputs, not only6: no hidden config/dependency/base drift.",
+    "exactPublicDelta": "18 reviewed additions plus a finalized explicit public-document path allowlist. No source removals, build/lock/config/AGENTS changes, new executable files or additional runtime inputs. Prior private evidence docs are not implicitly copied.",
+    "publicAncestry": "Approved develop is the sole delivery starting ancestry. Private candidate/process commits remain source references only and must not be reachable as newly introduced ancestors. A copied blob identity does not require importing its private commit ancestry.",
+    "documentationChanges": "Record every selected/derived/new public doc original SHA and public SHA, field/range mapping/redaction, restricted reference and unchanged substantive findings; privacy projection is not an implementation approval."
+  },
+  "settingsAllowedFields": [
+    "reviewCandidate",
+    "reviewBase",
+    "sessionId",
+    "turnId",
+    "requestId",
+    "provider",
+    "model",
+    "effortOrThinkingLevel",
+    "actualPermissionMode",
+    "permissionEvidenceKind",
+    "workspaceAlias",
+    "actualTimestamp",
+    "appVersion",
+    "sourceReference",
+    "sourceSHA256"
+  ],
+  "terminalAllowedFields": [
+    "sessionId",
+    "turnId",
+    "actualTerminalState",
+    "actualStopReason",
+    "actualTerminalTimestamp",
+    "finalReportPath",
+    "finalReportSHA256",
+    "finalReportByteLength",
+    "reviewCandidate",
+    "sourceSnapshotReference",
+    "sourceSnapshotSHA256"
+  ],
+  "forbiddenPublicMaterial": [
+    "complete application system or skills context",
+    "assistant thinking/reasoning stream",
+    "reminder or unrelated policy context",
+    "request/response headers or tokens/cookies/credentials",
+    "unrelated sessions or live peer opinions",
+    "business files/data or unapproved user content",
+    "uninspected reviewer scratch archives",
+    "private local commit ancestry containing raw context"
+  ],
+  "ownUserLinePlan": [
+    {
+      "role": "zcode",
+      "sourceCommit": "9eb3034b7f1425f5d7d6f2bf83ec9f0b46e79185",
+      "sourcePath": "docs/reviews/T10/round-2-dispatch/zcode-accepted-attachment.txt",
+      "fullPromptSHA256": "a612c2e88c0f5da41d0dd2860215ec95d83d3756e9cf94a7e21e301eb789f830",
+      "fullPromptLineCount": 667,
+      "publicProposedRanges": [
+        {
+          "firstLine": 1,
+          "lastLine": 28,
+          "lineCount": 28,
+          "normalizedLFExcerptSHA256": "05cc904f55f3b8309f97cd4252ef21d014f1ddc976b6d38822449323f26e70a2"
+        },
+        {
+          "firstLine": 59,
+          "lastLine": 88,
+          "lineCount": 30,
+          "normalizedLFExcerptSHA256": "9faacc6a4b70fb68d9954cf3ff61724493ef0491fa73d37a4391b4e51cb96942"
+        },
+        {
+          "firstLine": 95,
+          "lastLine": 145,
+          "lineCount": 51,
+          "normalizedLFExcerptSHA256": "18a3ede7c7cebefb6d21693b8cf60b31b45d590a3b1437793638435281269d29"
+        },
+        {
+          "firstLine": 147,
+          "lastLine": 176,
+          "lineCount": 30,
+          "normalizedLFExcerptSHA256": "b15948a7d3ee1ec475755d057bb353ac86c8a3b176f4641b5cf99af1a8aaa360"
+        }
+      ],
+      "publicProposedLineCount": 139,
+      "omittedRanges": [
+        [
+          29,
+          58
+        ],
+        [
+          89,
+          94
+        ],
+        [
+          146,
+          146
+        ],
+        [
+          177,
+          667
+        ]
+      ],
+      "omittedContentPolicy": "Index only: historical reports are separately selected as full final reports; unrelated operating-policy copies are not duplicated in public user lines. Preserve original privately. No app system/skills/thinking/reminder/header extraction.",
+      "publicLineContentsCopiedNow": false
+    },
+    {
+      "role": "minimax",
+      "sourceCommit": "9eb3034b7f1425f5d7d6f2bf83ec9f0b46e79185",
+      "sourcePath": "docs/reviews/T10/round-2-dispatch/minimax-accepted-attachment.txt",
+      "fullPromptSHA256": "a503367fc7b686c28bf35f4a314dbd0ae116cfa7a1409f523fb9e78a29795941",
+      "fullPromptLineCount": 667,
+      "publicProposedRanges": [
+        {
+          "firstLine": 1,
+          "lastLine": 28,
+          "lineCount": 28,
+          "normalizedLFExcerptSHA256": "6710e17379b63824ae6be75d133c8148796ea5ef0f120e1ebdbb462ef8ff6acd"
+        },
+        {
+          "firstLine": 59,
+          "lastLine": 88,
+          "lineCount": 30,
+          "normalizedLFExcerptSHA256": "9faacc6a4b70fb68d9954cf3ff61724493ef0491fa73d37a4391b4e51cb96942"
+        },
+        {
+          "firstLine": 95,
+          "lastLine": 145,
+          "lineCount": 51,
+          "normalizedLFExcerptSHA256": "18a3ede7c7cebefb6d21693b8cf60b31b45d590a3b1437793638435281269d29"
+        },
+        {
+          "firstLine": 147,
+          "lastLine": 176,
+          "lineCount": 30,
+          "normalizedLFExcerptSHA256": "b15948a7d3ee1ec475755d057bb353ac86c8a3b176f4641b5cf99af1a8aaa360"
+        }
+      ],
+      "publicProposedLineCount": 139,
+      "omittedRanges": [
+        [
+          29,
+          58
+        ],
+        [
+          89,
+          94
+        ],
+        [
+          146,
+          146
+        ],
+        [
+          177,
+          667
+        ]
+      ],
+      "omittedContentPolicy": "Index only: historical reports are separately selected as full final reports; unrelated operating-policy copies are not duplicated in public user lines. Preserve original privately. No app system/skills/thinking/reminder/header extraction.",
+      "publicLineContentsCopiedNow": false
+    }
+  ],
+  "ownUserLineCoverageClaim": "Full667 acceptance remains a bounded historical verified fact; public proposed own-user-line excerpts contain139 lines only, not a claim that public payload includes all667 lines. Exact original numbers and slice hashes retained; no content rewritten here.",
+  "metadataBoundary": "Additional .mimosa/hook metadata remains path/lstat only; no content/hash inspection, no peer inference or deletion for green verification.",
+  "currentActions": {
+    "publicBranchCreated": false,
+    "publicPayloadFilesCreated": false,
+    "pushPerformed": false,
+    "productTestsRunForDesign": false,
+    "reviewTasksRestarted": false,
+    "fixed225Modified": false,
+    "goalStatusChanged": false
+  },
+  "ciGateInterpretation": "The controller must explicitly confirm the applicable CI admission gate before branch creation/push; this design neither weakens it nor declares it passed. CI tied to the future publicHEAD cannot be claimed before that HEAD exists and remote execution has occurred, and remains mandatory before merge."
+}
