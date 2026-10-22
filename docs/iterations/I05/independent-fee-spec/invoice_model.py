@@ -158,6 +158,117 @@ def cost(event: dict) -> tuple[dict, tuple[int, int] | None]:
     raise ValueError('unknown event kind')
 
 
+def _holds(event: dict) -> list[tuple[str, int, int, bool]]:
+    """All retention allocated by an event, including temporary BLOCK live."""
+    kind = event['kind']
+    if kind == 'hold':
+        return [(event['handle'], nat(event['objects']), nat(event['scalar']), False)]
+    if kind == 'finalize':
+        return [('receipt', nat(event['fields'])+1, nat(event['bytes']), False)]
+    if kind == 'block':
+        result = []
+        if 'live' in event:
+            live = event['live']
+            if type(live) is not dict or set(live) != {'objects', 'scalar'}:
+                raise ValueError('BLOCK live requires exact objects/scalar')
+            result.append(('@block:'+event['id'], nat(live['objects']), nat(live['scalar']), True))
+        if 'retained' in event:
+            retained = event['retained']
+            if type(retained) is not dict or set(retained) != {'handle','objects','scalar'}:
+                raise ValueError('BLOCK retained requires handle/objects/scalar')
+            result.append((retained['handle'], nat(retained['objects']), nat(retained['scalar']), False))
+        return result
+    return []
+
+
+def _program(events: list[dict], caps: dict) -> list[tuple]:
+    """Static mathematical-program proof, before any ledger opening/mutation.
+
+    No business data or product logic is interpreted. Insufficient cleanup bounds
+    are invalid mathematical programs, not runtime resource refusals.
+    """
+    if type(events) is not list or not events or type(caps) is not dict:
+        raise ValueError('exact finite event list/caps required')
+    for domain, value in caps.items():
+        if domain not in DOMAIN_ORDER:
+            raise ValueError('unknown cap domain')
+        nat(value)
+    fields = {
+        'item': ({'n'}, {'category'}),
+        'input': ({'n'}, set()), 'output': ({'n'}, set()),
+        'scan': ({'n'}, set()), 'copy': ({'n'}, set()),
+        'hash': ({'n'}, set()), 'mhash': ({'n'}, set()),
+        'add': ({'a','b'}, set()), 'sub': ({'a','b'}, set()),
+        'cmp': ({'a','b'}, set()), 'mul': ({'a','b'}, set()),
+        'divstep': ({'a','b'}, set()), 'shift': ({'a','out_bound_bits'}, set()),
+        'hold': ({'handle','objects','scalar'}, set()),
+        'finalize': ({'handles','slots','fields','bytes','domain_bytes'}, set()),
+        'block': ({'proof','charges'}, {'live','retained'}),
+        'release': ({'handle'}, set()), 'error': ({'reason'}, set()), 'finish': (set(),set()),
+    }
+    priced, active, ever, ids = [], set(), set(), set()
+    final_seen, limits, handles_seen, slots_seen = False, None, 0, 0
+    for ordinal, event in enumerate(events):
+        if type(event) is not dict or not {'id','kind'}.issubset(event):
+            raise ValueError('invalid exact event shape')
+        kind, label = event['kind'], event['id']
+        if kind not in fields or type(label) is not str or not label or label in ids:
+            raise ValueError('unknown event kind/invalid or duplicate event ID')
+        ids.add(label)
+        required, optional = fields[kind]
+        if not ({'id','kind'} | required) <= set(event) <= ({'id','kind'} | required | optional):
+            raise ValueError('unknown/missing event field')
+        if kind in ('finish','error') and ordinal != len(events)-1:
+            raise ValueError('terminal must be the last event; no success prefix')
+        if not final_seen and kind not in ('hold','finalize'):
+            raise ValueError('data event before finalization prepayment')
+        if kind == 'hold' and not final_seen and event['handle'] != 'control':
+            raise ValueError('only control bootstrap may precede finalization')
+        if kind == 'hold' and final_seen and event['handle'] == 'control':
+            raise ValueError('control bootstrap must precede finalization')
+        if kind == 'finalize':
+            if final_seen:
+                raise ValueError('duplicate finalization reservation')
+            limits = (nat(event['handles']), nat(event['slots']))
+            final_seen = True
+        if kind == 'release':
+            handle = event['handle']
+            if handle in ('control','receipt'):
+                raise ValueError('control/receipt retained until terminal cleanup')
+            if type(handle) is not str or handle not in active:
+                raise ValueError('unknown/released handle')
+            active.remove(handle)
+        if kind == 'error' and (type(event['reason']) is not str or not event['reason']):
+            raise ValueError('error requires bounded mathematical reason')
+        charges, _ = cost(event)
+        if any(domain not in caps for domain in charges):
+            raise ValueError('missing cost cap; not zero')
+        holds = _holds(event)
+        if holds and not {'objects','scalar'} <= set(caps):
+            raise ValueError('missing live caps; not zero')
+        for handle, objects, scalar, temporary in holds:
+            if type(handle) is not str or not handle or handle in ever:
+                raise ValueError('invalid or reused lifetime handle')
+            if kind not in ('hold','finalize') and handle in ('control','receipt'):
+                raise ValueError('BLOCK cannot alias control/receipt')
+            if kind == 'hold' and (handle == 'receipt' or handle.startswith('@')):
+                raise ValueError('reserved lifetime handle')
+            if handle not in ('control','receipt'):
+                # Proof BEFORE active/ever/ledger held/live/peak change.
+                if not final_seen or handles_seen+1 > limits[0] or slots_seen+objects > limits[1]:
+                    raise ValueError('finalization proof insufficient; incomplete model')
+                handles_seen += 1
+                slots_seen += objects
+            ever.add(handle)
+            active.add(handle)
+            if temporary:
+                active.remove(handle)
+        priced.append((event, charges, holds))
+    if not final_seen or events[-1]['kind'] not in ('finish','error'):
+        raise ValueError('event program has no complete finalization/terminal')
+    return priced
+
+
 @dataclass
 class Ledger:
     caps: dict
@@ -171,78 +282,75 @@ class Ledger:
     holds_seen: int = 0
     slots_seen: int = 0
 
+    def _cleanup(self, success: bool) -> None:
+        # The only place where control/receipt can leave the operation owner.
+        keep = {'receipt':self.held['receipt']} if success else {}
+        self.held = keep
+        self.live = {k:sum(v[j] for v in keep.values())
+                     for j,k in enumerate(('objects','scalar'))}
+
     def run(self, events: list[dict]) -> dict:
         if self.state != 'new':
             raise ValueError('ledger reused; terminal ledger cannot reopen')
-        for k, v in self.caps.items():
-            if k not in DOMAIN_ORDER:
-                raise ValueError('unknown cap domain')
-            nat(v)
-        self.used = {k: 0 for k in self.caps if k not in ('objects', 'scalar')}
+        priced = _program(events, self.caps)  # Invalid proof: remains new, no charged/live mutation.
+        self.used = {k:0 for k in self.caps if k not in ('objects','scalar')}
         self.state = 'running'
-        for ordinal, e in enumerate(events):
-            kind = e['kind']
-            if kind == 'finalize' and self.finalized:
-                raise ValueError('duplicate finalization reservation')
-            if not self.finalized and kind not in ('finalize', 'hold'):
-                raise ValueError('data event before finalization prepayment')
-            charges, hold = cost(e)
-            if kind == 'hold' and not self.finalized and e.get('handle') != 'control':
-                raise ValueError('only control bootstrap may precede finalization')
-            if hold:
-                if any(k not in self.caps for k in ('objects', 'scalar')):
-                    raise ValueError('missing live caps; not zero')
-                handle = 'receipt' if kind == 'finalize' else e['handle']
-                if handle in self.held:
-                    raise ValueError('duplicate live handle')
-            attempted = dict(charges)
-            if hold:
-                attempted.update({k: self.live[k]+v for k, v in zip(('objects', 'scalar'), hold)})
-            for domain in DOMAIN_ORDER:
-                if domain not in attempted:
-                    continue
-                if domain not in self.caps:
-                    raise ValueError('missing cost cap; not zero')
-                need = attempted[domain] if domain in self.live else self.used[domain]+attempted[domain]
-                if need > self.caps[domain]:
-                    self.state = 'failed'
-                    self.held.clear()
-                    self.live = {'objects': 0, 'scalar': 0}
-                    return self.result(e['id'], domain, ordinal, attempted)
-            for k, v in charges.items():
-                self.used[k] += v
-            if hold:
-                self.held[handle] = hold
-                for k, v in zip(('objects', 'scalar'), hold):
-                    self.live[k] += v
-                    self.peak[k] = max(self.peak[k], self.live[k])
-            if kind == 'finalize':
-                self.finalized = True
-                self.limits = (e['handles'], e['slots'])
-            if kind == 'hold' and self.finalized:
-                self.holds_seen += 1
-                self.slots_seen += e['objects']
-                if self.holds_seen > self.limits[0] or self.slots_seen > self.limits[1]:
-                    raise ValueError('finalization proof insufficient; incomplete model')
-            if kind == 'release':
-                if e['handle'] not in self.held or e['handle'] == 'receipt':
-                    raise ValueError('unknown/released/receipt handle')
-                for k, v in zip(('objects', 'scalar'), self.held.pop(e['handle'])):
-                    self.live[k] -= v
-            if kind in ('error', 'finish'):
-                self.state = 'failed' if kind == 'error' else 'completed'
-                keep = {} if kind == 'error' else {'receipt': self.held['receipt']}
-                self.held = keep
-                self.live = {k: sum(v[j] for v in keep.values())
-                             for j, k in enumerate(('objects', 'scalar'))}
-                return self.result(e['id'] if kind == 'error' else None,
-                                   e.get('reason') if kind == 'error' else None, ordinal, {})
-        raise ValueError('event program has no terminal; unknown not success')
+        try:
+            for ordinal, (event, charges, holds) in enumerate(priced):
+                kind = event['kind']
+                attempted = dict(charges)
+                if holds:
+                    attempted.update({k:self.live[k]+sum(v[j+1] for v in holds)
+                                      for j,k in enumerate(('objects','scalar'))})
+                # Whole cumulative+temporary+retained vector: all pass, then all commit.
+                for domain in DOMAIN_ORDER:
+                    if domain not in attempted:
+                        continue
+                    need = attempted[domain] if domain in self.live else self.used[domain]+attempted[domain]
+                    if need > self.caps[domain]:
+                        self.state = 'failed'
+                        self._cleanup(False)
+                        return self.result(event['id'], domain, ordinal, attempted)
+                for domain, amount in charges.items():
+                    self.used[domain] += amount
+                for handle, objects, scalar, temporary in holds:
+                    self.held[handle] = (objects,scalar)
+                    if handle not in ('control','receipt'):
+                        self.holds_seen += 1
+                        self.slots_seen += objects
+                    self.live['objects'] += objects
+                    self.live['scalar'] += scalar
+                for domain in self.live:
+                    self.peak[domain] = max(self.peak[domain],self.live[domain])
+                if kind == 'finalize':
+                    self.finalized = True
+                    self.limits = (event['handles'],event['slots'])
+                for handle, objects, scalar, temporary in holds:
+                    if temporary:
+                        del self.held[handle]
+                        self.live['objects'] -= objects
+                        self.live['scalar'] -= scalar
+                if kind == 'release':
+                    objects, scalar = self.held.pop(event['handle'])
+                    self.live['objects'] -= objects
+                    self.live['scalar'] -= scalar
+                    # Cumulative handles/slots and all paid domains never return.
+                if kind in ('error','finish'):
+                    self.state = 'failed' if kind == 'error' else 'completed'
+                    self._cleanup(kind == 'finish')
+                    return self.result(event['id'] if kind == 'error' else None,
+                                       event.get('reason') if kind == 'error' else None,ordinal,{})
+        except Exception:
+            self.state = 'failed'
+            self._cleanup(False)
+            raise
+        raise AssertionError('validated terminal unreachable')
 
     def result(self, first, domain, ordinal, attempted):
-        return {'state': self.state, 'used': dict(self.used), 'live': dict(self.live),
-                'peak': dict(self.peak), 'first': first, 'domain': domain,
-                'ordinal': ordinal, 'attempted': attempted}
+        return {'state':self.state,'used':dict(self.used),'live':dict(self.live),
+                'peak':dict(self.peak),'first':first,'domain':domain,
+                'ordinal':ordinal,'attempted':attempted,
+                'newHandles':self.holds_seen,'newSlots':self.slots_seen}
 
 
 def proposal_digest(preimage: bytes) -> str:

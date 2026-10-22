@@ -1,7 +1,9 @@
-# 独立收费规范候选入口
+# 独立收费规范 R2 候选入口
 
-先读[规范及现行/提案边界](specification.md)，再读[五operation逐动作delta](operation-schedule.md)、[逐ID表](per-id.md)和[完整手算账](hand-examples.md)。可计算载体为fee-contract.json、bound-formulas.json、per-id.json；invoice_model.py只做外部纯数学，19个手列向量由test_invoice_model.py的8个methods验证。后继见[handoff](handoff.md)。
+本版回应 R1 的 F1–F3：完整114项新提案收费程序、2282-prefix baseline、独立手算/字节复核、control与累计cleanup/BLOCK修复。**现行invoice/真实issuer/usage仍pending**；新提案金额不证明产品已遵守。
 
-review同名前缀保固定输入manifest、16组精确原行/片段SHA、最终实际命令argv/双流/exit、作者修订和首失败转录。author-v1-input-exposure仅为root保全的not-independent历史，不能作为本新规范依据；manifest只收bytes/hash，不读内容。所有原始固定输入副本未经formatter改写。
+先读[完整R2规范](specification-r2.md)，再读[逐ID表](per-id-r2.md)、[完整手算与首拒](hand-examples-r2.md)、[具体实施delta](handoff-r2.md)。机器入口是[完整114程序配方/分池金额](charge-reference-v2/all114-fee-programs-r2.json)与[114分栏表](per-id-r2.json)；[baseline全prefix](charge-reference-v2/baseline-prefix-r2.json)及合成输入原字节支持完整示范。reference.py只用stdlib做独立数学/编码/收费，不导入产品或导出业务expected。
 
-交付边界：113项完整17L预测+1项canonical默认的条件预测、18格独立整数真值、完整114输入/外部业务expected的独立字段域均可消费；完整现行114收费invoice/真实同次发点权威仍pending。不能由本候选宣称417 oracle/产品/预算运行通过，或把任意RESOURCE_LIMIT当合法预期。
+原specification.md/operation-schedule.md/per-id.json/md/hand-examples.md及artifact-manifest.json是**R1原候选/历史**，保留其不完整与Fail，不能当R2当前金额。R1独立报告/命令/proof、旧作者not-independent原件、首失败与两个窄授权原字节均在review前缀；不得读/复用旧作者草稿。R2清单另用artifact-manifest-r2.json，明确self-exclusion和历史保全范围。
+
+本候选未运行产品、pytest/npm、网络/GUI/DB、真实预算或平台门，也未修改T05受审候选。数学/静态/formatter验证与真实运行/发行证据分开；详细实际命令与exit见review中的R2命令记录。真实审查由root另派fresh reviewer。

@@ -1,0 +1,71 @@
+{
+  "format": "r2-final-pure-math-checks/1",
+  "sourceSha256": "5ce34520e51aff88333fb3a09437929651b4d0f8e8f7c5228a1515fe9005758d",
+  "commands": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/charge-reference-v2/run_reference.py",
+        "--attempt",
+        "baseline-final-04",
+        "--baseline-only"
+      ],
+      "exit": 0,
+      "stdout": "profile-83/baseline:G-base 2282 fits\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/test_invoice_model.py"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "test_dummy_disabled_and_zero_remainder (__main__.IndependentMathTests.test_dummy_disabled_and_zero_remainder) ... ok\ntest_limb_and_explicit_encoding (__main__.IndependentMathTests.test_limb_and_explicit_encoding) ... ok\ntest_literal_hand_invoices (__main__.IndependentMathTests.test_literal_hand_invoices) ... ok\ntest_literal_local_bounds_are_not_invoices (__main__.IndependentMathTests.test_literal_local_bounds_are_not_invoices) ... ok\ntest_pure_import_surface_ast (__main__.IndependentMathTests.test_pure_import_surface_ast) ... ok\ntest_same_ledger_no_retry_and_new_operation_aggregate (__main__.IndependentMathTests.test_same_ledger_no_retry_and_new_operation_aggregate) ... ok\ntest_sorted_allocator_literal_full_three (__main__.IndependentMathTests.test_sorted_allocator_literal_full_three) ... ok\ntest_unknown_not_zero_atomic_vector_and_finalize_gate (__main__.IndependentMathTests.test_unknown_not_zero_atomic_vector_and_finalize_gate) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.008s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/test_retention_r2.py"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "test_block_retained_overlaps_temporary_and_never_aliases_control (__main__.RetentionRegressions.test_block_retained_overlaps_temporary_and_never_aliases_control) ... ok\ntest_block_temporary_live_whole_vector_prepaid (__main__.RetentionRegressions.test_block_temporary_live_whole_vector_prepaid) ... ok\ntest_control_objects_67_68_literal (__main__.RetentionRegressions.test_control_objects_67_68_literal) ... ok\ntest_control_release_and_alias_never_free_bootstrap (__main__.RetentionRegressions.test_control_release_and_alias_never_free_bootstrap) ... ok\ntest_failure_reuse_rejected_with_paid_costs_intact (__main__.RetentionRegressions.test_failure_reuse_rejected_with_paid_costs_intact) ... ok\ntest_h0_s0_and_one_zero_reject_without_any_mutation (__main__.RetentionRegressions.test_h0_s0_and_one_zero_reject_without_any_mutation) ... ok\ntest_last_allowed_handle_and_slot_literal (__main__.RetentionRegressions.test_last_allowed_handle_and_slot_literal) ... ok\ntest_released_handle_and_slots_do_not_return_cleanup_allocation (__main__.RetentionRegressions.test_released_handle_and_slots_do_not_return_cleanup_allocation) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/charge-reference-v2/test_reference.py"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "test_allocator_three_rules_full_literal_remainder_and_dummy (__main__.PureReferenceTests.test_allocator_three_rules_full_literal_remainder_and_dummy) ... ok\ntest_false_does_not_erase_later_operand_type_error (__main__.PureReferenceTests.test_false_does_not_erase_later_operand_type_error) ... ok\ntest_fee_codec_literal_hex_and_shape (__main__.PureReferenceTests.test_fee_codec_literal_hex_and_shape) ... ok\ntest_ieee_independent_exact_ratios_and_ties (__main__.PureReferenceTests.test_ieee_independent_exact_ratios_and_ties) ... ok\ntest_integer_123_hand_13_and_decimal_one_tenth_hand_12 (__main__.PureReferenceTests.test_integer_123_hand_13_and_decimal_one_tenth_hand_12) ... ok\ntest_key_57_and_alias_raw_distinctions (__main__.PureReferenceTests.test_key_57_and_alias_raw_distinctions) ... ok\ntest_limb_bound_precedes_hold_or_work_mutation (__main__.PureReferenceTests.test_limb_bound_precedes_hold_or_work_mutation) ... ok\ntest_q6_calendar_literal_day_second_and_timezone_domains (__main__.PureReferenceTests.test_q6_calendar_literal_day_second_and_timezone_domains) ... ok\ntest_q6_far_exponents_signed_zero_and_strict_integer_zero (__main__.PureReferenceTests.test_q6_far_exponents_signed_zero_and_strict_integer_zero) ... ok\ntest_q6_nine_domain_six_operator_literal_matrix (__main__.PureReferenceTests.test_q6_nine_domain_six_operator_literal_matrix) ... ok\ntest_q6_string_language_and_q2_domains (__main__.PureReferenceTests.test_q6_string_language_and_q2_domains) ... ok\ntest_source_record_uses_content_and_pointer_not_locator_as_source (__main__.PureReferenceTests.test_source_record_uses_content_and_pointer_not_locator_as_source) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 0.080s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/charge-reference-v2/audit_prefixes.py"
+      ],
+      "exit": 0,
+      "stdout": "all2282 baseline prefixes, literal totals, lifetime counters and782-byte receipt: PASS\n",
+      "stderr": ""
+    }
+  ],
+  "AST": "all authored current Python parsed; no imports/product execution for AST check",
+  "exit": 0,
+  "notRun": [
+    "product import/execution",
+    "pytest",
+    "npm check",
+    "network/install/build/native/DB/GUI",
+    "actual budget or issuer",
+    "417 product oracle",
+    "T05 candidate",
+    "push"
+  ]
+}
