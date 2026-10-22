@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration
+configfile: pyproject.toml
+collected 1 item
+
+packages/engine/tests/test_semantic_source_package_probe.py E            [100%]
+
+==================================== ERRORS ====================================
+_ ERROR at setup of test_sealed_input_supplier_is_independent_of_runtime_source_ref _
+packages/engine/tests/test_semantic_source_package_probe.py:317: in sealed_assets
+    inputs, manifest = probe.load_assets()
+                       ^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:646: in load_assets
+    validate_assets(manifest, inputs)
+packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:625: in validate_assets
+    _validate_nested_assets(manifest, inputs)
+packages/engine/src/ontolearn_engine/semantic_source_package_probe.py:1323: in _validate_nested_assets
+    raise ProbeFault("ASSET_VERSION_INVALID")
+E   ontolearn_engine.semantic_source_package_probe.ProbeFault: ASSET_VERSION_INVALID
+=========================== short test summary info ============================
+ERROR packages/engine/tests/test_semantic_source_package_probe.py::test_sealed_input_supplier_is_independent_of_runtime_source_ref
+=============================== 1 error in 0.22s ===============================

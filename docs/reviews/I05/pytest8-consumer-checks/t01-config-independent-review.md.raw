@@ -1,0 +1,62 @@
+# I05 config v2 独立静态审查
+
+结论：本次精确两配置提案未发现阻断应用的已证 P1/P2。四个固定历史 checker 的 format literal 与21个逐路径/规则组合恰好覆盖原141条诊断；三条新增 Prettier 项为批准固定历史文档/生成JSON的根锚literal。活动生成器178条仍未豁免。此结论是配置范围与来源绑定的静态结论，不是141条语义缺陷修复、生成器修复或完整工具链运行通过。
+
+## 依据与操作边界
+
+按主方本轮精确授权，只读审 /tmp/t01-i05-toolchain-config-prereview-20261023-02/ 的 proposed-two-config.patch、README.md、proposal-receipt.json、fixed-assets-proof.json，并依据 manifest读取前后像、库存及v1保存记录。没有读取其他当前独审意见。完整读取对应 I05-pytest8-supplier-integration 树AGENTS及固定历史implementation文档；规则不据路径独自扩大归档分类。
+
+独立读取固定Git对象：配置基线513db0056f312342a6791e2d4c7842f3726581f2，固定历史资产d1fb6d13ead01a10a5406a661d38f46108098663。只运行只读git show→SHA256核对，九项命令均exit0；另以常驻Node文件/字符串/JSON/哈希操作核当前字节、manifest及原诊断日志。未应用补丁、修改树、运行formatter/linter/生成器、导入或执行产品/测试、GUI、DB或网络。仅新增本报告。
+
+## 冻结工件身份与补丁完整性
+
+- proposed-two-config.patch：1680B，SHA256 d5eaecf791bc376d19f6588c12fc94ce032175d453bfc83f8729f2511e56516a。
+- README.md：3366B，8ab71ae8500ff96f1d8e4d7843dc413a4717db9c8db077f2e8be66b71b5cb156。
+- proposal-receipt.json：4417B，ba67120f6cb4a46813b366af628f5247d21fa53921dd5c3e0fa43cf70faa791c。
+- fixed-assets-proof.json：1445B，a3ff01f7f835024b1a3fa6046defd638fd2296984147126badaa53bd2d356c8c。
+- inventory.json：3789B，c022b8ca15eea1f01d38b222a3b89b1c333c52b2ba70db6af393b68ec518e0f1。
+
+manifest列13件全部实际bytes/SHA核同。完整补丁仅pyproject.toml和.prettierignore；在内存从两前像逐行核旧行、上下文和hunk计数，精确重建两候选，无应用操作。combined patch以1137B v1-pyproject.patch原字节为前缀；v2 pyproject候选与v1保持相同身份。
+
+基线Git两配置SHA与before相同：pyproject494B/55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63；.prettierignore442B/82535615400927072d276a731f4c3f1869d882b45d826f3dd569132b04387b4c。候选pyproject1453B/4bb20cf970a09b2948cf1b9d41ad93496b25f5c01a3f2b277426ea75798879c0；候选.prettierignore756B/9b0af2a98f9c134d14722225fd313b32a90cff83eb1373f0581a766d5ae454d0。两候选均逐字保留原文件作为完整前缀，没有改写旧配置。
+
+## Ruff精确范围和旧诊断
+
+新增[tool.ruff.format].exclude恰为四个完整相对文件路径，不是目录、basename、glob或全局排除：
+
+1. docs/reviews/I05/active-source-hygiene/independent-applied-checker.py：B007/B905/E401/E501/E701/E702/I001，7组合，旧63条。
+2. docs/reviews/I05/retained-source-review-triage/independent-triage-r1-applied-check.py：E401/E501/E701/E702/I001/UP022，6组合，旧27条。
+3. docs/reviews/I05/retained-source-review-triage/independent-triage-r1-check.py：E401/E501/E701/E702/F401/I001/UP022，7组合，旧50条。
+4. docs/reviews/I05/source-package-probe-source/static-verify.py：E501，1组合，旧1条。
+
+[tool.ruff.lint.per-file-ignores]对应相同四完整路径，恰21组合；没有E/F/B/UP等宽前缀、额外规则或活动源码路径。原target-version=py312、line-length=100、select=E/F/I/UP/B及所有既有project/uv/pytest字段逐字保留。未改engine pyproject、命令/CI、依赖或锁；未移植T05等列表。
+
+不是只信inventory计数：只读现成 engine-check-01.stdout.raw，200517B/SHA256 b985be46bd29e15c6d400e3333405d6ddae2a0d11feb72a66e740a0905984888；从每个实际诊断header及下一location独立归并，得到四历史文件63+27+50+1=141，逐规则数量均与库存核同。余scripts/generate-i05-source-package-inputs.py为E501174、E7311、E7431、F8411、I0011，合178，总319。原receipt为npm run engine:check、对应树cwd、exit1；不能称该运行通过。静态重数首次对象直接JSON.stringify比较因规则插入顺序不同返回false，改用规则key/value集合比较后全部核同；没有调整原日志、库存或配置凑结果。
+
+生成器60354B/e58dd4efd1c64952b6555b98c65271fc7e82d7b99b198d848d69f5a7c9dcde0b当前仍等库存，且两个配置新增部分均未出现它。178项修复仍归独立source owner，不能被配置方案算作已处理。
+
+B007/B905、F401/UP022不全是排版类规则。此处对固定历史证据发行明确有限豁免，而非修复其语义/证明其当前安全；README和receipt已明确保留这一界线。没有据141项被忽略推导任何产品正确性结论，也没有把未来活动checker自动加入本次授权。
+
+## 三项Prettier literal与固定资产绑定
+
+.prettierignore原442B全部保留，新增一条说明和恰三根锚literal，无星号、目录忽略或.py：
+
+- /docs/iterations/I05/source-package-probe/implementation.md
+- /packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json
+- /packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json
+
+既有docs/reviews等较宽排除为基线原内容，本补丁没有扩展其范围。三条精确literal不会匹配别的目录下同名文件或整个probe_inputs目录；当前授权也不覆盖后续新增资产。
+
+实际current读取与固定d1fb Git SHA独立核同：
+
+- 历史implementation.md：6431B/d25d3d7cfec7ae78a7c8df7adf3510e5c1cd9bd23f09ec4090a68586107421ce。全文是以前源码窗交付记录，固定更早组合、输入身份及当时未运行/包验收边界；不能把该历史“未执行”声明解释为本轮canonical运行状态。
+- 固定inputs.json：8205267B/47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa。
+- 固定manifest.json：21202B/0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a。
+
+不是只读proof自报true：从实际manifest字节解析其顶层字段恰caseSets/counts/format/inputAsset/sources/versions，format=i05-source-package-parity-manifest/1；实际inputAsset恰bytes8205267、sha25647c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa，与直接读取inputs原字节完全相等。未解析/重新生成8MiB输入业务内容，未将字节绑定等同资产语义或运行consumer验证。
+
+四checker的当前bytes/SHA也独立等固定Git：7662B/1ab5d149707750cd78830b5363315e7898b039715afd14d47ba7a3b63063c993；6394B/115f08261b378d9a04c6d0685e7c48ffe49e130637cabaeccaf636edc18c34d4；10538B/90a964345bd829c04e425cf3c3cba42d16cac7cb58f7317d432b0eb729940868；6924B/5aa5112cdf6c5968cf6d3da03ba06c96657e88fb2d89df7a0f60eff8d0f2d119。配置提案没有修改任何历史原件。
+
+## 结论范围
+
+无已证必修P1/P2。主方可按明确隔离配置写面决定后续应用此精确补丁；应用后仍需对应实际配置的工具链检查，静态结论不能替代Ruff/Prettier真实配置解析及运行终态。四checker例外不修产品语义，固定JSON保字节不验证其业务正确性，生成器178项不消失，原engine/fullcheck首败不倒写。本审未替source owner、完整check、指定审查或发布门签通过。

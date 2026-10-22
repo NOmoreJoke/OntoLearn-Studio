@@ -1,0 +1,15 @@
+{
+  "scope": "official primary Python 3.12 documentation and exact CPython v3.12.12 source; read-only design, no monitoring calls",
+  "sources": [
+    {"url": "https://docs.python.org/3.12/library/sys.monitoring.html", "facts": "PY_START, local/global events, callback signature, user tool IDs, DISABLE, explicit free cleanup", "versionNote": "current 3.12 branch renders 3.12.15"},
+    {"url": "https://github.com/python/cpython/blob/v3.12.12/Doc/library/sys.monitoring.rst", "facts": "exact interpreter-version documentation; free_tool_id does not clear events or callbacks; register_callback exchange/audit"},
+    {"url": "https://peps.python.org/pep-0669/#specification", "facts": "monitoring per interpreter; distinct events; no project performance inference"},
+    {"url": "https://docs.python.org/3.12/library/sys.html#sys.setprofile", "facts": "profile is thread-specific, call event and callback error behavior"},
+    {"url": "https://docs.python.org/3.12/library/_thread.html#_thread.get_ident", "facts": "current thread cookie and lifetime reuse"},
+    {"url": "https://github.com/python/cpython/blob/v3.12.12/Python/instrumentation.c#L1699-L1853", "facts": "set-local partial mutation before instrumentation failure; use/free only name; register callback audit before exchange"},
+    {"url": "https://github.com/python/cpython/blob/v3.12.12/Objects/codeobject.c#L1433-L1469", "facts": "public co_code materialization from deoptimized bytes; not a substitute for later loader/fingerprint unit validation"}
+  ],
+  "discardedAsVersionMismatch": ["search result for Python 3.14 free_tool_id clearing behavior"],
+  "negativeSearches": ["initial web find for monitoring_use_tool_id yielded no match; opened exact source section using nearby register_callback location"],
+  "notPerformed": ["monitor API call", "product import", "pyshacl import", "thread creation", "pytest", "collector", "benchmark", "OS profiling", "product or fixed evidence mutation"]
+}

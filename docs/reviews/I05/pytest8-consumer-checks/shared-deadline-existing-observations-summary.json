@@ -1,0 +1,241 @@
+{
+  "inputPath": "build/i05-pytest8/full-pytest-02/semantic-full-v1-diagnostic0/observations.jsonl",
+  "source": "existing instrumented JSONL only; no new run",
+  "notPerformanceBenchmarkOrUninstrumentedTiming": true,
+  "familyGroups": {
+    "profile-83": {
+      "observations": 83,
+      "observationSeconds": 74.87243766384199,
+      "encodedLineBytes": 15944142,
+      "stageAttempts": 2794
+    },
+    "consumer-C-query": {
+      "observations": 2,
+      "observationSeconds": 0.7694186250446364,
+      "encodedLineBytes": 2169,
+      "stageAttempts": 4
+    },
+    "consumer-C-shape": {
+      "observations": 9,
+      "observationSeconds": 0.07663183193653822,
+      "encodedLineBytes": 12177,
+      "stageAttempts": 27
+    },
+    "consumer-C-date": {
+      "observations": 4,
+      "observationSeconds": 0.028623793041333556,
+      "encodedLineBytes": 4856,
+      "stageAttempts": 4
+    },
+    "consumer-C-integer": {
+      "observations": 2,
+      "observationSeconds": 0.011209207936190069,
+      "encodedLineBytes": 2623,
+      "stageAttempts": 2
+    },
+    "utc-date": {
+      "observations": 2,
+      "observationSeconds": 0.014651415986008942,
+      "encodedLineBytes": 2560,
+      "stageAttempts": 2
+    },
+    "turtle": {
+      "observations": 1,
+      "observationSeconds": 0.004770333995111287,
+      "encodedLineBytes": 2381,
+      "stageAttempts": 1
+    },
+    "rdfs": {
+      "observations": 1,
+      "observationSeconds": 0.015546042006462812,
+      "encodedLineBytes": 5053,
+      "stageAttempts": 2
+    },
+    "b1-measurement": {
+      "observations": 2,
+      "observationSeconds": 2.0046051250537857,
+      "encodedLineBytes": 256014,
+      "stageAttempts": 32
+    },
+    "readonly-query": {
+      "observations": 25,
+      "observationSeconds": 10.263027293956839,
+      "encodedLineBytes": 47171,
+      "stageAttempts": 50
+    },
+    "turtle-lexical": {
+      "observations": 17,
+      "observationSeconds": 0.02681899827439338,
+      "encodedLineBytes": 18471,
+      "stageAttempts": 17
+    },
+    "turtle-rejection": {
+      "observations": 9,
+      "observationSeconds": 0.0035649999044835567,
+      "encodedLineBytes": 9550,
+      "stageAttempts": 9
+    },
+    "rdfs-finite": {
+      "observations": 7,
+      "observationSeconds": 0.02254174870904535,
+      "encodedLineBytes": 16678,
+      "stageAttempts": 14
+    },
+    "legacy-rule": {
+      "observations": 4,
+      "observationSeconds": 0.03037370799575001,
+      "encodedLineBytes": 11187,
+      "stageAttempts": 8
+    },
+    "scope": {
+      "observations": 10,
+      "observationSeconds": 1.253161457949318,
+      "encodedLineBytes": 185294,
+      "stageAttempts": 51
+    },
+    "original-query": {
+      "observations": 2,
+      "observationSeconds": 0.6977105409605429,
+      "encodedLineBytes": 3647,
+      "stageAttempts": 4
+    },
+    "original-shape-repair": {
+      "observations": 3,
+      "observationSeconds": 0.035585706937126815,
+      "encodedLineBytes": 6164,
+      "stageAttempts": 9
+    },
+    "transfer-shape-repair": {
+      "observations": 2,
+      "observationSeconds": 0.015401249984279275,
+      "encodedLineBytes": 2699,
+      "stageAttempts": 6
+    },
+    "dag-fullview": {
+      "observations": 19,
+      "observationSeconds": 20.224475123919547,
+      "encodedLineBytes": 14801473,
+      "stageAttempts": 290
+    },
+    "restore-negative": {
+      "observations": 14,
+      "observationSeconds": 8.888374375062995,
+      "encodedLineBytes": 14892456,
+      "stageAttempts": 79
+    }
+  },
+  "topObservedApiTotals": [
+    {
+      "api": "semantic_execution.execute_profile_records",
+      "calls": 82,
+      "elapsedNs": 73973386578
+    },
+    {
+      "api": "semantic.query",
+      "calls": 36,
+      "elapsedNs": 14211651832
+    },
+    {
+      "api": "semantic_profile_restore.restore_profile_result",
+      "calls": 19,
+      "elapsedNs": 13000741958
+    },
+    {
+      "api": "semantic_profile_production.execute_admitted_profile_job",
+      "calls": 14,
+      "elapsedNs": 7282285333
+    },
+    {
+      "api": "semantic_profile_restore.restore_profile_explanation_result",
+      "calls": 27,
+      "elapsedNs": 4888539542
+    },
+    {
+      "api": "semantic_profile_production.execute_profile_explanation",
+      "calls": 19,
+      "elapsedNs": 2036908669
+    },
+    {
+      "api": "semantic_turtle.decode_profile_term",
+      "calls": 2919,
+      "elapsedNs": 639579637
+    },
+    {
+      "api": "semantic_profile_input.prepare_profile_material",
+      "calls": 33,
+      "elapsedNs": 574311169
+    },
+    {
+      "api": "semantic.parse_turtle",
+      "calls": 138,
+      "elapsedNs": 438427293
+    },
+    {
+      "api": "semantic.reason",
+      "calls": 16,
+      "elapsedNs": 201620790
+    },
+    {
+      "api": "semantic.check_shapes",
+      "calls": 21,
+      "elapsedNs": 169745414
+    },
+    {
+      "api": "semantic_scopes.prepare_validation_scope",
+      "calls": 10,
+      "elapsedNs": 106727167
+    }
+  ],
+  "largestObservedLines": [
+    {
+      "id": "restore/explanation/tail-source-tamper",
+      "bytes": 1673258,
+      "stageAttempts": 6
+    },
+    {
+      "id": "restore/explanation/head-occurrence-1023-15",
+      "bytes": 1673003,
+      "stageAttempts": 6
+    },
+    {
+      "id": "restore/explanation/tail-definition-tamper",
+      "bytes": 1672975,
+      "stageAttempts": 6
+    },
+    {
+      "id": "restore/explanation/tail-child-tamper",
+      "bytes": 1672938,
+      "stageAttempts": 6
+    },
+    {
+      "id": "restore/explanation/payload-unknown-key",
+      "bytes": 1672933,
+      "stageAttempts": 6
+    },
+    {
+      "id": "restore/explanation/tail-limits-tamper",
+      "bytes": 1672893,
+      "stageAttempts": 6
+    },
+    {
+      "id": "dag/two-head-occurrences",
+      "bytes": 1586557,
+      "stageAttempts": 5
+    },
+    {
+      "id": "fullview/profile-76",
+      "bytes": 1536314,
+      "stageAttempts": 39
+    },
+    {
+      "id": "dag/raw-aliases",
+      "bytes": 1232300,
+      "stageAttempts": 5
+    },
+    {
+      "id": "restore/explanation/leaf-rename-all",
+      "bytes": 1047434,
+      "stageAttempts": 6
+    }
+  ]
+}

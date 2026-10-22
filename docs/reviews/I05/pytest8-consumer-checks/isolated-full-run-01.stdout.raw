@@ -1,0 +1,24 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration
+configfile: pyproject.toml
+collected 1 item
+
+packages/engine/tests/test_semantic_source_package_probe.py F            [100%]
+
+=================================== FAILURES ===================================
+______ test_full_jsonl_is_complete_inventory_not_self_signed_equivalence _______
+packages/engine/tests/test_semantic_source_package_probe.py:966: in test_full_jsonl_is_complete_inventory_not_self_signed_equivalence
+    assert status == 0, (status, stderr)
+E   AssertionError: (1, b'')
+E   assert 1 == 0
+=============================== warnings summary ===============================
+packages/engine/tests/test_semantic_source_package_probe.py::test_full_jsonl_is_complete_inventory_not_self_signed_equivalence
+  /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.venv/lib/python3.12/site-packages/rdflib/term.py:1715: UserWarning: Serializing weird numerical rdflib.term.Literal('bad', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+    warnings.warn(f"Serializing weird numerical {self!r}")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/build/i05-pytest8/isolated-full-run-01.junit.xml -
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_full_jsonl_is_complete_inventory_not_self_signed_equivalence
+=================== 1 failed, 1 warning in 128.28s (0:02:08) ===================

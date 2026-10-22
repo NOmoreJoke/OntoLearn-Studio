@@ -1,0 +1,414 @@
+{
+  "format": "I05-counter-monitor-implementation/1",
+  "ticketPath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/.private/I05-counter-cooperative-v2-finite-implementation-ticket-20261023.json",
+  "ticketSha256": "58e100ba45a2c8e6cfa56c05e9e6b04853840838e9075809b62a21db6fac97a3",
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+  "baseHEAD": "4bb99d99620811766df38d7e29346e3174f82c8c",
+  "environmentOverlay": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "commands": [
+    {
+      "label": "01-apply-check",
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/cooperative-v2/probe.unapplied.patch",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/cooperative-v2/tests.unapplied.patch"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "environmentOverlay": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "startUTC": "2026-10-22T20:01:12.490816+00:00",
+      "pid": 89350,
+      "exitCode": 0,
+      "endUTC": "2026-10-22T20:01:12.509112+00:00",
+      "elapsedSeconds": 0.01807704207021743,
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/01-apply-check.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/01-apply-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "02-apply",
+      "argv": [
+        "git",
+        "apply",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/cooperative-v2/probe.unapplied.patch",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/cooperative-v2/tests.unapplied.patch"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "environmentOverlay": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "startUTC": "2026-10-22T20:01:12.509614+00:00",
+      "pid": 89365,
+      "exitCode": 0,
+      "endUTC": "2026-10-22T20:01:12.528287+00:00",
+      "elapsedSeconds": 0.01867612497881055,
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/02-apply.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/02-apply.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "03-format",
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.venv/bin/ruff",
+        "format",
+        "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "packages/engine/tests/test_semantic_source_package_probe.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "environmentOverlay": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "startUTC": "2026-10-22T20:01:12.580607+00:00",
+      "pid": 89366,
+      "exitCode": 0,
+      "endUTC": "2026-10-22T20:01:12.619576+00:00",
+      "elapsedSeconds": 0.03898249997291714,
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/03-format.stdout.raw",
+        "bytes": 20,
+        "sha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/03-format.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "04-ruff-check",
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.venv/bin/ruff",
+        "check",
+        "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "packages/engine/tests/test_semantic_source_package_probe.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "environmentOverlay": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "startUTC": "2026-10-22T20:01:12.705350+00:00",
+      "pid": 89367,
+      "exitCode": 0,
+      "endUTC": "2026-10-22T20:01:12.724096+00:00",
+      "elapsedSeconds": 0.018758999998681247,
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/04-ruff-check.stdout.raw",
+        "bytes": 19,
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/04-ruff-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "05-format-check",
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.venv/bin/ruff",
+        "format",
+        "--check",
+        "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "packages/engine/tests/test_semantic_source_package_probe.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "environmentOverlay": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "startUTC": "2026-10-22T20:01:12.724786+00:00",
+      "pid": 89368,
+      "exitCode": 0,
+      "endUTC": "2026-10-22T20:01:12.737494+00:00",
+      "elapsedSeconds": 0.012718167039565742,
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/05-format-check.stdout.raw",
+        "bytes": 26,
+        "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/05-format-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "06-monitor-units",
+      "argv": [
+        ".venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "packages/engine/tests/test_semantic_source_package_probe.py",
+        "--maxfail=1",
+        "-k",
+        "(test_monitor_ or test_call_counter_counts_real_code_identity_and_restores_hook or test_call_counter_existing_hook_fails_without_overwriting_it or test_call_counter_restores_hook_on_real_policy_rejection or test_imported_probe_classes_have_only_canonical_module_identity)",
+        "--basetemp=build/i05-pytest8/monitor-units-01",
+        "--junitxml=build/i05-pytest8/monitor-units-01.junit.xml",
+        "--tb=short"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "environmentOverlay": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "startUTC": "2026-10-22T20:01:12.738160+00:00",
+      "pid": 89371,
+      "exitCode": 0,
+      "endUTC": "2026-10-22T20:01:13.826673+00:00",
+      "elapsedSeconds": 1.0885242921067402,
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/06-monitor-units.stdout.raw",
+        "bytes": 716,
+        "sha256": "153edfd838e33decc74f66b944d06b98bfa808327120f32e0e0145f3b5223ba4"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-consumer-checks/counter-monitoring-implementation-02/06-monitor-units.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "actualPytestRun": true,
+  "status": "finite-command-passed",
+  "interpreter": {
+    "path": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12",
+    "bytes": 49968,
+    "sha256": "322572c8d73b308856d23a07f26afe9d65b9159f8174575e14fb23503a7f734e"
+  },
+  "venvConfig": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.venv/pyvenv.cfg",
+    "bytes": 205,
+    "sha256": "ba7b2b7cd92bb863bc3baad7c423dbd1436ee8f4872fddb5f1db6564d37ff6c4"
+  },
+  "ruff": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.venv/bin/ruff",
+    "bytes": 21671760,
+    "sha256": "1cd36902264ba39d8eada510c026a44236ddb55f67937694d8a22b2708fdc0e0"
+  },
+  "beforeFiles": {
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "bytes": 102749,
+      "sha256": "2996deca33083754132bf5f4eab8d1e273161b3e5fe722a8ee96856fb5cc0d5b",
+      "ASTSha256": "3583a299c9a390b77c036ac45b09197e7c4e43c9a7e89f7fd4e7ab25a1a52e02"
+    },
+    "packages/engine/tests/test_semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/tests/test_semantic_source_package_probe.py",
+      "bytes": 76628,
+      "sha256": "d7947f3e90a7226b28aada7f7b6ba0c09393d25295700da2d8ffa65e353b2f68",
+      "ASTSha256": "69e6fe4088bde6553b364ea7cb0ffa15f8610981f4b8f6949d01b3e00e492f88"
+    }
+  },
+  "protectedBeforeFiles": {
+    "AGENTS.md": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/AGENTS.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    "pyproject.toml": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/pyproject.toml",
+      "bytes": 1527,
+      "sha256": "74763669b19190b980849bee07c53f0c0bc145417ca488a540333803a3ed3d14"
+    },
+    ".prettierignore": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.prettierignore",
+      "bytes": 756,
+      "sha256": "9b0af2a98f9c134d14722225fd313b32a90cff83eb1373f0581a766d5ae454d0"
+    },
+    "uv.lock": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+    },
+    "packages/engine/pyproject.toml": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/pyproject.toml",
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+    },
+    "scripts/build-engine.mjs": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/scripts/build-engine.mjs",
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+    },
+    "packages/engine/entrypoint.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/entrypoint.py",
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+    },
+    "packages/engine/src/ontolearn_engine/semantic.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 66258,
+      "sha256": "d6c5f5c38aec310de726f73568e1086bf4de95117cbdf664ae1384fcd6808392"
+    },
+    "packages/engine/src/ontolearn_engine/semantic_build_provenance.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 46602,
+      "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c"
+    },
+    "packages/engine/tests/test_semantic_build_provenance.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 44315,
+      "sha256": "0def6d7da0bdc2353c6f524fe8d86d40ab18936b58d58d1cc06bae713f7a3ec8"
+    },
+    "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json",
+      "bytes": 36587,
+      "sha256": "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04"
+    },
+    "scripts/generate-i05-source-package-inputs.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/scripts/generate-i05-source-package-inputs.py",
+      "bytes": 75633,
+      "sha256": "c51a1a7f3085e79958022deda95d8a08792f3a95f7c4f1fb171d56196f3d2d26"
+    },
+    "packages/contracts/src/index.ts": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/contracts/src/index.ts",
+      "bytes": 4881,
+      "sha256": "e105ebcf8263e0b513992ff80cb8ea0396f485b2156f5360fb63274162b6066c"
+    },
+    "apps/desktop/src/preload/index.ts": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/apps/desktop/src/preload/index.ts",
+      "bytes": 1230,
+      "sha256": "727e1ff11c5acbd23c098e5c3a6f4161320b0fec02fb62b9291c702c06e7fe94"
+    }
+  },
+  "appliedExactProposal": true,
+  "appliedFiles": {
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "bytes": 109381,
+      "sha256": "fb60b0b45c977d2d7e4134b23f170bc144b28d41ccf1af3338b5502477152e3f",
+      "ASTSha256": "3c9d72f6557fa07fbd007139037a6416fd2e3d5a0f3e1e3d5d64c12e5d626839"
+    },
+    "packages/engine/tests/test_semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/tests/test_semantic_source_package_probe.py",
+      "bytes": 99627,
+      "sha256": "7f03018981b71382b9725e1d5a3898d483487ea8b5ef067e10a429cd208622d9",
+      "ASTSha256": "543d4b8f3ef39c429400e23707cfa55fc27b928b64b539123d68837d33bf1b38"
+    }
+  },
+  "formatASTIdentical": true,
+  "formattedFiles": {
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "bytes": 109443,
+      "sha256": "63a6b4a6ead4e05fe28b3384c0e1f70455039533763a5c4b585809704ce41d18",
+      "ASTSha256": "3c9d72f6557fa07fbd007139037a6416fd2e3d5a0f3e1e3d5d64c12e5d626839"
+    },
+    "packages/engine/tests/test_semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/tests/test_semantic_source_package_probe.py",
+      "bytes": 99672,
+      "sha256": "0185e7b0bc7d6aa8c301e10a8847547706be39cfff05971c8df3f27c8d2b333a",
+      "ASTSha256": "543d4b8f3ef39c429400e23707cfa55fc27b928b64b539123d68837d33bf1b38"
+    }
+  },
+  "afterFiles": {
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "bytes": 109443,
+      "sha256": "63a6b4a6ead4e05fe28b3384c0e1f70455039533763a5c4b585809704ce41d18",
+      "ASTSha256": "3c9d72f6557fa07fbd007139037a6416fd2e3d5a0f3e1e3d5d64c12e5d626839"
+    },
+    "packages/engine/tests/test_semantic_source_package_probe.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/tests/test_semantic_source_package_probe.py",
+      "bytes": 99672,
+      "sha256": "0185e7b0bc7d6aa8c301e10a8847547706be39cfff05971c8df3f27c8d2b333a",
+      "ASTSha256": "543d4b8f3ef39c429400e23707cfa55fc27b928b64b539123d68837d33bf1b38"
+    }
+  },
+  "protectedAfterFiles": {
+    "AGENTS.md": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/AGENTS.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    "pyproject.toml": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/pyproject.toml",
+      "bytes": 1527,
+      "sha256": "74763669b19190b980849bee07c53f0c0bc145417ca488a540333803a3ed3d14"
+    },
+    ".prettierignore": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.prettierignore",
+      "bytes": 756,
+      "sha256": "9b0af2a98f9c134d14722225fd313b32a90cff83eb1373f0581a766d5ae454d0"
+    },
+    "uv.lock": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+    },
+    "packages/engine/pyproject.toml": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/pyproject.toml",
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+    },
+    "scripts/build-engine.mjs": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/scripts/build-engine.mjs",
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+    },
+    "packages/engine/entrypoint.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/entrypoint.py",
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+    },
+    "packages/engine/src/ontolearn_engine/semantic.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 66258,
+      "sha256": "d6c5f5c38aec310de726f73568e1086bf4de95117cbdf664ae1384fcd6808392"
+    },
+    "packages/engine/src/ontolearn_engine/semantic_build_provenance.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 46602,
+      "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c"
+    },
+    "packages/engine/tests/test_semantic_build_provenance.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 44315,
+      "sha256": "0def6d7da0bdc2353c6f524fe8d86d40ab18936b58d58d1cc06bae713f7a3ec8"
+    },
+    "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json",
+      "bytes": 36587,
+      "sha256": "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04"
+    },
+    "scripts/generate-i05-source-package-inputs.py": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/scripts/generate-i05-source-package-inputs.py",
+      "bytes": 75633,
+      "sha256": "c51a1a7f3085e79958022deda95d8a08792f3a95f7c4f1fb171d56196f3d2d26"
+    },
+    "packages/contracts/src/index.ts": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/contracts/src/index.ts",
+      "bytes": 4881,
+      "sha256": "e105ebcf8263e0b513992ff80cb8ea0396f485b2156f5360fb63274162b6066c"
+    },
+    "apps/desktop/src/preload/index.ts": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/apps/desktop/src/preload/index.ts",
+      "bytes": 1230,
+      "sha256": "727e1ff11c5acbd23c098e5c3a6f4161320b0fec02fb62b9291c702c06e7fe94"
+    }
+  },
+  "protectedFilesUnchanged": true,
+  "junit": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/build/i05-pytest8/monitor-units-01.junit.xml",
+    "bytes": 6607,
+    "sha256": "3da06ca08d869b8785d3a7a34be5e88c60305136c8713fa50f9aa220e0fca60b"
+  }
+}

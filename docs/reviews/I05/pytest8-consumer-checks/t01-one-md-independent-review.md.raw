@@ -1,0 +1,38 @@
+# I05 单历史 Markdown formatter literal 独立静审
+
+结论：无已证阻断P1/P2。所审464B补丁只在根pyproject.toml的[tool.ruff.format].exclude新增获准目标的一条完整literal；lint、其他配置与历史原件无改动。可由主方依本轮精确授权继续应用及有限formatter实测；本报告未验证formatter实际排除效果或完整check通过。
+
+## 输入与实际边界
+
+只读 /tmp/t01-i05-one-md-format-followup-20261023/ 的完整patch、README、proposal-receipt、historical-identity、diagnostic及manifest前后像；全文读获准历史目标报告，未读取其他当前独审意见。读取两棵当前树对应文件及固定Git对象核身份；只做字节、字符串、SHA256和只读Git，未应用补丁、运行Python/formatter/产品/生成器/测试/GUI/DB、修改报告或树。仅写本报告。首按receipt.json猜名读取ENOENT，随后按实际目录读取proposal-receipt.json；该读取错误保留工具记录，不冒作运行失败/成功证据。
+
+配置树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-I05-exact-config-20261023，实际git rev-parse HEAD为a909afc369c143071025a55bc788abde0b9f40f5，符合指定base。固定Git a909:pyproject SHA与当前和提案before三者核同。I05原诊断及目标当前文件来自 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/。
+
+## 精确delta和身份
+
+- proposed-one-md.patch：464B/SHA256 832947885dd7a8409e7d0e3f56b58de15fef1e300f4034aab644128bdd88e07f。
+- pyproject.before.toml及当前配置：1453B/4bb20cf970a09b2948cf1b9d41ad93496b25f5c01a3f2b277426ea75798879c0。
+- pyproject.proposed.toml：1527B/74763669b19190b980849bee07c53f0c0bc145417ca488a540333803a3ed3d14。
+- proposal-receipt.json：2521B/6a80dce7f72bf6996393cf8d0ecf4d2c7ded7814fea1d94b902e0fe92a8adcee。
+- historical-identity.json：968B/08623e7f9faa06126c0aaa1efe20b106f8dfdcfdcc41757fb5b4aaad608cdbf0。
+- README.md：2227B/24df8cfb3477135945768a4974351d7c716178af43b0e000af7fb870b4470aad。
+
+manifest列七件bytes/SHA全部直接核同。补丁恰一个diff路径pyproject.toml、一个hunk、一条新增行、零删除：
+
+  "docs/reviews/I05/active-source-hygiene/lifecycle-review-r1/report.md",
+
+该行在候选恰出现一次且位于[tool.ruff.format]与[tool.ruff.lint.per-file-ignores]之间的exclude数组。将此唯一74B行从候选移除，即逐字得到完整1453B前像。这比仅核表项数量更强，直接排除全局select、target-version、line-length、lint逐文件规则、依赖/工作区/pytest等任何其他文本变动；lint段从表头至EOF亦独立逐字相同。
+
+literal含完整docs相对路径，无glob、目录排除或宽后缀匹配；不涉及现役generator、其他md、Python源码或lint豁免。现有四历史checker配置不扩规则。当前.prettierignore仍756B/9b0af2a98f9c134d14722225fd313b32a90cff83eb1373f0581a766d5ae454d0，补丁未涉及它、engine pyproject、命令/CI/锁或历史报告。
+
+## 历史报告及新诊断独立核验
+
+精确目标docs/reviews/I05/active-source-hygiene/lifecycle-review-r1/report.md：在I05原树与配置树均10951B，SHA256 e8687d8bf11800723b7269d3da1106b559811feef95deec3c23a2a3f8482b3a7。固定513db0056f312342a6791e2d4c7842f3726581f2该路径的git show→SHA与之相同；git blob实为9835f2a5a9699512baa1f4c2e028c4ef34dd0e56。早期10004/6872身份不采用，没有据旧手录去匹配别的文件。
+
+全文实读显示它是以前B1闭包生命周期窄归因报告，标题明确纯静态/未应用，绑定401a6844 candidate与4c84586c process，逐九项B023解释同步创建→消费→返回→下一轮，再给keyword-only default binding建议及Python代码围栏。代码块属于历史建议和证据语境，不是本任务要执行或重写的活动实现。保字节格式例外不等于认定旧分析永久正确，也不把其中旧未运行/剩余门叙述当作当前canonical状态；不得用此排除替代source owner的真实产品修复。
+
+实际I05 docs/reviews/I05/pytest8-consumer-checks/new-frozen-markdown-format-diagnostic.json与/tmp diagnostic.json逐身份核同：571B/b121b9c18116c6e898f38a51502648b04fb5a1ebb7f75555bb6bb2f84129aa07。JSON记录目标相同10951B/SHA，在report.md:48:1因Markdown Python代码块空行产生Ruff format诊断；pytestReached=false。其checksPassedBeforeStop是主方既有阶段观察，本独审没有另核相应完整双流或重跑，故不代签这些stage通过，更不将诊断JSON当作当前新配置已消除问题的证据。
+
+## 结论限制
+
+本次必要写面确为单个根format literal，未扩大到lint、产品、generator或任意历史目录，未作语义洗白。无必修新增修改。主方后续应依精确candidate1527B/747636...应用、运行已获准有限format验证并保真实argv/exit/双流；原首诊断和旧运行结果不倒写。本静态结论不授权额外配置变更，不替完整check、指定独审或任何生产/原生验收。

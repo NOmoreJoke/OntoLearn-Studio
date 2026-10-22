@@ -1,0 +1,31 @@
+{
+  "format": "I05-counter-preflight-failure/1",
+  "originalLauncher": {
+    "path": "/tmp/i05-counter-monitor-implementation-01.py",
+    "bytes": 7171,
+    "sha256": "7c375a96dca06b03ab8845ce7bf469670666617f5eac933b7ee767e988524384"
+  },
+  "failure": {
+    "class": "FileNotFoundError",
+    "path": "scripts/generate-semantic-probe-inputs.py",
+    "correctFixed553Path": "scripts/generate-i05-source-package-inputs.py",
+    "phase": "before any child process command",
+    "productOperationPerformed": false,
+    "pytestStarted": false
+  },
+  "originalReceiptRetained": true,
+  "originalLauncherTraceback": "Transport output chunk8fdff1 only; not claimed as a separately saved raw file. Child command streams do not exist because no child command was started.",
+  "newUnexecutedLauncher": {
+    "path": "/tmp/i05-counter-monitor-implementation-02.py",
+    "bytes": 7458,
+    "sha256": "b00010d9c4992a4aabda0b5d96e50df81a9468a35d0f8611fa718d7a9ae403a1",
+    "changes": [
+      "correct one protected generator path",
+      "use fresh process-output directory02",
+      "record launcher exception explicitly"
+    ],
+    "ASTParsedOnly": true
+  },
+  "executionBlockedUntilControllerContinuation": true,
+  "original01Preserved": true
+}

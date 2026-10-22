@@ -1,0 +1,198 @@
+{
+  "format": "I05-monitoring-design-independent-proof-r1/1",
+  "recordedAtUtc": "2026-10-22T19:34:43.434814+00:00",
+  "verdict": "Limited Pass fixed facts/count logic; cooperative concrete proposal pending; no implementation approval",
+  "inputs": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/design.md",
+      "bytes": 11051,
+      "sha256": "b48d7e0e69aa2fb07ab255ad0e022c72a9e254d8b014d9088920a4e510807bb8"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/lifecycle-pseudocode.txt",
+      "bytes": 3193,
+      "sha256": "53ebf8b7a383dbebd8f937b2a4fa466427b17e54931c6b2f7e81556c8b5a9af3"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/receipt.json",
+      "bytes": 1530,
+      "sha256": "75a28fe9a60279c4480ae4aa9b71117cd6c040bbc5c7d5544ead8b5091fe8642"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/sources.json",
+      "bytes": 1963,
+      "sha256": "835585c88c60d35c517ed335e15d7d67ae9140732e179b538f6fea565696a0d1"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/static-source-extracts.json",
+      "bytes": 8063,
+      "sha256": "052ba3c2be0be98ebd6bc4220fde09cf6be19fb11672ec07d2765bc1ad32a5a7"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_counter_monitoring_design/manifest.json",
+      "bytes": 862,
+      "sha256": "f27f22a0c5ddf94fe218ca327109eb6a436ec0d1ea89e202dca6590f3e1499bb"
+    }
+  ],
+  "all5ManifestMemberBytesHashesVerified": true,
+  "officialPrimarySources": [
+    {
+      "url": "https://github.com/python/cpython/blob/v3.12.12/Doc/library/sys.monitoring.rst",
+      "ranges": [
+        [
+          43,
+          74
+        ],
+        [
+          118,
+          131
+        ],
+        [
+          229,
+          298
+        ],
+        [
+          308,
+          341
+        ]
+      ],
+      "verified": "tool names/events/callback APIs and limited read-only surface; PY_START signature; DISABLE/restart domain"
+    },
+    {
+      "url": "https://github.com/python/cpython/blob/v3.12.12/Python/instrumentation.c",
+      "ranges": [
+        [
+          667,
+          737
+        ],
+        [
+          789,
+          811
+        ],
+        [
+          1484,
+          1554
+        ],
+        [
+          1699,
+          1727
+        ],
+        [
+          1754,
+          1853
+        ]
+      ],
+      "verified": "tool-name-only lifetime; callback audit/exchange; mask mutation before instrumentation; new-event re-instrumentation; callback exceptions"
+    },
+    {
+      "url": "https://peps.python.org/pep-0669/#specification",
+      "ranges": [
+        [
+          75,
+          89
+        ]
+      ],
+      "verified": "per-interpreter scope and start/resume separation"
+    },
+    {
+      "url": "https://github.com/python/cpython/blob/v3.12.12/Doc/library/sys.rst",
+      "ranges": [
+        [
+          1364,
+          1392
+        ]
+      ],
+      "verified": "profile thread scope and call events"
+    },
+    {
+      "url": "https://github.com/python/cpython/blob/v3.12.12/Doc/library/_thread.rst",
+      "ranges": [
+        [
+          99,
+          104
+        ]
+      ],
+      "verified": "cookie lifetime/reuse"
+    },
+    {
+      "url": "https://github.com/python/cpython/blob/v3.12.12/Objects/codeobject.c",
+      "ranges": [
+        [
+          1433,
+          1469
+        ]
+      ],
+      "verified": "co_code deoptimization path; does not substitute runtime fingerprint tests"
+    }
+  ],
+  "sourceReadMethod": "official web text only, pinned v3.12.12 for implementation facts; no downloaded code executed",
+  "initialStrictDomain": {
+    "generallyReadOnlyCleanSlotProofNotAvailable": true,
+    "neverTransientExchangeCannotBePromised": true,
+    "retainedAsHistory": true
+  },
+  "currentRootEngineeringDomain": {
+    "finitePYStartExchangeAllowed": true,
+    "rejectExistingProfileOrOccupiedName": true,
+    "unknownOtherLocalNotEnumeratedOrCleared": true,
+    "otherEventCallbacksMayRemain": true,
+    "arbitrarySameProcessTakeoverResistanceRequired": false,
+    "callerCleanBitAllowed": false,
+    "unknownLocalAloneIsImplementationBlocker": false
+  },
+  "disableReasoning": {
+    "nonzeroTargetMaskStaleDisableMustReject": true,
+    "sameMaskSetEarlyReturnsAndDoesNotRestart": true,
+    "global0TargetLocal0ToPYStartSuccessfulTransitionReAddsTargetInstrumentation": true,
+    "globalRestartAllowed": false,
+    "reasoningNotRuntimeExperiment": true
+  },
+  "countDomain": {
+    "twoTargetAstSyncNoYieldNoDecoratorIndependentlyVerified": true,
+    "reasonLines": [
+      1247,
+      1258
+    ],
+    "validatorRunLines": [
+      175,
+      324
+    ],
+    "codeIdentityNotName": true,
+    "sameCodeTwoIndependentRoles": true,
+    "ownerLiveThreadCookieFilterRequired": true,
+    "zeroExceptionNestedThreadCasesActuallyRun": false
+  },
+  "remainingConcreteProposalConditions": [
+    "stable callback object identity and unexpected returned-callback restoration/error handling",
+    "resource state for partial init before local-set attempts and callback restore failure",
+    "cleanup only own changes; quarantine own dirty resources; preserve foreign unrelated preimages; no success or reliable zero on integrity failure"
+  ],
+  "actualLocalReadChecks": [
+    {
+      "chunk": "9790c4",
+      "exitCode": 0,
+      "kind": "design full text and manifest/identities"
+    },
+    {
+      "chunk": "a8ce00",
+      "exitCode": 0,
+      "kind": "pseudo,receipt,sources,static extracts full local read; combined first web display truncated and replaced by targeted official views"
+    },
+    {
+      "chunk": "68756e",
+      "exitCode": 0,
+      "kind": "5 input members,4 source extract full-byte identities,2 real target AST metadata,current probe hash"
+    }
+  ],
+  "webQueries": "exact official version docs/source and PEP only; initial free_tool/_set_local_events find no-match not treated as absence; subsequent exact code regions read",
+  "monitoringApiCalls": [],
+  "threadsCreated": false,
+  "productsImportedOrRun": false,
+  "pytestOrBenchmarkOrFormatterOrOsExperiments": false,
+  "newT03ProductAlgorithmsRead": false,
+  "originalAuthorFilesModified": false,
+  "currentProbeUnchangedSha256": "2996deca33083754132bf5f4eab8d1e273161b3e5fe722a8ee96856fb5cc0d5b",
+  "implementationReady": false,
+  "rootImplementationTicketGrantedByReview": false,
+  "projectPerformanceOrDeadlineGuarantee": false
+}

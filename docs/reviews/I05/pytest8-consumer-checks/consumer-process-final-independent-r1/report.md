@@ -1,0 +1,33 @@
+# I05 consumer过程归档独立终审 r1
+
+结论：**有界字节/范围审通过，无hash、缺失、原件保全或范围阻断。** 可将本独审三件按预声明目录原样复制后，按精确365路径完成过程归档。此刻没有暂存或提交这些过程件；不把未来stage/commit说成已经完成。完整engine仍NotPass，38case仅有限gate，无性能扩张。
+
+## 361 payload与固定来源
+
+主manifest81562B/981d9105180ab9b83b5554bdcccbd58d65e77b3bd6882bb2534683a1383ae494，独立逐成员核361项bytes/SHA-256，合计1883068B，全符、无重复、无越界、无符号链接。范围严格限input-generator-style与pytest8-consumer-checks两prefix。这里是字节/映射/提交范围核验，**不是361篇语义全文审阅**，没有重审算法或执行归档作者脚本。
+
+其中input-generator-style精确77文件，路径集合及每件当前字节均等于固定954f38fe643c4903e5819d469e6de2c56f666374同prefix；其余284件为consumer过程证据。未把generator产品作为本过程提交成员。
+
+## gzip与原件
+
+14份archive/preservation maps合计218条条目逐项核验，145条gzip独立解压后bytes/hash全部相符；其余条目为未压缩直接原样件。221次声明的originalPreservedAt/originalPath/externalOriginalPath实际文件读取，均存在并与对应archive解码字节精确相等。归档文件本身同时受361主manifest绑定。没有格式化、trim或覆盖原证据。
+
+新whitespace三份：electron-dependency-install-01.stderr.raw（2B）、full-pytest-01.stdout.raw（37590B）、full-pytest-02.stdout.raw（9563B），checkout原件、external副本与gzip解压全部相同。三份原件实际仍untracked，排除于361以及未来365集合；gzip与preservation声明在payload内。不能把diff/check卫生当成原始流无空白，也不能stage原件。
+
+旧source-freeze-archive-map本身当前=fixed513db；另五份docs raw/patch outsideprefix逐个核原件仍存在、untracked、未在本payload/未来集合，gzip精确round-trip。它们保持原封存域，不因本归档而再次提交。详细五路径、新三原件及所有221次原件哈希均在receipt.json。
+
+## 当前产品与过程提交域
+
+HEAD确为ae118d2a2b4fe267991522cbcc457d7d33f7ce8b，parent4bb99d99620811766df38d7e29346e3174f82c8c；该commit精确两产品路径。probe109443B/63a6b4a6ead4e05fe28b3384c0e1f70455039533763a5c4b585809704ce41d18、tests99672B/0185e7b0bc7d6aa8c301e10a8847547706be39cfff05971c8df3f27c8d2b333a，current=ae118 Git对象=本manifest声明。未读取产品算法，仅核字节和Git范围。
+
+实际tracked工作区差异仅既存AGENTS overlay；其15147B/de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4保持不变，不能冒称等于已提交HEAD。当前index为空，未跟踪产品路径为空，无其他tracked产品delta。candidate-freeze收据7条命令全0、14原双流引用哈希均相符，包含历史cachedcheck0、exact2 commit和index-empty证据；未重新执行check。
+
+计划集合严格为361payload+主manifest+独审signoff三件=365个唯一docs路径。signoff预声明为docs/reviews/I05/pytest8-consumer-checks/consumer-process-final-independent-r1，不在361中，使用本独立manifest绑定report/receipt；manifest自身不自哈希。主审必须原样复制report.md、receipt.json、manifest.json，再据精确列表暂存；不能用整个目录git add。集合不含AGENTS、产品、三新raw、五旧outsideprefix raw或others。本审查不暂存，不审批尚未见到的最终cached列表/过程commit。
+
+## 重要状态与边界
+
+主manifest明确Overall engine remains NotPass；candidate-freeze实际overall为NotPass; only finite38 gate passed。实际38case收据finite-command-passed/6命令全0保留，实际独审6751B报告的gzip字节对应上一轮原件；未把原失败流或历史current-labelled inventory改写为当前通过。历史proposal-v1 Request Changes、v2静态Limited Pass、实际有限38通过属于不同阶段，不互相覆盖。
+
+canonical22SupplierRef23352、canonicalProcessRef513、assetSupplierRef6891保持各自领域；最新整源码ae118不冒充canonical22供方ref。没有新完整417、全pytest/current fullcheck、CLI/package/native/GUI、性能或120秒/64MiB通过证据。本次归档不关闭这些未完工程项，也不由38单元耗时推性能结论。
+
+独审仅新增本outputs目录三件，所有payload/主manifest未修改。receipt包含361逐项核验、218映射、221原件、77固定供方、365计划集合与范围限制；不执行API、线程、pytest、formatter、产品检查或stage。主审复制和实际过程提交后，仍需按自身收据核精确365范围与最终commit身份。

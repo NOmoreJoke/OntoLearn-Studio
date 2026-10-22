@@ -1,0 +1,63 @@
+DESIGN ONLY; not runnable product code and not a completed admission contract.
+Fixed domain: ordinary synchronous reason_code and validator_code from actual
+verified modules; one normative with lifetime on its live owner thread.
+
+callback(code, offset):
+    if not active or get_ident() != owner_thread:
+        return None
+    if code is reason_code:
+        counts[reason] += 1
+    if code is validator_code:       # independent if, including same-code roles
+        counts[validator] += 1
+    return None                     # never monitoring.DISABLE
+
+enter:
+    reject if self.active or self.acquired, before changing saved state
+    reject if sys.getprofile() is not None
+    reject if monitoring.get_tool(PROFILER_ID) is not None
+    acquire PROFILER_ID using use_tool_id; if conflict, reject without cleanup
+    record acquired only after successful acquisition
+    record owner thread and owner-specific tool name
+    reject, releasing only acquired name, if global mask != 0
+    reject, releasing only acquired name, if either target local mask != 0
+
+    UNRESOLVED STRICT-ADMISSION POINT:
+      no public read-only callback getter or all-code local-mask inventory exists
+      do not invent a caller-approved clean bit
+      strict never-touch-foreign-residue contract: STOP DESIGN HERE
+
+    CONDITIONAL cooperative released-slot route, requiring explicit scope decision:
+      register PY_START callback with active still false; save returned prior
+      if prior is not None:
+          restore prior exactly, release acquired name, reject
+          (this was a temporary swap, so it does NOT satisfy strict admission)
+      for each identity-distinct target:
+          add target to attempted_codes BEFORE setting local events
+          set_local_events(PROFILER_ID, target, PY_START)
+      active = true only when all steps succeeded
+      return self
+    on any entry failure:
+      cleanup all possibly changed own resources, not only successful calls
+      reject as private harness failure; do not publish reliable zero
+
+cleanup on normal/body-exception/partial-entry:
+    active = false first
+    if no acquired resource: do not mutate or free any tool
+    if current tool name is not this instance's owner-specific name:
+        fail integrity; never free another owner
+    attempt disabling local events for every attempted identity-distinct target
+    verify own global mask is still zero (this design never enabled it)
+    attempt unregistering own PY_START callback
+    verify own local masks and callback cleanup succeeded
+    only after verified cleanup, free_tool_id
+    do not use 3.14-only clear_tool_id or global restart_events
+    if cleanup cannot be completed:
+        retain/quarantine owned reservation, report private harness failure
+        do not return success, count 0, or release a dirty slot for later reuse
+
+No body exception is swallowed to make a collection look complete. Cleanup
+integrity failure must prevent a business-rejection/success claim; the exact
+private diagnostic handling is part of a later implementation review.
+
+No performance conclusion follows. No monitoring call or target execution was
+performed while producing this document.

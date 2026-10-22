@@ -1,0 +1,103 @@
+[
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+    "ref": "553a63ce700477e288be895b33269b1d5ecbdc0f",
+    "bytes": 102749,
+    "sha256": "2996deca33083754132bf5f4eab8d1e273161b3e5fe722a8ee96856fb5cc0d5b",
+    "functions": [
+      {
+        "kind": "ClassDef",
+        "name": "CallCounter",
+        "lineno": 710,
+        "end_lineno": 739,
+        "source": "class CallCounter:\n    \"\"\"Count real Python call code identities without changing callable behavior.\"\"\"\n\n    def __init__(self, semantic, validator):\n        self.reason_code = semantic.reason.__code__\n        self.validator_code = validator.run.__code__\n        self.counts = {\"reason\": 0, \"validator\": 0}\n        self.previous = None\n        self.active = False\n\n    def _profile(self, frame, event, _arg):\n        if event == \"call\":\n            if frame.f_code is self.reason_code:\n                self.counts[\"reason\"] += 1\n            if frame.f_code is self.validator_code:\n                self.counts[\"validator\"] += 1\n\n    def __enter__(self):\n        self.previous = sys.getprofile()\n        if self.previous is not None:\n            raise ProbeFault(\"PROFILE_HOOK_ALREADY_PRESENT\")\n        sys.setprofile(self._profile)\n        self.active = True\n        return self\n\n    def __exit__(self, *_exception):\n        if self.active:\n            sys.setprofile(self.previous)\n            self.active = False\n        return False",
+        "containsYield": false,
+        "decorators": [],
+        "isAsync": false
+      }
+    ]
+  },
+  {
+    "path": "packages/engine/src/ontolearn_engine/semantic.py",
+    "ref": "553a63ce700477e288be895b33269b1d5ecbdc0f",
+    "bytes": 66258,
+    "sha256": "d6c5f5c38aec310de726f73568e1086bf4de95117cbdf664ae1384fcd6808392",
+    "functions": [
+      {
+        "kind": "FunctionDef",
+        "name": "reason",
+        "lineno": 1247,
+        "end_lineno": 1258,
+        "source": "def reason(graph: Graph, rules=(), *, profile=None, catalog=None, term_context=None) -> dict:\n    \"\"\"Explicit legacy or fixed-profile reasoning over one frozen finite closure.\"\"\"\n    with offline():\n        if profile is None:\n            if catalog is not None or term_context is not None:\n                raise SemanticError(\"INVALID_RULE\")\n            return _legacy_reason(graph, rules)\n        from ontolearn_engine.quality.rule_profile import PROFILE\n\n        if type(profile) is not str or profile != PROFILE:\n            raise ProfileReasonError(\"RULE_POLICY_UNSUPPORTED\", context=\"rule\")\n        return _reason_profile_core(graph, rules, catalog, term_context, None)",
+        "containsYield": false,
+        "decorators": [],
+        "isAsync": false
+      }
+    ]
+  },
+  {
+    "path": "packages/engine/tests/test_semantic_source_package_probe.py",
+    "ref": "553a63ce700477e288be895b33269b1d5ecbdc0f",
+    "bytes": 76628,
+    "sha256": "d7947f3e90a7226b28aada7f7b6ba0c09393d25295700da2d8ffa65e353b2f68",
+    "functions": [
+      {
+        "kind": "FunctionDef",
+        "name": "test_call_counter_counts_real_code_identity_and_restores_hook",
+        "lineno": 785,
+        "end_lineno": 808,
+        "source": "def test_call_counter_counts_real_code_identity_and_restores_hook(probe, canonical):\n    semantic = canonical[\"semantic\"]\n    graph = semantic.parse_turtle(\"<urn:counter:x> a <urn:counter:A> .\")\n    previous = sys.getprofile()\n    assert previous is None, \"the probe refuses a pre-existing profiler\"\n\n    def reason(*args, **kwargs):\n        # A same-name harness function is deliberately not the canonical code.\n        return None\n\n    with probe.CallCounter(semantic, semantic.Validator) as counter:\n        reason()\n        assert counter.counts == {\"validator\": 0, \"reason\": 0}\n        alias = semantic.reason\n        alias(graph)\n        assert counter.counts == {\"validator\": 0, \"reason\": 1}\n        semantic.validate_shacl_text(\n            _data(\"2000-01-01Z\"),\n            _shape('sh:minInclusive \"2000-01-01Z\"^^xsd:date'),\n            data_policy=\"strict\",\n            range_policy=\"utc-date-range-v1\",\n        )\n        assert counter.counts == {\"validator\": 1, \"reason\": 1}\n    assert sys.getprofile() is previous",
+        "containsYield": false,
+        "decorators": [],
+        "isAsync": false
+      },
+      {
+        "kind": "FunctionDef",
+        "name": "test_call_counter_existing_hook_fails_without_overwriting_it",
+        "lineno": 811,
+        "end_lineno": 823,
+        "source": "def test_call_counter_existing_hook_fails_without_overwriting_it(probe, canonical):\n    def existing(frame, event, arg):\n        return None\n\n    previous = sys.getprofile()\n    sys.setprofile(existing)\n    try:\n        with pytest.raises(probe.ProbeFault):\n            with probe.CallCounter(canonical[\"semantic\"], canonical[\"semantic\"].Validator):\n                raise AssertionError(\"existing hook must fail on entry\")\n        assert sys.getprofile() is existing\n    finally:\n        sys.setprofile(previous)",
+        "containsYield": false,
+        "decorators": [],
+        "isAsync": false
+      },
+      {
+        "kind": "FunctionDef",
+        "name": "test_call_counter_restores_hook_on_real_policy_rejection",
+        "lineno": 842,
+        "end_lineno": 855,
+        "source": "def test_call_counter_restores_hook_on_real_policy_rejection(probe, canonical):\n    from ontolearn_engine.semantic_offline import SemanticError\n\n    previous = sys.getprofile()\n    with pytest.raises(SemanticError):\n        with probe.CallCounter(canonical[\"semantic\"], canonical[\"semantic\"].Validator) as counter:\n            canonical[\"semantic\"].validate_shacl_text(\n                _data(\"2000-01-01Z\"),\n                _shape(\"sh:minCount 1\"),\n                data_policy=\"not-a-policy\",\n                range_policy=\"legacy\",\n            )\n    assert counter.counts == {\"validator\": 0, \"reason\": 0}\n    assert sys.getprofile() is previous",
+        "containsYield": false,
+        "decorators": [],
+        "isAsync": false
+      },
+      {
+        "kind": "FunctionDef",
+        "name": "test_scope_without_counter_fails_before_loading_canonical_inputs",
+        "lineno": 858,
+        "end_lineno": 863,
+        "source": "def test_scope_without_counter_fails_before_loading_canonical_inputs(probe):\n    # Empty mappings prove admission fails before module/dataset lookup or any\n    # canonical parse/prepare call; they do not stand in for a business result.\n    with pytest.raises(probe.ProbeFault) as failure:\n        probe._scope_observation({}, \"fresh\", {}, None)\n    assert failure.value.code == \"INTERNAL_ERROR\"",
+        "containsYield": false,
+        "decorators": [],
+        "isAsync": false
+      }
+    ]
+  },
+  {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/.venv/lib/python3.12/site-packages/pyshacl/validator.py",
+    "bytes": 16430,
+    "sha256": "18840545f2146c0f5b9eea60b665099c992f9d56f9f0a060df07c07889a6a129",
+    "functions": [
+      {
+        "kind": "FunctionDef",
+        "name": "run",
+        "lineno": 175,
+        "end_lineno": 324,
+        "decorators": [],
+        "containsYield": false,
+        "source": "    def run(self):\n        datagraph: Union[GraphLike, None] = self.target_graph\n        if datagraph is not None:\n            self._target_graph = datagraph\n        else:\n            has_cloned = False\n            if self.ont_graph is not None:\n                if self.inplace:\n                    self.logger.debug(\"Adding ontology definitions to DataGraph\")\n                else:\n                    self.logger.debug(\"Cloning DataGraph to temporary memory graph, to add ontology definitions.\")\n                # creates a copy of self.data_graph, doesn't modify it\n                datagraph = self.mix_in_ontology()\n                has_cloned = True\n            else:",
+        "isAsync": false
+      }
+    ]
+  }
+]

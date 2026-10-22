@@ -1,0 +1,119 @@
+{
+  "format": "I05-toolchain-debt-exact-inventory/1",
+  "sourceEngineLog": "engine-check-01.stdout.raw",
+  "sourceFullcheckLogs": [
+    "fullcheck-01.stdout.raw",
+    "fullcheck-01.stderr.raw"
+  ],
+  "ruffCount": 319,
+  "ruffRows": [
+    {
+      "path": "docs/reviews/I05/active-source-hygiene/independent-applied-checker.py",
+      "bytes": 7662,
+      "sha256": "1ab5d149707750cd78830b5363315e7898b039715afd14d47ba7a3b63063c993",
+      "currentEqualsFixedBaseD1fb": true,
+      "rules": {
+        "B007": 2,
+        "B905": 1,
+        "E401": 1,
+        "E501": 21,
+        "E701": 6,
+        "E702": 31,
+        "I001": 1
+      },
+      "count": 63
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-triage/independent-triage-r1-applied-check.py",
+      "bytes": 6394,
+      "sha256": "115f08261b378d9a04c6d0685e7c48ffe49e130637cabaeccaf636edc18c34d4",
+      "currentEqualsFixedBaseD1fb": true,
+      "rules": {
+        "E401": 1,
+        "E501": 10,
+        "E701": 3,
+        "E702": 11,
+        "I001": 1,
+        "UP022": 1
+      },
+      "count": 27
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-triage/independent-triage-r1-check.py",
+      "bytes": 10538,
+      "sha256": "90a964345bd829c04e425cf3c3cba42d16cac7cb58f7317d432b0eb729940868",
+      "currentEqualsFixedBaseD1fb": true,
+      "rules": {
+        "E401": 1,
+        "E501": 17,
+        "E701": 8,
+        "E702": 21,
+        "F401": 1,
+        "I001": 1,
+        "UP022": 1
+      },
+      "count": 50
+    },
+    {
+      "path": "docs/reviews/I05/source-package-probe-source/static-verify.py",
+      "bytes": 6924,
+      "sha256": "5aa5112cdf6c5968cf6d3da03ba06c96657e88fb2d89df7a0f60eff8d0f2d119",
+      "currentEqualsFixedBaseD1fb": true,
+      "rules": {
+        "E501": 1
+      },
+      "count": 1
+    },
+    {
+      "path": "scripts/generate-i05-source-package-inputs.py",
+      "bytes": 60354,
+      "sha256": "e58dd4efd1c64952b6555b98c65271fc7e82d7b99b198d848d69f5a7c9dcde0b",
+      "currentEqualsFixedBaseD1fb": true,
+      "rules": {
+        "E501": 174,
+        "E731": 1,
+        "E743": 1,
+        "F841": 1,
+        "I001": 1
+      },
+      "count": 178
+    }
+  ],
+  "prettierRows": [
+    {
+      "path": "docs/iterations/I05/source-package-probe/implementation.md",
+      "bytes": 6431,
+      "sha256": "d25d3d7cfec7ae78a7c8df7adf3510e5c1cd9bd23f09ec4090a68586107421ce",
+      "currentEqualsFixedBaseD1fb": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+      "currentEqualsFixedBaseD1fb": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+      "currentEqualsFixedBaseD1fb": true
+    }
+  ],
+  "currentConfiguration": [
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63",
+      "currentEqualsFixedHead513db": true
+    },
+    {
+      "path": ".prettierignore",
+      "bytes": 442,
+      "sha256": "82535615400927072d276a731f4c3f1869d882b45d826f3dd569132b04387b4c",
+      "currentEqualsFixedHead513db": true
+    }
+  ],
+  "noIgnoreOrHistoricalFileChanges": true,
+  "generatorClassification": "active .py path still present, preserved exact baseD1fb; current normal package/check scripts have not invoked it; not declared historical solely from path or style debt; root/toolchain owner must classify from actual provenance/callers before exception",
+  "activeSemanticProbeTestHaveNoLocationsInThisEngineLog": true
+}

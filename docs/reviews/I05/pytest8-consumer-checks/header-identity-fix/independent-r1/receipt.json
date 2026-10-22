@@ -1,0 +1,88 @@
+{
+  "format": "I05-header-identity-fix-independent-prereview/1",
+  "recordedAtUtc": "2026-10-22T19:08:30.614052+00:00",
+  "verdict": "Limited Pass; no new P1/P2/blocker",
+  "inputs": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_header_identity_fix/test.before.py.raw",
+      "bytes": 76535,
+      "sha256": "5fcf853fb48f5781758bdb0893357a9687f1ce7e35d9cc9352957b7d4fcaa4c9"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_header_identity_fix/test.proposed.py.raw",
+      "bytes": 76628,
+      "sha256": "d7947f3e90a7226b28aada7f7b6ba0c09393d25295700da2d8ffa65e353b2f68"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_header_identity_fix/header-pins.patch.raw",
+      "bytes": 880,
+      "sha256": "f531fbe82d6a0c939eb1cb7c318986338a47a71668996f27b862709886b1ddd6"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_header_identity_fix/proposal-and-replay.json",
+      "bytes": 1292,
+      "sha256": "f2cc4158a748155a378f6f28d375bdd2b97fdd2e64804d63cbd13932bc4c25c7"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/build/i05-pytest8/full-pytest-02/semantic-full-v1-diagnostic0/observations.jsonl",
+      "bytes": 46483457,
+      "sha256": "a84bfcaa1b374fc02a8114aedfc414b2f6a36368c6b2176bd4a7397f15350a1b"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/build/i05-pytest8/full-pytest-02.junit.xml",
+      "bytes": 181866,
+      "sha256": "12f84ab082c385fe7e3bfc0ba3ee7d0b7866b51c64877d04afba3b614e64cbee"
+    }
+  ],
+  "checks": {
+    "patchExactGeneratedDiff": true,
+    "wholeTestAstOnlyTwoFixedRuntimeLiteralsPlusOneSealedSupplierAssertion": true,
+    "actualGitSourceProcessCommitsExist": true,
+    "actualProcessParentIsSource": true,
+    "headerSavedRefsMatchFixedCommits": true,
+    "sourceRuntimeVsSealedAssetIdentitySeparationRetained": true,
+    "currentTestWasBeforeAtReview": true,
+    "twoOriginalAssetHashesVerified": true,
+    "businessCasesGuardsDeadlineUnchanged": true,
+    "pureReplaysIndependentBeforeFailureAfterPass": true
+  },
+  "actualReadChecks": [
+    {
+      "chunk": "2b36ec",
+      "exitCode": 0,
+      "kind": "all proposal identities and patch/replay JSON full read"
+    },
+    {
+      "chunk": "7b3b85",
+      "exitCode": 0,
+      "kind": "complete selected pure functions in both variants; real Git commit types/parent"
+    },
+    {
+      "chunk": "3e04ad",
+      "exitCode": 0,
+      "kind": "whole-file constrained AST, raw JSONL/data identities, independent pure3 replay, JUnit header failure only"
+    }
+  ],
+  "originalFullPytest02": {
+    "junitSuiteTests": 1180,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0,
+    "passedDerived": 1176,
+    "otherDeadlineFailuresReReviewed": false,
+    "fullStdoutReadOrClaimed": false
+  },
+  "reviewerPureDataAssertionReplayExecuted": true,
+  "reviewerPytestCollectorB1OrProductExecuted": false,
+  "reviewerMainTreeWrites": [],
+  "proposalAppliedByReviewer": false,
+  "newFindings": {
+    "P1": 0,
+    "P2": 0
+  },
+  "unresolved": [
+    "actual apply and authorized subsequent runtime validation",
+    "separate deadline dispositions and full original check",
+    "broader source/package and goal acceptance"
+  ]
+}

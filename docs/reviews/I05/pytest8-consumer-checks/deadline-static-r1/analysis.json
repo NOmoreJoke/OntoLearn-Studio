@@ -1,0 +1,3142 @@
+{
+  "format": "I05-existing-stream-deadline-static-attribution/1",
+  "productExecution": false,
+  "sourceIdentity": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+    "bytes": 102749,
+    "sha256": "2996deca33083754132bf5f4eab8d1e273161b3e5fe722a8ee96856fb5cc0d5b"
+  },
+  "testIdentity": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/tests/test_semantic_source_package_probe.py",
+    "bytes": 76535,
+    "sha256": "5fcf853fb48f5781758bdb0893357a9687f1ce7e35d9cc9352957b7d4fcaa4c9"
+  },
+  "agentRulesIdentity": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/AGENTS.md",
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "streams": [
+    {
+      "name": "shared",
+      "identity": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/build/i05-pytest8/full-pytest-02/semantic-full-v1-diagnostic0/observations.jsonl",
+        "bytes": 46483457,
+        "sha256": "a84bfcaa1b374fc02a8114aedfc414b2f6a36368c6b2176bd4a7397f15350a1b"
+      },
+      "records": 220,
+      "observationCount": 218,
+      "terminal": {
+        "state": "deadline-boundary",
+        "collectionComplete": false,
+        "elapsedSeconds": 121.10367004200816,
+        "firstFailure": {
+          "api": "semantic_profile_restore.restore_profile_result",
+          "code": "COLLECTION_DEADLINE",
+          "id": "fullview/profile-76",
+          "stage": "restore/result"
+        }
+      },
+      "completedIdCount": 218,
+      "unstartedIdCount": 199,
+      "observationsSeconds": 119.25892924249638,
+      "elapsedMinusObservationSeconds": 1.8447407995117828,
+      "familyGroups": {
+        "profile-83": {
+          "count": 83,
+          "observationSeconds": 74.87243766384199,
+          "checkedIntervalUnionSeconds": 74.57324404281098,
+          "outsideCheckedIntervalSeconds": 0.29919362103100866,
+          "lineBytes": 15944142,
+          "stageAttempts": 2794
+        },
+        "consumer-C-query": {
+          "count": 2,
+          "observationSeconds": 0.7694186250446364,
+          "checkedIntervalUnionSeconds": 0.7691487912088633,
+          "outsideCheckedIntervalSeconds": 0.00026983383577317,
+          "lineBytes": 2169,
+          "stageAttempts": 4
+        },
+        "consumer-C-shape": {
+          "count": 9,
+          "observationSeconds": 0.07663183193653822,
+          "checkedIntervalUnionSeconds": 0.0754665823187679,
+          "outsideCheckedIntervalSeconds": 0.0011652496177703142,
+          "lineBytes": 12177,
+          "stageAttempts": 27
+        },
+        "consumer-C-date": {
+          "count": 4,
+          "observationSeconds": 0.028623793041333556,
+          "checkedIntervalUnionSeconds": 0.02810758294072002,
+          "outsideCheckedIntervalSeconds": 0.0005162101006135345,
+          "lineBytes": 4856,
+          "stageAttempts": 4
+        },
+        "consumer-C-integer": {
+          "count": 2,
+          "observationSeconds": 0.011209207936190069,
+          "checkedIntervalUnionSeconds": 0.010932707926258445,
+          "outsideCheckedIntervalSeconds": 0.00027650000993162394,
+          "lineBytes": 2623,
+          "stageAttempts": 2
+        },
+        "utc-date": {
+          "count": 2,
+          "observationSeconds": 0.014651415986008942,
+          "checkedIntervalUnionSeconds": 0.014447001041844487,
+          "outsideCheckedIntervalSeconds": 0.00020441494416445494,
+          "lineBytes": 2560,
+          "stageAttempts": 2
+        },
+        "turtle": {
+          "count": 1,
+          "observationSeconds": 0.004770333995111287,
+          "checkedIntervalUnionSeconds": 0.004399040946736932,
+          "outsideCheckedIntervalSeconds": 0.00037129304837435484,
+          "lineBytes": 2381,
+          "stageAttempts": 1
+        },
+        "rdfs": {
+          "count": 1,
+          "observationSeconds": 0.015546042006462812,
+          "checkedIntervalUnionSeconds": 0.015097834053449333,
+          "outsideCheckedIntervalSeconds": 0.0004482079530134797,
+          "lineBytes": 5053,
+          "stageAttempts": 2
+        },
+        "b1-measurement": {
+          "count": 2,
+          "observationSeconds": 2.0046051250537857,
+          "checkedIntervalUnionSeconds": 1.980567207094282,
+          "outsideCheckedIntervalSeconds": 0.02403791795950383,
+          "lineBytes": 256014,
+          "stageAttempts": 32
+        },
+        "readonly-query": {
+          "count": 25,
+          "observationSeconds": 10.263027293956839,
+          "checkedIntervalUnionSeconds": 10.258504543453455,
+          "outsideCheckedIntervalSeconds": 0.004522750503383577,
+          "lineBytes": 47171,
+          "stageAttempts": 50
+        },
+        "turtle-lexical": {
+          "count": 17,
+          "observationSeconds": 0.02681899827439338,
+          "checkedIntervalUnionSeconds": 0.0244169580982998,
+          "outsideCheckedIntervalSeconds": 0.0024020401760935783,
+          "lineBytes": 18471,
+          "stageAttempts": 17
+        },
+        "turtle-rejection": {
+          "count": 9,
+          "observationSeconds": 0.0035649999044835567,
+          "checkedIntervalUnionSeconds": 0.00274937495123595,
+          "outsideCheckedIntervalSeconds": 0.0008156249532476068,
+          "lineBytes": 9550,
+          "stageAttempts": 9
+        },
+        "rdfs-finite": {
+          "count": 7,
+          "observationSeconds": 0.02254174870904535,
+          "checkedIntervalUnionSeconds": 0.021250206045806408,
+          "outsideCheckedIntervalSeconds": 0.0012915426632389426,
+          "lineBytes": 16678,
+          "stageAttempts": 14
+        },
+        "legacy-rule": {
+          "count": 4,
+          "observationSeconds": 0.03037370799575001,
+          "checkedIntervalUnionSeconds": 0.02889858209528029,
+          "outsideCheckedIntervalSeconds": 0.0014751259004697204,
+          "lineBytes": 11187,
+          "stageAttempts": 8
+        },
+        "scope": {
+          "count": 10,
+          "observationSeconds": 1.253161457949318,
+          "checkedIntervalUnionSeconds": 1.246009461232461,
+          "outsideCheckedIntervalSeconds": 0.0071519967168569565,
+          "lineBytes": 185294,
+          "stageAttempts": 51
+        },
+        "original-query": {
+          "count": 2,
+          "observationSeconds": 0.6977105409605429,
+          "checkedIntervalUnionSeconds": 0.6974756680428982,
+          "outsideCheckedIntervalSeconds": 0.00023487291764467955,
+          "lineBytes": 3647,
+          "stageAttempts": 4
+        },
+        "original-shape-repair": {
+          "count": 3,
+          "observationSeconds": 0.035585706937126815,
+          "checkedIntervalUnionSeconds": 0.03522279276512563,
+          "outsideCheckedIntervalSeconds": 0.00036291417200118303,
+          "lineBytes": 6164,
+          "stageAttempts": 9
+        },
+        "transfer-shape-repair": {
+          "count": 2,
+          "observationSeconds": 0.015401249984279275,
+          "checkedIntervalUnionSeconds": 0.015190417063422501,
+          "outsideCheckedIntervalSeconds": 0.00021083292085677385,
+          "lineBytes": 2699,
+          "stageAttempts": 6
+        },
+        "dag-fullview": {
+          "count": 19,
+          "observationSeconds": 20.224475123919547,
+          "checkedIntervalUnionSeconds": 19.693598536541685,
+          "outsideCheckedIntervalSeconds": 0.5308765873778611,
+          "lineBytes": 14801473,
+          "stageAttempts": 290
+        },
+        "restore-negative": {
+          "count": 14,
+          "observationSeconds": 8.888374375062995,
+          "checkedIntervalUnionSeconds": 8.203649076400325,
+          "outsideCheckedIntervalSeconds": 0.68472529866267,
+          "lineBytes": 14892456,
+          "stageAttempts": 79
+        }
+      },
+      "apiTotalsSorted": [
+        {
+          "api": "semantic_execution.execute_profile_records",
+          "attempts": 82,
+          "elapsedNs": 73973386578,
+          "returned": 78
+        },
+        {
+          "api": "semantic.query",
+          "attempts": 36,
+          "elapsedNs": 14211651832,
+          "returned": 25
+        },
+        {
+          "api": "semantic_profile_restore.restore_profile_result",
+          "attempts": 19,
+          "elapsedNs": 13000741958,
+          "returned": 14
+        },
+        {
+          "api": "semantic_profile_production.execute_admitted_profile_job",
+          "attempts": 14,
+          "elapsedNs": 7282285333,
+          "returned": 14
+        },
+        {
+          "api": "semantic_profile_restore.restore_profile_explanation_result",
+          "attempts": 27,
+          "elapsedNs": 4888539542,
+          "returned": 18
+        },
+        {
+          "api": "semantic_profile_production.execute_profile_explanation",
+          "attempts": 19,
+          "elapsedNs": 2036908669,
+          "returned": 18
+        },
+        {
+          "api": "semantic_turtle.decode_profile_term",
+          "attempts": 2919,
+          "elapsedNs": 639579637,
+          "returned": 2919
+        },
+        {
+          "api": "semantic_profile_input.prepare_profile_material",
+          "attempts": 33,
+          "elapsedNs": 574311169,
+          "returned": 33
+        },
+        {
+          "api": "semantic.parse_turtle",
+          "attempts": 138,
+          "elapsedNs": 438427293,
+          "returned": 129
+        },
+        {
+          "api": "semantic.reason",
+          "attempts": 16,
+          "elapsedNs": 201620790,
+          "returned": 15
+        },
+        {
+          "api": "semantic.check_shapes",
+          "attempts": 21,
+          "elapsedNs": 169745414,
+          "returned": 21
+        },
+        {
+          "api": "semantic_scopes.prepare_validation_scope",
+          "attempts": 10,
+          "elapsedNs": 106727167,
+          "returned": 7
+        },
+        {
+          "api": "semantic_profile_restore.explanation_roots",
+          "attempts": 18,
+          "elapsedNs": 72535083,
+          "returned": 18
+        },
+        {
+          "api": "semantic.validate_shacl_text",
+          "attempts": 8,
+          "elapsedNs": 53491500,
+          "returned": 4
+        },
+        {
+          "api": "semantic_scopes.project_validation_scope",
+          "attempts": 5,
+          "elapsedNs": 24641334,
+          "returned": 1
+        },
+        {
+          "api": "probe.explicitInputGraphBuild",
+          "attempts": 4,
+          "elapsedNs": 19789042,
+          "returned": 4
+        },
+        {
+          "api": "probe.canonical_bytes",
+          "attempts": 4,
+          "elapsedNs": 1840167,
+          "returned": 4
+        },
+        {
+          "api": "probe._capture_expectation",
+          "attempts": 32,
+          "elapsedNs": 1458878,
+          "returned": 32
+        }
+      ],
+      "largestLines": [
+        {
+          "id": "restore/explanation/tail-source-tamper",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.7697931670118123,
+          "checkedIntervalUnionSeconds": 0.6949289571493864,
+          "outsideCheckedIntervalSeconds": 0.07486420986242592,
+          "lineBytes": 1673258,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 31,
+            "end": 15,
+            "family": 18,
+            "id": 40,
+            "operation": 18,
+            "parameters": 103,
+            "projectionSha256": 66,
+            "result": 1671255,
+            "sourceCaseId": 40,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1023,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 146,
+            "actualDefinitions": 1585,
+            "allocation": 1036,
+            "catalogBytes": 250,
+            "definitionBytes": 1367,
+            "expectedCapture": 3492,
+            "mutation": 86384,
+            "payloadBytes": 38973,
+            "receipts": 1176602,
+            "restored": 256270,
+            "roots": 177,
+            "rowsBytes": 43049,
+            "sourceBytes": 202,
+            "wire": 61518
+          }
+        },
+        {
+          "id": "restore/explanation/head-occurrence-1023-15",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.8261892080772668,
+          "checkedIntervalUnionSeconds": 0.7574778740527108,
+          "outsideCheckedIntervalSeconds": 0.06871133402455598,
+          "lineBytes": 1673003,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 31,
+            "end": 16,
+            "family": 18,
+            "id": 45,
+            "operation": 18,
+            "parameters": 108,
+            "projectionSha256": 66,
+            "result": 1670982,
+            "sourceCaseId": 45,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1026,
+            "start": 15,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 146,
+            "actualDefinitions": 1585,
+            "allocation": 1036,
+            "catalogBytes": 250,
+            "definitionBytes": 1367,
+            "expectedCapture": 3492,
+            "mutation": 86111,
+            "payloadBytes": 38973,
+            "receipts": 1176602,
+            "restored": 256270,
+            "roots": 177,
+            "rowsBytes": 43049,
+            "sourceBytes": 202,
+            "wire": 61518
+          }
+        },
+        {
+          "id": "restore/explanation/tail-definition-tamper",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.8086800000164658,
+          "checkedIntervalUnionSeconds": 0.6989861249458045,
+          "outsideCheckedIntervalSeconds": 0.1096938750706613,
+          "lineBytes": 1672975,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 31,
+            "end": 16,
+            "family": 18,
+            "id": 44,
+            "operation": 18,
+            "parameters": 107,
+            "projectionSha256": 66,
+            "result": 1670963,
+            "sourceCaseId": 44,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1019,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 146,
+            "actualDefinitions": 1585,
+            "allocation": 1036,
+            "catalogBytes": 250,
+            "definitionBytes": 1367,
+            "expectedCapture": 3492,
+            "mutation": 86092,
+            "payloadBytes": 38973,
+            "receipts": 1176602,
+            "restored": 256270,
+            "roots": 177,
+            "rowsBytes": 43049,
+            "sourceBytes": 202,
+            "wire": 61518
+          }
+        },
+        {
+          "id": "restore/explanation/tail-child-tamper",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.7391141670523211,
+          "checkedIntervalUnionSeconds": 0.672905332990922,
+          "outsideCheckedIntervalSeconds": 0.0662088340613991,
+          "lineBytes": 1672938,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 31,
+            "end": 16,
+            "family": 18,
+            "id": 39,
+            "operation": 18,
+            "parameters": 102,
+            "projectionSha256": 66,
+            "result": 1670937,
+            "sourceCaseId": 39,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1023,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 146,
+            "actualDefinitions": 1585,
+            "allocation": 1036,
+            "catalogBytes": 250,
+            "definitionBytes": 1367,
+            "expectedCapture": 3492,
+            "mutation": 86066,
+            "payloadBytes": 38973,
+            "receipts": 1176602,
+            "restored": 256270,
+            "roots": 177,
+            "rowsBytes": 43049,
+            "sourceBytes": 202,
+            "wire": 61518
+          }
+        },
+        {
+          "id": "restore/explanation/payload-unknown-key",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.7921525839483365,
+          "checkedIntervalUnionSeconds": 0.715577915776521,
+          "outsideCheckedIntervalSeconds": 0.07657466817181557,
+          "lineBytes": 1672933,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 31,
+            "end": 14,
+            "family": 18,
+            "id": 41,
+            "operation": 18,
+            "parameters": 104,
+            "projectionSha256": 66,
+            "result": 1670926,
+            "sourceCaseId": 41,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1025,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 146,
+            "actualDefinitions": 1585,
+            "allocation": 1036,
+            "catalogBytes": 250,
+            "definitionBytes": 1367,
+            "expectedCapture": 3492,
+            "mutation": 86055,
+            "payloadBytes": 38973,
+            "receipts": 1176602,
+            "restored": 256270,
+            "roots": 177,
+            "rowsBytes": 43049,
+            "sourceBytes": 202,
+            "wire": 61518
+          }
+        },
+        {
+          "id": "restore/explanation/tail-limits-tamper",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.7938841669820249,
+          "checkedIntervalUnionSeconds": 0.7264554993016645,
+          "outsideCheckedIntervalSeconds": 0.06742866768036038,
+          "lineBytes": 1672893,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 31,
+            "end": 16,
+            "family": 18,
+            "id": 40,
+            "operation": 18,
+            "parameters": 103,
+            "projectionSha256": 66,
+            "result": 1670887,
+            "sourceCaseId": 40,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1025,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 146,
+            "actualDefinitions": 1585,
+            "allocation": 1036,
+            "catalogBytes": 250,
+            "definitionBytes": 1367,
+            "expectedCapture": 3492,
+            "mutation": 86016,
+            "payloadBytes": 38973,
+            "receipts": 1176602,
+            "restored": 256270,
+            "roots": 177,
+            "rowsBytes": 43049,
+            "sourceBytes": 202,
+            "wire": 61518
+          }
+        },
+        {
+          "id": "dag/two-head-occurrences",
+          "family": "dag-fullview",
+          "status": "observed-return",
+          "seconds": 0.7107139999279752,
+          "checkedIntervalUnionSeconds": 0.6384637068258598,
+          "outsideCheckedIntervalSeconds": 0.07225029310211539,
+          "lineBytes": 1586557,
+          "stageAttempts": 5,
+          "topLevelFieldEncodedBytes": {
+            "api": 4,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 31,
+            "end": 16,
+            "family": 14,
+            "id": 26,
+            "operation": 5,
+            "parameters": 77,
+            "projectionSha256": 66,
+            "result": 1584859,
+            "sourceCaseId": 26,
+            "sourceRefs": 272,
+            "stage": 22,
+            "stageAttempts": 841,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 146,
+            "actualDefinitions": 1585,
+            "allocation": 1036,
+            "catalogBytes": 250,
+            "definitionBytes": 1367,
+            "expectedCapture": 3492,
+            "payloadBytes": 38973,
+            "receipts": 1176602,
+            "restored": 256270,
+            "roots": 177,
+            "rowsBytes": 43049,
+            "sourceBytes": 202,
+            "wire": 61518
+          }
+        },
+        {
+          "id": "fullview/profile-76",
+          "family": "dag-fullview",
+          "status": "unexpected-failure",
+          "seconds": 2.763913083006628,
+          "checkedIntervalUnionSeconds": 2.756292207748629,
+          "outsideCheckedIntervalSeconds": 0.007620875257998705,
+          "lineBytes": 1536314,
+          "stageAttempts": 39,
+          "topLevelFieldEncodedBytes": {
+            "api": 49,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 40,
+            "diagnostic": 127,
+            "end": 16,
+            "error": 30,
+            "family": 14,
+            "id": 21,
+            "operation": 10,
+            "parameters": 26,
+            "partialOutputs": 1529206,
+            "projectionSha256": 66,
+            "sourceCaseId": 29,
+            "sourceRefs": 226,
+            "stage": 16,
+            "stageAttempts": 6109,
+            "start": 13,
+            "status": 20,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {}
+        },
+        {
+          "id": "dag/raw-aliases",
+          "family": "dag-fullview",
+          "status": "observed-return",
+          "seconds": 0.4103690830525011,
+          "checkedIntervalUnionSeconds": 0.3471664582611993,
+          "outsideCheckedIntervalSeconds": 0.06320262479130179,
+          "lineBytes": 1232300,
+          "stageAttempts": 5,
+          "topLevelFieldEncodedBytes": {
+            "api": 4,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 22,
+            "end": 16,
+            "family": 14,
+            "id": 17,
+            "operation": 5,
+            "parameters": 44,
+            "projectionSha256": 66,
+            "result": 1230663,
+            "sourceCaseId": 17,
+            "sourceRefs": 272,
+            "stage": 22,
+            "stageAttempts": 841,
+            "start": 15,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 144,
+            "actualDefinitions": 2,
+            "allocation": 1002,
+            "catalogBytes": 246,
+            "definitionBytes": 121,
+            "expectedCapture": 6977,
+            "payloadBytes": 14649,
+            "receipts": 873952,
+            "restored": 292070,
+            "roots": 2,
+            "rowsBytes": 16777,
+            "sourceBytes": 955,
+            "wire": 23574
+          }
+        },
+        {
+          "id": "restore/explanation/leaf-rename-all",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.26157787500415,
+          "checkedIntervalUnionSeconds": 0.2095959570724517,
+          "outsideCheckedIntervalSeconds": 0.05198191793169826,
+          "lineBytes": 1047434,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 19,
+            "end": 15,
+            "family": 18,
+            "id": 37,
+            "operation": 18,
+            "parameters": 140,
+            "projectionSha256": 66,
+            "result": 1045421,
+            "sourceCaseId": 37,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1014,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 129,
+            "actualDefinitions": 2,
+            "allocation": 1002,
+            "catalogBytes": 226,
+            "definitionBytes": 121,
+            "expectedCapture": 2888,
+            "mutation": 27875,
+            "payloadBytes": 11224,
+            "receipts": 620731,
+            "restored": 350195,
+            "roots": 48,
+            "rowsBytes": 12668,
+            "sourceBytes": 182,
+            "wire": 17926
+          }
+        },
+        {
+          "id": "restore/explanation/dag-last-premise-forward",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.24390291702002287,
+          "checkedIntervalUnionSeconds": 0.18819008208811283,
+          "outsideCheckedIntervalSeconds": 0.05571283493191004,
+          "lineBytes": 1046967,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 19,
+            "end": 16,
+            "family": 18,
+            "id": 46,
+            "operation": 18,
+            "parameters": 149,
+            "projectionSha256": 66,
+            "result": 1044915,
+            "sourceCaseId": 46,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1025,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 129,
+            "actualDefinitions": 2,
+            "allocation": 1002,
+            "catalogBytes": 226,
+            "definitionBytes": 121,
+            "expectedCapture": 2888,
+            "mutation": 27369,
+            "payloadBytes": 11224,
+            "receipts": 620731,
+            "restored": 350195,
+            "roots": 48,
+            "rowsBytes": 12668,
+            "sourceBytes": 182,
+            "wire": 17926
+          }
+        },
+        {
+          "id": "restore/explanation/dag-depth-plus-one",
+          "family": "restore-negative",
+          "status": "observed-return",
+          "seconds": 0.2556652909843251,
+          "checkedIntervalUnionSeconds": 0.20797133399173617,
+          "outsideCheckedIntervalSeconds": 0.04769395699258894,
+          "lineBytes": 1046863,
+          "stageAttempts": 6,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 19,
+            "end": 16,
+            "family": 18,
+            "id": 40,
+            "operation": 18,
+            "parameters": 143,
+            "projectionSha256": 66,
+            "result": 1044833,
+            "sourceCaseId": 40,
+            "sourceRefs": 272,
+            "stage": 18,
+            "stageAttempts": 1022,
+            "start": 15,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "actualCatalog": 129,
+            "actualDefinitions": 2,
+            "allocation": 1002,
+            "catalogBytes": 226,
+            "definitionBytes": 121,
+            "expectedCapture": 2888,
+            "mutation": 27287,
+            "payloadBytes": 11224,
+            "receipts": 620731,
+            "restored": 350195,
+            "roots": 48,
+            "rowsBytes": 12668,
+            "sourceBytes": 182,
+            "wire": 17926
+          }
+        }
+      ],
+      "profileContextFacts": {
+        "jsonPath": "$.header.contexts.mathInputContexts[*].eligibleStandaloneMathInput",
+        "contexts": 83,
+        "eligibleTrue": 82,
+        "eligibleFalse": 1,
+        "profileObservations": 83,
+        "matchedSourceCaseIds": 83,
+        "statuses": {
+          "observed-return": 78,
+          "not-executed": 1,
+          "observed-rejection": 4
+        },
+        "profileCheckedExecuteCalls": 82
+      }
+    },
+    {
+      "name": "producer-fault",
+      "identity": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/build/i05-pytest8/full-pytest-02/test_r1_real_producer_capture_0/observations.jsonl",
+        "bytes": 17290993,
+        "sha256": "23f6dd18a937edb3761ba3ebcca0eb65f1c9d92e630947ecc4b68880e9f2e71c"
+      },
+      "records": 188,
+      "observationCount": 186,
+      "terminal": {
+        "state": "failed",
+        "collectionComplete": false,
+        "elapsedSeconds": 83.2794518750161,
+        "firstFailure": {
+          "api": "semantic_profile_restore.restore_profile_explanation_result",
+          "code": "INTERNAL_ERROR",
+          "id": "dag/type",
+          "stage": "restore/result"
+        }
+      },
+      "completedIdCount": 186,
+      "unstartedIdCount": 231,
+      "observationsSeconds": 82.78779892064631,
+      "elapsedMinusObservationSeconds": 0.4916529543697834,
+      "familyGroups": {
+        "profile-83": {
+          "count": 83,
+          "observationSeconds": 70.0013175009517,
+          "checkedIntervalUnionSeconds": 69.70709206582978,
+          "outsideCheckedIntervalSeconds": 0.29422543512191623,
+          "lineBytes": 15944092,
+          "stageAttempts": 2794
+        },
+        "consumer-C-query": {
+          "count": 2,
+          "observationSeconds": 0.6201444580219686,
+          "checkedIntervalUnionSeconds": 0.6198163330554962,
+          "outsideCheckedIntervalSeconds": 0.0003281249664723873,
+          "lineBytes": 2173,
+          "stageAttempts": 4
+        },
+        "consumer-C-shape": {
+          "count": 9,
+          "observationSeconds": 0.06285854300949723,
+          "checkedIntervalUnionSeconds": 0.06172008323483169,
+          "outsideCheckedIntervalSeconds": 0.0011384597746655345,
+          "lineBytes": 12169,
+          "stageAttempts": 27
+        },
+        "consumer-C-date": {
+          "count": 4,
+          "observationSeconds": 0.023058665916323662,
+          "checkedIntervalUnionSeconds": 0.02259912493173033,
+          "outsideCheckedIntervalSeconds": 0.0004595409845933318,
+          "lineBytes": 4859,
+          "stageAttempts": 4
+        },
+        "consumer-C-integer": {
+          "count": 2,
+          "observationSeconds": 0.008724916027858853,
+          "checkedIntervalUnionSeconds": 0.008533834014087915,
+          "outsideCheckedIntervalSeconds": 0.00019108201377093792,
+          "lineBytes": 2626,
+          "stageAttempts": 2
+        },
+        "utc-date": {
+          "count": 2,
+          "observationSeconds": 0.011837000027298927,
+          "checkedIntervalUnionSeconds": 0.011617665877565742,
+          "outsideCheckedIntervalSeconds": 0.00021933414973318577,
+          "lineBytes": 2559,
+          "stageAttempts": 2
+        },
+        "turtle": {
+          "count": 1,
+          "observationSeconds": 0.004808083991520107,
+          "checkedIntervalUnionSeconds": 0.004487333004362881,
+          "outsideCheckedIntervalSeconds": 0.0003207509871572256,
+          "lineBytes": 2383,
+          "stageAttempts": 1
+        },
+        "rdfs": {
+          "count": 1,
+          "observationSeconds": 0.013429666985757649,
+          "checkedIntervalUnionSeconds": 0.01292020792607218,
+          "outsideCheckedIntervalSeconds": 0.0005094590596854687,
+          "lineBytes": 5051,
+          "stageAttempts": 2
+        },
+        "b1-measurement": {
+          "count": 2,
+          "observationSeconds": 1.761531208991073,
+          "checkedIntervalUnionSeconds": 1.7451889195945114,
+          "outsideCheckedIntervalSeconds": 0.016342289396561682,
+          "lineBytes": 256005,
+          "stageAttempts": 32
+        },
+        "readonly-query": {
+          "count": 25,
+          "observationSeconds": 8.294339251704514,
+          "checkedIntervalUnionSeconds": 8.289812292088754,
+          "outsideCheckedIntervalSeconds": 0.0045269596157595515,
+          "lineBytes": 47167,
+          "stageAttempts": 50
+        },
+        "turtle-lexical": {
+          "count": 17,
+          "observationSeconds": 0.018106583273038268,
+          "checkedIntervalUnionSeconds": 0.016327623976394534,
+          "outsideCheckedIntervalSeconds": 0.001778959296643734,
+          "lineBytes": 18475,
+          "stageAttempts": 17
+        },
+        "turtle-rejection": {
+          "count": 9,
+          "observationSeconds": 0.002559624146670103,
+          "checkedIntervalUnionSeconds": 0.001874874928034842,
+          "outsideCheckedIntervalSeconds": 0.0006847492186352611,
+          "lineBytes": 9547,
+          "stageAttempts": 9
+        },
+        "rdfs-finite": {
+          "count": 7,
+          "observationSeconds": 0.015858582919463515,
+          "checkedIntervalUnionSeconds": 0.014914582250639796,
+          "outsideCheckedIntervalSeconds": 0.000944000668823719,
+          "lineBytes": 16691,
+          "stageAttempts": 14
+        },
+        "legacy-rule": {
+          "count": 4,
+          "observationSeconds": 0.02249179210048169,
+          "checkedIntervalUnionSeconds": 0.02150674897711724,
+          "outsideCheckedIntervalSeconds": 0.0009850431233644485,
+          "lineBytes": 11190,
+          "stageAttempts": 8
+        },
+        "scope": {
+          "count": 10,
+          "observationSeconds": 1.1114686676301062,
+          "checkedIntervalUnionSeconds": 1.1049572924384847,
+          "outsideCheckedIntervalSeconds": 0.006511375191621482,
+          "lineBytes": 185276,
+          "stageAttempts": 51
+        },
+        "original-query": {
+          "count": 2,
+          "observationSeconds": 0.6290000419830903,
+          "checkedIntervalUnionSeconds": 0.6286999989533797,
+          "outsideCheckedIntervalSeconds": 0.00030004302971065044,
+          "lineBytes": 3648,
+          "stageAttempts": 4
+        },
+        "original-shape-repair": {
+          "count": 3,
+          "observationSeconds": 0.14120774995535612,
+          "checkedIntervalUnionSeconds": 0.14086695609148592,
+          "outsideCheckedIntervalSeconds": 0.0003407938638702035,
+          "lineBytes": 6170,
+          "stageAttempts": 9
+        },
+        "transfer-shape-repair": {
+          "count": 2,
+          "observationSeconds": 0.01375054195523262,
+          "checkedIntervalUnionSeconds": 0.013475333107635379,
+          "outsideCheckedIntervalSeconds": 0.0002752088475972414,
+          "lineBytes": 2704,
+          "stageAttempts": 6
+        },
+        "dag-fullview": {
+          "count": 1,
+          "observationSeconds": 0.031306041055358946,
+          "checkedIntervalUnionSeconds": 0.025120250997133553,
+          "outsideCheckedIntervalSeconds": 0.006185790058225393,
+          "lineBytes": 501533,
+          "stageAttempts": 4
+        }
+      },
+      "apiTotalsSorted": [
+        {
+          "api": "semantic_execution.execute_profile_records",
+          "attempts": 82,
+          "elapsedNs": 69080480915,
+          "returned": 78
+        },
+        {
+          "api": "semantic.query",
+          "attempts": 36,
+          "elapsedNs": 11788985712,
+          "returned": 25
+        },
+        {
+          "api": "semantic_turtle.decode_profile_term",
+          "attempts": 2712,
+          "elapsedNs": 625994025,
+          "returned": 2712
+        },
+        {
+          "api": "semantic.parse_turtle",
+          "attempts": 138,
+          "elapsedNs": 356028785,
+          "returned": 129
+        },
+        {
+          "api": "semantic.check_shapes",
+          "attempts": 21,
+          "elapsedNs": 239616456,
+          "returned": 21
+        },
+        {
+          "api": "semantic.reason",
+          "attempts": 16,
+          "elapsedNs": 161269166,
+          "returned": 15
+        },
+        {
+          "api": "semantic_scopes.prepare_validation_scope",
+          "attempts": 10,
+          "elapsedNs": 95352334,
+          "returned": 7
+        },
+        {
+          "api": "semantic.validate_shacl_text",
+          "attempts": 8,
+          "elapsedNs": 42753956,
+          "returned": 4
+        },
+        {
+          "api": "semantic_profile_production.execute_profile_explanation",
+          "attempts": 1,
+          "elapsedNs": 23600750,
+          "returned": 1
+        },
+        {
+          "api": "semantic_scopes.project_validation_scope",
+          "attempts": 5,
+          "elapsedNs": 20466833,
+          "returned": 1
+        },
+        {
+          "api": "probe.explicitInputGraphBuild",
+          "attempts": 4,
+          "elapsedNs": 14015584,
+          "returned": 4
+        },
+        {
+          "api": "semantic_profile_input.prepare_profile_material",
+          "attempts": 1,
+          "elapsedNs": 1495708,
+          "returned": 1
+        },
+        {
+          "api": "probe.canonical_bytes",
+          "attempts": 4,
+          "elapsedNs": 888583,
+          "returned": 4
+        },
+        {
+          "api": "probe._capture_expectation",
+          "attempts": 1,
+          "elapsedNs": 19542,
+          "returned": 1
+        },
+        {
+          "api": "semantic_profile_restore.restore_profile_explanation_result",
+          "attempts": 1,
+          "elapsedNs": 3791,
+          "returned": 0
+        }
+      ],
+      "largestLines": [
+        {
+          "id": "dag/type",
+          "family": "dag-fullview",
+          "status": "unexpected-failure",
+          "seconds": 0.031306041055358946,
+          "checkedIntervalUnionSeconds": 0.025120250997133553,
+          "outsideCheckedIntervalSeconds": 0.006185790058225393,
+          "lineBytes": 501533,
+          "stageAttempts": 4,
+          "topLevelFieldEncodedBytes": {
+            "api": 61,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 10,
+            "diagnostic": 164,
+            "end": 16,
+            "error": 25,
+            "family": 14,
+            "id": 10,
+            "operation": 5,
+            "parameters": 44,
+            "partialOutputs": 499811,
+            "projectionSha256": 66,
+            "sourceCaseId": 10,
+            "sourceRefs": 272,
+            "stage": 16,
+            "stageAttempts": 677,
+            "start": 16,
+            "status": 20,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {}
+        },
+        {
+          "id": "profile-83/R-04:steps:1",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.5008410409791395,
+          "checkedIntervalUnionSeconds": 1.4959495817311108,
+          "outsideCheckedIntervalSeconds": 0.004891459248028696,
+          "lineBytes": 355198,
+          "stageAttempts": 40,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 25,
+            "end": 16,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 348211,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 6236,
+            "start": 13,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 167967,
+            "rows": 180057,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/R-04:steps:2",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.5520168750081211,
+          "checkedIntervalUnionSeconds": 1.5470896628685296,
+          "outsideCheckedIntervalSeconds": 0.004927212139591575,
+          "lineBytes": 355198,
+          "stageAttempts": 40,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 25,
+            "end": 16,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 348211,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 6233,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 167967,
+            "rows": 180057,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/B-07:steps:0",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.5004733750829473,
+          "checkedIntervalUnionSeconds": 1.4964954981114715,
+          "outsideCheckedIntervalSeconds": 0.00397787697147578,
+          "lineBytes": 331266,
+          "stageAttempts": 37,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 25,
+            "end": 16,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 324746,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 5766,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 156567,
+            "rows": 167992,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/B-01:steps:0",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.5844259998993948,
+          "checkedIntervalUnionSeconds": 1.5812457480933517,
+          "outsideCheckedIntervalSeconds": 0.0031802518060430884,
+          "lineBytes": 331255,
+          "stageAttempts": 37,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 25,
+            "end": 16,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 324746,
+            "sourceCaseId": 14,
+            "sourceRefs": 225,
+            "stage": 17,
+            "stageAttempts": 5756,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 156567,
+            "rows": 167992,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/R-03:steps:1",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.5394821659428999,
+          "checkedIntervalUnionSeconds": 1.5360158738913015,
+          "outsideCheckedIntervalSeconds": 0.0034662920515984297,
+          "lineBytes": 331254,
+          "stageAttempts": 37,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 25,
+            "end": 16,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 324746,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 5754,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 156567,
+            "rows": 167992,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/extension:MULTI-OUTPUT-ONE-FIRING",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.0680847089970484,
+          "checkedIntervalUnionSeconds": 1.0648735041031614,
+          "outsideCheckedIntervalSeconds": 0.003211204893887043,
+          "lineBytes": 280943,
+          "stageAttempts": 37,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 46,
+            "end": 13,
+            "family": 12,
+            "id": 46,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 274373,
+            "sourceCaseId": 35,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 5756,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 132222,
+            "rows": 141964,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/B-05:steps:0",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.222360249958001,
+          "checkedIntervalUnionSeconds": 1.2186103326966986,
+          "outsideCheckedIntervalSeconds": 0.003749917261302471,
+          "lineBytes": 280499,
+          "stageAttempts": 44,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 32,
+            "end": 14,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 272882,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 6859,
+            "start": 15,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 131140,
+            "rows": 141555,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/B-10:steps:0",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.1175007909769192,
+          "checkedIntervalUnionSeconds": 1.1137609612196684,
+          "outsideCheckedIntervalSeconds": 0.0037398297572508454,
+          "lineBytes": 280498,
+          "stageAttempts": 44,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 32,
+            "end": 16,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 272882,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 6856,
+            "start": 15,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 131140,
+            "rows": 141555,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/baseline:G-behavior",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.0866186249768361,
+          "checkedIntervalUnionSeconds": 1.083230456802994,
+          "outsideCheckedIntervalSeconds": 0.003388168173842132,
+          "lineBytes": 280497,
+          "stageAttempts": 44,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 32,
+            "end": 14,
+            "family": 12,
+            "id": 32,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 272882,
+            "sourceCaseId": 21,
+            "sourceRefs": 225,
+            "stage": 17,
+            "stageAttempts": 6843,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 131140,
+            "rows": 141555,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/B-09:steps:0",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.1416846250649542,
+          "checkedIntervalUnionSeconds": 1.1384106191108003,
+          "outsideCheckedIntervalSeconds": 0.0032740059541538358,
+          "lineBytes": 280493,
+          "stageAttempts": 44,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 32,
+            "end": 16,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 272882,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 6850,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 131140,
+            "rows": 141555,
+            "rowsDigest": 66
+          }
+        },
+        {
+          "id": "profile-83/B-11:steps:0",
+          "family": "profile-83",
+          "status": "observed-return",
+          "seconds": 1.0709617090178654,
+          "checkedIntervalUnionSeconds": 1.067601204966195,
+          "outsideCheckedIntervalSeconds": 0.003360504051670432,
+          "lineBytes": 280493,
+          "stageAttempts": 44,
+          "topLevelFieldEncodedBytes": {
+            "api": 44,
+            "callCounts": 26,
+            "contextStatus": 10,
+            "datasetId": 32,
+            "end": 15,
+            "family": 12,
+            "id": 25,
+            "operation": 9,
+            "parameters": 2,
+            "projectionSha256": 66,
+            "result": 272882,
+            "sourceCaseId": 14,
+            "sourceRefs": 226,
+            "stage": 17,
+            "stageAttempts": 6851,
+            "start": 16,
+            "status": 17,
+            "type": 13
+          },
+          "resultFieldEncodedBytes": {
+            "jsonPayloadDigest": 66,
+            "payload": 131140,
+            "rows": 141555,
+            "rowsDigest": 66
+          }
+        }
+      ],
+      "profileContextFacts": {
+        "jsonPath": "$.header.contexts.mathInputContexts[*].eligibleStandaloneMathInput",
+        "contexts": 83,
+        "eligibleTrue": 82,
+        "eligibleFalse": 1,
+        "profileObservations": 83,
+        "matchedSourceCaseIds": 83,
+        "statuses": {
+          "observed-return": 78,
+          "not-executed": 1,
+          "observed-rejection": 4
+        },
+        "profileCheckedExecuteCalls": 82
+      }
+    }
+  ],
+  "comparablePrefix": {
+    "count": 185,
+    "rows": [
+      {
+        "id": "profile-83/baseline:G-base",
+        "sharedSeconds": 1.1175330410478637,
+        "faultSeconds": 0.9517289999639615,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/baseline:G-behavior",
+        "sharedSeconds": 1.2635327499592677,
+        "faultSeconds": 1.0866186249768361,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/baseline:G-map-empty",
+        "sharedSeconds": 0.41996625007595867,
+        "faultSeconds": 0.356052584014833,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/baseline:E.5",
+        "sharedSeconds": 0.441870916984044,
+        "faultSeconds": 0.3937143749790266,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/A-01:steps:1",
+        "sharedSeconds": 1.1079139170469716,
+        "faultSeconds": 0.9870510840555653,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-01:steps:0",
+        "sharedSeconds": 1.6304816250922158,
+        "faultSeconds": 1.5844259998993948,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-02:steps:0",
+        "sharedSeconds": 1.1892135000089183,
+        "faultSeconds": 0.9900880829663947,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-03:setup:0",
+        "sharedSeconds": 0.6180134169990197,
+        "faultSeconds": 0.5953701669350266,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-03:steps:0",
+        "sharedSeconds": 1.0980942921014503,
+        "faultSeconds": 0.935587458894588,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-04:steps:0",
+        "sharedSeconds": 1.2998551250202581,
+        "faultSeconds": 1.1356323749059811,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-04:steps:1",
+        "sharedSeconds": 0.8085767079610378,
+        "faultSeconds": 0.9106362919555977,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-05:steps:0",
+        "sharedSeconds": 1.256199249997735,
+        "faultSeconds": 1.222360249958001,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-06:steps:0",
+        "sharedSeconds": 1.221751332981512,
+        "faultSeconds": 1.0828525830293074,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-07:steps:0",
+        "sharedSeconds": 1.5054999169660732,
+        "faultSeconds": 1.5004733750829473,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-09:steps:0",
+        "sharedSeconds": 1.25888279103674,
+        "faultSeconds": 1.1416846250649542,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-10:steps:0",
+        "sharedSeconds": 1.1958410830702633,
+        "faultSeconds": 1.1175007909769192,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/B-11:steps:0",
+        "sharedSeconds": 1.2663424169877544,
+        "faultSeconds": 1.0709617090178654,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-01:steps:0",
+        "sharedSeconds": 0.5040340420091525,
+        "faultSeconds": 0.3821875840658322,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-02:steps:0",
+        "sharedSeconds": 0.46034949994646013,
+        "faultSeconds": 0.42052762501407415,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-02:steps:1",
+        "sharedSeconds": 0.45336350006982684,
+        "faultSeconds": 0.4372570830164477,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-03:steps:0",
+        "sharedSeconds": 0.4386325419181958,
+        "faultSeconds": 0.4461852500680834,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-03:steps:1",
+        "sharedSeconds": 0.47264379204716533,
+        "faultSeconds": 0.39089850010350347,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-03:steps:2",
+        "sharedSeconds": 0.4438229160150513,
+        "faultSeconds": 0.39399741601664573,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-04:steps:0",
+        "sharedSeconds": 0.46242341597098857,
+        "faultSeconds": 0.39229716593399644,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-04:steps:1",
+        "sharedSeconds": 0.47469654108863324,
+        "faultSeconds": 0.3748287910129875,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-06:steps:0",
+        "sharedSeconds": 0.45940312498714775,
+        "faultSeconds": 0.3995379999978468,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/M-06:steps:2",
+        "sharedSeconds": 0.46283183293417096,
+        "faultSeconds": 0.42740816704463214,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/O-01:setup:0",
+        "sharedSeconds": 1.0106628750218078,
+        "faultSeconds": 0.9265309580368921,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/O-01:steps:0",
+        "sharedSeconds": 1.0146820000372827,
+        "faultSeconds": 0.8916767089394853,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/Q-01:steps:0",
+        "sharedSeconds": 1.0667312090517953,
+        "faultSeconds": 0.968210665974766,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/Q-02:setup:0",
+        "sharedSeconds": 0.6530412079300731,
+        "faultSeconds": 0.7536884999135509,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/Q-02:steps:0",
+        "sharedSeconds": 0.6555972499772906,
+        "faultSeconds": 0.6435794170247391,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-01:steps:0",
+        "sharedSeconds": 1.03545700001996,
+        "faultSeconds": 1.0208506670314819,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-02:steps:0",
+        "sharedSeconds": 1.0240116670029238,
+        "faultSeconds": 0.9366543339565396,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-02:steps:1",
+        "sharedSeconds": 0.5977447499753907,
+        "faultSeconds": 0.573153999983333,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-02:steps:2",
+        "sharedSeconds": 0.5653592910384759,
+        "faultSeconds": 0.5503290840424597,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-02:steps:3",
+        "sharedSeconds": 0.6079825420165434,
+        "faultSeconds": 0.6257202080450952,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-03:steps:0",
+        "sharedSeconds": 1.0289940829388797,
+        "faultSeconds": 1.0398837499087676,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-03:steps:1",
+        "sharedSeconds": 1.451026666094549,
+        "faultSeconds": 1.5394821659428999,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-03:steps:2",
+        "sharedSeconds": 1.102798374951817,
+        "faultSeconds": 1.0095291249454021,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-03:steps:3",
+        "sharedSeconds": 1.104531249962747,
+        "faultSeconds": 1.0541596250841394,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-04:steps:0",
+        "sharedSeconds": 1.1263317499542609,
+        "faultSeconds": 1.0637920420849696,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-04:steps:1",
+        "sharedSeconds": 1.5548479170538485,
+        "faultSeconds": 1.5008410409791395,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-04:steps:2",
+        "sharedSeconds": 1.4708882910199463,
+        "faultSeconds": 1.5520168750081211,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-05:steps:0",
+        "sharedSeconds": 1.0265256250277162,
+        "faultSeconds": 1.0185982909752056,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-05:steps:1",
+        "sharedSeconds": 1.167995750089176,
+        "faultSeconds": 1.1117235419806093,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-05:steps:2:order:0",
+        "sharedSeconds": 1.2021655419375747,
+        "faultSeconds": 1.1260024170624092,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-06:steps:0",
+        "sharedSeconds": 1.0332517500501126,
+        "faultSeconds": 1.014313374995254,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-06:steps:1",
+        "sharedSeconds": 1.1770734579768032,
+        "faultSeconds": 1.1845296659739688,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-06:steps:2:order:0",
+        "sharedSeconds": 1.169057207996957,
+        "faultSeconds": 1.0825728749623522,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/R-06:steps:2:order:1",
+        "sharedSeconds": 1.1671294160187244,
+        "faultSeconds": 1.1950725000351667,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/V-01:steps:0",
+        "sharedSeconds": 1.0059255419764668,
+        "faultSeconds": 1.0390203749993816,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/V-01:steps:1",
+        "sharedSeconds": 1.0203869580291212,
+        "faultSeconds": 1.0063114169752225,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/V-01:steps:2",
+        "sharedSeconds": 1.0823699999600649,
+        "faultSeconds": 1.019796833046712,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/V-01:steps:3",
+        "sharedSeconds": 1.0357476249337196,
+        "faultSeconds": 0.9258210000116378,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-EQ-TRUE",
+        "sharedSeconds": 0.8440758340293542,
+        "faultSeconds": 0.8353314161067829,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-EQ-FALSE",
+        "sharedSeconds": 0.7445118749747053,
+        "faultSeconds": 0.7399028339423239,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-NE-TRUE",
+        "sharedSeconds": 0.7975778750842437,
+        "faultSeconds": 0.8405717079294845,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-NE-FALSE",
+        "sharedSeconds": 0.7806461249710992,
+        "faultSeconds": 0.7584250409854576,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-LT-TRUE",
+        "sharedSeconds": 0.9200941250892356,
+        "faultSeconds": 0.7996636249590665,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-LT-FALSE",
+        "sharedSeconds": 0.792187667102553,
+        "faultSeconds": 0.7930607920279726,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-LE-TRUE",
+        "sharedSeconds": 0.8412392500322312,
+        "faultSeconds": 0.9242715829750523,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-LE-FALSE",
+        "sharedSeconds": 0.7883172499714419,
+        "faultSeconds": 0.8269888749346137,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-GT-TRUE",
+        "sharedSeconds": 0.88291558297351,
+        "faultSeconds": 0.9308296670205891,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-GT-FALSE",
+        "sharedSeconds": 0.7904617909807712,
+        "faultSeconds": 0.7555715830530971,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-GE-TRUE",
+        "sharedSeconds": 0.8357545419130474,
+        "faultSeconds": 0.7439632089808583,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-GE-FALSE",
+        "sharedSeconds": 0.7484435410005972,
+        "faultSeconds": 0.7908959590131417,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:JOIN-NO-CROSS-ALARM",
+        "sharedSeconds": 0.7363563750404865,
+        "faultSeconds": 0.6221847919514403,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:MULTI-OUTPUT-ONE-FIRING",
+        "sharedSeconds": 1.1992869999958202,
+        "faultSeconds": 1.0680847089970484,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:DISABLED-RULE-NO-OUTPUT",
+        "sharedSeconds": 0.6761926249600947,
+        "faultSeconds": 0.6360508339712396,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:MISSING-PROPERTY-IS-NOT-A-NEGATION",
+        "sharedSeconds": 0.6584725840948522,
+        "faultSeconds": 0.6122309579513967,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-EQ-ABOVE-FALSE",
+        "sharedSeconds": 0.8275290420278907,
+        "faultSeconds": 0.7174357910407707,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-NE-ABOVE-TRUE",
+        "sharedSeconds": 0.8490959169575945,
+        "faultSeconds": 0.7129022920271382,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-LT-ABOVE-FALSE",
+        "sharedSeconds": 0.7343112919479609,
+        "faultSeconds": 0.6540435830829665,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-LE-BELOW-TRUE",
+        "sharedSeconds": 0.8684612920042127,
+        "faultSeconds": 0.7383222499629483,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-GT-BELOW-FALSE",
+        "sharedSeconds": 0.833742415998131,
+        "faultSeconds": 0.6939616670133546,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/extension:CMP-GE-ABOVE-TRUE",
+        "sharedSeconds": 0.9504303750582039,
+        "faultSeconds": 0.7097518750233576,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/transfer:repair",
+        "sharedSeconds": 6.375019438564777e-06,
+        "faultSeconds": 5.542067810893059e-06,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/transfer:classification",
+        "sharedSeconds": 0.8723443750059232,
+        "faultSeconds": 0.7151992910075933,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/E.5:event-fragment:round:1",
+        "sharedSeconds": 1.5901322910794988,
+        "faultSeconds": 1.4210300829727203,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/E.5:event-fragment:round:2",
+        "sharedSeconds": 0.749960417044349,
+        "faultSeconds": 0.6233077920041978,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/E.5:event-fragment:round:3",
+        "sharedSeconds": 0.6154381660744548,
+        "faultSeconds": 0.4774628330487758,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "profile-83/E.5:event-fragment:round:4",
+        "sharedSeconds": 0.45436512504238635,
+        "faultSeconds": 0.358140500029549,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-query-numeric-promotion",
+        "sharedSeconds": 0.3940179579658434,
+        "faultSeconds": 0.3118982909945771,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-query-type-error",
+        "sharedSeconds": 0.37540066707879305,
+        "faultSeconds": 0.3082461670273915,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-datatype-exact",
+        "sharedSeconds": 0.008301708032377064,
+        "faultSeconds": 0.007405583979561925,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-langString",
+        "sharedSeconds": 0.007451000041328371,
+        "faultSeconds": 0.0059451250126585364,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-count-term-identity",
+        "sharedSeconds": 0.00843120797071606,
+        "faultSeconds": 0.0073860419215634465,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-in-term-identity",
+        "sharedSeconds": 0.009626667015254498,
+        "faultSeconds": 0.007797125028446317,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-numeric",
+        "sharedSeconds": 0.008278749999590218,
+        "faultSeconds": 0.0062716660322621465,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-nni",
+        "sharedSeconds": 0.007635624962858856,
+        "faultSeconds": 0.005836667027324438,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-dateTime-equal",
+        "sharedSeconds": 0.00901604094542563,
+        "faultSeconds": 0.005694458959624171,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-dateTime-before",
+        "sharedSeconds": 0.009505582973361015,
+        "faultSeconds": 0.008800833020359278,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-type-error",
+        "sharedSeconds": 0.00838524999562651,
+        "faultSeconds": 0.007721042027696967,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-date-entry/strict/legacy",
+        "sharedSeconds": 0.00605116703081876,
+        "faultSeconds": 0.004400208010338247,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-date-entry/strict/utc-date-range-v1",
+        "sharedSeconds": 0.008563791983760893,
+        "faultSeconds": 0.00686683296225965,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-date-entry/integer-illtyped-report-v1/legacy",
+        "sharedSeconds": 0.006266167038120329,
+        "faultSeconds": 0.005544250016100705,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-inclusive-date-entry/integer-illtyped-report-v1/utc-date-range-v1",
+        "sharedSeconds": 0.007742666988633573,
+        "faultSeconds": 0.00624737492762506,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-illtyped-entry/strict",
+        "sharedSeconds": 0.002089165966026485,
+        "faultSeconds": 0.0012912079691886902,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "C-illtyped-entry/integer-illtyped-report-v1",
+        "sharedSeconds": 0.009120041970163584,
+        "faultSeconds": 0.007433708058670163,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "utc-date/C-before",
+        "sharedSeconds": 0.00861304101999849,
+        "faultSeconds": 0.007235958008095622,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "utc-date/C-offset",
+        "sharedSeconds": 0.006038374966010451,
+        "faultSeconds": 0.004601042019203305,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/G-base-fixture",
+        "sharedSeconds": 0.004770333995111287,
+        "faultSeconds": 0.004808083991520107,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/ten-ontology-suite",
+        "sharedSeconds": 0.015546042006462812,
+        "faultSeconds": 0.013429666985757649,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "b1-semantic/1x",
+        "sharedSeconds": 0.8206044170074165,
+        "faultSeconds": 0.8067107090028003,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": false,
+        "sameCallCounts": true
+      },
+      {
+        "id": "b1-semantic/10x",
+        "sharedSeconds": 1.1840007080463693,
+        "faultSeconds": 0.9548204999882728,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": false,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/ask",
+        "sharedSeconds": 0.431171957985498,
+        "faultSeconds": 0.30318441695999354,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/words-in-string",
+        "sharedSeconds": 0.41092104208655655,
+        "faultSeconds": 0.2951746250037104,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/optional-unbound",
+        "sharedSeconds": 0.5193679170915857,
+        "faultSeconds": 0.4638172499835491,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/count",
+        "sharedSeconds": 0.4167742090066895,
+        "faultSeconds": 0.29545341699849814,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/order-tie",
+        "sharedSeconds": 0.4003392920130864,
+        "faultSeconds": 0.3316829999675974,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/filter",
+        "sharedSeconds": 0.46530404104851186,
+        "faultSeconds": 0.3264389579417184,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-distinct",
+        "sharedSeconds": 0.40393162495456636,
+        "faultSeconds": 0.2925436249934137,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-count",
+        "sharedSeconds": 0.45516741706524044,
+        "faultSeconds": 0.3824030830292031,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/insert-update",
+        "sharedSeconds": 0.36524804204236716,
+        "faultSeconds": 0.28718404192477465,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/delete-update",
+        "sharedSeconds": 0.4593364169122651,
+        "faultSeconds": 0.32853941700886935,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/construct",
+        "sharedSeconds": 0.4461332919308916,
+        "faultSeconds": 0.3041082910494879,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/describe",
+        "sharedSeconds": 0.38116104202345014,
+        "faultSeconds": 0.3099664170295,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/invalid",
+        "sharedSeconds": 0.3623601660365239,
+        "faultSeconds": 0.27541991707403213,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/load-update",
+        "sharedSeconds": 0.4459736669668928,
+        "faultSeconds": 0.39891587500460446,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/rand",
+        "sharedSeconds": 0.3903831249335781,
+        "faultSeconds": 0.27631304203532636,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/now",
+        "sharedSeconds": 0.38672870898153633,
+        "faultSeconds": 0.2751851249486208,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/uuid",
+        "sharedSeconds": 0.3645185419591144,
+        "faultSeconds": 0.2953529580263421,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/struuid",
+        "sharedSeconds": 0.3911369579145685,
+        "faultSeconds": 0.27633841696660966,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/bnode",
+        "sharedSeconds": 0.37226537498645484,
+        "faultSeconds": 0.27903520793188363,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-expression-0",
+        "sharedSeconds": 0.44710125005804,
+        "faultSeconds": 0.4515304999658838,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-expression-1",
+        "sharedSeconds": 0.3827894580317661,
+        "faultSeconds": 0.3568062090780586,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-expression-2",
+        "sharedSeconds": 0.3808324170531705,
+        "faultSeconds": 0.3488044999539852,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-expression-3",
+        "sharedSeconds": 0.3821958329062909,
+        "faultSeconds": 0.3420531249139458,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-expression-4",
+        "sharedSeconds": 0.370272959000431,
+        "faultSeconds": 0.3464687919477001,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "query/string-expression-5",
+        "sharedSeconds": 0.43161254096776247,
+        "faultSeconds": 0.4516190419672057,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-0",
+        "sharedSeconds": 0.0019377500284463167,
+        "faultSeconds": 0.001096458057872951,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-1",
+        "sharedSeconds": 0.0018457500264048576,
+        "faultSeconds": 0.0010411660186946392,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-2",
+        "sharedSeconds": 0.0016952920705080032,
+        "faultSeconds": 0.0011705000652000308,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-3",
+        "sharedSeconds": 0.0018193749710917473,
+        "faultSeconds": 0.0011529999319463968,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-4",
+        "sharedSeconds": 0.0016565000405535102,
+        "faultSeconds": 0.0010441250633448362,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-5",
+        "sharedSeconds": 0.0013851660769432783,
+        "faultSeconds": 0.0009634169982746243,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-6",
+        "sharedSeconds": 0.0015410409541800618,
+        "faultSeconds": 0.0010952920420095325,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-7",
+        "sharedSeconds": 0.001419000094756484,
+        "faultSeconds": 0.0011187499621883035,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-8",
+        "sharedSeconds": 0.001544125028885901,
+        "faultSeconds": 0.0010358750587329268,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/numeric-lexical-9",
+        "sharedSeconds": 0.001279165968298912,
+        "faultSeconds": 0.0010424170177429914,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/string-identity-0",
+        "sharedSeconds": 0.0012940410524606705,
+        "faultSeconds": 0.0009748750599101186,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/string-identity-1",
+        "sharedSeconds": 0.0015734999906271696,
+        "faultSeconds": 0.0012517080176621675,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/string-identity-2",
+        "sharedSeconds": 0.0015854579396545887,
+        "faultSeconds": 0.0009322919650003314,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/string-identity-3",
+        "sharedSeconds": 0.0016375830164179206,
+        "faultSeconds": 0.0009064169134944677,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/string-identity-4",
+        "sharedSeconds": 0.0014526669401675463,
+        "faultSeconds": 0.0013351670932024717,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/lang-case",
+        "sharedSeconds": 0.0016098340274766088,
+        "faultSeconds": 0.0009847909677773714,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/integer-distinct",
+        "sharedSeconds": 0.001542750047519803,
+        "faultSeconds": 0.000960333039984107,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-0",
+        "sharedSeconds": 0.0004146250430494547,
+        "faultSeconds": 0.0002495419466868043,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-1",
+        "sharedSeconds": 0.00017008406575769186,
+        "faultSeconds": 0.0001307500060647726,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-2",
+        "sharedSeconds": 0.0004724169848486781,
+        "faultSeconds": 0.00022112508304417133,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-3",
+        "sharedSeconds": 0.0003215409815311432,
+        "faultSeconds": 0.00020845804829150438,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-4",
+        "sharedSeconds": 0.00014299992471933365,
+        "faultSeconds": 0.00014941697008907795,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-5",
+        "sharedSeconds": 0.00033487495966255665,
+        "faultSeconds": 0.0002560000866651535,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-6",
+        "sharedSeconds": 0.0004445409867912531,
+        "faultSeconds": 0.00023279094602912664,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-7",
+        "sharedSeconds": 0.0007505000103265047,
+        "faultSeconds": 0.0003250000299885869,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "turtle/front-8",
+        "sharedSeconds": 0.0005134169477969408,
+        "faultSeconds": 0.0007865410298109055,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/type",
+        "sharedSeconds": 0.0018684169044718146,
+        "faultSeconds": 0.0013267089379951358,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/domain-depth2",
+        "sharedSeconds": 0.0026229580398648977,
+        "faultSeconds": 0.0019521249923855066,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/range",
+        "sharedSeconds": 0.001691040932200849,
+        "faultSeconds": 0.0010705830063670874,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/subclass",
+        "sharedSeconds": 0.0018213329603895545,
+        "faultSeconds": 0.0012952079996466637,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/cycle",
+        "sharedSeconds": 0.00749412493314594,
+        "faultSeconds": 0.005030791973695159,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/domain-first-witness",
+        "sharedSeconds": 0.003455833997577429,
+        "faultSeconds": 0.0024696249747648835,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "rdfs/range-first-witness",
+        "sharedSeconds": 0.0035880409413948655,
+        "faultSeconds": 0.0027135410346090794,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "legacy/no-rule-feedback",
+        "sharedSeconds": 0.012625582981854677,
+        "faultSeconds": 0.009516917052678764,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "legacy/multiple-matches",
+        "sharedSeconds": 0.014184916042722762,
+        "faultSeconds": 0.010465458035469055,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "legacy/repeated-variable",
+        "sharedSeconds": 0.0020308339735493064,
+        "faultSeconds": 0.0016540000215172768,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "legacy/unbound-head",
+        "sharedSeconds": 0.0015323749976232648,
+        "faultSeconds": 0.0008554169908165932,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/asserted",
+        "sharedSeconds": 0.35014745802618563,
+        "faultSeconds": 0.3203967500012368,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/fresh",
+        "sharedSeconds": 0.38730025000404567,
+        "faultSeconds": 0.32922712503932416,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/project",
+        "sharedSeconds": 0.38321745907887816,
+        "faultSeconds": 0.3332897919462994,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/missing-source",
+        "sharedSeconds": 0.02827958296984434,
+        "faultSeconds": 0.025234333937987685,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/wrong-source",
+        "sharedSeconds": 0.02968908299226314,
+        "faultSeconds": 0.028496499988250434,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/missing-result",
+        "sharedSeconds": 0.027283707982860506,
+        "faultSeconds": 0.028264291933737695,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/nonexact-include",
+        "sharedSeconds": 0.007786249974742532,
+        "faultSeconds": 0.007314042071811855,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/unselected-rules",
+        "sharedSeconds": 0.007307459018193185,
+        "faultSeconds": 0.0068093748996034265,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/unselected-result",
+        "sharedSeconds": 0.024747082963585854,
+        "faultSeconds": 0.02384374989196658,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "scope/facts-axioms",
+        "sharedSeconds": 0.007403124938718975,
+        "faultSeconds": 0.008592707919888198,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "original-Q01",
+        "sharedSeconds": 0.37065554095897824,
+        "faultSeconds": 0.33890712505672127,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "original-Q02",
+        "sharedSeconds": 0.3270550000015646,
+        "faultSeconds": 0.29009291692636907,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "original-V01-before",
+        "sharedSeconds": 0.011974832974374294,
+        "faultSeconds": 0.010467416956089437,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "original-V01-missing",
+        "sharedSeconds": 0.01185279106721282,
+        "faultSeconds": 0.01114508300088346,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "original-V01-repaired",
+        "sharedSeconds": 0.011758082895539701,
+        "faultSeconds": 0.11959524999838322,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "transfer-repair-before",
+        "sharedSeconds": 0.008096167002804577,
+        "faultSeconds": 0.0070711669977754354,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      },
+      {
+        "id": "transfer-repair-after",
+        "sharedSeconds": 0.007305082981474698,
+        "faultSeconds": 0.006679374957457185,
+        "sameProjectionSha256": true,
+        "sameResultCanonicalBytes": true,
+        "sameCallCounts": true
+      }
+    ],
+    "profile83SharedSeconds": 74.87243766384199,
+    "profile83FaultSeconds": 70.0013175009517,
+    "sameProjectionAll": true,
+    "sameResultAll": false,
+    "sameCallCountsAll": true
+  },
+  "relatedSourceRanges": [
+    {
+      "name": "CollectionBoundary",
+      "start": 279,
+      "end": 312
+    },
+    {
+      "name": "JSONLWriter",
+      "start": 652,
+      "end": 707
+    },
+    {
+      "name": "CallCounter",
+      "start": 710,
+      "end": 739
+    },
+    {
+      "name": "_original_profile_inputs",
+      "start": 1381,
+      "end": 1451
+    },
+    {
+      "name": "_catalog",
+      "start": 1485,
+      "end": 1491
+    },
+    {
+      "name": "_production_observation",
+      "start": 1721,
+      "end": 1841
+    },
+    {
+      "name": "_install_audit_observer",
+      "start": 2001,
+      "end": 2020
+    },
+    {
+      "name": "_dispatch",
+      "start": 2229,
+      "end": 2318
+    },
+    {
+      "name": "_partial_value",
+      "start": 2321,
+      "end": 2372
+    },
+    {
+      "name": "_partial_outputs",
+      "start": 2375,
+      "end": 2382
+    },
+    {
+      "name": "run_fixed_suite",
+      "start": 2395,
+      "end": 2644
+    }
+  ],
+  "preservedConditions": {
+    "deadlineSeconds": 120,
+    "reportCap": 67108864,
+    "droppedObservations": false,
+    "inputMutation": false
+  },
+  "timingDomain": "existing instrumented wall-clock intervals; inclusive API totals are not uninstrumented benchmark or CPU attribution",
+  "concurrency": "parent supplied T01 StageB started 18:58 UTC overlapping; no process evidence read and no causal attribution"
+}

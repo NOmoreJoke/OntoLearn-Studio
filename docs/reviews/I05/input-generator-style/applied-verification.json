@@ -1,0 +1,43 @@
+{
+  "format": "I05-generator-applied-verification/1",
+  "appliedEqualsApprovedProposal": true,
+  "originalAssets": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+      "authorOldNewAndFixed513ByteEqual": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+      "authorOldNewAndFixed513ByteEqual": true
+    }
+  ],
+  "auditGeneratorOld": {
+    "bytes": 60354,
+    "path": "scripts/generate-i05-source-package-inputs.py",
+    "sha256": "e58dd4efd1c64952b6555b98c65271fc7e82d7b99b198d848d69f5a7c9dcde0b"
+  },
+  "auditGeneratorNew": {
+    "bytes": 75633,
+    "path": "scripts/generate-i05-source-package-inputs.py",
+    "sha256": "c51a1a7f3085e79958022deda95d8a08792f3a95f7c4f1fb171d56196f3d2d26"
+  },
+  "auditOtherDataEqual": true,
+  "inputGenerationReportByteEqual": true,
+  "controlledTreeStatus": [
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-input-generator-golden-old",
+      "trackedStatusUtf8": " M AGENTS.md\n",
+      "statusExitCode": 0
+    },
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-input-generator-golden-new",
+      "trackedStatusUtf8": " M AGENTS.md\n M docs/reviews/I05/source-package-probe-source/inputs-source-manifest.json\n M scripts/generate-i05-source-package-inputs.py\n",
+      "statusExitCode": 0
+    }
+  ],
+  "noCheckModeRun": "--check compares audit generator identity; default mode in isolated copies used for true output comparison"
+}

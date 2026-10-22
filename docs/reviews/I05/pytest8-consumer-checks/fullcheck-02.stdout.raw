@@ -1,0 +1,97 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration
+
+
+ Test Files  15 passed (15)
+      Tests  630 passed (630)
+   Start at  02:58:19
+   Duration  8.21s (tests 80%, transform 14%, import 6%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  390.71 kB
+
+✓ built in 129ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  327.68 kB
+
+✓ built in 31ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-C9bGc14L.js   916.76 kB
+
+✓ built in 91ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+unformatted: File would be reformatted
+  --> docs/reviews/I05/active-source-hygiene/lifecycle-review-r1/report.md:48:1
+   |
+47 |
+48 +
+49 | def build(*, asserted=asserted, ontology=ontology):
+50 |     # 原 body 保持原顺序
+51 |     ...
+52 |
+53 +
+54 | # 各自在原 timed(...) 参数位置替换对应 lambda：
+   |
+
+1 file would be reformatted, 220 files already formatted

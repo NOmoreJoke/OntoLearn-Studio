@@ -1,0 +1,108 @@
+{
+  "format": "I05-header-pure-replay-independent-proof/1",
+  "executionChunk": "3e04ad",
+  "reviewerRunKind": "three AST-extracted pure assertion functions on already-saved JSON data; no pytest/product/module import",
+  "selectedFunctions": [
+    "_sha",
+    "_asset_canonical",
+    "test_full_header_records_actual_identity_and_retains_context_ledger"
+  ],
+  "functionIdentities": [
+    {
+      "variant": "before",
+      "function": "_sha",
+      "lines": [
+        51,
+        52
+      ],
+      "extractedBytes": 57,
+      "extractedSha256": "4296e7dbff79ffadce94930af0e6b422e60e67293264c59a469808101b474bf7"
+    },
+    {
+      "variant": "before",
+      "function": "_asset_canonical",
+      "lines": [
+        61,
+        65
+      ],
+      "extractedBytes": 236,
+      "extractedSha256": "1627c1cbac5dd112dd59a260419ef104509716c3ca638403a2c48252407caa98"
+    },
+    {
+      "variant": "before",
+      "function": "test_full_header_records_actual_identity_and_retains_context_ledger",
+      "lines": [
+        986,
+        1021
+      ],
+      "extractedBytes": 1909,
+      "extractedSha256": "980a8d55ad57dc76cb46675c4cd3c3e19f465422fc2439de20d9205f36fb9717"
+    },
+    {
+      "variant": "proposed",
+      "function": "_sha",
+      "lines": [
+        51,
+        52
+      ],
+      "extractedBytes": 57,
+      "extractedSha256": "4296e7dbff79ffadce94930af0e6b422e60e67293264c59a469808101b474bf7"
+    },
+    {
+      "variant": "proposed",
+      "function": "_asset_canonical",
+      "lines": [
+        61,
+        65
+      ],
+      "extractedBytes": 236,
+      "extractedSha256": "1627c1cbac5dd112dd59a260419ef104509716c3ca638403a2c48252407caa98"
+    },
+    {
+      "variant": "proposed",
+      "function": "test_full_header_records_actual_identity_and_retains_context_ledger",
+      "lines": [
+        986,
+        1022
+      ],
+      "extractedBytes": 2002,
+      "extractedSha256": "86f1bc69ae581c62c4a2f6299f4e1fe17d8648402835a3ab27c2daa228808a55"
+    }
+  ],
+  "namespaceGlobals": [
+    "hashlib",
+    "json"
+  ],
+  "restrictedBuiltins": [
+    "type",
+    "str",
+    "len",
+    "set"
+  ],
+  "unusedFullRunTupleSlots": [
+    null,
+    null,
+    null
+  ],
+  "collectorExitReconstructed": false,
+  "actualJsonl": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/build/i05-pytest8/full-pytest-02/semantic-full-v1-diagnostic0/observations.jsonl",
+    "bytes": 46483457,
+    "sha256": "a84bfcaa1b374fc02a8114aedfc414b2f6a36368c6b2176bd4a7397f15350a1b"
+  },
+  "actualRecordCount": 220,
+  "actualHeaderSupplier": "23352bacb500088367f849e53980e97c937724b3",
+  "actualHeaderProcess": "513db0056f312342a6791e2d4c7842f3726581f2",
+  "results": [
+    {
+      "variant": "before",
+      "outcome": "AssertionError"
+    },
+    {
+      "variant": "proposed",
+      "outcome": "pass"
+    }
+  ],
+  "full417CompleteClaimed": false,
+  "productCollectorOrB1Run": false
+}

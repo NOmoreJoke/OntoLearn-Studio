@@ -1,0 +1,646 @@
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 279-312 (CollectionBoundary) ---
+class CollectionBoundary:
+    """Caller observation only; never replaces a canonical business callable."""
+
+    def __init__(self, monotonic, started, cancel_requested):
+        self.monotonic, self.started = monotonic, started
+        self.cancel_requested = cancel_requested
+        self.stage, self.api = "dispatch/input", None
+        self.completed = []
+        self.attempts = []
+
+    def check(self):
+        if self.cancel_requested():
+            raise BoundaryStop("COLLECTION_STOP_REQUESTED", 130, "stopping")
+        if self.monotonic() - self.started >= DEADLINE_SECONDS:
+            raise BoundaryStop("COLLECTION_DEADLINE", 1, "deadline-boundary")
+
+    def call(self, stage, api, function, args, kwargs, capture=True):
+        self.stage, self.api = stage, api
+        self.check()
+        attempt = {"stage": stage, "api": api, "start": self.monotonic(), "returned": False}
+        self.attempts.append(attempt)
+        tick = time.perf_counter_ns()
+        try:
+            value = function(*args, **kwargs)
+        finally:
+            attempt["end"] = self.monotonic()
+            attempt["elapsedNs"] = time.perf_counter_ns() - tick
+        attempt["returned"] = True
+        if capture:
+            # Retain actual references until this observation is written.
+            # No fake success, cross-case cache or native reconstruction.
+            self.completed.append({**attempt, "value": value})
+        self.check()  # An opaque call may finish late; never start the next one.
+        return value
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 652-707 (JSONLWriter) ---
+class JSONLWriter:
+    """Full encoded logical records; physical pipe writes are not called atomic."""
+
+    def __init__(
+        self, stream, *, total_cap=REPORT_CAP, item_cap=ITEM_CAP, reserve=TERMINAL_RESERVE
+    ):
+        if (
+            not callable(getattr(stream, "write", None))
+            or any(type(v) is not int or v < 0 for v in (total_cap, item_cap, reserve))
+            or reserve > total_cap
+        ):
+            raise ProbeFault("OUTPUT_STREAM_INVALID")
+        self.stream, self.total_cap = stream, total_cap
+        self.item_cap, self.reserve = item_cap, reserve
+        self.used = self.written = 0
+        self.terminal_written = False
+        self.broken = False
+
+    def emit(self, value, *, terminal=False):
+        if self.terminal_written or self.broken:
+            raise ProbeFault("OUTPUT_STATE_INVALID")
+        bound = self.reserve if terminal else self.item_cap
+        raw = bytearray()
+        try:
+            encoder = json.JSONEncoder(
+                ensure_ascii=True, allow_nan=False, sort_keys=True, separators=(",", ":")
+            )
+            for chunk in encoder.iterencode(value):
+                part = chunk.encode("ascii")
+                if len(raw) + len(part) + 1 > bound:
+                    raise ProbeFault("OUTPUT_ITEM_LIMIT")
+                raw.extend(part)
+            raw.extend(b"\n")
+        except ProbeFault:
+            raise
+        except (TypeError, ValueError, UnicodeError, RecursionError, OverflowError):
+            raise ProbeFault("OUTPUT_SERIALIZATION_FAILED") from None
+        ceiling = self.total_cap if terminal else self.total_cap - self.reserve
+        if self.used + len(raw) > ceiling:
+            raise ProbeFault("OUTPUT_REPORT_LIMIT")
+        self.used += len(raw)  # Charge the full record before exposing its first byte.
+        view, offset = memoryview(raw), 0
+        try:
+            while offset < len(view):
+                count = self.stream.write(view[offset:])
+                if type(count) is not int or count <= 0 or count > len(view) - offset:
+                    raise ProbeFault("OUTPUT_WRITE_FAILED")
+                offset += count
+                self.written += count
+            if callable(getattr(self.stream, "flush", None)):
+                self.stream.flush()
+        except Exception:
+            self.broken = True
+            raise ProbeFault("OUTPUT_WRITE_FAILED") from None
+        if terminal:
+            self.terminal_written = True
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 710-739 (CallCounter) ---
+class CallCounter:
+    """Count real Python call code identities without changing callable behavior."""
+
+    def __init__(self, semantic, validator):
+        self.reason_code = semantic.reason.__code__
+        self.validator_code = validator.run.__code__
+        self.counts = {"reason": 0, "validator": 0}
+        self.previous = None
+        self.active = False
+
+    def _profile(self, frame, event, _arg):
+        if event == "call":
+            if frame.f_code is self.reason_code:
+                self.counts["reason"] += 1
+            if frame.f_code is self.validator_code:
+                self.counts["validator"] += 1
+
+    def __enter__(self):
+        self.previous = sys.getprofile()
+        if self.previous is not None:
+            raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
+        sys.setprofile(self._profile)
+        self.active = True
+        return self
+
+    def __exit__(self, *_exception):
+        if self.active:
+            sys.setprofile(self.previous)
+            self.active = False
+        return False
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 1381-1451 (_original_profile_inputs) ---
+def _original_profile_inputs(dataset, dataset_id, input_sha, modules):
+    """Construct original syntax only, using the single canonical lexical adapter."""
+    firing = modules["ontolearn_engine.quality.rule_firing"]
+    profile = modules["ontolearn_engine.quality.rule_profile"]
+    decode = modules["ontolearn_engine.semantic_turtle"].decode_profile_term
+    raw = dataset["input"]
+    prefix = (
+        INPUT_NAME + "#/datasets/" + dataset_id.replace("~", "~0").replace("/", "~1") + "/input"
+    )
+
+    def source(pointer, text=None, revision=None):
+        return profile.SourceRecord(prefix + pointer, input_sha, revision, text)
+
+    def term(value, pointer, iri=False):
+        if value.startswith("?") and not iri:
+            return firing.Variable(value)
+        value_term = (
+            profile.TermInput("iri", value) if iri else _checked_lexical_decode(decode, value)
+        )
+        return profile.TermInput(
+            value_term.kind,
+            value_term.lexical_form,
+            value_term.datatype_iri,
+            value_term.language_raw,
+            source(pointer, value),
+        )
+
+    def triple(value, pointer, rule=False):
+        terms = tuple(
+            term(
+                value[key],
+                pointer + "/" + key,
+                iri=(key in ("subject", "predicate") and not value[key].startswith("?")),
+            )
+            for key in ("subject", "predicate", "object")
+        )
+        return firing.Triple(*terms) if rule else terms
+
+    records = tuple(
+        triple(item["triple"], f"/{section}/{index}/triple")
+        for section in ("asserted", "ontology")
+        for index, item in enumerate(raw[section])
+    )
+    rules = []
+    for index, definition in enumerate(raw["definitions"]):
+        pointer = f"/definitions/{index}"
+        rules.append(
+            firing.RuleSpec(
+                definition["rule_id"],
+                tuple(
+                    triple(item, f"{pointer}/when/{n}", True)
+                    for n, item in enumerate(definition["when"])
+                ),
+                tuple(
+                    firing.Comparison(
+                        term(item["left"], f"{pointer}/comparisons/{n}/left"),
+                        item["operator"],
+                        term(item["right"], f"{pointer}/comparisons/{n}/right"),
+                    )
+                    for n, item in enumerate(definition["comparisons"])
+                ),
+                tuple(
+                    triple(item, f"{pointer}/heads/{n}", True)
+                    for n, item in enumerate(definition["heads"])
+                ),
+                source(pointer, revision=definition["revision"]),
+                definition["revision"],
+                definition["definitionJsonValueSha256"],
+            )
+        )
+    return records, tuple(rules), tuple(raw["disabled_rule_ids"])
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 1485-1491 (_catalog) ---
+def _catalog(modules):
+    resources = modules["ontolearn_engine.resources"]
+    contract = resources.CONTRACT
+    return {
+        "error_catalog": contract.ERROR_CATALOG,
+        "error_schema": strict_json(read_bounded(resources.ROOT / "v2/schema.json", 207256)),
+    }
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 1721-1841 (_production_observation) ---
+def _production_observation(dataset, observation, manifest, modules, approved):
+    parameters = observation["parameters"]
+    explanation = observation["operation"] == "dag" or parameters.get("explanation", False)
+    material_api = modules["ontolearn_engine.semantic_profile_input"]
+    production = modules["ontolearn_engine.semantic_profile_production"]
+    direct_api = modules["ontolearn_engine.semantic_profile_directsteps"]
+    restore_api = modules["ontolearn_engine.semantic_profile_restore"]
+    ledger = material_api.CaptureLedger()
+    if dataset["kind"] == "profile":
+        records, rules, disabled = _original_profile_inputs(
+            dataset, observation["datasetId"], manifest["inputAsset"]["sha256"], modules
+        )
+    else:
+        records, rules, disabled = _structured_inputs(dataset, modules)
+    kwargs = {"rules": rules, "disabled_rule_ids": disabled, "ledger": ledger}
+    if parameters.get("materialMode", "records") == "text":
+        kwargs.update(
+            text=dataset["text"],
+            source_reference=observation["datasetId"],
+            source_revision=SOURCE_REF,
+        )
+    else:
+        kwargs["records"] = records
+    material = _checked_call(
+        "material/prepare",
+        "semantic_profile_input.prepare_profile_material",
+        material_api.prepare_profile_material,
+        **kwargs,
+    )
+    # Preparation transfers its receipt. Production independently rechecks using a new ledger.
+    ledger = material_api.CaptureLedger()
+    if explanation:
+        produced = _checked_call(
+            "production/compute",
+            "semantic_profile_production.execute_profile_explanation",
+            production.execute_profile_explanation,
+            material,
+            **_catalog(modules),
+            ledger=ledger,
+            direct_ledger=direct_api.DirectStepsLedger(),
+        )
+    else:
+        produced = _checked_call(
+            "production/compute",
+            "semantic_profile_production.execute_admitted_profile_job",
+            production.execute_admitted_profile_job,
+            material,
+            **_catalog(modules),
+            ledger=ledger,
+        )
+    expected = _checked_call(
+        "production/expectation",
+        "probe._capture_expectation",
+        _capture_expectation,
+        produced,
+        explanation,
+        modules,
+    )
+    restored = _restore(produced, expected, explanation, modules)
+    roots = ()
+    if explanation:
+        roots = _checked_call(
+            "restore/roots",
+            "semantic_profile_restore.explanation_roots",
+            restore_api.explanation_roots,
+            restored,
+            tuple(tuple(item) for item in parameters.get("rootsTargets", ())),
+            direct_ledger=direct_api.DirectStepsLedger(),
+        )
+    boundary = _COLLECTION_CONTEXT.get()
+    if boundary is not None:
+        boundary.stage, boundary.api = "production/serialize", None
+    result = {
+        "wire": produced.wire,
+        "payloadBytes": _bytes_value(produced.payload_json),
+        "rowsBytes": _bytes_value(produced.rows_json),
+        "sourceBytes": _bytes_value(produced.source_encoded),
+        "definitionBytes": _bytes_value(produced.definitions_encoded),
+        "catalogBytes": _bytes_value(produced.catalog_json),
+        "actualDefinitions": _typed_value(produced.actual_definitions, approved),
+        "actualCatalog": _typed_value(produced.actual_catalog, approved),
+        "allocation": _typed_value(produced.original_allocation, approved),
+        "expectedCapture": _typed_value(expected, approved),
+        "restored": _typed_value(restored, approved),
+        "roots": _typed_value(roots, approved),
+        "receipts": {
+            "capture": _typed_value(produced.capture_receipt, approved),
+            "direct": _typed_value(produced.direct_receipt, approved) if explanation else None,
+        },
+    }
+    if observation["operation"] == "restore-negative":
+        bad_payload, bad_rows, mutation_receipt = _mutate_current_payload(
+            produced.payload_json, parameters["mutation"]
+        )
+        result["mutation"] = {
+            "name": parameters["mutation"],
+            "changes": mutation_receipt,
+            "payloadBytes": _bytes_value(bad_payload),
+            "rowsBytes": _bytes_value(bad_rows),
+            "expectedCapture": _typed_value(expected, approved),
+            "allocationReissued": False,
+            "expectationReissued": False,
+            "onlyOuterDigestsRebound": False,
+            "deepValidationReached": "unknown; original digest gate preserved",
+        }
+        try:
+            bad_restored = _restore(
+                produced, expected, explanation, modules, payload=bad_payload, rows=bad_rows
+            )
+        except Exception as error:
+            failure = _known_failure(error, modules)
+            if failure is None:
+                raise
+            result["mutation"].update(
+                status="observed-rejection", error=failure[0], diagnostic=failure[1]
+            )
+        else:
+            result["mutation"].update(
+                status="observed-return", restored=_typed_value(bad_restored, approved)
+            )
+    return result
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 2001-2020 (_install_audit_observer) ---
+def _install_audit_observer():
+    """Observe event names only, before the canonical denial hook when possible."""
+    global _AUDIT_INSTALLED, _AUDIT_ORDER_KNOWN
+    if not _AUDIT_INSTALLED:
+        _AUDIT_ORDER_KNOWN = "ontolearn_engine.semantic_offline" not in sys.modules
+
+        def observe(event, _args):
+            state = _AUDIT_CONTEXT.get()
+            if state is not None and (
+                event.startswith("socket.")
+                or event in {"urllib.Request", "subprocess.Popen", "os.system", "os.posix_spawn"}
+            ):
+                state["attemptCount"] += 1
+                if len(state["events"]) < 32:
+                    state["events"].append(event)
+                else:
+                    state["eventNamesComplete"] = False
+
+        sys.addaudithook(observe)
+        _AUDIT_INSTALLED = True
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 2229-2318 (_dispatch) ---
+def _dispatch(observation, dataset, manifest, modules, approved, counter, instrumentation):
+    semantic = modules["ontolearn_engine.semantic"]
+    operation, parameters = observation["operation"], observation["parameters"]
+    if operation == "parse":
+        return _graph_value(
+            _checked_call(
+                "parse/turtle",
+                "semantic.parse_turtle",
+                semantic.parse_turtle,
+                dataset["text"],
+                format=dataset["format"],
+                shapes=dataset["shapes"],
+            )
+        )
+    if operation == "query":
+        graph = _checked_call(
+            "query/parse", "semantic.parse_turtle", semantic.parse_turtle, dataset["dataText"]
+        )
+        return _checked_call(
+            "query/select", "semantic.query", semantic.query, graph, dataset["queryText"]
+        )
+    if operation == "legacy-reason":
+        graph = _checked_call(
+            "legacy/parse", "semantic.parse_turtle", semantic.parse_turtle, dataset["dataText"]
+        )
+        reason = _checked_call(
+            "legacy/reason",
+            "semantic.reason",
+            semantic.reason,
+            graph,
+            _legacy_rules(dataset, modules),
+        )
+        return {"graph": _graph_value(graph), "reason": reason}
+    if operation == "scope":
+        return _scope_observation(dataset, parameters["mode"], modules, counter)
+    if operation == "profile":
+        records, rules, disabled = _original_profile_inputs(
+            dataset, observation["datasetId"], manifest["inputAsset"]["sha256"], modules
+        )
+        return _checked_call(
+            "profile/execute",
+            "semantic_execution.execute_profile_records",
+            modules["ontolearn_engine.semantic_execution"].execute_profile_records,
+            records,
+            rules,
+            disabled_rule_ids=disabled,
+            **_catalog(modules),
+        )
+    if operation in ("fullview", "dag", "restore-negative"):
+        return _production_observation(dataset, observation, manifest, modules, approved)
+    if operation == "shape":
+        data = _checked_call(
+            "shape/dataParse", "semantic.parse_turtle", semantic.parse_turtle, dataset["dataText"]
+        )
+        shapes = _checked_call(
+            "shape/shapesParse",
+            "semantic.parse_turtle",
+            semantic.parse_turtle,
+            dataset["shapesText"],
+            shapes=True,
+        )
+        return _checked_call(
+            "shape/shacl", "semantic.check_shapes", semantic.check_shapes, data, shapes
+        )
+    if operation == "shacl-text":
+        kwargs = {}
+        for incoming, keyword in (("dataPolicy", "data_policy"), ("rangePolicy", "range_policy")):
+            if incoming in parameters:
+                kwargs[keyword] = parameters[incoming]
+        # A missing mandatory keyword is deliberately passed to the actual callable.
+        return _checked_call(
+            "shacl-text/validate",
+            "semantic.validate_shacl_text",
+            semantic.validate_shacl_text,
+            dataset["dataText"],
+            dataset["shapesText"],
+            **kwargs,
+        )
+    if operation == "offline":
+        return _checked_call(
+            "offline/action",
+            "probe._offline_observation",
+            _offline_observation,
+            dataset,
+            parameters["action"],
+            modules,
+        )
+    if operation == "b1-measurement":
+        return _b1_observation(dataset, modules, instrumentation)
+    raise ProbeFault("OPERATION_NOT_FIXED")
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 2321-2372 (_partial_value) ---
+def _partial_value(value, modules, approved, *, depth=0):
+    """Read actual completed values only; never publish an unfinished restore view."""
+    from rdflib import Graph
+
+    if depth > 96:
+        raise ProbeFault("OUTPUT_ITEM_LIMIT")
+    if type(value) is Graph:
+        return _graph_value(value)
+    production = modules["ontolearn_engine.semantic_profile_production"]
+    if type(value) in (production.ProfileComputation, production.ProfileExplanationComputation):
+        explanation = type(value) is production.ProfileExplanationComputation
+        return {
+            "wire": value.wire,
+            "payloadBytes": _bytes_value(value.payload_json),
+            "rowsBytes": _bytes_value(value.rows_json),
+            "sourceBytes": _bytes_value(value.source_encoded),
+            "definitionBytes": _bytes_value(value.definitions_encoded),
+            "catalogBytes": _bytes_value(value.catalog_json),
+            "material": _typed_value(value.material, approved),
+            "nativeResult": _typed_value(value.native_result, approved),
+            "actualDefinitions": _typed_value(value.actual_definitions, approved),
+            "actualCatalog": _typed_value(value.actual_catalog, approved),
+            "allocation": _typed_value(value.original_allocation, approved),
+            "receipts": {
+                "capture": _typed_value(value.capture_receipt, approved),
+                "direct": _typed_value(value.direct_receipt, approved) if explanation else None,
+            },
+        }
+    if type(value) is modules["ontolearn_engine.semantic_scopes"].ValidationScope:
+        return {
+            "facts": _graph_value(value.facts),
+            "ontology": _graph_value(value.ontology),
+            "provenance": value.provenance,
+            "reasoningResult": value.reasoning_result,
+        }
+    kind = type(value)
+    if value is None or kind in (bool, str, int):
+        return value
+    if kind is float and math.isfinite(value):
+        return value
+    if kind is bytes:
+        return _bytes_value(value)
+    if kind in (tuple, list):
+        return [_partial_value(item, modules, approved, depth=depth + 1) for item in value]
+    if kind is dict:
+        if any(type(key) is not str for key in value):
+            raise ProbeFault("OUTPUT_TYPE_INVALID")
+        return {
+            key: _partial_value(item, modules, approved, depth=depth + 1)
+            for key, item in value.items()
+        }
+    return _typed_value(value, approved)
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 2375-2382 (_partial_outputs) ---
+def _partial_outputs(boundary, modules, approved):
+    return [
+        {
+            key: (_partial_value(value, modules, approved) if key == "value" else value)
+            for key, value in item.items()
+        }
+        for item in boundary.completed
+    ]
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 2395-2420 (run_fixed_suite) ---
+def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cancel_requested=None):
+    """The only collector; exit zero describes protocol collection, never acceptance."""
+    stdout = getattr(sys.stdout, "buffer", None) if stdout is None else stdout
+    stderr = getattr(sys.stderr, "buffer", sys.stderr) if stderr is None else stderr
+    monotonic = time.monotonic if monotonic is None else monotonic
+    cancel_requested = (lambda: False) if cancel_requested is None else cancel_requested
+    start = monotonic()  # Includes asset/identity/import preparation in the same deadline domain.
+    try:
+        parse_argv([FLAG, selector])
+        inputs, manifest = load_assets()
+        identity = check_runtime_preconditions()
+        if sys.getprofile() is not None:
+            raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
+        _install_audit_observer()
+        modules, validator = _runtime_modules(identity)
+        approved = _approved_types(modules)
+    except Exception as error:
+        _safe_stderr(stderr, error.code if type(error) is ProbeFault else "PREFLIGHT_FAILED")
+        return 2
+    instrumentation = selector == "full-v1"
+    inventory = manifest["caseSets"][selector]
+    lookup = {item["id"]: item for item in inputs["observations"]}
+    context = {item["id"]: item for item in inputs["contexts"]["mathInputContexts"]}
+    completed, first_failure = [], None
+    current_observation_id = None
+    code, state = 0, "collecting"
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 2460-2512 (run_fixed_suite) ---
+            }
+        )
+        for case_id in inventory:
+            if cancel_requested():
+                code, state = 130, "stopping"
+                break
+            if monotonic() - start >= DEADLINE_SECONDS:
+                code, state = 1, "deadline-boundary"
+                first_failure = first_failure or {"code": "COLLECTION_DEADLINE"}
+                break
+            original = lookup[case_id]
+            current_observation_id = case_id
+            observation = {"type": "observation", **original, "start": monotonic()}
+            source_context = context.get(original["sourceCaseId"])
+            if (
+                original["operation"] == "profile"
+                and source_context is not None
+                and not source_context["eligibleStandaloneMathInput"]
+            ):
+                observation.update(
+                    status="not-executed",
+                    callCounts={"reason": 0, "validator": 0},
+                    stage="input/not-executed",
+                    api=None,
+                    stageAttempts=[],
+                    diagnostic={
+                        "code": "ORIGINAL_INPUT_CONTEXT_NOT_STANDALONE",
+                        "originalOperationPassed": False,
+                    },
+                )
+            else:
+                counter = (
+                    CallCounter(modules["ontolearn_engine.semantic"], validator)
+                    if instrumentation
+                    else None
+                )
+                boundary = CollectionBoundary(monotonic, start, cancel_requested)
+                token = _COLLECTION_CONTEXT.set(boundary)
+                try:
+                    with counter if counter is not None else nullcontext():
+                        result = _dispatch(
+                            original,
+                            inputs["datasets"][original["datasetId"]],
+                            manifest,
+                            modules,
+                            approved,
+                            counter,
+                            instrumentation,
+                        )
+                    observation.update(status="observed-return", result=result)
+                    if (
+                        original["operation"] == "offline"
+                        and result["status"] == "observed-rejection"
+
+--- /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py 2559-2610 (run_fixed_suite) ---
+                        code, state = 1, "failed"
+                        first_failure = first_failure or {
+                            "id": case_id,
+                            "code": safe_code,
+                            "stage": boundary.stage,
+                            "api": boundary.api,
+                        }
+                    observation["diagnostic"].update(stage=boundary.stage, api=boundary.api)
+                    observation["partialOutputs"] = _partial_outputs(boundary, modules, approved)
+                finally:
+                    _COLLECTION_CONTEXT.reset(token)
+                    observation["stage"], observation["api"] = boundary.stage, boundary.api
+                    observation["stageAttempts"] = boundary.attempts
+                    observation["callCounts"] = (
+                        dict(counter.counts) if counter is not None else None
+                    )
+                    if counter is not None and hasattr(counter, "scope_details"):
+                        observation["scopeStages"] = counter.scope_details
+            observation["end"] = monotonic()
+            writer.emit(observation)
+            completed.append(case_id)
+            if code:
+                break
+        requested = cancel_requested()
+        if code == 0 and (requested or monotonic() - start >= DEADLINE_SECONDS):
+            if requested:
+                code, state = 130, "stopping"
+            else:
+                code, state = 1, "deadline-boundary"
+                first_failure = first_failure or {"code": "COLLECTION_DEADLINE"}
+        complete = code == 0 and len(completed) == len(inventory)
+        state = "collected" if complete else state
+        writer.emit(
+            {
+                "type": "terminal",
+                "state": state,
+                "selectedCaseSet": selector,
+                "collectionComplete": complete,
+                "fullSuiteCollectionComplete": complete and selector == "full-v1",
+                "completedIds": completed,
+                "unstartedIds": inventory[len(completed) :],
+                "fullInventory": manifest["caseSets"]["full-v1"],
+                "selectedInventory": inventory,
+                "firstFailure": first_failure,
+                "elapsedSeconds": monotonic() - start,
+                "externalOracleCompared": False,
+                "sourcePackageEquivalent": False,
+                "externalOracleMatched": False,
+                "originalOperationPassed": False,
+                "externalProcessStopped": "unknown",
+                "readerJoin": "unknown",
+            },

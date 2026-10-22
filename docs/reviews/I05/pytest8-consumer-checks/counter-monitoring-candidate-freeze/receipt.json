@@ -1,0 +1,179 @@
+{
+  "format": "I05-counter-two-product-freeze/1",
+  "baseHEAD": "4bb99d99620811766df38d7e29346e3174f82c8c",
+  "commands": [
+    {
+      "label": "01-stage-exact-two",
+      "argv": [
+        "git",
+        "add",
+        "--",
+        "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "packages/engine/tests/test_semantic_source_package_probe.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "startUTC": "2026-10-22T20:04:31.745218+00:00",
+      "endUTC": "2026-10-22T20:04:31.765151+00:00",
+      "exitCode": 0,
+      "stdout": {
+        "path": "01-stage-exact-two.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "01-stage-exact-two.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "02-cached-paths",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "startUTC": "2026-10-22T20:04:31.765772+00:00",
+      "endUTC": "2026-10-22T20:04:31.779312+00:00",
+      "exitCode": 0,
+      "stdout": {
+        "path": "02-cached-paths.stdout.raw",
+        "bytes": 130,
+        "sha256": "80e09f2032e1c0c29689f07261fe26666cf0529ec5ce244bf0cf9b238184e17c"
+      },
+      "stderr": {
+        "path": "02-cached-paths.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "03-cached-check",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "startUTC": "2026-10-22T20:04:31.779983+00:00",
+      "endUTC": "2026-10-22T20:04:31.795813+00:00",
+      "exitCode": 0,
+      "stdout": {
+        "path": "03-cached-check.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "03-cached-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "04-commit",
+      "argv": [
+        "git",
+        "commit",
+        "-m",
+        "fix(engine): count real entries with local monitoring"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "startUTC": "2026-10-22T20:04:31.796423+00:00",
+      "endUTC": "2026-10-22T20:04:31.837540+00:00",
+      "exitCode": 0,
+      "stdout": {
+        "path": "04-commit.stdout.raw",
+        "bytes": 155,
+        "sha256": "0efe3876959ee3e46098dfb5888d90cefbb4130048e063496455695a33cda169"
+      },
+      "stderr": {
+        "path": "04-commit.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "05-read-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "startUTC": "2026-10-22T20:04:31.838399+00:00",
+      "endUTC": "2026-10-22T20:04:31.856577+00:00",
+      "exitCode": 0,
+      "stdout": {
+        "path": "05-read-head.stdout.raw",
+        "bytes": 41,
+        "sha256": "4652ed04a39bfcf2ee9d7b8721004b9eac64dec3bcc59f93fdc72dafed060e12"
+      },
+      "stderr": {
+        "path": "05-read-head.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "06-commit-paths",
+      "argv": [
+        "git",
+        "show",
+        "--format=",
+        "--name-only",
+        "ae118d2a2b4fe267991522cbcc457d7d33f7ce8b"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "startUTC": "2026-10-22T20:04:31.857254+00:00",
+      "endUTC": "2026-10-22T20:04:31.878618+00:00",
+      "exitCode": 0,
+      "stdout": {
+        "path": "06-commit-paths.stdout.raw",
+        "bytes": 130,
+        "sha256": "80e09f2032e1c0c29689f07261fe26666cf0529ec5ce244bf0cf9b238184e17c"
+      },
+      "stderr": {
+        "path": "06-commit-paths.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "07-index-empty",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+      "startUTC": "2026-10-22T20:04:31.880139+00:00",
+      "endUTC": "2026-10-22T20:04:31.897308+00:00",
+      "exitCode": 0,
+      "stdout": {
+        "path": "07-index-empty.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "07-index-empty.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "independentReportSha256": "1651d1209baa470f547b134e002022c4e8b53d484f5582c34bbfe37565565766",
+  "overall": "NotPass; only finite38 gate passed",
+  "noPush": true,
+  "commit": "ae118d2a2b4fe267991522cbcc457d7d33f7ce8b",
+  "productSHA256": {
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py": "63a6b4a6ead4e05fe28b3384c0e1f70455039533763a5c4b585809704ce41d18",
+    "packages/engine/tests/test_semantic_source_package_probe.py": "0185e7b0bc7d6aa8c301e10a8847547706be39cfff05971c8df3f27c8d2b333a"
+  },
+  "AGENTSNotStaged": true,
+  "indexEmpty": true,
+  "status": "exact-two-product-committed"
+}
