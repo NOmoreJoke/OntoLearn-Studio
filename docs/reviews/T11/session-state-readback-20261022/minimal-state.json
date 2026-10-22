@@ -1,0 +1,227 @@
+{
+  "capturedAt": "2026-10-22T16:00:09.915889+00:00",
+  "purpose": "Granted GUI recovery window; both existing reports found, no message sent; native status only",
+  "guiReleased": true,
+  "noResetPaymentSettingsModelOrSourceChange": true,
+  "zcode": {
+    "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+    "sourceFile": "/Users/kyle/.zcode/cli/rollout/model-io-session_31c8c641b36907791bdab363f7473a01.jsonl",
+    "sourceSnapshotBytes": 53078491,
+    "sourceSnapshotSHA256": "3d020fc9371825b6b97f3149db2345cb9fba7eb4b04e7f67d69b9ec66150bd37",
+    "turns": {
+      "turn_11e0b19b-864f-4623-bb72-b2b9bc4b69c1": {
+        "records": 11,
+        "exactRetryUserObserved": false,
+        "lastModelRecord": {
+          "requestId": "94e53a57-21eb-4789-9bae-21e815078a5b",
+          "startedAt": "2026-10-22T13:27:48.452Z",
+          "completedAt": "2026-10-22T13:27:56.490Z",
+          "modelId": "GLM-5.3",
+          "effort": "max",
+          "finishReason": null
+        }
+      },
+      "turn_1b2a8b28-1eab-4f29-ad08-6a8385491485": {
+        "records": 27,
+        "exactRetryUserObserved": true,
+        "lastModelRecord": {
+          "requestId": "3283b44b-7d0f-4ea2-b717-969f2d8df2fc",
+          "startedAt": "2026-10-22T14:32:22.596Z",
+          "completedAt": "2026-10-22T14:33:25.478Z",
+          "modelId": "GLM-5.3",
+          "effort": "max",
+          "finishReason": "stop"
+        }
+      }
+    },
+    "officialEvents": [
+      {
+        "timestamp": "2026-10-22T11:08:01.956Z",
+        "event": "bootstrap.app.startup.runtime_config.completed",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": null,
+        "status": "completed",
+        "context": {
+          "mode": "yolo",
+          "model": "account:bigmodel-individual-coding-plan/GLM-5.3",
+          "workingDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb"
+        }
+      },
+      {
+        "timestamp": "2026-10-22T13:27:56.504Z",
+        "event": "turn.failed",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": "turn_11e0b19b-864f-4623-bb72-b2b9bc4b69c1",
+        "status": "failed",
+        "context": {}
+      },
+      {
+        "timestamp": "2026-10-22T14:33:25.728Z",
+        "event": "turn.completed",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": "turn_1b2a8b28-1eab-4f29-ad08-6a8385491485",
+        "status": "completed",
+        "context": {}
+      },
+      {
+        "timestamp": "2026-10-22T15:55:49.332Z",
+        "event": "bootstrap.app.startup.runtime_config.completed",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": null,
+        "status": "completed",
+        "context": {
+          "mode": "yolo",
+          "workingDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb"
+        }
+      }
+    ],
+    "freshUI": {
+      "sessionIdCopiedAndReadBack": "session_31c8c641b36907791bdab363f7473a01",
+      "workspaceTitle": "T11-zcode-review-7d28fdb · 游离 HEAD",
+      "model": "GLM-5.3",
+      "effort": "最高",
+      "permission": "完全访问",
+      "finalResponseVisible": true,
+      "temporaryIdDraftCleared": true
+    },
+    "sentThisVisit": false
+  },
+  "minimax": {
+    "sessionId": "mvs_52775b8f354f485a919e2c0e8ebe6bd2",
+    "sourceFile": "/Users/kyle/.minimax/v2/sessions/2026/10/22/11-12-06-487-session_bXZzXzUyNzc1YjhmMzU0ZjQ4NWE5MTllMmMwZThlYmU2YmQy/messages.jsonl",
+    "manifestSessionIdVerified": true,
+    "sourceSnapshotBytes": 1024401,
+    "sourceSnapshotSHA256": "7886758dcf471dd883fe0720cba9a1b29b686f92556923a0496ac8398f3db5ce",
+    "users": [
+      {
+        "messageId": "msg-user-v1-v6Z0_v-wiiVDgYDAEg9Ety604FcYH9eX2IMOXh8G3XQ",
+        "turnId": "cbcd9805-5962-433d-87cd-436c50f819be",
+        "timestamp": 1792667526926,
+        "canonicalTextRange": {
+          "startOffset": 4388,
+          "endOffset": 4613
+        },
+        "hasBackgroundTaskOrigin": false,
+        "canonicalOwnerText": "T11 全新完整独立审查：请先核本方工作目录，并完整读取本条文本文件附件全部 322 行，核验 53774 bytes / SHA256 35a8ee75e450d16b199dd25d052c43f57613b5b473b99c291844131779f40978 后按完整正文执行；本方 UI 设置收据在 .t11-review-runtime/metadata/owner-task-settings.json，无需读取全局配置或日志证明权限。"
+      },
+      {
+        "messageId": "msg-0RDdt6NUWTfkdkgiTAPsugFo91i39FkN6pghG17zJek",
+        "turnId": "turn_6746f565-e8f7-4911-bd3a-6bd587059bb9",
+        "timestamp": 1792681226498,
+        "canonicalTextRange": {
+          "startOffset": 479,
+          "endOffset": 479
+        },
+        "hasBackgroundTaskOrigin": true,
+        "canonicalOwnerText": ""
+      },
+      {
+        "messageId": "msg-7yKKn4CK1Zlh_jhMDey93CxNaZrRRHXcvFaya9hvkNI",
+        "turnId": "turn_6746f565-e8f7-4911-bd3a-6bd587059bb9",
+        "timestamp": 1792681286937,
+        "canonicalTextRange": {
+          "startOffset": 482,
+          "endOffset": 482
+        },
+        "hasBackgroundTaskOrigin": true,
+        "canonicalOwnerText": ""
+      },
+      {
+        "messageId": "msg-9arhL0li-YhFpksHwWTdIvJB0SbDSkuydX_B9s1eL-E",
+        "turnId": "turn_6746f565-e8f7-4911-bd3a-6bd587059bb9",
+        "timestamp": 1792681337098,
+        "canonicalTextRange": {
+          "startOffset": 476,
+          "endOffset": 476
+        },
+        "hasBackgroundTaskOrigin": true,
+        "canonicalOwnerText": ""
+      },
+      {
+        "messageId": "msg-TwPO-cA8RlZkIdryhehhqvQo8jvBErvUAMJNZ43JLqw",
+        "turnId": "turn_6746f565-e8f7-4911-bd3a-6bd587059bb9",
+        "timestamp": 1792681428529,
+        "canonicalTextRange": {
+          "startOffset": 507,
+          "endOffset": 507
+        },
+        "hasBackgroundTaskOrigin": true,
+        "canonicalOwnerText": ""
+      }
+    ],
+    "turns": {
+      "cbcd9805-5962-433d-87cd-436c50f819be": {
+        "role": "assistant",
+        "stopReason": "aborted",
+        "timestamp": 1792667853034,
+        "message_id": "msg-AH7wTfDQeilh8iRgN3pmGDT9QpBgvNQAG9SKLRfyIGI",
+        "turn_id": "cbcd9805-5962-433d-87cd-436c50f819be"
+      },
+      "turn_c2af0798-10de-47ba-9fe7-aec07bdc96b6": {
+        "role": "assistant",
+        "stopReason": "toolUse",
+        "timestamp": 1792678472086,
+        "message_id": "msg-M8nq3w5bn2-LwkJKFncImgUzZwFPPmdRIbK0e1nGXgY",
+        "turn_id": "turn_c2af0798-10de-47ba-9fe7-aec07bdc96b6"
+      },
+      "turn_6746f565-e8f7-4911-bd3a-6bd587059bb9": {
+        "role": "assistant",
+        "stopReason": "toolUse",
+        "timestamp": 1792681890882,
+        "message_id": "msg-3IkTm-KdwXl2h__S4ediE7TttkM8WoLrKh6uVSkzGIU",
+        "turn_id": "turn_6746f565-e8f7-4911-bd3a-6bd587059bb9"
+      }
+    },
+    "freshUI": {
+      "sessionIdCopiedAndReadBack": "mvs_52775b8f354f485a919e2c0e8ebe6bd2",
+      "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb",
+      "model": "M3.1-Flash",
+      "effort": "xhigh",
+      "permission": "始终授权",
+      "publicErrors": ["模型服务有点不稳定，请重试", "您的网络环境有问题，请确认网络状况后再尝试"],
+      "continueExecutionButtonVisible": true,
+      "temporaryIdDraftCleared": true
+    },
+    "sentThisVisit": false,
+    "officialCompletionVerified": false,
+    "lastAssistant": {
+      "role": "assistant",
+      "stopReason": "toolUse",
+      "timestamp": 1792681890882,
+      "message_id": "msg-3IkTm-KdwXl2h__S4ediE7TttkM8WoLrKh6uVSkzGIU",
+      "turn_id": "turn_6746f565-e8f7-4911-bd3a-6bd587059bb9"
+    },
+    "modelScalars": {
+      "provider": "minimax",
+      "model": "MiniMax-M3.1-Flash",
+      "thinkingLevel": "xhigh"
+    },
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb"
+  },
+  "reports": [
+    {
+      "role": "zcode",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/report/review.md",
+      "bytes": 29056,
+      "sha256": "6e82553c693678e2f6af95a905fc8f77c639d5caac28ccce5878e226064ee505",
+      "head": "b6e57a0534c94316dd07c3a87b4b8931d5a39501",
+      "reportOnlyDoesNotProveTerminal": true,
+      "selfReportedConclusion": "pass in offline engineering scope",
+      "fullOwnerReadbackComplete": false
+    },
+    {
+      "role": "minimax",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb/.t11-review-runtime/report/review.md",
+      "bytes": 42053,
+      "sha256": "d28405753dcc5644dd0b809f0c0eedbf0b1692ac12bd3d8c58970f128f3833a0",
+      "head": "b6e57a0534c94316dd07c3a87b4b8931d5a39501",
+      "reportOnlyDoesNotProveTerminal": true,
+      "selfReportedConclusion": "not pass in offline engineering scope",
+      "fullOwnerReadbackComplete": false
+    }
+  ],
+  "priorFailureEvidenceUnchanged": "../native-readback-20261022/index.json",
+  "inputReadEvidenceReusedWithoutResend": "Both original 321 body lines already independently verified; UI322 includes trailing empty line",
+  "scopeUnchanged": true,
+  "releaseAuthorized": false
+}
