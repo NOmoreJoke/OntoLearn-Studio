@@ -1,0 +1,179 @@
+{
+  "schema": "T03_CALLER_FRESH_INDEPENDENT_STATIC_REVIEW_V1",
+  "reviewer": "/root/real_caller_independent_review",
+  "status": "NEEDS_CHANGE_NOT_CALL_READY",
+  "base": "f2b2159c1060b10f73f0baba6ca1cdebd6a38677",
+  "candidate": "6815495c010e8eac617baa8c061d8ed3cfd90eec",
+  "candidateManifest": {
+    "bytes": 3607,
+    "sha256": "4f2d47484f3f1454590e2ee0032faa55dbfdc86631ddf4895403f111c1c6636e",
+    "payloadFiles": 13,
+    "payloadBytes": 86832,
+    "completeFiles": 14,
+    "completeBytes": 90439
+  },
+  "source": {
+    "bytes": 43314,
+    "sha256": "55bb6afe958101ca4420eacb1033f58ad6bea1da70fbf610761ee694f31c40ba",
+    "fullSourceRead": true,
+    "repeatedUnchangedSourceRead": false,
+    "heldBufferContinuousOutput": true
+  },
+  "checks": {
+    "allCurrentEqualCandidateGitAndManifest": true,
+    "exactBaseCandidate14PathSet": true,
+    "entranceHEADMatches": true,
+    "branchMatches": true,
+    "entranceIndexEmpty": true,
+    "entranceProtectedAGENTSOnlyTrackedModification": true,
+    "old37NotModifiedByCandidate": true,
+    "all14MaterialsFullRead": true,
+    "currentAGENTSFullRead": true,
+    "rootWindowFullRead": true,
+    "desktopPolicyAndCommonFullRead": true,
+    "originalProcedureSmallMetadataOnly": true,
+    "independentLiteralArithmetic": true,
+    "sourceSpansFromHeldBuffer": true,
+    "sourceASTNewlyRun": false,
+    "jsonSchemaEngineRun": false,
+    "runtimeRun": false,
+    "sourceOrLocalFunctionInvoked": false,
+    "fixturesOrSimulationRun": false,
+    "GUIUsed": false,
+    "sourceModified": false,
+    "stageOrCommit": false
+  },
+  "protectedAGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "sourceLines": [
+        594,
+        609,
+        636,
+        639,
+        794,
+        804,
+        843,
+        845
+      ],
+      "result": "CONSUMED_RAW_TAIL_NOT_PERSISTED_AFTER_PARTIAL_WRITE_FAILURE"
+    },
+    {
+      "id": "F2",
+      "priority": "P2",
+      "sourceLines": [
+        153,
+        169
+      ],
+      "result": "NEW_DIRECTORY_FD_UNOWNED_IF_OLD_CLOSE_FAILS_AND_OLD_FD_AMBIGUOUSLY_RETRIED"
+    },
+    {
+      "id": "F3",
+      "priority": "P2",
+      "sourceLines": [
+        728,
+        732,
+        335,
+        357
+      ],
+      "result": "NONCE_DIRECTORY_FINALLY_CLOSE_CAN_MASK_FIRST_FAULT"
+    },
+    {
+      "id": "F4",
+      "priority": "P2",
+      "proofLines": [
+        29,
+        62
+      ],
+      "result": "COMPLETE_SOURCE_UPPER_NOT_ESTABLISHED"
+    }
+  ],
+  "proposalArithmetic": {
+    "perRoleMetadataUpperClaim": 27624,
+    "perRoleEntityUpperClaim": 26392,
+    "arithmeticCorrect": true,
+    "upperAccepted": false,
+    "allFourMetadataTickets": 112000,
+    "allFourEntityTickets": 108000,
+    "allFourApplicationBytes": 13631488,
+    "metadataAfter": 3209263,
+    "metadataDeficit": 9263,
+    "entityAfter": 1366736,
+    "entityDeficit": 66736,
+    "buildBytesAfter": 109271960616,
+    "buildBytesRemaining": 28166992856,
+    "runtimeFunded": false,
+    "originalFutureFunded": false,
+    "readiness": "METADATA_AND_ENTITY_NOT_FIT_NOT_CALL_READY"
+  },
+  "namedConservativeLedger": {
+    "prepayment": "independent-prepayment.json",
+    "totalReserved": {
+      "metadata": 6000,
+      "applicationBytes": 2097152
+    },
+    "fullSourceAndRelations": {
+      "reservedMetadata": 3500,
+      "reservedApplicationBytes": 1048576,
+      "metadataConservativeBooked": 3500,
+      "knownMaterialInputBytes": 230247,
+      "namedInputGroups": [
+        {
+          "name": "current14_plus_candidateGit14",
+          "bytes": 180878
+        },
+        {
+          "name": "currentAGENTS_plus_rootWindow",
+          "bytes": 19520
+        },
+        {
+          "name": "currentDesktopPolicy_plus_commonGuidance_held",
+          "bytes": 19799
+        },
+        {
+          "name": "allowedProcedureREADME_preconditions_plus_unsignedOriginalAuth_held",
+          "bytes": 10050
+        }
+      ],
+      "additionalNamedWork": "initial prepayment write; fixed Git/head/ref/index/status/path-set output; own independent report/check draft writes and formatter read/write; held source spans, JSON/hash/literal arithmetic",
+      "conservativeAllNamedApplicationByteBound": 524288,
+      "unallocatedRemainderReusable": false,
+      "actualMetadata": null,
+      "actualApplicationBytes": null,
+      "actualOSIO": null
+    },
+    "exactDelta": {
+      "reservedMetadata": 1500,
+      "reservedApplicationBytes": 524288,
+      "status": "UNUSED_RETAINED_ONLY_FOR_LATER_FROZEN_NEW_CANDIDATE_EXACT_DELTA",
+      "borrowed": 0
+    },
+    "sealAndClosure": {
+      "reservedMetadata": 1000,
+      "reservedApplicationBytes": 524288,
+      "metadataConservativeBooked": 1000,
+      "conservativeNamedApplicationByteBound": 262144,
+      "namedWork": "own final format/check; full final report/check/prepayment readback; Git small status/index/HEAD; protectedAGENTS named hash; own seal write/check/readhash; parent handoff",
+      "actualMetadata": null,
+      "actualApplicationBytes": null,
+      "actualOSIO": null
+    },
+    "borrowing": 0,
+    "refund": 0,
+    "capIncrease": 0,
+    "actualConsumption": "UNKNOWN"
+  },
+  "unclosed": [
+    "F1-F4",
+    "real root out-of-band admission and all four actual identities/configs",
+    "actual parent/loader/ABI/drain/full acceptance",
+    "original formal/product gates",
+    "applicable external-model/CI/multi-OS/human/develop gates"
+  ],
+  "sealProtocol": "Full final artifact bytes and SHA256 are recorded by independent-seal.json excluding itself; final seal bytes/SHA are handed to root externally. Stop writing after seal."
+}

@@ -1,0 +1,80 @@
+{
+  "schema": "T03_CALLER_FRESH_INDEPENDENT_REVIEW_SEAL_V1",
+  "status": "SEALED_NEEDS_CHANGE_NOT_CALL_READY",
+  "reviewer": "/root/real_caller_independent_review",
+  "base": "f2b2159c1060b10f73f0baba6ca1cdebd6a38677",
+  "candidate": "6815495c010e8eac617baa8c061d8ed3cfd90eec",
+  "artifacts": [
+    {
+      "path": "independent-prepayment.json",
+      "bytes": 748,
+      "sha256": "a7c516780155c3699aee5d2aa5f2861ad7988594e4bc377266ce56c0f337726d"
+    },
+    {
+      "path": "independent-review.md",
+      "bytes": 13920,
+      "sha256": "cd48ad93c13547014727d951781cb857f5c3812a61eb366b88440a344bc5b800"
+    },
+    {
+      "path": "independent-check-record.json",
+      "bytes": 5676,
+      "sha256": "9dc140ab1c2a0aac867df58760e7de9bda64c578af376a84b3180d998fb4ec43"
+    }
+  ],
+  "protectedAGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "finalChecks": {
+    "candidateHEADUnchanged": true,
+    "indexEmpty": true,
+    "trackedModificationOnlyProtectedAGENTS": true,
+    "ownArtifactsFullTextReadback": true,
+    "ownJSONParsedWithStdlib": true,
+    "reportAfterReadbackDelta": "Only one extra trailing empty line removed; final full byte read/hash and UTF8 validation succeeded.",
+    "prettierCheck": {
+      "exitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "scope": "own report and check record only"
+    },
+    "whitespaceCheck": {
+      "scope": "own report and check record only",
+      "exitCode": 1,
+      "diagnostics": "",
+      "interpretation": "git diff --no-index --check against /dev/null: content differs, no whitespace diagnostic"
+    },
+    "correctedCheckIssues": [
+      "Initial own-report whitespace check diagnosed an extra EOF blank line; removed and repeated check had no diagnostic.",
+      "One own-report hash/last-byte display utility decoded a byte-truncated UTF8 tail and failed before printing; corrected to whole-file UTF8 validation/hash with no source access or mutation."
+    ],
+    "runtimeOrLocalFunctionExecution": false,
+    "sourceEdited": false,
+    "stagedOrCommitted": false
+  },
+  "accounting": {
+    "fullSourceMetadataConservativeBooked": 3500,
+    "fullSourceNamedApplicationByteBound": 524288,
+    "fullSourceReservedApplicationBytes": 1048576,
+    "closureMetadataConservativeBooked": 1000,
+    "closureNamedApplicationByteBound": 262144,
+    "closureReservedApplicationBytes": 524288,
+    "exactDeltaMetadataRetained": 1500,
+    "exactDeltaApplicationBytesRetained": 524288,
+    "borrowed": 0,
+    "refunded": 0,
+    "capIncrease": 0,
+    "actualMetadata": null,
+    "actualApplicationBytes": null,
+    "actualOSIO": null,
+    "note": "Conservative named bounds, not measured application/OS consumption. No remainder reallocated."
+  },
+  "findings": [
+    "F1 P2 consumed raw tail loss",
+    "F2 P2 directory fd ownership/ambiguous close retry",
+    "F3 P2 nonce close masks first Fault",
+    "F4 P2 complete upper not established"
+  ],
+  "nextBoundary": "Root fully reads and freezes/commits this review before any owner source fix. A new actual candidate may use only retained exact-delta budget; original future and caller runtime remain unfunded; no new runtime identity created.",
+  "selfExcluded": true,
+  "externalSealIdentity": "Final seal byte count/SHA256 supplied to root after this file is written and checked. No more report writes after seal."
+}
