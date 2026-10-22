@@ -22,7 +22,7 @@
     "engine:check": "uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest",
     "engine:build": "node scripts/build-engine.mjs",
     "package:dir": "npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && node scripts/check-c1-lifecycle-snapshot.mjs tests/e2e/c1-native-macos-driver.mjs && node scripts/check-c1-finite-termination.mjs tests/e2e/c1-native-macos-driver.mjs && npm run build && npm run engine:check",
     "verify:sources": "node scripts/verify-sources.mjs",
     "typecheck:contracts": "npm run typecheck --workspace @ontolearn/contracts",
     "typecheck:unit": "tsc --noEmit -p tsconfig.unit.json"

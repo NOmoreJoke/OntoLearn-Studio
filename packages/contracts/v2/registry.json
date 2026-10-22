@@ -300,11 +300,13 @@
       "requiresConfirmation": false,
       "agentEligible": true,
       "exposure": "business-named-bridge-only",
-      "implementation": "design-only",
+      "implementation": "runtime-asserted-only",
       "limitProfile": "read",
       "cancelBoundary": "discard-unpublished-result",
       "dependencyPolicy": "query.execute",
-      "dataScopes": ["asserted", "asserted+derived"]
+      "dataScopes": ["asserted", "asserted+derived"],
+      "runtimeDataScopes": ["asserted"],
+      "plannedDataScopes": ["asserted+derived"]
     },
     "reasoning.execute": {
       "owner": "coordinator",

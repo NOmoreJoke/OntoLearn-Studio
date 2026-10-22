@@ -82,6 +82,7 @@ class JobStore(Store):
                 with self._transaction():
                     for sql in JOB_SCHEMA:
                         self._db.execute(sql)
+            self._migrate_query_payloads(job_migration_hook)
         except BaseException:
             # A failed parent already attempted its own closes. Its leftover
             # attributes are not a second transfer of resource ownership.
@@ -95,6 +96,117 @@ class JobStore(Store):
             failures = _close_resources(owned)
             self._cleanup_failures = getattr(self, "_cleanup_failures", []) + failures
             raise
+
+    def _migrate_query_payloads(self, hook):
+        """Add a private catalog without changing either original Job schema hash.
+
+        Old query jobs are explicitly inventoried; they never acquire a fictitious
+        complete payload. Partial/unknown extension catalogs are rejected, not repaired.
+        """
+        from ontolearn_engine.project.format3 import _schema
+
+        names = [_job_object_name(sql) for sql in QUERY_PAYLOAD_SCHEMA]
+        present = {
+            r[0]: r[1]
+            for r in self._db.execute(
+                "SELECT name,sql FROM sqlite_master WHERE name IN ("
+                + ",".join("?" for _ in names)
+                + ")",
+                tuple(names),
+            )
+        }
+        if present:
+            if set(present) != set(names) or any(
+                _schema(present[_job_object_name(sql)]) != _schema(sql)
+                for sql in QUERY_PAYLOAD_SCHEMA
+            ):
+                fault("INVALID_STATE")
+            with self._read():
+                self._validate_query_catalog()
+            return
+        with self._transaction(lambda phase: hook("query_payload_" + phase)):
+            legacy = []
+            for row in self._db.execute("SELECT id,context FROM jobs ORDER BY id"):
+                context = json.loads(row["context"])
+                if "queryRequest" in context:
+                    fault("INVALID_STATE")  # Missing catalog for an already-new producer.
+                if context.get("capability") == "query.execute":
+                    legacy.append(row["id"])
+            for sql in QUERY_PAYLOAD_SCHEMA:
+                self._db.execute(sql)
+                hook("query_payload_ddl:" + _job_object_name(sql))
+            for identity in legacy:
+                self._db.execute("INSERT INTO query_legacy_jobs VALUES(?)", (identity,))
+            self._db.execute(
+                "INSERT INTO query_payload_format VALUES(1,1,?,?)",
+                (QUERY_PAYLOAD_HASH, self.actual_format),
+            )
+            hook("query_payload_catalog")
+            self._validate_query_catalog()
+
+    def _validate_query_catalog(self):
+        catalog = self._db.execute("SELECT * FROM query_payload_format").fetchall()
+        if (
+            len(catalog) != 1
+            or tuple(catalog[0]) != (1, 1, QUERY_PAYLOAD_HASH, catalog[0]["source_format"])
+            or catalog[0]["source_format"] not in {2, 3}
+        ):
+            fault("INVALID_STATE")
+        legacy = {r[0] for r in self._db.execute("SELECT job FROM query_legacy_jobs")}
+        known = set()
+        for row in self._db.execute("SELECT id,context,dto FROM jobs"):
+            context, job = json.loads(row["context"]), json.loads(row["dto"])
+            if context.get("capability") != "query.execute":
+                continue
+            if row["id"] in legacy:
+                if "queryRequest" in context:
+                    fault("INVALID_STATE")
+                known.add(row["id"])
+                continue
+            if "queryRequest" not in context:
+                fault("INVALID_STATE")
+            claim = self._db.execute(
+                "SELECT * FROM operation_claims WHERE operation=?", (job["operationId"],)
+            ).fetchone()
+            if claim is None or claim["job"] != row["id"]:
+                fault("INVALID_STATE")
+            self._accepted_job(
+                claim,
+                job["projectId"],
+                job["capability"],
+                job["input"],
+                job["confirmationRef"],
+                job["implementation"],
+                job["limits"],
+            )
+            records = self._db.execute(
+                "SELECT q.result FROM query_payloads q JOIN job_results r ON r.id=q.result "
+                "WHERE r.job=?",
+                (row["id"],),
+            ).fetchall()
+            if len(records) != (1 if job["state"] == "succeeded" else 0):
+                fault("INVALID_STATE")
+            if records and job["resultRef"] != {
+                "resultId": records[0][0],
+                "inputSnapshotId": job["inputSnapshotId"],
+            }:
+                fault("INVALID_STATE")
+        if (
+            known != legacy
+            or self._db.execute(
+                "SELECT 1 FROM query_payloads q LEFT JOIN job_results r ON r.id=q.result "
+                "LEFT JOIN jobs j ON j.id=r.job WHERE j.id IS NULL OR j.id IN "
+                "(SELECT job FROM query_legacy_jobs) LIMIT 1"
+            ).fetchone()
+        ):
+            fault("INVALID_STATE")
+        for row in self._db.execute(
+            "SELECT j.context FROM query_payloads q JOIN job_results r ON r.id=q.result "
+            "JOIN jobs j ON j.id=r.job"
+        ):
+            context = json.loads(row[0])
+            if context.get("capability") != "query.execute" or "queryRequest" not in context:
+                fault("INVALID_STATE")
 
     def _lock(self):
         try:
@@ -889,6 +1001,11 @@ class JobStore(Store):
                 fault("IDENTITY_CONFLICT")
             snap = self._project_snapshot(input_["inputSnapshotId"], internal)
             parameters = self.blob(project, input_["parametersHash"])
+            query_request = None
+            if capability == "query.execute":
+                query_request = self.prepare_query_request(
+                    project, input_, parameters, snap, implementation, confirmation_ref
+                )
             if capability.startswith("test."):
                 self._test_parameters(parameters)
             vector, manifests = self._dependencies(capability, input_, snap)
@@ -925,6 +1042,8 @@ class JobStore(Store):
                 "dependencyVector": vector,
                 "manifests": manifests,
             }
+            if query_request is not None:
+                context["queryRequest"] = query_request
             if capability == "test.rounds":
                 events = parameters.get("events", [])
                 context["runConfig"] = {
@@ -1050,6 +1169,12 @@ class JobStore(Store):
         parameters = self.blob(project, input_["parametersHash"])
         if parameters != context["parameters"] or digest(parameters) != input_["parametersHash"]:
             fault("INVALID_STATE")
+        if "queryRequest" in context:
+            expected = self.prepare_query_request(
+                project, input_, parameters, snapshot, implementation, confirmation_ref, live=False
+            )
+            if context["queryRequest"] != expected:
+                fault("INVALID_STATE")
         if "runConfig" in context:
             config = context["runConfig"]
             if (
@@ -1278,10 +1403,264 @@ class JobStore(Store):
                 return job
             if job["state"] != "running" or job["commitProgress"]["mode"] != "none":
                 fault("INVALID_STATE")
+            if job["capability"] == "query.execute":
+                fault("INVALID_STATE")  # New query success requires the complete private bundle.
             result = self._publish_job(job, rows, kind)
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)
+
+    def prepare_query_request(
+        self, project, input_, parameters, snap, implementation, confirmation_ref, *, live=True
+    ):
+        from ontolearn_engine.resources import semantic_identity
+        from ontolearn_engine.semantic_execution import SemanticExecutionFault, build_request
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        if type(parameters) is not dict or set(parameters) != {"inputSelection"}:
+            fault("INVALID_REQUEST", field="params")
+        if parameters["inputSelection"] not in ("current", "historical"):
+            fault("INVALID_REQUEST", field="params")
+        if (
+            input_["scope"] != "asserted"
+            or input_["derivedResultIds"]
+            or input_["preparedPlanRef"] is not None
+            or confirmation_ref is not None
+        ):
+            fault("INVALID_REQUEST", field="identity")
+        if live and implementation != semantic_identity():
+            fault("IDENTITY_CONFLICT")
+        if implementation["executionSemanticsVersion"] != "i05-finite-6":
+            fault("IDENTITY_CONFLICT")
+        if not any(
+            d["layer"] == "query" and d["id"] == input_["definitionId"]
+            for d in snap["state"]["definitions"]
+        ):
+            fault("INVALID_REQUEST", field="dependency")
+        if (
+            live
+            and parameters["inputSelection"] == "current"
+            and input_["inputSnapshotId"] != self.snapshot(self._project(project))
+        ):
+            fault("IDENTITY_CONFLICT")
+        try:
+            request = build_request(
+                snap,
+                "query.execute",
+                input_,
+                parameters,
+                error_catalog=self.contract.ERROR_CATALOG,
+                error_schema=self.contract.DOCUMENT,
+            )
+            from ontolearn_engine.resources import LIMITS
+
+            _, maximum = query_transport_limits(LIMITS)
+            query_encode(request, maximum)
+            return request
+        except SemanticExecutionFault as error:
+            raise JobFault(error.error["code"], error.error["params"]) from None
+
+    def _query_payload_binding(self, job, payload, rows):
+        """Authenticate accepted source and complete output, without re-running SPARQL."""
+        from ontolearn_engine.semantic_execution import _rows, _term
+
+        context = self.job_context(job["jobId"])
+        claim = self._db.execute(
+            "SELECT * FROM operation_claims WHERE operation=?", (job["operationId"],)
+        ).fetchone()
+        if claim is None or claim["job"] != job["jobId"]:
+            fault("INVALID_STATE")
+        self._accepted_job(
+            claim,
+            job["projectId"],
+            job["capability"],
+            job["input"],
+            job["confirmationRef"],
+            job["implementation"],
+            job["limits"],
+        )
+        request = context.get("queryRequest")
+        if request is None:
+            fault("UNSUPPORTED_CAPABILITY")  # Explicit legacy no-complete-payload distinction.
+        expected = self.prepare_query_request(
+            job["projectId"],
+            job["input"],
+            context["parameters"],
+            context["snapshot"],
+            job["implementation"],
+            job["confirmationRef"],
+            live=False,
+        )
+        if request != expected:
+            fault("INVALID_STATE")
+        query_text = next(
+            json.loads(d["payload"])["text"]
+            for d in context["snapshot"]["state"]["definitions"]
+            if d["layer"] == "query" and d["id"] == job["input"]["definitionId"]
+        )
+        common = {
+            "kind": "query",
+            "inputSnapshotId": job["inputSnapshotId"],
+            "inputProjectRevision": context["snapshot"]["projectRevision"],
+            "executionSemanticsVersion": job["implementation"]["executionSemanticsVersion"],
+            "scope": "asserted",
+            "definitionId": job["input"]["definitionId"],
+            "inputSelection": context["parameters"]["inputSelection"],
+            "selectedResultIds": [],
+            "queryText": query_text,
+        }
+        if type(payload) is not dict or set(payload) != set(common) | {"query", "provenance"}:
+            fault("INVALID_STATE")
+        if any(payload[k] != v for k, v in common.items()):
+            fault("INVALID_STATE")
+        query = payload["query"]
+        if type(query) is not dict:
+            fault("INVALID_STATE")
+        if query.get("type") == "ASK":
+            if set(query) != {"type", "value"} or type(query["value"]) is not bool:
+                fault("INVALID_STATE")
+        elif query.get("type") == "SELECT":
+            if (
+                set(query) != {"type", "variables", "rows"}
+                or type(query["variables"]) is not list
+                or any(type(v) is not str for v in query["variables"])
+                or len(set(query["variables"])) != len(query["variables"])
+                or type(query["rows"]) is not list
+                or any(
+                    type(r) is not list
+                    or len(r) != len(query["variables"])
+                    or any(v is not None and type(v) is not str for v in r)
+                    for r in query["rows"]
+                )
+            ):
+                fault("INVALID_STATE")
+        else:
+            fault("INVALID_STATE")
+        state = context["snapshot"]["state"]
+
+        # Only bounded RDF term canonicalization for binding; never execute the
+        # query (or invoke execute_request) again in the Store/coordinator.
+        def triple(record):
+            return [
+                f"<{record['subject']}>",
+                f"<{record['predicate']}>",
+                _term(record["object"]).n3(),
+            ]
+
+        facts = sorted({tuple(triple(r)) for r in state["facts"] if r["object"] is not None})
+        ontology = sorted(
+            {
+                tuple(triple(r))
+                for d in state["definitions"]
+                if d["layer"] == "ontology"
+                for r in json.loads(d["payload"])["triples"]
+            }
+        )
+        facts, ontology = [list(t) for t in facts], [list(t) for t in ontology]
+        expected_provenance = {
+            "scope": "asserted",
+            "executionSemanticsVersion": common["executionSemanticsVersion"],
+            "assertedInputSha256": digest(facts),
+            "ontologyInputSha256": digest(ontology),
+            "selectedRulesSha256": digest([]),
+            "reasoningSource": None,
+            "selectedRuleIds": [],
+            "warnings": [],
+            "selectedFacts": [{"triple": t, "sources": [{"kind": "asserted"}]} for t in facts],
+            "derivedAxioms": [],
+            "ontologyView": ontology,
+            "factViewSha256": digest(facts),
+            "ontologyViewSha256": digest(ontology),
+        }
+        if payload["provenance"] != expected_provenance:
+            fault("INVALID_STATE")
+        # Fixed supplier projection is pure JSON walking, not graph/query execution.
+        projected = _rows(payload)
+        if (
+            type(rows) is not list
+            or len(rows) != len(projected)
+            or any(
+                not self.contract.validate("row", row)
+                or row["ordinal"] != expected_row["ordinal"]
+                or row["cells"] != expected_row["cells"]
+                for row, expected_row in zip(rows, projected, strict=True)
+            )
+        ):
+            fault("INVALID_STATE")
+
+    def finish_query_job(self, identity, output, hook: Hook = lambda _: None):
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        with self._transaction(hook):
+            job = self._job(identity)
+            if job["state"] in TERMINAL:
+                return job
+            if job["state"] != "running" or job["capability"] != "query.execute":
+                fault("INVALID_STATE")
+            if type(output) is not dict or set(output) != {"payload", "rows"}:
+                fault("INVALID_STATE")
+            _, maximum = query_transport_limits(job["limits"])
+            query_encode(output, maximum)
+            self._query_payload_binding(job, output["payload"], output["rows"])
+            result = self._publish_job(job, output["rows"], "query")
+            hook("query_rows_published")
+            self._db.execute(
+                "INSERT INTO query_payloads VALUES(?,?,?,?)",
+                (
+                    result["resultId"],
+                    canonical(output["payload"]),
+                    digest(output["payload"]),
+                    digest(output["rows"]),
+                ),
+            )
+            hook("query_payload_published")
+            self._transition(job, "succeeded", result=result)
+            hook("mid_job_terminal")
+        return self._job(identity)
+
+    def semantic_result(self, project, identity):
+        """Internal full query material; public metadata/page schemas are unchanged."""
+        with self._read():
+            metadata = self.result_get(project, identity)
+            if metadata["kind"] != "query":
+                fault("UNSUPPORTED_CAPABILITY")
+            if metadata["payloadStatus"] != "available":
+                fault("PAYLOAD_EVICTED", resultId=identity)
+            job = self.get_job(project, metadata["jobId"])
+            if self._db.execute(
+                "SELECT 1 FROM query_legacy_jobs WHERE job=?", (job["jobId"],)
+            ).fetchone():
+                fault("UNSUPPORTED_CAPABILITY")
+            record = self._db.execute(
+                "SELECT * FROM query_payloads WHERE result=?", (identity,)
+            ).fetchone()
+            if record is None or record["payload"] is None:
+                fault("INVALID_STATE")
+            payload = json.loads(record["payload"])
+            rows = self.result(identity)["payload"]
+            if (
+                digest(payload) != record["payload_hash"]
+                or digest(rows) != record["rows_hash"]
+                or job["state"] != "succeeded"
+                or job["capability"] != "query.execute"
+                or job["resultRef"]
+                != {"resultId": identity, "inputSnapshotId": metadata["inputSnapshotId"]}
+                or any(
+                    job[k] != metadata[k]
+                    for k in (
+                        "inputSnapshotId",
+                        "implementation",
+                        "dependencyVector",
+                        "definitionSetDigests",
+                        "parametersHash",
+                        "scope",
+                    )
+                )
+                or job["input"]["definitionId"] != metadata["definitionId"]
+            ):
+                fault("INVALID_STATE")
+            self._query_payload_binding(job, payload, rows)
+            return metadata, payload
 
     def start_job_run(self, identity, config):
         with self._transaction():
@@ -1726,6 +2105,8 @@ class JobStore(Store):
             fault("INVALID_STATE")
         if result["kind"] == "scenario":
             self._check_summary(result, payload)
+        if result["kind"] == "query" and "queryRequest" in self.job_context(result["jobId"]):
+            self.semantic_result(project, identity)
         return result, payload
 
     def _check_summary(self, result, payload):
@@ -1987,6 +2368,9 @@ class JobStore(Store):
             ]
             for identity in ids:
                 self._db.execute("UPDATE results SET payload=NULL WHERE id=?", (identity,))
+                self._db.execute(
+                    "UPDATE query_payloads SET payload=NULL WHERE result=?", (identity,)
+                )
             return ids
 
 
@@ -2080,3 +2464,25 @@ JOB3_CATALOG = [
     for action in ("UPDATE", "DELETE")
 ]
 JOB3_HASH = digest(JOB3_SCHEMA + JOB3_CATALOG)
+
+# An additive private extension: never append these to JOB_SCHEMA/JOB3_SCHEMA.
+QUERY_PAYLOAD_SCHEMA = [
+    "CREATE TABLE query_payloads(result TEXT PRIMARY KEY NOT NULL REFERENCES job_results(id),"
+    "payload TEXT,payload_hash TEXT NOT NULL,rows_hash TEXT NOT NULL)",
+    "CREATE TABLE query_legacy_jobs(job TEXT PRIMARY KEY NOT NULL REFERENCES jobs(id))",
+    "CREATE TABLE query_payload_format(singleton INTEGER PRIMARY KEY CHECK(singleton=1),"
+    "version INTEGER NOT NULL CHECK(version=1),schema_hash TEXT NOT NULL,"
+    "source_format INTEGER NOT NULL CHECK(source_format IN (2,3)))",
+    "CREATE TRIGGER immutable_query_payloads_UPDATE BEFORE UPDATE ON query_payloads "
+    "WHEN NEW.result IS NOT OLD.result OR NEW.payload_hash IS NOT OLD.payload_hash "
+    "OR NEW.rows_hash IS NOT OLD.rows_hash OR NEW.payload IS NOT NULL "
+    "BEGIN SELECT RAISE(ABORT,'immutable query payload'); END",
+    "CREATE TRIGGER immutable_query_payloads_DELETE BEFORE DELETE ON query_payloads "
+    "BEGIN SELECT RAISE(ABORT,'immutable query evidence'); END",
+] + [
+    f"CREATE TRIGGER immutable_{table}_{action} BEFORE {action} ON {table} "
+    "BEGIN SELECT RAISE(ABORT,'immutable query catalog'); END"
+    for table in ("query_legacy_jobs", "query_payload_format")
+    for action in ("UPDATE", "DELETE")
+]
+QUERY_PAYLOAD_HASH = digest(QUERY_PAYLOAD_SCHEMA)

@@ -1,6 +1,7 @@
 """Single application writer; isolated workers never open the SQLite source of truth."""
 
 import asyncio
+import hashlib
 import json
 import os
 import queue
@@ -19,9 +20,22 @@ from ontolearn_engine.job_store import JobFault, JobStore
 from ontolearn_engine.memory_guard import MEMORY_LIMIT_EXIT, resident_bytes
 from ontolearn_engine.process_environment import worker_environment
 from ontolearn_engine.protocol import JsonlReader, ProtocolFault
-from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, LIMITS, REGISTRY_HASH, safe_error
+from ontolearn_engine.resources import (
+    CONTRACT,
+    IMPLEMENTATION,
+    LIMITS,
+    REGISTRY_HASH,
+    safe_error,
+    semantic_identity,
+)
 from ontolearn_engine.storage import Conflict, UnsupportedProjectFormat
-from ontolearn_engine.worker import worker_owner_arguments
+from ontolearn_engine.worker import (
+    query_decode,
+    query_encode,
+    query_parts,
+    query_transport_limits,
+    worker_owner_arguments,
+)
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
 _JOB_READY = object()
@@ -365,14 +379,19 @@ class Coordinator:
             return self.store.get_job(p["projectId"], p["jobId"])
         if method == "job.create":
             formal = self.version == 3 and p["capability"] == "changeset.commit"
-            if not formal and (
-                not self.test_mode
-                or p["capability"]
-                not in {
-                    "test.read",
-                    "test.atomic",
-                    "test.rounds",
-                }
+            query = p["capability"] == "query.execute"
+            if (
+                not formal
+                and not query
+                and (
+                    not self.test_mode
+                    or p["capability"]
+                    not in {
+                        "test.read",
+                        "test.atomic",
+                        "test.rounds",
+                    }
+                )
             ):
                 raise ServiceFault("UNSUPPORTED_CAPABILITY")
             if len(self.queued) >= self.limits[
@@ -397,10 +416,14 @@ class Coordinator:
                     p["capability"],
                     p["input"],
                     p["confirmationRef"],
-                    IMPLEMENTATION,
+                    semantic_identity() if query else IMPLEMENTATION,
                     self.limits,
                 )
-            if job["state"] == "queued" and job["jobId"] not in self.queued:
+            if (
+                job["state"] == "queued"
+                and job["jobId"] not in self.queued
+                and job["jobId"] not in self.active
+            ):
                 self.queued.append(job["jobId"])
             return job
         if method == "job.cancel":
@@ -567,6 +590,11 @@ class Coordinator:
             def commit_boundary(_phase):
                 if time.monotonic() >= deadline:
                     raise ServiceFault("TIMEOUT", {"phase": "total"})
+                if (
+                    job["capability"] == "query.execute"
+                    and self.store.get_job(active["project"], identity)["state"] == "cancelling"
+                ):
+                    raise asyncio.CancelledError()
 
             async def controlled(work, phase, maximum_ms, on_completed=None):
                 pending = asyncio.create_task(work)
@@ -578,6 +606,21 @@ class Coordinator:
                         commit_boundary("waiting")
                         if time.monotonic() >= phase_deadline:
                             raise ServiceFault("TIMEOUT", {"phase": phase})
+                        child = active.get("process")
+                        if (
+                            job["capability"] == "query.execute"
+                            and sys.platform == "darwin"
+                            and child is not None
+                            and child.returncode is None
+                        ):
+                            try:
+                                if (
+                                    resident_bytes(child.pid)
+                                    > job["limits"]["maxWorkerMemoryBytes"]
+                                ):
+                                    raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
+                            except ProcessLookupError:
+                                pass
                         await asyncio.wait({pending}, timeout=0.02)
                     result = pending.result()
                     if on_completed:
@@ -604,6 +647,42 @@ class Coordinator:
                 lambda child: active.update(process=child),
             )
             active["process"] = process
+            if job["capability"] == "query.execute":
+                frame, maximum = query_transport_limits(job["limits"])
+                encoded = query_encode(context["queryRequest"], maximum)
+                pieces = query_parts(encoded, frame)
+                header = {
+                    "capability": "query.execute",
+                    "memoryBytes": job["limits"]["maxWorkerMemoryBytes"],
+                    "frameBytes": frame,
+                    "byteLimit": maximum,
+                    "parts": len(pieces),
+                    "bytes": len(encoded),
+                    "sha256": hashlib.sha256(encoded).hexdigest(),
+                }
+                for message in [header]:
+                    process.stdin.write(query_encode(message, frame) + b"\n")
+                    await controlled(process.stdin.drain(), "startup", self.limits["startupMs"])
+                for index, text in enumerate(pieces):
+                    process.stdin.write(query_encode({"index": index, "text": text}, frame) + b"\n")
+                    await controlled(process.stdin.drain(), "startup", self.limits["startupMs"])
+                process.stdin.close()
+                self._stage(identity, "computing")
+                output = await controlled(
+                    self._query_output(process, job), "total", job["limits"]["totalMs"]
+                )
+                self._stage(identity, "reconciling")
+                await controlled(process.wait(), "total", job["limits"]["totalMs"])
+                if process.returncode == MEMORY_LIMIT_EXIT:
+                    raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
+                if process.returncode != 0:
+                    raise ServiceFault("ENGINE_EXITED")
+                if "error" in output:
+                    raise ServiceFault(output["error"]["code"], output["error"]["params"])
+                commit_boundary("before")
+                self._stage(identity, "committing")
+                self._notify(self.store.finish_query_job(identity, output, hook=commit_boundary))
+                return
             raw = json.dumps(
                 {
                     "capability": job["capability"],
@@ -752,6 +831,75 @@ class Coordinator:
             self._notify(self.store.fail_job(identity, classify(error, profile=self.profile)))
         finally:
             self.active.pop(identity, None)
+
+    async def _query_output(self, process, job):
+        """Private query stream: complete is evidence only after strict EOF and exit.
+
+        Unlike legacy test streams, every post-terminal byte/frame is rejected.
+        The caller separately reconciles the actual child exit and cancel fence.
+        """
+        frame, maximum = query_transport_limits(job["limits"])
+        reader = JsonlReader(frame)
+        pieces, size = [], 0
+        done = complete = False
+        failure = None
+        while True:
+            raw = await process.stdout.read(min(16384, frame + 1))
+            if not raw:
+                reader.finish()
+                await process.wait()
+                if process.returncode == MEMORY_LIMIT_EXIT:
+                    raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
+                break
+            for message in reader.feed(raw):
+                if complete or type(message) is not dict:
+                    raise ProtocolFault()
+                kind = message.get("type")
+                if kind == "query.chunk" and not done and failure is None:
+                    if (
+                        set(message) != {"type", "index", "text"}
+                        or type(message["index"]) is not int
+                        or message["index"] != len(pieces)
+                        or type(message["text"]) is not str
+                        or not message["text"]
+                        or len(message["text"]) > (frame - 256) // 12
+                    ):
+                        raise ProtocolFault()
+                    text = message["text"].encode("utf-8", errors="strict")
+                    if len(text) > maximum - size:
+                        raise ProtocolFault()
+                    size += len(text)
+                    pieces.append(text)
+                elif kind == "query.done" and not done and failure is None:
+                    if (
+                        set(message) != {"type", "parts", "bytes", "sha256"}
+                        or type(message["parts"]) is not int
+                        or message["parts"] != len(pieces)
+                        or not pieces
+                        or type(message["bytes"]) is not int
+                        or message["bytes"] != size
+                        or message["sha256"] != hashlib.sha256(b"".join(pieces)).hexdigest()
+                    ):
+                        raise ProtocolFault()
+                    done = True
+                elif kind == "query.error" and not done and failure is None and not pieces:
+                    if set(message) != {"type", "error"} or not CONTRACT.validate(
+                        "error", message["error"]
+                    ):
+                        raise ProtocolFault()
+                    failure = message["error"]
+                elif message == {"type": "complete"} and (done or failure is not None):
+                    complete = True
+                else:
+                    raise ProtocolFault()
+        if not complete:
+            raise ProtocolFault()
+        if failure is not None:
+            return {"error": failure}
+        output = query_decode(b"".join(pieces), maximum)
+        if type(output) is not dict or set(output) != {"payload", "rows"}:
+            raise ProtocolFault()
+        return output
 
     async def stop(self) -> None:
         self.closed = True
