@@ -1,0 +1,58 @@
+{
+  "scope": "two authorized new files plus dedicated new design/review docs; uncommitted independent-review candidate",
+  "files": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/entity_metadata.py",
+      "bytes": 10668,
+      "sha256": "c7c5e9cf1cf88c07420d89a136bb6893f04d8e74fcbcfd4cee7a937bcc3e735b"
+    },
+    {
+      "path": "packages/engine/tests/test_project_entity_metadata.py",
+      "bytes": 15963,
+      "sha256": "fc77319d88fc7ce8a58aebb4939dbd1791e2c2b67638aad4e409135145530f63"
+    },
+    {
+      "path": "docs/iterations/T01/entity-metadata-helper/design.md",
+      "bytes": 4624,
+      "sha256": "0c7103a8ae54bda0cd7700dd0674a774aa2e82313c9209c3ba85b0b6816c2b6f"
+    },
+    {
+      "path": "docs/reviews/T01/entity-metadata-helper/evidence-package.json",
+      "bytes": 573,
+      "sha256": "c8abaa1787f7b524c31231026a21bddf2c3b90e7eb636b88af4a421308c49dfb"
+    },
+    {
+      "path": "docs/reviews/T01/entity-metadata-helper/input-identities.json",
+      "bytes": 3644,
+      "sha256": "88bc7613e83c945f07cbea1ce23328c9278531ac1837a3ad3dc2f756c3113de7"
+    },
+    {
+      "path": "docs/reviews/T01/entity-metadata-helper/local-checks.json",
+      "bytes": 5776,
+      "sha256": "44fc2784fdd738829c7ed158576965f37c9a84d76bbe9185e41ec05fa44f0304"
+    },
+    {
+      "path": "docs/reviews/T01/entity-metadata-helper/related-readonly.json",
+      "bytes": 521,
+      "sha256": "f3935f3df31dd6b17212d9299a63a4c341970f3fe62a0ea84f69819617f4d874"
+    },
+    {
+      "path": "docs/reviews/T01/entity-metadata-helper/verification.json",
+      "bytes": 2523,
+      "sha256": "1d7adbe7638c1ed3b84aaa51ebcd8e26ba781cc9466ec303085d2c833680bf02"
+    }
+  ],
+  "excludesSelf": "delivery-manifest.json",
+  "policy": {
+    "path": "AGENTS.md",
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "protected": "not stage or commit"
+  },
+  "lateDocsFormat": {
+    "firstCheckTool": "1110d4",
+    "exit": 1,
+    "reason": "two new receipt JSON files required Prettier formatting; code/design passed and code unchanged",
+    "remediation": "only new verification.json and related-readonly.json formatted; final explicit check follows"
+  },
+  "runtimeVerification": "full npm run check exit0 at unchanged source hashes; final added receipt formatting does not require unchanged product retest"
+}

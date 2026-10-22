@@ -1,0 +1,40 @@
+# Entity metadata纯helper：独立静态实质审查
+
+结论：**本轮静态审查未发现阻断项或必须修复的P2及以上问题。** 两文件符合本次“给定有限不可变材料/显式home与冲突scope/profile-aware叶子校验”授权。完整check终态及后续指定同版审查尚未由本审确认，不能把本结论称作完整供方、真实home/provenance、全项目唯一性或产品运行通过。
+
+## 固定受审对象与授权
+
+树`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-entity-metadata-helper`，branch `feature/T01-entity-metadata-helper`，HEAD/基线均5f910b52c69d86a1076b2032e5d3c63e715947f3，源/测试尚未commit；以本轮实读bytes/SHA绑定，不能预填产品SHA：
+
+| 文件 | bytes / SHA256 |
+| --- | --- |
+| packages/engine/src/ontolearn_engine/project/entity_metadata.py | 10668 / c7c5e9cf1cf88c07420d89a136bb6893f04d8e74fcbcfd4cee7a937bcc3e735b |
+| packages/engine/tests/test_project_entity_metadata.py | 15963 / fc77319d88fc7ce8a58aebb4939dbd1791e2c2b67638aad4e409135145530f63 |
+| docs/iterations/T01/entity-metadata-helper/design.md | 4624 / 0c7103a8ae54bda0cd7700dd0674a774aa2e82313c9209c3ba85b0b6816c2b6f |
+| docs/reviews/T01/entity-metadata-helper/input-identities.json | 3644 / 88bc7613e83c945f07cbea1ce23328c9278531ac1837a3ad3dc2f756c3113de7 |
+| docs/reviews/T01/entity-metadata-helper/local-checks.json | 5776 / 44fc2784fdd738829c7ed158576965f37c9a84d76bbe9185e41ec05fa44f0304 |
+
+全文读根票`T01-entity-metadata-helper-first-window-20261023.json`2205B／00f935f446c083d977f6004bfbb1a68e428e93ab743c03bb147bb4b5b8a465b6及最新AGENTS15147B／de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4。按输入身份表逐项核f20七docs、836c convergence/intake/independent及其manifest的固定Git bytes/SHA，全部相符；复用已读同SHA f20主计划/首Fail/终审，全文读本次相关convergence与独审。未追读其引用的产品源码或其它大闭包。原owner和两新路径与票一致。
+
+Git状态实见仅保护AGENTS修改及两源/测试、新专属docs未跟踪；未stage/commit。作者记录的远端建树前核验是其过程证据，本审仅独立核本地HEAD/base/branch，未联网重查。未改AGENTS或其它候选路径。
+
+## 实质检查
+
+- **来源/权限边界**：源仅import stdlib dataclasses，顶层为有限常量、数据类和函数，无文件/DB/Store/Job、晚导入或调用引擎。1–7、180–195行与design明确home/profile是输入声明，结果没有trusted/complete/editable/proof标记。没有真实来源读取、迁移激活、S1/S2/session或公共schema/API接线；不得把私有数据类名存在当正式供方注册。
+- **精确类型与异常**：106–108、113–118、123、152、163、168、197–204、223、231、247行按type精确核验，str/tuple/bytes或数据类子类不绕过；bool不能冒profile/int界。缺slot由99–103行转有限MetadataFault，不返回输入值或底层异常。未知profile/kind不默认到已知分支，可变list/dict/bytearray均拒。
+- **不可变别名与保真**：成功输入的所有层均为本模块frozen/slots、精确tuple、精确str/bytes/int/None，未接受藏有可变容器的字段。返回保原对象并保持语言拼写、文本、序列次序和明确的None/空tuple差别；不做trim/NFC/casefold、排序或集合去重。常规frozen并非同进程恶意object.__setattr__/类猴子补丁的安全边界，本候选也未声称该能力。
+- **home与identifier**：206–229行仅在声明scope内核project、IRI→home、声明/材料一一匹配；同一home可容纳不同IRI。250–266行identifier缺失报gap，不从IRI/label/ID派生；已给定非空identifier按原str跨四kind核重复。缺一实体的scope不会变为“全项目覆盖”，也不能凭profile=2声明认证实际profile。此处只拒空字符串；业务identifier语法/真实值仍归后续权威校验，不把仅空白或其它字符串的叶子接受当正式Entity有效证明。
+- **profile/absence**：235–246行profile1仅保opaque bytes、fields必须None，同名内容不解析也不升格；缺opaque仍报legacy gap。profile2拒opaque混入；fields或具体五字段缺失分别保留gap，不补成空集合、不制造可编辑成功。未知旧字段/真实namespace coverage不是本模块能判的事，文档未冒领。
+- **有限性**：本地hard bounds256 homes/128 cells/65536每字符串UTF8 bytes/2097152总逻辑bytes允许收紧，不可放大。长度在容器/字符串遍历前核，Unicode逐scalar计数并拒surrogate，不分配完整encode副本；opaque按bytes计总量，共享对象每次出现重复计数。哈希/容器开销及调用方预分配不在该计数，文档明确不冒CostSession/RSS/whole-H/业务预算。未发现超界输入能成功绕过计数的静态路径。
+
+文本重复项、NUL/控制字符、未认证language/datatype及非IRI样式home词法被原样保留是当前私有叶子合同（design13、源193–194），不是RDF/BCP47/完整metadata写门有效判定。这里不因后续consumer需要更严语义就擅自把全链前置塞进本两文件；未来采用须明确这层与正式校验的组合，不能直接以gaps为空放行真实写。
+
+## 测试与现有执行证据
+
+全文读测试395行。其独立encode递归oracle核逻辑UTF8计数，覆盖真实hard总界精确/越1、nonASCII scalar界、home/cell数界；16种四类型冲突、大小写/空白/NFC/casefold反例、None与空集合、profile1同名opaque、缺字段、输入对象同一性/顺序、可变容器、str子类、bool/profile/非法Unicode及未初始化home均有具体断言。测试不只镜像分支或数件数；没有假Store、DB或正向supplier fixture。hard字段测试有重复cell是保真需求，不应被误读成正式RDF集合政策。
+
+独立重核local-checks列出的14份raw身份全部相符，实际读取pytest-01原63passed+1warning、pytest-02原70passed/0.23s及ruff-02原“All checks passed”。首轮Ruff exit1和修复工具exit1、首源码/测试raw及文档生成工具失败记录保留；不能把初版无警告或首检查绿倒填。作者局部Ruff/format0属其执行证据，本审未重跑，不作自己执行声称。
+
+本审读取的5776B local-checks仍将完整npm check记为session62569运行中，只给start和未来verification.json，**没有独立确认完整check终态**；不以局部70passed代全check。后续作者补终态/固定产品与过程pin后，由主线按实际候选核绑定；本报告只绑定上表两文件字节。双指定外审、CI/合并/父验收仍保留。
+
+本轮只执行Git/stdlib读取、JSON/hash/AST语法静态解析，命令退出0；没有import候选或执行内存反例、pytest/全check、DB/SQL/native/GUI/网络。为避免与作者完整check争用资源，未启动任何新增测试。只写本独审raw，不改树、候选、输入或原首败，不提交或联系其它聊天。

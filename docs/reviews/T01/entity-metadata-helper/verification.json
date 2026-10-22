@@ -1,0 +1,64 @@
+{
+  "candidate": "pure-helper-r2; author verification only; independent review pending",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "branch": "feature/T01-entity-metadata-helper",
+  "sources": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-entity-metadata-helper/packages/engine/src/ontolearn_engine/project/entity_metadata.py",
+      "bytes": 10668,
+      "sha256": "c7c5e9cf1cf88c07420d89a136bb6893f04d8e74fcbcfd4cee7a937bcc3e735b"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-entity-metadata-helper/packages/engine/tests/test_project_entity_metadata.py",
+      "bytes": 15963,
+      "sha256": "fc77319d88fc7ce8a58aebb4939dbd1791e2c2b67638aad4e409135145530f63"
+    }
+  ],
+  "fullCheck": {
+    "observedTerminalAt": "2026-10-22T16:50:43.328788+00:00",
+    "session": 62569,
+    "initialToolChunk": "ae9280",
+    "terminalToolChunk": "ed5a1f",
+    "exit": 0,
+    "result": {
+      "vitest": {
+        "files": 15,
+        "passed": 630
+      },
+      "pytest": {
+        "passed": 1122,
+        "seconds": 51.04
+      },
+      "ruff": "check and format 0; 171 files formatted",
+      "lint": "passed",
+      "prettier": "passed",
+      "typecheck": "passed",
+      "build": "passed"
+    },
+    "stdout": {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/npm-check-01.stdout.txt",
+      "bytes": 5231,
+      "sha256": "dbd4af898c42e120070ed4dc4972686e5e6bc9c64c054a20a0fdc87edc2f3217"
+    },
+    "stderr": {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/npm-check-01.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scope": {
+    "trackedChanges": ["AGENTS.md exact authorized policy carry; protected, not stageable"],
+    "otherTrackedChanges": [],
+    "staged": [],
+    "newProductAndTestFiles": [
+      "packages/engine/src/ontolearn_engine/project/entity_metadata.py",
+      "packages/engine/tests/test_project_entity_metadata.py"
+    ],
+    "newDocsPrefixes": [
+      "docs/iterations/T01/entity-metadata-helper/",
+      "docs/reviews/T01/entity-metadata-helper/"
+    ]
+  },
+  "limits": "Pure leaf supplied-material checks only. Full command includes inherited fixtures; it does not certify supplier integration, real home, all-project coverage, production, packaging, native GUI or e2e. No stage/commit/push.",
+  "originals": "external evidence ZIP and index; first candidate and first failing Ruff raw retained"
+}

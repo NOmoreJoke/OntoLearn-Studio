@@ -1,0 +1,162 @@
+{
+  "scope": "author local verification; not independent review or full supplier chain",
+  "environment": {
+    "python": "3.12.14 (main, Aug 12 2026, 13:57:54) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "venv": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-entity-metadata-helper/.venv",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "uvSyncExit": 0,
+    "uvSyncTool": "3552ff",
+    "npmCiExit": 0,
+    "npmCiTool": "53c670",
+    "npmCiSession": 87946,
+    "sharedEnvironmentUsed": false
+  },
+  "checks": [
+    {
+      "name": "pytest-01",
+      "exit": 0,
+      "toolChunk": "605355",
+      "result": "63 passed, 1 parametrization warning",
+      "rawPrefix": "/tmp/t01-entity-metadata-helper-20261023/evidence/pytest-01"
+    },
+    {
+      "name": "ruff-01",
+      "exit": 1,
+      "toolChunk": "01dedf",
+      "result": "18 import/format/unused-import errors",
+      "rawPrefix": "/tmp/t01-entity-metadata-helper-20261023/evidence/ruff-01"
+    },
+    {
+      "name": "pytest-02",
+      "exit": 0,
+      "toolChunk": "19f88e",
+      "result": "70 passed in 0.23s",
+      "rawPrefix": "/tmp/t01-entity-metadata-helper-20261023/evidence/pytest-02"
+    },
+    {
+      "name": "ruff-02",
+      "exit": 0,
+      "toolChunk": "3ccc94",
+      "result": "All checks passed",
+      "rawPrefix": "/tmp/t01-entity-metadata-helper-20261023/evidence/ruff-02"
+    }
+  ],
+  "otherChecks": [
+    {
+      "name": "targeted ruff --fix",
+      "exit": 1,
+      "toolChunk": "1cbcae",
+      "note": "truncated tool output; no reconstructed complete raw claimed"
+    },
+    {
+      "name": "targeted ruff format",
+      "exit": 0,
+      "toolChunk": "0e5f26",
+      "result": "2 files reformatted"
+    },
+    {
+      "name": "targeted ruff format --check",
+      "exit": 0,
+      "toolChunk": "59fac6",
+      "result": "2 files already formatted; enclosing docs generator failed separately"
+    },
+    {
+      "name": "new design Prettier",
+      "exit": 0,
+      "toolChunk": "9552b6"
+    }
+  ],
+  "toolingFailuresPreserved": [
+    {
+      "toolChunk": "59fac6",
+      "note": "system python3 stdin rejected non-UTF-8 source before document generator execution; subsequent missing-file Prettier failed; retried with own .venv interpreter and apply_patch"
+    },
+    {
+      "toolChunk": "ad64c2",
+      "note": "local receipt generator had a missing dict brace; no output written; fixed in next invocation"
+    },
+    {
+      "note": "initial git from non-repository scheduling root failed; corrected to real Git tree before remote verification and creation"
+    }
+  ],
+  "rawFiles": [
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/full-check-start.json",
+      "bytes": 698,
+      "sha256": "445647b8bbcb8f6e2703e20c6a227288479f981081fc2ea4af6fd9ea3bf230bd"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/npm-ci.stderr.txt",
+      "bytes": 814,
+      "sha256": "c8b5e212c8115aa7c7efb457da4419789a7e5d3dc4cfda83ccff499131c109d0"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/npm-ci.stdout.txt",
+      "bytes": 144,
+      "sha256": "f307e34b565ce225d4f09c2aac09f5e9b2e7424324d4de979c48465d5ce1e25d"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/pytest-01.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/pytest-01.stdout.txt",
+      "bytes": 901,
+      "sha256": "623ac8d2612c9856a64cc93fd1abca10dde655c7fe74aea515ca9842db4be008"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/pytest-02.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/pytest-02.stdout.txt",
+      "bytes": 99,
+      "sha256": "10720b3b7162dbdb7a929a63605fd6e5b4574e9b1e73a08ed8a67c381288430c"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/r1/entity_metadata.py.raw",
+      "bytes": 10606,
+      "sha256": "c39a9ceb4b5fdb94323909b972a9fdfa6d79d91bf026123ad7563d4dc584587c"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/r1/identity.json",
+      "bytes": 844,
+      "sha256": "8dd26c71053b835966e326dbcd4b786d2b85c5ca0a04c220e67cc52bcc4642ad"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/r1/test_project_entity_metadata.py.raw",
+      "bytes": 13525,
+      "sha256": "08be2d7ca22e6184762d2cb1fb8a4685b21d9ddd195bad8158787b9f8c5eb7da"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/ruff-01.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/ruff-01.stdout.txt",
+      "bytes": 9916,
+      "sha256": "66ac5b5d820a9ea177b35064362d0c4ace8455ff0b7133baf4389a94431cf096"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/ruff-02.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/t01-entity-metadata-helper-20261023/evidence/ruff-02.stdout.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  ],
+  "completeCheck": {
+    "state": "running when local receipt written",
+    "session": 62569,
+    "toolChunk": "ae9280",
+    "command": "npm run check",
+    "terminalReceipt": "verification.json"
+  },
+  "hold": "No stage/commit/push; parent independent review pending. No e2e/GUI/native/DB/project reads in new helper tests."
+}
