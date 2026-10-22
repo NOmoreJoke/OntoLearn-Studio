@@ -9,4 +9,3 @@ ZCode新任务要求GLM-5.3最高、permission.mode=yolo；MiniMax新任务要�
 本次根授权仅新备包prefix，允许完整固定Git源码/需求/原始证据的复制和stdlib/Git/hash/tar/formatter结构验收；没有产品、测试、模型、native/caller、DB、安装/网络、HOLD项目、GC/物理H实验许可，没有新增Goal/付费/重置/push/PR/merge。新tree AGENTS副本由政策owner传播且保持不stage；外部现行规则已经全文读，不以传播等待阻塞备包。
 
 指定模型任务仍prepared_not_dispatched；作者结构检查不冒独立复核或指定Pass。原57P0/六迭代/父I05和完整发布验收全部保留。已有权益/新增付费/平台逐次确认规则保持原文，禁止绕过。
-

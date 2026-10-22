@@ -93,4 +93,3 @@ def main():
     save(ROOT/"author-validation.json",validation)
     print(json.dumps({"members":len(seen),"regular":regular,"hardlinks":links,"bundleBytes":bpath.stat().st_size,"commands":len(records),"formatting":formatting},ensure_ascii=False))
 if __name__=="__main__":main()
-

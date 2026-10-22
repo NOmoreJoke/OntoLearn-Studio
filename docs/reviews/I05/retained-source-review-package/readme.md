@@ -44,3 +44,4 @@ author-build.py仅纯Git/stdlib打包器，author-command-log.json保存实际ar
 
 input-manifest自项排除，后续candidate Git提交绑定其最终字节；独立agent文档/包结构复核和指定应用实际任务仍待root接手。没有创建Goal、模型任务、外部消息、push/PR/merge。
 
+补充：初次Prettier受仓库ignore影响，exit0不能证明覆盖；原输出保留。后续text-correction-proof.json的显式 --ignore-path /dev/null 才是新作者文件格式检查。原author-build.py、author-finish-first.py作为首次失败作者器保留EOF，不清洗；完整base→packet whitespace仍保留其两项例外，另给精确排除两件后的检查，不称全量绿。

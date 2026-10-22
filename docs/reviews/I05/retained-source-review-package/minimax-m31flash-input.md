@@ -59,4 +59,3 @@ T03供应锁28440B/86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8
 ## 本任务专属设置与输出
 
 指定 MiniMax Code M3.1-Flash，thinking=xhigh，逐任务权限=permissionMode=bypassPermissions。这是待实际UI读回的要求，不是已派发记录。报告只写 reports/minimax-m31flash.md 和本人必要纯结构收据；不读另一方报告/任务。原生ID不可见时明确unknown，不捏造UUID；权限不符由root在安全边界修正并实际记录，不以用户级默认配置代任务设置证明。
-

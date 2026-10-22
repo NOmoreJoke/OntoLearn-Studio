@@ -60,4 +60,3 @@ def main():
       "promptSHA256":receipt["mainPromptSHA256"],"inputManifestSHA256":receipt["inputManifestSHA256"],
       "packetManifestSHA256":receipt["packetManifestSHA256"],"stagedWhitespaceExit":check.returncode,"finalToolOnlyExactCommandRecords":final_tool_records},ensure_ascii=False))
 if __name__=="__main__":main()
-
