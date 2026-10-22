@@ -1,0 +1,99 @@
+{
+  "sessionId": "mvs_4a0e67fa3d5949eb910022a5c96822fb",
+  "originalTurn": "12d877f3-1c57-46bb-ad32-a609bc2a0ba3",
+  "source": "/Users/kyle/.minimax/v2/sessions/2026/10/22/21-06-18-316-session_bXZzXzRhMGU2N2ZhM2Q1OTQ5ZWI5MTAwMjJhNWM5NjgyMmZi/messages.jsonl",
+  "actualReportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md",
+  "nativeInitialWriteThenEdits": [
+    {
+      "id": "call_01a1657beb3b708c96b5346f",
+      "name": "write",
+      "timestamp": 1792703971209,
+      "resultStatusOnly": {
+        "isError": false,
+        "timestamp": 1792704065486
+      },
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md",
+      "contentBytes": 48944,
+      "contentSHA256": "36cdc187a20a3e06994d0fe91c5bb6f0178be73ae8ba47146fab15b1391bf2cc",
+      "contentOmittedFromPacket": true
+    },
+    {
+      "id": "call_01a1657d61b775b3a59a6a95",
+      "name": "edit",
+      "timestamp": 1792704072112,
+      "resultStatusOnly": {
+        "isError": false,
+        "timestamp": 1792704079647
+      },
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md",
+      "old_string": "1. 固定输入完整性无缺口：`input-manifest.json` 全部 **106/106 条**目按声明角色（product-diff / existing-process-evidence / approved-prd-context / frozen-round-input）从真实 Git 对象取出并逐条重算 SHA-256 与字节数，**全部一致**；其中 47 条还声明了 `gitBlob`，blob 与文件内容一一吻合（`raw/manifest-verification.json`）。base tree `0a23f708…` 与 product tree `8b646570…` 独立复算一致。",
+      "new_string": "1. 固定输入完整性无缺口：`input-manifest.json` 全部 **106/106 条**目按声明角色（product-diff 55 / existing-process-evidence 42 / approved-prd-context 1 / frozen-round-input 8）从真实 Git 对象取出并逐条重算 SHA-256 与字节数，**全部一致**；其中 55 条（全部 product-diff）还声明了 `gitBlob`，blob 与文件内容一一吻合、0 处不符（`raw/manifest-verification.json`，含另 2 条 base/product tree 身份复算，共 108 条核验记录）。base tree `0a23f708…` 与 product tree `8b646570…` 独立复算一致。",
+      "oldStringOccurrenceCountBeforeEdit": 1
+    },
+    {
+      "id": "call_01a1657d8dcc7009b73962e2",
+      "name": "edit",
+      "timestamp": 1792704085958,
+      "resultStatusOnly": {
+        "isError": false,
+        "timestamp": 1792704091189
+      },
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md",
+      "old_string": "- 47 条声明 `gitBlob` 者：**blob 内容与路径内容一致，0 处不符**。",
+      "new_string": "- 55 条声明 `gitBlob` 者（全部 product-diff）：**blob 内容与路径内容一致，0 处不符**。",
+      "oldStringOccurrenceCountBeforeEdit": 1
+    },
+    {
+      "id": "call_01a1657e186d700e9bba7a49",
+      "name": "edit",
+      "timestamp": 1792704117959,
+      "resultStatusOnly": {
+        "isError": false,
+        "timestamp": 1792704127384
+      },
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md",
+      "old_string": "- **学习专项 pytest**：stdout 末行 `42 passed in 2.70s`，stderr 0 字节，退出码 0。42 项 = fixture 完整性 9 + reducer/服务 + **7 项真实 I04 通道**（4 baseline × 真实 rollback 预览 / stdio coordinator / 隔离 worker / test.atomic 提交 / operation.get / result.page / SQLite 重开，及 3 个负例模式 stale-preview → `REVISION_CONFLICT`、worker-failure → `INTERNAL_ERROR`、product-mode → `UNSUPPORTED_CAPABILITY`）。",
+      "new_string": "- **学习专项 pytest**：stdout 末行 `42 passed in 2.70s`，stderr 0 字节，退出码 0。本方 `--collect-only -q` 实测分解为 **fixture 完整性 11 + reducer/服务 24 + 真实 I04 通道 7 = 42**（`test_learning_jobstore_integration.py` 的 7 项 = 4 个 baseline 成功通道 + 3 个负例模式：stale-preview → `REVISION_CONFLICT`、worker-failure → `INTERNAL_ERROR`、product-mode → `UNSUPPORTED_CAPABILITY`；每个成功通道真实经 rollback 预览 / stdio coordinator / 隔离 worker / test.atomic 提交 / operation.get / result.page / SQLite 重开 / 依赖向量）。",
+      "oldStringOccurrenceCountBeforeEdit": 1
+    },
+    {
+      "id": "call_01a1657e30b073db80a8b8b9",
+      "name": "edit",
+      "timestamp": 1792704127485,
+      "resultStatusOnly": {
+        "isError": false,
+        "timestamp": 1792704131914
+      },
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md",
+      "old_string": "- raw（32 文件）：`docs/reviews/T09/replacement-r1-runtime/minimax/raw/`",
+      "new_string": "- raw（27 文件）：`docs/reviews/T09/replacement-r1-runtime/minimax/raw/`",
+      "oldStringOccurrenceCountBeforeEdit": 1
+    },
+    {
+      "id": "call_01a1657e59a5741686f8c18b",
+      "name": "edit",
+      "timestamp": 1792704136807,
+      "resultStatusOnly": {
+        "isError": false,
+        "timestamp": 1792704144306
+      },
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md",
+      "old_string": "| headless 组件 | **本轮未独立重跑**（环境未绑定 chromium 1248，按指令不重跑已知失败、不安装 runtime）；本方独立跑了同文件的**纯逻辑部分**并确认 16 项为 skip 而非 pass；该子项的通过结论**依赖 d969 固定同候选证据**，其覆盖的 7 个源码 SHA 与 manifest SHA 已由本方逐条核对与受审字节一致，且 `ui-browser-install`/`ui-third-vitest`（68.42s 真实浏览器执行时长）等归档旁证互相印证该套件**确实执行过**而非跳过 | §5.4、`raw/archive-expansion.json` |",
+      "new_string": "| headless 组件 | **本轮未独立重跑**（环境未绑定 chromium 1248，按指令不重跑已知失败、不安装 runtime）；本方实际跑的是同目录的**纯投影文件**（`learning-presentation.test.ts`，18 passed），而 `learning-workspace.test.ts` 的 16 项浏览器用例在本轮确为 **skip（16 skipped）而非 pass**；该子项的通过结论**依赖 d969 固定同候选证据**，其覆盖的 7 个源码 SHA 与 manifest SHA 已由本方逐条核对与受审字节一致，且 `ui-browser-install`（真实 Chromium 下载记录）、`ui-third-vitest`（68.42s 真实浏览器执行时长）、`npm-check-ui-first`（ESLint 扫到下载的浏览器 `content.js`）等归档旁证互相印证该套件**确实执行过**而非跳过 | §5.4、`raw/archive-expansion.json` |",
+      "oldStringOccurrenceCountBeforeEdit": 1
+    }
+  ],
+  "nativeContentReconstructedInMemory": true,
+  "expectedDiskBytesUsedToFillContent": false,
+  "reconstructedBytes": 49469,
+  "reconstructedSHA256": "92cfb9d6433710303355fd7be6754026e54846f24c2853e46a41df2a0f9766b0",
+  "matchesActualFinalReport": true,
+  "publicFinal": {
+    "timestamp": 1792704157517,
+    "stopReason": "stop",
+    "model": "MiniMax-M3.1-Flash",
+    "text": "T09-S1 replacement-r1 独立审查已完成，报告落盘于本方新路径。\n\n## 结论：通过（严格限定完整 T09-S1 同版范围）\n\nbase `5f910b52` → 产品 `7659665`（tree `8b646570`），公共 review HEAD `72aa83a8`，原流程证据 `d96924e7` —— 三角色分列核验，未以物理 HEAD 冒充产品角色。\n\n**独立核得的关键事实**\n- **106/106** manifest 条目按声明角色从真实 Git 对象重算 SHA-256/字节，全部一致；55 条 product-diff 的 `gitBlob` 逐一吻合，0 处不符；17/17 fixture 摘要与绑定 PRD SHA 一致；base/product tree 独立复算一致。\n- **本轮实际运行 4 条授权检查，真实整数退出码全为 0**：fixture/PRD 校验（17 文件/50 计划/`productRuntime: not-executed`）、reset 导出（独立原始模型，**递归确认无任何 `expected` 键**）、学习 pytest **42 passed**（含 7 项真实 I04 通道 + 3 负例）、vitest **18 passed / 16 skipped**。我的 verify stdout SHA 与归档 `baseline-verification.json` **逐字节相同**。\n- **12 个 gzip 首败归档全部解压复核**，解压后 SHA/字节与证据登记的原始 raw **逐一吻合**；失败文本逐个核对（27 digest mismatch、4 failed/3 passed 且**原件确未打印 dependencyKey 错误**、jsxDEV 13 failed/16 passed、ESLint 扫到浏览器 `content.js`）。\n- **13 项旧问题全部独立判为已关闭**（不采信历史\"已关闭\"标签），关闭依据均为可复算的源码/原件证据。\n\n**发现：0×P0、0×P1、0×P2，5×P3**\n- F-01/02/03 = 总控三项 P3 延期，**经独立复核均成立且接受延期**（守卫本身正确且 S1 不可达；内容区分度问题非洗白风险；内联 oracle 实测与 E.5 源**当前完全相等**，缺的是回归护栏）。\n- **F-04（新）** renderer `currentFloor` 用 `?? 0` 兼作\"无记录\"哨兵，与契约允许的合法 `recordVersion=0` 冲突；同 attempt 换输入且 owner 首条用 0 时，首条提示/检查回执会被永久拒绝（方向保守，非洗白；无测试覆盖）。\n- **F-05（新）** `evidence/verification-summary.json` 无阶段标记，其 `baselines.py` 摘要实测对应的是 INFRA-01 修复**之前**的 `51cdc0e` 版本。\n\n**身份边界（如实记录）**：模型 M3.1-Flash / xhigh / 始终授权、cwd、HEAD 均取自 fresh 操作员回执并复核一致；正文 75943 B / SHA `18fbcbe3…fe1b` 与回执逐字节相同。`sessionId`/`originalTurn`/`acceptedAtUTC`/`officialMenuSIDReadBack`/`unsentDraftCleared` 为 **UNKNOWN**（operator-only 收件范围，按指令未做任何发现）——**总控补齐任务实例绑定前，本报告不得当作已绑定的正式终态用于同版双方通过判定**。\n\n**未验边界**：浏览器组件 16 项本轮为 skip 而非 pass（环境未绑定 chromium 1248，按指令不重跑、不安装 runtime），该子项结论依赖 d969 同候选证据；领域执行、package/native、双平台、真人、生产全部未执行。父门 T00–T08/T10/T11、bridge/App 路由、课程入包、5 名新手 80% 口径、57 项 P0 全部保留。\n\n**合规**：未提交/推送/切分支/合并；`AGENTS.md` 保持未暂存 M 且 SHA 未变；产品/测试/配置/依赖/锁**零漂移**（`git diff HEAD` 为空、暂存区为空）；未调用 agentlist/sessionget/globalconfig/peer 发现；未读另一方提示正文与前组报告。\n\n报告 SHA-256 `92cfb9d6433710303355fd7be6754026e54846f24c2853e46a41df2a0f9766b0`（49469 bytes），raw 27 件（`run-receipt.json`、`manifest-verification.json`、`probe-fixtures.json`、`archive-expansion.json` + 12 份解压原文 + 8 份 stdout/stderr）。\n\n<media type=\"file\" src=\"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1/minimax-m31flash.md\" caption=\"T09-S1 replacement-r1 MiniMax M3.1-Flash 完整独立审查报告（结论：通过，限定 S1 同版范围）\" />"
+  },
+  "operatorDidNotEditAuthorsReport": true,
+  "globalOrPeerResultsExported": false
+}

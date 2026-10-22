@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "observedUTC": "2026-10-22T21:27:59.801157+00:00",
+  "priorLaunchCommit": "e18bc9a0cd38d869a5e480e9f7c66e9879d73dfb",
+  "zcode": {
+    "SID": "session_1d54a3bdcdcb436f5693f8a1f6c41544",
+    "originalTurn": "turn_9bfca954-5f33-42c8-ac6a-c38344f8c7e0",
+    "officialOriginalTurnLifecycle": [
+      {
+        "timestamp": "2026-10-22T21:04:07.619Z",
+        "event": "turn.started",
+        "status": "started",
+        "sessionId": "session_1d54a3bdcdcb436f5693f8a1f6c41544",
+        "turnId": "turn_9bfca954-5f33-42c8-ac6a-c38344f8c7e0"
+      },
+      {
+        "timestamp": "2026-10-22T21:21:46.823Z",
+        "event": "turn.completed",
+        "status": "completed",
+        "sessionId": "session_1d54a3bdcdcb436f5693f8a1f6c41544",
+        "turnId": "turn_9bfca954-5f33-42c8-ac6a-c38344f8c7e0"
+      }
+    ],
+    "reportBytes": 19358,
+    "reportLines": 114,
+    "reportSHA256": "5540beb29ab89baf5c72fd9fc3a2fcc9df213c376ad392171c7a291a5b727f79",
+    "nativeWriteMatchesActualReport": true,
+    "nativeWriteCallId": "call_410ace5aba50431abbd4b80f",
+    "modelConclusion": "bounded S1 Pass",
+    "controllerProcessResult": "FAIL",
+    "processReason": "public denial→changed tool/equivalent argv successors; known global-memory Read/Edit action inputs outside write face",
+    "globalExecutionOrMutationSucceeded": "UNKNOWN; return bodies and actual files not investigated",
+    "environmentAttribution": "UNKNOWN; author claim not adopted"
+  },
+  "minimax": {
+    "SID": "mvs_4a0e67fa3d5949eb910022a5c96822fb",
+    "originalTurn": "12d877f3-1c57-46bb-ad32-a609bc2a0ba3",
+    "officialFourColumnRows": [
+      [
+        "mvs_4a0e67fa3d5949eb910022a5c96822fb",
+        "12d877f3-1c57-46bb-ad32-a609bc2a0ba3",
+        "completed",
+        1792704167996
+      ]
+    ],
+    "rowUpdatedUTC": "2026-10-22T21:22:47.996000+00:00",
+    "rowUpdatedIsNotAnAdditionalCompletionEventTimestamp": true,
+    "reportBytes": 49469,
+    "reportLines": 353,
+    "reportSHA256": "92cfb9d6433710303355fd7be6754026e54846f24c2853e46a41df2a0f9766b0",
+    "nativeWriteEditReconstructionMatchesFinalReport": true,
+    "modelConclusion": "bounded S1 Pass; three deferrals accepted",
+    "newFindings": [
+      "F-04 P3 recordVersion=0 sentinel conflict",
+      "F-05 P3 missing historical verification stage label"
+    ],
+    "controllerAcceptance": "pending; cannot form Pair Pass while Z process FAIL"
+  },
+  "originalAuthorRunReceiptFiles": [
+    {
+      "role": "zcode",
+      "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-zcode-review-7659665/docs/reviews/T09/replacement-r1-runtime/zcode/raw/run-receipt.json",
+      "bytes": 5815,
+      "sha256": "af96feacf642ae0fbb80bb4b50135028987d63ad0682d1bf9e15c8ef821c8f0d",
+      "copyUnmodified": true,
+      "strength": "author runtime artifact, not new operator run or native independent integer field"
+    },
+    {
+      "role": "minimax",
+      "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/run-receipt.json",
+      "bytes": 6065,
+      "sha256": "9e15046fdbe959300aa28b7e1a923d460c365bfb6232659db067c3d409ef86d4",
+      "copyUnmodified": true,
+      "strength": "author runtime artifact, not new operator run or native independent integer field"
+    }
+  ],
+  "bothOriginalReportsPreservedByteForByte": true,
+  "allAuthorOpinionsPreservedNotOverwritten": true,
+  "samePairPassAccepted": false,
+  "oldFailuresAndP3ConditionsRetained": true,
+  "noNewPairOrCorrection": true,
+  "operatorNoGUIOrFollowupPrompt": true,
+  "operatorNoExperimentsOrCleanup": true,
+  "sourceGuardOrPriorInputProofRepeated": false,
+  "goalChanged": false,
+  "pushedOrPRCreated": false,
+  "operatorReadbackScopeException": "Earlier denial-keyword scan was not call-ID-whitelisted and could process out-of-scope original-turn result strings; bodies not exported, actual global targets not opened/hashed. Corrected to known IDs plus pre-global-return cutoff; extent UNKNOWN."
+}

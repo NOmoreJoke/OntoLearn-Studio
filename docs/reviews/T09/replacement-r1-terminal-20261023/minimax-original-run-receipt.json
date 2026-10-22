@@ -1,0 +1,124 @@
+{
+ "runnerExit": 0,
+ "runs": [
+  {
+   "id": "verify-product-baselines",
+   "reason": "Confirm the frozen manifest/PRD-coverage/fixture verifier really passes on this worktree and still reports productRuntime=not-executed (scope requires the reset/verify path to be sound).",
+   "argv": [
+    ".venv/bin/python",
+    "scripts/verify-product-baselines.py"
+   ],
+   "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665",
+   "envOverrides": {
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/scratch",
+    "unset": [
+     "T09_HEADLESS_UI",
+     "PLAYWRIGHT_BROWSERS_PATH",
+     "ONTOLEARN_TEST_ENGINE"
+    ]
+   },
+   "startedUTC": "2026-10-22T21:11:49Z",
+   "endedUTC": "2026-10-22T21:11:49Z",
+   "durationSeconds": 0.069,
+   "returncode": 0,
+   "stdoutPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/verify-product-baselines.stdout.txt",
+   "stdoutBytes": 876,
+   "stdoutSha256": "e3cf790a4e1f3cdb3616a8690d106cea59998f4260733535d93c1ec3551758fb",
+   "stderrPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/verify-product-baselines.stderr.txt",
+   "stderrBytes": 0,
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "id": "verify-product-baselines-reset-G-base",
+   "reason": "Confirm the reset entry returns the independent raw model and does not prefill an oracle/expected payload.",
+   "argv": [
+    ".venv/bin/python",
+    "scripts/verify-product-baselines.py",
+    "--reset",
+    "G-base"
+   ],
+   "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665",
+   "envOverrides": {
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/scratch",
+    "unset": [
+     "T09_HEADLESS_UI",
+     "PLAYWRIGHT_BROWSERS_PATH",
+     "ONTOLEARN_TEST_ENGINE"
+    ]
+   },
+   "startedUTC": "2026-10-22T21:11:49Z",
+   "endedUTC": "2026-10-22T21:11:49Z",
+   "durationSeconds": 0.055,
+   "returncode": 0,
+   "stdoutPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/verify-product-baselines-reset-G-base.stdout.txt",
+   "stdoutBytes": 8227,
+   "stdoutSha256": "dbae89cc1ba9df375a65eb4cb92ce314e181d5dfe65e7755ccb1796a88813a69",
+   "stderrPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/verify-product-baselines-reset-G-base.stderr.txt",
+   "stderrBytes": 0,
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "id": "learning-pytest-suite",
+   "reason": "Confirm the frozen S1 learning suite (fixture integrity, reducer, real I04 preview/stdio worker/SQLite/reopen) actually passes in this worktree; the 42-test result is claimed only by archived evidence.",
+   "argv": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "packages/engine/tests/test_learning_baselines.py",
+    "packages/engine/tests/test_learning_service.py",
+    "packages/engine/tests/test_learning_jobstore_integration.py",
+    "-q"
+   ],
+   "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665",
+   "envOverrides": {
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/scratch",
+    "unset": [
+     "T09_HEADLESS_UI",
+     "PLAYWRIGHT_BROWSERS_PATH",
+     "ONTOLEARN_TEST_ENGINE"
+    ]
+   },
+   "startedUTC": "2026-10-22T21:11:49Z",
+   "endedUTC": "2026-10-22T21:11:52Z",
+   "durationSeconds": 2.983,
+   "returncode": 0,
+   "stdoutPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/learning-pytest-suite.stdout.txt",
+   "stdoutBytes": 99,
+   "stdoutSha256": "ab91cd9f96ad7a6e39c85485bd8976742833d132c24453cb05a69345d1cd7c28",
+   "stderrPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/learning-pytest-suite.stderr.txt",
+   "stderrBytes": 0,
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "id": "learning-vitest-unit",
+   "reason": "Confirm the 18 pure projection unit tests pass here and observe that the 16 browser component tests are skipped (not passed) without the explicit opt-in; no browser is launched.",
+   "argv": [
+    "npx",
+    "--no-install",
+    "vitest",
+    "run",
+    "tests/unit/learning-presentation.test.ts",
+    "tests/unit/learning-workspace.test.ts"
+   ],
+   "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665",
+   "envOverrides": {
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/scratch",
+    "unset": [
+     "T09_HEADLESS_UI",
+     "PLAYWRIGHT_BROWSERS_PATH",
+     "ONTOLEARN_TEST_ENGINE"
+    ]
+   },
+   "startedUTC": "2026-10-22T21:11:52Z",
+   "endedUTC": "2026-10-22T21:11:55Z",
+   "durationSeconds": 2.932,
+   "returncode": 0,
+   "stdoutPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/learning-vitest-unit.stdout.txt",
+   "stdoutBytes": 270,
+   "stdoutSha256": "2b1c34cf069aa442224b734c0ac65284a5345aae633c63d4565201d9ce9a1f07",
+   "stderrPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665/docs/reviews/T09/replacement-r1-runtime/minimax/raw/learning-vitest-unit.stderr.txt",
+   "stderrBytes": 0,
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ ]
+}

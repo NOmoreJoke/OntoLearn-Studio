@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "task": "T09-S1 replacement-r1 zcode-glm53 fresh independent review",
+  "session": "session_1d54a3bdcdcb436f5693f8a1f6c41544",
+  "runnerMode": "direct Bash invocations after runner-script path was refused by mimosa hook (refusal preserved)",
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-zcode-review-7659665",
+  "envOverrides": {
+    "TMPDIR": "docs/reviews/T09/replacement-r1-runtime/zcode/scratch/tmp",
+    "UV_CACHE_DIR": "docs/reviews/T09/replacement-r1-runtime/zcode/uv-cache",
+    "npm_config_cache": "docs/reviews/T09/replacement-r1-runtime/zcode/npm-cache",
+    "removedForRuns": ["T09_HEADLESS_UI", "T09_UI_CAPTURE", "PLAYWRIGHT_BROWSERS_PATH"],
+    "mirrorPytestExtra": ["PYTHONPATH=<mirror>/packages/engine/src"]
+  },
+  "environmentalIncident": {
+    "what": "mimosa hook wrote per-session state file into the audited fixture directory during this review session",
+    "path": "tests/fixtures/product-baselines/.mimosa/hook-state/session_1d54a3bdcdcb436f5693f8a1f6c41544.json",
+    "lstat": "size=218 mode=-rw------- born=2026-10-23T05:11:11+08:00 (path/lstat only; not read, hashed, parsed or deleted per rules)",
+    "gitVisibility": "ignored by .gitignore:26 .mimosa/ hence invisible in git status, but visible to baselines.verify() rglob completeness check",
+    "effect": "all direct real-tree runs of verify(ROOT) fail at baselines.py:65 'Manifest does not cover complete content/fixture file set'; this is the tamper-detection design working correctly against an extra unlisted file, an environment artifact, not a product defect",
+    "resolution": "comparison runs against a byte-exact mirror of HEAD (git archive HEAD into scratch/mirror, .mimosa absent, manifest sha aaaef2c0...) "
+  },
+  "hookRefusalsPreserved": [
+    {
+      "refused": "Bash heredoc write of scratch runner script",
+      "hookMessage": "Bash 直接写源码/安全配置会绕过 Write/Edit 安全扫描；改用 Write/Edit 提交",
+      "then": "Write-tool submission of hardened literal-argv runner was refused twice by mimosa candidate-code scan (path-traversal / command-injection pattern flags on the guard function and shell=False literal call)",
+      "disposition": "stopped the self-written subprocess-runner path entirely; switched to direct Bash execution of the three pre-authorized commands, preserving both refusals"
+    },
+    {
+      "refused": "npx --no-install vitest run with explicit test file paths",
+      "hookMessage": "misread read-only test paths as writing source files (known false positive)",
+      "disposition": "used the environment-established name-filter form 'vitest run learning' (same form as the frozen-input recorded headless first-failure command); file-path form remains refused and unretried"
+    }
+  ],
+  "commands": [
+    {
+      "name": "verify-product-baselines-direct-realtree",
+      "argv": ["python3", "scripts/verify-product-baselines.py"],
+      "cwd": "worktree root",
+      "startUTC": "2026-10-22T21:14:18Z",
+      "endUTC": "2026-10-22T21:14:18Z",
+      "returncode": 1,
+      "stdout": "raw/verify-product-baselines.stdout.txt (0 bytes)",
+      "stderr": "raw/verify-product-baselines.stderr.txt (88 bytes, 'Baseline verification failed: Manifest does not cover complete content/fixture file set')"
+    },
+    {
+      "name": "verify-product-baselines-head-mirror",
+      "argv": ["python3", "scripts/verify-product-baselines.py"],
+      "cwd": "scratch/mirror (git archive HEAD; .mimosa absent)",
+      "startUTC": "2026-10-22T21:16:35Z",
+      "endUTC": "2026-10-22T21:16:35Z",
+      "returncode": 0,
+      "stdout": "raw/verify-product-baselines-mirror.stdout.txt",
+      "summary": "version prd-v0.6-learning-1, manifestSha256 aaaef2c0..., filesVerified 17, casesPrepared 50, productRuntime not-executed"
+    },
+    {
+      "name": "learning-pytest-42-direct-realtree",
+      "argv": ["uv", "run", "--frozen", "pytest", "<three learning test files>", "-q"],
+      "cwd": "worktree root",
+      "startUTC": "2026-10-22T21:16:14Z",
+      "endUTC": "2026-10-22T21:16:15Z",
+      "returncode": 1,
+      "result": "38 failed, 4 passed",
+      "cause": "all failures ValueError at baselines.py:65 (same .mimosa completeness trigger)",
+      "stdout": "raw/learning-pytest-42-realtree.stdout.txt"
+    },
+    {
+      "name": "learning-pytest-42-head-mirror",
+      "argv": ["<real .venv>/bin/python", "-m", "pytest", "<three learning test files>", "-q"],
+      "cwd": "scratch/mirror",
+      "startUTC": "2026-10-22T21:16:44Z",
+      "endUTC": "2026-10-22T21:16:47Z",
+      "returncode": 0,
+      "result": "42 passed in 2.68s",
+      "stdout": "raw/learning-pytest-42-mirror.stdout.txt"
+    },
+    {
+      "name": "learning-vitest-nooptin-namfiltered-realtree",
+      "argv": ["npx", "--no-install", "vitest", "run", "learning"],
+      "cwd": "worktree root",
+      "startUTC": "2026-10-22T21:17:09Z",
+      "endUTC": "2026-10-22T21:17:10Z",
+      "returncode": 0,
+      "result": "18 passed | 16 skipped (34); browser component suite skipped without T09_HEADLESS_UI=1, not counted as pass; known chromium_headless_shell-1248 missing failure NOT re-run; no runtime installed",
+      "stdout": "raw/learning-vitest-nooptin.stdout.txt"
+    }
+  ],
+  "exitCodeProvenance": "integer codes printed from shell wait status of each direct child (printf after each command); no pipeline tail/grep success masking; raw stdout/stderr captured per command",
+  "notRun": [
+    "npm run check full chain (frozen same-bytes original npm-check-ui-final.txt sha 210d3d9b... read back in full; no mechanical re-run of unchanged checks)",
+    "headless browser suite with opt-in (known 1248 missing; no install authorization)",
+    "Electron/e2e/native/HMR, product launch, package:dir, domain producers, paid APIs, credentials"
+  ]
+}
