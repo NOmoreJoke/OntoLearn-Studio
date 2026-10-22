@@ -1,0 +1,15 @@
+{
+  "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-zcode-review-3031941/node_modules/electron/install.js",
+  "bytes": 3564,
+  "sha256": "3b9e0c3c9070edbdb732dc05ed23c6f1c6b7a404bd623033a2f0b71052534e93",
+  "fullTextRead": true,
+  "findings": [
+    "downloads via @electron/get using bundled checksums unless explicit override; no override passed",
+    "extracts using @electron-internal/extract-zip native dependency; does not launch Electron app",
+    "writes only own electron/dist, electron.d.ts and path.txt plus assigned download cache",
+    "sysctl childProcess only on darwin x64 Rosetta detection; current installed node process arm64",
+    "native extractor loads are dependency installation, not native identity/probe research"
+  ],
+  "limitations": "transitive installer dependencies not exhaustively audited; no promise of zero OS operations or network access",
+  "productLaunched": false
+}

@@ -1,0 +1,206 @@
+{
+  "module": "T03-mapping-S1",
+  "role": "minimax",
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941",
+  "reviewHead": "0fb8e045ec776da6e8dc1b306c72212982114cd8",
+  "product": "30319412daf8ae4745987babf7bbed93c53b6b42",
+  "created": true,
+  "at": "2026-10-22T10:23:44.560803+00:00",
+  "beforeGenerated": {
+    "regularFiles": 0,
+    "regularBytes": 0,
+    "directories": 0,
+    "symlinks": 0,
+    "hardlinkedRegularFiles": 0,
+    "other": 0,
+    "uniqueObservedInodes": 0
+  },
+  "afterGenerated": {
+    "regularFiles": 20235,
+    "regularBytes": 809391619,
+    "directories": 3598,
+    "symlinks": 90,
+    "hardlinkedRegularFiles": 0,
+    "other": 0,
+    "uniqueObservedInodes": 23923
+  },
+  "growth": {
+    "regularFiles": 20235,
+    "regularBytes": 809391619,
+    "directories": 3598,
+    "symlinks": 90,
+    "hardlinkedRegularFiles": 0,
+    "other": 0,
+    "uniqueObservedInodes": 23923
+  },
+  "metricMeaning": "Logical generated-entry lstat inventory, not OS metadata-operation measurement. Snapshot precedes writing this receipt. OS/app operation totals UNKNOWN.",
+  "commands": [
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941",
+      "started": "2026-10-22T10:19:33.991916+00:00",
+      "ended": "2026-10-22T10:20:16.313195+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/raw/setup-1.log"
+    },
+    {
+      "argv": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--python",
+        "/Users/kyle/.local/bin/python3.12",
+        "--no-managed-python",
+        "--link-mode",
+        "copy"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941",
+      "started": "2026-10-22T10:20:16.314341+00:00",
+      "ended": "2026-10-22T10:20:23.564928+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/raw/setup-2.log"
+    },
+    {
+      "argv": [
+        "node",
+        "node_modules/electron/install.js"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941",
+      "started": "2026-10-22T10:21:00.868544+00:00",
+      "ended": "2026-10-22T10:22:22.913765+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/raw/setup-3-electron.log",
+      "productLaunched": false
+    }
+  ],
+  "raw": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/raw/setup-1.log",
+      "bytes": 841,
+      "sha256": "47513372ed8e722751b9c7063d16052277e564bceb9f05123a9dc21d71e972bc",
+      "fullText": "npm warn deprecated rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported\nnpm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.\nnpm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me\n\nadded 440 packages in 42s\nnpm notice\nnpm notice New major version of npm available! 11.12.1 -> 12.2.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1\nnpm notice To update run: npm install -g npm@12.2.1\nnpm notice\n"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/raw/setup-2.log",
+      "bytes": 1201,
+      "sha256": "320bc171594faa605a70d4372c5d44f5db50974fe0a6f77b9b2994f1d43df4f5",
+      "fullText": "Using CPython 3.12.12 interpreter at: /Users/kyle/.local/bin/python3.12\nCreating virtual environment at: .venv\n   Building ontolearn-engine @ file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T03-mapping-S1-minimax-review-3031941/packages/engine\nDownloading pygments (1.2MiB)\nDownloading pyinstaller (1.0MiB)\nDownloading ruff (8.8MiB)\n Downloaded pyinstaller\n Downloaded pygments\n      Built ontolearn-engine @ file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T03-mapping-S1-minimax-review-3031941/packages/engine\n Downloaded ruff\nPrepared 17 packages in 6.65s\nInstalled 17 packages in 512ms\n + altgraph==0.17.5\n + defusedxml==0.7.1\n + et-xmlfile==2.0.0\n + iniconfig==2.3.1\n + macholib==1.16.4\n + ontolearn-engine==0.1.0 (from file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T03-mapping-S1-minimax-review-3031941/packages/engine)\n + openpyxl==3.1.5\n + packaging==26.3\n + pluggy==1.7.0\n + pygments==2.21.0\n + pyinstaller==6.22.3\n + pyinstaller-hooks-contrib==2026.8\n + pyparsing==3.3.3\n + pytest==9.1.1\n + rdflib==7.6.0\n + ruff==0.17.1\n + setuptools==84.0.0\n"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/raw/setup-3-electron.log",
+      "bytes": 2,
+      "sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "fullText": "\n\n"
+    }
+  ],
+  "installedPythonDistributions": [
+    {
+      "Name": "altgraph",
+      "Version": "0.17.5"
+    },
+    {
+      "Name": "defusedxml",
+      "Version": "0.7.1"
+    },
+    {
+      "Name": "et_xmlfile",
+      "Version": "2.0.0"
+    },
+    {
+      "Name": "iniconfig",
+      "Version": "2.3.1"
+    },
+    {
+      "Name": "macholib",
+      "Version": "1.16.4"
+    },
+    {
+      "Name": "ontolearn-engine",
+      "Version": "0.1.0"
+    },
+    {
+      "Name": "openpyxl",
+      "Version": "3.1.5"
+    },
+    {
+      "Name": "packaging",
+      "Version": "26.3"
+    },
+    {
+      "Name": "pluggy",
+      "Version": "1.7.0"
+    },
+    {
+      "Name": "Pygments",
+      "Version": "2.21.0"
+    },
+    {
+      "Name": "pyinstaller",
+      "Version": "6.22.3"
+    },
+    {
+      "Name": "pyinstaller-hooks-contrib",
+      "Version": "2026.8"
+    },
+    {
+      "Name": "pyparsing",
+      "Version": "3.3.3"
+    },
+    {
+      "Name": "pytest",
+      "Version": "9.1.1"
+    },
+    {
+      "Name": "rdflib",
+      "Version": "7.6.0"
+    },
+    {
+      "Name": "ruff",
+      "Version": "0.17.1"
+    },
+    {
+      "Name": "setuptools",
+      "Version": "84.0.0"
+    }
+  ],
+  "externalSymlinks": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/.venv/bin/python3",
+      "linkText": "python",
+      "resolved": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/.venv/bin/python",
+      "linkText": "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+      "resolved": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/.venv/bin/python3.12",
+      "linkText": "python",
+      "resolved": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+    }
+  ],
+  "observedRegularEntriesByRoot": {
+    "node_modules": 13457,
+    ".venv": 2638,
+    "build/review-session": 4140
+  },
+  "electronInstalledPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+  "electronLaunched": false,
+  "productExecuted": false,
+  "normalValidationExecuted": false,
+  "normalValidationReady": "NOT CLAIMED; dependency setup only",
+  "skippedNpmLifecycle": [
+    "electron-winstaller",
+    "fsevents"
+  ],
+  "head": "0fb8e045ec776da6e8dc1b306c72212982114cd8",
+  "branch": "",
+  "status": "M AGENTS.md"
+}

@@ -1,0 +1,194 @@
+{
+  "module": "T03-source-selection",
+  "role": "minimax",
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5",
+  "reviewHead": "4fa5d62eb13269351384527b1f84761c08811e79",
+  "product": "8c904b57b7c5aac7b2b19273e679e7e36304dd1c",
+  "created": true,
+  "at": "2026-10-22T10:23:16.584703+00:00",
+  "beforeGenerated": {
+    "regularFiles": 0,
+    "regularBytes": 0,
+    "directories": 0,
+    "symlinks": 0,
+    "hardlinkedRegularFiles": 0,
+    "other": 0,
+    "uniqueObservedInodes": 0
+  },
+  "afterGenerated": {
+    "regularFiles": 19783,
+    "regularBytes": 807397340,
+    "directories": 3542,
+    "symlinks": 87,
+    "hardlinkedRegularFiles": 0,
+    "other": 0,
+    "uniqueObservedInodes": 23412
+  },
+  "growth": {
+    "regularFiles": 19783,
+    "regularBytes": 807397340,
+    "directories": 3542,
+    "symlinks": 87,
+    "hardlinkedRegularFiles": 0,
+    "other": 0,
+    "uniqueObservedInodes": 23412
+  },
+  "metricMeaning": "Logical generated-entry lstat inventory, not OS metadata-operation measurement. Snapshot precedes writing this receipt. OS/app operation totals UNKNOWN.",
+  "commands": [
+    {
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5",
+      "started": "2026-10-22T10:19:33.994278+00:00",
+      "ended": "2026-10-22T10:20:08.224412+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/raw/setup-1.log"
+    },
+    {
+      "argv": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--python",
+        "/Users/kyle/.local/bin/python3.12",
+        "--no-managed-python",
+        "--link-mode",
+        "copy"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5",
+      "started": "2026-10-22T10:20:08.225310+00:00",
+      "ended": "2026-10-22T10:20:15.012152+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/raw/setup-2.log"
+    },
+    {
+      "argv": [
+        "node",
+        "node_modules/electron/install.js"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5",
+      "started": "2026-10-22T10:21:00.874388+00:00",
+      "ended": "2026-10-22T10:22:03.492799+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/raw/setup-3-electron.log",
+      "productLaunched": false
+    }
+  ],
+  "raw": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/raw/setup-1.log",
+      "bytes": 841,
+      "sha256": "44b799dead987ad71454633a4f60d9f4373401b43d68656f21eea4a696324979",
+      "fullText": "npm warn deprecated rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported\nnpm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.\nnpm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me\n\nadded 440 packages in 34s\nnpm notice\nnpm notice New major version of npm available! 11.12.1 -> 12.2.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1\nnpm notice To update run: npm install -g npm@12.2.1\nnpm notice\n"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/raw/setup-2.log",
+      "bytes": 1158,
+      "sha256": "96bfe1afb2192be565a4007e06bc5cca033d3a89dcba6657aaec6c121c0d653b",
+      "fullText": "Using CPython 3.12.12 interpreter at: /Users/kyle/.local/bin/python3.12\nCreating virtual environment at: .venv\n   Building ontolearn-engine @ file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T03-source-selection-minimax-review-8c904b5/packages/engine\nDownloading pygments (1.2MiB)\nDownloading ruff (8.8MiB)\nDownloading pyinstaller (1.0MiB)\n Downloaded pygments\n Downloaded pyinstaller\n Downloaded ruff\n      Built ontolearn-engine @ file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T03-source-selection-minimax-review-8c904b5/packages/engine\nPrepared 14 packages in 5.96s\nInstalled 14 packages in 698ms\n + altgraph==0.17.5\n + iniconfig==2.3.1\n + macholib==1.16.4\n + ontolearn-engine==0.1.0 (from file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T03-source-selection-minimax-review-8c904b5/packages/engine)\n + packaging==26.3\n + pluggy==1.7.0\n + pygments==2.21.0\n + pyinstaller==6.22.3\n + pyinstaller-hooks-contrib==2026.8\n + pyparsing==3.3.3\n + pytest==9.1.1\n + rdflib==7.6.0\n + ruff==0.17.1\n + setuptools==84.0.0\n"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/raw/setup-3-electron.log",
+      "bytes": 2,
+      "sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "fullText": "\n\n"
+    }
+  ],
+  "installedPythonDistributions": [
+    {
+      "Name": "altgraph",
+      "Version": "0.17.5"
+    },
+    {
+      "Name": "iniconfig",
+      "Version": "2.3.1"
+    },
+    {
+      "Name": "macholib",
+      "Version": "1.16.4"
+    },
+    {
+      "Name": "ontolearn-engine",
+      "Version": "0.1.0"
+    },
+    {
+      "Name": "packaging",
+      "Version": "26.3"
+    },
+    {
+      "Name": "pluggy",
+      "Version": "1.7.0"
+    },
+    {
+      "Name": "Pygments",
+      "Version": "2.21.0"
+    },
+    {
+      "Name": "pyinstaller",
+      "Version": "6.22.3"
+    },
+    {
+      "Name": "pyinstaller-hooks-contrib",
+      "Version": "2026.8"
+    },
+    {
+      "Name": "pyparsing",
+      "Version": "3.3.3"
+    },
+    {
+      "Name": "pytest",
+      "Version": "9.1.1"
+    },
+    {
+      "Name": "rdflib",
+      "Version": "7.6.0"
+    },
+    {
+      "Name": "ruff",
+      "Version": "0.17.1"
+    },
+    {
+      "Name": "setuptools",
+      "Version": "84.0.0"
+    }
+  ],
+  "externalSymlinks": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/.venv/bin/python3",
+      "linkText": "python",
+      "resolved": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/.venv/bin/python",
+      "linkText": "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+      "resolved": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/.venv/bin/python3.12",
+      "linkText": "python",
+      "resolved": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+    }
+  ],
+  "observedRegularEntriesByRoot": {
+    "node_modules": 13457,
+    ".venv": 2411,
+    "build/review-session": 3915
+  },
+  "electronInstalledPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+  "electronLaunched": false,
+  "productExecuted": false,
+  "normalValidationExecuted": false,
+  "normalValidationReady": "NOT CLAIMED; dependency setup only",
+  "skippedNpmLifecycle": [
+    "electron-winstaller",
+    "fsevents"
+  ],
+  "head": "4fa5d62eb13269351384527b1f84761c08811e79",
+  "branch": "",
+  "status": "M AGENTS.md"
+}

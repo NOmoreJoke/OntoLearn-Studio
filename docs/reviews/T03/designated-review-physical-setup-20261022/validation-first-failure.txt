@@ -1,0 +1,12 @@
+Command: python3 .worktrees/T03-mapping/docs/reviews/T03/designated-review-physical-setup-20261022/validate-package.py
+Exit code: 1
+Original complete terminal output (chunk 1104f4):
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-physical-setup-20261022/validate-package.py", line 42, in <module>
+    assert len(pth)==1 and str(root/'packages/engine/src') in pth[0].read_text()
+AssertionError
+
+Disposition: The checker guessed the editable .pth filename as _ontolearn_engine.pth.
+Actual Hatchling installation uses _editable_impl_ontolearn_engine.pth with the exact
+own-tree packages/engine/src path. Only the document check filename was corrected;
+no product, lock, dependency installation or .pth file changed.
