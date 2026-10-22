@@ -2,7 +2,7 @@
 
 2026-10-23 总控已正式有限接收**第5组同base5f→product507、完整有界S1双方明确Pass**；新增创建0、接收pair+1。[接收回执](controller-r3-limited-acceptance-20261023.json)追加记录，已冻结的创建/收件原件不改。两模型产品Pass不升级为全native合规、零曝光或父验收；旧R2过程Fail与全部父缺口保留。F-R3-01原P3非阻断未修未关，T01已接未来唯一责任，延期至正式结果metadata度量/错误分类契约冻结后由T04/I05消费。原父Goal仍blocked；未因本次接收获准push/PR/merge。
 
-- 下一步：[正式query.execute最小集成需求与现有入口](../../iterations/T04/query-execute-integration-requirements-20261023.md)。只读固定507入口并列实缺；总控尚未接收可供正式查询/Store结果metadata联验的supplier。既有命名reader继续保留，不重复S1验证或为未闭门自动新审。
+- 下一步：[正式query.execute最小集成需求与现有入口](../../iterations/T04/query-execute-integration-requirements-20261023.md)。只读固定507入口并列实缺；[I05供方事实收件](i05-supplier-facts-intake-20261023.json)确认真实SELECT/ASK与execute_request算法已存在，正式Job/worker/Store metadata/App接线仍待成熟接口与接收。纯asserted可先解其实际依赖，不缩减selected/profile、ASK、网络拒绝、历史或保存要求。既有命名reader继续保留，不重复S1验证或为未闭门自动新审。
 
 - 最新双报告：[统一收据](p3-repair/round3-results-20261023/dual-review-receipt.json)、[Z处置](p3-repair/round3-results-20261023/zcode-owner-disposition.md)、[M处置](p3-repair/round3-results-20261023/minimax-owner-disposition.md)。Z官方原turn.completed=`2026-10-22T20:24:27.590Z`，报告27067B/119行/SHA `7ab676ff90b1ded1b89e573480d2597080bfb950507ae57e7c640fd05c8851d6`；M strict四scalar completed/updated1792701245588，报告59781B/380行/SHA `fe23ab51aea1ded81ba87264377475b71d1676468c49e7dc3a75199e7dc1d612`。均正式终态后全文读、前后hash一致；四P3均关闭，10closed+旧partial不抹平。M新F-R3-01 P3保留/未修未关，T01已接未来唯一责任；延期至正式结果metadata度量/错误分类契约冻结后由T04/I05消费，不把draft D1授权外推reader/结果契约。
 - Z七helper、M三helper完整收据/raw均核，完整719/1167、SSR14、组件DOM5通过；M自写probe另存11必要原生请求结果及首harness失败、管道exit限制/TS无完整逐例value等，按证据等级处置，不补造或重跑。两modelPass不代替过程合规、零曝光或父验收。原创建UNKNOWN快照、operator原件、旧R2 Fail均保持；两HEAD仍同detached507。

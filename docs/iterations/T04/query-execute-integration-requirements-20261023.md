@@ -17,6 +17,18 @@
 
 源文件身份由旁列 [source-evidence.json](query-execute-source-evidence-20261023.json) 固定。
 
+## I05 已有算法供方与正式接线的区别
+
+总控提供的 [I05 供方事实表](/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_query_execute_supplier_facts/supplier-table.md) 已全文收件，表、receipt、manifest 三份字节/hash 已核；详见 [定点收件记录](../../reviews/T04/i05-supplier-facts-intake-20261023.json)。其事实源为 `9d86ef183b2bfc4d2ac6f1583ceb9a5b29cdf876`，相关 12 函数 AST 与已审库存产品源 `2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64` 相同；这是供方静态事实，不是 T04 新运行证据，也未 whole-ref 采用该树。
+
+| 已有实际供给                                                                                                                                                                            | 正式接线仍缺什么                                                                                                                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `semantic.py::query:173` 有真实 RDFLib SELECT/ASK；`semantic_query.py::prepare_lexical_query:146`、`semantic_offline.py::offline:46` 及查询代数检查提供本地解析与外联拒绝               | 项目授权、可信快照、真实 owned worker、硬超时/取消与正式 job 身份；已有 context 拒绝不能升格为 OS sandbox 或完整正式链网络验收                                                                                      |
+| `semantic_execution.py::build_request:176/execute_request:331` 真实解码、scope 投影、查询并返回 `{payload,rows}`；payload 含实际 query/queryText、输入/范围/定义/选择及 provenance 内容 | T01 需接完整 payload+rows、实际 capability implementation、结果/终态原子发布与取消/迟到围栏；该内容不自行证明可信 producer、正式 result/job ID 或权威 presentation 来源                                             |
+| `semantic_scopes.py::project_validation_scope:234` 支持 asserted 与 legacy selected reasoning 投影                                                                                      | 纯 asserted 查询无需先完成整个 profile producer；这只区分依赖，不缩减所选推导/profile 的完整需求。新 finite7/8 typed profile 仍须其真实受理、来源、reader/pin/累计算额及新只读 scope 接口，不能塞进旧 selected 格式 |
+
+当前隔离供方树的 test-only coordinator/worker 不抹去旧 C4 真 worker 分支的历史证据；T01 正核其可复用性。旧 finite6 通过也不自动成为新 finite7/8 接线证明。完整 FR-400–404、SELECT/ASK、真实网络拒绝、所选范围/推导、历史与保存要求继续保持。
+
 ## 唯一 owner 需返回的最小供给
 
 | 依赖与责任                                      | 需要固定的实际接口和依据                                                                                                                                | T04 消费边界                                                                                                                                       |
@@ -30,7 +42,7 @@
 
 ## 依赖现状与下一步
 
-总控本次明确：**尚无已接收、可声明正式 query.execute/Store 结果 metadata 联验通过的 supplier**。其提供的可定位 T01 stageParent 为 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-C1-complete-zcode-review-244207d`、固定 `244207d0928db9ed1d47a3ccb2e91da4ebbfeb21`，不等于正式查询供给已批准。类型桥接源提案在 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-typed-bridge-source-proposal-20261023`，总控本次回执时尚未冻结新 candidate、首轮 lint 失败修复中，也不能消费成正式 supplier。这里只记录总控回执，不读取或接入这些未批准实现。
+供方现状是 **I05 真实查询算法已存在，正式 query.execute/Store 结果 metadata 联验仍待接线与接收**。总控先前提供的可定位 T01 stageParent 为 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-C1-complete-zcode-review-244207d`、固定 `244207d0928db9ed1d47a3ccb2e91da4ebbfeb21`，不等于正式查询供给已批准。类型桥接源提案在 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-typed-bridge-source-proposal-20261023`，先前回执时尚未冻结新 candidate、首轮 lint 失败修复中；最新调度要求 8.3 先冻结、不混新功能。这里只记录总控回执，不读取或接入这些未批准实现。
 
 F-R3-01 保持原 P3/非阻断/未修未关；T01 已接未来统一责任，**延期至正式结果 metadata 的度量及错误分类契约冻结后处理**，T04/I05 按该契约消费。draft D1 不扩为结果计量政策。OBS1–6 及零列/ASK 等已有边界继续保留，不新增默认答案。
 
