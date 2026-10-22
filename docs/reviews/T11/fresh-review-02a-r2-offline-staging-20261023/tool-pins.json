@@ -1,0 +1,103 @@
+{
+  "kind": "READ_ONLY_EXISTING_TOOL_PINS_NO_VERSION_EXECUTION",
+  "tools": {
+    "node": {
+      "path": "/usr/local/bin/node",
+      "canonical": "/usr/local/bin/node",
+      "bytes": 242234784,
+      "sha256": "a5ebb9adc969c8fcc486823ada530a4130b0d56edf954de7b05c280170487b1a",
+      "version": "v24.15.0",
+      "versionBasis": "Historical setup/F1 record plus current binary static string and installed node_version.h; no version command",
+      "setupOrVersionSmokeExecutedThisPreparation": false
+    },
+    "npmCLI": {
+      "path": "/usr/local/lib/node_modules/npm/bin/npm-cli.js",
+      "canonical": "/usr/local/lib/node_modules/npm/bin/npm-cli.js",
+      "bytes": 54,
+      "sha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7",
+      "version": "11.12.1",
+      "versionBasis": "Current npm/package.json static version and historical setup",
+      "fullReadOnlyClosure": "tool-closure-manifest.json npm prefix",
+      "entryAvoidsEnvShebang": true,
+      "setupOrVersionSmokeExecutedThisPreparation": false
+    },
+    "uv": {
+      "path": "/Users/kyle/.local/bin/uv",
+      "canonical": "/Users/kyle/.local/bin/uv",
+      "bytes": 47779072,
+      "sha256": "0846e158cfd0f039b3bacabf69268cf5767ebe36d1ddbdf0977a594b038ddeac",
+      "historicalVersion": "0.11.12 (63c5f57d3 2026-05-08 aarch64-apple-darwin)",
+      "currentExecutedVersion": null,
+      "versionBasis": "Historical setup and owner pyvenv.cfg only; no authenticated current binary version metadata; pinned current bytes, no smoke",
+      "setupOrVersionSmokeExecutedThisPreparation": false
+    },
+    "python": {
+      "path": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12",
+      "canonical": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12",
+      "bytes": 49968,
+      "sha256": "322572c8d73b308856d23a07f26afe9d65b9159f8174575e14fb23503a7f734e",
+      "version": "3.12.12",
+      "versionBasis": "Canonical prefix patchlevel.h and historical setup/pyvenv.cfg; no version command",
+      "fullReadOnlyClosure": "tool-closure-manifest.json python prefix",
+      "avoidPathPython": "/opt/homebrew/bin/python3.12 resolves3.12.14; not selected",
+      "setupOrVersionSmokeExecutedThisPreparation": false
+    }
+  },
+  "closureManifest": "tool-closure-manifest.json",
+  "currentToolTreesRehashed": true,
+  "systemSharedLibraryBoundary": {
+    "node": [
+      "/System/Library/Frameworks/CoreFoundation.framework",
+      "/System/Library/Frameworks/Security.framework",
+      "/usr/lib/libc++.1.dylib",
+      "/usr/lib/libSystem.B.dylib"
+    ],
+    "uv": "System framework/dylib dependencies per static Mach-O inspection",
+    "python": "Own libpython+stdlib/extensions in full prefix; macOS system libraries remain OS dependency",
+    "systemLibrariesExecutedOrCertified": false
+  },
+  "readOnlyMeaning": "Existing global tools read-only by task contract; no chmod or global config mutation; rehash exact pinned bytes/tree before any future granted install",
+  "versionEvidence": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/docs/reviews/T11/fresh-review-preparation-20261023/zcode-setup.json",
+      "bytes": 1104,
+      "sha256": "7af2e6c02f5184c7a2f87f10eceaa5173a987bfb7025333ce2d7ca99854974a0",
+      "historicalVersionNotBinaryIdentity": true
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/docs/reviews/T11/fresh-review-02a-preparation-20261023/zcode-setup.json",
+      "bytes": 1254,
+      "sha256": "5e6e26f1ffd857a556bba3ba7fe1cccde056429a191914601fa4c4ba5edf6503",
+      "historicalVersionNotBinaryIdentity": true
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/docs/reviews/T11/fresh-review-02a-preparation-20261023/zcode-uv-setup.log",
+      "bytes": 900,
+      "sha256": "a8eac046248bef31fc6d65671ca9c049bc6bfe0191f5169d04d839215423b1e4",
+      "historicalVersionNotBinaryIdentity": true
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/docs/reviews/T11/f1-fix-20261023/verification.json",
+      "bytes": 11463,
+      "sha256": "1ae0844a00d6674a8fa05329d4223e31b724474a84e2fa7f4f5fbe3fab22f949",
+      "historicalVersionNotBinaryIdentity": true
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/.venv/pyvenv.cfg",
+      "bytes": 205,
+      "sha256": "ba7b2b7cd92bb863bc3baad7c423dbd1436ee8f4872fddb5f1db6564d37ff6c4",
+      "historicalVersionNotBinaryIdentity": true
+    }
+  ],
+  "historyToolBinaryEquivalence": "UNKNOWN: historical records did not hash tools",
+  "candidateVersionSmokesExecuted": false,
+  "installExecuted": false,
+  "authorDocumentFormatting": {
+    "nodeUsed": true,
+    "nodePath": "/usr/local/bin/node",
+    "formatterPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/node_modules/prettier/bin/prettier.cjs",
+    "formatterSha256": "6e922134a3c76fd4de202959bb6aef50bde0c994148075003a15569b7197906e",
+    "purpose": "Only new preparation/source metadata JSON formatting, no tool version/install/product smoke",
+    "directExit": 0
+  }
+}

@@ -1,0 +1,299 @@
+{
+  "kind": "EXACT_OFFLINE_STAGING_HANDOFF_NOT_INSTALL_TICKET",
+  "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+  "guideSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+  "sourceRootsCreated": true,
+  "sourceFileCountEach": 956,
+  "guideOverlayOnly": true,
+  "input411EachCreated": true,
+  "metadataOutsideRepo": true,
+  "toolPins": "tool-pins.json",
+  "staticClosureEntries": {
+    "npm": 1739,
+    "python": 1898
+  },
+  "sourceOrToolVersionSmokesExecuted": false,
+  "versionBoundary": "Current bytes pinned; uv historical version only, no current-version execution; historical tool-byte equivalence UNKNOWN",
+  "roles": {
+    "zcode": {
+      "repo": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo",
+      "runtime": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime",
+      "sourceMetadata": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/metadata/source-setup.json",
+      "ownInputFileCount": 411,
+      "inputCopy": "own7+common404 only; ownpagearchive not extracted",
+      "nodeModulesExists": false,
+      "venvExists": false,
+      "seedTargets": {
+        "npm": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/npm",
+        "uv": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/uv"
+      },
+      "seedCopied": false,
+      "commandsForLaterRootTicket": [
+        {
+          "id": "npm-ci-001",
+          "argv": [
+            "/usr/local/bin/node",
+            "/usr/local/lib/node_modules/npm/bin/npm-cli.js",
+            "ci",
+            "--offline",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "timeoutSeconds": 300,
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo",
+          "environment": {
+            "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/tmp",
+            "TMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/tmp",
+            "TEMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/tmp",
+            "PYTHONPYCACHEPREFIX": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/pycache",
+            "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/npm",
+            "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/uv",
+            "XDG_CACHE_HOME": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/xdg",
+            "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo/.venv",
+            "UV_OFFLINE": "1",
+            "UV_LINK_MODE": "copy",
+            "RUFF_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/ruff",
+            "npm_config_offline": "true",
+            "NODE_COMPILE_CACHE": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/node-compile",
+            "UV_PYTHON_DOWNLOADS": "never",
+            "PATH": "/usr/local/bin:/Users/kyle/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          },
+          "clearEnvironmentKeys": [
+            "ROOT_SOURCE_PATH",
+            "GIT_DIR",
+            "GIT_WORK_TREE",
+            "PYTHONPATH",
+            "NODE_OPTIONS",
+            "NODE_NO_WARNINGS"
+          ],
+          "executed": false,
+          "rawStdout": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/raw/npm-ci-001.stdout.log",
+          "rawStderr": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/raw/npm-ci-001.stderr.log",
+          "rawDirectResult": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/raw/npm-ci-001.result.json",
+          "directChildExit": null
+        },
+        {
+          "id": "uv-sync-001",
+          "argv": [
+            "/Users/kyle/.local/bin/uv",
+            "sync",
+            "--frozen",
+            "--python",
+            "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+          ],
+          "timeoutSeconds": 300,
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo",
+          "environment": {
+            "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/tmp",
+            "TMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/tmp",
+            "TEMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/tmp",
+            "PYTHONPYCACHEPREFIX": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/pycache",
+            "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/npm",
+            "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/uv",
+            "XDG_CACHE_HOME": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/xdg",
+            "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo/.venv",
+            "UV_OFFLINE": "1",
+            "UV_LINK_MODE": "copy",
+            "RUFF_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/ruff",
+            "npm_config_offline": "true",
+            "NODE_COMPILE_CACHE": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/cache/node-compile",
+            "UV_PYTHON_DOWNLOADS": "never",
+            "PATH": "/usr/local/bin:/Users/kyle/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          },
+          "clearEnvironmentKeys": [
+            "ROOT_SOURCE_PATH",
+            "GIT_DIR",
+            "GIT_WORK_TREE",
+            "PYTHONPATH",
+            "NODE_OPTIONS",
+            "NODE_NO_WARNINGS"
+          ],
+          "executed": false,
+          "rawStdout": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/raw/uv-sync-001.stdout.log",
+          "rawStderr": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/raw/uv-sync-001.stderr.log",
+          "rawDirectResult": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime/raw/uv-sync-001.result.json",
+          "directChildExit": null
+        }
+      ],
+      "allowedFutureWrites": [
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo/node_modules",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo/apps/desktop/node_modules",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo/packages/contracts/node_modules",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/repo/.venv",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/zcode/runtime"
+      ],
+      "writeBoundary": "Dependency install only; locked source/config/acceptance remain fixed except already granted AGENTS overlay; no product checks, build outputs, GUI/native/collector",
+      "commandLimit": 2,
+      "automaticRetryLimit": 0,
+      "stdoutStderrLimitBytesEach": 67108864,
+      "proposedDiskCeilingBytes": {
+        "nodeModulesAndVenv": 2147483648,
+        "ownCaches": 2147483648,
+        "ownMetadataRawTmp": 268435456
+      },
+      "limitStatus": "Proposed ticket limits, not an executed enforcement claim; actual timeout/cap cancellation must preserve direct child result without fake success"
+    },
+    "minimax": {
+      "repo": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo",
+      "runtime": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime",
+      "sourceMetadata": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/metadata/source-setup.json",
+      "ownInputFileCount": 411,
+      "inputCopy": "own7+common404 only; ownpagearchive not extracted",
+      "nodeModulesExists": false,
+      "venvExists": false,
+      "seedTargets": {
+        "npm": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/npm",
+        "uv": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/uv"
+      },
+      "seedCopied": false,
+      "commandsForLaterRootTicket": [
+        {
+          "id": "npm-ci-001",
+          "argv": [
+            "/usr/local/bin/node",
+            "/usr/local/lib/node_modules/npm/bin/npm-cli.js",
+            "ci",
+            "--offline",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "timeoutSeconds": 300,
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo",
+          "environment": {
+            "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/tmp",
+            "TMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/tmp",
+            "TEMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/tmp",
+            "PYTHONPYCACHEPREFIX": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/pycache",
+            "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/npm",
+            "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/uv",
+            "XDG_CACHE_HOME": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/xdg",
+            "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo/.venv",
+            "UV_OFFLINE": "1",
+            "UV_LINK_MODE": "copy",
+            "RUFF_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/ruff",
+            "npm_config_offline": "true",
+            "NODE_COMPILE_CACHE": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/node-compile",
+            "UV_PYTHON_DOWNLOADS": "never",
+            "PATH": "/usr/local/bin:/Users/kyle/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          },
+          "clearEnvironmentKeys": [
+            "ROOT_SOURCE_PATH",
+            "GIT_DIR",
+            "GIT_WORK_TREE",
+            "PYTHONPATH",
+            "NODE_OPTIONS",
+            "NODE_NO_WARNINGS"
+          ],
+          "executed": false,
+          "rawStdout": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/raw/npm-ci-001.stdout.log",
+          "rawStderr": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/raw/npm-ci-001.stderr.log",
+          "rawDirectResult": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/raw/npm-ci-001.result.json",
+          "directChildExit": null
+        },
+        {
+          "id": "uv-sync-001",
+          "argv": [
+            "/Users/kyle/.local/bin/uv",
+            "sync",
+            "--frozen",
+            "--python",
+            "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12"
+          ],
+          "timeoutSeconds": 300,
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo",
+          "environment": {
+            "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/tmp",
+            "TMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/tmp",
+            "TEMP": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/tmp",
+            "PYTHONPYCACHEPREFIX": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/pycache",
+            "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/npm",
+            "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/uv",
+            "XDG_CACHE_HOME": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/xdg",
+            "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo/.venv",
+            "UV_OFFLINE": "1",
+            "UV_LINK_MODE": "copy",
+            "RUFF_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/ruff",
+            "npm_config_offline": "true",
+            "NODE_COMPILE_CACHE": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/cache/node-compile",
+            "UV_PYTHON_DOWNLOADS": "never",
+            "PATH": "/usr/local/bin:/Users/kyle/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          },
+          "clearEnvironmentKeys": [
+            "ROOT_SOURCE_PATH",
+            "GIT_DIR",
+            "GIT_WORK_TREE",
+            "PYTHONPATH",
+            "NODE_OPTIONS",
+            "NODE_NO_WARNINGS"
+          ],
+          "executed": false,
+          "rawStdout": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/raw/uv-sync-001.stdout.log",
+          "rawStderr": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/raw/uv-sync-001.stderr.log",
+          "rawDirectResult": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime/raw/uv-sync-001.result.json",
+          "directChildExit": null
+        }
+      ],
+      "allowedFutureWrites": [
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo/node_modules",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo/apps/desktop/node_modules",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo/packages/contracts/node_modules",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/repo/.venv",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t11_02a_fresh_r2/minimax/runtime"
+      ],
+      "writeBoundary": "Dependency install only; locked source/config/acceptance remain fixed except already granted AGENTS overlay; no product checks, build outputs, GUI/native/collector",
+      "commandLimit": 2,
+      "automaticRetryLimit": 0,
+      "stdoutStderrLimitBytesEach": 67108864,
+      "proposedDiskCeilingBytes": {
+        "nodeModulesAndVenv": 2147483648,
+        "ownCaches": 2147483648,
+        "ownMetadataRawTmp": 268435456
+      },
+      "limitStatus": "Proposed ticket limits, not an executed enforcement claim; actual timeout/cap cancellation must preserve direct child result without fake success"
+    }
+  },
+  "immutableSeed": {
+    "npmSource": "NONE_PROVEN",
+    "uvSource": "NONE_PROVEN",
+    "requirements": "seed-requirements.json in static evidence archive",
+    "npmUniqueResolvedIntegrityPairsUnmapped": 445,
+    "uvLockArtifactsUnmapped": 58,
+    "uvRegistryPackages": 16,
+    "extraBuildRequirement": "hatchling>=1.27,<2 plus unbound exact transitive build closure",
+    "actualMissingPackageBytesProven": false,
+    "gapMeaning": "No authorized immutable source/manifest mapping was provided or found in named T11 static chain; not a claim that all packages are physically absent from machine",
+    "activeOrPeerCacheRead": false,
+    "seedCopied": false,
+    "networkFallback": false
+  },
+  "preservedReviewScope": {
+    "logicalFiles": 107,
+    "textFiles": 104,
+    "archiveMembers": 75,
+    "emptyArchiveMembers": 11,
+    "actualEmptyMemberEOFReview": "NOT_STARTED; require actual exists+0B evidence, pages=[] never FULL",
+    "historicalFindings": 19,
+    "ownerClosedCount": 0,
+    "originalSeverityPreserved": true,
+    "oldNotPassFailuresUNKNOWNUnchanged": true
+  },
+  "notExecuted": [
+    "dependency install",
+    "version smoke",
+    "tests",
+    "wholecheck",
+    "GUI",
+    "collector",
+    "native",
+    "oldturn polling"
+  ],
+  "installTicketReady": false,
+  "readyForDispatch": false,
+  "newReviewTasks": 0,
+  "newPair": 0,
+  "newPass": 0,
+  "releaseAuthorized": false,
+  "nextNeeded": "Root supplies or authorizes exact immutable npm+uv seed manifests including build closure; static copy into each owncache only, then root may sign one bounded offline install ticket. No install or extra version smoke before tool/seed binding."
+}
