@@ -1,0 +1,56 @@
+{
+  "format": "i05-root-r2-raw-diff-whitespace-receipt/1",
+  "reviewProcessCommit": "d1a736bae1c36d3521d1b0c21037fb566f52e14e",
+  "firstAttempt": {
+    "toolChunkId": "665da2",
+    "wrapperExitCode": 1,
+    "gitCachedCheckExitCode": 2,
+    "commitDespiteCheck": {
+      "toolChunkId": "378a22",
+      "exitCode": 0
+    },
+    "meaning": "root sequencing mistake; not product execution/failure; no full-check pass claimed"
+  },
+  "rawEvidence": {
+    "path": "docs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt",
+    "bytes": 128276,
+    "sha256": "13c4471bc5518f354b8315220c14b8fbd5f722c722075ed93c1fc29183b01477",
+    "unchangedEqualsCommittedGitAndR2RootReceipt": true,
+    "exactRecordedSourceArgv": [
+      "git",
+      "diff",
+      "57c67631fab6a36f47963aca95b4036064e10777",
+      "1e753a82b837fb53f0389dabf1c401d89809238c"
+    ],
+    "equalsRecomputedOriginalPureGitDiff": true
+  },
+  "repeatFullCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "ce268c62cc33a5b85d9c663c87d8260d68ab9612",
+      "d1a736bae1c36d3521d1b0c21037fb566f52e14e"
+    ],
+    "exitCode": 2,
+    "stdout": "docs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:158: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:160: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:239: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:241: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:248: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:249: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:266: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:268: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:269: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:273: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:274: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:290: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:291: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:294: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:299: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:300: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:777: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:779: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:781: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:783: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:808: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:810: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:812: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:814: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:817: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:819: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:828: trailing whitespace.\n+ \ndocs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt:830: trailing whitespace.\n+ \n",
+    "stderr": ""
+  },
+  "exactLimitedCheck": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "ce268c62cc33a5b85d9c663c87d8260d68ab9612",
+      "d1a736bae1c36d3521d1b0c21037fb566f52e14e",
+      "--",
+      ".",
+      ":(exclude)docs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": "",
+    "scope": "all R2 review/process additions except the single immutable original diff transcript"
+  },
+  "nextRule": "Do not run dependent commit after a failed validation without inspecting the result. Preserve raw transcript, explicitly report limited check scope. No product or frozen proposal payload changed."
+}
