@@ -1,0 +1,9 @@
+# T11 02a 普通检查写面补充：输入机械续版
+
+候选仍为02a4738a220b2c6e881f7161ee658c61bf4328dc。根指定总源7314B、SHA256 `403e4288ad363425c9a842c00fe5668692503efabf20e2e42f94b28bd15b621d` 已核；总源含两role，不复制到任一审查输入。仅共同字段与本方role原记录分别机械摘录，rootReview控制侧引用不提供给审者。各自过滤JSON、完整prompt和manifest均只含自己的新写面，不能读取另一方role或原控制文件。
+
+ffba原30747B/30776B完整输入及原索引保持原字节；各自runtime/input/history也保留本方原件与原manifest。新完整prompt以本方旧完整输入为精确字节前缀，再追加共同约束和本方role，不是只发增量摘要。107文件、19历史、四完整历史报告、NotPass及全部过程UNKNOWN不变。两份manifest各自携带本方补充，没有向任一模型展示另一方role。
+
+补充仅细化普通check必要生成目录、精确新临时config bundle和运行环境，修正前文runtime-only概括。生成目录与temporaryConfigBundle只读规则按各自原字段的上下文执行，不扩展glob、不修改源/测试/原配置/锁/依赖。每条实际运行命令临时设置给定environment并保真实direct child退出/全输出/首失败；禁止collector即预期早拒、临时git commit、native/e2e/package/API/OS研究等原禁令不变。
+
+本次只更新可见输入、manifest和机械绑定收据，并创建本方runtime内未来cache空目录；未运行check/build/测试/依赖setup、未应用全局环境配置、未创建应用任务或新报告、未CUA。状态仍为NO_GUI_START，按根顺序等待T06在前的实际GUI START；目标模型/effort/permission不冒称已读回实际值。此次没有新增广泛审查或无变化测试。
