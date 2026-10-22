@@ -1,0 +1,255 @@
+{
+  "AGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "allSixSourceBytesRead": true,
+  "existingOracleCounts": {
+    "pending": 137,
+    "specified": 280
+  },
+  "format": "T05-projection-R3-static-readback/1",
+  "graphSlotsStatic": 85,
+  "inputBindingRows": 37,
+  "jsonFilesFullyParsed": [
+    "schema.json",
+    "cases.json"
+  ],
+  "knownSourceWhitespace": "source R3 all-history diff check exit2 retained by source report; no global all-green claim",
+  "mathSidecarComparisons": [
+    {
+      "comparison": "exact previous math",
+      "id": "rdfs/type",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "rdfs/domain-depth2",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "rdfs/range",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "rdfs/subclass",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "rdfs/cycle",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "rdfs/domain-first-witness",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "rdfs/range-first-witness",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "legacy/no-rule-feedback",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "legacy/multiple-matches",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous math",
+      "id": "legacy/repeated-variable",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous scope math after separately retaining semanticState and reasoningReceipt gates",
+      "id": "scope/asserted",
+      "reasoningReceiptGateKeptSeparate": null
+    },
+    {
+      "comparison": "exact previous scope math after separately retaining semanticState and reasoningReceipt gates",
+      "id": "scope/fresh",
+      "reasoningReceiptGateKeptSeparate": {
+        "relation": "project uses the exact freshly returned reasoning_result and provenance.reasoningSource, not another run/value-equal copy"
+      }
+    },
+    {
+      "comparison": "exact previous scope math after separately retaining semanticState and reasoningReceipt gates",
+      "id": "scope/project",
+      "reasoningReceiptGateKeptSeparate": {
+        "relation": "project uses the exact freshly returned reasoning_result and provenance.reasoningSource, not another run/value-equal copy"
+      }
+    }
+  ],
+  "modelASTParsedOnly": true,
+  "modelRuntimeResults": "not run here; source R3 report attributed to its independent reviewer only",
+  "normalCases": 13,
+  "old130BaselineExpectedIdentity": "retained; final preservation checks against baseline Git required",
+  "productOrOracleFunctionsCalled": false,
+  "rejectionCases": 24,
+  "sameInputSourceRefsAll37": true,
+  "sourceFunctions": [
+    {
+      "endLine": 26,
+      "line": 23,
+      "name": "safe_harness_stage"
+    },
+    {
+      "endLine": 30,
+      "line": 29,
+      "name": "canonical"
+    },
+    {
+      "endLine": 34,
+      "line": 33,
+      "name": "digest"
+    },
+    {
+      "endLine": 44,
+      "line": 37,
+      "name": "exact"
+    },
+    {
+      "endLine": 59,
+      "line": 47,
+      "name": "strict_json"
+    },
+    {
+      "endLine": 73,
+      "line": 62,
+      "name": "n3"
+    },
+    {
+      "endLine": 77,
+      "line": 76,
+      "name": "triple"
+    },
+    {
+      "endLine": 83,
+      "line": 80,
+      "name": "identity_term"
+    },
+    {
+      "endLine": 88,
+      "line": 86,
+      "name": "graph"
+    },
+    {
+      "endLine": 92,
+      "line": 91,
+      "name": "graph_json"
+    },
+    {
+      "endLine": 98,
+      "line": 95,
+      "name": "typed_graph"
+    },
+    {
+      "endLine": 126,
+      "line": 101,
+      "name": "legacy"
+    },
+    {
+      "endLine": 135,
+      "line": 129,
+      "name": "source_context"
+    },
+    {
+      "endLine": 144,
+      "line": 138,
+      "name": "view"
+    },
+    {
+      "endLine": 192,
+      "line": 147,
+      "name": "scope"
+    },
+    {
+      "endLine": 203,
+      "line": 195,
+      "name": "rejection"
+    },
+    {
+      "endLine": 207,
+      "line": 206,
+      "name": "unknown"
+    },
+    {
+      "endLine": 223,
+      "line": 210,
+      "name": "safe_projection"
+    },
+    {
+      "endLine": 271,
+      "line": 226,
+      "name": "validate"
+    },
+    {
+      "endLine": 281,
+      "line": 274,
+      "name": "matches"
+    },
+    {
+      "endLine": 315,
+      "line": 284,
+      "name": "_wire_term"
+    },
+    {
+      "endLine": 350,
+      "line": 318,
+      "name": "_n3_wire_term"
+    },
+    {
+      "endLine": 376,
+      "line": 353,
+      "name": "canonical_graph_wire"
+    },
+    {
+      "endLine": 396,
+      "line": 379,
+      "name": "canonical_graph_slots"
+    },
+    {
+      "endLine": 418,
+      "line": 399,
+      "name": "graph_isomorphic"
+    },
+    {
+      "endLine": 464,
+      "line": 421,
+      "name": "projection_layout"
+    },
+    {
+      "endLine": 542,
+      "line": 467,
+      "name": "identity_domain_equal"
+    },
+    {
+      "endLine": 547,
+      "line": 545,
+      "name": "projection_identity_equal"
+    }
+  ],
+  "sourceImports": [
+    [
+      "hashlib"
+    ],
+    [
+      "itertools"
+    ],
+    [
+      "json"
+    ],
+    [
+      "re"
+    ]
+  ],
+  "sourceModelFunctionsCalled": false,
+  "uniqueDatasets": 19
+}

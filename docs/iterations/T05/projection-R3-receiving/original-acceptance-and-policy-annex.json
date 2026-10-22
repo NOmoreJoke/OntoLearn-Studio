@@ -1,0 +1,173 @@
+{
+  "PRD": {
+    "bytes": 93584,
+    "path": "docs/prd/PRD-本体学习与落地Agent工作台.md",
+    "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "requiredFullSections": [
+      "FR-500..505",
+      "appendixC",
+      "appendixD",
+      "appendixG.2 V/R/O",
+      "sections10..12"
+    ],
+    "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb"
+  },
+  "acceptanceBaselines": [
+    {
+      "原始固定验收条目": "| V-01 | 独立还原 `G-base` | 删除 `003` 的设备名称并按固定范围验证 | 只产生 `003` 违反名称必填的结果；补回后消失 |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "V-01"
+    },
+    {
+      "原始固定验收条目": "| R-01 | 独立还原 `G-base` | 运行推理 | 仅 `001` 获得 `HighRiskEquipment`，依据包含 `A01` 和 `R-risk` |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "R-01"
+    },
+    {
+      "原始固定验收条目": "| R-02 | 独立还原 `G-base` | 删除 `A01` 后重跑 | 原结果先过期，随后撤回 `001` 的风险分类，不断言事实被误删 |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "R-02"
+    },
+    {
+      "原始固定验收条目": "| R-03 | 独立还原 `G-base` | 增加 `A04：001、High、Open`，再删除 `A01` 并重跑 | `001` 风险分类保留，依据指向 `A04` |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "R-03"
+    },
+    {
+      "原始固定验收条目": "| R-04 | 独立还原 `G-base` | 增加 `CriticalPump rdfs:subClassOf Equipment`、`P001 rdf:type CriticalPump` 及其 `High/Open` 告警后运行 | RDFS 先推导 `P001` 为 `Equipment`，随后 `R-risk` 推导其为高风险 |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "R-04"
+    },
+    {
+      "原始固定验收条目": "| R-05 | 独立还原 `G-base` | 增加类 `NeedsInspection` 和规则 `R-next：HighRiskEquipment → NeedsInspection`，保存、启用并运行 | 编辑器提示 P0 不支持规则链；不得生成 `001` 的 `NeedsInspection` 二阶结果 |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "R-05"
+    },
+    {
+      "原始固定验收条目": "| R-06 | 完成 R-05，且 `R-risk` 与 `R-next` 均已保存并启用、`R-next` 带不支持规则链提示 | 调换 `R-risk` 与 `R-next` 保存顺序后运行 | 可观察结果与 R-05 一致，不得受规则保存顺序影响 |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "R-06"
+    },
+    {
+      "原始固定验收条目": "| O-01 | 独立还原 `G-base`，删除 `A03` 及其与 `003` 的关联，保留 `003` | 查看 `003` 的告警记录 | 显示“未记录”，不得展示为“已证明不存在告警” |",
+      "原章节": "G.2 查询、SHACL、推理与规则组合",
+      "对应完整候选证据": "",
+      "状态": "未核验完整产品通过",
+      "用例标识": "O-01"
+    }
+  ],
+  "boundaries": [
+    "all original acceptance remains; bounded component code review does not sign parent P0",
+    "complete saved/stale/history/undo/cancel/failed/late/atomicity and formal source/issuer/Job/Store/selected remain unverified where backlog says so",
+    "137 oracle pending and actual17L/capture/usage/fee not provided",
+    "SQLite damaged-input HOLD/automatic denials/native unsigned tickets remain; reviewers cannot run these on owner behalf",
+    "current operation is static documentation preparation only; no model/product/test/collector/neworacle execution authorized by this package; old matching actual evidence may be read as historical validation only",
+    "same unchanged bytes do not require repeated tests just for scheduling; missing required runtime must be NotPass/unable, not invented Pass",
+    "no new paid usage/keys/reset-confirmation bypass/network/process termination/pushPRmerge/Goal operations"
+  ],
+  "fixedControlSources": [
+    {
+      "bytes": 10229,
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/requirements.csv",
+      "sha256": "c9fbc2fd6543a3310ed99ba69dd319898da35b72976e93eecca8a1bed3b0fbca"
+    },
+    {
+      "bytes": 11617,
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/acceptance-baselines.csv",
+      "sha256": "5626e1ee6025527d51e2fb7928a734bf42cb27c02921335d60f0a3346f6fc5cb"
+    },
+    {
+      "bytes": 3160,
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md",
+      "sha256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1"
+    },
+    {
+      "bytes": 16867,
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1"
+    }
+  ],
+  "format": "T05-designated-full-original-acceptance-annex/1",
+  "requirements": [
+    {
+      "FR": "FR-500",
+      "主要交付任务": "T05",
+      "共同依赖/协作": "",
+      "原始优先级": "P0",
+      "标题": "一键检查与验证范围",
+      "正式证据/PR/merge": "",
+      "状态": "未取得完整产品正式完成证据",
+      "首版发布门": "必须",
+      "验收依据（原条款全文不缩减）": "PRD FR-500 全文; G.2 V-01/R-01..06/O-01;C;D; PRD10–12; plan.md发布门"
+    },
+    {
+      "FR": "FR-501",
+      "主要交付任务": "T05",
+      "共同依赖/协作": "",
+      "原始优先级": "P0",
+      "标题": "推理执行与组合语义",
+      "正式证据/PR/merge": "",
+      "状态": "未取得完整产品正式完成证据",
+      "首版发布门": "必须",
+      "验收依据（原条款全文不缩减）": "PRD FR-501 全文; G.2 V-01/R-01..06/O-01;C;D; PRD10–12; plan.md发布门"
+    },
+    {
+      "FR": "FR-502",
+      "主要交付任务": "T05",
+      "共同依赖/协作": "",
+      "原始优先级": "P0",
+      "标题": "推导依据与解释边界",
+      "正式证据/PR/merge": "",
+      "状态": "未取得完整产品正式完成证据",
+      "首版发布门": "必须",
+      "验收依据（原条款全文不缩减）": "PRD FR-502 全文; G.2 V-01/R-01..06/O-01;C;D; PRD10–12; plan.md发布门"
+    },
+    {
+      "FR": "FR-503",
+      "主要交付任务": "T05",
+      "共同依赖/协作": "",
+      "原始优先级": "P0",
+      "标题": "问题分级与定位",
+      "正式证据/PR/merge": "",
+      "状态": "未取得完整产品正式完成证据",
+      "首版发布门": "必须",
+      "验收依据（原条款全文不缩减）": "PRD FR-503 全文; G.2 V-01/R-01..06/O-01;C;D; PRD10–12; plan.md发布门"
+    },
+    {
+      "FR": "FR-504",
+      "主要交付任务": "T05",
+      "共同依赖/协作": "",
+      "原始优先级": "P0",
+      "标题": "最小约束编辑与测试",
+      "正式证据/PR/merge": "",
+      "状态": "未取得完整产品正式完成证据",
+      "首版发布门": "必须",
+      "验收依据（原条款全文不缩减）": "PRD FR-504 全文; G.2 V-01/R-01..06/O-01;C;D; PRD10–12; plan.md发布门"
+    },
+    {
+      "FR": "FR-505",
+      "主要交付任务": "T05",
+      "共同依赖/协作": "",
+      "原始优先级": "P0",
+      "标题": "最小规则编辑与测试",
+      "正式证据/PR/merge": "",
+      "状态": "未取得完整产品正式完成证据",
+      "首版发布门": "必须",
+      "验收依据（原条款全文不缩减）": "PRD FR-505 全文; G.2 V-01/R-01..06/O-01;C;D; PRD10–12; plan.md发布门"
+    }
+  ]
+}

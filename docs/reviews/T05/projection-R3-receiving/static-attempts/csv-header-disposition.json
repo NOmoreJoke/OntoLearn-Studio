@@ -1,0 +1,46 @@
+{
+  "cause": "CSV UTF8 BOM remained in first header when read_text omitted utf-8-sig",
+  "correctedActualCommand": {
+    "argv": [
+      "python3",
+      "-B",
+      "-"
+    ],
+    "exit": 0,
+    "fields": [
+      "用例标识",
+      "原章节",
+      "原始固定验收条目",
+      "状态",
+      "对应完整候选证据"
+    ],
+    "relevantRowsRead": [
+      "V-01",
+      "R-01",
+      "R-02",
+      "R-03",
+      "R-04",
+      "R-05",
+      "R-06",
+      "O-01"
+    ]
+  },
+  "correction": "explicit UTF8-sig decode for CSV header",
+  "failedCommand": {
+    "argv": [
+      "python3",
+      "-B",
+      "-"
+    ],
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle",
+    "exit": 1,
+    "isRawStdoutStderrCapture": false,
+    "note": "actual tool reported exit1; source and error transcribed, not fabricated original separated streams; preceding fixed PRD read succeeded",
+    "source": "csv.DictReader(p.read_text().splitlines()); r[\"用例标识\"]",
+    "toolResultTranscription": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\n  File \"<stdin>\", line 5, in <genexpr>\nKeyError: '用例标识'\n"
+  },
+  "format": "T05-read-only-static-failure-disposition/1",
+  "notProductOrDesignModelFailure": true,
+  "scope": "acceptance-baselines.csv metadata read only; no product or model execution",
+  "sourceFilesUnchanged": true
+}
