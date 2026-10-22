@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:ontolearn:i05:source-package-parity-build:1",
   "title": "Proposed strict external build provenance; no actual build instance supplied",
-  "$comment": "Schema shape plus mandatory cross-field/identity checks in offer section 4 are jointly normative. Required build evidence may not be replaced by unknown/null/source hashes.",
+  "$comment": "Schema shape plus offer section 4 actor responsibilities are jointly normative. External source/log/archive/installed/approval references are produced by T03 and verified by root/caller; the probe checks syntax, bundle files and actual loader code against declarations only, never dereferences external evidence or claims approval. Required actual build evidence may not be replaced by unknown/null/source hashes.",
   "type": "object",
   "additionalProperties": false,
   "properties": {

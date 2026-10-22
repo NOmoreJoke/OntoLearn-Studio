@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import sys
 
 P = Path(__file__).resolve().parent
 ROOT = P.parents[3]
@@ -32,6 +33,8 @@ for r in x['modules23']:
     ast.parse(git('show',r['ref']+':'+r['path']))
 checks['staticAstOnlyModules']=23
 p=read('profile-descriptor.draft.json')
+assert 'root accepted source-only R2' in x['modules23'][-1]['owner']
+assert p['verificationActors']['probe'].endswith('externalReceiptStatus=external-unverified')
 assert p['executionAuthorization'] is False and p['acceptedCompositionRef'] is None
 assert p['canonicalModules']==x['modules23']
 assert p['resources']==x['resources4'] and p['assets']==x['assets2']
@@ -92,5 +95,5 @@ report={'format':'i05-offer-static-validation/1','checks':checks,
             'physical measurements','T03 meter ticket'],
         'failuresPreserved':['static-collect-first-failure.raw','static-collect-second-failure.raw',
                             'document-write-first-failure.raw']}
-(P/'validation-static.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+(P/(sys.argv[1] if len(sys.argv)==2 else 'validation-static.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(report,ensure_ascii=False,indent=2))

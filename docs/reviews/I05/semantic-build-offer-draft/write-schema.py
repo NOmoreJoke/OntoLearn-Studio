@@ -117,7 +117,7 @@ props={
 schema={'$schema':'https://json-schema.org/draft/2020-12/schema',
     '$id':'urn:ontolearn:i05:source-package-parity-build:1',
     'title':'Proposed strict external build provenance; no actual build instance supplied',
-    '$comment':'Schema shape plus mandatory cross-field/identity checks in offer section 4 are jointly normative. Required build evidence may not be replaced by unknown/null/source hashes.',
+    '$comment':'Schema shape plus offer section 4 actor responsibilities are jointly normative. External source/log/archive/installed/approval references are produced by T03 and verified by root/caller; the probe checks syntax, bundle files and actual loader code against declarations only, never dereferences external evidence or claims approval. Required actual build evidence may not be replaced by unknown/null/source hashes.',
     **obj(props),'$defs':defs}
 (P/'build-provenance.schema.json').write_text(json.dumps(schema,ensure_ascii=False,indent=2)+'\n')
 receipt=obj({'format':const('i05-final-build-receipt/1'),'compositionRef':gitref,
@@ -158,6 +158,12 @@ profile={'format':'i05-semantic-profile-offer/1','status':'draft-owner-acceptanc
         'T03 four writer/dependency adoption/profile implementation; root combination approval',
         'installed distribution/resources/license/runtime mapping and actual archive evidence',
         'T05 independent oracle and source/frozen/parent finite validation tickets'],
+    'verificationActors':{'producer':'T03 actual archive/compile/installed/license evidence',
+        'externalReceiver':'root approves exact source/composition and external witness evidence',
+        'caller':'prelaunch approved receipt and complete directory/external-evidence binding; postlaunch header/runtime digest binding',
+        'probe':'strict schema/declarations plus own bundle/source files and actual loader code; externalReceiptStatus=external-unverified'},
+    'probeMustNotDereference':['external Git source paths','ownerAcceptanceRecord','extractorSource',
+        'build.stdoutReceipt','build.stderrReceipt','original installedFiles/RECORD paths','external final receipt'],
     'executionAuthorization':False}
 (P/'profile-descriptor.draft.json').write_text(json.dumps(profile,ensure_ascii=False,indent=2)+'\n')
 print('Wrote declarative draft profile and two schemas; no builder/consumer executed.')

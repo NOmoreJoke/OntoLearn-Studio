@@ -384,7 +384,7 @@
       "bytes": 93848,
       "sha256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
       "gitBlob": "d4585b555a01a1d8b862ad833504c8a1e258fd43",
-      "owner": "I05; source-only R2 not root accepted"
+      "owner": "I05; root accepted source-only R2; runtime/lock/package not accepted; ownership retained"
     }
   ],
   "resources": [
@@ -520,6 +520,21 @@
     "T03 four writer/dependency adoption/profile implementation; root combination approval",
     "installed distribution/resources/license/runtime mapping and actual archive evidence",
     "T05 independent oracle and source/frozen/parent finite validation tickets"
+  ],
+  "verificationActors": {
+    "producer": "T03 actual archive/compile/installed/license evidence",
+    "externalReceiver": "root approves exact source/composition and external witness evidence",
+    "caller": "prelaunch approved receipt and complete directory/external-evidence binding; postlaunch header/runtime digest binding",
+    "probe": "strict schema/declarations plus own bundle/source files and actual loader code; externalReceiptStatus=external-unverified"
+  },
+  "probeMustNotDereference": [
+    "external Git source paths",
+    "ownerAcceptanceRecord",
+    "extractorSource",
+    "build.stdoutReceipt",
+    "build.stderrReceipt",
+    "original installedFiles/RECORD paths",
+    "external final receipt"
   ],
   "executionAuthorization": false
 }

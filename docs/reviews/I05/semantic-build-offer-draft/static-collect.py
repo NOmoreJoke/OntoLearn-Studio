@@ -61,7 +61,7 @@ for module in closure['modules']:
 raw, row = blob(PROBE, 'packages/engine/src/ontolearn_engine/semantic_source_package_probe.py')
 probe_ast = ast.parse(raw)
 modules.append({'module': 'ontolearn_engine.semantic_source_package_probe', **row,
-                'owner': 'I05; source-only R2 not root accepted'})
+                'owner': 'I05; root accepted source-only R2; runtime/lock/package not accepted; ownership retained'})
 resource_paths = ['packages/contracts/python/contract_v2.py',
                   'packages/contracts/v2/schema.json', 'packages/contracts/v2/registry.json',
                   'packages/contracts/v2/errors.json']
