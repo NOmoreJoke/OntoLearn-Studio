@@ -5,9 +5,31 @@ import { createServer } from 'node:http'
 import { runNativeRecovery } from './native-driver'
 import { tmpdir } from 'node:os'
 import { mkdtemp } from 'node:fs/promises'
+import { compareCspViolations, type CspViolationTuple } from '../helpers/csp-violation-projection'
+
+// Independent semantic expectations; identical tuples may repeat in the raw event stream.
+const expectedCspViolations: Record<'production' | 'development', readonly CspViolationTuple[]> = {
+  production: [
+    ['script-src-elem', 'enforce', 'inline'],
+    ['script-src-elem', 'enforce', 'probe-origin'],
+    ['style-src-elem', 'enforce', 'inline'],
+    ['style-src-attr', 'enforce', 'inline'],
+    ['img-src', 'enforce', 'probe-origin'],
+    ['connect-src', 'enforce', 'probe-origin'],
+    ['frame-src', 'enforce', 'probe-origin'],
+  ],
+  development: [
+    ['script-src-elem', 'enforce', 'inline'],
+    ['script-src-elem', 'enforce', 'probe-origin'],
+    ['img-src', 'enforce', 'probe-origin'],
+    ['connect-src', 'enforce', 'probe-origin'],
+    ['frame-src', 'enforce', 'probe-origin'],
+  ],
+}
 
 test('C1 real CSP, normal functionality and renderer recovery', async () => {
   test.setTimeout(90000)
+  const testInfo = test.info()
   const requests: string[] = []
   const server = createServer((request, response) => {
     requests.push(request.url ?? '')
@@ -20,6 +42,8 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
   const target = `http://127.0.0.1:${address.port}`
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
+  const expectedUserDataPath = testInfo.outputPath('electron-user-data')
+  const userDataArg = `--user-data-dir=${expectedUserDataPath}`
   const development = Boolean(env.ELECTRON_RENDERER_URL)
   const evidence: Record<string, unknown> = { development, target }
   const stage = (value: string) => {
@@ -30,8 +54,8 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
   const application = await electron.launch({
     chromiumSandbox: true,
     ...(env.ONTOLEARN_PACKAGED_EXECUTABLE
-      ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
-      : { args: [resolve('apps/desktop')] }),
+      ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [userDataArg] }
+      : { args: [userDataArg, resolve('apps/desktop')] }),
     cwd: resolve('apps/desktop'),
     env,
   })
@@ -47,6 +71,18 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     await expect(page.getByRole('status')).toContainText('本地引擎已连接')
   }
   try {
+    const actualUserDataPath = await application.evaluate(({ app }) => app.getPath('userData'))
+    const userDataEvidencePath = testInfo.outputPath('electron-user-data.json')
+    await writeFile(
+      userDataEvidencePath,
+      JSON.stringify({ expected: expectedUserDataPath, actual: actualUserDataPath }, null, 2) +
+        '\n',
+    )
+    await testInfo.attach('electron-user-data', {
+      path: userDataEvidencePath,
+      contentType: 'application/json',
+    })
+    expect(actualUserDataPath).toBe(expectedUserDataPath)
     stage('first-window')
     let page = await application.firstWindow()
     stage('normal-ui')
@@ -168,6 +204,12 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       return result
     }, target)
     evidence.probe = probe
+    const violationProjection = compareCspViolations(
+      probe.violations,
+      target,
+      expectedCspViolations[development ? 'development' : 'production'],
+    )
+    evidence.cspViolationProjection = violationProjection
     expect(probe.inlineExecuted).toBe(false)
     expect(probe.remoteExecuted).toBe(false)
     expect(probe.fetchBlocked).toBe(true)
@@ -182,6 +224,10 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     }
     expect(requests).toEqual([])
     evidence.receiverRequests = requests
+    expect(
+      { missing: violationProjection.missing, extra: violationProjection.extra },
+      'complete CSP directive/disposition/blocked-class set',
+    ).toEqual({ missing: [], extra: [] })
     const url = page.url()
     await page.evaluate((target) => {
       window.open(target)
