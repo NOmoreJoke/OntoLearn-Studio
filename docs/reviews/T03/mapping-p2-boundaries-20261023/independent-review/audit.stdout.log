@@ -1,0 +1,125 @@
+{
+  "startedUtc": "2026-10-22T18:51:45.030569+00:00",
+  "base": "30319412daf8ae4745987babf7bbed93c53b6b42",
+  "candidate": "da1795b20c3c0d47ae975fe3371e802092a4b429",
+  "committedProducts": [
+    "packages/engine/src/ontolearn_engine/mapping/probe.py",
+    "packages/engine/tests/test_mapping_entrypoint.py"
+  ],
+  "manifest.json": {
+    "verifiedFiles": 19,
+    "allBytesAndHashesMatch": true
+  },
+  "raw-evidence-manifest.json": {
+    "verifiedFiles": 74,
+    "allBytesAndHashesMatch": true
+  },
+  "candidateBinding": {
+    "sourceIdentitiesVerified": 11,
+    "protectedRecordedPathsEqualBase": true,
+    "runtimeDirtyProductsEqualCommit": true
+  },
+  "legacyPreserved": {
+    "oracleOld11ProjectionEqualsBase": true,
+    "legacyFunctionBodyASTEqualsBase": true
+  },
+  "actualEngineInventory": {
+    "entries": 440,
+    "currentFullTreeEqualsArchivedInventory": true
+  },
+  "independentlyRecomputedCodeBindings": [
+    {
+      "module": "ontolearn_engine.mapping.probe",
+      "codeSha256": "ad1ddd07f0a2eebda20e974cb48009f1f40b8b5660186086b9952ad95d6d4d74"
+    },
+    {
+      "module": "ontolearn_engine.mapping.source",
+      "codeSha256": "007f5b8a002a8473e1c6c308c2b1e9490f7e525af1f9b255ea3fa99ba4788e2a"
+    },
+    {
+      "module": "ontolearn_engine.mapping.plan",
+      "codeSha256": "d6f64766b7151ef569078c0f7e2ef24d1fa687d908588dcf770b439169294278"
+    }
+  ],
+  "recordedRunsReadback": {
+    "runs": 5,
+    "allFullOutputChecksMatch": true,
+    "caseRecords": 17,
+    "independentPerCaseExits": null,
+    "optimizedSourceExactOracle": true
+  },
+  "commandReadback": [
+    {
+      "action": "uv-sync",
+      "startUtc": "2026-10-22T18:42:29.966742+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "npm-ci",
+      "startUtc": "2026-10-22T18:42:31.132010+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "ruff-check",
+      "startUtc": "2026-10-22T18:44:32.969623+00:00",
+      "exitCode": 1
+    },
+    {
+      "action": "ruff-format",
+      "startUtc": "2026-10-22T18:44:32.969759+00:00",
+      "exitCode": 1
+    },
+    {
+      "action": "ruff-check",
+      "startUtc": "2026-10-22T18:44:51.723252+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "ruff-format",
+      "startUtc": "2026-10-22T18:44:51.792982+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "targeted",
+      "startUtc": "2026-10-22T18:44:51.863634+00:00",
+      "exitCode": 1
+    },
+    {
+      "action": "targeted",
+      "startUtc": "2026-10-22T18:45:10.617228+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "check",
+      "startUtc": "2026-10-22T18:45:11.720469+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "electron-install",
+      "startUtc": "2026-10-22T18:45:11.782097+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "sources",
+      "startUtc": "2026-10-22T18:46:41.911114+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "package",
+      "startUtc": "2026-10-22T18:46:46.215079+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "verify-package",
+      "startUtc": "2026-10-22T18:47:19.937736+00:00",
+      "exitCode": 0
+    },
+    {
+      "action": "source-probe-optimized",
+      "startUtc": "2026-10-22T18:47:30.963946+00:00",
+      "exitCode": 0
+    }
+  ],
+  "completeUtc": "2026-10-22T18:51:45.514802+00:00",
+  "scope": "read-only independent byte/code/receipt review; no source/package execution or fullcheck rerun"
+}
