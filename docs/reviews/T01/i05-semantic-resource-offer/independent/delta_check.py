@@ -1,0 +1,118 @@
+"""Independent R2 fixed-doc delta audit; only stdlib and Git/formatter tools."""
+from pathlib import Path
+import hashlib
+import json
+import re
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[5]
+OUT = Path(__file__).resolve().parent
+BASE = '5f910b52c69d86a1076b2032e5d3c63e715947f3'
+OLD = '4064b216635f9b7a472879b31b07033edf14d185'
+NEW = 'dd972b79adf4d378636a7d41a6b0e3e08c0d5ca1'
+PFX = 'docs/reviews/T01/i05-semantic-resource-offer/'
+MAIN = 'docs/iterations/T01/i05-semantic-resource-offer.md'
+FORMATTER = Path('/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/.bin/prettier')
+
+
+def sha(b):
+ return hashlib.sha256(b).hexdigest()
+
+
+def git(*args):
+ return subprocess.check_output(['git',*args],cwd=ROOT)
+
+
+def raw(ref,path):
+ return git('show',ref+':'+path)
+
+
+def parsed(b):
+ def unique(pairs):
+  d={}
+  for k,v in pairs:
+   assert k not in d,k
+   d[k]=v
+  return d
+ return json.loads(b,object_pairs_hook=unique)
+
+
+assert git('rev-parse','HEAD').decode().strip()==NEW
+names=set(git('diff','--name-only',BASE,NEW).decode().splitlines())
+assert len(names)==53
+assert all(n==MAIN or n.startswith(PFX) for n in names)
+manifest=parsed(raw(NEW,PFX+'candidate-manifest.json'))
+assert len(manifest['files'])==52
+assert len({x['path'] for x in manifest['files']})==52
+assert {x['path'] for x in manifest['files']}|{PFX+'candidate-manifest.json'}==names
+for item in manifest['files']:
+ b=raw(NEW,item['path']);assert b==(ROOT/item['path']).read_bytes()
+ assert len(b)==item['bytes'] and sha(b)==item['sha256']
+assert raw(NEW,PFX+'candidate-manifest.json')==(ROOT/(PFX+'candidate-manifest.json')).read_bytes()
+old_names=set(git('diff','--name-only',BASE,OLD).decode().splitlines())
+changes=[]
+for name in sorted(old_names):
+ if raw(OLD,name)!=raw(NEW,name):changes.append(name)
+assert set(changes)=={MAIN,PFX+'candidate-manifest.json',PFX+'dispositions.json',PFX+'static-audit.json',PFX+'verification.md'}
+for name in old_names:
+ if name.startswith(PFX+'inputs/'):
+  assert raw(OLD,name)==raw(NEW,name)
+for name in [PFX+'dispositions.json',PFX+'static-audit.json']:
+ assert parsed(raw(OLD,name))==parsed(raw(NEW,name))
+separator=re.compile(r'^\s*\|(?:\s*:?-+:?\s*\|)+\s*$')
+def significant(b):
+ s='\n'.join(line for line in b.decode().splitlines() if not separator.fullmatch(line))
+ return re.sub(r'\s+','',s)
+assert significant(raw(OLD,MAIN))==significant(raw(NEW,MAIN))
+assert re.findall(r'`[^`]*`',raw(OLD,MAIN).decode())==re.findall(r'`[^`]*`',raw(NEW,MAIN).decode())
+assert len(raw(NEW,PFX+'independent/round-1.md'))==9884
+assert sha(raw(NEW,PFX+'independent/round-1.md'))=='687227d50bfd9a386ec3db8fcc4559c839c0b08222193e6665dfb927d48a107c'
+for name,h in [('independent-check.json','d5ea0285d766352970a975f8767f7d572da46b1202bae6dac606bf4bd44b0e45'),('review_check.py','9c12792bce60a626425d77c7b8b1d9d2f023ea2b0e34aa5b5acc4fdf0b791ca3')]:
+ assert sha(raw(NEW,PFX+'independent/'+name))==h
+history=parsed(raw(NEW,PFX+'history/4064b21-format-inputs/manifest.json'))
+# The raw history shape is inspected without invoking any old verification tool.
+assert history
+for name in [MAIN,PFX+'dispositions.json',PFX+'static-audit.json',PFX+'candidate-manifest.json',PFX+'verification.md']:
+ saved=PFX+'history/4064b21-format-inputs/'+Path(name).name+'.raw'
+ assert raw(NEW,saved)==raw(OLD,name)
+logs=[]
+for key in ['01-before','02-write','04-explicit-check','05-explicit-write','06-final-check']:
+ meta=parsed(raw(NEW,PFX+'format/'+key+'.json'))
+ for stream in ['stdout','stderr']:
+  path=PFX+'format/'+key+'.'+stream+'.log';b=raw(NEW,path)
+  assert len(b)==meta[stream+'Bytes'] and sha(b)==meta[stream+'Sha256']
+  logs.append(path)
+ assert meta['exit']==(1 if key in ['01-before','04-explicit-check'] else 0)
+final=parsed(raw(NEW,PFX+'format/06-final-check.json'))
+assert final['checkedFiles']==14 and '--ignore-path' in final['argv'] and '/dev/null' in final['argv']
+assert len(final['argv'])==18
+assert parsed(raw(NEW,PFX+'format/03-first-equivalence-failure.json'))['actualOuterExit']==1
+previous=git('rev-parse',NEW+'^').decode().strip()
+assert previous.startswith('4709e90')
+previous_names=set(git('diff','--name-only',BASE,previous).decode().splitlines())
+assert len(previous_names)==43
+assert names-previous_names==set(logs) and previous_names<=names
+assert set(git('diff','--name-only',previous,NEW).decode().splitlines())==set(logs)|{PFX+'verification.md',PFX+'candidate-manifest.json'}
+old_verification=raw(previous,PFX+'verification.md')
+assert len(old_verification)==5005 and raw(NEW,PFX+'verification.md').startswith(old_verification)
+old_manifest=parsed(raw(previous,PFX+'candidate-manifest.json'))
+for entry in old_manifest['files']:
+ if entry['path']==PFX+'verification.md':
+  entry['bytes']=5605
+  entry['sha256']='edf73119364b9ca10d384fe2ddf6f31f57f0b9b701dfae6fcf305184650bfeb5'
+assert old_manifest==manifest
+assert FORMATTER.exists()
+formatter_bin=FORMATTER.resolve();b=formatter_bin.read_bytes()
+assert len(b)==2628 and sha(b)=='6e922134a3c76fd4de202959bb6aef50bde0c994148075003a15569b7197906e'
+pkg=formatter_bin.parents[1]/'package.json';package=parsed(pkg.read_bytes());assert package['version']=='3.9.10'
+argv=[str(FORMATTER),'--ignore-path','/dev/null','--check',str(ROOT/MAIN),str(ROOT/(PFX+'dispositions.json')),str(ROOT/(PFX+'static-audit.json')),str(ROOT/(PFX+'candidate-manifest.json')),str(ROOT/(PFX+'format/06-final-check.json'))]
+r=subprocess.run(argv,cwd=ROOT,capture_output=True)
+(OUT/'round-2-format.stdout.raw').write_bytes(r.stdout)
+(OUT/'round-2-format.stderr.raw').write_bytes(r.stderr)
+assert r.returncode==0
+assert git('diff','--cached','--name-only')==b''
+ag=(ROOT/'AGENTS.md').read_bytes();assert sha(ag)=='78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759'
+subprocess.run(['git','diff','--check',BASE,NEW],cwd=ROOT,check=True)
+result={'base':BASE,'oldCandidate':OLD,'newCandidate':NEW,'baseDeltaFiles':53,'manifestPayloadFiles':52,'fixedGitCurrentManifestEqual':True,'modifiedOldFiles':changes,'rawInputsUnchanged':True,'r1ReportBytes':9884,'r1ReportSha256':'687227d50bfd9a386ec3db8fcc4559c839c0b08222193e6665dfb927d48a107c','formatOnly':{'jsonDeepEquality':True,'markdownSignificantTextEqual':True,'markdownInlineCodeEqual':True,'actualDiffManuallyRead':True},'historyCopiesMatchOriginalGit':True,'formatLogFilesVerified':logs,'incompleteIntermediate':{'head':previous,'baseDeltaFiles':43,'missingLogs':10},'rootFormatterRecorded14Check':{'exit':0,'logHashVerified':True,'actualArgv':final['argv']},'ownFormatter':{'bin':str(formatter_bin),'binBytes':len(b),'binSha256':sha(b),'packageVersion':package['version'],'packageJsonSha256':sha(pkg.read_bytes()),'argv':argv,'exit':r.returncode,'stdoutBytes':len(r.stdout),'stdoutSha256':sha(r.stdout),'stderrBytes':len(r.stderr),'stderrSha256':sha(r.stderr)},'gitDiffWhitespaceExit':0,'scope':'Static document delta only; no product/checker imports or tests, DB/native/GUI/business child/build; Goal/HOLD unchanged'}
+p=OUT/'round-2-check.json';p.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'output':str(p),'bytes':p.stat().st_size,'sha256':sha(p.read_bytes()),'formatterExit':r.returncode,'head':NEW,'modifiedOldFiles':changes},ensure_ascii=False))
