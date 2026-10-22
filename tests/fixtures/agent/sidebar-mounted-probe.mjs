@@ -316,10 +316,18 @@ try {
         )
         assert.equal((await events())[0].target, 'local')
         await expect(submit).toBeDisabled()
+        for (const button of await page.locator('.t08-actions button').all())
+          if (!(await button.innerText()).includes('给我一点提示'))
+            await expect(button).toBeDisabled()
       }
     }
     await reset({ handlers: false })
-    await expect(page.locator('.t08-actions button').first()).toBeDisabled()
+    for (const button of await page.locator('.t08-actions button').all()) {
+      await expect(button).toBeDisabled()
+      await button.dispatchEvent('click')
+    }
+    await input.fill('handler missing')
+    await page.locator('form').evaluate((form) => form.requestSubmit())
     assert.equal((await events()).length, 0)
   })
   await run('native double submit, safe rejection,001 retained', async () => {
@@ -375,9 +383,14 @@ try {
         { mode: 'project' },
         { selectedObjectIds: ['002', '001'] },
       ]) {
-        await reset({ state: state({ phase: 'awaiting-provider' }) })
+        await reset({ state: state() })
+        await expect(page.getByRole('button', { name: '查看真实 Diff' })).toBeEnabled()
         await update({ context: { ...context, ...change } })
+        await expect(page.getByText(/以下记录来自先前项目或输入版本/)).toBeVisible()
         await expect(page.getByRole('button', { name: '查看真实 Diff' })).toBeDisabled()
+        await page.getByRole('button', { name: '查看真实 Diff' }).dispatchEvent('click')
+        assert.equal((await events()).length, 0)
+        await update({ state: state({ phase: 'awaiting-provider' }) })
         await expect(page.getByRole('button', { name: '取消本地等待' })).toBeDisabled()
         await page.getByRole('button', { name: '取消本地等待' }).dispatchEvent('click')
         assert.equal((await events()).length, 0)
@@ -457,6 +470,8 @@ try {
     async () => {
       await reset({ privacy: 'local', state: state({ phase: 'failed', error: 'TIMED_OUT' }) })
       await expect(page.getByRole('button', { name: '重试本次操作' })).toBeDisabled()
+      await page.getByRole('button', { name: '重试本次操作' }).dispatchEvent('click')
+      assert.equal((await events()).length, 0)
       await reset({ context: { ...context, module: 'ontology' } })
       await page.getByRole('button', { name: /演示下一步/ }).click()
       assert.equal((await events())[0].assistance, 'full-assistance')
@@ -467,6 +482,10 @@ try {
       await page.getByRole('button', { name: '取消本地等待' }).click()
       await expect.poll(() => portAborted).toBe(true)
       await expect.poll(() => conversation.state().phase).toBe('cancelled')
+      await expect(
+        page.getByText('操作未完成，输入已保留。请检查实际任务状态后重试。'),
+      ).toBeVisible()
+      const beforeLate = conversation.state()
       completeLate({
         kind: 'evidence',
         projectId: 'p1',
@@ -478,6 +497,8 @@ try {
         fields: [],
       })
       await expect(page.getByText('已完成草稿', { exact: true })).toBeVisible()
+      await page.evaluate(() => Promise.resolve())
+      assert.deepEqual(conversation.state(), beforeLate)
       assert.equal(conversation.state().phase, 'cancelled')
       report.pureToolCancellation = {
         signalAborted: portAborted,
