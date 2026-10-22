@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "stage": "T09-private-stage-evidence; not new S2",
+  "round": 1,
+  "date": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "preparationOnly": true,
+  "repository": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence",
+  "branch": "feature/weekly-t09-stage-evidence",
+  "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "productCommit": "12699cc0f536f5875e8b021349b58c2c954145cc",
+  "productTree": "813af592a58396bf0a90a7f9f22076a5e5862266",
+  "localContinuationParent": "74b17a43fd51b0fa89d810c664d185583a140e48",
+  "inheritedS1Product": "76596656908ed84e577e8202a602e3256d5febcc",
+  "fixedEvidenceProcessCommit": "9a1baa74f2b6482106eb7c8090efef7f7ba065e2",
+  "originalEvidenceCommit": "e6519932b0b20fd1862dcd6f038a621fce8177f5",
+  "preparationParentCommit": "9a1baa74f2b6482106eb7c8090efef7f7ba065e2",
+  "files": {
+    "input-manifest.json": {
+      "bytes": 69466,
+      "sha256": "267eb13144cd70b8b2cf3ad0f32f590173b21b6f59ac247c06dd7fa701112f15"
+    },
+    "inputs/agents-snapshot.txt": {
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    "inputs/common-instructions-snapshot.txt": {
+      "bytes": 16867,
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1"
+    },
+    "inputs/controller-preparation-scope.md": {
+      "bytes": 955,
+      "sha256": "8c3524f04a3e3d75d41eb45145d74c088f8e34c91f9700392d0f8ef6c3b52be3"
+    },
+    "inputs/desktop-operation-policy-snapshot.md": {
+      "bytes": 3172,
+      "sha256": "7b54d589d39bfe71c0f67d61c00995bb4d60b5156a74a6ae25ac69a2f491f5eb"
+    },
+    "inputs/external-review-permissions-snapshot.md": {
+      "bytes": 4462,
+      "sha256": "feea1595894b347ff1151e5526bc21e2055911f2ba744670f08ba85765f8b53a"
+    },
+    "minimax-m31flash-input.md": {
+      "bytes": 21384,
+      "sha256": "2801f823dbf55df65e71fe1836af567ec056940c7fdfb5101c0583d72c53bfcc"
+    },
+    "prompt-preparation-review.md": {
+      "bytes": 6534,
+      "sha256": "6d1d388cb712c48391e0155e95ddef2abde1e9d0d03342123aed47cfa5ddd7f8"
+    },
+    "validation-and-history-map.json": {
+      "bytes": 12636,
+      "sha256": "39a5fdc1dfe065640a0777198067630b332a2dae1f315c6d720b7d7f59522975"
+    },
+    "verification-and-history-index.md": {
+      "bytes": 5072,
+      "sha256": "2803d41829db218aae6444beae90f946e298d73cc3bcbdf1d489dcd0cda44f52"
+    },
+    "zcode-glm53-input.md": {
+      "bytes": 21362,
+      "sha256": "46e00127c559763c9e71f7ebb4823eef71a40f3da71ff8386f20dec93b4eedf8"
+    }
+  },
+  "staticVerification": {
+    "inputEntries": 168,
+    "completeProductDiffPaths": 77,
+    "completeIncrementFiles": 3,
+    "sourceDataTestPaths": 34,
+    "fixedProcessContextPaths": 61,
+    "approvedBaseContextPaths": 21,
+    "frozenRoundInputs": 9,
+    "exactProductProcessRoleMappings": 5,
+    "losslessHistoricalArchivesVerified": 9,
+    "finalPlaintextLogsVerified": 2,
+    "finalOriginalEvidence": "80专项；648 Vitest passed/16 headless skipped/1174 pytest; original final logs only, not rerun",
+    "allInputHashBytesGitBlob": "pass",
+    "allIncrementAndSourceDataUnchanged": "pass",
+    "oldS1Round1FilesUnchanged": 11,
+    "independentPreparationAudit": "pass; no unresolved preparation blockers",
+    "productTestsOrBuildOrServiceOrGUIRun": false
+  },
+  "actualTaskState": {
+    "actualExternalTasksCreated": false,
+    "zcodeTaskId": null,
+    "minimaxTaskId": null,
+    "actualSettingsReadbacks": null,
+    "leaseGrantedToT09": false,
+    "workspaceMapping": null,
+    "notAReviewPass": true
+  },
+  "expectedReports": {
+    "ZCode": "docs/reviews/T09/stage-round-1/zcode-glm53.md",
+    "MiniMax": "docs/reviews/T09/stage-round-1/minimax-m31flash.md"
+  },
+  "conclusionGate": "Critical acceptance missing => overall Pass forbidden; preserve actual model NotPass/UnableToVerify; no scope reduction or new S2.",
+  "executionGate": {
+    "noModelTaskCreated": true,
+    "noT09CreationLease": true,
+    "parentGoal": "blocked retained, unchanged objective; no new Goal",
+    "next": "Deliver fixed package to root for actual short creation/settings/readback lease; retain separate S1 candidate queue and do not mix versions.",
+    "futureWorkspaceMapping": "Separately hashed immutable source/report absolute path and precise role-ref materialization supplement must preserve original prompt bytes."
+  },
+  "acceptanceBoundary": "Preparation pass is not product Pass. Missing critical durable/actual-domain/integration/package/platform/human and all parent gates remain; preserve actual designated NotPass/UnableToVerify and complete terminal/report before remediation and new candidate validation/new complete dual review.",
+  "productAndS1Protection": "Only new stage-round-1 process artifacts written. All original product/data/tests and old S1 round-1 eleven files unchanged; actual AGENTS policy overlay remains unstaged. No push/PR/merge.",
+  "hashRule": "files hashes exact relative bytes and excludes this outer receipt. Resulting local process Git commit binds receipt bytes; no self hash or self commit cycle."
+}
