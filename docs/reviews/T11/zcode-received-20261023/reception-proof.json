@@ -1,0 +1,419 @@
+{
+  "capturedAt": "2026-10-22T16:09:45.576701+00:00",
+  "report": {
+    "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/report/review.md",
+    "copiedPath": "zcode-report-original.md",
+    "bytes": 29056,
+    "lines": 183,
+    "sha256": "6e82553c693678e2f6af95a905fc8f77c639d5caac28ccce5878e226064ee505",
+    "ownerReadbackRanges": ["1-95", "96-183"],
+    "fullOwnerReadback": true,
+    "originalBytesPreserved": true,
+    "verdictSelfReported": "pass: full frozen offline tool engineering scope",
+    "controllerAdoption": false
+  },
+  "native": {
+    "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+    "latestCompletedTurnId": "turn_1b2a8b28-1eab-4f29-ad08-6a8385491485",
+    "oldFailedTurnId": "turn_11e0b19b-864f-4623-bb72-b2b9bc4b69c1",
+    "events": [
+      {
+        "timestamp": "2026-10-22T13:27:56.504Z",
+        "event": "turn.failed",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": "turn_11e0b19b-864f-4623-bb72-b2b9bc4b69c1",
+        "status": "failed"
+      },
+      {
+        "timestamp": "2026-10-22T14:33:25.728Z",
+        "event": "turn.completed",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": "turn_1b2a8b28-1eab-4f29-ad08-6a8385491485",
+        "status": "completed"
+      }
+    ],
+    "lastModelRecord": {
+      "requestId": "3283b44b-7d0f-4ea2-b717-969f2d8df2fc",
+      "completedAt": "2026-10-22T14:33:25.478Z",
+      "modelId": "GLM-5.3",
+      "effort": "max",
+      "finishReason": "stop"
+    },
+    "reportWrite": [
+      {
+        "requestId": "d32bb49d-7ef6-40a7-9a93-a88f258f5f3a",
+        "toolCallId": "call_75411ef18420410fb5294295",
+        "name": "Write",
+        "filePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/report/review.md",
+        "contentBytes": 29056,
+        "contentSHA256": "6e82553c693678e2f6af95a905fc8f77c639d5caac28ccce5878e226064ee505",
+        "equalsReceivedReportBytes": true,
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": "turn_1b2a8b28-1eab-4f29-ad08-6a8385491485",
+        "selectionVerified": "Native record matched both sessionId and turnId before projecting exact report Write"
+      }
+    ],
+    "retryUserTextObserved": true,
+    "retryActor": "unknown",
+    "retryTriggerSource": "unknown; no global/ingress tracing",
+    "explicitOldTurnLink": "not proven beyond same original session",
+    "thisOwnerSentContinuationDuringGrantedVisit": false,
+    "priorInputReadProof": "../native-readback-20261022/index.json",
+    "ownRuntimeConfigEvents": [
+      {
+        "timestamp": "2026-10-22T11:08:01.956Z",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "event": "bootstrap.app.startup.runtime_config.completed",
+        "mode": "yolo",
+        "model": "account:bigmodel-individual-coding-plan/GLM-5.3",
+        "workingDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb"
+      },
+      {
+        "timestamp": "2026-10-22T15:55:49.332Z",
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "event": "bootstrap.app.startup.runtime_config.completed",
+        "mode": "yolo",
+        "model": null,
+        "workingDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb"
+      }
+    ],
+    "freshGuiReceipt": "../session-state-readback-20261022/minimal-state.json",
+    "permissionBasis": "Own runtime_config yolo + granted-visit UI actual completely-access mode; no global configuration"
+  },
+  "identity": {
+    "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb",
+    "head": "b6e57a0534c94316dd07c3a87b4b8931d5a39501",
+    "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "product": "7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4",
+    "process": "9f12f17b74f1e26f310c8298232a7fe66cb026ad",
+    "manifestSHA256": "f982b59a594da3c0dc87d85dd6b1b1e14234f3c816d684fcf063a379c66113cf",
+    "frozenEntries": [
+      {
+        "role": "productFiles",
+        "path": "docs/iterations/T11/acceptance.md",
+        "bytes": 3294,
+        "sha256": "e8e259199bb194a12506a81f737d210bb89059c26f9f7ede45edc678d2cd348f",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/iterations/T11/selection-comparison-v2.md",
+        "bytes": 2625,
+        "sha256": "03dd36b5cc3493cf38c5e288a84af2ab7886bf7389eae2de5cb968bcb71056a2",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/iterations/T11/shared-file-handoff.md",
+        "bytes": 7876,
+        "sha256": "fb5f2b9bb21930d037cd9866f287eb3799ef6574f62957dda511762bff3e5aa4",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/release/README.md",
+        "bytes": 6878,
+        "sha256": "0d738c720e31efa6de22e8b9e476c0ea293f1008cc11e67d06dacc597abab499",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/release/migration-recovery.md",
+        "bytes": 5108,
+        "sha256": "7177d924771fab5bf71ab3d395d4dbdcbc8bf6514c01ca50bd019fc76e01c968",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/release/target-device-runbook.md",
+        "bytes": 4648,
+        "sha256": "29fda85e9e91d736b7a18a5ccc86442cb7566e305ee8d4583eb40b5cf65d655d",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/release/user-observation-template.csv",
+        "bytes": 647,
+        "sha256": "c2229f58febf8c76c8cef93411ae2ba035a21b24da648fd9c6e5d7c9a4f98cb4",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/release/user-study.md",
+        "bytes": 4075,
+        "sha256": "9c77c08dc8c770fdbe9b268358fef73c07177f7e6aaa902a6127e1ac0bbca0c3",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/approved-fixed-baseline-probe.json",
+        "bytes": 3833,
+        "sha256": "614236667b67a5761c8757057430d39544742458f8d18d5c9000ec63e17c9996",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/completion-audit.md",
+        "bytes": 7534,
+        "sha256": "f38a846b3e498c64eaaba6a22aee6585e4c82d3fec7f381612455d0e566f8dec",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/external-review-permissions-receipt.json",
+        "bytes": 1722,
+        "sha256": "bd354b1349ddbbedce4de1dd0f60a43fccf79a56f23e0b2c6f3e513adba91e14",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/first-failure.json",
+        "bytes": 603,
+        "sha256": "2d6b63f58d2cbdb9753303dc2b57f6dddb757f9b56db27450da52e3e4f1e3605",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/internal-review.md",
+        "bytes": 2781,
+        "sha256": "ab5f4815eaf6f7e3d1d71352b6ffe569262aa58f5350c9fe3a2cc71efbeee6ba",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/operating-policy-receipt.json",
+        "bytes": 2582,
+        "sha256": "9e36049f2ea4bd9afbde49618335d481840ede24157d1f4053c6c3da2e1959f3",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/selection-v2-review.md",
+        "bytes": 2402,
+        "sha256": "dea7c2d6064a21ff4fc4c5797441a8d57d0b8302810ad359ed8f43ab60bcc0e6",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/status.md",
+        "bytes": 6579,
+        "sha256": "c3a360b0b182d1600471b4a9df0d457bb0b3cdf1868010093aae39a50bb7b3ee",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/t09-readonly-alignment.json",
+        "bytes": 617,
+        "sha256": "038b9e851ff6529490f164333e572b016d87c139fda2c56be2467a6d29d140d9",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "docs/reviews/T11/verification.json",
+        "bytes": 8857,
+        "sha256": "0cb03592bcde2f0f8fe6f0570bff9a88a573ee2465397c9bec42d15efa50b8f5",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "scripts/release/collect-macos.sh",
+        "bytes": 1793,
+        "sha256": "f273da7b4eaf8eb25fee2d4479817c0b559ef64b83567b8be04f28e48f266fb4",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "scripts/release/collect-windows.ps1",
+        "bytes": 2927,
+        "sha256": "9194c70522154249a16fa8b7d5902416c46622b2c121307cfab9dbd73a77add8",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "scripts/release/verify-release.mjs",
+        "bytes": 1133,
+        "sha256": "184141eb1169172789d85a875310f29d91f86493177a82b6338f58256ae1b491",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "scripts/release/verify.ts",
+        "bytes": 31794,
+        "sha256": "8f6aac79f43167cd243cc978e1ecf50d1a5262f43fbc421b1e6472bf77ba6c06",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "tests/fixtures/release/comparison.json",
+        "bytes": 2543,
+        "sha256": "615f14f86c6c3b1a8a50aa8e0d9fe25701202ba3573490e68da2463233fc0c65",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "tests/fixtures/release/synthetic-profile.json",
+        "bytes": 348,
+        "sha256": "654965c87ff3f26e7ce96364ff005b7ca10f95acf57888a6f25479e37da697b0",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "productFiles",
+        "path": "tests/unit/t11-release.test.ts",
+        "bytes": 33509,
+        "sha256": "504d23c278fb9f1c09de475b62a00bca8beef7b76f4971005f9054998a9eebec",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/iterations/T11/shared-file-handoff.md",
+        "bytes": 9781,
+        "sha256": "d160bb0db14d867a783765964a08de5e01713084a253e23e8a99e7b1a62e2bd3",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/reviews/T11/blocked-audit.json",
+        "bytes": 3726,
+        "sha256": "e7ad460e2dfc8e7d9911c251d7781754856688d7409ee593a2cf97115468abb7",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/reviews/T11/completion-audit.md",
+        "bytes": 8059,
+        "sha256": "d8e16dbe757254bc4016edd490e080031308e8f63ed966b0ebaea5a9e56b46c1",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/reviews/T11/format-public-ownership-receipt.json",
+        "bytes": 3070,
+        "sha256": "83b90c71558f7223957bea6e33963f10664c3b5285a17179665243d7a3fbcf7d",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/reviews/T11/format-python-ownership-receipt.json",
+        "bytes": 2533,
+        "sha256": "ce7d76cff33e50de2ef3c64f063a1dec442344600db66c986dd102964f8aa295",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/reviews/T11/operating-policy-receipt.json",
+        "bytes": 4177,
+        "sha256": "b94083ae09b6488a3eb540b01513806c1c08b14bdd4eec1176c963773d705ed5",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/reviews/T11/recovery.json",
+        "bytes": 2685,
+        "sha256": "7834b2fea3d148a496e1898acc3648d4080d770fbcfcf4f709adf9d5b3bf12c0",
+        "matchesFrozenManifest": true
+      },
+      {
+        "role": "processOnlyChanges",
+        "path": "docs/reviews/T11/status.md",
+        "bytes": 9083,
+        "sha256": "cc56d6928cdb0373e9a6180d1b7863f2bbed76d2e016817ac09b666ca76913d9",
+        "matchesFrozenManifest": true
+      }
+    ],
+    "trackedFileCount": 822,
+    "currentPhysicalDifferencesFromReviewHead": ["AGENTS.md"],
+    "agentsCurrentSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "status": [" M AGENTS.md", "?? .t11-review-runtime/"]
+  },
+  "rawLogChecks": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/001-frozen-hash-verify.log",
+      "bytes": 4517,
+      "sha256": "d57b916b08469e9fa50460dd679de5dd3e85dd0b5c7a7008d2046b2163b8d054",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/002-rawlogs-tar-verify.log",
+      "bytes": 2838,
+      "sha256": "b4cc99896bed2f2311a6eb76ff53c97b85e4f13f6ea2b0b58e6b690a6fd6cd7f",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/003-t09-manifest-direct.log",
+      "bytes": 355,
+      "sha256": "bc8a7cc495a59353299db515cdbd6496eb0208820f95172c0c150aff76d665f6",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/004-bash-n-mac-collector.log",
+      "bytes": 56,
+      "sha256": "ece12353dda48877ddc56c4c29ebfdfadb142598bf4d55d48d610723377bdce8",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/005-probe-specialized-test.log",
+      "bytes": 701,
+      "sha256": "658e855536c85487c701f167bd3383077c97bc88c99ef202d30150d75b554504",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/006-default-specialized-test.log",
+      "bytes": 354,
+      "sha256": "04879c74063965c2ec3b357889bf88828fb7897fa81a3a87a1e6dc494390df9e",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/007-explicit-release-lint.log",
+      "bytes": 43,
+      "sha256": "bb7b8cf0ca74c4ddbf8d2442db88b0b3c28359463385ff03218d0d173c54ee77",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/008-explicit-release-format.log",
+      "bytes": 111,
+      "sha256": "99d71334bbbf9c5bea6d03a820cd93a876aa3d708033f401f3c5eea1e3e11da0",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/009-prd-hash.log",
+      "bytes": 233,
+      "sha256": "a6de6105a0c05245e440d0ed1511911c1da3395a2aaba393cd47143ce89841cd",
+      "matchesReviewerSummary": true,
+      "reportedExit": 0
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/010-probe-missing-object.log",
+      "bytes": 1300,
+      "sha256": "32dd072e76b348a457a744b4d856a1a87d7e95cae7bff7e9f8817e326b2f2435",
+      "matchesReviewerSummary": true,
+      "reportedExit": 1
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/.t11-review-runtime/raw/010b-probe-missing-object-full.log",
+      "bytes": 7574,
+      "sha256": "5ed8c13d464eebe056746b9b80800394b155fe0e679bf36081173b0a30bf1ba3",
+      "matchesReviewerSummary": true,
+      "reportedExit": 1
+    }
+  ],
+  "reviewerSummary": {
+    "path": "review-run-summary-original.json",
+    "bytes": 5266,
+    "sha256": "90c5951f462a23477da97ba1201231c8a6bb0114d5766bb36cd05c99de1fb07f"
+  },
+  "ownerNoRuntimeVerification": true,
+  "releaseAuthorized": false,
+  "collectionFailureRetained": {
+    "firstAttempt": "git ls-tree without -z quoted nonASCII paths; exact git show lookup failed before creating proof",
+    "repair": "use NUL-delimited ls-tree -rz --name-only; no source or report modified",
+    "initialFormatCheck": "failed because intended proof files were not yet created; later actual explicit check required"
+  }
+}

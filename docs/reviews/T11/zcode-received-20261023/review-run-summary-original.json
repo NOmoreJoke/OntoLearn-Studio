@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "role": "zcode",
+  "taskId": "session_31c8c641b36907791bdab363f7473a01",
+  "settingsReadback": {
+    "source": "owner-task-settings.json (user-designated UI receipt; global config not read per instruction)",
+    "model": "GLM-5.3",
+    "effort": "最高 (max)",
+    "permission": "完全访问 (yolo)",
+    "submittedAttachment": {
+      "bytes": 53740,
+      "sha256": "1c044e9a98d984528b2a73a33940501bff64d074dfd9dc544e4ee7634d13c911",
+      "fullRead": true
+    }
+  },
+  "reviewIdentity": {
+    "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb",
+    "head": "b6e57a0534c94316dd07c3a87b4b8931d5a39501",
+    "detached": true,
+    "product": "7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4",
+    "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "processAnchor": "9f12f17b74f1e26f310c8298232a7fe66cb026ad",
+    "productPathCount": 25,
+    "hashVerify": "33/33 OK (25 product at PRODUCT + 8 process at anchor)",
+    "agentsWorkingTreeSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "agentsState": "M unstaged (policy propagation), not staged, matches setup expectation"
+  },
+  "runs": [
+    { "id": "001", "cmd": "frozen hash verify (git show PRODUCT/PROCESS x33)", "exit": 0, "log": "raw/001-frozen-hash-verify.log", "sha256": "d57b916b08469e9fa50460dd679de5dd3e85dd0b5c7a7008d2046b2163b8d054" },
+    { "id": "002", "cmd": "raw-logs.tar.gz extract + 48-entry verify", "exit": 0, "log": "raw/002-rawlogs-tar-verify.log", "sha256": "b4cc99896bed2f2311a6eb76ff53c97b85e4f13f6ea2b0b58e6b690a6fd6cd7f", "result": "48/48 OK, archive c1f34bd3d6085f9eb72c38ae3c44dc0cee935a5ac17bc840daca52b5ee4e99b5, 73704 bytes total" },
+    { "id": "003", "cmd": "git show 873:tests/fixtures/product-baselines/manifest.json + hash/count", "exit": 0, "log": "raw/003-t09-manifest-direct.log", "sha256": "bc8a7cc495a59353299db515cdbd6496eb0208820f95172c0c150aff76d665f6", "result": "sha aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e, files=17, prd=7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb" },
+    { "id": "004", "cmd": "bash -n scripts/release/collect-macos.sh", "exit": 0, "log": "raw/004-bash-n-mac-collector.log", "sha256": "ece12353dda48877ddc56c4c29ebfdfadb142598bf4d55d48d610723377bdce8" },
+    { "id": "005", "cmd": "T11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release.test.ts", "exit": 0, "log": "raw/005-probe-specialized-test.log", "sha256": "658e855536c85487c701f167bd3383077c97bc88c99ef202d30150d75b554504", "result": "65 passed / 0 skipped" },
+    { "id": "006", "cmd": "npx vitest run tests/unit/t11-release.test.ts (default)", "exit": 0, "log": "raw/006-default-specialized-test.log", "sha256": "04879c74063965c2ec3b357889bf88828fb7897fa81a3a87a1e6dc494390df9e", "result": "62 passed / 3 skipped" },
+    { "id": "007", "cmd": "npx eslint --no-ignore scripts/release/verify.ts scripts/release/verify-release.mjs", "exit": 0, "log": "raw/007-explicit-release-lint.log", "sha256": "bb7b8cf0ca74c4ddbf8d2442db88b0b3c28359463385ff03218d0d173c54ee77" },
+    { "id": "008", "cmd": "npx prettier --ignore-path /dev/null --check (release/iteration files)", "exit": 0, "log": "raw/008-explicit-release-format.log", "sha256": "99d71334bbbf9c5bea6d03a820cd93a876aa3d708033f401f3c5eea1e3e11da0" },
+    { "id": "009", "cmd": "shasum PRD (working tree + HEAD)", "exit": 0, "log": "raw/009-prd-hash.log", "sha256": "a6de6105a0c05245e440d0ed1511911c1da3395a2aaba393cd47143ce89841cd", "result": "both 7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb" },
+    { "id": "010", "cmd": "GIT_DIR=<empty repo> T11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release.test.ts (missing-873 negative probe)", "exit": 1, "log": "raw/010-probe-missing-object.log + raw/010b-probe-missing-object-full.log", "sha256": "32dd072e76b348a457a744b4d856a1a87d7e95cae7bff7e9f8817e326b2f2435 / 5ed8c13d464eebe056746b9b80800394b155fe0e679bf36081173b0a30bf1ba3", "result": "3 probe tests failed / 62 passed; explicit git-show error; no HEAD fallback (expected fail-closed)" }
+  ],
+  "notRerun": [
+    "npm run check (full chain) - frozen bytes unchanged vs archived fixed-baseline-full-check.log (cce3b1f53e57c68624697feb773ef53fc850de8ca480354e31b7cfc00717f0b4, verified inside archive)",
+    "npm run verify:sources - archived sources.log 12 files, no source change"
+  ],
+  "verdict": {
+    "engineeringScope": "通过 (pass, for the frozen offline evidence-verification tool engineering scope, all 25 paths)",
+    "unverifiable": [
+      "Windows collector runtime (static review only)",
+      "macOS collector target-device runtime (bash -n only)",
+      "real signing/notarization/install/native/credentials/migration on both OS",
+      "real model API evaluation, five human users, designated dual reviews, push/PR/CI/merge/remote, final channel"
+    ],
+    "newFindings": "0 x P1-P3; 6 x P4 suggestions (see report section 6)",
+    "releaseAuthorized": false,
+    "parentGatesClosed": false
+  },
+  "report": "report/review.md",
+  "independence": "no peer (minimax) current-round material read; no parent .worktrees scan; no shared files modified; nothing staged/committed/pushed",
+  "completedAt": "2026-10-22T22:35:00+08:00"
+}

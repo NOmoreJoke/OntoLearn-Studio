@@ -42,3 +42,7 @@
 新交接通知接收：I06→T01 canonical七文件/main engine八文件已实际生效，协议全文与登记hash核对一致；恢复接口责任路由已更新，见format-public-ownership-receipt.json。此前“尚待八文件交接”为历史记录。此次只转未来维护权，不证明精确SQL/JSON已批准、格式3 ready或T11依赖具备；Goal工具当前仍blocked，私有实现与既有验证不变。
 
 共同指南责任同步：已在安全边界全文读回b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39，实际计算原第九节及无桌面段hash仍分别为1f57a08e…d4b54、5215df2e…551d，AGENTS仍78df2825…a759。旧9717/df090快照保留。已将责任追加通过send_message发给完成状态的独立agent，未触发新任务、不声称其读回；详见operating-policy-receipt.json追加记录。仅责任政策变化，无实现/测试/依赖/验收/资源变化，Goal保持blocked，未重测/重启/重开外审。
+
+## 2026-10-23：指定 Z 报告收件与 M 续接准备
+
+原工具产品候选仍为 `7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4`。Z 原 session 新 turn 已核真实 completed，183行报告已全文收件并保全原字节、Write关联、设置/范围及日志hash；审者自述工程范围通过，6项建议仍待处置，不能当双审或发布通过。M当前精确sid为网络错误50113/failed、processing已结束，尚无正常完成；只准备397B短继续，等总控后续短lease及fresh核再发，本次未发送。详见 `zcode-received-20261023/owner-reception.md` 及索引；旧failed/aborted、此前未发送回执均保留，不推断重试操作者或触发来源。Q5方案已交总控集中询问、用户仍待答；本次未benchmark、未改产品或既有验收，原Goal与全部发布门保持。

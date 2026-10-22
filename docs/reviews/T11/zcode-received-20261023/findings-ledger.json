@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-23",
+  "scope": "Z only; not combined dual review",
+  "findings": [
+    {
+      "id": "F1",
+      "reviewerSeverity": "P4",
+      "title": "重复expectedSchema校验",
+      "location": "scripts/release/verify.ts:423",
+      "ownerDisposition": "pending; not closed",
+      "note": "源码存在重复校验，后继候选评估清理。"
+    },
+    {
+      "id": "F2",
+      "reviewerSeverity": "P4",
+      "title": "readBound stat/read间TOCTOU",
+      "location": "scripts/release/verify.ts:288",
+      "ownerDisposition": "pending; not closed",
+      "note": "源码结构可见；SHA pin不能代替资源/路径边界评估，不因标P4直接关闭。"
+    },
+    {
+      "id": "F3",
+      "reviewerSeverity": "P4",
+      "title": "迁移目标缺失时可选资产绑定",
+      "location": "scripts/release/verify.ts:920",
+      "ownerDisposition": "pending; not closed",
+      "note": "报告认为前置拒绝使其不可达；保留待处置，未加探针或改断言。"
+    },
+    {
+      "id": "F4",
+      "reviewerSeverity": "P4",
+      "title": "Mac collector非绝对路径命令",
+      "location": "scripts/release/collect-macos.sh:17",
+      "ownerDisposition": "pending; not closed",
+      "note": "源码可见，无目标机运行结论。"
+    },
+    {
+      "id": "F5",
+      "reviewerSeverity": "P4",
+      "title": "Windows PE offset界限",
+      "location": "scripts/release/collect-windows.ps1:25",
+      "ownerDisposition": "pending; not closed",
+      "note": "源码可见仍仅静态，fail-closed自述不代目标验收。"
+    },
+    {
+      "id": "F6",
+      "reviewerSeverity": "P4",
+      "title": "collector半成品输出目录",
+      "location": "scripts/release/collect-macos.sh:16",
+      "ownerDisposition": "pending; not closed",
+      "note": "两脚本先建目录再采集，待评估完成标记，不删除失败。"
+    }
+  ],
+  "metadataCorrections": [
+    {
+      "id": "C1",
+      "issue": "322行归因为末行无换行",
+      "correction": "真实321正文行且有尾LF，UI322为空尾；以此前逐行证据为准，原报告不追改。"
+    },
+    {
+      "id": "C2",
+      "issue": "首38失败raw永久缺失",
+      "correction": "当前未取得独立完整raw，只有摘录/transcript线索；未证明永久无法取得。"
+    },
+    {
+      "id": "C3",
+      "issue": "summary completedAt晚于官方完成",
+      "correction": "官方终态2026-10-22T14:33:25.728Z，即北京时间22:33:25.728；summary自填22:35只保留原件。"
+    },
+    {
+      "id": "C4",
+      "issue": "010首EXIT记录不准",
+      "correction": "保留010和010b；后者3failed/62passed且VITEST_PIPESTATUS=1，不把首EXIT=0当通过。"
+    }
+  ],
+  "newProductChanges": false,
+  "designatedDualPass": false
+}
