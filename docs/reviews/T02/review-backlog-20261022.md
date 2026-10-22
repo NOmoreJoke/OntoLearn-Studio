@@ -56,3 +56,12 @@
 同候选e5ad、同审查HEAD7c52的两方现均真实stop且完整报告已收件：ZCode20343B/SHA c3f5efd5858a568b2ed4843eac8a0210ed0ea66832bc6b37ebfae278c90bd8a2；MiniMax40420B/SHA449cf074c463105e286d0d42fe5ce1506632dc57bda6f5af667db3a221d4a181。均明确有界S1 Pass，各自实际634TS/1164Py、ontology112、合成callback headless21 exit0。全部原始流／首失败／完整报告及终态原回复在round-2/received-20261022各方目录；Z 21成员、M 26成员归档逐成员读回匹配。owner仅静态读取，不重跑产品。
 
 仍有M 3项P3（内部digest边界／当前交付指针／深链代价）和Z 1项P3（localGraph非graph页签也重算），均接收待后继，未修、未宣称全部关闭；M的T01范围外观察只经总控路由。完整处置与原报告覆盖描述纠偏见round-2/received-20261022/dual-review-disposition.md。R1延期／部分接受及全部父验收保留。候选和两审查树仍冻结，不改实现／测试／配置／锁／验收、不占GUI；后继产品改变须新候选及现行重审。原Goal仍blocked，正式接线／CI／合并／远端门未完成。
+
+
+### 总控正式接收C5 S1及下一段规划（2026-10-22）
+
+总控已正式接收固定e5ad/7c52的完整有界S1同版双方明确Pass，根proof已读回并在next-segment-20261022/controller-reception.snapshot.json原字节保全；不接收全父T02、供方采用或发布。四P3决定：内部digest边界和localGraph随正式adapter的新候选处理；深链Set成本接受非阻断观察，待真实规模/Q5/设备阈值；陈旧交付指针保历史，下次完整输入刷新副本/引用。两审者digest定级分歧保留，旧文不宣称已修。范围外5f Store观察已由总控转T01，本线不改共享storage。
+
+按总控继续原完整Goal的依赖规划请求，已产出docs/iterations/T02/next-integration-segment-20261022.md（从本status文件按仓库根定位），逐件核旧typed十件固定Git身份；复用原ID/完整Diff/确认/Job/undo及来源复验要求，停止沿用旧派生identifier提议，T02三模块重pin到C5。下一段建议为单个人工事实正式保存/撤销，列出T01新M/S1/S2/CostSession/canonical/host scope、I06四壳桥路径、T02两新适配文件及两P3路径、I05交换接口和具体验收门序。新供方pin仍缺，全部写路径均是待总控确定边界的申请，不是已授实施。
+
+当前只增加规划/静态读回文档；不改C5/两审查树、旧十件、共享schema/writer/锁或验收，不开新产品树/模型轮、不复测无变化产品。父Goal保持blocked，不重建/自行改变；正式接口采用、父验收、CI/正常develop合并/远端/发布门仍待。
