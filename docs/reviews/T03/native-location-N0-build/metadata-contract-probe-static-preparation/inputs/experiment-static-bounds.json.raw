@@ -1,0 +1,42 @@
+{
+  "scope": "Static arithmetic only; no native/C++/API/FS/OS/heap probe.",
+  "caseIDs": [0, 1, 2, 3, 4],
+  "maxFstatCalls": 7,
+  "maxFgetattrlistCalls": 5,
+  "payloadBudgetBytes": 4096,
+  "maxHeldMetadataFDs": 5,
+  "maxTransientCreationFDs": 1,
+  "maxOwnedACLSetupObjectsAtOnce": 1,
+  "maxNewFixtures": 2,
+  "newRecordOrRunDirectoryCreated": false,
+  "formats": [
+    {
+      "kind": "obs",
+      "format": "N0 ACL obs case=%u api=%u err=%d bytes=%u attrs=%u sec=%u\n",
+      "maxBytesIncludingLF": 71
+    },
+    {
+      "kind": "obj",
+      "format": "N0 ACL obj case=%u known=%u same=%u type=%u owner=%u mode=%u links=%u\n",
+      "maxBytesIncludingLF": 63
+    },
+    {
+      "kind": "val",
+      "format": "N0 ACL val case=%u ref=%u magic=%u form=%u flags=%u count=%u\n",
+      "maxBytesIncludingLF": 64
+    }
+  ],
+  "maxStdoutBytes": 1018,
+  "stdoutCap": 4096,
+  "stderrCap": 4096,
+  "lineCap": 96,
+  "decision": "Any mandatory empty case missing an independent successful ACL response abandons this route; no unsupported-skips count as positive.",
+  "observationFstatCalls": 5,
+  "memberCreationIdentityFstatCalls": 2,
+  "singleACERequires": [
+    "ALLOW/PERMIT kind only; no other entry flags",
+    "qualifier equals captured internal owner UUID",
+    "exact case-specific dir/file rights",
+    "target SDK/API-to-kauth mapping fixed before source/build approval"
+  ]
+}
