@@ -1,0 +1,62 @@
+{
+  "scope": "specific entry sources statically read only; not product execution or blanket safety/acceptance; reviewer must inspect each exact transitive entry before running",
+  "sources": [
+    {
+      "path": "package.json",
+      "bytes": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32"
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "bytes": 491,
+      "sha256": "35f077bf29fc15fee1c9785bd89b01b9059edc30c185bd45affdfde0681235ae"
+    },
+    {
+      "path": "vitest.config.mts",
+      "bytes": 125,
+      "sha256": "fba5352d9a9d9c4e79e7bf37b72a428fbd666d5c96447e28b195bfe73d964df4"
+    },
+    {
+      "path": "apps/desktop/electron.vite.config.ts",
+      "bytes": 1202,
+      "sha256": "c535cec85be6e0a37a09fa36ba42497ecee40cdeb8b38b5ec2197354afb86c2d"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 351,
+      "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20"
+    },
+    {
+      "path": "docs/iterations/T04/ssr-probe.mjs",
+      "bytes": 6293,
+      "sha256": "865105b1b8ac2497c6ee6492c07d59a1f5baccea4a713a135829f586e61f4f47"
+    },
+    {
+      "path": "packages/engine/tests/test_worker_parent.py",
+      "bytes": 4197,
+      "sha256": "34e9c8b2a9091b678ac798635afc5d67ff8f10390f63d24ac37b8cde73fbe49f"
+    },
+    {
+      "path": "packages/engine/tests/test_memory_guard_exit.py",
+      "bytes": 1953,
+      "sha256": "af9b56fd599663d218a348aba65ea2853fa7a3112f8f16c3a1d7b83f45d15c65"
+    },
+    {
+      "path": "tests/unit/native-driver.test.ts",
+      "bytes": 2672,
+      "sha256": "3ff3cab7951733438817ed8a2859ec7220924c247d750089cc67f64930c7fcc1"
+    }
+  ],
+  "checkChain": "lint/format-check/types/vitest/build/ruff/pytest; no test:e2e or dev in this script chain",
+  "vitestInclude": "tests/unit/**/*.test.ts",
+  "desktopBuild": "electron-vite build; no automatic app launch",
+  "normalWorkerExample": "test_worker_parent.py exact self-emitted owner/worker PIDs and tmp database; not broad process kill",
+  "notAuthorized": "new/rejected SQLite-corruption/heap/OS research; new native/caller/producer; HMR/GUI/e2e/product app launch outside this S1 ordinary validation surface",
+  "setupOnly": true,
+  "noProductTestsOrBuildExecuted": true
+}
