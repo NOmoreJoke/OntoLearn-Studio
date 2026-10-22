@@ -1,0 +1,125 @@
+{
+  "format": "i05-independent-fee-r2-root-review-receipt/1",
+  "candidate": "7554c5582619a2beddaa42bf08ffd1a8e1961214",
+  "reviewedProcess": "b04f359a53fbce2c137d09f20a020facd8916231",
+  "rootReadCompleteReport": true,
+  "rootDidNotReadEveryRawCommandStreamInLargeProof": true,
+  "rootVerified113FrozenFilesCurrentEqualsGitAndDeclaredIdentity": true,
+  "reviewConclusion": "Fail",
+  "findings": [
+    {
+      "id": "R2-F1",
+      "priority": 1,
+      "summary": "Complete reference semantic failures do not return invoice/H01; earlier resource rejection can be obscured"
+    },
+    {
+      "id": "R2-F2",
+      "priority": 2,
+      "summary": "Variable heads skip fixed controlled references and predicate compile checks"
+    }
+  ],
+  "validPositiveEvidence": "114 full programs, two seeds each 219815 events all result/prefix fields equal; R1 F2/F3 pure state machine closed, R1 F1 partly open",
+  "protectedAGENTSCurrent": {
+    "path": "AGENTS.md",
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "historicalAGENTS": "15852B/78df at candidate freeze; authorized policy-only transition, original records unchanged",
+  "indexEmptyBeforeReceipt": true,
+  "reviewFiles": [
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-proof-r2.json",
+      "bytes": 36263573,
+      "sha256": "5944583c52eb9e7d6374db847dd2ad1bc45918d48af31a6bd31ea779308446e5"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-adversarial.json",
+      "bytes": 885171,
+      "sha256": "9ff669c97b24cd72a4aa22862dca344dac8cd75ac0ce34d8d8624ee94506f49d"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-adversarial.py",
+      "bytes": 6203,
+      "sha256": "e929163c06b702e6d02d83a1c11116a3284618d1ed8154799f0ea96bc1923caf"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-command-log.json",
+      "bytes": 817142,
+      "sha256": "1c347d3fa6d0f8a44d6d61394766ddb09b766c8753cea179e8a373cf257aa653"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-command.py",
+      "bytes": 1312,
+      "sha256": "976e84ade69267d89a13d0a8aa032bbda5bb1356365df332390579e7c6dc4011"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-final-check.json",
+      "bytes": 86241953,
+      "sha256": "853e9bc5040ec9fbfca5d63c321b969b2996431675916206b59a35083be29afd"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-finalize.py",
+      "bytes": 8510,
+      "sha256": "e4fdb1660f5cb5a616b6b3ce6355035d1e9fc1218be627f630eced8f5efb41e8"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-integrity.json",
+      "bytes": 35402408,
+      "sha256": "d01cb63b53f634516f3d0587d7256ab96516b91cd41c55bf55cabf171d3dda5d"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-inventory.json",
+      "bytes": 28025,
+      "sha256": "ffd83640d7c4d9895f726a3fae9a153d1d8b11236c1400a949f1f6045cef7fba"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-numeric-boundaries.json",
+      "bytes": 9369,
+      "sha256": "85e18c85e3452885424eefc8923e623a83c47065f4d77aaaa6603dd670d491bf"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-numeric-boundaries.py",
+      "bytes": 2303,
+      "sha256": "829ae754b9c8c7c72236b2e93ed371f093336b0d3422f9509aada39d4036dc5e"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-recompute-1.json",
+      "bytes": 35587,
+      "sha256": "29f53fa10c5aab9b4d6fb27d56ab3c9c6704538d4d0322fb28aefa524edf9b87"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-recompute-2.json",
+      "bytes": 35587,
+      "sha256": "9157659cd3ee177e57da158b05fc46ef29b89b3aa91d5e11b57046c811a616ac"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-static.json",
+      "bytes": 3261,
+      "sha256": "f779b0a133333ec503acb04f214f22e16c194e2068405d87f9afc5bc71cbb85b"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r2-verify.py",
+      "bytes": 12912,
+      "sha256": "901791615262059dcff92fe0e9e884d6f46ca2fdb4760c7dc29c7a74dda187a3"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-review-r2.md",
+      "bytes": 12866,
+      "sha256": "1fddcea5a4973faa872299963858eeea4a56dd8830772a6d39e4326ffddfe41e"
+    }
+  ],
+  "rootFirstPreservationAttempt": {
+    "toolChunk": "d0eee6",
+    "actualExit": 1,
+    "reason": "Asserted reviewer handoff count 17 new files; actual untracked files 16. Status 17 lines includes protected AGENTS. No receipt written, no stage/commit.",
+    "combinedToolOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 17, in <module>\nAssertionError: 16\n",
+    "splitStreamsNotPreserved": true
+  },
+  "rootSecondPreservationAttempt": "113 fixed files and 16 exact new review paths verified before receipt creation",
+  "largeProofReason": "Preserve complete actual command split streams and fixed approved source JSON Git bytes without reconstructing earliest combined-only commands",
+  "productExecuted": false,
+  "wholeOracleComplete": false,
+  "pending": "Actual codec/issuer/same-issue17L/usage/capture/permission/ownerH/Job/Store/runtime/package/platform/specified dual models/CI/develop/parentGoal",
+  "next": "Preserve this Fail before a new minimal revision; do not patch reviewed candidate in place",
+  "selfExclusion": "Self excluded; process commit binds final receipt bytes"
+}

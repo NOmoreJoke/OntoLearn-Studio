@@ -1,0 +1,135 @@
+{
+  "parsedModules": 9,
+  "items": [
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/invoice_model.py",
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "hashlib"
+      ],
+      "writes": [],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/test_invoice_model.py",
+      "imports": [
+        "pathlib",
+        "ast",
+        "copy",
+        "json",
+        "unittest",
+        "invoice_model"
+      ],
+      "writes": [],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/test_retention_r2.py",
+      "imports": [
+        "unittest",
+        "invoice_model"
+      ],
+      "writes": [],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/audit_prefixes.py",
+      "imports": [
+        "pathlib",
+        "json",
+        "hashlib"
+      ],
+      "writes": [],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/bind_per_id.py",
+      "imports": [
+        "pathlib",
+        "json",
+        "reference"
+      ],
+      "writes": [
+        {
+          "line": 33,
+          "call": "(PARENT / 'per-id-r2.json').write_bytes(r.canonical(r2) + b'\\n')"
+        },
+        {
+          "line": 44,
+          "call": "(PARENT / 'per-id-r2.md').write_text('\\n'.join(lines) + '\\n')"
+        }
+      ],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/check_determinism.py",
+      "imports": [
+        "pathlib",
+        "subprocess",
+        "os",
+        "json",
+        "sys",
+        "hashlib"
+      ],
+      "writes": [
+        {
+          "line": 27,
+          "call": "path.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\\n')"
+        }
+      ],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/reference.py",
+      "imports": [
+        "__future__",
+        "collections",
+        "pathlib",
+        "hashlib",
+        "json",
+        "re"
+      ],
+      "writes": [],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/run_reference.py",
+      "imports": [
+        "pathlib",
+        "argparse",
+        "hashlib",
+        "json",
+        "sys",
+        "traceback",
+        "reference"
+      ],
+      "writes": [
+        {
+          "line": 25,
+          "call": "path.write_bytes(r.canonical(value) + b'\\n')"
+        },
+        {
+          "line": 52,
+          "call": "(HERE / 'baseline-fee-material-r2.json').write_text(json.dumps(r.project(material), ensure_ascii=False, separators=(',', ':')) + '\\n')"
+        },
+        {
+          "line": 53,
+          "call": "(HERE / 'baseline-fee-material-r2.bytes.hex').write_text(r.encode(material).hex() + '\\n')"
+        }
+      ],
+      "dynamicExec": []
+    },
+    {
+      "path": "docs/iterations/I05/independent-fee-spec/charge-reference-v2/test_reference.py",
+      "imports": [
+        "unittest",
+        "reference"
+      ],
+      "writes": [],
+      "dynamicExec": []
+    }
+  ],
+  "authorMutatingDriversNotRun": true,
+  "subprocessCommands": []
+}
