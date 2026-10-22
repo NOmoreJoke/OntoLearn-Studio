@@ -1,0 +1,11 @@
+# 第六新输入ACL编译收件
+
+2026-10-22。固定输入bfe137f371361f9fda446d5cbe6b3079c5433ee5/过程37fe056e5d1716a10237de20f79042db54aa0549已受限收件，仅built-unverified/NOT_RUN。根已全文读8078B prebuild及10799B outcome独审、交付说明，直接核174纯新增过程差异、205项current/fixedGit/bytes/SHA共5707888B，真实13命令positivePID/status0与10静态检查0。根未重跑构建/检查。详见T03-controller-sixth-build-direct-proof.json。
+
+新digest1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50；两实物根各hash一次吻合：core362656B/17fb8b48ec3e79cfd36015edc4047bbd390ac0145dd2c40b1c20850455771f60，probe34120B/5b9978c2e7bbb8d3ee51d3d94d95ab4797ac01337654180cf121d89dc3e05b98。
+
+deps1808/唯一880，新增membership.h、ntsid.h、uuid/uuid.h。根核三selected原行/JSON pin与锁descriptor，分别按已固定索引offset定点读取，共1050B；未扫全索引、数前缀行号、读头文件payload或重审旧五轮大供应。owner的一次42772索引/19368210B及另2格式探查如实保留；root独立15000票不占作者。符号新增17/移除旧ACL wrapper是静态事实，不是运行/API成功。
+
+累计build108738235432/137438953472、metadata2055635/2250000、实体513264/600000，旧supply独账/所有预留、首timeout/未知drain/旧255超额保留。62处原始whitespace及派生纠正记录保持，不签全量0。T03继续冻结pair/12/source/lock/过程，不第七编译或执行。
+
+原I06可依另窗准备004，实际CLI与其中Darwin fixture ACL setup/read须再单独授权。003原失败不追认修复，installed libSystem/内部资源硬界/目标OS/EXCL全路径/drain/父N0及双指定外审/CI/真人/远端未关闭；SQLite/HOLD和拒线停止不变。

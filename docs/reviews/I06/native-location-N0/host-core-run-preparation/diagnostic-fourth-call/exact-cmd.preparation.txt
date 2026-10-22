@@ -1,0 +1,335 @@
+exec /usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC HOME=/var/empty TMPDIR=/tmp /Applications/Xcode.app/Contents/Developer/usr/bin/python3 -I -S - <<'I06_N0_ONE_SHOT_PY'
+import sys
+
+AUTHORIZATION = 'I06-N0-execution-004-1526093e58aeaa43'  # 仅准备record identity；根未授最终运行窗口。
+CORE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_core_test', 'bytes': 362656, 'sha256': '17fb8b48ec3e79cfd36015edc4047bbd390ac0145dd2c40b1c20850455771f60'}  # 根已接受的新pair；本副本仍禁止执行。
+PROBE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_child_probe', 'bytes': 34120, 'sha256': '5b9978c2e7bbb8d3ee51d3d94d95ab4797ac01337654180cf121d89dc3e05b98'}  # 同一artifacts的新probe；本副本仍禁止执行。
+if AUTHORIZATION is None or CORE_PIN is None or PROBE_PIN is None:
+    sys.stderr.write("PREPARATION_ONLY_BLOCKED: no execution authorization/pins\n")
+    raise SystemExit(78)
+
+import errno
+import hashlib
+import json
+import os
+import resource
+import signal
+import stat
+import subprocess
+import threading
+import time
+
+PY_REAL = "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9"
+BASE = "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation"
+RUN = BASE + "/execution-004"
+ENV = {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C", "TZ": "UTC", "HOME": "/var/empty", "TMPDIR": "/tmp"}
+LIMITS = ((resource.RLIMIT_NOFILE, 64), (resource.RLIMIT_CPU, 12),
+          (resource.RLIMIT_FSIZE, 1048576), (resource.RLIMIT_CORE, 0))
+RECORD_LIMIT = 65536  # 每件<=64KiB；三件合计<=192KiB，低于256KiB。
+STREAM_LIMIT = 1048576
+ARTIFACT_LIMIT = 2097152  # 每个 pre/post pass 两实物合计<=2MiB。
+record_bytes = 0
+fds = []
+dirfd = None
+proc = None
+owned_unreaped = False
+process_api_refused = False
+cleanup_started = False
+dispatch_attempted = False
+cancel_signal = 0
+events = []
+exit_code = 74
+result = {"status": "NOT_DISPATCHED", "sourceRef": "b59239f9c1ec2774c7922f95dfc67db4dc8754e8",
+          "authorization": AUTHORIZATION, "fixtureResidual": "unknown; no external ownership receipt",
+          "nativeDrainCertified": False, "retry": False}
+post = {"artifacts": None, "streams": None, "completeness": "unknown"}
+
+
+def event(where, exc=None):
+    # 固定数量和固定字段；不输出原异常文本/traceback/environment。
+    if len(events) < 24:
+        events.append({"where": where, "exception": None if exc is None else type(exc).__name__,
+                       "errno": None if exc is None else getattr(exc, "errno", None)})
+
+
+def cancelled(signum, frame):
+    global cancel_signal
+    cancel_signal = int(signum)  # 不异步raise，不在handler做IO/wait/kill。
+
+
+def new_record(name, value):
+    global record_bytes
+    payload = (json.dumps(value, ensure_ascii=True, sort_keys=True) + "\n").encode("ascii")
+    if len(payload) > RECORD_LIMIT or record_bytes + len(payload) > 262144:
+        raise ValueError("control-record-budget")
+    # 预付完整payload；部分写失败也不重新打开或重写。
+    record_bytes += len(payload)
+    fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+                 0o600, dir_fd=dirfd)
+    try:
+        s = os.fstat(fd)
+        if not stat.S_ISREG(s.st_mode) or s.st_uid != os.geteuid() or s.st_mode & 0o777 != 0o600:
+            raise ValueError("control-file-identity")
+        view = memoryview(payload)
+        while view:
+            count = os.write(fd, view)
+            if count <= 0:
+                raise OSError(errno.EIO, "zero-write")
+            view = view[count:]
+    finally:
+        os.close(fd)
+
+
+def pin_pass():
+    rows = []
+    used = 0
+    for pin in (CORE_PIN, PROBE_PIN):
+        if (set(pin) != {"path", "bytes", "sha256"} or type(pin["bytes"]) is not int
+                or not 0 < pin["bytes"] <= ARTIFACT_LIMIT
+                or type(pin["path"]) is not str or not pin["path"].startswith("/")
+                or len(pin["path"]) > 4096 or "\x00" in pin["path"]
+                or type(pin["sha256"]) is not str or len(pin["sha256"]) != 64
+                or any(c not in "0123456789abcdef" for c in pin["sha256"])):
+            raise ValueError("unresolved-pin")
+        used += pin["bytes"]
+        if used > ARTIFACT_LIMIT:
+            raise ValueError("artifact-budget")
+        fd = os.open(pin["path"], os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+        try:
+            before = os.fstat(fd)
+            if (not stat.S_ISREG(before.st_mode) or before.st_size != pin["bytes"]
+                    or not before.st_mode & 0o111):
+                raise ValueError("artifact-kind-size-mode")
+            digest = hashlib.sha256()
+            remaining = pin["bytes"]
+            while remaining:
+                block = os.read(fd, min(65536, remaining))
+                if not block:
+                    raise ValueError("artifact-short-read")
+                digest.update(block)
+                remaining -= len(block)
+            after = os.fstat(fd)
+            named = os.stat(pin["path"], follow_symlinks=False)
+            identity = lambda s: (s.st_dev, s.st_ino, s.st_size, s.st_mtime_ns, s.st_ctime_ns)
+            if identity(before) != identity(after) or identity(after) != identity(named):
+                raise ValueError("artifact-drift")
+            if digest.hexdigest() != pin["sha256"]:
+                raise ValueError("artifact-hash")
+            rows.append({**pin, "dev": after.st_dev, "ino": after.st_ino})
+        finally:
+            os.close(fd)
+    return rows
+
+
+def child_setup():
+    # 所有import已在单线程父完成；仅此新fork child。不要加日志、锁、导入或环境工作。
+    signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+    signal.signal(signal.SIGTERM, signal.SIG_DFL)
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.pthread_sigmask(signal.SIG_SETMASK, ())
+    for kind, value in LIMITS:
+        resource.setrlimit(kind, (value, value))
+
+
+def wait_until(deadline, allow_cancel=True):
+    global owned_unreaped, process_api_refused
+    while time.monotonic() < deadline:
+        if allow_cancel and cancel_signal:
+            return "cancelled"
+        try:
+            pid, status = os.waitpid(proc.pid, os.WNOHANG)
+        except BaseException as exc:
+            # Python层收到ECHILD/EINTR/权限等异常即停；CPython可能已按PEP475内部重试EINTR。
+            # 不伪造exit0，不再依号码发信号，不在本脚本重试该异常API。
+            owned_unreaped = False
+            process_api_refused = True
+            event("waitpid-stopped-unknown", exc)
+            return "wait-unknown"
+        if pid == proc.pid:
+            if os.WIFEXITED(status):
+                code = os.WEXITSTATUS(status)
+            elif os.WIFSIGNALED(status):
+                code = -os.WTERMSIG(status)
+            else:
+                owned_unreaped = False
+                event("unexpected-nonterminal-wait-status")
+                return "wait-unknown"
+            owned_unreaped = False
+            proc.returncode = code  # 本控制器唯一exact wait；避免Popen内部另一轮wait。
+            result.update({"coreReturncode": code, "coreWaitStatus": status})
+            return "terminal"
+        if pid != 0:
+            owned_unreaped = False
+            event("unexpected-wait-pid")
+            return "wait-unknown"
+        time.sleep(min(0.01, max(0.0, deadline - time.monotonic())))
+    return "deadline"
+
+
+def stop_owned_group():
+    global process_api_refused, cleanup_started
+    if cleanup_started or not owned_unreaped or process_api_refused:
+        event("no-owned-group-signal-permitted")
+        return
+    cleanup_started = True  # 异常进入外层catch也不能第二次启动TERM/KILL时序。
+    # setsid成功由Popen exec握手确认；唯一leader pid仍未reap，非getpgid事后猜测。
+    # TERM后整个1秒不调用wait/poll；即使leader已成zombie也保其pid不复用。
+    for sig in (signal.SIGTERM, signal.SIGKILL):
+        try:
+            os.killpg(proc.pid, sig)
+            event("owned-group-TERM" if sig == signal.SIGTERM else "owned-group-KILL")
+        except ProcessLookupError:
+            event("owned-group-ESRCH")  # 无活group不证明native drain；仍保leader未reap。
+        except BaseException as exc:
+            process_api_refused = True
+            event("group-signal-refused-stop", exc)
+            return  # 不换API、不提权、不重试、不补KILL。
+        if sig == signal.SIGTERM:
+            until = time.monotonic() + 1.0
+            while time.monotonic() < until:
+                time.sleep(min(0.01, max(0.0, until - time.monotonic())))
+    # KILL后只wait自己的leader，最多2秒；取消标志不能取消这次有界回收。
+    result["killWaitOutcome"] = wait_until(time.monotonic() + 2.0, allow_cancel=False)
+
+
+def stream_pass(fd, name):
+    before = os.fstat(fd)
+    if not stat.S_ISREG(before.st_mode) or before.st_size > STREAM_LIMIT:
+        return {"name": name, "bytes": before.st_size, "sha256": None, "stable": False}
+    digest = hashlib.sha256()
+    remaining = before.st_size
+    offset = 0
+    while remaining:
+        block = os.pread(fd, min(65536, remaining), offset)  # 不移动与child共享的open-file offset。
+        if not block:
+            raise ValueError("raw-stream-short-read")
+        digest.update(block)
+        remaining -= len(block)
+        offset += len(block)
+    after = os.fstat(fd)
+    stable = (before.st_size, before.st_mtime_ns, before.st_ctime_ns) == (
+        after.st_size, after.st_mtime_ns, after.st_ctime_ns)
+    return {"name": name, "bytes": before.st_size, "sha256": digest.hexdigest(), "stable": stable}
+
+
+try:
+    if (sys.version_info[:3] != (3, 9, 6) or os.path.realpath(sys.executable) != PY_REAL
+            or not sys.flags.isolated or not sys.flags.no_site
+            or threading.current_thread() is not threading.main_thread()
+            or len(threading.enumerate()) != 1 or subprocess._active != []):
+        raise ValueError("standalone-single-thread-interpreter-required")
+    if type(AUTHORIZATION) is not str or not 0 < len(AUTHORIZATION) <= 4096:
+        raise ValueError("authorization-identity")
+    if not hasattr(signal, "pthread_sigmask") or os.name != "posix" or sys.platform != "darwin":
+        raise ValueError("unsupported-platform")
+    for fd in (0, 1, 2):
+        os.fstat(fd)  # 缺任一标准FD即拒绝，不用新pipe补它。
+    # 只设置本次独立Python控制进程自己的reap/取消状态；不是tool host或系统/全UID。
+    # 父也须清NOCLDWAIT，避免其core被自动reap；子preexec再次设定，不只依赖restore_signals。
+    signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+    signal.signal(signal.SIGTERM, cancelled)
+    signal.signal(signal.SIGINT, cancelled)
+    signal.pthread_sigmask(signal.SIG_SETMASK, ())
+    for kind, value in LIMITS:
+        soft, hard = resource.getrlimit(kind)
+        if hard != resource.RLIM_INFINITY and hard < value:
+            raise ValueError("child-limit-not-admissible")
+    pre = pin_pass()  # 只读新确切两个实物；固定供方/窗口须保证之后无并发更换。
+    parentfd = os.open(BASE, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    fds.append(parentfd)
+    os.mkdir("execution-004", 0o700, dir_fd=parentfd)  # 存在即停，无复用/删除。
+    dirfd = os.open("execution-004", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC,
+                    dir_fd=parentfd)
+    fds.append(dirfd)
+    ds = os.fstat(dirfd)
+    if not stat.S_ISDIR(ds.st_mode) or ds.st_uid != os.geteuid() or ds.st_mode & 0o777 != 0o700:
+        raise ValueError("run-directory-mode-owner")
+    stdin_fd = os.open("/dev/null", os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+    fds.append(stdin_fd)
+    if stdin_fd < 3 or not stat.S_ISCHR(os.fstat(stdin_fd).st_mode):
+        raise ValueError("stdin-not-explicit-null")
+    raw = []
+    for name in ("core.stdout", "core.stderr"):
+        fd = os.open(name, os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+                     0o600, dir_fd=dirfd)
+        fds.append(fd)
+        s = os.fstat(fd)
+        if fd < 3 or not stat.S_ISREG(s.st_mode) or s.st_uid != os.geteuid() or s.st_mode & 0o777 != 0o600:
+            raise ValueError("raw-file-mode-owner")
+        raw.append(fd)
+    new_record("intent.json", {"authorization": AUTHORIZATION, "argv": [CORE_PIN["path"], PROBE_PIN["path"]],
+               "preArtifacts": pre, "environment": ENV, "limits": [[int(k), v] for k, v in LIMITS],
+               "signals": "private parent + child SIGCHLD default flags0; child TERM/INT default; empty mask",
+               "wallWaitSeconds": 15, "termGraceSeconds": 1, "killWaitSeconds": 2,
+               "constructionDeadline": "Popen exec/preexec handshake not hard-bounded",
+               "singleThreadCondition": "fresh isolated -S CLI; no thread starts/import hooks/native agents",
+               "controlFileBudget": 262144, "rawPerStreamBudget": STREAM_LIMIT})
+    if cancel_signal:
+        raise ValueError("cancelled-before-dispatch")
+    dispatch_attempted = True  # 即使构造抛出，也禁止再次Popen。
+    result["status"] = "DISPATCH_ATTEMPTED"
+    proc = subprocess.Popen([CORE_PIN["path"], PROBE_PIN["path"]], executable=CORE_PIN["path"],
+                            stdin=stdin_fd, stdout=raw[0], stderr=raw[1], cwd=RUN, env=ENV,
+                            shell=False, close_fds=True, start_new_session=True,
+                            restore_signals=True, preexec_fn=child_setup)
+    owned_unreaped = True
+    result["corePid"] = proc.pid
+    began = time.monotonic()
+    outcome = wait_until(began + 15.0)
+    result["waitOutcome"] = outcome
+    if outcome in ("deadline", "cancelled"):
+        result["status"] = "FAILED_TIMEOUT_OR_CANCELLED"
+        stop_owned_group()
+    elif outcome == "terminal":
+        result["status"] = "HOST_CASE_EXIT0" if proc.returncode == 0 else "FAILED_CORE_NONZERO_OR_SIGNAL"
+    else:
+        result["status"] = "FAILED_WAIT_UNKNOWN"
+    result["waitAndCleanupElapsedSeconds"] = time.monotonic() - began
+    post["artifacts"] = pin_pass()
+    post["streams"] = [stream_pass(raw[0], "core.stdout"), stream_pass(raw[1], "core.stderr")]
+    post["completeness"] = "snapshot only; descendants/residue not independently certified"
+    if cancel_signal:
+        result["status"] = "FAILED_CANCELLED_POSTFLIGHT"
+        exit_code = 1
+    elif result["status"] == "HOST_CASE_EXIT0" and all(x["stable"] for x in post["streams"]):
+        exit_code = 0
+    else:
+        if result["status"] == "HOST_CASE_EXIT0":
+            result["status"] = "FAILED_POSTFLIGHT"
+        exit_code = 1
+except BaseException as exc:
+    event("control-stopped", exc)
+    result["status"] = "FAILED_CONTROL_OR_PREFLIGHT"
+    # 构造未返回时没有可用确切PID receipt；不猜子进程/PGID，不重试Popen。
+    # 构造返回后异常仅在保有未reap身份且未发生平台process拒绝时走一次有界收口。
+    if proc is not None and owned_unreaped and not process_api_refused:
+        stop_owned_group()
+    exit_code = 74
+finally:
+    if cancel_signal:
+        result["status"] = "FAILED_CANCELLED_CONTROL"
+        if exit_code == 0:
+            exit_code = 1
+    leader_state = "unreaped" if owned_unreaped else (
+        "reaped" if proc is not None and proc.returncode is not None else "unknown")
+    result.update({"dispatchAttempted": dispatch_attempted, "leaderState": leader_state,
+                   "processApiRefusedOrWaitUnknown": process_api_refused, "cancelSignal": cancel_signal,
+                   "events": events, "nativeDrainCertified": False, "fixtureResidual": "unknown; not scanned/deleted"})
+    # 一次写每件；文件/平台拒绝不重试。部分记录/部分原始流留原状，不截断、删改或伪造完整。
+    if dirfd is not None:
+        try:
+            new_record("postflight.json", post)
+            new_record("result.json", result)
+        except BaseException:
+            exit_code = 74
+    for fd in reversed(fds):
+        try:
+            os.close(fd)
+        except BaseException:
+            exit_code = 74
+    # 防止Popen.__del__/subprocess._cleanup/上下文管理器另作poll/wait；未reap须明确unknown。
+    # SIGKILL/OS崩溃等外部终止可能绕过finally，没有有界恢复/原始记录完整性保证。
+    # 最后返回快照再查一次已观测取消；写记录/close期间取消也不能让控制返回0。
+    # 记录不重写，较早快照可能不同；此参数快照以后到达的信号没有原子捕获保证。
+    os._exit(1 if cancel_signal and exit_code == 0 else exit_code)
+I06_N0_ONE_SHOT_PY

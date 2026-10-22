@@ -1,0 +1,148 @@
+{
+  "status": "PREPARATION_ONLY_NOT_RUN",
+  "baselineRef": "9509d02790f9a79905371c5183be16cab99f5114",
+  "sourceTemplate": {
+    "ref": "5b78098ae8b53168fc23ec7499f240d1ede3f1c6",
+    "path": "docs/reviews/I06/native-location-N0/host-core-run-preparation/diagnostic-third-call/exact-tool-call.preparation.json",
+    "bytes": 19615,
+    "sha256": "4c14304e4e4be6b041f60596aa581ed277af40e79d4499f9d2e8bf9e38d8cbe5",
+    "cmdUtf8Bytes": 17176,
+    "cmdSha256": "ed84b73de7178ba8340843ed54b63d6cf45e6f683074833ad1f4a356df3aede3"
+  },
+  "rulesRead": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I06-N0-acl-remedy-fourth-call-preparation-window.md",
+      "bytes": 2961,
+      "sha256": "a6c02ee8483e058dff93752de1f62311b0ace532f3bff46a28cc6974b5a22d34"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-sixth-acl-build-root-closure.md",
+      "bytes": 1779,
+      "sha256": "f9481538a9f77b270d4b185dc7d1c5e2f7df430356e200346b0de593f74d22cd"
+    }
+  ],
+  "commonInstructions": {
+    "bytes": 17891,
+    "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+  },
+  "recordIdentity": "I06-N0-execution-004-1526093e58aeaa43",
+  "actualSourceBinding": {
+    "I06ProductRef": "1217e0f63a9c62b72e01046ef5fbc5c53434251a",
+    "I06ProcessRef": "9509d02790f9a79905371c5183be16cab99f5114",
+    "T03InputRef": "bfe137f371361f9fda446d5cbe6b3079c5433ee5",
+    "T03ProcessRef": "37fe056e5d1716a10237de20f79042db54aa0549",
+    "inputDigest": "1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50"
+  },
+  "legacyResultSourceRef": "b59239f9c1ec2774c7922f95dfc67db4dc8754e8; retained historical template field, not new provenance",
+  "exactToolCall": {
+    "bytes": 19614,
+    "sha256": "8f9788b64b721ad60a8a1c5bf4a72287dd2519d6fcdedc82f5b681e1a8adb739"
+  },
+  "cmd": {
+    "bytes": 17176,
+    "sha256": "100ebd1ae0a8f43608146565b95d145503e014b87beaccb53182fbc5115d8781"
+  },
+  "stdin": {
+    "bytes": 16976,
+    "sha256": "5a3fb0e4b6e273ca20c76f7ddb0567fcd0f2ce75baed151722e6b7dbebd7db92"
+  },
+  "nonCmdArguments": {
+    "workdir": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0",
+    "login": false,
+    "yield_time_ms": 1000,
+    "max_output_tokens": 1000
+  },
+  "changes": [
+    {
+      "expression": "AUTHORIZATION",
+      "stdinLine": 3,
+      "cmdLine": 4,
+      "startByte": 28,
+      "endByte": 67,
+      "before": "'I06-N0-execution-003-0d5223985fcd9761'",
+      "after": "'I06-N0-execution-004-1526093e58aeaa43'"
+    },
+    {
+      "expression": "CORE_PIN",
+      "stdinLine": 4,
+      "cmdLine": 5,
+      "startByte": 140,
+      "endByte": 466,
+      "before": "{'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/0d5223985fcd9761c60cee55d4c258af9b8204c8b0131df1535928cd1953c8fb/core/artifacts/location_core_test', 'bytes': 344096, 'sha256': '65cca109ce2a43b24c94fc013b5e91127548d4be3d39de5330024128ffdb8039'}",
+      "after": "{'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_core_test', 'bytes': 362656, 'sha256': '17fb8b48ec3e79cfd36015edc4047bbd390ac0145dd2c40b1c20850455771f60'}"
+    },
+    {
+      "expression": "PROBE_PIN",
+      "stdinLine": 5,
+      "cmdLine": 6,
+      "startByte": 535,
+      "endByte": 862,
+      "before": "{'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/0d5223985fcd9761c60cee55d4c258af9b8204c8b0131df1535928cd1953c8fb/core/artifacts/location_child_probe', 'bytes': 34120, 'sha256': '12d355d3cc43fc5c39b6e8689d7e0dabb6909b8dfd7a7deed6322f3351d80e48'}",
+      "after": "{'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_child_probe', 'bytes': 34120, 'sha256': '5b9978c2e7bbb8d3ee51d3d94d95ab4797ac01337654180cf121d89dc3e05b98'}"
+    },
+    {
+      "expression": "RUN.right",
+      "stdinLine": 23,
+      "cmdLine": 24,
+      "startByte": 1520,
+      "endByte": 1536,
+      "before": "\"/execution-003\"",
+      "after": "\"/execution-004\""
+    },
+    {
+      "expression": "os.mkdir.args[0]",
+      "stdinLine": 239,
+      "cmdLine": 240,
+      "startByte": 11566,
+      "endByte": 11581,
+      "before": "\"execution-003\"",
+      "after": "\"execution-004\""
+    },
+    {
+      "expression": "os.open.args[0]",
+      "stdinLine": 240,
+      "cmdLine": 241,
+      "startByte": 11665,
+      "endByte": 11680,
+      "before": "\"execution-003\"",
+      "after": "\"execution-004\""
+    }
+  ],
+  "changedCmdLines": [
+    4,
+    5,
+    6,
+    24,
+    240,
+    241
+  ],
+  "reverseSixLinesRestoresWholeCmdBytes": true,
+  "normalizedWholeASTEqual": true,
+  "allOtherToolArgumentsEqual": true,
+  "pairReadOnlyPins": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_core_test",
+      "bytes": 362656,
+      "sha256": "17fb8b48ec3e79cfd36015edc4047bbd390ac0145dd2c40b1c20850455771f60",
+      "device": 16777232,
+      "inode": 66899292,
+      "mode": "0o755"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_child_probe",
+      "bytes": 34120,
+      "sha256": "5b9978c2e7bbb8d3ee51d3d94d95ab4797ac01337654180cf121d89dc3e05b98",
+      "device": 16777232,
+      "inode": 66899299,
+      "mode": "0o755"
+    }
+  ],
+  "execution004AbsentAtPreparation": true,
+  "runDirectoryCreated": false,
+  "payloadOrNativeExecuted": false,
+  "firstStaticReadDiagnostic": {
+    "toolChunk": "58a560",
+    "exitCode": 1,
+    "reason": "Initial read-only extractor expected generic PY heredoc; fixed template uses I06_N0_ONE_SHOT_PY. IndexError occurred before AST parsing or writes, no payload execution. Corrected extraction used exact fixed delimiter; no command/template changes."
+  }
+}
