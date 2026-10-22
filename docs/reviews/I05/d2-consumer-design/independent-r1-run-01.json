@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "docs/reviews/I05/d2-consumer-design/independent-r1-checker.py"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "exit": 1,
+  "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "utf8": ""
+  },
+  "stderr": {
+    "bytes": 1195,
+    "sha256": "24ffc000b7148355bf5fbba8b019f906275360079eadb67846b608a28c66d8d6",
+    "utf8": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design/docs/reviews/I05/d2-consumer-design/independent-r1-checker.py\", line 278, in <module>\n    main()\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design/docs/reviews/I05/d2-consumer-design/independent-r1-checker.py\", line 207, in main\n    actual = [(x['pointerTemplate'], tuple((c['keyword'], c['schemaPointer']) for c in x['branchConditions']), tuple((d['variable'], d['arrayPointerTemplate']) for d in x['arrayVariables'])) for x in row['instanceLocations']]\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design/docs/reviews/I05/d2-consumer-design/independent-r1-checker.py\", line 207, in <genexpr>\n    actual = [(x['pointerTemplate'], tuple((c['keyword'], c['schemaPointer']) for c in x['branchConditions']), tuple((d['variable'], d['arrayPointerTemplate']) for d in x['arrayVariables'])) for x in row['instanceLocations']]\n                                            ~^^^^^^^^^^^\nKeyError: 'keyword'\n"
+  }
+}
