@@ -1,0 +1,19 @@
+{
+  "decisionVersion": "t01-i05-semantic-resource-offer/1",
+  "supplierRef": "6891a5842302859a531cf82767c5a482417bc274",
+  "contractDocsRef": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
+  "decisions": [
+    {"path": "packages/contracts/python/contract_v2.py", "decision": "accept-private-immutable-readonly", "bytes": 34608, "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7"},
+    {"path": "packages/contracts/v2/schema.json", "decision": "accept-private-immutable-readonly", "bytes": 207256, "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf"},
+    {"path": "packages/contracts/v2/registry.json", "decision": "accept-private-immutable-readonly", "bytes": 15962, "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b"},
+    {"path": "packages/contracts/v2/errors.json", "decision": "accept-private-immutable-readonly", "bytes": 16299, "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c"}
+  ],
+  "allowedUse": "Unmodified canonical resources.CONTRACT startup; semantic_identity and fixed ordinary error catalog/validate-error closure in the independent private semantic artifact",
+  "forbiddenCalls": ["resource_manifest", "build_request", "execute_request", "derive_dependencies", "permits_transition"],
+  "additionalCallsOrResourcesRequireOwnerDelta": true,
+  "publicMaintenanceTransferred": false,
+  "runtimeOrBuildAuthorized": false,
+  "physicalHoldUnchanged": true,
+  "originalGoalRemainsBlocked": true,
+  "fallbackOrMixedRefAllowed": false
+}

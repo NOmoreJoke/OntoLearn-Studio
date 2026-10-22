@@ -1,0 +1,30 @@
+# T01：I05 私有语义 artifact 四资源只读采用审查
+
+2026-10-22；继续原 T01 会话 `01a15bba-0884-7401-b24f-f50c1fcf60aa`，仅此新静态文档子任务。总控已创建 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-i05-semantic-resource-offer`，分支 `docs/T01-i05-semantic-resource-offer`，经实际远端核验 base `5f910b52c69d86a1076b2032e5d3c63e715947f3`。开始仅 ` M AGENTS.md`：15852 B／`78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`，保护且不得 stage。
+
+## 唯一任务
+
+为 I05 新私有 source/package semantic artifact 给出四件固定资源的 owner 接收／拒绝结论，不转移公共维护权，不改变任何公共契约。此任务独立于 T01 的 SQLite／heap／OS物理资源保护线；损坏输入保护 HOLD 和原 Goal blocked 保留。不得恢复已被自动审批拒绝的分析、Store启用、DB／OS探针或以新措辞重试。若平台再次拒绝当前操作，立即停止该操作并准确报告，不另路重试。
+
+先读总控 `I05-source-package-contract-limited-root-closure.md`，以及固定 docs head `ee2b30a2dad35b2d395f9c735aff80371ab41110` 的 `docs/iterations/I05/source-package-parity/contract.md` §5.1–5.4、对应 `docs/reviews/I05/source-package-parity-contract/{static-import-closure.json,packaging-resource-investigation.md}`。其实际文档树为 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-contract`，只读。
+
+提议全部来自同一供应产品 ref `6891a5842302859a531cf82767c5a482417bc274`，按固定 Git 读取而非当前 WIP：
+
+| 路径                                     |  bytes | SHA256                                                           |
+| ---------------------------------------- | -----: | ---------------------------------------------------------------- |
+| packages/contracts/python/contract_v2.py |  34608 | 17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7 |
+| packages/contracts/v2/schema.json        | 207256 | e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf |
+| packages/contracts/v2/registry.json      |  15962 | 1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b |
+| packages/contracts/v2/errors.json        |  16299 | ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c |
+
+允许的用途只有原样 canonical `resources.CONTRACT` 启动与 semantic_identity／固定错误目录。checker 顶层读取 schema/registry/errors；resources 顶层 registry/lock 的实际静态读取面也须检查。I05 不调用 `resource_manifest`、`build_request`、`execute_request`、`derive_dependencies`、`permits_transition`，不依赖 dependencies/states 的 lazy 读取，不需要 fixtures/binding-regressions/framefixture 运行资源。不得只因四件位于语义供应提交就假定已接收。
+
+核对顶层副作用、静态真实调用闭包、schema／registry／错误码兼容、路径和冻结资源布局需求；不 import 或运行 checker／引擎，不安装依赖、不测试、构建、DB、native、GUI或子进程业务试跑。允许普通 Git、文件读取、stdlib AST/JSON/hash、文档格式核验。T03 的专用计量预算不供此线使用。
+
+输出逐路径明确结论及限制：接受则仅私有不可变只读使用；有阻断则给实际证据和最小修复／替代固定 ref 及组合差异，禁止静默替换5f或当前T01 WIP。任何新增调用／资源均须另行 owner delta，不自动接收。
+
+## 责任、独审与交付
+
+本树只写 `docs/iterations/T01/i05-semantic-resource-offer.md` 和 `docs/reviews/T01/i05-semantic-resource-offer/`。不写产品／公共资源、不回写任何旧树、不 stage AGENTS。使用新的独立 agent 做本范围静态审查；独立审查不代替指定外部双模型门禁。冻结候选后再审，不并发修改被审文件；处理全部发现，实际全文读报告，保留首轮及每次 delta。文档格式核验可使用可用的固定 formatter，但不得为此安装或连接共享可变依赖。
+
+交付固定 base/head、本地过程提交、完整清单 bytes/SHA、独审结论、逐条处理、已执行检查／未运行边界和准确 Git 状态。无需等待物理保护 HOLD 解除即可完成此纯静态 offer；offer 交付不关闭原 T01／Job/H，不授权 I05 运行。不得推送、PR、合并。保留原会话／Goal，不创建替代会话／Goal；无 GUI／当前桌面操作。

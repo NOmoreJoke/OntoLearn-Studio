@@ -1,0 +1,940 @@
+{
+  "method": "AST top-level, class bodies/decorators/defaults and lexical conditional branches; skip function/lambda bodies. Does not resolve imported stdlib/third-party side effects, dynamic calls, annotations or execution branches. Not runtime/heap evidence.",
+  "sources": [
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/__init__.py",
+        "bytes": 101,
+        "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+        "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+      },
+      "lexicalTopLevelCalls": []
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+        "bytes": 548,
+        "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+        "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+      },
+      "lexicalTopLevelCalls": []
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+        "bytes": 4047,
+        "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+        "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 23,
+          "expression": "re.compile(DATE + TZ, re.ASCII)"
+        },
+        {
+          "line": 24,
+          "expression": "re.compile(DATE + 'T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\\\\.([0-9]+))?' + TZ, re.ASCII)"
+        },
+        {
+          "line": 27,
+          "expression": "dataclass(frozen=True, slots=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+        "bytes": 1750,
+        "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+        "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+      },
+      "lexicalTopLevelCalls": []
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+        "bytes": 19149,
+        "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+        "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 30,
+          "expression": "re.compile('\\\\?[A-Za-z][A-Za-z0-9_]{0,63}', re.ASCII)"
+        },
+        {
+          "line": 31,
+          "expression": "object()"
+        },
+        {
+          "line": 41,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 46,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 53,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 60,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 72,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 79,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 87,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 100,
+          "expression": "field(repr=False, compare=False)"
+        },
+        {
+          "line": 101,
+          "expression": "field(repr=False, compare=False)"
+        },
+        {
+          "line": 95,
+          "expression": "dataclass(frozen=True, slots=True, init=False, weakref_slot=True)"
+        },
+        {
+          "line": 116,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 125,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 131,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 146,
+          "expression": "dataclass(frozen=True, slots=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+        "bytes": 7372,
+        "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+        "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 8,
+          "expression": "re.compile('[+-]?[0-9]+', re.ASCII)"
+        },
+        {
+          "line": 9,
+          "expression": "re.compile('[+-]?(?:[0-9]+(?:\\\\.[0-9]*)?|\\\\.[0-9]+)', re.ASCII)"
+        },
+        {
+          "line": 10,
+          "expression": "re.compile('[+-]?(?:[0-9]+(?:\\\\.[0-9]*)?|\\\\.[0-9]+)(?:[eE][+-]?[0-9]+)?', re.ASCII)"
+        },
+        {
+          "line": 13,
+          "expression": "dataclass(frozen=True, slots=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+        "bytes": 11987,
+        "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+        "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 12,
+          "expression": "tuple((XSD + s for s in ('integer', 'int', 'nonNegativeInteger', 'decimal', 'float', 'double')))"
+        },
+        {
+          "line": 18,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 66,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 74,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 117,
+          "expression": "dataclass(frozen=True, slots=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+        "bytes": 6288,
+        "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+        "gitBlob": "d4fdc2c750af383e41799ae6b0947c13479d999c"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 33,
+          "expression": "tuple(((f.name, f.default) for f in fields(ProfileLimits)))"
+        },
+        {
+          "line": 33,
+          "expression": "fields(ProfileLimits)"
+        },
+        {
+          "line": 36,
+          "expression": "len(PROFILE)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+        "bytes": 6176,
+        "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+        "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 26,
+          "expression": "frozenset('en-GB-oed i-ami i-bnn i-default i-enochian i-hak i-klingon i-lux i-mingo i-navajo i-pwn i-tao i-tay i-tsu sgn-BE-FR sgn-BE-NL sgn-CH-DE art-lojban cel-gaulish no-bok no-nyn zh-guoyu zh-hakka zh-min zh-min-nan zh-xiang'.lower().split())"
+        },
+        {
+          "line": 27,
+          "expression": "'en-GB-oed i-ami i-bnn i-default i-enochian i-hak i-klingon i-lux i-mingo i-navajo i-pwn i-tao i-tay i-tsu sgn-BE-FR sgn-BE-NL sgn-CH-DE art-lojban cel-gaulish no-bok no-nyn zh-guoyu zh-hakka zh-min zh-min-nan zh-xiang'.lower().split()"
+        },
+        {
+          "line": 27,
+          "expression": "'en-GB-oed i-ami i-bnn i-default i-enochian i-hak i-klingon i-lux i-mingo i-navajo i-pwn i-tao i-tay i-tsu sgn-BE-FR sgn-BE-NL sgn-CH-DE art-lojban cel-gaulish no-bok no-nyn zh-guoyu zh-hakka zh-min zh-min-nan zh-xiang'.lower()"
+        },
+        {
+          "line": 35,
+          "expression": "re.compile('(?:(?:[a-z]{2,3}(?:-[a-z]{3}){0,3}|[a-z]{4}|[a-z]{5,8})(?:-[a-z]{4})?(?:-(?:[a-z]{2}|[0-9]{3}))?(?:-(?:[a-z0-9]{5,8}|[0-9][a-z0-9]{3}))*(?:-[0-9a-wy-z](?:-[a-z0-9]{2,8})+)*(?:-x(?:-[a-z0-9]{1,8})+)?|x(?:-[a-z0-9]{1,8})+)', re.ASCII | re.IGNORECASE)"
+        },
+        {
+          "line": 43,
+          "expression": "re.compile('[A-Za-z][A-Za-z0-9+.-]*:', re.ASCII)"
+        },
+        {
+          "line": 46,
+          "expression": "dataclass(frozen=True, slots=True, weakref_slot=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "bytes": 3065,
+        "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+        "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 11,
+          "expression": "getattr(sys, 'frozen', False)"
+        },
+        {
+          "line": 10,
+          "expression": "Path(sys._MEIPASS)"
+        },
+        {
+          "line": 12,
+          "expression": "Path(__file__).resolve()"
+        },
+        {
+          "line": 12,
+          "expression": "Path(__file__)"
+        },
+        {
+          "line": 14,
+          "expression": "importlib.util.spec_from_file_location('ontolearn_contract_v2', ROOT / 'python/contract_v2.py')"
+        },
+        {
+          "line": 18,
+          "expression": "RuntimeError('CONTRACT_UNAVAILABLE')"
+        },
+        {
+          "line": 19,
+          "expression": "importlib.util.module_from_spec(SPEC)"
+        },
+        {
+          "line": 20,
+          "expression": "SPEC.loader.exec_module(CONTRACT)"
+        },
+        {
+          "line": 21,
+          "expression": "(ROOT / 'v2/registry.json').read_bytes()"
+        },
+        {
+          "line": 22,
+          "expression": "hashlib.sha256(REGISTRY_BYTES).hexdigest()"
+        },
+        {
+          "line": 22,
+          "expression": "hashlib.sha256(REGISTRY_BYTES)"
+        },
+        {
+          "line": 25,
+          "expression": "getattr(sys, 'frozen', False)"
+        },
+        {
+          "line": 24,
+          "expression": "Path(sys._MEIPASS)"
+        },
+        {
+          "line": 31,
+          "expression": "hashlib.sha256(LOCK_FILE.read_bytes()).hexdigest()"
+        },
+        {
+          "line": 31,
+          "expression": "hashlib.sha256(LOCK_FILE.read_bytes())"
+        },
+        {
+          "line": 31,
+          "expression": "LOCK_FILE.read_bytes()"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "bytes": 65749,
+        "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+        "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 240,
+          "expression": "dataclass(frozen=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "bytes": 15426,
+        "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+        "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 38,
+          "expression": "dataclass(frozen=True)"
+        },
+        {
+          "line": 44,
+          "expression": "dataclass(frozen=True)"
+        },
+        {
+          "line": 53,
+          "expression": "frozenset({Stage.SYNTAX, Stage.CONSTRAINT})"
+        },
+        {
+          "line": 54,
+          "expression": "frozenset({Stage.SYNTAX, Stage.QUERY})"
+        },
+        {
+          "line": 55,
+          "expression": "frozenset({Stage.SYNTAX, Stage.RULE})"
+        },
+        {
+          "line": 56,
+          "expression": "frozenset({Stage.SYNTAX, Stage.CONSTRAINT})"
+        },
+        {
+          "line": 57,
+          "expression": "frozenset({Stage.PROJECTION})"
+        },
+        {
+          "line": 58,
+          "expression": "frozenset({Stage.PARAMS})"
+        },
+        {
+          "line": 60,
+          "expression": "frozenset({Producer.TURTLE, Producer.QUERY, Producer.REASON, Producer.SHACL})"
+        },
+        {
+          "line": 62,
+          "expression": "frozenset({(Producer.TURTLE, Stage.SYNTAX), (Producer.TURTLE, Stage.CONSTRAINT), (Producer.QUERY, Stage.SYNTAX), (Producer.REASON, Stage.SYNTAX), (Producer.REASON, Stage.RULE), (Producer.SHACL, Stage.SYNTAX), (Producer.SHACL, Stage.CONSTRAINT)})"
+        },
+        {
+          "line": 73,
+          "expression": "frozenset({'TEXT_TYPE_INVALID', 'SCOPE_SELECTION_TYPE_INVALID', 'UNSELECTED_RULES_PRESENT'})"
+        },
+        {
+          "line": 81,
+          "expression": "frozenset({(Producer.TURTLE, Stage.SYNTAX), (Producer.TURTLE, Stage.CONSTRAINT), (Producer.QUERY, Stage.QUERY)})"
+        },
+        {
+          "line": 91,
+          "expression": "frozenset({(Producer.TURTLE, Stage.SYNTAX), (Producer.TURTLE, Stage.CONSTRAINT), (Producer.QUERY, Stage.SYNTAX), (Producer.REASON, Stage.SYNTAX), (Producer.SHACL, Stage.SYNTAX), (Producer.SHACL, Stage.CONSTRAINT), (Producer.PROJECTION, Stage.PROJECTION)})"
+        },
+        {
+          "line": 103,
+          "expression": "frozenset({(Producer.QUERY, Stage.QUERY)})"
+        },
+        {
+          "line": 104,
+          "expression": "frozenset({(Producer.REASON, Stage.RULE)})"
+        },
+        {
+          "line": 105,
+          "expression": "frozenset({(Producer.REASON, Stage.RULE)})"
+        },
+        {
+          "line": 106,
+          "expression": "frozenset({(Producer.REASON, Stage.RULE)})"
+        },
+        {
+          "line": 109,
+          "expression": "frozenset({(Producer.REASON, Stage.RULE), (Producer.REASON, Stage.SYNTAX), (Producer.PROJECTION, Stage.PROJECTION)})"
+        },
+        {
+          "line": 119,
+          "expression": "frozenset({(Producer.PROJECTION, Stage.PROJECTION)})"
+        },
+        {
+          "line": 125,
+          "expression": "frozenset({(Producer.SHACL, Stage.CONSTRAINT)})"
+        },
+        {
+          "line": 127,
+          "expression": "frozenset({(Producer.SHACL, Stage.CONSTRAINT)})"
+        },
+        {
+          "line": 129,
+          "expression": "frozenset({(Producer.QUERY, Stage.QUERY)})"
+        },
+        {
+          "line": 130,
+          "expression": "frozenset({(Producer.QUERY, Stage.QUERY)})"
+        },
+        {
+          "line": 135,
+          "expression": "frozenset({(Producer.TURTLE, Stage.SYNTAX), (Producer.TURTLE, Stage.CONSTRAINT)})"
+        },
+        {
+          "line": 137,
+          "expression": "frozenset({(Producer.QUERY, Stage.QUERY)})"
+        },
+        {
+          "line": 138,
+          "expression": "frozenset({(Producer.QUERY, Stage.QUERY)})"
+        },
+        {
+          "line": 139,
+          "expression": "frozenset({(Producer.QUERY, Stage.QUERY)})"
+        },
+        {
+          "line": 140,
+          "expression": "frozenset({(Producer.REASON, Stage.RULE)})"
+        },
+        {
+          "line": 142,
+          "expression": "frozenset({'INVALID_LITERAL_LEXICAL', 'RDF_TERM_INVALID', 'RDF_TYPE_OBJECT_INVALID', 'RDFS_TERM_INVALID', 'INVALID_UNICODE', 'ABSOLUTE_IRI_REQUIRED'})"
+        },
+        {
+          "line": 153,
+          "expression": "frozenset({Producer.REASON})"
+        },
+        {
+          "line": 153,
+          "expression": "frozenset({Stage.SYNTAX})"
+        },
+        {
+          "line": 154,
+          "expression": "frozenset({Producer.TURTLE})"
+        },
+        {
+          "line": 154,
+          "expression": "frozenset({Stage.SYNTAX, Stage.CONSTRAINT})"
+        },
+        {
+          "line": 155,
+          "expression": "frozenset({Producer.QUERY})"
+        },
+        {
+          "line": 155,
+          "expression": "frozenset({Stage.QUERY})"
+        },
+        {
+          "line": 156,
+          "expression": "frozenset({Producer.REASON})"
+        },
+        {
+          "line": 156,
+          "expression": "frozenset({Stage.RULE})"
+        },
+        {
+          "line": 157,
+          "expression": "frozenset({Producer.REASON})"
+        },
+        {
+          "line": 157,
+          "expression": "frozenset({Stage.RULE})"
+        },
+        {
+          "line": 158,
+          "expression": "frozenset({Producer.REASON})"
+        },
+        {
+          "line": 158,
+          "expression": "frozenset({Stage.RULE})"
+        },
+        {
+          "line": 159,
+          "expression": "frozenset({Producer.SHACL})"
+        },
+        {
+          "line": 159,
+          "expression": "frozenset({Stage.CONSTRAINT})"
+        },
+        {
+          "line": 160,
+          "expression": "frozenset({Producer.SHACL})"
+        },
+        {
+          "line": 160,
+          "expression": "frozenset({Stage.CONSTRAINT})"
+        },
+        {
+          "line": 161,
+          "expression": "frozenset({Producer.SHACL})"
+        },
+        {
+          "line": 161,
+          "expression": "frozenset({Stage.CONSTRAINT})"
+        },
+        {
+          "line": 162,
+          "expression": "frozenset({Producer.SHACL})"
+        },
+        {
+          "line": 162,
+          "expression": "frozenset({Stage.CONSTRAINT})"
+        },
+        {
+          "line": 163,
+          "expression": "frozenset({Producer.SHACL})"
+        },
+        {
+          "line": 163,
+          "expression": "frozenset({Stage.CONSTRAINT})"
+        },
+        {
+          "line": 166,
+          "expression": "frozenset()"
+        },
+        {
+          "line": 167,
+          "expression": "frozenset()"
+        },
+        {
+          "line": 168,
+          "expression": "frozenset()"
+        },
+        {
+          "line": 169,
+          "expression": "frozenset({'params'})"
+        },
+        {
+          "line": 170,
+          "expression": "frozenset({'syntax', 'query', 'rule', 'constraint'})"
+        },
+        {
+          "line": 171,
+          "expression": "frozenset((v[0] for v in _UNSUPPORTED.values()))"
+        },
+        {
+          "line": 171,
+          "expression": "_UNSUPPORTED.values()"
+        },
+        {
+          "line": 172,
+          "expression": "frozenset({'semanticInput', 'semanticResult', 'semanticWork'})"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "bytes": 35220,
+        "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+        "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 20,
+          "expression": "frozenset({'query.execute', 'reasoning.execute', 'validation.execute'})"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+        "bytes": 1351,
+        "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+        "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 21,
+          "expression": "ContextVar('ontolearn_semantic_offline', default=False)"
+        },
+        {
+          "line": 32,
+          "expression": "sys.addaudithook(_audit)"
+        },
+        {
+          "line": 42,
+          "expression": "logging.getLogger('rdflib.term').addFilter(_NoRawLiteralDiagnostics())"
+        },
+        {
+          "line": 42,
+          "expression": "logging.getLogger('rdflib.term')"
+        },
+        {
+          "line": 42,
+          "expression": "_NoRawLiteralDiagnostics()"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+        "bytes": 46459,
+        "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+        "gitBlob": "66fcb3a9e04cf9d1ebda9c994c9f739c67288bab"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 69,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 527,
+          "expression": "dataclass(slots=True)"
+        },
+        {
+          "line": 533,
+          "expression": "dataclass(slots=True)"
+        },
+        {
+          "line": 726,
+          "expression": "dataclass(slots=True)"
+        },
+        {
+          "line": 733,
+          "expression": "dataclass(slots=True)"
+        },
+        {
+          "line": 741,
+          "expression": "dataclass(slots=True)"
+        },
+        {
+          "line": 749,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 1120,
+          "expression": "dataclass(frozen=True, slots=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "bytes": 40378,
+        "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+        "gitBlob": "f91e3b2fb719dd18dbdffa48698db19eb4fd3934"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 208,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 220,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 237,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 245,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 513,
+          "expression": "dataclass(frozen=True, slots=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+        "bytes": 19993,
+        "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+        "gitBlob": "fec434ea49c8cf989afeb7b7e0f2c9a518545d1c"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 26,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 33,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 51,
+          "expression": "dataclass(frozen=True, slots=True, kw_only=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+        "bytes": 70203,
+        "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+        "gitBlob": "0e5baa40641c6eaf016dd6515e1b1528f815c632"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 65,
+          "expression": "tuple(((f.name, f.default) for f in fields(ProfileLimits)))"
+        },
+        {
+          "line": 65,
+          "expression": "fields(ProfileLimits)"
+        },
+        {
+          "line": 110,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 127,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 146,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 153,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 161,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 173,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 189,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 204,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 212,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 218,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 233,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 239,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 293,
+          "expression": "tuple((name for (name, _) in _LIMITS))"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+        "bytes": 37889,
+        "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+        "gitBlob": "0bf52a792873be88ac5c084aec25af173df18514"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 135,
+          "expression": "tuple(('A' + str(i) for i in range(1, 17)))"
+        },
+        {
+          "line": 135,
+          "expression": "str(i)"
+        },
+        {
+          "line": 135,
+          "expression": "range(1, 17)"
+        },
+        {
+          "line": 950,
+          "expression": "object()"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+        "bytes": 6448,
+        "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+        "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+      },
+      "lexicalTopLevelCalls": []
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "bytes": 13051,
+        "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+        "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 226,
+          "expression": "dataclass(frozen=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+        "bytes": 33916,
+        "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+        "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 107,
+          "expression": "re.compile('[A-Za-z][A-Za-z0-9+.-]*:', re.ASCII)"
+        },
+        {
+          "line": 108,
+          "expression": "frozenset('0123456789abcdefABCDEF')"
+        },
+        {
+          "line": 109,
+          "expression": "frozenset('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~')"
+        },
+        {
+          "line": 110,
+          "expression": "frozenset(\"!$&'()*+,;=\")"
+        },
+        {
+          "line": 112,
+          "expression": "object()"
+        },
+        {
+          "line": 290,
+          "expression": "dataclass(frozen=True, slots=True)"
+        },
+        {
+          "line": 298,
+          "expression": "dataclass(frozen=True, slots=True, weakref_slot=True)"
+        }
+      ]
+    },
+    {
+      "source": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/contracts/python/contract_v2.py",
+        "bytes": 34608,
+        "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+        "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76"
+      },
+      "lexicalTopLevelCalls": [
+        {
+          "line": 12,
+          "expression": "Path(__file__).resolve()"
+        },
+        {
+          "line": 12,
+          "expression": "Path(__file__)"
+        },
+        {
+          "line": 13,
+          "expression": "json.loads((ROOT / 'schema.json').read_text(encoding='utf-8'))"
+        },
+        {
+          "line": 13,
+          "expression": "(ROOT / 'schema.json').read_text(encoding='utf-8')"
+        },
+        {
+          "line": 15,
+          "expression": "json.loads((ROOT / 'registry.json').read_text(encoding='utf-8'))"
+        },
+        {
+          "line": 15,
+          "expression": "(ROOT / 'registry.json').read_text(encoding='utf-8')"
+        },
+        {
+          "line": 16,
+          "expression": "json.loads((ROOT / 'errors.json').read_text(encoding='utf-8'))"
+        },
+        {
+          "line": 16,
+          "expression": "(ROOT / 'errors.json').read_text(encoding='utf-8')"
+        }
+      ]
+    }
+  ],
+  "manualRelevantSideEffects": [
+    "resources top level dynamically executes original checker, rereads registry bytes, hashes lock",
+    "checker top level reads three JSON resources and defines constants/functions",
+    "semantic_offline top level registers sys.addaudithook and rdflib.term log filter; not installed/executed by this review",
+    "main/resource_manifest lexical definition is not a top-level invocation or permission to call"
+  ]
+}
