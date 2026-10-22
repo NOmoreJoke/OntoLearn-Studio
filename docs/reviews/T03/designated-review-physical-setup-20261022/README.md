@@ -39,3 +39,7 @@ setup inventory 首跑 exit1：审计脚本误用 `'/python' in basename` 判断
 ## 下一步
 
 封存新候选、完整 fresh 独审及意见处置后交总控预检；由总控安排短 lease，再在正确物理树创建 ZCode GLM-5.3/最高/yolo 与 MiniMax M3.1-Flash/xhigh/bypassPermissions，真实读回实际设置。任何模型本轮意见、状态、runtime 或报告都不得向同伴发现或读取。当前任务与设置留空。
+
+## 首次独审 F1 与精确修复
+
+e95f20f 完整首审结论 SETUP_NEEDS_CHANGE，报告在 2b49d1dd 独立封存。唯一 F1/P2 是继承的 `I02_EVIDENCE` 可导致普通 C1 将结果写往旧树。现将六份本树环境统一固定到各自 `build/review-session/raw/c1-evidence.json`，补齐提示路径；用人为旧值 source 环境后纯 shell 回读逐树核同。没有运行 C1/产品、重装依赖或改测试；C1 内部覆盖的 I02_NATIVE_EVIDENCE 没有误报为同一逃逸。每次真实重跑须先由 owner 配本树新轮次路径保首失败，不覆盖首次证据。完整旧首审与候选 manifest 保留，新 delta 单列身份，修复仍待独立 delta 结论。

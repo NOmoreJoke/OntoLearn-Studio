@@ -37,6 +37,8 @@ for x in index:
     assert subprocess.check_output(['git','-C',str(root),'status','--porcelain'],text=True).strip()=='M AGENTS.md'
     paths=x['pathMap']
     assert all(Path(paths[k]).is_relative_to(root) for k in paths)
+    assert paths['c1Evidence']==str(root/'build/review-session/raw/c1-evidence.json')
+    assert 'export I02_EVIDENCE=' in Path(paths['environmentShell']).read_text()
     site=root/'.venv/lib/python3.12/site-packages'
     pth=list(site.glob('_editable_impl_ontolearn_engine.pth'))
     assert len(pth)==1 and str(root/'packages/engine/src') in pth[0].read_text()
@@ -55,6 +57,10 @@ checks.append('All new Python scripts ast.parse; all new JSON syntax valid; no p
 isolation=json.loads((HERE/'isolation-verification.json').read_text())
 assert not isolation['crossTreeRegularInodeCollisions'] and len(isolation['externalSymlinks'])==18
 checks.append('Isolation scan receipt: zero cross-tree regular inode collisions; 18 disclosed base interpreter links')
+repair=json.loads((HERE/'F1-environment-repair.json').read_text())
+assert len(repair['rows'])==6
+assert all(x['exitCode']==0 and not x['stderr'] and x['stdout']==str(Path(x['tree'])/'build/review-session/raw/c1-evidence.json') for x in repair['rows'])
+checks.append('F1 exact repair: six own C1 output maps and six pure-shell stale-env overwrite readbacks')
 result={'scope':'Finite documents/setup-identity checks only, not product tests or designated review','checks':checks,'exitCode':0,'productExecuted':False}
 (HERE/'validation.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(result,ensure_ascii=False))

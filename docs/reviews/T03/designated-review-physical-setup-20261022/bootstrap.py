@@ -83,6 +83,7 @@ def env_for(root):
         'TMPDIR': str(session / 'tmp') + '/',
         'TMP': str(session / 'tmp'),
         'TEMP': str(session / 'tmp'),
+        'I02_EVIDENCE': str(session / 'raw/c1-evidence.json'),
     }
     env.update(values)
     return env, values, clear

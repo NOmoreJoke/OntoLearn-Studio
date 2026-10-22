@@ -24,7 +24,8 @@ for row in rows:
     mapping.update({'workingTree':str(physical),'nodeModules':str(physical/'node_modules'),'pythonVenv':str(physical/'.venv'),
                     'environmentShell':str(session/'environment.sh'),'fullReport':str(report),'actualTaskMetadata':str(task),
                     'ordinaryBuildOutput':str(physical/'apps/desktop/out'),'engineBuildOutput':str(physical/'build/engine'),
-                    'packageOutput':str(physical/'release'),'playwrightOutput':str(physical/'test-results')})
+                    'packageOutput':str(physical/'release'),'playwrightOutput':str(physical/'test-results'),
+                    'c1Evidence':str(session/'raw/c1-evidence.json')})
     header = f'''# 本轮物理树与执行补充（优先于下附冻结历史提示中的路径、安装及一律不运行段）
 
 任务仍为本组全部固定工程与全部原依据的独立完整审查。只允许选择本物理树：`{physical}`。它是detached HEAD，必须保持HEAD `{row['reviewHead']}`；产品候选 `{row['product']}`，base `5f910b52c69d86a1076b2032e5d3c63e715947f3`。旧提示中的原owner工作树/分支仅为历史来源，不是当前执行目录，不切去原树，不切分支，不拼装其他分支。原固定完整工程/历史输入清单及manifest继续用原只读共享地址与ref逐件核身份；过程追加的纯文档不改变产品。当前AGENTS15147B/SHAde15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4已在本树传播，保持未暂存，不修产品/测试/锁/配置/验收。
@@ -35,7 +36,7 @@ for row in rows:
 {json.dumps(mapping,ensure_ascii=False,indent=2)}
 ```
 
-开始运行前source本树environment.sh（不是执行bootstrap.py）；它设置本树独立npm/uv/Electron/builder/XDG缓存与TMP，UV_LINK_MODE=copy，清除ROOT_SOURCE_PATH、旧engine/package/fixture/HMR目标。仅本树实体node_modules/.venv可用，不能借其他树、把.venv指向外部、用共享mutable inode或复制同伴运行库；系统Node/npm/uv/Python只读基础工具可以共用，`.venv/bin/python`基础解释器符号链接须如实披露。Hatchling正常editable安装只指本树源码，是setup，不是产品运行通过。
+开始运行前source本树environment.sh（不是执行bootstrap.py）；它设置本树独立npm/uv/Electron/builder/XDG缓存与TMP，UV_LINK_MODE=copy，清除ROOT_SOURCE_PATH、旧engine/package/fixture/HMR目标。I02_EVIDENCE明确覆盖任何继承值并固定为上述c1Evidence路径；每次真实重跑前owner另建本树新raw轮次路径保首失败，不覆盖旧证据。仅本树实体node_modules/.venv可用，不能借其他树、把.venv指向外部、用共享mutable inode或复制同伴运行库；系统Node/npm/uv/Python只读基础工具可以共用，`.venv/bin/python`基础解释器符号链接须如实披露。Hatchling正常editable安装只指本树源码，是setup，不是产品运行通过。
 
 setup由原T03唯一owner完成，模型不得重装依赖、更新锁、运行本包bootstrap或make-prompts脚本；若依赖缺失，报告精确setup缺口给owner。setup收据记录`npm ci --ignore-scripts`、`uv sync --frozen --python /Users/kyle/.local/bin/python3.12 --no-managed-python --link-mode copy`及独立Electron install.js安装结果；跳过的可选lifecycle不等于跨平台工具均ready。不能用安装exit0冒充check/e2e/package通过。当前这份预备包制作阶段不运行产品；后续真实审查任务可按下列正常回归权限执行，不继承旧“一律不新运行”限制。
 
