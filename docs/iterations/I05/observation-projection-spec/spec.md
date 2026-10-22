@@ -1,4 +1,4 @@
-# I05 私有观察投影规范提案 v1
+# I05 私有观察投影规范提案 v2
 
 本提案给 37 个固定观察 ID 的精确目标值、严格 JSON schema、来源和有限关系。`cases.json` 保存完整值及全部独立 typed 数学侧车，不能用本文摘要替代。当前是待 owner 接收的私有 serializer/API 技术提案；没有执行 6891 产品或真实库，`wholeOracleComplete=false`。11 个 legacy 域 ID 实际为 **10 个正常、1 个 unbound-head 拒绝**；依固定输入、独立 oracle 和合同 L45 保留这个差异，不因设计窗简称“正常”而改写结果。
 
@@ -96,18 +96,18 @@ Unknown 不打印原异常、URL、文件路径、节点、异常 class 自由�
 
 下面是精确**目标提案**，不是从允许异常集合猜测的旧实际值。每个字段的 null、origin、分类/阶段在 cases 中完整展开。
 
-| ID/族                    | 本提案 exact 目标                                                                                             | 权威/未证边界                                                                                               |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| turtle/front-5           | SemanticError / INVALID_TURTLE；harness=parse-data；canonical stage=null                                      | F1：按 Turtle IRIREF 词法拒裸空格，再做合法 IRI 语义检查；旧竖线 IRI 断言不替代此输入，固定库实际分类待验   |
-| shape/front-2            | SemanticError / INVALID_LITERAL_LEXICAL；parse-shapes                                                         | F1：SHACL shape 中 typed nni `-1` 先过 datatype 词法/值域门，再约束模板门；旧 data-gate 断言不证明 shape 侧 |
-| integer/other-datatype-1 | 同码；parse-data                                                                                              | F1：wide integer 政策只宽化已批准 integer 族，不使非法 nni 负值合法；两侧独立登记                           |
-| scope/missing-source     | SemanticError / REASONING_SOURCE_REQUIRED；scope-provenance-gate                                              | F1 新明确 missing-source 私有码；不借三个别的 scope 码外推                                                  |
-| scope/wrong-source       | SemanticError / REASONING_SOURCE_MISMATCH；scope-provenance-gate                                              | 旧 L84–105 局部预登记该 code；此 ID 的完整上下文检查与 stage 待验                                           |
-| scope/missing-result     | SemanticError / REASONING_RESULT_INVALID；scope-provenance-gate                                               | 旧 L108–119 支持缺失/不完整 code；本 stage 为 F1 固定                                                       |
-| scope/unselected-result  | SemanticError / UNSELECTED_REASONING_PRESENT；scope-selection-gate                                            | 旧 L237–247 局部 code；F1 显式先核 include/asserted 组合，后核 source/result                                |
-| 14 restore 固定扰动      | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / slot=null / domain=null；harness=restore   | R1：新增 receiver integrity preflight 的固定出口，**非 constructor 默认/旧测试证明 actual A1**              |
-| dag/turtle-entry         | DirectStepsFailure / DIRECT_STEPS_INVALID / input / entry / domain=null；harness=structured-material-required | D1 新 structured-only entry guard；旧 L556–568 只证明预登记有限拒绝和 reason0，未定 exact class/code        |
-| offline/implicit-jsonld  | OfflineAccessDenied / EXTERNAL_ACCESS_DENIED；implicit-loader-guard                                           | O1 新 typed denial 事件；现有 loader 没精确异常投影，仍 pending 真实边界/no-I/O 验证                        |
+| ID/族                    | 本提案 exact 目标                                                                                             | 权威/未证边界                                                                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| turtle/front-5           | SemanticError / INVALID_TURTLE；harness=parse-data；canonical stage=null                                      | F1：按 Turtle IRIREF 词法拒裸空格，再做合法 IRI 语义检查；旧竖线 IRI 断言不替代此输入，固定库实际分类待验                   |
+| shape/front-2            | SemanticError / INVALID_LITERAL_LEXICAL；parse-shapes                                                         | F1：SHACL shape 中 typed nni `-1` 先过 datatype 词法/值域门，再约束模板门；旧 data-gate 断言不证明 shape 侧                 |
+| integer/other-datatype-1 | 同码；parse-data                                                                                              | F1：只宽化 data object 的 exact xsd:integer ill_typed；xsd:int/nonNegativeInteger/decimal 与 shape 侧都不宽化；两侧独立登记 |
+| scope/missing-source     | SemanticError / REASONING_SOURCE_REQUIRED；scope-provenance-gate                                              | F1 新明确 missing-source 私有码；不借三个别的 scope 码外推                                                                  |
+| scope/wrong-source       | SemanticError / REASONING_SOURCE_MISMATCH；scope-provenance-gate                                              | 旧 L84–105 局部预登记该 code；此 ID 的完整上下文检查与 stage 待验                                                           |
+| scope/missing-result     | SemanticError / REASONING_RESULT_INVALID；scope-provenance-gate                                               | 旧 L108–119 支持缺失/不完整 code；本 stage 为 F1 固定                                                                       |
+| scope/unselected-result  | SemanticError / UNSELECTED_REASONING_PRESENT；scope-selection-gate                                            | 旧 L237–247 局部 code；F1 显式先核 include/asserted 组合，后核 source/result                                                |
+| 14 restore 固定扰动      | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / slot=null / domain=null；harness=restore   | R1：新增 receiver integrity preflight 的固定出口，**非 constructor 默认/旧测试证明 actual A1**                              |
+| dag/turtle-entry         | DirectStepsFailure / DIRECT_STEPS_INVALID / input / entry / domain=null；harness=structured-material-required | D1 新 structured-only entry guard；旧 L556–568 只证明预登记有限拒绝和 reason0，未定 exact class/code                        |
+| offline/implicit-jsonld  | OfflineAccessDenied / EXTERNAL_ACCESS_DENIED；implicit-loader-guard                                           | O1 新 typed denial 事件；现有 loader 没精确异常投影，仍 pending 真实边界/no-I/O 验证                                        |
 
 F1 的 scope 先序为 exact include 类型→asserted 与 result/source/rules 组合→derived result 必需→source 必需→source 完整一致→result 完整一致→project→query/SHACL。不得以 source 缺失触发 fresh reason。坏空格前门需按 token grammar 识别 IRIREF，不能扫全文 regex 导致合法 literal 内同字串误拒。正常 literal、合法 `<urn:ok>`、nni `0/+0/01`、合法 shape-list 是后继 F1 必须保留的边界；本文不实现 parser、也不把这些扩展边界当已测产品。
 
@@ -117,7 +117,7 @@ R1 在原同次成功生产与独立资源准入已成立的前提下，进入 r
 
 ## 有限比较与手工小例
 
-schema 后再执行逐 ID `exact`：递归 keys/type/null/数组全长/每个末字段/重复与顺序。正常项遇到任意已知拒绝、unknown 或 RESOURCE_LIMIT 都不匹配；拒绝项也只匹配对应 exact origin/reason/stage/class/slot/domain。source 与 package 相等只是独立结论；两者各自还要对独立 expected 及真实来源/完整阶段/计数关系核验。不得把 source 输出固化为 expected。
+schema 后按 `projection_layout` 确定唯一 RDF 身份域，再执行逐 ID 完整比较：RDF 图按集合；有序 RDF occurrence 保数组全长/每个末字段/重复与顺序；其余 keys/type/null/字段逐一 exact。正常项遇到任意已知拒绝、unknown 或 RESOURCE_LIMIT 都不匹配；拒绝项也只匹配对应 exact origin/reason/stage/class/slot/domain。source 与 package 相等只是独立结论；两者各自还要对独立 expected 及真实来源/完整阶段/计数关系核验。不得把 source 输出固化为 expected。
 
 正常手工例：`x type A` 和 `A subclass B` 只新增 `x type B`；五字段中 rdfsEvidence 的 basis 恰为这两叶，rules/evidence/warnings 皆空。深度2 domain 例有 `p domain A`、`x p y`、`A subclass B` 三叶；x:B 的 basis 必须全三叶，不能因只看 direct premise 就删 p/x 输入。多匹配例 A01、A04 两个匹配产生同 head，图1条但 evidence2条，每条四个有序输入。
 
@@ -132,10 +132,43 @@ schema 后再执行逐 ID `exact`：递归 keys/type/null/数组全长/每个末
 | owner                        | 最小后继 delta（本窗不实施）                                                                                                                                                                                                            | 兼容和前置                                                                                                                    |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | I05 canonical API owner      | F1 的显式语法/词法/选择首序、missing-source 私有码；D1 structured-only exact entry；R1 完整 receiver preflight；O1 typed offline denial                                                                                                 | 原公共 registry/Q6/date/外联拒绝/权限保持；API 若改变旧输出需新版本入口，不改旧契约来冒通过                                   |
-| I05 serializer/harness owner | 新 `i05-observation-projection/1` 选择器；完整五字段/N3+typed 数学对应；新 scope display provenance/content source；exact canonical class 适配；安全 Unknown；完整先前返回阶段原件及实际 hooks                                          | 不按 key 猜版本，不截 /2 /3 成五key，不将新 contentSource 反喂旧 helper；旧原始 provenance 继续完整保存，未定编码保持 pending |
+| I05 serializer/harness owner | 新 `i05-observation-projection/2` 选择器；完整五字段/N3+typed 数学对应；新 scope display provenance/content source；exact canonical class 适配；安全 Unknown；完整先前返回阶段原件及实际 hooks                                          | 不按 key 猜版本，不截 /2 /3 成五key，不将新 contentSource 反喂旧 helper；旧原始 provenance 继续完整保存，未定编码保持 pending |
 | T05 oracle owner             | 新 `observationProjectionVersion`、每个 ID 的完整 `expectedProjection`、`expectedProjectionSourceRefs`、`firstErrorAuthority`、`projectionPendingFields`、`finiteRelations`/`preconditions`；保旧 input sourceRefs 与数学 expected 分离 | 37 项逐一接收本文件实际 commit 和 hash；旧137 pending 不批量改绿。legacy11 是10正常+1拒绝；wholeOracleComplete 仍 false       |
 | root/来源与预算 owner        | 接收明确组合、真实原 allocation/capture/issuer/完整预算准入、旧 source metadata 完整载体；后继隔离 runtime 票                                                                                                                           | 本设计的内容 hash/schema 不替代权限或发行凭据；API 默认 `rules=()` 不证明实际调用省略参数、实际 fee/capture                   |
 
 顺序：先独立审查本 candidate→owner 按项接收版本/首错与来源载体→唯一 I05 writer 提交新 API/serializer、独立 fee 规范接收并组成固定组合→T05 独立适配完整字段→后续获准 source 与 package 实测及独立比较。真实库分类没有证据前保 pending；旧首失败/unknown 不重写。再按原正式 Job/Store/selected/whole-H、CI、目标两 OS、真人与指定双模型门验收；不 push/merge，不替代 Goal。
 
 本窗没有实施 packages/scripts/tests/共享契约/CI，没有使用业务编译、第三方库、build、native/DB/GUI/网络/安装或模型；不修改原数学、capture/原 allocation、调用权威、公共四字段错误边界或保护 AGENTS。
+
+## R2 delta：采集安全、共享 BNode 域和明确调用链
+
+R1 报告的 Fail 保留。v2 对私有 terminal schema 的唯一结构扩展是保留的安全 stage `collection-failure`，以及明确的合法链阶段 `check-shapes`；schema ID 为 `urn:ontolearn:private:i05-observation-projection:2`。case 容器仍 `/1`，另有明确 `projectionSpecVersion=i05-observation-projection/2`，37 个 `expectedProjection` 与独立数学保持原完整值，禁止靠新增 key 猜版本。后继 serializer owner 须显式选择 /2；旧 /1 只在固定旧 candidate 解释，不默默接收新 stage。
+
+`unknown` 与 `safe_projection` 都先对 harnessStage 做 **exact str 类型且有限白名单**检查，再处理 diagnostic。正常集合为 reason/rule-definition/scope/restore/structured-material-required/parse-data/parse-shapes/scope-provenance-gate/scope-selection-gate/implicit-loader-guard/check-shapes。非 str、str 子类、路径、URL、未知字符串或外来对象均不得被复制、比较、hash、getattr、str 或 repr；只返回字面 `harnessStage="collection-failure"`、Unknown/INTERNAL_ERROR、complete=false。该保留 stage 只允许 Unknown/incomplete，不能出现在 complete=true 的已知拒绝，也不能匹配任一 37 项。合法阶段的 Unknown 保原有限阶段。collector 完整记录此安全 incomplete 终态和此前已返回的完整阶段原件；不能补回非法 stage 文本。这里不创建新的公共码或 ErrorFrame 字段。
+
+`projection_layout` 明列整个 terminal artifact 的 RDF 位置；同一 terminal 内以下位置共享 **同一个** BNode 标签双射，不能逐字段、逐行或逐列表片段各自挑映射。身份域只在这一实际不可变 artifact 内；跨独立 parse/producer artifact 的节点不能凭相同字面 label 合并；若 query/SHACL 消费该图，其 term references 明确归此图所属同一 artifact。实际 harness 必须提供这一 graph→consumer 关联，未绑定的不同图不进入同域，仍 pending。
+
+| 位置                                                                                             | 比较模式与域                                                                                                                   |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| scope facts/ontology typed 图                                                                    | 同一域、RDF 集合；仅 literal.language 身份 casefold                                                                            |
+| legacy rdfs/rules；scope.reasoning_result 的同字段                                               | 同一域、N3 三元组集合                                                                                                          |
+| rdfsEvidence.result/basis；evidence.result/inputs/basis                                          | 同域；result/inputs 是有序位置（inputs 的重复与全尾项保留）；basis 是完整图集合；evidence 外层 occurrence 数组仍有序且重复保留 |
+| provenance.selectedFacts.triple、所有 sources 的 inputs/basis；derivedAxioms.triple/source.basis | 同域；triple/inputs 有序、basis 为集合，source 列表及其规则身份 exact                                                          |
+| query.rows 的每个非 null typed cell                                                              | 同域、二维有序序列；变量名/列序、null 和重复 rows 保留                                                                         |
+| SHACL violations 的 focus/path/value/sourceShape/constraint/severity                             | 全部 RDF term 引用同域；value=null 保留；当前已登记 terminal 的 violation 外层数组完整有序，本次不另放宽其排序                 |
+| raw 输入/occurrence/source 原文、规则定义、ID、warnings、内容摘要及其他非 RDF 槽                 | 不做 alpha-renaming、不 casefold，完整 exact；raw JSON 的 `"_:a"` 字符串也不是自动发现的 node 引用                             |
+
+`identity_domain_equal` 收集所有明确槽中的 BNode 标签，求一次全域双射并应用到**全部**槽；图模式比较完整集合，序列模式递归保 keys/类型/null/顺序/重复，未声明位置 exact。N3 槽只识别完整 `_:label` token 和完整生成字面量 token 的 language 后缀；不对 IRI、datatype、lexical、source 或含 `@EN` 的普通文本全量 lower。`projection_identity_equal` 将上述 layout 应用于整个 terminal，`matches` 在严格 schema 后调用它。单图 `graph_isomorphic` 与图函数使用相同 language identity。两者均为最多 8 个 BNode 的有限数学模型；超过小例域拒比较并保 pending，不能称产品限额或推导容量。后继实际 comparator 若支持更大域须另获准有界实现，不得以每字段各求同构绕过全域限制。
+
+独立数学联合例同时含 typed 图、N3 evidence、重复有序 inputs、query cells、SHACL sourceShape：a→p、b→q 在所有位置一致才通过；只将 query/evidence/sourceShape 任一处的 a 指向 q 即不通过，即使各片段分别同构、两端全局节点数量相同。另有合法 `_:a first "hello"@EN; rest nil` 对 `_:p ...@en` 正常例，删 rest 尾、折叠节点、lexical01/1、int/integer 都不等。raw EN/source/null 不被修改或宽化。这些是纯数学边界，不能作为产品接收带 BNode 数据事实的批准。
+
+所有实际 payload/rows/sidecar/source 摘要仍必须分别核各自完整原始 preimage，不能因 BNode 比较放弃 hash。此模型对摘要字段仍 exact；若将来合法运行域的 digest 因各端生成 BNode label 而不同，需要 owner 单独接收明确 preimage 关系与新版本，不得一般忽略摘要或用本双射伪造发行凭据。本窗不关闭这一 pending，也不创建虚假成功 capture。
+
+两项调用的 `invocation` 在 cases 中逐步登记：
+
+- `shape/front-2`：按固定 ee2b 合同实际 L51，`semantic.parse_turtle(dataset.dataText,format="turtle",shapes=False)` 得 dataGraph；随后 `semantic.parse_turtle(dataset.shapesText,format="turtle",shapes=True)` 得 shapesGraph；只有两者完成才 `semantic.check_shapes(dataGraph,shapesGraph)`。原 input parameters 仍 `{}`，没有额外 input policy。F1 精确目标在第二步 parse-shapes 拒绝，因此 check_shapes 未到达；所有已成功返回的第一步 dataGraph 全量保留。L52 是相邻 integer 行，不能混用行号当 source 权威。
+- `integer/other-datatype-1`：按同合同 L52，`semantic.validate_shacl_text(dataset.dataText,dataset.shapesText,data_policy="integer-illtyped-report-v1",range_policy="legacy")`；完整映射 `parameters.dataPolicy→data_policy`、`parameters.rangePolicy→range_policy`，值逐字保留，无默认 strict fallback。F1 目标仍 parse-data / INVALID_LITERAL_LEXICAL；真实库分类未证。
+
+这两项不新设 `semantic.validate` wrapper；批准入口名称、阶段、参数及新 F1 首序分开。其 owner 均为 I05 canonical API/serializer owner，接收和实际实现/调用验证继续 pending；没有读实际函数体来补签名或执行链。`integer-illtyped-report-v1` **仅**放宽 data object 的 exact xsd:integer ill_typed，交真实 Datatype 报告；xsd:int、nonNegativeInteger、decimal 及 shape 侧都不随之宽化，旧 parse/query/reason/check 的 strict 不变。未改 Q6/date/外联/公共 registry/权限。
+
+新 `selftest-r2.py` 保留原20方法的独立名称，并新增针对 R1 三发现及联合域的测试。旧 selftest/双流/20通过只属于 R1 的覆盖，未改写为包含这些新反例。R2 的实际命令/分离双流与结果另存新证据，仍是 stdlib 设计验证，独立审查结论由 root 另派 R2 审者给出。

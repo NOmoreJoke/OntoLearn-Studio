@@ -12,6 +12,20 @@ import json
 import re
 
 
+HARNESS_STAGES = (
+    "reason", "rule-definition", "scope", "restore", "structured-material-required",
+    "parse-data", "parse-shapes", "scope-provenance-gate", "scope-selection-gate",
+    "implicit-loader-guard", "check-shapes",
+)
+COLLECTION_FAILURE_STAGE = "collection-failure"
+
+
+def safe_harness_stage(value):
+    # Exact type check comes before membership: no foreign equality, hash, repr,
+    # str, descriptor or attribute is evaluated, including on str subclasses.
+    return value if type(value) is str and value in HARNESS_STAGES else COLLECTION_FAILURE_STAGE
+
+
 def canonical(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
@@ -190,7 +204,7 @@ def rejection(origin, reason, harness_stage, classification=None, stage=None,
 
 
 def unknown(harness_stage):
-    return rejection("Unknown", "INTERNAL_ERROR", harness_stage, complete=False)
+    return rejection("Unknown", "INTERNAL_ERROR", safe_harness_stage(harness_stage), complete=False)
 
 
 def safe_projection(diagnostic, harness_stage, schema):
@@ -199,11 +213,14 @@ def safe_projection(diagnostic, harness_stage, schema):
     A real adapter must first establish exact trusted class identity; this function
     cannot prove that from JSON. It models schema rejection and safe fallback only.
     """
-    proposed = {"kind": "rejection", "complete": True, "harnessStage": harness_stage,
+    stage = safe_harness_stage(harness_stage)
+    if stage == COLLECTION_FAILURE_STAGE:
+        return unknown(COLLECTION_FAILURE_STAGE)
+    proposed = {"kind": "rejection", "complete": True, "harnessStage": stage,
                 "diagnostic": diagnostic, "partialView": None, "report": None}
     if validate(proposed, schema):
         return proposed
-    return unknown(harness_stage)
+    return unknown(stage)
 
 
 def validate(value, schema, root=None):
@@ -256,7 +273,7 @@ def validate(value, schema, root=None):
 
 def matches(case, observed, schema):
     # A safe unknown or another known refusal can never pass a normal fixture.
-    return validate(observed, schema) and exact(case["expectedProjection"], observed)
+    return validate(observed, schema) and projection_identity_equal(case["expectedProjection"], observed)
 
 
 def graph_isomorphic(left, right):
@@ -271,11 +288,139 @@ def graph_isomorphic(left, right):
     a, b = blanks(left), blanks(right)
     if len(a) != len(b) or len(a) > 8:
         return False
-    target = {canonical(row) for row in right}
+    target = {canonical([identity_term(t) for t in row]) for row in right}
     for order in itertools.permutations(b):
         mapping = dict(zip(a, order))
         rewritten = [[{"kind": "blank", "label": mapping[t["label"]]} if t["kind"] == "blank"
-                      else t for t in row] for row in left]
+                      else identity_term(t) for t in row] for row in left]
         if {canonical(row) for row in rewritten} == target:
             return True
     return False
+
+
+def projection_layout(value):
+    """All RDF positions in this terminal schema; no substring scan of other text.
+
+    One invocation/terminal artifact owns one BNode identity domain. Raw input,
+    source, digests, rule IDs and every undeclared position stay exact.
+    """
+    slots = []
+
+    def legacy_slots(prefix, data):
+        for field in ("rdfs", "rules"):
+            slots.append((prefix + (field,), "n3-graph"))
+        for i, _ in enumerate(data["rdfsEvidence"]):
+            slots.extend([(prefix + ("rdfsEvidence", i, "result"), "n3-sequence"),
+                          (prefix + ("rdfsEvidence", i, "basis"), "n3-graph")])
+        for i, _ in enumerate(data["evidence"]):
+            for field, mode in (("result", "n3-sequence"), ("inputs", "n3-sequence"),
+                                ("basis", "n3-graph")):
+                slots.append((prefix + ("evidence", i, field), mode))
+
+    if value["kind"] == "legacy":
+        legacy_slots(("value",), value["value"])
+    elif value["kind"] == "scope":
+        data = value["value"]
+        for field in ("facts", "ontology"):
+            slots.append((("value", field), "typed-graph"))
+        if data["reasoning_result"] is not None:
+            legacy_slots(("value", "reasoning_result"), data["reasoning_result"])
+        provenance = data["provenance"]
+        for i, row in enumerate(provenance["selectedFacts"]):
+            prefix = ("value", "provenance", "selectedFacts", i)
+            slots.append((prefix + ("triple",), "n3-sequence"))
+            for j, source in enumerate(row["sources"]):
+                slots.append((prefix + ("sources", j, "basis"), "n3-graph"))
+                if source["kind"] == "rule":
+                    slots.append((prefix + ("sources", j, "inputs"), "n3-sequence"))
+        for i, _ in enumerate(provenance["derivedAxioms"]):
+            prefix = ("value", "provenance", "derivedAxioms", i)
+            slots.extend([(prefix + ("triple",), "n3-sequence"),
+                          (prefix + ("source", "basis"), "n3-graph")])
+        slots.append((("query", "rows"), "typed-sequence"))
+        for i, row in enumerate(value["shacl"]["violations"]):
+            for field in row:
+                slots.append((("shacl", "violations", i, field), "typed-sequence"))
+    return slots
+
+
+def identity_domain_equal(left, right, slots):
+    """Joint finite identity comparison, at most 8 BNodes per entire artifact.
+
+    slots are explicit disjoint (JSON path, mode) pairs. Graph modes compare RDF
+    sets; sequence modes retain every ordered position and duplicate. Every slot
+    shares ONE bijection. Undeclared fields, including raw occurrences and digest
+    strings, compare exactly. This detached JSON model is not an RDF/N3 parser.
+    """
+    def clone(value):
+        if type(value) is dict:
+            return {k: clone(v) for k, v in value.items()}
+        if type(value) is list:
+            return [clone(v) for v in value]
+        if type(value) in (str, int, bool, type(None)):
+            return value
+        raise ValueError("detached JSON required")
+
+    paths = [path for path, _ in slots]
+    if any(a == b[:len(a)] for i, a in enumerate(paths) for j, b in enumerate(paths) if i != j):
+        return False
+
+    def transform(value, mode, mapping, labels):
+        def term(value):
+            if type(value) is dict:
+                if set(value) == {"kind", "label"} and value["kind"] == "blank":
+                    labels.add(value["label"])
+                    return {"kind": "blank", "label": mapping.get(value["label"], value["label"])}
+                if set(value) == {"kind", "lexical", "datatype", "language"} and value["kind"] == "literal":
+                    return identity_term(value)
+                return {k: term(v) for k, v in value.items()}
+            if type(value) is list:
+                return [term(v) for v in value]
+            if mode.startswith("n3-") and type(value) is str:
+                if re.fullmatch(r"_:[A-Za-z][A-Za-z0-9_-]*", value):
+                    label = value[2:]
+                    labels.add(label)
+                    return "_:" + mapping.get(label, label)
+                # Only a complete generated literal token's language suffix is
+                # casefolded; never lexical text, datatype, IRI or other fields.
+                match = re.fullmatch(r'("(?:[^"\\]|\\.)*")@([A-Za-z]+(?:-[A-Za-z0-9]+)*)', value)
+                if match:
+                    return match[1] + "@" + match[2].casefold()
+            return value
+
+        normalized = term(value)
+        if mode in ("typed-graph", "n3-graph"):
+            return [json.loads(row) for row in sorted({canonical(row) for row in normalized})]
+        if mode not in ("typed-sequence", "n3-sequence"):
+            raise ValueError("unknown identity slot mode")
+        return normalized
+
+    def rewrite(value, mapping):
+        result = clone(value)
+        labels = set()
+        for path, mode in slots:
+            if not path:
+                raise ValueError("nonempty identity slot path required")
+            target = result
+            for part in path[:-1]:
+                target = target[part]
+            key = path[-1]
+            target[key] = transform(target[key], mode, mapping, labels)
+        return result, sorted(labels)
+
+    try:
+        _, a = rewrite(left, {})
+        target, b = rewrite(right, {})
+        if len(a) != len(b) or len(a) > 8:
+            return False
+        for order in itertools.permutations(b):
+            rewritten, _ = rewrite(left, dict(zip(a, order)))
+            if exact(rewritten, target):
+                return True
+    except (KeyError, IndexError, TypeError, ValueError):
+        return False
+    return False
+
+
+def projection_identity_equal(left, right):
+    return identity_domain_equal(left, right, projection_layout(left))

@@ -1,0 +1,129 @@
+{
+  "format": "i05-observation-r2-author-validation/1",
+  "revisionBase": "57c67631fab6a36f47963aca95b4036064e10777",
+  "originalCandidate": "dd3e659e9214481700275afb3f3188891e42359d",
+  "commands": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/iterations/I05/observation-projection-spec/selftest-r2.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stderr.txt",
+        "bytes": 3902,
+        "sha256": "1a04660443ffdef0bbcfcb3ac1ef17f51601d72754ace83a840a4ba2ec644982"
+      }
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/iterations/I05/observation-projection-spec/selftest-r2.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stderr.txt",
+        "bytes": 4053,
+        "sha256": "19f8b38eca6a4de5b751ac61d6c114b2392d3866b7310ba4a331fd9bc31dd225"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--write",
+        "docs/iterations/I05/observation-projection-spec/cases.json",
+        "docs/iterations/I05/observation-projection-spec/coverage.md",
+        "docs/iterations/I05/observation-projection-spec/schema.json",
+        "docs/iterations/I05/observation-projection-spec/spec.md",
+        "docs/reviews/I05/observation-projection-spec/disposition-r2.md",
+        "docs/reviews/I05/observation-projection-spec/delta-r2.json",
+        "docs/reviews/I05/observation-projection-spec/r2-validation.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-write.stdout.txt",
+        "bytes": 255,
+        "sha256": "1ff004c1d543076a98b8a7c7f098150c1bfe8e02a43872e20035312d3005365e"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-write.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "docs/iterations/I05/observation-projection-spec/cases.json",
+        "docs/iterations/I05/observation-projection-spec/coverage.md",
+        "docs/iterations/I05/observation-projection-spec/schema.json",
+        "docs/iterations/I05/observation-projection-spec/spec.md",
+        "docs/reviews/I05/observation-projection-spec/disposition-r2.md",
+        "docs/reviews/I05/observation-projection-spec/delta-r2.json",
+        "docs/reviews/I05/observation-projection-spec/r2-validation.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-check.stdout.txt",
+        "bytes": 66,
+        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-check.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "57c67631fab6a36f47963aca95b4036064e10777",
+        "--",
+        "docs/iterations/I05/observation-projection-spec/",
+        "docs/reviews/I05/observation-projection-spec/"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "productExecuted": false,
+  "reviewConclusion": "not asserted; root will assign independent R2 delta review",
+  "tests": {
+    "legacyMethodsUnchanged": 20,
+    "newR2Methods": 12,
+    "totalMethods": 32,
+    "attempt1ActualExitCode": 0,
+    "attempt2ActualExitCode": 0,
+    "scope": "stdlib model plus fixed Git docs identity only; no product/library validation"
+  },
+  "formatterDidNotChangeJSONValues": true,
+  "preservationChecks": {
+    "originalImmutableFilesUnchanged": 43,
+    "oldR1FailAndProofAndDoubleStreamsPreserved": true,
+    "originalSelftestSourceUnchanged": true,
+    "all37InputsExpectedAndIndependentMathUnchanged": true,
+    "protectedGuidanceSHA256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+    "newAuthorFailures": []
+  }
+}

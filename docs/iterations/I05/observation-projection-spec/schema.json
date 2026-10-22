@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:ontolearn:private:i05-observation-projection:1",
-  "title": "Proposed private observation terminal projection, not a public DTO",
+  "$id": "urn:ontolearn:private:i05-observation-projection:2",
+  "title": "Proposed private observation terminal projection /2, not a public DTO",
   "$defs": {
     "term": {
       "oneOf": [
@@ -984,7 +984,8 @@
                 "parse-shapes",
                 "scope-provenance-gate",
                 "scope-selection-gate",
-                "implicit-loader-guard"
+                "implicit-loader-guard",
+                "check-shapes"
               ]
             },
             "diagnostic": {
@@ -1020,7 +1021,9 @@
                 "parse-shapes",
                 "scope-provenance-gate",
                 "scope-selection-gate",
-                "implicit-loader-guard"
+                "implicit-loader-guard",
+                "collection-failure",
+                "check-shapes"
               ]
             },
             "diagnostic": {

@@ -10476,7 +10476,7 @@
       "datasetId": "shape/front-2",
       "inputProjectionSha256": "f0511f039e5197203d748f551840d076dd1becbf66ebcf434c6b0de038b8881a",
       "parameters": {},
-      "api": "semantic.validate",
+      "api": "semantic.parse_turtle -> semantic.check_shapes",
       "harnessStage": "parse-shapes",
       "authority": ["sealed fixed input", "new deterministic front-door proposal F1"],
       "oldOracleState": "known-rejection",
@@ -10514,7 +10514,68 @@
           "sha256": "38bc7a4074e183205f55fdb0a74e6933a505f9ff021fe24f5895d296ab725324"
         }
       ],
-      "preconditions": []
+      "preconditions": [],
+      "invocation": {
+        "format": "i05-fixed-invocation/1",
+        "owner": "I05 canonical API/serializer owner",
+        "authority": {
+          "ref": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
+          "path": "docs/iterations/I05/source-package-parity/contract.md",
+          "lines": [51]
+        },
+        "inputParameterMapping": {},
+        "steps": [
+          {
+            "ordinal": 0,
+            "api": "semantic.parse_turtle",
+            "positional": [
+              {
+                "datasetField": "dataText"
+              }
+            ],
+            "keywordArguments": {
+              "format": "turtle",
+              "shapes": false
+            },
+            "harnessStage": "parse-data",
+            "returnBinding": "dataGraph"
+          },
+          {
+            "ordinal": 1,
+            "api": "semantic.parse_turtle",
+            "positional": [
+              {
+                "datasetField": "shapesText"
+              }
+            ],
+            "keywordArguments": {
+              "format": "turtle",
+              "shapes": true
+            },
+            "harnessStage": "parse-shapes",
+            "returnBinding": "shapesGraph"
+          },
+          {
+            "ordinal": 2,
+            "api": "semantic.check_shapes",
+            "positional": [
+              {
+                "stageReturn": "dataGraph"
+              },
+              {
+                "stageReturn": "shapesGraph"
+              }
+            ],
+            "keywordArguments": {},
+            "harnessStage": "check-shapes",
+            "returnBinding": "report"
+          }
+        ],
+        "newWrapper": null,
+        "status": "approved entry chain; exact proposed F1 code/stage still pending real pinned-library/API verification",
+        "expectedReachedPrefix": [0, 1],
+        "expectedUnreachedSuffix": [2]
+      }
     },
     {
       "id": "integer/other-datatype-1",
@@ -10525,7 +10586,7 @@
         "dataPolicy": "integer-illtyped-report-v1",
         "rangePolicy": "legacy"
       },
-      "api": "semantic.validate",
+      "api": "semantic.validate_shacl_text",
       "harnessStage": "parse-data",
       "authority": ["sealed fixed input", "new deterministic front-door proposal F1"],
       "oldOracleState": "known-rejection",
@@ -10563,7 +10624,50 @@
           "sha256": "61a3e92c298fa37483d203a8ad59dcafc9ec0ff61cf6d30b043267b7ca048c98"
         }
       ],
-      "preconditions": []
+      "preconditions": [],
+      "invocation": {
+        "format": "i05-fixed-invocation/1",
+        "owner": "I05 canonical API/serializer owner",
+        "authority": {
+          "ref": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
+          "path": "docs/iterations/I05/source-package-parity/contract.md",
+          "lines": [52]
+        },
+        "inputParameterMapping": {
+          "dataPolicy": {
+            "pythonKeyword": "data_policy",
+            "exactValue": "integer-illtyped-report-v1"
+          },
+          "rangePolicy": {
+            "pythonKeyword": "range_policy",
+            "exactValue": "legacy"
+          }
+        },
+        "steps": [
+          {
+            "ordinal": 0,
+            "api": "semantic.validate_shacl_text",
+            "positional": [
+              {
+                "datasetField": "dataText"
+              },
+              {
+                "datasetField": "shapesText"
+              }
+            ],
+            "keywordArguments": {
+              "data_policy": "integer-illtyped-report-v1",
+              "range_policy": "legacy"
+            },
+            "harnessStage": "parse-data",
+            "returnBinding": "report"
+          }
+        ],
+        "newWrapper": null,
+        "status": "approved explicit policy entry; exact proposed F1 code/stage still pending real pinned-library/API verification",
+        "expectedReachedPrefix": [0],
+        "expectedUnreachedSuffix": []
+      }
     },
     {
       "id": "offline/implicit-jsonld",
@@ -10618,5 +10722,6 @@
       ],
       "preconditions": []
     }
-  ]
+  ],
+  "projectionSpecVersion": "i05-observation-projection/2"
 }
