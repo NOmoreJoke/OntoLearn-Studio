@@ -137,3 +137,12 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 按总控核实的人类补齐双审授权，已盘点全部四批保留实现、中间失败候选及非实现接口方案，见[全量积压附录](dual-review-backlog-2026-10-22.md)。四批全部没有ZCode/MiniMax真实任务或指定Pass，前三批累积进入93516fa；既有内审不能替代指定双方，也不遗漏历史未ready部分。四份历史清单均匹配各自Git对象，当前25项无漂移。原check日志逐字节保全到evidence/check-93516fa-original.txt，未重新执行。
 
 本次只新增过程附录/原日志归档；原product93516fa、评估manifest及冻结输入不改，Goal保持blocked。桌面静默政策已撤回，不再列为当前阻断；T08尚无外审创建lease。真实网关/领域/页面/原11.3与12.2及发布门仍未验，不为入队缩验收。
+
+
+## 全部已开发范围双模型输入准备（2026-10-22）
+
+按总控最新明确准备授权，product93516fa保持，已在dual-review-preparation-93516fa/准备完整同版双方独立提示与input-manifest。范围包含全部25实现/测试/fixture、完整44项产品差异和828项Git树；原PRD全文、FR/A/Q9/11.3/12.2/全部原门、8内审及历史失败、717TS/1052Py原日志与其他候选摘要/hash、所有真实未验缺口均入包，不造缩小S1。
+
+独立准备核验1暂不通过，发现源码快照扩展名可能被静态工具扫描及历史成功日志表述过宽；原意见与旧manifest保留包外。已改23份快照为数据后缀、原字节不变，并明确679/691/706仅摘要/hash而717有完整成功日志。复核2明确准备包通过，100项输入/来源、完整范围、两提示同正文和原门一致；见dual-review-preparation-review-1.md、-2.md及receipt.json。
+
+随后暂存发现CSV换行规范化及原PRD硬换行被当新空白；仅给本包inputs新增归档属性以保全原字节，未改产品配置。实际新增字节问题触发独立增量复核3并明确通过，101项工作区/暂存blob/manifest一致；原材料复核2与其4d85清单保留。当前input-manifest SHA256 `33deedd2aaeb18852d513bef4d46ab047a27ded380d7fff9ef03e3eb9e9ba317`。定向新文档/JSON Prettier通过，只做材料核验；产品/旧manifest未改，未运行产品测试、probe、API或GUI。实际指定任务/设置/报告仍不存在，待root短创建lease；准备通过不等于产品/指定双审/发布通过，原Goal保持blocked。

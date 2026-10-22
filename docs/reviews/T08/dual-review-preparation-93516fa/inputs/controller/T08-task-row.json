@@ -1,0 +1,80 @@
+{
+  "id": "T08",
+  "name": "Agent 与模型",
+  "status": "owned_and_preparing",
+  "actual_owner": "original functional development chat",
+  "actual_agent_or_thread": "01a15bc2-40dd-7393-a1cb-1e87086e6993",
+  "actual_worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model",
+  "actual_branch": "feature/weekly-t08-agent-model",
+  "actual_base_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "actual_head_sha": "ca3c8b017afefe7b5514a944192f4fbb0a3c2914",
+  "candidate_branch_pattern": "feature/weekly-t08-<topic>",
+  "preparation_without_formal_dependencies": "tool adapters/prompts/evaluation set; each tool waits its actual domain service",
+  "proposed_exclusive_boundaries": [
+    "agent services/sidebar",
+    "model settings"
+  ],
+  "verification_evidence": [],
+  "dual_review_reports": [],
+  "pr": null,
+  "merged_sha": null,
+  "next_action": "Pure provider codec and agent trusted-evidence/evaluation tests; I06 approved gateway and domain tools required later",
+  "integration_prerequisites": [
+    "I06",
+    "T01",
+    "T00"
+  ],
+  "acceptance_cross_links": [
+    "Each declared domain tool requires its relevant approved T02..T07 actual runtime and T01 write boundary",
+    "Full Agent evaluation covers all required domains, truthful failure/staleness, field authorization and no fabricated results using actual Q9 service",
+    "T09 records full-assistance transfer attempt without counting it as independent success"
+  ],
+  "local_service_acceptance": "FR-800..806/900..902/904; A-01..05/09/10; Q9 actual service; tools remain unavailable until each relevant T02..T07 runtime is approved",
+  "actual_turn": "01a15c43-e201-7fd2-999f-56d2129af074",
+  "wait_cursor": "82a4bdd3-363b-4f91-8951-606411bbd696:12",
+  "exclusive_write_paths": [
+    "apps/desktop/src/main/agent/",
+    "apps/desktop/src/renderer/src/agent/",
+    "tests/unit/t08-*.test.ts",
+    "tests/fixtures/agent/",
+    "docs/reviews/T08/",
+    "docs/iterations/T08/"
+  ],
+  "actual_runtime_status": "idle/completed; timestamped observation only",
+  "launch_prompt": "iteration-control/2026-10-21-weekly-release/T08-launch-prompt.md",
+  "functional_implementation_not_dispatched": false,
+  "no_implementation_pass_yet": true,
+  "verification_commands_planned": [
+    "npm run check",
+    "dedicated t08 protocol/evaluation unit tests"
+  ],
+  "actual_owner_goal_status_reported": "blocked",
+  "parent_acceptance_complete": false,
+  "latest_real_recovery_note": "official idle/final reports existing Goal blocked; exact93516 source current30e0 policy only",
+  "original_goal_runtime_observation": "official idle/final reports existing Goal blocked; exact93516 source current30e0 policy only",
+  "historical_observations": [
+    {
+      "context": "prior launch/runtime metadata superseded by bounded current observation;original time not re-invented",
+      "actual_head_sha": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "actual_runtime_status": "active/inProgress; official immediate wait verified",
+      "actual_turn": "01a15bf1-5f2d-7522-a0bf-8c1dc48282a7",
+      "wait_cursor": "82a4bdd3-363b-4f91-8951-606411bbd696:10"
+    }
+  ],
+  "actual_head_role": "observed parent checkout process HEAD;not frozen product candidate or runtime approval",
+  "current_runtime_observation": {
+    "turn": "01a15c43-e201-7fd2-999f-56d2129af074",
+    "cursor": "82a4bdd3-363b-4f91-8951-606411bbd696:12",
+    "source": "official single-target wait_threads(timeoutMs=0);independent report rootfullread",
+    "observation_batch": "2026-10-21T10:58:08.702390+08:00 Git metadata batch;polls in same bounded audit,not atomic",
+    "report": "task-status-reconciliation-readback.md",
+    "goal_status_directly_verified": false
+  },
+  "current_git_observation": {
+    "head": "ca3c8b017afefe7b5514a944192f4fbb0a3c2914",
+    "branch_matches_registered": true,
+    "status_count": 1,
+    "observed_at": "2026-10-21T10:58:08.702390+08:00",
+    "new_candidate_claimed": false
+  }
+}

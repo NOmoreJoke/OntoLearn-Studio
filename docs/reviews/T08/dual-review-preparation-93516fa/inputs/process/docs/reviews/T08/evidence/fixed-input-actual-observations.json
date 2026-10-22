@@ -1,0 +1,224 @@
+{
+  "implementationCandidate": "93516fa8455cf4b195cbfb699aa7a6652d428b6f",
+  "suiteVersion": "t08-fixed-input-eval-2",
+  "probeSha256": "6ca511b904a0bfe7b99cd3c9cbd19b13556786680735f7c65b53f30391a0f854",
+  "queries": [
+    {
+      "case": {
+        "id": "Q-01",
+        "stage": "Q-01-1",
+        "question": "查询未闭环高危告警",
+        "expected": {
+          "variables": ["alarm"],
+          "rows": [
+            {
+              "alarm": "<urn:ontolearn:learning:alarm/A01>"
+            }
+          ],
+          "scope": "current-asserted"
+        },
+        "expectedSemanticMatch": true
+      },
+      "actualObservation": {
+        "probeVersion": "t08-fixed-rdflib-csv-1",
+        "sourceCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+        "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixtureSha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+        "rdflibVersion": "7.6.0",
+        "caseId": "Q-01",
+        "kind": "query",
+        "inputSha256": "cb42e51dde89677efe513eed5e9bdea5b91ac3a7832ff9f2495fa47bfda32844",
+        "querySha256": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386",
+        "query": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm\n",
+        "scope": "current-asserted",
+        "ok": true,
+        "variables": ["alarm"],
+        "rows": [
+          {
+            "alarm": "<urn:ontolearn:learning:alarm/A01>"
+          }
+        ]
+      },
+      "actualSemanticMatch": true,
+      "expectedDispositionVerified": true
+    },
+    {
+      "case": {
+        "id": "Q-02",
+        "stage": "Q-02-1",
+        "question": "A01改Closed后查询未闭环高危告警",
+        "expected": {
+          "variables": ["alarm"],
+          "rows": [],
+          "scope": "current-asserted"
+        },
+        "expectedSemanticMatch": true
+      },
+      "actualObservation": {
+        "probeVersion": "t08-fixed-rdflib-csv-1",
+        "sourceCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+        "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixtureSha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+        "rdflibVersion": "7.6.0",
+        "caseId": "Q-02",
+        "kind": "query",
+        "inputSha256": "68cef88daa6d40925e2d2f603a3d72d170a6cdbeea4faeb862d8dae587517b04",
+        "querySha256": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386",
+        "query": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Open\" . } ORDER BY ?alarm\n",
+        "scope": "current-asserted",
+        "ok": true,
+        "variables": ["alarm"],
+        "rows": []
+      },
+      "actualSemanticMatch": true,
+      "expectedDispositionVerified": true
+    },
+    {
+      "case": {
+        "id": "Q-01-semantic-wrong",
+        "stage": "Q-01-1",
+        "question": "查询未闭环高危告警",
+        "expected": {
+          "variables": ["alarm"],
+          "rows": [
+            {
+              "alarm": "<urn:ontolearn:learning:alarm/A01>"
+            }
+          ],
+          "scope": "current-asserted"
+        },
+        "expectedObservedRows": [
+          {
+            "alarm": "<urn:ontolearn:learning:alarm/A02>"
+          }
+        ],
+        "expectedSemanticMatch": false
+      },
+      "actualObservation": {
+        "probeVersion": "t08-fixed-rdflib-csv-1",
+        "sourceCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+        "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixtureSha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+        "rdflibVersion": "7.6.0",
+        "caseId": "Q-01-semantic-wrong",
+        "kind": "query",
+        "inputSha256": "cb42e51dde89677efe513eed5e9bdea5b91ac3a7832ff9f2495fa47bfda32844",
+        "querySha256": "b5bc03457baf960aa638b6b0cd51195aee7d45a049cfa23cd3b6dd8bd64e168a",
+        "query": "PREFIX l: <urn:ontolearn:learning:>\nSELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ?alarm l:level \"High\" ; l:status \"Closed\" . } ORDER BY ?alarm\n",
+        "scope": "current-asserted",
+        "ok": true,
+        "variables": ["alarm"],
+        "rows": [
+          {
+            "alarm": "<urn:ontolearn:learning:alarm/A02>"
+          }
+        ]
+      },
+      "actualSemanticMatch": false,
+      "expectedDispositionVerified": true
+    },
+    {
+      "case": {
+        "id": "Q-01-syntax-wrong",
+        "stage": "Q-01-1",
+        "question": "查询未闭环高危告警",
+        "expectedCode": "QUERY_SYNTAX",
+        "expectedSemanticMatch": false
+      },
+      "actualObservation": {
+        "probeVersion": "t08-fixed-rdflib-csv-1",
+        "sourceCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+        "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+        "fixtureSha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+        "rdflibVersion": "7.6.0",
+        "caseId": "Q-01-syntax-wrong",
+        "kind": "query",
+        "inputSha256": "cb42e51dde89677efe513eed5e9bdea5b91ac3a7832ff9f2495fa47bfda32844",
+        "querySha256": "52719ea1d5af2504820cc2cb17f278d5c7f4ea001c59e7929d4f7d47943f8a9d",
+        "query": "SELECT ?alarm WHERE {",
+        "scope": "current-asserted",
+        "ok": false,
+        "code": "QUERY_SYNTAX"
+      },
+      "actualSemanticMatch": false,
+      "expectedDispositionVerified": true
+    }
+  ],
+  "csvObservation": {
+    "probeVersion": "t08-fixed-rdflib-csv-1",
+    "sourceCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+    "manifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "fixtureSha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+    "rdflibVersion": "7.6.0",
+    "caseId": "CSV-original",
+    "kind": "csv",
+    "sourceSha256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+    "columns": ["equipment_id", "equipment_name"],
+    "rows": [
+      {
+        "sourceLine": 2,
+        "equipment_id": "001",
+        "equipment_name": "泵站A"
+      },
+      {
+        "sourceLine": 3,
+        "equipment_id": "002",
+        "equipment_name": "泵站B"
+      }
+    ]
+  },
+  "csvCandidateChecks": [
+    {
+      "candidateCase": {
+        "id": "mapping-string-identity",
+        "candidate": [
+          {
+            "equipment_id": "001",
+            "equipment_name": "泵站A"
+          },
+          {
+            "equipment_id": "002",
+            "equipment_name": "泵站B"
+          }
+        ],
+        "expectedConsistent": true
+      },
+      "actualSampleConsistent": true
+    },
+    {
+      "candidateCase": {
+        "id": "mapping-leading-zero-loss",
+        "candidate": [
+          {
+            "equipment_id": "1",
+            "equipment_name": "泵站A"
+          },
+          {
+            "equipment_id": "2",
+            "equipment_name": "泵站B"
+          }
+        ],
+        "expectedConsistent": false
+      },
+      "actualSampleConsistent": false
+    },
+    {
+      "candidateCase": {
+        "id": "mapping-name-swapped",
+        "candidate": [
+          {
+            "equipment_id": "001",
+            "equipment_name": "泵站B"
+          },
+          {
+            "equipment_id": "002",
+            "equipment_name": "泵站A"
+          }
+        ],
+        "expectedConsistent": false
+      },
+      "actualSampleConsistent": false
+    }
+  ],
+  "scope": "Direct local CLI observations for versioned evaluation, not FR904 logs or product runtime. Candidates/protocol messages hand-authored; no actual provider, approved product adapter, Store, inference, behavior or scenario execution."
+}

@@ -1,0 +1,43 @@
+{
+  "version": "t08-agent-eval-v1",
+  "source": "synthetic-only",
+  "caseFile": "synthetic-cases.v1.json",
+  "sha256": "38f332e4f2d1e7cb59817f66c4db9b4d73defa04149650074fd890e1f0ad1f88",
+  "caseIds": [
+    "query-complete-set",
+    "query-semantic-error-remains-draft",
+    "reasoning-exact-trace",
+    "scenario-exact-record",
+    "truthful-stale",
+    "truthful-historical",
+    "truthful-failed",
+    "truthful-cancelled",
+    "fabricated-reference-rejected",
+    "injected-success-text-rejected",
+    "no-basis-uncertain",
+    "mapping-leading-zero-draft",
+    "ontology-versioned-draft"
+  ],
+  "reset": "Each case creates a fresh AgentSession with fixed context and one injected synthetic adapter. No engine, network, project or persisted state.",
+  "scope": "Agent receipt fidelity and draft boundaries only. These fixtures do not execute SPARQL, inference or scenario algorithms.",
+  "requiredRealAcceptance": [
+    "A-01 stale ChangeSet through T01",
+    "A-02 atomic failure and undo through T01",
+    "A-03 final-byte field provenance through I06",
+    "A-04 imported/tool injection through actual path",
+    "A-05 endpoint/principal grant invalidation through I06",
+    "A-09 actual tool errors/stale/history/no evidence",
+    "A-10 zero fabricated results with actual provider and all relevant tools",
+    "11.3 actual NL SPARQL syntax and complete result/semantic negative",
+    "11.3 actual mapping sample correctness incl leading zero",
+    "11.3 actual inference trace/open-world/domain-range explanations",
+    "11.3 actual scenario rounds/metrics/assumptions",
+    "12.2 actual UI, user Diff confirmation and offline continuity"
+  ],
+  "supplementalTests": [
+    "t08-codec.test.ts: empty/truncated JSON, unknown fields, wrong tool arguments, reasoning_content and call IDs",
+    "t08-agent.test.ts: cancellation, timeout, stale projects, late responses, injection, field projection, offline action policy"
+  ],
+  "providerAcceptance": "not-run",
+  "formalThinkingMode": "not-selected-until-real-evaluation"
+}
