@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "scope": "pure-docs draft consumer I/O/failure matrix and minimal supplier requests; not public contracts or implementation",
+  "initialReviewRef": "db77a347a826b7b50d6ef88c5e894c365d63eefe",
+  "pageRetryClarificationRef": "e976835a8a9c40cf86a07e6d5ad1cc6421a95b83",
+  "independentlyReviewedRevisionRef": "bb23457bc55fb68816f25b884f4b1a981e53e920",
+  "reviewVerdict": "Pass at draft document layer only; initial P2 Fail preserved",
+  "files": [
+    {
+      "path": "docs/reviews/T02/single-fact-consumer-draft-20261022/consumer-matrix.md",
+      "bytes": 18265,
+      "sha256": "cbeac0b34596ef8f09c5a141be17327eac179925a078026b235503f87e691c69"
+    },
+    {
+      "path": "docs/reviews/T02/single-fact-consumer-draft-20261022/supplier-requests.md",
+      "bytes": 20377,
+      "sha256": "9d6b1e0686646904ce389243aeddb32d063d4e4cbff3fe7018ecb0a2e1371d33"
+    },
+    {
+      "path": "docs/reviews/T02/single-fact-consumer-draft-20261022/input-readback.json",
+      "bytes": 3562,
+      "sha256": "684b254b9871de3b361fdc15cb25a9ba29fb212d6a45f945695016ed3d44012b"
+    },
+    {
+      "path": "docs/reviews/T02/single-fact-consumer-draft-20261022/disposition.md",
+      "bytes": 1874,
+      "sha256": "3f3623623ece3bfcff68d05f995434a8744c6a6f8ec5d5c01b83beea24599c08"
+    },
+    {
+      "path": "docs/reviews/T02/single-fact-consumer-draft-20261022/independent-review-initial.md",
+      "bytes": 8796,
+      "sha256": "db585c8947c759466842a91468f2340f22480ba07e79278f6635ebb16622d573"
+    },
+    {
+      "path": "docs/reviews/T02/single-fact-consumer-draft-20261022/independent-review-final.md",
+      "bytes": 3659,
+      "sha256": "008e2389f96379cfcaa92ac2bb7f3855f6567f5f5ecbd7d0038d84655ed16a74"
+    }
+  ],
+  "futureFailureCases": 22,
+  "supplierRequestSlots": 10,
+  "fixedInputEvidence": "8 fixed inputs and root audit checked at independent initial review; 1 exact PRD input added and checked in delta review; no repeated all-input/product run",
+  "oldTen": "not copied or reverified; no paths outside this new prefix changed since fa988",
+  "protectedAGENTSUnchanged": true,
+  "noProductTestsConfigLocksDeltaFromC5": true,
+  "documentPrettierExit": 0,
+  "linksExist": true,
+  "noProductImportSQLJobStoreTestsGUIModelsSupplierFixtureAdoptionGoalMutation": true,
+  "parallelWriting": {
+    "consumer": "root owner",
+    "supplierRequests": "t02_ui_review_fixes, single assigned file; owner later adds C1-C8 link and page retry precision",
+    "independentReview": "t02_independent_review, reports only"
+  },
+  "staticLocateAttempt": {
+    "initial": "rg ordinary hidden-file listing plus nonexistent OntoLearn-Studio/.private path exited2 before audit read",
+    "corrected": "rg --files --hidden on .private and iteration-control located exact root audit; its bytes/SHA verified",
+    "productFailure": false
+  },
+  "selfReference": "Six payloads listed. This delivery manifest excludes itself; final enclosing Git ref is sent separately."
+}
