@@ -23,10 +23,9 @@
 复现核心（只在内存改对象；无产品执行）：
 
 ```python
-row = copy.deepcopy(next(x for x in asset['observations']
-                         if x['id'] == 'utc-date/lexical-0/value'))
-row['id'] = 'utc-date/lexical-100/value'
-builder.business_expected(row, asset['datasets'][row['datasetId']], golden)
+row = copy.deepcopy(next(x for x in asset["observations"] if x["id"] == "utc-date/lexical-0/value"))
+row["id"] = "utc-date/lexical-100/value"
+builder.business_expected(row, asset["datasets"][row["datasetId"]], golden)
 # 实际返回 known-rejection + []，没有 ValueError
 ```
 

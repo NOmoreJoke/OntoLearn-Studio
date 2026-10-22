@@ -1,0 +1,112 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle
+
+
+ Test Files  15 passed (15)
+      Tests  630 passed (630)
+   Start at  01:22:51
+   Duration  8.42s (tests 90%, import 6%, transform 4%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  339.29 kB
+
+✓ built in 35ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  276.26 kB
+
+✓ built in 21ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-DaDpMxpv.js   865.34 kB
+
+✓ built in 80ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+unformatted: File would be reformatted
+  --> docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/independent-owned-repair-review-first.md:26:43
+   |
+25 | ```python
+   - row = copy.deepcopy(next(x for x in asset['observations']
+   -                          if x['id'] == 'utc-date/lexical-0/value'))
+   - row['id'] = 'utc-date/lexical-100/value'
+   - builder.business_expected(row, asset['datasets'][row['datasetId']], golden)
+26 + row = copy.deepcopy(next(x for x in asset["observations"] if x["id"] == "utc-date/lexical-0/value"))
+27 + row["id"] = "utc-date/lexical-100/value"
+28 + builder.business_expected(row, asset["datasets"][row["datasetId"]], golden)
+29 | # 实际返回 known-rejection + []，没有 ValueError
+   |
+
+unformatted: File would be reformatted
+  --> docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/independent-owned-repair-review.md:26:43
+   |
+25 | ```python
+   - row = copy.deepcopy(next(x for x in asset['observations']
+   -                          if x['id'] == 'utc-date/lexical-0/value'))
+   - row['id'] = 'utc-date/lexical-100/value'
+   - builder.business_expected(row, asset['datasets'][row['datasetId']], golden)
+26 + row = copy.deepcopy(next(x for x in asset["observations"] if x["id"] == "utc-date/lexical-0/value"))
+27 + row["id"] = "utc-date/lexical-100/value"
+28 + builder.business_expected(row, asset["datasets"][row["datasetId"]], golden)
+29 | # 实际返回 known-rejection + []，没有 ValueError
+   |
+
+2 files would be reformatted, 254 files already formatted

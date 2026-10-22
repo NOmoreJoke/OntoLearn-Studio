@@ -1,0 +1,49 @@
+{
+  "format": "T05-O15-full-check-02-finite-blocker/1",
+  "recordedUtc": "2026-10-22T17:27:22.944197+00:00",
+  "combinedCommit": "0de7c2fa7774fddb9366e029d01a8f6a86830670",
+  "fullCheckExit": 1,
+  "passedInThisWholeCommand": [
+    "eslint",
+    "prettier",
+    "three typechecks",
+    "15vitestFiles/630tests",
+    "electron-vite build",
+    "ruff lint"
+  ],
+  "stoppedAt": "ruff format --check . Markdown Python fenced-code formatting",
+  "pytestReached": false,
+  "exactTwoReportsAtFailure": [
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/independent-owned-repair-review-first.md",
+      "bytes": 9672,
+      "sha256": "abbe714a90a341d00af0103737feba597eb4fb35a1878f129e97a6f770b0ffc0",
+      "fixedFailureVersionGit": "0de7c2fa7774fddb9366e029d01a8f6a86830670"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/independent-owned-repair-review.md",
+      "bytes": 14157,
+      "sha256": "0809441bf5d1a06157c372fce18fdb0b4c1bb96604cda354c1f3c5bb31d67e24",
+      "fixedFailureVersionGit": "0de7c2fa7774fddb9366e029d01a8f6a86830670"
+    }
+  ],
+  "sourceAndLocksBeforeAfterEqual": true,
+  "minimalProposal": {
+    "activeReport": "original author formatted current Python codeblock only; old preserved at Git17b7917a",
+    "frozenFirstReport": "preserve9672/abbe; unique config owner add only exact whole relative path to tool.ruff.format.exclude",
+    "additionalLintIgnore": false,
+    "directoryGlobOrActiveSourceExclusion": false
+  },
+  "activeReportStyleAfter": {
+    "bytes": 14132,
+    "sha256": "e7cc56d9838bc1258788fdcb10556791893bcbf172b5b60210a07647811dad6b",
+    "onePythonCodeblockASTEqual": true,
+    "allTextOutsideCodeblockEqual": true,
+    "independentAuthorTargetedRuffFormatCheck": 0,
+    "firstAndCombinationReportsUnchanged": true
+  },
+  "firstReceiptReadAttempt": "assertion rejected current=oldGit during simultaneous author formatting before write; fixed failure identity now from actual committed oldGit",
+  "noRepeatedKnownBlockedWholeCheck": true,
+  "noFullCheckGreen": true,
+  "first02RawStreamsPreserved": true
+}
