@@ -2,6 +2,8 @@
 
 2026-10-23 总控已正式有限接收**第5组同base5f→product507、完整有界S1双方明确Pass**；新增创建0、接收pair+1。[接收回执](controller-r3-limited-acceptance-20261023.json)追加记录，已冻结的创建/收件原件不改。两模型产品Pass不升级为全native合规、零曝光或父验收；旧R2过程Fail与全部父缺口保留。F-R3-01原P3非阻断未修未关，T01已接未来唯一责任，延期至正式结果metadata度量/错误分类契约冻结后由T04/I05消费。原父Goal仍blocked；未因本次接收获准push/PR/merge。
 
+- 固定供消费源码：[QueryPage 507小包](../../iterations/T04/querypage-consumer-507/README.md)。5份可读逐字源码＋16项共享依赖/宿主上下文Git blob身份；props/callback、CSS与有限reader契约只取获接收507，不以live需求稿代替源，不新增presentation政策。供T08/T01按成熟接口接线；T01 asserted后端票与旧C4真worker复用核验不在本包验收内。
+
 - 下一步：[正式query.execute最小集成需求与现有入口](../../iterations/T04/query-execute-integration-requirements-20261023.md)。只读固定507入口并列实缺；[I05供方事实收件](i05-supplier-facts-intake-20261023.json)确认真实SELECT/ASK与execute_request算法已存在，正式Job/worker/Store metadata/App接线仍待成熟接口与接收。纯asserted可先解其实际依赖，不缩减selected/profile、ASK、网络拒绝、历史或保存要求。既有命名reader继续保留，不重复S1验证或为未闭门自动新审。
 
 - 最新双报告：[统一收据](p3-repair/round3-results-20261023/dual-review-receipt.json)、[Z处置](p3-repair/round3-results-20261023/zcode-owner-disposition.md)、[M处置](p3-repair/round3-results-20261023/minimax-owner-disposition.md)。Z官方原turn.completed=`2026-10-22T20:24:27.590Z`，报告27067B/119行/SHA `7ab676ff90b1ded1b89e573480d2597080bfb950507ae57e7c640fd05c8851d6`；M strict四scalar completed/updated1792701245588，报告59781B/380行/SHA `fe23ab51aea1ded81ba87264377475b71d1676468c49e7dc3a75199e7dc1d612`。均正式终态后全文读、前后hash一致；四P3均关闭，10closed+旧partial不抹平。M新F-R3-01 P3保留/未修未关，T01已接未来唯一责任；延期至正式结果metadata度量/错误分类契约冻结后由T04/I05消费，不把draft D1授权外推reader/结果契约。
