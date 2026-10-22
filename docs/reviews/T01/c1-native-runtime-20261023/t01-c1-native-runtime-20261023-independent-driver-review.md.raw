@@ -1,0 +1,69 @@
+# T01 C1 native runtime driver：实际新补丁独立静态审查
+
+结论：本候选暂不通过，有1项具体P2需窄修。大部分新增行为与有限采样、身份分类、独立终态收口直接对应，首败保护和禁止盲signal没有降低；但ancestry helper发生comm变化并呈Z后，当前无需任何原exit/close即可被fresh absence结清，超过本次“改变展示值仅在原exit0/close0及后续真实absence共同成立时放行”的精确条件。已有16组没有覆盖这一组合。修复可只收紧该分支，不扩大产品或原spec。本结论不替新native运行通过。
+
+审查者 /root/create_core_review，2026-10-23；独立于作者，只读源、diff、既有定点原件，另做1个必要纯内存实际候选函数反例。没有写任何源/旧报告，没有commit、产品import、数据库、真实spawn/ps/kill、Electron/GUI或完整check。审查前段一次读取工具会话未保fs变量，返回fs is not defined，重新导入工具内标准库后正常；这不是候选执行失败。本报告与自有/tmp反例JSON是唯一新增文件，原窄归因报告不改。
+
+## 1. 实际候选身份和读面
+
+树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-native-runtime-20261023；实际HEAD/parent均acbe2dc6388c855f7fbabbb6da08cdf6c14bcbab，源码未提交。实际Git diff只有AGENTS政策同步和driver；前者15147B/SHA256 de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4，与已全文读规则相同，属保护项，不是本实现新增改动。
+
+- 新driver：tests/e2e/c1-native-macos-driver.mjs，41587B / 3ebd981b9824d578f22e89c3a44e653dbef0af97cee474495e4244a4dc13b469，1152个非尾空行。
+- parent旧driver：24417B / 008b7bfd2b580aa3bd32812b0823f0642123280fead527b941cc06e748bf8b6d。
+- observer未改：13673B / 33678a1742bcfb2ed9710ed65a7894ee33f9fb047c4fd2d1743207eabcddf22c。
+
+先核实际hash再分四段全文读取新driver。读取全部772行变更diff（634增/138删）；第一次批量diff中段工具输出被截断，随后专门回读diff340–560行补齐，不把截断输出当全文。独立静态归属检查基于实际源码和diff，不只读作者说明。最后Git查HEAD及diff路径确认没有旧产品/spec/lock/observer变更。本次hash前后同3ebd候选。
+
+## 2. 已修好的原收尾缺口与范围
+
+原CLI四参数及未知/重复/规范绝对路径拒绝保留，本树executable/app、独占runRoot、TMPDIR/TMP/TEMP、原子mkdir、依赖/产物前置和built/file legacy2边界保留。120000ms主runtime、300000mscleanup、10000msbootstrap仍是原界；新增2000ms只用于有界分类quarantine和原cleanup总界内的自然采样等待，不增加总deadline或业务rounds。无安装/构建/自动新资源入口。
+
+observer原文未变，所以真实health、可见focus、renderer crash/infinite loop/真实unresponsive、两次原dialog、main inspector故障前close+undefined、无rendererCDP/无stub/无禁hangmonitor与sandbox均维持原路线。driver注入和固定argv/env删除集未降；新candidate并未重写产品恢复或before-quit。
+
+新增过程有明确必要用途：
+
+- 第88–282行纯解析/分类/observerProjection：将pid birth、comm显示、actual row presence、stat和原ChildProcess exit/close分离；拒parse/重复pid/错误生命周期。
+- 第284–333行processTable：增加实际ps argv、序号、采样起止/exit/signal/timeout、stat/rawLine；仅精确target空code1可作为相应ps absence，global仍须包含runner且parse完整，timeout不会冒absence。
+- 第451–496/965–973行：原事件分别保exit/close/error及接收时刻，避免旧快照晚回调冒作close后fresh采样；重复/身份冲突不重新收养。
+- 第550–650行：原/新rawrow、分类、生命期、采样区间及尾部ring/transition留证，32尾/512转变/4MiB上界，诊断不完整即禁止signal和success；稳定采样时间推进不无意义地耗尽transition。
+- 第652–798行：先分类已知生命期，再以未退出/未quarantine/未冲突的原归属作亲缘根；原child已exit/close不再由祖先/metrics重新收养；无可信父birth的孤儿metrics不被直接认领，未知reported PID阻断完整收口。
+- 第809–873行：每次signal前fresh精确采样并重新分类；任何signal尝试先记testCleanupSignalled及firstFailure，不能事后排空补自然成功。未知、birth冲突、展示quarantine、已close和诊断不完整均不signal；无批杀/组杀。
+- 第875–915/1055–1109行：finally独立读取原子observer全文，分别保恢复/child/main/process/overall及firstFailure，不因早期failure Promise跳过；收集证据不清旧fail，observer缺失/不一致仍失败。
+
+allProcessesAbsent必须known非空、诊断完整、每一known resolvedTerminal且无birthMismatch、所有reported均有实际known身份。对于原main/engine，classifier必须原exit0/close0、fresh absence采样开始晚于close接收和最后present样本结束；helpers稳定comm则可以原parent/birth及真正fresh absence终结，不伪造其没有的ChildProcess close。这两类原证据强度应继续区分，不能把下述展示变化例外混入稳定helper的规则。
+
+## 3. P2-NR-01：helper的改变展示值绕过原exit/close条件
+
+准确切点：driver143–183，特别是requiresClose仅看direct-spawn/main-child-object（144），以及resolvedTerminal末项(!requiresClose || trustedOriginalClose)（182）。displayMismatch虽被永久记下，但明确Z时unexplainedDisplay=false；之后row不存在且sample足够新，就能在ancestry source绕过所有原exit/close要求。
+
+独立反例直接截取本候选纯函数marker之间实际字节，VM执行classifyProcess，没有import模块/CLI或任何真实过程：
+
+1. 原entry为已建立归属的ancestry helper，pid42，start='Fri Oct 23 00:36:24 2026'，comm='/owned/helper'，firstSeen=10，lastPresentEnd=20，没有lifecycle。
+2. sample[80,90]看到同pid/start/ppid，但comm='(helper)'、stat='Z'。实际返回displayMismatch=true、trustedOriginalClose=false、terminalPending=true、signalEligible=false、resolvedTerminal=false。
+3. 将返回状态带入后，sample[120,130]完整parse且该pid真实缺行，仍没有原exit/close。实际返回displayMismatch=true、trustedOriginalClose=false、freshAbsence=true，但resolvedTerminal=true、failureReason=null。
+
+该helper可由真实sample沿活跃own main的亲缘建立，因此不是调用外部伪entry才可达的无关API问题。Electron GPU/Utility/renderer属于这一source类别；若其展示变为另一值且Z再消失，allProcessesAbsent将消费这个true。它不会导致盲signal，但能把本次授权保守要求仍不够证据的展示改变分支算作自然完整收尾。
+
+最小处置：对已有或当次displayMismatch单独再要求trustedOriginalClose，且freshAbsence也必须晚于该原close及最后present结束；无原句柄helper若发生展示改变，应维持quarantine/未结并失败，绝不signal。只对稳定comm helper保留现有“原亲缘/birth+fresh trueabsence”路线。不要删除helper稳定自然收尾功能，不要把任意Z或后来的absence视作同一生命期证明，也不要清birth冲突。
+
+应补两个相邻定点：ancestry helper Z展示改变+无原close+fresh absence不得resolved；稳定comm helper+fresh absence仍可resolved。原main/engine同Z变化+exit0/close0+之后fresh absence正例应保。此修复在现有两owned脚本授权内，不需另等泛准或新增产品/旧spec/timeout/rounds门；由主线作者修改，本审不写源码。
+
+独立反例全输入/实际输出：/tmp/t01-c1-native-runtime-20261023-independent-helper-counterexample.json，2012B / SHA256 83d8cef68c6cfecd2ab27570682e3ca742f00e2abb21e57d55eacfbfa173951f。源码身份在该JSON绑定3ebd候选；不是复制函数另写预期实现。
+
+## 4. 作者定点是否真测源
+
+已全文读outputs/c1-native-runtime-20261023/out/classifier-check.mjs：15063B / af5eefe05e5ebb90331982a226a64a1738513f9e73c8f81763fcbfa893537380。它读取当前driver源，纯函数按BEGIN/END切片，processTable/updateEntry/sample/allProcessesAbsent/cleanup各按实际源码函数边界切片后VM运行，函数主体没有在test中复制重写。因此可认其目标是实际候选代码。
+
+测试注入controlled Date、tableFor/execFile、delay、kill回调与Map/entry；没有运行实际ps/kill/CLI。部分测试手动设置resolvedTerminal或stub sample以聚焦预signal逻辑，因此是局部分类/接线单元证据，不能说完整真实OS生命周期或全部sample组合已运行。完整candidate源SHA在classifier-04.stdout明确为3ebd981b...，16组result均passed，exit文件实际0，stderr空。没有重跑其16组或完整check。
+
+classifier-04.stdout 2168B / 77291aced901c50478da191b550eef0607d7091ed40007fd358e1111ab81deb5；classifier-results-04.json 1897B / 84a53f5c73dad191a75cc7d5576044fa31e44d5b2f953b9034e2a8329be99058；classifier-04.exit 2B / 9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa（内容0换行）。03亦有实际0及16结果，属其当时源版本，不倒称04前全部候选同一SHA。
+
+02首失败仍在：classifier-02.stderr 2275B / 221b9eefc4cb73fc02d1004415640864883afb9c10f32e506f1696b332f0c619；exit内容1。其controlled row缺rawLine导致实际updateEntry Buffer.byteLength(undefined)抛TypeError，测试本想断言自然终态失败，实际错误不匹配导致首fail。后来只补fixture并保02/03原件，不能把02记成通过；这不证明runtime真实ps会缺rawLine，真实parser始终给该字段。本审没有删除这项原失败或因后来16过而回写。
+
+上述16组确覆盖原birth冲突永久性、active/unknown改变展示、close非0/缺失、旧采样晚回调、诊断不完整、原run01独立恢复投影、controlled ps拒timeout、fresh pre-signal及closed祖先不得重收养等。但helper测试只覆盖“稳定comm+absence”，未覆盖本报告的“改变comm+Z+无close+absence”，所以已有passed不关闭P2-NR-01。
+
+## 5. 旧原件和后续边界
+
+原run01 driver.json仍19024B / c0f5ad337bbe28ef2b84ceed6177b137e9c7b4ce9345a7f917570aab4ed3b716，machineOutcome=failed；observer.json仍12539B / 171ebf4dcf95cc4585bd86db8ede6f8e26701c0463b73fcce9e8800c8cc25527，outcome=succeeded。没有修改首fail为Pass，不能因本候选只在内存投影成功就重写run01缺失的newrow/stat。
+
+本报告不要求无变化产品/旧spec全审，不重复作者正在跑的完整check。修本P2后给新实际source hash并仅复核差异/必要定点；新candidate继续按现行代码验证门和根资源调度完成真实新native。最终仍要求main+原engine真实exit0/close0、自然ownedabsent、无testCleanup，两次真实dialog选择和故障/health证据齐备。静态修好或定点全过均不能代新native通过。

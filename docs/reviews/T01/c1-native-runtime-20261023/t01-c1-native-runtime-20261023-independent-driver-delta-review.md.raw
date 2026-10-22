@@ -1,0 +1,52 @@
+# T01 C1 native driver：P2-NR-01 定点修订独立复核
+
+结论：P2-NR-01在本次实际8c69候选中关闭，delta静态复核通过，未发现新增阻断。唯一源码增量为resolvedTerminal增加 (!displayMismatch || trustedOriginalClose)。它阻止无原exit0/close0的helper改变comm后借Z+absence结清，同时保持稳定helper的fresh absence和原engine真实close0后的Z/absence路线。此结论不代表check02或新native运行通过。
+
+审查者 /root/create_core_review，2026-10-23。只读新旧源码、前后定点原件；另从新实际源码提取纯classifier在VM作必要增量验证。未import执行driver CLI、实际spawn/ps/kill、GUI/native/DB、产品或完整check，未修改任何源/首报告/旧原件，没有commit或联系其他线程。只写本delta raw。
+
+## 1. 候选、冻结身份和唯一差异
+
+树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-native-runtime-20261023，parent仍为acbe2dc6388c855f7fbabbb6da08cdf6c14bcbab。
+
+- 旧受审driver快照 outputs/c1-native-runtime-20261023/out/first-fixed-driver-3ebd981b.mjs.raw：41587B / SHA256 3ebd981b9824d578f22e89c3a44e653dbef0af97cee474495e4244a4dc13b469。
+- 当前 tests/e2e/c1-native-macos-driver.mjs：41637B / 8c69a55ce6fdfa7b444f1b91211d42cc562753b1596fddc554406c3277624cdc。
+- observer仍13673B / 33678a1742bcfb2ed9710ed65a7894ee33f9fb047c4fd2d1743207eabcddf22c；AGENTS仍15147B / de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4。
+
+独立逐字符串验证：在旧源原 (!requiresClose || trustedOriginalClose), 之前插入一行 (!displayMismatch || trustedOriginalClose) && 后，完整结果逐字节等于当前源。除该50B guard外无变化；初次本审比较表达式预设插在后面而得到false，回读真实增量后核插在前面精确相等。这不是候选多了其他修改，也未运行/改动源码。
+
+因此前审已全文核过的4CLI、120000/300000ms总界、app/executable/userData隔离、真实health/dialog、main inspector关闭、无rendererCDP、birth冲突永久拒绝、有限诊断、closed祖先不得重新收养、finally原observer独立收口、firstFailure和任何testcleanup不得洗绿等行为均未改变；本轮无须重做无变化的全文/全check。
+
+首独审报告 /tmp/t01-c1-native-runtime-20261023-independent-driver-review.md.raw 实际仍10982B / d6992db2f6c9825fe038d89080a0d8365057e7e94bbe51ec3098f1ee4fc544a5，已重新hash核其未变。作者另归档first-fixed-report-4f9877d1.md.raw为7140B / 4f9877d16d320e826f717cacc47f62cf8e63faccedebb9f59edba1138ed7b479；这是另一份作者材料，不拿7140B替换或冒作10982B独审原件。
+
+## 2. 实际修前失败与修后17组原件
+
+原件均在本新树 outputs/c1-native-runtime-20261023/out。已读classifier-check-05.mjs的取源与新增用例：脚本从argv指定真实源文件读字节，按原marker切片到VM执行实际函数；05指定旧3ebd快照，06指定当前8c69源。不是手写另一份classifier再测自己。脚本16504B / 290745a75ba4872e547a88eae1c59734e46555ee9314dfcabf7c9fdbdb3eb26a。
+
+05-before真实exit=1：新增helper改变comm为Z、无原close后立即fresh absence，期望resolvedTerminal=false，旧实际为true，断言 true !== false。此前13组先通过，到该新分支失败即停；不能将05记成17组完成。其results明确绑定旧source 3ebd。保留：
+
+- classifier-05-before.stderr：1135B / 21362f858cfd2c1496371272e73ea192be21035095b10c86619a98fcbbf75cbd。
+- classifier-05-before.stdout：0B / 空SHA；exit为1换行，2B / 4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865。
+- classifier-results-05-before.json：2875B / 799c657a421f92eba19c7f93dbe8f215243cba1de3571dacf6df670de955c154。
+
+06-after真实exit=0，17组全部passed，stdout与results均绑定实际8c69源。新增一组同时核：改变comm的helper在absence后仍未结/noSignal，quarantine到期给quarantine-unresolved；稳定helper+fresh absence仍可结；原engine改变展示但具有原close0且随后fresh absence仍可结。先前16组覆盖和保守拒绝未删。
+
+- classifier-06-after.stdout：2331B / aa89b43a5ca1fed21da9f2365d0e14e7e0c2c3fa460a9cba3c473832ac49ced9。
+- classifier-06-after.stderr：0B / e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855。
+- classifier-06-after.exit：0换行，2B / 9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa。
+- classifier-results-06-after.json：2345B / bd6468764c73fcbeacc5926b98130c6f2a35467f8012f6780b50666e545a366f。
+
+这些是已有受控纯内存证据，不是新真实ps/kill/native。我没有重复执行17组完整脚本，也没有覆盖其前后原文件。
+
+## 3. 独立必要增量验证
+
+本审另直接按当前8c69源marker提取classifyProcess到工具内VM，复用首反例的原entry（source=ancestry）、Z改变comm、无lifecycle和[80,90]present/[120,130]fresh absence，实际得到：displayMismatch=true、trustedOriginalClose=false、resolvedTerminal=false、signalEligible=false；推进至[2200,2210]后failureReason=quarantine-unresolved，仍未结且不能signal。
+
+相邻两个正例也由同实际新函数验证：comm从未变的已建立ancestry helper fresh absence可resolved；source=main-child-object且具有原exit0/close0、Z展示改变后在close接收之后fresh absence可resolved。没有绕到另一份函数、没有实际启动被测进程或伪造run01当时原始ps值。
+
+一行新guard只是收紧原逻辑，未清除birthMismatch/unexplainedDisplay/diagnosticIncomplete/postTerminalRow等永久拒绝，未改变signalEligible；“没有原close的展示改变helper仍未结”与原精确授权一致。因此首审唯一P2-NR-01已关闭，无需为此扩大产品、旧spec、timeout、rounds或OS研究范围。
+
+## 4. 后续门与原件边界
+
+本审未读取check02终态，也不依据父消息中的前序1125TS或Python进行中把完整check写为通过；完整check结果由主线按其真实结束回执另绑定新8c69候选。旧fullcheck01及3ebd的16组不倒套为新候选完整通过。
+
+旧run01仍按前审固定原件为driver exit1、恢复observer succeeded；本delta没有改写首败、缺失采样、首独审报告或独立反例。修订后静态可继续推进现行验证门与根新native资源调度，最终仍需实际新run的main/原engine close0、自然ownedabsent、无testcleanup及真实双dialog/health/fault恢复证据，不据本静态结论替签native或C1全Pass。

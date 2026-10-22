@@ -85,32 +85,249 @@ function writeJson(path, value) {
   renameSync(temporary, path)
 }
 
-function processTable(pids) {
+// BEGIN pure process-accounting classifier (extracted verbatim by focused checks).
+const processQuarantineMs = 2000
+
+function parseProcessRows(stdout) {
+  const rows = new Map()
+  const unparsed = []
+  for (const line of stdout.split('\n')) {
+    if (!line.trim()) continue
+    const match =
+      /^\s*(\d+)\s+(\d+)\s+(\w{3}\s+\w{3}\s+\d+\s+\d\d:\d\d:\d\d\s+\d{4})\s+(\S+)\s+(.+)$/.exec(
+        line,
+      )
+    if (!match) {
+      unparsed.push({ pid: Number(/^\s*(\d+)/.exec(line)?.[1]) || null, rawLine: line })
+      continue
+    }
+    const pid = Number(match[1])
+    const row = {
+      pid,
+      ppid: Number(match[2]),
+      start: match[3].replace(/\s+/g, ' '),
+      stat: match[4],
+      command: match[5],
+      rawLine: line,
+    }
+    if (
+      !Number.isSafeInteger(pid) ||
+      pid < 0 ||
+      !Number.isSafeInteger(row.ppid) ||
+      row.ppid < 0 ||
+      !Number.isFinite(Date.parse(row.start)) ||
+      !/^[A-Z?][A-Za-z0-9+<>=-]*$/.test(row.stat) ||
+      rows.has(pid)
+    )
+      unparsed.push({ pid, rawLine: line })
+    else rows.set(pid, row)
+  }
+  return { rows, unparsed, parseComplete: unparsed.length === 0 }
+}
+
+function originalClose(lifecycle) {
+  return Boolean(
+    lifecycle?.exit &&
+    lifecycle?.close &&
+    !lifecycle.error &&
+    lifecycle.exit.code === 0 &&
+    lifecycle.exit.signal === null &&
+    lifecycle.close.code === 0 &&
+    lifecycle.close.signal === null &&
+    Number.isFinite(lifecycle.exit.receivedAtMs) &&
+    Number.isFinite(lifecycle.close.receivedAtMs) &&
+    lifecycle.exit.receivedAtMs <= lifecycle.close.receivedAtMs,
+  )
+}
+
+function classifyProcess(entry, row, sample, lifecycle, nowMs) {
+  const requiresClose = entry.source === 'direct-spawn' || entry.source === 'main-child-object'
+  const lifecycleClosed = Boolean(lifecycle?.close)
+  const trustedOriginalClose = originalClose(lifecycle)
+  const invalidLifecycle = Boolean(
+    lifecycle?.error ||
+    (lifecycle?.exit && (lifecycle.exit.code !== 0 || lifecycle.exit.signal !== null)) ||
+    (lifecycle?.close && !trustedOriginalClose),
+  )
+  const diagnosticIncomplete = Boolean(entry.diagnosticIncomplete || !sample.parseComplete)
+  const rowPresent = Boolean(row)
+  const birthMismatch = Boolean(entry.birthMismatch || (row && row.start !== entry.start))
+  const changedDisplay = Boolean(row && row.command !== entry.command)
+  const displayMismatch = Boolean(entry.displayMismatch || changedDisplay)
+  const postTerminalRow = Boolean(entry.postTerminalRow || (entry.resolvedTerminal && rowPresent))
+  // A terminal-looking display is only pending. Active/unknown display changes
+  // remain unexplained, even if a later close or absence arrives.
+  const unexplainedDisplay = Boolean(
+    entry.unexplainedDisplay || (changedDisplay && !row.stat.startsWith('Z')),
+  )
+  const quarantine = Boolean(displayMismatch || birthMismatch || postTerminalRow)
+  const quarantineSinceMs = entry.quarantineSinceMs ?? (quarantine ? nowMs : null)
+  const lastPresentEndedMs = rowPresent ? sample.endedAtMs : entry.lastPresentEndedMs
+  const absenceAfterMs = Math.max(
+    entry.firstSeenAtMs,
+    lastPresentEndedMs ?? entry.firstSeenAtMs,
+    requiresClose ? (lifecycle?.close?.receivedAtMs ?? Infinity) : entry.firstSeenAtMs,
+  )
+  const freshAbsence = Boolean(
+    !rowPresent && sample.parseComplete && sample.startedAtMs > absenceAfterMs,
+  )
+  const resolvedTerminal = Boolean(
+    entry.ownershipEstablished &&
+    freshAbsence &&
+    !birthMismatch &&
+    !diagnosticIncomplete &&
+    !postTerminalRow &&
+    !unexplainedDisplay &&
+    !invalidLifecycle &&
+    (!displayMismatch || trustedOriginalClose) &&
+    (!requiresClose || trustedOriginalClose),
+  )
+  const terminalPending = Boolean(
+    !resolvedTerminal &&
+    (quarantine || lifecycle?.exit || lifecycleClosed || row?.stat.startsWith('Z')),
+  )
+  const signalEligible = Boolean(
+    entry.ownershipEstablished &&
+    rowPresent &&
+    !birthMismatch &&
+    !displayMismatch &&
+    !postTerminalRow &&
+    !diagnosticIncomplete &&
+    !lifecycle?.exit &&
+    !lifecycleClosed &&
+    !invalidLifecycle &&
+    !row.stat.startsWith('Z') &&
+    /^[IRSUTW]/.test(row.stat),
+  )
+  const quarantineExpired = Boolean(
+    terminalPending &&
+    quarantineSinceMs !== null &&
+    nowMs - quarantineSinceMs >= processQuarantineMs,
+  )
+  const failureReason = birthMismatch
+    ? 'birth-conflict'
+    : diagnosticIncomplete
+      ? 'diagnostic-incomplete'
+      : postTerminalRow
+        ? 'row-after-terminal'
+        : invalidLifecycle
+          ? 'original-lifecycle-failed'
+          : quarantineExpired && !resolvedTerminal
+            ? 'quarantine-unresolved'
+            : null
+  return {
+    rowPresent,
+    birthMismatch,
+    displayMismatch,
+    unexplainedDisplay,
+    postTerminalRow,
+    quarantine,
+    quarantineSinceMs,
+    lastPresentEndedMs,
+    trustedOriginalClose,
+    lifecycleClosed,
+    terminalPending,
+    freshAbsence,
+    resolvedTerminal,
+    signalEligible,
+    diagnosticIncomplete,
+    failureReason,
+  }
+}
+
+function observerProjection(observer, runId, mainExit, mainClose) {
+  if (!observer || observer.runId !== runId) throw new Error('observer evidence identity mismatch')
+  const children = observer.children
+  if (
+    !Array.isArray(children) ||
+    children.length > 16 ||
+    !Array.isArray(observer.events) ||
+    observer.events.length > 512 ||
+    !Array.isArray(observer.windows) ||
+    observer.windows.length > 3 ||
+    !Array.isArray(observer.health) ||
+    observer.health.length > 3
+  )
+    throw new Error('observer evidence shape unavailable')
+  const childCloses =
+    children.length > 0 &&
+    children.every(
+      (entry) =>
+        entry.exit?.code === 0 &&
+        entry.exit.signal === null &&
+        entry.close?.code === 0 &&
+        entry.close.signal === null,
+    )
+  return {
+    observer,
+    recoveryOutcome: observer.outcome,
+    childLifecycleOutcome: {
+      outcome: childCloses ? 'succeeded' : 'incomplete',
+      source: 'observer-file',
+      records: children,
+    },
+    naturalEngineChildClosesObserved: childCloses,
+    mainLifecycleOutcome: {
+      outcome:
+        mainExit?.code === 0 &&
+        mainExit.signal === null &&
+        mainClose?.code === 0 &&
+        mainClose.signal === null
+          ? 'succeeded'
+          : 'incomplete',
+      exit: mainExit ?? null,
+      close: mainClose ?? null,
+    },
+  }
+}
+// END pure process-accounting classifier.
+
+let psSequence = 0
+function processTable(pids, argv = false) {
+  const startedAtMs = Date.now()
+  const observation = {
+    sequence: ++psSequence,
+    executable: '/bin/ps',
+    argv: pids
+      ? ['-p', pids.join(','), '-o', 'pid=,ppid=,lstart=,stat=,' + (argv ? 'command=' : 'comm=')]
+      : ['-axo', 'pid=,ppid=,lstart=,stat=,comm='],
+    startedAtMs,
+    startedAt: new Date(startedAtMs).toISOString(),
+  }
   return new Promise((done, reject) => {
-    // comm avoids collecting unrelated users' argument strings.
+    // Global discovery collects comm only; full argv is limited to established owned PIDs.
     execFile(
       '/bin/ps',
-      pids
-        ? ['-p', pids.join(','), '-o', 'pid=,ppid=,lstart=,command=']
-        : ['-axo', 'pid=,ppid=,lstart=,comm='],
+      observation.argv,
       { timeout: 2000, maxBuffer: 4 * 1024 * 1024, env: { ...process.env, LC_ALL: 'C' } },
       (error, stdout) => {
-        if (error && !(pids && error.code === 1 && stdout.trim() === '')) return reject(error)
-        const rows = new Map()
-        for (const line of stdout.split('\n')) {
-          const match =
-            /^\s*(\d+)\s+(\d+)\s+(\w{3}\s+\w{3}\s+\d+\s+\d\d:\d\d:\d\d\s+\d{4})\s+(.+)$/.exec(line)
-          if (match)
-            rows.set(Number(match[1]), {
-              pid: Number(match[1]),
-              ppid: Number(match[2]),
-              start: match[3].replace(/\s+/g, ' '),
-              command: match[4],
-            })
-        }
-        if (!pids && !rows.has(process.pid))
-          return reject(new Error('ps did not include the runner'))
-        done(rows)
+        const endedAtMs = Date.now()
+        const parsed = parseProcessRows(stdout ?? '')
+        Object.assign(observation, {
+          endedAtMs,
+          endedAt: new Date(endedAtMs).toISOString(),
+          exitCode: error?.code ?? 0,
+          signal: error?.signal ?? null,
+          timedOut: Boolean(error?.killed),
+          parseComplete: parsed.parseComplete,
+          rowCount: parsed.rows.size,
+          unparsedCount: parsed.unparsed.length,
+        })
+        const validAbsence =
+          pids && error?.code === 1 && !error.killed && !error.signal && !(stdout ?? '').trim()
+        if (
+          (error && !validAbsence) ||
+          !parsed.parseComplete ||
+          (!pids && !parsed.rows.has(process.pid))
+        ) {
+          const failure = new Error(
+            'ps unavailable or parse incomplete; no absence or signal authorized',
+          )
+          failure.observation = observation
+          failure.unparsed = parsed.unparsed
+          failure.rows = parsed.rows
+          reject(failure)
+        } else done({ ...parsed, observation })
       },
     )
   })
@@ -199,6 +416,14 @@ async function run(options) {
   const logBytes = { stdout: 0, stderr: 0 }
   const known = new Map()
   const reported = new Map()
+  receipt.sampling = {
+    byteLimit: logLimit,
+    tailLimit: 32,
+    transitionLimit: 512,
+    tail: [],
+    transitions: [],
+    diagnosticIncomplete: false,
+  }
   let failRun
   const failure = new Promise((_, reject) => {
     failRun = reject
@@ -228,11 +453,48 @@ async function run(options) {
     requireCondition(event.runId === receipt.runId, 'observer run identity mismatch')
     if (event.kind === 'child') {
       requireCondition(Number.isSafeInteger(event.pid) && event.pid > 1, 'invalid child pid')
+      requireCondition(
+        ['created', 'spawn', 'exit', 'close', 'error'].includes(event.event),
+        'invalid original child event',
+      )
       const record = reported.get(event.pid) ?? { pid: event.pid, firstReportedAt: event.at }
-      Object.assign(record, event)
+      if (record[event.event] || record.close) {
+        record.error = {
+          at: event.at,
+          receivedAtMs: Date.now(),
+          message: 'duplicate or post-close lifecycle',
+        }
+        fail(new Error('original lifecycle repeated; closed PID will not be adopted'))
+      } else {
+        if (
+          record.file &&
+          (record.file !== event.file || JSON.stringify(record.argv) !== JSON.stringify(event.argv))
+        ) {
+          record.error = {
+            at: event.at,
+            receivedAtMs: Date.now(),
+            message: 'original child identity changed',
+          }
+          fail(new Error('original child identity changed'))
+        } else {
+          record.file = event.file
+          record.argv = event.argv
+          record.source = 'main-child-object'
+          record[event.event] = {
+            at: event.at,
+            receivedAtMs: Date.now(),
+            ...(event.event === 'exit' || event.event === 'close'
+              ? { code: event.code, signal: event.signal }
+              : {}),
+          }
+        }
+      }
       reported.set(event.pid, record)
       requireCondition(reported.size <= 64, 'observer child limit exceeded')
-      if (known.has(event.pid)) known.get(event.pid).childLifecycle = { ...record }
+      if (known.has(event.pid)) {
+        known.get(event.pid).source = 'main-child-object'
+        known.get(event.pid).childLifecycle = { ...record }
+      }
     } else if (event.kind === 'metrics') {
       requireCondition(
         Array.isArray(event.processes) && event.processes.length <= 64,
@@ -280,163 +542,377 @@ async function run(options) {
     }
   }
 
-  async function sample() {
-    const rows = await processTable()
+  function lifecycle(entry) {
+    return entry.pid === child?.pid
+      ? { exit: receipt.mainExit, close: receipt.mainClose, error: receipt.mainError }
+      : reported.get(entry.pid)
+  }
+
+  function recordSampling(table, purpose, targets, transitions = []) {
+    const sampling = receipt.sampling
+    const record = {
+      ...table.observation,
+      purpose,
+      targets: [...targets].map((pid) => ({
+        pid,
+        row: table.rows.get(pid) ?? null,
+        ...(known.has(pid) ? { classification: known.get(pid).classification } : {}),
+      })),
+    }
+    const tail = [...sampling.tail, record].slice(-sampling.tailLimit)
+    const history = [...sampling.transitions, ...transitions]
+    const encoded = JSON.stringify({ tail, transitions: history })
+    if (
+      history.length > sampling.transitionLimit ||
+      Buffer.byteLength(encoded) > sampling.byteLimit
+    ) {
+      sampling.diagnosticIncomplete = true
+      sampling.overflow = {
+        sequence: table.observation.sequence,
+        purpose,
+        bytes: Buffer.byteLength(encoded),
+        sha256: createHash('sha256').update(encoded).digest('hex'),
+      }
+      for (const entry of known.values()) {
+        entry.diagnosticIncomplete = true
+        entry.signalEligible = false
+      }
+      fail(new Error('process diagnostic capacity exceeded; no signal or success authorized'))
+      return
+    }
+    sampling.tail = tail
+    sampling.transitions = history
+  }
+
+  async function tableFor(pids, argv, purpose) {
+    try {
+      return await processTable(pids, argv)
+    } catch (error) {
+      receipt.sampling.diagnosticIncomplete = true
+      for (const entry of known.values()) {
+        entry.diagnosticIncomplete = true
+        entry.signalEligible = false
+      }
+      if (error.observation) {
+        const targets = new Set([...known.keys(), process.pid])
+        const unparsed = (error.unparsed ?? []).map((line) =>
+          targets.has(line.pid)
+            ? line
+            : {
+                pid: line.pid,
+                bytes: Buffer.byteLength(line.rawLine),
+                sha256: createHash('sha256').update(line.rawLine).digest('hex'),
+              },
+        )
+        receipt.sampling.psFailure = {
+          ...error.observation,
+          purpose,
+          unparsed: unparsed.slice(0, 64),
+          targets: [...targets].map((pid) => ({ pid, row: error.rows?.get(pid) ?? null })),
+        }
+      }
+      persist()
+      throw error
+    }
+  }
+
+  function updateEntry(entry, row, observation) {
+    if (row && Buffer.byteLength(row.rawLine) > 32768) entry.diagnosticIncomplete = true
+    const state = classifyProcess(entry, row, observation, lifecycle(entry), Date.now())
+    const previous = entry.classification
+    Object.assign(entry, state, {
+      lastCheckedAt: observation.endedAt,
+      lastObservation: observation.sequence,
+      classification: state,
+    })
+    // Sampling timestamps advance while an unchanged process stays present;
+    // keep those in the bounded tail, not as a new identity transition.
+    const transitionState = (value) => value && { ...value, lastPresentEndedMs: null }
+    const changed =
+      !previous ||
+      JSON.stringify(transitionState(previous)) !== JSON.stringify(transitionState(state)) ||
+      entry.lastRow?.start !== row?.start ||
+      entry.lastRow?.stat !== row?.stat ||
+      entry.lastRow?.command !== row?.command
+    entry.lastRow = row ?? null
+    if (state.failureReason)
+      fail(new Error('owned process accounting failed: ' + entry.pid + '/' + state.failureReason))
+    return changed
+      ? {
+          sequence: observation.sequence,
+          original: entry.originalRow,
+          observed: row ?? null,
+          sampleStartedAtMs: observation.startedAtMs,
+          sampleEndedAtMs: observation.endedAtMs,
+          lifecycle: lifecycle(entry) ?? null,
+          classification: state,
+        }
+      : null
+  }
+
+  async function sample(purpose = 'inventory') {
+    const table = await tableFor(undefined, false, purpose)
+    const { rows, observation } = table
     const root = child?.pid
     if (!receipt.runner.identity) receipt.runner.identity = rows.get(process.pid)
+    const transitions = []
+    // Classify existing identities before using any of them as ancestry roots.
+    for (const entry of known.values()) {
+      const changed = updateEntry(entry, rows.get(entry.pid), observation)
+      if (changed) transitions.push(changed)
+    }
     const ownedNow = new Set()
-    if (root && !mainClosed && rows.has(root)) ownedNow.add(root)
+    const originalRoot = known.get(root)
+    if (
+      root &&
+      !mainClosed &&
+      !receipt.mainExit &&
+      rows.has(root) &&
+      (!originalRoot || originalRoot.signalEligible)
+    ) {
+      requireCondition(
+        Date.parse(rows.get(root).start) <= receipt.launch.spawnRequestedAtMs + 1000,
+        'direct child birth is newer than its original spawn; ownership unavailable',
+      )
+      ownedNow.add(root)
+    }
     for (const entry of known.values()) {
       const current = rows.get(entry.pid)
-      if (entry.pid === root && mainClosed) continue
       if (
-        !entry.identityChanged &&
-        current?.start === entry.start &&
-        current.command === entry.command
+        entry.resolvedTerminal ||
+        lifecycle(entry)?.close ||
+        lifecycle(entry)?.exit ||
+        entry.quarantine ||
+        entry.birthMismatch ||
+        entry.diagnosticIncomplete ||
+        current?.stat.startsWith('Z')
       )
+        continue
+      if (current?.start === entry.start && current.command === entry.command)
         ownedNow.add(entry.pid)
     }
     for (let depth = 0; depth < 32; depth++) {
       let changed = false
-      for (const row of rows.values())
+      for (const row of rows.values()) {
+        const existing = known.get(row.pid)
+        // A closed lifecycle is still classified below, but is never re-adopted
+        // from ancestry, metrics or a repeated display of its PID.
+        if (
+          existing &&
+          (lifecycle(existing)?.close ||
+            lifecycle(existing)?.exit ||
+            existing.resolvedTerminal ||
+            existing.quarantine ||
+            existing.birthMismatch)
+        )
+          continue
+        if (reported.get(row.pid)?.close || rows.get(row.ppid)?.stat.startsWith('Z')) continue
         if (ownedNow.has(row.ppid) && !ownedNow.has(row.pid)) {
           ownedNow.add(row.pid)
           changed = true
         }
+      }
       if (!changed) break
       requireCondition(depth !== 31, 'process ancestry exceeded 32 levels')
     }
-    // Original ChildProcess events from our trusted main hook also survive reparenting.
     for (const entry of reported.values()) {
-      if (entry.pid === root && mainClosed) continue
       const current = rows.get(entry.pid)
-      if (current && Date.parse(current.start) > Date.parse(entry.firstReportedAt) + 1000)
-        throw new Error(
-          `reported PID has a newer start time: ${entry.pid}; ownership not established`,
-        )
-      if (entry.event !== 'close' && !known.has(entry.pid) && current) ownedNow.add(entry.pid)
+      if (!current || entry.exit || entry.close || known.has(entry.pid) || !entry.created) continue
+      requireCondition(
+        Date.parse(current.start) <= Date.parse(entry.created.at) + 1000,
+        'reported PID birth is newer than original child creation; ownership unavailable',
+      )
+      // Original child-object provenance can survive OS reparenting. Metrics
+      // without an established parent/birth are never enough to adopt an orphan.
+      if (entry.source === 'main-child-object') ownedNow.add(entry.pid)
     }
     const discovered = []
     for (const pid of ownedNow) {
+      if (known.has(pid)) continue
       const row = rows.get(pid)
-      const existing = known.get(pid)
-      if (existing && (existing.start !== row.start || existing.command !== row.command)) {
-        existing.identityChanged = true
-        fail(new Error(`owned PID identity changed: ${pid}; it will not be signalled`))
-        continue
-      }
-      if (!existing) {
-        requireCondition(known.size < 256, 'owned PID limit exceeded')
-        known.set(pid, {
-          ...row,
-          firstSeenAt: new Date().toISOString(),
-          source:
-            pid === root
-              ? 'direct-spawn'
-              : reported.get(pid)?.source === 'app.getAppMetrics'
-                ? 'app.getAppMetrics'
-                : reported.has(pid)
-                  ? 'main-child-object'
-                  : 'ancestry',
-          ...(reported.has(pid) ? { childLifecycle: { ...reported.get(pid) } } : {}),
-        })
-        discovered.push(pid)
-      }
+      requireCondition(known.size < 256, 'owned PID limit exceeded')
+      requireCondition(
+        Buffer.byteLength(row.rawLine) <= 32768,
+        'owned ps row exceeded diagnostic bound',
+      )
+      const parent = known.get(row.ppid) ?? rows.get(row.ppid)
+      const originalChild = reported.get(pid)?.source === 'main-child-object'
+      const source =
+        pid === root ? 'direct-spawn' : originalChild ? 'main-child-object' : 'ancestry'
+      requireCondition(
+        pid === root || originalChild || (parent && ownedNow.has(row.ppid)),
+        'helper original parent/birth unavailable',
+      )
+      known.set(pid, {
+        ...row,
+        originalRow: { ...row },
+        firstSeenAt: observation.endedAt,
+        firstSeenAtMs: observation.endedAtMs,
+        source,
+        ownershipEstablished: true,
+        parentIdentity: parent ? { pid: parent.pid, start: parent.start } : null,
+        ...(reported.has(pid) ? { childLifecycle: { ...reported.get(pid) } } : {}),
+      })
+      discovered.push(pid)
     }
+    for (const pid of discovered) {
+      const changed = updateEntry(known.get(pid), rows.get(pid), observation)
+      if (changed) transitions.push(changed)
+    }
+    recordSampling(table, purpose, new Set([...known.keys(), process.pid]), transitions)
+    persist()
     if (discovered.length) {
-      const argumentsNow = await processTable(discovered)
+      const details = await tableFor(discovered, true, 'owned-argv')
       for (const pid of discovered) {
         const entry = known.get(pid)
-        const detail = argumentsNow.get(pid)
-        if (detail?.start === entry.start) entry.observedArgv = detail.command
-        else
-          entry.argvObservation =
-            'process disappeared or changed before targeted ps; not reconstructed'
+        const detail = details.rows.get(pid)
+        if (detail?.start === entry.start) {
+          requireCondition(
+            Buffer.byteLength(detail.command) <= 65536,
+            'owned argv exceeded diagnostic bound',
+          )
+          entry.observedArgv = detail.command
+        } else {
+          entry.argvObservation = 'absent or birth changed before targeted argv; not reconstructed'
+          if (detail) {
+            entry.birthMismatch = true
+            entry.signalEligible = false
+            entry.classification = {
+              ...entry.classification,
+              birthMismatch: true,
+              signalEligible: false,
+              failureReason: 'birth-conflict',
+            }
+            entry.argvBirthConflict = {
+              original: entry.originalRow,
+              observed: detail,
+              observation: details.observation,
+            }
+            fail(new Error('owned process birth changed during targeted argv observation: ' + pid))
+          }
+        }
       }
+      recordSampling(details, 'owned-argv', new Set(discovered))
+      persist()
     }
-    for (const entry of known.values()) {
-      const current = rows.get(entry.pid)
-      entry.lastCheckedAt = new Date().toISOString()
-      entry.alive = Boolean(
-        current && current.start === entry.start && current.command === entry.command,
-      )
-      if (current && !entry.alive) entry.identityChanged = true
-    }
-    persist()
-    return rows
+    return table
+  }
+
+  function allProcessesAbsent() {
+    return (
+      known.size > 0 &&
+      !receipt.sampling.diagnosticIncomplete &&
+      [...known.values()].every((entry) => entry.resolvedTerminal && !entry.birthMismatch) &&
+      [...reported.values()].every((entry) => known.has(entry.pid))
+    )
   }
 
   async function cleanup() {
-    // Reserve five seconds for the final finite inventory and receipt.
     const until = cleanupDeadline - 5000
     receipt.cleanupStartedAt = new Date().toISOString()
-    await sample()
-    const naturalUntil = Date.now() + 1000
-    while (Date.now() < naturalUntil && [...known.values()].some((entry) => entry.alive)) {
+    await sample('cleanup-initial')
+    const naturalUntil = Math.min(until, Date.now() + processQuarantineMs + 250)
+    while (Date.now() < naturalUntil && (!allProcessesAbsent() || !mainClosed)) {
       await delay(100)
-      await sample()
+      await sample('natural-terminal-wait')
     }
-    receipt.naturalTrackedProcessesAbsent =
-      mainClosed && [...known.values()].every((entry) => !entry.alive && !entry.identityChanged)
-    // Keep collecting ancestry until the main process is closed. Never kill by name/group.
+    receipt.naturalTrackedProcessesAbsent = mainClosed && allProcessesAbsent()
+    // Signals are only a last-resort test cleanup. Every attempt remains an
+    // overall failure; quarantined/closed/unknown identities are never targeted.
     for (const signal of ['SIGTERM', 'SIGKILL']) {
-      let rows
-      try {
-        rows = await sample()
-      } catch (error) {
-        receipt.cleanup.push({ error: `identity unavailable; no blind signal: ${error}` })
-        break
-      }
+      if (allProcessesAbsent() && mainClosed) break
       const entries = [...known.values()].sort((a, b) =>
         a.pid === child?.pid ? 1 : b.pid === child?.pid ? -1 : 0,
       )
       for (const entry of entries) {
         if (Date.now() >= until) break
-        if (!entry.alive || entry.identityChanged) continue
-        if (
-          entry.pid === child?.pid &&
-          (mainClosed || child.exitCode !== null || child.signalCode !== null)
-        )
-          continue
-        // Refresh immediately before each signal, rather than reusing an old poll snapshot.
-        rows = await processTable()
-        const current = rows.get(entry.pid)
-        if (!current || current.start !== entry.start || current.command !== entry.command) {
-          receipt.cleanup.push({ pid: entry.pid, signal, skipped: 'gone or identity changed' })
+        if (!entry.signalEligible || receipt.sampling.diagnosticIncomplete) continue
+        const table = await tableFor([entry.pid], false, 'pre-signal')
+        const changed = updateEntry(entry, table.rows.get(entry.pid), table.observation)
+        recordSampling(table, 'pre-signal', new Set([entry.pid]), changed ? [changed] : [])
+        persist()
+        if (Date.now() >= until || !entry.signalEligible || receipt.sampling.diagnosticIncomplete) {
+          receipt.cleanup.push({ pid: entry.pid, signal, skipped: 'fresh identity not eligible' })
           continue
         }
+        receipt.testCleanupSignalled = true
+        fail(
+          new Error('test cleanup signal attempted; natural product termination not established'),
+        )
         try {
           process.kill(entry.pid, signal)
-          receipt.cleanup.push({ pid: entry.pid, signal, at: new Date().toISOString() })
-          receipt.testCleanupSignalled = true
+          receipt.cleanup.push({
+            pid: entry.pid,
+            signal,
+            at: new Date().toISOString(),
+            sampleSequence: table.observation.sequence,
+          })
         } catch (error) {
-          if (error.code !== 'ESRCH')
-            receipt.cleanup.push({ pid: entry.pid, signal, error: String(error) })
+          receipt.cleanup.push({ pid: entry.pid, signal, error: String(error) })
         }
       }
       const waitUntil = Math.min(until, Date.now() + (signal === 'SIGTERM' ? 3000 : 5000))
       while (Date.now() < waitUntil) {
         await delay(100)
-        await sample()
-        if ([...known.values()].every((entry) => !entry.alive) && mainClosed) break
+        await sample('post-signal')
+        if (allProcessesAbsent() && mainClosed) break
       }
-      if ([...known.values()].every((entry) => !entry.alive) && mainClosed) break
     }
-    await sample()
+    await sample('cleanup-final')
     receipt.cleanupFinishedAt = new Date().toISOString()
-    receipt.trackedProcessesAbsent = [...known.values()].every(
-      (entry) => !entry.alive && !entry.identityChanged,
-    )
+    receipt.trackedProcessesAbsent = allProcessesAbsent()
     receipt.mainCloseObserved = mainClosed
     requireCondition(mainClosed, 'direct Electron child close was not observed')
     requireCondition(
       receipt.trackedProcessesAbsent,
-      'tracked PID cleanup unresolved; preserve run root',
+      'tracked process accounting unresolved; preserve run root',
     )
     requireCondition(
       receipt.naturalTrackedProcessesAbsent && !receipt.testCleanupSignalled,
       'natural product termination incomplete; test cleanup is not product success',
     )
+  }
+
+  function collectObserverEvidence() {
+    const path = join(evidenceRoot, 'observer.json')
+    try {
+      requireCondition(statSync(path).size <= logLimit, 'observer evidence exceeded 4MiB')
+      const observer = JSON.parse(readFileSync(path, 'utf8'))
+      const projection = observerProjection(
+        observer,
+        receipt.runId,
+        receipt.mainExit,
+        receipt.mainClose,
+      )
+      Object.assign(receipt, projection)
+      receipt.observerEvidence = { outcome: 'available', collectedAt: new Date().toISOString() }
+      if (observerResult && observerResult.outcome !== observer.outcome)
+        throw new Error('observer stream/file terminal mismatch')
+      requireCondition(observer.outcome === 'succeeded', 'missing successful observer recovery')
+      requireCondition(
+        observer.inspectorClosedBeforeFaults === true,
+        'main inspector not proven closed',
+      )
+      requireCondition(
+        projection.naturalEngineChildClosesObserved,
+        'original engine exit/close0 missing',
+      )
+      requireCondition(observer.windows.length === 3, 'expected three real window generations')
+    } catch (error) {
+      receipt.observerEvidence = {
+        outcome: 'unavailable-or-invalid',
+        error: String(error),
+        collectedAt: new Date().toISOString(),
+      }
+      receipt.recoveryOutcome ??= 'unavailable'
+      const records = [...reported.values()].filter((entry) => entry.source === 'main-child-object')
+      receipt.childLifecycleOutcome ??= {
+        outcome: records.length > 0 && records.every(originalClose) ? 'succeeded' : 'incomplete',
+        source: 'observer-stream',
+        records,
+      }
+      fail(error)
+    }
   }
 
   try {
@@ -470,6 +946,7 @@ async function run(options) {
     })
     const args = ['--inspect=0', `--user-data-dir=${config.userData}`, options.app]
     receipt.launch = { executable: options.executable, args, cwd: options.app, config }
+    receipt.launch.spawnRequestedAtMs = Date.now()
     child = spawn(options.executable, args, {
       cwd: options.app,
       env,
@@ -478,14 +955,21 @@ async function run(options) {
     receipt.launch.pid = child.pid
     child.stdout.on('data', (chunk) => log('stdout', chunk))
     child.stderr.on('data', (chunk) => log('stderr', chunk))
-    child.on('error', fail)
+    child.on('error', (error) => {
+      receipt.mainError = {
+        at: new Date().toISOString(),
+        receivedAtMs: Date.now(),
+        message: String(error),
+      }
+      fail(error)
+    })
     child.on('exit', (code, signal) => {
-      receipt.mainExit = { code, signal, at: new Date().toISOString() }
+      receipt.mainExit = { code, signal, at: new Date().toISOString(), receivedAtMs: Date.now() }
     })
     const closed = new Promise((done) =>
       child.on('close', (code, signal) => {
         mainClosed = true
-        mainExit = { code, signal, at: new Date().toISOString() }
+        mainExit = { code, signal, at: new Date().toISOString(), receivedAtMs: Date.now() }
         receipt.mainClose = mainExit
         done(mainExit)
       }),
@@ -564,24 +1048,7 @@ async function run(options) {
       `Electron closed ${exit.code}/${exit.signal}`,
     )
     requireCondition(observerResult?.outcome === 'succeeded', 'missing successful observer result')
-    const observer = JSON.parse(readFileSync(join(evidenceRoot, 'observer.json'), 'utf8'))
-    requireCondition(observer.runId === receipt.runId, 'observer evidence identity mismatch')
-    receipt.observer = observer
-    receipt.recoveryOutcome = observer.outcome
-    requireCondition(
-      observer.inspectorClosedBeforeFaults === true,
-      'main inspector not proven closed',
-    )
-    receipt.naturalEngineChildClosesObserved =
-      observer.children.length > 0 && observer.children.every((entry) => entry.close)
-    requireCondition(
-      receipt.naturalEngineChildClosesObserved,
-      'original engine child close missing; observer did not delay product quit',
-    )
-    requireCondition(
-      observer.windows.length === 3,
-      'expected exactly three real window generations',
-    )
+    collectObserverEvidence()
     receipt.machineOutcome = 'succeeded'
   } catch (error) {
     fail(error)
@@ -590,15 +1057,43 @@ async function run(options) {
     cleanupDeadline = Date.now() + cleanupMs
     receipt.cleanupBudgetStartedAt = new Date().toISOString()
     clearTimeout(runtimeTimer)
-    socket?.close()
+    try {
+      socket?.close()
+    } catch (error) {
+      fail(error)
+    }
     polling = false
-    if (monitor) await monitor
+    try {
+      if (monitor) await monitor
+    } catch (error) {
+      fail(error)
+    }
     try {
       if (child) await cleanup()
     } catch (error) {
       fail(error)
       receipt.machineOutcome = 'failed'
     }
+    // Independent recovery evidence must survive any earlier failure Promise.
+    collectObserverEvidence()
+    receipt.mainLifecycleOutcome = {
+      outcome: originalClose({
+        exit: receipt.mainExit,
+        close: receipt.mainClose,
+        error: receipt.mainError,
+      })
+        ? 'succeeded'
+        : 'incomplete',
+      exit: receipt.mainExit ?? null,
+      close: receipt.mainClose ?? null,
+      error: receipt.mainError ?? null,
+    }
+    receipt.processAccountingOutcome =
+      allProcessesAbsent() &&
+      receipt.mainLifecycleOutcome.outcome === 'succeeded' &&
+      !receipt.testCleanupSignalled
+        ? 'succeeded'
+        : 'failed'
     for (const input of fingerprints.slice(0, -1)) {
       try {
         const after = await fingerprint(input.path)
@@ -611,6 +1106,8 @@ async function run(options) {
     receipt.finishedAt = new Date().toISOString()
     receipt.logBytes = logBytes
     if (firstFailure) receipt.machineOutcome = 'failed'
+    receipt.overallOutcome = receipt.machineOutcome
+    receipt.firstFailure = firstFailure ? String(firstFailure.stack ?? firstFailure) : null
     try {
       persist()
     } finally {
