@@ -11,7 +11,6 @@ import math
 import re
 from contextlib import contextmanager
 from dataclasses import dataclass
-from itertools import combinations
 
 
 class BehaviorError(ValueError):
@@ -112,17 +111,17 @@ def _schema(schema, classes):
             _fail("invalid_schema", "schema.property")
 
 
-def _fact(fact, state, schema, classes):
+def _fact(fact, objects, schema, classes):
     _shape(fact, ("subject", "property", "value"), location="fact")
     _text(fact["subject"], "fact.subject")
-    if fact["subject"] not in state["objects"]:
+    if fact["subject"] not in objects:
         _fail("invalid_object", "fact.subject")
     prop = fact["property"]
     if type(prop) is not str or prop not in schema:
         _fail("invalid_property", "fact.property")
     value = _scalar(fact["value"], "fact.value")
     kind = schema[prop]["kind"]
-    if kind == "relation" and (type(value) is not str or value not in state["objects"]):
+    if kind == "relation" and (type(value) is not str or value not in objects):
         _fail("invalid_object", "fact.value")
     if kind == "class" and (type(value) is not str or value not in classes):
         _fail("invalid_class", "fact.value")
@@ -138,11 +137,12 @@ def _normalize(state):
 def _state(state, schema, classes):
     _shape(state, ("objects", "facts", "notifications"), location="state")
     _unique_texts(state["objects"], "state.objects")
+    objects = set(state["objects"])
     _list(state["facts"], "state.facts")
     keys = set()
     single = set()
     for fact in state["facts"]:
-        _fact(fact, state, schema, classes)
+        _fact(fact, objects, schema, classes)
         key = _json(fact)
         if key in keys:
             _fail("duplicate_fact", "state.facts")
@@ -164,73 +164,128 @@ def _state(state, schema, classes):
     return _normalize(state)
 
 
-def _put(state, fact, schema, classes, *, append):
-    _fact(fact, state, schema, classes)
-    many = schema[fact["property"]]["cardinality"] == "many"
-    if append != many:
-        _fail("cardinality_action_mismatch", "action")
-    if not many:
-        state["facts"] = [
-            f
-            for f in state["facts"]
-            if (f["subject"], f["property"]) != (fact["subject"], fact["property"])
-        ]
-    if _json(fact) not in {_json(f) for f in state["facts"]}:
-        state["facts"].append(fact)
+class _Workspace:
+    """Call-local indexes over already validated state; export ordinary detached JSON.
+
+    Never index raw state before _state has rejected duplicate/contradictory input.
+    Scratch workspaces are independent per instance. Facts and notifications contain
+    only validated scalars, so copying each record also detaches every exported value.
+    """
+
+    def __init__(self, state, schema, classes):
+        self.schema, self.classes = schema, classes
+        self.objects = set(state["objects"])
+        self.facts = {_json(fact): dict(fact) for fact in state["facts"]}
+        self.slots = {}
+        for key, fact in self.facts.items():
+            self.slots.setdefault((fact["subject"], fact["property"]), set()).add(key)
+        self.notifications = [dict(record) for record in state["notifications"]]
+        self.notification_ids = {record["id"] for record in self.notifications}
+
+    def _remove_fact(self, key):
+        fact = self.facts.pop(key)
+        slot = (fact["subject"], fact["property"])
+        self.slots[slot].remove(key)
+        if not self.slots[slot]:
+            del self.slots[slot]
+
+    def _put(self, fact, *, append):
+        _fact(fact, self.objects, self.schema, self.classes)
+        many = self.schema[fact["property"]]["cardinality"] == "many"
+        if append != many:
+            _fail("cardinality_action_mismatch", "action")
+        key = _json(fact)
+        slot = (fact["subject"], fact["property"])
+        if key in self.facts:
+            return False
+        if not many:
+            for old in list(self.slots.get(slot, ())):
+                self._remove_fact(old)
+        self.facts[key] = fact
+        self.slots.setdefault(slot, set()).add(key)
+        return True
+
+    def edit(self, edit):
+        if type(edit) is not dict or type(edit.get("kind")) is not str:
+            _fail("invalid_action", "event.edit")
+        kind = edit["kind"]
+        if kind == "create":
+            _shape(edit, ("kind", "object"), ("initial",))
+            obj = _text(edit["object"], "edit.object")
+            if obj in self.objects or obj in self.notification_ids:
+                _fail("duplicate_identity", "edit.object")
+            self.objects.add(obj)
+            for index, field in enumerate(_list(edit.get("initial", []), "create.initial")):
+                with _explain(initial_index=index):
+                    _shape(field, ("property", "value"), location="create.initial")
+                    fact = {"subject": obj, **field}
+                    # Validate property before looking up its cardinality.
+                    _fact(fact, self.objects, self.schema, self.classes)
+                    self._put(fact, append=self.schema[field["property"]]["cardinality"] == "many")
+            return True
+        if kind == "declare":
+            # Event-only idempotent declaration; behavior create still rejects collisions.
+            _shape(edit, ("kind", "object"))
+            obj = _text(edit["object"], "edit.object")
+            if obj in self.notification_ids:
+                _fail("duplicate_identity", "edit.object")
+            changed = obj not in self.objects
+            self.objects.add(obj)
+            return changed
+        if kind == "delete_object":
+            _shape(edit, ("kind", "object"))
+            if type(edit["object"]) is not str or edit["object"] not in self.objects:
+                _fail("invalid_object", "edit.object")
+            self.objects.remove(edit["object"])
+            removed = [
+                key
+                for key, fact in self.facts.items()
+                if fact["subject"] == edit["object"]
+                or (
+                    self.schema[fact["property"]]["kind"] == "relation"
+                    and fact["value"] == edit["object"]
+                )
+            ]
+            for key in removed:
+                self._remove_fact(key)
+            return True
+        if kind in ("set", "add", "remove"):
+            _shape(edit, ("kind", "subject", "property", "value"))
+            fact = {k: edit[k] for k in ("subject", "property", "value")}
+            if kind == "remove":
+                _fact(fact, self.objects, self.schema, self.classes)
+                key = _json(fact)
+                if key not in self.facts:
+                    return False
+                self._remove_fact(key)
+                return True
+            return self._put(fact, append=kind == "add")
+        _fail("unavailable_action", "event.edit.kind")
+
+    def notify(self, record):
+        if record["id"] in self.objects or record["id"] in self.notification_ids:
+            _fail("duplicate_identity", "notification.id")
+        self.notifications.append(record)
+        self.notification_ids.add(record["id"])
+        return True
+
+    def export(self):
+        return {
+            "objects": sorted(self.objects),
+            "facts": [dict(self.facts[key]) for key in sorted(self.facts)],
+            "notifications": [dict(record) for record in self.notifications],
+        }
 
 
 def _edit(state, edit, schema, classes):
-    if type(edit) is not dict or type(edit.get("kind")) is not str:
-        _fail("invalid_action", "event.edit")
-    kind = edit["kind"]
-    if kind == "create":
-        _shape(edit, ("kind", "object"), ("initial",))
-        obj = _text(edit["object"], "edit.object")
-        if obj in state["objects"] or obj in {n["id"] for n in state["notifications"]}:
-            _fail("duplicate_identity", "edit.object")
-        state["objects"].append(obj)
-        for index, field in enumerate(_list(edit.get("initial", []), "create.initial")):
-            with _explain(initial_index=index):
-                _shape(field, ("property", "value"), location="create.initial")
-                fact = {"subject": obj, **field}
-                _fact(fact, state, schema, classes)
-                _put(
-                    state,
-                    fact,
-                    schema,
-                    classes,
-                    append=schema[field["property"]]["cardinality"] == "many",
-                )
-    elif kind == "declare":
-        # RDF assertion input may introduce the same stable subject/reference in
-        # multiple events. Declaration is event-only and never a behavior action.
-        _shape(edit, ("kind", "object"))
-        obj = _text(edit["object"], "edit.object")
-        if obj in {n["id"] for n in state["notifications"]}:
-            _fail("duplicate_identity", "edit.object")
-        if obj not in state["objects"]:
-            state["objects"].append(obj)
-    elif kind == "delete_object":
-        _shape(edit, ("kind", "object"))
-        if edit["object"] not in state["objects"]:
-            _fail("invalid_object", "edit.object")
-        state["objects"].remove(edit["object"])
-        state["facts"] = [
-            f
-            for f in state["facts"]
-            if f["subject"] != edit["object"]
-            and not (schema[f["property"]]["kind"] == "relation" and f["value"] == edit["object"])
-        ]
-    elif kind in ("set", "add", "remove"):
-        _shape(edit, ("kind", "subject", "property", "value"))
-        fact = {k: edit[k] for k in ("subject", "property", "value")}
-        if kind == "remove":
-            _fact(fact, state, schema, classes)
-            state["facts"] = [f for f in state["facts"] if _json(f) != _json(fact)]
-        else:
-            _put(state, fact, schema, classes, append=kind == "add")
-    else:
-        _fail("unavailable_action", "event.edit.kind")
+    """Compatibility boundary for the fixed-input adapter's isolated setup edit.
+
+    Bulk planning retains one workspace per phase/instance rather than rebuilding
+    its indexes per action. The adapter supplies model_state's validated JSON.
+    """
+    workspace = _Workspace(state, schema, classes)
+    workspace.edit(edit)
+    state.update(workspace.export())
 
 
 @dataclass(frozen=True)
@@ -348,7 +403,7 @@ def prepare_events(request: dict) -> PreparedRound:
                 _scalar(value, "event.payload.value")
             _list(event["edits"], "event.edits")
     indexed_events.sort(key=lambda pair: (pair[1]["sequence"], pair[1]["id"]))
-    state = json.loads(_json(request["state"]))
+    workspace = _Workspace(request["state"], request["schema"], request["classes"])
     seen = dict(consumed)
     accepted, event_trace, discarded_edits = [], [], []
     for source_index, event in indexed_events:
@@ -382,10 +437,11 @@ def prepare_events(request: dict) -> PreparedRound:
                 discarded_event_edits=discarded_edits,
                 committed=False,
             ):
-                _edit(state, edit, request["schema"], request["classes"])
+                workspace.edit(edit)
             discarded_edits.append({"event_id": event["id"], "edit_index": index})
         accepted.append({"event": event, "fingerprint": fingerprint})
         event_trace.append({"event_id": event["id"], "reason": "event_applied"})
+    state = workspace.export()
     _state(state, request["schema"], request["classes"])
     return PreparedRound(
         _json(
@@ -629,6 +685,47 @@ def _single_writes(intent, schema):
     return []
 
 
+def _first_conflict(intents, schema):
+    """Find exactly the first old global combinations pair, without unrelated pairs.
+
+    Deduplicate only the search index, never intents/actions. After duplicate
+    (instance, typed value) pairs are removed, a bucket's first conflicting left
+    entry is its first or second unique entry: if the first has no conflict, every
+    other entry shares its instance or value, and the two distinct groups conflict.
+    All-same-instance/value buckets have no conflict at all. Select the smallest
+    original (i,j) across buckets to preserve failure evidence, not bucket order.
+    """
+    buckets = {}
+    position = 0
+    for intent in intents:
+        for write in _single_writes(intent, schema):
+            instance = (intent["event_id"], intent["behavior_id"])
+            value = _json(write["value"])
+            bucket = buckets.setdefault((write["subject"], write["property"]), {})
+            bucket.setdefault((instance, value), (position, write, instance, value))
+            position += 1
+    first = None
+    for bucket in buckets.values():
+        entries = list(bucket.values())
+        if len({item[2] for item in entries}) < 2 or len({item[3] for item in entries}) < 2:
+            continue
+        for offset, left in enumerate(entries[:2]):
+            right = next(
+                (
+                    item
+                    for item in entries[offset + 1 :]
+                    if item[2] != left[2] and item[3] != left[3]
+                ),
+                None,
+            )
+            if right is not None:
+                pair = (left[0], right[0])
+                if first is None or pair < first[0]:
+                    first = (pair, left[1], right[1])
+                break
+    return None if first is None else first[1:]
+
+
 def _difference(before, after):
     def items(state):
         return (
@@ -652,6 +749,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
     occurs here. Only the approved adapter may supply the reasoning facts.
     """
     doc = prepared.document
+    binding = _hash(doc)
     request = doc["request"]
     schema, classes, scope = request["schema"], request["classes"], request["scope"]
     reasoning = json.loads(_json(reasoning))
@@ -668,7 +766,12 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
         ),
         location="reasoning",
     )
-    expected = prepared.reasoning_input
+    expected = {
+        "binding": binding,
+        "assertion_digest": _hash(doc["after_events"]),
+        "ontology_version": request["ontology_version"],
+        "rules_version": request["rules_version"],
+    }
     if reasoning["status"] != "current" or any(
         reasoning[k] != expected[k]
         for k in ("binding", "assertion_digest", "ontology_version", "rules_version")
@@ -676,10 +779,14 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
         _fail("stale_reasoning", "reasoning")
     _text(reasoning["version"], "reasoning.version")
     frozen = json.loads(_json(doc["after_events"]))
+    frozen_objects = set(frozen["objects"])
+    facts = {_json(fact) for fact in frozen["facts"]}
     for fact in _list(reasoning["facts"], "reasoning.facts"):
-        _fact(fact, frozen, schema, classes)
-        if _json(fact) not in {_json(f) for f in frozen["facts"]}:
+        _fact(fact, frozen_objects, schema, classes)
+        key = _json(fact)
+        if key not in facts:
             frozen["facts"].append(fact)
+            facts.add(key)
     # Single-valued reasoning contradictions cannot silently pick a condition value.
     _state(frozen, schema, classes)
     _definitions(request["behaviors"])
@@ -688,7 +795,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
         "scope": scope,
         "run_id": request["run_id"],
         "round": request["round"],
-        "binding": prepared.binding,
+        "binding": binding,
         "assertion_version": request["assertion_version"],
         "reasoning_version": reasoning["version"],
         "behavior_version": request["behavior_version"],
@@ -696,7 +803,6 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
         "executed_actions": [],
     }
     decisions, instances = [], []
-    facts = {_json(fact) for fact in frozen["facts"]}
     behaviors = sorted(request["behaviors"], key=lambda b: (-b["priority"], b["id"]))
     for behavior in behaviors:
         for item in doc["accepted"]:
@@ -734,7 +840,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                                 k: _resolve(condition[k], event, behavior["id"], scope)
                                 for k in ("subject", "property", "value")
                             }
-                            _fact(fact, frozen, schema, classes)
+                            _fact(fact, frozen_objects, schema, classes)
                             satisfied = _json(fact) in facts
                             source = "frozen_snapshot" if satisfied else "not_recorded_in_snapshot"
                         decision["conditions"].append(
@@ -771,7 +877,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
     # so creates may be referenced later in the same instance, never a peer's create.
     intents = []
     for event, behavior in instances:
-        scratch = json.loads(_json(doc["after_events"]))
+        scratch = _Workspace(doc["after_events"], schema, classes)
         for index, template in enumerate(behavior["actions"]):
             with _explain(
                 **failure_identity,
@@ -798,31 +904,27 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                         else "notification:" + _hash([scope, event["id"], behavior["id"], index])
                     )
                 else:
-                    _edit(scratch, action, schema, classes)
+                    scratch.edit(action)
                 intents.append(intent)
-    writes = [write for intent in intents for write in _single_writes(intent, schema)]
-    for a, b in combinations(writes, 2):
+    conflict = _first_conflict(intents, schema)
+    if conflict is not None:
+        a, b = conflict
         left, right = a["intent"], b["intent"]
-        if (left["event_id"], left["behavior_id"]) == (right["event_id"], right["behavior_id"]):
-            continue
-        if (a["subject"], a["property"]) == (b["subject"], b["property"]) and (
-            _json(a["value"]) != _json(b["value"])
-        ):
-            _fail(
-                "competing_write",
-                "behavior.intents",
-                {
-                    **failure_identity,
-                    "stage": "conflict_check",
-                    "event_trace": doc["event_trace"],
-                    "decisions": decisions,
-                    "intents": intents,
-                    "conflict": [left, right],
-                    "executed_actions": [],
-                    "conflict_slot": {"subject": a["subject"], "property": a["property"]},
-                },
-            )
-    candidate = json.loads(_json(doc["after_events"]))
+        _fail(
+            "competing_write",
+            "behavior.intents",
+            {
+                **failure_identity,
+                "stage": "conflict_check",
+                "event_trace": doc["event_trace"],
+                "decisions": decisions,
+                "intents": intents,
+                "conflict": [left, right],
+                "executed_actions": [],
+                "conflict_slot": {"subject": a["subject"], "property": a["property"]},
+            },
+        )
+    workspace = _Workspace(doc["after_events"], schema, classes)
     trace = []
     for intent in intents:
         with _explain(
@@ -837,7 +939,6 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
             discarded_actions=trace,
         ):
             action = intent["action"]
-            prior = _json(candidate)
             if action["kind"] == "notify":
                 record = {
                     "id": intent["notification_id"],
@@ -846,17 +947,11 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
                     "action_index": intent["action_index"],
                     "message": action["message"],
                 }
-                if record["id"] in candidate["objects"] or any(
-                    n["id"] == record["id"] for n in candidate["notifications"]
-                ):
-                    _fail("duplicate_identity", "notification.id")
-                candidate["notifications"].append(record)
+                changed = workspace.notify(record)
             else:
-                _edit(candidate, action, schema, classes)
-            _normalize(candidate)
-            trace.append(
-                {**intent, "effect": "unchanged" if prior == _json(candidate) else "changed"}
-            )
+                changed = workspace.edit(action)
+            trace.append({**intent, "effect": "changed" if changed else "unchanged"})
+    candidate = workspace.export()
     _state(candidate, schema, classes)
     consumed_events = request["consumption"]["events"] + [
         {"event_id": item["event"]["id"], "fingerprint": item["fingerprint"]}
@@ -873,7 +968,7 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
         "run_id": request["run_id"],
         "round": request["round"],
         "base_revision": request["base_revision"],
-        "binding": prepared.binding,
+        "binding": binding,
         "assertion_version": request["assertion_version"],
         "reasoning_version": reasoning["version"],
         "behavior_version": request["behavior_version"],

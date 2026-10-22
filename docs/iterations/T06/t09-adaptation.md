@@ -9,6 +9,7 @@
 - RDF 事件追加可重复声明同一稳定节点。event-only declare 是幂等节点登记，不添加虚构类型，不计行为动作，行为定义禁止 declare。原 create 碰撞仍拒绝。
 - 属性基数只来自 singleValuedPredicates；rdf:type、多值关系和非单值字面量追加保持集合语义。保留原 equipment→alarm 关系，不使用私有反例的简化反向关系。
 - 固定 codec 只承诺当前数据使用的 IRI、字符串、true/false Boolean；拒绝未知类型、语言与会损失词法的信息，不冒充附录 C 完整 RDF codec。正式推理输入/编码由 T05 批准后接入。
+- 动作中的属性值按已声明动作的原样 JSON 标量保留，不在动作编译阶段自动解释成 RDF literal 词法或执行通用 RDF 解码；不得把这一有限适配扩大为附录 C 的完整值语义。
 
 ## 只读输入与投影
 
