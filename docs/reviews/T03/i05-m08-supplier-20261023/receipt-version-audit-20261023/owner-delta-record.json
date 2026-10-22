@@ -1,0 +1,78 @@
+{
+  "format": "T03-M08-receipt-post-review-delta/1",
+  "recordedAtUtc": "2026-10-22T18:15:53.062237+00:00",
+  "owner": "original T03 primary agent /root",
+  "cause": "primary owner appended scriptIdentity/versionBoundary after independent reviewer had read17783-byte receipt; formatting reviewer report later did not refresh receipt identity; freeze failed to reconcile this gap",
+  "sourceEvent": {
+    "source": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-07-01a15bcd-f838-75a2-b2c3-692915cc91c3.jsonl",
+    "eventTimestampUtc": "2026-10-22T18:00:37.524Z",
+    "toolCallId": "call_5c1267d04da34ac5a597062e94e4fd69",
+    "toolName": "exec",
+    "inputBytes": 1507,
+    "inputSha256": "0d877f0e47462e4d5574fbc2243f8d345eb646f42c13c5b91ca5fcf60ac1a0cd"
+  },
+  "formalAppCommandId": "exec-ccbdb0a5-997a-46fa-a057-62c039e7e6be",
+  "appendLocalTime": "2026-10-23T02:00:37.524+08:00",
+  "fileTimes": {
+    "receiptModifiedLocal": "2026-10-23T02:00:37+08:00",
+    "reviewFirstCreatedLocal": "2026-10-23T02:00:19+08:00",
+    "reviewFormattedLocal": "2026-10-23T02:01:56+08:00",
+    "docsFreezeCommitLocal": "2026-10-23T02:02:31+08:00",
+    "meaning": "file birth/mtime and commit time are separate from source tool event timestamp"
+  },
+  "reviewedVersionRecovery": {
+    "identity": {
+      "path": "docs/reviews/T03/i05-m08-supplier-20261023/receipt-version-audit-20261023/validation-receipt-reviewed-v1.json",
+      "bytes": 17783,
+      "sha256": "fc249e62f858cb26ba58bb73428a6d2c546b56ab4deed904ab120b793be46746"
+    },
+    "method": "reverse only the two additions, serialize using repository Prettier config printWidth100; exact17783B/fc249 hash matches independent report",
+    "notAnOriginalBackup": "no prior standalone backup existed; label this byte-exact recovered reviewed version, never backdate creation",
+    "firstRecoveryAttempt": "default Prettier80 mismatched recorded identity and aborted before writing; corrected to actual project config100"
+  },
+  "deliveredVersion": {
+    "path": "docs/reviews/T03/i05-m08-supplier-20261023/receipt-version-audit-20261023/validation-receipt-delivered-v2.json",
+    "bytes": 18209,
+    "sha256": "eaf60afb8f95794d45c77fb2ba90da19de5c95505d45727816648d40b1153d7b"
+  },
+  "additions": {
+    "scriptIdentity": {
+      "path": "docs/reviews/T03/i05-m08-supplier-20261023/audit-packaged-supplier.py",
+      "bytes": 5293,
+      "sha256": "37bed088e4d5e4569804f50b90863db705d8cba9ca9c04832dbd2ab477f91781"
+    },
+    "versionBoundary": "current helper includes explicit metadata License-File validation added after first17 audit; original first result remains a10-license-prefix inventory and is not rewritten as11"
+  },
+  "onlyAddedJsonPointers": [
+    "/supplementalDeclaredLicenseAudit/scriptIdentity",
+    "/supplementalDeclaredLicenseAudit/versionBoundary"
+  ],
+  "jsonDeltaExactlyTwoAdditions": true,
+  "originalIndependentReview": {
+    "path": "docs/reviews/T03/i05-m08-supplier-20261023/independent-review.md",
+    "bytes": 9013,
+    "sha256": "917a1aba25a400a61f7ec8eb233dc45a5f199db5d4bfcd0531628be1a926ba23"
+  },
+  "originalReviewCoverage": "9013B/917a report covered17783B/fc249 receipt, not the later426-byte two-field addition; original report not rewritten",
+  "unchangedOriginalFiles": [
+    {
+      "path": "docs/reviews/T03/i05-m08-supplier-20261023/validation-receipt.json",
+      "bytes": 18209,
+      "sha256": "eaf60afb8f95794d45c77fb2ba90da19de5c95505d45727816648d40b1153d7b"
+    },
+    {
+      "path": "docs/reviews/T03/i05-m08-supplier-20261023/independent-review.md",
+      "bytes": 9013,
+      "sha256": "917a1aba25a400a61f7ec8eb233dc45a5f199db5d4bfcd0531628be1a926ba23"
+    },
+    {
+      "path": "docs/reviews/T03/i05-m08-supplier-20261023/final-manifest.json",
+      "bytes": 2478,
+      "sha256": "6898ea4ad482d7ee3b395c136edde615ca57988f1165bb03fa9d52819921c9a0"
+    }
+  ],
+  "productCommit": "4e752177f3e350d0be94ed063aca2e866dbf7970",
+  "productOrRuntimeChange": false,
+  "newInstallationTestsOrProductExecution": false,
+  "resolution": "separate independent delta review; no retroactive original-full-coverage claim"
+}
