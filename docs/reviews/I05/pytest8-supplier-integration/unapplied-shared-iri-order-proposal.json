@@ -1,0 +1,20 @@
+{
+  "format": "I05-unapplied-shared-iri-proposal/1",
+  "base": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "path": "packages/engine/src/ontolearn_engine/semantic.py",
+  "sourceBytes": 65749,
+  "sourceSha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+  "applied": false,
+  "sharedProductWritten": false,
+  "proposal": "pre-sort URIRef spelling guard using exact existing lexical condition and existing ABSOLUTE_IRI_REQUIRED code; existing post-sort checks retained",
+  "normalDeterministicSortPreserved": true,
+  "newErrorCode": false,
+  "literalDatatypePolicyChanged": false,
+  "genericExceptionsDowngraded": false,
+  "runtimeValidation": false,
+  "ownerDecisionRequired": [
+    "preserve old API intended malformedIRI rejection while removing raw n3 exception",
+    "regression on malformed URI subjects/predicates/objects and valid ordering",
+    "refresh actual semantic source pin by same-issue supplier proof after fixed change"
+  ]
+}

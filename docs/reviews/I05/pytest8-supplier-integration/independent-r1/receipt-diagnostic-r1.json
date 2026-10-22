@@ -1,0 +1,85 @@
+{
+  "format": "I05-diagnostic-r1-independent-static-receipt/1",
+  "recordedAtUtc": "2026-10-22T18:06:23.846653+00:00",
+  "reviewedBase": "d1fb6d13ead01a10a5406a661d38f46108098663",
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration",
+  "test": {
+    "bytes": 75647,
+    "sha256": "4fdc5c954c7784ca17298da4e23cbe77d7a618cfeb93add29cd074a13285a39e"
+  },
+  "probe": {
+    "bytes": 102669,
+    "sha256": "05f4ac85f883f40142782e9ee3943b8df9593ddf5a35e318ca35bbd6781a6dd4",
+    "byteIdenticalToBase": true
+  },
+  "normalizedWholeTestAstEqualsBase": true,
+  "normalization": {
+    "removedFixtureParameters": [
+      "full_run.tmp_path_factory",
+      "test_r1_real_producer_capture_survives_restore_unknown_failure.tmp_path"
+    ],
+    "removedStatements": {
+      "full_run": 3,
+      "test_r1_real_producer_capture_survives_restore_unknown_failure": 2
+    }
+  },
+  "canonicalFunctionRead": {
+    "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+    "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+    "function": "explanation_roots",
+    "lines": [
+      1696,
+      1767
+    ],
+    "wholeFileBytes": 70203,
+    "wholeFileSha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+    "extractedFunctionUtf8Bytes": 3064,
+    "extractedFunctionSha256": "7eccfa8ff91197135c2da35e883879f7f7f51837d60cc7191544a53b1ae83a6a",
+    "bodyRenderedOnlyThisFunction": true,
+    "otherAlgorithmsFollowed": false,
+    "productImported": false
+  },
+  "actualChecks": [
+    {
+      "chunk": "8c91eb",
+      "exitCode": 0,
+      "kind": "diagnostic test diff"
+    },
+    {
+      "chunk": "1e1025",
+      "exitCode": 0,
+      "kind": "fixed canonical single function AST extraction"
+    },
+    {
+      "chunk": "c1b0a2",
+      "exitCode": 1,
+      "kind": "reviewer checker incorrect hardcoded function body index; not a product execution"
+    },
+    {
+      "chunk": "760aaa",
+      "exitCode": 0,
+      "kind": "corrected AST structural normalization and unchanged probe bytes"
+    }
+  ],
+  "diagnosticDiffCapture": {
+    "argv": [
+      "git",
+      "diff",
+      "d1fb6d13ead01a10a5406a661d38f46108098663",
+      "--",
+      "packages/engine/tests/test_semantic_source_package_probe.py"
+    ],
+    "exitCode": 0,
+    "streamMode": "actual subprocess stdout/stderr captured separately",
+    "stdoutPath": "diff-diagnostic-r1.stdout.raw",
+    "stderrPath": "diff-diagnostic-r1.stderr.raw"
+  },
+  "runtimeRuns": [],
+  "productWrites": [],
+  "findings": {
+    "newDiagnosticP1": 0,
+    "newDiagnosticP2": 0,
+    "originalTestMappingAccessAssumptionConfirmedWrong": true
+  },
+  "verdict": "Limited Pass; diagnostic-only static review"
+}

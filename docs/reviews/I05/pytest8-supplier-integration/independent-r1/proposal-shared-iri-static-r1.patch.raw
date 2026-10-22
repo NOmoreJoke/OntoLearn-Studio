@@ -1,0 +1,16 @@
+--- a/packages/engine/src/ontolearn_engine/semantic.py
++++ b/packages/engine/src/ontolearn_engine/semantic.py
+@@ -68,6 +68,13 @@
+     }
+     if any(graph.triples((None, OWL.imports, None))):
+         raise SemanticError("EXTERNAL_ACCESS_DENIED")
++    # Reject malformed IRIs before n3() is used by the deterministic sorting key.
++    for triple in graph:
++        for term in triple:
++            if isinstance(term, URIRef):
++                value = str(term)
++                if ":" not in value or any(c.isspace() or c in '<>"{}|^`\\' for c in value):
++                    raise SemanticError("ABSOLUTE_IRI_REQUIRED")
+     for s, p, o in sorted(graph, key=_key):
+         if p == OWL.imports:
+             raise SemanticError("EXTERNAL_ACCESS_DENIED")

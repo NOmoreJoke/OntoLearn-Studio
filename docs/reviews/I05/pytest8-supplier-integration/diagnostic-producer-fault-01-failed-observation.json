@@ -1,0 +1,49 @@
+{
+  "api": "semantic.parse_turtle",
+  "callCounts": {
+    "reason": 0,
+    "validator": 0
+  },
+  "contextStatus": "complete",
+  "datasetId": "turtle/front-5",
+  "diagnostic": {
+    "api": "semantic.parse_turtle",
+    "classification": "harness-or-unknown",
+    "exceptionClass": "Exception",
+    "stage": "parse/turtle"
+  },
+  "end": 854035.128718125,
+  "error": {
+    "code": "INTERNAL_ERROR"
+  },
+  "family": "turtle-rejection",
+  "id": "turtle/front-5",
+  "operation": "parse",
+  "parameters": {},
+  "partialOutputs": [],
+  "projectionSha256": "e4158095f1193247cb0ffb43a597ce8c57d20ad505b90df5ac191ecd12da3f95",
+  "sourceCaseId": "turtle/front-5",
+  "sourceRefs": [
+    {
+      "bytes": 33858,
+      "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+      "pointer": "ast:constants/input-only",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9"
+    }
+  ],
+  "stage": "parse/turtle",
+  "stageAttempts": [
+    {
+      "api": "semantic.parse_turtle",
+      "elapsedNs": 377125,
+      "end": 854035.128674541,
+      "returned": false,
+      "stage": "parse/turtle",
+      "start": 854035.128297416
+    }
+  ],
+  "start": 854035.128248583,
+  "status": "unexpected-failure",
+  "type": "observation"
+}

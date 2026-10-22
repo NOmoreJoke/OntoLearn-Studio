@@ -1,0 +1,40 @@
+{
+  "format": "I05-pytest8-supplier-integration-scope/1",
+  "recordedAtUtc": "2026-10-22T18:04:17.791187+00:00",
+  "base": "d1fb6d13ead01a10a5406a661d38f46108098663",
+  "hygieneCandidate": "e56eae1eeebcd845cf07a9ec5ce638cb0df953c7",
+  "supplierProductRef": "4e752177f3e350d0be94ed063aca2e866dbf7970",
+  "supplierDocsRef": "7abab04b223b0c6ca9c290b5b6bd8a702971d2e9",
+  "adoptedExactProductPaths": [
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 1574,
+      "sha256": "0b999721e7ab2dde7ebbc831982cd398cb7d4af7219a49802a0f82c77b1d332c"
+    }
+  ],
+  "ownedEditableSource": [
+    "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+    "packages/engine/tests/test_semantic_source_package_probe.py"
+  ],
+  "sharedCanonicalEdit": false,
+  "diagnosis": "one directed pytest invocation with original module full_run and separate real producer failure test; save actual full JSONL and terminal; do not reconstruct first-run BytesIO",
+  "originalFirstRunFullJsonl": "not preserved, confirmed by T03 2026-10-23 delegation; original merged log preserved separately",
+  "authorizedRuntime": "existing canonical/full-v1 and two B1 selectors in normal fixtures; no new independent probe/caller/native/business network; cooperative120s not OS hard deadline",
+  "unchangedGates": [
+    "417 observations/320 datasets",
+    "existing guards/pins/selectors",
+    "no Store reads",
+    "item32MiB/report64MiB",
+    "source/packageCLI/physical/RSS/wholeH/17L not established"
+  ]
+}

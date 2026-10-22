@@ -1,0 +1,281 @@
+{
+  "format": "I05-shared-iri-static-r1-independent-receipt/1",
+  "recordedAtUtc": "2026-10-22T18:19:59.579993+00:00",
+  "verdict": "Limited static proposal approval only; no compatibility approval and no shared-write authority",
+  "fixedFunctionInputs": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 65749,
+      "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+      "onlyRenderedMembers": [
+        {
+          "name": "_text",
+          "lines": [
+            36,
+            44
+          ],
+          "extractedUtf8": {
+            "bytes": 326,
+            "sha256": "12d648ad687c8acfe6a80e091a8965193a62b9de6185e03629a8a0110c81fc5e"
+          }
+        },
+        {
+          "name": "_terms",
+          "lines": [
+            59,
+            108
+          ],
+          "extractedUtf8": {
+            "bytes": 2555,
+            "sha256": "94c7c0675df43d3470ad59a234db07811d7bb4516b166373ac3d619465a144df"
+          }
+        },
+        {
+          "name": "parse_turtle",
+          "lines": [
+            111,
+            113
+          ],
+          "extractedUtf8": {
+            "bytes": 231,
+            "sha256": "8b25c35a2d08f91d3382e06e52139330c76d2cc076b8b59473a6f855c4fdf847"
+          }
+        },
+        {
+          "name": "_parse_turtle",
+          "lines": [
+            116,
+            132
+          ],
+          "extractedUtf8": {
+            "bytes": 663,
+            "sha256": "02891a95f667d6adb53e31aad9c577bee394e6f0b29979bba399e5923403a0f0"
+          }
+        },
+        {
+          "name": "_shacl_text_iris",
+          "lines": [
+            135,
+            144
+          ],
+          "extractedUtf8": {
+            "bytes": 540,
+            "sha256": "46748bd60332edd4d4dff3769dc2dcee2aaf8cf46384ec143bd7224a87e792e0"
+          }
+        },
+        {
+          "name": "_key",
+          "lines": [
+            247,
+            248
+          ],
+          "extractedUtf8": {
+            "bytes": 65,
+            "sha256": "fc950eb06133c87466319be97aeb395ed32e8ab705714ef67f1a578cebb516b5"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 33916,
+      "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+      "onlyRenderedMembers": [
+        {
+          "name": "parse_graph",
+          "lines": [
+            92,
+            99
+          ],
+          "extractedUtf8": {
+            "bytes": 353,
+            "sha256": "e047eb07238624d8b6a849ebf0c358a6f2e12862f7bb414d329b082b2e3653ff"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "onlyRenderedMembers": [
+        {
+          "name": "SemanticError",
+          "lines": [
+            13,
+            18
+          ],
+          "extractedUtf8": {
+            "bytes": 208,
+            "sha256": "7a9b1d41023236b20a01b4271089aba8e2fec741881a267469a1cf7b62e6596a"
+          }
+        }
+      ]
+    }
+  ],
+  "relatedArchivedApiTests": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "docs/reviews/I05/source-package-probe-source/inputs/corpus/6891a5842302__packages__engine__tests__test_semantic_shacl_entry.py.raw",
+      "bytes": 14604,
+      "sha256": "61a3e92c298fa37483d203a8ad59dcafc9ec0ff61cf6d30b043267b7ca048c98",
+      "renderedWindows": [
+        [
+          44,
+          48
+        ],
+        [
+          212,
+          228
+        ],
+        [
+          231,
+          244
+        ]
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "docs/reviews/I05/source-package-probe-source/inputs/corpus/6891a5842302__packages__engine__tests__test_semantic_shacl_date_policy.py.raw",
+      "bytes": 26924,
+      "sha256": "bd8e332a1b55ebdf183f1effdd37126a61233931edaa8d2239e0a20d9179b765",
+      "renderedWindows": [
+        [
+          183,
+          188
+        ],
+        [
+          505,
+          531
+        ]
+      ]
+    }
+  ],
+  "proposal": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-supplier-integration/unapplied-shared-iri-order-proposal.patch",
+    "bytes": 755,
+    "sha256": "63c75cf21da84c50d4c7a2f4fa5b0f1aa7ebf9a7e923011fad48dcebc09453d1",
+    "metadata": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-supplier-integration/unapplied-shared-iri-order-proposal.json",
+      "bytes": 969,
+      "sha256": "e624c3f085402359ce4dfb96878f32ebae1c564a20d481a851f7805dcbb28fc0"
+    },
+    "applied": false,
+    "exactExistingLexicalIfAndRaiseAst": true,
+    "wholeFileAstEqualAfterRemovingOnlyNewFor": true,
+    "addedLines": 7,
+    "inMemoryProposedBytes": 66117,
+    "inMemoryProposedSha256": "0cfc956fc65c3dd6db9aa9a5973618ee4735751d1fb54c80800ad60d08202f93",
+    "sharedCurrentEqualsFixedOriginal": true
+  },
+  "scopeNotes": [
+    "whole files hashed and AST-parsed, only authorized functions/test windows rendered",
+    "fixed2cf function read; no front-5 complete input or dynamic exception stack read",
+    "source membership names inspected to locate archived related API tests; unrelated implementation bodies not rendered"
+  ],
+  "actualChecks": [
+    {
+      "chunk": "93d8fd",
+      "exitCode": 0,
+      "kind": "proposal and six-chain functions including parse_graph"
+    },
+    {
+      "chunk": "44388a",
+      "exitCode": 0,
+      "kind": "live engine pytest grep no ABSOLUTE match; parse references"
+    },
+    {
+      "chunk": "5b5b8f",
+      "exitCode": 0,
+      "kind": "_text helper"
+    },
+    {
+      "chunk": "ce8cd2",
+      "exitCode": 1,
+      "kind": "all live *test*.py exact-code grep no match"
+    },
+    {
+      "chunk": "8beeb7",
+      "exitCode": 0,
+      "kind": "direct SemanticError import"
+    },
+    {
+      "chunk": "e6a624",
+      "exitCode": 1,
+      "kind": "semantic_samples.py grep no path match"
+    },
+    {
+      "chunk": "c6370c",
+      "exitCode": 0,
+      "kind": "direct SemanticError type"
+    },
+    {
+      "chunk": "00e6ce",
+      "exitCode": 1,
+      "kind": "same absent semantic_samples.py path grep"
+    },
+    {
+      "chunk": "020f95",
+      "exitCode": 0,
+      "kind": "bounded exploratory strict literal front-door test, not illegalIRI evidence"
+    },
+    {
+      "chunk": "554fef",
+      "exitCode": 0,
+      "kind": "fixed test filename metadata"
+    },
+    {
+      "chunk": "9856e3",
+      "exitCode": 1,
+      "nestedGitExitCode": 128,
+      "kind": "attempted fixed semantic_samples.py Git show path absent; no file body read"
+    },
+    {
+      "chunk": "9d316b",
+      "exitCode": 0,
+      "kind": "fixed semantic test archive filename metadata"
+    },
+    {
+      "chunk": "4cb860",
+      "exitCode": 0,
+      "kind": "archive grep overbroad 96 matching lines; tool display truncated; not treated as full test read"
+    },
+    {
+      "chunk": "45d46c",
+      "exitCode": 0,
+      "kind": "narrowed complete related illegalIRI test functions/decorators"
+    },
+    {
+      "chunk": "68c48d",
+      "exitCode": 0,
+      "kind": "direct reject helper"
+    },
+    {
+      "chunk": "b6b8d2",
+      "exitCode": 0,
+      "kind": "direct validate helper"
+    },
+    {
+      "chunk": "5cfa78",
+      "exitCode": 0,
+      "kind": "in-memory AST proof and unchanged current shared bytes"
+    }
+  ],
+  "findings": {
+    "newP1": 0,
+    "newP2": 0
+  },
+  "ownerCompatibilityDecisions": [
+    "ordinary parse generic Exception to existing stable ABSOLUTE_IRI_REQUIRED is intentional behavior change",
+    "prescan may change priority relative to other non-import rejection conditions in mixed invalid graphs",
+    "Literal datatype policy excluded; not all possible n3 exception closure claimed"
+  ],
+  "productRuns": [],
+  "productWrites": [],
+  "testsRun": false,
+  "compatibilityApproved": false,
+  "sharedWriterSelectedByReviewer": false
+}

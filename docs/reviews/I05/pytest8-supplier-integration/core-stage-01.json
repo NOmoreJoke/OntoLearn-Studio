@@ -1,0 +1,105 @@
+{
+  "recordedAtUtc": "2026-10-22T18:25:52.022985+00:00",
+  "commands": [
+    {
+      "label": "empty-index",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--quiet"
+      ],
+      "exitCode": 0,
+      "streams": {
+        "stdout": {
+          "path": "core-empty-index-01.stdout.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "core-empty-index-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "label": "stage",
+      "argv": [
+        "git",
+        "add",
+        "--",
+        "packages/engine/pyproject.toml",
+        "packages/engine/src/ontolearn_engine/semantic.py",
+        "packages/engine/tests/test_semantic_source_package_probe.py",
+        "scripts/build-engine.mjs",
+        "uv.lock"
+      ],
+      "exitCode": 0,
+      "streams": {
+        "stdout": {
+          "path": "core-stage-01.stdout.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "core-stage-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "label": "staged-paths",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "streams": {
+        "stdout": {
+          "path": "core-staged-paths-01.stdout.raw",
+          "bytes": 173,
+          "sha256": "49d909ef76f2c1c85a4695c122cd837f20024ce57069d46d76a023eddbe7c702"
+        },
+        "stderr": {
+          "path": "core-staged-paths-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "label": "staged-check",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "streams": {
+        "stdout": {
+          "path": "core-staged-check-01.stdout.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "core-staged-check-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "exactOwnedPaths": [
+    "packages/engine/pyproject.toml",
+    "packages/engine/src/ontolearn_engine/semantic.py",
+    "packages/engine/tests/test_semantic_source_package_probe.py",
+    "scripts/build-engine.mjs",
+    "uv.lock"
+  ],
+  "AGENTSExcluded": true
+}

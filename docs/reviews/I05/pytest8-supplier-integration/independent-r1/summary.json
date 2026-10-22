@@ -1,0 +1,53 @@
+{
+  "format": "I05-pytest8-independent-static-summary/1",
+  "verdict": "limited-static-triage; root cause evidence incomplete",
+  "originalPytest": {
+    "collected": 1175,
+    "passed": 1167,
+    "failed": 8,
+    "durationSeconds": 204.47,
+    "source": "original supplied log; not an execution by this reviewer"
+  },
+  "groups": [
+    {
+      "tests": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "proven": "one module-scope full_run returned1 with at least one unexpected-failure",
+      "unknown": "first failing id/code/stage/api and terminal not expanded in original log"
+    },
+    {
+      "tests": [
+        7
+      ],
+      "proven": "independent fault-injected run returned1, producer did not append a successful return, restore wrapper not entered",
+      "unknown": "whether producer started then failed, or earlier observation stopped collection; equivalence to shared run root cause"
+    },
+    {
+      "tests": [
+        8
+      ],
+      "proven": "actual roots length1, roots[0] dict, test attribute access failed",
+      "unknown": "formal return contract and actual dict keys/values"
+    }
+  ],
+  "correction": "issued=0 does not prove producer was never entered; append occurs after original compute returns",
+  "notClaimed": [
+    "all seven collector failures have one proven root cause",
+    "roots dict is cause of collector failure",
+    "contract permits merely changing expected",
+    "current hygiene candidate runtime passed"
+  ],
+  "nextEvidence": [
+    "first-run shared full_run raw JSONL with failed observation and terminal",
+    "separate fault-injected run raw JSONL if preserved",
+    "limited formal explanation_roots interface contract via root owner"
+  ],
+  "testsRun": false,
+  "productEdits": false
+}

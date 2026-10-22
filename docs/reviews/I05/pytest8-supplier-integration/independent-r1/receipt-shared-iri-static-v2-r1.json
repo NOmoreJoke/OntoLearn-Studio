@@ -1,0 +1,93 @@
+{
+  "format": "I05-shared-iri-static-v2-r1-independent-receipt/1",
+  "recordedAtUtc": "2026-10-22T18:21:21.963782+00:00",
+  "verdict": "no static blocker; Limited Pass for v2 proposal only",
+  "inputs": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-supplier-integration/unapplied-shared-iri-order-proposal-v2.patch",
+      "bytes": 1540,
+      "sha256": "7c4b46260e218dacbdc5bcc0d4d2c8595a629ef4caf81f8355d5768f18fd6b6e"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-supplier-integration/unapplied-shared-iri-order-proposal-v2.json",
+      "bytes": 459,
+      "sha256": "26b2207138a7cedb730dffbeea657faec9bfc19e45db83118920c968c8bccfa6"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-supplier-integration/iri-regression-red-01.json",
+      "bytes": 1067,
+      "sha256": "c2a523a749f3f25d9724d81219d367c897e41831c2def530bf00bbcc55267f05"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-supplier-integration/iri-regression-red-01.stdout.raw",
+      "bytes": 4798,
+      "sha256": "a64ffc0a0d40466b6bd911758dd4ceff1b44c445af65de8f1a056c04e5453917"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration/docs/reviews/I05/pytest8-supplier-integration/iri-regression-red-01.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "base": {
+    "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+    "path": "packages/engine/src/ontolearn_engine/semantic.py",
+    "bytes": 65749,
+    "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07"
+  },
+  "checks": {
+    "patchAppliedInMemoryOnly": true,
+    "privateKeywordOnlyDefaultFalse": true,
+    "onlyExistingParseRouteSuppliesTrue": true,
+    "identicalExistingLexicalIfAndRaise": true,
+    "wholeAstEqualsBaseAfterReversingThreeChanges": true,
+    "publicSignatureUnchanged": true,
+    "originalSortedAndChecksRetained": true,
+    "genericCatchAdded": false,
+    "semanticTurtleChanged": false,
+    "literalDatatypePolicyChanged": false,
+    "inMemoryProposedBytes": 66264,
+    "inMemoryProposedSha256": "4b81da30fd3d2623bfc4cc8ee4b8789be2eb9077ed6a4fafb91e61a29d40257b"
+  },
+  "redEvidence": {
+    "rawStreamHashesMatchReceipt": true,
+    "pytestFailed": 3,
+    "pytestSeconds": 0.94,
+    "launcherExit": 1,
+    "launcherElapsedSeconds": 1.456453291932121,
+    "allThreePositionsTrace": [
+      "subject",
+      "predicate",
+      "object"
+    ],
+    "actualN3TraceRead": true,
+    "historicalT03FirstRunEvidence": false,
+    "greenEvidence": false
+  },
+  "actualChecks": [
+    {
+      "chunk": "1c0c2c",
+      "exitCode": 0,
+      "kind": "v2 proposal, red receipt and complete original streams read"
+    },
+    {
+      "chunk": "41229f",
+      "exitCode": 0,
+      "kind": "in-memory exact unified patch application and constrained AST reversal"
+    }
+  ],
+  "productRuns": [],
+  "productWrites": [],
+  "newFindings": {
+    "P1": 0,
+    "P2": 0
+  },
+  "compatibilityDecisionReservedToRoot": true,
+  "textMixedViolationPriorityBoundaryRetained": true,
+  "v1HistoricalNotActualImplementationCandidate": true,
+  "unresolved": [
+    "v2 actual applied identity and same-issue source pin",
+    "green regression and full original check",
+    "broader goal completion"
+  ]
+}

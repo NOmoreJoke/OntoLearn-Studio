@@ -1,0 +1,74 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration
+configfile: pyproject.toml
+collected 3 items
+
+packages/engine/tests/test_semantic_source_package_probe.py FFF          [100%]
+
+=================================== FAILURES ===================================
+_______ test_parse_turtle_rejects_malformed_iri_before_n3_sort[subject] ________
+packages/engine/tests/test_semantic_source_package_probe.py:1771: in test_parse_turtle_rejects_malformed_iri_before_n3_sort
+    semantic.parse_turtle(" ".join(terms) + " .")
+packages/engine/src/ontolearn_engine/semantic.py:113: in parse_turtle
+    return _parse_turtle(text, format=format, shapes=shapes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:131: in _parse_turtle
+    _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
+packages/engine/src/ontolearn_engine/semantic.py:71: in _terms
+    for s, p, o in sorted(graph, key=_key):
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:248: in _key
+    return tuple(term.n3() for term in triple)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:248: in <genexpr>
+    return tuple(term.n3() for term in triple)
+                 ^^^^^^^^^
+.venv/lib/python3.12/site-packages/rdflib/term.py:317: in n3
+    raise Exception(
+E   Exception: "urn:bad iri" does not look like a valid URI, I cannot serialize this as N3/Turtle. Perhaps you wanted to urlencode it?
+______ test_parse_turtle_rejects_malformed_iri_before_n3_sort[predicate] _______
+packages/engine/tests/test_semantic_source_package_probe.py:1771: in test_parse_turtle_rejects_malformed_iri_before_n3_sort
+    semantic.parse_turtle(" ".join(terms) + " .")
+packages/engine/src/ontolearn_engine/semantic.py:113: in parse_turtle
+    return _parse_turtle(text, format=format, shapes=shapes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:131: in _parse_turtle
+    _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
+packages/engine/src/ontolearn_engine/semantic.py:71: in _terms
+    for s, p, o in sorted(graph, key=_key):
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:248: in _key
+    return tuple(term.n3() for term in triple)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:248: in <genexpr>
+    return tuple(term.n3() for term in triple)
+                 ^^^^^^^^^
+.venv/lib/python3.12/site-packages/rdflib/term.py:317: in n3
+    raise Exception(
+E   Exception: "urn:bad iri" does not look like a valid URI, I cannot serialize this as N3/Turtle. Perhaps you wanted to urlencode it?
+________ test_parse_turtle_rejects_malformed_iri_before_n3_sort[object] ________
+packages/engine/tests/test_semantic_source_package_probe.py:1771: in test_parse_turtle_rejects_malformed_iri_before_n3_sort
+    semantic.parse_turtle(" ".join(terms) + " .")
+packages/engine/src/ontolearn_engine/semantic.py:113: in parse_turtle
+    return _parse_turtle(text, format=format, shapes=shapes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:131: in _parse_turtle
+    _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
+packages/engine/src/ontolearn_engine/semantic.py:71: in _terms
+    for s, p, o in sorted(graph, key=_key):
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:248: in _key
+    return tuple(term.n3() for term in triple)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:248: in <genexpr>
+    return tuple(term.n3() for term in triple)
+                 ^^^^^^^^^
+.venv/lib/python3.12/site-packages/rdflib/term.py:317: in n3
+    raise Exception(
+E   Exception: "urn:bad iri" does not look like a valid URI, I cannot serialize this as N3/Turtle. Perhaps you wanted to urlencode it?
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_parse_turtle_rejects_malformed_iri_before_n3_sort[subject]
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_parse_turtle_rejects_malformed_iri_before_n3_sort[predicate]
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_parse_turtle_rejects_malformed_iri_before_n3_sort[object]
+============================== 3 failed in 0.94s ===============================

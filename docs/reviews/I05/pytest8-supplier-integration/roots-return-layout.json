@@ -1,0 +1,59 @@
+{
+  "format": "I05-roots-return-layout/1",
+  "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+  "bytes": 70203,
+  "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+  "readWindow": [
+    1696,
+    1767
+  ],
+  "retainedLines": [
+    1696,
+    1743,
+    1744,
+    1745,
+    1746,
+    1747,
+    1748,
+    1749,
+    1750,
+    1767
+  ],
+  "necessaryHelpersRead": [],
+  "return": "tuple of dict projections, not internal RootRef instances",
+  "cases": {
+    "leaf": [
+      "kind",
+      "reference"
+    ],
+    "step": [
+      "kind",
+      "ordinal"
+    ],
+    "other": [
+      "kind",
+      "firingIndex",
+      "headIndex"
+    ]
+  },
+  "contractChanged": false,
+  "productExecuted": false,
+  "existingTestSearch": {
+    "argv": [
+      "git",
+      "grep",
+      "-n",
+      "explanation_roots",
+      "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "--",
+      "packages/engine/tests"
+    ],
+    "exitCode": 0,
+    "onlyReferences": [
+      "test_semantic_source_package_probe.py:1654",
+      "test_semantic_source_package_probe.py:1674"
+    ]
+  },
+  "disposition": "test attribute assumption incorrect; retain original step/leaf values and order; change only representation assertions after diagnostic run"
+}

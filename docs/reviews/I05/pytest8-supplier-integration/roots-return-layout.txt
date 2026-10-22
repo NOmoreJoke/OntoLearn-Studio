@@ -1,0 +1,10 @@
+1696: def explanation_roots(view, target_keys, *, direct_ledger):
+1743:         result = tuple(
+1744:             {"kind": ref.kind, "reference": ref.reference}
+1745:             if ref.kind == "leaf"
+1746:             else {"kind": ref.kind, "ordinal": ref.ordinal}
+1747:             if ref.kind == "step"
+1748:             else {"kind": ref.kind, "firingIndex": ref.firing_index, "headIndex": ref.head_index}
+1749:             for ref in refs
+1750:         )
+1767:     return result

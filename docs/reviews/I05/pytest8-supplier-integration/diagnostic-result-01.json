@@ -1,0 +1,84 @@
+{
+  "format": "I05-diagnostic-01-result/1",
+  "pytestExit": 1,
+  "cases": [
+    {
+      "label": "shared",
+      "rawJsonl": {
+        "path": "build/i05-pytest8/diagnostic-01/semantic-full-v1-diagnostic0/observations.jsonl",
+        "bytes": 16560553,
+        "sha256": "3b1b290b76212309af9e5e5a19bffd4dec3a077ba8bed1d6923ec7afd7cb8834"
+      },
+      "records": 156,
+      "completed": 154,
+      "unstarted": 263,
+      "state": "failed",
+      "elapsedSeconds": 81.80614679097198,
+      "firstFailure": {
+        "api": "semantic.parse_turtle",
+        "code": "INTERNAL_ERROR",
+        "id": "turtle/front-5",
+        "stage": "parse/turtle"
+      },
+      "exceptionClass": "Exception",
+      "stageAttempts": [
+        {
+          "api": "semantic.parse_turtle",
+          "elapsedNs": 373042,
+          "end": 853951.320314375,
+          "returned": false,
+          "stage": "parse/turtle",
+          "start": 853951.319940958
+        }
+      ],
+      "partialOutputsCount": 0,
+      "limitsVerified": {
+        "reportBytesLe64MiB": true,
+        "eachPhysicalItemBytesLe32MiB": true
+      },
+      "source": "new authorized reproduction, not original T03 first run"
+    },
+    {
+      "label": "producer-fault",
+      "rawJsonl": {
+        "path": "build/i05-pytest8/diagnostic-01/test_r1_real_producer_capture_0/observations.jsonl",
+        "bytes": 16560566,
+        "sha256": "d9598c2326a8b39a02d476abb059f45b14abd1787055ebbfb70d1cdb5b2d0300"
+      },
+      "records": 156,
+      "completed": 154,
+      "unstarted": 263,
+      "state": "failed",
+      "elapsedSeconds": 83.59960083302576,
+      "firstFailure": {
+        "api": "semantic.parse_turtle",
+        "code": "INTERNAL_ERROR",
+        "id": "turtle/front-5",
+        "stage": "parse/turtle"
+      },
+      "exceptionClass": "Exception",
+      "stageAttempts": [
+        {
+          "api": "semantic.parse_turtle",
+          "elapsedNs": 377125,
+          "end": 854035.128674541,
+          "returned": false,
+          "stage": "parse/turtle",
+          "start": 854035.128297416
+        }
+      ],
+      "partialOutputsCount": 0,
+      "limitsVerified": {
+        "reportBytesLe64MiB": true,
+        "eachPhysicalItemBytesLe32MiB": true
+      },
+      "source": "new authorized reproduction, not original T03 first run"
+    }
+  ],
+  "sameFirstFailureAcrossBoth": true,
+  "productSourcesUnchangedDuringRun": true,
+  "sourceEditsAfterBinding": false,
+  "independentDiagnosticsReportFullRead": "932ba0",
+  "independentDiagnosticManifest4MembersVerified": true,
+  "all6BindingFileHashesReverifiedAfterRun": true
+}

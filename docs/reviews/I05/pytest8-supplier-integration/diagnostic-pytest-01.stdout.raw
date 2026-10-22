@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-pytest8-supplier-integration
+configfile: pyproject.toml
+collected 2 items
+
+packages/engine/tests/test_semantic_source_package_probe.py FF           [100%]
+
+=================================== FAILURES ===================================
+______ test_full_jsonl_is_complete_inventory_not_self_signed_equivalence _______
+packages/engine/tests/test_semantic_source_package_probe.py:953: in test_full_jsonl_is_complete_inventory_not_self_signed_equivalence
+    assert status == 0, (status, stderr)
+E   AssertionError: (1, b'')
+E   assert 1 == 0
+________ test_r1_real_producer_capture_survives_restore_unknown_failure ________
+packages/engine/tests/test_semantic_source_package_probe.py:1422: in test_r1_real_producer_capture_survives_restore_unknown_failure
+    assert code == 1 and len(issued) == len(received) == 1
+E   assert (1 == 1 and 0 == 1)
+E    +  where 0 = len([])
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_full_jsonl_is_complete_inventory_not_self_signed_equivalence
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_r1_real_producer_capture_survives_restore_unknown_failure
+======================== 2 failed in 166.16s (0:02:46) =========================
