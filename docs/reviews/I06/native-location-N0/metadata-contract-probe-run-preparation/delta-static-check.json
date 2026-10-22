@@ -1,0 +1,167 @@
+{
+  "status": "STATIC_PARSE_ONLY_NOT_CALL_READY",
+  "baselineRef": "e85ae88815e45aa336850b594910a524a073cc00",
+  "baselineJSON": {
+    "bytes": 19614,
+    "sha256": "8f9788b64b721ad60a8a1c5bf4a72287dd2519d6fcdedc82f5b681e1a8adb739"
+  },
+  "baselineCmd": {
+    "bytes": 17176,
+    "sha256": "100ebd1ae0a8f43608146565b95d145503e014b87beaccb53182fbc5115d8781"
+  },
+  "templateCmd": {
+    "bytes": 16552,
+    "sha256": "ca69fa685b20b5a7313899a42f0b431ee0df1ac3e186b93da52fb25b6f0cc423"
+  },
+  "stdinParsedNotExecuted": true,
+  "normalizedASTExactMatch": true,
+  "normalization": "Only explicit AUTH/pin/guard/single-pin iterator/single argv/new namespace/sourceRef+programKind/FSIZE+STREAM4096 and exit-label adaptations; all other AST exact match. Comments separately in textual diff.",
+  "nonCmdArgumentsExactMatch": {
+    "workdir": true,
+    "login": true,
+    "yield_time_ms": true,
+    "max_output_tokens": true
+  },
+  "changedBaseCmdLines": [
+    {
+      "baseCmdLine": 4,
+      "before": "AUTHORIZATION = 'I06-N0-execution-004-1526093e58aeaa43'  # 仅准备record identity；根未授最终运行窗口。\n",
+      "after": "AUTHORIZATION = None  # PENDING_ARTIFACT identity; no execution authorization.\n"
+    },
+    {
+      "baseCmdLine": 5,
+      "before": "CORE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_core_test', 'bytes': 362656, 'sha256': '17fb8b48ec3e79cfd36015edc4047bbd390ac0145dd2c40b1c20850455771f60'}  # 根已接受的新pair；本副本仍禁止执行。\n",
+      "after": "EXPERIMENT_PIN = None  # path/bytes/sha256 PENDING_ARTIFACT; never use an old pair.\n"
+    },
+    {
+      "baseCmdLine": 6,
+      "before": "PROBE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_child_probe', 'bytes': 34120, 'sha256': '5b9978c2e7bbb8d3ee51d3d94d95ab4797ac01337654180cf121d89dc3e05b98'}  # 同一artifacts的新probe；本副本仍禁止执行。\n",
+      "after": ""
+    },
+    {
+      "baseCmdLine": 7,
+      "before": "if AUTHORIZATION is None or CORE_PIN is None or PROBE_PIN is None:\n",
+      "after": "if AUTHORIZATION is None or EXPERIMENT_PIN is None:\n"
+    },
+    {
+      "baseCmdLine": 23,
+      "before": "BASE = \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation\"\n",
+      "after": "BASE = \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/metadata-contract-probe-run-preparation\"\n"
+    },
+    {
+      "baseCmdLine": 24,
+      "before": "RUN = BASE + \"/execution-004\"\n",
+      "after": "RUN = BASE + \"/execution-001\"\n"
+    },
+    {
+      "baseCmdLine": 27,
+      "before": "          (resource.RLIMIT_FSIZE, 1048576), (resource.RLIMIT_CORE, 0))\n",
+      "after": "          (resource.RLIMIT_FSIZE, 4096), (resource.RLIMIT_CORE, 0))\n"
+    },
+    {
+      "baseCmdLine": 29,
+      "before": "STREAM_LIMIT = 1048576\n",
+      "after": "STREAM_LIMIT = 4096\n"
+    },
+    {
+      "baseCmdLine": 30,
+      "before": "ARTIFACT_LIMIT = 2097152  # 每个 pre/post pass 两实物合计<=2MiB。\n",
+      "after": "ARTIFACT_LIMIT = 2097152  # 每个 pre/post pass 单实物<=2MiB。\n"
+    },
+    {
+      "baseCmdLine": 42,
+      "before": "result = {\"status\": \"NOT_DISPATCHED\", \"sourceRef\": \"b59239f9c1ec2774c7922f95dfc67db4dc8754e8\",\n",
+      "after": "result = {\"status\": \"NOT_DISPATCHED\", \"sourceRef\": \"2b724f0188c233de5c8ef107d39fe0c4cb50311f\",\n          \"programKind\": \"N0_ACL_CONTRACT_CHARACTERIZATION_NOT_PRODUCT_PASS\",\n"
+    },
+    {
+      "baseCmdLine": 86,
+      "before": "    for pin in (CORE_PIN, PROBE_PIN):\n",
+      "after": "    for pin in (EXPERIMENT_PIN,):\n"
+    },
+    {
+      "baseCmdLine": 237,
+      "before": "    pre = pin_pass()  # 只读新确切两个实物；固定供方/窗口须保证之后无并发更换。\n",
+      "after": "    pre = pin_pass()  # 只读未来确切一个实验实物；固定供方/窗口须保证之后无并发更换。\n"
+    },
+    {
+      "baseCmdLine": 240,
+      "before": "    os.mkdir(\"execution-004\", 0o700, dir_fd=parentfd)  # 存在即停，无复用/删除。\n",
+      "after": "    os.mkdir(\"execution-001\", 0o700, dir_fd=parentfd)  # 存在即停，无复用/删除。\n"
+    },
+    {
+      "baseCmdLine": 241,
+      "before": "    dirfd = os.open(\"execution-004\", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC,\n",
+      "after": "    dirfd = os.open(\"execution-001\", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC,\n"
+    },
+    {
+      "baseCmdLine": 260,
+      "before": "    new_record(\"intent.json\", {\"authorization\": AUTHORIZATION, \"argv\": [CORE_PIN[\"path\"], PROBE_PIN[\"path\"]],\n",
+      "after": "    new_record(\"intent.json\", {\"authorization\": AUTHORIZATION, \"argv\": [EXPERIMENT_PIN[\"path\"]],\n"
+    },
+    {
+      "baseCmdLine": 271,
+      "before": "    proc = subprocess.Popen([CORE_PIN[\"path\"], PROBE_PIN[\"path\"]], executable=CORE_PIN[\"path\"],\n",
+      "after": "    proc = subprocess.Popen([EXPERIMENT_PIN[\"path\"]], executable=EXPERIMENT_PIN[\"path\"],\n"
+    },
+    {
+      "baseCmdLine": 284,
+      "before": "        result[\"status\"] = \"HOST_CASE_EXIT0\" if proc.returncode == 0 else \"FAILED_CORE_NONZERO_OR_SIGNAL\"\n",
+      "after": "        result[\"status\"] = \"EXPERIMENT_EXIT0_REQUIRES_CAPTURE_REVIEW\" if proc.returncode == 0 else \"EXPERIMENT_NONZERO_OR_SIGNAL\"\n"
+    },
+    {
+      "baseCmdLine": 294,
+      "before": "    elif result[\"status\"] == \"HOST_CASE_EXIT0\" and all(x[\"stable\"] for x in post[\"streams\"]):\n",
+      "after": "    elif result[\"status\"] == \"EXPERIMENT_EXIT0_REQUIRES_CAPTURE_REVIEW\" and all(x[\"stable\"] for x in post[\"streams\"]):\n"
+    },
+    {
+      "baseCmdLine": 297,
+      "before": "        if result[\"status\"] == \"HOST_CASE_EXIT0\":\n",
+      "after": "        if result[\"status\"] == \"EXPERIMENT_EXIT0_REQUIRES_CAPTURE_REVIEW\":\n"
+    }
+  ],
+  "functionASTComparison": {
+    "event": {
+      "unchangedAST": true,
+      "baseASTSha256": "e4a29f6fb9892ead9658122f31b1fce39c330d303546664255b7298ca999c953",
+      "templateASTSha256": "e4a29f6fb9892ead9658122f31b1fce39c330d303546664255b7298ca999c953"
+    },
+    "cancelled": {
+      "unchangedAST": true,
+      "baseASTSha256": "fe33bd5d9131380e4a9e69bf622e24bb83548b4a8541f9fb27977d9384372f6e",
+      "templateASTSha256": "fe33bd5d9131380e4a9e69bf622e24bb83548b4a8541f9fb27977d9384372f6e"
+    },
+    "new_record": {
+      "unchangedAST": true,
+      "baseASTSha256": "070b5253a0a42d525f5e918f3dafbe4d771cfc8ec60796dcdeffbebac8952532",
+      "templateASTSha256": "070b5253a0a42d525f5e918f3dafbe4d771cfc8ec60796dcdeffbebac8952532"
+    },
+    "pin_pass": {
+      "unchangedAST": false,
+      "baseASTSha256": "6726ae40e3ced087397fee624d7a78333e6b0b287af3603040a787f151318a43",
+      "templateASTSha256": "dae5799551eee0b598d3dda0ab2491a464f673d03078c24cd4fff37d442771b3"
+    },
+    "child_setup": {
+      "unchangedAST": true,
+      "baseASTSha256": "0e00d14f1050f156347002c03693e27070ffda9d1d42770bcefa3af38b9851fb",
+      "templateASTSha256": "0e00d14f1050f156347002c03693e27070ffda9d1d42770bcefa3af38b9851fb"
+    },
+    "wait_until": {
+      "unchangedAST": true,
+      "baseASTSha256": "64272eb8afd5eedd5e1a354245f3c31004dda6d2bfa8357dd05619ba069abd24",
+      "templateASTSha256": "64272eb8afd5eedd5e1a354245f3c31004dda6d2bfa8357dd05619ba069abd24"
+    },
+    "stop_owned_group": {
+      "unchangedAST": true,
+      "baseASTSha256": "59046341d82d0e75ab7fe6f65f79c1bbf19e853ca2683c8e649868260fe4399b",
+      "templateASTSha256": "59046341d82d0e75ab7fe6f65f79c1bbf19e853ca2683c8e649868260fe4399b"
+    },
+    "stream_pass": {
+      "unchangedAST": true,
+      "baseASTSha256": "a0eddb981687fda7b30d465582a2f6abf8ef9b462a854a36762bf02993ae058e",
+      "templateASTSha256": "a0eddb981687fda7b30d465582a2f6abf8ef9b462a854a36762bf02993ae058e"
+    }
+  },
+  "controllerOrNativeExecuted": false,
+  "T03FilesOrFutureArtifactDirectoriesRead": false,
+  "runOrRecordDirectoryCreated": false
+}

@@ -1,0 +1,53 @@
+--- e85ae888-004-fixed-cmd
++++ NOT_CALL_READY-single-experiment-cmd-template
+@@ -4,4 +4,3 @@
+-AUTHORIZATION = 'I06-N0-execution-004-1526093e58aeaa43'  # 仅准备record identity；根未授最终运行窗口。
+-CORE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_core_test', 'bytes': 362656, 'sha256': '17fb8b48ec3e79cfd36015edc4047bbd390ac0145dd2c40b1c20850455771f60'}  # 根已接受的新pair；本副本仍禁止执行。
+-PROBE_PIN = {'path': '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/n0/darwin-arm64/1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50/core/artifacts/location_child_probe', 'bytes': 34120, 'sha256': '5b9978c2e7bbb8d3ee51d3d94d95ab4797ac01337654180cf121d89dc3e05b98'}  # 同一artifacts的新probe；本副本仍禁止执行。
+-if AUTHORIZATION is None or CORE_PIN is None or PROBE_PIN is None:
++AUTHORIZATION = None  # PENDING_ARTIFACT identity; no execution authorization.
++EXPERIMENT_PIN = None  # path/bytes/sha256 PENDING_ARTIFACT; never use an old pair.
++if AUTHORIZATION is None or EXPERIMENT_PIN is None:
+@@ -23,2 +22,2 @@
+-BASE = "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/host-core-run-preparation"
+-RUN = BASE + "/execution-004"
++BASE = "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0/docs/reviews/I06/native-location-N0/metadata-contract-probe-run-preparation"
++RUN = BASE + "/execution-001"
+@@ -27 +26 @@
+-          (resource.RLIMIT_FSIZE, 1048576), (resource.RLIMIT_CORE, 0))
++          (resource.RLIMIT_FSIZE, 4096), (resource.RLIMIT_CORE, 0))
+@@ -29,2 +28,2 @@
+-STREAM_LIMIT = 1048576
+-ARTIFACT_LIMIT = 2097152  # 每个 pre/post pass 两实物合计<=2MiB。
++STREAM_LIMIT = 4096
++ARTIFACT_LIMIT = 2097152  # 每个 pre/post pass 单实物<=2MiB。
+@@ -42 +41,2 @@
+-result = {"status": "NOT_DISPATCHED", "sourceRef": "b59239f9c1ec2774c7922f95dfc67db4dc8754e8",
++result = {"status": "NOT_DISPATCHED", "sourceRef": "2b724f0188c233de5c8ef107d39fe0c4cb50311f",
++          "programKind": "N0_ACL_CONTRACT_CHARACTERIZATION_NOT_PRODUCT_PASS",
+@@ -86 +86 @@
+-    for pin in (CORE_PIN, PROBE_PIN):
++    for pin in (EXPERIMENT_PIN,):
+@@ -237 +237 @@
+-    pre = pin_pass()  # 只读新确切两个实物；固定供方/窗口须保证之后无并发更换。
++    pre = pin_pass()  # 只读未来确切一个实验实物；固定供方/窗口须保证之后无并发更换。
+@@ -240,2 +240,2 @@
+-    os.mkdir("execution-004", 0o700, dir_fd=parentfd)  # 存在即停，无复用/删除。
+-    dirfd = os.open("execution-004", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC,
++    os.mkdir("execution-001", 0o700, dir_fd=parentfd)  # 存在即停，无复用/删除。
++    dirfd = os.open("execution-001", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC,
+@@ -260 +260 @@
+-    new_record("intent.json", {"authorization": AUTHORIZATION, "argv": [CORE_PIN["path"], PROBE_PIN["path"]],
++    new_record("intent.json", {"authorization": AUTHORIZATION, "argv": [EXPERIMENT_PIN["path"]],
+@@ -271 +271 @@
+-    proc = subprocess.Popen([CORE_PIN["path"], PROBE_PIN["path"]], executable=CORE_PIN["path"],
++    proc = subprocess.Popen([EXPERIMENT_PIN["path"]], executable=EXPERIMENT_PIN["path"],
+@@ -284 +284 @@
+-        result["status"] = "HOST_CASE_EXIT0" if proc.returncode == 0 else "FAILED_CORE_NONZERO_OR_SIGNAL"
++        result["status"] = "EXPERIMENT_EXIT0_REQUIRES_CAPTURE_REVIEW" if proc.returncode == 0 else "EXPERIMENT_NONZERO_OR_SIGNAL"
+@@ -294 +294 @@
+-    elif result["status"] == "HOST_CASE_EXIT0" and all(x["stable"] for x in post["streams"]):
++    elif result["status"] == "EXPERIMENT_EXIT0_REQUIRES_CAPTURE_REVIEW" and all(x["stable"] for x in post["streams"]):
+@@ -297 +297 @@
+-        if result["status"] == "HOST_CASE_EXIT0":
++        if result["status"] == "EXPERIMENT_EXIT0_REQUIRES_CAPTURE_REVIEW":
