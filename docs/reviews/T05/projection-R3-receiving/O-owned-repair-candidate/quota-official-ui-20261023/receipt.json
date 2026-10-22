@@ -1,0 +1,60 @@
+{
+  "format": "T05-unique-ZCode-quota-owner-official-UI-observation/1",
+  "businessDateAsiaShanghai": "2026-10-23",
+  "controllerThreadId": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "authorization": "Controller explicit START, ZCode official quota-only GUI lease <=5 minutes; no product-model send/task creation, no MiniMax operation.",
+  "earlierLimitAttribution": "Controller relayed T03 UI five-hour limit/send disabled and reset literal2026-10-23 04:37:23; not independently observed by this owner before START.",
+  "officialFreshObservation": {
+    "surface": "ZCode remaining quota popover opened via 剩余额度 button",
+    "label": "5 小时",
+    "remainingDisplayed": "100%",
+    "firstClockObservationUTC": "2026-10-22 20:40:03 UTC",
+    "firstClockObservationAsiaShanghai": "2026-10-23 04:40:03",
+    "actualResetEventTime": "Not exposed by observed UI; no claim reset occurred at the exact earlier literal.",
+    "interpretation": "Current official quota available after earlier natural-reset literal; no reset action taken by this owner."
+  },
+  "sendReadinessObservation": {
+    "initialComposer": "empty",
+    "initialSendButton": "disabled while empty",
+    "temporaryUnsentDraft": "额度界面核查（未发送）",
+    "sendButtonWithTemporaryDraft": "enabled",
+    "sendClicked": false,
+    "cleanup": "super+a then BackSpace",
+    "finalComposer": "empty",
+    "finalSendButton": "disabled while empty",
+    "newModelMessagesSent": 0,
+    "newReviewTasksCreated": 0,
+    "providerRequestAcceptanceTested": false
+  },
+  "entitlements": {
+    "reset5HourButtonObserved": true,
+    "getSixResetsCTAObserved": "获得6次重置额度",
+    "anyResetOrGetEntitlementButtonClicked": false,
+    "additionalEntitlementsConsumedByThisOwner": 0,
+    "ownershipOrEligibilityOfSixResetsProven": false,
+    "noNeedToConsumeWhileFresh100Percent": true
+  },
+  "navigationNotes": [
+    "Initial T03 project editor auxiliary modal closed through X without changing fields or clicking Save.",
+    "Initial paste while quota popover open did not enter composer; after Escape, actual temporary draft/send enabled was observed and cleared. No Return or Send action."
+  ],
+  "unchangedUISettingsObserved": {
+    "model": "GLM-5.3",
+    "effort": "最高",
+    "permission": "完全访问"
+  },
+  "excludedActions": {
+    "newPaymentUpgradeOrModelSwitch": false,
+    "codexResetConsumed": false,
+    "APIOrGlobalConfigOrCredentialProbe": false,
+    "minimaxOperated": false,
+    "unrelatedTaskContentsCopiedIntoReceipt": false
+  },
+  "guiRelease": {
+    "status": "RELEASED explicitly to controller immediately after empty draft confirmation",
+    "reportedUTC": "2026-10-22 20:40:54 UTC",
+    "reportedAsiaShanghai": "2026-10-23 04:40:54",
+    "noFurtherCUAAfterRelease": true
+  },
+  "evidenceBoundary": "Official current UI quota and button readiness only; no new model invocation, exact reset-event time, global entitlement history or provider-side request acceptance claim."
+}
