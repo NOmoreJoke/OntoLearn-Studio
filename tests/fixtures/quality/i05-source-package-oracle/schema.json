@@ -1,0 +1,178 @@
+{
+  "dynamicFieldPolicies": {
+    "allFields": "Complete records: exact keys, exact scalar types (int excludes bool), full sequence tails, multiplicity and order; reject omitted/extra/duplicate fields rather than normalize away.",
+    "directSteps": {
+      "containerKeys": [
+        "format",
+        "steps"
+      ],
+      "leafRefKeys": [
+        "kind",
+        "reference"
+      ],
+      "relation": "every result exactly in rdfsAdded, each introduced once; two ordered premises are declared rule instances; leaf refs resolve to complete input dictionary; step ordinal earlier; depth and leaf union exact; no cyclic/forward refs",
+      "roots": "for each actual requested target, return every matching leaf/direct-step/ruleHead occurrence in prescribed order; repeated head occurrences retained; no off-target roots or fabricated calls for unrequested targets",
+      "ruleHeadKeys": [
+        "kind",
+        "firingIndex",
+        "headIndex"
+      ],
+      "stepKeys": [
+        "ordinal",
+        "rule",
+        "result",
+        "premises",
+        "depth"
+      ],
+      "stepRefKeys": [
+        "kind",
+        "ordinal"
+      ]
+    },
+    "runtimeIdentity": "run ID, times, real source/frozen origins and actual compiled-code domains require separate genuine provenance receipts. Source and package issue separate own objects; never compare memory addresses or prefill bundle code from source SHA.",
+    "sameIssue": {
+      "allocation": "same actual OriginalAllocation object and every issued child(rule_id,definitionOrdinal,limits), original rule_ids/disabled match input and batches; no fresh/rebound allocation for modified bytes",
+      "expectation": "actual caller-held expectation captured from this precise production; all payload/rows/input/source/definition/catalog/implementation fields equal complete original values; JSON self-assertion does not prove origin",
+      "material": "input text UTF8 or complete raw records, full rules/definitions/disabled/source and provenance are bound to the pinned input only",
+      "restore": "complete immutable projection equals same produced native result and every child/row/source/definition/catalog field; no reason call and no partial view on rejection"
+    },
+    "unknown": "unknown/incomplete/not-started/unexpected-failure has no oracle-match permission; collection exit0 never implies semantic/original-operation success",
+    "versions": {
+      "explanation": {
+        "executionSemanticsVersion": "i05-finite-8",
+        "payloadFormat": "i05-reasoning-result/3",
+        "restoreSchema": "i05-profile-restore-schema/2",
+        "schemaGeneration": 2
+      },
+      "fullview": {
+        "executionSemanticsVersion": "i05-finite-7",
+        "payloadFormat": "i05-reasoning-result/2",
+        "schemaGeneration": 1
+      },
+      "policy": "Q6 remains OntoLearn-rule-comparison-profile/1; directsteps format i05-direct-rdfs-steps/1; dispatch by explicit versions, never keys"
+    },
+    "wire": {
+      "integers": "native exact int nonbool; wire unique integerHex (zero canonical, no +/uppercase/negative-zero/leading zeros); all tuples become arrays without losing items",
+      "payload": "canonical sorted compact UTF8 of complete payload; SHA/byte length recomputed from received bytes",
+      "rows": "sequence of str segments, each <=8192 characters, <=10000 rows; concat encoded UTF8 equals complete payload_json; rows_json canonical of every row; payload+rows <=8388608B",
+      "sidecars": "source_encoded/definitions_encoded/catalog_json and all respective SHA/lengths cover full preimages, including final child/source/definition/limits; no source-code SHA stands in for package code"
+    }
+  },
+  "entryKeys": [
+    "businessComparison",
+    "caseSets",
+    "contextStatus",
+    "datasetId",
+    "dynamicRules",
+    "expected",
+    "expectedSourceRefs",
+    "family",
+    "id",
+    "inventoryOrdinal",
+    "operation",
+    "oracleStatus",
+    "parameters",
+    "pendingFields",
+    "projectionSha256",
+    "sourceRefs"
+  ],
+  "exactIssuedRecordKeys": {
+    "_CHILD": [
+      "ruleId",
+      "definitionOrdinal",
+      "disabled",
+      "planDigest",
+      "batch",
+      "originalMatches",
+      "definitions",
+      "catalog",
+      "limits",
+      "budgetLimits",
+      "budgetUsage"
+    ],
+    "_PAYLOAD": [
+      "format",
+      "implementation",
+      "reasoning",
+      "inputDigest",
+      "inputDigestDomain",
+      "sourceDigest",
+      "definitionsDigest"
+    ],
+    "_REASONING": [
+      "formatVersion",
+      "semanticsVersion",
+      "profile",
+      "rdfs",
+      "rules",
+      "warnings",
+      "evidence",
+      "rdfsEvidence",
+      "firingGroups",
+      "mechanismBatches",
+      "definitions",
+      "catalog",
+      "proofLeaves",
+      "termSources",
+      "graphBudget"
+    ]
+  },
+  "explanationDispatch": "explicit /3 version only; reasoning is native15 plus directSteps, child11 unchanged",
+  "format": "T05-oracle-schema/1",
+  "missingOrExtraOrDuplicateKeysRejected": true,
+  "normalization": {
+    "DAG": "every direct step and every result/root occurrence, ordered two premises, chosen-witness depth and exact leaf union, complete alias occurrence mappings; see dynamicRules and explicit pending interface fields",
+    "RDFTerm": {
+      "blank": "only legal shape-list graph structure isomorphism; bijection must preserve every triple/multiplicity; no data blank nodes admitted",
+      "iri": "exact absolute IRI, no namespace rewriting",
+      "literal": "exact lexical/datatype; simple string maps to xsd:string per RDF1.1; language comparison casefold only with full original occurrences separately pinned",
+      "oneOfExactKeys": [
+        [
+          "kind",
+          "value"
+        ],
+        [
+          "kind",
+          "lexical",
+          "datatype",
+          "language"
+        ],
+        [
+          "kind",
+          "label"
+        ]
+      ]
+    },
+    "SHACL": {
+      "comparison": "complete multiset of all six-field rows; conforms exact bool; absent value represented None, never synthesized",
+      "exactKeys": [
+        "conforms",
+        "violations"
+      ],
+      "violationExactKeys": [
+        "focus",
+        "path",
+        "value",
+        "sourceShape",
+        "constraint",
+        "severity"
+      ]
+    },
+    "graphs": "complete unordered RDF-identity sets, no numeric/date lexical normalization; actual input text bytes separate",
+    "profile": "asserted/ontology/rdfs/custom exact full sets; every binding/when/comparison/index/operator/operand/result/accepted/head occurrence/leaf/source/definition preserved; false computation is not persistent false ComparisonEvidence",
+    "query": "exact ASK boolean or SELECT ordered variables and every typed cell/None/row including tail and tie-order; no row-count shortcut",
+    "source": "all raw None versus empty string values retained; spans unavailable remain unavailable; input content hashes are not producer authority",
+    "state": "normal, known-rejection, not-executed are distinct; pending means no oracle match may be claimed; incomplete/unknown/collectionComplete alone cannot satisfy oracle"
+  },
+  "scope": "semantic model only; no frozen JSONL adapter",
+  "stateValues": [
+    "normal",
+    "known-rejection",
+    "not-executed"
+  ],
+  "statusValues": [
+    "specified",
+    "pending"
+  ],
+  "unknownNotMatched": true
+}

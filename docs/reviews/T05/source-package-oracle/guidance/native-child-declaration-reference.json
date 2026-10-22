@@ -1,0 +1,70 @@
+{
+  "sourceRef": "6891a5842302859a531cf82767c5a482417bc274",
+  "schemaDeclarationPath": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+  "sourceBytes": 70203,
+  "sourceSHA256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+  "declarationsOnlyNoImplementationAlgorithmOrRuntimeOutput": {
+    "_PAYLOAD": {
+      "lineStart": 69,
+      "lineEnd": 77,
+      "keys": [
+        "format",
+        "implementation",
+        "reasoning",
+        "inputDigest",
+        "inputDigestDomain",
+        "sourceDigest",
+        "definitionsDigest"
+      ]
+    },
+    "_REASONING": {
+      "lineStart": 78,
+      "lineEnd": 94,
+      "keys": [
+        "formatVersion",
+        "semanticsVersion",
+        "profile",
+        "rdfs",
+        "rules",
+        "warnings",
+        "evidence",
+        "rdfsEvidence",
+        "firingGroups",
+        "mechanismBatches",
+        "definitions",
+        "catalog",
+        "proofLeaves",
+        "termSources",
+        "graphBudget"
+      ]
+    },
+    "_CHILD": {
+      "lineStart": 95,
+      "lineEnd": 107,
+      "keys": [
+        "ruleId",
+        "definitionOrdinal",
+        "disabled",
+        "planDigest",
+        "batch",
+        "originalMatches",
+        "definitions",
+        "catalog",
+        "limits",
+        "budgetLimits",
+        "budgetUsage"
+      ]
+    }
+  },
+  "approvedContractReferencePath": "docs/reviews/I05/profile-directsteps/inputs/profile-M1-directsteps-consumer-contract.md.raw",
+  "approvedContractBytes": 34958,
+  "approvedContractSHA256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba",
+  "contractReference": {
+    "line18": "explicit restore65-113 exact outer7/native15/child11; directsteps new inner16, child unchanged",
+    "line45": "newdirectSteps one additional reasoning field; all old mathematical fields unchanged"
+  },
+  "missingNativeKey": "graphBudget",
+  "missingChildKeys": ["planDigest", "budgetUsage"],
+  "doesNotSpecifyUnknownValuesOrDeriveExpectedFromImplementation": true,
+  "schema2DirectStepsDispatchedByExplicitFormatNotKeyGuess": true
+}

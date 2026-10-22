@@ -1,0 +1,34 @@
+"""Record only this authorized external oracle's build/check/self-test commands."""
+import datetime
+import hashlib
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[4]
+tag, action = sys.argv[1:]
+if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", tag) is None:
+    raise ValueError("invalid local command record tag")
+commands = {
+    'build': [sys.executable, '-B', 'scripts/build-i05-source-package-oracle.py'],
+    'check': [sys.executable, '-B', 'scripts/build-i05-source-package-oracle.py', '--check'],
+    'test': [sys.executable, '-B', 'scripts/test-i05-source-package-oracle.py'],
+}
+argv = commands[action]
+out = Path(__file__).parent / 'commands' / tag
+out.mkdir(parents=True, exist_ok=False)
+record = {'argv': argv, 'cwd': str(root), 'startedUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          'scope': 'stdlib independent oracle only; no product/probe/RDF/DB/native execution',
+          'sourceSHA256': {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                           for p in (root / 'scripts/build-i05-source-package-oracle.py', root / 'scripts/test-i05-source-package-oracle.py')}}
+(out / 'invocation.json').write_text(json.dumps(record, indent=2) + '\n')
+with (out / 'stdout.raw').open('wb') as stdout, (out / 'stderr.raw').open('wb') as stderr:
+    run = subprocess.run(argv, cwd=root, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, check=False)
+record['exit'] = run.returncode
+record['finishedUtc'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+record['streams'] = {name: {'bytes': len((out / name).read_bytes()), 'sha256': hashlib.sha256((out / name).read_bytes()).hexdigest()} for name in ['stdout.raw', 'stderr.raw']}
+(out / 'result.json').write_text(json.dumps(record, indent=2) + '\n')
+print(json.dumps({'tag': tag, 'exit': run.returncode}))
+raise SystemExit(run.returncode)

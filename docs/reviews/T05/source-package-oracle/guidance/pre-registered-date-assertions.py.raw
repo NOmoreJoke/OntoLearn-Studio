@@ -1,0 +1,39 @@
+@pytest.mark.parametrize("side", ["bound", "value"])
+@pytest.mark.parametrize(
+    "spelling,early",
+    [
+        ("1900-02-29Z", True),
+        ("2000-13-01Z", True),
+        ("2000-00-01Z", True),
+        ("2000-01-32Z", True),
+        ("0000-01-01Z", True),
+        ("-0001-01-01Z", True),
+        ("10000-01-01Z", True),
+        ("2000-1-01Z", True),
+        ("２０００-01-01Z", True),
+        (" 2000-01-01Z", True),
+        ("20000101Z", True),
+        ("2000-01-01", False),
+        ("2000-01-01+00:00", False),
+        ("2000-01-01+01:00", False),
+        ("2000-01-01-05:00", False),
+        ("2000-01-01z", False),
+        ("2000-01-01T12:00:00Z", False),
+    ],
+)
+def test_exact_lexical_domain_rejects_both_sides_before_validator(observe, side, spelling, early):
+    text = data(literal(spelling if side == "value" else "2000-01-01Z"))
+    constraints = shape(
+        "sh:minInclusive " + literal(spelling if side == "bound" else "2000-01-01Z")
+    )
+    code = (
+        "INVALID_LITERAL_LEXICAL"
+        if early
+        else "INVALID_SHAPE"
+        if side == "bound"
+        else "RDF_TERM_INVALID"
+    )
+    record = reject(observe, code, text, constraints)
+    assert record["stage"] == (
+        ("parse-shapes" if side == "bound" else "parse-data") if early else "date-" + side
+    )
