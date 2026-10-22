@@ -937,10 +937,13 @@ def test_probe_does_not_import_old_runtime_store_or_observation_helpers():
 
 
 @pytest.fixture(scope="module")
-def full_run(probe, canonical):
+def full_run(probe, canonical, tmp_path_factory):
     """One actual full canonical collection, shared instead of redoing the run."""
     stdout, stderr = io.BytesIO(), io.BytesIO()
     status = probe.run_fixed_suite("full-v1", stdout=stdout, stderr=stderr)
+    diagnostic = tmp_path_factory.mktemp("semantic-full-v1-diagnostic")
+    (diagnostic / "observations.jsonl").write_bytes(stdout.getvalue())
+    (diagnostic / "stderr.raw").write_bytes(stderr.getvalue())
     return status, _jsonl(stdout.getvalue()), stdout.getvalue(), stderr.getvalue()
 
 
@@ -1389,7 +1392,9 @@ def _snapshot_has_exact_bytes(value, raw):
     )
 
 
-def test_r1_real_producer_capture_survives_restore_unknown_failure(probe, canonical, monkeypatch):
+def test_r1_real_producer_capture_survives_restore_unknown_failure(
+    probe, canonical, monkeypatch, tmp_path
+):
     production, restore = canonical["production"], canonical["restore"]
     original_compute = production.execute_profile_explanation
     original_restore = restore.restore_profile_explanation_result
@@ -1410,6 +1415,8 @@ def test_r1_real_producer_capture_survives_restore_unknown_failure(probe, canoni
     monkeypatch.setattr(restore, "restore_profile_explanation_result", fail_restore)
     stdout, stderr = io.BytesIO(), io.BytesIO()
     code = probe.run_fixed_suite("full-v1", stdout=stdout, stderr=stderr)
+    (tmp_path / "observations.jsonl").write_bytes(stdout.getvalue())
+    (tmp_path / "stderr.raw").write_bytes(stderr.getvalue())
     records = _jsonl(stdout.getvalue())
     failed = _failed_observation(records)
     assert code == 1 and len(issued) == len(received) == 1
@@ -1755,6 +1762,16 @@ def test_real_scope_consumes_the_same_fresh_prepare_result(canonical):
     }
 
 
+@pytest.mark.parametrize("position", [0, 1, 2], ids=["subject", "predicate", "object"])
+def test_parse_turtle_rejects_malformed_iri_before_n3_sort(canonical, position):
+    semantic = canonical["semantic"]
+    terms = ["<urn:s>", "<urn:p>", "<urn:o>"]
+    terms[position] = "<urn:bad iri>"
+    with pytest.raises(semantic.SemanticError) as failure:
+        semantic.parse_turtle(" ".join(terms) + " .")
+    assert failure.value.code == "ABSOLUTE_IRI_REQUIRED"
+
+
 def _fresh_production(canonical, explanation):
     term = canonical["TermInput"]
     records = tuple(
@@ -1839,7 +1856,7 @@ def test_real_capture_restore_retains_original_expectation_on_bad_bytes(canonica
         roots = restore.explanation_roots(
             view, (target,), direct_ledger=canonical["direct"].DirectStepsLedger()
         )
-        assert len(roots) == 1 and roots[0].kind == "step" and roots[0].ordinal == 0
+        assert roots == ({"kind": "step", "ordinal": 0},)
         steps = produced.native_result["directSteps"]["steps"]
         assert len(steps) == 1
         assert steps[0]["rule"] == "rdfs9-type-via-subclass"
@@ -1861,7 +1878,4 @@ def test_real_capture_restore_retains_original_expectation_on_bad_bytes(canonica
         all_roots = restore.explanation_roots(
             view, (target, *seeds), direct_ledger=canonical["direct"].DirectStepsLedger()
         )
-        assert [root.kind for root in all_roots] == ["step", "leaf", "leaf"]
-        assert [root.reference for root in all_roots[1:]] == [
-            row["reference"] for row in expected_premises
-        ]
+        assert all_roots == ({"kind": "step", "ordinal": 0}, *expected_premises)

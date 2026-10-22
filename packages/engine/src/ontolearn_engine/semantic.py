@@ -56,7 +56,7 @@ def _copy(graph):
     return result
 
 
-def _terms(graph, *, shapes=False, _allow_illtyped_integer=False):
+def _terms(graph, *, shapes=False, _allow_illtyped_integer=False, _precheck_iris=False):
     allowed_owl = {OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty}
     allowed_rdfs = {
         RDFS.Class,
@@ -68,6 +68,14 @@ def _terms(graph, *, shapes=False, _allow_illtyped_integer=False):
     }
     if any(graph.triples((None, OWL.imports, None))):
         raise SemanticError("EXTERNAL_ACCESS_DENIED")
+    if _precheck_iris:
+        # Text intake rejects malformed IRIs before the n3() sorting key.
+        for triple in graph:
+            for term in triple:
+                if isinstance(term, URIRef):
+                    value = str(term)
+                    if ":" not in value or any(c.isspace() or c in '<>"{}|^`\\' for c in value):
+                        raise SemanticError("ABSOLUTE_IRI_REQUIRED")
     for s, p, o in sorted(graph, key=_key):
         if p == OWL.imports:
             raise SemanticError("EXTERNAL_ACCESS_DENIED")
@@ -128,7 +136,12 @@ def _parse_turtle(
             raise SemanticError("GRAPH_INPUT_LIMIT")
         if _check_iris:
             _shacl_text_iris(graph)
-        _terms(graph, shapes=shapes, _allow_illtyped_integer=_allow_illtyped_integer)
+        _terms(
+            graph,
+            shapes=shapes,
+            _allow_illtyped_integer=_allow_illtyped_integer,
+            _precheck_iris=True,
+        )
         return graph
 
 
