@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "name": "whole-staged",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 2,
+      "stdoutBytes": 3310,
+      "stderrBytes": 0,
+      "trailingWhitespaceWarnings": 16,
+      "disposition": "Historical exact full-input bytes preserved; warnings only in the two frozen originals.",
+      "stdoutEvidence": "whole-staged.stdout.json",
+      "stdoutEvidenceEncoding": "base64 preserves exact Git output without introducing its historical whitespace into authored files"
+    },
+    {
+      "name": "authored-staged",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":(exclude)docs/reviews/T07/round-3-preparation-20261023/zcode-full-input.txt",
+        ":(exclude)docs/reviews/T07/round-3-preparation-20261023/minimax-full-input.txt"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ],
+  "productValidationRuns": 0,
+  "dependencyInstallCommandsExecuted": 0,
+  "noStart": true
+}

@@ -1,0 +1,259 @@
+{
+  "scope": "Separate immutable histories and unresolved engineering observations; not a merged defect count",
+  "originalSeven": {
+    "product": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+    "sourceReports": "Prior exact sealed 8ee32ae5... / 050a018a...; native write/edit bindings verified",
+    "scope": "Seven nonblocking engineering/evidence opinions only. Does not waive process Fail or claim cross-owner acceptance.",
+    "items": [
+      {
+        "id": "Z-P3-1",
+        "issue": "未来事件可在initial_consumed显式声明",
+        "classification": "Author P3/observation, not the process P2 findings",
+        "existingEvidence": "model.py:197,221-224 / runner.py:171-176",
+        "responsibility": "T01/T00 场景适配契约，T07 消费",
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "sourceFiles": [
+          {
+            "path": "packages/engine/src/ontolearn_engine/scenario/model.py",
+            "bytes": 8300,
+            "sha256": "f30ce8d84b117805379933ce93025d9b0bcf61a3e8b0400feb0ad7ca4aa8f632"
+          },
+          {
+            "path": "packages/engine/src/ontolearn_engine/scenario/runner.py",
+            "bytes": 11287,
+            "sha256": "69600dc9c9222b5102a75c261165bee309b4db0a72195b45de6915ff2104c702"
+          }
+        ],
+        "deferralCondition": "正式场景适配前明确基线消费与事件轮次关系；保留合成Definition当前语义",
+        "disposition": "登记延期；未定义新契约、未改候选"
+      },
+      {
+        "id": "Z-P3-2",
+        "issue": "资源选中即完成",
+        "classification": "Author P3/observation, not the process P2 findings",
+        "existingEvidence": "model.py:146-159；PRD E.3允许的最小语义",
+        "responsibility": "T07 私有资源阶段；T06正式完成条件",
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "sourceFiles": [
+          {
+            "path": "packages/engine/src/ontolearn_engine/scenario/model.py",
+            "bytes": 8300,
+            "sha256": "f30ce8d84b117805379933ce93025d9b0bcf61a3e8b0400feb0ad7ca4aa8f632"
+          }
+        ],
+        "deferralCondition": "正式资源/行为接线前确认完成条件，当前仅最小私有语义",
+        "disposition": "本S1语义已记录；真实完成条件仍未验"
+      },
+      {
+        "id": "Z-P3-3",
+        "issue": "封存原行hash可复算性",
+        "classification": "Author P3/observation, not the process P2 findings",
+        "existingEvidence": "旧独立audit99323a1d...：splitlines(keepends=True)，双方9/9封存行及payload.id匹配",
+        "responsibility": "T07 过程证据与独立审计",
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "sourceFiles": [],
+        "deferralCondition": "当前已追加方法更正，不跟随sourceSession；原报告和raw006/raw007不同失败/正文等价结果全部保留",
+        "disposition": "静态方法更正完成；不等于官方读取、工程或父功能通过"
+      },
+      {
+        "id": "Z-P3-4",
+        "issue": "ignored log/png可追溯性",
+        "classification": "Author P3/observation, not the process P2 findings",
+        "existingEvidence": "旧archive75成员含35原始log/png；本轮25文件精确快照与26成员封存",
+        "responsibility": "T07 证据归档",
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "sourceFiles": [
+          {
+            "path": "docs/reviews/T07/.gitignore",
+            "bytes": 122,
+            "sha256": "a7daf91a4dea0bb886a9f42aad2760a97ae638454e36dbc6a34e89107652f568"
+          }
+        ],
+        "deferralCondition": "原始文件可由固定封存件与hash追踪；后续每轮保留独立原始输出而不覆盖旧证据",
+        "disposition": "封存完成；未完整读取/未保全stdout的流程问题另列P2"
+      },
+      {
+        "id": "M-F01",
+        "issue": "结果状态/失效原因标签精度",
+        "classification": "Author P3/observation, not the process P2 findings",
+        "existingEvidence": "presentation.ts:137-148 / ScenarioPage.tsx:328-341,441；PRD D.1/D.2",
+        "responsibility": "T00状态契约；T07页面消费",
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "sourceFiles": [
+          {
+            "path": "apps/desktop/src/renderer/src/scenario/presentation.ts",
+            "bytes": 5924,
+            "sha256": "3474e356ffc7dd9f3c5bddaea4ba9a1e6e6259020e9ee22dd2e9769d15a5e463"
+          },
+          {
+            "path": "apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx",
+            "bytes": 20270,
+            "sha256": "65ac6a8efd6a9f395088403be8e0133cd1f32f3f70f34334e1f5a135f65c30ac"
+          }
+        ],
+        "deferralCondition": "公共App接线前确认四态、具体失效维度及重跑入口；当前不临时改变冻结标签",
+        "disposition": "登记延期，未称当前符合完整附录D产品验收"
+      },
+      {
+        "id": "M-F02",
+        "issue": "续跑phase=initial语义",
+        "classification": "Author P3/observation, not the process P2 findings",
+        "existingEvidence": "runner.py:221-227 / integration-request.md:20",
+        "responsibility": "T05/T00推理阶段契约；T07编排",
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "sourceFiles": [
+          {
+            "path": "packages/engine/src/ontolearn_engine/scenario/runner.py",
+            "bytes": 11287,
+            "sha256": "69600dc9c9222b5102a75c261165bee309b4db0a72195b45de6915ff2104c702"
+          },
+          {
+            "path": "docs/iterations/T07/integration-request.md",
+            "bytes": 6502,
+            "sha256": "9cfa95c4a464b58db35b1ed902be56494e69ed8a502e993151213ed8682afa3b"
+          }
+        ],
+        "deferralCondition": "真实T05适配前明确checkpoint边界初始化/续跑阶段与调用次数",
+        "disposition": "登记延期，真实推理续跑仍未验"
+      },
+      {
+        "id": "M-F03",
+        "issue": "同一触发实例动作序号连续性",
+        "classification": "Author P3/observation, not the process P2 findings",
+        "existingEvidence": "runner.py:256-265；PRD E.1/G.3 B-10",
+        "responsibility": "T06执行器与T00轨迹契约；T07形状校验",
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "sourceFiles": [
+          {
+            "path": "packages/engine/src/ontolearn_engine/scenario/runner.py",
+            "bytes": 11287,
+            "sha256": "69600dc9c9222b5102a75c261165bee309b4db0a72195b45de6915ff2104c702"
+          }
+        ],
+        "deferralCondition": "正式T06接线前明确连续性由谁保证及runner校验边界，不未经批准新增1..k契约",
+        "disposition": "登记延期，真实动作次序/轨迹仍未验"
+      }
+    ],
+    "implementationChangeMade": false,
+    "ifActuallyImplemented": "Any implementation/test/contract/acceptance/config/lock/base change requires a new candidate, necessary validation, and both new full independent reviews."
+  },
+  "R1NativeFindings": [
+    {
+      "originalId": "NR-01",
+      "priority": "P2",
+      "heading": "两方fixture通读缺失，M另缺私有源码内容",
+      "state": "R1 PROCESS_FAIL retained"
+    },
+    {
+      "originalId": "NR-02",
+      "priority": "P2",
+      "heading": "完整PRD和原历史日志的通读要求尚未满足",
+      "state": "R1 PROCESS_FAIL retained"
+    },
+    {
+      "originalId": "NR-03",
+      "priority": "P2",
+      "heading": "ZCode明确拒绝后包装执行，且报告遗漏首错/拒绝",
+      "state": "R1 PROCESS_FAIL retained"
+    },
+    {
+      "originalId": "NR-04",
+      "priority": "P2",
+      "heading": "MiniMax原位probe违反派发，scratch纠正现已具备真实命令依据",
+      "state": "R1 PROCESS_FAIL retained"
+    },
+    {
+      "originalId": "NR-05",
+      "priority": "P2",
+      "heading": "MiniMax为定位收据向父项目做发现性枚举",
+      "state": "R1 PROCESS_FAIL retained"
+    }
+  ],
+  "R2NativeFindings": [
+    {
+      "sourceNumber": "1",
+      "priority": "P2",
+      "exactOriginalParagraph": "M 越界写入未披露。** 第 83 调用 `call_01a16589548875cb80205d78` 成功向授权 runtime 之外的 `/Users/kyle/.minimax/v2/assets/t07-r2-ledger.json` 写入 45 B；下一调用清理并列举全局 assets 顶层。超出唯一写面，清理不抹除事实，报告未披露。未据此推断读取他人正文。",
+      "state": "R2 PROCESS_FAIL retained"
+    },
+    {
+      "sourceNumber": "2",
+      "priority": "P2",
+      "exactOriginalParagraph": "M 完整阅读和 PASS 无充分证据。** 早期原生文件压缩丢失完整读取链，242581 B 附件身份不能替代模型可见全文。报告第 65/84/195/219 行宣称全部 EOF，ledger 却有 38 项标注 `not independently re-read this round`，并统一 `eofConfirmed:true`。该声明不能由现存返回补证；证据不足不等于证明从未读取。",
+      "state": "R2 PROCESS_FAIL retained"
+    },
+    {
+      "sourceNumber": "3",
+      "priority": "P2",
+      "exactOriginalParagraph": "Z 历史日志全文声明过度。** 报告第 38 行和 ledger 的 33/33 FULL-EOF 不成立。`call_1e5449b354504b458c104510` 对六份 check 日志只输出关键行；`call_620c2b32c1ff43bebab35d50` 经 `head -c 13000` 实际返回 READONLY 正文 12970 字符并出现 BrokenPipeError，`call_1e83fff215a843f697dbb6f0` 从字符 13000 接读，缺 30 字符。这独立于作者已经披露的 G-1（历史 M results 结构扫描及选段）。",
+      "state": "R2 PROCESS_FAIL retained"
+    },
+    {
+      "sourceNumber": "4",
+      "priority": "P2",
+      "exactOriginalParagraph": "Z 超出明确写面。** `call_e34b751fa60f4a91ae806490` 成功 `tee /tmp/t07_r2_diffpaths.txt`。冻结前缀第 33 行只允许本方 raw/validation、reports、指定 reviewer metadata 和唯一报告；该写入越界，与报告第 30 行自述不符。本审未读取或清理 /tmp 实物。",
+      "state": "R2 PROCESS_FAIL retained"
+    },
+    {
+      "sourceNumber": "5",
+      "priority": "P2",
+      "exactOriginalParagraph": "Z 历史关闭映射错误。** 报告第 75 行将 IR-03 写为项目/引擎/锁身份；实际历史定义为删除最高序号工单后复用历史 ID。该表不能作为本轮正确逐项关闭记录，历史原件不改。",
+      "state": "R2 PROCESS_FAIL retained"
+    }
+  ],
+  "newAuthorEngineering": {
+    "state": "ROOT_ADJUDICATION_PENDING",
+    "sourceReportSHA256": "ee282bd9297ef05c174a4037968d49f90b734ec00c0066081d426797ae5c3307",
+    "existingSevenDispositionsChanged": false,
+    "existingOtherOwnerAcknowledgementsChanged": false,
+    "items": [
+      {
+        "id": "R2-M-P2-1",
+        "authorPriority": "P2",
+        "topic": "Definition digest distinguishes duplicate/reordered event representations and rejects cross-definition resume",
+        "authorDisposition": "Nonblocking S1; settle before integration",
+        "independentStaticAssessment": "Phenomenon plausible; present PRD/integration text does not establish output-equivalent definitions must share resume identity. S1 implementation defect not proven. Checkpoint.events/pending order and scenario/input identity constrain equivalence.",
+        "rootDecision": null,
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "implementationChangeMade": false
+      },
+      {
+        "id": "R2-M-P3-1",
+        "authorPriority": "P3",
+        "topic": "Digest depends on asdict field representation",
+        "authorDisposition": "Define explicit field list and normalization before integration",
+        "independentStaticAssessment": "Contract risk worth recording; canonical sort_keys already removes declaration-order dependence, JSON does not distinguish tuple/list array representation. Field additions changing digest may be intentional.",
+        "rootDecision": null,
+        "responsibilityAcknowledgedByOtherOwner": false,
+        "implementationChangeMade": false
+      }
+    ],
+    "definiteReportCorrection": {
+      "authorLocation": "runner.py:2108-2111",
+      "actualFileLines": 334,
+      "actualDigestGuardLines": [
+        158,
+        160
+      ],
+      "source": "Independent static engineering opinion audit"
+    },
+    "noPriorityOrDeferralWaiverByOwner": true
+  },
+  "operationalHold": {
+    "originalCallId": "call_67be7300c0dc4552845dc9c0",
+    "priority": null,
+    "rejectionNotLifted": true,
+    "state": "UNVERIFIED"
+  },
+  "categoryCountsNotDistinctDefectTotal": {
+    "originalSeven": 7,
+    "R1NativeFindings": 5,
+    "R2NativeFindings": 5,
+    "newAuthorEngineering": 2,
+    "operationalHold": 1
+  },
+  "noPriorityDowngradeOrDeferralAcceptance": true,
+  "rootDecision": null,
+  "sourcePatchProposal": [],
+  "pairGateBeforeNewReview": "PROCESS_FAIL / Pair 0"
+}
