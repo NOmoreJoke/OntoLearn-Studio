@@ -1,0 +1,133 @@
+{
+  "format": "i05-private-module-implementation-receipt/1",
+  "baseCommit": "2fdd85375300bfbfa797588c348a205e1030ef6c",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance-module",
+  "branch": "fix/T03-i05-private-provenance-module",
+  "contractBytes": 36587,
+  "contractSha256": "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04",
+  "agentsOverlay": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "staged": false
+  },
+  "products": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 46499,
+      "sha256": "7b115b5e8ee7c4215f69216634b321bb952aad8accdf60587341d1d08feaedd2"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 30232,
+      "sha256": "a6f9e73632a00652348ff664ab532989c5953ed1c120cab872581307df6c4617"
+    }
+  ],
+  "checks": [
+    {
+      "argv": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--python",
+        "/Users/kyle/.local/bin/python3.12"
+      ],
+      "exit": 0,
+      "log": "01-sync.log.txt",
+      "logBytes": 1272,
+      "logSha256": "218e8c9b914b83ce5a778788498b30215d1a694b24c578ae7733e453061d7f99"
+    },
+    {
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "check",
+        "--fix",
+        "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "exit": 1,
+      "log": "02-ruff-first.log.txt",
+      "result": "First failure: 20 style errors; 1 fixed, 19 remaining. Preserved before subsequent corrections.",
+      "logBytes": 10783,
+      "logSha256": "200d67df31e1b125abfe826c982b35487d2b5fadc23fc6ca55cf2aad091db2fe"
+    },
+    {
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "check",
+        "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "exit": 1,
+      "log": "05-ruff-after-format.log.txt",
+      "result": "Second style failure: E731 lambda and E501 bytes literal; both corrected.",
+      "logBytes": 1460,
+      "logSha256": "b3263823bd0e22836e7bbe71474885571cff58102a603e9d93f7ad936ac3f847"
+    },
+    {
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "check",
+        "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "exit": 0,
+      "log": "15-ruff-final.log.txt",
+      "logBytes": 19,
+      "logSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "format",
+        "--check",
+        "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "exit": 0,
+      "log": "16-format-check-final.log.txt",
+      "logBytes": 26,
+      "logSha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "-q",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "exit": 0,
+      "log": "17-pytest-final.log.txt",
+      "result": "86 passed in 1.74s",
+      "logBytes": 179,
+      "logSha256": "bf5e236e9663b1db71f281c60b70205822a0f0745c5b75a5a535801571a79e8b"
+    }
+  ],
+  "unitFixtureOnly": true,
+  "actualPyInstallerBuild": false,
+  "actualNativeImport": false,
+  "actualFrozenRun": false,
+  "semanticExecution": false,
+  "rootApproval": "unknown",
+  "environment": {
+    "UV_CACHE_DIR": "build/i05-private-module-agent/cache/uv",
+    "TMPDIR": "build/i05-private-module-agent/tmp"
+  },
+  "notes": [
+    "Earlier targeted unit checkpoints: 68,82,85,86 all passed; final 86 includes missing packaged Python shared-library rejection.",
+    "All selected logs preserved here; intermediate logs remain in the ignored own build/i05-private-module-agent directory."
+  ]
+}
