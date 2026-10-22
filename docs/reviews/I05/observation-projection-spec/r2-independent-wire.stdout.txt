@@ -1,0 +1,54 @@
+{
+  "registeredExpectedGraphSlotsAlreadyN3Sorted": 85,
+  "exactDuplicateSchemaGate": [
+    {
+      "id": "rdfs/cycle",
+      "path": [
+        "value",
+        "rdfs"
+      ],
+      "schemaValid": false,
+      "identityOnlyEqual": true,
+      "matchesWithSchemaGate": false
+    },
+    {
+      "id": "legacy/repeated-variable",
+      "path": [
+        "value",
+        "rules"
+      ],
+      "schemaValid": false,
+      "identityOnlyEqual": true,
+      "matchesWithSchemaGate": false
+    },
+    {
+      "id": "scope/fresh",
+      "path": [
+        "value",
+        "facts"
+      ],
+      "schemaValid": false,
+      "identityOnlyEqual": true,
+      "matchesWithSchemaGate": false
+    },
+    {
+      "id": "rdfs/domain-depth2",
+      "path": [
+        "value",
+        "rdfsEvidence",
+        1,
+        "basis"
+      ],
+      "schemaValid": false,
+      "identityOnlyEqual": true,
+      "matchesWithSchemaGate": false
+    }
+  ],
+  "rdfIdentityDuplicateAliases": {
+    "n3SchemaValidAndMatchesTwoRowsForOneIdentity": true,
+    "typedSchemaValidAndMatchesTwoRowsForOneIdentity": true,
+    "abstractSerializerExamplesOnly": true
+  },
+  "crossingBNodeRenameBothSidesLocallyCanonicalAndIdentityEqual": true,
+  "fixMustCheckEachWireBeforeSharedIdentityMapping": true
+}

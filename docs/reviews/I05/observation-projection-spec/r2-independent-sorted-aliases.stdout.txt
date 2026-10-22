@@ -1,0 +1,54 @@
+{
+  "n3AliasExample": {
+    "expected": {
+      "kind": "legacy",
+      "complete": true,
+      "value": {
+        "rdfs": [],
+        "rules": [
+          [
+            "<urn:x>",
+            "<urn:p>",
+            "\"hello\"@en"
+          ]
+        ],
+        "warnings": [],
+        "rdfsEvidence": [],
+        "evidence": []
+      }
+    },
+    "observedLocallySorted": {
+      "kind": "legacy",
+      "complete": true,
+      "value": {
+        "rdfs": [],
+        "rules": [
+          [
+            "<urn:x>",
+            "<urn:p>",
+            "\"hello\"@EN"
+          ],
+          [
+            "<urn:x>",
+            "<urn:p>",
+            "\"hello\"@en"
+          ]
+        ],
+        "warnings": [],
+        "rdfsEvidence": [],
+        "evidence": []
+      }
+    },
+    "schemaValid": true,
+    "matches": true,
+    "rows": 2,
+    "rdfIdentities": 1
+  },
+  "typedAliasExample": {
+    "twoDifferentJSONRowsLocallySorted": true,
+    "schemaValid": true,
+    "matches": true,
+    "rdfIdentities": 1,
+    "abstractNotBusinessOrCapture": true
+  }
+}

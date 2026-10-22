@@ -1,0 +1,1769 @@
+diff --git a/docs/iterations/I05/observation-projection-spec/cases.json b/docs/iterations/I05/observation-projection-spec/cases.json
+index 2f928c5..70ba0cb 100644
+--- a/docs/iterations/I05/observation-projection-spec/cases.json
++++ b/docs/iterations/I05/observation-projection-spec/cases.json
+@@ -10476,7 +10476,7 @@
+       "datasetId": "shape/front-2",
+       "inputProjectionSha256": "f0511f039e5197203d748f551840d076dd1becbf66ebcf434c6b0de038b8881a",
+       "parameters": {},
+-      "api": "semantic.validate",
++      "api": "semantic.parse_turtle -> semantic.check_shapes",
+       "harnessStage": "parse-shapes",
+       "authority": ["sealed fixed input", "new deterministic front-door proposal F1"],
+       "oldOracleState": "known-rejection",
+@@ -10514,7 +10514,68 @@
+           "sha256": "38bc7a4074e183205f55fdb0a74e6933a505f9ff021fe24f5895d296ab725324"
+         }
+       ],
+-      "preconditions": []
++      "preconditions": [],
++      "invocation": {
++        "format": "i05-fixed-invocation/1",
++        "owner": "I05 canonical API/serializer owner",
++        "authority": {
++          "ref": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
++          "path": "docs/iterations/I05/source-package-parity/contract.md",
++          "lines": [51]
++        },
++        "inputParameterMapping": {},
++        "steps": [
++          {
++            "ordinal": 0,
++            "api": "semantic.parse_turtle",
++            "positional": [
++              {
++                "datasetField": "dataText"
++              }
++            ],
++            "keywordArguments": {
++              "format": "turtle",
++              "shapes": false
++            },
++            "harnessStage": "parse-data",
++            "returnBinding": "dataGraph"
++          },
++          {
++            "ordinal": 1,
++            "api": "semantic.parse_turtle",
++            "positional": [
++              {
++                "datasetField": "shapesText"
++              }
++            ],
++            "keywordArguments": {
++              "format": "turtle",
++              "shapes": true
++            },
++            "harnessStage": "parse-shapes",
++            "returnBinding": "shapesGraph"
++          },
++          {
++            "ordinal": 2,
++            "api": "semantic.check_shapes",
++            "positional": [
++              {
++                "stageReturn": "dataGraph"
++              },
++              {
++                "stageReturn": "shapesGraph"
++              }
++            ],
++            "keywordArguments": {},
++            "harnessStage": "check-shapes",
++            "returnBinding": "report"
++          }
++        ],
++        "newWrapper": null,
++        "status": "approved entry chain; exact proposed F1 code/stage still pending real pinned-library/API verification",
++        "expectedReachedPrefix": [0, 1],
++        "expectedUnreachedSuffix": [2]
++      }
+     },
+     {
+       "id": "integer/other-datatype-1",
+@@ -10525,7 +10586,7 @@
+         "dataPolicy": "integer-illtyped-report-v1",
+         "rangePolicy": "legacy"
+       },
+-      "api": "semantic.validate",
++      "api": "semantic.validate_shacl_text",
+       "harnessStage": "parse-data",
+       "authority": ["sealed fixed input", "new deterministic front-door proposal F1"],
+       "oldOracleState": "known-rejection",
+@@ -10563,7 +10624,50 @@
+           "sha256": "61a3e92c298fa37483d203a8ad59dcafc9ec0ff61cf6d30b043267b7ca048c98"
+         }
+       ],
+-      "preconditions": []
++      "preconditions": [],
++      "invocation": {
++        "format": "i05-fixed-invocation/1",
++        "owner": "I05 canonical API/serializer owner",
++        "authority": {
++          "ref": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
++          "path": "docs/iterations/I05/source-package-parity/contract.md",
++          "lines": [52]
++        },
++        "inputParameterMapping": {
++          "dataPolicy": {
++            "pythonKeyword": "data_policy",
++            "exactValue": "integer-illtyped-report-v1"
++          },
++          "rangePolicy": {
++            "pythonKeyword": "range_policy",
++            "exactValue": "legacy"
++          }
++        },
++        "steps": [
++          {
++            "ordinal": 0,
++            "api": "semantic.validate_shacl_text",
++            "positional": [
++              {
++                "datasetField": "dataText"
++              },
++              {
++                "datasetField": "shapesText"
++              }
++            ],
++            "keywordArguments": {
++              "data_policy": "integer-illtyped-report-v1",
++              "range_policy": "legacy"
++            },
++            "harnessStage": "parse-data",
++            "returnBinding": "report"
++          }
++        ],
++        "newWrapper": null,
++        "status": "approved explicit policy entry; exact proposed F1 code/stage still pending real pinned-library/API verification",
++        "expectedReachedPrefix": [0],
++        "expectedUnreachedSuffix": []
++      }
+     },
+     {
+       "id": "offline/implicit-jsonld",
+@@ -10618,5 +10722,6 @@
+       ],
+       "preconditions": []
+     }
+-  ]
++  ],
++  "projectionSpecVersion": "i05-observation-projection/2"
+ }
+diff --git a/docs/iterations/I05/observation-projection-spec/coverage.md b/docs/iterations/I05/observation-projection-spec/coverage.md
+index 5d9c995..0c2add1 100644
+--- a/docs/iterations/I05/observation-projection-spec/coverage.md
++++ b/docs/iterations/I05/observation-projection-spec/coverage.md
+@@ -2,45 +2,45 @@
+ 
+ 完整字段、值、type/null、参数、输入 hash、全部数学及来源见 `cases.json`；此表不替代完整预期。全部 targetStatus 为 proposed-exact-not-runtime-proven。
+ 
+-| ID                                             | API / harness 阶段                                                   | 精确目标摘要                                                                                  | 数学/先序依据与尚未证实                                       |
+-| ---------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+-| `turtle/front-5`                               | `semantic.parse_turtle` / `parse-data`                               | SemanticError / INVALID_TURTLE / None / None / None / None                                    | 新deterministic提案；旧实际首错未证，pending                  |
+-| `rdfs/type`                                    | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=0, rdfsEvidence=1, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `rdfs/domain-depth2`                           | `semantic.reason` / `reason`                                         | 正常：rdfs=2, rules=0, rdfsEvidence=2, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `rdfs/range`                                   | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=0, rdfsEvidence=1, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `rdfs/subclass`                                | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=0, rdfsEvidence=1, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `rdfs/cycle`                                   | `semantic.reason` / `reason`                                         | 正常：rdfs=8, rules=0, rdfsEvidence=8, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `rdfs/domain-first-witness`                    | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=1, rdfsEvidence=1, evidence=1, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `rdfs/range-first-witness`                     | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=1, rdfsEvidence=1, evidence=1, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `legacy/no-rule-feedback`                      | `semantic.reason` / `reason`                                         | 正常：rdfs=0, rules=1, rdfsEvidence=0, evidence=1, warnings=["RULE_CHAIN_UNSUPPORTED:R-next"] | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `legacy/multiple-matches`                      | `semantic.reason` / `reason`                                         | 正常：rdfs=0, rules=1, rdfsEvidence=0, evidence=2, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `legacy/repeated-variable`                     | `semantic.reason` / `reason`                                         | 正常：rdfs=0, rules=1, rdfsEvidence=0, evidence=1, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测         |
+-| `legacy/unbound-head`                          | `semantic.reason` / `rule-definition`                                | SemanticError / UNBOUND_RULE_VARIABLE / None / None / None / None                             | 旧独立oracle明确拒绝；不是第11个正常DTO                       |
+-| `scope/asserted`                               | `semantic_scopes.prepare_validation_scope` / `scope`                 | 正常：facts=6, ontology=2, selectedFacts=6, queryRows=2, violations=0                         | 完整独立数学；新provenance/source /1、同次发行与真实hooks待验 |
+-| `scope/fresh`                                  | `semantic_scopes.prepare_validation_scope` / `scope`                 | 正常：facts=9, ontology=3, selectedFacts=9, queryRows=5, violations=2                         | 完整独立数学；新provenance/source /1、同次发行与真实hooks待验 |
+-| `scope/project`                                | `semantic_scopes.project_validation_scope` / `scope`                 | 正常：facts=9, ontology=3, selectedFacts=9, queryRows=5, violations=2                         | 完整独立数学；新provenance/source /1、同次发行与真实hooks待验 |
+-| `scope/missing-source`                         | `semantic_scopes.project_validation_scope` / `scope-provenance-gate` | SemanticError / REASONING_SOURCE_REQUIRED / None / None / None / None                         | 新deterministic提案；旧实际首错未证，pending                  |
+-| `scope/wrong-source`                           | `semantic_scopes.project_validation_scope` / `scope-provenance-gate` | SemanticError / REASONING_SOURCE_MISMATCH / None / None / None / None                         | 新deterministic提案；旧实际首错未证，pending                  |
+-| `scope/missing-result`                         | `semantic_scopes.project_validation_scope` / `scope-provenance-gate` | SemanticError / REASONING_RESULT_INVALID / None / None / None / None                          | 新deterministic提案；旧实际首错未证，pending                  |
+-| `scope/unselected-result`                      | `semantic_scopes.project_validation_scope` / `scope-selection-gate`  | SemanticError / UNSELECTED_REASONING_PRESENT / None / None / None / None                      | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/fullview/payload-unknown-key`         | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/fullview/tail-source-tamper`          | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/fullview/tail-definition-tamper`      | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/fullview/tail-limits-tamper`          | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/fullview/tail-child-tamper`           | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/payload-unknown-key`      | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/tail-source-tamper`       | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/tail-definition-tamper`   | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/tail-limits-tamper`       | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/tail-child-tamper`        | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/dag-depth-plus-one`       | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/dag-last-premise-forward` | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/leaf-rename-all`          | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `restore/explanation/head-occurrence-1023-15`  | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                  |
+-| `dag/turtle-entry`                             | `execute_profile_explanation` / `structured-material-required`       | DirectStepsFailure / DIRECT_STEPS_INVALID / input / entry / None / None                       | 新deterministic提案；旧实际首错未证，pending                  |
+-| `shape/front-2`                                | `semantic.validate` / `parse-shapes`                                 | SemanticError / INVALID_LITERAL_LEXICAL / None / None / None / None                           | 新deterministic提案；旧实际首错未证，pending                  |
+-| `integer/other-datatype-1`                     | `semantic.validate` / `parse-data`                                   | SemanticError / INVALID_LITERAL_LEXICAL / None / None / None / None                           | 新deterministic提案；旧实际首错未证，pending                  |
+-| `offline/implicit-jsonld`                      | `semantic_offline.offline` / `implicit-loader-guard`                 | OfflineAccessDenied / EXTERNAL_ACCESS_DENIED / None / None / None / None                      | 新deterministic提案；旧实际首错未证，pending                  |
++| ID                                             | API / harness 阶段                                                   | 精确目标摘要                                                                                  | 数学/先序依据与尚未证实                                                         |
++| ---------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
++| `turtle/front-5`                               | `semantic.parse_turtle` / `parse-data`                               | SemanticError / INVALID_TURTLE / None / None / None / None                                    | 新deterministic提案；旧实际首错未证，pending                                    |
++| `rdfs/type`                                    | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=0, rdfsEvidence=1, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `rdfs/domain-depth2`                           | `semantic.reason` / `reason`                                         | 正常：rdfs=2, rules=0, rdfsEvidence=2, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `rdfs/range`                                   | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=0, rdfsEvidence=1, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `rdfs/subclass`                                | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=0, rdfsEvidence=1, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `rdfs/cycle`                                   | `semantic.reason` / `reason`                                         | 正常：rdfs=8, rules=0, rdfsEvidence=8, evidence=0, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `rdfs/domain-first-witness`                    | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=1, rdfsEvidence=1, evidence=1, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `rdfs/range-first-witness`                     | `semantic.reason` / `reason`                                         | 正常：rdfs=1, rules=1, rdfsEvidence=1, evidence=1, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `legacy/no-rule-feedback`                      | `semantic.reason` / `reason`                                         | 正常：rdfs=0, rules=1, rdfsEvidence=0, evidence=1, warnings=["RULE_CHAIN_UNSUPPORTED:R-next"] | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `legacy/multiple-matches`                      | `semantic.reason` / `reason`                                         | 正常：rdfs=0, rules=1, rdfsEvidence=0, evidence=2, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `legacy/repeated-variable`                     | `semantic.reason` / `reason`                                         | 正常：rdfs=0, rules=1, rdfsEvidence=0, evidence=1, warnings=[]                                | 完整独立数学；新五字段排序/N3 serializer 待接收及实测                           |
++| `legacy/unbound-head`                          | `semantic.reason` / `rule-definition`                                | SemanticError / UNBOUND_RULE_VARIABLE / None / None / None / None                             | 旧独立oracle明确拒绝；不是第11个正常DTO                                         |
++| `scope/asserted`                               | `semantic_scopes.prepare_validation_scope` / `scope`                 | 正常：facts=6, ontology=2, selectedFacts=6, queryRows=2, violations=0                         | 完整独立数学；新provenance/source /1、同次发行与真实hooks待验                   |
++| `scope/fresh`                                  | `semantic_scopes.prepare_validation_scope` / `scope`                 | 正常：facts=9, ontology=3, selectedFacts=9, queryRows=5, violations=2                         | 完整独立数学；新provenance/source /1、同次发行与真实hooks待验                   |
++| `scope/project`                                | `semantic_scopes.project_validation_scope` / `scope`                 | 正常：facts=9, ontology=3, selectedFacts=9, queryRows=5, violations=2                         | 完整独立数学；新provenance/source /1、同次发行与真实hooks待验                   |
++| `scope/missing-source`                         | `semantic_scopes.project_validation_scope` / `scope-provenance-gate` | SemanticError / REASONING_SOURCE_REQUIRED / None / None / None / None                         | 新deterministic提案；旧实际首错未证，pending                                    |
++| `scope/wrong-source`                           | `semantic_scopes.project_validation_scope` / `scope-provenance-gate` | SemanticError / REASONING_SOURCE_MISMATCH / None / None / None / None                         | 新deterministic提案；旧实际首错未证，pending                                    |
++| `scope/missing-result`                         | `semantic_scopes.project_validation_scope` / `scope-provenance-gate` | SemanticError / REASONING_RESULT_INVALID / None / None / None / None                          | 新deterministic提案；旧实际首错未证，pending                                    |
++| `scope/unselected-result`                      | `semantic_scopes.project_validation_scope` / `scope-selection-gate`  | SemanticError / UNSELECTED_REASONING_PRESENT / None / None / None / None                      | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/fullview/payload-unknown-key`         | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/fullview/tail-source-tamper`          | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/fullview/tail-definition-tamper`      | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/fullview/tail-limits-tamper`          | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/fullview/tail-child-tamper`           | `restore_profile_result` / `restore`                                 | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/payload-unknown-key`      | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/tail-source-tamper`       | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/tail-definition-tamper`   | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/tail-limits-tamper`       | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/tail-child-tamper`        | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/dag-depth-plus-one`       | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/dag-last-premise-forward` | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/leaf-rename-all`          | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `restore/explanation/head-occurrence-1023-15`  | `restore_profile_explanation_result` / `restore`                     | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / None / None                | 新deterministic提案；旧实际首错未证，pending                                    |
++| `dag/turtle-entry`                             | `execute_profile_explanation` / `structured-material-required`       | DirectStepsFailure / DIRECT_STEPS_INVALID / input / entry / None / None                       | 新deterministic提案；旧实际首错未证，pending                                    |
++| `shape/front-2`                                | `semantic.parse_turtle → semantic.check_shapes` / `parse-shapes`     | SemanticError / INVALID_LITERAL_LEXICAL / None / None / None / None                           | 批准双parse→check链；shape=True，parse-shapes目标；F1首错仍pending              |
++| `integer/other-datatype-1`                     | `semantic.validate_shacl_text` / `parse-data`                        | SemanticError / INVALID_LITERAL_LEXICAL / None / None / None / None                           | 显式data_policy=integer-illtyped-report-v1/range_policy=legacy；F1首错仍pending |
++| `offline/implicit-jsonld`                      | `semantic_offline.offline` / `implicit-loader-guard`                 | OfflineAccessDenied / EXTERNAL_ACCESS_DENIED / None / None / None / None                      | 新deterministic提案；旧实际首错未证，pending                                    |
+ 
+ 14 restore ID 保原 mutation enum/rootsTargets/输入指针，每项 conditional 前置在 cases 独立登记。没有重新绑定 expectation，没有用 R1 推断旧 actual A1。
+ 
+diff --git a/docs/iterations/I05/observation-projection-spec/model.py b/docs/iterations/I05/observation-projection-spec/model.py
+index 86595c9..db5a406 100644
+--- a/docs/iterations/I05/observation-projection-spec/model.py
++++ b/docs/iterations/I05/observation-projection-spec/model.py
+@@ -12,6 +12,20 @@ import json
+ import re
+ 
+ 
++HARNESS_STAGES = (
++    "reason", "rule-definition", "scope", "restore", "structured-material-required",
++    "parse-data", "parse-shapes", "scope-provenance-gate", "scope-selection-gate",
++    "implicit-loader-guard", "check-shapes",
++)
++COLLECTION_FAILURE_STAGE = "collection-failure"
++
++
++def safe_harness_stage(value):
++    # Exact type check comes before membership: no foreign equality, hash, repr,
++    # str, descriptor or attribute is evaluated, including on str subclasses.
++    return value if type(value) is str and value in HARNESS_STAGES else COLLECTION_FAILURE_STAGE
++
++
+ def canonical(value):
+     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+ 
+@@ -190,7 +204,7 @@ def rejection(origin, reason, harness_stage, classification=None, stage=None,
+ 
+ 
+ def unknown(harness_stage):
+-    return rejection("Unknown", "INTERNAL_ERROR", harness_stage, complete=False)
++    return rejection("Unknown", "INTERNAL_ERROR", safe_harness_stage(harness_stage), complete=False)
+ 
+ 
+ def safe_projection(diagnostic, harness_stage, schema):
+@@ -199,11 +213,14 @@ def safe_projection(diagnostic, harness_stage, schema):
+     A real adapter must first establish exact trusted class identity; this function
+     cannot prove that from JSON. It models schema rejection and safe fallback only.
+     """
+-    proposed = {"kind": "rejection", "complete": True, "harnessStage": harness_stage,
++    stage = safe_harness_stage(harness_stage)
++    if stage == COLLECTION_FAILURE_STAGE:
++        return unknown(COLLECTION_FAILURE_STAGE)
++    proposed = {"kind": "rejection", "complete": True, "harnessStage": stage,
+                 "diagnostic": diagnostic, "partialView": None, "report": None}
+     if validate(proposed, schema):
+         return proposed
+-    return unknown(harness_stage)
++    return unknown(stage)
+ 
+ 
+ def validate(value, schema, root=None):
+@@ -256,7 +273,7 @@ def validate(value, schema, root=None):
+ 
+ def matches(case, observed, schema):
+     # A safe unknown or another known refusal can never pass a normal fixture.
+-    return validate(observed, schema) and exact(case["expectedProjection"], observed)
++    return validate(observed, schema) and projection_identity_equal(case["expectedProjection"], observed)
+ 
+ 
+ def graph_isomorphic(left, right):
+@@ -271,11 +288,139 @@ def graph_isomorphic(left, right):
+     a, b = blanks(left), blanks(right)
+     if len(a) != len(b) or len(a) > 8:
+         return False
+-    target = {canonical(row) for row in right}
++    target = {canonical([identity_term(t) for t in row]) for row in right}
+     for order in itertools.permutations(b):
+         mapping = dict(zip(a, order))
+         rewritten = [[{"kind": "blank", "label": mapping[t["label"]]} if t["kind"] == "blank"
+-                      else t for t in row] for row in left]
++                      else identity_term(t) for t in row] for row in left]
+         if {canonical(row) for row in rewritten} == target:
+             return True
+     return False
++
++
++def projection_layout(value):
++    """All RDF positions in this terminal schema; no substring scan of other text.
++
++    One invocation/terminal artifact owns one BNode identity domain. Raw input,
++    source, digests, rule IDs and every undeclared position stay exact.
++    """
++    slots = []
++
++    def legacy_slots(prefix, data):
++        for field in ("rdfs", "rules"):
++            slots.append((prefix + (field,), "n3-graph"))
++        for i, _ in enumerate(data["rdfsEvidence"]):
++            slots.extend([(prefix + ("rdfsEvidence", i, "result"), "n3-sequence"),
++                          (prefix + ("rdfsEvidence", i, "basis"), "n3-graph")])
++        for i, _ in enumerate(data["evidence"]):
++            for field, mode in (("result", "n3-sequence"), ("inputs", "n3-sequence"),
++                                ("basis", "n3-graph")):
++                slots.append((prefix + ("evidence", i, field), mode))
++
++    if value["kind"] == "legacy":
++        legacy_slots(("value",), value["value"])
++    elif value["kind"] == "scope":
++        data = value["value"]
++        for field in ("facts", "ontology"):
++            slots.append((("value", field), "typed-graph"))
++        if data["reasoning_result"] is not None:
++            legacy_slots(("value", "reasoning_result"), data["reasoning_result"])
++        provenance = data["provenance"]
++        for i, row in enumerate(provenance["selectedFacts"]):
++            prefix = ("value", "provenance", "selectedFacts", i)
++            slots.append((prefix + ("triple",), "n3-sequence"))
++            for j, source in enumerate(row["sources"]):
++                slots.append((prefix + ("sources", j, "basis"), "n3-graph"))
++                if source["kind"] == "rule":
++                    slots.append((prefix + ("sources", j, "inputs"), "n3-sequence"))
++        for i, _ in enumerate(provenance["derivedAxioms"]):
++            prefix = ("value", "provenance", "derivedAxioms", i)
++            slots.extend([(prefix + ("triple",), "n3-sequence"),
++                          (prefix + ("source", "basis"), "n3-graph")])
++        slots.append((("query", "rows"), "typed-sequence"))
++        for i, row in enumerate(value["shacl"]["violations"]):
++            for field in row:
++                slots.append((("shacl", "violations", i, field), "typed-sequence"))
++    return slots
++
++
++def identity_domain_equal(left, right, slots):
++    """Joint finite identity comparison, at most 8 BNodes per entire artifact.
++
++    slots are explicit disjoint (JSON path, mode) pairs. Graph modes compare RDF
++    sets; sequence modes retain every ordered position and duplicate. Every slot
++    shares ONE bijection. Undeclared fields, including raw occurrences and digest
++    strings, compare exactly. This detached JSON model is not an RDF/N3 parser.
++    """
++    def clone(value):
++        if type(value) is dict:
++            return {k: clone(v) for k, v in value.items()}
++        if type(value) is list:
++            return [clone(v) for v in value]
++        if type(value) in (str, int, bool, type(None)):
++            return value
++        raise ValueError("detached JSON required")
++
++    paths = [path for path, _ in slots]
++    if any(a == b[:len(a)] for i, a in enumerate(paths) for j, b in enumerate(paths) if i != j):
++        return False
++
++    def transform(value, mode, mapping, labels):
++        def term(value):
++            if type(value) is dict:
++                if set(value) == {"kind", "label"} and value["kind"] == "blank":
++                    labels.add(value["label"])
++                    return {"kind": "blank", "label": mapping.get(value["label"], value["label"])}
++                if set(value) == {"kind", "lexical", "datatype", "language"} and value["kind"] == "literal":
++                    return identity_term(value)
++                return {k: term(v) for k, v in value.items()}
++            if type(value) is list:
++                return [term(v) for v in value]
++            if mode.startswith("n3-") and type(value) is str:
++                if re.fullmatch(r"_:[A-Za-z][A-Za-z0-9_-]*", value):
++                    label = value[2:]
++                    labels.add(label)
++                    return "_:" + mapping.get(label, label)
++                # Only a complete generated literal token's language suffix is
++                # casefolded; never lexical text, datatype, IRI or other fields.
++                match = re.fullmatch(r'("(?:[^"\\]|\\.)*")@([A-Za-z]+(?:-[A-Za-z0-9]+)*)', value)
++                if match:
++                    return match[1] + "@" + match[2].casefold()
++            return value
++
++        normalized = term(value)
++        if mode in ("typed-graph", "n3-graph"):
++            return [json.loads(row) for row in sorted({canonical(row) for row in normalized})]
++        if mode not in ("typed-sequence", "n3-sequence"):
++            raise ValueError("unknown identity slot mode")
++        return normalized
++
++    def rewrite(value, mapping):
++        result = clone(value)
++        labels = set()
++        for path, mode in slots:
++            if not path:
++                raise ValueError("nonempty identity slot path required")
++            target = result
++            for part in path[:-1]:
++                target = target[part]
++            key = path[-1]
++            target[key] = transform(target[key], mode, mapping, labels)
++        return result, sorted(labels)
++
++    try:
++        _, a = rewrite(left, {})
++        target, b = rewrite(right, {})
++        if len(a) != len(b) or len(a) > 8:
++            return False
++        for order in itertools.permutations(b):
++            rewritten, _ = rewrite(left, dict(zip(a, order)))
++            if exact(rewritten, target):
++                return True
++    except (KeyError, IndexError, TypeError, ValueError):
++        return False
++    return False
++
++
++def projection_identity_equal(left, right):
++    return identity_domain_equal(left, right, projection_layout(left))
+diff --git a/docs/iterations/I05/observation-projection-spec/schema.json b/docs/iterations/I05/observation-projection-spec/schema.json
+index fee4e9c..ba7ea54 100644
+--- a/docs/iterations/I05/observation-projection-spec/schema.json
++++ b/docs/iterations/I05/observation-projection-spec/schema.json
+@@ -1,7 +1,7 @@
+ {
+   "$schema": "https://json-schema.org/draft/2020-12/schema",
+-  "$id": "urn:ontolearn:private:i05-observation-projection:1",
+-  "title": "Proposed private observation terminal projection, not a public DTO",
++  "$id": "urn:ontolearn:private:i05-observation-projection:2",
++  "title": "Proposed private observation terminal projection /2, not a public DTO",
+   "$defs": {
+     "term": {
+       "oneOf": [
+@@ -984,7 +984,8 @@
+                 "parse-shapes",
+                 "scope-provenance-gate",
+                 "scope-selection-gate",
+-                "implicit-loader-guard"
++                "implicit-loader-guard",
++                "check-shapes"
+               ]
+             },
+             "diagnostic": {
+@@ -1020,7 +1021,9 @@
+                 "parse-shapes",
+                 "scope-provenance-gate",
+                 "scope-selection-gate",
+-                "implicit-loader-guard"
++                "implicit-loader-guard",
++                "collection-failure",
++                "check-shapes"
+               ]
+             },
+             "diagnostic": {
+diff --git a/docs/iterations/I05/observation-projection-spec/selftest-r2.py b/docs/iterations/I05/observation-projection-spec/selftest-r2.py
+new file mode 100644
+index 0000000..f39e1d4
+--- /dev/null
++++ b/docs/iterations/I05/observation-projection-spec/selftest-r2.py
+@@ -0,0 +1,285 @@
++"""R2 detached-design regression and new R1 counterexamples; no product calls.
++
++The original twenty test methods remain separately identifiable and unchanged.
++New BNode fixtures are mathematical RDF artifacts, not permitted product inputs,
++engine success objects, producer/capture records or actual observations.
++"""
++import copy
++import json
++from pathlib import Path
++import subprocess
++import sys
++import unittest
++
++sys.dont_write_bytecode = True
++from selftest import DesignTests, CASES, BY_ID, SCHEMA
++import model as m
++
++HERE = Path(__file__).parent
++ROOT = HERE.parents[3]
++R1 = "57c67631fab6a36f47963aca95b4036064e10777"
++RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
++XSD = "http://www.w3.org/2001/XMLSchema#"
++
++
++def iri(s):
++    return {"kind": "iri", "value": s}
++
++
++def blank(s):
++    return {"kind": "blank", "label": s}
++
++
++def literal(text, datatype=RDF + "langString", language="EN"):
++    return {"kind": "literal", "lexical": text, "datatype": datatype, "language": language}
++
++
++def list_graph(label="a", language="EN"):
++    return [[blank(label), iri(RDF + "first"), literal("hello", language=language)],
++            [blank(label), iri(RDF + "rest"), iri(RDF + "nil")]]
++
++
++class R2DeltaTests(unittest.TestCase):
++    def test_r1_01_stage_is_closed_before_any_untrusted_operation(self):
++        touched = []
++        class Poison:
++            def __getattribute__(self, _):
++                touched.append("getattribute")
++                raise AssertionError("foreign attribute read")
++            def __str__(self):
++                touched.append("str")
++                raise AssertionError("foreign string conversion")
++            def __repr__(self):
++                touched.append("repr")
++                raise AssertionError("foreign repr conversion")
++            def __eq__(self, _):
++                touched.append("eq")
++                raise AssertionError("foreign equality")
++            def __hash__(self):
++                touched.append("hash")
++                raise AssertionError("foreign hash")
++        class ForeignString(str):
++            def __eq__(self, _):
++                touched.append("str-subclass-eq")
++                raise AssertionError("foreign string equality")
++        bad = [None, True, 1, [], {}, "/private/r1-sensitive-path",
++               "https://secret.invalid/path", "not-a-registered-stage", Poison(),
++               ForeignString("restore")]
++        diagnostic = BY_ID["scope/wrong-source"]["expectedProjection"]["diagnostic"]
++        for value in bad:
++            for output in (m.unknown(value), m.safe_projection(diagnostic, value, SCHEMA),
++                           m.safe_projection(Poison(), value, SCHEMA)):
++                self.assertTrue(m.validate(output, SCHEMA))
++                self.assertEqual(output, m.unknown("collection-failure"))
++                encoded = json.dumps(output)
++                for secret in ("/private/r1-sensitive-path", "https://secret.invalid/path",
++                               "not-a-registered-stage"):
++                    self.assertNotIn(secret, encoded)
++        self.assertEqual(touched, [])
++
++    def test_r1_01_valid_stage_and_reserved_incomplete(self):
++        for case in CASES:
++            stage = case["harnessStage"]
++            self.assertEqual(m.unknown(stage)["harnessStage"], stage)
++            self.assertTrue(m.validate(m.unknown(stage), SCHEMA))
++            self.assertFalse(m.matches(case, m.unknown(stage), SCHEMA))
++            if case["expectedProjection"]["kind"] == "rejection":
++                self.assertEqual(m.safe_projection(case["expectedProjection"]["diagnostic"],
++                                                   stage, SCHEMA), case["expectedProjection"])
++        bad = copy.deepcopy(BY_ID["scope/missing-source"]["expectedProjection"])
++        bad["harnessStage"] = "collection-failure"
++        self.assertFalse(m.validate(bad, SCHEMA))
++        self.assertTrue(SCHEMA["$id"].endswith(":2"))
++        branches = SCHEMA["$defs"]["rejection"]["oneOf"]
++        self.assertEqual(set(branches[0]["properties"]["harnessStage"]["enum"]), set(m.HARNESS_STAGES))
++        self.assertEqual(set(branches[1]["properties"]["harnessStage"]["enum"]),
++                         set(m.HARNESS_STAGES) | {m.COLLECTION_FAILURE_STAGE})
++
++    def test_r1_02_language_and_tail_graph_identity(self):
++        left, right = list_graph(), list_graph("p", "en")
++        before = copy.deepcopy((left, right))
++        self.assertTrue(m.graph_isomorphic(left, right))
++        self.assertFalse(m.graph_isomorphic(left, right[:-1]))
++        self.assertEqual((left, right), before)
++        self.assertNotEqual(m.n3(left[0][2]), m.n3(right[0][2]))
++        folded = copy.deepcopy(right)
++        folded[0][2]["lexical"] = "HELLO"
++        self.assertFalse(m.graph_isomorphic(left, folded))
++
++    def test_r1_02_numeric_lexical_datatype_and_node_collapse(self):
++        for lexical, datatype in [("1", XSD + "integer"), ("01", XSD + "int")]:
++            left = [[blank("a"), iri(RDF + "first"), literal("01", XSD + "integer", None)]]
++            right = [[blank("p"), iri(RDF + "first"), literal(lexical, datatype, None)]]
++            self.assertFalse(m.graph_isomorphic(left, right))
++        left = [[blank("a"), iri(RDF + "rest"), blank("b")],
++                [blank("b"), iri(RDF + "rest"), iri(RDF + "nil")]]
++        right = [[blank("p"), iri(RDF + "rest"), blank("p")],
++                 [blank("p"), iri(RDF + "rest"), iri(RDF + "nil")]]
++        self.assertFalse(m.graph_isomorphic(left, right))
++
++    def artifact(self, a="a", b="b", language="EN"):
++        return {
++            "typedGraph": [[blank(a), iri("urn:p"), literal("hello", language=language)],
++                           [blank(b), iri("urn:p"), iri("urn:y")]],
++            "evidence": [{"result": ["_:" + a, "<urn:p>", '"hello"@' + language],
++                          "inputs": [["_:" + a, "<urn:p>", '"hello"@' + language]] * 2}],
++            "query": {"variables": ["s"], "rows": [[blank(a)], [blank(b)], [blank(a)]]},
++            "shacl": {"conforms": False, "violations": [{
++                "focus": blank(a), "path": iri("urn:p"), "value": literal("hello", language=language),
++                "sourceShape": blank(a), "constraint": iri("urn:constraint"),
++                "severity": iri("urn:severity")}]},
++            "raw": {"language_raw": "EN", "inputText": '"hello"@EN',
++                    "source": None, "looksLikeNodeButIsRaw": "_:a"},
++        }
++
++    def slots(self):
++        return [(("typedGraph",), "typed-graph"),
++                (("evidence", 0, "result"), "n3-sequence"),
++                (("evidence", 0, "inputs"), "n3-sequence"),
++                (("query", "rows"), "typed-sequence"),
++                *(((("shacl", "violations", 0, key), "typed-sequence"))
++                  for key in ("focus", "path", "value", "sourceShape", "constraint", "severity"))]
++
++    def test_shared_domain_normal_language_and_exact_raw_source(self):
++        left, right = self.artifact(), self.artifact("p", "q", "en")
++        before = copy.deepcopy((left, right))
++        self.assertTrue(m.identity_domain_equal(left, right, self.slots()))
++        self.assertEqual((left, right), before)
++        for key, value in [("language_raw", "en"), ("source", ""),
++                           ("looksLikeNodeButIsRaw", "_:p")]:
++            changed = copy.deepcopy(right)
++            changed["raw"][key] = value
++            self.assertFalse(m.identity_domain_equal(left, changed, self.slots()))
++
++    def test_shared_domain_contradictory_query_evidence_or_source_shape(self):
++        left, right = self.artifact(), self.artifact("p", "q", "en")
++        # Equal global label counts: this cannot be rejected by a count shortcut.
++        changes = [("query", "rows", 0, 0, "label"),
++                   ("shacl", "violations", 0, "sourceShape", "label")]
++        for path in changes:
++            changed = copy.deepcopy(right)
++            cursor = changed
++            for part in path[:-1]:
++                cursor = cursor[part]
++            cursor[path[-1]] = "q"
++            self.assertFalse(m.identity_domain_equal(left, changed, self.slots()))
++        changed = copy.deepcopy(right)
++        changed["evidence"][0]["result"][0] = "_:q"
++        self.assertFalse(m.identity_domain_equal(left, changed, self.slots()))
++        # Each slice can independently choose a conflicting bijection.
++        a1 = {"graph": [[blank("a"), iri("urn:p"), iri("urn:x")]]}
++        a2 = {"graph": [[blank("a"), iri("urn:q"), iri("urn:y")]]}
++        b1 = {"graph": [[blank("p"), iri("urn:p"), iri("urn:x")]]}
++        b2 = {"graph": [[blank("q"), iri("urn:q"), iri("urn:y")]]}
++        self.assertTrue(m.identity_domain_equal(a1, b1, [(("graph",), "typed-graph")]))
++        self.assertTrue(m.identity_domain_equal(a2, b2, [(("graph",), "typed-graph")]))
++        self.assertFalse(m.identity_domain_equal({"x": a1["graph"], "y": a2["graph"]},
++                                                {"x": b1["graph"], "y": b2["graph"]},
++                                                [(("x",), "typed-graph"), (("y",), "typed-graph")]))
++
++    def test_shared_domain_order_duplicates_tail_and_no_substring_rewrite(self):
++        left, right = self.artifact(), self.artifact("p", "q", "en")
++        for field in ("inputs", "result"):
++            changed = copy.deepcopy(right)
++            changed["evidence"][0][field].pop()
++            self.assertFalse(m.identity_domain_equal(left, changed, self.slots()))
++        changed = copy.deepcopy(right)
++        changed["query"]["rows"].reverse()
++        # The original [a,b,a] palindrome intentionally survives reversal.
++        self.assertTrue(m.identity_domain_equal(left, changed, self.slots()))
++        changed["query"]["rows"] = [changed["query"]["rows"][1],
++                                    changed["query"]["rows"][0], changed["query"]["rows"][2]]
++        self.assertFalse(m.identity_domain_equal(left, changed, self.slots()))
++        changed = copy.deepcopy(right)
++        changed["evidence"][0]["result"][2] = '"HELLO"@en'
++        self.assertFalse(m.identity_domain_equal(left, changed, self.slots()))
++
++    def test_terminal_layout_covers_all_rdf_roles_and_shared_map(self):
++        # Only detached projection comparison: this fixture does not establish
++        # product input legality, provenance/digests, admission or success.
++        left = copy.deepcopy(BY_ID["scope/fresh"]["expectedProjection"])
++        left["value"]["ontology"] = [[blank("a"), iri(RDF + "rest"), iri(RDF + "nil")]]
++        left["value"]["reasoning_result"]["evidence"][0]["result"][0] = "_:a"
++        left["query"]["rows"][0][0] = blank("a")
++        left["shacl"]["violations"][0]["sourceShape"] = blank("a")
++        right = copy.deepcopy(left)
++        right["value"]["ontology"][0][0] = blank("p")
++        right["value"]["reasoning_result"]["evidence"][0]["result"][0] = "_:p"
++        right["query"]["rows"][0][0] = blank("p")
++        right["shacl"]["violations"][0]["sourceShape"] = blank("p")
++        self.assertTrue(m.projection_identity_equal(left, right))
++        right["shacl"]["violations"][0]["sourceShape"] = blank("q")
++        self.assertFalse(m.projection_identity_equal(left, right))
++        layout = m.projection_layout(left)
++        self.assertIn((("value", "facts"), "typed-graph"), layout)
++        self.assertIn((("query", "rows"), "typed-sequence"), layout)
++        for field in ("focus", "path", "value", "sourceShape", "constraint", "severity"):
++            self.assertIn((("shacl", "violations", 0, field), "typed-sequence"), layout)
++
++    def test_shared_domain_provenance_basis_and_n3_numeric_identity(self):
++        left = copy.deepcopy(BY_ID["scope/fresh"]["expectedProjection"])
++        right = copy.deepcopy(left)
++        paths = [
++            ("value", "provenance", "selectedFacts", 0, "triple", 0),
++            ("value", "provenance", "selectedFacts", 0, "sources", 0, "basis", 0, 0),
++            ("value", "provenance", "derivedAxioms", 0, "source", "basis", 0, 0),
++            ("value", "reasoning_result", "rdfsEvidence", 0, "basis", 0, 0),
++            ("value", "reasoning_result", "evidence", 0, "inputs", 0, 0),
++        ]
++        for path in paths:
++            for value, token in [(left, "_:a"), (right, "_:p")]:
++                cursor = value
++                for part in path[:-1]:
++                    cursor = cursor[part]
++                cursor[path[-1]] = token
++        self.assertTrue(m.projection_identity_equal(left, right))
++        right["value"]["provenance"]["derivedAxioms"][0]["source"]["basis"][0][0] = "_:q"
++        self.assertFalse(m.projection_identity_equal(left, right))
++        n3 = {"evidence": [["_:a", "<urn:p>", '"01"^^<' + XSD + 'integer>']]}
++        for token in ['"1"^^<' + XSD + 'integer>', '"01"^^<' + XSD + 'int>']:
++            changed = {"evidence": [["_:p", "<urn:p>", token]]}
++            self.assertFalse(m.identity_domain_equal(n3, changed,
++                                                     [(("evidence",), "n3-sequence")]))
++        self.assertFalse(m.identity_domain_equal({"x": ['"word@EN"']},
++                                                {"x": ['"word@en"']},
++                                                [(("x",), "n3-sequence")]))
++
++    def test_r1_03_shape_exact_chain(self):
++        case = BY_ID["shape/front-2"]
++        plan = case["invocation"]
++        self.assertEqual(case["api"], "semantic.parse_turtle -> semantic.check_shapes")
++        self.assertEqual([s["api"] for s in plan["steps"]],
++                         ["semantic.parse_turtle", "semantic.parse_turtle", "semantic.check_shapes"])
++        self.assertEqual(plan["steps"][0]["keywordArguments"], {"format": "turtle", "shapes": False})
++        self.assertEqual(plan["steps"][1]["keywordArguments"], {"format": "turtle", "shapes": True})
++        self.assertEqual(plan["steps"][2]["positional"],
++                         [{"stageReturn": "dataGraph"}, {"stageReturn": "shapesGraph"}])
++        self.assertEqual(plan["expectedReachedPrefix"], [0, 1])
++        self.assertEqual(plan["expectedUnreachedSuffix"], [2])
++        self.assertEqual(case["parameters"], {})
++        self.assertIsNone(plan["newWrapper"])
++
++    def test_r1_03_integer_explicit_parameter_mapping(self):
++        case = BY_ID["integer/other-datatype-1"]
++        self.assertEqual(case["api"], "semantic.validate_shacl_text")
++        expected = {"data_policy": "integer-illtyped-report-v1", "range_policy": "legacy"}
++        self.assertEqual(case["invocation"]["steps"][0]["keywordArguments"], expected)
++        self.assertEqual({v["pythonKeyword"]: case["parameters"][k]
++                          for k, v in case["invocation"]["inputParameterMapping"].items()}, expected)
++        self.assertIsNone(case["invocation"]["newWrapper"])
++
++    def test_37_fixed_inputs_and_expected_math_unchanged_from_r1(self):
++        path = "docs/iterations/I05/observation-projection-spec/cases.json"
++        old = json.loads(subprocess.check_output(["git", "show", R1 + ":" + path], cwd=ROOT))
++        self.assertEqual(len(CASES), 37)
++        for before, after in zip(old["cases"], CASES):
++            for field in ("id", "parameters", "datasetId", "inputProjectionSha256",
++                          "inputSourceRefs", "independentTypedMath", "expectedProjection"):
++                self.assertTrue(m.exact(before[field], after[field]), (after["id"], field))
++        source_path = "docs/iterations/I05/observation-projection-spec/pure-sources.json"
++        self.assertEqual(subprocess.check_output(["git", "show", R1 + ":" + source_path], cwd=ROOT),
++                         (ROOT / source_path).read_bytes())
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/docs/iterations/I05/observation-projection-spec/spec.md b/docs/iterations/I05/observation-projection-spec/spec.md
+index a983bff..d71dffb 100644
+--- a/docs/iterations/I05/observation-projection-spec/spec.md
++++ b/docs/iterations/I05/observation-projection-spec/spec.md
+@@ -1,4 +1,4 @@
+-# I05 私有观察投影规范提案 v1
++# I05 私有观察投影规范提案 v2
+ 
+ 本提案给 37 个固定观察 ID 的精确目标值、严格 JSON schema、来源和有限关系。`cases.json` 保存完整值及全部独立 typed 数学侧车，不能用本文摘要替代。当前是待 owner 接收的私有 serializer/API 技术提案；没有执行 6891 产品或真实库，`wholeOracleComplete=false`。11 个 legacy 域 ID 实际为 **10 个正常、1 个 unbound-head 拒绝**；依固定输入、独立 oracle 和合同 L45 保留这个差异，不因设计窗简称“正常”而改写结果。
+ 
+@@ -96,18 +96,18 @@ Unknown 不打印原异常、URL、文件路径、节点、异常 class 自由
+ 
+ 下面是精确**目标提案**，不是从允许异常集合猜测的旧实际值。每个字段的 null、origin、分类/阶段在 cases 中完整展开。
+ 
+-| ID/族                    | 本提案 exact 目标                                                                                             | 权威/未证边界                                                                                               |
+-| ------------------------ | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+-| turtle/front-5           | SemanticError / INVALID_TURTLE；harness=parse-data；canonical stage=null                                      | F1：按 Turtle IRIREF 词法拒裸空格，再做合法 IRI 语义检查；旧竖线 IRI 断言不替代此输入，固定库实际分类待验   |
+-| shape/front-2            | SemanticError / INVALID_LITERAL_LEXICAL；parse-shapes                                                         | F1：SHACL shape 中 typed nni `-1` 先过 datatype 词法/值域门，再约束模板门；旧 data-gate 断言不证明 shape 侧 |
+-| integer/other-datatype-1 | 同码；parse-data                                                                                              | F1：wide integer 政策只宽化已批准 integer 族，不使非法 nni 负值合法；两侧独立登记                           |
+-| scope/missing-source     | SemanticError / REASONING_SOURCE_REQUIRED；scope-provenance-gate                                              | F1 新明确 missing-source 私有码；不借三个别的 scope 码外推                                                  |
+-| scope/wrong-source       | SemanticError / REASONING_SOURCE_MISMATCH；scope-provenance-gate                                              | 旧 L84–105 局部预登记该 code；此 ID 的完整上下文检查与 stage 待验                                           |
+-| scope/missing-result     | SemanticError / REASONING_RESULT_INVALID；scope-provenance-gate                                               | 旧 L108–119 支持缺失/不完整 code；本 stage 为 F1 固定                                                       |
+-| scope/unselected-result  | SemanticError / UNSELECTED_REASONING_PRESENT；scope-selection-gate                                            | 旧 L237–247 局部 code；F1 显式先核 include/asserted 组合，后核 source/result                                |
+-| 14 restore 固定扰动      | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / slot=null / domain=null；harness=restore   | R1：新增 receiver integrity preflight 的固定出口，**非 constructor 默认/旧测试证明 actual A1**              |
+-| dag/turtle-entry         | DirectStepsFailure / DIRECT_STEPS_INVALID / input / entry / domain=null；harness=structured-material-required | D1 新 structured-only entry guard；旧 L556–568 只证明预登记有限拒绝和 reason0，未定 exact class/code        |
+-| offline/implicit-jsonld  | OfflineAccessDenied / EXTERNAL_ACCESS_DENIED；implicit-loader-guard                                           | O1 新 typed denial 事件；现有 loader 没精确异常投影，仍 pending 真实边界/no-I/O 验证                        |
++| ID/族                    | 本提案 exact 目标                                                                                             | 权威/未证边界                                                                                                               |
++| ------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
++| turtle/front-5           | SemanticError / INVALID_TURTLE；harness=parse-data；canonical stage=null                                      | F1：按 Turtle IRIREF 词法拒裸空格，再做合法 IRI 语义检查；旧竖线 IRI 断言不替代此输入，固定库实际分类待验                   |
++| shape/front-2            | SemanticError / INVALID_LITERAL_LEXICAL；parse-shapes                                                         | F1：SHACL shape 中 typed nni `-1` 先过 datatype 词法/值域门，再约束模板门；旧 data-gate 断言不证明 shape 侧                 |
++| integer/other-datatype-1 | 同码；parse-data                                                                                              | F1：只宽化 data object 的 exact xsd:integer ill_typed；xsd:int/nonNegativeInteger/decimal 与 shape 侧都不宽化；两侧独立登记 |
++| scope/missing-source     | SemanticError / REASONING_SOURCE_REQUIRED；scope-provenance-gate                                              | F1 新明确 missing-source 私有码；不借三个别的 scope 码外推                                                                  |
++| scope/wrong-source       | SemanticError / REASONING_SOURCE_MISMATCH；scope-provenance-gate                                              | 旧 L84–105 局部预登记该 code；此 ID 的完整上下文检查与 stage 待验                                                           |
++| scope/missing-result     | SemanticError / REASONING_RESULT_INVALID；scope-provenance-gate                                               | 旧 L108–119 支持缺失/不完整 code；本 stage 为 F1 固定                                                                       |
++| scope/unselected-result  | SemanticError / UNSELECTED_REASONING_PRESENT；scope-selection-gate                                            | 旧 L237–247 局部 code；F1 显式先核 include/asserted 组合，后核 source/result                                                |
++| 14 restore 固定扰动      | RestoreFailure / RESTORE_EXPECTATION_MISMATCH / expectation / A1 / slot=null / domain=null；harness=restore   | R1：新增 receiver integrity preflight 的固定出口，**非 constructor 默认/旧测试证明 actual A1**                              |
++| dag/turtle-entry         | DirectStepsFailure / DIRECT_STEPS_INVALID / input / entry / domain=null；harness=structured-material-required | D1 新 structured-only entry guard；旧 L556–568 只证明预登记有限拒绝和 reason0，未定 exact class/code                        |
++| offline/implicit-jsonld  | OfflineAccessDenied / EXTERNAL_ACCESS_DENIED；implicit-loader-guard                                           | O1 新 typed denial 事件；现有 loader 没精确异常投影，仍 pending 真实边界/no-I/O 验证                                        |
+ 
+ F1 的 scope 先序为 exact include 类型→asserted 与 result/source/rules 组合→derived result 必需→source 必需→source 完整一致→result 完整一致→project→query/SHACL。不得以 source 缺失触发 fresh reason。坏空格前门需按 token grammar 识别 IRIREF，不能扫全文 regex 导致合法 literal 内同字串误拒。正常 literal、合法 `<urn:ok>`、nni `0/+0/01`、合法 shape-list 是后继 F1 必须保留的边界；本文不实现 parser、也不把这些扩展边界当已测产品。
+ 
+@@ -117,7 +117,7 @@ R1 在原同次成功生产与独立资源准入已成立的前提下，进入 r
+ 
+ ## 有限比较与手工小例
+ 
+-schema 后再执行逐 ID `exact`：递归 keys/type/null/数组全长/每个末字段/重复与顺序。正常项遇到任意已知拒绝、unknown 或 RESOURCE_LIMIT 都不匹配；拒绝项也只匹配对应 exact origin/reason/stage/class/slot/domain。source 与 package 相等只是独立结论；两者各自还要对独立 expected 及真实来源/完整阶段/计数关系核验。不得把 source 输出固化为 expected。
++schema 后按 `projection_layout` 确定唯一 RDF 身份域，再执行逐 ID 完整比较：RDF 图按集合；有序 RDF occurrence 保数组全长/每个末字段/重复与顺序；其余 keys/type/null/字段逐一 exact。正常项遇到任意已知拒绝、unknown 或 RESOURCE_LIMIT 都不匹配；拒绝项也只匹配对应 exact origin/reason/stage/class/slot/domain。source 与 package 相等只是独立结论；两者各自还要对独立 expected 及真实来源/完整阶段/计数关系核验。不得把 source 输出固化为 expected。
+ 
+ 正常手工例：`x type A` 和 `A subclass B` 只新增 `x type B`；五字段中 rdfsEvidence 的 basis 恰为这两叶，rules/evidence/warnings 皆空。深度2 domain 例有 `p domain A`、`x p y`、`A subclass B` 三叶；x:B 的 basis 必须全三叶，不能因只看 direct premise 就删 p/x 输入。多匹配例 A01、A04 两个匹配产生同 head，图1条但 evidence2条，每条四个有序输入。
+ 
+@@ -132,10 +132,43 @@ schema 后再执行逐 ID `exact`：递归 keys/type/null/数组全长/每个末
+ | owner                        | 最小后继 delta（本窗不实施）                                                                                                                                                                                                            | 兼容和前置                                                                                                                    |
+ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+ | I05 canonical API owner      | F1 的显式语法/词法/选择首序、missing-source 私有码；D1 structured-only exact entry；R1 完整 receiver preflight；O1 typed offline denial                                                                                                 | 原公共 registry/Q6/date/外联拒绝/权限保持；API 若改变旧输出需新版本入口，不改旧契约来冒通过                                   |
+-| I05 serializer/harness owner | 新 `i05-observation-projection/1` 选择器；完整五字段/N3+typed 数学对应；新 scope display provenance/content source；exact canonical class 适配；安全 Unknown；完整先前返回阶段原件及实际 hooks                                          | 不按 key 猜版本，不截 /2 /3 成五key，不将新 contentSource 反喂旧 helper；旧原始 provenance 继续完整保存，未定编码保持 pending |
++| I05 serializer/harness owner | 新 `i05-observation-projection/2` 选择器；完整五字段/N3+typed 数学对应；新 scope display provenance/content source；exact canonical class 适配；安全 Unknown；完整先前返回阶段原件及实际 hooks                                          | 不按 key 猜版本，不截 /2 /3 成五key，不将新 contentSource 反喂旧 helper；旧原始 provenance 继续完整保存，未定编码保持 pending |
+ | T05 oracle owner             | 新 `observationProjectionVersion`、每个 ID 的完整 `expectedProjection`、`expectedProjectionSourceRefs`、`firstErrorAuthority`、`projectionPendingFields`、`finiteRelations`/`preconditions`；保旧 input sourceRefs 与数学 expected 分离 | 37 项逐一接收本文件实际 commit 和 hash；旧137 pending 不批量改绿。legacy11 是10正常+1拒绝；wholeOracleComplete 仍 false       |
+ | root/来源与预算 owner        | 接收明确组合、真实原 allocation/capture/issuer/完整预算准入、旧 source metadata 完整载体；后继隔离 runtime 票                                                                                                                           | 本设计的内容 hash/schema 不替代权限或发行凭据；API 默认 `rules=()` 不证明实际调用省略参数、实际 fee/capture                   |
+ 
+ 顺序：先独立审查本 candidate→owner 按项接收版本/首错与来源载体→唯一 I05 writer 提交新 API/serializer、独立 fee 规范接收并组成固定组合→T05 独立适配完整字段→后续获准 source 与 package 实测及独立比较。真实库分类没有证据前保 pending；旧首失败/unknown 不重写。再按原正式 Job/Store/selected/whole-H、CI、目标两 OS、真人与指定双模型门验收；不 push/merge，不替代 Goal。
+ 
+ 本窗没有实施 packages/scripts/tests/共享契约/CI，没有使用业务编译、第三方库、build、native/DB/GUI/网络/安装或模型；不修改原数学、capture/原 allocation、调用权威、公共四字段错误边界或保护 AGENTS。
++
++## R2 delta：采集安全、共享 BNode 域和明确调用链
++
++R1 报告的 Fail 保留。v2 对私有 terminal schema 的唯一结构扩展是保留的安全 stage `collection-failure`，以及明确的合法链阶段 `check-shapes`；schema ID 为 `urn:ontolearn:private:i05-observation-projection:2`。case 容器仍 `/1`，另有明确 `projectionSpecVersion=i05-observation-projection/2`，37 个 `expectedProjection` 与独立数学保持原完整值，禁止靠新增 key 猜版本。后继 serializer owner 须显式选择 /2；旧 /1 只在固定旧 candidate 解释，不默默接收新 stage。
++
++`unknown` 与 `safe_projection` 都先对 harnessStage 做 **exact str 类型且有限白名单**检查，再处理 diagnostic。正常集合为 reason/rule-definition/scope/restore/structured-material-required/parse-data/parse-shapes/scope-provenance-gate/scope-selection-gate/implicit-loader-guard/check-shapes。非 str、str 子类、路径、URL、未知字符串或外来对象均不得被复制、比较、hash、getattr、str 或 repr；只返回字面 `harnessStage="collection-failure"`、Unknown/INTERNAL_ERROR、complete=false。该保留 stage 只允许 Unknown/incomplete，不能出现在 complete=true 的已知拒绝，也不能匹配任一 37 项。合法阶段的 Unknown 保原有限阶段。collector 完整记录此安全 incomplete 终态和此前已返回的完整阶段原件；不能补回非法 stage 文本。这里不创建新的公共码或 ErrorFrame 字段。
++
++`projection_layout` 明列整个 terminal artifact 的 RDF 位置；同一 terminal 内以下位置共享 **同一个** BNode 标签双射，不能逐字段、逐行或逐列表片段各自挑映射。身份域只在这一实际不可变 artifact 内；跨独立 parse/producer artifact 的节点不能凭相同字面 label 合并；若 query/SHACL 消费该图，其 term references 明确归此图所属同一 artifact。实际 harness 必须提供这一 graph→consumer 关联，未绑定的不同图不进入同域，仍 pending。
++
++| 位置                                                                                             | 比较模式与域                                                                                                                   |
++| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
++| scope facts/ontology typed 图                                                                    | 同一域、RDF 集合；仅 literal.language 身份 casefold                                                                            |
++| legacy rdfs/rules；scope.reasoning_result 的同字段                                               | 同一域、N3 三元组集合                                                                                                          |
++| rdfsEvidence.result/basis；evidence.result/inputs/basis                                          | 同域；result/inputs 是有序位置（inputs 的重复与全尾项保留）；basis 是完整图集合；evidence 外层 occurrence 数组仍有序且重复保留 |
++| provenance.selectedFacts.triple、所有 sources 的 inputs/basis；derivedAxioms.triple/source.basis | 同域；triple/inputs 有序、basis 为集合，source 列表及其规则身份 exact                                                          |
++| query.rows 的每个非 null typed cell                                                              | 同域、二维有序序列；变量名/列序、null 和重复 rows 保留                                                                         |
++| SHACL violations 的 focus/path/value/sourceShape/constraint/severity                             | 全部 RDF term 引用同域；value=null 保留；当前已登记 terminal 的 violation 外层数组完整有序，本次不另放宽其排序                 |
++| raw 输入/occurrence/source 原文、规则定义、ID、warnings、内容摘要及其他非 RDF 槽                 | 不做 alpha-renaming、不 casefold，完整 exact；raw JSON 的 `"_:a"` 字符串也不是自动发现的 node 引用                             |
++
++`identity_domain_equal` 收集所有明确槽中的 BNode 标签，求一次全域双射并应用到**全部**槽；图模式比较完整集合，序列模式递归保 keys/类型/null/顺序/重复，未声明位置 exact。N3 槽只识别完整 `_:label` token 和完整生成字面量 token 的 language 后缀；不对 IRI、datatype、lexical、source 或含 `@EN` 的普通文本全量 lower。`projection_identity_equal` 将上述 layout 应用于整个 terminal，`matches` 在严格 schema 后调用它。单图 `graph_isomorphic` 与图函数使用相同 language identity。两者均为最多 8 个 BNode 的有限数学模型；超过小例域拒比较并保 pending，不能称产品限额或推导容量。后继实际 comparator 若支持更大域须另获准有界实现，不得以每字段各求同构绕过全域限制。
++
++独立数学联合例同时含 typed 图、N3 evidence、重复有序 inputs、query cells、SHACL sourceShape：a→p、b→q 在所有位置一致才通过；只将 query/evidence/sourceShape 任一处的 a 指向 q 即不通过，即使各片段分别同构、两端全局节点数量相同。另有合法 `_:a first "hello"@EN; rest nil` 对 `_:p ...@en` 正常例，删 rest 尾、折叠节点、lexical01/1、int/integer 都不等。raw EN/source/null 不被修改或宽化。这些是纯数学边界，不能作为产品接收带 BNode 数据事实的批准。
++
++所有实际 payload/rows/sidecar/source 摘要仍必须分别核各自完整原始 preimage，不能因 BNode 比较放弃 hash。此模型对摘要字段仍 exact；若将来合法运行域的 digest 因各端生成 BNode label 而不同，需要 owner 单独接收明确 preimage 关系与新版本，不得一般忽略摘要或用本双射伪造发行凭据。本窗不关闭这一 pending，也不创建虚假成功 capture。
++
++两项调用的 `invocation` 在 cases 中逐步登记：
++
++- `shape/front-2`：按固定 ee2b 合同实际 L51，`semantic.parse_turtle(dataset.dataText,format="turtle",shapes=False)` 得 dataGraph；随后 `semantic.parse_turtle(dataset.shapesText,format="turtle",shapes=True)` 得 shapesGraph；只有两者完成才 `semantic.check_shapes(dataGraph,shapesGraph)`。原 input parameters 仍 `{}`，没有额外 input policy。F1 精确目标在第二步 parse-shapes 拒绝，因此 check_shapes 未到达；所有已成功返回的第一步 dataGraph 全量保留。L52 是相邻 integer 行，不能混用行号当 source 权威。
++- `integer/other-datatype-1`：按同合同 L52，`semantic.validate_shacl_text(dataset.dataText,dataset.shapesText,data_policy="integer-illtyped-report-v1",range_policy="legacy")`；完整映射 `parameters.dataPolicy→data_policy`、`parameters.rangePolicy→range_policy`，值逐字保留，无默认 strict fallback。F1 目标仍 parse-data / INVALID_LITERAL_LEXICAL；真实库分类未证。
++
++这两项不新设 `semantic.validate` wrapper；批准入口名称、阶段、参数及新 F1 首序分开。其 owner 均为 I05 canonical API/serializer owner，接收和实际实现/调用验证继续 pending；没有读实际函数体来补签名或执行链。`integer-illtyped-report-v1` **仅**放宽 data object 的 exact xsd:integer ill_typed，交真实 Datatype 报告；xsd:int、nonNegativeInteger、decimal 及 shape 侧都不随之宽化，旧 parse/query/reason/check 的 strict 不变。未改 Q6/date/外联/公共 registry/权限。
++
++新 `selftest-r2.py` 保留原20方法的独立名称，并新增针对 R1 三发现及联合域的测试。旧 selftest/双流/20通过只属于 R1 的覆盖，未改写为包含这些新反例。R2 的实际命令/分离双流与结果另存新证据，仍是 stdlib 设计验证，独立审查结论由 root 另派 R2 审者给出。
+diff --git a/docs/reviews/I05/observation-projection-spec/delta-r2.json b/docs/reviews/I05/observation-projection-spec/delta-r2.json
+new file mode 100644
+index 0000000..6ea9e0b
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/delta-r2.json
+@@ -0,0 +1,282 @@
++{
++  "format": "i05-observation-r2-delta/1",
++  "originalBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
++  "revisionBase": "57c67631fab6a36f47963aca95b4036064e10777",
++  "previousCandidate": "dd3e659e9214481700275afb3f3188891e42359d",
++  "mutableTrackedPaths": [
++    "docs/iterations/I05/observation-projection-spec/cases.json",
++    "docs/iterations/I05/observation-projection-spec/coverage.md",
++    "docs/iterations/I05/observation-projection-spec/model.py",
++    "docs/iterations/I05/observation-projection-spec/schema.json",
++    "docs/iterations/I05/observation-projection-spec/spec.md"
++  ],
++  "addedCorePaths": [
++    "docs/iterations/I05/observation-projection-spec/selftest-r2.py",
++    "docs/reviews/I05/observation-projection-spec/disposition-r2.md",
++    "docs/reviews/I05/observation-projection-spec/r2-validation.json"
++  ],
++  "preservedOriginalFiles": [
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/pure-sources.json",
++      "bytes": 560441,
++      "sha256": "14d9f2759b1a90cc5acd2b22bc2189a73449b08b53bf153bb49d716378b3b847",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/selftest.py",
++      "bytes": 12442,
++      "sha256": "745f7dcf88f5adbabbd4e0326a62927b2453ed05d0a443449b51dff99a815064",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/I05-canonical-profile-api-defaults-reference.json.raw",
++      "bytes": 1037,
++      "sha256": "18a07ea9d3fb5074db368685ae7f126709b2c8c1c1b93f7d1e6f4d37ec7215eb",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/I05-observation-literal-enum-reference.json.raw",
++      "bytes": 4742,
++      "sha256": "ccd0f291957d8483f89b0b0a61f1d7f0f642b1b2a73b6b69085f2cd7d7bef694",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/author-validation.md",
++      "bytes": 2499,
++      "sha256": "45c5071de010f67140e23b45fbb9355a068a3e531178b0b77f82529e1b6d94b2",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/candidate-receipt.json",
++      "bytes": 5063,
++      "sha256": "a7d221a2faa0dd2b1a924b4e9591c6c6e5165a2c978d0e68eb805765d691238d",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/independent-review-r1.md",
++      "bytes": 37247,
++      "sha256": "328944e737298722c72dae6bd6fc49d75832c8f2ce151b2772bb11f6d8e050d8",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/literal-excerpts.json",
++      "bytes": 24009,
++      "sha256": "58f2ffd4a796829e4a37931b8853d3b89dff6e032097438438d591fc86503cbc",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/manifest.json",
++      "bytes": 3977,
++      "sha256": "6900517c540f1d15b0d105cfe0cd48c32e71bc42e64f174ee12530cc5f578be2",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/preparation-errors.json",
++      "bytes": 1673,
++      "sha256": "6d3735ac3a74614f8cc1bd4e8b5e662dc7f62571b090cbea943beba65f402a87",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/prettier-check.txt",
++      "bytes": 66,
++      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/prettier-write.txt",
++      "bytes": 326,
++      "sha256": "64714c25e5d727b47df653911849c696ca175063572711951c0de77d3b7899fc",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-boundaries.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-boundaries.stdout.txt",
++      "bytes": 287,
++      "sha256": "58b03fb60025047a323fea0f6e2d337b612df083e25d983bfbc4b0eb124dc287",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-check.py",
++      "bytes": 7008,
++      "sha256": "db506c38bb0d03ce8465d272d60fccccdd0901fd194449b822edd4ccf7285d20",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-0.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-0.stdout.txt",
++      "bytes": 41,
++      "sha256": "60c17c7a61201cd59244419daa060e29d9f670b591850a6fe3b49c671688823d",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-1.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-1.stdout.txt",
++      "bytes": 217,
++      "sha256": "56c86c329f4a22799cb1ad722a5167b764e083771cbca5f540a966bd38052815",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-2.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-2.stdout.txt",
++      "bytes": 1258,
++      "sha256": "4325a1d9bc1128d2e4cc7de063c491da2e3727fc77e2286e2a5add1360c992b6",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-79.stderr.txt",
++      "bytes": 2405,
++      "sha256": "230d114dd982ea90894c4387041695be67c299954f08a7589c52b45c6650a58e",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-79.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-counterexamples.py",
++      "bytes": 12205,
++      "sha256": "19b194dc6ee6dca981c3f92a91e7f5ed65bffe19aa7ac188033cb8e62ccb8938",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-counterexamples.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-counterexamples.stdout.txt",
++      "bytes": 5183,
++      "sha256": "6171966a69920df9c317b485581dfbc6ca33f15e97f4e42f74e1091419297781",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-diffcheck.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-diffcheck.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-head.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-head.stdout.txt",
++      "bytes": 41,
++      "sha256": "60c17c7a61201cd59244419daa060e29d9f670b591850a6fe3b49c671688823d",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-prettier.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-prettier.stdout.txt",
++      "bytes": 66,
++      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-staged.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-staged.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-status.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-status.stdout.txt",
++      "bytes": 1906,
++      "sha256": "fe66170a1acacd4d6e1ca944ac0e2568317be99e3fd9917a6c3588044522a258",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-prettier.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-prettier.stdout.txt",
++      "bytes": 66,
++      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-proof.json",
++      "bytes": 84158,
++      "sha256": "35ad91097b751fdaada5d081e5ce8f5b9c61fdf31153422dceba0c9e742c2aad",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-root-receipt.json",
++      "bytes": 6457,
++      "sha256": "6c016cae1cec5531e00fdeab422e14ae08ebc93d9f16df79b99f12595a55bc91",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/selftest-final.txt",
++      "bytes": 2405,
++      "sha256": "95aded1f5849f664ebe76c7f5ded939b7c4f6beb6d0d88359bae7974a03b3ae0",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/source-ledger.json",
++      "bytes": 9195,
++      "sha256": "8470b159be6f6046c1ed85d43f7df29f7429a5ec042d4d9dc3e37317a44cc9e4",
++      "unchangedFromR1RevisionBase": true
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/verification.json",
++      "bytes": 3209,
++      "sha256": "2c72305ea28501bc3070c10a846e63fdfcd406b93d58fae4e2bb46a401fd1e7b",
++      "unchangedFromR1RevisionBase": true
++    }
++  ],
++  "reportConclusionPreserved": "R1 Fail; author does not assert independent R2 Pass",
++  "mathematicalTargetsAndPureSourcesUnchanged": true,
++  "candidateIdentity": "Only recorded after actual commit in a separately named process receipt; current finite complete inventory belongs to manifest-r2.json. No future SHA here.",
++  "productExecuted": false
++}
+diff --git a/docs/reviews/I05/observation-projection-spec/disposition-r2.md b/docs/reviews/I05/observation-projection-spec/disposition-r2.md
+new file mode 100644
+index 0000000..3a8e8b0
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/disposition-r2.md
+@@ -0,0 +1,38 @@
++# R1 发现的 R2 作者处置
++
++R1 结论 **Fail** 保留。R1 报告为 37247B / SHA256 `328944e737298722c72dae6bd6fc49d75832c8f2ce151b2772bb11f6d8e050d8`。修订起点为实际 `57c67631fab6a36f47963aca95b4036064e10777`，亲代 `6b665455a4cb88a9744c1b8d67573c5adf0c95f6`；原设计 candidate `dd3e659e9214481700275afb3f3188891e42359d` 及原 base `5f910b52c69d86a1076b2032e5d3c63e715947f3` 均不重写。作者已全文读取 R1 报告、proof、root receipt，并核完整 ref/亲代和报告 hash。
++
++下列状态均是“已修订并完成作者纯模型验证，等待 root 指派的独立 R2 delta 审查”，不是作者自审 Pass，也不是产品/真实库通过。只修改原两 docs 前缀；R1 报告、脚本、命令、分离双流、proof、root receipt、旧 manifest/receipt、原首错和原验证原件一律不覆盖。旧20项通过仍只证明旧覆盖。
++
++## R1-01：封闭 Unknown 的不受信 harnessStage
++
++`model.py` 新 `safe_harness_stage` 首先检查 `type(value) is str` 和固定集合；`unknown` 与 `safe_projection` 共用此门，后者在门失败时甚至不处理 diagnostic。非字符串、str 子类、私有路径、URL、未知值、带危险方法的对象均转字面 `collection-failure`，不复制原值，不调用其属性/str/repr/equality/hash。输出固定 Unknown/INTERNAL_ERROR、complete=false；保留此前完整成功阶段，collector 将此次记录为 incomplete，不补回原 stage 文本。
++
++schema 与私有投影版本升 `/2`：`collection-failure` 仅在 Unknown/complete=false 分支允许；合法 `check-shapes` 阶段显式登记。37 个已有精确目标不改。旧 `/1` 只在原固定 candidate 解释，不靠 key 猜版本或默许新 stage。公共四字段 ErrorFrame、registry 与错误归责政策没有变化。
++
++新增 `test_r1_01_stage_is_closed_before_any_untrusted_operation` 使用危险属性/字符串/相等/哈希对象及 str 子类，断言方法零调用、每个输出 JSON 均 schema 合法，且没有路径/URL/未知文本。`test_r1_01_valid_stage_and_reserved_incomplete` 检查全部37合法阶段保留、Unknown不能匹配、reserved stage不能生成known complete，并核模型/schema白名单一致。
++
++## R1-02：language identity 与跨输出唯一 BNode 双射
++
++单图 `graph_isomorphic` 现在与 `graph/typed_graph` 一样，只对 literal.language 身份 casefold；IRI、datatype、lexical、raw/source 原文不变。新增 `identity_domain_equal/projection_layout/projection_identity_equal` 明列全 terminal RDF 槽，以一次全域双射覆盖 typed 图、N3 rdfs/rules、全部 evidence/premise/basis、scope selectedFacts/source/derivedAxioms、query cells 和 SHACL六字段（含sourceShape）。graph 模式只在 RDF 集合域比较，序列保位置、末项和重复。非 RDF 槽完整 exact，raw `_:a` 字符串不被误作引用。`matches` 先严格 schema，再做这一完整比较。
++
++共享身份域是同一不可变 artifact 及明确消费其图的输出；实际 producer/graph→consumer 绑定仍须后继凭据，不能按同字面 label 合并独立 parse/producer。摘要不因同构被删：仍逐端对完整原 preimage核验，本模型对摘要字段 exact；未来若生成 BNode 标签导致摘要不同，需 owner另定明确关系/版本，不能伪造capture或泛化忽略变化字段。模型仍限最多8个BNode的小例域，超出不称产品限额或性能证明。
++
++新增反例包括：合法 a/EN 对 p/en 正常同构；删尾rest、节点折叠、01/1、int/integer拒绝；typed图+N3evidence+query+SHACL sourceShape联合映射；节点数量相同但任一字段映射矛盾拒绝；独立片段分别同构而联合无双射拒绝；provenance各basis共用映射；重复premise/head序列不去重；raw语言/原文/null保持，quoted lexical `word@EN` 不被lowercase。数学联合 fixture不是合法数据BNode输入批准，也不是产品成功/capture/来源或准入证据。
++
++## R1-03：两项前门调用与政策映射
++
++完整核固定 ee2b 合同 SHA `d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23` 后，实际 shape 行为 **L51**、integer 行为 **L52**；R1/root提示中的相邻行号不代替实际来源。只读取已授权纯合同，没有读函数体。
++
++- `shape/front-2` 的 `api` 为 `semantic.parse_turtle -> semantic.check_shapes`，`invocation` 逐步固定 `parse_turtle(dataText,format="turtle",shapes=False)`→`parse_turtle(shapesText,format="turtle",shapes=True)`→`check_shapes(dataGraph,shapesGraph)`。原 parameters `{}`、data/shapes文本、投影hash保持。F1目标在第二步parse-shapes，首步完整返回保留，末check未到达，不构造shapes部分视图/报告。
++- `integer/other-datatype-1` 的 `api` 为 `semantic.validate_shacl_text`；显式 `data_policy="integer-illtyped-report-v1",range_policy="legacy"`。`parameters.dataPolicy→data_policy`、`parameters.rangePolicy→range_policy`逐字映射，无默认strict fallback，原camelCase参数/hash不变。
++
++两项均 `newWrapper=null`，没有发明 `semantic.validate` wrapper。case/spec/coverage同步，owner为I05 canonical API/serializer owner；批准调用链与F1新首序提案分开。wide政策收紧为**仅data object的exact xsd:integer ill_typed**；xsd:int/nonNegativeInteger/decimal与shape侧不宽化，旧parse/query/reason/check strict不变，不改Q6/date/外联/公共registry/权限。库/API实际首错仍pending。
++
++## 验证、原件与未解决边界
++
++`selftest.py` 原20方法原字节保留；新 `selftest-r2.py` 加12方法，当前32方法实际exit0，分离stdout/stderr与argv在 `r2-validation.json`。第一次R2记录31方法exit0；随后增加provenance/N3数值联合反例及模型/schema枚举一致断言，第二次32方法exit0。两个实际记录分别保留，不覆写首次输出。没有新增失败被隐藏，也没有重新运行会覆写R1 proof的旧审查脚本。
++
++全37 input parameters/datasetId/inputProjectionSha256/sourceRefs/expectedProjection/独立数学逐字段对固定R1 Git不变；`pure-sources.json`原字节不变。R1的全部原件和旧manifest/receipt/原首错等对57固定Git逐字保护，保护AGENTS不stage。新 `manifest-r2.json` 与后加实际候选回执另命名；原manifest只是原candidate的历史身份，不冒充当前修订的manifest。自排除/后加process记录明确，不写未来ref或循环自hash。
++
++真实库分类、同次capture/expectation/allocation、预算、真实caller/producer来源、旧metadata完整编码、实际hooks/无I/O、source/package/正式Job/Store/selected/whole-H及原CI/两OS/真人/指定双审门全部pending，`wholeOracleComplete=false`。本窗仅stdlib/已授formatter/Git/docs，不运行产品、第三方、pytest/build、DB/GUI/网络/安装/探针/业务模拟，不借T03票。独立R2审者尚未给出结论。
+diff --git a/docs/reviews/I05/observation-projection-spec/manifest-r2.json b/docs/reviews/I05/observation-projection-spec/manifest-r2.json
+new file mode 100644
+index 0000000..2421d1d
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/manifest-r2.json
+@@ -0,0 +1,317 @@
++{
++  "format": "i05-observation-candidate-manifest/2",
++  "originalBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
++  "revisionBase": "57c67631fab6a36f47963aca95b4036064e10777",
++  "previousCandidate": "dd3e659e9214481700275afb3f3188891e42359d",
++  "scopePrefixes": [
++    "docs/iterations/I05/observation-projection-spec/",
++    "docs/reviews/I05/observation-projection-spec/"
++  ],
++  "selfExclusions": [
++    "docs/reviews/I05/observation-projection-spec/manifest-r2.json",
++    "docs/reviews/I05/observation-projection-spec/candidate-receipt-r2.json"
++  ],
++  "reason": "manifest excludes itself to avoid cyclic hash; the separately named later process receipt records only an actually committed candidate. Old manifest/receipt/R1 evidence are immutable history and included by their current unchanged bytes.",
++  "files": [
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/cases.json",
++      "bytes": 344339,
++      "sha256": "b5548a704ba7163e70744830cbf31e25105a2f76cd5e542668583735703a0302"
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/coverage.md",
++      "bytes": 12924,
++      "sha256": "794736d4340dba46aa57fbd727b0867b4ba4093a1b9d27e1895ebea55bdd28e3"
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/model.py",
++      "bytes": 18016,
++      "sha256": "665655d11e9b9015b0ffee9968650251616b109e6098a5ff22b0d46c9c310936"
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/pure-sources.json",
++      "bytes": 560441,
++      "sha256": "14d9f2759b1a90cc5acd2b22bc2189a73449b08b53bf153bb49d716378b3b847"
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/schema.json",
++      "bytes": 40461,
++      "sha256": "19ef42b5e4fc90519903c71edd63ad16708161a3b17f62a29be40725eb586822"
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/selftest-r2.py",
++      "bytes": 15577,
++      "sha256": "bfd7fcfb1461265f270450a63090884a780af5a977b449db82e99ac0b9fe38b1"
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/selftest.py",
++      "bytes": 12442,
++      "sha256": "745f7dcf88f5adbabbd4e0326a62927b2453ed05d0a443449b51dff99a815064"
++    },
++    {
++      "path": "docs/iterations/I05/observation-projection-spec/spec.md",
++      "bytes": 36260,
++      "sha256": "64c46def47c89c37146cd6cd5a75567631ebe24bd471c1eee6397b29fb6d249c"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/I05-canonical-profile-api-defaults-reference.json.raw",
++      "bytes": 1037,
++      "sha256": "18a07ea9d3fb5074db368685ae7f126709b2c8c1c1b93f7d1e6f4d37ec7215eb"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/I05-observation-literal-enum-reference.json.raw",
++      "bytes": 4742,
++      "sha256": "ccd0f291957d8483f89b0b0a61f1d7f0f642b1b2a73b6b69085f2cd7d7bef694"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/author-validation.md",
++      "bytes": 2499,
++      "sha256": "45c5071de010f67140e23b45fbb9355a068a3e531178b0b77f82529e1b6d94b2"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/candidate-receipt.json",
++      "bytes": 5063,
++      "sha256": "a7d221a2faa0dd2b1a924b4e9591c6c6e5165a2c978d0e68eb805765d691238d"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/delta-r2.json",
++      "bytes": 11769,
++      "sha256": "e0b46b5232c57e325d2a23ee3c72c6c9f17b0e0acd2687205845e7395613d0d3"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/disposition-r2.md",
++      "bytes": 6907,
++      "sha256": "3d951bda1a046609c5e4273931012ac8aa12a313519c3dddf441adf74f2385de"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/independent-review-r1.md",
++      "bytes": 37247,
++      "sha256": "328944e737298722c72dae6bd6fc49d75832c8f2ce151b2772bb11f6d8e050d8"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/literal-excerpts.json",
++      "bytes": 24009,
++      "sha256": "58f2ffd4a796829e4a37931b8853d3b89dff6e032097438438d591fc86503cbc"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/manifest.json",
++      "bytes": 3977,
++      "sha256": "6900517c540f1d15b0d105cfe0cd48c32e71bc42e64f174ee12530cc5f578be2"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/preparation-errors.json",
++      "bytes": 1673,
++      "sha256": "6d3735ac3a74614f8cc1bd4e8b5e662dc7f62571b090cbea943beba65f402a87"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/prettier-check.txt",
++      "bytes": 66,
++      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/prettier-write.txt",
++      "bytes": 326,
++      "sha256": "64714c25e5d727b47df653911849c696ca175063572711951c0de77d3b7899fc"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-boundaries.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-boundaries.stdout.txt",
++      "bytes": 287,
++      "sha256": "58b03fb60025047a323fea0f6e2d337b612df083e25d983bfbc4b0eb124dc287"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-check.py",
++      "bytes": 7008,
++      "sha256": "db506c38bb0d03ce8465d272d60fccccdd0901fd194449b822edd4ccf7285d20"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-0.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-0.stdout.txt",
++      "bytes": 41,
++      "sha256": "60c17c7a61201cd59244419daa060e29d9f670b591850a6fe3b49c671688823d"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-1.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-1.stdout.txt",
++      "bytes": 217,
++      "sha256": "56c86c329f4a22799cb1ad722a5167b764e083771cbca5f540a966bd38052815"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-2.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-2.stdout.txt",
++      "bytes": 1258,
++      "sha256": "4325a1d9bc1128d2e4cc7de063c491da2e3727fc77e2286e2a5add1360c992b6"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-79.stderr.txt",
++      "bytes": 2405,
++      "sha256": "230d114dd982ea90894c4387041695be67c299954f08a7589c52b45c6650a58e"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-command-79.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-counterexamples.py",
++      "bytes": 12205,
++      "sha256": "19b194dc6ee6dca981c3f92a91e7f5ed65bffe19aa7ac188033cb8e62ccb8938"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-counterexamples.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-counterexamples.stdout.txt",
++      "bytes": 5183,
++      "sha256": "6171966a69920df9c317b485581dfbc6ca33f15e97f4e42f74e1091419297781"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-diffcheck.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-diffcheck.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-head.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-head.stdout.txt",
++      "bytes": 41,
++      "sha256": "60c17c7a61201cd59244419daa060e29d9f670b591850a6fe3b49c671688823d"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-prettier.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-prettier.stdout.txt",
++      "bytes": 66,
++      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-staged.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-staged.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-status.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-final-status.stdout.txt",
++      "bytes": 1906,
++      "sha256": "fe66170a1acacd4d6e1ca944ac0e2568317be99e3fd9917a6c3588044522a258"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-prettier.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-prettier.stdout.txt",
++      "bytes": 66,
++      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-proof.json",
++      "bytes": 84158,
++      "sha256": "35ad91097b751fdaada5d081e5ce8f5b9c61fdf31153422dceba0c9e742c2aad"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r1-root-receipt.json",
++      "bytes": 6457,
++      "sha256": "6c016cae1cec5531e00fdeab422e14ae08ebc93d9f16df79b99f12595a55bc91"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-check.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-check.stdout.txt",
++      "bytes": 66,
++      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-write.stderr.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-write.stdout.txt",
++      "bytes": 255,
++      "sha256": "1ff004c1d543076a98b8a7c7f098150c1bfe8e02a43872e20035312d3005365e"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stderr.txt",
++      "bytes": 3902,
++      "sha256": "1a04660443ffdef0bbcfcb3ac1ef17f51601d72754ace83a840a4ba2ec644982"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stderr.txt",
++      "bytes": 4053,
++      "sha256": "19f8b38eca6a4de5b751ac61d6c114b2392d3866b7310ba4a331fd9bc31dd225"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stdout.txt",
++      "bytes": 0,
++      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/r2-validation.json",
++      "bytes": 5605,
++      "sha256": "d557cb0e0f09bff7be9ed077128766f63557ddd2cea3bd3990ce874383c7bdab"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/selftest-final.txt",
++      "bytes": 2405,
++      "sha256": "95aded1f5849f664ebe76c7f5ded939b7c4f6beb6d0d88359bae7974a03b3ae0"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/source-ledger.json",
++      "bytes": 9195,
++      "sha256": "8470b159be6f6046c1ed85d43f7df29f7429a5ec042d4d9dc3e37317a44cc9e4"
++    },
++    {
++      "path": "docs/reviews/I05/observation-projection-spec/verification.json",
++      "bytes": 3209,
++      "sha256": "2c72305ea28501bc3070c10a846e63fdfcd406b93d58fae4e2bb46a401fd1e7b"
++    }
++  ]
++}
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-prettier-check.stderr.txt b/docs/reviews/I05/observation-projection-spec/r2-prettier-check.stderr.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-prettier-check.stdout.txt b/docs/reviews/I05/observation-projection-spec/r2-prettier-check.stdout.txt
+new file mode 100644
+index 0000000..4aa0d16
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/r2-prettier-check.stdout.txt
+@@ -0,0 +1,2 @@
++Checking formatting...
++All matched files use Prettier code style!
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-prettier-write.stderr.txt b/docs/reviews/I05/observation-projection-spec/r2-prettier-write.stderr.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-prettier-write.stdout.txt b/docs/reviews/I05/observation-projection-spec/r2-prettier-write.stdout.txt
+new file mode 100644
+index 0000000..20949e4
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/r2-prettier-write.stdout.txt
+@@ -0,0 +1,4 @@
++docs/iterations/I05/observation-projection-spec/cases.json 74ms
++docs/iterations/I05/observation-projection-spec/coverage.md 28ms
++docs/iterations/I05/observation-projection-spec/schema.json 10ms
++docs/iterations/I05/observation-projection-spec/spec.md 39ms
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stderr.txt b/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stderr.txt
+new file mode 100644
+index 0000000..0f0d2f4
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stderr.txt
+@@ -0,0 +1,36 @@
++test_37_exact_ids_and_targets (selftest.DesignTests.test_37_exact_ids_and_targets) ... ok
++test_bool_not_integer_and_no_untrusted_diagnostic (selftest.DesignTests.test_bool_not_integer_and_no_untrusted_diagnostic) ... ok
++test_complete_five_fields_and_basis_tail (selftest.DesignTests.test_complete_five_fields_and_basis_tail) ... ok
++test_every_nonempty_sequence_tail_is_observable (selftest.DesignTests.test_every_nonempty_sequence_tail_is_observable) ... ok
++test_evidence_duplicate_occurrence_is_not_deduplicated (selftest.DesignTests.test_evidence_duplicate_occurrence_is_not_deduplicated) ... ok
++test_exact_warning_and_unbound_case (selftest.DesignTests.test_exact_warning_and_unbound_case) ... ok
++test_global_blank_node_bijection_and_tail (selftest.DesignTests.test_global_blank_node_bijection_and_tail) ... ok
++test_hand_authored_type_example (selftest.DesignTests.test_hand_authored_type_example) ... ok
++test_hand_depth_two_has_all_three_leaves (selftest.DesignTests.test_hand_depth_two_has_all_three_leaves) ... ok
++test_hand_multiple_matches_preserve_two_occurrences (selftest.DesignTests.test_hand_multiple_matches_preserve_two_occurrences) ... ok
++test_known_rejections_do_not_all_match_each_other (selftest.DesignTests.test_known_rejections_do_not_all_match_each_other) ... ok
++test_lexical_type_language_and_escape_preserved (selftest.DesignTests.test_lexical_type_language_and_escape_preserved) ... ok
++test_missing_and_extra_each_top_field_rejected (selftest.DesignTests.test_missing_and_extra_each_top_field_rejected) ... ok
++test_normal_cannot_match_any_rejection_or_unknown (selftest.DesignTests.test_normal_cannot_match_any_rejection_or_unknown) ... ok
++test_ordered_when_duplicate_positions_survive (selftest.DesignTests.test_ordered_when_duplicate_positions_survive) ... ok
++test_scope_shacl_null_and_multiplicity (selftest.DesignTests.test_scope_shacl_null_and_multiplicity) ... ok
++test_scope_sources_and_four_fields (selftest.DesignTests.test_scope_sources_and_four_fields) ... ok
++test_strict_json_duplicate_and_nonfinite (selftest.DesignTests.test_strict_json_duplicate_and_nonfinite) ... ok
++test_unknown_is_fixed_safe_incomplete (selftest.DesignTests.test_unknown_is_fixed_safe_incomplete) ... ok
++test_when_reorder_changes_value (selftest.DesignTests.test_when_reorder_changes_value) ... ok
++test_37_fixed_inputs_and_expected_math_unchanged_from_r1 (__main__.R2DeltaTests.test_37_fixed_inputs_and_expected_math_unchanged_from_r1) ... ok
++test_r1_01_stage_is_closed_before_any_untrusted_operation (__main__.R2DeltaTests.test_r1_01_stage_is_closed_before_any_untrusted_operation) ... ok
++test_r1_01_valid_stage_and_reserved_incomplete (__main__.R2DeltaTests.test_r1_01_valid_stage_and_reserved_incomplete) ... ok
++test_r1_02_language_and_tail_graph_identity (__main__.R2DeltaTests.test_r1_02_language_and_tail_graph_identity) ... ok
++test_r1_02_numeric_lexical_datatype_and_node_collapse (__main__.R2DeltaTests.test_r1_02_numeric_lexical_datatype_and_node_collapse) ... ok
++test_r1_03_integer_explicit_parameter_mapping (__main__.R2DeltaTests.test_r1_03_integer_explicit_parameter_mapping) ... ok
++test_r1_03_shape_exact_chain (__main__.R2DeltaTests.test_r1_03_shape_exact_chain) ... ok
++test_shared_domain_contradictory_query_evidence_or_source_shape (__main__.R2DeltaTests.test_shared_domain_contradictory_query_evidence_or_source_shape) ... ok
++test_shared_domain_normal_language_and_exact_raw_source (__main__.R2DeltaTests.test_shared_domain_normal_language_and_exact_raw_source) ... ok
++test_shared_domain_order_duplicates_tail_and_no_substring_rewrite (__main__.R2DeltaTests.test_shared_domain_order_duplicates_tail_and_no_substring_rewrite) ... ok
++test_terminal_layout_covers_all_rdf_roles_and_shared_map (__main__.R2DeltaTests.test_terminal_layout_covers_all_rdf_roles_and_shared_map) ... ok
++
++----------------------------------------------------------------------
++Ran 31 tests in 0.263s
++
++OK
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stdout.txt b/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stdout.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stderr.txt b/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stderr.txt
+new file mode 100644
+index 0000000..ac1e8ff
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stderr.txt
+@@ -0,0 +1,37 @@
++test_37_exact_ids_and_targets (selftest.DesignTests.test_37_exact_ids_and_targets) ... ok
++test_bool_not_integer_and_no_untrusted_diagnostic (selftest.DesignTests.test_bool_not_integer_and_no_untrusted_diagnostic) ... ok
++test_complete_five_fields_and_basis_tail (selftest.DesignTests.test_complete_five_fields_and_basis_tail) ... ok
++test_every_nonempty_sequence_tail_is_observable (selftest.DesignTests.test_every_nonempty_sequence_tail_is_observable) ... ok
++test_evidence_duplicate_occurrence_is_not_deduplicated (selftest.DesignTests.test_evidence_duplicate_occurrence_is_not_deduplicated) ... ok
++test_exact_warning_and_unbound_case (selftest.DesignTests.test_exact_warning_and_unbound_case) ... ok
++test_global_blank_node_bijection_and_tail (selftest.DesignTests.test_global_blank_node_bijection_and_tail) ... ok
++test_hand_authored_type_example (selftest.DesignTests.test_hand_authored_type_example) ... ok
++test_hand_depth_two_has_all_three_leaves (selftest.DesignTests.test_hand_depth_two_has_all_three_leaves) ... ok
++test_hand_multiple_matches_preserve_two_occurrences (selftest.DesignTests.test_hand_multiple_matches_preserve_two_occurrences) ... ok
++test_known_rejections_do_not_all_match_each_other (selftest.DesignTests.test_known_rejections_do_not_all_match_each_other) ... ok
++test_lexical_type_language_and_escape_preserved (selftest.DesignTests.test_lexical_type_language_and_escape_preserved) ... ok
++test_missing_and_extra_each_top_field_rejected (selftest.DesignTests.test_missing_and_extra_each_top_field_rejected) ... ok
++test_normal_cannot_match_any_rejection_or_unknown (selftest.DesignTests.test_normal_cannot_match_any_rejection_or_unknown) ... ok
++test_ordered_when_duplicate_positions_survive (selftest.DesignTests.test_ordered_when_duplicate_positions_survive) ... ok
++test_scope_shacl_null_and_multiplicity (selftest.DesignTests.test_scope_shacl_null_and_multiplicity) ... ok
++test_scope_sources_and_four_fields (selftest.DesignTests.test_scope_sources_and_four_fields) ... ok
++test_strict_json_duplicate_and_nonfinite (selftest.DesignTests.test_strict_json_duplicate_and_nonfinite) ... ok
++test_unknown_is_fixed_safe_incomplete (selftest.DesignTests.test_unknown_is_fixed_safe_incomplete) ... ok
++test_when_reorder_changes_value (selftest.DesignTests.test_when_reorder_changes_value) ... ok
++test_37_fixed_inputs_and_expected_math_unchanged_from_r1 (__main__.R2DeltaTests.test_37_fixed_inputs_and_expected_math_unchanged_from_r1) ... ok
++test_r1_01_stage_is_closed_before_any_untrusted_operation (__main__.R2DeltaTests.test_r1_01_stage_is_closed_before_any_untrusted_operation) ... ok
++test_r1_01_valid_stage_and_reserved_incomplete (__main__.R2DeltaTests.test_r1_01_valid_stage_and_reserved_incomplete) ... ok
++test_r1_02_language_and_tail_graph_identity (__main__.R2DeltaTests.test_r1_02_language_and_tail_graph_identity) ... ok
++test_r1_02_numeric_lexical_datatype_and_node_collapse (__main__.R2DeltaTests.test_r1_02_numeric_lexical_datatype_and_node_collapse) ... ok
++test_r1_03_integer_explicit_parameter_mapping (__main__.R2DeltaTests.test_r1_03_integer_explicit_parameter_mapping) ... ok
++test_r1_03_shape_exact_chain (__main__.R2DeltaTests.test_r1_03_shape_exact_chain) ... ok
++test_shared_domain_contradictory_query_evidence_or_source_shape (__main__.R2DeltaTests.test_shared_domain_contradictory_query_evidence_or_source_shape) ... ok
++test_shared_domain_normal_language_and_exact_raw_source (__main__.R2DeltaTests.test_shared_domain_normal_language_and_exact_raw_source) ... ok
++test_shared_domain_order_duplicates_tail_and_no_substring_rewrite (__main__.R2DeltaTests.test_shared_domain_order_duplicates_tail_and_no_substring_rewrite) ... ok
++test_shared_domain_provenance_basis_and_n3_numeric_identity (__main__.R2DeltaTests.test_shared_domain_provenance_basis_and_n3_numeric_identity) ... ok
++test_terminal_layout_covers_all_rdf_roles_and_shared_map (__main__.R2DeltaTests.test_terminal_layout_covers_all_rdf_roles_and_shared_map) ... ok
++
++----------------------------------------------------------------------
++Ran 32 tests in 0.263s
++
++OK
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stdout.txt b/docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stdout.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/docs/reviews/I05/observation-projection-spec/r2-validation.json b/docs/reviews/I05/observation-projection-spec/r2-validation.json
+new file mode 100644
+index 0000000..c268d19
+--- /dev/null
++++ b/docs/reviews/I05/observation-projection-spec/r2-validation.json
+@@ -0,0 +1,129 @@
++{
++  "format": "i05-observation-r2-author-validation/1",
++  "revisionBase": "57c67631fab6a36f47963aca95b4036064e10777",
++  "originalCandidate": "dd3e659e9214481700275afb3f3188891e42359d",
++  "commands": [
++    {
++      "argv": [
++        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
++        "docs/iterations/I05/observation-projection-spec/selftest-r2.py"
++      ],
++      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
++      "actualExitCode": 0,
++      "stdout": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stdout.txt",
++        "bytes": 0,
++        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++      },
++      "stderr": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-1.stderr.txt",
++        "bytes": 3902,
++        "sha256": "1a04660443ffdef0bbcfcb3ac1ef17f51601d72754ace83a840a4ba2ec644982"
++      }
++    },
++    {
++      "argv": [
++        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
++        "docs/iterations/I05/observation-projection-spec/selftest-r2.py"
++      ],
++      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
++      "actualExitCode": 0,
++      "stdout": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stdout.txt",
++        "bytes": 0,
++        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++      },
++      "stderr": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-selftest-attempt-2.stderr.txt",
++        "bytes": 4053,
++        "sha256": "19f8b38eca6a4de5b751ac61d6c114b2392d3866b7310ba4a331fd9bc31dd225"
++      }
++    },
++    {
++      "argv": [
++        "/usr/local/bin/node",
++        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
++        "--write",
++        "docs/iterations/I05/observation-projection-spec/cases.json",
++        "docs/iterations/I05/observation-projection-spec/coverage.md",
++        "docs/iterations/I05/observation-projection-spec/schema.json",
++        "docs/iterations/I05/observation-projection-spec/spec.md",
++        "docs/reviews/I05/observation-projection-spec/disposition-r2.md",
++        "docs/reviews/I05/observation-projection-spec/delta-r2.json",
++        "docs/reviews/I05/observation-projection-spec/r2-validation.json"
++      ],
++      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
++      "actualExitCode": 0,
++      "stdout": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-write.stdout.txt",
++        "bytes": 255,
++        "sha256": "1ff004c1d543076a98b8a7c7f098150c1bfe8e02a43872e20035312d3005365e"
++      },
++      "stderr": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-write.stderr.txt",
++        "bytes": 0,
++        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++      }
++    },
++    {
++      "argv": [
++        "/usr/local/bin/node",
++        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
++        "--check",
++        "docs/iterations/I05/observation-projection-spec/cases.json",
++        "docs/iterations/I05/observation-projection-spec/coverage.md",
++        "docs/iterations/I05/observation-projection-spec/schema.json",
++        "docs/iterations/I05/observation-projection-spec/spec.md",
++        "docs/reviews/I05/observation-projection-spec/disposition-r2.md",
++        "docs/reviews/I05/observation-projection-spec/delta-r2.json",
++        "docs/reviews/I05/observation-projection-spec/r2-validation.json"
++      ],
++      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
++      "actualExitCode": 0,
++      "stdout": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-check.stdout.txt",
++        "bytes": 66,
++        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
++      },
++      "stderr": {
++        "path": "docs/reviews/I05/observation-projection-spec/r2-prettier-check.stderr.txt",
++        "bytes": 0,
++        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++      }
++    },
++    {
++      "argv": [
++        "git",
++        "diff",
++        "--check",
++        "57c67631fab6a36f47963aca95b4036064e10777",
++        "--",
++        "docs/iterations/I05/observation-projection-spec/",
++        "docs/reviews/I05/observation-projection-spec/"
++      ],
++      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
++      "actualExitCode": 0,
++      "stdout": "",
++      "stderr": ""
++    }
++  ],
++  "productExecuted": false,
++  "reviewConclusion": "not asserted; root will assign independent R2 delta review",
++  "tests": {
++    "legacyMethodsUnchanged": 20,
++    "newR2Methods": 12,
++    "totalMethods": 32,
++    "attempt1ActualExitCode": 0,
++    "attempt2ActualExitCode": 0,
++    "scope": "stdlib model plus fixed Git docs identity only; no product/library validation"
++  },
++  "formatterDidNotChangeJSONValues": true,
++  "preservationChecks": {
++    "originalImmutableFilesUnchanged": 43,
++    "oldR1FailAndProofAndDoubleStreamsPreserved": true,
++    "originalSelftestSourceUnchanged": true,
++    "all37InputsExpectedAndIndependentMathUnchanged": true,
++    "protectedGuidanceSHA256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
++    "newAuthorFailures": []
++  }
++}
