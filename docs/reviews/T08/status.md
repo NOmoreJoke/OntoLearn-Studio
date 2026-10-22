@@ -162,3 +162,12 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 ## T10纯文档供方事实入口（2026-10-22）
 
 按总控限定读取面，将前次已核验T08事实整理为docs/iterations/T08/T10-learning-provenance-facts-20261022.md，供根核后转交T10。许可仅该纯文档；源码/ref/bytes/SHA仅溯源，不授源码、移动HEAD或本轮模型意见读取。attempt/task/check/hint/actor/learning provenance及正式持久投影未实现；现有assistance仅UI回调标记。F16跨attempt决定在本供方固定材料无可提供身份/规则，明确unknown，不默认永久辅助或清UI洗白。未新写schema、实现、替身或政策，未跑产品或占GUI；旧冻结输入/候选及父验收保持，新文档定向Prettier通过。
+
+
+## 指定双审真实创建与GUI释放（2026-10-23）
+
+已使用总控授予的T08独占短GUI窗口，通过原owner CUA分别在两棵固定独立reviewHead 5b64bfea树创建全新完整任务。ZCode实际新任务UI读回GLM-5.3/最高/完全访问，官方菜单SID为`session_cd996c3a9b47f03713b41eaae59a83b0`；MiniMax读回M3.1-Flash/xhigh/始终授权，官方菜单SID为`mvs_68301ad5197d46ed91bf9aee7ec39f19`。两SID均粘贴到本方未发送composer读回，随后清空并确认空草稿。提交后立即GUI RELEASE，不占用桌面等待模型执行。
+
+官方附件分别为59804B/8951b0e3…及59859B/65104b0c…完整373行正文；原始完整提示前缀、旧manifest33de及base/product身份未改。双方已各自写受理JSON，确认实际cwd、detached HEAD、完整正文及完整审查范围；所有本轮意见互不转发。创建收据见[independent-review-roots-20261022/gui-dispatch-receipt-20261023.json](independent-review-roots-20261022/gui-dispatch-receipt-20261023.json)，各方自有runtime保留完整设置与受理记录。
+
+此时任务仍在执行，无指定终态或完整报告；创建及受理不计Pass。后续仅沿本方精确SID/自有证据跟进，未经新lease不再操作GUI；没有已核验公开只读会话接口时不猜测私有API或扫描会话数据库。产品93516fa、原Goal blocked及正式接线/真实API/PRD父验收/发布门保持。此段更新此前“未创建任务”的历史状态，不改写历史原件。
