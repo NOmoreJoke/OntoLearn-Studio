@@ -36,6 +36,14 @@ offline 覆盖八类 SERVICE/FROM、格式拒绝、imports 三角色×两 scheme
 
 准备结果与原件清单见 inputs-source-manifest.json；本报告列出的 source-path/JSON pointer 属于输入出处，不能补齐 unresolved 原上下文。后续主线必须执行真实 canonical dispatcher、完整报告与双端对比，并保持 B1 fresh 条件与原失败边界。
 
+## R1-03 delta：报告 EOF
+
+R1 正式 Fail 原件保留于 review-r1.md／cf15439；固定旧候选 0e42a0fe349054a92817cb4d463bccdc15f6c042 的首 EOF 失败为 `input-generation-report.md:497: new blank line at EOF.`，base→candidate diff check 原 exit2 不改写。
+
+本 delta 只将 generator 报告输出尾部规范为恰一个 LF（移除 join 后遗留的空白行），并重建本报告及 inputs-source-manifest 的 generator bytes/SHA。所有输入、dataset、观测、selector、两件 runtime JSON 字节均保持原值；未删用例，未改产品或测试，未执行产品／库／测试，未 stage／commit。
+
+本 delta 实际执行 generator generate 和 --check，均 exit0；另外以纯标准库比较两件 runtime JSON 的 before/after bytes 与原冻结 SHA、核报告末尾恰一个 LF。R1-01/02 由对应 writer 处理，不能用此 EOF 修复声称整体审查通过。
+
 ## family counts
 
 - `b1-measurement`: 2
@@ -494,4 +502,3 @@ offline 覆盖八类 SERVICE/FROM、格式拒绝、imports 三角色×两 scheme
 ### b1-semantic-10x-v1
 
 1. `b1-semantic/10x`
-

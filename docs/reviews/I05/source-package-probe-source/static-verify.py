@@ -4,6 +4,7 @@ import ast
 import hashlib
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -81,8 +82,40 @@ def main():
     )
     staged_agents = subprocess.check_output(["git", "diff", "--cached", "--", "AGENTS.md"], cwd=ROOT)
     assert not staged_agents
-    diff = subprocess.run(["git", "diff", "--check"], cwd=ROOT, capture_output=True)
-    assert diff.returncode == 0, "git diff --check failed"
+    target = sys.argv[1] if len(sys.argv) == 2 else "HEAD"
+    assert len(sys.argv) in (1, 2), "one fixed Git ref only"
+    target = subprocess.check_output(
+        ["git", "rev-parse", "--verify", target + "^{commit}"], cwd=ROOT, text=True
+    ).strip()
+    base = "5f910b52c69d86a1076b2032e5d3c63e715947f3"
+    diff_checks = {}
+    for label, args in (
+        ("baseToFixedCandidate", [base, target]),
+        ("baseToCurrentTracked", [base, "--", ".", ":(exclude)AGENTS.md"]),
+        ("staged", ["--cached"]),
+        ("unstaged", ["--", ".", ":(exclude)AGENTS.md"]),
+    ):
+        result = subprocess.run(["git", "diff", "--check", *args],
+                                cwd=ROOT, capture_output=True)
+        diff_checks[label] = {"exit": result.returncode,
+                              "stdout": result.stdout.decode("utf-8"),
+                              "stderr": result.stderr.decode("utf-8")}
+        assert result.returncode == 0, label + " whitespace failure"
+    untracked = subprocess.check_output(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"], cwd=ROOT
+    ).decode("utf-8").split("\0")
+    untracked_checks = []
+    for name in filter(None, untracked):
+        assert name.startswith((
+            "docs/iterations/I05/source-package-probe/",
+            "docs/reviews/I05/source-package-probe-source/",
+        )), "untracked path outside this source-only document scope"
+        result = subprocess.run(["git", "diff", "--no-index", "--check", "/dev/null", name],
+                                cwd=ROOT, capture_output=True)
+        assert result.returncode in (0, 1) and not result.stdout and not result.stderr, (
+            "untracked whitespace failure: " + name
+        )
+        untracked_checks.append(name)
     required_lock = subprocess.check_output(["git", "show", SOURCE + ":uv.lock"], cwd=ROOT)
     assert (len(required_lock), sha(required_lock)) == (values["LOCK_BYTES"], values["LOCK_SHA256"])
     actual_lock = (ROOT / "uv.lock").read_bytes()
@@ -95,7 +128,8 @@ def main():
         "currentLock": {"bytes": len(actual_lock), "sha256": sha(actual_lock),
                         "adopted": False},
         "requiredLock": {"bytes": len(required_lock), "sha256": sha(required_lock)},
-        "agentsProtected": True, "gitDiffCheckExit": diff.returncode,
+        "agentsProtected": True, "fixedCandidateRef": target,
+        "diffChecks": diff_checks, "untrackedTextFilesChecked": untracked_checks,
         "productImported": False, "probeExecuted": False, "testsExecuted": False,
         "runtimeOrBuildPassed": False,
     }, ensure_ascii=False, indent=2))

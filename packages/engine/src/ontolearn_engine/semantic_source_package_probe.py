@@ -139,6 +139,68 @@ class ProbeFault(ValueError):
         super().__init__(self.code)
 
 
+class BoundaryStop(ProbeFault):
+    def __init__(self, code, exit_code, state):
+        super().__init__(code)
+        self.exit_code, self.state = exit_code, state
+
+
+_COLLECTION_CONTEXT = ContextVar("i05_probe_collection_boundary", default=None)
+
+
+class CollectionBoundary:
+    """Caller observation only; never replaces a canonical business callable."""
+
+    def __init__(self, monotonic, started, cancel_requested):
+        self.monotonic, self.started = monotonic, started
+        self.cancel_requested = cancel_requested
+        self.stage, self.api = "dispatch/input", None
+        self.completed = []
+        self.attempts = []
+
+    def check(self):
+        if self.cancel_requested():
+            raise BoundaryStop("COLLECTION_STOP_REQUESTED", 130, "stopping")
+        if self.monotonic() - self.started >= DEADLINE_SECONDS:
+            raise BoundaryStop("COLLECTION_DEADLINE", 1, "deadline-boundary")
+
+    def call(self, stage, api, function, args, kwargs, capture=True):
+        self.stage, self.api = stage, api
+        self.check()
+        attempt = {"stage": stage, "api": api, "start": self.monotonic(), "returned": False}
+        self.attempts.append(attempt)
+        tick = time.perf_counter_ns()
+        try:
+            value = function(*args, **kwargs)
+        finally:
+            attempt["end"] = self.monotonic()
+            attempt["elapsedNs"] = time.perf_counter_ns() - tick
+        attempt["returned"] = True
+        if capture:
+            # Retain actual references until this observation is written.
+            # No fake success, cross-case cache or native reconstruction.
+            self.completed.append({**attempt, "value": value})
+        self.check()  # An opaque call may finish late; never start the next one.
+        return value
+
+
+def _checked_call(stage, api, function, *args, **kwargs):
+    boundary = _COLLECTION_CONTEXT.get()
+    if boundary is None:
+        return function(*args, **kwargs)
+    return boundary.call(stage, api, function, args, kwargs)
+
+
+def _checked_lexical_decode(function, text):
+    boundary = _COLLECTION_CONTEXT.get()
+    if boundary is None:
+        return function(text)
+    # Each term is original input syntax. Do not retain thousands of duplicate
+    # lexical adapter values; the actual prepared material is captured separately.
+    return boundary.call("input/decodeTerm", "semantic_turtle.decode_profile_term",
+                         function, (text,), {}, capture=False)
+
+
 def parse_argv(argv):
     if (
         type(argv) is not list or len(argv) != 2
@@ -994,7 +1056,8 @@ def _original_profile_inputs(dataset, dataset_id, input_sha, modules):
     def term(value, pointer, iri=False):
         if value.startswith("?") and not iri:
             return firing.Variable(value)
-        value_term = profile.TermInput("iri", value) if iri else decode(value)
+        value_term = (profile.TermInput("iri", value)
+                      if iri else _checked_lexical_decode(decode, value))
         return profile.TermInput(value_term.kind, value_term.lexical_form,
                                  value_term.datatype_iri, value_term.language_raw,
                                  source(pointer, value))
@@ -1099,9 +1162,12 @@ def _known_failure(error, modules):
 def _scope_observation(dataset, mode, modules, counter):
     semantic = modules["ontolearn_engine.semantic"]
     scopes = modules["ontolearn_engine.semantic_scopes"]
-    asserted = semantic.parse_turtle(dataset["assertedText"])
-    ontology = semantic.parse_turtle(dataset["ontologyText"])
-    shapes = semantic.parse_turtle(dataset["shapesText"], shapes=True)
+    asserted = _checked_call("scope/assertedParse", "semantic.parse_turtle",
+                             semantic.parse_turtle, dataset["assertedText"])
+    ontology = _checked_call("scope/ontologyParse", "semantic.parse_turtle",
+                             semantic.parse_turtle, dataset["ontologyText"])
+    shapes = _checked_call("scope/shapesParse", "semantic.parse_turtle",
+                          semantic.parse_turtle, dataset["shapesText"], shapes=True)
     rules = _legacy_rules(dataset, modules)
     stages = []
     counter.scope_details = {"assertedInput": _graph_value(asserted),
@@ -1110,9 +1176,15 @@ def _scope_observation(dataset, mode, modules, counter):
     def stage(name, call):
         before = dict(counter.counts)
         try:
-            value = call()
+            value = _checked_call("scope/" + name, "semantic_scopes." + (
+                "prepare_validation_scope" if name == "prepare" else "project_validation_scope"),
+                call)
         except Exception:
-            stages.append({"name": name, "returned": False, "callCounts": {
+            boundary = _COLLECTION_CONTEXT.get()
+            returned = bool(boundary is not None and boundary.attempts
+                            and boundary.attempts[-1]["returned"])
+            stages.append({"name": name, "stageCompleted": False, "apiReturned": returned,
+                           "callCounts": {
                 key: counter.counts[key] - before[key] for key in before}})
             raise
         stages.append({"name": name, "callCounts": {
@@ -1145,8 +1217,10 @@ def _scope_observation(dataset, mode, modules, counter):
             ontology if mode == "facts-axioms" else asserted, ontology,
             include_derived=1 if mode == "nonexact-include" else False,
             rules=rules if mode == "unselected-rules" else ()))
-    query = semantic.query(prepared.facts, dataset["queryText"])
-    report = semantic.check_shapes(prepared.facts, shapes)
+    query = _checked_call("scope/query", "semantic.query", semantic.query,
+                          prepared.facts, dataset["queryText"])
+    report = _checked_call("scope/shacl", "semantic.check_shapes", semantic.check_shapes,
+                           prepared.facts, shapes)
     return {**counter.scope_details, "query": query, "report": report}
 
 
@@ -1175,8 +1249,11 @@ def _restore(produced, expectation, explanation, modules, *, payload=None, rows=
         kwargs["direct_ledger"] = direct
     function = (restore.restore_profile_explanation_result
                 if explanation else restore.restore_profile_result)
-    restored = function(produced.payload_json if payload is None else payload,
-                        produced.rows_json if rows is None else rows, **kwargs)
+    restored = _checked_call(
+        "restore/mutation" if payload is not None else "restore/result",
+        "semantic_profile_restore." + function.__name__, function,
+        produced.payload_json if payload is None else payload,
+        produced.rows_json if rows is None else rows, **kwargs)
     return restored
 
 
@@ -1199,23 +1276,32 @@ def _production_observation(dataset, observation, manifest, modules, approved):
                       source_revision=SOURCE_REF)
     else:
         kwargs["records"] = records
-    material = material_api.prepare_profile_material(**kwargs)
+    material = _checked_call("material/prepare", "semantic_profile_input.prepare_profile_material",
+                             material_api.prepare_profile_material, **kwargs)
     # Preparation transfers its receipt. Production independently rechecks using a new ledger.
     ledger = material_api.CaptureLedger()
     if explanation:
-        produced = production.execute_profile_explanation(
-            material, **_catalog(modules), ledger=ledger,
-                direct_ledger=direct_api.DirectStepsLedger())
+        produced = _checked_call(
+            "production/compute", "semantic_profile_production.execute_profile_explanation",
+            production.execute_profile_explanation, material, **_catalog(modules), ledger=ledger,
+            direct_ledger=direct_api.DirectStepsLedger())
     else:
-        produced = production.execute_admitted_profile_job(material, **_catalog(modules),
-            ledger=ledger)
-    expected = _capture_expectation(produced, explanation, modules)
+        produced = _checked_call(
+            "production/compute", "semantic_profile_production.execute_admitted_profile_job",
+            production.execute_admitted_profile_job, material, **_catalog(modules), ledger=ledger)
+    expected = _checked_call("production/expectation", "probe._capture_expectation",
+                             _capture_expectation, produced, explanation, modules)
     restored = _restore(produced, expected, explanation, modules)
     roots = ()
     if explanation:
-        roots = restore_api.explanation_roots(
-            restored, tuple(tuple(item) for item in parameters.get("rootsTargets", ())),
+        roots = _checked_call(
+            "restore/roots", "semantic_profile_restore.explanation_roots",
+            restore_api.explanation_roots, restored,
+            tuple(tuple(item) for item in parameters.get("rootsTargets", ())),
             direct_ledger=direct_api.DirectStepsLedger())
+    boundary = _COLLECTION_CONTEXT.get()
+    if boundary is not None:
+        boundary.stage, boundary.api = "production/serialize", None
     result = {
         "wire": produced.wire,
         "payloadBytes": _bytes_value(produced.payload_json),
@@ -1395,19 +1481,26 @@ def _offline_observation(dataset, action, modules):
     try:
         try:
             if action == "query":
-                value = semantic.query(semantic.parse_turtle(dataset["dataText"]),
-                    dataset["queryText"])
+                graph = _checked_call("offline/parse", "semantic.parse_turtle",
+                                      semantic.parse_turtle, dataset["dataText"])
+                value = _checked_call("offline/query", "semantic.query", semantic.query,
+                                      graph, dataset["queryText"])
             elif action == "shape":
-                value = semantic.check_shapes(semantic.parse_turtle(dataset["dataText"]),
-                                              semantic.parse_turtle(dataset["shapesText"],
-                                                  shapes=True))
+                data = _checked_call("offline/dataParse", "semantic.parse_turtle",
+                                     semantic.parse_turtle, dataset["dataText"])
+                shapes = _checked_call("offline/shapesParse", "semantic.parse_turtle",
+                                       semantic.parse_turtle, dataset["shapesText"], shapes=True)
+                value = _checked_call("offline/shacl", "semantic.check_shapes",
+                                      semantic.check_shapes, data, shapes)
             elif action == "implicit-jsonld":
                 from rdflib import Graph
                 with modules["ontolearn_engine.semantic_offline"].offline():
-                    value = _graph_value(Graph().parse(data=dataset["text"],
-                        format=dataset["format"]))
+                    value = _graph_value(_checked_call(
+                        "offline/implicitJsonld", "rdflib.Graph.parse", Graph().parse,
+                        data=dataset["text"], format=dataset["format"]))
             else:
-                value = _graph_value(semantic.parse_turtle(
+                value = _graph_value(_checked_call(
+                    "offline/parse", "semantic.parse_turtle", semantic.parse_turtle,
                     dataset["text"], format=dataset["format"], shapes=dataset["shapes"]))
         except Exception as error:
             failure = _known_failure(error, modules)
@@ -1429,14 +1522,16 @@ def _b1_observation(dataset, modules, instrumentation):
     first_graphs = None
     for name in ("First", "Warm"):
         phases = {}
-        def timed(phase, call):
+        def timed(phase, api, call):
             start = time.perf_counter_ns()
-            value = call()
+            value = _checked_call(name + "/" + phase, api, call)
             phases[phase] = {"elapsedNs": time.perf_counter_ns() - start,
                              "pythonAllocation": "unknown", "processHighWaterRss": "unknown"}
             return value
-        asserted = timed("turtleParse", lambda: semantic.parse_turtle(dataset["assertedText"]))
-        ontology = timed("ontologyParse", lambda: semantic.parse_turtle(dataset["ontologyText"]))
+        asserted = timed("turtleParse", "semantic.parse_turtle",
+                         lambda: semantic.parse_turtle(dataset["assertedText"]))
+        ontology = timed("ontologyParse", "semantic.parse_turtle",
+                         lambda: semantic.parse_turtle(dataset["ontologyText"]))
         def build():
             # Explicit input transformation, not derived facts or an alternate reasoner.
             facts = Graph()
@@ -1452,19 +1547,22 @@ def _b1_observation(dataset, modules, instrumentation):
             for triple in ontology:
                 combined.add(triple)
             return facts, combined
-        transformed, combined = timed("graphBuild", build)
-        query = timed("fixedSelect", lambda: semantic.query(combined, dataset["queryText"]))
-        reason = timed("rdfsRules", lambda: semantic.reason(combined, _legacy_rules(dataset,
-            modules)))
-        shapes = timed("shapesParse", lambda: semantic.parse_turtle(dataset["shapesText"],
-            shapes=True))
-        report = timed("shacl", lambda: semantic.check_shapes(asserted, shapes))
+        transformed, combined = timed("graphBuild", "probe.explicitInputGraphBuild", build)
+        query = timed("fixedSelect", "semantic.query",
+                      lambda: semantic.query(combined, dataset["queryText"]))
+        reason = timed("rdfsRules", "semantic.reason",
+                       lambda: semantic.reason(combined, _legacy_rules(dataset, modules)))
+        shapes = timed("shapesParse", "semantic.parse_turtle",
+                       lambda: semantic.parse_turtle(dataset["shapesText"], shapes=True))
+        report = timed("shacl", "semantic.check_shapes",
+                       lambda: semantic.check_shapes(asserted, shapes))
         outputs = {"assertedOriginal": _graph_value(asserted),
             "transformedFacts": _graph_value(transformed),
                    "ontology": _graph_value(ontology), "graph": _graph_value(combined),
                    "query": query, "reason": reason, "report": report}
         # The timer observes encoding only; JSONL transport/parent wall is a distinct domain.
-        encoded = timed("resultSerialization", lambda: canonical_bytes(outputs))
+        encoded = timed("resultSerialization", "probe.canonical_bytes",
+                        lambda: canonical_bytes(outputs))
         passes.append({"name": name, "phases": phases, "outputs": outputs,
                        "serializationBytes": len(encoded),
                            "serializationSha256": hashlib.sha256(encoded).hexdigest()})
@@ -1498,38 +1596,107 @@ def _dispatch(observation, dataset, manifest, modules, approved, counter, instru
     semantic = modules["ontolearn_engine.semantic"]
     operation, parameters = observation["operation"], observation["parameters"]
     if operation == "parse":
-        return _graph_value(semantic.parse_turtle(
+        return _graph_value(_checked_call("parse/turtle", "semantic.parse_turtle",
+            semantic.parse_turtle,
             dataset["text"], format=dataset["format"], shapes=dataset["shapes"]))
     if operation == "query":
-        return semantic.query(semantic.parse_turtle(dataset["dataText"]), dataset["queryText"])
+        graph = _checked_call("query/parse", "semantic.parse_turtle",
+                              semantic.parse_turtle, dataset["dataText"])
+        return _checked_call("query/select", "semantic.query", semantic.query,
+                             graph, dataset["queryText"])
     if operation == "legacy-reason":
-        graph = semantic.parse_turtle(dataset["dataText"])
-        return {"graph": _graph_value(graph), "reason": semantic.reason(graph,
-            _legacy_rules(dataset, modules))}
+        graph = _checked_call("legacy/parse", "semantic.parse_turtle",
+                              semantic.parse_turtle, dataset["dataText"])
+        reason = _checked_call("legacy/reason", "semantic.reason",
+                               semantic.reason, graph, _legacy_rules(dataset, modules))
+        return {"graph": _graph_value(graph), "reason": reason}
     if operation == "scope":
         return _scope_observation(dataset, parameters["mode"], modules, counter)
     if operation == "profile":
         records, rules, disabled = _original_profile_inputs(
             dataset, observation["datasetId"], manifest["inputAsset"]["sha256"], modules)
-        return modules["ontolearn_engine.semantic_execution"].execute_profile_records(
+        return _checked_call("profile/execute", "semantic_execution.execute_profile_records",
+            modules["ontolearn_engine.semantic_execution"].execute_profile_records,
             records, rules, disabled_rule_ids=disabled, **_catalog(modules))
     if operation in ("fullview", "dag", "restore-negative"):
         return _production_observation(dataset, observation, manifest, modules, approved)
     if operation == "shape":
-        return semantic.check_shapes(semantic.parse_turtle(dataset["dataText"]),
-                                     semantic.parse_turtle(dataset["shapesText"], shapes=True))
+        data = _checked_call("shape/dataParse", "semantic.parse_turtle",
+                             semantic.parse_turtle, dataset["dataText"])
+        shapes = _checked_call("shape/shapesParse", "semantic.parse_turtle",
+                               semantic.parse_turtle, dataset["shapesText"], shapes=True)
+        return _checked_call("shape/shacl", "semantic.check_shapes",
+                             semantic.check_shapes, data, shapes)
     if operation == "shacl-text":
         kwargs = {}
         for incoming, keyword in (("dataPolicy", "data_policy"), ("rangePolicy", "range_policy")):
             if incoming in parameters:
                 kwargs[keyword] = parameters[incoming]
         # A missing mandatory keyword is deliberately passed to the actual callable.
-        return semantic.validate_shacl_text(dataset["dataText"], dataset["shapesText"], **kwargs)
+        return _checked_call("shacl-text/validate", "semantic.validate_shacl_text",
+            semantic.validate_shacl_text, dataset["dataText"], dataset["shapesText"], **kwargs)
     if operation == "offline":
-        return _offline_observation(dataset, parameters["action"], modules)
+        return _checked_call("offline/action", "probe._offline_observation",
+                             _offline_observation, dataset, parameters["action"], modules)
     if operation == "b1-measurement":
         return _b1_observation(dataset, modules, instrumentation)
     raise ProbeFault("OPERATION_NOT_FIXED")
+
+
+def _partial_value(value, modules, approved, *, depth=0):
+    """Read actual completed values only; never publish an unfinished restore view."""
+    from rdflib import Graph
+
+    if depth > 96:
+        raise ProbeFault("OUTPUT_ITEM_LIMIT")
+    if type(value) is Graph:
+        return _graph_value(value)
+    production = modules["ontolearn_engine.semantic_profile_production"]
+    if type(value) in (production.ProfileComputation, production.ProfileExplanationComputation):
+        explanation = type(value) is production.ProfileExplanationComputation
+        return {
+            "wire": value.wire,
+            "payloadBytes": _bytes_value(value.payload_json),
+            "rowsBytes": _bytes_value(value.rows_json),
+            "sourceBytes": _bytes_value(value.source_encoded),
+            "definitionBytes": _bytes_value(value.definitions_encoded),
+            "catalogBytes": _bytes_value(value.catalog_json),
+            "material": _typed_value(value.material, approved),
+            "nativeResult": _typed_value(value.native_result, approved),
+            "actualDefinitions": _typed_value(value.actual_definitions, approved),
+            "actualCatalog": _typed_value(value.actual_catalog, approved),
+            "allocation": _typed_value(value.original_allocation, approved),
+            "receipts": {
+                "capture": _typed_value(value.capture_receipt, approved),
+                "direct": _typed_value(value.direct_receipt, approved) if explanation else None,
+            },
+        }
+    if type(value) is modules["ontolearn_engine.semantic_scopes"].ValidationScope:
+        return {"facts": _graph_value(value.facts), "ontology": _graph_value(value.ontology),
+                "provenance": value.provenance, "reasoningResult": value.reasoning_result}
+    kind = type(value)
+    if value is None or kind in (bool, str, int):
+        return value
+    if kind is float and math.isfinite(value):
+        return value
+    if kind is bytes:
+        return _bytes_value(value)
+    if kind in (tuple, list):
+        return [_partial_value(item, modules, approved, depth=depth + 1) for item in value]
+    if kind is dict:
+        if any(type(key) is not str for key in value):
+            raise ProbeFault("OUTPUT_TYPE_INVALID")
+        return {key: _partial_value(item, modules, approved, depth=depth + 1)
+                for key, item in value.items()}
+    return _typed_value(value, approved)
+
+
+def _partial_outputs(boundary, modules, approved):
+    return [
+        {key: (_partial_value(value, modules, approved) if key == "value" else value)
+         for key, value in item.items()}
+        for item in boundary.completed
+    ]
 
 
 def _safe_stderr(stream, code):
@@ -1548,6 +1715,7 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
     stderr = getattr(sys.stderr, "buffer", sys.stderr) if stderr is None else stderr
     monotonic = time.monotonic if monotonic is None else monotonic
     cancel_requested = (lambda: False) if cancel_requested is None else cancel_requested
+    start = monotonic()  # Includes asset/identity/import preparation in the same deadline domain.
     try:
         parse_argv([FLAG, selector])
         inputs, manifest = load_assets()
@@ -1565,8 +1733,8 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
     lookup = {item["id"]: item for item in inputs["observations"]}
     context = {item["id"]: item for item in inputs["contexts"]["mathInputContexts"]}
     completed, first_failure = [], None
+    current_observation_id = None
     code, state = 0, "collecting"
-    start = monotonic()
     try:
         writer = JSONLWriter(stdout)
     except ProbeFault as error:
@@ -1586,7 +1754,8 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
             "selectedInventorySha256": hashlib.sha256(canonical_bytes(inventory)).hexdigest(),
             "limits": {"reportBytes": REPORT_CAP, "itemBytes": ITEM_CAP,
                        "terminalReserveBytes": TERMINAL_RESERVE, "caseCount": CASE_CAP,
-                       "cooperativeBoundaryDeadlineSeconds": DEADLINE_SECONDS},
+                       "cooperativeBoundaryDeadlineSeconds": DEADLINE_SECONDS,
+                       "deadlineIncludesPreflight": True},
             "externalOracleCompared": False, "sourcePackageEquivalent": False,
             "externalOracleMatched": False, "originalOperationPassed": False,
         })
@@ -1599,16 +1768,20 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
                 first_failure = first_failure or {"code": "COLLECTION_DEADLINE"}
                 break
             original = lookup[case_id]
+            current_observation_id = case_id
             observation = {"type": "observation", **original, "start": monotonic()}
             source_context = context.get(original["sourceCaseId"])
             if (original["operation"] == "profile" and source_context is not None
                     and not source_context["eligibleStandaloneMathInput"]):
                 observation.update(status="not-executed", callCounts={"reason": 0, "validator": 0},
+                                   stage="input/not-executed", api=None, stageAttempts=[],
                                    diagnostic={"code": "ORIGINAL_INPUT_CONTEXT_NOT_STANDALONE",
                                                "originalOperationPassed": False})
             else:
                 counter = CallCounter(modules["ontolearn_engine.semantic"],
                     validator) if instrumentation else None
+                boundary = CollectionBoundary(monotonic, start, cancel_requested)
+                token = _COLLECTION_CONTEXT.set(boundary)
                 try:
                     with counter if counter is not None else nullcontext():
                         result = _dispatch(
@@ -1625,7 +1798,16 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
                         original["operation"] == "shacl-text" and type(error) is TypeError
                         and set(original["parameters"]) != {"dataPolicy", "rangePolicy"}
                     )
-                    if missing_keywords:
+                    if type(error) is BoundaryStop:
+                        observation.update(
+                            status="unexpected-failure", error={"code": error.code},
+                            diagnostic={"classification": "cooperative-boundary-stop"})
+                        code, state = error.exit_code, error.state
+                        first_failure = first_failure or {
+                            "id": case_id, "code": error.code,
+                            "stage": boundary.stage, "api": boundary.api,
+                        }
+                    elif missing_keywords:
                         observation.update(status="observed-rejection",
                                            error={"kind": "call-contract",
                                                "code": "CALL_ARGUMENTS_INVALID"},
@@ -1640,8 +1822,16 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
                                            diagnostic={"classification": "harness-or-unknown",
                                                        "exceptionClass": type(error).__name__})
                         code, state = 1, "failed"
-                        first_failure = first_failure or {"id": case_id, "code": safe_code}
+                        first_failure = first_failure or {
+                            "id": case_id, "code": safe_code,
+                            "stage": boundary.stage, "api": boundary.api,
+                        }
+                    observation["diagnostic"].update(stage=boundary.stage, api=boundary.api)
+                    observation["partialOutputs"] = _partial_outputs(boundary, modules, approved)
                 finally:
+                    _COLLECTION_CONTEXT.reset(token)
+                    observation["stage"], observation["api"] = boundary.stage, boundary.api
+                    observation["stageAttempts"] = boundary.attempts
                     observation["callCounts"] = (
                         dict(counter.counts) if counter is not None else None)
                     if counter is not None and hasattr(counter, "scope_details"):
@@ -1651,8 +1841,9 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
             completed.append(case_id)
             if code:
                 break
-        if code == 0 and (cancel_requested() or monotonic() - start >= DEADLINE_SECONDS):
-            if cancel_requested():
+        requested = cancel_requested()
+        if code == 0 and (requested or monotonic() - start >= DEADLINE_SECONDS):
+            if requested:
                 code, state = 130, "stopping"
             else:
                 code, state = 1, "deadline-boundary"
@@ -1674,6 +1865,10 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
     except Exception as error:
         safe_code = error.code if type(error) is ProbeFault else "COLLECTION_FAILED"
         _safe_stderr(stderr, safe_code)
+        first_failure = first_failure or {
+            "code": safe_code, "id": current_observation_id,
+            "stage": "observation/JSONL-write", "api": "JSONLWriter.emit",
+        }
         if not writer.broken and not writer.terminal_written:
             try:
                 writer.emit({

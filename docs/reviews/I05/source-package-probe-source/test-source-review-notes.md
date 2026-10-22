@@ -38,3 +38,23 @@ restore-negative 的有限扰动保持同次原 expectation／allocation；不�
 测试中的 full run 以模块 fixture 共享一次实际完整采集，避免为多条结构断言重复执行 full suite；两个 B1 selector 另各采集一次，验证无 hook／子集完整性，明确 `freshProcessExternallyVerified=false`、`coldClaim=false`，不把 pytest 内的直接调用冒充 fresh process。controlled fault／clock／stream 没有提供虚假业务返回。
 
 写锁：本文件及测试源码完成最终字节／SHA读取后停止编辑，交 root 冻结组合与独立静态审查。后续实现、资产或接口变化需另作明确 delta；未声明运行通过或合并就绪。不在文件内自引用本文件 hash。
+
+## R1-01／R1-02 测试源码增补
+
+root 明确重新开放本测试及说明两文件，依据正式 Fail 的 `review-r1.md`（已保全于 `cf15439`）。已全文读回 R1；首版66函数及前节冻结值是历史交付，以下只补本轮控制流和阶段保留的回归源码，不改写首轮不通过，也不负责 input writer 的 R1-03。
+
+新增测试使用真实 canonical 函数先成功返回，再在指定后续阶段注入异常／时钟／取消请求；没有 fake Graph、fake producer 或替代成功返回：
+
+| R1 项 | 新增源码验收断言 | 证据边界 |
+| --- | --- | --- |
+| R1-01 | First/turtleParse 真实返回后将同一 monotonic 改为121，或将取消回调改为 true；只允许一次 parse，下一 ontologyParse 不启动，保完整18 triples。另以两次真实 parse 返回70／121的累计时间，要求 ontologyParse 后止步、保4 ontology triples，不能逐调用重置120秒；deadline 返回1，取消返回130／stopping | 受控时钟／请求，不能证明即时中断 opaque 调用、OS hard timeout 或实际 process stopped |
+| R1-02 B1 | First 全部调用真实执行，第2次 check_shapes（Warm/shacl）抛未知异常；First 的完整 query／reason／SHACL 及 Warm 已成功阶段留在 partialOutputs，失败阶段没有伪造返回值，diagnostic 保精确 stage/API | query、conforms 等独立 literal 预期；不把异常消息写入输出 |
+| R1-02 production | 真实 execute_profile_explanation 返回，restore_profile_explanation_result 再抛未知异常；保 material/prepare、production/compute、production/expectation；五组真实 producer bytes、原 expectation 摘要及同一个 allocation 可审计，未返回的 restore/result／roots 不发布 partial view | wrapper 仅保留原真实返回并注入 raise；不是替代业务执行或重新发行 caller-held 前提 |
+
+新 `_partial_by_stage` 只读核每项 stage/api/start/end/value、阶段唯一性与开始结束次序，并核已有 returned／elapsedNs 元信息；`_snapshot_has_exact_bytes` 只对照实际生产对象的 bytes/base64/SHA，不重新计算业务结果。First 的完整 resultSerialization bytes 也解码核对 query／reason／report 与18／4／22图数，防止仅留摘要。取消／deadline 必须是控制边界，不能归为已知业务拒绝或 harness-or-unknown；外部停止／reader join 仍为 unknown。
+
+已按最终落盘的 CollectionBoundary／BoundaryStop／_checked_call、partialOutputs、stageAttempts 与诊断字段完成静态对接；restore API 标签精确为 semantic_profile_restore.restore_profile_explanation_result，fault wrapper 用 functools.wraps 保留 canonical 标签。partial compute 按实际完整 wrapper 核五bytes，expectation 从独立 production/expectation 的 typed value 核原摘要，没有假资源或 fake successful return。
+
+本轮增加4个 `test_*` 函数，当前共70个；参数展开未作 pytest 收集，不能当实际运行例数。最终以标准库 ast.parse／compile 仅作语法编译，重复函数名、超100列、skip／skipif／xfail均为0。未执行编译返回的 code object，未运行或 import 产品、测试、pytest、npm、CLI、构建、DB、native、网络、GUI 或资源测量；不提供 passed 数，不宣告 R1 运行关闭。
+
+R1增补写锁：最终两件 bytes/SHA 从磁盘读取后停笔，交 root 冻结新candidate及独立delta复审。正式Fail和首版冻结仍由原Git保全；未授权的运行验证、完整check、资源与包／平台门继续后置。

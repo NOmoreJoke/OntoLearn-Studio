@@ -14,6 +14,7 @@ import io
 import json
 import signal
 import sys
+from functools import wraps
 from pathlib import Path
 
 import pytest
@@ -1139,6 +1140,222 @@ def test_unknown_library_fault_is_incomplete_harness_failure_not_known_rejection
     assert observations[0]["status"] != "observed-rejection"
     assert records[-1]["collectionComplete"] is False
     assert b"private-token" not in stdout.getvalue() + stderr.getvalue()
+
+
+def _partial_by_stage(observation):
+    partial = observation["partialOutputs"]
+    assert type(partial) is list
+    assert len({item["stage"] for item in partial}) == len(partial)
+    for item in partial:
+        assert {"stage", "api", "start", "end", "value"} <= set(item)
+        assert type(item["api"]) is str and item["api"]
+        assert item["start"] <= item["end"]
+        if "returned" in item:
+            assert item["returned"] is True
+        if "elapsedNs" in item:
+            assert type(item["elapsedNs"]) is int and item["elapsedNs"] >= 0
+    return {item["stage"]: item for item in partial}
+
+
+def _failed_observation(records):
+    observations = [item for item in records if item["type"] == "observation"]
+    assert observations
+    return observations[-1]
+
+
+def test_r1_real_first_outputs_survive_warm_shacl_unknown_failure(probe, canonical, monkeypatch):
+    semantic = canonical["semantic"]
+    original = semantic.check_shapes
+    calls = 0
+
+    @wraps(original)
+    def fail_warm(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise RuntimeError("private-warm-shacl-detail")
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(semantic, "check_shapes", fail_warm)
+    stdout, stderr = io.BytesIO(), io.BytesIO()
+    code = probe.run_fixed_suite("b1-semantic-1x-v1", stdout=stdout, stderr=stderr)
+    records = _jsonl(stdout.getvalue())
+    failed = _failed_observation(records)
+    assert code == 1 and calls == 2
+    assert failed["status"] == "unexpected-failure"
+    assert failed["error"]["code"] == "INTERNAL_ERROR"
+    assert failed["diagnostic"]["stage"] == "Warm/shacl"
+    assert failed["diagnostic"]["api"] == "semantic.check_shapes"
+    assert "result" not in failed, "no complete B1 result was returned"
+    partial = _partial_by_stage(failed)
+    assert {"First/turtleParse", "First/ontologyParse", "First/graphBuild", "First/fixedSelect",
+            "First/rdfsRules", "First/shapesParse", "First/shacl",
+            "First/resultSerialization"} <= set(partial)
+    assert {"Warm/turtleParse", "Warm/ontologyParse", "Warm/graphBuild", "Warm/fixedSelect",
+            "Warm/rdfsRules", "Warm/shapesParse"} <= set(partial)
+    assert "Warm/shacl" not in partial, "a throwing call has no returned value"
+    attempts = [item for item in failed["stageAttempts"] if item["stage"] == "Warm/shacl"]
+    assert len(attempts) == 1 and "value" not in attempts[0]
+    assert attempts[0]["returned"] is False
+    assert partial["First/fixedSelect"]["value"] == {
+        "type": "SELECT", "variables": ["alarm"], "rows": [["<urn:case:0:alarm/A01>"]]
+    }
+    assert partial["First/shacl"]["value"] == {"conforms": True, "violations": []}
+    encoded = partial["First/resultSerialization"]["value"]
+    raw = base64.b64decode(encoded["data"], validate=True)
+    assert encoded["bytes"] == len(raw) and encoded["sha256"] == _sha(raw)
+    first_outputs = json.loads(raw)
+    assert first_outputs["query"] == partial["First/fixedSelect"]["value"]
+    assert first_outputs["report"] == {"conforms": True, "violations": []}
+    assert first_outputs["reason"] == partial["First/rdfsRules"]["value"]
+    assert first_outputs["assertedOriginal"]["tripleCount"] == 18
+    assert first_outputs["ontology"]["tripleCount"] == 4
+    assert first_outputs["graph"]["tripleCount"] == 22
+    assert records[-1]["collectionComplete"] is False
+    assert b"private-warm-shacl-detail" not in stdout.getvalue() + stderr.getvalue()
+
+
+def _snapshot_has_exact_bytes(value, raw):
+    return any(
+        record.get("encoding") == "base64"
+        and record.get("bytes") == len(raw)
+        and record.get("sha256") == _sha(raw)
+        and record.get("data") == base64.b64encode(raw).decode("ascii")
+        for _, record in _walk_json(value)
+    )
+
+
+def test_r1_real_producer_capture_survives_restore_unknown_failure(probe, canonical, monkeypatch):
+    production, restore = canonical["production"], canonical["restore"]
+    original_compute = production.execute_profile_explanation
+    original_restore = restore.restore_profile_explanation_result
+    issued, received = [], []
+
+    @wraps(original_compute)
+    def real_compute(*args, **kwargs):
+        produced = original_compute(*args, **kwargs)
+        issued.append(produced)
+        return produced
+
+    @wraps(original_restore)
+    def fail_restore(payload, rows, *, expected, allocation, **kwargs):
+        received.append((payload, rows, expected, allocation))
+        raise RuntimeError("private-restore-detail")
+
+    monkeypatch.setattr(production, "execute_profile_explanation", real_compute)
+    monkeypatch.setattr(restore, "restore_profile_explanation_result", fail_restore)
+    stdout, stderr = io.BytesIO(), io.BytesIO()
+    code = probe.run_fixed_suite("full-v1", stdout=stdout, stderr=stderr)
+    records = _jsonl(stdout.getvalue())
+    failed = _failed_observation(records)
+    assert code == 1 and len(issued) == len(received) == 1
+    produced = issued[0]
+    payload, rows, expected, allocation = received[0]
+    assert payload is produced.payload_json and rows is produced.rows_json
+    assert allocation is produced.original_allocation
+    assert expected.payload_digest == _sha(payload) and expected.rows_digest == _sha(rows)
+    assert failed["status"] == "unexpected-failure"
+    assert failed["error"]["code"] == "INTERNAL_ERROR"
+    assert failed["diagnostic"]["stage"] == "restore/result"
+    assert failed["diagnostic"]["api"] == (
+        "semantic_profile_restore.restore_profile_explanation_result"
+    )
+    partial = _partial_by_stage(failed)
+    assert {"material/prepare", "production/compute", "production/expectation"} <= set(partial)
+    assert "restore/result" not in partial and "restore/roots" not in partial
+    for raw in (produced.payload_json, produced.rows_json, produced.source_encoded,
+                produced.definitions_encoded, produced.catalog_json):
+        assert _snapshot_has_exact_bytes(partial["production/compute"]["value"], raw)
+    assert any(record.get("payload_digest") == expected.payload_digest
+               and record.get("rows_digest") == expected.rows_digest
+               for _, record in _walk_json(partial["production/expectation"]["value"]))
+    assert "result" not in failed, "a failed restore must not publish a partial restored view"
+    assert records[-1]["collectionComplete"] is False
+    assert b"private-restore-detail" not in stdout.getvalue() + stderr.getvalue()
+
+
+@pytest.mark.parametrize("stop", ["deadline", "deadline-cumulative", "cancel"])
+def test_r1_boundary_after_real_parse_prevents_next_canonical_stage(
+    probe, canonical, monkeypatch, stop
+):
+    semantic = canonical["semantic"]
+    original_parse = semantic.parse_turtle
+    state = {"now": 0.0, "cancel": False, "calls": 0}
+
+    @wraps(original_parse)
+    def actual_parse_then_stop(*args, **kwargs):
+        graph = original_parse(*args, **kwargs)
+        state["calls"] += 1
+        if stop == "deadline":
+            state["now"] = 121.0
+        elif stop == "deadline-cumulative":
+            state["now"] = 70.0 if state["calls"] == 1 else 121.0
+        else:
+            state["cancel"] = True
+        return graph
+
+    monkeypatch.setattr(semantic, "parse_turtle", actual_parse_then_stop)
+    stdout, stderr = io.BytesIO(), io.BytesIO()
+    code = probe.run_fixed_suite(
+        "b1-semantic-1x-v1", stdout=stdout, stderr=stderr,
+        monotonic=lambda: state["now"], cancel_requested=lambda: state["cancel"],
+    )
+    records = _jsonl(stdout.getvalue())
+    failed = _failed_observation(records)
+    terminal = records[-1]
+    expected_calls = 2 if stop == "deadline-cumulative" else 1
+    assert state["calls"] == expected_calls, "no next canonical stage after the stop"
+    assert code == (130 if stop == "cancel" else 1)
+    assert failed["status"] != "observed-rejection"
+    assert failed["diagnostic"]["classification"] != "harness-or-unknown"
+    expected_stage = "First/ontologyParse" if stop == "deadline-cumulative" else "First/turtleParse"
+    assert failed["diagnostic"]["stage"] == expected_stage
+    assert failed["diagnostic"]["api"] == "semantic.parse_turtle"
+    partial = _partial_by_stage(failed)
+    expected_stages = {"First/turtleParse"}
+    if stop == "deadline-cumulative":
+        expected_stages.add("First/ontologyParse")
+        assert partial["First/ontologyParse"]["value"]["tripleCount"] == 4
+    assert set(partial) == expected_stages
+    assert partial["First/turtleParse"]["value"]["tripleCount"] == 18
+    assert len(partial["First/turtleParse"]["value"]["triples"]) == 18
+    assert terminal["collectionComplete"] is False
+    assert terminal["state"] == ("stopping" if stop == "cancel" else "deadline-boundary")
+    assert terminal.get("externalProcessStopped", "unknown") == "unknown"
+    assert terminal.get("readerJoin", "unknown") == "unknown"
+
+
+def test_r1_preflight_elapsed_time_counts_before_first_business_call(
+    probe, canonical, monkeypatch
+):
+    original_preflight = probe.check_runtime_preconditions
+    original_parse = canonical["semantic"].parse_turtle
+    state = {"now": 0.0, "parseCalls": 0}
+
+    @wraps(original_preflight)
+    def actual_preflight_then_elapsed():
+        identity = original_preflight()
+        state["now"] = 121.0
+        return identity
+
+    @wraps(original_parse)
+    def actual_parse(*args, **kwargs):
+        state["parseCalls"] += 1
+        return original_parse(*args, **kwargs)
+
+    monkeypatch.setattr(probe, "check_runtime_preconditions", actual_preflight_then_elapsed)
+    monkeypatch.setattr(canonical["semantic"], "parse_turtle", actual_parse)
+    stdout, stderr = io.BytesIO(), io.BytesIO()
+    code = probe.run_fixed_suite(
+        "b1-semantic-1x-v1", stdout=stdout, stderr=stderr, monotonic=lambda: state["now"]
+    )
+    records = _jsonl(stdout.getvalue())
+    assert code == 1
+    assert state["parseCalls"] == 0
+    assert [item["type"] for item in records] == ["header", "terminal"]
+    assert records[0]["limits"]["deadlineIncludesPreflight"] is True
+    assert records[-1]["collectionComplete"] is False
+    assert records[-1]["completedIds"] == []
 
 
 @pytest.fixture(scope="module")

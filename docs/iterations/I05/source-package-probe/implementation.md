@@ -28,6 +28,10 @@ descriptor 1 MiB、input 8 MiB、512 项、单项 32 MiB、总报告 64 MiB、te
 
 exit 0 仅表示所选集合协议采集完整，可包含已知拒绝和未执行；1 为 harness/未知/逻辑输出/边界 deadline；2 为参数、资产、身份前置错误；130 只表示协作 stopping。进程实际停止、硬超时、signal 和 reader join 由外部 collector 证明。oracle／source-package equivalence／原操作通过始终分开且本 probe 不自签。
 
+R1 修复后，同一 monotonic 起点在 preflight 之前取得，首个业务调用前计入该耗时。probe 内 CollectionBoundary 用 ContextVar 传递；每个显式 canonical 调用前后检查，不替换业务 callable，opaque 调用仍不能被其硬中断。返回时已越界会停止下一调用，保当前真实返回与 callCounts，deadline=1、协作停止=130，均不签实际进程停止。
+
+每阶段保 stage/API、开始／结束／实际返回状态；失败 observation 的 partialOutputs 只含已经真正返回的阶段，包括完整图／表／报告、生产接收 bytes、allocation、expectation、receipts 及已完整成功的恢复 view。未返回的恢复只有阶段元数据，不发行部分 view。B1 的 First/Warm 每一阶段分别保留；partial 阶段的 elapsedNs 为 guard 内单次调用计时，完整 B1 phases 为 timed 包住调用及边界检查的计时，两域不混作新性能结论。所有序列化仍受原 cap；编码或运输不能完成即 incomplete，不能删字段凑通过。
+
 ## 仍待后续窗口
 
 当前树 uv.lock 仍是 5f 的 20999 B／d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e，没有复制或采用 T03 锁／环境。probe 要求的固定供应锁为28440 B／86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73，因此当前组合不能声称可运行。Python3.12／八 distribution 的真实安装也未验证。
