@@ -1,0 +1,109 @@
+{
+  "format": "T03-P2-own-native-input-proof/1",
+  "role": "minimax",
+  "observedUtc": "2026-10-22T20:55:24.917145+00:00",
+  "sessionId": "mvs_b159af436fec43caa2b7272568bfc248",
+  "originalTurnId": "05e3f459-c218-4804-b6f2-3e76076fc4c0",
+  "manifestSource": "/Users/kyle/.minimax/v2/sessions/2026/10/22/20-46-46-000-session_bXZzX2IxNTlhZjQzNmZlYzQzY2FhMmI3MjcyNTY4YmZjMjQ4/manifest.json",
+  "messagesSource": "/Users/kyle/.minimax/v2/sessions/2026/10/22/20-46-46-000-session_bXZzX2IxNTlhZjQzNmZlYzQzY2FhMmI3MjcyNTY4YmZjMjQ4/messages.jsonl",
+  "firstUser": {
+    "line": 1,
+    "ownAttachmentFilenamePresent": true,
+    "ownFrozenShaPresent": true
+  },
+  "actualModels": [
+    "MiniMax-M3.1-Flash"
+  ],
+  "actualBackendEffort": "UNKNOWN",
+  "actualBackendPermission": "UNKNOWN",
+  "readCalls": [
+    {
+      "messageLine": 2,
+      "id": "call-4989b212-06fa-4346-8cf2-ec8cff58c3e2",
+      "name": "read",
+      "arguments": {
+        "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/04-46-46-260-asset_20261023-044646-260_48839f37ed03_e7183429-dispatch-prompt.md",
+        "offset": 1,
+        "limit": 300
+      }
+    },
+    {
+      "messageLine": 6,
+      "id": "call-cc43edf2-5629-4742-9b19-8bd663ccd54b",
+      "name": "read",
+      "arguments": {
+        "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/04-46-46-260-asset_20261023-044646-260_48839f37ed03_e7183429-dispatch-prompt.md",
+        "offset": 111,
+        "limit": 200
+      }
+    }
+  ],
+  "readResults": [
+    {
+      "messageLine": 3,
+      "toolCallId": "call-4989b212-06fa-4346-8cf2-ec8cff58c3e2",
+      "isError": false,
+      "truncation": {
+        "truncated": true,
+        "has_more": true,
+        "strategy": "prefix_lines",
+        "original_bytes": 47063,
+        "returned_bytes": 23946,
+        "max_bytes": 24576,
+        "next_offset": 111,
+        "offset_unit": "line",
+        "continuation_hint": {
+          "tool": "read",
+          "preserve_args": [
+            "path"
+          ],
+          "instruction": "If the omitted remainder is needed, call read again with offset=111; preserve the same path."
+        }
+      },
+      "continuation": {
+        "has_more": true,
+        "next_offset": 111,
+        "offset_unit": "line",
+        "continuation_hint": {
+          "tool": "read",
+          "preserve_args": [
+            "path"
+          ],
+          "instruction": "If the omitted remainder is needed, call read again with offset=111; preserve the same path."
+        }
+      },
+      "range": [
+        1,
+        110
+      ],
+      "textBytes": 23946,
+      "textSha256": "246a2c1f7b3455b2270cc86a341a189ac9065b11c5eb13989bd413779f7577de"
+    },
+    {
+      "messageLine": 7,
+      "toolCallId": "call-cc43edf2-5629-4742-9b19-8bd663ccd54b",
+      "isError": false,
+      "truncation": null,
+      "continuation": null,
+      "range": [
+        111,
+        243
+      ],
+      "textBytes": 23263,
+      "textSha256": "c5343ad9f843f8e7ac0965d62d82377cedcb2b7ec7d33a72d414fe4f4466852c"
+    }
+  ],
+  "firstReadTruncated": true,
+  "continuationActuallyRead": true,
+  "lineRange": [
+    1,
+    243
+  ],
+  "reconstructedBytes": 44876,
+  "reconstructedSha256": "48839f37ed03a220ea1f82cf97e67528a4a82fd7f0ee769be47b213e55288662",
+  "matchesFrozenPrompt": true,
+  "originalFinalLfPreserved": true,
+  "officialTerminal": "UNKNOWN; no DB query performed",
+  "productRunsByOperator": 0,
+  "scope": "exact own manifest + original turn public user/Read/results/model scalars only; no thinking/header/hiddenbody/peer export"
+}

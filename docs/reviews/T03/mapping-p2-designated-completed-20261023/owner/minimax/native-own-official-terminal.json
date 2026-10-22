@@ -1,0 +1,14 @@
+{
+  "format": "T03-P2-own-official-terminal/1",
+  "observedUtc": "2026-10-22T21:08:00.984404+00:00",
+  "source": "/Users/kyle/.minimax/v2/sqlite/runtime-state.sqlite",
+  "connection": "mode=ro timeout=1 query_only=ON; no immutable",
+  "query": "SELECT session_id,turn_id,terminal_outcome,updated_at_ms FROM local_runtime_session_agent_state WHERE session_id=? AND turn_id=?",
+  "row": [
+    "mvs_b159af436fec43caa2b7272568bfc248",
+    "05e3f459-c218-4804-b6f2-3e76076fc4c0",
+    "completed",
+    1792702707999
+  ],
+  "scope": "Only explicitly authorized exact SID+original turn four columns; no schema/other columns/tables/peers"
+}

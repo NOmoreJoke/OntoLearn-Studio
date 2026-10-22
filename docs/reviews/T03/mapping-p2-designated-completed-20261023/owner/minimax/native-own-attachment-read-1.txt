@@ -1,0 +1,112 @@
+     1→# Mapping P2：全新完整独立审查（minimax）
+     2→
+     3→这是全新指定外审任务，不能继续旧303会话或继承旧Pass。请求设置：**M3.1-Flash / xhigh / permissionMode=bypassPermissions (Full access)**。请求值不是实际值；须在真实任务读回task/session/turn、实际模型/思考/权限和来源。实际ID尚未创建，不能用本提示伪填。审查全程不改实现、测试、依赖、锁、配置、原验收或历史原件，不提交、推送、PR、切分支或创建Goal/其他聊天。
+     4→
+     5→## 唯一工作现场与精确版本
+     6→
+     7→唯一工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795`。实际应为detached HEAD **`c1e44f81723f9c616f669f56481d1b1ada7e57f2`**；另一项新审也必须是这个完整HEAD。产品候选`da1795b20c3c0d47ae975fe3371e802092a4b429`，工程/既存证据来源`4ec492f07d261164283a939c65b5e835c30e561e`；批准base **`5f910b52c69d86a1076b2032e5d3c63e715947f3`**，本次两文件修复base另列 **`30319412daf8ae4745987babf7bbed93c53b6b42`**。不能以repairbase替代批准base，也不能以产品SHA替代实际完整HEAD。本轮完整HEAD仅追加文档，与da1795的所有非docs工程（AGENTS保护覆盖另计）逐blob相同。
+     8→
+     9→当前AGENTS保护覆盖15147B / SHA `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`应保持unstaged；Git树内旧AGENTS blob不是覆盖实际值。先核验现场，实际不符则报告具体差异，不自行checkout/reset/fetch/cherry-pick或改文件。所有旧提示、control tasks.json/plan中的owner路径、分支、STOP现场及状态仅为历史来源，不能去旧树运行或借环境，不拼装其他分支互斥代码。
+    10→
+    11→本包目录为`docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/`。同目录README、input-copy-provenance、history-agent和旧完整fixed manifest均需读。独立派发包中的完整candidate tree索引绑定此HEAD；blob OID/清单/数量是身份元数据，不是已经全文阅读载荷的声明。
+    12→
+    13→**完整1028项索引的可用入口**：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/metadata/full-candidate-tree-c1e44f81.json`，SHA-256 **`a8afd3637dcc7fb613c95bd3009d20294e815a96b2043ed108a67afdef673eb4`**。这是owner从同一固定HEAD生成后原字节复制到你自己metadata的文件；不要猜HEAD内不存在的dispatch/full-candidate-tree路径。自己的prepared派发索引在`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/metadata/dispatch-index-v2.prepared.json`，只有请求值/null，不是任何任务实际状态。首版70f432派发定位缺口保留，当前提示是v2修订。
+    14→
+    15→本次索引定位修订的生成工具/模板也在自己`build/review-session/metadata/preparation-tools-v2/`保存原字节副本及manifest，作为额外过程工具源码一并静审；不执行生成器或安装器。实际工程HEAD仍是上述c1e44，不能把这些后加metadata当作已经进入该HEAD或改变产品。历史fixed索引的旧路径仍按其固定Git ref读取，不能去其他树当前WIP。
+    16→
+    17→## 完整审查范围，不能缩成新六项或两个diff
+    18→
+    19→1. **完整工程**：本固定HEAD全部tracked源码、tools、tests、fixtures、配置、锁、公共契约、CSS、构建/CI和docs中的证据工具。继承工程和I01–I04不因owner不同而排除；docs/.py.raw/.input.py.txt/.mjs不能被当散文漏审。两产品delta只是导航。审业务正确性、异常、事务/撤销、来源所有权、历史重放、缓存/草稿/序列化与安全边界；未实测性能不量化。
+    20→2. **全部原输入/历史**：原共享包固定ref`ed9cef968b17a1edefc0977b509906fb9f81a336`，原process`3c396070c74fbf09cf319b0230c6f96ed2858482`；同一仓库可用只读Git show精确读取。legacy-fixed-package保存mapping/shared原字节入口；原19文件入口和旧866项完整清单/历史阶段/coverage-matrix继续有效。旧866中11份缺失T03文档已按固定blob恢复，新输入不替代原历史。旧failed/HOLD/UNKNOWN、首次失败、缺证及后继阶段均须保留，不只读最后success。
+    21→3. **完整需求与原验收**：全文`docs/prd/PRD-本体学习与落地Agent工作台.md`（1255行、93584B、SHA `7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb`）；全部59 FR、57 P0、另2 P1及原延期界限。完整附录C–G、§10–12及全篇其他条款/待决项；M-01–M-06在G.1。FR-300–304是局部定位，不能把其片段当全范围。control-snapshots中完整requirements.csv（57=55精确P0+2带注释P0）、50条acceptance-baselines、plan/review/交接保持原字节。父P0缺口须分别判，不排除后给整体Pass。
+    22→4. **M0全文**：`docs/iterations/I01/inputs/m0-review-and-update-plan-2026-10-19.md`完整207行及其原I03副本、docs/m0-checklist、ADR/历史输入。S1/S2/S3/C1/B1/U1六节全部覆盖，不能只读入口或摘要。
+    23→
+    24→逐文件记录完整/部分/metadata-only/未读及实际范围、引用证据和未读原因。docstring、定义计数、grep或作者摘要不能冒充全文；大raw/原报告应按允许范围分段读完。JSON/设计结构按完整语义记录，不夸称逐字散文。不能将“其他owner”当免读理由；实际无法完成全范围时明确无法完成验证，不能用局部Pass替代。
+    25→
+    26→## 必须逐项复核的真实历史意见
+    27→
+    28→历史原报告完整保存在`docs/reviews/T03/mapping-followup-1-completed-20261023/`，两个报告均已终态，是此次明确授权的历史输入；不属于对方本轮新审意见。`history-agent/historical-findings-index.{md,json}`提供Z1–Z7与F01–F11 **18个真实编号**的原严重度/性质、原文行、主控处置及未验边界。不存在已确认的“原15问题”清单；根已纠正口误，不能造15条或额外门。18编号也不等于18个缺陷，F05/F06为验证观察，旧P1/P2是证据登记ID而非严重度。
+    29→
+    30→必须独立复核原始代码/证据，不把主控technical-disposition-draft当最终事实或Pass：Z1墓碑preview残余说法与真实分支、Z2重复predicate/reference预检及“维持P3/无P3”矛盾、F06普通XML样例不能证明CDATA普遍结论、F09总1110已含mapping58；其余18项也不能只处置这四项。旧原严重度及改判历史原样保留，报告错误、产品问题、正向观察、继承边界分别记录。未制作/运行CDATA fixture，不虚构已证产品误拒，也不擅改DOCTYPE闸。新六项不会自动修复其他UI/公共接线问题。
+    31→
+    32→## 新P2与实际包证据
+    33→
+    34→首读`docs/reviews/T03/mapping-p2-boundaries-20261023/{delivery.md,actual-receipt.json,candidate-binding.json,fixed-probe-v2-expected.json,oracle-before-run.json,command-records.json,raw-evidence-manifest.json,actual-engine-inventory.json,verify-packaged-boundaries.py}`及其原件。新包的p2-original-raw保存74份原字节副本，raw-relocations只增加定位；原收据中的旧cwd/argv/时间保持，不能写成在当前新树重新运行。
+    35→
+    36→既存实测：fresh check638 TS/1116 Python、sources12、package exit0；真实source和真实新包固定17项完整匹配执行前静态oracle；三额外参数拒绝、source -O均有原双流。旧11项实现/预期保留，六新增为外部cached WEBSERVICE公式、外部hyperlink显示文本、CSV文件/列/单格/行四类上限完整定位。固定caps未改，不接受caller文件或任意URL/script/path。
+    37→
+    38→精确边界：17项共用一次source和一次package进程退出码，`independentPerCaseProcessExit:null`，不能写成17个独立进程。socket是socket.socket/create_connection/getaddrinfo三API在固定输入构造/解析期间的累计计数，dependency import在guard前；不是全OS网络、17个隔离counter或所有公式格式证明。两成功引用case的column2是已知B2坐标，四CSV才是真实issue完整code/sheet/row/column。三模块probe/source/plan源与实际PYZ代码绑定仅归一化co_filename，完整440项inventory是其余实际字节身份，不能升级为全部依赖语义等价。
+    39→
+    40→既存本地Codex独审只作可复核历史材料，不是指定双Pass；本轮须自己读完整源码和实际原件。1116与mapping专项分列，不能沿用“总1110不含mapping58”的旧报告错误。当前实际包来自原P2树，当前新树没有新pack/check结果；不能借旧包运行并伪称本树fresh包。
+    41→
+    42→## 当前资源与允许动作
+    43→
+    44→根已释放I05唯一CPU窗并解除安装暂缓；owner只完成各新树的独立`npm ci --ignore-scripts`、`uv sync --frozen`及Electron installer setup，不是产品验收。安装具体argv/时间/exit/双流、环境路径与基础解释器symlink披露见本树`build/review-session/metadata/setup-receipt.json`和raw/setup-1。node_modules/.venv/缓存属于本树实体目录，不借其他树或共享可变运行库；base Python只读解释器链接如实披露。
+    45→
+    46→**本次新审先做完整静态审读与既存证据复核，不重未变pack/check，不自行安装、更新锁、运行setup脚本、启动Electron/e2e或其他产品命令。** 若某个具体未解问题确需新运行，给owner精确argv/原因/输入/输出和资源条件，由owner按根当前阶段票安排，不向用户重复索桌面时段、不把等待当批准。任何后续运行须新raw轮次保首次失败，不覆盖旧报告/oracle/验收。提示中旧一般“可正常回归”不覆盖此轮具体限制。
+    47→
+    48→GUI目前由T08使用，本提示不证明短lease。静态审查可后台继续，不能自行获取CUA/创建另一任务；原owner仅在根排队交接后真实创建/设置/读回。没有新Goal、付费/API消费、重置或凭据读取授权。
+    49→
+    50→独立写面仅本树`build/review-session/{tmp,scratch,raw,reports,metadata}`及原owner明确的报告路径。完整全文报告：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md`。实际任务元数据：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/metadata/task-actual.json`。可使用本树environment.sh列明自有路径；不要执行owner setup driver。此轮不产生新的app/build/release运行输出。
+    51→
+    52→## 绝对保留的STOP与独立性
+    53→
+    54→不得读取、扫描、写入、复制、格式化或执行`.worktrees/T03-native-location-N0-build`停止现场（及其caller WIP）；不得研究或调用未签T03-N0 native/producer/caller、局部函数、runner/reader、ABI/loader/drain，不能借票、抬guard或用fixture/dry-run替代。SDK/二进制安装身份/原witness/descriptor/index受限载荷继续按原权限，不因“完整范围”新解码；仅按已固定manifest登记未读/未验。原完整工程源码/历史审读与受限payload门分别记录，不据局部例外删父门。私有provenance真实build/CLI/loader/native另无运行票，不被本mapping票覆盖。
+    55→
+    56→本轮两新任务完全独立：禁止搜索、读取或通过Git新日志/应用数据库/状态库/别的报告取得对方**本轮**意见、进度、raw、metadata；禁止传递本轮意见。已封存历史Z1–Z7/F01–F11按上文同一公开固定包读取，不拿它们冒充对方当前答复。只审本任务，不切旧会话或其他树。模型请求配置和文件存在不能冒充实际设置/完成。
+    57→
+    58→## 必须完整交付
+    59→
+    60→完整报告含真实ID和实际设置来源、精确工作树/HEAD/approved base/repairbase/product/evidence ref、逐文件/历史范围覆盖、实际命令与结果或未运行原因、所有意见严重度/文件行/触发/影响/证据/建议、真实18项逐项处置、六新增/17固定包证据、全部原验收矩阵与未验边界。源码/单元/check/包CLI/GUI/native/两OS/干净设备/签名安装/父57P0/CI与远端/生产分别判，不能仅凭无P0/P1或17项成功给整体Pass。
+    61→
+    62→结论必须明确通过/不通过/无法完成验证及范围；真实任务终态后owner全文读回，不能只阶段摘要、不强改模型不通过。首失败和历史UNKNOWN保持；旧候选双审、本地独审、setup通过都不是本候选指定双Pass。未经同版双明确通过、全部意见处置及必要验收不得push/PR/合并。
+    63→
+    64→下附当前共同规则原文及冻结历史dispatch-v2提示。共同指南中的“建Goal”等新开发通用条款不适用于本既有外审任务；下附旧路径/候选/运行状态以本新头精确覆盖，原需求/历史/安全与发布门不缩减。
+    65→
+    66→
+    67→---
+    68→
+    69→# Current frozen policy original: developer-common-instructions.md
+    70→
+    71→# 完整首版功能开发共同指令
+    72→
+    73→用户已在规划聊天 `01a15bad-ceeb-7103-b611-fff95e1f31ee` 明确要求 OntoLearn-Studio 全部原定首版功能于北京时间2026-10-25前开发上线、质量不降，并授权“发送并落实到现有总控”。总控实际读取原始用户消息确认了授权。本指令用于新功能开发聊天；截止日是目标，不是保质按期保证。
+    74→
+    75→先读取本目录 controller-handoff.md、plan.md、tasks.json 中自己的任务、requirements.csv、acceptance-baselines.csv、review.md，以及实际工作树最新版AGENTS和对应PRD原条款/附录。57项P0、附录C–G及第10–12节保留；P1/P2原延期安排不变。T编号不覆盖I01–I06历史；纯服务完成不等于父模块P0完成，integration_prerequisites不是全部验收条件。
+    76→
+    77→本会话只负责指定的一项功能，建立自己的Goal（不存在时），不继承总控Goal。先核验并回执绝对worktree、分支、base、实际git状态、指南SHA、唯一文件责任、验收与下一交付。总控已创建独立worktree，切勿改主checkout或其他树；AGENTS是总控复制的受保护操作规则，SHA应为 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，保持未暂存，不混入产品提交。不得重建原I05/I06 Goal或继续写其树。
+    78→
+    79→当前批准develop为 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。I01–I04已合并；I05 C1在指定双审冻结，已发现词法语义阻断，I06在自己的14文件接线与隔离平台联验。不得采用未批准I05/I06实现、环境或测试结果为正式依赖。只读取已批准基线接口开展独立工作，具体接口缺口/共享改动向总控提供精确路径和依据。
+    80→
+    81→初始共享责任（历史，已被下述逐项生效交接更新）：I06原独占 contracts/src/{index.ts,v2.ts}、contracts/v2/{schema,registry,errors,fixtures,binding-regressions}.json，desktop/main/{index.ts,task-service.ts,engine.ts}、preload/index.ts、renderer/src/{env.d.ts,App.tsx,style.css}；I05原保留其他Python Store/coordinator/worker/protocol、语义/resources、entrypoint/build/锁/CI/窗口安全恢复。这些逻辑文件在任何树中均不得抢写。新增私有路径可按本任务授权实施；现有共享文件、迁移和依赖锁一律先做具体交接。不得复制第二套公共契约、SQLite可变权威或Store写入通道来绕过交接。子任务独立worktree/feature和文件责任，复杂交付独立agent审查；核验真实并发槽，不将创建目录当作已启动agent。
+    82→
+    83→后续责任变更补充：I05/T01双方实际接受、独立复核及总控登记后，只有 `packages/engine/src/ontolearn_engine/storage.py` 后续维护已交T01生效，详见 I05-T01-storage-ownership-handoff.md 和 execution-state.json。I05冻结树保持原字节，其余共享/14文件不变。不得将这个单文件交接扩张为其他文件授权；当前具体责任以总控实际生效记录为准。
+    84→
+    85→2026-10-21新增已生效交接：T01除原storage.py外，已唯一接管Python四个 `packages/engine/src/ontolearn_engine/{job_store.py,coordinator.py,__main__.py}`、`packages/contracts/python/contract_v2.py`，及原I06 canonical七个 `packages/contracts/src/{index.ts,v2.ts}`、`packages/contracts/v2/{schema,registry,errors,fixtures,binding-regressions}.json` 和 `apps/desktop/src/main/engine.ts`，仅从批准5f独立实施格式基础。T03已唯一接管 `packages/engine/pyproject.toml`、`uv.lock`、`scripts/build-engine.mjs`、`packages/engine/entrypoint.py`，仅做XLSX最小依赖/收集/受限probe。原I05/I06树原字节保留，可读/构建但不得继续维护已交逻辑文件；必要修复先精确返还。I06仍维护其余六个main/index、task-service、preload/index、env.d.ts、App.tsx、style.css，I05仍维护其他未交路径；既有测试、CI、resources等不自动扩权。三份新handoff协议及独立报告/实际接受/生效通知见本目录 I05-T01-format3-ownership-handoff.md、I06-T01-format3-ownership-handoff.md、I05-T03-build-ownership-handoff.md 和execution-state.json；这不是未批准代码采用、公共格式启用或运行通过。
+    86→
+    87→2026-10-22人类已撤回静默桌面、不占用/聚焦/点击限制及先预约用户时段的偏好。已授权任务可直接computer use操作桌面端及按原验收运行本机原生测试；互斥资源由总控内部协调，不把CLI认证/后台/headless/隔离桌面作为前置。具体阶段源码/写面/运行票/被拒工作边界不随政策扩大；指定双审、冻结、必要验证、CI/平台/真人/远端和付款逐次确认门保持。当前详细政策见 /Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md。 桌面仅在创建/设置/读回阶段按execution-state当前短lease串行，原任务后台推理不独占整个应用；CUA对Codex app的工具拒绝仍不得绕过。
+    88→
+    89→开发至完整可审查结果，必要异常路径/事务/撤销/历史隔离均保留。AGENTS所需 check/sources/e2e/package 按实际改动执行，隔离项真实待验，首跑失败原件保留。文档/纯模块/静态检查不能冒充正式接线或生产。没有变化不重复测试。依赖资源缺失只阻塞相关部分，先完成独立工作，不擅自结束或暂停整个Goal。
+    90→
+    91→最终完整验收前刷新实际批准依赖及develop、集成冲突并验证；冻结真实base/head。由同一开发聊天通过CUA在ZCode选择本精确工作树、GLM-5.3/最高，MiniMax Code选择本精确工作树、M3.1-Flash/xhigh；每轮双方各新建独立只读完整范围任务，不互传本轮意见。报告按 docs/reviews/Txx/round-N/{zcode-glm53,minimax-m31flash}.md，逐项含任务来源/模型设置/路径分支/base/head/检查命令结果/未验边界/问题严重度位置触发影响证据建议/历史逐项关闭/明确通过或不通过或无法验证。两个任务必须实际终态，全文读回、全部意见处置；不能自己把指定模型不通过改成通过。所有实现/测试/配置/依赖/验收或基线变化后重新验证并双方全新完整审查。纯追加流程证据记录对应关系，不自动触发无变化重审。
+    92→
+    93→同版双方明确通过、验收和必要验证通过、全部意见有处置、实际推送内容与受审实现一致后才push/PR；实际CI通过后正常合并develop、核验远端与保护源。必须attach创建PR；无强推、绕过分支保护或双审前push。集成/外审按总控预约，减少前方候选基线失效。纯服务可单独冻结合并，但原父任务P0跨模块验收与完整发布门不关闭。
+    94→
+    95→额度：效率和完整交付优先，不因token删减；真实告警由账号唯一负责人核实。Codex重置每次需本人明确确认/阈值/幂等，不能UI绕过；不新增付费、订阅、API消费或扩张授权。只读服务/身份元数据不含读取或输出密钥。真人非开发用户验收不能agent替代，向外招募/消息仍需用户明确授权。
+    96→
+    97→各线只维护自己的 docs/reviews/Txx/status.md 及证据，不写根 state.json、tasks.json 或其他总控文件。及时保留可恢复SHA/原件和准确下一步；实际独立实现与验收证据成熟后向总控给出可读交付，不用反复询问常规实施许可。不能将配置/脚本存在、目录/模型名称或数量相同当作验收。完成后父模块/远端/上线分别据实记录。
+    98→
+    99→## 第九节与当前桌面操作政策
+   100→
+   101→以下按原目标文件及最新AGENTS原文附带；该操作政策补充不重建Goal、不改冻结实现或已归档输入，也不单因此重开产品审查。
+   102→
+   103→九、效率优先、额度恢复与持续执行（2026-10-20 用户更新）
+   104→
+   105→本节与最新 AGENTS/scope 一起适用于总控、现有功能 Goal、后续开发会话及模块子任务；与旧提示词统一串行、额度不足一律停止后项的文字冲突时，以本节为准。用户表示 ZCode、Codex、MiniMax Code 均仍有额外重置次数；这属于用户提供的权益信息，实际余额、可用次数和恢复结果须在执行时核实，不假定无限额度。
+   106→
+   107→1. **开发效率优先。** 不以节省 token 为目标压缩需求、实现、异常处理、必要上下文或验证；以正确交付和缩短关键路径为目标。充分利用实际可用的 agent 并发槽、独立 worktree 与 feature 分支，尽早开展不依赖尚未就绪接口的设计、真实探针和独立模块。不是为提高 token 消耗而重复探索、无变化重测、无效轮询或新增无关范围；普通任务不强设三轮。
+   108→2. **保留指定模型与门禁。** ZCode 的 GLM-5.3/最高思考、MiniMax Code 的 M3.1-Flash/xhigh 继续适用；Codex 保持任务既有设置，按复杂度和已授权工具能力分配 agent，不因节省额度擅自降级或更换模型。独立审查、冻结候选、原验收、双模型通过、CI 与远端核验要求均不变。
+   109→3. **额度受限先恢复。** 出现实际额度告警或明确 rate/usage-limit 错误时，先区分额度耗尽、短时限速、服务故障、账单异常和认证错误，保存 base/head、任务标识、报告与已运行证据。由总控指定每个平台/账号唯一额度负责人，查询当前额度、可用重置权益及恢复条件；不要让多个并行任务同时消费同一权益或重复充值。
+   110→4. **已有权益优先自动使用。** 用户已授权在平台及工具允许的范围内，额度受限时使用该账号已有的额外重置次数、已购余额或已配置的官方恢复能力，尽快继续原任务。仅调用实际可用、经核验的官方入口；无需逐次确认且无额外新增支付时可自动执行。若工具或平台要求该次确认，按该要求办理；如需UI由唯一资源owner依2026-10-22当前政策直接computer use，不等待额外用户桌面时段。不得绕过确认或支付验证。
+
+[desktop read output truncated: original_bytes=47063; if the omitted remainder is needed, continue with read using offset=111 and the same path.]

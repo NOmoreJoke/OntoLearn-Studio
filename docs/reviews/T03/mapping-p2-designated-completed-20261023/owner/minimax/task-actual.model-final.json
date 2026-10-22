@@ -1,0 +1,150 @@
+{
+  "format": "T03-P2-minimax-task-actual/1",
+  "status": "REVIEW_COMPLETE_REPORT_WRITTEN",
+  "role": "minimax",
+  "round": "mapping-P2-full-independent-static-review",
+  "requestedModelSettings": "M3.1-Flash / xhigh / permissionMode=bypassPermissions (Full access)",
+  "actualSettings": {
+    "source": "build/review-session/metadata/operator-own-ui-pre-submit.json (own operator CUA own fresh composer, own native folder chooser, own model and permission controls; no global config / DB / session-get / peer lookup)",
+    "projectUI": "T03-mapping-P2-minimax-review-da1795",
+    "modelUI": "M3.1-Flash（订阅限免）",
+    "thinkingUI": "xhigh",
+    "permissionUI": "始终授权",
+    "requestedPermissionCode": "bypassPermissions",
+    "actualBackendModelScalar": "UNKNOWN",
+    "actualBackendThinkingScalar": "UNKNOWN",
+    "actualBackendPermissionScalar": "UNKNOWN",
+    "operatorAccepted": false,
+    "operatorComposerState": "empty before attachment",
+    "operatorObservedUtc": "2026-10-22T20:45:40.574762+00:00",
+    "ownerMustSupply": "owner task/session/turn IDs copied from the owner menu; operator receipt recorded all three as UNKNOWN"
+  },
+  "taskIdentity": {
+    "runtimeSessionId": "mvs_b159af436fec43caa2b7272568bfc248",
+    "runtimeSessionIdSource": "this agent's own runtime context (not an owner UI read-back)",
+    "turnId": "UNKNOWN",
+    "ownerTaskId": "UNKNOWN"
+  },
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795",
+  "reviewHead": "c1e44f81723f9c616f669f56481d1b1ada7e57f2",
+  "headState": "detached HEAD, unchanged; only unstaged AGENTS.md overlay (15147 B / de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4)",
+  "refs": {
+    "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "repairBase": "30319412daf8ae4745987babf7bbed93c53b6b42",
+    "product": "da1795b20c3c0d47ae975fe3371e802092a4b429",
+    "evidenceRef": "4ec492f07d261164283a939c65b5e835c30e561e",
+    "legacyPacketRef": "ed9cef968b17a1edefc0977b509906fb9f81a336"
+  },
+  "promptSha256": "48839f37ed03a220ea1f82cf97e67528a4a82fd7f0ee769be47b213e55288662",
+  "promptSha256Note": "authoritative value per operator receipt and tree file; verified byte-identical",
+  "candidateTreeIndex": {
+    "path": "build/review-session/metadata/full-candidate-tree-c1e44f81.json",
+    "sha256": "a8afd3637dcc7fb613c95bd3009d20294e815a96b2043ed108a67afdef673eb4",
+    "completeTrackedCount": 1028
+  },
+  "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-minimax-review-da1795/build/review-session/reports/mapping-P2-minimax-full-report.md",
+  "coverageRegister": "build/review-session/raw/path-coverage-register.json",
+  "writes": [
+    "build/review-session/reports/mapping-P2-minimax-full-report.md",
+    "build/review-session/metadata/task-actual.json",
+    "build/review-session/raw/path-coverage-register.json"
+  ],
+  "execution": {
+    "productExecuted": false,
+    "checkExecuted": false,
+    "packageExecuted": false,
+    "electronOrE2EStarted": false,
+    "installOrSetupRun": false,
+    "networkCalls": false,
+    "newGoal": false,
+    "commitPushOrPr": false,
+    "branchSwitch": false,
+    "implementationTestDependencyOrConfigModified": false,
+    "method": "static reading of the fixed HEAD tree plus byte-level verification of already-archived originals; no new product run"
+  },
+  "coverage": {
+    "FULL": 44,
+    "PARTIAL": 19,
+    "METADATA": 964,
+    "UNREAD": 1,
+    "total": 1028,
+    "unreadPaths": [
+      "design/prototypes/OntoLearn-Studio-Prototype.pen"
+    ]
+  },
+  "verdict": {
+    "staticReviewAndArchivedEvidenceRecheck": "PASS (scope: this round's achievable coverage; no new P1/P2/P3 defect found)",
+    "p2DeltaTwoFiles": "PASS",
+    "fixedSeventeenCaseEvidenceChain": "PASS (byte-level recheck: source stdout == package stdout == pre-authored oracle; -O stdout byte-identical; three rejected args exit 2 with empty stdout and fixed 32B stderr)",
+    "overallCandidate": "NOT PASSED (parent business wiring, dual OS, GUI/e2e, signed install, parent 57 P0, CI/remote and production remain unverified; 1028-path full-text coverage not reached; historical Z1/F06/F09 wording corrections and the Z2 P3 contradiction remain open on the original-report side)",
+    "specifiedDualReview": "NOT satisfied by this report alone; the other designated model's current-round terminal state is unknown and was not read"
+  },
+  "newFindings": [
+    {
+      "id": "N01",
+      "severity": "信息",
+      "title": "证据域表述不精确：defusedxml 首次 import 发生在 socket guard 窗口内",
+      "location": "packages/engine/src/ontolearn_engine/mapping/probe.py:39,236,346-353"
+    },
+    {
+      "id": "N02",
+      "severity": "信息",
+      "title": "两个外部引用 case 的 column 为硬编码字面量 2，非解析派生值",
+      "location": "packages/engine/src/ontolearn_engine/mapping/probe.py:288-295"
+    },
+    {
+      "id": "N03",
+      "severity": "信息/正向观察",
+      "title": "四类 CSV 上限在 303 基线已有单元级覆盖，P2 增量价值在包内可执行与完整定位",
+      "location": "packages/engine/tests/test_mapping_source.py; packages/engine/src/ontolearn_engine/mapping/probe.py:296-342"
+    },
+    {
+      "id": "N04",
+      "severity": "信息",
+      "title": "440 项 engine inventory 实际无 symlink 条目（file 391 / directory 49 / symlink 0）",
+      "location": "docs/reviews/T03/mapping-p2-boundaries-20261023/actual-engine-inventory.json"
+    },
+    {
+      "id": "N05",
+      "severity": "信息/纠正性",
+      "title": "F06 普遍结论须按精确表述纠正（CDATA 可承载字面 DOCTYPE；未制作 fixture，未宣称产品误拒）",
+      "location": "packages/engine/src/ontolearn_engine/mapping/source.py:181-186"
+    },
+    {
+      "id": "N06",
+      "severity": "信息",
+      "title": "运行发生在 repair base HEAD + 等候选产品字节，引用不得写成在候选提交上实测",
+      "location": "docs/reviews/T03/mapping-p2-boundaries-20261023/actual-receipt.json (runtimeHead); candidate-binding.json"
+    },
+    {
+      "id": "N07",
+      "severity": "信息",
+      "title": "Z2 的“维持 P3”与原续报终段“无任何 P1/P2/P3 遗留”仍并存",
+      "location": "docs/reviews/T03/mapping-followup-1-completed-20261023/mapping-S1-zcode-followup-1-full-report.md"
+    }
+  ],
+  "historicalFindingsReviewed": 18,
+  "historicalFindingIds": [
+    "Z1",
+    "Z2",
+    "Z3",
+    "Z4",
+    "Z5",
+    "Z6",
+    "Z7",
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07",
+    "F08",
+    "F09",
+    "F10",
+    "F11"
+  ],
+  "independence": "本轮未读取、未推断另一指定模型本轮的意见/进度/raw/metadata；未传递本轮意见；历史 Z1–Z7/F01–F11 仅取自同一公开固定包",
+  "stopBoundaries": "未触碰 .worktrees/T03-native-location-N0-build 停止现场及其 caller WIP；未调用未签 native/producer/caller、runner/reader、ABI/loader/drain；未解码 SDK/witness/descriptor/index 受限载荷",
+  "terminalOutcome": "报告已全文写入本方写面；owner 需全文读回并补录真实 task/session/turn ID；本结论不得被改述为整体通过"
+}

@@ -1,0 +1,139 @@
+"""Static text/JSON/AST audit only. Never import project or installed libraries."""
+
+import ast
+import hashlib
+import json
+from collections import Counter
+from datetime import UTC, datetime
+from pathlib import Path
+import re
+
+HERE = Path(__file__).resolve().parent
+WORKTREES = HERE.parents[5]
+Z = WORKTREES / "T03-mapping-P2-zcode-review-da1795"
+M = WORKTREES / "T03-mapping-P2-minimax-review-da1795"
+Z_REPORT = Z / "build/review-session/reports/mapping-P2-zcode-full-report.md"
+M_REPORT = M / "build/review-session/reports/mapping-P2-minimax-full-report.md"
+
+
+def identity(path):
+    raw = path.read_bytes()
+    return {"path": str(path), "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def fragment(path, start, end):
+    return {"file": identity(path), "lineStart": start, "lineEnd": end,
+            "text": "\n".join(path.read_text().splitlines()[start - 1:end])}
+
+
+def historical_rows(path):
+    rows = {}
+    for number, line in enumerate(path.read_text().splitlines(), 1):
+        found = re.match(r"^\|\s*(?:\*\*)?(Z[1-7]|F\d\d)", line)
+        if found:
+            rows[found.group(1)] = {"report": str(path), "line": number, "rawRow": line}
+    assert len(rows) == 18
+    return rows
+
+
+def main():
+    assert identity(Z_REPORT)["sha256"] == "bbe0d321270f4eb40ffdac3cc508077f35bceb7a935f9d498bfe1493d12fc6a1"
+    assert identity(M_REPORT)["sha256"] == "886d6934b6c35a7acb4a37836a00aa5fc99972731813c39183bf3fde5bb6f178"
+    index_path = M / "build/review-session/metadata/full-candidate-tree-c1e44f81.json"
+    register_path = M / "build/review-session/raw/path-coverage-register.json"
+    index = json.loads(index_path.read_text())
+    register = json.loads(register_path.read_text())
+    indexed = {row["path"]: row for row in index["completeTrackedTree"]}
+    recorded = {row["path"]: row for row in register["entries"]}
+    assert len(indexed) == len(recorded) == 1028 and indexed.keys() == recorded.keys()
+    for key, row in recorded.items():
+        assert row["bytes"] == indexed[key]["bytes"] and row["gitBlobOID"] == indexed[key]["gitBlobOID"]
+    counts = dict(Counter(row["coverage"] for row in recorded.values()))
+    assert counts == register["counts"] == {"METADATA": 964, "PARTIAL": 19, "FULL": 44, "UNREAD": 1}
+    by_kind = {kind: dict(Counter(recorded[path]["coverage"] for path, row in indexed.items()
+                                 if row["kind"] == kind)) for kind in {r["kind"] for r in indexed.values()}}
+    assert by_kind["engineering"] == {"METADATA": 144, "PARTIAL": 8, "FULL": 27, "UNREAD": 1}
+    blank = sum(row["coverage"] == "METADATA" and not row.get("note") for row in recorded.values())
+    assert blank == 962
+    zrows, mrows = historical_rows(Z_REPORT), historical_rows(M_REPORT)
+    dispositions = {
+        "Z1": "报告残余判断纠正；preview同ID墓碑拒绝，严重度历史保留，不改产品。",
+        "Z2": "P3维持；后端fail-closed；普通checkbox不主动制造重复referenceColumns，非任意state证明；旧终段矛盾待对齐。",
+        "Z3": "P4升级维护观察，未证当次不兼容。", "Z4": "P4资源观察，不量化未测性能。",
+        "Z5": "P4工具计数口径，不追认旧182/207解释。", "Z6": "P4已声明格式解析差异。",
+        "Z7": "P4正式错误适配约束，与F11同一责任。", "F01": "低；旧脚本仍回写原件；新verifier采用新目录不等于旧脚本本体修复。",
+        "F02": "低；fail-closed草稿UX，未改产品。", "F03": "信息；design-only不可由agentEligible单字段提升为可派发。",
+        "F04": "信息；工具链策略不对称，不是已证执行失败。", "F05": "正面验证观察，非待修缺陷，限已核分支。",
+        "F06": "普遍XML断言纠正；未运行CDATA，不宣称已证产品误拒或改闸。",
+        "F07": "继承dev诊断信息，未实测宿主异常表现。", "F08": "平台引用边界，macOS零skip不升级为Linux证据。",
+        "F09": "旧1110含58mapping；新1116/专项64分列，报告更正。", "F10": "T03假设消解，非T03存储边界由正式owner处置。",
+        "F11": "有界错误链不等于mapping正式接线；仍待T01。",
+    }
+    history = [{"id": key, "zcode": zrows[key], "minimax": mrows[key], "independentDisposition": value}
+               for key, value in dispositions.items()]
+    new_dispositions = {
+        "Obs-1": "登记建议成立，未单列engine pyproject由Git可证未变；不回填旧收据。",
+        "Obs-2": "docs oracle依赖成立；维护说明即可评估，不是必改产品缺陷。",
+        "Obs-3": "不是最后case快照的判断不成立；row-limit是当前最后解析case，JSON排序不是执行顺序。",
+        "Obs-4": "证据来源确认项，原P2树实测不是新审树fresh包。",
+        "N01": "局部import执行点在guard内；首次实际时刻UNKNOWN；已安装openpyxl提供guard前导入链静态反证。",
+        "N02": "已知B2坐标边界，非独立parser列定位，非新增缺陷。",
+        "N03": "303已有单元语义，P2提升到包内固定CLI及完整定位，不称首次语义覆盖。",
+        "N04": "391文件49目录0symlink，引用实际对象数量；空symlink集合不新增验证对象。",
+        "N05": "与F06同一CDATA边界，不重复计产品缺陷。",
+        "N06": "HEAD303+候选同字节dirty工作区实测，后提交；不称提交后HEAD实测。",
+        "N07": "与Z2同一历史报告矛盾，不改历史原件或代原模型签。",
+    }
+    observations = []
+    zlines, mlines = Z_REPORT.read_text().splitlines(), M_REPORT.read_text().splitlines()
+    for key, disposition in new_dispositions.items():
+        if key.startswith("Obs"):
+            hits = [(n, line) for n, line in enumerate(zlines, 1) if line.startswith("| " + key + " |")]
+            assert len(hits) == 1
+            start, text = hits[0]
+            source = {"report": str(Z_REPORT), "lineStart": start, "lineEnd": start, "rawText": text}
+        else:
+            start = next(n for n, line in enumerate(mlines, 1) if line.startswith("### " + key + " —"))
+            end = next((n - 1 for n in range(start + 1, len(mlines) + 1)
+                        if mlines[n - 1].startswith(("### ", "## "))), len(mlines))
+            source = {"report": str(M_REPORT), "lineStart": start, "lineEnd": end,
+                      "rawText": "\n".join(mlines[start - 1:end])}
+        observations.append({"id": key, "source": source, "independentDisposition": disposition})
+    assert len(history) == 18 and len(observations) == 11
+    site = M / ".venv/lib/python3.12/site-packages/openpyxl"
+    fragments = [fragment(site / rel, start, end) for rel, start, end in (
+        ("__init__.py", 1, 19), ("xml/__init__.py", 22, 42), ("xml/functions.py", 11, 42),
+        ("workbook/__init__.py", 1, 4), ("workbook/workbook.py", 1, 35), ("packaging/core.py", 1, 18),
+        ("_constants.py", 1, 13))]
+    probe_path = M / "packages/engine/src/ontolearn_engine/mapping/probe.py"
+    probe = ast.parse(probe_path.read_bytes())
+    boundary = next(node for node in probe.body if isinstance(node, ast.FunctionDef) and node.name == "_boundary_cases")
+    csv_assign = next(node for node in boundary.body if isinstance(node, ast.Assign)
+                      and any(isinstance(t, ast.Name) and t.id == "csv_cases" for t in node.targets))
+    csv_order = [ast.literal_eval(case.elts[0]) for case in csv_assign.value.elts]
+    assert csv_order == ["csv-file-limit-located", "csv-column-limit-located", "csv-cell-limit-located", "csv-row-limit-located"]
+    result = {
+        "format": "T03-P2-DESIGNATED-COMPLETED-INDEPENDENT-STATIC/1", "recordedUtc": datetime.now(UTC).isoformat(),
+        "reviewHead": index["reviewHead"], "reports": [identity(Z_REPORT), identity(M_REPORT)],
+        "prompts": [identity(t / "build/review-session/metadata/dispatch-prompt.md") for t in (Z, M)],
+        "index": identity(index_path), "register": identity(register_path), "coverageCounts": counts,
+        "coverageByKind": by_kind, "blankMetadataPerPathNotes": blank,
+        "engineeringNotFullRows": [row for path, row in recorded.items()
+                                   if indexed[path]["kind"] == "engineering" and row["coverage"] != "FULL"],
+        "historicalLedger": history, "newObservationLedger": observations,
+        "installedOpenpyxlImportChainStaticFragments": fragments,
+        "probeStaticFragments": [fragment(probe_path, 278, 364),
+                                 fragment(M / "packages/engine/src/ontolearn_engine/mapping/source.py", 232, 241)],
+        "csvExecutionTupleOrderFromAST": csv_order,
+        "actualHistoricalFirstImportTime": "UNKNOWN", "installedLibraryImportedOrExecuted": False,
+        "productOrTestExecuted": False, "GUIAPIOrNativeUsed": False,
+        "gate": "FULL_DESIGNATED_REVIEW_INCOMPLETE_NO_FULL_DUAL_PASS",
+    }
+    (HERE / "static-evidence-and-ledger.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    print(json.dumps({"history": len(history), "new": len(observations), "counts": counts,
+                      "coverageByKind": by_kind, "csvOrder": csv_order,
+                      "output": identity(HERE / "static-evidence-and-ledger.json")}, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()
