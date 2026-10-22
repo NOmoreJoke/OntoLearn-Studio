@@ -1,0 +1,36 @@
+{
+  "role": "minimax",
+  "npmCi": {
+    "command": "npm ci --ignore-scripts --cache out/t10-review/round-1/minimax/npm-cache",
+    "exitCode": 0
+  },
+  "uvSync": {
+    "command": "uv sync --frozen --python 3.12 --cache-dir out/t10-review/round-1/minimax/uv-cache",
+    "exitCode": 0
+  },
+  "electronInstall": {
+    "command": "./node_modules/.bin/install-electron",
+    "exitCode": 0,
+    "launched": false
+  },
+  "nodeEnvironment": {
+    "node": "v24.15.0",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5",
+    "electronVersion": "44.9.0",
+    "electronExecutable": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-c3c7e90/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+    "electronExists": true,
+    "nodeModulesReal": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-c3c7e90/node_modules",
+    "contractsReal": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-c3c7e90/packages/contracts"
+  },
+  "pythonEnvironment": {
+    "python": "3.12.12",
+    "prefix": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-c3c7e90/.venv",
+    "pytest": "9.1.1",
+    "ruff": "0.17.1",
+    "rdflib": "7.6.0",
+    "engineDirectUrl": "{\"url\":\"file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T10-minimax-review-c3c7e90/packages/engine\",\"dir_info\":{\"editable\":true}}"
+  },
+  "productTestsRunDuringPreparation": false,
+  "guiUsed": false
+}
