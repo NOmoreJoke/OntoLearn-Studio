@@ -1,0 +1,39 @@
+{
+  "format": "T03-private-main-integration/1",
+  "basisHead": "56c234e2",
+  "productFiles": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 46499,
+      "sha256": "7b115b5e8ee7c4215f69216634b321bb952aad8accdf60587341d1d08feaedd2"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 42607,
+      "sha256": "c7311d084fbe377de311e97c31df07e0c2eeccea2353159bd7f32a964100df59"
+    }
+  ],
+  "commands": [],
+  "recovery": {
+    "source": "own session exact exec-0edf072c-d230-4476-8368-81ed8a9d43e4 aggregated_output; no other sessions",
+    "v04": "byte-exact recovery from own tool output, not an original backup",
+    "v05": "v04 plus exact authorized mkdir delta; exact reviewed05 hash reproduced; not an original backup",
+    "timestamps": "new files have current creation times; no backdate"
+  },
+  "finalTargetedPytest": {
+    "exitCode": 0,
+    "passed": 96,
+    "stdout": "18-pytest-integrated.stdout"
+  },
+  "limits": "Node subprocesses stub Python/PyInstaller; entrypoint uses fake canonical modules; no real whole-repo prepare/build/native/full-v1/B1/GUI; no runtimePass or root approval"
+}

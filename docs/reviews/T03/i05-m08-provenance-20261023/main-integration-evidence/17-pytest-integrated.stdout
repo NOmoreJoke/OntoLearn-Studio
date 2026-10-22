@@ -1,0 +1,31 @@
+........................................................................ [ 75%]
+..............F.........                                                 [100%]
+=================================== FAILURES ===================================
+_____________________ test_private_node_builder_boundaries _____________________
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-657/test_private_node_builder_boun0')
+
+    def test_private_node_builder_boundaries(tmp_path):
+        script = tmp_path / "builder-private-unit.mjs"
+        script.write_text(BUILDER_UNIT)
+        result = subprocess.run(
+            ["node", "--test", str(script)],
+            cwd=REPOSITORY,
+            env={
+                **os.environ,
+                "BUILDER_MODULE_URL": (REPOSITORY / "scripts/build-engine.mjs").as_uri(),
+            },
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        assert result.returncode == 0, result.stdout + result.stderr
+>       assert "# pass 10" in result.stdout
+E       AssertionError: assert '# pass 10' in 'EXPECTED_UNIT_PREPARE_FAILURE\n✔ builder fixes8 collections, compile0, unique outputs and preserves old stage (6.5570...0792ms)\nℹ tests 10\nℹ suites 0\nℹ pass 10\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 112.480792\n'
+E        +  where 'EXPECTED_UNIT_PREPARE_FAILURE\n✔ builder fixes8 collections, compile0, unique outputs and preserves old stage (6.5570...0792ms)\nℹ tests 10\nℹ suites 0\nℹ pass 10\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 112.480792\n' = CompletedProcess(args=['node', '--test', '/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pyte...ests 10\nℹ suites 0\nℹ pass 10\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 112.480792\n', stderr='').stdout
+
+packages/engine/tests/test_semantic_build_provenance.py:1106: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_private_node_builder_boundaries
+1 failed, 95 passed in 1.75s

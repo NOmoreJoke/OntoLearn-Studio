@@ -1,0 +1,144 @@
+import test from 'node:test'
+import { spawnSync } from 'node:child_process'
+import assert from 'node:assert/strict'
+import * as fs from 'node:fs'
+import { resolve, join } from 'node:path'
+import { buildEngine, publishEngineCopy } from '../../scripts/build-engine.mjs'
+const token = '11111111-2222-3333-4444-555555555555'
+const parent = new URL('./tmp/', import.meta.url)
+function fixture(t, behavior = {}) {
+  const root = fs.mkdtempSync(new URL('builder-', parent))
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }))
+  const runRoot = resolve(root, 'build/i05-provenance', token)
+  const engine = resolve(runRoot, 'dist/ontolearn-engine')
+  const calls = []
+  const run = (command, args, options) => {
+    calls.push({ command, args, options })
+    if (calls.length === 1) {
+      if (behavior.prepare) return behavior.prepare
+      fs.mkdirSync(resolve(runRoot, 'generated'), { recursive: true })
+      fs.mkdirSync(resolve(runRoot, 'provenance'))
+      return { status: 0, stdout: JSON.stringify({
+        provenancePath: resolve(runRoot, 'provenance/i05-private-build-provenance-v1.json'),
+        contractPath: resolve(runRoot, 'provenance/i05-private-contract-v1.json'),
+        generatedDir: resolve(runRoot, 'generated'),
+        anchorPath: resolve(runRoot, 'generated/_i05_private_build_anchor.py'),
+      }) }
+    }
+    if (calls.length === 2) {
+      if (behavior.packager) return behavior.packager
+      fs.mkdirSync(engine, { recursive: true })
+      fs.writeFileSync(resolve(engine, 'ontolearn-engine'), 'synthetic-new-engine')
+      return { status: 0 }
+    }
+    if (calls.length === 3) {
+      if (behavior.finalize) return behavior.finalize
+      fs.writeFileSync(resolve(runRoot, 'artifact-binding-v1.json'), 'synthetic-binding')
+      return { status: 0, stdout: JSON.stringify({ bindingPath: resolve(runRoot, 'artifact-binding-v1.json'),
+        bindingSha256: 'a'.repeat(64), engineDirectory: engine, provenanceSha256: 'b'.repeat(64) }) }
+    }
+    throw new Error('unexpected subprocess')
+  }
+  return { root, runRoot, engine, calls, run }
+}
+function oldStage(f) {
+  const path = resolve(f.root, 'build/engine/ontolearn-engine')
+  fs.mkdirSync(path, { recursive: true })
+  fs.writeFileSync(resolve(path, 'old'), 'synthetic-old-stage')
+  return path
+}
+
+test('private builder fixes8 collections, compile0 and unique outputs, preserves old stage', (t) => {
+  const f = fixture(t); const old = oldStage(f)
+  const result = buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token })
+  assert.equal(f.calls.length, 3)
+  const argv = f.calls[1].args
+  for (const name of ['rdflib','pyparsing','pyshacl','owlrl','packaging','prettytable','wcwidth','html5rdf']) {
+    assert(argv.some((x,i) => x === '--collect-all' && argv[i+1] === name))
+    assert(argv.some((x,i) => x === '--copy-metadata' && argv[i+1] === name))
+  }
+  assert.equal(argv[argv.indexOf('--optimize')+1], '0')
+  assert(argv.some((x,i)=>x==='--hidden-import'&&argv[i+1]==='ontolearn_engine.semantic_build_provenance'))
+  for (const flag of ['--distpath','--workpath','--specpath'])
+    assert(argv[argv.indexOf(flag)+1].startsWith(f.runRoot+'/'))
+  assert.equal(f.calls[1].options.env.PYINSTALLER_CONFIG_DIR, resolve(f.runRoot,'cache'))
+  assert.equal(result.rootApproved, false)
+  assert.equal(fs.readFileSync(resolve(old,'ontolearn-engine'),'utf8'),'synthetic-new-engine')
+  assert.equal(fs.readFileSync(resolve(f.runRoot,'staging-archive/ontolearn-engine/old'),'utf8'),'synthetic-old-stage')
+  assert.equal(fs.readFileSync(resolve(f.engine,'ontolearn-engine'),'utf8'),'synthetic-new-engine')
+  assert.equal(fs.readFileSync(result.bindingPath,'utf8'),'synthetic-binding')
+})
+
+test('prepare nonzero prevents packager and keeps first diagnostic', (t) => {
+  const f = fixture(t,{prepare:{status:2,stdout:'',stderr:'EXPECTED_UNIT_PREPARE_FAILURE\n'}})
+  assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/HELPER_FAILED/)
+  assert.equal(f.calls.length,1)
+})
+
+test('packager failure never finalizes or replaces staging', (t) => {
+  const f = fixture(t,{packager:{status:7}}); const old = oldStage(f)
+  assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/PYINSTALLER_FAILED/)
+  assert.equal(f.calls.length,2);assert.equal(fs.readFileSync(resolve(old,'old'),'utf8'),'synthetic-old-stage')
+})
+
+test('unexpected helper output cannot select other paths', (t) => {
+  const f = fixture(t,{prepare:{status:0,stdout:JSON.stringify({provenancePath:'/outside',contractPath:'/outside',generatedDir:'/outside',anchorPath:'/outside'})}})
+  assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/HELPER_PATH_INVALID/)
+  assert.equal(f.calls.length,1)
+})
+
+test('invalid final binding prevents staging publication', (t) => {
+  const f=fixture(t,{finalize:{status:0,stdout:JSON.stringify({bindingPath:'/outside',bindingSha256:'a'.repeat(64),engineDirectory:'/outside',provenanceSha256:'b'.repeat(64)})}})
+  const old=oldStage(f)
+  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/BINDING_INVALID/)
+  assert.equal(fs.readFileSync(resolve(old,'old'),'utf8'),'synthetic-old-stage')
+})
+
+test('duplicate UUID does not overwrite previous artifact or binding', (t) => {
+  const f=fixture(t);const result=buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token})
+  const original=fs.readFileSync(result.bindingPath)
+  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/OUTPUT_EXISTS/)
+  assert.deepEqual(fs.readFileSync(result.bindingPath),original)
+  assert.equal(f.calls.length,3)
+})
+
+test('dangling build ancestor symlink is rejected without writing its target', (t) => {
+  const f=fixture(t);fs.mkdirSync(resolve(f.root,'build'))
+  const outside=resolve(f.root,'outside-not-created')
+  fs.symlinkSync(outside,resolve(f.root,'build/i05-provenance'))
+  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/DIRECTORY_INVALID/)
+  assert.equal(fs.existsSync(outside),false);assert.equal(f.calls.length,0)
+})
+
+test('failed publication restores preceding stage without deleting immutable object', (t) => {
+  const f=fixture(t);const old=oldStage(f);let injected=false
+  const io={...fs,renameSync:(source,target)=>{
+    if(source.includes('.ontolearn-engine-')&&target===old&&!injected){injected=true;throw new Error('EXPECTED_RENAME_FAILURE')}
+    return fs.renameSync(source,target)
+  }}
+  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token,io}),/EXPECTED_RENAME_FAILURE/)
+  assert.equal(fs.readFileSync(resolve(old,'old'),'utf8'),'synthetic-old-stage')
+  assert.equal(fs.readFileSync(resolve(f.engine,'ontolearn-engine'),'utf8'),'synthetic-new-engine')
+  assert.equal(fs.readFileSync(resolve(f.runRoot,'artifact-binding-v1.json'),'utf8'),'synthetic-binding')
+})
+
+test('publish rejects source ancestor symlink and unsafe token', (t) => {
+  const f=fixture(t);fs.mkdirSync(f.runRoot,{recursive:true});const outside=resolve(f.root,'outside')
+  fs.mkdirSync(resolve(outside,'ontolearn-engine'),{recursive:true});fs.symlinkSync(outside,resolve(f.runRoot,'dist'))
+  assert.throws(()=>publishEngineCopy({root:f.root,runRoot:f.runRoot,engineDirectory:f.engine,token}),/ARTIFACT_PATH_INVALID/)
+  assert.throws(()=>publishEngineCopy({root:f.root,runRoot:f.runRoot,engineDirectory:f.engine,token:'../outside'}),/ARTIFACT_PATH_INVALID/)
+})
+
+
+test('noncanonical absolute root rejects promptly in a bounded unit child', (t) => {
+  const f=fixture(t)
+  const script=`import {publishEngineCopy} from ${JSON.stringify(new URL('../../scripts/build-engine.mjs',import.meta.url).href)};
+  import {resolve} from 'node:path';
+  const root=process.argv[1];const token=${JSON.stringify(token)};
+  const runRoot=resolve(root,'build/i05-provenance',token);
+  try {publishEngineCopy({root,runRoot,engineDirectory:resolve(runRoot,'dist/ontolearn-engine'),token});process.exit(3)}
+  catch(error){process.stdout.write(error.message);process.exit(error.message==='BUILD_ENGINE_ARTIFACT_PATH_INVALID'?0:4)}`
+  const result=spawnSync(process.execPath,['--input-type=module','-e',script,f.root+'/.'],{encoding:'utf8',timeout:2000})
+  assert.equal(result.error,undefined);assert.equal(result.status,0)
+  assert.equal(result.stdout,'BUILD_ENGINE_ARTIFACT_PATH_INVALID')
+})

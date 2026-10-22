@@ -1,0 +1,36 @@
+{
+  "format": "i05-private-consumer-interface-clarifications/1",
+  "contractCommit": "2fdd85375300bfbfa797588c348a205e1030ef6c",
+  "contractSha256": "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04",
+  "contractUnchanged": true,
+  "inputs": {
+    "sourceRoot": "packages/engine/src/ontolearn_engine/probe_inputs",
+    "frozenRoot": "sys._MEIPASS/ontolearn_engine/probe_inputs",
+    "names": ["i05-source-package-parity-manifest.json", "i05-source-package-parity-inputs.json"],
+    "builderCollection": "--collect-data ontolearn_engine; prepare/finalize verify exact fixed2 path/bytes/SHA",
+    "oldAliasNotProduced": "prov/i05/source-package-parity"
+  },
+  "native": {
+    "owner": "I05 unique probe writer, not T03 reader",
+    "sequence": [
+      "preflight data/identity check",
+      "I05 _install_audit_observer",
+      "actual canonical runtime imports",
+      "explicit importlib.import_module(wcwidth._wcwidth_c)",
+      "verify_loaded_modules and verify_native_extension over actual already-loaded modules"
+    ],
+    "noIncidentalAssumption": "22 canonical modules, Validator or import wcwidth do not by themselves prove native extension loaded",
+    "readerDoesNotImportTargets": true,
+    "checks": [
+      "canonical sys.modules identity",
+      "ExtensionFileLoader",
+      "actual origin inside engine artifact",
+      "actual file bytes/hash"
+    ],
+    "missingOrWrongLoader": "fixed BuildProvenanceFault; never purePython fallback Pass",
+    "sourceVsSignedNativeBytesEquivalent": "UNKNOWN unless separately verified by root; installation source hash and actual artifact hash are separate",
+    "observerProof": "actual I05 call ordering; no caller-supplied true boolean substitutes for installing observer"
+  },
+  "runtimeAuthority": "clarification of existing fixed target and after-observer consumption only; no new source/package full-v1/B1 CLI run, ABI/OS research, physical or UI authority",
+  "coordination": "through root to I05; no reciprocal crosschat precondition"
+}

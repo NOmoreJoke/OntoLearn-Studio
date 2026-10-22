@@ -1,0 +1,19 @@
+EXPECTED_UNIT_PREPARE_FAILURE
+✔ private builder fixes8 collections, compile0 and unique outputs, preserves old stage (5.236042ms)
+✔ prepare nonzero prevents packager and keeps first diagnostic (1.103167ms)
+✔ packager failure never finalizes or replaces staging (2.1785ms)
+✔ unexpected helper output cannot select other paths (1.001375ms)
+✔ invalid final binding prevents staging publication (3.701459ms)
+✔ duplicate UUID does not overwrite previous artifact or binding (3.622458ms)
+✔ dangling build ancestor symlink is rejected without writing its target (0.824375ms)
+✔ failed publication restores preceding stage without deleting immutable object (5.081333ms)
+✔ publish rejects source ancestor symlink and unsafe token (1.425542ms)
+✔ noncanonical absolute root rejects promptly in a bounded unit child (37.314125ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 112.566083

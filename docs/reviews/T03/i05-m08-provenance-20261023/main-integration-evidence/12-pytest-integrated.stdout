@@ -1,0 +1,433 @@
+........................................................................ [ 75%]
+..............FFFFFFFFFF                                                 [100%]
+=================================== FAILURES ===================================
+_____________________ test_private_node_builder_boundaries _____________________
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-656/test_private_node_builder_boun0')
+
+    def test_private_node_builder_boundaries(tmp_path):
+        script = tmp_path / "builder-private-unit.mjs"
+        script.write_text(BUILDER_UNIT)
+        result = subprocess.run(
+            ["node", "--test", str(script)],
+            cwd=REPOSITORY,
+            env={
+                **os.environ,
+                "BUILDER_MODULE_URL": (REPOSITORY / "scripts/build-engine.mjs").as_uri(),
+            },
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+>       assert result.returncode == 0, result.stdout + result.stderr
+E       AssertionError: EXPECTED_UNIT_PREPARE_FAILURE
+E         ✔ private builder fixes8 collections, compile0 and unique outputs, preserves old stage (7.7465ms)
+E         ✔ prepare nonzero prevents packager and keeps first diagnostic (1.321166ms)
+E         ✔ packager failure never finalizes or replaces staging (4.405166ms)
+E         ✔ unexpected helper output cannot select other paths (1.179458ms)
+E         ✔ invalid final binding prevents staging publication (3.786542ms)
+E         ✔ duplicate UUID does not overwrite previous artifact or binding (4.389041ms)
+E         ✔ dangling build ancestor symlink is rejected without writing its target (0.906375ms)
+E         ✔ failed publication restores preceding stage without deleting immutable object (4.924292ms)
+E         ✔ publish rejects source ancestor symlink and unsafe token (1.482459ms)
+E         ✖ noncanonical absolute root rejects promptly in a bounded unit child (33.31875ms)
+E         ℹ tests 10
+E         ℹ suites 0
+E         ℹ pass 9
+E         ℹ fail 1
+E         ℹ cancelled 0
+E         ℹ skipped 0
+E         ℹ todo 0
+E         ℹ duration_ms 123.292042
+E         
+E         ✖ failing tests:
+E         
+E         test at ../../../../../../../../private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-656/test_private_node_builder_boun0/builder-private-unit.mjs:134:1
+E         ✖ noncanonical absolute root rejects promptly in a bounded unit child (33.31875ms)
+E           AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+E           
+E           1 !== 0
+E           
+E               at TestContext.<anonymous> (file:///private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-656/test_private_node_builder_boun0/builder-private-unit.mjs:148:47)
+E               at Test.runInAsyncScope (node:async_hooks:227:14)
+E               at Test.run (node:internal/test_runner/test:1201:25)
+E               at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+E               at Test.postRun (node:internal/test_runner/test:1330:19)
+E               at Test.run (node:internal/test_runner/test:1258:12)
+E               at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+E             generatedMessage: true,
+E             code: 'ERR_ASSERTION',
+E             actual: 1,
+E             expected: 0,
+E             operator: 'strictEqual',
+E             diff: 'simple'
+E           }
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['node', '--test', '/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pyte...ERR_ASSERTION',\n    actual: 1,\n    expected: 0,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n", stderr='').returncode
+
+packages/engine/tests/test_semantic_build_provenance.py:980: AssertionError
+_____________ test_entrypoint_semantic_preserves_argv_and_exit[0] ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d25760>
+status = 0
+
+    @pytest.mark.parametrize("status", [0, 1, 2, 130])
+    def test_entrypoint_semantic_preserves_argv_and_exit(monkeypatch, status):
+        name = "ontolearn_engine.semantic_source_package_probe"
+        module = types.ModuleType(name)
+        observed = []
+    
+        def main():
+            observed.append(list(sys.argv))
+            return status
+    
+        module.main = main
+        monkeypatch.setitem(sys.modules, name, module)
+        argv = ["entrypoint.py", "--semantic-source-package-probe", "full-v1"]
+        monkeypatch.setattr(sys, "argv", argv.copy())
+        with pytest.raises(SystemExit) as caught:
+            runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+        assert caught.value.code == status
+>       assert observed == [argv]
+E       AssertionError: assert [['/Users/kyl...', 'full-v1']] == [['entrypoint...', 'full-v1']]
+E         
+E         At index 0 diff: ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--semantic-source-package-probe', 'full-v1'] != ['entrypoint.py', '--semantic-source-package-probe', 'full-v1']
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1002: AssertionError
+_____________ test_entrypoint_semantic_preserves_argv_and_exit[1] ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d3e720>
+status = 1
+
+    @pytest.mark.parametrize("status", [0, 1, 2, 130])
+    def test_entrypoint_semantic_preserves_argv_and_exit(monkeypatch, status):
+        name = "ontolearn_engine.semantic_source_package_probe"
+        module = types.ModuleType(name)
+        observed = []
+    
+        def main():
+            observed.append(list(sys.argv))
+            return status
+    
+        module.main = main
+        monkeypatch.setitem(sys.modules, name, module)
+        argv = ["entrypoint.py", "--semantic-source-package-probe", "full-v1"]
+        monkeypatch.setattr(sys, "argv", argv.copy())
+        with pytest.raises(SystemExit) as caught:
+            runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+        assert caught.value.code == status
+>       assert observed == [argv]
+E       AssertionError: assert [['/Users/kyl...', 'full-v1']] == [['entrypoint...', 'full-v1']]
+E         
+E         At index 0 diff: ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--semantic-source-package-probe', 'full-v1'] != ['entrypoint.py', '--semantic-source-package-probe', 'full-v1']
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1002: AssertionError
+_____________ test_entrypoint_semantic_preserves_argv_and_exit[2] ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d3f650>
+status = 2
+
+    @pytest.mark.parametrize("status", [0, 1, 2, 130])
+    def test_entrypoint_semantic_preserves_argv_and_exit(monkeypatch, status):
+        name = "ontolearn_engine.semantic_source_package_probe"
+        module = types.ModuleType(name)
+        observed = []
+    
+        def main():
+            observed.append(list(sys.argv))
+            return status
+    
+        module.main = main
+        monkeypatch.setitem(sys.modules, name, module)
+        argv = ["entrypoint.py", "--semantic-source-package-probe", "full-v1"]
+        monkeypatch.setattr(sys, "argv", argv.copy())
+        with pytest.raises(SystemExit) as caught:
+            runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+        assert caught.value.code == status
+>       assert observed == [argv]
+E       AssertionError: assert [['/Users/kyl...', 'full-v1']] == [['entrypoint...', 'full-v1']]
+E         
+E         At index 0 diff: ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--semantic-source-package-probe', 'full-v1'] != ['entrypoint.py', '--semantic-source-package-probe', 'full-v1']
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1002: AssertionError
+____________ test_entrypoint_semantic_preserves_argv_and_exit[130] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d25760>
+status = 130
+
+    @pytest.mark.parametrize("status", [0, 1, 2, 130])
+    def test_entrypoint_semantic_preserves_argv_and_exit(monkeypatch, status):
+        name = "ontolearn_engine.semantic_source_package_probe"
+        module = types.ModuleType(name)
+        observed = []
+    
+        def main():
+            observed.append(list(sys.argv))
+            return status
+    
+        module.main = main
+        monkeypatch.setitem(sys.modules, name, module)
+        argv = ["entrypoint.py", "--semantic-source-package-probe", "full-v1"]
+        monkeypatch.setattr(sys, "argv", argv.copy())
+        with pytest.raises(SystemExit) as caught:
+            runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+        assert caught.value.code == status
+>       assert observed == [argv]
+E       AssertionError: assert [['/Users/kyl...', 'full-v1']] == [['entrypoint...', 'full-v1']]
+E         
+E         At index 0 diff: ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--semantic-source-package-probe', 'full-v1'] != ['entrypoint.py', '--semantic-source-package-probe', 'full-v1']
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1002: AssertionError
+_ test_entrypoint_existing_dispatch[--storage-probe-storage_probe-expected_argv0] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d3f080>
+flag = '--storage-probe', target = 'storage_probe'
+expected_argv = ['entrypoint.py', 'synthetic']
+
+    @pytest.mark.parametrize(
+        ("flag", "target", "expected_argv"),
+        [
+            ("--storage-probe", "storage_probe", ["entrypoint.py", "synthetic"]),
+            ("--worker", "worker", ["entrypoint.py", "--worker", "synthetic"]),
+            ("--contract-probe", "contract_probe", ["entrypoint.py", "--contract-probe", "synthetic"]),
+            (
+                "--protocol-resources",
+                "resources",
+                ["entrypoint.py", "--protocol-resources", "synthetic"],
+            ),
+            ("--other", "__main__", ["entrypoint.py", "--other", "synthetic"]),
+        ],
+    )
+    def test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):
+        observed = []
+        for candidate in [
+            "semantic_source_package_probe",
+            "storage_probe",
+            "worker",
+            "contract_probe",
+            "resources",
+            "__main__",
+        ]:
+            name = f"ontolearn_engine.{candidate}"
+            module = types.ModuleType(name)
+    
+            def main(candidate=candidate):
+                observed.append((candidate, list(sys.argv)))
+    
+            module.main = main
+            monkeypatch.setitem(sys.modules, name, module)
+        monkeypatch.setattr(sys, "argv", ["entrypoint.py", flag, "synthetic"])
+        runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+>       assert observed == [(target, expected_argv)]
+E       AssertionError: assert [('storage_pr...'synthetic'])] == [('storage_pr...'synthetic'])]
+E         
+E         At index 0 diff: ('storage_probe', ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', 'synthetic']) != ('storage_probe', ['entrypoint.py', 'synthetic'])
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1039: AssertionError
+______ test_entrypoint_existing_dispatch[--worker-worker-expected_argv1] _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d3ea80>
+flag = '--worker', target = 'worker'
+expected_argv = ['entrypoint.py', '--worker', 'synthetic']
+
+    @pytest.mark.parametrize(
+        ("flag", "target", "expected_argv"),
+        [
+            ("--storage-probe", "storage_probe", ["entrypoint.py", "synthetic"]),
+            ("--worker", "worker", ["entrypoint.py", "--worker", "synthetic"]),
+            ("--contract-probe", "contract_probe", ["entrypoint.py", "--contract-probe", "synthetic"]),
+            (
+                "--protocol-resources",
+                "resources",
+                ["entrypoint.py", "--protocol-resources", "synthetic"],
+            ),
+            ("--other", "__main__", ["entrypoint.py", "--other", "synthetic"]),
+        ],
+    )
+    def test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):
+        observed = []
+        for candidate in [
+            "semantic_source_package_probe",
+            "storage_probe",
+            "worker",
+            "contract_probe",
+            "resources",
+            "__main__",
+        ]:
+            name = f"ontolearn_engine.{candidate}"
+            module = types.ModuleType(name)
+    
+            def main(candidate=candidate):
+                observed.append((candidate, list(sys.argv)))
+    
+            module.main = main
+            monkeypatch.setitem(sys.modules, name, module)
+        monkeypatch.setattr(sys, "argv", ["entrypoint.py", flag, "synthetic"])
+        runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+>       assert observed == [(target, expected_argv)]
+E       AssertionError: assert [('worker', [...'synthetic'])] == [('worker', [...'synthetic'])]
+E         
+E         At index 0 diff: ('worker', ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--worker', 'synthetic']) != ('worker', ['entrypoint.py', '--worker', 'synthetic'])
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1039: AssertionError
+_ test_entrypoint_existing_dispatch[--contract-probe-contract_probe-expected_argv2] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d3f5c0>
+flag = '--contract-probe', target = 'contract_probe'
+expected_argv = ['entrypoint.py', '--contract-probe', 'synthetic']
+
+    @pytest.mark.parametrize(
+        ("flag", "target", "expected_argv"),
+        [
+            ("--storage-probe", "storage_probe", ["entrypoint.py", "synthetic"]),
+            ("--worker", "worker", ["entrypoint.py", "--worker", "synthetic"]),
+            ("--contract-probe", "contract_probe", ["entrypoint.py", "--contract-probe", "synthetic"]),
+            (
+                "--protocol-resources",
+                "resources",
+                ["entrypoint.py", "--protocol-resources", "synthetic"],
+            ),
+            ("--other", "__main__", ["entrypoint.py", "--other", "synthetic"]),
+        ],
+    )
+    def test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):
+        observed = []
+        for candidate in [
+            "semantic_source_package_probe",
+            "storage_probe",
+            "worker",
+            "contract_probe",
+            "resources",
+            "__main__",
+        ]:
+            name = f"ontolearn_engine.{candidate}"
+            module = types.ModuleType(name)
+    
+            def main(candidate=candidate):
+                observed.append((candidate, list(sys.argv)))
+    
+            module.main = main
+            monkeypatch.setitem(sys.modules, name, module)
+        monkeypatch.setattr(sys, "argv", ["entrypoint.py", flag, "synthetic"])
+        runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+>       assert observed == [(target, expected_argv)]
+E       AssertionError: assert [('contract_p...'synthetic'])] == [('contract_p...'synthetic'])]
+E         
+E         At index 0 diff: ('contract_probe', ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--contract-probe', 'synthetic']) != ('contract_probe', ['entrypoint.py', '--contract-probe', 'synthetic'])
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1039: AssertionError
+_ test_entrypoint_existing_dispatch[--protocol-resources-resources-expected_argv3] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d3df70>
+flag = '--protocol-resources', target = 'resources'
+expected_argv = ['entrypoint.py', '--protocol-resources', 'synthetic']
+
+    @pytest.mark.parametrize(
+        ("flag", "target", "expected_argv"),
+        [
+            ("--storage-probe", "storage_probe", ["entrypoint.py", "synthetic"]),
+            ("--worker", "worker", ["entrypoint.py", "--worker", "synthetic"]),
+            ("--contract-probe", "contract_probe", ["entrypoint.py", "--contract-probe", "synthetic"]),
+            (
+                "--protocol-resources",
+                "resources",
+                ["entrypoint.py", "--protocol-resources", "synthetic"],
+            ),
+            ("--other", "__main__", ["entrypoint.py", "--other", "synthetic"]),
+        ],
+    )
+    def test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):
+        observed = []
+        for candidate in [
+            "semantic_source_package_probe",
+            "storage_probe",
+            "worker",
+            "contract_probe",
+            "resources",
+            "__main__",
+        ]:
+            name = f"ontolearn_engine.{candidate}"
+            module = types.ModuleType(name)
+    
+            def main(candidate=candidate):
+                observed.append((candidate, list(sys.argv)))
+    
+            module.main = main
+            monkeypatch.setitem(sys.modules, name, module)
+        monkeypatch.setattr(sys, "argv", ["entrypoint.py", flag, "synthetic"])
+        runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+>       assert observed == [(target, expected_argv)]
+E       AssertionError: assert [('resources'...'synthetic'])] == [('resources'...'synthetic'])]
+E         
+E         At index 0 diff: ('resources', ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--protocol-resources', 'synthetic']) != ('resources', ['entrypoint.py', '--protocol-resources', 'synthetic'])
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1039: AssertionError
+______ test_entrypoint_existing_dispatch[--other-__main__-expected_argv4] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x106d3dcd0>
+flag = '--other', target = '__main__'
+expected_argv = ['entrypoint.py', '--other', 'synthetic']
+
+    @pytest.mark.parametrize(
+        ("flag", "target", "expected_argv"),
+        [
+            ("--storage-probe", "storage_probe", ["entrypoint.py", "synthetic"]),
+            ("--worker", "worker", ["entrypoint.py", "--worker", "synthetic"]),
+            ("--contract-probe", "contract_probe", ["entrypoint.py", "--contract-probe", "synthetic"]),
+            (
+                "--protocol-resources",
+                "resources",
+                ["entrypoint.py", "--protocol-resources", "synthetic"],
+            ),
+            ("--other", "__main__", ["entrypoint.py", "--other", "synthetic"]),
+        ],
+    )
+    def test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):
+        observed = []
+        for candidate in [
+            "semantic_source_package_probe",
+            "storage_probe",
+            "worker",
+            "contract_probe",
+            "resources",
+            "__main__",
+        ]:
+            name = f"ontolearn_engine.{candidate}"
+            module = types.ModuleType(name)
+    
+            def main(candidate=candidate):
+                observed.append((candidate, list(sys.argv)))
+    
+            module.main = main
+            monkeypatch.setitem(sys.modules, name, module)
+        monkeypatch.setattr(sys, "argv", ["entrypoint.py", flag, "synthetic"])
+        runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+>       assert observed == [(target, expected_argv)]
+E       AssertionError: assert [('__main__',...'synthetic'])] == [('__main__',...'synthetic'])]
+E         
+E         At index 0 diff: ('__main__', ['/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/packages/engine/entrypoint.py', '--other', 'synthetic']) != ('__main__', ['entrypoint.py', '--other', 'synthetic'])
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_build_provenance.py:1039: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_private_node_builder_boundaries
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_semantic_preserves_argv_and_exit[0]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_semantic_preserves_argv_and_exit[1]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_semantic_preserves_argv_and_exit[2]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_semantic_preserves_argv_and_exit[130]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_existing_dispatch[--storage-probe-storage_probe-expected_argv0]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_existing_dispatch[--worker-worker-expected_argv1]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_existing_dispatch[--contract-probe-contract_probe-expected_argv2]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_existing_dispatch[--protocol-resources-resources-expected_argv3]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_entrypoint_existing_dispatch[--other-__main__-expected_argv4]
+10 failed, 86 passed in 2.56s

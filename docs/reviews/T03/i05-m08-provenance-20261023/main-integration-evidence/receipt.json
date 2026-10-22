@@ -1,0 +1,228 @@
+{
+  "format": "T03-private-main-integration/1",
+  "basisHead": "56c234e2",
+  "productFiles": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 46499,
+      "sha256": "7b115b5e8ee7c4215f69216634b321bb952aad8accdf60587341d1d08feaedd2"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 42607,
+      "sha256": "c7311d084fbe377de311e97c31df07e0c2eeccea2353159bd7f32a964100df59"
+    }
+  ],
+  "commands": [
+    {
+      "executionId": "exec-7919392c-d90f-4d5f-8574-d0020adc605c",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "cat > build/i05-provenance-unit/builder-private-unit.mjs <<'JS'\nimport test from 'node:test'\nimport assert from 'node:assert/strict'\nimport * as fs from 'node:fs'\nimport { resolve, join } from 'node:path'\nimport { buildEngine, publishEngineCopy } from '../../scripts/build-engine.mjs'\nconst token = '11111111-2222-3333-4444-555555555555'\nconst parent = new URL('./tmp/', import.meta.url)\nfunction fixture(t, behavior = {}) {\n  const root = fs.mkdtempSync(new URL('builder-', parent))\n  t.after(() => fs.rmSync(root, { recursive: true, force: true }))\n  const runRoot = resolve(root, 'build/i05-provenance', token)\n  const engine = resolve(runRoot, 'dist/ontolearn-engine')\n  const calls = []\n  const run = (command, args, options) => {\n    calls.push({ command, args, options })\n    if (calls.length === 1) {\n      if (behavior.prepare) return behavior.prepare\n      fs.mkdirSync(resolve(runRoot, 'generated'), { recursive: true })\n      fs.mkdirSync(resolve(runRoot, 'provenance'))\n      return { status: 0, stdout: JSON.stringify({\n        provenancePath: resolve(runRoot, 'provenance/i05-private-build-provenance-v1.json'),\n        contractPath: resolve(runRoot, 'provenance/i05-private-contract-v1.json'),\n        generatedDir: resolve(runRoot, 'generated'),\n        anchorPath: resolve(runRoot, 'generated/_i05_private_build_anchor.py'),\n      }) }\n    }\n    if (calls.length === 2) {\n      if (behavior.packager) return behavior.packager\n      fs.mkdirSync(engine, { recursive: true })\n      fs.writeFileSync(resolve(engine, 'ontolearn-engine'), 'synthetic-new-engine')\n      return { status: 0 }\n    }\n    if (calls.length === 3) {\n      if (behavior.finalize) return behavior.finalize\n      fs.writeFileSync(resolve(runRoot, 'artifact-binding-v1.json'), 'synthetic-binding')\n      return { status: 0, stdout: JSON.stringify({ bindingPath: resolve(runRoot, 'artifact-binding-v1.json'),\n        bindingSha256: 'a'.repeat(64), engineDirectory: engine, provenanceSha256: 'b'.repeat(64) }) }\n    }\n    throw new Error('unexpected subprocess')\n  }\n  return { root, runRoot, engine, calls, run }\n}\nfunction oldStage(f) {\n  const path = resolve(f.root, 'build/engine/ontolearn-engine')\n  fs.mkdirSync(path, { recursive: true })\n  fs.writeFileSync(resolve(path, 'old'), 'synthetic-old-stage')\n  return path\n}\n\ntest('private builder fixes8 collections, compile0 and unique outputs, preserves old stage', (t) => {\n  const f = fixture(t); const old = oldStage(f)\n  const result = buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token })\n  assert.equal(f.calls.length, 3)\n  const argv = f.calls[1].args\n  for (const name of ['rdflib','pyparsing','pyshacl','owlrl','packaging','prettytable','wcwidth','html5rdf']) {\n    assert(argv.some((x,i) => x === '--collect-all' && argv[i+1] === name))\n    assert(argv.some((x,i) => x === '--copy-metadata' && argv[i+1] === name))\n  }\n  assert.equal(argv[argv.indexOf('--optimize')+1], '0')\n  for (const flag of ['--distpath','--workpath','--specpath'])\n    assert(argv[argv.indexOf(flag)+1].startsWith(f.runRoot+'/'))\n  assert.equal(f.calls[1].options.env.PYINSTALLER_CONFIG_DIR, resolve(f.runRoot,'cache'))\n  assert.equal(result.rootApproved, false)\n  assert.equal(fs.readFileSync(resolve(old,'ontolearn-engine'),'utf8'),'synthetic-new-engine')\n  assert.equal(fs.readFileSync(resolve(f.runRoot,'staging-archive/ontolearn-engine/old'),'utf8'),'synthetic-old-stage')\n  assert.equal(fs.readFileSync(resolve(f.engine,'ontolearn-engine'),'utf8'),'synthetic-new-engine')\n  assert.equal(fs.readFileSync(result.bindingPath,'utf8'),'synthetic-binding')\n})\n\ntest('prepare nonzero prevents packager and keeps first diagnostic', (t) => {\n  const f = fixture(t,{prepare:{status:2,stdout:'',stderr:'EXPECTED_UNIT_PREPARE_FAILURE\\n'}})\n  assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/HELPER_FAILED/)\n  assert.equal(f.calls.length,1)\n})\n\ntest('packager failure never finalizes or replaces staging', (t) => {\n  const f = fixture(t,{packager:{status:7}}); const old = oldStage(f)\n  assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/PYINSTALLER_FAILED/)\n  assert.equal(f.calls.length,2);assert.equal(fs.readFileSync(resolve(old,'old'),'utf8'),'synthetic-old-stage')\n})\n\ntest('unexpected helper output cannot select other paths', (t) => {\n  const f = fixture(t,{prepare:{status:0,stdout:JSON.stringify({provenancePath:'/outside',contractPath:'/outside',generatedDir:'/outside',anchorPath:'/outside'})}})\n  assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/HELPER_PATH_INVALID/)\n  assert.equal(f.calls.length,1)\n})\n\ntest('invalid final binding prevents staging publication', (t) => {\n  const f=fixture(t,{finalize:{status:0,stdout:JSON.stringify({bindingPath:'/outside',bindingSha256:'a'.repeat(64),engineDirectory:'/outside',provenanceSha256:'b'.repeat(64)})}})\n  const old=oldStage(f)\n  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/BINDING_INVALID/)\n  assert.equal(fs.readFileSync(resolve(old,'old'),'utf8'),'synthetic-old-stage')\n})\n\ntest('duplicate UUID does not overwrite previous artifact or binding', (t) => {\n  const f=fixture(t);const result=buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token})\n  const original=fs.readFileSync(result.bindingPath)\n  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/OUTPUT_EXISTS/)\n  assert.deepEqual(fs.readFileSync(result.bindingPath),original)\n  assert.equal(f.calls.length,3)\n})\n\ntest('dangling build ancestor symlink is rejected without writing its target', (t) => {\n  const f=fixture(t);fs.mkdirSync(resolve(f.root,'build'))\n  const outside=resolve(f.root,'outside-not-created')\n  fs.symlinkSync(outside,resolve(f.root,'build/i05-provenance'))\n  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/DIRECTORY_INVALID/)\n  assert.equal(fs.existsSync(outside),false);assert.equal(f.calls.length,0)\n})\n\ntest('failed publication restores preceding stage without deleting immutable object', (t) => {\n  const f=fixture(t);const old=oldStage(f);let injected=false\n  const io={...fs,renameSync:(source,target)=>{\n    if(source.includes('.ontolearn-engine-')&&target===old&&!injected){injected=true;throw new Error('EXPECTED_RENAME_FAILURE')}\n    return fs.renameSync(source,target)\n  }}\n  assert.throws(()=>buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token,io}),/EXPECTED_RENAME_FAILURE/)\n  assert.equal(fs.readFileSync(resolve(old,'old'),'utf8'),'synthetic-old-stage')\n  assert.equal(fs.readFileSync(resolve(f.engine,'ontolearn-engine'),'utf8'),'synthetic-new-engine')\n  assert.equal(fs.readFileSync(resolve(f.runRoot,'artifact-binding-v1.json'),'utf8'),'synthetic-binding')\n})\n\ntest('publish rejects source ancestor symlink and unsafe token', (t) => {\n  const f=fixture(t);fs.mkdirSync(f.runRoot,{recursive:true});const outside=resolve(f.root,'outside')\n  fs.mkdirSync(resolve(outside,'ontolearn-engine'),{recursive:true});fs.symlinkSync(outside,resolve(f.runRoot,'dist'))\n  assert.throws(()=>publishEngineCopy({root:f.root,runRoot:f.runRoot,engineDirectory:f.engine,token}),/ARTIFACT_PATH_INVALID/)\n  assert.throws(()=>publishEngineCopy({root:f.root,runRoot:f.runRoot,engineDirectory:f.engine,token:'../outside'}),/ARTIFACT_PATH_INVALID/)\n})\nJS\nnode --test build/i05-provenance-unit/builder-private-unit.mjs > build/i05-provenance-unit/03-builder-unit.stdout 2> build/i05-provenance-unit/03-builder-unit.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "completed",
+      "exitCode": 0,
+      "startedAtMs": 1792694486814,
+      "completedAtMs": 1792694486816,
+      "durationAsRecorded": {
+        "secs": 0,
+        "nanos": 1789834
+      }
+    },
+    {
+      "executionId": "exec-afc96567-bec4-42f6-a54f-e8ab9e8d96f9",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "/Users/kyle/.local/bin/python3.12 - <<'PY'\nfrom pathlib import Path\np=Path('build/i05-provenance-unit/builder-private-unit.mjs');s=p.read_text().replace(\"import test from 'node:test'\", \"import test from 'node:test'\\nimport { spawnSync } from 'node:child_process'\")\ns=s.replace(\"  assert.equal(argv[argv.indexOf('--optimize')+1], '0')\", \"  assert.equal(argv[argv.indexOf('--optimize')+1], '0')\\n  assert(argv.some((x,i)=>x==='--hidden-import'&&argv[i+1]==='ontolearn_engine.semantic_build_provenance'))\")\ns+='''\\n\\ntest('noncanonical absolute root rejects promptly in a bounded unit child', (t) => {\\n  const f=fixture(t)\\n  const script=`import {publishEngineCopy} from ${JSON.stringify(new URL('../../scripts/build-engine.mjs',import.meta.url).href)};\\n  import {resolve} from 'node:path';\\n  const root=process.argv[1];const token=${JSON.stringify(token)};\\n  const runRoot=resolve(root,'build/i05-provenance',token);\\n  try {publishEngineCopy({root,runRoot,engineDirectory:resolve(runRoot,'dist/ontolearn-engine'),token});process.exit(3)}\\n  catch(error){process.stdout.write(error.message);process.exit(error.message==='BUILD_ENGINE_ARTIFACT_PATH_INVALID'?0:4)}`\\n  const result=spawnSync(process.execPath,['--input-type=module','-e',script,f.root+'/.'],{encoding:'utf8',timeout:2000})\\n  assert.equal(result.error,undefined);assert.equal(result.status,0)\\n  assert.equal(result.stdout,'BUILD_ENGINE_ARTIFACT_PATH_INVALID')\\n})\\n'''\np.write_text(s)\nPY\nnode --test build/i05-provenance-unit/builder-private-unit.mjs > build/i05-provenance-unit/04-builder-unit-root-guard.stdout 2> build/i05-provenance-unit/04-builder-unit-root-guard.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "completed",
+      "exitCode": 0,
+      "startedAtMs": 1792694681869,
+      "completedAtMs": 1792694681896,
+      "durationAsRecorded": {
+        "secs": 0,
+        "nanos": 26459250
+      }
+    },
+    {
+      "executionId": "exec-6cc780f1-4983-4876-9f60-c686ada5b8c7",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "node --test build/i05-provenance-unit/builder-private-unit.mjs > build/i05-provenance-unit/05-builder-unit-root-real-ancestors.stdout 2> build/i05-provenance-unit/05-builder-unit-root-real-ancestors.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "completed",
+      "exitCode": 0,
+      "startedAtMs": 1792695029278,
+      "completedAtMs": 1792695029296,
+      "durationAsRecorded": {
+        "secs": 0,
+        "nanos": 18255833
+      }
+    },
+    {
+      "executionId": "exec-93c540f7-8d83-453e-9bbe-e0edf4c4ca93",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "python3 - <<'PY'\nfrom pathlib import Path\np=Path('packages/engine/tests/test_semantic_build_provenance.py')\ns=p.read_text().replace('import os\\n','import os\\nimport runpy\\nimport subprocess\\n')\njs=Path('build/i05-provenance-unit/builder-private-unit.mjs').read_text()\njs=js.replace(\"import { buildEngine, publishEngineCopy } from '../../scripts/build-engine.mjs'\", \"const { buildEngine, publishEngineCopy } = await import(process.env.BUILDER_MODULE_URL)\")\njs=js.replace(\"const parent = new URL('./tmp/', import.meta.url)\",\"const parent = new URL('./tmp/', import.meta.url)\\nfs.mkdirSync(parent, {recursive:true})\")\njs=js.replace(\"JSON.stringify(new URL('../../scripts/build-engine.mjs',import.meta.url).href)\",\"JSON.stringify(process.env.BUILDER_MODULE_URL)\")\ns+='''\\n\\n# Stub subprocesses plus actual temporary filesystem; no prepare/PyInstaller execution.\\nBUILDER_UNIT = r\\\"\\\"\\\"'''+js+'''\\\"\\\"\\\"\\n\\n\\ndef test_private_node_builder_boundaries(tmp_path):\\n    script = tmp_path / \"builder-private-unit.mjs\"\\n    script.write_text(BUILDER_UNIT)\\n    result = subprocess.run(\\n        [\"node\", \"--test\", str(script)],\\n        cwd=REPOSITORY,\\n        env={**os.environ, \"BUILDER_MODULE_URL\": (REPOSITORY / \"scripts/build-engine.mjs\").as_uri()},\\n        capture_output=True,\\n        text=True,\\n        timeout=30,\\n        check=False,\\n    )\\n    assert result.returncode == 0, result.stdout + result.stderr\\n    assert \"# pass 10\" in result.stdout\\n    assert \"# fail 0\" in result.stdout\\n\\n\\n@pytest.mark.parametrize(\"status\", [0, 1, 2, 130])\\ndef test_entrypoint_semantic_preserves_argv_and_exit(monkeypatch, status):\\n    name = \"ontolearn_engine.semantic_source_package_probe\"\\n    module = types.ModuleType(name)\\n    observed = []\\n\\n    def main():\\n        observed.append(list(sys.argv))\\n        return status\\n\\n    module.main = main\\n    monkeypatch.setitem(sys.modules, name, module)\\n    argv = [\"entrypoint.py\", \"--semantic-source-package-probe\", \"full-v1\"]\\n    monkeypatch.setattr(sys, \"argv\", argv.copy())\\n    with pytest.raises(SystemExit) as caught:\\n        runpy.run_path(str(REPOSITORY / \"packages/engine/entrypoint.py\"), run_name=\"__main__\")\\n    assert caught.value.code == status\\n    assert observed == [argv]\\n\\n\\n@pytest.mark.parametrize(\\n    (\"flag\", \"target\", \"expected_argv\"),\\n    [\\n        (\"--storage-probe\", \"storage_probe\", [\"entrypoint.py\", \"synthetic\"]),\\n        (\"--worker\", \"worker\", [\"entrypoint.py\", \"--worker\", \"synthetic\"]),\\n        (\"--contract-probe\", \"contract_probe\", [\"entrypoint.py\", \"--contract-probe\", \"synthetic\"]),\\n        (\"--protocol-resources\", \"resources\", [\"entrypoint.py\", \"--protocol-resources\", \"synthetic\"]),\\n        (\"--other\", \"__main__\", [\"entrypoint.py\", \"--other\", \"synthetic\"]),\\n    ],\\n)\\ndef test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):\\n    observed = []\\n    for candidate in [\\n        \"semantic_source_package_probe\", \"storage_probe\", \"worker\",\\n        \"contract_probe\", \"resources\", \"__main__\",\\n    ]:\\n        name = f\"ontolearn_engine.{candidate}\"\\n        module = types.ModuleType(name)\\n\\n        def main(candidate=candidate):\\n            observed.append((candidate, list(sys.argv)))\\n\\n        module.main = main\\n        monkeypatch.setitem(sys.modules, name, module)\\n    monkeypatch.setattr(sys, \"argv\", [\"entrypoint.py\", flag, \"synthetic\"])\\n    runpy.run_path(str(REPOSITORY / \"packages/engine/entrypoint.py\"), run_name=\"__main__\")\\n    assert observed == [(target, expected_argv)]\\n'''\np.write_text(s)\nPY\n.venv/bin/ruff check packages/engine/tests/test_semantic_build_provenance.py packages/engine/entrypoint.py packages/engine/src/ontolearn_engine/semantic_build_provenance.py > build/i05-provenance-unit/07-ruff-integration-first.stdout 2> build/i05-provenance-unit/07-ruff-integration-first.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "failed",
+      "exitCode": 1,
+      "startedAtMs": 1792695083851,
+      "completedAtMs": 1792695083851,
+      "durationAsRecorded": {
+        "secs": 0,
+        "nanos": 6750
+      }
+    },
+    {
+      "executionId": "exec-cef2e818-e8af-4adb-883c-0acd65e7efe6",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "cat build/i05-provenance-unit/07-ruff-integration-first.stdout && .venv/bin/ruff format packages/engine/tests/test_semantic_build_provenance.py && .venv/bin/ruff check packages/engine/tests/test_semantic_build_provenance.py packages/engine/entrypoint.py packages/engine/src/ontolearn_engine/semantic_build_provenance.py > build/i05-provenance-unit/08-ruff-integration.stdout 2> build/i05-provenance-unit/08-ruff-integration.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "failed",
+      "exitCode": 1,
+      "startedAtMs": 1792695089696,
+      "completedAtMs": 1792695089696,
+      "durationAsRecorded": {
+        "secs": 0,
+        "nanos": 10167
+      }
+    },
+    {
+      "executionId": "exec-77bbdc7e-053c-4382-8ef9-7d14cba1834d",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "node_modules/.bin/prettier build/i05-provenance-unit/builder-private-unit.mjs --write --print-width 90 > build/i05-provenance-unit/09-js-test-format.stdout 2> build/i05-provenance-unit/09-js-test-format.stderr\npython3 - <<'PY'\nfrom pathlib import Path\np=Path('packages/engine/tests/test_semantic_build_provenance.py')\ns=p.read_text().replace('import runpy\\nimport subprocess\\nimport shutil\\n','import runpy\\nimport shutil\\nimport subprocess\\n')\njs=Path('build/i05-provenance-unit/builder-private-unit.mjs').read_text()\njs=js.replace(\"import { buildEngine, publishEngineCopy } from '../../scripts/build-engine.mjs'\", \"const { buildEngine, publishEngineCopy } = await import(process.env.BUILDER_MODULE_URL)\")\njs=js.replace(\"const parent = new URL('./tmp/', import.meta.url)\",\"const parent = new URL('./tmp/', import.meta.url)\\nfs.mkdirSync(parent, { recursive: true })\")\njs=js.replace(\"new URL('../../scripts/build-engine.mjs', import.meta.url).href\", \"process.env.BUILDER_MODULE_URL\")\njs=js.replace(\";process.exit(3)\",\";\\n  process.exit(3)\")\njs=js.replace(\"catch(error){process.stdout.write(error.message);process.exit(\",\"catch(error){\\n  process.stdout.write(error.message);\\n  process.exit(\")\njs=js.replace(\"engineDirectory:resolve(runRoot,'dist/ontolearn-engine'),token\", \"engineDirectory:resolve(runRoot,'dist/ontolearn-engine'),\\n  token\")\na=s.index('BUILDER_UNIT = r\"\"\"')+len('BUILDER_UNIT = r\"\"\"');b=s.index('\"\"\"',a)\ns=s[:a]+js+s[b:];p.write_text(s)\nPY\n.venv/bin/ruff format packages/engine/tests/test_semantic_build_provenance.py > build/i05-provenance-unit/10-format-integration.stdout\n.venv/bin/ruff check packages/engine/tests/test_semantic_build_provenance.py packages/engine/entrypoint.py packages/engine/src/ontolearn_engine/semantic_build_provenance.py > build/i05-provenance-unit/11-ruff-integration.stdout 2> build/i05-provenance-unit/11-ruff-integration.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "failed",
+      "exitCode": 1,
+      "startedAtMs": 1792695108405,
+      "completedAtMs": 1792695108923,
+      "durationAsRecorded": {
+        "secs": 0,
+        "nanos": 517448167
+      }
+    },
+    {
+      "executionId": "exec-6ac2c341-87ed-48e8-be27-d37e861f363b",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "cat build/i05-provenance-unit/11-ruff-integration.stdout && .venv/bin/pytest packages/engine/tests/test_semantic_build_provenance.py -q > build/i05-provenance-unit/12-pytest-integrated.stdout 2> build/i05-provenance-unit/12-pytest-integrated.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "failed",
+      "exitCode": 1,
+      "startedAtMs": 1792695109078,
+      "completedAtMs": 1792695112150,
+      "durationAsRecorded": {
+        "secs": 3,
+        "nanos": 71040334
+      }
+    },
+    {
+      "executionId": "exec-362d244d-60fb-4fcf-9bdf-956d618c88df",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "node_modules/.bin/prettier build/i05-provenance-unit/builder-private-unit.mjs --write --print-width 90 --ignore-path /dev/null > build/i05-provenance-unit/13-js-test-format.stdout 2> build/i05-provenance-unit/13-js-test-format.stderr\npython3 - <<'PY'\nfrom pathlib import Path\np=Path('packages/engine/tests/test_semantic_build_provenance.py'); s=p.read_text()\njs=Path('build/i05-provenance-unit/builder-private-unit.mjs').read_text()\njs=js.replace(\"import { buildEngine, publishEngineCopy } from '../../scripts/build-engine.mjs'\", \"const { buildEngine, publishEngineCopy } = await import(process.env.BUILDER_MODULE_URL)\")\njs=js.replace(\"const parent = new URL('./tmp/', import.meta.url)\",\"const parent = new URL('./tmp/', import.meta.url)\\nfs.mkdirSync(parent, { recursive: true })\")\njs=js.replace(\"new URL('../../scripts/build-engine.mjs', import.meta.url).href\", \"process.env.BUILDER_MODULE_URL\")\njs=js.replace(\"new URL('../../scripts/build-engine.mjs',import.meta.url).href\", \"process.env.BUILDER_MODULE_URL\")\njs=js.replace(\";process.exit(3)\",\";\\n  process.exit(3)\")\njs=js.replace(\"catch(error){process.stdout.write(error.message);process.exit(\",\"catch(error){\\n  process.stdout.write(error.message);\\n  process.exit(\")\njs=js.replace(\"engineDirectory:resolve(runRoot,'dist/ontolearn-engine'),token\", \"engineDirectory:resolve(runRoot,'dist/ontolearn-engine'),\\n  token\")\na=s.index('BUILDER_UNIT = r\"\"\"')+len('BUILDER_UNIT = r\"\"\"');b=s.index('\"\"\"',a)\ns=s[:a]+js+s[b:];p.write_text(s)\nPY\n.venv/bin/ruff check packages/engine/tests/test_semantic_build_provenance.py > build/i05-provenance-unit/14-ruff-integration.stdout 2> build/i05-provenance-unit/14-ruff-integration.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "failed",
+      "exitCode": 1,
+      "startedAtMs": 1792695122170,
+      "completedAtMs": 1792695122185,
+      "durationAsRecorded": {
+        "secs": 0,
+        "nanos": 15067000
+      }
+    },
+    {
+      "executionId": "exec-5c89c516-2b91-4cdc-96ff-fe5d089fa81f",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "python3 - <<'PY'\nfrom pathlib import Path\np=Path('packages/engine/tests/test_semantic_build_provenance.py');s=p.read_text().replace('private builder fixes8 collections, compile0 and unique outputs, preserves old stage','builder fixes8 collections, compile0, unique outputs and preserves old stage')\ns=s.replace('argv = [\"entrypoint.py\", \"--semantic-source-package-probe\", \"full-v1\"]','argv = [str(REPOSITORY / \"packages/engine/entrypoint.py\"),\\n            \"--semantic-source-package-probe\", \"full-v1\"]')\ns=s.replace('assert observed == [(target, expected_argv)]','assert observed == [(target, [str(REPOSITORY / \"packages/engine/entrypoint.py\"),\\n                                   *expected_argv[1:]])]')\np.write_text(s)\nPY\n.venv/bin/ruff format packages/engine/tests/test_semantic_build_provenance.py > build/i05-provenance-unit/15-format-integration.stdout\n.venv/bin/ruff check packages/engine/tests/test_semantic_build_provenance.py packages/engine/entrypoint.py packages/engine/src/ontolearn_engine/semantic_build_provenance.py > build/i05-provenance-unit/16-ruff-integration.stdout 2> build/i05-provenance-unit/16-ruff-integration.stderr\n.venv/bin/pytest packages/engine/tests/test_semantic_build_provenance.py -q > build/i05-provenance-unit/17-pytest-integrated.stdout 2> build/i05-provenance-unit/17-pytest-integrated.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "failed",
+      "exitCode": 1,
+      "startedAtMs": 1792695132384,
+      "completedAtMs": 1792695134220,
+      "durationAsRecorded": {
+        "secs": 1,
+        "nanos": 835892375
+      }
+    },
+    {
+      "executionId": "exec-59b0dfa0-9a4b-4db8-be1a-c8315218b8dc",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        ".venv/bin/pytest packages/engine/tests/test_semantic_build_provenance.py -q > build/i05-provenance-unit/18-pytest-integrated.stdout 2> build/i05-provenance-unit/18-pytest-integrated.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "completed",
+      "exitCode": 0,
+      "startedAtMs": 1792695152164,
+      "completedAtMs": 1792695153904,
+      "durationAsRecorded": {
+        "secs": 1,
+        "nanos": 740672333
+      }
+    },
+    {
+      "executionId": "exec-56abd933-fb0e-4e71-9999-046887aef646",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "sed -n '1210,1280p' packages/engine/src/ontolearn_engine/semantic_build_provenance.py && .venv/bin/ruff format --check packages/engine/tests/test_semantic_build_provenance.py packages/engine/entrypoint.py packages/engine/src/ontolearn_engine/semantic_build_provenance.py > build/i05-provenance-unit/19-format-final.stdout 2> build/i05-provenance-unit/19-format-final.stderr && node --check scripts/build-engine.mjs && node_modules/.bin/eslint scripts/build-engine.mjs && node_modules/.bin/prettier scripts/build-engine.mjs --check && git diff --check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "status": "completed",
+      "exitCode": 0,
+      "startedAtMs": 1792695224373,
+      "completedAtMs": 1792695226211,
+      "durationAsRecorded": {
+        "secs": 1,
+        "nanos": 838066000
+      }
+    }
+  ],
+  "recovery": {
+    "source": "own session exact exec-0edf072c-d230-4476-8368-81ed8a9d43e4 aggregated_output; no other sessions",
+    "v04": "byte-exact recovery from own tool output, not an original backup",
+    "v05": "v04 plus exact authorized mkdir delta; exact reviewed05 hash reproduced; not an original backup",
+    "timestamps": "new files have current creation times; no backdate"
+  },
+  "finalTargetedPytest": {
+    "exitCode": 0,
+    "passed": 96,
+    "stdout": "18-pytest-integrated.stdout"
+  },
+  "limits": "Node subprocesses stub Python/PyInstaller; entrypoint uses fake canonical modules; no real whole-repo prepare/build/native/full-v1/B1/GUI; no runtimePass or root approval",
+  "metadataCorrection": "First metadata extraction used literal cwd and string command; actual records store URI cwd and argv list. First incomplete receipt retained; exact bounded own executions selected after decoding."
+}

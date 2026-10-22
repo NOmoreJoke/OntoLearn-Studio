@@ -1,0 +1,130 @@
+E501 Line too long (109 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:849:101
+    |
+847 |       if (behavior.finalize) return behavior.finalize
+848 |       fs.writeFileSync(resolve(runRoot, 'artifact-binding-v1.json'), 'synthetic-binding')
+849 |       return { status: 0, stdout: JSON.stringify({ bindingPath: resolve(runRoot, 'artifact-binding-v1.json'),
+    |                                                                                                     ^^^^^^^^^
+850 |         bindingSha256: 'a'.repeat(64), engineDirectory: engine, provenanceSha256: 'b'.repeat(64) }) }
+851 |     }
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:850:101
+    |
+848 |       fs.writeFileSync(resolve(runRoot, 'artifact-binding-v1.json'), 'synthetic-binding')
+849 |       return { status: 0, stdout: JSON.stringify({ bindingPath: resolve(runRoot, 'artifact-binding-v1.json'),
+850 |         bindingSha256: 'a'.repeat(64), engineDirectory: engine, provenanceSha256: 'b'.repeat(64) }) }
+    |                                                                                                     ^
+851 |     }
+852 |     throw new Error('unexpected subprocess')
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:863:101
+    |
+861 | }
+862 |
+863 | test('private builder fixes8 collections, compile0 and unique outputs, preserves old stage', (t) => {
+    |                                                                                                     ^
+864 |   const f = fixture(t); const old = oldStage(f)
+865 |   const result = buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token })
+    |
+
+E501 Line too long (111 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:868:101
+    |
+866 |   assert.equal(f.calls.length, 3)
+867 |   const argv = f.calls[1].args
+868 |   for (const name of ['rdflib','pyparsing','pyshacl','owlrl','packaging','prettytable','wcwidth','html5rdf']) {
+    |                                                                                                     ^^^^^^^^^^^
+869 |     assert(argv.some((x,i) => x === '--collect-all' && argv[i+1] === name))
+870 |     assert(argv.some((x,i) => x === '--copy-metadata' && argv[i+1] === name))
+    |
+
+E501 Line too long (105 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:892:101
+    |
+890 | test('packager failure never finalizes or replaces staging', (t) => {
+891 |   const f = fixture(t,{packager:{status:7}}); const old = oldStage(f)
+892 |   assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/PYINSTALLER_FAILED/)
+    |                                                                                                     ^^^^^
+893 |   assert.equal(f.calls.length,2);assert.equal(fs.readFileSync(resolve(old,'old'),'utf8'),'synthetic-old-stage')
+894 | })
+    |
+
+E501 Line too long (164 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:897:101
+    |
+896 | …{
+897 | …ovenancePath:'/outside',contractPath:'/outside',generatedDir:'/outside',anchorPath:'/outside'})}})
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+898 | …,uuid:()=>token}),/HELPER_PATH_INVALID/)
+899 | …
+    |
+
+E501 Line too long (106 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:898:101
+    |
+896 | test('unexpected helper output cannot select other paths', (t) => {
+897 |   const f = fixture(t,{prepare:{status:0,stdout:JSON.stringify({provenancePath:'/outside',contractPath:'/outside',generatedDir:'/outs…
+898 |   assert.throws(() => buildEngine({repositoryRoot:f.root,run:f.run,uuid:()=>token}),/HELPER_PATH_INVALID/)
+    |                                                                                                     ^^^^^^
+899 |   assert.equal(f.calls.length,1)
+900 | })
+    |
+
+E501 Line too long (178 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:903:101
+    |
+902 | …
+903 | …h:'/outside',bindingSha256:'a'.repeat(64),engineDirectory:'/outside',provenanceSha256:'b'.repeat(64)})}})
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+904 | …
+905 | …>token}),/BINDING_INVALID/)
+    |
+
+E501 Line too long (128 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:928:101
+    |
+926 |   const f=fixture(t);const old=oldStage(f);let injected=false
+927 |   const io={...fs,renameSync:(source,target)=>{
+928 |     if(source.includes('.ontolearn-engine-')&&target===old&&!injected){injected=true;throw new Error('EXPECTED_RENAME_FAILURE')}
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+929 |     return fs.renameSync(source,target)
+930 |   }}
+    |
+
+E501 Line too long (101 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:938:101
+    |
+937 | test('publish rejects source ancestor symlink and unsafe token', (t) => {
+938 |   const f=fixture(t);fs.mkdirSync(f.runRoot,{recursive:true});const outside=resolve(f.root,'outside')
+    |                                                                                                     ^
+939 |   fs.mkdirSync(resolve(outside,'ontolearn-engine'),{recursive:true});fs.symlinkSync(outside,resolve(f.runRoot,'dist'))
+940 |   assert.throws(()=>publishEngineCopy({root:f.root,runRoot:f.runRoot,engineDirectory:f.engine,token}),/ARTIFACT_PATH_INVALID/)
+    |
+
+E501 Line too long (130 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:948:101
+    |
+946 |   const f=fixture(t)
+947 |   fs.mkdirSync(f.engine,{recursive:true})
+948 |   const script=`import {publishEngineCopy} from ${JSON.stringify(new URL('../../scripts/build-engine.mjs',import.meta.url).href)};
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+949 |   import {resolve} from 'node:path';
+950 |   const root=process.argv[1];const token=${JSON.stringify(token)};
+    |
+
+E501 Line too long (121 > 100)
+   --> packages/engine/tests/test_semantic_build_provenance.py:958:101
+    |
+956 |   process.stdout.write(error.message);
+957 |   process.exit(error.message==='BUILD_ENGINE_ARTIFACT_PATH_INVALID'?0:4)}`
+958 |   const result=spawnSync(process.execPath,['--input-type=module','-e',script,f.root+'/.'],{encoding:'utf8',timeout:2000})
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^
+959 |   assert.equal(result.error,undefined);assert.equal(result.status,0)
+960 |   assert.equal(result.stdout,'BUILD_ENGINE_ARTIFACT_PATH_INVALID')
+    |
+
+Found 12 errors.

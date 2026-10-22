@@ -6,7 +6,9 @@ import copy
 import importlib.machinery
 import json
 import os
+import runpy
 import shutil
+import subprocess
 import sys
 import types
 import uuid
@@ -803,4 +805,366 @@ def test_build_archive_reader_is_imported_only_by_explicit_build_helper(monkeypa
         ("import", "PyInstaller.archive.readers"),
         ("open", str(tmp_path / "ontolearn-engine")),
         ("embedded", "PYZ.pyz"),
+    ]
+
+
+# Stub subprocesses plus actual temporary filesystem; no prepare/PyInstaller execution.
+BUILDER_UNIT = r"""import test from 'node:test'
+import { spawnSync } from 'node:child_process'
+import assert from 'node:assert/strict'
+import * as fs from 'node:fs'
+import { resolve, join } from 'node:path'
+const { buildEngine, publishEngineCopy } = await import(process.env.BUILDER_MODULE_URL)
+const token = '11111111-2222-3333-4444-555555555555'
+const parent = new URL('./tmp/', import.meta.url)
+fs.mkdirSync(parent, { recursive: true })
+function fixture(t, behavior = {}) {
+  const root = fs.mkdtempSync(new URL('builder-', parent))
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }))
+  const runRoot = resolve(root, 'build/i05-provenance', token)
+  const engine = resolve(runRoot, 'dist/ontolearn-engine')
+  const calls = []
+  const run = (command, args, options) => {
+    calls.push({ command, args, options })
+    if (calls.length === 1) {
+      if (behavior.prepare) return behavior.prepare
+      fs.mkdirSync(resolve(runRoot, 'generated'), { recursive: true })
+      fs.mkdirSync(resolve(runRoot, 'provenance'))
+      return {
+        status: 0,
+        stdout: JSON.stringify({
+          provenancePath: resolve(
+            runRoot,
+            'provenance/i05-private-build-provenance-v1.json',
+          ),
+          contractPath: resolve(runRoot, 'provenance/i05-private-contract-v1.json'),
+          generatedDir: resolve(runRoot, 'generated'),
+          anchorPath: resolve(runRoot, 'generated/_i05_private_build_anchor.py'),
+        }),
+      }
+    }
+    if (calls.length === 2) {
+      if (behavior.packager) return behavior.packager
+      fs.mkdirSync(engine, { recursive: true })
+      fs.writeFileSync(resolve(engine, 'ontolearn-engine'), 'synthetic-new-engine')
+      return { status: 0 }
+    }
+    if (calls.length === 3) {
+      if (behavior.finalize) return behavior.finalize
+      fs.writeFileSync(resolve(runRoot, 'artifact-binding-v1.json'), 'synthetic-binding')
+      return {
+        status: 0,
+        stdout: JSON.stringify({
+          bindingPath: resolve(runRoot, 'artifact-binding-v1.json'),
+          bindingSha256: 'a'.repeat(64),
+          engineDirectory: engine,
+          provenanceSha256: 'b'.repeat(64),
+        }),
+      }
+    }
+    throw new Error('unexpected subprocess')
+  }
+  return { root, runRoot, engine, calls, run }
+}
+function oldStage(f) {
+  const path = resolve(f.root, 'build/engine/ontolearn-engine')
+  fs.mkdirSync(path, { recursive: true })
+  fs.writeFileSync(resolve(path, 'old'), 'synthetic-old-stage')
+  return path
+}
+
+test('builder fixes8 collections, compile0, unique outputs and preserves old stage', (t) => {
+  const f = fixture(t)
+  const old = oldStage(f)
+  const result = buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token })
+  assert.equal(f.calls.length, 3)
+  const argv = f.calls[1].args
+  for (const name of [
+    'rdflib',
+    'pyparsing',
+    'pyshacl',
+    'owlrl',
+    'packaging',
+    'prettytable',
+    'wcwidth',
+    'html5rdf',
+  ]) {
+    assert(argv.some((x, i) => x === '--collect-all' && argv[i + 1] === name))
+    assert(argv.some((x, i) => x === '--copy-metadata' && argv[i + 1] === name))
+  }
+  assert.equal(argv[argv.indexOf('--optimize') + 1], '0')
+  assert(
+    argv.some(
+      (x, i) =>
+        x === '--hidden-import' &&
+        argv[i + 1] === 'ontolearn_engine.semantic_build_provenance',
+    ),
+  )
+  for (const flag of ['--distpath', '--workpath', '--specpath'])
+    assert(argv[argv.indexOf(flag) + 1].startsWith(f.runRoot + '/'))
+  assert.equal(f.calls[1].options.env.PYINSTALLER_CONFIG_DIR, resolve(f.runRoot, 'cache'))
+  assert.equal(result.rootApproved, false)
+  assert.equal(
+    fs.readFileSync(resolve(old, 'ontolearn-engine'), 'utf8'),
+    'synthetic-new-engine',
+  )
+  assert.equal(
+    fs.readFileSync(resolve(f.runRoot, 'staging-archive/ontolearn-engine/old'), 'utf8'),
+    'synthetic-old-stage',
+  )
+  assert.equal(
+    fs.readFileSync(resolve(f.engine, 'ontolearn-engine'), 'utf8'),
+    'synthetic-new-engine',
+  )
+  assert.equal(fs.readFileSync(result.bindingPath, 'utf8'), 'synthetic-binding')
+})
+
+test('prepare nonzero prevents packager and keeps first diagnostic', (t) => {
+  const f = fixture(t, {
+    prepare: { status: 2, stdout: '', stderr: 'EXPECTED_UNIT_PREPARE_FAILURE\n' },
+  })
+  assert.throws(
+    () => buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token }),
+    /HELPER_FAILED/,
+  )
+  assert.equal(f.calls.length, 1)
+})
+
+test('packager failure never finalizes or replaces staging', (t) => {
+  const f = fixture(t, { packager: { status: 7 } })
+  const old = oldStage(f)
+  assert.throws(
+    () => buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token }),
+    /PYINSTALLER_FAILED/,
+  )
+  assert.equal(f.calls.length, 2)
+  assert.equal(fs.readFileSync(resolve(old, 'old'), 'utf8'), 'synthetic-old-stage')
+})
+
+test('unexpected helper output cannot select other paths', (t) => {
+  const f = fixture(t, {
+    prepare: {
+      status: 0,
+      stdout: JSON.stringify({
+        provenancePath: '/outside',
+        contractPath: '/outside',
+        generatedDir: '/outside',
+        anchorPath: '/outside',
+      }),
+    },
+  })
+  assert.throws(
+    () => buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token }),
+    /HELPER_PATH_INVALID/,
+  )
+  assert.equal(f.calls.length, 1)
+})
+
+test('invalid final binding prevents staging publication', (t) => {
+  const f = fixture(t, {
+    finalize: {
+      status: 0,
+      stdout: JSON.stringify({
+        bindingPath: '/outside',
+        bindingSha256: 'a'.repeat(64),
+        engineDirectory: '/outside',
+        provenanceSha256: 'b'.repeat(64),
+      }),
+    },
+  })
+  const old = oldStage(f)
+  assert.throws(
+    () => buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token }),
+    /BINDING_INVALID/,
+  )
+  assert.equal(fs.readFileSync(resolve(old, 'old'), 'utf8'), 'synthetic-old-stage')
+})
+
+test('duplicate UUID does not overwrite previous artifact or binding', (t) => {
+  const f = fixture(t)
+  const result = buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token })
+  const original = fs.readFileSync(result.bindingPath)
+  assert.throws(
+    () => buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token }),
+    /OUTPUT_EXISTS/,
+  )
+  assert.deepEqual(fs.readFileSync(result.bindingPath), original)
+  assert.equal(f.calls.length, 3)
+})
+
+test('dangling build ancestor symlink is rejected without writing its target', (t) => {
+  const f = fixture(t)
+  fs.mkdirSync(resolve(f.root, 'build'))
+  const outside = resolve(f.root, 'outside-not-created')
+  fs.symlinkSync(outside, resolve(f.root, 'build/i05-provenance'))
+  assert.throws(
+    () => buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token }),
+    /DIRECTORY_INVALID/,
+  )
+  assert.equal(fs.existsSync(outside), false)
+  assert.equal(f.calls.length, 0)
+})
+
+test('failed publication restores preceding stage without deleting immutable object', (t) => {
+  const f = fixture(t)
+  const old = oldStage(f)
+  let injected = false
+  const io = {
+    ...fs,
+    renameSync: (source, target) => {
+      if (source.includes('.ontolearn-engine-') && target === old && !injected) {
+        injected = true
+        throw new Error('EXPECTED_RENAME_FAILURE')
+      }
+      return fs.renameSync(source, target)
+    },
+  }
+  assert.throws(
+    () => buildEngine({ repositoryRoot: f.root, run: f.run, uuid: () => token, io }),
+    /EXPECTED_RENAME_FAILURE/,
+  )
+  assert.equal(fs.readFileSync(resolve(old, 'old'), 'utf8'), 'synthetic-old-stage')
+  assert.equal(
+    fs.readFileSync(resolve(f.engine, 'ontolearn-engine'), 'utf8'),
+    'synthetic-new-engine',
+  )
+  assert.equal(
+    fs.readFileSync(resolve(f.runRoot, 'artifact-binding-v1.json'), 'utf8'),
+    'synthetic-binding',
+  )
+})
+
+test('publish rejects source ancestor symlink and unsafe token', (t) => {
+  const f = fixture(t)
+  fs.mkdirSync(f.runRoot, { recursive: true })
+  const outside = resolve(f.root, 'outside')
+  fs.mkdirSync(resolve(outside, 'ontolearn-engine'), { recursive: true })
+  fs.symlinkSync(outside, resolve(f.runRoot, 'dist'))
+  assert.throws(
+    () =>
+      publishEngineCopy({
+        root: f.root,
+        runRoot: f.runRoot,
+        engineDirectory: f.engine,
+        token,
+      }),
+    /ARTIFACT_PATH_INVALID/,
+  )
+  assert.throws(
+    () =>
+      publishEngineCopy({
+        root: f.root,
+        runRoot: f.runRoot,
+        engineDirectory: f.engine,
+        token: '../outside',
+      }),
+    /ARTIFACT_PATH_INVALID/,
+  )
+})
+
+test('noncanonical absolute root rejects promptly in a bounded unit child', (t) => {
+  const f = fixture(t)
+  fs.mkdirSync(f.engine, { recursive: true })
+  const script = `import {publishEngineCopy} from ${JSON.stringify(process.env.BUILDER_MODULE_URL)};
+  import {resolve} from 'node:path';
+  const root=process.argv[1];const token=${JSON.stringify(token)};
+  const runRoot=resolve(root,'build/i05-provenance',token);
+  try {publishEngineCopy({root,runRoot,engineDirectory:resolve(runRoot,'dist/ontolearn-engine'),
+  token});
+  process.exit(3)}
+  catch(error){
+  process.stdout.write(error.message);
+  process.exit(error.message==='BUILD_ENGINE_ARTIFACT_PATH_INVALID'?0:4)}`
+  const result = spawnSync(
+    process.execPath,
+    ['--input-type=module', '-e', script, f.root + '/.'],
+    { encoding: 'utf8', timeout: 2000 },
+  )
+  assert.equal(result.error, undefined)
+  assert.equal(result.status, 0)
+  assert.equal(result.stdout, 'BUILD_ENGINE_ARTIFACT_PATH_INVALID')
+})
+"""
+
+
+def test_private_node_builder_boundaries(tmp_path):
+    script = tmp_path / "builder-private-unit.mjs"
+    script.write_text(BUILDER_UNIT)
+    result = subprocess.run(
+        ["node", "--test", "--test-reporter=tap", str(script)],
+        cwd=REPOSITORY,
+        env={
+            **os.environ,
+            "BUILDER_MODULE_URL": (REPOSITORY / "scripts/build-engine.mjs").as_uri(),
+        },
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "# pass 10" in result.stdout
+    assert "# fail 0" in result.stdout
+
+
+@pytest.mark.parametrize("status", [0, 1, 2, 130])
+def test_entrypoint_semantic_preserves_argv_and_exit(monkeypatch, status):
+    name = "ontolearn_engine.semantic_source_package_probe"
+    module = types.ModuleType(name)
+    observed = []
+
+    def main():
+        observed.append(list(sys.argv))
+        return status
+
+    module.main = main
+    monkeypatch.setitem(sys.modules, name, module)
+    argv = [
+        str(REPOSITORY / "packages/engine/entrypoint.py"),
+        "--semantic-source-package-probe",
+        "full-v1",
+    ]
+    monkeypatch.setattr(sys, "argv", argv.copy())
+    with pytest.raises(SystemExit) as caught:
+        runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+    assert caught.value.code == status
+    assert observed == [argv]
+
+
+@pytest.mark.parametrize(
+    ("flag", "target", "expected_argv"),
+    [
+        ("--storage-probe", "storage_probe", ["entrypoint.py", "synthetic"]),
+        ("--worker", "worker", ["entrypoint.py", "--worker", "synthetic"]),
+        ("--contract-probe", "contract_probe", ["entrypoint.py", "--contract-probe", "synthetic"]),
+        (
+            "--protocol-resources",
+            "resources",
+            ["entrypoint.py", "--protocol-resources", "synthetic"],
+        ),
+        ("--other", "__main__", ["entrypoint.py", "--other", "synthetic"]),
+    ],
+)
+def test_entrypoint_existing_dispatch(monkeypatch, flag, target, expected_argv):
+    observed = []
+    for candidate in [
+        "semantic_source_package_probe",
+        "storage_probe",
+        "worker",
+        "contract_probe",
+        "resources",
+        "__main__",
+    ]:
+        name = f"ontolearn_engine.{candidate}"
+        module = types.ModuleType(name)
+
+        def main(candidate=candidate):
+            observed.append((candidate, list(sys.argv)))
+
+        module.main = main
+        monkeypatch.setitem(sys.modules, name, module)
+    monkeypatch.setattr(sys, "argv", ["entrypoint.py", flag, "synthetic"])
+    runpy.run_path(str(REPOSITORY / "packages/engine/entrypoint.py"), run_name="__main__")
+    assert observed == [
+        (target, [str(REPOSITORY / "packages/engine/entrypoint.py"), *expected_argv[1:]])
     ]

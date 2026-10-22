@@ -3,7 +3,11 @@
 import sys
 
 if __name__ == "__main__":
-    if sys.argv[1:2] == ["--storage-probe"]:
+    if sys.argv[1:2] == ["--semantic-source-package-probe"]:
+        from ontolearn_engine.semantic_source_package_probe import main as probe_main
+
+        raise SystemExit(probe_main())
+    elif sys.argv[1:2] == ["--storage-probe"]:
         from ontolearn_engine.storage_probe import main as probe_main
 
         sys.argv.pop(1)
