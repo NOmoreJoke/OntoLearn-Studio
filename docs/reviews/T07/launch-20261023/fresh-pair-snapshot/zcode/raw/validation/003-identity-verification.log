@@ -1,0 +1,46 @@
+path                                                                   wt==mf  git==mf bytes
+apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx                True    True    20270
+apps/desktop/src/renderer/src/scenario/presentation.ts                 True    True    5924
+apps/desktop/src/renderer/src/scenario/scenario.css                    True    True    3633
+docs/iterations/T07/acceptance.md                                      True    True    6766
+docs/iterations/T07/integration-request.md                             True    True    6502
+docs/iterations/T07/round-projection-handoff.md                        True    True    4060
+docs/reviews/T07/.gitignore                                            True    True    122
+docs/reviews/T07/evidence/candidate-files.json                         True    True    2458
+docs/reviews/T07/evidence/persistence-validation.json                  True    True    3037
+docs/reviews/T07/evidence/render-probe.mjs                             True    True    7984
+docs/reviews/T07/evidence/t09-input-receipt.json                       True    True    3708
+docs/reviews/T07/evidence/ui-probe.json                                True    True    1628
+docs/reviews/T07/evidence/validation.json                              True    True    2770
+docs/reviews/T07/internal-review.md                                    True    True    3769
+docs/reviews/T07/status.md                                             False   True    8383
+packages/engine/src/ontolearn_engine/scenario/__init__.py              True    True    90
+packages/engine/src/ontolearn_engine/scenario/model.py                 True    True    8300
+packages/engine/src/ontolearn_engine/scenario/runner.py                True    True    11287
+packages/engine/tests/test_scenario_persistence.py                     True    True    11511
+packages/engine/tests/test_scenario_rounds.py                          True    True    17612
+tests/fixtures/scenario/e5.json                                        True    True    4024
+tests/fixtures/scenario/round-projection-handoff.json                  True    True    13004
+tests/fixtures/scenario/t09-e5.json                                    True    True    169895
+tests/fixtures/scenario/t09-manifest.json                              True    True    2268
+tests/unit/t07-scenario.test.ts                                        True    True    5388
+
+result: git(productHead)==manifest 24+1 of 25; wt drift (process files updated after freeze): 1; real mismatches: 0
+
+== 14 implementation/test/fixture entries (working tree) ==
+apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx                True
+apps/desktop/src/renderer/src/scenario/presentation.ts                 True
+apps/desktop/src/renderer/src/scenario/scenario.css                    True
+docs/reviews/T07/evidence/render-probe.mjs                             True
+packages/engine/src/ontolearn_engine/scenario/__init__.py              True
+packages/engine/src/ontolearn_engine/scenario/model.py                 True
+packages/engine/src/ontolearn_engine/scenario/runner.py                True
+packages/engine/tests/test_scenario_persistence.py                     True
+packages/engine/tests/test_scenario_rounds.py                          True
+tests/fixtures/scenario/e5.json                                        True
+tests/fixtures/scenario/round-projection-handoff.json                  True
+tests/fixtures/scenario/t09-e5.json                                    True
+tests/fixtures/scenario/t09-manifest.json                              True
+tests/unit/t07-scenario.test.ts                                        True
+14-entry matches: 14/14
+git diff base..product path count: 25

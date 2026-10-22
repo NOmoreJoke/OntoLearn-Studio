@@ -1,0 +1,19 @@
+== base PRD sha256 vs t09-manifest source ==
+7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb  /Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/scratch/prd-base.md
+manifest expects: 7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb
+
+== t09-e5.json structure ==
+keys: ['alarmClosurePolicy', 'behaviorVersion', 'behaviors', 'capacityMode', 'constraints', 'eventInjectionPolicy', 'events', 'expected', 'fixtureVersion', 'id', 'initialBacklog', 'initialConsumedEvents', 'initialFacts', 'initialTriggeredInstances', 'inputVersion', 'maxRounds', 'ontology', 'orderIdPolicy', 'queueOrder', 'replay', 'ruleVersion', 'rules', 'semanticsVersion', 'singleValuedPredicates']
+inputVersion/ruleVersion/behaviorVersion: e5-1 rules-1 e5-behaviors-1
+events: 16 first: {'id': 'E001', 'round': 1, 'inputSequence': 0, 'type': 'alarm-added', 'alarmId': 'AE001', 'equipmentId': '001', 'level': 'High', 'status': 'Open', 'orderId': 'W001', 'payload': {'alarmId': 'AE001', 'equipmentId': '001', 'level': 'High', 'status': 'Open', 'orderId': 'W001', 'addFacts': [{'subject': 'urn:ontolearn:learning:alarm/AE001', 'predicate': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'object': '<urn:ontolearn:learning:Alarm>'}, {'subject': 'urn:ontolearn:learning:alarm/AE001', 'predicate': 'urn:ontolearn:learning:level', 'object': '"High"'}, {'subject': 'urn:ontolearn:learning:alarm/AE001', 'predicate': 'urn:ontolearn:learning:status', 'object': '"Open"'}, {'subject': 'urn:ontolearn:learning:equipment/001', 'predicate': 'urn:ontolearn:learning:alarm', 'object': '<urn:ontolearn:learning:alarm/AE001>'}]}}
+rounds in expected[3]: 4
+expected[3][0] keys: ['actionTrace', 'backlog', 'backlogCount', 'completed', 'completedCount', 'consumedEvents', 'created', 'facts', 'inferred', 'orders', 'pendingEvents', 'round', 'scheduledFutureEvents', 'triggeredInstances', 'unclosedHighAlarmCount']
+unclosedHighAlarmCount r1..4 (cap3): [4, 8, 12, 16]
+unclosedHighAlarmCount r1..4 (cap4): [4, 8, 12, 16]
+scheduledFutureEvents r4 (cap3): []
+
+== round-projection-handoff.json structure ==
+keys: ['acknowledgmentIdentityProposal', 'definitionDigest', 'eventScopeExplanation', 'exampleIdentityWarning', 'internalRound', 'proposedCoordinatorState', 'scope', 'sourceImplementation', 'unverified']
+internalRound keys: ['backlog', 'before_inference', 'checkpoint', 'created', 'end_inference', 'frozen_plan', 'input_events', 'metrics', 'resource_completed', 'trace']
+proposal keys: ['consumedEvents', 'inputEvents', 'pendingEvents', 'scenarioRound']
+ackIdentity keys: ['expectedRound', 'inputDigest', 'jobId', 'operationId', 'projectId', 'runId', 'stateDigest']

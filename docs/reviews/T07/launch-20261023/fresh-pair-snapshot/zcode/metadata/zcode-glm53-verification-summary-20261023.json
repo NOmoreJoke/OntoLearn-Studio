@@ -1,0 +1,46 @@
+{
+  "task": "T07-S1 round-1 ZCode designated full independent engineering review",
+  "report": {
+    "path": "docs/reviews/T07/round-1/zcode-glm53.md",
+    "bytes": 19230,
+    "sha256": "8ee32ae5adad3f47959f479d8e855f38f9ecaccdbbde800a864a83c57f7006f7",
+    "verdict": "PASS limited to S1 private scope; no new P1/P2; IR-01..05 closed; all parent gates preserved"
+  },
+  "identity": {
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157",
+    "head": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+    "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "product": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+    "manifest25Paths": "25/25 git(productHead)==manifest; wt drift only status.md (post-freeze process file, manifest-flagged)",
+    "manifest14Entries": "14/14 working-tree==manifest",
+    "candidatePatch": "340601B sha256 3e697c94bae835307e1012bb30ea65bbbce680555e488135bfcb267b4210b8a3 (matches)",
+    "ancestry": "base<-product<-reviewHead verified"
+  },
+  "archive": {
+    "frozenInputsTar": "946863B sha256 880d4cc9b40587346919a178e3eaff5522aa9e65e49eab093307fa90da6748e6; 75/75 member hashes match archive-manifest",
+    "originalsJsonl": "sha256 51f5746a... matches sources.json; 9/9 payload content byte-equal (strip) to full-input embedded copies; per-line rawLineSha256 refers to forbidden source-session lines - recorded as not recomputable in-role",
+    "encryptedIntermediateMessages": "3, metadata only, not decrypted",
+    "extractLocation": "../T07-zcode-review-f9a1157.runtime/scratch/frozen-inputs/ (own scratch only)"
+  },
+  "commands": [
+    { "cmd": "uv run --frozen pytest test_scenario_rounds.py test_scenario_persistence.py", "exit": 0, "result": "90 passed", "log": "raw/validation/009-t07-pytest-90.log" },
+    { "cmd": "npx --no-install vitest run tests/unit/t07-scenario.test.ts", "exit": 0, "result": "27 passed", "log": "raw/validation/010-t07-vitest.log" },
+    { "cmd": "npm run check", "exit": 0, "result": "eslint clean; prettier clean; 3x tsc clean; vitest 657 passed; electron-vite 3 builds; ruff clean; pytest 1142 passed", "log": "raw/validation/011-full-check.log" },
+    { "cmd": "npx --no-install prettier --check docs/reviews/T07/round-1/zcode-glm53.md", "exit": 0, "result": "docs/reviews is prettier-ignored; check clean", "log": "console" }
+  ],
+  "notRun": [
+    "evidence/render-probe.mjs re-run (forbidden in fixed review checkout by dispatch; sealed ui-probe.json cited as historical evidence only)",
+    "verify:sources (archived sources unchanged; base PRD hash independently verified vs t09-manifest)",
+    "dev/HMR, test:e2e, engine:build, package:dir, Electron/GUI, external models, paid operations (outside this review authorization)"
+  ],
+  "env": "TMPDIR/UV_CACHE_DIR/UV_PROJECT_ENVIRONMENT/npm cache/RUFF_CACHE_DIR all under ../T07-zcode-review-f9a1157.runtime/; cross-tree env overrides cleared; pytest basetemp in own unique subdirs; own node_modules/.venv (Python 3.12.12, Node v24.15.0)",
+  "taskSettings": {
+    "model": "GLM-5.3 (operator UI read-back + session self-observation account:bigmodel-individual-coding-plan/GLM-5.3)",
+    "thinking": "最高 (operator UI read-back)",
+    "permission": "完全访问 (operator UI read-back)",
+    "nativeSessionId": "session_488117259b5e999c5321f8a1141cefd6 (owner-ui-accepted-retry-20261023.json, official menu)",
+    "turnId": "UNKNOWN (null in operator receipt)",
+    "globalconfigOrPeerScanned": false
+  },
+  "gitStateAfterReview": "M AGENTS.md (protected, unstaged) + ?? docs/reviews/T07/dispatch-20261022/ (dispatch input) + untracked new report docs/reviews/T07/round-1/zcode-glm53.md + gitignored out/ from allowed build; no source/test/config/dependency changes; no stage/commit/push/branch operations"
+}

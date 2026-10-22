@@ -1,0 +1,160 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157
+
+ ✓ tests/unit/t07-scenario.test.ts (27 tests) 6ms
+ ✓ tests/unit/csp.test.ts (2 tests) 3ms
+ ✓ tests/unit/window-recovery.test.ts (6 tests) 5ms
+ ✓ tests/unit/native-driver.test.ts (3 tests) 22ms
+ ✓ tests/unit/task-progress.test.ts (11 tests) 5ms
+ ✓ tests/unit/task-update-boundary.test.ts (2 tests) 31ms
+ ✓ tests/unit/contract.test.ts (4 tests) 7ms
+ ✓ tests/unit/binding-regressions.test.ts (41 tests) 40ms
+ ✓ tests/unit/engine-environment.test.ts (5 tests) 53ms
+ ✓ tests/unit/view-navigation.test.ts (2 tests) 70ms
+ ✓ tests/unit/jsonl.test.ts (75 tests) 747ms
+   ✓ strict raw JSONL reader (75)
+     ✓ consumes the canonical public positive and negative decoded fixtures 734ms
+ ✓ tests/unit/engine-connection-state.test.ts (8 tests) 807ms
+ ✓ tests/unit/contract-v2.test.ts (414 tests) 847ms
+ ✓ tests/unit/supervisor.test.ts (16 tests) 1153ms
+ ✓ tests/unit/task-service.test.ts (33 tests) 2144ms
+   ✓ trusted task bridge (31)
+     ✓ stops after three failed read attempts, retains last-known jobs, and allows one explicit retry budget 1162ms
+     ✓ cancels old recovery backoff when the selected project changes 803ms
+ ✓ tests/unit/task-runtime.test.ts (8 tests) 6866ms
+   ✓ actual Python → supervisor → task service runtime (8)
+     ✓ automatically reconciles a real coordinator exit with zero pending requests and retained rounds 931ms
+     ✓ re-reads a real atomic marker after transport loss without changing its successful job 735ms
+     ✓ enters explicit offline after three real failed restarts, then permits an explicit read recovery 2307ms
+     ✓ recovers one omitted real state notification through a durable read and fresh subscription 901ms
+     ✓ observes real atomic commit revision and sends a rebuilt historical-input view 479ms
+     ✓ hands initial restoration over when a real atomic completion precedes subscribe response delivery 495ms
+     ✓ re-reads project authority when an actual atomic write finishes before the first job read 510ms
+     ✓ preserves persisted worker-failure error fields through the safe presentation boundary 506ms
+
+ Test Files  16 passed (16)
+      Tests  657 passed (657)
+   Start at  03:04:07
+   Duration  7.26s (tests 78%, transform 16%, import 6%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  339.29 kB
+
+✓ built in 32ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  276.26 kB
+
+✓ built in 19ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-DaDpMxpv.js   865.34 kB
+
+✓ built in 68ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+198 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 1142 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  1%]
+...................                                                      [  3%]
+packages/engine/tests/test_contract_v2.py .............................. [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 37%]
+...........................................                              [ 41%]
+packages/engine/tests/test_coordinator_control.py ...................    [ 43%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 45%]
+........................                                                 [ 47%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 48%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 49%]
+packages/engine/tests/test_i04_progress.py ......                        [ 49%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 51%]
+.................................                                        [ 54%]
+packages/engine/tests/test_job_store.py ................................ [ 57%]
+........................................................................ [ 63%]
+.............................................................            [ 69%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 69%]
+packages/engine/tests/test_protocol.py .............                     [ 71%]
+packages/engine/tests/test_resident_runtime.py .............             [ 72%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 72%]
+packages/engine/tests/test_scenario_persistence.py ..................... [ 74%]
+.......................                                                  [ 76%]
+packages/engine/tests/test_scenario_rounds.py .......................... [ 78%]
+....................                                                     [ 80%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 80%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 80%]
+packages/engine/tests/test_storage.py .................................. [ 83%]
+........................................................................ [ 90%]
+........................................................................ [ 96%]
+.........                                                                [ 97%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 98%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+============================ 1142 passed in 49.10s =============================

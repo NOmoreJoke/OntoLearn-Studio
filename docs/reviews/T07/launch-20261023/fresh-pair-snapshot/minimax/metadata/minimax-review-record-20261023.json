@@ -1,0 +1,100 @@
+{
+  "role": "minimax",
+  "stage": "T07-S1",
+  "reviewerApplication": "MiniMax Code",
+  "actualSettingsUI": {
+    "model": "M3.1-Flash",
+    "thinking": "xhigh",
+    "permission": "始终授权"
+  },
+  "settingsSource": ".runtime/metadata/owner-ui-pre-submit-retry-20261023.json (operator read back from this task's own new-task UI)",
+  "actualTaskId": null,
+  "actualSessionId": "mvs_bfa6c40659f6405391d5de2bbb8cbc0f",
+  "actualTurnId": null,
+  "missingItems": "task ID and official turn ID UNKNOWN (not supplied by official menu); not scanned from globalconfig/peer/other opinions/session history",
+  "fullInputAccepted": {
+    "bytes": 143054,
+    "lines": 896,
+    "sha256": "153dc55dbae5e3b27b8ae65e0a74f14e1da01c36398cffa477691269f7e325dd",
+    "ownerCopyIdentical": true,
+    "prefixSha256": "914a1c984380e7f56a427bb811c6175df9e00e9cc56973a6f1e6796784933d88",
+    "suffixByteExactVsOriginalFrozenPrompt": true
+  },
+  "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-f9a1157",
+  "reviewHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+  "product": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "verificationRun": {
+    "pytest_scenario_rounds": {
+      "passed": 46,
+      "exitCode": 0
+    },
+    "pytest_scenario_persistence": {
+      "passed": 44,
+      "exitCode": 0
+    },
+    "vitest_t07_scenario": {
+      "passed": 27,
+      "exitCode": 0
+    },
+    "vitest_full": {
+      "files": 16,
+      "passed": 657,
+      "exitCode": 0
+    },
+    "npm_run_check": {
+      "typescriptTests": 657,
+      "pythonTests": 1142,
+      "exitCode": 0
+    },
+    "render_probe_scratch_copy": {
+      "exitCode": 0,
+      "outputsByteIdenticalToSealedOriginals": true
+    }
+  },
+  "identityVerification": {
+    "candidatePathsInDiff": 25,
+    "implementationTestFixtureHashesMatchedAtProductHead": 14,
+    "candidatePatchSha256": "3e697c94bae835307e1012bb30ea65bbbce680555e488135bfcb267b4210b8a3",
+    "frozenArchiveSha256": "880d4cc9b40587346919a178e3eaff5522aa9e65e49eab093307fa90da6748e6",
+    "frozenArchiveMembersVerified": "75/75",
+    "originalFinalsVerified": "9/9",
+    "localEvidenceLogHashesVerified": "15/15",
+    "sharedFilesUnchangedVsApprovedBase": true,
+    "protectedAgentsSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "protectedAgentsStaged": false
+  },
+  "verdict": {
+    "result": "通过（限 T07-S1 私有候选范围）",
+    "newFindings": [
+      {
+        "id": "F-01",
+        "severity": "P3",
+        "area": "result-state labelling vs PRD D.1/D.2"
+      },
+      {
+        "id": "F-02",
+        "severity": "P3",
+        "area": "phase='initial' inference semantics on resume (integration contract)"
+      },
+      {
+        "id": "F-03",
+        "severity": "P3",
+        "area": "action-index contiguity within one trigger instance (contract boundary)"
+      }
+    ],
+    "p1p2Found": 0,
+    "ir01toIr05": "all five confirmed closed; early 42-test READONLY proof not re-recognised",
+    "parentDomain": "not verified and not closed by this review"
+  },
+  "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-f9a1157/docs/reviews/T07/round-1/minimax-m31flash.md",
+  "reportBytes": 29378,
+  "rawValidation": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-f9a1157.runtime/raw/validation",
+  "processDeviation": {
+    "what": "render-probe.mjs first invoked with cwd = fixed review checkout instead of the scratch copy, rewriting docs/reviews/T07/evidence/ui-probe.json and the two ignored PNGs in place",
+    "impact": "no byte changed: ui-probe.json sha256 6e5edcec50ee0bffcb0e63c3f2e39023ab5379297cbe1cb64688f204f8361ba8 equals the reviewHead blob; page-wide.png 32ede79bc9dc5330e9a6d7082223f41baf808ce0d812d8808a0492146461216e and page-narrow.png 1ee10753e7b467eea745ae14f4ea907d168d43f01a40aae80a7ef9e0e03ca3ec equal the sealed originals; git diff of the evidence path empty; no implementation/test/fixture/acceptance/lock/config/old-input/archive byte modified; no .t07-ui-* residue",
+    "correction": "re-ran in an exclusive scratch copy built by git archive of reviewHead (25 paths hash-checked) with cwd = copy; exit 0, byte-identical outputs; both runs preserved under raw/validation/inplace-run and raw/validation/scratch-run"
+  },
+  "actualSessionIdSource": "operator official own-task Session menu Copy session ID via CUA + AX value read; matches this session identifier exactly (owner-ui-accepted-retry-20261023.json)",
+  "bodyAcceptedAt": "2026-10-23T03:00:35+08:00"
+}
