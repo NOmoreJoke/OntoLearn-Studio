@@ -1,0 +1,120 @@
+{
+  "schema": "T03_I05_D1_FRESH_INDEPENDENT_DELTA_REVIEW_V1",
+  "reviewer": "/root/i05_d1_plan_independent_review",
+  "status": "PLAN_DELTA_PASS_ONLY",
+  "originalCandidate": "ae28572c91b78933c35996f0d80e81c03b96edf0",
+  "base": "d014b925e2c9bb246a71621a919d7f9a412f6c57",
+  "candidate": "2cb00785b628638503bb9773a662b34475d0ed78",
+  "exactDeltaPaths": 12,
+  "deltaPayloadFiles": 11,
+  "deltaPayloadBytes": 418472,
+  "deltaManifest": {
+    "bytes": 15280,
+    "sha256": "c786a5ca672852a9d64236e3f8db9b5e174c32e1bc371fc04f6960cfbc09017e"
+  },
+  "completeCurrentFiles": 24,
+  "completeCurrentBytes": 624878,
+  "allCurrentEqualFixedGitManifest": true,
+  "unchangedHistoricalFiles": 12,
+  "allHistoricalCurrentEqualBase": true,
+  "oldD0AndProductsNotChanged": true,
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "status": "CLOSED_PLAN_COMPLETENESS_ONLY",
+      "runtimeCompatibilityProven": false
+    },
+    {
+      "id": "F2",
+      "priority": "P3",
+      "status": "CLOSED_EXACT_LITERAL",
+      "actualFunctionCodeObserved": false
+    }
+  ],
+  "independentStaticChecks": {
+    "oldFixedLiteralRows": 43,
+    "oldRowsPathBytesSHAAndIndexMatched": true,
+    "fullPathSetDerivedFromD0AndMapping": true,
+    "historicalScope": 45,
+    "dedicatedSemanticScope": 33,
+    "parentDefaultScope": 58,
+    "allThreeExactSetsMatched": true,
+    "shared": 22,
+    "sameShared": 13,
+    "dependencyConflicts": 2,
+    "sourceResourceConflicts": 7,
+    "oldOnly": 21,
+    "newOnly": 11,
+    "oldNewUnion": 54,
+    "mappingAdditional": 4,
+    "uniqueExistingGitRefPathIdentities": 82,
+    "all82BytesSHAAndBlobMatched": true,
+    "all58OwnersAndScopeDecisionShapesReviewed": true,
+    "allUniqueScopeScalarDecisionValuesRead": true,
+    "allNewActualPinsNull": true,
+    "oldOnly21ParentSourceNotAutomaticallyAdopted": true,
+    "sourceAndInterfaceOtherSubtreesEqualOld": true,
+    "dependencyOtherSubtreesEqualOld": true,
+    "schemaIndexUnchanged": true,
+    "old83ProbeFullStaticRead": true,
+    "old83ConstantsReportNonClaimsAndExitSemanticsMatchPlan": true,
+    "exactBacktickedFunctionCodeLiteralPresent": true,
+    "oldBadLiteralAbsent": true,
+    "canonicalCodeTypeCoConstsDomainRulesPreserved": true
+  },
+  "executionAndAuthority": {
+    "actualGuardProduced": false,
+    "actualNewPinsProduced": false,
+    "rootAdopted": false,
+    "implementationAuthorized": false,
+    "runtimeAuthorized": false,
+    "runtimeExecuted": false,
+    "externalModelsReviewed": false,
+    "stageOrCommit": false
+  },
+  "policy": {
+    "currentBytes": 3160,
+    "currentSHA256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1",
+    "sameAsFirstReviewFullRead": true,
+    "originalReadonly81Preserved": true,
+    "newRepairSnapshotSeparates80MatchedOneDrift": true,
+    "notAProductRetestTrigger": true
+  },
+  "readback": {
+    "allNormativeDeltaAndNewMarkdownFullRead": true,
+    "allNewMatrixJSONValuesParsed": true,
+    "all58PathOwnerClassScopeRowsAndAllUniqueDecisionStringsReviewed": true,
+    "repeatedIdentitiesVerifiedAgainstActualGit": true,
+    "longOutput": "held normative diff completed in contiguous0:16000/16000:32000/32000:end; repair checks tail completed from held buffer",
+    "unchangedBusinessSourceReauditClaimed": false
+  },
+  "ownFirstErrors": [
+    {
+      "stage": "ad-hoc static matrix identity extractor",
+      "error": "KeyError ref while reading mappingOrigin, whose actual key is originRef",
+      "effect": "utility stopped before identity verification; no writes or product execution",
+      "correction": "full recursive extractor accepts explicit ref/originRef shapes;82 deduplicated actualGit identities then all matched"
+    },
+    {
+      "stage": "diagnostic shape output",
+      "error": "one combined diagnostic view truncated",
+      "effect": "not treated as full read",
+      "correction": "all unique row/scope keyshapes/scalar values and all58 row owner/path flags independently printed; complete normative held windows and repair checks tail completed"
+    }
+  ],
+  "notExecuted": [
+    "JSONSchema engine",
+    "resolver/install",
+    "product tests or functions",
+    "wrapper/probe/main/resource_manifest/execute_profile_records",
+    "source compile/pycompile/import",
+    "fixture/simulation",
+    "archive/native/API/DB/GUI/network",
+    "installed/license/binary/witness/identity/SDK reads",
+    "external-model tasks",
+    "Goal/stage/commit/push/PR/merge"
+  ],
+  "formatter": "only own3 documents; final actual result recorded in seal",
+  "futureRootAndOwnerGates": "all actual scope adoption,21old-only migration,26 lock/newconsumer/writer pins,83+417+B1+S1+parent complete runtime and original platform/formal gates pending"
+}

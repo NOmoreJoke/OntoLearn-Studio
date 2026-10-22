@@ -1,0 +1,51 @@
+{
+  "schema": "T03_I05_D1_FRESH_INDEPENDENT_DELTA_SEAL_V1",
+  "status": "SEALED_PLAN_DELTA_PASS_ONLY",
+  "reviewer": "/root/i05_d1_plan_independent_review",
+  "candidate": "2cb00785b628638503bb9773a662b34475d0ed78",
+  "base": "d014b925e2c9bb246a71621a919d7f9a412f6c57",
+  "originalCandidate": "ae28572c91b78933c35996f0d80e81c03b96edf0",
+  "artifacts": [
+    {
+      "path": "independent-delta-review.md",
+      "bytes": 7648,
+      "sha256": "7450cdc55fc6014801ab67116fbac011f0e4068d6f2dd07811191417ae4f6c5e"
+    },
+    {
+      "path": "independent-delta-checks.json",
+      "bytes": 4702,
+      "sha256": "a63128d51a3f1ebdb4719530dcfa6b241f55875518c62f2c0ba09aeafe0b986f"
+    }
+  ],
+  "checks": {
+    "ownReportAndChecksFullTextReadback": true,
+    "ownJSONParsed": true,
+    "candidateHEADUnchanged": true,
+    "indexEmpty": true,
+    "trackedModificationOnlyProtectedAGENTS": true,
+    "formatterCheck": {
+      "exitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "stderr": ""
+    },
+    "whitespaceCheck": {
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "new content differs from /dev/null; no whitespace diagnostics"
+    }
+  },
+  "findings": {
+    "F1": "CLOSED_PLAN_COMPLETENESS_ONLY",
+    "F2": "CLOSED_EXACT_LITERAL",
+    "newBlockingFindings": []
+  },
+  "actualRuntimeCompatibilityProven": false,
+  "rootAdoption": false,
+  "executionAuthorization": false,
+  "sourceOrProductModified": false,
+  "stageOrCommit": false,
+  "oldFirstReviewAndFailurePreserved": true,
+  "selfExcluded": true,
+  "next": "Parent reads and freezes delta; root may only accept plan scope. Actual guard/owner adoption, consumer/lock/writer pins and all runtime/platform/formal gates remain future."
+}
