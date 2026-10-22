@@ -26,3 +26,7 @@
 原三件及原manifest/verification保存于history/4064b21-format-inputs，仍可由原Git恢复。格式后主文10465 B／`d62791067bdcc73e8aa5755336ceda02611c61df7fdc3063df6437f77215cd0a`，dispositions1691 B／`caa0baf7d3668fd58222a87dfcedf514655fab448c787157ed7aa3ffaa25ef21`，static-audit88332 B／`b082f3ee65521a69611f800b3a6b4bd86755a9416d44f28d5fcf53f2007db87f`。此前§2的88434 B/hash是原脚本实际输出，原数据未重跑；重现顺序为原静态脚本后显式formatter，不能把纯格式差当新产品核验。format/semantic-equivalence.json绑定前后身份与比较域。
 
 未对.raw或历史独审做批量格式化。新清单与当前新增文档将显式检查后冻结；后继独立delta复审应核纯格式、清单和原采用决定不变，再给新结论，不能覆盖R1不通过。
+
+## 候选Git完整性补正
+
+本地暂存4709e90后，逐manifest条目核实际Git对象发现10件format stdout/stderr .log受仓库ignore规则排除，清单52payload存在于工作树而该提交仅43件base delta。该临时候选因此不能作为完整交付；未把它送入R2或称证据齐全。原本地提交和工具观察保留，不amend／删历史。主线仅对清单指定的10个本窗小日志逐路径force-add，保留原bytes；不放开ignore、不stage其它原件／AGENTS。最终新候选应有53件base delta，并再逐项核Git=工作树=清单，之后才交R2。
