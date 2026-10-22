@@ -1,0 +1,95 @@
+{
+  "format": "i05-protocol3-F1-repair-checks/1",
+  "at": "2026-10-22T10:40:35.693492+00:00",
+  "repairBase": "289fa9877e864a5ae5aa4f3b0593f6d454dce351",
+  "originalCandidate": "d355d384470d6de30c28229945cb77a65cca3dd4",
+  "originalReview": {
+    "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/independent-review.md",
+    "bytes": 10173,
+    "sha256": "5bc0d389b21851d3bc8b29ee891f997d457ae882717808564cca50e46e0b5c00",
+    "finding": "F1/P3 only; NEEDS_CHANGE retained"
+  },
+  "existingPrefixPathsAtBase": 47,
+  "changedExistingFiles": [
+    {
+      "path": "docs/iterations/T03/i05-semantic-build-protocol-v3/profile-change-index.json",
+      "old": {
+        "bytes": 16988,
+        "sha256": "2e47bbd4cf9de4bafd87036740ba16afdd69dcdd414b2c994da86d34edf34b17"
+      },
+      "new": {
+        "bytes": 17112,
+        "sha256": "d157935227d4fdcb56d66997c9bc345040e081f50d59633737a71b80f0f41402"
+      }
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/materialize-documents.py",
+      "old": {
+        "bytes": 27096,
+        "sha256": "804c9d85707d0f669088bc6e6620291571406a8aa4027d8a6e5b64868dee24b5"
+      },
+      "new": {
+        "bytes": 27140,
+        "sha256": "fdf14e2d5c84c96af3577458a93c9c7598f8c05d3bd2ad68303eb5fadeca6457"
+      }
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/protocol-selfcheck.py",
+      "old": {
+        "bytes": 9611,
+        "sha256": "55a255dc477f25bbfa4e45d6872510c248ce59a373cd6286590b4672d23ccd6c"
+      },
+      "new": {
+        "bytes": 11578,
+        "sha256": "2a1619d6a30fe5947ffc8cc648be1a440c384af0595a7bc389a140d53e3cd73a"
+      }
+    }
+  ],
+  "unchangedExistingFiles": 44,
+  "oldCandidateManifestAndReportsAndLogsUnchanged": true,
+  "originalFirstFailurePreserved": {
+    "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-first.stderr",
+    "bytes": 1140,
+    "sha256": "a59b2aa4fca1dc83d966dd867895bc93315d03882b32b4bbc074504ad4395de6"
+  },
+  "generatorReexecuted": false,
+  "protocolSelfcheckFirstExit": 0,
+  "finiteResults": {
+    "profileTopLevelChanges": 21,
+    "presenceNegativesRejected": 3,
+    "originalAdditionalNegativesStillRejected": 26,
+    "schemaVersionLiterals": 14,
+    "descriptiveMetadataChanges": 8,
+    "propertyIndex": 1241,
+    "dependencyPackages": 26,
+    "directRequirements": 6,
+    "guardCounts": [45, 33, 58]
+  },
+  "commands": [
+    {
+      "command": "prettier --write profile-change-index.json F1-repair-profile-index-negatives.json",
+      "exitCode": 0
+    },
+    {
+      "command": "python3.12 <new-review-prefix>/protocol-selfcheck.py",
+      "exitCode": 0
+    },
+    {
+      "command": "prettier --write F1-repair-disposition.md",
+      "exitCode": 0
+    },
+    {
+      "command": "prettier --check <three modified or new MD/JSON documents>",
+      "exitCode": 0
+    }
+  ],
+  "boundedMeaning": "finite stdlib document assertions only, not JSONSchema2020-12 engine validation or actual runtime evidence",
+  "sourceProductLockConsumerSchemaDescriptorGuardFieldsChanged": false,
+  "oldD0D1Changed": false,
+  "newActualPins": null,
+  "executionAuthorization": false,
+  "productExecuted": false,
+  "authorStageCommit": false,
+  "headUnchanged": true,
+  "protectedAgentsSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+}

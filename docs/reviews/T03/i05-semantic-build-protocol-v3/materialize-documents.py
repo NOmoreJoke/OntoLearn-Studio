@@ -251,7 +251,7 @@ G02/G03 business carrier的schema由I05唯一作者在其新prefix完整定义�
     put(OUT / "schema-change-index.json", {"format": "i05-protocol3-materialized-schema-change-index/1", "sourceIndexRef": FIXED, "sourceIndexPath": D1 + "forward-schema-change-index.json", "schemaChanges": actual_schema_changes, "fieldResponsibilityLiteralChanges": delta["fieldResponsibilityLiteralChanges"], "propertyIndexCount": 1241, "schemaFieldAdditionOrRemoval": False, "actualImplementationAdoption": False})
     profile_changes = []
     for key in sorted(set(profile) | set(old_profile)):
-        if old_profile.get(key) != profile.get(key):
+        if (key in old_profile) != (key in profile) or old_profile.get(key) != profile.get(key):
             profile_changes.append({"pointer": "#/" + key, "old": old_profile.get(key), "new": profile.get(key), "newProperty": key not in old_profile})
     put(OUT / "profile-change-index.json", {"format": "i05-protocol3-profile-change-index/1", "changes": profile_changes, "fieldResponsibilityNonLiteralMetadataChanges": ["#/format", "#/normativeCrossFieldRules"], "canonicalResourceAssetFunctionPathCodeDomainsPreserved": True})
 

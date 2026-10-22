@@ -52,6 +52,25 @@ def differences(a, b, path="#"):
     return [] if a == b else [path]
 
 
+def profile_index_relations(old_profile, profile, index):
+    """Index all changed top-level values, including absent -> explicit null."""
+    changed_keys = {key for key in old_profile.keys() | profile.keys()
+                    if (key in old_profile) != (key in profile)
+                    or differences(old_profile.get(key), profile.get(key))}
+    expected = {"#/" + key.replace("~", "~0").replace("/", "~1"): key
+                for key in changed_keys}
+    rows = index["changes"]
+    assert len(rows) == len({row["pointer"] for row in rows}) == len(expected)
+    assert {row["pointer"] for row in rows} == set(expected)
+    for row in rows:
+        assert set(row) == {"pointer", "old", "new", "newProperty"}
+        key = expected[row["pointer"]]
+        assert type(row["newProperty"]) is bool
+        assert row["newProperty"] is (key not in old_profile)
+        assert not differences(row["old"], old_profile.get(key))
+        assert not differences(row["new"], profile.get(key))
+
+
 def design_relations(bundle, accepted, baseline_guard, old_profile):
     p, dep, guard = bundle["profile"], bundle["dependency"], bundle["guard"]
     assert p["id"] == "i05-source-package-parity-v3" and p["format"] == "i05-semantic-build-protocol-profile/4"
@@ -135,6 +154,18 @@ def main():
     baseline_guard = old_json(D1 + "guard-scope-matrix.json")
     old_profile = old_json(OLD + "profile-descriptor.json", D0)
     bundle = {"profile": read(BASE / "profile-descriptor.json"), "dependency": read(BASE / "dependency-specification.json"), "guard": read(BASE / "guard-adoption-matrix.json")}
+    profile_index = read(BASE / "profile-change-index.json")
+    profile_index_relations(old_profile, bundle["profile"], profile_index)
+    profile_index_results = []
+    for case in read(HERE / "F1-repair-profile-index-negatives.json")["cases"]:
+        altered = {"profile": copy.deepcopy(bundle["profile"]), "index": copy.deepcopy(profile_index)}
+        mutate(altered, case["pointer"], case["value"])
+        try:
+            profile_index_relations(old_profile, altered["profile"], altered["index"])
+        except (AssertionError, KeyError, TypeError, ValueError):
+            profile_index_results.append({"id": case["id"], "rejectedByPresenceAwareIndexAssertions": True})
+        else:
+            raise AssertionError(("profile-index-negative-accepted", case["id"]))
     design_relations(bundle, accepted, baseline_guard, old_profile)
     cases = read(HERE / "protocol-negative-cases.json")
     results = []
@@ -147,7 +178,7 @@ def main():
             results.append({"id": case["id"], "rejectedByFiniteDocumentAssertions": True})
         else:
             raise AssertionError(("negative-accepted", case["id"]))
-    report = {"kind": "finite stdlib document structure and relationship assertions; not JSONSchema engine validation", "schemaChanges": changed, "versionLiteralCount": 14, "metadataOnlyCount": 8, "propertyIndex": 1241, "dependencyPackages": 26, "directRequirements": 6, "guardCounts": [45, 33, 58], "additionalFiniteNegativesRejected": len(results), "results": results, "actualBuildInstallResolverLoaderRunApproval": False}
+    report = {"kind": "finite stdlib document structure and relationship assertions; not JSONSchema engine validation", "schemaChanges": changed, "versionLiteralCount": 14, "metadataOnlyCount": 8, "propertyIndex": 1241, "dependencyPackages": 26, "directRequirements": 6, "guardCounts": [45, 33, 58], "additionalFiniteNegativesRejected": len(results), "results": results, "profileIndexChangedTopLevelProperties": len(profile_index["changes"]), "profileIndexPresenceNegativesRejected": len(profile_index_results), "profileIndexPresenceResults": profile_index_results, "actualBuildInstallResolverLoaderRunApproval": False}
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
