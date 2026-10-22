@@ -1,0 +1,24 @@
+{
+  "format": "T03-fixture-proposal-monkeypatch-source/1",
+  "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/.venv/lib/python3.12/site-packages/_pytest/monkeypatch.py",
+  "bytes": 15510,
+  "sha256": "b5c405ed57dbd58adfb7f0fae44f84d62402993c50058e07f03387285c03df33",
+  "method": "source read only; no pytest import/execution",
+  "ranges": [
+    {
+      "start": 132,
+      "end": 160,
+      "text": "\n    @classmethod\n    @contextmanager\n    def context(cls) -> Generator[MonkeyPatch]:\n        \"\"\"Context manager that returns a new :class:`MonkeyPatch` object\n        which undoes any patching done inside the ``with`` block upon exit.\n\n        Example:\n\n        .. code-block:: python\n\n            import functools\n\n\n            def test_partial(monkeypatch):\n                with monkeypatch.context() as m:\n                    m.setattr(functools, \"partial\", 3)\n\n        Useful in situations where it is desired to undo some patches before the test ends,\n        such as mocking ``stdlib`` functions that might break pytest itself if mocked (for examples\n        of this see :issue:`3290`).\n        \"\"\"\n        m = cls()\n        try:\n            yield m\n        finally:\n            m.undo()\n\n    @overload\n"
+    },
+    {
+      "start": 286,
+      "end": 308,
+      "text": "            delattr(target, name)\n\n    def setitem(self, dic: Mapping[K, V], name: K, value: V) -> None:\n        \"\"\"Set dictionary entry ``name`` to value.\"\"\"\n        self._setitem.append((dic, name, dic.get(name, NOTSET)))\n        # Not all Mapping types support indexing, but MutableMapping doesn't support TypedDict\n        dic[name] = value  # type: ignore[index]\n\n    def delitem(self, dic: Mapping[K, V], name: K, raising: bool = True) -> None:\n        \"\"\"Delete ``name`` from dict.\n\n        Raises ``KeyError`` if it doesn't exist, unless ``raising`` is set to\n        False.\n        \"\"\"\n        if name not in dic:\n            if raising:\n                raise KeyError(name)\n        else:\n            self._setitem.append((dic, name, dic.get(name, NOTSET)))\n            # Not all Mapping types support indexing, but MutableMapping doesn't support TypedDict\n            del dic[name]  # type: ignore[attr-defined]\n\n    def setenv(self, name: str, value: str, prepend: str | None = None) -> None:\n"
+    },
+    {
+      "start": 388,
+      "end": 424,
+      "text": "\n    def undo(self) -> None:\n        \"\"\"Undo previous changes.\n\n        This call consumes the undo stack. Calling it a second time has no\n        effect unless you do more monkeypatching after the undo call.\n\n        There is generally no need to call `undo()`, since it is\n        called automatically during tear-down.\n\n        .. note::\n            The same `monkeypatch` fixture is used across a\n            single test function invocation. If `monkeypatch` is used both by\n            the test function itself and one of the test fixtures,\n            calling `undo()` will undo all of the changes made in\n            both functions.\n\n            Prefer to use :meth:`context() <pytest.MonkeyPatch.context>` instead.\n        \"\"\"\n        for obj, name, value in reversed(self._setattr):\n            if value is not NOTSET:\n                setattr(obj, name, value)\n            else:\n                delattr(obj, name)\n        self._setattr[:] = []\n        for dictionary, key, value in reversed(self._setitem):\n            if value is NOTSET:\n                try:\n                    # Not all Mapping types support indexing, but MutableMapping doesn't support TypedDict\n                    del dictionary[key]  # type: ignore[attr-defined]\n                except KeyError:\n                    pass  # Was already deleted, so we have the desired state.\n            else:\n                # Not all Mapping types support indexing, but MutableMapping doesn't support TypedDict\n                dictionary[key] = value  # type: ignore[index]\n        self._setitem[:] = []\n        if self._savesyspath is not None:\n"
+    }
+  ]
+}

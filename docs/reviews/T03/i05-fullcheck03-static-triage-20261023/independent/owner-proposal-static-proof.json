@@ -1,0 +1,17 @@
+{
+  "format": "T03-owner-fixture-proposal-static-read/1",
+  "proposal": {
+    "path": "docs/reviews/T03/i05-fullcheck03-static-triage-20261023/owner-proposal.md",
+    "bytes": 6513,
+    "sha256": "46084b8ee35d371accb39c54273499a26346a8aa1ef3b8e2977e0911a13ad477"
+  },
+  "codeExcerpt": "for name in tuple(sys.modules):\n    if any(\n        name == prefix or name.startswith(prefix + \".\")\n        for prefix in p.FIXED_DISTRIBUTIONS\n    ):\n        monkeypatch.delitem(sys.modules, name)",
+  "astOnlyNoExecution": true,
+  "loopIterableSnapshot": "tuple(sys.modules)",
+  "prefixBoundary": "name == prefix or name.startswith(prefix + \".\")",
+  "mutation": "monkeypatch.delitem(sys.modules, name)",
+  "targetEntry": "make_case before synthetic modules",
+  "readerChangeProposed": false,
+  "testsClaimedExecuted": false,
+  "checks": "source/draft static review only; not patch or runtime verdict"
+}
