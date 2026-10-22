@@ -11,6 +11,7 @@ if __name__ == "__main__":
 
     raise SystemExit(main())
 
+import _thread
 import base64
 import hashlib
 import importlib
@@ -708,34 +709,178 @@ class JSONLWriter:
 
 
 class CallCounter:
-    """Count real Python call code identities without changing callable behavior."""
+    """Count owner-thread entries using two real, synchronous code identities."""
 
     def __init__(self, semantic, validator):
-        self.reason_code = semantic.reason.__code__
-        self.validator_code = validator.run.__code__
+        try:
+            self.reason_code = semantic.reason.__code__
+            self.validator_code = validator.run.__code__
+            self._codes = (
+                (self.reason_code,)
+                if self.reason_code is self.validator_code
+                else (self.reason_code, self.validator_code)
+            )
+            # CPython 3.12 CO_GENERATOR | CO_COROUTINE | CO_ASYNC_GENERATOR.
+            if any(
+                type(code) is not types.CodeType or code.co_flags & 0x2A0 for code in self._codes
+            ):
+                raise ProbeFault("INTERNAL_ERROR")
+            self._monitor = sys.monitoring
+            self._tool_id = self._monitor.PROFILER_ID
+            self._start = self._monitor.events.PY_START
+            self._get_ident = _thread.get_ident
+        except Exception as error:
+            raise ProbeFault("INTERNAL_ERROR") from error
         self.counts = {"reason": 0, "validator": 0}
         self.previous = None
         self.active = False
+        self._counts_complete = False
+        self._callback_failed = False
+        self._acquired = False
+        self._installed = False
+        self._admitted = False
+        self._prior_start = None
+        self._attempted = []
+        self._owner_thread = None
+        self._name = "i05-call-counter-" + str(id(self))
+        self._callback = self._on_start
 
-    def _profile(self, frame, event, _arg):
-        if event == "call":
-            if frame.f_code is self.reason_code:
+    @property
+    def counts_complete(self):
+        return self._counts_complete
+
+    def _on_start(self, code, _offset):
+        try:
+            if not self.active or self._get_ident() != self._owner_thread:
+                return None
+            if code is self.reason_code:
                 self.counts["reason"] += 1
-            if frame.f_code is self.validator_code:
+            if code is self.validator_code:
                 self.counts["validator"] += 1
+        except BaseException as error:
+            self._callback_failed = True
+            if isinstance(error, Exception):
+                raise ProbeFault("INTERNAL_ERROR") from error
+            raise
+        return None
+
+    def _cleanup(self, was_active):
+        """Return the first integrity/cleanup error; never free uncertain state."""
+        self.active = False
+        failures = []
+        safe_to_free = True
+        monitor, tool = self._monitor, self._tool_id
+        if not self._acquired:
+            return None
+        try:
+            if monitor.get_tool(tool) != self._name:
+                return ProbeFault("INTERNAL_ERROR")
+        except BaseException as error:
+            return error
+        try:
+            if self._get_ident() != self._owner_thread or sys.getprofile() is not self.previous:
+                failures.append(ProbeFault("INTERNAL_ERROR"))
+            if self._admitted and monitor.get_events(tool) != 0:
+                failures.append(ProbeFault("INTERNAL_ERROR"))
+                safe_to_free = False
+        except BaseException as error:
+            failures.append(error)
+            safe_to_free = False
+        for code in self._attempted:
+            try:
+                mask = monitor.get_local_events(tool, code)
+                if mask == self._start:
+                    monitor.set_local_events(tool, code, 0)
+                    if monitor.get_local_events(tool, code) != 0:
+                        raise ProbeFault("INTERNAL_ERROR")
+                elif mask == 0:
+                    if was_active:
+                        failures.append(ProbeFault("INTERNAL_ERROR"))
+                else:
+                    failures.append(ProbeFault("INTERNAL_ERROR"))
+                    safe_to_free = False
+            except BaseException as error:
+                failures.append(error)
+                safe_to_free = False
+        if self._installed:
+            try:
+                actual = monitor.register_callback(tool, self._start, self._prior_start)
+                if actual is not self._callback:
+                    # Preserve what was actually found, not the expected callback.
+                    monitor.register_callback(tool, self._start, actual)
+                    failures.append(ProbeFault("INTERNAL_ERROR"))
+                    safe_to_free = False
+                else:
+                    self._installed = False
+            except BaseException as error:
+                failures.append(error)
+                safe_to_free = False
+        if safe_to_free:
+            try:
+                # Only our acquired reservation, after our exact changes were undone.
+                if monitor.get_tool(tool) != self._name:
+                    raise ProbeFault("INTERNAL_ERROR")
+                if self._admitted and monitor.get_events(tool) != 0:
+                    raise ProbeFault("INTERNAL_ERROR")
+                if any(monitor.get_local_events(tool, code) != 0 for code in self._attempted):
+                    raise ProbeFault("INTERNAL_ERROR")
+                monitor.free_tool_id(tool)
+                self._acquired = False
+                self._attempted = []
+            except BaseException as error:
+                failures.append(error)
+        if self._callback_failed:
+            failures.append(ProbeFault("INTERNAL_ERROR"))
+        return failures[0] if failures else None
 
     def __enter__(self):
-        self.previous = sys.getprofile()
-        if self.previous is not None:
+        self._counts_complete = False
+        if self.active or self._acquired:
             raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
-        sys.setprofile(self._profile)
-        self.active = True
-        return self
+        self._callback_failed = False
+        self._admitted = False
+        try:
+            self.previous = sys.getprofile()
+            if self.previous is not None:
+                raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
+            self._owner_thread = self._get_ident()
+            monitor, tool = self._monitor, self._tool_id
+            if monitor.get_tool(tool) is not None:
+                raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
+            monitor.use_tool_id(tool, self._name)
+            self._acquired = True
+            if monitor.get_events(tool) != 0 or any(
+                monitor.get_local_events(tool, code) != 0 for code in self._codes
+            ):
+                raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
+            self._admitted = True
+            self._prior_start = monitor.register_callback(tool, self._start, self._callback)
+            self._installed = True
+            if self._prior_start is not None:
+                raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
+            for code in self._codes:
+                # CPython may mutate the mask before instrumentation can fail.
+                self._attempted.append(code)
+                monitor.set_local_events(tool, code, self._start)
+                if monitor.get_local_events(tool, code) != self._start:
+                    raise ProbeFault("INTERNAL_ERROR")
+            self.active = True
+            return self
+        except BaseException as error:
+            cleanup_error = self._cleanup(False)
+            if cleanup_error is not None:
+                raise ProbeFault("INTERNAL_ERROR") from cleanup_error
+            if isinstance(error, ProbeFault) or not isinstance(error, Exception):
+                raise
+            raise ProbeFault("INTERNAL_ERROR") from error
 
     def __exit__(self, *_exception):
-        if self.active:
-            sys.setprofile(self.previous)
-            self.active = False
+        was_active = self.active
+        self._counts_complete = False
+        failure = self._cleanup(was_active)
+        if failure is not None:
+            raise ProbeFault("INTERNAL_ERROR") from failure
+        self._counts_complete = was_active and not self._callback_failed
         return False
 
 
@@ -2570,7 +2715,10 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
                     observation["stage"], observation["api"] = boundary.stage, boundary.api
                     observation["stageAttempts"] = boundary.attempts
                     observation["callCounts"] = (
-                        dict(counter.counts) if counter is not None else None
+                        dict(counter.counts)
+                        if counter is not None
+                        and getattr(counter, "counts_complete", False) is True
+                        else None
                     )
                     if counter is not None and hasattr(counter, "scope_details"):
                         observation["scopeStages"] = counter.scope_details

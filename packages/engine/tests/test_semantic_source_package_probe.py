@@ -14,6 +14,8 @@ import io
 import json
 import signal
 import sys
+import threading
+import types
 from functools import wraps
 from pathlib import Path
 
@@ -1893,3 +1895,630 @@ def test_real_capture_restore_retains_original_expectation_on_bad_bytes(canonica
             view, (target, *seeds), direct_ledger=canonical["direct"].DirectStepsLedger()
         )
         assert all_roots == ({"kind": "step", "ordinal": 0}, *expected_premises)
+
+
+# Cooperative-v1: proposed finite units; none were executed at author time.
+def _counter_targets(reason, run):
+    return types.SimpleNamespace(reason=reason), types.SimpleNamespace(run=run)
+
+
+class _CounterMonitor:
+    """State-machine fault double only; not evidence for CPython delivery."""
+
+    PROFILER_ID = 2
+    events = types.SimpleNamespace(PY_START=1)
+
+    def __init__(self):
+        self.name = None
+        self.global_mask = 0
+        self.local = {}
+        self.callback = None
+        self.fail_set = None
+        self.fail_register = False
+        self.writes = 0
+        self.freed = False
+
+    def get_tool(self, tool):
+        assert tool == 2
+        return self.name
+
+    def use_tool_id(self, tool, name):
+        assert tool == 2 and self.name is None
+        self.name = name
+
+    def free_tool_id(self, tool):
+        assert tool == 2
+        self.name = None
+        self.freed = True
+
+    def get_events(self, tool):
+        assert tool == 2
+        return self.global_mask
+
+    def get_local_events(self, tool, code):
+        assert tool == 2
+        return self.local.get(id(code), 0)
+
+    def set_local_events(self, tool, code, mask):
+        assert tool == 2
+        self.local[id(code)] = mask
+        if mask:
+            self.writes += 1
+            if self.writes == self.fail_set:
+                raise TypeError("unit-local-set-after-mutation")
+
+    def register_callback(self, tool, event, callback):
+        assert tool == 2 and event == 1
+        if self.fail_register:
+            raise TypeError("unit-audit-before-mutation")
+        previous, self.callback = self.callback, callback
+        return previous
+
+
+def _fake_counter(probe):
+    def reason():
+        return None
+
+    def run():
+        return None
+
+    counter = probe.CallCounter(*_counter_targets(reason, run))
+    counter._monitor = _CounterMonitor()
+    counter._start = 1
+    return counter
+
+
+@pytest.mark.parametrize("failure", [1, 2])
+def test_monitor_partial_setup_rolls_back_without_complete_zero(probe, failure):
+    counter = _fake_counter(probe)
+    counter._monitor.fail_set = failure
+    with pytest.raises(probe.ProbeFault) as caught:
+        with counter:
+            pytest.fail("partial setup entered body")
+    assert caught.value.code == "INTERNAL_ERROR"
+    assert counter.counts_complete is False
+    assert counter._monitor.name is None
+    assert counter._monitor.callback is None
+    assert all(mask == 0 for mask in counter._monitor.local.values())
+
+
+def test_monitor_audit_rejection_precedes_exchange(probe):
+    counter = _fake_counter(probe)
+    foreign = object()
+    counter._monitor.callback = foreign
+    counter._monitor.fail_register = True
+    with pytest.raises(probe.ProbeFault) as caught:
+        counter.__enter__()
+    assert caught.value.code == "INTERNAL_ERROR"
+    assert counter._monitor.callback is foreign
+    assert counter._monitor.name is None
+    assert counter.counts_complete is False
+
+
+def test_monitor_residual_callback_is_restored_and_rejected(probe):
+    counter = _fake_counter(probe)
+    foreign = object()
+    counter._monitor.callback = foreign
+    with pytest.raises(probe.ProbeFault) as caught:
+        counter.__enter__()
+    assert caught.value.code == "PROFILE_HOOK_ALREADY_PRESENT"
+    assert counter._monitor.callback is foreign
+    assert counter._monitor.name is None
+    assert counter._monitor.local == {}
+    assert counter.counts_complete is False
+
+
+@pytest.mark.parametrize("residue", ["occupied", "global", "target"])
+def test_monitor_foreign_occupancy_or_masks_are_not_cleared(probe, residue):
+    counter = _fake_counter(probe)
+    monitor = counter._monitor
+    if residue == "occupied":
+        monitor.name = "foreign"
+    elif residue == "global":
+        monitor.global_mask = 1
+    else:
+        monitor.local[id(counter.reason_code)] = 1
+    before = monitor.name, monitor.global_mask, dict(monitor.local), monitor.callback
+    with pytest.raises(probe.ProbeFault) as caught:
+        counter.__enter__()
+    assert caught.value.code == "PROFILE_HOOK_ALREADY_PRESENT"
+    assert (monitor.name, monitor.global_mask, monitor.local, monitor.callback) == before
+    assert counter.counts_complete is False
+
+
+def test_monitor_callback_failure_stays_invalid_after_clean_resources(probe):
+    counter = _fake_counter(probe)
+    with pytest.raises(probe.ProbeFault) as caught:
+        with counter:
+            original_ident = counter._get_ident
+
+            def failed_ident():
+                raise TypeError("unit-callback-thread-read")
+
+            counter._get_ident = failed_ident
+            with pytest.raises(probe.ProbeFault):
+                counter._callback(counter.reason_code, 0)
+            counter._get_ident = original_ident
+    assert caught.value.code == "INTERNAL_ERROR"
+    assert counter._monitor.name is None
+    assert counter._monitor.callback is None
+    assert counter.counts_complete is False
+
+
+@pytest.mark.parametrize("change", ["callback", "missing-mask", "foreign-mask", "global"])
+def test_monitor_persistent_changes_fail_without_blind_restore(probe, change):
+    counter = _fake_counter(probe)
+    foreign = object()
+    with pytest.raises(probe.ProbeFault) as caught:
+        with counter:
+            if change == "callback":
+                counter._monitor.callback = foreign
+            elif change == "missing-mask":
+                counter._monitor.local[id(counter.reason_code)] = 0
+            elif change == "foreign-mask":
+                counter._monitor.local[id(counter.reason_code)] = 3
+            else:
+                counter._monitor.global_mask = 1
+    assert caught.value.code == "INTERNAL_ERROR"
+    assert counter.counts_complete is False
+    if change == "callback":
+        assert counter._monitor.callback is foreign
+        assert counter._monitor.name == counter._name
+    elif change == "foreign-mask":
+        assert counter._monitor.local[id(counter.reason_code)] == 3
+        assert counter._monitor.name == counter._name
+    elif change == "global":
+        assert counter._monitor.global_mask == 1
+        assert counter._monitor.name == counter._name
+    else:
+        assert counter._monitor.name is None
+
+
+def test_monitor_same_instance_nested_rejection_does_not_break_outer(probe):
+    counter = _fake_counter(probe)
+    stable = counter._callback
+    with counter:
+        with pytest.raises(probe.ProbeFault):
+            with counter:
+                pytest.fail("nested same-instance body")
+        assert counter.active and counter._monitor.callback is stable
+        counter._callback(counter.reason_code, 0)
+    assert counter.counts == {"reason": 1, "validator": 0}
+    assert counter.counts_complete is True
+
+
+def test_monitor_distinct_equal_codes_and_same_code_roles(probe):
+    def target():
+        return None
+
+    original = target.__code__
+    equal = original.replace()
+    assert equal is not original and equal == original
+    other = types.FunctionType(equal, globals())
+    counter = probe.CallCounter(*_counter_targets(target, other))
+    with counter:
+        assert len(counter._codes) == 2
+        assert sys.monitoring.get_local_events(2, original) == sys.monitoring.events.PY_START
+        assert sys.monitoring.get_local_events(2, equal) == sys.monitoring.events.PY_START
+        alias = target
+        alias()
+        other()
+    assert counter.counts == {"reason": 1, "validator": 1}
+    assert counter.counts_complete is True
+    shared = probe.CallCounter(*_counter_targets(target, target))
+    with shared:
+        assert len(shared._codes) == 1
+        target()
+    assert shared.counts == {"reason": 1, "validator": 1}
+    assert shared.counts_complete is True
+
+
+def test_monitor_owner_thread_real_delivery_and_business_exception(probe):
+    def reason():
+        return None
+
+    def run():
+        raise ValueError("unit-business-unwind")
+
+    counter = probe.CallCounter(*_counter_targets(reason, run))
+    failures = []
+
+    def worker():
+        try:
+            reason()
+            reason()
+        except BaseException as error:
+            failures.append(error)
+
+    with pytest.raises(ValueError, match="unit-business-unwind"):
+        with counter:
+            thread = threading.Thread(target=worker)
+            thread.start()
+            thread.join()
+            assert failures == []
+            reason()
+            run()
+    assert counter.counts == {"reason": 1, "validator": 1}
+    assert counter.counts_complete is True
+
+
+class _MonitorTestLease:
+    """Track only this real unit's edits, independently of its live reservation."""
+
+    def __init__(self, monitor):
+        self.monitor = monitor
+        self.name = None
+        self.locals = []
+        self.callbacks = []
+        self.quarantined = False
+
+    def acquire(self, name):
+        assert self.name is None
+        assert self.monitor.get_tool(2) is None, "do not take an active/quarantined tool"
+        self.monitor.use_tool_id(2, name)
+        self.name = name
+
+    def _owns(self):
+        assert self.name is not None and self.monitor.get_tool(2) == self.name
+        assert not self.quarantined, "uncertain resources require stopping this unit run"
+
+    def release(self):
+        self._owns()
+        self.monitor.free_tool_id(2)
+        self.name = None
+
+    def install_callback(self, event, callback):
+        self._owns()
+        previous = self.monitor.register_callback(2, event, callback)
+        # The real 3.12 audit failure occurs before exchange. Record only a
+        # successful exchange, including the actual previous object.
+        self.callbacks.append((event, callback, previous))
+        if previous is not None:
+            self.restore_callback(event)
+            pytest.fail("released slot retained callback; restored and refused")
+
+    def restore_callback(self, event):
+        self._owns()
+        index = next(i for i, item in enumerate(self.callbacks) if item[0] == event)
+        _, ours, previous = self.callbacks[index]
+        actual = self.monitor.register_callback(2, event, previous)
+        if actual is not ours:
+            # The exchange found another actual object: preserve it, then stop.
+            self.quarantined = True
+            self.monitor.register_callback(2, event, actual)
+            pytest.fail("unit callback changed; restored actual object, no blind release")
+        self.callbacks.pop(index)
+
+    def set_local_from_zero(self, code, mask):
+        self._owns()
+        assert self.monitor.get_local_events(2, code) == 0
+        assert not any(item[0] is code for item in self.locals)
+        # A real set may mutate before instrumentation raises.
+        self.locals.append((code, mask))
+        self.monitor.set_local_events(2, code, mask)
+
+    def restore_local(self, code):
+        self._owns()
+        index = next(i for i, item in enumerate(self.locals) if item[0] is code)
+        _, ours = self.locals[index]
+        actual = self.monitor.get_local_events(2, code)
+        if actual not in (0, ours):
+            self.quarantined = True
+            pytest.fail("unit target mask changed; foreign mask preserved")
+        if actual:
+            self.monitor.set_local_events(2, code, 0)
+        assert self.monitor.get_local_events(2, code) == 0
+        self.locals.pop(index)
+
+    def cleanup(self):
+        pending = bool(self.locals or self.callbacks)
+        if self.name is None:
+            if not pending:
+                return
+            # Assertions can fail after release and before normal reacquisition.
+            # Reacquire only an actually free name; never take counter quarantine.
+            self.acquire("unit-residual-cleanup")
+        self._owns()
+        failures = []
+        for code, _ in tuple(self.locals):
+            try:
+                self.restore_local(code)
+            except BaseException as error:
+                failures.append(error)
+        for event, _, _ in tuple(self.callbacks):
+            try:
+                self.restore_callback(event)
+            except BaseException as error:
+                failures.append(error)
+        if failures:
+            # No release after uncertain restoration. maxfail=1 stops this run.
+            raise AssertionError(
+                "unit resource restoration failed; reservation retained"
+            ) from failures[0]
+        self.release()
+
+
+@pytest.mark.parametrize("clear_first", [False, True])
+def test_monitor_disabled_target_requires_zero_then_start(probe, clear_first):
+    monitor = sys.monitoring
+
+    def target():
+        return None
+
+    def other():
+        return None
+
+    seen = []
+
+    def disabling(code, offset):
+        seen.append(code)
+        return monitor.DISABLE
+
+    lease = _MonitorTestLease(monitor)
+    try:
+        lease.acquire("unit-disable-history")
+        assert monitor.get_events(2) == 0
+        assert monitor.get_local_events(2, target.__code__) == 0
+        lease.install_callback(monitor.events.PY_START, disabling)
+        lease.set_local_from_zero(target.__code__, monitor.events.PY_START)
+        target()
+        monitor.set_local_events(2, target.__code__, monitor.events.PY_START)
+        target()
+        assert len(seen) == 1, "same declared mask must not restart DISABLE"
+        if clear_first:
+            lease.restore_local(target.__code__)
+        lease.restore_callback(monitor.events.PY_START)
+        lease.release()
+        counter = probe.CallCounter(*_counter_targets(target, other))
+        if clear_first:
+            with counter:
+                target()
+                target()
+            assert counter.counts == {"reason": 2, "validator": 0}
+            assert counter.counts_complete is True
+        else:
+            with pytest.raises(probe.ProbeFault) as caught:
+                counter.__enter__()
+            assert caught.value.code == "PROFILE_HOOK_ALREADY_PRESENT"
+            assert counter.counts_complete is False
+            assert monitor.get_local_events(2, target.__code__) == monitor.events.PY_START
+    finally:
+        lease.cleanup()
+
+
+def test_monitor_invalid_entry_exports_none_and_terminal_failed(probe, canonical, monkeypatch):
+    class EntryFailureCounter:
+        def __init__(self, *_args):
+            self.counts = {"reason": 0, "validator": 0}
+
+        def __enter__(self):
+            raise probe.ProbeFault("INTERNAL_ERROR")
+
+        def __exit__(self, *_args):
+            return False
+
+    monkeypatch.setattr(probe, "CallCounter", EntryFailureCounter)
+    stdout, stderr = io.BytesIO(), io.BytesIO()
+    status = probe.run_fixed_suite("full-v1", stdout=stdout, stderr=stderr)
+    records = _jsonl(stdout.getvalue())
+    observations = [item for item in records if item["type"] == "observation"]
+    assert status == 1
+    assert len(observations) == 1
+    assert observations[0]["status"] == "unexpected-failure"
+    assert observations[0]["callCounts"] is None
+    assert records[-1]["state"] == "failed"
+    assert records[-1]["collectionComplete"] is False
+
+
+def test_monitor_unknown_code_masks_and_other_event_callback_are_preserved(probe):
+    monitor = sys.monitoring
+
+    def reason():
+        return None
+
+    def run():
+        return None
+
+    def unrelated():
+        return None
+
+    returned = []
+
+    def foreign_return(code, offset, value):
+        returned.append(code)
+
+    lease = _MonitorTestLease(monitor)
+    foreign_mask = monitor.events.PY_START | monitor.events.PY_RETURN
+    try:
+        lease.acquire("unit-unrelated-residue")
+        assert monitor.get_events(2) == 0
+        assert monitor.get_local_events(2, unrelated.__code__) == 0
+        lease.install_callback(monitor.events.PY_RETURN, foreign_return)
+        lease.set_local_from_zero(unrelated.__code__, foreign_mask)
+        lease.release()
+        counter = probe.CallCounter(*_counter_targets(reason, run))
+        with counter:
+            unrelated()
+            reason()
+        assert counter.counts == {"reason": 1, "validator": 0}
+        assert counter.counts_complete is True
+        assert returned == [unrelated.__code__]
+        assert monitor.get_local_events(2, unrelated.__code__) == foreign_mask
+    finally:
+        # Pending own edits survive release. Even a failed assertion above must
+        # reacquire the free name and undo them, or fail without taking quarantine.
+        lease.cleanup()
+
+
+def test_monitor_callback_increment_failure_invalidates_even_if_body_catches(probe):
+    counter = _fake_counter(probe)
+
+    class FailedCounts(dict):
+        def __setitem__(self, key, value):
+            raise TypeError("unit-count-write")
+
+    counter.counts = FailedCounts(counter.counts)
+    with pytest.raises(probe.ProbeFault) as caught:
+        with counter:
+            with pytest.raises(probe.ProbeFault):
+                counter._callback(counter.reason_code, 0)
+    assert caught.value.code == "INTERNAL_ERROR"
+    assert counter.counts_complete is False
+    assert counter._monitor.name is None
+
+
+def test_monitor_cleanup_audit_failure_retains_reservation_and_invalid_counts(probe):
+    counter = _fake_counter(probe)
+    with pytest.raises(probe.ProbeFault) as caught:
+        with counter:
+            counter._monitor.fail_register = True
+    assert caught.value.code == "INTERNAL_ERROR"
+    assert counter._monitor.callback is counter._callback
+    assert counter._monitor.name == counter._name
+    assert counter.counts_complete is False
+
+
+def test_monitor_zero_is_complete_only_after_normal_exit(probe):
+    counter = _fake_counter(probe)
+    assert counter.counts_complete is False
+    with counter:
+        assert counter.counts == {"reason": 0, "validator": 0}
+        assert counter.counts_complete is False
+    assert counter.counts_complete is True
+    assert counter.counts == {"reason": 0, "validator": 0}
+
+
+def test_monitor_other_owner_callback_is_ignored_but_thread_read_failure_invalidates(probe):
+    counter = _fake_counter(probe)
+    with counter:
+        original = counter._get_ident
+        counter._get_ident = lambda: counter._owner_thread + 1
+        counter._callback(counter.reason_code, 0)
+        counter._get_ident = original
+    assert counter.counts == {"reason": 0, "validator": 0}
+    assert counter.counts_complete is True
+    # Any getter failure is recorded before an owner comparison can be trusted;
+    # the callback-failure unit separately proves clean resources cannot undo it.
+
+
+def test_monitor_recursive_real_entries_and_distinct_nested_counter(probe):
+    def run():
+        return None
+
+    def reason(depth):
+        if depth:
+            run()
+            reason(depth - 1)
+
+    counter = probe.CallCounter(*_counter_targets(reason, run))
+    with counter:
+        with pytest.raises(probe.ProbeFault):
+            with probe.CallCounter(*_counter_targets(reason, run)):
+                pytest.fail("second counter must not share active reservation")
+        reason(2)
+    assert counter.counts == {"reason": 3, "validator": 2}
+    assert counter.counts_complete is True
+
+
+def test_monitor_canonical_code_objects_and_public_fingerprints_survive(probe, canonical):
+    semantic = canonical["semantic"]
+    before_codes = semantic.reason.__code__, semantic.Validator.run.__code__
+    before_fingerprints = tuple(probe._code_fingerprint(code) for code in before_codes)
+    counter = probe.CallCounter(semantic, semantic.Validator)
+    with counter:
+        assert counter.reason_code is before_codes[0]
+        assert counter.validator_code is before_codes[1]
+        assert tuple(probe._code_fingerprint(code) for code in before_codes) == before_fingerprints
+    assert semantic.reason.__code__ is before_codes[0]
+    assert semantic.Validator.run.__code__ is before_codes[1]
+    assert tuple(probe._code_fingerprint(code) for code in before_codes) == before_fingerprints
+    assert counter.counts == {"reason": 0, "validator": 0}
+    assert counter.counts_complete is True
+
+
+@pytest.mark.parametrize("failure", ["name", "profile", "clear", "free", "restore-foreign"])
+def test_monitor_remaining_cleanup_faults_are_private_and_incomplete(probe, failure, monkeypatch):
+    counter = _fake_counter(probe)
+    monitor = counter._monitor
+    foreign = object()
+    original_register = monitor.register_callback
+    with pytest.raises(probe.ProbeFault) as caught:
+        with counter:
+            if failure == "name":
+                monitor.name = "changed-owner"
+            elif failure == "profile":
+                monkeypatch.setattr(probe.sys, "getprofile", lambda: foreign)
+            elif failure == "clear":
+                original_set = monitor.set_local_events
+
+                def failed_clear(tool, code, mask):
+                    if mask == 0:
+                        raise TypeError("unit-clear-before-mutation")
+                    return original_set(tool, code, mask)
+
+                monitor.set_local_events = failed_clear
+            elif failure == "free":
+
+                def failed_free(tool):
+                    raise TypeError("unit-free-before-mutation")
+
+                monitor.free_tool_id = failed_free
+            else:
+                monitor.callback = foreign
+                exchanges = 0
+
+                def failed_restore(tool, event, callback):
+                    nonlocal exchanges
+                    exchanges += 1
+                    if exchanges == 2:
+                        raise TypeError("unit-restore-audit-before-mutation")
+                    return original_register(tool, event, callback)
+
+                monitor.register_callback = failed_restore
+    assert caught.value.code == "INTERNAL_ERROR"
+    assert counter.counts_complete is False
+    if failure == "profile":
+        assert probe.sys.getprofile() is foreign
+        assert monitor.name is None
+    elif failure == "name":
+        assert monitor.name == "changed-owner"
+        assert monitor.callback is counter._callback
+    else:
+        assert monitor.name == counter._name
+
+
+@pytest.mark.parametrize("kind", ["generator", "coroutine", "async-generator"])
+def test_monitor_rejects_nonordinary_targets_before_reserving(probe, kind):
+    def generator():
+        yield None
+
+    async def coroutine():
+        return None
+
+    async def async_generator():
+        yield None
+
+    target = {"generator": generator, "coroutine": coroutine, "async-generator": async_generator}[
+        kind
+    ]
+    with pytest.raises(probe.ProbeFault) as caught:
+        probe.CallCounter(*_counter_targets(target, target))
+    assert caught.value.code == "INTERNAL_ERROR"
+
+
+def test_monitor_setup_keyboard_interrupt_rolls_back_and_propagates(probe):
+    counter = _fake_counter(probe)
+    original_set = counter._monitor.set_local_events
+
+    def interrupted(tool, code, mask):
+        original_set(tool, code, mask)
+        if mask:
+            raise KeyboardInterrupt()
+
+    counter._monitor.set_local_events = interrupted
+    with pytest.raises(KeyboardInterrupt):
+        counter.__enter__()
+    assert counter.counts_complete is False
+    assert counter._monitor.name is None
+    assert counter._monitor.callback is None
+    assert all(mask == 0 for mask in counter._monitor.local.values())
