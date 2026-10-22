@@ -7,7 +7,7 @@ import { pathToFileURL } from 'node:url'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-const output = resolve('docs/reviews/T10/evidence/runtime')
+const output = resolve('out/t10-render-probe')
 await mkdir(output, { recursive: true })
 const sourceRoot = resolve('apps/desktop/src/renderer/src/transfer')
 const csp = pathToFileURL(resolve('apps/desktop/src/csp.ts')).href

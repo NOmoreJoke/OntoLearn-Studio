@@ -1,0 +1,50 @@
+{
+  "status": "fixed_and_validated_pending_fresh_full_dual_review",
+  "observedAt": "2026-10-22T10:06:39.416247+00:00",
+  "commands": [
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "raw": "validation/check-full.txt",
+      "typescriptPassed": 691,
+      "pythonPassed": 1118,
+      "lintFormatTypeBuild": true,
+      "attempts": 1
+    },
+    {
+      "command": "uv run --frozen pytest packages/engine/tests/test_transfer_inspection.py -q",
+      "exitCode": 0,
+      "passed": 66,
+      "toolChunk": "78c53e",
+      "rawLocation": "original tool stdout in owner chat; full check also includes all66"
+    },
+    {
+      "command": "node docs/iterations/T10/render-probe.mjs",
+      "exitCode": 0,
+      "raw": "validation/render-probe.txt",
+      "verification": "validation/probe-output-verification.json"
+    }
+  ],
+  "noGUINoE2ERun": true,
+  "mainRendererNativeImplementationChanged": false,
+  "oldNativeEvidenceScope": "Original C / isolated Linux arm64 only; no new native claim",
+  "sourceFiles": {
+    "packages/engine/src/ontolearn_engine/transfer/inspection.py": {
+      "byteLength": 9638,
+      "sha256": "a94e41be1df4e60901b971d024b91bd19936f22687b08b9492214243e89d1054"
+    },
+    "packages/engine/tests/test_transfer_inspection.py": {
+      "byteLength": 12955,
+      "sha256": "56f894a77dd0bf7c071fe81996af8f52b5a72ddd03ea343821927b6190fa751c"
+    },
+    "docs/iterations/T10/render-probe.mjs": {
+      "byteLength": 2427,
+      "sha256": "c5d89b33eeea99aef0e3d2e68e018c754dc3a426a163a7989695d5737bcc2abe"
+    },
+    "docs/iterations/T10/private-preparation.md": {
+      "byteLength": 4755,
+      "sha256": "9c629faef2ee0375d935dd29d46397631c7e5b63963878b4bc1833369b8427d4"
+    }
+  },
+  "fullDualReviewNewCandidateRequired": true
+}

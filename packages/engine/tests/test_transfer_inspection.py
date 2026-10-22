@@ -45,11 +45,11 @@ def manifest(roles=("definitions",), kind="template", options=None):
     }, data
 
 
-def pack(m=None, data=None, raw_manifest=None, entries=()):
+def pack(m=None, data=None, raw_manifest=None, entries=(), compression=zipfile.ZIP_DEFLATED):
     if m is None:
         m, data = manifest()
     stream = io.BytesIO()
-    with warnings.catch_warnings(), zipfile.ZipFile(stream, "w", zipfile.ZIP_DEFLATED) as z:
+    with warnings.catch_warnings(), zipfile.ZipFile(stream, "w", compression) as z:
         warnings.simplefilter("ignore", UserWarning)
         z.writestr("manifest.json", raw_manifest or json.dumps(m))
         for path, value in (data or {}).items():
@@ -245,6 +245,32 @@ def test_trailing_bytes_and_comment_rejected():
     raw = bytearray(pack())
     raw[-2:] = b"\x01\x00"
     rejected(bytes(raw), "ARCHIVE_SHAPE")
+
+
+@pytest.mark.parametrize("declared_count", [1, 3])
+def test_eocd_count_must_match_actual_central_directory_members(declared_count):
+    raw = bytearray(pack())  # Exactly manifest.json and data/definitions.json.
+    struct.pack_into("<HH", raw, len(raw) - 14, declared_count, declared_count)
+    rejected(bytes(raw), "ARCHIVE_SHAPE")
+
+
+@pytest.mark.parametrize("disk_count,total_count", [(1, 2), (2, 1)])
+def test_eocd_disk_count_must_match_total_count(disk_count, total_count):
+    raw = bytearray(pack())
+    struct.pack_into("<HH", raw, len(raw) - 14, disk_count, total_count)
+    rejected(bytes(raw), "ARCHIVE_SHAPE")
+
+
+@pytest.mark.parametrize("compression", [zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED])
+def test_matching_eocd_counts_preserve_full_without_optional_content(compression):
+    m, data = manifest(tuple(sorted(CORE_ROLES)), "full")
+    result = inspect_candidate(pack(m, data, compression=compression))
+    assert result.declared_kind == "full"
+    assert result.roles == tuple(sorted(CORE_ROLES))
+    assert result.selected_options == result.included_options == ()
+    assert not any(
+        [result.restore_current, result.rerun_mapping, result.replay_runs, result.import_allowed]
+    )
 
 
 def prepend_unindexed(raw, prefix):

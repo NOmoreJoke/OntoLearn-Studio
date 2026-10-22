@@ -66,3 +66,12 @@ T09 获批只读输入版本 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 mani
 ZCode真实session `session_65271e095f85aad0c95b5e1f512243f1`、turn `turn_6b38be66-cb82-46f7-836a-43b742cfe944`，GLM-5.3/max/yolo；MiniMax真实session `mvs_41069a5454874e1aa0bd61c40d1daffa`、turn `854a6900-aadf-4f1e-b035-5806dc1cf2c8`，MiniMax-M3.1-Flash/xhigh、任务始终授权。两者实际cwd、完整290行输入和受理均已实核，已后台开始；前台已释放。完整回执见`dispatch-20261022/launch-receipt.json`与README。此前blocked审计中“实际任务0/无入口”为当时事实，现更新为实际任务2，尚无终态或指定Pass。
 
 本次只推进已明确授权的准备和派发，没有重建/自动恢复或完成原blocked Goal；正式格式/可信投影/生产lease/导入receipt及父门仍待，未push/PR/CI/merge。准备方不重跑不变产品；审者允许在各自隔离env/scratch执行必要完整验证及独立反例，现有源/tests/fixture/锁/config/旧验收/旧raw/Git只读。
+
+
+## 2026-10-22 round-1终态与修后候选
+
+两指定任务现均实际终态stop，完整原报告、终态与验证raw已保全于round-1/。ZCode报告SHA6d46ea401d7ee6257766a162d79af6db2dd0e7cff448a8ac850a4297c6382f13；MiniMax报告SHAcb76b0a248575f348d6a8f24a30f8e4abf0fa788f78c7c4f30f17850ca5bd74f。两原报告均写有界阶段通过，但MiniMax登记EOCD计数P2，本线按较高优先级采纳修复，旧结论不继承到修后候选。10个去重议题的完整处置见round-1-disposition.md，包括已修、正式格式/共享owner与生命周期开放项；O4未修不得标关闭。
+
+本轮仅改Python检查器/其测试、CLI probe输出目录与运行说明。定向66Python通过，整仓npm run check一次exit0，691TS/1118Python及lint/格式/类型/构建通过；独立补丁审查和20项内存反例通过。probe实际生成3HTML，3900B/26af字节保持不变且输出被忽略，旧证据不覆盖。新原件见round-2-preparation/verification.json。浏览器/native同一report源码不同标题输入、executed:null仅未观测哨兵的精确澄清见处置文档，旧原件不改。
+
+新候选仍需双方各全新完整同版round-2审查，不复用旧会话；尚无新任务/创建lease，不操作GUI。原正式格式/可信投影/生产lease/原子导入及父门继续未完成，原Goal blocked不重建，未push/PR/CI/merge。

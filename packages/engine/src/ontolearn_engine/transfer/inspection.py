@@ -86,7 +86,7 @@ class Inspection:
     reason: str = "UNAPPROVED_FORMAT_AND_UNVERIFIED_PAYLOADS"
 
 
-def _preflight(raw: bytes) -> int:
+def _preflight(raw: bytes) -> tuple[int, int]:
     _require(type(raw) is bytes and len(raw) <= MAX_ARCHIVE, "ARCHIVE_LIMIT")
     # Inspect classic EOCD before ZipFile allocates a list for every central-directory entry.
     # Deliberately reject ZIP64, multi-disk, trailing bytes and archive comments in this draft.
@@ -96,7 +96,7 @@ def _preflight(raw: bytes) -> int:
     _require(1 <= count <= MAX_ENTRIES, "ARCHIVE_LIMIT")
     _require(size <= 256 * MAX_ENTRIES, "ARCHIVE_LIMIT")
     _require(offset + size == len(raw) - 22, "ARCHIVE_SHAPE")
-    return offset
+    return offset, count
 
 
 def _local_layout(raw: bytes, entries: list[zipfile.ZipInfo], central_offset: int) -> None:
@@ -146,9 +146,12 @@ def _read(raw: bytes, item: zipfile.ZipInfo, limit: int) -> bytes:
     return payload
 
 
-def _inspect(archive: zipfile.ZipFile, raw: bytes, central_offset: int) -> Inspection:
+def _inspect(
+    archive: zipfile.ZipFile, raw: bytes, central_offset: int, declared_count: int
+) -> Inspection:
     entries = archive.infolist()
     _require(1 <= len(entries) <= MAX_ENTRIES, "ARCHIVE_LIMIT")
+    _require(len(entries) == declared_count, "ARCHIVE_SHAPE")
     seen = set()
     total = 0
     for item in entries:
@@ -209,10 +212,10 @@ def _inspect(archive: zipfile.ZipFile, raw: bytes, central_offset: int) -> Inspe
 
 def inspect_candidate(raw: bytes) -> Inspection:
     """Read memory-only draft ZIP bytes. Never import or claim recovery from role names."""
-    central_offset = _preflight(raw)
+    central_offset, declared_count = _preflight(raw)
     try:
         with zipfile.ZipFile(io.BytesIO(raw), "r") as archive:
-            return _inspect(archive, raw, central_offset)
+            return _inspect(archive, raw, central_offset, declared_count)
     except TransferError:
         raise
     except (OSError, ValueError, RuntimeError, EOFError, zipfile.BadZipFile, zlib.error):

@@ -35,6 +35,6 @@ npm run check
 node docs/iterations/T10/render-probe.mjs
 ```
 
-最后一条只生成合成 HTML 与组件 SSR，不启动浏览器。浏览器预验使用 Playwright CLI 的独立 headless Chrome 会话；最新报告文件服务产物的 12 个恶意字符串及首 LF 完整出现在文本、危险 DOM 为零、脚本哨兵未触发、外部请求为空。独立组件另有四个默认未选项、两项禁用动作和错误路径证据。原始命令与结果保存在本线 evidence，运行时 HTML 可随脚本重建。
+最后一条只生成合成 HTML 与组件 SSR，输出到忽略的 `out/t10-render-probe/`，不启动浏览器，不覆盖冻结证据。浏览器预验使用 Playwright CLI 的独立 headless Chrome 会话；最新报告文件服务产物的 12 个恶意字符串及首 LF 完整出现在文本、危险 DOM 为零、脚本哨兵未触发、外部请求为空。独立组件另有四个默认未选项、两项禁用动作和错误路径证据。原始命令与结果保存在本线 evidence，运行时 HTML 可随脚本重建。
 
 完整接点请求见 [interface-needs.md](interface-needs.md)。正式 schema、批准 checkpoint、业务投影、原子发布与跨设备操作未就绪，不注册生产能力、不承诺迁移或发布完成。
