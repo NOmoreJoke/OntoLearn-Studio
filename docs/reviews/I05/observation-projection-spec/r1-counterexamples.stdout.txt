@@ -1,0 +1,223 @@
+{
+  "sealedInputsAndIndependentOracleExact": {
+    "observations": 37,
+    "datasets": 19,
+    "oracleEntries": 37,
+    "sealedInventory": [
+      417,
+      320
+    ]
+  },
+  "legacyFullProjectionAndWitnessConsistency": [
+    {
+      "id": "rdfs/type",
+      "rdfs": 1,
+      "rules": 0,
+      "rdfsEvidence": 1,
+      "evidence": 0
+    },
+    {
+      "id": "rdfs/domain-depth2",
+      "rdfs": 2,
+      "rules": 0,
+      "rdfsEvidence": 2,
+      "evidence": 0
+    },
+    {
+      "id": "rdfs/range",
+      "rdfs": 1,
+      "rules": 0,
+      "rdfsEvidence": 1,
+      "evidence": 0
+    },
+    {
+      "id": "rdfs/subclass",
+      "rdfs": 1,
+      "rules": 0,
+      "rdfsEvidence": 1,
+      "evidence": 0
+    },
+    {
+      "id": "rdfs/cycle",
+      "rdfs": 8,
+      "rules": 0,
+      "rdfsEvidence": 8,
+      "evidence": 0
+    },
+    {
+      "id": "rdfs/domain-first-witness",
+      "rdfs": 1,
+      "rules": 1,
+      "rdfsEvidence": 1,
+      "evidence": 1
+    },
+    {
+      "id": "rdfs/range-first-witness",
+      "rdfs": 1,
+      "rules": 1,
+      "rdfsEvidence": 1,
+      "evidence": 1
+    },
+    {
+      "id": "legacy/no-rule-feedback",
+      "rdfs": 0,
+      "rules": 1,
+      "rdfsEvidence": 0,
+      "evidence": 1
+    },
+    {
+      "id": "legacy/multiple-matches",
+      "rdfs": 0,
+      "rules": 1,
+      "rdfsEvidence": 0,
+      "evidence": 2
+    },
+    {
+      "id": "legacy/repeated-variable",
+      "rdfs": 0,
+      "rules": 1,
+      "rdfsEvidence": 0,
+      "evidence": 1
+    }
+  ],
+  "scopeFullGraphsSourcesAndDigests": [
+    {
+      "id": "scope/asserted",
+      "facts": 6,
+      "ontology": 2,
+      "allDigestsRecomputed": true
+    },
+    {
+      "id": "scope/fresh",
+      "facts": 9,
+      "ontology": 3,
+      "allDigestsRecomputed": true
+    },
+    {
+      "id": "scope/project",
+      "facts": 9,
+      "ontology": 3,
+      "allDigestsRecomputed": true
+    }
+  ],
+  "independentMutationCounts": {
+    "missingNestedField": 1031,
+    "nonemptyTail": 423,
+    "emptyToNonempty": 33,
+    "typeConfusion": 229,
+    "normalVsKnownRejection": 312
+  },
+  "duplicateHeadAndPremiseOccurrencesRetained": true,
+  "counterexampleUnsafeHarnessFallback": {
+    "inputStage": "/private/r1-sensitive-path",
+    "actualOutput": {
+      "kind": "rejection",
+      "complete": false,
+      "harnessStage": "/private/r1-sensitive-path",
+      "diagnostic": {
+        "origin": "Unknown",
+        "reason": "INTERNAL_ERROR",
+        "classification": null,
+        "stage": null,
+        "slot": null,
+        "domain": null,
+        "ruleId": null,
+        "location": null
+      },
+      "partialView": null,
+      "report": null
+    },
+    "schemaValid": false,
+    "sensitiveStageRetained": true
+  },
+  "counterexampleBNodeLanguageIdentity": {
+    "left": [
+      [
+        {
+          "kind": "blank",
+          "label": "a"
+        },
+        {
+          "kind": "iri",
+          "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first"
+        },
+        {
+          "kind": "literal",
+          "lexical": "hello",
+          "datatype": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+          "language": "EN"
+        }
+      ],
+      [
+        {
+          "kind": "blank",
+          "label": "a"
+        },
+        {
+          "kind": "iri",
+          "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"
+        },
+        {
+          "kind": "iri",
+          "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"
+        }
+      ]
+    ],
+    "right": [
+      [
+        {
+          "kind": "blank",
+          "label": "p"
+        },
+        {
+          "kind": "iri",
+          "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first"
+        },
+        {
+          "kind": "literal",
+          "lexical": "hello",
+          "datatype": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+          "language": "en"
+        }
+      ],
+      [
+        {
+          "kind": "blank",
+          "label": "p"
+        },
+        {
+          "kind": "iri",
+          "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"
+        },
+        {
+          "kind": "iri",
+          "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"
+        }
+      ]
+    ],
+    "actualGraphIsomorphic": false,
+    "requiredByRDFIdentityPolicy": true
+  },
+  "numericLexicalAndRawLanguageRemainDistinct": true,
+  "restoreTargetAudit": {
+    "ids": [
+      "restore/fullview/payload-unknown-key",
+      "restore/fullview/tail-source-tamper",
+      "restore/fullview/tail-definition-tamper",
+      "restore/fullview/tail-limits-tamper",
+      "restore/fullview/tail-child-tamper",
+      "restore/explanation/payload-unknown-key",
+      "restore/explanation/tail-source-tamper",
+      "restore/explanation/tail-definition-tamper",
+      "restore/explanation/tail-limits-tamper",
+      "restore/explanation/tail-child-tamper",
+      "restore/explanation/dag-depth-plus-one",
+      "restore/explanation/dag-last-premise-forward",
+      "restore/explanation/leaf-rename-all",
+      "restore/explanation/head-occurrence-1023-15"
+    ],
+    "conditionalNewProposalOnly": true,
+    "mutationBytesExecuted": false,
+    "earlierFailuresMustRemainNotReached": true
+  }
+}
