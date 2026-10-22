@@ -1,0 +1,41 @@
+{
+  "runs": [
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--no-cache",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-preparation/verify-input.py"
+      ],
+      "exit": 0,
+      "stdout": "1 file left unchanged\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--no-cache",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-preparation/verify-input.py"
+      ],
+      "exit": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "--no-cache",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-preparation/verify-input.py"
+      ],
+      "exit": 0,
+      "stdout": "1 file already formatted\n",
+      "stderr": ""
+    }
+  ],
+  "firstLintAttempt": "Initial new helper had2 E501 findings, displayed in owner tool output; formatter corrected them. Initial combined shell exit0 represented last formatter only, never reported first lint0. No repository/product function executed.",
+  "helperBytes": 5497,
+  "helperSHA256": "a8d43c5b48e1e0f8be6fc53d2820b6d3395b719699db6d702b49dbd6d295a9e9"
+}
