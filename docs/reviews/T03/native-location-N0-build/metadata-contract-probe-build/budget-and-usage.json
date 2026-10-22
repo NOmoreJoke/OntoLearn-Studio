@@ -63,9 +63,9 @@
   "oldFailures255UnknownDrainAndAllRetainedTicketsPreserved": true,
   "actualOSCompilerLoaderIOBytes": null,
   "compilerRunnerExperimentCalls": 0,
-  "metadataGuardOrEntityGuardIncreased": false,
+  "metadataGuardOrEntityGuardIncreased": true,
   "withdrawnUniqueBasedFuturePreflightEstimate": 512,
-  "futurePreflightActualUpperBound": "20292 semantic fee proof /22000 phase, not actual",
+  "futurePreflightActualUpperBound": "39928 semantic source model /42000 phase; fixed binding scalars within prepaid2000; not actual",
   "knownExplicitFuturePreflightPartialVisits": 583,
   "withdrawnForwardPreflightOriginalTicketGapEstimate": 512,
   "knownExplicitDependencyPartialVisitsAtIndividualCaps": 8055,
@@ -103,18 +103,19 @@
     "entityRemaining": 78544
   },
   "rootAllocatedCumulative": {
-    "buildDeclarationBytes": 109042322472,
+    "buildDeclarationBytes": 109080071208,
     "buildGuardBytes": 137438953472,
-    "buildRemainingBytes": 28396631000,
-    "combinedDeclarationBytes": 118788049557,
+    "buildRemainingBytes": 28358882264,
+    "combinedDeclarationBytes": 118825798293,
     "combinedGuardBytes": 147184680557,
     "oldSupplySeparateBytes": 9745727085,
-    "metadataDeclaration": 2201263,
-    "metadataGuard": 2600000,
-    "metadataRemaining": 398737,
+    "metadataDeclaration": 2273263,
+    "metadataGuard": 3200000,
+    "metadataRemaining": 926737,
     "entityConservative": 521456,
-    "entityGuard": 600000,
-    "entityRemaining": 78544
+    "entityGuard": 1300000,
+    "entityRemaining": 778544,
+    "knownCompletedEntityRetained": 470492
   },
   "currentPreparationAllocation": {
     "bytes": 12582912,
@@ -127,7 +128,7 @@
     "rootSeparateMetadata": 4000,
     "appliedExactlyOnceByRoot": true
   },
-  "futureDependencyUpperBound": 61000,
+  "futureDependencyUpperBound": 60803,
   "currentPreparationOwnerWitnessRead": "one pinned 3156859B read; text assertion failed; 6400 record fee retained; no owner retry",
   "withdrawn103000Proposal": {
     "bytes": 134217728,
@@ -241,19 +242,18 @@
     "peerBytesEach": 37748736,
     "entities": 737280,
     "wideEntityCandidateUpper": 729804,
-    "metadataIfAccepted": 3055263,
-    "metadataRemainingIfAccepted": -55263,
-    "buildIfAccepted": 109239454760,
-    "buildRemainingIfAccepted": 28199498712,
-    "combinedIfAccepted": 118985181845,
+    "metadataIfAccepted": 3079263,
+    "metadataRemainingIfAccepted": 120737,
+    "buildIfAccepted": 109252037672,
+    "buildRemainingIfAccepted": 28186915800,
+    "combinedIfAccepted": 118997764757,
     "entitiesIfAccepted": 1258736,
-    "entityRemainingIfAccepted": -658736,
-    "status": "PROPOSAL_ONLY_METADATA_GUARD_DEFICIT55263_ENTITY_GUARD_DEFICIT658736_NO_EXECUTION_AUTH"
+    "entityRemainingIfAccepted": 41264,
+    "status": "ARITHMETIC_FITS_NEW_FORWARD_GUARDS_ONLY_NOT_FUNDED_NO_AUTH_ATTEMPT"
   },
   "futureControlUpperBound": 51690,
   "futureOwnerClosureUpperBound": 99616,
-  "futurePeerUpperBoundEach": 265192
-,
+  "futurePeerUpperBoundEach": 265192,
   "schemaInitCurrentDeclaration": {
     "metadataDeclaration": 2225263,
     "forwardMetadataGuard": 3000000,
@@ -268,11 +268,13 @@
     "newStaticBytesReservedOnce": 12582912,
     "previousV2MetadataProposalUnfunded": 398000,
     "previousV2EntityProposalUnfunded": 57344,
-    "oldGuardsRetained": [2250000, 2600000],
+    "oldGuardsRetained": [
+      2250000,
+      2600000
+    ],
     "historicalActualUnknownRetained": true,
     "futureTicketsApplied": false
-  }
-,
+  },
   "structuralPrecheckCurrentDeclaration": {
     "metadata": 2249263,
     "metadataGuardUnchanged": 3000000,
@@ -287,5 +289,77 @@
     "oldUnfundedEntityProposal": 532480,
     "futureTicketsApplied": false,
     "historicalActualUnknownRetained": true
+  },
+  "rootAllocatedCumulativeBeforeForwardBinding": {
+    "buildDeclarationBytes": 109042322472,
+    "buildGuardBytes": 137438953472,
+    "buildRemainingBytes": 28396631000,
+    "combinedDeclarationBytes": 118788049557,
+    "combinedGuardBytes": 147184680557,
+    "oldSupplySeparateBytes": 9745727085,
+    "metadataDeclaration": 2201263,
+    "metadataGuard": 2600000,
+    "metadataRemaining": 398737,
+    "entityConservative": 521456,
+    "entityGuard": 600000,
+    "entityRemaining": 78544
+  },
+  "structuralPrecheckUnfundedProposalAtOldGuards": {
+    "metadata": 806000,
+    "runtime": 167000,
+    "ownerClosure": 103000,
+    "peerA": 268000,
+    "peerB": 268000,
+    "bytes": 171966464,
+    "runtimeBytes": 41943040,
+    "ownerClosureBytes": 54525952,
+    "peerBytesEach": 37748736,
+    "entities": 737280,
+    "wideEntityCandidateUpper": 729804,
+    "metadataIfAccepted": 3055263,
+    "metadataRemainingIfAccepted": -55263,
+    "buildIfAccepted": 109239454760,
+    "buildRemainingIfAccepted": 28199498712,
+    "combinedIfAccepted": 118985181845,
+    "entitiesIfAccepted": 1258736,
+    "entityRemainingIfAccepted": -658736,
+    "status": "PROPOSAL_ONLY_METADATA_GUARD_DEFICIT55263_ENTITY_GUARD_DEFICIT658736_NO_EXECUTION_AUTH"
+  },
+  "preForwardBindingTopLevelRetained": {
+    "metadataGuardOrEntityGuardIncreased": false,
+    "futurePreflightActualUpperBound": "20292 semantic fee proof /22000 phase, not actual",
+    "futureDependencyUpperBound": 61000
+  },
+  "forwardBindingCurrentDeclaration": {
+    "version": "T03_FORWARD_LOGICAL_GUARD_BINDING_V1",
+    "metadata": 2273263,
+    "metadataGuard": 3200000,
+    "metadataRemaining": 926737,
+    "build": 109080071208,
+    "buildGuard": 137438953472,
+    "combined": 118825798293,
+    "combinedGuard": 147184680557,
+    "entity": 521456,
+    "entityGuard": 1300000,
+    "entityRemaining": 778544,
+    "newStaticMetadataReservedOnce": 24000,
+    "newStaticBytesReservedOnce": 12582912,
+    "ownerMetadata": 12000,
+    "authorMetadata": 8000,
+    "rootMetadata": 4000,
+    "actualMetadata": null,
+    "actualApplicationIO": null,
+    "actualOSIO": null,
+    "historicalActualUnknownRetained": true,
+    "oldMetadataGuardsRetained": [
+      2250000,
+      2600000,
+      3000000
+    ],
+    "oldEntityGuardRetained": 600000,
+    "futureTicketsApplied": false,
+    "physicalProtectionsChanged": false,
+    "historicalComplianceRetroactivelyProved": false,
+    "rootBudgetSHA256": "91cdbd2b6067f1fe2e1977e7c661b6f65c1dfdc1874bbb98060bf3a0c07e3480"
   }
 }

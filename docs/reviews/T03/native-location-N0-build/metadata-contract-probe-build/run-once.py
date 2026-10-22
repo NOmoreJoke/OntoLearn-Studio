@@ -21,7 +21,7 @@ SELF = STAGE / 'run-once.py'
 PLAN = STAGE / 'call-plan.json'
 METER_PLAN = STAGE / 'meter-plan.json'
 HISTORY = STAGE / 'meter-history.json'
-REVIEW_METHOD = STAGE / 'meter-structural-precheck-repair/review-methods/method-plan.json'
+REVIEW_METHOD = STAGE / 'meter-forward-binding/review-methods/method-plan.json'
 AUTH = Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-metadata-contract-probe-one-build-authorization.json')
 PINS = STAGE / 'approved-identity-pins.json'
 SOURCE = STAGE / 'inputs/location_metadata_contract_probe.cc.raw'
@@ -850,7 +850,7 @@ def main():
         demand(digest(meter_raw) == auth['meterPlanSHA256'] and digest(history_raw) == auth['historyLedgerSHA256'], 'meter-history-authority')
         meter_plan = decode_metadata(meter_raw, 256)
         history = decode_metadata(history_raw, 128)
-        proof_raw = bounded_read(STAGE / 'meter-structural-precheck-repair/meter-proof.md', 32768)
+        proof_raw = bounded_read(STAGE / 'meter-forward-binding/meter-proof.md', 32768)
         demand(digest(proof_raw) == meter_plan['proofSHA256'] == auth['countingProofSHA256'], 'counting-proof-authority')
         method_raw = bounded_read(REVIEW_METHOD, 32768)
         demand(digest(method_raw) == meter_plan['reviewMethodPlanSHA256'] == auth['reviewMethodPlanSHA256'], 'review-method-authority')
@@ -859,7 +859,10 @@ def main():
         demand(method['ownerMetadata'] == 103000 and method['peerMetadataEach'] == 268000, 'external-method-tickets')
         demand(meter_plan['runtimeMetadataReserved'] == 167000 and meter_plan['futureAllPartiesMetadataProposal'] == 806000, 'fixed-runtime-ticket')
         demand(auth['runtimeMetadataReserved'] == 167000 and auth['freshFutureAllPartiesMetadataAccepted'] == 806000, 'fresh-runtime-ticket-not-accepted')
-        demand(meter_plan['futureAllPartiesMetadataProposal'] <= history['currentMetadataRemaining'], 'joint-future-ticket-does-not-fit-declared-remainder')
+        demand(meter_plan['futureAllPartiesMetadataProposal'] <= history['currentMetadataRemaining'] == 926737 and
+               history['currentMetadataCumulative'] == 2273263 and history['forwardLogicalGuard'] == 3200000 and
+               history['currentEntityDeclarationUnchanged'] == 521456 and history['currentEntityGuardUnchanged'] == 1300000,
+               'joint-forward-declaration-and-guard-binding')
         demand(meter_plan['futureEntityProposal'] == 737280 and auth['freshFutureEntityAccepted'] == 737280, 'fresh-entity-ticket-not-accepted')
         demand(auth['ownerClosureMetadataAccepted'] == 103000 and auth['peerMetadataEachAccepted'] == 268000, 'joint-component-authority')
         demand(auth['freshFutureByteProposalAccepted'] == 171966464 and auth['runtimeOwnerBytes'] == 41943040, 'fresh-byte-ticket-not-accepted')

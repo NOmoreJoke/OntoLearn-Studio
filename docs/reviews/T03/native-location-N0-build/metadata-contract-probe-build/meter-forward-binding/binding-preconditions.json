@@ -1,0 +1,221 @@
+{
+  "status": "MACHINE_ACTIONABLE_PRECONDITIONS_NOT_EXECUTION_AUTHORITY",
+  "baseProcessRef": "f8af237b9d2c18fe7a645def0fbb18af8a017132",
+  "currentCandidateRef": null,
+  "currentFinalProcessRef": null,
+  "refNullMeaning": "root must resolve actual fixed candidate/process from externally reported final delivery; do not modify frozen packet or self-reference",
+  "futureTicketsFunded": false,
+  "actualAuthPresent": false,
+  "actualAttemptCreated": false,
+  "artifactExecutionPermitted": false,
+  "futureFundingRequired": {
+    "M": 167000,
+    "C": 103000,
+    "P1": 268000,
+    "P2": 268000,
+    "metadata": 806000,
+    "bytes": 171966464,
+    "entity": 737280
+  },
+  "currentForwardDeclaration": {
+    "metadata": 2273263,
+    "metadataGuard": 3200000,
+    "entity": 521456,
+    "entityGuard": 1300000
+  },
+  "fixedIdentityManifest": {
+    "base": "f8af237b9d2c18fe7a645def0fbb18af8a017132",
+    "path": "docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/approved-identity-pins.json",
+    "gitBlob": "6aeb5665ee546174d9b88fd911af6f9d723c21b7",
+    "approvedSHA256": null,
+    "readPolicy": "reuse externally approved exact metadata pin only; no payload read in this static window"
+  },
+  "producerAuthRequiredKeysExactReadSet": [
+    "authorized",
+    "countingProofSHA256",
+    "dependencyMode",
+    "freshFutureAllPartiesMetadataAccepted",
+    "freshFutureByteProposalAccepted",
+    "freshFutureEntityAccepted",
+    "historyLedgerSHA256",
+    "identityDescriptorSHA256",
+    "identityManifestSHA256",
+    "inputProcessRef",
+    "meterPlanSHA256",
+    "ownerClosureMetadataAccepted",
+    "peerMetadataEachAccepted",
+    "planSHA256",
+    "preparedIdentityHistoricalCapBytes",
+    "reusePreparedIdentityHashesMetadataOnly",
+    "reviewMethodPlanSHA256",
+    "runnerSHA256",
+    "runtimeMetadataReserved",
+    "runtimeOwnerBytes",
+    "schema",
+    "scope",
+    "sourceRef",
+    "sourceSHA256"
+  ],
+  "authTemplate": "unsigned-templates/producer-authorization.template.json",
+  "roleTemplates": [
+    "unsigned-templates/peer-a-config.template.json",
+    "unsigned-templates/peer-b-config.template.json",
+    "unsigned-templates/owner-config.template.json"
+  ],
+  "externalParentTemplate": "unsigned-templates/external-parent-receipt.template.json",
+  "roleCompletionTemplate": "unsigned-templates/role-completion.template.json",
+  "nullIsNotAnAuthorizedValue": true,
+  "stages": [
+    {
+      "order": 0,
+      "id": "root-window",
+      "requires": [
+        "actual fixed candidate/process/pins + full static reports/root receipt",
+        "explicit one-time funding for all domains",
+        "genuine auth authorized=true at exact AUTH; template forbidden",
+        "parent actual nonce/time expiry/config/argv/owned output and retention policy"
+      ],
+      "onMissing": "NOT_STARTED_HOLD"
+    },
+    {
+      "order": 1,
+      "id": "producer",
+      "compilerCalls": 1,
+      "staticCalls": 5,
+      "parallel": 1,
+      "artifactCalls": 0,
+      "compilerTimeoutSeconds": 600,
+      "inspectorTimeoutSeconds": 30,
+      "exactPlan": "call-plan.json",
+      "interpreterFlags": ["-I", "-S", "-B"],
+      "recordStages": ["planned", "dispatch-attempted", "dispatched", "terminal"],
+      "outputBase": "build/native-location/metadata-contract-probe/darwin-arm64/<actual-token>",
+      "createdDirectoriesMode": "0700",
+      "sourceCopyMode": "0400",
+      "rawFilesMode": "0600",
+      "attempt": "D/execution-attempt.json O_EXCL producer-created only",
+      "rawCap": 16777216,
+      "emergencyCap": 65536,
+      "stop": "only own unreaped leader terminate/wait1 kill/wait1; UNKNOWN drain; no retry/group/oldPID",
+      "parentRequires": [
+        "actual original emergency stderr + exit/signal/start/end/config/argv/nonce binding",
+        "full capture tails and first/cleanup errors separately"
+      ]
+    },
+    {
+      "order": 2,
+      "id": "two-independent-peers",
+      "roles": ["peer-a", "peer-b"],
+      "requires": [
+        "distinct root-accepted identities/actual funded configs with same producer inputProcessRef/token/auth/identity",
+        "all eight control pins, actual execution-attempt hash only after producer",
+        "each full saved-original table + complete raw streams",
+        "parent actual exit/stderr/completion output hashes"
+      ],
+      "outputs": [
+        "report.md",
+        "facts.json",
+        "original-index.json",
+        "method.stderr",
+        "completion.json"
+      ],
+      "onFailure": "HOLD retain originals no summary or retry"
+    },
+    {
+      "order": 3,
+      "id": "owner",
+      "requires": [
+        "both actual peer completions config-pinned",
+        "all full original presence/bytes/SHA equality + both complete report texts",
+        "each finding explicitly retained OPEN/disposed; no silent closure",
+        "actual owner parent exit/stderr/archive/facts/report pins"
+      ],
+      "externalClosure": "five sources S3751936 heldread+onecopy+oneindexread, 3S11255808 plus allaux<=1MiB total<=12MiB; fixed2464 and no extra free passes"
+    },
+    {
+      "order": 4,
+      "id": "root-final-receipt",
+      "requires": [
+        "full owner report/findings read",
+        "exact finite current=Git=manifest/index blob + parent observed terminal",
+        "actual ABI/loader/drain and all parent/external gates remain open unless separately observed"
+      ],
+      "onMissing": "HOLD"
+    }
+  ],
+  "rootMustNotInferAuthorizationFrom": [
+    "guard fit",
+    "template fixed fee numbers",
+    "static source support",
+    "authorized field alone without actual root window"
+  ],
+  "notExecuted": [
+    "prepared runner/reader/helper/local functions",
+    "fixture/simulation/compiler/inspector/native/API/DB/GUI/network/install/probe",
+    "artifact",
+    "SDK/tool/witness/descriptor payload"
+  ],
+  "producerAuthFieldTypes": {
+    "authorized": "boolean",
+    "countingProofSHA256": "sha256lowerhex64",
+    "dependencyMode": "exact-string",
+    "freshFutureAllPartiesMetadataAccepted": "integer",
+    "freshFutureByteProposalAccepted": "integer",
+    "freshFutureEntityAccepted": "integer",
+    "historyLedgerSHA256": "sha256lowerhex64",
+    "identityDescriptorSHA256": "sha256lowerhex64",
+    "identityManifestSHA256": "sha256lowerhex64",
+    "inputProcessRef": "gitref40lowerhex",
+    "meterPlanSHA256": "sha256lowerhex64",
+    "ownerClosureMetadataAccepted": "integer",
+    "peerMetadataEachAccepted": "integer",
+    "planSHA256": "sha256lowerhex64",
+    "preparedIdentityHistoricalCapBytes": "integer",
+    "reusePreparedIdentityHashesMetadataOnly": "boolean",
+    "reviewMethodPlanSHA256": "sha256lowerhex64",
+    "runnerSHA256": "sha256lowerhex64",
+    "runtimeMetadataReserved": "integer",
+    "runtimeOwnerBytes": "integer",
+    "schema": "exact-string",
+    "scope": "exact-string",
+    "sourceRef": "gitref40lowerhex",
+    "sourceSHA256": "sha256lowerhex64"
+  },
+  "roleConfigFieldTypes": {
+    "schema": "exact-string",
+    "authorized": "true only actual root authority",
+    "role": "peer-a|peer-b|owner",
+    "metadataTicket": "268000 peer|103000 owner integer",
+    "byteTicket": "37748736 peer|54525952 owner integer",
+    "inputProcessRef": "approved final process gitref40",
+    "reviewerIdentity": "root accepted distinct identity string",
+    "outputToken": "lowerhex64 actual producer token",
+    "outputRoot": "exact OUT_BASE/token",
+    "reviewOutputRoot": "exact REVIEW_BASE/token/role",
+    "producerAuthorizationSHA256": "lowerhex64 actual auth bytes",
+    "producerIdentityManifestSHA256": "lowerhex64 externally approved manifest pin",
+    "controlPins": "exact eight lowerhex64 control hashes; attempt unavailable until real producer",
+    "acceptedCompilerGeneratedImports": "root-approved list[str],max128,no _nl_/_napi_",
+    "expectedPeerIdentities": "owner only exact peer-a/peer-b distinct root identities",
+    "peerCompletionSHA256": "owner only exact both actual completion hashes"
+  },
+  "completionFieldTypes": {
+    "role": "exact role",
+    "inputProcessRef": "same approved process gitref40",
+    "readerSHA256": "same fixed reader lowerhex64",
+    "exitCode": "actual observed integer; nonzero HOLD",
+    "stderrSHA256": "full actual stderr lowerhex64",
+    "factsSHA256": "actual facts bytes hash",
+    "indexSHA256": "actual original-index or owner archive-manifest hash",
+    "reportSHA256": "full actual report hash"
+  },
+  "parentExternalRelations": [
+    "actual signed/root-accepted admission has genuine unique nonce and bounded UTC validity, external caller enforces it before any launch",
+    "config SHA, argv, interpreter flags/cwd/executable and role source hashes equal approved fixed inputs",
+    "start/end/signal/exit/readerJoined/reference release remain observation fields, null until actual terminal; absence is incomplete",
+    "producer token derives actual auth+plan+runner+identity bytes; external envelope nonce is bound to same actual auth/config digests",
+    "completion inputProcessRef/reader and all output hashes match parent observations; no time/nonce validator is falsely attributed to unchanged prepared code",
+    "partial/timeout/cleanup error/raw tail preserved; no retry or claim of descendant drain"
+  ],
+  "controlPinTable": "binding-pins.json"
+}
