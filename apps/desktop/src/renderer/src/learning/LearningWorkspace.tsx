@@ -26,6 +26,8 @@ import './learning.css'
 
 const EMPTY_RECORDS: readonly LearningRecordView[] = []
 const EMPTY_CONTEXTS: Readonly<Record<string, TaskContext>> = {}
+// Version 0 is valid; an attempt-wide assistance floor need not have a current-context record.
+type ContextFloor = RecordFloor & { hasContextRecord: boolean }
 
 export function LearningWorkspace(props: LearningWorkspaceProps) {
   return <WorkspaceSession key={JSON.stringify([props.generation, props.projectId])} {...props} />
@@ -58,7 +60,7 @@ function WorkspaceSession({
     const value = contexts[taskId]
     return value?.projectId === projectId && value.taskId === taskId ? value : undefined
   }
-  function currentFloor(context: TaskContext): RecordFloor | undefined {
+  function currentFloor(context: TaskContext): ContextFloor | undefined {
     const related = Object.values(acknowledged).filter(
       ({ latest }) =>
         latest.context.projectId === context.projectId &&
@@ -66,8 +68,10 @@ function WorkspaceSession({
         latest.context.attemptId === context.attemptId,
     )
     if (!related.length) return undefined
+    const current = acknowledged[contextKey(context)]
     return {
-      recordVersion: acknowledged[contextKey(context)]?.floor.recordVersion ?? 0,
+      hasContextRecord: current !== undefined,
+      recordVersion: current?.floor.recordVersion ?? 0,
       maxHintLevel: Math.max(...related.map(({ floor }) => floor.maxHintLevel)),
       assistance: related
         .map(({ floor }) => floor.assistance)
@@ -205,7 +209,7 @@ interface PanelProps {
   index: number
   context: TaskContext | undefined
   record: LearningRecordView | undefined
-  floor: RecordFloor | undefined
+  floor: ContextFloor | undefined
   recordConflict: boolean
   actions: LearningActions | undefined
   priorInput: boolean
@@ -265,7 +269,7 @@ function TaskPanel({
         receipt.record.maxHintLevel < Math.max(highestHint, level) ||
         receipt.record.assistance === 'independent' ||
         (floor &&
-          (receipt.record.recordVersion <= floor.recordVersion ||
+          ((floor.hasContextRecord && receipt.record.recordVersion <= floor.recordVersion) ||
             assistanceRank(receipt.record.assistance) < assistanceRank(floor.assistance)))
       ) {
         setNotice('提示使用记录与当前任务不一致，请重试。')
@@ -291,7 +295,7 @@ function TaskPanel({
       if (!live.current) return
       if (
         !validFeedback(value, context, highestHint, floor) ||
-        (floor && value.record.recordVersion <= floor.recordVersion) ||
+        (floor?.hasContextRecord && value.record.recordVersion <= floor.recordVersion) ||
         (!task.transfer && value.record.independentTransferSuccess)
       ) {
         setNotice('检查结果与当前输入或提示记录不一致，请重新检查。')

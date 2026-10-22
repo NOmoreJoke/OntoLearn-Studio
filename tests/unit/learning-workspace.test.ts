@@ -190,10 +190,12 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')(
       expect(javascript).not.toBe('')
       expect(css).not.toBe('')
       browser = await chromium.launch({
+        executablePath: process.env.T09_CHROME_EXECUTABLE,
         headless: true,
         chromiumSandbox: true,
         ignoreDefaultArgs: ['--disable-hang-monitor', '--use-mock-keychain'],
       })
+      console.info('T09 headless browser version:', browser.version())
     }, 30000)
 
     beforeEach(async () => {
@@ -437,6 +439,127 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')(
           '独立迁移成功 0 / 2',
         )
       })
+      it.each(['hint', 'check'] as const)(
+        'accepts a new input first version zero %s while retaining attempt assistance',
+        async (action) => {
+          await mount({ initialTaskId: 'transfer-repair' })
+          await page.getByRole('button', { name: /完整示范/ }).click()
+          await page.getByRole('heading', { name: '完整示范', exact: true }).waitFor()
+          await page.evaluate(() => {
+            const state = window.learningHarness
+            state.version = -1 // Synthetic owner emits its first legal version, 0.
+            state.props = {
+              ...state.props,
+              contexts: {
+                ...state.props.contexts,
+                'transfer-repair': {
+                  ...state.props.contexts!['transfer-repair'],
+                  inputVersion: 'input-zero',
+                },
+              },
+            }
+            window.mountLearning(state.props)
+          })
+          await page.getByText('当前输入：input-zero', { exact: true }).waitFor()
+          if (action === 'hint') {
+            await page.getByRole('button', { name: /完整示范/ }).click()
+            await page.getByRole('heading', { name: '完整示范', exact: true }).waitFor()
+          } else {
+            await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+            await page.getByText('实际结果条目', { exact: true }).waitFor()
+            await page.getByText('本次未计入独立迁移成功。', { exact: true }).waitFor()
+          }
+          expect(await page.evaluate(() => window.learningHarness.version)).toBe(0)
+          expect(await page.getByLabel('当前输入学习进度').innerText()).toContain(
+            '独立迁移成功 0 / 2',
+          )
+          expect(await page.getByRole('status').count()).toBe(0)
+        },
+      )
+      it.each(['hint', 'check'] as const)(
+        'rejects a same-context zero %s replay and accepts a later greater version',
+        async (action) => {
+          await mount({ initialTaskId: 'transfer-repair' })
+          await page.evaluate(() => {
+            const state = window.learningHarness
+            state.version = -1
+            state.maxHint = 4
+            state.assistance = 'full-demonstration'
+            const record = state.reply(state.props.contexts!['transfer-repair']).record
+            state.props = { ...state.props, records: [record] }
+            window.mountLearning(state.props)
+            state.version = -1
+          })
+          await page.getByText('本次提示最高层级：4 · 使用完整示范', { exact: true }).waitFor()
+          const button =
+            action === 'hint'
+              ? page.getByRole('button', { name: '04 完整示范', exact: true })
+              : page.getByRole('button', { name: '检查我的操作', exact: true })
+          await button.click()
+          await page
+            .getByText(
+              action === 'hint'
+                ? '提示使用记录与当前任务不一致，请重试。'
+                : '检查结果与当前输入或提示记录不一致，请重新检查。',
+              { exact: true },
+            )
+            .waitFor()
+          expect(await page.evaluate(() => window.learningHarness.version)).toBe(0)
+          expect(await page.getByRole('heading', { name: '完整示范', exact: true }).count()).toBe(0)
+          expect(await page.getByText('实际结果条目', { exact: true }).count()).toBe(0)
+          await button.click()
+          if (action === 'hint')
+            await page.getByRole('heading', { name: '完整示范', exact: true }).waitFor()
+          else await page.getByText('实际结果条目', { exact: true }).waitFor()
+          expect(await page.evaluate(() => window.learningHarness.version)).toBe(1)
+          expect(await page.getByRole('status').count()).toBe(0)
+        },
+      )
+      it.each(['hint', 'check'] as const)(
+        'rejects a new input first zero %s that washes prior attempt assistance',
+        async (action) => {
+          await mount({ initialTaskId: 'transfer-repair' })
+          await page.getByRole('button', { name: /完整示范/ }).click()
+          await page.getByRole('heading', { name: '完整示范', exact: true }).waitFor()
+          await page.evaluate(() => {
+            const state = window.learningHarness
+            state.version = -1
+            state.maxHint = 0
+            state.assistance = 'independent'
+            state.props = {
+              ...state.props,
+              contexts: {
+                ...state.props.contexts,
+                'transfer-repair': {
+                  ...state.props.contexts!['transfer-repair'],
+                  inputVersion: 'input-zero',
+                },
+              },
+            }
+            window.mountLearning(state.props)
+          })
+          await page.getByText('当前输入：input-zero', { exact: true }).waitFor()
+          await page
+            .getByRole('button', {
+              name: action === 'hint' ? /概念提示/ : '检查我的操作',
+            })
+            .click()
+          await page
+            .getByText(
+              action === 'hint'
+                ? '提示使用记录与当前任务不一致，请重试。'
+                : '检查结果与当前输入或提示记录不一致，请重新检查。',
+              { exact: true },
+            )
+            .waitFor()
+          expect(await page.evaluate(() => window.learningHarness.version)).toBe(0)
+          expect(await page.getByRole('heading', { name: '概念提示', exact: true }).count()).toBe(0)
+          expect(await page.getByText('实际结果条目', { exact: true }).count()).toBe(0)
+          expect(await page.getByLabel('当前输入学习进度').innerText()).toContain(
+            '独立迁移成功 0 / 2',
+          )
+        },
+      )
       it.each(['task', 'attemptId', 'inputVersion'] as const)(
         'ignores a late check after changing %s',
         async (field) => {
