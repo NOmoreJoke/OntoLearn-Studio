@@ -2,7 +2,6 @@
 
 Source -m and a future direct frozen target bootstrap the canonical module
 before defining any observer class. Assets contain syntax, never oracle output.
-This source-only candidate has not been executed or packaged.
 """
 
 from __future__ import annotations
@@ -30,8 +29,10 @@ from pathlib import Path
 
 FLAG = "--semantic-source-package-probe"
 SELECTORS = ("full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1")
-SOURCE_REF = "6891a5842302859a531cf82767c5a482417bc274"
-PROCESS_REF = "f79a29f596b2444cba542a906c91727869014886"
+# Input provenance stays fixed when the runtime supplier is repaired.
+ASSET_SUPPLIER_REF = "6891a5842302859a531cf82767c5a482417bc274"
+SOURCE_REF = "23352bacb500088367f849e53980e97c937724b3"
+PROCESS_REF = "513db0056f312342a6791e2d4c7842f3726581f2"
 DESCRIPTOR_CAP = 1_048_576
 INPUT_CAP = 8_388_608
 ITEM_CAP = 33_554_432
@@ -108,8 +109,8 @@ SUPPLIER_PINS = (
     (
         "ontolearn_engine.semantic",
         "semantic.py",
-        65749,
-        "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+        66258,
+        "d6c5f5c38aec310de726f73568e1086bf4de95117cbdf664ae1384fcd6808392",
     ),
     (
         "ontolearn_engine.semantic_error_adapter",
@@ -1315,7 +1316,7 @@ def _validate_nested_assets(manifest, inputs):
         _exact(item, ("gap", "id", "source"))
         reference(item["source"])
     if manifest["versions"] != {
-        "supplierRef": SOURCE_REF,
+        "supplierRef": ASSET_SUPPLIER_REF,
         "contractRef": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
         "b1InputMethodRef": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
         "generator": "input-only-stdlib/1",

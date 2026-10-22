@@ -319,6 +319,19 @@ def sealed_assets(probe):
     return inputs, manifest
 
 
+def test_sealed_input_supplier_is_independent_of_runtime_source_ref(
+    probe, sealed_assets, monkeypatch
+):
+    inputs, manifest = copy.deepcopy(sealed_assets)
+    assert manifest["versions"]["supplierRef"] == "6891a5842302859a531cf82767c5a482417bc274"
+    monkeypatch.setattr(probe, "SOURCE_REF", "f" * 40)
+    assert probe.validate_assets(manifest, inputs) is None
+    manifest["versions"]["supplierRef"] = "f" * 40
+    with pytest.raises(probe.ProbeFault) as failure:
+        probe.validate_assets(manifest, inputs)
+    assert failure.value.code == "ASSET_VERSION_INVALID"
+
+
 @pytest.mark.parametrize("area", ["input", "manifest", "observation", "inputAsset"])
 def test_asset_exact_schemas_reject_extra_keys(probe, sealed_assets, area):
     inputs, manifest = copy.deepcopy(sealed_assets)
@@ -976,8 +989,9 @@ def test_full_header_records_actual_identity_and_retains_context_ledger(full_run
     header = records[0]
     assert type(header["runId"]) is str and header["runId"]
     assert header["mode"] == "source"
-    assert header["supplierRef"] == "6891a5842302859a531cf82767c5a482417bc274"
-    assert header["supplierProcessRef"] == "f79a29f596b2444cba542a906c91727869014886"
+    assert header["supplierRef"] == "23352bacb500088367f849e53980e97c937724b3"
+    assert header["supplierProcessRef"] == "513db0056f312342a6791e2d4c7842f3726581f2"
+    assert manifest["versions"]["supplierRef"] == "6891a5842302859a531cf82767c5a482417bc274"
     assert header["counts"] == manifest["counts"]
     assert header["contexts"] == inputs["contexts"]
     assert header["fullInventory"] == manifest["caseSets"]["full-v1"]
