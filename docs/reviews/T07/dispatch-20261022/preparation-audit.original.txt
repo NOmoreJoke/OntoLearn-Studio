@@ -1,0 +1,42 @@
+# T07 本次派发准备独立静态审查
+
+结论：**仅本次准备物的静态范围通过；未发现需要阻断派发准备的 P1/P2 实质错误。** 本报告不是 ZCode / MiniMax 指定审查，不证明产品、任何检查命令、正式集成或发布通过，也不授予 T07 前台操作租约。
+
+审查者：`/root/t07_dispatch_preflight_audit`。日期：2026-10-22。由 T07 owner 明确授权读取双方准备输入并独立审查；未读取实际指定本轮 peer 报告、任务状态、任务流、应用 metadata 或 controller 实时队列。只使用文件静态读取、Python 标准库 hash/tar/JSON、只读 Git；唯一新增文件为本报告。已读取当前工作树 AGENTS 和 `audit-verify-explain-grade-5/SKILL.md`。没有改 Goal、实现、测试、配置、锁、旧 prompt / manifest，没有 stage / commit / push。
+
+## 固定身份与检查结果
+
+- B：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。
+- 产品 P：`f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3`。
+- 两树 reviewHead：`24f3703ecf4fce75e0d0375f7291ed928f083c41`，实际均为 detached HEAD。Git 确认 B 是 P 祖先、P 是 reviewHead 祖先。
+- ZCode 物理根：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157`。
+- MiniMax 物理根：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-f9a1157`。
+- 当前 AGENTS：15147 B / SHA256 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，两树与源指南快照一致。两树 tracked diff 唯一为未暂存 AGENTS；index 无改动。
+
+| 核验对象 | 独立观察与结果 |
+| --- | --- |
+| 完整输入 | ZCode `143012 B`，SHA256 `bfd74c930cddbc9274ef05e30f7c3eaf482a56ff3caa5a10718fdc30128c7287`；MiniMax `143054 B`，SHA256 `153dc55dbae5e3b27b8ae65e0a74f14e1da01c36398cffa477691269f7e325dd`。owner 文件与各树 `full-input.txt` 逐字节相同。 |
+| 前缀与原件 | ZCode suffix offset `94322`，旧完整 prompt `48690 B` / `377509e050596645c588c1f1d6cc756d989c563f4dfdc664e5d32540911e5476`；MiniMax offset `94374`，旧完整 prompt `48680 B` / `650c9f8552496b2838bc5d80f9946236ff1cb06c1a153de30d332b769024cb1d`。两份 suffix 均精确等于旧完整原件，前缀长度及 hash 符合 manifest，无未替换模板占位符。 |
+| 全工程源码身份 | 使用 `git ls-tree -rz` 与物理文件逐项重算 blob/SHA256。每树 832 个 tracked 路径集合与本角色全源码清单一致；831 项精确等 reviewHead，唯一例外为已声明的当前 AGENTS。未把 Git 路径引号转义当作文件差异。 |
+| 全候选范围 | B→P 恰为 frozen-manifest 的完整 25 路径集合；`git diff --full-index B P` 精确等于 `candidate.patch` 的 340601 B / SHA256 `3e697c94bae835307e1012bb30ea65bbbce680555e488135bfcb267b4210b8a3`。两树 14 项实现/测试/fixture 逐字节等 P，符合各项固定 hash。P→reviewHead 只追加/更新过程材料，未改这些产品输入。 |
+| 当前准备副本 | 每方 8 项 current-inputs 的长度/hash 均与其 manifest 一致；各自 `input-manifest.json`、owner 对应角色 manifest 与 dispatch-manifest 的角色记录结构一致。全文含当前 AGENTS/common/desktop/execution-boundaries 的完整原文、原验收、历史问题、9 原 final 和全量 backlog Markdown。JSON backlog 保留 12 项、14 文件、9 原 final；结构化清单作为本树副本提供，无需将全部 JSON 再塞入正文。 |
+| 旧 round-1 保全 | 两树 18 项 packet-files 逐项长度/hash 全符；冻结 tar 为 946863 B / `880d4cc9b40587346919a178e3eaff5522aa9e65e49eab093307fa90da6748e6`。75 个文件成员集合、逐成员长度/hash 均符 archive-manifest。只在内存读 tar，未提取覆盖原件。 |
+| 历史内审原文 | 两树 9 条原 JSONL final 的逐行 hash（包含原末尾换行）与来源索引一致，9 条 content 全文逐项存在新前缀。3 条不可用加密中间消息仅保留元信息。未追踪 sourceSession 到原会话。 |
+| 环境准备 | 四份 setup 完整原始日志与 owner 副本逐字节一致，长度/hash 符合 setup-results。两角色均记录 `uv sync --frozen --no-python-downloads` 与 `npm ci --ignore-scripts --no-audit --fund=false` exit 0、起止与自有 cwd。日志为本树 editable 构建/依赖安装，npm 警告与 notice 保留；未将安装记为 check 或 Electron 通过。退出码是原 setup 记录，本审未重跑安装。 |
+| 物理隔离 | workspace、各自 `.runtime`、node_modules、venv、uv/npm cache、tmp、scratch、raw/setup、raw/validation、metadata、reports、pytest 均为各自绝对实目录，双方 inode 不同且无跨根 resolve。两份 editable `.pth` 与 direct_url 均绑定自身 packages/engine；npm 的 contracts/desktop workspace links 只指本树。正式测试必须继续使用这些隔离环境和新建临时 DB；当前路径检查不代替以后实际运行的归属记录。 |
+
+## 内容与执行边界判断
+
+1. **不是 delta 或 source-only 审查。** `*-full-input.txt:1–22` 明确要求完整 25 路径、14 项源码/测试/fixture、原 PRD 验收、失败日志、历史发现/关闭；`:24–334` 完整透传原验收、IR-01～05、9 原始 final 和 INV-01～12。父积压与未完成能力保留：真实 T05/T06、T01/I04 生命周期/取消/原子进度/终态/operation-id 响应丢失对账、公共契约/bridge/App、实际删除/恢复/快照/续跑、完整 E5 四类结果、跨设备、两 OS、真人、CI/远端及发布。正文允许对现有工程独立下结论，没有把父缺口当作全面停止工程审查的理由，也未预填 Pass。
+2. **历史失效关系诚实。** IR-01～04 的原发现与后续关闭、IR-05 的 READONLY 假通过发现和负对照修复均保留。42 项旧 passed 日志不能追认 READONLY，43/44 为后继不同运行；空 ui-identity.log 不独立证明退出码。首错原件仍在归档，本次未把各次测试数拼成一次指定审查。
+3. **路径映射和独立性足够明确。** `*-full-input.txt:7–12` 用各自实际根指定 app workspace/cwd，将旧 scenario 根仅作历史来源；`:387–393` 禁止发现或读取 peer 本轮报告/状态/metadata、其他 worktree/refs/controller 实时队列/全 session。历史 session 索引不得追踪。允许自己的报告/raw/metadata/正常检查输出，要求保留 metadata 增长和 inherited ignore 状态，不得删 metadata 或新增 ignore 求绿。owner README 同时列两方准备路径，但 owner 明确不向指定审者分发该 README；角色 payload 本身各自隔离。
+4. **普通验证许可与固定调用一致。** 静态读取根 package scripts、desktop package、pyproject testpaths、vitest.config.mts、`.prettierignore`、verify-sources、原 render-probe、task-runtime/engine-environment 及 T07 持久化测试。正常 check 的 lint/format-check/typecheck/vitest/build/ruff/pytest 顺序与表一致；vitest 是整个 tests/unit，确有真实自有 Python coordinator/worker、临时 SQLite 和 Node 子进程，native-driver 使用 mock。Python 原 suite 含受控 owner/runtime/事务/READONLY/退出恢复；T07 持久化矩阵中确有 10 个 `os._exit(92)` 子进程用例和 runner 外异常码断言。因此未泛禁 child/SQLite 是必要且准确的。新许可仍不覆盖物理资源研究、原 HOLD/被拒命令、新 native/caller/producer、dev/HMR/e2e/engine 打包或付费 API。
+5. **headless 证据保护正确。** `render-probe.mjs:8–10,36–42,65–67,83–90` 从 cwd 读页面/fixture，临时 Vite 构建、sandbox Chromium，写旧证据目录 PNG/JSON，并回收自身 scratch。`execution-boundaries.md` 明确禁止在固定 review checkout 原位运行，必要补验先建完整固定 Git 副本并以副本 cwd 调原脚本，保留副本身份和新输出。这能避免覆盖原证据，也没有把合成页面等同正式 App。
+6. **桌面政策与内部调度区分清楚。** 当前 AGENTS/common/desktop 全文已附，静默/用户时段/CLI 登录前置已撤回。前缀明确压过旧 prompt 的旧操作限制；纯政策更新不重写旧冻结输入。准备文字仍注明 T07 尚无短 GUI lease、准备时 T01 持短 lease，由 root 在真正创建前核有效内部调度；本审未读取实时队列或操作前台。政策快照内历史 T06 叙述不能当当前 T07 租约。
+7. **指定双审原门保留。** 每方要求 GLM-5.3/max/yolo 或 M3.1-Flash/xhigh/bypassPermissions，明确只是要求，需实际任务级读回。真实 ID/正文受理、完整终态与全文报告、全部意见处置、变更后双方全新完整审查、同版通过后 push/PR、真实 CI 后合并及远端核验均保留。准备 manifest 的 actualTaskId / actualTaskSettings / externalVerdict 为空，未预造通过；本审未到应用里验证是否已创建任务。
+
+## 严重度与剩余门
+
+本准备范围没有 P1/P2 发现，也没有需修改准备源的实质问题。无需为了此静态审查改旧输入、候选或重跑无变化验证。
+
+尚未发生或未由本审验证：ZCode/MiniMax 实际任务创建与受理、任务级模型/思考/权限读回、实际完整源码阅读和指定结论、任何 npm/uv 产品检查、build/headless/e2e/Electron/native、跨模块/跨设备/两 OS/真人/生产发布、CI 和远端结果。正式派发仍由 owner/root 核当时的授权与短 lease；之后按原双审与验收门处理。**本次通过只表示准备材料和静态执行边界可交 root 预检，不表示上述待验门通过。**

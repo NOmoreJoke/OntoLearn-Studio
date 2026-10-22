@@ -1,0 +1,52 @@
+{
+  "at": "2026-10-22T10:25:15.398855+00:00",
+  "kind": "limited independent preparation audit receipt, not product or designated Pass",
+  "parentProcessHead": "15dcbb103fade7a91df73a54c5217a6053bd5f47",
+  "audit": {
+    "author": "/root/t07_dispatch_preflight_audit",
+    "result": "passed static preparation scope; no blocking P1/P2",
+    "formattedReport": "preparation-audit.md",
+    "formattedSha256": "8bacbf26cda44d4679ae8ec3cbbe0337b8b7d0a2e0a79a468b5845c834542ab2",
+    "originalReport": "preparation-audit.original.txt",
+    "originalSha256": "24c7dd407c38c02770709e11e225162d461357e446ceabf998fb0d1ec53628bf",
+    "formatChange": "author changed Markdown table whitespace/separators only; original exact bytes preserved"
+  },
+  "auditedDispatchManifest": {
+    "path": "dispatch-manifest.json",
+    "sha256": "8bfdda53117c6d8dab39ed561021eef85cecfd88ad228e4f59fcf0b6af02e1c1"
+  },
+  "roles": [
+    {
+      "role": "zcode",
+      "reviewHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157",
+      "fullInputSha256": "bfd74c930cddbc9274ef05e30f7c3eaf482a56ff3caa5a10718fdc30128c7287",
+      "fullInputBytes": 143012,
+      "trackedOnlyProtectedAGENTSChanged": true,
+      "actualTaskId": null,
+      "actualTaskSettings": null,
+      "externalVerdict": null
+    },
+    {
+      "role": "minimax",
+      "reviewHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-f9a1157",
+      "fullInputSha256": "153dc55dbae5e3b27b8ae65e0a74f14e1da01c36398cffa477691269f7e325dd",
+      "fullInputBytes": 143054,
+      "trackedOnlyProtectedAGENTSChanged": true,
+      "actualTaskId": null,
+      "actualTaskSettings": null,
+      "externalVerdict": null
+    }
+  ],
+  "setup": {
+    "commands": 4,
+    "exitZero": 4,
+    "dependenciesOnly": true,
+    "productExecuted": false
+  },
+  "verification": "static docs/Git/hash/archive/paths and documentation format only; no product validation or GUI",
+  "guiLease": "not granted to T07; root preflight and short creation/setting/readback coordination remain",
+  "goalChanged": false,
+  "oldRound1Changed": false
+}
