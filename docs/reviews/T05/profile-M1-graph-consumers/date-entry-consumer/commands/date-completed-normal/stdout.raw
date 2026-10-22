@@ -1,0 +1,225 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  09:00:16
+   Duration  7.97s (tests 83%, import 13%, transform 4%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 32ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 21ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 61ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+282 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 4954 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  0%]
+...................                                                      [  0%]
+packages/engine/tests/test_contract_v2.py .............................. [  1%]
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+...........................................                              [  9%]
+packages/engine/tests/test_coordinator_control.py ...................    [  9%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 10%]
+........................                                                 [ 11%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 11%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 11%]
+packages/engine/tests/test_i04_progress.py ......                        [ 11%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 11%]
+.................................                                        [ 12%]
+packages/engine/tests/test_job_store.py ................................ [ 13%]
+........................................................................ [ 14%]
+.............................................................            [ 15%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 16%]
+packages/engine/tests/test_profile_M1_graph_consumers.py ............... [ 16%]
+........                                                                 [ 16%]
+packages/engine/tests/test_project_applications.py ..................... [ 17%]
+........................................................................ [ 18%]
+.................                                                        [ 18%]
+packages/engine/tests/test_project_business3_contract.py ............... [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 22%]
+....................................                                     [ 22%]
+packages/engine/tests/test_project_changeset_service.py ................ [ 23%]
+..............................................................           [ 24%]
+packages/engine/tests/test_project_changeset_stdio.py .....              [ 24%]
+packages/engine/tests/test_project_compensation.py ..................... [ 24%]
+..........................................................               [ 26%]
+packages/engine/tests/test_project_create_contract.py .................. [ 26%]
+........................................................................ [ 27%]
+......................................                                   [ 28%]
+packages/engine/tests/test_project_draft_plan.py ....................    [ 29%]
+packages/engine/tests/test_project_format3.py ...................ss..s.. [ 29%]
+s..s..s..s..s..s..s..................................................... [ 30%]
+.............s........................ss..s..s..s..s..s..s..s..s........ [ 32%]
+..........................................................s............. [ 33%]
+...........ss..s..s..s..s..s..s..s..s................................... [ 35%]
+...............................s........................ss..s..s..s..s.. [ 36%]
+s..s..s..s.............................................................. [ 38%]
+....s................................................................... [ 39%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................                                                 [ 43%]
+packages/engine/tests/test_project_host_read_services.py ............... [ 43%]
+.....................................                                    [ 44%]
+packages/engine/tests/test_project_job_format3.py ...................... [ 44%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+....................................................................     [ 48%]
+packages/engine/tests/test_project_source_table_material.py ............ [ 49%]
+........................................................................ [ 50%]
+................................................                         [ 51%]
+packages/engine/tests/test_project_source_transport.py ................. [ 51%]
+......................................................................   [ 53%]
+packages/engine/tests/test_project_startup_contract.py ................. [ 53%]
+...................................                                      [ 54%]
+packages/engine/tests/test_project_startup_stdio.py .................... [ 54%]
+......                                                                   [ 54%]
+packages/engine/tests/test_project_transactions.py ..................... [ 55%]
+.................................                                        [ 55%]
+packages/engine/tests/test_project_workspace.py ...........              [ 56%]
+packages/engine/tests/test_protocol.py .............                     [ 56%]
+packages/engine/tests/test_quality_profile_revalidation.py ............. [ 56%]
+........................................................................ [ 58%]
+.............................................................            [ 59%]
+packages/engine/tests/test_resident_runtime.py .............             [ 59%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 59%]
+packages/engine/tests/test_semantic.py ................................. [ 60%]
+........................................................                 [ 61%]
+packages/engine/tests/test_semantic_error_adapter.py ................... [ 61%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+..............................................                           [ 65%]
+packages/engine/tests/test_semantic_error_reasons.py ................... [ 66%]
+                                                                         [ 66%]
+packages/engine/tests/test_semantic_execution.py ....................... [ 66%]
+.........                                                                [ 66%]
+packages/engine/tests/test_semantic_lexical.py ......................... [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 70%]
+..............                                                           [ 70%]
+packages/engine/tests/test_semantic_profile_errors.py .................. [ 70%]
+...                                                                      [ 70%]
+packages/engine/tests/test_semantic_profile_imports.py ....              [ 70%]
+packages/engine/tests/test_semantic_profile_input.py ................... [ 71%]
+..............                                                           [ 71%]
+packages/engine/tests/test_semantic_profile_integration.py ............. [ 71%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+......................................................                   [ 86%]
+packages/engine/tests/test_semantic_profile_limits.py ......             [ 86%]
+packages/engine/tests/test_semantic_profile_production.py .............. [ 86%]
+.......                                                                  [ 86%]
+packages/engine/tests/test_semantic_profile_restore.py ................. [ 86%]
+......................................................................   [ 88%]
+packages/engine/tests/test_semantic_profile_restore_limits.py .......... [ 88%]
+........................................................................ [ 89%]
+...................                                                      [ 90%]
+packages/engine/tests/test_semantic_profile_source.py .................. [ 90%]
+.....................................                                    [ 91%]
+packages/engine/tests/test_semantic_query_tokens.py .................... [ 91%]
+................................                                         [ 92%]
+packages/engine/tests/test_semantic_rdfs_basis_determinism.py .......... [ 92%]
+                                                                         [ 92%]
+packages/engine/tests/test_semantic_scopes.py ..............             [ 92%]
+packages/engine/tests/test_semantic_selected_projection.py ............. [ 93%]
+...................................                                      [ 93%]
+packages/engine/tests/test_semantic_string_identity.py ................. [ 94%]
+........................................................                 [ 95%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 95%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 95%]
+packages/engine/tests/test_storage.py .................................. [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 99%]
+.........                                                                [ 99%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 99%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+================= 4910 passed, 44 skipped in 148.15s (0:02:28) =================

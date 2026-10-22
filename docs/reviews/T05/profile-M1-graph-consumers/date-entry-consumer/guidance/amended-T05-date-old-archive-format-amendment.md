@@ -1,0 +1,11 @@
+# T05 date：旧归档脚本单处纯格式例外
+
+2026-10-22。原T05报告正常check首跑exit1，停在ruff format，Python消费者尚未执行；不记为date语义失败或通过。总控已实际读取并核固定0019036f81375d40af186b00e57957e9c0a5713d与当前旧脚本一致：2564B/SHA6cf289c57a50d58fd57f05404d4b10fb4aec12b527d77256f453f9ba64768873。
+
+批准原T05仅修改docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py中summary.scope两段相邻字符串：合并成同一个原值字面量，保必要括号/缩进。总控静态合并后的AST与全部常量值完全相同，预期2553B/SHA1c674533fb283be09287de7904be8afa6c390bf1065d6c6d4aa1c9650c09317b；最终formatter若另有变化须给具体diff，不扩本授权。不得改变任何算法、路径、archive内容或命令；**不执行旧脚本**，不重生成旧B归档或结果。
+
+先在新date过程目录保存旧脚本原字节、SHA、精确patch和前后完整AST等价证明；原旧manifest/ZIP/观察/提交不改。旧474过程的固定Git身份继续冻结；当前文件保持只承诺除这一明确例外外473路径不变，不能再声称当前474全同旧pin。新date最终manifest与交接如实列该一个旧过程例外，不把它混为第三产品源或修改旧manifest求一致。
+
+146产品受控、145只读和test58366前缀约束不变。总控保原fixed-inputs字节快照，当前清单新增本例外身份。已修新过程脚本也保存原首失败说明；不通过环境/配置/忽略文件排除旧路径取绿。
+
+完成该纯格式修正后，授权一次必要正常check重验，并按原窗12sources与真实date capture/报告、146源前后/独审收口。保首跑完整流、exit和“未到pytest”的事实。独审核旧脚本仅合并字面量/AST等价、固定历史身份及新消费者真实结果；不扩大旧D内容审计。原所有GUI/native/付费/pushmerge、Goal、SQLiteHOLD和父门限制保持，无须再问常规格式修正。

@@ -1,0 +1,525 @@
+{
+  "summary": {
+    "tag": "date-completed-normal",
+    "candidate": "8e6f469ac7a64a1b3ec43edb13a8dc976ee8c4c4",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/date-actual/date-completed-normal",
+    "archive": "date-completed-normal-originals.zip",
+    "archiveBytes": 28879,
+    "archiveSha256": "84b91228096764c6e21a105e594a4075306b09768e32f63c237f45fe3395f724",
+    "memberCount": 49,
+    "caseCount": 3,
+    "allMemberBytesSha256AndCrcVerified": true,
+    "scope": "Three date consumer inputs; old regression not recaptured; no Job/Store authority"
+  },
+  "cases": [
+    {
+      "id": "C-inclusive-date-explicit-utc-offset",
+      "kind": "explicit-utc-date-text-consumer",
+      "assertion": "pass",
+      "actual": {
+        "stages": [
+          {
+            "actual": {
+              "diagnostic": null,
+              "exceptionType": "SemanticError",
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": false,
+                    "_check_iris": true
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "_check_iris": true,
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "publicError": null,
+              "reason": "RDF_TERM_INVALID",
+              "stage": "date-value",
+              "status": "error",
+              "validatorRuns": 0
+            },
+            "dataPolicyArgument": "strict",
+            "name": "utc-strict",
+            "rangePolicyArgument": "utc-date-range-v1"
+          }
+        ]
+      },
+      "expected": {
+        "noPartialReport": true,
+        "reason": "RDF_TERM_INVALID",
+        "validatorRuns": 0
+      },
+      "member": "observations/147eb6080988dc8f17bba7af7e12856710b927361f2da8c0076c2c073dcd6e51/observation.json",
+      "sha256": "57be9c6e558c8e60bba335d0fd0685e00f2b7c56de4f5cb73639d75deef89b4f"
+    },
+    {
+      "id": "C-inclusive-date-explicit-utc-before",
+      "kind": "explicit-utc-date-text-consumer",
+      "assertion": "pass",
+      "actual": {
+        "stages": [
+          {
+            "actual": {
+              "dataAfter": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"1999-12-31Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                ]
+              ],
+              "dataBefore": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"1999-12-31Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                ]
+              ],
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "literalObjects": [
+                {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#date",
+                  "illTyped": false,
+                  "isDateDatatype": true,
+                  "language": null,
+                  "lexical": "1999-12-31Z"
+                }
+              ],
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": false,
+                    "_check_iris": true
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "_check_iris": true,
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "realValidatorReport": {
+                "conforms": false,
+                "conformsTerms": [
+                  "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+                ],
+                "rows": [
+                  {
+                    "actualResultNode": "_:N59abde16b71244039e3f4eb7a9ff4721",
+                    "focusNode": [
+                      "<urn:m1:s>"
+                    ],
+                    "resultPath": [
+                      "<urn:m1:p>"
+                    ],
+                    "resultSeverity": [
+                      "<http://www.w3.org/ns/shacl#Violation>"
+                    ],
+                    "sourceConstraintComponent": [
+                      "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>"
+                    ],
+                    "sourceShape": [
+                      "<urn:m1:shape>"
+                    ],
+                    "value": [
+                      "\"1999-12-31Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                    ]
+                  }
+                ]
+              },
+              "result": {
+                "dataPolicy": "strict",
+                "entryVersion": "i05-shacl-text-2",
+                "rangePolicy": "utc-date-range-v1",
+                "report": {
+                  "conforms": false,
+                  "violations": [
+                    {
+                      "constraint": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+                      "focus": "<urn:m1:s>",
+                      "path": "<urn:m1:p>",
+                      "severity": "<http://www.w3.org/ns/shacl#Violation>",
+                      "sourceShape": "<urn:m1:shape>",
+                      "value": "\"1999-12-31Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                    }
+                  ]
+                }
+              },
+              "stage": "returned",
+              "status": "success",
+              "validatorRuns": 1
+            },
+            "dataPolicyArgument": "strict",
+            "name": "utc-strict",
+            "rangePolicyArgument": "utc-date-range-v1"
+          }
+        ]
+      },
+      "expected": {
+        "conforms": false,
+        "requiredResultRows": [
+          {
+            "focusNode": "<urn:m1:s>",
+            "resultPath": "<urn:m1:p>",
+            "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+            "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+            "sourceShape": "<urn:m1:shape>",
+            "value": "\"1999-12-31Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+          }
+        ]
+      },
+      "member": "observations/208f1751c349ce4049d97e671731dfe73e85a7b485a1238815d63b35f8076acb/observation.json",
+      "sha256": "64836f8f13bb376166a315fdd2e1f6e638fcd92cc6802f05be1546cfb32ada7e"
+    },
+    {
+      "id": "C-inclusive-date-explicit-utc-original",
+      "kind": "explicit-utc-date-text-consumer",
+      "assertion": "pass",
+      "actual": {
+        "stages": [
+          {
+            "actual": {
+              "diagnostic": null,
+              "exceptionType": "SemanticError",
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": false,
+                    "_check_iris": true
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "_check_iris": true,
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "publicError": null,
+              "reason": "INVALID_SHAPE",
+              "stage": "check-shapes",
+              "status": "error",
+              "validatorRuns": 0
+            },
+            "dataPolicyArgument": "strict",
+            "name": "legacy-before",
+            "rangePolicyArgument": "legacy"
+          },
+          {
+            "actual": {
+              "dataAfter": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"2000-01-01Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                ]
+              ],
+              "dataBefore": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"2000-01-01Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                ]
+              ],
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "literalObjects": [
+                {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#date",
+                  "illTyped": false,
+                  "isDateDatatype": true,
+                  "language": null,
+                  "lexical": "2000-01-01Z"
+                }
+              ],
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": false,
+                    "_check_iris": true
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "_check_iris": true,
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "realValidatorReport": {
+                "conforms": true,
+                "conformsTerms": [
+                  "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+                ],
+                "rows": []
+              },
+              "result": {
+                "dataPolicy": "strict",
+                "entryVersion": "i05-shacl-text-2",
+                "rangePolicy": "utc-date-range-v1",
+                "report": {
+                  "conforms": true,
+                  "violations": []
+                }
+              },
+              "stage": "returned",
+              "status": "success",
+              "validatorRuns": 1
+            },
+            "dataPolicyArgument": "strict",
+            "name": "utc-strict",
+            "rangePolicyArgument": "utc-date-range-v1"
+          },
+          {
+            "actual": {
+              "dataAfter": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"2000-01-01Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                ]
+              ],
+              "dataBefore": [
+                [
+                  "<urn:m1:s>",
+                  "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+                  "<urn:m1:Focus>"
+                ],
+                [
+                  "<urn:m1:s>",
+                  "<urn:m1:p>",
+                  "\"2000-01-01Z\"^^<http://www.w3.org/2001/XMLSchema#date>"
+                ]
+              ],
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "literalObjects": [
+                {
+                  "datatype": "http://www.w3.org/2001/XMLSchema#date",
+                  "illTyped": false,
+                  "isDateDatatype": true,
+                  "language": null,
+                  "lexical": "2000-01-01Z"
+                }
+              ],
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": true,
+                    "_check_iris": true
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "_check_iris": true,
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "realValidatorReport": {
+                "conforms": true,
+                "conformsTerms": [
+                  "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+                ],
+                "rows": []
+              },
+              "result": {
+                "dataPolicy": "integer-illtyped-report-v1",
+                "entryVersion": "i05-shacl-text-2",
+                "rangePolicy": "utc-date-range-v1",
+                "report": {
+                  "conforms": true,
+                  "violations": []
+                }
+              },
+              "stage": "returned",
+              "status": "success",
+              "validatorRuns": 1
+            },
+            "dataPolicyArgument": "integer-illtyped-report-v1",
+            "name": "utc-integer",
+            "rangePolicyArgument": "utc-date-range-v1"
+          },
+          {
+            "actual": {
+              "diagnostic": null,
+              "exceptionType": "SemanticError",
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "_allow_illtyped_integer": false,
+                    "_check_iris": true
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "_check_iris": true,
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "publicError": null,
+              "reason": "INVALID_SHAPE",
+              "stage": "check-shapes",
+              "status": "error",
+              "validatorRuns": 0
+            },
+            "dataPolicyArgument": "strict",
+            "name": "legacy-after",
+            "rangePolicyArgument": "legacy"
+          },
+          {
+            "actual": {
+              "diagnostic": null,
+              "exceptionType": "SemanticError",
+              "globalState": {
+                "converterIdentitiesUnchanged": true,
+                "converterKeysUnchanged": true,
+                "normalizationUnchanged": true,
+                "normalizeAfter": true,
+                "normalizeBefore": true
+              },
+              "parseTrace": [
+                {
+                  "kwargs": {
+                    "format": "turtle",
+                    "shapes": false
+                  },
+                  "returned": true,
+                  "stage": "parse-data",
+                  "tripleCount": 2
+                },
+                {
+                  "kwargs": {
+                    "format": "turtle",
+                    "shapes": true
+                  },
+                  "returned": true,
+                  "stage": "parse-shapes",
+                  "tripleCount": 6
+                }
+              ],
+              "publicError": null,
+              "reason": "INVALID_SHAPE",
+              "stage": "check-shapes",
+              "status": "error",
+              "validatorRuns": 0
+            },
+            "dataPolicyArgument": null,
+            "name": "old-api-after",
+            "rangePolicyArgument": null
+          }
+        ]
+      },
+      "expected": {
+        "conforms": true,
+        "derivation": "Same valid date, same explicit offset and lexical denotes equal value; inclusive <= true under the explicitly chosen date relation extension",
+        "requiredResultRows": []
+      },
+      "member": "observations/4d1ba6ff4cce22c24c31a3dce7a449cdad1d579343195ff50b2c2d79a6dde4cc/observation.json",
+      "sha256": "0ae07cbf7fde5445141cb28a2233321e5e3e73549f02224d76889e296bf17d64"
+    }
+  ]
+}

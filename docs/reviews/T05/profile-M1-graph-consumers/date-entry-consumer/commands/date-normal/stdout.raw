@@ -1,0 +1,106 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  08:54:44
+   Duration  7.15s (tests 86%, import 10%, transform 4%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 28ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 18ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 54ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+unformatted: File would be reformatted
+  --> docs/reviews/T05/profile-M1-graph-consumers/date-entry-consumer/archive-run.py:54:15
+   |
+53 |     "allMemberBytesSha256AndCrcVerified": True,
+   -     "scope": (
+   -         "Three date consumer inputs; "
+   -         "old regression not recaptured; no Job/Store authority"
+   -     ),
+54 +     "scope": ("Three date consumer inputs; old regression not recaptured; no Job/Store authority"),
+55 | }
+   |
+
+unformatted: File would be reformatted
+  --> docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py:55:47
+   |
+54 |     "scope": (
+   -         "One explicit integer text component; "
+   -         "old regression not recaptured; no Job/Store authority"
+55 +         "One explicit integer text component; old regression not recaptured; no Job/Store authority"
+56 |     ),
+   |
+
+2 files would be reformatted, 278 files already formatted

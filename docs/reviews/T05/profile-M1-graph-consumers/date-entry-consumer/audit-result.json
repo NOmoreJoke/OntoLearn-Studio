@@ -1,0 +1,61 @@
+{
+  "candidate": "8e6f469ac7a64a1b3ec43edb13a8dc976ee8c4c4",
+  "controlled": 146,
+  "readonly": 145,
+  "originalPrefix": 58366,
+  "oldFrozenGit": 474,
+  "oldCurrentUnchanged": 473,
+  "oldCurrentFormatException": {
+    "path": "docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py",
+    "fixedRef": "0019036f81375d40af186b00e57957e9c0a5713d",
+    "beforeBytes": 2564,
+    "beforeSHA256": "6cf289c57a50d58fd57f05404d4b10fb4aec12b527d77256f453f9ba64768873",
+    "onlyChange": "Merge the two adjacent scope string literals; AST and all runtime values unchanged",
+    "expectedLiteralMergedBytes": 2553,
+    "expectedLiteralMergedSHA256": "1c674533fb283be09287de7904be8afa6c390bf1065d6c6d4aa1c9650c09317b",
+    "old474ProcessFrozenAsFixedGit": true,
+    "currentUnchangedExceptThisOne": true,
+    "doNotExecuteOldArchiveScript": true
+  },
+  "cases": [
+    {
+      "id": "C-inclusive-date-explicit-utc-offset",
+      "variant": "offset",
+      "calls": [
+        0
+      ]
+    },
+    {
+      "id": "C-inclusive-date-explicit-utc-before",
+      "variant": "before",
+      "calls": [
+        1
+      ]
+    },
+    {
+      "id": "C-inclusive-date-explicit-utc-original",
+      "variant": "original",
+      "calls": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "realReports": 3,
+  "archive": {
+    "tag": "date-completed-normal",
+    "candidate": "8e6f469ac7a64a1b3ec43edb13a8dc976ee8c4c4",
+    "actualDirectory": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-profile-M1-graph-consumers/build/date-actual/date-completed-normal",
+    "archive": "date-completed-normal-originals.zip",
+    "archiveBytes": 28879,
+    "archiveSha256": "84b91228096764c6e21a105e594a4075306b09768e32f63c237f45fe3395f724",
+    "memberCount": 49,
+    "caseCount": 3,
+    "allMemberBytesSha256AndCrcVerified": true,
+    "scope": "Three date consumer inputs; old regression not recaptured; no Job/Store authority"
+  },
+  "allMemberBytesShaAndCrcVerified": true
+}

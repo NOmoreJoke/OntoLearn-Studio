@@ -1,0 +1,12 @@
+E501 Line too long (104 > 100)
+    --> packages/engine/tests/test_profile_M1_graph_consumers.py:1617:101
+     |
+1615 |             assert [s["actual"]["validatorRuns"] for s in stages] == [0, 1, 1, 0, 0]
+1616 |             for stage in stages[1:3]:
+1617 |                 assert_date_text_report(stage["actual"], stage["dataPolicyArgument"], lexical, expected)
+     |                                                                                                     ^^^^
+1618 |             for stage in (stages[0], stages[3], stages[4]):
+1619 |                 actual = stage["actual"]
+     |
+
+Found 1 error.

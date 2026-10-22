@@ -1,0 +1,14 @@
+diff --git a/docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py b/docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py
+index 0090f8c..0bd3aec 100644
+--- a/docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py
++++ b/docs/reviews/T05/profile-M1-graph-consumers/illtyped-entry-consumer/archive-run.py
+@@ -52,8 +52,7 @@ summary = {
+     "caseCount": len(cases),
+     "allMemberBytesSha256AndCrcVerified": True,
+     "scope": (
+-        "One explicit integer text component; "
+-        "old regression not recaptured; no Job/Store authority"
++        "One explicit integer text component; old regression not recaptured; no Job/Store authority"
+     ),
+ }
+ (base / (tag + "-original-members.json")).write_text(

@@ -1,0 +1,40 @@
+{
+  "firstAppendLint": {
+    "exit": 1,
+    "reason": "new append E501104 chars",
+    "disposition": "ruff format only test; original58366B prefix unchanged; final lint0"
+  },
+  "firstNormal": {
+    "tag": "date-normal",
+    "exit": 1,
+    "pythonTestsEntered": false,
+    "reason": "ruff format adjacent scope literals in new archive script and frozen old archive script",
+    "disposition": "new script formatted; exact old-path exception authorized by root and complete AST proven equal"
+  },
+  "secondNormal": {
+    "tag": "date-final-normal",
+    "exit": 1,
+    "passed": 2910,
+    "fixtureSetupErrors": 2044,
+    "dateConsumerExecuted": false,
+    "reason": "new basetemp parent missing; FileNotFoundError at pytest mkdir(parents=False)",
+    "disposition": "recorded mkdir -p build/date-basetemp; same candidate and unchanged tests retried"
+  },
+  "finalNormal": {
+    "normalTag": "date-completed-normal",
+    "exit": 0,
+    "frontendPassed": 1125,
+    "frontendFiles": 22,
+    "pythonPassed": 4910,
+    "pythonExistingSkipped": 44,
+    "pythonSeconds": 148.15,
+    "testFilePassed": 23,
+    "stderrBytes": 0,
+    "lintFormatTypeBuildRuff": "passed",
+    "sourcesExit": 0,
+    "archivedSourceFiles": 12,
+    "tag": "date-completed-normal"
+  },
+  "preservation": "All attempts retain exact argv/environment/cwd/raw streams/exit; no assertion loosening or path exclusion; old archive script not executed",
+  "newDateSemanticFailuresObserved": 0
+}
