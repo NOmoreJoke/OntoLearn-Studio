@@ -1,0 +1,342 @@
+{
+  "status": "DELTA1_FINAL_AUTHOR_RECORD_PENDING_OWNER_COMMIT_AND_FRESH_DELTA",
+  "firstReviewProcess": "d09f826e0f1d9b102c6ecdcf867686704d349b71",
+  "latestPureDocumentCheck": {
+    "command": [
+      "/usr/bin/python3",
+      "docs/reviews/T03/i05-semantic-build-protocol/document-selfcheck.py"
+    ],
+    "exitCode": 0,
+    "stdout": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-after-format.stdout",
+    "stdoutBytes": 5251,
+    "stdoutSHA256": "1471417a510039cdaccec606a5a8725e4cb891777ae6568c202e3ebd291f449c",
+    "stderrBytes": 0,
+    "result": {
+      "kind": "stdlib finite document selfcheck; not JSONSchema engine validation",
+      "schemaCount": 4,
+      "propertyIndexRows": 1241,
+      "headerRawExamples": 15,
+      "localRefsResolved": 3,
+      "syntheticValid": 1,
+      "syntheticValidVariants": 15,
+      "syntheticInvalidRejected": 54,
+      "results": [
+        {
+          "id": "A1-root-confusion",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A1-prefix-hash",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A1-bootloader-copy",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A1-path-escape",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-both-location",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-open-id",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-parent-order",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-parent-cycle",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-parent-raw-mismatch",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-fourth-function",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-missing-dist-module",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-source-as-code",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "N01-build-runtime-field",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "N01-checker-expected-mismatch",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A3-record-row-lost",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A3-install-escape",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A3-runtime-omit",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A3-selected-artifact",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A4-build-backfill",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A4-build-nonnull",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A4-receipt-cycle",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A4-comparison-without-identity",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A4-pending-matched",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "S-argv-extra",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "S-missing-canonical",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "S-duplicate-dist",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "C-python-build-domain",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-checker-runtime-mismatch",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "S-argv-leading-extra",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A4-selfhash",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A4-pretend-approved",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "A2-raw-as-directory",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-missing-raw",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-missing-terminal-marked-complete",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-416-not-full",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-unknown-header-property",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-bool-as-int",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-missing-python",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-wrong-binding",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-ref-mismatch",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-provenance-mismatch",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-frozen-source23-forged",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-full-null-loader",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-duplicate-canonical",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-duplicate-function",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-raw-only-header-no-payload",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-false-swallowed-as-null",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-incomplete-pretends-full",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-source-cannot-read-frozen-provenance",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-frozen-missing-source23-declaration",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-wrong-kind",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-required-field-missing",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-wrong-value-type",
+          "rejectedByFiniteAssertions": true
+        },
+        {
+          "id": "R-header-mismatch-pretends-collected",
+          "rejectedByFiniteAssertions": true
+        }
+      ],
+      "actualBuildRunInstallApprovalEvidence": false
+    }
+  },
+  "whyAfterFormatRun": "Final source change made raw header decoder reject BOM/duplicate keys/nonfinite just as top-level JSON parsing does; no new unchanged product tests. Previous first/second/final outputs retained.",
+  "formatter": {
+    "commandPrefix": [
+      "node",
+      "/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/node_modules/prettier/bin/prettier.cjs"
+    ],
+    "writeExitCode": 0,
+    "checkExitCode": 0,
+    "shellLogin": false,
+    "checkStdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+    "checkStderr": "",
+    "targetCount": 9
+  },
+  "trackedWhitespaceExitCode": 0,
+  "newFileWhitespaceChecks": [
+    {
+      "path": "docs/iterations/T03/i05-semantic-build-protocol/runtime-header.schema.json",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-author-checks.json",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-author-delivery.md",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-formatter-check.stderr",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-formatter-check.stdout",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-formatter-write.stderr",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-formatter-write.stdout",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-after-format.stderr",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-after-format.stdout",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-final.stderr",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-final.stdout",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-first.stderr",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-first.stdout",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-second.stderr",
+      "exitCode": 1,
+      "diagnostics": ""
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol/delta1-selfcheck-second.stdout",
+      "exitCode": 1,
+      "diagnostics": ""
+    }
+  ],
+  "original32InvalidExactObjectEquality": true,
+  "buildSchemasUnchanged": true,
+  "authorDidNotStageOrCommit": true,
+  "actualExecutionAuthority": false,
+  "newCodeAndExamplesAreOnlyPureDocumentDataAndAssertions": true,
+  "schemaEngineValidation": false,
+  "remaining": "owner full read; actual candidate commit; fresh independent affected delta; all actual runtime and parent gates"
+}

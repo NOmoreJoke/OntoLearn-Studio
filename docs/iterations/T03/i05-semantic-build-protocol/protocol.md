@@ -1,10 +1,10 @@
-# T03 I05 semantic build protocol v2.0.0
+# T03 I05 semantic build protocol v2.1.0
 
-2026-10-22。本完整 D0 草案将已收 adoption A1–A4 与 N-01 落为三个新 schema、完整 profile、consumer 合同和字段责任表。作者拟稿待原 T03 全文接收、实际 candidate commit 后 fresh 独审；无真实 build、安装、composition 或 runtime 实例。descriptor 的批准字段固定 null/空、executionAuthorization=false。原 offer47/adoption12 字节冻结；此处新版本不追改历史，不使原 v1 schema 可直接实施。
+2026-10-22。本完整 D0 草案将已收 adoption A1–A4 与 N-01 落为四个完整 schema、完整 profile、consumer 合同和字段责任表。作者拟稿待原 T03 全文接收、实际 candidate commit 后 fresh 独审；无真实 build、安装、composition 或 runtime 实例。descriptor 的批准字段固定 null/空、executionAuthorization=false。原 offer47/adoption12 字节冻结；此处新版本不追改历史，不使原 v1 schema 可直接实施。
 
 ## 1. 固定输入、版本和采用方式
 
-固定 base `bba31be7384a676e54cb3b64e219f14bf2a9460e`；branch `docs/T03-i05-semantic-offer-owner-review`。旧 offer candidate `6ba273a892b18a5ebaedc07aea6f36584999adcf`，process `21f9d4d288e8bd462b2252018578590110c08691`；本协议完整保留其字段能力，显式替换 archivePath/loaderCode 的歧义表示并增加原始 RECORD、批准根、第四模块和独立 validation receipt。新 JSON 的 exact path、bytes、SHA 由包外 draft-manifest 给出；本文件不预填未来自身 commit/hash。原 T03 接收后采用的 candidate/process 另由 owner 外报。
+固定 base `bba31be7384a676e54cb3b64e219f14bf2a9460e`；branch `docs/T03-i05-semantic-offer-owner-review`。旧 offer candidate `6ba273a892b18a5ebaedc07aea6f36584999adcf`，process `21f9d4d288e8bd462b2252018578590110c08691`；本协议完整保留其字段能力，显式替换 archivePath/loaderCode 的歧义表示并增加原始 RECORD、批准根、第四模块和独立 validation receipt。新 JSON 的 exact path、bytes、SHA 由包外当次 delta/final manifest 给出（原 draft-manifest 保留历史）；本文件不预填未来自身 commit/hash。原 T03 接收后采用的 candidate/process 另由 owner 外报。
 
 本目录规范对象如下；JSON Schema2020-12 shape 与本文/consumer-contract 的所有关系共同构成协议，任一不满足即拒绝。schema 不能表达的实际对象、路径、引用及证据真实性规则不能忽略。
 
@@ -12,10 +12,11 @@
 | -------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------- |
 | build-provenance.schema.json           | i05-source-package-parity-build/2 / urn:ontolearn:i05:source-package-parity-build:2 | E0 后置包内构建声明                     |
 | build-receipt.schema.json              | i05-build-receipt/2 / urn:ontolearn:i05:build-receipt:2                             | E0 包外 immutable build receipt         |
-| runtime-validation-receipt.schema.json | i05-runtime-validation-receipt/1 / urn:ontolearn:i05:runtime-validation-receipt:1   | E1/E2 以后另出的 runtime receipt        |
-| profile-descriptor.json                | i05-semantic-build-protocol-profile/2                                               | 完整未批准 profile，原 pin 为历史基线   |
-| consumer-contract.md                   | 2.0.0                                                                               | I05 source/frozen 与 caller strict 合同 |
-| field-responsibility.json              | 2.0.0                                                                               | 全字段 pointer 索引、actor/安全码/exit  |
+| runtime-validation-receipt.schema.json | i05-runtime-validation-receipt/2 / urn:ontolearn:i05:runtime-validation-receipt:2   | E1/E2 以后另出的 runtime receipt        |
+| runtime-header.schema.json             | i05-semantic-runtime-header/1 / urn:ontolearn:i05:runtime-header:1                  | source/frozen完整header payload与可用性 |
+| profile-descriptor.json                | i05-semantic-build-protocol-profile/3                                               | 完整未批准 profile，原 pin 为历史基线   |
+| consumer-contract.md                   | 2.1.0                                                                               | I05 source/frozen 与 caller strict 合同 |
+| field-responsibility.json              | 2.1.0                                                                               | 全字段 pointer 索引、actor/安全码/exit  |
 
 新 schema 在 docs 中存在不授权产品读取；D2 须另明确精确采用路径/hash、consumer guard 与新第23 source pin。D1/D2/D3/E0 后分别开窗。旧供应22、T01四资源、I05资产保持原维护者；T03唯一四 writer 和锁未修改。本协议不重审新的 T05 oracle；当前口径是 T05 实现已限定收件，allocation delta 另审，旧 adoption 时点“未收件”只为历史。
 
@@ -59,7 +60,7 @@ E0 对 checker，只比较批准 Git source 与实际 bundle data 原 bytes/SHA�
 
 fingerprint 严格保原四字段 algorithm/sha256/pythonCacheTag/domain，domain 原字面仍保以兼容算法返回shape；真实域由 sourceCompilation/actualArchiveCode/expectedBundleSourceCode/runtimeLoaderCode 外层位置决定，不能凭 domain 字样冒 runtime 事实。algorithm=i05-code-object-marshal-filename-normalized/1，exact CodeType 递归 co_consts 中 code 只 replace co_filename=<i05-canonical-code>，保字节码、flags、name、qualname、lineno、linetable、exception table、所有常量及其他字段；marshal.dumps(...,4)→SHA256。不删除字段消差，不拿 sourceSHA/raw archive SHA 填 code fingerprint。
 
-source compile=批准原bytes、实际source路径、exec、dont_inherit=True、optimize=0，使用实际构建解释器；compile不是执行 source。Python完整 implementation/version/hexversion/buildIdentity（versionString/buildNumber/date/compiler/apiVersion）/cacheTag/magic/marshal/optimize/byteorder/abiflags/platform/architecture/flags/compilerExecutable 全部保留。每 compile/archive/runtime 的 build/cacheTag/magic/flags/optimization和算法须同域；相同cacheTag不足。codeDomain.marshalReferenceStability=measured-same-domain 在E0只指 sourcecompile↔archive 的实际测量，不预签 E1 loader。E1独立 fresh/cold/warm/cache 重复 get_code 与真实 function.**code**，exact CodeType/相同canonical对象/稳定指纹逐项保见证；缺get_code、非exact类型、缓存/引用intern导致差异保首错，新算法版本/source/consumer/schema/工具共同delta后重审，不降sourceSHA。
+source compile=批准原bytes、实际source路径、exec、dont_inherit=True、optimize=0，使用实际构建解释器；compile不是执行 source。Python完整 implementation/version/hexversion/buildIdentity（versionString/buildNumber/date/compiler/apiVersion）/cacheTag/magic/marshal/optimize/byteorder/abiflags/platform/architecture/flags/compilerExecutable 全部保留。每 compile/archive/runtime 的 build/cacheTag/magic/flags/optimization和算法须同域；相同cacheTag不足。codeDomain.marshalReferenceStability=measured-same-domain 在E0只指 sourcecompile↔archive 的实际测量，不预签 E1 loader。E1独立 fresh/cold/warm/cache 重复 get_code 与真实 `function.__code__`，exact CodeType/相同canonical对象/稳定指纹逐项保见证；缺get_code、非exact类型、缓存/引用intern导致差异保首错，新算法版本/source/consumer/schema/工具共同delta后重审，不降sourceSHA。
 
 ## 6. CR-A3：RECORD、许可与 runtime 保全
 
@@ -77,7 +78,7 @@ distribution 与 buildToolDistributions 都保 selectedArtifact/allPlatformArtif
 
 build receipt 保原全部字段，但 runtimeValidation 固定 not-executed、runtimeEvidenceManifest 必须显式 null；approvalStatus 固定 unapproved-produced-evidence。root 对实际来源、工具、全见证和原owner接收另出可信批准记录，绑定既有 build receipt 原bytes/hash及composition/profile/externalEvidenceManifest，不能从包内boolean推批准。caller启动前核该外部授权来源和同一receipt/完整目录/exe/provenance及批准证据包（可消费root已审且全hash绑定的固定包，但必须亲核包身份）。无批准/缺证/任一差异不得launch；probe不读此记录、不自证approved。
 
-E1/E2以后后出 validation receipt 绑定既有 buildReceipt（approved-witness内原收据）及 approvedBuildRecord、完整runtimeEvidenceManifest；绝不回填原build receipt/provenance/旧directory。每个run保真实stdout/stderr/header/terminal/exit/signal，ordered runs/selector/mode/argv、同composition/provenance digest、Python域、23模块/第四模块/四函数/checker真实 loader 和fresh/cold/warm原件。完整manifest列所有raw输出与comparison文件，hash关系先原件后manifest后validation；不得在manifest收自己或validation，不把validation hash回写任何祖先。
+E1/E2以后后出 validation receipt 绑定既有 buildReceipt（approved-witness内原收据）及 approvedBuildRecord、完整runtimeEvidenceManifest；绝不回填原build receipt/provenance/旧directory。每个run依consumer合同CR-R保真实stdout/stderr/header/terminal/exit/signal与可用性、ordered runs/selector/mode/实际argv；source与frozen/parent的声明域按CR-H分别处理。完整成功采集仍要求Python域、23模块/第四模块/四函数/checker真实loader及fresh/cold/warm原件；失败只保实际已观察值，不能填批准预期值或剔除失败。完整manifest列所有raw输出与comparison文件，hash关系先原件后manifest后validation；不得在manifest收自己或validation，不把validation hash回写任何祖先。
 
 runtimeValidation=collected-pending-comparison 时 comparison.state=pending，comparatorSource/oracleSource/comparisonReport/三结果均null；runtime manifest及完整runs仍非null且不可缺。runtimeValidation=compared 时 comparison.state=compared，comparatorSource/oracleSource/comparisonReport均非null、hash绑定真实独立来源；三个结果都是实际boolean，可false。compared仅表示比较发生，matched/equivalence/original operation三判独立。fullSuiteCollectionComplete=true要求selector=full-v1且全417有序完整terminal；collectionComplete=true仅所选采集完整。exit0不能覆盖header mismatch、unknown、缺行或oracle失败；missing-context/not-executed不能升级originalOperationPassed。caller分别报告，不让probe签后三判。
 
@@ -90,3 +91,11 @@ full-v1完整417/320 datasets/83数学/106操作/54checks/50产品上下文保�
 失败保第一原件、候选/命令/输入身份/完整stdout-stderr/真实exit-signal；修订新candidate/delta复核，不能覆盖Fail或偷偷重试/安装/放宽cap。build缺证不产accepted provenance；未知异常INTERNAL_ERROR/exit1/incomplete，安全码不泄路径/堆栈/原值。完整actor/exactcodes见field-responsibility及consumer合同。
 
 本窗自检仅普通Git/文件、stdlib JSON/AST/re/数学和已有Prettier；无已命名获准离线JSONSchema引擎，本轮未探环境、未安装、未网络。结构/refs/有限关系自检不是JSONSchema引擎验证，更不证明build/runtime。未执行产品/probe/builder/spec/reader/helper、prepared旧staticverify/generator、产品fixture模拟/pytest/业务compile/pycompile/archive解码、安装/版本能力探针/DB/native/GUI，未读旧binary/toolSDKwitness。examples全部synthetic design data，不能冒实际见证。作者写完停止，等待原T03全文读/owner接收和后续commit后fresh独审；不stage/commit/push/merge。
+
+## 9. CR-R / CR-H：实际失败与精确header
+
+完整规则以 consumer-contract.md §5–6 和 runtime-header.schema.json 为准。后继receipt版本为i05-runtime-validation-receipt/2；build provenance/receipt仍保持原版本、not-executed/null，不回填。四份schema各自完整且final/delta manifest绑定原字节，header定义不是等待D2自行决定的空缺。D2只实现已审固定协议。
+
+失败收据与成功采集分离：not-started、pre-header-rejected、incomplete、collected；header/terminal均区分absent/malformed/parsed，原bytes和真实exit/signal保留。所有required字段保持存在，未观察值显式null或实际部分集合；observedPaths绑定实际已观察的非null叶值，false是已观察值，不能改null吞掉。成功分支仍严格完整23+单列第四模块+四函数/checker、同代码域、exact三argv及完整417/单B1。坏Python域/非CodeType/alias/checker反例保真实值，不借“schema成功”升级运行结论。
+
+source不读frozen provenance或包外批准/编译器文件：header中的declaredCompositionRef/provenanceRead/declaredPython固定null，declaredSupplierSources只有前22批准供应声明；23 actual source/loader及第23实际source observation交caller外部组合绑定。frozen/parent声明实际读取的唯一provenance原bytes/SHA与组合及其完整Python声明，caller对原build receipt复核。header.observedPython只含可由运行解释器观察的域，外部compilerExecutable/dontInherit保在declaredPython及caller收据，不作为probe包外读取指令。

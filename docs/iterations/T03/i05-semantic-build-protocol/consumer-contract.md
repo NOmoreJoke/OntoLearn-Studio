@@ -1,6 +1,6 @@
-# I05 source/frozen consumer contract v2.0.0
+# I05 source/frozen consumer contract v2.1.0
 
-本件是 D0 完整消费合同；与 protocol.md、三个完整 schema、profile-descriptor 和 field-responsibility 共同生效。未实现 consumer；2cf frozen 仍有原总拒绝，不能以本件称其通过。D2 原 I05 owner 另窗实施新LOCK/八dist、strict读取和新第23 pin，T03/root随后审真实 composition。descriptor目前 approvedConsumerPin、approvedDependencyPin、approvedToolchain、acceptedCompositionRef、approvedProtocolRecord、approvedEvidenceRootRecord=null，approvedWrapperPins=[]，executionAuthorization=false；所有这些都不是actual可运行批准。
+本件是 D0 完整消费合同；与 protocol.md、四个完整 schema、profile-descriptor 和 field-responsibility 共同生效。未实现 consumer；2cf frozen 仍有原总拒绝，不能以本件称其通过。D2 原 I05 owner 另窗实施新LOCK/八dist、strict读取和新第23 pin，T03/root随后审真实 composition。descriptor目前 approvedConsumerPin、approvedDependencyPin、approvedToolchain、acceptedCompositionRef、approvedProtocolRecord、approvedEvidenceRootRecord=null，approvedWrapperPins=[]，executionAuthorization=false；所有这些都不是actual可运行批准。
 
 ## 1. 启动输入是三个 exact argv
 
@@ -32,7 +32,7 @@ source前22按已批原pin核actual source bytes→sourcecompile→实际loader�
 
 ## 3. header、完整终态与运行收据
 
-header必须分开 declared supplier/source identity、actual模块/函数/checker runtime code、declaredCompositionRef、读取provenance原bytes/SHA、Python精确域、selector/mode。externalReceiptStatus固定external-unverified，packageCodeBoundToSource最多 archive-loader-consistent-with-declared-source；source23 actualSourceSha来自实际观察，不是内嵌自hash。未来D2精确header schema须同本合同；缺字段不能以日志文字替代。caller逐字段把header digest/ref/runtime code与启动前同一批准build receipt及见证回绑，不能exit0抵消差异，不让probe输出approved。
+header必须分开 declared supplier/source identity、actual模块/函数/checker runtime code、declaredCompositionRef、读取provenance原bytes/SHA、Python精确域、selector/mode。externalReceiptStatus固定external-unverified，packageCodeBoundToSource最多 archive-loader-consistent-with-declared-source；source23 actualSourceSha来自实际观察，不是内嵌自hash。本D0的runtime-header.schema.json已定义精确header payload（kind/format及完整字段全集）；D2只能实现该固定协议。缺字段不能以日志文字替代。caller逐字段把header digest/ref/runtime code与启动前同一批准build receipt及见证回绑，不能exit0抵消差异，不让probe输出approved。
 
 完整采集UTF-8 JSONL：唯一header→每条完整observation→唯一terminal。full-v1恰417有序；两个B1 selector各一measurement，不能拼full。所有真实stage结果/graph/query variables/全rows/None/ASK、reason图/SHACL六字段、typed全字段/payload/原bytes/base64/wire/source/definition/allocation/DAG/root/失败诊断保全。known rejection、unsupported、missing-context、not-executed分态，不补view或改业务pass；未知为INTERNAL_ERROR/incomplete。
 
@@ -66,3 +66,34 @@ build receipt永久not-executed/null；后出validation receipt保buildReceipt�
 安全输出只稳定code及受限stage/参数，不泄原路径、堆栈、凭据或业务原值。原resource/lock/dist/Python现有安全前门码保留，不虚称新码在2cf已实现。argv/asset/provenance前置非法exit2；unknown/harness/逻辑预算不完整exit1；exit0仅所选采集完整，可包含known rejection/missing-context/not-executed，非业务通过。external caller错误不能伪造成child exit2。build只有真实非零要求，本协议不编造统一数值exit；child signal保实际。所有首次失败不可覆盖，修复新candidate/delta再审。
 
 字段责任全量见 field-responsibility.json：T03生产真实外部证据，root审批exact组合与原件，caller先核后绑，probe只strict声明和本域实际loader，不读包外locator、不自签批准。此分工不授权安装/build/运行/工具实现，也不代指定双方独审/CI/两OS/真人/develop和原B1/parent/S1/正式门。
+
+## 5. CR-R：失败运行、可用性与完整采集
+
+runtime-validation-receipt/2 的每run所有字段均required。observationState恰not-started、pre-header-rejected、incomplete、collected之一；stdout/stderr、header/terminal引用、headerPayload、declaredCompositionRef/provenanceSha256/python、实际loader/函数/checker/source23、绑定状态允许显式null或实际部分列表，但必须符合下列状态，不得全局自由省略。runtimeEvidenceManifest.complete只证明所有现有原件均列入，不表示运行或suite完整。所有实际尝试保原顺序，not-started也列入但不能虚构child。
+
+- not-started：caller未dispatch；stdout/stderr/header/terminal/headerPayload、exit/signal及所有实际观察为null/空列表，observedPaths=[]、observationIds=[]，两complete=false，failure.actor=caller/phase=prelaunch且code为既有三种prelaunch码之一。argv仅是拟调度数组，不能声称已运行。
+- pre-header-rejected：真实child前置拒绝，原stdout/stderr必须存在（可为0字节），headerState/terminalState=absent、两个引用和headerPayload=null，actualExitCode=2、signal=null，两complete=false，failure.actor=probe。invalid argv原数组照实保留，failure.phase=argv/reason=argv-rejected、code=null，引用原受限stderr；这只允许记录拒绝，绝不扩大canonical main接收的三数组。其他前置拒绝保本合同既有exact code/阶段。可以保确已取得的Python或部分loader观察，不能填未观察预期值。
+- incomplete：真实child已dispatch；完整raw stdout/stderr都非null，header/terminal分别absent、malformed或parsed。absent时引用=null；malformed时引用指完整原坏JSON/半行片段或语法可解析但strict shape不合法的原JSON，headerPayload=null；parsed时引用非null且headerPayload按完整header schema解析（shape可解析不等批准绑定通过，真实错ref/digest/对象仍可留作incomplete）。真实signal非null时exit=null；未确认终态保真实null，不伪造exit1/2或130。failure保实际caller/probe、受限phase/code/reason及firstEvidence；两complete=false。header后部分loader、timeout、非CodeType/alias/checker false、Python错误域、外部header mismatch均可真实保存。
+- collected：仅所选完整采集，actualExitCode=0/signal=null/failure=null，header/terminal均parsed且非null，headerPayload完整。collectionComplete=true。full-v1必须417个唯一、按固定资产原序的observationIds与逐项observationOutcomes，fullSuiteCollectionComplete=true；两B1 selector各恰1 measurement且fullSuiteCollectionComplete=false。known-rejection、unsupported、missing-context、not-executed可作为完整业务observation保留，不能由采集完整推originalOperationPassed=true。
+
+观察与成功分判：moduleLoaders/函数只有实际观察的有序子集，不能重复或出现封闭名集合外项；完整collected恰23 canonical、单列pyshacl.validator、四function和resources.CONTRACT checker，全CodeType/同canonical对象/同consumer对象为true，完整fingerprint分别等批准模块/函数/expectedBundleSourceCode且完整Python同域。失败时真实false与不等指纹允许保留；未取得fingerprint是null，不以sourceSHA代填。freshColdWarmEvidence只在外部receipt引用获准witness；probe header不读取/产生包外witness locator。
+
+observationOutcomes与observationIds等长、顺序一致，取success/known-rejection/unsupported/missing-context/not-executed；它们是原件的有序索引，不代替完整业务payload。observedPaths是caller从原始观察中导出的实际JSON pointer全集，针对run的python、moduleLoaders、distributionModuleLoader、functionCodes、dynamicChecker、observedSource23、declaredCompositionRef、provenanceSha256及两个code绑定状态的每个已观测非null叶值；重复pointer、越界pointer、pointer指null或吞掉已观测false均拒绝。无观察的null/空列表不列叶值。caller必须与完整raw/header/首错诊断逐字段核同，不能通过同时改mask和值规避；有限selfcheck只验证合成数据内一致性，不认证真实观察。firstEvidence非null及所有fresh/cache文件必须列入同一runtime manifest且bytes/SHA相等；不留未列“旁日志”。
+
+headerPayload是原header raw严格解析后的完整值副本；不能靠重序列化替代原raw hash。它与run的实际字段逐字段映射相等，除receipt独有freshColdWarmEvidence和外部编译器来源；header/terminal的malformed原件必须仍列入manifest。collected中的任何必需null、缺23/4/checker、缺raw/terminal/417或错误argv/域/绑定一律拒绝；把incomplete改collected或伪true也拒绝。comparison为true的任何整体结果要求其完整受审scope全部collected且真实外部report证明相应语义，不能用失败片段判full通过。
+
+## 6. CR-H：完整header字段、source/frozen分域与映射
+
+独立runtime-header.schema.json定义exact键名及所有嵌套required/type/null/unknown限制。完整字段全集：kind、format、profileId、mode、selector、externalReceiptStatus、declaredCompositionRef、provenanceRead、declaredSupplierSources、declaredPython、observedPython、moduleLoaders、distributionModuleLoader、functionCodes、dynamicChecker、observedSource23、packageCodeBoundToSource、sourceCodeBoundToSource。unknown/missing/bool作int拒绝。header只声明和保本域实际观察，不包含外部批准状态或witness/compiler/root绝对locator，不自签root批准。
+
+source header：declaredCompositionRef/provenanceRead/declaredPython固定null；declaredSupplierSources按profile前22顺序逐canonicalName/source五身份声明，不声明内嵌第23自身SHA。moduleLoaders的actualSource为全部23实际bytes/SHA，observedSource23为第23实际bytes/SHA/actualLoaderCode，并与第23模块相同。caller在包外对批准新consumer pin和全部source/编译/loader域绑定组合，不让source去读frozen provenance、包外receipt或安装根。sourceCodeBoundToSource最多loader-consistent-with-observed-source，packageCodeBoundToSource=null。
+
+frozen-independent/parent header：declaredSupplierSources按23顺序等实际已读取provenance inputs.modules，declaredCompositionRef等其组合，provenanceRead保唯一白名单文件实际bytes/SHA；declaredPython保该provenance完整Python域。actualSource模块值和observedSource23=null，因为包内没有这些source原件，不能声称观察过。完整绑定时packageCodeBoundToSource最多archive-loader-consistent-with-declared-source，sourceCodeBoundToSource=null。失败header可以保真实partial/mismatch值，不能标完整绑定；caller的批准事实永远在包外。
+
+header.observedPython只含运行解释器可观察的implementation/version/hexversion/cacheTag/magicHex/marshalVersion/optimize/byteorder/abiflags/platform/architecture/flags/buildIdentity。compilerExecutable和dontInherit属于声明编译域/外部实物链，保在frozen declaredPython与caller run.python，不允许probe为填header读安装根或执行编译器。header observedPython与run.python剔除这两个外部字段后的值相同；collected时与批准build域相同。失败观察可以为非3.12/非CPython/优化非0等真实值，但该run不能collected。
+
+header actual模块/函数/checker对象层级与run同名组逐字段相同，只去除外部freshColdWarmEvidence。模块字段bindingId/canonicalName/loaderClass/specName/origin/exactCodeType/singleCanonicalObject/runtimeLoaderCode/actualSource；四函数name/moduleBindingId/runtimeFunctionCode/exactCodeType/codeConstIndexPath；checker保name/objectAuthority/sysModulesRegistrationRequired/loaderClass/specName/origin/runtimeLoaderCode/exactCodeType/sameConsumerObject。完整时名称、binding、source/code、same co_consts路径、domain全部严格同批准映射；失败时仅实际取得的字段非null，并保 observedPaths/raw。所有完整source/frozen synthetic header和失败反例是设计数据，不是实际loader/cache运行证书。
+
+设计数据中的headerRawExamples保完整合成UTF-8 JSON/坏JSON原文本及其真实bytes/SHA；selfcheck核raw→parsed headerPayload→receipt投影。其余合成文件身份占位不是真实运行证据，417合成ID/状态只为有限结构关系，不冒实际完整417业务JSONL、typed结果或运行采集。
+
+失败分支保actual header值，即使其mode/selector/source声明/ref/digest错误，也不把它们改成拟调用/批准值；headerPayload按原raw解析，run的实际观察投影同其值，caller另记HEADER_PROVENANCE_BINDING_MISMATCH并保持incomplete。成功collected才强制source/frozen适用域和全部批准值相同。unknown/缺required/错类型等导致strict shape无法解析时，原完整JSON仍按malformed协议header保留，不能伪造一个可解析headerPayload。

@@ -14,22 +14,27 @@ BASE = pathlib.Path(__file__).resolve().parents[3] / "iterations/T03/i05-semanti
 HERE = pathlib.Path(__file__).resolve().parent
 
 
-def read(path):
+def strict_json_text(text):
+    assert not text.startswith("\ufeff")
     def pairs(items):
         result = {}
         for key, value in items:
             assert key not in result, ("duplicate-key", key)
             result[key] = value
         return result
-    return json.loads(path.read_text(), object_pairs_hook=pairs,
+    return json.loads(text, object_pairs_hook=pairs,
                       parse_constant=lambda value: (_ for _ in ()).throw(ValueError(value)))
 
+
+def read(path):
+    return strict_json_text(path.read_text())
 
 def resolve(schema, pointer):
     assert pointer.startswith("#/")
     node = schema
     for part in pointer[2:].split("/"):
-        node = node[part.replace("~1", "/").replace("~0", "~")]
+        key = part.replace("~1", "/").replace("~0", "~")
+        node = node[int(key)] if isinstance(node, list) else node[key]
     return node
 
 
@@ -78,6 +83,171 @@ def structural(value, node, schema):
 
 def same_file(a, b):
     assert (a["path"], a["bytes"], a["sha256"]) == (b["path"], b["bytes"], b["sha256"])
+
+
+RAW_HEADER_EXAMPLES = {}
+HEADER_DOCUMENT_SCHEMA = None
+
+OBSERVATION_GROUPS = ["python", "moduleLoaders", "distributionModuleLoader", "functionCodes", "dynamicChecker", "observedSource23", "declaredCompositionRef", "provenanceSha256", "packageCodeBoundToSource", "sourceCodeBoundToSource"]
+
+
+def observation_paths(run):
+    paths = []
+    def walk(value, pointer):
+        if value is None:
+            return
+        if type(value) is dict:
+            for key, item in value.items():
+                walk(item, pointer + "/" + key.replace("~", "~0").replace("/", "~1"))
+        elif type(value) is list:
+            for index, item in enumerate(value):
+                walk(item, pointer + "/" + str(index))
+        else:
+            paths.append(pointer)
+    for name in OBSERVATION_GROUPS:
+        walk(run[name], "/" + name)
+    return paths
+
+
+def runtime_relations(run, provenance, build_receipt, profile, runtime_files):
+    state = run["observationState"]
+    expected = [m["module"] for m in profile["canonicalModules"]]
+    names = [m["canonicalName"] for m in run["moduleLoaders"]]
+    assert len(names) == len(set(names)) and set(names) <= set(expected)
+    assert names == [name for name in expected if name in names]
+    fnames = [f["name"] for f in run["functionCodes"]]
+    fexpected = [f["name"] for f in profile["functionBindings"]]
+    assert len(fnames) == len(set(fnames)) and set(fnames) <= set(fexpected)
+    assert fnames == [name for name in fexpected if name in fnames]
+    assert len(run["observedPaths"]) == len(set(run["observedPaths"]))
+    assert set(run["observedPaths"]) == set(observation_paths(run))
+    assert len(run["observationIds"]) == len(set(run["observationIds"]))
+    assert len(run["observationIds"]) == len(run["observationOutcomes"])
+    if run["signal"] is not None:
+        assert run["actualExitCode"] is None
+    for key in ["stdout", "stderr", "header", "terminal"]:
+        if run[key] is not None:
+            same_file(run[key], runtime_files[run[key]["path"]])
+    for key in ["header", "terminal"]:
+        availability = run[key + "State"]
+        assert (run[key] is None) == (availability == "absent")
+    assert (run["headerPayload"] is None) == (run["headerState"] != "parsed")
+    if run["failure"] is not None and run["failure"]["firstEvidence"] is not None:
+        evidence = run["failure"]["firstEvidence"]
+        same_file(evidence, runtime_files[evidence["path"]])
+    for item in run["moduleLoaders"] + ([run["distributionModuleLoader"]] if run["distributionModuleLoader"] else []) + ([run["dynamicChecker"]] if run["dynamicChecker"] else []):
+        evidence = item["freshColdWarmEvidence"]
+        if evidence is not None:
+            same_file(evidence, runtime_files[evidence["path"]])
+    if state == "not-started":
+        assert all(run[k] is None for k in ["stdout", "stderr", "header", "terminal", "headerPayload", "actualExitCode", "signal"])
+        assert not run["observedPaths"] and not run["observationIds"]
+        assert not run["collectionComplete"] and not run["fullSuiteCollectionComplete"]
+        assert run["failure"]["actor"] == "caller" and run["failure"]["phase"] == "prelaunch"
+        assert run["failure"]["code"] in ["APPROVED_BUILD_RECEIPT_UNAVAILABLE", "APPROVED_SOURCE_BINDING_INVALID", "BUNDLE_DIRECTORY_MISMATCH"]
+        return
+    assert run["stdout"] is not None and run["stderr"] is not None
+    if state != "collected":
+        assert run["failure"] is not None and run["failure"]["firstEvidence"] is not None
+    if state == "pre-header-rejected":
+        assert run["headerState"] == run["terminalState"] == "absent"
+        assert run["actualExitCode"] == 2 and run["signal"] is None
+        assert not run["collectionComplete"] and not run["fullSuiteCollectionComplete"]
+        assert run["failure"]["actor"] == "probe"
+        if run["failure"]["phase"] == "argv":
+            assert run["failure"]["reason"] == "argv-rejected" and run["failure"]["code"] is None
+        else:
+            assert run["failure"]["code"] in ["FROZEN_BUILD_PROVENANCE_UNAVAILABLE", "BUILD_PROVENANCE_FORMAT_INVALID", "DECLARED_COMPOSITION_FORMAT_INVALID", "BUNDLE_PROVENANCE_RESOURCE_MISMATCH", "LOADER_ARCHIVE_CODE_MISMATCH", "CODE_DOMAIN_INVALID", "DYNAMIC_CHECKER_IDENTITY_INVALID", "LOADER_SOURCE_CODE_MISMATCH"]
+    elif state == "incomplete":
+        assert run["failure"] is not None
+        assert not run["collectionComplete"] and not run["fullSuiteCollectionComplete"]
+    else:
+        assert state == "collected" and run["failure"] is None
+        assert run["actualExitCode"] == 0 and run["signal"] is None
+        assert run["headerState"] == run["terminalState"] == "parsed"
+        assert run["collectionComplete"]
+    if run["header"] is not None:
+        example = RAW_HEADER_EXAMPLES[run["header"]["path"]]
+        raw = example["utf8"].encode("utf-8")
+        assert len(raw) == run["header"]["bytes"] and hashlib.sha256(raw).hexdigest() == run["header"]["sha256"]
+        if run["headerState"] == "parsed":
+            assert strict_json_text(raw.decode("utf-8")) == run["headerPayload"]
+        else:
+            try:
+                parsed = strict_json_text(raw.decode("utf-8"))
+                structural(parsed, HEADER_DOCUMENT_SCHEMA, HEADER_DOCUMENT_SCHEMA)
+            except (ValueError, AssertionError, KeyError, TypeError):
+                pass
+            else:
+                raise AssertionError("malformed header example was strict valid JSON")
+    header = run["headerPayload"]
+    if header is not None:
+        assert header["declaredCompositionRef"] == run["declaredCompositionRef"]
+        assert (header["provenanceRead"]["sha256"] if header["provenanceRead"] else None) == run["provenanceSha256"]
+        python = run["python"]
+        assert header["observedPython"] == ({k: v for k, v in python.items() if k not in ["compilerExecutable", "dontInherit"]} if python else None)
+        for group in ["moduleLoaders", "distributionModuleLoader", "functionCodes", "dynamicChecker"]:
+            def project(item):
+                return {k: v for k, v in item.items() if k != "freshColdWarmEvidence"} if item else None
+            actual = run[group]
+            projected = [project(item) for item in actual] if type(actual) is list else project(actual)
+            assert header[group] == projected
+        for group in ["observedSource23", "packageCodeBoundToSource", "sourceCodeBoundToSource"]:
+            assert header[group] == run[group]
+    if state != "collected":
+        return
+    assert header["mode"] == run["mode"] and header["selector"] == run["selector"]
+    count = 22 if run["mode"] == "source" else 23
+    assert header["declaredSupplierSources"] == [{"canonicalName": name, "source": source} for name, source in zip(expected[:count], provenance["inputs"]["modules"][:count])]
+    if run["mode"] == "source":
+        assert header["provenanceRead"] is None and header["declaredPython"] is None and header["declaredCompositionRef"] is None
+        assert run["declaredCompositionRef"] is None and run["provenanceSha256"] is None and run["packageCodeBoundToSource"] is None
+    else:
+        assert run["observedSource23"] is None and run["sourceCodeBoundToSource"] is None
+        assert all(m["actualSource"] is None for m in run["moduleLoaders"])
+    assert run["argv"][-2:] in profile["exactProbeArgv"]
+    if run["mode"] == "source":
+        assert run["argv"] == ["python", "-m", "ontolearn_engine.semantic_source_package_probe"] + run["argv"][-2:]
+        assert run["sourceCodeBoundToSource"] == "loader-consistent-with-observed-source"
+        assert run["observedSource23"] is not None
+    else:
+        assert len(run["argv"]) == 3
+        assert run["declaredCompositionRef"] == provenance["composition"]["compositionRef"]
+        assert run["provenanceSha256"] == build_receipt["embeddedProvenance"]["sha256"]
+        assert header["provenanceRead"]["bytes"] == build_receipt["embeddedProvenance"]["bytes"]
+        assert header["declaredPython"] == provenance["python"]
+        assert run["packageCodeBoundToSource"] == "archive-loader-consistent-with-declared-source"
+    assert run["selector"] == run["argv"][-1]
+    assert run["python"] == provenance["python"]
+    assert names == expected
+    bindings = {m["bindingId"]: m for m in provenance["moduleBindings"] + [provenance["distributionCodeBinding"]]}
+    for item in run["moduleLoaders"] + [run["distributionModuleLoader"]]:
+        assert item is not None and item["exactCodeType"] is True and item["singleCanonicalObject"] is True
+        expected_binding = bindings[item["bindingId"]]
+        assert item["canonicalName"] == expected_binding["canonicalName"]
+        assert item["specName"] == item["canonicalName"] and item["loaderClass"] and item["origin"]
+        assert item["runtimeLoaderCode"] == expected_binding["actualArchiveCode"]["fingerprint"]
+        assert item["freshColdWarmEvidence"] is not None
+    assert run["distributionModuleLoader"]["canonicalName"] == "pyshacl.validator"
+    if run["mode"] == "source":
+        for item, source in zip(run["moduleLoaders"], provenance["inputs"]["modules"]):
+            assert item["actualSource"] == {"bytes": source["bytes"], "sha256": source["sha256"]}
+        source23 = run["observedSource23"]
+        assert source23 == {"actualSourceBytes": run["moduleLoaders"][-1]["actualSource"]["bytes"], "actualSourceSha256": run["moduleLoaders"][-1]["actualSource"]["sha256"], "actualLoaderCode": run["moduleLoaders"][-1]["runtimeLoaderCode"]}
+    assert fnames == fexpected
+    for item, expected_function in zip(run["functionCodes"], provenance["functionBindings"]):
+        assert item["exactCodeType"] is True
+        assert item["moduleBindingId"] == expected_function["moduleBindingId"]
+        assert item["codeConstIndexPath"] == expected_function["codeConstIndexPath"]
+        assert item["runtimeFunctionCode"] == expected_function["expectedFunctionCode"]
+    checker = run["dynamicChecker"]
+    assert checker is not None and checker["exactCodeType"] is True and checker["sameConsumerObject"] is True
+    assert checker["runtimeLoaderCode"] == provenance["dynamicChecker"]["expectedBundleSourceCode"]
+    assert checker["freshColdWarmEvidence"] is not None
+    if run["selector"] == "full-v1":
+        assert run["fullSuiteCollectionComplete"] and len(run["observationIds"]) == 417
+    else:
+        assert not run["fullSuiteCollectionComplete"] and len(run["observationIds"]) == 1
 
 
 def relations(x, profile):
@@ -203,24 +373,10 @@ def relations(x, profile):
         same_file(comparison["comparisonReport"], runtime_files[comparison["comparisonReport"]["path"]])
         assert all(type(comparison[k]) is bool for k in ["sourcePackageEquivalent", "externalOracleMatched", "originalOperationPassed"])
     for run in v["runs"]:
-        for field in ["stdout", "stderr", "header", "terminal"]:
-            same_file(run[field], runtime_files[run[field]["path"]])
-        assert run["argv"][-2:] in profile["exactProbeArgv"]
-        if run["mode"] == "source":
-            assert run["argv"] == ["python", "-m", "ontolearn_engine.semantic_source_package_probe"] + run["argv"][-2:]
-            assert run["observedSource23"] is not None
-        else:
-            assert len(run["argv"]) == 3
-            assert run["observedSource23"] is None
-        assert run["selector"] == run["argv"][-1]
-        assert run["declaredCompositionRef"] == v["compositionRef"]
-        assert run["provenanceSha256"] == f["embeddedProvenance"]["sha256"]
-        assert run["python"] == b["python"]
-        assert [m["canonicalName"] for m in run["moduleLoaders"]] == expected
-        assert run["distributionModuleLoader"]["canonicalName"] == "pyshacl.validator"
-        assert run["dynamicChecker"]["runtimeLoaderCode"] == checker["expectedBundleSourceCode"]
-        if run["fullSuiteCollectionComplete"]:
-            assert run["collectionComplete"] and run["selector"] == "full-v1"
+        runtime_relations(run, b, f, profile, runtime_files)
+    if v["comparison"]["state"] == "compared":
+        if any(v["comparison"][k] is True for k in ["sourcePackageEquivalent", "externalOracleMatched", "originalOperationPassed"]):
+            assert all(run["observationState"] == "collected" for run in v["runs"])
     # Finite evidence dependency graph is data, not filesystem traversal.
     graph = x["dependencyGraph"]
     done = set()
@@ -242,6 +398,10 @@ def mutate(data, pointer, value):
 def main():
     schemas = {k: read(BASE / n) for k, n in {"provenance": "build-provenance.schema.json", "buildReceipt": "build-receipt.schema.json", "validationReceipt": "runtime-validation-receipt.schema.json"}.items()}
     profile = read(BASE / "profile-descriptor.json")
+    global HEADER_DOCUMENT_SCHEMA
+    header_schema = read(BASE / "runtime-header.schema.json")
+    HEADER_DOCUMENT_SCHEMA = header_schema
+    assert schemas["validationReceipt"]["properties"]["runs"]["items"]["properties"]["headerPayload"]["anyOf"][0] == {k: v for k, v in header_schema.items() if k not in ["$schema", "$id", "title", "$comment"]}
     ref_count = 0
     def walk(node, schema):
         nonlocal ref_count
@@ -259,14 +419,42 @@ def main():
         elif isinstance(node, list):
             for value in node:
                 walk(value, schema)
-    for schema in schemas.values():
+    for schema in list(schemas.values()) + [header_schema]:
         walk(schema, schema)
+    responsibility = read(BASE / "field-responsibility.json")
+    schema_files = {"build-provenance.schema.json": schemas["provenance"], "build-receipt.schema.json": schemas["buildReceipt"], "runtime-validation-receipt.schema.json": schemas["validationReceipt"], "runtime-header.schema.json": header_schema}
+    declared_index = responsibility["propertyIndex"]
+    actual_pointers = set()
+    def enumerate_properties(node, pointer, filename):
+        if type(node) is dict:
+            for key in node.get("properties", {}):
+                actual_pointers.add((filename, pointer + "/properties/" + key.replace("~", "~0").replace("/", "~1")))
+            for key, value in node.items():
+                enumerate_properties(value, pointer + "/" + key.replace("~", "~0").replace("/", "~1"), filename)
+        elif type(node) is list:
+            for index, value in enumerate(node):
+                enumerate_properties(value, pointer + "/" + str(index), filename)
+    for filename, schema in schema_files.items():
+        enumerate_properties(schema, "#", filename)
+    assert len(declared_index) == len(actual_pointers)
+    assert {(row["schema"], row["pointer"]) for row in declared_index} == actual_pointers
+    for row in declared_index:
+        node = resolve(schema_files[row["schema"]], row["pointer"])
+        assert row["shape"] == {k: v for k, v in node.items() if k in ["type", "const", "enum", "$ref"]}
+        assert row["required"] is True
     cases = read(HERE / "synthetic-design-cases.json")
     assert cases["sampleKind"] == "synthetic design data; no actual build or run"
+    global RAW_HEADER_EXAMPLES
+    RAW_HEADER_EXAMPLES = cases["headerRawExamples"]
     valid = cases["valid"]
     for key, schema in schemas.items():
         structural(valid[key], schema, schema)
     relations(valid, profile)
+    for example in cases["headerExamples"].values():
+        structural(example, header_schema, header_schema)
+    assert cases["headerExamples"]["frozen"] == valid["validationReceipt"]["runs"][0]["headerPayload"]
+    source_example = next(v for v in cases["validVariants"] if v["id"] == "R-source-complete-header")["changes"][0]["value"][0]["headerPayload"]
+    assert cases["headerExamples"]["source"] == source_example
     for variant in cases.get("validVariants", []):
         altered = copy.deepcopy(valid)
         for change in variant["changes"]:
@@ -288,7 +476,7 @@ def main():
             rejected = True
         assert rejected, case["id"]
         results.append({"id": case["id"], "rejectedByFiniteAssertions": True})
-    print(json.dumps({"kind": "stdlib finite document selfcheck; not JSONSchema engine validation", "schemaCount": 3, "localRefsResolved": ref_count, "syntheticValid": 1, "syntheticValidVariants": len(cases.get("validVariants", [])), "syntheticInvalidRejected": len(results), "results": results, "actualBuildRunInstallApprovalEvidence": False}, ensure_ascii=False, indent=2))
+    print(json.dumps({"kind": "stdlib finite document selfcheck; not JSONSchema engine validation", "schemaCount": 4, "propertyIndexRows": len(declared_index), "headerRawExamples": len(RAW_HEADER_EXAMPLES), "localRefsResolved": ref_count, "syntheticValid": 1, "syntheticValidVariants": len(cases.get("validVariants", [])), "syntheticInvalidRejected": len(results), "results": results, "actualBuildRunInstallApprovalEvidence": False}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

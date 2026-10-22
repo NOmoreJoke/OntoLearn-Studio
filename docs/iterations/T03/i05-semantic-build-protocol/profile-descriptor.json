@@ -1,5 +1,5 @@
 {
-  "format": "i05-semantic-build-protocol-profile/2",
+  "format": "i05-semantic-build-protocol-profile/3",
   "status": "D0-author-draft-owner-review-pending",
   "id": "i05-source-package-parity-v2",
   "baseRef": "bba31be7384a676e54cb3b64e219f14bf2a9460e",
@@ -542,7 +542,7 @@
     "external final receipt"
   ],
   "executionAuthorization": false,
-  "protocolVersion": "2.0.0",
+  "protocolVersion": "2.1.0",
   "canonicalModulePinsRole": "historical immutable source baselines; first22 fixed supply; item23 is consumer delta baseline only, never a claim the future consumer retains these bytes",
   "approvedConsumerPin": null,
   "approvedDependencyPin": null,
@@ -555,9 +555,10 @@
   "schemaIds": [
     "urn:ontolearn:i05:source-package-parity-build:2",
     "urn:ontolearn:i05:build-receipt:2",
-    "urn:ontolearn:i05:runtime-validation-receipt:1"
+    "urn:ontolearn:i05:runtime-validation-receipt:2",
+    "urn:ontolearn:i05:runtime-header:1"
   ],
-  "schemaIdentitySource": "exact path/bytes/SHA in external draft-manifest; no future ref or self hash embedded",
+  "schemaIdentitySource": "exact path/bytes/SHA in current externally reported delta/final manifest; historical draft-manifest remains unchanged",
   "pathDomains": {
     "finalOrdinaryFiles": "bundle-root",
     "payloadFiles": "meipass-root",
@@ -608,5 +609,7 @@
     ["--semantic-source-package-probe", "full-v1"],
     ["--semantic-source-package-probe", "b1-semantic-1x-v1"],
     ["--semantic-source-package-probe", "b1-semantic-10x-v1"]
-  ]
+  ],
+  "runtimeHeaderSchema": "runtime-header.schema.json",
+  "runtimeObservationRules": "consumer-contract.md CR-R/CR-H; receipt can preserve failed actual observations, never upgrades collection or business correctness"
 }
