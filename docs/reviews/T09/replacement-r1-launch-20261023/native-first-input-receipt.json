@@ -1,0 +1,87 @@
+{
+  "observedUTC": "2026-10-22T21:08:33.785682+00:00",
+  "zcode": {
+    "SID": "session_1d54a3bdcdcb436f5693f8a1f6c41544",
+    "originalTurn": "turn_9bfca954-5f33-42c8-ac6a-c38344f8c7e0",
+    "source": "/Users/kyle/.zcode/cli/rollout/model-io-session_1d54a3bdcdcb436f5693f8a1f6c41544.jsonl",
+    "querySource": "main_turn",
+    "nativeModel": {
+      "modelId": "GLM-5.3",
+      "providerId": "account:bigmodel-individual-coding-plan"
+    },
+    "firstRequestStartedUTC": "2026-10-22T21:04:09.413Z",
+    "attachment": {
+      "nativeName": "pasted-text-20261023-050346-4fa678ab.txt",
+      "rowRange": [1, 409],
+      "continuous": true,
+      "bytes": 75876,
+      "sha256": "e7bc2a159c554df686f7d991d3912798d1e1caa7f08ba93f2cdacbd675c088ea",
+      "exactFrozenMatch": true,
+      "lineEndingReconstruction": "strip actual tab row prefixes, join returned rows with LF; no added trailing LF",
+      "expectedUsedToFillGaps": false
+    }
+  },
+  "minimax": {
+    "firstInput": {
+      "messageId": "msg-user-v1-9qVqGXBY0viKxKOX5Y-O2rsCwakAg1yMfmrlhRRWIaw",
+      "timestamp": 1792703178759,
+      "launcherText": "T09-S1 replacement-r1：总控现已明确START，这是本方全新完整独立审查，不能沿用旧任务或旧结论。请完整读取本条全文附件（75943 bytes，SHA-256 18fbcbe32a1dd353e36c63a311db31f7257e2b0ef2ad538dc2084880ec47fe1b），按首段与文末当前补充优先执行，再审完整原scope。身份/模型/权限仅取本方mapping指定的fresh operator-own-receipt.json；缺项UNKNOWN，绝禁agentlist/sessionget/globalconfig/peer发现，工具拒绝不得换工具包装绕过。不重复已知缺1248的浏览器失败，不安装runtime；只写replacement-r1本方新报告/raw。独立重判13旧问题及3P3延期，不预填Pass。",
+      "bytes": 672,
+      "sha256": "1564958152caba458f96449e1288e4026852e26038f7f211f4e393c602fc687f",
+      "systemReminderExcluded": true
+    },
+    "SID": "mvs_4a0e67fa3d5949eb910022a5c96822fb",
+    "originalTurn": "12d877f3-1c57-46bb-ad32-a609bc2a0ba3",
+    "source": "/Users/kyle/.minimax/v2/sessions/2026/10/22/21-06-18-316-session_bXZzXzRhMGU2N2ZhM2Q1OTQ5ZWI5MTAwMjJhNWM5NjgyMmZi/messages.jsonl",
+    "attachment": {
+      "nativeExactPath": "/Users/kyle/.minimax/v2/assets/2026/10/23/05-06-18-631-asset_20261023-050618-631_18fbcbe32a1d_0a9ae092-pasted-text.txt",
+      "calls": [
+        {
+          "toolCallId": "call_01a1656fb69273e8b0ddd82b",
+          "arguments": {
+            "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/05-06-18-631-asset_20261023-050618-631_18fbcbe32a1d_0a9ae092-pasted-text.txt"
+          },
+          "rows": [1, 118],
+          "isError": false
+        },
+        {
+          "toolCallId": "call_01a1656fc67974efaad3078c",
+          "arguments": {
+            "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/05-06-18-631-asset_20261023-050618-631_18fbcbe32a1d_0a9ae092-pasted-text.txt",
+            "offset": 119
+          },
+          "rows": [119, 215],
+          "isError": false
+        },
+        {
+          "toolCallId": "call_01a1656fd2a57763844820bc",
+          "arguments": {
+            "offset": 216,
+            "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/05-06-18-631-asset_20261023-050618-631_18fbcbe32a1d_0a9ae092-pasted-text.txt"
+          },
+          "rows": [216, 373],
+          "isError": false
+        },
+        {
+          "toolCallId": "call_01a1656fdc5874b5a85accea",
+          "arguments": {
+            "offset": 374,
+            "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/05-06-18-631-asset_20261023-050618-631_18fbcbe32a1d_0a9ae092-pasted-text.txt"
+          },
+          "rows": [374, 408],
+          "isError": false
+        }
+      ],
+      "uniqueRows": 408,
+      "gaps": [],
+      "conflicts": [],
+      "reconstructedBytes": 75943,
+      "reconstructedSHA256": "18fbcbe32a1dd353e36c63a311db31f7257e2b0ef2ad538dc2084880ec47fe1b",
+      "exactFrozenMatch": true,
+      "terminalLFReconstructed": true,
+      "expectedUsedToFillGaps": false
+    },
+    "prohibitedDiscoveryCallInputsObserved": [],
+    "observationBoundary": "Only presently recorded own original-turn call inputs; no claim about future behavior or unrecorded calls"
+  }
+}
