@@ -1,0 +1,177 @@
+{
+  "phase": "STATIC_CONTRACT_DESIGN_ONLY",
+  "baselineRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I06-native-location-N0",
+  "branch": "feature/I06-native-location-N0",
+  "rulesRead": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I06-metadata-contract-premise-independent-review.md",
+      "bytes": 12583,
+      "sha256": "855e591907422e3d9c1ef98510d230261e4f126a4cfd0d6c982e51375f221eae"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I06-metadata-full-positive-contract-design-window.md",
+      "bytes": 4225,
+      "sha256": "24ac2ccc3e64fb59b8c786cdd7ee273177ae9d14411f563d6589d106445b68fa"
+    }
+  ],
+  "protectedAGENTS": {
+    "bytes": 15852,
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+  },
+  "commonInstructions": {
+    "bytes": 17891,
+    "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0"
+  },
+  "nineProtectedSources": [
+    {
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172"
+    },
+    {
+      "path": "packages/native-location/src/capability_core.cc",
+      "bytes": 17304,
+      "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319"
+    },
+    {
+      "path": "packages/native-location/src/platform_macos.cc",
+      "bytes": 12579,
+      "sha256": "d944a4901b6d3f516f18ab436aed9ec56a78eb1bbd12d1949ebf6a6e171825ce"
+    },
+    {
+      "path": "packages/native-location/src/platform_windows.cc",
+      "bytes": 12506,
+      "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4"
+    },
+    {
+      "path": "packages/native-location/src/node_binding.cc",
+      "bytes": 13163,
+      "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383"
+    },
+    {
+      "path": "apps/desktop/src/main/security/native-location-owner.ts",
+      "bytes": 12496,
+      "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0"
+    },
+    {
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "bytes": 37928,
+      "sha256": "2517eb970ef39f37dd99ca9945909331df937d4dd43ce53b74eb722bf47a7053"
+    },
+    {
+      "path": "packages/native-location/tests/location_child_probe.cc",
+      "bytes": 380,
+      "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c"
+    },
+    {
+      "path": "tests/unit/i06-native-location-owner.test.ts",
+      "bytes": 8424,
+      "sha256": "4552db106b86a8a8a80b9fcb7b55292a1696f69b72a20bd97bdfaae2bdc104ce"
+    }
+  ],
+  "relevantCode": [
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "packages/native-location/include/location_abi.h",
+      "bytes": 13296,
+      "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172",
+      "relevantLines": [
+        [7, 24],
+        [83, 90],
+        [129, 146]
+      ]
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "packages/native-location/src/capability_core.cc",
+      "bytes": 17304,
+      "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319",
+      "relevantLines": [
+        [37, 82],
+        [189, 232],
+        [238, 315]
+      ]
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "bytes": 37928,
+      "sha256": "2517eb970ef39f37dd99ca9945909331df937d4dd43ce53b74eb722bf47a7053",
+      "relevantLines": [
+        [129, 159],
+        [511, 563]
+      ]
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "packages/native-location/src/platform_macos.cc",
+      "bytes": 12579,
+      "sha256": "d944a4901b6d3f516f18ab436aed9ec56a78eb1bbd12d1949ebf6a6e171825ce",
+      "relevantLines": [
+        [109, 123],
+        [123, 218]
+      ]
+    }
+  ],
+  "existingOfficialSourceReferences": [
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/xnu-getattrlist-man.excerpts.txt",
+      "bytes": 5643,
+      "sha256": "8deae41e88d5b51945542610964291c466a513835b5c04ce34c40e87a38f0287"
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/xnu-buffer-contract.excerpt.txt",
+      "bytes": 2627,
+      "sha256": "796ae0767dee8f9c25952a7ea1954ec4100609284c2558ad0e10935789357525"
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/xnu-security-pack.excerpts.txt",
+      "bytes": 3309,
+      "sha256": "14d0c615d2a7ddb9a6bf4898ec04e227737a765f0cc84278e64785051f57ef82"
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/SDK-sys--attr.h.excerpts.txt",
+      "bytes": 5727,
+      "sha256": "496a7fd524105b9ed2673bccf23f95ae80a45cb3f395c589b4bd443fcb5ac127"
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "docs/reviews/I06/native-location-N0/acl-envelope-004-static/sources/SDK-sys--kauth.h.excerpts.txt",
+      "bytes": 2445,
+      "sha256": "d991c38af8dc6c995a2065b9ee59d5b8f664fb5422e6d8383c4e5a10cf00fb9b"
+    },
+    {
+      "fixedRef": "904cc2675c37387621954bb5a39a055c09d492b3",
+      "path": "docs/reviews/I06/native-location-N0/acl-null-003-remedy/sources/posix1e--acl_file.c",
+      "bytes": 4011,
+      "sha256": "61a075c38c4c3d5d382248d9b0a52894012f54d8310009402c218e7907c76b78"
+    }
+  ],
+  "upstreamRefs": {
+    "Libc": "71bbe350ab79eef58113991d817ccc6165061a64",
+    "XNU": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  },
+  "newOfficialContract": {
+    "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/acl_get_link_np.3.html",
+    "fact": "Successful ACL retrieval returns independent allocated copy; NULL is error and errno, not documented absence."
+  },
+  "limitedLookupOutcome": {
+    "GitHubDirectoryMetadata": {
+      "toolChunk": "c7d754",
+      "firstPath": "posix1e",
+      "outcome": "HTTP403 rate limit; no retry/authentication or directory enumeration completed; subsequent gen/sys not requested."
+    },
+    "officialExactURLs": {
+      "tool": "web",
+      "outcome": "gen/filesec_get_property.3 and sys/statx_np.2 at pinned official raw paths404; developer filesec_get_property page inaccessible. These are locator failures, not evidence that no contract exists."
+    },
+    "scope": "No broad API survey or new complete system body copied."
+  },
+  "productChanged": false,
+  "apiProbeBuildExecuted": false
+}

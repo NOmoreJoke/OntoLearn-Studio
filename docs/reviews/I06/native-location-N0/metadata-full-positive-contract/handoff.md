@@ -1,0 +1,17 @@
+# 完整正例合同：设计交接
+
+本阶段仅静态设计，基准904cc2675c37387621954bb5a39a055c09d492b3。已全文读取并保存根前提独审12583B/855e591907422e3d9c1ef98510d230261e4f126a4cfd0d6c982e51375f221eae及4225B精确窗口24ac2ccc3e64fb59b8c786cdd7ee273177ae9d14411f563d6589d106445b68fa。原树、分支、Goal、产品/测试/锁、失败原件和运行继续冻结。
+
+observation-and-acl-contract.md补齐受信harness的阶段稳定责任及native gate/epoch/TTL、实际身份、late return/关闭边界，区分cached root、本次held观察和持续许可。采用多调用、替换UUID实现见证或依据充分正式合同适配，都不需用户降低原验收；不额外要求系统库源码同源。harness直接mutation不被native mutex自动锁住，必须显式纳入观察阶段协调。
+
+对象级ACL状态表区分API错误、UnknownAbsence、明确AbsentProven、有效empty、任意ACE、畸形/矛盾和释放未知，逐项分正式语义、公开实现和待实测。NULL/ENOENT、缺位/占位或setup历史都不单独签acl_checked。受控empty正例必须可用，所有正例UNSUPPORTED仍是未完成。
+
+当前仍未取得完整产品源码路线：缺的是原root/sub/member等必需empty对象在选定目标profile的可判别实际响应；若仍为缺位，则还缺该对象absence的充分正式语义。不是单次原子snapshot或installed源码身份缺项，也不是所有公共API都不存在合同。一次官方定位请求HTTP403即停、精确手册URL404/不可访问均未当成语义否定。
+
+decision-experiment.md给出另授前可审的单用途实验提案：原样empty root/sub/member三样本和真实单ACE dir/member两对照，实际生产FD模式，同FD每样本至多一次观察fstat/一次fgetattrlist，另有两个member创建身份记录（总fstat≤7）。单ACE对照须核tag、owner qualifier、零额外entry flags与精确rights，count1不够；缺位不当absence，任何必需正例无充分响应即停止并放弃fgetattrlist-only路线，不靠少数header或unsupported-skip求绿。全部五样本和收尾满足，才进入目标profile/两writer适配及原case验收下一门；仍不算产品通过。
+
+实验固定4KiB应用buffer、无扩容重试、最多15条响应行；静态最大单行71B、stdout含disposition最多1018B，预算stdout/stderr各4096B。最多五个metadata FD、一个暂态创建FD、一个owned ACL setup副本、两个自有fixture；只约束应用清单，不签内部资源硬界。拟实验私有源路径及T03唯一构建责任、setup/read/cleanup、解析前门和失败停止列在提案，当前没有创建源码、record/目录或构建，也未执行任何API/探针。
+
+九源current/Git/bytes/SHA及AGENTS15852B/78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759保护指纹保持，见evidence-and-preservation.json；无产品变化未跑npm/旧测试。独立窄审只审本轮新合同和提案，有限manifest排除自身；固定过程ref提交后交root。
+
+本阶段没有完成N0，也未批准实验、两writer实现、第七构建或新CLI。003/004失败与drain/fixture未知、目标双OS/EXCL/完整父功能/指定同版双外审/CI/真人/远端以及T01损坏保护HOLD和SQLite/heap/OS资源拒线均保留。进一步精确合同/目标实验可在现有功能安全目标内内部推进，需root具体另授，当前不发起后继。
