@@ -1,4 +1,4 @@
-# I05 私有观察投影规范提案 v2
+# I05 私有观察投影规范提案 v2（R3 wire 门修订）
 
 本提案给 37 个固定观察 ID 的精确目标值、严格 JSON schema、来源和有限关系。`cases.json` 保存完整值及全部独立 typed 数学侧车，不能用本文摘要替代。当前是待 owner 接收的私有 serializer/API 技术提案；没有执行 6891 产品或真实库，`wholeOracleComplete=false`。11 个 legacy 域 ID 实际为 **10 个正常、1 个 unbound-head 拒绝**；依固定输入、独立 oracle 和合同 L45 保留这个差异，不因设计窗简称“正常”而改写结果。
 
@@ -117,7 +117,7 @@ R1 在原同次成功生产与独立资源准入已成立的前提下，进入 r
 
 ## 有限比较与手工小例
 
-schema 后按 `projection_layout` 确定唯一 RDF 身份域，再执行逐 ID 完整比较：RDF 图按集合；有序 RDF occurrence 保数组全长/每个末字段/重复与顺序；其余 keys/type/null/字段逐一 exact。正常项遇到任意已知拒绝、unknown 或 RESOURCE_LIMIT 都不匹配；拒绝项也只匹配对应 exact origin/reason/stage/class/slot/domain。source 与 package 相等只是独立结论；两者各自还要对独立 expected 及真实来源/完整阶段/计数关系核验。不得把 source 输出固化为 expected。
+schema 后分别核 expected/observed 全部 graph 槽各自 wire 的完整 N3 升序、RDF identity 唯一性和既定表达限制，之后才按 `projection_layout` 确定唯一 RDF 身份域，再执行逐 ID 完整比较：RDF 图按集合；有序 RDF occurrence 保数组全长/每个末字段/重复与顺序；其余 keys/type/null/字段逐一 exact。正常项遇到任意已知拒绝、unknown 或 RESOURCE_LIMIT 都不匹配；拒绝项也只匹配对应 exact origin/reason/stage/class/slot/domain。source 与 package 相等只是独立结论；两者各自还要对独立 expected 及真实来源/完整阶段/计数关系核验。不得把 source 输出固化为 expected。
 
 正常手工例：`x type A` 和 `A subclass B` 只新增 `x type B`；五字段中 rdfsEvidence 的 basis 恰为这两叶，rules/evidence/warnings 皆空。深度2 domain 例有 `p domain A`、`x p y`、`A subclass B` 三叶；x:B 的 basis 必须全三叶，不能因只看 direct premise 就删 p/x 输入。多匹配例 A01、A04 两个匹配产生同 head，图1条但 evidence2条，每条四个有序输入。
 
@@ -172,3 +172,27 @@ R1 报告的 Fail 保留。v2 对私有 terminal schema 的唯一结构扩展是
 这两项不新设 `semantic.validate` wrapper；批准入口名称、阶段、参数及新 F1 首序分开。其 owner 均为 I05 canonical API/serializer owner，接收和实际实现/调用验证继续 pending；没有读实际函数体来补签名或执行链。`integer-illtyped-report-v1` **仅**放宽 data object 的 exact xsd:integer ill_typed，交真实 Datatype 报告；xsd:int、nonNegativeInteger、decimal 及 shape 侧都不随之宽化，旧 parse/query/reason/check 的 strict 不变。未改 Q6/date/外联/公共 registry/权限。
 
 新 `selftest-r2.py` 保留原20方法的独立名称，并新增针对 R1 三发现及联合域的测试。旧 selftest/双流/20通过只属于 R1 的覆盖，未改写为包含这些新反例。R2 的实际命令/分离双流与结果另存新证据，仍是 stdlib 设计验证，独立审查结论由 root 另派 R2 审者给出。
+
+## R3 delta：各端 wire canonical 门先于集合身份
+
+R2 的 Fail 与所有原件保留。R3 兑现 v2 已规定的 canonical 输出约束，没有改变37个完整目标、输入/hash/source/math、JSON字段或私有 `/2` 格式，也未修改公共schema/registry、Q6/date、错误政策或权限。新候选仍需 owner 按实际 ref 接收，不把此修订称已实现产品行为。
+
+完整 wire 比较入口是 `matches`，顺序固定为：
+
+1. 对 expected 和 observed 各自执行严格 schema。完全相同 JSON 图成员重复已有 `uniqueItems` 拒绝，这个有效门保留。
+2. 对每端独立用其自身 `projection_layout` 找到**全部** typed-graph/n3-graph 槽，执行 `canonical_graph_slots`。先核表达，再核该端原标签/原语言拼法下的完整三元组 N3 key 升序，并核完整 RDF identity 唯一性。不改输入数组，不先排序/去重来修复它。
+3. 两端各自 canonical 后，才调用 `projection_identity_equal` 作同 artifact 的共享全域 BNode 双射及其余完整值比较。映射后的图可以按集合比较；不能把映射后的顺序倒推成原 wire 合法，也不能逐下标 raw exact 拒掉合法交叉改名。
+
+typed graph 的本端 key 为 `(n3(subject),n3(predicate),n3(object))`，N3 graph 的 key 为三项已验证的原 token。按 Unicode code point 比较完整 key，不只比主语或前缀。identity key 保完整 IRI/lexical/datatype及本端BNode标签，只对 language 身份 casefold，plain string为xsd:string身份。两个不同 JSON 成员 `"hello"@EN`、`"hello"@en` 即使本端已排序，仍是同一 RDF 成员，必须拒绝；不能靠 `uniqueItems` 或集合化吞掉别名。单独一个 EN 拼法仍可以和 en 作身份比较，原文/source 不被改写。
+
+有限 typed/N3 表达门也独立于 identity：typed term 必须是既定 exact keys/type、合法 UTF-8 字符串；IRI/ datatype 为完整绝对 IRI，N3 IRIREF 禁用字符不接受；blank label 保既定有限字符域；lang literal 要完整 language tag 与 rdf:langString 对应，无 language 则不是 rdf:langString；subject不得literal，predicate必须IRI。**不计算** numeric/date datatype 值，不改变 ill_typed、Q6、date或前门业务政策。
+
+N3 门只读取本 serializer 已定义的**单个生成 token**，不是 Turtle parser 或完整 RDF 库。literal 的 quoted lexical 使用原规定的 JSON double-quote/escape 生成规则；`n3(decoded_token)==原token` 必须成立。simple/xsd:string 输出为 plain string，因此显式 `^^xsd:string` 虽可能 RDF 等价，仍不符合本 wire 拼法；非规范 `\u0068ello` 代 `hello`、未转义控制字符、坏 IRIREF/label、空language等同样拒绝。schema 的 string 形状若仍放行这些值，不能替代此门。source原文里的escape、typed词法、语言大小写和重复occurrence完全保留，此门不对它们进行修复或重编码。
+
+`projection_identity_equal`、`identity_domain_equal`、`graph_isomorphic` 是**数学身份关系**，可以处理一个集合的不同枚举方式；它们不是完整 wire 接收器，不能直接用于 harness/oracle-match。R2已有抽象同构/布局测试继续只证明该身份关系。所有 consumer 必须使用 `matches` 的 schema→两端wire→共享映射顺序；不把 identity-only=true 当成 wire 通过。
+
+新手写反例对 rdfs/cycle 的8条rdfs、rdfs/domain-depth2的3叶basis、scope/fresh的9条facts分别逆序：schema仍合法，数学identity仍可相同，完整入口必须拒绝；expected端同样逆序也拒绝。37个原目标的85个graph槽本来均canonical，无需改golden。另有已排序的typed/N3 EN/en别名、完全相同JSON重复和schema仍放行的显式xsd:string/escape/控制符表示反例。
+
+合法交叉改名正常例为左 `[a→x,b→y]`、右 `[p→y,q→x]`：各端分别按原标签升序，统一双射 a→q/b→p 后相等，完整入口必须通过（typed和N3均有小例）。when/heads/evidence/source等有序occurrence不被新门排序/去重；重复inputs和evidence可保留，删除任何尾项仍拒绝。raw/source和quoted lexical仍exact。小例只证明有限serializer/comparator边界，不证明合法产品scope、摘要绑定、capture/来源或资源准入。
+
+R3不改旧32方法与其双流，新 `selftest-r3.py` 承接32回归并增加独立字面测试；实际次数、结果、首失败及分离双流另见新R3证据。R1安全stage、精确API映射、language identity与共享双射保持；所有库/费用/runtime/来源/旧metadata pending不变。独立R3结论由root另派审者给出，作者不自定Pass。

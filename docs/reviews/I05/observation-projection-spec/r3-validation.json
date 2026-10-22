@@ -1,0 +1,197 @@
+{
+  "format": "i05-observation-r3-author-validation/1",
+  "revisionBase": "755326a26306f5bce0f36c172bd4994c7340f235",
+  "commands": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/iterations/I05/observation-projection-spec/selftest-r3.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-selftest-attempt-1.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-selftest-attempt-1.stderr.txt",
+        "bytes": 5401,
+        "sha256": "23b20d878b7b64d6ead9b3d5a86e4e738e1ad7490a4270da3e7b80b67a7322c8"
+      }
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/iterations/I05/observation-projection-spec/selftest-r3.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-selftest-attempt-2.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-selftest-attempt-2.stderr.txt",
+        "bytes": 5573,
+        "sha256": "78e4ce5c83a48bc5cdf1b693238f4154fb4f2fc35c9acd33c9a1204cf8ae3920"
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "--",
+        "."
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 2,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-full-diffcheck.stdout.json",
+        "encoding": "lossless UTF-8 JSON string, not trimmed or reformatted raw stream",
+        "bytes": 3080,
+        "sha256": "9520c8520c2a08d4ee6fed10c7ce4e3720d239efb8a524dae88952d9a5a0cd6a"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-full-diffcheck.stderr.json",
+        "encoding": "lossless UTF-8 JSON string, not trimmed or reformatted raw stream",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "meaning": "Actual full-check Fail preserved; only the immutable historical raw diff transcript emits diagnostics. Root preparation mistake, not product failure."
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "--",
+        ".",
+        ":(exclude)docs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-single-transcript-excluded-diffcheck.stdout.json",
+        "encoding": "lossless UTF-8 JSON string, not trimmed or reformatted raw stream",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-single-transcript-excluded-diffcheck.stderr.json",
+        "encoding": "lossless UTF-8 JSON string, not trimmed or reformatted raw stream",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "755326a26306f5bce0f36c172bd4994c7340f235",
+        "--",
+        "."
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-revision-diffcheck.stdout.json",
+        "encoding": "lossless UTF-8 JSON string, not trimmed or reformatted raw stream",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-revision-diffcheck.stderr.json",
+        "encoding": "lossless UTF-8 JSON string, not trimmed or reformatted raw stream",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--write",
+        "docs/iterations/I05/observation-projection-spec/spec.md",
+        "docs/reviews/I05/observation-projection-spec/delta-r3.json",
+        "docs/reviews/I05/observation-projection-spec/r3-full-diffcheck.stderr.json",
+        "docs/reviews/I05/observation-projection-spec/r3-full-diffcheck.stdout.json",
+        "docs/reviews/I05/observation-projection-spec/r3-revision-diffcheck.stderr.json",
+        "docs/reviews/I05/observation-projection-spec/r3-revision-diffcheck.stdout.json",
+        "docs/reviews/I05/observation-projection-spec/r3-single-transcript-excluded-diffcheck.stderr.json",
+        "docs/reviews/I05/observation-projection-spec/r3-single-transcript-excluded-diffcheck.stdout.json",
+        "docs/reviews/I05/observation-projection-spec/r3-validation.json",
+        "docs/reviews/I05/observation-projection-spec/disposition-r3.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-prettier-write.stdout.txt",
+        "bytes": 73,
+        "sha256": "443e7cd4d21e6347ff39757e6319b21d2379e62ae1816966f232ea6932f5fb05"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-prettier-write.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "docs/iterations/I05/observation-projection-spec/spec.md",
+        "docs/reviews/I05/observation-projection-spec/delta-r3.json",
+        "docs/reviews/I05/observation-projection-spec/r3-full-diffcheck.stderr.json",
+        "docs/reviews/I05/observation-projection-spec/r3-full-diffcheck.stdout.json",
+        "docs/reviews/I05/observation-projection-spec/r3-revision-diffcheck.stderr.json",
+        "docs/reviews/I05/observation-projection-spec/r3-revision-diffcheck.stdout.json",
+        "docs/reviews/I05/observation-projection-spec/r3-single-transcript-excluded-diffcheck.stderr.json",
+        "docs/reviews/I05/observation-projection-spec/r3-single-transcript-excluded-diffcheck.stdout.json",
+        "docs/reviews/I05/observation-projection-spec/r3-validation.json",
+        "docs/reviews/I05/observation-projection-spec/disposition-r3.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-observation-projection-spec",
+      "actualExitCode": 0,
+      "stdout": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-prettier-check.stdout.txt",
+        "bytes": 66,
+        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+      },
+      "stderr": {
+        "path": "docs/reviews/I05/observation-projection-spec/r3-prettier-check.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "productExecuted": false,
+  "independentReview": "pending root-appointed R3 reviewer, no author Pass",
+  "tests": {
+    "unchangedPreviousMethods": 32,
+    "newR3Methods": 9,
+    "attempt1Methods": 40,
+    "attempt2Methods": 41,
+    "attempt2ActualExitCode": 0,
+    "registeredExpectedGraphSlots": 85
+  },
+  "rawTranscriptPreserved": {
+    "path": "docs/reviews/I05/observation-projection-spec/r2-independent-full-diff.stdout.txt",
+    "bytes": 128276,
+    "sha256": "13c4471bc5518f354b8315220c14b8fbd5f722c722075ed93c1fc29183b01477"
+  },
+  "formattingDidNotChangeJSONValues": true,
+  "firstHistoricalFullCheckFailurePreserved": {
+    "actualExitCode": 2,
+    "onlyDiagnosticSource": "r2-independent-full-diff.stdout.txt",
+    "notProductFailure": true,
+    "singleTranscriptExcludedCheckActualExitCode": 0,
+    "newRevisionDeltaCheckActualExitCode": 0
+  }
+}

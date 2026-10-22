@@ -272,8 +272,128 @@ def validate(value, schema, root=None):
 
 
 def matches(case, observed, schema):
-    # A safe unknown or another known refusal can never pass a normal fixture.
-    return validate(observed, schema) and projection_identity_equal(case["expectedProjection"], observed)
+    # Wire validity is a separate per-side predicate BEFORE any set or alpha
+    # normalization. A mathematical identity helper alone is not wire acceptance.
+    expected = case["expectedProjection"]
+    return (validate(expected, schema) and validate(observed, schema)
+            and canonical_graph_slots(expected, projection_layout(expected))
+            and canonical_graph_slots(observed, projection_layout(observed))
+            and projection_identity_equal(expected, observed))
+
+
+def _wire_term(value):
+    """Validate the declared typed term spelling, not datatype value semantics."""
+    def text(value):
+        if type(value) is not str:
+            return False
+        try:
+            value.encode("utf-8")
+            return True
+        except UnicodeError:
+            return False
+
+    def absolute_iri(value):
+        return text(value) and re.fullmatch(
+            r'[A-Za-z][A-Za-z0-9+.-]*:[^<>"{}|^`\\\x00-\x20]*', value
+        ) is not None
+
+    if type(value) is not dict:
+        return False
+    if set(value) == {"kind", "value"} and value["kind"] == "iri":
+        return absolute_iri(value["value"])
+    if set(value) == {"kind", "label"} and value["kind"] == "blank":
+        return text(value["label"]) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", value["label"]) is not None
+    if set(value) != {"kind", "lexical", "datatype", "language"} or value["kind"] != "literal":
+        return False
+    if not text(value["lexical"]) or not absolute_iri(value["datatype"]):
+        return False
+    language = value["language"]
+    lang_string = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+    if language is None:
+        return value["datatype"] != lang_string
+    return (text(language) and re.fullmatch(r"[A-Za-z]+(?:-[A-Za-z0-9]+)*", language) is not None
+            and value["datatype"] == lang_string)
+
+
+def _n3_wire_term(token):
+    """Read ONE declared generated N3 token; never parse Turtle or call a library.
+
+    Roundtrip enforces this serializer's double-quoted JSON escape spelling and
+    plain xsd:string spelling. Numeric/date lexical values are not interpreted.
+    """
+    if type(token) is not str:
+        return None
+    try:
+        if token.startswith("<") and token.endswith(">"):
+            value = {"kind": "iri", "value": token[1:-1]}
+        elif token.startswith("_:"):
+            value = {"kind": "blank", "label": token[2:]}
+        elif token.startswith('"'):
+            lexical, end = json.JSONDecoder().raw_decode(token)
+            if type(lexical) is not str:
+                return None
+            suffix = token[end:]
+            datatype = "http://www.w3.org/2001/XMLSchema#string"
+            language = None
+            if suffix.startswith("@"):
+                language = suffix[1:]
+                datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            elif suffix.startswith("^^<") and suffix.endswith(">"):
+                datatype = suffix[3:-1]
+            elif suffix:
+                return None
+            value = {"kind": "literal", "lexical": lexical, "datatype": datatype, "language": language}
+        else:
+            return None
+        return value if _wire_term(value) and n3(value) == token else None
+    except (ValueError, UnicodeError):
+        return None
+
+
+def canonical_graph_wire(rows, mode):
+    """Per-end wire gate: original N3 order AND RDF identity uniqueness.
+
+    Does not reorder or deduplicate the supplied rows. Upper/lower language tags
+    may each be valid spelling, but two rows with the same RDF identity are not
+    two graph members. Blank labels here remain this end's own original labels.
+    """
+    if type(rows) is not list or mode not in ("typed-graph", "n3-graph"):
+        return False
+    keys, identities = [], set()
+    for row in rows:
+        if type(row) is not list or len(row) != 3:
+            return False
+        terms = row if mode == "typed-graph" else [_n3_wire_term(t) for t in row]
+        if not all(_wire_term(t) for t in terms):
+            return False
+        if terms[0]["kind"] == "literal" or terms[1]["kind"] != "iri":
+            return False
+        keys.append(tuple(n3(t) for t in terms))
+        identity = canonical([identity_term(t) for t in terms])
+        if identity in identities:
+            return False
+        identities.add(identity)
+    return keys == sorted(keys)
+
+
+def canonical_graph_slots(value, slots):
+    """Check every explicitly declared graph slot independently before mapping.
+
+    Sequence/raw slots are deliberately untouched; callers must still do complete
+    shared-domain comparison afterwards. This function never makes a repaired view.
+    """
+    try:
+        for path, mode in slots:
+            if mode not in ("typed-graph", "n3-graph"):
+                continue
+            rows = value
+            for part in path:
+                rows = rows[part]
+            if not canonical_graph_wire(rows, mode):
+                return False
+    except (KeyError, IndexError, TypeError):
+        return False
+    return True
 
 
 def graph_isomorphic(left, right):
@@ -423,4 +543,5 @@ def identity_domain_equal(left, right, slots):
 
 
 def projection_identity_equal(left, right):
+    """Mathematical identity relation only; wire callers MUST use matches()."""
     return identity_domain_equal(left, right, projection_layout(left))
