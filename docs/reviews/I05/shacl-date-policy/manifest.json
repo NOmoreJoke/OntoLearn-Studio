@@ -1,0 +1,119 @@
+{
+  "kind": "I05 SHACL date policy design-only handoff",
+  "date": "2026-10-22",
+  "baseRef": "7f99e9c62bed85b6fa38a8efb6be44ce3f1fba81",
+  "acceptedIntegerProductRef": "91e98074a334931648e9b7c8f58a3b5e8f93a642",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-integer-entry",
+  "policy": {
+    "rangePolicy": "utc-date-range-v1",
+    "proposedEntryVersion": "i05-shacl-text-2",
+    "legacyEntryVersionUnchanged": "i05-shacl-text-1",
+    "implementationStatus": "not implemented; no product/library/test runtime in this window"
+  },
+  "userDecision": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/SHACL-date-and-SQLite-user-decisions-20261022.md",
+    "bytes": 2651,
+    "sha256": "6fd2c6162bef2da5b2d9f6a218a0482fb12ab5a6e2811efcfcf4d477a80e9c8f"
+  },
+  "frozenSourceInputs": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 58495,
+      "sha256": "1a2bfd40bc30a7a4ba5f90ab79cba5d9e0a4311b028681d8ceced528e1982075",
+      "matchesBaseGitBlob": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 33916,
+      "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+      "matchesBaseGitBlob": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "bytes": 15426,
+      "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+      "matchesBaseGitBlob": true
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+      "matchesBaseGitBlob": true
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_shacl_entry.py",
+      "bytes": 14604,
+      "sha256": "f86de5f1a41e186d80a0042d574e7e15ec3421966a873c930169f685bb6b63a0",
+      "matchesBaseGitBlob": true
+    },
+    {
+      "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+      "bytes": 8505,
+      "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6",
+      "matchesBaseGitBlob": true
+    },
+    {
+      "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-goldens.json",
+      "bytes": 8163,
+      "sha256": "c25e7afcc593a7be09fc8b2ca29af9cff28a7a1e030a13b98aa5e7d88d596440",
+      "matchesBaseGitBlob": true
+    }
+  ],
+  "staticLibraryTextInputs": [
+    {
+      "path": ".venv/lib/python3.12/site-packages/rdflib/xsd_datetime.py",
+      "bytes": 23387,
+      "sha256": "88f5fe16466721f72618e981001a33d3108e574ac3301606da33bcaf8fa80555"
+    },
+    {
+      "path": ".venv/lib/python3.12/site-packages/pyshacl/constraints/core/value_range_constraints.py",
+      "bytes": 15659,
+      "sha256": "f4a18946cd0a328fff0be4d35412572321b19b5cd4b1252c8ef520231cf82299"
+    },
+    {
+      "path": ".venv/lib/python3.12/site-packages/pyshacl/rdfutil/compare.py",
+      "bytes": 9761,
+      "sha256": "546ad62a98f62b99c33e90b334588d7710a0c09e05c04639eed461f31760a7df"
+    },
+    {
+      "path": ".venv/lib/python3.12/site-packages/pyshacl/shape.py",
+      "bytes": 33733,
+      "sha256": "b5dd7f31207c0f7894211188b2213e1e1fefb26a376c7a26baa70194bda3064e"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/iterations/I05/shacl-date-policy-design.md",
+      "bytes": 22938,
+      "sha256": "1457aea0ba8b15ed0d137492dd648bc846e9757e067cf2cf506b70949aa996cc"
+    },
+    {
+      "path": "docs/reviews/I05/shacl-date-policy/independent-review.md",
+      "bytes": 8464,
+      "sha256": "53f54f266fca71e1200b378d1352277acd046278d2bd41592197a85bdc51fd14"
+    },
+    {
+      "path": "docs/reviews/I05/shacl-date-policy/handoff.md",
+      "bytes": 1740,
+      "sha256": "ca52a70cdf602718c38d2f6ea7c43f552091f444b527dd936ad6ddee982e09a8"
+    }
+  ],
+  "independentReview": {
+    "agent": "/root/restore_schema_code_review",
+    "result": "static limited pass; D1 budget/order design blocker closed",
+    "runtimeEvidence": false
+  },
+  "checks": {
+    "allPreexistingTrackedFilesUnchangedFromBaseBeforeStaging": true,
+    "listedTrackedInputsByteEqualBaseGitBlobs": true,
+    "finalDesignHashMatchesIndependentReport": true
+  },
+  "boundary": {
+    "onlyNewDesignAndReviewPrefix": true,
+    "productTestsOrLibraryProbesRun": false,
+    "oldGoldensChanged": false,
+    "sqlite": "retain corrupt-input protection; HOLD; rejected analysis remains stopped",
+    "goalCreatedOrModified": false
+  },
+  "manifestSelfHash": "excluded; fixed Git ref and delivery receipt identify manifest bytes"
+}
