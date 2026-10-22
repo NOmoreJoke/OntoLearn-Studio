@@ -313,7 +313,8 @@ export function parseEvents(events: SampleEvent[]): {
       ) {
         issues.push({
           path,
-          message: '事件内容包含保留键（__proto__、constructor 或 prototype），请改用普通业务字段',
+          message:
+            '事件内容包含保留键（__proto__、constructor 或 prototype）；该事件整体未执行，普通字段也不会提交。原文已保留，请修正保留键后重试',
         })
         return
       }

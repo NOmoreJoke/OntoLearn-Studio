@@ -29,9 +29,26 @@ export interface WorkspaceState {
   issues: Issue[]
   notice: string
 }
+interface Operation {
+  // Object identity is the lifecycle token, independent of the display epoch.
+  key: string
+  view: NonNullable<WorkspaceState['pending']>
+  epoch: number
+  cancelAttempt?: object
+}
+function contextKey(context: Context): string {
+  return JSON.stringify([
+    context.projectId,
+    context.inputVersion,
+    context.behaviorVersion,
+    context.scopeId,
+  ])
+}
 export class BehaviorController {
   private listeners = new Set<() => void>()
   private epoch = 0
+  // Only live component calls; no persisted jobs, timeout release or second Store authority.
+  private operations = new Map<string, Operation>()
   private services: BehaviorServices
   private catalog: Catalog
   private state: WorkspaceState
@@ -69,15 +86,14 @@ export class BehaviorController {
     initialDraft?: BehaviorDraft,
   ) {
     const changed = !sameContext(context, this.state.context)
-    const serviceChanged =
-      services.runSample !== this.services.runSample ||
-      services.refreshResult !== this.services.refreshResult ||
-      services.cancelSample !== this.services.cancelSample
     this.catalog = catalog
+    // Inline callbacks may change on every host render. Identity is not an input version.
+    // Calls already made retain their own Promise; only future calls use these functions.
     this.services = services
     if (changed) {
       this.epoch++
       const sameProject = context.projectId === this.state.context.projectId
+      const operation = this.operations.get(contextKey(context))
       this.publish({
         context: { ...context },
         draft: sameProject ? this.state.draft : structuredClone(initialDraft ?? emptyDraft()),
@@ -87,22 +103,18 @@ export class BehaviorController {
         revision: this.state.revision + 1,
         result: undefined,
         resultRevision: undefined,
-        pending: undefined,
-        cancelling: false,
+        pending: operation?.view,
+        cancelling: Boolean(operation?.cancelAttempt),
         issues: [],
-        notice: '输入上下文已切换；原请求结果不会覆盖当前视图。',
-      })
-    } else if (serviceChanged) {
-      this.invalidate()
-      this.publish({
-        pending: undefined,
-        cancelling: false,
-        notice: '能力连接已变化，请核对后重新运行。',
+        notice: operation
+          ? '该输入的原请求仍在收尾；旧结果不会覆盖当前视图，请等待或请求取消。'
+          : '输入上下文已切换；原请求结果不会覆盖当前视图。',
       })
     }
   }
   invalidate() {
     this.epoch++
+    this.publish({ result: undefined, resultRevision: undefined })
   }
   editDraft(draft: BehaviorDraft) {
     this.publish({
@@ -133,8 +145,44 @@ export class BehaviorController {
     })
     return issues
   }
+  private currentOperation(): Operation | undefined {
+    return this.operations.get(contextKey(this.state.context))
+  }
+  private begin(kind: 'run' | 'refresh', binding: Binding, revision: number): Operation {
+    const operation: Operation = {
+      key: contextKey(binding),
+      view: { kind, binding, revision },
+      epoch: ++this.epoch,
+    }
+    this.operations.set(operation.key, operation)
+    this.publish({ pending: operation.view, cancelling: false })
+    return operation
+  }
+  private owns(operation: Operation): boolean {
+    return this.operations.get(operation.key) === operation
+  }
+  private visible(operation: Operation): boolean {
+    return this.owns(operation) && sameContext(operation.view.binding, this.state.context)
+  }
+  private accepts(operation: Operation): boolean {
+    return this.visible(operation) && operation.epoch === this.epoch
+  }
+  private finish(
+    operation: Operation,
+    invalidatedNotice = '原请求已收尾；旧输入结果未作为当前结果展示。',
+  ) {
+    if (!this.owns(operation)) return
+    this.operations.delete(operation.key)
+    if (sameContext(operation.view.binding, this.state.context)) {
+      this.publish({
+        pending: undefined,
+        cancelling: false,
+        ...(operation.epoch !== this.epoch ? { notice: invalidatedNotice } : {}),
+      })
+    }
+  }
   async run() {
-    if (this.state.pending) return
+    if (this.currentOperation()) return
     const service = this.services.runSample
     if (!service) {
       this.publish({ notice: '隔离执行服务未接入，不能运行样本。' })
@@ -145,44 +193,35 @@ export class BehaviorController {
       return
     }
     if (this.validate().length) return
-    const binding = { ...this.state.context, requestId: `behavior-ui-${crypto.randomUUID()}` }
-    const request: SampleRequest = {
-      binding,
-      draft: draftSchema.parse(this.state.draft),
-      events: parseEvents(this.state.events).events,
+    let request: SampleRequest
+    try {
+      request = {
+        binding: { ...this.state.context, requestId: `behavior-ui-${crypto.randomUUID()}` },
+        draft: draftSchema.parse(this.state.draft),
+        events: parseEvents(this.state.events).events,
+      }
+    } catch {
+      this.publish({ notice: '无法建立隔离测试请求；尚未调用执行服务，请检查运行环境后重试。' })
+      return
     }
-    const revision = this.state.revision
-    const epoch = ++this.epoch
+    const operation = this.begin('run', request.binding, this.state.revision)
     this.publish({
-      pending: { kind: 'run', binding, revision },
       result: undefined,
       resultRevision: undefined,
       notice: '正在请求隔离样本测试；正式项目数据不属于此请求范围。',
     })
     try {
-      this.receive(await service(structuredClone(request)), binding, revision, epoch)
+      this.receive(await service(structuredClone(request)), operation)
     } catch {
-      if (this.accepts(binding, epoch))
+      if (this.accepts(operation))
         this.publish({ notice: '隔离测试调用失败，未取得成功证据。请对账后重试。' })
     } finally {
-      if (this.accepts(binding, epoch)) this.publish({ pending: undefined, cancelling: false })
+      this.finish(operation)
     }
   }
-  private accepts(binding: Binding, epoch: number): boolean {
-    return (
-      epoch === this.epoch &&
-      sameContext(binding, this.state.context) &&
-      this.state.pending?.binding.requestId === binding.requestId
-    )
-  }
-  private receive(
-    value: unknown,
-    binding: Binding,
-    revision: number,
-    epoch: number,
-    runId?: string,
-  ) {
-    if (!this.accepts(binding, epoch)) return
+  private receive(value: unknown, operation: Operation, runId?: string) {
+    if (!this.accepts(operation)) return
+    const binding = operation.view.binding
     const parsed = resultSchema.safeParse(value)
     if (
       !parsed.success ||
@@ -193,61 +232,64 @@ export class BehaviorController {
       this.publish({ notice: '返回结果格式或项目/版本/请求不匹配，已拒绝显示。' })
       return
     }
-    this.publish({ result: parsed.data, resultRevision: revision, notice: '' })
+    this.publish({ result: parsed.data, resultRevision: operation.view.revision, notice: '' })
   }
   async refresh() {
     const result = this.state.result
     const service = this.services.refreshResult
-    if (this.state.pending || !result || !service) return
-    const binding = result.binding
-    const epoch = ++this.epoch
-    const revision = this.state.resultRevision ?? this.state.revision
-    this.publish({
-      pending: { kind: 'refresh', binding, revision },
-      notice: '正在读取此运行的状态；不会重发事件或覆盖编辑草稿。',
-    })
+    if (this.currentOperation() || !result || !service) return
+    const operation = this.begin(
+      'refresh',
+      result.binding,
+      this.state.resultRevision ?? this.state.revision,
+    )
+    this.publish({ notice: '正在读取此运行的状态；不会重发事件或覆盖编辑草稿。' })
     try {
       this.receive(
-        await service(structuredClone(binding), result.runId),
-        binding,
-        revision,
-        epoch,
+        await service(structuredClone(result.binding), result.runId),
+        operation,
         result.runId,
       )
     } catch {
-      if (this.accepts(binding, epoch))
+      if (this.accepts(operation))
         this.publish({ notice: '状态刷新失败，保留最后一次已核验结果。' })
     } finally {
-      if (this.accepts(binding, epoch)) this.publish({ pending: undefined })
+      this.finish(operation)
     }
   }
   async cancel() {
-    const pending = this.state.pending
+    const operation = this.currentOperation()
     const service = this.services.cancelSample
-    if (!pending || pending.kind !== 'run' || this.state.cancelling || !service) return
-    const epoch = this.epoch
+    if (!operation || operation.view.kind !== 'run' || operation.cancelAttempt || !service) return
+    const attempt = {}
+    operation.cancelAttempt = attempt
+    const ownsAttempt = () => this.owns(operation) && operation.cancelAttempt === attempt
     this.publish({ cancelling: true, notice: '已请求取消，等待服务确认收尾；尚未视为已取消。' })
     try {
-      const result = await service(structuredClone(pending.binding))
-      if (!this.accepts(pending.binding, epoch)) return
-      const parsed = resultSchema.safeParse(result)
-      if (!parsed.success || parsed.data.state !== 'cancelled') {
-        this.publish({ notice: '取消尚未得到有效收尾确认，原请求继续等待。' })
+      const value = await service(structuredClone(operation.view.binding))
+      if (!ownsAttempt()) return
+      const parsed = resultSchema.safeParse(value)
+      const binding = operation.view.binding
+      if (
+        !parsed.success ||
+        parsed.data.state !== 'cancelled' ||
+        !sameContext(parsed.data.binding, binding) ||
+        parsed.data.binding.requestId !== binding.requestId
+      ) {
+        if (this.visible(operation))
+          this.publish({ notice: '取消尚未得到有效收尾确认，原请求继续等待。' })
         return
       }
-      this.receive(result, pending.binding, pending.revision, epoch)
-      if (
-        sameContext(parsed.data.binding, pending.binding) &&
-        parsed.data.binding.requestId === pending.binding.requestId
-      ) {
-        this.epoch++
-        this.publish({ pending: undefined, cancelling: false })
-      }
+      this.receive(parsed.data, operation)
+      this.finish(operation, '原请求已确认取消；旧输入结果未作为当前结果展示。')
     } catch {
-      if (this.accepts(pending.binding, epoch))
+      if (ownsAttempt() && this.visible(operation))
         this.publish({ notice: '取消调用失败；运行状态未确认。' })
     } finally {
-      if (this.accepts(pending.binding, epoch)) this.publish({ cancelling: false })
+      if (ownsAttempt()) {
+        operation.cancelAttempt = undefined
+        if (this.visible(operation)) this.publish({ cancelling: false })
+      }
     }
   }
 }

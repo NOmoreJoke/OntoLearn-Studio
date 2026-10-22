@@ -364,7 +364,8 @@ describe('T06 event content fidelity', () => {
       expect(parsed.issues).toEqual([
         {
           path: 'events.0',
-          message: '事件内容包含保留键（__proto__、constructor 或 prototype），请改用普通业务字段',
+          message:
+            '事件内容包含保留键（__proto__、constructor 或 prototype）；该事件整体未执行，普通字段也不会提交。原文已保留，请修正保留键后重试',
         },
       ])
     }
@@ -544,7 +545,7 @@ describe('T06 request/refresh isolation', () => {
       ).success,
     ).toBe(false)
   })
-  it('invalidates pending callbacks when the capability connection changes or component unmounts', async () => {
+  it('retains real calls when callbacks disappear and releases invalidated calls without displaying them', async () => {
     const gate = deferred<unknown>()
     let binding!: Binding
     const controller = setup((request) => {
@@ -553,9 +554,11 @@ describe('T06 request/refresh isolation', () => {
     })
     const pending = controller.run()
     controller.configure(context, catalog, {})
+    expect(controller.getSnapshot().pending?.kind).toBe('run')
     gate.resolve(result(binding))
     await pending
-    expect(controller.getSnapshot().result).toBeUndefined()
+    expect(controller.getSnapshot().result?.binding).toEqual(binding)
+    expect(controller.getSnapshot().pending).toBeUndefined()
     const nextGate = deferred<unknown>()
     controller.configure(context, catalog, {
       runSample: (request) => {
@@ -568,6 +571,7 @@ describe('T06 request/refresh isolation', () => {
     nextGate.resolve(result(binding))
     await next
     expect(controller.getSnapshot().result).toBeUndefined()
+    expect(controller.getSnapshot().pending).toBeUndefined()
   })
 })
 
@@ -675,5 +679,280 @@ describe('T06 complete evidence presentation', () => {
     expect(resultHeading({ ...value, state: 'completed', committed: true })).toBe(
       '隔离副本已提交 / 当前输入',
     )
+  })
+})
+
+describe('T06 live operation ownership under host callback churn', () => {
+  it('retains an in-flight run across repeated inline callback replacements and only then admits its successor', async () => {
+    const gate = deferred<unknown>()
+    const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => gate.promise)
+    const runB = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const refreshB = vi.fn()
+    const controller = setup(runA)
+    const first = controller.run()
+    const pending = controller.getSnapshot().pending
+    for (let index = 0; index < 4; index++) {
+      controller.configure(context, catalog, {
+        runSample: (request) => runB(request),
+        refreshResult: () => refreshB(),
+      })
+      await controller.run()
+      await controller.refresh()
+      expect(controller.getSnapshot().pending).toBe(pending)
+    }
+    expect(runA).toHaveBeenCalledTimes(1)
+    expect(runB).not.toHaveBeenCalled()
+    expect(refreshB).not.toHaveBeenCalled()
+    gate.resolve(result(runA.mock.calls[0][0].binding))
+    await first
+    expect(controller.getSnapshot().pending).toBeUndefined()
+    expect(controller.getSnapshot().result?.binding).toEqual(runA.mock.calls[0][0].binding)
+    await controller.run()
+    expect(runB).toHaveBeenCalledTimes(1)
+    expect(controller.getSnapshot().result?.binding).toEqual(runB.mock.calls[0][0].binding)
+  })
+  it('keeps the pending call when capability availability disappears, and releases it on real rejection', async () => {
+    const gate = deferred<unknown>()
+    const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => gate.promise)
+    const runB = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(runA)
+    const first = controller.run()
+    controller.configure(context, catalog, {})
+    await controller.run()
+    expect(runA).toHaveBeenCalledTimes(1)
+    expect(controller.getSnapshot().pending?.kind).toBe('run')
+    gate.reject(new Error('private old call failure'))
+    await first
+    expect(controller.getSnapshot().pending).toBeUndefined()
+    expect(controller.getSnapshot().notice).toBe('隔离测试调用失败，未取得成功证据。请对账后重试。')
+    controller.configure(context, catalog, { runSample: (request) => runB(request) })
+    await controller.run()
+    expect(runB).toHaveBeenCalledTimes(1)
+    expect(controller.getSnapshot().result?.binding).toEqual(runB.mock.calls[0][0].binding)
+  })
+  it('display invalidation blocks reentry until settlement and does not strand a hidden operation', async () => {
+    const gate = deferred<unknown>()
+    const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => gate.promise)
+    const runB = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(runA)
+    const first = controller.run()
+    controller.invalidate()
+    controller.configure(context, catalog, { runSample: (request) => runB(request) })
+    await controller.run()
+    expect(runB).not.toHaveBeenCalled()
+    expect(controller.getSnapshot().pending?.kind).toBe('run')
+    gate.resolve(result(runA.mock.calls[0][0].binding))
+    await first
+    expect(controller.getSnapshot().result).toBeUndefined()
+    expect(controller.getSnapshot().pending).toBeUndefined()
+    expect(controller.getSnapshot().notice).toContain('旧输入结果未作为当前结果展示')
+    await controller.run()
+    expect(runB).toHaveBeenCalledTimes(1)
+  })
+  it.each(['projectId', 'inputVersion', 'behaviorVersion', 'scopeId'] as const)(
+    'old %s finally cannot clear a successor pending in a new context',
+    async (field) => {
+      const firstGate = deferred<unknown>()
+      const secondGate = deferred<unknown>()
+      const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => firstGate.promise)
+      const runB = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => secondGate.promise)
+      const controller = setup(runA)
+      const first = controller.run()
+      controller.configure({ ...context, [field]: 'NEW' }, catalog, { runSample: runB }, draft)
+      if (field === 'projectId') controller.editEvents(events)
+      const second = controller.run()
+      const successor = controller.getSnapshot().pending
+      expect(successor?.binding).toEqual(runB.mock.calls[0][0].binding)
+      firstGate.resolve(result(runA.mock.calls[0][0].binding))
+      await first
+      expect(controller.getSnapshot().pending).toBe(successor)
+      expect(controller.getSnapshot().result).toBeUndefined()
+      secondGate.resolve(result(runB.mock.calls[0][0].binding))
+      await second
+      expect(controller.getSnapshot().result?.binding).toEqual(runB.mock.calls[0][0].binding)
+      expect(controller.getSnapshot().pending).toBeUndefined()
+    },
+  )
+  it('does not overwrite a finished successor when the old context returns last', async () => {
+    const gate = deferred<unknown>()
+    const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => gate.promise)
+    const runB = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(runA)
+    const first = controller.run()
+    controller.configure({ ...context, inputVersion: 'V2' }, catalog, { runSample: runB })
+    await controller.run()
+    const latest = controller.getSnapshot().result
+    gate.resolve(result(runA.mock.calls[0][0].binding))
+    await first
+    expect(controller.getSnapshot().result).toBe(latest)
+    expect(controller.getSnapshot().notice).toBe('')
+  })
+  it('projects the real pending when switching away and back to the same context', async () => {
+    const gate = deferred<unknown>()
+    const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => gate.promise)
+    const runB = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(runA)
+    const first = controller.run()
+    const original = controller.getSnapshot().pending
+    controller.configure({ ...context, inputVersion: 'V2' }, catalog, { runSample: runB })
+    controller.configure(context, catalog, { runSample: (request) => runB(request) })
+    expect(controller.getSnapshot().pending).toBe(original)
+    await controller.run()
+    expect(runB).not.toHaveBeenCalled()
+    gate.resolve(result(runA.mock.calls[0][0].binding))
+    await first
+    expect(controller.getSnapshot().result).toBeUndefined()
+    expect(controller.getSnapshot().pending).toBeUndefined()
+    await controller.run()
+    expect(runB).toHaveBeenCalledTimes(1)
+  })
+  it('retains a real refresh across callback churn without rerunning events or losing editor contents', async () => {
+    const gate = deferred<unknown>()
+    const run = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const refreshA = vi.fn<(binding: Binding, runId: string) => Promise<unknown>>(
+      () => gate.promise,
+    )
+    const refreshB = vi.fn()
+    const controller = setup(run)
+    controller.configure(context, catalog, { runSample: run, refreshResult: refreshA })
+    await controller.run()
+    const binding = controller.getSnapshot().result!.binding
+    const refreshing = controller.refresh()
+    controller.editDraft({ ...draft, name: '宿主重绘保留草稿' })
+    controller.configure(context, catalog, {
+      runSample: (request) => run(request),
+      refreshResult: () => refreshB(),
+    })
+    await controller.run()
+    await controller.refresh()
+    expect(run).toHaveBeenCalledTimes(1)
+    expect(refreshB).not.toHaveBeenCalled()
+    gate.resolve(result(binding, { freshness: 'stale', freshnessDetail: '实际版本已变化' }))
+    await refreshing
+    expect(refreshA).toHaveBeenCalledWith(binding, 'R1')
+    expect(controller.getSnapshot().pending).toBeUndefined()
+    expect(controller.getSnapshot().result?.freshness).toBe('stale')
+    expect(controller.getSnapshot().draft.name).toBe('宿主重绘保留草稿')
+  })
+  it('a genuinely cancelled run may have a late Promise; its finally cannot clear the next cancellation', async () => {
+    const runGateA = deferred<unknown>()
+    const cancelGateA = deferred<unknown>()
+    const runGateB = deferred<unknown>()
+    const cancelGateB = deferred<unknown>()
+    const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => runGateA.promise)
+    const runB = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => runGateB.promise)
+    const cancelA = vi.fn<(binding: Binding) => Promise<unknown>>(() => cancelGateA.promise)
+    const cancelB = vi.fn<(binding: Binding) => Promise<unknown>>(() => cancelGateB.promise)
+    const controller = setup(runA)
+    controller.configure(context, catalog, { runSample: runA, cancelSample: cancelA })
+    const first = controller.run()
+    const cancellingFirst = controller.cancel()
+    controller.configure(context, catalog, {
+      runSample: (request) => runB(request),
+      cancelSample: (binding) => cancelB(binding),
+    })
+    await controller.run()
+    await controller.cancel()
+    expect(runB).not.toHaveBeenCalled()
+    expect(cancelB).not.toHaveBeenCalled()
+    expect(controller.getSnapshot().cancelling).toBe(true)
+    cancelGateA.resolve(result(runA.mock.calls[0][0].binding, { state: 'cancelled' }))
+    await cancellingFirst
+    expect(controller.getSnapshot().pending).toBeUndefined()
+    const second = controller.run()
+    const cancellingSecond = controller.cancel()
+    const nextPending = controller.getSnapshot().pending
+    runGateA.resolve(result(runA.mock.calls[0][0].binding))
+    await first
+    expect(controller.getSnapshot().pending).toBe(nextPending)
+    expect(controller.getSnapshot().cancelling).toBe(true)
+    cancelGateB.resolve(result(runB.mock.calls[0][0].binding, { state: 'cancelled' }))
+    await cancellingSecond
+    runGateB.resolve(result(runB.mock.calls[0][0].binding))
+    await second
+    expect(controller.getSnapshot().result?.state).toBe('cancelled')
+    expect(controller.getSnapshot().result?.binding).toEqual(runB.mock.calls[0][0].binding)
+  })
+  it('late cancellation failure after completion cannot overwrite a successor notice or pending', async () => {
+    const runGateA = deferred<unknown>()
+    const cancelGateA = deferred<unknown>()
+    const runGateB = deferred<unknown>()
+    const runA = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => runGateA.promise)
+    const runB = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => runGateB.promise)
+    const controller = setup(runA)
+    controller.configure(context, catalog, {
+      runSample: runA,
+      cancelSample: () => cancelGateA.promise,
+    })
+    const first = controller.run()
+    const cancelling = controller.cancel()
+    runGateA.resolve(result(runA.mock.calls[0][0].binding))
+    await first
+    controller.configure(context, catalog, { runSample: runB })
+    const second = controller.run()
+    const pending = controller.getSnapshot().pending
+    const notice = controller.getSnapshot().notice
+    cancelGateA.reject(new Error('late private cancellation failure'))
+    await cancelling
+    expect(controller.getSnapshot().pending).toBe(pending)
+    expect(controller.getSnapshot().notice).toBe(notice)
+    runGateB.resolve(result(runB.mock.calls[0][0].binding))
+    await second
+  })
+  it.each(['projectId', 'inputVersion', 'behaviorVersion', 'scopeId', 'requestId'] as const)(
+    'mismatched cancellation %s keeps the real run and gives cancellation-specific guidance',
+    async (field) => {
+      const gate = deferred<unknown>()
+      const run = vi.fn<(request: SampleRequest) => Promise<unknown>>(() => gate.promise)
+      const controller = setup(run)
+      controller.configure(context, catalog, {
+        runSample: run,
+        cancelSample: async (binding) =>
+          result({ ...binding, [field]: 'foreign' }, { state: 'cancelled' }),
+      })
+      const pending = controller.run()
+      await controller.cancel()
+      expect(controller.getSnapshot().pending?.binding).toEqual(run.mock.calls[0][0].binding)
+      expect(controller.getSnapshot().cancelling).toBe(false)
+      expect(controller.getSnapshot().notice).toBe('取消尚未得到有效收尾确认，原请求继续等待。')
+      gate.resolve(result(run.mock.calls[0][0].binding))
+      await pending
+      expect(controller.getSnapshot().result?.state).toBe('candidate')
+    },
+  )
+  it('request identity creation failure is safely reported before a call or pending is started', async () => {
+    const run = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(run)
+    const uuid = vi.spyOn(crypto, 'randomUUID').mockImplementation(() => {
+      throw new Error('private identity failure')
+    })
+    try {
+      await controller.run()
+      expect(run).not.toHaveBeenCalled()
+      expect(controller.getSnapshot().pending).toBeUndefined()
+      expect(controller.getSnapshot().notice).toBe(
+        '无法建立隔离测试请求；尚未调用执行服务，请检查运行环境后重试。',
+      )
+    } finally {
+      uuid.mockRestore()
+    }
+    await controller.run()
+    expect(run).toHaveBeenCalledTimes(1)
+  })
+  it('mixed reserved-key events retain their exact editor text and reject the whole event until explicitly corrected', async () => {
+    const run = vi.fn(async (request: SampleRequest) => result(request.binding))
+    const controller = setup(run)
+    const payload = '{"equipment":"T1","level":"high","__proto__":"x"}'
+    controller.editEvents([{ ...events[0], payload }])
+    await controller.run()
+    expect(run).not.toHaveBeenCalled()
+    expect(controller.getSnapshot().events[0].payload).toBe(payload)
+    expect(controller.getSnapshot().issues[0].message).toContain(
+      '该事件整体未执行，普通字段也不会提交',
+    )
+    controller.editEvents([{ ...events[0], payload: '{"equipment":"T1","level":"high"}' }])
+    await controller.run()
+    expect(run).toHaveBeenCalledTimes(1)
+    expect(run.mock.calls[0][0].events[0].payload).toEqual({ equipment: 'T1', level: 'high' })
   })
 })
