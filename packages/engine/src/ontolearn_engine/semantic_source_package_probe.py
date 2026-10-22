@@ -350,7 +350,7 @@ def parse_argv(argv):
 
 def asset_paths():
     if getattr(sys, "frozen", False):
-        base = Path(sys._MEIPASS) / "provenance/i05/source-package-parity"
+        base = Path(sys._MEIPASS) / "ontolearn_engine/probe_inputs"
     else:
         base = Path(__file__).resolve().parent / "probe_inputs"
     return base / MANIFEST_NAME, base / INPUT_NAME
@@ -891,6 +891,39 @@ def _check_pin(path, count, digest, code):
     return {"path": str(path), "bytes": len(raw), "sha256": digest}
 
 
+def _frozen_expectations():
+    """Convert the existing fixed pins to the private reader's exact layout."""
+    return {
+        "suppliers": [
+            {
+                "module": module,
+                "path": "ontolearn_engine/" + relative,
+                "bytes": count,
+                "sha256": digest,
+            }
+            for module, relative, count, digest in SUPPLIER_PINS
+        ],
+        "publicResources": [
+            {"path": "contracts/" + relative, "bytes": count, "sha256": digest}
+            for relative, count, digest in PUBLIC_RESOURCE_PINS
+        ],
+        "inputs": [
+            {
+                "path": "ontolearn_engine/probe_inputs/" + MANIFEST_NAME,
+                "bytes": MANIFEST_BYTES,
+                "sha256": MANIFEST_SHA256,
+            },
+            {
+                "path": "ontolearn_engine/probe_inputs/" + INPUT_NAME,
+                "bytes": 8205267,
+                "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+            },
+        ],
+        "lock": {"path": "uv.lock", "bytes": LOCK_BYTES, "sha256": LOCK_SHA256},
+        "distributions": dict(DISTRIBUTIONS),
+    }
+
+
 def check_runtime_preconditions():
     """Read identity before importing resources or any semantic implementation."""
     frozen = bool(getattr(sys, "frozen", False))
@@ -917,10 +950,6 @@ def check_runtime_preconditions():
         raise ProbeFault("DISTRIBUTION_UNAVAILABLE") from None
     if sys.version_info[:2] != (3, 12):
         raise ProbeFault("PYTHON_IDENTITY_INVALID")
-    if frozen:
-        # No T03 build-provenance schema or reader is authorized in this source window.
-        # Do not turn source pins printed inside a PYZ into source-to-artifact proof.
-        raise ProbeFault("FROZEN_BUILD_PROVENANCE_UNAVAILABLE")
     return {
         "frozen": frozen,
         "resources": resource_rows,
@@ -2544,17 +2573,34 @@ def run_fixed_suite(selector, *, stdout=None, stderr=None, monotonic=None, cance
     monotonic = time.monotonic if monotonic is None else monotonic
     cancel_requested = (lambda: False) if cancel_requested is None else cancel_requested
     start = monotonic()  # Includes asset/identity/import preparation in the same deadline domain.
+    provenance_reader = None
+    frozen_evidence = None
     try:
         parse_argv([FLAG, selector])
         inputs, manifest = load_assets()
         identity = check_runtime_preconditions()
         if sys.getprofile() is not None:
             raise ProbeFault("PROFILE_HOOK_ALREADY_PRESENT")
+        if identity["frozen"]:
+            provenance_reader = importlib.import_module(
+                "ontolearn_engine.semantic_build_provenance"
+            )
+            frozen_evidence = provenance_reader.load_frozen_provenance(
+                expectations=_frozen_expectations()
+            )
         _install_audit_observer()
         modules, validator = _runtime_modules(identity)
+        if identity["frozen"]:
+            importlib.import_module("wcwidth._wcwidth_c")
+            provenance_reader.verify_loaded_modules(frozen_evidence, modules)
+            provenance_reader.verify_native_extension(frozen_evidence)
         approved = _approved_types(modules)
     except Exception as error:
-        _safe_stderr(stderr, error.code if type(error) is ProbeFault else "PREFLIGHT_FAILED")
+        known_fault = type(error) is ProbeFault or (
+            provenance_reader is not None
+            and type(error) is getattr(provenance_reader, "BuildProvenanceFault", None)
+        )
+        _safe_stderr(stderr, error.code if known_fault else "PREFLIGHT_FAILED")
         return 2
     instrumentation = selector == "full-v1"
     inventory = manifest["caseSets"][selector]

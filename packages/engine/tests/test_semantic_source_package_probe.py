@@ -189,7 +189,7 @@ def test_locators_are_module_relative_or_bundle_only(probe, monkeypatch, tmp_pat
     monkeypatch.setattr(sys, "frozen", True, raising=False)
     monkeypatch.setattr(sys, "_MEIPASS", str(bundle), raising=False)
     manifest, inputs = probe.asset_paths()
-    expected = bundle / "provenance/i05/source-package-parity"
+    expected = bundle / "ontolearn_engine/probe_inputs"
     assert manifest == expected / "i05-source-package-parity-manifest.json"
     assert inputs == expected / "i05-source-package-parity-inputs.json"
 
@@ -2522,3 +2522,219 @@ def test_monitor_setup_keyboard_interrupt_rolls_back_and_propagates(probe):
     assert counter._monitor.name is None
     assert counter._monitor.callback is None
     assert all(mask == 0 for mask in counter._monitor.local.values())
+
+
+# Private consumer boundary units only; these do not execute a frozen/native artifact.
+def _consumer_boundary(probe, monkeypatch, *, frozen=True, failure=None):
+    calls = []
+    opaque = object()
+    modules = {name: types.ModuleType(name) for name, *_ in probe.SUPPLIER_PINS}
+    identity = {
+        "frozen": frozen,
+        "packageCodeBoundToSource": "unknown" if frozen else "source-bytes-verified",
+        "externalBuildProvenance": "unknown",
+    }
+
+    class ReaderFault(ValueError):
+        def __init__(self, code):
+            self.code = code
+            super().__init__(code)
+
+    codes = {
+        "load": "BUILD_PROVENANCE_ANCHOR_MISMATCH",
+        "loaded": "BUILD_PROVENANCE_LOADER_MISMATCH",
+        "native": "BUILD_PROVENANCE_NATIVE_MISMATCH",
+    }
+
+    def step(name):
+        calls.append(name)
+        if failure == name:
+            if name in codes:
+                raise ReaderFault(codes[name])
+            raise RuntimeError("private consumer unit secret")
+        if failure == "unknown-reader" and name == "load":
+            raise TypeError("private consumer unit secret")
+
+    def preflight():
+        step("preflight")
+        return identity
+
+    def load(*, expectations):
+        step("load")
+        assert expectations == probe._frozen_expectations()
+        return opaque
+
+    def loaded(evidence, actual_modules):
+        step("loaded")
+        assert evidence is opaque and actual_modules is modules
+        assert len(actual_modules) == 22
+        return {"rootApproval": "unknown"}
+
+    def native(evidence):
+        step("native")
+        assert evidence is opaque
+        return {"rootApproval": "unknown"}
+
+    reader = types.SimpleNamespace(
+        BuildProvenanceFault=ReaderFault,
+        load_frozen_provenance=load,
+        verify_loaded_modules=loaded,
+        verify_native_extension=native,
+    )
+
+    def imports(name):
+        if name == "ontolearn_engine.semantic_build_provenance":
+            step("reader-import")
+            return reader
+        if name == "wcwidth._wcwidth_c":
+            step("native-import")
+            return object()
+        raise AssertionError("unexpected import at consumer boundary")
+
+    def runtime(actual_identity):
+        step("canonical22+Validator")
+        assert actual_identity is identity
+        return modules, object()
+
+    def approved(actual_modules):
+        step("approved-types")
+        assert actual_modules is modules
+        return frozenset()
+
+    inputs = {"observations": [{"id": "unit-unstarted"}], "contexts": {"mathInputContexts": []}}
+    manifest = {
+        "caseSets": {"full-v1": ["unit-unstarted"]},
+        "inputAsset": {"bytes": 0, "sha256": "0" * 64},
+        "counts": {"observations": 1},
+    }
+    monkeypatch.setattr(probe, "load_assets", lambda: (inputs, manifest))
+    monkeypatch.setattr(probe, "check_runtime_preconditions", preflight)
+    monkeypatch.setattr(probe, "_install_audit_observer", lambda: step("observer"))
+    monkeypatch.setattr(probe, "_runtime_modules", runtime)
+    monkeypatch.setattr(probe, "_approved_types", approved)
+    monkeypatch.setattr(probe.importlib, "import_module", imports)
+
+    def forbidden_dispatch(*_args, **_kwargs):
+        raise AssertionError("consumer unit must stop before business dispatch")
+
+    monkeypatch.setattr(probe, "_dispatch", forbidden_dispatch)
+    stdout, stderr = io.BytesIO(), io.BytesIO()
+    status = probe.run_fixed_suite(
+        "full-v1", stdout=stdout, stderr=stderr, cancel_requested=lambda: True
+    )
+    return status, stdout.getvalue(), stderr.getvalue(), calls, identity
+
+
+def test_provenance_consumer_expectations_preserve_fixed_roles(probe):
+    contract_path = (
+        REPOSITORY / "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json"
+    )
+    raw = contract_path.read_bytes()
+    assert _sha(raw) == "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04"
+    contract = json.loads(raw)
+    actual = probe._frozen_expectations()
+    assert set(actual) == {"suppliers", "publicResources", "inputs", "lock", "distributions"}
+    assert len(actual["suppliers"]) == 22
+    assert [row["module"] for row in actual["suppliers"]] == [row[0] for row in probe.SUPPLIER_PINS]
+    assert [row["path"] for row in actual["suppliers"]] == [
+        "ontolearn_engine/" + row[1] for row in probe.SUPPLIER_PINS
+    ]
+    assert [(row["bytes"], row["sha256"]) for row in actual["suppliers"]] == [
+        row[2:] for row in probe.SUPPLIER_PINS
+    ]
+    assert actual["publicResources"] == [
+        {"path": "contracts/" + path, "bytes": size, "sha256": digest}
+        for path, size, digest in probe.PUBLIC_RESOURCE_PINS
+    ]
+    assert actual["inputs"] == contract["fixedInputs"]
+    assert actual["distributions"] == contract["fixedDistributions"]
+    assert actual["lock"] == {
+        "path": "uv.lock",
+        "bytes": probe.LOCK_BYTES,
+        "sha256": probe.LOCK_SHA256,
+    }
+
+
+def test_provenance_consumer_frozen_preconditions_return_only_public_identity(
+    probe, monkeypatch, tmp_path
+):
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(sys, "_MEIPASS", str(tmp_path / "bundle"), raising=False)
+    checked = []
+
+    def pin(path, size, digest, code):
+        checked.append((Path(path), size, digest, code))
+        return {"path": str(path), "bytes": size, "sha256": digest}
+
+    monkeypatch.setattr(probe, "_check_pin", pin)
+    monkeypatch.setattr(probe.importlib.metadata, "version", lambda name: probe.DISTRIBUTIONS[name])
+    identity = probe.check_runtime_preconditions()
+    assert identity["frozen"] is True
+    assert len(checked) == 5
+    assert identity["sourceModules"] == []
+    assert identity["packageCodeBoundToSource"] == "unknown"
+    assert identity["externalBuildProvenance"] == "unknown"
+    assert json.loads(json.dumps(identity)) == identity
+
+
+def test_provenance_consumer_frozen_order_and_opaque_stays_local(probe, monkeypatch):
+    status, stdout, stderr, calls, identity = _consumer_boundary(probe, monkeypatch)
+    assert status == 130 and stderr == b""
+    assert calls == [
+        "preflight",
+        "reader-import",
+        "load",
+        "observer",
+        "canonical22+Validator",
+        "native-import",
+        "loaded",
+        "native",
+        "approved-types",
+    ]
+    header, terminal = _jsonl(stdout)
+    assert header["identity"] == identity
+    assert header["identity"]["packageCodeBoundToSource"] == "unknown"
+    assert terminal["state"] == "stopping" and terminal["completedIds"] == []
+    for record in (header, terminal):
+        assert record["externalOracleCompared"] is False
+        assert record["sourcePackageEquivalent"] is False
+        assert record["originalOperationPassed"] is False
+
+
+@pytest.mark.parametrize(
+    "failure, expected",
+    [
+        ("reader-import", "PREFLIGHT_FAILED"),
+        ("load", "BUILD_PROVENANCE_ANCHOR_MISMATCH"),
+        ("native-import", "PREFLIGHT_FAILED"),
+        ("loaded", "BUILD_PROVENANCE_LOADER_MISMATCH"),
+        ("native", "BUILD_PROVENANCE_NATIVE_MISMATCH"),
+        ("unknown-reader", "PREFLIGHT_FAILED"),
+    ],
+)
+def test_provenance_consumer_failures_stop_at_private_preflight(
+    probe, monkeypatch, failure, expected
+):
+    status, stdout, stderr, calls, _ = _consumer_boundary(probe, monkeypatch, failure=failure)
+    assert status == 2 and stdout == b""
+    assert json.loads(stderr) == {"error": expected}
+    assert b"private consumer unit secret" not in stderr
+    assert "approved-types" not in calls
+    failed_step = "load" if failure == "unknown-reader" else failure
+    assert calls[-1] == failed_step
+    if failed_step in {"reader-import", "load"}:
+        assert "observer" not in calls
+    if failed_step == "native-import":
+        assert "loaded" not in calls and "native" not in calls
+    if failed_step == "loaded":
+        assert "native" not in calls
+
+
+def test_provenance_consumer_source_branch_does_not_import_reader_or_native(probe, monkeypatch):
+    status, stdout, stderr, calls, identity = _consumer_boundary(probe, monkeypatch, frozen=False)
+    assert status == 130 and stderr == b""
+    assert calls == ["preflight", "observer", "canonical22+Validator", "approved-types"]
+    header, terminal = _jsonl(stdout)
+    assert header["identity"] == identity
+    assert identity["packageCodeBoundToSource"] == "source-bytes-verified"
+    assert terminal["state"] == "stopping"
