@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "docs/reviews/I05/retained-source-review-package/independent-r1-complete.py"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-package",
+  "environmentOverride": { "PYTHONDONTWRITEBYTECODE": "1" },
+  "toolChunk": "fb5b43",
+  "exitCode": 1,
+  "toolCombinedOutput": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-package/docs/reviews/I05/retained-source-review-package/independent-r1-complete.py\", line 64, in <module>\n    assert launch and 'docs/reviews/I05/round-4/full-review-input.md' in by_label['reference-C4']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "streamBoundary": "Tool returned combined output. No retrospective stdout/stderr split is asserted.",
+  "meaning": "Second exact-original mapping failure: named I05 round-4 input absent from the claimed C4 snapshot. Follow-up proves it is absent across all16; actual round-1/2/3 inputs remain. No archive re-decompression or product execution."
+}

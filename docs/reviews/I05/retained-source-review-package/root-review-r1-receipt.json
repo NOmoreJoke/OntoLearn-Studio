@@ -1,0 +1,83 @@
+{
+  "format": "i05-retained-packet-root-review-receipt/1",
+  "packetCandidate": "4de58348f25dc28e2dd18ef928101f2b7293355f",
+  "reviewedProcess": "2dd91056000c3ff7a6d102eff4a168ec5419bd1b",
+  "sourceCandidate": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "sourceProcess": "61f53dbe76262f5003065900a4e97d9a6130014b",
+  "rootReadBothFullPromptsReadmeAndCompleteIndependentReport": true,
+  "rootVerified124CurrentEqualsFixedGit": true,
+  "rootDidNotIndependentlyInspectEveryTarMember": true,
+  "conclusion": "Fail package dispatch readiness, not product review",
+  "findings": [
+    {
+      "id": "PKT-R1-P2-01",
+      "priority": 2,
+      "summary": "Incorrect original M0 and I05 round4 input locations in both prompts"
+    },
+    {
+      "id": "PKT-R1-P2-02",
+      "priority": 2,
+      "summary": "Independent physical copies/own reports/automatic metadata read scope/accidental peer access handling not specified"
+    }
+  ],
+  "positiveEvidence": "All22492members/16snapshots/17diffs/148x8matrix/211hashes/8branchqueue valid; a15 143process originals preserved through integer/date; no archive corruption found",
+  "reviewFiles": [
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-proof-r1.json",
+      "bytes": 6380981,
+      "sha256": "7b0db500055ac3ba143e99f412f79d75aed6cd659406ebb52fe15c31b2d89586"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-r1-check.py",
+      "bytes": 15769,
+      "sha256": "715b6e8c66703b246776e133d77779e987913484b5fdfe6ecf6d0da38e73cabb"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-r1-complete.py",
+      "bytes": 12865,
+      "sha256": "cbb55b555731788d0ac34f982dd7a07b8b0dce1e39467d9662260bf818ddea66"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-r1-continuation-failure.json",
+      "bytes": 1218,
+      "sha256": "e3d5ae575644c631ce3a6383da32f14e01d38a7389532c14b5fea40f53c0198b"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-r1-final-receipt.json",
+      "bytes": 8961,
+      "sha256": "0525e83ad472c9047c7a538f32bb89b9cf597c17b4851b5a44f0c8020d783ba2"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-r1-finalize.py",
+      "bytes": 5129,
+      "sha256": "49433ca833dc699c62d3d87efbbe8d325cc1f7540a00aef3a2e00bb74b64c950"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-r1-first-structure.json",
+      "bytes": 5449981,
+      "sha256": "b61dd1a2c9a16d7bf138da7c56dd3d4030cbd9267312dd827767f2152b82e76c"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-r1-queue-descriptor-interpretation.json",
+      "bytes": 1288,
+      "sha256": "48df2aead19d1ebec0bd6581a4b176b6688b1de78689ca0be383601d3091491f"
+    },
+    {
+      "path": "docs/reviews/I05/retained-source-review-package/independent-review-r1.md",
+      "bytes": 11850,
+      "sha256": "a4cd549887845cb6788a3e54a48b27202046bc86200957116df13982f8a214c7"
+    }
+  ],
+  "protectedAGENTS": {
+    "path": "AGENTS.md",
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "knownWhitespace": "fullbase exit2 only two immutable first-failed author scripts EOF; exact two excluded0; no fullgreen claim",
+  "actualSpecifiedTaskCount": 0,
+  "productExecuted": false,
+  "pushPRMerge": false,
+  "parentGoal": "active; no product/specified-model/acceptance completion",
+  "next": "Minimal new documents candidate after preserving Fail; no archive regeneration or unchanged product test",
+  "selfExclusion": "Self excluded, final local process commit binds receipt bytes"
+}

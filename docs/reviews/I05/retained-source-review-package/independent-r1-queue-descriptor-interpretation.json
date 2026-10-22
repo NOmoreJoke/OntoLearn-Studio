@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "docs/reviews/I05/retained-source-review-package/independent-r1-complete.py"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-package",
+  "environmentOverride": { "PYTHONDONTWRITEBYTECODE": "1" },
+  "toolChunk": "493241",
+  "exitCode": 1,
+  "toolCombinedOutput": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-package/docs/reviews/I05/retained-source-review-package/independent-r1-complete.py\", line 103, in <module>\n    assert len(value) == row['sourceDiff']['bytes'] and sha(value) == row['sourceDiff']['sha256']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "streamBoundary": "Tool returned combined output. No retrospective stdout/stderr split is asserted.",
+  "meaning": "Checker interpreted sourceDiff metadata as JSON-carrier identity. They actually identify the decoded raw diff. All17 decoded diffs had already matched Git exactly. Corrected check now binds both layers; this failed assertion is not a product or packet corruption finding. No tar re-decompression."
+}
