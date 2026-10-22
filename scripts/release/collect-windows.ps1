@@ -7,44 +7,87 @@ param(
   [Parameter(Mandatory=$true)][string]$NewOutputDirectory
 )
 $ErrorActionPreference = 'Stop'
-$osInfo = Get-CimInstance Win32_OperatingSystem
-if (-not $ApprovedIsolatedSession -or $osInfo.Caption -notmatch 'Windows 11' -or
-    [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'X64') {
-  throw 'TARGET_REQUIRED: approved Windows 11 x64 isolated session'
+try {
+  $osInfo = Get-CimInstance Win32_OperatingSystem
+  if (-not $ApprovedIsolatedSession -or $osInfo.Caption -notmatch 'Windows 11' -or
+      [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'X64') {
+    throw 'TARGET_REQUIRED'
+  }
+  if (Test-Path -LiteralPath $NewOutputDirectory) { throw 'OUTPUT_MUST_BE_NEW' }
+  foreach ($item in @($Installer, $AppExe, $EngineExe)) {
+    if (-not (Test-Path -LiteralPath $item -PathType Leaf)) { throw 'INPUT_REQUIRED' }
+  }
+  New-Item -ItemType Directory -Path $NewOutputDirectory | Out-Null
+} catch {
+  [Console]::Error.WriteLine('TARGET_INPUT_OR_NEW_OUTPUT_REQUIRED')
+  exit 2
 }
-if (Test-Path -LiteralPath $NewOutputDirectory) { throw 'OUTPUT_MUST_BE_NEW' }
-foreach ($item in @($Installer, $AppExe, $EngineExe)) {
-  if (-not (Test-Path -LiteralPath $item -PathType Leaf)) { throw 'INPUT_REQUIRED' }
+$step = 'initializing'
+function Write-CollectorStatus([string]$Status, [int]$ExitCode) {
+  $content = @{ schemaVersion=1; status=$Status; step=$step; exitCode=$ExitCode } | ConvertTo-Json -Compress
+  $statusPath = Join-Path $NewOutputDirectory 'collector-status.json'
+  $temporaryPath = Join-Path $NewOutputDirectory 'collector-status.json.tmp'
+  [System.IO.File]::WriteAllText($temporaryPath, $content, [System.Text.UTF8Encoding]::new($false))
+  if ([System.IO.File]::Exists($statusPath)) {
+    [System.IO.File]::Replace($temporaryPath, $statusPath, $null)
+  } else {
+    [System.IO.File]::Move($temporaryPath, $statusPath)
+  }
 }
-New-Item -ItemType Directory -Path $NewOutputDirectory | Out-Null
-$cpuInfo = Get-CimInstance Win32_Processor | Select-Object Name, AddressWidth
-$memory = (Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory
-@{ caption=$osInfo.Caption; version=$osInfo.Version; build=$osInfo.BuildNumber;
-   architecture=$osInfo.OSArchitecture; cpu=$cpuInfo; memoryBytes=$memory } |
-  ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $NewOutputDirectory 'device.json')
-function Get-PeMachine([string]$FilePath) {
-  $stream = [System.IO.File]::OpenRead($FilePath)
-  $reader = [System.IO.BinaryReader]::new($stream)
-  try {
-    if ($reader.ReadUInt16() -ne 0x5a4d) { throw 'PE_MZ_REQUIRED' }
-    $stream.Position = 0x3c
-    $offset = $reader.ReadUInt32()
-    $stream.Position = $offset
-    if ($reader.ReadUInt32() -ne 0x00004550) { throw 'PE_SIGNATURE_REQUIRED' }
-    return ('0x{0:x4}' -f $reader.ReadUInt16())
-  } finally { $reader.Dispose(); $stream.Dispose() }
+function Start-CollectorStep([string]$Name) {
+  $script:step = $Name
+  Write-CollectorStatus 'pending' 0
 }
-$records = foreach ($item in @($Installer, $AppExe, $EngineExe)) {
-  $signatureInfo = Get-AuthenticodeSignature -LiteralPath $item
-  if ($signatureInfo.Status -ne 'Valid' -or $null -eq $signatureInfo.TimeStamperCertificate) { throw 'SIGNATURE_INVALID' }
-  $machine = Get-PeMachine $item
-  if ($machine -ne '0x8664' -and $item -ne $Installer) { throw 'EXECUTABLE_X64_REQUIRED' }
-  @{ fileName=[System.IO.Path]::GetFileName($item); sha256=(Get-FileHash -LiteralPath $item -Algorithm SHA256).Hash;
-     machine=$machine; status=$signatureInfo.Status.ToString();
-     signer=$signatureInfo.SignerCertificate.Subject;
-     timestampSigner=$signatureInfo.TimeStamperCertificate.Subject;
-     productVersion=(Get-Item -LiteralPath $item).VersionInfo.ProductVersion }
+try {
+  Write-CollectorStatus 'pending' 0
+  Start-CollectorStep 'pe-reader'
+  . (Join-Path $PSScriptRoot 'pe-machine.ps1')
+  Start-CollectorStep 'device'
+  $cpuInfo = Get-CimInstance Win32_Processor | Select-Object Name, AddressWidth
+  $memory = (Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory
+  @{ caption=$osInfo.Caption; version=$osInfo.Version; build=$osInfo.BuildNumber;
+     architecture=$osInfo.OSArchitecture; cpu=$cpuInfo; memoryBytes=$memory } |
+    ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $NewOutputDirectory 'device.json')
+  $records = @()
+  $index = 0
+  foreach ($item in @($Installer, $AppExe, $EngineExe)) {
+    Start-CollectorStep "signature-$index"
+    $signatureInfo = Get-AuthenticodeSignature -LiteralPath $item
+    # Preserve each first raw signature result even when validation or later artifacts fail.
+    @{ status=$signatureInfo.Status.ToString(); signer=$signatureInfo.SignerCertificate.Subject;
+       timestampSigner=$signatureInfo.TimeStamperCertificate.Subject } |
+      ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $NewOutputDirectory "signature-$index.json")
+    if ($signatureInfo.Status -ne 'Valid' -or $null -eq $signatureInfo.TimeStamperCertificate) {
+      throw 'SIGNATURE_INVALID'
+    }
+    Start-CollectorStep "pe-$index"
+    $machine = Get-PeMachine $item
+    if ($index -eq 0 -and $machine -notin @('0x014c', '0x8664')) { throw 'INSTALLER_MACHINE_REQUIRED' }
+    if ($index -ne 0 -and $machine -ne '0x8664') { throw 'EXECUTABLE_X64_REQUIRED' }
+    Start-CollectorStep "artifact-$index"
+    $record = @{ fileName=[System.IO.Path]::GetFileName($item);
+       sha256=(Get-FileHash -LiteralPath $item -Algorithm SHA256).Hash;
+       machine=$machine; status=$signatureInfo.Status.ToString();
+       signer=$signatureInfo.SignerCertificate.Subject;
+       timestampSigner=$signatureInfo.TimeStamperCertificate.Subject;
+       productVersion=(Get-Item -LiteralPath $item).VersionInfo.ProductVersion }
+    $record | ConvertTo-Json -Depth 4 |
+      Set-Content -LiteralPath (Join-Path $NewOutputDirectory "artifact-$index.json")
+    $records += $record
+    $index += 1
+  }
+  Start-CollectorStep 'artifacts'
+  $records | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $NewOutputDirectory 'artifacts.json')
+  Start-CollectorStep 'scope'
+  'Metadata only. Completion is not signature-chain, native-operation or same-package provenance proof. SDK signtool /pa /all, installation, DPAPI and independent review remain separate.' |
+    Set-Content -LiteralPath (Join-Path $NewOutputDirectory 'scope.txt')
+  $step = 'complete'
+  Write-CollectorStatus 'complete' 0
+} catch {
+  try { Write-CollectorStatus 'failed' 1 } catch {
+    # Storage failures leave the prior pending/malformed marker and raw files; verification rejects them.
+    [Console]::Error.WriteLine('COLLECTOR_STATUS_WRITE_FAILED')
+  }
+  [Console]::Error.WriteLine('COLLECTION_FAILED')
+  exit 1
 }
-$records | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $NewOutputDirectory 'artifacts.json')
-'Metadata only. SDK signtool /pa /all, installation, DPAPI and all native scenarios remain separate.' |
-  Set-Content -LiteralPath (Join-Path $NewOutputDirectory 'scope.txt')
