@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Actual S1 new-task acceptance and official MiniMax stop receipt; not a review Pass or new launch authorization",
+  "reviewHead": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+  "product": "76596656908ed84e577e8202a602e3256d5febcc",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "processEvidence": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+  "operatorPreflight": {
+    "bothActualHeadsMatched": true,
+    "agentsBytes": 15147,
+    "agentsSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "frozenFullInputHashesUnchanged": true,
+    "unchangedProductChecksRerunByOperator": false
+  },
+  "zcode": {
+    "sessionId": "session_b0a43d8ead0ec43ae5e6eb571a653775",
+    "originalTurn": "turn_79759cfb-6abd-4aba-b35a-9003fb5bd895",
+    "ownCWD": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-zcode-review-7659665",
+    "operatorUI": {
+      "project": "T09-S1-ZCode-review-7659665",
+      "taskDirectoryLabel": "T09-s1-zcode-review-7659665 · 游离 HEAD",
+      "model": "GLM-5.3",
+      "effort": "最高",
+      "permission": "完全访问",
+      "officialMenuSIDReadBackInUnsentOwnDraft": true,
+      "draftClearedWithoutSending": true
+    },
+    "nativeModel": "GLM-5.3",
+    "nativeProvider": "account:bigmodel-individual-coding-plan",
+    "nativeThinking": "enabled",
+    "nativeAttachment": {
+      "name": "pasted-text-20261023-033639-211dba96.txt",
+      "source": "/Users/kyle/.zcode/cli/rollout/model-io-session_b0a43d8ead0ec43ae5e6eb571a653775.jsonl",
+      "querySource": "main_turn",
+      "readRows": [1, 265],
+      "continuous": true,
+      "reconstruction": "Remove actual tab line-number prefixes from the exact attachment Read block; joining its 265 rows with LF yields the original bytes without adding a terminal LF",
+      "bytes": 51699,
+      "sha256": "ebdaf40e51c09a602174a9cca2060934e53d376b7a48c2555927eef2565d922f",
+      "byteIdenticalToFrozenInput": true,
+      "expectedContentUsedToFillGaps": false
+    },
+    "officialTurnStartedUTC": "2026-10-22T19:36:58.775Z",
+    "formalTerminalAtReceipt": "UNKNOWN; no terminal claimed",
+    "reportAtReceipt": "not yet collected",
+    "keepRunningWithoutPeerFeedback": true
+  },
+  "minimax": {
+    "sessionId": "mvs_959086c08fb34d7780e83e4fff427417",
+    "originalTurn": "1981cd03-b7ef-49df-b86b-a1d8c78a8e9f",
+    "ownCWD": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-s1-minimax-review-7659665",
+    "operatorUI": {
+      "directorySelectedByOfficialDialog": true,
+      "model": "M3.1-Flash（订阅限免）",
+      "effort": "xhigh",
+      "permission": "始终授权",
+      "officialMenuSIDReadBackInUnsentOwnDraft": true,
+      "draftClearedWithoutSending": true
+    },
+    "nativeOwnFolder": "/Users/kyle/.minimax/v2/sessions/2026/10/22/19-38-40-149-session_bXZzXzk1OTA4NmMwOGZiMzRkNzc4MGU4M2U0ZmZmNDI3NDE3",
+    "nativeAttachment": {
+      "name": "pasted-text.txt",
+      "readCalls": [
+        {"id": "call_01a1651f7a5b76d28933c856", "rows": [1, 117], "isError": false},
+        {"id": "call_01a1651f80c175b8a8a19452", "rows": [118, 214], "isError": false},
+        {"id": "call_01a1651f8717702db01cbbdb", "rows": [215, 264], "isError": false}
+      ],
+      "continuous": true,
+      "conflictingRows": [],
+      "reconstruction": "Remove actual arrow line-number prefixes and join all 264 returned rows with LF and one terminal LF",
+      "bytes": 51735,
+      "sha256": "c9a468e258a0ddb18db63c2018e47ff31ab2bd6b8db0738f540e021506774c51",
+      "byteIdenticalToFrozenInput": true,
+      "expectedContentUsedToFillGaps": false
+    },
+    "processResult": "Fail",
+    "processViolations": [
+      "Actual mavis agent list call with include_primary=true",
+      "Actual Bash call requesting grep of permissionMode in user-level global config"
+    ],
+    "violationResultsNotExportedToEvidence": true,
+    "specificDisclosureExtent": "UNKNOWN; no claim of specific disclosure or zero disclosure",
+    "officialStop": {
+      "onlyOwnTaskOperated": true,
+      "buttonBeforeAction": "停止生成",
+      "actionUTC": "2026-10-22T19:42:50.812Z",
+      "uiResult": "你已暂停 · 已执行 4 分 10 秒",
+      "buttonAfterAction": "继续执行",
+      "promptSent": false,
+      "backendMutationOrKill": false,
+      "readOnlyOriginalTurnTerminal": "aborted",
+      "readOnlySessionStatus": "aborted",
+      "terminalUpdatedAtMs": 1792698171368,
+      "terminalObservedUTC": "2026-10-22T19:43:01.166521Z"
+    }
+  },
+  "operatorReadbackException": {
+    "fact": "An overbroad role=user projection from native model-io emitted an application-wrapped reminder and user-level instruction context into this owner chat tool output",
+    "preservedAsException": true,
+    "notWrittenIntoEvidenceOrForwardedToReviewModels": true,
+    "usedForTaskDecision": false,
+    "correction": "Restrict projection to exact own first-input/attachment delimiter blocks, permitted own tool calls/results and required scalars; do not export whole role messages or system/header/thinking"
+  },
+  "guiReleasedAfterPairAcceptance": true,
+  "guiReleasedImmediatelyAfterOfficialStop": true,
+  "newPairCreatedAfterStop": false,
+  "sameRoundDualPassAccepted": false,
+  "oldB871FailurePreserved": true,
+  "sourceOrFrozenInputEdited": false,
+  "reviewerReportsEditedByOperator": false,
+  "goalStatusChanged": false,
+  "pushedOrPRCreated": false
+}
