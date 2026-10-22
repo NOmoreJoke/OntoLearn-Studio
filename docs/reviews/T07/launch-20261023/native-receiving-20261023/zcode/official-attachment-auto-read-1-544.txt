@@ -1,0 +1,544 @@
+1	# T07-S1 ZCode 完整工程新任务：当前派发操作补充
+2	
+3	本补充后接旧完整冻结正文的**原始字节**，不是只审最新delta或source-only片段。保留完整工程、原验收、首错原件及IR-01～05发现/关闭。以下只更新物理路径、当前政策、独立性和执行授权；不改产品/测试/验收、旧输入/manifest。与旧正文的旧路径、旧静默/CLI前置或“尚无任何产品测试许可/只写一报告”冲突时，以本当前补充为准，其余完整审查内容全部保留。
+4	
+5	## 当前精确任务身份
+6	
+7	- 应用workspace和所有源码读取/命令cwd唯一为 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157`，detached reviewHead `24f3703ecf4fce75e0d0375f7291ed928f083c41`。不得选原开发树，也不自行切分支。
+8	- 受审base `5f910b52c69d86a1076b2032e5d3c63e715947f3` → 产品/测试 `f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3`，完整25路径、14项实现/测试/fixture；该reviewHead仅追加过程材料，产品14项仍等f9。status等过程文件按各自固定ref读，不把后继流程状态混作f9原件。
+9	- 指定模型/思考/权限要求：**GLM-5.3 / max (highest) / yolo**。这些是要求，不是已经核验的实际设置。创建负责人必须保存本实际任务级模型、思考、权限读回、真实ID/正文受理时间；不要依据用户默认或标题预填Pass。
+10	- 旧正文出现的 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario` 一律只是历史来源标识；本次源码、测试、文档和输出路径均映射到上述自己的实际workspace。历史原文不改字节；不得因此跨树读取原开发目录或当前session。
+11	- 唯一最终报告：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157/docs/reviews/T07/round-1/zcode-glm53.md`。独占原始输出/补充证据在 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/raw/validation/` 和 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/reports/`；临时检查文件在 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/scratch/`；任务设置及文件增长记录在 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/metadata/`。
+12	- node_modules `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157/node_modules`、venv `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157/.venv`；其余环境/缓存/TMPDIR/pytest/日志都用 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime` 的本角色目录。不能共享可变依赖环境、DB、scratch、raw、报告或metadata。
+13	
+14	## 完整范围、原验收与历史证据
+15	
+16	完整审查私有场景定义/事件/轮次编排/FIFO三指标、不可变历史/恢复身份、私有页面/view/合成探针、批准T09输入/资源投影、Context/冻结计划/逐动作轨迹、真实批准Store事务/取消/READONLY/崩溃测试及完整投影交接样例。前6个技术组成仍是一个完整S1，不缩为6个小任务。还须读纯接口提案与当前未就绪父积压，辨别已有工程与未实现能力。
+17	
+18	必须完整读取本树 `docs/reviews/T07/round-1/frozen-manifest.json`、25路径完整diff/candidate.patch、14项全部实现与测试/fixture、批准PRD全文及对应FR-700～705、D/E.1～E.5/G.4/G.6/第10～12节、原验收/接线提案；不能用摘要替代源码。完整Git源码身份清单在本次 `current-inputs/full-git-files.json`，该清单包含本树全部tracked文件，不仅末次补丁。当前AGENTS是唯一允许的受保护操作政策差异，M保留、不stage。
+19	
+20	须读取本树旧包 `frozen-inputs.tar.gz` 的全部既有log/png原件、失败与最终记录、9条原始独审终态和来源索引，核其大小/hash。压缩包只提取到本角色scratch，不能覆盖固定review路径。3条加密中间消息只登记元信息，不解密。原sourceSession和旧绝对链接只是历史索引，**不要跟随到正在增长的原会话或其他任务目录**。`internal-review.md`只是开发者摘要，原始终态才是历史原文。早期42项READONLY假证明已失效，后来43/44项修复和交接不追认旧证明；空日志不能单独证明退出码。首失败均保留，不删除/改成通过。
+21	
+22	下面附原验收、历史问题和9条原始内审终态的可读全文；原始逐行JSONL/hash及全部原日志仍在本树封存包核验。普通内审、准备包独审和本任务尚不存在的终态都不等于指定双审Pass。
+23	
+24	### 现有工程原验收全文
+25	
+26	# T07 独立服务验收与集成边界
+27	
+28	本线以 PRD V0.6 FR-700–705、D、E.1–E.5、G.4/G.6、第10–12节为依据。原父功能与跨模块验收不因本表局部验证关闭。当前阶段、候选与真实待验见 [status](../../reviews/T07/status.md)。
+29	
+30	## 本线实现
+31	
+32	- 不可变场景定义、项目ID/版本、引擎/依赖锁、完整输入/规则/行为/参数版本和内容摘要；显式复制场景身份。
+33	- 初始实际推理调用；每轮严格事件→行为前推理→冻结/冲突计划→显式轮次/阶段上下文的动作执行→FIFO资源→轮末推理/指标→单轮原子提交接口。
+34	- 最大轮数1–1000、每轮动作最多1000；保存逐动作序号和冻结计划，拒绝缺失/重复动作轨迹或错阶段推理；每阶段检查取消，动作间检查与计算超时/硬终止由正式T06/I04适配器承担。不以纯编排承诺长时不可协作库调用的取消时限。
+35	- 事件ID去重、异内容拒绝、按序号/ID排序，新事件只能进入下一轮。达到max保留未来事件，不推断全部处理完成。
+36	- 工单创建轮次/序号/ID的FIFO；快照保存历史创建身份和单调序号，删除工单不复用ID。三项指标统计实际状态及完成身份，不用简化积压递推公式替代。
+37	- 独立重放恢复原始消费，显式续跑校验完整定义摘要、事件目录与已提交消费；已提交快照不会被新运行修改。
+38	- React页面：从基准项目或选中场景创建、结构化场景配置、两种产能方式、任务状态、取消、历史依据、详情、显式快照续跑、独立重放、恢复与删除操作入口、至少双场景逐轮/最终指标。无已批准适配器的方法禁用。
+39	- 页面历史运行使用自身不可变依据；V1晚到与V2按完整身份区分。所有动态值以文本显示，无HTML注入或外部资源。
+40	
+41	## 运行命令与证据
+42	
+43	```sh
+44	uv run --frozen pytest packages/engine/tests/test_scenario_rounds.py
+45	npx vitest run tests/unit/t07-scenario.test.ts
+46	npm run check
+47	T07_HEADLESS_EXECUTABLE=/path/to/existing/headless-chromium node docs/reviews/T07/evidence/render-probe.mjs
+48	```
+49	
+50	`tests/fixtures/scenario/e5.json` 是本线专属算法测试素材，SHA256 `84c299fa61de136965699a2b02c7b0c9cc7cde949abd86e8e68343c8a264e53b`。四轮每轮四事件，逐项核对W001–W016创建/完成/积压、消费和三项指标；产能3与4各独立重复重放两次。已新增总控批准T09固定提交873c8c0输入的资源/指标投影测试：manifest与全17项固定文件逐项校验，manifest/E.5原字节副本在本线`t09-*.json`；未改T09原件或消费其服务。公共E.5的未闭环高危告警为4/8/12/16，工单完成不自动闭环告警；本线原始无告警素材的0值仅属另一个合成探针。完整RDF事实、推导与动作轨迹须真实领域执行器另验。
+51	
+52	| 验收                    | 独立验证范围                                                 | 必须保留的正式验收                                                             |
+53	| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+54	| FR-700                  | Definition/复制、结构化表单与资源模式验证                    | 从真实项目/已有场景快照创建，T05初始推理与规则支持校验                         |
+55	| FR-701 / E.2 / G.4前4条 | 编排顺序、完整E.5集合、动作上限、失败/取消、FIFO、未来事件   | T06真实冻结条件/冲突/动作及T05真实推理；T01/I04逐轮事务、取消竞态与错误        |
+56	| FR-702                  | 私有view比较与最终指标，缺轮显示缺失                         | 两个真实场景运行结果，真实告警数据口径                                         |
+57	| FR-703 / G.4后2条       | 输入身份隔离、消费重置、显式续跑与历史依据                   | 完整持久运行依据、重放包/执行语义校验、T10跨设备重放                           |
+58	| FR-704                  | 来源/假设/公式/未处理事件明确显示                            | 实际业务记录进入页面，Agent只按真实依据解释                                    |
+59	| FR-705 / G.6            | 不可变纯状态、失败保留上轮、提交后取消保留记录；受限操作入口 | 真Store隔离/崩溃/写失败/提交响应丢失对账；用户删除运行、恢复基准、真实快照续跑 |
+60	
+61	测试的`ProbePorts`明确为合成编排探针：`infer`返回合成标记、`execute`只模拟E.5一事件一工单、`commit`只捕获不可变值。它们不注册产品能力，不证明真实推理、行为冲突或落盘恢复通过。独立内审与UI测试也不替代指定双模型外审。
+62	
+63	## 精确共享依赖
+64	
+65	详见 [integration-request](integration-request.md)。尤其：
+66	
+67	1. 提交成功响应丢失必须按持久operation/job记录对账；本服务不能从异常推断“零提交”。正式适配器不得在持久成功后抛出普通提交失败。
+68	2. 恢复快照由T01校验真实项目/run来源与不可变记录；本线构造值的形状/消费检查不等于授权认证。
+69	3. 现有Store的runs/rounds/terminal有不可变触发器；FR-705明确删除需T01提供显式生命周期API及引用影响说明，本线不绕过SQL触发器。
+70	4. T00唯一公共schema必须严格验证所有业务边界；本地表单只做格式检查，不冒充规则/本体的语义校验。不新增通用IPC、第二公共schema或存储权威。
+71	5. 正式接入后刷新批准develop，同版必要联验、指定双方新完整审查、实际CI及远端核验全部保留；Windows/macOS完整产品和发布门另验。
+72	
+73	## 真实 Store 提交边界补充
+74	
+75	新增 `packages/engine/tests/test_scenario_persistence.py` 直接使用批准base5f的Store及临时数据库，将runner实际生成的完整Round写入；推理/行为仍为明确合成测试端口。44个专属用例覆盖：两产能真实保存/重开/缓存不删轮次；0或1个已提交前轮×5个事务阶段×异常/取消/真实SQLite READONLY；同样边界的真实子进程退出，以及READONLY负对照和完整交接样例一致性。正式哨兵事实和revision始终保持，提交后投递失败按公开history及完整operation/job/round/payload核对确认效果。
+76	
+77	这新增了实际SQLite与进程恢复证据，未新增产品Store写入入口。未完成I04真实业务任务注册/取消协调/终态持久化或T05/T06领域执行；`test.rounds`的严格toy载荷不能被称为正式scenario。前轮保留和after_commit效果可从真实数据库核查，仍不推断整个G.6/FR-705完成。
+78	
+79	
+80	### 历史问题与处置索引全文
+81	
+82	# 历史问题与处置索引（开发者整理）
+83	
+84	原始独审终态见 internal-review-original-finals.jsonl，精确来源见 internal-review-sources.json。以下仅索引，历史通过限当时范围，不能预设本轮指定模型结论。
+85	
+86	| 编号     | 触发/影响                                              | 修复与原始复核                                                                         |
+87	| -------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+88	| IR-01/P2 | V1历史运行展示V2当前来源、假设、产能                   | 运行独立evidence/identity；原始final第1、3条及后续复核                                 |
+89	| IR-02/P2 | 第1轮快照接受提前消费第2轮事件，续跑漏事件             | 校验事件所属轮次/已提交消费；原始final第1、3条及后续复核                               |
+90	| IR-03/P2 | 删除最高序号工单后复用历史ID，混淆轨迹/去重            | 历史创建身份/单调序号；原始final第1、3条及后续复核                                     |
+91	| IR-04/P2 | 已有场景后无法再从基准项目创建                         | 显式来源选择，项目来源不传scenarioId；原始final第2、3条                                |
+92	| IR-05/P2 | READONLY未触发时AssertionError被runner吞掉，产生假通过 | runner外断言OperationalError/SQLITE_READONLY码名，禁用注入负对照；原始final第7、8、9条 |
+93	
+94	persistence-pytest-first.log的42项通过原件保留，其中READONLY证明已失效，不得追认。修复43项、交接样例44项是不同历史运行，按persistence-validation.json日志/hash分别阅读。最终完整check对应check-persistence-confirmed.log；ui-identity.log为空，不能独立证明退出码/成功。其他check-first、format-first、ruff-first等原始首错也全部封存，未删除/覆盖。
+95	
+96	原始消息保留各次实际测试数与结论，不能把累计90项T07 Python/27TS拼成同一次独审运行。本次只包装原件和核哈希，没有重跑命令，没有补造独审原文。完整父领域、Job生命周期、App接线、完整E5与跨设备门仍未完成。
+97	
+98	
+99	### 9条历史普通内审原始final全文
+100	
+101	Original message amsg_01a15bec-6e25-7d93-80cd-3bf9df7e96ce / 2026-10-21T00:46:23.781Z
+102	
+103	Message Type: FINAL_ANSWER
+104	Task name: /root
+105	Sender: /root/t07_internal_review
+106	Payload:
+107	内审发现 3 项 P2，建议修复后再冻结候选。
+108	
+109	1. **历史运行展示当前场景的依据。**  
+110	   [ScenarioPage.tsx:163](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx:163)、[presentation.ts:30](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/apps/desktop/src/renderer/src/scenario/presentation.ts:30)  
+111	   触发：V1 运行后修改来源、假设、产能或规则为 V2，再展开 V1 历史。页面依据来自当前 `ScenarioView`，`RunView` 未携带历史来源、假设、参数等信息。历史结果会显示在 V2 的依据下，不满足 FR-703/704。建议为运行保存并展示不可变依据快照，历史详情显示完整身份和配置。
+112	
+113	2. **续跑校验接受提前消费的未来事件。**  
+114	   [runner.py:129](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/packages/engine/src/ontolearn_engine/scenario/runner.py:129)  
+115	   触发：第 1 轮快照将第 2 轮事件也列为已消费。当前校验只检查 ID 属于目录，续跑会跳过该事件并返回成功。已用无文件写入的探针复现。建议拒绝非 `initial_consumed` 中、却早于事件所属轮次被消费的快照；明确由本层或正式恢复适配器执行完整一致性校验，并补反例测试。
+116	
+117	3. **删除最高序号工单后会复用历史 ID。**  
+118	   [model.py:108](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/packages/engine/src/ontolearn_engine/scenario/model.py:108)  
+119	   触发：创建 W001、W002，事件删除 W002，再创建另一工单。`max(当前存活工单序号)+1` 再次产生 W002；探针已复现。事件允许删除场景断言，适配后的队列可能出现此路径。复用 ID 会混淆历史轨迹和累计完成去重。建议在快照保留不可回退的创建序号或完整身份登记，并补删除后创建及续跑测试。
+120	
+121	验证：专属 Python 测试 **34 passed**，无 GUI、模型、凭据或外发操作，未修改文件。现有取消测试的 `infer` 用例停在初始推理，尚未分别覆盖事件后和轮末推理取消，建议补齐。
+122	
+123	真实 T05/T06、T01/I04 原子落盘与异常恢复、正式页面接线、跨设备重放，以及指定双外审/CI 仍须后续验收；本次探针不证明这些通过。
+124	
+125	Original message amsg_01a15bef-098d-75b3-8b96-fd69244c6bea / 2026-10-21T00:49:14.637Z
+126	
+127	Message Type: FINAL_ANSWER
+128	Task name: /root
+129	Sender: /root/t07_internal_review
+130	Payload:
+131	复核结论：**此前 3 项 P2 已关闭；当前仍有 1 项新增 P2，暂不通过普通内审。**
+132	
+133	- 历史依据已改用 `RunView.evidence`，详情独立展示运行版本、来源、假设与参数。
+134	- 续跑已拒绝未来事件提前消费和已提交事件消费丢失。
+135	- 创建身份登记与递增序号已保留，删除后不复用工单或事件身份。
+136	- 三处推理取消反例、结构化输入与资源模式测试已补充；最终指标也已单独展示。
+137	
+138	**新增 P2：已有场景后无法从基准项目创建。**  
+139	位置：[ScenarioPage.tsx:39](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx:39)、[ScenarioPage.tsx:95](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx:95)。
+140	
+141	触发：`scenarios` 非空时，`current` 必定选中某个场景，提交始终传其 `scenarioId`，页面没有选择基准项目的入口。影响：FR-700 的“从基准项目创建”在首次创建之后不可达。建议增加明确的来源选择；选择基准项目时不传场景 ID，并补交互反例。
+142	
+143	本次实跑：**Python 39 passed；TS 24 passed**。全程只读、无 GUI 或外发。
+144	
+145	真实推理/行为接入、原子存储与异常恢复、正式契约和页面接线、跨设备重放、指定双外审及 CI 仍待实际验收。
+146	
+147	Original message amsg_01a15bef-fde6-7d51-9baa-73e01df366e8 / 2026-10-21T00:50:17.190Z
+148	
+149	Message Type: FINAL_ANSWER
+150	Task name: /root
+151	Sender: /root/t07_internal_review
+152	Payload:
+153	**普通内审通过。此前共 4 项 P2 已关闭，本次未发现新的 P1/P2。**
+154	
+155	来源修复已核对：[ScenarioPage.tsx:41](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx:41) 仅在选择场景来源时提供 `scenarioId`；选择基准项目时传 `undefined`。已有场景不再阻断从项目创建。已读取 headless 探针脚本和结果，包含来源切换、产能换算、自定义输入透传及非法事件禁用提交。
+156	
+157	其余三项修复保持有效：历史运行使用独立依据；续跑检查消费轮次；删除工单后保留身份登记和递增序号。最近对应验证为 **Python 39 passed、TS 24 passed**；本轮未重复无变化测试，未修改文件或执行 GUI。
+158	
+159	通过范围限于当前独立服务、私有页面和合成探针。真实 T05/T06、T01/I04 原子提交与恢复、正式契约接线、跨设备重放、指定双外审、完整 check/CI 和合并发布门仍须实际完成。
+160	
+161	Original message amsg_01a15bf1-902d-7011-8efb-31cd794a04f6 / 2026-10-21T00:52:00.173Z
+162	
+163	Message Type: FINAL_ANSWER
+164	Task name: /root
+165	Sender: /root/t07_internal_review
+166	Payload:
+167	**当前新增候选普通内审通过，未发现新的 P1/P2；此前 4 项 P2 保持关闭。**
+168	
+169	已核对新增项目 ID、引擎版本和依赖锁身份：均参与 `Definition.digest`、续跑身份拒绝及 `sameInput` 判定，运行详情展示对应身份。跨项目、引擎或依赖锁变化不会沿用旧快照或标为当前结果。
+170	
+171	本次实际运行：**Python 42 passed，TS 27 passed**。未修改文件，未运行 GUI。
+172	
+173	结论限于独立服务、私有页面与合成探针。最终完整 check/headless、真实领域与存储接线、异常恢复、跨设备重放、指定双外审及 CI/合并发布门仍须据实完成。
+174	
+175	Original message amsg_01a15bf3-dae1-7e23-9fdc-b75740ceeaa9 / 2026-10-21T00:54:30.369Z
+176	
+177	Message Type: FINAL_ANSWER
+178	Task name: /root
+179	Sender: /root/t07_internal_review
+180	Payload:
+181	**当前工作树普通内审仍通过，未发现新增 P1/P2。**
+182	
+183	独立核验结果：
+184	
+185	- 本线两份 T09 文件与批准提交 `873c8c0` 的原始字节一致；manifest SHA 正确，17 项文件哈希及本地 PRD 来源哈希均匹配。
+186	- 新测试逐轮核对完整工单身份/事件/状态/创建轮、创建与资源完成集合、积压、消费、未来事件及三项指标；两种产能均完成原运行加两次重放。
+187	- 告警未随工单完成自动闭环，公共样例正确得到 **4/8/12/16**。
+188	- 本次实际运行：**44 passed**；未改文件、未运行 GUI。
+189	
+190	这只证明批准 E.5 输入的**资源与指标投影子集**。`facts`、`inferred`、`actionTrace`、`triggeredInstances` 及真实 RDF/行为/Store 未因此通过；完整领域接线、恢复、指定外审及 CI 门保留。
+191	
+192	非阻断收尾：同步更新验收文档中“T09 批准后对接”的旧表述，并在本地提交前刷新候选文件清单及测试数。
+193	
+194	Original message amsg_01a15bf5-0d92-7220-a2bc-305b03dc16b5 / 2026-10-21T00:55:48.882Z
+195	
+196	Message Type: FINAL_ANSWER
+197	Task name: /root
+198	Sender: /root/t07_internal_review
+199	Payload:
+200	**当前候选普通内审通过，未发现新增 P1/P2；此前 4 项问题保持关闭。**
+201	
+202	已核对：
+203	
+204	- `Context(round, phase)` 显式进入事件、推理、计划和执行阶段；推理结果必须匹配当前上下文。
+205	- 续跑直接使用 `context.round`，测试不再手工补造已提交计数。
+206	- 动作轨迹保存三元身份，提交前检查数量、唯一性、事件归属及正整数序号；冻结计划 JSON 随轮次保留。
+207	- 正式 T06 仍须负责行为排序、冲突、动作语义和执行一致性；新增轨迹检查不代替这些验收。
+208	
+209	本次实际运行：**46 passed**，批准 T09 资源/指标投影测试保留。页面未变化，未重复其测试；未改文件或运行 GUI。
+210	
+211	真实领域接线、原子存储与恢复、完整基线结果、指定双外审、CI 和发布门仍保留。
+212	
+213	Original message amsg_01a15bf9-9cf7-7531-893f-a9a7dfd3bf60 / 2026-10-21T01:00:47.735Z
+214	
+215	Message Type: FINAL_ANSWER
+216	Task name: /root
+217	Sender: /root/t07_internal_review
+218	Payload:
+219	**新增持久化验收暂不通过普通内审：有 1 项 P2 证据漏洞。**
+220	
+221	**P2：READONLY 注入失效也能通过测试。**  
+222	位置：[test_scenario_persistence.py:81](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/packages/engine/tests/test_scenario_persistence.py:81)。
+223	
+224	若 `UPDATE` 没有产生 SQLite READONLY，后面的 `AssertionError` 会被 runner 当作普通故障吞掉，仍得到测试预期的 `failed`；提交后则可能被对账流程接受。我用临时数据库禁用 `query_only=ON` 做负向验证，确实仍满足当前故障断言。
+225	
+226	建议记录并逐例断言 `sqlite3.OperationalError`、`SQLITE_READONLY` 错误码/名称；没有发生预期 SQLite 异常必须使测试失败。
+227	
+228	其余检查：
+229	
+230	- 生产 Store 与批准基线无差异，测试未引入产品写入通道。
+231	- 提交后对账检查 operation、job、轮号和完整快照，且没有重发写入，依据合理。
+232	- 10 个真实子进程退出用例检查退出码、重开后的完整轮次内容及正式数据哨兵，矩阵有效。
+233	- 本次实际运行 **42 passed**，但其中 10 个 READONLY 用例存在上述假通过路径。
+234	
+235	这批证据仍只覆盖“合成推理/行为＋真实 Store 事务与隔离”；不能记作 I04 正式联验、真实领域执行或完整运行重放通过。
+236	
+237	Original message amsg_01a15bfb-832b-71b2-a3c7-d3df3a7606be / 2026-10-21T01:02:52.203Z
+238	
+239	Message Type: FINAL_ANSWER
+240	Task name: /root
+241	Sender: /root/t07_internal_review
+242	Payload:
+243	**READONLY 假通过问题已关闭，当前新增测试普通内审通过，未发现新的 P1/P2。**
+244	
+245	已确认 10 个 READONLY 用例均在 runner 外严格断言异常类型、错误码和名称；负对照禁用注入后，统一故障状态不能冒充 READONLY 证据。
+246	
+247	本次实际验证：**89 passed**（轮次 46＋持久化 43）；新增文件的 Ruff 检查与格式检查通过。接线文档所述 I04 toy 载荷限制与实际源码一致。
+248	
+249	证据仍限于合成领域端口与真实 Store 的事务、隔离和进程恢复，不代表 I04 正式业务联验通过。验收文档的“42 个专属用例”需更新为 **43**。全程未改文件、未运行 GUI。
+250	
+251	Original message amsg_01a15bfe-a3bf-7ad1-8787-7a498555c6e2 / 2026-10-21T01:06:17.151Z
+252	
+253	Message Type: FINAL_ANSWER
+254	Task name: /root
+255	Sender: /root/t07_internal_review
+256	Payload:
+257	**当前新增投影交接子集普通内审通过，未发现 P1/P2 或假通过路径。**
+258	
+259	已确认完整 `Round`、投影事件集合及 `stateDigest` 与实际 runner 输出一致；项目、输入摘要、轮号和来源提交也匹配。持久化专属测试本次实际运行 **44 passed**。
+260	
+261	文档明确区分运行未处理全集与 T09 注入队列，保留未来事件，并清楚标注合成端口、示例身份和未验证范围。幂等提交与响应丢失对账仍是给 T01 的待批准提案，没有被表述为现有能力，也未新增公共 schema 或产品写入通道。
+262	
+263	本次通过不代表正式适配、I04 任务联验或完整 E.5 领域结果通过。全程只读，无 GUI 或外发。
+264	
+265	### 全量保留技术项/未就绪父积压
+266	
+267	下列盘点来自原过程提交 `15dcbb103fade7a91df73a54c5217a6053bd5f47`，是身份/范围材料，不是新增产品版本；所写“无任务”是盘点时状态，实际本任务ID及设置由创建负责人另行读回。
+268	
+269	# T07 全量指定双审积压事实清单
+270	
+271	2026-10-22。T07 尚无任何 ZCode/MiniMax 指定审查任务或通过记录。以下覆盖已保留实现、技术子项、纯提案、过程材料及未就绪父功能，不只登记 ready S1。`INV` 是本次盘点行号，不是新增官方阶段、独立审查拆分或运行授权。
+272	
+273	## 实际身份和责任
+274	
+275	- owner 聊天：`01a15bce-0706-7360-8e99-df8fe9b15ad2`；worktree：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario`；分支：`feature/weekly-t07-scenario`。
+276	- 实际起点/base **B**：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。
+277	- 首次实现提交 **I**：`791a7b2b9ea831105e3aa7ef2e95f80001942ba5`。
+278	- 当前产品/测试候选 **P**：`f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3`。
+279	- 本次盘点前过程 HEAD **D**：`24f3703ecf4fce75e0d0375f7291ed928f083c41`；完整准备提交 **F**：`f50ebc0fb9db792aceec103e623768d585a6175d`。
+280	- 本线唯一授权写面：`packages/engine/src/ontolearn_engine/scenario/`、`packages/engine/tests/test_scenario_*.py`、`apps/desktop/src/renderer/src/scenario/`、`tests/unit/t07-*.test.ts`、`tests/fixtures/scenario/`、`docs/iterations/T07/`、`docs/reviews/T07/`。没有共享 Store/Job/coordinator/worker、公共契约、main/preload/App、依赖锁或构建写权。
+281	
+282	本次读取本地 T07 分支、worktree 注册及 B→D 全部7提交，只观察到这一条命名 T07 实现分支/worktree。其他 owner 的阶段体验外壳、依赖代码和审查任务不计为 T07 实现或通过。这里记录本线实际 base，不声称本次刷新了远端 develop；真实派发/集成前仍须核当时批准基线。
+283	
+284	## 指定双审共同状态（适用于全部行）
+285	
+286	| 项目                          | ZCode                               | MiniMax Code                           |
+287	| ----------------------------- | ----------------------------------- | -------------------------------------- |
+288	| 必需设置                      | GLM-5.3 / 最高，实际任务 max / yolo | M3.1-Flash / xhigh / bypassPermissions |
+289	| T07 实际 task/session/turn ID | 无，未创建                          | 无，未创建                             |
+290	| 实际任务级设置读回            | 无；上述为要求，不是实际回执        | 无；上述为要求，不是实际回执           |
+291	| 实际报告/完整终态/结论        | 无；未审、没有指定 Pass             | 无；未审、没有指定 Pass                |
+292	| 已准备正文                    | `round-1/zcode-frozen-prompt.md`    | `round-1/minimax-frozen-prompt.md`     |
+293	| 未来报告目标（尚不存在）      | `round-1/zcode-glm53.md`            | `round-1/minimax-m31flash.md`          |
+294	
+295	所有路径均相对本文件所在 `docs/reviews/T07/`，全树绝对位置见上。当前只准备了一个完整 **T07-S1：完整私有轮次编排/资源FIFO指标/独立场景页及现有验证**，受审单位是 **B→P 全25路径、14项实现/测试/fixture**。下列 INV-01～06 是该完整候选的技术组成，不各自缩成单项审查，不因逐项登记重复建立模型任务。root 已限定接收准备包；尚未全文批准两提示词或重新认证9条原终态来源，T07 也未取得新任务创建租约。
+296	
+297	## 全部保留技术项和未就绪积压
+298	
+299	| 行号/阶段或技术项                                                     | 实际版本、原 owner 写面                                                                                                                                               | 当前验收与证据                                                                                                                                                                                                                                        | 缺口、后继及可独立下一行动                                                                                                                                                |
+300	| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+301	| INV-01 不可变定义、事件、FIFO和轮次编排；已实现，属S1                 | B→I首次落盘；当前B→P，过程D。T07：`scenario/{__init__,model,runner}.py`、`test_scenario_rounds.py`                                                                    | 项目/输入/规则/行为/参数/语义/引擎/锁身份，轮次顺序、事件去重/未来事件、FIFO/历史ID、三指标、失败/取消/恢复校验。轮次文件最终46 Python；`evidence/validation.json`、原始final 1～6。领域端口为合成                                                    | 真实T05/T06和正式任务适配未接。全部保留于P，等待短创建lease后随完整S1双方新审；不因本清单重复测试                                                                         |
+302	| INV-02 私有场景页面、view身份及headless探针；已实现，属S1             | B→I首次落盘；当前B→P，过程D。T07：renderer `scenario/{ScenarioPage.tsx,presentation.ts,scenario.css}`、`tests/unit/t07-scenario.test.ts`、`evidence/render-probe.mjs` | 项目/场景创建、结构化输入、两产能、任务/历史依据/详情、逐轮/最终比较、缺轮和受限操作禁用。27 TS；Chromium151.0.7922.34、1440×1100/390×844合成headless，`evidence/ui-probe.json`；原始final 2～4                                                       | 未挂App/bridge，无真实数据/执行/删除/恢复联验。保留于P完整S1；正式页面接线需对应owner批准，合成页面证据不替代产品                                                         |
+303	| INV-03 批准T09输入及E5资源/指标投影；已有测试/fixture，属S1           | B→I首次落盘；当前B→P，过程D。T07：`e5.json`、`t09-e5.json`、`t09-manifest.json`及轮次测试                                                                             | 批准T09 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的17项hash及两份原字节副本；两产能工单/资源集合、消费/未来事件/指标/重放。公共告警4/8/12/16，私有零告警fixture独立。`evidence/t09-input-receipt.json`、原始final 5                                 | 未验真实 facts/inferred/actionTrace/triggeredInstances，未消费T09服务。保留于P，不把资源投影改称完整E5；随完整S1审，真实领域依赖批准后另联验                              |
+304	| INV-04 显式Context及冻结计划/完整逐动作轨迹；已实现，属S1             | B→I首次落盘；当前B→P，过程D。T07：`runner.py`、轮次测试及私有接线提案                                                                                                 | `Context(round,phase)`贯穿并检查推理阶段；动作三元身份/eventId/behaviorId/actionIndex、数量/唯一性、冻结计划保存，1～1000轮/每轮1000动作。原始final 6，最终轮次46项包含这些用例，不能另加重复计数                                                     | 私有形状校验未代替T06真实条件、顺序、冲突、动作语义/动作间取消。保留于P完整S1，正式adapter等待精确批准接口                                                                |
+305	| INV-05 真实批准Store故障/取消/崩溃边界；已有测试，属S1                | B→P新增，过程D。T07仅 `packages/engine/tests/test_scenario_persistence.py`，生产共享源码未改                                                                          | 最终44专项：两产能完整Round保存/重开/缓存隔离，前轮0/1×五事务阶段×异常/取消/真实READONLY，10真实子进程退出、禁注入负对照及交接一致性。最终check657 TS/1142 Python；T07共46+44=90 Python/27 TS。`evidence/persistence-validation.json`、原始final 7～9 | 首批42项READONLY证明已失效；修复后runner外严格断言OperationalError/SQLITE_READONLY码名。仅真Store＋合成领域测试，正式Job/取消/终态未验。随P完整S1新双审，不能重用失效证明 |
+306	| INV-06 完整Round/Checkpoint投影交接样例；已有fixture/一致性测试，属S1 | B→P新增，过程D。T07：`round-projection-handoff.json`、持久化测试、交接文档                                                                                            | runner实际输出完整JSON/stateDigest相同，区分未消费全集与T09已注入pending子集；原始final 9、`persistence-validation.json` handoff段。44持久化包含此用例，不重复累计                                                                                    | operation-id权威幂等/ack-loss API是待批准提案。`test.rounds`只接toy载荷，示例job/run身份不是实际任务。样例保留于P完整S1；T01/T00冻结真实接口后联验                        |
+307	| INV-07 正式领域/事务/契约/页面/导出接口方案；纯提案，不是产品实现     | `integration-request.md`起于I并在P扩充；`round-projection-handoff.md`于P新增，base B，过程D。T07仅文档/样例，供应实现由各唯一owner维护                                | `docs/iterations/T07/integration-request.md`、`round-projection-handoff.md`；普通独审final 8～9核过toy限制及样例/提案边界，不是供应方API批准，也没有指定Pass                                                                                          | 无单独生产实现，不伪造技术阶段完成。root按当前唯一owners路由原固定提案，确认具体源码/接口/运行窗口；旧原件与hash不改                                                      |
+308	| INV-08 外审准备、原件封存、fresh文档核验；过程材料，非产品实现        | base B，所绑定产品P；准备F，独立文档核验D。T07仅 `docs/reviews/T07/`，旧25候选原件不改                                                                                | `round-1/`：25全路径/14身份、75归档成员、9原始final/3加密中间消息元信息、18packet封存项；`preparation-audit.md`过程核验通过，无阻断P1/P2。root限定接收不等于指定审查或新租约                                                                          | 指定两方ID/实际设置/报告/终态均缺失。完整原文及历史报告保留；派发前附当前操作政策addendum，完成root提示词/source全文审核、base/输入核验和短创建lease                      |
+309	| INV-09 真实T05/T06领域与完整E5；未实施/未就绪父积压                   | **无产品/测试候选SHA、无实现base**；仅参考B提案，过程D。所需owner：T05推理/T06行为；T07仅其批准私有adapter                                                            | 待验：初始/事件后/资源后真实推理；冻结条件/排序/冲突/动作/取消/新事件，完整E5四类领域结果及G.4。现有合成测试不关闭此行                                                                                                                                | 依赖具体批准API/身份/错误/fixture，不能消费未批准变化代码。下一步由root精确路由供给；接口到达后唯一owner接线、必要验证、新同版完整双审                                    |
+310	| INV-10 T01/I04正式scenario生命周期与恢复；未实施/未就绪父积压         | **无T07生产adapter候选SHA、无实现base**；仅参考B提案，过程D。T01持共享Store/Job/coordinator/worker，公共契约按现owner                                                 | 待验：业务注册、project/run/job身份、原子Round+progress、取消/最后提交/终态竞态、operation-id/expectedRound与ack-loss/崩溃对账、正式数据隔离；FR-705删除/恢复/来源合法的快照续跑                                                                      | 44真实Store测试未覆盖正式Job，toy能力不可冒用。下一步T01冻结内部API/受限错误/恢复fixture并批准，T07在私有写面适配联验，不绕过不可变触发器                                 |
+311	| INV-11 公共契约/bridge/App真实页面与Agent依据；未实施/未就绪父积压    | **无T07正式接线候选SHA、无实现base**；参考B提案，过程D。T01 canonical/main，I06 preload/env/App/style，T08 Agent消费者；当前具体交接由root复核                        | 待验：创建/复制/运行/取消/详情/比较/删除/恢复/续跑业务方法严格校验；FR-700～704真实记录进入页面，Agent按真实依据解释。现有props/callback页面只属INV-02                                                                                                | 无正式IPC/mount/真实操作验收。下一步root确认owners与批准方法，按唯一责任接线；不因页面已做而假定App完成                                                                   |
+312	| INV-12 完整运行依据、T10跨设备及产品/平台/发布；未实施/未就绪父积压   | **无T07完整产品/跨设备候选SHA、无实现base**；参考B提案，过程D。T07运行语义，T10包/重放，T11平台/发布及对应维护者                                                      | 待验：FR-703完整输入/配置/规则/行为/引擎/锁/语义齐全才能标可重放，跨设备实际结果核对、G.6恢复迁移、FR-700～705父验收；必要CI、两OS、真人、远端develop及发布门                                                                                         | 无完整真实运行包/跨设备/完整产品平台证据。永久保留在积压，实际adapter/包齐全后安排验证；不得用私有S1、基础I04或阶段体验包关闭父门                                         |
+313	
+314	## 历史版本、普通内审与撤回/失效关系
+315	
+316	完整本地链为 B → I → `833c6a1d836f76b6714d11e6a7ad2fd94049749d`（恢复点过程）→ P → `48b14dabeb769dc45e36a8e4be936d244a9c8b14`（就绪过程）→ `982e4535e864c17275e51ed67664c0b7fac367bc`（阻塞过程）→ F → D。只有I、P引入实现/测试/fixture或对应验收变化；其他为过程记录。
+317	
+318	- I的21文件候选由P的25文件完整候选后继；I→P改9路径，新增真实Store测试/完整交接样例并更新验收和证据，私有生产代码/页面未变。I的范围全部保留于P，没有撤销或永久排除的独立实现。旧全量check657 TS/1098 Python属于I阶段；新增测试后最终657 TS/1142 Python属于P阶段，不能混作同次运行。
+319	- 第一批未提交内审经历IR-01～04 P2修复，再补项目/引擎/锁身份、批准T09投影、Context/逐动作轨迹；后继都已落入I。内审原始final并未各自保存可寻址的Git候选SHA，因此**不为这些未提交阶段补造SHA**，保留原message ID/时间/内容hash及准确边界。
+320	- 持久化首批未提交42项被独审发现READONLY假通过（IR-05）；该证明撤销，随后43项修复/负对照，再44项完整交接一致性，最终落入P。原始失败/旧passed日志均保留；旧42项不能因为P通过而追认。
+321	- T07从未有指定双模型Pass，故没有“指定旧通过因变化失效”记录，也没有撤回的已审候选。普通内审的历史Pass仅限各次当时内容，不能视为最终P的指定Pass。将来实现/测试/配置/依赖/验收/base变化，仍须新候选、必要验证及双方各全新完整审查。
+322	- 普通原始独审来自 `/root/t07_internal_review`，9条精确原始final已在 `round-1/internal-review-original-finals.jsonl`；精确message ID/时间/原session行号及SHA见 `round-1/internal-review-sources.json`。IR-01～05及每次真实计数见原文；`internal-review.md`是开发者摘要，不是原始agent报告。fresh过程审查者 `/root/t07_round1_document_audit` 的报告在 `round-1/preparation-audit.md`，只通过准备包文档范围。
+323	
+324	## 当前操作addendum与下一步
+325	
+326	已实际全文接收 `iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md` 和最新共同指令：人类撤回静默桌面/用户时段要求，已授权任务可直接computer use，不以CLI登录、headless或隔离桌面为前置；内部资源协调仍保留。旧prompt/manifest、旧“无GUI许可”及历史阻塞文字只按历史时点解读，不改原件。
+327	
+328	补齐双审授权不取消具体阶段写面/运行票/自动审批拒绝或SQLite损坏HOLD等原边界。T07未取得新指定任务创建lease；由root串行协调短时创建/核验，不能占整个后台推理时长，不能与当前T06两真实任务争焦点或重复建它们。T07派发时须附此当前addendum，不能把旧冻结输入中的静默文字继续当阻塞。
+329	
+330	立即可独立完成的是本次全量事实盘点和原件/提示材料整理。下一执行门是root完成完整提示/source核验、当时base/输入确认及短lease，双方各新建同版完整S1只读任务并实际读回设置；不是让用户重复提供桌面时段。真实领域与父集成则按INV-09～12具体依赖推进，不能永久排除未ready项。全部57P0及原验收、完整终态/全文报告/全部意见、CI、两OS、真人、远端门均保留。
+331	
+332	本次只读取Git/文档及核原件身份、检查本新增文档格式，没有产品测试/构建/GUI/模型任务、没有改Goal或旧manifest。生成结构化草稿的首个Python命令发生UTF-8解析错误、exit1，未生成文件；随后改为直接写本事实文档，不将首错伪记成功。
+333	
+334	
+335	## 普通验证授权与明确边界
+336	
+337	setup owner已按本角色原锁准备npm依赖（忽略lifecycle）和独占venv，没有运行产品。**正式审查中允许按必要性运行原普通对应检查及受控测试worker回归**，这项许可取代旧正文“本准备授权无产品测试/只能先列命令”的操作限制；不机械重跑无变化历史。不能泛禁child进程、临时SQLite、原READONLY/事务/进程退出suite；也不能扩大物理资源研究、已拒绝动作、新native/caller/producer或API付费。
+338	
+339	实际调用预检及每项副作用/边界如下，必须完整遵守。setup成功不证明下表检查或产品通过；本角色只对自己实际运行的命令和观察负责。
+340	
+341	# T07 完整工程外审：静态调用预检与执行边界
+342	
+343	本文件是新派发的操作补充，不改B→f9产品/测试/验收、旧round-1正文或manifest。当前只做setup和静态准备，没有运行下表产品检查。正式审者在root预检并短时创建各自任务后，可按必要性运行普通对应检查，不机械重跑无变化历史。
+344	
+345	## 正常验证的实际调用
+346	
+347	| 命令/入口                                                                                      | 固定源码中的实际调用和副作用                                                                                                                                                                             | 本次派发边界                                                                                                                                                                                                                                                                                                |
+348	| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+349	| `npm run check`                                                                                | 根package.json依次lint、format:check、typecheck、vitest、electron-vite build、ruff check/format-check、pytest                                                                                            | 审者必要时可跑完整正常检查；记录每段退出码及首错，不能把setup当check通过。无修改型format、HMR、Electron启动或打包产物运行                                                                                                                                                                                   |
+350	| `npm run lint` / `npm run format:check` / `npm run typecheck`                                  | eslint读取工程；prettier检查；contracts/unit/desktop三个tsc检查。原 `.prettierignore` 忽略旧归档docs/reviews                                                                                             | 可执行；新报告/metadata造成状态或检查差异须如实记录，不新增ignore、删metadata或改源码求绿。新派发文档另显式格式检查，冻结原件不格式化                                                                                                                                                                       |
+351	| `npm test` / `npx --no-install vitest run tests/unit/t07-scenario.test.ts`                     | `vitest.config.mts`包含整个tests/unit。`task-runtime.test.ts`真实spawn本树`.venv` coordinator/worker和临时SQLite；engine-environment真实Node子进程。window/native-driver相关单测使用mock，不启动Electron | 允许必要原正常单测及受控worker回归，不能因为名称含native/child/SQLite就一概禁止。不得设置ROOT_SOURCE_PATH指向其他树，不能改测试或读取peer                                                                                                                                                                   |
+352	| `uv run --frozen pytest` / 两个T07专项pytest                                                   | 根pyproject的testpaths是packages/engine/tests。原套件包含Store/Job临时SQLite、事务/取消/READONLY、受控异常退出、owner PID/bootstrap与runtime边界；T07持久化专项44项含10个真实os._exit子进程              | 允许固定原套件中这些受控回归。只用本树venv/已批准固定源码和自己新建临时DB，原测试的精确自有PID清理/临时目录回收可按原逻辑执行。不得借此新增物理资源、损坏研究或新native/caller/producer票                                                                                                                   |
+353	| `npm run build`                                                                                | desktop workspace仅`electron-vite build`，写本树out，未启动Electron                                                                                                                                      | 必要时允许普通构建，保持输出与日志可归因；不自动运行产物                                                                                                                                                                                                                                                    |
+354	| `npm run verify:sources`                                                                       | 仅运行scripts/verify-sources.mjs，对归档源做本地hash校验                                                                                                                                                 | 必要时允许，不改归档源                                                                                                                                                                                                                                                                                      |
+355	| 原 `evidence/render-probe.mjs`                                                                 | 原脚本读本树页面与fixture，临时Vite构建、sandbox headless Chromium，再写`docs/reviews/T07/evidence/ui-probe.json`及PNG；finally回收自己`.t07-ui-*`scratch                                                | **禁止在固定review checkout原位执行，避免覆盖旧证据。** 如审者确需补验，应先在其独占scratch建立完整固定reviewHead的Git文件副本，逐项核来源/输入身份，以该副本为cwd调用原脚本；产物只落副本。使用自己环境及已有可用Chromium，不修改候选脚本、不改sandbox。保留副本清单和原始新输出；不能把合成页面当正式接线 |
+356	| dev/HMR、`test:e2e`、`engine:build`、`package:dir`、新native/caller/producer、真实业务模型/API | 涉及窗口、HMR写源码、安装/打包/产物、或其他单独运行票                                                                                                                                                    | 本次普通工程审查不授权新增这些运行；发现实际必要缺口交owner/root精确调度，不把桌面静默、用户时段或CLI登录当当前前置。桌面政策撤回不解除原明确HOLD或自动审批拒绝                                                                                                                                             |
+357	
+358	受控原套件可能会使用ctypes/原生进程身份观察或SQLite临时损坏/迁移fixture，这不是新增ABI/loader/drain或物理资源实验许可。不得泛禁原child/SQLite套件，也不得接触正式业务库、其他树运行库、未批变化源码或扩大已拒绝命令；遇实际自动审批拒绝须保留原理由，不变换包装绕过。
+359	
+360	## 实际环境隔离和取证
+361	
+362	每个审者只用其自身review根作为应用workspace/cwd。node_modules与.venv位于各自Git树，npm/uv cache、scratch、TMPDIR、pytest basetemp、raw、metadata位于其独占`.runtime`旁目录。没有共享可变env、venv、DB、报告或scratch；系统Node/uv/Python基础解释器和Git对象是只读工具/对象，不是共享运行状态。
+363	
+364	setup只允许按原锁执行`uv sync --frozen --no-python-downloads`及`npm ci --ignore-scripts --no-audit --fund=false`，逐命令留完整stdout/stderr、起止时间和退出码。npm lifecycle未执行，不据此声称Electron二进制或产品测试已验。UV缓存、npm缓存与TMPDIR均明确归本角色。没有在setup中运行产品。
+365	
+366	实际运行普通检查时，将TMPDIR/UV_CACHE_DIR/UV_PROJECT_ENVIRONMENT/npm cache/RUFF_CACHE_DIR指向本角色路径；清除ROOT_SOURCE_PATH、PYTHONPATH、ONTOLEARN_TEST_ENGINE、ONTOLEARN_DB_PATH等跨树或业务库覆盖。pytest如显式basetemp必须使用本角色新的唯一子目录，不能重复指定已有原件目录。记录每次实际命令、环境中非敏感路径、退出码、原始输出hash与源码前后身份。不得打印环境凭据或读取认证文件。
+367	
+368	审者可写自己的最终报告和独占sidecar下检查/取证/metadata材料，允许原正常检查生成本树out/cache；实现、测试、fixture、验收、锁、配置、旧证据及旧输入保持只读。应用确实生成的本树metadata按路径/大小/时间记录增长，保留原状态；不清理、不新增ignore掩盖，也不把预期metadata dirty当产品变更。敏感凭据不读取或复制。AGENTS由阶段主聊天唯一传播，保护M不stage，setup owner不代改。
+369	
+370	## 独立性和完整审查门
+371	
+372	本轮完整范围仍为B→f9全部25路径、14实现/测试/fixture及全部原验收、历史首错与IR-01～05发现/关闭；没有缩为最新delta、source-only或单项投影。P前6个技术组成在同一个完整S1任务内审，真实T05/T06、T01/I04生命周期、App/bridge、完整E5、T10跨设备与两OS/真人/发布缺口照实记录；这些父缺口不阻止对现有完整工程给出独立结论。
+373	
+374	严禁peer本轮报告、状态、任务流、metadata的读取或发现性枚举：不扫其他worktree、controller实时队列、其他应用任务/账号或全session历史。旧原始内审消息只读本树封存9条，不跟随source索引到正在增长的原session。Git只读本任务指定base/product/reviewHead与本树状态，不做其他worktree/refs发现。两模型只用各自root和输入，不互传本轮意见。
+375	
+376	模型、思考和权限均是待逐任务读回的要求，不预填实际Pass或实际任务设置。需要真实任务ID/正文受理/完整终态、全文报告、命令和未验项、所有意见处置及前后冻结身份；后续push/PR、CI、正常合并、远端和完整父功能门均保留。setup/普通文档独审不是指定双审。
+377	
+378	## 准备首错记录
+379	
+380	初次只读枚举误试了不存在的`uv.toml`与`vitest.config.ts`，相应cat命令非零，未执行任何产品。随后依据文件清单读取真实根`pyproject.toml`、`vitest.config.mts`、`eslint.config.mjs`及`.python-version`，完成上述调用预检。没有因首错修改产品或丢弃历史证据。
+381	
+382	
+383	具体运行时非敏感环境路径：TMPDIR=`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/tmp`，UV_CACHE_DIR=`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/uv-cache`，UV_PROJECT_ENVIRONMENT=`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157/.venv`，npm cache=`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/npm-cache`，RUFF_CACHE_DIR=`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/ruff-cache`。清除ROOT_SOURCE_PATH/PYTHONPATH/ONTOLEARN_TEST_ENGINE/ONTOLEARN_DB_PATH跨树覆盖。pytest如指定basetemp只能用 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-f9a1157.runtime/pytest/` 下全新唯一子目录。不要输出环境秘密，不读取/搬运凭据。
+384	
+385	允许写自己的报告、raw/metadata/检查临时材料，以及正常检查按原逻辑生成的本树out/cache；候选源码/测试/fixture/验收/依赖锁/配置和旧证据/旧输入只读。应用生成的本树metadata按实际路径/大小/mtime记录增长并保留；不能新加ignore、删除或清空metadata求git clean。继承的ignore状态也要如实记录，不能把未显示文件当不存在。正常原测试对其精确自有子进程/临时目录的回收不等于删除应用metadata。
+386	
+387	## 严格独立性及调度
+388	
+389	只能读取本角色workspace、自己的runtime和指定B/P/reviewHead的只读Git对象。**禁止读取或发现peer本轮报告、状态、任务流或metadata**；禁止枚举其他worktree/refs、controller实时队列、全会话文件、其他应用账号任务。禁止把另一模型本轮意见带入本任务；历史普通独审已完整封存于自己输入，可核历史关闭。
+390	
+391	当前人类已撤回静默桌面要求，可按已授权范围computer use；没有用户时段、CLI登录、后台或隔离桌面前置。桌面仅创建/设置/读回短时内部串行，后台推理不占整个应用。准备时当前短lease归T01，本消息不是T07操作前台许可；实际创建负责人须先取得root短lease。此处是内部调度，不让用户重答桌面时段，不重复其他线既有真实任务。
+392	
+393	真实T05/T06、T01/I04正式Job生命周期/取消/原子进度/终态/operation-id响应丢失对账、公共契约/bridge/App、实际删除/恢复/快照创建/续跑、完整E5四类领域结果、T10跨设备及FR-700～705/两OS/真人/发布门照实保留。这些缺口不阻止对现有完整工程审查，但不能填成已完成或缩减原父验收。所有57P0、双审/全文终态/所有意见处置/CI/远端门保留。
+394	
+395	## 当前操作政策全文
+396	
+397	以下为本次快照；其操作段优先于后附旧冻结正文中的历史政策。执行前由负责人核当时仍适用，审者不为发现最新队列而读取peer/controller状态。完全访问不允许改产品或自行commit/push/切分支。
+398	
+399	### 当前受保护AGENTS全文
+400	
+401	# OntoLearn Studio Agent 指南
+402	
+403	默认中文，结论先行，简洁。先读需求依据再动手；不确定就问，不猜产品决定。
+404	
+405	## 1. 先读什么
+406	
+407	| 场景              | 必读                                                                                                                                                                                                                 |
+408	| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+409	| 任何业务语义改动  | [PRD V0.6](docs/prd/PRD-本体学习与落地Agent工作台.md) 对应 FR 条款 + 附录 C/D/E/G                                                                                                                                    |
+410	| 工程/架构改动     | [M0 更新计划](docs/architecture/m0-review-and-update-plan-2026-10-19.md)（S1/S2/S3/C1/B1/U1 验收全文）、[ADR-0001](docs/architecture/0001-desktop-framework.md)、[ADR-0002](docs/iterations/I01/ADR-0002-storage.md) |
+411	| 当前状态与待办    | [M0 清单](docs/m0-checklist.md)；进行中迭代见 `docs/reviews/Ixx/status.md`                                                                                                                                           |
+412	| 迭代 I01–I06 执行 | 仓库外总控 `../iteration-control/2026-10-19/scope.md` 与 `state.json`                                                                                                                                                |
+413	
+414	状态快照（2026-10-20，以上述文件为准）：I01/S1 存储 spike 已合并 develop；I02/C1 CSP 与窗口恢复处于 CI 修复门禁；I03–I06 未开始。产品正式能力仍只有 health；存储是 Python 内部 API，未暴露给 IPC、UI 或 Agent。禁止把占位界面、测试替身或 spike 说成已实现的产品能力。
+415	
+416	## 2. 仓库地图
+417	
+418	```text
+419	apps/desktop/src/main/      Electron 主进程：窗口安全、来源校验、引擎监督、恢复
+420	apps/desktop/src/preload/   唯一桥接（按业务命名的方法）
+421	apps/desktop/src/renderer/  React UI（无 Node 能力）
+422	apps/desktop/src/csp.ts     CSP 唯一配置源（生产 meta / 开发 header 两个变体）
+423	packages/contracts/         TS 边界类型与 zod 运行时校验
+424	packages/engine/            Python stdio 引擎：protocol.py、storage.py、invalidation-v2.json
+425	tests/unit, tests/e2e       vitest 单测；Playwright 驱动真实 Electron
+426	docs/iterations/Ixx/        迭代设计、验收、证据；docs/reviews/Ixx/ 评审与流程记录
+427	```
+428	
+429	## 3. 架构不变量（违反即阻断）
+430	
+431	- **本地优先**：不自动启用模型、遥测或云服务；不开 HTTP 端口；不引入云数据库或未经测量的图数据库。
+432	- **渲染端隔离**：renderer 不得直接使用 Node、文件系统、shell 或通用 IPC；preload 只暴露按业务命名的方法，禁止 `invoke(method, params)` 式通道。IPC 处理器保持 sender/mainFrame/可信文档校验。
+433	- **CSP**：只改 `csp.ts` 一处；生产脚本不得出现 `unsafe-inline`/`unsafe-eval`；不手写第三份策略。
+434	- **确定性与 Agent 解耦**：确定性结果只能来自真实引擎；Agent 只产出草稿并调用白名单工具，不得自动确认自己的修改。
+435	- **存储**：SQLite 是唯一可变源真相，正式写入只经 `Store.commit`（版本化、可预览、原子提交、旧基线拒绝）；RDFLib 图只从不可变快照重建，不能写回。
+436	- **数据层次**：本体定义、断言事实、当前推导、场景副本、历史运行分层；历史与已提交轮次不可改写，缓存回收不得触及历史。
+437	- **失效规则**：`staleReason` 只来自 `invalidation-v2.json`；仅改模型配置不使领域结果过期；历史/失败/取消不计为过期原因。
+438	- **模型外发**（S3 前不得接入）：唯一网关在主进程，凭据只在主进程；Python 引擎不持有密钥，也不调用模型。
+439	- **错误**：跨边界只传固定错误码和受限参数，不回传原始异常、堆栈、路径、单元格原值或凭据。
+440	
+441	## 4. 改动类型 → 必跑验证
+442	
+443	| 改动                                       | 命令                                                               |
+444	| ------------------------------------------ | ------------------------------------------------------------------ |
+445	| 任意代码或配置                             | `npm run check`（lint/格式/类型/vitest/构建/ruff/pytest）          |
+446	| 涉及归档资料或 `docs/source-manifest.json` | `npm run verify:sources`                                           |
+447	| 主进程、preload、bridge、CSP、窗口         | 另跑 `npm run test:e2e`（Linux 用 `xvfb-run -a`）                  |
+448	| 引擎依赖、打包配置                         | 另跑 `npm run package:dir`，并在包内运行同一样例                   |
+449	| 仅文档                                     | `npx prettier --check <文件>`；不批量格式化归档 PRD、审查和 `.pen` |
+450	
+451	`I02_HMR=1` 的 HMR 探针会临时改写源文件，评审冻结期间禁止运行。结果须分开报告静态、运行、打包、生产四类证据，不以静态检查代替运行证据。
+452	
+453	### 桌面工具与本地验证（2026-10-22 用户更新）
+454	
+455	- 用户明确要求“直接使用 computer use 调用桌面端的工具，删除之前要求的静默桌面操作”。此前静默、不占用当前桌面、禁止聚焦或自动点击、须先取得桌面时段的偏好已撤回，不再作为现行限制。
+456	- 已授权任务可按需直接使用 computer use 操作 ZCode、MiniMax Code 等桌面工具，也可运行本机浏览器、Electron、原生窗口与恢复验收；不为常规桌面操作重复询问或把后台、headless、隔离桌面作为前置。
+457	- 多条开发线操作同一桌面应用或使用互斥测试资源时，由总控内部协调，避免互相改动任务或干扰测试；无需额外向用户预约桌面时段。清理进程仍须核对自有 PID 和任务归属，不得宽泛结束用户或其他任务的进程。
+458	- 验证仍须覆盖原验收条件，区分静态、运行、打包与生产证据；不得用隐藏窗口、禁用 hang monitor 或 stub 原生提示冒充真实原生验收。操作政策更新不改变冻结候选、指定双审与发布门禁。
+459	
+460	## 5. 分支、迭代与评审门禁
+461	
+462	- **并行开发为默认执行要求（2026-10-20 用户确认）**：适用于当前 M0、后续里程碑、不同功能模块，以及单个模块内可独立开发的具体子任务。先识别真实接口、数据和集成依赖；可独立验收的工作须拆分并行推进，不得仅因迭代编号或模块顺序而全量串行。强依赖保留前置条件，不为增加并行数而重复实现或提前假定未冻结契约。
+463	- **独立 worktree + feature 分支**：每条并行开发线使用自己的 Git worktree、feature 分支和负责 agent，禁止多个开发 agent 在同一 checkout 切分支或同时写文件。迭代使用 `feature/Ixx-<主题>`，模块子任务使用 `feature/<模块>-<子任务>`；其他改动使用 `feat/`、`fix/`、`docs/`、`chore/`。从核验过的 `develop` 提交切出并记录 base SHA，经 PR 合回；不强推共享分支。提交前缀使用 `feat:`、`fix:`、`docs:`、`test:`、`chore:`。
+464	- **拆分与文件责任**：启动前记录各子任务的范围、前置依赖、接口约定、文件负责人、验收和集成顺序，再分配独立 agent。共享契约、存储迁移、能力注册表、依赖清单与锁文件指定唯一维护者；其他开发线提出接口需求，由维护者统一修改。依赖尚未就绪时，可先做独立设计、纯模块、真实库探针及对应测试，后置正式接线与联验；替身通过不得计作集成完成。
+465	- **M0 的并行拆分**：I02 继续当前候选评审；I03 可基于已完成的 I01 并行设计；I05 可先做真实候选语义、外联拒绝、依赖与打包验证；I06 可先做网关 ADR、独立授权与凭据模块。I04 实施须等待 I03 同版本设计审查通过并合并；I05/I06 的正式接入及最终验收须等待各自实际依赖就绪，并补齐与存储、任务和窗口生命周期的联验。引入真实依赖时即做相应打包验证，不全部推迟到最终集成。
+466	- **运行资源隔离**：各 worktree 独立依赖环境、构建输出、临时数据、日志及测试证据，开发端口和应用测试数据目录分别配置；不得共享可变运行库。桌面焦点、原生故障恢复、系统凭据存储及外部审查应用的 UI 操作由总控内部协调串行使用，避免运行互扰，不以向用户申请桌面时段为前置；已有固定端口或未隔离资源的测试须排队。
+467	- **并行开发、按依赖串行集成**：每条开发线独立验证并履行现行评审门禁；合并前同步目标基线、处理冲突并验证实际集成结果。目标基线或受审内容变化时，按现行规则重新验证及独立审查，不沿用旧版本通过。保留双指定模型、CI 和远端核验要求；子任务完成不等于父模块或里程碑验收完成。
+468	- **冻结与调度记录**：候选冻结后不得修改受审路径，任何实现、测试、配置、依赖或验收改动都要生成新候选，并按现行门禁重新独立审查。其他工作在独立 worktree 推进，不干扰冻结候选。总控记录并行任务、worktree/分支、base/head、文件责任、依赖和资源预约；仅按实际进展更新状态，不把获准并行登记为已启动或完成。
+469	- **与旧计划的关系**：本节取代旧 `scope.md` 中“所有迭代必须前项合并后才启动后项”的统一串行调度要求；执行时总控须同步相关范围与调度记录，保留原需求、真实技术依赖、验收及评审门禁。后续功能模块和子任务同样执行本节，无需为常规并行拆分重复征求授权。
+470	- **进行中开发与 Goal 的过渡**：按最新桌面操作政策执行；并行策略在安全边界用于新任务/新开发线，不强行迁移正在冻结审查的 checkout、不改写其候选、不重建已有 Goal、不丢弃报告或重跑无变化的验证。用户授权的 AGENTS/调度文档变化单独记录前后哈希与适用范围；若未改变受审实现、测试、依赖、CI、验收或集成基线，不将其误判为受审产品变更，不单因此重开整轮审查。若实际受审内容或基线确有变化，仍执行原重新审查规则。审查代码读取固定 SHA，实际执行遵守最新操作约束。新 worktree 须携带并核对最新指南，不能只读取旧基线中的 AGENTS；总控负责同步规则，开发会话各自维护状态，避免共同改写 `state.json`。
+471	- 不混入其他会话的未提交改动；禁止 `git add -A` 或整体 stage。只 stage 本任务文件。
+472	- 复杂或高风险交付使用独立 agent 审查，避免并发修改共享契约文件；不得替换指定审查模型或降低门禁。
+473	
+474	### 效率与额度恢复（2026-10-20 用户确认）
+475	
+476	- 以正确交付和开发效率为优先，不因 token 消耗缩减实现、异常处理、上下文或必要验证。充分使用实际可用的并行 agent/worktree；避免重复探索、无变化重测和无效轮询，不擅自更换指定模型或降低审查门禁。
+477	- 用户说明 ZCode、Codex、MiniMax Code 均有额外重置次数；遇实际额度限制时由账号唯一负责人核实状态，优先通过经核验的官方方式使用已有权益恢复，成功后续接原任务。其他开发线保存现场并继续无关工作，不重复消费同一权益；短时限速、服务/认证/账单故障不能当作额度耗尽盲目充值。
+478	- 自动恢复受实际工具/平台约束：Codex `consume_usage_reset` 每次必须取得用户对该次操作的明确确认，未来批量授权不能替代；只在工具的额度条件满足时使用，同次不确定重试复用幂等 key，完成后核验额度，不因刷新失败重复消费。ZCode/MiniMax Code 的可用恢复机制尚待核实，不虚称已实现无人值守充值；禁止通过 UI 绕过工具确认。
+479	- 已有重置/余额与新增付费分开：本次未提供新增付款的单次金额及累计上限，实际购买前须明确这些条件及授权；不将“不考虑 token”扩大为无限付款、自动订阅升级或切换付费 API。完整执行与透传规则见仓库外 `../iteration-control/2026-10-19/goal-objective.md` 第九节；运行中 Goal 须实际同步，旧冻结输入保留。
+480	
+481	## 6. 文档与证据规范
+482	
+483	- **唯一状态来源**：完成度只在 `docs/m0-checklist.md` 和对应 `status.md` 中维护；其他文档链接过去，不重复“不代表 M0 完成”之类的声明。
+484	- ADR 采用后放到 `docs/architecture/000N-<主题>.md`；迭代目录只保留设计、验收和证据。
+485	- 证据只提交摘要、关键 JSON 和哈希；大段原始日志、截图、runtime dump 优先放 CI artifact。确需入库时写明理由。
+486	- 文档写决定、理由、未决项，每份 ADR 控制在 1–2 屏；不编造性能数字、容量通过线、日期或人员承诺。
+487	- 不提交凭据、业务数据、`.sqlite`/`.db` 运行库、`.env`、`.mimosa/`。
+488	
+489	## 7. 编码约定
+490	
+491	- TypeScript `strict`；边界数据一律经 zod `.strict()` 解析。Python 3.12 + ruff（line-length 100，E/F/I/UP/B）。
+492	- JS 直接依赖写精确版本；npm 与 uv 两份锁文件随改动一起提交，CI 使用 `npm ci` 和 `uv sync --frozen`。
+493	- 测试断言真实需求和错误边界（完整预期集合/顺序），不只断言数量或按钮可点击。
+494	- 不设 PRD Q2/Q3/Q5/Q6/Q7/Q8/Q9 的默认答案；遇到这些决定时停下来询问。
+495	
+496	### ZCode / MiniMax Code 默认执行权限（2026-10-21 用户确认）
+497	
+498	- 用户明确要求“更新调用zcode和minimax code的权限，默认为完全访问和始终授权”。ZCode 默认完全访问（permission.mode=yolo），MiniMax Code 默认始终授权/Full access（permissionMode=bypassPermissions）。创建或进入审查任务时读回该任务实际模式；用户级配置不能证明已有会话即时切换。已获授权，不重复询问默认模式。
+499	- 当前计算、Goal和冻结审查不重启；在应用支持的安全边界确认或调整权限。完全访问不改变审查只读职责：仅运行约定验证、写独立报告，不修改实现/测试/依赖/配置，不提交、推送或切分支。
+500	- 指定模型与思考等级、同版双审、意见处理、CI 和远端核验继续适用；桌面操作按本指南最新政策执行，不扩大为新增付费、读取密钥或绕过平台逐次确认。
+501	- 详见仓库外 `../iteration-control/2026-10-21-weekly-release/external-review-permissions.md`（worktree中从本体根目录定位）；新任务附上本节，旧冻结输入保留，单纯操作政策更新不触发无变化实现重审。
+502	
+503	
+504	### 当前共同开发指令全文（含第九节）
+505	
+506	# 完整首版功能开发共同指令
+507	
+508	用户已在规划聊天 `01a15bad-ceeb-7103-b611-fff95e1f31ee` 明确要求 OntoLearn-Studio 全部原定首版功能于北京时间2026-10-25前开发上线、质量不降，并授权“发送并落实到现有总控”。总控实际读取原始用户消息确认了授权。本指令用于新功能开发聊天；截止日是目标，不是保质按期保证。
+509	
+510	先读取本目录 controller-handoff.md、plan.md、tasks.json 中自己的任务、requirements.csv、acceptance-baselines.csv、review.md，以及实际工作树最新版AGENTS和对应PRD原条款/附录。57项P0、附录C–G及第10–12节保留；P1/P2原延期安排不变。T编号不覆盖I01–I06历史；纯服务完成不等于父模块P0完成，integration_prerequisites不是全部验收条件。
+511	
+512	本会话只负责指定的一项功能，建立自己的Goal（不存在时），不继承总控Goal。先核验并回执绝对worktree、分支、base、实际git状态、指南SHA、唯一文件责任、验收与下一交付。总控已创建独立worktree，切勿改主checkout或其他树；AGENTS是总控复制的受保护操作规则，SHA应为 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，保持未暂存，不混入产品提交。不得重建原I05/I06 Goal或继续写其树。
+513	
+514	当前批准develop为 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。I01–I04已合并；I05 C1在指定双审冻结，已发现词法语义阻断，I06在自己的14文件接线与隔离平台联验。不得采用未批准I05/I06实现、环境或测试结果为正式依赖。只读取已批准基线接口开展独立工作，具体接口缺口/共享改动向总控提供精确路径和依据。
+515	
+516	初始共享责任（历史，已被下述逐项生效交接更新）：I06原独占 contracts/src/{index.ts,v2.ts}、contracts/v2/{schema,registry,errors,fixtures,binding-regressions}.json，desktop/main/{index.ts,task-service.ts,engine.ts}、preload/index.ts、renderer/src/{env.d.ts,App.tsx,style.css}；I05原保留其他Python Store/coordinator/worker/protocol、语义/resources、entrypoint/build/锁/CI/窗口安全恢复。这些逻辑文件在任何树中均不得抢写。新增私有路径可按本任务授权实施；现有共享文件、迁移和依赖锁一律先做具体交接。不得复制第二套公共契约、SQLite可变权威或Store写入通道来绕过交接。子任务独立worktree/feature和文件责任，复杂交付独立agent审查；核验真实并发槽，不将创建目录当作已启动agent。
+517	
+518	后续责任变更补充：I05/T01双方实际接受、独立复核及总控登记后，只有 `packages/engine/src/ontolearn_engine/storage.py` 后续维护已交T01生效，详见 I05-T01-storage-ownership-handoff.md 和 execution-state.json。I05冻结树保持原字节，其余共享/14文件不变。不得将这个单文件交接扩张为其他文件授权；当前具体责任以总控实际生效记录为准。
+519	
+520	2026-10-21新增已生效交接：T01除原storage.py外，已唯一接管Python四个 `packages/engine/src/ontolearn_engine/{job_store.py,coordinator.py,__main__.py}`、`packages/contracts/python/contract_v2.py`，及原I06 canonical七个 `packages/contracts/src/{index.ts,v2.ts}`、`packages/contracts/v2/{schema,registry,errors,fixtures,binding-regressions}.json` 和 `apps/desktop/src/main/engine.ts`，仅从批准5f独立实施格式基础。T03已唯一接管 `packages/engine/pyproject.toml`、`uv.lock`、`scripts/build-engine.mjs`、`packages/engine/entrypoint.py`，仅做XLSX最小依赖/收集/受限probe。原I05/I06树原字节保留，可读/构建但不得继续维护已交逻辑文件；必要修复先精确返还。I06仍维护其余六个main/index、task-service、preload/index、env.d.ts、App.tsx、style.css，I05仍维护其他未交路径；既有测试、CI、resources等不自动扩权。三份新handoff协议及独立报告/实际接受/生效通知见本目录 I05-T01-format3-ownership-handoff.md、I06-T01-format3-ownership-handoff.md、I05-T03-build-ownership-handoff.md 和execution-state.json；这不是未批准代码采用、公共格式启用或运行通过。
+521	
+522	2026-10-22人类已撤回静默桌面、不占用/聚焦/点击限制及先预约用户时段的偏好。已授权任务可直接computer use操作桌面端及按原验收运行本机原生测试；互斥资源由总控内部协调，不把CLI认证/后台/headless/隔离桌面作为前置。具体阶段源码/写面/运行票/被拒工作边界不随政策扩大；指定双审、冻结、必要验证、CI/平台/真人/远端和付款逐次确认门保持。当前详细政策见 /Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md。 桌面仅在创建/设置/读回阶段按execution-state当前短lease串行，原任务后台推理不独占整个应用；CUA对Codex app的工具拒绝仍不得绕过。
+523	
+524	开发至完整可审查结果，必要异常路径/事务/撤销/历史隔离均保留。AGENTS所需 check/sources/e2e/package 按实际改动执行，隔离项真实待验，首跑失败原件保留。文档/纯模块/静态检查不能冒充正式接线或生产。没有变化不重复测试。依赖资源缺失只阻塞相关部分，先完成独立工作，不擅自结束或暂停整个Goal。
+525	
+526	最终完整验收前刷新实际批准依赖及develop、集成冲突并验证；冻结真实base/head。由同一开发聊天通过CUA在ZCode选择本精确工作树、GLM-5.3/最高，MiniMax Code选择本精确工作树、M3.1-Flash/xhigh；每轮双方各新建独立只读完整范围任务，不互传本轮意见。报告按 docs/reviews/Txx/round-N/{zcode-glm53,minimax-m31flash}.md，逐项含任务来源/模型设置/路径分支/base/head/检查命令结果/未验边界/问题严重度位置触发影响证据建议/历史逐项关闭/明确通过或不通过或无法验证。两个任务必须实际终态，全文读回、全部意见处置；不能自己把指定模型不通过改成通过。所有实现/测试/配置/依赖/验收或基线变化后重新验证并双方全新完整审查。纯追加流程证据记录对应关系，不自动触发无变化重审。
+527	
+528	同版双方明确通过、验收和必要验证通过、全部意见有处置、实际推送内容与受审实现一致后才push/PR；实际CI通过后正常合并develop、核验远端与保护源。必须attach创建PR；无强推、绕过分支保护或双审前push。集成/外审按总控预约，减少前方候选基线失效。纯服务可单独冻结合并，但原父任务P0跨模块验收与完整发布门不关闭。
+529	
+530	额度：效率和完整交付优先，不因token删减；真实告警由账号唯一负责人核实。Codex重置每次需本人明确确认/阈值/幂等，不能UI绕过；不新增付费、订阅、API消费或扩张授权。只读服务/身份元数据不含读取或输出密钥。真人非开发用户验收不能agent替代，向外招募/消息仍需用户明确授权。
+531	
+532	各线只维护自己的 docs/reviews/Txx/status.md 及证据，不写根 state.json、tasks.json 或其他总控文件。及时保留可恢复SHA/原件和准确下一步；实际独立实现与验收证据成熟后向总控给出可读交付，不用反复询问常规实施许可。不能将配置/脚本存在、目录/模型名称或数量相同当作验收。完成后父模块/远端/上线分别据实记录。
+533	
+534	## 第九节与当前桌面操作政策
+535	
+536	以下按原目标文件及最新AGENTS原文附带；该操作政策补充不重建Goal、不改冻结实现或已归档输入，也不单因此重开产品审查。
+537	
+538	九、效率优先、额度恢复与持续执行（2026-10-20 用户更新）
+539	
+540	本节与最新 AGENTS/scope 一起适用于总控、现有功能 Goal、后续开发会话及模块子任务；与旧提示词统一串行、额度不足一律停止后项的文字冲突时，以本节为准。用户表示 ZCode、Codex、MiniMax Code 均仍有额外重置次数；这属于用户提供的权益信息，实际余额、可用次数和恢复结果须在执行时核实，不假定无限额度。
+541	
+542	1. **开发效率优先。** 不以节省 token 为目标压缩需求、实现、异常处理、必要上下文或验证；以正确交付和缩短关键路径为目标。充分利用实际可用的 agent 并发槽、独立 worktree 与 feature 分支，尽早开展不依赖尚未就绪接口的设计、真实探针和独立模块。不是为提高 token 消耗而重复探索、无变化重测、无效轮询或新增无关范围；普通任务不强设三轮。
+543	2. **保留指定模型与门禁。** ZCode 的 GLM-5.3/最高思考、MiniMax Code 的 M3.1-Flash/xhigh 继续适用；Codex 保持任务既有设置，按复杂度和已授权工具能力分配 agent，不因节省额度擅自降级或更换模型。独立审查、冻结候选、原验收、双模型通过、CI 与远端核验要求均不变。
+544	3. **额度受限先恢复。** 出现实际额度告警或明确 rate/usage-limit 错误时，先区分额度耗尽、短时限速、服务故障、账单异常和认证错误，保存 base/head、任务标识、报告与已运行证据。由总控指定每个平台/账号唯一额度负责人，查询当前额度、可用重置权益及恢复条件；不要让多个并行任务同时消费同一权益或重复充值。

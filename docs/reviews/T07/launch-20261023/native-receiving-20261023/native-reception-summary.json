@@ -1,0 +1,56 @@
+{
+  "receivedAtUTC": "2026-10-22T19:31:53.037707+00:00",
+  "supersedesOnlyMissingEvidenceAssertionsAtPriorCheckpoint": "9e849040b79f827603529505bf1eda0f6f4968c3",
+  "scope": "Exact own native session + original turn reception; no product/test/GUI execution",
+  "zcode": {
+    "sessionId": "session_488117259b5e999c5321f8a1141cefd6",
+    "turnId": "turn_6c468d1b-4dd4-4136-a3c6-6e3c974ee5c5",
+    "querySource": "main_turn",
+    "modelCalls": 45,
+    "toolCalls": 68,
+    "uniqueToolResults": 68,
+    "officialTerminal": "completed",
+    "attachmentBytes": 143012,
+    "attachmentSha256": "bfd74c930cddbc9274ef05e30f7c3eaf482a56ff3caa5a10718fdc30128c7287",
+    "attachmentFullVisibleReadReconstructed": true,
+    "reportBytes": 19230,
+    "reportSha256": "8ee32ae5adad3f47959f479d8e855f38f9ecaccdbbde800a864a83c57f7006f7",
+    "nativeWriteBindingVerified": true
+  },
+  "minimax": {
+    "sessionId": "mvs_bfa6c40659f6405391d5de2bbb8cbc0f",
+    "turnId": "5e3cbf95-1b5a-427f-a46f-a89f4ef7c109",
+    "ownMessages": 148,
+    "toolCalls": 85,
+    "toolResults": 85,
+    "officialTerminal": "completed",
+    "attachmentBytes": 143054,
+    "attachmentSha256": "153dc55dbae5e3b27b8ae65e0a74f14e1da01c36398cffa477691269f7e325dd",
+    "attachmentFullVisibleReadReconstructed": true,
+    "reportBytes": 30205,
+    "reportSha256": "050a018a762fe28a6e8b52a6b0badb6ccd3ad93ba6d657cc35b0c4451ca3eb6f",
+    "nativeWriteThenTwoEditBindingVerified": true,
+    "oldMetadataReportBytes29378Preserved": true
+  },
+  "formalCompletionDoesNotMeanReviewGatePass": true,
+  "fullScopeReadVerification": "NOT_MET: independent audit NR-01/02; Z12/14 and M10/14 content coverage, full PRD/history not all read",
+  "gate": "PROCESS_FAIL",
+  "processIssuesRetained": [
+    "MiniMax prohibited in-place probe execution",
+    "ZCode rejected Bash followed by Write-shell-wrapper and Bash execution; investigate prohibited bypass/undisclosed first rejection"
+  ],
+  "ownerActions": {
+    "CUA": false,
+    "newExternalTasks": false,
+    "productTests": false,
+    "productEdits": false,
+    "globalConfigRead": false,
+    "globalSessionEnumeration": false,
+    "goalChanged": false,
+    "pushPR": false
+  },
+  "nativeIdentityAttachmentTerminalReportReception": "VERIFIED",
+  "rootConditionalProcessFailureTriggered": true,
+  "independentNativeAuditSha256": "1ae1439ae8a2090e5d7bb3005325be6968162d3a9473f59413c036053ee9098a",
+  "sevenNonblockingOpinionDispositions": "seven-opinion-dispositions.json"
+}
