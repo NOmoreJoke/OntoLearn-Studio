@@ -31,6 +31,17 @@ export function classTree(objects: readonly ObjectRow[]): readonly TreeRow[] {
   const visited = new Set<string>()
   const sorted = (values: readonly ObjectRow[]) =>
     [...values].sort((a, b) => (a.iri < b.iri ? -1 : a.iri > b.iri ? 1 : 0))
+  const ordered = sorted(classes)
+  // Index children once. Traversal still pays for edges and ancestor sets.
+  const children = new Map<string, ObjectRow[]>()
+  for (const row of ordered) {
+    for (const parent of new Set(row.parents)) {
+      if (!byId.has(parent)) continue
+      const siblings = children.get(parent) ?? []
+      siblings.push(row)
+      children.set(parent, siblings)
+    }
+  }
   const walk = (start: ObjectRow) => {
     const stack = [{ row: start, depth: 0, ancestors: new Set<string>() }]
     while (stack.length) {
@@ -40,16 +51,13 @@ export function classTree(objects: readonly ObjectRow[]): readonly TreeRow[] {
       if (repeated) continue
       visited.add(row.iri)
       const next = new Set([...ancestors, row.iri])
-      for (const child of sorted(
-        classes.filter((item) => item.parents.includes(row.iri)),
-      ).reverse())
+      for (const child of [...(children.get(row.iri) ?? [])].reverse())
         stack.push({ row: child, depth: depth + 1, ancestors: next })
     }
   }
-  for (const root of sorted(classes.filter((row) => !row.parents.some((id) => byId.has(id)))))
-    walk(root)
+  for (const root of ordered.filter((row) => !row.parents.some((id) => byId.has(id)))) walk(root)
   // Closed cycles have no root; still display every class with an explicit reference marker.
-  for (const row of sorted(classes)) if (!visited.has(row.iri)) walk(row)
+  for (const row of ordered) if (!visited.has(row.iri)) walk(row)
   return result
 }
 
