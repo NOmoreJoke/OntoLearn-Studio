@@ -1,0 +1,6 @@
+{
+  "actualOuterExit": 1,
+  "location": "inline Python assertion at stdin line23, after formatter --write",
+  "reason": "The comparison wrongly required all non-whitespace characters to match, including Markdown table delimiter hyphen counts that Prettier legitimately expands. No content mismatch established; old inputs and all logs retained.",
+  "additionalObservation": "First formatter invocation used default ignore file; only main Markdown was actually checked/written, JSON review paths were ignored. Later explicit ignore-path fixes that coverage; no earlier JSON Pass claimed."
+}

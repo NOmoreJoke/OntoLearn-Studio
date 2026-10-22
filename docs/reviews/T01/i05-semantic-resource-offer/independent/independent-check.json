@@ -1,0 +1,125 @@
+{
+  "candidate": "4064b216635f9b7a472879b31b07033edf14d185",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "supplier": "6891a5842302859a531cf82767c5a482417bc274",
+  "candidateFiles": 26,
+  "candidateBytesUnchanged": true,
+  "manifest25Verified": true,
+  "inputs17Verified": true,
+  "schemaDefs": [
+    66,
+    94
+  ],
+  "oldSchemaDefsChanged": [],
+  "registryCapabilities": [
+    24,
+    27
+  ],
+  "ordinaryErrors": 26,
+  "localReferences": 607,
+  "staticModules": 22,
+  "literalEdges": 128,
+  "resourceNamedCallSites": [
+    [
+      "ontolearn_engine.resources",
+      80,
+      "CONTRACT.ERROR_CATALOG['codes'].get(code)"
+    ],
+    [
+      "ontolearn_engine.resources",
+      97,
+      "print(json.dumps(resource_manifest(), separators=(',', ':')), flush=True)"
+    ],
+    [
+      "ontolearn_engine.resources",
+      91,
+      "CONTRACT.validate('error', value)"
+    ],
+    [
+      "ontolearn_engine.resources",
+      97,
+      "json.dumps(resource_manifest(), separators=(',', ':'))"
+    ],
+    [
+      "ontolearn_engine.resources",
+      97,
+      "resource_manifest()"
+    ],
+    [
+      "ontolearn_engine.semantic_execution",
+      731,
+      "semantic_identity(profile=True, explanation=explanation)"
+    ]
+  ],
+  "checkerAllowedClosureCalls": {
+    "validate": [
+      "_changeset_semantics",
+      "check",
+      "encoded_size",
+      "semantic"
+    ],
+    "check": [
+      "all",
+      "any",
+      "check",
+      "equal",
+      "int",
+      "isinstance",
+      "len",
+      "math.isfinite",
+      "ord",
+      "re.fullmatch",
+      "s.get",
+      "set",
+      "sum",
+      "target.startswith",
+      "type",
+      "value.items"
+    ],
+    "equal": [
+      "math.isfinite",
+      "type"
+    ],
+    "semantic": [
+      "all",
+      "any",
+      "bool",
+      "commit.get",
+      "encoded_size",
+      "isinstance",
+      "len",
+      "r['dependency'].split",
+      "semantic",
+      "set",
+      "type",
+      "v.get",
+      "v.values",
+      "zip",
+      "{'whole-transaction': 'atomic', 'uncommitted-round': 'rounds'}.get"
+    ],
+    "encoded_size": [
+      "encoded_size",
+      "isinstance",
+      "json.dumps",
+      "json.dumps(value, ensure_ascii=False, separators=(',', ':')).encode",
+      "len",
+      "max",
+      "sum",
+      "type",
+      "value.items"
+    ],
+    "_changeset_semantics": [
+      "_changeset_semantics",
+      "all",
+      "encoded.endswith",
+      "enumerate",
+      "len",
+      "value['method'].startswith"
+    ]
+  },
+  "changedExistingCheckerFunctions": [
+    "validate"
+  ],
+  "formatBoundary": "stdlib UTF8/JSON/LF/whitespace and git diff --check exit0; not Prettier",
+  "noProductExecution": true
+}

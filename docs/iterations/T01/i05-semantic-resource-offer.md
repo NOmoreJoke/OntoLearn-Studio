@@ -11,12 +11,12 @@
 
 ## 2. 逐路径决定
 
-| 固定供应路径 | bytes | SHA256 | 明确决定与用途 |
-| --- | ---: | --- | --- |
-| `packages/contracts/python/contract_v2.py` | 34608 | `17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7` | 接收：原样 canonical `resources.CONTRACT` 的启动，及普通固定错误目录／`validate("error", value)` 所需闭包；不授权其它公共服务入口 |
-| `packages/contracts/v2/schema.json` | 207256 | `e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf` | 接收：checker 启动所读原三 JSON 之一及普通 error 结构；不开放新增 v3 schema 的业务执行 |
-| `packages/contracts/v2/registry.json` | 15962 | `1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b` | 接收：checker 原启动读取与 resources 原 registry bytes/hash；不把已包含的 capability/profile 数据当运行授权 |
-| `packages/contracts/v2/errors.json` | 16299 | `ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c` | 接收：固定普通错误码、messageKey、retryable、params schema 和原2048编码限制；startup/business3 分支不因此得到执行许可 |
+| 固定供应路径                               |  bytes | SHA256                                                             | 明确决定与用途                                                                                                                    |
+| ------------------------------------------ | -----: | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/contracts/python/contract_v2.py` |  34608 | `17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7` | 接收：原样 canonical `resources.CONTRACT` 的启动，及普通固定错误目录／`validate("error", value)` 所需闭包；不授权其它公共服务入口 |
+| `packages/contracts/v2/schema.json`        | 207256 | `e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf` | 接收：checker 启动所读原三 JSON 之一及普通 error 结构；不开放新增 v3 schema 的业务执行                                            |
+| `packages/contracts/v2/registry.json`      |  15962 | `1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b` | 接收：checker 原启动读取与 resources 原 registry bytes/hash；不把已包含的 capability/profile 数据当运行授权                       |
+| `packages/contracts/v2/errors.json`        |  16299 | `ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c` | 接收：固定普通错误码、messageKey、retryable、params schema 和原2048编码限制；startup/business3 分支不因此得到执行许可             |
 
 四件均已实际核 Git blob、bytes/SHA，并与批准5f逐件生成差异。没有拒绝项，也没有选择替代 ref；上表不允许混合5f、当前 HEAD 或未来修改版本。原始副本只存本次 review 的 `.raw` 输入，不写入产品路径。
 
@@ -44,10 +44,10 @@ errors原所有顶层字段逐值不变，新增 foundationProfiles/startup；�
 
 ## 5. 路径与不可变组合条件
 
-| 域 | checker | 三件 JSON | 额外 lock（不是本四资源采用授权） |
-| --- | --- | --- | --- |
-| source checkout | `packages/contracts/python/contract_v2.py` | `packages/contracts/v2/{schema,registry,errors}.json` | 仓库根 `uv.lock` |
-| frozen | `_MEIPASS/contracts/python/contract_v2.py` | `_MEIPASS/contracts/v2/{schema,registry,errors}.json` | `_MEIPASS/provenance/uv.lock` |
+| 域              | checker                                    | 三件 JSON                                             | 额外 lock（不是本四资源采用授权） |
+| --------------- | ------------------------------------------ | ----------------------------------------------------- | --------------------------------- |
+| source checkout | `packages/contracts/python/contract_v2.py` | `packages/contracts/v2/{schema,registry,errors}.json` | 仓库根 `uv.lock`                  |
+| frozen          | `_MEIPASS/contracts/python/contract_v2.py` | `_MEIPASS/contracts/v2/{schema,registry,errors}.json` | `_MEIPASS/provenance/uv.lock`     |
 
 checker 从其实际 `__file__` 向上定位 v2，resources 按自身 source/frozen 根定位 contracts；因此保留上述相对布局，不扁平化或移动 checker。resources 对 registry 的两次读取必须对应同一精确字节。source原 resolver使用resolve；本次没有执行路径／符号链接／包内读取验证，不据此保证任何实际文件系统布局。
 

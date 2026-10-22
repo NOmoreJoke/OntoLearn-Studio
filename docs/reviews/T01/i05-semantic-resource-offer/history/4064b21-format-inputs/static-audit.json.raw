@@ -1,0 +1,2904 @@
+{
+  "scope": "Static limited owner offer only, not product/checker execution or runtime validation",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "supplierRef": "6891a5842302859a531cf82767c5a482417bc274",
+  "contractDocsRef": "ee2b30a2dad35b2d395f9c735aff80371ab41110",
+  "sharedResourceIdentities": [
+    {
+      "supplier": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/contracts/python/contract_v2.py",
+        "bytes": 34608,
+        "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+        "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76"
+      },
+      "baseline": {
+        "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "path": "packages/contracts/python/contract_v2.py",
+        "bytes": 20174,
+        "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+        "gitBlob": "a00d0d0f3663ac4483eb7cc6b80cedae4e606f79"
+      }
+    },
+    {
+      "supplier": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/contracts/v2/schema.json",
+        "bytes": 207256,
+        "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf",
+        "gitBlob": "114d963d0967d2a9ce347195b5ee536e09a8195a"
+      },
+      "baseline": {
+        "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "path": "packages/contracts/v2/schema.json",
+        "bytes": 122889,
+        "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+        "gitBlob": "3d2d79002c8176779c6b7cdefd97c58876dbfaf4"
+      }
+    },
+    {
+      "supplier": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/contracts/v2/registry.json",
+        "bytes": 15962,
+        "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+        "gitBlob": "8d2195b04a193501b90bbfc432e3af2d2f6e489d"
+      },
+      "baseline": {
+        "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "path": "packages/contracts/v2/registry.json",
+        "bytes": 13039,
+        "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+        "gitBlob": "3a6705a00217f5e55d130bd2a231a6aad233b3fe"
+      }
+    },
+    {
+      "supplier": {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/contracts/v2/errors.json",
+        "bytes": 16299,
+        "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+        "gitBlob": "9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b"
+      },
+      "baseline": {
+        "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "path": "packages/contracts/v2/errors.json",
+        "bytes": 14400,
+        "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+        "gitBlob": "14d0bb017a8ef2248221d62c372cbcdfa4cfc28b"
+      }
+    }
+  ],
+  "schema": {
+    "baselineDefinitionCount": 66,
+    "supplierDefinitionCount": 94,
+    "added": [
+      "changeSetDefinition",
+      "changeSetDefinitionReference",
+      "changeSetDefinitionRemoval",
+      "changeSetFact",
+      "changeSetManifest",
+      "changeSetOntologyValue",
+      "changeSetPage",
+      "changeSetPlan",
+      "changeSetSegment",
+      "changeSetSegmentDescriptor",
+      "changeSetTriple",
+      "envelope3",
+      "error3",
+      "error_bootstrap3",
+      "error_startup",
+      "notification3",
+      "params_changeset.confirm",
+      "params_changeset.diff.page",
+      "params_changeset.preview",
+      "project3",
+      "request3",
+      "response3",
+      "result_changeset.confirm",
+      "result_changeset.diff.page",
+      "result_changeset.preview",
+      "result_hello3",
+      "result_project.get3",
+      "startupFailure"
+    ],
+    "removed": [],
+    "changedExisting": [],
+    "referenceCount": 607,
+    "references": [
+      {
+        "from": "#/$defs/vector/propertyNames",
+        "target": "#/$defs/dependencyKey"
+      },
+      {
+        "from": "#/$defs/implementation/properties/executionSemanticsVersion",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/implementation/properties/engineVersion",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/implementation/properties/dependencyLockHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/error/oneOf/12/properties/params/properties/detailRef",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error/oneOf/15/properties/params/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error/oneOf/18/properties/params/properties/resultId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error/oneOf/20/properties/params/properties/worksheetId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error/oneOf/20/properties/params/properties/detailRef",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/committedProgress/properties/runId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/committedProgress/properties/snapshotRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/commitProgress/oneOf/1/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/commitProgress/oneOf/1/properties/marker/oneOf/1/properties/beforeSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/commitProgress/oneOf/1/properties/marker/oneOf/1/properties/afterSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/commitProgress/oneOf/1/properties/marker/oneOf/1/properties/planHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/commitProgress/oneOf/2/properties/committedProgress/oneOf/1",
+        "target": "#/$defs/committedProgress"
+      },
+      {
+        "from": "#/$defs/resultRef/properties/resultId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/resultRef/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/definitionSetDigests/additionalProperties",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/commitProgress",
+        "target": "#/$defs/commitProgress"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/input",
+        "target": "#/$defs/jobInput"
+      },
+      {
+        "from": "#/$defs/job/oneOf/0/properties/confirmationRef/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/definitionSetDigests/additionalProperties",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/commitProgress",
+        "target": "#/$defs/commitProgress"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/input",
+        "target": "#/$defs/jobInput"
+      },
+      {
+        "from": "#/$defs/job/oneOf/1/properties/confirmationRef/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/definitionSetDigests/additionalProperties",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/commitProgress",
+        "target": "#/$defs/commitProgress"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/input",
+        "target": "#/$defs/jobInput"
+      },
+      {
+        "from": "#/$defs/job/oneOf/2/properties/confirmationRef/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/definitionSetDigests/additionalProperties",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/commitProgress",
+        "target": "#/$defs/commitProgress"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/resultRef",
+        "target": "#/$defs/resultRef"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/input",
+        "target": "#/$defs/jobInput"
+      },
+      {
+        "from": "#/$defs/job/oneOf/3/properties/confirmationRef/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/definitionSetDigests/additionalProperties",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/commitProgress",
+        "target": "#/$defs/commitProgress"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/input",
+        "target": "#/$defs/jobInput"
+      },
+      {
+        "from": "#/$defs/job/oneOf/4/properties/confirmationRef/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/definitionSetDigests/additionalProperties",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/commitProgress",
+        "target": "#/$defs/commitProgress"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/input",
+        "target": "#/$defs/jobInput"
+      },
+      {
+        "from": "#/$defs/job/oneOf/5/properties/confirmationRef/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result/properties/resultId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result/properties/definitionId",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/result/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/result/properties/definitionSetDigests/additionalProperties",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/result/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/result/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result/properties/staleReason/items",
+        "target": "#/$defs/staleReason"
+      },
+      {
+        "from": "#/$defs/project/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/project/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/project/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/pageBinding/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/pageBinding/properties/resultId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/pageBinding/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/pageBinding/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/pageBinding/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/row/properties/rowId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/page/properties/binding",
+        "target": "#/$defs/pageBinding"
+      },
+      {
+        "from": "#/$defs/page/properties/rows/items",
+        "target": "#/$defs/row"
+      },
+      {
+        "from": "#/$defs/page/properties/nextCursor/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/cursorRecord/properties/token",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/cursorRecord/properties/binding",
+        "target": "#/$defs/pageBinding"
+      },
+      {
+        "from": "#/$defs/cursorRecord/properties/lastRowId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/listBinding/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/listBinding/properties/listSnapshotId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/jobList/properties/binding",
+        "target": "#/$defs/listBinding"
+      },
+      {
+        "from": "#/$defs/jobList/properties/jobs/items",
+        "target": "#/$defs/job"
+      },
+      {
+        "from": "#/$defs/jobList/properties/nextCursor/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/commitMarker/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/commitMarker/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/commitMarker/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/commitMarker/properties/planHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/commitMarker/properties/beforeSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/commitMarker/properties/afterSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/subscription/properties/subscriptionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/subscription/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/subscription/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/jobInput/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/jobInput/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/jobInput/properties/definitionId",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/jobInput/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/jobInput/properties/derivedResultIds/items",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/jobInput/properties/preparedPlanRef/oneOf/1",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/params_hello/properties/clientId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_hello/properties/engineVersion",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/result_hello/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_hello/properties/capabilities/items",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/result_hello/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/result_hello/properties/registryHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_health/properties/engineVersion",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/params_session.ping/properties/nonce",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_session.ping/properties/nonce",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_project.get/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_project.get",
+        "target": "#/$defs/project"
+      },
+      {
+        "from": "#/$defs/params_job.create/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.create/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.create/properties/input",
+        "target": "#/$defs/jobInput"
+      },
+      {
+        "from": "#/$defs/params_job.create/properties/confirmationRef/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_job.create",
+        "target": "#/$defs/job"
+      },
+      {
+        "from": "#/$defs/params_job.get/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.get/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_job.get",
+        "target": "#/$defs/job"
+      },
+      {
+        "from": "#/$defs/params_job.cancel/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.cancel/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_job.cancel/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.list/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.list/properties/listSnapshotId/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.list/properties/cursor/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_job.list",
+        "target": "#/$defs/jobList"
+      },
+      {
+        "from": "#/$defs/params_job.subscribe/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.subscribe/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_job.subscribe",
+        "target": "#/$defs/subscription"
+      },
+      {
+        "from": "#/$defs/params_job.unsubscribe/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.unsubscribe/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_job.unsubscribe/properties/subscriptionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_job.unsubscribe/properties/subscriptionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_result.get/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_result.get/properties/resultId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_result.get",
+        "target": "#/$defs/result"
+      },
+      {
+        "from": "#/$defs/params_result.current/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_result.current/properties/definitionId",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/params_result.current/properties/scope",
+        "target": "#/$defs/scope"
+      },
+      {
+        "from": "#/$defs/params_result.current/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/params_result.current/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/result_result.current/oneOf/1",
+        "target": "#/$defs/result"
+      },
+      {
+        "from": "#/$defs/params_result.page/properties/binding",
+        "target": "#/$defs/pageBinding"
+      },
+      {
+        "from": "#/$defs/params_result.page/properties/cursor/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_result.page",
+        "target": "#/$defs/page"
+      },
+      {
+        "from": "#/$defs/params_operation.get/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_operation.get/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_operation.get/oneOf/1",
+        "target": "#/$defs/commitMarker"
+      },
+      {
+        "from": "#/$defs/changeSet/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/changeSet/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/changeSet/properties/planRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSet/properties/diffRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSet/properties/confirmationRef",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/changeSet/properties/beforeSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/runConfig/properties/parametersRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/runConfig/properties/eventsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/runConfig/properties/ruleVersions",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/runConfig/properties/behaviorVersions",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/runConfig/properties/initialSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/runConfig/properties/eventConsumptionRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/request/oneOf/0/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/0/properties/params",
+        "target": "#/$defs/params_hello"
+      },
+      {
+        "from": "#/$defs/request/oneOf/1/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/1/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/1/properties/params",
+        "target": "#/$defs/params_health"
+      },
+      {
+        "from": "#/$defs/request/oneOf/2/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/2/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/2/properties/params",
+        "target": "#/$defs/params_session.ping"
+      },
+      {
+        "from": "#/$defs/request/oneOf/3/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/3/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/3/properties/params",
+        "target": "#/$defs/params_project.get"
+      },
+      {
+        "from": "#/$defs/request/oneOf/4/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/4/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/4/properties/params",
+        "target": "#/$defs/params_job.create"
+      },
+      {
+        "from": "#/$defs/request/oneOf/5/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/5/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/5/properties/params",
+        "target": "#/$defs/params_job.get"
+      },
+      {
+        "from": "#/$defs/request/oneOf/6/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/6/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/6/properties/params",
+        "target": "#/$defs/params_job.cancel"
+      },
+      {
+        "from": "#/$defs/request/oneOf/7/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/7/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/7/properties/params",
+        "target": "#/$defs/params_job.list"
+      },
+      {
+        "from": "#/$defs/request/oneOf/8/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/8/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/8/properties/params",
+        "target": "#/$defs/params_job.subscribe"
+      },
+      {
+        "from": "#/$defs/request/oneOf/9/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/9/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/9/properties/params",
+        "target": "#/$defs/params_job.unsubscribe"
+      },
+      {
+        "from": "#/$defs/request/oneOf/10/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/10/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/10/properties/params",
+        "target": "#/$defs/params_result.get"
+      },
+      {
+        "from": "#/$defs/request/oneOf/11/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/11/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/11/properties/params",
+        "target": "#/$defs/params_result.current"
+      },
+      {
+        "from": "#/$defs/request/oneOf/12/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/12/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/12/properties/params",
+        "target": "#/$defs/params_result.page"
+      },
+      {
+        "from": "#/$defs/request/oneOf/13/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/13/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request/oneOf/13/properties/params",
+        "target": "#/$defs/params_operation.get"
+      },
+      {
+        "from": "#/$defs/response/oneOf/0/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/0/properties/engineSessionId/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/0/properties/result",
+        "target": "#/$defs/result_hello"
+      },
+      {
+        "from": "#/$defs/response/oneOf/1/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/1/properties/engineSessionId/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/1/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/2/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/2/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/2/properties/result",
+        "target": "#/$defs/result_health"
+      },
+      {
+        "from": "#/$defs/response/oneOf/3/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/3/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/3/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/4/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/4/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/4/properties/result",
+        "target": "#/$defs/result_session.ping"
+      },
+      {
+        "from": "#/$defs/response/oneOf/5/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/5/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/5/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/6/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/6/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/6/properties/result",
+        "target": "#/$defs/result_project.get"
+      },
+      {
+        "from": "#/$defs/response/oneOf/7/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/7/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/7/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/8/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/8/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/8/properties/result",
+        "target": "#/$defs/result_job.create"
+      },
+      {
+        "from": "#/$defs/response/oneOf/9/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/9/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/9/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/10/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/10/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/10/properties/result",
+        "target": "#/$defs/result_job.get"
+      },
+      {
+        "from": "#/$defs/response/oneOf/11/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/11/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/11/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/12/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/12/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/12/properties/result",
+        "target": "#/$defs/result_job.cancel"
+      },
+      {
+        "from": "#/$defs/response/oneOf/13/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/13/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/13/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/14/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/14/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/14/properties/result",
+        "target": "#/$defs/result_job.list"
+      },
+      {
+        "from": "#/$defs/response/oneOf/15/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/15/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/15/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/16/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/16/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/16/properties/result",
+        "target": "#/$defs/result_job.subscribe"
+      },
+      {
+        "from": "#/$defs/response/oneOf/17/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/17/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/17/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/18/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/18/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/18/properties/result",
+        "target": "#/$defs/result_job.unsubscribe"
+      },
+      {
+        "from": "#/$defs/response/oneOf/19/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/19/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/19/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/20/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/20/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/20/properties/result",
+        "target": "#/$defs/result_result.get"
+      },
+      {
+        "from": "#/$defs/response/oneOf/21/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/21/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/21/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/22/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/22/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/22/properties/result",
+        "target": "#/$defs/result_result.current"
+      },
+      {
+        "from": "#/$defs/response/oneOf/23/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/23/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/23/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/24/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/24/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/24/properties/result",
+        "target": "#/$defs/result_result.page"
+      },
+      {
+        "from": "#/$defs/response/oneOf/25/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/25/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/25/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/26/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/26/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/26/properties/result",
+        "target": "#/$defs/result_operation.get"
+      },
+      {
+        "from": "#/$defs/response/oneOf/27/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/27/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response/oneOf/27/properties/error",
+        "target": "#/$defs/error"
+      },
+      {
+        "from": "#/$defs/response/oneOf/28/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/0/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/0/properties/subscriptionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/0/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/0/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/0/properties/data/properties/progress",
+        "target": "#/$defs/progress"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/1/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/1/properties/subscriptionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/1/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/1/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/1/properties/data",
+        "target": "#/$defs/job"
+      },
+      {
+        "from": "#/$defs/notification/oneOf/2/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/envelope/oneOf/0",
+        "target": "#/$defs/request"
+      },
+      {
+        "from": "#/$defs/envelope/oneOf/1",
+        "target": "#/$defs/response"
+      },
+      {
+        "from": "#/$defs/envelope/oneOf/2",
+        "target": "#/$defs/notification"
+      },
+      {
+        "from": "#/$defs/jobListCursorRecord/properties/token",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/jobListCursorRecord/properties/binding",
+        "target": "#/$defs/listBinding"
+      },
+      {
+        "from": "#/$defs/jobListCursorRecord/properties/lastJobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/definitionIdentity/properties/id",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/definitionIdentity/properties/references/items",
+        "target": "#/$defs/dependencyKey"
+      },
+      {
+        "from": "#/$defs/validationDerivedLayers/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/validationDerivedLayers/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationDerivedLayers/properties/resultId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/validationDerivedLayers/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/validationDerivedLayers/properties/factsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationDerivedLayers/properties/axiomsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/0/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/0/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/0/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/0/properties/assertedFactsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/0/properties/ontologyAxiomsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/0/properties/constraintDefinitionId",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/0/properties/constraintsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/implementation",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/assertedFactsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/ontologyAxiomsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/constraintDefinitionId",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/constraintsRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationProjection/oneOf/1/properties/derived",
+        "target": "#/$defs/validationDerivedLayers"
+      },
+      {
+        "from": "#/$defs/validationResourceBinding/properties/ref",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationResourceBinding/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/validationResourceBinding/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/validationResourceBinding/properties/resultId/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/validationResourceBinding/properties/implementation/oneOf/1",
+        "target": "#/$defs/implementation"
+      },
+      {
+        "from": "#/$defs/validationResourceBinding/properties/constraintDefinitionId/oneOf/1",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/validationResources/items",
+        "target": "#/$defs/validationResourceBinding"
+      },
+      {
+        "from": "#/$defs/project3/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/project3/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/project3/properties/dependencyVector",
+        "target": "#/$defs/vector"
+      },
+      {
+        "from": "#/$defs/result_project.get3",
+        "target": "#/$defs/project3"
+      },
+      {
+        "from": "#/$defs/result_hello3/properties/engineVersion",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/result_hello3/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_hello3/properties/capabilities/items",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/result_hello3/properties/limits",
+        "target": "#/$defs/limits"
+      },
+      {
+        "from": "#/$defs/result_hello3/properties/registryHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/error3/oneOf/12/properties/params/properties/detailRef",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error3/oneOf/15/properties/params/properties/operationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error3/oneOf/18/properties/params/properties/resultId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error3/oneOf/20/properties/params/properties/worksheetId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/error3/oneOf/20/properties/params/properties/detailRef",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/0/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/0/properties/params",
+        "target": "#/$defs/params_hello"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/1/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/1/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/1/properties/params",
+        "target": "#/$defs/params_health"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/2/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/2/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/2/properties/params",
+        "target": "#/$defs/params_session.ping"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/3/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/3/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/3/properties/params",
+        "target": "#/$defs/params_project.get"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/4/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/4/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/4/properties/params",
+        "target": "#/$defs/params_job.create"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/5/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/5/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/5/properties/params",
+        "target": "#/$defs/params_job.get"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/6/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/6/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/6/properties/params",
+        "target": "#/$defs/params_job.cancel"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/7/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/7/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/7/properties/params",
+        "target": "#/$defs/params_job.list"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/8/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/8/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/8/properties/params",
+        "target": "#/$defs/params_job.subscribe"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/9/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/9/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/9/properties/params",
+        "target": "#/$defs/params_job.unsubscribe"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/10/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/10/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/10/properties/params",
+        "target": "#/$defs/params_result.get"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/11/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/11/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/11/properties/params",
+        "target": "#/$defs/params_result.current"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/12/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/12/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/12/properties/params",
+        "target": "#/$defs/params_result.page"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/13/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/13/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/13/properties/params",
+        "target": "#/$defs/params_operation.get"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/14/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/14/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/14/properties/params",
+        "target": "#/$defs/params_changeset.preview"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/15/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/15/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/15/properties/params",
+        "target": "#/$defs/params_changeset.diff.page"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/16/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/16/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/request3/oneOf/16/properties/params",
+        "target": "#/$defs/params_changeset.confirm"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/0/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/0/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/0/properties/result",
+        "target": "#/$defs/result_hello3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/1/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/1/properties/error",
+        "target": "#/$defs/error_bootstrap3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/2/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/2/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/2/properties/result",
+        "target": "#/$defs/result_health"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/3/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/3/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/3/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/4/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/4/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/4/properties/result",
+        "target": "#/$defs/result_session.ping"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/5/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/5/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/5/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/6/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/6/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/6/properties/result",
+        "target": "#/$defs/result_project.get3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/7/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/7/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/7/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/8/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/8/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/8/properties/result",
+        "target": "#/$defs/result_job.create"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/9/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/9/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/9/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/10/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/10/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/10/properties/result",
+        "target": "#/$defs/result_job.get"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/11/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/11/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/11/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/12/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/12/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/12/properties/result",
+        "target": "#/$defs/result_job.cancel"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/13/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/13/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/13/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/14/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/14/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/14/properties/result",
+        "target": "#/$defs/result_job.list"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/15/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/15/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/15/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/16/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/16/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/16/properties/result",
+        "target": "#/$defs/result_job.subscribe"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/17/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/17/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/17/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/18/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/18/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/18/properties/result",
+        "target": "#/$defs/result_job.unsubscribe"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/19/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/19/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/19/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/20/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/20/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/20/properties/result",
+        "target": "#/$defs/result_result.get"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/21/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/21/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/21/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/22/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/22/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/22/properties/result",
+        "target": "#/$defs/result_result.current"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/23/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/23/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/23/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/24/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/24/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/24/properties/result",
+        "target": "#/$defs/result_result.page"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/25/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/25/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/25/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/26/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/26/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/26/properties/result",
+        "target": "#/$defs/result_operation.get"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/27/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/27/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/27/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/28/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/28/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/28/properties/result",
+        "target": "#/$defs/result_changeset.preview"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/29/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/29/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/29/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/30/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/30/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/30/properties/result",
+        "target": "#/$defs/result_changeset.diff.page"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/31/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/31/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/31/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/32/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/32/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/32/properties/result",
+        "target": "#/$defs/result_changeset.confirm"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/33/properties/id",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/33/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/response3/oneOf/33/properties/error",
+        "target": "#/$defs/error3"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/0/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/0/properties/subscriptionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/0/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/0/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/0/properties/data/properties/progress",
+        "target": "#/$defs/progress"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/1/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/1/properties/subscriptionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/1/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/1/properties/jobId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/1/properties/data",
+        "target": "#/$defs/job"
+      },
+      {
+        "from": "#/$defs/notification3/oneOf/2/properties/engineSessionId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/envelope3/oneOf/0",
+        "target": "#/$defs/request3"
+      },
+      {
+        "from": "#/$defs/envelope3/oneOf/1",
+        "target": "#/$defs/response3"
+      },
+      {
+        "from": "#/$defs/envelope3/oneOf/2",
+        "target": "#/$defs/notification3"
+      },
+      {
+        "from": "#/$defs/startupFailure/properties/registryHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/startupFailure/properties/error",
+        "target": "#/$defs/error_startup"
+      },
+      {
+        "from": "#/$defs/changeSetDefinitionReference/properties/id",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/changeSetOntologyValue/properties/triples/items",
+        "target": "#/$defs/changeSetTriple"
+      },
+      {
+        "from": "#/$defs/changeSetOntologyValue/properties/references/items",
+        "target": "#/$defs/changeSetDefinitionReference"
+      },
+      {
+        "from": "#/$defs/changeSetDefinition/properties/id",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/changeSetDefinition/properties/value",
+        "target": "#/$defs/changeSetOntologyValue"
+      },
+      {
+        "from": "#/$defs/changeSetDefinitionRemoval/properties/id",
+        "target": "#/$defs/name"
+      },
+      {
+        "from": "#/$defs/changeSetFact/properties/id",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetPlan/properties/definitions/items",
+        "target": "#/$defs/changeSetDefinition"
+      },
+      {
+        "from": "#/$defs/changeSetPlan/properties/remove_definitions/items",
+        "target": "#/$defs/changeSetDefinitionRemoval"
+      },
+      {
+        "from": "#/$defs/changeSetPlan/properties/manual/items",
+        "target": "#/$defs/changeSetFact"
+      },
+      {
+        "from": "#/$defs/changeSetPlan/properties/edits/propertyNames",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetPlan/properties/remove/items",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetSegmentDescriptor/properties/sha256",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetSegment/properties/sha256",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetManifest/properties/documentHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetManifest/properties/segments/items",
+        "target": "#/$defs/changeSetSegmentDescriptor"
+      },
+      {
+        "from": "#/$defs/params_changeset.preview/oneOf/0/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_changeset.preview/oneOf/0/properties/plan",
+        "target": "#/$defs/changeSetPlan"
+      },
+      {
+        "from": "#/$defs/params_changeset.preview/oneOf/1/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_changeset.preview/oneOf/1/properties/targetOperationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/0/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/0/properties/previewHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/0/properties/preparedPlanRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/0/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/0/properties/parametersHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/0/properties/targetOperationId/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/0/properties/manifest",
+        "target": "#/$defs/changeSetManifest"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/1/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/1/properties/previewHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/1/properties/targetOperationId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.preview/oneOf/1/properties/manifest",
+        "target": "#/$defs/changeSetManifest"
+      },
+      {
+        "from": "#/$defs/params_changeset.diff.page/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_changeset.diff.page/properties/previewHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/params_changeset.diff.page/properties/cursor/oneOf/1",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/changeSetPage/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/changeSetPage/properties/previewHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetPage/properties/documentHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/changeSetPage/properties/segments/items",
+        "target": "#/$defs/changeSetSegment"
+      },
+      {
+        "from": "#/$defs/changeSetPage/properties/nextCursor",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.diff.page",
+        "target": "#/$defs/changeSetPage"
+      },
+      {
+        "from": "#/$defs/params_changeset.confirm/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/params_changeset.confirm/properties/previewHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/params_changeset.confirm/properties/completionCursor",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.confirm/properties/projectId",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.confirm/properties/previewHash",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.confirm/properties/preparedPlanRef",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.confirm/properties/confirmationRef",
+        "target": "#/$defs/id"
+      },
+      {
+        "from": "#/$defs/result_changeset.confirm/properties/inputSnapshotId",
+        "target": "#/$defs/hash"
+      },
+      {
+        "from": "#/$defs/result_changeset.confirm/properties/parametersHash",
+        "target": "#/$defs/hash"
+      }
+    ],
+    "unsupportedKeywords": []
+  },
+  "registry": {
+    "changedTopLevelKeys": [
+      "capabilities",
+      "foundationProfiles",
+      "startupDiagnostic"
+    ],
+    "baselineCapabilities": 24,
+    "supplierCapabilities": 27,
+    "addedCapabilities": [
+      "changeset.confirm",
+      "changeset.diff.page",
+      "changeset.preview"
+    ],
+    "changedExistingCapabilities": [],
+    "v2RuntimeUnchanged": true,
+    "unadoptedFoundationProfiles": {
+      "business3": {
+        "bootstrapVersion": 2,
+        "businessVersion": 3,
+        "databaseFormatVersion": 3,
+        "state": "explicit-internal-opt-in-default2",
+        "methods": [
+          "hello",
+          "health",
+          "session.ping",
+          "project.get",
+          "job.create",
+          "job.get",
+          "job.cancel",
+          "job.list",
+          "job.subscribe",
+          "job.unsubscribe",
+          "result.get",
+          "result.current",
+          "result.page",
+          "operation.get",
+          "changeset.preview",
+          "changeset.diff.page",
+          "changeset.confirm"
+        ],
+        "newSourceOrLearningMethods": [],
+        "capabilityImplementations": {
+          "changeset.commit": "explicit-internal-business3-runtime"
+        }
+      }
+    }
+  },
+  "errors": {
+    "ordinaryCodeCount": 26,
+    "ordinaryCodes": [
+      "CURSOR_EXPIRED",
+      "CURSOR_MISMATCH",
+      "ENGINE_EXITED",
+      "HANDSHAKE_REQUIRED",
+      "IDENTITY_CONFLICT",
+      "INTERNAL_ERROR",
+      "INVALID_REQUEST",
+      "INVALID_STATE",
+      "MAPPING_VALUE_INVALID",
+      "METHOD_NOT_ALLOWED",
+      "NETWORK_FORBIDDEN",
+      "NOT_FOUND",
+      "OWNERSHIP_CONFLICT",
+      "PAYLOAD_EVICTED",
+      "PERMISSION_DENIED",
+      "QUEUE_FULL",
+      "RESOURCE_LIMIT",
+      "REVISION_CONFLICT",
+      "SEMANTIC_INPUT_INVALID",
+      "SESSION_MISMATCH",
+      "STORAGE_BUSY",
+      "STORAGE_FAILURE",
+      "TIMEOUT",
+      "UNSUPPORTED_CAPABILITY",
+      "UNSUPPORTED_CONSTRUCT",
+      "VERSION_INCOMPATIBLE"
+    ],
+    "allOldTopLevelFieldsUnchanged": true,
+    "ordinaryCatalogMatchesSchemaBranches": true,
+    "encodedLimit": 2048,
+    "unadoptedAddedTopLevelFields": [
+      "foundationProfiles",
+      "startup"
+    ]
+  },
+  "checker": {
+    "addedFunctions": [
+      "_capture_source_table",
+      "_changeset_semantics",
+      "accepts_business3_job_event",
+      "business3_error",
+      "business3_hello_outcome",
+      "matches_business3_response",
+      "source_table_digest",
+      "source_table_material",
+      "startup_error",
+      "validate_business3",
+      "validate_startup_failure"
+    ],
+    "removedFunctions": [],
+    "changedExistingFunctions": [
+      "validate"
+    ],
+    "topLevelReads": [
+      "schema.json",
+      "registry.json",
+      "errors.json"
+    ],
+    "allowedErrorValidationTransitiveFunctions": [
+      "validate",
+      "check",
+      "equal",
+      "semantic",
+      "encoded_size",
+      "_changeset_semantics"
+    ],
+    "errorNameChangesetSemanticsFallsThroughTrue": "Manually inspected fixed checker lines266-309; not executed"
+  },
+  "closure": {
+    "moduleCount": 22,
+    "identities": [
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/__init__.py",
+        "bytes": 101,
+        "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+        "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+        "bytes": 548,
+        "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+        "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+        "bytes": 4047,
+        "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+        "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+        "bytes": 1750,
+        "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+        "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+        "bytes": 19149,
+        "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+        "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+        "bytes": 7372,
+        "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+        "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+        "bytes": 11987,
+        "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+        "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+        "bytes": 6288,
+        "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+        "gitBlob": "d4fdc2c750af383e41799ae6b0947c13479d999c"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+        "bytes": 6176,
+        "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+        "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "bytes": 3065,
+        "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+        "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "bytes": 65749,
+        "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+        "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "bytes": 15426,
+        "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+        "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "bytes": 35220,
+        "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+        "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+        "bytes": 1351,
+        "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+        "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+        "bytes": 46459,
+        "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+        "gitBlob": "66fcb3a9e04cf9d1ebda9c994c9f739c67288bab"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "bytes": 40378,
+        "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+        "gitBlob": "f91e3b2fb719dd18dbdffa48698db19eb4fd3934"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+        "bytes": 19993,
+        "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+        "gitBlob": "fec434ea49c8cf989afeb7b7e0f2c9a518545d1c"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+        "bytes": 70203,
+        "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+        "gitBlob": "0e5baa40641c6eaf016dd6515e1b1528f815c632"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+        "bytes": 37889,
+        "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+        "gitBlob": "0bf52a792873be88ac5c084aec25af173df18514"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+        "bytes": 6448,
+        "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+        "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "bytes": 13051,
+        "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+        "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+      },
+      {
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+        "bytes": 33916,
+        "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+        "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+      }
+    ],
+    "literalEdgeCount": 128,
+    "literalEdgesMissingFromOurExtraction": [],
+    "literalEdgesExtraInOurExtraction": [],
+    "unresolvedLiteralTargets": [
+      {
+        "source": "ontolearn_engine.quality",
+        "target": "ontolearn_engine.quality.planning",
+        "line": 12
+      }
+    ],
+    "resourceImportSites": [
+      {
+        "module": "ontolearn_engine.semantic_execution",
+        "line": 646,
+        "text": "from ontolearn_engine.resources import semantic_identity"
+      }
+    ],
+    "resourceCallSites": [
+      {
+        "module": "ontolearn_engine.resources",
+        "line": 80,
+        "call": "CONTRACT.ERROR_CATALOG['codes'].get(code)"
+      },
+      {
+        "module": "ontolearn_engine.resources",
+        "line": 91,
+        "call": "CONTRACT.validate('error', value)"
+      },
+      {
+        "module": "ontolearn_engine.semantic_execution",
+        "line": 731,
+        "call": "semantic_identity(profile=True, explanation=explanation)"
+      }
+    ],
+    "forbiddenNamedCallSitesIncludingUncalledDefinitions": [
+      {
+        "module": "ontolearn_engine.resources",
+        "line": 97,
+        "call": "resource_manifest()"
+      }
+    ],
+    "callGraphLimit": "AST literal names and manual owner-scope review, not dynamic import or future probe/runtime absence proof"
+  },
+  "resourceSidecar": {
+    "resources": {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "bytes": 3065,
+      "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+      "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+    },
+    "uvLockNotAdoptedByT01": {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73",
+      "gitBlob": "337a34ec442b0fabbb9c28fe4599ba7b6cc8b148"
+    },
+    "registryReadTwice": "checker json text plus resources.REGISTRY_BYTES hash, both same exact bytes",
+    "sourceLayout": {
+      "checker": "packages/contracts/python/contract_v2.py",
+      "jsonRoot": "packages/contracts/v2",
+      "lock": "uv.lock"
+    },
+    "frozenLayout": {
+      "checker": "contracts/python/contract_v2.py",
+      "jsonRoot": "contracts/v2",
+      "lock": "provenance/uv.lock"
+    },
+    "moduleIdentity": "canonical ontolearn_engine.resources loads one CONTRACT module object named ontolearn_contract_v2 via spec/exec_module; sys.modules caching not implemented here, no runtime uniqueness claim"
+  },
+  "executed": [
+    "Git text reads",
+    "stdlib AST",
+    "stdlib JSON duplicate-key/ref/catalog comparison",
+    "SHA256"
+  ],
+  "notExecuted": [
+    "supplier imports",
+    "checker functions",
+    "tests",
+    "builds",
+    "DB",
+    "native",
+    "GUI",
+    "business child",
+    "formatter"
+  ]
+}
