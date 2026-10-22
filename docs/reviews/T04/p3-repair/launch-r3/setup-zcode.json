@@ -1,0 +1,50 @@
+{
+  "reviewer": "zcode",
+  "scope": "New round3 isolated environment setup only; not product validation or model review",
+  "records": [
+    {
+      "reviewer": "zcode",
+      "label": "setup-uv",
+      "argv": [
+        "uv",
+        "sync",
+        "--frozen"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-r3-5070004",
+      "startedAt": "2026-10-22T18:42:41.444686+00:00",
+      "finishedAt": "2026-10-22T18:43:31.503072+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-r3-5070004/test-results/t04-review-runtime/zcode/raw/setup-uv.log",
+      "rawBytes": 1048,
+      "rawSHA256": "19b1f3c3bd609d6b8de8827d123dbc178e250c026ddb8d92a79b2785912c068a",
+      "kind": "environment setup only; not product test"
+    },
+    {
+      "reviewer": "zcode",
+      "label": "setup-npm",
+      "argv": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--prefer-offline"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-r3-5070004",
+      "startedAt": "2026-10-22T18:43:31.504023+00:00",
+      "finishedAt": "2026-10-22T18:44:32.162178+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-r3-5070004/test-results/t04-review-runtime/zcode/raw/setup-npm.log",
+      "rawBytes": 840,
+      "rawSHA256": "d7315fd03fcfe0189e590b3a1bab40edcbd71a32b1c7f87aeb328c81adc2c64a",
+      "kind": "environment setup only; not product test"
+    }
+  ],
+  "platformBinding": {
+    "path": "node_modules/@rolldown/binding-darwin-arm64/rolldown-binding.darwin-arm64.node",
+    "present": true,
+    "lockVersion": "1.2.14",
+    "supplementRequired": false
+  },
+  "sourceChanges": false
+}

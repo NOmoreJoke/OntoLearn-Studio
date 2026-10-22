@@ -1,5 +1,15 @@
 # T04 查询状态
 
+2026-10-23 第三轮准备：**新两clean审查树已部署，独立准备复核通过；两实际HEAD均精确detached507，同base→head。当前仅ready待总控内部队列，尚未创建新任务、投递正文或读回设置；新报告/终态为0/UNKNOWN。**
+
+- 完整输入各147行：Z29675B/SHA `45828e0984d527d2a105dca0b6cd6bc5823713e96f0b802ade914d603bc5bf1c`；M29715B/SHA `1985d7c54e0d1f0b8804018542e7d57d070c3d4da08b3055e1940f8dc53f1c40`。
+- 新树为同级`.worktrees/T04-s1-zcode-r3-5070004`与`T04-s1-minimax-r3-5070004`；42产品逐字等固定507，19角色支持输入各自未跟踪、由本owner过程ref/外部manifest封存。两树均只有保护AGENTS M和本角色未跟踪输入，无上一轮产品意见/peerprompt/新报告占位。
+- [本轮准备包](p3-repair/launch-r3/README.md)、[全包清单](p3-repair/launch-r3/package-files.json)（26payload609667B/SHA `f6c441476b8f91a4c6c4bc57c61084d492e615c5035022f291eb70c4d94dbead`）、[实际部署](p3-repair/launch-r3/deployment-receipt.json)、[独立准备复核](p3-repair/launch-r3/preparation-audit.md)（6145B/SHA `e919b663fc4c64b9f3d9c7502ebd776dd503761624cf3f8fecb0471884beb260`）。部署收据的PENDING是独审前时点，实际独审结果以新增回执为准，旧时序不改。
+- 本轮提示保全原完整S1/FR/四P3/指定554历史/T09/现行政策，仅给上一507轮中性过程事实。身份只用操作者本方operator回执，缺项UNKNOWN报owner，禁止global/native/session/peer恢复与写设置。各树独立uv/npm安装均exit0、binding齐备，安装不当测试Pass；未变产品没有重复check。两actualHEAD同507；先前角色支持提交仅保留refs/t04-history历史，不作当前受审head。
+- 上一507轮MP-01/02流程Fail与不可变原件已固定`074f9ca0ce21d9dd73d4b92a60644733b65ae72f`，总控已独立收件；不计合规双Pass，旧Z意见也不转移第三轮。原Goal仍blocked，父验收/CI/两OS/真人/推送/PR/正常合并/远端均未完成或获此步授权。不占GUI，按总控队列续接。
+
+## 上一507轮收件及过程失败（历史）
+
 2026-10-23 当前过程状态：**固定507两项全新完整指定审查均已正式completed并交付有界S1 Pass；全文报告、完整输入与原turn终态已收件。全部意见已逐项记录；最小独审已证实MiniMax存在越界工具请求和收据覆盖，流程不通过，不能接收为完整同版双Pass。后续补审由总控决定，发布门未通过。**
 
 当前证据入口：[实际双审收件](p3-repair/actual-launch-20261023/)、[Z逐意见处置](p3-repair/actual-launch-20261023/zcode-owner-disposition.md)、[M逐意见处置](p3-repair/actual-launch-20261023/minimax-owner-disposition.md)。Z原报告27064B/bbe76da2…dc57a8、M原报告38855B/7a63268a…b2d765，原文保持。双方完整check各自实际719 TS/1167 Python、SSR14、真实组件DOM5；M完整check先缺平台绑定exit1后补装锁内包exit0，首败保留。GUI已于18:13:21Z释放。固定507的历史evidence/final-verification.json和verification-summary.json描述早期候选；507原实现终态看p3-repair/verification.json，不能将历史证据误作当前。

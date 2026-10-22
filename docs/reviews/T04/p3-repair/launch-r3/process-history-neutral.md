@@ -1,0 +1,11 @@
+# 上一507轮过程事实与本轮处置
+
+固定产品507、42项实现/测试/fixture/验收原字节不变；base仍5f。上一507轮两个原turn均正式completed，原全文报告和失败均由操作者另行不可变归档。该轮未被总控接收为完整双Pass；本轮两个模型都必须全新完整独立审查，不转移任何旧通过结论。本文件不提供上一507轮任一方产品审查意见。
+
+独立最小原turn审计确认两项P2过程问题：一方尝试从全局权限配置/跨session搜索恢复操作者设置收据，并请求列举本轮另一review runtime；同时Write覆盖本方operator命名收据后再次edit。工具请求与必要写入状态已证实。审计未读取配置或peer结果正文，未判定具体数据/意见泄露，也不宣称零泄露。覆盖前、Write后和edit后原件均独立保留，没有原位恢复来隐藏时序。正式过程包固定于owner过程ref074f9ca0ce21d9dd73d4b92a60644733b65ae72f；该ref仅供操作者溯源，审者不得据此寻找上一507轮两方产品报告。
+
+本轮改进是明确提示与正常收据分工：身份只用操作者本方operator回执；未知写UNKNOWN并报告，不自行查配置/原生session/peer或恢复；禁止写operator设置，工程收据取唯一label保存首败。没有降模型/权限、改hook或引入OS隔离。缺身份材料不扩大读取面，owner按本方官方路径补证。
+
+上一轮工程环境曾在npm ci --ignore-scripts后缺锁内darwin-arm64 rolldown绑定，完整check首跑启动失败，补锁内平台包后正常运行；这是环境首败历史，不等于本轮已失败或当前产品缺陷。系统python3.9不支持datetime.UTC；本轮命令明确用本方.venv/bin/python3.12。新clean树的setup记录反映本轮实况，安装/补装本身不是产品测试通过。
+
+固定507清单包含早期evidence/final-verification.json与verification-summary.json，按其candidate读作历史；507 owner终态入口是p3-repair/verification.json。42项分类为runtime7/测试5/fixture8/probe2/其他docs20。模型载入保持既有保存身份/generation，新建与saved载入推进generation；本轮不改该批准规则。零列/ASK元数据仍待父契约，不把列名字串min(1)说成数组非空保证。
