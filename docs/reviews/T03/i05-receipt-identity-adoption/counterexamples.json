@@ -1,0 +1,180 @@
+{
+  "format": "i05-receipt-identity-adoption-design-counterexamples/1",
+  "evidenceClass": "Textual hypothetical rejection cases, not executable fixtures or runtime results",
+  "negativeCases": [
+    {
+      "id": "N01",
+      "trigger": "Set receipt.runId=null or empty for no-context failure",
+      "requiredRejection": "receipt3 runId remains required nonempty; preserve actual caller attempt identity",
+      "executed": false
+    },
+    {
+      "id": "N02",
+      "trigger": "Copy child ID into receipt.runId when actual caller attemptId differs",
+      "requiredRejection": "receiptRunId=real registered attemptId, explicit child link only",
+      "executed": false
+    },
+    {
+      "id": "N03",
+      "trigger": "Invent child ID from attemptId/PID/header/lexical bad-context bytes",
+      "requiredRejection": "before accepted context childRunId is null",
+      "executed": false
+    },
+    {
+      "id": "N04",
+      "trigger": "Clear accepted child ID/stages after second context or bad later frame",
+      "requiredRejection": "reject later context/fault while preserving first accepted facts and incomplete",
+      "executed": false
+    },
+    {
+      "id": "N05",
+      "trigger": "Use a mismatched context ID in Carrier or BoundContextCore",
+      "requiredRejection": "same accepted original context and subsequent frame identity required",
+      "executed": false
+    },
+    {
+      "id": "N06",
+      "trigger": "Relabel dispatched zero-byte/exit7/signal failure as not-started",
+      "requiredRejection": "actual dispatch remains incomplete with nonnull captured raw",
+      "executed": false
+    },
+    {
+      "id": "N07",
+      "trigger": "Replace dispatched zero-byte stdout/stderr FileRefs with null",
+      "requiredRejection": "zero length is captured file, not absent child/raw",
+      "executed": false
+    },
+    {
+      "id": "N08",
+      "trigger": "Omit failed or not-started registered attempt from receipt",
+      "requiredRejection": "one row and binding per actual registered attempt in original order",
+      "executed": false
+    },
+    {
+      "id": "N09",
+      "trigger": "Reorder receipt rows, duplicate an attempt row, or add an unregistered row",
+      "requiredRejection": "exact original caller registry sequence, unique one-to-one mapping",
+      "executed": false
+    },
+    {
+      "id": "N10",
+      "trigger": "Retry actual dispatch using old attemptId and overwrite earlier failure",
+      "requiredRejection": "new real attempt registration/ID; old failure immutable",
+      "executed": false
+    },
+    {
+      "id": "N11",
+      "trigger": "Invent attemptId after seeing child result without earlier registry source",
+      "requiredRejection": "syntax is not pre-existing caller registration proof",
+      "executed": false
+    },
+    {
+      "id": "N12",
+      "trigger": "Merge same-string attempt IDs from distinct registries into one receipt",
+      "requiredRejection": "one declared complete trusted registry/order domain; separate originals",
+      "executed": false
+    },
+    {
+      "id": "N13",
+      "trigger": "Drop any one of the31 required keys or add childRunId to strict receipt",
+      "requiredRejection": "unchanged full received shape/additionalProperties=false",
+      "executed": false
+    },
+    {
+      "id": "N14",
+      "trigger": "Treat binding RawRange as receipt header/terminal FileRef",
+      "requiredRejection": "exact extracted original file and whole raw/range/manifest closure",
+      "executed": false
+    },
+    {
+      "id": "N15",
+      "trigger": "Reverse rebuild full child typed/stage/context from receipt row alone",
+      "requiredRejection": "same-manifest full binding/carrier/raw and original caller sources required",
+      "executed": false
+    },
+    {
+      "id": "N16",
+      "trigger": "Replace false/partial observed values with expected/null or hide observedPaths",
+      "requiredRejection": "retain exact raw/header observations and old CR-R/CR-H",
+      "executed": false
+    },
+    {
+      "id": "N17",
+      "trigger": "Rewrite wrong header mode/selector from planned command or accept mismatch as collected",
+      "requiredRejection": "preserve independent command and original header; mismatch stays incomplete",
+      "executed": false
+    },
+    {
+      "id": "N18",
+      "trigger": "Treat producer=caller at field755 as adopted identity policy",
+      "requiredRejection": "separate exact owner/controller receiptIdentityPolicyPin required",
+      "executed": false
+    },
+    {
+      "id": "N19",
+      "trigger": "Use missing/invented/wrong policy/collector/layout pin as verified",
+      "requiredRejection": "preserve capture but no trusted compatible/observed/collected upgrade",
+      "executed": false
+    },
+    {
+      "id": "N20",
+      "trigger": "Satisfy not-started run using fabricated outer build receipt/approval/manifest",
+      "requiredRejection": "all top-level required trusted originals remain mandatory",
+      "executed": false
+    },
+    {
+      "id": "N21",
+      "trigger": "Normalize/truncate/rename true registry ID to fit business Id",
+      "requiredRejection": "preserve actual original, reject unsupported representation",
+      "executed": false
+    },
+    {
+      "id": "N22",
+      "trigger": "Use header with no context or terminal-looking bytes to establish child identity",
+      "requiredRejection": "strict accepted context is mandatory; otherwise preserve only raw",
+      "executed": false
+    },
+    {
+      "id": "N23",
+      "trigger": "Dedup attempts by equal child ID or require caller/child strings be different",
+      "requiredRejection": "role proof and qualified actual attempt domain, not string coincidence",
+      "executed": false
+    },
+    {
+      "id": "N24",
+      "trigger": "Hash a future receipt in binding or include manifest self/receipt",
+      "requiredRejection": "preserve original acyclic source→raw→carrier→binding→manifest→receipt order",
+      "executed": false
+    },
+    {
+      "id": "N25",
+      "trigger": "Claim five pre-context synthetic cases prove full post-context business path",
+      "requiredRejection": "original complete post-context fixture gap remains",
+      "executed": false
+    },
+    {
+      "id": "N26",
+      "trigger": "Rewrite two frozen overwrites as no modification because old113 restored",
+      "requiredRejection": "retain actual incident and missing first-draft/time/stream evidence",
+      "executed": false
+    }
+  ],
+  "nonRejectionBoundaries": [
+    {
+      "id": "B01",
+      "condition": "same attempt result readback with original verified sources",
+      "meaning": "no new dispatch/row created"
+    },
+    {
+      "id": "B02",
+      "condition": "caller and child IDs happen to have equal text with independent respective real sources",
+      "meaning": "not rejected solely by equality, neither role inferred from equality"
+    },
+    {
+      "id": "B03",
+      "condition": "different genuine attempts emit same child text and have distinct real caller IDs",
+      "meaning": "retain separate qualified attempts; never dedup by child text"
+    }
+  ],
+  "fullPostContextFixtureProduced": false
+}

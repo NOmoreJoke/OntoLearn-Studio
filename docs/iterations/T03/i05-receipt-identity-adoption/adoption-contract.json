@@ -1,0 +1,453 @@
+{
+  "format": "i05-receipt-identity-adoption/1",
+  "ownerDecision": "COMPATIBLE_WITH_RECEIVED_RECEIPT3_SHAPE_FOR_THIS_IDENTITY_MAPPING_ONLY",
+  "jointAdoptionState": "T03 author decision; fresh independent static review and exact controller joint acceptance pending",
+  "pinTarget": "docs/iterations/T03/i05-receipt-identity-adoption/adoption-contract.json",
+  "actualReceiptIdentityPolicyPin": null,
+  "executionAuthorization": false,
+  "receivedProtocolRef": "d9c3c151614674f2c7a6e3d7f6507aa7ba81db58",
+  "receivedCarrierRef": "0841ffbe7a4599fbea96f4ff998808f3f4e00972",
+  "normativeText": "decision.md",
+  "schemaVersionChangeRequired": false,
+  "schemaDelta": [],
+  "old1241Coverage": "received unchanged coverage; not rerun or recounted",
+  "receiptRunIdPointer": "#/properties/runs/items/properties/runId",
+  "ownershipPointer": "field-responsibility.json#/propertyIndex/755",
+  "ownershipMeaning": "caller producer assignment is not new identity semantics approval",
+  "roles": {
+    "receipt3.runs[i].runId": "actual caller pre-existing registration attemptId; caller entry identity",
+    "carrier2.attemptId": "same actual registration attemptId",
+    "binding2.attemptId": "same actual registration attemptId",
+    "binding2.receiptRunId": "same actual registration attemptId and receipt runId",
+    "binding2.attemptCore.attemptId": "same actual registration attemptId",
+    "carrier2.runId": "first strictly accepted child context runId; null before accepted context",
+    "binding2.attemptCore.core.runId": "accepted child context only in child-context branch"
+  },
+  "idRules": {
+    "businessIdSubset": {
+      "kind": "primitive",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$",
+      "maxLength": 2048,
+      "authority": false
+    },
+    "receipt3RunIdShape": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192
+    },
+    "authority": "neither ID string nor syntax/hash/pin shape authenticates an owner/source or grants authority",
+    "registryDomain": "one externally trusted complete logical caller registration/order domain per receipt; namespace source is proved by actual external registry/witness/binding/manifest, not an extra receipt key",
+    "attemptUniqueness": "unique within that declared complete registry domain, exact case-sensitive original value, no normalization or after-result invention",
+    "crossDomain": "do not merge same-string IDs from separate domains; preserve complete separate originals; any multi-domain combination needs separately exact verifiable registration contract",
+    "childDomain": "one first accepted context and same-identity subsequent frames within the actual attempt; no cross-attempt dedup by child string",
+    "roleStringCollision": "equal caller/child string is permitted only with independently verified respective original sources; equality does not prove same role",
+    "retry": "new actual scheduled/dispatch attempt gets a new real registration ID and row; preserve all previous failures and original order",
+    "readback": "same attempt result retrieval retains identity and is not a new scheduled attempt",
+    "outsideExistingIdDomain": "preserve actual source and reject compatibility; never silently rename/truncate/normalize to fit"
+  },
+  "branches": [
+    {
+      "identityAvailability": "not-dispatched",
+      "attemptCore": "NotDispatchedCore",
+      "childRunId": null,
+      "receiptRunId": "actual registered attemptId",
+      "observationState": "not-started",
+      "raw": "both null; no child dispatch; original31 keys and CR-R prelaunch/empty/null rules remain"
+    },
+    {
+      "identityAvailability": "unavailable-before-context",
+      "attemptCore": "PreContextFailureCore",
+      "childRunId": null,
+      "receiptRunId": "actual registered attemptId",
+      "observationState": "pre-header-rejected only when original CR-R actual exit2 conditions hold, otherwise incomplete",
+      "raw": "both full captured FileRefs nonnull, including zero-byte; actual header ranges/exit/signal/first failure preserved"
+    },
+    {
+      "identityAvailability": "observed-context",
+      "attemptCore": "BoundContextCore",
+      "childRunId": "first strictly accepted context.runId",
+      "receiptRunId": "actual registered attemptId",
+      "observationState": "incomplete after later fault; collected only complete original CR-R/CR-H and all independent gates",
+      "raw": "preserve first accepted context/stages/false/partial and all later rejected raw; reject second context without rolling back earlier accepted identity"
+    }
+  ],
+  "runRequiredCount": 31,
+  "runRequiredFields": [
+    "runId",
+    "mode",
+    "selector",
+    "argv",
+    "stdout",
+    "stderr",
+    "header",
+    "terminal",
+    "actualExitCode",
+    "signal",
+    "collectionComplete",
+    "fullSuiteCollectionComplete",
+    "declaredCompositionRef",
+    "provenanceSha256",
+    "externalReceiptStatus",
+    "python",
+    "moduleLoaders",
+    "distributionModuleLoader",
+    "functionCodes",
+    "dynamicChecker",
+    "observedSource23",
+    "packageCodeBoundToSource",
+    "sourceCodeBoundToSource",
+    "observationState",
+    "headerState",
+    "terminalState",
+    "observationIds",
+    "observedPaths",
+    "failure",
+    "headerPayload",
+    "observationOutcomes"
+  ],
+  "projectionRows": [
+    {
+      "sourcePointer": "#/rows/0",
+      "field": "runId",
+      "schemaPointer": "#/properties/runs/items/properties/runId",
+      "required": true,
+      "projection": "binding2.receiptRunId = carrier2.attemptId = original caller attempt registry record identity; caller-produced row identity, never child runId",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/1",
+      "field": "mode",
+      "schemaPointer": "#/properties/runs/items/properties/mode",
+      "required": true,
+      "projection": "actual caller mode/command context; accepted header value if available is preserved separately and mismatch fails binding",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/2",
+      "field": "selector",
+      "schemaPointer": "#/properties/runs/items/properties/selector",
+      "required": true,
+      "projection": "actual caller recorded selector/argv; never infer expected full-v1 after argv rejection",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/3",
+      "field": "argv",
+      "schemaPointer": "#/properties/runs/items/properties/argv",
+      "required": true,
+      "projection": "carrier2.lifecycle.argv actual original array for dispatched; original planned array for not-started",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/4",
+      "field": "stdout",
+      "schemaPointer": "#/properties/runs/items/properties/stdout",
+      "required": true,
+      "projection": "carrier2.stdout exact whole raw FileRef; null only not-started; dispatched zero-byte file is nonnull",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/5",
+      "field": "stderr",
+      "schemaPointer": "#/properties/runs/items/properties/stderr",
+      "required": true,
+      "projection": "carrier2.stderr exact whole raw FileRef; same availability rule",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/6",
+      "field": "header",
+      "schemaPointer": "#/properties/runs/items/properties/header",
+      "required": true,
+      "projection": "external exact extracted original header bytes FileRef when malformed/parsed; null absent, also retain whole stdout",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/7",
+      "field": "terminal",
+      "schemaPointer": "#/properties/runs/items/properties/terminal",
+      "required": true,
+      "projection": "external exact extracted original terminal bytes FileRef when malformed/parsed; null absent; unavailable child context cannot make a trusted terminal",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/8",
+      "field": "actualExitCode",
+      "schemaPointer": "#/properties/runs/items/properties/actualExitCode",
+      "required": true,
+      "projection": "carrier2.actualExitCode exact actual exit; null if signal/unconfirmed/not-started; caller error never child exit2",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/9",
+      "field": "signal",
+      "schemaPointer": "#/properties/runs/items/properties/signal",
+      "required": true,
+      "projection": "carrier2.signal actual; nonnull requires exit null",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/10",
+      "field": "collectionComplete",
+      "schemaPointer": "#/properties/runs/items/properties/collectionComplete",
+      "required": true,
+      "projection": "carrier2.collectionComplete; false for any not-started/pre-context/incomplete",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/11",
+      "field": "fullSuiteCollectionComplete",
+      "schemaPointer": "#/properties/runs/items/properties/fullSuiteCollectionComplete",
+      "required": true,
+      "projection": "carrier2.fullSuiteCollectionComplete; full417 only, B1 cannot substitute",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/12",
+      "field": "declaredCompositionRef",
+      "schemaPointer": "#/properties/runs/items/properties/declaredCompositionRef",
+      "required": true,
+      "projection": "original strict header payload field when actually observed; otherwise null; retain true mismatch and mark incomplete",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/13",
+      "field": "provenanceSha256",
+      "schemaPointer": "#/properties/runs/items/properties/provenanceSha256",
+      "required": true,
+      "projection": "original header.provenanceRead.sha256 if observed; source null; no expected fill",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/14",
+      "field": "externalReceiptStatus",
+      "schemaPointer": "#/properties/runs/items/properties/externalReceiptStatus",
+      "required": true,
+      "projection": "external-unverified exact schema constant, not caller approval",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/15",
+      "field": "python",
+      "schemaPointer": "#/properties/runs/items/properties/python",
+      "required": true,
+      "projection": "actual full caller run Python observation plus external compiler/dontInherit evidence only when actually observed; otherwise null/actual partial where schema permits",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/16",
+      "field": "moduleLoaders",
+      "schemaPointer": "#/properties/runs/items/properties/moduleLoaders",
+      "required": true,
+      "projection": "actual ordered available module observations, 0..23 on failure; keep false/null/mismatch and all fresh witnesses; never fake23",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/17",
+      "field": "distributionModuleLoader",
+      "schemaPointer": "#/properties/runs/items/properties/distributionModuleLoader",
+      "required": true,
+      "projection": "actual pyshacl.validator observation or null; keep partial actual",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/18",
+      "field": "functionCodes",
+      "schemaPointer": "#/properties/runs/items/properties/functionCodes",
+      "required": true,
+      "projection": "actual ordered available subset of four; keep null/false/different fingerprints",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/19",
+      "field": "dynamicChecker",
+      "schemaPointer": "#/properties/runs/items/properties/dynamicChecker",
+      "required": true,
+      "projection": "actual original resources.CONTRACT observation or null; no alias reconstruction",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/20",
+      "field": "observedSource23",
+      "schemaPointer": "#/properties/runs/items/properties/observedSource23",
+      "required": true,
+      "projection": "actual source23 observation or null; source/frozen domain CR-H preserved",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/21",
+      "field": "packageCodeBoundToSource",
+      "schemaPointer": "#/properties/runs/items/properties/packageCodeBoundToSource",
+      "required": true,
+      "projection": "actual original frozen binding status or null; no pre-signed success",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/22",
+      "field": "sourceCodeBoundToSource",
+      "schemaPointer": "#/properties/runs/items/properties/sourceCodeBoundToSource",
+      "required": true,
+      "projection": "actual original source binding status or null; no pre-signed success",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/23",
+      "field": "observationState",
+      "schemaPointer": "#/properties/runs/items/properties/observationState",
+      "required": true,
+      "projection": "not-started iff no dispatch; pre-header-rejected only actual probe exit2 and CR-R conditions; otherwise incomplete until complete CR-R fulfilled",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/24",
+      "field": "headerState",
+      "schemaPointer": "#/properties/runs/items/properties/headerState",
+      "required": true,
+      "projection": "carrier2.header.state; original parsed/malformed/absent; malformed keeps full bytes even syntactically JSON wrong strict shape",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/25",
+      "field": "terminalState",
+      "schemaPointer": "#/properties/runs/items/properties/terminalState",
+      "required": true,
+      "projection": "actual terminal availability from raw; absent/malformed/parsed per CR-R; no context cannot imply parsed trusted terminal",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/26",
+      "field": "observationIds",
+      "schemaPointer": "#/properties/runs/items/properties/observationIds",
+      "required": true,
+      "projection": "actual sealed original ordered emitted observation IDs; [] before any; never planned expected417",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/27",
+      "field": "observedPaths",
+      "schemaPointer": "#/properties/runs/items/properties/observedPaths",
+      "required": true,
+      "projection": "exact full nonnull observation leaf JSON pointers including false, from raw/header; [] when none; no changing mask to hide values",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/28",
+      "field": "failure",
+      "schemaPointer": "#/properties/runs/items/properties/failure",
+      "required": true,
+      "projection": "actual original earliest CR-R failure actor/phase/code/reason/firstEvidence FileRef; not a guessed code or reclassified RESOURCE; full mapping guarded by actual material",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/29",
+      "field": "headerPayload",
+      "schemaPointer": "#/properties/runs/items/properties/headerPayload",
+      "required": true,
+      "projection": "complete original header/2 strict parse from exact bytes; null absent/malformed; no extra business context fields",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    },
+    {
+      "sourcePointer": "#/rows/30",
+      "field": "observationOutcomes",
+      "schemaPointer": "#/properties/runs/items/properties/observationOutcomes",
+      "required": true,
+      "projection": "actual ordered outcome index same length/order as observationIds; never replaces complete business payload",
+      "owner": "caller collects actual; root verifies exact raw/owner source",
+      "unavailable": "only received schema null/empty/partial state constraints; all keys retained"
+    }
+  ],
+  "projectionShapeBasis": {
+    "repository": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review",
+    "ref": "d9c3c151614674f2c7a6e3d7f6507aa7ba81db58",
+    "path": "docs/iterations/T03/i05-semantic-build-protocol-v3/runtime-validation-receipt.schema.json",
+    "bytes": 88818,
+    "sha256": "9853eac5b28f12393c7af1c315273828b950136aece1a8bfd1b2122485652bd5"
+  },
+  "projectionSource": {
+    "repository": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+    "ref": "0841ffbe7a4599fbea96f4ff998808f3f4e00972",
+    "path": "docs/iterations/I05/d2-business-carrier-design/receipt-projection-r2.json"
+  },
+  "projectionAdoptionLimit": "Only runId role/link receives new semantic adoption here; other30 fields retain full received schema and CR-R/CR-H, not certified implemented or business-compatible by this record",
+  "reverseProjection": "Every actual registered attempt once in original order; row alone is lossy and cannot reconstruct carrier. Same trusted manifest plus complete registry/binding2/carrier/raw/caller originals/prior immutable build required; reject dangling/extra/reordered/missing/duplicate/wrong-domain links",
+  "rawReferences": "RawRange is not FileRef; exact extracted header/terminal original FileRef bytes/SHA map back to whole captured raw and same manifest",
+  "headerPreservation": "Strict headerPayload equals original header raw parse; keep actual mismatch/false/partial, malformed raw, and original command/argv separately. Apply original CR-H binding mismatch as incomplete; do not fill expected or rewrite header from command",
+  "wholeReceiptPrerequisite": "Representable not-started run does not license inventing mandatory top-level buildReceipt/approvedBuildRecord/runtimeEvidenceManifest. If valid whole-receipt sources unavailable, preserve all registration/capture originals without claiming a valid compatible whole receipt",
+  "currentRuntimePins": {
+    "businessAdoptionPin": null,
+    "registryOwnerPin": null,
+    "collectorOwnerPin": null,
+    "layoutPin": null,
+    "controlledRootApproval": null,
+    "implementationPin": null,
+    "compositionPin": null
+  },
+  "dependencyOrder": [
+    "externally accepted exact policy/specs and prior immutable build/owner authorization",
+    "actual caller attempt registry/command/prior ticket",
+    "child full raw and caller postrun originals",
+    "carrier2",
+    "binding2",
+    "comparison only if reached",
+    "complete external manifest",
+    "receipt3"
+  ],
+  "noCycle": "no future receipt reference in binding; no manifest self/receipt member; immutable build/provenance never backfilled; external controller acceptance supplies exact policy pin after freeze",
+  "preservedR2Coverage": {
+    "completeSyntheticFailureExamples": [
+      "zero-byte-no-context",
+      "bad-header-no-child-id",
+      "no-header-stderr-only",
+      "signal-before-context",
+      "not-dispatched"
+    ],
+    "detachedContextScenarios": 4,
+    "fullPostContextIncompleteOrCollectedEndToEndFixture": false,
+    "notRegeneratedOrExecutedHere": true
+  },
+  "preservedIncident": "As recorded in fixed R2 full independent report/root receipt: two frozen-checker overwrites; old113 finally restored; first unexecuted draft bytes/hash and independent event timestamps absent; initial separate streams incomplete. Restoration/design Pass is not whole-time compliance.",
+  "futureVersionBoundary": [
+    "nullable receipt.runId or identity union/new receipt/header key",
+    "changed31 required/type/null constraints or old CR-R/CR-H",
+    "automatic old carrier1/binding1 migration or unauthenticated multi-registry merge"
+  ],
+  "futureEvidence": [
+    "real pre-result registry owner/source/order/retry capture",
+    "actual full raw zero-byte/header/context/later-failure traces",
+    "complete post-context incomplete and collected end-to-end fixtures",
+    "full31 backprojection plus manifest/carrier/binding/prior-build proof",
+    "actual collector/layout/controlled roots and prior tickets",
+    "remaining M02-M05 codec/metadata/recipe/verifier/adapter and all fee/whole-H/Job/Store/417/B1/S1/platform/human/designated-review/CI/develop gates"
+  ]
+}
