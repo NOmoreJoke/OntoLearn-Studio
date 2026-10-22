@@ -1,0 +1,58 @@
+{
+  "observedUtc": "2026-10-22T18:59:22.906843+00:00",
+  "source": "/Users/kyle/.minimax/v2/sessions/2026/10/22/18-25-30-343-session_bXZzX2MyODUxMGQ0Yjk2YTRlY2JhZWE3YmUzZjgzOGM1MTEw/messages.jsonl",
+  "originalTurnId": "677c3d52-3d00-45ec-96af-2005b0a71d58",
+  "parentRecordIndex": 3,
+  "parentToolCallId": "call_DA4mSliXoqTx2JJhaf9eRXx3",
+  "selectedTwoTaskCardsOnly": [
+    {
+      "task_id": "bg_7c43a5df-9986-47fa-8def-9cd1d6a49c78",
+      "kind": "bash",
+      "status": "failed",
+      "execution": {
+        "status": "failed",
+        "reason": "exited",
+        "exitCode": 127,
+        "message": "Command exited with code 127"
+      },
+      "output": {
+        "rawBytes": 55,
+        "persistence": "complete",
+        "omittedBytes": 0
+      },
+      "timing": {
+        "commandTimeoutSeconds": 3600,
+        "commandTimerStartedAt": 1792694177314,
+        "commandDeadlineAt": 1792697777314
+      },
+      "parent_task_id": null,
+      "execution_mode": "managed_foreground",
+      "description": "Extract first-failure records and real errors",
+      "created_at": 1792694177311,
+      "ended_at": 1792694177325,
+      "last_error": "Command exited with code 127"
+    },
+    {
+      "task_id": "bg_c0a612bd-d8d1-497e-be96-23cf04830aed",
+      "kind": "bash",
+      "status": "succeeded",
+      "execution": {
+        "status": "succeeded",
+        "reason": "exited",
+        "exitCode": 0
+      },
+      "output": {
+        "rawBytes": 1404,
+        "persistence": "complete",
+        "omittedBytes": 0
+      },
+      "timing": {},
+      "parent_task_id": null,
+      "execution_mode": "explicit_background",
+      "description": "Run the two authorized oracle commands",
+      "created_at": 1792693850912,
+      "ended_at": 1792693857564
+    }
+  ],
+  "supportBoundary": "127 task failure and combined authorized-oracle task exit0 independently visible in existing parent card. Original per-command argv/exit and 55-byte first error body not in current segment. Do not treat combined task0 as each Python command separately exit0."
+}

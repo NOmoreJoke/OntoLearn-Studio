@@ -1,0 +1,548 @@
+# T05 O15 修复版候选 · 全新独立完整工程审查报告（MiniMax Code 侧）
+
+- 审查对象：`b88be226501703f1d5365734dd0e56066bd1bffb`（固定 source）
+- 本方工作区：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-minimax-review-b88be226`
+- 本方 HEAD：`0f87f2c2a1fe5b8085176b530e473a7d51cea509`（detached，与 launch-map 的 `processRef` 一致）
+- 报告路径：`docs/reviews/T05/projection-R3-receiving/launch-O15/report.md`
+- 报告日期：2026-10-23
+
+---
+
+## 0. 结论先行
+
+### 0.1 三层判定
+
+| 判定层 | 结论 | 依据摘要 |
+| --- | --- | --- |
+| **A. O15 候选增量（9 文件 delta）静态范围** | **Pass（有条件）** | 候选自身声明的每一条（15 条意见处置、5 项全文缺口、150 清单身份、1246 完整树身份、417/280/137/26/whole=false 边界、两条 oracle 命令、历史首失败保留）经本方**独立复验均成立**；未在候选增量中发现阻断缺陷。 |
+| **B. 150 完整工程 scope 静态范围** | **NotPass** | 范围内存在 **3 项中等严重度**未闭合缺陷（§8.1–§8.3）与一批低/信息项（§8.4–§8.12）；这些**均为既存问题、非本候选引入**，候选也未声明闭合。按"完整 scope 不能只审 9 file delta"的要求，不得整体签 Pass。 |
+| **C. 运行 / 打包 / 生产层** | **无法验证** | 本轮禁令只允许两条 oracle 命令 + `verify-input.py --phase observe`；完整 `npm run check`、`npm run test:e2e`、`npm run package:dir`、native/GUI、生产环境**本方均未取得运行证据**。 |
+
+### 0.2 不可由本报告关闭的门（逐项保留）
+
+以下**全部保持开放**，本报告不代签、不沿用旧结论：
+
+- 15 条原意见：`all-15-owned-disposition.json` 中 **15/15 条 `externalReviewerOpinionClosed` 均为 `false`**；台账顶层 `allOriginal15ExternalOpinionsStillOpen=true`。本方只核"处置是否正确、证据是否成立"，**不构成外部关闭**。
+- F-12 / F-13 / F-14 / F-15 四条**本候选未实施**（`implementationDone=false`），处置理由（所有权归属 root/T01/I04，非 T05 写权）经核成立，但事项**仍开放**。
+- 137 项 pending、26 项 allocation pending、`wholeOracleComplete=false`：保持。
+- 父 T05、P0、正式 JobStore、`selected`、wholeH、S1、B1、费用、两 OS CI、真人验证、develop 门：保持。
+- 旧 Z 的 Pass：**未沿用**。旧 M：**未续接**。
+
+### 0.3 三层判定的读法
+
+A 与 B 不矛盾，但**不可互相替代**：
+
+- A = "**这个候选自己做的事，做对了**"；
+- B = "**这个候选所在的完整工程面，不是全绿**"；
+- C = "**除两条命令外，本轮没有运行证据**"。
+
+候选 delta 的 Pass **不**向上传递为 scope Pass；scope 的 NotPass **不**反向否定候选 delta 的正确性。
+
+---
+
+## 1. 审查身份与固定输入核验
+
+### 1.1 正式附件
+
+| 项 | 实测值 | 要求值 | 结论 |
+| --- | --- | --- | --- |
+| 附件路径 | `/Users/kyle/.minimax/v2/assets/2026/10/23/02-25-30-603-asset_20261023-022530-603_c31f1b5d44bb_7dbe04ab-launch-prompt.md` | 同 | — |
+| 字节数 | `7279` | 7279 | ✅ |
+| SHA256 | `c31f1b5d44bb008becdadb21b4ea156058548c809cbcbf9d5db80e47e6629ddd` | `c31f1b5d…9ddd` | ✅ |
+| worktree 内 `launch-O15/launch-prompt.md` | 7279 B / 同 SHA256 | 字节相同 | ✅ |
+
+附件已**全文读取并逐条执行**，未只读 9 file delta。
+
+### 1.2 范围与政策输入
+
+| 项 | 实测 | 结论 |
+| --- | --- | --- |
+| `launch-O15/scope-contract.json` | 36691 B，SHA256 `757682e1a0e3d389cc7cc4b89c4ea3a7ba6c38623ad66c4c01771cb4cd6e86f5` | ✅ 与 launch-map `commonScopeSHA256` 一致 |
+| `launch-O15/guidance/AGENTS-stage-current.md` | 15147 B，SHA256 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4` | ✅ |
+| 仓库内现行 `AGENTS.md` | 15147 B，SHA256 **同上** | ✅ 两文件字节相同；为已授权且**未暂存**的 overlay |
+| 历史 Git 版 `AGENTS.md` | 1056 B / `1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb` / blob `f3876f6690b11ae58f633d1bcb96db05a429d58b` | ✅ 与 launch-map `historicalGitAGENTS` 一致（overlay 与历史 Git 版是两件事） |
+| `git status --porcelain` | ` M AGENTS.md` + `?? docs/reviews/T05/projection-R3-receiving/launch-O15/` | ✅ 符合"只写本方目录" |
+| `git rev-parse HEAD` | `0f87f2c2a1fe5b8085176b530e473a7d51cea509` | ✅ detached，与 `processRef` 一致 |
+
+已全文读取的政策文件：`AGENTS.md`、`guidance/AGENTS-user-current.md`、`guidance/desktop-operation-policy.md`、`guidance/external-review-permissions.md`、`guidance/developer-common-instructions.md`。
+
+### 1.3 preflight
+
+```
+$ .venv/bin/python -B docs/reviews/T05/projection-R3-receiving/launch-O15/verify-input.py --phase observe
+exit 0
+{"phase":"observe","exit":0,"protected":450}
+```
+
+产出 `launch-O15/preflight-observe.json`（3098230223b0bd76e566cf831b5ad17f60e43c498056a173576830cb85f18445），内含 1262 条 trackedPathMetadata；未知目录仅做 `lstat`，未做 open/hash/parse。10 份 launchInputs 与 450 项受保护输入校验一致。
+
+### 1.4 Goal
+
+`get_goal` 返回空。本轮**未新建 Goal**，符合禁令。
+
+---
+
+## 2. 本轮实际执行的命令（全部 argv / cwd / env / exit / hash）
+
+### 2.1 允许命令 1 — oracle 自测
+
+```
+cwd    = /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-minimax-review-b88be226
+env    = TMPDIR=<worktree>/docs/reviews/T05/projection-R3-receiving/launch-O15/scratch
+argv   = <worktree>/.venv/bin/python -B scripts/test-i05-source-package-oracle.py
+interp = Python 3.12.14（.venv/bin/python）
+exit   = 0
+stdout = 空（raw SHA256 e3b0c442…b855）
+stderr = 62 行，末尾 "Ran 57 tests in 4.688s" / "OK"
+         raw SHA256 c0f7dbd8220f001985022901a5384973834ea1fd5a9e5e14147e77545c425e06
+raw    = launch-O15/raw/o15-test-oracle.{stdout,stderr}.raw
+```
+
+### 2.2 允许命令 2 — oracle 重建校验（`--check` 未省略，未执行裸 build 写回）
+
+```
+cwd    = <worktree>
+env    = TMPDIR=<worktree>/.../launch-O15/scratch
+argv   = <worktree>/.venv/bin/python -B scripts/build-i05-source-package-oracle.py --check
+interp = Python 3.12.14
+exit   = 0
+stdout = JSON（raw SHA256 030cabeee57f2adf1e3d03376c0f079e78a62e045c819b67f8241b356888bce5）
+         {"observations":417,"datasets":320,"statuses":{"pending":137,"specified":280},
+          "wholeOracleComplete":false, …}
+stderr = 空（raw SHA256 e3b0c442…b855）
+raw    = launch-O15/raw/o15-build-check.{stdout,stderr}.raw
+```
+
+`--check` 报告的 5 个产物与磁盘**逐字节一致**（本方独立复算）：
+
+| 产物 | bytes | SHA256 |
+| --- | ---: | --- |
+| `tests/fixtures/quality/i05-source-package-oracle/oracle.json` | 5938727 | `374f223f7348ee982077ba75c8a0403a2edf71fab373612ea29b4e325b2014b7` |
+| `…/coverage.json` | 154032 | `95d7395761fbabe97c1fd81d1d05eb44bb8094f7266d977de42fdff349d28bd9` |
+| `…/sources.json` | 79253 | `b06bef47a15fde1953b638d5a233a054d139b4fa844a89395c510434c2522402` |
+| `…/schema.json` | 10220 | `2c1fefc9a675cf685bb7c31545ca1070dadd3845ce093c648f1c59dbc08a9f6f` |
+| `…/budget-gaps.json` | 362492 | `e68188ddefae4488fa6cf7762549508b78a3d87551f27cb24b9c9998f7948e9d` |
+
+### 2.3 允许命令 3 — 声明式输入静态 preflight
+
+见 §1.3，exit 0。
+
+### 2.4 运行后工作树状态
+
+```
+$ git status --porcelain
+ M AGENTS.md
+?? docs/reviews/T05/projection-R3-receiving/launch-O15/
+```
+
+→ 两条 oracle 命令**未回写任何产品文件**（`--check` 确实只校验）。
+
+### 2.5 本轮发生的一次自伤失败（如实记录）
+
+在 `O-owned-repair-candidate/` 子目录内以相对路径执行 `.venv/bin/python` → `/bin/bash: .venv/bin/python: No such file or directory`，exit 127。
+**成因**：相对路径基于子目录；**非产品失败**。改用绝对解释器路径后同一读取动作成功，未造成任何写入。
+
+### 2.6 未执行（禁令，逐项）
+
+产品 pytest / npm run check / npm run test:e2e / npm run build / npm run package:dir / native / GUI / model / 网络 / 付款 / 凭据 / 物理资源 / SQLite 损坏 HOLD / 未签 caller / producer 验证 —— **全部未执行**。历史 `verify-i01` 原件保留 149 项，本方**只核适用边界、不执行**。`I02_HMR=1` 探针**未运行**。
+
+---
+
+## 3. 实际已读范围与读取方式（含明确缺口）
+
+采用"**本人逐行读决策核心 + 只读子线覆盖大体量机械遍历**"的混合方法。每条结论均标注来源；子线输出只作证据，不作结论。
+
+### 3.1 本人逐行读完（in-context）
+
+- **政策/指南**：`AGENTS.md`、`guidance/{AGENTS-user-current, desktop-operation-policy, external-review-permissions, developer-common-instructions}.md`。
+- **launch 输入**：`scope-contract.json`、`launch-map.json`、`verify-input.py`、`frozen-original-prompt.md`、preflight/observe JSON。
+- **受审主体（全文）**：`scripts/build-i05-source-package-oracle.py`（3168 行 / 129742 B）、`scripts/test-i05-source-package-oracle.py`（987 行 / 46930 B）。
+- **五项全文缺口（全部读完）**：PRD V0.6（1255 行）、`allocation-integration-plan.md.raw`（159 行）、`allocation-restore-plan.md.raw`（249 行）、`package-lock.json`（6423 行，分 12 段连续读取无跳行）、`uv.lock`（240 行）。
+- **接收包历史**：`O-owned-repair-candidate/README.md`、`all-15-owned-disposition.json`（15 行逐字段）、`final-full-engineering-inventory.json`、`final-validation-receipt.json`、`next-pair-five-full-read-requirements.json`、`independent-owned-repair-review{,-first}.md`、`independent-combined-config-review.md`、`R1-failure-disposition.json`、`R1-repair-disposition.json`、`R1-repair-static-readback.json`、`baseline-preservation.json`、`package-byte-verification.json`、`source-receipt.json`、`candidate-receipt.json`、`final-delivery-receipt.json`、`sealed-source-candidate.json`、`owned-implementation-commit-receipt.json`、`report-finalization-receipt.json`、`independent-review-version-binding.json`、`full-check-02-finite-format-blocker.json`、`full-check-02-config-identity-after.json`、`raw-evidence-whitespace-disposition.json`、`preconfig-evidence-whitespace-first-check.json`、`final-semantic-delta-proof.json`、`semantic-delta-proof.json`、`config-integration-receipt.json`、`config-r2-integration-receipt.json`、`runner-pytest-action-delta-verification.json`、`exact-format-scope-proposal.json`、`evidence-index-preconfig.json`、`final-delivery-manifest.json`、`next-pair-preparation.md`、`environment-setup/summary.json`、`python-style-closure/final-style-verification.json`。
+- **首失败原件（全部 11 份 result.json + 对应 raw 全部读完）**：`component-build-01/02`、`component-engine-check-01`、`component-engine-pytest-01`、`component-test-01/02`、`component-typecheck-01`、`full-check-01/02/03`、`environment-repair-02`。
+- **150 scope 其余部分**：`.github/*`(4)、`.prettierignore`、`.prettierrc.json`、`apps/desktop/{electron-builder.yml,package.json,tsconfig.json}`、`packages/contracts/{package.json,tsconfig.json}`、`eslint.config.mjs`、`package.json`、`pyproject.toml`、`playwright.config.ts`、`tsconfig.unit.json`、`scripts/{verify-sources.mjs,build-engine.mjs,prepare-i04-fixture.py,verify-i04-package.py}`、`scripts/i04_matrix_evidence.py`(前 120 行)、`docs/reviews/I02/round-2/minimax-runtime/*.mjs`(3)、`scripts/verify-i01.py`(关键段)、`docs/reviews/T05/source-package-oracle/record-command.py`。
+
+### 3.2 只读子线覆盖（结论已逐条回收到本报告）
+
+| 子线 | 覆盖 | 回收状态 |
+| --- | --- | --- |
+| A · engine+contracts Python 测试套件 | `packages/engine/tests/*` 全 19 文件（6004 行）全文 + `packages/engine/src/ontolearn_engine/*` 交叉引用 + `packages/contracts/**` | ✅ 已回收（§7.1–§7.2、§7.6） |
+| B · desktop unit/e2e 测试 | `tests/unit/*`(15)、`tests/e2e/*`(5)、`playwright.config.ts`、`apps/desktop/src/{main,preload,renderer}/**`、`packages/contracts/src/*` 共 44 文件 8524 行 | ✅ 已回收（§7.3–§7.5） |
+| C · T05 guidance 规范要求 | `docs/reviews/T05/source-package-oracle/guidance/*` 18 文件 + `docs/iterations/T05/source-package-oracle/*` 2 文件全文 | ✅ 已回收（§6.4 边界口径交叉验证） |
+| D · 大型结构化 JSON 遍历 | 18 份大型结构化 JSON 全量解析 + 遍历 + 约束核验（oracle/coverage/budget-gaps/sources/schema、5 份输入、5 份 contracts v2 数据、1246 条 tracked-tree） | ✅ 已回收（§5.3、§5.4、§8.10–§8.12） |
+
+子线均被限定为**只读**，且被要求**不得运行** pytest/npm/build/GUI/native/网络/模型，不得写入产品文件；子线 D 的唯一可写目录为 `launch-O15/scratch/subagent-D/`。
+
+### 3.3 程序化遍历（非逐行读，但完整解析 + 全量约束核验）
+
+- `final-source-tracked-tree.json` 1246 条路径集 vs `git ls-tree -r -z b88be226`。
+- `final-full-engineering-inventory.json` 150 条：文件系统 bytes+SHA256 vs 登记值；`git rev-parse b88be226:<path>` blob vs 登记 `gitBlob`。
+- `oracle.json` 完整解析：observations / datasets / statuses / semanticStates / declaredAllocation / pendingFields / notClaims。
+- `sources.json` 完整解析：来源行数、唯一 local 数、lineage 条数。
+- `package-lock.json`（467 packages、lockfileVersion 3、root engines、workspaces、link 条目、resolved 域、凭据模式）与 `uv.lock`（18 包、来源域、editable/virtual）完整解析并遍历。
+
+### 3.4 明确的未读缺口（不得当作已覆盖）
+
+| 缺口 | 说明 |
+| --- | --- |
+| `docs/reviews/T05/source-package-oracle/guidance/` 中 `allocation-selective-adoption.json.raw`(1135 行) | 子线 C 已全文读并复核计数；**本人未逐行读**。 |
+| `packages/contracts/v2/{fixtures.json, binding-regressions.json, frame-fixtures.json}` | 子线 A 以程序化方式计数/检索，未逐行读（分别 472098 / 123964 / 17537 B）。 |
+| `packages/engine/src/ontolearn_engine/job_store.py`、`storage.py` 全文 | 子线 A 只读测试依赖的区段；两文件均 1000+ 行，其余区段**未读**。 |
+| `packages/engine/src/ontolearn_engine/entrypoint.py` | 未读。 |
+| `docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-inputs.json`(8.2 MB) 等 6 份输入 | 由 builder 消费；本方核其 pin/hash 与读取路径，**未逐行读内容**。 |
+| `docs/reviews/I02/round-2/minimax-runtime/*.json`（5 份） | 仅 grep 命中，未逐行读。 |
+| `scripts/i04_matrix_evidence.py` 第 121 行以后 | 未读。 |
+| 任何 peer 本轮 workspace / 意见 / global 会话日志 | **按禁令未读**。 |
+
+---
+
+## 4. 150 完整 scope 的身份核验
+
+### 4.1 150 项清单
+
+- **150/150** 项的当前文件系统 `bytes + SHA256` 与 `final-full-engineering-inventory.json` 登记值**完全一致**。
+- **150/150** 项的 `git rev-parse b88be226:<path>` blob 与登记 `gitBlob` **完全一致**。
+- 目录分布：`packages/engine` 36、`docs/reviews` 27、`apps/desktop` 22、`packages/contracts` 16、`tests/unit` 15、`tests/e2e` 5、`tests/fixtures` 5、`docs/iterations` 2、其余 12 项为根级/`.github`/`scripts` 单文件。
+
+### 4.2 1246 条完整树
+
+`final-source-tracked-tree.json` 的 1246 条路径集与 `git ls-tree -r -z b88be226` **完全相等**，mode/blob **0 处不匹配**（子线 D 进一步用 `git ls-tree -r -l -z` 复核 `mode`/`gitType`/`gitBlob`/`bytes` 四字段，**1246/1246 全部一致**，0 缺失、0 多余）。
+→ **R1-02（树身份修复）在本候选上成立**。
+
+**精度说明**：`1246` 是**锁定在 `sourceCommit = b88be226` 上的** tracked 树规模；本方当前 HEAD（`0f87f2c2`）实际跟踪 **1262** 个文件（多出 28 个，均为本轮评审目录与证据文件），与 `preflight-observe.json` 的 `trackedPathMetadataCount = 1262` 一致。**1246 与 1262 不构成矛盾**，但引用时必须写明提交边界，不得混用。
+
+### 4.3 锁文件完整解析约束
+
+| 约束 | 实测 |
+| --- | --- |
+| `package-lock.json` | 467 packages；`lockfileVersion=3`；root `engines.node >=24 <25`；`workspaces=["apps/desktop","packages/contracts"]`；2 个 `link` 条目；**0** 个非注册表 `resolved`；**0** 处真实凭据（`js-tokens` 为正则误报）；25 个包存在多版本 |
+| `uv.lock` | 18 包；来源仅 `https://pypi.org/simple`；editable/virtual 关系；**0** 个非 https 来源 |
+
+两份锁文件**未在本候选被改动**，与 `owned-implementation-commit-receipt.json` 记录一致。
+
+### 4.4 `.prettierignore` / `pyproject.toml` 例外路径的真实存在性
+
+`.prettierignore` 新增 **15** 条根锚精确路径（10 条 `docs/iterations/T05/projection-R3-receiving/*` + 5 条 `tests/fixtures/quality/i05-source-package-oracle/*.json`），本方逐条核实**在本树真实存在**（非死路径），疑点排除。
+
+`pyproject.toml` 现状：`[tool.ruff.format].exclude` **9** 条（8 份历史 Python + `independent-owned-repair-review-first.md`）；`[tool.ruff.lint.per-file-ignores]` **8** 个 key、26 条规则 membership。
+
+**范围说明**：被 ruff 豁免的 8 份历史脚本位于 `docs/reviews/T05/projection-R3-receiving/O-launch-{dispatch,preparation}/`，**均不在 150 scope 内**（本方实测命中数 0）。这是候选配置 delta 指向**范围外归档件**的事实，记为 §7.7（低-信息）。
+
+---
+
+## 5. 五项全文缺口与边界数据的独立复验
+
+### 5.1 五项缺口
+
+| 缺口 | 读取方式 | SHA256 与 `next-pair-five-full-read-requirements.json` |
+| --- | --- | --- |
+| PRD V0.6 | 全文 1255 行 | ✅ 一致 |
+| `allocation-integration-plan.md.raw` | 全文 159 行 | ✅ 一致 |
+| `allocation-restore-plan.md.raw` | 全文 249 行 | ✅ 一致 |
+| `package-lock.json` | 全文 6423 行（12 段连续） | ✅ 一致 |
+| `uv.lock` | 全文 240 行 | ✅ 一致 |
+
+**结论**：五项全文读取要求 **Pass**（读取与身份层面）。
+
+### 5.2 关键规范条款已被候选正确绑定
+
+子线 C 从 `allocation-integration-plan.md.raw:72–80` 与 `allocation-restore-plan.md.raw:103–109` 提取的七池规范值，与候选 `DECLARED_POOLS`（`scripts/build-i05-source-package-oracle.py:159`）**数值一致**：work 16777216 / input_bytes 262144 / output_bytes 262144 / trace_items 8192 / firings 1024 / head_occurrences 16384 / bindings 1024；restore 侧的 input/output/trace 别名与规范行一致。
+
+### 5.3 边界数据（本方实测 `oracle.json`，非引用台账）
+
+| 指标 | 实测 | 台账/规范声明 | 一致 |
+| --- | ---: | ---: | :-: |
+| observations | 417 | 417 | ✅ |
+| datasets | 320 | — | — |
+| specified | 280 | 280 | ✅ |
+| pending | 137 | 137 | ✅ |
+| `wholeOracleComplete` | `false` | `false` | ✅ |
+| `declaredAllocation` 合计 | 116 | 116（301 条为 null） | ✅ |
+| ├ specified | 88 | 88 | ✅ |
+| ├ pending | 26 | 26 | ✅ |
+| └ not-invoked | 2 | 2 | ✅ |
+| `semanticStates` | normal 208 / known-rejection 208 / not-executed 1 | — | — |
+| `pendingFields` 对象总数 | 209 | — | — |
+| `notClaims` | 8 项 | — | — |
+
+**并集关系核验**：88 + 26 + 2 = 116；116 + 301 = 417；280 + 137 = 417；88 ≤ 280（26 是 137 的子集，非并列类）。
+→ 与 `declared-allocation-delta.md:7–19` 的口径**完全吻合**。**26 项 allocation pending 保持开放，不得由本报告关闭。**
+
+**子线 D 的独立复算（与本方互为交叉验证）**：D 在 `manifest.counts`、`coverage.byStatus`、`coverage.observationCount`、`oracle.observations[]`、`inputs.observations[]` **五处独立声明点**分别复算，全部一致；`coverage.byFamily` **26/26 家族逐项相等**且声明和 = 实际和 = 417；`manifest.counts` 的 datasets=320 / productCases=50 / mathInputContexts=83 / learningChecks=54 / originalOperations=106 / unresolved=5 **全部复算一致**；`mathOnlyCounts` 的 83/82/79/78/4/1 **六项全部复算一致**（与 `window.md:22`、`contract.md:24` 的 82 eligible / 79 full / 交集 78 口径吻合）。
+→ **没有任何声明数字与数据矛盾。**
+
+### 5.4 其他数据实测
+
+- `sources.json`：**27** 行来源登记 / **19** 个唯一 local 身份 / **111** 条 `provenance-only` lineage。
+- `rawTermSourceOccurrences`：**26** 个 observation 带该键；其中 **25** 个为数组、**1** 个（`fullview/turtle-entry`，dataset kind = `turtle`）为 `null` —— 该 `null` 恰为 `schema.normalization.RawTermSourceOccurrence` 规定值（无结构化记录时置 null，**不得从解析出的 term 反造**）。数组长度与源记录长度 **25/25 精确相等**；逐行逐字段（`kind`/`lexical_form`/`datatype_iri`/`language_raw`/`source`）与 `inputs.datasets` 源记录深比对 **0 处差异**；**96** 行 × 每行 **3** term = **288** term。
+- **blank node：全量 0 命中**（`kind == "blank"` 0 处、`_:label` 0 处）→ F-01 的"data/ontology 侧不引入 blank"在数据层**空真成立**。
+- `pendingFields` 长度分布：0→280、1→105、2→6、3→12、4→14，合计 **209**；**`specified` ⇔ `pendingFields` 为空** 在 417 条上 **0 违例**；`oracle.pendingFields` 与 `coverage.pending[].fields` **137/137 逐字相等**。
+- **19 条 `pending` observation 带非空 `businessMath.matches`**，但**全部 19 条都同时声明了 `pendingFields` 缺口** → "pending 不得声称已匹配"的纪律以**已披露缺口**的方式成立，非隐瞒。
+- **溯源链（最强交叉核验）**：`parity-inputs` / `manifest` / `oracle` / `sources` 中 **79 组 `(ref, path, sha256)`** 三元组，经 `git cat-file` 在其声明 ref 上逐个哈希核验，**79/79 与 Git 对象字节一致**，0 不匹配、0 不可用。
+- **凭据与绝对路径扫描（18 份文件，结构化扫描 + 字节级 grep 双路一致）**：**0** 处真实凭据、**0** 处绝对路径、**0** 处主机标识。唯一"疑似凭据"值 `fixtureSecret = "SYNTHETIC-DO-NOT-EXPORT"`（4 处）是显式非密标记，且配对 `expected.credentialFields` 为 `[]`。
+
+
+---
+
+## 6. 全部 15 条原意见的逐项处置
+
+台账字段：`implementationDone` / `externalReviewerOpinionClosed` / `originalOpinionPreserved`。
+**15/15 条 `originalOpinionPreserved=true`；15/15 条 `externalReviewerOpinionClosed=false`。**
+
+本方**独立复验**结论（不采信 `implementationDone` 布尔值，逐条以代码/数据行取证）：
+
+| ID | 原意见 | 本方独立证据 | 本方判定 |
+| --- | --- | --- | --- |
+| **F-01** | fixture Turtle blank node 标签无数据集作用域，跨图合并会混淆 | `build…py:403` `self.blank = 0`、`:422` "fixture list blank nodes are admitted only in the shapes role"、`:430-431` 标签 `list-N` 每次从零起（局部作用域）；`:1867-1870` data/ontology 侧 blank 拒绝；`test…py:884` `test_list_blank_nodes_remain_shapes_only_without_cross_graph_relabeling`；实测 oracle 内 blank term = 0 | ✅ 已修且边界正确；**未关闭**（外部审判定权在双指定审） |
+| **F-02** | 17 条 observation 声称 `consumer-C-goldens.json` 为独立 expected，但交叉核对只覆盖 9/13 golden、只比 2 字段 | `test…py:738` `assertEqual(sum(len(row["observations"]) for row in ledger), 17)`（强制 13 金标 → 17 观察）；`test…py:730` `test_all_C_authority_cases_have_explicit_conditional_consumption`；`build…py:2126` 按名分派、`:2133` 指向 per-observation `expectedSourceRefs` | ✅ 已修；**未关闭** |
+| **F-03** | `explanation-goldens.json` 被列为独立 expected 但未被任何派生/校验 | `build…py:2123` "retained-reference-only; no exact current observation/input mapping"、`:2311` `"status": "retained-reference-only"`；`test…py:784-786` 断言该状态；本方实测该记录**未出现在任何 `expectedSourceRefs`** | ✅ 已修（诚实标注未消费）；**未关闭** |
+| **F-04** | 七池总额为手工复制常量，与引文无机器交叉校验 | `build…py:2156` `check_declared_pool_sources()` → `:2169` 遍历 `DECLARED_POOLS` → `:2174` `if found != DECLARED_POOLS:` 抛错；读 integration L72–80 与 restore L103–109 并比对；`test…py:845-847` 以 `work=16777217` 做负例 | ✅ 已修；**未关闭** |
+| **F-05** | 三份来源清单互不包含、命名口径不一致、一条实际来源未登记 | `test…py:799` `test_source_registry_has_fixed_local_identities_and_separate_literal_lineage`；实测 27 行 / 19 唯一 local / 111 条 provenance-only lineage | ✅ 已修；**未关闭** |
+| **F-06** | `schema.json` 的 RDFTerm 形状未覆盖 288 处真实数据 | `build…py:1486` `"rawTermSourceOccurrences": raw_records`；`:1867-1875` 私有 raw 专用域；实测 25 数组 / 96 行 / 288 term；公共 `packages/contracts` schema 未被改动 | ✅ 已修（私有域，公共 schema 不动）；**未关闭** |
+| **F-07** | `scope.factSources.basis` 只保留首个匹配 firing 的 leafBasis | `build…py:1294` `def scope_rule_basis(matches, triple)`；`:3069` 异 basis 直接抛错（fail-closed） | ✅ 已修；**未关闭** |
+| **F-08** | `source-identities.json` 被消费但未入固定身份白名单 | `build…py:47` 已列入 `DOC_PINS`；`:2985` 严格解析该文件；`test…py:836` `test_source_identity_pin_rejects_changed_metadata_before_interpretation` | ✅ 已修；**未关闭** |
+| **F-09** | `sources.json` 的 `sourcePath` 指向本树不存在的历史路径且不带 ref/sha256 | 登记行已带 SHA + 多数 ref；历史 path 明示为历史地址、不以同名本地文件充证；`test…py:575-579` 断言 111 条 lineage 全为 `provenance-only` 且含指定 ref | ✅ 已修（原意见"整体不成立"部分属实，台账已诚实记录）；**未关闭** |
+| **F-10** | 索引→错误码映射表对越界索引无防护 | `build…py:756` `finite_fixture_index(key, prefix, allowed)`、`:766` `indexed_fixture_domain(key)`；越界抛明确 `ValueError`（`test…py` 负例 `patch.object(..., side_effect=ValueError('invalid finite index'))`） | ✅ 已修（fail-closed，未扩 417）；**未关闭** |
+| **F-11** | 固定 argv 的解释器与项目声明 Python 版本不一致 | `record-command.py:29-31` 记录 `executable` / `version` / `versionInfo`；`:33-42` env 白名单；`:25-26` argv+cwd；`:58` exit；`:63` 输出 hash；`:13-21` 三 action 与 tag 规则 | ✅ 已修；**未关闭** |
+| **F-12** | `verify-i01.py` 打包健康探针仍用 I01 v1 信封 | `scripts/verify-i01.py:58` `"protocolVersion": 1`、`:69` `capabilities == ["health"]` —— **原件未被修改**，149 项库存保持 | ✅ 处置正确（属历史依赖，无当前执行依赖；保持原字节）；**本候选未实施 → 事项仍开放** |
+| **F-13** | `job_store.commit_job_round` 直接 `stateVersion += 1` 绕过 `permits_transition` | `job_store.py:799` `def commit_job_round`；`:836` `job["stateVersion"] += 1`，其上 `:832-835` 注释与守卫说明 `_transition` 仍掌状态名边、此处仅同态推进持久版本；`:828-829` running/rounds 守卫 | ✅ 处置正确（未改 JobStore，未外推为状态边违规）；**事项仍开放** |
+| **F-14** | `storage.Conflict` 异常文本内嵌 subject/predicate/source_row/id | `storage.py:435-440`、`:629-633` 仍内嵌（**未改**，与台账一致）；分类出口只取 code/params，未证跨边界泄露 | ✅ 处置正确（无 T05 写权，避免以未来可能误用扩大修复）；**事项仍开放** |
+| **F-15** | 内存上限跨平台不等价、Darwin 非硬限可过冲 | `memory_guard.py:4-6` docstring 明示 "Darwin has no usable per-process RLIMIT_AS here…Darwin sampling is not a hard allocation cap and can overshoot between samples" | ✅ 处置正确（保平台限制事实，不量化过冲）；**事项仍开放** |
+
+**小结**：F-01…F-11 共 11 条**实施证据成立**；F-12…F-15 共 4 条**按台账保持未实施且处置理由成立**。**15 条均未被本报告关闭**。
+
+---
+
+## 7. 历史首失败与首错的逐项处置
+
+历史原件全部保留，本方已逐份读取 `result.json` 与 `stdout.raw`/`stderr.raw` 的**真实错误文本**（非摘要）。
+
+### 7.1 首失败清单与后继
+
+| 目录 | argv | exit | 真实首错（摘） | 后继 |
+| --- | --- | :-: | --- | --- |
+| `component-typecheck-01` | `npm run typecheck` | **0** | — | 首轮已绿 |
+| `full-check-01` | `npm run check` | **1** | Prettier 门：`[warn] … Code style issues found in 16 files. Run Prettier with --write to fix.`（16 条含 10 条 T05 投影文档 + `field-policies.md` + 5 份 fixture JSON） | 见 §7.2 |
+| `component-test-01` | `npm run test` | **1** | `Error: Cannot find native binding. npm has a bug related to optional dependencies (#4828)`，cause 链：`@rolldown/binding-darwin-arm64` → `./rolldown-binding.darwin-arm64.node` → `@rolldown/binding-darwin-universal` → `@rolldown/binding-wasm32-wasi` → `./rolldown-binding.wasi.cjs`（vitest `Startup Error`） | `environment-repair-02` |
+| `component-build-01` | `npm run build` | **1** | 同一 `Cannot find native binding`（electron-vite build；`npm error workspace @ontolearn/desktop@0.1.0`） | 同上 |
+| `component-engine-check-01` | `npm run engine:check` | **1** | `ruff check` 报 **415 errors**（`I001` / `B023` / `E501` 等；末条 `E501 Line too long (139 > 100)` 位于 `scripts/test-i05-source-package-oracle.py:667`）；`ruff format --check` 未及 | `python-style-closure` |
+| `environment-repair-02` | `npm ci --include=optional` | **0** | 修复上两项：`bindingLockedVersion=1.2.14`、`bindingInstalledBefore=false → After=true`、`lockBeforeSHA256 == lockAfterSHA256 == a462ba70…` | 绑定恢复，锁未动 |
+| `component-test-02` | `npm run test` | **0** | — | 复跑绿 |
+| `component-build-02` | `npm run build` | **0** | — | 复跑绿 |
+| `component-engine-pytest-01` | `uv run --frozen pytest` | **0** | — | 复跑绿 |
+| `full-check-02` | `npm run check` | **1** | 停在 `ruff format --check .`：**恰好 2 个文件** `independent-owned-repair-review-first.md:26:43`、`independent-owned-repair-review.md:26:43`（Markdown 内 Python fenced block 需重排）；该轮 eslint / prettier / 三个 typecheck / **15 vitest 文件 630 测试** / electron-vite build / `ruff lint` **均已通过**，`pytestReached=false` | 见 §7.2 |
+| `full-check-03` | `npm run check` | **0** | — | 全绿（**本方未复跑**，见下） |
+
+### 7.2 首错的真实修复路径
+
+1. **格式门（full-check-01 的 16 文件）** → `.prettierignore` 新增 15 条根锚精确路径（保留 10 份 T05 投影文档与 5 份生成 JSON 的权威字节），`field-policies.md`（9968 → 11719 B）由 owner 实际重排。
+2. **原生绑定缺失（component-test-01 / component-build-01）** → `environment-repair-02` 用 `npm ci --include=optional` 恢复 darwin-arm64 可选绑定，**未删锁、未改版本、未用 WASM 回退**（`lockBefore == lockAfter`）。
+3. **ruff 415 错（component-engine-check-01）** → `python-style-closure/final-style-verification.json` 记录 4 次定向 ruff 运行（owned-cleanup `7 errors (7 fixed)` / owned-format `1 file reformatted, 4 files left unchanged` / owned-check `All checks passed!` / owned-format-check `5 files already formatted`），仅作用于 5 个自有文件，**归档原文未改**。
+4. **ruff format 的 2 个 Markdown（full-check-02）** → **两条不同处置**：
+   - active 报告 `independent-owned-repair-review.md`：由作者重排（14157 → 14132 B），并由 `full-check-02-finite-format-blocker.json` 给出"一段 Python codeblock AST 相等 + codeblock 外文本逐字相等"的证明；
+   - frozen 首报 `independent-owned-repair-review-first.md`：**保持 9672 B / `abbe714a…` 不变**，改由唯一配置 owner 在 `pyproject.toml` 加**一条** `[tool.ruff.format].exclude` literal（`config-r2-integration-receipt.json` 记录"删除该唯一一行后逐字等于 parent"）。
+   - 这与 `AGENTS.md` §6"不批量格式化归档 PRD、审查"一致，**处置正确**。
+5. **raw 证据空白** → `raw-evidence-whitespace-disposition.json`：诊断**仅限 6 个确切 raw 工件**（5 个工具流 + `owned-source-minimal.diff`），其余 **117 个** authored 证据 diff 检查 exit 0；**未改写 raw 以伪装原始输出**，未改 Git whitespace/ignore 配置。
+
+### 7.3 77 / 15 B023 档案诊断
+
+`independent-combined-config-review.md:57` 明确记载：先行审计的 **77 条静态诊断（含 15 条 B023）本审未重跑，也不称已修复**；B023 是语义风险规则，"不能将 lint 不再报这几条称作闭包修复或安全执行证明"。
+本方核实：该 5 份 `check-protected-stat-only.py` 位于 `docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/*`，**不在 150 scope 内**，未被候选修改，仅被 `pyproject.toml` 显式豁免。**本报告维持该档案风险为"已保留、未修复"**，不因 lint 变绿而降级。
+
+### 7.4 full-check-03 的归属
+
+`full-check-03/result.json` 记录 argv `/usr/local/bin/npm run check`、cwd = **旧树** `…/.worktrees/T05-source-package-oracle`、exit 0、stdout 5068 B / `0808a69e…`。
+**本方未复跑**（禁令），因此：**该 exit 0 归属 owner 的旧树运行记录，本报告不将其计为本方运行证据**；本方仅有 §2.1–§2.3 三条命令的运行证据。
+
+---
+
+## 8. 发现的问题（按严重度）
+
+> 说明：以下 **§8.1–§8.3 为中等严重度**且位于 150 scope 内；**均非本候选增量引入**，候选也未声明闭合 —— 这正是"完整 scope 不能只审 9 file delta"的落点。子线给出的其余弱断言与覆盖缺口已在 §8.4–§8.9 按低/信息汇总，不逐条重复。
+
+### 8.1 [中] 契约声明 `cancelling → succeeded` 边，但产品三处调用点都传 `False`，该边产品不可达；契约测试却用产品永不可能传入的参数断言该边
+
+- **位置**：`packages/contracts/v2/states.json:7`（`"cancelling": ["cancelled","failed","succeeded"]`）、`:13`（`cancellingSuccessRequires`）；`packages/contracts/python/contract_v2.py:433`；`packages/contracts/src/states-v2.ts:16`；`packages/engine/src/ontolearn_engine/job_store.py:621-623`；`packages/contracts/python/contract_v2.py:312-313`；`packages/contracts/src/v2.ts:362-368`；`packages/engine/tests/test_contract_v2.py:54`
+- **触发**：`job_store._transition` 对 `cancelling → succeeded` 直接抛 `INVALID_STATE`；三条成功路径（`job_store.py:752` `commit_job`、`:764` `finish_read_job`、`:922` `finish_job_run`）全部经过该函数。
+- **影响**：契约**公布**了一条边及其成文政策（`cancellingSuccessRequires`），实现使其**结构性不可达**；契约测试用 `final_before_cancel=True` 断言该边，而该参数值**任何产品调用点都不会传入**（三处生产调用点全传 `False`）。绿色测试掩盖了"宣称能力不存在"。
+- **证据**：子线 A 逐调用点追踪；本方复核 `test_contract_v2.py:54` 与 `job_store.py:621-623`。
+- **修复建议**：二选一并留证据 ——（a）实现侧提供可达路径并让 `cancellingSuccessRequires` 真正生效；（b）契约侧删除该边与政策，或将其标为 `design-only` 并在 `permits_transition` 显式拒绝。**测试应改用产品可达的参数组合断言可达行为**，另以独立负例覆盖该边。属 root/T01 契约所有权，不属 T05 写权。
+
+### 8.2 [中] 驱动共享契约套件的三份金标准语料未做哈希锚定，可与实现锁步修改
+
+- **位置**：读取方 `packages/engine/tests/test_contract_v2.py:16`（`fixtures.json` 472098 B）、`packages/engine/tests/test_binding_regressions.py:9`（`binding-regressions.json` 123964 B）、`packages/engine/tests/test_frame_corpus.py:12`（`frame-fixtures.json` 17537 B）；生产侧 `packages/engine/src/ontolearn_engine/contract_probe.py:10,23,30`。**唯一被哈希锚定的是 `registry.json`**（`packages/engine/src/ontolearn_engine/resources.py:21-22` 的 `REGISTRY_HASH`，断于 `test_coordinator_control.py:32`）。
+- **触发**：同时修改语料内的 `valid` 标志与消费它的实现。
+- **影响**：`test_contract_v2.py`、`test_binding_regressions.py`、`test_frame_corpus.py` 三套与 `contract_probe.py` **仍全部通过**；`test_frame_corpus.py:52-63` 只固定用例**数量**，不固定内容。
+- **证据**：子线 A 扫描全仓哈希锚定点，确认仅 `registry.json` 被锚；对照 `docs/reviews/I03/inputs/sources.json`、`docs/reviews/I03/handoffs/I05-contract-source.json` 已有哈希锚定的先例。
+- **修复建议**：为三份语料补精确 bytes+SHA256 锚（与 `resources.py` 现有 `REGISTRY_HASH` 同法），并在锚变更时显式失败。**本项亦直接关系到 T05 自身的 oracle 纪律**（候选已在 T05 侧对 `source-identities.json` 做了同类 pin，见 F-08），同类做法可平移。
+
+### 8.3 [中] 11 个 IPC 通道中 3 个无任何测试引用；`main/index.ts` 与 `preload/index.ts` 无单测；路由表 `(argument: never)` 抹掉编译期通道↔签名校验
+
+- **位置**：`apps/desktop/src/preload/index.ts:7`（`getActiveProject`）、`:14`（`getResult`）、`:15`（`getResultPage`）；主进程对应 `apps/desktop/src/main/index.ts:165`、`:171`、`:172`；`apps/desktop/src/main/index.ts:163`（`Record<string, (argument: never) => Promise<unknown>>`）、`:177`（`handler(argument as never)`）；未覆盖的组合逻辑 `apps/desktop/src/main/task-service.ts:683-712`。
+- **触发**：对 `project:active` / `result:get` / `result:page` 任一通道的签名或返回结构做改动。
+- **影响**：因 `never` 是底类型，路由表**不提供任何编译期通道↔签名校验**；而恰是这 3 个无端到端覆盖的通道最需要它。`main/index.ts`（187 行，含 `trusted()` 信任门、`permission()` 形状、fixture 参数信任门、`projectId` 守卫）与 `preload/index.ts`（25 行，含 bridge 方法集、`onTaskUpdate` 的 `isTaskUpdate` 过滤）**无 vitest 直接覆盖**，只被 e2e 间接触及。
+- **证据**：子线 B 全量 grep `tests/` 对三个桥方法**零命中**；`grep main/index|preload/index` 在 `tests/` 仅命中一个 **preload 路径字符串**（`tests/e2e/csp-lifecycle.spec.ts:201`）。
+- **修复建议**：（a）把路由表改为按通道的**受约束函数签名表**（去掉 `as never`），使签名错配成为编译错误；（b）为三个未覆盖通道补 `TaskService` 层单测 + 至少一条 IPC 级 e2e；（c）为 `main/index.ts` 的信任门补单测（可把 `trusted()` 抽为可注入依赖的纯函数）。属 root/T01 所有权。
+
+### 8.4 [中] AGENTS §7"断言真实需求和错误边界（完整预期集合/顺序），不只断言数量或按钮可点击"在范围内仍有残留
+
+- **代表位置**：`tests/e2e/desktop.spec.ts:21`、`:24`、`:46` 三处 `expect(page.getByRole('button', { name: '检查本地引擎' })).toBeEnabled()` —— 正是被明文禁止的"按钮可点击"类。
+- **规模**：子线 B 清单列出 **约 30 处 count-only** 断言（`tests/unit/task-service.test.ts` 13 处、`tests/unit/engine-connection-state.test.ts` 4 处、`tests/e2e/csp-lifecycle.spec.ts` 4 处等）与 **约 12 处存在性/形状断言**；子线 A 另列 **17 项弱/同源自证断言**（`packages/engine/tests/test_frame_corpus.py:41` 为**恒真**断言、`test_job_store.py:166` 与实现同源自证、`test_stdio_session_shutdown.py:247` 注释声明的性质（"no create/cancel/write replay"）**并未被计数断言证立**、`test_resident_runtime.py:341/319/281` 局部字段与二值析取）。
+- **影响**：AGENTS 明文要求的"完整预期集合/顺序"在两套套件中均未达标；改动实现时弱断言处不会失败。
+- **证据**：子线 A、B 逐条 file:line 给出。
+- **修复建议**：按 §7 要求改为精确集合/顺序/字段断言；`test_stdio_session_shutdown.py:247` 应改为断言**实际方法序列**而非总数。
+
+### 8.5 [中] CSP 违规集合用存在性匹配而非完整集合；dev 变体策略无完整断言
+
+- **位置**：`tests/e2e/csp-lifecycle.spec.ts:178-182`（`expect(probe.violations.some(...)).toBe(true)`，对 4 项指令取存在性而非完整违规集合）、`:301`（原生事件取存在性而非精确事件列表）；`tests/unit/csp.test.ts:12-20`（dev 变体仅断言 nonce 与 ws origin 两点，未断言完整指令集）。
+- **触发**：策略新增/减少一条指令，或在 dev 的 `script-src` 引入 `'unsafe-inline'`。
+- **影响**：多出或缺失的违规项不可见；dev 变体回归可**通过 vitest**，仅在 dev 模式 e2e 才暴露。
+- **证据**：子线 B。
+- **修复建议**：改为**完整违规集合相等**断言；dev 变体补完整指令集断言。生产侧 CSP 实现本身复核**无问题**（见 §9）。
+
+### 8.6 [低-中] `METHOD_NOT_ALLOWED` 无可达发射点；4 个目录错误码全仓无发射点
+
+- **位置**：`packages/contracts/v2/errors.json:19-28`（`METHOD_NOT_ALLOWED`）；实际发射分支 `packages/engine/src/ontolearn_engine/coordinator.py:325`（`raise ServiceFault("METHOD_NOT_ALLOWED")`）位于 `coordinator.py:239-325` 已完整处理 13 个非 hello v2Runtime 方法之后 → **死分支**。另有 4 个码在 `packages/engine/src/**`、`packages/contracts/src/**`、`packages/contracts/python/**` 中**零命中**：`MAPPING_VALUE_INVALID`（`errors.json:261`）、`SEMANTIC_INPUT_INVALID`（`:301`）、`NETWORK_FORBIDDEN`（`:315`）、`UNSUPPORTED_CONSTRUCT`（`:325`）。
+- **影响**：目录与实现漂移无人看守；`METHOD_NOT_ALLOWED` 只有 schema 有效用例（`fixtures.json`）而无产品发射测试。
+- **证据**：子线 A 全仓扫描 + 13 个方法的分发点逐一比对。
+- **修复建议**：删除死分支或改为可达；对 design-only 能力绑定的 4 个码明确标注"仅设计期"并加守卫测试防止静默漂移。
+
+### 8.7 [低-中] 共享契约三份金标准之一未钉 UTF-8 编码（当前良性，潜在）
+
+- **位置**：`packages/engine/tests/test_binding_regressions.py:9` 使用无编码的 `.read_text()`；套件自身在 `packages/engine/tests/test_frame_corpus.py:16-31` 专门模拟"平台默认编码"风险并**明确点名** `binding-regressions.json`。
+- **触发**：该语料首次含非 ASCII 字节。
+- **影响**：在 cp1252 默认环境导入期失败；当前实测该文件 **0** 个非 ASCII 字节，故**现为良性**。
+- **证据**：子线 A 逐字节计数。
+- **修复建议**：显式 `encoding="utf-8"`。
+
+### 8.8 [低-中] 引擎队列预算与桌面任务视图的数值上限不一致（桌面侧未核）
+
+- **位置**：`packages/engine/src/ontolearn_engine/resources.py:41`（`maxQueuedJobs: 32`）vs `packages/contracts/src/index.ts:78`（`jobs: z.array(jobViewSchema).max(16)`）。
+- **触发**：主进程把 >16 个 job 物化进 `TaskView`。
+- **影响**：`isTaskUpdate`（`packages/contracts/src/index.ts:111-113`）将拒绝该更新。
+- **证据**：子线 A；**桌面主进程侧未读**，因此本方只记为**有界风险**，不记为已证缺陷。
+- **修复建议**：由 root/T01 核实际物化路径并统一上限或显式截断策略。
+
+### 8.9 [低-信息] 其余观察（逐条列出，不折叠）
+
+| # | 观察 | 位置 |
+| --- | --- | --- |
+| a | `task-presentation.ts:193` 表达式 `cells[5] !== Number(cells[6]) > 0` 按 ECMAScript 优先级实为 `cells[5] !== (Number(cells[6]) > 0)`（正确），但可读性差，是潜在误改陷阱 | `apps/desktop/src/renderer/src/task-presentation.ts:193` |
+| b | 主进程内 zod 解析失败可能把 fixture 内容带入 `whenReady` 的未处理拒绝（**主进程内，不跨边界**；路径仅在 `process.env.I04_TEST_FIXTURE === fixturePath` 时接受） | `apps/desktop/src/main/index.ts:93-119` |
+| c | `App.tsx`（381 行）无任何单测；`loadSummary` / `查看运行摘要` / `查看提交点` 成功分支无测试；26 个目录 messageKey 中 **19 个**无展示测试 | `apps/desktop/src/renderer/src/App.tsx:132-159,317-338`；`task-presentation.ts:22-161` |
+| d | 引擎熔断未测：5 次/60s 启动上限、`QUEUE_FULL`、3 次未匹配升级、协商降帧预算均无测试 | `apps/desktop/src/main/engine.ts:262,296-321,411,422,444-452` |
+| e | 4 个 e2e spec 中 3 个在 macOS **永不执行**（`test.skip` 依赖 Linux / `I04_NATIVE_ISOLATED=1` / `I04_TEST_FIXTURE`），Linux-only 原生与 coordinator 退出覆盖在本工作区环境未运行 | `tests/e2e/i04-jobs.spec.ts:22,99-101,317-320` |
+| f | `maxEncodedBytes` 真实值 **2048** 未被钉住，仅断言 `> 0` | `tests/unit/contract-v2.test.ts:232-233`；`packages/contracts/v2/errors.json` |
+| g | 裸布尔错误断言（不区分错误码）：`denied.ok === false` 实际为 `INVALID_REQUEST`（因严格 zod 先于 project 授权检查），`PERMISSION_DENIED` 亦可通过 | `tests/e2e/i04-jobs.spec.ts:91`；`tests/unit/engine-connection-state.test.ts:162,172` |
+| h | `supervisor.test.ts:97` 的 expected 由被测常量自派生（filter 后恒为 `['health']`），对"能力过滤集"变化不敏感 | `tests/unit/supervisor.test.ts:97` |
+| i | `test_job_store.py:37` 的 `maxPageItems: 100` 与生产 `resources.py:43` 的 `200` 已漂移，无检测 | `packages/engine/tests/test_job_store.py:37` |
+| j | `test_job_store.py:166` 的 `planHash` 断言为同源自证（强形式已在 `:430` 存在） | `packages/engine/tests/test_job_store.py:166` |
+| k | 3 份 in-scope 的 I02 历史探针脚本内嵌机器绝对路径 `/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio`（指向**另一棵树**，非当前 worktree）；非活动代码、非本候选引入 | `docs/reviews/I02/round-2/minimax-runtime/i02-r2-mavis-extra-probe.mjs:7`、`i02-r2-mavis-nav-probe.mjs:4`、`i02-r2-mavis-nav-probe2.mjs:5` |
+| l | `pyproject.toml` 的 9 条 ruff format exclude / 8 条 lint 豁免指向 **150 scope 外**的归档脚本；`B023` 为语义风险规则，豁免**不等于修复**（owner 与配置独审均已如实披露） | `pyproject.toml:27-48` |
+| m | `packages/engine/tests/*` 对 T05 oracle（85 槽 / BNode / 原始源精确性 / held-首错）**零覆盖** —— 二者正交，属范围说明而非缺陷 | `packages/engine/tests/` 全量 grep |
+
+### 8.10 [低] `packages/contracts/v2/schema.json` 单独不足以作一致性判定；29 条负例仅靠 TS `semantic()` 层拒绝
+
+- **位置**：`packages/contracts/v2/schema.json`（122889 B，4752 行，66 个 `$defs`）vs 真正的门 `packages/contracts/src/v2.ts`（`validateV2` = 结构 schema **+** 手写 `semantic()` 层 **+** 262144 字节 utf8 预算）。
+- **触发**：任何消费方只按 `schema.json` 校验。
+- **影响**：子线 D 以自写 stdlib JSON-Schema 子集验证器（对未知关键字**失败关闭**）复算，**217 条 `valid:false` 负例中有 29 条在纯 schema 下依然"合规"**，仅由 `semantic()` 层拒绝（如 `cases[155]` 'non round carrying rounds'、`cases[204]` 'duplicate list members'、`cases[205]` 'duplicate stale dependency'、`cases[304–308]` 'derived validation … mismatch'）。即：**已提交的 JSON Schema 不是独立的一致性产物，权威门是 TS 代码**。
+- **证据**：子线 D 逐例复算，443 个 fixture 元素（321 cases + 30 responses + 11 routing + 9 cursors + 7 jobListCursors + 2 transitions + 2 unicodeMutations + 20 validationBindings + 41 binding-regressions）**0 不匹配**。
+- **修复建议**：若 `schema.json` 需作为独立制品对外，则需把 `semantic()` 的判定条件以机器可读规则下沉进 schema（`if/then`、`not`、`pattern` 等），或明确在契约文档中标注"schema.json 不足以判定一致性"。**该项与 §8.2 相互加强**：两者共同说明"机器可判定的权威"目前散落在 TS 代码与未锚定的语料两处。
+
+### 8.11 [低] 22 份归档语料副本（`manifest.sources[].corpusPath`）在本工作区不存在，其声明的 bytes/sha256 无法对本地副本核验
+
+- **位置**：`docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-manifest.json` 的 `$.sources[*].corpusPath`（22 份 `.raw` 归档，指向 `docs/reviews/I05/source-package-probe-source/inputs/corpus/`，该目录在 HEAD **不存在**）；另 20 份 `$.sources[*].path` 原始件同样不在本工作区。
+- **触发**：以本地副本逐份比对归档字节。
+- **影响**：这些归档副本的**声明 bytes/sha256 本方无法对本地文件核验**。但同内容已由**更强的方式**覆盖：**79 组 `(ref, path, sha256)` 三元组经 `git cat-file` 在其声明 ref 上 79/79 字节一致**（§5.4）。`manifest` 自身的 `corpusPath`/`ref` 二分设计与 `sources.json` 的 `originRefStatus: "provided metadata, not independently authenticated"` 标签**已如实披露**这一点，不是隐瞒。
+- **修复建议**：无需修改数据；如需闭合，应在 `sources.json` 中为归档副本补 ref，使"内容"与"归档副本位置"两条链都可核。**属 F-09 同一族**，与台账"历史 path 不应强求在本 HEAD 存在"的处置一致。
+
+### 8.12 [低-信息] `schema.json` 的 `exactIssuedRecordKeys`（`_CHILD`/`_PAYLOAD`/`_REASONING`）在本数据集中**无受检对象**；另有 lone-surrogate 可移植性提示与体量集中提示
+
+- **无受检对象**：`tests/fixtures/quality/i05-source-package-oracle/schema.json` 声明了 `exactIssuedRecordKeys` 三组精确键集合，但 `oracle.json` 及其余 17 份文件中 **0 处出现**这些键集 —— 该规则**只被声明、未被行使**。定位：oracle 是**语义模型**而非发行线缆记录，故该规则在本数据集内空转。**属声明与数据覆盖面之间的落差，不构成缺陷**，但若以"schema 全部规则已被数据覆盖"为验收口径，则此项不成立。
+- **可移植性**：parity-inputs 内有 **2 个故意的孤立代理项**（`\ud800`，位于 `datasets['utc-date/surrogate-data'].dataText` 与 `datasets['utc-date/text-limit-data'].shapesText`）。JSON 转义**合法**、且是明确的 Unicode 测试向量，但任何以严格 UTF-8 往返这些值的下游工具都会失败（子线 D 的体量脚本即需 `surrogatepass`）。属**低-可移植性提示**，非缺陷。
+- **体量集中**：`i05-source-package-parity-inputs.json` 8.2 MB 中 **5.77 MB（70.3%）** 是 `datasets[*].dataText` 的原始 Turtle/Shacl 文本；`oracle.json` 与 `packages/contracts/v2/schema.json` 分别有 **47.7% / 50.5%** 的字节是纯缩进。**均为已提交的确定性产物**（builder 以 `ensure_ascii=True/sort_keys=True/indent=2/LF` 序列化，字节是权威身份的一部分），**不建议重排**；此处只记录集中度以备容量评估，不作为缺陷。
+
+---
+
+## 9. 复核为干净的部分（据实记录）
+
+| 架构不变量 | 复核结论 | 关键证据 |
+| --- | --- | --- |
+| 渲染端隔离 | ✅ 干净 | `apps/desktop/src/renderer/` 全量 grep 无 Node/fs/shell/通用 IPC；渲染面仅 `window.ontolearn`（`env.d.ts:2-6`） |
+| preload 仅暴露按业务命名的方法 | ✅ 干净 | `preload/index.ts:5-25` 全部为**字面通道字符串**；全仓仅 1 处 `exposeInMainWorld`；**无 `invoke(method, params)` 式通用通道** |
+| IPC 来源校验 | ✅ 干净 | `main/index.ts:137-144` 同时校验 sender 身份、mainFrame、可信文档（`trusted-document.ts:8` 要求 href 逐字相等，含 query）；全仓仅 2 处 `ipcMain.handle`，**无任何 handler 缺检查**；无 `ipcMain.on`；外来窗口被拒有运行级 e2e（`tests/e2e/csp-lifecycle.spec.ts:216-224` 返回固定 `PERMISSION_DENIED`） |
+| CSP 单一来源 | ✅ 干净 | `apps/desktop/src/csp.ts` 是唯一构造点；生产 meta 与开发 header 两变体均派生自它；生产 `script-src` 仅 `'self'`，**无 `unsafe-inline`/`unsafe-eval`**（全仓唯一 `unsafe-*` 在 `csp.ts:20` 的**开发** `style-src`）；无第三份手写策略（`docs/iterations/I02/evidence/*.json` 中的策略字面量为**归档证据**，无代码读取） |
+| 错误边界 | ✅ 干净 | `safeError`（`packages/contracts/src/index.ts:26-30`）经 `validateV2('error', …)` 目录化，params 均为 `additionalProperties:false` 的有界 schema；子进程 stderr **不存不转发**（`engine.ts:330-335` 只记有界字节计数）；`EngineError` 的 message **仅为错误码**（`engine.ts:36-41`）；负向断言见 `task-service.test.ts:1087-1092,1150-1160`、`supervisor.test.ts:191-198`、`engine-environment.test.ts:93-120` |
+| 确定性来源 | ✅ 未见违反 | 本候选只产出 oracle 声明与独立 fixture，未把 Agent 草稿自动确认 |
+| 存储不变式 | ✅ 未改 | `packages/engine/src/ontolearn_engine/storage.py` 与 `job_store.py` 在本候选**未被修改**（F-13/F-14 处置正确） |
+| 失效规则 | ✅ 未改 | `packages/engine/src/ontolearn_engine/invalidation-v2.json` 未被修改 |
+| 本地优先 | ✅ 未见违反 | 未引入模型/遥测/云/HTTP 端口；新增依赖为 0 |
+| 不提交凭据/运行库 | ✅ 干净 | 本候选 delta 内无 `.env`/`.sqlite`/凭据；`package-lock.json`/`uv.lock` 未改 |
+
+---
+
+## 10. 实际 task 设置终态
+
+### 10.1 launch-map 声明的必需设置 vs 实际读回
+
+| 项 | launch-map `requiredSettings` | 实际读回 | 来源 | 一致 |
+| --- | --- | --- | --- | :-: |
+| model | `MiniMax-M3.1-Flash` | `minimax/MiniMax-M3.1-Flash`（`effective_model`） | `mavis session get me` | ✅ |
+| thinking | `xhigh` | `effort: xhigh`（`model.thinking.effort`） | `mavis session get me` | ✅ |
+| permission | `bypassPermissions / 始终授权` | **用户级配置** `permissionMode: bypassPermissions`（`~/.minimax/config.yaml:107`） | 配置文件 | ⚠️ 见下 |
+
+**权限读回说明（如实）**：本轮运行时**未向本会话暴露逐会话 permissionMode 读回接口**（`mavis session get me` 返回体不含该字段，`mavis agent get me` 亦不含）。因此 `bypassPermissions` 只能从**用户级配置**得到，**不能证明本会话的实际生效模式** —— 这一点与 `AGENTS.md`「用户级配置不能证明已有会话即时切换」的要求一致，故在 launch-map `actualSettings` 口径下仍记为**部分可核**。
+
+### 10.2 终态字段
+
+| 字段 | launch-map 原值 | 本轮实际 | 说明 |
+| --- | --- | --- | --- |
+| `actualTaskId` | `null` | `null` | 本轮**未创建 GUI/桌面任务**，未申请 GUI lease |
+| `actualSessionId` | `null` | `mvs_c28510d4b96a4ecbaea7be3f838c5110` | 由 `mavis session get me` 读回 |
+| `actualTurnId` | `null` | **运行时未向本会话暴露 turn 标识** | 记为不可核，不编造 |
+| `actualSettings` | `null` | 部分可核（model ✅ / thinking ✅ / permission 仅用户级 ⚠️） | 见 §10.1 |
+| `actualTerminal` | `null` | `null` | 无终端产物 |
+| `actualWorkspace` | `…/T05-O15-minimax-review-b88be226` | 同 | ✅ |
+| `actualDetachedHEAD` | `0f87f2c2…` | 同 | ✅ |
+| `status` | `setup only; no new actual task or GUI lease` | 仍成立 | 未创建 Goal、未申请 GUI lease、未建任务 |
+
+### 10.3 本方写入边界（实际）
+
+**只写**：`launch-O15/report.md`（本文件）、`launch-O15/preflight-observe.json`、`launch-O15/raw/*`、`launch-O15/scratch/*`。
+**未做**：stage / commit / 切分支 / push / PR / merge；未改源、测试、锁、验收、AGENTS 或任何历史原件；未读 peer 本轮 workspace、peer 意见或 global 会话日志；未对父目录做 glob 或全局 DB 绕读；未对未知 metadata 做 open/hash/parse。
+
+---
+
+## 11. 未取得证据的边界（逐项，不得默认为已验证）
+
+| 证据类别 | 本轮状态 | 原因 |
+| --- | --- | --- |
+| 完整 `npm run check`（lint/format/typecheck/vitest/build/ruff/pytest 一体） | **未取得本方运行证据** | 禁令；仅有 owner `full-check-03` exit 0 的**旧树**记录（§7.4） |
+| `npm run test:e2e`（Playwright + 真实 Electron） | **未取得** | 禁令；且 §8.9(e) 3/4 spec 在 macOS 永不执行 |
+| `npm run package:dir` 与包内样例 | **未取得** | 禁令（打包验证要求） |
+| native 故障恢复 / 真实原生提示 | **未取得** | 禁令 |
+| GUI / 桌面 lease | **未取得** | 禁令；本轮未申请 |
+| 模型 API / 网络 / 付款 / 凭据 | **未取得且未尝试** | 禁令；本候选也未接入（S3 前不得接入） |
+| 两 OS CI、真人验证 | **未取得** | 禁令 + 门未开 |
+| `verify-i01.py` 149 项 | **保留未执行** | 历史原件保留；只核适用边界 |
+| `I02_HMR=1` 探针 | **未运行** | 冻结期禁止 |
+| 大型 JSON 子线 D | **已回收**（§3.2、§5.3–§5.4、§8.10–§8.12） | 其 18 份文件全量解析 + 遍历 + 双 schema 校验 + 79 组 Git blob 溯源核验，结论与本方独立测量**一致** |
+| `packages/contracts/v2/frame-fixtures.json` 的 51 条帧用例 | **仅结构核验，未执行** | 无 schema、无 `valid` 标志；帧字节切分期望值由 `test_frame_corpus.py` 在运行期判定，本轮未运行 |
+| `packages/contracts/v2/schema.json` 的 `exactIssuedRecordKeys` | **仅核声明，无受检对象** | 该键集在 18 份文件中 0 命中（§8.12） |
+| `manifest.sources[].corpusPath` 22 份归档副本的本地字节 | **无法核验** | 归档目录在 HEAD 不存在；同内容已由 79 组 git-blob ref 覆盖（§8.11） |
+
+---
+
+## 12. 本报告的有效性边界
+
+1. 本报告是**静态审查 + 两条允许命令的运行复核**。除 §2 明列的命令外，**没有**任何测试、构建、打包、GUI、native、网络或模型执行结果。
+2. 本报告**不代签**任何被明令保留的门（§0.2）；不沿用旧 Z 的 Pass；不续接旧 M。
+3. 子线 A/B/C/D 的输出被当作**证据**而非结论逐条回收到 §6–§8；D 的**自写验证器误报（键类型不匹配、`cancelBoundary` 默认值缺失、JS `Number()` 强制转换语义）在其自述中已定位为"修自己的移植"而非"改数据"**，本方已按此口径采信并独立复核了关键数字（§5.3、§5.4）。
+4. 所有"已修""正确"判断均以**本人可复核的 file:line 或数据计数**为据，不以 owner 的 `implementationDone` 布尔值或台账摘要为据。
+5. §8.1–§8.3 的三项中等缺陷**不由本候选引入**，本报告无权要求本候选修复，但同样**不得**因它们不在候选 delta 内就把 150 scope 整体签为 Pass。
+6. 子线 D 曾自述"无法从其 18 份文件佐证 150-file 这一数字"——该限制不构成本报告缺口：**150 项清单的 bytes+SHA256 与 git blob 双重一致性由本方独立核验（§4.1，150/150）**，不依赖子线 D。
+7. 本方**未**把任何子线的"Pass/Verdict"字样当作结论采信；D 的 VERDICT: PASS 只被用作其 §2–§8 的数据证据，结论仍由本方 §0 独立给出。
+
+---
+
+*本报告由 MiniMax Code 侧独立审查会话 `mvs_c28510d4b96a4ecbaea7be3f838c5110` 生成；唯一交付物为本文件。*

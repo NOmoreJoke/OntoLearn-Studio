@@ -1,0 +1,36 @@
+T05 O15 修复版候选的全新独立完整审查已完成，唯一报告已落盘。
+
+## 结论：三层判定
+
+| 层 | 结论 |
+|---|---|
+| **A. 候选增量（9 file delta）静态** | **Pass（有条件）** — 候选自身声明逐条经本方独立复验成立，未发现阻断缺陷 |
+| **B. 150 完整工程 scope 静态** | **NotPass** — 范围内 3 项中等缺陷未闭合（均为既存、非本候选引入） |
+| **C. 运行/打包/生产** | **无法验证** — 禁令下仅两条 oracle 命令 + preflight 取得运行证据 |
+
+A 与 B 不互相替代：候选 delta 的 Pass 不向上传递为 scope Pass，scope 的 NotPass 不反向否定候选。
+
+## 核心复验结果
+
+- **两条允许命令实跑 exit 0**：`test-i05-source-package-oracle.py` → 57 tests OK；`build-… --check` → 417 obs / 320 datasets / 280 specified / 137 pending / whole=false，五产物 bytes+sha256 与磁盘精确一致，未回写任何产品文件。
+- **150 scope 身份**：150/150 项 bytes+SHA256 与文件系统一致，150/150 git blob 与登记一致；1246 条完整树与 `git ls-tree b88be226` 全字段零不匹配（并注明 1246 是提交边界值，HEAD 实际 1262）。
+- **五项全文缺口**：PRD/integration-plan/restore-plan/package-lock.json/uv.lock 全部读完，哈希与要求一致。
+- **边界数据双路交叉验证**：本人 + 子线 D 在 5 处独立声明点复算 417/280/137/26/whole=false 全一致；26 是 137 的子集；**79/79 组 (ref,path,sha256) 与 Git blob 字节一致**；0 凭据、0 绝对路径。
+- **15 条意见逐条行级取证**：F-01…F-11 实施证据成立；F-12…F-15 按台账保持未实施、处置理由成立。**15/15 条 `externalReviewerOpinionClosed=false`，本报告不关闭任何一条。**
+- **历史首失败**：11 份 result.json + raw 真实错误文本全部读完（prettier 16 文件门 / rolldown 原生绑定缺失 / ruff 415 错 / ruff format 2 个 Markdown / 77 条含 15 B023 档案诊断），修复路径逐条还原；`full-check-03` exit 0 归属 owner 旧树，**不计为本方运行证据**。
+
+## 主要新发现（150 scope 内，均非候选引入）
+
+- **[中]** `packages/contracts/v2/states.json:7` 声明 `cancelling→succeeded`，但产品三处调用点全传 `False` → 该边结构性不可达，而 `test_contract_v2.py:54` 用产品永不可能传入的参数断言它。
+- **[中]** 驱动共享契约套件的 `fixtures.json` / `binding-regressions.json` / `frame-fixtures.json` **未哈希锚定**，可与实现锁步修改。
+- **[中]** 11 个 IPC 通道中 `project:active`/`result:get`/`result:page` **零测试引用**；`main/index.ts`(187行) 与 `preload/index.ts`(25行) 无单测；路由表 `(argument: never)` 抹掉编译期签名校验。
+- **[中]** AGENTS §7 弱断言残留（3 处"按钮可点击"、约 30 处 count-only）；CSP 违规集合用存在性而非完整集合。
+- **[低]** `contracts/v2/schema.json` 单独不足以判定一致性（29 条负例仅靠 TS `semantic()` 层拒绝）。
+
+## 保持开放、不得代签
+
+父 T05/P0/正式 JobStore/selected/wholeH/S1/B1/费用/两 OS CI/真人/develop 门全部保留；旧 Z 未沿用、旧 M 未续接；`actualTaskId`/`actualTurnId`/`actualTerminal` 仍为 null，`actualSessionId=mvs_c28510d4b96a4ecbaea7be3f838c5110`，model=minimax/MiniMax-M3.1-Flash ✅、thinking=xhigh ✅（session read-back），permission 仅能从用户级配置读到 `bypassPermissions`，**运行时未提供逐会话读回接口**，故记为部分可核。
+
+工作树最终状态：` M AGENTS.md`（既有授权 overlay）+ `?? .../launch-O15/`，未 stage/commit/push，未动任何冻结输入。
+
+<media type="file" src="/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-minimax-review-b88be226/docs/reviews/T05/projection-R3-receiving/launch-O15/report.md" caption="T05 O15 修复版候选 · 全新独立完整工程审查报告（548 行 / 59291 B，SHA256 256f7af033f4141bea9b26cc0895272e39076beeec1f39f69eda2b52ce6f2ada）" />

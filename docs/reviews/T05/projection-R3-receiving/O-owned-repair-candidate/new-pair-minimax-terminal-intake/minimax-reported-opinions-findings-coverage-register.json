@@ -1,0 +1,288 @@
+{
+  "sourceReportBytes": 59291,
+  "sourceReportSHA256": "256f7af033f4141bea9b26cc0895272e39076beeec1f39f69eda2b52ce6f2ada",
+  "ownerFullReadRanges": ["1-140", "141-280", "281-420", "421-548"],
+  "ownerAll548LinesRead": true,
+  "reportedVerdicts": {
+    "candidateNineFileDelta": "Pass conditional",
+    "full150EngineeringScope": "NotPass",
+    "runtimePackagingProduction": "unable to verify"
+  },
+  "all15ExternalWorkflowOpinionsStillOpen": true,
+  "original15Opinions": [
+    {
+      "id": "F-01",
+      "reportLine": 296,
+      "originalOpinionText": "fixture Turtle blank node 标签无数据集作用域，跨图合并会混淆",
+      "reportedIndependentEvidenceText": "`build…py:403` `self.blank = 0`、`:422` \"fixture list blank nodes are admitted only in the shapes role\"、`:430-431` 标签 `list-N` 每次从零起（局部作用域）；`:1867-1870` data/ontology 侧 blank 拒绝；`test…py:884` `test_list_blank_nodes_remain_shapes_only_without_cross_graph_relabeling`；实测 oracle 内 blank term = 0",
+      "reportedDispositionText": "✅ 已修且边界正确；**未关闭**（外部审判定权在双指定审）",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-02",
+      "reportLine": 297,
+      "originalOpinionText": "17 条 observation 声称 `consumer-C-goldens.json` 为独立 expected，但交叉核对只覆盖 9/13 golden、只比 2 字段",
+      "reportedIndependentEvidenceText": "`test…py:738` `assertEqual(sum(len(row[\"observations\"]) for row in ledger), 17)`（强制 13 金标 → 17 观察）；`test…py:730` `test_all_C_authority_cases_have_explicit_conditional_consumption`；`build…py:2126` 按名分派、`:2133` 指向 per-observation `expectedSourceRefs`",
+      "reportedDispositionText": "✅ 已修；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-03",
+      "reportLine": 298,
+      "originalOpinionText": "`explanation-goldens.json` 被列为独立 expected 但未被任何派生/校验",
+      "reportedIndependentEvidenceText": "`build…py:2123` \"retained-reference-only; no exact current observation/input mapping\"、`:2311` `\"status\": \"retained-reference-only\"`；`test…py:784-786` 断言该状态；本方实测该记录**未出现在任何 `expectedSourceRefs`**",
+      "reportedDispositionText": "✅ 已修（诚实标注未消费）；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-04",
+      "reportLine": 299,
+      "originalOpinionText": "七池总额为手工复制常量，与引文无机器交叉校验",
+      "reportedIndependentEvidenceText": "`build…py:2156` `check_declared_pool_sources()` → `:2169` 遍历 `DECLARED_POOLS` → `:2174` `if found != DECLARED_POOLS:` 抛错；读 integration L72–80 与 restore L103–109 并比对；`test…py:845-847` 以 `work=16777217` 做负例",
+      "reportedDispositionText": "✅ 已修；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-05",
+      "reportLine": 300,
+      "originalOpinionText": "三份来源清单互不包含、命名口径不一致、一条实际来源未登记",
+      "reportedIndependentEvidenceText": "`test…py:799` `test_source_registry_has_fixed_local_identities_and_separate_literal_lineage`；实测 27 行 / 19 唯一 local / 111 条 provenance-only lineage",
+      "reportedDispositionText": "✅ 已修；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-06",
+      "reportLine": 301,
+      "originalOpinionText": "`schema.json` 的 RDFTerm 形状未覆盖 288 处真实数据",
+      "reportedIndependentEvidenceText": "`build…py:1486` `\"rawTermSourceOccurrences\": raw_records`；`:1867-1875` 私有 raw 专用域；实测 25 数组 / 96 行 / 288 term；公共 `packages/contracts` schema 未被改动",
+      "reportedDispositionText": "✅ 已修（私有域，公共 schema 不动）；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-07",
+      "reportLine": 302,
+      "originalOpinionText": "`scope.factSources.basis` 只保留首个匹配 firing 的 leafBasis",
+      "reportedIndependentEvidenceText": "`build…py:1294` `def scope_rule_basis(matches, triple)`；`:3069` 异 basis 直接抛错（fail-closed）",
+      "reportedDispositionText": "✅ 已修；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-08",
+      "reportLine": 303,
+      "originalOpinionText": "`source-identities.json` 被消费但未入固定身份白名单",
+      "reportedIndependentEvidenceText": "`build…py:47` 已列入 `DOC_PINS`；`:2985` 严格解析该文件；`test…py:836` `test_source_identity_pin_rejects_changed_metadata_before_interpretation`",
+      "reportedDispositionText": "✅ 已修；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-09",
+      "reportLine": 304,
+      "originalOpinionText": "`sources.json` 的 `sourcePath` 指向本树不存在的历史路径且不带 ref/sha256",
+      "reportedIndependentEvidenceText": "登记行已带 SHA + 多数 ref；历史 path 明示为历史地址、不以同名本地文件充证；`test…py:575-579` 断言 111 条 lineage 全为 `provenance-only` 且含指定 ref",
+      "reportedDispositionText": "✅ 已修（原意见\"整体不成立\"部分属实，台账已诚实记录）；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-10",
+      "reportLine": 305,
+      "originalOpinionText": "索引→错误码映射表对越界索引无防护",
+      "reportedIndependentEvidenceText": "`build…py:756` `finite_fixture_index(key, prefix, allowed)`、`:766` `indexed_fixture_domain(key)`；越界抛明确 `ValueError`（`test…py` 负例 `patch.object(..., side_effect=ValueError('invalid finite index'))`）",
+      "reportedDispositionText": "✅ 已修（fail-closed，未扩 417）；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-11",
+      "reportLine": 306,
+      "originalOpinionText": "固定 argv 的解释器与项目声明 Python 版本不一致",
+      "reportedIndependentEvidenceText": "`record-command.py:29-31` 记录 `executable` / `version` / `versionInfo`；`:33-42` env 白名单；`:25-26` argv+cwd；`:58` exit；`:63` 输出 hash；`:13-21` 三 action 与 tag 规则",
+      "reportedDispositionText": "✅ 已修；**未关闭**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-12",
+      "reportLine": 307,
+      "originalOpinionText": "`verify-i01.py` 打包健康探针仍用 I01 v1 信封",
+      "reportedIndependentEvidenceText": "`scripts/verify-i01.py:58` `\"protocolVersion\": 1`、`:69` `capabilities == [\"health\"]` —— **原件未被修改**，149 项库存保持",
+      "reportedDispositionText": "✅ 处置正确（属历史依赖，无当前执行依赖；保持原字节）；**本候选未实施 → 事项仍开放**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-13",
+      "reportLine": 308,
+      "originalOpinionText": "`job_store.commit_job_round` 直接 `stateVersion += 1` 绕过 `permits_transition`",
+      "reportedIndependentEvidenceText": "`job_store.py:799` `def commit_job_round`；`:836` `job[\"stateVersion\"] += 1`，其上 `:832-835` 注释与守卫说明 `_transition` 仍掌状态名边、此处仅同态推进持久版本；`:828-829` running/rounds 守卫",
+      "reportedDispositionText": "✅ 处置正确（未改 JobStore，未外推为状态边违规）；**事项仍开放**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-14",
+      "reportLine": 309,
+      "originalOpinionText": "`storage.Conflict` 异常文本内嵌 subject/predicate/source_row/id",
+      "reportedIndependentEvidenceText": "`storage.py:435-440`、`:629-633` 仍内嵌（**未改**，与台账一致）；分类出口只取 code/params，未证跨边界泄露",
+      "reportedDispositionText": "✅ 处置正确（无 T05 写权，避免以未来可能误用扩大修复）；**事项仍开放**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    },
+    {
+      "id": "F-15",
+      "reportLine": 310,
+      "originalOpinionText": "内存上限跨平台不等价、Darwin 非硬限可过冲",
+      "reportedIndependentEvidenceText": "`memory_guard.py:4-6` docstring 明示 \"Darwin has no usable per-process RLIMIT_AS here…Darwin sampling is not a hard allocation cap and can overshoot between samples\"",
+      "reportedDispositionText": "✅ 处置正确（保平台限制事实，不量化过冲）；**事项仍开放**",
+      "ownerExternalWorkflowStatus": "open-awaiting-controller-adjudication"
+    }
+  ],
+  "newReportedFindings": [
+    {
+      "id": "O15-M-8.1",
+      "originalSection": "8.1",
+      "reportedSeverity": "中",
+      "title": "契约声明 `cancelling → succeeded` 边，但产品三处调用点都传 `False`，该边产品不可达；契约测试却用产品永不可能传入的参数断言该边",
+      "reportStartLine": 363,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 370,
+      "originalSectionUTF8SHA256": "b39930f29e160c552b6c0835f92934100af63745bcfa20603422b21091183ee2"
+    },
+    {
+      "id": "O15-M-8.2",
+      "originalSection": "8.2",
+      "reportedSeverity": "中",
+      "title": "驱动共享契约套件的三份金标准语料未做哈希锚定，可与实现锁步修改",
+      "reportStartLine": 371,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 378,
+      "originalSectionUTF8SHA256": "0369395dc0f6f611d729d3968befb6d99358324800fcbe8eca842cb7f72bb172"
+    },
+    {
+      "id": "O15-M-8.3",
+      "originalSection": "8.3",
+      "reportedSeverity": "中",
+      "title": "11 个 IPC 通道中 3 个无任何测试引用；`main/index.ts` 与 `preload/index.ts` 无单测；路由表 `(argument: never)` 抹掉编译期通道↔签名校验",
+      "reportStartLine": 379,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 386,
+      "originalSectionUTF8SHA256": "0f6534d6c0e9700fd2eaaf394301d4b084ce120b71107d5f362208364e286862"
+    },
+    {
+      "id": "O15-M-8.4",
+      "originalSection": "8.4",
+      "reportedSeverity": "中",
+      "title": "AGENTS §7\"断言真实需求和错误边界（完整预期集合/顺序），不只断言数量或按钮可点击\"在范围内仍有残留",
+      "reportStartLine": 387,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 394,
+      "originalSectionUTF8SHA256": "9d4a94e8737055a72700a003d2ad1b98d663658ab1d576d8e8b155c5a52d1088"
+    },
+    {
+      "id": "O15-M-8.5",
+      "originalSection": "8.5",
+      "reportedSeverity": "中",
+      "title": "CSP 违规集合用存在性匹配而非完整集合；dev 变体策略无完整断言",
+      "reportStartLine": 395,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 402,
+      "originalSectionUTF8SHA256": "118e2085364cb78130ff8949ca9379e7e2efaef534f123490c664df81f337491"
+    },
+    {
+      "id": "O15-M-8.6",
+      "originalSection": "8.6",
+      "reportedSeverity": "低-中",
+      "title": "`METHOD_NOT_ALLOWED` 无可达发射点；4 个目录错误码全仓无发射点",
+      "reportStartLine": 403,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 409,
+      "originalSectionUTF8SHA256": "f74cccfaec01dbe2e1ca7393513eff4458281aeb3ca9427303744db1bf42d7d6"
+    },
+    {
+      "id": "O15-M-8.7",
+      "originalSection": "8.7",
+      "reportedSeverity": "低-中",
+      "title": "共享契约三份金标准之一未钉 UTF-8 编码（当前良性，潜在）",
+      "reportStartLine": 410,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 417,
+      "originalSectionUTF8SHA256": "55e3c275ffa7972eb8e2312354b1601811a31712ce7d004c9af5269c9e50e8f8"
+    },
+    {
+      "id": "O15-M-8.8",
+      "originalSection": "8.8",
+      "reportedSeverity": "低-中",
+      "title": "引擎队列预算与桌面任务视图的数值上限不一致（桌面侧未核）",
+      "reportStartLine": 418,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 425,
+      "originalSectionUTF8SHA256": "2c342dfaa41330bce68fb07170459f476675ec65e13abfb96634f1d02c43b765"
+    },
+    {
+      "id": "O15-M-8.9",
+      "originalSection": "8.9",
+      "reportedSeverity": "低-信息",
+      "title": "其余观察（逐条列出，不折叠）",
+      "reportStartLine": 426,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 443,
+      "originalSectionUTF8SHA256": "89b451cd33e88d24c706696517cafef27a6369efe0b5bb8cd091403a934f9edb"
+    },
+    {
+      "id": "O15-M-8.10",
+      "originalSection": "8.10",
+      "reportedSeverity": "低",
+      "title": "`packages/contracts/v2/schema.json` 单独不足以作一致性判定；29 条负例仅靠 TS `semantic()` 层拒绝",
+      "reportStartLine": 444,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 451,
+      "originalSectionUTF8SHA256": "f3c3ed4065ab251aaeaba8e607b50771f57cb6742e49a4f4f98aa1fcb5a960e3"
+    },
+    {
+      "id": "O15-M-8.11",
+      "originalSection": "8.11",
+      "reportedSeverity": "低",
+      "title": "22 份归档语料副本（`manifest.sources[].corpusPath`）在本工作区不存在，其声明的 bytes/sha256 无法对本地副本核验",
+      "reportStartLine": 452,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 458,
+      "originalSectionUTF8SHA256": "33524ee74ea5a9c4a1951b0f57b040d0f9160e713d36f7403708affe4ebef0f8"
+    },
+    {
+      "id": "O15-M-8.12",
+      "originalSection": "8.12",
+      "reportedSeverity": "低-信息",
+      "title": "`schema.json` 的 `exactIssuedRecordKeys`（`_CHILD`/`_PAYLOAD`/`_REASONING`）在本数据集中**无受检对象**；另有 lone-surrogate 可移植性提示与体量集中提示",
+      "reportStartLine": 459,
+      "ownerStatus": "reported-open-unadjudicated",
+      "introducedByCandidateAccordingToReport": false,
+      "reportEndLine": 466,
+      "originalSectionUTF8SHA256": "c23210beaa3182573287167fc7b3fdc59700864583d4642c8d62bbd2d9b7b83e"
+    }
+  ],
+  "reportedFindingHeadingSeverityCounts": {
+    "中": 5,
+    "低": 2,
+    "低-中": 3,
+    "低-信息": 2
+  },
+  "headlineMediumCountAsWritten": 3,
+  "actualMediumTitleCount": 5,
+  "coverageNotComplete": true,
+  "reportedReadGapSection": "3.4",
+  "unreadOrPartialAsReported": [
+    "job_store.py and storage.py: only test-dependent segments read",
+    "entrypoint.py: unread",
+    "i04_matrix_evidence.py: after line120 unread",
+    "contracts fixtures/binding-regressions/frame-fixtures: programmatic count/search, not line-read; D structured checks separately reported",
+    "six large input files: pin/hash and reading paths, no line-read; D traversal separately reported",
+    "five I02 archived JSON: grep only",
+    "allocation-selective-adoption.json.raw: C subline full read, main reviewer not line-read"
+  ],
+  "ownerNoProductFixOrNewReviewDispatch": true
+}

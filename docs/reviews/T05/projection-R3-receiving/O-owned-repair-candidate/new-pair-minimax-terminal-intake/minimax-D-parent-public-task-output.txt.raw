@@ -1,0 +1,324 @@
+<task_output status="succeeded">
+<task_output_cursor next_offset="44203" truncated="false" timed_out="false" />
+I'll start by confirming the worktree state and file inventory, then write a stdlib-only parser in the designated scratch dir.
+HEAD is `0f87f2c2`, not the stated candidate `b88be226` — I'll check that relationship, then build the parser.
+b88be226 is HEAD's parent. I'll verify whether the 18 target files differ between them, then build the full traversal script.
+Only file #18 differs (added at HEAD). Now writing the full traversal script in the designated scratch dir.
+All 18 parsed fully. Now examining top-level structure and the declared accounting numbers.
+Now the core accounting: 417/280/137/26/whole. Let me dig into the declared numbers and compute actuals.
+Now computing the actual accounting numbers against the declarations.
+417 observations confirmed, and allocation pending = 26 exactly. Now checking `oracleStatus` (the specified/pending split) and coverage.json.
+Core accounting matches so far (417/280/137/26). Now cross-file ID linking and manifest count verification.
+Three declaredAllocation sets mismatch and `mathInputContexts` (83) vs `inputs.contexts` (6) differ. Investigating both.
+`inputs.contexts` is a 6-key container (mathInputContexts inside = 83, matches manifest). But `coverage.declaredAllocation` IDs disagree with the oracle's per-observation allocation statuses. Investigating precisely.
+The apparent mismatch was my own comparison error — `coverage.declaredAllocation` is keyed by **observation id**, not datasetId. Re-verifying correctly.
+All accounting numbers now verified consistent. Next: the schema files — reading them to build a validator.
+Now I'll build the stdlib validator for the oracle fixture schema (entry keys, status/state enums, RDFTerm oneOf, RawTermSourceOccurrences, SHACL, directSteps, issued record keys).
+Zero oracle-schema violations. Now checking the `rawTermSourceOccurrences` null case and the semantic-state vocabulary, then moving to contracts v2.
+semanticState counts match coverage exactly. Now let me check the raw-term occurrences against the inputs and start on the contracts v2 JSON Schema.
+Now let me check the 6 `fullview/profile-N` datasets missing the raw-term key, and validate the contracts v2 JSON Schema.
+Now verifying datasetId set equality and whether raw-term rows equal their source records.
+Raw-term binding verified: 25 arrays, all rows byte-equal to source records, all 3 terms/row. Now the contracts v2 JSON Schema validator.
+Now let me understand how the contracts v2 data binds to the schema before writing the validator.
+Now I'll build a stdlib JSON Schema (2020-12 subset) validator. First, enumerating the keywords used.
+Now writing the stdlib JSON Schema validator (2020-12 subset used by this file).
+`maxProperties` is used — adding it (the validator must not silently under-validate).
+The edit tool is failing on this path; I'll patch my own scratch script via python instead.
+Validator correctly rejects invalid data. Now applying it to all contracts v2 datasets.
+Now the decisive test: do the `valid: true/false` flags match actual schema conformance?
+Key finding: 29 negative cases conform to the declared schema. Let me check whether the repo applies additional semantic validation beyond the schema.
+There's a hand-written validator in `packages/contracts/src/v2.ts`. Let me read it to determine whether the `valid` flag is enforced by semantics beyond the JSON Schema.
+The repo layers a `semantic()` check on top of the JSON Schema. Let me read the rest and the test to see which authority governs the `valid` flag.
+Critical: the repo's `validateV2` adds a `semantic()` layer, and its `pattern` check is full-match, not search. I need to mirror the real validator exactly.
+Important finding: the repo's `validateV2` = structural schema **plus** a `semantic()` layer. I must port both faithfully. Let me read the rest.
+Now I'll port `validateV2` faithfully (structural + `semantic()` + utf8 budget). First, checking the `staleReason` shape, which `semantic()` treats as an array.
+Now I'll port the repo's real `validateV2` (structural + `semantic()` + utf8 budget) to Python so my "valid" verdict matches the actual authority.
+The `valid` flags are enforced by `validateV2` = structural schema **+** `semantic()` layer. I must port both faithfully. Let me read the remaining helpers.
+Now I'll port the repo's real `validateV2` (structural + `semantic()` + utf8 budget) faithfully to Python. First, how binding-regressions and frame-fixtures are consumed.
+Now writing the faithful port of `validateV2` (structural + `semantic()` + utf8 budget) and the matching helpers.
+Now running the ported validator against every contracts v2 fixture dataset.
+Down to 4. Let me diagnose each — some may be JS/Python numeric semantics differences in my port.
+Two are port bugs in my own code (JS `Number()` coercion and `cancelBoundary` default). Fixing my port, not the data.
+Two are bugs in **my port** (missing `cancelBoundary` default, and JS `Number()` coercion of string versions). Fixing my port.
+All contracts v2 datasets now fully consistent. Next: manifest source hashes, the tracked-tree file, and remaining input files.
+The manifest sources point to archived corpus copies. Let me verify those instead.
+Corpus archives aren't in this worktree. Let me check what actually exists and validate the oracle's `sourceRefs` links.
+Now let me verify the tracked-tree file (file #18) against the actual repo state.
+Now verifying every one of the 1246 tracked-tree entries against the real git tree.
+The 12 "differences" are git's C-quoting of non-ASCII paths in my display — the file declares it parsed with `-z`. Let me confirm with `-z`.
+All 1246 entries match git exactly. Now the remaining input files, plus secret/path scanning and size-dominance analysis.
+Now cross-linking the 6 inputs against the 5 oracle fixtures, and checking the real-executor-acceptance-inputs.
+Now verifying sources.json file references and running the secret/absolute-path scan.
+All 27 `local` source files verify byte-exact. Now the secret / absolute-path / machine-identifier scan across all 18 files.
+Zero hits — but let me sanity-check the scanner against a known-positive control, and scan raw bytes for keys the JSON walk might miss.
+Two things to resolve: the ABSPATH control failed (scanner soundness) and there are `"Secret"` occurrences grep found. Investigating both.
+Found a bug in **my own scanner**: hits were stored under tuple keys but read with string keys, so all categories printed 0. Fixing and re-running.
+Now the scan is real. Let me classify the 318 hits by distinct key name and value shape rather than dumping them.
+All secret-ish keys are benign placeholders. Now the size-dominance analysis and remaining cross-file consistency checks.
+A lone surrogate in the inputs file — that's itself a finding. Let me locate it and use surrogatepass for sizing.
+Lone surrogates are intentional test data (`utc-date/surrogate-data`). Now completing the size analysis with surrogate-safe encoding.
+Now the remaining cross-file checks: oracle's policy blocks vs schema.json/sources.json/manifest, plus verifying the `orderedIdsSha256` hash claims.
+Now verifying the projectionSha256 claims (a strong integrity check) and remaining internal-consistency rules.
+The `/input` suffix needs stripping in my resolver. Let me re-check properly.
+All 82 pointers resolve correctly — my earlier resolver was wrong, not the data. Now the final checks: manifest counts vs inputs internals, and the `contextLedger` vs `inputs.contexts` comparison.
+Let me check the contextLedger vs contexts content differences and verify the `mathOnlyCounts` numbers.
+Let me verify the ledger wrapper equals the contexts entries, and pin down the two count discrepancies.
+The ledger `productCases[].originalSetupSteps` embeds the **product-cases.json** case, not the contexts entry. Let me verify that mapping.
+All reconciled. Now let me verify the remaining oracle fields (finiteRelations, expectedAuthorityConsumption) and check the sources.json vs oracle expectedAuthorityConsumption consistency, then finish the raw-term/blank-node analysis.
+Let me finish the raw-term completeness check and the consumer-C linkage.
+Let me verify the consumer-C golden pointers resolve, and check the goldenPointer links.
+Let me correct the golden-pointer check and test whether the explanation-goldens file has any consumer.
+Let me run a final consolidated pass: duplicate IDs everywhere, pointer resolvability, and ordering claims.
+Let me check the remaining items: git existence of referenced paths, "whole" declarations, and pending-observation claim discipline.
+Strong lead: the referenced source files exist at other commits. Let me verify the `ref`+`sha256` provenance chain directly against git objects.
+All 79 provenance claims verify byte-exact against git objects. Let me finish with the remaining checks and write the report.
+Let me verify the rxa graph/triple reference integrity (all referenced triple ids must exist) — the last major consistency check.
+40 of 40 matches have `ruleId` not in `ruleDefinitions` — let me check whether that's a naming-convention difference or a real broken link.
+All 20 `matches[].ruleId` values resolve via `definition.id` — no broken links. Let me run a final consolidated summary for the report.
+All checks complete. Let me confirm I wrote nothing outside the designated scratch dir.
+Let me run a final verification on the schema-vs-semantic gap, frame-fixture schema coverage, and the prompt's size ordering.
+Let me confirm how frame-fixtures is validated (it has no `valid` flag and no schema def).
+Let me verify the substantive constraint that `pending` observations must not claim an oracle match.
+Final check: confirming pending observations claim no match, and the contextStatus vocabulary.
+One nuance to pin down: 19 pending observations carry non-empty `businessMath.matches`. Let me check whether their `pendingFields` declare the gap.
+All 19 pending observations carrying `matches` do declare `pendingFields` gaps. Let me verify the last `required` semantics and finalize.
+All verification complete. Here is my report.
+
+---
+
+# T05 Source-Package Oracle — Independent Structural Traversal & Constraint Verification
+
+**Scope:** 18 designated files, read-only. Source commit `b88be226501703f1d5365734dd0e56066bd1bffb`.
+**Interpreter:** `.venv/bin/python` 3.12.14, stdlib only, `-B`. No pytest/npm/vitest/build/oracle scripts/network calls. All writes confined to `…/launch-O15/scratch/subagent-D/` (verified: `git status` shows only the pre-existing ` M AGENTS.md` and pre-existing untracked `launch-O15/`; `git diff --stat` unchanged from session start).
+
+**Commit note:** the worktree HEAD is `0f87f2c2` (parent of nothing — it is the *child* of `b88be226`). `git merge-base --is-ancestor b88be226 HEAD` → **YES**. Of the 18 assigned files, 17 are byte-identical between `b88be226` and HEAD; **file #18** (`final-source-tracked-tree.json`) exists only at HEAD and declares `sourceCommit: b88be226…` — verified consistent.
+
+---
+
+## 1. Traversal table
+
+All 18 files parsed successfully with `json.loads`; **fully parsed = Y** for every one (every element of every container iterated — recursive walk counted 3,930 array elements / 8,009 objects in file #1 alone, up to 38,305 / 31,851 in #7).
+
+| # | File | Bytes | Lines | Top type | Fully parsed | Element counts (computed) |
+|---|---|---|---|---|---|---|
+| 1 | `…/inputs/i05-source-package-parity-inputs.json` | 8,205,267 | 1 | object | **Y** | keys 4: contexts(6)/datasets(320)/format/observations(**417**) · 1,442 arrays, 3,930 elems, 8,009 objects, 29,915 keys, 24,395 scalars |
+| 2 | `…/inputs/i05-source-package-parity-manifest.json` | 21,202 | 1 | object | **Y** | keys 5: caseSets(3)/counts(8)/format/inputAsset(2)/sources(**22**)/versions(5) · 4 arrays, 441 elems, 28 objects |
+| 3 | `…/inputs/real-executor-acceptance-inputs.json` | 767,826 | 22,035 | object | **Y** | keys 24: triples(248)/graphs(89)/productCases(50)/ruleDefinitions(28)/matches(40)/completenessArguments(24)/extensions(22)/finiteRdfsRules(4)/supplementalLearningCases(5)… · 2,198 arrays, 7,909 elems |
+| 4 | `…/inputs/product-cases.json` | 188,023 | 5,355 | object | **Y** | keys 2: fixtureVersion/cases(**50**) · 348 arrays, 944 elems |
+| 5 | `…/inputs/consumer-C-goldens.json` | 8,163 | 210 | object | **Y** | keys 5: status/pins(4)/cases(**13**)/reportComparison/noConflation · 21 arrays, 30 elems |
+| 6 | `…/inputs/explanation-goldens.json` | 11,584 | 331 | object | **Y** | keys 8: completeHeads(7)/falseThenError(7)/directSteps(5)/existingR04Reference(7)/additionalDirectStepCases(**2**)/expectedCatalogObservations(2) · 52 arrays, 114 elems |
+| 7 | `tests/fixtures/quality/i05-source-package-oracle/oracle.json` | 5,938,727 | 178,575 | object | **Y** | keys 13: observations(**417**)/contextLedger(9)/declaredAllocationPolicy(10)/dynamicRules(7)/fieldPolicies(9)/finiteRelations(12)/notClaims(7)/caseSets(3)/expectedAuthorityConsumption(3)… · 13,773 arrays, 38,305 elems, 31,851 objects, 96,479 keys |
+| 8 | `…/i05-source-package-oracle/budget-gaps.json` | 362,492 | 6,226 | object | **Y** | keys 4: items(**82**)/additionalProductionRestoreCases(32)/directPools(2)/scope · 328 arrays, 1,159 elems |
+| 9 | `…/i05-source-package-oracle/coverage.json` | 154,032 | 3,785 | object | **Y** | keys 9: byFamily(26)/byStatus(2)/caseSets(3)/declaredAllocation(3)/pending(**137**)/semanticStates(3)… · 292 arrays, 1,980 elems |
+| 10 | `…/i05-source-package-oracle/schema.json` | 10,220 | 245 | object | **Y** | keys 13: entryKeys(17)/normalization(9)/declaredAllocationPolicy(10)/dynamicFieldPolicies(7)/exactIssuedRecordKeys(3)/stateValues(3)/statusValues(2)… · 22 arrays, 101 elems |
+| 11 | `…/i05-source-package-oracle/sources.json` | 79,253 | 1,700 | object | **Y** | keys 5: sources(**27**)/inputOriginLineage(**111**)/forbiddenAsOracle(3)/expectedAuthorityConsumption(3)/semantics · 37 arrays, 214 elems |
+| 12 | `packages/contracts/v2/fixtures.json` | 472,098 | 13,424 | object | **Y** | keys 11: cases(**321**)/validationBindings(20)/responses(30)/routing(11)/cursors(9)/jobListCursors(7)/unicodeMutations(2)/transitions(2)/dependencyChains(2) · 353 arrays, 1,594 elems |
+| 13 | `packages/contracts/v2/schema.json` | 122,889 | 4,752 | object | **Y** | keys 5: `$defs`(**66**)/`$ref`/`$id`/`$schema`/`title` · 245 arrays, 1,241 elems, 1,240 objects |
+| 14 | `packages/contracts/v2/binding-regressions.json` | 123,964 | 3,231 | object | **Y** | keys 3: cases(**41**)/schemaVersion/source · 44 arrays, 41 elems, 453 objects |
+| 15 | `packages/contracts/v2/registry.json` | 13,039 | 406 | object | **Y** | keys 4: capabilities(**24**)/v2Runtime(14)/productRuntime(1)/schemaVersion · 26 arrays, 27 elems |
+| 16 | `packages/contracts/v2/errors.json` | 14,400 | 450 | object | **Y** | keys 4: codes(**26**)/parameterMeanings(7)/maxEncodedBytes/schemaVersion · 33 arrays, 70 elems |
+| 17 | `packages/contracts/v2/frame-fixtures.json` | 17,537 | 778 | object | **Y** | keys 2: cases(**51**)/schemaVersion · 154 arrays, 339 elems |
+| 18 | `…/O-owned-repair-candidate/final-source-tracked-tree.json` | 284,817 | 8,732 | object | **Y** | keys 7: files(**1,246**)/format/sourceCommit/sourceTree/trackedFileCount/pathEncoding/metadataNotRuntimeOrSemanticPass · 1,247 objects, 6,237 keys |
+
+---
+
+## 2. Declared accounting vs actual
+
+Every declared number was located at a concrete file+path and recomputed from the data.
+
+| Declared number | Declared at | Actual computed | Match |
+|---|---|---|---|
+| **417** total observations | `manifest.counts.observations`=417; `coverage.observationCount`=417; `oracle.observations[]` len=417; `parity-inputs.observations[]` len=417 | 417 | **Y** (all four agree) |
+| **280** specified | `coverage.byStatus.specified`=280 | 280 (`oracle.observations[].oracleStatus=="specified"`) | **Y** |
+| **137** pending | `coverage.byStatus.pending`=137; `coverage.pending[]` len=137 | 137 (`oracleStatus=="pending"`) | **Y** |
+| 280+137 = 417 | derived | 280+137 = 417 | **Y** (partition complete, no overlap) |
+| **26** allocation pending | `coverage.declaredAllocation.pending` len=26 | 26 (`oracle.observations[].declaredAllocationExpectation.status=="pending"`) | **Y** |
+| **whole == false** | `oracle.wholeOracleComplete`=false; `coverage.wholeOracleComplete`=false | false in both | **Y** |
+
+Additional declared numbers verified:
+
+| Declared | At | Actual | Match |
+|---|---|---|---|
+| datasets = 320 | `manifest.counts.datasets` | 320 (`inputs.datasets` keys, and distinct `oracle[].datasetId`) | **Y** |
+| 26 families, per-family counts | `manifest.counts.families` | all 26 match exactly; declared sum 417 = actual sum 417 | **Y** (26/26) |
+| productCases = 50 | `manifest.counts.productCases` | 50 (`product-cases.cases`, `inputs.contexts.productCases`, `rxa.productCases`) | **Y** |
+| mathInputContexts = 83 | `manifest.counts.mathInputContexts` | 83 (`inputs.contexts.mathInputContexts`) | **Y** |
+| learningChecks = 54 | `manifest.counts.learningChecks` | 54 | **Y** |
+| originalOperations = 106 | `manifest.counts.originalOperations` | 106 | **Y** |
+| unresolved = 5 | `manifest.counts.unresolved` | 5 | **Y** |
+| `inputAsset` bytes+sha256 | `manifest.inputAsset` | 8,205,267 B, sha256 `47c66ffe…c59eaa` — byte-identical to file on disk | **Y** |
+| `oracle.inputIdentity` bytes+sha256 | `oracle.inputIdentity` | identical to same file | **Y** |
+| `trackedFileCount` = 1246 | `final-source-tracked-tree.trackedFileCount` | 1246 = len(files) = `git ls-tree -r` count | **Y** |
+| `coverage.semanticStates` | `coverage.semanticStates` | 208 known-rejection / 208 normal / 1 not-executed = `oracle[].expected.semanticState` tally | **Y** |
+| `coverage.byFamily` | `coverage.byFamily` | equals actual family tally exactly | **Y** |
+| `manifest.counts.unresolved`=5 | — | 5 | **Y** |
+
+**No declared number contradicted the data.** The only discrepancy encountered was in **my own** first-pass comparison (I compared `coverage.declaredAllocation` — which is keyed by **observation id** — against `datasetId`); re-running with the correct key produced three exact set+multiset matches (88 specified / 26 pending / 2 not-invoked, total 116 = the 116 observations carrying `declaredAllocationExpectation`).
+
+---
+
+## 3. Internal consistency findings
+
+**No violations found.** Verified:
+
+- **Oracle observation key set:** all 417 elements have *exactly* the 17 `schema.entryKeys` — 1 distinct key signature across 417 elements; `entryKeys` itself sorted and duplicate-free.
+- **`oracleStatus` ⊆ `schema.statusValues`** (`specified`,`pending`): 417/417.
+- **`expected.semanticState` ⊆ `schema.stateValues`** (`normal`,`known-rejection`,`not-executed`): 417/417.
+- **`specified` ⇔ empty `pendingFields`:** 0 violations across 417 (`pendingFields` len distribution: 0→280, 1→105, 2→6, 3→12, 4→14).
+- **`oracle.pendingFields` ⇔ `coverage.pending[].fields`:** 137/137 exact equality, 0 mismatches.
+- **Duplicate IDs:** `oracle.observations[].id` 417/417 unique; `inventoryOrdinal` is exactly 0…416, contiguous, no gaps/dupes; `budget-gaps.items[].id` 82/82 unique; `fixtures.cases[].name` 321/321; `binding-regressions.cases[].name` 41/41; `frame-fixtures.cases[].name` 51/51; `tracked-tree.files[].path` 1246/1246 unique.
+- **Ordering claims:** `tracked-tree.files[].path` order == `git ls-tree -r -l -z` order **and** == lexicographic sort (both true). `oracle.observations[]` order == `inputs.observations[]` order (id-for-id). `coverage.caseSets[*].orderedIds` == `oracle.caseSets[*]` (list-equal, not just set-equal) for all 3 case sets; `orderedIdsSha256` **recomputed and matched** all 3 (compact-JSON of `orderedIds`).
+- **Policy blocks are byte-identical across files:** `oracle.fieldPolicies` == `schema.normalization` (9/9 keys); `oracle.dynamicRules` == `schema.dynamicFieldPolicies` (7/7); `oracle.declaredAllocationPolicy` == `schema.declaredAllocationPolicy`; `oracle.expectedAuthorityConsumption` == `sources.expectedAuthorityConsumption`; `oracle.caseSets` == `manifest.caseSets`; `oracle.contextLedger.original` == `inputs.contexts` for all 6 sub-blocks.
+- **Context ledger wrapping:** `contextLedger.learningChecks[i].source` == `inputs.contexts.learningChecks[i]` 54/54; `originalOperations` 106/106; `productCases[i].originalSetupSteps` == the corresponding `product-cases.json` case 50/50; all `state` = `not-executed`.
+- **`mathOnlyCounts` recomputed:** all=83, eligible=82, fullContext=79, intersection=78, E5FragmentsNotWholeOperations=4 (`E.5:event-fragment:round:*` = 4, distinct from `baseline:E.5`), repairProfileNotExecuted=1 (`transfer:repair`) — all 6 match.
+- **rxa internal references:** all 8 triple-id fields resolve within `triples` (248, contiguous `t0001`–`t0248`) — 0 dangling; `graphs[].matchRefs` and `graphs[].ruleDefinitionRefs` — 0 dangling; `matches[].ruleId` resolves for **40/40** matches via `ruleDefinitions[*].definition.id` (my first check against `ruleDefinitions` *keys* was the wrong key space — `R-risk` is a `definition.id` mapping to key `R-risk/map`; `R-risk-multi` → `extension/DISABLED-RULE-NO-OUTPUT`).
+- **`errors.json` ⇄ `$defs/error`:** 26 codes both ways, 0 missing, 0 extra.
+- **`registry.capabilities[*].paramsSchema/resultSchema`** → 48 refs, all resolve inside `$defs`.
+
+---
+
+## 4. Cross-file link findings
+
+**No missing links; no orphans among the 6 inputs ↔ 5 oracle fixtures.**
+
+- **All 6 input files are referenced by name** in the oracle fixture set, and each has a `sources.json` entry with a `local` path, `bytes` and `sha256` — **all 27 `local` files verified byte-exact on disk (0 mismatches, 0 missing)**.
+- **Oracle ↔ inputs observation linkage:** 417 oracle ids == 417 input ids, symmetric difference empty; the 7 shared fields (`contextStatus`,`datasetId`,`family`,`operation`,`parameters`,`projectionSha256`,`sourceRefs`) are **identical on all 417** (0 mismatches). `projectionSha256` — 320 distinct values, all 64-hex lowercase, 0 datasetIds with >1 distinct sha.
+- **`inputs.datasets` ⇄ oracle `datasetId`:** set-equal (320 == 320, 0 orphans either direction).
+- **`budget-gaps.items[].declaredAllocationOnly.oracleObservationId`** → 82/82 exist in the oracle.
+- **`budget-gaps.items[].datasetPointer`** → 82/82 resolve (`/datasets/<key>/input`, JSON-Pointer `~1` unescaping); all point to `kind:"profile"` datasets that do carry an `input` member.
+- **`budget-gaps.items[].inputProjectionSha256`** → 56 distinct values, **all present** among the 320 observation `projectionSha256` values.
+- **`consumer-C` linkage:** `oracle.expectedAuthorityConsumption.consumerC` (13) ⇄ `consumer-C-goldens.cases` (13) — id sets identical; each `goldenPointer` (`/cases/N`), `observations[].selectedBranch`, and every `comparedPointers` entry **resolves inside `consumer-C-goldens.json`**; the selected branch equals the golden's `expected`; all `observationId`s exist in the oracle.
+- **`product-cases` linkage:** 50 ids == `inputs.contexts.productCases` ids == `rxa.productCases` ids, all sets identical.
+- **Provenance chain (strongest cross-file check):** **79 distinct `(ref, path, sha256)` claims** across `parity-inputs`, `manifest`, `oracle`, `sources` — **79/79 verified byte-exact** by hashing the git blob at `<ref>:<path>` (`git cat-file -p`), 0 mismatches, 0 unavailable.
+- **`tracked-tree`:** all 1,246 entries match `git ls-tree -r -l -z <sourceTree>` exactly — 0 missing, 0 extra, **0 field mismatches** (`mode`,`gitType`,`gitBlob`,`bytes` all agree). `sourceCommit`/`sourceTree` are both valid git objects.
+- **Consumers of the 5 oracle fixtures:** `oracle.json` ← `coverage.json` (pending ids, byFamily, byStatus, caseSets), `schema.json` (policy blocks), `sources.json` (authority consumption); `budget-gaps.json` ← oracle observation ids; `schema.json` ← oracle observation keys.
+
+**Non-finding (expected by design, disclosed as declared metadata, not an error):** the `sourceRefs`/`corpusPath` targets (`packages/engine/src/ontolearn_engine/semantic_probe.py`, `semantic_samples.py`, `tests/fixtures/quality/approved-T09-873c8c0/**`, `docs/iterations/I05/profile-probe-inputs.json`, `tests/fixtures/quality/fr505-extension-cases.json`, `docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json`) **do not exist at HEAD** in this worktree — they belong to other commits. Their content is nonetheless fully verifiable via the `ref`+`sha256` chain (79/79 above), and `sources.json` labels them `originRefStatus: "provided metadata, not independently authenticated"`. `manifest.sources[].corpusPath` (22 archived `.raw` copies under `docs/reviews/I05/source-package-probe-source/inputs/corpus/`) are **also absent** — `docs/reviews/I05/` does not exist at HEAD. This is disclosed by the manifest's own `corpusPath`/`ref` split and is not a link failure, but it does mean **the archived corpus copies are not reachable from this worktree**.
+
+---
+
+## 5. Schema validation findings
+
+I implemented two stdlib-only validators.
+
+**(a) `tests/fixtures/quality/i05-source-package-oracle/schema.json`** — hand-written rules extracted from the file and checked against all 417 oracle observations:
+
+| Rule (source) | Result |
+|---|---|
+| `entryKeys` — exact 17-key set, no missing/extra (`missingOrExtraOrDuplicateKeysRejected: true`) | 417/417 conform |
+| `statusValues` enum on `oracleStatus` | 417/417 |
+| `stateValues` enum on `expected.semanticState` | 417/417 |
+| `normalization.RDFTerm.oneOfExactKeys` (3 allowed shapes) | 19,402 RDFTerm objects found: 17,236 `{kind,value}` + 2,166 `{kind,lexical,datatype,language}` — **all valid**, 0 violations |
+| `normalization.RawTermSourceOccurrence.exactKeys` (5 keys) + `kind`∈{iri,literal} + `datatype_iri`/`language_raw` str-or-null + `lexical_form` str | 288 objects, all 5-key, kinds 275 iri / 13 literal — **0 violations** |
+| `normalization.SHACL.exactKeys` + `violationExactKeys` | 61 SHACL objects, **0 violations** |
+| `exactIssuedRecordKeys` (`_CHILD`/`_PAYLOAD`/`_REASONING`) | 0 occurrences present in the oracle — the oracle is a *semantic* model, not the issued wire record, so this rule is **not exercised** (see limitations) |
+| `declaredAllocationPolicy.pools` (7 pools) + `version` | 116 allocation-bearing observations: `pools` match the declared 7 values; `policyVersion` = `i05-profile-graph-budget/1` on all 116 |
+| `dynamicFieldPolicies.directSteps` key sets | `containerKeys`/`stepKeys`/`stepRefKeys`/`leafRefKeys`/`ruleHeadKeys` present and consistent across `oracle.dynamicRules` and `schema.dynamicFieldPolicies` (identical objects) |
+
+**Total violations for the oracle fixture schema: 0.**
+
+**(b) `packages/contracts/v2/schema.json`** — I first wrote a generic JSON-Schema-2020-12 validator (subset: `$ref`,`type`,`properties`,`required`,`additionalProperties`,`oneOf`,`const`,`enum`,`min/max`,`minItems/maxItems`,`min/maxLength`,`pattern`,`items`,`propertyNames`,`maxProperties`), with a deliberate "fail on unknown keyword" guard so it cannot silently under-validate. That validator alone accepted **29 of the 217 `valid:false` fixtures** — because the repo's real gate is `validateV2()` in `packages/contracts/src/v2.ts`, which is **structural schema AND a hand-written `semantic()` layer AND a 262144-byte utf8 budget**. I therefore ported `v2.ts` faithfully to Python (`compile()` zod-subset with zod's *full-match* `pattern` semantics and lone-surrogate rejection; `semantic()`; `utf8()` with 32-byte numeric tokens; plus `acceptsJobEvent`, `cursorMatches`, `matchesResponse`, `jobListCursorMatches`, `validationProjectionMatchesResources`, `permitsTransition`) and re-ran:
+
+| Dataset | Elements | Declared `valid` vs computed | Violations |
+|---|---|---|---|
+| `fixtures.cases` (via `validateV2`) | 321 | (True,True)=104, (False,False)=217, **(True,False)=0** | **0** |
+| `fixtures.responses` (via `matchesResponse`) | 30 | 0 mismatches | **0** |
+| `fixtures.routing` (via `acceptsJobEvent`) | 11 | 0 mismatches | **0** |
+| `fixtures.cursors` (via `cursorMatches`) | 9 | 0 mismatches | **0** |
+| `fixtures.jobListCursors` | 7 | 0 mismatches | **0** |
+| `fixtures.transitions` | 2 | 0 mismatches | **0** |
+| `fixtures.unicodeMutations` | 2 | 0 mismatches | **0** |
+| `fixtures.validationBindings` | 20 | 0 mismatches | **0** |
+| `binding-regressions.cases` (via `acceptsJobEvent`) | 41 | 0 mismatches | **0** |
+
+**Total violations for the contracts v2 schema: 0.** (Two initial mismatches were bugs in *my* port — missing `cancelBoundary`→mode defaulting and JS `Number("1.0")` coercion — fixed in the port, not in the data. A control test confirmed the validator rejects a deliberately malformed envelope.)
+
+**Observation worth recording (not a data defect):** 29 negative fixtures are rejected **only** by the `semantic()` layer in `packages/contracts/src/v2.ts`, not by `packages/contracts/v2/schema.json` alone (e.g. `cases[155] 'non round carrying rounds'`, `cases[204] 'duplicate list members'`, `cases[205] 'duplicate stale dependency'`, `cases[304–308]'derived validation … mismatch'`). The committed `schema.json` is therefore **not self-sufficient** as a conformance artifact; the authoritative gate is TS code. Any consumer validating only against `schema.json` would accept these 29 invalid values. This is a design fact of the repo, not a contradiction inside the data.
+
+---
+
+## 6. Secret / absolute-path findings
+
+**No credentials, secrets, absolute local paths, or machine-specific identifiers found.** Both a structural scan (all dict keys, all string values, recursive) and an independent byte-level `grep` over all 18 files agree.
+
+- Secret-ish key names (318 raw hits) reduce to benign categories: `messageKey` (254, protocol i18n keys), `rawImportToken` (248, all `null`), `authoredDerivation` (248, all `null`), `sourceAuthorityAuthenticated` (167, all `false`), `knownChildKeys`/`knownNativeKeys`/`knownPayloadKeys`/`exactKeys`/`*Keys` (schema key-name lists), `token`/`nonce` (fixed UUID-shaped fixtures, e.g. `00000000-…-000000000050`), `rawToken`/`rawTokenSpan` (literal explanatory strings), `key` (`'001'`, `'002'` — CSV column keys), `authorizedFields` (`['equipment_id']`).
+- **Only credential-shaped value**: `fixtureSecret` = `"SYNTHETIC-DO-NOT-EXPORT"` at 4 locations — `product-cases.$.cases[5].steps[0].credentials.fixtureSecret`, `rxa.$.productCases[5].sourceSteps[0].credentials.fixtureSecret`, `oracle.$.contextLedger.originalOperations[14].originalOperationText.credentials.fixtureSecret`, `oracle.$.contextLedger.productCases[5].originalSetupSteps.…`. The value is an explicit non-secret marker; the paired `expected.credentialFields` is `[]`.
+- **Absolute paths:** 0 hits for `/Users/…`, `/home/…`, `/opt/…`, `/tmp/…`, `C:\…`, `~/…`, `/Volumes/…` (byte-level grep confirms). All embedded paths are repo-relative.
+- **Machine-specific identifiers:** 0 hits for hostname, `user@host.local`, email addresses, or the local username. `author` = `"T05 sole oracle author; independent reviewer read-only"` — a role string, not a person.
+- No `.env`, key, or credential file content in scope.
+
+---
+
+## 7. Raw-term / blank-node binding findings
+
+- **`rawTermSourceOccurrences` count: 26** observations carry the key (`expected.businessMath.rawTermSourceOccurrences`).
+  - **25** carry an array; **1** (`fullview/turtle-entry`, dataset kind `turtle`) carries `null` — exactly as `schema.normalization.RawTermSourceOccurrence.turtleRelation` prescribes ("null when no structured records were supplied; never fabricated from parsed terms"). **Conformant.**
+  - **Array-length binding:** every array length equals the length of the corresponding `inputs.datasets[datasetId].records` array — **25/25 exact** (2,3,2,2,4,4,2,8,8,4,4,4×8,3,3,4 and the rest). All 9 `kind:"records"` datasets are covered by exactly the 25 non-null arrays; **0 records-kind observations lack the array** and **0 non-records datasets carry a non-null array**.
+  - **Value binding (deep):** every row of every array was compared **element-by-element against the source record** in `inputs.datasets`: **0 differences across all rows and all 5 sub-fields** (`kind`,`lexical_form`,`datatype_iri`,`language_raw`,`source`).
+  - **Row width:** all 96 rows have exactly **3 terms** — matching the schema's "three terms per row" and the "same array length across every element that carries them" requirement. Row widths observed: `{3: 96}` (uniform).
+  - The 6 `fullview/profile-*` observations (dataset kind `profile`) carry a `businessMath` **without** the key — correct, since they are not structured-records datasets.
+- **Blank nodes:** **0** occurrences of `_:label` in either file #1 or #7; **0** objects with `kind == "blank"` in either. `schema.normalization.RDFTerm.blank` ("only legal shape-list graph structure isomorphism; no data blank nodes admitted") is therefore **vacuously satisfied**.
+- **RDFTerm identity records:** 19,402 objects, all conforming to the 3 allowed `oneOfExactKeys` shapes (17,236 `{kind,value}`; 2,166 `{kind,lexical,datatype,language}`); **0** `{kind,label}` forms present. 0 violations.
+
+---
+
+## 8. Size risk findings
+
+All 11 large files parse cleanly and quickly (whole set fully parsed in one pass); **no file is malformed, truncated, or un-loadable**. Dominance analysis (compact-JSON byte attribution):
+
+| File | Bytes | Compact | Indent overhead | Dominant container | Dominant leaf key (share of that container) |
+|---|---|---|---|---|---|
+| #1 parity-inputs | 8,205,267 | 8,202,974 | 0.0% | `datasets` (7,783,037 B = **94.9%**) | **`dataText` = 5,768,523 B (32.9% of `datasets`; 70.3% of the whole file)** |
+| #7 oracle | 5,938,727 | 3,103,986 | 47.7% | `observations` (2,638,381 B = 85.0%) | `expected` = 1,769,872 B (20.9% of `observations`) |
+| #3 rxa | 767,826 | 554,337 | 27.8% | `triples` (209,969 B = 37.9%) | `inputOccurrences` = 114,760 B (24.2% of `triples`) |
+| #12 contracts fixtures | 472,098 | 330,151 | 30.1% | `cases` (181,723 B = 55.1%) | `value` = 154,162 B (43.2%) |
+| #8 budget-gaps | 362,492 | 304,523 | 16.0% | `items` (276,881 B = 90.9%) | `missingInvoiceOperations` = 141,860 B (32.6%) |
+| #18 tracked-tree | 284,817 | 222,484 | 21.9% | `files` (222,174 B = 99.9%) | `path` = 86,721 B (53.8%) |
+| #4 product-cases | 188,023 | 123,122 | 34.5% | `cases` (100%) | `expected` = 75,479 B (26.3%) |
+| #9 coverage | 154,032 | 114,323 | 25.8% | `pending` (98,113 B = 85.9%) | `fields` = 91,811 B (49.7%) |
+| #14 binding-regressions | 123,964 | 85,998 | 30.6% | `cases` (99.9%) | `value` = 72,163 B (31.5%) |
+| #13 contracts schema | 122,889 | 60,795 | 50.5% | `$defs` (99.8%) | `oneOf` = 45,757 B (22.2%) |
+| #11 sources | 79,253 | 64,419 | 18.7% | `inputOriginLineage` (60.3%) | `record` = 25,653 B (44.9%) |
+
+**Risk assessment against AGENTS.md "don't commit large raw data":**
+- **File #1 is the material risk**: 5.77 MB of the 8.21 MB is a single repeated field, `datasets[*].dataText` — raw Turtle/Shacl source text for 320 datasets. It is *committed* raw data. Note `sources.json` labels this file `"sealed pure input, not expected"`, so it is deliberate sealed input rather than accidental dump — but it is the largest committed artifact in the scope.
+- **Files #7 and #13 carry substantial formatting overhead**: 47.7% and 50.5% of their bytes are pure indentation (the oracle is pretty-printed to 178,575 lines; the contracts schema to 4,752 lines). Recompacting would cut ~3.48 MB across the two with zero content change — but note the repo may rely on line-addressable diffs, so this is an observation, not a recommendation.
+- **File #2 is single-line JSON** (1 line, 8.2 MB) — the opposite extreme, which makes any line-level diff of #1 unreviewable.
+- No file contains base64 blobs, embedded binaries, or duplicated copies of the same payload beyond the documented `rawTermSourceOccurrences`/source-record duplication (verified byte-equal, so it is redundancy by design: 25 arrays reproduce their input records verbatim).
+
+---
+
+## 9. Read limitations
+
+1. **No execution of any test/build/oracle/producer script**, per instructions. Consequently the *runtime* semantics of the engine were not exercised — I verified the **data** and the **declared rules** it encodes, not that the engine produces these values.
+2. **`exactIssuedRecordKeys` (`_CHILD`/`_PAYLOAD`/`_REASONING`) is not exercised by the oracle fixture** — 0 occurrences of those key sets exist in `oracle.json` (or in the other 17 files). The rule is declared in `schema.json` but has no subject in this data set; I verified its *declaration* only.
+3. **`packages/contracts/v2/frame-fixtures.json` has no schema and no `valid` flag.** `contracts/v2/schema.json` defines no frame/chunk `$def`, and no `expected`/`valid` field exists on its 51 cases. I verified only its **structure** (51 cases; 49 with keys `{chunks,end,expectedErrors,expectedFrames,name,terminal}` + 2 additionally carrying `maxBytes`; names unique) and that it is consumed at runtime by `packages/engine/tests/test_frame_corpus.py` — I did **not** execute that corpus, so the frame byte-splitting expectations are unverified.
+4. **The `semantic()` port is a re-implementation, not the TS itself.** I matched `validateV2` behaviour on all 321+30+11+9+7+2+2+20+41 = **443** contract fixture elements with 0 mismatches, and the port is conservative (fails closed on unknown schema keywords). But it is a *port*: any residual JS-specific edge (e.g. `Number()` coercion of exotic strings, `JSON.stringify` key-order semantics, float formatting) not exercised by these fixtures would not be caught. The fixtures' own `valid` flags are the authority I checked against, not the TS runtime itself.
+5. **Absent-source paths.** The 22 `manifest.sources[].corpusPath` archives (`docs/reviews/I05/source-package-probe-source/inputs/corpus/*.raw`) and the 20 `manifest.sources[].path` originals do not exist at HEAD in this worktree, so their **declared `bytes`/`sha256` could not be verified against the local copies**. I verified the equivalent claim a different and stronger way: the 79 `(ref, path, sha256)` triples all verify byte-exact against git blobs at their declared refs, which covers the same content by a different route. The `corpusPath` archive bytes themselves remain unverified.
+6. **`inputs.observations[].sourceCaseId` (401 distinct values) is not a product-case id space.** 363 of those values are operation/dataset-level ids (`A-01:steps:1`, `dag/type`, `utc-date/…`) that do not appear in `product-cases.json` (which holds 50 case ids `A-01`…`R-06`). The two id spaces are different by construction (`sourceCaseId` is a source pointer, not a case reference), and every one of the 401 values does resolve inside `inputs.contexts.originalOperations[].id` / `mathInputContexts[].id` / `datasets` — but I did not find an explicit declaration of that naming rule inside the data, so I record it as an observed convention rather than a verified invariant.
+7. **The "150-file engineering scope" figure in the task brief could not be corroborated from the 18 assigned files.** The only file-count declaration present is `final-source-tracked-tree.trackedFileCount = 1246` (verified exactly against `git ls-tree`), and the tracked tree at `b88be226` lists 1,246 files, while HEAD tracks 1,262 (28 added by `0f87f2c2`). The "150-file" scope is therefore a *subset* notion defined outside these 18 files; I did not verify it and did not attempt to reconstruct it.
+8. **Two lone surrogates** (`\ud800`) exist in file #1, at `datasets['utc-date/surrogate-data'].dataText` and `datasets['utc-date/text-limit-data'].shapesText`. These are deliberate Unicode test vectors (the dataset ids are literally `surrogate-data` / `text-limit-data`) and I confirmed they are well-formed JSON escapes — but Python's `json.dumps` cannot re-encode them without `surrogatepass`, which is why my size script needed that flag. Any downstream tooling that round-trips these values through a strict UTF-8 encoder will fail. Flagged as a low-severity portability note, not a defect.
+9. **I did not read** any peer reviewer's opinions, global session logs/databases, or any workspace outside this worktree, per the assignment. Repo source I read beyond the 18 files was limited to what was strictly necessary to determine the authoritative validation rule for those files: `packages/contracts/src/v2.ts`, `src/states-v2.ts`, `src/dependencies-v2.ts`, `packages/contracts/v2/{registry,errors,states}.json`, `tests/unit/contract-v2.test.ts`, `tests/unit/binding-regressions.test.ts`, `packages/engine/tests/test_frame_corpus.py`.
+
+---
+
+## Findings by severity
+
+**No blocking defects found.** The declared accounting (417 / 280 / 137 / 26 / whole=false) is exactly corroborated by the data at every declaration site; all 18 files parse fully; the oracle fixture schema yields 0 violations across 417 observations; the contracts v2 schema + its `semantic()` gate yields 0 violations across 443 fixture elements; all 79 provenance hash claims verify byte-exact against git objects; all 1,246 tracked-tree entries match `git ls-tree` exactly; no secrets or absolute paths are committed; raw-term arrays are complete and value-bound to their sources.
+
+| Sev | Finding | Location | Status |
+|---|---|---|---|
+| Low | `packages/contracts/v2/schema.json` alone accepts 29 of the 217 negative fixtures; the real gate is the `semantic()` layer in `packages/contracts/src/v2.ts`. The committed schema is not a standalone conformance artifact. | `packages/contracts/v2/schema.json`; `packages/contracts/src/v2.ts:145` | Design fact, disclosed |
+| Low | 22 `manifest.sources[].corpusPath` archives and 20 `manifest.sources[].path` originals are absent from this worktree (`docs/reviews/I05/` does not exist at HEAD); their declared bytes/sha256 could not be checked against local copies (equivalent content verified via the 79 git-blob refs instead). | `…/i05-source-package-parity-manifest.json` `$.sources[*]` | Declared by the manifest's own ref/corpusPath split |
+| Low | File #1 commits 5.77 MB of raw Turtle/Shacl `dataText` (94.9% of the file is `datasets`); file #7 and #13 carry 47.7%/50.5% pure indentation overhead. Bears on the repo's "don't commit large raw data" rule. | `…/i05-source-package-parity-inputs.json` `$.datasets[*].dataText` | Disclosed as "sealed pure input" |
+| Low | Two deliberate lone surrogates (`\ud800`) in `utc-date/surrogate-data` / `utc-date/text-limit-data` break strict-UTF-8 re-encoding tools. | file #1 `$.datasets['utc-date/surrogate-data'].dataText`, `['utc-date/text-limit-data'].shapesText` | Intentional test vectors |
+| Info | `schema.normalization.RawTermSourceOccurrence` path rule says "for structured records datasets"; 6 `fullview/profile-*` observations carry `businessMath` without the key — conformant (non-records datasets), noted because the key's presence is dataset-kind-dependent, not uniform. | file #7 `$.observations[*].expected.businessMath` | Conformant |
+| Info | `frame-fixtures.json` (51 cases) has no schema and no `valid` flag; only structurally verified, not executed. | `packages/contracts/v2/frame-fixtures.json` | Out of scope for a data-only check |
+| Info | 19 `pending` observations carry non-empty `expected.businessMath.matches` (e.g. `fullview/two-head-occurrences`), but **all 19** declare a `pendingFields` gap entry, so the "pending ⇒ no oracle match may be claimed" rule is honoured via disclosed gaps (209 `pendingFields` elements total, 0 pending observations without them). | file #7 `$.observations[*].pendingFields` | Conformant |
+
+---
+
+**VERDICT: PASS**
+
+All required checks were performed with full traversal (no sampling, no head/tail, no stat-only). The only residual gaps are the ones itemised in §9 — chiefly the non-executed runtime semantics, the non-subject `exactIssuedRecordKeys` rule, the absent corpus archives, and the unreconstructed "150-file" scope figure. None of these contradicts any declared number or constraint inside the 18 assigned files.
+</task_output>
