@@ -56,6 +56,8 @@ T08 新增模块只处理文字 Chat Completions 数据、Agent 白名单调度�
 
 每个 `DomainPort.execute(context,args,signal)` 必须映射获批业务命名服务；readCurrent由宿主读取当前权威视图。执行前、每个结果回收时以及答案展示时校验上下文；旧结果不会当作新项目/版本当前结果。异步有界等待、批前整组校验、同session调用ID不重用和总调用数上限；取消中断本地等待并传播signal。适配器不能因为T08停止等待就假定引擎已取消，持久job/run状态仍以I04/T01为准。行为/沙盘端口仅能使用隔离运行，不能写正式事实；具体取消/已提交轮次由其真实服务返回。
 
+2026-10-23 续修补充：上下文复验还位于每个延迟微任务中、紧邻真正端口调用之前，覆盖批前检查或前笔结果回收后切换项目/快照的间隔。权威读取异常固定为 STALE_CONTEXT，不保存宿主原异常；它不替代真实服务独立校验 scope/版本及事务边界。
+
 工具参数和用途：ontology_read(选中objectIds)、ontology_propose(instruction)、mapping_propose(sourceId,instruction)、query_draft(question,scope)、query_execute(sparql,scope)、quality_check(scope)、reasoning_run(scope)、behavior_test(behaviorId,sampleId)、scenario_run(scenarioId)、result_read(resultId)。scope 为 asserted / asserted-and-derived / selected-history；具体范围必须由scopeRef再次检查。SPARQL只读与禁外联由真实T04/I05执行器保证，T08不另造不完整词法检查器。
 
 工具结果只接受：
@@ -103,6 +105,8 @@ enabled 模式收到的每个响应（含无领域端口时）必须有 string r
 显示当前项目/版本/选中对象、最多四个页面动作、真实工具字段及依据引用、明确失败/过期/历史/取消、版本化草稿详情与独立“查看真实Diff”入口。缺处理器/缺能力/完全本地时禁用模型发送，已有本地动作才有可用路由；Diff基准不符或缺真实预览处理器时禁用。没有正式确认、提交、撤销或快照恢复能力，仍经T01独立入口。父级必须为每个项目保留各自输入/草稿，并把T09辅助级别写入真实学习记录；这里不建立持久项目或学习记录副本。
 
 输入在发送/失败后保留，异步回调错误只显示固定提示，不回显异常正文；取消与重试只调用显式宿主处理器。inputContext不匹配时持续显示先前上下文提示并禁用动作；旧快照记录不能因切页被当成当前结果。所有业务/模型字符串使用React文本节点，禁止HTML注入、自动资源加载或外链渲染。
+
+2026-10-23 续修将同一挂载实例内的输入、在途锁和本地错误按全部 TrustedContext 字段隔离；key 固定字段顺序并保留选中对象顺序，切回可恢复原输入。旧异步回调只更新启动时的 key，并合并最新输入；取消也须对应当前状态上下文。此临时 UI 内存不提供卸载后持久保存，父级真实草稿/学习记录职责不变。纯状态转换与 SSR 已有验证，实际挂载事件及真实取消仍须另验。
 
 `tests/unit/t08-sidebar.test.ts`在内存编译实际TSX并用React renderToStaticMarkup验证HTML文本安全、完整供给值（含001/0/false/null）、记录状态、错误时草稿可见、缺服务禁用和旧基准Diff拒绝。它是无窗口SSR验证，不是浏览器交互、Electron或真实页面接线验收；实际事件行为/可访问性/视觉仍须隔离环境挂载同候选验证。
 
