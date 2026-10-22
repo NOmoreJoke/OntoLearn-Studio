@@ -1,0 +1,45 @@
+{
+  "scope": "Offline independent same-lock environment setup only. No tests/build/product/native/collector/API/GUI or actual review task.",
+  "root": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-02a4738a",
+  "head": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "ci",
+        "--offline",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "explicitEnvironment": {
+        "offline": true,
+        "ignoreScripts": true
+      },
+      "exitCode": 0,
+      "seconds": 2.796527291,
+      "log": ".t11-review-runtime/raw/npm-setup.log",
+      "bytes": 631,
+      "sha256": "82595a73192e4c680e8debb56b364eb41f8445c84bd10dc217f52e7ddb6b21ce"
+    },
+    {
+      "command": [
+        "uv",
+        "sync",
+        "--frozen"
+      ],
+      "explicitEnvironment": {
+        "UV_OFFLINE": "1"
+      },
+      "exitCode": 0,
+      "seconds": 0.564853125,
+      "log": ".t11-review-runtime/raw/uv-setup.log",
+      "bytes": 900,
+      "sha256": "a8eac046248bef31fc6d65671ca9c049bc6bfe0191f5169d04d839215423b1e4"
+    }
+  ],
+  "nodeModulesIsSymlink": false,
+  "venvIsSymlink": false,
+  "taskCreated": false,
+  "actualSettingsReadBack": false
+}

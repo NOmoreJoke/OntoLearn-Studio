@@ -1,0 +1,39 @@
+# 02a 新指定审查准备独立文档 preflight
+
+2026-10-23。限定阅读owner新准备的common、两full-prompt、handoff-manifest、review-roots，以及两棵精确新根当前input和metadata/{source-setup,setup}.json。未运行产品/测试/检查/GUI，未读任何native/private/global或旧被禁返回，未重审实现。唯一新增本报告；这只是准备文档内审，不是实际指定模型Pass、设置读回或任务创建。
+
+结论：现有共同正文和完整范围未见缩减、漏掉必需历史意见或假模型provenance；派发前应按owner已提出的方案补充明确Git读取边界，见下文。没有其他必须修改点。
+
+## 已核对
+
+- 唯一review candidate为02a4738a220b2c6e881f7161ee658c61bf4328dc；87cc只作提交后交接流程parent，不偷换受审候选。两角色root、HEAD、manifest和input candidate binding均指向各自02a；taskCreated/actualSettingsReadBack均false，session/turn为null，model/effort/permission明确仅desired。GLM-5.3/最高max、M3.1-Flash/xhigh及权限目标保留，创建后还须真实本方读回。
+- 全文阅读共同正文与两封面；共同后缀完全等字节：29839B，SHA382751d60a421ecdac7c5c00a79050b872c50c6f1cdab497cf1007078a4c44ed。Z全文30610B/fcf131b393a20f81b8cf40785191a7439cb987b46d04165cdecc3ef574d18333，M全文30639B/0fd63b613be0f18ead2dad888b906bb4e4d4e3bba4dda2f169c62e661f580bb0。内嵌指南15147B/de15f6ce…a5c8c4匹配当前政策记录。
+- requiredFiles为107个唯一条目；原25/8/23分组全部在集合内，旧verify.ts明确映射唯一verify.mts。两collector、PE helper、两测试、PRD和F1配置/错误面依赖均在；四历史完整报告、18矩阵/triage、036的19项口径和其他观察/报告误差、两代旧raw与F1证据以及owner/root读面偏差、input-only禁令例外均明确继承。没有把Z信息级同主题O1算成第20项，也没有采纳一方关闭提议为已关闭。
+- 两根本方input均只有candidate-binding/common/full-prompt/handoff-manifest；本方全文、common和manifest均等于owner准备副本，无peer当前提示。两份source-setup各956条唯一记录、onlyPolicyDifference=AGENTS；107个必读条目的bytes/physicalSha256/equalsGit与manifest逐项一致。首次比较误用了旧版不存在的gitSha256字段，已按本版实际schema纠正，0差异；不是实体漂移。本轮没有越出范围重新遍读956个源码实体或独立查询Git HEAD，把这些记录与实际Git复验区分。
+- setup元数据各记离线npm ci/ignore-scripts及UV_OFFLINE=1 frozen exit0，不把依赖setup算产品检查或新模型任务；本轮未读/重执行安装raw，不认证旧进程外部行为。
+- 原12标准及新增F1标准完整：57P0、G50/唯一17文件、1000轮/每轮1000实际动作、完整八步80%、G.6双向、恢复/回退/同包/签名/渠道/真人/模型/CI/合并/远端等父门保持。F1明确真实.mts、动态加载/Node门、全stderr、schema合同、125包含755与122历史区分、版本模拟不冒充实机、warning仍可见，不预填通过。
+- 明确禁止临时仓commit，禁止真实collector即使错误参数或预期OS门拒绝；同时保原普通suite/受控CLI/临时SQLite/worker，不泛禁child或SQLite。F01/F16/Q5和过程异常不代答、不抹去技术意见。GUI归T09，无CUA/新任务票；不因新版准备继承旧设置或旧Pass。
+
+## 派发前补充
+
+建议在“执行、隔离与禁止事项/本轮独立性”明确：Git历史仅可按已给精确SHA和本方相关路径读取；禁止--all、全refs/分支/worktree枚举以发现其他线或peer。当前禁止peer/全局/父.worktrees的原则已在，但补这句可避免把Git历史命令当旁路发现权限。owner已表示采纳，尚待统一改正文、两full-prompt及本方input，并刷新相应bytes/hash/索引；不能用本次旧字节核同冒称后继字节已核。
+
+根需实际协调后才创建两份全新完整任务；本轮19历史意见、M NotPass、过程事件和全部正式门继续保留。此报告不授权任何GUI、代码执行、服务或发布。
+
+## Git边界与新冻结字节最终复核
+
+同日仅复核新增句与相关字节身份：共同正文已明确“Git历史只按已给精确SHA及相关路径读取；禁止使用--all、分支或worktree枚举来探查其他开发线或本轮peer”。移除新增句文字并保留原有分隔空格后，与此前共同正文完全相同，原107范围、19意见及其他规则未改；上述派发前措辞残留已修复，无其他待修文档问题。
+
+新common29976B/SHA6d00516f4fd71031ad4b1685b408fc8eb25d55f871438544bb63847bfaf76a11；Z全文30747B/SHA13319c66d6e73daa8f57d594e98d4379fe1525ed6418fb9cd07b38babafe594b；M全文30776B/SHA50cc9c8d8b51e37b0b094878f2772e6400dfa6360265cc7bcd8968c72e6079b1。两全文均以同一新common为完整后缀，各自runtime的full-prompt/common副本逐字节一致。
+
+source-snapshots.tar.gz为136351B/SHA c31ffcdf20214112cd9e8c5748cb37bafc0ac4db00632817e1662fec64b8175b，精确两个成员的bytes/hash均匹配index、review-roots成员引用及各自runtime source-setup原字节。两份owner setup JSON逐字节等本方runtime，bytes/hash与roots一致；四个setup原日志也与owner副本及metadata记录hash一致，退出字段均0。本核对只确认当前原件身份，不把先前格式化试改/恢复过程冒称未发生，也不重执行setup。
+
+roots现明确独立node_modules/.venv目录inode且两角色记录不同，taskCreated/actualSettingsReadBack仍false、报告不存在仅为owner记录；本轮未新增实机目录stat或读取report。未读native，未跑任何重复检查、GUI或产品。结论仍为静态准备文档内审，不是指定Pass或实际模型provenance；根安排具体创建窗口及原全部门保持。
+
+## 三份派发辅助文本核对
+
+同日全文阅读新增README.md、zcode-short-request.txt、minimax-short-request.txt，未作任何执行/GUI或native读取。两短模板分别引用Z30747B/SHA13319c66d6e73daa8f57d594e98d4379fe1525ed6418fb9cd07b38babafe594b、M30776B/SHA50cc9c8d8b51e37b0b094878f2772e6400dfa6360265cc7bcd8968c72e6079b1，与已核完整提示相同，根和detached02a身份对应正确。
+
+“这是实际派发的新任务”是未来发送时使用的模板语句；README明确当前prepared_inputs_frozen_not_dispatched、无task/settings事实且GUI归T09、须根具体创建窗口，未以文件存在伪称任务已创建。派发后不以附件准备false快照要求人类再次确认继续，是对未来已获派任务的正确执行说明；实际设置仍须本方收据/公开工具读回，未知UNKNOWN，不编造provenance或Pass。
+
+107/19、四完整历史报告、其他观察及输入/回读例外均保留；禁止临时commit、真实collector即使早拒绝、GUI/native/API/全局导出等未放宽，普通suite/CLI/临时SQLite不泛停。没有把本次辅助文本或目标配置当新授权，也不复制peer当前材料。三份文字未发现需修问题；共同正文/cover/manifest无需因本辅助文本重审。本意见仍非指定Pass或真实派发收据。

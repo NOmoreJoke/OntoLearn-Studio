@@ -1,0 +1,45 @@
+{
+  "scope": "Offline independent same-lock environment setup only. No tests/build/product/native/collector/API/GUI or actual review task.",
+  "root": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-02a4738a",
+  "head": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "ci",
+        "--offline",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "explicitEnvironment": {
+        "offline": true,
+        "ignoreScripts": true
+      },
+      "exitCode": 0,
+      "seconds": 2.6281499160000004,
+      "log": ".t11-review-runtime/raw/npm-setup.log",
+      "bytes": 631,
+      "sha256": "a42da9a0538702b27b14d97b780b2812b442df40bdff5b46cceda34781622f9a"
+    },
+    {
+      "command": [
+        "uv",
+        "sync",
+        "--frozen"
+      ],
+      "explicitEnvironment": {
+        "UV_OFFLINE": "1"
+      },
+      "exitCode": 0,
+      "seconds": 0.41627004199999984,
+      "log": ".t11-review-runtime/raw/uv-setup.log",
+      "bytes": 906,
+      "sha256": "3ca6c9d12c7f0e460b84b2f1116e65fc4b2b54346db074e36ac4f8cc539ab492"
+    }
+  ],
+  "nodeModulesIsSymlink": false,
+  "venvIsSymlink": false,
+  "taskCreated": false,
+  "actualSettingsReadBack": false
+}
