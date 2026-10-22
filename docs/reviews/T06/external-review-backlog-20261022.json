@@ -7,14 +7,14 @@
   },
   "ownerChat": "01a15bba-0c8a-7dc2-b612-5b5c4ec4a4b9",
   "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
-  "sourceSnapshotMainHead": "1e072cdf7592000955b011509b55becdc086404e",
+  "sourceSnapshotMainHead": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
   "stages": [
     {
       "id": "T06-S1",
       "kind": "implemented_private_planner_and_fixed_input_adapter",
       "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
       "branch": "feature/weekly-t06-behavior",
-      "product": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+      "product": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
       "processHeadAtSnapshot": "1e072cdf7592000955b011509b55becdc086404e",
       "ownedPaths": [
         "packages/engine/src/ontolearn_engine/behavior/",
@@ -23,60 +23,87 @@
         "docs/iterations/T06/",
         "docs/reviews/T06/"
       ],
-      "sourceManifest": "docs/reviews/T06/evidence/validation-61396a5.json",
-      "fullDiffSha256": "e1b08e5c89b72f4d8a0a7e1ca57feadd91ced235301d1096fdfd07d8e5d507dc",
+      "sourceManifest": "docs/reviews/T06/evidence/validation-3be0397.json",
+      "fullDiffSha256": "569b98c2b6f16a18593fc3c3c8b17580f8df21672d04188549d7946cda9c916f",
       "validation": {
         "typescript": 630,
-        "python": 1174,
-        "behavior": 122,
+        "python": 1191,
+        "behavior": 139,
         "fullCheckExit": 0,
-        "t09Cases": 9,
-        "t09Derivations": "manual gold",
-        "formalAcceptance": false,
-        "localReview": "docs/reviews/T06/local-review-6.md",
-        "localVerdict": "pass_private_scope"
+        "differentialCases": 1009,
+        "fullOutcomesEqual": true,
+        "pairedOriginalInputCostMeasurements": "completed; full output hashes equal; matrix cost remains",
+        "localReview": "complete independent review running",
+        "formalAcceptance": false
       },
       "designated": {
         "zcode": {
-          "sessionId": "session_863fdf5a03a40f74ea7b4b7289b097d1",
-          "provider": "account:bigmodel-individual-coding-plan",
-          "model": "GLM-5.3",
-          "thinking": "最高",
-          "permission": "完全访问",
-          "state": "terminal_report_pass_addendum_independently_verified_root_process_disposition_pending",
-          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5",
-          "inputSha256": "a56121060048737ac48a72f05cdd0c1654f9ed46d0a8c266a8ca5a2509421786",
-          "receipt": "docs/reviews/T06/round-1/zcode-desktop-start-receipt-20261022.json",
-          "expectedReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5/docs/reviews/T06/round-1/zcode-glm53.md",
-          "verdict": "pass_private_scope",
-          "processGate": "pending independent raw/addendum audit"
+          "state": "not_created",
+          "sessionId": null,
+          "verdict": null,
+          "requires": "fresh complete same-version task after root preflight/GUI coordination"
         },
         "minimax": {
-          "sessionId": "mvs_a864253984c3453f982eeaa1cdfb43d8",
-          "turnId": "04fe413a-9d81-433c-84ac-a16030e1f1aa",
-          "streamId": "t06-review-stream-26d88a3d-63df-4045-a7ee-79d4507767c3",
-          "model": "MiniMax-M3.1-Flash",
-          "thinking": "xhigh",
-          "permission": "bypassPermissions",
-          "state": "terminal_finished_report_read",
-          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5",
-          "inputSha256": "a795b5823cffef870c070d9692222a4980cd23892d745bb9e2e8817bf6d00d71",
-          "receipt": "docs/reviews/T06/round-1/minimax-completion-receipt-20261022.json",
-          "expectedReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/docs/reviews/T06/round-1/minimax-m31flash.md",
-          "verdict": "Pass with Conditions",
-          "p2": 2,
-          "p3": 4
+          "state": "not_created",
+          "sessionId": null,
+          "verdict": null,
+          "requires": "fresh complete same-version task after root preflight/GUI coordination"
         }
       },
-      "next": "Seal originals/raw and independently audit all findings; preserve contracts while optimizing avoidable resource costs in a new candidate. Required validation and two new complete same-version reviews; no old Pass reuse."
+      "next": "Complete new independent full review, freeze full common-history inputs, root preflight, then fresh GLM-5.3/max/yolo and M3.1-Flash/xhigh/always-authorized complete tasks; no old Pass reuse.",
+      "successorInProgress": {
+        "newProduct": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
+        "frozen": true,
+        "completeIndependentReview": "running",
+        "newDesignatedTasksCreated": 0,
+        "notDualPass": true
+      },
+      "previousCandidateReview": {
+        "product": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+        "designated": {
+          "zcode": {
+            "sessionId": "session_863fdf5a03a40f74ea7b4b7289b097d1",
+            "provider": "account:bigmodel-individual-coding-plan",
+            "model": "GLM-5.3",
+            "thinking": "最高",
+            "permission": "完全访问",
+            "state": "terminal_report_pass_addendum_independently_verified_root_process_disposition_pending",
+            "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5",
+            "inputSha256": "a56121060048737ac48a72f05cdd0c1654f9ed46d0a8c266a8ca5a2509421786",
+            "receipt": "docs/reviews/T06/round-1/zcode-desktop-start-receipt-20261022.json",
+            "expectedReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5/docs/reviews/T06/round-1/zcode-glm53.md",
+            "verdict": "pass_private_scope",
+            "processGate": "pending independent raw/addendum audit"
+          },
+          "minimax": {
+            "sessionId": "mvs_a864253984c3453f982eeaa1cdfb43d8",
+            "turnId": "04fe413a-9d81-433c-84ac-a16030e1f1aa",
+            "streamId": "t06-review-stream-26d88a3d-63df-4045-a7ee-79d4507767c3",
+            "model": "MiniMax-M3.1-Flash",
+            "thinking": "xhigh",
+            "permission": "bypassPermissions",
+            "state": "terminal_finished_report_read",
+            "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5",
+            "inputSha256": "a795b5823cffef870c070d9692222a4980cd23892d745bb9e2e8817bf6d00d71",
+            "receipt": "docs/reviews/T06/round-1/minimax-completion-receipt-20261022.json",
+            "expectedReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/docs/reviews/T06/round-1/minimax-m31flash.md",
+            "verdict": "Pass with Conditions",
+            "p2": 2,
+            "p3": 4
+          }
+        },
+        "sourceManifest": "docs/reviews/T06/evidence/validation-61396a5.json",
+        "fullDiffSha256": "e1b08e5c89b72f4d8a0a7e1ca57feadd91ced235301d1096fdfd07d8e5d507dc"
+      },
+      "processHead": "3be0397faf03de6520c47bf7d86f3dc2fd004287"
     },
     {
       "id": "T06-UI",
       "kind": "implemented_unmounted_component",
       "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui",
       "branch": "feature/T06-behavior-ui",
-      "product": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
-      "processHead": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "product": "97074205d677a8cc272426b1bcabe7140b5be085",
+      "processHead": "8ed1fc562efd6416e9b571c4e62bc9e587db4b75",
       "ownedPaths": [
         "apps/desktop/src/renderer/src/behavior/",
         "tests/unit/t06-behavior-ui.test.ts"
@@ -94,54 +121,39 @@
         "tests/unit/t06-behavior-ui.test.ts"
       ],
       "all7SourceHashesCurrentlyMatched": true,
-      "sourceManifest": "docs/reviews/T06/evidence/ui-validation-da37709.json",
-      "fullDiffSha256": "0b2ebc607543cfbc0a02a2856c1fddbf4b4a92c6204cf186f3655d0b90f8a2b4",
+      "sourceManifest": "docs/reviews/T06/evidence/ui-validation-9707420.json",
+      "fullDiffSha256": "8d71b91d6b80f56c3976621fb3d3e687738929dcc88166287039b19c509c0193",
       "validation": {
-        "typescript": 664,
+        "typescript": 683,
         "python": 1052,
-        "ui": 34,
+        "ui": 53,
         "fullCheckExit": 0,
-        "realHeadless": "normal and counterexamples, keyboard, 1440/390; fixture shell only",
-        "localReview": "docs/reviews/T06/ui-local-review-2.md",
-        "localVerdict": "pass_private_component_scope",
-        "oldP2Closed": 3,
-        "archiveIndex": "docs/reviews/T06/evidence/ui-archive-index-20261021.json",
-        "archiveIntegrity": "42 members Git readback verified; original artifacts retained"
+        "headlessChecks": 12,
+        "realLocalPointerSuccesses": 3,
+        "keyboardFallbacksUsed": 0,
+        "firstHeadlessFailureRetained": true,
+        "localReview": "fresh full independent review running",
+        "formalAcceptance": false
       },
       "designated": {
         "zcode": {
-          "sessionId": "session_498d6eba64585a20972eb406372bc4e2",
-          "model": "GLM-5.3",
-          "thinking": "最高",
-          "permissionRequired": "yolo",
-          "state": "running_full_exact_attachment_verified",
-          "report": null,
+          "state": "not_created",
+          "sessionId": null,
           "verdict": null,
-          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709",
-          "permission": "完全访问",
-          "receipt": "docs/reviews/T06/ui-round-1/zcode-start-receipt-20261022.json",
-          "queryId": "01a162fe-7f0f-723d-ba12-d7ecaacb2e38",
-          "turnId": "turn_b1d5248e-e8e5-42af-8bf6-51ca21dd1ba1"
+          "requires": "fresh complete same-version task after root preflight/GUI coordination"
         },
         "minimax": {
-          "sessionId": "mvs_1e7a6b7b6e624cc28afb6f4bad4470e3",
-          "model": "MiniMax-M3.1-Flash",
-          "thinking": "xhigh",
-          "permissionRequired": "bypassPermissions",
-          "state": "running_full_body_verified_except_terminal_LF",
-          "report": null,
+          "state": "not_created",
+          "sessionId": null,
           "verdict": null,
-          "turnId": "bfd918da-dd46-4cf4-9b11-fce69339b18e",
-          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709",
-          "permission": "始终授权",
-          "receipt": "docs/reviews/T06/ui-round-1/minimax-start-receipt-20261022.json"
+          "requires": "fresh complete same-version task after root preflight/GUI coordination"
         }
       },
       "readinessGap": [
-        "Current-lock headless shell1248 unavailable; browserReady=false. Required full current headless validation unrun; no Pass exception.",
-        "Both true terminal/full reports and finding dispositions pending; current full input exact acceptance verified in both actual sessions."
+        "Fresh complete independent review and both new same-version designated reviews; callback lifecycle fix implemented, not yet externally accepted.",
+        "Full App/Store/reasoner integration, G3/native/CI remain open."
       ],
-      "next": "Keep separate current tasks; verify actual accepted full inputs and true final reports. Resolve browser gap; do not claim Pass with missing key validation.",
+      "next": "Complete new independent full review, freeze full common-history inputs, root preflight, then fresh GLM-5.3/max/yolo and M3.1-Flash/xhigh/always-authorized complete tasks; no old Pass reuse.",
       "preparedReviewWorkspaces": [
         "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709",
         "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709"
@@ -169,6 +181,49 @@
         "originalInputExactSuffixBoth": true,
         "productTestsRun": false,
         "modelTasksCreated": true
+      },
+      "successorInProgress": {
+        "newProduct": "97074205d677a8cc272426b1bcabe7140b5be085",
+        "frozen": true,
+        "completeIndependentReview": "running",
+        "newDesignatedTasksCreated": 0,
+        "notDualPass": true
+      },
+      "previousCandidateReview": {
+        "product": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
+        "designated": {
+          "zcode": {
+            "sessionId": "session_498d6eba64585a20972eb406372bc4e2",
+            "model": "GLM-5.3",
+            "thinking": "最高",
+            "permissionRequired": "yolo",
+            "state": "completed_two_rounds_originals_sealed",
+            "report": "docs/reviews/T06/ui-round-1/zcode-glm53.md",
+            "verdict": "author_pass_private_scope_with_original_check_environment_failure_preserved",
+            "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709",
+            "permission": "完全访问",
+            "receipt": "docs/reviews/T06/ui-round-1/zcode-start-receipt-20261022.json",
+            "queryId": "01a162fe-7f0f-723d-ba12-d7ecaacb2e38",
+            "turnId": "turn_b1d5248e-e8e5-42af-8bf6-51ca21dd1ba1",
+            "processAudit": "docs/reviews/T06/ui-round-1/owner-completion-audit-20261022.md"
+          },
+          "minimax": {
+            "sessionId": "mvs_1e7a6b7b6e624cc28afb6f4bad4470e3",
+            "model": "MiniMax-M3.1-Flash",
+            "thinking": "xhigh",
+            "permissionRequired": "bypassPermissions",
+            "state": "completed_final_stop_query_processing_finished_and_idle_originals_sealed",
+            "report": "docs/reviews/T06/ui-round-1/minimax-m31flash.md",
+            "verdict": "author_pass_with_new_P2_and_preassembly_conditions_not_unblocked_pass",
+            "turnId": "bfd918da-dd46-4cf4-9b11-fce69339b18e",
+            "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709",
+            "permission": "始终授权",
+            "receipt": "docs/reviews/T06/ui-round-1/minimax-start-receipt-20261022.json",
+            "newP2": 1
+          }
+        },
+        "sourceManifest": "docs/reviews/T06/evidence/ui-validation-da37709.json",
+        "fullDiffSha256": "0b2ebc607543cfbc0a02a2856c1fddbf4b4a92c6204cf186f3655d0b90f8a2b4"
       }
     },
     {
@@ -237,9 +292,86 @@
       "localVerdict": "fail three P2",
       "successor": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
       "reason": "always/status matrix/reserved JSON keys fixed; new complete independent local review passed, designated reviews missing"
+    },
+    {
+      "product": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+      "phase": "implemented_private_planner_and_fixed_input_adapter",
+      "localVerdict": "prior private-scope internal Pass only",
+      "designated": {
+        "zcode": {
+          "sessionId": "session_863fdf5a03a40f74ea7b4b7289b097d1",
+          "provider": "account:bigmodel-individual-coding-plan",
+          "model": "GLM-5.3",
+          "thinking": "最高",
+          "permission": "完全访问",
+          "state": "terminal_report_pass_addendum_independently_verified_root_process_disposition_pending",
+          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5",
+          "inputSha256": "a56121060048737ac48a72f05cdd0c1654f9ed46d0a8c266a8ca5a2509421786",
+          "receipt": "docs/reviews/T06/round-1/zcode-desktop-start-receipt-20261022.json",
+          "expectedReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5/docs/reviews/T06/round-1/zcode-glm53.md",
+          "verdict": "pass_private_scope",
+          "processGate": "pending independent raw/addendum audit"
+        },
+        "minimax": {
+          "sessionId": "mvs_a864253984c3453f982eeaa1cdfb43d8",
+          "turnId": "04fe413a-9d81-433c-84ac-a16030e1f1aa",
+          "streamId": "t06-review-stream-26d88a3d-63df-4045-a7ee-79d4507767c3",
+          "model": "MiniMax-M3.1-Flash",
+          "thinking": "xhigh",
+          "permission": "bypassPermissions",
+          "state": "terminal_finished_report_read",
+          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5",
+          "inputSha256": "a795b5823cffef870c070d9692222a4980cd23892d745bb9e2e8817bf6d00d71",
+          "receipt": "docs/reviews/T06/round-1/minimax-completion-receipt-20261022.json",
+          "expectedReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/docs/reviews/T06/round-1/minimax-m31flash.md",
+          "verdict": "Pass with Conditions",
+          "p2": 2,
+          "p3": 4
+        }
+      },
+      "successor": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
+      "reason": "original full reports/raw/failures sealed; actual designated P2 triggered new complete candidate, old Pass not reused"
+    },
+    {
+      "product": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
+      "phase": "implemented_unmounted_component",
+      "localVerdict": "prior private-scope internal Pass only",
+      "designated": {
+        "zcode": {
+          "sessionId": "session_498d6eba64585a20972eb406372bc4e2",
+          "model": "GLM-5.3",
+          "thinking": "最高",
+          "permissionRequired": "yolo",
+          "state": "completed_two_rounds_originals_sealed",
+          "report": "docs/reviews/T06/ui-round-1/zcode-glm53.md",
+          "verdict": "author_pass_private_scope_with_original_check_environment_failure_preserved",
+          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709",
+          "permission": "完全访问",
+          "receipt": "docs/reviews/T06/ui-round-1/zcode-start-receipt-20261022.json",
+          "queryId": "01a162fe-7f0f-723d-ba12-d7ecaacb2e38",
+          "turnId": "turn_b1d5248e-e8e5-42af-8bf6-51ca21dd1ba1",
+          "processAudit": "docs/reviews/T06/ui-round-1/owner-completion-audit-20261022.md"
+        },
+        "minimax": {
+          "sessionId": "mvs_1e7a6b7b6e624cc28afb6f4bad4470e3",
+          "model": "MiniMax-M3.1-Flash",
+          "thinking": "xhigh",
+          "permissionRequired": "bypassPermissions",
+          "state": "completed_final_stop_query_processing_finished_and_idle_originals_sealed",
+          "report": "docs/reviews/T06/ui-round-1/minimax-m31flash.md",
+          "verdict": "author_pass_with_new_P2_and_preassembly_conditions_not_unblocked_pass",
+          "turnId": "bfd918da-dd46-4cf4-9b11-fce69339b18e",
+          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709",
+          "permission": "始终授权",
+          "receipt": "docs/reviews/T06/ui-round-1/minimax-start-receipt-20261022.json",
+          "newP2": 1
+        }
+      },
+      "successor": "97074205d677a8cc272426b1bcabe7140b5be085",
+      "reason": "original full reports/raw/failures sealed; actual designated P2 triggered new complete candidate, old Pass not reused"
     }
   ],
-  "historicalDesignatedReviews": "No historical designated GLM/MiniMax Pass exists for any retired T06 implementation candidate; old internal reviews are not designated reviews. Superseded code remains Git-recoverable; current full-range successor review must close all historical findings, do not reopen obsolete code as production target.",
+  "historicalDesignatedReviews": "61396a5 S1 and da37709 UI now have both actual terminal original designated reports/raw preserved; each pair contains unresolved P2 and cannot count as dual unblocked Pass. Earlier retired candidates had no designated Pass. Current new candidates require both fresh complete reviews.",
   "purePlans": [
     {
       "paths": [
@@ -260,5 +392,12 @@
     "Full parent 57P0/release and real two OS/human acceptance gates retained"
   ],
   "noSourceChangesOrUnchangedRetestsForInventory": true,
-  "updatedAt": "2026-10-22T09:58:26.016Z"
+  "updatedAt": "2026-10-22T10:42:33.172920+00:00",
+  "reviewResourceState": {
+    "source": "root actual notification",
+    "zcode": "account recovery uniquely owned by original T05 chat; no new Z/duplicate reset/GUI by T06",
+    "newMinimax": "pending root explicit window",
+    "otherZTasks": "not inferred failed from other owners task errors",
+    "sameRoundOpinionIsolation": true
+  }
 }

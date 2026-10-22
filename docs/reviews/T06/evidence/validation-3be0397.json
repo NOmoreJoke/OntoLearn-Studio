@@ -1,0 +1,493 @@
+{
+  "at": "2026-10-22T10:33:55.874Z",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "product": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
+  "predecessor": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+  "branch": "feature/weekly-t06-behavior",
+  "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+  "source_sha256": {
+    "docs/iterations/T06/interface.md": "47fcdd948f838779f8c921ae7fcc48b586c8d24325e68f5a775b6b8670e4e2a0",
+    "docs/iterations/T06/probe_t09_baselines.py": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+    "docs/iterations/T06/t09-adaptation.md": "0a48144fa3324c406af52848676c2f2e14840bf79747891d07f7a1709c7eb477",
+    "packages/engine/src/ontolearn_engine/behavior/__init__.py": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+    "packages/engine/src/ontolearn_engine/behavior/baseline_adapter.py": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+    "packages/engine/src/ontolearn_engine/behavior/planner.py": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+    "packages/engine/tests/test_behavior_baseline_adapter.py": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+    "packages/engine/tests/test_behavior_creation.py": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+    "packages/engine/tests/test_behavior_failures.py": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+    "packages/engine/tests/test_behavior_planner.py": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+    "tests/fixtures/behavior/build_corpus.py": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+    "tests/fixtures/behavior/counterexamples.json": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+    "packages/engine/tests/test_behavior_resource_equivalence.py": "9bb385e714156ee41b1cbf113063dda52c7fe007e240c58df08459d66d861e8f"
+  },
+  "all13SourceMatchGit": [
+    {
+      "path": "docs/iterations/T06/interface.md",
+      "sha256": "47fcdd948f838779f8c921ae7fcc48b586c8d24325e68f5a775b6b8670e4e2a0",
+      "gitEqual": true
+    },
+    {
+      "path": "docs/iterations/T06/probe_t09_baselines.py",
+      "sha256": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+      "gitEqual": true
+    },
+    {
+      "path": "docs/iterations/T06/t09-adaptation.md",
+      "sha256": "0a48144fa3324c406af52848676c2f2e14840bf79747891d07f7a1709c7eb477",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/__init__.py",
+      "sha256": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/baseline_adapter.py",
+      "sha256": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/planner.py",
+      "sha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_baseline_adapter.py",
+      "sha256": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_creation.py",
+      "sha256": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_failures.py",
+      "sha256": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_planner.py",
+      "sha256": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+      "gitEqual": true
+    },
+    {
+      "path": "tests/fixtures/behavior/build_corpus.py",
+      "sha256": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+      "gitEqual": true
+    },
+    {
+      "path": "tests/fixtures/behavior/counterexamples.json",
+      "sha256": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+      "gitEqual": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_resource_equivalence.py",
+      "sha256": "9bb385e714156ee41b1cbf113063dda52c7fe007e240c58df08459d66d861e8f",
+      "gitEqual": true
+    }
+  ],
+  "fullBaseToProductDiff": {
+    "bytes": 6075356,
+    "sha256": "569b98c2b6f16a18593fc3c3c8b17580f8df21672d04188549d7946cda9c916f",
+    "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/base-to-3be0397faf03de6520c47bf7d86f3dc2fd004287.patch"
+  },
+  "verification": {
+    "behavior": 139,
+    "typescript": 630,
+    "python": 1191,
+    "fullCheckExit": 0,
+    "fullStreamsReceipt": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/full-check-1.json",
+    "fullEquivalence": {
+      "cases": 1009,
+      "counts": {
+        "plan": 114,
+        "domain_error": 895
+      },
+      "allFullOutputAndErrorEvidenceEqual": true,
+      "rollingSha256": "8fd07766b5e3bff41a07d0b0b4247c8f202dd120c216834712b7e6a6362cf160"
+    },
+    "pairedMeasurements": {
+      "startedAt": "2026-10-22T10:22:43.755314+00:00",
+      "helperSha256": "25dfed41f78bf9d9954f5bbac5c19e83ffda50a8b961965fd9556a3ca3bb7df9",
+      "method": "Sequential fresh processes, same exact original probe17/18 inputs; creates uses wall time, matrix wall+tracemalloc peak, not RSS. Whole output equality checked after measured interval. Other desktop tasks may run; no controlled production capacity claim.",
+      "runs": [
+        {
+          "label": "cost-creates-200-baseline-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "creates",
+            "--size",
+            "200",
+            "--implementation",
+            "baseline"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "baseline",
+          "result": {
+            "mode": "creates",
+            "size": 200,
+            "inputSha256": "b17c0bee62b96f16c3ddf385b56ee891995845cbb3891540f7177ec09e8ca4fa",
+            "fullOutputSha256": "8cb87ebc137da97af05658f6d657543457b09f0633906ad318bbc5723a86e35e",
+            "decisions": 200,
+            "sourceActions": 200,
+            "wallSeconds": 8.675141083076596,
+            "pythonTracedPeakBytes": null,
+            "tracemallocEnabledDuringTime": false,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-creates-200-current-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "creates",
+            "--size",
+            "200",
+            "--implementation",
+            "current"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "current",
+          "result": {
+            "mode": "creates",
+            "size": 200,
+            "inputSha256": "b17c0bee62b96f16c3ddf385b56ee891995845cbb3891540f7177ec09e8ca4fa",
+            "fullOutputSha256": "8cb87ebc137da97af05658f6d657543457b09f0633906ad318bbc5723a86e35e",
+            "decisions": 200,
+            "sourceActions": 200,
+            "wallSeconds": 0.16995195799972862,
+            "pythonTracedPeakBytes": null,
+            "tracemallocEnabledDuringTime": false,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-creates-400-baseline-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "creates",
+            "--size",
+            "400",
+            "--implementation",
+            "baseline"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "baseline",
+          "result": {
+            "mode": "creates",
+            "size": 400,
+            "inputSha256": "40995f1be8d65e7b1896afded7da2ac7db380f4dadd90136ab42d6fcfa9150d6",
+            "fullOutputSha256": "f60929dd0adfa7a632475b7874c8d4782f4917ac918f747ddbed56724c26e014",
+            "decisions": 400,
+            "sourceActions": 400,
+            "wallSeconds": 33.184808082995005,
+            "pythonTracedPeakBytes": null,
+            "tracemallocEnabledDuringTime": false,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-creates-400-current-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "creates",
+            "--size",
+            "400",
+            "--implementation",
+            "current"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "current",
+          "result": {
+            "mode": "creates",
+            "size": 400,
+            "inputSha256": "40995f1be8d65e7b1896afded7da2ac7db380f4dadd90136ab42d6fcfa9150d6",
+            "fullOutputSha256": "f60929dd0adfa7a632475b7874c8d4782f4917ac918f747ddbed56724c26e014",
+            "decisions": 400,
+            "sourceActions": 400,
+            "wallSeconds": 0.3226352499332279,
+            "pythonTracedPeakBytes": null,
+            "tracemallocEnabledDuringTime": false,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-creates-800-baseline-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "creates",
+            "--size",
+            "800",
+            "--implementation",
+            "baseline"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "baseline",
+          "result": {
+            "mode": "creates",
+            "size": 800,
+            "inputSha256": "400f6c0092085c16fc1060095707e78ee81926be30c43221ca1e85e7723c2da1",
+            "fullOutputSha256": "54644b5221148575a4f43395cd479e470e1b0e4a3176b683d22e9736d3cba33c",
+            "decisions": 800,
+            "sourceActions": 800,
+            "wallSeconds": 131.51580287492834,
+            "pythonTracedPeakBytes": null,
+            "tracemallocEnabledDuringTime": false,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-creates-800-current-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "creates",
+            "--size",
+            "800",
+            "--implementation",
+            "current"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "current",
+          "result": {
+            "mode": "creates",
+            "size": 800,
+            "inputSha256": "400f6c0092085c16fc1060095707e78ee81926be30c43221ca1e85e7723c2da1",
+            "fullOutputSha256": "54644b5221148575a4f43395cd479e470e1b0e4a3176b683d22e9736d3cba33c",
+            "decisions": 800,
+            "sourceActions": 800,
+            "wallSeconds": 0.636688124970533,
+            "pythonTracedPeakBytes": null,
+            "tracemallocEnabledDuringTime": false,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-matrix-200-baseline-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "matrix",
+            "--size",
+            "200",
+            "--implementation",
+            "baseline"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "baseline",
+          "result": {
+            "mode": "matrix",
+            "size": 200,
+            "inputSha256": "33b9eea1520fb0b74f4443450f53ac86fa0ebf283b40eb9fc16e520034608f01",
+            "fullOutputSha256": "f77fd27ce1a06deae61c373a1d213267a29dff45da9ab1d5e055629292fc70dc",
+            "decisions": 80000,
+            "sourceActions": 0,
+            "wallSeconds": 0.9860116250347346,
+            "pythonTracedPeakBytes": 29982791,
+            "tracemallocEnabledDuringTime": true,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-matrix-200-current-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "matrix",
+            "--size",
+            "200",
+            "--implementation",
+            "current"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "current",
+          "result": {
+            "mode": "matrix",
+            "size": 200,
+            "inputSha256": "33b9eea1520fb0b74f4443450f53ac86fa0ebf283b40eb9fc16e520034608f01",
+            "fullOutputSha256": "f77fd27ce1a06deae61c373a1d213267a29dff45da9ab1d5e055629292fc70dc",
+            "decisions": 80000,
+            "sourceActions": 0,
+            "wallSeconds": 0.989930208073929,
+            "pythonTracedPeakBytes": 28289575,
+            "tracemallocEnabledDuringTime": true,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-matrix-1000-baseline-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "matrix",
+            "--size",
+            "1000",
+            "--implementation",
+            "baseline"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "baseline",
+          "result": {
+            "mode": "matrix",
+            "size": 1000,
+            "inputSha256": "1a0a2c59b5286440a19b3bcb4c5e990f20a1758df125f4a7eb378d006837a782",
+            "fullOutputSha256": "0964fe0afbe22f4d337b2fd5aaaa72d5f38f37c99aee7bf7b88f95f49b509f10",
+            "decisions": 1000000,
+            "sourceActions": 0,
+            "wallSeconds": 11.62230708298739,
+            "pythonTracedPeakBytes": 345860759,
+            "tracemallocEnabledDuringTime": true,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        },
+        {
+          "label": "cost-matrix-1000-current-1",
+          "argv": [
+            "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_resource_fix/verify_equivalence_and_cost.py",
+            "--baseline-planner",
+            "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5/packages/engine/src/ontolearn_engine/behavior/planner.py",
+            "--corpus",
+            "tests/fixtures/behavior/counterexamples.json",
+            "--mode",
+            "matrix",
+            "--size",
+            "1000",
+            "--implementation",
+            "current"
+          ],
+          "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior",
+          "python": "3.12.12 (main, Feb  4 2026, 01:57:59) [Clang 21.1.4 ]",
+          "platform": "macOS-27.0.1-arm64-arm-64bit",
+          "baselineFileSha256": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+          "currentFileSha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+          "implementation": "current",
+          "result": {
+            "mode": "matrix",
+            "size": 1000,
+            "inputSha256": "1a0a2c59b5286440a19b3bcb4c5e990f20a1758df125f4a7eb378d006837a782",
+            "fullOutputSha256": "0964fe0afbe22f4d337b2fd5aaaa72d5f38f37c99aee7bf7b88f95f49b509f10",
+            "decisions": 1000000,
+            "sourceActions": 0,
+            "wallSeconds": 11.710347583983094,
+            "pythonTracedPeakBytes": 340522343,
+            "tracemallocEnabledDuringTime": true,
+            "measurementInterval": "prepare_events + reasoning_input + plan_behaviors; excludes input hashing and post-run full-output checks/hash",
+            "completeOutputAndIndependentConditionListsChecked": true
+          }
+        }
+      ],
+      "finishedAt": "2026-10-22T10:26:14.268126+00:00",
+      "allPairedFullInputsAndOutputsEqual": true
+    },
+    "fullInputOutputPairsAllEqual": true,
+    "t09": {
+      "cases": 9,
+      "exit": 0,
+      "formalAcceptance": false,
+      "productRuntime": "not-executed",
+      "derivation": "manual gold; no real reasoner"
+    },
+    "failureHistory": "first style check; initial collection failed missing adapter _edit compatibility wrapper; first new test compared object insertion order rather than canonical JSON; exact own tool records being indexed, no original rejected ZCode operations rerun"
+  },
+  "P2Status": {
+    "P2_1": "new implementation measured, awaiting independent and two new designated full reviews",
+    "P2_2": "complete 1M output retained; traced memory still340522343B/time11.710347583983094s; not independently closed or downgraded; Q5 no fabricated threshold"
+  },
+  "noPublicAPIOrSourceActionCountChanges": true,
+  "unverified": [
+    "real reasoner/full RDF",
+    "Store atomic/cancel/reopen",
+    "resource B07/Agent B08/G3 full",
+    "UI assembly",
+    "native two OS/package/human",
+    "two fresh designated reviews/CI/remote/release"
+  ],
+  "agentsSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+}
