@@ -1,0 +1,69 @@
+{
+  "snapshotUtc": "2026-10-22T18:22:46.492368+00:00",
+  "sessionId": "mvs_10d369cf314843fab6f3d0bc5e213dd6",
+  "turnId": "34159925-cc88-4c63-875a-f353dcd6f442",
+  "officialTerminal": "completed; separately captured by exact four-field query in minimax-terminal-snapshot-4.json",
+  "report": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/reports/mapping-S1-minimax-followup-1-full-report.md",
+    "bytes": 42204,
+    "lines": 392,
+    "sha256": "4ab6e2c685dcc50a0a8e0c864c84a0a4cfd9a6585723b1ac060486894fcafd7a",
+    "actualReadRanges": [
+      [
+        1,
+        100
+      ],
+      [
+        101,
+        200
+      ],
+      [
+        201,
+        300
+      ],
+      [
+        301,
+        392
+      ]
+    ],
+    "allReadWithoutTruncation": true
+  },
+  "reviewerClaims": {
+    "selfVerdict": "private S1 Pass with boundaries; not pair/parent/release Pass",
+    "coverage": {
+      "registeredPaths": 866,
+      "engineering": 173,
+      "documentation": 693,
+      "READ-FULL": 749,
+      "READ-SECTIONS": 93,
+      "READ-STRUCTURAL": 5,
+      "NOT-READ-BINARY": 18,
+      "NOT-READ-BY-DESIGN": 1
+    },
+    "priorFindings": {
+      "F-01": "low: evidence generator overwrites tracked evidence; retained; recommend output argument",
+      "F-02": "low: draft.fields editing reorders array and invalidates equivalent preview; retained fail-closed usability issue",
+      "F-03": "information: inherited mapping.commit agentEligible/design-only catalog consistency; contracts owner",
+      "F-04": "information: inherited ESLint/Prettier docs policy asymmetry; tooling owner",
+      "F-05": "verification observation, positive ownership-defense check; not defect",
+      "F-06": "verification observation, DOCTYPE false-positive hypothesis refuted; not defect"
+    },
+    "newFindings": {
+      "F-07": "information: dev CSP validation rejection diagnostic; inherited desktop owner",
+      "F-08": "information: macOS 0-skip count cannot be generalized to Linux",
+      "F-09": "information: distinguish inherited and mapping-specific test coverage; count attribution not independently verified in this readback",
+      "F-10": "information: identity character-set hypothesis unreachable through mapping validation; inherited storage/contracts concern",
+      "F-11": "information: formal T01 mapping wiring should use JobStore.commit_job bounded conflict handling"
+    },
+    "runtime": "No new check/sources/package/probe execution; references first-round runs for unchanged bytes",
+    "package": "P1 fixed11case prior package execution claimed closed; P2 candidate303 socket-zero-call/CSV limit boundary package execution remains open",
+    "otherGates": "formal parent integration, e2e/GUI/native/focus, clean twoOS, signing/production, pair-review/release gates remain unverified/open"
+  },
+  "ownerReadbackAssessment": {
+    "acceptance": "Record actual new official completion and full report receipt; do not adopt self-Pass as full original scope or pair Pass.",
+    "fullOriginalScope": "Report explicitly says PRD read limited to FR300-304 and D.1 M01-06, other sections not read line-by-line; this does not establish the original required appendix C-G and sections10-12 coverage.93 READ-SECTIONS and5 structural registrations do not themselves establish full historical-original semantic read.18 binary payload exclusions and1 forbidden peer prompt are legitimate boundaries, not defects by themselves.",
+    "original15IssueDisposition": "No explicit original15-issue identifier-to-disposition matrix appears in the392-line report. Report explicitly handles F01-F06 and adds F07-F11, but that numbering must not be equated to the requested original15 issues without the fixed original issue mapping. This readback did not expand into raw/coverage-register/history files to infer a mapping.",
+    "verificationLimit": "This child read report text only; did not run product/tests/probe or read general raw stdout, other sessions, system/header/thinking, or GUI. Package/runtime assertions remain reviewer claims here."
+  },
+  "preservation": "Only this new readback and snapshot4 written; existing files/manifest not modified; original failed turn is not relabeled."
+}
