@@ -1,0 +1,33 @@
+"""Actual patch pre-run audit; bytes/AST/Git only, no candidate import or test."""
+import ast
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+ROOT=Path.cwd()
+OUT=Path('docs/reviews/T03/i05-fixture-implementation-20261023/independent-pre-run')
+BASE='6202e3144405f7a718e5d3d1dde7f42ec45a3b65'
+TARGET=Path('packages/engine/tests/test_semantic_build_provenance.py')
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+def git(*args):
+    return subprocess.check_output(['git',*args])
+
+raw=TARGET.read_bytes();before=git('show',BASE+':'+str(TARGET))
+patch=git('diff',BASE,'--',str(TARGET))
+old_ast,new_ast=ast.parse(before),ast.parse(raw)
+old_fns={node.name:node for node in old_ast.body if isinstance(node,ast.FunctionDef)}
+new_fns={node.name:node for node in new_ast.body if isinstance(node,ast.FunctionDef)}
+dump=lambda node:ast.dump(node,include_attributes=False)
+changed=[name for name,node in old_fns.items() if name not in new_fns or dump(node)!=dump(new_fns[name])]
+original_imports=lambda tree:[dump(node) for node in tree.body if isinstance(node,(ast.Import,ast.ImportFrom))]
+result={'base':BASE,'actualHead':git('rev-parse','HEAD').decode().strip(),'testSource':{'path':str(TARGET),'bytes':len(raw),'lines':len(raw.splitlines()),'sha256':sha(raw)},'priorTestSource':{'bytes':len(before),'sha256':sha(before)},'patch':{'bytes':len(patch),'sha256':sha(patch),'numstat':git('diff','--numstat',BASE,'--',str(TARGET)).decode()},'changedExistingFunctions':changed,'addedFunctions':[name for name in new_fns if name not in old_fns],'noOriginalFunctionRemoved':set(old_fns)<=set(new_fns),'importsExact':original_imports(old_ast)==original_imports(new_ast),'originalRecheckASTExact':dump(old_fns['test_loaded_code_is_rechecked_on_every_post_observer_call'])==dump(new_fns['test_loaded_code_is_rechecked_on_every_post_observer_call']),'otherProtected':[],'newFunctionRanges':{name:[new_fns[name].lineno,new_fns[name].end_lineno] for name in new_fns if name not in old_fns},'trackedDiffExcludingAGENTS':git('diff','--name-only',BASE,'--','.',':(exclude)AGENTS.md').decode().splitlines(),'testsExecuted':False,'productImported':False}
+for name in ['scripts/build-engine.mjs','packages/engine/entrypoint.py','packages/engine/src/ontolearn_engine/semantic_build_provenance.py','docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json']:
+    data=Path(name).read_bytes();fixed=git('show',BASE+':'+name)
+    result['otherProtected'].append({'path':name,'bytes':len(data),'sha256':sha(data),'equalBase':data==fixed})
+for name,data in [('actual-test-source.py.raw',raw),('actual-delta.patch.raw',patch)]:
+    with (OUT/name).open('xb') as stream:stream.write(data)
+print(json.dumps(result,ensure_ascii=False,indent=2))

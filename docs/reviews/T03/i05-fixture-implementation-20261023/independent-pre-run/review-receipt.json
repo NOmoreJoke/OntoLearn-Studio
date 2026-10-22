@@ -1,0 +1,24 @@
+{
+  "format": "T03-fixture-actual-delta-independent-pre-run/1",
+  "ticketSHA256": "20f1dd81021ccf590bb1ad0e1737722e0384e3dc1b8bc1b595790801f914fe92",
+  "base": "6202e3144405f7a718e5d3d1dde7f42ec45a3b65",
+  "reviewedTestSHA256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a",
+  "decision": "No static blocker; may enter necessary own validation already authorized by exact START ticket",
+  "audit": {
+    "argv": [
+      "/Users/kyle/.local/bin/python3.12",
+      "-B",
+      "docs/reviews/T03/i05-fixture-implementation-20261023/independent-pre-run/audit-static-delta.py"
+    ],
+    "exitCode": 0,
+    "stdout": "docs/reviews/T03/i05-fixture-implementation-20261023/independent-pre-run/audit-static-delta.stdout.json",
+    "stderr": "docs/reviews/T03/i05-fixture-implementation-20261023/independent-pre-run/audit-static-delta.stderr",
+    "toolOutputChunk": "8bbf26",
+    "scriptPreservedAs": "docs/reviews/T03/i05-fixture-implementation-20261023/independent-pre-run/audit-static-delta.py.raw",
+    "preservationNote": "Static audit actually ran under .py as recorded; newly authored script then renamed byte-identically to .py.raw before runtime to stay outside Ruff product scope. No frozen6202 file changed."
+  },
+  "runtimeExecutedByReviewer": false,
+  "productImportedByReviewer": false,
+  "sourceWrittenByReviewer": false,
+  "commitCreatedByReviewer": false
+}

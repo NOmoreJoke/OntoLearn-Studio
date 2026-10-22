@@ -1,0 +1,29 @@
+"""Static audit of sole test formatting delta and existing bounded receipts."""
+import ast
+import difflib
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+OWNER=Path('docs/reviews/T03/i05-fixture-implementation-20261023/owner')
+TARGET=Path('packages/engine/tests/test_semantic_build_provenance.py')
+BASE='6202e3144405f7a718e5d3d1dde7f42ec45a3b65'
+
+def ident(raw):
+    return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+
+old=(OWNER/'actual-test-v1.py.raw').read_bytes()
+new=(OWNER/'actual-test-v2-formatted.py.raw').read_bytes()
+current=TARGET.read_bytes()
+result={'scope':'static only; no toolchain/test run','before':ident(old),'after':ident(new),'currentEqualsFormattedSnapshot':current==new,'ASTWithoutAttributesEqual':ast.dump(ast.parse(old),include_attributes=False)==ast.dump(ast.parse(new),include_attributes=False),'textDiff':''.join(difflib.unified_diff(old.decode().splitlines(keepends=True),new.decode().splitlines(keepends=True),fromfile='76068',tofile='216d')),'receipts':[],'otherProducts':[]}
+for label in ['05-test-ruff-check','06-test-ruff-format-check','07-test-ruff-format-only','08-test-ruff-format-final','04-product-diff-check']:
+    directory=OWNER/label
+    r=json.loads((directory/'receipt.json').read_bytes());start=json.loads((directory/'start.json').read_bytes())
+    result['receipts'].append({'label':label,'identity':ident((directory/'receipt.json').read_bytes()),'startExact':all(r[k]==v for k,v in start.items()),'argv':r['argv'],'pid':r['pid'],'startUTC':r['startedUtc'],'endUTC':r['completedUtc'],'exitCode':r['exitCode'],'beforeTest':r['beforeSources'][str(TARGET)],'afterTest':r['afterSources'][str(TARGET)],'otherThreeUnchanged':all(r['beforeSources'][name]==r['afterSources'][name] for name in r['beforeSources'] if name!=str(TARGET)),'streamsExact':all(ident((directory/name).read_bytes())==expected for name,expected in r['streams'].items()),'streams':r['streams']})
+for name in ['scripts/build-engine.mjs','packages/engine/entrypoint.py','packages/engine/src/ontolearn_engine/semantic_build_provenance.py']:
+    raw=Path(name).read_bytes();fixed=subprocess.check_output(['git','show',BASE+':'+name])
+    result['otherProducts'].append({'path':name,**ident(raw),'equal6202':raw==fixed})
+result['supplier101Binding']='76068 pre-format only; no new supplier or wholecheck run inferred for216d'
+result['wholeCheckPass']=False
+print(json.dumps(result,ensure_ascii=False,indent=2))

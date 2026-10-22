@@ -1,0 +1,12 @@
+unformatted: File would be reformatted
+  --> packages/engine/tests/test_semantic_build_provenance.py:55:16
+   |
+54 |     for name in tuple(sys.modules):
+   -         if any(
+   -             name == prefix or name.startswith(prefix + ".") for prefix in p.FIXED_DISTRIBUTIONS
+   -         ):
+55 +         if any(name == prefix or name.startswith(prefix + ".") for prefix in p.FIXED_DISTRIBUTIONS):
+56 |             monkeypatch.delitem(sys.modules, name)
+   |
+
+1 file would be reformatted

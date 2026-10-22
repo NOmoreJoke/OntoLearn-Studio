@@ -1,0 +1,294 @@
+{
+  "scope": "static final intake only; no product/test/toolchain execution",
+  "HEAD": "6202e3144405f7a718e5d3d1dde7f42ec45a3b65",
+  "runs": [
+    {
+      "label": "01-supplier-module",
+      "receiptIdentity": {
+        "bytes": 3929,
+        "sha256": "2326a0af7df2958968e48285b2f512db7c54f393fbf62d91e890d4edab3aeed5"
+      },
+      "startIdentity": {
+        "bytes": 2821,
+        "sha256": "4af9380199487448165056961e30697a4bcf8495d47cabdc4018ad718fbd60af"
+      },
+      "startFieldsMatchReceipt": true,
+      "argv": [
+        "/Users/kyle/.local/bin/uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_semantic_build_provenance.py",
+        "-q",
+        "--junitxml=/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/build/i05-fixture-implementation-20261023/supplier-module.junit.xml"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "pid": 62424,
+      "startedUtc": "2026-10-22T21:04:30.423894+00:00",
+      "completedUtc": "2026-10-22T21:04:33.611139+00:00",
+      "exitCode": 0,
+      "streams": [
+        {
+          "path": "docs/reviews/T03/i05-fixture-implementation-20261023/owner/01-supplier-module/stdout.raw",
+          "expected": {
+            "bytes": 180,
+            "sha256": "e3554de55a32efe1113c111d4a61979c6e025c42d18e0abb0c8f37474e73b2b8"
+          },
+          "actual": {
+            "bytes": 180,
+            "sha256": "e3554de55a32efe1113c111d4a61979c6e025c42d18e0abb0c8f37474e73b2b8"
+          },
+          "exact": true
+        },
+        {
+          "path": "docs/reviews/T03/i05-fixture-implementation-20261023/owner/01-supplier-module/stderr.raw",
+          "expected": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "actual": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "exact": true
+        }
+      ],
+      "beforeAfterSourceSnapshotsExact": true,
+      "currentSourcesEqualRecordedAfter": true,
+      "sourceIdentities": {
+        "scripts/build-engine.mjs": {
+          "bytes": 8437,
+          "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+        },
+        "packages/engine/entrypoint.py": {
+          "bytes": 976,
+          "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+        },
+        "packages/engine/src/ontolearn_engine/semantic_build_provenance.py": {
+          "bytes": 46602,
+          "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c"
+        },
+        "packages/engine/tests/test_semantic_build_provenance.py": {
+          "bytes": 47649,
+          "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+        }
+      }
+    },
+    {
+      "label": "02-npm-check",
+      "receiptIdentity": {
+        "bytes": 3667,
+        "sha256": "8a510549e5fe847da91ae81bc43ead7207034a1c2f6a81e8bd67aa635ee831f1"
+      },
+      "startIdentity": {
+        "bytes": 2551,
+        "sha256": "7f072288e36a0eee17ead48d513142e3e412f5bc1388efe6aa6dec6f7e788f7c"
+      },
+      "startFieldsMatchReceipt": true,
+      "argv": [
+        "/usr/local/bin/npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+      "pid": 62773,
+      "startedUtc": "2026-10-22T21:04:41.697908+00:00",
+      "completedUtc": "2026-10-22T21:04:48.123393+00:00",
+      "exitCode": 1,
+      "streams": [
+        {
+          "path": "docs/reviews/T03/i05-fixture-implementation-20261023/owner/02-npm-check/stdout.raw",
+          "expected": {
+            "bytes": 290,
+            "sha256": "8a406a126def882707e1f2c58148f58ff27721ca676daf1084301ac22f959290"
+          },
+          "actual": {
+            "bytes": 290,
+            "sha256": "8a406a126def882707e1f2c58148f58ff27721ca676daf1084301ac22f959290"
+          },
+          "exact": true
+        },
+        {
+          "path": "docs/reviews/T03/i05-fixture-implementation-20261023/owner/02-npm-check/stderr.raw",
+          "expected": {
+            "bytes": 544,
+            "sha256": "9a0c28a5d7a665c8a1561cb1dc665914e5f0b2824f33fb039bd92493c70dbcac"
+          },
+          "actual": {
+            "bytes": 544,
+            "sha256": "9a0c28a5d7a665c8a1561cb1dc665914e5f0b2824f33fb039bd92493c70dbcac"
+          },
+          "exact": true
+        }
+      ],
+      "beforeAfterSourceSnapshotsExact": true,
+      "currentSourcesEqualRecordedAfter": true,
+      "sourceIdentities": {
+        "scripts/build-engine.mjs": {
+          "bytes": 8437,
+          "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+        },
+        "packages/engine/entrypoint.py": {
+          "bytes": 976,
+          "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+        },
+        "packages/engine/src/ontolearn_engine/semantic_build_provenance.py": {
+          "bytes": 46602,
+          "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c"
+        },
+        "packages/engine/tests/test_semantic_build_provenance.py": {
+          "bytes": 47649,
+          "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+        }
+      }
+    }
+  ],
+  "junit": {
+    "path": "build/i05-fixture-implementation-20261023/supplier-module.junit.xml",
+    "identity": {
+      "bytes": 16264,
+      "sha256": "e04896422e8099ac5bc3c219ca898786ec312730b02c584bb3970417416d493b"
+    },
+    "suiteAttributes": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "101",
+        "time": "2.823",
+        "timestamp": "2026-10-23T05:04:30.722945+08:00",
+        "hostname": "Kyles-MacBook-Pro.local"
+      }
+    ],
+    "cases": 101,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "reviewedRegressionCases": [
+      {
+        "classname": "packages.engine.tests.test_semantic_build_provenance",
+        "name": "test_make_case_isolates_all_distribution_names_and_restores_exact_objects[False]",
+        "time": "0.081"
+      },
+      {
+        "classname": "packages.engine.tests.test_semantic_build_provenance",
+        "name": "test_make_case_isolates_all_distribution_names_and_restores_exact_objects[True]",
+        "time": "0.003"
+      },
+      {
+        "classname": "packages.engine.tests.test_semantic_build_provenance",
+        "name": "test_case_fixture_isolates_inherited_distribution_names",
+        "time": "0.070"
+      },
+      {
+        "classname": "packages.engine.tests.test_semantic_build_provenance",
+        "name": "test_loaded_module_positive_is_limited_and_has_no_root_approval",
+        "time": "0.057"
+      },
+      {
+        "classname": "packages.engine.tests.test_semantic_build_provenance",
+        "name": "test_loaded_distribution_module_not_in_frozen_inventory_rejected",
+        "time": "0.075"
+      },
+      {
+        "classname": "packages.engine.tests.test_semantic_build_provenance",
+        "name": "test_loaded_code_is_rechecked_on_every_post_observer_call",
+        "time": "0.062"
+      }
+    ]
+  },
+  "formatBlock": {
+    "recordIdentity": {
+      "bytes": 1411,
+      "sha256": "08958371b2739e3bec9218b42154812da72e98cefda463488e6497089bf9444b"
+    },
+    "paths": [
+      {
+        "path": "docs/iterations/I05/source-package-probe/implementation.md",
+        "current": {
+          "bytes": 6431,
+          "sha256": "d25d3d7cfec7ae78a7c8df7adf3510e5c1cd9bd23f09ec4090a68586107421ce"
+        },
+        "matchesRecord": true,
+        "equals6202": true,
+        "equals830cdd": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+        "current": {
+          "bytes": 8205267,
+          "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa"
+        },
+        "matchesRecord": true,
+        "equals6202": true,
+        "equals830cdd": true
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+        "current": {
+          "bytes": 21202,
+          "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a"
+        },
+        "matchesRecord": true,
+        "equals6202": true,
+        "equals830cdd": true
+      }
+    ],
+    "unreached": [
+      "typecheck",
+      "vitest",
+      "build",
+      "ruff",
+      "full pytest"
+    ]
+  },
+  "rename": {
+    "sidecarIdentity": {
+      "bytes": 771,
+      "sha256": "96ee708ba9d440d97a9c3fe6e4d299df0cf7af4d09f1c41d1a24a78494b406fd"
+    },
+    "oldPathAbsent": true,
+    "newPath": "docs/reviews/T03/i05-fullcheck03-static-triage-20261023/independent/static-audit.py.raw",
+    "newIdentity": {
+      "bytes": 4335,
+      "sha256": "17b9c2285ca6ac0c0ddac58c30b7bf0f9fb5962973ae8c1599237a74fe6418f1"
+    },
+    "newBytesEqual6202OldBlob": true,
+    "oldBlob": {
+      "bytes": 4335,
+      "sha256": "17b9c2285ca6ac0c0ddac58c30b7bf0f9fb5962973ae8c1599237a74fe6418f1"
+    },
+    "newMatchesSidecar": true,
+    "newMatchesFrozenManifestOldEntry": true,
+    "oldManifestIdentity": {
+      "bytes": 2251,
+      "sha256": "e2810588c9e70658fb2b3ca51135014134b28b4c3c8014897cb777faef9dab17"
+    },
+    "oldManifestBytesUnchanged": true,
+    "remainingOldManifestMembersEqualBase": true,
+    "sidecarRecordsRenameAfterFirstCheck": true
+  },
+  "addendum": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/.private/T03-fixture-archival-py-raw-rename-addendum-20261023.json",
+    "identity": {
+      "bytes": 1819,
+      "sha256": "ae8704e4a3a4e01c55f36071705c887761424e3b761538ddb8db4926a757e500"
+    },
+    "atUTC": "2026-10-22T21:04:41.722711+00:00",
+    "additionalProcessOnlyRename": {
+      "from": "docs/reviews/T03/i05-fullcheck03-static-triage-20261023/independent/static-audit.py",
+      "to": "docs/reviews/T03/i05-fullcheck03-static-triage-20261023/independent/static-audit.py.raw",
+      "bytes": 4335,
+      "sha256": "17b9c2285ca6ac0c0ddac58c30b7bf0f9fb5962973ae8c1599237a74fe6418f1",
+      "preserveOldFixedProcessCommit": "6202e3144405f7a718e5d3d1dde7f42ec45a3b65"
+    },
+    "timingPrecision": "Addendum describes intended before-check rename; actual sidecar records after first check exit. Do not rewrite chronology."
+  },
+  "trackedDeltaNameStatus": [
+    "M\tAGENTS.md",
+    "D\tdocs/reviews/T03/i05-fullcheck03-static-triage-20261023/independent/static-audit.py",
+    "M\tpackages/engine/tests/test_semantic_build_provenance.py"
+  ],
+  "runtimeExecutedByAuditor": false
+}

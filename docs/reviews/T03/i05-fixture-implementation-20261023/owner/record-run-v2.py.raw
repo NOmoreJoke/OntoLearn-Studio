@@ -1,0 +1,98 @@
+"""Record one explicitly selected validation; preserve complete separate streams."""
+
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[5]
+HERE = ROOT / "docs/reviews/T03/i05-fixture-implementation-20261023/owner"
+TEMP = ROOT / "build/i05-fixture-implementation-20261023"
+SOURCES = (
+    "scripts/build-engine.mjs",
+    "packages/engine/entrypoint.py",
+    "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+    "packages/engine/tests/test_semantic_build_provenance.py",
+)
+
+
+def identity(path):
+    raw = path.read_bytes()
+    return {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def sources():
+    return {name: identity(ROOT / name) for name in SOURCES}
+
+
+def utc():
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def save(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+
+
+COMMANDS = {
+    "01-supplier-module": [
+        "/Users/kyle/.local/bin/uv", "run", "--frozen", "pytest",
+        "packages/engine/tests/test_semantic_build_provenance.py", "-q",
+        "--junitxml=" + str(TEMP / "supplier-module.junit.xml"),
+    ],
+    "02-npm-check": ["/usr/local/bin/npm", "run", "check"],
+    "05-test-ruff-check": [str(ROOT / ".venv/bin/ruff"), "check", SOURCES[-1]],
+    "06-test-ruff-format-check": [str(ROOT / ".venv/bin/ruff"), "format", "--check", SOURCES[-1]],
+    "03-verify-sources": ["/usr/local/bin/npm", "run", "verify:sources"],
+    "04-product-diff-check": [
+        "git", "diff", "--check", "6202e3144405f7a718e5d3d1dde7f42ec45a3b65",
+        "--", "packages/engine/tests/test_semantic_build_provenance.py",
+    ],
+}
+
+label = sys.argv[1]
+argv = COMMANDS[label]
+assert ROOT.name == "T03-i05-private-provenance" and (ROOT / "package.json").is_file()
+directory = HERE / label
+directory.mkdir(parents=True, exist_ok=False)
+TEMP.mkdir(parents=True, exist_ok=True)
+overrides = {
+    "UV_CACHE_DIR": str(TEMP / "uv-cache"),
+    "npm_config_cache": str(TEMP / "npm-cache"),
+    "TMPDIR": str(TEMP / "tmp"),
+}
+for value in overrides.values():
+    Path(value).mkdir(parents=True, exist_ok=True)
+env = dict(os.environ)
+env.update(overrides)
+record = {
+    "format": "T03-I05-fixture-owned-validation/1",
+    "label": label,
+    "argv": argv,
+    "cwd": str(ROOT),
+    "environmentOverrides": overrides,
+    "inheritedEnvironment": "Inherited without body export; no credentials/config read",
+    "path": env.get("PATH"),
+    "startedUtc": utc(),
+    "beforeSources": sources(),
+}
+started = time.monotonic()
+with (directory / "stdout.raw").open("wb") as out, (directory / "stderr.raw").open("wb") as err:
+    child = subprocess.Popen(argv, cwd=ROOT, env=env, stdout=out, stderr=err)
+    record["pid"] = child.pid
+    save(directory / "start.json", record)
+    print(json.dumps({"label": label, "pid": child.pid, "startedUtc": record["startedUtc"]}), flush=True)
+    record["exitCode"] = child.wait()
+record["completedUtc"] = utc()
+record["elapsedSeconds"] = time.monotonic() - started
+record["afterSources"] = sources()
+record["fourSourceBytesUnchangedDuringRun"] = record["beforeSources"] == record["afterSources"]
+record["streams"] = {name: identity(directory / name) for name in ("stdout.raw", "stderr.raw")}
+save(directory / "receipt.json", record)
+print(json.dumps({"label": label, "pid": record["pid"], "exitCode": record["exitCode"],
+                  "fourSourceBytesUnchangedDuringRun": record["fourSourceBytesUnchangedDuringRun"],
+                  "streams": record["streams"]}), flush=True)
+sys.exit(record["exitCode"] or (0 if record["fourSourceBytesUnchangedDuringRun"] else 99))

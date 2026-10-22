@@ -1,0 +1,70 @@
+{
+  "format": "T03-I05-fixture-owned-validation/1",
+  "label": "06-test-ruff-format-check",
+  "argv": [
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/.venv/bin/ruff",
+    "format",
+    "--check",
+    "packages/engine/tests/test_semantic_build_provenance.py"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance",
+  "environmentOverrides": {
+    "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/build/i05-fixture-implementation-20261023/uv-cache",
+    "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/build/i05-fixture-implementation-20261023/npm-cache",
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/build/i05-fixture-implementation-20261023/tmp"
+  },
+  "inheritedEnvironment": "Inherited without body export; no credentials/config read",
+  "path": "/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/usr/local/co.palokaj.battery:/Library/Apple/usr/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/kyle/.codex/tmp/arg0-macos/codex-arg0BTk2AZ:/Users/kyle/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/kyle/.antigravity-ide/antigravity-ide/bin:/Users/kyle/.minimax/bin:/Users/kyle/.kimi-code/bin:/Users/kyle/.npm-global/bin:/Users/kyle/.local/bin:/Users/kyle/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS",
+  "startedUtc": "2026-10-22T21:06:58.430485+00:00",
+  "beforeSources": {
+    "scripts/build-engine.mjs": {
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+    },
+    "packages/engine/entrypoint.py": {
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+    },
+    "packages/engine/src/ontolearn_engine/semantic_build_provenance.py": {
+      "bytes": 46602,
+      "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c"
+    },
+    "packages/engine/tests/test_semantic_build_provenance.py": {
+      "bytes": 47649,
+      "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+    }
+  },
+  "pid": 67703,
+  "exitCode": 1,
+  "completedUtc": "2026-10-22T21:06:58.485411+00:00",
+  "elapsedSeconds": 0.053793125,
+  "afterSources": {
+    "scripts/build-engine.mjs": {
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff"
+    },
+    "packages/engine/entrypoint.py": {
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+    },
+    "packages/engine/src/ontolearn_engine/semantic_build_provenance.py": {
+      "bytes": 46602,
+      "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c"
+    },
+    "packages/engine/tests/test_semantic_build_provenance.py": {
+      "bytes": 47649,
+      "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+    }
+  },
+  "fourSourceBytesUnchangedDuringRun": true,
+  "streams": {
+    "stdout.raw": {
+      "bytes": 487,
+      "sha256": "4396ed64b9cd14ebb04a9d446c93ec86d64b13c69fc52b306659704e41d26469"
+    },
+    "stderr.raw": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

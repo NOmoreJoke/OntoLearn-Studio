@@ -1,0 +1,86 @@
+{
+  "base": "6202e3144405f7a718e5d3d1dde7f42ec45a3b65",
+  "actualHead": "6202e3144405f7a718e5d3d1dde7f42ec45a3b65",
+  "testSource": {
+    "path": "packages/engine/tests/test_semantic_build_provenance.py",
+    "bytes": 47649,
+    "lines": 1290,
+    "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+  },
+  "priorTestSource": {
+    "bytes": 44315,
+    "sha256": "0def6d7da0bdc2353c6f524fe8d86d40ab18936b58d58d1cc06bae713f7a3ec8"
+  },
+  "patch": {
+    "bytes": 4511,
+    "sha256": "4009a3f2b1ebf7c5c7d081bed679895af651b2f0f3ec5410d25194d18c0d6b5f",
+    "numstat": "76\t0\tpackages/engine/tests/test_semantic_build_provenance.py\n"
+  },
+  "changedExistingFunctions": [
+    "make_case",
+    "test_loaded_distribution_module_not_in_frozen_inventory_rejected"
+  ],
+  "addedFunctions": [
+    "distribution_module_snapshot",
+    "seed_inherited_distributions",
+    "assert_synthetic_distribution_baseline",
+    "test_make_case_isolates_all_distribution_names_and_restores_exact_objects",
+    "test_case_fixture_isolates_inherited_distribution_names"
+  ],
+  "noOriginalFunctionRemoved": true,
+  "importsExact": true,
+  "originalRecheckASTExact": true,
+  "otherProtected": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff",
+      "equalBase": true
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3",
+      "equalBase": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 46602,
+      "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c",
+      "equalBase": true
+    },
+    {
+      "path": "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json",
+      "bytes": 36587,
+      "sha256": "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04",
+      "equalBase": true
+    }
+  ],
+  "newFunctionRanges": {
+    "distribution_module_snapshot": [
+      223,
+      228
+    ],
+    "seed_inherited_distributions": [
+      231,
+      242
+    ],
+    "assert_synthetic_distribution_baseline": [
+      245,
+      256
+    ],
+    "test_make_case_isolates_all_distribution_names_and_restores_exact_objects": [
+      260,
+      283
+    ],
+    "test_case_fixture_isolates_inherited_distribution_names": [
+      286,
+      290
+    ]
+  },
+  "trackedDiffExcludingAGENTS": [
+    "packages/engine/tests/test_semantic_build_provenance.py"
+  ],
+  "testsExecuted": false,
+  "productImported": false
+}

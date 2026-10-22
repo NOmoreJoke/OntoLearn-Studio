@@ -1,0 +1,101 @@
+diff --git a/packages/engine/tests/test_semantic_build_provenance.py b/packages/engine/tests/test_semantic_build_provenance.py
+index a2b61f46b54a48809d76f9649cd43e4236b626cd..59beb05466fd8d7a73041fb7ef5808fd05a08271 100644
+--- a/packages/engine/tests/test_semantic_build_provenance.py
++++ b/packages/engine/tests/test_semantic_build_provenance.py
+@@ -51,6 +51,11 @@ def fake_module(monkeypatch, root, name, path, code):
+ 
+ 
+ def make_case(monkeypatch, engine):
++    for name in tuple(sys.modules):
++        if any(
++            name == prefix or name.startswith(prefix + ".") for prefix in p.FIXED_DISTRIBUTIONS
++        ):
++            monkeypatch.delitem(sys.modules, name)
+     root = engine / "_internal"
+     root.mkdir(parents=True)
+     launcher = engine / "ontolearn-engine"
+@@ -215,6 +220,76 @@ def fault(suffix):
+     return pytest.raises(p.BuildProvenanceFault, match="^BUILD_PROVENANCE_" + suffix + "$")
+ 
+ 
++def distribution_module_snapshot():
++    return {
++        name: module
++        for name, module in sys.modules.items()
++        if name.split(".", 1)[0] in p.FIXED_DISTRIBUTIONS
++    }
++
++
++def seed_inherited_distributions(monkeypatch):
++    near_names = {}
++    for prefix in p.FIXED_DISTRIBUTIONS:
++        for name in (prefix, prefix + ".child", prefix + ".child.deep"):
++            monkeypatch.setitem(sys.modules, name, types.ModuleType(name))
++        monkeypatch.setitem(sys.modules, prefix + ".unavailable", None)
++        for name in (prefix + "_neighbor", "outside_" + prefix):
++            near_names[name] = types.ModuleType(name)
++            monkeypatch.setitem(sys.modules, name, near_names[name])
++    name = "wcwidth._wcwidth_c"
++    monkeypatch.setitem(sys.modules, name, types.ModuleType(name))
++    return distribution_module_snapshot(), near_names
++
++
++def assert_synthetic_distribution_baseline(value, near_names):
++    current = distribution_module_snapshot()
++    assert set(current) == set(p.FIXED_DISTRIBUTIONS)
++    assert all(type(module) is types.ModuleType for module in current.values())
++    assert all(sys.modules[name] is module for name, module in near_names.items())
++    result = p.verify_loaded_modules(value.load(), value.modules)
++    assert {row["module"] for row in result["loadedDistributionModules"]} == set(
++        p.FIXED_DISTRIBUTIONS
++    )
++    assert len(result["supplierAndPrivateModules"]) == 24
++    with fault("NATIVE_UNAVAILABLE"):
++        p.verify_native_extension(value.load())
++
++
++@pytest.mark.parametrize("setup_fails", [False, True])
++def test_make_case_isolates_all_distribution_names_and_restores_exact_objects(
++    monkeypatch, tmp_path, setup_fails
++):
++    before, near_names = seed_inherited_distributions(monkeypatch)
++
++    def fail_fake_module(*_args):
++        assert distribution_module_snapshot() == {}
++        assert all(sys.modules[name] is module for name, module in near_names.items())
++        raise RuntimeError("synthetic setup failure")
++
++    if setup_fails:
++        with pytest.raises(RuntimeError, match="^synthetic setup failure$"):
++            with pytest.MonkeyPatch.context() as isolated:
++                isolated.setattr(sys.modules[__name__], "fake_module", fail_fake_module)
++                make_case(isolated, tmp_path / "engine")
++    else:
++        with pytest.MonkeyPatch.context() as isolated:
++            value = make_case(isolated, tmp_path / "engine")
++            assert_synthetic_distribution_baseline(value, near_names)
++
++    after = distribution_module_snapshot()
++    assert set(after) == set(before)
++    assert all(after[name] is module for name, module in before.items())
++    assert all(sys.modules[name] is module for name, module in near_names.items())
++
++
++def test_case_fixture_isolates_inherited_distribution_names(monkeypatch, request):
++    _before, near_names = seed_inherited_distributions(monkeypatch)
++    # Request only after seeding: pytest must construct the real fixture in this environment.
++    value = request.getfixturevalue("case")
++    assert_synthetic_distribution_baseline(value, near_names)
++
++
+ @pytest.mark.parametrize(
+     "raw",
+     [
+@@ -421,6 +496,7 @@ def test_evidence_is_context_bound_and_not_a_dict_approval(case, monkeypatch, tm
+ 
+ def test_loaded_distribution_module_not_in_frozen_inventory_rejected(case, monkeypatch):
+     evidence = case.load()
++    p.verify_loaded_modules(evidence, case.modules)
+     monkeypatch.setitem(sys.modules, "pyshacl.unrecorded", types.ModuleType("pyshacl.unrecorded"))
+     with fault("MODULE_MISMATCH"):
+         p.verify_loaded_modules(evidence, case.modules)

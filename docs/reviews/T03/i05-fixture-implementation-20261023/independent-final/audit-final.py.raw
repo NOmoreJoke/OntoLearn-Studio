@@ -1,0 +1,47 @@
+"""Static intake of existing run receipts/JUnit/rename; no toolchain execution."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import xml.etree.ElementTree as ET
+
+ROOT=Path.cwd()
+BASE='6202e3144405f7a718e5d3d1dde7f42ec45a3b65'
+PRODUCT='830cdd1d198bf549b563925a3a47f7f9444710bd'
+PACKAGE=Path('docs/reviews/T03/i05-fixture-implementation-20261023')
+OWNER=PACKAGE/'owner'
+
+def git(*args):
+    return subprocess.check_output(['git',*args])
+
+def ident(path):
+    raw=Path(path).read_bytes()
+    return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+
+result={'scope':'static final intake only; no product/test/toolchain execution','HEAD':git('rev-parse','HEAD').decode().strip(),'runs':[]}
+for label in ['01-supplier-module','02-npm-check']:
+    directory=OWNER/label
+    receipt=json.loads((directory/'receipt.json').read_bytes())
+    start=json.loads((directory/'start.json').read_bytes())
+    result['runs'].append({'label':label,'receiptIdentity':ident(directory/'receipt.json'),'startIdentity':ident(directory/'start.json'),'startFieldsMatchReceipt':all(receipt[k]==v for k,v in start.items()),'argv':receipt['argv'],'cwd':receipt['cwd'],'pid':receipt['pid'],'startedUtc':receipt['startedUtc'],'completedUtc':receipt['completedUtc'],'exitCode':receipt['exitCode'],'streams':[{'path':str(directory/name),'expected':row,'actual':ident(directory/name),'exact':ident(directory/name)==row} for name,row in receipt['streams'].items()],'beforeAfterSourceSnapshotsExact':receipt['beforeSources']==receipt['afterSources'],'currentSourcesEqualRecordedAfter':all(ident(path)==row for path,row in receipt['afterSources'].items()),'sourceIdentities':receipt['afterSources']})
+junit=Path('build/i05-fixture-implementation-20261023/supplier-module.junit.xml')
+xml=ET.fromstring(junit.read_bytes());cases=xml.findall('.//testcase')
+interesting=[case.attrib for case in cases if case.attrib['name'].startswith(('test_make_case_isolates_','test_case_fixture_isolates_','test_loaded_module_positive_','test_loaded_code_is_rechecked_','test_loaded_distribution_module_not_'))]
+result['junit']={'path':str(junit),'identity':ident(junit),'suiteAttributes':[suite.attrib for suite in xml.findall('.//testsuite')],'cases':len(cases),'failures':sum(c.find('failure') is not None for c in cases),'errors':sum(c.find('error') is not None for c in cases),'skips':sum(c.find('skipped') is not None for c in cases),'reviewedRegressionCases':interesting}
+block=json.loads((OWNER/'first-check-formatting-block.json').read_bytes())
+result['formatBlock']={'recordIdentity':ident(OWNER/'first-check-formatting-block.json'),'paths':[],'unreached':block['unreached']}
+for row in block['paths']:
+    path=row['path'];raw=Path(path).read_bytes()
+    result['formatBlock']['paths'].append({'path':path,'current':ident(path),'matchesRecord':ident(path)=={'bytes':row['bytes'],'sha256':row['sha256']},'equals6202':raw==git('show',BASE+':'+path),'equals830cdd':raw==git('show',PRODUCT+':'+path)})
+side=json.loads((OWNER/'archival-rename-sidecar.json').read_bytes())
+old=Path(side['oldPath']);new=Path(side['newPath'])
+old_git=git('show',BASE+':'+str(old))
+manifest_path=old.parent/'manifest.json'
+manifest_bytes=manifest_path.read_bytes();manifest=json.loads(manifest_bytes)
+old_row=next(row for row in manifest['files'] if row['path']==str(old))
+result['rename']={'sidecarIdentity':ident(OWNER/'archival-rename-sidecar.json'),'oldPathAbsent':not old.exists(),'newPath':str(new),'newIdentity':ident(new),'newBytesEqual6202OldBlob':new.read_bytes()==old_git,'oldBlob':{'bytes':len(old_git),'sha256':hashlib.sha256(old_git).hexdigest()},'newMatchesSidecar':ident(new)=={'bytes':side['bytes'],'sha256':side['sha256']},'newMatchesFrozenManifestOldEntry':ident(new)=={'bytes':old_row['bytes'],'sha256':old_row['sha256']},'oldManifestIdentity':ident(manifest_path),'oldManifestBytesUnchanged':manifest_bytes==git('show',BASE+':'+str(manifest_path)),'remainingOldManifestMembersEqualBase':all(Path(row['path']).read_bytes()==git('show',BASE+':'+row['path']) for row in manifest['files'] if row['path']!=str(old)),'sidecarRecordsRenameAfterFirstCheck':side['renamedAfterFirstCheckNaturalExit']}
+addendum=Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/.private/T03-fixture-archival-py-raw-rename-addendum-20261023.json')
+j=json.loads(addendum.read_bytes());result['addendum']={'path':str(addendum),'identity':ident(addendum),'atUTC':j['atUTC'],'additionalProcessOnlyRename':j['additionalProcessOnlyRename'],'timingPrecision':'Addendum describes intended before-check rename; actual sidecar records after first check exit. Do not rewrite chronology.'}
+result['trackedDeltaNameStatus']=git('diff','--name-status',BASE).decode().splitlines()
+result['runtimeExecutedByAuditor']=False
+print(json.dumps(result,ensure_ascii=False,indent=2))

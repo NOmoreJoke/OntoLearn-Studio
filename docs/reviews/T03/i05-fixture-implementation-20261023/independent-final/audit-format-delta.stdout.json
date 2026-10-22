@@ -1,0 +1,228 @@
+{
+  "scope": "static only; no toolchain/test run",
+  "before": {
+    "bytes": 47649,
+    "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+  },
+  "after": {
+    "bytes": 47627,
+    "sha256": "216d92b0dae54c28bb9464cf854e39110b8010d73020b1d66cdd9cb4df92d4a2"
+  },
+  "currentEqualsFormattedSnapshot": true,
+  "ASTWithoutAttributesEqual": true,
+  "textDiff": "--- 76068\n+++ 216d\n@@ -52,9 +52,7 @@\n \n def make_case(monkeypatch, engine):\n     for name in tuple(sys.modules):\n-        if any(\n-            name == prefix or name.startswith(prefix + \".\") for prefix in p.FIXED_DISTRIBUTIONS\n-        ):\n+        if any(name == prefix or name.startswith(prefix + \".\") for prefix in p.FIXED_DISTRIBUTIONS):\n             monkeypatch.delitem(sys.modules, name)\n     root = engine / \"_internal\"\n     root.mkdir(parents=True)\n",
+  "receipts": [
+    {
+      "label": "05-test-ruff-check",
+      "identity": {
+        "bytes": 3793,
+        "sha256": "7f29276b99361b78aa2e2e585f97ab599c429ad1665365a74e16b5ef71d177d0"
+      },
+      "startExact": true,
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/.venv/bin/ruff",
+        "check",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "pid": 67335,
+      "startUTC": "2026-10-22T21:06:33.040065+00:00",
+      "endUTC": "2026-10-22T21:06:33.105625+00:00",
+      "exitCode": 0,
+      "beforeTest": {
+        "bytes": 47649,
+        "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+      },
+      "afterTest": {
+        "bytes": 47649,
+        "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+      },
+      "otherThreeUnchanged": true,
+      "streamsExact": true,
+      "streams": {
+        "stdout.raw": {
+          "bytes": 19,
+          "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "label": "06-test-ruff-format-check",
+      "identity": {
+        "bytes": 3817,
+        "sha256": "07dd29776fc5dd5a9c25f7163d09ed73f7d0b96ad8df239b65103dbc609ea5af"
+      },
+      "startExact": true,
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/.venv/bin/ruff",
+        "format",
+        "--check",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "pid": 67703,
+      "startUTC": "2026-10-22T21:06:58.430485+00:00",
+      "endUTC": "2026-10-22T21:06:58.485411+00:00",
+      "exitCode": 1,
+      "beforeTest": {
+        "bytes": 47649,
+        "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+      },
+      "afterTest": {
+        "bytes": 47649,
+        "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+      },
+      "otherThreeUnchanged": true,
+      "streamsExact": true,
+      "streams": {
+        "stdout.raw": {
+          "bytes": 487,
+          "sha256": "4396ed64b9cd14ebb04a9d446c93ec86d64b13c69fc52b306659704e41d26469"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "label": "07-test-ruff-format-only",
+      "identity": {
+        "bytes": 3810,
+        "sha256": "6e6a0952eacd08a721a285a2b39453d26142686e6d63b61802300e91b9660e5d"
+      },
+      "startExact": true,
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/.venv/bin/ruff",
+        "format",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "pid": 68261,
+      "startUTC": "2026-10-22T21:07:39.674148+00:00",
+      "endUTC": "2026-10-22T21:07:39.728739+00:00",
+      "exitCode": 0,
+      "beforeTest": {
+        "bytes": 47649,
+        "sha256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a"
+      },
+      "afterTest": {
+        "bytes": 47627,
+        "sha256": "216d92b0dae54c28bb9464cf854e39110b8010d73020b1d66cdd9cb4df92d4a2"
+      },
+      "otherThreeUnchanged": true,
+      "streamsExact": true,
+      "streams": {
+        "stdout.raw": {
+          "bytes": 19,
+          "sha256": "413a709001976657cb743636fd34e48fc41d8d302d665460d3f874b3313da127"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "label": "08-test-ruff-format-final",
+      "identity": {
+        "bytes": 3816,
+        "sha256": "c772d3edd0798f8b08c45e6edbce62234b938cf566ab4bf82e6ec004fa83e148"
+      },
+      "startExact": true,
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-private-provenance/.venv/bin/ruff",
+        "format",
+        "--check",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "pid": 68283,
+      "startUTC": "2026-10-22T21:07:39.893455+00:00",
+      "endUTC": "2026-10-22T21:07:39.910657+00:00",
+      "exitCode": 0,
+      "beforeTest": {
+        "bytes": 47627,
+        "sha256": "216d92b0dae54c28bb9464cf854e39110b8010d73020b1d66cdd9cb4df92d4a2"
+      },
+      "afterTest": {
+        "bytes": 47627,
+        "sha256": "216d92b0dae54c28bb9464cf854e39110b8010d73020b1d66cdd9cb4df92d4a2"
+      },
+      "otherThreeUnchanged": true,
+      "streamsExact": true,
+      "streams": {
+        "stdout.raw": {
+          "bytes": 25,
+          "sha256": "fd2299c9f1c6dc869070883e281051bfe93aacf66c1a3b0069f45b4aa410ca50"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "label": "04-product-diff-check",
+      "identity": {
+        "bytes": 3775,
+        "sha256": "c4da1422bd6a8baaac603321f7fa09553063a32db78fa5d9372b024cdb5d45b9"
+      },
+      "startExact": true,
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "6202e3144405f7a718e5d3d1dde7f42ec45a3b65",
+        "--",
+        "packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "pid": 68477,
+      "startUTC": "2026-10-22T21:08:00.893402+00:00",
+      "endUTC": "2026-10-22T21:08:00.911939+00:00",
+      "exitCode": 0,
+      "beforeTest": {
+        "bytes": 47627,
+        "sha256": "216d92b0dae54c28bb9464cf854e39110b8010d73020b1d66cdd9cb4df92d4a2"
+      },
+      "afterTest": {
+        "bytes": 47627,
+        "sha256": "216d92b0dae54c28bb9464cf854e39110b8010d73020b1d66cdd9cb4df92d4a2"
+      },
+      "otherThreeUnchanged": true,
+      "streamsExact": true,
+      "streams": {
+        "stdout.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr.raw": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "otherProducts": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff",
+      "equal6202": true
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3",
+      "equal6202": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 46602,
+      "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c",
+      "equal6202": true
+    }
+  ],
+  "supplier101Binding": "76068 pre-format only; no new supplier or wholecheck run inferred for216d",
+  "wholeCheckPass": false
+}

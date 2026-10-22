@@ -1,0 +1,68 @@
+{
+  "format": "T03-I05-fixture-limited-handoff/1",
+  "atUtc": "2026-10-22T21:12:08.865579+00:00",
+  "productCommit": "27eaaafcfad0f53e287401c24f7dae991c8cea63",
+  "base": "6202e3144405f7a718e5d3d1dde7f42ec45a3b65",
+  "productDeltaExactlyOneTestFile": true,
+  "finalTest": {
+    "path": "packages/engine/tests/test_semantic_build_provenance.py",
+    "bytes": 47627,
+    "sha256": "216d92b0dae54c28bb9464cf854e39110b8010d73020b1d66cdd9cb4df92d4a2"
+  },
+  "supplier101ActualInputSHA256": "76068ad0853dabef7d99d97445f1a3da7b8ec52f2615524856f99c9655c28f9a",
+  "finalOnlyLineWrapFullAstEquivalent": true,
+  "supplierModule": {
+    "caseCount": 101,
+    "passed": 101,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "receipt": "owner/01-supplier-module/receipt.json"
+  },
+  "originalNpmCheck": {
+    "exit": 1,
+    "phase": "Prettier inherited3",
+    "receipt": "owner/02-npm-check/receipt.json",
+    "notReached": [
+      "typecheck",
+      "vitest",
+      "build",
+      "Ruff",
+      "whole pytest"
+    ]
+  },
+  "firstTestFormatCheckExit": 1,
+  "finalTestFormatCheckExit": 0,
+  "testRuffCheckOnPreformatExit": 0,
+  "testDiffCheckOnFinalExit": 0,
+  "sourcesVerification": "NOT_RUN; stopped after original check failure",
+  "wholeCheckPass": false,
+  "rootAuthorizedLimitedFreeze": true,
+  "independentActualDeltaPreRunAccepted": true,
+  "independentFinalIntakeAndFormatDeltaAcceptedWithinLimitedScope": true,
+  "primaryFullReadAllThreeReports": true,
+  "primaryVerifiedPreRun7Final5FormatDelta11Members": true,
+  "I05AdoptionAuthorizedByThisHandoff": false,
+  "I05ActualTargetFullCheckStillRequired": true,
+  "mappingCandidateUnchanged": true,
+  "preservedOriginal1320pass2failAnd98": true,
+  "productionSources": {
+    "scripts/build-engine.mjs": {
+      "bytes": 8437,
+      "sha256": "738f55ef056c3326f812ab9e4ed272a11a332a21a23a78c72fd07b510d31a8ff",
+      "unchanged": true
+    },
+    "packages/engine/entrypoint.py": {
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3",
+      "unchanged": true
+    },
+    "packages/engine/src/ontolearn_engine/semantic_build_provenance.py": {
+      "bytes": 46602,
+      "sha256": "c96f0630b97c02049b9ee2f62f0b44946962b14c0a2ab5c9094eaaa3fa3b7b0c",
+      "unchanged": true
+    }
+  },
+  "processStagedRawArchiveDiffCheckExit": 2,
+  "processDiffReason": "verbatim unified patch blank context prefixes; originals preserved; product test diff check0"
+}
