@@ -1,0 +1,64 @@
+{
+  "state": "draft_independent_support_correction_only_wait_root_complete_preflight_before_finalizing",
+  "preparedAt": "2026-10-22T20:03:19.732394+00:00",
+  "issue": "Z historical reviewed-evidence-index points at mutable minimal-manifest with stale bytes/hash; original index/report retained",
+  "originalIndex": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-review-3be0397/out/environment-prep/process-correction-20261023/reviewed-evidence-index.json",
+    "bytes": 3213,
+    "sha256": "6274a3612abfb9226b02b7c21e42d338ef0c24eceb802581223a2ec3d54506aa"
+  },
+  "oldReferenceUnchanged": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t06_s1_r2/zcode/minimal-manifest.json",
+    "bytes": 2242,
+    "sha256": "141303912410c326b256311d93c8007f2d96c220f02aa41e186792563cef5f57"
+  },
+  "currentSource": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t06_s1_r2/zcode/minimal-manifest.json",
+    "bytes": 3063,
+    "sha256": "033c1c1a33f15bad11237a093f665ec3bd4f7757a184f8533684122b89a1e831"
+  },
+  "sealedMainPackage": {
+    "path": "docs/reviews/T06/evidence/zcode-s1-r2-tool-evidence-20261023.tar.gz",
+    "bytes": 2599004,
+    "sha256": "b056c81174d23159f8eb14e715598642f59b44a72ffda10a0c1fcb17257066a6",
+    "member": "minimal-manifest.json",
+    "memberBytes": 3063,
+    "memberSHA256": "033c1c1a33f15bad11237a093f665ec3bd4f7757a184f8533684122b89a1e831",
+    "memberByteEqualCurrentSource": true,
+    "archiveNotRepacked": true
+  },
+  "newSupportSnapshot": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-review-3be0397/out/environment-prep/process-correction-20261023/zcode-minimal-manifest-snapshot-20261023.json",
+    "mainCopy": "docs/reviews/T06/round-2/zcode-minimal-manifest-snapshot-20261023.json",
+    "bytes": 3063,
+    "sha256": "033c1c1a33f15bad11237a093f665ec3bd4f7757a184f8533684122b89a1e831"
+  },
+  "newIndexVersion": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-review-3be0397/out/environment-prep/process-correction-20261023/zcode-reviewed-evidence-index-v2-20261023.json",
+    "mainCopy": "docs/reviews/T06/round-2/zcode-reviewed-evidence-index-v2-20261023.json",
+    "bytes": 3292,
+    "sha256": "03cbe9f6d88e0a89362f7112e0fa88683a6390bc133997bc32c67d1a933c0a7b",
+    "entries": 14,
+    "allEntriesByteHashVerified": true,
+    "onlyChangedEntry": 0
+  },
+  "addendum": {
+    "path": "docs/reviews/T06/round-2/zcode-support-index-correction-20261023.md",
+    "bytes": 1905,
+    "sha256": "de8e91bcba3eabdf186ecb377c8d5518bf89fd67cf7666b20fea3b9e372cb09c"
+  },
+  "allOldIndicesAndReportsUnchanged": true,
+  "bothFullBodiesAndUniqueFrozenSuffixesUnchanged": true,
+  "productError": false,
+  "newProductTestsOrRuntimeOrMessagesOrGUI": false,
+  "originalTurnTerminalAndAuthorPrivatePassChanged": false,
+  "retrospectiveReadClaimMade": false,
+  "noGateClosed": true,
+  "preparationFirstFailure": {
+    "type": "CalledProcessError git exit128",
+    "cause": "generator omitted workdir for git show; not a git repository",
+    "partialNewFiles": "new snapshot and v2 copies were created before git identity check; later exact bytes/SHA checked and reused, not overwritten",
+    "correction": "reran only metadata verification in explicit main workdir; old sources/body/archive untouched",
+    "productOrReviewerRun": false
+  }
+}
