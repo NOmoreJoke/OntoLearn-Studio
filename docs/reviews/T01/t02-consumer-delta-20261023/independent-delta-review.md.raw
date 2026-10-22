@@ -1,0 +1,32 @@
+# T01回应T02 37bd delta：独立纯文档审查
+
+结论：**设计delta可接收，未发现P2及以上事实错误、遗漏或越权。** 有一项非阻断命名澄清建议；不需重写f20或等待整个M0/F01/F16/Q5。此结论不证明供方、源码或运行通过。
+
+## 身份与范围
+
+全文读取草稿10204B／SHA256 `5848748f83e8f74d4ca0254c6bdced45541069e0b1a9ece3e8363e614f923658`及输入身份JSON2496B／`56a5d93754246fb92055d4efc21d5efc358ef74760530c5af7c0e36d3dc19112`。
+
+仅全文核三指定Git blob：
+
+- 37bd3eb0f05ad1f9ef188154569aab8bd0e8497c，`docs/reviews/T02/single-fact-consumer-draft-20261022/consumer-matrix.md`：18265B／`cbeac0b34596ef8f09c5a141be17327eac179925a078026b235503f87e691c69`，blob abba2e6c200827b88000c0cba36ffaa25d2ec78b。
+- 同ref／prefix的`supplier-requests.md`：20377B／`9d6b1e0686646904ce389243aeddb32d063d4e4cbff3fe7018ecb0a2e1371d33`，blob 95c5ac3fc600e9df6a1ae4f1030ad2234d521e0a。
+- f20c2a7f39c90d5a3397821d5ea81752ff79da19，`docs/reviews/T01/t02-supplier-next-delivery-20261022/plan.md.raw`：25696B／`6964fa5bb767b009d9e6b3949bb53ba8f44628c29b879b4d52a9ef05083e7c6b`，blob c1a95a274f9136ece9bbb4fc74d5c1423bd3f1b1。
+
+bytes/SHA及blob均实核同身份表。未以当前树HEAD替指定ref；身份表中作者历史HEAD/文件系统观察未由本审重采，也非本审结论的依据。
+
+## 实质核对
+
+1. R1/R2/R7/R8正确区分既定方向和补充精度。五字段home/精确identifier政策、首次源读前可信session、失败累计、K早于M1/S2、原历史/current分派均已有f20依据。37bd新增的是当前查询预算与终结写会话分离等明确消费条件；草稿12、17行称“精度”，未伪称整个费用/undo方案首次提出。
+2. R3/R4准确提炼37bd的旧Store2四键绑定适用域、兼容RDF view与完整M/proof同源绑定、Preview可直接构造而不证明真实调用。草稿13–14、40行要求新固定发行和真实生产调用，未将文档中的签名/类型当已交付或授权，未让T02删字段凑旧形状。
+3. C2–C7覆盖existing individual/dataProperty、恰1/1同S/P且O真变、零实体/外部引用变化、全部支持唯一manual且活动/归属字段为空、slot唯一/目标在全部支持不存在、原ID可表示与完整candidate/after核同。它们是相对f20更具体的消费oracle，不是八个新API；C1/C8仍依完整当前proof和真实同会话计费。
+4. 草稿32行与consumer-matrix 24、29行一致：domain/range是RDFS推理声明，不新增prop.range==literal.datatype值门；保词项/datatype/ill_typed及声明结构守卫。range=xsd:string与canonical integer的例子仅防“单凭range拒绝”，未承诺该例已通过完整链，也未扩SHACL合同。
+5. R5/R6准确保受控同页重试与错误重复拼段之别；失败事务无部分写不等抹除前段合法plan/页/confirmation/Job历史。草稿20行保四原事务重取/重投影/重演，已受理精确历史重试不因当前变化否定旧成功。
+6. 36–40行给出立即D设计小段、获票后M0两新纯helper路径及真正单事实机制所需C/S1/K/M1/S2发行。未承诺当前可import实现；未将完整CRUD/Turtle/T08/T10、整个M0或App先做完作为纯准备前置；R8机制host合同与后续正式engine/main/I06启用有分层，未抢四基础文件或I06写权。HOLD和运行/产品/平台门保留。
+
+## P3-NAME-01：显式区分两种C5（非阻断）
+
+草稿13–14、40行的“C5”指旧T02产品阶段/模块来源，28行的“C5”指本次slot与目标消费判据。原矩阵也同时使用二者，现上下文尚能辨认，并无把slot判据误作source-binding能力的事实错误。建议首次出现加一句“旧C5阶段≠本矩阵判据C5”，分别写“旧C5阶段的bind/change_preview”与“判据C5”；不改条件编号或创造新产品阶段。
+
+篇幅可再短：24行C1/C8概括、20行四事务和40行整链部分重复f20；可用精确章节引用缩短，但需保留历史查询预算、完整支持/metadata比较、C5兼容域及上述命名澄清。正确性优先，无须为变短删掉这些真实增量。
+
+本轮只有只读Git show/rev-parse、stdlib文本/JSON/hash及本报告写入，所有实际命令退出0。无产品源码读取、import、测试、DB/SQL/native、GUI、网络或其它线程消息；未改任何树、草稿或输入。未执行formatter，无格式通过结论。本审只评价三固定文档之间的设计对应，不认证其引用的产品实现或新增供方/API批准状态。
