@@ -1,0 +1,577 @@
+{
+  "schemaVersion": 1,
+  "preparedAtDate": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "productHead": "49321221733ea927484647352e05e7d833cebc86",
+  "inputProcessHead": "d597b3c00980652042163d250c875d660d4d371e",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-ontology",
+  "branch": "feature/weekly-t02-ontology",
+  "fullBranchDeltaFiles": [
+    {
+      "path": "apps/desktop/src/renderer/src/ontology/OntologyPage.tsx",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 23671,
+      "sha256": "127e0f5b746f7c7140f4e92b4d423b920ee9422df3cc87f8945ad799a1626ef1",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/ontology/ontology.css",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 2899,
+      "sha256": "000a16875e2155c0ec7bd0b704dde4103af4754e41550bf88c4756a27c366a62",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/ontology/view-model.ts",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 3945,
+      "sha256": "5a3c6c3bf95bc2cc6219f7cf24e5d337c8381ae6fc392b460895b002e0c2e405",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "docs/iterations/T02/acceptance.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 5300,
+      "sha256": "0cc530704d1373b85a1c3bdee4ac2592ef04659b98fcc9ba596725ccf83ed682",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/iterations/T02/controller-message-draft.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 3051,
+      "sha256": "7adfc8cbcb271d1a84e73d5092f7fcc47048c1af37e31b246adf40b59bdddbba",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/iterations/T02/delivery.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 5927,
+      "sha256": "2a8c814afddf769eb43b7a68aa5d1c2a86cea7b14fd5bf81ff5fff4c19ad8213",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/iterations/T02/interface-handoff.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 5052,
+      "sha256": "fd2239404473ae48f73f45199d84fc1976e12ec9ab1a7468161b2f84a737c186",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/iterations/T02/source-projection.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 3597,
+      "sha256": "60b2f5226985874d5dc74fb886faead4c9be5ccbe6d92bdee5e03d4268ca1153",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/iterations/T02/stage-registration-request.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 6751,
+      "sha256": "70c94baba5a637281019c95feb265d0cd05042cf4534b9cdc8e7c53d9c2ecc32",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/iterations/T02/typed-changeset-integration-plan.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 44243,
+      "sha256": "6b88b1f7a8e9b7b08719f6b48dda16905a3eb800a7b8baef21f4b7a26b06983c",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/iterations/T02/ui-probe/build.mjs",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 286,
+      "sha256": "0f953b219d1e1306d372727f8ade16cbe5786e4efb3edb4ddeaaf4eecf4dbf08",
+      "role": "S1-headless-harness"
+    },
+    {
+      "path": "docs/iterations/T02/ui-probe/check.mjs",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 8913,
+      "sha256": "b0b199ea01cf900bd8cd07a224c1f14f43ec3b233f53275783975415b6cc2d06",
+      "role": "S1-headless-harness"
+    },
+    {
+      "path": "docs/iterations/T02/ui-probe/fixture.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 4056,
+      "sha256": "55f1b9c9b74149c34efc238f2c9772dc39c20434439aa283fa6870a7b2adc331",
+      "role": "S1-headless-harness"
+    },
+    {
+      "path": "docs/iterations/T02/ui-probe/harness.tsx",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 2277,
+      "sha256": "f12984e000d411609ac11abc79d462ca54b89f36757ca55669d09a20c314bc32",
+      "role": "S1-headless-harness"
+    },
+    {
+      "path": "docs/iterations/T02/ui-probe/index.html",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 330,
+      "sha256": "b8262fcd67ddb5e429f095e29086f6de2ed621c1a3779892f0ec9e1827b7490a",
+      "role": "S1-headless-harness"
+    },
+    {
+      "path": "docs/reviews/T02/controller-message-receipt.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 898,
+      "sha256": "4eb6b515ec162fe800906a9b52cff7906c6592243e028f63b732a47e45380dac",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/evidence-archive/README.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 1706,
+      "sha256": "afe5324266bf68d0d9a009c6f96874be8224e8817a2cff447798c0e124e7a22f",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/evidence-archive/archive-index.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 1110,
+      "sha256": "62879518e3c03987f0c74bccc86b932bd91acb6950d7ac15df28932a9a9f1395",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/evidence-archive/git-readback.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 10715,
+      "sha256": "c69651b00e758781eef5940b5b66d2457661f9430d147ac86ce42a82f481ca2c",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/evidence-archive/independent-review.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 919,
+      "sha256": "b3a57e6841eef6e8d0f31f94bad54cc897d31f820cb35b684b8164491c331e75",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/evidence-archive/manifest.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 21415,
+      "sha256": "ee9585f7d1960ef70808c09cf67e51d377970c3c8f8e8b8a348f706384c9e4f2",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/evidence-archive/raw-evidence-c1-c3-20261021.tar.gz",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 548417,
+      "sha256": "43d9e20533885828a03c34392e8ae42ada23663c1cc338986c795c236f2a6b86",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/evidence-archive/readback.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 10428,
+      "sha256": "981703cfb263eb75c2996c447ce4f991cce3fafb1712d25965b6e98d3d2b7718",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/independent-review-c1.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 1159,
+      "sha256": "b681ed1d1ab8a217a35b866d1d2efede2c070b5bb4956564b2a1ed9feba19034",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/independent-review-c2.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 2181,
+      "sha256": "5fdafe16dab0a8de7f7cfbc5a90cec278675ccec53e7ab671ea74d4d0b4919f7",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/independent-review-c3.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 1388,
+      "sha256": "7cf61a7e02cf85bbf0f8371e2ea82cc8a3e6ca05d4a6ec75ef988406a2a0492c",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/stage-registration-review.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 1648,
+      "sha256": "084065535aa2762efcf9c7bc31981d05d783b65c53aa4915a460ca6c948c11ec",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/status.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 22112,
+      "sha256": "260a7020985cf66c2dd040cde798a6e43ccbb503c58ed45d0a26c334d081d20e",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/t09-input-verification.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 2468,
+      "sha256": "e66a3a8d23f4c6e722ef26d7e3a40e96f776b35756b0dda4eb15981171a9b8e8",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/delivery-manifest.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 4555,
+      "sha256": "f5a9ac444246b0ade3ec4f556a93aa3b5029c28d5a4f951839464e427147378b",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/disposition.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 1484,
+      "sha256": "619b810148e1eda25b7e2ee0931e2344a6198c1bb949f543a7e251a17460d667",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/independent-review-final.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 1116,
+      "sha256": "e6ed2166337a5f88845716aba32546d2e382d6e014629381c1cef7768f0b487b",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/independent-review-initial.md",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 2458,
+      "sha256": "22e6071370c01807e486d0ccba7b0ed5c79183ba91081106110abc1612fa5d3b",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/intake.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 845,
+      "sha256": "e9815f69ecac31333f58ebd5544e5463cf0e11052b7c6b9e10dbc6259e4f4d95",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/review-input.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 760,
+      "sha256": "fe2469973c11dd42b353b066225635850102cfb9b03abb775c6cfd14706baed2",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/source-manifest.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 17269,
+      "sha256": "7b5bfa123871e4985b667ddd50b341de51ce90aac042f703cdf12ec793119894",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/static-verification-final.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 894,
+      "sha256": "6f6cbe16a14efc665115f844f95c3f114457dc495c4e1cd7b21b352dbbb735b2",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/typed-changeset-integration-plan/static-verification.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 14704,
+      "sha256": "dd3fcdff0d8bbe03d5eaf77361d5cd3f76f791ada23ccce91eb6eea20d2b7ab8",
+      "role": "later-plan-context-only-not-implemented"
+    },
+    {
+      "path": "docs/reviews/T02/ui-probe.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 676,
+      "sha256": "148db4e82e6b68701b5a96b3a48af83cc8b85e2daa0bc2e186adc44e22da11ae",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/verification-c2.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 6143,
+      "sha256": "79fdcf149ddcee440f6a607da13d26c13aabf3438767e31305a09b2d499924f5",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/verification-c3.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 2247,
+      "sha256": "7e558411f00dc4847eda37090a2e0c16291ca7f52380c29c19963dde4d4a32c8",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "docs/reviews/T02/verification.json",
+      "ref": "d597b3c00980652042163d250c875d660d4d371e",
+      "bytes": 5438,
+      "sha256": "08de812f0b39681aea79c315b44ec9c22f0aeac5c51ea98dc1ec4a115fb12db3",
+      "role": "S1-process-evidence"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/ontology/__init__.py",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 501,
+      "sha256": "dd89c5685444fdca5a3fd37acb3d0cc05be3dbb77a935a39feb298503b7e7a7d",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/ontology/model.py",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 7779,
+      "sha256": "26cb5c55c10e0611b5610b53ca3ca129ad4e371e6186b026d74c791a15573c23",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/ontology/service.py",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 7896,
+      "sha256": "fa49220fbc812f6e94f6c0c19b6ceff82cb00fa9843f1e7238f6c196f7c839cf",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/ontology/source_projection.py",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 7422,
+      "sha256": "919e6f055c84ddb55de985c66093d585b53ea9f78e167c2aa85dabb224c0c8e2",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "packages/engine/tests/test_ontology_editor.py",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 11138,
+      "sha256": "75e7a810b6d3dd1049b621072d7c858146136b4bb77560f2942d54936478343b",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "packages/engine/tests/test_ontology_fixed_inputs.py",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 4894,
+      "sha256": "09ad1826425a4e0f1b68347ffe407a069b8fb7bf7c08a3d9fbfa62b97bf72739",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "packages/engine/tests/test_ontology_source_projection.py",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 11706,
+      "sha256": "000a489696ad29ff88e0f422a67b0a4de168c7d681fe61961979a5c7eb94d2cd",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/invalid-turtle.ttl",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 43,
+      "sha256": "8f003454f79b131b82853cb763685fab447e5cd02018b69eb56ba1d2636851ed",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/manifest.json",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 1063,
+      "sha256": "bdd9bb6d5d318ac76fb1c674dc3b916c17d56ecc010ee6cfacdcf24dc1096d03",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/manual-supported.ttl",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 635,
+      "sha256": "fea927fa9393e82ba0a6d0b71c6387d4892b8599384edba26db8ad8d49e3d49b",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/supported-shacl-template.ttl",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 395,
+      "sha256": "44684f7d49e33cc4c9b7a28b11549715df0f4f73843bc69455702134cf2202c2",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/t09-fixed-inputs/G-base.json",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 8219,
+      "sha256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/t09-fixed-inputs/manifest.json",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 2268,
+      "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/unsupported-owl.ttl",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 189,
+      "sha256": "7fb25d98e1968e444675f783d6128562fb8f082725d6202136bdeecd9e8a8006",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/fixtures/ontology/unsupported-shacl-path.ttl",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 209,
+      "sha256": "d864d43a223baaf3762816a1ba591da157e973058ec7987fbce4a0b3088de8de",
+      "role": "S1-product-test-fixture"
+    },
+    {
+      "path": "tests/unit/t02-ontology-views.test.ts",
+      "ref": "49321221733ea927484647352e05e7d833cebc86",
+      "bytes": 2438,
+      "sha256": "11f021b7a6e8a9a7c1f13288c7153d78f7cb931fd13c37ab5100c7af90a99a2d",
+      "role": "S1-product-test-fixture"
+    }
+  ],
+  "unchangedReferences": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 55364,
+      "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 1329,
+      "sha256": "a5e8165f4e8814da387558c89b8b175ac4bcc0e57223b9278f44a8c5120e1ca3",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 2530,
+      "sha256": "7cca115fa77e0926a632ba58d404ed39071f7dcfb8d52af2d212e89d36b2309a",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 1745,
+      "sha256": "a4c821797f40adc68c233d3c2bd2273fcabbc449871117a86881ee2e60f13e12",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "docs/prd/PRD-本体学习与落地Agent工作台.md",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 93584,
+      "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "docs/source-manifest.json",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 3570,
+      "sha256": "4e3a43ab0d67129d41ba42e2fea5d4e3e86d209d936ac04bb3d55857824a1ec8",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "package.json",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "package-lock.json",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 351,
+      "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20",
+      "role": "unchanged-approved-dependency-or-requirement"
+    },
+    {
+      "path": "uv.lock",
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 20999,
+      "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+      "role": "unchanged-approved-dependency-or-requirement"
+    }
+  ],
+  "protectedUnstaged": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+      "stageAllowed": false
+    },
+    {
+      "path": "docs/reviews/T02/ui-desktop.png",
+      "bytes": 293943,
+      "sha256": "4dd1d54148ed9e8dd8ce7dfc1b02e329ec92cb42898fb7b2ae9045c12b4076f6",
+      "stageAllowed": false
+    },
+    {
+      "path": "docs/reviews/T02/ui-mobile.png",
+      "bytes": 269334,
+      "sha256": "87944618da1596ff957f36aa422fcdb77a7c74e14ec2e4b1eb2f251ded6bc417",
+      "stageAllowed": false
+    }
+  ],
+  "operationalPolicies": [
+    {
+      "absolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T06-supported-background-external-review-window.md",
+      "bytes": 4792,
+      "sha256": "5fd7ef28089c6dde7efffaadaf1adca77c249f4e76670d8a9b53a28db7085433",
+      "role": "operational policy snapshot, not runtime adoption"
+    },
+    {
+      "absolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/external-review-permissions.md",
+      "bytes": 4698,
+      "sha256": "99c9a62fa28bcbb940170bf122f7d4b3c953ac0f0a49546ae9dfec038599448d",
+      "role": "operational policy snapshot, not runtime adoption"
+    },
+    {
+      "absolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0",
+      "role": "operational policy snapshot, not runtime adoption"
+    },
+    {
+      "absolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/Q6-user-adoption-receipt.json",
+      "bytes": 710,
+      "sha256": "8c9fbc10eb2ce35b609303b3b595a3b2702b99f59da98f4476ea4d1f97be7101",
+      "role": "operational policy snapshot, not runtime adoption"
+    },
+    {
+      "absolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/Q6-rule-comparison-decision.md",
+      "bytes": 5038,
+      "sha256": "4e82174a9d5c312dce23a02320ef9e23f9a9fc62bb22bf69bdedd6a25ed10b29",
+      "role": "operational policy snapshot, not runtime adoption"
+    }
+  ],
+  "sourceClosure": "All tracked delta from base to inputProcessHead, not a UI-only selection. Product/test/fixture19 paths at productHead exactly equal process/current. Five standalone UI probe files at processHead. Later typed-ChangeSet plan docs are context only and authorize no runtime. Baseline refs unchanged. No borrowed other worktree environment.",
+  "runtimeTasksCreated": false,
+  "workspaceMapping": "Original absolute worktree is frozen. Any later isolated review tree and report-output mapping must be separately approved and recorded with exact refs/bytes/hashes; preserve these original prompt bytes.",
+  "reproducibleDiffs": [
+    {
+      "name": "full-original-product-diff",
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "49321221733ea927484647352e05e7d833cebc86"
+      ],
+      "bytes": 174836,
+      "sha256": "6fe371b6da4c41b09f3e9a11b2e6bccbd13b9c32a765ce858e15a76701547f53",
+      "scope": "Full tracked diff, including docs at that ref; current product19 paths are separately fixed in fullBranchDeltaFiles."
+    },
+    {
+      "name": "full-original-process-diff",
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "d597b3c00980652042163d250c875d660d4d371e"
+      ],
+      "bytes": 1054991,
+      "sha256": "aef6296a9108b08fdc99c066bcd9b17cbe0ddb2ecccd5d1eda647ca96c88b1f6",
+      "scope": "Full tracked diff, including docs at that ref; current product19 paths are separately fixed in fullBranchDeltaFiles."
+    }
+  ]
+}
