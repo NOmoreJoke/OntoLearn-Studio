@@ -1,0 +1,59 @@
+{
+  "format": "i05-offer-final-static-proof/1",
+  "baseRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "candidateRef": "6ba273a892b18a5ebaedc07aea6f36584999adcf",
+  "candidatePayloadCount": 41,
+  "candidatePayloadBytes": 1388730,
+  "candidateCurrentEqualsGitEqualsManifest": true,
+  "candidateTrackedFilesUnchanged": true,
+  "candidateManifest": {
+    "path": "docs/reviews/I05/semantic-build-offer-draft/candidate-r2-manifest.json",
+    "bytes": 8990,
+    "sha256": "afab8efcb0c52dec320155fffaf8f98c75c507b1430ce91a3416f54d4be201b6"
+  },
+  "reports": [
+    {
+      "path": "docs/reviews/I05/semantic-build-offer-draft/review-r1.md",
+      "bytes": 10450,
+      "sha256": "50135a0c4dd1d4cf9f2d7935026442cdc392145683c1f0ffd914fe0f50df43d4"
+    },
+    {
+      "path": "docs/reviews/I05/semantic-build-offer-draft/review-r1-proof.json",
+      "bytes": 10358,
+      "sha256": "0b94c84e44024139e71cf312ae8f35d4dbae0eac5a6dbd2bca910c91e61ff2db"
+    },
+    {
+      "path": "docs/reviews/I05/semantic-build-offer-draft/review-r2.md",
+      "bytes": 7286,
+      "sha256": "10679eff378aba56f4b5e74c68df3cf8114a70173964f5f31bf04ab1c8bea487"
+    },
+    {
+      "path": "docs/reviews/I05/semantic-build-offer-draft/review-r2-proof.json",
+      "bytes": 13160,
+      "sha256": "e95845ab70bac2541f808fd53ffd86ee5278dbc446820e8166b4497df2066f78"
+    }
+  ],
+  "allFourWritersEqualBase": true,
+  "agents": {
+    "path": "AGENTS.md",
+    "bytes": 15852,
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+  },
+  "indexEmptyBeforeFinalProcessStage": true,
+  "checks": {
+    "prettier3_9_10AllNewMdJson": "exit0; explicit --ignore-path /dev/null; raw excluded",
+    "baseToCandidateWhitespace": 0,
+    "unstagedWhitespace": 0,
+    "stagedWhitespace": 0
+  },
+  "reviewConclusion": "R1 Fail retained; R1-01/R1-02 closed by independent R2 limited static Pass",
+  "notExecuted": [
+    "product imports/probe/tests/pytest",
+    "builder/spec/reader/helper/fixture simulation",
+    "business compile/archive decode/old binary/witness/SDK/toolpayload",
+    "install/network/DB/native/GUI/measurement",
+    "T03 ticket",
+    "push/PR/merge"
+  ],
+  "finalProcessRef": "reported externally after local commit; no future self reference"
+}
