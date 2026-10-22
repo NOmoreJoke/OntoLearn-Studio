@@ -1,0 +1,813 @@
+{
+  "scope": "R2 minimal independent static delta; no author/model/product execution, no third-party schema engine",
+  "checks": [
+    {
+      "name": "delta definition surface matches six changed and seven new",
+      "pass": true,
+      "details": {
+        "changed": [
+          "PinnedHeader",
+          "Negotiation",
+          "Carrier",
+          "RunCoreBinding",
+          "BusinessValidationBinding",
+          "ProcessLifecycle"
+        ],
+        "added": [
+          "NotDispatchedCore",
+          "PreContextFailureCore",
+          "BoundContextCore",
+          "AttemptCore",
+          "CallerEvidenceValue",
+          "CallerWitness",
+          "CallerWitnessPayload"
+        ],
+        "unchanged": 46
+      }
+    },
+    {
+      "name": "child Artifact/frames/old hash preimages unchanged",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "full R2 field-map exact keys/types/meaning/owner/rules",
+      "pass": true,
+      "details": {
+        "definitions": 59,
+        "fields": 294
+      }
+    },
+    {
+      "name": "all new exact required sets and references",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "all31 required projections exact received shape and pointer",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "receipt entry producer is caller at exact propertyIndex755",
+      "pass": true,
+      "details": {
+        "schema": "runtime-validation-receipt.schema.json",
+        "pointer": "#/properties/runs/items/properties/runId",
+        "required": true,
+        "producer": "caller",
+        "externalVerifier": "root/caller",
+        "probeDuty": "not-read-external-receipt",
+        "shape": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "name": "five full author records satisfy independent finite grammar plus exact received schema keywords",
+      "pass": true,
+      "details": [
+        {
+          "id": "zero-byte-no-context",
+          "errors": [],
+          "allFileBytesAndSha": true,
+          "registryPaths": [
+            "synthetic-r2-zero-byte-no-context/stdout.bin",
+            "synthetic-r2-zero-byte-no-context/stderr.bin",
+            "synthetic-r2-zero-byte-no-context/immutable-build-receipt.json",
+            "synthetic-r2-zero-byte-no-context/caller-attempt-registry.json",
+            "synthetic-r2-zero-byte-no-context/prior-authorization.json",
+            "synthetic-r2-zero-byte-no-context/command-context.json",
+            "synthetic-r2-zero-byte-no-context/target-binding.json",
+            "synthetic-r2-zero-byte-no-context/target-terminated.json",
+            "synthetic-r2-zero-byte-no-context/reader-joined.json",
+            "synthetic-r2-zero-byte-no-context/references-released.json",
+            "synthetic-r2-zero-byte-no-context/carrier.json",
+            "synthetic-r2-zero-byte-no-context/binding.json",
+            "synthetic-r2-zero-byte-no-context/runtime-manifest.json"
+          ],
+          "state": "incomplete",
+          "contextAvailable": false
+        },
+        {
+          "id": "bad-header-no-child-id",
+          "errors": [],
+          "allFileBytesAndSha": true,
+          "registryPaths": [
+            "synthetic-r2-bad-header-no-child-id/stdout.bin",
+            "synthetic-r2-bad-header-no-child-id/stderr.bin",
+            "synthetic-r2-bad-header-no-child-id/immutable-build-receipt.json",
+            "synthetic-r2-bad-header-no-child-id/caller-attempt-registry.json",
+            "synthetic-r2-bad-header-no-child-id/prior-authorization.json",
+            "synthetic-r2-bad-header-no-child-id/command-context.json",
+            "synthetic-r2-bad-header-no-child-id/target-binding.json",
+            "synthetic-r2-bad-header-no-child-id/target-terminated.json",
+            "synthetic-r2-bad-header-no-child-id/reader-joined.json",
+            "synthetic-r2-bad-header-no-child-id/references-released.json",
+            "synthetic-r2-bad-header-no-child-id/carrier.json",
+            "synthetic-r2-bad-header-no-child-id/binding.json",
+            "synthetic-r2-bad-header-no-child-id/header.raw",
+            "synthetic-r2-bad-header-no-child-id/runtime-manifest.json"
+          ],
+          "state": "incomplete",
+          "contextAvailable": false
+        },
+        {
+          "id": "no-header-stderr-only",
+          "errors": [],
+          "allFileBytesAndSha": true,
+          "registryPaths": [
+            "synthetic-r2-no-header-stderr-only/stdout.bin",
+            "synthetic-r2-no-header-stderr-only/stderr.bin",
+            "synthetic-r2-no-header-stderr-only/immutable-build-receipt.json",
+            "synthetic-r2-no-header-stderr-only/caller-attempt-registry.json",
+            "synthetic-r2-no-header-stderr-only/prior-authorization.json",
+            "synthetic-r2-no-header-stderr-only/command-context.json",
+            "synthetic-r2-no-header-stderr-only/target-binding.json",
+            "synthetic-r2-no-header-stderr-only/target-terminated.json",
+            "synthetic-r2-no-header-stderr-only/reader-joined.json",
+            "synthetic-r2-no-header-stderr-only/references-released.json",
+            "synthetic-r2-no-header-stderr-only/carrier.json",
+            "synthetic-r2-no-header-stderr-only/binding.json",
+            "synthetic-r2-no-header-stderr-only/runtime-manifest.json"
+          ],
+          "state": "pre-header-rejected",
+          "contextAvailable": false
+        },
+        {
+          "id": "signal-before-context",
+          "errors": [],
+          "allFileBytesAndSha": true,
+          "registryPaths": [
+            "synthetic-r2-signal-before-context/stdout.bin",
+            "synthetic-r2-signal-before-context/stderr.bin",
+            "synthetic-r2-signal-before-context/immutable-build-receipt.json",
+            "synthetic-r2-signal-before-context/caller-attempt-registry.json",
+            "synthetic-r2-signal-before-context/prior-authorization.json",
+            "synthetic-r2-signal-before-context/command-context.json",
+            "synthetic-r2-signal-before-context/target-binding.json",
+            "synthetic-r2-signal-before-context/target-terminated.json",
+            "synthetic-r2-signal-before-context/reader-joined.json",
+            "synthetic-r2-signal-before-context/references-released.json",
+            "synthetic-r2-signal-before-context/carrier.json",
+            "synthetic-r2-signal-before-context/binding.json",
+            "synthetic-r2-signal-before-context/runtime-manifest.json"
+          ],
+          "state": "incomplete",
+          "contextAvailable": false
+        },
+        {
+          "id": "not-dispatched",
+          "errors": [],
+          "allFileBytesAndSha": true,
+          "registryPaths": [
+            "synthetic-r2-not-dispatched/immutable-build-receipt.json",
+            "synthetic-r2-not-dispatched/caller-attempt-registry.json",
+            "synthetic-r2-not-dispatched/prior-authorization.json",
+            "synthetic-r2-not-dispatched/command-context.json",
+            "synthetic-r2-not-dispatched/carrier.json",
+            "synthetic-r2-not-dispatched/binding.json",
+            "synthetic-r2-not-dispatched/runtime-manifest.json"
+          ],
+          "state": "not-started",
+          "contextAvailable": false
+        }
+      ]
+    },
+    {
+      "name": "independent all three AttemptCore shapes retain distinct identities",
+      "pass": true,
+      "details": [
+        {
+          "kind": "not-dispatched",
+          "attemptId": "scheduled-before-child",
+          "childRunId": null,
+          "dispatchState": "not-started"
+        },
+        {
+          "kind": "pre-context-failure",
+          "attemptId": "scheduled-before-child",
+          "childRunId": null,
+          "mode": "source",
+          "selector": "full-v1",
+          "stdout": {
+            "root": "approved-witness",
+            "path": "independent-r2/stdout.bin",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "root": "approved-witness",
+            "path": "independent-r2/stderr.bin",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "headerRange": null,
+          "rejectedTerminalRange": null,
+          "actualExitCode": 7,
+          "signal": null,
+          "firstCollectionFailure": {
+            "actor": "caller",
+            "phase": "header",
+            "reason": "raw-incomplete",
+            "stageId": null,
+            "firstRange": null,
+            "diagnosticArtifactId": null
+          },
+          "lifecycleWitnessIds": []
+        },
+        {
+          "kind": "child-context",
+          "attemptId": "scheduled-before-child",
+          "core": {
+            "runId": "observed-child-context",
+            "mode": "source",
+            "selector": "full-v1",
+            "stdout": {
+              "root": "approved-witness",
+              "path": "independent-r2/stdout.bin",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stderr": {
+              "root": "approved-witness",
+              "path": "independent-r2/stderr.bin",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "headerRange": null,
+            "terminalRange": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "independent 31-key pre-context failure receipt row fits exact received schema",
+      "pass": true,
+      "details": {
+        "row": {
+          "runId": "scheduled-before-child",
+          "mode": "source",
+          "selector": "full-v1",
+          "argv": ["--semantic-source-package-probe", "full-v1"],
+          "stdout": {
+            "root": "approved-witness",
+            "path": "independent-r2/stdout.bin",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "root": "approved-witness",
+            "path": "independent-r2/stderr.bin",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "header": null,
+          "terminal": null,
+          "actualExitCode": 7,
+          "signal": null,
+          "collectionComplete": false,
+          "fullSuiteCollectionComplete": false,
+          "declaredCompositionRef": null,
+          "provenanceSha256": null,
+          "externalReceiptStatus": "external-unverified",
+          "python": null,
+          "moduleLoaders": [],
+          "distributionModuleLoader": null,
+          "functionCodes": [],
+          "dynamicChecker": null,
+          "observedSource23": null,
+          "packageCodeBoundToSource": null,
+          "sourceCodeBoundToSource": null,
+          "observationState": "incomplete",
+          "headerState": "absent",
+          "terminalState": "absent",
+          "observationIds": [],
+          "observedPaths": [],
+          "failure": {
+            "actor": "caller",
+            "phase": "stream",
+            "code": "RUNTIME_EVIDENCE_INCOMPLETE",
+            "reason": "stream-incomplete",
+            "firstEvidence": {
+              "root": "approved-witness",
+              "path": "independent-r2/stdout.bin",
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          },
+          "headerPayload": null,
+          "observationOutcomes": []
+        },
+        "errors": []
+      }
+    },
+    {
+      "name": "independent identity positives preserve pre/post-context and caller separation",
+      "pass": true,
+      "details": [
+        {
+          "name": "not-dispatched",
+          "errors": [],
+          "scope": "identity branch only; collected business/source completeness is inherited and not asserted"
+        },
+        {
+          "name": "pre-context-exit7",
+          "errors": [],
+          "scope": "identity branch only; collected business/source completeness is inherited and not asserted"
+        },
+        {
+          "name": "post-context-incomplete",
+          "errors": [],
+          "scope": "identity branch only; collected business/source completeness is inherited and not asserted"
+        },
+        {
+          "name": "post-context-collected-identity-only",
+          "errors": [],
+          "scope": "identity branch only; collected business/source completeness is inherited and not asserted"
+        }
+      ]
+    },
+    {
+      "name": "independent caller-only witness and false value require no fake child fields",
+      "pass": true,
+      "details": {
+        "witness": {
+          "witnessId": "caller-reader",
+          "origin": "caller-owned-file",
+          "attemptId": "scheduled-before-child",
+          "collectorOwnerPin": {
+            "ref": "0000000000000000000000000000000000000000",
+            "path": "independent-r2/prior-approved-collector.md",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "gitBlob": "0000000000000000000000000000000000000000",
+            "repositoryId": "synthetic-approval-assumption"
+          },
+          "verificationState": "verified",
+          "purpose": "reader-joined",
+          "file": {
+            "root": "approved-witness",
+            "path": "independent-r2/reader-witness.json",
+            "bytes": 141,
+            "sha256": "c9b98b5c81c0ba8a770a3d6675fdca8d912868e0b9d1d4452718a42773e82148"
+          },
+          "codecId": "i05-caller-witness-payload/1",
+          "layoutPin": {
+            "ref": "0000000000000000000000000000000000000000",
+            "path": "independent-r2/prior-approved-collector.md",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "gitBlob": "0000000000000000000000000000000000000000",
+            "repositoryId": "synthetic-approval-assumption"
+          },
+          "fieldPointer": "/value",
+          "parentWitnessIds": []
+        },
+        "payloadBase64": "eyJhdHRlbXB0SWQiOiJzY2hlZHVsZWQtYmVmb3JlLWNoaWxkIiwiZm9ybWF0IjoiaTA1LWNhbGxlci13aXRuZXNzLXBheWxvYWQvMSIsInB1cnBvc2UiOiJyZWFkZXItam9pbmVkIiwidmFsdWUiOnsidGFnIjoiYm9vbCIsInZhbHVlIjpmYWxzZX19",
+        "evidence": {
+          "state": "observed",
+          "value": {
+            "tag": "bool",
+            "value": false
+          },
+          "witnessIds": ["caller-reader"],
+          "reason": null
+        }
+      }
+    },
+    {
+      "name": "independent witness full raw/namespace/purpose checks accept only explicit origin",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "all independently constructed field/identity/caller mutations reject",
+      "pass": true,
+      "details": [
+        {
+          "name": "missing-receipt-runId",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-mode",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-selector",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-argv",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-stdout",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-stderr",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-header",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-terminal",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-actualExitCode",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-signal",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-collectionComplete",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-fullSuiteCollectionComplete",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-declaredCompositionRef",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-provenanceSha256",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-externalReceiptStatus",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-python",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-moduleLoaders",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-distributionModuleLoader",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-functionCodes",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-dynamicChecker",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-observedSource23",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-packageCodeBoundToSource",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-sourceCodeBoundToSource",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-observationState",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-headerState",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-terminalState",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-observationIds",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-observedPaths",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-failure",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-headerPayload",
+          "reject": true
+        },
+        {
+          "name": "missing-receipt-observationOutcomes",
+          "reject": true
+        },
+        {
+          "name": "null receipt identity still rejected",
+          "reject": true
+        },
+        {
+          "name": "child identity cannot widen strict receipt keys",
+          "reject": true
+        },
+        {
+          "name": "invented-child-before-context",
+          "reject": true
+        },
+        {
+          "name": "context-erased",
+          "reject": true
+        },
+        {
+          "name": "context-different",
+          "reject": true
+        },
+        {
+          "name": "duplicate-context",
+          "reject": true
+        },
+        {
+          "name": "receipt label invented only for schema",
+          "reject": true
+        },
+        {
+          "name": "dangling caller ID",
+          "reject": true
+        },
+        {
+          "name": "caller masquerades as child",
+          "reject": true
+        },
+        {
+          "name": "request not terminated",
+          "reject": true
+        },
+        {
+          "name": "wrong actual attempt",
+          "reject": true
+        },
+        {
+          "name": "missing manifest member",
+          "reject": true
+        },
+        {
+          "name": "wrong raw SHA",
+          "reject": true
+        },
+        {
+          "name": "unverified pin cannot observed",
+          "reject": true
+        },
+        {
+          "name": "later parent reference",
+          "reject": true
+        },
+        {
+          "name": "false erased as true",
+          "reject": true
+        }
+      ]
+    },
+    {
+      "name": "actual four author exits and original split streams retained",
+      "pass": true,
+      "details": [
+        {
+          "check": 1,
+          "exit": 1,
+          "argv": [
+            "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+            "-c",
+            "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json'); exec(compile(json.loads(p.read_text())['source'], str(p), 'exec'))"
+          ],
+          "streams": [
+            {
+              "channel": "stdout",
+              "match": true
+            },
+            {
+              "channel": "stderr",
+              "match": true
+            }
+          ]
+        },
+        {
+          "check": 2,
+          "exit": 1,
+          "argv": [
+            "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+            "-c",
+            "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/checker-source-r2.json'); exec(compile(json.loads(p.read_text())['source'], '<i05-business-r2-finite-checker>', 'exec'))"
+          ],
+          "streams": [
+            {
+              "channel": "stdout",
+              "match": true
+            },
+            {
+              "channel": "stderr",
+              "match": true
+            }
+          ]
+        },
+        {
+          "check": 3,
+          "exit": 0,
+          "argv": [
+            "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+            "-c",
+            "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/business-checker-source-r2.json'); exec(compile(json.loads(p.read_text())['source'], '<i05-business-r2-finite-checker>', 'exec'))"
+          ],
+          "streams": [
+            {
+              "channel": "stdout",
+              "match": true
+            },
+            {
+              "channel": "stderr",
+              "match": true
+            }
+          ]
+        },
+        {
+          "check": 4,
+          "exit": 0,
+          "argv": [
+            "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+            "-c",
+            "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-business-carrier-design/business-checker-source-r2.json'); exec(compile(json.loads(p.read_text())['source'], '<i05-business-r2-finite-checker>', 'exec'))"
+          ],
+          "streams": [
+            {
+              "channel": "stdout",
+              "match": true
+            },
+            {
+              "channel": "stderr",
+              "match": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "incident restored old source and exact new executed container separately",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "known process evidence gaps explicit instead of fabricated",
+      "pass": true,
+      "details": {
+        "chronology": [
+          {
+            "toolChunk": "a0aaef",
+            "event": "initial new checker draft write mistakenly targeted existing frozen checker-source-r2.json; precise intermediate initial draft bytes were not separately preserved before later source edit, do not fabricate"
+          },
+          {
+            "toolChunk": "e9f21e",
+            "event": "amended source at same protected path before executing; final executed container19751B/SHA recorded and preserved under unique new filename"
+          },
+          {
+            "toolChunk": "e46f46",
+            "event": "author check01 child exit1 synthetic TreeNull missing value; actual source at protected name; complete split streams stored"
+          },
+          {
+            "toolChunk": "c8aaf9",
+            "event": "corrected only new synthetic fixture, protected checker source remained temporary overwritten"
+          },
+          {
+            "toolChunk": "233707",
+            "event": "author check02 child exit1 old113 hash guard detected protected file mismatch; source unchanged, split streams stored"
+          },
+          {
+            "toolChunk": "1fba4a",
+            "event": "preserved overwritten executed new source as business-checker-source-r2.json; git show exact revisionBase original12013B restored; actual restore exit0 and original streams recorded; all113 current hashes rechecked"
+          },
+          {
+            "toolChunk": "e1c36a",
+            "event": "after restoration author check03 from unique new source exit0; limited design only"
+          }
+        ],
+        "timestamps": "No wall-clock event timestamps were independently captured for these steps; original tool invocation sequence is evidence. No reconstructed past timestamps or split streams.",
+        "initialReads": [
+          {
+            "chunk": "c30796",
+            "exit": 1,
+            "reason": "inferred absent proof filename; original separate streams not captured"
+          },
+          {
+            "chunk": "57bfa2",
+            "exit": 1,
+            "reason": "read-only assumption $defs absent; original separate streams not captured"
+          }
+        ]
+      }
+    },
+    {
+      "name": "M02-M05 remain exact pending source/codec/layout/verifier guards",
+      "pass": true,
+      "details": null
+    }
+  ],
+  "allChecksPassed": true,
+  "schemaKeywordEvaluatorBoundary": {
+    "supported": [
+      "type",
+      "anyOf",
+      "const",
+      "enum",
+      "required",
+      "properties",
+      "additionalProperties:false",
+      "items",
+      "minItems",
+      "maxItems",
+      "minLength",
+      "maxLength",
+      "pattern",
+      "minimum"
+    ],
+    "observedSchemaKeys": [
+      "$comment",
+      "$id",
+      "$schema",
+      "additionalProperties",
+      "anyOf",
+      "authority",
+      "bound",
+      "const",
+      "enum",
+      "exact",
+      "items",
+      "kind",
+      "maxItems",
+      "maxLength",
+      "minItems",
+      "minLength",
+      "minimum",
+      "pattern",
+      "properties",
+      "required",
+      "rule",
+      "title",
+      "type",
+      "unicode"
+    ],
+    "notACompleteJsonSchemaEngine": true
+  },
+  "sampleCoverage": {
+    "completeAuthorSamples": 5,
+    "postContextCompleteAuthorSamples": 0,
+    "acceptedContextChecks": "four independent identity positives plus key/ID counterexamples; no complete collected business/source claim"
+  },
+  "incident": {
+    "finalCurrentIntegrity": true,
+    "interimFrozenWriteViolation": true,
+    "initialDraftBytesAvailable": false,
+    "eventWallClockAvailable": false,
+    "initialReadSplitStreamsAvailable": false,
+    "sequence": [
+      {
+        "toolChunk": "a0aaef",
+        "event": "initial new checker draft write mistakenly targeted existing frozen checker-source-r2.json; precise intermediate initial draft bytes were not separately preserved before later source edit, do not fabricate"
+      },
+      {
+        "toolChunk": "e9f21e",
+        "event": "amended source at same protected path before executing; final executed container19751B/SHA recorded and preserved under unique new filename"
+      },
+      {
+        "toolChunk": "e46f46",
+        "event": "author check01 child exit1 synthetic TreeNull missing value; actual source at protected name; complete split streams stored"
+      },
+      {
+        "toolChunk": "c8aaf9",
+        "event": "corrected only new synthetic fixture, protected checker source remained temporary overwritten"
+      },
+      {
+        "toolChunk": "233707",
+        "event": "author check02 child exit1 old113 hash guard detected protected file mismatch; source unchanged, split streams stored"
+      },
+      {
+        "toolChunk": "1fba4a",
+        "event": "preserved overwritten executed new source as business-checker-source-r2.json; git show exact revisionBase original12013B restored; actual restore exit0 and original streams recorded; all113 current hashes rechecked"
+      },
+      {
+        "toolChunk": "e1c36a",
+        "event": "after restoration author check03 from unique new source exit0; limited design only"
+      }
+    ]
+  },
+  "r1Disposition": {
+    "R1-F01": "design gap closed by explicit three-arm attempt union and caller-entry/child-context namespace separation; new policy adoption remains pending",
+    "R1-F02": "design gap closed by explicit caller-only witnesses and origin-specific lifecycle references; real source verification remains pending"
+  },
+  "provisionalVerdict": "Pass limited pure-design if every independent check passes; process violation remains recorded, not excused"
+}
