@@ -1,0 +1,210 @@
+{
+  "format": "i05-existing-source-digest-recipes/1",
+  "sourceFactsOnly": true,
+  "recipes": [
+    {
+      "id": "scope-json-sha",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "_digest",
+        "line": 42,
+        "endLine": 49
+      },
+      "preimage": "UTF8(json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(comma,colon)))",
+      "algorithm": "SHA256 lowercase hexdigest",
+      "notes": [
+        "No domain prefix, terminal LF or Unicode normalization added here",
+        "allow_nan not explicitly set in this function",
+        "Current source inputs use N3 strings/arrays/dicts; this is not a general arbitrary JSON grammar"
+      ]
+    },
+    {
+      "id": "asserted-input",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "_source",
+        "line": 73,
+        "endLine": 85
+      },
+      "preimageValue": "sorted(tuple(term.n3() for term in triple) for triple in original asserted graph)",
+      "encoder": "scope-json-sha"
+    },
+    {
+      "id": "ontology-input",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "_source",
+        "line": 73,
+        "endLine": 85
+      },
+      "preimageValue": "sorted(tuple(term.n3() for term in triple) for triple in original ontology graph)",
+      "encoder": "scope-json-sha"
+    },
+    {
+      "id": "selected-rules",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "_source",
+        "line": 73,
+        "endLine": 85
+      },
+      "preimageValue": "canonical Rule objects sorted by id -> [{id,when:[triple N3 tuples],then:triple N3 tuple}]",
+      "encoder": "scope-json-sha",
+      "unresolvedExactDependency": "semantic._canonical_rule invokes semantic_turtle.canonical_string, outside current eight-file text window"
+    },
+    {
+      "id": "fact-view",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "project_validation_scope",
+        "line": 234,
+        "endLine": 298
+      },
+      "preimageValue": "sorted triple N3 tuples of final projected facts",
+      "encoder": "scope-json-sha"
+    },
+    {
+      "id": "ontology-view",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "project_validation_scope",
+        "line": 234,
+        "endLine": 298
+      },
+      "preimageValue": "sorted triple N3 tuples of final projected ontology",
+      "encoder": "scope-json-sha"
+    },
+    {
+      "id": "request-constraint",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_json/_digest and execute_request",
+        "line": 59,
+        "endLine": 501
+      },
+      "preimage": "UTF8(json.dumps(full constraint definition,ensure_ascii=False,sort_keys=True,separators=(comma,colon),allow_nan=False))",
+      "algorithm": "SHA256 lowercase hexdigest"
+    },
+    {
+      "id": "profile-input-text",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_execute_profile",
+        "line": 626,
+        "endLine": 758
+      },
+      "preimage": "original text.encode(UTF8), not normalized display text",
+      "algorithm": "SHA256; inputDigestDomain=utf8-turtle"
+    },
+    {
+      "id": "profile-input-records",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_execute_profile",
+        "line": 626,
+        "endLine": 758
+      },
+      "preimage": "_profile_json_bytes(_ProfileProjection().value(records))",
+      "algorithm": "SHA256; inputDigestDomain=profile-structured-records-json/1",
+      "notConfusedWith": "material._encode has its own explicit input grammar; compatibility not run here"
+    },
+    {
+      "id": "profile-source",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_execute_profile",
+        "line": 626,
+        "endLine": 758
+      },
+      "preimage": "_profile_json_bytes(projection.value(source))",
+      "algorithm": "SHA256 raw bytes; source is SourceRecord or full occurrence tuple"
+    },
+    {
+      "id": "profile-definitions",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_execute_profile",
+        "line": 626,
+        "endLine": 758
+      },
+      "preimage": "_profile_json_bytes(projection.value(tuple(rules)))",
+      "algorithm": "SHA256 raw bytes"
+    },
+    {
+      "id": "profile-json-payload",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_execute_profile",
+        "line": 626,
+        "endLine": 758
+      },
+      "preimage": "_profile_json_bytes(full seven-key payload)",
+      "algorithm": "SHA256 raw bytes; jsonPayloadDigest"
+    },
+    {
+      "id": "profile-rows",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_execute_profile",
+        "line": 626,
+        "endLine": 758
+      },
+      "preimage": "_profile_json_bytes(all one-column string slices of decoded full payload, preserving final slice)",
+      "algorithm": "SHA256 raw bytes; rowsDigest",
+      "sliceUnit": "8192 Python characters, not UTF8 bytes"
+    },
+    {
+      "id": "profile-json-encoder",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_profile_json_bytes",
+        "line": 593,
+        "endLine": 606
+      },
+      "preimage": "JSONEncoder ensure_ascii=False,sort_keys=True,separators=(comma,colon),allow_nan=False; each complete encoded chunk UTF8; no LF",
+      "algorithm": "Encoder only, SHA performed at call sites"
+    },
+    {
+      "id": "material-input-codec",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "function": "_project/_encode/_definitions/_prepare_profile_material",
+        "line": 308,
+        "endLine": 783
+      },
+      "preimage": "exact primitive/record projection -> bounded JSONEncoder same compact/sorted strict options; material holds input_preimage,source_preimage,definitions_preimage,definition_material separately",
+      "algorithm": "_hash accepts exact bytes then SHA256; no new fee acceptance implied"
+    },
+    {
+      "id": "captured-expectation",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "function": "_capture_expectation",
+        "line": 1227,
+        "endLine": 1240
+      },
+      "preimage": "produced.payload_json,produced.rows_json,produced.catalog_json separately; payload existing input/source/definitions digests and material input/source preimages preserved",
+      "algorithm": "three raw byte SHA256s; does not prove runtime issuance or define missing catalog codec"
+    }
+  ],
+  "rawDigestsNotReplacedByRelationDigest": true,
+  "allExternalCodecDependenciesResolved": false,
+  "noActualOutputsOrExpectedRead": true,
+  "productExecuted": false
+}

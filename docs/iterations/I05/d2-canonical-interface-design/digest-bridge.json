@@ -1,0 +1,544 @@
+{
+  "format": "i05-d2-canonical-digest-bridge/1-proposal",
+  "existingRecipeCount": 16,
+  "bridges": [
+    {
+      "id": "scope-json-sha",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/0",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "scope-json-sha",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "function": "_digest",
+          "line": 42,
+          "endLine": 49
+        },
+        "preimage": "UTF8(json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(comma,colon)))",
+        "algorithm": "SHA256 lowercase hexdigest",
+        "notes": [
+          "No domain prefix, terminal LF or Unicode normalization added here",
+          "allow_nan not explicitly set in this function",
+          "Current source inputs use N3 strings/arrays/dicts; this is not a general arbitrary JSON grammar"
+        ]
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "asserted-input",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/1",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "asserted-input",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "function": "_source",
+          "line": 73,
+          "endLine": 85
+        },
+        "preimageValue": "sorted(tuple(term.n3() for term in triple) for triple in original asserted graph)",
+        "encoder": "scope-json-sha"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "ontology-input",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/2",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "ontology-input",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "function": "_source",
+          "line": 73,
+          "endLine": 85
+        },
+        "preimageValue": "sorted(tuple(term.n3() for term in triple) for triple in original ontology graph)",
+        "encoder": "scope-json-sha"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "selected-rules",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/3",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "selected-rules",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "function": "_source",
+          "line": 73,
+          "endLine": 85
+        },
+        "preimageValue": "canonical Rule objects sorted by id -> [{id,when:[triple N3 tuples],then:triple N3 tuple}]",
+        "encoder": "scope-json-sha",
+        "unresolvedExactDependency": "semantic._canonical_rule invokes semantic_turtle.canonical_string, outside current eight-file text window"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "fact-view",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/4",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "fact-view",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "function": "project_validation_scope",
+          "line": 234,
+          "endLine": 298
+        },
+        "preimageValue": "sorted triple N3 tuples of final projected facts",
+        "encoder": "scope-json-sha"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "ontology-view",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/5",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "ontology-view",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+          "function": "project_validation_scope",
+          "line": 234,
+          "endLine": 298
+        },
+        "preimageValue": "sorted triple N3 tuples of final projected ontology",
+        "encoder": "scope-json-sha"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "request-constraint",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/6",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "request-constraint",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_json/_digest and execute_request",
+          "line": 59,
+          "endLine": 501
+        },
+        "preimage": "UTF8(json.dumps(full constraint definition,ensure_ascii=False,sort_keys=True,separators=(comma,colon),allow_nan=False))",
+        "algorithm": "SHA256 lowercase hexdigest"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "profile-input-text",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/7",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "profile-input-text",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_execute_profile",
+          "line": 626,
+          "endLine": 758
+        },
+        "preimage": "original text.encode(UTF8), not normalized display text",
+        "algorithm": "SHA256; inputDigestDomain=utf8-turtle"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "profile-input-records",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/8",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "profile-input-records",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_execute_profile",
+          "line": 626,
+          "endLine": 758
+        },
+        "preimage": "_profile_json_bytes(_ProfileProjection().value(records))",
+        "algorithm": "SHA256; inputDigestDomain=profile-structured-records-json/1",
+        "notConfusedWith": "material._encode has its own explicit input grammar; compatibility not run here"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "profile-source",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/9",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "profile-source",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_execute_profile",
+          "line": 626,
+          "endLine": 758
+        },
+        "preimage": "_profile_json_bytes(projection.value(source))",
+        "algorithm": "SHA256 raw bytes; source is SourceRecord or full occurrence tuple"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "profile-definitions",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/10",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "profile-definitions",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_execute_profile",
+          "line": 626,
+          "endLine": 758
+        },
+        "preimage": "_profile_json_bytes(projection.value(tuple(rules)))",
+        "algorithm": "SHA256 raw bytes"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "profile-json-payload",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/11",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "profile-json-payload",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_execute_profile",
+          "line": 626,
+          "endLine": 758
+        },
+        "preimage": "_profile_json_bytes(full seven-key payload)",
+        "algorithm": "SHA256 raw bytes; jsonPayloadDigest"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "profile-rows",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/12",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "profile-rows",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_execute_profile",
+          "line": 626,
+          "endLine": 758
+        },
+        "preimage": "_profile_json_bytes(all one-column string slices of decoded full payload, preserving final slice)",
+        "algorithm": "SHA256 raw bytes; rowsDigest",
+        "sliceUnit": "8192 Python characters, not UTF8 bytes"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "profile-json-encoder",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/13",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "profile-json-encoder",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "function": "_profile_json_bytes",
+          "line": 593,
+          "endLine": 606
+        },
+        "preimage": "JSONEncoder ensure_ascii=False,sort_keys=True,separators=(comma,colon),allow_nan=False; each complete encoded chunk UTF8; no LF",
+        "algorithm": "Encoder only, SHA performed at call sites"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "material-input-codec",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/14",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "material-input-codec",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+          "function": "_project/_encode/_definitions/_prepare_profile_material",
+          "line": 308,
+          "endLine": 783
+        },
+        "preimage": "exact primitive/record projection -> bounded JSONEncoder same compact/sorted strict options; material holds input_preimage,source_preimage,definitions_preimage,definition_material separately",
+        "algorithm": "_hash accepts exact bytes then SHA256; no new fee acceptance implied"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "captured-expectation",
+      "basis": {
+        "factFile": "digest-recipes.json",
+        "factPointer": "/recipes/15",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": {
+        "id": "captured-expectation",
+        "source": {
+          "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+          "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+          "function": "_capture_expectation",
+          "line": 1227,
+          "endLine": 1240
+        },
+        "preimage": "produced.payload_json,produced.rows_json,produced.catalog_json separately; payload existing input/source/definitions digests and material input/source preimages preserved",
+        "algorithm": "three raw byte SHA256s; does not prove runtime issuance or define missing catalog codec"
+      },
+      "knownRecipeStatus": "EXISTING-FACT recipe only; original byte/preimage receipt and lexical dependency runtime not proven",
+      "requiredOriginalMaterial": "full original preimage bytes if API returns them, otherwise exact owner-approved original value export plus producer lexical witness; unavailable remains pending",
+      "consumerVerification": "full byte SHA only when actual original bytes present; reconstructing N3 or owner projection requires Q03/Q05, never new DTO/display serialization",
+      "newRelationPolicy": "NEW-PROPOSED relation digest only separate supplemental relation, never replace/correct/remove old digest/preimage",
+      "missingGuardIds": ["Q03", "Q05"],
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "production-catalog",
+      "basis": {
+        "factFile": "helper-interface-facts.md",
+        "factPointer": "production.py391 catalog_json paragraph",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": "_profile_json_bytes(_ProfileProjection().value(capture.actual_catalog)); SHA complete catalog_json bytes",
+      "recordStyle": "recordType+flat original fields; Catalog full ordered tuples",
+      "requiredOriginalMaterial": "actual produced.catalog_json, actual_catalog and complete original codec adapter; all bytes retained",
+      "consumerVerification": "compare actual raw bytes/digest first; preserve original projection, do not nest fields to imitate probe",
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "canonical-string-narrow",
+      "basis": {
+        "factFile": "helper-interface-facts.md",
+        "factPointer": "canonical_string20–28 paragraph",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingRecipe": "only no-language XSD.string Literal gets Literal(str(term),normalize=False); all other terms unchanged; no global RDFLib mutation",
+      "consumerVerification": "fact noted only; do not execute helper or normalize numeric/date/language spellings from this design",
+      "semanticOrAuthorityVerified": false
+    },
+    {
+      "id": "implementation-expression",
+      "basis": {
+        "factFile": "helper-interface-facts.md",
+        "factPointer": "IMPLEMENTATION28–32 paragraph",
+        "ref": "39a91de416eb2692aea079c637309f9d8770b08a",
+        "sourceFollowingAuthorized": false
+      },
+      "existingKeys": ["executionSemanticsVersion", "engineVersion", "dependencyLockHash"],
+      "existingDeclaredLiterals": {
+        "executionSemanticsVersion": "i04-infrastructure-v1",
+        "engineVersion": "0.1.0"
+      },
+      "existingExpressionNotEvaluated": "hashlib.sha256(LOCK_FILE.read_bytes()).hexdigest()",
+      "semanticIdentityOverrideFact": "selected i05-finite-6/7/8 only; exact bool flags and explanation requires profile",
+      "actualDependencyLockHash": null,
+      "consumerVerification": "retain actual returned implementation bytes/value if later observed; do not evaluate expression or follow lock/helper/source pins",
+      "semanticOrAuthorityVerified": false
+    }
+  ],
+  "scopeJsonOptionsFact": {
+    "ensure_ascii": false,
+    "sort_keys": true,
+    "separators": [",", ":"],
+    "allow_nanExplicitlySpecified": false,
+    "noNewDomainOrLfOrNormalization": true,
+    "notArbitraryJsonLanguage": true
+  },
+  "profileJsonOptionsFact": {
+    "ensure_ascii": false,
+    "sort_keys": true,
+    "separators": [",", ":"],
+    "allow_nan": false,
+    "UTF8": "strict",
+    "LF": false
+  },
+  "rowsRecipeFact": {
+    "unit": "Python characters",
+    "chunkLength": 8192,
+    "columnsPerRow": 1,
+    "allFinalSlicesRetained": true,
+    "utf8ByteResliceForbidden": true
+  },
+  "newRelationHash": {
+    "status": "NEW-PROPOSED-NOT-ADOPTED",
+    "algorithm": "SHA256",
+    "preimage": "ASCII ontolearn/i05/canonical-interface-bridge/1-proposal then one NUL then C(relationCore)",
+    "C": "UTF8 JSON ensure_ascii=False sort_keys=True separators=(comma,colon) allow_nan=False; no floats; unicode scalar values unchanged",
+    "exactCoreKeys": [
+      "dtoFormat",
+      "recordId",
+      "factBasis",
+      "originalBlobRefs",
+      "fieldStates",
+      "bridgeState"
+    ],
+    "exclude": [
+      "relationDigest itself",
+      "future carrier/manifest/receipt/process hashes",
+      "live authority claims"
+    ],
+    "notPreimageForAnyExistingDigest": true,
+    "liveAuthorityProvided": false
+  },
+  "dependencyOrder": [
+    "fixed facts/owner adopted codec pins and prior build",
+    "actual original bytes and live caller/child source evidence if authorized",
+    "new export and separate relationCore",
+    "supplemental digest",
+    "carrier2/binding2 complete manifest",
+    "receipt3"
+  ],
+  "actualOriginalPreimagesVerified": false
+}

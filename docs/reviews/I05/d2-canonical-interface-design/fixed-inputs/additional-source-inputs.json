@@ -1,0 +1,155 @@
+{
+  "format": "i05-additional-interface-inputs/1",
+  "bindingPath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I05-M02-M05-additional-interface-static-read-binding-20261022.json",
+  "bindingBytes": 8069,
+  "bindingSha256": "ee8373d4366693acefc1c82aac738294a0cc11b816fdd4fe842a38b490686686",
+  "inputs": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 33916,
+      "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+      "namedTargets": [
+        "canonical_string",
+        "parse_graph",
+        "parse_profile_graph",
+        "profile_graph_from_records",
+        "bind_profile_disabled_rules"
+      ],
+      "permittedTextScope": "specified pure serialization/parser API layout facts only",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "namedTargets": [
+        "SourceRecord",
+        "TermInput",
+        "InputLocation",
+        "ProfileLimits",
+        "ProfileFailure"
+      ],
+      "permittedTextScope": "named class/type declarations,constructor field assignments,dataclass fields only",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "namedTargets": [
+        "Variable",
+        "Triple",
+        "Comparison",
+        "RuleSpec",
+        "Catalog",
+        "BindingMatch",
+        "ComparisonEvidence",
+        "HeadEvidence",
+        "PreparedFiring",
+        "PreparedFiringBatch"
+      ],
+      "permittedTextScope": "named class/type declarations,constructor field assignments,dataclass fields only",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 6176,
+      "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+      "namedTargets": ["ProfileValue"],
+      "permittedTextScope": "named class/type declarations only",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "namedTargets": ["Number"],
+      "permittedTextScope": "named class/type declarations only",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "namedTargets": ["Calendar"],
+      "permittedTextScope": "named class/type declarations only",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "bytes": 19993,
+      "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+      "namedTargets": [
+        "_ProductionCapture",
+        "execute_admitted_profile_job",
+        "execute_profile_explanation"
+      ],
+      "permittedTextScope": "API signatures/return shape/classes/catalog-source-definition codec fields only;not fee/resource logic",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "bytes": 70203,
+      "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+      "namedTargets": [
+        "RestoreExpectation",
+        "ExplanationRestoreExpectation",
+        "restore_profile_result",
+        "restore_profile_explanation_result",
+        "explanation_roots"
+      ],
+      "permittedTextScope": "API signatures/return classes/serialized field layout only;not recovery/resource algorithm analysis",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "bytes": 37889,
+      "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+      "namedTargets": ["RestoreFailure", "RestoreLedger"],
+      "permittedTextScope": "only named exception/ledger interface/receipt field declarations;no fee/rate/physicalbudget algorithm bodies",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "bytes": 46459,
+      "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+      "namedTargets": ["DirectStepsFailure", "DirectStepsLedger"],
+      "permittedTextScope": "only named exception/ledger interface/receipt field declarations;no fee/rate/physicalbudget algorithm bodies",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "namedTargets": ["SemanticError", "OfflineAccessDenied"],
+      "permittedTextScope": "named existing safe exception fields/signatures only",
+      "sourceMode": "fixed Git object only,currenttree not adopted"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "wholeSourceBytesOpaque": 3065,
+      "wholeSourceSHA256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+      "functionOnly": "semantic_identity",
+      "firstLine": 35,
+      "lastLine": 48,
+      "approvedFragment": "I05-M02-M05-resources-semantic-identity-fixed-fragment.py.txt",
+      "fragmentBytes": 646,
+      "fragmentSHA256": "2943b2094019ae07aefdf93dfe845ae75c19e69af8b24ecfa6f9150ec7800920",
+      "permittedTextScope": "only exact fragment;not other resources.py bodies/globals;sourceAST parsed solely to locate this top-level function"
+    }
+  ],
+  "sourceFactsOnly": true,
+  "noExecution": true
+}

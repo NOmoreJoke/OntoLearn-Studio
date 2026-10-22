@@ -1,0 +1,30 @@
+{
+  "format": "i05-canonical-design-static-check-record/1",
+  "argv": [
+    "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+    "-c",
+    "import json,pathlib; p=pathlib.Path('docs/reviews/I05/d2-canonical-interface-design/canonical-interface-static-source-v2.json'); exec(compile(json.loads(p.read_text())['source'], '<i05-canonical-document-static-check>', 'exec'))"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+  "envOverride": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "exit": 0,
+  "stdout": {
+    "encoding": "lossless-utf8-json",
+    "text": "{\"scope\": \"minimal documentation/static+hand literal checks only\", \"fixedPureInputs\": 11, \"protectedOldCurrentBytes\": 176, \"apiTopIds\": 12, \"additionalReturnRecords\": 15, \"mappedDirectories\": 52, \"mappedFieldRows\": 263, \"originalRecipesPreserved\": 16, \"newProposedDefinitions\": 29, \"ownerRequests\": 9, \"negativeDesignCasesDeclared\": 21, \"negativeProductCasesExecuted\": 0, \"handRowsChars\": [8192, 2], \"oldCodecsOrProductsExecuted\": false, \"jsonSchemaEngineValidation\": false, \"actualAuthorityOrRuntimeClosed\": false, \"independentReview\": \"pending\"}\n",
+    "bytes": 548,
+    "sha256": "ec88b86ddb0d7531dfdc5bb09cf2c880386206ab24699f8ed002b550aba60bd8",
+    "base64": "eyJzY29wZSI6ICJtaW5pbWFsIGRvY3VtZW50YXRpb24vc3RhdGljK2hhbmQgbGl0ZXJhbCBjaGVja3Mgb25seSIsICJmaXhlZFB1cmVJbnB1dHMiOiAxMSwgInByb3RlY3RlZE9sZEN1cnJlbnRCeXRlcyI6IDE3NiwgImFwaVRvcElkcyI6IDEyLCAiYWRkaXRpb25hbFJldHVyblJlY29yZHMiOiAxNSwgIm1hcHBlZERpcmVjdG9yaWVzIjogNTIsICJtYXBwZWRGaWVsZFJvd3MiOiAyNjMsICJvcmlnaW5hbFJlY2lwZXNQcmVzZXJ2ZWQiOiAxNiwgIm5ld1Byb3Bvc2VkRGVmaW5pdGlvbnMiOiAyOSwgIm93bmVyUmVxdWVzdHMiOiA5LCAibmVnYXRpdmVEZXNpZ25DYXNlc0RlY2xhcmVkIjogMjEsICJuZWdhdGl2ZVByb2R1Y3RDYXNlc0V4ZWN1dGVkIjogMCwgImhhbmRSb3dzQ2hhcnMiOiBbODE5MiwgMl0sICJvbGRDb2RlY3NPclByb2R1Y3RzRXhlY3V0ZWQiOiBmYWxzZSwgImpzb25TY2hlbWFFbmdpbmVWYWxpZGF0aW9uIjogZmFsc2UsICJhY3R1YWxBdXRob3JpdHlPclJ1bnRpbWVDbG9zZWQiOiBmYWxzZSwgImluZGVwZW5kZW50UmV2aWV3IjogInBlbmRpbmcifQo="
+  },
+  "stderr": {
+    "encoding": "lossless-utf8-json",
+    "text": "",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "base64": ""
+  },
+  "sourceStaticReadTool": "851c2d",
+  "sourceContainerSha256": "be2d67b1c53bf768c8f6bb4cde9197e2d8a44677a5ffa350a81ca9d071e606d8",
+  "scope": "own minimal structure/hand literal check only; old codec/product/helper not executed; 21 negatives declarative, not21 runtime tests"
+}

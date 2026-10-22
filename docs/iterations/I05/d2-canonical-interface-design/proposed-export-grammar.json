@@ -1,0 +1,851 @@
+{
+  "format": "i05-canonical-interface-export-grammar/1-proposal",
+  "status": "EVERY definition NEW-PROPOSED-NOT-ADOPTED, not an existing schema",
+  "syntax": "exact required records/no unknown keys/no defaults; exactly one union tag; ordered full arrays; exact primitives; no arbitrary object or float",
+  "definitions": {
+    "Text": {
+      "kind": "primitive",
+      "type": "str",
+      "status": "NEW-PROPOSED-NOT-ADOPTED"
+    },
+    "Nat": {
+      "kind": "primitive",
+      "type": "int-exact-nonnegative",
+      "status": "NEW-PROPOSED-NOT-ADOPTED"
+    },
+    "Bool": {
+      "kind": "primitive",
+      "type": "bool-exact",
+      "status": "NEW-PROPOSED-NOT-ADOPTED"
+    },
+    "IntText": {
+      "kind": "primitive",
+      "type": "decimal-integer-string",
+      "status": "NEW-PROPOSED-NOT-ADOPTED"
+    },
+    "Sha": {
+      "kind": "primitive",
+      "type": "lowercase-hex64",
+      "status": "NEW-PROPOSED-NOT-ADOPTED"
+    },
+    "Ref40": {
+      "kind": "primitive",
+      "type": "lowercase-hex40",
+      "status": "NEW-PROPOSED-NOT-ADOPTED"
+    },
+    "BlobRef": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["root", "path", "bytes", "sha256"],
+      "fields": {
+        "root": {
+          "type": {
+            "const": "approved-witness"
+          },
+          "meaning": "controlled external root, not probe locator"
+        },
+        "path": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "safe relative ordinary-file path; real containment/aliases checked by external owner"
+        },
+        "bytes": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "complete bytes"
+        },
+        "sha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "RawSHA of unchanged full bytes"
+        }
+      }
+    },
+    "Pin6": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["ref", "path", "bytes", "sha256", "gitBlob", "repositoryId"],
+      "fields": {
+        "ref": {
+          "type": {
+            "ref": "Ref40"
+          },
+          "meaning": "external exact accepted identity; syntax is not authority"
+        },
+        "path": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "external exact accepted identity; syntax is not authority"
+        },
+        "bytes": {
+          "type": {
+            "ref": "Nat"
+          },
+          "meaning": "external exact accepted identity; syntax is not authority"
+        },
+        "sha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "external exact accepted identity; syntax is not authority"
+        },
+        "gitBlob": {
+          "type": {
+            "ref": "Ref40"
+          },
+          "meaning": "external exact accepted identity; syntax is not authority"
+        },
+        "repositoryId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "external exact accepted identity; syntax is not authority"
+        }
+      }
+    },
+    "FactBasis": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["inventoryRef", "documentPath", "pointer", "documentSha256"],
+      "fields": {
+        "inventoryRef": {
+          "type": {
+            "const": "39a91de416eb2692aea079c637309f9d8770b08a"
+          },
+          "meaning": "pure inventory ref, not source access"
+        },
+        "documentPath": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "one received pure fact path"
+        },
+        "pointer": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "exact JSON pointer or markdown line"
+        },
+        "documentSha256": {
+          "type": {
+            "ref": "Sha"
+          },
+          "meaning": "original received fact bytes SHA"
+        }
+      }
+    },
+    "NoneValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "none"
+          },
+          "meaning": "NEW typed tag, not old codec"
+        }
+      }
+    },
+    "BoolValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag", "value"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "bool"
+          },
+          "meaning": "NEW typed tag, not old codec"
+        },
+        "value": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "complete actual value only after exact owner acceptance"
+        }
+      }
+    },
+    "IntValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag", "value"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "integer-decimal"
+          },
+          "meaning": "NEW typed tag, not old codec"
+        },
+        "value": {
+          "type": {
+            "ref": "IntText"
+          },
+          "meaning": "complete actual value only after exact owner acceptance"
+        }
+      }
+    },
+    "StringValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag", "value"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "string"
+          },
+          "meaning": "NEW typed tag, not old codec"
+        },
+        "value": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "complete actual value only after exact owner acceptance"
+        }
+      }
+    },
+    "BytesValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag", "value"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "bytes-reference"
+          },
+          "meaning": "NEW typed tag, not old codec"
+        },
+        "value": {
+          "type": {
+            "ref": "BlobRef"
+          },
+          "meaning": "complete actual value only after exact owner acceptance"
+        }
+      }
+    },
+    "SequenceValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag", "nativeKind", "items"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "sequence"
+          },
+          "meaning": "NEW exact sequence distinction"
+        },
+        "nativeKind": {
+          "type": {
+            "enum": ["list", "tuple"]
+          },
+          "meaning": "NEW grammar enum, NOT old ReadonlySequence.native_kind:str enum"
+        },
+        "items": {
+          "type": {
+            "array": {
+              "ref": "ClosedValue"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "all original sequence members and tail"
+        }
+      }
+    },
+    "MapMember": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "fields": {
+        "name": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "NEW approved string-key subset, not every old dict"
+        },
+        "value": {
+          "type": {
+            "ref": "ClosedValue"
+          },
+          "meaning": "full owned member"
+        }
+      }
+    },
+    "MapValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag", "entries"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "ordered-string-map"
+          },
+          "meaning": "NEW grammar, cannot auto-close native_result dict"
+        },
+        "entries": {
+          "type": {
+            "array": {
+              "ref": "MapMember"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "unique names, full insertion order"
+        }
+      }
+    },
+    "RecordMember": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "fields": {
+        "name": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "exact explicitly approved owner field"
+        },
+        "value": {
+          "type": {
+            "ref": "ClosedValue"
+          },
+          "meaning": "no generic reflection fallback"
+        }
+      }
+    },
+    "RecordValue": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["tag", "typeId", "adapterPin", "fields"],
+      "fields": {
+        "tag": {
+          "type": {
+            "const": "explicit-record-adapter"
+          },
+          "meaning": "NEW export, not existing recordType"
+        },
+        "typeId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "new approved exact-class registry identity, no guessed existing literal"
+        },
+        "adapterPin": {
+          "type": {
+            "ref": "Pin6"
+          },
+          "meaning": "actual owner adoption prior to export, current unknown"
+        },
+        "fields": {
+          "type": {
+            "array": {
+              "ref": "RecordMember"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "all exact fields, inherited and sidecars retained"
+        }
+      }
+    },
+    "ClosedValue": {
+      "kind": "tagged-union",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "variants": [
+        {
+          "ref": "NoneValue"
+        },
+        {
+          "ref": "BoolValue"
+        },
+        {
+          "ref": "IntValue"
+        },
+        {
+          "ref": "StringValue"
+        },
+        {
+          "ref": "BytesValue"
+        },
+        {
+          "ref": "SequenceValue"
+        },
+        {
+          "ref": "MapValue"
+        },
+        {
+          "ref": "RecordValue"
+        }
+      ],
+      "restriction": "object/unrefined tuple/dict and incomplete class directory remain blocked until EXACT owner grammar and codec adopted; this new generic data language cannot close existing types"
+    },
+    "ExportedSlot": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["state", "value", "adapterPin"],
+      "fields": {
+        "state": {
+          "type": {
+            "const": "exported-with-adopted-adapter"
+          },
+          "meaning": "future exact owner accepted path only"
+        },
+        "value": {
+          "type": {
+            "ref": "ClosedValue"
+          },
+          "meaning": "actual None only explicit NoneValue"
+        },
+        "adapterPin": {
+          "type": {
+            "ref": "Pin6"
+          },
+          "meaning": "no actual adapter pin issued by this design"
+        }
+      }
+    },
+    "OriginalBytesSlot": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["state", "blob", "codecFamilyId", "semanticCompatible"],
+      "fields": {
+        "state": {
+          "type": {
+            "const": "original-bytes-retained"
+          },
+          "meaning": "existing actual API bytes, never invented legacy metadata wire"
+        },
+        "blob": {
+          "type": {
+            "ref": "BlobRef"
+          },
+          "meaning": "full unchanged original"
+        },
+        "codecFamilyId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "specific old codec family kept distinct"
+        },
+        "semanticCompatible": {
+          "type": {
+            "const": false
+          },
+          "meaning": "bytes alone not semantics/authority"
+        }
+      }
+    },
+    "BlockedSlot": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "availableOriginalBlobs",
+        "noWireReason",
+        "requestIds",
+        "retentionState",
+        "semanticCompatible"
+      ],
+      "fields": {
+        "state": {
+          "type": {
+            "const": "layout-blocked"
+          },
+          "meaning": "known field cannot currently be fully exported"
+        },
+        "availableOriginalBlobs": {
+          "type": {
+            "array": {
+              "ref": "BlobRef"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "all existing bytes if actually available, never manufacture wire"
+        },
+        "noWireReason": {
+          "type": {
+            "nullable": {
+              "enum": [
+                "original-api-no-dedicated-wire",
+                "not-yet-captured",
+                "existing-codec-not-closed"
+              ]
+            }
+          },
+          "meaning": "explicit why absent; null when bytes retained"
+        },
+        "requestIds": {
+          "type": {
+            "array": {
+              "ref": "Text"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "nonempty unresolved exact owner request IDs"
+        },
+        "retentionState": {
+          "type": {
+            "enum": [
+              "not-observed-in-this-doc",
+              "owner-retains-reference-pending-approved-export",
+              "release-pending"
+            ]
+          },
+          "meaning": "actual owner/lifetime proof still needed; strings are not capability"
+        },
+        "semanticCompatible": {
+          "type": {
+            "const": false
+          },
+          "meaning": "blocked is not actual None or success"
+        }
+      }
+    },
+    "NotReachedSlot": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["state", "blockingStageId", "reason"],
+      "fields": {
+        "state": {
+          "type": {
+            "const": "not-reached"
+          },
+          "meaning": "dependent stage did not run; no expected fill"
+        },
+        "blockingStageId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "actual earlier blocker link if future runtime"
+        },
+        "reason": {
+          "type": {
+            "enum": ["not-started", "prior-stage-failure", "declared-interface-unavailable"]
+          },
+          "meaning": "does not replace original canonical first failure"
+        }
+      }
+    },
+    "FieldSlot": {
+      "kind": "tagged-union",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "variants": [
+        {
+          "ref": "ExportedSlot"
+        },
+        {
+          "ref": "OriginalBytesSlot"
+        },
+        {
+          "ref": "BlockedSlot"
+        },
+        {
+          "ref": "NotReachedSlot"
+        }
+      ]
+    },
+    "FieldEntry": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": ["name", "basis", "slot"],
+      "fields": {
+        "name": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "each exact received directory field in original order"
+        },
+        "basis": {
+          "type": {
+            "ref": "FactBasis"
+          },
+          "meaning": "pure fact identity only"
+        },
+        "slot": {
+          "type": {
+            "ref": "FieldSlot"
+          },
+          "meaning": "availability distinct from real None/false/empty tuple"
+        }
+      }
+    },
+    "OriginalRepresentation": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": [
+        "representationId",
+        "codecFamilyId",
+        "byteOrigin",
+        "blob",
+        "nativeKindEvidence",
+        "semanticRoundTrip"
+      ],
+      "fields": {
+        "representationId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "unique relation label, no issuer"
+        },
+        "codecFamilyId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "material/production/probe/scope memory stay distinct"
+        },
+        "byteOrigin": {
+          "type": {
+            "enum": ["preexisting-returned-bytes", "no-dedicated-original-wire"]
+          },
+          "meaning": "new export never relabeled as old bytes"
+        },
+        "blob": {
+          "type": {
+            "nullable": {
+              "ref": "BlobRef"
+            }
+          },
+          "meaning": "null for no original wire, not proof original value was None"
+        },
+        "nativeKindEvidence": {
+          "type": {
+            "enum": [
+              "preserved-in-original",
+              "already-collapsed-by-existing-codec",
+              "not-established"
+            ]
+          },
+          "meaning": "array bytes cannot recover tuple/list; native_kind field still retained"
+        },
+        "semanticRoundTrip": {
+          "type": {
+            "const": "not-proved"
+          },
+          "meaning": "requires exact old codec/owner proof"
+        }
+      }
+    },
+    "DtoEnvelope": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "status",
+        "recordId",
+        "attemptId",
+        "childContextRunId",
+        "stageId",
+        "directoryId",
+        "originalRepresentations",
+        "fieldEntries",
+        "directoryCoverage",
+        "wholeValueExportComplete",
+        "semanticCompatible",
+        "authorityVerified"
+      ],
+      "fields": {
+        "format": {
+          "type": {
+            "const": "i05-canonical-interface-dto/1-proposal"
+          },
+          "meaning": "NEW explicitly unadopted format"
+        },
+        "status": {
+          "type": {
+            "const": "NEW-PROPOSED-NOT-ADOPTED"
+          },
+          "meaning": "not existing or approved wire"
+        },
+        "recordId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "new export record identifier"
+        },
+        "attemptId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "actual prior caller attempt if future authorized"
+        },
+        "childContextRunId": {
+          "type": {
+            "nullable": {
+              "ref": "Text"
+            }
+          },
+          "meaning": "only first trusted context; role reception is separate from actual approval"
+        },
+        "stageId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "future carrier2 stage link"
+        },
+        "directoryId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "received directory ID"
+        },
+        "originalRepresentations": {
+          "type": {
+            "array": {
+              "ref": "OriginalRepresentation"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "all existing actually available byte forms"
+        },
+        "fieldEntries": {
+          "type": {
+            "array": {
+              "ref": "FieldEntry"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "exact all known names/order; unknown actual field blocks completeness"
+        },
+        "directoryCoverage": {
+          "type": {
+            "enum": ["complete-known-directory", "missing-owner-directory"]
+          },
+          "meaning": "names complete does not mean values closed"
+        },
+        "wholeValueExportComplete": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "false with any unclosed value/layout/codec gap"
+        },
+        "semanticCompatible": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "not implied by structure/bytes"
+        },
+        "authorityVerified": {
+          "type": {
+            "ref": "Bool"
+          },
+          "meaning": "requires actual independent owner/source verifier"
+        }
+      }
+    },
+    "RelationCore": {
+      "kind": "exact-record",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "additionalProperties": false,
+      "required": [
+        "dtoFormat",
+        "recordId",
+        "factBasis",
+        "originalBlobRefs",
+        "fieldStates",
+        "bridgeState"
+      ],
+      "fields": {
+        "dtoFormat": {
+          "type": {
+            "const": "i05-canonical-interface-dto/1-proposal"
+          },
+          "meaning": "new supplemental domain"
+        },
+        "recordId": {
+          "type": {
+            "ref": "Text"
+          },
+          "meaning": "same envelope"
+        },
+        "factBasis": {
+          "type": {
+            "array": {
+              "ref": "FactBasis"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "all prior pure facts"
+        },
+        "originalBlobRefs": {
+          "type": {
+            "array": {
+              "ref": "BlobRef"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "full prior originals, no future/self refs"
+        },
+        "fieldStates": {
+          "type": {
+            "array": {
+              "ref": "Text"
+            },
+            "ordered": true,
+            "duplicatesAndFinalTailPreserved": true
+          },
+          "meaning": "every field name/state in exact directory order"
+        },
+        "bridgeState": {
+          "type": {
+            "enum": [
+              "pending-owner-contract",
+              "bytes-only",
+              "new-adapter-accepted-pending-authority"
+            ]
+          },
+          "meaning": "no source/issuer authorization"
+        }
+      }
+    }
+  },
+  "rules": {
+    "FIELD-COVERAGE": "Every original directory field once in original order, including inherited14/15, native_kind, sidecars/preimages. Unknown actual field keeps existing bytes and blocks complete export; no silent ignore.",
+    "UNREFINED": "object/plain tuple/dict/incomplete class directory stays blocked even sample looks JSON. Preserve existing raw when available; no original byte wire invented. Live references require future actual owner/lifetime authority.",
+    "NO-REFLECTION": "future exact explicitly approved class/field adapter only; no generic getattr/__dict__/repr/str or source-pin following.",
+    "ORIGINAL-CODECS": "production flat recordType+fields versus probe full-module recordType+nested fields; hex/base64/integerHex and list/tuple collapse kept distinct.",
+    "STATE": "NoneValue is actual None, blocked/not-reached/no-wire different; no expected fill or success by omission.",
+    "RAW": "all original bytes/tails/duplicates/old digests/native_kind preserved; no whole-value retention claim when unknown live object has no export codec.",
+    "ADOPTION": "all definitions NEW proposed, require Q04 exact owner/root adoption and actual pins; identity-policy role reception does not adopt this codec.",
+    "STREAM": "no strict18/header/four-schema/old1241 changes. Future carrier2 stage layoutId/codecId must explicitly adopt this proposed artifact and same attempt/raw/prior build, list in manifest; old versions reject unknown codec rather than skip.",
+    "CAPS": "full originals plus new encoding need approved capture/admission/budget accounting; no hidden files bypass caps, no suppression of originals or inferred physical authority.",
+    "HASH": "retain original byte/preimage digests; separate proposed relation tag excludes self/future manifest/receipt and provides no semantic/issuer proof."
+  },
+  "currentGateState": {
+    "grammarAdopted": false,
+    "fullValueAdapterClosed": false,
+    "sourcePermissionVerified": false,
+    "sameIssueLiveAuthorityVerified": false,
+    "wholeM02M05Closed": false,
+    "runtimeAuthorized": false
+  }
+}
