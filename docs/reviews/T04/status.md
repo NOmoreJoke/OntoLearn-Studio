@@ -1,8 +1,8 @@
 # T04 查询状态
 
-2026-10-22；owner/chat `01a15bcd-fcba-7583-a307-56497cdde347`。**T04-S1 独立实现、完整检查与独立内审通过；指定双审实际任务仍为 0。总控曾授短 GUI 窗口，创建前遇 CUA 并发保护，已停止并明确释放；未发送正文、无真实任务 ID。完整 T04/父功能未完成，原 Goal 当前为 blocked，完整目标与交付保留。**
+2026-10-23；owner/chat `01a15bcd-fcba-7583-a307-56497cdde347`。**T04-S1 的两指定同版完整独立审查均已实际终态并明确通过；两原报告已全文收件，各三项 P3 合并为四项待修建议，当前候选继续冻结。完整 T04/父功能未完成；原 Goal 工具最近读回仍为 blocked，未重建 Goal，实际审查与收件已在同一原会话继续完成。**
 
-最新队列纠偏：总控已直接通知旧 T05 窗口实际释放，当前唯一 GUI 窗口归 **I05 retained R2**；不得再将 T05 当作当前阻塞。总控将在 I05 真实释放后明确向本会话交接下一短创建窗口，此通知本身不是 T04 新 grant。两份 496 行附件和原候选保持，不提前 CUA，不基于旧 cursor 反复轮询或重测。历史 T05 调度观察按原时点保留；[本次队列接收记录](round-1/queue-correction-20261022.json)单独记录当前状态。
+最新调度：I05 retained 原 owner 已实际释放后，总控明确授予 T04 新短创建窗口；本方已完成两任务发送、设置/原生 ID 读回并明确释放 GUI，总控回执已将窗口交 T05 原 MiniMax 任务恢复。本方仅后台核终态并收件，不再 CUA。此前 T05/I05 队列观察及 [18a4d876 对应纠偏记录](round-1/queue-correction-20261022.json)均按原时点保留。当前真实创建与全文受理证据见[本轮创建收据](round-1/actual-launch-20261022/creation-receipt.json)。
 
 ## 当前身份与候选
 
@@ -31,13 +31,13 @@
 
 总控已在仓库外 service-stage-register.md 正式登记 T04-S1，并全文接收固定准备包；派发预检确认准备条件满足。产品仍固定 554、base 5f，两方 review root 均 detached 9a；prep a13 和 diff 参数补充 facac 仅流程件。新增 T01/T03 共享交接不扩张本线责任或允许消费未批代码。
 
-总控随后实际授予 T04 短创建窗口。本方 ZCode 项目/空草稿曾核对为指定 review 目录、游离 HEAD、GLM-5.3「最高」及「完全访问」，但这些是草稿设置，不是任务受理。恢复原会话后，本方项目仍显示「暂无任务」；点击本方新建任务被 CUA 的 “The user changed '/Applications/ZCode.app'” 保护拦截，未执行点击。按约定只做一次 fresh 只读观察后停止该 app；MiniMax fresh 观察也已在无关会话，未对其点击、创建或粘贴。GUI 已明确释放并回报总控；两方 task ID、发送和全文实读均未产生。remote compact 的连接失败单列为本代理 transport 故障，不计为产品检查或指定模型失败。
+此前失败的历史创建尝试：总控随后实际授予 T04 短创建窗口。本方 ZCode 项目/空草稿曾核对为指定 review 目录、游离 HEAD、GLM-5.3「最高」及「完全访问」，但这些是草稿设置，不是任务受理。恢复原会话后，本方项目仍显示「暂无任务」；点击本方新建任务被 CUA 的 “The user changed '/Applications/ZCode.app'” 保护拦截，未执行点击。按约定只做一次 fresh 只读观察后停止该 app；MiniMax fresh 观察也已在无关会话，未对其点击、创建或粘贴。GUI 已明确释放并回报总控；两方 task ID、发送和全文实读均未产生。remote compact 的连接失败单列为本代理 transport 故障，不计为产品检查或指定模型失败。
 
-当前可直接粘贴的完整附件已在各方独占 runtime 组装：原完整正文与同义 diff 附录分别保持原字节，新增投递封面只说明完整读取与最小设置收据。ZCode 83018 字节/496 行/SHA `d2c0b328070962ac56c9dbae9d99ee026df538d786dc6ac39c3fe47619b6bb28`；MiniMax 83104 字节/496 行/SHA `94be45ae7e598a57ad63a0e53521c6ca13d9c76be3028cd7941dea81e0c9921a`。文件生成不算发送或完整受理；下次实际创建后仍须逐任务设置、原生 ID 和实际 Read 全行证据。详见[派发状态](round-1/dispatch-state-20261022.json)。
+本轮实际投递的完整附件先在各方独占 runtime 组装：原完整正文与同义 diff 附录分别保持原字节，新增投递封面只说明完整读取与最小设置收据。ZCode 83018 字节/496 行/SHA `d2c0b328070962ac56c9dbae9d99ee026df538d786dc6ac39c3fe47619b6bb28`；MiniMax 83104 字节/496 行/SHA `94be45ae7e598a57ad63a0e53521c6ca13d9c76be3028cd7941dea81e0c9921a`。旧[派发状态](round-1/dispatch-state-20261022.json)是准备时快照；本次实际发送、ID 和完整 Read 证据另见本轮创建收据。ZCode 任务 `session_1719c0a047701db7476795228340f6f6`，MiniMax 任务 `mvs_3ad70e61ef6147a799bb745debb73bee`。ZCode 首请求的本人附件自动 Read 实际含 1–497 编号行，MiniMax 四次本人附件 Read 实际覆盖 1–496；由实际编号内容重建正文（终端 LF 另核实际附件），分别与实际附件和提交文件逐字相等。只归档本方输入编号行及最小标量，不归档一般 system、thinking、headers 或通用工具 stdout。
 
-本线交付：[服务阶段](../../iterations/T04/service-stage.md)、[接线缺口](../../iterations/T04/integration-handoff.md)、[已批准读取适配](../../iterations/T04/reader-integration.md)、[验收对应](../../iterations/T04/acceptance.md)。正常回执固定 candidate、过程 HEAD、manifest/raw；下一步按总控实际交接的短窗口完成两方创建，不自行重占已释放窗口或改前方候选基线。
+本线交付：[服务阶段](../../iterations/T04/service-stage.md)、[接线缺口](../../iterations/T04/integration-handoff.md)、[已批准读取适配](../../iterations/T04/reader-integration.md)、[验收对应](../../iterations/T04/acceptance.md)。正常回执固定 candidate、过程 HEAD、manifest/raw；本次已后台核验原任务真实终态、全文收件并逐项登记；下一步交总控核验固定收件及后续集成/发布门；不自行重占已释放窗口或改前方候选基线。
 
-正式审查前刷新实际批准 develop/依赖并必要验证；ZCode GLM-5.3/最高、MiniMax M3.1-Flash/xhigh各全新完整独立任务，实际路径/模式/模型读回、真实终态全文报告/全部处置/同候选双方明确通过后才 push/PR（attach），实际 CI 通过后正常合并/远端核验。**当前未指定双外审、未 push/PR/CI/合并、未上线。**
+本轮按明确批准的 5f/554 固定映射审查；两方真实终态与全文报告、逐项处置见[收件证明](round-1/actual-launch-20261022/collection-receipt.json)和[owner 处置](round-1/owner-disposition-20261023.md)。ZCode GLM-5.3/最高与 MiniMax M3.1-Flash/xhigh 均对同版完整 S1 通过；原报告 metadata 未知项由操作者后续真实收据补充，模型原件不改。**当前未 push/PR/CI/合并、未上线；仍按总控实际集成/推送调度和全部父门继续。**
 
 ## 原父功能完整缺口保留
 
@@ -45,7 +45,7 @@
 
 ## 操作政策接收（以下为 2026-10-21 历史记录）
 
-本节旧无桌面约束仅描述当时接收与执行事实，已被 2026-10-22 用户更新撤回。现行规则以最新 AGENTS、共同指令和桌面政策为准；不能将旧限制继续当作当前桌面阻断理由。当前阻断是实际 CUA 并发保护后释放了内部窗口，非等待用户预约或登录。
+本节旧无桌面约束仅描述当时接收与执行事实，已被 2026-10-22 用户更新撤回。现行规则以最新 AGENTS、共同指令和桌面政策为准；不能将旧限制继续当作当前桌面阻断理由。旧创建尝试曾遇 CUA 并发保护；本次已按新明确交接完成创建并释放窗口，不能继续用旧错误或等待用户预约/登录阻断当前后台审查。
 
 第九节与无桌面段全文已读/透传独立 agent：第九节 SHA `1f57a08e909e9d49a6e2c2d6e7012beec3e22b8e3c9e8eacad22c84dfb2d4b54`，无桌面 `5215df2ead4745e7d74f137c4fa6ac837a54114590b5dee2d83cd16bb728551d`，早期补发共同指令 `9717f699e14b5941e15d90269f33cbebc32ef9bec6e7439739be848753419880`；后续共同指令 `df09014af4d6cf757ca0977a995497f3646cd330e8921710876663a40a8cbcb4` 和 external-review-permissions.md 亦已全文读/透传并实际回执。
 

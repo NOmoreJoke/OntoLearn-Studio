@@ -1,0 +1,127 @@
+{
+  "collectedAt": "2026-10-22T16:07:06.627594+00:00",
+  "product": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "bothActualOriginalTurnsCompleted": true,
+  "terminalProof": "actual-terminal.json",
+  "bothFullInputsAccepted": true,
+  "bothFullScopeS1ExplicitPass": true,
+  "reports": [
+    {
+      "role": "zcode",
+      "original": {
+        "originalPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-review-554ec89/docs/reviews/T04/round-1/zcode-glm53.md",
+        "archiveMember": "report/zcode-glm53.md",
+        "bytes": 18874,
+        "sha256": "2122c795d14abce9d82a274ff27b45b04b30a08fd4217f799846ddd659228576"
+      },
+      "display": {
+        "path": "docs/reviews/T04/round-1/zcode-glm53.md",
+        "bytes": 18874,
+        "sha256": "2122c795d14abce9d82a274ff27b45b04b30a08fd4217f799846ddd659228576",
+        "transformation": "Markdown formatting only; exact reviewer original preserved separately and unchanged"
+      },
+      "originalOwnerReadFull": true,
+      "actualConclusion": "Pass for same-candidate full bounded S1 only",
+      "newP3Count": 3
+    },
+    {
+      "role": "minimax",
+      "original": {
+        "originalPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-review-554ec89/docs/reviews/T04/round-1/minimax-m31flash.md",
+        "archiveMember": "report/minimax-m31flash.md",
+        "bytes": 34904,
+        "sha256": "fed9376312dd49b59c2d82ef26f54bed85d53fa69e1d55a38670d51147d5b912"
+      },
+      "display": {
+        "path": "docs/reviews/T04/round-1/minimax-m31flash.md",
+        "bytes": 34904,
+        "sha256": "fed9376312dd49b59c2d82ef26f54bed85d53fa69e1d55a38670d51147d5b912",
+        "transformation": "Markdown formatting only; exact reviewer original preserved separately and unchanged"
+      },
+      "originalOwnerReadFull": true,
+      "actualConclusion": "Pass for same-candidate full bounded S1 only",
+      "newP3Count": 3
+    }
+  ],
+  "sourceChecks": [
+    {
+      "role": "zcode",
+      "fixedProductManifestEntries": 33,
+      "physicalEntriesEqual": 32,
+      "onlyKnownProcessDifference": "docs/reviews/T04/status.md",
+      "sourceTestsFixturesSSRLocksChanged": false,
+      "head": "9a4dfc8f1e9106a4c05423f80a26e9e88eb0aaa1",
+      "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "gitStatus": [
+        " M AGENTS.md",
+        "?? docs/reviews/T04/round-1/diff-reproduction-20261022/",
+        "?? docs/reviews/T04/round-1/launch-20261022/",
+        "?? docs/reviews/T04/round-1/zcode-glm53.md"
+      ]
+    },
+    {
+      "role": "minimax",
+      "fixedProductManifestEntries": 33,
+      "physicalEntriesEqual": 32,
+      "onlyKnownProcessDifference": "docs/reviews/T04/status.md",
+      "sourceTestsFixturesSSRLocksChanged": false,
+      "head": "9a4dfc8f1e9106a4c05423f80a26e9e88eb0aaa1",
+      "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "gitStatus": [
+        " M AGENTS.md",
+        "?? docs/reviews/T04/round-1/diff-reproduction-20261022/",
+        "?? docs/reviews/T04/round-1/launch-20261022/",
+        "?? docs/reviews/T04/round-1/minimax-m31flash.md"
+      ]
+    }
+  ],
+  "mergedUniqueNewP3": 4,
+  "disposition": "../owner-disposition-20261023.md; accepted and deferred to next implementation candidate, not claimed fixed",
+  "metadataLimit": "Original reviewers consumed pre-submit setting snapshots early; later actual own UI/native receipts supplement IDs/settings without rewriting original reports.",
+  "T09Limit": "M independently byte-checked three consumed fixture copies; fourteen nonconsumed originals not in its review tree remain unverified by M.",
+  "verificationLimit": "Z targeted V1-V3 numeric exit not captured; positive summaries only; full check numeric EXIT=0 captured.",
+  "goalToolStatusLastActuallyRead": "blocked",
+  "sameGoalActualWorkContinued": true,
+  "pushOrPRorCIorMergeOrRemoteVerified": false,
+  "parentFR400_404AndP0Complete": false,
+  "lockChecks": [
+    {
+      "role": "zcode",
+      "locks": [
+        {
+          "path": "package-lock.json",
+          "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+          "equalsApprovedBaseGitBlob": true
+        },
+        {
+          "path": "uv.lock",
+          "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+          "equalsApprovedBaseGitBlob": true
+        }
+      ]
+    },
+    {
+      "role": "minimax",
+      "locks": [
+        {
+          "path": "package-lock.json",
+          "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+          "equalsApprovedBaseGitBlob": true
+        },
+        {
+          "path": "uv.lock",
+          "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+          "equalsApprovedBaseGitBlob": true
+        }
+      ]
+    }
+  ],
+  "independentCollectionProcessReview": {
+    "file": "collection-process-review.md",
+    "firstResult": "not passed: one P3 owner documentation factual error",
+    "correction": "Only column minimum statement corrected; original model reports/source unchanged",
+    "deltaResult": "passed",
+    "doesNotReplaceSpecifiedReviewsOrParentAcceptance": true
+  }
+}
