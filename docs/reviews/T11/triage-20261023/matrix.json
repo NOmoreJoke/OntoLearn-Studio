@@ -1,0 +1,331 @@
+{
+  "date": "2026-10-23",
+  "product": "7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4",
+  "analysisHead": "f11adf70de1fb25b37cafa9e02c2304142d267d1",
+  "sourceReports": {
+    "M": {
+      "path": "../minimax-received-20261023/minimax-report-original.md",
+      "sha256": "272914fff1189ac755d8e81bb9269bca6d9d98d8fe0e2adf14178d8db077a798",
+      "verdict": "NotPass"
+    },
+    "Z": {
+      "path": "../zcode-received-20261023/zcode-report-original.md",
+      "sha256": "6e82553c693678e2f6af95a905fc8f77c639d5caac28ccce5878e226064ee505",
+      "verdict": "Pass limited to frozen engineering scope"
+    }
+  },
+  "counts": {
+    "M": 12,
+    "Z": 6,
+    "total": 18
+  },
+  "findings": [
+    {
+      "id": "M-F-A",
+      "originalSeverity": "高",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W1"],
+      "staticClassification": "confirmed_contract_ambiguity",
+      "evidence": [
+        "scripts/release/verify.ts:777",
+        "scripts/release/verify.ts:809",
+        "docs/release/README.md:25",
+        "docs/iterations/T11/selection-comparison-v2.md:5",
+        "tests/unit/t11-release.test.ts:558",
+        "scripts/release/verify.ts:271"
+      ],
+      "assessment": "六层非空施加于全部top-level快照，文档只限定G.6；代码注释有G.6意图但无可校验场景。template-not-restorable已存在，不能把模板误塞restoreCurrent:true成功投影。",
+      "plannedAction": "通用结构与G.6断言分开；新T11证据版本显式comparisonCase并由独立freeze固定，双向迁移仍强制G.6完整场景；通用空层不再被当普遍非法。模板用负向check承载。",
+      "plannedVerification": "通用合法空层、G.6缺六层逐项拒绝、降case绕过拒绝、模板不能恢复；保全部选择/零提交/来源冲突回归。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-B",
+      "originalSeverity": "中",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W2"],
+      "staticClassification": "partly_confirmed_authority_material_gap",
+      "evidence": [
+        "scripts/release/verify.ts:114",
+        "scripts/release/verify.ts:175",
+        "scripts/release/verify.ts:714",
+        "controller:decisions.md:23"
+      ],
+      "assessment": "硬编码及freeze未pin endpoint/requestedModel属实；无任何批准依据不成立，根决定已有DeepSeek首选方向，但未携入受审树。",
+      "plannedAction": "补固定决定出处；endpoint/requestedModel纳入独立freeze和漂移比较，字段验证不代表授权新服务，也不变更唯一网关。",
+      "plannedVerification": "匹配通过；只改单边endpoint或requestedModel拒绝；不安全URL拒绝；旧freeze缺pin明确拒绝。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-C",
+      "originalSeverity": "中",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W2"],
+      "staticClassification": "confirmed_contract_enforcement_gap",
+      "evidence": [
+        "scripts/release/verify.ts:464",
+        "scripts/release/verify.ts:577",
+        "tests/unit/t11-release.test.ts:143",
+        "docs/reviews/T11/approved-fixed-baseline-probe.json:9"
+      ],
+      "assessment": "生产核验器逐项核baseline实际列出的文件，未显式约束批准17路径/版本；合法独立manifest SHA已间接绑定全集，缩水freeze改变信任前提，不等于现有pin可被绕过。",
+      "plannedAction": "为本轮批准profile显式核manifest SHA、版本及17路径集合；不复制17份内容hash生成第二基线，继续读唯一T09 manifest。",
+      "plannedVerification": "缺任意必需项/额外项/版本不符/未批manifest，即使测试同步重签两边也拒绝；固定873正例仍逐文件核hash。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-D",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W1"],
+      "staticClassification": "overstrict_claim_not_established; metric_definition_gap_confirmed",
+      "evidence": [
+        "scripts/release/verify.ts:751",
+        "docs/release/user-study.md:12",
+        "docs/release/user-study.md:19",
+        "docs/prd/PRD-本体学习与落地Agent工作台.md:303",
+        "docs/prd/PRD-本体学习与落地Agent工作台.md:772",
+        "docs/prd/PRD-本体学习与落地Agent工作台.md:809",
+        "docs/reviews/T11/internal-review.md"
+      ],
+      "assessment": "PRD12.1第8步已含迁移任务完成；core&&transferCompleted未被证明为无依据加严。FR105/11.2要求独立迁移成功另记，不能把操作完成与独立成功混同。文档字段定义及矛盾检查需明确，原M低级别仍开。",
+      "plannedAction": "保留完整8步及transferCompleted条件，明确coreCompleted涵盖迁移操作完成并拒core=true/transfer=false矛盾；独立迁移成功由transferIndependent及辅助标记另统计，不增加新的迁移百分比门。",
+      "plannedVerification": "4/5完整8步通过、3/5拒绝；core=true/transfer=false明确拒绝；迁移操作完成不等于独立成功，Agent完整代做不能伪计独立；不以仅前7步满足80%。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-E",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W6"],
+      "staticClassification": "clarification_already_partly_present",
+      "evidence": ["docs/iterations/T11/acceptance.md:22", "docs/reviews/T11/verification.json"],
+      "assessment": "显式flag和默认3skip已有全文；最终检查措辞仍可误读为树默认状态。",
+      "plannedAction": "用命令、日期、候选及证据引用标记历史最终检查；保默认skip不作固定输入通过。",
+      "plannedVerification": "仅文档核对；实际新候选仍跑显式探针，不写措辞镜像测试。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-F",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W5"],
+      "staticClassification": "confirmed_required_check_coverage_gap",
+      "evidence": [
+        "docs/release/migration-recovery.md:17",
+        "scripts/release/verify.ts:252",
+        "scripts/release/verify.ts:895"
+      ],
+      "assessment": "回退保留新数据副本、拒开不兼容新格式已有文档，未各自具名强制check。",
+      "plannedAction": "加两个固定恢复/回退check，预期由原验收owner独立freeze；仅补证据要求，不写恢复器。",
+      "plannedVerification": "缺任一check拒绝、错误actual拒绝；未提交回滚/旧版身份pin仍在。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-G",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W6"],
+      "staticClassification": "documented_external_evidence_boundary",
+      "evidence": [
+        "scripts/release/verify.ts:75",
+        "scripts/release/verify.ts:747",
+        "docs/release/user-study.md:7",
+        "docs/release/user-study.md:21",
+        "docs/release/README.md:29"
+      ],
+      "assessment": "record ref只核文件hash，不解析同意/逐段/完整示范记录，已属工具外部真实性边界。",
+      "plannedAction": "明确列主持人/独立验收owner核同意、逐段尝试、迁移解释和示范计数，不用新增布尔制造证明。",
+      "plannedVerification": "文档与participant字段/观察表逐项对照；未来真实主持记录另验，不合成真人结果。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-H",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W4", "W5"],
+      "staticClassification": "confirmed_mixed_collector_gaps",
+      "evidence": [
+        "scripts/release/collect-macos.sh:16",
+        "scripts/release/collect-windows.ps1:19",
+        "scripts/release/collect-windows.ps1:25",
+        "scripts/release/collect-windows.ps1:37"
+      ],
+      "assessment": "含三子项：半成品目录、包与app/engine来源、PE越界。来源仅要求路径位于解包根不足证明同包。",
+      "plannedAction": "保失败原件加完成/失败标记；PE读取前界限；加实际安装组件与包一致的强制证据check，真实T03包内清单待接口就绪，不造第二builder。",
+      "plannedVerification": "失败/成功/已有目录与无完成标记拒绝；Windows小型PE边界；实际包绑定保留待验。",
+      "related": ["Z-F5", "Z-F6", "M-F-I"],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-I",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W6"],
+      "staticClassification": "documented_structure_and_identity_boundary",
+      "evidence": [
+        "scripts/release/verify.ts:333",
+        "scripts/release/verify.ts:637",
+        "docs/release/README.md:19",
+        "docs/release/README.md:29"
+      ],
+      "assessment": "PE/koly仅结构，valid是绑定报告声明；已有签名人/真实性边界但可更具体。",
+      "plannedAction": "明示不解析密码学签名链、不证明NSIS/DMG实质格式、组件来源须真实安装/包内证据；不加新签名库/安装执行。",
+      "plannedVerification": "文档与各checker能力相符；原生签名/渠道/两OS真实门保留。",
+      "related": ["M-F-H", "Z-F2"],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-J",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W6"],
+      "staticClassification": "acknowledged_clock_trust_boundary",
+      "evidence": ["scripts/release/verify-release.mjs:18", "scripts/release/verify.ts:457"],
+      "assessment": "CLI使用本地墙钟；已阻止freeze自填now，但不能认证本机时间正确。",
+      "plannedAction": "明确受控核验机须记录时间来源/偏差处理；不增加任意--now来绕过CLI当前时间。",
+      "plannedVerification": "保未来/过期拒绝；必要补CLI忽略freeze内伪now的回归，无网络校时或性能研究。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-K",
+      "originalSeverity": "低",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W6"],
+      "staticClassification": "historical_state_and_snapshot_label_gap",
+      "evidence": [
+        "docs/reviews/T11/completion-audit.md:5",
+        "docs/reviews/T11/operating-policy-receipt.json:27",
+        "docs/reviews/T11/status.md:40",
+        "docs/reviews/T11/blocked-audit.json"
+      ],
+      "assessment": "多代current/active文本并存且部分已注明历史；同updatedAt不同source hash不能擅自归并成同一快照。",
+      "plannedAction": "新当前入口列绝对日期/适用commit/取代关系；原JSON回执hash与历史报告不追改，来源矛盾保留并加observedAt的独立索引。",
+      "plannedVerification": "静态链接/hash/适用版本核对；不重写外部execution-state或Goal。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "M-F-L",
+      "originalSeverity": "中",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W6"],
+      "staticClassification": "confirmed_overbroad_status_wording",
+      "evidence": [
+        "docs/reviews/T11/status.md:18",
+        "docs/reviews/T11/first-failure.json",
+        "docs/reviews/T11/round-1/history-disposition.md:16"
+      ],
+      "assessment": "现存失败日志确保留，但首38只有摘录/transcript；总括失败原件保留强于事实。",
+      "plannedAction": "新候选status明确首38缺独立完整raw，其后失败原件/重跑原件各自指向归档；不写永久不可获得。",
+      "plannedVerification": "核48归档索引及现存hash，不重跑补造首失败。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "Z-F1",
+      "originalSeverity": "P4",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W3"],
+      "staticClassification": "confirmed_duplicate_check",
+      "evidence": ["scripts/release/verify.ts:415", "scripts/release/verify.ts:423"],
+      "assessment": "重复safeParse条件冗余，不是整个if分支必不可达，finite(now)仍有价值。",
+      "plannedAction": "删除第二次schema parse，保finite检查。",
+      "plannedVerification": "沿用合法/非法freeze回归和类型检查；不写调用次数镜像测试。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "Z-F2",
+      "originalSeverity": "P4",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W3"],
+      "staticClassification": "confirmed_fd_and_bounds_race",
+      "evidence": [
+        "scripts/release/verify.ts:288",
+        "scripts/release/verify.ts:304",
+        "scripts/release/verify.ts:314",
+        "scripts/release/verify.ts:337",
+        "scripts/release/verify-release.mjs:13"
+      ],
+      "assessment": "stat后按路径重读/重开；大文件和格式检查也有路径/fd不一致；CLI readJson先整读再限额同类。SHA不能防先耗资源。",
+      "plannedAction": "共用受控打开+fstat+同fd有界读取/哈希/格式检查，CLI复用限额；保明确取证目录不可被不可信并发变更的条件，不声称消除全部祖先目录竞争。",
+      "plannedVerification": "小文件/确定性fs替换与增长模拟、异常关闭、symlink外部拒绝；不做压力实验、新native caller或SQLite损坏探针。",
+      "related": ["M-F-I"],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "Z-F3",
+      "originalSeverity": "P4",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W3"],
+      "staticClassification": "confirmed_binding_branch_guard_gap",
+      "evidence": [
+        "scripts/release/verify.ts:919",
+        "scripts/release/verify.ts:920",
+        "scripts/release/verify.ts:404"
+      ],
+      "assessment": "fail只累积不终止，dest缺失分支可达；前置错误阻止consistent=true，未证虚假放行。",
+      "plannedAction": "dest不存在显式fail并停止该项绑定检查，不传undefined略过asset pin。",
+      "plannedVerification": "缺/重复目标明确错误，正常双向asset绑定仍通过。",
+      "related": [],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "Z-F4",
+      "originalSeverity": "P4",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W4"],
+      "staticClassification": "confirmed_path_resolution_dependency",
+      "evidence": [
+        "scripts/release/collect-macos.sh:8",
+        "scripts/release/collect-macos.sh:16",
+        "scripts/release/collect-macos.sh:29"
+      ],
+      "assessment": "目标判断与采集命令有PATH依赖。",
+      "plannedAction": "已知系统命令用绝对路径，覆盖最前OS/arch门及xcrun，保引用和原非零退出。",
+      "plannedVerification": "bash -n与调用路径静态；获批目标机后实测，不能语法当运行。",
+      "related": ["M-F-H"],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "Z-F5",
+      "originalSeverity": "P4",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W4"],
+      "staticClassification": "confirmed_pe_bounds_gap",
+      "evidence": ["scripts/release/collect-windows.ps1:25"],
+      "assessment": "未先核DOS header长度和e_lfanew<=length-6；流异常为fail-closed，不等于受控错误。",
+      "plannedAction": "先核长度/范围，保PE签名与machine检查及固定错误。",
+      "plannedVerification": "获批Windows小型有效/截断/越界PE用例；当前无真实Windows运行。",
+      "related": ["M-F-H"],
+      "disposition": "open; plan only, not implemented or closed"
+    },
+    {
+      "id": "Z-F6",
+      "originalSeverity": "P4",
+      "originalVerdictPreserved": "M NotPass / Z scoped Pass; no controller dual Pass",
+      "workPackages": ["W4", "W5"],
+      "staticClassification": "confirmed_partial_output_admission_gap",
+      "evidence": ["scripts/release/collect-macos.sh:16", "scripts/release/collect-windows.ps1:19"],
+      "assessment": "先建输出目录后采集，失败残留半份数据。",
+      "plannedAction": "保原件，加明确完成/失败及步骤状态；证据纳入时强制collector-complete check；不自动删失败目录。",
+      "plannedVerification": "首步/中途失败、成功、防覆盖，缺complete不得纳入正式证据；marker不当发布授权。",
+      "related": ["M-F-H"],
+      "disposition": "open; plan only, not implemented or closed"
+    }
+  ],
+  "implementationStarted": false,
+  "testCommandsRunThisTriage": [],
+  "severityChanged": false,
+  "designatedDualPass": false,
+  "releaseAuthorized": false
+}

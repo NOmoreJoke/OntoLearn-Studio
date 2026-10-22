@@ -50,3 +50,7 @@
 ## 2026-10-23：M 单次正常续接后真实完成
 
 在总控显式短GUI交接下，仅向原M session正常发送一次短继续，立即释放；应用canonical正文396B仅去源397B唯一尾LF。新turn `2bd54f89-0d87-4cce-b126-fb91175019ae` 后台已核assistant stop、runtime idle/agent completed。最新375行50693B报告已全文收件，审者工程终态仍NotPass，12项意见全部待处置；Z已收的工程Pass自述及6项建议不覆盖M不通过，不成立双Pass。旧failed/aborted、旧非正常终态报告的可核重建原字节和本次受理/终态证据均保留，见 `minimax-continue-20261023/README.md`、`minimax-received-20261023/owner-reception.md`。Z自述读另一提示的规定与最小Read证据另核，仅证读本方准备索引，正文Read未独立证实，不绝对宣称无违规。冻结产品/验收未改、未重测产品、Q5仍待用户答复，原Goal及全部发布门不变。
+
+## 2026-10-23：18项静态 triage 与本线修复计划
+
+原M12项及Z6项全部静态核对、关联去重，逐项证据与W1–W6最小本线计划见 `triage-20261023/repair-plan.md`、`matrix.json`；原级别及NotPass保留，18项全open。独立子任务和计划文档复核已完成，不当指定工程通过。F-D同时对齐FR105/11.2/12.1第8步，保完整八步、迁移操作完成条件及独立成功分记，不以仅七步满足80%。新候选建议显式G.6 case和独立pin，正式双向G.6不能降级；其他涉及文件fd边界、服务/批准基线绑定、collector状态/PE及证据说明。当前仅计划，无产品代码/测试/collector修改、无新运行/GUI/模型任务，无共享责任或原门变化；Q5仍待答但不冻结后继本线缺陷修复。
