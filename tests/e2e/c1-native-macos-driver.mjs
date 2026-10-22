@@ -20,6 +20,7 @@ import { dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { setTimeout as delay } from 'node:timers/promises'
 import { StringDecoder } from 'node:string_decoder'
+import { connect } from 'node:net'
 
 const tree = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const observerPath = join(tree, 'tests/e2e/c1-native-macos-observer.cjs')
@@ -282,11 +283,183 @@ function observerProjection(observer, runId, mainExit, mainClose) {
 }
 // END pure process-accounting classifier.
 
+// BEGIN finite termination projection (distinct from the preserved 650 classifier).
+function validFiniteSample(sample, scope) {
+  return Boolean(
+    sample &&
+    sample.scope === scope &&
+    sample.parseComplete &&
+    sample.validUtf8 &&
+    !sample.timedOut &&
+    !sample.truncated &&
+    !sample.signal &&
+    Number.isFinite(sample.startedAtMs) &&
+    Number.isFinite(sample.endedAtMs) &&
+    sample.endedAtMs >= sample.startedAtMs &&
+    /^[a-f0-9]{64}$/.test(sample.stdoutSHA256 ?? '') &&
+    (sample.exitCode === 0 ||
+      (scope === 'targets' &&
+        sample.exitCode === 1 &&
+        sample.emptyOutput &&
+        sample.stderrBytes === 0)) &&
+    (scope !== 'full-table' || sample.runnerAnchorPresent),
+  )
+}
+
+function finiteObservation(entry, row, sample, lifecycleSnapshot, nowMs, argv = false) {
+  const requiresClose = entry.source === 'direct-spawn' || entry.source === 'main-child-object'
+  const naturallyClosed = requiresClose ? originalClose(lifecycleSnapshot) : null
+  const executableConflict =
+    entry.confirmedExecutableConflict ||
+    Boolean(
+      !argv &&
+      row &&
+      row.command.startsWith('/') &&
+      entry.command.startsWith('/') &&
+      row.command !== entry.command,
+    )
+  const lifecycleFailed = Boolean(
+    lifecycleSnapshot?.error ||
+    (lifecycleSnapshot?.exit &&
+      (lifecycleSnapshot.exit.code !== 0 || lifecycleSnapshot.exit.signal !== null)) ||
+    (lifecycleSnapshot?.close && !originalClose(lifecycleSnapshot)),
+  )
+  const hard =
+    entry.finiteHardConflict ||
+    (entry.argvBirthConflict
+      ? 'argv-birth-conflict'
+      : executableConflict
+        ? 'confirmed-executable-conflict'
+        : entry.birthMismatch || (row && row.start !== entry.start)
+          ? 'birth-conflict'
+          : entry.postTerminalRow || (entry.finiteTerminationEstablished && row)
+            ? 'post-termination-row'
+            : entry.diagnosticIncomplete || !sample.parseComplete
+              ? 'diagnostic-incomplete'
+              : lifecycleFailed
+                ? 'original-lifecycle-conflict'
+                : null)
+  const lastPresent = row
+    ? Math.max(entry.finiteLastPresentEndedMs ?? 0, sample.endedAtMs)
+    : (entry.finiteLastPresentEndedMs ?? entry.lastPresentEndedMs ?? entry.firstSeenAtMs)
+  const absenceAfter = Math.max(
+    entry.firstSeenAtMs,
+    lastPresent,
+    requiresClose ? (lifecycleSnapshot?.close?.receivedAtMs ?? Infinity) : entry.firstSeenAtMs,
+  )
+  return {
+    confirmedExecutableConflict: Boolean(executableConflict),
+    finiteHardConflict: hard,
+    signalEligible: Boolean(!hard && entry.signalEligible),
+    historicalUnknown: Boolean(
+      entry.historicalUnknown ||
+      entry.displayMismatch ||
+      entry.unexplainedDisplay ||
+      (row && !argv && row.command !== entry.command),
+    ),
+    originalClosedNaturally: naturallyClosed,
+    finiteLastPresentEndedMs: lastPresent,
+    absentAtValidSample: Boolean(
+      !row && validFiniteSample(sample, 'full-table') && sample.startedAtMs > absenceAfter,
+    ),
+    finiteTerminationEstablished: Boolean(entry.finiteTerminationEstablished && !row && !hard),
+    finiteConsumedAtMs: nowMs,
+  }
+}
+
+function completeFiniteClosure(certificate) {
+  return Boolean(
+    certificate?.complete &&
+    /^[a-f0-9]{64}$/.test(certificate.inputSourceHash ?? '') &&
+    validFiniteSample(certificate.fullTable, 'full-table') &&
+    validFiniteSample(certificate.knownPidCheck, 'targets') &&
+    certificate.knownPidCheck.startedAtMs >= certificate.fullTable.endedAtMs &&
+    certificate.knownPidCheck.sequence > certificate.fullTable.sequence &&
+    Array.isArray(certificate.knownPids) &&
+    certificate.knownPids.length > 0 &&
+    certificate.knownPids.length <= 256 &&
+    certificate.knownPids.every(
+      (pid, index, list) =>
+        Number.isSafeInteger(pid) && pid > 1 && (index === 0 || pid > list[index - 1]),
+    ) &&
+    JSON.stringify(certificate.knownPidCheck.queriedPids) ===
+      JSON.stringify(certificate.knownPids) &&
+    certificate.reportedPids.every((pid) => certificate.knownPids.includes(pid)) &&
+    certificate.knownPidCheck.emptyOutput &&
+    certificate.knownPidCheck.rowCount === 0 &&
+    certificate.originalMainClosedNaturally &&
+    certificate.reportedUnbound.length === 0 &&
+    certificate.unboundCandidates.length === 0 &&
+    certificate.ownExecutableRows.length === 0 &&
+    certificate.scopeEstablished &&
+    certificate.port?.outcome === 'refused',
+  )
+}
+
+function projectFiniteTermination(entry, certificate, issuedAtMs) {
+  const requiresClose = entry.source === 'direct-spawn' || entry.source === 'main-child-object'
+  const previous = entry.finiteCertificate
+  const quarantineStart = entry.quarantineSinceMs
+  const timely =
+    (previous && entry.finiteTerminationEstablished) ||
+    quarantineStart == null ||
+    (issuedAtMs >= quarantineStart && issuedAtMs - quarantineStart < processQuarantineMs)
+  const laterThan = Math.max(
+    entry.firstSeenAtMs,
+    entry.finiteLastPresentEndedMs ?? 0,
+    requiresClose
+      ? (entry.finiteLifecycleSnapshot?.close?.receivedAtMs ?? Infinity)
+      : entry.firstSeenAtMs,
+  )
+  const established = Boolean(
+    entry.ownershipEstablished &&
+    !entry.finiteHardConflict &&
+    entry.absentAtValidSample &&
+    (!requiresClose || entry.originalClosedNaturally) &&
+    timely &&
+    completeFiniteClosure(certificate) &&
+    certificate.fullTable.startedAtMs > laterThan &&
+    certificate.knownPids.includes(entry.pid),
+  )
+  return {
+    finiteTerminationEstablished: established,
+    finiteCertificate: established
+      ? {
+          inputSourceHash: certificate.inputSourceHash,
+          fullTableSequence: certificate.fullTable.sequence,
+          knownPidSequence: certificate.knownPidCheck.sequence,
+          fullTableStdoutSHA256: certificate.fullTable.stdoutSHA256,
+          knownPidStdoutSHA256: certificate.knownPidCheck.stdoutSHA256,
+          issuedAtMs: previous?.issuedAtMs ?? issuedAtMs,
+          statement: requiresClose
+            ? 'original object closed naturally and established-owned PID absent in valid samples'
+            : 'established-owned PID absent in valid post-settle samples; independent exit code not observed',
+        }
+      : (previous ?? null),
+  }
+}
+
+function finiteRunClosed(entries, reportedPids, sampling, evidence) {
+  const knownPids = entries.map((entry) => entry.pid).sort((a, b) => a - b)
+  return Boolean(
+    entries.length &&
+    !sampling.diagnosticIncomplete &&
+    evidence.hardFailures.length === 0 &&
+    completeFiniteClosure(evidence.certificate) &&
+    JSON.stringify(knownPids) === JSON.stringify(evidence.certificate.knownPids) &&
+    reportedPids.every((pid) => knownPids.includes(pid)) &&
+    entries.every((entry) => entry.finiteTerminationEstablished && !entry.finiteHardConflict),
+  )
+}
+// END finite termination projection.
+
 let psSequence = 0
 function processTable(pids, argv = false) {
   const startedAtMs = Date.now()
   const observation = {
     sequence: ++psSequence,
+    scope: pids ? 'targets' : 'full-table',
+    queriedPids: pids ? [...pids] : null,
     executable: '/bin/ps',
     argv: pids
       ? ['-p', pids.join(','), '-o', 'pid=,ppid=,lstart=,stat=,' + (argv ? 'command=' : 'comm=')]
@@ -299,22 +472,52 @@ function processTable(pids, argv = false) {
     execFile(
       '/bin/ps',
       observation.argv,
-      { timeout: 2000, maxBuffer: 4 * 1024 * 1024, env: { ...process.env, LC_ALL: 'C' } },
-      (error, stdout) => {
+      {
+        timeout: 2000,
+        maxBuffer: 4 * 1024 * 1024,
+        encoding: 'buffer',
+        env: { ...process.env, LC_ALL: 'C' },
+      },
+      (error, stdout, stderr) => {
         const endedAtMs = Date.now()
-        const parsed = parseProcessRows(stdout ?? '')
+        const raw = Buffer.isBuffer(stdout) ? stdout : Buffer.from(stdout ?? '')
+        const errorOutput = Buffer.isBuffer(stderr) ? stderr : Buffer.from(stderr ?? '')
+        let text = ''
+        let validUtf8 = true
+        try {
+          text = new TextDecoder('utf-8', { fatal: true }).decode(raw)
+        } catch {
+          validUtf8 = false
+        }
+        const parsed = validUtf8
+          ? parseProcessRows(text)
+          : { rows: new Map(), unparsed: [], parseComplete: false }
         Object.assign(observation, {
           endedAtMs,
           endedAt: new Date(endedAtMs).toISOString(),
           exitCode: error?.code ?? 0,
           signal: error?.signal ?? null,
           timedOut: Boolean(error?.killed),
+          truncated: error?.code === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER',
+          validUtf8,
+          emptyOutput: text.trim().length === 0,
+          stdoutBytes: raw.length,
+          stdoutSHA256: createHash('sha256').update(raw).digest('hex'),
+          stderrBytes: errorOutput.length,
+          stderrSHA256: createHash('sha256').update(errorOutput).digest('hex'),
+          runnerAnchorPresent: pids ? null : parsed.rows.has(process.pid),
           parseComplete: parsed.parseComplete,
           rowCount: parsed.rows.size,
           unparsedCount: parsed.unparsed.length,
         })
         const validAbsence =
-          pids && error?.code === 1 && !error.killed && !error.signal && !(stdout ?? '').trim()
+          pids &&
+          error?.code === 1 &&
+          !error.killed &&
+          !error.signal &&
+          validUtf8 &&
+          !text.trim() &&
+          errorOutput.length === 0
         if (
           (error && !validAbsence) ||
           !parsed.parseComplete ||
@@ -423,6 +626,15 @@ async function run(options) {
     tail: [],
     transitions: [],
     diagnosticIncomplete: false,
+  }
+  receipt.finiteEvidence = {
+    inputSourceHash: createHash('sha256').update(JSON.stringify(fingerprints)).digest('hex'),
+    hardFailures: [],
+    unboundCandidates: [],
+    scope: null,
+    latestClosure: null,
+    certificate: null,
+    port: null,
   }
   let failRun
   const failure = new Promise((_, reject) => {
@@ -548,10 +760,198 @@ async function run(options) {
       : reported.get(entry.pid)
   }
 
+  function finiteFailure(reason, row = null) {
+    const evidence = receipt.finiteEvidence
+    if (!evidence.hardFailures.includes(reason)) {
+      if (evidence.hardFailures.length >= 128 || (row && Buffer.byteLength(row.rawLine) > 32768)) {
+        receipt.sampling.diagnosticIncomplete = true
+        fail(new Error('finite evidence capacity incomplete'))
+        return
+      }
+      const candidate = { reason, row, atMs: Date.now() }
+      if (
+        Buffer.byteLength(
+          JSON.stringify({
+            ...evidence,
+            unboundCandidates: [...evidence.unboundCandidates, candidate],
+          }),
+        ) > logLimit
+      ) {
+        receipt.sampling.diagnosticIncomplete = true
+        evidence.overflow = { reason, sampleBytesExceeded: true }
+        fail(new Error('finite evidence exceeded 4MiB'))
+        return
+      }
+      evidence.hardFailures.push(reason)
+      if (row) evidence.unboundCandidates.push(candidate)
+      fail(new Error('finite closure hard failure: ' + reason))
+    }
+  }
+
+  function finiteScope() {
+    if (receipt.finiteEvidence.scope) return receipt.finiteEvidence.scope
+    const root = known.get(child?.pid)
+    const suffix = '/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron'
+    if (
+      root?.source !== 'direct-spawn' ||
+      !root.originalRow.command.startsWith('/') ||
+      !root.originalRow.command.endsWith(suffix) ||
+      options.executable !== tree + suffix
+    )
+      return null
+    const scope = {
+      method:
+        'original direct-spawn raw comm minus fixed ASCII executable suffix; LC_ALL=C representation retained',
+      source: structuredClone(root.originalRow),
+      suffix,
+      rawTreePrefix: root.originalRow.command.slice(0, -suffix.length) + '/',
+      expectedExecutable: options.executable,
+      executableInput: fingerprints.find((value) => value.path === options.executable),
+    }
+    if (!scope.rawTreePrefix.startsWith('/') || !scope.executableInput) return null
+    receipt.finiteEvidence.scope = scope
+    return scope
+  }
+
+  function finiteClosureRows(table) {
+    const scope = finiteScope()
+    const ownRows = []
+    for (const row of table.rows.values()) {
+      const ownPath = Boolean(scope && row.command.startsWith(scope.rawTreePrefix))
+      if (ownPath) ownRows.push(row)
+      if (!known.has(row.pid) && (known.has(row.ppid) || ownPath))
+        finiteFailure('unbound-candidate:' + row.pid + ':' + row.start, row)
+    }
+    return { scope, ownRows }
+  }
+
+  async function finitePortObservation() {
+    const startedAtMs = Date.now()
+    const match = /^ws:\/\/127\.0\.0\.1:(\d+)\//.exec(receipt.inspectorEndpoint ?? '')
+    if (!match)
+      return { startedAtMs, endedAtMs: Date.now(), outcome: 'unavailable', endpoint: null }
+    return new Promise((done) => {
+      let settled = false
+      const socket = connect({ host: '127.0.0.1', port: Number(match[1]) })
+      const finish = (outcome, code = null) => {
+        if (settled) return
+        settled = true
+        socket.destroy()
+        done({
+          startedAtMs,
+          endedAtMs: Date.now(),
+          outcome,
+          code,
+          endpoint: receipt.inspectorEndpoint,
+          statement:
+            'auxiliary original inspector endpoint observation; never substitutes for PID closure',
+        })
+      }
+      socket.setTimeout(200, () => finish('unknown', 'timeout'))
+      socket.once('connect', () => finish('open'))
+      socket.once('error', (error) =>
+        finish(error.code === 'ECONNREFUSED' ? 'refused' : 'unknown', error.code),
+      )
+    })
+  }
+
+  async function tryFiniteClosure(table) {
+    const evidence = receipt.finiteEvidence
+    const { scope, ownRows } = finiteClosureRows(table)
+    if (!mainClosed) return
+    const unbound = [...reported.keys()].filter((pid) => !known.has(pid))
+    const mainNatural = originalClose({
+      exit: receipt.mainExit,
+      close: receipt.mainClose,
+      error: receipt.mainError,
+    })
+    const latestClosure = {
+      fullTable: table.observation,
+      inputSourceHash: evidence.inputSourceHash,
+      reportedPids: [...reported.keys()],
+      reportedUnbound: unbound,
+      ownExecutableRows: ownRows,
+      scopeEstablished: Boolean(scope),
+      originalMainClosedNaturally: mainNatural,
+    }
+    const closureBytes = JSON.stringify({ ...evidence, latestClosure })
+    if (Buffer.byteLength(closureBytes) > logLimit) {
+      receipt.sampling.diagnosticIncomplete = true
+      evidence.overflow = {
+        bytes: Buffer.byteLength(closureBytes),
+        sha256: createHash('sha256').update(closureBytes).digest('hex'),
+      }
+      finiteFailure('closure-capacity-exceeded')
+      return
+    }
+    evidence.latestClosure = latestClosure
+    if (unbound.length) for (const pid of unbound) finiteFailure('reported-unbound:' + pid)
+    if (!scope) finiteFailure('own-executable-display-scope-unavailable')
+    if (
+      !validFiniteSample(table.observation, 'full-table') ||
+      !mainNatural ||
+      receipt.sampling.diagnosticIncomplete ||
+      evidence.hardFailures.length ||
+      ownRows.length ||
+      [...known.values()].some((entry) => table.rows.has(entry.pid) || entry.finiteHardConflict)
+    )
+      return
+    if (finiteRunClosed([...known.values()], [...reported.keys()], receipt.sampling, evidence))
+      return
+    const knownPids = [...known.keys()].sort((a, b) => a - b)
+    const checked = await tableFor(knownPids, false, 'finite-known-pids')
+    recordSampling(checked, 'finite-known-pids', new Set(knownPids))
+    if (
+      !validFiniteSample(checked.observation, 'targets') ||
+      checked.rows.size ||
+      evidence.hardFailures.length
+    )
+      return
+    evidence.port = await finitePortObservation()
+    const issuedAtMs = Date.now()
+    const certificate = structuredClone({
+      complete: true,
+      issuedAtMs,
+      inputSourceHash: evidence.inputSourceHash,
+      fullTable: table.observation,
+      knownPidCheck: checked.observation,
+      knownPids,
+      reportedPids: [...reported.keys()],
+      reportedUnbound: [...reported.keys()].filter((pid) => !known.has(pid)),
+      unboundCandidates: evidence.unboundCandidates,
+      ownExecutableRows: ownRows,
+      scopeEstablished: Boolean(scope),
+      scope,
+      originalMainClosedNaturally: mainNatural,
+      port: evidence.port,
+      statement:
+        'finite observations of this run established-owned PIDs and explicit closure scope; no continuous identity or all-time/global escape guarantee',
+    })
+    for (const entry of known.values())
+      Object.assign(entry, projectFiniteTermination(entry, certificate, issuedAtMs))
+    if ([...known.values()].every((entry) => entry.finiteTerminationEstablished))
+      evidence.certificate = certificate
+  }
+
   function recordSampling(table, purpose, targets, transitions = []) {
+    for (const entry of known.values()) {
+      const row = table.rows.get(entry.pid)
+      if (!row) continue
+      const next = finiteObservation(
+        entry,
+        row,
+        table.observation,
+        entry.finiteLifecycleSnapshot,
+        Date.now(),
+        purpose === 'owned-argv',
+      )
+      Object.assign(entry, next)
+      if (next.finiteHardConflict) finiteFailure('pid:' + entry.pid + ':' + next.finiteHardConflict)
+    }
     const sampling = receipt.sampling
     const record = {
       ...table.observation,
+      inputSourceHash: receipt.finiteEvidence.inputSourceHash,
       purpose,
       targets: [...targets].map((pid) => ({
         pid,
@@ -606,6 +1006,7 @@ async function run(options) {
         )
         receipt.sampling.psFailure = {
           ...error.observation,
+          inputSourceHash: receipt.finiteEvidence.inputSourceHash,
           purpose,
           unparsed: unparsed.slice(0, 64),
           targets: [...targets].map((pid) => ({ pid, row: error.rows?.get(pid) ?? null })),
@@ -621,8 +1022,16 @@ async function run(options) {
     const consumedAtMs = Date.now()
     const lifecycleSnapshot = structuredClone(lifecycle(entry) ?? null)
     const state = classifyProcess(entry, row, observation, lifecycleSnapshot, consumedAtMs)
+    const finiteState = finiteObservation(
+      { ...entry, ...state },
+      row,
+      observation,
+      lifecycleSnapshot,
+      consumedAtMs,
+    )
     const previous = entry.classification
-    Object.assign(entry, state, {
+    Object.assign(entry, state, finiteState, {
+      finiteLifecycleSnapshot: lifecycleSnapshot,
       lastCheckedAt: observation.endedAt,
       lastObservation: observation.sequence,
       classification: state,
@@ -637,7 +1046,24 @@ async function run(options) {
       entry.lastRow?.stat !== row?.stat ||
       entry.lastRow?.command !== row?.command
     entry.lastRow = row ?? null
-    if (state.failureReason)
+    if (finiteState.finiteHardConflict)
+      fail(
+        new Error(
+          'finite accounting hard conflict: ' + entry.pid + '/' + finiteState.finiteHardConflict,
+        ),
+      )
+    const timelyCertificate =
+      entry.finiteTerminationEstablished &&
+      finiteRunClosed(
+        [...known.values()],
+        [...reported.keys()],
+        receipt.sampling,
+        receipt.finiteEvidence,
+      )
+    if (
+      state.failureReason &&
+      !(state.failureReason === 'quarantine-unresolved' && timelyCertificate)
+    )
       fail(new Error('owned process accounting failed: ' + entry.pid + '/' + state.failureReason))
     return changed
       ? {
@@ -799,15 +1225,17 @@ async function run(options) {
       recordSampling(details, 'owned-argv', new Set(discovered))
       persist()
     }
+    await tryFiniteClosure(table)
+    persist()
     return table
   }
 
   function allProcessesAbsent() {
-    return (
-      known.size > 0 &&
-      !receipt.sampling.diagnosticIncomplete &&
-      [...known.values()].every((entry) => entry.resolvedTerminal && !entry.birthMismatch) &&
-      [...reported.values()].every((entry) => known.has(entry.pid))
+    return finiteRunClosed(
+      [...known.values()],
+      [...reported.keys()],
+      receipt.sampling,
+      receipt.finiteEvidence,
     )
   }
 

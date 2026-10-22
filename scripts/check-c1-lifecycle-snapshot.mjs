@@ -14,6 +14,10 @@ const updateEnd = source.indexOf('  async function sample(', updateStart)
 assert(pureStart >= 0 && pureEnd > pureStart && updateStart >= 0 && updateEnd > updateStart)
 const pure = source.slice(pureStart, pureEnd)
 const update = source.slice(updateStart, updateEnd)
+const finiteStart = source.indexOf('// BEGIN finite termination projection')
+const finiteEnd = source.indexOf('// END finite termination projection.')
+const finite =
+  finiteStart >= 0 && finiteEnd > finiteStart ? source.slice(finiteStart, finiteEnd) : ''
 const results = []
 const birth = 'Fri Oct 23 01:54:47 2026'
 const original = { pid: 42, ppid: 12, start: birth, stat: 'S', command: '/owned/python' }
@@ -63,6 +67,8 @@ function harness(readLifecycle, now = 500) {
   }
   const actual = vm.runInNewContext(
     pure +
+      '\n' +
+      finite +
       '\n' +
       'const actualClassifier = classifyProcess; classifyProcess = (...args) => { capture(args); return actualClassifier(...args) };\n' +
       update +
