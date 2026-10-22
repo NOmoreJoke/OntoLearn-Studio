@@ -1,0 +1,116 @@
+{
+  "schema": "T03_CONTROLLER_DISPATCH_HANDOFF_20261022_V1",
+  "scope": "control/report metadata only; no caller access or new accounting",
+  "readyFullEngineeringGroups": [
+    {
+      "id": "mapping-S1",
+      "originalWorktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping",
+      "reviewHead": "0fb8e045ec776da6e8dc1b306c72212982114cd8",
+      "productHead": "30319412daf8ae4745987babf7bbed93c53b6b42",
+      "fullSourceEvidenceRef": "3c396070c74fbf09cf319b0230c6f96ed2858482",
+      "fixedScope": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/mapping-S1-fixed-inputs.json",
+      "fullPrompts": {
+        "zcode": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/dispatch-v2/mapping-S1-zcode-prompt.md",
+        "minimax": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/dispatch-v2/mapping-S1-minimax-prompt.md"
+      },
+      "actualTasks": null,
+      "actualModelSettings": null,
+      "actualPhysicalTrees": null,
+      "lease": "CONTROLLER_QUEUE_NOT_GRANTED"
+    },
+    {
+      "id": "source-selection",
+      "originalWorktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection",
+      "reviewHead": "4fa5d62eb13269351384527b1f84761c08811e79",
+      "productHead": "8c904b57b7c5aac7b2b19273e679e7e36304dd1c",
+      "fullSourceEvidenceRef": "4fa5d62eb13269351384527b1f84761c08811e79",
+      "fixedScope": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/source-selection-fixed-inputs.json",
+      "fullPrompts": {
+        "zcode": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/dispatch-v2/source-selection-zcode-prompt.md",
+        "minimax": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/dispatch-v2/source-selection-minimax-prompt.md"
+      },
+      "actualTasks": null,
+      "actualModelSettings": null,
+      "actualPhysicalTrees": null,
+      "lease": "CONTROLLER_QUEUE_NOT_GRANTED"
+    },
+    {
+      "id": "profile-D2",
+      "originalWorktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-build",
+      "reviewHead": "56a852321d72c6665044242d24064bf3523302d3",
+      "productHead": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98",
+      "fullSourceEvidenceRef": "56a852321d72c6665044242d24064bf3523302d3",
+      "fixedScope": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/profile-D2-fixed-inputs.json",
+      "fullPrompts": {
+        "zcode": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/dispatch-v2/profile-D2-zcode-prompt.md",
+        "minimax": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/dispatch-v2/profile-D2-minimax-prompt.md"
+      },
+      "actualTasks": null,
+      "actualModelSettings": null,
+      "actualPhysicalTrees": null,
+      "lease": "CONTROLLER_QUEUE_NOT_GRANTED"
+    }
+  ],
+  "sharedFullPacket": {
+    "fixedOriginalRef": "ed9cef968b17a1edefc0977b509906fb9f81a336",
+    "manifest": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/final-preparation-manifest.json",
+    "manifestBytes": 8558,
+    "manifestSHA256": "818f767ac872fabb585f911e029022ed24392abb94ed3561a6c8f20b3deb23d5",
+    "finalPreparationRef": "0fb8e045ec776da6e8dc1b306c72212982114cd8",
+    "completeFiles": 37,
+    "payloadFiles": 36,
+    "payloadBytes": 3463270
+  },
+  "independentPreparation": {
+    "firstReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/independent-review.md",
+    "firstStatus": "NEEDS_CHANGE F1/P2",
+    "deltaReport": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022/independent-delta-review.md",
+    "deltaBytes": 4727,
+    "deltaSHA256": "189abc8b3edb3529f96ee52e9fa216c766585f81c09548a9ccd7b34835b5bc1d",
+    "deltaCandidate": "806920ac8512d82a7a9b2c1977d23079bcb27fed",
+    "status": "F1_CLOSED_LIMITED_PREPARATION_PASS_NOT_MODEL_PASS"
+  },
+  "callerStopped": {
+    "controllerDecision": "No new caller static sealing allocation. Preserve WIP, initial failure and unused fresh delta; no source scan/format/copy to backfill proof.",
+    "firstUnpreaccountedStep": "Owner invoked existing Prettier --write over15 caller repair documents without first adding named formatter reads/possible writes to owner450000B bound; subsequent16file126752B delta read also not prospectively included.",
+    "actualMetadata": "UNKNOWN",
+    "actualApplicationIO": "UNKNOWN",
+    "actualOSIO": "UNKNOWN",
+    "budgetComplianceProven": false,
+    "oldBudgetRetroactivelyApproved": false,
+    "newAccountingCreatedHere": false,
+    "newAllocation": false,
+    "remainingIndependentExactDeltaUntouched": true,
+    "callerCandidateCreated": false,
+    "callerExecutionAuthorized": false,
+    "lastObservedSource": {
+      "bytes": 46530,
+      "sha256": "252fbd44d5434bd01bceaa4686da5829cb3bd32089301f0abb9b61ec5329a515",
+      "meaning": "last owner write/readback, no new source access for this receipt"
+    },
+    "existingEvidencePaths": [
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/caller-preparation/owner-repair-finalization-prepayment.json",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/caller-preparation/owner-repair-disposition.json",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/caller-preparation/repair-disposition.json",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/caller-preparation/repair-source-bound-table.json",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/caller-preparation/owner-sparse-bound.json",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/caller-preparation/independent-review.md"
+    ],
+    "noNativeDispatch": true
+  },
+  "D1Plan": {
+    "finalProcessRef": "86d6297a8cac5ad780f1be4416ec9052b82f3aaf",
+    "manifest": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-semantic-offer-owner-review/docs/reviews/T03/i05-semantic-D1-plan/final-plan-manifest.json",
+    "manifestBytes": 6314,
+    "manifestSHA256": "f8cdcce7b7752eae52ec20d3357f929511b787cb0606e7e331e5f74185a46edf",
+    "payloadFiles": 27,
+    "payloadBytes": 639001,
+    "completeFiles": 28,
+    "status": "PLAN_DELTA_PASS_ONLY; root adoption/implementation/runtime pending"
+  },
+  "actualCUAUsed": false,
+  "actualExternalTaskCreated": false,
+  "physicalTreeRelocation": "Controller must append exact original-to-physical-tree path/head mapping and task setting readback. Keep fixed original refs/identities; no mixed branch assembly.",
+  "runtimeOrProductTestsRun": false,
+  "rootTablesModified": false
+}
