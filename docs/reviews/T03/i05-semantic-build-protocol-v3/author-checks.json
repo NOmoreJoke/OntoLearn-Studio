@@ -1,0 +1,203 @@
+{
+  "format": "i05-protocol3-author-document-checks/1",
+  "at": "2026-10-22T10:27:59.470681+00:00",
+  "inputHead": "86d6297a8cac5ad780f1be4416ec9052b82f3aaf",
+  "authorStageCommit": false,
+  "writePrefixes": [
+    "docs/iterations/T03/i05-semantic-build-protocol-v3",
+    "docs/reviews/T03/i05-semantic-build-protocol-v3"
+  ],
+  "fixedInputIdentityCount": 94,
+  "oldD0PayloadAndManifestUnchanged": true,
+  "oldD1PayloadAndManifestUnchanged": true,
+  "trackedDirty": " M AGENTS.md",
+  "newActualPins": null,
+  "executionAuthorization": false,
+  "productExecuted": false,
+  "firstFailure": {
+    "command": "python3.12 <new-review-prefix>/document-selfcheck.py",
+    "exitCode": 1,
+    "stdout": {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-first.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-first.stderr",
+      "bytes": 1140,
+      "sha256": "a59b2aa4fca1dc83d966dd867895bc93315d03882b32b4bbc074504ad4395de6"
+    },
+    "cause": "synthetic header version/digest forward mapping missed references because original raw records had only state/utf8; strict assertion remained intact",
+    "correction": "derive original raw UTF-8 SHA rather than absent sha field; update new synthetic references; preserve first failure"
+  },
+  "commands": [
+    {
+      "id": "materialize-first",
+      "exitCode": 0
+    },
+    {
+      "id": "materialize-second",
+      "exitCode": 0
+    },
+    {
+      "id": "selfcheck-first",
+      "exitCode": 1
+    },
+    {
+      "id": "selfcheck-second",
+      "exitCode": 0
+    },
+    {
+      "id": "formatter-write",
+      "exitCode": 0
+    },
+    {
+      "id": "selfcheck-final",
+      "exitCode": 0
+    },
+    {
+      "id": "protocol-check-first",
+      "exitCode": 0
+    },
+    {
+      "id": "protocol-check-final",
+      "exitCode": 0
+    },
+    {
+      "id": "protocol-check-final-coverage",
+      "exitCode": 0
+    },
+    {
+      "id": "formatter-check",
+      "exitCode": 0
+    }
+  ],
+  "finiteDocumentResults": {
+    "syntheticValidTriplet": 1,
+    "validVariants": 15,
+    "rawHeaderExamples": 15,
+    "oldFiniteNegativesRejected": 54,
+    "additionalFiniteNegativesRejected": 26,
+    "propertyIndexRows": 1241,
+    "schemaCount": 4,
+    "localRefsResolved": 3,
+    "indexedVersionLiterals": 14,
+    "descriptiveMetadataChanges": 8,
+    "lockPackages": 26,
+    "directRequirements": 6,
+    "allOriginCandidateArtifactRows": 143,
+    "guardCounts": [45, 33, 58]
+  },
+  "notJSONSchemaEngineValidation": true,
+  "unverified": [
+    "resolver compatibility",
+    "actual new lock/source/consumer/wrapper/collector pins",
+    "artifact/install/RECORD/LICENSE/NOTICE/COPYING",
+    "owner parent compatibility migration",
+    "CodeType/archive/loader/runtime witnesses",
+    "G02/G03 business carrier design by separate I05 owner",
+    "whole-H/SQLite HOLD/parent/417/B1/S1/57P0/twoOS/CI/human/develop gates"
+  ],
+  "logs": [
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/formatter-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/formatter-check.stdout",
+      "bytes": 66,
+      "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/formatter-write.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/formatter-write.stdout",
+      "bytes": 1514,
+      "sha256": "b77d9ee3da9ad8340231248c26b2f250c54337ab5735f6ccfb5d5723121dd18c"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/materialize-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/materialize-first.stdout",
+      "bytes": 523,
+      "sha256": "3f358df22284858874357b7a002dd2d3c69ce97a21b06dc716d1408b3324edc1"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/materialize-second.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/materialize-second.stdout",
+      "bytes": 523,
+      "sha256": "3f358df22284858874357b7a002dd2d3c69ce97a21b06dc716d1408b3324edc1"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/protocol-check-final-coverage.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/protocol-check-final-coverage.stdout",
+      "bytes": 5445,
+      "sha256": "9f5a7990f617d54f8fd222ab8f9f19049538d5739db80c9c6895cb3830f24ddb"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/protocol-check-final.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/protocol-check-final.stdout",
+      "bytes": 5445,
+      "sha256": "9f5a7990f617d54f8fd222ab8f9f19049538d5739db80c9c6895cb3830f24ddb"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/protocol-check-first.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/protocol-check-first.stdout",
+      "bytes": 5445,
+      "sha256": "9f5a7990f617d54f8fd222ab8f9f19049538d5739db80c9c6895cb3830f24ddb"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-final.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-final.stdout",
+      "bytes": 5251,
+      "sha256": "1471417a510039cdaccec606a5a8725e4cb891777ae6568c202e3ebd291f449c"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-first.stderr",
+      "bytes": 1140,
+      "sha256": "a59b2aa4fca1dc83d966dd867895bc93315d03882b32b4bbc074504ad4395de6"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-first.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-second.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reviews/T03/i05-semantic-build-protocol-v3/selfcheck-second.stdout",
+      "bytes": 5251,
+      "sha256": "1471417a510039cdaccec606a5a8725e4cb891777ae6568c202e3ebd291f449c"
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "format": "i05-protocol3-materialized-schema-change-index/1",
+  "sourceIndexRef": "86d6297a8cac5ad780f1be4416ec9052b82f3aaf",
+  "sourceIndexPath": "docs/iterations/T03/i05-semantic-D1-plan/forward-schema-change-index.json",
+  "schemaChanges": [
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:source-package-parity-build:2",
+      "new": "urn:ontolearn:i05:source-package-parity-build:3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-source-package-parity-build/2",
+      "new": "i05-source-package-parity-build/3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "new": "i05-source-package-parity-v3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:build-receipt:2",
+      "new": "urn:ontolearn:i05:build-receipt:3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-build-receipt/2",
+      "new": "i05-build-receipt/3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "new": "i05-source-package-parity-v3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-runtime-validation-receipt/2",
+      "new": "i05-runtime-validation-receipt/3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "new": "i05-source-package-parity-v3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/format/const",
+      "old": "i05-semantic-runtime-header/1",
+      "new": "i05-semantic-runtime-header/2",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "new": "i05-source-package-parity-v3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:runtime-validation-receipt:2",
+      "new": "urn:ontolearn:i05:runtime-validation-receipt:3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/properties/format/const",
+      "old": "i05-semantic-runtime-header/1",
+      "new": "i05-semantic-runtime-header/2",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/properties/profileId/const",
+      "old": "i05-source-package-parity-v2",
+      "new": "i05-source-package-parity-v3",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/$id",
+      "old": "urn:ontolearn:i05:runtime-header:1",
+      "new": "urn:ontolearn:i05:runtime-header:2",
+      "kind": "D1-indexed-version-literal"
+    },
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/title",
+      "old": "D0 complete proposed build provenance v2; actual evidence required only in later authorized windows",
+      "new": "Complete proposed build provenance v3; exact26 dependency contract; later actual evidence required",
+      "kind": "descriptive-metadata-only"
+    },
+    {
+      "schema": "build-provenance.schema.json",
+      "pointer": "#/$comment",
+      "old": "Jointly normative with protocol.md v2 and consumer-contract.md v2. No actual build instance or execution authorization supplied. Objects are strict; cross-field reference, path and actual-evidence rules are mandatory in addition to schema shape.",
+      "new": "Jointly normative with protocol.md v3.0.0 and consumer-contract.md v3.0.0. No actual build instance or execution authorization supplied. Objects are strict; cross-field reference, path and actual-evidence rules are mandatory in addition to schema shape. Complete protocol3 forward design; source lock26, canonical23, supplier22, runtime8 and source33 are distinct. No execution authority.",
+      "kind": "descriptive-metadata-only"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/title",
+      "old": "D0 immutable build receipt v2; later runtime validation is a different document",
+      "new": "Immutable build receipt v3; later runtime validation is a different document",
+      "kind": "descriptive-metadata-only"
+    },
+    {
+      "schema": "build-receipt.schema.json",
+      "pointer": "#/$comment",
+      "old": "Root approval is a separate immutable approval record, externally trusted by caller. No selfHash/future process ref; no subsequent runtime field backfill. Schema identifies this schema in approved witness copy; it is not the receipt own hash.",
+      "new": "Root approval is a separate immutable approval record, externally trusted by caller. No selfHash/future process ref; no subsequent runtime field backfill. Schema identifies this schema in approved witness copy; it is not the receipt own hash. Complete protocol3 forward design; source lock26, canonical23, supplier22, runtime8 and source33 are distinct. No execution authority.",
+      "kind": "descriptive-metadata-only"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/title",
+      "old": "D0 later immutable runtime validation receipt v2",
+      "new": "Later immutable runtime validation receipt v3; full actual failures preserved",
+      "kind": "descriptive-metadata-only"
+    },
+    {
+      "schema": "runtime-validation-receipt.schema.json",
+      "pointer": "#/$comment",
+      "old": "CR-R distinguishes not-started, rejection, partial actual evidence and complete collection; all required fields remain present, null only by explicit availability and observedPaths. This is not a success-only receipt.",
+      "new": "CR-R distinguishes not-started, rejection, partial actual evidence and complete collection; all required fields remain present, null only by explicit availability and observedPaths. This is not a success-only receipt. Complete protocol3 forward design; source lock26, canonical23, supplier22, runtime8 and source33 are distinct. No execution authority.",
+      "kind": "descriptive-metadata-only"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/title",
+      "old": "D0 exact runtime header payload v1",
+      "new": "Exact runtime header payload v2 for protocol3/profile4",
+      "kind": "descriptive-metadata-only"
+    },
+    {
+      "schema": "runtime-header.schema.json",
+      "pointer": "#/$comment",
+      "old": "Strict JSON shape with explicit actual/unobserved data. Source and frozen relations are normative in consumer-contract CR-H. No external receipt approval or witness locator is read by probe.",
+      "new": "Strict JSON shape with explicit actual/unobserved data. Source and frozen relations are normative in consumer-contract CR-H. No external receipt approval or witness locator is read by probe. Complete protocol3 forward design; source lock26, canonical23, supplier22, runtime8 and source33 are distinct. No execution authority.",
+      "kind": "descriptive-metadata-only"
+    }
+  ],
+  "fieldResponsibilityLiteralChanges": [
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/0/shape/const",
+      "schema": "build-provenance.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-source-package-parity-build/2",
+      "proposed": "i05-source-package-parity-build/3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/1/shape/const",
+      "schema": "build-provenance.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/669/shape/const",
+      "schema": "build-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-build-receipt/2",
+      "proposed": "i05-build-receipt/3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/683/shape/const",
+      "schema": "build-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/725/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-runtime-validation-receipt/2",
+      "proposed": "i05-runtime-validation-receipt/3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/726/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/921/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/format",
+      "old": "i05-semantic-runtime-header/1",
+      "proposed": "i05-semantic-runtime-header/2"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/922/shape/const",
+      "schema": "runtime-validation-receipt.schema.json",
+      "schemaPropertyPointer": "#/properties/runs/items/properties/headerPayload/anyOf/0/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/1092/shape/const",
+      "schema": "runtime-header.schema.json",
+      "schemaPropertyPointer": "#/properties/format",
+      "old": "i05-semantic-runtime-header/1",
+      "proposed": "i05-semantic-runtime-header/2"
+    },
+    {
+      "fieldResponsibilityPointer": "#/propertyIndex/1093/shape/const",
+      "schema": "runtime-header.schema.json",
+      "schemaPropertyPointer": "#/properties/profileId",
+      "old": "i05-source-package-parity-v2",
+      "proposed": "i05-source-package-parity-v3"
+    }
+  ],
+  "propertyIndexCount": 1241,
+  "schemaFieldAdditionOrRemoval": false,
+  "actualImplementationAdoption": false
+}

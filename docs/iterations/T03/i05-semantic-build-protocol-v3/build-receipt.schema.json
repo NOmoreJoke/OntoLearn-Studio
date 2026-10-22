@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ontolearn:i05:build-receipt:3",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "i05-build-receipt/3"
+    },
+    "compositionRef": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "embeddedProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "const": "bundle-root"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["root", "path", "bytes", "sha256"]
+    },
+    "executable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "const": "bundle-root"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["root", "path", "bytes", "sha256"]
+    },
+    "directoryManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "const": "approved-witness"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["root", "path", "bytes", "sha256"]
+    },
+    "directoryFiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "root": {
+            "const": "bundle-root"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": ["root", "path", "bytes", "sha256"]
+      },
+      "minItems": 1,
+      "maxItems": 100000
+    },
+    "archiveWitnessManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "const": "approved-witness"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["root", "path", "bytes", "sha256"]
+    },
+    "approvedProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "gitBlob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+    },
+    "buildInputsStableBeforeAfter": {
+      "const": true
+    },
+    "externalCollectorSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "gitBlob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+    },
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "const": "approved-witness"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["root", "path", "bytes", "sha256"]
+    },
+    "runtimeValidation": {
+      "const": "not-executed"
+    },
+    "runtimeEvidenceManifest": {
+      "const": null
+    },
+    "nonClaims": {
+      "const": [
+        "parent-package-not-proved",
+        "S1-not-proved",
+        "Job-H-not-proved",
+        "target-OS-CI-human-develop-gates-remain"
+      ]
+    },
+    "profileId": {
+      "const": "i05-source-package-parity-v3"
+    },
+    "buildId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8192
+    },
+    "externalEvidenceManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "const": "approved-witness"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*[\\\\\\x00:!])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*(?:/$|[ .](?:/|$)))[^/]+(?:/[^/]+)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["root", "path", "bytes", "sha256"]
+    },
+    "approvalStatus": {
+      "const": "unapproved-produced-evidence"
+    }
+  },
+  "required": [
+    "format",
+    "compositionRef",
+    "embeddedProvenance",
+    "executable",
+    "directoryManifest",
+    "directoryFiles",
+    "archiveWitnessManifest",
+    "approvedProfile",
+    "buildInputsStableBeforeAfter",
+    "externalCollectorSource",
+    "schema",
+    "runtimeValidation",
+    "runtimeEvidenceManifest",
+    "nonClaims",
+    "profileId",
+    "buildId",
+    "externalEvidenceManifest",
+    "approvalStatus"
+  ],
+  "title": "Immutable build receipt v3; later runtime validation is a different document",
+  "$comment": "Root approval is a separate immutable approval record, externally trusted by caller. No selfHash/future process ref; no subsequent runtime field backfill. Schema identifies this schema in approved witness copy; it is not the receipt own hash. Complete protocol3 forward design; source lock26, canonical23, supplier22, runtime8 and source33 are distinct. No execution authority."
+}
