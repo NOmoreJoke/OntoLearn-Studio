@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "sourceProduct": "6891a5842302859a531cf82767c5a482417bc274",
+  "sourceProcess": "f79a29f596b2444cba542a906c91727869014886",
+  "sourceTree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy",
+  "sourceTreeHeadAtReadback": "f79a29f596b2444cba542a906c91727869014886",
+  "sources": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "bytes": 33916,
+      "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+      "fixedGitMatchesOfferedIdentity": true,
+      "currentPresent": true,
+      "currentMatchesFixed": true,
+      "publicTopLevelFunctions": [
+        {
+          "name": "canonical_string",
+          "line": 20,
+          "endLine": 28,
+          "parameters": "term",
+          "returnAnnotation": null
+        },
+        {
+          "name": "parse_graph",
+          "line": 92,
+          "endLine": 99,
+          "parameters": "text, *, base_uri",
+          "returnAnnotation": null
+        },
+        {
+          "name": "validate_profile_iri",
+          "line": 209,
+          "endLine": 233,
+          "parameters": "text",
+          "returnAnnotation": null
+        },
+        {
+          "name": "bind_profile_disabled_rules",
+          "line": 564,
+          "endLine": 569,
+          "parameters": "context, disabled_rule_ids",
+          "returnAnnotation": null
+        },
+        {
+          "name": "parse_profile_graph",
+          "line": 692,
+          "endLine": 722,
+          "parameters": "text, *, base_uri, source=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "profile_context_for_graph",
+          "line": 725,
+          "endLine": 761,
+          "parameters": "graph, *, disabled_rule_ids=()",
+          "returnAnnotation": null
+        },
+        {
+          "name": "profile_graph_from_records",
+          "line": 815,
+          "endLine": 839,
+          "parameters": "records, *, disabled_rule_ids=()",
+          "returnAnnotation": null
+        },
+        {
+          "name": "decode_profile_term",
+          "line": 842,
+          "endLine": 872,
+          "parameters": "text",
+          "returnAnnotation": null
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "bytes": 65749,
+      "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+      "fixedGitMatchesOfferedIdentity": true,
+      "currentPresent": true,
+      "currentMatchesFixed": true,
+      "publicTopLevelFunctions": [
+        {
+          "name": "parse_turtle",
+          "line": 111,
+          "endLine": 113,
+          "parameters": "text: str, *, format: str='turtle', shapes: bool=False",
+          "returnAnnotation": "Graph"
+        },
+        {
+          "name": "query",
+          "line": 160,
+          "endLine": 237,
+          "parameters": "graph: Graph, text: str",
+          "returnAnnotation": "dict"
+        },
+        {
+          "name": "reason",
+          "line": 1234,
+          "endLine": 1245,
+          "parameters": "graph: Graph, rules=(), *, profile=None, catalog=None, term_context=None",
+          "returnAnnotation": "dict"
+        },
+        {
+          "name": "check_shapes",
+          "line": 1528,
+          "endLine": 1530,
+          "parameters": "data: Graph, shapes: Graph",
+          "returnAnnotation": "dict"
+        },
+        {
+          "name": "validate_shacl_text",
+          "line": 1533,
+          "endLine": 1563,
+          "parameters": "data_text, shapes_text, *, data_policy, range_policy",
+          "returnAnnotation": "dict"
+        }
+      ]
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "bytes": 40378,
+      "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+      "fixedGitMatchesOfferedIdentity": true,
+      "currentPresent": true,
+      "currentMatchesFixed": true,
+      "publicTopLevelFunctions": [
+        {
+          "name": "decode_rule_definitions",
+          "line": 633,
+          "endLine": 683,
+          "parameters": "data, *, ledger=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "prepare_profile_material",
+          "line": 786,
+          "endLine": 806,
+          "parameters": "text=None, rules=(), *, records=None, disabled_rule_ids=(), source_reference=None, source_revision=None, parser_identity=None, ledger=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "prepare_selected_material",
+          "line": 1005,
+          "endLine": 1016,
+          "parameters": "asserted_records, ontology_records, definition, *, parser_identity, ledger=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "decode_selected_material",
+          "line": 1019,
+          "endLine": 1033,
+          "parameters": "input_preimage, source_preimage, definition_material, *, parser_identity, ledger=None",
+          "returnAnnotation": null
+        }
+      ]
+    },
+    {
+      "path": "docs/iterations/T05/q6-adopted-profile-v1.md",
+      "ref": "9333e69234a6f54a0dfc1485f49d8fdeb4b69cfd",
+      "bytes": 16428,
+      "sha256": "9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427",
+      "fixedGitMatchesOfferedIdentity": true,
+      "currentPresent": false,
+      "currentMatchesFixed": false
+    },
+    {
+      "path": "docs/iterations/I05/shacl-date-policy-design.md",
+      "ref": "65e31d331b315c245e1f921c3558bb7886adbd27",
+      "bytes": 22938,
+      "sha256": "1457aea0ba8b15ed0d137492dd648bc846e9757e067cf2cf506b70949aa996cc",
+      "fixedGitMatchesOfferedIdentity": true,
+      "currentPresent": true,
+      "currentMatchesFixed": true
+    }
+  ],
+  "requirements": {
+    "path": "docs/prd/PRD-本体学习与落地Agent工作台.md",
+    "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "bytes": 93584,
+    "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+    "sections": [
+      "FR-203",
+      "Appendix C",
+      "12.1"
+    ]
+  },
+  "dateClosureReadOnlyLocalSnapshot": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I05-date-component-root-closure.md",
+    "bytes": 1764,
+    "sha256": "eacbbe2facdaf6ec641872b85152d6a433a17e80473f340c4aaf7de3424d80c6",
+    "provenance": "controller owner closure; not T02 rerun or direct 117-observation reconstruction"
+  },
+  "evidenceTier": {
+    "T02Performed": [
+      "fixed Git bytes/SHA identity of five offered items",
+      "static AST API signatures and selected source body read",
+      "read fixed normative clauses and current controller date closure"
+    ],
+    "T02DidNotPerform": [
+      "product imports or execution",
+      "reconstruction of 117 Validator observations",
+      "tests, package or native validation",
+      "adoption/copying of I05 code into C5",
+      "full repository absence-of-API proof"
+    ]
+  },
+  "C5FrozenProduct": "e5ad54e5762157cafe532c2a0c07c22e8dd737cb",
+  "C5ReviewHead": "7c52e33e92d76bb0a83938a0e50abc40b8fb234e",
+  "addedToC5ReviewInputs": false,
+  "interfaceStatus": "static facts received; exact formal API/schema/serialization/roundtrip gaps proposed to sole writers, not formally ready"
+}
