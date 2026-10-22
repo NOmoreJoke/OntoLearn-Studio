@@ -1,15 +1,1458 @@
 {
+  "expectedAuthorityConsumption": {
+    "consumerC": [
+      {
+        "caseId": "C-query-numeric-promotion",
+        "fieldRoles": {
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "rows": "predicate in the explicit applicable branch above",
+          "ruleProfileComparison": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/0",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/0/expected/rows"
+            ],
+            "observationId": "C-query-numeric-promotion",
+            "selectedBranch": "/cases/0/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-query-type-error",
+        "fieldRoles": {
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "rows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/1",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/1/expected/rows"
+            ],
+            "observationId": "C-query-type-error",
+            "selectedBranch": "/cases/1/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-datatype-exact",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/2",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/2/expected/conforms",
+              "/cases/2/expected/components",
+              "/cases/2/expected/requiredResultRows"
+            ],
+            "observationId": "C-datatype-exact",
+            "selectedBranch": "/cases/2/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-langString",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/3",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/3/expected/conforms",
+              "/cases/3/expected/components"
+            ],
+            "observationId": "C-langString",
+            "selectedBranch": "/cases/3/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-count-term-identity",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above",
+          "valueNodeCount": "reference-only: not projected as an independent predicate in this model"
+        },
+        "goldenPointer": "/cases/4",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/4/expected/conforms",
+              "/cases/4/expected/components",
+              "/cases/4/expected/requiredResultRows"
+            ],
+            "observationId": "C-count-term-identity",
+            "selectedBranch": "/cases/4/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-in-term-identity",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/5",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/5/expected/conforms",
+              "/cases/5/expected/components",
+              "/cases/5/expected/requiredResultRows"
+            ],
+            "observationId": "C-in-term-identity",
+            "selectedBranch": "/cases/5/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-numeric",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/6",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/6/expected/conforms",
+              "/cases/6/expected/components"
+            ],
+            "observationId": "C-inclusive-numeric",
+            "selectedBranch": "/cases/6/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-nni",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/7",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/7/expected/conforms",
+              "/cases/7/expected/components"
+            ],
+            "observationId": "C-inclusive-nni",
+            "selectedBranch": "/cases/7/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-dateTime-equal",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/8",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/8/expected/conforms",
+              "/cases/8/expected/components"
+            ],
+            "observationId": "C-inclusive-dateTime-equal",
+            "selectedBranch": "/cases/8/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-dateTime-before",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/9",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/9/expected/conforms",
+              "/cases/9/expected/components",
+              "/cases/9/expected/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-dateTime-before",
+            "selectedBranch": "/cases/9/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-type-error",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/10",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/10/expected/conforms",
+              "/cases/10/expected/components",
+              "/cases/10/expected/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-type-error",
+            "selectedBranch": "/cases/10/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-date-entry",
+        "fieldRoles": {
+          "afterEntryPolicy": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "coreOnlyExpectedReport": "reference-only: not projected as an independent predicate in this model",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "ifI05ExplicitlySupportsXsdDateOperatorExtension": "predicate in the explicit applicable branch above",
+          "policyNotAdoptedByThisDocument": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/11",
+        "observations": [
+          {
+            "applicability": "reference-only: entry rejected before the conditional Validator report; exact safe code comes from the separate interface contract",
+            "comparedPointers": [],
+            "observationId": "C-inclusive-date-entry/strict/legacy",
+            "selectedBranch": "/cases/11/expected"
+          },
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/conforms",
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-date-entry/strict/utc-date-range-v1",
+            "selectedBranch": "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension"
+          },
+          {
+            "applicability": "reference-only: entry rejected before the conditional Validator report; exact safe code comes from the separate interface contract",
+            "comparedPointers": [],
+            "observationId": "C-inclusive-date-entry/integer-illtyped-report-v1/legacy",
+            "selectedBranch": "/cases/11/expected"
+          },
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/conforms",
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-date-entry/integer-illtyped-report-v1/utc-date-range-v1",
+            "selectedBranch": "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension"
+          }
+        ]
+      },
+      {
+        "caseId": "C-illtyped-entry",
+        "fieldRoles": {
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "directSHACLNormativeResult": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/12",
+        "observations": [
+          {
+            "applicability": "reference-only: entry rejected before the conditional Validator report; exact safe code comes from the separate interface contract",
+            "comparedPointers": [],
+            "observationId": "C-illtyped-entry/strict",
+            "selectedBranch": "/cases/12/expected"
+          },
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/12/expected/directSHACLNormativeResult/conforms",
+              "/cases/12/expected/directSHACLNormativeResult/components"
+            ],
+            "observationId": "C-illtyped-entry/integer-illtyped-report-v1",
+            "selectedBranch": "/cases/12/expected/directSHACLNormativeResult"
+          }
+        ]
+      }
+    ],
+    "explanation": {
+      "local": "inputs/explanation-goldens.json",
+      "reason": "No exact binding of its supplemental-graph-inputs cases to these sealed observations is approved; no file presence or author identity is counted as consumption.",
+      "retainedPointers": [
+        "/status",
+        "/matchOrder",
+        "/completeHeads",
+        "/falseThenError",
+        "/directSteps",
+        "/existingR04Reference",
+        "/additionalDirectStepCases",
+        "/expectedCatalogObservations"
+      ],
+      "status": "retained-reference-only"
+    },
+    "metadataPolicy": "Historical currentEntryGap and explanatory reason/derivation are not actual safe errors, pending overrides or evidence that a Validator ran."
+  },
   "forbiddenAsOracle": [
     "new I05 probe/tests/generator",
     "I05 source/package observations",
     "source output as golden"
   ],
   "format": "T05-oracle-sources/1",
+  "inputOriginLineage": [
+    {
+      "record": {
+        "bytes": 13873,
+        "path": "packages/engine/src/ontolearn_engine/semantic_probe.py",
+        "pointer": "L229-L259",
+        "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+        "sha256": "63f575302cf0796ab279d7a970cd8a9c62344fbc39128c7f60a3d204038a418d"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 13873,
+        "path": "packages/engine/src/ontolearn_engine/semantic_probe.py",
+        "pointer": "L66-L85 real JSON-LD implicit-access guard",
+        "ref": "523c478d5f39671c4ac7c1ea6997e51d3047d58e",
+        "sha256": "63f575302cf0796ab279d7a970cd8a9c62344fbc39128c7f60a3d204038a418d"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 14604,
+        "path": "packages/engine/tests/test_semantic_shacl_entry.py",
+        "pointer": "input data/shape clauses and policy parameters",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "61a3e92c298fa37483d203a8ad59dcafc9ec0ff61cf6d30b043267b7ca048c98"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/0",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/0/input",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/1",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/10",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/11",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/12",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/13",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/14",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/15",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/16",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/17",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/18",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/19",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/2",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/20",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/21",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/22",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/23",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/24",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/25",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/26",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/27",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/28",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/29",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/3",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/30",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/31",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/32",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/33",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/34",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/35",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/36",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/37",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/38",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/39",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/4",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/40",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/41",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/42",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/43",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/44",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/45",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/46",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/47",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/48",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/49",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/5",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/50",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/51",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/52",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/53",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/54",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/55",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/56",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/57",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/58",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/59",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/6",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/60",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/61",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/62",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/63",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/64",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/65",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/66",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/67",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/68",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/69",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/7",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/70",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/71",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/72",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/73",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/74",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/75",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/76",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/77",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/78",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/79",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/8",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/80",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/81",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/82",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 1839011,
+        "path": "docs/iterations/I05/profile-probe-inputs.json",
+        "pointer": "/mathInputs/9",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 188023,
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/cases.json",
+        "pointer": "/cases/41",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 188023,
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/cases.json",
+        "pointer": "/cases/42",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 188023,
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/cases.json",
+        "pointer": "/cases/49",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 26924,
+        "path": "packages/engine/tests/test_semantic_shacl_date_policy.py",
+        "pointer": "explicit test input parameters (no expected/result/report projection)",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "bd8e332a1b55ebdf183f1effdd37126a61233931edaa8d2239e0a20d9179b765"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 33858,
+        "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+        "pointer": "ast:constants/input-only",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 33858,
+        "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+        "pointer": "ast:scope_suite input assignments",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 33858,
+        "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+        "pointer": "ast:template_suite input literals",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "387278fa37006c9cdb3b08f1c7e7d6b8c3f0d5fbdaecb554fe02f310ec93cdb9"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 42828,
+        "path": "packages/engine/tests/test_semantic_profile_directsteps.py",
+        "pointer": "input vectors / independent mathematical fixtures",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "7bd1b63fbdcaf70d0a78efa4432c1b6091f91d96758988a86b5764b5c5d4b708"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 5611,
+        "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+        "pointer": "L35-L57",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "01415c8c904ad75bf8f6e2bf48430bd04211e0899bee81c490cee9dfe42f90f2"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 7211,
+        "path": "packages/engine/tests/test_semantic_profile_shape_entry.py",
+        "pointer": "input shape clauses / template front doors",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "38bc7a4074e183205f55fdb0a74e6933a505f9ff021fe24f5895d296ab725324"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/0",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/1",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/10",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/11",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/12",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/2",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/3",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/4",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/5",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/6",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/7",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/8",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 8505,
+        "path": "docs/reviews/T05/profile-M1-math-explanation-input-contract/consumer-C-inputs.json",
+        "pointer": "/cases/9",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    },
+    {
+      "record": {
+        "bytes": 9091,
+        "path": "tests/fixtures/quality/approved-T09-873c8c0/content/learning/transfer-inputs.json",
+        "pointer": "/repair",
+        "ref": "6891a5842302859a531cf82767c5a482417bc274",
+        "sha256": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6"
+      },
+      "role": "provenance-only literal from sealed input; not expected authority or proof of producer execution"
+    }
+  ],
   "semantics": "Source file names do not grant authority: triples/graphs/matches/rdfsWitnesses are external expected even when named inputs.json.",
   "sources": [
     {
       "bytes": 188023,
+      "consumption": "immutable original operation context, not an engine invocation",
       "local": "docs/reviews/T05/source-package-oracle/inputs/product-cases.json",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "525c91717c07dc4b386fcec00f897e1e6a75caf1",
       "role": "previous independently authored external expected, never engine input",
       "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa",
@@ -17,7 +1460,9 @@
     },
     {
       "bytes": 8205267,
+      "consumption": "sealed input origin, not expected",
       "local": "docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-inputs.json",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "0e42a0fe349054a92817cb4d463bccdc15f6c042",
       "role": "sealed pure input, not expected",
       "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
@@ -25,7 +1470,9 @@
     },
     {
       "bytes": 21202,
+      "consumption": "sealed input origin, not expected",
       "local": "docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-manifest.json",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "0e42a0fe349054a92817cb4d463bccdc15f6c042",
       "role": "sealed pure input, not expected",
       "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
@@ -33,7 +1480,9 @@
     },
     {
       "bytes": 767826,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/inputs/real-executor-acceptance-inputs.json",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "525c91717c07dc4b386fcec00f897e1e6a75caf1",
       "role": "previous independently authored external expected, never engine input",
       "sha256": "87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f",
@@ -41,7 +1490,9 @@
     },
     {
       "bytes": 11584,
+      "consumption": "retained-reference-only; no exact current observation/input mapping",
       "local": "docs/reviews/T05/source-package-oracle/inputs/explanation-goldens.json",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "525c91717c07dc4b386fcec00f897e1e6a75caf1",
       "role": "previous independently authored external expected, never engine input",
       "sha256": "68bc6848ad05b7cca01f37368a15b9e961a78a6a877b841f08cafa2a2fba36d9",
@@ -49,7 +1500,9 @@
     },
     {
       "bytes": 8163,
+      "consumption": "conditional predicates and metadata roles in expectedAuthorityConsumption",
       "local": "docs/reviews/T05/source-package-oracle/inputs/consumer-C-goldens.json",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "525c91717c07dc4b386fcec00f897e1e6a75caf1",
       "role": "previous independently authored external expected, never engine input",
       "sha256": "c25e7afcc593a7be09fc8b2ca29af9cff28a7a1e030a13b98aa5e7d88d596440",
@@ -57,46 +1510,58 @@
     },
     {
       "bytes": 23814,
-      "local": "guidance/semantic-boundaries.md",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/semantic-boundaries.md",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "path": "docs/iterations/I03/I05-semantic-boundaries.md",
       "ref": "6891a5842302859a531cf82767c5a482417bc274",
       "sha256": "a1e279f8d55a82af12cf27dbf11e71b78a11005b310748c3a5b3496062fae61d"
     },
     {
       "bytes": 22938,
-      "local": "guidance/date-policy.md",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/date-policy.md",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "path": "docs/iterations/I05/shacl-date-policy-design.md",
       "ref": "65e31d331b315c245e1f921c3558bb7886adbd27",
       "sha256": "1457aea0ba8b15ed0d137492dd648bc846e9757e067cf2cf506b70949aa996cc"
     },
     {
       "bytes": 34958,
-      "local": "guidance/directsteps-contract.md",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/directsteps-contract.md",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "path": "docs/iterations/T05/profile-M1-directsteps-consumer-contract.md",
       "ref": "057d2d96aaaac92d59f593678fc265fd13eace78",
       "sha256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba"
     },
     {
       "bytes": 16428,
-      "local": "guidance/q6-profile.md",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/q6-profile.md",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "path": "docs/iterations/T05/q6-adopted-profile-v1.md",
       "ref": "9333e69234a6f54a0dfc1485f49d8fdeb4b69cfd",
       "sha256": "9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427"
     },
     {
       "bytes": 26782,
-      "local": "guidance/q6-mechanism.md",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/q6-mechanism.md",
+      "originRefStatus": "provided metadata, not independently authenticated",
       "path": "docs/iterations/T05/q6-profile-mechanism-stage-plan.md",
       "ref": "9333e69234a6f54a0dfc1485f49d8fdeb4b69cfd",
       "sha256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424"
     },
     {
       "bytes": 36922,
-      "local": "guidance/allocation-integration-plan.md.raw",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/allocation-integration-plan.md.raw",
       "normativeLines": [
         72,
         80
       ],
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "de37ff64fab7f40b69fbf900e4657137ca18ce74",
       "scope": "declaration policy only; no runtime or complete fee authority",
       "sha256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d",
@@ -104,11 +1569,13 @@
     },
     {
       "bytes": 45463,
-      "local": "guidance/allocation-restore-plan.md.raw",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/allocation-restore-plan.md.raw",
       "normativeLines": [
         103,
         109
       ],
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "851e6241233d8b7a8f944944207260436b524e9f",
       "scope": "declaration policy only; no runtime or complete fee authority",
       "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
@@ -116,82 +1583,116 @@
     },
     {
       "bytes": 57687,
-      "local": "guidance/allocation-selective-adoption.json.raw",
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/allocation-selective-adoption.json.raw",
       "normativeLines": null,
+      "originRefStatus": "provided metadata, not independently authenticated",
       "ref": "6891a5842302859a531cf82767c5a482417bc274",
       "scope": "selective adoption metadata only; not whole-tree ancestry or unchanged writers",
       "sha256": "e5fe75cbf07436660fc475b5ac6c176c40fff35f00e1aad1250b7d967ef149d5",
       "sourcePath": "docs/reviews/I05/profile-directsteps/inputs/I05-profile-directsteps-first-fixed-inputs.json.raw"
     },
     {
+      "bytes": 1379,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
+      "local": "docs/reviews/T05/source-package-oracle/guidance/source-identities.json",
+      "originRefStatus": "not provided; pinned local identity only",
+      "sha256": "74323865f69ed3fe481872b94de4ef999c7e476271414bab7ec1c42f987ccb0f",
+      "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
+    },
+    {
       "bytes": 60953,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/contract.md",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 23814,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/semantic-boundaries.md",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "a1e279f8d55a82af12cf27dbf11e71b78a11005b310748c3a5b3496062fae61d",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 22938,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/date-policy.md",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "1457aea0ba8b15ed0d137492dd648bc846e9757e067cf2cf506b70949aa996cc",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 16428,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/q6-profile.md",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "9259f4ac6622857182570509378afb6c96ab5c4dc19d2e887db559c27a282427",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 26782,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/q6-mechanism.md",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 34958,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/directsteps-contract.md",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 2087,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/native-child-declaration-reference.json",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "71f64ab22f60fe6407e72f97a1296f4863fdcf8dc22e583425366d220a3dba74",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 1309,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/pre-registered-date-assertions.py.raw",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "6e67da970aac72b3d7e56e695d41a3f34ea6e57f7621235c42c589815d194795",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 36922,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/allocation-integration-plan.md.raw",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 45463,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/allocation-restore-plan.md.raw",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 57687,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/allocation-selective-adoption.json.raw",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "e5fe75cbf07436660fc475b5ac6c176c40fff35f00e1aad1250b7d967ef149d5",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     },
     {
       "bytes": 3204,
+      "consumption": "fixed finite expected or normative/interface authority; see per-observation expectedSourceRefs",
       "local": "docs/reviews/T05/source-package-oracle/guidance/allocation-source-receipt.json",
+      "originRefStatus": "not provided; pinned local identity only",
       "sha256": "6e7d747f7afa81b4f522a32b89b10043cf3addf4e9f3a95bf961e5e7e93cfd71",
       "sourceType": "approved contract/interface or explicitly reused legacy pre-registration; never a new probe output"
     }

@@ -1,4 +1,5 @@
 {
+  "authorityConsumptionPolicy": "Historical currentEntryGap and explanatory reason/derivation are not actual safe errors, pending overrides or evidence that a Validator ran.",
   "declaredAllocationEntryField": "declaredAllocationExpectation is null outside profile/production/DAG/restore; explicit status and complete model or precise missing metadata inside; never actual OriginalAllocation",
   "declaredAllocationPolicy": {
     "formula": "N=max(1,all definition count including disabled); T//N+(j<T%N)",
@@ -168,6 +169,7 @@
   "normalization": {
     "DAG": "every direct step and every result/root occurrence, ordered two premises, chosen-witness depth and exact leaf union, complete alias occurrence mappings; see dynamicRules and explicit pending interface fields",
     "RDFTerm": {
+      "applicability": "canonical graph/typed identity terms only; excludes the complete rawTermSourceOccurrences subtree",
       "blank": "only legal shape-list graph structure isomorphism; bijection must preserve every triple/multiplicity; no data blank nodes admitted",
       "iri": "exact absolute IRI, no namespace rewriting",
       "literal": "exact lexical/datatype; simple string maps to xsd:string per RDF1.1; language comparison casefold only with full original occurrences separately pinned",
@@ -187,6 +189,26 @@
           "label"
         ]
       ]
+    },
+    "RawTermSourceOccurrence": {
+      "arrayRelation": "exact complete input records, three terms per row; types, multiplicity, order and every tail retained",
+      "datatype_iri": "str or null",
+      "exactKeys": [
+        "kind",
+        "lexical_form",
+        "datatype_iri",
+        "language_raw",
+        "source"
+      ],
+      "kind": [
+        "iri",
+        "literal"
+      ],
+      "language_raw": "str or null, original spelling",
+      "lexical_form": "exact str",
+      "path": "expected.businessMath.rawTermSourceOccurrences for structured records datasets",
+      "source": "complete sealed input JSON source value, including null and empty fields; not producer authentication",
+      "turtleRelation": "null when no structured records were supplied; never fabricated from parsed terms"
     },
     "SHACL": {
       "comparison": "complete multiset of all six-field rows; conforms exact bool; absent value represented None, never synthesized",

@@ -1,5 +1,5 @@
 {
-  "builderSha256": "024b352964880f57154ee2f49b31fce9dea368e29d5cd3112ffbad7497b06610",
+  "builderSha256": "5f6c18e305ac1f6355b6cc89c7761082b6dca8c74479908db6ff305c0860a2bd",
   "caseSets": {
     "b1-semantic-10x-v1": [
       "b1-semantic/10x"
@@ -17608,9 +17608,339 @@
       "sidecars": "source_encoded/definitions_encoded/catalog_json and all respective SHA/lengths cover full preimages, including final child/source/definition/limits; no source-code SHA stands in for package code"
     }
   },
+  "expectedAuthorityConsumption": {
+    "consumerC": [
+      {
+        "caseId": "C-query-numeric-promotion",
+        "fieldRoles": {
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "rows": "predicate in the explicit applicable branch above",
+          "ruleProfileComparison": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/0",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/0/expected/rows"
+            ],
+            "observationId": "C-query-numeric-promotion",
+            "selectedBranch": "/cases/0/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-query-type-error",
+        "fieldRoles": {
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "rows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/1",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/1/expected/rows"
+            ],
+            "observationId": "C-query-type-error",
+            "selectedBranch": "/cases/1/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-datatype-exact",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/2",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/2/expected/conforms",
+              "/cases/2/expected/components",
+              "/cases/2/expected/requiredResultRows"
+            ],
+            "observationId": "C-datatype-exact",
+            "selectedBranch": "/cases/2/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-langString",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/3",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/3/expected/conforms",
+              "/cases/3/expected/components"
+            ],
+            "observationId": "C-langString",
+            "selectedBranch": "/cases/3/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-count-term-identity",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above",
+          "valueNodeCount": "reference-only: not projected as an independent predicate in this model"
+        },
+        "goldenPointer": "/cases/4",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/4/expected/conforms",
+              "/cases/4/expected/components",
+              "/cases/4/expected/requiredResultRows"
+            ],
+            "observationId": "C-count-term-identity",
+            "selectedBranch": "/cases/4/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-in-term-identity",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/5",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/5/expected/conforms",
+              "/cases/5/expected/components",
+              "/cases/5/expected/requiredResultRows"
+            ],
+            "observationId": "C-in-term-identity",
+            "selectedBranch": "/cases/5/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-numeric",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/6",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/6/expected/conforms",
+              "/cases/6/expected/components"
+            ],
+            "observationId": "C-inclusive-numeric",
+            "selectedBranch": "/cases/6/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-nni",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/7",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/7/expected/conforms",
+              "/cases/7/expected/components"
+            ],
+            "observationId": "C-inclusive-nni",
+            "selectedBranch": "/cases/7/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-dateTime-equal",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/8",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/8/expected/conforms",
+              "/cases/8/expected/components"
+            ],
+            "observationId": "C-inclusive-dateTime-equal",
+            "selectedBranch": "/cases/8/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-dateTime-before",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/9",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/9/expected/conforms",
+              "/cases/9/expected/components",
+              "/cases/9/expected/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-dateTime-before",
+            "selectedBranch": "/cases/9/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-type-error",
+        "fieldRoles": {
+          "components": "predicate in the explicit applicable branch above",
+          "conforms": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "requiredResultRows": "predicate in the explicit applicable branch above"
+        },
+        "goldenPointer": "/cases/10",
+        "observations": [
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/10/expected/conforms",
+              "/cases/10/expected/components",
+              "/cases/10/expected/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-type-error",
+            "selectedBranch": "/cases/10/expected"
+          }
+        ]
+      },
+      {
+        "caseId": "C-inclusive-date-entry",
+        "fieldRoles": {
+          "afterEntryPolicy": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "coreOnlyExpectedReport": "reference-only: not projected as an independent predicate in this model",
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "ifI05ExplicitlySupportsXsdDateOperatorExtension": "predicate in the explicit applicable branch above",
+          "policyNotAdoptedByThisDocument": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/11",
+        "observations": [
+          {
+            "applicability": "reference-only: entry rejected before the conditional Validator report; exact safe code comes from the separate interface contract",
+            "comparedPointers": [],
+            "observationId": "C-inclusive-date-entry/strict/legacy",
+            "selectedBranch": "/cases/11/expected"
+          },
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/conforms",
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-date-entry/strict/utc-date-range-v1",
+            "selectedBranch": "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension"
+          },
+          {
+            "applicability": "reference-only: entry rejected before the conditional Validator report; exact safe code comes from the separate interface contract",
+            "comparedPointers": [],
+            "observationId": "C-inclusive-date-entry/integer-illtyped-report-v1/legacy",
+            "selectedBranch": "/cases/11/expected"
+          },
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/conforms",
+              "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension/requiredResultRows"
+            ],
+            "observationId": "C-inclusive-date-entry/integer-illtyped-report-v1/utc-date-range-v1",
+            "selectedBranch": "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension"
+          }
+        ]
+      },
+      {
+        "caseId": "C-illtyped-entry",
+        "fieldRoles": {
+          "currentEntryGap": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "directSHACLNormativeResult": "predicate in the explicit applicable branch above",
+          "entryAndReportAreSeparate": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code",
+          "reason": "context metadata: explanation, historical gap or entry/report separation, not a runtime error code"
+        },
+        "goldenPointer": "/cases/12",
+        "observations": [
+          {
+            "applicability": "reference-only: entry rejected before the conditional Validator report; exact safe code comes from the separate interface contract",
+            "comparedPointers": [],
+            "observationId": "C-illtyped-entry/strict",
+            "selectedBranch": "/cases/12/expected"
+          },
+          {
+            "applicability": "conditional golden report/query predicates only",
+            "comparedPointers": [
+              "/cases/12/expected/directSHACLNormativeResult/conforms",
+              "/cases/12/expected/directSHACLNormativeResult/components"
+            ],
+            "observationId": "C-illtyped-entry/integer-illtyped-report-v1",
+            "selectedBranch": "/cases/12/expected/directSHACLNormativeResult"
+          }
+        ]
+      }
+    ],
+    "explanation": {
+      "local": "inputs/explanation-goldens.json",
+      "reason": "No exact binding of its supplemental-graph-inputs cases to these sealed observations is approved; no file presence or author identity is counted as consumption.",
+      "retainedPointers": [
+        "/status",
+        "/matchOrder",
+        "/completeHeads",
+        "/falseThenError",
+        "/directSteps",
+        "/existingR04Reference",
+        "/additionalDirectStepCases",
+        "/expectedCatalogObservations"
+      ],
+      "status": "retained-reference-only"
+    },
+    "metadataPolicy": "Historical currentEntryGap and explanatory reason/derivation are not actual safe errors, pending overrides or evidence that a Validator ran."
+  },
   "fieldPolicies": {
     "DAG": "every direct step and every result/root occurrence, ordered two premises, chosen-witness depth and exact leaf union, complete alias occurrence mappings; see dynamicRules and explicit pending interface fields",
     "RDFTerm": {
+      "applicability": "canonical graph/typed identity terms only; excludes the complete rawTermSourceOccurrences subtree",
       "blank": "only legal shape-list graph structure isomorphism; bijection must preserve every triple/multiplicity; no data blank nodes admitted",
       "iri": "exact absolute IRI, no namespace rewriting",
       "literal": "exact lexical/datatype; simple string maps to xsd:string per RDF1.1; language comparison casefold only with full original occurrences separately pinned",
@@ -17630,6 +17960,26 @@
           "label"
         ]
       ]
+    },
+    "RawTermSourceOccurrence": {
+      "arrayRelation": "exact complete input records, three terms per row; types, multiplicity, order and every tail retained",
+      "datatype_iri": "str or null",
+      "exactKeys": [
+        "kind",
+        "lexical_form",
+        "datatype_iri",
+        "language_raw",
+        "source"
+      ],
+      "kind": [
+        "iri",
+        "literal"
+      ],
+      "language_raw": "str or null, original spelling",
+      "lexical_form": "exact str",
+      "path": "expected.businessMath.rawTermSourceOccurrences for structured records datasets",
+      "source": "complete sealed input JSON source value, including null and empty fields; not producer authentication",
+      "turtleRelation": "null when no structured records were supplied; never fabricated from parsed terms"
     },
     "SHACL": {
       "comparison": "complete multiset of all six-field rows; conforms exact bool; absent value represented None, never synthesized",
@@ -114644,7 +114994,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/0/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-query",
@@ -114702,7 +115053,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/1/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-query",
@@ -114787,7 +115139,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/2/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -114843,7 +115196,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/3/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -114923,7 +115277,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/4/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -115008,7 +115363,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/5/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -115064,7 +115420,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/6/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -115120,7 +115477,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/7/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -115176,7 +115534,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/8/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -115261,7 +115620,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/9/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -115346,7 +115706,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/10/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-shape",
@@ -115403,7 +115764,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/11/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "reference-only conditional report; rejected entry code comes from interface contract"
         }
       ],
       "family": "consumer-C-date",
@@ -115464,8 +115826,9 @@
         },
         {
           "local": "inputs/consumer-C-goldens.json",
-          "pointer": "/cases/11/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "pointer": "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension",
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         },
         {
           "local": "guidance/date-policy.md",
@@ -115530,7 +115893,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/11/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "reference-only conditional report; rejected entry code comes from interface contract"
         }
       ],
       "family": "consumer-C-date",
@@ -115591,8 +115955,9 @@
         },
         {
           "local": "inputs/consumer-C-goldens.json",
-          "pointer": "/cases/11/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "pointer": "/cases/11/expected/ifI05ExplicitlySupportsXsdDateOperatorExtension",
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         },
         {
           "local": "guidance/date-policy.md",
@@ -115657,7 +116022,8 @@
         {
           "local": "inputs/consumer-C-goldens.json",
           "pointer": "/cases/12/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "type": "independent pre-existing conditional C expected",
+          "usage": "reference-only direct Validator report; strict entry rejects before Validator"
         }
       ],
       "family": "consumer-C-integer",
@@ -115747,8 +116113,9 @@
         },
         {
           "local": "inputs/consumer-C-goldens.json",
-          "pointer": "/cases/12/expected",
-          "type": "independent pre-existing C expected; extension date branch only where explicitly selected"
+          "pointer": "/cases/12/expected/directSHACLNormativeResult",
+          "type": "independent pre-existing conditional C expected",
+          "usage": "applicable independent report/query predicates; metadata roles in expectedAuthorityConsumption"
         }
       ],
       "family": "consumer-C-integer",
