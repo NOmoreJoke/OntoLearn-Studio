@@ -1,0 +1,32 @@
+# T10：固定 checkpoint 事实
+
+结论：有私有一致读、checkpoint/历史核验、域回滚预演及唯一Store提交；没有完整typed项目导出/导入/ID迁移接口。opaque保存≠全部业务typed闭包；本件不设计新函数。
+
+唯一ref：423b7e4c799f188cf2ce6e8e7121893ce85624cd。定位均为该ref的下列路径及一基行；P=packages/engine/src/ontolearn_engine/。
+
+|简称|P下精确路径|
+|---|---|
+|S|storage.py|
+|F|project/format3.py|
+|T|project/transactions.py|
+|A|project/applications.py|
+|J|job_store.py|
+|D|project/domain_changesets.py|
+|K|project/compensation.py|
+|H|project/project_host.py|
+
+|核对项|实际覆盖与限制|固定源行|
+|---|---|---|
+|definition/assertion/fact|state仅mappingState、definitions(layer/id/payload字符串)、facts(id/subject/predicate/object/owner/source_row/managed_value)。无独立assertions槽，asserted事实在facts。payload可保opaque JSON；validator仅核保存形状/引用及已识别RDF字段，不保证所有family业务typed。|S:416–440、1014–1039、1262–1348|
+|tombstone/版本|managed删除保行object=NULL及owner/source_row/managed_value；manual删除直接删行，ID跨edit/tombstone保原键。snapshot含project/revision/dependencyVector/state；vector过滤缺席/retired成员，不是完整versions账本。|S:700–718、359–391、1208–1232、1325|
+|retirements|state/snapshot无retirements字段；独立retirement_control及preview control捕获。历史恢复需按不可变commit/preview_control重建，缺账拒绝，非CP内直接完整清单。|S:862–873；T:47–63、68–80；K:73–133|
+|应用checkpoint|CP含版本、project、domainSnapshotRef/domainRevision、operationSequence、coverage/historyCoverage及application。application含metadataVersion/metadata、全部draft头、learningCurrent、assistanceAudit。metadata字段name/templateRef/archived/mode/origin；draft含generation/present/bound_revision/payload/hash；learning/audit payload只核JSON dict，非完整业务typed。|F:190–232、257–276、416–480、543–584|
+|当前闭包/一致读|_history逐genesis→当前head核receipt/sequence/domain前后ref及实际application；当前domainSnapshotRef等实际state/vector/revision的digest。project_checkpoint在_read内取原CP；返回引用，不是内嵌完整domain/history包。workspace一致读只metadata/CP/domainSnapshotRef+一个editor草稿，不是全项目export projection。snapshot()会持久化，不能当纯读export。|F:587–775；S:269–281、400–414、1208–1223；H:338–390|
+|预演/CAS|已有真实Store.commit后回滚的preview；commit核confirmed digest、before/control、after/control；base revision CAS。preview_restore只选本项目可信既有snapshot/历史做域补偿，不消费外来导入包。应用metadata/draft CAS及可选combined domain存在；A明示不接受供应的whole-state replacement、learning producer/full application restore待实现。|T:146–178、201–240、285–308；S:608–639；A:1–5、85–120、146–170、415–469|
+|typed范围/ID映射|formal ChangeSet只ontology定义和manual fact/edit/remove，拒mapped/managed历史；不能拼成全family迁移。public↔internal项目UUID映射存在；未提供typed Entity/定义/fact/source_row/owner/editor/attempt跨项目映射、冲突重写或导入manifest消费。|D:87–127；J:506–526；S:443–454、1014–1039|
+|唯一原子写/幂等对账|Store外层BEGIN IMMEDIATE/COMMIT，内层savepoint；application同Store提交，写claim/CP/receipt。reconcile只读核marker/job/fingerprint及before/after/control；project_receipt读混合链，legacy诚实返回legacy-not-recorded，不能单独证明Job/global claim或授权重放。无完整import幂等receipt接口。|S:120–146、283–303、481–519；T:180–199；A:415–526；J:358–420、1015–1078|
+|错误|已有Conflict固定code映射、Format3Fault六类reason、ProjectFault的确认/预演/undo/restore失败、JobFault(code,params)；仍有内部ValueError/KeyError。不存在本次所核接口的导入错误枚举/导入归因合同，不能拿通用异常名补设计。|S:50–65；F:23–35；T:26–32、211–239、253–290；J:31–42|
+
+仅固定源码事实，既有DB格式迁移不等跨项目包迁移。未核f51方案（由root另查）；未把方案、C1内部business或接口B说明当完整迁移实现。未读本轮模型意见，未运行产品/测试/import/SQL/native，未改受审源；不产生产品Pass或权限/物理准入证明。
+
+同目录T10-checkpoint-source-identity.json附8文件ref/path/blob/bytes/SHA及实核来源。

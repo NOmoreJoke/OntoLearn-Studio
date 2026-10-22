@@ -1,0 +1,77 @@
+{
+  "purpose": "Existing fixed material only for root to T10; no new design/API/implementation or test execution",
+  "identities": [
+    {
+      "sourceRef": "f51a9e10647d75cd07fe28007ab73c0e65451f63",
+      "path": "docs/iterations/T01/format3-foundation-contract.md",
+      "gitBlob": "48d3f0c5c5a153a0e2698742156ab30b10c1f5f8",
+      "bytes": 19818,
+      "sha256": "d435f2340ddda8d77e1f74c9291a7de64dfcac2fba1ba2d3834c6e24498c9855",
+      "sourceKind": "Historical foundation design; some parts later implemented at423, full restore is not implied",
+      "currentNamedDocBytesMatchFixedRef": true
+    },
+    {
+      "sourceRef": "f51a9e10647d75cd07fe28007ab73c0e65451f63",
+      "path": "docs/iterations/T01/application-cas-contract.md",
+      "gitBlob": "7730fb04dab0d2509bf4683dcdc6fbf12f040f14",
+      "bytes": 3937,
+      "sha256": "bcbc9509dfc24f03d9a755c6d4031b31b61ac8ecd668be7c02c4d72c2b729e55",
+      "sourceKind": "Historical private application CAS implementation contract, not full import/export; actual source binds423",
+      "currentNamedDocBytesMatchFixedRef": true
+    },
+    {
+      "sourceRef": "f51a9e10647d75cd07fe28007ab73c0e65451f63",
+      "path": "docs/iterations/T01/changeset-business-service-implementation-plan.md",
+      "gitBlob": "edf84918295fdf8b34a5989a0ee36ec5f1e22d9b",
+      "bytes": 27888,
+      "sha256": "39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1",
+      "sourceKind": "Historical typed ChangeSet design, later limited domain implementation at423; explicitly excludes full project restore",
+      "currentNamedDocBytesMatchFixedRef": true
+    },
+    {
+      "sourceRef": "f51a9e10647d75cd07fe28007ab73c0e65451f63",
+      "path": "docs/iterations/T01/full-function-acceptance-map.md",
+      "gitBlob": "0b4ce6038355459c14239285f3dd930c2c84c90c",
+      "bytes": 46745,
+      "sha256": "1262fbee16e7819b87f7f04b83f19ec7ec6587d76af5459d706c4f686c6c71c5",
+      "sourceKind": "Acceptance/gap inventory, not an implemented import/export service",
+      "currentNamedDocBytesMatchFixedRef": true
+    },
+    {
+      "sourceRef": "423b7e4c799f188cf2ce6e8e7121893ce85624cd",
+      "path": "packages/contracts/v2/errors.json",
+      "gitBlob": "9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b",
+      "bytes": 16299,
+      "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+      "sourceKind": "existing v2 error catalogue; not complete T10 import error contract",
+      "existingErrorCodes": [
+        "INVALID_REQUEST",
+        "METHOD_NOT_ALLOWED",
+        "VERSION_INCOMPATIBLE",
+        "HANDSHAKE_REQUIRED",
+        "SESSION_MISMATCH",
+        "NOT_FOUND",
+        "PERMISSION_DENIED",
+        "UNSUPPORTED_CAPABILITY",
+        "QUEUE_FULL",
+        "TIMEOUT",
+        "ENGINE_EXITED",
+        "REVISION_CONFLICT",
+        "OWNERSHIP_CONFLICT",
+        "IDENTITY_CONFLICT",
+        "STORAGE_BUSY",
+        "STORAGE_FAILURE",
+        "CURSOR_MISMATCH",
+        "CURSOR_EXPIRED",
+        "PAYLOAD_EVICTED",
+        "INVALID_STATE",
+        "MAPPING_VALUE_INVALID",
+        "INTERNAL_ERROR",
+        "SEMANTIC_INPUT_INVALID",
+        "NETWORK_FORBIDDEN",
+        "UNSUPPORTED_CONSTRUCT",
+        "RESOURCE_LIMIT"
+      ]
+    }
+  ]
+}
