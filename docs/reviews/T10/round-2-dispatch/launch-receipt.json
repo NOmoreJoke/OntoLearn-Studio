@@ -1,0 +1,70 @@
+{
+  "status": "two_fresh_round2_tasks_started_and_complete_input_accepted_not_review_pass",
+  "observedAt": "2026-10-22T10:22:29.673109+00:00",
+  "reviewHead": "66cc15200611d592d3da2877961f9e079eb05277",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "preparationCommit": "4cc5f82e0858ef03b84a3fcf9360849414290002",
+  "preparationManifestSHA256": "1509c6ce95b9cf280c195b7037af13088f5c6f2dc42ddfe14bdb3ac235e1e7e2",
+  "inputManifestSHA256": "4097a0cab75ae2f03c30450fa6c09d8d1ef4e054b2199fe10bad3d2b9e29f4c8",
+  "inputCount": 225,
+  "GUILease": "Controller 01a154de-843b-7a00-8a80-51ba1c0aebce granted short T10 round2 creation lease after T01 release; actual CUA creation/settings/input acceptance complete; explicitly released before backend full-read audit",
+  "GUIReleased": true,
+  "models": [
+    {
+      "role": "zcode",
+      "sessionId": "session_51c6a1c550181572a24f331b9a5c5e23",
+      "turnId": "turn_024c2267-49dd-4c90-9e0a-8dd9b61c5b43",
+      "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-zcode-review-r2-66cc152",
+      "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-zcode-review-r2-66cc152/docs/reviews/T10/round-2/zcode-glm53.md",
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-zcode-review-r2-66cc152/docs/reviews/T10/round-2/zcode-raw",
+      "scratch": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-zcode-review-r2-66cc152/out/t10-review/round-2/zcode",
+      "model": "GLM-5.3",
+      "effort": "max",
+      "permissionReadback": "yolo (runtime) / 完全访问 (task UI)",
+      "settingsRecord": "zcode-request-settings.json",
+      "acceptedAttachment": {
+        "bytes": 106452,
+        "sha256": "a612c2e88c0f5da41d0dd2860215ec95d83d3756e9cf94a7e21e301eb789f830",
+        "byteExactToFrozenFullPrompt": true
+      },
+      "all667LinesActuallySuppliedToModel": true,
+      "postLaunchReadback": "zcode-post-launch-input-readback.json",
+      "formalTerminal": null,
+      "reportExistsAtReceipt": false
+    },
+    {
+      "role": "minimax",
+      "sessionId": "mvs_d314cc7a43c84a559e31d5ddf3663af7",
+      "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+      "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152",
+      "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/docs/reviews/T10/round-2/minimax-m31flash.md",
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/docs/reviews/T10/round-2/minimax-raw",
+      "scratch": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/out/t10-review/round-2/minimax",
+      "model": "MiniMax-M3.1-Flash",
+      "effort": "xhigh",
+      "permissionReadback": "始终授权 (task UI) / bypassPermissions per verified UI mapping",
+      "settingsRecord": "minimax-request-settings.json",
+      "acceptedAttachment": {
+        "bytes": 106507,
+        "sha256": "a503367fc7b686c28bf35f4a314dbd0ae116cfa7a1409f523fb9e78a29795941",
+        "byteExactToFrozenFullPrompt": true
+      },
+      "all667LinesActuallySuppliedToModel": true,
+      "postLaunchReadback": "minimax-post-launch-input-readback.json",
+      "formalTerminal": null,
+      "reportExistsAtReceipt": false
+    }
+  ],
+  "reviewConclusion": null,
+  "formalTerminals": null,
+  "goalStatusUnchanged": "blocked",
+  "productTestsRunByPreparer": false,
+  "otherSessionsModified": false,
+  "independentReceiptReview": {
+    "reviewer": "/root/t10_private_review",
+    "result": "pass_for_startup_receipt_only",
+    "record": "independent-receipt-review.md",
+    "sha256": "a58acb428be33a61e7a88c170627ea15f31a7be0a53b0efd760af813439f3082",
+    "productReviewPass": false
+  }
+}

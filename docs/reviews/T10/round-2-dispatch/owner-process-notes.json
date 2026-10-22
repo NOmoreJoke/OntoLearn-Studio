@@ -1,0 +1,22 @@
+{
+  "statusAppendAttempt": {
+    "method": "python3 stdin script",
+    "result": "SyntaxError before writing file; git status showed no status.md change",
+    "stderr": "SyntaxError: Non-UTF-8 code starting with '\\xe4' in file <stdin> on line 2, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details",
+    "stepExitCode": "not separately captured; composite shell ended with successful git status",
+    "resolution": "Applied the same intended status-only append through apply_patch; git diff confirms eight added lines",
+    "systemPythonVersion": "3.9.6",
+    "workspacePythonVersion": "3.12.12",
+    "productOrFrozenInputModified": false
+  },
+  "newMetadataFormatting": {
+    "firstPrettierCheck": "5 new README/settings/readback files warned",
+    "resolution": "Formatted only those new files; explicit check passed; original attachment/Read payloads untouched"
+  },
+  "minimalEvidenceSchemaCheck": {
+    "firstAttemptExitCode": 1,
+    "cause": "Owner whitelist used formatOnlyTrailingLine668 but omitted MiniMax existing formatOnlyTrailingLines field; assertion failed before mutation",
+    "resolution": "Corrected checker whitelist, then both 667 contiguous numbered-line schemas and private bytes/hash/mode/Git-ignore plus all JSON parsing passed; no evidence text changed",
+    "productOrFrozenInputModified": false
+  }
+}

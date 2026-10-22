@@ -75,3 +75,11 @@ ZCode真实session `session_65271e095f85aad0c95b5e1f512243f1`、turn `turn_6b38b
 本轮仅改Python检查器/其测试、CLI probe输出目录与运行说明。定向66Python通过，整仓npm run check一次exit0，691TS/1118Python及lint/格式/类型/构建通过；独立补丁审查和20项内存反例通过。probe实际生成3HTML，3900B/26af字节保持不变且输出被忽略，旧证据不覆盖。新原件见round-2-preparation/verification.json。浏览器/native同一report源码不同标题输入、executed:null仅未观测哨兵的精确澄清见处置文档，旧原件不改。
 
 新候选仍需双方各全新完整同版round-2审查，不复用旧会话；尚无新任务/创建lease，不操作GUI。原正式格式/可信投影/生产lease/原子导入及父门继续未完成，原Goal blocked不重建，未push/PR/CI/merge。
+
+## 2026-10-22 round-2实际启动与完整正文受理
+
+总控预检接受后给原T10短GUI创建lease，已各新建一个完整独立任务；前台创建/设置/输入读回完成即释放，不等待后台推理。固定reviewHead为66cc15200611d592d3da2877961f9e079eb05277，两审查树分别T10-zcode-review-r2-66cc152与T10-minimax-review-r2-66cc152。
+
+ZCode真实session `session_51c6a1c550181572a24f331b9a5c5e23`、turn `turn_024c2267-49dd-4c90-9e0a-8dd9b61c5b43`，GLM-5.3/max、runtime yolo；MiniMax真实session `mvs_d314cc7a43c84a559e31d5ddf3663af7`、turn `5ad5f9d9-3db0-4872-86ab-04fbb3375fd3`，MiniMax-M3.1-Flash/xhigh、任务UI始终授权；各自实际cwd已核。Z106452B/a612c2e8、M106507B/a503367f完整附件byte-exact；Z自动Read1–551并由首工具补读552–667，M五read覆盖全部667行，逐行与冻结全文一致。真实回执及仅含本人提示编号行/调用标识的最小供给证据在round-2-dispatch/；完整上下文原件只在受限Git忽略目录保留，MiniMax初始链为12条消息，Z668仅空白格式尾行。
+
+225项受审Git/工作文件与各11输入副本启动后保持精确；额外metadata仅路径/lstat及明确自身session归属，未知不读、不删求绿。未改其他会话/stdio/设置、未复用旧task/Pass、未互泄本轮意见。当前只记新任务启动/全文受理，正式终态/报告/问题闭环仍待；不因此标新候选或完整父T10通过，原Goal blocked不重建，未push/PR/CI/merge。

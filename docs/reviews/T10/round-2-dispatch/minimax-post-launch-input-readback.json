@@ -1,0 +1,1138 @@
+{
+  "observedAt": "2026-10-22T10:21:44.163856+00:00",
+  "reviewHead": "66cc15200611d592d3da2877961f9e079eb05277",
+  "fixedInputCount": 225,
+  "all225WorkingAndGitInputsExact": true,
+  "AGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+  "trackedDelta": ["AGENTS.md"],
+  "status": " M AGENTS.md\n?? docs/reviews/T10/round-2/minimax-input/AGENTS-current.md\n?? docs/reviews/T10/round-2/minimax-input/common-current.md\n?? docs/reviews/T10/round-2/minimax-input/desktop-policy-current.md\n?? docs/reviews/T10/round-2/minimax-input/environment.json\n?? docs/reviews/T10/round-2/minimax-input/input-manifest.json\n?? docs/reviews/T10/round-2/minimax-input/invocation-and-validation-addendum.md\n?? docs/reviews/T10/round-2/minimax-input/manifest-original147.json\n?? docs/reviews/T10/round-2/minimax-input/original-prompt.md\n?? docs/reviews/T10/round-2/minimax-input/paths.json\n?? docs/reviews/T10/round-2/minimax-input/permissions-current.md\n?? docs/reviews/T10/round-2/minimax-input/round-1-disposition.md\n?? docs/reviews/T10/round-2/minimax-raw/manifest-verification.txt\n",
+  "metadataInspection": "Path/lstat only; no metadata content read or hash; no peer content peek; ownership only explicit own session in filename/path, others unknown. No deletion or verifier change.",
+  "additionalMetadata": [],
+  "files": {
+    "apps/desktop/src/csp.ts": {
+      "byteLength": 1065,
+      "sha256": "06cef03f34cca86884b7eec937d5156cc4612e9521506e9e617d1ee9acab4192",
+      "matchesFrozenGit": true
+    },
+    "apps/desktop/src/main/project-transfer/prepared-report-file.ts": {
+      "byteLength": 12626,
+      "sha256": "71e7359ed62f53d9b9c9ac0e3559f5993431e99a7f2527afe1916735824a0219",
+      "matchesFrozenGit": true
+    },
+    "apps/desktop/src/renderer/src/transfer/TransferPanel.tsx": {
+      "byteLength": 3103,
+      "sha256": "77b28b745547e5b470c496564bf2e24191bb5f4cb09de953706eae8b0f7cccb3",
+      "matchesFrozenGit": true
+    },
+    "apps/desktop/src/renderer/src/transfer/report.ts": {
+      "byteLength": 8662,
+      "sha256": "b5e508106bf6072f8b72f9c77cce9ab77d9e06bc91a926840ea2eaac379b8c05",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/i06-transfer-response-acceptance-r1.md": {
+      "byteLength": 3692,
+      "sha256": "484bc02d9244ce64cc6bf44edea7afceb25cc74d38385c89a10b9c0f39d3c3a1",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/i06-trusted-transfer-contract-request.md": {
+      "byteLength": 19000,
+      "sha256": "6e52cdf4230b61034366963ef39808cbdf8b7e62655a0ec168d77706b311b7bd",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/interface-needs.md": {
+      "byteLength": 4616,
+      "sha256": "056ad78e84c3534e7d9b06be4e86c6237658da3c914ab7bd5c1716fb389791eb",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/isolated-native-validation.md": {
+      "byteLength": 4557,
+      "sha256": "e5f838954c37503200b070fcf9c51b0c60a657a6e2a9b47b0555baf195df9ad4",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/isolated/Dockerfile": {
+      "byteLength": 1705,
+      "sha256": "8e2b144d300916416de28cdf3a92ba3ad7e2ddf75e890d1377aa515afbd3b407",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/isolated/native-driver.mjs": {
+      "byteLength": 6169,
+      "sha256": "11aee701e5b6d47282f14674510d3c7a176d762d474b328dcd96d3fb7cfa9665",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/isolated/native-hook.cjs": {
+      "byteLength": 6215,
+      "sha256": "2f5fd5fe1d97d82b6d816865331449d30c7f619bb67a5b115ac53071362b7588",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/isolated/prepare-native.mjs": {
+      "byteLength": 1506,
+      "sha256": "78618cf7cd7418d4ec6a320ac29fa501b87beb6301d2ff93ec6ddf1ac60e48ea",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/isolated/run-container.py": {
+      "byteLength": 4496,
+      "sha256": "47081b141f9aeef88137e0b909e10ba3aea411b9ec17e54ff07078e0bd500260",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/isolated/run.sh": {
+      "byteLength": 960,
+      "sha256": "5cca0465a5f96557c1e2cc0595e2a2ba0a77550097dd935952cd4bbd36edcae4",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/private-preparation.md": {
+      "byteLength": 4755,
+      "sha256": "9c629faef2ee0375d935dd29d46397631c7e5b63963878b4bc1833369b8427d4",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/render-probe.mjs": {
+      "byteLength": 2427,
+      "sha256": "c5d89b33eeea99aef0e3d2e68e018c754dc3a426a163a7989695d5737bcc2abe",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/report-file-publication.md": {
+      "byteLength": 3445,
+      "sha256": "14882825e19ac93a11ffb9ed57f0f40b0870bd3fcca56f200a7438ab93912767",
+      "matchesFrozenGit": true
+    },
+    "docs/iterations/T10/t01-transfer-design-acceptance-r1.md": {
+      "byteLength": 6931,
+      "sha256": "ebee0f936c6e1e4ee24d89d574e672465218f228af80b1b998eb47e8d1ad8037",
+      "matchesFrozenGit": true
+    },
+    "docs/prd/PRD-本体学习与落地Agent工作台.md": {
+      "byteLength": 93584,
+      "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/blocked-audit.md": {
+      "byteLength": 4235,
+      "sha256": "69ac7c2314382b7c037e4e5213956edaab6ffd08e8ecdab19fdcaf9affc54fb2",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/designated-review-backlog-20261022.md": {
+      "byteLength": 11299,
+      "sha256": "009084f875692e00299f389fdb525b587e218d21958bb28e4fe881d613c60854",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/README.md": {
+      "byteLength": 2636,
+      "sha256": "01ee2c5655e4d74f64f54cc1ebde534eb3e7c00e4ff5662de055434fb849fd96",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/dispatch-manifest.json": {
+      "byteLength": 2679,
+      "sha256": "f335fb1f83db7b5838918c7d7efe6c4282e87738c1888f180490aecac2706f4a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/independent-receipt-review.md": {
+      "byteLength": 1100,
+      "sha256": "35bd5d1b13afa24f8a3c59d4b56eb8e7ac7dbd903591e0b5b442c19c0dec5109",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/launch-receipt.json": {
+      "byteLength": 3310,
+      "sha256": "41088b958040c866f8485e7750d52d2fd451cdf9eb937b6e137fb1fe3d6b210e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/minimax-accepted-attachment.txt": {
+      "byteLength": 52555,
+      "sha256": "d8b551c6f4d2bc678849b55e739872f767cac8cc6895c4440097202237fb1587",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/minimax-before-submit-ax.txt": {
+      "byteLength": 198,
+      "sha256": "b1231f116cb028be9557c71c8f4223d32d2aa90b06d60b8934b327ad3d418f75",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/minimax-initial-read-messages.jsonl": {
+      "byteLength": 205100,
+      "sha256": "7df7d19b647cb90e11743a0d9eb39e555b48f5da29bf28ef1f883c789ffcb61d",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/minimax-post-launch-input-readback.json": {
+      "byteLength": 60262,
+      "sha256": "d163017fea8865383b188358c54b221e3cb813ec5697f41b4a02102f14500923",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/minimax-request-settings.json": {
+      "byteLength": 585,
+      "sha256": "598e7587e3e09d942c15c93dc19f10663bc8bc56b9ad27c1a559891b281d21bc",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/minimax-running-ax.txt": {
+      "byteLength": 1161,
+      "sha256": "8b5d54742718060f4e19a2af126f89bbaec758eb344ab45a0536562840127da6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/minimax-submitted-ax.txt": {
+      "byteLength": 3618,
+      "sha256": "98ee3ec365eb03c6464edd7d55578acadd04ffa024d117100411a3c2e43ca563",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/zcode-accepted-attachment.txt": {
+      "byteLength": 52504,
+      "sha256": "c76e34d0b2639b1cab23eb0c3f3b7c848cb8ddc8f58e34c7a9e83f80e545b902",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/zcode-model-input-numbered.txt": {
+      "byteLength": 53556,
+      "sha256": "8281511457488054a4f3767dbc23b155387b28f791821ab1aaaabd155115323e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/zcode-post-launch-input-readback.json": {
+      "byteLength": 91027,
+      "sha256": "3b5bb8ce3e2e92dcc87a1235d8b247a2ac35072a8ef8fa25b36bb50480e42e69",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/zcode-project-ax.txt": {
+      "byteLength": 1603,
+      "sha256": "2fa017060c910de42c31939560447f40ceda2c0175c3a040de5a5b78c556825c",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/zcode-request-settings.json": {
+      "byteLength": 511,
+      "sha256": "a4447777fe3c31c5eca73e67acea5b3b65b73b2440303f27580ec9ca6eba8880",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/zcode-runtime-events.json": {
+      "byteLength": 2509,
+      "sha256": "08d90252b398dfa243f6af5d601b9a3ca7c99bcddfd9f38cd0dde520374a4618",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/dispatch-20261022/zcode-submitted-ax.txt": {
+      "byteLength": 1801,
+      "sha256": "54f2247578dc409da878f2019396542b54aee53fa95674d67f0a9062ab2809ac",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence-preservation-E1.md": {
+      "byteLength": 1961,
+      "sha256": "65063e260fae74dcce2f94009fc6fe4a344253db2a348ce5ef42dd22786d1d92",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/approved-input-reference.json": {
+      "byteLength": 3209,
+      "sha256": "bdc629256c62b7ec9f9bccbfcfa1fbcf423a8337cf8d5428dd6483c49489f53f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/browser-summary.json": {
+      "byteLength": 228,
+      "sha256": "d8a7b1b44d2561cdfc278d37f01e0678237f68986c640787bed1855e6378c80b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/check-first.txt": {
+      "byteLength": 1024,
+      "sha256": "0d56e81ff342489f550fd58f2913070a9b03ae8e1c05c2839ace4befa8ebd48b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/initial-browser-summary.json": {
+      "byteLength": 293,
+      "sha256": "b97a749ef237a566cc0a288b3743134e4a5700d06fd8393c3529566ffa459664",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/initial-preparation-summary.json": {
+      "byteLength": 1365,
+      "sha256": "025efa4ef22cc4b56e26ad7907c236241a086e582538afa66b6ae575ea9bc9f6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-1/container-config.json": {
+      "byteLength": 472,
+      "sha256": "8322bfa042706e8dd76d3f15a51fde20d369c8da4f2ef00380976920bb196ce6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-1/final-state.json": {
+      "byteLength": 250,
+      "sha256": "b4bb5627bbbfb53043e7c03cc725a52718e8e9cb3a1107a9a30b2aa960cba4a7",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/compiled-sources.json": {
+      "byteLength": 358,
+      "sha256": "783b3ae85fba5e97d30e62c6f2e8dec3691ae5f2586b5e225c85a999c7b50ec6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/container-config.json": {
+      "byteLength": 472,
+      "sha256": "21144b778379e20b63f8c034156d9b699e02cb6235b61a3367db3e13bf7a669f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/container-state.json": {
+      "byteLength": 269,
+      "sha256": "ddd52aa1ed596f2dbc3d1bb1da41fc28e3505ab1658788e4fc65e9261edd5e5f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/container-stderr.txt": {
+      "byteLength": 276,
+      "sha256": "e83c5b39a29dad6d0a5fedb1b03f233698654753430d4abb38036ffd76ae1768",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/container-stdout.txt": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/driver.json": {
+      "byteLength": 232,
+      "sha256": "8c0095919782fd4b938afa4ab38d8c71a6bc3dfaf71300d1fe7b9642487d272f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/final-state.json": {
+      "byteLength": 269,
+      "sha256": "ddd52aa1ed596f2dbc3d1bb1da41fc28e3505ab1658788e4fc65e9261edd5e5f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/host-driver-sha256.txt": {
+      "byteLength": 65,
+      "sha256": "cf11a669e358b537448d7b68d5aeeed0685e22a6d8549903b889fa8607dd77a8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/native-stderr.txt": {
+      "byteLength": 788,
+      "sha256": "bf0b883b77554acbdd119b89a52ad7e6fec6d3dd34ea871d5235912bec2339dd",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/native-stdout.txt": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/native.json": {
+      "byteLength": 1656,
+      "sha256": "af3a60e3bc18fbf44a56480354f156770b24aea7eaac7b850186375988fb8a31",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/node-version.txt": {
+      "byteLength": 9,
+      "sha256": "2b796b748c85883d00cfea9775eaa143435f0dc06c69311b444cf0dfc98214bc",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/npm-version.txt": {
+      "byteLength": 8,
+      "sha256": "608c86d3f47c084a7a0de5d4eb4bc18724c96c456f3fe6842d17f04004338c3f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/openbox.txt": {
+      "byteLength": 85,
+      "sha256": "6f748c3cd02a858c087697c3afac639205c62b7b206558bd40d1bcbd98165a5c",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/pytest.txt": {
+      "byteLength": 284,
+      "sha256": "93d63e8bf786636e0daa32ff8b2a10fb55c7a88686652a793cb6640146fe7037",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/python-version.txt": {
+      "byteLength": 15,
+      "sha256": "55ae85cf4bdb38743edbcd53ea68ff36511997ec6c21b1e83d8bebc939bf056b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/units.txt": {
+      "byteLength": 543,
+      "sha256": "79a6e10ae529a78f360cb43150f6f94291c0a4839cec2aae6e8fb89f34eb2758",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/uv-version.txt": {
+      "byteLength": 40,
+      "sha256": "eb7897b767ba2f34eddb10db251bf693a17641563da0c6c98fc2796f6e9a2bcd",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-2/verified-controls.json": {
+      "byteLength": 355,
+      "sha256": "428d25d0c959fb90756e13df4b72b87ea71af72db94a5644aea4a4b493311ab3",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/cancel-dialog.png": {
+      "byteLength": 28509,
+      "sha256": "75c43b3dac503a2438f6a6e479b55e59ec2ba8c676ed9908805b8dbb2d3c8f7d",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/compiled-sources.json": {
+      "byteLength": 358,
+      "sha256": "783b3ae85fba5e97d30e62c6f2e8dec3691ae5f2586b5e225c85a999c7b50ec6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/container-config.json": {
+      "byteLength": 472,
+      "sha256": "720946d40ff1f2c423c025b6275e47812510d61bfdac5deba569c287bba35b0e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/container-state.json": {
+      "byteLength": 269,
+      "sha256": "0e2b17faee0cf0bde7df0bf702e6cd2a33ec8b9f65c07ea46eb52392130af40d",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/container-stderr.txt": {
+      "byteLength": 272,
+      "sha256": "6738c713f2365254b09162331a7151c10756f93fb17969385bbe3beb9e8d93f3",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/container-stdout.txt": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/driver.json": {
+      "byteLength": 587,
+      "sha256": "d8a7b63bc625e1d8fe50aee8f99257b0cc41697f740305fd87e9dc0a37a43dcc",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/final-state.json": {
+      "byteLength": 269,
+      "sha256": "0e2b17faee0cf0bde7df0bf702e6cd2a33ec8b9f65c07ea46eb52392130af40d",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/host-driver-sha256.txt": {
+      "byteLength": 65,
+      "sha256": "cf11a669e358b537448d7b68d5aeeed0685e22a6d8549903b889fa8607dd77a8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/native-report.html": {
+      "byteLength": 3896,
+      "sha256": "ad367a3158a8adc989378239d68d992e9c281f0269561af7fd31027a1743cdcd",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/native-stderr.txt": {
+      "byteLength": 788,
+      "sha256": "869006425e99784aa24fcf71399f5967302b13270c98e7f8d13b88487c3ca943",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/native-stdout.txt": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/native.json": {
+      "byteLength": 2471,
+      "sha256": "b8cbf986d09e758179f73d5ea2b72372d627aeb886f63c98fb0dd610dd406865",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/node-version.txt": {
+      "byteLength": 9,
+      "sha256": "2b796b748c85883d00cfea9775eaa143435f0dc06c69311b444cf0dfc98214bc",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/npm-version.txt": {
+      "byteLength": 8,
+      "sha256": "608c86d3f47c084a7a0de5d4eb4bc18724c96c456f3fe6842d17f04004338c3f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/openbox.txt": {
+      "byteLength": 85,
+      "sha256": "6f748c3cd02a858c087697c3afac639205c62b7b206558bd40d1bcbd98165a5c",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/pytest.txt": {
+      "byteLength": 284,
+      "sha256": "5d4f3ae2f65ad28c16cb10c0b4400b7347a63f1c36d4cdd022fa1224be8c4ccc",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/python-version.txt": {
+      "byteLength": 15,
+      "sha256": "55ae85cf4bdb38743edbcd53ea68ff36511997ec6c21b1e83d8bebc939bf056b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/save-dialog.png": {
+      "byteLength": 25477,
+      "sha256": "4262c14ce3a678aedc7a978c53a179aaf308f4b8f63855030f8a14ce1ab42c67",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/units.txt": {
+      "byteLength": 543,
+      "sha256": "6ef2f08f49f1fee95c32866adc2a1ac999327d00e9d8208dcc0c161ec18bdc1a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/uv-version.txt": {
+      "byteLength": 40,
+      "sha256": "eb7897b767ba2f34eddb10db251bf693a17641563da0c6c98fc2796f6e9a2bcd",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/attempt-3/verified-controls.json": {
+      "byteLength": 355,
+      "sha256": "7a11347d8f694086eb44213e310b514ebf6657570b61838c87be89f5a2a9fa2e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/check-failure-notes.json": {
+      "byteLength": 750,
+      "sha256": "631c0335513dad60a5a4504c6811b3fbec0d75c68e506ac00474ad099f19e4fa",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/check-isolated-final.txt": {
+      "byteLength": 1948,
+      "sha256": "ef946ab83841f9feebde378dfaf6c5ea326cd3142bce5334d01ee94f5833a426",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/check-isolated-retry.txt": {
+      "byteLength": 5216,
+      "sha256": "89fabdb0219384b2239af2004830f1dafb1a76f0e39e3a56bf1c0b955470e0aa",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/check-isolated-tools.txt": {
+      "byteLength": 5216,
+      "sha256": "459990f6deecc4057be2c05c1b9e1d4def7e501e71bf4b1b43951f124d82892e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/docker-build-v1.txt": {
+      "byteLength": 54593,
+      "sha256": "1ed9bac7f50dc6443d40f6e16fd66f264b9bb3e159f8a03b42ec1fcd52f5a511",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/docker-build-v2.txt": {
+      "byteLength": 3148,
+      "sha256": "74a78609d20d44ed2f959a4332941430aa3c2b0992f818fb5e64698d2c96355a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/docker-build-v3.txt": {
+      "byteLength": 4195,
+      "sha256": "18f7ead46015a47621ccb938f6d23898eafa161213313ed49ea5271e22826c9a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/engine-connection-isolated-recheck.txt": {
+      "byteLength": 221,
+      "sha256": "3c7d1294594cc95533cff4791fe01830aca310197a83cf8b4ef14c8eed28c19f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/manifest.json": {
+      "byteLength": 5498,
+      "sha256": "9e515ec939ff5ef732b88955da9b0360d08bae243abcecf7cf58cd6c512e31e1",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/native-host-driver-v1.txt": {
+      "byteLength": 280,
+      "sha256": "280e294a5dbc5b6adbe868bb2a753d9b2dc5de41bf052884566bba50775bcfda",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/native-host-driver-v2.txt": {
+      "byteLength": 295,
+      "sha256": "0b23d153e01710aef903bb5e90921084f94b5d7c140034c28de113f7257bed25",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/native-host-driver-v3.txt": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/isolated-native/source-manifest.json": {
+      "byteLength": 13624,
+      "sha256": "3017c8c0bb90a85cb76e3fb70f465c34d6547618ada68213220d74b470ba8e80",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-final-first-attempt.txt": {
+      "byteLength": 107,
+      "sha256": "eed9c62d78be927b86b5056cd0b72d24c5f9784bf775eb08021a9c355805e151",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-final.txt": {
+      "byteLength": 2873,
+      "sha256": "eea026f32d1a5cbb291ec802c43dfb141b1500430fb0daeff1b513b98ca22f8c",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-open-final.txt": {
+      "byteLength": 224,
+      "sha256": "c030897398e19c7b528f89274e231c4544bbd9f57e10cf252d8c0c833f4930fb",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-panel.txt": {
+      "byteLength": 3090,
+      "sha256": "5b08f7d4e7fe6054da2bad5780baf559d89b2566e7781647bb4744ff167f24f9",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-report-file-open.txt": {
+      "byteLength": 229,
+      "sha256": "9afdcbe19d7ccf1153e7991590d21ee18abbb4a7ca5cd83f2e487a4b63ce4c1a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-report-file-summary.json": {
+      "byteLength": 228,
+      "sha256": "d8a7b1b44d2561cdfc278d37f01e0678237f68986c640787bed1855e6378c80b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-report-file.txt": {
+      "byteLength": 2372,
+      "sha256": "0001a93c101c54e60f390e4327a5de8e57f04275654061da6d4a4c06213b1842",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/browser-report.txt": {
+      "byteLength": 3318,
+      "sha256": "43a3137f9749853068905964ed814c45e278987c9096380767435b44703ee56a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/check-report-file-first.txt": {
+      "byteLength": 481,
+      "sha256": "a6a1d01073c98455a7f96204de3487e0d4982f302255fe2c1d4e59f8c1c8bb1e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/check-report-file-fsync-failure.txt": {
+      "byteLength": 2321,
+      "sha256": "37c60dde4e2ac9cd4036c8d721dc245d5756246fe12f5c64b0131e339d12cef8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/check-report-file-stable.txt": {
+      "byteLength": 5216,
+      "sha256": "956e5bf86a29dba6fa2c0e9c5ef7eb2cd7c96c684fef5af532aa6e244c7fcb58",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/check-second.txt": {
+      "byteLength": 5217,
+      "sha256": "339ebee5eb57ab1501b111fb4d8e90d9ba71fcf08174dfb135e04c2634607d0e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/check-third.txt": {
+      "byteLength": 5216,
+      "sha256": "7db74f8da593fe7e5248d88a5babbc7a83fbc933826ab464597e8353ca9cbc8a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/headless-final-first.yml": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/headless-final.yml": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/headless-initial.yml": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/headless-report-file.yml": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/index.json": {
+      "byteLength": 10662,
+      "sha256": "4857d46acbe7f25d485c5ad81d2aff4604c4545e4a60ed9a6956c7bd1de18399",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/pytest-first.txt": {
+      "byteLength": 1640,
+      "sha256": "2c50d7d883c685dee1910ccb22189820f786d3047bb3f3833e13d23ffaca6e8e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/pytest-review-fixes.txt": {
+      "byteLength": 99,
+      "sha256": "42057ad096dfbb6919101f15f8b6dc95d7671d91d0c21d76cfb99e16b367863b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/pytest-second.txt": {
+      "byteLength": 99,
+      "sha256": "4012ece23de491eaf90b59099cc0b2e3a9325bc87bfc5751ab99e7d360775861",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/render-probe-final.txt": {
+      "byteLength": 605,
+      "sha256": "01af842f42bac30df9ca1a6de1c47a632ea68d1c507e88ba8fca4c883602ea8e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/render-probe.txt": {
+      "byteLength": 605,
+      "sha256": "018fbb62f14aabb3881b317a5da5e8dd6fa9ca9a17f8450e35f63c1fdb803074",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/render-report-file-current.txt": {
+      "byteLength": 605,
+      "sha256": "c21f267e651654336969e16a22e30ce58305ddfce12ea33b1076bde8f0328ed8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-final-unit.txt": {
+      "byteLength": 236,
+      "sha256": "3f518499b3bc32910d10c8758095a7258fe146de367d7385453501dd872c106f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-first.txt": {
+      "byteLength": 236,
+      "sha256": "5ef249e238886ce683078199e3cd51c007668da22a5279aec3f1bd38df0311b6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-fsync-first-failure.txt": {
+      "byteLength": 1484,
+      "sha256": "a14a317da77ec218e4060400003619b382b052933a8ddb2ac99c13285235666d",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-probe.json": {
+      "byteLength": 436,
+      "sha256": "f7835c68f4dc13c24eba8792f0f41c8ad832cf213b31593a4662fee03af62ad6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-review-fixes-2.txt": {
+      "byteLength": 236,
+      "sha256": "f3681f7c8fc0f11340b7ddc0a9e1025d3f930ab97c3241812f3e71899ca9efab",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-review-fixes.txt": {
+      "byteLength": 236,
+      "sha256": "1df9595b2136620893e6af1584675b7df4bd370d1a30660753b23cf725921ff4",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-runtime/invalid-panel.html": {
+      "byteLength": 1527,
+      "sha256": "0519a2f9ef46e8eb473bb358ba1df27e779fde457ffbfd0b828c8ea60dae7b86",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-runtime/malicious-report.html": {
+      "byteLength": 3900,
+      "sha256": "26af12303d80436e470fe30c5f1cffa57b424da0401ce1320e6bc5499ad676b6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-runtime/panel.html": {
+      "byteLength": 2748,
+      "sha256": "021ec9b2d6a21f397a5239c83d005fd979f3a55a5b3daca760712d9d9f0c4418",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-runtime/published-report.html": {
+      "byteLength": 3900,
+      "sha256": "26af12303d80436e470fe30c5f1cffa57b424da0401ce1320e6bc5499ad676b6",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/report-file-second.txt": {
+      "byteLength": 236,
+      "sha256": "906406b333dde824ab02222a33d157a84b9a5d9d0a9372f3b1ef62906c2e60d3",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/runtime/invalid-panel.html": {
+      "byteLength": 1527,
+      "sha256": "0519a2f9ef46e8eb473bb358ba1df27e779fde457ffbfd0b828c8ea60dae7b86",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/runtime/malicious-report.html": {
+      "byteLength": 3514,
+      "sha256": "a3b3e83aa2ac47e70abeca20d7be04883333c50ceff9e1bc85c9237f41860290",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/runtime/panel.html": {
+      "byteLength": 2663,
+      "sha256": "fdd763c41612d9a4c9edcb59909da5876ef87a295a391314008c24b8d4d9369f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/vitest-first.txt": {
+      "byteLength": 236,
+      "sha256": "e1b8ff60d20b6932363e938214d35a642050b093f16cc2fe0d8b4cf36efe3beb",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/vitest-review-fixes.txt": {
+      "byteLength": 236,
+      "sha256": "caafcf5040735afad9dd48dd839ffe1c4e30af942c7bb4896db532493023e3b1",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/legacy-raw-archive/vitest-second.txt": {
+      "byteLength": 236,
+      "sha256": "7abaf1f59897df307eb3bb5f82ea6ba64b51ae2adb2aa5e58a189355a7636a3c",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/native-compiled-postrun-readback/csp.cjs.raw": {
+      "byteLength": 1211,
+      "sha256": "090ba8bc9bf6b28312923fa767a7abbf846d9077c95ad9b13f73ac18b359fb24",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/native-compiled-postrun-readback/index.json": {
+      "byteLength": 2190,
+      "sha256": "24ef786b8ea7994e2d0ae2796b43022e45c4ebc73060341cb0469701a6b593ee",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/native-compiled-postrun-readback/prepared-report-file.cjs.raw": {
+      "byteLength": 13007,
+      "sha256": "8b4f44c26524ee162cfd1614b442d29611f64893a650acf6ed922d4fe997e67e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/native-compiled-postrun-readback/report.cjs.raw": {
+      "byteLength": 9292,
+      "sha256": "915f2aaad5054b81f1f24c1c0c73e56f76d91488f7f48ff4d5d88f346f7f68a4",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/pytest-first.json": {
+      "byteLength": 1889,
+      "sha256": "b627cffdeaaedd4e840de974fa383972a0cfb131e6452a8d07e9ffbb57bf7268",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/report-file-failures.json": {
+      "byteLength": 2545,
+      "sha256": "ec6515cbd8c7368a9cea6d7604de1a0f9d0768b8a072e9e01bc2e9b76d80f270",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/report-file-stage-summary.json": {
+      "byteLength": 3115,
+      "sha256": "956a19dedf7363050cc6598bb9b3f853bc33dfd761953fd5fbcff37467e7dcfc",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/evidence/verification-summary.json": {
+      "byteLength": 7412,
+      "sha256": "f00de1639bf1ae0cf3a8a48fb47a4924fb823f0e6d39c22fe645d9375078d4a3",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/external-review-current-policy-addendum-20261022.md": {
+      "byteLength": 1962,
+      "sha256": "ed0cc2b69e2b5a9a3fba3dc56b9135f5769f889ae494fd5ad11f9a202100016e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/external-review-input-manifest.json": {
+      "byteLength": 33979,
+      "sha256": "b2c17f448608370b86ac0549e4f72312e3c8542afa2835138f9fd3b1a4f80623",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/external-review-task-packet.md": {
+      "byteLength": 9525,
+      "sha256": "6efa041ac48794574f06cc76ac8afdf27d48f603f18ea16de8fda553f7d86f5b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/internal-review.md": {
+      "byteLength": 2134,
+      "sha256": "632cff9b4ba58f8535506dd9ce3913c85c38f2e9261e4db20bc431c78c8a27b8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/isolated-native-review.md": {
+      "byteLength": 2531,
+      "sha256": "b4ec7a3d82f32c663d30bc6b7868f595b7295fadf0143fe8ac103c70a7c20cc8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/private-stage-candidate.md": {
+      "byteLength": 3218,
+      "sha256": "f51e921c3cd702079a28a56f43144aad7810b3052691974e40fb30f0c01e955d",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/report-file-internal-review.md": {
+      "byteLength": 2476,
+      "sha256": "35788238a9489fd3003ecb970297773883d02553153e49f3e2ac8a2a588ce9ce",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/AGENTS-current.md": {
+      "byteLength": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/README.md": {
+      "byteLength": 3535,
+      "sha256": "ed67950266e5785b366d2013bb51537ba662725b90b16c0bb3cefa3546a6dedd",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/backlog-original.md": {
+      "byteLength": 11299,
+      "sha256": "009084f875692e00299f389fdb525b587e218d21958bb28e4fe881d613c60854",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/common-current.md": {
+      "byteLength": 16867,
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/desktop-policy-current.md": {
+      "byteLength": 3172,
+      "sha256": "7b54d589d39bfe71c0f67d61c00995bb4d60b5156a74a6ae25ac69a2f491f5eb",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/independent-preflight.md": {
+      "byteLength": 1068,
+      "sha256": "86e33c3a72b3a0e25627ed99935ca1ca8df83bf3f727f28863d1ae54b02b39c2",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/manifest-original.json": {
+      "byteLength": 33979,
+      "sha256": "b2c17f448608370b86ac0549e4f72312e3c8542afa2835138f9fd3b1a4f80623",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/environment-raw/install-electron.txt": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/environment-raw/npm-ci.txt": {
+      "byteLength": 958,
+      "sha256": "85738eb46e44bc5124b0056f4205bc9a5dd6fb2bbaaa84edaa41f270fcdc3d8c",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/environment-raw/uv-sync.txt": {
+      "byteLength": 1057,
+      "sha256": "20f0bd08cc33f6ab7cf2788c16303363d8b424dc69cd43d5b4246d8d3f535e66",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/environment.json": {
+      "byteLength": 1497,
+      "sha256": "ec1d172585ac335858b70aa6ba73b91b09464c915bca180df2b78862f18aee54",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/invocation-and-validation-addendum.md": {
+      "byteLength": 6546,
+      "sha256": "dc58282e020b84abbc6f6c501596caeb4428f889b491f784d400b9d14876445e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/original-prompt.md": {
+      "byteLength": 52555,
+      "sha256": "d8b551c6f4d2bc678849b55e739872f767cac8cc6895c4440097202237fb1587",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/paths.json": {
+      "byteLength": 1131,
+      "sha256": "3d4b1a96f943f26bca79eac57a40837e2c36f2fbb9a8cc52776941b2f1233819",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/minimax/preparation-readback.json": {
+      "byteLength": 477,
+      "sha256": "3e9ffd0f812a07a5c16d2c033818d3b82344161b43d993683c2023344ec126b8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/packet-original.md": {
+      "byteLength": 9525,
+      "sha256": "6efa041ac48794574f06cc76ac8afdf27d48f603f18ea16de8fda553f7d86f5b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/permissions-current.md": {
+      "byteLength": 4462,
+      "sha256": "feea1595894b347ff1151e5526bc21e2055911f2ba744670f08ba85765f8b53a",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/preparation-manifest.json": {
+      "byteLength": 6983,
+      "sha256": "83ba084841933e2c2638e6591bc63274efc383627f77b389032285771765f566",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/environment-raw/install-electron.txt": {
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/environment-raw/npm-ci.txt": {
+      "byteLength": 958,
+      "sha256": "491160272adf30f1106ee21b07c7834058315bc83c75f98c95566cf51bf6283e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/environment-raw/uv-sync.txt": {
+      "byteLength": 1051,
+      "sha256": "aebfce869fdd30232af5879f5496e89864530bf9ffbedece9e718ca2ef4049af",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/environment.json": {
+      "byteLength": 1481,
+      "sha256": "5bf2d42244af504c81524f34be159b3deec809ce841fefa6660e7d4740b88ce2",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/invocation-and-validation-addendum.md": {
+      "byteLength": 6495,
+      "sha256": "5b98c5411af7c54afe96aef36fc2cf57c08f937c9375ec57ec9c0e40a393be3c",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/original-prompt.md": {
+      "byteLength": 52504,
+      "sha256": "c76e34d0b2639b1cab23eb0c3f3b7c848cb8ddc8f58e34c7a9e83f80e545b902",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/paths.json": {
+      "byteLength": 1090,
+      "sha256": "d43ef98c9a7b8d1c076cee2a3edb305d350e06af6c27880fbc0be8d80aac59e7",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/review-preparation-20261022/zcode/preparation-readback.json": {
+      "byteLength": 477,
+      "sha256": "c93799bb0e7b46b9aa009dcdf6cb3039ef2006ba49ef24c942f81418bb75ca31",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1-disposition.md": {
+      "byteLength": 7712,
+      "sha256": "11c752c311509cebcb4dd9b34747b994e098c178a7eb4e11f73c3c7803f953ba",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/README.md": {
+      "byteLength": 527,
+      "sha256": "b05a2f1290eb11a14d00fbd42e81a7aad9f2caf392a52174254789c83ae7032f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/minimax-m31flash.md": {
+      "byteLength": 28899,
+      "sha256": "cb76b0a248575f348d6a8f24a30f8e4abf0fa788f78c7c4f30f17850ca5bd74f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/minimax-terminal.json": {
+      "byteLength": 4832,
+      "sha256": "6ca33e1e9038bfcb1686318be2b13bd4e79e6fb87865ecdc799840a28b1dce0f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/preservation-manifest.json": {
+      "byteLength": 8864,
+      "sha256": "39e6cd120a2145393925d050e94a6897d56b7e9e4506feff95d8edd27bacedef",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/reviewer-scratch-originals.tar.gz": {
+      "byteLength": 27263,
+      "sha256": "a98c0c8d234e18a96f5057282204bf83eae6083cfa53156a002a773166f98b09",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/scratch-archive-index.json": {
+      "byteLength": 6506,
+      "sha256": "6a99acb3f5e77652f4df141ed7ec57e28963e515a96b5e61b4a2f03af1b88719",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/terminal-receipt.json": {
+      "byteLength": 2311,
+      "sha256": "a0c08fbe5fc4b5092b27a2cf51e03274d9e42cc4f746ff553b3b573044285a82",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-glm53.md": {
+      "byteLength": 17799,
+      "sha256": "6d46ea401d7ee6257766a162d79af6db2dd0e7cff448a8ac850a4297c6382f13",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/check-full.txt": {
+      "byteLength": 7550,
+      "sha256": "f3e7981e7cc21273633dce5f739a969a05bd76982526017a87fe5f3591819f58",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/counterexamples-artifact-reproduction-v2.txt": {
+      "byteLength": 900,
+      "sha256": "a09d226d97745c8479a514848ecf18bab4104481069ac7ccd48c8b427565231b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/counterexamples-artifact-reproduction.txt": {
+      "byteLength": 1565,
+      "sha256": "1e7ac5a02fdd1f24fb63dd14ef71a3f5af8dfef2a9cbbc269564a8cd570a7d25",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/counterexamples-zip-round2.txt": {
+      "byteLength": 547,
+      "sha256": "1ad553ca9b0617376529d2d02cc420aec309dff351f50e626ff31211a86e3914",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/counterexamples-zip-round3-fixed.txt": {
+      "byteLength": 254,
+      "sha256": "3f1d6b37bf0ed88769fe6944d2d018d5401b7575585007f7a5c344b9d0fd6827",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/counterexamples-zip-round3.txt": {
+      "byteLength": 85,
+      "sha256": "3dcff62bb8db109110cbddd4c64fd44995ea03310c0a21bddf18f2a51a31c26e",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/counterexamples-zip.txt": {
+      "byteLength": 1036,
+      "sha256": "d72a8917349b8176c86c0b85d8ca82f7625b32c54d892447292c06b924d75e72",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/delta-base-to-c.txt": {
+      "byteLength": 1309,
+      "sha256": "b2320a493e0ea986ebb196131aa031baf8c23dde381ee0ccff55abc54ddeed7b",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/legacy-archive-verification.txt": {
+      "byteLength": 353,
+      "sha256": "558e26600ecdc770af9388a6edfcc3928a22d0582b42c734cbc12e7594d4928f",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/manifest-verification.txt": {
+      "byteLength": 210,
+      "sha256": "08c6a9e9729f9f4b58368120cdace6f8ebd0d56b7bca040682d24bbe3dca8812",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/pytest-transfer-targeted.txt": {
+      "byteLength": 106,
+      "sha256": "ada97a773b534ac96500b37133f3361fee5dad034d3bd11bf2b76ca90787a5d1",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-raw/vitest-t10-targeted.txt": {
+      "byteLength": 355,
+      "sha256": "8dacd9c15fe1a93cbc5b9c3cb5535276bc8d8826cb1b814dd4d54945ddbde814",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-1/zcode-terminal.json": {
+      "byteLength": 2907,
+      "sha256": "f6c7c2c0717abca3761e86b0b9a2c6683de7b1b01dfa9e51fc1ffce010f57b13",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-2-preparation/internal-review.md": {
+      "byteLength": 773,
+      "sha256": "e90330264fc384f31ec08ac24fe1885e9b48460c589082dcd310476366a27aa0",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-2-preparation/validation/check-full.txt": {
+      "byteLength": 5216,
+      "sha256": "edc8fe052219eba78e9670fa95622aacfa750d018b481153522f2d1534931589",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-2-preparation/validation/probe-output-verification.json": {
+      "byteLength": 549,
+      "sha256": "596db2c0b2c9ae6a0b2ab014a194adb77009233d00a2177f4598ff0293a95cf8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-2-preparation/validation/render-probe.txt": {
+      "byteLength": 605,
+      "sha256": "98f63ff4a2b9c802ffaad2d49e3e32671bd8f13b2330d6605e3a1f7d93bdb7a8",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/round-2-preparation/verification.json": {
+      "byteLength": 1768,
+      "sha256": "b48e0a778468bfb4856e7068732c5fd9949d00a2607c3181eea6b9b744349b84",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/status.md": {
+      "byteLength": 11980,
+      "sha256": "0914c9cd5821e726c8578cfb20af8d94ae5da876d6c653b958d5bd9791d59e90",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/trusted-contract-review.md": {
+      "byteLength": 1234,
+      "sha256": "3cb053c3ea2224c738a7d1c61d5742d02a6a487a2628da64c1e8c7ecfa497427",
+      "matchesFrozenGit": true
+    },
+    "docs/reviews/T10/verification.md": {
+      "byteLength": 4721,
+      "sha256": "98b739f93b7e6598d29b4830bea50820dff0625bca07b755e4e43b509db73c36",
+      "matchesFrozenGit": true
+    },
+    "package-lock.json": {
+      "byteLength": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+      "matchesFrozenGit": true
+    },
+    "package.json": {
+      "byteLength": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32",
+      "matchesFrozenGit": true
+    },
+    "packages/engine/src/ontolearn_engine/transfer/__init__.py": {
+      "byteLength": 222,
+      "sha256": "71f20d26a9fa6be53afeb07a4ab6729c3545a1ad3bfff33599989ef1ff044bca",
+      "matchesFrozenGit": true
+    },
+    "packages/engine/src/ontolearn_engine/transfer/inspection.py": {
+      "byteLength": 9638,
+      "sha256": "a94e41be1df4e60901b971d024b91bd19936f22687b08b9492214243e89d1054",
+      "matchesFrozenGit": true
+    },
+    "packages/engine/tests/test_transfer_inspection.py": {
+      "byteLength": 12955,
+      "sha256": "56f894a77dd0bf7c071fe81996af8f52b5a72ddd03ea343821927b6190fa751c",
+      "matchesFrozenGit": true
+    },
+    "pyproject.toml": {
+      "byteLength": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63",
+      "matchesFrozenGit": true
+    },
+    "tests/fixtures/transfer/inspection-expected.json": {
+      "byteLength": 319,
+      "sha256": "701c4b68690b4c8391a262837303a87a69996e72f98ee256d7a02c97ef5946eb",
+      "matchesFrozenGit": true
+    },
+    "tests/fixtures/transfer/malicious-texts.json": {
+      "byteLength": 856,
+      "sha256": "b1b41d908b66559e4a3ee66e86d2065411613353765a27a1eec6cafe248d4e0f",
+      "matchesFrozenGit": true
+    },
+    "tests/fixtures/transfer/report-input.json": {
+      "byteLength": 2238,
+      "sha256": "32228b39ae33b08b73a6a8ddd52c8f80289493a5a06206d30219e994140fdb45",
+      "matchesFrozenGit": true
+    },
+    "tests/unit/t10-report-file.test.ts": {
+      "byteLength": 20366,
+      "sha256": "7d0f42531fc7b8e512b075e2062c10c13161dd4059bbe7fe0996b60560f814e5",
+      "matchesFrozenGit": true
+    },
+    "tests/unit/t10-report.test.ts": {
+      "byteLength": 7226,
+      "sha256": "5f9c99f5c3d8682c241fa6d37e6f2db01d400d1c224304d29f86cb4983fe7736",
+      "matchesFrozenGit": true
+    },
+    "uv.lock": {
+      "byteLength": 20999,
+      "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+      "matchesFrozenGit": true
+    }
+  }
+}

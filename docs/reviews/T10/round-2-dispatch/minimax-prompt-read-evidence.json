@@ -1,0 +1,2752 @@
+{
+  "status": "minimal_prompt_only_derived_evidence",
+  "sessionId": "mvs_d314cc7a43c84a559e31d5ddf3663af7",
+  "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+  "promptSHA256": "a503367fc7b686c28bf35f4a314dbd0ae116cfa7a1409f523fb9e78a29795941",
+  "segments": [
+    {
+      "messageId": "msg-sxl3KDbnBg2_Arn5FkJhqlaGMiLF6aaYb7xnrOPzxI4",
+      "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+      "toolCallId": "call_01a1631fa3bd75d2a76e9592",
+      "actualReadArguments": {
+        "path": "/Users/kyle/.minimax/v2/assets/2026/10/22/18-19-10-799-asset_20261022-181910-799_a503367fc7b6_16c433d4-pasted-text.txt"
+      },
+      "actualFirstLine": 1,
+      "actualLastLine": 123,
+      "allLinesMatchFrozenPrompt": true,
+      "formatOnlyTrailingLines": [],
+      "lines": [
+        {
+          "number": 1,
+          "text": "# T10-S1 round-2 全新完整独立审查（本段优先于后附历史原件）"
+        },
+        {
+          "number": 2,
+          "text": ""
+        },
+        {
+          "number": 3,
+          "text": "你是本轮全新的完整独立审查者，实际指定M3.1-Flash、xhigh、bypassPermissions。由原owner真实读回模型/思考/权限、项目/workdir、受理和终态；此提示不是已创建证明。不复用round-1会话，不创建Goal/其他模型任务，不修复受审实现、不提交Git。"
+        },
+        {
+          "number": 4,
+          "text": ""
+        },
+        {
+          "number": 5,
+          "text": "## 当前版本与唯一隔离写面"
+        },
+        {
+          "number": 6,
+          "text": ""
+        },
+        {
+          "number": 7,
+          "text": "- 批准base `5f910b52c69d86a1076b2032e5d3c63e715947f3`；本轮新候选与执行detached HEAD均`66cc15200611d592d3da2877961f9e079eb05277`。代码含C的全部产品、N的全部7工具以及新EOCD计数修复、probe输出目录修复；不是只审增量。原产品C/证据A/旧147manifest仅历史证据身份，不能按旧A期待新inspection/test/probe仍旧hash。"
+        },
+        {
+          "number": 8,
+          "text": "- 唯一工作树`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152`；只在自己的树/env运行。当前保护AGENTS SHA de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4保持未暂存。新`input-manifest.json`固定本轮225项（219delta+6上下文），逐Git blob核验本轮候选；另核旧147manifest@A只为历史链，不改旧原件。"
+        },
+        {
+          "number": 9,
+          "text": "- 唯一最终MD `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/docs/reviews/T10/round-2/minimax-m31flash.md`；自己的raw `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/docs/reviews/T10/round-2/minimax-raw`；自己的scratch `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/out/t10-review/round-2/minimax`；冻结完整输入副本 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/docs/reviews/T10/round-2/minimax-input`。原packet中旧主开发树/feature分支/round-1路径、旧计数和旧“仅MD可写”等限制均已过时，以本段为准。不在原开发树、另一审查树或旧round-1写入。"
+        },
+        {
+          "number": 10,
+          "text": "- 原src/tests/fixture/依赖声明/锁/config/验收/旧raw/截图/manifest/AGENTS/Git只读。Git仅status/show/diff/log/cat-file/ls-tree/rev-parse等读取；禁止stage/commit/stash/reset/checkout/switch/merge/push；禁止npm run format或HMR改源探针。"
+        },
+        {
+          "number": 11,
+          "text": "- 允许在本树各自node_modules/.venv、自己的raw/scratch/cache/tmp、正常out/dist/build/release/test-results/playwright-report/__pycache__/.pytest_cache/.ruff_cache/coverage派生目录执行完整check、必要复现和真正独立反例，并保留完整首失败。独立测试/临时配置/fixture只放自己scratch，不能改原测试使其变绿。验证依赖确需新增时只装自己env/scratch并记录版本，不改声明/锁、不借用别线环境。不重设HOME/CODEX_HOME，不读凭据。"
+        },
+        {
+          "number": 12,
+          "text": "- 建议TMPDIR=/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/out/t10-review/round-2/minimax/tmp、UV_CACHE_DIR=/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/out/t10-review/round-2/minimax/uv-cache、npm_config_cache=/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/out/t10-review/round-2/minimax/npm-cache、XDG_CACHE_HOME=/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-r2-66cc152/out/t10-review/round-2/minimax/cache。允许自己创建这些派生目录；没有逐命令root确认要求。"
+        },
+        {
+          "number": 13,
+          "text": ""
+        },
+        {
+          "number": 14,
+          "text": "## 完整审查范围与轮次隔离"
+        },
+        {
+          "number": 15,
+          "text": ""
+        },
+        {
+          "number": 16,
+          "text": "双方均完整审11个产品/测试/fixture作者路径、全部7个CLI/native工具及全部S1-A/B/C、T-A/B/C原验收与历史证据，不拆一人一半，不仅复核EOCD补丁。源代码/测试逐行核验，结合PRD FR1000/1001/104、A06–08/G6和12.4/12.5，范围不缩减；正式格式/可信投影/生产lease/原子导入/真实App接线/双OS包内/真人/57P0/CI及正常合并/远端仍未完成。"
+        },
+        {
+          "number": 17,
+          "text": ""
+        },
+        {
+          "number": 18,
+          "text": "round-1已双方各自真实终态，旧完整报告、所有意见和原owner处置在当前候选`docs/reviews/T10/round-1/`、`round-1-disposition.md`，现对称提供属于已完成历史；不能视为round-2 Pass。**禁止读取/接收/展示另一方round-2报告、摘要、结论、问题清单或对话**。本轮各全新独立任务；自己的报告结尾独立明确通过/不通过/无法验证，不给条件Pass或捏造ID。"
+        },
+        {
+          "number": 19,
+          "text": ""
+        },
+        {
+          "number": 20,
+          "text": "新改动：EOCD实际成员数与声明一致才通过，不符ARCHIVE_SHAPE；原其他预算/角色/能力不变。66个定向Py、full check691TS/1118Py一次exit0、内审20项内存探针结果见internal-review.md，原工具stdout保留于独立审者会话；完整check原始日志另留validation/check-full.txt。render-probe输出out/t10-render-probe且3900B/26af内容未变；所有旧原件不覆盖。审者须自己评判与必要复现，不能以旧报告或数字抵当本轮核验。"
+        },
+        {
+          "number": 21,
+          "text": ""
+        },
+        {
+          "number": 22,
+          "text": "旧native3896B/ad367与browser3900B/26af来自同一C的report源码不同标题输入、不同实际运行；它们未冒充本轮全新native。executed:null仅未观测到__t10xss哨兵，未测scriptContexts数量。attempt1容器已created、启动前CAP名称检查失败，StartedAt零，从未运行；旧backlog措辞保留仅作历史追溯。失败/missing仍保留。"
+        },
+        {
+          "number": 23,
+          "text": ""
+        },
+        {
+          "number": 24,
+          "text": "审查运行可能产生官方.mimosa/hook-state等过程附加文件；逐路径/时间/hash与实际来源记录，不删原件或改verifier，不按目录名静默豁免，更不能因额外元数据自动声称受审源漂移。源/原输入/验收必须保持精确。scratch归档是不可执行证据；如要复跑在自己scratch解包/调整临时独立配置，不能把归档副本注入仓库源码/测试发现流。"
+        },
+        {
+          "number": 25,
+          "text": ""
+        },
+        {
+          "number": 26,
+          "text": "当前桌面政策撤回静默/用户时段/CLI登录前置；必要GUI/原生互斥资源与root短协调，后台推理不占整段lease。不要无意义启动旧App e2e/stub或拿其冒充未接线服务。原未签运行票、自动审批拒绝、SQLite损坏HOLD等精确限制仍有效；无新增付费/密钥搬运/宽泛结束用户或别线进程权。"
+        },
+        {
+          "number": 27,
+          "text": ""
+        },
+        {
+          "number": 28,
+          "text": "报告列实际身份/读过运行过内容/全部失败与首失败/每项优先级路径行触发影响证据建议/历史逐项关闭或未闭边界。当前P3延期不是已修复，不可略掉；如认为本阶段阻断，独立说明，不因旧报告措辞被迫Pass。最终指定MD保留完整报告。任务ID若模型不可见如实写未可见，由原owner关联真实创建/终态原件。"
+        },
+        {
+          "number": 29,
+          "text": ""
+        },
+        {
+          "number": 30,
+          "text": ""
+        },
+        {
+          "number": 31,
+          "text": "# 原始round-1 packet（逐字保留，仅作历史范围追溯）"
+        },
+        {
+          "number": 32,
+          "text": "# T10-S1 双外审离线输入（未派发）"
+        },
+        {
+          "number": 33,
+          "text": ""
+        },
+        {
+          "number": 34,
+          "text": "总控已登记有界阶段，但尚无本线GUI入口/时段、实际任务或报告。本文件只准备完整任务输入；不把准备当外审通过，不授权操作当前Mac或推送。正式派发须由原开发线取得总控实际资源租约，分别创建全新完整独立任务并读回实际模型/推理档位/工作路径/模式。"
+        },
+        {
+          "number": 35,
+          "text": ""
+        },
+        {
+          "number": 36,
+          "text": "## 冻结身份"
+        },
+        {
+          "number": 37,
+          "text": ""
+        },
+        {
+          "number": 38,
+          "text": "- 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export`，分支 `feature/weekly-t10-transfer-export`。"
+        },
+        {
+          "number": 39,
+          "text": "- 批准base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`；本输入candidate：`a1e7efef4bd47c97b630753c0e7c4dc34de1d8ae`。"
+        },
+        {
+          "number": 40,
+          "text": "- 阶段登记流程：`66eeedd735370576b49eb39cd4b14cdef9c0d55b`；产品实现：`d3546af3b6fe895957f9626fd4de28bf59dc600a`、`c3c7e90f721344113c4279d663127f9c8d5bda59`。66之后只增加本线合同提案/原件保全，没有产品、测试、依赖或验收变化。"
+        },
+        {
+          "number": 41,
+          "text": "- `external-review-input-manifest.json` 列固定Git delta及不变的CSP/依赖锁/PRD上下文，每个文件有长度和SHA；AGENTS受保护未提交修改不属于candidate。最新共同指令与实际资源政策仍由总控控制，不以旧启动提示覆盖新政策。"
+        },
+        {
+          "number": 42,
+          "text": "- 后续仅本packet/流程文档追加不改变上述固定输入。实际派发前必须重新核验批准develop、base/head、冻结树及队列；若产品/测试/依赖/验收或基线变化，完成必要验证后给双方同一新完整输入，不能沿用旧Pass。"
+        },
+        {
+          "number": 43,
+          "text": ""
+        },
+        {
+          "number": 44,
+          "text": "## 本轮分模型输出与唯一写入例外（D1）"
+        },
+        {
+          "number": 45,
+          "text": ""
+        },
+        {
+          "number": 46,
+          "text": "当前仅预留round-1的两个互不覆盖的绝对报告路径，尚未创建目录、报告或任务；actualTask均保持null。实际派发前由原owner核验轮号及路径未占用，在获得租约后准备父目录，并将对应模型这一行作为其完整任务输入。仅允许该模型写自己的本轮MD，不能写另一模型报告，也不能覆盖历史轮次。"
+        },
+        {
+          "number": 47,
+          "text": ""
+        },
+        {
+          "number": 48,
+          "text": "| 本轮模型 | 唯一可写的绝对MD路径 |"
+        },
+        {
+          "number": 49,
+          "text": "| --- | --- |"
+        },
+        {
+          "number": 50,
+          "text": "| ZCode GLM-5.3/最高 | `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export/docs/reviews/T10/round-1/zcode-glm53.md` |"
+        },
+        {
+          "number": 51,
+          "text": "| MiniMax M3.1-Flash/xhigh | `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export/docs/reviews/T10/round-1/minimax-m31flash.md` |"
+        },
+        {
+          "number": 52,
+          "text": ""
+        },
+        {
+          "number": 53,
+          "text": "除各自指定报告外，源码、tests、依赖、配置、原始证据、缓存/构建产物及所有Git操作均只读；不允许commit/reset/stash/checkout或改索引。若额外检查会写出其他文件，由原线按授权执行并提供原件，不让审查任务扩大写入范围。后续每轮使用新的round-N及两条新的绝对路径，在派发记录与models manifest中同时冻结，不复用本轮路径，不创建占位Pass文件。"
+        },
+        {
+          "number": 54,
+          "text": ""
+        },
+        {
+          "number": 55,
+          "text": "## 每轮独立任务与结论隔离（D2）"
+        },
+        {
+          "number": 56,
+          "text": ""
+        },
+        {
+          "number": 57,
+          "text": "首次审查和**每次复审，双方都各自创建全新的完整独立任务，不复用上一轮对话**。双方获得同一冻结版本和完整范围；不得提前向任一方展示另一方本轮报告、摘要、结论或问题清单，审查任务也不得读取另一方本轮输出。不是仅要求“不引用”：本轮结论在双方各自独立产出前不得作为对方输入。上一轮已完成的意见/处置可作为相同冻结材料对称提供，但不能夹带另一方本轮内容。"
+        },
+        {
+          "number": 58,
+          "text": ""
+        },
+        {
+          "number": 59,
+          "text": "## 两个实际任务都使用的完整正文"
+        },
+        {
+          "number": 60,
+          "text": ""
+        },
+        {
+          "number": 61,
+          "text": "下面正文需分别完整提交给 ZCode GLM-5.3/最高推理档、MiniMax M3.1-Flash/xhigh。不得把范围拆成“一个审安全、一个审功能”，也不得引用另一方结论代替独立判断。"
+        },
+        {
+          "number": 62,
+          "text": ""
+        },
+        {
+          "number": 63,
+          "text": "> 本任务仅可写上表为你的模型指定的本轮绝对MD报告文件；其他源码/tests/依赖/配置/raw/缓存/构建产物和Git均只读，不写另一方报告或覆盖旧轮。每轮包括本次复审均须全新独立任务，不复用旧对话；不得接收、展示或读取另一方本轮报告/摘要/结论/问题清单。"
+        },
+        {
+          "number": 64,
+          "text": ">"
+        },
+        {
+          "number": 65,
+          "text": "> 请独立、只读（仅指定MD报告可写）、完整审查固定 T10-S1“私有包检查与安全报告文件服务”阶段。工作树/分支/base/candidate如本packet冻结身份及manifest；请先核验Git对象、delta范围和关键源码hash，不把工作树中未提交AGENTS或后续流程追加算入产品候选。"
+        },
+        {
+          "number": 66,
+          "text": ">"
+        },
+        {
+          "number": 67,
+          "text": "> 本阶段已由总控登记为可独立审查的有界阶段，完整T10 Goal仍包含正式格式/可信业务投影/原子导入/真实App接线及全部父门。请评判本阶段全部已登记验收，不把缺失父功能称已实现；也不要通过删除父门或另造Store/协议来关闭缺口。"
+        },
+        {
+          "number": 68,
+          "text": ">"
+        },
+        {
+          "number": 69,
+          "text": "> 请完整阅读11个产品/测试/fixture delta、`private-stage-candidate.md`、当前status/verification、两次产品内审及真实失败处置；结合固定PRD FR-1000/1001/104、A-06–08/G.6和12.4/12.5核对承诺是否准确。所有代码与测试以固定Git对象为准，不能只看summary或测试计数。"
+        },
+        {
+          "number": 70,
+          "text": ">"
+        },
+        {
+          "number": 71,
+          "text": "> Python检查器：核对严格draft版本/角色/选项/hash、必需与可选数据的界限、完整包无原文件/推导/历史/会话时不误降模板；包名/path/保留名/symlink/重复或隐藏成员/局部与中央布局/重叠/真实长度/CRC/压缩尾部/资源限额和失败行为。不解包、不写DB、不凭角色/hash推断checkpoint语义；import/restore/rerun/replay始终未开放。"
+        },
+        {
+          "number": 72,
+          "text": ">"
+        },
+        {
+          "number": 73,
+          "text": "> 报告与未接线页面：核对严格输入、FR-1001所有栏目、逐attempt真实证据与辅助等级分类、历史/过期标识、未知证据边界；所有业务/模型文本按实际HTML位置编码、固定CSP、离线不外联、不执行脚本/事件/标签、中文引号/实体/前导LF完整；可选项默认与禁用页面状态准确。合成输入不能冒称可信Store/T09/T08实际联验或凭据排除。"
+        },
+        {
+          "number": 74,
+          "text": ">"
+        },
+        {
+          "number": 75,
+          "text": "> 主进程私有文件服务：核对不可变payload/hash/长度、可信main picker内部边界、选择名/路径验证、排他暂存/0600、持有句柄与发布前完整真实字节/路径身份核验、原子不覆盖link、竞态/取消/并发、发布成功后回调错误不谎报失败、IO丢确认及publication-unconfirmed协调、目录fsync耐久状态、身份绑定非递归清理/pending/重试。当前没有I06动态私有根guard/可信投影或正式桥接，不能把草案合同当已实现权限检查。"
+        },
+        {
+          "number": 76,
+          "text": ">"
+        },
+        {
+          "number": 77,
+          "text": "> 核对测试确实覆盖相关反例且未替换真实实现。最新稳定完整check为691TS/1112Python及lint/格式/类型/构建；保留一次既有engine-connection-state TIMEOUT、单文件8项通过及完整retry，原因未证实。不得修改共享测试或称第一次全绿。需要运行额外命令时仅限已授权无窗口且不写其他文件的只读CLI；需要生成缓存、构建或测试产物的额外检查交原线执行；不启动host Electron/e2e/native/HMR/凭据提示，不读取密钥、不新增网络服务/付费API调用，不修改代码/配置/原始证据。若需要新的runtime证据请说明具体缺口，交原线在批准隔离环境执行，不自行操作GUI或其他任务容器。"
+        },
+        {
+          "number": 78,
+          "text": ">"
+        },
+        {
+          "number": 79,
+          "text": "> 实际证据须分别审：旧Chrome155检查3900B/26af实物的12攻击文本、DOM/哨兵/外联；隔离Linux arm64 native attempt3检查3896B/ad367实物的真实GTK保存/取消、原运行0600、picker未替换、进程归属、sandbox及终态。二者不是同一文件/同一运行。attempt1未启动、attempt2超时失败、attempt3成功均保留。55项native原件manifest、E1归档40个旧文件（含11个历史raw）、旧snapshot两项missing均如实核对；运行后补存cjs不是运行时独立输出hash。源码health不是正式包内引擎/迁移能力。Docker额外SYS_ADMIN、构建联网与runtime断网、短时main loopback inspector均须按实际边界判断，不能美化为最小权限/全程无listener。"
+        },
+        {
+          "number": 80,
+          "text": ">"
+        },
+        {
+          "number": 81,
+          "text": "> 将完整报告写入上表对应模型的本轮唯一绝对MD路径，不创建占位Pass或修改其他文件。输出完整报告：列核验版本、范围、实际读过/运行过的证据；每个问题给优先级、具体文件/行、可触发场景、后果及必要修复，区分证实缺陷与缺证据/建议。逐项评判本阶段的有界验收，所有问题均须有明确处置；不要仅给计数、摘要或条件通过。最后单独说明是否明确通过本阶段及尚未满足的父T10门。报告不能把私有检查/报告服务的Pass扩成完整产品、迁移/G.6、跨平台/包内、真实凭据排除或发布通过。"
+        },
+        {
+          "number": 82,
+          "text": ""
+        },
+        {
+          "number": 83,
+          "text": "## 终态读回与闭环门"
+        },
+        {
+          "number": 84,
+          "text": ""
+        },
+        {
+          "number": 85,
+          "text": "实际派发时记录应用/版本、模型/档位、真实任务ID或可回读定位、工作路径和只读任务意图；应用默认权限模式依已授权政策实际核验，权限模式不改变本次只读范围。首次及每轮复审两方必须各建全新完整独立任务，不复用上一轮对话；派发时分别冻结新round及各自绝对MD路径，唯一报告写入例外不扩大到其他文件。不得提前向一方展示另一方本轮结论或让其读取本轮报告。两方必须各有真实任务、真实终态、完整报告原文及核验hash。逐条登记问题/处置/证据，涉及产品/测试/依赖/验收变动时给双方更新后的同版完整任务；不能用一方Pass、条件Pass、内部agent结论或口头状态替代双方明确通过。"
+        },
+        {
+          "number": 86,
+          "text": ""
+        },
+        {
+          "number": 87,
+          "text": "双方同版实际通过后，才按总控队列及真实批准依赖完成push/PR（attach）、实际CI、正常develop合并与远端核验。本packet不使这些动作现在生效；即使T10-S1最终合并，完整T10父Goal仍持续。"
+        },
+        {
+          "number": 88,
+          "text": ""
+        },
+        {
+          "number": 89,
+          "text": ""
+        },
+        {
+          "number": 90,
+          "text": "# 全量历史backlog（逐字保留，当前执行以本轮addendum为准）"
+        },
+        {
+          "number": 91,
+          "text": "# T10 全量指定双审积压（2026-10-22）"
+        },
+        {
+          "number": 92,
+          "text": ""
+        },
+        {
+          "number": 93,
+          "text": "依据人类“把之前没有通过zcode和minimax的审查都补上”的最新授权盘点。**本线从未创建指定双方实际任务，没有指定Pass、Fail报告或可沿用的旧Pass；所有已实现产品及技术工具均在本积压内。**下列拆项用于完整盘点，不另造阶段/Goal或把同一S1拆给两模型各审一半。未来双方各完整审同版全部登记范围；新任务创建仍由root短lease内部串行协调，后台推理不占用整个桌面lease。"
+        },
+        {
+          "number": 94,
+          "text": ""
+        },
+        {
+          "number": 95,
+          "text": "## 固定身份与唯一owner"
+        },
+        {
+          "number": 96,
+          "text": ""
+        },
+        {
+          "number": 97,
+          "text": "- 全部本线实现的实际base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。"
+        },
+        {
+          "number": 98,
+          "text": "- 工作树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export`；分支：`feature/weekly-t10-transfer-export`；原owner为本T10聊天 `01a15bce-0a94-7870-9694-f100e78f406a`。"
+        },
+        {
+          "number": 99,
+          "text": "- 产品恢复点D：`d3546af3b6fe895957f9626fd4de28bf59dc600a`；产品当前点C：`c3c7e90f721344113c4279d663127f9c8d5bda59`；技术工具/原生证据点N：`66eeedd735370576b49eb39cd4b14cdef9c0d55b`。"
+        },
+        {
+          "number": 100,
+          "text": "- 当前统一固定受审输入A：`a1e7efef4bd47c97b630753c0e7c4dc34de1d8ae`，完整141delta+6不变上下文；本次盘点前实际process HEAD：`f00e1b74213a76ba573dd38bde20191eb39d1cfa`。D1/D2流程点：`ede09f02b1e82680dc0d498d51142ad6238ecf71`。本盘点追加本身仅流程材料，不更换A或解冻C。"
+        },
+        {
+          "number": 101,
+          "text": "- 实查C→盘点前HEAD的apps/packages/tests/scripts/锁/CI没有变化；工作树仅受保护AGENTS未暂存。147项固定Git长度/hash均匹配既有manifest。"
+        },
+        {
+          "number": 102,
+          "text": "- 原授权写面：engine transfer、test_transfer_*、main/project-transfer、renderer/transfer、t10-* tests、fixtures/transfer、docs/{iterations,reviews}/T10；不含公共Store/canonical/main/index/task-service/preload/App/锁/CI。后续共享接线由root按当时唯一owner协调，T10不抢写。"
+        },
+        {
+          "number": 103,
+          "text": ""
+        },
+        {
+          "number": 104,
+          "text": "## 全部已实现及保留的技术子阶段"
+        },
+        {
+          "number": 105,
+          "text": ""
+        },
+        {
+          "number": 106,
+          "text": "每行均：ZCode taskId=null、MiniMax taskId=null、实际模型设置未读回、完整指定报告不存在、指定结论=未审。计划设置和报告位置统一见下节。"
+        },
+        {
+          "number": 107,
+          "text": ""
+        },
+        {
+          "number": 108,
+          "text": "| 盘点项及提交关系 | 全部实际写面（仓库相对路径） | 当前完整有界验收与内审 | 双审就绪缺口/可独立下一行动 |"
+        },
+        {
+          "number": 109,
+          "text": "| --- | --- | --- | --- |"
+        },
+        {
+          "number": 110,
+          "text": "| S1-A 候选ZIP信封检查；D引入且仍为当前源码 | `packages/engine/src/ontolearn_engine/transfer/{__init__.py,inspection.py}`；`packages/engine/tests/test_transfer_inspection.py`；`tests/fixtures/transfer/inspection-expected.json` | 60Py；严格draft/version/role/选项/hash、有界ZIP局部/中央布局、隐藏成员/重叠/路径/保留名/symlink、实际长度/CRC/deflate EOF与尾部反例；初内审2P2及延伸已闭。只是只读信封，不证明业务语义，不开放import/restore/rerun/replay | 已包含登记S1及A全量输入。待root短lease/最终冻结核验后双方完整审；不等待正式迁移全部实现才排此独立积压 |"
+        },
+        {
+          "number": 111,
+          "text": "| S1-B 安全HTML与独立未接线页面；D引入，C修report首LF及攻击fixture | `apps/desktop/src/renderer/src/transfer/{report.ts,TransferPanel.tsx}`；`tests/unit/t10-report.test.ts`；`tests/fixtures/transfer/{report-input.json,malicious-texts.json}` | 当前18TS；FR1001栏目、逐attempt辅助/证据、纯文本/CSP/离线、12攻击文本及中文/引号/前导LF；页面默认选择及禁用状态。初内审及C增量内审覆盖；真实Chrome检查旧3900B/26af实物。未取得真实T09/T08可信投影 | 同S1-A；没有另一个遗失/未登记的产品候选。真实业务报告联验列父门，不能以合成投影关闭 |"
+        },
+        {
+          "number": 112,
+          "text": "| S1-C 不可变报告文件服务；C引入后未改 | `apps/desktop/src/main/project-transfer/prepared-report-file.ts`；`tests/unit/t10-report-file.test.ts` | 43TS；固定bytes/hash、排他0600暂存、句柄/实际字节与路径身份、原子不覆盖、竞态/取消/并发、不明发布协调、fsync/清理pending及单飞；3P2实际修复并复核。Linux真实picker保存/取消原件另属下行，非正式产品接线 | 同S1-A。当前FS自持实现不是生产能力lease；未来适配须真实新delta/验证/双方新同版完整审，不能拿本S1审查先覆盖未来实现 |"
+        },
+        {
+          "number": 113,
+          "text": "| T-A 合成报告/SSR准备脚本；D引入且保留 | `docs/iterations/T10/render-probe.mjs` | 实际合成HTML/panel/invalid输出、CLI不启动应用；原内审明确覆盖该脚本。browser完整脚本/结果及首失败、HTML原件在legacy归档，不是只留截图或计数 | 已在A清单，必须随S1完整审，不因位于docs而排除。无需无变化重跑；需要额外运行证据由原owner按当时授权执行 |"
+        },
+        {
+          "number": 114,
+          "text": "| T-B 隔离Linux构建/编译/直接native工具；N引入后未改 | `docs/iterations/T10/isolated/{Dockerfile,prepare-native.mjs,native-hook.cjs,native-driver.mjs,run.sh,run-container.py}` | 独立工具内审推动补隔离硬断言/超时/固定容器ID/PID/controls读回。attempt1创建前检查失败、attempt2真实保存窗口Enter后超时、attempt3真实GTK保存Alt+s/取消Escape成功，原运行0600、3896B/ad367、exit0；额外SYS_ADMIN/短时inspector等边界公开。61TS/60Py为容器定向，不能冒充容器全check | 亦已在A清单、全部进入待审，不以“仅工具”永久排除。不是正式package或目标双OS；原失败版本不作为现行可执行候选，精确后继见下节 |"
+        },
+        {
+          "number": 115,
+          "text": "| T-C 保留的编译副本/归档证据 | `docs/reviews/T10/evidence/native-compiled-postrun-readback/{csp.cjs.raw,report.cjs.raw,prepared-report-file.cjs.raw,index.json}`；native55/legacy40索引原件 | 三份为同一已停止attempt3容器的事后原字节副本，不是另写实现；输入源码hash不冒充运行时输出hash，Git副本权限不冒充原运行权限。当前A完整包含，旧snapshot两项missing明确保留 | 连同T-A/T-B供双方追证，不另注册运行能力。现存原件已保全，无缺件需以新测试伪造补回 |"
+        },
+        {
+          "number": 116,
+          "text": ""
+        },
+        {
+          "number": 117,
+          "text": "实际可执行/产品/tests/fixture作者路径总数18＝11非docs产品/tests/fixture＋7工具（本表T-C是原件副本，不重复计作者实现）。没有本线其他已实现正式迁移器、生产guard、共享bridge、Store writer或独立被撤回的功能线。"
+        },
+        {
+          "number": 118,
+          "text": ""
+        },
+        {
+          "number": 119,
+          "text": "## 验证、继承与历史后继"
+        },
+        {
+          "number": 120,
+          "text": ""
+        },
+        {
+          "number": 121,
+          "text": "- 当前稳定全check：691TS/1112Python及lint/format/type/build；原日志 `evidence/isolated-native/check-isolated-retry.txt`。一次既有TIMEOUT、单文件8通过和完整retry原件均保留，原因未明。S1尚无正式package/e2e/目标双OS证据；Linux源码native不是包内证据，不把这些父门删掉。"
+        },
+        {
+          "number": 122,
+          "text": "- D初始产品后继为C：inspection/页面/报告测试脚本保留，report及攻击fixture按C更新；旧内审/11攻击文本证据只保留其原范围，当前12例与首LF以C的增量内审及新原件为准。没有指定旧Pass可沿用，也不把旧内审直接推广到新文件服务。"
+        },
+        {
+          "number": 123,
+          "text": "- C的文件发布3P2及更早ZIP/访问器2P2均在最终提交前修复；提交前中间稿仅有实际保存的失败/哈希/工具原文历史，不承诺每个未提交中间源码都可重建。当前可恢复快照为D/C，不隐藏这些首失败。"
+        }
+      ]
+    },
+    {
+      "messageId": "msg-mlI6yYQu8vtwYf2YhSsxal43nBtsrZYYhEr5Un_eZO8",
+      "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+      "toolCallId": "call_01a1631fb18071d490a63426",
+      "actualReadArguments": {
+        "path": "/Users/kyle/.minimax/v2/assets/2026/10/22/18-19-10-799-asset_20261022-181910-799_a503367fc7b6_16c433d4-pasted-text.txt",
+        "offset": 124
+      },
+      "actualFirstLine": 124,
+      "actualLastLine": 238,
+      "allLinesMatchFrozenPrompt": true,
+      "formatOnlyTrailingLines": [],
+      "lines": [
+        {
+          "number": 124,
+          "text": "- native attempt1/2的失败控制版本由attempt3/N替代；失败不撤销或改记通过。现行六工具以N为准，旧out控制副本只作失败溯源，不作为另一个未来生产候选。3900B/26af浏览器与3896B/ad367 native是两实物/两运行。"
+        },
+        {
+          "number": 125,
+          "text": "- 66之后仅文档/原件/政策/输入准备，未使指定Pass失效（因为从无指定Pass）；纯流程追加不触发不变产品复测。以后任何产品/tests/依赖/验收或base变动，必要验证后双方各新任务完整审新同版，不继承任何旧Pass。"
+        },
+        {
+          "number": 126,
+          "text": ""
+        },
+        {
+          "number": 127,
+          "text": "## 两指定模型的实际记录与提示入口"
+        },
+        {
+          "number": 128,
+          "text": ""
+        },
+        {
+          "number": 129,
+          "text": "- 两应用实际任务ID、会话、终态、实际设置均未创建/未读回；不存在完整指定报告或指定结论。计划：ZCode GLM-5.3/最高+yolo；MiniMax M3.1-Flash/xhigh+bypassPermissions。计划不是实际设置证明。"
+        },
+        {
+          "number": 130,
+          "text": "- 完整提示：`docs/reviews/T10/external-review-task-packet.md`（SHA `6efa041ac48794574f06cc76ac8afdf27d48f603f18ea16de8fda553f7d86f5b`），固定输入manifest（SHA `b2c17f448608370b86ac0549e4f72312e3c8542afa2835138f9fd3b1a4f80623`）。本次未改两旧文件或147项身份。"
+        },
+        {
+          "number": 131,
+          "text": "- 新任务必须同时附 `external-review-current-policy-addendum-20261022.md`，覆盖旧操作政策；双方仍完整审同一全部S1-A/B/C、T-A/B/C，不拆范围、不互泄本轮意见，每轮各新对话/独立任务。"
+        },
+        {
+          "number": 132,
+          "text": "- round-1计划唯一可写MD：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export/docs/reviews/T10/round-1/zcode-glm53.md` 与 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-transfer-export/docs/reviews/T10/round-1/minimax-m31flash.md`。目录/报告尚不存在，未造占位Pass；新轮另建新路径。"
+        },
+        {
+          "number": 133,
+          "text": ""
+        },
+        {
+          "number": 134,
+          "text": "## 纯方案和未实现父门（不能充当指定通过）"
+        },
+        {
+          "number": 135,
+          "text": ""
+        },
+        {
+          "number": 136,
+          "text": "| 材料/阶段 | 实际状态、内审与明确缺口 | 下一行动 |"
+        },
+        {
+          "number": 137,
+          "text": "| --- | --- | --- |"
+        },
+        {
+          "number": 138,
+          "text": "| `i06-trusted-transfer-contract-request.md`，b39 | 纯合同r1；独立内审2P2修闭，见trusted-contract-review.md；无runtime/API。a1已有此提案仅说明其未批准设计，不当已实现guard | 等各唯一owner/root批准正式payload/coverage/引用JSON/错误/能力接口，再沿授权面实现和新验证/指定双审 |"
+        },
+        {
+          "number": 139,
+          "text": "| `t01-transfer-design-acceptance-r1.md`，156838c；`i06-transfer-response-acceptance-r1.md`，f00e1b7 | 纯接受/比对回执，本线未为这两份另开独立内审；所读T01/I06方案有原线/root独立设计审查，不能冒称这两份有指定Pass。生产inventory/原子退役/FS能力/receipt均未交付 | 保留相容方向和具体caller适配缺口；维护责任变化按当前root记录，不能消费未批实现 |"
+        },
+        {
+          "number": 140,
+          "text": "| interface-needs/private-preparation/report-file-publication/isolated-native-validation说明 | 随对应私有实现/工具的上下文，非另一个可调用实现；相应实现内审存在，不另造文档“指定通过” | 未来实际接口delta到位更新当前对接记录，冻结历史仍保留 |"
+        },
+        {
+          "number": 141,
+          "text": "| packet/manifest/D1D2/E1/blocked审计 | 纯流程/证据材料；root独立预检及针对性D1/D2读回已闭；未派发，不是模型外审 | root短lease后按当前政策核新base/head/实际模型、创建两完整任务；已存在真实任务按ID等待，不重复建 |"
+        },
+        {
+          "number": 142,
+          "text": "| 正式格式/投影/原子新project导入/来源能力/学习证据/生产IO guard/桥接/G.6/包内双平台 | 本线尚未实现；仅方案/精确缺口，不伪登记已开发候选或永久排除未来积压。I06 metadata/token核心等是其他owner阶段且未获本线消费批准 | 正式批准接点/实现到位按独占写面推进；形成代码后加入积压、必要验证和双方完整新审。全部57P0/父门与PR/CI/正常合并/远端要求不减 |"
+        },
+        {
+          "number": 143,
+          "text": ""
+        },
+        {
+          "number": 144,
+          "text": "当前可独立下一步是补齐此全量盘点及新任务政策addendum，并交root形成总队列；已完成前置无变化不重跑。实际新任务创建等root短lease，后台推理不占整个lease。完整T10仍未完成；已批准桌面可直接computer use，旧“无GUI许可/待用户时段/CLI登录”不再是当前阻断，当前只按内部互斥及真实依赖/写权/运行边界执行。"
+        },
+        {
+          "number": 145,
+          "text": ""
+        },
+        {
+          "number": 146,
+          "text": ""
+        },
+        {
+          "number": 147,
+          "text": "# 上轮完整意见处置"
+        },
+        {
+          "number": 148,
+          "text": "# T10 round-1 全量意见处置"
+        },
+        {
+          "number": 149,
+          "text": ""
+        },
+        {
+          "number": 150,
+          "text": "两指定任务都已真实终态stop，完整原报告/raw与终态在`round-1/`保全；精确ID与报告SHA见`round-1/terminal-receipt.json`。ZCode列5项P3，MiniMax列1项P2和6项P3，共10个去重议题。两原报告均称有界阶段通过，但F1按较高P2处理，本线不将旧结论推广到修后新候选；新候选仍须双方各全新完整同版审查。"
+        },
+        {
+          "number": 151,
+          "text": ""
+        },
+        {
+          "number": 152,
+          "text": "| 原项                                      | 原owner处置                                                  | 依据与验收/后续门                                                                                                                                                                                                                                                                    |"
+        },
+        {
+          "number": 153,
+          "text": "| ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |"
+        },
+        {
+          "number": 154,
+          "text": "| M-F1 P2 / Z-O1 P3 EOCD计数                | 采纳并修复；待新候选指定双审                                 | `_preflight`返回offset/count，`_inspect`在读取成员内容前强制实际中央条目数等于声明数，不符固定`ARCHIVE_SHAPE`。保留两计数相等、预算和连续本地布局检查；补少报、多报、两字段不等和合法STORED/DEFLATED full无可选内容6项反例/正例。无需第二套ZIP解析器，不开放导入能力。               |"
+        },
+        {
+          "number": 155,
+          "text": "| M-F2 / Z-O2 模板反向/最小角色             | 接受为正式格式开放项，本阶段不改语义                         | 当前只保留declared_kind；full缺核心角色拒绝；四能力恒false。没有批准的template最小集/反向判定，不擅自代格式owner定产品规则。正式schema验收前须明确。                                                                                                                                 |"
+        },
+        {
+          "number": 156,
+          "text": "| Z-O3 每角色单成员/预算规模                | 接受为正式格式开放项                                         | 现有8MiB成员、32MiB总量等是公开防御预算，未承诺业务容量。分片/多成员和业务容量须格式owner与实测验收后决定，不以P3建议改变当前格式。                                                                                                                                                  |"
+        },
+        {
+          "number": 157,
+          "text": "| Z-O4 非待确认阶段reconcile返回unconfirmed | 明确登记延期，未称已修                                       | 当前方法没有生产caller，错误使用不会产生发布/越权或写入；现有prepared/busy返回值语义确实易混淆。正式caller接线前须决定固定错误或独立not-pending状态，补prepared/busy无IO/无状态变化及published幂等测试。本轮集中修复已证实计数缺口，不扩大未接线main文件服务返回协议及相应原生验收。 |"
+        },
+        {
+          "number": 158,
+          "text": "| Z-O5 崩溃残留目录                         | 接受为已公开生命周期边界，未称已实现                         | 无跨进程权威日志/生产位置lease时，不能安全推断遗留目录归属而自动清扫。正式生命周期/归属协议到位后补恢复、身份核验和陌生文件保留验收；当前身份绑定非递归cleanup逻辑不放宽。                                                                                                           |"
+        },
+        {
+          "number": 159,
+          "text": "| M-F3 main依赖renderer纯报告模块           | 接受为正式接线前维护风险                                     | 当前report仅纯函数，未见运行隔离突破，不改共享架构/文件owner。正式接线前协调批准的中立纯模块位置和main/renderer依赖方向，不能直接将HTML业务实现塞入contracts。                                                                                                                       |"
+        },
+        {
+          "number": 160,
+          "text": "| M-F4 desktop缺显式zod依赖                 | 转共享依赖owner处理，非本线回归                              | base已存在同样import/依赖状态；当前未出现已证实包内缺模块失败。同步总控，由当时共享依赖唯一owner在正式接线/包内验收前处理声明与锁；T10不抢改清单/锁，亦不称风险已解除。                                                                                                              |"
+        },
+        {
+          "number": 161,
+          "text": "| M-F5 probe输出污染证据目录                | 采纳并修复；待新候选指定双审                                 | 默认输出改为忽略的`out/t10-render-probe/`，同步运行说明。实际生成3HTML；恶意报告3900B/26af与历史逐字节一致，旧`evidence/runtime`不存在，不改旧证据。                                                                                                                                 |"
+        },
+        {
+          "number": 162,
+          "text": "| M-F6 browser/native标注                   | 采纳，当前说明在下段澄清；旧冻结backlog/packet/raw保留原字节 | “旧”只可作历史运行先后描述，不能解释为report源码旧版。两模型均独立复算：同一C源码的不同输入，分别3900/3896B。                                                                                                                                                                        |"
+        },
+        {
+          "number": 163,
+          "text": "| M-F7 executed:null度量                    | 采纳，当前说明在下段定义；原摘要不改                         | 仅表示读取`globalThis.__t10xss ?? null`未观测到哨兵；不是测得脚本上下文数量，不新增未测的scriptContexts:0。                                                                                                                                                                          |"
+        },
+        {
+          "number": 164,
+          "text": ""
+        },
+        {
+          "number": 165,
+          "text": "## 证据说明的现行精确定义"
+        },
+        {
+          "number": 166,
+          "text": ""
+        },
+        {
+          "number": 167,
+          "text": "浏览器3900B、SHA256`26af12303d80436e470fe30c5f1cffa57b424da0401ce1320e6bc5499ad676b6`与native3896B、SHA256`ad367a3158a8adc989378239d68d992e9c281f0269561af7fd31027a1743cdcd`均可由同一冻结C的report.ts复算。两输入都把goals设置为12条attacks；render-probe另把title设置为attacks[0]，native保留fixture标题，4B差异来自标题。它们仍是不同文件和不同实际运行，Chrome的DOM/哨兵/外联观测不能冒充native的picker/0600/容器终态，反之亦然。"
+        },
+        {
+          "number": 168,
+          "text": ""
+        },
+        {
+          "number": 169,
+          "text": "原浏览器摘要`executed:null`仅是未观测到攻击哨兵，`dangerousNodes:0`和`externalRequests:[]`分别是DOM危险节点及请求观测；静态元素/属性白名单复核是另一种证据。保留这些各自可观察的含义，不升级为形式证明、真实业务凭据排除或包内/跨平台证据。"
+        },
+        {
+          "number": 170,
+          "text": ""
+        },
+        {
+          "number": 171,
+          "text": "两模型原报告中关于“任务ID不可见”、读取文件数量/反例计数的文字均原样保留；实际task关联由owner终态回执补齐，原报告不反写。MiniMax验证raw实际在其scratch/raw，已随scratch惰性归档；报告中的`raw/`相对引用按该真实位置追溯。归档脚本不是仓库待执行源码/测试，tar内路径/长度/hash另列且与原树逐字节核验。"
+        },
+        {
+          "number": 172,
+          "text": ""
+        },
+        {
+          "number": 173,
+          "text": "## 本轮边界"
+        },
+        {
+          "number": 174,
+          "text": ""
+        },
+        {
+          "number": 175,
+          "text": "修复仅涉及本线Python检查器、其测试、CLI输出路径及说明，不改公共协议/Store/writer/bridge/App/锁/CI。完整FR-1000/1001/104、A-06–08、G.6、12.4/12.5、全部57P0、正式格式/可信投影/原子导入、双平台包内、真人、CI/正常合并/远端门保持。旧native和browser原件证明原C范围，未被写成新候选的全新原生运行。本线不使用GUI、不改/续投旧审查任务；复审等总控短创建lease。"
+        },
+        {
+          "number": 176,
+          "text": ""
+        },
+        {
+          "number": 177,
+          "text": ""
+        },
+        {
+          "number": 178,
+          "text": "# 已完成round-1 ZCode原报告"
+        },
+        {
+          "number": 179,
+          "text": "# T10-S1 round-1 外审报告（ZCode / GLM-5.3 / 最高推理）"
+        },
+        {
+          "number": 180,
+          "text": ""
+        },
+        {
+          "number": 181,
+          "text": "- 报告性质：一轮完整、独立、只读的代码与证据审查。审查对象为已登记有界阶段 `T10-S1 私有包检查与安全报告文件服务`（含 T-A/T-B/T-C 工具与保全证据），不是完整 T10 Goal 的验收，不创建 Goal、不修改候选、不 push/PR/CI/合并。"
+        },
+        {
+          "number": 182,
+          "text": "- 审查执行树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-zcode-review-c3c7e90`（detached HEAD `77f2d5048630827ba5220fe092392ded6ab1c697`）。本模型会话内未见外部实际任务 ID 或可回读定位（如实声明，不作猜测）；权限模式未在会话内回读，只读职责不依赖权限模式。"
+        },
+        {
+          "number": 183,
+          "text": "- 唯一报告写入本文件；验证原始输出在 `docs/reviews/T10/round-1/zcode-raw/`；独立反例/脚本/派生构建在 `out/t10-review/round-1/zcode/`（scratch）。未读取另一方（MiniMax）本轮任何输出。"
+        },
+        {
+          "number": 184,
+          "text": ""
+        },
+        {
+          "number": 185,
+          "text": "## 1. 核验的身份与固定输入"
+        },
+        {
+          "number": 186,
+          "text": ""
+        },
+        {
+          "number": 187,
+          "text": "| 项 | 声明 | 核验结果 |"
+        },
+        {
+          "number": 188,
+          "text": "| --- | --- | --- |"
+        },
+        {
+          "number": 189,
+          "text": "| 批准 base | `5f910b52c69d86a1076b2032e5d3c63e715947f3` | Git 对象存在（I04 合并点），与全部身份链一致 |"
+        },
+        {
+          "number": 190,
+          "text": "| 产品实现 D→C | `d3546af3…` → `c3c7e90f…` | 存在；base→C delta 共 27 文件，全部位于授权写面（transfer/、project-transfer/、renderer/transfer/、T10 tests/fixtures/docs），未触公共契约、Store、writer、main/index、preload、App、锁、CI |"
+        },
+        {
+          "number": 191,
+          "text": "| 工具/证据点 N | `66eeedd735370576b49eb39cd4b14cdef9c0d55b` | 存在；66→A→HEAD 仅文档/证据/流程追加 |"
+        },
+        {
+          "number": 192,
+          "text": "| 固定输入 A | `a1e7efef4bd47c97b630753c0e7c4dc34de1d8ae` | `external-review-input-manifest.json` 147 项（141 delta + 6 上下文）逐项与 A 的 Git blob SHA256 比对：147/147 全部一致（raw: `zcode-raw/manifest-verification.txt`） |"
+        },
+        {
+          "number": 193,
+          "text": "| 当前执行树 77 vs 产品 C | 源码/tests/fixture/锁/CI 零差异 | `git diff c3c7e90 77f2d50 -- apps packages tests scripts package.json package-lock.json uv.lock .github` 为空；77 仅追加流程材料。工作树与 A 的差异仅 `docs/reviews/T10/status.md`（后续流程更新，预期内） |"
+        },
+        {
+          "number": 194,
+          "text": "| AGENTS 保护 | SHA `de15f6ce…c8c4` | 实测一致；保持未暂存、未提交；本次审查未改写 |"
+        },
+        {
+          "number": 195,
+          "text": "| 内审冻结哈希 | inspection `c64ea0f0…`、report `b5e50810…`、prepared-report-file `71e7359e…`、t10-report-file.test `7d0f4253…`、malicious-texts `b1b41d90…`、render-probe `dcccc5b9…` | 全部与当前文件实测一致 |"
+        },
+        {
+          "number": 196,
+          "text": ""
+        },
+        {
+          "number": 197,
+          "text": "## 2. 实际读过与运行过的内容"
+        },
+        {
+          "number": 198,
+          "text": ""
+        },
+        {
+          "number": 199,
+          "text": "**通读**（代码逐行）：`inspection.py`、`transfer/__init__.py`、`report.ts`、`TransferPanel.tsx`、`prepared-report-file.ts`、`test_transfer_inspection.py`（60 项）、`t10-report.test.ts`（18 项）、`t10-report-file.test.ts`（43 项）、三个 fixture、`csp.ts`、`render-probe.mjs`、隔离六工具（Dockerfile/run.sh/run-container.py/native-driver.mjs/native-hook.cjs/prepare-native.mjs）。"
+        },
+        {
+          "number": 200,
+          "text": "**通读**（文档/证据）：private-stage-candidate、status、verification、internal-review、report-file-internal-review、isolated-native-review、trusted-contract-review 概要、evidence-preservation-E1、designated-review-backlog、blocked-audit、private-preparation、report-file-publication、isolated-native-validation、interface-needs、verification-summary/browser-summary/check-failure-notes、PRD FR-104/FR-1000/FR-1001、12.4/12.5、A-06–08、G.6。"
+        },
+        {
+          "number": 201,
+          "text": "**哈希核验**：147 项输入 manifest；55 项 native manifest（55/55）；legacy 归档 40 项（40/40，index 内 11 项 requiredSummaryRaw 亦一致）；postrun 读回 3 份 cjs（3/3）；两份实物（native 3896B/`ad367a…`、browser 3900B/`26af12…`）实测与各回执一致；两项旧 snapshot 缺失如实登记。"
+        },
+        {
+          "number": 202,
+          "text": "**运行**（本树独立 env，缓存指向自己 scratch）："
+        },
+        {
+          "number": 203,
+          "text": "1. `npm run check` 全量：**exit 0，一次通过** — lint、format、双端+unit 类型、vitest **691/691**（17 文件）、构建、ruff、pytest **1112/1112**（raw: `zcode-raw/check-full.txt`）。历史 engine-connection-state TIMEOUT **本轮未复现**，与\"原因未证实\"的记录一致。"
+        },
+        {
+          "number": 204,
+          "text": "2. 定向：`pytest test_transfer_inspection.py` **60 passed**；`vitest t10-report + t10-report-file` **61 passed（18+43）**。与登记数字完全一致。"
+        },
+        {
+          "number": 205,
+          "text": "3. 独立反例（scratch，脚本与输出均在 raw/scratch 留档）：ZIP 检查器 21 个自制用例 + 报告字节复算（见 §4/§5）。"
+        },
+        {
+          "number": 206,
+          "text": ""
+        },
+        {
+          "number": 207,
+          "text": "## 3. 逐项审查结论"
+        },
+        {
+          "number": 208,
+          "text": ""
+        },
+        {
+          "number": 209,
+          "text": "### S1-A Python 只读 ZIP 信封检查 — 通过（限登记范围）"
+        },
+        {
+          "number": 210,
+          "text": ""
+        },
+        {
+          "number": 211,
+          "text": "- 严格性：draft 版本字面量精确匹配（`FORMAT_UNSUPPORTED` 不做任何隐式迁移）；manifest 严格键集、重复键拒绝、NaN/Infinity 拒绝、深嵌套 RecursionError 收敛为固定码；角色封闭集合，vault/credentials/audit/authorization/unknown 全拒（测试覆盖）；每角色至多一个成员、每路径唯一。"
+        },
+        {
+          "number": 212,
+          "text": "- 布局反隐藏：EOCD 必须位于文件尾且 `offset+size==len-22`（无尾随字节/注释/ZIP64/多磁盘）；本地 header 从偏移 0 连续铺到中央目录，本地/中央 flags、compression、CRC、packed/unpacked、文件名逐项一致，extra 必须为零，仅允许 0x800 位（拒加密与流式 data descriptor）。中央目录独占 `[offset, len-22)`。**不存在可藏字节的缝隙**。"
+        },
+        {
+          "number": 213,
+          "text": "- 解压安全：raw-deflate `decompressobj` 带界输出、`eof/unused_data/unconsumed_tail` 全查（拒压缩尾随与截断输出）；STORED/DEFLATED only；逐成员 CRC+长度+SHA256 核验；预算 40MiB/32MiB/8MiB/64KiB/256 项且在文档中明确\"非容量承诺\"。"
+        },
+        {
+          "number": 214,
+          "text": "- 语义克制：`import_allowed/restore_current/rerun_mapping/replay_runs` 恒 false、reason 固定；不凭角色/hash 推断 checkpoint 语义；无解包、无路径、无 DB、无 import/restore/rerun/replay 入口。`full` 必含四核心角色（含断言+所有权，方向与 FR-1000 \"缺当前断言/所有权只能标模板\"一致）；未选可选内容出现即 `UNSELECTED_CONTENT`；\"选择≠包含\"分开返回；完整包缺可选数据不降模板（`test_full_without_optional…`）。"
+        },
+        {
+          "number": 215,
+          "text": "- 我的独立反例（非套件用例）：手造合法 STORED/DEFLATED 归档作为对照组通过；隐藏 deflate 尾随流、截断到声明前缀、中央区垃圾、81 字符名、大写扩展名、BOM manifest、大写 hash、记录内重复键等全部以正确固定码拒绝（raw: `counterexamples-zip*.txt`）。未发现绕过。"
+        },
+        {
+          "number": 216,
+          "text": ""
+        },
+        {
+          "number": 217,
+          "text": "### S1-B 安全 HTML 报告与未接线页面 — 通过（限登记范围）"
+        },
+        {
+          "number": 218,
+          "text": ""
+        },
+        {
+          "number": 219,
+          "text": "- FR-1001 栏目齐全（目标/能力问题/逐 attempt 学习/本体/数据/查询/验证/行为/场景/假设/待解决），结果显式绑定 inputRevision/semanticsVersion/scope 与 当前/过期/历史/失败/取消 状态；`current` 必须与 projectRevision 一致、inputRevision 不得超前（superRefine）；通过却无 evidenceRef 拒绝。"
+        },
+        {
+          "number": 220,
+          "text": "- 学习分类（FR-104）：五级标签，未完成或检查未过=尚未验证完成；完整辅助/完整示范不计独立；任何部分提示/辅助不计独立；点击完成≠掌握。旧尝试不被新尝试覆盖（独立渲染）。"
+        },
+        {
+          "number": 221,
+          "text": "- 编码与离线：所有动态串仅进入 HTML 文本位置并经 `escapeReportText`；CSP 复用 `csp.ts` 唯一源（生产无 unsafe-inline/eval，connect-src/object-src/base-uri/frame-src/form-action 均 none）；无脚本/样式/链接/图片/字体；12 攻击文本 + 中文引号/实体/前导 LF（`<pre><span>`）在单测与浏览器实物中一致。zod strict 拒绝 apiKey/password/token/vault/audit/agentSessions/sendAuthorization 等一切额外键。"
+        },
+        {
+          "number": 222,
+          "text": "- 防御：`checkBudget` 节点/字符/数组/键数预算，拒绝 getter（自有/继承）、稀疏数组、异常原型、循环引用，且实测未执行 getter；错误统一 `REPORT_PROJECTION_INVALID`，无源值/诊断泄漏。"
+        },
+        {
+          "number": 223,
+          "text": "- 页面：独立未接线，4 选项默认未选、导出/导入禁用、三项能力明确\"未验证\"、无效投影 1 alert；无 Node/innerHTML/通用 IPC。合成输入未被声称为可信 Store/T09/T08 联验或凭据排除——声明与事实相符。"
+        },
+        {
+          "number": 224,
+          "text": ""
+        },
+        {
+          "number": 225,
+          "text": "### S1-C 主进程不可变报告文件服务 — 通过（限登记范围）"
+        },
+        {
+          "number": 226,
+          "text": ""
+        },
+        {
+          "number": 227,
+          "text": "- 构造期渲染一次并冻结 payload/hash/长度（Object.freeze）；后续源对象变异不影响产物（测试实证）。"
+        },
+        {
+          "number": 228,
+          "text": "- 选择校验：strict schema + 绝对目录 + NUL 拒绝 + `.html` 后缀 + 非法字符/控制字符 + Windows 保留名 + 相对目录/额外键拒绝；picker 适配器保持在受信主进程侧，无 renderer/模型路径入口；未接线任何真实 IPC/Store/picker（文档如实声明）。"
+        },
+        {
+          "number": 229,
+          "text": "- 暂存与发布：目标父目录 `mkdtemp` + `wx+`/0600 独占句柄；写+fsync；发布前经保留句柄有界读回**全字节+长度+路径身份**（同 inode 同长度改写、替换为 symlink、增长/截断均拒）；同文件系统 hard link 原子发布，EEXIST 即 `REPORT_TARGET_EXISTS`，不覆盖既有文件/目录/最终符号链接，竞争写者胜出时保留对方内容。"
+        },
+        {
+          "number": 230,
+          "text": "- 发布后语义：link 成功立即固定 published；其后回调错误（含伪造 EEXIST）、中止、目录 fsync 失败均不倒退为失败/取消（postPublicationError/durability 单列）；link 回执丢失（EIO 注入）以自己临时 inode 读回裁决，读不回进入 publication-unconfirmed 并阻止再次保存，`reconcilePublication` 显式读回后才定 published/not-present，\"当前未观察到\"≠\"从未提交\"。"
+        },
+        {
+          "number": 231,
+          "text": "- 清理：仅删自己身份绑定的暂存文件与空目录，非递归、未知文件保留并 pending；单飞 retryCleanup；pending 期间拒绝新暂存（`REPORT_CLEANUP_PENDING`）；并发保存 `REPORT_EXPORT_BUSY`（同步检查，无可竞争窗口）。错误码封闭，`errno()` 用描述符读 code 不执行访问器（测试实证未触发 getter）。"
+        },
+        {
+          "number": 232,
+          "text": "- 边界如实：无 I06 动态私有根 guard/可信投影/正式桥接；不阻止同 UID 外部持续篡改；无跨进程提交日志/启动清扫器（文档明示）。"
+        },
+        {
+          "number": 233,
+          "text": ""
+        },
+        {
+          "number": 234,
+          "text": "### T-A render-probe / T-B 隔离 native 工具 / T-C 保全证据 — 通过（限工具与证据范围）"
+        },
+        {
+          "number": 235,
+          "text": ""
+        },
+        {
+          "number": 236,
+          "text": "- T-A：CLI-only，经 TypeScript transpile 动态 import，不启动 Electron/浏览器；我在 scratch 复刻其编译路径（输出指向自己 scratch，未覆盖旧原件），产物与归档 HTML 逐字节一致（见 §5）。"
+        },
+        {
+          "number": 237,
+          "text": "- T-B：Dockerfile 摘要钉扎、非 root 1110、chrome-sandbox 0:4755、构建联网/runtime `--network none`（已公开区分）；run-container.py 对 create 后未启动容器做硬配置断言并从其中复制 controls 逐 hash 比对当前受审文件；driver 5 秒命令超时+55 秒总 deadline+只杀自己进程组；native-hook 硬断言 NoNewPrivs=1/Seccomp=2/CapEff=0/sandbox/contextIsolation/nodeIntegration=false/hang-monitor 开/mock-keychain 关/inspector 已关，真实 GTK `showSaveDialog` 保存(Alt+s)/取消(Escape)、picker 未被改写、nativeDialogs=2。额外 `SYS_ADMIN` 与短时 main loopback inspector（picker 前关闭）如实公开，未美化为最小权限/无 listener。"
+        },
+        {
+          "number": 238,
+          "text": "- 三次 attempt 原件一致：attempt1 `Status=created/StartedAt=0`（按 addendum 澄清解读为\"已创建、启动前 CAP 名称检查失败\"，非一次 native 运行）；attempt2 `T10_NATIVE_DEADLINE`（Return 键无回执）；attempt3 容器 exit 0、61TS/60Py、3896B/0600/`ad367a…` 与服务回执一致。失败原件均保留、未改记通过。"
+        }
+      ]
+    },
+    {
+      "messageId": "msg-vgjwb3PZ34ur0VYb12pYYR4I8EPCPelMavkY0QD4kDM",
+      "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+      "toolCallId": "call_01a1631fcc0277e48b0d45ff",
+      "actualReadArguments": {
+        "offset": 239,
+        "path": "/Users/kyle/.minimax/v2/assets/2026/10/22/18-19-10-799-asset_20261022-181910-799_a503367fc7b6_16c433d4-pasted-text.txt"
+      },
+      "actualFirstLine": 239,
+      "actualLastLine": 450,
+      "allLinesMatchFrozenPrompt": true,
+      "formatOnlyTrailingLines": [],
+      "lines": [
+        {
+          "number": 239,
+          "text": "- T-C：postrun 三份 cjs 明确标注\"停止容器事后读回、非运行时独立输出 hash\"；Git 副本权限不冒充原运行 0600；旧 browser（3900B/26af）与 native（3896B/ad367）两实物两运行，未混同；两项旧 snapshot missing 如实记录。"
+        },
+        {
+          "number": 240,
+          "text": ""
+        },
+        {
+          "number": 241,
+          "text": "## 4. 独立反例与复算结果（摘要，全文见 zcode-raw）"
+        },
+        {
+          "number": 242,
+          "text": ""
+        },
+        {
+          "number": 243,
+          "text": "ZIP（round1/2/3）："
+        },
+        {
+          "number": 244,
+          "text": "- 手造含 manifest 的合法归档（STORED、DEFLATED 对照组）→ 接受；"
+        },
+        {
+          "number": 245,
+          "text": "- 声明压缩大小内藏第二 deflate 流（尾随私有数据）→ `ARCHIVE_INVALID`；"
+        },
+        {
+          "number": 246,
+          "text": "- 解压实际输出超过声明 usize 前缀 → `ARCHIVE_INVALID`；"
+        },
+        {
+          "number": 247,
+          "text": "- 中央区垃圾字节 → `UNSAFE_ENTRY`；81 字符名/大写扩展名/BOM/大写 hash/记录重复键 → 各自固定码拒绝；"
+        },
+        {
+          "number": 248,
+          "text": "- 预算：>32MiB 总量拒绝；EOCD count 谎报（见问题 O-1）接受但无隐藏字节风险。"
+        },
+        {
+          "number": 249,
+          "text": "- 首轮反例中若干用例因我构造偏差被拒（字段偏移写错、双层压缩、多余成员），行为均正确；已修正构造后复测，结论以上述为准。"
+        },
+        {
+          "number": 250,
+          "text": ""
+        },
+        {
+          "number": 251,
+          "text": "报告字节复算（跨环境决定性验证）："
+        },
+        {
+          "number": 252,
+          "text": "- 以当前冻结源码+fixture 在本机（macOS/Node 24.15.0）按 native-hook 真实输入（仅 `goals=attacks`）渲染 → **3896 字节 / `ad367a…`，与 attempt-3 容器产物逐字节一致**；"
+        },
+        {
+          "number": 253,
+          "text": "- 按 render-probe 输入（`goals=attacks`+`title=attacks[0]`）渲染 → **3900 字节 / `26af12…`，与归档 browser 实物逐字节一致**。两实物差异完全由输入差异解释，无未声明变量。"
+        },
+        {
+          "number": 254,
+          "text": ""
+        },
+        {
+          "number": 255,
+          "text": "## 5. 问题清单"
+        },
+        {
+          "number": 256,
+          "text": ""
+        },
+        {
+          "number": 257,
+          "text": "**未发现 P0/P1/P2 级证实缺陷。** 以下为 P3 观察项/建议（均不阻断本阶段，属未来 owner 取舍）："
+        },
+        {
+          "number": 258,
+          "text": ""
+        },
+        {
+          "number": 259,
+          "text": "| # | 级别 | 位置 | 触发与影响 | 建议 |"
+        },
+        {
+          "number": 260,
+          "text": "| --- | --- | --- | --- | --- |"
+        },
+        {
+          "number": 261,
+          "text": "| O-1 | P3 建议 | `packages/engine/src/ontolearn_engine/transfer/inspection.py:94-99`（EOCD 解析）与 `:151`（条目计数） | EOCD `count` 字段与实际中央条目数不一致时仍被接受（我实测 count 谎报通过）。因 `offset+size==len-22` 与本地布局连续性已使全部字节可核算，**无隐藏内容风险**，仅声明字段完整性未交叉核验 | 在 `_inspect` 增加 `len(entries) == preflight count` 校验，收紧信封卫生 |"
+        },
+        {
+          "number": 262,
+          "text": "| O-2 | P3 观察 | `inspection.py:176`、`:196` | `template` 允许零角色空清单（实测接受），也允许含全部核心角色。FR-1000 只约束\"缺断言/所有权不得标 full\"这一方向，现行实现与 PRD 方向一致；反向与最小内容属未来正式格式决定 | 正式 schema 定稿时决定 template 的最小角色集与反向误标规则 |"
+        },
+        {
+          "number": 263,
+          "text": "| O-3 | P3 观察 | `inspection.py:187`（`DUPLICATE_ROLE`） | 每角色至多一个成员、单成员 ≤8MiB、总量 ≤32MiB：属草案级规模约束（已声明非容量承诺） | 正式格式阶段重新评估多成员/分片需求 |"
+        },
+        {
+          "number": 264,
+          "text": "| O-4 | P3 观察 | `apps/desktop/src/main/project-transfer/prepared-report-file.ts:182-187` | 非处于 `unconfirmed` 相位时调用 `reconcilePublication()` 返回字符串 `'unconfirmed'`，易与真实未确认态混淆（纯 API 语义瑕疵，测试未触达） | 非 unconfirmed 相位时抛固定错误或返回显式状态 |"
+        },
+        {
+          "number": 265,
+          "text": "| O-5 | P3 观察（已知边界） | `prepared-report-file.ts:257`（暂存目录建于目标父目录） | 进程崩溃后 `.ontolearn-report-*` 目录残留，无启动清扫器；文档已如实声明，正式接线时由应用生命周期验收覆盖 | 正式集成时补崩溃残留清理与生命周期联验 |"
+        },
+        {
+          "number": 266,
+          "text": ""
+        },
+        {
+          "number": 267,
+          "text": "历史遗留（已有处置、无需新动作）：engine-connection-state TIMEOUT 原因未证实、原件保留，本轮未复现（691/691 一次通过）；attempt1/2 失败原件保留且不作为现行候选；旧 snapshot 两项 missing 保留不伪造。"
+        },
+        {
+          "number": 268,
+          "text": ""
+        },
+        {
+          "number": 269,
+          "text": "## 6. 承诺准确性抽查（文档 vs 实现/证据）"
+        },
+        {
+          "number": 270,
+          "text": ""
+        },
+        {
+          "number": 271,
+          "text": "- \"60 Py / 18 报告 TS / 43 文件服务 TS / 整仓 691 TS / 1112 Py\" — 本轮独立复测全部一致。"
+        },
+        {
+          "number": 272,
+          "text": "- verification-summary 的 `formalIntegration/approvedFormat/dualPlatform/credentialExclusionEndToEnd/dualSpecifiedReview/pushed` 全为 false — 与仓库事实（未接线、未 push、无 PR/CI/合并）一致。"
+        },
+        {
+          "number": 273,
+          "text": "- 引擎能力仅 `health`（native.json capabilities）— 与 AGENTS 状态快照一致，未夸大为正式迁移/包内引擎能力。"
+        },
+        {
+          "number": 274,
+          "text": "- 两份内审（2 P2 + 3 P2）修复声明 — 冻结哈希与现行源码一致，修复点（本地布局覆盖、getter 防护、staged 字节核验、pending 语义、post-link EEXIST）均能在代码与测试中定位到对应实现与反例。"
+        },
+        {
+          "number": 275,
+          "text": "- D1/D2 流程文档中的旧路径/旧\"仅报告可写\"条款已按本轮 addendum 替代执行；原 packet 字节保留未改，无追溯问题。"
+        },
+        {
+          "number": 276,
+          "text": ""
+        },
+        {
+          "number": 277,
+          "text": "## 7. 未验边界与未满足的父 T10 门（不因本报告关闭）"
+        },
+        {
+          "number": 278,
+          "text": ""
+        },
+        {
+          "number": 279,
+          "text": "正式包格式/schema 与完整 checkpoint（owner 未批准）；可信且排除 vault/凭据/发送授权的业务投影（T09/T08）；唯一 writer 原子导入与 receipt；真实学习/重放语义与跨设备续编辑/查询/重跑冲突/撤销；共享代次/项目/窗口接线与真实 App 内 main picker + 触发的 e2e；FR-1000 全量迁移验收；A-06 端到端凭据排除（本阶段仅信封级角色拒绝+严格 schema，明确不证明业务文本无凭据）；G.6 全部条目；12.4/12.5 双平台与包内验证；真人验收；全部 57 P0 与父功能门；指定双审另一方（MiniMax M3.1-Flash/xhigh）同版完整独立审查；push/PR/实际 CI/develop 合并/远端核验。本阶段通过不扩展为上述任何一项。"
+        },
+        {
+          "number": 280,
+          "text": ""
+        },
+        {
+          "number": 281,
+          "text": "## 8. 最终结论"
+        },
+        {
+          "number": 282,
+          "text": ""
+        },
+        {
+          "number": 283,
+          "text": "**明确通过本阶段**（T10-S1 私有包检查与安全报告文件服务，含登记的 T-A/T-B/T-C 工具与保全证据，固定于 candidate `a1e7efef`、产品实现 `c3c7e90f`、工具 `66eeedd`、base `5f910b52`）："
+        },
+        {
+          "number": 284,
+          "text": ""
+        },
+        {
+          "number": 285,
+          "text": "- 11 项产品/测试/fixture delta 逐行审读，未发现 P0/P1/P2 缺陷；5 项 P3 观察均已列出并给建议。"
+        },
+        {
+          "number": 286,
+          "text": "- 全量 `npm run check` 与定向复测在本隔离树独立复现登记结果（691/1112/60/18/43，exit 0）。"
+        },
+        {
+          "number": 287,
+          "text": "- 两份历史实物（3900B browser、3896B native）在本机从冻结源码逐字节独立复算成功，跨环境决定性与证据链完整性得到独立确认。"
+        },
+        {
+          "number": 288,
+          "text": "- 147/55/40/11/3 项哈希核验全部通过；失败原件、missing 项、超时历史均如实保留。"
+        },
+        {
+          "number": 289,
+          "text": ""
+        },
+        {
+          "number": 290,
+          "text": "通过范围严格限于上述有界阶段；完整 T10 Goal 及全部父门仍未满足、继续有效。"
+        },
+        {
+          "number": 291,
+          "text": ""
+        },
+        {
+          "number": 292,
+          "text": ""
+        },
+        {
+          "number": 293,
+          "text": "# 已完成round-1 MiniMax原报告"
+        },
+        {
+          "number": 294,
+          "text": "# T10-S1 独立外审报告（MiniMax M3.1-Flash / round-1）"
+        },
+        {
+          "number": 295,
+          "text": ""
+        },
+        {
+          "number": 296,
+          "text": "审查模型：MiniMax M3.1-Flash（思考档位 xhigh，权限模式 bypassPermissions）。本轮为全新独立只读审查任务，未复用任何旧对话，未读取、未接收、未展示另一方本轮报告/摘要/结论/问题清单。"
+        },
+        {
+          "number": 297,
+          "text": ""
+        },
+        {
+          "number": 298,
+          "text": "本报告是本模型本轮唯一产物。结论先行：**明确通过 T10-S1 有界阶段**，登记 1 项 P2（不阻断本阶段）与 6 项 P3。完整 T10 父门全部未关闭，本通过不构成产品、迁移、G.6、跨平台、包内或发布通过。"
+        },
+        {
+          "number": 299,
+          "text": ""
+        },
+        {
+          "number": 300,
+          "text": "---"
+        },
+        {
+          "number": 301,
+          "text": ""
+        },
+        {
+          "number": 302,
+          "text": "## 1. 实际身份与执行环境"
+        },
+        {
+          "number": 303,
+          "text": ""
+        },
+        {
+          "number": 304,
+          "text": "| 项 | 实际值 | 核验方式 |"
+        },
+        {
+          "number": 305,
+          "text": "| --- | --- | --- |"
+        },
+        {
+          "number": 306,
+          "text": "| 隔离工作树 | `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T10-minimax-review-c3c7e90` | 全部读写只在此树 |"
+        },
+        {
+          "number": 307,
+          "text": "| Git HEAD | detached `77f2d5048630827ba5220fe092392ded6ab1c697` | `git rev-parse HEAD` |"
+        },
+        {
+          "number": 308,
+          "text": "| 批准 base | `5f910b52c69d86a1076b2032e5d3c63e715947f3` | `git cat-file -t` 通过 |"
+        },
+        {
+          "number": 309,
+          "text": "| 固定证据/清单候选 A | `a1e7efef4bd47c97b630753c0e7c4dc34de1d8ae` | 存在；141 delta + 6 不变上下文 |"
+        },
+        {
+          "number": 310,
+          "text": "| 产品实现 C | `c3c7e90f721344113c4279d663127f9c8d5bda59` | 存在 |"
+        },
+        {
+          "number": 311,
+          "text": "| 工具实现 N | `66eeedd735370576b49eb39cd4b14cdef9c0d55b` | 存在 |"
+        },
+        {
+          "number": 312,
+          "text": "| 恢复点 D | `d3546af3b6fe895957f9626fd4de28bf59dc600a` | 存在 |"
+        },
+        {
+          "number": 313,
+          "text": "| AGENTS.md | `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4` | 实算 SHA-256 **完全匹配** addendum 声明；保持未暂存 |"
+        },
+        {
+          "number": 314,
+          "text": "| Node / npm | v24.15.0 / 11.12.1 | `node -v` / `npm -v` |"
+        },
+        {
+          "number": 315,
+          "text": "| Python | CPython 3.12.12（`.venv`，本树自建） | `uv sync --frozen` 于本树完成（`raw/uv-sync.txt`、`raw/npm-ci.txt`） |"
+        },
+        {
+          "number": 316,
+          "text": ""
+        },
+        {
+          "number": 317,
+          "text": "**身份区分（按 addendum 要求）**：执行树 77 与固定候选 A 之间，141 个受审文件（源码/tests/fixtures/锁/CI）**逐 blob 无差异**；差异仅为流程材料 `docs/reviews/T10/status.md` 及 A→77 新增的两份流程回执文档（`t01-transfer-design-acceptance-r1.md`、`i06-transfer-response-acceptance-r1.md`）。因此本报告不把 a1 当作实际执行 HEAD，也不把当前工作树 status 追加当作 a1 的相同 blob。"
+        },
+        {
+          "number": 318,
+          "text": ""
+        },
+        {
+          "number": 319,
+          "text": "**Git 只读**：全程仅 `status/show/diff/log/cat-file/ls-tree/merge-base/rev-parse`，无 stage/commit/stash/reset/checkout/merge/push。审查结束时 `git status --porcelain` 仅 `M AGENTS.md`（受保护）与 `?? docs/reviews/T10/round-1/`（本报告与我的派生流），受审文件零改动。"
+        },
+        {
+          "number": 320,
+          "text": ""
+        },
+        {
+          "number": 321,
+          "text": "**本轮任务 ID 未向模型可见**：本会话未收到任何 ZCode/MiniMax 任务 ID、会话 ID 或终态回执字段，因此本报告不猜测任务 ID；如需关联，由原线用实际创建/终态原件关联。"
+        },
+        {
+          "number": 322,
+          "text": ""
+        },
+        {
+          "number": 323,
+          "text": "---"
+        },
+        {
+          "number": 324,
+          "text": ""
+        },
+        {
+          "number": 325,
+          "text": "## 2. 固定输入清单核验（147 项）"
+        },
+        {
+          "number": 326,
+          "text": ""
+        },
+        {
+          "number": 327,
+          "text": "对 `external-review-input-manifest.json` 的 147 项逐项从 **Git 对象**（`git cat-file blob`）取真实字节后重算 SHA-256 与长度："
+        },
+        {
+          "number": 328,
+          "text": ""
+        },
+        {
+          "number": 329,
+          "text": "- 141 项 `candidate-delta` + 6 项 `unchanged-context`：**147/147 长度与 SHA-256 全部匹配，0 缺失、0 不匹配**。"
+        },
+        {
+          "number": 330,
+          "text": "- 首轮报出 1 项\"缺失\"是 `docs/prd/PRD-本体学习与落地Agent工作台.md`；复核为 `git ls-tree` 对非 ASCII 路径的引号转义所致，以 `-c core.quotepath=false` 复算后**匹配**（93584 B / `7586b2c4…60fbb`），工作树文件与 blob 逐字节相同。"
+        },
+        {
+          "number": 331,
+          "text": "- 关键实现哈希与候选文档自述交叉一致："
+        },
+        {
+          "number": 332,
+          "text": "  - `prepared-report-file.ts` = `71e7359e…4a0219`（= 清单、= 容器 `compiled-sources.json`、= 内审读回表）"
+        },
+        {
+          "number": 333,
+          "text": "  - `report.ts` = `b5e50810…8c05`（= 容器 `compiled-sources.json`、= 内审读回表）"
+        },
+        {
+          "number": 334,
+          "text": "  - `inspection.py` = `c64ea0f0…41e6e8`；`t10-report-file.test.ts` = `7d0f4253…14e5`；`malicious-texts.json` = `b1b41d90…4e0f`；`render-probe.mjs` = `dcccc5b9…c8807`（后四项亦逐项实算匹配内审读回表）"
+        },
+        {
+          "number": 335,
+          "text": "  - `docs/iterations/T10/i06-trusted-transfer-contract-request.md` = `6e52cdf4…b7bd`（匹配 status.md 声明）"
+        },
+        {
+          "number": 336,
+          "text": "  - `evidence/isolated-native/manifest.json` = `9e515ec9…31e1`（匹配 status.md 声明）"
+        },
+        {
+          "number": 337,
+          "text": ""
+        },
+        {
+          "number": 338,
+          "text": "---"
+        },
+        {
+          "number": 339,
+          "text": ""
+        },
+        {
+          "number": 340,
+          "text": "## 3. 实际读过与实际运行过的内容"
+        },
+        {
+          "number": 341,
+          "text": ""
+        },
+        {
+          "number": 342,
+          "text": "### 3.1 逐字读过的受审文件"
+        },
+        {
+          "number": 343,
+          "text": ""
+        },
+        {
+          "number": 344,
+          "text": "- 产品源码 4 份：`packages/engine/src/ontolearn_engine/transfer/inspection.py`(219)、`.../transfer/__init__.py`、`apps/desktop/src/renderer/src/transfer/report.ts`(230)、`.../transfer/TransferPanel.tsx`(82)、`apps/desktop/src/main/project-transfer/prepared-report-file.ts`(338)"
+        },
+        {
+          "number": 345,
+          "text": "- 不变上下文 1 份：`apps/desktop/src/csp.ts`(26)"
+        },
+        {
+          "number": 346,
+          "text": "- 测试 3 份：`packages/engine/tests/test_transfer_inspection.py`(315)、`tests/unit/t10-report.test.ts`(183)、`tests/unit/t10-report-file.test.ts`(513)"
+        },
+        {
+          "number": 347,
+          "text": "- fixture 3 份：`tests/fixtures/transfer/{inspection-expected,malicious-texts,report-input}.json`"
+        },
+        {
+          "number": 348,
+          "text": "- 工具 7 份：`docs/iterations/T10/render-probe.mjs`、`docs/iterations/T10/isolated/{Dockerfile,run.sh,prepare-native.mjs,native-hook.cjs,native-driver.mjs,run-container.py}`"
+        },
+        {
+          "number": 349,
+          "text": "- 候选文档：`private-stage-candidate.md`、`verification.md`、`status.md`、`internal-review.md`、`report-file-internal-review.md`、`isolated-native-review.md`、`trusted-contract-review.md`、`docs/iterations/T10/{private-preparation,interface-needs,report-file-publication}.md`"
+        },
+        {
+          "number": 350,
+          "text": "- 证据原件：attempt-1/2/3 全部 JSON 与日志、`native-compiled-postrun-readback/`、`legacy-raw-archive/index.json` 及 40 项归档、`browser-summary.json`、`initial-browser-summary.json`、`verification-summary.json`、`check-failure-notes.json`、`report-file-failures.json`、`approved-input-reference.json`"
+        },
+        {
+          "number": 351,
+          "text": ""
+        },
+        {
+          "number": 352,
+          "text": "### 3.2 实际运行的命令（全部首失败均保留）"
+        },
+        {
+          "number": 353,
+          "text": ""
+        },
+        {
+          "number": 354,
+          "text": "| 命令 | 环境 | 结果 | 原始输出 |"
+        },
+        {
+          "number": 355,
+          "text": "| --- | --- | --- | --- |"
+        },
+        {
+          "number": 356,
+          "text": "| `npm run check`（lint/format/类型/构建/vitest/ruff/pytest） | 本树 node_modules + .venv | **EXIT=0**；17 文件 **691 TS passed**；**1112 Python passed** | `raw/npm-run-check.txt` |"
+        },
+        {
+          "number": 357,
+          "text": "| `npx vitest run tests/unit/t10-report.test.ts tests/unit/t10-report-file.test.ts` | 同上 | 2 文件 **61 passed**（18 + 43） | `raw/vitest-t10-targeted.txt` |"
+        },
+        {
+          "number": 358,
+          "text": "| `pytest packages/engine/tests/test_transfer_inspection.py -q` | `.venv` | **60 passed** | `raw/pytest-transfer-targeted.txt` |"
+        },
+        {
+          "number": 359,
+          "text": "| `npm run verify:sources` | 本树 | exit 0，\"已核对 12 个归档源文件\" | `raw/verify-sources.txt` |"
+        },
+        {
+          "number": 360,
+          "text": "| 审查方独立反例（Python，21 例） | `.venv` | 见 §5.1 | `raw/adversarial-inspection.txt` |"
+        },
+        {
+          "number": 361,
+          "text": "| 审查方 NUL 名单构造（2 例） | `.venv` | 见 §5.1 | `raw/nul-filename.txt`、`raw/nul-filename-detail.txt` |"
+        },
+        {
+          "number": 362,
+          "text": "| 审查方独立 TS 反例（8 项） | 自建 scratch vitest 配置 | 全通过 | `raw/adversarial-ts.txt` |"
+        },
+        {
+          "number": 363,
+          "text": "| 审查方产物复算（5 项） | 自建 scratch vitest 配置 | 全通过 | `raw/recompute-artifacts.txt`、`raw/diff-browser-artifact.txt` |"
+        },
+        {
+          "number": 364,
+          "text": "| 55 项 native manifest + 40 项 legacy 归档逐 hash | 脚本 | 0 缺失 0 不匹配 | `raw/manifest-native-verify.txt` |"
+        },
+        {
+          "number": 365,
+          "text": "| 容器 source-manifest 116 项 vs 当前树 | 脚本 | 0 缺失 0 不匹配 | `raw/source-manifest-verify.txt` |"
+        },
+        {
+          "number": 366,
+          "text": ""
+        },
+        {
+          "number": 367,
+          "text": "审查方全部反例与复算脚本、派生输出位于自己的 scratch `out/t10-review/round-1/minimax/`，未写入任何受审源码、测试、fixture、锁、配置或旧原件。"
+        },
+        {
+          "number": 368,
+          "text": ""
+        },
+        {
+          "number": 369,
+          "text": "---"
+        },
+        {
+          "number": 370,
+          "text": ""
+        },
+        {
+          "number": 371,
+          "text": "## 4. 独立复现结论（与候选自述逐项比对）"
+        },
+        {
+          "number": 372,
+          "text": ""
+        },
+        {
+          "number": 373,
+          "text": "| 候选自述 | 审查方实测 | 结论 |"
+        },
+        {
+          "number": 374,
+          "text": "| --- | --- | --- |"
+        },
+        {
+          "number": 375,
+          "text": "| 整仓 `npm run check` 691 TS / 1,112 Python 全通过，exit 0 | 完全一致（EXIT=0） | ✅ 复现 |"
+        },
+        {
+          "number": 376,
+          "text": "| 定向 T10：60 Python / 18 报告 TS / 43 文件服务 TS | 完全一致 | ✅ 复现 |"
+        },
+        {
+          "number": 377,
+          "text": "| 容器内 61 TS / 60 Python（容器定向，非全 check） | 61 TS / 60 Py 复现；确认 `run.sh` 只跑这三条定向命令，**未**冒充容器全 check | ✅ 口径属实 |"
+        },
+        {
+          "number": 378,
+          "text": "| 真实 native 产物 3896 B / SHA256 `ad367a31…3cdcd` / 0600 | **审查方独立复算 = 3896 B / `ad367a31…3cdcd`，且与 `attempt-3/native-report.html` 原件逐字节相同**；发布文件 inode 与暂存 inode 相同（硬链接发布，非拷贝） | ✅ 成立 |"
+        },
+        {
+          "number": 379,
+          "text": "| 浏览器产物 3900 B / `26af1230…76b6` | **审查方独立复算 = 3900 B / `26af1230…76b6`，与归档 `published-report.html` 逐字节相同** | ✅ 成立（口径修正见 F6） |"
+        },
+        {
+          "number": 380,
+          "text": "| native 源提交 `a8a497a8` | 与候选 C 的差异**仅 `docs/reviews/T10/verification-summary.json`、`docs/reviews/T10/status.md` 两份文档**；`apps/ packages/ tests/ scripts/ package.json / package-lock.json / pyproject.toml / uv.lock` **零差异** | ✅ 成立 |"
+        },
+        {
+          "number": 381,
+          "text": "| 容器源清单 116 项 | 116/116 与当前树逐 hash 相同 | ✅ 成立 |"
+        },
+        {
+          "number": 382,
+          "text": "| native 55 项 manifest、legacy 40 项归档 | 55/55、40/40 逐 hash 通过；`missingReferencedSnapshots` 2 项缺口如实登记 | ✅ 成立 |"
+        },
+        {
+          "number": 383,
+          "text": "| attempt1 未启动 | `Status: \"created\"`、`StartedAt/FinishedAt` 为零值、`Pid: 0`，无 native/units 原件 | ✅ 属实（按 addendum 澄清：容器已创建，启动前 CAP 名称检查拦下，从未启动，不构成一次 native 运行） |"
+        },
+        {
+          "number": 384,
+          "text": "| attempt2 真实失败 | `native.json` 停在 `stage: \"T10 01a15bce save\"`、`nativeDialogs: 1`；`driver.json` `result: FAIL` / `error: T10_NATIVE_DEADLINE`；容器 `ExitCode: 1` | ✅ 属实 |"
+        },
+        {
+          "number": 385,
+          "text": "| attempt3 成功 | driver/native 均 PASS，容器 `ExitCode: 0`，真实 GTK 保存（Alt+s）与取消（Escape），`pickerUnchanged: true`，`cancelFileAbsent: true` | ✅ 属实 |"
+        },
+        {
+          "number": 386,
+          "text": "| 既有 engine-connection-state TIMEOUT 保留、原因未证实 | `check-failure-notes.json` 记 690 通过/1 失败 `EngineError: TIMEOUT`、单文件 8 通过、`cause: \"not established\"`；审查方整仓 check 本次 691/691 全绿，**未**复现该 flake | ✅ 属实且未夸大（未宣称已定位原因，也未宣称已修复） |"
+        },
+        {
+          "number": 387,
+          "text": "| ESLint `no-control-regex` 与 fsync 注入首失败 | `report-file-failures.json` 保存原文与 SHA；当前 `prepared-report-file.ts:68` 已无控制字符正则，改逐字符判定 | ✅ 属实 |"
+        },
+        {
+          "number": 388,
+          "text": "| 内审读回哈希 | 6 项全部实算匹配 | ✅ 属实 |"
+        },
+        {
+          "number": 389,
+          "text": ""
+        },
+        {
+          "number": 390,
+          "text": "---"
+        },
+        {
+          "number": 391,
+          "text": ""
+        },
+        {
+          "number": 392,
+          "text": "## 5. 独立反例结果（不使用受审测试替身，直接打真实实现）"
+        },
+        {
+          "number": 393,
+          "text": ""
+        },
+        {
+          "number": 394,
+          "text": "### 5.1 Python 只读信封检查器（`inspect_candidate` 真实调用）"
+        },
+        {
+          "number": 395,
+          "text": ""
+        },
+        {
+          "number": 396,
+          "text": "全部反例在内存中构造 ZIP 字节，直接调用冻结源码实现。**20 例中 13 例按预期拒绝、5 例按预期接受（设计上允许），2 例被意外接受（A1/A2）**；另有 2 例 NUL 专项。"
+        },
+        {
+          "number": 397,
+          "text": ""
+        },
+        {
+          "number": 398,
+          "text": "| 组 | 用例 | 实测 |"
+        },
+        {
+          "number": 399,
+          "text": "| --- | --- | --- |"
+        },
+        {
+          "number": 400,
+          "text": "| A | EOCD `entries_total` 低报（1）/ 高报（3） | **均被接受** → 见 F1 |"
+        },
+        {
+          "number": 401,
+          "text": "| A | ZIP64 计数标记 0xFFFF / 计数为 0 | ARCHIVE_LIMIT |"
+        },
+        {
+          "number": 402,
+          "text": "| B | 名单内嵌 NUL（截断后仍合法）、反斜杠分隔符、绝对路径、大写 `CON.json`、`data/../x.json`、`data/nul.bin` | 全部拒绝（UNSAFE_PATH / ARCHIVE_SHAPE） |"
+        },
+        {
+          "number": 403,
+          "text": "| B 专项 | NUL 位于\"完全合法名之后\"（结构正确构造） | **UNSAFE_PATH**；实测 `zipfile` 的 `filename` 被截断为 `data/definitions.json`（仍匹配 PATH），但 `orig_filename` 保留 NUL → `inspection.py:156` 的 `orig_filename == path` 检查正是拦截点，该检查有效 |"
+        },
+        {
+          "number": 404,
+          "text": "| C | 9 MiB deflate 成员 vs `MAX_MEMBER` 8 MiB | ARCHIVE_LIMIT |"
+        },
+        {
+          "number": 405,
+          "text": "| C | 第二个成员共用第一个成员的本地 header | UNLISTED_OR_MISSING_FILE |"
+        },
+        {
+          "number": 406,
+          "text": "| C | 在中央目录前拼接**未编入索引**的隐藏本地成员 | **ARCHIVE_LAYOUT**（本地 header 连续覆盖检查生效） |"
+        },
+        {
+          "number": 407,
+          "text": "| D | `kind=\"full\"` 缺核心角色 | MISLABELED_FULL_PACKAGE |"
+        },
+        {
+          "number": 408,
+          "text": "| D | 可选角色在册但选项为 false | UNSELECTED_CONTENT |"
+        },
+        {
+          "number": 409,
+          "text": "| D | `kind=\"full\"` + 四个核心角色 + **无**原文件/推导/历史/会话 | **接受且 `declared_kind=\"full\"`**（满足\"不误降模板\"） |"
+        },
+        {
+          "number": 410,
+          "text": "| D | 四个选项为 true 但无对应成员 | 接受，`selected_options` 与 `included_options` 分离正确 |"
+        },
+        {
+          "number": 411,
+          "text": "| D | `kind=\"template\"` 且四个核心角色齐全 | 接受（仅保留声明值）→ 见 F2 |"
+        },
+        {
+          "number": 412,
+          "text": ""
+        },
+        {
+          "number": 413,
+          "text": "### 5.2 报告 HTML 与主进程文件服务"
+        },
+        {
+          "number": 414,
+          "text": ""
+        },
+        {
+          "number": 415,
+          "text": "| 检查 | 实测 |"
+        },
+        {
+          "number": 416,
+          "text": "| --- | --- |"
+        },
+        {
+          "number": 417,
+          "text": "| 元素白名单（12 条攻击串填入全部动态字段） | 输出仅含 `html,head,meta,title,body,p,h1,h2,section,pre,span` 11 种元素，无 script/style/img/svg/iframe/object/link/a |"
+        },
+        {
+          "number": 418,
+          "text": "| 属性白名单 | 全文档属性仅 `charset, content, http-equiv, lang` 四个静态属性；无任何 `on*=`、`src=`、`href=`、`javascript:` 出现在标签位置 |"
+        },
+        {
+          "number": 419,
+          "text": "| CSP meta 解码后 | `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'` —— 与 `csp.ts` 生产变体一致，**无 `unsafe-inline`/`unsafe-eval`**、无任何 http(s) 源 |"
+        },
+        {
+          "number": 420,
+          "text": "| 前导 LF | `<pre><span>` 方案生效：`<pre>` 后无裸 LF，攻击串原样保留于文本节点 |"
+        },
+        {
+          "number": 421,
+          "text": "| 发布权限位 | 暂存文件 0600、暂存目录 0700、**发布文件 0600** |"
+        },
+        {
+          "number": 422,
+          "text": "| 发布方式 | 发布文件 inode == 暂存文件 inode → 确为同文件系统 hard link 原子发布（非覆盖拷贝） |"
+        },
+        {
+          "number": 423,
+          "text": "| 原子不覆盖 | 既有文件/目录/最终符号链接均返回 `REPORT_TARGET_EXISTS` 且原目标内容不变 |"
+        },
+        {
+          "number": 424,
+          "text": "| 发布后回调异常 | `link-completed`/`published` 阶段抛错仍返回 `state: published, postPublicationError: true`，不谎报失败/取消 |"
+        },
+        {
+          "number": 425,
+          "text": "| 目录 fsync 不可确认 | 返回 `published + durability: unconfirmed + postPublicationError: true`，不降级为普通失败 |"
+        },
+        {
+          "number": 426,
+          "text": "| 清理 | 只按自身 inode 身份删除，不递归；出现陌生文件时保留并返回 `pending`，禁止再次暂存；`retryCleanup` 单飞 |"
+        },
+        {
+          "number": 427,
+          "text": "| 并发 | 同一实例并发保存 → `REPORT_EXPORT_BUSY`；两个独立实例并发发布到不同目标均成功 |"
+        },
+        {
+          "number": 428,
+          "text": "| 失败后可复用 | 导出失败后同一实例可再次保存并成功发布 |"
+        },
+        {
+          "number": 429,
+          "text": "| 拒绝源可访问器 | 抛错对象的 `code` 为 getter 时不被执行（`errno()` 只读数据属性） |"
+        },
+        {
+          "number": 430,
+          "text": ""
+        },
+        {
+          "number": 431,
+          "text": "---"
+        },
+        {
+          "number": 432,
+          "text": ""
+        },
+        {
+          "number": 433,
+          "text": "## 6. 产物可复现性：两个原生/浏览器产物的确切关系（口径修正，见 F6）"
+        },
+        {
+          "number": 434,
+          "text": ""
+        },
+        {
+          "number": 435,
+          "text": "审查方独立复算结论："
+        },
+        {
+          "number": 436,
+          "text": ""
+        },
+        {
+          "number": 437,
+          "text": "- **native 产物** = 当前冻结 `report.ts` 渲染 `report-input.json` 且 `goals = malicious-texts.json`（保留 fixture 原标题）→ 3896 B / `ad367a31…3cdcd`，与 `attempt-3/native-report.html` 原件**逐字节相同**。"
+        },
+        {
+          "number": 438,
+          "text": "- **浏览器产物** = 同一份当前冻结 `report.ts` 渲染同一份夹具，但 `render-probe.mjs:40` 额外把 `title` 覆盖为 `attacks[0]` → 3900 B / `26af1230…76b6`，与归档 `published-report.html` / `malicious-report.html` **逐字节相同**。"
+        },
+        {
+          "number": 439,
+          "text": ""
+        },
+        {
+          "number": 440,
+          "text": "即：两者**不是两个不同版本的源码、也不是两个不可比的运行**，而是**同一冻结源码、同一 12 条攻击集的两种投影输入**；4 字节差异完全来自标题文本。候选文档中的\"旧 browser3900B/26af\"标注与此不符（见 F6）。浏览器证据因此是**当前候选源码的证据**，而非旧版本遗留物。"
+        },
+        {
+          "number": 441,
+          "text": ""
+        },
+        {
+          "number": 442,
+          "text": "---"
+        },
+        {
+          "number": 443,
+          "text": ""
+        },
+        {
+          "number": 444,
+          "text": "## 7. 问题清单（逐项：优先级 / 位置 / 触发 / 影响 / 证据 / 建议 / 处置）"
+        },
+        {
+          "number": 445,
+          "text": ""
+        },
+        {
+          "number": 446,
+          "text": "### F1 [P2｜不阻断本阶段] ZIP EOCD 声明条目数未与中央目录实际条目数交叉核对"
+        },
+        {
+          "number": 447,
+          "text": ""
+        },
+        {
+          "number": 448,
+          "text": "- **位置**：`packages/engine/src/ontolearn_engine/transfer/inspection.py:89-99`（`_preflight`），配合 `:149-151`（`_inspect`）。"
+        },
+        {
+          "number": 449,
+          "text": "- **触发**：把 EOCD 的 `entries_total` / `entries_this_disk`（偏移 `len-12` / `len-14`）改成与中央目录实际记录数不同的值（1 或 3），归档仍被接受。`_preflight` 只校验 `count_disk == count`、`1 <= count <= MAX_ENTRIES`、`offset + size == len(raw)-22`；而 CPython `zipfile` 是按 `cd_size`（而非 `count`）解析中央目录条目，因此 `count` 与 `len(archive.infolist())` 从未被比对。"
+        },
+        {
+          "number": 450,
+          "text": "- **影响**：**当前草案内无实际危害** —— `count` 从不用于分配缓冲区或决定成员集合；每个成员仍独立通过路径/保留名/类型/长度/CRC/SHA/本地布局校验，且 `seen == listed | {\"manifest.json\"}` 保证中央目录里多出的成员无法逃过清单核对（见 A1/A2 实测：多报/少报都被完整校验，成员集合未扩大）。真实风险在于信封自身声明的结构计数没有被强制：生产者与消费者对条目数的分歧在本阶段不可见，若后续正式格式或导入器以该计数为准，会成为完整性缺口。"
+        }
+      ]
+    },
+    {
+      "messageId": "msg-W8Y2-8Z2lge7TotUQLcakrrU1cAHWzsDlgteSx94K40",
+      "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+      "toolCallId": "call_01a1631fda447488affee024",
+      "actualReadArguments": {
+        "offset": 451,
+        "path": "/Users/kyle/.minimax/v2/assets/2026/10/22/18-19-10-799-asset_20261022-181910-799_a503367fc7b6_16c433d4-pasted-text.txt"
+      },
+      "actualFirstLine": 451,
+      "actualLastLine": 587,
+      "allLinesMatchFrozenPrompt": true,
+      "formatOnlyTrailingLines": [],
+      "lines": [
+        {
+          "number": 451,
+          "text": "- **证据**：审查方独立反例 `raw/adversarial-inspection.txt`（A1/A2 两行 `!!-ACCEPTED`）。受审 60Py 现有用例只覆盖计数越界（`MAX_ENTRIES+1`），未覆盖计数与实际条目数不一致。"
+        },
+        {
+          "number": 452,
+          "text": "- **建议**：在 `_inspect` 中断言 `len(entries) == count`（并保留 `count_disk == count`），补两条计数不一致反例。属草案加固，**不改变本阶段任何已登记验收的结论**。"
+        },
+        {
+          "number": 453,
+          "text": "- **处置**：由原唯一 owner 在后续**新候选**中修复并重新验证；按 AGENTS「候选变更后需双方各新任务完整同版重审」，此修复生效时本轮通过不自动继承。**本项不构成本阶段不通过的理由**。"
+        },
+        {
+          "number": 454,
+          "text": ""
+        },
+        {
+          "number": 455,
+          "text": "### F2 [P3｜登记的开放项，非缺陷] `kind=\"template\"` 未反向约束"
+        },
+        {
+          "number": 456,
+          "text": ""
+        },
+        {
+          "number": 457,
+          "text": "- **位置**：`packages/engine/src/ontolearn_engine/transfer/inspection.py:196`。"
+        },
+        {
+          "number": 458,
+          "text": "- **触发**：四个核心角色（definitions/assertions/ownership/checkpoint）齐全但声明 `kind=\"template\"`，被接受并原样返回 `declared_kind=\"template\"`；现有约束只做单向（`full` ⇒ 核心角色齐全）。"
+        },
+        {
+          "number": 459,
+          "text": "- **影响**：不产生任何能力 —— `restore_current/rerun_mapping/replay_runs/import_allowed` 恒为 `false`，原因固定 `UNAPPROVED_FORMAT_AND_UNVERIFIED_PAYLOADS`。`docs/iterations/T10/private-preparation.md` 已明确声明\"`declared_kind` 仅保留清单声明\"，因此实现与自身文档一致，**不是缺陷**。"
+        },
+        {
+          "number": 460,
+          "text": "- **证据**：审查方独立反例 D2（`raw/adversarial-inspection.txt`）。"
+        },
+        {
+          "number": 461,
+          "text": "- **建议**：模板/完整包的判定方向属产品决定（AGENTS「不设 PRD 未决问题的默认答案」），**审查方不代定**；请格式 owner（T00）在正式格式批准时明确单向还是双向约束，并同步到界面文案（`TransferPanel.tsx:27` 当前表述只覆盖单向）。"
+        },
+        {
+          "number": 462,
+          "text": ""
+        },
+        {
+          "number": 463,
+          "text": "### F3 [P3｜架构] 主进程模块直接依赖渲染端源码目录"
+        },
+        {
+          "number": 464,
+          "text": ""
+        },
+        {
+          "number": 465,
+          "text": "- **位置**：`apps/desktop/src/main/project-transfer/prepared-report-file.ts:8`（`import { renderPreparedReport } from '../../renderer/src/transfer/report'`）。"
+        },
+        {
+          "number": 466,
+          "text": "- **触发**：构建主进程包时把 renderer 目录的模块纳入 main 侧依赖图。"
+        },
+        {
+          "number": 467,
+          "text": "- **影响**：今天 `report.ts` 是纯函数（无 Node / React / 网络），复用安全；但方向与「渲染端隔离」约定相反，且正式接线后 main bundle 会打进 renderer 目录代码，属可维护性与边界风险，不是当前功能缺陷。"
+        },
+        {
+          "number": 468,
+          "text": "- **证据**：`prepared-report-file.ts:8`；`report.ts` 全部 import 仅 `zod` 与 `../../../csp`。"
+        },
+        {
+          "number": 469,
+          "text": "- **建议**：正式接线前把报告投影/渲染下沉到共享纯模块位置（如 `packages/contracts` 或 main 私有目录），由 main 与 renderer 共同依赖；行为不变。"
+        },
+        {
+          "number": 470,
+          "text": ""
+        },
+        {
+          "number": 471,
+          "text": "### F4 [P3｜既有状态，非 T10 引入] `apps/desktop` 直接 import `zod` 但未在该包声明依赖"
+        },
+        {
+          "number": 472,
+          "text": ""
+        },
+        {
+          "number": 473,
+          "text": "- **位置**：`apps/desktop/package.json:13-17` 依赖表 vs `apps/desktop/src/renderer/src/transfer/report.ts:3`、`apps/desktop/src/main/project-transfer/prepared-report-file.ts:7`。"
+        },
+        {
+          "number": 474,
+          "text": "- **触发/影响**：当前靠根 `node_modules` 提升恰好满足（`packages/contracts` 依赖 `zod@4.6.7`）。一旦 T10 模块真正进入 main bundle，`package:dir` 的依赖收集可能不带 `zod`，运行时报模块缺失。"
+        },
+        {
+          "number": 475,
+          "text": "- **证据（**关键**：非 T10 回归**）**：批准 base `5f910b5` 的 `apps/desktop/src/main/index.ts:4` 已同样 `import { z } from 'zod'`，且 base 的 `apps/desktop/package.json` 依赖表与当前完全相同（`@ontolearn/contracts` / `react` / `react-dom`）。"
+        },
+        {
+          "number": 476,
+          "text": "- **建议**：由共享依赖唯一 owner（I06）在正式接线前把 `zod` 加入 `apps/desktop` 显式依赖并同步锁文件；**T10 不抢写共享依赖清单**，本项不计入 T10 缺陷。"
+        },
+        {
+          "number": 477,
+          "text": ""
+        },
+        {
+          "number": 478,
+          "text": "### F5 [P3｜工具卫生] `render-probe.mjs` 输出落在受审证据树内的未跟踪目录"
+        },
+        {
+          "number": 479,
+          "text": ""
+        },
+        {
+          "number": 480,
+          "text": "- **位置**：`docs/iterations/T10/render-probe.mjs:10`（`const output = resolve('docs/reviews/T10/evidence/runtime')`）。"
+        },
+        {
+          "number": 481,
+          "text": "- **触发**：按文档执行 `node docs/iterations/T10/render-probe.mjs` 会在 `docs/reviews/T10/evidence/runtime/` 生成 3 个 HTML。该目录既不在 `.gitignore`，也不在 147 项固定清单内（仓库当前不存在该目录）。"
+        },
+        {
+          "number": 482,
+          "text": "- **影响**：复现者会在**受审证据树**内产生未跟踪文件，与「证据目录只放已登记原件」的约定相悖，也使该步骤无法在冻结候选上无痕重跑。"
+        },
+        {
+          "number": 483,
+          "text": "- **证据**：`docs/reviews/T10/evidence/` 实际内容（无 `runtime/`）；`.gitignore` 无该路径（`out/`、`evidence/out` 已被覆盖，但 `evidence/runtime` 未覆盖）。"
+        },
+        {
+          "number": 484,
+          "text": "- **建议**：把 probe 输出重定向到 `out/` 或 `evidence/out/`（已在忽略范围），或在 `private-preparation.md` 明确标注该目录为生成物。"
+        },
+        {
+          "number": 485,
+          "text": "- **审查方处置**：因此**未在原位运行 probe**，改为在 scratch 内完成等价渲染复算（结果见 §6），未向受审树写入任何文件。"
+        },
+        {
+          "number": 486,
+          "text": ""
+        },
+        {
+          "number": 487,
+          "text": "### F6 [P3｜证据标注不准] \"旧 browser3900B/26af\" 的\"旧\"字与事实不符"
+        },
+        {
+          "number": 488,
+          "text": ""
+        },
+        {
+          "number": 489,
+          "text": "- **位置**：`docs/reviews/T10/status.md`（\"旧browser3900B/26af与新native3896B/ad367是不同实物\"）、`docs/reviews/T10/designated-review-backlog-20261022.md`（\"真实Chrome检查旧3900B/26af实物\"）。"
+        },
+        {
+          "number": 490,
+          "text": "- **事实**：审查方独立复算证明 3900 B / `26af1230…76b6` 由**当前冻结源码**（`report.ts` @ `c3c7e90`，SHA `b5e50810…`）渲染得出，与 native 产物仅差标题输入（见 §6）。它不是旧版本遗留物。"
+        },
+        {
+          "number": 491,
+          "text": "- **影响**：方向是\"低估\"而非\"高估\"—— 该标注会让读者把一份**当前有效**的浏览器证据当成陈旧件折扣掉；但同一句话也可能被反向读成\"浏览器证据更新、比 native 新\"，造成两个证据的先后关系被误读。"
+        },
+        {
+          "number": 492,
+          "text": "- **建议**：改为\"浏览器产物与 native 产物为同一冻结源码的两种投影输入（render-probe 覆盖标题为 attacks[0]），字节差异 4 B 全部来自标题文本\"，并去掉\"旧\"字。"
+        },
+        {
+          "number": 493,
+          "text": ""
+        },
+        {
+          "number": 494,
+          "text": "### F7 [P3｜措辞] 浏览器摘要中 `\"executed\": null` 的度量含义需写明"
+        },
+        {
+          "number": 495,
+          "text": ""
+        },
+        {
+          "number": 496,
+          "text": "- **位置**：`docs/reviews/T10/evidence/browser-summary.json`、`docs/reviews/T10/evidence/legacy-raw-archive/browser-report-file-summary.json`。"
+        },
+        {
+          "number": 497,
+          "text": "- **事实**：该字段取自 `page.evaluate(() => globalThis.__t10xss ?? null)`，语义是\"**未观测到**哨兵被触发\"，不是\"证明无任何脚本上下文\"。同一摘要里的 `dangerousNodes: 0` 与 `externalRequests: []` 才是支撑\"不执行、不外联\"的正面证据。"
+        },
+        {
+          "number": 498,
+          "text": "- **影响**：单看 `executed: null` 容易被读成比实际更强的主张。"
+        },
+        {
+          "number": 499,
+          "text": "- **佐证**：审查方独立核验（§5.2）确认渲染产物只有 11 种元素、4 个静态属性、无 script/style/iframe/img/link/object/svg/a —— 该前提成立，所以\"脚本未执行\"的结论本身是稳固的，只是字段命名需要更精确。"
+        },
+        {
+          "number": 500,
+          "text": "- **建议**：把字段改名为可度量的名字（如 `observedSentinel: null`、`scriptContexts: 0`），或在摘要旁补一行度量定义。"
+        },
+        {
+          "number": 501,
+          "text": ""
+        },
+        {
+          "number": 502,
+          "text": "---"
+        },
+        {
+          "number": 503,
+          "text": ""
+        },
+        {
+          "number": 504,
+          "text": "## 8. 历史处置与既有内部审查核对"
+        },
+        {
+          "number": 505,
+          "text": ""
+        },
+        {
+          "number": 506,
+          "text": "- `internal-review.md` 2 项 P2（中央目录外隐藏成员/前后缀；数组 spread 执行 getter 并原样抛敏感异常）在当前冻结源码中**均已实际闭合**：本地 header 从偏移 0 连续覆盖到中央目录（`inspection.py:102-126`）与数据描述符预算（`report.ts:113-145`）在代码中可见，且被审查方独立反例复现（隐藏成员 → ARCHIVE_LAYOUT；访问器不被执行 → 我的 TS 反例与受审用例一致）。"
+        },
+        {
+          "number": 507,
+          "text": "- `report-file-internal-review.md` 3 项 P2（暂存原地改写、清理状态误报、post-link 回调 EEXIST 误判）同样在当前源码中闭合，且**由审查方独立复现**（0600 + inode 相同 + 发布后回调仍 `published` + 清理 `pending` 保留陌生文件）。"
+        },
+        {
+          "number": 508,
+          "text": "- 两份内审均声明\"读回时 HEAD 为未提交中间稿\"（`a1c76d8a…`），与 backlog 中\"提交前中间稿不承诺可重建\"的说明一致，本报告不把中间稿当作受审输入。"
+        },
+        {
+          "number": 509,
+          "text": "- `docs/reviews/T10/blocked-audit.md` 记录的 Goal blocked 状态与本阶段候选状态不冲突（候选与原件不变，未 push/PR/CI/合并）。"
+        },
+        {
+          "number": 510,
+          "text": "- **未发现**候选文档与实现之间的实质矛盾；未发现把占位界面、测试替身或 spike 表述为已实现产品能力。"
+        },
+        {
+          "number": 511,
+          "text": ""
+        },
+        {
+          "number": 512,
+          "text": "---"
+        },
+        {
+          "number": 513,
+          "text": ""
+        },
+        {
+          "number": 514,
+          "text": "## 9. 未验证 / 本阶段不可验证的边界（明确不覆盖）"
+        },
+        {
+          "number": 515,
+          "text": ""
+        },
+        {
+          "number": 516,
+          "text": "1. **无正式格式批准**：`t10-envelope-draft-1` 未批准；`import/restore/rerun/replay` 从未开放，恒为 `false`；hash 只证明字节完整性，**不**证明语义、所有权或 checkpoint 可恢复。"
+        },
+        {
+          "number": 517,
+          "text": "2. **无可信业务投影**：报告 DTO 不是可信学习记录来源；真实逐 attempt 证据须由 T09/T08/T01 投影；合成夹具不得冒称真实学习验收。"
+        },
+        {
+          "number": 518,
+          "text": "3. **未接线**：私有报告文件服务与 `TransferPanel` 均**无任何生产 import**（全仓仅其自身定义处出现）；无 preload/bridge、无 App 入口、无真实 native picker、无 I06 动态私有根 guard 或可信投影。**不得把本阶段 Pass 读成正式 App 接线通过。**"
+        },
+        {
+          "number": 519,
+          "text": "4. **无 A-06 端到端凭据排除证明**：检查器只证明未知/私有角色不作为已知成员通过，**不**证明允许角色的自由文本不含凭据，也不证明已实现端到端排除；不得读取真实密钥来扫描。"
+        },
+        {
+          "number": 520,
+          "text": "5. **无打包 / 包内 / 双平台证据**：本阶段未产出 `package:dir`、包内引擎/迁移、双 OS、真人验收证据；本轮**未**执行 `npm run package:dir` 与 e2e（不在本阶段有界验收内，且审查方不得占用受审实现做打包改动）。"
+        },
+        {
+          "number": 521,
+          "text": "6. **原生证据的适用面**：仅 Linux arm64 隔离容器内的**私有服务**保存/取消；容器额外 `SYS_ADMIN`（非最小权限）、**构建期联网 / 运行期 `--network none`**、启动阶段曾存在**短时 main loopback inspector**（由 hook 在 picker 前 `inspector.close()` 关闭，原件记 `mainInspectorClosed: true`），这些边界必须按实际表述，不得美化为\"最小权限 / 全程无 listener\"。该证据**不**代表通用 e2e、正式 App/bridge 可信投影、G.6、跨平台或包内完成。"
+        },
+        {
+          "number": 522,
+          "text": "7. **既有 TIMEOUT 原因未证实**：engine-connection-state 的 `EngineError: TIMEOUT` 本次未复现，原因仍未确立，保留原样。"
+        },
+        {
+          "number": 523,
+          "text": "8. **浏览器\"不执行\"是观测结论**：基于 `dangerousNodes: 0` + 哨兵未触发 + 外部请求为空 + 审查方独立元素/属性白名单核验，非形式化证明。"
+        },
+        {
+          "number": 524,
+          "text": "9. **双审与远端门**：本报告只是本轮一方结论；另一方本轮结论、实际 CI、push/PR、正常 develop 合并与远端核验均不在本报告内，也未由本轮触发。"
+        },
+        {
+          "number": 525,
+          "text": ""
+        },
+        {
+          "number": 526,
+          "text": "---"
+        },
+        {
+          "number": 527,
+          "text": ""
+        },
+        {
+          "number": 528,
+          "text": "## 10. 明确结论"
+        },
+        {
+          "number": 529,
+          "text": ""
+        },
+        {
+          "number": 530,
+          "text": "**本阶段结论：T10-S1「私有包检查与安全报告文件服务」有界阶段 —— 明确通过。**"
+        },
+        {
+          "number": 531,
+          "text": ""
+        },
+        {
+          "number": 532,
+          "text": "依据：本阶段登记的全部有界验收项均被独立复现满足（141 delta 清单 147/147 逐 hash 一致；整仓 `npm run check` 691 TS / 1,112 Python exit 0；定向 60 Py / 18 TS / 43 TS 全通过；容器 61 TS / 60 Py 口径属实；native 3896 B / `ad367a31…3cdcd` 与浏览器 3900 B / `26af1230…76b6` 两个产物均可由当前冻结源码逐字节复现；55 项 native 与 40 项 legacy 原件逐 hash 通过；失败原件 attempt1/attempt2 与既有 TIMEOUT 均真实保留）。审查方自建 30 项独立反例未发现任何成员逃逸、HTML 注入、外联、覆盖发布、越权清理或失败谎报。"
+        },
+        {
+          "number": 533,
+          "text": ""
+        },
+        {
+          "number": 534,
+          "text": "登记问题：1 项 P2（F1，草案加固，不阻断本阶段，须由原唯一 owner 在后续新候选中修复并触发双方新同版复审）与 6 项 P3（F2–F7）。所有 P3 均为登记的开放项、既有状态或标注/措辞修正，**不改变本阶段任何验收结论**。"
+        },
+        {
+          "number": 535,
+          "text": ""
+        },
+        {
+          "number": 536,
+          "text": "审查方自建并实际执行的反例合计 **30 项**（Python 20 项 + NUL 专项 2 项 + TypeScript 8 项），另有 5 项产物复算断言，全部通过或按 §7 如实记录；未发现任何成员逃逸、HTML 注入、外联、覆盖发布、越权清理或失败谎报。"
+        },
+        {
+          "number": 537,
+          "text": ""
+        },
+        {
+          "number": 538,
+          "text": "**该通过的边界**：仅覆盖 T10-S1 有界阶段。**完整 T10 父门全部未关闭** —— 正式格式/schema 与完整 checkpoint、可信且排除 vault/凭据/发送授权的业务投影、唯一 writer 的原子导入、真实学习与重放语义、公共同代次/项目/窗口/bridge 接线、FR-1000/1001/104、A-06–08、G.6、12.4/12.5、全部父功能与跨模块门、包内与双平台验收、全部 57 项 P0、CI / push / PR / 正常合并 / 远端核验，均**未**因本报告通过。**不得**把本阶段通过扩写为产品、迁移、G.6、跨平台、包内、真实凭据排除或发布通过。"
+        },
+        {
+          "number": 539,
+          "text": ""
+        },
+        {
+          "number": 540,
+          "text": "本报告为本模型 round-1 唯一产物，仅写入 `docs/reviews/T10/round-1/minimax-m31flash.md`；未修改任何受审源码、测试、fixture、依赖声明、锁、配置、验收、旧原件或 AGENTS，未执行任何 Git 写操作。"
+        },
+        {
+          "number": 541,
+          "text": ""
+        },
+        {
+          "number": 542,
+          "text": ""
+        },
+        {
+          "number": 543,
+          "text": "# 当前政策全文：desktop-policy-current.md"
+        },
+        {
+          "number": 544,
+          "text": "# 当前桌面操作政策：撤回静默限制"
+        },
+        {
+          "number": 545,
+          "text": ""
+        },
+        {
+          "number": 546,
+          "text": "总控已正式read_thread核验人类最新原文：“直接使用computer use调用桌面端的工具就行，删除我之前要求的静默桌面操作”。来源chat `01a1628e-1220-7fb1-9135-97cbea4a3ed5`，turn `01a162ce-e65a-7753-84ab-47db9975c1d3`，human message `01a162cf-5a30-7e13-95ee-24d468007ce5`。这条在“现在可以登录”答复之后，当前执行以其为准。"
+        },
+        {
+          "number": 547,
+          "text": ""
+        },
+        {
+          "number": 548,
+          "text": "## 立即生效"
+        },
+        {
+          "number": 549,
+          "text": ""
+        },
+        {
+          "number": 550,
+          "text": "- 撤回此前静默、不占当前桌面、禁止聚焦/点击、须先预约用户时段的偏好。已授权任务可直接computer use操作桌面端审查工具及按既有验收运行本机浏览器/Electron/native；不为常规桌面操作重复询问，不把CLI认证、后台、headless或隔离桌面作为前置。"
+        },
+        {
+          "number": 551,
+          "text": "- 同一桌面应用、原生故障测试与其他互斥资源由总控内部调度。本轮最先创建ZCode/MiniMax任务的负责人是原T06聊天 `01a15bba-0c8a-7dc2-b612-5b5c4ec4a4b9`；直接创建ZCode GLM-5.3/max/yolo完整新审，保留现有MiniMax真实session/turn/stream，不重复任务、不互泄本轮意见。其自有OAuth等待已实际收尾，不再给本人CLI登录前置。T06创建已完成并释放前台；后台任务保持，不独占整个应用推理时长。当前短时创建/核验lease以execution-state.json为准，"
+        },
+        {
+          "number": 552,
+          "text": "- 尚在排队的T02/T03/T04/T07/T09/T10/T11不自行抢同一桌面；总控按实际资源交接。内部协调不是向用户重新申请桌面时段。完整必要验证可以按任务授权执行，不以“静默不了”一律停工；原native/窗口验收条件保留，不用隐藏/stub/禁hang monitor代真实结果。"
+        },
+        {
+          "number": 553,
+          "text": "- 操作政策撤回不扩大具体阶段写面/运行权：纯文档、源码静态准备、未签native caller、尚未获运行票的构建/探针，以及已被自动审批拒绝的工作仍按各自原界限；不得把桌面可用当ABI/loader/drain、SQLite损坏HOLD/whole-H/owner或其他产品验收通过。"
+        },
+        {
+          "number": 554,
+          "text": "- 指定模型/思考/逐任务权限、同版双审、必要验证、完整终态/全文报告/全部意见、CI/两OS/真人/develop远端及全部57P0保持。无新增付费、密钥读取/搬运、重置逐次确认绕过或宽泛结束用户进程授权。"
+        },
+        {
+          "number": 555,
+          "text": ""
+        },
+        {
+          "number": 556,
+          "text": "## 规则传播与历史"
+        },
+        {
+          "number": 557,
+          "text": ""
+        },
+        {
+          "number": 558,
+          "text": "阶段主聊天唯一修改主repo AGENTS及注册worktree政策副本；总控唯一修改common、active scope/goal-objective、permissions、state/队列。当前主AGENTS15147B/SHA `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，传播收据 `outputs/20261022_desktop_policy_update/propagation.json`；异版仅按原操作政策段更新，其余不覆盖。"
+        },
+        {
+          "number": 559,
+          "text": ""
+        },
+        {
+          "number": 560,
+          "text": "历史冻结prompt、原始审查输入、历史报告与旧原件不改。新任务附当前政策，已有任务由原owner在安全边界透传；单纯guidance变化不是产品/测试/依赖/验收或base变化，不重建Goal、不因本政策重审现有MiniMax。旧“无GUI许可”“待桌面时段”“必须先CLI登录”只能按历史时点解读，不能继续成为当前阻断理由。实际派发/任务ID/设置与终态另记，不把policy落地当任务已完成。"
+        },
+        {
+          "number": 561,
+          "text": ""
+        },
+        {
+          "number": 562,
+          "text": ""
+        },
+        {
+          "number": 563,
+          "text": "# 当前政策全文：common-current.md"
+        },
+        {
+          "number": 564,
+          "text": "# 完整首版功能开发共同指令"
+        },
+        {
+          "number": 565,
+          "text": ""
+        },
+        {
+          "number": 566,
+          "text": "用户已在规划聊天 `01a15bad-ceeb-7103-b611-fff95e1f31ee` 明确要求 OntoLearn-Studio 全部原定首版功能于北京时间2026-10-25前开发上线、质量不降，并授权“发送并落实到现有总控”。总控实际读取原始用户消息确认了授权。本指令用于新功能开发聊天；截止日是目标，不是保质按期保证。"
+        },
+        {
+          "number": 567,
+          "text": ""
+        },
+        {
+          "number": 568,
+          "text": "先读取本目录 controller-handoff.md、plan.md、tasks.json 中自己的任务、requirements.csv、acceptance-baselines.csv、review.md，以及实际工作树最新版AGENTS和对应PRD原条款/附录。57项P0、附录C–G及第10–12节保留；P1/P2原延期安排不变。T编号不覆盖I01–I06历史；纯服务完成不等于父模块P0完成，integration_prerequisites不是全部验收条件。"
+        },
+        {
+          "number": 569,
+          "text": ""
+        },
+        {
+          "number": 570,
+          "text": "本会话只负责指定的一项功能，建立自己的Goal（不存在时），不继承总控Goal。先核验并回执绝对worktree、分支、base、实际git状态、指南SHA、唯一文件责任、验收与下一交付。总控已创建独立worktree，切勿改主checkout或其他树；AGENTS是总控复制的受保护操作规则，SHA应为 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，保持未暂存，不混入产品提交。不得重建原I05/I06 Goal或继续写其树。"
+        },
+        {
+          "number": 571,
+          "text": ""
+        },
+        {
+          "number": 572,
+          "text": "当前批准develop为 `5f910b52c69d86a1076b2032e5d3c63e715947f3`。I01–I04已合并；I05 C1在指定双审冻结，已发现词法语义阻断，I06在自己的14文件接线与隔离平台联验。不得采用未批准I05/I06实现、环境或测试结果为正式依赖。只读取已批准基线接口开展独立工作，具体接口缺口/共享改动向总控提供精确路径和依据。"
+        },
+        {
+          "number": 573,
+          "text": ""
+        },
+        {
+          "number": 574,
+          "text": "初始共享责任（历史，已被下述逐项生效交接更新）：I06原独占 contracts/src/{index.ts,v2.ts}、contracts/v2/{schema,registry,errors,fixtures,binding-regressions}.json，desktop/main/{index.ts,task-service.ts,engine.ts}、preload/index.ts、renderer/src/{env.d.ts,App.tsx,style.css}；I05原保留其他Python Store/coordinator/worker/protocol、语义/resources、entrypoint/build/锁/CI/窗口安全恢复。这些逻辑文件在任何树中均不得抢写。新增私有路径可按本任务授权实施；现有共享文件、迁移和依赖锁一律先做具体交接。不得复制第二套公共契约、SQLite可变权威或Store写入通道来绕过交接。子任务独立worktree/feature和文件责任，复杂交付独立agent审查；核验真实并发槽，不将创建目录当作已启动agent。"
+        },
+        {
+          "number": 575,
+          "text": ""
+        },
+        {
+          "number": 576,
+          "text": "后续责任变更补充：I05/T01双方实际接受、独立复核及总控登记后，只有 `packages/engine/src/ontolearn_engine/storage.py` 后续维护已交T01生效，详见 I05-T01-storage-ownership-handoff.md 和 execution-state.json。I05冻结树保持原字节，其余共享/14文件不变。不得将这个单文件交接扩张为其他文件授权；当前具体责任以总控实际生效记录为准。"
+        },
+        {
+          "number": 577,
+          "text": ""
+        },
+        {
+          "number": 578,
+          "text": "2026-10-21新增已生效交接：T01除原storage.py外，已唯一接管Python四个 `packages/engine/src/ontolearn_engine/{job_store.py,coordinator.py,__main__.py}`、`packages/contracts/python/contract_v2.py`，及原I06 canonical七个 `packages/contracts/src/{index.ts,v2.ts}`、`packages/contracts/v2/{schema,registry,errors,fixtures,binding-regressions}.json` 和 `apps/desktop/src/main/engine.ts`，仅从批准5f独立实施格式基础。T03已唯一接管 `packages/engine/pyproject.toml`、`uv.lock`、`scripts/build-engine.mjs`、`packages/engine/entrypoint.py`，仅做XLSX最小依赖/收集/受限probe。原I05/I06树原字节保留，可读/构建但不得继续维护已交逻辑文件；必要修复先精确返还。I06仍维护其余六个main/index、task-service、preload/index、env.d.ts、App.tsx、style.css，I05仍维护其他未交路径；既有测试、CI、resources等不自动扩权。三份新handoff协议及独立报告/实际接受/生效通知见本目录 I05-T01-format3-ownership-handoff.md、I06-T01-format3-ownership-handoff.md、I05-T03-build-ownership-handoff.md 和execution-state.json；这不是未批准代码采用、公共格式启用或运行通过。"
+        },
+        {
+          "number": 579,
+          "text": ""
+        },
+        {
+          "number": 580,
+          "text": "2026-10-22人类已撤回静默桌面、不占用/聚焦/点击限制及先预约用户时段的偏好。已授权任务可直接computer use操作桌面端及按原验收运行本机原生测试；互斥资源由总控内部协调，不把CLI认证/后台/headless/隔离桌面作为前置。具体阶段源码/写面/运行票/被拒工作边界不随政策扩大；指定双审、冻结、必要验证、CI/平台/真人/远端和付款逐次确认门保持。当前详细政策见 /Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md。 桌面仅在创建/设置/读回阶段按execution-state当前短lease串行，原任务后台推理不独占整个应用；CUA对Codex app的工具拒绝仍不得绕过。"
+        },
+        {
+          "number": 581,
+          "text": ""
+        },
+        {
+          "number": 582,
+          "text": "开发至完整可审查结果，必要异常路径/事务/撤销/历史隔离均保留。AGENTS所需 check/sources/e2e/package 按实际改动执行，隔离项真实待验，首跑失败原件保留。文档/纯模块/静态检查不能冒充正式接线或生产。没有变化不重复测试。依赖资源缺失只阻塞相关部分，先完成独立工作，不擅自结束或暂停整个Goal。"
+        },
+        {
+          "number": 583,
+          "text": ""
+        },
+        {
+          "number": 584,
+          "text": "最终完整验收前刷新实际批准依赖及develop、集成冲突并验证；冻结真实base/head。由同一开发聊天通过CUA在ZCode选择本精确工作树、GLM-5.3/最高，MiniMax Code选择本精确工作树、M3.1-Flash/xhigh；每轮双方各新建独立只读完整范围任务，不互传本轮意见。报告按 docs/reviews/Txx/round-N/{zcode-glm53,minimax-m31flash}.md，逐项含任务来源/模型设置/路径分支/base/head/检查命令结果/未验边界/问题严重度位置触发影响证据建议/历史逐项关闭/明确通过或不通过或无法验证。两个任务必须实际终态，全文读回、全部意见处置；不能自己把指定模型不通过改成通过。所有实现/测试/配置/依赖/验收或基线变化后重新验证并双方全新完整审查。纯追加流程证据记录对应关系，不自动触发无变化重审。"
+        },
+        {
+          "number": 585,
+          "text": ""
+        },
+        {
+          "number": 586,
+          "text": "同版双方明确通过、验收和必要验证通过、全部意见有处置、实际推送内容与受审实现一致后才push/PR；实际CI通过后正常合并develop、核验远端与保护源。必须attach创建PR；无强推、绕过分支保护或双审前push。集成/外审按总控预约，减少前方候选基线失效。纯服务可单独冻结合并，但原父任务P0跨模块验收与完整发布门不关闭。"
+        },
+        {
+          "number": 587,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "messageId": "msg-nLwjFdTl-0R7GlUhGZ_VOmiauZzZAwagNJAtVKGuXYo",
+      "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+      "toolCallId": "call_01a1631fe42472d4a9badf00",
+      "actualReadArguments": {
+        "offset": 588,
+        "path": "/Users/kyle/.minimax/v2/assets/2026/10/22/18-19-10-799-asset_20261022-181910-799_a503367fc7b6_16c433d4-pasted-text.txt"
+      },
+      "actualFirstLine": 588,
+      "actualLastLine": 667,
+      "allLinesMatchFrozenPrompt": true,
+      "formatOnlyTrailingLines": [],
+      "lines": [
+        {
+          "number": 588,
+          "text": "额度：效率和完整交付优先，不因token删减；真实告警由账号唯一负责人核实。Codex重置每次需本人明确确认/阈值/幂等，不能UI绕过；不新增付费、订阅、API消费或扩张授权。只读服务/身份元数据不含读取或输出密钥。真人非开发用户验收不能agent替代，向外招募/消息仍需用户明确授权。"
+        },
+        {
+          "number": 589,
+          "text": ""
+        },
+        {
+          "number": 590,
+          "text": "各线只维护自己的 docs/reviews/Txx/status.md 及证据，不写根 state.json、tasks.json 或其他总控文件。及时保留可恢复SHA/原件和准确下一步；实际独立实现与验收证据成熟后向总控给出可读交付，不用反复询问常规实施许可。不能将配置/脚本存在、目录/模型名称或数量相同当作验收。完成后父模块/远端/上线分别据实记录。"
+        },
+        {
+          "number": 591,
+          "text": ""
+        },
+        {
+          "number": 592,
+          "text": "## 第九节与当前桌面操作政策"
+        },
+        {
+          "number": 593,
+          "text": ""
+        },
+        {
+          "number": 594,
+          "text": "以下按原目标文件及最新AGENTS原文附带；该操作政策补充不重建Goal、不改冻结实现或已归档输入，也不单因此重开产品审查。"
+        },
+        {
+          "number": 595,
+          "text": ""
+        },
+        {
+          "number": 596,
+          "text": "九、效率优先、额度恢复与持续执行（2026-10-20 用户更新）"
+        },
+        {
+          "number": 597,
+          "text": ""
+        },
+        {
+          "number": 598,
+          "text": "本节与最新 AGENTS/scope 一起适用于总控、现有功能 Goal、后续开发会话及模块子任务；与旧提示词统一串行、额度不足一律停止后项的文字冲突时，以本节为准。用户表示 ZCode、Codex、MiniMax Code 均仍有额外重置次数；这属于用户提供的权益信息，实际余额、可用次数和恢复结果须在执行时核实，不假定无限额度。"
+        },
+        {
+          "number": 599,
+          "text": ""
+        },
+        {
+          "number": 600,
+          "text": "1. **开发效率优先。** 不以节省 token 为目标压缩需求、实现、异常处理、必要上下文或验证；以正确交付和缩短关键路径为目标。充分利用实际可用的 agent 并发槽、独立 worktree 与 feature 分支，尽早开展不依赖尚未就绪接口的设计、真实探针和独立模块。不是为提高 token 消耗而重复探索、无变化重测、无效轮询或新增无关范围；普通任务不强设三轮。"
+        },
+        {
+          "number": 601,
+          "text": "2. **保留指定模型与门禁。** ZCode 的 GLM-5.3/最高思考、MiniMax Code 的 M3.1-Flash/xhigh 继续适用；Codex 保持任务既有设置，按复杂度和已授权工具能力分配 agent，不因节省额度擅自降级或更换模型。独立审查、冻结候选、原验收、双模型通过、CI 与远端核验要求均不变。"
+        },
+        {
+          "number": 602,
+          "text": "3. **额度受限先恢复。** 出现实际额度告警或明确 rate/usage-limit 错误时，先区分额度耗尽、短时限速、服务故障、账单异常和认证错误，保存 base/head、任务标识、报告与已运行证据。由总控指定每个平台/账号唯一额度负责人，查询当前额度、可用重置权益及恢复条件；不要让多个并行任务同时消费同一权益或重复充值。"
+        },
+        {
+          "number": 603,
+          "text": "4. **已有权益优先自动使用。** 用户已授权在平台及工具允许的范围内，额度受限时使用该账号已有的额外重置次数、已购余额或已配置的官方恢复能力，尽快继续原任务。仅调用实际可用、经核验的官方入口；无需逐次确认且无额外新增支付时可自动执行。若工具或平台要求该次确认，按该要求办理；如需UI由唯一资源owner依2026-10-22当前政策直接computer use，不等待额外用户桌面时段。不得绕过确认或支付验证。"
+        },
+        {
+          "number": 604,
+          "text": "5. **Codex 的具体限制。** 优先使用 `get_usage_limits` 查询；当前 `consume_usage_reset` 工具仅在五小时或周额度剩余不高于 10% 时尝试兑换已有重置，并硬性要求每次使用都取得用户对该次操作的明确确认。本节的未来批量授权不能替代该次确认。确认后每个逻辑尝试使用唯一 `idempotencyKey`，不确定结果重试必须复用原 key；`reset`/`alreadyRedeemed` 均表示该尝试已完成，不能再次消费；`noCredit`/`nothingToReset` 不得记为成功。使用后查询实际额度，区分兑换完成与额度刷新失败，不直接重复兑换。"
+        },
+        {
+          "number": 605,
+          "text": "6. **ZCode / MiniMax Code 的机制核实。** 两者的额外重置次数由用户说明，目前未在本任务中核验可调用的恢复接口或实际余额。遇限时由对应开发线核实官方状态与入口，满足第 4 条才自动使用；没有支持的方式时如实记录缺少条件。不得猜测私有接口、索取或打印凭据、自动点击未知付款按钮，亦不得声称已配置三平台无人值守充值。"
+        },
+        {
+          "number": 606,
+          "text": "7. **重置与新增付费充值分开。** 优先消费已有权益。本次用户未给出新增付款的单次金额、累计上限或套餐选项；“不考虑 token”不是无限额新增付款授权。确需新增支出时，先查明实际可选方案与费用，在交易前明确并确认单次金额及累计上限；已有明确金额授权可按其范围执行，平台/支付工具要求逐次确认时仍遵守。不得通过擅自切换付费 API、订阅升级或其他账号绕过额度门禁。"
+        },
+        {
+          "number": 607,
+          "text": "8. **恢复后续跑、受限时不停无关工作。** 以平台实际确认及额度读回验证恢复结果，再续接原任务与同一候选，不无故新建 Goal、丢弃报告或重跑不变的验证。等待确认、自然恢复或隔离环境时，继续其他已授权且不受限的开发线；保存准确恢复条件，不无限重试。持续到目标达成，但遵守实际工具/系统预算；不能用本节绕过硬限制、伪造自动续跑或将未完成标记完成。"
+        },
+        {
+          "number": 608,
+          "text": "9. **记录和透传。** 记录平台/账号的不敏感标识、实际额度来源、受限类型、已有权益、该次授权、幂等尝试标识、操作结果和复查结果；不记录凭据或付款敏感信息。总控统一更新状态，新任务提示词必须附本节与当前桌面政策；进行中任务在安全边界读取并执行，不改写已归档的冻结输入，不仅因调度/额度政策变化重开产品审查。文档更新不等于运行中 Goal 自动生效，必须向总控及各开发线实际传达并记录接收状态。"
+        },
+        {
+          "number": 609,
+          "text": ""
+        },
+        {
+          "number": 610,
+          "text": "### 当前桌面操作政策（2026-10-22 用户撤回静默限制）"
+        },
+        {
+          "number": 611,
+          "text": ""
+        },
+        {
+          "number": 612,
+          "text": "2026-10-22人类已撤回静默桌面、不占用/聚焦/点击限制及先预约用户时段的偏好。已授权任务可直接computer use操作桌面端及按原验收运行本机原生测试；互斥资源由总控内部协调，不把CLI认证/后台/headless/隔离桌面作为前置。具体阶段源码/写面/运行票/被拒工作边界不随政策扩大；指定双审、冻结、必要验证、CI/平台/真人/远端和付款逐次确认门保持。当前详细政策见 /Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md。"
+        },
+        {
+          "number": 613,
+          "text": ""
+        },
+        {
+          "number": 614,
+          "text": "### ZCode / MiniMax Code 默认执行权限（2026-10-21 用户确认）"
+        },
+        {
+          "number": 615,
+          "text": ""
+        },
+        {
+          "number": 616,
+          "text": "- 用户明确要求“更新调用zcode和minimax code的权限，默认为完全访问和始终授权”。ZCode 默认完全访问（permission.mode=yolo），MiniMax Code 默认始终授权/Full access（permissionMode=bypassPermissions）。创建或进入审查任务时读回该任务实际模式；用户级配置不能证明已有会话即时切换。已获授权，不重复询问默认模式。"
+        },
+        {
+          "number": 617,
+          "text": "- 当前计算、Goal和冻结审查不重启；在应用支持的安全边界确认或调整权限。完全访问不改变审查只读职责：仅运行约定验证、写独立报告，不修改实现/测试/依赖/配置，不提交、推送或切分支。"
+        },
+        {
+          "number": 618,
+          "text": "- 指定模型与思考等级、同版双审、意见处理、CI和远端核验保持；桌面按2026-10-22当前政策执行，不扩大为新增付费、读取密钥或绕过平台逐次确认。"
+        },
+        {
+          "number": 619,
+          "text": "- 详见仓库外 `../iteration-control/2026-10-21-weekly-release/external-review-permissions.md`（worktree中从本体根目录定位）；新任务附上本节，旧冻结输入保留，单纯操作政策更新不触发无变化实现重审。"
+        },
+        {
+          "number": 620,
+          "text": ""
+        },
+        {
+          "number": 621,
+          "text": "2026-10-21单文件补充生效：在既有T01十二共享及storage责任之外，`packages/engine/src/ontolearn_engine/worker.py`未来维护唯一交T01；只从批准5f的9314B/2fa848aa…06f2f0施工，不复制消费I05未批准C3的13638B/3d934e79…4f99d语义worker。原I05 C3受审字节继续冻结；若审查需修先由root精确返还、T01停写保存SHA/差异，执行输入变重新验证/双新审。protocol/resources/语义模块/旧tests/build/CI等不随此转，其他owners不变；source wire/限额/格式3/ready并未获批。原offer/接收/独立复核与唯一责任/返还门见本目录I05-T01-worker-ownership-handoff.md及execution-state.json。此补充不改变前文完整第九节/最新桌面规则。"
+        },
+        {
+          "number": 622,
+          "text": ""
+        },
+        {
+          "number": 623,
+          "text": "## 四文件基础层未来维护交接生效（2026-10-21T11:40:05.102755+08:00）"
+        },
+        {
+          "number": 624,
+          "text": ""
+        },
+        {
+          "number": 625,
+          "text": "I05原owner分别释放并由T01逐项明确接收 apps/desktop/src/main/jsonl.ts、apps/desktop/src/renderer/src/task-presentation.ts；I06原owner仅释放并由T01逐项明确接收 apps/desktop/src/main/task-service.ts、apps/desktop/src/main/index.ts。独立复核eeb221ea…0562、原接收01fa5ce5…2731/2124ef6c…3fae均由总控全文读回，四接收路径实际clean且逐字等批准develop5f；生效登记见 foundation-four-file-handoff-effective.json，原协议bad9716a…2965及全部原件保全。自此四路径唯一未来维护者T01，原I05/I06停止所有checkout未来逻辑编辑，固定C4/e2c/961只读审查/构建保留。T01仅沿自己批准5f，不复制未批gateway/语义实现；I06保留preload/index.ts、renderer/src/env.d.ts、App.tsx、style.css及私有模块。其余协议/resources/旧tests/依赖/build/CI/语义路径不转移。"
+        },
+        {
+          "number": 626,
+          "text": ""
+        },
+        {
+          "number": 627,
+          "text": "此项仅维护责任生效；当前纯表材料阶段授权不变，startup/schema/新码/runtime3/ready仍须总控精确阶段授权。返还任一路径须root精确路径/原因/基线/窗口/验证、T01先停写并保全HEAD/文件SHA/WIP diff/测试状态，再明确唯一接手者和生效点；旧owner不得自动回收。受审执行输入变化仍新候选/必要验证/指定双方全新完整审查，不继承旧Pass。原第九节、最新桌面政策、安全应用入口/内部资源租约、指定双审及push/PR/CI/正常合并门全部保留；历史文字不覆盖本新生效责任。"
+        },
+        {
+          "number": 628,
+          "text": ""
+        },
+        {
+          "number": 629,
+          "text": ""
+        },
+        {
+          "number": 630,
+          "text": "# 当前政策全文：permissions-current.md"
+        },
+        {
+          "number": 631,
+          "text": "# ZCode / MiniMax Code 默认执行权限"
+        },
+        {
+          "number": 632,
+          "text": ""
+        },
+        {
+          "number": 633,
+          "text": "2026-10-21 用户明确指令：“更新调用zcode和minimax code的权限，默认为完全访问和始终授权”。适用于本项目现有和后续对这两个应用的调用；应用权限模式不改变具体任务的职责与验收。"
+        },
+        {
+          "number": 634,
+          "text": ""
+        },
+        {
+          "number": 635,
+          "text": "## 默认与实际持久化"
+        },
+        {
+          "number": 636,
+          "text": ""
+        },
+        {
+          "number": 637,
+          "text": "| 应用         | 默认模式               | 本机实际配置                                                             | 本次结果                                 |"
+        },
+        {
+          "number": 638,
+          "text": "| ------------ | ---------------------- | ------------------------------------------------------------------------ | ---------------------------------------- |"
+        },
+        {
+          "number": 639,
+          "text": "| ZCode        | 完全访问               | `/Users/kyle/.zcode/cli/config.json` → `permission.mode = \"yolo\"`        | 原子写入并读回；其他配置与原权限子项保留 |"
+        },
+        {
+          "number": 640,
+          "text": "| MiniMax Code | 始终授权 / Full access | `/Users/kyle/.minimax/config.yaml` → `permissionMode: bypassPermissions` | 原配置已经满足，核对后保留               |"
+        },
+        {
+          "number": 641,
+          "text": ""
+        },
+        {
+          "number": 642,
+          "text": "ZCode 的默认配置路径、合法模式及 yolo 跳过权限提示的语义，来自已安装应用 `/Applications/ZCode.app/Contents/Resources/glm/zcode.cjs` 的实际配置加载器、schema 和权限判定实现。修改前备份为 `/Users/kyle/.zcode/cli/config.json.before-permission-20261021-084806.bak`，仅在需要恢复时本机读取，不复制进仓库或输出其他配置内容。"
+        },
+        {
+          "number": 643,
+          "text": ""
+        },
+        {
+          "number": 644,
+          "text": "MiniMax 的配置和界面映射由已安装 `@mavis/local-runtime` 实际代码独立核验：`bypassPermissions` 对应中文“始终授权”和英文“Full access”。`config.chatPermissions` 不是已证实的全局默认入口，未手造或修改。运行时官方配置更新入口会清缓存并广播变更；本轮没有启动/连接运行时、修改其桌面 store 或重启应用。"
+        },
+        {
+          "number": 645,
+          "text": ""
+        },
+        {
+          "number": 646,
+          "text": "## 调用时的执行要求"
+        },
+        {
+          "number": 647,
+          "text": ""
+        },
+        {
+          "number": 648,
+          "text": "1. 新任务默认使用上述模式；创建/进入实际任务时读回其显示或实际配置，不只依赖用户级文件。项目覆盖值、显式请求参数和既有会话状态可能优先于用户默认。"
+        },
+        {
+          "number": 649,
+          "text": "2. 当前计算、冻结候选和审查任务不重启、不丢弃；在安全边界确认权限，必要时通过应用支持的会话设置切换。不能仅凭配置文件改动声称所有在途会话已经即时切换。"
+        },
+        {
+          "number": 650,
+          "text": "3. 用户已授权上述默认应用权限，常规调用不因旧提示词中的默认模式重复询问。应用硬限制、系统权限和平台工具自己的确认机制仍以实际支持为准。"
+        },
+        {
+          "number": 651,
+          "text": "4. 对抗审查仍只读实现；只允许约定验证和独立报告写入，禁止修改受审实现或自行提交/推送。完全访问是执行能力，不把审查任务改为开发任务。"
+        },
+        {
+          "number": 652,
+          "text": "5. 指定模型、思考等级、同版双审、意见处理、CI与远端核验保持。2026-10-22静默桌面偏好已撤回，可由原功能owner直接computer use，互斥桌面资源由总控内部协调；不必再申请用户时段。"
+        },
+        {
+          "number": 653,
+          "text": "6. 新任务提示词和共同开发指南附上本要求；历史冻结输入保留原样，文档权限规则更新本身不触发无变化的实现重审。"
+        },
+        {
+          "number": 654,
+          "text": ""
+        },
+        {
+          "number": 655,
+          "text": "## 证据与接收"
+        },
+        {
+          "number": 656,
+          "text": ""
+        },
+        {
+          "number": 657,
+          "text": "- ZCode 写前 SHA-256：`c7f88256c49fbae707d57bfcd294dfa4becee03169ded1f14f9ab7b8aa47bb5f`。"
+        },
+        {
+          "number": 658,
+          "text": "- ZCode 写后 SHA-256：`67f26b9702a009fa8353b77f9f9b6d44658bd9fc41f55b31e924d872cb2124`。"
+        },
+        {
+          "number": 659,
+          "text": "- 已逐项比较非权限配置及权限中其他字段，结构相同；未修改任务数据库、应用安装包、模型或思考设置。"
+        },
+        {
+          "number": 660,
+          "text": "- MiniMax 的本轮独立只读核验确认默认已符合；没有把静态文件核验当作每个运行会话的权限回执。"
+        },
+        {
+          "number": 661,
+          "text": "- 由现有执行总控维护调用指南与派发状态，在安全边界透传进行中开发线；实际发送/回执另行记录，不假定写文件即自动生效。"
+        },
+        {
+          "number": 662,
+          "text": ""
+        },
+        {
+          "number": 663,
+          "text": "## 2026-10-22 后台恢复补充"
+        },
+        {
+          "number": 664,
+          "text": ""
+        },
+        {
+          "number": 665,
+          "text": "当前人类已撤回静默桌面偏好，原功能owner可直接computer use；已启动的官方CLI/app-server任务继续。原指定模型、思考等级、逐任务权限读回、同版独立审查和全文终态门不变。T06两项真实任务已启动，桌面创建动作已结束；其他线由总控内部安排资源，不自行抢建任务。"
+        },
+        {
+          "number": 666,
+          "text": ""
+        },
+        {
+          "number": 667,
+          "text": "历史：昨日短时答复曾被误记未答、随后又被误作本轮新答复，原件及16:01停止记录保留。当前人类已经撤回整个静默桌面偏好，原T06直接CUA创建ZCode审查，不再以旧时段/CLI认证阻塞；现有MiniMax任务保持。详见desktop-operation-policy-20261022.md。"
+        }
+      ]
+    }
+  ],
+  "privateOriginalMessageCount": 12,
+  "note": "Only own attachment read toolResult numbered lines/call IDs/actual arguments. No assistant thinking or user system reminder/headers retained in shareable evidence."
+}
