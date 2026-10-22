@@ -22,3 +22,26 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+# Historical records retain bytes; these rule exceptions do not fix B023 closures.
+[tool.ruff.format]
+exclude = [
+  "docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/complete-scope-result/check-protected-stat-only.py",
+  "docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/final-followup/check-protected-stat-only.py",
+  "docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/normal-recovery-dispatch/check-protected-stat-only.py",
+  "docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/official-minimal-readback/check-protected-stat-only.py",
+  "docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/post-intake-terminal-readback/check-protected-stat-only.py",
+  "docs/reviews/T05/projection-R3-receiving/O-launch-preparation/minimax/verify-launch-input.py",
+  "docs/reviews/T05/projection-R3-receiving/O-launch-preparation/verify-launch-input.py",
+  "docs/reviews/T05/projection-R3-receiving/O-launch-preparation/zcode/verify-launch-input.py",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/complete-scope-result/check-protected-stat-only.py" = ["B023", "E501", "I001", "UP017"]
+"docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/final-followup/check-protected-stat-only.py" = ["B023", "E501", "I001", "UP017"]
+"docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/normal-recovery-dispatch/check-protected-stat-only.py" = ["B023", "E501", "I001", "UP017"]
+"docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/official-minimal-readback/check-protected-stat-only.py" = ["B023", "E501", "I001", "UP017"]
+"docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/post-intake-terminal-readback/check-protected-stat-only.py" = ["B023", "E501", "I001", "UP017"]
+"docs/reviews/T05/projection-R3-receiving/O-launch-preparation/minimax/verify-launch-input.py" = ["E501", "I001"]
+"docs/reviews/T05/projection-R3-receiving/O-launch-preparation/verify-launch-input.py" = ["E501", "I001"]
+"docs/reviews/T05/projection-R3-receiving/O-launch-preparation/zcode/verify-launch-input.py" = ["E501", "I001"]
