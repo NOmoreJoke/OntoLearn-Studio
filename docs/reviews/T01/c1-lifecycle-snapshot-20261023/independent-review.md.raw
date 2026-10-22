@@ -1,0 +1,41 @@
+# Stage A lifecycle snapshot：独立实现复核
+
+结论：未发现本次两路径差异引入的P1/P2。已证的transition.lifecycle未来污染在本候选闭合；classifier及原严格unknown/helper/birth门未变。本审不把Stage A当kernel身份修复或native通过，也不等待/代签主方整check。
+
+## 固定身份与实读范围
+
+树 /Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-lifecycle-snapshot-20261023；实际rev-parse HEAD=d0b1756e85eb17c524b44c4f5557e62d738d5c62，parent=650433962f37055f1c15b29130e28b9ad776f0e8。完整读取两路径及650→d0b完整diff：
+
+- tests/e2e/c1-native-macos-driver.mjs：41805B，SHA1aa5a89f7e6384adf71ffc7fa6e4902f40e29d4d1b4d3521e26eb6adf41a23bf。
+- scripts/check-c1-lifecycle-snapshot.mjs：8533B，SHA9e762783f0479308d8196c585a00e2e89c3ca50658ab0f858d7709b2de675f07。
+- 已全文核AGENTS overlay15147B/de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4；实际status仅AGENTS修改，无本审写树或stage。
+
+## 实现与异常边界
+
+updateEntry一次Date.now固定consumedAtMs，一次structuredClone(lifecycle(entry)??null)，同一clone和时间喂真实classifier并保存transition；没有第二次读可变reported。数组、已存在嵌套exit/close/error和后来新增事件都与旧transition分离。classifiedAtMs/consumedAtMs是消费/分类时间，不伪造逐row采集时刻；保留原sample区间及事件at/receivedAtMs。
+
+classifier块实核SHA68238542607e8992a4b58f38fa1b2c82a58bb3bbbbd874fff1de435dfb104c89与650完全一致。diff未改采样/信号/native CLI/observer、timeout或终态语义；run02/03的未知display仍不能由跨close或后续absence洗白。structuredClone是值分离而非Object.freeze，当前后续代码没有修改该clone；classifier返回新状态，后续entry更新也不反写旧快照。
+
+合法lifecycle由JSON事件/本方plain record构造，现容量门保持。受控注入clone抛错时，实际updateEntry在classifier调用与entry分类写入前抛出，未生成宽松状态；调用点sample外层monitor及cleanup仍沿原catch/fail路径。该注入只说明异常传播机制，不是生产/OS故障实证。
+
+## 本审实际运行
+
+只运行纯Node受控函数提取，未import/启动native CLI，未查询ps/kill/DB/OS/ABI，未编译或运行GUI/产品，未重跑整check；输出只在本审tmp。
+
+实际用新专属脚本分别读git show保存的650源码和新候选：旧源码SHA8c69a55c…24cdc，exit1，6通过/4失败；四个失败分别为后续事件污染旧transition、嵌套别名、两次lifecycle读取、后续快照污染前次。新候选exit0，10项全通过。测试使用实际pure块/updateEntry，wrapper只捕获classifier参数，再调用原真实classifier，不复制另一个放宽实现；旧源码仍能通过helper/missing-close/birth等保守断言，所以旧失败确由目标别名/单次读取缺口触发。
+
+另独立提取实际updateEntry补三组：helper comm→Z无close后freshabsence及quarantine超时仍失败/no signal；稳定helperabsence与原engine close0+Z后freshabsence保持成功；clone受控抛错在分类前传播、entry未获得新许可。均实际通过，Node v24.15.0。专属10测没有声称完整OS/native矩阵，这三组也不是产品运行证据。
+
+本审完整命令/旧新逐项、双流和旧源在：
+/tmp/t01-c1-lifecycle-snapshot-independent-20261023-172d1a76-5506-44ac-91da-d6a19eef824d/
+其中source-check-runs.json、old/new.stdout、old/new.stderr、independent-boundaries.json、两个本审纯Node脚本均保留。主方历史输出路径映射错误不被本审重写，本次独立运行不冒称主方补跑。
+
+## wrapper v1输出归属补核
+
+全文核run_capture.py1948B/SHA2ab0bd7378b40b48ce0d52ee54694e7a531701616862699f4d976b2bae65c81f：tree、subprocess cwd、UV_PROJECT_ENVIRONMENT和PATH首段均新树；清PYTHONPATH/NODE_PATH/UV_PROJECT等覆盖。out/cache/TMPDIR确仍本方旧GLOBAL T01-C1-native-runtime-20261023，不误写成新GLOBAL。
+
+实际新树node_modules/.venv均目录而非symlink，realpath均本树；npm workspace @ontolearn/contracts、desktop均链接本树，Python editable .pth/direct_url也明确本树packages/engine/src，uv-sync双流写本树创建.venv/构建engine。读取旧GLOBAL四组npm-ci/uv-sync/snapshot-before/snapshot-after收据，cwd均新树，终态依次0/0/1/0；与新GLOBAL/prior-runner-actual-output的receipt及双流逐字节12件全部一致。
+
+因此目前未见因本方旧cache/临时输出路径复用而改变受验源码、共享canonical或借用旧树可变安装的具体证据；不以路径复用本身要求机械整重跑。保留实际输出位置和副本归因即可。此结论不是全机并发/缓存内容无突变的证明；本审不作OS调查。读取fullcheck-01时其receipt尚不存在，主方自然运行中的终态不纳入本审通过声明。
+
+最终限制：本报告只关闭Stage A诊断别名及本次增量审查；kerneladapter仍待核，650/run02/03保原失败，真正native验收及指定外审由根另行绑定同候选。不修改受审树或任何原始证据。
