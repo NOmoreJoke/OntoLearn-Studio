@@ -15,7 +15,7 @@
     "changedText": "Inserted actual backend diagnosis correction: old cross-cell stdin0B, MiniMax official0.6.12 default-dir account/catalog metadata, ZCode bundle TUI missing module. Not T02 review success.",
     "readInFull": true
   },
-  "interpretation": "input-manifest operationalPolicies are captured snapshots; use snapshotPath for the old exact window hash, and current root policy plus actual lease at future launch. Old source path is mutable. Other four policy snapshots were hash-matched at final preparation check.",
+  "interpretation": "All five input-manifest operationalPolicies are captured snapshots; use frozenPolicySnapshots mappings for exact original hashes. Original absolute control files may change. Future launch requires latest root policy and actual lease, separately appended without rewriting original prompts.",
   "futureLaunch": "Read latest root operation policy and receive explicit T02 exclusive lease; attach any new operational/workspace mapping hash separately, preserve original prompts. T06 remains the only current backend recovery owner; T02 has no task/lease and starts nothing.",
   "promptsPreserved": {
     "zcode-glm53-input.md": {
@@ -26,5 +26,42 @@
       "bytes": 29048,
       "sha256": "20e90310c471bb46ddb24dc1df31969be657382d13af2dac6498be7eedc94e5f"
     }
-  }
+  },
+  "frozenPolicySnapshots": [
+    {
+      "originalAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T06-supported-background-external-review-window.md",
+      "snapshotPath": "docs/reviews/T02/round-1/background-window-at-freeze.txt",
+      "bytes": 4792,
+      "sha256": "5fd7ef28089c6dde7efffaadaf1adca77c249f4e76670d8a9b53a28db7085433",
+      "captureMethod": "Exact historical bytes recovered and checked as described in originalPolicy."
+    },
+    {
+      "originalAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/external-review-permissions.md",
+      "snapshotPath": "docs/reviews/T02/round-1/operational-policy-snapshots/external-review-permissions.txt",
+      "bytes": 4698,
+      "sha256": "99c9a62fa28bcbb940170bf122f7d4b3c953ac0f0a49546ae9dfec038599448d",
+      "captureMethod": "Copied original full bytes while they still matched the initial captured hash."
+    },
+    {
+      "originalAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "snapshotPath": "docs/reviews/T02/round-1/operational-policy-snapshots/developer-common-instructions.txt",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0",
+      "captureMethod": "Copied original full bytes while they still matched the initial captured hash."
+    },
+    {
+      "originalAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/Q6-user-adoption-receipt.json",
+      "snapshotPath": "docs/reviews/T02/round-1/operational-policy-snapshots/Q6-user-adoption-receipt.txt",
+      "bytes": 710,
+      "sha256": "8c9fbc10eb2ce35b609303b3b595a3b2702b99f59da98f4476ea4d1f97be7101",
+      "captureMethod": "Copied original full bytes while they still matched the initial captured hash."
+    },
+    {
+      "originalAbsolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/Q6-rule-comparison-decision.md",
+      "snapshotPath": "docs/reviews/T02/round-1/operational-policy-snapshots/Q6-rule-comparison-decision.txt",
+      "bytes": 5038,
+      "sha256": "4e82174a9d5c312dce23a02320ef9e23f9a9fc62bb22bf69bdedd6a25ed10b29",
+      "captureMethod": "Copied original full bytes while they still matched the initial captured hash."
+    }
+  ]
 }
