@@ -1,0 +1,61 @@
+{
+  "status": "STATIC_ONLY_PENDING_OWNER_COMMIT_AND_FRESH_REVIEW",
+  "source": {
+    "bytes": 43314,
+    "sha256": "55bb6afe958101ca4420eacb1033f58ad6bea1da70fbf610761ee694f31c40ba",
+    "python39ASTParsedOnly": true,
+    "maxBytes": 49152,
+    "noCompileOrImportOrExecution": true
+  },
+  "literalRelations": {
+    "admissionSchemaCodeTemplateExactKeys": 25,
+    "perRoleMetadataUpper": 27624,
+    "perRoleEntityUpper": 26392,
+    "fourRoleMetadataFee": 112000,
+    "fourRoleEntityFee": 108000,
+    "byteFee": 13631488,
+    "runtimeFunded": false,
+    "metadataDeficit": 9263,
+    "entityDeficit": 66736
+  },
+  "formatter": {
+    "scope": [
+      "README.md",
+      "SOURCE_BOUND.md",
+      "admission.schema.json",
+      "unsigned-admission.template.json",
+      "runtime-fees.json",
+      "source-phase-prepayment.json",
+      "source-phase-named-ledger.json"
+    ],
+    "exitCode": 0,
+    "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+    "stderr": "",
+    "shellLogin": false,
+    "ledgerOnlyScalarReserveAdjustedAfterCheck": true,
+    "checksAndManifestCreatedAfterCheck": true
+  },
+  "preparationFailuresRetained": [
+    {
+      "operation": "apply_patch auth plus already-correct final except context",
+      "result": "verification failed before mutation",
+      "disposition": "retried only the actual auth hunk; no candidate execution or overwritten product evidence"
+    },
+    {
+      "operation": "initial fixed source fee estimate",
+      "result": "complete output/lifecycle/binding expansion required4096 instead of2048",
+      "disposition": "final112000/108000/13MiB with both-domain NOT_FIT; no class excluded or old cap raised"
+    }
+  ],
+  "notRun": [
+    "caller or local functions",
+    "runner/reader/helper",
+    "Popen/subprocess",
+    "fixtures/simulation/dryrun",
+    "compile/py_compile/compiler/inspector/native",
+    "product tests/API/DB/network/GUI/install/capability/version probe",
+    "identity descriptor/tool/SDK/witness/index payload"
+  ],
+  "firstCandidateCommit": null,
+  "ownerMustReportActualCommitAfterCommit": true
+}
