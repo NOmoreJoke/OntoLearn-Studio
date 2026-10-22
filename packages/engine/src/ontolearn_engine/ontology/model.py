@@ -96,12 +96,24 @@ def _unique_tuple(value: object, location: str) -> None:
 
 
 def validate(snapshot: Snapshot) -> None:
+    if not isinstance(snapshot, Snapshot):
+        raise OntologyError("invalid_snapshot")
     if not isinstance(snapshot.project, str) or not snapshot.project:
         raise OntologyError("project_required")
     if type(snapshot.revision) is not int or snapshot.revision < 0:
         raise OntologyError("invalid_revision")
-    for field in ("entities", "facts", "external_references"):
-        _unique_tuple(getattr(snapshot, field), field)
+    for field, element_type, reason in (
+        ("entities", Entity, "invalid_entity"),
+        ("facts", Fact, "invalid_fact"),
+        ("external_references", ExternalReference, "invalid_external_reference"),
+    ):
+        values = getattr(snapshot, field)
+        if not isinstance(values, tuple):
+            raise OntologyError("immutable_tuple_required", field)
+        # Check the typed collection before hashing or dereferencing its elements.
+        if any(not isinstance(value, element_type) for value in values):
+            raise OntologyError(reason, field)
+        _unique_tuple(values, field)
     entities = {item.iri: item for item in snapshot.entities}
     if len(entities) != len(snapshot.entities):
         raise OntologyError("duplicate_iri")

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from ontolearn_engine.invalidation import family
 from ontolearn_engine.storage import Store, digest
 
-from .model import OntologyError, Snapshot, Triple
+from .model import OntologyError, Snapshot, Triple, validate
 from .service import Preview, rdf_triples
 
 
@@ -66,7 +66,13 @@ class BoundRdfProjection:
 
     def removed_sources(self, preview: Preview) -> tuple[StatementSource, ...]:
         # A preview for another project/revision/editor cannot select source records.
+        if not isinstance(preview, Preview):
+            raise OntologyError("invalid_preview")
         preview.require_current(self.editor)
+        if not isinstance(preview.removed, tuple) or any(
+            not isinstance(item, Triple) for item in preview.removed
+        ):
+            raise OntologyError("invalid_preview", "removed")
         removed = set(preview.removed)
         known = {item.triple for item in self.statement_sources}
         if not removed <= known:
@@ -122,6 +128,7 @@ def bind_rdf_projection(source_ref: str, source: dict, editor: Snapshot) -> Boun
     belong to T01/T00. Their content remains bound by the full source digest.
     """
     _validated_source(source_ref, source)
+    validate(editor)
     if (editor.project, editor.revision) != (source["project"], source["projectRevision"]):
         raise OntologyError("projection_identity_mismatch")
     expected = set(rdf_triples(editor))

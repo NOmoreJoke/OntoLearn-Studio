@@ -65,6 +65,8 @@ def references(snapshot: Snapshot) -> tuple[Reference, ...]:
 
 def deletion_impact(snapshot: Snapshot, target: str) -> tuple[Reference, ...]:
     validate(snapshot)
+    if not isinstance(target, str):
+        raise OntologyError("invalid_iri", "target")
     if target not in {item.iri for item in snapshot.entities}:
         raise OntologyError("not_found")
     return tuple(ref for ref in references(snapshot) if ref.target == target)
@@ -126,7 +128,7 @@ class Preview:
     added: tuple[Triple, ...]
     removed: tuple[Triple, ...]
     changed_entities: tuple[str, ...]  # includes metadata-only edits
-    deletion_references: tuple[Reference, ...]
+    deletion_references: tuple[Reference, ...]  # affected references in the base snapshot
     entity_changes: tuple[EntityChange, ...]
 
     def require_current(self, current: Snapshot) -> None:
@@ -150,6 +152,13 @@ def change_preview(
     validate(snapshot)
     if not all(isinstance(value, tuple) for value in (commands, add_facts, remove_facts)):
         raise OntologyError("immutable_tuple_required")
+    for field, values in (("add_facts", add_facts), ("remove_facts", remove_facts)):
+        for fact in values:
+            if not isinstance(fact, Fact):
+                raise OntologyError("invalid_fact", field)
+            # Validate terms before set construction: even a Fact can contain
+            # malformed runtime field values despite its type annotations.
+            fact.triple()
     entities = {item.iri: item for item in snapshot.entities}
     original = entities.copy()
     touched: set[str] = set()
@@ -157,7 +166,14 @@ def change_preview(
     for command in commands:
         if not isinstance(command, Put | Delete | Copy):
             raise OntologyError("unsupported_command")
+        if isinstance(command, Put):
+            if not isinstance(command.entity, Entity) or type(command.create) is not bool:
+                raise OntologyError("invalid_command", "commands")
+        elif isinstance(command, Copy) and not isinstance(command.source, str):
+            raise OntologyError("invalid_command", "commands")
         target = command.entity.iri if isinstance(command, Put) else command.iri
+        if not isinstance(target, str):
+            raise OntologyError("invalid_iri", "commands")
         if target in touched:
             raise OntologyError("duplicate_command")
         touched.add(target)

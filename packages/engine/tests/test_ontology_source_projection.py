@@ -303,3 +303,33 @@ def test_entity_field_edit_keeps_original_asserted_type_and_label_record_origins
     }
     assert store.revision(editor.project) == 2
     assert store.marker(editor.project, "annotate")["revision"] == 2
+
+
+@pytest.mark.parametrize("editor_input", [None, {"project": "private-untrusted-value"}])
+def test_projection_rejects_foreign_editor_before_identity_access(seeded, editor_input):
+    store, editor, _ = seeded
+    ref, source = _source(store, editor)
+    state, writes = store.state(editor.project), store._db.total_changes
+    _expect("invalid_snapshot", lambda: bind_rdf_projection(ref, source, editor_input))
+    assert store.state(editor.project) == state
+    assert store._db.total_changes == writes
+
+
+def test_removed_sources_rejects_untyped_preview_and_unknown_origin_without_writes(seeded):
+    store, editor, _ = seeded
+    ref, source = _source(store, editor)
+    bound = bind_rdf_projection(ref, source, editor)
+    writes = store._db.total_changes
+    preview = change_preview(editor)
+    _expect("invalid_preview", lambda: bound.removed_sources({"removed": []}))
+    _expect(
+        "invalid_preview",
+        lambda: bound.removed_sources(replace(preview, removed=({"object": "x"},))),
+    )
+    missing = Triple("urn:unknown:subject", "urn:unknown:predicate", '"unknown origin"')
+    _expect(
+        "projection_origin_missing",
+        lambda: bound.removed_sources(replace(preview, removed=(missing,))),
+    )
+    assert store.state(editor.project) == source["state"]
+    assert store._db.total_changes == writes
