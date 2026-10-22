@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import selectors
+import re
 import signal
 import stat
 import subprocess
@@ -18,6 +19,8 @@ WORKSPACE = Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-nati
 STAGE = WORKSPACE / 'docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build'
 SELF = STAGE / 'run-once.py'
 PLAN = STAGE / 'call-plan.json'
+METER_PLAN = STAGE / 'meter-plan.json'
+HISTORY = STAGE / 'meter-history.json'
 AUTH = Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-metadata-contract-probe-one-build-authorization.json')
 PINS = STAGE / 'approved-identity-pins.json'
 SOURCE = STAGE / 'inputs/location_metadata_contract_probe.cc.raw'
@@ -42,6 +45,256 @@ class Stop(Exception):
     pass
 
 
+# Fresh future invocation budgets; no historical preparation ticket is reused.
+# Whole phases are prepaid before constrained access; unused fee is never refunded.
+METER = None
+BYTE_METER = None
+
+
+class MeterLimit(Stop):
+    pass
+
+
+class PhaseMeter:
+    LIMIT = 96000
+
+    def __init__(self):
+        self.reserved = 3000  # Emergency is reserved before any input access.
+        self.used_upper = 0
+        self.prepaid_pre = False
+        self.prepaid_dep = False
+        self.prepaid_ctl = False
+        self.pre_used = 0
+        self.dep_used = 0
+        self.ctl_used = 0
+        self.err_used = 0
+        self.active = 'emergency'
+
+    def enter(self, phase):
+        if phase == 'preflight':
+            if not self.prepaid_pre:
+                self.reserved += 20000
+                self.prepaid_pre = True
+        elif phase == 'dependency':
+            if not self.prepaid_dep:
+                self.reserved += 61000
+                self.prepaid_dep = True
+        elif phase == 'control':
+            if not self.prepaid_ctl:
+                self.reserved += 12000
+                self.prepaid_ctl = True
+        elif phase != 'emergency':
+            raise MeterLimit('unknown-meter-phase')
+        if self.reserved > self.LIMIT:
+            raise MeterLimit('master-reservation-cap')
+        self.active = phase
+
+    def work(self, units):
+        if not isinstance(units, int) or units < 0:
+            raise MeterLimit('invalid-meter-debit')
+        # Only fixed scalar fields: no iteration of records or meter history.
+        if self.active == 'preflight':
+            if units > 20000 - self.pre_used:
+                raise MeterLimit('preflight-work-bound')
+            self.pre_used += units
+        elif self.active == 'dependency':
+            if units > 61000 - self.dep_used:
+                raise MeterLimit('dependency-work-bound')
+            self.dep_used += units
+        elif self.active == 'control':
+            if units > 12000 - self.ctl_used:
+                raise MeterLimit('control-work-bound')
+            self.ctl_used += units
+        elif self.active == 'emergency':
+            if units > 3000 - self.err_used:
+                raise MeterLimit('emergency-work-bound')
+            self.err_used += units
+        else:
+            raise MeterLimit('meter-not-active')
+        self.used_upper += units
+
+    def snapshot(self):
+        # Construction is included in each record's prepaid JSON fee.
+        return {'limit': self.LIMIT, 'phaseReserved': self.reserved,
+                'upperWorkDebits': self.used_upper, 'phase': self.active,
+                'preReserved': self.prepaid_pre, 'depReserved': self.prepaid_dep,
+                'controlReserved': self.prepaid_ctl, 'emergencyReserved': True,
+                'preUpper': self.pre_used, 'depUpper': self.dep_used,
+                'controlUpper': self.ctl_used, 'emergencyUpper': self.err_used,
+                'actualLogicalVisits': None, 'noRefund': True,
+                'inputBytesReserved': BYTE_METER.inputs,
+                'recordBytesReserved': BYTE_METER.outputs,
+                'artifactBytesReserved': BYTE_METER.artifacts,
+                'captureBytesReserved': BYTE_METER.capture}
+
+
+class CaptureBytes:
+    def __init__(self):
+        self.captured_bytes = 0
+        self.select_calls = 0
+
+
+class ByteMeter:
+    # Runtime owner 40MiB; separate external owner closure 24MiB is not callable
+    # by this helper. Together 64MiB; author/root each have separate 32MiB.
+    def __init__(self):
+        self.inputs = 0
+        self.outputs = 0
+        self.artifacts = 0
+        self.capture = 0
+
+    def reserve(self, size, role):
+        if not isinstance(size, int) or size < 0:
+            raise MeterLimit('invalid-byte-debit')
+        if role == 'input':
+            if size > 8388608 - self.inputs:
+                raise MeterLimit('input-byte-cap')
+            self.inputs += size
+        elif role == 'output':
+            if size > 8388608 - self.outputs:
+                raise MeterLimit('record-output-byte-cap')
+            self.outputs += size
+        elif role == 'artifact':
+            if size > 8388608 - self.artifacts:
+                raise MeterLimit('artifact-byte-cap')
+            self.artifacts += size
+        elif role == 'capture':
+            if self.capture:
+                return
+            if size != CAP:
+                raise MeterLimit('capture-reservation-shape')
+            self.capture = CAP
+        else:
+            raise MeterLimit('unknown-byte-role')
+
+
+def json_shape(raw):
+    """Byte/character scan only, before any native metadata JSON decoder.
+
+    Units count containers + object fields + array values. JSON string/number
+    characters are byte work, not metadata records. No input object callbacks.
+    """
+    text = raw.decode('utf-8')
+    stack = []
+    objects = arrays = fields = elements = 0
+    max_depth = 0
+    in_string = escape = False
+    for char in text:
+        if in_string:
+            if escape:
+                escape = False
+            elif char == '\\':
+                escape = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char.isspace():
+            continue
+        if stack and stack[-1][0] == '[' and stack[-1][1] and char != ']':
+            elements += 1
+            stack[-1][1] = False
+        if char == '"':
+            in_string = True
+        elif char in '{[':
+            if char == '{':
+                objects += 1
+            else:
+                arrays += 1
+            stack.append([char, char == '['])
+            if len(stack) > 12:
+                raise Stop('json-depth-cap-before-decode')
+            max_depth = max(max_depth, len(stack))
+        elif char in '}]':
+            if not stack or (char == '}' and stack[-1][0] != '{') or (char == ']' and stack[-1][0] != '['):
+                raise Stop('json-container-shape')
+            stack.pop()
+        elif char == ':':
+            fields += 1
+        elif char == ',' and stack and stack[-1][0] == '[':
+            stack[-1][1] = True
+    if in_string or stack:
+        raise Stop('json-incomplete-shape')
+    return objects + arrays + fields + elements, max_depth
+
+
+def decode_metadata(raw, unit_cap):
+    METER.work(3 * unit_cap + 8)  # Before lexical structure and native decoder.
+    units, depth = json_shape(raw)
+    demand(units <= unit_cap, 'json-record-cap-before-decode')
+    # Ordinary decoder only; no pairs/object hooks, key sorting or user callbacks.
+    return json.loads(raw)
+
+
+def read_metadata(path, byte_cap, unit_cap):
+    return decode_metadata(bounded_read(path, byte_cap), unit_cap)
+
+
+def encode_metadata(value, unit_cap, byte_cap):
+    """Own bounded container encoder; json.dumps sees scalar values only.
+
+    Caller prepays 3*unit_cap before snapshot/construction or any traversal.
+    No generic prewalk followed by an uncharged second container-library pass.
+    """
+    fragments = []
+    units = 0
+    byte_count = 0
+
+    def emit(text):
+        nonlocal byte_count
+        count = len(text.encode('utf-8'))
+        demand(count <= byte_cap - byte_count, 'json-output-byte-cap')
+        byte_count += count
+        fragments.append(text)
+
+    def take(count):
+        nonlocal units
+        demand(count <= unit_cap - units, 'json-output-unit-cap-before-access')
+        units += count
+
+    def visit(item, depth):
+        demand(depth <= 12, 'json-output-depth-cap')
+        kind = type(item)
+        if kind is dict:
+            take(1 + len(item))  # Reserve all member iteration before items().
+            emit('{')
+            first = True
+            for key, child in item.items():
+                demand(type(key) is str and len(key) <= 4096, 'json-key-type-cap')
+                if not first:
+                    emit(',')
+                first = False
+                emit(json.dumps(key, ensure_ascii=False))
+                emit(':')
+                visit(child, depth + 1)
+            emit('}')
+        elif kind is list:
+            take(1 + len(item))
+            emit('[')
+            first = True
+            for child in item:
+                if not first:
+                    emit(',')
+                first = False
+                visit(child, depth + 1)
+            emit(']')
+        else:
+            # Scalar dispatch is included in its parent member fee; root scalar
+            # has one explicit unit. All scalar characters remain byte work.
+            if depth == 0:
+                take(1)
+            demand(kind in (str, int, float, bool, type(None)), 'json-no-custom-object')
+            if kind is str:
+                demand(len(item) <= 4096, 'json-string-cap')
+            elif kind is int:
+                demand(-(1 << 63) <= item < (1 << 64), 'json-integer-width')
+            elif kind is float:
+                demand(item == item and abs(item) <= 1e15, 'json-float-bound')
+            emit(json.dumps(item, ensure_ascii=False, allow_nan=False))
+    visit(value, 0)
+    emit('\n')
+    return ''.join(fragments).encode('utf-8')
+
+
 class RecordFailure(Stop):
     def __init__(self, details):
         super().__init__('record-persistence-failure')
@@ -55,6 +308,8 @@ class CaptureFailure(Stop):
 
 
 def error_info(exc):
+    METER.enter('emergency')
+    METER.work(32)
     result = {'kind': str(exc)[:256] if isinstance(exc, Stop) else type(exc).__name__,
               'errno': getattr(exc, 'errno', None)}
     if isinstance(exc, (RecordFailure, CaptureFailure)):
@@ -63,20 +318,19 @@ def error_info(exc):
 
 
 def emergency(value):
-    """One bounded stderr attempt; never truncates then claims completeness."""
     global EMERGENCY_EMITTED
     if EMERGENCY_EMITTED:
         return
     EMERGENCY_EMITTED = True
-    raw = (json.dumps(value, ensure_ascii=False, separators=(',', ':')) + '\n').encode()
-    if len(raw) > EMERGENCY_CAP:
-        raw = (json.dumps({'status': 'EMERGENCY_CONTEXT_EXCEEDS_CAP',
-                           'firstFailure': value.get('firstFailure'),
-                           'fullContextUnavailable': True}, separators=(',', ':')) + '\n').encode()
-    if len(raw) > EMERGENCY_CAP:
-        raw = b'{"status":"EMERGENCY_UNAVAILABLE_CONTEXT_TOO_LARGE","complete":false}\n'
     try:
-        os.write(2, raw)  # A short/error write is not retried or called complete.
+        METER.enter('emergency')
+        METER.work(3 * 192)
+        raw = encode_metadata(value, 192, EMERGENCY_CAP)
+    except BaseException:
+        # Literal last-resort status does not traverse a failed metadata graph.
+        raw = b'{"status":"EMERGENCY_CONTEXT_INCOMPLETE","complete":false}\n'
+    try:
+        os.write(2, raw)
     except BaseException:
         pass
 
@@ -90,8 +344,9 @@ def digest(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def bounded_read(path, cap):
+def bounded_read(path, cap, role='input'):
     """No-follow bounded regular input; read and close errors stay separate."""
+    METER.work(16)  # File metadata/ownership/close, prepaid before open.
     fd = None
     result = None
     first = None
@@ -100,6 +355,7 @@ def bounded_read(path, cap):
         fd = os.open(str(path), os.O_RDONLY | os.O_NOFOLLOW)
         before = os.fstat(fd)
         demand(stat.S_ISREG(before.st_mode) and before.st_size <= cap, 'input-type-or-size')
+        BYTE_METER.reserve(before.st_size, role)
         pieces = []
         remaining = before.st_size
         while remaining:
@@ -125,6 +381,8 @@ def bounded_read(path, cap):
 
 
 def write_once_bytes(path, raw, mode):
+    METER.work(16)
+    BYTE_METER.reserve(len(raw), 'output')
     demand(len(raw) <= 2 * 1024 * 1024, 'record-or-source-size-cap')
     fd = None
     first = None
@@ -148,7 +406,25 @@ def write_once_bytes(path, raw, mode):
 
 
 def write_json(path, value):
-    raw = (json.dumps(value, ensure_ascii=False, indent=2) + '\n').encode()
+    name = path.name
+    if name == 'dependency-receipt.json':
+        cap = 5248
+    elif name == 'build-intent.json':
+        cap = 1050
+    elif name == 'build-failure.json' or (name.endswith('.terminal.json') and value.get('firstFailure')):
+        METER.enter('emergency')
+        cap = 192
+    elif name.endswith('.dispatch-attempted.json') or name.endswith('.dispatched.json'):
+        cap = 32
+    elif name.startswith('artifact-'):
+        cap = 32
+    elif name == 'build-terminal.json':
+        cap = 128
+    else:
+        cap = 96
+    METER.work(3 * cap)  # Includes fixed snapshot construction, before traversal.
+    value['meter'] = METER.snapshot()
+    raw = encode_metadata(value, cap, 2 * 1024 * 1024)
     write_once_bytes(path, raw, 0o600)
 
 
@@ -165,46 +441,49 @@ def identity_preflight(authorization, pin_raw, pin_document):
     """
     descriptor_raw = bounded_read(STAGE / 'identity-descriptor-sum.json', 262144)
     demand(digest(descriptor_raw) == authorization['identityDescriptorSHA256'], 'identity-descriptor-authority')
-    described = json.loads(descriptor_raw)
+    described = decode_metadata(descriptor_raw, 1200)
+    fixed = described['fixedToolsAndInterpreterRows']
+    modules = described['moduleRows']
+    demand(type(fixed) is list and type(modules) is list and len(fixed) + len(modules) <= 117, 'descriptor-row-cap')
     allowed = {}
-    for row in described['fixedToolsAndInterpreterRows'] + described['moduleRows']:
-        if 'metadataError' not in row:
-            allowed[row['path']] = row
+    METER.work(8 * 117)
+    for group in (fixed, modules):
+        for row in group:
+            if 'metadataError' not in row:
+                path = row['path']
+                demand(path not in allowed, 'descriptor-duplicates')
+                allowed[path] = (row['realpath'], row['bytes'], row['device'], row['inode'], row['mtime_ns'])
     files = pin_document['files']
-    demand(0 < len(files) <= 256, 'identity-record-cap')
-    demand({x['path'] for x in files} == set(allowed), 'identity-set-mismatch')
-    demand(len(files) == len({x['path'] for x in files}), 'identity-duplicates')
-    unique = {}
+    demand(type(files) is list and len(files) == len(allowed) == 117, 'identity-record-cap')
+    unique, seen = {}, set()
     before_rows = []
+    payload_sum = 0
+    METER.work(32 * 117)
     for row in files:
-        expectation = allowed[row['path']]
-        demand(row['realpath'] == expectation['realpath'] and row['bytes'] == expectation['bytes'], 'identity-descriptor-mismatch')
-        demand(len(row['sha256']) == 64, 'identity-hash-missing')
-        demand(os.path.realpath(row['path']) == row['realpath'], 'identity-realpath')
-        st = os.stat(row['realpath'])
-        demand(stat.S_ISREG(st.st_mode) and st.st_size == row['bytes'], 'identity-current-size')
-        demand((row['device'], row['inode'], row['mtime_ns']) ==
-               (expectation['device'], expectation['inode'], expectation['mtime_ns']), 'authenticated-identity-metadata-mismatch')
-        demand((st.st_dev, st.st_ino, st.st_mtime_ns) ==
-               (row['device'], row['inode'], row['mtime_ns']), 'identity-metadata-drift')
-        key = (st.st_dev, st.st_ino)
-        before_rows.append({'path': row['path'], 'realpath': row['realpath'], 'bytes': st.st_size,
-                            'device': st.st_dev, 'inode': st.st_ino, 'mtime_ns': st.st_mtime_ns})
+        path, real, size, device, inode, mtime, sha = (row['path'], row['realpath'], row['bytes'], row['device'], row['inode'], row['mtime_ns'], row['sha256'])
+        demand(path not in seen and path in allowed, 'identity-set-or-duplicate')
+        seen.add(path)
+        demand((real, size, device, inode, mtime) == allowed[path], 'identity-descriptor-mismatch')
+        demand(len(sha) == 64, 'identity-hash-missing')
+        demand(os.path.realpath(path) == real, 'identity-realpath')
+        st = os.stat(real)
+        demand(stat.S_ISREG(st.st_mode) and (st.st_size, st.st_dev, st.st_ino, st.st_mtime_ns) == (size, device, inode, mtime), 'identity-metadata-drift')
+        before_rows.append({'path': path, 'realpath': real, 'bytes': size, 'device': device, 'inode': inode, 'mtime_ns': mtime})
+        key = (device, inode)
         if key in unique:
-            demand(unique[key]['sha256'] == row['sha256'], 'alias-pin-conflict')
+            demand(unique[key] == sha, 'alias-pin-conflict')
         else:
-            unique[key] = row
-    payload_sum = sum(x['bytes'] for x in unique.values())
-    # Two MiB plus explicit source/helper bounds are reserved for control reads.
-    demand(payload_sum + 20278 + 65536 + 2097152 <= IDENTITY_CAP, 'identity-read-ticket-insufficient')
+            unique[key] = sha
+            payload_sum += size
+    demand(payload_sum + 20278 + 65536 + 2097152 <= IDENTITY_CAP, 'prepared-identity-ticket-insufficient')
     demand(authorization['identityReadCapBytes'] == IDENTITY_CAP, 'identity-authority-cap')
     demand(authorization['reusePreparedIdentityHashesMetadataOnly'] is True, 'prepared-hash-reuse-not-accepted')
     demand(pin_document['payloadHashesPerformedInPreparation'] is True, 'prepared-hashes-missing')
     demand(pin_document['payloadHashRepeatPermitted'] is False, 'identity-ticket-must-not-reset')
     demand(pin_document['distinctPayloadBytesHashed'] == payload_sum, 'prepared-identity-byte-total')
-    # Current isolated imports must be a subset of the prepared finite candidates.
     demand(len(sys.modules) <= 512, 'interpreter-module-visit-bound')
-    for module in tuple(sys.modules.values()):
+    METER.work(3 * 512)
+    for module in sys.modules.values():
         path = getattr(module, '__file__', None)
         if path and path.startswith('/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/'):
             demand(path in allowed, 'unprepared-interpreter-module')
@@ -216,6 +495,8 @@ def identity_preflight(authorization, pin_raw, pin_document):
 
 def stop_owned_leader(process, record):
     """Only this unreaped Popen instance; no group, descendant or old-PID kill."""
+    METER.enter('emergency')
+    METER.work(64)
     for action, grace in [('terminate', 1.0), ('kill', 1.0)]:
         if process.poll() is not None:
             break
@@ -242,11 +523,14 @@ def capture(argv, env, output, number, label, seconds, ledger):
     No lookahead byte, post-hoc truncation, discarded drain, or output retry.
     """
     global CANCELLED
+    METER.enter('control')
+    BYTE_METER.reserve(CAP, 'capture')
+    METER.work(48)  # Fixed command construction, descriptors and final cleanup.
     stem = '%02d-%s' % (number, label)
     stdout = output / (stem + '.stdout')
     stderr = output / (stem + '.stderr')
     record = {'index': number, 'label': label, 'argv': argv, 'cwd': str(output), 'environment': env,
-              'stdout': str(stdout), 'stderr': str(stderr), 'captureRemainingAtStart': RAW_CAPTURE_CAP - ledger['capturedBytes'],
+              'stdout': str(stdout), 'stderr': str(stderr), 'captureRemainingAtStart': RAW_CAPTURE_CAP - ledger.captured_bytes,
               'timeoutSeconds': seconds, 'phase': 'planned', 'dispatchAttempted': False, 'pid': None,
               'leaderReturnCode': None, 'firstFailure': None, 'ownedLeaderControl': [],
               'captureEOF': {'stdout': False, 'stderr': False}, 'descendantDrain': 'UNKNOWN_NOT_MEASURED'}
@@ -260,17 +544,17 @@ def capture(argv, env, output, number, label, seconds, ledger):
         for name, path in [('stdout', stdout), ('stderr', stderr)]:
             fds[name] = os.open(str(path), os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
             demand(stat.S_IMODE(os.fstat(fds[name]).st_mode) == 0o600, 'capture-file-mode')
-        demand(not CANCELLED and ledger['capturedBytes'] < RAW_CAPTURE_CAP, 'cancelled-or-no-capture-budget')
+        demand(not CANCELLED and ledger.captured_bytes < RAW_CAPTURE_CAP, 'cancelled-or-no-capture-budget')
         record['phase'] = 'dispatch-attempted'
         record['dispatchAttempted'] = True
-        write_json(output / (stem + '.dispatch-attempted.json'), record)
+        write_json(output / (stem + '.dispatch-attempted.json'), {'index': number, 'phase': record['phase'], 'dispatchAttempted': True, 'pid': None})
         process = subprocess.Popen(argv, cwd=str(output), env=env, stdin=subprocess.DEVNULL,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True,
                                    start_new_session=True)
         pipes = {'stdout': process.stdout, 'stderr': process.stderr}
         record['pid'] = process.pid
         record['phase'] = 'dispatched'
-        write_json(output / (stem + '.dispatched.json'), record)
+        write_json(output / (stem + '.dispatched.json'), {'index': number, 'phase': record['phase'], 'dispatchAttempted': True, 'pid': process.pid})
         for name, pipe in [('stdout', process.stdout), ('stderr', process.stderr)]:
             pipes[name] = pipe
             os.set_blocking(pipe.fileno(), False)
@@ -281,9 +565,14 @@ def capture(argv, env, output, number, label, seconds, ledger):
                 raise Stop('cancelled')
             if time.monotonic() >= deadline:
                 raise Stop('timeout')
-            demand(ledger['capturedBytes'] < RAW_CAPTURE_CAP, 'output-cap-reached')
+            demand(ledger.captured_bytes < RAW_CAPTURE_CAP, 'output-cap-reached')
+            # Only stdout/stderr are registered: at most two returned events.
+            # Pay before native collection creation, including an empty wakeup.
+            demand(ledger.select_calls < 128, 'select-call-cap-incomplete')
+            METER.work(8)
+            ledger.select_calls += 1
             for key, events in sel.select(min(0.1, max(0.0, deadline - time.monotonic()))):
-                remaining = RAW_CAPTURE_CAP - ledger['capturedBytes']
+                remaining = RAW_CAPTURE_CAP - ledger.captured_bytes
                 demand(remaining > 0, 'output-cap-reached')
                 try:
                     chunk = os.read(key.fileobj.fileno(), min(65536, remaining))
@@ -293,10 +582,10 @@ def capture(argv, env, output, number, label, seconds, ledger):
                     record['captureEOF'][key.data] = True
                     sel.unregister(key.fileobj)
                     continue
-                ledger['capturedBytes'] += len(chunk)
+                ledger.captured_bytes += len(chunk)
                 written = os.write(fds[key.data], chunk)
                 demand(written == len(chunk), 'capture-short-write')
-                if ledger['capturedBytes'] == RAW_CAPTURE_CAP:
+                if ledger.captured_bytes == RAW_CAPTURE_CAP:
                     raise Stop('output-cap-reached')
         record['leaderReturnCode'] = process.returncode
         demand(process.returncode == 0, 'command-nonzero-exit')
@@ -330,7 +619,8 @@ def capture(argv, env, output, number, label, seconds, ledger):
             if record['firstFailure'] is None:
                 record['firstFailure'] = {'kind': 'capture-close-error'}
         record['elapsedSeconds'] = time.monotonic() - started
-        record['captureCombinedBytesAfter'] = ledger['capturedBytes']
+        record['captureCombinedBytesAfter'] = ledger.captured_bytes
+        record['selectCallsCombinedAfter'] = ledger.select_calls
         record['outputComplete'] = record['phase'] == 'completed'
         # Failure to persist terminal leaves earlier exclusive intent as evidence;
         # it never authorizes redispatch or directory reuse.
@@ -376,6 +666,8 @@ def parse_deps(raw):
             continue
         if char.isspace():
             if part:
+                demand(len(words) < 3072, 'raw-dependency-cap-before-append')
+                METER.work(1)
                 words.append(''.join(part))
                 part = []
                 demand(len(words) <= 3072, 'raw-dependency-cap')
@@ -388,52 +680,105 @@ def parse_deps(raw):
         part.append(char)
         i += 1
     if part:
+        demand(len(words) < 3072, 'raw-dependency-cap-before-append')
+        METER.work(1)
         words.append(''.join(part))
     demand(len(words) <= 3072, 'raw-dependency-cap')
     return words
 
 
 def dependency_receipt(output):
+    METER.enter('dependency')
+    METER.work(128)  # Fixed result construction, scalar checks and provenance.
     raw = bounded_read(output / 'probe.d', 2097152)
     words = parse_deps(raw.decode('utf-8'))
-    normalized = sorted({os.path.normpath(x if os.path.isabs(x) else str(output / x)) for x in words})
-    demand(len(normalized) <= 1024, 'unique-dependency-cap')
-    # Future root explicitly accepts this one bounded 3MiB witness read; no old
-    # 205-file package, SDK inventory, or records-index body is opened here.
+    normalized = {}
+    METER.work(3 * len(words))  # normalization + membership + insert; no sorting.
+    for word in words:
+        path = os.path.normpath(word if os.path.isabs(word) else str(output / word))
+        if path not in normalized:
+            demand(len(normalized) < 1024, 'unique-dependency-cap-before-insert')
+            normalized[path] = None
+    # This future read is paid afresh. Deep prior references and witnesses remain
+    # opaque bytes. Whole-file pin plus row ordinal binds provenance, not current
+    # header/open identity. No whole JSON decoding of this historic document.
     oldraw = bounded_read(PRIOR_USED, 3156859)
     demand(len(oldraw) == 3156859 and digest(oldraw) == PRIOR_USED_SHA, 'prior-witness-pin')
-    old = json.loads(oldraw)
-    oldmap = {x['normalizedPath']: x for x in old['covered']}
-    demand(len(oldmap) == 880, 'prior-witness-count')
+    METER.work(880 * 24 + 64)
+    start_marker = b'  "covered": [\n'
+    start = oldraw.find(start_marker)
+    demand(start >= 0, 'prior-covered-array-missing')
+    start += len(start_marker)
+    end = oldraw.find(b'\n  ],', start)
+    demand(end > start, 'prior-covered-array-end')
+    covered = oldraw[start:end]
+    oldmap = {}
+    cursor = ordinal = 0
+    while cursor < len(covered):
+        begin = covered.find(b'    {\n', cursor)
+        if begin < 0:
+            break
+        demand(ordinal < 880, 'prior-row-cap-before-access')
+        finish = covered.find(b'\n    }', begin)
+        demand(finish > begin, 'prior-row-end')
+        row = covered[begin:finish]
+        # Only a scalar JSON string is decoded; nested graphs are never built.
+        path_prefix = b'      "normalizedPath": '
+        demand(row.startswith(b'    {\n' + path_prefix), 'prior-path-field-order')
+        line_end = row.find(b'\n', len(b'    {\n'))
+        path_raw = row[len(b'    {\n') + len(path_prefix):line_end]
+        demand(path_raw.endswith(b','), 'prior-path-delimiter')
+        path_raw = path_raw[:-1]
+        demand(len(path_raw) <= 4096, 'prior-path-string-cap')
+        top = re.findall(rb'^      "([^"\n]+)":', row, re.MULTILINE)
+        demand(top == [b'normalizedPath', b'references', b'approvedWitness'], 'prior-opaque-field-schema')
+        demand(b'\n      "approvedWitness": {' in row, 'prior-witness-object')
+        path = json.loads(path_raw)
+        demand(type(path) is str and path not in oldmap, 'prior-path-scalar-or-duplicate')
+        oldmap[path] = ordinal
+        ordinal += 1
+        cursor = finish + len(b'\n    }')
+    demand(ordinal == len(oldmap) == 880, 'prior-witness-count')
     supplied_raw = bounded_read(STAGE / 'inputs/source-evidence.json.raw', 3621)
     demand(len(supplied_raw) == 3621 and digest(supplied_raw) == '5afb7c58d5154e7bd6083a5c7e7c273e15f4e6176e5f65c24758fa54a5ccb176', 'fixed-source-evidence-pin')
-    supplied = json.loads(supplied_raw)
-    direct = {x['path']: x for x in supplied['sdkAndReleaseEvidence'] if 'path' in x}
+    supplied = decode_metadata(supplied_raw, 128)
+    candidates = supplied['sdkAndReleaseEvidence']
+    demand(type(candidates) is list and len(candidates) <= 7, 'SDK-candidate-cap')
+    direct = {}
+    METER.work(5 * 7)
+    for ordinal, row in enumerate(candidates):
+        if 'path' in row:
+            path = row['path']
+            demand(path not in direct, 'SDK-evidence-duplicate')
+            direct[path] = ordinal
     entries, pending = [], []
     resource_prefix = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/'
+    METER.work(10 * len(normalized))
     for path in normalized:
         if path == str(output / 'input/location_metadata_contract_probe.cc'):
-            entry = {'path': path, 'basis': 'frozen-single-source', 'sha256': SOURCE_SHA}
+            entry = {'path': path, 'basis': 'frozen-single-source', 'sourceSHA256': SOURCE_SHA}
         elif (path.startswith(SDK + '/') or path.startswith(resource_prefix)) and path in oldmap:
-            entry = {'path': path, 'basis': 'prior-approved-used-witness', 'witness': oldmap[path]['approvedWitness']}
+            entry = {'path': path, 'basis': 'prior-approved-used-witness', 'priorRowOrdinal': oldmap[path]}
         elif path in direct:
-            entry = {'path': path, 'basis': 'root-accepted-I06-SDK-pin', 'pin': direct[path]}
+            entry = {'path': path, 'basis': 'root-accepted-I06-SDK-pin', 'sdkEvidenceOrdinal': direct[path]}
         else:
+            demand(len(pending) < 64, 'new-dependency-record-cap-before-append')
             pending.append(path)
             entry = {'path': path, 'basis': 'PENDING_NEW_APPROVED_RECORD_AND_LOCATOR'}
         entries.append(entry)
-    demand(len(pending) <= 64, 'new-dependency-record-cap')
     result = {'rawTokens': len(words), 'uniquePaths': len(normalized), 'depfileBytes': len(raw),
               'depfileSHA256': digest(raw), 'entries': entries, 'pendingNewPaths': pending,
+              'priorWitnessSHA256': PRIOR_USED_SHA, 'sourceEvidenceSHA256': digest(supplied_raw),
               'currentHeaderPayloadRehashes': 0, 'newWholeIndexPasses': 0,
               'bindingIsNotCompilerOpenTrace': True,
               'closure': 'PENDING_EXACT_NEW_WITNESSES_AND_IDENTITY' if pending else 'REUSED_PIN_BINDINGS_ONLY_CURRENT_OPEN_AND_LINK_CLOSURE_PENDING'}
     write_json(output / 'dependency-receipt.json', result)
+    METER.enter('control')
     return result
 
 
 def artifact_pin(path):
-    raw = bounded_read(path, 4194304)
+    raw = bounded_read(path, 4194304, 'artifact')
     return {'path': str(path), 'bytes': len(raw), 'sha256': digest(raw)}
 
 
@@ -479,6 +824,10 @@ def create_owned_output(token):
 
 
 def main():
+    global METER, BYTE_METER
+    METER, BYTE_METER = PhaseMeter(), ByteMeter()
+    METER.enter('preflight')
+    METER.work(2000)  # Fixed authority/plan/scalar checks, paths, SDK and directories.
     output = None
     try:
         demand(len(sys.argv) == 1, 'no-runner-arguments')
@@ -488,24 +837,30 @@ def main():
         # AUTH does not exist in preparation. It must be created by root in a
         # separate execution window; no dry-run/verify-only execution entry.
         auth_raw = bounded_read(AUTH, 65536)
-        auth = json.loads(auth_raw)
+        auth = decode_metadata(auth_raw, 96)
         demand(auth['schema'] == 'T03_METADATA_PROBE_BUILD_AUTH_V1' and auth['authorized'] is True, 'no-build-authority')
         demand(auth['scope'] == 'ONE_COMPILE_AND_FIVE_STATIC_CHECKS_NO_EXPERIMENT_EXECUTION', 'wrong-authority-scope')
         demand(auth['sourceRef'] == SOURCE_REF and auth['sourceSHA256'] == SOURCE_SHA, 'source-authority')
         demand(auth['identityReallocationAccepted'] is True and auth['evidenceReadCapBytes'] == EVIDENCE_CAP, 'budget-authority')
-        demand(auth['metadataCountingMethodApproved'] is True and
-               auth['acceptedCountingPlanSHA256'] == auth['planSHA256'], 'cumulative-visit-counting-not-approved')
-        demand(auth['preparedPreflightDebitUpper'] == 1000 and
-               auth['futurePreflightVisitBound'] >= 1467 and
-               auth['metadataPreflightCap'] >= 1000 + auth['futurePreflightVisitBound'], 'cumulative-preflight-ticket-not-approved')
-        demand(auth['metadataDependencyVisitBound'] >= 8055 and
-               auth['metadataDepsBindingCap'] >= auth['metadataDependencyVisitBound'], 'dependency-visit-ticket-not-approved')
+        meter_raw = bounded_read(METER_PLAN, 32768)
+        history_raw = bounded_read(HISTORY, 16384)
+        demand(digest(meter_raw) == auth['meterPlanSHA256'] and digest(history_raw) == auth['historyLedgerSHA256'], 'meter-history-authority')
+        meter_plan = decode_metadata(meter_raw, 256)
+        history = decode_metadata(history_raw, 128)
+        proof_raw = bounded_read(STAGE / 'meter-preparation/meter-proof.md', 32768)
+        demand(digest(proof_raw) == meter_plan['proofSHA256'] == auth['countingProofSHA256'], 'counting-proof-authority')
+        demand(meter_plan['runtimeMetadataReserved'] == 96000 and meter_plan['futureAllPartiesMetadataProposal'] == 176000, 'fixed-runtime-ticket')
+        demand(auth['runtimeMetadataReserved'] == 96000 and auth['freshFutureAllPartiesMetadataAccepted'] == 176000, 'fresh-runtime-ticket-not-accepted')
+        demand(meter_plan['futureAllPartiesMetadataProposal'] <= history['currentMetadataRemaining'], 'joint-future-ticket-does-not-fit-declared-remainder')
+        demand(meter_plan['futureEntityProposal'] == 4096 and auth['freshFutureEntityAccepted'] == 4096, 'fresh-entity-ticket-not-accepted')
+        demand(auth['freshFutureByteProposalAccepted'] == 134217728 and auth['runtimeOwnerBytes'] == 41943040, 'fresh-byte-ticket-not-accepted')
+        demand(history['historicalOwnerActual'] is None and history['oldOwner1000Reusable'] is False and history['oldRoot4000Reusable'] is False, 'historical-unknown-must-remain')
         demand(auth['dependencyMode'] == 'CAPTURE_REUSE_PINNED_WITNESS_AND_DEFER_UNKNOWN_NO_INDEX_READ', 'dependency-method-not-accepted')
         plan_raw = bounded_read(PLAN, 65536)
         self_raw = bounded_read(SELF, 65536)
         pin_raw = bounded_read(PINS, 262144)
         demand(digest(plan_raw) == auth['planSHA256'] and digest(self_raw) == auth['runnerSHA256'] and digest(pin_raw) == auth['identityManifestSHA256'], 'authority-input-hash')
-        plan = json.loads(plan_raw)
+        plan = decode_metadata(plan_raw, 768)
         demand(plan['compiler']['path'] == COMPILER and plan['SDKRoot'] == SDK and plan['outputBase'] == str(OUT_BASE), 'fixed-command-roots')
         expected_flags = ['-std=c++17', '-arch', 'arm64', '-isysroot', SDK, '-mmacosx-version-min=15.0', '-MD', '-MF', '@OUT@/probe.d', '-v', '@OUT@/input/location_metadata_contract_probe.cc', '-o', '@OUT@/artifacts/location_metadata_contract_probe']
         demand(plan['flags'] == expected_flags, 'fixed-compiler-flags')
@@ -517,7 +872,7 @@ def main():
         write_json(STAGE / 'execution-attempt.json', {'authorizationSHA256': digest(auth_raw),
                    'inputProcessRef': auth['inputProcessRef'], 'token': token, 'dispatchAttempted': False,
                    'singleUseAcrossAuthorizationWhitespaceChanges': True})
-        identities = identity_preflight(auth, pin_raw, json.loads(pin_raw))
+        identities = identity_preflight(auth, pin_raw, decode_metadata(pin_raw, 1100))
         verify_sdk_metadata(plan)
         output, output_problem = create_owned_output(token)
         if output_problem:
@@ -526,11 +881,12 @@ def main():
         for name in ['input', 'artifacts', 'tmp']:
             (output / name).mkdir(mode=0o700, exist_ok=False)
         write_once_bytes(output / 'input/location_metadata_contract_probe.cc', source_raw, 0o400)
+        METER.enter('control')
         write_json(output / 'build-intent.json', {'authorizationSHA256': digest(auth_raw), 'planSHA256': digest(plan_raw), 'runnerSHA256': digest(self_raw), 'identityManifestSHA256': digest(pin_raw), 'authorizationInputRef': auth['inputProcessRef'], 'output': str(output), 'noRetry': True, 'runtime': 'NOT_AUTHORIZED', 'sourceArgcIfLaterI06Runs': 1, 'applicationIdentity': identities})
         env = {'PATH': '/usr/bin:/bin', 'DEVELOPER_DIR': '/Applications/Xcode.app/Contents/Developer', 'LANG': 'C', 'LC_ALL': 'C', 'TMPDIR': str(output / 'tmp')}
         flags = [x.replace('@OUT@', str(output)) for x in expected_flags]
         argv = [COMPILER] + flags
-        ledger = {'capturedBytes': 0}
+        ledger = CaptureBytes()
         signal.signal(signal.SIGINT, signal_cancel)
         signal.signal(signal.SIGTERM, signal_cancel)
         capture(argv, env, output, 0, 'compile-link', 600, ledger)
@@ -550,14 +906,16 @@ def main():
         after = artifact_pin(product)
         demand(before == after, 'artifact-changed-during-static-checks')
         # Final metadata comparison costs no second compiler payload hash.
+        METER.work(12 * 117)
         for row in identities['before']:
-            demand(os.path.realpath(row['path']) == row['realpath'], 'post-tool-realpath-drift')
-            st = os.stat(row['realpath'])
+            path, real, device, inode, size, mtime = row['path'], row['realpath'], row['device'], row['inode'], row['bytes'], row['mtime_ns']
+            demand(os.path.realpath(path) == real, 'post-tool-realpath-drift')
+            st = os.stat(real)
             demand((st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns) ==
-                   (row['device'], row['inode'], row['bytes'], row['mtime_ns']), 'post-tool-metadata-drift')
+                   (device, inode, size, mtime), 'post-tool-metadata-drift')
         verify_sdk_metadata(plan)
         write_json(output / 'build-terminal.json', {'status': 'BUILT_UNVERIFIED_STATIC_STREAMS_CAPTURED', 'artifact': after,
-                   'capturedCombinedBytes': ledger['capturedBytes'], 'compilerCalls': 1, 'staticCalls': 5,
+                   'capturedCombinedBytes': ledger.captured_bytes, 'compilerCalls': 1, 'staticCalls': 5,
                    'dependencyClosure': dependencies['closure'], 'pendingNewPaths': dependencies['pendingNewPaths'],
                    'actualSelectedLinkInputsClosure': 'PENDING_VERBOSE_AND_SYMBOL_REVIEW',
                    'descendantDrain': 'UNKNOWN_NOT_PROVEN_BY_LEADER_OR_EOF', 'experimentInvoked': False, 'runtime': 'NOT_RUN'})

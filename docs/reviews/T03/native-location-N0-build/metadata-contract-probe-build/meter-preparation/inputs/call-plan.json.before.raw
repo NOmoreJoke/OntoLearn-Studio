@@ -1,0 +1,246 @@
+{
+  "schema": "T03_METADATA_PROBE_CALL_PLAN_V1",
+  "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build",
+  "stageDir": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build",
+  "parentProcessRef": "74a04b08ee4cac6dfb27e9366538ffa18719fe65",
+  "source": {
+    "sourceRef": "2b724f0188c233de5c8ef107d39fe0c4cb50311f",
+    "processRef": "119a8bef651a81ae80a6ef8bacdc64d4129e5373",
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/inputs/location_metadata_contract_probe.cc.raw",
+    "bytes": 20278,
+    "sha256": "6b6ff0969396c243c425dca507d0ea05732a0edb0123a264ab834cd2531690dd"
+  },
+  "runnerPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/run-once.py",
+  "interpreterPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+  "interpreterFlags": [
+    "-I",
+    "-S",
+    "-B"
+  ],
+  "interpreterRealpath": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+  "compiler": {
+    "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+    "realpath": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+    "bytes": 124676976,
+    "sha256": "ee029330bf58ab6e481385f4237cc54602eaa8b81526242e5c5ab5b76e8c5a7e"
+  },
+  "expectedLinkerPath": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld",
+  "SDKRoot": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+  "SDKRootMetadata": {
+    "realpath": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+    "device": 16777232,
+    "inode": 58066362,
+    "mtime_ns": 1792151656486610443
+  },
+  "outputBase": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/build/native-location/metadata-contract-probe/darwin-arm64",
+  "authorizationPath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-metadata-contract-probe-one-build-authorization.json",
+  "identityPinsPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-native-location-N0-build/docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/approved-identity-pins.json",
+  "flags": [
+    "-std=c++17",
+    "-arch",
+    "arm64",
+    "-isysroot",
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+    "-mmacosx-version-min=15.0",
+    "-MD",
+    "-MF",
+    "@OUT@/probe.d",
+    "-v",
+    "@OUT@/input/location_metadata_contract_probe.cc",
+    "-o",
+    "@OUT@/artifacts/location_metadata_contract_probe"
+  ],
+  "environmentBase": {
+    "PATH": "/usr/bin:/bin",
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "LANG": "C",
+    "LC_ALL": "C"
+  },
+  "environmentOutputVariables": {
+    "TMPDIR": "@OUT@/tmp"
+  },
+  "timeouts": {
+    "compilerSeconds": 600,
+    "inspectorSeconds": 30,
+    "terminateGraceSeconds": 1,
+    "killWaitSeconds": 1,
+    "selectorStepSeconds": 0.1
+  },
+  "captureCombinedCapBytes": 16777216,
+  "artifactCapBytes": 4194304,
+  "depfileCapBytes": 2097152,
+  "sourceCapBytes": 131072,
+  "rawDepTokensCap": 3072,
+  "uniqueDepPathsCap": 1024,
+  "newRecordsCap": 64,
+  "locatorTextCapBytes": 524288,
+  "newApplicationSDKResourceEntityCap": 8192,
+  "futureRuntimeArgv": [
+    "<pinned-experiment-only>"
+  ],
+  "runtimeArgcMustEqual": 1,
+  "experimentEverInvokedByRunner": false,
+  "staticCommands": [
+    {
+      "label": "file-format",
+      "tool": "/usr/bin/file",
+      "args": []
+    },
+    {
+      "label": "linked-libraries",
+      "tool": "/usr/bin/otool",
+      "args": [
+        "-L"
+      ]
+    },
+    {
+      "label": "load-commands",
+      "tool": "/usr/bin/otool",
+      "args": [
+        "-l"
+      ]
+    },
+    {
+      "label": "symbol-table",
+      "tool": "/usr/bin/nm",
+      "args": [
+        "-m"
+      ]
+    },
+    {
+      "label": "undefined-symbols",
+      "tool": "/usr/bin/nm",
+      "args": [
+        "-u"
+      ]
+    }
+  ],
+  "directHeaders": [
+    "sys/types.h",
+    "sys/acl.h",
+    "sys/attr.h",
+    "sys/stat.h",
+    "sys/vnode.h",
+    "fcntl.h",
+    "membership.h",
+    "unistd.h",
+    "uuid/uuid.h",
+    "cerrno",
+    "climits",
+    "cstddef",
+    "cstdint",
+    "cstdio",
+    "cstdlib",
+    "cstring",
+    "limits",
+    "type_traits"
+  ],
+  "sourceAPICallSites": {
+    "close": 1,
+    "unlinkat": 2,
+    "rmdir": 1,
+    "acl_init": 1,
+    "acl_create_entry": 1,
+    "acl_set_tag_type": 1,
+    "acl_set_qualifier": 1,
+    "acl_get_permset": 1,
+    "acl_clear_perms": 1,
+    "acl_add_perm": 1,
+    "acl_set_permset": 1,
+    "acl_get_flagset_np": 1,
+    "acl_clear_flags_np": 1,
+    "acl_set_flagset_np": 1,
+    "acl_valid": 1,
+    "acl_set_fd_np": 1,
+    "acl_free": 1,
+    "mkdtemp": 1,
+    "open": 1,
+    "mkdirat": 1,
+    "openat": 4,
+    "fstat": 2,
+    "fgetattrlist": 1,
+    "geteuid": 1,
+    "mbr_uid_to_uuid": 1
+  },
+  "sourceMaxAPIPathCounts": {
+    "fstat": 7,
+    "fgetattrlist": 5,
+    "geteuid": 1,
+    "mbr_uid_to_uuid": 1,
+    "mkdtemp": 2,
+    "open": 2,
+    "mkdirat": 2,
+    "openat": 5,
+    "close": 7,
+    "unlinkat": 4,
+    "rmdir": 2,
+    "acl_init": 4,
+    "acl_valid": 2,
+    "acl_set_fd_np": 4,
+    "acl_free": 4,
+    "acl_create_entry": 2,
+    "acl_set_tag_type": 2,
+    "acl_set_qualifier": 2,
+    "acl_get_permset": 2,
+    "acl_clear_perms": 2,
+    "acl_add_perm": 2,
+    "acl_set_permset": 2,
+    "acl_get_flagset_np": 2,
+    "acl_clear_flags_np": 2,
+    "acl_set_flagset_np": 2
+  },
+  "sourceLayoutAssertions": [
+    "CHAR_BIT == 8 && sizeof(unsigned) == 4 && sizeof(int) == 4",
+    "sizeof(std::uint32_t) == 4 && sizeof(std::uint64_t) == 8",
+    "std::numeric_limits<int>::min() == INT32_MIN",
+    "std::numeric_limits<unsigned>::max() == UINT32_MAX",
+    "sizeof(dev_t) == 4 && sizeof(uid_t) == 4 && sizeof(gid_t) == 4",
+    "sizeof(fsobj_type_t) == 4",
+    "ATTR_BIT_MAP_COUNT == 5 && sizeof(attribute_set_t) == 20",
+    "offsetof(attribute_set_t, commonattr) == 0",
+    "offsetof(attribute_set_t, volattr) == 4",
+    "offsetof(attribute_set_t, dirattr) == 8",
+    "offsetof(attribute_set_t, fileattr) == 12",
+    "offsetof(attribute_set_t, forkattr) == 16",
+    "sizeof(attrreference_t) == 8",
+    "offsetof(attrreference_t, attr_dataoffset) == 0",
+    "offsetof(attrreference_t, attr_length) == 4",
+    "std::is_same<decltype(attrreference_t{}.attr_dataoffset),\n                           std::int32_t>::value",
+    "sizeof(guid_t) == 16 && sizeof(uuid_t) == 16",
+    "offsetof(kauth_filesec, fsec_magic) == 0",
+    "offsetof(kauth_filesec, fsec_owner) == 4",
+    "offsetof(kauth_filesec, fsec_group) == 20",
+    "offsetof(kauth_filesec, fsec_acl) == 36",
+    "offsetof(kauth_acl, acl_entrycount) == 0",
+    "offsetof(kauth_acl, acl_flags) == 4",
+    "offsetof(kauth_acl, acl_ace) == 8 && kHeaderBytes == 44",
+    "offsetof(kauth_ace, ace_applicable) == 0",
+    "offsetof(kauth_ace, ace_flags) == 16",
+    "offsetof(kauth_ace, ace_rights) == 20 && kACEBytes == 24",
+    "ACL_EXTENDED_ALLOW == KAUTH_ACE_PERMIT",
+    "ACL_READ_DATA == KAUTH_VNODE_READ_DATA",
+    "ACL_LIST_DIRECTORY == KAUTH_VNODE_LIST_DIRECTORY",
+    "(KAUTH_ACE_PERMIT & ~KAUTH_ACE_KINDMASK) == 0",
+    "KAUTH_FILESEC_NOACL == UINT32_MAX",
+    "std::is_trivially_copyable<T>::value",
+    "sizeof(observations) == 340"
+  ],
+  "sourceMappingEvidence": "inputs/source-evidence.json.raw plus seven immutable excerpts; root accepted source stage; not reaudited here",
+  "compileAssertionsStatus": "NOT_COMPILED",
+  "newActualImportExpectedFromSource": "fgetattrlist plus supplied call-site whitelist; compiler-generated/optimized imports remain to be observed",
+  "productImportsForbiddenPrefixes": [
+    "_nl_",
+    "_napi_"
+  ],
+  "actualSelectedLinkInputsClosure": "PENDING_ACTUAL_COMPILER_VERBOSE_OUTPUT_AND_STATIC_ARTIFACT; no -### probe",
+  "noCMakeXcrunOldDriverOrProductSource": true,
+  "permissionState": "PREPARATION_ONLY; no root execution authority; final control/dependency/cumulative-ticket acceptance pending",
+  "rawChildStreamCapBytes": 16711680,
+  "oneEmergencyStderrCapBytes": 65536,
+  "dependencyMode": "CAPTURE_REUSE_PINNED_WITNESS_AND_DEFER_UNKNOWN_NO_INDEX_READ",
+  "identityPayloadPolicy": "PREPARATION_HASH_ONCE_FUTURE_METADATA_ONLY_IF_ROOT_EXPLICITLY_ACCEPTS",
+  "preparedSourceEvidencePin": {
+    "bytes": 3621,
+    "sha256": "5afb7c58d5154e7bd6083a5c7e7c273e15f4e6176e5f65c24758fa54a5ccb176"
+  }
+}

@@ -1,0 +1,13 @@
+# T03 固定输入与 runner 准备：总控收件
+
+接受固定过程 4690d9aed65f62aa635fc79e59b6eb53d2620d4b（父 74a04b08ee4cac6dfb27e9366538ffa18719fe65）为 PREPARATION_ONLY / NOT_CALL_READY，不授执行。
+
+实际核对本轮37个当前文件与固定Git blob及manifest，合305595B；36项加manifest自排除，SHA e1a9fa2d41a4f1f96c48cf3ac269e0efe259e53e1ed73b8ac5d14eb3f06fdd4f。工作树clean，变更仅本轮docs新目录；旧source/12/锁/第六pair无该提交改动。直接证据见 T03-controller-metadata-probe-preparation-direct-proof.json。
+
+全文读取runner29217B、control/dependency methods、handoff、9756B独立报告、budget及异常/closure记录。runner AST-only，SHA 8ee38b02aefb6208b56a0621b420b84dd9d3e9b783be3523147e0d4972dd29ca。117 pin rows与authenticated descriptor逐字段一致，115物理key的已记payload合137864612B；没有重读/hash工具payload。接受这份准备身份manifest/descriptor用于下一阶段设计；未来metadata-only复用仍需精确固定的完整计量方案和单次窗口。
+
+输入绑定、source-evidence pin、SDK-root metadata检查、首因与close/持久化异常分离，按独立报告及总控控制流阅读静态关闭；未故障注入、未运行helper或任何compiler/inspector/native。whitespace收据保留默认exit2的7份原摘录10项；不是全绿。预算后验更新不冒称已被原作者报告预签。
+
+历史作者34515候选访问及原超票、owner已知922加其余未知，全部保留。40000/2000/4000补票各仅一次，owner4000不是实测或历史上界；原1000不能再写作已证明准备上界。当前metadata2125263/2250000，余124737，其他累积声明不变。
+
+未来计数阻断仍开：583/8055仅局部量；runner准备1000上界条件与后验未知不符，下一阶段必须修正。先完成全pipeline累计计量及票绑定，再另授真实构建；该接收不授权旧witness读取、索引/SDK扫描、compiler、检查器或实验。

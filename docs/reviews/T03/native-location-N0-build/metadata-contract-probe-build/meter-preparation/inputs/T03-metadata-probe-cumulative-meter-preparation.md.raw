@@ -1,0 +1,20 @@
+# T03 累计计量修订准备窗口（仅静态）
+
+继续原T03聊天、原Goal与原worktree，基线4690d9aed65f62aa635fc79e59b6eb53d2620d4b。先读同目录 T03-metadata-probe-input-runner-root-closure.md。该轮准备已收；下一项是把未来单次runner变为完整可计量候选，仍 PREPARATION_ONLY / NOT_CALL_READY。
+
+唯一范围：修订docs目录内runner、call-plan及相关控制/依赖/预算/收据，完成独立新delta审查和冻结提交。产品source、旧12、锁、CMake/driver、所有旧pair、源副本与身份manifest/descriptor保持原字节。不得调用helper（含dry/verify/import）、compiler、检查器、native/API、fixture、GUI、DB、网络下载、push/PR/merge，不重建Goal。不得重hash115工具payload、读SDK/header或完整42772索引。
+
+计量交付要求：
+
+- 列全future preflight、module discovery、输入解析/验证、依赖token产出/规范化/去重/排序/旧映射/SDK候选/绑定、输出record构造与序列化、post metadata、异常/取消/持久化/closure路径的累计逻辑记录访问。重复遍历/next候选/重复输出均收费，不能改成唯一实体数。字符处理/字节流与OS I/O另受byte/capture限额，不把每字节伪称metadata记录，也不把JSON解析、排序和库内记录遍历默认记0；清楚列明计数单位和库操作的保守收费依据。
+- 优先简单、可审核的phase预扣与有界累计meter：访问前扣完整保守阶段上界，或逐记录扣费；未知实际量用已接受输入cap保守预扣。任何阶段超票须在受约束访问前停止，失败不退款。meter自身只用固定scalar操作，不额外遍历历史记录；一次主账与phase账、失败/terminal上下文须能对账。运行期meter不能弥补构建前缺失的充分性证明。
+- 原owner历史实际量仍UNKNOWN，原1000与4000保留且隔离，不追认、不用于未来。删除preparedPreflightDebitUpper==1000作为历史实测/完整上界的暗示；把历史保留账和未来新票分开绑定。完整方法必须绑定真实计划/runner SHA，不能只把批准布尔改true或以1467/8055阈值代替证明。
+- 可在确有必要时，本准备阶段读取一次且仅一次已命名旧witness：host-core-build/sixth-acl-remedy-input-build/used-dependencies.json，3156859B/SHA c7a1c91c0d6cbb0e9f1daf087c79413c65973d5cc2c128b03a22c2196b2d3357，用于确立固定schema/记录上界；先预扣保守记录票，再读取并核pin。无其它旧205包/索引/SDK读取。作者可独立读该同一固定witness至多一次，另占作者票，不能将owner摘要冒作自己实读。若不需要则不读。未来真正构建再读仍是另次有偿读取，不假称本轮缓存自然存在。
+- 依赖策略继续capture/reuse/defer，未知≤64保持pending；当前不实施locator或签immutable-membership。只提出完整未来执行分票方案；不得自行挪旧票、提高guard或生成执行授权文件。未来count bounds应在当前余量中可行，否则先交准确缺口。
+- 用stdlib AST/文本静态验证即可，绝不import/call runner。独立agent从新的固定候选做一次delta审，覆盖所有新计量点、失败前扣费/无退款、历史未知、哈希绑定和旧控制边界；不重复全部源算法/工具SDK历史。报告全文读回并处置，再冻结纯过程提交、manifest与准确用量/保守预留、未关闭项。接近票前提前停止交接，不能事后另报已超。
+
+本次新保守准备票显式增加且只加一次，不是实测I/O：12MiB读取/审查池（owner6MiB，独立作者4MiB，总控另2MiB）；metadata20000（owner10000、独立作者6000、总控另4000）。无新增SDK/resource实体授权，既有8192及所有原票/失败/unknown/255保留且不退。不借历史40000/4000补票。owner/作者应使用简单有界计数，避免重复线性next；共同修改风险由owner唯一维护runner，作者只写独立报告。
+
+新增后build109027642408/137438953472B，余28411311064；combined118773369493/147184680557B；metadata2145263/2250000，余104737；entity521456/600000，余78544。旧256MiB及16628池保留，未来构建票仍需重新完整设计/显式接受，不把本20k准备票当运行票。
+
+原第九节、无桌面干扰、T01损坏SQLite输入与wholeH HOLD、已拒绝SQLite/heap/OS操作停止线、指定同版双模型/两目标OS/真人/CI/父N0/远端合并门全部保留。下一交付是固定计量准备包，不是构建结果。

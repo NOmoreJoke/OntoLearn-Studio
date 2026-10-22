@@ -1,0 +1,61 @@
+{
+  "ownerMetadataCap": 10000,
+  "ownerReadByteCap": 6291456,
+  "phases": [
+    {
+      "name": "fixed-inputs-and-rules",
+      "reservedRecords": 800,
+      "reservedBytes": 524288,
+      "status": "PREPAID_BEFORE_FURTHER_READ"
+    },
+    {
+      "name": "optional-single-witness-text-profile",
+      "reservedRecords": 6400,
+      "reservedBytes": 3156859,
+      "status": "FAILED_NO_REFUND_SINGLE_READ_CONSUMED",
+      "applicationReadBytes": 3156859,
+      "recordReservationRetained": 6400,
+      "knownCandidateInspectionUnitsBeforeFailure": 71,
+      "sourcePayloadPinPassedBeforeTextAssertion": true,
+      "failure": "outer-row keys assertion; regex covered all four-space objects rather than scoped covered array",
+      "retryOrSourceReread": false
+    },
+    {
+      "name": "meter-code-and-proof",
+      "reservedRecords": 1200,
+      "reservedBytes": 1048576,
+      "status": "FIXED_CANDIDATE_REVIEWED_FINDINGS_PRESERVED_NO_COMPLIANCE_CLAIM"
+    },
+    {
+      "name": "closure",
+      "reservedRecords": 1600,
+      "reservedBytes": 1561733,
+      "status": "RESTRICTED_FREEZE_ONLY_NO_MORE_EXPLORATION"
+    }
+  ],
+  "failureNoRefund": true,
+  "oldTicketsBorrowed": false,
+  "sdkOrToolsPayloadReadAuthorized": false,
+  "reservedMetadataTotal": 10000,
+  "reservedReadBytesTotal": 6291456,
+  "actualMetadataVisits": null,
+  "actualOSIOBytes": null,
+  "reporting": "All phase upper reservations retained. Known witness application read3156859B; source text/AST/proof work remains inside separate prepaid byte/record phase caps. No reservation is represented as measured IO or a measured metadata count.",
+  "independentAuthor": {
+    "metadataTicketRetained": 6000,
+    "byteTicket": 4194304,
+    "witnessSubticket": 4600,
+    "knownTwoLibraryTraversalsMinimum": 5280,
+    "knownSubticketExcessAtLeast": 680,
+    "otherWitnessActual": "UNKNOWN_NOT_ZERO",
+    "completeActual": null,
+    "deltaTicket": 1100,
+    "reportTicket": 300,
+    "noBorrowNoRefundNoSupplement": true,
+    "knownApplicationReadBytesIncludingReport": 3336739,
+    "conservativeIncludingReportWriteBytes": 3348536,
+    "status": "STOPPED_NO_NEW_READS_OR_RECHECK"
+  },
+  "new20kIsNotActualOrProvenUpper": true,
+  "ownerClosureScope": "existing static corrections, report full readback, finite pins/manifest/index/commit only; no witness reread or new exploration"
+}
