@@ -61,7 +61,29 @@
   },
   "actualOwnedTsTests": 112,
   "actualOwnedTsFiles": 6,
-  "fullCheck": "pending internal runtime coordination; prior739TS/1052Python belongs only to330641",
+  "fullCheck": {
+    "command": ["npm", "run", "check"],
+    "exitCode": 0,
+    "typescriptFiles": 22,
+    "typescriptTests": 752,
+    "pythonTests": 1052,
+    "raw": "fullcheck-01.raw.txt",
+    "metadata": "fullcheck-01.metadata.json",
+    "rawSha256": "8567dcfc9f70c8b43dd9bec5722d25f6f1c214e4b45ffb5c4c018ab7ba961708",
+    "sourceUnchangedDuringCheck": true,
+    "sourceCount": 26,
+    "covers": [
+      "lint",
+      "format",
+      "all TypeScript typechecks",
+      "full Vitest including fixed-input probe",
+      "desktop build",
+      "ruff",
+      "full pytest"
+    ],
+    "resourceAuthorization": "controller explicitly authorized ordinary original fullcheck with own env/cache/tmp after prior I05/CSP checks ended;not a GUI ticket or performance acceptance",
+    "independentEvidenceReview": "independent-fullcheck-evidence-review.md"
+  },
   "independentReview": "independent-static-review.md; static incremental pass, not designated review",
   "firstFailure": "before-fix.metadata.json: actual exit1 / three failed; red source includes new test before patch, not a committed product candidate",
   "originalFindingDisposition": "../post-designated-review-20261023/finding-disposition.md; original14 opinions, severities, bothNotPass retained;0 designated findings closed by owner",
@@ -74,9 +96,6 @@
     "T03": "shared dependencies/config/locks"
   },
   "notRun": [
-    "full npm run check on7a33",
-    "fixed-input Python probe on7a33",
-    "build on7a33",
     "mounted DOM event cases in continuation-disposition.md",
     "test:e2e and actual application/job cancellation",
     "real parser/domain/provider/API/credential/spend",
@@ -85,5 +104,12 @@
   ],
   "goal": "original blocked unchanged; original objective retained",
   "protectedAgentsSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
-  "frozenOldReviewTrees": "not edited;old93516/5b64 remains the prior designated subject"
+  "frozenOldReviewTrees": "not edited;old93516/5b64 remains the prior designated subject",
+  "fullCheckAtInitialReceipt": "pending internal runtime coordination; prior739TS/1052Python belongs only to330641",
+  "environmentObservation": {
+    "command": "node --input-type=module; createRequire(import.meta.url)(electron)",
+    "effect": "Electron package printed Downloading Electron binary and returned own node_modules binary path;exists true afterward;no app launched",
+    "when": "during ordinary fullcheck,source26 before/after unchanged",
+    "claimBoundary": "not a read-only inventory step;not a product/Electron/native run"
+  }
 }

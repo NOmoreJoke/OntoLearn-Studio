@@ -30,3 +30,11 @@
 原指定两NotPass、原P1/P2、原Goal blocked保持；本轮独审仅审最小补丁，不替代新完整同候选指定双审。旧330641及其过程4e4ef5保留，新候选不能沿用它的完整check或外审状态。未push/PR/merge。
 
 本轮最小实现候选已固定为 `7a33a920faf92fe0d19de3a0a1b0efad80b93d5b`；26份完整原范围源码/测试/fixture与本次五改动路径、实际验证绑定见[candidate-and-acceptance.json](candidate-and-acceptance.json)。这是待完整验收候选，不是指定Pass或发布候选。小份raw随本修复归档，保留首失败及真实退出码以便独审复查；runtime数据库/缓存不入库。
+
+## 后续原完整check实际完成
+
+总控明确I05/CSP普通check自然结束后，本线已在独立.venv/uv缓存/XDG缓存/pycache/tmp/pytest basetemp执行原`npm run check`，实际exit0：22文件752项TypeScript、1052项Python；lint/format/typecheck/build/ruff通过，26份固定源码运行前后hash相同，过程HEAD仍af24482c。完整raw/metadata见fullcheck-01；本节更新上文初始收据的pending，不修改旧失败或借用330641的绿。普通运行不是性能验收，没有host idle或性能量化结论。
+
+准备挂载环境时，`require(electron)`触发包自身“Downloading Electron binary”，随后返回的本树node_modules二进制存在；未启动应用或窗口。这一步有环境下载副作用，不能称纯只读清点。Playwright指定Chromium实查不存在；esbuild直接导入不可用，现有Vite解析可用。实际挂载probe/harness尚未编写，拟定argv明确因该缺件不可运行；未安装浏览器或修改锁。现有`npm run test:e2e`仍需根串行GUI/资源，且共享App没有T08挂载，不能拿现有壳层e2e替代T08事件或实际Agent取消。
+
+完整剩余原验收按实际owner、缺件和argv列在[真实验收清单](remaining-real-acceptance-plan.json)：真实DOM、真实job取消、唯一parsergate/安全说明、当前隐私及受测provider、正式ChangeSet与离线/学习记录、原11.3/12.2/目标平台及新同版指定双审。原P1/P2及两NotPass保持开放；没有API、密钥、付费或Q5默认。

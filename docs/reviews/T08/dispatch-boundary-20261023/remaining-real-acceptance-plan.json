@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "productCandidate": "7a33a920faf92fe0d19de3a0a1b0efad80b93d5b",
+  "sourceManifest": "candidate-and-acceptance.json:sourceHashes",
+  "actualDependencyFacts": {
+    "playwright": "1.64.1",
+    "react": "19.3.1",
+    "reactDom": "19.3.1",
+    "electron": "44.9.0",
+    "chromiumExpectedPath": "/Users/kyle/Library/Caches/ms-playwright/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+    "chromiumExistsAtObservation": false,
+    "esbuildDirectImportAvailable": false,
+    "viteImportResolutionAvailable": true,
+    "electronBinaryObservation": "require(electron) triggered package automatic binary download; afterward exact own node_modules/electron/dist/Electron.app/Contents/MacOS/Electron exists; no app launched",
+    "actualCompositionSearch": "no AgentSidebar/AgentConversation/query_execute match in current shared App/main/preload; rg exit1 is no-match,not a runtime Pass"
+  },
+  "commands": [
+    {
+      "id": "existing-original-e2e",
+      "argv": ["npm", "run", "test:e2e"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model",
+      "status": "not run; requires controller serial GUI/resource lease and current fullcheck build",
+      "coverageBoundary": "existing shell/IPC/CSP/task tests; T08 is not mounted,so not evidence for T08 component events or actual Agent cancellation"
+    },
+    {
+      "id": "isolated-browser-binary-preparation",
+      "argv": ["node_modules/.bin/playwright", "install", "chromium"],
+      "env": {
+        "PLAYWRIGHT_BROWSERS_PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model/docs/reviews/T08/review-runtime-post-designated-20261023/mounted-browser-cache"
+      },
+      "status": "not run; proposed own-cache prerequisite only,not a lockfile/shared dependency change"
+    },
+    {
+      "id": "component-mounted-probe",
+      "argv": [
+        "node",
+        "tests/fixtures/agent/sidebar-mounted-probe.mjs",
+        "--candidate",
+        "7a33a920faf92fe0d19de3a0a1b0efad80b93d5b",
+        "--browser",
+        "chromium",
+        "--headless",
+        "--output",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model/docs/reviews/T08/review-runtime-post-designated-20261023/mounted-component-01"
+      ],
+      "env": {
+        "PLAYWRIGHT_BROWSERS_PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model/docs/reviews/T08/review-runtime-post-designated-20261023/mounted-browser-cache",
+        "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model/docs/reviews/T08/review-runtime-post-designated-20261023/mounted-component-01/tmp"
+      },
+      "status": "proposed argv,not yet runnable: probe/harness not authored and browser binary absent;fixing those is a new test artifact requiring own review and exact candidate hash binding",
+      "requirements": [
+        "real ReactDOM createRoot actual AgentSidebar.tsx, no hook/DOM stub",
+        "reuse installed Vite for isolated temporary bundle; no esbuild install or shared config edit",
+        "local file/bundle, no fixed server port/no desktop focus; deny external network",
+        "assert full candidate26 source hashes before/after",
+        "capture actual argv/exit/raw/browser version and exact harness hash",
+        "callback observations are component-only,not actual domain/job/learning integrations"
+      ]
+    }
+  ],
+  "remainingAcceptance": [
+    {
+      "gate": "M P2-6 mounted events",
+      "owner": "T08 owned harness; T03 only if shared deps/config actually needed; root runtime coordination",
+      "cases": [
+        "double submit one handler",
+        "rejected handler retains001 and fixed safe error",
+        "absent handler zero calls",
+        "local retry zero/local hint one",
+        "A/B inputs preserved and nevercrosssubmitted",
+        "late A failure/finish cannot change B or erase laterA edit",
+        "same-context in-flight reentry blocked including switchback",
+        "stale cancellation blocked,matching busy cancellation available"
+      ],
+      "status": "pending real mounted execution;pure transitions/SSR112 do not close it"
+    },
+    {
+      "gate": "actual Agent cancellation and late results",
+      "owner": "T00/I04/T01 with actual approved composition",
+      "cases": [
+        "explicit cancel reaches correct actual job",
+        "local wait/ACK distinguished from actual terminal",
+        "late result rejected after project/snapshot/scope changes",
+        "completed receipt/draft preserved"
+      ],
+      "status": "pending actual T08 App/bridge and durable job adapter;no synthetic job success"
+    },
+    {
+      "gate": "P1 FR402/FR803 parsergate",
+      "owner": "I05/T04 actual unique service,T00 installation,T08 safe explanation",
+      "cases": [
+        "SELECT/ASK actual local result",
+        "SERVICE/remote FROM rejected before network",
+        "UPDATE rejected before write",
+        "BASE alone not network;keywords in literal/comment not blacklist proof",
+        "scope/identity/source/version/cancel checked by actual service"
+      ],
+      "status": "pending exact approved runtime interface/reason mapping;query_execute remains uninstalled,no lexer clone"
+    },
+    {
+      "gate": "FR900/FR902/Q9 provider and privacy",
+      "owner": "I06 actual settings/final-byte authorization and tested provider;T08 consumes contract",
+      "cases": [
+        "connection/JSON/tool capabilities distinct",
+        "returned model/fingerprint actual tested pin",
+        "enabled protocol/effort actual observed",
+        "current privacy/config/principal revalidation every send",
+        "all final bytes authorized;requested cap not totalusage or fees"
+      ],
+      "status": "no provider API/key/spend authorized in this turn;Q5 undecided,not defaulted"
+    },
+    {
+      "gate": "FR804/A-series ChangeSet",
+      "owner": "T01 actual preview/confirm/atomic/cancel/undo/restore plusT00/T08 integration",
+      "status": "pending real named adapters and independent human confirmation path"
+    },
+    {
+      "gate": "FR801/FR806 offline and assistance",
+      "owner": "T09 actual handler/learning record,T00 mount,T08 UI callbacks",
+      "status": "pending true local route and stored assistance;SSR handler availability not domain execution"
+    },
+    {
+      "gate": "original11.3/12.2 and release",
+      "owner": "registered domain owners,T11/controller",
+      "status": "pending actual relevant domain/model paths,targetOS/realusers/CI/remote and new full same-candidate designated pair;both prior NotPass retained"
+    }
+  ],
+  "notExecuted": [
+    "browser install/launch",
+    "Electron/app/window/e2e",
+    "new probe/harness",
+    "provider/API/credentials/spend",
+    "actual domain/ChangeSet/job/learning integration"
+  ],
+  "completedFullCheck": {
+    "candidate": "7a33a920faf92fe0d19de3a0a1b0efad80b93d5b",
+    "typescript": 752,
+    "python": 1052,
+    "exitCode": 0,
+    "metadata": "fullcheck-01.metadata.json"
+  }
+}
