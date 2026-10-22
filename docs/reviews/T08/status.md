@@ -157,3 +157,8 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 中央新材料初次仅两格式告警，修正后独立复核2通过；见independent-review-roots-20261022/root-readiness-receipt.json及复核原件。ZCode完整正文59804B/SHA8951b0e3…；MiniMax59859B/SHA65104b0c…，精确路径/全文/hash/原check与source证明齐备，待root预检及短创建lease，不预填指定Pass或恢复Goal。
 
 同期总控请求T02 B草稿依赖事实回报，已在docs/iterations/T08/T02-request-B-draft-interface-response-20261022.md给固定935ref/7源码SHA、私有draft/codec/session/receipt与文本安全/真实未验边界。独立事实复核指出上下文字段位置一句不准，已修为localReceipts保存收据、同级inputContext保存上下文；修前原件/意见保留，复核2通过。仅可作接口设计/审查引用，不批准消费未批T08源码或声称T02 C5/真实API闭环通过。
+
+
+## T10纯文档供方事实入口（2026-10-22）
+
+按总控限定读取面，将前次已核验T08事实整理为docs/iterations/T08/T10-learning-provenance-facts-20261022.md，供根核后转交T10。许可仅该纯文档；源码/ref/bytes/SHA仅溯源，不授源码、移动HEAD或本轮模型意见读取。attempt/task/check/hint/actor/learning provenance及正式持久投影未实现；现有assistance仅UI回调标记。F16跨attempt决定在本供方固定材料无可提供身份/规则，明确unknown，不默认永久辅助或清UI洗白。未新写schema、实现、替身或政策，未跑产品或占GUI；旧冻结输入/候选及父验收保持，新文档定向Prettier通过。
