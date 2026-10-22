@@ -81,14 +81,21 @@ export function exportPageCsv(page: QueryPageData, columns: readonly string[]): 
   // Export only this accepted bounded page. Larger exports are a separate flow.
   if (
     columns.length > 64 ||
+    columns.some((column) => typeof column !== 'string') ||
     page.rows.length > 200 ||
     page.rows.some((r) => r.cells.length !== columns.length)
   ) {
     throw new Error('query.invalidPage')
   }
   const escape = (value: unknown) => {
-    let text = value === null ? '' : String(value)
-    if (/^[\s]*[=+\-@]/u.test(text) || /^[\t\r\n]/u.test(text)) text = `'${text}`
+    let text: string
+    if (typeof value === 'string') {
+      text = value
+      if (/^[\s]*[=+\-@]/u.test(text) || /^[\t\r\n]/u.test(text)) text = `'${text}`
+    } else if (value === null) text = ''
+    else if (typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value)))
+      text = String(value)
+    else throw new Error('query.invalidPage')
     return `"${text.replaceAll('"', '""')}"`
   }
   return (

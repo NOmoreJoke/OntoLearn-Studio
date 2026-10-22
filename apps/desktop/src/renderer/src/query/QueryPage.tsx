@@ -11,6 +11,7 @@ import {
   emptyDirections,
   type QueryDraft,
   type VisualQuery,
+  visualSchema,
 } from './draft'
 import {
   acceptPage,
@@ -54,10 +55,12 @@ const initialDraft: QueryDraft = {
   capabilityQuestion: '',
   source: 'editor',
 }
+const emptyVisual = (): VisualQuery => ({ classIri: '', fields: [], conditions: [] })
 
 export function QueryPage(props: QueryPageProps) {
   const [draft, setDraft] = useState<QueryDraft>(initialDraft)
-  const [visual, setVisual] = useState<VisualQuery>({ classIri: '', fields: [], conditions: [] })
+  const [visual, setVisual] = useState<VisualQuery>(emptyVisual)
+  const validVisual = visualSchema.safeParse(visual).success
   const [definitionId, setDefinitionId] = useState<string | null>(null)
   const [snapshotId, setSnapshotId] = useState('')
   const [notice, setNotice] = useState('')
@@ -226,19 +229,28 @@ export function QueryPage(props: QueryPageProps) {
           </label>
           <fieldset>
             <legend>返回字段（对象 IRI 始终保留）</legend>
+            <p>已选 {visual.fields.length}/16</p>
             {props.catalog.predicates.map((p) => (
               <label className="query-check" key={p.iri}>
                 <input
                   type="checkbox"
                   checked={visual.fields.some((f) => f.predicate === p.iri)}
-                  onChange={(e) =>
-                    setVisual({
-                      ...visual,
-                      fields: e.target.checked
-                        ? [...visual.fields, { predicate: p.iri, label: p.label }]
-                        : visual.fields.filter((f) => f.predicate !== p.iri),
-                    })
+                  disabled={
+                    visual.fields.length >= 16 && !visual.fields.some((f) => f.predicate === p.iri)
                   }
+                  onChange={(e) => {
+                    const checked = e.target.checked
+                    setVisual((current) => {
+                      const selected = current.fields.some((f) => f.predicate === p.iri)
+                      if (checked && (selected || current.fields.length >= 16)) return current
+                      return {
+                        ...current,
+                        fields: checked
+                          ? [...current.fields, { predicate: p.iri, label: p.label }]
+                          : current.fields.filter((f) => f.predicate !== p.iri),
+                      }
+                    })
+                  }}
                 />
                 {p.label}
               </label>
@@ -427,7 +439,10 @@ export function QueryPage(props: QueryPageProps) {
               添加条件
             </button>
           </fieldset>
-          <button onClick={() => build(visual, 'visual')}>生成可见 SPARQL 草稿</button>
+          <button disabled={!validVisual} onClick={() => build(visual, 'visual')}>
+            生成可见 SPARQL 草稿
+          </button>
+          {!validVisual && <p>请选择有效对象，并检查属性和 RDF 条件值后生成草稿。</p>}
         </section>
         <section aria-label="查询草稿">
           <h2>查询草稿</h2>
@@ -522,8 +537,10 @@ export function QueryPage(props: QueryPageProps) {
             disabled={!props.modelDraft}
             onClick={() => {
               const parsed = draftSchema.safeParse(props.modelDraft)
-              if (parsed.success) update({ ...parsed.data, source: 'model' })
-              else setNotice('模型草稿格式不兼容，请重新生成。')
+              if (parsed.success) {
+                setVisual(emptyVisual())
+                update({ ...parsed.data, source: 'model' })
+              } else setNotice('模型草稿格式不兼容，请重新生成。')
             }}
           >
             查看 T08 提供的模型草稿
@@ -532,6 +549,7 @@ export function QueryPage(props: QueryPageProps) {
             onClick={() => {
               documentGeneration.current++
               setDefinitionId(null)
+              setVisual(emptyVisual())
               update(initialDraft)
             }}
           >
@@ -546,6 +564,7 @@ export function QueryPage(props: QueryPageProps) {
                 if (parsed.success) {
                   documentGeneration.current++
                   setDefinitionId(parsed.data.definitionId)
+                  setVisual(emptyVisual())
                   update(parsed.data.draft)
                 } else setNotice('保存的查询格式不兼容，请检查项目版本。')
               }}

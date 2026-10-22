@@ -30,6 +30,24 @@ def _text(value, maximum, minimum=0):
     return value
 
 
+# Fixed union of Python whitespace and ECMAScript whitespace (U+FEFF).
+_DRAFT_EDGE_SPACE = "\t\n\v\f\r\x1c\x1d\x1e\x1f \x85\xa0\u1680" + (
+    "\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a"
+    "\u2028\u2029\u202f\u205f\u3000\ufeff"
+)
+
+
+def _draft_text(value, maximum):
+    _text(value, maximum)
+    # Match renderer/HTML limits on the raw string before edge normalization.
+    if len(value.encode("utf-16-le")) // 2 > maximum:
+        raise DraftError("query.invalidDraft")
+    normalized = value.strip(_DRAFT_EDGE_SPACE)
+    if not normalized:
+        raise DraftError("query.invalidDraft")
+    return normalized
+
+
 def _iri(value):
     _text(value, 2048, 1)
     if not re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", value) or any(
@@ -113,10 +131,8 @@ def compile_visual(query):
 def validate_draft(draft):
     _object(draft, ("name", "description", "sparql", "scope", "capabilityQuestion", "source"))
     normalized = copy.deepcopy(draft)
-    normalized["name"] = _text(draft["name"], 128).strip()
-    normalized["sparql"] = _text(draft["sparql"], 65536).strip()
-    if not normalized["name"] or not normalized["sparql"]:
-        raise DraftError("query.invalidDraft")
+    normalized["name"] = _draft_text(draft["name"], 128)
+    normalized["sparql"] = _draft_text(draft["sparql"], 65536)
     _text(draft["description"], 4096)
     _text(draft["capabilityQuestion"], 4096)
     if draft["scope"] not in ("asserted", "asserted+derived") or draft["source"] not in (

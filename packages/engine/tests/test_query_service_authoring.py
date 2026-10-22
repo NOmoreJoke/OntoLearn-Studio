@@ -17,6 +17,9 @@ from rdflib import Graph, Literal, URIRef
 FIXTURE = json.loads(
     (Path(__file__).resolve().parents[3] / "tests/fixtures/query/authoring-case.json").read_text()
 )
+BOUNDARIES = json.loads(
+    (Path(__file__).resolve().parents[3] / "tests/fixtures/query/draft-boundaries.json").read_text()
+)
 
 
 def literal(value, **kwargs):
@@ -32,6 +35,33 @@ def draft():
         "capabilityQuestion": "哪些告警待处理？",
         "source": "template",
     }
+
+
+@pytest.mark.parametrize("entry", BOUNDARIES["cases"], ids=lambda entry: entry["label"])
+def test_draft_raw_utf16_boundaries_before_normalization(entry):
+    core = entry["unit"] * entry["count"]
+    value = {**draft(), entry["field"]: entry["prefix"] + core + entry["suffix"]}
+    if entry["valid"]:
+        assert validate_draft(value)[entry["field"]] == core
+    else:
+        with pytest.raises(DraftError):
+            validate_draft(value)
+
+
+@pytest.mark.parametrize("cp", BOUNDARIES["trimEdgeCodePoints"])
+@pytest.mark.parametrize("field", ["name", "sparql"])
+def test_draft_shared_edge_whitespace(cp, field):
+    edge = chr(cp)
+    assert validate_draft({**draft(), field: edge + "q" + edge})[field] == "q"
+    with pytest.raises(DraftError):
+        validate_draft({**draft(), field: edge})
+
+
+@pytest.mark.parametrize("field", ["name", "sparql"])
+@pytest.mark.parametrize("value", ["\ud800", "\udfff"])
+def test_draft_lone_surrogates_still_rejected(field, value):
+    with pytest.raises(DraftError):
+        validate_draft({**draft(), field: value})
 
 
 def test_complete_rows_and_empty_variant_in_local_standard_engine():

@@ -33,10 +33,20 @@ node docs/iterations/T04/ssr-probe.mjs
 
 只消费已批准 I05/T01/T00/T08，刷新真实 develop，完整联验所有父功能与跨模块条款后固定 base/head。由当前开发聊天预约并通过 ZCode GLM-5.3/最高和 MiniMax M3.1-Flash/xhigh 各新独立完整任务，全文读回并逐项处置。门禁通过才 push/PR（attach），实际 CI 通过后正常合并 develop 并核验远端/保护原件。服务单独合并不关闭父功能或上线门。独立 Codex 内审不替代这两个指定模型。
 
-本机不运行 Electron/e2e/native/HMR/凭据提示/审查应用，不抢焦点；这些验收仍须隔离环境或已有明确时段授权。Windows 11 x64/macOS 15 arm64、用户验收和生产状态不能由这里的 CLI 证据替代。
+桌面操作按现行 AGENTS 执行，互斥资源由总控内部协调。当前组件验证不替代 Electron/App、原生、IPC、生产 CSP、Windows 11 x64/macOS 15 arm64、真人与生产证据；冻结期间仍禁止 HMR 改写受审源文件。
 
 ## 总控批准的固定 T09 输入探针
 
 总控后续明确批准固定 Git `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的输入。manifest SHA-256 `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`，版本 `prd-v0.6-learning-1`。实际从该固定提交读取并验证全部 17 项输入与 PRD 来源哈希，原字节复制 manifest/G-base/unclosed-high/conventions 到本线 `tests/fixtures/query/approved-baseline/`，不读取变化中 HEAD，不采用任何 T09 服务/helper/Store。
 
 `test_query_service_approved_baseline.py` 每次重新核对选用文件的 manifest 哈希，再从实际声明 ontology/facts 构建只读标准 RDFLib 图；原始查询与生成查询分别独立还原 G-base，完整预期都为 alarm/A01，单独将 A01 改 Closed 后均为空集合。未用 expected 预填 Store，没有执行规则/行为。此证据验证正式固定输入下的编写互操作，I05 query.execute、任务/取消/游标/范围/Store 联验仍待批准执行器与公共接线。
+
+## 四项 P3 修复验证入口
+
+本轮 name/SPARQL 的固定边界与规范化共用 `tests/fixtures/query/draft-boundaries.json`，两语言分别实际验证；CSV 单测核对完整输出，区分有限真实数值/布尔与字符串公式防护。字段限制、载入重置与非法 RDF 条件另用真实组件 DOM 操作核验：
+
+```sh
+node docs/iterations/T04/p3-interaction-probe.mjs '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' unique-run-name
+```
+
+探针使用锁定 Vite/React/Playwright 与已安装 Chrome，不新增依赖、不下载浏览器、不启动端口；独立上下文 offline 且拒绝所有请求。`unique-run-name` 须每次唯一，已有原件不会覆盖；运行产物落本树 ignored `test-results/t04-p3-repair/browser/`。这验证真实 QueryPage 组件的五种 DOM 情景，fixture 明确未提供执行/保存桥接或模型服务。实际结果与首失败处置以 status 和验证收据为准。

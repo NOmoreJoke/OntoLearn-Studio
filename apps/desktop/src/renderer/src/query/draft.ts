@@ -52,11 +52,27 @@ export const visualSchema = z
   })
   .strict()
 export type VisualQuery = z.infer<typeof visualSchema>
+// Raw UTF-16 limit, then the fixed union of Python/ECMAScript edge whitespace.
+const draftEdgeSpace =
+  '\t\n\v\f\r\u001c\u001d\u001e\u001f \u0085\u00a0\u1680' +
+  '\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a' +
+  '\u2028\u2029\u202f\u205f\u3000\ufeff'
+const draftText = (maximum: number) =>
+  scalarText
+    .refine((s) => s.length <= maximum, '超过长度上限')
+    .transform((s) => {
+      let start = 0
+      let end = s.length
+      while (start < end && draftEdgeSpace.includes(s[start])) start++
+      while (end > start && draftEdgeSpace.includes(s[end - 1])) end--
+      return s.slice(start, end)
+    })
+    .refine((s) => s.length > 0, '不能为空')
 export const draftSchema = z
   .object({
-    name: scalarText.trim().min(1).max(128),
+    name: draftText(128),
     description: scalarText.max(4096),
-    sparql: scalarText.trim().min(1).max(65536),
+    sparql: draftText(65536),
     scope: scopeSchema,
     capabilityQuestion: scalarText.max(4096),
     source: z.enum(['template', 'visual', 'editor', 'model']),

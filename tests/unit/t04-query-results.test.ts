@@ -7,6 +7,7 @@ import {
   queryMetadata,
   queryJob,
   resultNotice,
+  type QueryPageData,
 } from '../../apps/desktop/src/renderer/src/query/results'
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`
@@ -129,6 +130,35 @@ describe('T04 result display uses approved result/page validators', () => {
     const accepted = acceptPage(input, queryMetadata(metadata()), columns)
     expect(exportPageCsv(accepted, columns)).toBe(
       '"告警","等级","状态"\r\n"\'=SUM(1)","""quoted""\nnext",""\r\n',
+    )
+  })
+  it('preserves actual numeric and boolean cells while guarding string formulas', () => {
+    const labels = ['数值', '-文本', '布尔', '其他']
+    const input = {
+      ...page(),
+      rows: [
+        { rowId: id(4), ordinal: 0, cells: [-5, '-5', true, null] },
+        { rowId: id(5), ordinal: 1, cells: [-0, ' +SUM(1)', false, 'a,"b"\n'] },
+        { rowId: id(6), ordinal: 2, cells: [1e-7, '\t=1', false, '\rline'] },
+      ],
+    }
+    expect(exportPageCsv(acceptPage(input, queryMetadata(metadata()), labels), labels)).toBe(
+      '"数值","\'-文本","布尔","其他"\r\n' +
+        '"-5","\'-5","true",""\r\n' +
+        '"0","\' +SUM(1)","false","a,""b""\n"\r\n' +
+        '"1e-7","\'\t=1","false","\'\rline"\r\n',
+    )
+  })
+  it('fails closed on invalid runtime CSV cells or non-string column headers', () => {
+    for (const value of [NaN, Infinity, -Infinity, undefined, {}, []]) {
+      const input = {
+        ...page(),
+        rows: [{ rowId: id(4), ordinal: 0, cells: [value] }],
+      } as unknown as QueryPageData
+      expect(() => exportPageCsv(input, ['value'])).toThrow('query.invalidPage')
+    }
+    expect(() => exportPageCsv(page(), [1, 'b', 'c'] as unknown as string[])).toThrow(
+      'query.invalidPage',
     )
   })
   it('accepts only strictly valid query jobs for this project', () => {

@@ -1,0 +1,189 @@
+{
+  "policy": "Raw UTF-16 limits before fixed thirty-character edge trim; interior unchanged",
+  "trimEdgeCodePoints": [
+    9, 10, 11, 12, 13, 28, 29, 30, 31, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196, 8197, 8198,
+    8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288, 65279
+  ],
+  "cases": [
+    {
+      "label": "name-at",
+      "field": "name",
+      "unit": "a",
+      "count": 128,
+      "prefix": "",
+      "suffix": "",
+      "valid": true
+    },
+    {
+      "label": "name-above",
+      "field": "name",
+      "unit": "a",
+      "count": 129,
+      "prefix": "",
+      "suffix": "",
+      "valid": false
+    },
+    {
+      "label": "name-raw-at-with-trim",
+      "field": "name",
+      "unit": "a",
+      "count": 127,
+      "prefix": "",
+      "suffix": " ",
+      "valid": true
+    },
+    {
+      "label": "name-raw-above-with-trim",
+      "field": "name",
+      "unit": "a",
+      "count": 128,
+      "prefix": "",
+      "suffix": " ",
+      "valid": false
+    },
+    {
+      "label": "name-raw-above-leading",
+      "field": "name",
+      "unit": "a",
+      "count": 128,
+      "prefix": " ",
+      "suffix": "",
+      "valid": false
+    },
+    {
+      "label": "name-raw-above-two-spaces",
+      "field": "name",
+      "unit": "a",
+      "count": 127,
+      "prefix": "",
+      "suffix": "  ",
+      "valid": false
+    },
+    {
+      "label": "name-astral-at",
+      "field": "name",
+      "unit": "\ud83d\ude42",
+      "count": 64,
+      "prefix": "",
+      "suffix": "",
+      "valid": true
+    },
+    {
+      "label": "name-astral-above",
+      "field": "name",
+      "unit": "\ud83d\ude42",
+      "count": 65,
+      "prefix": "",
+      "suffix": "",
+      "valid": false
+    },
+    {
+      "label": "name-empty-after-trim",
+      "field": "name",
+      "unit": "",
+      "count": 0,
+      "prefix": " \t",
+      "suffix": "\ufeff\u0085",
+      "valid": false
+    },
+    {
+      "label": "name-interior-preserved",
+      "field": "name",
+      "unit": "a \t b",
+      "count": 1,
+      "prefix": "\ufeff\u0085",
+      "suffix": "\u001c ",
+      "valid": true
+    },
+    {
+      "label": "sparql-at",
+      "field": "sparql",
+      "unit": "a",
+      "count": 65536,
+      "prefix": "",
+      "suffix": "",
+      "valid": true
+    },
+    {
+      "label": "sparql-above",
+      "field": "sparql",
+      "unit": "a",
+      "count": 65537,
+      "prefix": "",
+      "suffix": "",
+      "valid": false
+    },
+    {
+      "label": "sparql-raw-at-with-trim",
+      "field": "sparql",
+      "unit": "a",
+      "count": 65535,
+      "prefix": "",
+      "suffix": " ",
+      "valid": true
+    },
+    {
+      "label": "sparql-raw-above-with-trim",
+      "field": "sparql",
+      "unit": "a",
+      "count": 65536,
+      "prefix": "",
+      "suffix": " ",
+      "valid": false
+    },
+    {
+      "label": "sparql-raw-above-leading",
+      "field": "sparql",
+      "unit": "a",
+      "count": 65536,
+      "prefix": " ",
+      "suffix": "",
+      "valid": false
+    },
+    {
+      "label": "sparql-raw-above-two-spaces",
+      "field": "sparql",
+      "unit": "a",
+      "count": 65535,
+      "prefix": "",
+      "suffix": "  ",
+      "valid": false
+    },
+    {
+      "label": "sparql-astral-at",
+      "field": "sparql",
+      "unit": "\ud83d\ude42",
+      "count": 32768,
+      "prefix": "",
+      "suffix": "",
+      "valid": true
+    },
+    {
+      "label": "sparql-astral-above",
+      "field": "sparql",
+      "unit": "\ud83d\ude42",
+      "count": 32769,
+      "prefix": "",
+      "suffix": "",
+      "valid": false
+    },
+    {
+      "label": "sparql-empty-after-trim",
+      "field": "sparql",
+      "unit": "",
+      "count": 0,
+      "prefix": " \t",
+      "suffix": "\ufeff\u0085",
+      "valid": false
+    },
+    {
+      "label": "sparql-interior-preserved",
+      "field": "sparql",
+      "unit": "a \t b",
+      "count": 1,
+      "prefix": "\ufeff\u0085",
+      "suffix": "\u001c ",
+      "valid": true
+    }
+  ]
+}

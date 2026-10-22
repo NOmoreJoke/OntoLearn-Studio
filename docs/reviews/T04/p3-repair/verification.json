@@ -1,0 +1,647 @@
+{
+  "date": "2026-10-23",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+  "branch": "feature/weekly-t04-query-p3-repair",
+  "startingHead": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+  "approvedCommonBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "protectedGuideSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+  "commands": [
+    {
+      "label": "docs-format-explicit",
+      "argv": [
+        "npx",
+        "prettier",
+        "--write",
+        "--ignore-path",
+        "/dev/null",
+        "docs/reviews/T04/p3-repair/verification.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:45:40.494963+00:00",
+      "finishedAt": "2026-10-22T16:45:40.934545+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/docs-format-explicit.log",
+      "rawBytes": 50,
+      "rawSHA256": "cc910825aee2608538a92ddaa1806b34138524ca3e6046aedc5524b928252f27"
+    },
+    {
+      "label": "docs-format-final",
+      "argv": [
+        "npx",
+        "prettier",
+        "--write",
+        "docs/reviews/T04/status.md",
+        "docs/reviews/T04/p3-repair/implementation-review.md",
+        "docs/reviews/T04/p3-repair/verification.json",
+        "docs/iterations/T04/acceptance.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:44:48.516405+00:00",
+      "finishedAt": "2026-10-22T16:44:48.881536+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/docs-format-final.log",
+      "rawBytes": 39,
+      "rawSHA256": "c32db637d55704e938ec8e87b52091de724eec907b7685009c9f6cff2656a62c"
+    },
+    {
+      "label": "final-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:45:09.697549+00:00",
+      "finishedAt": "2026-10-22T16:45:09.716107+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/final-diff-check.log",
+      "rawBytes": 0,
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "final-docs-format-check",
+      "argv": [
+        "npx",
+        "prettier",
+        "--check",
+        "--ignore-path",
+        "/dev/null",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "docs/iterations/T04/p3-repair-plan.md",
+        "docs/iterations/T04/acceptance.md",
+        "docs/reviews/T04/status.md",
+        "docs/reviews/T04/p3-repair/plan-review.md",
+        "docs/reviews/T04/p3-repair/implementation-review.md",
+        "docs/reviews/T04/p3-repair/verification.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:45:09.749721+00:00",
+      "finishedAt": "2026-10-22T16:45:10.081170+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/final-docs-format-check.log",
+      "rawBytes": 159,
+      "rawSHA256": "2e152ffddf4a709e5d5d70066983d384dc8b1fc1688a545f320e310ce2f3c397"
+    },
+    {
+      "label": "final-docs-format-corrected",
+      "argv": [
+        "npx",
+        "prettier",
+        "--check",
+        "--ignore-path",
+        "/dev/null",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "docs/iterations/T04/p3-repair-plan.md",
+        "docs/iterations/T04/acceptance.md",
+        "docs/reviews/T04/status.md",
+        "docs/reviews/T04/p3-repair/plan-review.md",
+        "docs/reviews/T04/p3-repair/implementation-review.md",
+        "docs/reviews/T04/p3-repair/verification.json",
+        "docs/reviews/T04/p3-repair/candidate-files.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:45:41.035116+00:00",
+      "finishedAt": "2026-10-22T16:45:41.426751+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/final-docs-format-corrected.log",
+      "rawBytes": 66,
+      "rawSHA256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+    },
+    {
+      "label": "final-probe-lint",
+      "argv": [
+        "npx",
+        "eslint",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "--max-warnings",
+        "0"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:45:08.793873+00:00",
+      "finishedAt": "2026-10-22T16:45:09.663135+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/final-probe-lint.log",
+      "rawBytes": 0,
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "format-draft-final",
+      "argv": ["npx", "prettier", "--write", "apps/desktop/src/renderer/src/query/draft.ts"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:41:41.549405+00:00",
+      "finishedAt": "2026-10-22T16:41:41.970054+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/format-draft-final.log",
+      "rawBytes": 62,
+      "rawSHA256": "2d604fcd5555e7800d06a6ebe34b74f870311fd22e8010b80eb8f5a2049f0700"
+    },
+    {
+      "label": "format-probe-final",
+      "argv": ["npx", "prettier", "--write", "docs/iterations/T04/p3-interaction-probe.mjs"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:42:56.911112+00:00",
+      "finishedAt": "2026-10-22T16:42:57.306910+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/format-probe-final.log",
+      "rawBytes": 62,
+      "rawSHA256": "3cd9b1876264352d663c4fc43266481cc8bc5ea798ca30e6157fbe38ec687556"
+    },
+    {
+      "label": "format-repair",
+      "argv": [
+        "npx",
+        "prettier",
+        "--write",
+        "apps/desktop/src/renderer/src/query/draft.ts",
+        "apps/desktop/src/renderer/src/query/results.ts",
+        "apps/desktop/src/renderer/src/query/QueryPage.tsx",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/unit/t04-query-results.test.ts",
+        "tests/fixtures/query/draft-boundaries.json",
+        "tests/fixtures/query/p3-interaction.tsx",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "docs/iterations/T04/p3-repair-plan.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:40:48.750489+00:00",
+      "finishedAt": "2026-10-22T16:40:49.635284+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/format-repair.log",
+      "rawBytes": 487,
+      "rawSHA256": "2830d12db4ed28acaad44cfd44c22d2c4c95bd0cbff43d652ef6a7e9b9e78103"
+    },
+    {
+      "label": "full-check-repair-lint-fixed",
+      "argv": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:41:42.029479+00:00",
+      "finishedAt": "2026-10-22T16:42:48.504580+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/full-check-repair-lint-fixed.log",
+      "rawBytes": 5377,
+      "rawSHA256": "9a7a984a540183ce6cef490b751f5fed4a98126e5f16ec0ed5bd2dbbbb6789ff"
+    },
+    {
+      "label": "full-check-repair",
+      "argv": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:41:04.295652+00:00",
+      "finishedAt": "2026-10-22T16:41:07.807990+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/full-check-repair.log",
+      "rawBytes": 476,
+      "rawSHA256": "cde651cd0b5fc63388b5ed49149cefa00d6adf55203090ca83305d19b7e5c3a7"
+    },
+    {
+      "label": "interaction-after-fix",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "after-fix"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:40:19.228090+00:00",
+      "finishedAt": "2026-10-22T16:40:38.289633+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/interaction-after-fix.log",
+      "rawBytes": 3040,
+      "rawSHA256": "f41ff86d9b2994e17a99ba5dd01f080cdbe63cd9edb74090caee53995cab11fd"
+    },
+    {
+      "label": "interaction-after-selector-fix",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "after-selector-fix"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:41:04.295508+00:00",
+      "finishedAt": "2026-10-22T16:41:09.303993+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/interaction-after-selector-fix.log",
+      "rawBytes": 979,
+      "rawSHA256": "bf2a93c51e15a43700905811b404484d25e076c413c2b88285d407959b00bc2f"
+    },
+    {
+      "label": "interaction-before-fix-selector-corrected",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "before-fix-selector-corrected"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:38:58.524366+00:00",
+      "finishedAt": "2026-10-22T16:39:22.815373+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/interaction-before-fix-selector-corrected.log",
+      "rawBytes": 2817,
+      "rawSHA256": "112149127321056414134e56b46f72c437f9298532cd739c8b773252ecaaf4d9"
+    },
+    {
+      "label": "interaction-before-fix",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "before-fix"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:36:34.179204+00:00",
+      "finishedAt": "2026-10-22T16:37:27.343675+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/interaction-before-fix.log",
+      "rawBytes": 2206,
+      "rawSHA256": "7e354c22b67ff2c0abc0c681fe04113337b1b66a4ac1bb9ada98b8fbd7fb6ae2"
+    },
+    {
+      "label": "interaction-final",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "final"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:42:57.343004+00:00",
+      "finishedAt": "2026-10-22T16:43:01.475380+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/interaction-final.log",
+      "rawBytes": 1012,
+      "rawSHA256": "cc8b593d6aef577ba10a610681640f0097dc32432d5da66c7cd4ed8b971b9700"
+    },
+    {
+      "label": "regression-python-before-fix",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_query_service_authoring.py",
+        "-q"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:34:08.230076+00:00",
+      "finishedAt": "2026-10-22T16:34:09.413218+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/regression-python-before-fix.log",
+      "rawBytes": 7200,
+      "rawSHA256": "897efaed50b2e9b2f0727dd8f18bccb430ff8d26a0b809877b1e1dd7188b9d3d"
+    },
+    {
+      "label": "regression-typescript-before-fix",
+      "argv": [
+        "./node_modules/.bin/vitest",
+        "run",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/unit/t04-query-results.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:34:18.126808+00:00",
+      "finishedAt": "2026-10-22T16:34:19.622316+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/regression-typescript-before-fix.log",
+      "rawBytes": 10125,
+      "rawSHA256": "d44b901e0a0fbc2979da7d9cea05afd508fec48a251e2a95b426cc7e47ef3e0a"
+    },
+    {
+      "label": "setup-npm-retry",
+      "argv": ["npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund", "--prefer-offline"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:32:58.633006+00:00",
+      "finishedAt": "2026-10-22T16:33:12.288706+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/setup-npm-retry.log",
+      "rawBytes": 632,
+      "rawSHA256": "276213038fc52069763a8cc821bd00329e7ffeb78074583ed46d3523efe4711b"
+    },
+    {
+      "name": "npm",
+      "argv": ["npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:25:51.783168+00:00",
+      "finishedAt": "2026-10-22T16:26:41.671169+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/setup-npm.log",
+      "rawBytes": 1373,
+      "rawSHA256": "040f0e0976fbe011afaac8e88ea0be75facea46b5eed0dcee933e69e1d9e7ea2",
+      "kind": "environment setup only; not product test/build evidence"
+    },
+    {
+      "name": "uv",
+      "argv": ["uv", "sync", "--frozen"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:25:51.783475+00:00",
+      "finishedAt": "2026-10-22T16:26:08.900651+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/setup-uv.log",
+      "rawBytes": 1036,
+      "rawSHA256": "e9a7aeebf9f63fd471d97b60ef4a7a1cb259b2ed36323a949b37970ad9a07bc3",
+      "kind": "environment setup only; not product test/build evidence"
+    },
+    {
+      "label": "ssr-after-fix",
+      "argv": ["node", "docs/iterations/T04/ssr-probe.mjs"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:41:04.295421+00:00",
+      "finishedAt": "2026-10-22T16:41:04.774217+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/ssr-after-fix.log",
+      "rawBytes": 423,
+      "rawSHA256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874"
+    },
+    {
+      "label": "targeted-python-after-fix",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "packages/engine/tests/test_query_service_authoring.py",
+        "-q"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:40:18.809048+00:00",
+      "finishedAt": "2026-10-22T16:40:19.166794+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/targeted-python-after-fix.log",
+      "rawBytes": 180,
+      "rawSHA256": "d079ceba22c2d654c04ed9b583576d712c514bb2c01264ab57402b463787b549"
+    },
+    {
+      "label": "targeted-ts-after-fix",
+      "argv": [
+        "npx",
+        "vitest",
+        "run",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/unit/t04-query-results.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:40:18.097669+00:00",
+      "finishedAt": "2026-10-22T16:40:18.742829+00:00",
+      "exitCode": 1,
+      "raw": "test-results/t04-p3-repair/raw/targeted-ts-after-fix.log",
+      "rawBytes": 1370,
+      "rawSHA256": "dfe21bf29bc5f5466867ad967979b5e0b646f3bc10e7947d6158a7d34fdb6a26"
+    },
+    {
+      "label": "targeted-ts-final",
+      "argv": [
+        "npx",
+        "vitest",
+        "run",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/unit/t04-query-results.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-p3-repair",
+      "startedAt": "2026-10-22T16:41:04.295441+00:00",
+      "finishedAt": "2026-10-22T16:41:05.213943+00:00",
+      "exitCode": 0,
+      "raw": "test-results/t04-p3-repair/raw/targeted-ts-final.log",
+      "rawBytes": 236,
+      "rawSHA256": "a963c1942444ab77785df47b74451a40b9a66819e4bb0f069086eae3554cdfb9"
+    }
+  ],
+  "browserArtifacts": [
+    {
+      "path": "test-results/t04-p3-repair/browser/after-fix/interaction-results.json",
+      "bytes": 2825,
+      "sha256": "baa083beb31f255c9285a00e4d1f21978f5e4cd7582396f2b7cb467753c4781e",
+      "result": {
+        "probe": "T04 isolated QueryPage real DOM interaction",
+        "browserVersion": "155.0.8059.85",
+        "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "headless": true,
+        "offline": true,
+        "requests": [],
+        "pageErrors": [],
+        "checks": [
+          {
+            "name": "sixteen-fields-and-reselection",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator: getByLabel('SPARQL', { exact: true })\nExpected: \"SELECT DISTINCT ?item ?field0 ?field1 ?field2 ?field3 ?field4 ?field5 ?field6 ?field7 ?field8 ?field9 ?field10 ?field11 ?field12 ?field13 ?field14 ?field15 WHERE {\n  ?item a <urn:ClassA> .\n  OPTIONAL { ?item <urn:p2> ?field0 . }\n  OPTIONAL { ?item <urn:p3> ?field1 . }\n  OPTIONAL { ?item <urn:p4> ?field2 . }\n  OPTIONAL { ?item <urn:p5> ?field3 . }\n  OPTIONAL { ?item <urn:p6> ?field4 . }\n  OPTIONAL { ?item <urn:p7> ?field5 . }\n  OPTIONAL { ?item <urn:p8> ?field6 . }\n  OPTIONAL { ?item <urn:p9> ?field7 . }\n  OPTIONAL { ?item <urn:p10> ?field8 . }\n  OPTIONAL { ?item <urn:p11> ?field9 . }\n  OPTIONAL { ?item <urn:p12> ?field10 . }\n  OPTIONAL { ?item <urn:p13> ?field11 . }\n  OPTIONAL { ?item <urn:p14> ?field12 . }\n  OPTIONAL { ?item <urn:p15> ?field13 . }\n  OPTIONAL { ?item <urn:p16> ?field14 . }\n  OPTIONAL { ?item <urn:p17> ?field15 . }\n}\nORDER BY ?item ?field0 ?field1 ?field2 ?field3 ?field4 ?field5 ?field6 ?field7 ?field8 ?field9 ?field10 ?field11 ?field12 ?field13 ?field14 ?field15\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveValue\" getByLabel('SPARQL', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('SPARQL', { exact: true })\n"
+          },
+          {
+            "name": "saved-load-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator: getByLabel('SPARQL', { exact: true })\nExpected: \"SELECT ?b WHERE { ?b a <urn:ClassB> }\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveValue\" getByLabel('SPARQL', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('SPARQL', { exact: true })\n"
+          },
+          {
+            "name": "new-query-clears-old-builder",
+            "passed": true
+          },
+          {
+            "name": "model-load-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator: getByLabel('SPARQL', { exact: true })\nExpected: \"SELECT ?m WHERE { ?m a <urn:ClassM> }\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveValue\" getByLabel('SPARQL', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('SPARQL', { exact: true })\n"
+          }
+        ],
+        "passed": false,
+        "boundary": "No App, IPC, executor, persistence, model call, production CSP or native acceptance."
+      }
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/after-selector-fix/interaction-results.json",
+      "bytes": 721,
+      "sha256": "a0376cbab4283041b0747a3c69df89e7dd79543aa4bc11b5ab22b928fb49fdc4",
+      "result": {
+        "probe": "T04 isolated QueryPage real DOM interaction",
+        "browserVersion": "155.0.8059.85",
+        "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "headless": true,
+        "offline": true,
+        "requests": [],
+        "pageErrors": [],
+        "checks": [
+          {
+            "name": "sixteen-fields-and-reselection",
+            "passed": true
+          },
+          {
+            "name": "saved-load-clears-old-builder",
+            "passed": true
+          },
+          {
+            "name": "new-query-clears-old-builder",
+            "passed": true
+          },
+          {
+            "name": "model-load-clears-old-builder",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "boundary": "No App, IPC, executor, persistence, model call, production CSP or native acceptance."
+      }
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/before-fix/interaction-results.json",
+      "bytes": 1997,
+      "sha256": "a138bd1c40e93f0addfb6a613c6fa8511e0c1747b7e82136dd460f0bedd95923",
+      "result": {
+        "probe": "T04 isolated QueryPage real DOM interaction",
+        "browserVersion": "155.0.8059.85",
+        "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "headless": true,
+        "offline": true,
+        "requests": [],
+        "pageErrors": [],
+        "checks": [
+          {
+            "name": "sixteen-fields-and-reselection",
+            "passed": false,
+            "error": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('选择对象', { exact: true })\u001b[22m\n"
+          },
+          {
+            "name": "saved-load-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator: getByLabel('选择对象', { exact: true })\nExpected: \"urn:ClassA\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveValue\" getByLabel('选择对象', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('选择对象', { exact: true })\n"
+          },
+          {
+            "name": "new-query-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator: getByLabel('选择对象', { exact: true })\nExpected: \"urn:ClassA\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveValue\" getByLabel('选择对象', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('选择对象', { exact: true })\n"
+          },
+          {
+            "name": "model-load-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator: getByLabel('选择对象', { exact: true })\nExpected: \"urn:ClassA\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveValue\" getByLabel('选择对象', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('选择对象', { exact: true })\n"
+          }
+        ],
+        "passed": false,
+        "boundary": "No App, IPC, executor, persistence, model call, production CSP or native acceptance."
+      }
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/before-fix-selector-corrected/interaction-results.json",
+      "bytes": 2570,
+      "sha256": "cdcee3aaef1de0704a0cfa1bb42a26616765c8f5aff2538834e406cd54aa1983",
+      "result": {
+        "probe": "T04 isolated QueryPage real DOM interaction",
+        "browserVersion": "155.0.8059.85",
+        "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "headless": true,
+        "offline": true,
+        "requests": [],
+        "pageErrors": [],
+        "checks": [
+          {
+            "name": "sixteen-fields-and-reselection",
+            "passed": false,
+            "error": "Error: expect(locator).toBeDisabled() failed\n\nLocator:  getByRole('checkbox', { name: '字段17' })\nExpected: disabled\nReceived: enabled\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeDisabled\" getByRole('checkbox', { name: '字段17' }) with timeout 5000ms\n  - waiting for getByRole('checkbox', { name: '字段17' })\n    14 × locator resolved to <input type=\"checkbox\"/>\n       - unexpected value \"enabled\"\n"
+          },
+          {
+            "name": "saved-load-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  getByRole('combobox', { name: /^选择对象/u })\nExpected: \"\"\nReceived: \"urn:ClassA\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" getByRole('combobox', { name: /^选择对象/u }) with timeout 5000ms\n  - waiting for getByRole('combobox', { name: /^选择对象/u })\n    14 × locator resolved to <select>…</select>\n       - unexpected value \"urn:ClassA\"\n"
+          },
+          {
+            "name": "new-query-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  getByRole('combobox', { name: /^选择对象/u })\nExpected: \"\"\nReceived: \"urn:ClassA\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" getByRole('combobox', { name: /^选择对象/u }) with timeout 5000ms\n  - waiting for getByRole('combobox', { name: /^选择对象/u })\n    14 × locator resolved to <select>…</select>\n       - unexpected value \"urn:ClassA\"\n"
+          },
+          {
+            "name": "model-load-clears-old-builder",
+            "passed": false,
+            "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  getByRole('combobox', { name: /^选择对象/u })\nExpected: \"\"\nReceived: \"urn:ClassA\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" getByRole('combobox', { name: /^选择对象/u }) with timeout 5000ms\n  - waiting for getByRole('combobox', { name: /^选择对象/u })\n    14 × locator resolved to <select>…</select>\n       - unexpected value \"urn:ClassA\"\n"
+          }
+        ],
+        "passed": false,
+        "boundary": "No App, IPC, executor, persistence, model call, production CSP or native acceptance."
+      }
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/final/interaction-results.json",
+      "bytes": 807,
+      "sha256": "bd16e983d9079fb15360153b566244c404733b4c6319f2251c4c94dd40dd1c76",
+      "result": {
+        "probe": "T04 isolated QueryPage real DOM interaction",
+        "browserVersion": "155.0.8059.85",
+        "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "headless": true,
+        "offline": true,
+        "requests": [],
+        "pageErrors": [],
+        "checks": [
+          {
+            "name": "invalid-rdf-type-blocks-generation",
+            "passed": true
+          },
+          {
+            "name": "sixteen-fields-and-reselection",
+            "passed": true
+          },
+          {
+            "name": "saved-load-clears-old-builder",
+            "passed": true
+          },
+          {
+            "name": "new-query-clears-old-builder",
+            "passed": true
+          },
+          {
+            "name": "model-load-clears-old-builder",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "boundary": "No App, IPC, executor, persistence, model call, production CSP or native acceptance."
+      }
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/after-fix/interaction-trace.zip",
+      "bytes": 1527140,
+      "sha256": "f957a0f080135440184bbb884c77c82b2cd8ed6b8708ba37d5d9da9ff66efcf5"
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/after-selector-fix/interaction-trace.zip",
+      "bytes": 1515833,
+      "sha256": "39aa34650d567f4903abd0e24df2b57967564d73686f711070505adc04c48efe"
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/before-fix/interaction-trace.zip",
+      "bytes": 987688,
+      "sha256": "dd88b740611e26e354194228b2508a89e07047f09ea9383dd55f07eee3969856"
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/before-fix-selector-corrected/interaction-trace.zip",
+      "bytes": 1469391,
+      "sha256": "c6924d8a1f7fe6e6494e6903bd5ba5c778a208b784352ce2b7b178e09db62403"
+    },
+    {
+      "path": "test-results/t04-p3-repair/browser/final/interaction-trace.zip",
+      "bytes": 1779875,
+      "sha256": "d1644c28fc3ba0336b6b4b5ae6a69c999bb70d79b1fe397221d81d35e813e95f"
+    }
+  ],
+  "summary": {
+    "fullCheck": {
+      "label": "full-check-repair-lint-fixed",
+      "exitCode": 0,
+      "typescriptFiles": 18,
+      "typescriptPassed": 719,
+      "pythonPassed": 1167
+    },
+    "targetedTS": 65,
+    "targetedPython": 112,
+    "staticSSR": 14,
+    "componentInteraction": 5
+  },
+  "firstFailureDisposition": {
+    "setup-npm": "ECONNRESET; one successful isolated-cache retry, no lock change",
+    "regression-python-before-fix": "8 failed/104 passed, genuine before-fix regression",
+    "regression-typescript-before-fix": "19 failed/46 passed, genuine before-fix regression",
+    "interaction-before-fix": "harness exact wrapping-label lookup failed; not product regression proof",
+    "interaction-before-fix-selector-corrected": "four genuine original product failures; field17 enabled and old builder retained in all three loads",
+    "targeted-ts-after-fix": "2 astral failures showed Zod max uses code points; fixed explicit s.length check",
+    "interaction-after-fix": "three populated textarea exact-label lookups failed; new-query passed; selector corrected",
+    "full-check-repair": "lint no-control-regex failed; fixed equivalent fixed-space scanning without rule suppression",
+    "final-docs-format-check": "Explicit check found verification JSON style (docs/reviews is ignored by default); formatted named new file with --ignore-path /dev/null; corrected explicit check exit0."
+  },
+  "boundary": "Offline isolated component evidence only; no App/IPC/Store/executor/model API/production CSP/native/parent acceptance. Old dual Pass applies only to frozen554. No push/PR/CI/merge.",
+  "rawArchive": {
+    "path": "docs/reviews/T04/p3-repair/owner-verification-raw.tar.gz",
+    "bytes": 12474,
+    "sha256": "b209238b01e0af962f1bc198cf8dd64af3a3918ef9f1b9b1efa1f8ebbcc318fe",
+    "purpose": "Small raw stdout and actual-command receipts retained for independent review and failed-attempt traceability; browser traces/screenshots remain ignored local runtime. Captured before final formatting/commit."
+  }
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import fixture from '../fixtures/query/authoring-case.json'
+import boundaries from '../fixtures/query/draft-boundaries.json'
 import {
   alarmTemplate,
   compileVisual,
@@ -10,6 +11,34 @@ import {
 } from '../../apps/desktop/src/renderer/src/query/draft'
 
 describe('T04 offline query authoring', () => {
+  const baseDraft = {
+    name: 'q',
+    description: '',
+    sparql: 'SELECT ?item WHERE { ?item a <urn:Class> }',
+    scope: 'asserted',
+    capabilityQuestion: '',
+    source: 'editor',
+  }
+  it.each(boundaries.cases)('uses the shared raw length policy: $label', (entry) => {
+    const core = entry.unit.repeat(entry.count)
+    const input = { ...baseDraft, [entry.field]: entry.prefix + core + entry.suffix }
+    if (entry.valid) {
+      const parsed = draftSchema.parse(input)
+      expect(parsed[entry.field as 'name' | 'sparql']).toBe(core)
+    } else expect(() => draftSchema.parse(input)).toThrow()
+  })
+  it.each(boundaries.trimEdgeCodePoints)('normalizes edge whitespace U+%s consistently', (cp) => {
+    const edge = String.fromCodePoint(cp)
+    for (const field of ['name', 'sparql'] as const) {
+      expect(draftSchema.parse({ ...baseDraft, [field]: edge + 'q' + edge })[field]).toBe('q')
+      expect(() => draftSchema.parse({ ...baseDraft, [field]: edge })).toThrow()
+    }
+  })
+  it('continues rejecting lone surrogates in bounded draft text', () => {
+    for (const field of ['name', 'sparql'])
+      for (const value of ['\ud800', '\udfff'])
+        expect(() => draftSchema.parse({ ...baseDraft, [field]: value })).toThrow()
+  })
   it('builds the exact standards query with project supplied vocabulary', () => {
     const visual = alarmTemplate(fixture.vocabulary)
     expect(visual).toEqual(fixture.visual)
