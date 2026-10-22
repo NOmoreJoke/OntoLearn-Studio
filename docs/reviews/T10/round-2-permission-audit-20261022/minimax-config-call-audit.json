@@ -1,0 +1,77 @@
+{
+  "status": "bounded_own_tool_call_and_return_classification_not_global_config_audit",
+  "observedAt": "2026-10-22T18:54:00.158653+08:00",
+  "reviewCandidate": "66cc15200611d592d3da2877961f9e079eb05277",
+  "sessionId": "mvs_d314cc7a43c84a559e31d5ddf3663af7",
+  "turnId": "5ad5f9d9-3db0-4872-86ab-04fbb3375fd3",
+  "sourceReference": "official-local:minimax:mvs_d314cc7a43c84a559e31d5ddf3663af7:messages",
+  "sourceStreamSHA256AtReadback": "626aa9cefda50640af10d4f6f16b73b9e2be4ad07a13ccdad80f73d47e82a261",
+  "toolCall": {
+    "messageIndex": 169,
+    "messageId": "msg-AtMO275KU6wNa1140j0VpKohpnDbCGmTZFcdPb4cA2A",
+    "toolCallId": "call_01a1632f79087710ae0544ec",
+    "name": "bash",
+    "actualArguments": {
+      "command": "grep -nE \"permissionMode|model|reasoning|effort\" /Users/kyle/.minimax/config.yaml 2>/dev/null | head -20; echo \"---\"; grep -rn \"M3.1-Flash\\|xhigh\" /Users/kyle/.minimax/config.yaml 2>/dev/null | head -10",
+      "description": "Read back local runtime permission/model settings"
+    }
+  },
+  "associatedReturn": {
+    "messageIndex": 170,
+    "messageId": "msg-M7FwdGDUCrf_0sc7w-i8ag2BAWZ1_8Aaxtxl6yXUKn8",
+    "toolCallId": "call_01a1632f79087710ae0544ec",
+    "role": "toolResult",
+    "toolName": "bash",
+    "isError": false,
+    "textByteLength": 1124,
+    "textSHA256": "5648cacfb1f84ffd4bb11d8f76c502ac1d8c2ce0f73b061e1f624ff6c70b9b6a",
+    "lineCount": 29,
+    "returnClass": "grep-selected global model/reasoning/effort/permission config snippets, not entire YAML and not per-session settings",
+    "allowedEnumValuesObserved": [
+      "bypassPermissions",
+      "MiniMax-M3.1-Flash",
+      "xhigh"
+    ],
+    "credentialOrPeerContentClassification": "No credential value or peer conversation content observed in this bounded associated text; explicit pattern checks below are not a proof that the entire global config is secret-free",
+    "boundedShapeChecks": {
+      "privateKeyBlock": false,
+      "bearerCredentialShape": false,
+      "skTokenShape": false,
+      "credentialKeyValueAssignment": false,
+      "otherSessionIdentifierShape": false,
+      "reviewWorktreePath": false,
+      "systemReminderMarkup": false
+    },
+    "fullReturnCopied": false,
+    "lineCategories": {
+      "selectedConfigLine": 28,
+      "separator": 1
+    },
+    "selectedConfigKeyNamesOnly": [
+      "defaultModel",
+      "effort",
+      "effortOptions",
+      "model_order",
+      "models",
+      "name",
+      "permissionMode",
+      "reasoning",
+      "reasoningSummary"
+    ]
+  },
+  "scopeAssessment": {
+    "frozenPromptAssignsActualSettingReadbackToOriginalOwner": true,
+    "frozenPromptForbidsCredentialsAndOtherModelCurrentRoundOpinions": true,
+    "actualOperation": "The reviewer read selected global configuration lines via grep; owner did not rerun command or reopen global file",
+    "credentialOrPeerProhibitionViolationDirectEvidenceObserved": false,
+    "globalDefaultProvesActualTaskPermission": false,
+    "permissionPrimaryEvidence": "Actual submitted task UI 始终授权 captured at creation in 9eb round-2-dispatch/minimax-submitted-ax.txt; verified app mapping to bypassPermissions",
+    "modelEffortPrimaryEvidence": "Own session llm-call.json provider/model/thinkingLevel verified in initial receipt, not global model catalog",
+    "disposition": "Keep original report bytes. Treat global snippet as global defaults/catalog only; do not cite it as actual task model/permission proof. No automatic invalidation of whole review; any additional scope decision remains controller judgment."
+  },
+  "globalConfigReopenedByOwner": false,
+  "otherSessionsQueried": false,
+  "GUIUsed": false,
+  "headersThinkingSystemOrCompleteYAMLCopied": false,
+  "productOr225Modified": false
+}
