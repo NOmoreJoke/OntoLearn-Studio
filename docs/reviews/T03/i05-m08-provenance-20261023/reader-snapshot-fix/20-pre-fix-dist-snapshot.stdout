@@ -1,0 +1,104 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+______ test_distribution_python_identity_uses_one_bounded_snapshot[False] ______
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-659/test_distribution_python_ident0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b6154c0>
+oversized = False
+
+    @pytest.mark.parametrize("oversized", [False, True])
+    def test_distribution_python_identity_uses_one_bounded_snapshot(tmp_path, monkeypatch, oversized):
+        site = tmp_path / "env/site-packages"
+        info = "html5rdf-1.2.1.dist-info"
+        write(site, info + "/METADATA", b"Name: html5rdf\nVersion: 1.2.1\n")
+        write(site, info + "/LICENSE", b"license")
+        relative = "html5rdf/__init__.py"
+        original_raw = b"VALUE = 1\n" if not oversized else b"#" * (p.CODE_CAP + 1)
+        source = site / relative
+        write(site, relative, original_raw)
+    
+        class Distribution:
+            version = "1.2.1"
+            files = [info + "/METADATA", info + "/LICENSE", relative]
+    
+            def locate_file(self, path):
+                return site / path
+    
+        monkeypatch.setattr(p.importlib.metadata, "distribution", lambda _name: Distribution())
+        monkeypatch.setattr(p.sysconfig, "get_path", lambda _kind: str(site))
+        monkeypatch.setattr(sys, "prefix", str(tmp_path / "env"))
+        original_read = p._read
+        source_caps = []
+    
+        def observed_read(path, cap):
+            if path == source:
+                source_caps.append(cap)
+                raw = original_read(path, cap)
+                source.write_bytes(b"VALUE = 999\n")
+                return raw
+            return original_read(path, cap)
+    
+        monkeypatch.setattr(p, "_read", observed_read)
+        if oversized:
+            with fault("LIMIT_EXCEEDED"):
+                p._dist_inventory("html5rdf", "1.2.1")
+        else:
+            row = p._dist_inventory("html5rdf", "1.2.1")["files"][0]
+            assert row["bytes"] == len(original_raw)
+            assert row["sha256"] == p._sha(original_raw)
+>           assert row["codeSha256"] == p._code_sha(p._compiled(original_raw))
+E           AssertionError: assert '7e3c4572ff1d...76906fc3129cd' == '5efca1a0e13a...a77166ed7131b'
+E             
+E             - 5efca1a0e13aa8f9c5b4d2d5d322ccd854d1ae95064e05f4daea77166ed7131b
+E             + 7e3c4572ff1d4297dc1aad87931c6b341ff63742be92b83de2e76906fc3129cd
+
+packages/engine/tests/test_semantic_build_provenance.py:1213: AssertionError
+______ test_distribution_python_identity_uses_one_bounded_snapshot[True] _______
+
+tmp_path = PosixPath('/private/var/folders/7y/9bfdsf6j5ys67hh4tpt11k_r0000gn/T/pytest-of-kyle/pytest-659/test_distribution_python_ident1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b65b7d0>
+oversized = True
+
+    @pytest.mark.parametrize("oversized", [False, True])
+    def test_distribution_python_identity_uses_one_bounded_snapshot(tmp_path, monkeypatch, oversized):
+        site = tmp_path / "env/site-packages"
+        info = "html5rdf-1.2.1.dist-info"
+        write(site, info + "/METADATA", b"Name: html5rdf\nVersion: 1.2.1\n")
+        write(site, info + "/LICENSE", b"license")
+        relative = "html5rdf/__init__.py"
+        original_raw = b"VALUE = 1\n" if not oversized else b"#" * (p.CODE_CAP + 1)
+        source = site / relative
+        write(site, relative, original_raw)
+    
+        class Distribution:
+            version = "1.2.1"
+            files = [info + "/METADATA", info + "/LICENSE", relative]
+    
+            def locate_file(self, path):
+                return site / path
+    
+        monkeypatch.setattr(p.importlib.metadata, "distribution", lambda _name: Distribution())
+        monkeypatch.setattr(p.sysconfig, "get_path", lambda _kind: str(site))
+        monkeypatch.setattr(sys, "prefix", str(tmp_path / "env"))
+        original_read = p._read
+        source_caps = []
+    
+        def observed_read(path, cap):
+            if path == source:
+                source_caps.append(cap)
+                raw = original_read(path, cap)
+                source.write_bytes(b"VALUE = 999\n")
+                return raw
+            return original_read(path, cap)
+    
+        monkeypatch.setattr(p, "_read", observed_read)
+        if oversized:
+>           with fault("LIMIT_EXCEEDED"):
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE BuildProvenanceFault
+
+packages/engine/tests/test_semantic_build_provenance.py:1207: Failed
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_distribution_python_identity_uses_one_bounded_snapshot[False]
+FAILED packages/engine/tests/test_semantic_build_provenance.py::test_distribution_python_identity_uses_one_bounded_snapshot[True]
+2 failed, 96 deselected in 0.38s

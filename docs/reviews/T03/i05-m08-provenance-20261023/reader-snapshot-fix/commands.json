@@ -1,0 +1,37 @@
+{
+  "commands": [
+    {
+      "executionId": "exec-8ba1641d-df04-42f5-87a7-66e0dd3d0684",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        "cat >> packages/engine/tests/test_semantic_build_provenance.py <<'PY'\n\n\n@pytest.mark.parametrize(\"oversized\", [False, True])\ndef test_distribution_python_identity_uses_one_bounded_snapshot(tmp_path, monkeypatch, oversized):\n    site = tmp_path / \"env/site-packages\"\n    info = \"html5rdf-1.2.1.dist-info\"\n    write(site, info + \"/METADATA\", b\"Name: html5rdf\\nVersion: 1.2.1\\n\")\n    write(site, info + \"/LICENSE\", b\"license\")\n    relative = \"html5rdf/__init__.py\"\n    original_raw = b\"VALUE = 1\\n\" if not oversized else b\"#\" * (p.CODE_CAP + 1)\n    source = site / relative\n    write(site, relative, original_raw)\n\n    class Distribution:\n        version = \"1.2.1\"\n        files = [info + \"/METADATA\", info + \"/LICENSE\", relative]\n\n        def locate_file(self, path):\n            return site / path\n\n    monkeypatch.setattr(p.importlib.metadata, \"distribution\", lambda _name: Distribution())\n    monkeypatch.setattr(p.sysconfig, \"get_path\", lambda _kind: str(site))\n    monkeypatch.setattr(sys, \"prefix\", str(tmp_path / \"env\"))\n    original_read = p._read\n    source_caps = []\n\n    def observed_read(path, cap):\n        if path == source:\n            source_caps.append(cap)\n            raw = original_read(path, cap)\n            source.write_bytes(b\"VALUE = 999\\n\")\n            return raw\n        return original_read(path, cap)\n\n    monkeypatch.setattr(p, \"_read\", observed_read)\n    if oversized:\n        with fault(\"LIMIT_EXCEEDED\"):\n            p._dist_inventory(\"html5rdf\", \"1.2.1\")\n    else:\n        row = p._dist_inventory(\"html5rdf\", \"1.2.1\")[\"files\"][0]\n        assert row[\"bytes\"] == len(original_raw)\n        assert row[\"sha256\"] == p._sha(original_raw)\n        assert row[\"codeSha256\"] == p._code_sha(p._compiled(original_raw))\n    assert source_caps == [p.CODE_CAP]\nPY\n.venv/bin/ruff format packages/engine/tests/test_semantic_build_provenance.py\n.venv/bin/pytest packages/engine/tests/test_semantic_build_provenance.py -q -k distribution_python_identity_uses_one_bounded_snapshot > build/i05-provenance-unit/20-pre-fix-dist-snapshot.stdout 2> build/i05-provenance-unit/20-pre-fix-dist-snapshot.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-i05-private-provenance",
+      "exitCode": 1,
+      "startedAtMs": 1792695420470,
+      "completedAtMs": 1792695420957,
+      "duration": {
+        "secs": 0,
+        "nanos": 486257458
+      }
+    },
+    {
+      "executionId": "exec-7d84ebea-d0a7-465f-a5a9-4abed5ab79e2",
+      "argv": [
+        "/bin/zsh",
+        "-lc",
+        ".venv/bin/ruff check packages/engine/src/ontolearn_engine/semantic_build_provenance.py packages/engine/tests/test_semantic_build_provenance.py > build/i05-provenance-unit/21-ruff-dist-fix.stdout 2> build/i05-provenance-unit/21-ruff-dist-fix.stderr && .venv/bin/ruff format --check packages/engine/src/ontolearn_engine/semantic_build_provenance.py packages/engine/tests/test_semantic_build_provenance.py > build/i05-provenance-unit/22-format-dist-fix.stdout 2> build/i05-provenance-unit/22-format-dist-fix.stderr && .venv/bin/pytest packages/engine/tests/test_semantic_build_provenance.py -q > build/i05-provenance-unit/23-pytest-dist-fix.stdout 2> build/i05-provenance-unit/23-pytest-dist-fix.stderr"
+      ],
+      "cwd": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T03-i05-private-provenance",
+      "exitCode": 0,
+      "startedAtMs": 1792695431014,
+      "completedAtMs": 1792695433004,
+      "duration": {
+        "secs": 1,
+        "nanos": 990228375
+      }
+    }
+  ],
+  "source": "own exact bounded session CommandExecution events"
+}
