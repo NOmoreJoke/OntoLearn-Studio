@@ -1,0 +1,117 @@
+{
+  "recordedAt": "2026-10-22T20:43:46.813020+00:00",
+  "scope": "R3 actual two fresh complete designated bounded S1 reports; product verdicts separate from controller process intake",
+  "fixedProductAndBothActualHeads": "5070004ec8e3219bea33960bd88f57f1976e9cf8",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "ownerPreparationRef": "09a85f86f6d32d774e4dff6cdd2c10686963cb58",
+  "creationRef": "ed275d3849c333be07f3476116140a02dfbd9cc7",
+  "creationAuditRef": "ebbbc1d7e3cfd3a74f2f115dcfeaef50d1aa9782",
+  "zcodeSingleCollectionRef": "906625a9e79d740f8cb427b9da990bb407a7bb58",
+  "controllerCreationAccepted": true,
+  "guiReleasedAt": "2026-10-22T20:15:03.300Z",
+  "guiStillAllowed": false,
+  "zcode": {
+    "sessionId": "session_56788899c99e13a8d348bb21b2d62289",
+    "originalTurnId": "turn_dee9efbf-58dc-473e-8f12-b9be14ed1a72",
+    "officialTerminal": {
+      "observedAt": "2026-10-22T20:24:58.411575+00:00",
+      "strictOwnOriginalTurnEvents": [
+        {
+          "timestamp": "2026-10-22T20:24:27.590Z",
+          "event": "turn.completed",
+          "sessionId": "session_56788899c99e13a8d348bb21b2d62289",
+          "turnId": "turn_dee9efbf-58dc-473e-8f12-b9be14ed1a72",
+          "status": "completed"
+        }
+      ],
+      "currentFallbackUsed": false
+    },
+    "report": {
+      "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-r3-5070004/docs/reviews/T04/round-3/zcode-glm53.md",
+      "bytes": 27067,
+      "lines": 119,
+      "sha256": "7ab676ff90b1ded1b89e573480d2597080bfb950507ae57e7c640fd05c8851d6",
+      "ownerFullReadAfterOfficialTerminal": true,
+      "readBeforeAndAfterHashIdentical": true
+    },
+    "modelProductVerdict": "Pass complete bounded same507 S1",
+    "newFindings": "No new P1/P2/P3; O1/O2 retained",
+    "ownerDisposition": "zcode-owner-disposition.md",
+    "independentCollectionAudit": "zcode-collection-audit.md",
+    "controllerSingleSideIntakeAccepted": true,
+    "controllerSingleSideIntakeSource": "Actual controller message: original27067 report fully read, root audit8099B/ce8fe70bd8c7a74f7fd2142685f2f109cbe1a63146a21dae65c76d488a527fb3; owner acknowledges receipt, did not read an unprovided private path."
+  },
+  "minimax": {
+    "sessionId": "mvs_4e9f4b2b7bdd47348293cdbb41f60109",
+    "originalTurnId": "659fd77a-9a0b-49c5-b39f-48aeb928d9f1",
+    "officialTerminal": {
+      "observedAt": "2026-10-22T20:34:17.895555+00:00",
+      "strictOriginalTurnFourScalars": {
+        "session_id": "mvs_4e9f4b2b7bdd47348293cdbb41f60109",
+        "turn_id": "659fd77a-9a0b-49c5-b39f-48aeb928d9f1",
+        "terminal_outcome": "completed",
+        "updated_at_ms": 1792701245588
+      },
+      "currentFallbackUsed": false,
+      "reportExists": true,
+      "reportBytes": 59781
+    },
+    "report": {
+      "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004/docs/reviews/T04/round-3/minimax-m31flash.md",
+      "bytes": 59781,
+      "lines": 380,
+      "sha256": "fe23ab51aea1ded81ba87264377475b71d1676468c49e7dc3a75199e7dc1d612",
+      "ownerFullReadAfterOfficialTerminal": true,
+      "readRanges": [
+        "1-90",
+        "91-155",
+        "156-220",
+        "221-285",
+        "286-345",
+        "346-400"
+      ],
+      "readBeforeAndAfterHashIdentical": true
+    },
+    "modelProductVerdict": "Pass complete bounded same507 S1",
+    "newFindings": "One nonblocking P3 F-R3-01 retained/unfixed pending sole result-metadata owner judgement; OBS1-6 all disposed",
+    "ownerDisposition": "minimax-owner-disposition.md",
+    "independentCollectionAudit": "minimax-collection-audit.md",
+    "independentCollectionAuditEvidence": {
+      "bytes": 6517,
+      "sha256": "0c04383a22773be33957fd9455c7b9aee86a87182d460646dd6cc48722c7d5b8",
+      "verdict": "Pass collection increment only; F-R3-01 open; no full-turn process acceptance"
+    }
+  },
+  "finalIdentityOnly": [
+    {
+      "reviewer": "zcode",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-zcode-r3-5070004",
+      "actualHead": "5070004ec8e3219bea33960bd88f57f1976e9cf8",
+      "branch": "detached",
+      "gitStatusShort": " M AGENTS.md\n?? docs/reviews/T04/p3-repair/launch-r3/\n?? docs/reviews/T04/round-3/\n",
+      "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "kind": "Only final identity scalars; no repeated42/source/native-input chain"
+    },
+    {
+      "reviewer": "minimax",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004",
+      "actualHead": "5070004ec8e3219bea33960bd88f57f1976e9cf8",
+      "branch": "detached",
+      "gitStatusShort": " M AGENTS.md\n?? docs/reviews/T04/p3-repair/launch-r3/\n?? docs/reviews/T04/round-3/\n",
+      "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "kind": "Only final identity scalars; no repeated42/source/native-input chain"
+    }
+  ],
+  "controlledCommandEvidence": "Z7 and M3 receipt/raw fully preserved; both fullcheck719 TS/1167 Python, SSR14, isolatedDOM5. No owner rerun.",
+  "inlineProbeLimit": "M native/pipeline probes retain known first harness failures; not true process exit/UTC logger receipts; TS per-case values not saved. Do not replace missing evidence with replay.",
+  "bothModelProductPassReportsReceived": true,
+  "controllerAcceptedCompleteDualPassOrProcess": false,
+  "fullNativeProcessAuditDone": false,
+  "oldRound2ProcessFailPreserved": true,
+  "allFourP3D1D4ClosedByBothModels": true,
+  "F_R3_01Closed": false,
+  "parentP0CrossModuleAcceptance": false,
+  "pushPRCImergeRemoteRelease": false,
+  "goalLastObserved": "blocked",
+  "noNewPairAutoCreated": true
+}

@@ -1,0 +1,230 @@
+{
+  "recordedAt": "2026-10-22T20:38:14.429658+00:00",
+  "sourceWorkspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004",
+  "report": {
+    "sourcePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004/docs/reviews/T04/round-3/minimax-m31flash.md",
+    "bytes": 59781,
+    "lines": 380,
+    "sha256": "fe23ab51aea1ded81ba87264377475b71d1676468c49e7dc3a75199e7dc1d612",
+    "ownerFullReadAfterOfficialTerminal": true,
+    "readRanges": [
+      "1-90",
+      "91-155",
+      "156-220",
+      "221-285",
+      "286-345",
+      "346-400"
+    ],
+    "readBeforeAndAfterHashIdentical": true
+  },
+  "officialOriginalTurnFourScalarSnapshot": {
+    "observedAt": "2026-10-22T20:34:17.895555+00:00",
+    "strictOriginalTurnFourScalars": {
+      "session_id": "mvs_4e9f4b2b7bdd47348293cdbb41f60109",
+      "turn_id": "659fd77a-9a0b-49c5-b39f-48aeb928d9f1",
+      "terminal_outcome": "completed",
+      "updated_at_ms": 1792701245588
+    },
+    "currentFallbackUsed": false,
+    "reportExists": true,
+    "reportBytes": 59781
+  },
+  "modelConclusion": "Pass complete bounded same5f->actualHEAD507 S1; D1-D4 closed. F-R3-01 P3 plus OBS1-6 require owner disposition; not controller dualPass or full process acceptance.",
+  "archive": {
+    "path": "minimax-reviewer-originals.tar.gz",
+    "bytes": 40465,
+    "sha256": "34f57c27c4bc4628e539526768049b7ce19da5238ab3f1d33c227191a47da92a"
+  },
+  "commands": [
+    {
+      "reviewer": "minimax",
+      "label": "mm-r3-full-check-01",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004",
+      "startedAt": "2026-10-22T20:15:47.078847+00:00",
+      "finishedAt": "2026-10-22T20:17:07.307708+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004/test-results/t04-review-runtime/minimax/raw/mm-r3-full-check-01.log",
+      "rawBytes": 5389,
+      "rawSHA256": "1b86a3e70f159fcd5d011d4b94e5b441aa72299af926599305b7600793b10d7f"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "mm-r3-ssr-01",
+      "argv": [
+        "node",
+        "docs/iterations/T04/ssr-probe.mjs"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004",
+      "startedAt": "2026-10-22T20:18:29.374316+00:00",
+      "finishedAt": "2026-10-22T20:18:29.900747+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004/test-results/t04-review-runtime/minimax/raw/mm-r3-ssr-01.log",
+      "rawBytes": 423,
+      "rawSHA256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874"
+    },
+    {
+      "reviewer": "minimax",
+      "label": "mm-r3-component-01",
+      "argv": [
+        "node",
+        "docs/iterations/T04/p3-interaction-probe.mjs",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "review-minimax-r3"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004",
+      "startedAt": "2026-10-22T20:18:32.679192+00:00",
+      "finishedAt": "2026-10-22T20:18:37.562368+00:00",
+      "exitCode": 0,
+      "raw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004/test-results/t04-review-runtime/minimax/raw/mm-r3-component-01.log",
+      "rawBytes": 1037,
+      "rawSHA256": "2acd93153f7a294c623c4d5a99fbe807fa0d5efb3b17a74c7838b811e3cce705"
+    }
+  ],
+  "inlineProbeEvidence": {
+    "source": "native necessary own known-probe requests/results; saved source and Python/T09 result artifacts",
+    "finalNativeSummaries": {
+      "d1-python": {
+        "probe": "d1-python",
+        "cases": 40,
+        "mismatches": [],
+        "output": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004/test-results/t04-review-runtime/minimax/counterexamples/d1-python-results.json"
+      },
+      "d1-ts": {
+        "probe": "d1-ts",
+        "cases": 40,
+        "mismatches": [],
+        "visualCaps": []
+      }
+    },
+    "pythonSavedNamedCases": 40,
+    "t09SavedMemberCount": 19,
+    "t09Mismatches": [],
+    "t09FullAnswers": {
+      "deliberate_wrong_Closed_High": [
+        [
+          "urn:ontolearn:learning:alarm/A02"
+        ]
+      ],
+      "generated_A01": [
+        [
+          "urn:ontolearn:learning:alarm/A01"
+        ]
+      ],
+      "generated_after_Closed": [],
+      "generated_matches_original_sparql_shape": true,
+      "original_A01": [
+        [
+          "urn:ontolearn:learning:alarm/A01"
+        ]
+      ],
+      "original_after_Closed": [],
+      "same_count_wrong_meaning_detected": true
+    },
+    "qualityLimit": "No full per-probe logger receipts/UTC start-end; shell tail/head and echo $? are pipeline exit, not probe process exit. TS full per-case normalized outputs not saved. No independent owner rerun or full actual TS/Python value comparison claimed. Original native tool result truncation and first harness failures retained."
+  },
+  "members": [
+    {
+      "path": "minimax-m31flash.md",
+      "bytes": 59781,
+      "sha256": "fe23ab51aea1ded81ba87264377475b71d1676468c49e7dc3a75199e7dc1d612"
+    },
+    {
+      "path": "metadata/mm-r3-full-check-01.json",
+      "bytes": 624,
+      "sha256": "65d257d22b0324e077d8c13b842155225ebb4cb53b1047b2e074adecdb33a57d"
+    },
+    {
+      "path": "raw/mm-r3-full-check-01.log",
+      "bytes": 5389,
+      "sha256": "1b86a3e70f159fcd5d011d4b94e5b441aa72299af926599305b7600793b10d7f"
+    },
+    {
+      "path": "metadata/mm-r3-ssr-01.json",
+      "bytes": 627,
+      "sha256": "c23c091e43538e5a44f534741dc66355f3d228ab24384fd66e35be1c1c206f0f"
+    },
+    {
+      "path": "raw/mm-r3-ssr-01.log",
+      "bytes": 423,
+      "sha256": "f730e85970c4fff87784f8d377da18f50da85de9487a4a0080fedc38a0f80874"
+    },
+    {
+      "path": "metadata/mm-r3-component-01.json",
+      "bytes": 744,
+      "sha256": "f3ad1e1a4713c2d161fc808db65585f47a196f2a0e0d5cd845bb6977b5387857"
+    },
+    {
+      "path": "raw/mm-r3-component-01.log",
+      "bytes": 1037,
+      "sha256": "2acd93153f7a294c623c4d5a99fbe807fa0d5efb3b17a74c7838b811e3cce705"
+    },
+    {
+      "path": "counterexamples/d1-extra-cases.json",
+      "bytes": 2482,
+      "sha256": "48b934e8f5cb1dcd59eed7025199a22bbf9a6c9b954aae2d2dcdf68bfe194175"
+    },
+    {
+      "path": "counterexamples/d1-python-probe.py",
+      "bytes": 4535,
+      "sha256": "0d5bb169c2d13fd18d25be9363375cf266da5db646b0bd495102ecc7e79dffb6"
+    },
+    {
+      "path": "counterexamples/d1-python-results.json",
+      "bytes": 462961,
+      "sha256": "5cf25dd172d2bd87478d3a3fcce280e369465d03d7021c9e62571af59eb4ccb0"
+    },
+    {
+      "path": "counterexamples/d1-ts-probe.ts",
+      "bytes": 5901,
+      "sha256": "70b6128468c3198cd22a9a3b726dc967dcd9f284891c9c6dcc661e1c371bf0fa"
+    },
+    {
+      "path": "counterexamples/t09-provenance-check.py",
+      "bytes": 6807,
+      "sha256": "9dfa9edab3fc2ae285f85834a8607a75bb96d283b1d32554405d5a9a936ffadf"
+    },
+    {
+      "path": "counterexamples/t09-provenance-results.json",
+      "bytes": 8056,
+      "sha256": "f146d16749b7f23c177c14c8645a6925019353b063ccfcc0ba6fc7f73f9f484b"
+    },
+    {
+      "path": "counterexamples/zod-unit-probe.mjs",
+      "bytes": 928,
+      "sha256": "fadca76ebc5a937a654ed14d7a13ea270e1f71cb44f3954ff6a540041c39c34e"
+    },
+    {
+      "path": "native/necessary-inline-probe-requests-and-results.json",
+      "bytes": 21866,
+      "sha256": "73b765a6067b9f024c41dfd47b7db23ce375ac21784cbe353b13761624cd748e"
+    },
+    {
+      "path": "official-original-turn-four-scalars.json",
+      "bytes": 362,
+      "sha256": "ba9d64a5b971d4daf50b491ddc8550f09024bc691a757b3ad326e02595ec05f1"
+    },
+    {
+      "path": "browser/interaction-results.json",
+      "bytes": 807,
+      "sha256": "bd16e983d9079fb15360153b566244c404733b4c6319f2251c4c94dd40dd1c76"
+    }
+  ],
+  "actualReviewHead": "5070004ec8e3219bea33960bd88f57f1976e9cf8",
+  "operatorSettingsAndAcceptanceMatchCreationArchive": true,
+  "gitStatusShort": " M AGENTS.md\n?? docs/reviews/T04/p3-repair/launch-r3/\n?? docs/reviews/T04/round-3/\n",
+  "largeOwnTraceLocalOnly": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-s1-minimax-r3-5070004/test-results/t04-p3-repair/browser/review-minimax-r3/interaction-trace.zip",
+    "bytes": 1780469,
+    "sha256": "96620a61b938c595cbd045bd28d842c3fb013501a465f0bd78e1df4562a7b1ac",
+    "includedInArchive": false
+  },
+  "processCoverage": "Collection/runtime raw/own operator byte integrity only. No full native request compliance/zero exposure claim.",
+  "controllerAcceptedSame507DualPass": false,
+  "noProductRetestForCollection": true,
+  "noRepeated42OrNativeInputChainForIntake": true
+}
