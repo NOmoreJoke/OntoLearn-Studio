@@ -1,0 +1,11 @@
+# 独立首审逐项处置
+
+首审 `independent-review.md` 保持14650 B／SHA256 `a2807b1c166addaf308516043214aebfa45a187211d389cd92ed8a2a16da3b1a`，结论不通过不倒改。主合同首版保全 `inputs/contract.rc1.md.raw`（54679B／8cc6f527232d575028a5ba4e12912bc8f4a2b6eef350de929a296205d7c86cf1）；边表首版保全 `inputs/static-import-closure.initial.json.raw`。以下为作者处置，仍需独立delta复核，不由作者把首审改判通过。
+
+| ID  | 首审等级／问题                 | 具体修订                                                                                                                                                                                                                                           | 验证及范围                                                                                                          |
+| --- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| R1  | P2：scope调用缺覆盖            | contract §3加prepare/project真实入口、legacy纯输入、asserted/fresh derived/同次project、完整graph/provenance及拒绝；§4扩真实reason code身份hook，prepare=1/project=0分别观测；不从JSON喂结果，不将profile/DAG域喂legacyhelper                      | AST/固定6891签名与图范围只读核；模块集合22不变、资源仍startup3JSON；正式selected仍未授                              |
+| R2  | P3：两条相对导入漏边           | 补production:291→semantic_execution、restore:10→semantic；edgePolicy明确literal/package/self、隐含父包、未解析dynamic与不调用quality懒导出                                                                                                         | 首126边保raw；当前128边、22模块及其source SHA不变；没有源码采用扩张                                                 |
+| R3  | P2：单flag全suite无法各档fresh | 同一probe只接受flag+full-v1/b1-semantic-1x-v1/b1-semantic-10x-v1三exact argv；source/package/parent/main/manifest/header/terminal/equivalence同步；两B1 set固定四ontology版本、22/184图及CriticalPump输入构造，分别fresh process，Warm同进程第二遍 | 三固定set无任意path/env/case输入；子集collection与full分开，另12份B1纯语义原件不替代12原S1/Store；不授实际进程或绕H |
+
+资源调查五/八JSON事实错误由原作者单独补正，首版raw已保；该项首审确认关闭。一次本地文档编辑的解释器编码错误原stderr及处置记录见doc-process-history.json，不是产品或构建失败。后继主合同若再变执行／验收含义，必须记录新delta；本次仅修已发现设计与证据问题，不重跑旧组件。

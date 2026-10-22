@@ -1,0 +1,26 @@
+# T01 四资源 offer 总控限定收件与 I05 供应采用
+
+2026-10-22。接收原 T01 会话的纯静态 owner offer：受审候选 `dd972b79adf4d378636a7d41a6b0e3e08c0d5ca1`，最终过程 `79d63cc1f403ee857a3af2a98f8870db9a6a910d`，base `5f910b52c69d86a1076b2032e5d3c63e715947f3`。这是共享资源私有只读采用决定；原 T01 物理保护 Goal、父 I05、运行与发布门未关闭。
+
+## 实际核验
+
+总控全文读取主文、R1 9884 B（最终因FORMAT-01不通过）、R2 7069 B（限定Pass、FORMAT-01关闭）、处理／验证及最终交付说明。已直接核最终71件总1448654 B当前=固定Git=清单、53受审文件在18件后续过程新增中完全不变、授权路径集合、空暂存区及唯一受保护AGENTS M、四产品路径在T01文档树仍等5f。原17输入、三件纯格式差、两JSON解析值与主文非空白／inline-code、三件formatter修复后的exit0均有总控直接核验。见 `T01-controller-i05-resource-offer-{candidate-proof,candidate-delta-proof,final-proof}.json`。
+
+ZIP CRC、两member、原index与派生JSON一致已核；总控未重新追溯原session raw来源，不将资料包等同产品运行证据。旧不完整提交、默认ignore漏检、等价断言及独审脚本初始失败均保留，不被后续Pass覆盖。主文10465 B／`d62791067bdcc73e8aa5755336ceda02611c61df7fdc3063df6437f77215cd0a`，R2为 `9cb6f5682af3e316560b275979defc2a2dbe404e5390818da625a813616ed5a3`。
+
+## 对原 I05 源码窗的精确增补
+
+I05可在已创建的 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe`、分支 `feature/I05-source-package-probe` 中，从供应 ref `6891a5842302859a531cf82767c5a482417bc274` 逐项读取并原样复制以下四件，单独本地供应采用提交，记录原ref/bytes/SHA和本T01接收ref。只采用不可变供应副本，不授修改或公共维护权。
+
+| 路径                                     |  bytes | SHA256                                                           |
+| ---------------------------------------- | -----: | ---------------------------------------------------------------- |
+| packages/contracts/python/contract_v2.py |  34608 | 17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7 |
+| packages/contracts/v2/schema.json        | 207256 | e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf |
+| packages/contracts/v2/registry.json      |  15962 | 1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b |
+| packages/contracts/v2/errors.json        |  16299 | ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c |
+
+用途严格为canonical `resources.CONTRACT` 启动、`semantic_identity` 及普通固定error目录／`validate("error", value)` 闭包。不以包含v3 schema/capability/startup/business3内容授公共执行权；禁止 alias重新exec checker，运行时单实例仍待真正验证。`resource_manifest/build_request/execute_request/derive_dependencies/permits_transition` 及间接到达、dependencies/states lazy读取仍不授权。新增调用／资源另交owner delta，不混5f或未来WIP。
+
+本增补只取消原I05窗的“四件接收未定、不得复制”前置条件；原22供应模块不可变、新probe/纯输入/测试源码与静态独审职责保持。T03 lock/依赖环境/四writer/打包profile尚未获本增补采用，其他树、旧候选与原需求不变。I05不得因四件已可复制而import产品、运行probe/tests、安装依赖、构建或native/DB；源/包实际组合和真实代码身份仍需后续独立窗口。源资产封存后才安排独立oracle与运行验收。
+
+T01本纯静态子任务停止新增写入并保留冻结树，原物理Goal blocked／SQLite损坏输入HOLD、whole-H及真实owner门保持。无当前桌面操作，无推送／PR／合并。总 Goal继续active；双指定模型同版、CI、目标OS、真人和develop远端门均未替代。

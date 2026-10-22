@@ -1,0 +1,2658 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ontolearn:i05:source-package-parity-build:1",
+  "title": "Proposed strict external build provenance; no actual build instance supplied",
+  "$comment": "Schema shape plus mandatory cross-field/identity checks in offer section 4 are jointly normative. Required build evidence may not be replaced by unknown/null/source hashes.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "i05-source-package-parity-build/1"
+    },
+    "profileId": {
+      "const": "i05-source-package-parity-v1"
+    },
+    "composition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "baseRef": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "compositionRef": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "dependencyRef": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "wrapperRef": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "consumerDeltaRef": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "i05SourceAncestorRef": {
+          "const": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64"
+        },
+        "supplierRef": {
+          "const": "6891a5842302859a531cf82767c5a482417bc274"
+        },
+        "supplierProcessRef": {
+          "const": "f79a29f596b2444cba542a906c91727869014886"
+        },
+        "t01AdoptionRef": {
+          "const": "dd972b79adf4d378636a7d41a6b0e3e08c0d5ca1"
+        },
+        "t01AdoptionProcessRef": {
+          "const": "79d63cc1f403ee857a3af2a98f8870db9a6a910d"
+        },
+        "ownerAcceptanceRecord": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ref": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "gitBlob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+        },
+        "cleanGuardedPaths": {
+          "const": true
+        }
+      },
+      "required": [
+        "baseRef",
+        "compositionRef",
+        "dependencyRef",
+        "wrapperRef",
+        "consumerDeltaRef",
+        "i05SourceAncestorRef",
+        "supplierRef",
+        "supplierProcessRef",
+        "t01AdoptionRef",
+        "t01AdoptionProcessRef",
+        "ownerAcceptanceRecord",
+        "cleanGuardedPaths"
+      ]
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "buildId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "profileDescriptor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ref": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "gitBlob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+        },
+        "writers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "gitBlob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "minItems": 3,
+          "maxItems": 256
+        },
+        "environmentPolicyVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "buildToolDistributions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "selectedArtifact": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": ["wheel", "sdist"]
+                  },
+                  "filename": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "lockPackageName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "lockVersion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "platformTag": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "selectedByMarker": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  }
+                },
+                "required": [
+                  "kind",
+                  "filename",
+                  "url",
+                  "bytes",
+                  "sha256",
+                  "lockPackageName",
+                  "lockVersion",
+                  "platformTag",
+                  "selectedByMarker"
+                ]
+              },
+              "requiresDist": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "minItems": 0,
+                "maxItems": 100000
+              },
+              "activatedExtras": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "minItems": 0,
+                "maxItems": 100000
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048,
+                    "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "required": ["path", "bytes", "sha256"]
+              },
+              "record": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048,
+                    "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "required": ["path", "bytes", "sha256"]
+              },
+              "installedFiles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "installedRelativePath": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "recordDigest": {
+                      "type": ["string", "null"]
+                    },
+                    "recordSize": {
+                      "type": ["integer", "null"],
+                      "minimum": 0
+                    },
+                    "role": {
+                      "enum": ["code", "data", "metadata", "license", "notice", "native", "other"]
+                    },
+                    "disposition": {
+                      "enum": ["bundled", "omitted-not-runtime-with-owner-review", "build-only"]
+                    },
+                    "omissionReason": {
+                      "type": ["string", "null"]
+                    },
+                    "bundleMappings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048,
+                            "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                          },
+                          "container": {
+                            "enum": ["directory", "PYZ", "CArchive"]
+                          },
+                          "memberName": {
+                            "type": ["string", "null"]
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[0-9a-f]{64}$"
+                          }
+                        },
+                        "required": ["path", "container", "memberName", "bytes", "sha256"]
+                      },
+                      "minItems": 0,
+                      "maxItems": 100000
+                    }
+                  },
+                  "required": [
+                    "installedRelativePath",
+                    "bytes",
+                    "sha256",
+                    "recordDigest",
+                    "recordSize",
+                    "role",
+                    "disposition",
+                    "omissionReason",
+                    "bundleMappings"
+                  ]
+                },
+                "minItems": 1,
+                "maxItems": 100000
+              },
+              "licenses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "sourceFile": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048,
+                          "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                        },
+                        "bytes": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sha256": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        }
+                      },
+                      "required": ["path", "bytes", "sha256"]
+                    },
+                    "bundleFile": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048,
+                          "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                        },
+                        "bytes": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sha256": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        }
+                      },
+                      "required": ["path", "bytes", "sha256"]
+                    },
+                    "classification": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "noticeObligationReview": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    }
+                  },
+                  "required": [
+                    "sourceFile",
+                    "bundleFile",
+                    "classification",
+                    "noticeObligationReview"
+                  ]
+                },
+                "minItems": 1,
+                "maxItems": 100000
+              },
+              "completeRecordMapping": {
+                "const": true
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "selectedArtifact",
+              "requiresDist",
+              "activatedExtras",
+              "metadata",
+              "record",
+              "installedFiles",
+              "licenses",
+              "completeRecordMapping"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "target": {
+          "const": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+        },
+        "name": {
+          "const": "ontolearn-semantic-parity"
+        },
+        "mode": {
+          "const": "onedir"
+        },
+        "contentsDirectory": {
+          "const": "_internal"
+        },
+        "stderrReceipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": ["path", "bytes", "sha256"]
+        },
+        "stdoutReceipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": ["path", "bytes", "sha256"]
+        },
+        "actualExitCode": {
+          "const": 0
+        }
+      },
+      "required": [
+        "buildId",
+        "profileDescriptor",
+        "writers",
+        "command",
+        "environmentPolicyVersion",
+        "buildToolDistributions",
+        "target",
+        "name",
+        "mode",
+        "contentsDirectory",
+        "stderrReceipt",
+        "stdoutReceipt",
+        "actualExitCode"
+      ]
+    },
+    "python": {
+      "$ref": "#/$defs/python"
+    },
+    "codeDomain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "i05-code-object-marshal-filename-normalized/1"
+        },
+        "marshalProtocol": {
+          "const": 4
+        },
+        "normalizedFilename": {
+          "const": "<i05-canonical-code>"
+        },
+        "normalization": {
+          "const": "recursively replace co_filename only on exact CodeType values in co_consts; preserve every other field; marshal.dumps(normalized(code),4); sha256"
+        },
+        "sourceCompile": {
+          "const": "compile(exact approved source bytes, actual source path, exec, dont_inherit=True, optimize=0) using the build interpreter"
+        },
+        "comparisonScope": {
+          "const": "same exact Python build/cache tag/optimization and algorithm; cross-loader/cache/version stability must be evidenced, never assumed"
+        },
+        "marshalReferenceStability": {
+          "enum": ["measured-same-domain"]
+        }
+      },
+      "required": [
+        "algorithm",
+        "marshalProtocol",
+        "normalizedFilename",
+        "normalization",
+        "sourceCompile",
+        "comparisonScope",
+        "marshalReferenceStability"
+      ]
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "modules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "gitBlob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+          },
+          "minItems": 23,
+          "maxItems": 23
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "gitBlob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "pyproject": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ref": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "gitBlob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+        },
+        "lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ref": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "gitBlob": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+        },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "gitBlob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "inputCounts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "datasets": {
+              "const": 320
+            },
+            "observations": {
+              "const": 417
+            },
+            "mathInputContexts": {
+              "const": 83
+            },
+            "originalOperations": {
+              "const": 106
+            },
+            "learningChecks": {
+              "const": 54
+            },
+            "productCases": {
+              "const": 50
+            }
+          },
+          "required": [
+            "datasets",
+            "observations",
+            "mathInputContexts",
+            "originalOperations",
+            "learningChecks",
+            "productCases"
+          ]
+        },
+        "selectors": {
+          "const": ["full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1"]
+        }
+      },
+      "required": [
+        "modules",
+        "resources",
+        "pyproject",
+        "lock",
+        "assets",
+        "inputCounts",
+        "selectors"
+      ]
+    },
+    "archives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "kind": {
+            "enum": ["PYZ", "CArchive", "external-pyc"]
+          },
+          "inventory": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "kind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": ["name", "kind", "bytes", "sha256"]
+            },
+            "minItems": 1,
+            "maxItems": 100000
+          },
+          "extractorSource": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "gitBlob": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+          },
+          "inventoryComplete": {
+            "const": true
+          }
+        },
+        "required": [
+          "path",
+          "bytes",
+          "sha256",
+          "kind",
+          "inventory",
+          "extractorSource",
+          "inventoryComplete"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 64
+    },
+    "moduleBindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/module"
+      },
+      "minItems": 23,
+      "maxItems": 23
+    },
+    "bootstrapBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "carchiveScript": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "archivePath": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "archiveSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "memberName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "memberKind": {
+              "enum": ["PYZ-module", "CArchive-script", "external-pyc"]
+            },
+            "rawMemberBytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rawMemberSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "fingerprint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "algorithm": {
+                  "const": "i05-code-object-marshal-filename-normalized/1"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "pythonCacheTag": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "domain": {
+                  "const": "actual-loader-code; not source bytes or a build approval"
+                }
+              },
+              "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+            },
+            "extractionMethodVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "extractorSource": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "gitBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+            }
+          },
+          "required": [
+            "archivePath",
+            "archiveSha256",
+            "memberName",
+            "memberKind",
+            "rawMemberBytes",
+            "rawMemberSha256",
+            "fingerprint",
+            "extractionMethodVersion",
+            "extractorSource"
+          ]
+        },
+        "sourceCompilation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ref": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    },
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "gitBlob": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    }
+                  },
+                  "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "installed-distribution-source"
+                    },
+                    "distribution": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "version": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "artifactSha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "installedRelativePath": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "record": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048,
+                          "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                        },
+                        "bytes": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sha256": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        }
+                      },
+                      "required": ["path", "bytes", "sha256"]
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "distribution",
+                    "version",
+                    "artifactSha256",
+                    "installedRelativePath",
+                    "bytes",
+                    "sha256",
+                    "record"
+                  ]
+                }
+              ]
+            },
+            "compileMode": {
+              "const": "exec"
+            },
+            "dontInherit": {
+              "const": true
+            },
+            "optimize": {
+              "const": 0
+            },
+            "fingerprint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "algorithm": {
+                  "const": "i05-code-object-marshal-filename-normalized/1"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "pythonCacheTag": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "domain": {
+                  "const": "actual-loader-code; not source bytes or a build approval"
+                }
+              },
+              "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+            }
+          },
+          "required": ["source", "compileMode", "dontInherit", "optimize", "fingerprint"]
+        },
+        "entryGuardBeforeTypes": {
+          "const": true
+        },
+        "delegatesToCanonicalProbe": {
+          "const": true
+        },
+        "codeEqual": {
+          "const": true
+        }
+      },
+      "required": [
+        "carchiveScript",
+        "sourceCompilation",
+        "entryGuardBeforeTypes",
+        "delegatesToCanonicalProbe",
+        "codeEqual"
+      ]
+    },
+    "dynamicChecker": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "ontolearn_contract_v2"
+        },
+        "sourceCompilation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ref": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    },
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "gitBlob": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    }
+                  },
+                  "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "installed-distribution-source"
+                    },
+                    "distribution": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "version": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "artifactSha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "installedRelativePath": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "record": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048,
+                          "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                        },
+                        "bytes": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sha256": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        }
+                      },
+                      "required": ["path", "bytes", "sha256"]
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "distribution",
+                    "version",
+                    "artifactSha256",
+                    "installedRelativePath",
+                    "bytes",
+                    "sha256",
+                    "record"
+                  ]
+                }
+              ]
+            },
+            "compileMode": {
+              "const": "exec"
+            },
+            "dontInherit": {
+              "const": true
+            },
+            "optimize": {
+              "const": 0
+            },
+            "fingerprint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "algorithm": {
+                  "const": "i05-code-object-marshal-filename-normalized/1"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "pythonCacheTag": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "domain": {
+                  "const": "actual-loader-code; not source bytes or a build approval"
+                }
+              },
+              "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+            }
+          },
+          "required": ["source", "compileMode", "dontInherit", "optimize", "fingerprint"]
+        },
+        "bundleFile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": ["path", "bytes", "sha256"]
+        },
+        "loaderCode": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "algorithm": {
+              "const": "i05-code-object-marshal-filename-normalized/1"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "pythonCacheTag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "domain": {
+              "const": "actual-loader-code; not source bytes or a build approval"
+            }
+          },
+          "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+        },
+        "codeEqual": {
+          "const": true
+        },
+        "objectAuthority": {
+          "const": "resources.CONTRACT; not an independently exec-created alias"
+        },
+        "sysModulesRegistrationRequired": {
+          "const": false
+        }
+      },
+      "required": [
+        "name",
+        "sourceCompilation",
+        "bundleFile",
+        "loaderCode",
+        "codeEqual",
+        "objectAuthority",
+        "sysModulesRegistrationRequired"
+      ]
+    },
+    "functionBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "enum": [
+              "semantic.reason",
+              "semantic.query",
+              "semantic.validate_shacl_text",
+              "Validator.run"
+            ]
+          },
+          "moduleName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "codeConstIndexPath": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minItems": 1,
+            "maxItems": 100
+          },
+          "sourceCompilation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "ref": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{40}$"
+                      },
+                      "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048,
+                        "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                      },
+                      "bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      },
+                      "gitBlob": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{40}$"
+                      }
+                    },
+                    "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "installed-distribution-source"
+                      },
+                      "distribution": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8192
+                      },
+                      "version": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8192
+                      },
+                      "artifactSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      },
+                      "installedRelativePath": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048,
+                        "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                      },
+                      "bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      },
+                      "record": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048,
+                            "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[0-9a-f]{64}$"
+                          }
+                        },
+                        "required": ["path", "bytes", "sha256"]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "distribution",
+                      "version",
+                      "artifactSha256",
+                      "installedRelativePath",
+                      "bytes",
+                      "sha256",
+                      "record"
+                    ]
+                  }
+                ]
+              },
+              "compileMode": {
+                "const": "exec"
+              },
+              "dontInherit": {
+                "const": true
+              },
+              "optimize": {
+                "const": 0
+              },
+              "fingerprint": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "algorithm": {
+                    "const": "i05-code-object-marshal-filename-normalized/1"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "pythonCacheTag": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                  },
+                  "domain": {
+                    "const": "actual-loader-code; not source bytes or a build approval"
+                  }
+                },
+                "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+              }
+            },
+            "required": ["source", "compileMode", "dontInherit", "optimize", "fingerprint"]
+          },
+          "expectedFunctionCode": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "algorithm": {
+                "const": "i05-code-object-marshal-filename-normalized/1"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "pythonCacheTag": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "domain": {
+                "const": "actual-loader-code; not source bytes or a build approval"
+              }
+            },
+            "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+          },
+          "actualArchiveFunctionCode": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "algorithm": {
+                "const": "i05-code-object-marshal-filename-normalized/1"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "pythonCacheTag": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "domain": {
+                "const": "actual-loader-code; not source bytes or a build approval"
+              }
+            },
+            "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+          },
+          "codeEqual": {
+            "const": true
+          }
+        },
+        "required": [
+          "name",
+          "moduleName",
+          "codeConstIndexPath",
+          "sourceCompilation",
+          "expectedFunctionCode",
+          "actualArchiveFunctionCode",
+          "codeEqual"
+        ]
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "distributions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/distribution"
+      },
+      "minItems": 8,
+      "maxItems": 8
+    },
+    "runtimeComponents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "kind": {
+            "enum": [
+              "python",
+              "stdlib",
+              "pyinstaller-bootloader",
+              "dynamic-library",
+              "platform-runtime"
+            ]
+          },
+          "sourceArtifacts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": ["path", "bytes", "sha256"]
+            },
+            "minItems": 1,
+            "maxItems": 100000
+          },
+          "bundleFiles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": ["path", "bytes", "sha256"]
+            },
+            "minItems": 1,
+            "maxItems": 100000
+          },
+          "licenses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": ["path", "bytes", "sha256"]
+            },
+            "minItems": 1,
+            "maxItems": 100000
+          },
+          "noticeReview": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          }
+        },
+        "required": [
+          "name",
+          "version",
+          "kind",
+          "sourceArtifacts",
+          "bundleFiles",
+          "licenses",
+          "noticeReview"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 100000
+    },
+    "payloadFiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": ["path", "bytes", "sha256"]
+      },
+      "minItems": 1,
+      "maxItems": 100000
+    },
+    "exclusions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "engineModules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "minItems": 1,
+          "maxItems": 100000
+        },
+        "archiveVerifiedAbsent": {
+          "const": true
+        },
+        "extraContractResourcesAbsent": {
+          "const": true
+        },
+        "oracleAssetsAbsent": {
+          "const": true
+        }
+      },
+      "required": [
+        "engineModules",
+        "archiveVerifiedAbsent",
+        "extraContractResourcesAbsent",
+        "oracleAssetsAbsent"
+      ]
+    },
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "const": "archive-code-source-bound"
+        },
+        "runtimeParity": {
+          "const": "not-run-by-builder"
+        },
+        "externalOracle": {
+          "const": "not-run-by-builder"
+        },
+        "receiptLocation": {
+          "const": "external final-build-receipt.json; never hashed into this file"
+        },
+        "selfHashIncluded": {
+          "const": false
+        },
+        "payloadManifestExcludes": {
+          "const": ["provenance/i05/source-package-parity-build.json"]
+        },
+        "unknownRequiredEvidence": {
+          "const": []
+        }
+      },
+      "required": [
+        "state",
+        "runtimeParity",
+        "externalOracle",
+        "receiptLocation",
+        "selfHashIncluded",
+        "payloadManifestExcludes",
+        "unknownRequiredEvidence"
+      ]
+    }
+  },
+  "required": [
+    "format",
+    "profileId",
+    "composition",
+    "build",
+    "python",
+    "codeDomain",
+    "inputs",
+    "archives",
+    "moduleBindings",
+    "bootstrapBinding",
+    "dynamicChecker",
+    "functionBindings",
+    "distributions",
+    "runtimeComponents",
+    "payloadFiles",
+    "exclusions",
+    "completion"
+  ],
+  "$defs": {
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["path", "bytes", "sha256"]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "gitBlob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+    },
+    "fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "i05-code-object-marshal-filename-normalized/1"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "pythonCacheTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "domain": {
+          "const": "actual-loader-code; not source bytes or a build approval"
+        }
+      },
+      "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "canonicalName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "sourceCompilation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ref": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    },
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "gitBlob": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    }
+                  },
+                  "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "installed-distribution-source"
+                    },
+                    "distribution": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "version": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192
+                    },
+                    "artifactSha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "installedRelativePath": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "record": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048,
+                          "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                        },
+                        "bytes": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sha256": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        }
+                      },
+                      "required": ["path", "bytes", "sha256"]
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "distribution",
+                    "version",
+                    "artifactSha256",
+                    "installedRelativePath",
+                    "bytes",
+                    "sha256",
+                    "record"
+                  ]
+                }
+              ]
+            },
+            "compileMode": {
+              "const": "exec"
+            },
+            "dontInherit": {
+              "const": true
+            },
+            "optimize": {
+              "const": 0
+            },
+            "fingerprint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "algorithm": {
+                  "const": "i05-code-object-marshal-filename-normalized/1"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "pythonCacheTag": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "domain": {
+                  "const": "actual-loader-code; not source bytes or a build approval"
+                }
+              },
+              "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+            }
+          },
+          "required": ["source", "compileMode", "dontInherit", "optimize", "fingerprint"]
+        },
+        "actualArchiveCode": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "archivePath": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "archiveSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "memberName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "memberKind": {
+              "enum": ["PYZ-module", "CArchive-script", "external-pyc"]
+            },
+            "rawMemberBytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rawMemberSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "fingerprint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "algorithm": {
+                  "const": "i05-code-object-marshal-filename-normalized/1"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "pythonCacheTag": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8192
+                },
+                "domain": {
+                  "const": "actual-loader-code; not source bytes or a build approval"
+                }
+              },
+              "required": ["algorithm", "sha256", "pythonCacheTag", "domain"]
+            },
+            "extractionMethodVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "extractorSource": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "gitBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": ["ref", "path", "bytes", "sha256", "gitBlob"]
+            }
+          },
+          "required": [
+            "archivePath",
+            "archiveSha256",
+            "memberName",
+            "memberKind",
+            "rawMemberBytes",
+            "rawMemberSha256",
+            "fingerprint",
+            "extractionMethodVersion",
+            "extractorSource"
+          ]
+        },
+        "expectedLoaderClass": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "codeEqual": {
+          "const": true
+        },
+        "role": {
+          "enum": ["canonical-module", "canonical-probe"]
+        }
+      },
+      "required": [
+        "canonicalName",
+        "sourceCompilation",
+        "actualArchiveCode",
+        "expectedLoaderClass",
+        "codeEqual",
+        "role"
+      ]
+    },
+    "distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "selectedArtifact": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": ["wheel", "sdist"]
+            },
+            "filename": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "url": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "lockPackageName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "lockVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "platformTag": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "selectedByMarker": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            }
+          },
+          "required": [
+            "kind",
+            "filename",
+            "url",
+            "bytes",
+            "sha256",
+            "lockPackageName",
+            "lockVersion",
+            "platformTag",
+            "selectedByMarker"
+          ]
+        },
+        "requiresDist": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "minItems": 0,
+          "maxItems": 100000
+        },
+        "activatedExtras": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "minItems": 0,
+          "maxItems": 100000
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": ["path", "bytes", "sha256"]
+        },
+        "record": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": ["path", "bytes", "sha256"]
+        },
+        "installedFiles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "installedRelativePath": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048,
+                "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "recordDigest": {
+                "type": ["string", "null"]
+              },
+              "recordSize": {
+                "type": ["integer", "null"],
+                "minimum": 0
+              },
+              "role": {
+                "enum": ["code", "data", "metadata", "license", "notice", "native", "other"]
+              },
+              "disposition": {
+                "enum": ["bundled", "omitted-not-runtime-with-owner-review", "build-only"]
+              },
+              "omissionReason": {
+                "type": ["string", "null"]
+              },
+              "bundleMappings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048,
+                      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                    },
+                    "container": {
+                      "enum": ["directory", "PYZ", "CArchive"]
+                    },
+                    "memberName": {
+                      "type": ["string", "null"]
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  },
+                  "required": ["path", "container", "memberName", "bytes", "sha256"]
+                },
+                "minItems": 0,
+                "maxItems": 100000
+              }
+            },
+            "required": [
+              "installedRelativePath",
+              "bytes",
+              "sha256",
+              "recordDigest",
+              "recordSize",
+              "role",
+              "disposition",
+              "omissionReason",
+              "bundleMappings"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 100000
+        },
+        "licenses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "sourceFile": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048,
+                    "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "required": ["path", "bytes", "sha256"]
+              },
+              "bundleFile": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048,
+                    "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+                  },
+                  "bytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "required": ["path", "bytes", "sha256"]
+              },
+              "classification": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              },
+              "noticeObligationReview": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8192
+              }
+            },
+            "required": ["sourceFile", "bundleFile", "classification", "noticeObligationReview"]
+          },
+          "minItems": 1,
+          "maxItems": 100000
+        },
+        "completeRecordMapping": {
+          "const": true
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "selectedArtifact",
+        "requiresDist",
+        "activatedExtras",
+        "metadata",
+        "record",
+        "installedFiles",
+        "licenses",
+        "completeRecordMapping"
+      ]
+    },
+    "python": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "implementation": {
+          "const": "cpython"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^3\\.12\\.\\d+.*$"
+        },
+        "hexversion": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cacheTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "magicHex": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}$"
+        },
+        "marshalVersion": {
+          "const": 4
+        },
+        "optimize": {
+          "const": 0
+        },
+        "dontInherit": {
+          "const": true
+        },
+        "compilerExecutable": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": ["path", "bytes", "sha256"]
+        },
+        "byteorder": {
+          "enum": ["little", "big"]
+        },
+        "abiflags": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "architecture": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "flags": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "debug": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inspect": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "interactive": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "optimize": {
+              "const": 0
+            },
+            "dontWriteBytecode": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "noUserSite": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "noSite": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ignoreEnvironment": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "isolated": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "safePath": {
+              "type": "boolean"
+            },
+            "utf8Mode": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "debug",
+            "inspect",
+            "interactive",
+            "optimize",
+            "dontWriteBytecode",
+            "noUserSite",
+            "noSite",
+            "ignoreEnvironment",
+            "isolated",
+            "safePath",
+            "utf8Mode"
+          ]
+        }
+      },
+      "required": [
+        "implementation",
+        "version",
+        "hexversion",
+        "cacheTag",
+        "magicHex",
+        "marshalVersion",
+        "optimize",
+        "dontInherit",
+        "compilerExecutable",
+        "byteorder",
+        "abiflags",
+        "platform",
+        "architecture",
+        "flags"
+      ]
+    }
+  }
+}

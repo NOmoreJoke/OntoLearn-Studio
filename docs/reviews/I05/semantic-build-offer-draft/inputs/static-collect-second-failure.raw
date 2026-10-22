@@ -1,0 +1,4 @@
+Command: /opt/homebrew/bin/python3.12 docs/reviews/I05/semantic-build-offer-draft/static-collect.py
+Exit: 1
+AssertionError at assert blob(PROBE, 'uv.lock')[0] == lock_raw
+This static collector initially assumed the source-only probe ref had adopted the supplier lock. That assumption was false. Preserve this failure; record both lock identities and require T03/root-approved dependency composition before any source/frozen runtime. No probe/build/test executed.
