@@ -291,18 +291,20 @@
     "historicalActualUnknownRetained": true
   },
   "rootAllocatedCumulativeBeforeForwardBinding": {
-    "buildDeclarationBytes": 109042322472,
+    "asOfProcessRef": "f8af237b9d2c18fe7a645def0fbb18af8a017132",
+    "buildDeclarationBytes": 109067488296,
     "buildGuardBytes": 137438953472,
-    "buildRemainingBytes": 28396631000,
-    "combinedDeclarationBytes": 118788049557,
+    "buildRemainingBytes": 28371465176,
+    "combinedDeclarationBytes": 118813215381,
     "combinedGuardBytes": 147184680557,
     "oldSupplySeparateBytes": 9745727085,
-    "metadataDeclaration": 2201263,
-    "metadataGuard": 2600000,
-    "metadataRemaining": 398737,
+    "metadataDeclaration": 2249263,
+    "metadataGuard": 3000000,
+    "metadataRemaining": 750737,
     "entityConservative": 521456,
     "entityGuard": 600000,
-    "entityRemaining": 78544
+    "entityRemaining": 78544,
+    "knownCompletedEntityRetained": 470492
   },
   "structuralPrecheckUnfundedProposalAtOldGuards": {
     "metadata": 806000,
@@ -361,5 +363,28 @@
     "physicalProtectionsChanged": false,
     "historicalComplianceRetroactivelyProved": false,
     "rootBudgetSHA256": "91cdbd2b6067f1fe2e1977e7c661b6f65c1dfdc1874bbb98060bf3a0c07e3480"
+  },
+  "historicalRemedyRootAllocatedCumulativeRetained": {
+    "buildDeclarationBytes": 109042322472,
+    "buildGuardBytes": 137438953472,
+    "buildRemainingBytes": 28396631000,
+    "combinedDeclarationBytes": 118788049557,
+    "combinedGuardBytes": 147184680557,
+    "oldSupplySeparateBytes": 9745727085,
+    "metadataDeclaration": 2201263,
+    "metadataGuard": 2600000,
+    "metadataRemaining": 398737,
+    "entityConservative": 521456,
+    "entityGuard": 600000,
+    "entityRemaining": 78544
+  },
+  "historicalRetainedFieldScopes": {
+    "historicalRemedyRootAllocatedCumulativeRetained": "earlier remedy declaration2201263/2600000/build109042322472, retained unchanged from fixed f8af rootAllocatedCumulative; not direct predecessor",
+    "currentPreparationAllocation": "historical20k/owner10k/author6k packet retained at fixed f8af; not this24k/12k/8k window",
+    "currentAuthorPreparationAnomaly": "historical4600 sub-ticket/5280 minimum+other UNKNOWN retained at fixed f8af; not fresh author8k",
+    "currentRemedyStaticPreparation": "historical original remedy24k allocation retained at fixed f8af; not a second current allocation",
+    "schemaInitCurrentDeclaration": "dated previous schema-init stage retained at fixed f8af",
+    "structuralPrecheckCurrentDeclaration": "direct f8af stage before this forward-binding amendment",
+    "forwardBindingCurrentDeclaration": "only this new24k/12MiB allocation and3.2M/1.3M version; future tickets not applied"
   }
 }
