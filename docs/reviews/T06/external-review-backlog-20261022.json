@@ -33,8 +33,11 @@
         "differentialCases": 1009,
         "fullOutcomesEqual": true,
         "pairedOriginalInputCostMeasurements": "completed; full output hashes equal; matrix cost remains",
-        "localReview": "complete independent review running",
-        "formalAcceptance": false
+        "localReview": "docs/reviews/T06/local-review-7.md",
+        "formalAcceptance": false,
+        "localReviewSHA256": "b21c69b70b43524771b66aa496c00e9e420a5edd922f8f2dcb584e77742079c4",
+        "localVerdict": "pass_current_private_scope",
+        "resourceDisposition": "Independent P2-1 located avoidable mechanisms closed; P2-2 remains P2 capacity risk with full output cost, current private-scope nonblocking under existing contract; designated reviews/Q5/formal capacity pending."
       },
       "designated": {
         "zcode": {
@@ -50,11 +53,11 @@
           "requires": "fresh complete same-version task after root preflight/GUI coordination"
         }
       },
-      "next": "Complete new independent full review, freeze full common-history inputs, root preflight, then fresh GLM-5.3/max/yolo and M3.1-Flash/xhigh/always-authorized complete tasks; no old Pass reuse.",
+      "next": "Root complete preflight of frozen new full inputs/environments, then fresh same-version complete M and Z tasks under actual account/GUI coordination; no prior Pass transfer.",
       "successorInProgress": {
         "newProduct": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
         "frozen": true,
-        "completeIndependentReview": "running",
+        "completeIndependentReview": "completed current private scope Pass; new designated verdicts pending",
         "newDesignatedTasksCreated": 0,
         "notDualPass": true
       },
@@ -95,7 +98,15 @@
         "sourceManifest": "docs/reviews/T06/evidence/validation-61396a5.json",
         "fullDiffSha256": "e1b08e5c89b72f4d8a0a7e1ca57feadd91ced235301d1096fdfd07d8e5d507dc"
       },
-      "processHead": "3be0397faf03de6520c47bf7d86f3dc2fd004287"
+      "processHead": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
+      "newDesignatedPreparation": {
+        "inputs": "docs/reviews/T06/round-2/frozen-inputs.json",
+        "environments": "docs/reviews/T06/round-2/prepared-environments.json",
+        "rootPreflight": "requested, pending actual root result",
+        "taskIds": [],
+        "guiUsed": false,
+        "sourceCandidateFrozen": true
+      }
     },
     {
       "id": "T06-UI",
@@ -132,8 +143,17 @@
         "realLocalPointerSuccesses": 3,
         "keyboardFallbacksUsed": 0,
         "firstHeadlessFailureRetained": true,
-        "localReview": "fresh full independent review running",
-        "formalAcceptance": false
+        "localReview": "docs/reviews/T06/ui-local-review-3-9707420.md",
+        "formalAcceptance": false,
+        "localReviewSHA256": "cc62f6c7952ec7b2dd647326dd4151a51352ec4c3fed6ef6bcc716482f78731f",
+        "localVerdict": "pass_current_private_scope",
+        "historicalFourP2IndependentClosure": true,
+        "p3Retained": [
+          "index-key focus UX",
+          "original scroll timeout root cause not uniquely diagnosed",
+          "free-text adapter whitelist not implemented/verified",
+          "Q5 capacity unknown"
+        ]
       },
       "designated": {
         "zcode": {
@@ -153,7 +173,7 @@
         "Fresh complete independent review and both new same-version designated reviews; callback lifecycle fix implemented, not yet externally accepted.",
         "Full App/Store/reasoner integration, G3/native/CI remain open."
       ],
-      "next": "Complete new independent full review, freeze full common-history inputs, root preflight, then fresh GLM-5.3/max/yolo and M3.1-Flash/xhigh/always-authorized complete tasks; no old Pass reuse.",
+      "next": "Root complete preflight of frozen new full inputs/environments, then fresh same-version complete M and Z tasks under actual account/GUI coordination; no prior Pass transfer.",
       "preparedReviewWorkspaces": [
         "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709",
         "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709"
@@ -185,7 +205,7 @@
       "successorInProgress": {
         "newProduct": "97074205d677a8cc272426b1bcabe7140b5be085",
         "frozen": true,
-        "completeIndependentReview": "running",
+        "completeIndependentReview": "completed current private scope Pass; new designated verdicts pending",
         "newDesignatedTasksCreated": 0,
         "notDualPass": true
       },
@@ -224,6 +244,14 @@
         },
         "sourceManifest": "docs/reviews/T06/evidence/ui-validation-da37709.json",
         "fullDiffSha256": "0b2ebc607543cfbc0a02a2856c1fddbf4b4a92c6204cf186f3655d0b90f8a2b4"
+      },
+      "newDesignatedPreparation": {
+        "inputs": "docs/reviews/T06/ui-round-2/frozen-inputs.json",
+        "environments": "docs/reviews/T06/ui-round-2/prepared-environments.json",
+        "rootPreflight": "requested, pending actual root result",
+        "taskIds": [],
+        "guiUsed": false,
+        "sourceCandidateFrozen": true
       }
     },
     {
@@ -392,7 +420,7 @@
     "Full parent 57P0/release and real two OS/human acceptance gates retained"
   ],
   "noSourceChangesOrUnchangedRetestsForInventory": true,
-  "updatedAt": "2026-10-22T10:42:33.172920+00:00",
+  "updatedAt": "2026-10-22T10:55:46.897961+00:00",
   "reviewResourceState": {
     "source": "root actual notification",
     "zcode": "account recovery uniquely owned by original T05 chat; no new Z/duplicate reset/GUI by T06",
