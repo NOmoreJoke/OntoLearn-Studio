@@ -1335,3 +1335,304 @@ def test_explicit_illtyped_integer_text_consumer(tmp_path, goldens):
         observation.update(assertion="pass", normativeStatus="explicit-policy-component-matched")
     finally:
         (directory / "observation.json").write_bytes(canonical(observation))
+
+
+def observe_date_text_stage(case, directory, policy, range_policy):
+    import rdflib
+    from rdflib import XSD, Literal
+    from rdflib import term as rdf_term
+
+    directory.mkdir()
+    actual = {"status": "error", "stage": "entry", "validatorRuns": 0, "parseTrace": []}
+    normalize_before = rdflib.NORMALIZE_LITERALS
+    converters_before = dict(rdf_term._toPythonMapping)
+    original_parse, original_run = semantic._parse_turtle, semantic.Validator.run
+
+    original_check = semantic._check_shapes
+    original_values = semantic._UtcDatePreflight.values
+
+    def check(*args, **kwargs):
+        actual["stage"] = "check-shapes"
+        return original_check(*args, **kwargs)
+
+    def values(*args, **kwargs):
+        actual["stage"] = "date-value"
+        return original_values(*args, **kwargs)
+
+    def parse(*args, **kwargs):
+        stage = "parse-shapes" if kwargs.get("shapes", False) else "parse-data"
+        actual["stage"] = stage
+        trace = {"stage": stage, "kwargs": kwargs, "returned": False}
+        actual["parseTrace"].append(trace)
+        graph = original_parse(*args, **kwargs)
+        trace.update(returned=True, tripleCount=len(graph))
+        (directory / (stage + ".nt")).write_bytes(graph.serialize(format="nt", encoding="utf-8"))
+        return graph
+
+    def run(instance, *args, **kwargs):
+        actual["stage"] = "validator"
+        actual["validatorRuns"] += 1
+        data = instance.data_graph
+        before = sorted(semantic._key(row) for row in data)
+        (directory / "validator-data-before.nt").write_bytes(
+            data.serialize(format="nt", encoding="utf-8")
+        )
+        actual["dataBefore"] = before
+        actual["literalObjects"] = [
+            {
+                "lexical": str(value),
+                "datatype": str(value.datatype),
+                "language": value.language,
+                "illTyped": value.ill_typed,
+                "isDateDatatype": value.datatype == XSD.date,
+            }
+            for value in data.objects()
+            if isinstance(value, Literal)
+        ]
+        result = original_run(instance, *args, **kwargs)
+        conforms, report, text_report = result
+        (directory / "report.nt").write_bytes(report.serialize(format="nt", encoding="utf-8"))
+        (directory / "report-text.txt").write_text(text_report)
+        (directory / "validator-data-after.nt").write_bytes(
+            data.serialize(format="nt", encoding="utf-8")
+        )
+        actual["dataAfter"] = sorted(semantic._key(row) for row in data)
+        names = (
+            "focusNode",
+            "resultPath",
+            "value",
+            "sourceShape",
+            "sourceConstraintComponent",
+            "resultSeverity",
+        )
+        rows = []
+        for node in report.subjects(RDF.type, SH.ValidationResult):
+            rows.append(
+                {
+                    "actualResultNode": node.n3(),
+                    **{
+                        name: [value.n3() for value in report.objects(node, SH[name])]
+                        for name in names
+                    },
+                }
+            )
+        actual["realValidatorReport"] = {
+            "conforms": conforms,
+            "conformsTerms": [v.n3() for v in report.objects(None, SH.conforms)],
+            "rows": rows,
+        }
+        return result
+
+    try:
+        with (
+            patch.object(semantic, "_parse_turtle", parse),
+            patch.object(semantic.Validator, "run", run),
+            patch.object(semantic, "_check_shapes", check),
+            patch.object(semantic._UtcDatePreflight, "values", values),
+        ):
+            if policy is None:
+                data = semantic.parse_turtle(case["dataTurtle"])
+                shapes = semantic.parse_turtle(case["shapesTurtle"], shapes=True)
+                actual["result"] = semantic.check_shapes(data, shapes)
+            else:
+                actual["result"] = semantic.validate_shacl_text(
+                    case["dataTurtle"],
+                    case["shapesTurtle"],
+                    data_policy=policy,
+                    range_policy=range_policy,
+                )
+        actual.update(status="success", stage="returned")
+    except Exception as error:
+        actual.update(error_record(error))
+    finally:
+        actual["globalState"] = {
+            "normalizeBefore": normalize_before,
+            "normalizeAfter": rdflib.NORMALIZE_LITERALS,
+            "normalizationUnchanged": rdflib.NORMALIZE_LITERALS is normalize_before,
+            "converterKeysUnchanged": rdf_term._toPythonMapping.keys() == converters_before.keys(),
+            "converterIdentitiesUnchanged": all(
+                key in rdf_term._toPythonMapping and rdf_term._toPythonMapping[key] is value
+                for key, value in converters_before.items()
+            ),
+        }
+        (directory / "stage.json").write_bytes(canonical(actual))
+    return actual
+
+
+def assert_date_text_report(actual, policy, lexical, expected):
+    assert actual["status"] == "success" and actual["stage"] == "returned", actual
+    assert actual["validatorRuns"] == 1
+    result = actual["result"]
+    assert set(result) == {"entryVersion", "dataPolicy", "rangePolicy", "report"}
+    assert result["entryVersion"] == "i05-shacl-text-2"
+    assert result["dataPolicy"] == policy and result["rangePolicy"] == "utc-date-range-v1"
+    report, raw = result["report"], actual["realValidatorReport"]
+    assert set(report) == {"conforms", "violations"}
+    assert type(report["conforms"]) is bool and report["conforms"] is expected["conforms"]
+    assert type(raw["conforms"]) is bool and raw["conforms"] is expected["conforms"]
+    boolean = "true" if expected["conforms"] else "false"
+    assert raw["conformsTerms"] == [f'"{boolean}"^^<http://www.w3.org/2001/XMLSchema#boolean>']
+    mapping = {
+        "focusNode": "focus",
+        "resultPath": "path",
+        "value": "value",
+        "sourceShape": "sourceShape",
+        "sourceConstraintComponent": "constraint",
+        "resultSeverity": "severity",
+    }
+    expected_rows = expected["requiredResultRows"]
+    assert report["violations"] == [
+        {key: row[name] for name, key in mapping.items()} for row in expected_rows
+    ]
+    assert len(raw["rows"]) == len(expected_rows)
+    for raw_row, row in zip(raw["rows"], expected_rows, strict=True):
+        assert raw_row["actualResultNode"].startswith("_:")
+        assert set(raw_row) == {"actualResultNode", *mapping}
+        for name in mapping:
+            assert raw_row[name] == [row[name]]
+    value = f'"{lexical}"^^<http://www.w3.org/2001/XMLSchema#date>'
+    facts = [
+        ("<urn:m1:s>", "<urn:m1:p>", value),
+        ("<urn:m1:s>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:m1:Focus>"),
+    ]
+    assert actual["dataBefore"] == actual["dataAfter"] == sorted(facts)
+    assert actual["literalObjects"] == [
+        {
+            "lexical": lexical,
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "language": None,
+            "illTyped": False,
+            "isDateDatatype": True,
+        }
+    ]
+    assert [r["stage"] for r in actual["parseTrace"]] == ["parse-data", "parse-shapes"]
+    assert [r["tripleCount"] for r in actual["parseTrace"]] == [2, 6]
+
+
+@pytest.mark.parametrize("variant", ["original", "before", "offset"])
+def test_explicit_utc_date_text_consumer(tmp_path, goldens, variant):
+    case_index, base = next(
+        (i, c) for i, c in enumerate(CONSUMER_INPUT["cases"]) if c["id"] == "C-inclusive-date-entry"
+    )
+    lexical = {
+        "original": "2000-01-01Z",
+        "before": "1999-12-31Z",
+        "offset": "2000-01-01+00:00",
+    }[variant]
+    case_id = "C-inclusive-date-explicit-utc-" + variant
+    assert base["dataTurtle"].count('"2000-01-01Z"') == 1
+    case = {
+        "id": case_id,
+        "dataTurtle": base["dataTurtle"].replace('"2000-01-01Z"', f'"{lexical}"', 1),
+        "shapesTurtle": base["shapesTurtle"],
+    }
+    root = Path(os.environ.get("M1_DATE_OBSERVATION_DIR", str(tmp_path)))
+    directory = root / sha(case_id.encode())
+    directory.mkdir(parents=True, exist_ok=False)
+    (directory / "input.json").write_bytes(canonical(case))
+    (directory / "data.turtle").write_bytes(case["dataTurtle"].encode())
+    (directory / "shapes.turtle").write_bytes(case["shapesTurtle"].encode())
+    selections = (
+        (
+            ("legacy-before", "strict", "legacy"),
+            ("utc-strict", "strict", "utc-date-range-v1"),
+            ("utc-integer", "integer-illtyped-report-v1", "utc-date-range-v1"),
+            ("legacy-after", "strict", "legacy"),
+            ("old-api-after", None, None),
+        )
+        if variant == "original"
+        else (("utc-strict", "strict", "utc-date-range-v1"),)
+    )
+    stages = [
+        {
+            "name": name,
+            "dataPolicyArgument": policy,
+            "rangePolicyArgument": range_policy,
+            "actual": observe_date_text_stage(case, directory / name, policy, range_policy),
+        }
+        for name, policy, range_policy in selections
+    ]
+    # All actual operations finish before any expected result is selected/constructed.
+    if variant == "original":
+        expected = goldens["consumers"][base["id"]][
+            "ifI05ExplicitlySupportsXsdDateOperatorExtension"
+        ]
+    elif variant == "before":
+        expected = {
+            "conforms": False,
+            "requiredResultRows": [
+                {
+                    "focusNode": "<urn:m1:s>",
+                    "resultPath": "<urn:m1:p>",
+                    "value": '"1999-12-31Z"^^<http://www.w3.org/2001/XMLSchema#date>',
+                    "sourceShape": "<urn:m1:shape>",
+                    "sourceConstraintComponent": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+                    "resultSeverity": "<http://www.w3.org/ns/shacl#Violation>",
+                }
+            ],
+        }
+    else:
+        expected = {"reason": "RDF_TERM_INVALID", "validatorRuns": 0, "noPartialReport": True}
+    observation = {
+        "id": case_id,
+        "kind": "explicit-utc-date-text-consumer",
+        "variant": variant,
+        "baseCaseId": base["id"],
+        "testSourceSha256": sha(Path(__file__).read_bytes()),
+        "semanticSourceSha256": sha(
+            (REPO / "packages/engine/src/ontolearn_engine/semantic.py").read_bytes()
+        ),
+        "inputSourceSha256": sha((READONLY / "consumer-C-inputs.json").read_bytes()),
+        "sourceBinding": {
+            "pointer": f"/cases/{case_index}",
+            "carrier": "JSON decoded strings; no further lexical rewriting",
+            "inputCanonicalSha256": sha(canonical(case)),
+            "baseDataUtf8Sha256": sha(base["dataTurtle"].encode()),
+            "dataUtf8Sha256": sha(case["dataTurtle"].encode()),
+            "shapesUtf8Sha256": sha(case["shapesTurtle"].encode()),
+            "derivation": "identity"
+            if variant == "original"
+            else {
+                "replaceExactlyOnce": "2000-01-01Z",
+                "replacement": lexical,
+                "shapeUnchanged": True,
+            },
+            "meaning": "content provenance only; no Job or actor authority",
+        },
+        "input": case,
+        "actual": {"stages": stages},
+        "expected": expected,
+        "assertion": "fail",
+        "history": "Explicit UTC policy supplement; original pending/golden unchanged",
+    }
+    try:
+        for stage in stages:
+            state = stage["actual"]["globalState"]
+            assert state["normalizationUnchanged"] and state["converterKeysUnchanged"]
+            assert state["converterIdentitiesUnchanged"]
+        assert case["shapesTurtle"] == base["shapesTurtle"]
+        if variant == "original":
+            assert case["dataTurtle"] == base["dataTurtle"]
+            assert expected["conforms"] is True and expected["requiredResultRows"] == []
+            assert [s["actual"]["validatorRuns"] for s in stages] == [0, 1, 1, 0, 0]
+            for stage in stages[1:3]:
+                assert_date_text_report(
+                    stage["actual"], stage["dataPolicyArgument"], lexical, expected
+                )
+            for stage in (stages[0], stages[3], stages[4]):
+                actual = stage["actual"]
+                assert actual["status"] == "error" and actual["stage"] == "check-shapes", actual
+                assert actual["exceptionType"] == "SemanticError"
+                assert actual["reason"] == "INVALID_SHAPE" and actual["validatorRuns"] == 0
+                assert "result" not in actual and "realValidatorReport" not in actual
+        elif variant == "before":
+            assert_date_text_report(stages[0]["actual"], "strict", lexical, expected)
+        else:
+            actual = stages[0]["actual"]
+            assert actual["status"] == "error" and actual["stage"] == "date-value", actual
+            assert actual["exceptionType"] == "SemanticError"
+            assert actual["reason"] == expected["reason"] and actual["validatorRuns"] == 0
+            assert "result" not in actual and "realValidatorReport" not in actual
+        observation.update(assertion="pass", normativeStatus="explicit-policy-component-matched")
+    finally:
+        (directory / "observation.json").write_bytes(canonical(observation))
