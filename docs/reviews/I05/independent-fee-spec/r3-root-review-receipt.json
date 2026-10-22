@@ -1,0 +1,106 @@
+{
+  "format": "i05-fee-r3-root-independent-review-receipt/1",
+  "candidate": "ebd3e009a9588e4019880a34a3e8096f6f61d025",
+  "reviewedProcess": "4699bd2b08178302beaf1660e7c0724d35ef8177",
+  "rootReadCompleteReportHandoffDisposition": true,
+  "rootVerified189CurrentEqualsFixedGitAndManifest": true,
+  "conclusion": "Fail limited pure proposal model",
+  "findings": [
+    {
+      "id": "R3-F1",
+      "priority": 1,
+      "summary": "Invalid plain-JSON rule_id passes allocation and causes second exception during failure receipt encoding"
+    },
+    {
+      "id": "R3-F2",
+      "priority": 2,
+      "summary": "rdf:type object Variable widens fixed Class TermInput compile policy"
+    }
+  ],
+  "positiveEvidence": "Original six failure cases fixed; two seeds full120 fields/tapes/IFR3 equal; source occurrence fix verified; no actual authority inferred",
+  "reviewFiles": [
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-proof-r3.json",
+      "bytes": 104518,
+      "sha256": "70b45376b9e23a49c415e09ca338932fdf3712a38b8fa26e61e13efe35c80982"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-adversarial-audit.json",
+      "bytes": 10287,
+      "sha256": "fc0fbbeac61ffce6a4ee13ed4d328421aa8f469cfbfe5a4ae7cee2c8038c10a3"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-adversarial.json",
+      "bytes": 3314201,
+      "sha256": "34ac5fac52c20e43aa544798874c36fa0f1307e0e87e32116eb04925f62e6142"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-adversarial.py",
+      "bytes": 6166,
+      "sha256": "63c0a43e25e1cabfe498c22952787c723f67c2f732f3383061d7c46d8586a905"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-command-log.json",
+      "bytes": 611992,
+      "sha256": "01ec2bf2dea8a87c77a6f50ea31d4b69b0e090f26abdc907e1be8b40ea938cc5"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-command.py",
+      "bytes": 1209,
+      "sha256": "781985baf177aac9372eaf987a78034f470feb086f0cb07b52dfe75d548a0440"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-final-check.json",
+      "bytes": 294792,
+      "sha256": "0b0ba358de4d2e17cbbab7c7405c36e0feefa981f16162857ecc07f1aeeee79e"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-finalize.py",
+      "bytes": 8529,
+      "sha256": "8658cab8017446632c713bc501ec44e16002bf9997a34abde2e1233d9f621c64"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-integrity.json",
+      "bytes": 308343,
+      "sha256": "a0229273c0c9130c03473fb84a0ba897bfa6f678294b9a8fd1f6ca792f99502e"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-recompute-1.json",
+      "bytes": 86676,
+      "sha256": "5800c9c96c921b608bf19af7fcbb89aa58b329180330e750bb2c4538aa2c9971"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-recompute-2.json",
+      "bytes": 86676,
+      "sha256": "f9201f32ec758f8eaa975239ac3f70ca5525f11b2407bd5076191500f6b9367b"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r3-verify.py",
+      "bytes": 15875,
+      "sha256": "ec086fb2007077e1b799b80d71eb39543ad86ca658f197fe57929ca6fc4e7ac3"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-review-r3.md",
+      "bytes": 12799,
+      "sha256": "521dc9104bcb3571973d91427465912ac7ea715a3a61868bade1a991724f6524"
+    }
+  ],
+  "protectedAGENTS": {
+    "path": "AGENTS.md",
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "rootReadOnlyManifestLookupFailure": {
+    "chunk": "4987ab",
+    "actualExit": 1,
+    "wrongKey": "artifacts",
+    "correctKey": "members",
+    "mutation": false,
+    "subsequent189Verified": true
+  },
+  "productExecuted": false,
+  "wholeOracleComplete": false,
+  "actualIssuerCodecUsageOwnerRuntimePackagingAndParentGoal": "pending",
+  "next": "Preserve Fail before new minimal revision; old findings and first failures immutable",
+  "selfExclusion": "Receipt excluded; local process commit binds final bytes"
+}

@@ -1,0 +1,276 @@
+{
+  "independentArtifactReplayOnly": true,
+  "completeInvoicesAudited": 8,
+  "exceptionCases": 1,
+  "newAliasBoundary": {
+    "valuesEqual": true,
+    "sharedSourceObjects": 1,
+    "readbackSourceObjects": 6,
+    "completeInvoicesEqual": true,
+    "scanOccurrences": 6,
+    "hashOccurrences": 6,
+    "sourceScanBytes": 864,
+    "synthesizedHashBytes": 138,
+    "programSha256": "5ccfd6e67830da016a1d30642dde28d0c79bd57614529e92d32af5a74e79c0f6",
+    "executionSha256": "a2040e742ec89832a7b6d4addea81f33bfabc0e405ba72808004767a61ee9db4"
+  },
+  "items": [
+    {
+      "id": "nonstring-rule-id",
+      "noInvoice": true,
+      "exception": {
+        "type": "AttributeError",
+        "message": "'int' object has no attribute 'encode'",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py\", line 1100, in make_program\n    return _enumerate_program(observation,dataset,business,code_sha,context)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py\", line 809, in _enumerate_program\n    ordered(list(defs),lambda d:d['rule_id'].encode(),t,'C0','allocator stable full rule ID order')\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py\", line 431, in ordered\n    k=key(value);tape.scan(w,len(k),label+' key encoding')\n      ^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py\", line 809, in <lambda>\n    ordered(list(defs),lambda d:d['rule_id'].encode(),t,'C0','allocator stable full rule ID order')\n                                ^^^^^^^^^^^^^^^^^^^\nAttributeError: 'int' object has no attribute 'encode'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/reviews/I05/independent-fee-spec/independent-r3-adversarial.py\", line 34, in run\n    result,_=r.make_program(ob,dataset,business or {'rdfsAdded':[],'customOutput':[]},SOURCE)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py\", line 1107, in make_program\n    return finish_program(t,context['origins'],context['material'],observation,context['alloc'],context.get('b'),context.get('q'),context.get('view'),context.get('payload'),context.get('rows_bytes'),context.get('steps',()),context.get('candidates'),code_sha)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py\", line 1197, in finish_program\n    receipt_bytes=4+1+4+len(observation['id'].encode())+32+4+8+2+4+sum(4+len(w.encode())+11*8 for w in wallets)+4+sum(4+len((a['rule_id'] or '').encode())+1+4+1+17*8 for a in alloc)+1+2+8+32+32\n                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/reference.py\", line 1197, in <genexpr>\n    receipt_bytes=4+1+4+len(observation['id'].encode())+32+4+8+2+4+sum(4+len(w.encode())+11*8 for w in wallets)+4+sum(4+len((a['rule_id'] or '').encode())+1+4+1+17*8 for a in alloc)+1+2+8+32+32\n                                                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'int' object has no attribute 'encode'\n"
+      }
+    },
+    {
+      "id": "empty-rule-id",
+      "loweredCaps": null,
+      "analysis": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "state": "completed",
+      "firstError": null,
+      "receiptDecoded": true
+    },
+    {
+      "id": "last-head-bound-literal-subject",
+      "loweredCaps": null,
+      "analysis": {
+        "events": 173,
+        "dataHandles": 5,
+        "cumulativeSlots": 10985,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 173,
+        "dataHandles": 5,
+        "cumulativeSlots": 10985,
+        "rejectedExecutionOrdinal": null
+      },
+      "state": "failed",
+      "firstError": {
+        "kind": "semantic",
+        "reason": "INVALID_RULE",
+        "event": 166,
+        "wallet": "M0",
+        "stage": "M0:evaluate",
+        "label": "real normative check rejected",
+        "phase": "evaluate:head"
+      },
+      "receiptDecoded": true
+    },
+    {
+      "id": "lowercap-boundary",
+      "loweredCaps": null,
+      "analysis": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "state": "completed",
+      "firstError": null,
+      "receiptDecoded": true
+    },
+    {
+      "id": "lowercap-boundary",
+      "loweredCaps": [
+        [
+          "C0",
+          "work",
+          19165
+        ]
+      ],
+      "analysis": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 3,
+        "dataHandles": 0,
+        "cumulativeSlots": 0,
+        "rejectedExecutionOrdinal": 2
+      },
+      "state": "failed",
+      "firstError": {
+        "kind": "resource",
+        "reason": "RESOURCE_LIMIT",
+        "event": 2,
+        "wallet": "C0",
+        "domain": "work",
+        "stage": "entry/finalization-prepay",
+        "label": "receipt+all cumulative cleanup prepayment",
+        "before": {
+          "work": 0,
+          "input_bytes": 0,
+          "output_bytes": 0,
+          "trace_items": 0,
+          "firings": 0,
+          "head_occurrences": 0,
+          "bindings": 0,
+          "scan_copy": 0,
+          "hash_bytes": 0
+        },
+        "liveBefore": {
+          "objects": 64,
+          "scalar": 0
+        },
+        "requested": {
+          "work": 19166,
+          "scan_copy": 3176,
+          "hash_bytes": 812
+        },
+        "attemptedHold": [
+          "receipt",
+          95,
+          1620
+        ],
+        "cap": 19165
+      },
+      "receiptDecoded": true
+    },
+    {
+      "id": "lowercap-boundary",
+      "loweredCaps": [
+        [
+          "M0",
+          "work",
+          10367
+        ]
+      ],
+      "analysis": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 169,
+        "dataHandles": 5,
+        "cumulativeSlots": 11821,
+        "rejectedExecutionOrdinal": 162
+      },
+      "state": "failed",
+      "firstError": {
+        "kind": "resource",
+        "reason": "RESOURCE_LIMIT",
+        "event": 162,
+        "wallet": "M0",
+        "domain": "work",
+        "stage": "M0:evaluate",
+        "label": "typed batch digest",
+        "before": {
+          "work": 8548,
+          "input_bytes": 3311,
+          "output_bytes": 1804,
+          "trace_items": 1,
+          "firings": 1,
+          "head_occurrences": 1,
+          "bindings": 1,
+          "scan_copy": 468,
+          "hash_bytes": 1913
+        },
+        "liveBefore": {
+          "objects": 2932,
+          "scalar": 34152
+        },
+        "requested": {
+          "work": 1820,
+          "hash_bytes": 1820
+        },
+        "attemptedHold": null,
+        "cap": 10367
+      },
+      "receiptDecoded": true
+    },
+    {
+      "id": "lowercap-boundary",
+      "loweredCaps": [
+        [
+          "M0",
+          "work",
+          10368
+        ]
+      ],
+      "analysis": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "state": "completed",
+      "firstError": null,
+      "receiptDecoded": true
+    },
+    {
+      "id": "lowercap-boundary",
+      "loweredCaps": [
+        [
+          "M0",
+          "work",
+          10369
+        ]
+      ],
+      "analysis": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 179,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "state": "completed",
+      "firstError": null,
+      "receiptDecoded": true
+    },
+    {
+      "id": "variable-rdf-type-object",
+      "loweredCaps": null,
+      "analysis": {
+        "events": 164,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "execution": {
+        "events": 164,
+        "dataHandles": 8,
+        "cumulativeSlots": 15872,
+        "rejectedExecutionOrdinal": null
+      },
+      "state": "completed",
+      "firstError": null,
+      "receiptDecoded": true
+    }
+  ],
+  "subprocessCommands": []
+}
