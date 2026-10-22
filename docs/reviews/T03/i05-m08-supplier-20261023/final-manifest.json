@@ -1,0 +1,69 @@
+{
+  "format": "T03-M08-supplier-delivery/1",
+  "productCommit": "4e752177f3e350d0be94ed063aca2e866dbf7970",
+  "consumerStart": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "payloadFiles": 11,
+  "payloadBytes": 124990,
+  "files": [
+    {
+      "path": "actual-package-static-audit-v2.json",
+      "bytes": 30823,
+      "sha256": "d6ced45a36890560d537e06ffaeabb3c704c9e68fd0cf9882e38e4dbf68e9bde"
+    },
+    {
+      "path": "actual-package-static-audit.json",
+      "bytes": 30244,
+      "sha256": "90141de0853d5f93f90724a510aa78333d185b8ff6185cb19f5c4f4065a12715"
+    },
+    {
+      "path": "audit-packaged-supplier.py",
+      "bytes": 5293,
+      "sha256": "37bed088e4d5e4569804f50b90863db705d8cba9ca9c04832dbd2ab477f91781"
+    },
+    {
+      "path": "delivery.md",
+      "bytes": 5798,
+      "sha256": "877a121ba71f510173dd49e9ed68cd2b09e7a928088ccdb863284ea01873ce8d"
+    },
+    {
+      "path": "first-failure-preservation.md",
+      "bytes": 508,
+      "sha256": "4e67023b15fd6cb19d95d3b3f58f61beb1b1af49c6d421fd32425b510e6409e4"
+    },
+    {
+      "path": "implementation-scope.json",
+      "bytes": 1198,
+      "sha256": "d00abff2d8e3ed087b3e0c6f3bbf008867b39e5eec39bea0b09a292b74d47c9b"
+    },
+    {
+      "path": "independent-review.md",
+      "bytes": 9013,
+      "sha256": "917a1aba25a400a61f7ec8eb233dc45a5f199db5d4bfcd0531628be1a926ba23"
+    },
+    {
+      "path": "provenance-entrypoint-plan.md",
+      "bytes": 7518,
+      "sha256": "03539597bd42bb333526851cd73a6388e632deff84b034a804ab5944692ea16e"
+    },
+    {
+      "path": "pytest-first-failure.log",
+      "bytes": 15886,
+      "sha256": "62b3e3989a16dc19787686af7debc81d04aa05d8045577f3e4f28d4f927f139e"
+    },
+    {
+      "path": "resolver-constraints.toml",
+      "bytes": 500,
+      "sha256": "ab8bf22a02f78e3834db6635ceff2ce503f6d7d8be6ab13b1a1829b42a36b4d5"
+    },
+    {
+      "path": "validation-receipt.json",
+      "bytes": 18209,
+      "sha256": "eaf60afb8f95794d45c77fb2ba90da19de5c95505d45727816648d40b1153d7b"
+    }
+  ],
+  "assessment": "THREE_PATH_STATIC_AND_PACKAGE_COLLECTION_LIMITED_PASS; fullcheck and8pytestfail remain failed; frozen import/CLI parity UNKNOWN",
+  "rawEvidence": "pytest-first-failure.log preserved original merged bytes including original diagnostic whitespace; not formatted",
+  "protectedRules": "AGENTS15147B/de15f6ce unstaged overlay excluded",
+  "extraProvenanceEntrypoint": "PLAN ONLY, not implemented"
+}

@@ -1,0 +1,239 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 1175 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  1%]
+...................                                                      [  3%]
+packages/engine/tests/test_contract_v2.py .............................. [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 24%]
+........................................................................ [ 30%]
+........................................................................ [ 36%]
+...........................................                              [ 40%]
+packages/engine/tests/test_coordinator_control.py ...................    [ 41%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 44%]
+........................                                                 [ 46%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 46%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 47%]
+packages/engine/tests/test_i04_progress.py ......                        [ 48%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 50%]
+.................................                                        [ 53%]
+packages/engine/tests/test_job_store.py ................................ [ 56%]
+........................................................................ [ 62%]
+.............................................................            [ 67%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 68%]
+packages/engine/tests/test_protocol.py .............                     [ 69%]
+packages/engine/tests/test_resident_runtime.py .............             [ 70%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 70%]
+packages/engine/tests/test_semantic_source_package_probe.py ............ [ 71%]
+........................................................................ [ 77%]
+.......F.FFFF..F.....F................F                                  [ 80%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 81%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 81%]
+packages/engine/tests/test_storage.py .................................. [ 84%]
+........................................................................ [ 90%]
+........................................................................ [ 96%]
+.........                                                                [ 97%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 98%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+=================================== FAILURES ===================================
+______ test_full_jsonl_is_complete_inventory_not_self_signed_equivalence _______
+
+full_run = (1, [{'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputSt...alidator","offline/shacl-function","offline/shacl-logical","offline/shacl-inverse","offline/implicit-jsonld"]}\n', b'')
+sealed_assets = ({'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputStatus..., 'inputAsset': {'bytes': 8205267, 'sha256': '47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa'}, ...})
+
+    def test_full_jsonl_is_complete_inventory_not_self_signed_equivalence(full_run, sealed_assets):
+        status, records, raw, stderr = full_run
+        _, manifest = sealed_assets
+>       assert status == 0, (status, stderr)
+E       AssertionError: (1, b'')
+E       assert 1 == 0
+
+packages/engine/tests/test_semantic_source_package_probe.py:833: AssertionError
+______ test_full_observations_keep_parameters_sources_counts_and_statuses ______
+
+full_run = (1, [{'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputSt...alidator","offline/shacl-function","offline/shacl-logical","offline/shacl-inverse","offline/implicit-jsonld"]}\n', b'')
+sealed_assets = ({'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputStatus..., 'inputAsset': {'bytes': 8205267, 'sha256': '47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa'}, ...})
+
+    def test_full_observations_keep_parameters_sources_counts_and_statuses(full_run, sealed_assets):
+        _, records, _, _ = full_run
+        inputs, _ = sealed_assets
+        declared = {item["id"]: item for item in inputs["observations"]}
+        statuses = set()
+        for observed in records[1:-1]:
+            original = declared[observed["id"]]
+            for field in (
+                "sourceCaseId", "family", "operation", "datasetId", "parameters", "sourceRefs",
+                "contextStatus", "projectionSha256",
+            ):
+                assert observed[field] == original[field], (observed["id"], field)
+            assert observed["start"] <= observed["end"]
+            statuses.add(observed["status"])
+>           assert observed["status"] in {
+                "observed-return", "observed-rejection", "not-executed", "missing-context"
+            }
+E           AssertionError: assert 'unexpected-failure' in {'missing-context', 'not-executed', 'observed-rejection', 'observed-return'}
+
+packages/engine/tests/test_semantic_source_package_probe.py:904: AssertionError
+____ test_fragment_repair_shape_inputs_execute_without_upgrading_old_math77 ____
+
+full_run = (1, [{'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputSt...alidator","offline/shacl-function","offline/shacl-logical","offline/shacl-inverse","offline/implicit-jsonld"]}\n', b'')
+
+    def test_fragment_repair_shape_inputs_execute_without_upgrading_old_math77(full_run):
+        _, records, _, _ = full_run
+        by_id = {item["id"]: item for item in records[1:-1]}
+>       before, after = by_id["transfer-repair-before"], by_id["transfer-repair-after"]
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'transfer-repair-before'
+
+packages/engine/tests/test_semantic_source_package_probe.py:929: KeyError
+__ test_missing_mandatory_policy_keywords_are_actual_call_contract_rejections __
+
+full_run = (1, [{'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputSt...alidator","offline/shacl-function","offline/shacl-logical","offline/shacl-inverse","offline/implicit-jsonld"]}\n', b'')
+sealed_assets = ({'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputStatus..., 'inputAsset': {'bytes': 8205267, 'sha256': '47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa'}, ...})
+
+    def test_missing_mandatory_policy_keywords_are_actual_call_contract_rejections(
+        full_run, sealed_assets
+    ):
+        _, records, _, _ = full_run
+        inputs, _ = sealed_assets
+        omitted = [item for item in inputs["observations"] if item["operation"] == "shacl-text"
+                   and set(item["parameters"]) != {"dataPolicy", "rangePolicy"}]
+        assert omitted
+        by_id = {item["id"]: item for item in records[1:-1]}
+        for declaration in omitted:
+>           observed = by_id[declaration["id"]]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'shacl-policy/missing-both'
+
+packages/engine/tests/test_semantic_source_package_probe.py:951: KeyError
+___ test_full_production_bytes_are_complete_and_restore_uses_actual_capture ____
+
+full_run = (1, [{'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputSt...alidator","offline/shacl-function","offline/shacl-logical","offline/shacl-inverse","offline/implicit-jsonld"]}\n', b'')
+
+    def test_full_production_bytes_are_complete_and_restore_uses_actual_capture(full_run):
+        _, records, _, _ = full_run
+        produced = [item for item in records[1:-1]
+                    if item["operation"] in {"fullview", "dag"}
+                    and item["status"] == "observed-return"]
+>       assert {item["operation"] for item in produced} == {"fullview", "dag"}
+E       AssertionError: assert set() == {'dag', 'fullview'}
+E         
+E         Extra items in the right set:
+E         'dag'
+E         'fullview'
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_source_package_probe.py:962: AssertionError
+_______ test_restore_negative_copies_bytes_but_keeps_same_caller_capture _______
+
+full_run = (1, [{'contexts': {'learningChecks': [{'caseRef': 'A-01', 'checkExecuted': False, 'courseInputRefs': [], 'extraInputSt...alidator","offline/shacl-function","offline/shacl-logical","offline/shacl-inverse","offline/implicit-jsonld"]}\n', b'')
+
+    def test_restore_negative_copies_bytes_but_keeps_same_caller_capture(full_run):
+        _, records, _, _ = full_run
+        negatives = [item for item in records[1:-1]
+                     if item["operation"] == "restore-negative"
+                     and item["status"] == "observed-return"]
+>       assert negatives
+E       assert []
+
+packages/engine/tests/test_semantic_source_package_probe.py:1067: AssertionError
+________ test_r1_real_producer_capture_survives_restore_unknown_failure ________
+
+probe = <module 'ontolearn_engine.semantic_source_package_probe' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix/packages/engine/src/ontolearn_engine/semantic_source_package_probe.py'>
+canonical = {'semantic': <module 'ontolearn_engine.semantic' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-...s/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix/packages/engine/src/ontolearn_engine/semantic_profile_restore.py'>, ...}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x108f50710>
+
+    def test_r1_real_producer_capture_survives_restore_unknown_failure(probe, canonical, monkeypatch):
+        production, restore = canonical["production"], canonical["restore"]
+        original_compute = production.execute_profile_explanation
+        original_restore = restore.restore_profile_explanation_result
+        issued, received = [], []
+    
+        @wraps(original_compute)
+        def real_compute(*args, **kwargs):
+            produced = original_compute(*args, **kwargs)
+            issued.append(produced)
+            return produced
+    
+        @wraps(original_restore)
+        def fail_restore(payload, rows, *, expected, allocation, **kwargs):
+            received.append((payload, rows, expected, allocation))
+            raise RuntimeError("private-restore-detail")
+    
+        monkeypatch.setattr(production, "execute_profile_explanation", real_compute)
+        monkeypatch.setattr(restore, "restore_profile_explanation_result", fail_restore)
+        stdout, stderr = io.BytesIO(), io.BytesIO()
+        code = probe.run_fixed_suite("full-v1", stdout=stdout, stderr=stderr)
+        records = _jsonl(stdout.getvalue())
+        failed = _failed_observation(records)
+>       assert code == 1 and len(issued) == len(received) == 1
+E       assert (1 == 1 and 0 == 1)
+E        +  where 0 = len([])
+
+packages/engine/tests/test_semantic_source_package_probe.py:1251: AssertionError
+__ test_real_capture_restore_retains_original_expectation_on_bad_bytes[True] ___
+
+canonical = {'semantic': <module 'ontolearn_engine.semantic' from '/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-...s/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix/packages/engine/src/ontolearn_engine/semantic_profile_restore.py'>, ...}
+explanation = True
+
+    @pytest.mark.parametrize("explanation", [False, True])
+    def test_real_capture_restore_retains_original_expectation_on_bad_bytes(canonical, explanation):
+        produced, expected = _fresh_production(canonical, explanation)
+        allocation = produced.original_allocation
+        restore = canonical["restore"]
+        receive = (
+            restore.restore_profile_explanation_result
+            if explanation else restore.restore_profile_result
+        )
+    
+        def receive_bytes(payload, rows):
+            keywords = {"expected": expected, "allocation": allocation,
+                        "ledger": canonical["RestoreLedger"]()}
+            if explanation:
+                keywords["direct_ledger"] = canonical["direct"].DirectStepsLedger()
+            return receive(payload, rows, **keywords)
+    
+        view = receive_bytes(produced.payload_json, produced.rows_json)
+        assert produced.payload_json == _canonical(produced.wire["payload"])
+        assert produced.rows_json == _canonical(produced.wire["rows"])
+        assert produced.source_encoded == produced.material.source_preimage
+        assert produced.definitions_encoded == produced.material.definitions_preimage
+        assert view.rows_json == produced.rows_json
+        assert len(produced.wire["payload"]) == 7
+        assert len(produced.native_result) == (16 if explanation else 15)
+        assert all(len(child) == 11 for child in produced.native_result["mechanismBatches"])
+        saved = produced.payload_json, produced.rows_json, expected, allocation
+        for payload, rows in (
+            (produced.payload_json + b" ", produced.rows_json),
+            (produced.payload_json, produced.rows_json + b" "),
+        ):
+            with pytest.raises(canonical["RestoreFailure"]):
+                receive_bytes(payload, rows)
+            assert saved == (produced.payload_json, produced.rows_json, expected, allocation)
+        if explanation:
+            target = ("<urn:dag:x>", f"<{RDF}type>", "<urn:dag:B>")
+            roots = restore.explanation_roots(
+                view, (target,), direct_ledger=canonical["direct"].DirectStepsLedger()
+            )
+>           assert len(roots) == 1 and roots[0].kind == "step" and roots[0].ordinal == 0
+                                       ^^^^^^^^^^^^^
+E           AttributeError: 'dict' object has no attribute 'kind'
+
+packages/engine/tests/test_semantic_source_package_probe.py:1657: AttributeError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_full_jsonl_is_complete_inventory_not_self_signed_equivalence
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_full_observations_keep_parameters_sources_counts_and_statuses
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_fragment_repair_shape_inputs_execute_without_upgrading_old_math77
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_missing_mandatory_policy_keywords_are_actual_call_contract_rejections
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_full_production_bytes_are_complete_and_restore_uses_actual_capture
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_restore_negative_copies_bytes_but_keeps_same_caller_capture
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_r1_real_producer_capture_survives_restore_unknown_failure
+FAILED packages/engine/tests/test_semantic_source_package_probe.py::test_real_capture_restore_retains_original_expectation_on_bad_bytes[True]
+================== 8 failed, 1167 passed in 204.47s (0:03:24) ==================

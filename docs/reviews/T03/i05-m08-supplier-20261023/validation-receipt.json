@@ -1,0 +1,380 @@
+{
+  "format": "T03-M08-supplier-validation/1",
+  "candidateBase": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "recordedAtUtc": "2026-10-22T17:54:28.783073+00:00",
+  "rulesOverlay": {
+    "path": "AGENTS.md",
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "environment": {
+    "mutableRoots": "own node_modules/.venv/build cache/tmp/release only",
+    "python": "3.12.12",
+    "node": "24.15.0",
+    "npm": "11.12.1",
+    "uv": "0.11.12"
+  },
+  "commands": [
+    {
+      "argv": [
+        "uv",
+        "lock",
+        "--python",
+        "/Users/kyle/.local/bin/python3.12",
+        "--config-file",
+        "docs/reviews/T03/i05-m08-supplier-20261023/resolver-constraints.toml"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/01-resolver-constrained.log",
+        "bytes": 212,
+        "sha256": "91de3083ffe87e2fe9c8f172b06d556bca8199c24b2b0057f95ac5ee780eac5a"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:44:35.294852+00:00",
+      "fileModifiedUtc": "2026-10-22T17:44:38.323185+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "resolver did not apply workspace constraints from uv.toml; wcwidth0.9.3 rejected"
+    },
+    {
+      "argv": ["npm", "ci", "--ignore-scripts", "--cache", "<own build cache>"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/02-npm-ci.log",
+        "bytes": 957,
+        "sha256": "e64df39322e391bcf1fc9d22d9dbd2ba1e2e70ad89016814c316966b288bbba0"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:44:36.407631+00:00",
+      "fileModifiedUtc": "2026-10-22T17:45:41.931585+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": ""
+    },
+    {
+      "argv": ["uv", "lock", "--python", "/Users/kyle/.local/bin/python3.12"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/03-resolver-final.log",
+        "bytes": 100,
+        "sha256": "5396d124c885a070e04e1c2ff501d7c44231302c08890e74bde0272eac0b9b3b"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:45:31.599961+00:00",
+      "fileModifiedUtc": "2026-10-22T17:45:31.686906+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "retained unwanted wcwidth0.9.3; not final accepted lock"
+    },
+    {
+      "argv": ["uv", "sync", "--frozen", "--python", "/Users/kyle/.local/bin/python3.12"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/04-uv-sync.log",
+        "bytes": 1245,
+        "sha256": "243e3e07919b055bfe17748d339c10b98cfff10cec8b245271ba2d7d9dc82016"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:45:31.689301+00:00",
+      "fileModifiedUtc": "2026-10-22T17:45:57.817348+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "intermediate installation with wcwidth0.9.3, superseded"
+    },
+    {
+      "argv": [
+        "uv",
+        "lock",
+        "--python",
+        "/Users/kyle/.local/bin/python3.12",
+        "--upgrade-package",
+        "pyparsing==3.3.3",
+        "--upgrade-package",
+        "pyshacl==0.30.1",
+        "--upgrade-package",
+        "rdflib==7.6.0",
+        "--upgrade-package",
+        "owlrl==7.6.2",
+        "--upgrade-package",
+        "packaging==26.3",
+        "--upgrade-package",
+        "prettytable==3.18.0",
+        "--upgrade-package",
+        "wcwidth==0.9.2",
+        "--upgrade-package",
+        "html5rdf==1.2.1"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/05-resolver-fixed-versions.log",
+        "bytes": 63,
+        "sha256": "7de793bbfe95b733079b4e303a6cbd8b371b8f13803ba7892d707d30045bfad7"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:46:09.951042+00:00",
+      "fileModifiedUtc": "2026-10-22T17:46:13.134622+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "actual final resolver; explicit version specifiers"
+    },
+    {
+      "argv": ["uv", "lock", "--check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/06-lock-check.log",
+        "bytes": 29,
+        "sha256": "cf7e5a31949dd6a4d19addfa8b298aa0d103a5dc9d33d96066b7753e27299146"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:46:43.033319+00:00",
+      "fileModifiedUtc": "2026-10-22T17:46:43.100440+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": ""
+    },
+    {
+      "argv": ["uv", "sync", "--frozen"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/07-uv-sync-final.log",
+        "bytes": 120,
+        "sha256": "d7aadcce4f56e7408e66149a4b9b8b4910ec7aec7023141362d55d09bdd56148"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:46:43.103750+00:00",
+      "fileModifiedUtc": "2026-10-22T17:46:44.777977+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "eight expected locked/installed versions and original18 versions verified in explicit Python assertion"
+    },
+    {
+      "argv": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 1,
+      "log": {
+        "path": "build/m08-validation/08-check.log",
+        "bytes": 625,
+        "sha256": "cdb7a3ced2639ac64f24a1bbc49cd0f8f8586b7de2c0df377e6df19fc5c41245"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:47:17.693912+00:00",
+      "fileModifiedUtc": "2026-10-22T17:47:25.143439+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "inherited three-file prettier gate failure; subsequent components not run by this chain"
+    },
+    {
+      "argv": ["npm", "run", "verify:sources"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/09-verify-sources.log",
+        "bytes": 111,
+        "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:47:18.850790+00:00",
+      "fileModifiedUtc": "2026-10-22T17:47:19.008690+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "12 archived inputs"
+    },
+    {
+      "argv": ["node", "node_modules/electron/install.js"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/10-electron-install.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:47:33.333359+00:00",
+      "fileModifiedUtc": "2026-10-22T17:47:33.333359+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "download/install only, no app launch"
+    },
+    {
+      "argv": ["npm", "run", "typecheck"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/11-typecheck.log",
+        "bytes": 468,
+        "sha256": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:47:57.782125+00:00",
+      "fileModifiedUtc": "2026-10-22T17:48:01.211512+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": ""
+    },
+    {
+      "argv": ["npm", "test"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/12-vitest.log",
+        "bytes": 278,
+        "sha256": "adc7026fb9db668edf8a54d2ede05a649bec35daa9cbadb9b9136f35709b8d92"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:48:02.497095+00:00",
+      "fileModifiedUtc": "2026-10-22T17:48:12.296286+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "15 files/630 tests passed"
+    },
+    {
+      "argv": ["npm", "run", "build"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/13-build.log",
+        "bytes": 768,
+        "sha256": "941448d39d90bc7c3e776d44759b9abe4b45fd13ae8b731fcaf008893718419e"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:48:12.322314+00:00",
+      "fileModifiedUtc": "2026-10-22T17:48:13.041988+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": ""
+    },
+    {
+      "argv": ["npm", "run", "engine:check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 1,
+      "log": {
+        "path": "build/m08-validation/14-engine-check.log",
+        "bytes": 117991,
+        "sha256": "a18bbac383ffbf2a65493bfa22f37a0a869ab61ff9f988ff6b507f09495c4650"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:48:13.060730+00:00",
+      "fileModifiedUtc": "2026-10-22T17:48:13.710698+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "189 inherited ruff errors; && prevented format/pytest in this chain"
+    },
+    {
+      "argv": ["npm", "run", "package:dir"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/15-package-dir.log",
+        "bytes": 19699,
+        "sha256": "a684dd53838636f7b4a295b436363ee53a60b91bed633c4e64a15e6e239fd08a"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:48:54.050720+00:00",
+      "fileModifiedUtc": "2026-10-22T17:49:10.256056+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "unsigned macOS arm64 directory; no GUI launch"
+    },
+    {
+      "argv": ["uv", "run", "--frozen", "pytest"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 1,
+      "log": {
+        "path": "build/m08-validation/16-pytest.log",
+        "bytes": 15886,
+        "sha256": "62b3e3989a16dc19787686af7debc81d04aa05d8045577f3e4f28d4f927f139e"
+      },
+      "streamMode": "stdout+stderr merged at launch",
+      "fileBirthUtc": "2026-10-22T17:48:54.050799+00:00",
+      "fileModifiedUtc": "2026-10-22T17:52:19.956958+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "1175 collected;1167 passed/8 failed;204.47s; actual canonical/full-v1 fixture execution; B1 real fixture present in executed file, independent per-selector result UNKNOWN"
+    },
+    {
+      "argv": [
+        ".venv/bin/python",
+        "docs/reviews/T03/i05-m08-supplier-20261023/audit-packaged-supplier.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-i05-m08-supplier-fix",
+      "exitCode": 0,
+      "log": {
+        "path": "build/m08-validation/17-package-static-audit.json",
+        "bytes": 30380,
+        "sha256": "0eec22681e5984dda2704f8bef4f0228172095982c43dfed5df506fe3ecfb259"
+      },
+      "streamMode": "stdout JSON; stderr inherited",
+      "fileBirthUtc": "2026-10-22T17:51:44.421124+00:00",
+      "fileModifiedUtc": "2026-10-22T17:51:44.562753+00:00",
+      "timeEvidence": "filesystem timestamps, not precise monotonic execution start/end",
+      "note": "static audit only; actual frozen imports not executed"
+    }
+  ],
+  "failedPytestCases": [
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_full_jsonl_is_complete_inventory_not_self_signed_equivalence",
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_full_observations_keep_parameters_sources_counts_and_statuses",
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_fragment_repair_shape_inputs_execute_without_upgrading_old_math77",
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_missing_mandatory_policy_keywords_are_actual_call_contract_rejections",
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_full_production_bytes_are_complete_and_restore_uses_actual_capture",
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_restore_negative_copies_bytes_but_keeps_same_caller_capture",
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_r1_real_producer_capture_survives_restore_unknown_failure",
+    "packages/engine/tests/test_semantic_source_package_probe.py::test_real_capture_restore_retains_original_expectation_on_bad_bytes[True]"
+  ],
+  "scopeCorrection": {
+    "initialScopeReceipt": "implementation-scope.json is launch-time scope/state, not latest execution result",
+    "authorizationConflict": "earlier ordinary fullcheck authorization included pytest while full-v1/B1 execution was excluded; root later clarified fixture path and explicitly allowed already-running own pytest natural completion",
+    "observedOwnPids": [67096, 67110],
+    "stoppedOrKilled": false,
+    "restarted": false,
+    "actualExecuted": "canonical semantic import and full-v1 full_run actual status1 observed in failure trace; executed test file also contains mandatory real B1 fixtures, but per-selector independent exit/result not separately observable in default merged pytest output",
+    "notEstablished": "source/package CLI parity, frozen import/loader identity, new401a fullcandidate result, native/GUI/physical proof",
+    "b1EvidenceBoundary": {
+      "fixtureCallSite": "test_semantic_source_package_probe.py:1021-1027",
+      "associatedTest": "test_b1_selectors_are_uninstrumented_subsets_without_claiming_fresh_process",
+      "actualLogLocation": "16-pytest.log:32-34 file dot/F progress; no per-node verbose or JUnit",
+      "perSelectorExit": "UNKNOWN; not inferred solely from absence in8failed nodeids",
+      "noRerunForVerbose": true
+    }
+  },
+  "firstPreparationFailure": "system python3 lacked tomllib; corrected to explicit Python3.12 before writing constraints/scope",
+  "documentationScriptStyleRepair": "new static audit script initially had8 E501; own format and literal wrap corrected; its ruff check/format now pass",
+  "productFiles": [
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 1574,
+      "sha256": "0b999721e7ab2dde7ebbc831982cd398cb7d4af7219a49802a0f82c77b1d332c"
+    }
+  ],
+  "pending": [
+    "full npmcheck blocked by fixed baseline format; enginecheck ruff189",
+    "8 real pytest failures in fixed2cf probe/restore paths, I05 owner triage needed",
+    "frozen runtime supplier import and full source/package CLI parity require separately approved reader/entrypoint and actual execution",
+    "latest401a postintegration candidate and designated dual-review remain required"
+  ],
+  "runtimeGitHead": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "runtimeProductState": "three authorized product paths were uncommitted at validation; later frozen without product byte changes",
+  "productFreeze": "4e752177f3e350d0be94ed063aca2e866dbf7970",
+  "supplementalDeclaredLicenseAudit": {
+    "argv": [
+      ".venv/bin/python",
+      "docs/reviews/T03/i05-m08-supplier-20261023/audit-packaged-supplier.py"
+    ],
+    "exitCode": 0,
+    "kind": "read-only static audit rerun only after adding explicit License-File validation; no engine/pytest/GUI/probe execution",
+    "firstAudit": "17-package-static-audit.json and actual-package-static-audit.json preserved unchanged",
+    "log": {
+      "path": "build/m08-validation/18-package-static-audit-declared-licenses.json",
+      "bytes": 30959,
+      "sha256": "458fefc444b47da40ceb3a900eab3f1696cf8a420d149f5cb414f2b95e5b9682"
+    },
+    "actualLicenseAndNoticeFiles": 11,
+    "scriptIdentity": {
+      "path": "docs/reviews/T03/i05-m08-supplier-20261023/audit-packaged-supplier.py",
+      "bytes": 5293,
+      "sha256": "37bed088e4d5e4569804f50b90863db705d8cba9ca9c04832dbd2ab477f91781"
+    },
+    "versionBoundary": "current helper includes explicit metadata License-File validation added after first17 audit; original first result remains a10-license-prefix inventory and is not rewritten as11"
+  }
+}
