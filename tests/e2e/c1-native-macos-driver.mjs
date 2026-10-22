@@ -618,7 +618,9 @@ async function run(options) {
 
   function updateEntry(entry, row, observation) {
     if (row && Buffer.byteLength(row.rawLine) > 32768) entry.diagnosticIncomplete = true
-    const state = classifyProcess(entry, row, observation, lifecycle(entry), Date.now())
+    const consumedAtMs = Date.now()
+    const lifecycleSnapshot = structuredClone(lifecycle(entry) ?? null)
+    const state = classifyProcess(entry, row, observation, lifecycleSnapshot, consumedAtMs)
     const previous = entry.classification
     Object.assign(entry, state, {
       lastCheckedAt: observation.endedAt,
@@ -644,7 +646,9 @@ async function run(options) {
           observed: row ?? null,
           sampleStartedAtMs: observation.startedAtMs,
           sampleEndedAtMs: observation.endedAtMs,
-          lifecycle: lifecycle(entry) ?? null,
+          classifiedAtMs: consumedAtMs,
+          consumedAtMs,
+          lifecycle: lifecycleSnapshot,
           classification: state,
         }
       : null
