@@ -1,0 +1,149 @@
+# 本次精确派发补充：以实际review树与当前执行政策为准
+
+本文件前缀是原round-1/minimax-m31flash-prompt.md完整原字节，不是delta或source-only提示。本补充更新实际路径、操作政策与必要检查执行权，不缩减25路径、任一collector、专属测试、原验收或历史失败/处置。与前缀中“只读hash/一律不运行测试或GUI”的旧准备阶段操作限制冲突时，以本补充及root本次明确运行票为准；产品与验收输入仍冻结。
+
+- 你本次唯一实际应用workspace/工作目录：/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb
+- checkout为detached；不得切分支或复制/采用其他树实现。review HEAD b6e57a0534c94316dd07c3a87b4b8931d5a39501，product 7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4，base 5f910b52c69d86a1076b2032e5d3c63e715947f3。旧提示中的原开发树路径/feature分支是历史来源说明，不是本次workspace。
+- 模型/思考/权限必须在真实任务读回：M3.1-Flash / xhigh / permissionMode=bypassPermissions。当前尚无任务ID/设置读回，不能靠本提示声称通过。
+- 自己独立环境：/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb/node_modules、/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb/.venv；禁止采用peer/原开发树可变env。已有npm ignore-scripts与uv frozen安装日志在自己raw，均exit0，未运行产品。
+- TMPDIR/TMP/TEMP设为/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb/.t11-review-runtime/tmp；raw命令日志放/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb/.t11-review-runtime/raw；最终完整报告放/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb/.t11-review-runtime/report/review.md；实际task/session/turn/stream与设置读回放/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb/.t11-review-runtime/metadata。每次运行独立日志名，不覆盖失败。app自建metadata可以按实际增长登记，不删除、不新增ignore求绿。
+- 只访问自己根内的冻结Git源码、25路径/已有历史材料与自己的runtime。禁止peer本轮报告/状态/metadata发现和读取，禁止扫描父.worktrees或总控队列寻找另一方任务，不向另一方传本轮意见。
+- 自己metadata/source-setup.json固定全部822受控文件Git blob及实体SHA；当前只有AGENTS为操作政策差异，实际已传播de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4，保持M不stage。若其他受控源码/验收漂移，停止并报告，不自行修复或沿用旧证据。
+
+## 正常检查执行边界（替代旧一概禁测试/child条款）
+
+你在实际获派后可为审查必要问题执行本树原普通检查：显式T11_FIXED_BASELINE_PROBE=1专项、npm run lint/typecheck/build/check、原显式release lint/format、uv frozen ruff/pytest、sources、bash -n等；按必要性选择并保全原始结果，无变化历史不机械全部重跑。npm run check原链为lint→format:check→contracts/unit/desktop tsc→Vitest unit→electron-vite build→uv frozen ruff及pytest，不含e2e/打包/collector/API。
+
+Vitest配置为vitest.config.mts，T11测试会在TMPDIR中构造证据、git show固定873并spawnSync本树Node CLI；全量unit及Python原suite还包含受控stdio子进程、temp SQLite和worker/精确自有PID回归。允许这些必要原检查，不泛禁child/SQLite；不以模拟或oracle结果宣称领域运行。原source-mode测试不设置ONTOLEARN_TEST_ENGINE指向别树旧安装器。
+
+不能扩展被拒物理资源研究、全新native caller/producer票、外部SQLite损坏HOLD特定probe、新压力/内存实验、用户DB或API付费。若具体原测试触及明确HOLD，记录精确调用并报root，不静默跳过或删改suite；不能因关键词而禁整个原suite。e2e/install-electron/package:dir、真实collector/签名/公证、实际目标平台和模型API不是本次普通检查授权，缺口如实保留。不得修改产品/测试/配置/依赖/断言/旧manifest，不stage/commit/push/PR；必要修复由原唯一owner另做新候选与原门禁。
+
+metadata生长若影响format/lint或git status，保留实际结果/文件归属，不能delete/ignore/exclude后冒称原完整检查通过。检查与真实任务的命令、cwd、环境范围、exit、raw hash、未验边界均入自己报告。不得广泛结束用户进程，清理仅属本测试的准确PID。
+
+当前允许直接computer use，不再要用户桌面时段/CLI认证前置；但本准备不授新短lease，root当前T01唯一lease。实际应用创建/设置核验须按root短时串行协调，不占整个后台推理时长，不与其他租约争焦点。前缀“无GUI许可/必须独立桌面/T06当前owner”仅历史政策，不继续作为当前阻断理由。
+
+Windows collector仍只静态、Mac仅已有bash-n，两目标OS/五真人/真实模型API未测；已有65零skip仅工具合成/固定输入探针，默认3skip不作验收，首38失败完整raw仍缺。父57P0、C–G及10–12、双OS/模型/真人/CI/合并/远端/渠道门完整保留，不能为了工程审Pass删Windows或缩验收。你必须阅读全文/全部25路径/两collector/历史失败与关闭；无法核关键项则明确无法验证，不预设Pass。
+
+## 当前桌面政策原文
+
+# 当前桌面操作政策：撤回静默限制
+
+总控已正式read_thread核验人类最新原文：“直接使用computer use调用桌面端的工具就行，删除我之前要求的静默桌面操作”。来源chat `01a1628e-1220-7fb1-9135-97cbea4a3ed5`，turn `01a162ce-e65a-7753-84ab-47db9975c1d3`，human message `01a162cf-5a30-7e13-95ee-24d468007ce5`。这条在“现在可以登录”答复之后，当前执行以其为准。
+
+## 立即生效
+
+- 撤回此前静默、不占当前桌面、禁止聚焦/点击、须先预约用户时段的偏好。已授权任务可直接computer use操作桌面端审查工具及按既有验收运行本机浏览器/Electron/native；不为常规桌面操作重复询问，不把CLI认证、后台、headless或隔离桌面作为前置。
+- 同一桌面应用、原生故障测试与其他互斥资源由总控内部调度。本轮最先创建ZCode/MiniMax任务的负责人是原T06聊天 `01a15bba-0c8a-7dc2-b612-5b5c4ec4a4b9`；直接创建ZCode GLM-5.3/max/yolo完整新审，保留现有MiniMax真实session/turn/stream，不重复任务、不互泄本轮意见。其自有OAuth等待已实际收尾，不再给本人CLI登录前置。T06创建已完成并释放前台；后台任务保持，不独占整个应用推理时长。当前短时创建/核验lease以execution-state.json为准，
+- 尚在排队的T02/T03/T04/T07/T09/T10/T11不自行抢同一桌面；总控按实际资源交接。内部协调不是向用户重新申请桌面时段。完整必要验证可以按任务授权执行，不以“静默不了”一律停工；原native/窗口验收条件保留，不用隐藏/stub/禁hang monitor代真实结果。
+- 操作政策撤回不扩大具体阶段写面/运行权：纯文档、源码静态准备、未签native caller、尚未获运行票的构建/探针，以及已被自动审批拒绝的工作仍按各自原界限；不得把桌面可用当ABI/loader/drain、SQLite损坏HOLD/whole-H/owner或其他产品验收通过。
+- 指定模型/思考/逐任务权限、同版双审、必要验证、完整终态/全文报告/全部意见、CI/两OS/真人/develop远端及全部57P0保持。无新增付费、密钥读取/搬运、重置逐次确认绕过或宽泛结束用户进程授权。
+
+## 规则传播与历史
+
+阶段主聊天唯一修改主repo AGENTS及注册worktree政策副本；总控唯一修改common、active scope/goal-objective、permissions、state/队列。当前主AGENTS15147B/SHA `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，传播收据 `outputs/20261022_desktop_policy_update/propagation.json`；异版仅按原操作政策段更新，其余不覆盖。
+
+历史冻结prompt、原始审查输入、历史报告与旧原件不改。新任务附当前政策，已有任务由原owner在安全边界透传；单纯guidance变化不是产品/测试/依赖/验收或base变化，不重建Goal、不因本政策重审现有MiniMax。旧“无GUI许可”“待桌面时段”“必须先CLI登录”只能按历史时点解读，不能继续成为当前阻断理由。实际派发/任务ID/设置与终态另记，不把policy落地当任务已完成。
+
+## 当前AGENTS全文（实际应用以此操作政策执行，旧冻结前缀保留历史）
+
+# OntoLearn Studio Agent 指南
+
+默认中文，结论先行，简洁。先读需求依据再动手；不确定就问，不猜产品决定。
+
+## 1. 先读什么
+
+| 场景              | 必读                                                                                                                                                                                                                 |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 任何业务语义改动  | [PRD V0.6](docs/prd/PRD-本体学习与落地Agent工作台.md) 对应 FR 条款 + 附录 C/D/E/G                                                                                                                                    |
+| 工程/架构改动     | [M0 更新计划](docs/architecture/m0-review-and-update-plan-2026-10-19.md)（S1/S2/S3/C1/B1/U1 验收全文）、[ADR-0001](docs/architecture/0001-desktop-framework.md)、[ADR-0002](docs/iterations/I01/ADR-0002-storage.md) |
+| 当前状态与待办    | [M0 清单](docs/m0-checklist.md)；进行中迭代见 `docs/reviews/Ixx/status.md`                                                                                                                                           |
+| 迭代 I01–I06 执行 | 仓库外总控 `../iteration-control/2026-10-19/scope.md` 与 `state.json`                                                                                                                                                |
+
+状态快照（2026-10-20，以上述文件为准）：I01/S1 存储 spike 已合并 develop；I02/C1 CSP 与窗口恢复处于 CI 修复门禁；I03–I06 未开始。产品正式能力仍只有 health；存储是 Python 内部 API，未暴露给 IPC、UI 或 Agent。禁止把占位界面、测试替身或 spike 说成已实现的产品能力。
+
+## 2. 仓库地图
+
+```text
+apps/desktop/src/main/      Electron 主进程：窗口安全、来源校验、引擎监督、恢复
+apps/desktop/src/preload/   唯一桥接（按业务命名的方法）
+apps/desktop/src/renderer/  React UI（无 Node 能力）
+apps/desktop/src/csp.ts     CSP 唯一配置源（生产 meta / 开发 header 两个变体）
+packages/contracts/         TS 边界类型与 zod 运行时校验
+packages/engine/            Python stdio 引擎：protocol.py、storage.py、invalidation-v2.json
+tests/unit, tests/e2e       vitest 单测；Playwright 驱动真实 Electron
+docs/iterations/Ixx/        迭代设计、验收、证据；docs/reviews/Ixx/ 评审与流程记录
+```
+
+## 3. 架构不变量（违反即阻断）
+
+- **本地优先**：不自动启用模型、遥测或云服务；不开 HTTP 端口；不引入云数据库或未经测量的图数据库。
+- **渲染端隔离**：renderer 不得直接使用 Node、文件系统、shell 或通用 IPC；preload 只暴露按业务命名的方法，禁止 `invoke(method, params)` 式通道。IPC 处理器保持 sender/mainFrame/可信文档校验。
+- **CSP**：只改 `csp.ts` 一处；生产脚本不得出现 `unsafe-inline`/`unsafe-eval`；不手写第三份策略。
+- **确定性与 Agent 解耦**：确定性结果只能来自真实引擎；Agent 只产出草稿并调用白名单工具，不得自动确认自己的修改。
+- **存储**：SQLite 是唯一可变源真相，正式写入只经 `Store.commit`（版本化、可预览、原子提交、旧基线拒绝）；RDFLib 图只从不可变快照重建，不能写回。
+- **数据层次**：本体定义、断言事实、当前推导、场景副本、历史运行分层；历史与已提交轮次不可改写，缓存回收不得触及历史。
+- **失效规则**：`staleReason` 只来自 `invalidation-v2.json`；仅改模型配置不使领域结果过期；历史/失败/取消不计为过期原因。
+- **模型外发**（S3 前不得接入）：唯一网关在主进程，凭据只在主进程；Python 引擎不持有密钥，也不调用模型。
+- **错误**：跨边界只传固定错误码和受限参数，不回传原始异常、堆栈、路径、单元格原值或凭据。
+
+## 4. 改动类型 → 必跑验证
+
+| 改动                                       | 命令                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------ |
+| 任意代码或配置                             | `npm run check`（lint/格式/类型/vitest/构建/ruff/pytest）          |
+| 涉及归档资料或 `docs/source-manifest.json` | `npm run verify:sources`                                           |
+| 主进程、preload、bridge、CSP、窗口         | 另跑 `npm run test:e2e`（Linux 用 `xvfb-run -a`）                  |
+| 引擎依赖、打包配置                         | 另跑 `npm run package:dir`，并在包内运行同一样例                   |
+| 仅文档                                     | `npx prettier --check <文件>`；不批量格式化归档 PRD、审查和 `.pen` |
+
+`I02_HMR=1` 的 HMR 探针会临时改写源文件，评审冻结期间禁止运行。结果须分开报告静态、运行、打包、生产四类证据，不以静态检查代替运行证据。
+
+### 桌面工具与本地验证（2026-10-22 用户更新）
+
+- 用户明确要求“直接使用 computer use 调用桌面端的工具，删除之前要求的静默桌面操作”。此前静默、不占用当前桌面、禁止聚焦或自动点击、须先取得桌面时段的偏好已撤回，不再作为现行限制。
+- 已授权任务可按需直接使用 computer use 操作 ZCode、MiniMax Code 等桌面工具，也可运行本机浏览器、Electron、原生窗口与恢复验收；不为常规桌面操作重复询问或把后台、headless、隔离桌面作为前置。
+- 多条开发线操作同一桌面应用或使用互斥测试资源时，由总控内部协调，避免互相改动任务或干扰测试；无需额外向用户预约桌面时段。清理进程仍须核对自有 PID 和任务归属，不得宽泛结束用户或其他任务的进程。
+- 验证仍须覆盖原验收条件，区分静态、运行、打包与生产证据；不得用隐藏窗口、禁用 hang monitor 或 stub 原生提示冒充真实原生验收。操作政策更新不改变冻结候选、指定双审与发布门禁。
+
+## 5. 分支、迭代与评审门禁
+
+- **并行开发为默认执行要求（2026-10-20 用户确认）**：适用于当前 M0、后续里程碑、不同功能模块，以及单个模块内可独立开发的具体子任务。先识别真实接口、数据和集成依赖；可独立验收的工作须拆分并行推进，不得仅因迭代编号或模块顺序而全量串行。强依赖保留前置条件，不为增加并行数而重复实现或提前假定未冻结契约。
+- **独立 worktree + feature 分支**：每条并行开发线使用自己的 Git worktree、feature 分支和负责 agent，禁止多个开发 agent 在同一 checkout 切分支或同时写文件。迭代使用 `feature/Ixx-<主题>`，模块子任务使用 `feature/<模块>-<子任务>`；其他改动使用 `feat/`、`fix/`、`docs/`、`chore/`。从核验过的 `develop` 提交切出并记录 base SHA，经 PR 合回；不强推共享分支。提交前缀使用 `feat:`、`fix:`、`docs:`、`test:`、`chore:`。
+- **拆分与文件责任**：启动前记录各子任务的范围、前置依赖、接口约定、文件负责人、验收和集成顺序，再分配独立 agent。共享契约、存储迁移、能力注册表、依赖清单与锁文件指定唯一维护者；其他开发线提出接口需求，由维护者统一修改。依赖尚未就绪时，可先做独立设计、纯模块、真实库探针及对应测试，后置正式接线与联验；替身通过不得计作集成完成。
+- **M0 的并行拆分**：I02 继续当前候选评审；I03 可基于已完成的 I01 并行设计；I05 可先做真实候选语义、外联拒绝、依赖与打包验证；I06 可先做网关 ADR、独立授权与凭据模块。I04 实施须等待 I03 同版本设计审查通过并合并；I05/I06 的正式接入及最终验收须等待各自实际依赖就绪，并补齐与存储、任务和窗口生命周期的联验。引入真实依赖时即做相应打包验证，不全部推迟到最终集成。
+- **运行资源隔离**：各 worktree 独立依赖环境、构建输出、临时数据、日志及测试证据，开发端口和应用测试数据目录分别配置；不得共享可变运行库。桌面焦点、原生故障恢复、系统凭据存储及外部审查应用的 UI 操作由总控内部协调串行使用，避免运行互扰，不以向用户申请桌面时段为前置；已有固定端口或未隔离资源的测试须排队。
+- **并行开发、按依赖串行集成**：每条开发线独立验证并履行现行评审门禁；合并前同步目标基线、处理冲突并验证实际集成结果。目标基线或受审内容变化时，按现行规则重新验证及独立审查，不沿用旧版本通过。保留双指定模型、CI 和远端核验要求；子任务完成不等于父模块或里程碑验收完成。
+- **冻结与调度记录**：候选冻结后不得修改受审路径，任何实现、测试、配置、依赖或验收改动都要生成新候选，并按现行门禁重新独立审查。其他工作在独立 worktree 推进，不干扰冻结候选。总控记录并行任务、worktree/分支、base/head、文件责任、依赖和资源预约；仅按实际进展更新状态，不把获准并行登记为已启动或完成。
+- **与旧计划的关系**：本节取代旧 `scope.md` 中“所有迭代必须前项合并后才启动后项”的统一串行调度要求；执行时总控须同步相关范围与调度记录，保留原需求、真实技术依赖、验收及评审门禁。后续功能模块和子任务同样执行本节，无需为常规并行拆分重复征求授权。
+- **进行中开发与 Goal 的过渡**：按最新桌面操作政策执行；并行策略在安全边界用于新任务/新开发线，不强行迁移正在冻结审查的 checkout、不改写其候选、不重建已有 Goal、不丢弃报告或重跑无变化的验证。用户授权的 AGENTS/调度文档变化单独记录前后哈希与适用范围；若未改变受审实现、测试、依赖、CI、验收或集成基线，不将其误判为受审产品变更，不单因此重开整轮审查。若实际受审内容或基线确有变化，仍执行原重新审查规则。审查代码读取固定 SHA，实际执行遵守最新操作约束。新 worktree 须携带并核对最新指南，不能只读取旧基线中的 AGENTS；总控负责同步规则，开发会话各自维护状态，避免共同改写 `state.json`。
+- 不混入其他会话的未提交改动；禁止 `git add -A` 或整体 stage。只 stage 本任务文件。
+- 复杂或高风险交付使用独立 agent 审查，避免并发修改共享契约文件；不得替换指定审查模型或降低门禁。
+
+### 效率与额度恢复（2026-10-20 用户确认）
+
+- 以正确交付和开发效率为优先，不因 token 消耗缩减实现、异常处理、上下文或必要验证。充分使用实际可用的并行 agent/worktree；避免重复探索、无变化重测和无效轮询，不擅自更换指定模型或降低审查门禁。
+- 用户说明 ZCode、Codex、MiniMax Code 均有额外重置次数；遇实际额度限制时由账号唯一负责人核实状态，优先通过经核验的官方方式使用已有权益恢复，成功后续接原任务。其他开发线保存现场并继续无关工作，不重复消费同一权益；短时限速、服务/认证/账单故障不能当作额度耗尽盲目充值。
+- 自动恢复受实际工具/平台约束：Codex `consume_usage_reset` 每次必须取得用户对该次操作的明确确认，未来批量授权不能替代；只在工具的额度条件满足时使用，同次不确定重试复用幂等 key，完成后核验额度，不因刷新失败重复消费。ZCode/MiniMax Code 的可用恢复机制尚待核实，不虚称已实现无人值守充值；禁止通过 UI 绕过工具确认。
+- 已有重置/余额与新增付费分开：本次未提供新增付款的单次金额及累计上限，实际购买前须明确这些条件及授权；不将“不考虑 token”扩大为无限付款、自动订阅升级或切换付费 API。完整执行与透传规则见仓库外 `../iteration-control/2026-10-19/goal-objective.md` 第九节；运行中 Goal 须实际同步，旧冻结输入保留。
+
+## 6. 文档与证据规范
+
+- **唯一状态来源**：完成度只在 `docs/m0-checklist.md` 和对应 `status.md` 中维护；其他文档链接过去，不重复“不代表 M0 完成”之类的声明。
+- ADR 采用后放到 `docs/architecture/000N-<主题>.md`；迭代目录只保留设计、验收和证据。
+- 证据只提交摘要、关键 JSON 和哈希；大段原始日志、截图、runtime dump 优先放 CI artifact。确需入库时写明理由。
+- 文档写决定、理由、未决项，每份 ADR 控制在 1–2 屏；不编造性能数字、容量通过线、日期或人员承诺。
+- 不提交凭据、业务数据、`.sqlite`/`.db` 运行库、`.env`、`.mimosa/`。
+
+## 7. 编码约定
+
+- TypeScript `strict`；边界数据一律经 zod `.strict()` 解析。Python 3.12 + ruff（line-length 100，E/F/I/UP/B）。
+- JS 直接依赖写精确版本；npm 与 uv 两份锁文件随改动一起提交，CI 使用 `npm ci` 和 `uv sync --frozen`。
+- 测试断言真实需求和错误边界（完整预期集合/顺序），不只断言数量或按钮可点击。
+- 不设 PRD Q2/Q3/Q5/Q6/Q7/Q8/Q9 的默认答案；遇到这些决定时停下来询问。
+
+### ZCode / MiniMax Code 默认执行权限（2026-10-21 用户确认）
+
+- 用户明确要求“更新调用zcode和minimax code的权限，默认为完全访问和始终授权”。ZCode 默认完全访问（permission.mode=yolo），MiniMax Code 默认始终授权/Full access（permissionMode=bypassPermissions）。创建或进入审查任务时读回该任务实际模式；用户级配置不能证明已有会话即时切换。已获授权，不重复询问默认模式。
+- 当前计算、Goal和冻结审查不重启；在应用支持的安全边界确认或调整权限。完全访问不改变审查只读职责：仅运行约定验证、写独立报告，不修改实现/测试/依赖/配置，不提交、推送或切分支。
+- 指定模型与思考等级、同版双审、意见处理、CI 和远端核验继续适用；桌面操作按本指南最新政策执行，不扩大为新增付费、读取密钥或绕过平台逐次确认。
+- 详见仓库外 `../iteration-control/2026-10-21-weekly-release/external-review-permissions.md`（worktree中从本体根目录定位）；新任务附上本节，旧冻结输入保留，单纯操作政策更新不触发无变化实现重审。
