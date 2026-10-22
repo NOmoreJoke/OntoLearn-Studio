@@ -1,0 +1,177 @@
+# T11 02a 全新完整指定独立审查报告（ZCode / GLM-5.3）
+
+日期：2026-10-23（Asia/Shanghai）。审查者：ZCode，指定模型 GLM-5.3，思考目标最高（max），权限目标完全访问（yolo）；只读审查职责不因完全访问扩大。本报告为对候选 `02a4738a220b2c6e881f7161ee658c61bf4328dc`（简称 02a）的**全新完整独立审查终态**，不复用任何已 completed 会话。
+
+## 0. 终态结论（先行）
+
+| 维度 | 结论 |
+| --- | --- |
+| **完整工程范围**（107 requiredFiles 全量：原25产品路径按02a现状 + 8流程件 + 前23修复件 + F1实现/测试/验收 + 四份历史完整报告 + 全部过程/输入证据；含唯一实现 `verify.mts`、CLI、三collector脚本、两测试、两fixture、全部T11文档与PRD） | **通过** |
+| 19 项历史意见（M 12 + Z 6 + M036-F1） | 本方逐项处置见 §7：**M036-F1 在工程范围关闭**（F1 修复全部合同点成立并经本方亲跑验证）；18 项原意见中 15 项工程/文档关闭、3 项（Z-F4/F5/F6）静态/合成关闭（真机父门保留）、M-F-H② 工具侧关闭但真实 T03 同包对照**无法验证**。原严重度与 M 对 7d28 的 NotPass 作为历史记录保留，owner 关闭数仍为 0 |
+| 真实平台/发布验收（双OS真机安装/native/凭据/恢复迁移、签名公证、真实API零伪造评估、五真人、Q5容量、指定双审合成、CI/push/PR/合并/远端、最终渠道下载实装） | **无法验证 / 未关闭**，全部按原门保留 |
+| 核验器发布授权 | 恒 `releaseAuthorized:false`（返回类型字面量 + 本方全部实测路径一致）；本报告"通过"不构成发布授权 |
+
+通过的含义：02a 冻结字节与其验收文档（acceptance.md F-1 回归节 + 原01验收条件 / v3规范 / README / user-study）一致；F1 修复（verify.ts→verify.mts 原字节重命名 + CLI 纯JS参数/Node24.3+门 + try内显式ESM动态加载 + 整段stderr严格断言恢复）经本方独立环境逐点复现；18 项原意见的 338 修复在本方代码通读与亲跑中核实仍在位；独立复核 873 固定基线、57 P0、G50、Q9 决议、三个归档 75 个成员字节/hash；未发现新的 P1–P3 阻断缺陷（3 项信息级观察，见 §8）。本通过是新审独立结论，不继承 Z 对 7d28/036 的旧 Pass，也不被 M 对 7d28 的 NotPass 约束；M036-F1 的硬因已在 02a 消除。**不成立双 Pass**：本报告仅为 ZCode 一方，M3.1-Flash/xhigh 一方全新同版审查及双方意见处理仍待完成。
+
+## 1. 任务来源、设置读回与 provenance
+
+- 任务来源：用户派发消息（声明总控本轮 GUI START 已正式生效、本任务为实际派发的新任务）+ 所附 full-prompt.md。本方 `.t11-review-runtime/input/full-prompt.md` 实测 **35540 bytes / SHA-256 `dc5dcc5d52bed40e46e832cfaa606b09ec3b6e4159380ca8795b0bdd3fd55e40`，与用户给定值完全一致**；已完整读取全文（227 行，含角色封面、共同正文 13 条审查标准、19 历史意见处置要求、执行/隔离/禁止事项、最新工作指南全文、根普通检查生成写面补充），未只读预览、未降为 F1 delta 或 19 项 delta。
+- **实际设置读回**：模型 = GLM-5.3（本会话系统声明 `account:bigmodel-individual-coding-plan/GLM-5.3`，与指定一致）。**effort / permission / task / session / turn ID：UNKNOWN**——本方 runtime（input/metadata/raw/tmp/report）内无本轮实际设置收据；附件中 `taskCreated=false`、`actualSettingsReadBack=false` 为冻结时快照，本方不以其拒绝已派发审查，也不以默认配置或 AGENTS 用户级政策推定实际值。行为观察：本轮全部工具调用未出现逐次授权中断（与 yolo 预期相符），但此非配置读回。
+- cwd：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-02a4738a`（实测一致）；HEAD = `02a4738a220b2c6e881f7161ee658c61bf4328dc`（detached，实测一致）。工作树差异仅 ` M AGENTS.md`（15147B，SHA256 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`，与 manifest `currentGuide`/guide 字段一致；HEAD 内旧版 1056B/`1b3c0291…`，为已声明最新政策差异，保持未暂存）与未跟踪 `.t11-review-runtime/`。
+- 身份链（全部 Git 对象存在并实测）：原工程 base `5f910b52…`；原产品 `7d28fdb2…`；修复 base `692077da…`；受验实现/测试 `33894063…`；上一完整指定候选 `036d7172…`；F1 实修父 `550d47ad…`；`87cc1daf…` 仅为提交后交接流程 HEAD，不替换受审 02a（本方审查代码全部按 02a 固定 SHA 读取）。
+- F1 delta 实测（`git diff 550d47ad..02a`）：`scripts/release/verify.ts → scripts/release/verify.mts` 为 **R100 原字节重命名**（两侧 blob SHA-256 均为 `c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b`，38220B；036 无 verify.mts、02a 无 verify.ts）；CLI 改 9 行；io 测试 import 改 `.mjs` specifier；主测试 +135 行（新增 3 组合同例）；其余 12 文件全为 T11 独占 docs。**无第二 schema、无 package/锁/tsconfig/eslint/CI 改动**（package.json、package-lock、uv.lock、tsconfig.unit.json、eslint.config.mjs、ci.yml 六共享文件与 550d47ad 逐字节一致，f1-fix verification sourceProtection 登记且本方 git diff 复核成立）。
+- 独立性：未读取任何 peer 本轮 prompt/receipt/report/state/metadata（即使路径可推断也未尝试）；未访问父 `.worktrees`、总控队列、全局配置或应用日志；仅阅读显式列为历史的四份完整报告、18+1 矩阵、triage 全套、旧 raw 归档与本方 runtime。未 stage/commit/push/PR/切分支；未修改任何受审实现/测试/依赖/配置；仅在自己 `.t11-review-runtime/` 写 raw/metadata/本报告。
+- 每条命令在本方精确根执行；TMPDIR/TMP/TEMP、npm_config_cache、XDG_CACHE_HOME、PYTHONPYCACHEPREFIX、UV_CACHE_DIR、UV_PROJECT_ENVIRONMENT、UV_NO_SYNC、UV_OFFLINE 按本方 ordinary-execution-write-addendum 逐子进程内联设置；日志每次新名，未覆盖任何首败。
+
+## 2. 输入完整性与受控文件核验（全部通过）
+
+1. **107 个 requiredFiles**（handoff-manifest 逐条 bytes+SHA256）：本方逐一实测，**107/107 全部字节级一致，0 缺失 0 漂移**（证据 `.t11-review-runtime/raw/manifest-verify-02a-zcode-20261023.json`）。`f1-fix-20261023/review-scope.json` 的 107 清单与 handoff-manifest 逐条全等；candidate-binding 声明的 f1 index.json（1959B/`c7d3a34e…`）与 review-scope.json（23213B/`b52e1bf8…`）亦实测吻合。
+2. **受控文件**：`metadata/source-setup.json` 声明 956 受控文件（reviewHead=02a、approvedFixed873ObjectPresent=true）；本方逐条复核物理字节/SHA-256 **956/956 全等**，`equalsGit=false` 仅 AGENTS.md；另做 127 条分层抽样（107 全量 + 956 每 37 个）以 `git hash-object` 直核工作树 blob == 声明 gitBlob == HEAD blob（AGENTS 除外）**全部成立**。
+3. **三个二进制归档逐成员核验**（tar 头解析，不解包流式）：`round-1/raw-logs.tar.gz`（7208B/`c1f34bd3…`）**48/48**、`owned-fixes-20261023/raw-logs.tar.gz`（2825B/`2e714950…`）**14/14**、`f1-fix-20261023/raw-logs.tar.gz`（5493B/`95067c16…`）**13/13**，成员 bytes+SHA 与各自 index 全等、零缺失零多余（证据 `raw/archive-member-verify-20261023.json`）。首跑 38 失败仍无独立完整 raw（归档内无 "38 failed" 日志，`first-failure.json` 摘录 + transcript 线索），本方不重跑补造，永久性未知。
+4. **873 固定基线独立复核**：Git 对象存在；manifest SHA 实测 `aaaef2c0…ac39e`、17 文件、version `prd-v0.6-learning-1`、PRD `7586b2c4…f60fbb` 与 `APPROVED_BASELINE` 常量逐字一致；当前树 PRD 同 hash（冻结版逐字节等同）。显式探针亲跑时 17 文件逐文件联验通过（§5 R2）。
+5. **57 P0 / G50 独立解析**：本方独立正则解析当前 PRD：P0=57 且唯一（与核验器口径一致）；G.1 表 + `### G.4` 起顶层 `- ` 列表 = G.4(6) + G.6(7) = 13 列表项，合计 50；与 873 coverage/cases 及探针联验一致。
+6. **Q9 决议绑定**：`q9-decision-source-20261023.json`（来源 SHA `def9817dc35c11514335fce5ecf859878e00cdfccc259659edb7925fee9d84a7`，2026-10-21，首选真实模型服务 L21-29）与 `APPROVED_MODEL`（endpoint `https://api.deepseek.com/chat/completions`（具体路由）、requestedModel `deepseek-v4-pro`、decisionSha256 同上）及 README §Q9 三方一致；Base URL `https://api.deepseek.com` 与路由分列，Base URL 冒充 endpoint 有专门拒绝测试且本方探针窗口内测试实跑通过。
+7. **本方 runtime 输入**：common-review-scope.md（29976B/`6d00516f…` = manifest common 字段）、ordinary-execution-write-addendum.json（4201B/`faeb23d3…`）、history/full-prompt-ffba.md（30747B/`13319c66…` = 收据旧prompt）、handoff-manifest-ffba.json 哈希全部实测吻合；收据 `ordinary-execution-write-addendum-receipt.json` 确认 `commonConstraintsIdentical:true`、`otherRoleSupplied:false`（含两 role 的总源未提供给审者，本方未追查另一方 role 或原控制文件，只读本方过滤视图）。
+
+## 3. 12+1 条审查标准逐项结论
+
+| # | 标准 | 结论与证据（本方通读 + 亲跑） |
+| --- | --- | --- |
+| 1 | 严格 schema 及未知字段拒绝；身份/预期hash/时间/模型/旧资产/恢复迁移pin不能自证 | **符合**。manifestSchema/expectedSchema 及全部子 schema `.strict()`（verify.mts:10-246）；source/candidate/reviewedSha==freeze.candidateSha（:518）；releaseAuthorized 为返回类型字面量 false（:212-217,:1074）；freeze 由 CLI 独立注入且强制覆盖 now（verify-release.mjs:17-20）；expectedResults 逐 `${label}:${id}` pin（:706）；两边同填假数据被 APPROVED 常量与 baseline 唯一 manifest 拒绝（测试 refuses arbitrary service tuples / unapproved production profiles，本方亲跑通过） |
+| 2 | CLI manifest/freeze 16MiB、大文件 8GiB、先限额后 parse、同fd完整读取/hash/PE/koly、增长/短读/非regular/读错误关闭、symlink/祖先前提、不虚称TOCTOU | **符合**。withFile：O_RDONLY\|O_NOFOLLOW\|O_NONBLOCK → fstat（非regular/空/超限→FILE_BOUNDS）→ 限额后 alloc/parse → 同 fd 完整读取/hash/结构 → 尾部再读1字节检增长 → fstat 比对 size/ino/dev/mtime/ctime → finally close（:363-403）；readJsonFile 16MiB 先限后 parse（:404-407）；verifyLargeFile 8GiB、1MiB 分块流式同 fd hash（:434-451）；boundPath realpath 包含判定 + 拒绝对路径/反斜杠/`..`/`.`（:346-359）；注释明示不保护并发替换祖先（:361-362）、README:45 同口径。本方亲跑：专项 125/125 含 IO 9 例 + CLI 超限/缺失/损坏探针（§5 R3）全过 |
+| 3 | 双目标 Win11-x64 NSIS / macOS15-arm64 DMG、版本/架构/构建输入/两锁/唯一配置、组件/许可证、下载受众同hash实装；结构标记≠签名链/公证 | **符合（结构级）**。artifacts 恰2且目标互斥、TARGET_MATRIX/DISTINCT_DEVICES；koly/MZ→PE→machine(0x14c/0x8664) 仅结构判别（:417-433,449）；Mac 另强制 hardenedRuntime/notarized/stapled + 4项签名报告 check，Win authenticode+时间戳+3项报告（:738-754）；组件 inventory 与 licenses 多重集等价（:755-767）；下载 URL https/无凭据/无query/hash==候选/installed（:805-816）。README:45 明示结构标记不证明 NSIS/DMG 实质或签名可信、metadata valid 不能证明签名可信。真实签名链/公证属无法验证边界 |
+| 4 | 完整57 P0、G50原文/ID、唯一T09 manifest全17文件及完整expected/E.5 exact/replay指针；生产evidence固定批准873/版本/路径 | **符合**。P0 正则须恰57唯一（:555-556）；coverage 50条↔PRD G.1表+G.4起列表逐字对照 + sourceSha256==PRD（:581-625）；cases 50条 exactFile/exactPointer/replayExact 指针展开为完整对象（:626-681）；G-base/G-map-empty/G-behavior/E.5/cases 五件必列（:682-691）；evidence 模式显式核 APPROVED_BASELINE 的 manifest SHA/prd-v0.6-learning-1/PRD SHA/17精确路径集合（:566-576），缺/多/改版本即使双边同改也拒（测试+本方亲跑探针）；内容 hash 仍唯一 manifest 逐文件读取，无第二基线 |
+| 5 | RDF 仅指定完整SPO集合无序保重复数，事件/动作/轮次及余数组保序；1000轮等原要求不用模拟冒充 | **符合**。compareProductComplete 仅对 {facts,assertedFacts,inferred,addedTriples,inputs} 且全部元素为三字符串键 SPO 时排序多重集（保重复），其余数组严格保序（:467-492；单测直接断言重复数与 events/trace/rounds 保序，本方亲跑通过）；1000轮/每轮1000动作/已提交不可变/取消/响应丢失属 PRODUCT(57P0)+DEVICE_CHECKS 覆盖（:248-292），全部 actual 为合成/oracle 构造，acceptance/README/status 一致声明不代表50项产品通过 |
+| 6 | v3只读投影身份/唯一id/完整payload、selection/dependencies/三能力独立；current-state合法空层；PRD1252模板不得restoreCurrent、不代答F01；G.6双向固定六层非空、22迁移check、旧v2拒绝、零提交重放、未选不泄漏、模板负向；不另造Store/包/恢复器 | **符合**。snapshotSchema v3（:914-996）：facts/ownership 为空即 TEMPLATE_NOT_RESTORABLE（恒定，对应 PRD G.6 模板边界，不代答 F01）；g6-conflict 六层非空；两迁移槽 freeze literal g6-conflict（:233-239）不可双边降级（测试 MIGRATION_BEFORE_CASE/EXPECTED_IDENTITY）；MIGRATION_CHECKS 恰22（:318-341）含 relink-rerun-conflict/continue-edit-query-undo/replay-zero-commit-inputs；UNSELECTED_CONTENT 五类未选必空；MAPPING/REPLAY_CAPABILITY 严格等于依赖推导（零提交 rounds=[] 可重放正例在测）；v1/v2 拒绝不转换（测试）；migration-recovery.md:3 明示 T11 不写数据库、不实现第二导入/恢复器 |
+| 7 | 双平台上一版真实资产独立pin；recovery与每旧资产报告 rollback-retain-new-version-copy + rollback-refuse-incompatible-format，原check全保留；具名check≠真实操作 | **符合**。previousAssets 恰2 独立 pin；回退资产禁等于当前资产/同版本/同候选 + 结构/签名/公证链（:1013-1040）；两项具名 check 双落于 RECOVERY_CHECKS（:308-317）与每旧资产报告必检 id（:1041-1053），缺任一拒（测试+本方亲跑）；migration-recovery.md:23 明示不得用一个通过布尔或工具fixture代替实际操作 |
+| 8 | 两collector完整审：Mac绝对路径含最前OS/arch、pending/step、失败/有限exit、首raw与半成品保留、新目录防覆盖、成功末尾complete；Win受控DOS长度/PE offset/机器字段/finally关闭；缺/pending/failed/malformed拒；collector-complete与同包check绑定；marker≠native；真实T03唯一包对照 | **符合（静态+合成；真实运行未验）**。Mac：`--approved-isolated-session` 恰4参 exit2；arm64+15.* 门 exit1；输出目录必须不存在；全部外部命令绝对路径（/usr/bin/uname、/usr/bin/sw_vers 最前门，/usr/sbin/sysctl、/usr/bin/{shasum,plutil,file,codesign}、/usr/sbin/spctl、/usr/bin/xcrun、/bin/{mkdir,mv}）；pending/step 逐步、finish trap EXIT/INT/TERM set+e 写 failed+COLLECTION_FAILED、成功末尾才 complete；bash -n 本方亲跑 exit0。Win：Mandatory 5参、Win11+X64 门、OUTPUT_MUST_BE_NEW/INPUT_REQUIRED → 固定 TARGET_INPUT_OR_NEW_OUTPUT_REQUIRED exit2；signature-N 首 raw 先落盘再校验；pe-machine.ps1 受控 DOS≥64/offset∈[64,len-6]/PE签名/machine/size-changed/finally dispose/固定 PE_INVALID 不回显原异常。核验器侧 collectorStatus 严格 `{1,complete,complete,0}` 四态拒（测试亲跑）；collector-complete actual 与 status 文件 hash 绑定；installed-components-match-package 严格结构且 packageSha256==候选、inventory/provenance 读核、app/engine 大文件 hash；代码注释明示"绑定声明字节，不证明安装/解包 transcript 真实性"，README:33 同口径。真实 T03 唯一包内成员与原件对照仍为独立门（无法验证） |
+| 9 | Q9 批准 DeepSeek官方API+ChatCompletions+deepseek-v4-pro、Base URL 与具体路由分列、批准来源hash绑定；URL合法+两边同tuple不能批准任意服务；返回模型/服务版本/模式/评估hash/零伪造；不授API资源 | **符合**。§2.6 三方一致；manifest 与 expected 任一漂移、Base URL 冒充路由、任意同 tuple 服务均 MODEL_PROFILE_DRIFT 拒绝（:842-857 + 测试亲跑）；fabricatedResults 必 0（:858）；MODEL_CHECKS 13项含 endpoint-change/prompt-injection/offline-fallback；不接 API、不消费资源（q9-decision-source scope 明示） |
+| 10 | ≥5合格真人/80%依靠产品引导完整八步(core&&transferCompleted)、4/5与3/5及core/transfer矛盾；产品提示完成与独立迁移分记；真实帮助/示范/Agent代做不计独立；F16待决；record只hash、原件由主持人与独立验收人核 | **符合（结构级）**。users≥5唯一；human/非developer/ontologyNovice/资产绑定/blockers空；成功=core∧transfer∧assistance∈{independent,product-hints}，4/5=0.8 恰过、3/5 拒、core=true/transfer=false 专门矛盾错误（:880-902 + 测试亲跑）；transferIndependent 不得由操作完成推得、agentFullCounterexample 必真、agentMarkedIndependent 必假；user-study.md:25 口径与代码逐字一致（PRD FR-105"分别记录"、11.2、12.1 第8步含迁移+HTML）；F16 跨尝试资格待决明示（:27）；record 只 hash 不解析、主持人/独立验收人核原件职责成文（:29），无自证布尔 |
+| 11 | CLI语法/错误码、synthetic永不放行恒releaseAuthorized:false；CLI覆freeze.now不认证墙钟；19历史意见逐项证据处置 | **符合**。F1 后完整错误面：参数 usage exit2 / UNSUPPORTED_NODE_RUNTIME exit2 / 模块加载+缺失+JSON解析+freeze-schema+16MiB → 固定 `MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID` exit2 空stdout / manifest JSON可解析但schema错 → `MANIFEST_SCHEMA` 结果 exit1 stderr空 / 正常synthetic与一致性JSON语义不变——全部本方亲跑探针复现（§5 R3）；整段 stderr 严格断言已恢复（t11-release.test.ts:1184-1209,1229,1249,1258,1278,1289,1309,1335 断言整段相等或包含，无末行筛选）；无任何全局 warning 抑制。CLI 用当前墙钟覆盖 freeze.now（测试 forge 2099→USER_STALE）；README:47 操作者核时间来源/偏差、工具不认证时钟。19 项处置见 §7 |
+| 12 | 状态/当前/历史标签、同updatedAt不同来源hash、初始raw缺口、报告真实性不混淆；旧材料GUI/队列描述仅当时；原Goal/状态不由审者改 | **符合**。status.md 置顶两个 dated 当前回执（F-1 修复窗 / owned修复窗）精确入口与取代关系；历史阶段记录原文保留并标注"仅描述各段当时状态"；同 updatedAt 不同来源 hash（blocked-audit `0b41a993…` vs format-python `cf21df89…`）两份原件并存未归并；首38缺口分列不补造不称永久丢失；本方未触碰 GUI/Goal/队列/任何原状态记录 |
+| 13 | **F1完整错误面**：原字节rename、无第二schema/package/共享配置；CLI纯JS先参数后24.3+门、try内动态import真实.mts；各类错误整段固定stderr/exit2/空stdout；manifest schema错 exit1；不用全局关warning或文档披露代替修复；独立warning可见+真实失败exit2；受控版本preload只证guard决策；.mjs specifier映射唯一.mts；listFiles含.mts无旧.ts | **全部成立**。R100 原字节重命名（§1 实测）；CLI 参数优先→版本门→try内 `await import('./verify.mts')`（verify-release.mjs:2-16）；错误面合同逐点亲跑（§5 R3）；测试断言整段 stderr 相等、独立 preload warning 保留且无 MODULE_TYPELESS、四版本模拟（24.0.0/24.2.9/23.9.0/25.0.0）仅证 guard 分支（test:1291-1311，命名即"simulated"）；README:17 明示"不屏蔽Node诊断：操作者额外注入的preload/运行时警告仍可见，不把全局关闭warning当错误面修复"；tsc listFiles 本方亲测含唯一 verify.mts、0 个 verify.ts（§5 R4）；测试 `.mjs` specifier 经 TS 扩展替换映射唯一 .mts（typecheck + vitest 双证） |
+
+## 4. 107 个 requiredFiles 覆盖表（全部覆盖；实体与字节核验见 §2）
+
+| 分组 | 文件 | 覆盖方式与结论 |
+| --- | --- | --- |
+| 实现5 | verify.mts(38220B,1076行)、verify-release.mjs(28行)、collect-macos.sh(72行)、collect-windows.ps1(94行)、pe-machine.ps1(29行) | **全文通读**；§3 全项符合；F1/M036-F1、M-F-A/B/C/F/H①③、Z-F1/F2/F3/F4/F5/F6 修复落实 |
+| 测试2+fixtures2 | t11-release.test.ts(51021B,1339行)、t11-release-io.test.ts(126行)、comparison.json、synthetic-profile.json | **全文通读**；断言到具体错误码/语义边界；CLI 整段 stderr 断言恢复（1173-1337）；fixtures 自标 synthetic |
+| 配置4 | package.json、eslint.config.mjs、tsconfig.unit.json、packages/contracts/tsconfig.json | **全文通读**；与 550d47ad 逐字节一致（F1 未改共享配置）；eslint 全局 ignore release 故显式 lint 必要且已亲跑 |
+| 迭代文档4 | acceptance.md（含 F-1 新候选回归节）、selection-comparison-v2/v3.md、shared-file-handoff.md | **全文通读**；F-1 回归要求与实现/测试逐条对应；v2 历史保留；共享交接仅提案未越权 |
+| 发布文档5 | README、migration-recovery、target-device-runbook(11步)、user-study、user-observation-template.csv(28列5空行) | **全文通读**；README:17 F1 错误面口径与代码全等；runbook 明示 collector 不替代原生操作；user-study 与 participant 字段逐项对应 |
+| reviews/T11 基础12 | approved-fixed-baseline-probe、blocked-audit、completion-audit、external-review-permissions-receipt、first-failure、format-public/python-ownership-receipt、internal-review、operating-policy-receipt、recovery、selection-v2-review、status、t09-readonly-alignment、verification | **全文通读**（blocked-audit/回执类按结构+关键字段全文核读）；登记/计数/边界与实测吻合（65/695 为 7d28 历史、109/739 为 338、122→125 并入 755 为 02a，已分层标注） |
+| f1-fix-20261023 6+2 | design.json、design-review.md、implementation-review.md、verification.json、raw-logs-index.json、raw-logs.tar.gz(+index.json、review-scope.json) | **全文通读**+归档13成员核验；首轮122（wrapper显式flag，01 metadata未记env已如实声明）→末版125并入755；六路径before/after同hash；M036-F1=IMPLEMENTED_VERIFIED_LOCALLY、OPEN_FOR_DESIGNATED_GATE |
+| boundary-exceptions 9 | README、handoff、cross-review-disposition、f1-independent-triage、independent-review、index、input-only-incidents、minimax-formal-status（+目录内互链） | **全文通读**；两条036输入越界登记、M036-F1独立triage（含M036报告缺陷纠正）、交叉18项处置全表 |
+| fresh-review-created 21 | README、index、gui-release、document-checks、final-bounded-turn-snapshot、limited-receipt-review、own-trees-snapshot、owner-readback-boundary-exception、readback-diagnostic-corrections、两input-proof、两native-route/state、两own-short-input、两operator-ui-settings×2、两native-attachment、两native-attachment-read、zcode-own-attachment-numbered-block | **19件全文通读**；2份大原始Read副本（minimax-native-attachment-read-1/2.txt）与两份附件本体（zcode/minimax-native-attachment.md）以 manifest 哈希 + 结构关系（157行角色封面版、编号块剥`N\t`前缀与附件逐字节全等）覆盖——其正文实质为当前 prompt 共同正文之前身，本方已全文读过当前版；两input-proof重建字节=附件SHA |
+| fresh-review-completed 8 | 两 finding-disposition、两 input-only-audit、两 reception + 两报告原件 | **全文通读**（M input-only-audit 105调用按结构化清单逐项核读）；per-row 18项处置、M036-F1登记、报告内部错误清单保留 |
+| received 4 + round-1 2 + triage 4 + owned-fixes 5 | 两 index、两 owner-reception；history-disposition、raw-logs-index(48)；collector-and-io分析、evidence-index、independent-plan-review、index；handoff、history-archive-verification、independent-implementation-review、index、raw-logs-index(14) | **全文通读**（raw-logs-index 为成员哈希清单，与归档核验互证）；R1 已在338 delta关闭；triage 18项0关闭 |
+
+**未抽样声明**：107 条全部覆盖（103 条逐字通读；4 条大体积原始附件/编号块副本按哈希+结构全等覆盖并在上表逐条注明方法）；三个归档核全部成员字节+hash并阅读失败日志索引；未只审 F1/19项delta/单个verifier；不删 Windows collector；不降 acceptance 求 Pass。
+
+## 5. 本方亲跑命令（既有证据之外的新运行证据；cwd 均为本 worktree 根；环境变量按本方补充内联；日志均落 `.t11-review-runtime/raw/` 新名）
+
+| # | 命令 | 结果 | 日志 |
+| --- | --- | --- | --- |
+| R1 | 环境与输入核验脚本（107文件hash、source-setup 956物理、127抽样git blob、f1-fix 8文件、3归档75成员、附件/编号块关系、PRD 57P0/G结构） | 全部通过（§2 详列） | manifest-verify / source-setup-verify / git-blob-sample-verify / archive-member-verify-20261023.json |
+| R2 | `T11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release.test.ts tests/unit/t11-release-io.test.ts` | exit 0；**125 passed (125)，0 skipped**（四固定探针执行，17文件/50预期/指针联验） | r02a-flag-specialized（`c071660f…`） |
+| R2b | 同两文件（默认无flag） | exit 0；**121 passed \| 4 skipped (125)**（4 skip 即固定输入探针；默认通过不作联验） | r02a-default-specialized |
+| R3 | CLI 错误面探针（本方 tmp 构造）：usage 无参/多参、manifest/freeze 缺失、manifest 损坏JSON、freeze 16MiB+1 超限、freeze schema 非法、manifest schema 错+合法freeze、`--import` preload 模拟 24.2.9、独立 emitWarning+真实缺输入 | usage→exit2整段usage空stdout；缺失/损坏/超限/freeze-schema→exit2 `MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID`（40字符+LF）空stdout；manifest schema错→**exit1 `MANIFEST_SCHEMA` JSON stdout、stderr 0字节**；24.2.9→`UNSUPPORTED_NODE_RUNTIME` exit2；warning+缺输入→exit2、warning可见、stdout空、**无 MODULE_TYPELESS_PACKAGE_JSON** | 交互执行+tmp探针，结果载本表与raw |
+| R4 | `./node_modules/.bin/tsc --noEmit -p tsconfig.unit.json --listFiles` | exit 0；**含唯一 `scripts/release/verify.mts`、0 个 `verify.ts`** | r02a-tsc-listfiles |
+| R5 | `bash -n scripts/release/collect-macos.sh` | exit 0 | （stdout空） |
+| R6 | `npm run verify:sources` | exit 0；已核对 12 个归档源文件 | r02a-verify-sources |
+| R7 | `./node_modules/.bin/eslint --no-ignore --ignore-pattern '!scripts/release/**' <verify.mts、CLI、两测试>` | exit 0，日志空 | r02a-explicit-eslint |
+| R8 | `npm run lint`；`npm run typecheck` | 均 exit 0 | r02a-lint / r02a-typecheck |
+| R9 | `T11_FIXED_BASELINE_PROBE=1 npm test` | exit 0；**17 文件 / 755 passed (755)，0 skipped** | r02a-vitest-all |
+| R10 | `npm run build`；`npm run engine:check` | 均 exit 0；ruff All checks passed；**pytest 1052 passed in 47.77s** | r02a-build / r02a-engine-check |
+| R11 | `T11_FIXED_BASELINE_PROBE=1 npm run check`（整链） | **exit 2 —— 真实首败**：`prettier --check .` 命中**本方 runtime 文件**（owner 收据 setup.json/source-setup.json、本方 raw 核验 JSON、本方 tmp 内 17MB oversize 探针文件）；产品树本身零命中。与 7d28 轮 M 侧 C9 同类（该轮 C9 亦 exit 1 于自建 setup.json）。处置按该轮先例：首败日志整档保存（`605fc00d…`，17MB，未删未ignore）；删除本方自建两个 scratch 探针文件（探针结果已记录于 R3 表）；lint/typecheck/test/build/engine:check 逐步实际执行全绿（R8-R10）补齐同等覆盖。**不宣称整链 npm run check 在本树 exit 0**；owner 在无 runtime 目录的原树 full check exit 0 为其自有证据 | r02a-full-check-flag（首败保留） |
+| R12 | 缺 873 对象探针：`GIT_DIR=<空git仓(仅init无commit)> T11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release.test.ts` | **exit 1；4 failed \| 112 passed**，失败均为 `git show 873c8c05…` 显式报错——**无 live HEAD 回退**（本探针不执行任何 git commit，与 036 轮 Z 的越界调用不同） | r02a-missing873-probe |
+| R13 | 终态核验 | HEAD 仍 `02a4738a…`；` M AGENTS.md` + `?? .t11-review-runtime/`；无 stage/commit/push/切分支 | — |
+
+**既有证据与本方亲跑严格分列**：owner 的 122 首轮/125 末版并入 755TS+1052Py、六路径before/after、f1 内审（未重跑）均为 owner 运行，本方仅在归档内核 hash 并读记录；本节 R1–R13 为本方独立新运行。两方结果互相印证（125/755/1052 完全一致），无矛盾。
+
+## 6. 实现细节复核要点（非抽样，源码级）
+
+- **M036-F1 修复核心**：旧缺陷成因为静态 `import './verify.ts'`（try 外）触发 Node 模块类型探测，`MODULE_TYPELESS_PACKAGE_JSON` 警告含绝对路径先于固定错误码；02a 改为参数→24.3+门→`await import('./verify.mts')`（.mts 按官方规则固定 ESM、24.3 起 type-stripping 警告停止），加载/读取/解析全部纳入同一 catch 边界，固定错误码不暴露栈/路径。测试恢复**整段 stderr 严格相等**断言（1184-1209 等 8 处），无末行筛选、无全局抑制；独立 warning 用例证明不吞诊断。本方 R3 探针独立复现全部分支。
+- **CLI 版本门边界如实**：`major!==24 || !Number.isInteger(minor) || minor<3` fail-closed；README:17 写明"CLI要求Node 24.3及以上的24.x；实际验证版本随候选记录"（02a 实际 v24.15.0）；24.0–24.2 仅由受控版本 preload 模拟证明 guard 决策，不冒充旧 Node 实机（测试命名与文档均如实）。
+- **collector 状态机**：Mac `finish` 中 `set +e` 保写 failed marker，写失败保旧 pending/malformed 标记与 raw 文件（均不过核验器）；Windows catch 同构（COLLECTOR_STATUS_WRITE_FAILED 分支）。
+- **evidence() 多余 check 也必须被 freeze pin**（:706），防夹带未审检查；PE 偏移检查 `offset > size - 6` 防越界读；koly@size-512。
+- **fresh() 时间窗**：testedAt∈[frozen,now]；CLI 覆盖 now 后伪造未来 testedAt 被拒。
+
+## 7. 19 项历史意见逐项处置（原严重度保留；本方处置为指定新审一方独立意见，owner 关闭数仍 0，最终收口按门禁）
+
+| 原项 | 原级别 | 02a 证据（本方通读+亲跑） | 本方处置 |
+| --- | --- | --- | --- |
+| M-F-A 六层非空口径冲突 | 高 | v3 `comparisonCase` 拆分：g6-conflict 才强制六层（verify.mts:964-970）；current-state 合法空层正例、六层逐空负例、case 降级（含双边改 freeze→EXPECTED_IDENTITY）负例、模板负例全在测且本方亲跑通过；文档（README:27/v3:7-8/migration-recovery:21）与实现一致 | **关闭**（工程范围） |
+| M-F-B 端点/模型硬编码无依据 | 中 | q9-decision-source（dated+SHA `def9817d…`）入库；APPROVED_MODEL 常量+freeze 双向 pin；单边漂移/任意同 tuple/Base URL 冒充路由均拒（测试+亲跑） | **关闭**（工程范围；仅固化既有选型，不接 API/网关） |
+| M-F-C 17文件全集未内建约束 | 中 | evidence 模式显式核 manifest SHA/版本/PRD SHA/17精确路径（:566-576）；缺/多/改版本即使双边同改也拒；内容 hash 仍唯一 manifest | **关闭**（工程范围） |
+| M-F-D 80%分子口径/迁移不单列 | 低 | PRD 12.1 第8步含迁移→core=完整八步；core/transfer 矛盾专门拒绝；transferIndependent/assistance 独立分记（FR-105）；无额外迁移百分比门；user-study:25 与代码逐字一致 | **关闭**（工程范围；口径同步且有 PRD 依据） |
+| M-F-E "最终检查"措辞 | 低 | acceptance/status 以命令+日期+候选精确标注；默认4skip与显式探针边界成文；本方默认/flag 两模式实测吻合 | **关闭**（文档项） |
+| M-F-F 回退两项无具名check | 低 | rollback-retain-new-version-copy / rollback-refuse-incompatible-format 双落于 RECOVERY_CHECKS 与每旧资产报告必检 id（:1041-1053），缺任一拒（亲跑） | **关闭**（工程范围） |
+| M-F-G 同意/逐段记录无字段承载 | 低 | user-study:29 主持人/独立验收人核原件清单与工具只 hash record 边界成文；无自证布尔 | **关闭**（文档项；真实原件核验属父门） |
+| M-F-H collector 三子项（原①半成品②同包③PE） | 低 | ①状态机+首raw保留+核验器四态拒（合成实测）②installed-components-match-package 严格结构+packageSha256==候选+引用字节全核③pe-machine 受控界限+固定错误。按语义核对（036 M 报告序号②③交换不改变对映） | **①③关闭（静态/合成）；②工具侧关闭，真实 T03 唯一包内成员与安装/解包原件对照仍 open（无法验证，父门保留）** |
+| M-F-I 结构/声明≠签名链 | 低 | README:45/47、migration-recovery、scope.txt 明示不解析签名链、不判安装器实质、来源须原件 | **关闭**（文档项） |
+| M-F-J 墙钟不认证 | 低 | README:47 时间来源/偏差由操作者外部核验；无任意 --now；CLI 覆盖伪 now 有回归（亲跑窗口内测试通过） | **关闭**（文档项；时钟真实性不可由工具证，边界如实） |
+| M-F-K 状态双值并存 | 低 | status.md 置顶 dated 入口+取代关系；旧 JSON/报告/双值 SHA 原样保留未归并 | **关闭**（文档项） |
+| M-F-L "失败原件保留"强于事实 | 中 | status.md 分列首38仅摘录/transcript 与其后48归档；history-archive-verification 48/48 与本方独立复核一致；不补造不称永久丢失 | **关闭**（文档项；首38缺口如实保留） |
+| Z-F1 重复safeParse | P4 | 仅一次 expectedSchema.safeParse（:509-515），finite(now) 保留（:516-517） | **关闭** |
+| Z-F2 fd/限额竞态 | P4 | 同fd/fstat/限额后分配/同fd读取hash结构/尾读检增长/finally close；CLI 复用16MiB；IO 9例亲跑；祖先可信稳定前提明示，未虚称消除 TOCTOU | **关闭**（工程范围） |
+| Z-F3 dest缺失静默跳过 | P4 | 显式 fail('MIGRATION_DESTINATION')+continue（:1067-1071）；TARGET_MATRIX+MIGRATION_DESTINATION 并现断言亲跑通过 | **关闭** |
+| Z-F4 Mac PATH依赖 | P4 | 全部已知系统命令绝对路径（含最前 OS/arch 门与 xcrun）；bash -n 亲跑 exit0 | **静态关闭；目标机真实运行为父门，未验证** |
+| Z-F5 PE越界 | P4 | pe-machine.ps1 DOS长度/offset/PE签名/machine/size 全界限+finally+固定错误；TS侧小PE边界测试亲跑；本机无 pwsh | **静态关闭；真实 Windows 运行无法验证，父门保留** |
+| Z-F6 半成品目录 | P4 | pending/failed/complete+步骤+首raw保留；核验器拒无complete（四态亲跑）；重跑新目录 | **静态/合成关闭；目标机真实运行未验证，父门保留** |
+| **M036-F1（036新增，中级）** CLI stderr 非固定错误面：模块类型警告含路径抢先输出；owner 以末行断言降级处置 | 中（同主题 Z036-O1 信息级，两原级别均保留） | 02a 修复全部合同点：R100 原字节 rename、CLI 纯JS参数→24.3+门→try内动态import、整段stderr严格断言恢复、无全局warning抑制、README:17 披露与代码一致、.mts listFiles 唯一、.mjs specifier 映射双证——本方逐点亲跑（R2/R3/R4）+归档内 owner 首败原件（final-expanded-unit/final-full-check MODULE_TYPELESS 警告）与修复后 122→125/755 证据链互证 | **关闭**（工程范围；Z-O1 同主题建议随之消解，但 O1 原文与级别保留） |
+
+**M 对 7d28 的 NotPass**：历史记录保留（其硬因 F-A 及并行项已在 338/02a 修复并经本方核实）；本方对 02a 工程范围为通过，二者不矛盾（不同候选）。**不成立双 Pass**：本报告仅为 ZCode 一方。
+
+## 8. 其他观察、旧内部发现与过程例外处置
+
+### 8.1 Z036 四项信息观察与 M036 低优先边界（02a 现状）
+
+| 项 | 02a 现状 | 本方处置 |
+| --- | --- | --- |
+| Z036-O1 stderr末行断言（信息） | 已由 F1 修复消解（整段断言恢复，见 §7 M036-F1 行） | 随 M036-F1 关闭消解；原文与信息级保留 |
+| Z036-O2 coverage G-list 提取注释概称"G.4 lists"（信息） | 仍在（verify.mts:600 注释 `### G.4` 起，实际含 G.4(6)+G.6(7)=13条）；工具/测试/873冻结coverage三方同源一致（本方独立解析复核） | 登记为信息级，建议未来候选注释写明实际跨度；非阻断 |
+| Z036-O3 Mac collector 参数校验失败（目录未建）时 failed marker 写入静默（信息） | 仍在（collect-macos.sh:19 前置失败 exit2 时目录不存在，finish 的 write_status 落盘失败在 set+e 下静默，仅 stderr COLLECTION_FAILED）；核验器侧无 marker 即拒，无错误放行 | 登记为信息级，可选未来候选在 finish 内检测目录存在性；非阻断 |
+| Z036-O4 Mimosa pre-commit 暴露 engine 线既有发现（信息/环境） | 该断言来自 036 Z 的越界调用 hook 返回（审查者自述，非 owner 证据）；engine 文件不在 T11 范围 | 不采纳为 T11 证据；转交记录保留，engine 线 owner 另行处置；本方未读取该 hook 返回 |
+| M036 低优先边界：build.nodeLock/pythonLock/config 未结构pin路径（声明级） | 仍在（verify.mts:730 仅按 ref 读核 hash，未约束路径必须是 package-lock.json/uv.lock/唯一builder配置）；build.sourceSha 已绑候选、内容由 expectedResults 逐项 pin | 登记为低优先能力边界，建议未来候选纳入结构校验；非阻断（fail-closed 方向） |
+
+### 8.2 旧内部发现复核（internal-review 5项 / selection-v2-review 2+2项 / round-1 12项）
+
+逐项与 02a 代码/测试对照：P1 数量自证（EXPECTATION_PIN+PRODUCT_EXPECTATION_BASELINE+count-only/FR伪造负例）、P1 空壳快照（snapshotSchema+SOURCE_PIN+任意等值行负例）、P1 冻结时间回填（FREEZE_IDENTITY/FUTURE_FREEZE/CLI强制now）、P1 文本冒充旧版（结构+previousAssets pin+禁当前资产）、P2 core/迁移矛盾（USER_* 规则）、E.5 指针回归、v2 undo泄漏（priorUndo+UNSELECTED_CONTENT）、v2 零提交误拒（canRerun/canReplay 推导）、固定873/SPO 续审（本方亲跑复现）、首38失败（缺口如实）、声明误删失败（unit-third-run 40failed/check-first-run 原件在归档）、Python ENOENT（check-second-run 原件在归档）——**全部保持关闭且证据在档，无重开依据**；owned 内审 R1（status 入口未同步）已在 338 delta 修复并复核，本方核 status.md 置顶段确认。
+
+### 8.3 过程例外（独立未决事实，全部保持 OPEN 登记；本方不事后授权、不抹除、不外查补齐）
+
+1. **owner 回读边界异常**：一次 Z 角色诊断从本人 model-io 误输出注入上下文前缀 ≤1600 字符（`owner-readback-boundary-exception.json`）；根另报审计 agent 误输出 ≤40 后缀（仅根消息所述，本树未存其内容、无独立认证原生源）。此后已改精确本人短文本/附件定界。不声称零暴露或全程合规；保留待根处置。
+2. **036 Z 输入越界**：`call_e7fd593e12134be4a76a07df` 请求临时空仓 `git commit --allow-empty`（附缺873探针）。仅登记输入；执行/成功/hook 效果 UNKNOWN；对应越界工具返回未读未转。Z 036 报告 O4 的 hook 断言属审查者自述，不充当 owner 运行认证。
+3. **036 M 输入越界**：`call_01a165325b487476865bedbe` 请求两次 `bash collect-macos.sh` 及 `/usr/bin/sw_vers`（预期早拒绝不豁免）。同上 UNKNOWN、返回未读未转；M 036 报告 C13/门结果断言为审查者自述。
+4. **Z 036 raw 同名覆盖**：input-only-audit 实证 `call_e7fd593e`（临时commit版）与 `call_eb2a34`（no commit修正版）同写 `review-missing873-probe-20261023.log`，首跑输出被同名覆盖——不能据其报告"均新名/全保"推为所有首败完整；本方不读被禁返回填缺口，本方 R12 探针另用新名。
+5. **历史报告已知缺陷保留原文**（不复制错误统计）：Z036（M-F-D 表单元格中级与注118原低、line10/151 汇总12+6与逐行14+3+1映射、line32 manifest哈希抄写残缺）；M036（F-1 引 verify-release.mjs:16 实为第1行、"14组全部拒绝"实为1正例+13负例、"4个脚本"实列5、C1默认735+4skip与C4显式739须分读、"专项109"非上限）；M-F-H 子项新报告序号交换按语义核对不换 ID。原件均未追改。
+
+## 9. 本轮新发现（无 P1–P3；3 项信息级）
+
+| # | 级别 | 位置 | 观察 | 建议 |
+| --- | --- | --- | --- | --- |
+| N1 | 信息 | scripts/release/verify.mts:730 | build 三输入（两锁/配置）为声明级 ref（读核 hash），未结构 pin 至唯一锁/配置路径——M036 §4.3 已登记，02a 仍在（7d28 起既有边界，非本轮引入，fail-closed 方向） | 未来候选把锁/配置路径纳入结构校验 |
+| N2 | 信息 | scripts/release/collect-macos.sh:19-38 | 前置校验失败（目录未建）走 EXIT trap 时 failed marker 落盘在 set+e 下静默（Z036-O3 遗留）；消费端无 marker 即拒，无错误放行 | 可选：finish 内检测目录存在性再写 |
+| N3 | 信息 | scripts/release/verify.mts:600 | coverage G-list 注释概称 "G.4 lists"，实际扫描 G.4+G.6 两段共13条（Z036-O2 遗留）；工具/测试/873 冻结三方同源一致，非缺陷 | 未来候选注释写明实际跨度 |
+
+## 10. 无法验证边界（不假设通过，不删验收）
+
+1. 两 collector 真实目标机运行（Mac15 arm64 / Win11 x64 的成功、首步/中途失败、防覆盖、真实 codesign/spctl/stapler/Get-AuthenticodeSignature 输出）；PowerShell 语法/运行（本机无 pwsh）。
+2. 真实签名/公证/时间戳链、双 OS 安装/native/凭据/崩溃恢复/双向迁移、真实下载渠道与实装；T03 真实唯一同包清单与安装/解包原件对照。
+3. 真实模型 API 版本化评估与零伪造、五真人研究、Q5 容量口径与测量（工程 16MiB/8GiB 限额不作 Q5）。
+4. 指定双审合成（本报告为 ZCode 一方）、CI/push/PR/正常合并/远端核验、发布分发。
+5. Node 24.0–24.2 版本门仅受控 preload 模拟分支+官方依据，本轮无这些旧 Node 真实运行结果；F16 跨尝试资格、F01 模板范围不由本线代答。
+6. 首跑 38 失败独立完整 raw 缺口（仅摘录/transcript，未补造，永久性未知）。
+7. 工具固有边界：freeze 独立性（不由清单作者自填属流程控制）、报告签发者/真人资格/现实操作真实性、组件清单是否出自实际包——不可由工具证明，README:37 已声明；`consistent` 不等于发布授权。
+
+## 11. 操作边界遵守声明
+
+本轮零修改受审实现/测试/依赖/配置/锁/CI；未 stage/commit/push/PR/切分支（detached 保持 02a，R13 复核）；未运行真实 collector（本方 R12 缺873探针仅 `git init` 空仓、无 commit）、平台 native/窗口/凭据/OS版本研究、e2e/install-electron/package:dir、签名公证提交、API/网络/新增付费/真人研究、全局上下文或配置导出；未导出/查找密钥；未读 peer 任何本轮材料、父 .worktrees、总控队列或全局日志；普通既有 suite/CLI/临时SQLite 按正文边界执行、无泛停或 skip；AGENTS.md 保持未暂存政策差异；产物仅 `.t11-review-runtime/`（raw 13 份新日志、本报告、tmp 笔记/探针）。整链 `npm run check` 的 exit 2 如实归属本方 runtime 文件（R11），未删证据、未加 ignore 求绿。
+
+## 12. 结论重述
+
+- **完整工程范围（T11 离线发布证据核验工具及全部配套，02a 冻结字节）：通过。** 无 P1–P3 新发现；3 项信息级观察（N1–N3，均为既有边界/注释级遗留）；13 条审查标准逐项符合；M036-F1（F1 修复）全部合同点成立并经本方独立复现；18 项原意见按 §7 处置（15 工程/文档关闭、3 静态/合成关闭真机父门保留、M-F-H② 工具侧关闭真实同包对照无法验证）；既有披露逐条核实准确；关键验证在本方独立环境全部复现（R1–R13）。
+- 原严重度、M 对 7d28 的 NotPass、owner 关闭数 0、全部过程例外 OPEN：**全部原样保留**，本报告不构成 owner 关闭或过程事后授权。
+- 真实平台与发布验收：**无法验证/未关闭**；`releaseAuthorized:false` 恒成立；本报告不构成发布授权，不关闭任何父 T11 发布门；同版另一指定审查（M3.1-Flash/xhigh）与双方意见处理、CI/合并/远端门按原规则继续。生成 report 文件不等于 formal completed；全文由 owner 在真实终态后接收，本方不自行发布、不改 Goal。

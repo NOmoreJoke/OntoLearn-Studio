@@ -1,0 +1,32 @@
+{
+  "sid": "session_65a1c0dbec5e79bbb778b444f370d4b5",
+  "turn": "turn_b24126aa-bbc1-4e41-9801-9776cde0629b",
+  "status": "OPEN_UNRESOLVED",
+  "inputOnlyObservations": [
+    {
+      "topic": "ordinary environment",
+      "calls": [
+        "call_2bd6843e792f4d30a2fc3548",
+        "call_325d5c04570b4bbeb52dc649",
+        "call_774b7614c8c446d2a5e69e67",
+        "call_233c7deafdb340d7a8f20b83"
+      ],
+      "observation": "Calls explicitly set only subsets of required role environment. TMP/TEMP some derived from TMPDIR in same export invocation. Effective inherited values are UNKNOWN; do not infer from approved plan."
+    },
+    {
+      "topic": "archive diagnostic artifact reused",
+      "calls": [
+        "call_ce4abf151e7045b3a4aced44",
+        "call_151923a42c5041abb1ce9f65"
+      ],
+      "observation": "Same raw/archive-member-verify-20261023.json path written in successive parser attempts. Preserve both original public returns separately; later raw file cannot stand in for first result."
+    },
+    {
+      "topic": "supplemental CLI stream normalization",
+      "call": "call_233c7deafdb340d7a8f20b83",
+      "observation": "Supplemental helper reuses stderr.txt and uses command substitution, which removes trailing LF. It does not by itself prove exact full stream bytes; unit-test exact assertions are a separate evidence source."
+    }
+  ],
+  "formalTerminal": "UNKNOWN",
+  "releaseAuthorized": false
+}

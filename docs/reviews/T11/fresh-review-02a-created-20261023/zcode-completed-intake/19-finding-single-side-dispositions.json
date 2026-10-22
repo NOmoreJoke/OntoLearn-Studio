@@ -1,0 +1,162 @@
+{
+  "sourceReportSha256": "639b3bb0503671f13ec614be2a4d09046b519570187d4a64cf948d50c3aca943",
+  "count": 19,
+  "ownerClosedCount": 0,
+  "rows": [
+    {
+      "id": "M-F-A",
+      "originalSeverityAsReport": "高",
+      "reportOriginalRow": "| M-F-A 六层非空口径冲突 | 高 | v3 `comparisonCase` 拆分：g6-conflict 才强制六层（verify.mts:964-970）；current-state 合法空层正例、六层逐空负例、case 降级（含双边改 freeze→EXPECTED_IDENTITY）负例、模板负例全在测且本方亲跑通过；文档（README:27/v3:7-8/migration-recovery:21）与实现一致 | **关闭**（工程范围） |",
+      "reviewerDisposition": "**关闭**（工程范围）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-B",
+      "originalSeverityAsReport": "中",
+      "reportOriginalRow": "| M-F-B 端点/模型硬编码无依据 | 中 | q9-decision-source（dated+SHA `def9817d…`）入库；APPROVED_MODEL 常量+freeze 双向 pin；单边漂移/任意同 tuple/Base URL 冒充路由均拒（测试+亲跑） | **关闭**（工程范围；仅固化既有选型，不接 API/网关） |",
+      "reviewerDisposition": "**关闭**（工程范围；仅固化既有选型，不接 API/网关）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-C",
+      "originalSeverityAsReport": "中",
+      "reportOriginalRow": "| M-F-C 17文件全集未内建约束 | 中 | evidence 模式显式核 manifest SHA/版本/PRD SHA/17精确路径（:566-576）；缺/多/改版本即使双边同改也拒；内容 hash 仍唯一 manifest | **关闭**（工程范围） |",
+      "reviewerDisposition": "**关闭**（工程范围）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-D",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-D 80%分子口径/迁移不单列 | 低 | PRD 12.1 第8步含迁移→core=完整八步；core/transfer 矛盾专门拒绝；transferIndependent/assistance 独立分记（FR-105）；无额外迁移百分比门；user-study:25 与代码逐字一致 | **关闭**（工程范围；口径同步且有 PRD 依据） |",
+      "reviewerDisposition": "**关闭**（工程范围；口径同步且有 PRD 依据）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-E",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-E \"最终检查\"措辞 | 低 | acceptance/status 以命令+日期+候选精确标注；默认4skip与显式探针边界成文；本方默认/flag 两模式实测吻合 | **关闭**（文档项） |",
+      "reviewerDisposition": "**关闭**（文档项）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-F",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-F 回退两项无具名check | 低 | rollback-retain-new-version-copy / rollback-refuse-incompatible-format 双落于 RECOVERY_CHECKS 与每旧资产报告必检 id（:1041-1053），缺任一拒（亲跑） | **关闭**（工程范围） |",
+      "reviewerDisposition": "**关闭**（工程范围）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-G",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-G 同意/逐段记录无字段承载 | 低 | user-study:29 主持人/独立验收人核原件清单与工具只 hash record 边界成文；无自证布尔 | **关闭**（文档项；真实原件核验属父门） |",
+      "reviewerDisposition": "**关闭**（文档项；真实原件核验属父门）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-H",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-H collector 三子项（原①半成品②同包③PE） | 低 | ①状态机+首raw保留+核验器四态拒（合成实测）②installed-components-match-package 严格结构+packageSha256==候选+引用字节全核③pe-machine 受控界限+固定错误。按语义核对（036 M 报告序号②③交换不改变对映） | **①③关闭（静态/合成）；②工具侧关闭，真实 T03 唯一包内成员与安装/解包原件对照仍 open（无法验证，父门保留）** |",
+      "reviewerDisposition": "**①③关闭（静态/合成）；②工具侧关闭，真实 T03 唯一包内成员与安装/解包原件对照仍 open（无法验证，父门保留）**",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-I",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-I 结构/声明≠签名链 | 低 | README:45/47、migration-recovery、scope.txt 明示不解析签名链、不判安装器实质、来源须原件 | **关闭**（文档项） |",
+      "reviewerDisposition": "**关闭**（文档项）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-J",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-J 墙钟不认证 | 低 | README:47 时间来源/偏差由操作者外部核验；无任意 --now；CLI 覆盖伪 now 有回归（亲跑窗口内测试通过） | **关闭**（文档项；时钟真实性不可由工具证，边界如实） |",
+      "reviewerDisposition": "**关闭**（文档项；时钟真实性不可由工具证，边界如实）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-K",
+      "originalSeverityAsReport": "低",
+      "reportOriginalRow": "| M-F-K 状态双值并存 | 低 | status.md 置顶 dated 入口+取代关系；旧 JSON/报告/双值 SHA 原样保留未归并 | **关闭**（文档项） |",
+      "reviewerDisposition": "**关闭**（文档项）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M-F-L",
+      "originalSeverityAsReport": "中",
+      "reportOriginalRow": "| M-F-L \"失败原件保留\"强于事实 | 中 | status.md 分列首38仅摘录/transcript 与其后48归档；history-archive-verification 48/48 与本方独立复核一致；不补造不称永久丢失 | **关闭**（文档项；首38缺口如实保留） |",
+      "reviewerDisposition": "**关闭**（文档项；首38缺口如实保留）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "Z-F1",
+      "originalSeverityAsReport": "P4",
+      "reportOriginalRow": "| Z-F1 重复safeParse | P4 | 仅一次 expectedSchema.safeParse（:509-515），finite(now) 保留（:516-517） | **关闭** |",
+      "reviewerDisposition": "**关闭**",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "Z-F2",
+      "originalSeverityAsReport": "P4",
+      "reportOriginalRow": "| Z-F2 fd/限额竞态 | P4 | 同fd/fstat/限额后分配/同fd读取hash结构/尾读检增长/finally close；CLI 复用16MiB；IO 9例亲跑；祖先可信稳定前提明示，未虚称消除 TOCTOU | **关闭**（工程范围） |",
+      "reviewerDisposition": "**关闭**（工程范围）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "Z-F3",
+      "originalSeverityAsReport": "P4",
+      "reportOriginalRow": "| Z-F3 dest缺失静默跳过 | P4 | 显式 fail('MIGRATION_DESTINATION')+continue（:1067-1071）；TARGET_MATRIX+MIGRATION_DESTINATION 并现断言亲跑通过 | **关闭** |",
+      "reviewerDisposition": "**关闭**",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "Z-F4",
+      "originalSeverityAsReport": "P4",
+      "reportOriginalRow": "| Z-F4 Mac PATH依赖 | P4 | 全部已知系统命令绝对路径（含最前 OS/arch 门与 xcrun）；bash -n 亲跑 exit0 | **静态关闭；目标机真实运行为父门，未验证** |",
+      "reviewerDisposition": "**静态关闭；目标机真实运行为父门，未验证**",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "Z-F5",
+      "originalSeverityAsReport": "P4",
+      "reportOriginalRow": "| Z-F5 PE越界 | P4 | pe-machine.ps1 DOS长度/offset/PE签名/machine/size 全界限+finally+固定错误；TS侧小PE边界测试亲跑；本机无 pwsh | **静态关闭；真实 Windows 运行无法验证，父门保留** |",
+      "reviewerDisposition": "**静态关闭；真实 Windows 运行无法验证，父门保留**",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "Z-F6",
+      "originalSeverityAsReport": "P4",
+      "reportOriginalRow": "| Z-F6 半成品目录 | P4 | pending/failed/complete+步骤+首raw保留；核验器拒无complete（四态亲跑）；重跑新目录 | **静态/合成关闭；目标机真实运行未验证，父门保留** |",
+      "reviewerDisposition": "**静态/合成关闭；目标机真实运行未验证，父门保留**",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    },
+    {
+      "id": "M036-F1",
+      "originalSeverityAsReport": "中（同主题 Z036-O1 信息级，两原级别均保留）",
+      "reportOriginalRow": "| **M036-F1（036新增，中级）** CLI stderr 非固定错误面：模块类型警告含路径抢先输出；owner 以末行断言降级处置 | 中（同主题 Z036-O1 信息级，两原级别均保留） | 02a 修复全部合同点：R100 原字节 rename、CLI 纯JS参数→24.3+门→try内动态import、整段stderr严格断言恢复、无全局warning抑制、README:17 披露与代码一致、.mts listFiles 唯一、.mjs specifier 映射双证——本方逐点亲跑（R2/R3/R4）+归档内 owner 首败原件（final-expanded-unit/final-full-check MODULE_TYPELESS 警告）与修复后 122→125/755 证据链互证 | **关闭**（工程范围；Z-O1 同主题建议随之消解，但 O1 原文与级别保留） |",
+      "reviewerDisposition": "**关闭**（工程范围；Z-O1 同主题建议随之消解，但 O1 原文与级别保留）",
+      "ownerDisposition": "OPEN; reviewer single-side opinion retained, not accepted as owner closure",
+      "ownerClosed": false
+    }
+  ],
+  "sameTopicObservation": "Z036-O1 information remains same topic as M036-F1 medium, not twentieth finding",
+  "originalM7d28NotPassPreserved": true,
+  "releaseAuthorized": false
+}
