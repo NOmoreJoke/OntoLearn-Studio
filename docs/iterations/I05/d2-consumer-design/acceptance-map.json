@@ -1,0 +1,2380 @@
+{
+  "format": "i05-d2-consumer-design-acceptance/1",
+  "status": "author-candidate-pending-independent-review",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "wholeOracleComplete": false,
+  "productExecuted": false,
+  "schemaEngineValidation": false,
+  "protocolVersions": {
+    "provenance": "i05-source-package-parity-build/2",
+    "buildReceipt": "i05-build-receipt/2",
+    "validation": "i05-runtime-validation-receipt/2",
+    "header": "i05-semantic-runtime-header/1",
+    "consumer": "2.1.0",
+    "profile": "i05-semantic-build-protocol-profile/3",
+    "projection": "i05-observation-projection/2"
+  },
+  "consumptionOrder": [
+    "R02",
+    "R03",
+    "R05",
+    "R14",
+    "R15",
+    "R01",
+    "R04",
+    "R12",
+    "R06",
+    "R07",
+    "R08",
+    "R09",
+    "R10",
+    "R11",
+    "R16/R17",
+    "R18",
+    "R19/R20/R21/R23",
+    "R22",
+    "R24",
+    "R25",
+    "R26",
+    "R27/R28/R29"
+  ],
+  "orderMeaning": "documentation order; actual first reached failure wins; build producer gates precede launch; no model or product run in this window",
+  "rules": [
+    {
+      "id": "R01",
+      "title": "版本与strict JSON",
+      "responsible": "probe/caller",
+      "phase": "strict-shape",
+      "firstFailure": {
+        "codeOrDesignLabel": "BUILD_PROVENANCE_FORMAT_INVALID",
+        "exitOrState": "2或外部incomplete，按实际actor",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-S"
+        },
+        {
+          "inputId": "input-01",
+          "pointer": "§2"
+        },
+        {
+          "inputId": "input-06",
+          "pointer": "#"
+        }
+      ],
+      "predicate": "按固定四schema的每个required/type/enum/const/additionalProperties及所有嵌套union/ref；UTF8无BOM/重复key/nonfinite/尾数据；bool不是int，缺字段不能替代null。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R02",
+      "title": "外部批准与source23自pin",
+      "responsible": "root/caller",
+      "phase": "prelaunch",
+      "firstFailure": {
+        "codeOrDesignLabel": "APPROVED_BUILD_RECEIPT_UNAVAILABLE",
+        "exitOrState": "not-started/no-child-exit",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§2"
+        },
+        {
+          "inputId": "input-03",
+          "pointer": "/approvedConsumerPin"
+        }
+      ],
+      "predicate": "批准记录可信来源及精确composition/profile/schema/工具/新consumer pin必须另行成立；固定profile null/空/false不能变批准，原2cf仅祖先。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R03",
+      "title": "Git来源与组合",
+      "responsible": "T03/root/caller/probe",
+      "phase": "declaration-binding",
+      "firstFailure": {
+        "codeOrDesignLabel": "DECLARED_COMPOSITION_FORMAT_INVALID",
+        "exitOrState": "probe exit2；外部来源先拒用APPROVED_SOURCE_BINDING_INVALID",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-S"
+        },
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A4"
+        }
+      ],
+      "predicate": "producer原ref/path/bytes/SHA/blob五身份同一源；inputs.modules与sourceCompilation全同；pyproject/lock同dependencyRef，33路径真实before/after clean；probe只核声明关系，root核真实来源。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R04",
+      "title": "四资源两资产及lock",
+      "responsible": "I05/T01/T03/probe/caller",
+      "phase": "local-resource",
+      "firstFailure": {
+        "codeOrDesignLabel": "BUNDLE_PROVENANCE_RESOURCE_MISMATCH",
+        "exitOrState": "probe exit2，外部目录先拒用BUNDLE_DIRECTORY_MISMATCH",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A1"
+        },
+        {
+          "inputId": "input-01",
+          "pointer": "§2"
+        },
+        {
+          "inputId": "input-03",
+          "pointer": "/resources"
+        }
+      ],
+      "predicate": "精确四资源/两资产/lock白名单及原bytes/SHA，bundlePath=_internal/+payloadPath，receipt同文件全同；不读dependencies/states/fixtures或外部locator。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R05",
+      "title": "批准根与普通文件全集",
+      "responsible": "root/caller",
+      "phase": "prelaunch",
+      "firstFailure": {
+        "codeOrDesignLabel": "BUNDLE_DIRECTORY_MISMATCH",
+        "exitOrState": "not-started/no-child-exit",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A1"
+        },
+        {
+          "inputId": "input-05",
+          "pointer": "/properties/directoryFiles"
+        }
+      ],
+      "predicate": "批准根域固定，完整directory含root exe/provenance，payload为meipass且排自身；规范名唯一，拒alias/symlink/hardlink/escape；完整真实普通文件核验，不能只check字符串或count。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R06",
+      "title": "archive封闭账",
+      "responsible": "T03/root/caller/probe",
+      "phase": "archive-declaration",
+      "firstFailure": {
+        "codeOrDesignLabel": "BUILD_ARCHIVE_INCOMPLETE",
+        "exitOrState": "build实际非零；probe声明形状/关系失败按R01/R03",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A2"
+        }
+      ],
+      "predicate": "carchive-main=root exe depth1；pyz-main父member depth2且raw与TOC相同；父先/唯一/无环/不再嵌套，完整有序TOC和raw witness；external-pyc须另批准不能替canonical PYZ。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R07",
+      "title": "Python完整代码域",
+      "responsible": "T03/probe/caller",
+      "phase": "code-domain",
+      "firstFailure": {
+        "codeOrDesignLabel": "CODE_DOMAIN_INVALID",
+        "exitOrState": "probe exit2；build域BUILD_CODE_DOMAIN_MISMATCH实际非零；postlaunch保真实exit",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-C"
+        },
+        {
+          "inputId": "input-01",
+          "pointer": "§6"
+        }
+      ],
+      "predicate": "implementation/version/hexversion/buildIdentity/cacheTag/magic/marshal/optimize/flags/byteorder/abiflags/platform/arch全同；声明编译器与dontInherit外部核，observedPython不含二者；同cacheTag不够。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R08",
+      "title": "23模块与bootstrap",
+      "responsible": "T03/I05/probe/caller",
+      "phase": "loader-before-graph",
+      "firstFailure": {
+        "codeOrDesignLabel": "LOADER_ARCHIVE_CODE_MISMATCH",
+        "exitOrState": "frozen exit2；source差异LOADER_SOURCE_CODE_MISMATCH exit2",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-S"
+        },
+        {
+          "inputId": "input-00",
+          "pointer": "CR-C"
+        },
+        {
+          "inputId": "input-03",
+          "pointer": "/canonicalModules"
+        }
+      ],
+      "predicate": "profile次序23唯一canonical及canonical:name binding；前22供应、第23新pin；module spec/name/sys.modules同一实际对象/get_code exactCodeType/完整fingerprint。bootstrap单列carchive守卫先于类型，不能重复发行。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R09",
+      "title": "distribution第四模块",
+      "responsible": "T03/probe/caller",
+      "phase": "loader-before-graph",
+      "firstFailure": {
+        "codeOrDesignLabel": "LOADER_ARCHIVE_CODE_MISMATCH",
+        "exitOrState": "probe exit2",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A2"
+        },
+        {
+          "inputId": "input-04",
+          "pointer": "/properties/distributionCodeBinding"
+        }
+      ],
+      "predicate": "pyshacl.validator由selected artifact→installed source→RECORD row→实际PYZ-module完整code绑定，不计23；不能只查TOC同名。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R10",
+      "title": "四函数co_consts",
+      "responsible": "T03/probe/caller",
+      "phase": "loader-before-graph",
+      "firstFailure": {
+        "codeOrDesignLabel": "LOADER_ARCHIVE_CODE_MISMATCH",
+        "exitOrState": "source对应LOADER_SOURCE_CODE_MISMATCH，均exit2",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-S"
+        },
+        {
+          "inputId": "input-03",
+          "pointer": "/functionBindings"
+        }
+      ],
+      "predicate": "恰semantic.reason/query/validate_shacl_text与Validator.run，name/moduleBindingId/moduleName闭合；相同非空co_consts索引逐层exactCodeType，source编译/实际archive/function.__code__完整指纹相等；不能按name反射猜取。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R11",
+      "title": "唯一动态checker",
+      "responsible": "T01/T03/probe/caller",
+      "phase": "loader-before-graph",
+      "firstFailure": {
+        "codeOrDesignLabel": "DYNAMIC_CHECKER_IDENTITY_INVALID",
+        "exitOrState": "probe exit2；E0 code差异BUILD_CODE_DOMAIN_MISMATCH",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-C"
+        },
+        {
+          "inputId": "input-04",
+          "pointer": "/properties/dynamicChecker"
+        }
+      ],
+      "predicate": "resources.CONTRACT原对象且消费者同对象，spec/origin/loader真；sysModulesRegistrationRequired=false，不exec/alias/注册；E0仅source↔bundle data编译，E1才runtimeLoaderCode，不要求PYZ。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R12",
+      "title": "八运行distribution与全lock",
+      "responsible": "T03/root/caller/probe",
+      "phase": "dependency",
+      "firstFailure": {
+        "codeOrDesignLabel": "BUILD_INPUT_IDENTITY_INVALID",
+        "exitOrState": "build实际非零；保既有dist/lock前门code",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-S"
+        },
+        {
+          "inputId": "input-03",
+          "pointer": "/requiredRuntimeDistributions"
+        }
+      ],
+      "predicate": "八名字/精确版本集合全同，不等整23包lock；selectedArtifact须同完整allPlatformArtifacts真实平台marker项，保RequiresDist/extras/完整marker与HTML链；build工具另列。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R13",
+      "title": "RECORD与license闭包",
+      "responsible": "T03/root/caller",
+      "phase": "external-evidence",
+      "firstFailure": {
+        "codeOrDesignLabel": "BUILD_LICENSE_MAPPING_INCOMPLETE",
+        "exitOrState": "build实际非零，不产accepted provenance",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A3"
+        }
+      ],
+      "predicate": "完整RECORD原bytes/base64，每CSV记录raw原行终止拼接全等、三个原字段不重写；row/file双向映射、artifact/installed/final三账；runtime必需不得omit；owner真实许可证/NOTICE/COPYING与Python/stdlib/bootloader/动态平台组件闭包，缺证不得unknown补。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R14",
+      "title": "无环build收据",
+      "responsible": "T03/root/caller",
+      "phase": "prelaunch",
+      "firstFailure": {
+        "codeOrDesignLabel": "APPROVED_BUILD_RECEIPT_UNAVAILABLE",
+        "exitOrState": "not-started；producer不得伪accepted",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A4"
+        },
+        {
+          "inputId": "input-05",
+          "pointer": "/properties/runtimeValidation"
+        }
+      ],
+      "predicate": "source/tool→实际build见证→后置provenance→外部完整directory manifest→build receipt→流程commit；provenance不收self/future票，receipt永久not-executed/null/unapproved-produced-evidence，root另票批准不回填。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R15",
+      "title": "精确argv与selector",
+      "responsible": "I05/probe/caller",
+      "phase": "argv",
+      "firstFailure": {
+        "codeOrDesignLabel": "ARGV_REJECTED_NO_NEW_CODE",
+        "exitOrState": "真实child exit2/code=null；not-started不造child",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§1"
+        },
+        {
+          "inputId": "input-03",
+          "pointer": "/exactProbeArgv"
+        }
+      ],
+      "predicate": "只三数组[flag,full-v1|b1-semantic-1x-v1|b1-semantic-10x-v1]，无extra/flag=value/环境隐选；source -m/frozen root exe/parent转同main，stdin devnull。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R16",
+      "title": "source22声明与23实际",
+      "responsible": "probe/caller",
+      "phase": "header-binding",
+      "firstFailure": {
+        "codeOrDesignLabel": "HEADER_PROVENANCE_BINDING_MISMATCH",
+        "exitOrState": "external incomplete/failed，保真实exit/signal",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§6"
+        },
+        {
+          "inputId": "input-06",
+          "pointer": "/properties/declaredSupplierSources"
+        }
+      ],
+      "predicate": "source declared22按profile前22，actualSource全部23及observedSource23同第23实际bytes/SHA/loader；declaredCompositionRef/provenanceRead/declaredPython固定null；caller另对新pin/外部编译域，不内嵌自hash。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R17",
+      "title": "frozen声明与null域",
+      "responsible": "probe/caller",
+      "phase": "header-binding",
+      "firstFailure": {
+        "codeOrDesignLabel": "HEADER_PROVENANCE_BINDING_MISMATCH",
+        "exitOrState": "external incomplete/failed，保真实exit/signal",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§6"
+        },
+        {
+          "inputId": "input-06",
+          "pointer": "/properties/observedSource23"
+        }
+      ],
+      "predicate": "frozen/parent declared23与已读provenance完全同序同身份，组合/原文件bytes/SHA/Python声明全同；canonical及distribution actualSource和observedSource23=null，不能假称读source原件。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R18",
+      "title": "strict header→raw→run",
+      "responsible": "caller",
+      "phase": "postlaunch",
+      "firstFailure": {
+        "codeOrDesignLabel": "HEADER_PROVENANCE_BINDING_MISMATCH",
+        "exitOrState": "incomplete，不能exit0抵消",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§5"
+        },
+        {
+          "inputId": "input-01",
+          "pointer": "§6"
+        },
+        {
+          "inputId": "input-06",
+          "pointer": "#"
+        }
+      ],
+      "predicate": "header原raw严格解析全18键/嵌套，payload原值副本与run观察逐字段相同；Python剔除外部二字段、对象去fresh evidence；mode/selector/ref/digest错误仍保actual，另判binding mismatch，shape坏则malformed/null。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R19",
+      "title": "not-started",
+      "responsible": "caller",
+      "phase": "prelaunch",
+      "firstFailure": {
+        "codeOrDesignLabel": "APPROVED_BUILD_RECEIPT_UNAVAILABLE",
+        "exitOrState": "not-started/no-child-exit",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§5"
+        }
+      ],
+      "predicate": "未dispatch：raw/header/terminal/payload/exit/signal/actual均null或空，observedPaths/IDs空、两complete=false，failure caller/prelaunch三既有code之一；argv仅拟调度。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R20",
+      "title": "pre-header-rejected",
+      "responsible": "probe/caller",
+      "phase": "precondition",
+      "firstFailure": {
+        "codeOrDesignLabel": "BUILD_PROVENANCE_FORMAT_INVALID",
+        "exitOrState": "真实exit2/signal=null，不冒not-started",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§5"
+        }
+      ],
+      "predicate": "真实dispatch后前门拒：stdout/stderr非null可零bytes，header/terminal absent及ref/payload null，两complete=false；failure probe；非法argv code=null/phase=argv/reason=argv-rejected，保原argv/stderr。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R21",
+      "title": "incomplete与真实false/null",
+      "responsible": "caller/probe",
+      "phase": "collection",
+      "firstFailure": {
+        "codeOrDesignLabel": "RUNTIME_EVIDENCE_INCOMPLETE",
+        "exitOrState": "真实exit/signal/null；不伪1/2/130",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§5"
+        }
+      ],
+      "predicate": "完整raw双流非null，header/terminal absent/malformed/parsed按实际；signal非null则exit=null；malformed有原坏片段ref但payload null；实际partial/false/错域保留，firstEvidence入同manifest，不填未观察expected。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R22",
+      "title": "observedPaths可用性",
+      "responsible": "caller",
+      "phase": "postlaunch",
+      "firstFailure": {
+        "codeOrDesignLabel": "RUNTIME_EVIDENCE_INCOMPLETE",
+        "exitOrState": "external incomplete",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§5"
+        }
+      ],
+      "predicate": "指定观察组所有已观察非null叶pointer全集，含false/0/空字符串；空列表/未观察null无叶，pointer唯一/存在/不越界。mask与raw逐字段核同，不能同时改mask和值避开真实性。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R23",
+      "title": "collected完整身份",
+      "responsible": "probe/caller",
+      "phase": "collection",
+      "firstFailure": {
+        "codeOrDesignLabel": "RUNTIME_EVIDENCE_INCOMPLETE",
+        "exitOrState": "external incomplete，保真实child终态",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§5"
+        }
+      ],
+      "predicate": "exit0/signal null/failure null/header terminal parsed且完整、collection=true，23模块+单distribution+4函数/checker及所有code/对象/批准Python域；collected不允许必需null/错域/缺raw/错argv/伪true。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R24",
+      "title": "417与单B1有序全项",
+      "responsible": "caller",
+      "phase": "collection",
+      "firstFailure": {
+        "codeOrDesignLabel": "RUNTIME_EVIDENCE_INCOMPLETE",
+        "exitOrState": "external incomplete",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§3"
+        },
+        {
+          "inputId": "input-01",
+          "pointer": "§5"
+        },
+        {
+          "inputId": "input-24",
+          "pointer": "§4"
+        }
+      ],
+      "predicate": "full-v1恰固定资产原顺序417唯一ID及同序outcomes/fullSuite=true；B1各1 measurement/fullSuite=false，不拼full；全部业务字段/阶段/typed/原bytes/source/诊断保全，不能count-only。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R25",
+      "title": "manifest与后出validation",
+      "responsible": "caller/root",
+      "phase": "postcollection",
+      "firstFailure": {
+        "codeOrDesignLabel": "RUNTIME_EVIDENCE_INCOMPLETE",
+        "exitOrState": "external incomplete；不回写祖先",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A4"
+        },
+        {
+          "inputId": "input-07",
+          "pointer": "/properties/runtimeEvidenceManifest"
+        }
+      ],
+      "predicate": "所有raw/header/terminal/首错/fresh-cache/comparison原件完整列同一manifest并核bytes/SHA；manifest排self与validation；validation.buildReceipt同启动前原票，approvedBuildRecord同trusted批准，祖先不回填。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R26",
+      "title": "comparison独立三结论",
+      "responsible": "external comparator/T05/root",
+      "phase": "comparison",
+      "firstFailure": {
+        "codeOrDesignLabel": "COMPARISON_NOT_ACCEPTED_DESIGN_LABEL",
+        "exitOrState": "pending或真实false，非新增公共code",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-00",
+          "pointer": "CR-A4"
+        },
+        {
+          "inputId": "input-07",
+          "pointer": "/properties/comparison"
+        }
+      ],
+      "predicate": "pending三来源/report及三结果null；compared三身份非null、三个boolean可独立false；true须受审scope全collected且完整真实report对应，source/package相等不证明oracle/original通过。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R27",
+      "title": "37完整原值与唯一入口",
+      "responsible": "I05 serializer/T05 comparator",
+      "phase": "projection-comparison",
+      "firstFailure": {
+        "codeOrDesignLabel": "PROJECTION_MISMATCH_DESIGN_LABEL",
+        "exitOrState": "不匹配或未到达pending，非新增公共code",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-13",
+          "pointer": "有限比较与R3"
+        },
+        {
+          "inputId": "input-14",
+          "pointer": "matches"
+        },
+        {
+          "inputId": "input-16",
+          "pointer": "/cases"
+        }
+      ],
+      "predicate": "37完整expected/typedMath/params/source/preconditions/finiteRelations/pending逐ID保原值；matches schema两端→各端全部wire gate→共享identity→其余完整exact，不能identity-only；wholeOracleComplete=false。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R28",
+      "title": "RDF wire与共享域",
+      "responsible": "I05 serializer/T05 comparator",
+      "phase": "projection-comparison",
+      "firstFailure": {
+        "codeOrDesignLabel": "PROJECTION_MISMATCH_DESIGN_LABEL",
+        "exitOrState": "不匹配/pending",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-13",
+          "pointer": "R3"
+        },
+        {
+          "inputId": "input-14",
+          "pointer": "canonical_graph_slots/projection_layout/identity_domain_equal"
+        }
+      ],
+      "predicate": "各端原label/原语言下完整N3三元组升序/identity唯一/表达合法；不能先sort/set。全部明确RDF槽一个artifact共享双射；occurrence/rows/null/尾项不丢；raw/source/lexical/datatype/digest exact，8BNode仅数学小例。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R29",
+      "title": "首错与R1前提",
+      "responsible": "I05 canonical/serializer/resource owner",
+      "phase": "first-error",
+      "firstFailure": {
+        "codeOrDesignLabel": "EXACT_CASE_DIAGNOSTIC_ONLY",
+        "exitOrState": "未到达not-reached/pending，不接受替代码",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-13",
+          "pointer": "首错与最小deterministic delta"
+        },
+        {
+          "inputId": "input-16",
+          "pointer": "/cases"
+        }
+      ],
+      "predicate": "F1/D1/R1/O1逐ID完整diagnostic；十四R1须同次真实生产/准入成立且held bytes确变，A1固定payload→rows→source→defs→catalog。更早失败保原首错；不得用RESOURCE_LIMIT/no-op/rebind凑目标。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R30",
+      "title": "完整stage与业务carrier缺口",
+      "responsible": "I05 serializer/caller/root",
+      "phase": "integration-spec",
+      "firstFailure": {
+        "codeOrDesignLabel": "CARRIER_SPEC_PENDING_DESIGN_LABEL",
+        "exitOrState": "阻断完整接线，不私加header字段",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-24",
+          "pointer": "§4.2"
+        },
+        {
+          "inputId": "input-01",
+          "pointer": "§6"
+        },
+        {
+          "inputId": "input-13",
+          "pointer": "三个边界"
+        }
+      ],
+      "predicate": "旧run/inventory/writer/resource/policy上下文及已返回stage全payload/rows/source原件不可裁剪；strict18键不得扩张。G02外层carrier与G03旧metadata/handle/digest关系需明确版本及owner接收，不假定隐式sidecar。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R31",
+      "title": "逻辑cap与取消界",
+      "responsible": "I05 probe/caller/resource owner",
+      "phase": "bounded-collection",
+      "firstFailure": {
+        "codeOrDesignLabel": "RUNTIME_EVIDENCE_INCOMPLETE",
+        "exitOrState": "真实终态/unknown，未签运行票不执行",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-01",
+          "pointer": "§3"
+        },
+        {
+          "inputId": "input-24",
+          "pointer": "§4.3"
+        }
+      ],
+      "predicate": "descriptor1MiB/input8MiB/合9MiB/case512实际417/item32MiB/stdout64MiB/terminal64KiB/120s边界；完整item先预算；opaque不能即时打断，半行raw保全；request/stopping/真实停止/join/释放分别，不借逻辑票代native。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    },
+    {
+      "id": "R32",
+      "title": "费用与运行权",
+      "responsible": "root/fee/resource owner",
+      "phase": "authorization",
+      "firstFailure": {
+        "codeOrDesignLabel": "INTERFACE_WAITING_DESIGN_LABEL",
+        "exitOrState": "not-authorized/pending，非运行票",
+        "laterGates": "not-reached/pending; preserve first actual failure"
+      },
+      "fixedSources": [
+        {
+          "inputId": "input-25",
+          "pointer": "#"
+        },
+        {
+          "inputId": "input-26",
+          "pointer": "#"
+        },
+        {
+          "inputId": "input-13",
+          "pointer": "owner"
+        }
+      ],
+      "predicate": "只等独立规范/准入，不读费用WIP，不造issuer/capture/17L/usage/budget，不启动产品/模型/build/native/ABI/DB/loader/drain；保父137/wholeH/两OS/真人/指定双审/CI/develop。",
+      "decisionInThisWindow": "normative design only",
+      "runtimeEvidence": "pending-later-authorized-window"
+    }
+  ],
+  "frozenProfileApprovalFields": {
+    "acceptedCompositionRef": null,
+    "approvedConsumerPin": null,
+    "approvedDependencyPin": null,
+    "approvedWrapperPins": [],
+    "approvedToolchain": null,
+    "approvedEvidenceRootRecord": null,
+    "approvedProtocolRecord": null,
+    "executionAuthorization": false
+  },
+  "exactProbeArgv": [
+    ["--semantic-source-package-probe", "full-v1"],
+    ["--semantic-source-package-probe", "b1-semantic-1x-v1"],
+    ["--semantic-source-package-probe", "b1-semantic-10x-v1"]
+  ],
+  "fullCollection": {
+    "full-v1": {
+      "orderedObservations": 417,
+      "fullSuiteCollectionComplete": true
+    },
+    "b1-semantic-1x-v1": {
+      "orderedObservations": 1,
+      "fullSuiteCollectionComplete": false
+    },
+    "b1-semantic-10x-v1": {
+      "orderedObservations": 1,
+      "fullSuiteCollectionComplete": false
+    },
+    "inventorySource": "future approved fixed assets; not synthetic design IDs"
+  },
+  "gaps": [
+    {
+      "id": "G01",
+      "owner": "T03/I05/root",
+      "blocks": "D1/D2 composition approval and all execution",
+      "material": "exact approved dependency/new source23/toolchain/composition/root records",
+      "source": {
+        "inputId": "input-03",
+        "pointer": "/openDeltas"
+      }
+    },
+    {
+      "id": "G02",
+      "owner": "I05 serializer/caller with T03/D0/root acceptance",
+      "blocks": "complete ee2b business observation integration",
+      "material": "versioned complete stage/business carrier and exact field destinations; no added strict-header keys or implicit sidecar",
+      "source": {
+        "inputId": "input-24",
+        "pointer": "§4.2"
+      },
+      "conflictingStrictSource": {
+        "inputId": "input-06",
+        "pointer": "/properties"
+      }
+    },
+    {
+      "id": "G03",
+      "owner": "I05 canonical/serializer/root",
+      "blocks": "scope full observation and identity/source/digest acceptance",
+      "material": "original full reasoningSource metadata encoding, same-call handle, graph-consumer artifact domain, label-related digest preimages",
+      "source": {
+        "inputId": "input-13",
+        "pointer": "scope与R2 digest pending"
+      }
+    },
+    {
+      "id": "G04",
+      "owner": "I05 canonical/fee/resource owner/root",
+      "blocks": "actual API first-error/admission/issuer/fees",
+      "material": "independently accepted F1/D1/R1/O1 and fee/admission contracts; no WIP or fake actual",
+      "source": {
+        "inputId": "input-13",
+        "pointer": "首错与最小deterministic delta"
+      }
+    },
+    {
+      "id": "G05",
+      "owner": "T03/caller/T05/root/platform owners",
+      "blocks": "runtime/oracle/parent/release",
+      "material": "actual E0/E1/E2/417/full independent oracle/B1/S1/parent137/native/H/twoOS/human/designated dual review/CI/develop",
+      "source": {
+        "inputId": "input-24",
+        "pointer": "§6–8"
+      }
+    }
+  ],
+  "projectionCases": [
+    {
+      "id": "turtle/front-5",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/0"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/0/expectedProjection"
+      },
+      "expectedProjectionSha256": "df18c4e5436aacdf93ff89922568ebba545e4a48fd4759c914e06dc4297a9d8d",
+      "api": "semantic.parse_turtle",
+      "parameters": {},
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "no downstream Validator, no partial graph/report, no automatic fresh inference on scope failure"
+      ],
+      "pending": [
+        "New exact front-door ordering/code must be adopted and independently verified against real pinned library/API; older local assertions are only explicitly scoped evidence."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "rdfs/type",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/1"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/1/expectedProjection"
+      },
+      "expectedProjectionSha256": "91e12d25781b8fdc47517ca78b9b864aabe5b197fb9bd751ba495ae7b983aac3",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "rdfs/domain-depth2",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/2"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/2/expectedProjection"
+      },
+      "expectedProjectionSha256": "f57f5993b48a2f5d569bfafbe252ecc63936db1089b1fb70e66ca1d0e03c9c5e",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "rdfs/range",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/3"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/3/expectedProjection"
+      },
+      "expectedProjectionSha256": "2da3138ca42a717b57bbd10b87191202cf150f1ba0543fa9874ec8c65284be08",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "rdfs/subclass",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/4"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/4/expectedProjection"
+      },
+      "expectedProjectionSha256": "31777e192268cd615864ebc51cad5751b4d37cc80ba1b025dcc9788a0c59c08d",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "rdfs/cycle",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/5"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/5/expectedProjection"
+      },
+      "expectedProjectionSha256": "7369f68871cea2ef000b0dd00c80f3d711b1791b61114385c7e491ac92fd5c54",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "rdfs/domain-first-witness",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/6"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/6/expectedProjection"
+      },
+      "expectedProjectionSha256": "0c35032c0c90273224738ef7a6b4db0aa277b22bdb3232086d247897a9e8704d",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "rdfs/range-first-witness",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/7"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/7/expectedProjection"
+      },
+      "expectedProjectionSha256": "db1e140af762240c754befb4d2b623951a3bce3d80d157e88be40c3026c0bbf1",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "legacy/no-rule-feedback",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/8"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/8/expectedProjection"
+      },
+      "expectedProjectionSha256": "8061692760d21e20c0a3f53b43b7fa974ce1ba2ae3522e123759f49cb6d2075d",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "legacy/multiple-matches",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/9"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/9/expectedProjection"
+      },
+      "expectedProjectionSha256": "cc21f73c63aac795f5e8ccd802b4240dc8086ce5d349bce0f3dfece83f25f948",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "legacy/repeated-variable",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/10"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/10/expectedProjection"
+      },
+      "expectedProjectionSha256": "57618f3f75811846d0a2fab9f2cac8b1bcb79594a5fd3d0cec831b958c27e3eb",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "legacy",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": [
+        "New serializer version/ordered evidence projection requires owner acceptance and real source/package verification."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "legacy/unbound-head",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/11"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/11/expectedProjection"
+      },
+      "expectedProjectionSha256": "686c8cff81f461f59e49e9ffa68102b5d4d7359b97e695c3a7ef5823b0ee77e7",
+      "api": "semantic.reason",
+      "parameters": {},
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [],
+      "pending": ["Real canonical API execution not performed."],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "scope/asserted",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/12"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/12/expectedProjection"
+      },
+      "expectedProjectionSha256": "cfd10d3b7961daed8d1048ddf76829e11df1f06d6fda93f479ba43bf85198409",
+      "api": "semantic_scopes.prepare_validation_scope",
+      "parameters": {
+        "mode": "asserted"
+      },
+      "kind": "scope",
+      "preconditions": [],
+      "finiteRelations": [
+        "asserted has 6 facts/2 ontology axioms; derived has 9 facts/3 ontology axioms",
+        "fresh actual reason call at prepare = 1; project actual reason call at projection = 0",
+        "project input reasoning_result and reasoning_source must be those from this exact prepare, as verified in-process, not just equal JSON",
+        "query and SHACL consume exactly this facts graph; all already returned stage records retained",
+        "raw input rule definitions including null/source/when/head occurrence ordering remain bound to source context"
+      ],
+      "pending": [
+        "New private provenance/source encoding requires owner acceptance; old 6891 digest encoding is not established.",
+        "Content hashes do not prove same-issue identity, caller authority, or selected permission."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "scope/fresh",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/13"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/13/expectedProjection"
+      },
+      "expectedProjectionSha256": "0ab25ee8e30e569cb891856447e009f7e5fc5d1989cc2c1bfd74a761b2072adc",
+      "api": "semantic_scopes.prepare_validation_scope",
+      "parameters": {
+        "mode": "fresh"
+      },
+      "kind": "scope",
+      "preconditions": [],
+      "finiteRelations": [
+        "asserted has 6 facts/2 ontology axioms; derived has 9 facts/3 ontology axioms",
+        "fresh actual reason call at prepare = 1; project actual reason call at projection = 0",
+        "project input reasoning_result and reasoning_source must be those from this exact prepare, as verified in-process, not just equal JSON",
+        "query and SHACL consume exactly this facts graph; all already returned stage records retained",
+        "raw input rule definitions including null/source/when/head occurrence ordering remain bound to source context"
+      ],
+      "pending": [
+        "New private provenance/source encoding requires owner acceptance; old 6891 digest encoding is not established.",
+        "Content hashes do not prove same-issue identity, caller authority, or selected permission."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "scope/project",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/14"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/14/expectedProjection"
+      },
+      "expectedProjectionSha256": "0ab25ee8e30e569cb891856447e009f7e5fc5d1989cc2c1bfd74a761b2072adc",
+      "api": "semantic_scopes.project_validation_scope",
+      "parameters": {
+        "mode": "project"
+      },
+      "kind": "scope",
+      "preconditions": [],
+      "finiteRelations": [
+        "asserted has 6 facts/2 ontology axioms; derived has 9 facts/3 ontology axioms",
+        "fresh actual reason call at prepare = 1; project actual reason call at projection = 0",
+        "project input reasoning_result and reasoning_source must be those from this exact prepare, as verified in-process, not just equal JSON",
+        "query and SHACL consume exactly this facts graph; all already returned stage records retained",
+        "raw input rule definitions including null/source/when/head occurrence ordering remain bound to source context"
+      ],
+      "pending": [
+        "New private provenance/source encoding requires owner acceptance; old 6891 digest encoding is not established.",
+        "Content hashes do not prove same-issue identity, caller authority, or selected permission."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "scope/missing-source",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/15"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/15/expectedProjection"
+      },
+      "expectedProjectionSha256": "57448c77d3466db55df999fa508a52b684144c01a0d3f8b2748e57feee828517",
+      "api": "semantic_scopes.project_validation_scope",
+      "parameters": {
+        "mode": "missing-source"
+      },
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "no downstream Validator, no partial graph/report, no automatic fresh inference on scope failure"
+      ],
+      "pending": [
+        "New exact front-door ordering/code must be adopted and independently verified against real pinned library/API; older local assertions are only explicitly scoped evidence."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "scope/wrong-source",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/16"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/16/expectedProjection"
+      },
+      "expectedProjectionSha256": "1e1efc1dc62a8849683f76e32ff9a060a107f57f7bcc2f685b988a3f6f56c033",
+      "api": "semantic_scopes.project_validation_scope",
+      "parameters": {
+        "mode": "wrong-source"
+      },
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "no downstream Validator, no partial graph/report, no automatic fresh inference on scope failure"
+      ],
+      "pending": [
+        "New exact front-door ordering/code must be adopted and independently verified against real pinned library/API; older local assertions are only explicitly scoped evidence."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "scope/missing-result",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/17"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/17/expectedProjection"
+      },
+      "expectedProjectionSha256": "9f4e61f7945391196059434cb5c4fb8388ff34088423fc91727164081778d225",
+      "api": "semantic_scopes.project_validation_scope",
+      "parameters": {
+        "mode": "missing-result"
+      },
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "no downstream Validator, no partial graph/report, no automatic fresh inference on scope failure"
+      ],
+      "pending": [
+        "New exact front-door ordering/code must be adopted and independently verified against real pinned library/API; older local assertions are only explicitly scoped evidence."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "scope/unselected-result",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/18"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/18/expectedProjection"
+      },
+      "expectedProjectionSha256": "a1b2fcdd3f9024b0924cc53496a77be80c760f982455ee040f74846c8fb6452d",
+      "api": "semantic_scopes.project_validation_scope",
+      "parameters": {
+        "mode": "unselected-result"
+      },
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "no downstream Validator, no partial graph/report, no automatic fresh inference on scope failure"
+      ],
+      "pending": [
+        "New exact front-door ordering/code must be adopted and independently verified against real pinned library/API; older local assertions are only explicitly scoped evidence."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/fullview/payload-unknown-key",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/19"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/19/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_result",
+      "parameters": {
+        "explanation": false,
+        "mutation": "payload-unknown-key",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/fullview/tail-source-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/20"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/20/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_result",
+      "parameters": {
+        "explanation": false,
+        "mutation": "tail-source-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/fullview/tail-definition-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/21"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/21/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_result",
+      "parameters": {
+        "explanation": false,
+        "mutation": "tail-definition-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/fullview/tail-limits-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/22"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/22/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_result",
+      "parameters": {
+        "explanation": false,
+        "mutation": "tail-limits-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/fullview/tail-child-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/23"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/23/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_result",
+      "parameters": {
+        "explanation": false,
+        "mutation": "tail-child-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/payload-unknown-key",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/24"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/24/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "payload-unknown-key",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/tail-source-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/25"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/25/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "tail-source-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/tail-definition-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/26"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/26/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "tail-definition-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/tail-limits-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/27"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/27/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "tail-limits-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/tail-child-tamper",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/28"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/28/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "tail-child-tamper",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/dag-depth-plus-one",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/29"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/29/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "dag-depth-plus-one",
+        "rootsTargets": [
+          ["<urn:x>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:B>"]
+        ]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/dag-last-premise-forward",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/30"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/30/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "dag-last-premise-forward",
+        "rootsTargets": [
+          ["<urn:x>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:B>"]
+        ]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/leaf-rename-all",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/31"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/31/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "leaf-rename-all",
+        "rootsTargets": [
+          ["<urn:x>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>", "<urn:B>"]
+        ]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "restore/explanation/head-occurrence-1023-15",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/32"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/32/expectedProjection"
+      },
+      "expectedProjectionSha256": "3dd46ebffeee9c1b7f14ee749a5d8b6791569343600f9dcfbef80cad4abd3ee3",
+      "api": "restore_profile_explanation_result",
+      "parameters": {
+        "explanation": true,
+        "mutation": "head-occurrence-1023-15",
+        "rootsTargets": [["<urn:x>", "<urn:out>", "<urn:y>"]]
+      },
+      "kind": "rejection",
+      "preconditions": [
+        "Prior production completed with its own actual caller-issued expectation/allocation and full retained return records.",
+        "Independent admission establishes sufficient authorized resources for this fixed receiver-integrity preflight; no guessed caps/invoice or constructor default.",
+        "If a real earlier failure prevents reaching this target, keep it as first failure and pending/not-reached; never match it as this expected A1 rejection."
+      ],
+      "finiteRelations": [
+        "copy only actual received bytes; original held expectation/allocation unchanged",
+        "R1 explicitly assigns stage A1: compare all original held payload/rows/sidecar digests and lengths in fixed order before decoding; this is a proposed API delta, not inferred 6891 behavior",
+        "all 14 fixed mutations change at least one bound byte sequence; no rebind to newly computed expected",
+        "target error is exact proposed R1 mismatch, not any RestoreFailure, resource fault, or DIRECT_STEPS_INVALID",
+        "no target-stage reason/Validator call; no partial view; complete original successful material and all earlier returned stages retained unchanged"
+      ],
+      "pending": [
+        "6891 actual first reason/class/stage/slot/domain for each ID remains unproved. Constructor default is not authority.",
+        "Real prior production/capture/allocation/admission and full stage output codecs remain pending their independent approved windows.",
+        "Actual revised received bytes must differ from original held payload/row/sidecar identities; mutation dispatch must be audited independently."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "dag/turtle-entry",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/33"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/33/expectedProjection"
+      },
+      "expectedProjectionSha256": "5ddd2fb943c10cfaa858a4143387db17ae7e7af433a2d6759f0185007d697d69",
+      "api": "execute_profile_explanation",
+      "parameters": {
+        "materialMode": "text",
+        "rootsTargets": []
+      },
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "text material is rejected before reasoning, without parse-upgrade or partial view; exact canonical D1 error required after adoption"
+      ],
+      "pending": [
+        "6891 may throw DirectStepsFailure or MaterialFailure; exact class/reason is not established by local assertion. New D1 target must be implemented and verified."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "shape/front-2",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/34"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/34/expectedProjection"
+      },
+      "expectedProjectionSha256": "f9e8a9ce91e6d53d35c4443e5c3a4b0634cc422fae5fac8a101df423349a9ace",
+      "api": "semantic.parse_turtle -> semantic.check_shapes",
+      "parameters": {},
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "no downstream Validator, no partial graph/report, no automatic fresh inference on scope failure"
+      ],
+      "pending": [
+        "New exact front-door ordering/code must be adopted and independently verified against real pinned library/API; older local assertions are only explicitly scoped evidence."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "integer/other-datatype-1",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/35"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/35/expectedProjection"
+      },
+      "expectedProjectionSha256": "5d32b4d829f9bbc04afa37f80a388c7d1e0230623897f149a9896afae9c93b95",
+      "api": "semantic.validate_shacl_text",
+      "parameters": {
+        "dataPolicy": "integer-illtyped-report-v1",
+        "rangePolicy": "legacy"
+      },
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "no downstream Validator, no partial graph/report, no automatic fresh inference on scope failure"
+      ],
+      "pending": [
+        "New exact front-door ordering/code must be adopted and independently verified against real pinned library/API; older local assertions are only explicitly scoped evidence."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    },
+    {
+      "id": "offline/implicit-jsonld",
+      "casePointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/36"
+      },
+      "expectedProjectionPointer": {
+        "inputId": "input-16",
+        "pointer": "/cases/36/expectedProjection"
+      },
+      "expectedProjectionSha256": "ad1bbbd50ee8dca71935ef340bb1478d43c239d67418ce4cd434193e5acbfd82",
+      "api": "semantic_offline.offline",
+      "parameters": {
+        "action": "implicit-jsonld"
+      },
+      "kind": "rejection",
+      "preconditions": [],
+      "finiteRelations": [
+        "original json-ld @context pure input unchanged; guard denies before I/O",
+        "unrecognized exception produces Unknown/INTERNAL_ERROR/complete=false, never a successful policy match"
+      ],
+      "pending": [
+        "No approved actual-loader exception projection exists; new typed O1 guard and no-I/O evidence require later authorized isolated verification.",
+        "Do not label arbitrary library exceptions SemanticError or infer policy denial from exception text."
+      ],
+      "requiredComparisonEntry": "matches",
+      "rules": ["R27", "R28", "R29", "R30"],
+      "actualStatus": "not-run/not-reached-pending",
+      "earlierFailurePolicy": "preserve real first failure; never substitute expected diagnostic"
+    }
+  ],
+  "legacyMandatoryMaterialDestinations": [
+    {
+      "requirement": "stream format i05-source-package-observations/1",
+      "destinationOrBlockingGap": "no strict header slot; G02 requires explicit outer protocol version",
+      "owner": "I05 serializer/root",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "run ID",
+      "destinationOrBlockingGap": "caller receipt /runs/{run}/runId exists; raw-business association carrier still G02",
+      "owner": "caller/I05 serializer",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "source/bundle mode",
+      "destinationOrBlockingGap": "strict /mode and receipt run mode, equality checked",
+      "owner": "probe/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "defined-exact-protocol; runtime-pending"
+    },
+    {
+      "requirement": "composition/product/process refs",
+      "destinationOrBlockingGap": "composition strict /declaredCompositionRef frozen only; supplier source refs in /declaredSupplierSources; remaining exact product/process carrier G02",
+      "owner": "T03/root/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "actual writer/asset/lock/resource SHA",
+      "destinationOrBlockingGap": "provenance inputs/build writers are producer declarations; actual local observed hashes require full business carrier G02, not expected-value fill",
+      "owner": "I05 probe/serializer/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "Python and distributions/build tools",
+      "destinationOrBlockingGap": "strict observedPython/declaredPython handles Python; full actual distribution/tool/lock identities and witness provenance external, remaining business carrier G02",
+      "owner": "T03/probe/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "module spec/name/origin/code domain",
+      "destinationOrBlockingGap": "strict moduleLoaders/distributionModuleLoader/functionCodes/dynamicChecker exact groups",
+      "owner": "probe/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "defined-exact-protocol; runtime-pending"
+    },
+    {
+      "requirement": "semantic/policy/budget versions",
+      "destinationOrBlockingGap": "no strict header slot; G02 explicit full-context carrier; fees independent waiting G04",
+      "owner": "I05 serializer/fee/root",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "case inventory digest",
+      "destinationOrBlockingGap": "no strict header slot; G02 exact preimage/version carrier",
+      "owner": "I05 asset/serializer/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "selectedCaseSet and selected ordered inventory",
+      "destinationOrBlockingGap": "strict selector and receipt observationIds preserve actual selected observations; full original declared inventory/manifest binding G02",
+      "owner": "I05 asset/serializer/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "complete full inventory and actual counts",
+      "destinationOrBlockingGap": "full417 vs singleB1 rule fixed; complete full/selected declared inventories carrier G02, no count-only acceptance",
+      "owner": "I05 asset/serializer/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "instrumentation flag and actual per-stage hook counts",
+      "destinationOrBlockingGap": "no strict header slot; G02 actual hook carrier and exact object identity; B1 instrumentation=false separate fresh run",
+      "owner": "I05 probe/serializer/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "nonClaims",
+      "destinationOrBlockingGap": "no strict header slot; G02 explicit versioned full context without widening strict header",
+      "owner": "I05 serializer/root",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "full prior returned stages",
+      "destinationOrBlockingGap": "complete producer return/payload/rows/sidecars/typed/source metadata raw independently retained; G02 complete indexed carrier and hashes",
+      "owner": "I05 serializer/caller",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    },
+    {
+      "requirement": "source reasoningSource metadata and same-call handle",
+      "destinationOrBlockingGap": "original same-call objects used for project; G03 exact old metadata encoding/identity not replaced by display source",
+      "owner": "I05 canonical/serializer/root",
+      "fixedSource": {
+        "inputId": "input-24",
+        "textAnchor": "§4.2 全量输出与 canonical 调用顺序"
+      },
+      "state": "pending-exact-carrier-adoption"
+    }
+  ],
+  "completeLegacyFamilyRequirements": [
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 43,
+        "text": "| `turtle-*`：原 G-base、字符串身份、词法族           | `semantic.parse_turtle(text, format=\"turtle\", shapes=...)` L111                                         | 完整 RDF term 集：IRI、lexical、datatype、language 原文；原输入字节与解析身份分别保留。blank-node 仅对 shape list 的合法结构允许                                                                                                                                                                      | 非 Turtle、坏 Unicode／lexical、非有限数、未知 datatype、data blank node、owl:imports、原文／图限额；不先删坏项再成功                                                                                                            |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 44,
+        "text": "| `query-*`：原 Q01/Q02、C0/1、SELECT/ASK/COUNT/ORDER | parse→`semantic.query(graph,text)` L160                                                                 | type、全部 variables／二维 rows／None、ASK bool、稳定顺序与同值 term tie；保留 integer01/1 原词法及 FILTER type-error 空行                                                                                                                                                                            | SERVICE/SILENT/变量/嵌套、FROM/NAMED/BASE relative/file 外联；非 SELECT/ASK、非 COUNT 聚合、非确定函数、LIMIT/Slice、named GRAPH、非允许 ORDER。literal 中 SERVICE 字样正向保留                                                  |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 45,
+        "text": "| `rdfs-*`：四个有限分支、cycle／R04                  | parse／真实规则定义→`semantic.reason` L1234 的 legacy 分支                                              | 完整 rdfs、custom rules、warnings、每条 evidence/source/head；先有限 RDFS 闭包再固定一阶段规则；range literal 不产生 literal 主语                                                                                                                                                                     | 不扩 full RDFS、subProperty、OWL-RL／AF，不将规则头反馈 RDFS／其他规则；空图也不能绕过非法／unbound head                                                                                                                         |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 46,
+        "text": "| `scope-*`：原scope纯输入／asserted+derived差异      | `semantic_scopes.prepare_validation_scope` L301 与 `project_validation_scope` L234；只用legacy Rule域   | asserted-only；fresh prepare(include_derived=True)真实reason一次；再以同次reasoning_result及provenance.reasoningSource给project（reason零次），随后query/SHACL实际消费facts；保存完整facts/ontology/reasoning_result/provenance，含selectedFacts/selectedRuleIds/warnings/derivedAxioms与两个view摘要 | 缺／错reasoning_source、缺result、非exact include_derived、unselected rules/result/source、facts混公理均保原码。输入不携带derived结果／expected；不得将profile /2或DAG /3结果喂legacyhelper，不建立formal selected/Store/Job权威 |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 47,
+        "text": "| `profile-83/*`：原 83 及 22 扩展                    | `execute_profile_records` L844；真实 text 另用 `execute_profile` L822                                   | 完整 payload、rows、typed when/comparison/head、basis/source/definition/implementation；false、类型错、未匹配分别观测；原 disabled 全保留                                                                                                                                                             | repair 77 不执行原旧数学调用；片段只称 fragment 数学；无 given-binding／matches／expected／编译 seal 作输入                                                                                                                      |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 48,
+        "text": "| `production-fullview/*`                             | `prepare_profile_material`→`execute_admitted_profile_job`→`restore_profile_result`                      | 本次真正发行的 material、catalog、allocation、完整 payload_json/rows_json/source/definitions/catalog bytes 与 wire；/2 finite7、schema1、7/15/11 全字段；全量恢复 view 逐字段对应                                                                                                                     | 名称中的 admitted_job 不证明正式 Job；expectation/allocation 只能由本次真实生产结果在进程内捕获，不能从 JSON 输入伪造／跨进程复用；恢复不再 reason                                                                               |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 49,
+        "text": "| `dag-fullview/*`                                    | 同 material→`execute_profile_explanation`→`restore_profile_explanation_result`→`explanation_roots`      | /3 finite8、schema2、7/16/11；有序双 premise、depth、叶 union、首见证与全部 head occurrence、alias/raw source、所有 roots；两端分别真实发行，比较 wire／typed 内容，不比较地址                                                                                                                        | 仅 structured material；新解释 Turtle 路径明确拒绝；旧 reader 拒新版本／未知字段；不可 JSON 构造外来 class／metaclass。controlled late-shorter／MemoryError 留原单测边界                                                         |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 50,
+        "text": "| `restore-reject/*`                                  | 对本次真实生产的接收 bytes 副本作冻结的有限扰动→同 restore                                              | 末 child/source/definition/limits、DAG step/premise/depth、伪 leaf 全链及 head 1023/15 等必须 atomic 拒绝；保原 allocation、输入、完整错误／阶段，不发部分 view                                                                                                                                       | 扰动只由固定 enum／case ID 选择，不能外部提供 arbitrary bytes/expected/native_reason；不可重 reason 或重造 allocation 迎合坏载荷                                                                                                 |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 51,
+        "text": "| `shape-*`：C2–10、已收四个 shape 修复               | `parse_turtle(data)`＋`parse_turtle(shape,shapes=True)`→`check_shapes` L1528；显式 text policy 路径另列 | 全部 conforms 与 violations 六字段，named NodeShape/property、直接 path、min/maxCount/datatype/in/inclusive；无 target/value 与 minCount 单独观测                                                                                                                                                     | literal target/datatype、literal/inverse/unclassified path、重复／缺 target/path、非法 bound、事实混公理分别原码；复杂 SHACL 不开放                                                                                              |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 52,
+        "text": "| `integer-entry/*`：C12 与已收 B 整数族              | `validate_shacl_text(...,data_policy=...,range_policy=\"legacy\")` L1533                                  | strict 原前门；`integer-illtyped-report-v1` 仅放宽 data object 的 exact xsd:integer ill_typed，交真实 Datatype false／六字段，原 entry1/version 保留                                                                                                                                                  | shape、xsd:int/nni/decimal 等不随之放宽；未知／非 exact policy 先拒；新入口成功不改变旧 parse/query/reason/check 的 strict                                                                                                       |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 53,
+        "text": "| `utc-date/*`：原 C11、T05 before/offset、已收边界族 | 同 L1533，明确 `range_policy=\"utc-date-range-v1\"`；data_policy 仍逐项显式                               | entry2；合法 ASCII `YYYY-MM-DDZ`、0001–9999、真实闰年；minInclusive/maxInclusive 含等号；before/equal/after、反向双 bound、多值／共享 property／无 target/value/minCount 全量报告                                                                                                                     | offset／非 Z 不转 UTC；date/non-date 双向错配拒；shape 混 bound 即使无 target 仍拒；坏词法仍原 parser 门优先；minExclusive/maxExclusive 仍 `UNSUPPORTED_SHACL`，Validator 0                                                      |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 54,
+        "text": "| `logical-budget/*`                                  | 同公开 semantic／direct／restore 入口及原有限账本                                                       | date 公共 1000000 恰界／公开超界、D1早错/晚超界/三插入序；DAG四域及完整失败诊断。逻辑票版本／费用／阶段保留                                                                                                                                                                                           | 私有少一票、foreign object、受控 MemoryError 不伪装 JSON public case 或真实 OS OOM；票不证明 native／CPU／whole-H                                                                                                                |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    },
+    {
+      "fixedSource": {
+        "inputId": "input-24",
+        "line": 55,
+        "text": "| `offline-*`                                         | 上述真实 parser/query/validator 入口与 `semantic_offline.offline()`                                     | SERVICE/FROM/import data/ontology/shapes 的真实拒绝及无访问证据；JSON-LD/XML/N3 先拒格式；无 remote loader/ont_graph、AF/JS off 是实现事实，实际无访问另留证据                                                                                                                                        | 不用配置开关代替实际拒绝；本窗不启网络／监听／CLI。未来 sentinel／隔离验证须另授；拒绝前文／stderr 不泄露原 URL／异常堆栈                                                                                                        |"
+      },
+      "owner": "I05 canonical/probe/serializer; caller preserves full raw; independent oracle T05",
+      "destination": "complete business/stage carrier G02; strict header remains only identity core",
+      "state": "not-executed/pending; every complete cell retained as normative requirement"
+    }
+  ],
+  "originalContextCounts": {
+    "fullOrderedObservations": 417,
+    "datasets": 320,
+    "mathInputContexts": 83,
+    "originalOperations": 106,
+    "learningChecks": 54,
+    "productCases": 50,
+    "source": {
+      "inputId": "input-00",
+      "textAnchor": "§8 原验收、失败与后继边界"
+    },
+    "meaning": "mandatory distinct original context counts; not runtime evidence or counts-only acceptance"
+  }
+}

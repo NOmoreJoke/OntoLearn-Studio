@@ -1,0 +1,615 @@
+{
+  "format": "i05-semantic-build-protocol-profile/3",
+  "status": "D0-author-draft-owner-review-pending",
+  "id": "i05-source-package-parity-v2",
+  "baseRef": "bba31be7384a676e54cb3b64e219f14bf2a9460e",
+  "acceptedCompositionRef": null,
+  "builderFlag": "--i05-source-package-parity",
+  "target": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+  "name": "ontolearn-semantic-parity",
+  "mode": "onedir",
+  "contentsDirectory": "_internal",
+  "proposedOutputPrefix": "build/i05-semantic-parity/{approved-composition-ref}/{platform-id}/",
+  "outputPrefixStatus": "proposal; root must reserve prefix/resources before execution",
+  "sourceArgv": [
+    "python",
+    "-m",
+    "ontolearn_engine.semantic_source_package_probe",
+    "--semantic-source-package-probe",
+    "{exact-selector}"
+  ],
+  "frozenArgv": [
+    "ontolearn-semantic-parity",
+    "--semantic-source-package-probe",
+    "{exact-selector}"
+  ],
+  "selectors": ["full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1"],
+  "canonicalModules": [
+    {
+      "module": "ontolearn_engine",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/__init__.py",
+      "bytes": 101,
+      "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+      "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/__init__.py",
+        "bytes": 101,
+        "sha256": "4b8460a6ccc649f44188171c3d4c0c9e58e1204c711462d9ecf0aff12135684f",
+        "gitBlob": "aea2f9eaf2ec7427494596a52c40bb8333b8943e"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+      "bytes": 548,
+      "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+      "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/__init__.py",
+        "bytes": 548,
+        "sha256": "9a5130c2fdbe376e5e4c15e68085f01724847ff13e9b2c195cf270e476806d9c",
+        "gitBlob": "1405a985b4220dc18576a4c02c8df57646b6ad02"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality.rule_calendar",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+        "bytes": 4047,
+        "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+        "gitBlob": "7fab1dff7feef099a4a7d0593a30a4c9842bcca1"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality.rule_comparator",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+      "bytes": 1750,
+      "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+      "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_comparator.py",
+        "bytes": 1750,
+        "sha256": "9a495876a182d1cad4cac86bb4651c1627e4afc37e1bf9bb3d62be6bb0e95ff2",
+        "gitBlob": "1148fbd40c12c6138a689ee64580e08afa6c349c"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality.rule_firing",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+        "bytes": 19149,
+        "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+        "gitBlob": "4fc50930c20b8184b3bae5df34d691111351e6bd"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality.rule_numbers",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+        "bytes": 7372,
+        "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+        "gitBlob": "31a0d150ae82d48e03fee2b9051273c99997b415"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality.rule_profile",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+        "bytes": 11987,
+        "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+        "gitBlob": "85a683b3c7daf9d5b7c4199b190d1cb56901a402"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality.rule_revalidation",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+      "bytes": 6288,
+      "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+      "gitBlob": "d4fdc2c750af383e41799ae6b0947c13479d999c",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_revalidation.py",
+        "bytes": 6288,
+        "sha256": "9e9258cfefdef56f369dad6bb7838afd22478ea6714e4322b2d872d12616200e",
+        "gitBlob": "d4fdc2c750af383e41799ae6b0947c13479d999c"
+      }
+    },
+    {
+      "module": "ontolearn_engine.quality.rule_terms",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 6176,
+      "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+      "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+        "bytes": 6176,
+        "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+        "gitBlob": "148313c849a706008e909d2c199c0c0d20e9fc33"
+      }
+    },
+    {
+      "module": "ontolearn_engine.resources",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "bytes": 3065,
+      "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+      "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "bytes": 3065,
+        "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+        "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic.py",
+      "bytes": 65749,
+      "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+      "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "bytes": 65749,
+        "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+        "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_error_adapter",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+      "bytes": 15426,
+      "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+      "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "bytes": 15426,
+        "sha256": "0572b4730ba1ac28192e84633633d7da222e6603ff7da811c84e1f368eb55014",
+        "gitBlob": "64356928fe56697af4992c08e209f85a6a178e79"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_execution",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+      "bytes": 35220,
+      "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+      "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "bytes": 35220,
+        "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+        "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_offline",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+        "bytes": 1351,
+        "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+        "gitBlob": "0013805b49a8842383fd38afde3ffbfbd54e1e40"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_profile_directsteps",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "bytes": 46459,
+      "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+      "gitBlob": "66fcb3a9e04cf9d1ebda9c994c9f739c67288bab",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+        "bytes": 46459,
+        "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+        "gitBlob": "66fcb3a9e04cf9d1ebda9c994c9f739c67288bab"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_profile_input",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+      "bytes": 40378,
+      "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+      "gitBlob": "f91e3b2fb719dd18dbdffa48698db19eb4fd3934",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "bytes": 40378,
+        "sha256": "f4d76b68e6bd5f27d4e1c0ee7b26435117b1dd762a4b2a16503d41afd1841f74",
+        "gitBlob": "f91e3b2fb719dd18dbdffa48698db19eb4fd3934"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_profile_production",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "bytes": 19993,
+      "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+      "gitBlob": "fec434ea49c8cf989afeb7b7e0f2c9a518545d1c",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+        "bytes": 19993,
+        "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+        "gitBlob": "fec434ea49c8cf989afeb7b7e0f2c9a518545d1c"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_profile_restore",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "bytes": 70203,
+      "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+      "gitBlob": "0e5baa40641c6eaf016dd6515e1b1528f815c632",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+        "bytes": 70203,
+        "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+        "gitBlob": "0e5baa40641c6eaf016dd6515e1b1528f815c632"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_profile_restore_budget",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "bytes": 37889,
+      "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+      "gitBlob": "0bf52a792873be88ac5c084aec25af173df18514",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+        "bytes": 37889,
+        "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+        "gitBlob": "0bf52a792873be88ac5c084aec25af173df18514"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_query",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+      "bytes": 6448,
+      "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+      "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_query.py",
+        "bytes": 6448,
+        "sha256": "fe8e600de7c0b300038ba0c952497cb8fbbf30f741f1e0d5e1bba78afef8670f",
+        "gitBlob": "330cc2467838a685e5167014d6e4aaa28b4a3dbb"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_scopes",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+      "bytes": 13051,
+      "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+      "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "bytes": 13051,
+        "sha256": "aa8f1231df09332e9f02d96e3c8e4ef4cb64d4b3fa28067babcd3431de820ebf",
+        "gitBlob": "65d0f46e9e26d624e1fd4bfb7c0fb468b441dff2"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_turtle",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 33916,
+      "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+      "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2",
+      "owner": "original I05/T05 owner; immutable supply only",
+      "inProbeRefSameBytes": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+        "bytes": 33916,
+        "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+        "gitBlob": "37247efd459e32e914c29c4cf0da2c99751690b2"
+      }
+    },
+    {
+      "module": "ontolearn_engine.semantic_source_package_probe",
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "bytes": 93848,
+      "sha256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+      "gitBlob": "d4585b555a01a1d8b862ad833504c8a1e258fd43",
+      "owner": "I05; root accepted source-only R2; runtime/lock/package not accepted; ownership retained"
+    }
+  ],
+  "resources": [
+    {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/contracts/python/contract_v2.py",
+      "bytes": 34608,
+      "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+      "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76",
+      "owner": "T01",
+      "adoptionCandidate": "dd972b79adf4d378636a7d41a6b0e3e08c0d5ca1",
+      "adoptionProcess": "79d63cc1f403ee857a3af2a98f8870db9a6a910d",
+      "bundlePath": "contracts/python/contract_v2.py"
+    },
+    {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/contracts/v2/schema.json",
+      "bytes": 207256,
+      "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf",
+      "gitBlob": "114d963d0967d2a9ce347195b5ee536e09a8195a",
+      "owner": "T01",
+      "adoptionCandidate": "dd972b79adf4d378636a7d41a6b0e3e08c0d5ca1",
+      "adoptionProcess": "79d63cc1f403ee857a3af2a98f8870db9a6a910d",
+      "bundlePath": "contracts/v2/schema.json"
+    },
+    {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/contracts/v2/registry.json",
+      "bytes": 15962,
+      "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+      "gitBlob": "8d2195b04a193501b90bbfc432e3af2d2f6e489d",
+      "owner": "T01",
+      "adoptionCandidate": "dd972b79adf4d378636a7d41a6b0e3e08c0d5ca1",
+      "adoptionProcess": "79d63cc1f403ee857a3af2a98f8870db9a6a910d",
+      "bundlePath": "contracts/v2/registry.json"
+    },
+    {
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "packages/contracts/v2/errors.json",
+      "bytes": 16299,
+      "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+      "gitBlob": "9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b",
+      "owner": "T01",
+      "adoptionCandidate": "dd972b79adf4d378636a7d41a6b0e3e08c0d5ca1",
+      "adoptionProcess": "79d63cc1f403ee857a3af2a98f8870db9a6a910d",
+      "bundlePath": "contracts/v2/errors.json"
+    }
+  ],
+  "assets": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+      "gitBlob": "360ac7d9ac819d50d3394a73a505fc5e3de963fd",
+      "owner": "I05",
+      "bundlePath": "provenance/i05/source-package-parity/i05-source-package-parity-inputs.json"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+      "gitBlob": "7d44d3856ed168c68304c89551a844c7fea16013",
+      "owner": "I05",
+      "bundlePath": "provenance/i05/source-package-parity/i05-source-package-parity-manifest.json"
+    }
+  ],
+  "hiddenImports": [
+    "ontolearn_engine",
+    "ontolearn_engine.quality",
+    "ontolearn_engine.quality.rule_calendar",
+    "ontolearn_engine.quality.rule_comparator",
+    "ontolearn_engine.quality.rule_firing",
+    "ontolearn_engine.quality.rule_numbers",
+    "ontolearn_engine.quality.rule_profile",
+    "ontolearn_engine.quality.rule_revalidation",
+    "ontolearn_engine.quality.rule_terms",
+    "ontolearn_engine.resources",
+    "ontolearn_engine.semantic",
+    "ontolearn_engine.semantic_error_adapter",
+    "ontolearn_engine.semantic_execution",
+    "ontolearn_engine.semantic_offline",
+    "ontolearn_engine.semantic_profile_directsteps",
+    "ontolearn_engine.semantic_profile_input",
+    "ontolearn_engine.semantic_profile_production",
+    "ontolearn_engine.semantic_profile_restore",
+    "ontolearn_engine.semantic_profile_restore_budget",
+    "ontolearn_engine.semantic_query",
+    "ontolearn_engine.semantic_scopes",
+    "ontolearn_engine.semantic_turtle",
+    "ontolearn_engine.semantic_source_package_probe",
+    "prettytable",
+    "wcwidth",
+    "packaging"
+  ],
+  "collectAll": ["rdflib", "pyshacl", "owlrl", "html5rdf"],
+  "copyMetadata": [
+    "rdflib",
+    "pyshacl",
+    "pyparsing",
+    "owlrl",
+    "html5rdf",
+    "prettytable",
+    "wcwidth",
+    "packaging"
+  ],
+  "excludeEngineModules": [
+    "ontolearn_engine.quality.definitions",
+    "ontolearn_engine.quality.planning",
+    "ontolearn_engine.semantic_profile_probe",
+    "ontolearn_engine.semantic_probe",
+    "ontolearn_engine.semantic_samples",
+    "ontolearn_engine.storage",
+    "ontolearn_engine.storage_probe",
+    "ontolearn_engine.worker",
+    "ontolearn_engine.coordinator",
+    "ontolearn_engine.job_store",
+    "ontolearn_engine.protocol",
+    "ontolearn_engine.__main__"
+  ],
+  "forbidCollectAllEngine": true,
+  "forbidCollectDataEngine": true,
+  "forbidContractsGlob": true,
+  "frozenResourceRoot": "_MEIPASS/contracts",
+  "frozenAssetRoot": "_MEIPASS/provenance/i05/source-package-parity",
+  "frozenLock": "_MEIPASS/provenance/uv.lock",
+  "frozenBuildProvenance": "_MEIPASS/provenance/i05/source-package-parity-build.json",
+  "buildProvenanceSchema": "build-provenance.schema.json",
+  "externalReceiptSchema": "build-receipt.schema.json",
+  "openDeltas": [
+    "D0 fixed candidate owner acceptance and fresh independent review",
+    "D1 dependency",
+    "D2 I05 source/frozen consumer and new source23 pin",
+    "D3 wrapper and dedicated evidence tooling",
+    "E0 actual composition/environment/build/archive/license evidence",
+    "E1 actual runtime loader/cache validation",
+    "E2 complete417 source/frozen/parent comparison",
+    "T05 current implementation limited received; allocation delta separate review; no new oracle re-review here",
+    "B1/S1/parent/formal gates remain"
+  ],
+  "verificationActors": {
+    "producer": "T03 actual archive/compile/installed/license evidence",
+    "externalReceiver": "root approves exact source/composition and external witness evidence",
+    "caller": "prelaunch approved receipt and complete directory/external-evidence binding; postlaunch header/runtime digest binding",
+    "probe": "strict schema/declarations plus own bundle/source files and actual loader code; externalReceiptStatus=external-unverified"
+  },
+  "probeMustNotDereference": [
+    "external Git source paths",
+    "ownerAcceptanceRecord",
+    "extractorSource",
+    "build.stdoutReceipt",
+    "build.stderrReceipt",
+    "original installedFiles/RECORD paths",
+    "external final receipt"
+  ],
+  "executionAuthorization": false,
+  "protocolVersion": "2.1.0",
+  "canonicalModulePinsRole": "historical immutable source baselines; first22 fixed supply; item23 is consumer delta baseline only, never a claim the future consumer retains these bytes",
+  "approvedConsumerPin": null,
+  "approvedDependencyPin": null,
+  "approvedWrapperPins": [],
+  "approvedToolchain": null,
+  "approvedEvidenceRootRecord": null,
+  "approvedProtocolRecord": null,
+  "runtimeValidationReceiptSchema": "runtime-validation-receipt.schema.json",
+  "contractPaths": ["protocol.md", "consumer-contract.md", "field-responsibility.json"],
+  "schemaIds": [
+    "urn:ontolearn:i05:source-package-parity-build:2",
+    "urn:ontolearn:i05:build-receipt:2",
+    "urn:ontolearn:i05:runtime-validation-receipt:2",
+    "urn:ontolearn:i05:runtime-header:1"
+  ],
+  "schemaIdentitySource": "exact path/bytes/SHA in current externally reported delta/final manifest; historical draft-manifest remains unchanged",
+  "pathDomains": {
+    "finalOrdinaryFiles": "bundle-root",
+    "payloadFiles": "meipass-root",
+    "meipassPrefix": "_internal/",
+    "archives": "closed archiveId table; file or parentMember only",
+    "source": "Git root",
+    "installed": "approved-installation",
+    "artifacts": "approved-artifacts",
+    "witness": "approved-witness",
+    "logs": "approved-logs"
+  },
+  "archiveIds": ["carchive-main", "pyz-main", "external-pyc-main"],
+  "maximumArchiveDepth": 2,
+  "maximumProvenanceBytes": 16777216,
+  "functionBindings": [
+    {
+      "name": "semantic.reason",
+      "moduleName": "ontolearn_engine.semantic",
+      "moduleBindingId": "canonical:ontolearn_engine.semantic"
+    },
+    {
+      "name": "semantic.query",
+      "moduleName": "ontolearn_engine.semantic",
+      "moduleBindingId": "canonical:ontolearn_engine.semantic"
+    },
+    {
+      "name": "semantic.validate_shacl_text",
+      "moduleName": "ontolearn_engine.semantic",
+      "moduleBindingId": "canonical:ontolearn_engine.semantic"
+    },
+    {
+      "name": "Validator.run",
+      "moduleName": "pyshacl.validator",
+      "moduleBindingId": "distribution:pyshacl.validator"
+    }
+  ],
+  "requiredRuntimeDistributions": {
+    "rdflib": "7.6.0",
+    "pyshacl": "0.30.1",
+    "pyparsing": "3.3.3",
+    "owlrl": "7.6.2",
+    "prettytable": "3.18.0",
+    "wcwidth": "0.9.2",
+    "html5rdf": "1.2.1",
+    "packaging": "26.3"
+  },
+  "exactProbeArgv": [
+    ["--semantic-source-package-probe", "full-v1"],
+    ["--semantic-source-package-probe", "b1-semantic-1x-v1"],
+    ["--semantic-source-package-probe", "b1-semantic-10x-v1"]
+  ],
+  "runtimeHeaderSchema": "runtime-header.schema.json",
+  "runtimeObservationRules": "consumer-contract.md CR-R/CR-H; receipt can preserve failed actual observations, never upgrades collection or business correctness"
+}

@@ -1,0 +1,1599 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ontolearn:private:i05-observation-projection:2",
+  "title": "Proposed private observation terminal projection /2, not a public DTO",
+  "$defs": {
+    "term": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "iri"
+            },
+            "value": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^ <>\\x00-\\x20]*$"
+            }
+          },
+          "required": ["kind", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "lexical": {
+              "type": "string"
+            },
+            "datatype": {
+              "type": "string"
+            },
+            "language": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": ["kind", "lexical", "datatype", "language"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "blank"
+            },
+            "label": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            }
+          },
+          "required": ["kind", "label"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "triple": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/term"
+      }
+    },
+    "graph": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/triple"
+      },
+      "uniqueItems": true
+    },
+    "n3Triple": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "string"
+      }
+    },
+    "n3Graph": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/n3Triple"
+      },
+      "uniqueItems": true
+    },
+    "rdfsEvidence": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/$defs/n3Triple"
+        },
+        "basis": {
+          "$ref": "#/$defs/n3Graph"
+        }
+      },
+      "required": ["result", "basis"],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "rule": {
+          "type": "string"
+        },
+        "result": {
+          "$ref": "#/$defs/n3Triple"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/n3Triple"
+          }
+        },
+        "basis": {
+          "$ref": "#/$defs/n3Graph"
+        }
+      },
+      "required": ["rule", "result", "inputs", "basis"],
+      "additionalProperties": false
+    },
+    "legacy": {
+      "type": "object",
+      "properties": {
+        "rdfs": {
+          "$ref": "#/$defs/n3Graph"
+        },
+        "rules": {
+          "$ref": "#/$defs/n3Graph"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "rdfsEvidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rdfsEvidence"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      },
+      "required": ["rdfs", "rules", "warnings", "rdfsEvidence", "evidence"],
+      "additionalProperties": false
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": ["asserted", "rdfs"]
+            },
+            "basis": {
+              "$ref": "#/$defs/n3Graph"
+            }
+          },
+          "required": ["kind", "basis"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "rule"
+            },
+            "ruleId": {
+              "type": "string"
+            },
+            "inputs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/n3Triple"
+              }
+            },
+            "basis": {
+              "$ref": "#/$defs/n3Graph"
+            }
+          },
+          "required": ["kind", "ruleId", "inputs", "basis"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "factsCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ontologyCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "factsDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "ontologyDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["factsCount", "ontologyCount", "factsDigest", "ontologyDigest"],
+      "additionalProperties": false
+    },
+    "contentSource": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "i05-scope-content-source/1"
+        },
+        "assertedDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "ontologyDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "rulesDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["format", "assertedDigest", "ontologyDigest", "rulesDigest"],
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "i05-scope-observation-provenance/1"
+        },
+        "selectedFacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "triple": {
+                "$ref": "#/$defs/n3Triple"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/source"
+                }
+              }
+            },
+            "required": ["triple", "sources"],
+            "additionalProperties": false
+          }
+        },
+        "selectedRuleIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "derivedAxioms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "triple": {
+                "$ref": "#/$defs/n3Triple"
+              },
+              "source": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "rdfs"
+                  },
+                  "basis": {
+                    "$ref": "#/$defs/n3Graph"
+                  }
+                },
+                "required": ["kind", "basis"],
+                "additionalProperties": false
+              }
+            },
+            "required": ["triple", "source"],
+            "additionalProperties": false
+          }
+        },
+        "views": {
+          "type": "object",
+          "properties": {
+            "asserted": {
+              "$ref": "#/$defs/view"
+            },
+            "selected": {
+              "$ref": "#/$defs/view"
+            }
+          },
+          "required": ["asserted", "selected"],
+          "additionalProperties": false
+        },
+        "reasoningSource": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/contentSource"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "format",
+        "selectedFacts",
+        "selectedRuleIds",
+        "warnings",
+        "derivedAxioms",
+        "views",
+        "reasoningSource"
+      ],
+      "additionalProperties": false
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "facts": {
+          "$ref": "#/$defs/graph"
+        },
+        "ontology": {
+          "$ref": "#/$defs/graph"
+        },
+        "reasoning_result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/legacy"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      },
+      "required": ["facts", "ontology", "reasoning_result", "provenance"],
+      "additionalProperties": false
+    },
+    "query": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "SELECT"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/term"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "required": ["type", "variables", "rows"],
+      "additionalProperties": false
+    },
+    "violation": {
+      "type": "object",
+      "properties": {
+        "focus": {
+          "$ref": "#/$defs/term"
+        },
+        "path": {
+          "$ref": "#/$defs/term"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/term"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceShape": {
+          "$ref": "#/$defs/term"
+        },
+        "constraint": {
+          "$ref": "#/$defs/term"
+        },
+        "severity": {
+          "$ref": "#/$defs/term"
+        }
+      },
+      "required": ["focus", "path", "value", "sourceShape", "constraint", "severity"],
+      "additionalProperties": false
+    },
+    "shacl": {
+      "type": "object",
+      "properties": {
+        "conforms": {
+          "type": "boolean"
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/violation"
+          }
+        }
+      },
+      "required": ["conforms", "violations"],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "SemanticError"
+            },
+            "reason": {
+              "enum": [
+                "UNBOUND_RULE_VARIABLE",
+                "INVALID_TURTLE",
+                "INVALID_LITERAL_LEXICAL",
+                "REASONING_SOURCE_REQUIRED",
+                "REASONING_SOURCE_MISMATCH",
+                "REASONING_RESULT_INVALID",
+                "UNSELECTED_REASONING_PRESENT"
+              ]
+            },
+            "classification": {
+              "type": "null"
+            },
+            "stage": {
+              "type": "null"
+            },
+            "slot": {
+              "type": "null"
+            },
+            "domain": {
+              "type": "null"
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "RestoreFailure"
+            },
+            "reason": {
+              "enum": [
+                "RESTORE_INPUT_INVALID",
+                "RESTORE_EXPECTATION_MISSING",
+                "RESTORE_EXPECTATION_MISMATCH",
+                "RESTORE_LIMIT",
+                "RESTORE_INTERNAL",
+                "RESTORE_LEDGER_REUSED"
+              ]
+            },
+            "classification": {
+              "enum": ["input", "expectation", "resource", "internal"]
+            },
+            "stage": {
+              "enum": [
+                "entry",
+                "A1",
+                "A2",
+                "A3",
+                "A4",
+                "A5",
+                "A6",
+                "A7",
+                "A8",
+                "A9",
+                "A10",
+                "A11",
+                "A12",
+                "A13",
+                "A14",
+                "A15",
+                "A16"
+              ]
+            },
+            "slot": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 99
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "domain": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "wire",
+                    "schema",
+                    "traversal",
+                    "integer",
+                    "copy",
+                    "cache_query",
+                    "cache_split",
+                    "cache_alloc",
+                    "rule",
+                    "pv_compare",
+                    "hash",
+                    "scalar",
+                    "objects",
+                    "trie_nodes",
+                    "trie_slots",
+                    "opaque_scalar",
+                    "opaque_objects"
+                  ]
+                }
+              ]
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_INVALID"
+                },
+                "classification": {
+                  "const": "input"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_LIMIT"
+                },
+                "classification": {
+                  "const": "resource"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_REUSED"
+                },
+                "classification": {
+                  "const": "expectation"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_INTERNAL"
+                },
+                "classification": {
+                  "const": "internal"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "MaterialFailure"
+            },
+            "reason": {
+              "enum": [
+                "MATERIAL_INVALID",
+                "MATERIAL_LIMIT",
+                "MATERIAL_MISMATCH",
+                "MATERIAL_INTERNAL",
+                "MATERIAL_LEDGER_REUSED"
+              ]
+            },
+            "classification": {
+              "type": "null"
+            },
+            "stage": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            },
+            "slot": {
+              "type": "null"
+            },
+            "domain": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": ["traversal", "scan_copy", "hash", "scalar", "objects"]
+                }
+              ]
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "OfflineAccessDenied"
+            },
+            "reason": {
+              "enum": ["EXTERNAL_ACCESS_DENIED"]
+            },
+            "classification": {
+              "type": "null"
+            },
+            "stage": {
+              "type": "null"
+            },
+            "slot": {
+              "type": "null"
+            },
+            "domain": {
+              "type": "null"
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "Unknown"
+            },
+            "reason": {
+              "enum": ["INTERNAL_ERROR"]
+            },
+            "classification": {
+              "type": "null"
+            },
+            "stage": {
+              "type": "null"
+            },
+            "slot": {
+              "type": "null"
+            },
+            "domain": {
+              "type": "null"
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "rejection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "rejection"
+            },
+            "complete": {
+              "const": true
+            },
+            "harnessStage": {
+              "enum": [
+                "reason",
+                "rule-definition",
+                "scope",
+                "restore",
+                "structured-material-required",
+                "parse-data",
+                "parse-shapes",
+                "scope-provenance-gate",
+                "scope-selection-gate",
+                "implicit-loader-guard",
+                "check-shapes"
+              ]
+            },
+            "diagnostic": {
+              "$ref": "#/$defs/knownDiagnostic"
+            },
+            "partialView": {
+              "type": "null"
+            },
+            "report": {
+              "type": "null"
+            }
+          },
+          "required": ["kind", "complete", "harnessStage", "diagnostic", "partialView", "report"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "rejection"
+            },
+            "complete": {
+              "const": false
+            },
+            "harnessStage": {
+              "enum": [
+                "reason",
+                "rule-definition",
+                "scope",
+                "restore",
+                "structured-material-required",
+                "parse-data",
+                "parse-shapes",
+                "scope-provenance-gate",
+                "scope-selection-gate",
+                "implicit-loader-guard",
+                "collection-failure",
+                "check-shapes"
+              ]
+            },
+            "diagnostic": {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "Unknown"
+                },
+                "reason": {
+                  "enum": ["INTERNAL_ERROR"]
+                },
+                "classification": {
+                  "type": "null"
+                },
+                "stage": {
+                  "type": "null"
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "type": "null"
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            },
+            "partialView": {
+              "type": "null"
+            },
+            "report": {
+              "type": "null"
+            }
+          },
+          "required": ["kind", "complete", "harnessStage", "diagnostic", "partialView", "report"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "knownDiagnostic": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "SemanticError"
+            },
+            "reason": {
+              "enum": [
+                "UNBOUND_RULE_VARIABLE",
+                "INVALID_TURTLE",
+                "INVALID_LITERAL_LEXICAL",
+                "REASONING_SOURCE_REQUIRED",
+                "REASONING_SOURCE_MISMATCH",
+                "REASONING_RESULT_INVALID",
+                "UNSELECTED_REASONING_PRESENT"
+              ]
+            },
+            "classification": {
+              "type": "null"
+            },
+            "stage": {
+              "type": "null"
+            },
+            "slot": {
+              "type": "null"
+            },
+            "domain": {
+              "type": "null"
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "RestoreFailure"
+            },
+            "reason": {
+              "enum": [
+                "RESTORE_INPUT_INVALID",
+                "RESTORE_EXPECTATION_MISSING",
+                "RESTORE_EXPECTATION_MISMATCH",
+                "RESTORE_LIMIT",
+                "RESTORE_INTERNAL",
+                "RESTORE_LEDGER_REUSED"
+              ]
+            },
+            "classification": {
+              "enum": ["input", "expectation", "resource", "internal"]
+            },
+            "stage": {
+              "enum": [
+                "entry",
+                "A1",
+                "A2",
+                "A3",
+                "A4",
+                "A5",
+                "A6",
+                "A7",
+                "A8",
+                "A9",
+                "A10",
+                "A11",
+                "A12",
+                "A13",
+                "A14",
+                "A15",
+                "A16"
+              ]
+            },
+            "slot": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 99
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "domain": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "wire",
+                    "schema",
+                    "traversal",
+                    "integer",
+                    "copy",
+                    "cache_query",
+                    "cache_split",
+                    "cache_alloc",
+                    "rule",
+                    "pv_compare",
+                    "hash",
+                    "scalar",
+                    "objects",
+                    "trie_nodes",
+                    "trie_slots",
+                    "opaque_scalar",
+                    "opaque_objects"
+                  ]
+                }
+              ]
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_INVALID"
+                },
+                "classification": {
+                  "const": "input"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_LIMIT"
+                },
+                "classification": {
+                  "const": "resource"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_REUSED"
+                },
+                "classification": {
+                  "const": "expectation"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "const": "DirectStepsFailure"
+                },
+                "reason": {
+                  "const": "DIRECT_STEPS_INTERNAL"
+                },
+                "classification": {
+                  "const": "internal"
+                },
+                "stage": {
+                  "enum": [
+                    "entry",
+                    "capture",
+                    "link",
+                    "encode",
+                    "restore",
+                    "roots",
+                    "receipt",
+                    "cleanup"
+                  ]
+                },
+                "slot": {
+                  "type": "null"
+                },
+                "domain": {
+                  "oneOf": [
+                    {
+                      "enum": ["work", "scan_copy", "objects", "scalar"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ruleId": {
+                  "type": "null"
+                },
+                "location": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "origin",
+                "reason",
+                "classification",
+                "stage",
+                "slot",
+                "domain",
+                "ruleId",
+                "location"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "MaterialFailure"
+            },
+            "reason": {
+              "enum": [
+                "MATERIAL_INVALID",
+                "MATERIAL_LIMIT",
+                "MATERIAL_MISMATCH",
+                "MATERIAL_INTERNAL",
+                "MATERIAL_LEDGER_REUSED"
+              ]
+            },
+            "classification": {
+              "type": "null"
+            },
+            "stage": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            },
+            "slot": {
+              "type": "null"
+            },
+            "domain": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": ["traversal", "scan_copy", "hash", "scalar", "objects"]
+                }
+              ]
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "OfflineAccessDenied"
+            },
+            "reason": {
+              "enum": ["EXTERNAL_ACCESS_DENIED"]
+            },
+            "classification": {
+              "type": "null"
+            },
+            "stage": {
+              "type": "null"
+            },
+            "slot": {
+              "type": "null"
+            },
+            "domain": {
+              "type": "null"
+            },
+            "ruleId": {
+              "type": "null"
+            },
+            "location": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "origin",
+            "reason",
+            "classification",
+            "stage",
+            "slot",
+            "domain",
+            "ruleId",
+            "location"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "legacy"
+        },
+        "complete": {
+          "const": true
+        },
+        "value": {
+          "$ref": "#/$defs/legacy"
+        }
+      },
+      "required": ["kind", "complete", "value"],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "scope"
+        },
+        "complete": {
+          "const": true
+        },
+        "value": {
+          "$ref": "#/$defs/scope"
+        },
+        "query": {
+          "$ref": "#/$defs/query"
+        },
+        "shacl": {
+          "$ref": "#/$defs/shacl"
+        }
+      },
+      "required": ["kind", "complete", "value", "query", "shacl"],
+      "additionalProperties": false
+    },
+    {
+      "$ref": "#/$defs/rejection"
+    }
+  ]
+}

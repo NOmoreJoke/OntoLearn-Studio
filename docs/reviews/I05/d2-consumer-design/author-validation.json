@@ -1,0 +1,276 @@
+{
+  "format": "i05-d2-author-validation/1",
+  "evidenceClass": "design-only",
+  "checkerStaticPreflight": {
+    "file": "docs/reviews/I05/d2-consumer-design/design-checker.md",
+    "sha256": "11f1879f49f00763460a4caef57e637a7e2ddff2230ab86d345c1b0c5a65e50b",
+    "fullSourceReadBeforeExecution": true,
+    "imports": [
+      "collections",
+      "hashlib",
+      "json",
+      "pathlib"
+    ],
+    "readScope": "only new design JSON and 27 fixed pure-document snapshots/input identity",
+    "writeScope": "none, stdout only",
+    "noProductOrModelFunctionImports": true,
+    "notFullSchemaEngine": true
+  },
+  "captureBoundary": "Initial shell/rule/memory/source reads and author generation operations are tool transcript only, not reconstructed split streams. All validation subprocesses from this record use complete byte captures.",
+  "commands": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/reviews/I05/d2-consumer-design/design-checker.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 2875,
+        "sha256": "b9d8869b91baf9e7a26a45f6233449e000ff66ab293cafaaae0a7e1d8afeedad",
+        "encoding": "lossless-utf8-json",
+        "text": "{\n  \"evidenceClass\": \"finite-design-document-check-only\",\n  \"fixedInputIdentities\": 27,\n  \"schemaProperties\": 1241,\n  \"reachable\": 1229,\n  \"unreferencedDefinitions\": 12,\n  \"profileLeaves\": 483,\n  \"projectionCases\": 37,\n  \"projectionLeaves\": 1469,\n  \"normativeRules\": 32,\n  \"rejectDesigns\": 75,\n  \"finiteDecisions\": [\n    {\n      \"name\": \"full-selected-complete\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"b1-subset-complete\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"frozen-source-null\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"failed-actual-false-preserved\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"preheader-empty-but-present-raw\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"not-started-no-child\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"full416\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"fullDuplicateOrWrongOrder\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"b1ClaimFull\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"b1TwoItems\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"headerMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"terminalMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"rawMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"stderrMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"signalAndExit\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"unindexedFalse\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"failedUpgraded\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"notstartedHasChild\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"notstartedHasRaw\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderNullRaw\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderWrongExit\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderHasHeader\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"sourceDeclared23\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"sourceActual22\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"embeddedSelfPin\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"frozenActualSource\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongDigest\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongCodeDomain\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"aliasOrMissingModule\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongFunctionSet\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"checkerFalseClaimedComplete\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongArgvComplete\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"boolIsNotCount\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"unknownState\",\n      \"decision\": false\n    }\n  ],\n  \"strictJsonNegatives\": 4,\n  \"schemaEngineValidation\": false,\n  \"productExecuted\": false,\n  \"independentReview\": \"pending\"\n}\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--write",
+        "docs/iterations/I05/d2-consumer-design/plan.md",
+        "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+        "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+        "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+        "docs/iterations/I05/d2-consumer-design/handoff.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 312,
+        "sha256": "9ca9ee01ab577cbe7b0e630f1443e53816e6cdd6b1e059a18958658acba2b032",
+        "encoding": "lossless-utf8-json",
+        "text": "docs/iterations/I05/d2-consumer-design/plan.md 34ms (unchanged)\ndocs/iterations/I05/d2-consumer-design/acceptance-map.json 45ms\ndocs/iterations/I05/d2-consumer-design/field-origin-map.json 556ms\ndocs/iterations/I05/d2-consumer-design/reject-cases.json 16ms\ndocs/iterations/I05/d2-consumer-design/handoff.md 14ms\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/reviews/I05/d2-consumer-design/design-checker.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 2875,
+        "sha256": "b9d8869b91baf9e7a26a45f6233449e000ff66ab293cafaaae0a7e1d8afeedad",
+        "encoding": "lossless-utf8-json",
+        "text": "{\n  \"evidenceClass\": \"finite-design-document-check-only\",\n  \"fixedInputIdentities\": 27,\n  \"schemaProperties\": 1241,\n  \"reachable\": 1229,\n  \"unreferencedDefinitions\": 12,\n  \"profileLeaves\": 483,\n  \"projectionCases\": 37,\n  \"projectionLeaves\": 1469,\n  \"normativeRules\": 32,\n  \"rejectDesigns\": 75,\n  \"finiteDecisions\": [\n    {\n      \"name\": \"full-selected-complete\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"b1-subset-complete\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"frozen-source-null\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"failed-actual-false-preserved\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"preheader-empty-but-present-raw\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"not-started-no-child\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"full416\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"fullDuplicateOrWrongOrder\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"b1ClaimFull\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"b1TwoItems\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"headerMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"terminalMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"rawMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"stderrMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"signalAndExit\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"unindexedFalse\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"failedUpgraded\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"notstartedHasChild\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"notstartedHasRaw\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderNullRaw\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderWrongExit\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderHasHeader\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"sourceDeclared23\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"sourceActual22\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"embeddedSelfPin\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"frozenActualSource\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongDigest\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongCodeDomain\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"aliasOrMissingModule\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongFunctionSet\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"checkerFalseClaimedComplete\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongArgvComplete\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"boolIsNotCount\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"unknownState\",\n      \"decision\": false\n    }\n  ],\n  \"strictJsonNegatives\": 4,\n  \"schemaEngineValidation\": false,\n  \"productExecuted\": false,\n  \"independentReview\": \"pending\"\n}\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "docs/iterations/I05/d2-consumer-design/plan.md",
+        "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+        "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+        "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+        "docs/iterations/I05/d2-consumer-design/handoff.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 66,
+        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "encoding": "lossless-utf8-json",
+        "text": "Checking formatting...\nAll matched files use Prettier code style!\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "docs/iterations/I05/d2-consumer-design",
+        "docs/reviews/I05/d2-consumer-design"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--write",
+        "docs/iterations/I05/d2-consumer-design/plan.md",
+        "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+        "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+        "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+        "docs/iterations/I05/d2-consumer-design/handoff.md",
+        "docs/reviews/I05/d2-consumer-design/author-notes.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 348,
+        "sha256": "adf9cd830c17907bfe1c909e57a70871b5aa14001334eff03fddbe9c6c5a980b",
+        "encoding": "lossless-utf8-json",
+        "text": "docs/iterations/I05/d2-consumer-design/plan.md 52ms (unchanged)\ndocs/iterations/I05/d2-consumer-design/acceptance-map.json 58ms\ndocs/iterations/I05/d2-consumer-design/field-origin-map.json 819ms (unchanged)\ndocs/iterations/I05/d2-consumer-design/reject-cases.json 30ms (unchanged)\ndocs/iterations/I05/d2-consumer-design/handoff.md 17ms (unchanged)\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "docs/reviews/I05/d2-consumer-design/design-checker.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 2875,
+        "sha256": "b9d8869b91baf9e7a26a45f6233449e000ff66ab293cafaaae0a7e1d8afeedad",
+        "encoding": "lossless-utf8-json",
+        "text": "{\n  \"evidenceClass\": \"finite-design-document-check-only\",\n  \"fixedInputIdentities\": 27,\n  \"schemaProperties\": 1241,\n  \"reachable\": 1229,\n  \"unreferencedDefinitions\": 12,\n  \"profileLeaves\": 483,\n  \"projectionCases\": 37,\n  \"projectionLeaves\": 1469,\n  \"normativeRules\": 32,\n  \"rejectDesigns\": 75,\n  \"finiteDecisions\": [\n    {\n      \"name\": \"full-selected-complete\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"b1-subset-complete\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"frozen-source-null\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"failed-actual-false-preserved\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"preheader-empty-but-present-raw\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"not-started-no-child\",\n      \"decision\": true\n    },\n    {\n      \"name\": \"full416\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"fullDuplicateOrWrongOrder\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"b1ClaimFull\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"b1TwoItems\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"headerMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"terminalMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"rawMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"stderrMissing\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"signalAndExit\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"unindexedFalse\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"failedUpgraded\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"notstartedHasChild\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"notstartedHasRaw\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderNullRaw\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderWrongExit\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"preheaderHasHeader\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"sourceDeclared23\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"sourceActual22\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"embeddedSelfPin\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"frozenActualSource\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongDigest\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongCodeDomain\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"aliasOrMissingModule\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongFunctionSet\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"checkerFalseClaimedComplete\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"wrongArgvComplete\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"boolIsNotCount\",\n      \"decision\": false\n    },\n    {\n      \"name\": \"unknownState\",\n      \"decision\": false\n    }\n  ],\n  \"strictJsonNegatives\": 4,\n  \"schemaEngineValidation\": false,\n  \"productExecuted\": false,\n  \"independentReview\": \"pending\"\n}\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "docs/iterations/I05/d2-consumer-design/plan.md",
+        "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+        "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+        "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+        "docs/iterations/I05/d2-consumer-design/handoff.md",
+        "docs/reviews/I05/d2-consumer-design/author-notes.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 66,
+        "sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "encoding": "lossless-utf8-json",
+        "text": "Checking formatting...\nAll matched files use Prettier code style!\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "envDelta": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit": 0,
+      "stdout": {
+        "bytes": 58,
+        "sha256": "9a8239f84364ce2f4ee06a7fae9a8ed7218ee045d1620b6c1c1ac0983c1ea16d",
+        "encoding": "lossless-utf8-json",
+        "text": " M AGENTS.md\n?? docs/iterations/I05/\n?? docs/reviews/I05/\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    }
+  ],
+  "firstNonzeroCommand": null,
+  "checkerStaticRevisions": [
+    {
+      "sha256": "203152622549636e6585b615e4874ead47672ed2ea5ca007dc6d5c0830d35e49",
+      "fullSourceReadBeforeExecution": true,
+      "imports": [
+        "collections",
+        "hashlib",
+        "json",
+        "pathlib"
+      ],
+      "writeScope": "none",
+      "change": "added structural cross-layer target pointer existence; not instance validator"
+    }
+  ],
+  "unstagedDiffCheckBoundary": "Unstaged git diff --check before staging sees no untracked new files; not claimed as full candidate whitespace verification. Actual cached check is required and retained separately in candidate-receipt."
+}
