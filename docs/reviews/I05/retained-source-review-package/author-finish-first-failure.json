@@ -1,0 +1,9 @@
+{
+  "phase": "Sequential full snapshot pathset readback v1",
+  "exitCode": 1,
+  "toolChunk": "68a5d2",
+  "actualToolCombinedOutput": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-package/docs/reviews/I05/retained-source-review-package/author-finish.py\", line 95, in <module>\n    if __name__==\"__main__\":main()\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-package/docs/reviews/I05/retained-source-review-package/author-finish.py\", line 53, in main\n    else:assert actual==paths\nAssertionError\n",
+  "cause": "Textual git ls-tree --name-only quotes non-ASCII paths by Git core.quotepath, while original -z inventory decoded exact UTF8; full pathset check caught mismatch. Bundle payload/member SHA and Git blob identity streaming had passed before this check.",
+  "repair": "Use git ls-tree -z --name-only and split NUL; preserve first author-finish script, first log and original stdout gzip. v2 uses separate command stream/log names; no bundle rebuilt, no product run.",
+  "firstSourcePreservation": "author-finish-first.py is an exact copy from original file stdout; original read cat tool chunk recorded in conversation. Author script only, not product."
+}

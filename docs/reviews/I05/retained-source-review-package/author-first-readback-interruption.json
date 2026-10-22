@@ -1,0 +1,29 @@
+{
+  "bootstrapProgressProbe": {
+    "argv": [
+      "ls",
+      "-lh",
+      "docs/reviews/I05/retained-source-review-package/frozen-inputs.tar.gz",
+      "docs/reviews/I05/retained-source-review-package/input-manifest.json",
+      "docs/reviews/I05/retained-source-review-package/author-validation.json"
+    ],
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-package",
+    "actualResult": {
+      "chunk_id": "30b785",
+      "wall_time_seconds": 0.000006208,
+      "exit_code": 1,
+      "original_token_count": 83,
+      "output": "ls: docs/reviews/I05/retained-source-review-package/author-validation.json: No such file or directory\n-rw-r--r--@ 1 kyle  staff    81M Oct 22 17:29 docs/reviews/I05/retained-source-review-package/frozen-inputs.tar.gz\n-rw-r--r--@ 1 kyle  staff    13M Oct 22 17:29 docs/reviews/I05/retained-source-review-package/input-manifest.json\n"
+    },
+    "streamBoundary": "Tool combined output; not retrospectively split into stdout/stderr."
+  },
+  "authorReadbackInterruption": {
+    "session": 89735,
+    "exitCode": 130,
+    "toolChunk": "ee5313",
+    "reason": "Original tar readback followed hardlinks by random seeks into gzip, causing repeated decompression; stopped own session only. Bundle and manifest already complete and unchanged.",
+    "actualToolCombinedOutput": "Traceback (most recent call last):\n  File \".../author-build.py\", line 159, in <module>\n    if __name__==\"__main__\": main()\n  File \".../author-build.py\", line 148, in main\n    seen.add(info.name);value=tar.extractfile(info).read();r=expected[info.name]\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tarfile.py\", line 683, in read\n    self.fileobj.seek(offset + (self.position - start))\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/gzip.py\", line 392, in seek\n    return self._buffer.seek(offset, whence)\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/_compression.py\", line 143, in seek\n    data = self.read(min(io.DEFAULT_BUFFER_SIZE, offset))\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/gzip.py\", line 495, in read\n    uncompress = self._decompressor.decompress(buf, size)\nKeyboardInterrupt\n",
+    "outputPreservation": "This field reproduces observed stack with packet prefix shortened to ellipsis; full original tool output remains in session chunk ee5313. Not a manufactured exact split stream.",
+    "repair": "author-finish.py streams archive sequentially and validates every unique payload plus every hardlink target; does not rebuild bundle or execute product."
+  }
+}

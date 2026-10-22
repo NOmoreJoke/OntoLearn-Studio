@@ -1,0 +1,13 @@
+{
+  "format": "packet-bootstrap-incidents/1",
+  "incidents": [
+    {
+      "phase": "Pure JavaScript authoring bootstrap after both prompt writes",
+      "tool": "functions.exec",
+      "actualError": "ReferenceError: stages is not defined",
+      "result": "Both full prompt files had been written; dispatch requirements and policy addendum were not written by failed call. Corrected by loading coverage_stages in a new call; no product executed.",
+      "splitStreams": "Tool exception only; not a shell subprocess. No stderr/stdout file fabrication."
+    }
+  ],
+  "earlierInventory": "The initial inventory commands are in tool conversation; only exact product metadata/opaque hashes have been carried into coverage JSON. They are not re-described as a fully split-log author run."
+}
