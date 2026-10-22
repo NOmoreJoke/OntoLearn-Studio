@@ -21,7 +21,7 @@ SELF = STAGE / 'run-once.py'
 PLAN = STAGE / 'call-plan.json'
 METER_PLAN = STAGE / 'meter-plan.json'
 HISTORY = STAGE / 'meter-history.json'
-REVIEW_METHOD = STAGE / 'meter-remedy-after-controller-review/review-methods/method-plan.json'
+REVIEW_METHOD = STAGE / 'meter-schema-init-repair/review-methods/method-plan.json'
 AUTH = Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-metadata-contract-probe-one-build-authorization.json')
 PINS = STAGE / 'approved-identity-pins.json'
 SOURCE = STAGE / 'inputs/location_metadata_contract_probe.cc.raw'
@@ -854,18 +854,18 @@ def main():
         demand(digest(meter_raw) == auth['meterPlanSHA256'] and digest(history_raw) == auth['historyLedgerSHA256'], 'meter-history-authority')
         meter_plan = decode_metadata(meter_raw, 256)
         history = decode_metadata(history_raw, 128)
-        proof_raw = bounded_read(STAGE / 'meter-remedy-after-controller-review/meter-proof.md', 32768)
+        proof_raw = bounded_read(STAGE / 'meter-schema-init-repair/meter-proof.md', 32768)
         demand(digest(proof_raw) == meter_plan['proofSHA256'] == auth['countingProofSHA256'], 'counting-proof-authority')
         method_raw = bounded_read(REVIEW_METHOD, 32768)
         demand(digest(method_raw) == meter_plan['reviewMethodPlanSHA256'] == auth['reviewMethodPlanSHA256'], 'review-method-authority')
         method = decode_metadata(method_raw, 256)
         METER.work(128)  # Method/joint/byte/entity profile scalar validation.
-        demand(method['ownerMetadata'] == 48000 and method['peerMetadataEach'] == 102000, 'external-method-tickets')
-        demand(meter_plan['runtimeMetadataReserved'] == 146000 and meter_plan['futureAllPartiesMetadataProposal'] == 398000, 'fixed-runtime-ticket')
-        demand(auth['runtimeMetadataReserved'] == 146000 and auth['freshFutureAllPartiesMetadataAccepted'] == 398000, 'fresh-runtime-ticket-not-accepted')
+        demand(method['ownerMetadata'] == 48000 and method['peerMetadataEach'] == 202000, 'external-method-tickets')
+        demand(meter_plan['runtimeMetadataReserved'] == 146000 and meter_plan['futureAllPartiesMetadataProposal'] == 598000, 'fixed-runtime-ticket')
+        demand(auth['runtimeMetadataReserved'] == 146000 and auth['freshFutureAllPartiesMetadataAccepted'] == 598000, 'fresh-runtime-ticket-not-accepted')
         demand(meter_plan['futureAllPartiesMetadataProposal'] <= history['currentMetadataRemaining'], 'joint-future-ticket-does-not-fit-declared-remainder')
-        demand(meter_plan['futureEntityProposal'] == 57344 and auth['freshFutureEntityAccepted'] == 57344, 'fresh-entity-ticket-not-accepted')
-        demand(auth['ownerClosureMetadataAccepted'] == 48000 and auth['peerMetadataEachAccepted'] == 102000, 'joint-component-authority')
+        demand(meter_plan['futureEntityProposal'] == 77824 and auth['freshFutureEntityAccepted'] == 77824, 'fresh-entity-ticket-not-accepted')
+        demand(auth['ownerClosureMetadataAccepted'] == 48000 and auth['peerMetadataEachAccepted'] == 202000, 'joint-component-authority')
         demand(auth['freshFutureByteProposalAccepted'] == 171966464 and auth['runtimeOwnerBytes'] == 41943040, 'fresh-byte-ticket-not-accepted')
         demand(history['historicalOwnerActual'] is None and history['oldOwner1000Reusable'] is False and history['oldRoot4000Reusable'] is False, 'historical-unknown-must-remain')
         demand(auth['dependencyMode'] == 'CAPTURE_REUSE_PINNED_WITNESS_AND_DEFER_UNKNOWN_NO_INDEX_READ', 'dependency-method-not-accepted')
