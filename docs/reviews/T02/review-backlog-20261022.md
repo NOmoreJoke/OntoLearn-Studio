@@ -45,3 +45,7 @@
 | C5当前私有服务候选 | e5ad54e5762157cafe532c2a0c07c22e8dd737cb；证据过程516ba27 | 原P2 UTF-8拒绝、31负例/合法Unicode正例；634TS/1164Py、112本线Py exit0；独立C5复核通过，UI六输入hash未变沿21项；20产品/测试/fixture+5harness | 待双方全新同版完整R2审，不沿493 Pass；完整120delta/130输入与11项处置已独立复核，准备完成不算实际任务 |
 
 全部旧C1/C2/C3、证据恢复、纯方案/范围登记与父功能行继续保留。Z语言小写子集及完整前置parser延期未变成已实现；原验收/公共共享/锁/CI未改。原owner同一聊天，当前集成源移至`.worktrees/T02-s1-review-fixes`、branch feature/t02-s1-review-fixes；旧树/原报告保持。R2新任务实际ID/逐方设置/报告/处置在实际创建及终态后另登记。
+
+## C5 R2实际创建追加（原准备表不改）
+
+同产品e5ad、同review HEAD7c52，两实际独立树已真实创建：ZCode session_70e23e92b6da020a8bf5e58fe51cc04e（GLM5.3/最高/完全访问）；MiniMax mvs_1cdba3c3802647838bc5f5091a866e22（M3.1-Flash/xhigh/始终授权）。完整原文受理与逐方证据见 `round-2/actual-launch-20261022/`；M少一个末LF的表示差异如实保留，Z首次请求synthetic附件重建字节相同，不以标题/附件存在冒Pass。GUI已明确释放；当前两方终态/全文报告/逐项处置均待，不沿493结论。新接口矩阵和创建记录只在owner过程源，不写两冻结审查树，不缩父验收。

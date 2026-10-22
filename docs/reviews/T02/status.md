@@ -162,3 +162,13 @@ T01现在唯一维护 `apps/desktop/src/main/jsonl.ts`、`apps/desktop/src/rende
 当前修复源在独立树`.worktrees/T02-s1-review-fixes`、分支`feature/t02-s1-review-fixes`，固定产品`e5ad54e5762157cafe532c2a0c07c22e8dd737cb`，base5f。原T02先修类型守卫/补21项UI行为形成35aa，完整634TS/1133Py通过，但独立内审发现JSON未配对surrogate造成UnicodeEncodeError，C4原Fail与原始流完整保留于round-2，不改成通过。C5新增UTF-8文本守卫及31用例，无静默替换/归一化或改digest编码；完整check实际634TS/1164Py exit0，ontology112passed，独立C5内审通过，无新P级。UI六输入hash未变，沿C4的21项headless证据，不复跑/不当正式服务证据。
 
 所有R1十一项意见逐项事实/修复/部分接受/延期见`round-2/disposition-c4.md`及`disposition-c5.md`；小写语言子集与正式前置parser仍有明确父门，原acceptance/公共共享/锁/CI未改。C5尚无指定新任务/新Pass，下一步完整同版双方全新审，不沿493双Pass或35aa内审。全量积压与历史候选保持，不关闭原Goal/父验收/发布门。
+
+## 2026-10-22 C5 R2 实际双任务已创建，终态待回
+
+当前产品固定 e5ad54e5762157cafe532c2a0c07c22e8dd737cb，批准 base5f；owner源为 `.worktrees/T02-s1-review-fixes`，两实际审查树为 `.worktrees/T02-c5-{zcode,minimax}-review-e5ad54e`，detached HEAD均7c52e33e92d76bb0a83938a0e50abc40b8fb234e。C5原完整634TS/1164Py、112本线通过及UI21项沿用边界保持；本次只做文档/创建，不重跑产品。
+
+MiniMax实际session `mvs_1cdba3c3802647838bc5f5091a866e22`、turn `e35cefa5-8edb-4de7-8715-266a36aa39bb`，M3.1-Flash/xhigh/始终授权；首user完整输入表示仅少末LF。ZCode实际session `session_70e23e92b6da020a8bf5e58fe51cc04e`、turn `turn_e477da01-6fcf-4516-a0cd-f81c0b07fba7`，GLM-5.3/最高max/完全访问；首次模型请求synthetic附件去行号后的完整43945B与冻结原文SHA相同。逐方绝对cwd、首条受理、真实设置和未知边界见 `round-2/actual-launch-20261022/creation-receipt.json` 与 `foreground-release.md`。准备包中null状态是创建前历史快照，不改旧原件。
+
+总控已明确接收GUI释放；当前不占桌面、不为Z scratch未确认清空追占窗口，没有额外user Send、重发、重置/申领权益或付款。双方完整报告/终态与所有意见尚未完成，不计本轮Pass，旧493两个Pass不转授。原owner继续精确本人后台监控，当前同轮意见不透给另一方。
+
+I05/I06/T01接口依赖静态核对另见 `interface-intake-20261022/` 及各矩阵；仅文档复核通过，不采用未批实现或拼入C5。Entity五字段metadata、S2proof/统一CostSession、完整Turtle往返、正式App/bridge、T08草稿与全部父门仍待。原父Goal保留blocked，未重建/关闭；未push/PR/CI/merge或远端验收。
