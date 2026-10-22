@@ -1,0 +1,35 @@
+{
+  "format": "i05-fee-r1-root-receipt/1",
+  "reviewedCandidate": "6bbea55f5134f95f715858f55c142fb8b760ccf1",
+  "rootReadFullReport": true,
+  "conclusion": "Fail",
+  "unresolved": [
+    "F1 complete pure action/typed byte/finalization proposal and per-ID programs missing",
+    "F2 control bootstrap prematurely releasable",
+    "F3 finalization proof validated after retention mutation; failure not terminal"
+  ],
+  "files": [
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-review-r1.md",
+      "bytes": 12782,
+      "sha256": "1297eaa2d25c2050fc9dfd2201eae990ffce7d91524f3249cae23b0ef169adf3"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/r1-proof.json",
+      "bytes": 67832,
+      "sha256": "08ef48a713c9db51a75f23a53d86e7b0b58cab0a74701babb1271c21d48a127d"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r1-command.py",
+      "bytes": 16223,
+      "sha256": "986a31e99ce8abd90db311d471e3c54f1678cf10b2047b303a84027f7bc5e619"
+    }
+  ],
+  "rootFormatterCheck": {
+    "exitCode": 0,
+    "toolChunkId": "370a44"
+  },
+  "candidateProductRuntimeExecuted": false,
+  "nextAction": "preserve R1 and revise only authorized docs; no candidate changes during review",
+  "processCommit": "record actual later commit externally; no future SHA prefilled"
+}

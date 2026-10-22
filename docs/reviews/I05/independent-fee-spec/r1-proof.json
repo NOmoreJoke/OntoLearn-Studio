@@ -1,0 +1,2008 @@
+{
+  "format": "i05-independent-r1-proof/1",
+  "candidate": "6bbea55f5134f95f715858f55c142fb8b760ccf1",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "6bbea55f5134f95f715858f55c142fb8b760ccf1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "docs/I05-independent-fee-spec\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": " M AGENTS.md\n?? docs/reviews/I05/independent-fee-spec/independent-r1-command.py\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-status",
+        "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "A\tdocs/iterations/I05/independent-fee-spec/README.md\nA\tdocs/iterations/I05/independent-fee-spec/bound-formulas.json\nA\tdocs/iterations/I05/independent-fee-spec/fee-contract.json\nA\tdocs/iterations/I05/independent-fee-spec/hand-examples.md\nA\tdocs/iterations/I05/independent-fee-spec/hand_vectors.json\nA\tdocs/iterations/I05/independent-fee-spec/handoff.md\nA\tdocs/iterations/I05/independent-fee-spec/invoice_model.py\nA\tdocs/iterations/I05/independent-fee-spec/operation-schedule.md\nA\tdocs/iterations/I05/independent-fee-spec/per-id.json\nA\tdocs/iterations/I05/independent-fee-spec/per-id.md\nA\tdocs/iterations/I05/independent-fee-spec/specification.md\nA\tdocs/iterations/I05/independent-fee-spec/test_invoice_model.py\nA\tdocs/reviews/I05/independent-fee-spec/artifact-manifest.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v1-input-exposure/incident.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v1-input-exposure/invoice_model.py.unreviewed.raw\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/adoption.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/api-defaults-reference.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/budget.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/census.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/coverage.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/direct.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/dmodel.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/gaps.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/input-manifest.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/inputs.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/integration.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/oracle-schema.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/oracle.json\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/parity.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/policies.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/producer.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/q6.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/readme.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md\nA\tdocs/reviews/I05/independent-fee-spec/author-v2-inputs/sources.json\nA\tdocs/reviews/I05/independent-fee-spec/collect_inputs.py\nA\tdocs/reviews/I05/independent-fee-spec/final-format-check.json\nA\tdocs/reviews/I05/independent-fee-spec/final-format-write.json\nA\tdocs/reviews/I05/independent-fee-spec/format-check.json\nA\tdocs/reviews/I05/independent-fee-spec/format-write.json\nA\tdocs/reviews/I05/independent-fee-spec/git-diff-check.json\nA\tdocs/reviews/I05/independent-fee-spec/input-collection-result.json\nA\tdocs/reviews/I05/independent-fee-spec/input-manifest.json\nA\tdocs/reviews/I05/independent-fee-spec/inventory_math.py\nA\tdocs/reviews/I05/independent-fee-spec/local-proof-excerpts.json\nA\tdocs/reviews/I05/independent-fee-spec/math-selftest.json\nA\tdocs/reviews/I05/independent-fee-spec/normative-claims.json\nA\tdocs/reviews/I05/independent-fee-spec/process.md\nA\tdocs/reviews/I05/independent-fee-spec/retained-first-failures.json\nA\tdocs/reviews/I05/independent-fee-spec/revision-record.md\nA\tdocs/reviews/I05/independent-fee-spec/seal_candidate.py\nA\tdocs/reviews/I05/independent-fee-spec/static-validation.json\nA\tdocs/reviews/I05/independent-fee-spec/validate_math.py\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/README.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1111,
+      "stdoutSHA256": "7bf8240b21251314961fab0cc831e614c69e4fea55a30ccfaeba4a022da5e766",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/bound-formulas.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 5250,
+      "stdoutSHA256": "9178b1ea09fc6945fe718923d3cedbd152fa9da6b2c6745dc5754f58f45e07b8",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/fee-contract.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1359,
+      "stdoutSHA256": "42f5a833f385dfca90cfe572f292c803fe25ef832728bf8e634b3758431343a1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/hand-examples.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 10217,
+      "stdoutSHA256": "a4e79a1b717469cc624c6f0e33776383c92ac11b5d578f76fdca1214323b1bc6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/hand_vectors.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 17273,
+      "stdoutSHA256": "3188d927d5002d6758e2dff584f517034ef8b6e1914590722074e800ba36ebbf",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/handoff.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 8462,
+      "stdoutSHA256": "0cc424adcd117c1cb1f12edb6a930271beff7477c29bf29085c4bc3f8579db05",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/invoice_model.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 12930,
+      "stdoutSHA256": "b173f883d34cdc295bdbb9343cac84f0734c9098c8016b8a8092bd6dfc5ec693",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/operation-schedule.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 15875,
+      "stdoutSHA256": "df60bb05bc36a945b70ca641e2a6cf0940e1352eb5d0530400ae8145865de1ae",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/per-id.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 588043,
+      "stdoutSHA256": "0705c166599ae49375751b9be987c341bad2ac262d9fa616cd9993b86880ae60",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/per-id.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 29979,
+      "stdoutSHA256": "37a9e27976898bcbfbe36f5dd0ce19ae85f9cdce6d6b257296f3a6fb31f4c974",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/specification.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 23035,
+      "stdoutSHA256": "edf0f6350f0ba923c0a615e9d64846c8f45b88ad96c144e795e1e532e8b64abf",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/iterations/I05/independent-fee-spec/test_invoice_model.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 8187,
+      "stdoutSHA256": "518bfc48290cf756f548ddeddee3502f77346ddb4ec16efc6af3fa7f73198a08",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v1-input-exposure/incident.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1066,
+      "stdoutSHA256": "ef4f1d68d34b39cc09244639599339eaff179cef19bc7d905c5ff79b2bc39595",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v1-input-exposure/invoice_model.py.unreviewed.raw"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 11526,
+      "stdoutSHA256": "bb9ef16b17408d7a87e56a7d8f3e3c8df6faffd44baf1b66f0657bdb05d959a7",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/adoption.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 57687,
+      "stdoutSHA256": "e5fe75cbf07436660fc475b5ac6c176c40fff35f00e1aad1250b7d967ef149d5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/api-defaults-reference.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1037,
+      "stdoutSHA256": "18a07ea9d3fb5074db368685ae7f126709b2c8c1c1b93f7d1e6f4d37ec7215eb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/budget.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 18643,
+      "stdoutSHA256": "7262e4301ab77d1f2490366e50cd5f617588cae252b9b0735e9c44b344e053c1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/census.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 16939,
+      "stdoutSHA256": "3a95202e86b284db92f8aa304d4af89ec21d6c09e51b07634e44568179a6dd0a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/coverage.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 126099,
+      "stdoutSHA256": "6a8ba37ee119769f0493622ff7328a348ed03f04c749d8c9622c5987ae814b0a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/direct.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 34958,
+      "stdoutSHA256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/dmodel.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 2180,
+      "stdoutSHA256": "74e03d64e7fb80b1d4340779f842232c46fd7a3333d959e663b4b6fc8f674d51",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/gaps.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 327726,
+      "stdoutSHA256": "4a0e72d103a156117e461810d1e0f27a4e96c8f69a56d405111cab34b99300e6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/input-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 21202,
+      "stdoutSHA256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/inputs.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 8205267,
+      "stdoutSHA256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/integration.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 36922,
+      "stdoutSHA256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/oracle-schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 7350,
+      "stdoutSHA256": "ddfbbb7f622115ee7698831e1f27333f6e14d8b2d35a5d70ea2aed301cbb012c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/oracle.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 5651115,
+      "stdoutSHA256": "d8a91a9a1dc99def3187b3f77d9f88e5d2a95def08287fc672c8e5aa0fd5a9ab",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/parity.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 60953,
+      "stdoutSHA256": "d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/policies.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 6324,
+      "stdoutSHA256": "9abaab883296b6085e82eb3b5a44216611a3cdf6d10c0e1589f14ed728684c34",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/producer.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 69523,
+      "stdoutSHA256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/q6.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 26782,
+      "stdoutSHA256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/readme.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 3492,
+      "stdoutSHA256": "ea265f017f704c8e975749de6cf01bebcf9005e7c953a8fdf8a6302d00a7e2ba",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 45463,
+      "stdoutSHA256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/author-v2-inputs/sources.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 7115,
+      "stdoutSHA256": "5c8d2203706254f000e90fa4d397a9b0873e4cb73720b778791436df22397c3c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/collect_inputs.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 4140,
+      "stdoutSHA256": "b8238f15fe81e4113c0b9bb263cf0303b16f7126483a6a42378959548c6dc4fa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/final-format-check.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1663,
+      "stdoutSHA256": "89f8e11239959465f4744cfe8ece55f434070882e381b14b9e4d8965bbe85cb9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/final-format-write.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 2336,
+      "stdoutSHA256": "ddf6d700c0c666f012c50f3c9d574f8007cfeba4530db86aaefdca981050c313",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/format-check.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1245,
+      "stdoutSHA256": "ff30921e5b1653883b65eaf584ea7116f9727dbc78104da60b6c52f961a3ff05",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/format-write.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1766,
+      "stdoutSHA256": "c705adf2021b97cc0ce3075aecb0a29bd80ca44ce34394f8b28bc1204f69f286",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/git-diff-check.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 131,
+      "stdoutSHA256": "c8f4015d2e62b036f1addbd59e78c7d8fbf9aaeb335cd5697fa4cfc7162d492b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/input-collection-result.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 7531,
+      "stdoutSHA256": "bc42dc911cd85b52c8ecaf9c253c27d430d3419010498a208641618498e26577",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/input-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 8050,
+      "stdoutSHA256": "f92ff5ffc33bbab38739c56dc8e420510b3e8d450de4b62b0ae9a6a28ef069d6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/inventory_math.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 13414,
+      "stdoutSHA256": "10b00a48701c320e60e60307ec7c39cbdbebf677304959eb3dd6ca51a9d3f830",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/local-proof-excerpts.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 3132,
+      "stdoutSHA256": "7f66f8cdddf35462b55fb226f7ed76fe362ec3c490af3cc461f1aa6b20acf713",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/math-selftest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1312,
+      "stdoutSHA256": "27c95dfb8cd8506eb3bb43a2bfbac3234c5565d7f15b06a2991f61ce09afd140",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/normative-claims.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 123048,
+      "stdoutSHA256": "b5963fa74fcc3b21c9fafc6bcff1a327025eb1f675b4d7fff3311c4e36c3d6e6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/process.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 2385,
+      "stdoutSHA256": "1db99b0210c36ec07abe01c4c45fbde09a6a37ce19bed6eaf0d5312f525e69ff",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/retained-first-failures.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 1639,
+      "stdoutSHA256": "3fac2ad19bb4f1f43d524bfc372afa545494618b7190e94255addf01800ae358",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/revision-record.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 2169,
+      "stdoutSHA256": "98367ada579f512b4e5bb17848f5dde186d9930523eee75f0117ee1f02b0152a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/seal_candidate.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 3058,
+      "stdoutSHA256": "61ffe7113d80519743fc18c0473ef14936d2a43649bfe1728c16ed0129caaf23",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/static-validation.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 275,
+      "stdoutSHA256": "11dfd6e51dd625e851f43c3c36b0561bd073e3a7126a5ba33d24a470b8401939",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/validate_math.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 4055,
+      "stdoutSHA256": "1fee74684a35660ccc08419199dbeb3e5b0654baf8b9890ca7629e95f48faa5e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6bbea55f5134f95f715858f55c142fb8b760ccf1:docs/reviews/I05/independent-fee-spec/artifact-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 14246,
+      "stdoutSHA256": "4aba269a56b297b55d27ec01bb55606e508cb129531cadadddbcdd122f6535b4",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "9333e69234a6f54a0dfc1485f49d8fdeb4b69cfd:docs/iterations/T05/q6-profile-mechanism-stage-plan.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 26782,
+      "stdoutSHA256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "ee2b30a2dad35b2d395f9c735aff80371ab41110:docs/iterations/I05/source-package-parity/contract.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 60953,
+      "stdoutSHA256": "d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "de37ff64fab7f40b69fbf900e4657137ca18ce74:docs/iterations/I05/profile-integration-new-candidate-plan.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 36922,
+      "stdoutSHA256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "851e6241233d8b7a8f944944207260436b524e9f:docs/iterations/I05/profile-saved-restore-next-plan.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 45463,
+      "stdoutSHA256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "851e6241233d8b7a8f944944207260436b524e9f:docs/reviews/I05/profile-saved-restore-next-plan/budget-source-preparation.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 18643,
+      "stdoutSHA256": "7262e4301ab77d1f2490366e50cd5f617588cae252b9b0735e9c44b344e053c1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "851e6241233d8b7a8f944944207260436b524e9f:docs/reviews/I05/profile-saved-restore-next-plan/representation-census.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 16939,
+      "stdoutSHA256": "3a95202e86b284db92f8aa304d4af89ec21d6c09e51b07634e44568179a6dd0a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "a3592837d854628948ef4c468b6c839f21763273:docs/iterations/I05/formal-producer-and-selected-integration-plan.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 69523,
+      "stdoutSHA256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6891a5842302859a531cf82767c5a482417bc274:docs/reviews/I05/profile-directsteps/inputs/profile-M1-directsteps-consumer-contract.md.raw"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 34958,
+      "stdoutSHA256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6891a5842302859a531cf82767c5a482417bc274:docs/reviews/I05/profile-directsteps/inputs/budget-model.json.raw"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 2180,
+      "stdoutSHA256": "74e03d64e7fb80b1d4340779f842232c46fd7a3333d959e663b4b6fc8f674d51",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "6891a5842302859a531cf82767c5a482417bc274:docs/reviews/I05/profile-directsteps/inputs/I05-profile-directsteps-first-fixed-inputs.json.raw"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 57687,
+      "stdoutSHA256": "e5fe75cbf07436660fc475b5ac6c176c40fff35f00e1aad1250b7d967ef149d5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "3d8f4ee912f41bd03388322d29a9bfc0e7defe85:tests/fixtures/quality/i05-source-package-oracle/budget-gaps.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 327726,
+      "stdoutSHA256": "4a0e72d103a156117e461810d1e0f27a4e96c8f69a56d405111cab34b99300e6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "3d8f4ee912f41bd03388322d29a9bfc0e7defe85:docs/iterations/T05/source-package-oracle/field-policies.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 6324,
+      "stdoutSHA256": "9abaab883296b6085e82eb3b5a44216611a3cdf6d10c0e1589f14ed728684c34",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "3d8f4ee912f41bd03388322d29a9bfc0e7defe85:docs/reviews/T05/source-package-oracle/README.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 3492,
+      "stdoutSHA256": "ea265f017f704c8e975749de6cf01bebcf9005e7c953a8fdf8a6302d00a7e2ba",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "3d8f4ee912f41bd03388322d29a9bfc0e7defe85:tests/fixtures/quality/i05-source-package-oracle/sources.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 7115,
+      "stdoutSHA256": "5c8d2203706254f000e90fa4d397a9b0873e4cb73720b778791436df22397c3c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "3d8f4ee912f41bd03388322d29a9bfc0e7defe85:tests/fixtures/quality/i05-source-package-oracle/coverage.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 126099,
+      "stdoutSHA256": "6a8ba37ee119769f0493622ff7328a348ed03f04c749d8c9622c5987ae814b0a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "3d8f4ee912f41bd03388322d29a9bfc0e7defe85:tests/fixtures/quality/i05-source-package-oracle/oracle.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 5651115,
+      "stdoutSHA256": "d8a91a9a1dc99def3187b3f77d9f88e5d2a95def08287fc672c8e5aa0fd5a9ab",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "3d8f4ee912f41bd03388322d29a9bfc0e7defe85:tests/fixtures/quality/i05-source-package-oracle/schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 7350,
+      "stdoutSHA256": "ddfbbb7f622115ee7698831e1f27333f6e14d8b2d35a5d70ea2aed301cbb012c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "0e42a0fe349054a92817cb4d463bccdc15f6c042:packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 8205267,
+      "stdoutSHA256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "0e42a0fe349054a92817cb4d463bccdc15f6c042:packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdoutBytes": 21202,
+      "stdoutSHA256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/test_invoice_model.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "test_dummy_disabled_and_zero_remainder (__main__.IndependentMathTests.test_dummy_disabled_and_zero_remainder) ... ok\ntest_limb_and_explicit_encoding (__main__.IndependentMathTests.test_limb_and_explicit_encoding) ... ok\ntest_literal_hand_invoices (__main__.IndependentMathTests.test_literal_hand_invoices) ... ok\ntest_literal_local_bounds_are_not_invoices (__main__.IndependentMathTests.test_literal_local_bounds_are_not_invoices) ... ok\ntest_pure_import_surface_ast (__main__.IndependentMathTests.test_pure_import_surface_ast) ... ok\ntest_same_ledger_no_retry_and_new_operation_aggregate (__main__.IndependentMathTests.test_same_ledger_no_retry_and_new_operation_aggregate) ... ok\ntest_sorted_allocator_literal_full_three (__main__.IndependentMathTests.test_sorted_allocator_literal_full_three) ... ok\ntest_unknown_not_zero_atomic_vector_and_finalize_gate (__main__.IndependentMathTests.test_unknown_not_zero_atomic_vector_and_finalize_gate) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.005s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/node",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "docs/iterations/I05/independent-fee-spec/README.md",
+        "docs/iterations/I05/independent-fee-spec/bound-formulas.json",
+        "docs/iterations/I05/independent-fee-spec/fee-contract.json",
+        "docs/iterations/I05/independent-fee-spec/hand-examples.md",
+        "docs/iterations/I05/independent-fee-spec/hand_vectors.json",
+        "docs/iterations/I05/independent-fee-spec/handoff.md",
+        "docs/iterations/I05/independent-fee-spec/operation-schedule.md",
+        "docs/iterations/I05/independent-fee-spec/per-id.json",
+        "docs/iterations/I05/independent-fee-spec/per-id.md",
+        "docs/iterations/I05/independent-fee-spec/specification.md",
+        "docs/reviews/I05/independent-fee-spec/artifact-manifest.json",
+        "docs/reviews/I05/independent-fee-spec/final-format-check.json",
+        "docs/reviews/I05/independent-fee-spec/final-format-write.json",
+        "docs/reviews/I05/independent-fee-spec/format-check.json",
+        "docs/reviews/I05/independent-fee-spec/format-write.json",
+        "docs/reviews/I05/independent-fee-spec/git-diff-check.json",
+        "docs/reviews/I05/independent-fee-spec/input-collection-result.json",
+        "docs/reviews/I05/independent-fee-spec/input-manifest.json",
+        "docs/reviews/I05/independent-fee-spec/math-selftest.json",
+        "docs/reviews/I05/independent-fee-spec/normative-claims.json",
+        "docs/reviews/I05/independent-fee-spec/process.md",
+        "docs/reviews/I05/independent-fee-spec/revision-record.md",
+        "docs/reviews/I05/independent-fee-spec/static-validation.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "6bbea55f5134f95f715858f55c142fb8b760ccf1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": " M AGENTS.md\n?? docs/reviews/I05/independent-fee-spec/independent-r1-command.py\n",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "initialStatus": " M AGENTS.md\n?? docs/reviews/I05/independent-fee-spec/independent-r1-command.py\n",
+    "candidateIdentity": {
+      "manifestEntries": 52,
+      "addedFiles": 53,
+      "currentEqualsGit": true,
+      "opaqueDraftPreserved": true
+    },
+    "sourceIdentity": {
+      "manifestInputs": 22,
+      "gitInputs": 19,
+      "claims": 16,
+      "allHashesAndTextMatch": true
+    },
+    "perId": {
+      "checkedIds": [
+        "profile-83/baseline:G-base",
+        "profile-83/baseline:G-behavior",
+        "profile-83/baseline:G-map-empty",
+        "profile-83/baseline:E.5",
+        "profile-83/A-01:steps:1",
+        "profile-83/B-01:steps:0",
+        "profile-83/B-02:steps:0",
+        "profile-83/B-03:setup:0",
+        "profile-83/B-03:steps:0",
+        "profile-83/B-04:steps:0",
+        "profile-83/B-04:steps:1",
+        "profile-83/B-05:steps:0",
+        "profile-83/B-06:steps:0",
+        "profile-83/B-07:steps:0",
+        "profile-83/B-09:steps:0",
+        "profile-83/B-10:steps:0",
+        "profile-83/B-11:steps:0",
+        "profile-83/M-01:steps:0",
+        "profile-83/M-02:steps:0",
+        "profile-83/M-02:steps:1",
+        "profile-83/M-03:steps:0",
+        "profile-83/M-03:steps:1",
+        "profile-83/M-03:steps:2",
+        "profile-83/M-04:steps:0",
+        "profile-83/M-04:steps:1",
+        "profile-83/M-06:steps:0",
+        "profile-83/M-06:steps:2",
+        "profile-83/O-01:setup:0",
+        "profile-83/O-01:steps:0",
+        "profile-83/Q-01:steps:0",
+        "profile-83/Q-02:setup:0",
+        "profile-83/Q-02:steps:0",
+        "profile-83/R-01:steps:0",
+        "profile-83/R-02:steps:0",
+        "profile-83/R-02:steps:1",
+        "profile-83/R-02:steps:2",
+        "profile-83/R-02:steps:3",
+        "profile-83/R-03:steps:0",
+        "profile-83/R-03:steps:1",
+        "profile-83/R-03:steps:2",
+        "profile-83/R-03:steps:3",
+        "profile-83/R-04:steps:0",
+        "profile-83/R-04:steps:1",
+        "profile-83/R-04:steps:2",
+        "profile-83/R-05:steps:0",
+        "profile-83/R-05:steps:1",
+        "profile-83/R-05:steps:2:order:0",
+        "profile-83/R-06:steps:0",
+        "profile-83/R-06:steps:1",
+        "profile-83/R-06:steps:2:order:0",
+        "profile-83/R-06:steps:2:order:1",
+        "profile-83/V-01:steps:0",
+        "profile-83/V-01:steps:1",
+        "profile-83/V-01:steps:2",
+        "profile-83/V-01:steps:3",
+        "profile-83/extension:CMP-EQ-TRUE",
+        "profile-83/extension:CMP-EQ-FALSE",
+        "profile-83/extension:CMP-NE-TRUE",
+        "profile-83/extension:CMP-NE-FALSE",
+        "profile-83/extension:CMP-LT-TRUE",
+        "profile-83/extension:CMP-LT-FALSE",
+        "profile-83/extension:CMP-LE-TRUE",
+        "profile-83/extension:CMP-LE-FALSE",
+        "profile-83/extension:CMP-GT-TRUE",
+        "profile-83/extension:CMP-GT-FALSE",
+        "profile-83/extension:CMP-GE-TRUE",
+        "profile-83/extension:CMP-GE-FALSE",
+        "profile-83/extension:JOIN-NO-CROSS-ALARM",
+        "profile-83/extension:MULTI-OUTPUT-ONE-FIRING",
+        "profile-83/extension:DISABLED-RULE-NO-OUTPUT",
+        "profile-83/extension:MISSING-PROPERTY-IS-NOT-A-NEGATION",
+        "profile-83/extension:CMP-EQ-ABOVE-FALSE",
+        "profile-83/extension:CMP-NE-ABOVE-TRUE",
+        "profile-83/extension:CMP-LT-ABOVE-FALSE",
+        "profile-83/extension:CMP-LE-BELOW-TRUE",
+        "profile-83/extension:CMP-GT-BELOW-FALSE",
+        "profile-83/extension:CMP-GE-ABOVE-TRUE",
+        "profile-83/transfer:classification",
+        "profile-83/E.5:event-fragment:round:1",
+        "profile-83/E.5:event-fragment:round:2",
+        "profile-83/E.5:event-fragment:round:3",
+        "profile-83/E.5:event-fragment:round:4",
+        "dag/type",
+        "dag/domain-depth2",
+        "dag/range",
+        "dag/subclass",
+        "dag/first-witness",
+        "dag/cross-rule-witness",
+        "dag/range-literal",
+        "fullview/raw-aliases",
+        "dag/raw-aliases",
+        "fullview/two-head-occurrences",
+        "dag/two-head-occurrences",
+        "restore/fullview/payload-unknown-key",
+        "restore/fullview/tail-source-tamper",
+        "restore/fullview/tail-definition-tamper",
+        "restore/fullview/tail-limits-tamper",
+        "restore/fullview/tail-child-tamper",
+        "restore/explanation/payload-unknown-key",
+        "restore/explanation/tail-source-tamper",
+        "restore/explanation/tail-definition-tamper",
+        "restore/explanation/tail-limits-tamper",
+        "restore/explanation/tail-child-tamper",
+        "restore/explanation/dag-depth-plus-one",
+        "restore/explanation/dag-last-premise-forward",
+        "restore/explanation/leaf-rename-all",
+        "restore/explanation/head-occurrence-1023-15",
+        "fullview/turtle-entry",
+        "fullview/profile-0",
+        "fullview/profile-55",
+        "fullview/profile-73",
+        "fullview/profile-74",
+        "fullview/profile-75",
+        "fullview/profile-76"
+      ],
+      "structureAllocationsExpectedPointersMatch": true,
+      "predictedFull17L": 113,
+      "conditionalDefault": [
+        "fullview/turtle-entry"
+      ],
+      "integerTruthIds": [
+        "profile-83/extension:CMP-EQ-TRUE",
+        "profile-83/extension:CMP-EQ-FALSE",
+        "profile-83/extension:CMP-NE-TRUE",
+        "profile-83/extension:CMP-NE-FALSE",
+        "profile-83/extension:CMP-LT-TRUE",
+        "profile-83/extension:CMP-LT-FALSE",
+        "profile-83/extension:CMP-LE-TRUE",
+        "profile-83/extension:CMP-LE-FALSE",
+        "profile-83/extension:CMP-GT-TRUE",
+        "profile-83/extension:CMP-GT-FALSE",
+        "profile-83/extension:CMP-GE-TRUE",
+        "profile-83/extension:CMP-GE-FALSE",
+        "profile-83/extension:CMP-EQ-ABOVE-FALSE",
+        "profile-83/extension:CMP-NE-ABOVE-TRUE",
+        "profile-83/extension:CMP-LT-ABOVE-FALSE",
+        "profile-83/extension:CMP-LE-BELOW-TRUE",
+        "profile-83/extension:CMP-GT-BELOW-FALSE",
+        "profile-83/extension:CMP-GE-ABOVE-TRUE"
+      ],
+      "completeCurrentInvoices": 0,
+      "completeProposalInvoices": 0,
+      "missingH01Count": 114
+    },
+    "handVectors": [
+      {
+        "id": "complete-zero-balance",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 23,
+            "input_bytes": 3,
+            "output_bytes": 2,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 6
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 69,
+            "scalar": 8
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 8,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "one-work-short",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 21,
+            "input_bytes": 3,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 67,
+            "scalar": 3
+          },
+          "first": "output2",
+          "domain": "work",
+          "ordinal": 5,
+          "attempted": {
+            "work": 2,
+            "output_bytes": 2
+          }
+        }
+      },
+      {
+        "id": "false-then-type-error",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 17,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": "second-error",
+          "domain": "RULE_COMPARISON_TYPE_MISMATCH",
+          "ordinal": 4,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "false-then-earlier-resource",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 16,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": "later-domain-check",
+          "domain": "work",
+          "ordinal": 3,
+          "attempted": {
+            "work": 1
+          }
+        }
+      },
+      {
+        "id": "duplicate-comparisons-all-heads",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 32,
+            "input_bytes": 0,
+            "output_bytes": 6,
+            "trace_items": 0,
+            "firings": 1,
+            "head_occurrences": 2,
+            "bindings": 1,
+            "scan_copy": 10,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 11,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "alias-source-twice",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 34,
+            "input_bytes": 10,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 16,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 5,
+            "scalar": 8
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 6,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "cache-miss-then-hit",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 269,
+            "input_bytes": 3,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 254,
+            "hash_bytes": 182
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 4,
+            "scalar": 5
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 13,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "whole-stream-restore-one",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 28,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 20,
+            "hash_bytes": 11
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 4,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "repeated-roots-targets",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 32,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 18,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 6,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "overlap-success",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 14,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 7,
+            "scalar": 15
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 3,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "overlap-one-slot-short",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 14,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 5,
+            "scalar": 8
+          },
+          "first": "temporary",
+          "domain": "objects",
+          "ordinal": 2,
+          "attempted": {
+            "objects": 7,
+            "scalar": 15
+          }
+        }
+      },
+      {
+        "id": "dag-fixed-plus-whole-actions",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 121,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 16,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 7,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "last-item-semantic-error",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 19,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": "tail-source-error",
+          "domain": "SAVED_VALUE_MISMATCH",
+          "ordinal": 3,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "bootstrap-63",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 0,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 0,
+            "hash_bytes": 0
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "first": "bootstrap64",
+          "domain": "objects",
+          "ordinal": 0,
+          "attempted": {
+            "objects": 64,
+            "scalar": 0
+          }
+        }
+      },
+      {
+        "id": "last-head-one-short",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 29,
+            "input_bytes": 0,
+            "output_bytes": 3,
+            "trace_items": 0,
+            "firings": 1,
+            "head_occurrences": 2,
+            "bindings": 1,
+            "scan_copy": 10,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": "head1-same-three-bytes",
+          "domain": "work",
+          "ordinal": 10,
+          "attempted": {
+            "work": 3,
+            "output_bytes": 3
+          }
+        }
+      },
+      {
+        "id": "cache-tail-one-short",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 259,
+            "input_bytes": 3,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 244,
+            "hash_bytes": 182
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": "saved-second-allfields",
+          "domain": "work",
+          "ordinal": 11,
+          "attempted": {
+            "work": 10,
+            "scan_copy": 10
+          }
+        }
+      },
+      {
+        "id": "roots-tail-one-short",
+        "result": {
+          "state": "failed",
+          "used": {
+            "work": 30,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 18,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 0,
+            "scalar": 0
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": "second-two-head-roots",
+          "domain": "work",
+          "ordinal": 5,
+          "attempted": {
+            "work": 2
+          }
+        }
+      },
+      {
+        "id": "gcd-three-steps",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 17,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 4,
+          "attempted": {}
+        }
+      },
+      {
+        "id": "decimal-horner-123",
+        "result": {
+          "state": "completed",
+          "used": {
+            "work": 20,
+            "input_bytes": 0,
+            "output_bytes": 0,
+            "trace_items": 0,
+            "firings": 0,
+            "head_occurrences": 0,
+            "bindings": 0,
+            "scan_copy": 6,
+            "hash_bytes": 4
+          },
+          "live": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "peak": {
+            "objects": 3,
+            "scalar": 3
+          },
+          "first": null,
+          "domain": null,
+          "ordinal": 7,
+          "attempted": {}
+        }
+      }
+    ],
+    "independentLargeLimbBoundary": {
+      "exact": {
+        "state": "completed",
+        "used": {
+          "work": 18,
+          "input_bytes": 0,
+          "output_bytes": 0,
+          "trace_items": 0,
+          "firings": 0,
+          "head_occurrences": 0,
+          "bindings": 0,
+          "scan_copy": 8,
+          "hash_bytes": 4
+        },
+        "live": {
+          "objects": 3,
+          "scalar": 3
+        },
+        "peak": {
+          "objects": 3,
+          "scalar": 3
+        },
+        "first": null,
+        "domain": null,
+        "ordinal": 3,
+        "attempted": {}
+      },
+      "oneShort": {
+        "state": "failed",
+        "used": {
+          "work": 16,
+          "input_bytes": 0,
+          "output_bytes": 0,
+          "trace_items": 0,
+          "firings": 0,
+          "head_occurrences": 0,
+          "bindings": 0,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "live": {
+          "objects": 0,
+          "scalar": 0
+        },
+        "peak": {
+          "objects": 3,
+          "scalar": 3
+        },
+        "first": "same-two-bytes",
+        "domain": "work",
+        "ordinal": 2,
+        "attempted": {
+          "work": 2,
+          "scan_copy": 2
+        }
+      },
+      "handDerivation": "F10 + L(2^64)*L(2^32)=3*2=6 + SCAN2 =18"
+    },
+    "sameLedgerRetryRejected": "ledger reused; terminal ledger cannot reopen",
+    "endStatus": " M AGENTS.md\n?? docs/reviews/I05/independent-fee-spec/independent-r1-command.py\n"
+  },
+  "counterexamples": [
+    {
+      "id": "finalization-after-mutation",
+      "error": "finalization proof insufficient; incomplete model",
+      "state": "running",
+      "used": {
+        "work": 8,
+        "input_bytes": 0,
+        "output_bytes": 0,
+        "trace_items": 0,
+        "firings": 0,
+        "head_occurrences": 0,
+        "bindings": 0,
+        "scan_copy": 6,
+        "hash_bytes": 4
+      },
+      "live": {
+        "objects": 4,
+        "scalar": 5
+      },
+      "peak": {
+        "objects": 4,
+        "scalar": 5
+      },
+      "held": {
+        "receipt": [
+          3,
+          3
+        ],
+        "x": [
+          1,
+          2
+        ]
+      },
+      "holdsSeen": 1,
+      "slotsSeen": 1
+    },
+    {
+      "id": "control-ticket-released-before-data",
+      "program": [
+        {
+          "id": "C",
+          "kind": "hold",
+          "handle": "control",
+          "objects": 64,
+          "scalar": 0
+        },
+        {
+          "id": "F",
+          "kind": "finalize",
+          "handles": 1,
+          "slots": 1,
+          "fields": 2,
+          "bytes": 3,
+          "domain_bytes": 1
+        },
+        {
+          "id": "drop-control",
+          "kind": "release",
+          "handle": "control"
+        },
+        {
+          "id": "data",
+          "kind": "hold",
+          "handle": "x",
+          "objects": 1,
+          "scalar": 2
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "caps": {
+        "work": 16777216,
+        "input_bytes": 262144,
+        "output_bytes": 262144,
+        "trace_items": 8192,
+        "firings": 1024,
+        "head_occurrences": 16384,
+        "bindings": 1024,
+        "scan_copy": 1000,
+        "hash_bytes": 1000,
+        "objects": 67,
+        "scalar": 100
+      },
+      "result": {
+        "state": "completed",
+        "used": {
+          "work": 10,
+          "input_bytes": 0,
+          "output_bytes": 0,
+          "trace_items": 0,
+          "firings": 0,
+          "head_occurrences": 0,
+          "bindings": 0,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "live": {
+          "objects": 3,
+          "scalar": 3
+        },
+        "peak": {
+          "objects": 67,
+          "scalar": 5
+        },
+        "first": null,
+        "domain": null,
+        "ordinal": 4,
+        "attempted": {}
+      },
+      "expected": "control64 stays live through ordinary events, so data needs objects68 and must reject"
+    }
+  ],
+  "productRuntimeExecuted": false,
+  "opaqueDraftContentDecoded": false,
+  "firstCommandFailure": null,
+  "runner": {
+    "argv": [
+      "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+      "-B",
+      "docs/reviews/I05/independent-fee-spec/independent-r1-command.py"
+    ],
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+    "sourceSHA256": "986a31e99ce8abd90db311d471e3c54f1678cf10b2047b303a84027f7bc5e619",
+    "ownExitEvidence": "outer exec returncode; not prefilled inside running command",
+    "actualOuterExit": 0,
+    "actualOuterExitSource": "exec_command tool returned exit_code=0 for the recorded launch command"
+  },
+  "preliminaryReadFailure": {
+    "shellCommand": "wc -l docs/iterations/I05/independent-fee-spec/* docs/reviews/I05/independent-fee-spec/{normative-claims.json,bound-formulas.json,process.md,input-manifest.json,revision-record.md,local-proof-excerpts.json}",
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+    "actualToolExit": 1,
+    "observedError": "wc: docs/reviews/I05/independent-fee-spec/bound-formulas.json: open: No such file or directory",
+    "disposition": "read-location typo; actual bound-formulas.json subsequently fully read under docs/iterations; no candidate mutation",
+    "perExpandedArgvExit": "unknown; tool reports only compound shell-command exit"
+  },
+  "firstCommandFailureScope": "commands list contains independent verification subprocesses only; none failed. Earlier preliminary read-location failure is preserved separately.",
+  "finalIndependentCommands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "6bbea55f5134f95f715858f55c142fb8b760ccf1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": " M AGENTS.md\n?? docs/reviews/I05/independent-fee-spec/independent-r1-command.py\n?? docs/reviews/I05/independent-fee-spec/independent-review-r1.md\n?? docs/reviews/I05/independent-fee-spec/r1-proof.json\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "AGENTS.md\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "report": {
+    "path": "docs/reviews/I05/independent-fee-spec/independent-review-r1.md",
+    "bytes": 12782,
+    "sha256": "1297eaa2d25c2050fc9dfd2201eae990ffce7d91524f3249cae23b0ef169adf3",
+    "conclusion": "Fail",
+    "findings": [
+      "F1:P1:incomplete independently computable proposal",
+      "F2:P2:control ticket released before ordinary data",
+      "F3:P2:finalization proof checked after mutation without cleanup"
+    ]
+  }
+}
