@@ -1,0 +1,51 @@
+{
+  "schema": "T03_REVIEW_PACKET_F1_EXACT_DELTA_CHECKS_V1",
+  "reviewer": "/root/t03_full_review_packet_independent",
+  "status": "F1_CLOSED_LIMITED_PREPARATION_DELTA_PASS",
+  "priorCandidate": "ed9cef968b17a1edefc0977b509906fb9f81a336",
+  "firstReportCommit": "7a521a804eec31a2c98935b3eb12acb8956aa020",
+  "candidate": "806920ac8512d82a7a9b2c1977d23079bcb27fed",
+  "deltaManifest": {
+    "bytes": 2620,
+    "sha256": "d16d2095461d816e43b2a803d380eca089493f2c615177bd8439572ef3a1cc5d",
+    "payloadFiles": 10,
+    "payloadBytes": 64580,
+    "completeFiles": 11,
+    "completeBytes": 67200
+  },
+  "checks": {
+    "all11CurrentEqualGitAndManifest": true,
+    "exact11AddedPathSetFromFirstReport": true,
+    "old19Unchanged": true,
+    "first3ReportArtifactsUnchanged": true,
+    "all11TextAndJSONFullRead": true,
+    "all8OriginalFullPromptBodiesExactByteSuffix": true,
+    "all8SharedRepositoryAbsoluteRootRefAndManifestPinsVerified": true,
+    "all8GroupInputAbsolutePathFixedGitBytesSHA256Verified": true,
+    "all3HistoricalMatricesFixedGitCurrentManifestVerified": true,
+    "locatorIndexAll8RowsMatchPrompt": true,
+    "all4TargetPathsAndEd9ObjectResolve": true,
+    "mappingNonDocsProductUnchanged": true,
+    "sourceAndProfileFixedHEADUnchanged": true,
+    "nativeOldSnapshotDispatchForbidden": true,
+    "currentPolicySamePreviouslyFullRead3160": true,
+    "actualModelTasksCreated": 0,
+    "CUAUsed": false,
+    "networkUsed": false,
+    "sourceOrPayloadRead": false,
+    "productOrTestsOrPreparedFunctionsRun": false,
+    "stageOrCommit": false
+  },
+  "sourcePayloadsOrPriorFullEngineeringCoverageReaudited": false,
+  "findingDisposition": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "status": "CLOSED",
+      "scope": "all8 forward prompts + locator index + F1 disposition; original19 and firstFail kept"
+    }
+  ],
+  "newFindings": [],
+  "nativeStatus": "No dispatch until repaired candidate and prescribed independent delta; no assertion current caller WIP unchanged",
+  "next": "Parent full read/seal commit and controller actual short lease; no designated model pass claimed"
+}
