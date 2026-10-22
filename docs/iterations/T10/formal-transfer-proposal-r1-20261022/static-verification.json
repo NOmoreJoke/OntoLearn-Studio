@@ -1,0 +1,61 @@
+{
+  "status": "static_document_checks_only_no_product_pass",
+  "checkedAt": "2026-10-22T23:02:42.220783+08:00",
+  "sourceProcessHEADBeforeProposal": "24848b459ace2a1ddf13f75f9028733da03d9f07",
+  "checks": {
+    "fixedBaselineDocBytesSHA256": 8,
+    "fixedAllowedSupplierDocBytesSHA256": {
+      "T03": 12,
+      "T01": 11
+    },
+    "controllerPermissionManifestsBytesSHA256": 2,
+    "sourceIdentityOnlyEntriesNotRead": 11,
+    "all16BooleanOptionCombinations": true,
+    "optionTestExecutedAllFalseActualResultsAllNull": true,
+    "syntheticConceptExamples": 10,
+    "exampleActualExecutionAllNull": true,
+    "uniqueDecisionIDs": 19,
+    "decisionReferencesResolved": true,
+    "localMarkdownLinksChecked": 1,
+    "fixed66cc225EntriesMatchManifest": true,
+    "current225EntriesIdenticalToBeforeProposal": 225,
+    "currentEntriesMatching66ccManifest": 224,
+    "existingHistoricalDifferences": [
+      {
+        "path": "docs/reviews/T10/status.md",
+        "frozen66cc": {
+          "byteLength": 11980,
+          "sha256": "0914c9cd5821e726c8578cfb20af8d94ae5da876d6c653b958d5bd9791d59e90"
+        },
+        "beforeProposalAndCurrent": {
+          "byteLength": 13484,
+          "sha256": "2b5340c5c2cb80f02285acd1b8de4ff4e6835cf211b2e91ef4bdec48dd53a12d"
+        },
+        "existingChangingCommit": "9eb3034b7f1425f5d7d6f2bf83ec9f0b46e79185",
+        "newProposalChangedBytes": false
+      }
+    ],
+    "prior22PayloadsAnd3ManifestsUnchanged": true,
+    "onlyTrackedUnstagedDelta": "AGENTS.md",
+    "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "stagedPathsBeforeCommit": [],
+    "untrackedPathsOnlyNewProposalPrefix": true
+  },
+  "initialCheckCorrections": [
+    {
+      "attempt": "assuming current working tree all225 matches66cc manifest",
+      "result": "failed on pre-existing status.md change; checked fixed66cc and pre-proposal24848b separately; no history edited"
+    }
+  ],
+  "independentReview": "independent-design-review.md; original findings and final targeted design closures, no schema or implementation approval",
+  "notExecuted": [
+    "product unit/runtime tests",
+    "App/bridge/Store/source integration",
+    "native/GUI/target platform/package",
+    "human learning protocol",
+    "external Z/M new reviews",
+    "CI/PR/push/merge/remote verification"
+  ],
+  "pending": "F01–F19 / PRD Q decisions / exact supplier schema/API and execution paths remain unapproved",
+  "formatting": "Prettier check executed separately after final JSON/manifest generation; see final delivery verification"
+}

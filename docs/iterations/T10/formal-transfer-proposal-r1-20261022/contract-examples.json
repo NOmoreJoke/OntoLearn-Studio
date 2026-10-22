@@ -1,0 +1,303 @@
+{
+  "status": "synthetic_concept_examples_only_not_validated_wire_not_existing_APIs",
+  "proposal": "T10-formal-R1",
+  "officialFormatVersion": null,
+  "approvedCanonicalSchema": null,
+  "examples": [
+    {
+      "id": "E01-full-no-options",
+      "intent": "Full current business state preserved while all four optional bodies absent",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": false,
+        "history": false,
+        "agentSessions": false
+      },
+      "requiredCollections": {
+        "project-metadata": {
+          "goal": "synthetic device maintenance",
+          "legalConfig": "owner-typed fields only"
+        },
+        "definitions": [
+          "ontology-devices-v1",
+          "mapping-M1-v1",
+          "query-asserted-Q1-v1",
+          "learning-task-T1-v1",
+          "explicitly-covered-other-definition-families"
+        ],
+        "assertions": [
+          {
+            "recordId": "fact-001-name",
+            "subject": "urn:proposal:device:001",
+            "predicate": "urn:proposal:name",
+            "currentObject": "人工改名",
+            "origin": "mapped",
+            "ownerRef": {
+              "type": "mappingOwner",
+              "id": "owner-M1-row001-name"
+            }
+          },
+          {
+            "recordId": "manual-note",
+            "origin": "manual",
+            "currentObject": "人工事实保留"
+          }
+        ],
+        "provenance-ownership": [
+          {
+            "id": "owner-M1-row001-name",
+            "mappingRef": "mapping-M1-v1",
+            "sourceRowId": "001",
+            "slot": "name",
+            "managedValue": "设备A",
+            "currentValue": "人工改名",
+            "tombstone": false,
+            "sourceDescriptionRef": "source-original-A"
+          },
+          {
+            "id": "owner-M1-row002-name",
+            "sourceRowId": "002",
+            "managedValue": "设备B",
+            "tombstone": true
+          }
+        ],
+        "state-versions": {
+          "domainSnapshotRef": "portable-s7",
+          "completeVersionLedgerRef": "portable-version-ledger",
+          "currentVectorIsNotFullLedger": true,
+          "sourceDescription": {
+            "id": "source-original-A",
+            "fullRawSHA256": "PLACEHOLDER_SOURCE_BYTES_DIGEST_NOT_TABLE_DIGEST",
+            "format": "csv",
+            "encoding": "utf-8-sig",
+            "callerSheet": null,
+            "tableSheet": "CSV",
+            "bytesIncluded": false
+          }
+        },
+        "recovery-closure": {
+          "roots": ["portable-s7", "undo-cs7"],
+          "typedEdges": [
+            {
+              "from": "undo-cs7",
+              "type": "beforeSnapshot",
+              "to": "portable-s6"
+            },
+            {
+              "from": "undo-cs7",
+              "type": "afterSnapshot",
+              "to": "portable-s7"
+            },
+            {
+              "from": "fact-001-name",
+              "type": "managedOwner",
+              "to": "owner-M1-row001-name"
+            }
+          ],
+          "requiredObjectDefinitions": [
+            "portable-s6",
+            "portable-s7",
+            "undo-cs7",
+            "portable-version-ledger"
+          ],
+          "allSourceToPortableDigests": "PENDING_APPROVED_CANONICAL_DIGESTS",
+          "completeRequiredRootsSourceCoverage": "same-operationSequence approved ledger/retirement/control root enumeration with source family count/digest and explicit exclusion rules before payload pruning"
+        },
+        "learning-state": {
+          "actualSourceCoverage": "synthetic empty fixture only; a real empty state requires owner proof"
+        }
+      },
+      "expectedDesignAssessment": {
+        "fullCoreEligibility": "requires all actual owner-typed schemas/coverage/closure and supported implementation; example itself is not runtime eligible",
+        "currentRestore": "material_intent_complete_but_support_and_execution_unverified",
+        "mappingRerun": "blocked_missing_raw_until_trusted_reassociation_fresh_preview_confirmation",
+        "runReplay": "no_selected_run_history"
+      },
+      "actualExecution": null
+    },
+    {
+      "id": "E02-negative-missing-owner",
+      "kind": "full",
+      "missingRequiredCollection": "provenance-ownership",
+      "expectedDesignOutcome": "block_full_coverage_no_automatic_template",
+      "actualExecution": null
+    },
+    {
+      "id": "E03-negative-unselected-closure",
+      "selection": {
+        "history": false,
+        "agentSessions": false
+      },
+      "typedRequiredReference": {
+        "type": "businessUndoSnapshot",
+        "requiresUnselectedBody": "agent-session-content"
+      },
+      "expectedDesignOutcome": "SCOPE_CLOSURE_CONFLICT_proposed_category_only; explicit scope coordination or approved alternative projection",
+      "actualExecution": null
+    },
+    {
+      "id": "E04-main-only-plan-and-confirmation",
+      "objectsAreOpaqueMainOnlyNotRendererJSON": true,
+      "plan": {
+        "planId": "P-plan-A",
+        "inputDigest": "P-package-A",
+        "scopeDigest": "P-scope-A",
+        "planDigest": "P-plan-digest-A",
+        "targetMode": "new_project_only",
+        "identityAllocation": "PENDING_F13_OWNER_RULE",
+        "schemaVersionSet": "PENDING_APPROVED_VERSIONS",
+        "contextGeneration": "current trusted main context",
+        "typedRemapping": "PENDING_T01_TYPED_MAPPING",
+        "sourcePreparation": "PENDING_F14_DURABLE_PREPARE_PIN_AND_GC_ORDER",
+        "canConfirm": false,
+        "inputSealRef": "P-main-only-immutable-input-A"
+      },
+      "confirmation": {
+        "actor": "actual user interaction only",
+        "binds": [
+          "inputDigest",
+          "scopeDigest",
+          "planDigest",
+          "relevantVersions",
+          "contextGeneration"
+        ],
+        "source": "trusted main; never imported grant or model text"
+      },
+      "actualExecution": null
+    },
+    {
+      "id": "E05-receipt-branches",
+      "receipts": [
+        {
+          "state": "committed",
+          "requestId": "new-local-request-A",
+          "operationId": "new-local-operation-A",
+          "planDigest": "same-confirmed-plan",
+          "newProjectId": "new-local-project-B",
+          "checkpointRef": "new-local-checkpoint",
+          "identityMapDigest": "owner-generated",
+          "receiptAndProjectSameStoreTransaction": true
+        },
+        {
+          "state": "unknown",
+          "instruction": "lookup original operation only; do not create a new id or delete possibly referenced prepared objects"
+        },
+        {
+          "state": "verified-not-committed",
+          "instruction": "owner proof old execution cannot later admit/commit required before any permitted new operation"
+        }
+      ],
+      "lookupRequirements": [
+        "current legitimate local profile/application operation or recovery ownership when new target is absent/unknown",
+        "original stable business request/operation identity and exact fingerprint",
+        "current project read authorization separately when opening an existing committed target"
+      ],
+      "lookupDoesNotRequire": [
+        "old live lease",
+        "old WeakMap object",
+        "old base/CAS still current",
+        "new user confirmation for historical read",
+        "old main ticket or nonexistent/unknown new project authorization"
+      ],
+      "actualExecution": null
+    },
+    {
+      "id": "E06-learning-full-agent-without-session",
+      "selection": {
+        "agentSessions": false
+      },
+      "taskVersion": "synthetic transfer-task-v1",
+      "attemptId": "attempt-A",
+      "operationCompleted": true,
+      "realCheck": "synthetic reference only; actual source must be T09/T08 trusted tool evidence",
+      "assistance": {
+        "degree": "complete",
+        "acceptedChangeSetRef": "business-change-ref",
+        "bodyIncluded": false
+      },
+      "independentTransferSuccess": false,
+      "displayIntent": "Agent完整辅助完成; preserve assistance even though session text not selected",
+      "crossAttemptPolicy": "PENDING_F16",
+      "actualExecution": null
+    },
+    {
+      "id": "E07-source-hash-is-not-table-options",
+      "sourceHash": "same-fullraw-hash",
+      "previews": [
+        {
+          "encoding": "utf-8-sig",
+          "callerSheet": null,
+          "tableSheet": "CSV",
+          "tableOptionsDigest": "P-digest-A"
+        },
+        {
+          "encoding": "gb18030",
+          "callerSheet": null,
+          "tableSheet": "CSV",
+          "tableOptionsDigest": "P-digest-B"
+        }
+      ],
+      "expectedDesignOutcome": "Full options/actual ordered Table and producer binding required; sourceHash alone does not authorize equivalent parse/plan",
+      "producerIdentity": "PENDING_ACTUAL_T03_PRODUCER_NOT_INFERRED_FROM_I04_OR_PACKAGE",
+      "actualExecution": null
+    },
+    {
+      "id": "E08-unsigned-valid-core-foreign-unverified",
+      "input": "synthetic full core with valid approved byte/schema/owner/reference semantics; no external producer or actor signature",
+      "foreignLearning": {
+        "claimedCheck": "preserved origin claim",
+        "localTrustedCheck": false,
+        "authenticity": "unverified"
+      },
+      "expectedDesignOutcome": "Do not reject core solely for absent external authentication under proposed F09; never promote claims to local mastery or authority; any approved stricter policy must be explicit",
+      "actualExecution": null
+    },
+    {
+      "id": "E09-immutable-input-and-durable-prepare",
+      "inputSeal": {
+        "identity": "P-input-A",
+        "digest": "PLACEHOLDER_ACTUAL_SEALED_BYTES_DIGEST",
+        "sameSnapshotConsumers": ["decode", "business preview", "attachment prepare"],
+        "originalHandleReopenedAfterConfirmation": false
+      },
+      "prepare": {
+        "id": "P-prepare-A",
+        "operationId": "local-operation-A",
+        "fingerprint": "same-confirmed-plan",
+        "objectSetDigest": "PLACEHOLDER_OBJECT_SET",
+        "pinGeneration": 1,
+        "registryBeforeGCVisibility": true,
+        "crossCrashDurable": true
+      },
+      "visibilityRule": "Store project references + receipt + pin handoff have one authoritative visibility boundary; GC claim and commit share generation ordering",
+      "unknownRule": "retain durable pin; no TTL cleanup; terminal writer fence required for negative release",
+      "actualExecution": null
+    },
+    {
+      "id": "E10-durable-recovery-and-negative-fence",
+      "recovery": {
+        "id": "P-recovery-A",
+        "durableBeforeFirstDispatch": true,
+        "owner": "current legitimate local profile/application operation ownership",
+        "businessRequestId": "stable-business-request-A",
+        "operationId": "stable-local-operation-A",
+        "rpcRequestIds": ["transport-attempt-1", "transport-attempt-2"],
+        "planFingerprint": "same-confirmed-plan",
+        "prepareRef": "P-prepare-A",
+        "newProjectIdBeforeReceipt": null
+      },
+      "writerClaimStates": ["admitted", "committed", "terminal-not-committed-with-monotonic-fence"],
+      "unknownIsObservationNotNegativeProof": true,
+      "orderingRule": "negative claim can fence operation before admission; commit checks same authority claim and pin generation; committed cannot downgrade",
+      "lookupRule": "restart uses durable recovery and current legitimate operation ownership, even when target ID absent; no new operation derived from package hash",
+      "actualExecution": null
+    }
+  ],
+  "globalNotes": [
+    "Logical role names/field names and proposed error categories await unique owner approval",
+    "No object is an implemented importer, Store expected data, schema approval or a passed test",
+    "Opaque capabilities in main cannot actually be serialized as these explanatory strings",
+    "Placeholder digests are intentional and are never claimed to satisfy SHA/canonical production validation"
+  ]
+}

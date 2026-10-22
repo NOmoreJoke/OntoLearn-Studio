@@ -1,0 +1,473 @@
+{
+  "status": "proposed_16_case_matrix_not_product_test_results",
+  "proposal": "T10-formal-R1",
+  "optionOrder": ["rawSources", "derived", "history", "agentSessions"],
+  "logicalRoleDecompositionPendingFormatOwnerApproval": true,
+  "caseCount": 16,
+  "cases": [
+    {
+      "caseId": "O-0000",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": false,
+        "history": false,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": [],
+      "forbiddenOptionalRoles": ["raw-sources", "derived-results", "run-history", "agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-0001",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": false,
+        "history": false,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["agent-sessions"],
+      "forbiddenOptionalRoles": ["raw-sources", "derived-results", "run-history"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-0010",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": false,
+        "history": true,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["run-history"],
+      "forbiddenOptionalRoles": ["raw-sources", "derived-results", "agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-0011",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": false,
+        "history": true,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["run-history", "agent-sessions"],
+      "forbiddenOptionalRoles": ["raw-sources", "derived-results"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-0100",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": true,
+        "history": false,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["derived-results"],
+      "forbiddenOptionalRoles": ["raw-sources", "run-history", "agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-0101",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": true,
+        "history": false,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["derived-results", "agent-sessions"],
+      "forbiddenOptionalRoles": ["raw-sources", "run-history"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-0110",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": true,
+        "history": true,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["derived-results", "run-history"],
+      "forbiddenOptionalRoles": ["raw-sources", "agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-0111",
+      "kind": "full",
+      "selection": {
+        "rawSources": false,
+        "derived": true,
+        "history": true,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["derived-results", "run-history", "agent-sessions"],
+      "forbiddenOptionalRoles": ["raw-sources"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "not_directly_rerunnable_until_trusted_reassociation_and_fresh_preview_confirmation",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1000",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": false,
+        "history": false,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources"],
+      "forbiddenOptionalRoles": ["derived-results", "run-history", "agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1001",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": false,
+        "history": false,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources", "agent-sessions"],
+      "forbiddenOptionalRoles": ["derived-results", "run-history"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1010",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": false,
+        "history": true,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources", "run-history"],
+      "forbiddenOptionalRoles": ["derived-results", "agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1011",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": false,
+        "history": true,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources", "run-history", "agent-sessions"],
+      "forbiddenOptionalRoles": ["derived-results"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "no_derived_payload_do_not_silently_change_query_scope_or_treat_as_assertions",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1100",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": true,
+        "history": false,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources", "derived-results"],
+      "forbiddenOptionalRoles": ["run-history", "agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1101",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": true,
+        "history": false,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources", "derived-results", "agent-sessions"],
+      "forbiddenOptionalRoles": ["run-history"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "no_corresponding_run_replay_claim_from_unselected_history",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1110",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": true,
+        "history": true,
+        "agentSessions": false
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources", "derived-results", "run-history"],
+      "forbiddenOptionalRoles": ["agent-sessions"],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "retain_approved_required_business_assistance_without_selected_session_body",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "caseId": "O-1111",
+      "kind": "full",
+      "selection": {
+        "rawSources": true,
+        "derived": true,
+        "history": true,
+        "agentSessions": true
+      },
+      "requiredLogicalCollections": [
+        "project-metadata",
+        "definitions",
+        "assertions",
+        "provenance-ownership",
+        "state-versions",
+        "recovery-closure",
+        "learning-state"
+      ],
+      "selectedOptionalRoles": ["raw-sources", "derived-results", "run-history", "agent-sessions"],
+      "forbiddenOptionalRoles": [],
+      "restoreCurrentState": "independent_of_four_options_only_if_full_coverage_supported_versions_and_atomic_import_are_verified",
+      "rerunOriginalMappings": "per_mapping_requires_actual_correct_source_options_mapping_identity_versions_and_supported_executor",
+      "replayRuns": "per_selected_run_requires_its_complete_frozen_inputs_config_versions_supported_executor_and_actual_verification",
+      "derivedAvailability": "selected_payload_still_requires_scope_versions_and_trust_validation",
+      "learningEvidence": "selected_sessions_are_business_data_not_permissions_or_learning_proof",
+      "closureConflictPolicy": "block_and_explicitly_coordinate_scope_no_hidden_optional_payload_no_silent_template",
+      "testExecuted": false,
+      "actualResult": null
+    }
+  ]
+}
