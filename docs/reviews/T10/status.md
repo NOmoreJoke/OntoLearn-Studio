@@ -57,3 +57,12 @@ T09 获批只读输入版本 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的 mani
 ## 当前 Goal 状态：blocked（未完成）
 
 本轮已完成连续三轮同一依赖/资源条件的阻塞审计，见blocked-audit.md。正式格式/可信投影/位置lease/导入receipt仍无批准接点；外审实际任务0且无本线可用合规入口。私有实现、验证、内审、E1及离线packet已收口，现无不越界的必要独立实现可继续。总控/T01/I06实际进程仍运行，不把它们当停止；Goal blocked仅等待实际可执行接点或外审资源变化。完整目标与父门全部保留，候选和原件不变，未push/PR/CI/merge。
+
+
+## 2026-10-22 实际双审启动
+
+当前桌面政策已撤回静默/用户时段/CLI登录前置，旧限制仅为历史。总控给定短时创建lease后，已完成两隔离树准备与独立预检，准备提交`30ec443173d1f69925679d2f440516c49fa755f8`。原147项Git输入、产品C和证据A不改；两审查树detached77并拥有各自依赖、report/raw/scratch。
+
+ZCode真实session `session_65271e095f85aad0c95b5e1f512243f1`、turn `turn_6b38be66-cb82-46f7-836a-43b742cfe944`，GLM-5.3/max/yolo；MiniMax真实session `mvs_41069a5454874e1aa0bd61c40d1daffa`、turn `854a6900-aadf-4f1e-b035-5806dc1cf2c8`，MiniMax-M3.1-Flash/xhigh、任务始终授权。两者实际cwd、完整290行输入和受理均已实核，已后台开始；前台已释放。完整回执见`dispatch-20261022/launch-receipt.json`与README。此前blocked审计中“实际任务0/无入口”为当时事实，现更新为实际任务2，尚无终态或指定Pass。
+
+本次只推进已明确授权的准备和派发，没有重建/自动恢复或完成原blocked Goal；正式格式/可信投影/生产lease/导入receipt及父门仍待，未push/PR/CI/merge。准备方不重跑不变产品；审者允许在各自隔离env/scratch执行必要完整验证及独立反例，现有源/tests/fixture/锁/config/旧验收/旧raw/Git只读。
