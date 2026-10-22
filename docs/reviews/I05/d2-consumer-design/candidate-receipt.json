@@ -1,0 +1,2237 @@
+{
+  "format": "i05-d2-consumer-design-candidate-receipt/1",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "candidate": "d2c28a2bf549f4202b6188dde7fe4efee1c8769e",
+  "processRef": null,
+  "processResolution": "actual process commit externally reported after commit, never self-filled",
+  "selfExclusion": "docs/reviews/I05/d2-consumer-design/candidate-receipt.json",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 28,
+        "sha256": "22ac84e8cde4d2889f31218b24951add0ba14345959a65939215bb162e0b0983",
+        "encoding": "lossless-utf8-json",
+        "text": "docs/I05-d2-consumer-design\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 41,
+        "sha256": "c318fbaed1c14ff0ce47e95134a0ccf12aecb42e286124739c8aa46788a4e666",
+        "encoding": "lossless-utf8-json",
+        "text": "5f910b52c69d86a1076b2032e5d3c63e715947f3\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "add",
+        "--",
+        "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+        "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+        "docs/iterations/I05/d2-consumer-design/handoff.md",
+        "docs/iterations/I05/d2-consumer-design/plan.md",
+        "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+        "docs/reviews/I05/d2-consumer-design/author-notes.md",
+        "docs/reviews/I05/d2-consumer-design/author-validation.json",
+        "docs/reviews/I05/d2-consumer-design/candidate-manifest.json",
+        "docs/reviews/I05/d2-consumer-design/design-checker.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md",
+        "docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md",
+        "docs/reviews/I05/d2-consumer-design/input-identity.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 2531,
+        "sha256": "843c2cfd0cee9b1314c4d876ac4aec10d533eb4ca12ed5bfc7fcf0335992dbc8",
+        "encoding": "lossless-utf8-json",
+        "text": "docs/iterations/I05/d2-consumer-design/acceptance-map.json\ndocs/iterations/I05/d2-consumer-design/field-origin-map.json\ndocs/iterations/I05/d2-consumer-design/handoff.md\ndocs/iterations/I05/d2-consumer-design/plan.md\ndocs/iterations/I05/d2-consumer-design/reject-cases.json\ndocs/reviews/I05/d2-consumer-design/author-notes.md\ndocs/reviews/I05/d2-consumer-design/author-validation.json\ndocs/reviews/I05/d2-consumer-design/candidate-manifest.json\ndocs/reviews/I05/d2-consumer-design/design-checker.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md\ndocs/reviews/I05/d2-consumer-design/input-identity.json\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--numstat"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 2755,
+        "sha256": "204209a076733d5012769d33a2bfcb29e18e753326d0fb31d93e3d76a668a375",
+        "encoding": "lossless-utf8-json",
+        "text": "2380\t0\tdocs/iterations/I05/d2-consumer-design/acceptance-map.json\n118133\t0\tdocs/iterations/I05/d2-consumer-design/field-origin-map.json\n36\t0\tdocs/iterations/I05/d2-consumer-design/handoff.md\n55\t0\tdocs/iterations/I05/d2-consumer-design/plan.md\n4582\t0\tdocs/iterations/I05/d2-consumer-design/reject-cases.json\n15\t0\tdocs/reviews/I05/d2-consumer-design/author-notes.md\n276\t0\tdocs/reviews/I05/d2-consumer-design/author-validation.json\n208\t0\tdocs/reviews/I05/d2-consumer-design/candidate-manifest.json\n282\t0\tdocs/reviews/I05/d2-consumer-design/design-checker.md\n101\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md\n99\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md\n13673\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json\n615\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json\n3735\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json\n296\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json\n964\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json\n2444\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json\n336\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json\n77\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md\n71\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md\n17\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md\n28\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json\n198\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md\n547\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md\n1599\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json\n10727\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json\n47\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md\n18170\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json\n38\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md\n110\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md\n11947\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json\n618\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json\n815\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json\n238\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md\n7\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md\n7\t0\tdocs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md\n835\t0\tdocs/reviews/I05/d2-consumer-design/input-identity.json\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/iterations/I05/d2-consumer-design/acceptance-map.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+        "bytes": 117309,
+        "sha256": "9b29e17e01d91260b8fe226b0542f3c911afadd1aafc08192b344b3b71b7c52b",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/iterations/I05/d2-consumer-design/field-origin-map.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+        "bytes": 5113082,
+        "sha256": "11f482543bac79b1b4dee66a6ad42789e1614f780d65b69de2ce492f32241c6d",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/iterations/I05/d2-consumer-design/handoff.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/handoff.md",
+        "bytes": 7665,
+        "sha256": "ff8630b026315bbaff89290267d5aeb978382f43e9709a221d94c28c4d5d1d0c",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/iterations/I05/d2-consumer-design/plan.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/plan.md",
+        "bytes": 11099,
+        "sha256": "af6631301bf2ae569dae2a924790ad085781ee21d7b1cf178314324fa3598c08",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/iterations/I05/d2-consumer-design/reject-cases.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+        "bytes": 110211,
+        "sha256": "0cb25b50d53eecba732bc390cc43c98bff66dca1d901bed971f1aedfc9bfa3e9",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/author-notes.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/author-notes.md",
+        "bytes": 3716,
+        "sha256": "3d450050d14ae7feb1990332030c5488d69451fb57fca3d9effe79d92790080d",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/author-validation.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/author-validation.json",
+        "bytes": 20500,
+        "sha256": "e27575d49f059803b684ebbbee438304acb6efda73776d2be25c5fc9e8be98eb",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/candidate-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/candidate-manifest.json",
+        "bytes": 8352,
+        "sha256": "a70f81a78b862b0ad00a49157766097aced6ba7e6e19a7d1635f4e2bea5ea7b1",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/design-checker.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/design-checker.md",
+        "bytes": 13272,
+        "sha256": "203152622549636e6585b615e4874ead47672ed2ea5ca007dc6d5c0830d35e49",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md",
+        "bytes": 24247,
+        "sha256": "66c9628b621e6c6ae9cfd2431fef1beff1a748eaba396fa72e8184742c9afc61",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md",
+        "bytes": 19832,
+        "sha256": "64acfe5bf2e593f3c6f8cfb51a9a7043674d1f38cdf52f4f0842acad3bbc6758",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json",
+        "bytes": 463296,
+        "sha256": "05ee55cfad07851c3f1b8810ebc2313c266e498e9da23d6711332d90244342d4",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json",
+        "bytes": 27998,
+        "sha256": "7320993d0c6b38fb1748705c4e9b647d4d1d4423f33efd15a2d4fb51d217334a",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json",
+        "bytes": 119364,
+        "sha256": "5c32e1873dca80988bbea8bcf8adfe7eed14aac0457a05cd7f3b687231392baa",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json",
+        "bytes": 8108,
+        "sha256": "5a7d15d9a887227738a0f3f12aa19e47814fe836d184833a7ed111321c8a42f8",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json",
+        "bytes": 26824,
+        "sha256": "4698e97f42f25798d19c0e4a966a502c969532e74faa9a698ba929f1288cde45",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json",
+        "bytes": 88654,
+        "sha256": "3a659dc9342f19a6bd183f2d1937faf2ff29ddc04069361edb04acbd1a407815",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json",
+        "bytes": 13770,
+        "sha256": "21a45c66dd108751087b8880ef3420c92cdaebeb46093fa4756242f2d8130782",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md",
+        "bytes": 14706,
+        "sha256": "74c20abc35d31e6885d651e5b7892fee38f55ffb604c9a57c2d276965a897f3c",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md",
+        "bytes": 14369,
+        "sha256": "ffe652c314d5896df594d36319fc773dcb04ed10fd066c989752a8091f9b5198",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md",
+        "bytes": 3751,
+        "sha256": "27dfbb1a0b05f352becf0b0e5fce78f276e2b7dfea15ddbab80b66795016d5d5",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json",
+        "bytes": 984,
+        "sha256": "1d3233e75698a6e511b0acc78802b2d1c354df44bb3fe362d73da2cc122643cd",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md",
+        "bytes": 41086,
+        "sha256": "fbeebc9994aa77ecc7fafe1dda1b66f0d2a8f5582df26870f90d6061a5f2befe",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md",
+        "bytes": 22959,
+        "sha256": "183da4b54fdcb022c0afe326f228f7b0772e515a5e18108fbdd6e0c0f4bdb990",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json",
+        "bytes": 40461,
+        "sha256": "19ef42b5e4fc90519903c71edd63ad16708161a3b17f62a29be40725eb586822",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json",
+        "bytes": 344339,
+        "sha256": "b5548a704ba7163e70744830cbf31e25105a2f76cd5e542668583735703a0302",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md",
+        "bytes": 12924,
+        "sha256": "794736d4340dba46aa57fbd727b0867b4ba4093a1b9d27e1895ebea55bdd28e3",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json",
+        "bytes": 560441,
+        "sha256": "14d9f2759b1a90cc5acd2b22bc2189a73449b08b53bf153bb49d716378b3b847",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md",
+        "bytes": 5677,
+        "sha256": "23eaae774cf7fe54d4a7a4fb752c80c610b26567a3aa9a2bd23a25a1f17e20aa",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md",
+        "bytes": 20109,
+        "sha256": "c0d4c887f8f9468535278cd8e00c1d710d0bab86bf661eae9472bd77895d3ac8",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json",
+        "bytes": 443010,
+        "sha256": "9ab9ac72d6841dca3be92ad04d5b8a22394cfa88ae9baec04883ee2c5a680ad9",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json",
+        "bytes": 25501,
+        "sha256": "f8aac6b92326cfa094db7f2deadc498cd0bcfb96ba6948013bd2fe6f458c70f6",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json",
+        "bytes": 47004,
+        "sha256": "91055f397914c55a735aed645084c542d342d644595998be22f744f648776e66",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md",
+        "bytes": 60953,
+        "sha256": "d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md",
+        "bytes": 1482,
+        "sha256": "d1ee64e29d7027ce88793685c5a4b9371d86cb2de2aad2e3338cd1859baf2fff",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md",
+        "bytes": 1302,
+        "sha256": "1f845d7a6e710dd16f6be60db071c9487bc101df2c86e1216d5f26fd234ebf10",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        ":docs/reviews/I05/d2-consumer-design/input-identity.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/input-identity.json",
+        "bytes": 34904,
+        "sha256": "3e6a63fdc98661daa4e978b6761e2859257ffdb136641adb0c668e227bcb1c53",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 2531,
+        "sha256": "843c2cfd0cee9b1314c4d876ac4aec10d533eb4ca12ed5bfc7fcf0335992dbc8",
+        "encoding": "lossless-utf8-json",
+        "text": "docs/iterations/I05/d2-consumer-design/acceptance-map.json\ndocs/iterations/I05/d2-consumer-design/field-origin-map.json\ndocs/iterations/I05/d2-consumer-design/handoff.md\ndocs/iterations/I05/d2-consumer-design/plan.md\ndocs/iterations/I05/d2-consumer-design/reject-cases.json\ndocs/reviews/I05/d2-consumer-design/author-notes.md\ndocs/reviews/I05/d2-consumer-design/author-validation.json\ndocs/reviews/I05/d2-consumer-design/candidate-manifest.json\ndocs/reviews/I05/d2-consumer-design/design-checker.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md\ndocs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md\ndocs/reviews/I05/d2-consumer-design/input-identity.json\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "commit",
+        "-m",
+        "docs: design I05 D2 consumer field acceptance and handoff"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 3407,
+        "sha256": "3492f915e709521ba393e3eca5aa95c5ccf7022d1aac0226e987fe0aa381a7e3",
+        "encoding": "lossless-utf8-json",
+        "text": "[docs/I05-d2-consumer-design d2c28a2] docs: design I05 D2 consumer field acceptance and handoff\n 37 files changed, 194326 insertions(+)\n create mode 100644 docs/iterations/I05/d2-consumer-design/acceptance-map.json\n create mode 100644 docs/iterations/I05/d2-consumer-design/field-origin-map.json\n create mode 100644 docs/iterations/I05/d2-consumer-design/handoff.md\n create mode 100644 docs/iterations/I05/d2-consumer-design/plan.md\n create mode 100644 docs/iterations/I05/d2-consumer-design/reject-cases.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/author-notes.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/author-validation.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/candidate-manifest.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/design-checker.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md\n create mode 100644 docs/reviews/I05/d2-consumer-design/input-identity.json\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 41,
+        "sha256": "4e3e7ea93279e526ff1805a10224221d05f937ee53c5696aa85dac92b81f0bb9",
+        "encoding": "lossless-utf8-json",
+        "text": "d2c28a2bf549f4202b6188dde7fe4efee1c8769e\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/iterations/I05/d2-consumer-design/acceptance-map.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+        "bytes": 117309,
+        "sha256": "9b29e17e01d91260b8fe226b0542f3c911afadd1aafc08192b344b3b71b7c52b",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/iterations/I05/d2-consumer-design/field-origin-map.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+        "bytes": 5113082,
+        "sha256": "11f482543bac79b1b4dee66a6ad42789e1614f780d65b69de2ce492f32241c6d",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/iterations/I05/d2-consumer-design/handoff.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/handoff.md",
+        "bytes": 7665,
+        "sha256": "ff8630b026315bbaff89290267d5aeb978382f43e9709a221d94c28c4d5d1d0c",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/iterations/I05/d2-consumer-design/plan.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/plan.md",
+        "bytes": 11099,
+        "sha256": "af6631301bf2ae569dae2a924790ad085781ee21d7b1cf178314324fa3598c08",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/iterations/I05/d2-consumer-design/reject-cases.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+        "bytes": 110211,
+        "sha256": "0cb25b50d53eecba732bc390cc43c98bff66dca1d901bed971f1aedfc9bfa3e9",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/author-notes.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/author-notes.md",
+        "bytes": 3716,
+        "sha256": "3d450050d14ae7feb1990332030c5488d69451fb57fca3d9effe79d92790080d",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/author-validation.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/author-validation.json",
+        "bytes": 20500,
+        "sha256": "e27575d49f059803b684ebbbee438304acb6efda73776d2be25c5fc9e8be98eb",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/candidate-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/candidate-manifest.json",
+        "bytes": 8352,
+        "sha256": "a70f81a78b862b0ad00a49157766097aced6ba7e6e19a7d1635f4e2bea5ea7b1",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/design-checker.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/design-checker.md",
+        "bytes": 13272,
+        "sha256": "203152622549636e6585b615e4874ead47672ed2ea5ca007dc6d5c0830d35e49",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md",
+        "bytes": 24247,
+        "sha256": "66c9628b621e6c6ae9cfd2431fef1beff1a748eaba396fa72e8184742c9afc61",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md",
+        "bytes": 19832,
+        "sha256": "64acfe5bf2e593f3c6f8cfb51a9a7043674d1f38cdf52f4f0842acad3bbc6758",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json",
+        "bytes": 463296,
+        "sha256": "05ee55cfad07851c3f1b8810ebc2313c266e498e9da23d6711332d90244342d4",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json",
+        "bytes": 27998,
+        "sha256": "7320993d0c6b38fb1748705c4e9b647d4d1d4423f33efd15a2d4fb51d217334a",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json",
+        "bytes": 119364,
+        "sha256": "5c32e1873dca80988bbea8bcf8adfe7eed14aac0457a05cd7f3b687231392baa",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json",
+        "bytes": 8108,
+        "sha256": "5a7d15d9a887227738a0f3f12aa19e47814fe836d184833a7ed111321c8a42f8",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json",
+        "bytes": 26824,
+        "sha256": "4698e97f42f25798d19c0e4a966a502c969532e74faa9a698ba929f1288cde45",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json",
+        "bytes": 88654,
+        "sha256": "3a659dc9342f19a6bd183f2d1937faf2ff29ddc04069361edb04acbd1a407815",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json",
+        "bytes": 13770,
+        "sha256": "21a45c66dd108751087b8880ef3420c92cdaebeb46093fa4756242f2d8130782",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md",
+        "bytes": 14706,
+        "sha256": "74c20abc35d31e6885d651e5b7892fee38f55ffb604c9a57c2d276965a897f3c",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md",
+        "bytes": 14369,
+        "sha256": "ffe652c314d5896df594d36319fc773dcb04ed10fd066c989752a8091f9b5198",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md",
+        "bytes": 3751,
+        "sha256": "27dfbb1a0b05f352becf0b0e5fce78f276e2b7dfea15ddbab80b66795016d5d5",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json",
+        "bytes": 984,
+        "sha256": "1d3233e75698a6e511b0acc78802b2d1c354df44bb3fe362d73da2cc122643cd",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md",
+        "bytes": 41086,
+        "sha256": "fbeebc9994aa77ecc7fafe1dda1b66f0d2a8f5582df26870f90d6061a5f2befe",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md",
+        "bytes": 22959,
+        "sha256": "183da4b54fdcb022c0afe326f228f7b0772e515a5e18108fbdd6e0c0f4bdb990",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json",
+        "bytes": 40461,
+        "sha256": "19ef42b5e4fc90519903c71edd63ad16708161a3b17f62a29be40725eb586822",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json",
+        "bytes": 344339,
+        "sha256": "b5548a704ba7163e70744830cbf31e25105a2f76cd5e542668583735703a0302",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md",
+        "bytes": 12924,
+        "sha256": "794736d4340dba46aa57fbd727b0867b4ba4093a1b9d27e1895ebea55bdd28e3",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json",
+        "bytes": 560441,
+        "sha256": "14d9f2759b1a90cc5acd2b22bc2189a73449b08b53bf153bb49d716378b3b847",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md",
+        "bytes": 5677,
+        "sha256": "23eaae774cf7fe54d4a7a4fb752c80c610b26567a3aa9a2bd23a25a1f17e20aa",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md",
+        "bytes": 20109,
+        "sha256": "c0d4c887f8f9468535278cd8e00c1d710d0bab86bf661eae9472bd77895d3ac8",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json",
+        "bytes": 443010,
+        "sha256": "9ab9ac72d6841dca3be92ad04d5b8a22394cfa88ae9baec04883ee2c5a680ad9",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json",
+        "bytes": 25501,
+        "sha256": "f8aac6b92326cfa094db7f2deadc498cd0bcfb96ba6948013bd2fe6f458c70f6",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json",
+        "bytes": 47004,
+        "sha256": "91055f397914c55a735aed645084c542d342d644595998be22f744f648776e66",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md",
+        "bytes": 60953,
+        "sha256": "d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md",
+        "bytes": 1482,
+        "sha256": "d1ee64e29d7027ce88793685c5a4b9371d86cb2de2aad2e3338cd1859baf2fff",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md",
+        "bytes": 1302,
+        "sha256": "1f845d7a6e710dd16f6be60db071c9487bc101df2c86e1216d5f26fd234ebf10",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "d2c28a2bf549f4202b6188dde7fe4efee1c8769e:docs/reviews/I05/d2-consumer-design/input-identity.json"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "encoding": "exact-current-file-reference",
+        "path": "docs/reviews/I05/d2-consumer-design/input-identity.json",
+        "bytes": 34904,
+        "sha256": "3e6a63fdc98661daa4e978b6761e2859257ffdb136641adb0c668e227bcb1c53",
+        "equalsCurrentBytes": true
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-d2-consumer-design",
+      "exit": 0,
+      "stdout": {
+        "bytes": 75,
+        "sha256": "fe36cb10518d3a4ebc1fdcfb1ebd704d5f1d2611ab4df83b7b8be207201fc7a8",
+        "encoding": "lossless-utf8-json",
+        "text": " M AGENTS.md\n?? docs/reviews/I05/d2-consumer-design/candidate-receipt.json\n"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "encoding": "lossless-utf8-json",
+        "text": ""
+      }
+    }
+  ],
+  "firstNonzeroCommand": null,
+  "independentReview": "pending",
+  "productExecuted": false,
+  "wholeOracleComplete": false,
+  "actualCachedDiffCheckExit": 0,
+  "stagedPaths": [
+    "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+    "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+    "docs/iterations/I05/d2-consumer-design/handoff.md",
+    "docs/iterations/I05/d2-consumer-design/plan.md",
+    "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+    "docs/reviews/I05/d2-consumer-design/author-notes.md",
+    "docs/reviews/I05/d2-consumer-design/author-validation.json",
+    "docs/reviews/I05/d2-consumer-design/candidate-manifest.json",
+    "docs/reviews/I05/d2-consumer-design/design-checker.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md",
+    "docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md",
+    "docs/reviews/I05/d2-consumer-design/input-identity.json"
+  ],
+  "manifestIdentity": {
+    "path": "docs/reviews/I05/d2-consumer-design/candidate-manifest.json",
+    "bytes": 8352,
+    "sha256": "a70f81a78b862b0ad00a49157766097aced6ba7e6e19a7d1635f4e2bea5ea7b1"
+  },
+  "candidateFileCount": 37,
+  "candidateCommitActualExitCode": 0,
+  "postCandidateStatus": " M AGENTS.md\n?? docs/reviews/I05/d2-consumer-design/candidate-receipt.json\n",
+  "candidateInventory": [
+    {
+      "path": "docs/iterations/I05/d2-consumer-design/acceptance-map.json",
+      "bytes": 117309,
+      "sha256": "9b29e17e01d91260b8fe226b0542f3c911afadd1aafc08192b344b3b71b7c52b",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/iterations/I05/d2-consumer-design/field-origin-map.json",
+      "bytes": 5113082,
+      "sha256": "11f482543bac79b1b4dee66a6ad42789e1614f780d65b69de2ce492f32241c6d",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/iterations/I05/d2-consumer-design/handoff.md",
+      "bytes": 7665,
+      "sha256": "ff8630b026315bbaff89290267d5aeb978382f43e9709a221d94c28c4d5d1d0c",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/iterations/I05/d2-consumer-design/plan.md",
+      "bytes": 11099,
+      "sha256": "af6631301bf2ae569dae2a924790ad085781ee21d7b1cf178314324fa3598c08",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/iterations/I05/d2-consumer-design/reject-cases.json",
+      "bytes": 110211,
+      "sha256": "0cb25b50d53eecba732bc390cc43c98bff66dca1d901bed971f1aedfc9bfa3e9",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/author-notes.md",
+      "bytes": 3716,
+      "sha256": "3d450050d14ae7feb1990332030c5488d69451fb57fca3d9effe79d92790080d",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/author-validation.json",
+      "bytes": 20500,
+      "sha256": "e27575d49f059803b684ebbbee438304acb6efda73776d2be25c5fc9e8be98eb",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/candidate-manifest.json",
+      "bytes": 8352,
+      "sha256": "a70f81a78b862b0ad00a49157766097aced6ba7e6e19a7d1635f4e2bea5ea7b1",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/design-checker.md",
+      "bytes": 13272,
+      "sha256": "203152622549636e6585b615e4874ead47672ed2ea5ca007dc6d5c0830d35e49",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/00-protocol.md",
+      "bytes": 24247,
+      "sha256": "66c9628b621e6c6ae9cfd2431fef1beff1a748eaba396fa72e8184742c9afc61",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/01-consumer-contract.md",
+      "bytes": 19832,
+      "sha256": "64acfe5bf2e593f3c6f8cfb51a9a7043674d1f38cdf52f4f0842acad3bbc6758",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/02-field-responsibility.json",
+      "bytes": 463296,
+      "sha256": "05ee55cfad07851c3f1b8810ebc2313c266e498e9da23d6711332d90244342d4",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/03-profile-descriptor.json",
+      "bytes": 27998,
+      "sha256": "7320993d0c6b38fb1748705c4e9b647d4d1d4423f33efd15a2d4fb51d217334a",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/04-build-provenance.schema.json",
+      "bytes": 119364,
+      "sha256": "5c32e1873dca80988bbea8bcf8adfe7eed14aac0457a05cd7f3b687231392baa",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/05-build-receipt.schema.json",
+      "bytes": 8108,
+      "sha256": "5a7d15d9a887227738a0f3f12aa19e47814fe836d184833a7ed111321c8a42f8",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/06-runtime-header.schema.json",
+      "bytes": 26824,
+      "sha256": "4698e97f42f25798d19c0e4a966a502c969532e74faa9a698ba929f1288cde45",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/07-runtime-validation-receipt.schema.json",
+      "bytes": 88654,
+      "sha256": "3a659dc9342f19a6bd183f2d1937faf2ff29ddc04069361edb04acbd1a407815",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/08-final-manifest.json",
+      "bytes": 13770,
+      "sha256": "21a45c66dd108751087b8880ef3420c92cdaebeb46093fa4756242f2d8130782",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/09-independent-review.md",
+      "bytes": 14706,
+      "sha256": "74c20abc35d31e6885d651e5b7892fee38f55ffb604c9a57c2d276965a897f3c",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/10-independent-review-delta1.md",
+      "bytes": 14369,
+      "sha256": "ffe652c314d5896df594d36319fc773dcb04ed10fd066c989752a8091f9b5198",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/11-owner-final-disposition.md",
+      "bytes": 3751,
+      "sha256": "27dfbb1a0b05f352becf0b0e5fce78f276e2b7dfea15ddbab80b66795016d5d5",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/12-static-closure.json",
+      "bytes": 984,
+      "sha256": "1d3233e75698a6e511b0acc78802b2d1c354df44bb3fe362d73da2cc122643cd",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/13-spec.md",
+      "bytes": 41086,
+      "sha256": "fbeebc9994aa77ecc7fafe1dda1b66f0d2a8f5582df26870f90d6061a5f2befe",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/14-model.py.md",
+      "bytes": 22959,
+      "sha256": "183da4b54fdcb022c0afe326f228f7b0772e515a5e18108fbdd6e0c0f4bdb990",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/15-schema.json",
+      "bytes": 40461,
+      "sha256": "19ef42b5e4fc90519903c71edd63ad16708161a3b17f62a29be40725eb586822",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/16-cases.json",
+      "bytes": 344339,
+      "sha256": "b5548a704ba7163e70744830cbf31e25105a2f76cd5e542668583735703a0302",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/17-coverage.md",
+      "bytes": 12924,
+      "sha256": "794736d4340dba46aa57fbd727b0867b4ba4093a1b9d27e1895ebea55bdd28e3",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/18-pure-sources.json",
+      "bytes": 560441,
+      "sha256": "14d9f2759b1a90cc5acd2b22bc2189a73449b08b53bf153bb49d716378b3b847",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/19-disposition-r3.md",
+      "bytes": 5677,
+      "sha256": "23eaae774cf7fe54d4a7a4fb752c80c610b26567a3aa9a2bd23a25a1f17e20aa",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/20-r3-review.md",
+      "bytes": 20109,
+      "sha256": "c0d4c887f8f9468535278cd8e00c1d710d0bab86bf661eae9472bd77895d3ac8",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/21-r3-proof.json",
+      "bytes": 443010,
+      "sha256": "9ab9ac72d6841dca3be92ad04d5b8a22394cfa88ae9baec04883ee2c5a680ad9",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/22-manifest-r3.json",
+      "bytes": 25501,
+      "sha256": "f8aac6b92326cfa094db7f2deadc498cd0bcfb96ba6948013bd2fe6f458c70f6",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/23-candidate-receipt-r3.json",
+      "bytes": 47004,
+      "sha256": "91055f397914c55a735aed645084c542d342d644595998be22f744f648776e66",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/24-contract.md",
+      "bytes": 60953,
+      "sha256": "d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/25-T03-i05-D0-limited-root-closure.md",
+      "bytes": 1482,
+      "sha256": "d1ee64e29d7027ce88793685c5a4b9371d86cb2de2aad2e3338cd1859baf2fff",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/fixed-inputs/26-I05-projection-R3-limited-root-closure.md",
+      "bytes": 1302,
+      "sha256": "1f845d7a6e710dd16f6be60db071c9487bc101df2c86e1216d5f26fd234ebf10",
+      "currentEqualsCandidateGit": true
+    },
+    {
+      "path": "docs/reviews/I05/d2-consumer-design/input-identity.json",
+      "bytes": 34904,
+      "sha256": "3e6a63fdc98661daa4e978b6761e2859257ffdb136641adb0c668e227bcb1c53",
+      "currentEqualsCandidateGit": true
+    }
+  ],
+  "indexEmptyAfterCandidate": true,
+  "commitHookBoundary": "per-command core.hooksPath=/dev/null prevents unrelated product hooks outside this docs-only execution window; no persistent config changed",
+  "finalizationCapture": "Subsequent formatter/stage/cached check/process commit/final fixed-Git inventory are captured as complete split-stream JSON in final tool proof and root handoff, not embedded into the file being frozen. Actual process ref is externally reported after commit."
+}
