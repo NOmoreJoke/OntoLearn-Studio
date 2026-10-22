@@ -8,13 +8,28 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 3574,
-      "sha256": "d60994d1636adc94c097867bc94d56fef3fb6ba56490b2493b8d47e746e5c83b"
+      "bytes": 4043,
+      "sha256": "da3125f173000b69c4312705183d078d23349a57af70efa7292a66a08a690d6a"
+    },
+    {
+      "path": "document-checks.json",
+      "bytes": 741,
+      "sha256": "addec7c2a97067c5df849a2f3277e86a93054231729d2e2416f8ef2ec166816a"
+    },
+    {
+      "path": "final-bounded-turn-snapshot.json",
+      "bytes": 731,
+      "sha256": "9ac470b548273d85a720e62497897f37e1ab81ebbfd9c8f891f33d105427be84"
     },
     {
       "path": "gui-release.json",
       "bytes": 1015,
       "sha256": "7d690a03c329cc4f7dec49ba83d4189d6c3d02849c495b92d24ce0e130d9077c"
+    },
+    {
+      "path": "limited-receipt-review.json",
+      "bytes": 1056,
+      "sha256": "05f3810dddc048e3110e82a0f688d84016211d72b96b20d4cdb992a16e34ce8e"
     },
     {
       "path": "minimax-input-proof.json",
@@ -48,8 +63,8 @@
     },
     {
       "path": "minimax-operator-accepted-ui-20261023.json",
-      "bytes": 1001,
-      "sha256": "7f4d76d7a085334b656bfd65bd3b002fa61c231e354b7e2fcd3438bbb224d6e8"
+      "bytes": 1375,
+      "sha256": "6211ce48e92f1d1b03f0781b1e6faee7da8fd888da5ff5906a041fd3f9f7fc42"
     },
     {
       "path": "minimax-operator-ui-settings-before-send-20261023.json",
@@ -88,8 +103,8 @@
     },
     {
       "path": "zcode-operator-accepted-ui-20261023.json",
-      "bytes": 914,
-      "sha256": "29a8289e3122cbc91b69b2003db7bdc500f5a1485f56bf7be3f79195b0415012"
+      "bytes": 1286,
+      "sha256": "ce78bc8cb9e7f338357137a1c10c1553f952f4d0f2ac494140ed584a6b2c9798"
     },
     {
       "path": "zcode-operator-ui-settings-before-send-20261023.json",
@@ -122,5 +137,11 @@
   "originalFindingCount": 18,
   "originalMNotPassPreserved": true,
   "designatedDualPass": false,
-  "releaseAuthorized": false
+  "releaseAuthorized": false,
+  "limitedIndependentReceiptReview": {
+    "reviewedCommit": "66e21ce6ca3b8c17e601a7832bf7adb4aa7f0862",
+    "path": "limited-receipt-review.json",
+    "scope": "Fixed20payload only; later owner annotation/document-check/status snapshot is separate process supplement"
+  },
+  "fullDiffCheck": "exit2; pinned raw44 trailing whitespace warnings; scoped authored comparison exit0, not full pass"
 }

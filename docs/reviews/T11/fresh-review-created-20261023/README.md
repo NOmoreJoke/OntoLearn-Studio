@@ -14,3 +14,5 @@
 其余选择性诊断修正（Z工具行末分隔LF、M后续user范围/小写read名称）另记readback-diagnostic-corrections.json；实际重建只用原生观察字节/连续行，不用expected正文补缺。原生头/system/thinking不归档；本包保留的正文仅本人短请求、完整批准附件及其精确Read返回。至收件快照，未观察到两模型调用agent list/global config的身份命令；这只是既有自有记录的有限观察，不保证未来过程。
 
 当前仅证明两任务真实受理、UI设置和完整输入字节匹配。正式工程结论/终态/完整报告仍待后继本人原turn回读；未将109/739/1052或旧Z Pass当新版Pass。原18项仍open、旧M NotPass、F01/F16/Q5及所有父门保持。无新增collector/API/native/凭据/网络票，不重测无变化代码，不push/PR/合并/发布。
+
+有限独立收件复核仅覆盖固定66e21ce6的20payload及重建规则，未访问native/runtime/当前模型报告；未发现新增包内不一致，owner异常仍open。整包diff-check为exit2，44处尾空白均来自保真Z编号raw的空行尾tab；仅明确排除该固定raw的authored范围exit0，不能写整包通过，见document-checks。后继native绑定标签及最后状态快照为owner流程补充，不冒称该独审亲自运行或认证。

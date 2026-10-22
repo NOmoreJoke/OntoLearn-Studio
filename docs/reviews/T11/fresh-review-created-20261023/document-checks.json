@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "scope": "Creation receipt documentation, not product tests",
+  "checks": [
+    {
+      "scope": "full-created-package",
+      "exitCode": 2
+    },
+    {
+      "scope": "authored-and-other-files-excluding-pinned-raw-numbered-block",
+      "exitCode": 0
+    }
+  ],
+  "fullDiffResult": "Exit2 caused by preserved raw numbered Z attachment blank lines ending in tab. Raw bytes remain unchanged. No complete diff-check pass claimed.",
+  "authoredDiffResult": "Exit0 only for explicitly scoped comparison excluding that pinned raw file; not a replacement for the full result.",
+  "documentFormat": "Explicit Prettier check passed for authored README/JSON only; raw attachments and numbered output were not rewritten."
+}
