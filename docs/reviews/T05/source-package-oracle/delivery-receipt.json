@@ -1,0 +1,150 @@
+{
+  "AGENTS": {
+    "bytes": 15852,
+    "path": "AGENTS.md",
+    "protectedUnstaged": true,
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+  },
+  "artifacts": [
+    {
+      "bytes": 5651115,
+      "path": "tests/fixtures/quality/i05-source-package-oracle/oracle.json",
+      "sha256": "d8a91a9a1dc99def3187b3f77d9f88e5d2a95def08287fc672c8e5aa0fd5a9ab"
+    },
+    {
+      "bytes": 126099,
+      "path": "tests/fixtures/quality/i05-source-package-oracle/coverage.json",
+      "sha256": "6a8ba37ee119769f0493622ff7328a348ed03f04c749d8c9622c5987ae814b0a"
+    },
+    {
+      "bytes": 7115,
+      "path": "tests/fixtures/quality/i05-source-package-oracle/sources.json",
+      "sha256": "5c8d2203706254f000e90fa4d397a9b0873e4cb73720b778791436df22397c3c"
+    },
+    {
+      "bytes": 7350,
+      "path": "tests/fixtures/quality/i05-source-package-oracle/schema.json",
+      "sha256": "ddfbbb7f622115ee7698831e1f27333f6e14d8b2d35a5d70ea2aed301cbb012c"
+    },
+    {
+      "bytes": 327726,
+      "path": "tests/fixtures/quality/i05-source-package-oracle/budget-gaps.json",
+      "sha256": "4a0e72d103a156117e461810d1e0f27a4e96c8f69a56d405111cab34b99300e6"
+    }
+  ],
+  "authorActualValidation": [
+    "commands/build-candidate-01/result.json",
+    "commands/test-candidate-01/result.json",
+    "commands/check-candidate-01/result.json"
+  ],
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "branch": "feature/T05-source-package-oracle",
+  "businessStates": {
+    "known-rejection": 208,
+    "normal": 208,
+    "not-executed": 1
+  },
+  "candidate": "3d8f4ee912f41bd03388322d29a9bfc0e7defe85",
+  "candidateManifest": {
+    "bytes": 19807,
+    "path": "docs/reviews/T05/source-package-oracle/candidate-manifest.json",
+    "sha256": "d359f77e78a7c604566fec4df25701cefc3483c54bdf787b8620935e9cc81a01"
+  },
+  "candidateManifestMembersExcludingSelf": 96,
+  "candidateTrackedPaths": 97,
+  "counts": {
+    "caseSets": 3,
+    "datasets": 320,
+    "observations": 417,
+    "pending": 137,
+    "specified": 280
+  },
+  "deliveryScope": "external semantic oracle candidate and independent review with necessary explicit field gaps; no whole-oracle or product acceptance",
+  "format": "T05-source-package-oracle-limited-delivery/1",
+  "goalOrParentAcceptanceChange": false,
+  "independentActualValidation": {
+    "directSteps": 29,
+    "finiteModels": 37,
+    "matches": 101,
+    "profileContexts": 83,
+    "rawStreamsNotBackfilled": true,
+    "rebuildCheckExit": 0,
+    "selfTests": 37,
+    "selfTestsExit": 0,
+    "selfTestsSeconds": 3.394
+  },
+  "laterReadOnlySourceLocationsNotInCandidate": [
+    {
+      "bytes": 36922,
+      "path": "docs/iterations/I05/profile-integration-new-candidate-plan.md",
+      "readLines": [
+        [
+          68,
+          86
+        ]
+      ],
+      "ref": "de37ff64fab7f40b69fbf900e4657137ca18ce74",
+      "sha256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d"
+    },
+    {
+      "bytes": 45463,
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "readLines": [
+        [
+          100,
+          110
+        ],
+        [
+          117,
+          194
+        ]
+      ],
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b"
+    },
+    {
+      "bytes": 69523,
+      "path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "readLines": [
+        [
+          140,
+          159
+        ]
+      ],
+      "ref": "a3592837d854628948ef4c468b6c839f21763273",
+      "sha256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c"
+    }
+  ],
+  "newEvidenceOnly": [
+    "independent-review-R1.md",
+    "review-disposition.md",
+    "delivery-receipt.json",
+    "delivery-manifest.json"
+  ],
+  "newProbeOrObservationRead": false,
+  "next": "controller accepts independent fee/interface specification and explicit delta; then affected oracle update, new candidate and independent delta review; no waiting or pretending complete in this delivery",
+  "noNewExpectedFromLaterLocations": true,
+  "pendingCategories": {
+    "frontErrorPriority": 7,
+    "implicitLoaderError": 1,
+    "legacyDTO": 11,
+    "productionDAGRestore": 32,
+    "profileBudgetAndTypedUsage": 82,
+    "scopeProvenance": 3,
+    "structuredOnlyDAGError": 1
+  },
+  "productExecution": false,
+  "pushPRMerge": false,
+  "recordedUtc": "2026-10-22T07:04:35.123098+00:00",
+  "review": {
+    "authorReadFullReport": true,
+    "bytes": 10690,
+    "candidateChangesAfterReview": false,
+    "conclusion": "limited acceptance; all pending retained",
+    "findingP1P2": 0,
+    "path": "docs/reviews/T05/source-package-oracle/independent-review-R1.md",
+    "sha256": "90f6441a729c7aae169861973d82d6948a30d61cf8ea22ef74f65b54f8b502d6"
+  },
+  "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle",
+  "wholeOracleComplete": false
+}
