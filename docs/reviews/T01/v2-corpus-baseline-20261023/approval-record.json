@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "approvalId": "v2-contract-corpus-baseline-20261023-v1",
+  "approvedAt": "2026-10-22T19:51:53.863279+00:00",
+  "approvedByControllerThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "decision": "Approve these exact merged v2 contract corpus raw bytes as a stable baseline pin",
+  "sourceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "sourceRefKind": "actual remote develop confirmed by root git ls-remote; local develop not moved",
+  "records": [
+    {
+      "path": "packages/contracts/v2/fixtures.json",
+      "bytes": 472098,
+      "sha256": "32031804abf3283e87f070ffbfc3f95cf627f6b71e7bc49711faaff52ec31ad6",
+      "sourceGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3"
+    },
+    {
+      "path": "packages/contracts/v2/binding-regressions.json",
+      "bytes": 123964,
+      "sha256": "9601d6d0a31e3e71078ac2562c6b8501c1292bc2be71de742e40c2fc54512a24",
+      "sourceGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3"
+    },
+    {
+      "path": "packages/contracts/v2/frame-fixtures.json",
+      "bytes": 17537,
+      "sha256": "8e9a142ff04e908cc286c15702cd18b6c2ce9453490585d0855c3f62995dd2e5",
+      "sourceGitRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3"
+    }
+  ],
+  "authorityScope": "Controller record external to candidate; consumer must bind this exact record SHA from trusted operator input. approvedBy text alone is not authentication or a self-signing capability.",
+  "semanticBoundary": "Preserves existing merged resources only; does not freshly certify every corpus semantic expectation or answer any pending product question. Independent literal semantic anchors still require their own evidence.",
+  "expectedMustNotComeFromCandidateOrDynamicRegistry": true,
+  "candidateMayNotSelfApproveOrUpdateThisRecord": true,
+  "replacementRequires": "Explicit controller approval record, exact old/new raw and semantic diff, new candidate and required independent reviews; no silent regeneration with fixture changes",
+  "doesNotClose": [
+    "MiniMax O15 8.2 medium reported-open",
+    "B150 NotPass",
+    "fifteen review workflow items",
+    "parent acceptance or release gates"
+  ]
+}
