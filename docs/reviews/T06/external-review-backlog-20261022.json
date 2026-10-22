@@ -137,7 +137,7 @@
           }
         }
       },
-      "next": "Both new original-session turns and complete addenda/finals/independent audits safely archived; controller must review precise completion receipt and dispose open findings and deviations. No further correction round, CUA/model message/source/runtime test; UI0 and original parent gates remain.",
+      "next": "Controller full-read new R3 inputs and independent static READY, then explicitly schedule fresh tasks with exact execution/write clauses. Do not continue old SID corrections; no current GUI/model message/runtime authority. Old Pass/Fail/UNKNOWN and capacity/parent gates retained.",
       "successorInProgress": {
         "newProduct": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
         "frozen": true,
@@ -200,7 +200,33 @@
         "newFollowupTurnsCreated": 2,
         "correctionsStartReceipt": "docs/reviews/T06/round-2/process-correction-desktop-start-receipt-20261023.json"
       },
-      "processCorrectionCompletionReceipt": "docs/reviews/T06/round-2/process-correction-completion-receipt-20261023.json"
+      "processCorrectionCompletionReceipt": "docs/reviews/T06/round-2/process-correction-completion-receipt-20261023.json",
+      "freshRound3Preparation": {
+        "state": "READY_STATIC_ONLY_PENDING_CONTROLLER_START",
+        "historyProcess": "992f5b4a0369867e2898d85449a55dcbc6f684fa",
+        "entry": "docs/reviews/T06/round-3/ready-handoff.json",
+        "independentReport": {
+          "path": "docs/reviews/T06/round-3/independent-preparation-review.md",
+          "bytes": 11537,
+          "sha256": "635e5e449ae4059adbb3f1c501fca65204631510c4c5c2be87a56093bfcf8cd0",
+          "ownerFullRead": true,
+          "verdict": "READY, preparation only"
+        },
+        "workspaces": [
+          "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397",
+          "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-minimax-r3-review-3be0397"
+        ],
+        "tasksCreated": 0,
+        "actualSIDSettingsAcceptance": "UNKNOWN",
+        "scope": {
+          "all": 76,
+          "ownedFull": 56,
+          "productIncluded": 13,
+          "UIMetadata": 16,
+          "binaryMetadata": 4
+        },
+        "sourceRuntimeTests": false
+      }
     },
     {
       "id": "T06-UI",
@@ -514,7 +540,7 @@
     "Full parent 57P0/release and real two OS/human acceptance gates retained"
   ],
   "noSourceChangesOrUnchangedRetestsForInventory": true,
-  "updatedAt": "2026-10-22T20:42:24.101603+00:00",
+  "updatedAt": "2026-10-22T21:01:52.069672+00:00",
   "reviewResourceState": {
     "source": "root actual notification",
     "zcode": "root observed availability restored; reason unknown/no reset consumed; no account-wide hold",

@@ -1,0 +1,500 @@
+{
+  "scope": "R3 isolated approved locked dependency restoration only",
+  "started_utc": "2026-10-22T20:51:34.250527+00:00",
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397",
+  "HEAD": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
+  "preflight": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/preflight.json",
+    "bytes": 9266,
+    "sha256": "a0c0e113890f3f9477e37d99441848278f992201eca453117f46f1bfe2ac1113"
+  },
+  "AGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "dependency_manifests_and_locks": [
+    {
+      "path": "package.json",
+      "bytes": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32",
+      "git_blob": "0f83067f90b3da1eecb16af8ddcf99e18c99e082",
+      "git_bytes": 1953,
+      "git_sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32",
+      "byte_equal_git": true
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+      "git_blob": "99bf9de3805a29713d92c155c12f6de23c80e9f3",
+      "git_bytes": 224331,
+      "git_sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+      "byte_equal_git": true
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63",
+      "git_blob": "08d9cf0fa862356e0f5c6cc0039aebe25c6e861c",
+      "git_bytes": 494,
+      "git_sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63",
+      "byte_equal_git": true
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 20999,
+      "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+      "git_blob": "48e68bb2635aab2de04ecfb48737d730e1eab62a",
+      "git_bytes": 20999,
+      "git_sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+      "byte_equal_git": true
+    },
+    {
+      "path": ".python-version",
+      "bytes": 5,
+      "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d",
+      "git_blob": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+      "git_bytes": 5,
+      "git_sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d",
+      "byte_equal_git": true
+    },
+    {
+      "path": ".npmrc",
+      "bytes": 16,
+      "sha256": "be85cc462e740587626bbcbb1c3ed1c40b26e62ec072e8cbd2768f23915c28e6",
+      "git_blob": "cffe8cdef132f31903a4971117f33f60cd9a56e6",
+      "git_bytes": 16,
+      "git_sha256": "be85cc462e740587626bbcbb1c3ed1c40b26e62ec072e8cbd2768f23915c28e6",
+      "byte_equal_git": true
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "bytes": 491,
+      "sha256": "35f077bf29fc15fee1c9785bd89b01b9059edc30c185bd45affdfde0681235ae",
+      "git_blob": "4bd9e4ad83cfddf07a903155548f8deb0923a482",
+      "git_bytes": 491,
+      "git_sha256": "35f077bf29fc15fee1c9785bd89b01b9059edc30c185bd45affdfde0681235ae",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 291,
+      "sha256": "2bdce0f15eb195ddbdfcf75e7c43262bb1ff934c588b285f3e3c749750d72bcc",
+      "git_blob": "c56f1532d5ea282c7e5ac7ff3b337cd3284e00f8",
+      "git_bytes": 291,
+      "git_sha256": "2bdce0f15eb195ddbdfcf75e7c43262bb1ff934c588b285f3e3c749750d72bcc",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 351,
+      "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20",
+      "git_blob": "0123da2f597a80ed77a16610faedd195d5e59784",
+      "git_bytes": 351,
+      "git_sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20",
+      "byte_equal_git": true
+    }
+  ],
+  "owned_sources": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/planner.py",
+      "bytes": 39977,
+      "sha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+      "git_blob": "11f9b47e2fc23b8f2821859c542cbdcb3bd2dcb5",
+      "git_bytes": 39977,
+      "git_sha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/baseline_adapter.py",
+      "bytes": 22551,
+      "sha256": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+      "git_blob": "3469d13aac75140c941155768c4162ff9014d1a4",
+      "git_bytes": 22551,
+      "git_sha256": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/__init__.py",
+      "bytes": 255,
+      "sha256": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+      "git_blob": "55b8c37a87163fcd19faf12f277fb59c33f34e0e",
+      "git_bytes": 255,
+      "git_sha256": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_planner.py",
+      "bytes": 18557,
+      "sha256": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+      "git_blob": "33ab70c4e1c404eb692e3d251ab2653352fd5534",
+      "git_bytes": 18557,
+      "git_sha256": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_creation.py",
+      "bytes": 6151,
+      "sha256": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+      "git_blob": "05f765a72c500a26697e51a5e442206e57db2c37",
+      "git_bytes": 6151,
+      "git_sha256": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_failures.py",
+      "bytes": 11355,
+      "sha256": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+      "git_blob": "c2352426bea930996639a98b4117f06edf23ee12",
+      "git_bytes": 11355,
+      "git_sha256": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_baseline_adapter.py",
+      "bytes": 11995,
+      "sha256": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+      "git_blob": "a33ed06afe785303e6f6f5a4debb42681fa98102",
+      "git_bytes": 11995,
+      "git_sha256": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+      "byte_equal_git": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_resource_equivalence.py",
+      "bytes": 11658,
+      "sha256": "9bb385e714156ee41b1cbf113063dda52c7fe007e240c58df08459d66d861e8f",
+      "git_blob": "0effb4db74a5830e86d8e893d3cd8c7f047d8c70",
+      "git_bytes": 11658,
+      "git_sha256": "9bb385e714156ee41b1cbf113063dda52c7fe007e240c58df08459d66d861e8f",
+      "byte_equal_git": true
+    },
+    {
+      "path": "tests/fixtures/behavior/build_corpus.py",
+      "bytes": 16153,
+      "sha256": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+      "git_blob": "02c4f5306cf39353bb87abcdd9d78f80f41f05c8",
+      "git_bytes": 16153,
+      "git_sha256": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+      "byte_equal_git": true
+    },
+    {
+      "path": "tests/fixtures/behavior/counterexamples.json",
+      "bytes": 213042,
+      "sha256": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+      "git_blob": "dcf5e115f06cf34518d34a86712d54f9d65ce1dd",
+      "git_bytes": 213042,
+      "git_sha256": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+      "byte_equal_git": true
+    },
+    {
+      "path": "docs/iterations/T06/interface.md",
+      "bytes": 10072,
+      "sha256": "47fcdd948f838779f8c921ae7fcc48b586c8d24325e68f5a775b6b8670e4e2a0",
+      "git_blob": "1b973cb88b2f95919b6d02ce0558f2d0e6fb82fd",
+      "git_bytes": 10072,
+      "git_sha256": "47fcdd948f838779f8c921ae7fcc48b586c8d24325e68f5a775b6b8670e4e2a0",
+      "byte_equal_git": true
+    },
+    {
+      "path": "docs/iterations/T06/t09-adaptation.md",
+      "bytes": 3907,
+      "sha256": "0a48144fa3324c406af52848676c2f2e14840bf79747891d07f7a1709c7eb477",
+      "git_blob": "f58ffd8b7c69fe8f4f6025529a843bda3fbb358b",
+      "git_bytes": 3907,
+      "git_sha256": "0a48144fa3324c406af52848676c2f2e14840bf79747891d07f7a1709c7eb477",
+      "byte_equal_git": true
+    },
+    {
+      "path": "docs/iterations/T06/probe_t09_baselines.py",
+      "bytes": 8446,
+      "sha256": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+      "git_blob": "453d31e8bd296df56c70341669aecfe6b8c909d8",
+      "git_bytes": 8446,
+      "git_sha256": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+      "byte_equal_git": true
+    }
+  ],
+  "tools": {
+    "node": {
+      "path": "/usr/local/bin/node",
+      "version": "v24.15.0"
+    },
+    "npm": {
+      "path": "/usr/local/bin/npm",
+      "version": "11.12.1"
+    },
+    "uv": {
+      "path": "/Users/kyle/.local/bin/uv",
+      "version": "uv 0.11.12 (63c5f57d3 2026-05-08 aarch64-apple-darwin)"
+    },
+    "python3.12": {
+      "path": "/opt/homebrew/bin/python3.12",
+      "version": "Python 3.12.14"
+    }
+  },
+  "environment_overrides": {
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/review-r3/scratch/tmp",
+    "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/npm-cache",
+    "npm_config_devdir": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/node-gyp-cache",
+    "ELECTRON_CACHE": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/electron-cache",
+    "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/uv-cache",
+    "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/.venv",
+    "UV_PYTHON": "/opt/homebrew/bin/python3.12",
+    "UV_PYTHON_DOWNLOADS": "never",
+    "UV_LINK_MODE": "copy",
+    "XDG_CACHE_HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/xdg-cache"
+  },
+  "removed_environment_variable_names": [],
+  "commands": [
+    {
+      "name": "npm-ci",
+      "argv": [
+        "/usr/local/bin/npm",
+        "ci"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397",
+      "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/review-r3/scratch/tmp",
+      "started_utc": "2026-10-22T20:51:34.253279+00:00",
+      "pid": 42616,
+      "child_exit_code": 0,
+      "ended_utc": "2026-10-22T20:52:38.142936+00:00",
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/npm-ci.stdout.log",
+        "bytes": 143,
+        "sha256": "5d846d315951b8b191119be100597f06738ad031bbc685a430b08edf50526cca"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/npm-ci.stderr.log",
+        "bytes": 960,
+        "sha256": "bd33f737e754a94846c082ef9ae0314e4db461f3b413264f65bd975a58f7c6aa"
+      }
+    },
+    {
+      "name": "uv-sync-frozen",
+      "argv": [
+        "/Users/kyle/.local/bin/uv",
+        "sync",
+        "--frozen"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397",
+      "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/review-r3/scratch/tmp",
+      "started_utc": "2026-10-22T20:52:38.145462+00:00",
+      "pid": 44541,
+      "child_exit_code": 0,
+      "ended_utc": "2026-10-22T20:53:32.074217+00:00",
+      "stdout": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/uv-sync-frozen.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/uv-sync-frozen.stderr.log",
+        "bytes": 1200,
+        "sha256": "e0c6c4c3c43149018add78dd9b6e96ac4e69733aa060fce8716fdef4093d62ba"
+      }
+    }
+  ],
+  "fresh_actual_model_task_id": "UNKNOWN",
+  "fresh_actual_model_settings": "UNKNOWN",
+  "model_or_GUI_actions_performed": false,
+  "product_checks_or_tests_performed": false,
+  "status": "DEPENDENCIES_RESTORED",
+  "dependency_directory_isolation": {
+    "node_modules": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/node_modules",
+      "exists": true,
+      "existed_before": false,
+      "is_symlink": false,
+      "is_physical_directory": true,
+      "realpath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/node_modules",
+      "device": 16777232,
+      "inode": 71436011,
+      "mtime_ns": 1792702357817171372,
+      "within_current_worktree": true
+    },
+    ".venv": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/.venv",
+      "exists": true,
+      "existed_before": false,
+      "is_symlink": false,
+      "is_physical_directory": true,
+      "realpath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/.venv",
+      "device": 16777232,
+      "inode": 71469654,
+      "mtime_ns": 1792702358252345775,
+      "within_current_worktree": true
+    }
+  },
+  "workspace_links": {
+    "node_modules/@ontolearn/contracts": {
+      "symlink_target": "../../packages/contracts",
+      "realpath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/packages/contracts",
+      "within_current_worktree": true
+    },
+    "node_modules/@ontolearn/desktop": {
+      "symlink_target": "../../apps/desktop",
+      "realpath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/apps/desktop",
+      "within_current_worktree": true
+    }
+  },
+  "venv_python": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/.venv/bin/python",
+    "symlink": true,
+    "resolved_system_interpreter": "/opt/homebrew/Cellar/python@3.12/3.12.14/Frameworks/Python.framework/Versions/3.12/bin/python3.12"
+  },
+  "post_static_integrity": [
+    {
+      "path": "package.json",
+      "bytes": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 20999,
+      "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": ".python-version",
+      "bytes": 5,
+      "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": ".npmrc",
+      "bytes": 16,
+      "sha256": "be85cc462e740587626bbcbb1c3ed1c40b26e62ec072e8cbd2768f23915c28e6",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "bytes": 491,
+      "sha256": "35f077bf29fc15fee1c9785bd89b01b9059edc30c185bd45affdfde0681235ae",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 291,
+      "sha256": "2bdce0f15eb195ddbdfcf75e7c43262bb1ff934c588b285f3e3c749750d72bcc",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 351,
+      "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/planner.py",
+      "bytes": 39977,
+      "sha256": "525caeb1aafadc9856dc912e50fec95dfbcaea568e64b911f783d0d7f42a95d0",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/baseline_adapter.py",
+      "bytes": 22551,
+      "sha256": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/__init__.py",
+      "bytes": 255,
+      "sha256": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_planner.py",
+      "bytes": 18557,
+      "sha256": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_creation.py",
+      "bytes": 6151,
+      "sha256": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_failures.py",
+      "bytes": 11355,
+      "sha256": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_baseline_adapter.py",
+      "bytes": 11995,
+      "sha256": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_resource_equivalence.py",
+      "bytes": 11658,
+      "sha256": "9bb385e714156ee41b1cbf113063dda52c7fe007e240c58df08459d66d861e8f",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "tests/fixtures/behavior/build_corpus.py",
+      "bytes": 16153,
+      "sha256": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "tests/fixtures/behavior/counterexamples.json",
+      "bytes": 213042,
+      "sha256": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "docs/iterations/T06/interface.md",
+      "bytes": 10072,
+      "sha256": "47fcdd948f838779f8c921ae7fcc48b586c8d24325e68f5a775b6b8670e4e2a0",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "docs/iterations/T06/t09-adaptation.md",
+      "bytes": 3907,
+      "sha256": "0a48144fa3324c406af52848676c2f2e14840bf79747891d07f7a1709c7eb477",
+      "unchanged_since_preflight": true
+    },
+    {
+      "path": "docs/iterations/T06/probe_t09_baselines.py",
+      "bytes": 8446,
+      "sha256": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+      "unchanged_since_preflight": true
+    }
+  ],
+  "AGENTS_after": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "unchanged": true
+  },
+  "HEAD_after": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
+  "status_porcelain_after": " M AGENTS.md\n",
+  "ended_utc": "2026-10-22T20:53:32.128058+00:00",
+  "runner": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-r3-review-3be0397/out/environment-prep-r3/prepare_environment.py",
+    "bytes": 4850,
+    "sha256": "1b497811f9746f922011d6bacce6dc35c499997f54a64c29c1680e3dceff4a85"
+  },
+  "first_install_failure": null,
+  "manual_install_retry_count": 0,
+  "installer_warning_notes": [
+    "npm stderr records deprecated transitive dependencies, an unsupported npm_config_devdir environment warning, and an npm update notice; no configuration or dependency changes were made in response.",
+    "uv stderr records one internal network Retry attempt #0; the single uv sync --frozen invocation exited 0. No manual rerun occurred."
+  ],
+  "exit_evidence_boundary": "child_exit_code is the actual npm or uv subprocess return code. Individual internal lifecycle subprocess exits were not separately instrumented; complete installer stdout/stderr is preserved.",
+  "static_verification_boundary": "No dependency executables, product runtime, tests, checks, probes, measurements, native applications, or archive scripts were executed. Static file/hash/directory checks only."
+}
