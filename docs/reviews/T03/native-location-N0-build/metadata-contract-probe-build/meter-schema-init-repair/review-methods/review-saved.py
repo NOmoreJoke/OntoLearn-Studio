@@ -555,7 +555,7 @@ def profile_review(control, cfg, acc):
          meter['phaseReservations'] == {'preflight': 22000, 'dependency': 61000, 'control': 60000, 'emergency': 3000} and
          meter['futureOwnerClosureMetadataProposal'] == 48000 and meter['futureAuthorMetadataProposal'] == 202000 and
          meter['futureRootMetadataProposal'] == 202000 and meter['futureAllPartiesMetadataProposal'] == 598000 and
-         meter['futureByteProposal'] == 171966464 and meter['futureEntityProposal'] == 77824 and
+         meter['futureByteProposal'] == 171966464 and meter['futureEntityProposal'] == 532480 and
          meter['runtimeOwnerBytes'] == 41943040 and meter['ownerClosureBytes'] == 54525952 and
          meter['peerBytesEach'] == 37748736 and meter['noRefund'] is True and
          meter['proofSHA256'] == cfg['controlPins']['meter-proof.md'] and
@@ -677,8 +677,8 @@ def main():
             'ownerJSONUnits': 10240, 'ownerJSONFiles': 22, 'rawProjectionCap': 4096, 'depBindingsCap': 1024,
             'peerResultUnits': 2048, 'ownerManifestUnits': 768, 'ownerResultUnits': 1024, 'peerWorstUpper': 200616,
             'ownerWorstUpper': 46576, 'priorWitnessRereadPermitted': False, 'artifactExecutionPermitted': False,
-            'freshWideEntityProposal': 77824, 'rawMetadataFactor': 32, 'rawEntityFactor': 5,
-            'rawInitMetadata': 4096, 'rawInitEntity': 2048, 'schemaRows': 17, 'schemaNameFields': 67, 'sectionNameFields': 12}
+            'freshWideEntityProposal': 532480, 'rawMetadataFactor': 32, 'rawEntityFactor': 16,
+            'rawInitMetadata': 4096, 'rawInitEntity': 4096, 'schemaRows': 17, 'schemaNameFields': 67, 'sectionNameFields': 12}
         for key, expected in expected_method.items(): need(method[key] == expected, 'method-profile:' + key)
         need(method['readerSHA256'] == cfg['controlPins']['review-saved.py'] and
              method['readerBytes'] == len(control['review-saved.py']), 'method-reader-identity')

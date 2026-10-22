@@ -864,7 +864,7 @@ def main():
         demand(meter_plan['runtimeMetadataReserved'] == 146000 and meter_plan['futureAllPartiesMetadataProposal'] == 598000, 'fixed-runtime-ticket')
         demand(auth['runtimeMetadataReserved'] == 146000 and auth['freshFutureAllPartiesMetadataAccepted'] == 598000, 'fresh-runtime-ticket-not-accepted')
         demand(meter_plan['futureAllPartiesMetadataProposal'] <= history['currentMetadataRemaining'], 'joint-future-ticket-does-not-fit-declared-remainder')
-        demand(meter_plan['futureEntityProposal'] == 77824 and auth['freshFutureEntityAccepted'] == 77824, 'fresh-entity-ticket-not-accepted')
+        demand(meter_plan['futureEntityProposal'] == 532480 and auth['freshFutureEntityAccepted'] == 532480, 'fresh-entity-ticket-not-accepted')
         demand(auth['ownerClosureMetadataAccepted'] == 48000 and auth['peerMetadataEachAccepted'] == 202000, 'joint-component-authority')
         demand(auth['freshFutureByteProposalAccepted'] == 171966464 and auth['runtimeOwnerBytes'] == 41943040, 'fresh-byte-ticket-not-accepted')
         demand(history['historicalOwnerActual'] is None and history['oldOwner1000Reusable'] is False and history['oldRoot4000Reusable'] is False, 'historical-unknown-must-remain')
