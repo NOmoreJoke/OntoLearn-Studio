@@ -1,0 +1,92 @@
+{
+  "authorization": "I06-N0-execution-004-1526093e58aeaa43",
+  "preparationRef": "e85ae88815e45aa336850b594910a524a073cc00",
+  "actualSourceBinding": {
+    "I06ProductRef": "1217e0f63a9c62b72e01046ef5fbc5c53434251a",
+    "I06ProcessRef": "9509d02790f9a79905371c5183be16cab99f5114",
+    "T03InputRef": "bfe137f371361f9fda446d5cbe6b3079c5433ee5",
+    "T03ProcessRef": "37fe056e5d1716a10237de20f79042db54aa0549",
+    "inputDigest": "1526093e58aeaa43cd5c96dfc911dd032759df27c039bf3d11eacfb1e6cbfd50"
+  },
+  "window": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I06-N0-diagnostic-004-single-host-CLI-execution-window.md",
+    "bytes": 5252,
+    "sha256": "2e5aa0884155a4a4e4b6da38fa97c75c2504d3289e7d51341e44a5bd7eddcf92"
+  },
+  "cmd": {
+    "bytes": 17176,
+    "sha256": "100ebd1ae0a8f43608146565b95d145503e014b87beaccb53182fbc5115d8781"
+  },
+  "rawEntries": [
+    {
+      "path": "docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-004/intent.json",
+      "bytes": 1899,
+      "sha256": "597078793508fd5d7515b83efba0d392310a492ab7d5f72c734a10062aa73cab",
+      "mode": "0600"
+    },
+    {
+      "path": "docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-004/postflight.json",
+      "bytes": 1135,
+      "sha256": "547c8dd40a709a30c323f4abf186b8a3f41d2a53816e477010aa3e7b9b88d2a3",
+      "mode": "0600"
+    },
+    {
+      "path": "docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-004/result.json",
+      "bytes": 517,
+      "sha256": "834187b98d7266fdf71764bf32ea0b8fabf72bf417df76c12c831fd3029dc72e",
+      "mode": "0600"
+    },
+    {
+      "path": "docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-004/core.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0600"
+    },
+    {
+      "path": "docs/reviews/I06/native-location-N0/host-core-run-preparation/execution-004/core.stderr",
+      "bytes": 41,
+      "sha256": "0eebce381ace03e8f0650636b4aff2d25cb0f209e3fdb7a9e54d5c494cf41126",
+      "mode": "0600"
+    }
+  ],
+  "prePostArtifactsEqual": true,
+  "controlBytes": 3551,
+  "rawStreamBytes": {
+    "stdout": 0,
+    "stderr": 41
+  },
+  "toolInitialChunk": "80f169",
+  "toolSession": 66633,
+  "toolTerminalChunk": "7b6031",
+  "toolExitCode": 1,
+  "sameSessionContinuationCount": 1,
+  "nativeDispatchCount": 1,
+  "coreResult": {
+    "authorization": "I06-N0-execution-004-1526093e58aeaa43",
+    "cancelSignal": 0,
+    "corePid": 58416,
+    "coreReturncode": 1,
+    "coreWaitStatus": 256,
+    "dispatchAttempted": true,
+    "events": [],
+    "fixtureResidual": "unknown; not scanned/deleted",
+    "leaderState": "reaped",
+    "nativeDrainCertified": false,
+    "processApiRefusedOrWaitUnknown": false,
+    "retry": false,
+    "sourceRef": "b59239f9c1ec2774c7922f95dfc67db4dc8754e8",
+    "status": "FAILED_CORE_NONZERO_OR_SIGNAL",
+    "waitAndCleanupElapsedSeconds": 1.138704792,
+    "waitOutcome": "terminal"
+  },
+  "newBehaviorCoverage": {
+    "observed": "First independent fixture witness stopped at fixed envelope assertion; no proof lines emitted.",
+    "P1Absence": false,
+    "P2PresentEmpty": false,
+    "oneAceNegative": false,
+    "invalidFdNegative": false,
+    "productionMetadataRemedyReached": false,
+    "laterOriginalCasesReached": false
+  },
+  "boundary": "No retry, extra probe, source change, build, fixture scan or cleanup. Leader reap/output stability do not certify natural EOF/descendant drain."
+}
