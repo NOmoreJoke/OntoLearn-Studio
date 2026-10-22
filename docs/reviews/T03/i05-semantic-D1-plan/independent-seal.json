@@ -1,0 +1,49 @@
+{
+  "schema": "T03_I05_D1_FRESH_INDEPENDENT_PLAN_REVIEW_SEAL_V1",
+  "status": "SEALED_NEEDS_CHANGE_PLAN_ONLY",
+  "reviewer": "/root/i05_d1_plan_independent_review",
+  "candidate": "ae28572c91b78933c35996f0d80e81c03b96edf0",
+  "base": "c3eb0694daad26527cc3a1eb0127ed5033f2be25",
+  "artifacts": [
+    {
+      "path": "independent-review.md",
+      "bytes": 11655,
+      "sha256": "50d83cba279ab3eb048b2676ead4eb17068e68106f424d8a47b86f065e80d346"
+    },
+    {
+      "path": "independent-checks.json",
+      "bytes": 10400,
+      "sha256": "30167a72bd00030c87bf354399488b176a69ac648721a6fe45fd0e31aabcb3a5"
+    }
+  ],
+  "checks": {
+    "ownReportAndChecksFullTextReadback": true,
+    "ownJSONParsed": true,
+    "candidateHEADUnchanged": true,
+    "indexEmpty": true,
+    "trackedModificationOnlyProtectedAGENTS": true,
+    "formatterCheck": {
+      "exitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+      "stderr": ""
+    },
+    "whitespaceCheck": {
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "new-content differs from /dev/null; no whitespace diagnostics"
+    }
+  },
+  "findings": [
+    "F1 P2 full43 guard transition misses7 shared source/resource conflicts plus2 dependency pins",
+    "F2 P3 exact function.__code__ literal lost in verification matrix"
+  ],
+  "policyDriftRecordedNotProductFailure": true,
+  "sourceOrProductModified": false,
+  "runtimeExecuted": false,
+  "stageOrCommit": false,
+  "externalModelPass": false,
+  "executionAuthorization": false,
+  "selfExcluded": true,
+  "next": "Parent fully reads and commits original review before owner remedy; new actual candidate gets exact independent delta; old15/D066/report originals preserved"
+}

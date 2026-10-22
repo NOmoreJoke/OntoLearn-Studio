@@ -1,0 +1,243 @@
+{
+  "schema": "T03_I05_D1_FRESH_INDEPENDENT_PLAN_REVIEW_V1",
+  "reviewer": "/root/i05_d1_plan_independent_review",
+  "status": "NEEDS_CHANGE_PLAN_ONLY",
+  "base": "c3eb0694daad26527cc3a1eb0127ed5033f2be25",
+  "candidate": "ae28572c91b78933c35996f0d80e81c03b96edf0",
+  "protectedAGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "candidateIdentity": {
+    "files": 15,
+    "payloadFiles": 14,
+    "payloadBytes": 349852,
+    "totalBytes": 354405,
+    "manifestBytes": 4553,
+    "manifestSHA256": "21a7b0a5f39d6673613a6f30f83797471382a70db3444b3775e2f5e698df8e0c",
+    "allCurrentEqualFixedGitAndManifest": true,
+    "exactBaseDeltaOnly15": true,
+    "old66Unchanged": true
+  },
+  "independentChecks": {
+    "inputRecords": 81,
+    "gitOriginRecords": 77,
+    "allGitOriginRawBytesSHAAndBlobMatched": true,
+    "currentSnapshotDriftCount": 1,
+    "otherRecordsMatched": 80,
+    "threeOriginalLocksLosslesslyReconstructed": [
+      {
+        "name": "formalBase",
+        "packages": 18,
+        "bytes": 20999
+      },
+      {
+        "name": "profileProduct",
+        "packages": 23,
+        "bytes": 28440
+      },
+      {
+        "name": "mappingProduct",
+        "packages": 21,
+        "bytes": 23393
+      }
+    ],
+    "allBlocksLengthAndSHAIndependentlyMatched": true,
+    "unionNames": 26,
+    "commonNames": 18,
+    "artifactSourceRows": 143,
+    "artifactSourceRowsIndependentlyParsedAndMatched": true,
+    "versionConflicts": [],
+    "artifactIdentityConflicts": [],
+    "exactBlockDifferences": ["ontolearn-engine", "rdflib", "setuptools"],
+    "licenseApprovalNullAll26": true,
+    "fullSchemaJSONParsed": true,
+    "fieldIndexProperties": 1241,
+    "fieldIndexBySchema": {
+      "build-provenance.schema.json": 669,
+      "build-receipt.schema.json": 56,
+      "runtime-validation-receipt.schema.json": 366,
+      "runtime-header.schema.json": 150
+    },
+    "fieldIndexUniqueRequiredTypeConstEnumRefMismatches": [],
+    "forwardOldSchemaLiteralPointersMatched": 14,
+    "forwardOldResponsibilityLiteralPointersMatched": 10,
+    "completeSourceAndInterfaceListsEqualD0": true,
+    "oldGuardRows": 43,
+    "oldGuardSharedWithNewCanonicalResources": 20,
+    "additionalSourceResourceGuardConflicts": 7,
+    "sourceResourceGuardConflicts": [
+      {
+        "path": "packages/contracts/python/contract_v2.py",
+        "oldGuard": {
+          "bytes": 20174,
+          "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+          "authority": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98:scripts/build-engine.mjs fixedInputs"
+        },
+        "newSource": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "bytes": 34608,
+          "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+          "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76"
+        },
+        "owner": "T01"
+      },
+      {
+        "path": "packages/contracts/v2/errors.json",
+        "oldGuard": {
+          "bytes": 14400,
+          "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1",
+          "authority": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98:scripts/build-engine.mjs fixedInputs"
+        },
+        "newSource": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "bytes": 16299,
+          "sha256": "ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c",
+          "gitBlob": "9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b"
+        },
+        "owner": "T01"
+      },
+      {
+        "path": "packages/contracts/v2/registry.json",
+        "oldGuard": {
+          "bytes": 13039,
+          "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb",
+          "authority": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98:scripts/build-engine.mjs fixedInputs"
+        },
+        "newSource": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "bytes": 15962,
+          "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+          "gitBlob": "8d2195b04a193501b90bbfc432e3af2d2f6e489d"
+        },
+        "owner": "T01"
+      },
+      {
+        "path": "packages/contracts/v2/schema.json",
+        "oldGuard": {
+          "bytes": 122889,
+          "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79",
+          "authority": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98:scripts/build-engine.mjs fixedInputs"
+        },
+        "newSource": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "bytes": 207256,
+          "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf",
+          "gitBlob": "114d963d0967d2a9ce347195b5ee536e09a8195a"
+        },
+        "owner": "T01"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/resources.py",
+        "oldGuard": {
+          "bytes": 2927,
+          "sha256": "2361c55da7983e46fbdd08e50fc3ec48b281d2c76d0021f82fd94ab50ca54274",
+          "authority": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98:scripts/build-engine.mjs fixedInputs"
+        },
+        "newSource": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "bytes": 3065,
+          "sha256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+          "gitBlob": "6d9296633467047c0860a9b09053d577f796dad5"
+        },
+        "owner": "original I05/T05 source owner"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "oldGuard": {
+          "bytes": 52609,
+          "sha256": "5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549",
+          "authority": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98:scripts/build-engine.mjs fixedInputs"
+        },
+        "newSource": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "bytes": 65749,
+          "sha256": "60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07",
+          "gitBlob": "9310f6d6f12435f05e6efb62bf44a3afffc56929"
+        },
+        "owner": "original I05/T05 source owner"
+      },
+      {
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "oldGuard": {
+          "bytes": 32917,
+          "sha256": "cc701dba39cdeb7f2ae281dfd4a9580b879b9e85f34d3c87a09a3414e7c32731",
+          "authority": "a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98:scripts/build-engine.mjs fixedInputs"
+        },
+        "newSource": {
+          "ref": "6891a5842302859a531cf82767c5a482417bc274",
+          "bytes": 35220,
+          "sha256": "3ac496383349e3ddefea1672c27c88bacaf99f4436c22e96e1592393bac102f3",
+          "gitBlob": "79930f9690151eab376a8839bac2349c7d47c29c"
+        },
+        "owner": "original I05/T05 source owner"
+      }
+    ],
+    "authorExact39ScratchPathsCurrentlyAbsent": true
+  },
+  "policyDrift": {
+    "classification": "live operational policy advanced after author snapshot; not product/base change and not frozen candidate corruption",
+    "recordedBytes": 3172,
+    "recordedSHA256": "7b54d589d39bfe71c0f67d61c00995bb4d60b5156a74a6ae25ac69a2f491f5eb",
+    "currentBytes": 3160,
+    "currentSHA256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1",
+    "currentFullTextRead": true,
+    "observedChange": "T06 foreground creation released; current short lease follows execution-state; no change to native/static execution restrictions",
+    "requiredDisposition": "append current policy identity at process/dispatch boundary; preserve old15 history; no unchanged product retest"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "file": "docs/iterations/T03/i05-semantic-D1-plan/implementation-plan.md",
+      "lines": [55, 58, 59, 68],
+      "supportingFile": "docs/iterations/T03/i05-semantic-D1-plan/forward-protocol-delta.md",
+      "supportingLines": [49, 51],
+      "title": "Complete guard migration misses seven shared source/resource pin conflicts",
+      "status": "OPEN",
+      "acceptance": "full43-to-new33/parent matrix, all9 known changed guards incl2 dependency pins, exact owners/adoption/guard version and preserved old-flag/default behavior; no implementation authorized"
+    },
+    {
+      "id": "F2",
+      "priority": "P3",
+      "file": "docs/iterations/T03/i05-semantic-D1-plan/verification-matrix.md",
+      "lines": [54],
+      "title": "Use exact literal function.__code__ in loader acceptance",
+      "status": "OPEN",
+      "acceptance": "backticked literal function.__code__; keep exactCodeType/canonical/co_consts/domain obligations"
+    }
+  ],
+  "readMethod": {
+    "all15FilesReadOrFullyParsed": true,
+    "allMarkdownFullRead": true,
+    "largeRepeatedLockArtifactAndSchemaGraphs": "parsed all values; independent full identity reconstruction/index/relationship checks; not claiming line-by-line semantic re-audit of every unchanged supplier product source or business asset",
+    "longOutputTruncation": "initial combined output truncated; normative Markdown completed from held continuous segments and targeted original protocol prefix; no unseen truncation treated as read",
+    "sourceHashing": "all81 existing sources inspected for stated identity only; no source imported or executed"
+  },
+  "notExecuted": [
+    "JSONSchema engine",
+    "product tests",
+    "resolver/install",
+    "source compile/pycompile/import/call",
+    "probe/fixture/simulation",
+    "archive decode",
+    "native/API/DB/network/GUI",
+    "installed/license/binary/witness/identity payload or SDK reads",
+    "stage/commit/push/PR/merge"
+  ],
+  "externalModelGate": {
+    "designatedZCodeMinimaxReviewPerformed": false,
+    "oldPassInherited": false
+  },
+  "rootAdoption": false,
+  "executionAuthorization": false,
+  "formatter": {
+    "tool": "existing bundled prettier",
+    "scope": "own independent-review.md and independent-checks.json only",
+    "writeExitCode": 0,
+    "writeStdout": "docs/reviews/T03/i05-semantic-D1-plan/independent-review.md 47ms\ndocs/reviews/T03/i05-semantic-D1-plan/independent-checks.json 20ms\n",
+    "note": "Actual tool output copied; final explicit check recorded by seal"
+  },
+  "seal": "final seal supplied externally; no writes after seal",
+  "ownDraftCorrection": "Unsealed checks draft briefly included incorrect formatter timings53/21ms; corrected to actual47/20ms before final readback/seal. No candidate changes or rerun of product."
+}
