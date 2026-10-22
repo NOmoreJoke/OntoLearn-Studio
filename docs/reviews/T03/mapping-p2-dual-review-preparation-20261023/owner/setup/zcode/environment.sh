@@ -1,0 +1,19 @@
+#!/bin/sh
+unset PYTHONPATH
+unset ROOT_SOURCE_PATH
+unset I04_TEST_FIXTURE
+unset I04_NATIVE_ISOLATED
+unset I02_HMR
+unset I02_NATIVE
+unset ENGINE_PATH
+unset PACKAGE_PATH
+export npm_config_cache='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/env-cache/npm'
+export UV_CACHE_DIR='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/env-cache/uv'
+export UV_PROJECT_ENVIRONMENT='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/.venv'
+export UV_LINK_MODE=copy
+export ELECTRON_CACHE='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/env-cache/electron'
+export ELECTRON_BUILDER_CACHE='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/env-cache/electron-builder'
+export XDG_CACHE_HOME='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/env-cache/xdg'
+export PLAYWRIGHT_BROWSERS_PATH='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/env-cache/playwright'
+export TMPDIR='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/tmp'
+export I02_EVIDENCE='/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-P2-zcode-review-da1795/build/review-session/raw/c1-evidence.json'

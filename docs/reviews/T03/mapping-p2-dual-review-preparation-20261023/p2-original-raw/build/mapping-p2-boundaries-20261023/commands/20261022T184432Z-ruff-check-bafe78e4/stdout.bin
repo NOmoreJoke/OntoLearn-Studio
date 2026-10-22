@@ -1,0 +1,31 @@
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_mapping_entrypoint.py:102:101
+    |
+101 | def test_socket_guard_is_restored_after_successful_fixed_probe():
+102 |     originals = {name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")}
+    |                                                                                                     ^^^^
+103 |     assert probe.run() == EXPECTED
+104 |     assert all(getattr(socket, name) is original for name, original in originals.items())
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_mapping_entrypoint.py:109:101
+    |
+107 | @pytest.mark.parametrize("api", ["socket", "create_connection", "getaddrinfo"])
+108 | def test_socket_attempt_is_refused_and_original_apis_are_restored(monkeypatch, api):
+109 |     originals = {name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")}
+    |                                                                                                     ^^^^
+110 |
+111 |     def attempt(*_args, **_kwargs):
+    |
+
+E501 Line too long (104 > 100)
+   --> packages/engine/tests/test_mapping_entrypoint.py:121:101
+    |
+120 | def test_swallowed_socket_failure_cannot_be_reported_as_zero_calls(monkeypatch):
+121 |     originals = {name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")}
+    |                                                                                                     ^^^^
+122 |     parse = probe.parse_xlsx
+    |
+
+Found 3 errors.

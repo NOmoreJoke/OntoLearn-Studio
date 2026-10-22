@@ -1,0 +1,37 @@
+# T03 历史实现的精确候选覆盖
+
+本表由固定 Git 对象元数据逐路径比较产生，不读 native 冻结载荷，不执行产品。same 只证明字节身份；changed/deleted 明确表示旧字节没有被当前版本完整覆盖，须作为修复历史审查，不能冒旧 Pass。四分支分别评审，不把互斥共享版本拼接。完整对象/路径见 coverage-matrix.json。
+
+| 历史阶段                   | 固定 ref                                   | 完整当前审查组   | 相同/改变/删除的 engineering 路径 | 当前处置                                                                                             |
+| -------------------------- | ------------------------------------------ | ---------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| S1 initial service         | `438c4ba4dd6848cff8d3c25332cd583421c6a8ec` | mapping-S1       | 9/2/0                             | superseded by full S1 303; old reports retained                                                      |
+| S1 original package        | `0ad7e0a75cc4583918b057885631934c0a9bd859` | mapping-S1       | 17/1/0                            | source retained/acceptance tests extended at303; old package not rerun                               |
+| S1 current acceptance      | `30319412daf8ae4745987babf7bbed93c53b6b42` | mapping-S1       | 18/0/0                            | current independent branch; full review required                                                     |
+| source selection old29     | `f2c7deb8139255bc11e44c5b4a958ecbdae6a373` | source-selection | 0/2/0                             | explicitly superseded by8c inspection32; no oldPass inheritance                                      |
+| source selection current32 | `8c904b57b7c5aac7b2b19273e679e7e36304dd1c` | source-selection | 2/0/0                             | current independent branch; full review required                                                     |
+| profile dependency A       | `fd87fd148dc9e26d2c041ccb9fb61e3a80c51821` | profile-D2       | 5/0/0                             | retained two configs inside D2; helpers also included in full process                                |
+| profile D2 initial         | `418b5288014d3b7285c8b67b4d82086ed6541d2f` | profile-D2       | 45/1/0                            | superseded by final a4d; original failure retained                                                   |
+| profile D2 final           | `a4d1457fc6a1f1d1832296a8dcdb2ef42da75b98` | profile-D2       | 46/0/0                            | current independent branch; 83 mixed outcomes remain                                                 |
+| N0 initial3writers         | `c7ca9f517d3a4cffc39ce823b8f0bb16091e68a5` | native-current   | 4/3/0                             | R5/new sources/metadata optimization supersede selected paths; no oldPass inheritance                |
+| N0 logging R5              | `fe98dab02375362fcc07ca9bb309de17b558fcf2` | native-current   | 4/3/0                             | metadata optimization changes driver later; static repair history retained                           |
+| N0 tool supply             | `fb40bde92cc35269c25c11a8628a71d5f750be4e` | native-current   | 13/3/0                            | finite supply tools retained; not runtime proof                                                      |
+| N0 source adoption         | `6614837085c86067428d216eedf8a2a9d8112a19` | native-current   | 19/6/0                            | old source/lock inputs superseded through builds3-6; old evidence retained                           |
+| N0 first build input       | `c80cbcd193f8cb64a98c97378bbdf61756701e27` | native-current   | 20/6/0                            | configure timed out; no pair; new input later, no retry or erasure                                   |
+| N0 metadata optimization   | `95f07d931eeffd3bdcd52cb21e9fa2d8a1db12bd` | native-current   | 22/4/0                            | optimized CMake/driver retained with CRLF preservation receipts; no measured performance claim       |
+| N0 second build input      | `b65751963a8c1f0c35e6ef680e816a99c4026e24` | native-current   | 27/4/0                            | build2 pair frozen; old lock superseded by new input, NOT_RUN                                        |
+| N0 third EXCL input        | `4e4af36de8353fd72f9c43c14001992a1e936060` | native-current   | 33/4/0                            | build3 pair frozen; exact source/lock changes later, NOT_RUN                                         |
+| N0 fourth diagnostic input | `d87015bd1cb5196b9fde4b0153798602b52d60d9` | native-current   | 40/3/0                            | build4 pair frozen; exact source/lock changes later, NOT_RUN                                         |
+| N0 fifth endpoint input    | `e7cbf3e829349a488fd6f99ae537a4611edbc1eb` | native-current   | 46/3/0                            | build5 pair frozen; exact source/lock changes later, NOT_RUN                                         |
+| N0 sixth ACL input         | `3e6e5ddd14ae08241f2f26f8b30e0a765ce70077` | native-current   | 55/0/0                            | latest retained9source+3writers; pair frozen and NOT_RUN                                             |
+| metadata runner original   | `4690d9aed65f62aa635fc79e59b6eb53d2620d4b` | native-current   | 70/1/0                            | superseded runner code through meter repairs; original identity metadata retained, no payload reread |
+| meter v1                   | `bff478ae35cd90fbc894354b859b3e38e795fe83` | native-current   | 71/1/0                            | old103000 proposal withdrawn, original review not full closure; retained historical material         |
+| meter remedy v2            | `a4c6917ca4c7e953cdbf3d16fd6156d2c1e8020c` | native-current   | 73/1/0                            | Q frozen limited HOLD; old R1/R3/R5 not retrospectively passed                                       |
+| schema init first          | `fadce08d13be4970c6284d05df5b727cbda9a8da` | native-current   | 73/2/0                            | first failure retained, replaced by b348                                                             |
+| schema init fixed          | `b3487095bf634f947c3b65464e573d1fd8e33228` | native-current   | 74/1/0                            | N frozen HOLD; R7 remains until successor                                                            |
+| structural precheck first  | `68ffbb9dfab5790a1c076cf770e208b17eaa8d1b` | native-current   | 75/1/0                            | first report retained, replaced by dfbef                                                             |
+| structural precheck fixed  | `dfbef0d57af37fb577f8528def830f0b3c6b9aa9` | native-current   | 75/1/0                            | P frozen limited static source model, not runtime                                                    |
+| forward first candidate    | `b187c7104aeabe68b993911010bd0275cfc6c217` | native-current   | 77/0/0                            | first F1-F3 report retained, replaced by e6cd                                                        |
+| forward fixed candidate    | `e6cd3da5a17cf5e1dd3eaa29b8be951704ffb194` | native-current   | 77/0/0                            | final f2b37 frozen, source exact within current scope                                                |
+| caller first candidate     | `6815495c010e8eac617baa8c061d8ed3cfd90eec` | native-current   | 79/0/0                            | NEEDS_CHANGE F1-F4 sealed cf9; repair in progress, no dispatch                                       |
+
+指定模型实际任务、逐任务配置读回、终态全文报告及全部意见仍待真实派发；所有实际 ID 为 null。caller 当前首审未关闭，其完整组先登记、修复与独立 delta 后才更新候选派发。父 runtime 未证不会永久排除其它三组源码完整审查。

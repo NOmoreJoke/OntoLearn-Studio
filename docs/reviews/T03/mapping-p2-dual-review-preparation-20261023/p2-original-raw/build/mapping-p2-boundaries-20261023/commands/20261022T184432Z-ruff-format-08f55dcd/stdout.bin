@@ -1,0 +1,38 @@
+unformatted: File would be reformatted
+   --> packages/engine/src/ontolearn_engine/mapping/probe.py:228:17
+    |
+227 |         second = '<c r="B2" t="inlineStr"><is><t>显示文本</t></is></c>'
+    -         links = (
+    -             f'<hyperlinks><hyperlink xmlns:r="{docrel}" ref="B2" r:id="rId1"/>'
+    -             "</hyperlinks>"
+    -         )
+228 +         links = f'<hyperlinks><hyperlink xmlns:r="{docrel}" ref="B2" r:id="rId1"/></hyperlinks>'
+229 |     else:
+    |
+
+unformatted: File would be reformatted
+   --> packages/engine/tests/test_mapping_entrypoint.py:102:18
+    |
+101 | def test_socket_guard_is_restored_after_successful_fixed_probe():
+    -     originals = {name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")}
+102 +     originals = {
+103 +         name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")
+104 +     }
+105 |     assert probe.run() == EXPECTED
+--------------------------------------------------------------------------------
+110 | def test_socket_attempt_is_refused_and_original_apis_are_restored(monkeypatch, api):
+    -     originals = {name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")}
+111 +     originals = {
+112 +         name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")
+113 +     }
+114 |
+--------------------------------------------------------------------------------
+124 | def test_swallowed_socket_failure_cannot_be_reported_as_zero_calls(monkeypatch):
+    -     originals = {name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")}
+125 +     originals = {
+126 +         name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")
+127 +     }
+128 |     parse = probe.parse_xlsx
+    |
+
+2 files would be reformatted

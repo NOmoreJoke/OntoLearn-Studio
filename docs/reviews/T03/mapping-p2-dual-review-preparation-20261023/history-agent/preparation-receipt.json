@@ -1,0 +1,54 @@
+{
+  "schema": "T03-P2-HISTORY-AGENT-PREPARATION-RECEIPT/1",
+  "writes": "only history-agent directory",
+  "productMockBuildCheckExecuted": false,
+  "GUIUsed": false,
+  "gitOrOriginalInputsModified": false,
+  "counts": {
+    "findings": 18,
+    "P0": 57,
+    "original": 866,
+    "product": 875,
+    "process": 881,
+    "missingOld": 11,
+    "union": 892
+  },
+  "readNotes": [
+    "原报告合并输出发生工具截断，已分段补读相关全文；不以截断输出冒全文。",
+    "两个按链接推导的m0路径不存在，rg只读报错；随后按固定manifest定位真实I01输入及docs/m0-checklist。",
+    "非NUL Git中文quote误差仅诊断输出，最终全部使用ls-tree -rlz原始UTF8，不保留伪路径。",
+    "首次文档生成调用python3在stdin报Non-UTF-8 SyntaxError，未执行脚本/未写任何产物；改显式用户Python3.12，仅文本处理成功。"
+  ],
+  "artifacts": [
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/history-agent/complete-review-coverage-checklist.json",
+      "bytes": 956086,
+      "sha256": "69b9a99b641fbfdc27934395bd53c7742dd96a6b028184419ee2427c769bec14",
+      "lines": 25296
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/history-agent/complete-review-coverage-checklist.md",
+      "bytes": 8905,
+      "sha256": "59ca45310c36ba99b6f33fd9f4c32f0759ec8d096244b157de654ad6dfbf1acb",
+      "lines": 113
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/history-agent/historical-findings-index.json",
+      "bytes": 22512,
+      "sha256": "efcc5bc58ff39756bda13671890e4bb1800fc3a2efa1499b335f4e890369ec42",
+      "lines": 348
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/history-agent/historical-findings-index.md",
+      "bytes": 13164,
+      "sha256": "66ed4a3cb08bef0cd5e1870f76891602b014aa898c2395f4e50bff81595dea96",
+      "lines": 161
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/history-agent/old-eleven-missing-fixed-identities.json",
+      "bytes": 7306,
+      "sha256": "07b511c16277f1647efddd261ee2e9f34f5b5e66926f93969206053bebed7dc1",
+      "lines": 139
+    }
+  ]
+}

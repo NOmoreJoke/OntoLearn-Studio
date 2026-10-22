@@ -1,0 +1,20 @@
+......F.....                                                             [100%]
+=================================== FAILURES ===================================
+__________ test_socket_guard_is_restored_after_successful_fixed_probe __________
+
+    def test_socket_guard_is_restored_after_successful_fixed_probe():
+        originals = {
+            name: getattr(socket, name) for name in ("socket", "create_connection", "getaddrinfo")
+        }
+>       assert probe.run() == EXPECTED
+E       assert {'probe': 'T0...'passed', ...} == {'boundaryEvi...'passed', ...}
+E         
+E         Omitting 10 identical items, use -vv to show
+E         Differing items:
+E         {'exactFacts': [('urn:example:equipment/001', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '<urn:example:Equipme...999/02/22-rdf-syntax-ns#type', '<urn:example:Equipment>'), ('urn:example:equipment/002', 'urn:example:name', '"泵站B"')]} != {'exactFacts': [['urn:example:equipment/001', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '<urn:example:Equipme...999/02/22-rdf-syntax-ns#type', '<urn:example:Equipment>'], ['urn:example:equipment/002', 'urn:example:name', '"泵站B"']]}
+E         Use -v to get more diff
+
+packages/engine/tests/test_mapping_entrypoint.py:105: AssertionError
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_mapping_entrypoint.py::test_socket_guard_is_restored_after_successful_fixed_probe
+1 failed, 11 passed in 1.28s

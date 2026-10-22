@@ -1,0 +1,64 @@
+{
+  "action": "ruff-check",
+  "argv": [
+    "uv",
+    "run",
+    "--frozen",
+    "ruff",
+    "check",
+    "packages/engine/src/ontolearn_engine/mapping/probe.py",
+    "packages/engine/tests/test_mapping_entrypoint.py"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-p2-boundaries",
+  "startUtc": "2026-10-22T18:44:32.969623+00:00",
+  "ownedPid": 9534,
+  "driver": {
+    "path": "build/mapping-p2-boundaries-20261023/run-command.py",
+    "bytes": 4571,
+    "sha256": "9fcc468ce4189f3388fc710e0587c16447f8addaa23107b0d27ea842d09c08b9"
+  },
+  "headAtStart": "30319412daf8ae4745987babf7bbed93c53b6b42",
+  "productAtStart": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+      "bytes": 13950,
+      "sha256": "fcfb085ebbf704efdf3db418b10573c5b922d9d5a5c24f82a020f148570e98f9"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_entrypoint.py",
+      "bytes": 5565,
+      "sha256": "90f80f66deaea3371da04748b2a40a029c96e2987d161e5f0aff86ff7bbb4ec6"
+    },
+    {
+      "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/fixed-probe-v2-expected.json",
+      "bytes": 3123,
+      "sha256": "e7a8c0d3e0e9152d56da781a1705837e7987ac44cc4e450a8707293e2641eebc"
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 1232,
+      "sha256": "7653ddf2d0dda19f1a12b1ed93afa694f722f84d7ec95d979d33268d946afc47"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 23393,
+      "sha256": "9f5b6d2b93d994a3e4f8a46ce5cccae99d4e024ea7531ab62dd8e85d6aa1152e"
+    }
+  ],
+  "endUtc": "2026-10-22T18:44:33.818427+00:00",
+  "launcherElapsedSeconds": 0.8488034999463707,
+  "exitCode": 1,
+  "stdout": {
+    "path": "build/mapping-p2-boundaries-20261023/commands/20261022T184432Z-ruff-check-bafe78e4/stdout.bin",
+    "bytes": 1562,
+    "sha256": "20bbd276d7f53015aecb5e6ebc30f356c75d1d0077f395f55c608821cb37ea92"
+  },
+  "stderr": {
+    "path": "build/mapping-p2-boundaries-20261023/commands/20261022T184432Z-ruff-check-bafe78e4/stderr.bin",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noGuiRequested": true,
+  "streamMode": "separate captured stdout/stderr",
+  "runtimeCandidate": "HEAD303 plus explicit two authorized product paths until candidate commit"
+}
