@@ -2,6 +2,10 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-22 16:57+08：按本人最新真实指令直接使用 computer use，旧静默/预约时段偏好撤回。ZCode 已实际新建并提交完整独立审查，session `session_863fdf5a03a40f74ea7b4b7289b097d1`；提交前后实际新任务 UI 均为 GLM-5.3／最高／完全访问，当前工作中。17003B 完整正文 SHA `a56121060048737ac48a72f05cdd0c1654f9ed46d0a8c266a8ca5a2509421786`；已通过原生消息复制→未发送输入区逐字读回确认受理全文，核验草稿清空。独立工作树 T06-zcode-review-61396a5 detached10f1，12来源哈希全部一致，AGENTS de15f6，新 npm ci/uv sync --frozen 均 exit0。仅补最新操作政策及路径映射，原完整输入保留；未改候选。详情见 round-1/zcode-desktop-start-receipt-20261022.json。
+
+新 CLI 登录65980在旧人工就绪后开启，随后被更新桌面方式指令取代；自有Ctrl-C实际exit1，无登录成功，不再要求人工CLI认证或再发链接。MiniMax 原会话继续运行，实际已有check exit0留存尾部及探索探针，但尚无完整报告/真终态，不能记Pass。指定双审现均有真实在途任务，不再属于“未创建”；以下旧状态均按各自时间保留。Goal仍blocked是既有正式状态，真实依赖/父模块验收仍开放，未push/PR/CI/merge。
+
 2026-10-22 16:25+08：唯一BigModel无浏览器登录器85505真实exit1，原文“Authorization timed out. Please retry login.”；未收到ready、旧URL过期，已正式告阶段主聊天和总控，未自动开启第二流程。ZCode正文未提交，待本人准备好后由唯一owner协调一份新官方登录入口。MiniMax原审查继续运行，已实际启动全仓check后台及只读内存反例，尚无完整报告/终态/Pass。
 
 2026-10-22 16:20+08：ZCode 第一方固定源码3c5b227的生产CLI/TUI构建与help/version/模块解析已通过；owner在工具PTY实际启动，显示Yolo但无可用模型、需Coding Plan登录，未提交审查。新空设置probe已正式close；TUI37972已双CtrlC实际exit0。阶段线核非凭据使用元数据明确既有BigModel individual/GLM5.3/max路由，经正式CLI login bigmodel --no-browser生成唯一本人登录入口并由阶段主聊天集中交本人；工具85505有界等待，不开浏览器、不代登录、不读取或搬运凭据，未把链接/state写入仓库。准备证据见round-1/zcode-cli-login-readiness-20261022.json。必须真正登录成功、逐会话读回指定设置后才发ZCode正文，当前MiniMax原任务继续，不因登录等待中断。
