@@ -21,7 +21,7 @@ SELF = STAGE / 'run-once.py'
 PLAN = STAGE / 'call-plan.json'
 METER_PLAN = STAGE / 'meter-plan.json'
 HISTORY = STAGE / 'meter-history.json'
-REVIEW_METHOD = STAGE / 'meter-schema-init-repair/review-methods/method-plan.json'
+REVIEW_METHOD = STAGE / 'meter-structural-precheck-repair/review-methods/method-plan.json'
 AUTH = Path('/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T03-metadata-contract-probe-one-build-authorization.json')
 PINS = STAGE / 'approved-identity-pins.json'
 SOURCE = STAGE / 'inputs/location_metadata_contract_probe.cc.raw'
@@ -56,7 +56,7 @@ class MeterLimit(Stop):
 
 
 class PhaseMeter:
-    LIMIT = 146000
+    LIMIT = 167000
 
     def __init__(self):
         self.reserved = 3000  # Emergency is reserved before any input access.
@@ -73,11 +73,11 @@ class PhaseMeter:
     def enter(self, phase):
         if phase == 'preflight':
             if not self.prepaid_pre:
-                self.reserved += 22000
+                self.reserved += 42000
                 self.prepaid_pre = True
         elif phase == 'dependency':
             if not self.prepaid_dep:
-                self.reserved += 61000
+                self.reserved += 62000
                 self.prepaid_dep = True
         elif phase == 'control':
             if not self.prepaid_ctl:
@@ -94,11 +94,11 @@ class PhaseMeter:
             raise MeterLimit('invalid-meter-debit')
         # Only fixed scalar fields: no iteration of records or meter history.
         if self.active == 'preflight':
-            if units > 22000 - self.pre_used:
+            if units > 42000 - self.pre_used:
                 raise MeterLimit('preflight-work-bound')
             self.pre_used += units
         elif self.active == 'dependency':
-            if units > 61000 - self.dep_used:
+            if units > 62000 - self.dep_used:
                 raise MeterLimit('dependency-work-bound')
             self.dep_used += units
         elif self.active == 'control':
@@ -169,60 +169,56 @@ class ByteMeter:
             raise MeterLimit('unknown-byte-role')
 
 
-def json_shape(raw):
-    """Byte/character scan only, before any native metadata JSON decoder.
-
-    Units count containers + object fields + array values. JSON string/number
-    characters are byte work, not metadata records. No input object callbacks.
-    """
+def json_shape(raw, unit_cap):
+    """Bounded packed scalar state; caller prepaid before character decoding."""
     text = raw.decode('utf-8')
-    stack = []
-    objects = arrays = fields = elements = 0
-    max_depth = 0
-    in_string = escape = False
-    for char in text:
-        if in_string:
-            if escape:
-                escape = False
-            elif char == '\\':
-                escape = True
-            elif char == '"':
-                in_string = False
+    units = steps = depth = array_bits = pending_bits = 0
+    quoted = escaped = bare = False
+    step_cap = 4 * unit_cap + 8
+    for c in text:
+        if quoted:
+            if escaped: escaped = False
+            elif c == '\\': escaped = True
+            elif c == '"': quoted = False
             continue
-        if char.isspace():
-            continue
-        if stack and stack[-1][0] == '[' and stack[-1][1] and char != ']':
-            elements += 1
-            stack[-1][1] = False
-        if char == '"':
-            in_string = True
-        elif char in '{[':
-            if char == '{':
-                objects += 1
-            else:
-                arrays += 1
-            stack.append([char, char == '['])
-            if len(stack) > 12:
-                raise Stop('json-depth-cap-before-decode')
-            max_depth = max(max_depth, len(stack))
-        elif char in '}]':
-            if not stack or (char == '}' and stack[-1][0] != '{') or (char == ']' and stack[-1][0] != '['):
-                raise Stop('json-container-shape')
-            stack.pop()
-        elif char == ':':
-            fields += 1
-        elif char == ',' and stack and stack[-1][0] == '[':
-            stack[-1][1] = True
-    if in_string or stack:
-        raise Stop('json-incomplete-shape')
-    return objects + arrays + fields + elements, max_depth
+        if bare:
+            if c not in '\"{}[],: \t\r\n': continue
+            bare = False
+        if c.isspace(): continue
+        demand(steps < step_cap, 'json-structural-action-cap-before-state')
+        steps += 1
+        # Only a value start can create an array-member unit. Punctuation
+        # also consumes an action before looking at packed scalar state.
+        if c not in '}],:' and depth and array_bits & 1 and pending_bits & 1:
+            demand(units < unit_cap, 'json-unit-cap-before-array-member')
+            units += 1
+            pending_bits &= ~1
+        if c == '"': quoted = True
+        elif c in '{[':
+            demand(units < unit_cap, 'json-unit-cap-before-container')
+            units += 1
+            demand(depth < 12, 'json-depth-before-state')
+            array_bits = (array_bits << 1) | (c == '[')
+            pending_bits = (pending_bits << 1) | (c == '[')
+            depth += 1
+        elif c in '}]':
+            demand(depth > 0 and bool(array_bits & 1) == (c == ']'), 'json-container-shape')
+            array_bits >>= 1; pending_bits >>= 1; depth -= 1
+        elif c == ':':
+            demand(units < unit_cap, 'json-unit-cap-before-field')
+            units += 1
+        elif c == ',':
+            if depth and array_bits & 1: pending_bits |= 1
+        else: bare = True
+    demand(not quoted and depth == 0, 'json-incomplete-shape')
+    return units, steps
 
 
 def decode_metadata(raw, unit_cap):
-    METER.work(3 * unit_cap + 8)  # Before lexical structure and native decoder.
-    units, depth = json_shape(raw)
-    demand(units <= unit_cap, 'json-record-cap-before-decode')
-    # Ordinary decoder only; no pairs/object hooks, key sorting or user callbacks.
+    METER.work(16)  # Admission/type/fee checks, before any raw access.
+    demand(type(unit_cap) is int and unit_cap >= 0, 'json-unit-cap-type')
+    METER.work(8 * unit_cap + 80)  # Native3U+8 plus structure5U+72, before scan.
+    units, steps = json_shape(raw, unit_cap)
     return json.loads(raw)
 
 
@@ -854,18 +850,18 @@ def main():
         demand(digest(meter_raw) == auth['meterPlanSHA256'] and digest(history_raw) == auth['historyLedgerSHA256'], 'meter-history-authority')
         meter_plan = decode_metadata(meter_raw, 256)
         history = decode_metadata(history_raw, 128)
-        proof_raw = bounded_read(STAGE / 'meter-schema-init-repair/meter-proof.md', 32768)
+        proof_raw = bounded_read(STAGE / 'meter-structural-precheck-repair/meter-proof.md', 32768)
         demand(digest(proof_raw) == meter_plan['proofSHA256'] == auth['countingProofSHA256'], 'counting-proof-authority')
         method_raw = bounded_read(REVIEW_METHOD, 32768)
         demand(digest(method_raw) == meter_plan['reviewMethodPlanSHA256'] == auth['reviewMethodPlanSHA256'], 'review-method-authority')
         method = decode_metadata(method_raw, 256)
         METER.work(128)  # Method/joint/byte/entity profile scalar validation.
-        demand(method['ownerMetadata'] == 48000 and method['peerMetadataEach'] == 202000, 'external-method-tickets')
-        demand(meter_plan['runtimeMetadataReserved'] == 146000 and meter_plan['futureAllPartiesMetadataProposal'] == 598000, 'fixed-runtime-ticket')
-        demand(auth['runtimeMetadataReserved'] == 146000 and auth['freshFutureAllPartiesMetadataAccepted'] == 598000, 'fresh-runtime-ticket-not-accepted')
+        demand(method['ownerMetadata'] == 103000 and method['peerMetadataEach'] == 268000, 'external-method-tickets')
+        demand(meter_plan['runtimeMetadataReserved'] == 167000 and meter_plan['futureAllPartiesMetadataProposal'] == 806000, 'fixed-runtime-ticket')
+        demand(auth['runtimeMetadataReserved'] == 167000 and auth['freshFutureAllPartiesMetadataAccepted'] == 806000, 'fresh-runtime-ticket-not-accepted')
         demand(meter_plan['futureAllPartiesMetadataProposal'] <= history['currentMetadataRemaining'], 'joint-future-ticket-does-not-fit-declared-remainder')
-        demand(meter_plan['futureEntityProposal'] == 532480 and auth['freshFutureEntityAccepted'] == 532480, 'fresh-entity-ticket-not-accepted')
-        demand(auth['ownerClosureMetadataAccepted'] == 48000 and auth['peerMetadataEachAccepted'] == 202000, 'joint-component-authority')
+        demand(meter_plan['futureEntityProposal'] == 737280 and auth['freshFutureEntityAccepted'] == 737280, 'fresh-entity-ticket-not-accepted')
+        demand(auth['ownerClosureMetadataAccepted'] == 103000 and auth['peerMetadataEachAccepted'] == 268000, 'joint-component-authority')
         demand(auth['freshFutureByteProposalAccepted'] == 171966464 and auth['runtimeOwnerBytes'] == 41943040, 'fresh-byte-ticket-not-accepted')
         demand(history['historicalOwnerActual'] is None and history['oldOwner1000Reusable'] is False and history['oldRoot4000Reusable'] is False, 'historical-unknown-must-remain')
         demand(auth['dependencyMode'] == 'CAPTURE_REUSE_PINNED_WITNESS_AND_DEFER_UNKNOWN_NO_INDEX_READ', 'dependency-method-not-accepted')

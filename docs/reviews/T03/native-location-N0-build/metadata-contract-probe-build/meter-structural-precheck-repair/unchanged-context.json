@@ -1,0 +1,73 @@
+{
+  "base": "4fc8ea8c089d85c101dc11cf1494bd7a4808d492",
+  "comparison": "exact source text only; no import/local-call/execution",
+  "readerFunctions": [
+    {
+      "function": "read_once",
+      "bytes": 1664,
+      "sha256": "c8e134a763f04a9fbbaff731662ca5df3d5c9b2e9b62076c1b56e3d3ca4a0a22"
+    },
+    {
+      "function": "encode",
+      "bytes": 1338,
+      "sha256": "f9a51e160bd56798652febea54e8c27b45e1c3463d83842cb64b86b0ae923649"
+    },
+    {
+      "function": "save",
+      "bytes": 919,
+      "sha256": "a2b6a643ef57cd57d94b0a9c7e60c8b971efe7a56338831973fb5abc2f55b6bc"
+    },
+    {
+      "function": "original_table",
+      "bytes": 753,
+      "sha256": "25fa1504d8ae1ba17f3e705937e9f55cf7cb14cb64e26ba95d805e0adac7f281"
+    },
+    {
+      "function": "lines",
+      "bytes": 270,
+      "sha256": "eec12086259ac5d35fb3e50fbe7845cdc740837f9efe1c506244b74c2012f39a"
+    },
+    {
+      "function": "projection",
+      "bytes": 516,
+      "sha256": "ddfc063f3443d077d4d15250df070d1826d0f27a82c39ceef893022a7f3ece6f"
+    },
+    {
+      "function": "macho",
+      "bytes": 739,
+      "sha256": "464a3c443ff3678be372d2f3ee93b503e6bc438d72e50f3d95d0734959ed5c98"
+    },
+    {
+      "function": "driver_argv",
+      "bytes": 5701,
+      "sha256": "406c0c30fd48162950e7cba13fad4803e442a9e4eee8dd365d66713aeadaf6ba"
+    },
+    {
+      "function": "init_load_schemas",
+      "bytes": 1973,
+      "sha256": "f1192a8d41185f79abfea25ac66062654dd528185508f7b2674c710e4233a26b"
+    },
+    {
+      "function": "load_review",
+      "bytes": 4564,
+      "sha256": "c00db26fdf190d5905d98e1563c5ae82ca8b5348f76f95659aab9473234c88fb"
+    },
+    {
+      "function": "raw_review",
+      "bytes": 5180,
+      "sha256": "f66e74530c2fa1af4601b08b332158eae3bcb96d251a5dabb16172469b30f1c7"
+    },
+    {
+      "function": "bindings",
+      "bytes": 1594,
+      "sha256": "181da3c0e024875674cdb6d858b39c89895e69c5f782deb21927afee7c0e528d"
+    }
+  ],
+  "changedR7Functions": [
+    "shape",
+    "decode",
+    "Account"
+  ],
+  "R2": "same matrix and phases; only new authorized fee/cap constants, method-profile fields and single decode per preliminary obligation",
+  "R4": "same read/write/file/byte procedures and all byte caps; report snapshot extra bounded scalars within existing R"
+}

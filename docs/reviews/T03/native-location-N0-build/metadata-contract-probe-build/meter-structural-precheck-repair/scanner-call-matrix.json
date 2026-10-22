@@ -1,0 +1,89 @@
+{
+  "status": "STATIC_SOURCE_CALL_CLASSIFICATION_NO_EXECUTION",
+  "runtime": [
+    {
+      "context": "authorization",
+      "unitCap": 96,
+      "phase": "preflight",
+      "nativeFee": 296,
+      "newStructureAndAdmissionFee": 568,
+      "totalFeeBeforeScan": 864
+    },
+    {
+      "context": "meter-plan",
+      "unitCap": 256,
+      "phase": "preflight",
+      "nativeFee": 776,
+      "newStructureAndAdmissionFee": 1368,
+      "totalFeeBeforeScan": 2144
+    },
+    {
+      "context": "history",
+      "unitCap": 128,
+      "phase": "preflight",
+      "nativeFee": 392,
+      "newStructureAndAdmissionFee": 728,
+      "totalFeeBeforeScan": 1120
+    },
+    {
+      "context": "method-plan",
+      "unitCap": 256,
+      "phase": "preflight",
+      "nativeFee": 776,
+      "newStructureAndAdmissionFee": 1368,
+      "totalFeeBeforeScan": 2144
+    },
+    {
+      "context": "call-plan",
+      "unitCap": 768,
+      "phase": "preflight",
+      "nativeFee": 2312,
+      "newStructureAndAdmissionFee": 3928,
+      "totalFeeBeforeScan": 6240
+    },
+    {
+      "context": "identity-pins",
+      "unitCap": 1100,
+      "phase": "preflight",
+      "nativeFee": 3308,
+      "newStructureAndAdmissionFee": 5588,
+      "totalFeeBeforeScan": 8896
+    },
+    {
+      "context": "identity-descriptor",
+      "unitCap": 1200,
+      "phase": "preflight",
+      "nativeFee": 3608,
+      "newStructureAndAdmissionFee": 6088,
+      "totalFeeBeforeScan": 9696
+    },
+    {
+      "context": "source-evidence",
+      "unitCap": 128,
+      "phase": "dependency",
+      "nativeFee": 392,
+      "newStructureAndAdmissionFee": 728,
+      "totalFeeBeforeScan": 1120
+    }
+  ],
+  "runtimePreflightUnits": 3804,
+  "runtimeDependencyUnits": 128,
+  "reader": {
+    "onlyShapeCaller": "decode",
+    "oneScanPerDecode": true,
+    "configPerFileCap": 256,
+    "methodPerFileCap": 256,
+    "peerFactsEachPerFileCap": 256,
+    "peerIndexEachPerFileCap": 768,
+    "peerCompletionEachPerFileCap": 64,
+    "allOtherRecords": "remaining joint U, existing file byte/type constraints",
+    "peerJointUnits": 12288,
+    "peerFiles": 40,
+    "ownerJointUnits": 10240,
+    "ownerFiles": 22,
+    "poisonOnAnyFailedAdmissionScanOrNativeDecode": true,
+    "successfulUnitsConsumedOnce": true,
+    "countersAreAcceptedOnlyNotFailedPrefixActuals": true
+  },
+  "unchangedScalarPriorDecode": "runtime fixed-hash opaque prior path scalar json.loads covered by24x880; not a shape call or unbounded native graph"
+}

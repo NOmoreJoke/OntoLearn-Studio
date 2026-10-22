@@ -230,29 +230,29 @@
     "status": "NOT_APPLIED_METADATA_PROPOSAL_EXCEEDS_GUARD; CURRENT_PREPARATION_UNKNOWN_ADDITIONAL"
   },
   "freshFutureProposalNotApplied": {
-    "metadata": 598000,
-    "runtime": 146000,
-    "ownerClosure": 48000,
-    "peerA": 202000,
-    "peerB": 202000,
+    "metadata": 806000,
+    "runtime": 167000,
+    "ownerClosure": 103000,
+    "peerA": 268000,
+    "peerB": 268000,
     "bytes": 171966464,
     "runtimeBytes": 41943040,
     "ownerClosureBytes": 54525952,
     "peerBytesEach": 37748736,
-    "entities": 532480,
-    "wideEntityCandidateUpper": 527248,
-    "metadataIfAccepted": 2823263,
-    "metadataRemainingIfAccepted": 176737,
-    "buildIfAccepted": 109226871848,
-    "buildRemainingIfAccepted": 28212081624,
-    "combinedIfAccepted": 118972598933,
-    "entitiesIfAccepted": 1053936,
-    "entityRemainingIfAccepted": -453936,
-    "status": "PROPOSAL_ONLY_ENTITY_GUARD_DEFICIT453936_NO_EXECUTION_AUTH"
+    "entities": 737280,
+    "wideEntityCandidateUpper": 729804,
+    "metadataIfAccepted": 3055263,
+    "metadataRemainingIfAccepted": -55263,
+    "buildIfAccepted": 109239454760,
+    "buildRemainingIfAccepted": 28199498712,
+    "combinedIfAccepted": 118985181845,
+    "entitiesIfAccepted": 1258736,
+    "entityRemainingIfAccepted": -658736,
+    "status": "PROPOSAL_ONLY_METADATA_GUARD_DEFICIT55263_ENTITY_GUARD_DEFICIT658736_NO_EXECUTION_AUTH"
   },
   "futureControlUpperBound": 51690,
-  "futureOwnerClosureUpperBound": 46576,
-  "futurePeerUpperBoundEach": 200616
+  "futureOwnerClosureUpperBound": 99616,
+  "futurePeerUpperBoundEach": 265192
 ,
   "schemaInitCurrentDeclaration": {
     "metadataDeclaration": 2225263,
@@ -271,5 +271,21 @@
     "oldGuardsRetained": [2250000, 2600000],
     "historicalActualUnknownRetained": true,
     "futureTicketsApplied": false
+  }
+,
+  "structuralPrecheckCurrentDeclaration": {
+    "metadata": 2249263,
+    "metadataGuardUnchanged": 3000000,
+    "metadataRemaining": 750737,
+    "build": 109067488296,
+    "combined": 118813215381,
+    "entity": 521456,
+    "entityGuardUnchanged": 600000,
+    "newStaticMetadataReservedOnce": 24000,
+    "newStaticBytesReservedOnce": 12582912,
+    "oldUnfundedMetadataProposal": 598000,
+    "oldUnfundedEntityProposal": 532480,
+    "futureTicketsApplied": false,
+    "historicalActualUnknownRetained": true
   }
 }
