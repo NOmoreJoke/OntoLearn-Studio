@@ -1,0 +1,134 @@
+{
+  "format": "T05-O15-final-owned-semantic-delta/1",
+  "recordedUtc": "2026-10-22T17:07:10.027641+00:00",
+  "baseline": "a570cd2b5e2edd53fd5e8be09ae29f271583df43",
+  "fourSources": [
+    {
+      "path": "scripts/build-i05-source-package-oracle.py",
+      "bytes": 129742,
+      "sha256": "5f6c18e305ac1f6355b6cc89c7761082b6dca8c74479908db6ff305c0860a2bd"
+    },
+    {
+      "path": "scripts/test-i05-source-package-oracle.py",
+      "bytes": 46930,
+      "sha256": "927a8336174c6b71cdb70271c898238ba2d47ab12338776dfb2d6918472a8076"
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/record-command.py",
+      "bytes": 2424,
+      "sha256": "03b196afb1027fc9c9642a21be379798d962ac48ef5c79a2cdc7e607b6c4517a"
+    },
+    {
+      "path": "docs/iterations/T05/source-package-oracle/field-policies.md",
+      "bytes": 11719,
+      "sha256": "b1af685230e759adea3de8a549772f48f0853ad47931237cac926f7fa2f4fcbd"
+    }
+  ],
+  "normalGenerated": [
+    {
+      "path": "tests/fixtures/quality/i05-source-package-oracle/oracle.json",
+      "bytes": 5938727,
+      "sha256": "374f223f7348ee982077ba75c8a0403a2edf71fab373612ea29b4e325b2014b7"
+    },
+    {
+      "path": "tests/fixtures/quality/i05-source-package-oracle/coverage.json",
+      "bytes": 154032,
+      "sha256": "95d7395761fbabe97c1fd81d1d05eb44bb8094f7266d977de42fdff349d28bd9"
+    },
+    {
+      "path": "tests/fixtures/quality/i05-source-package-oracle/sources.json",
+      "bytes": 79253,
+      "sha256": "b06bef47a15fde1953b638d5a233a054d139b4fa844a89395c510434c2522402"
+    },
+    {
+      "path": "tests/fixtures/quality/i05-source-package-oracle/schema.json",
+      "bytes": 10220,
+      "sha256": "2c1fefc9a675cf685bb7c31545ca1070dadd3845ce093c648f1c59dbc08a9f6f"
+    },
+    {
+      "path": "tests/fixtures/quality/i05-source-package-oracle/budget-gaps.json",
+      "bytes": 362492,
+      "sha256": "e68188ddefae4488fa6cf7762549508b78a3d87551f27cb24b9c9998f7948e9d"
+    }
+  ],
+  "all417ObservationFieldsEqualExceptExpectedSourceRefs": true,
+  "changedExpectedSourceRefsOnly17C": [
+    "C-query-numeric-promotion",
+    "C-query-type-error",
+    "C-datatype-exact",
+    "C-langString",
+    "C-count-term-identity",
+    "C-in-term-identity",
+    "C-inclusive-numeric",
+    "C-inclusive-nni",
+    "C-inclusive-dateTime-equal",
+    "C-inclusive-dateTime-before",
+    "C-inclusive-type-error",
+    "C-inclusive-date-entry/strict/legacy",
+    "C-inclusive-date-entry/strict/utc-date-range-v1",
+    "C-inclusive-date-entry/integer-illtyped-report-v1/legacy",
+    "C-inclusive-date-entry/integer-illtyped-report-v1/utc-date-range-v1",
+    "C-illtyped-entry/strict",
+    "C-illtyped-entry/integer-illtyped-report-v1"
+  ],
+  "changedTopLevelFields": [
+    "builderSha256",
+    "expectedAuthorityConsumption",
+    "fieldPolicies",
+    "observations"
+  ],
+  "contextLedgerEqual": true,
+  "byteUnchangedGenerated": [
+    "coverage.json",
+    "budget-gaps.json"
+  ],
+  "sealedInputsCurrentEqualGit": [
+    {
+      "path": "docs/reviews/T05/source-package-oracle/inputs/product-cases.json",
+      "bytes": 188023,
+      "sha256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa"
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-inputs.json",
+      "bytes": 8205267,
+      "sha256": "47c66ffe18613eb8cc1af6365dcfc9d866821f22c48f96d9f44725f8f7c59eaa"
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-manifest.json",
+      "bytes": 21202,
+      "sha256": "0b91c1a9366d170b5614d94c20006054a5a959be235e0f46cb150cf32335193a"
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/inputs/real-executor-acceptance-inputs.json",
+      "bytes": 767826,
+      "sha256": "87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f"
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/inputs/consumer-C-goldens.json",
+      "bytes": 8163,
+      "sha256": "c25e7afcc593a7be09fc8b2ca29af9cff28a7a1e030a13b98aa5e7d88d596440"
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/inputs/explanation-goldens.json",
+      "bytes": 11584,
+      "sha256": "68bc6848ad05b7cca01f37368a15b9e961a78a6a877b841f08cafa2a2fba36d9"
+    }
+  ],
+  "specified": 280,
+  "pending": 137,
+  "allocationPending": 26,
+  "wholeOracleComplete": false,
+  "proposalSHAIdentityExplanation": {
+    "proposalSHA256": "841fd4f0b493a5b4f6034f200873ad6b3ee8c8195b5d83c03c14ffa98764acd8",
+    "currentSHA256": "374f223f7348ee982077ba75c8a0403a2edf71fab373612ea29b4e325b2014b7",
+    "staticStdlibSerializationWithBuild03BuilderHashExactlyReproducesProposalHash": true,
+    "onlyJSONDifferenceFromProposalReconstruction": "builderSha256",
+    "proposalNotFinalPin": true
+  },
+  "staticOnlyNoBuilderOrProductExecution": true,
+  "firstStaticProofAttempts": "system3.9 zip(strict) rejected before writing; project3.12 first used wrong nonascii serialization assertion, corrected to actual builder ensure_ascii=True; no evidence written by failures",
+  "external15Closed": false,
+  "fullCheckPassed": false,
+  "dualDesignatedPass": false,
+  "parentClosed": false
+}

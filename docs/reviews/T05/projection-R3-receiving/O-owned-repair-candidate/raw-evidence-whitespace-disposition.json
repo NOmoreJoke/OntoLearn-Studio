@@ -1,0 +1,48 @@
+{
+  "format": "T05-O15-raw-evidence-whitespace-disposition/1",
+  "fullEvidenceCheckExit": 2,
+  "firstCheck": "preconfig-evidence-whitespace-first-check.json",
+  "allDiagnosticsLimitedToExactSixRawArtifacts": true,
+  "exactUnmodifiedRawArtifacts": [
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/component-build-01/stdout.raw",
+      "bytes": 137,
+      "sha256": "09a2d4995dafc2e5441b66c80be9d8aa05c35f1dadc6d214c376b8e33ecc3e39"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/component-test-01/stderr.raw",
+      "bytes": 2297,
+      "sha256": "43ba4fb53174ede79e54e0a9ea4e9c528a7039a141067686ff2ebe3f89b23aa7"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/component-test-01/stdout.raw",
+      "bytes": 45,
+      "sha256": "8152f5db69f29f6d8193e38f26f06cb97973f5f24f48f09d1fe28a0970a61d08"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/component-test-02/stdout.raw",
+      "bytes": 279,
+      "sha256": "fa47752eea55e97ab4ae5660e9f06072cbe0ba5d2a8bc8503a69c74d5b381b54"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/component-typecheck-01/stdout.raw",
+      "bytes": 468,
+      "sha256": "ef35be543aff1f7e82be979906158f1f2f1448dfaa41256cfc157c03071e55d2"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/owned-source-minimal.diff",
+      "bytes": 407971,
+      "sha256": "744550d8891afd5f784185cde3af760adfbe48cf44743753682e7c6b3173682f"
+    }
+  ],
+  "meaning": "Five actual tool streams retain emitted final blank lines. Minimal diff retains Git context blank-line prefix bytes; underlying seven-file source patch already checked0. Do not edit raw artifacts to pretend the original output differed.",
+  "authoredEvidenceExcludingOnlyTheseExactSix": {
+    "files": 117,
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "noGitWhitespaceOrIgnoreConfigurationChanged": true,
+  "notClaimWholeEvidenceDiffCheck0": true,
+  "ordinaryNpmCheckUnchangedAndStillNotGreen": true
+}

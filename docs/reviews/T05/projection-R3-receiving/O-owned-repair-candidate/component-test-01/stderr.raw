@@ -1,0 +1,26 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+    at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:603:34
+    at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:9:49
+    ... 4 lines matching cause stack trace ...
+    at async CAC.run (file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/vitest/dist/chunks/cac.CLrZKo1g.js:2344:2) {
+  cause: Error: Cannot find module '@rolldown/binding-wasm32-wasi'
+  Require stack:
+  - /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs
+      at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:497:18
+      ... 8 lines matching cause stack trace ...
+      at async CAC.run (file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/vitest/dist/chunks/cac.CLrZKo1g.js:2344:2) {
+    cause: Error: Cannot find module './rolldown-binding.wasi.cjs'
+    Require stack:
+    - /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs
+        at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:497:18
+        ... 8 lines matching cause stack trace ...
+        at async CAC.run (file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/vitest/dist/chunks/cac.CLrZKo1g.js:2344:2) {
+      cause: [Error]
+    }
+  }
+}
+
+
+

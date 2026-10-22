@@ -1,0 +1,32 @@
+{
+  "file": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py",
+  "bytes": 3124,
+  "sha256": "7184ba80fec0d1a97dcbc7bfc44ee86935def74b388dbffb3aad1050dbe639a1",
+  "delta": "Added explicit engine-pytest action mapping to unchanged original uv run --frozen pytest substep; no command skip/deselect; original engine-check failure retained",
+  "runs": [
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--no-cache",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "--no-cache",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdout": "1 file already formatted\n",
+      "stderr": ""
+    }
+  ],
+  "fourOwnedSourcesUnchanged": true
+}

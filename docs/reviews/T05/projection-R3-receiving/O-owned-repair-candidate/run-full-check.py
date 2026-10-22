@@ -1,0 +1,98 @@
+"""Record authorized ordinary full check; never suppress failures or change sources."""
+
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
+action = sys.argv[2] if len(sys.argv) > 2 else "check"
+if action not in ("check", "typecheck", "test", "build", "engine:check", "engine-pytest"):
+    raise ValueError("unapproved ordinary check component")
+OUT = Path(__file__).resolve().parent / (
+    ("full-check-" if action == "check" else "component-" + action.replace(":", "-") + "-")
+    + sys.argv[1]
+)
+OUT.mkdir(exist_ok=False)
+(OUT / "tmp").mkdir()
+paths = [
+    "package-lock.json",
+    "uv.lock",
+    "scripts/build-i05-source-package-oracle.py",
+    "scripts/test-i05-source-package-oracle.py",
+    "docs/reviews/T05/source-package-oracle/record-command.py",
+    "docs/iterations/T05/source-package-oracle/field-policies.md",
+]
+
+
+def identities():
+    return {
+        name: {
+            "bytes": len((ROOT / name).read_bytes()),
+            "sha256": hashlib.sha256((ROOT / name).read_bytes()).hexdigest(),
+        }
+        for name in paths
+    }
+
+
+explicit = {
+    "TMPDIR": str(OUT / "tmp"),
+    "UV_CACHE_DIR": str(OUT / "uv-cache"),
+    "UV_NO_SYNC": "1",
+    "UV_OFFLINE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "npm_config_cache": str(OUT / "npm-cache"),
+    "npm_config_offline": "true",
+    "PATH": str(ROOT / ".venv/bin") + os.pathsep + os.environ["PATH"],
+}
+env = os.environ.copy()
+env.update(explicit)
+argv = ["/usr/local/bin/npm", "run", action]
+if action == "engine-pytest":
+    argv = ["/Users/kyle/.local/bin/uv", "run", "--frozen", "pytest"]
+record = {
+    "argv": argv,
+    "cwd": str(ROOT),
+    "explicitEnvironment": explicit,
+    "startedUtc": datetime.now(UTC).isoformat(),
+    "sourceBefore": identities(),
+    "scope": (
+        "authorized ordinary npm check component after preserve"
+        + "d format gate failure; no GUI/native/install/e2e/packa"
+        + "ge test"
+    )
+    if action != "check"
+    else ("authorized ordinary full npm check, no GUI/native/inst" + "all/e2e/package test"),
+}
+(OUT / "invocation.json").write_text(json.dumps(record, indent=2) + "\n")
+with (OUT / "stdout.raw").open("wb") as stdout, (OUT / "stderr.raw").open("wb") as stderr:
+    run = subprocess.run(
+        argv, cwd=ROOT, env=env, stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr, check=False
+    )
+record.update(
+    exit=run.returncode,
+    finishedUtc=datetime.now(UTC).isoformat(),
+    sourceAfter=identities(),
+)
+record["streams"] = {
+    name: {
+        "bytes": len((OUT / name).read_bytes()),
+        "sha256": hashlib.sha256((OUT / name).read_bytes()).hexdigest(),
+    }
+    for name in ("stdout.raw", "stderr.raw")
+}
+(OUT / "result.json").write_text(json.dumps(record, indent=2) + "\n")
+print(
+    json.dumps(
+        {
+            "ordinaryAction": action,
+            "attempt": sys.argv[1],
+            "exit": run.returncode,
+            "sourceUnchanged": record["sourceBefore"] == record["sourceAfter"],
+        }
+    )
+)
+raise SystemExit(run.returncode)

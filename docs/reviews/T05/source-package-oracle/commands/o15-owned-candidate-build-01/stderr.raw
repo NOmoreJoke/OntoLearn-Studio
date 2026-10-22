@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py", line 1552, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py", line 1530, in main
+    artifacts = construct()
+                ^^^^^^^^^^^
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py", line 1311, in construct
+    check_declared_pool_sources()
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py", line 1129, in check_declared_pool_sources
+    raise ValueError('missing or ambiguous normative pool: ' + key)
+ValueError: missing or ambiguous normative pool: trace_items

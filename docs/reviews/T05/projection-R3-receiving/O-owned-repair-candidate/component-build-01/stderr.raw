@@ -1,0 +1,55 @@
+file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:603
+			const error = /* @__PURE__ */ new Error("Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.");
+			                              ^
+
+Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+    at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:603:34
+    at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:9:49
+    ... 2 lines matching cause stack trace ...
+    at async node:internal/modules/esm/loader:639:26 {
+  cause: Error: Cannot find module '@rolldown/binding-wasm32-wasi'
+  Require stack:
+  - /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs
+      at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:497:18
+      ... 6 lines matching cause stack trace ...
+      at async node:internal/modules/esm/loader:639:26 {
+    cause: Error: Cannot find module './rolldown-binding.wasi.cjs'
+    Require stack:
+    - /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs
+        at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:497:18
+        ... 6 lines matching cause stack trace ...
+        at async node:internal/modules/esm/loader:639:26 {
+      cause: Error: Cannot find module '@rolldown/binding-darwin-arm64'
+      Require stack:
+      - /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs
+          at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:497:18
+          ... 6 lines matching cause stack trace ...
+          at async node:internal/modules/esm/loader:639:26 {
+        cause: Error: Cannot find module './rolldown-binding.darwin-arm64.node'
+        Require stack:
+        - /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs
+            at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:497:18
+            ... 6 lines matching cause stack trace ...
+            at async node:internal/modules/esm/loader:639:26 {
+          cause: Error: Cannot find module '@rolldown/binding-darwin-universal'
+          Require stack:
+          - /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs
+              at file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/T05-source-package-oracle/node_modules/rolldown/dist/shared/binding-CUpfdq6A.mjs:497:18
+              ... 6 lines matching cause stack trace ...
+              at async node:internal/modules/esm/loader:639:26 {
+            cause: [Error]
+          }
+        }
+      }
+    }
+  }
+}
+
+Node.js v24.15.0
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/apps/desktop
+npm error workspace @ontolearn/desktop@0.1.0
+npm error location /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/apps/desktop
+npm error command failed
+npm error command sh -c electron-vite build

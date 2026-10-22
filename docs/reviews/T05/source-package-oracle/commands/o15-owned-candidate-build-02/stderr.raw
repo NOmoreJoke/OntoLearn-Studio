@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py", line 1553, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py", line 1532, in main
+    validate_oracle(artifacts['oracle.json'], read_pinned(ASSET), read_pinned(DESCRIPTOR))
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py", line 1480, in validate_oracle
+    for source in actual['expected']['factSources']:
+                  ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+KeyError: 'factSources'

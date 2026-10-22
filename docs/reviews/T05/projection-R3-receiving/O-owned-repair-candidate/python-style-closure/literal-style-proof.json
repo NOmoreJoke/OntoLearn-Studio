@@ -1,0 +1,76 @@
+{
+  "scope": "owned active files and newly authored process helpers only; original docstrings untouched; no archived source changed",
+  "proof": [
+    {
+      "path": "scripts/build-i05-source-package-oracle.py",
+      "explicitConstantConcatenations": 150,
+      "exactASTEqualAfterConstantFolding": true
+    },
+    {
+      "path": "scripts/test-i05-source-package-oracle.py",
+      "explicitConstantConcatenations": 0,
+      "exactASTEqualAfterConstantFolding": true
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/record-command.py",
+      "explicitConstantConcatenations": 2,
+      "exactASTEqualAfterConstantFolding": true
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+      "explicitConstantConcatenations": 0,
+      "exactASTEqualAfterConstantFolding": true
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py",
+      "explicitConstantConcatenations": 2,
+      "exactASTEqualAfterConstantFolding": true
+    }
+  ],
+  "commands": [
+    {
+      "label": "format-final",
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "imports-final",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--select",
+        "I,UP017",
+        "--fix",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "check-final",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--output-format",
+        "json",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 1
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "recordedUtc": "2026-10-22T16:51:36.543215+00:00",
+  "operation": "owner source-style transform helper, not builder/product execution",
+  "failure": "SyntaxError at generated builder line1182: closing docstring joined next statement",
+  "cause": "AST end_col_offset counts UTF8 bytes; owner helper sliced Python Unicode character string with that offset",
+  "preservedDraftBytes": 126791,
+  "preservedDraftSHA256": "716f23ac0989efb9f036b6f47d97ca0355f64aeb3748b61a9ef1c520c9846987",
+  "preservedDraft": "builder-docstring-transform-first-error.txt",
+  "resolution": "restore exact pre-style inputs containing completed indexed guards; use tokenize character offsets and leave original docstrings untouched",
+  "noBuilderOrProductRanAgainstThisInvalidDraft": true
+}

@@ -1,0 +1,99 @@
+{
+  "sourceFormatLimitedToDeclaredActiveFilesAndNewProcessHelpers": true,
+  "originalArchivedPythonUnchanged": true,
+  "styleChanges": "literal wrapping via constant concatenation, import ordering, original docstrings retained; current Python3.12 UTC alias and four explicit strict zip length contracts",
+  "minimumInterpreterForNewValidation": "project Python3.12.14 in isolated venv; old system3.9 results retained as old WIP only",
+  "runs": [
+    {
+      "label": "owned-cleanup",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--select",
+        "F401,UP034,I",
+        "--fix",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdout": "Found 7 errors (7 fixed, 0 remaining).\n",
+      "stderr": ""
+    },
+    {
+      "label": "owned-format",
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdout": "1 file reformatted, 4 files left unchanged\n",
+      "stderr": ""
+    },
+    {
+      "label": "owned-check",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "label": "owned-format-check",
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdout": "5 files already formatted\n",
+      "stderr": ""
+    }
+  ],
+  "files": [
+    {
+      "path": "scripts/build-i05-source-package-oracle.py",
+      "bytes": 129742,
+      "sha256": "5f6c18e305ac1f6355b6cc89c7761082b6dca8c74479908db6ff305c0860a2bd"
+    },
+    {
+      "path": "scripts/test-i05-source-package-oracle.py",
+      "bytes": 46930,
+      "sha256": "927a8336174c6b71cdb70271c898238ba2d47ab12338776dfb2d6918472a8076"
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/record-command.py",
+      "bytes": 2424,
+      "sha256": "03b196afb1027fc9c9642a21be379798d962ac48ef5c79a2cdc7e607b6c4517a"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+      "bytes": 3163,
+      "sha256": "21a5dbab83dcee5206a5282a6ca8854a50182eb7efa6ec4f1fe5a993f595ba56"
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py",
+      "bytes": 3007,
+      "sha256": "c1a4a744b81c618d7c3a668152a0f878ed53ff3907e154f4e61ce324e31394d4"
+    }
+  ]
+}

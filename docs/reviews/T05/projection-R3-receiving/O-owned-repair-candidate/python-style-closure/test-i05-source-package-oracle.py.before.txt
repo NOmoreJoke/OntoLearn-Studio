@@ -1,0 +1,707 @@
+#!/usr/bin/env python3
+"""Stdlib tests of this independent oracle, never the product or future collector."""
+from __future__ import annotations
+
+import ast
+import copy
+import importlib.util
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+BUILDER = Path(__file__).with_name('build-i05-source-package-oracle.py')
+SPEC = importlib.util.spec_from_file_location('t05_own_oracle', BUILDER)
+oracle = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(oracle)
+
+
+class OracleTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.artifacts = oracle.construct()
+        cls.data = cls.artifacts['oracle.json']
+        cls.entries = {e['id']: e for e in cls.data['observations']}
+        cls.input = oracle.read_pinned(oracle.ASSET)
+        cls.manifest = oracle.read_pinned(oracle.DESCRIPTOR)
+
+    def expected(self, key):
+        return self.entries[key]['expected']
+
+    def test_417_exact_order_and_three_case_sets(self):
+        self.assertTrue(oracle.validate_oracle(self.data, self.input, self.manifest))
+        self.assertEqual([e['id'] for e in self.data['observations']], [e['id'] for e in self.input['observations']])
+        self.assertEqual(self.data['caseSets'], self.manifest['caseSets'])
+        for name, selected in self.manifest['caseSets'].items():
+            self.assertEqual([self.entries[i]['caseSets'][name] for i in selected], list(range(len(selected))))
+
+    def test_missing_tail_or_added_id_rejected(self):
+        for mutate in (lambda d: d['observations'].pop(), lambda d: d['observations'].append(copy.deepcopy(d['observations'][0]))):
+            d = copy.deepcopy(self.data)
+            mutate(d)
+            with self.assertRaises(ValueError):
+                oracle.validate_oracle(d, self.input, self.manifest)
+
+    def test_nonfinite_and_duplicate_json_rejected(self):
+        for raw in [b'{"x":1,"x":2}', b'{"x":NaN}', b'{"x":Infinity}']:
+            with self.assertRaises(ValueError):
+                oracle.strict_json(raw)
+
+    def test_surrogate_is_preserved_not_crashed_or_replaced(self):
+        raw = oracle.canonical({'bad': '\ud800'})
+        self.assertEqual(json.loads(raw)['bad'], '\ud800')
+        self.assertEqual(self.expected('utc-date/surrogate-data')['reason'], 'INVALID_UNICODE')
+        self.assertEqual(self.expected('utc-date/surrogate-data')['validatorCalls'], 0)
+
+    def test_hash_change_rejected_before_interpretation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / oracle.ASSET
+            path.write_bytes(b'{}')
+            with patch.object(oracle, 'INPUTS', Path(directory)):
+                with self.assertRaisesRegex(ValueError, 'identity mismatch'):
+                    oracle.read_pinned(oracle.ASSET)
+
+    def test_no_product_third_party_network_or_process_imports(self):
+        allowed = {'__future__', 'argparse', 'copy', 'hashlib', 'json', 're', 'collections', 'datetime', 'decimal', 'pathlib'}
+        for node in ast.walk(ast.parse(BUILDER.read_text())):
+            if isinstance(node, ast.Import):
+                self.assertTrue(all(alias.name.split('.')[0] in allowed for alias in node.names))
+            if isinstance(node, ast.ImportFrom):
+                self.assertIn(node.module.split('.')[0], allowed)
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+                self.assertNotIn(node.func.id, ('eval', 'exec', '__import__'))
+
+    def test_reproducible_build_exact_full_artifacts(self):
+        again = oracle.construct()
+        for name in self.artifacts:
+            self.assertEqual(oracle.canonical(self.artifacts[name]), oracle.canonical(again[name]))
+
+    def test_integer_spelling_never_numeric_deduplicated(self):
+        graph = self.expected('turtle/integer-distinct')['graph']
+        self.assertEqual({t[2]['lexical'] for t in graph}, {'01', '1'})
+        self.assertEqual(len(graph), 2)
+        model = copy.deepcopy(graph)
+        model[0][2]['lexical'] = model[1][2]['lexical']
+        with self.assertRaises(ValueError):
+            oracle.assert_exact_model(graph, model)
+
+    def test_numeric_turtle_preserves_every_original_lexical(self):
+        pairs = [('01', '1'), ('+01', '+1'), ('-01', '-1'), ('-00', '0'),
+                 ('01.00', '1.0'), ('+01.00', '+1.0'), ('-01.00', '-1.0'),
+                 ('01e+00', '1e+00'), ('+01e+00', '+1e+00'), ('-01e+00', '-1e+00')]
+        for i, expected in enumerate(pairs):
+            graph = self.expected('turtle/numeric-lexical-' + str(i))['graph']
+            self.assertEqual({t[2]['lexical'] for t in graph}, set(expected))
+
+    def test_rdf11_strings_and_language_identity_without_losing_source(self):
+        for i in range(5):
+            graph = self.expected('turtle/string-identity-' + str(i))['graph']
+            self.assertEqual(len(graph), 1)
+            self.assertEqual(graph[0][2]['datatype'], oracle.XSD + 'string')
+        self.assertEqual(len(self.expected('turtle/lang-case')['graph']), 1)
+        self.assertEqual(self.expected('turtle/lang-case')['graph'][0][2]['language'], 'en-us')
+        raw = self.input['datasets']['turtle/lang-case']['text']
+        self.assertIn('@EN-us', raw)
+        self.assertIn('@en-US', raw)
+
+    def test_query_complete_bindings_unbound_and_order(self):
+        q = self.expected('query/optional-unbound')['query']
+        self.assertEqual(q['variables'], ['s', 'missing'])
+        self.assertEqual([r[0]['value'] for r in q['rows']], ['urn:case:0:equipment/' + x for x in ('001', '002', '003')])
+        self.assertEqual([r[1] for r in q['rows']], [None] * 3)
+        changed = copy.deepcopy(q)
+        changed['rows'][-1][1] = oracle.literal('')
+        with self.assertRaises(ValueError):
+            oracle.assert_exact_model(q, changed)
+        self.assertEqual(self.expected('C-query-type-error')['query']['rows'], [])
+        self.assertEqual(self.expected('C-query-numeric-promotion')['query']['rows'], [[oracle.iri('urn:m1:s')]])
+
+    def test_original_query_is_alarm_only_not_equipment_column(self):
+        q = self.expected('original-Q01')['query']
+        self.assertEqual(q, {'type': 'SELECT', 'variables': ['alarm'], 'rows': [[oracle.iri('urn:ontolearn:learning:alarm/A01')]]})
+        self.assertEqual(self.expected('original-Q02')['query']['rows'], [])
+
+    def test_shacl_aggregate_absent_value_is_not_fabricated(self):
+        report = self.expected('shape/template-maximum')['report']
+        self.assertFalse(report['conforms'])
+        row, = report['violations']
+        self.assertIsNone(row['value'])
+        self.assertEqual(row['constraint'], oracle.iri(oracle.SH + 'MaxCountConstraintComponent'))
+        self.assertEqual(set(row), {'focus', 'path', 'value', 'sourceShape', 'constraint', 'severity'})
+        changed = copy.deepcopy(report)
+        changed['violations'][0]['value'] = oracle.literal('a')
+        with self.assertRaises(ValueError):
+            oracle.assert_exact_model(report, changed)
+
+    def test_date_equal_before_offset_policies(self):
+        equal = self.expected('C-inclusive-date-entry/strict/utc-date-range-v1')
+        self.assertEqual(equal['report'], {'conforms': True, 'violations': []})
+        self.assertEqual(equal['entryVersion'], 'i05-shacl-text-2')
+        before = self.expected('utc-date/C-before')['report']
+        row, = before['violations']
+        self.assertEqual(row['value'], oracle.literal('1999-12-31Z', oracle.XSD + 'date'))
+        self.assertEqual(row['constraint'], oracle.iri(oracle.SH + 'MinInclusiveConstraintComponent'))
+        offset = self.expected('utc-date/C-offset')
+        self.assertEqual((offset['reason'], offset['validatorCalls'], offset['report']), ('RDF_TERM_INVALID', 0, None))
+        self.assertEqual(self.expected('utc-date/minExclusive')['reason'], 'UNSUPPORTED_SHACL')
+
+    def test_date_reversed_has_both_complete_violations(self):
+        report = self.expected('utc-date/reversed')['report']
+        self.assertFalse(report['conforms'])
+        self.assertEqual({r['constraint']['value'] for r in report['violations']}, {oracle.SH + n + 'ConstraintComponent' for n in ('MinInclusive', 'MaxInclusive')})
+        self.assertEqual(len(report['violations']), 2)
+
+    def test_bad_integer_strict_and_explicit_report_are_distinct(self):
+        self.assertEqual(self.expected('C-illtyped-entry/strict')['reason'], 'INVALID_LITERAL_LEXICAL')
+        wide = self.expected('C-illtyped-entry/integer-illtyped-report-v1')
+        self.assertFalse(wide['report']['conforms'])
+        self.assertEqual(wide['report']['violations'][0]['value']['lexical'], 'not-an-int')
+        self.assertTrue(self.expected('integer/lexical-5/strict')['report']['conforms'])
+
+    def test_date_exact_public_budget_and_three_orders(self):
+        exact = self.expected('utc-date/public-budget-43460')
+        self.assertEqual((exact['work']['consumed'], exact['work']['remaining']), (1000000, 0))
+        self.assertEqual(exact['validatorCalls'], 1)
+        over = self.expected('utc-date/public-budget-43461')
+        self.assertEqual((over['reason'], over['validatorCalls']), ('GRAPH_INPUT_LIMIT', 0))
+        self.assertEqual(over['work']['uncappedRequired'], 1000023)
+        for p, consumed, code in [('p0', 366042, 'RDF_TERM_INVALID'), ('p99', 1000000, 'GRAPH_INPUT_LIMIT')]:
+            all_results = [self.expected('utc-date/D1-' + p + '/' + order) for order in ('forward', 'reverse', 'rotate')]
+            self.assertEqual([r['work']['consumed'] for r in all_results], [consumed] * 3)
+            self.assertEqual([r['reason'] for r in all_results], [code] * 3)
+
+    def test_hand_selected_multihead_and_disabled_not_same_rule_id_as_case(self):
+        multi = self.expected('profile-83/extension:MULTI-OUTPUT-ONE-FIRING')['conditionalBusinessExpected']
+        self.assertEqual([r['ruleId'] for r in multi['matches']], ['R-risk-multi'])
+        self.assertEqual([h['headIndex'] for h in multi['matches'][0]['heads']], [0, 1])
+        disabled = self.expected('profile-83/extension:DISABLED-RULE-NO-OUTPUT')['conditionalBusinessExpected']
+        self.assertEqual(disabled['matches'], [])
+        self.assertEqual(disabled['customOutput'], [])
+
+    def test_false_comparisons_keep_binding_not_persistent_false_evidence(self):
+        math = self.expected('profile-83/extension:CMP-EQ-FALSE')['conditionalBusinessExpected']
+        self.assertEqual(math['customOutput'], [])
+        match, = math['matches']
+        self.assertFalse(match['accepted'])
+        self.assertFalse(match['typedComparisons'][0]['result'])
+        self.assertEqual(match['typedComparisons'][0]['left']['value']['denominator'], 1)
+
+    def test_repair_and_fragments_never_promote_full_original_operation(self):
+        self.assertEqual(self.expected('profile-83/transfer:repair')['semanticState'], 'not-executed')
+        for number in range(1, 5):
+            e = self.expected('profile-83/E.5:event-fragment:round:' + str(number))['conditionalBusinessExpected']
+            self.assertTrue(e['fragmentOnly'])
+            self.assertEqual(len(e['matches']), 4 * number)
+        for category, count in [('originalOperations', 106), ('learningChecks', 54), ('productCases', 50)]:
+            rows = self.data['contextLedger'][category]
+            self.assertEqual(len(rows), count)
+            self.assertEqual({r['state'] for r in rows}, {'not-executed'})
+        self.assertTrue(all('originalOperationText' in r for r in self.data['contextLedger']['originalOperations']))
+
+    def test_scope_branches_consume_different_complete_fact_sets(self):
+        asserted, fresh, project = [self.expected('scope/' + k) for k in ('asserted', 'fresh', 'project')]
+        self.assertEqual([len(v['facts']) for v in (asserted, fresh, project)], [6, 9, 9])
+        self.assertEqual(len(fresh['derivedAxioms']), 1)
+        self.assertNotIn(fresh['derivedAxioms'][0], fresh['facts'])
+        self.assertTrue(asserted['shacl']['conforms'])
+        self.assertEqual(len(fresh['shacl']['violations']), 2)
+        self.assertEqual(project['reasonCallsByStage']['project'], 0)
+
+    def test_finite_rdfs_does_not_refeed_custom_rules(self):
+        math = self.expected('legacy/no-rule-feedback')['math']
+        self.assertEqual(len(math['customOutput']), 1)
+        self.assertEqual(math['customOutput'][0][2], oracle.iri('urn:ontolearn:HighRiskEquipment'))
+        self.assertFalse(any(t[2] == oracle.iri('urn:ontolearn:NeedsInspection') for t in math['customOutput']))
+        repeated = self.expected('legacy/repeated-variable')['math']['matches']
+        self.assertEqual(len(repeated), 1)
+        self.assertEqual(repeated[0]['bindings'], {'?s': oracle.iri('urn:c')})
+
+    def test_ordered_direct_depth_and_occurrence_roots(self):
+        math = self.expected('dag/domain-depth2')['businessMath']
+        self.assertEqual([s['depth'] for s in math['selectedDirectSteps']], [1, 2])
+        self.assertEqual(math['selectedDirectSteps'][1]['premises'][0], {'kind': 'step', 'ordinal': 0})
+        two = self.expected('dag/two-head-occurrences')['businessMath']
+        self.assertEqual(len(two['rootOccurrences']), 4)
+        self.assertEqual([r['ref']['headIndex'] for r in two['rootOccurrences']], [0, 1, 0, 1])
+
+    def test_raw_aliases_keep_all24_occurrences_and_six_identities(self):
+        math = self.expected('fullview/raw-aliases')['businessMath']
+        self.assertEqual(len(math['inputGraph']), 6)
+        self.assertEqual(sum(map(len, math['rawTermSourceOccurrences'])), 24)
+        self.assertEqual(len(math['selectedDirectSteps']), 0)
+
+    def test_restore_mutations_are_A1_not_rebound_deep_dag_coverage(self):
+        entries = [e for e in self.data['observations'] if e['operation'] == 'restore-negative']
+        self.assertEqual(len({e['parameters']['mutation'] for e in entries}), 9)
+        for e in entries:
+            r = e['expected']
+            self.assertEqual(r['failureStage'], 'A1')
+            self.assertIsNone(r['partialView'])
+            self.assertTrue(r['noDeepRevalidationClaim'])
+            self.assertEqual(r['restoreReasonCalls'], 0)
+
+    def test_b1_four_ontology_is_not_ten_suite_or_snapshot_measurement(self):
+        for scale in (1, 10):
+            e = self.expected('b1-semantic/' + str(scale) + 'x')
+            self.assertEqual(len(e['assertedOriginal']), 18 * scale)
+            self.assertEqual(len(e['ontology']), 4)
+            self.assertEqual(len(e['mergedInput']), 18 * scale + 4)
+            self.assertEqual(len(e['rdfsAdded']), 8 * scale + 1)
+            self.assertEqual(len(e['matches']), scale)
+            self.assertTrue(all(len(m['leafBasis']) == 6 for m in e['matches']))
+            self.assertEqual(e['snapshotLoad']['state'], 'not-executed')
+            self.assertFalse(e['instrumentation'])
+
+    def test_pending_not_hidden_or_counted_complete(self):
+        self.assertFalse(self.data['wholeOracleComplete'])
+        self.assertEqual(self.entries['shape/front-2']['oracleStatus'], 'pending')
+        self.assertEqual(self.entries['profile-83/baseline:G-base']['oracleStatus'], 'pending')
+        d = copy.deepcopy(self.data)
+        d['wholeOracleComplete'] = True
+        with self.assertRaises(ValueError):
+            oracle.validate_oracle(d, self.input, self.manifest)
+        d = copy.deepcopy(self.data)
+        next(e for e in d['observations'] if e['pendingFields'])['oracleStatus'] = 'specified'
+        with self.assertRaises(ValueError):
+            oracle.validate_oracle(d, self.input, self.manifest)
+
+    def test_model_type_field_and_full_tail_mutations_are_rejected(self):
+        model = {'integer': 1, 'allRows': [1, 2, 3], 'source': {'raw': None, 'empty': ''}}
+        for change in ({'integer': True, 'allRows': [1, 2, 3], 'source': model['source']},
+                       {'integer': 1, 'allRows': [1, 2], 'source': model['source']},
+                       {'integer': 1, 'allRows': [1, 2, 3], 'source': {'raw': '', 'empty': ''}},
+                       {**model, 'ignoredUnknown': None}):
+            with self.assertRaises(ValueError):
+                oracle.assert_exact_model(model, change)
+
+    def test_dynamic_relations_reject_bad_received_digest_and_tail(self):
+        payload = b'{"all":true}'
+        held = {'payload_sha256': oracle.digest(payload)}
+        model = {'wire': {'payload_json': payload, 'rows': ['{"all":', 'true}']}, 'held': held}
+        sha = next(r for r in oracle.RELATIONS if r['id'] == 'received-payload-sha')
+        tail = next(r for r in oracle.RELATIONS if r['id'] == 'rows-no-truncated-tail')
+        self.assertTrue(oracle.evaluate_relation(sha, model))
+        self.assertTrue(oracle.evaluate_relation(tail, model))
+        model['wire']['payload_json'] = b'{"all":false}'
+        with self.assertRaises(ValueError):
+            oracle.evaluate_relation(sha, model)
+        model['wire']['payload_json'] = payload
+        model['wire']['rows'].pop()
+        with self.assertRaises(ValueError):
+            oracle.evaluate_relation(tail, model)
+
+    def test_allocation_identity_is_not_value_equal_json(self):
+        class Issued:
+            def __eq__(self, other):
+                return type(other) is Issued
+        actual = Issued()
+        rule = next(r for r in oracle.RELATIONS if r['id'] == 'allocation-same-issuance')
+        model = {'issued': {'allocation': actual}, 'used': {'allocation': actual}}
+        self.assertTrue(oracle.evaluate_relation(rule, model))
+        model['used']['allocation'] = copy.deepcopy(actual)
+        with self.assertRaises(ValueError):
+            oracle.evaluate_relation(rule, model)
+        for value in (None, {'claimedAllocation': True}, 'allocation-id'):
+            model = {'issued': {'allocation': value}, 'used': {'allocation': value}}
+            with self.assertRaises(ValueError):
+                oracle.evaluate_relation(rule, model)
+
+    def test_stable_first_witness_is_ordered_by_approved_pair_key(self):
+        first = self.expected('dag/first-witness')['businessMath']['selectedDirectSteps']
+        self.assertEqual(len(first), 1)
+        self.assertEqual(first[0]['orderedDirectInputTriples'][0][2], oracle.iri('urn:A'))
+        cross = self.expected('dag/cross-rule-witness')['businessMath']['selectedDirectSteps']
+        self.assertEqual(cross[0]['rule'], 'rdfs2')
+        self.assertEqual(cross[0]['orderedDirectInputTriples'][0][0], oracle.iri('urn:a'))
+
+    def test_pre_registered_date_regression_has_separate_authority_level(self):
+        for number in (7, 8, 9, 10, 15, 16):
+            for side in ('bound', 'value'):
+                entry = self.entries['utc-date/lexical-' + str(number) + '/' + side]
+                expected = entry['expected']
+                self.assertEqual(entry['oracleStatus'], 'specified')
+                self.assertEqual(expected['reason'], 'INVALID_LITERAL_LEXICAL' if number <= 10 else
+                                 'INVALID_SHAPE' if side == 'bound' else 'RDF_TERM_INVALID')
+                self.assertFalse(expected['declaredRegressionAuthority']['independentLibraryClassificationProven'])
+                self.assertEqual(expected['declaredRegressionAuthority']['sourceType'], 'pre-registered legacy regression assertion')
+
+    def test_literal_only_native_schema_reference_closes_exact_key_names(self):
+        fields = self.artifacts['schema.json']['exactIssuedRecordKeys']
+        self.assertEqual(len(fields['_PAYLOAD']), 7)
+        self.assertEqual(len(fields['_REASONING']), 15)
+        self.assertEqual(len(fields['_CHILD']), 11)
+        self.assertIn('graphBudget', fields['_REASONING'])
+        self.assertTrue({'planDigest', 'budgetUsage'}.issubset(fields['_CHILD']))
+
+    def test_versions_are_exact_approved_format_tags_not_invented_profile_names(self):
+        versions = self.data['dynamicRules']['versions']
+        self.assertEqual(versions['fullview']['payloadFormat'], 'i05-reasoning-result/2')
+        self.assertEqual(versions['explanation']['payloadFormat'], 'i05-reasoning-result/3')
+        self.assertEqual(versions['fullview']['executionSemanticsVersion'], 'i05-finite-7')
+        self.assertEqual(versions['explanation']['executionSemanticsVersion'], 'i05-finite-8')
+
+    def test_each_expected_has_distinct_precise_authority_from_input_refs(self):
+        for e in self.data['observations']:
+            self.assertTrue(e['sourceRefs'])
+            self.assertTrue(e['expectedSourceRefs'])
+            self.assertTrue(all('type' in r and 'local' in r and ('pointer' in r or 'pointers' in r) for r in e['expectedSourceRefs']))
+        e = self.entries['profile-83/extension:MULTI-OUTPUT-ONE-FIRING']
+        self.assertTrue(any('/matches' in r.get('pointers', []) for r in e['expectedSourceRefs']))
+
+    def test_budget_gaps_pin_each_operation_and_leave_allocation_unknown(self):
+        gaps = self.artifacts['budget-gaps.json']['items']
+        self.assertEqual(len(gaps), 82)
+        self.assertEqual({g['id'] for g in gaps}, {e['id'] for e in self.data['observations'] if e['operation'] == 'profile' and e['expected']['semanticState'] != 'not-executed'})
+        for gap in gaps:
+            self.assertEqual(gap['entry'], 'execute_profile_records')
+            self.assertIsNone(gap['allocationRequired']['value'])
+            self.assertEqual(len(gap['missingInvoiceOperations']), 5)
+            self.assertTrue(all('missingFormula' in item and 'knownRule' in item for item in gap['missingInvoiceOperations']))
+            self.assertTrue(gap['firstErrorEntry']['missingDecision'])
+
+    def test_original_C_full_fields_stay_consistent_with_independent_golden(self):
+        golden = oracle.read_pinned('consumer-C-goldens.json')['cases']
+        mapping = {'focusNode': 'focus', 'resultPath': 'path', 'value': 'value',
+                   'sourceShape': 'sourceShape', 'sourceConstraintComponent': 'constraint',
+                   'resultSeverity': 'severity'}
+        for row in golden[2:11]:
+            report = self.expected(row['id'])['report']
+            expected = row['expected']
+            self.assertEqual(report['conforms'], expected['conforms'])
+            if 'requiredResultRows' in expected:
+                rows = [{key: None if value.get(name) is None else oracle.n3_term(value[name])
+                         for name, key in mapping.items()} for value in expected['requiredResultRows']]
+                self.assertEqual(sorted(report['violations'], key=oracle.canonical), sorted(rows, key=oracle.canonical))
+
+    def test_declared_three_way_split_has_literal_expected_remainders(self):
+        model = oracle.declared_allocation_expectation(['z', 'A', '乙'], ['z'])
+        children = model['children']
+        self.assertEqual([c['ruleId'] for c in children], ['A', 'z', '乙'])
+        self.assertEqual([c['definitionOrdinal'] for c in children], [1, 0, 2])
+        self.assertEqual([c['disabled'] for c in children], [False, True, False])
+        keys = ['work', 'input_bytes', 'output_bytes', 'trace_items', 'firings', 'head_occurrences', 'bindings']
+        self.assertEqual([[c['declaredLimits'][k] for k in keys] for c in children], [
+            [5592406, 87382, 87382, 2731, 342, 5462, 342],
+            [5592405, 87381, 87381, 2731, 341, 5461, 341],
+            [5592405, 87381, 87381, 2730, 341, 5461, 341]])
+
+    def test_declared_all_seven_pools_conserve_totals_for_every_supported_count(self):
+        totals = {'work': 16777216, 'input_bytes': 262144, 'output_bytes': 262144,
+                  'trace_items': 8192, 'firings': 1024, 'head_occurrences': 16384, 'bindings': 1024}
+        for n in range(1, 101):
+            model = oracle.declared_allocation_expectation(['r' + str(i) for i in range(n)], [])
+            self.assertEqual(model['pools'], totals)
+            for key, total in totals.items():
+                values = [c['declaredLimits'][key] for c in model['children']]
+                self.assertEqual(sum(values), total)
+                self.assertLessEqual(max(values) - min(values), 1)
+                self.assertEqual(values, sorted(values, reverse=True))
+                self.assertTrue(all(type(v) is int and 0 <= v <= total for v in values))
+
+    def test_declared_reordering_changes_only_original_ordinals(self):
+        left = oracle.declared_allocation_expectation(['z', 'A', '乙'], ['z'])
+        right = oracle.declared_allocation_expectation(['乙', 'z', 'A'], ['z'])
+        self.assertEqual([c['declaredLimits'] for c in left['children']],
+                         [c['declaredLimits'] for c in right['children']])
+        self.assertEqual([c['definitionOrdinal'] for c in right['children']], [2, 1, 0])
+        for disabled in ([], ['z'], ['A', 'z', '乙']):
+            all_slots = oracle.declared_allocation_expectation(['z', 'A', '乙'], disabled)
+            self.assertEqual(all_slots['slotCount'], 3)
+            self.assertEqual([c['declaredLimits'] for c in all_slots['children']],
+                             [c['declaredLimits'] for c in left['children']])
+            self.assertFalse(all_slots['resetOrReallocationPermitted'])
+            self.assertTrue(all_slots['compileEvaluateSameBudgetRequired'])
+
+    def test_declared_unicode_is_codepoint_order_without_normalization(self):
+        model = oracle.declared_allocation_expectation(['\U00010000', '\ue000', 'é', 'e\u0301'], [])
+        self.assertEqual([c['ruleId'] for c in model['children']], ['e\u0301', 'é', '\ue000', '\U00010000'])
+        self.assertEqual([c['definitionOrdinal'] for c in model['children']], [3, 2, 1, 0])
+
+    def test_declared_ID_preconditions_reject_missing_invalid_and_oversized_universes(self):
+        class StringSubclass(str):
+            pass
+        bad = [None, (), [''], [True], [1], [StringSubclass('r')], ['r', 'r'], ['\ud800'],
+               ['a' * 16385], ['中' * 5462], ['r' + str(i) for i in range(101)]]
+        for value in bad:
+            with self.subTest(valueType=type(value).__name__):
+                with self.assertRaises(ValueError):
+                    oracle.declared_allocation_expectation(value, [])
+        for valid in (['a' * 16384], ['中' * 5461]):
+            self.assertEqual(oracle.declared_allocation_expectation(valid, [])['slotCount'], 1)
+        for disabled in (None, (), ['foreign'], ['r', 'r'], [False]):
+            with self.assertRaises(ValueError):
+                oracle.declared_allocation_expectation(['r'], disabled)
+
+    def test_declared_empty_is_anonymous_dummy_contract_without_fabricated_identity(self):
+        model = oracle.declared_allocation_expectation([], [])
+        self.assertEqual(model['definitionCount'], 0)
+        self.assertEqual(model['slotCount'], 1)
+        child = model['children'][0]
+        self.assertIsNone(child['ruleId'])
+        self.assertIsNone(child['definitionOrdinal'])
+        self.assertNotIn('disabled', child)
+        self.assertEqual(child['declaredLimits'], model['pools'])
+        self.assertTrue(child['dummyContract']['requiresRealEmptyBatch'])
+        self.assertFalse(model['actualAllocationCaptureProvided'])
+        self.assertFalse(model['actualUsageProvided'])
+        self.assertNotIn('planDigest', child)
+        self.assertNotIn('budgetUsage', child)
+
+    def test_declared_relation_rejects_tail_types_fake_capture_and_redistribution(self):
+        rule = next(r for r in oracle.RELATIONS if r['id'] == 'declared-seven-pool-allocation')
+        correct = oracle.declared_allocation_expectation(['z', 'A', '乙'], ['z'])
+        def check(declaration):
+            return oracle.evaluate_relation(rule, {'input': {'ruleIds': ['z', 'A', '乙'], 'disabledRuleIds': ['z']},
+                                                  'declared': {'allocation': declaration}})
+        self.assertTrue(check(correct))
+        for mutation in ('tail', 'extra', 'bool-ordinal', 'bool-limit', 'remainder', 'disabled', 'capture', 'reuse'):
+            bad = copy.deepcopy(correct)
+            if mutation == 'tail':
+                bad['children'].pop()
+            elif mutation == 'extra':
+                bad['children'][0]['budgetUsage'] = 0
+            elif mutation == 'bool-ordinal':
+                bad['children'][0]['definitionOrdinal'] = True
+            elif mutation == 'bool-limit':
+                bad['children'][0]['declaredLimits']['bindings'] = True
+            elif mutation == 'remainder':
+                bad['children'][0]['declaredLimits']['work'] -= 1
+                bad['children'][1]['declaredLimits']['work'] += 1
+            elif mutation == 'disabled':
+                bad['children'][1]['disabled'] = False
+            elif mutation == 'capture':
+                bad['actualAllocationCaptureProvided'] = True
+            else:
+                bad['resetOrReallocationPermitted'] = True
+            with self.subTest(mutation=mutation):
+                with self.assertRaises(ValueError):
+                    check(bad)
+
+    def test_declared_per_ID_classification_never_infers_missing_disabled_or_text_rules(self):
+        coverage = self.artifacts['coverage.json']['declaredAllocation']
+        relevant = {e['id'] for e in self.data['observations']
+                    if e['operation'] in ('profile', 'fullview', 'dag', 'restore-negative')}
+        self.assertEqual(set().union(*map(set, coverage.values())), relevant)
+        self.assertEqual(len(relevant), 116)
+        self.assertEqual({k: len(v) for k, v in coverage.items()}, {'specified': 88, 'pending': 26, 'not-invoked': 2})
+        self.assertEqual(set(coverage['not-invoked']), {'profile-83/transfer:repair', 'dag/turtle-entry'})
+        self.assertIn('fullview/turtle-entry', coverage['pending'])
+        for key in ('dag/type', 'fullview/two-head-occurrences'):
+            declaration = self.entries[key]['declaredAllocationExpectation']
+            self.assertEqual(declaration['status'], 'pending')
+            self.assertIsNone(declaration['expectation'])
+            self.assertIn('disabled_rule_ids', declaration['missingFields'][0])
+        self.assertEqual(self.artifacts['coverage.json']['byStatus'], {'specified': 280, 'pending': 137})
+        self.assertFalse(self.data['wholeOracleComplete'])
+
+    def test_declared_binding_rejects_inconsistent_metadata_without_promoting_failure(self):
+        observation = {'operation': 'profile', 'id': 'owned-test-only'}
+        valid = {'kind': 'profile', 'input': {'definitions': [{'rule_id': 'r', 'enabled': True}], 'disabled_rule_ids': []}}
+        self.assertEqual(oracle.allocation_for_observation(observation, valid)['status'], 'specified')
+        for mutation in ('disabled', 'bool', 'duplicate', 'unknown', 'missing'):
+            bad = copy.deepcopy(valid)
+            if mutation == 'disabled':
+                bad['input']['disabled_rule_ids'] = ['r']
+            elif mutation == 'bool':
+                bad['input']['definitions'][0]['enabled'] = 1
+            elif mutation == 'duplicate':
+                bad['input']['definitions'] *= 2
+            elif mutation == 'unknown':
+                bad['input']['disabled_rule_ids'] = ['foreign']
+            else:
+                del bad['input']['disabled_rule_ids']
+            result = oracle.allocation_for_observation(observation, bad)
+            self.assertEqual(result['status'], 'pending')
+            self.assertIsNone(result['expectation'])
+
+    def test_declared_adoption_is_selective_writer_metadata_not_whole_tree(self):
+        raw = (oracle.EVIDENCE / 'guidance/allocation-selective-adoption.json.raw').read_bytes()
+        adoption = oracle.strict_json(raw)
+        self.assertEqual(len(adoption['files']), 139)
+        self.assertEqual(adoption['files'][51]['sourceRef'], '6c1eec41091a997f898cb448bfc7d4000c154307')
+        self.assertEqual(adoption['files'][51]['access'], 'write-existing')
+        self.assertTrue(adoption['files'][56]['path'].endswith('/semantic_profile_restore.py'))
+        self.assertEqual(adoption['files'][56]['access'], 'write-existing')
+        receipt = oracle.strict_json((oracle.EVIDENCE / 'guidance/allocation-source-receipt.json').read_bytes())
+        self.assertTrue(receipt['selectiveAdoption']['notWholeTreeAncestry'])
+        self.assertFalse(receipt['actualAllocationCaptureOrUsageProvided'])
+
+
+    def test_all_C_authority_cases_have_explicit_conditional_consumption(self):
+        ledger = self.data['expectedAuthorityConsumption']['consumerC']
+        golden = oracle.read_pinned('consumer-C-goldens.json')['cases']
+        self.assertEqual([row['caseId'] for row in ledger], [row['id'] for row in golden])
+        self.assertEqual({use['observationId'] for row in ledger for use in row['observations']},
+                         {key for key in self.entries if key.startswith('C-')})
+        self.assertEqual(sum(len(row['observations']) for row in ledger), 17)
+        for row, original in zip(ledger, golden):
+            self.assertEqual(set(row['fieldRoles']), set(original['expected']))
+        self.assertIn('reference-only', ledger[4]['fieldRoles']['valueNodeCount'])
+        date = ledger[11]['observations']
+        self.assertEqual(sum(bool(row['comparedPointers']) for row in date), 2)
+        self.assertTrue(all('ifI05ExplicitlySupportsXsdDateOperatorExtension' in row['selectedBranch']
+                            for row in date if row['comparedPointers']))
+        self.assertFalse(ledger[12]['observations'][0]['comparedPointers'])
+        self.assertIn('context metadata', ledger[3]['fieldRoles']['currentEntryGap'])
+
+    def test_C_query_tail_report_component_and_conditional_branch_mutations_rejected(self):
+        mutations = [
+            ('C-query-numeric-promotion', lambda e: e['query']['rows'].clear()),
+            ('C-query-type-error', lambda e: e['query']['rows'].append([oracle.iri('urn:invented')])),
+            ('C-in-term-identity', lambda e: e['report']['violations'][0].update(value=oracle.literal('1', oracle.XSD + 'integer'))),
+            ('C-inclusive-date-entry/strict/utc-date-range-v1', lambda e: e['report'].update(conforms=False)),
+            ('C-illtyped-entry/integer-illtyped-report-v1', lambda e: e['report']['violations'][0].update(constraint=oracle.iri(oracle.SH + 'InConstraintComponent'))),
+        ]
+        for key, mutation in mutations:
+            entries = copy.deepcopy(self.data['observations'])
+            mutation(next(e for e in entries if e['id'] == key)['expected'])
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                oracle.expected_authority_consumption(entries)
+
+    def test_explanation_authority_is_honestly_retained_not_fictitiously_consumed(self):
+        reference = self.data['expectedAuthorityConsumption']['explanation']
+        self.assertEqual(reference['status'], 'retained-reference-only')
+        self.assertEqual(reference['retainedPointers'],
+                         ['/' + key for key in oracle.read_pinned('explanation-goldens.json')])
+        self.assertFalse(any('explanation-goldens' in r['local'] for e in self.entries.values()
+                             for r in e['expectedSourceRefs']))
+
+    def test_source_registry_has_fixed_local_identities_and_separate_literal_lineage(self):
+        sources = self.artifacts['sources.json']
+        self.assertIn('source-identities.json', oracle.DOC_PINS)
+        self.assertTrue(all(row['local'].startswith('docs/reviews/T05/source-package-oracle/')
+                            for row in sources['sources']))
+        expected = {oracle.canonical(r) for e in self.input['observations'] for r in e['sourceRefs']}
+        actual = {oracle.canonical(row['record']) for row in sources['inputOriginLineage']}
+        self.assertEqual(actual, expected)
+        self.assertEqual(len(actual), 111)
+        self.assertTrue(all('provenance-only' in row['role'] for row in sources['inputOriginLineage']))
+        self.assertIn('523c478d5f39671c4ac7c1ea6997e51d3047d58e',
+                      {row['record']['ref'] for row in sources['inputOriginLineage']})
+        for path in ('../outside', '/tmp/outside', 'inputs/../guidance/contract.md',
+                     'inputs//consumer-C-goldens.json', 'inputs/not-declared.json'):
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                oracle.normalized_source_local(path)
+        row = sources['sources'][0]
+        bad = copy.deepcopy(row)
+        bad['sha256'] = '0' * 64
+        with self.assertRaises(ValueError):
+            oracle.checked_source_rows([row, bad])
+
+    def test_source_identity_pin_rejects_changed_metadata_before_interpretation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            evidence = Path(directory)
+            (evidence / 'guidance').mkdir()
+            (evidence / 'guidance/source-identities.json').write_bytes(b'[]')
+            with patch.object(oracle, 'EVIDENCE', evidence):
+                with self.assertRaisesRegex(ValueError, 'normative source identity mismatch'):
+                    oracle.construct()
+
+    def test_seven_pools_are_bound_to_both_pinned_normative_paragraphs(self):
+        oracle.check_declared_pool_sources()
+        changed = dict(oracle.DECLARED_POOLS, work=16777217)
+        with patch.object(oracle, 'DECLARED_POOLS', changed):
+            with self.assertRaisesRegex(ValueError, 'differs from pinned normative lines'):
+                oracle.check_declared_pool_sources()
+
+    def test_raw_occurrences_bind_complete_input_without_becoming_canonical_terms(self):
+        count = 0
+        for entry in self.data['observations']:
+            dataset = self.input['datasets'][entry['datasetId']]
+            if 'records' not in dataset or 'businessMath' not in entry['expected']:
+                continue
+            raw = entry['expected']['businessMath']['rawTermSourceOccurrences']
+            self.assertEqual(raw, dataset['records'])
+            count += 1
+        self.assertEqual(count, 25)
+        entry = self.entries['fullview/raw-aliases']
+        dataset = self.input['datasets'][entry['datasetId']]
+        for mutation in ('tail', 'extra', 'source', 'reorder', 'missing'):
+            bad = copy.deepcopy(entry)
+            raw = bad['expected']['businessMath']['rawTermSourceOccurrences']
+            if mutation == 'tail':
+                raw.pop()
+            elif mutation == 'extra':
+                raw[0][0]['extra'] = None
+            elif mutation == 'source':
+                raw[0][0]['source'] = ''
+            elif mutation == 'reorder':
+                raw.reverse()
+            else:
+                del bad['expected']['businessMath']['rawTermSourceOccurrences']
+            with self.subTest(mutation=mutation), self.assertRaises((ValueError, KeyError)):
+                oracle.validate_raw_term_domains(bad, dataset)
+        bad = copy.deepcopy(entry)
+        bad['expected']['businessMath']['inputGraph'][0][0]['source'] = None
+        with self.assertRaisesRegex(ValueError, 'canonical RDF term domain'):
+            oracle.validate_raw_term_domains(bad, dataset)
+
+    def test_list_blank_nodes_remain_shapes_only_without_cross_graph_relabeling(self):
+        text = '<urn:s> <urn:p> (<urn:x>) .'
+        with self.assertRaisesRegex(ValueError, 'only in the shapes role'):
+            oracle.turtle(text)
+        graph = oracle.turtle(text, allow_shape_lists=True)
+        blank = {'kind': 'blank', 'label': 'list-1'}
+        self.assertEqual(graph, oracle.ordered_set([
+            [oracle.iri('urn:s'), oracle.iri('urn:p'), blank],
+            [blank, oracle.iri(oracle.RDF + 'first'), oracle.iri('urn:x')],
+            [blank, oracle.iri(oracle.RDF + 'rest'), oracle.iri(oracle.RDF + 'nil')]]))
+
+    def test_scope_rejects_distinct_bases_instead_of_silently_selecting_first(self):
+        triple = [oracle.iri('urn:s'), oracle.iri('urn:p'), oracle.iri('urn:o')]
+        one = {'heads': [{'triple': triple}], 'leafBasis': [triple]}
+        two = {'heads': [{'triple': triple}], 'leafBasis': [[oracle.iri('urn:other'), *triple[1:]]]}
+        self.assertEqual(oracle.scope_rule_basis([one, copy.deepcopy(one)], triple), [triple])
+        with self.assertRaisesRegex(ValueError, 'one independently specified leaf basis'):
+            oracle.scope_rule_basis([one, two], triple)
+
+    def test_unapproved_indices_fail_closed_before_any_artifact_write(self):
+        for prefix, allowed in [('turtle/front-', range(9)), ('integer/other-datatype-', range(9)),
+                                ('integer/bound-front-', range(7)), ('shape/front-', range(10))]:
+            for suffix in ('-1', '100', '01', 'x', 'True'):
+                with self.subTest(prefix=prefix, suffix=suffix), self.assertRaises(ValueError):
+                    oracle.finite_fixture_index(prefix + suffix, prefix, allowed)
+        original_id = 'utc-date/lexical-0/value'
+        replacements = {
+            'utc-date/lexical-0/value': ['utc-date/lexical-100/value', 'utc-date/lexical-0/other', 'utc-date/lexical-01/value'],
+            'utc-date/incompatible-0/bound': ['utc-date/incompatible-100/bound', 'utc-date/incompatible-0/bound/extra'],
+            'integer/lexical-0/strict': ['integer/lexical-100/strict', 'integer/lexical-0/unknown-policy'],
+            'query/string-expression-0': ['query/string-expression-100'],
+            'turtle/numeric-lexical-0': ['turtle/numeric-lexical-100'],
+        }
+        golden = oracle.read_pinned('real-executor-acceptance-inputs.json')
+        for original, invalid_ids in replacements.items():
+            row = next(o for o in self.input['observations'] if o['id'] == original)
+            for invalid in invalid_ids:
+                bad = copy.deepcopy(row)
+                bad['id'] = invalid
+                with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'unapproved finite fixture'):
+                    oracle.business_expected(bad, self.input['datasets'][bad['datasetId']], golden)
+        for original in ('utc-date/lexical-0/value', 'integer/lexical-0/strict'):
+            bad = copy.deepcopy(next(o for o in self.input['observations'] if o['id'] == original))
+            bad['parameters']['dataPolicy'] = 'unapproved-policy'
+            with self.subTest(original=original), self.assertRaises(ValueError):
+                oracle.business_expected(bad, self.input['datasets'][bad['datasetId']], golden)
+
+        # Exercise real construct/main, bypassing only the already tested byte pin
+        # in memory so the inner finite business boundary itself must reject.
+        asset = copy.deepcopy(self.input)
+        invalid_id = 'utc-date/lexical-100/value'
+        next(o for o in asset['observations'] if o['id'] == original_id)['id'] = invalid_id
+        descriptor = copy.deepcopy(self.manifest)
+        descriptor['caseSets'] = {name: [invalid_id if key == original_id else key for key in keys]
+                                  for name, keys in descriptor['caseSets'].items()}
+        read = oracle.read_pinned
+        def in_memory_input(name):
+            return asset if name == oracle.ASSET else descriptor if name == oracle.DESCRIPTOR else read(name)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'not-created'
+            with patch.object(oracle, 'OUTPUT', output), patch.object(oracle, 'read_pinned', side_effect=in_memory_input):
+                with self.assertRaisesRegex(ValueError, 'unapproved finite fixture index'):
+                    oracle.main([])
+            self.assertFalse(output.exists())
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)

@@ -1,0 +1,406 @@
+[
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 45,
+      "row": 8
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from datetime import UTC, datetime",
+          "end_location": {
+            "column": 45,
+            "row": 8
+          },
+          "location": {
+            "column": 1,
+            "row": 8
+          }
+        }
+      ],
+      "message": "Remove unused import: `datetime.timezone`"
+    },
+    "location": {
+      "column": 37,
+      "row": 8
+    },
+    "message": "`datetime.timezone` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 8,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 45,
+      "row": 8
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from datetime import UTC, datetime",
+          "end_location": {
+            "column": 45,
+            "row": 8
+          },
+          "location": {
+            "column": 1,
+            "row": 8
+          }
+        }
+      ],
+      "message": "Remove unused import: `datetime.timezone`"
+    },
+    "location": {
+      "column": 37,
+      "row": 8
+    },
+    "message": "`datetime.timezone` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 8,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 107,
+      "row": 107
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 107
+    },
+    "message": "Line too long (106 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 107,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "UP034",
+    "end_location": {
+      "column": 97,
+      "row": 323
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "\"enabled flag and explicit disabled list disagree\" + \" or have wrong type\"",
+          "end_location": {
+            "column": 97,
+            "row": 323
+          },
+          "location": {
+            "column": 21,
+            "row": 323
+          }
+        }
+      ],
+      "message": "Remove extraneous parentheses"
+    },
+    "location": {
+      "column": 21,
+      "row": 323
+    },
+    "message": "Avoid extraneous parentheses",
+    "name": "extraneous-parentheses",
+    "noqa_row": 323,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/extraneous-parentheses"
+  },
+  {
+    "cell": null,
+    "code": "UP034",
+    "end_location": {
+      "column": 91,
+      "row": 420
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "\"fixture list blank nodes are admitted only in th\" + \"e shapes role\"",
+          "end_location": {
+            "column": 91,
+            "row": 420
+          },
+          "location": {
+            "column": 21,
+            "row": 420
+          }
+        }
+      ],
+      "message": "Remove extraneous parentheses"
+    },
+    "location": {
+      "column": 21,
+      "row": 420
+    },
+    "message": "Avoid extraneous parentheses",
+    "name": "extraneous-parentheses",
+    "noqa_row": 420,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/extraneous-parentheses"
+  },
+  {
+    "cell": null,
+    "code": "B905",
+    "end_location": {
+      "column": 68,
+      "row": 1153
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": ", strict=False",
+          "end_location": {
+            "column": 67,
+            "row": 1153
+          },
+          "location": {
+            "column": 67,
+            "row": 1153
+          }
+        }
+      ],
+      "message": "Add explicit value for parameter `strict=`"
+    },
+    "location": {
+      "column": 48,
+      "row": 1153
+    },
+    "message": "`zip()` without an explicit `strict=` parameter",
+    "name": "zip-without-explicit-strict",
+    "noqa_row": 1153,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/zip-without-explicit-strict"
+  },
+  {
+    "cell": null,
+    "code": "UP034",
+    "end_location": {
+      "column": 89,
+      "row": 1167
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "\"legacy comparison needs separately authored fini\" + \"te expected\"",
+          "end_location": {
+            "column": 89,
+            "row": 1167
+          },
+          "location": {
+            "column": 21,
+            "row": 1167
+          }
+        }
+      ],
+      "message": "Remove extraneous parentheses"
+    },
+    "location": {
+      "column": 21,
+      "row": 1167
+    },
+    "message": "Avoid extraneous parentheses",
+    "name": "extraneous-parentheses",
+    "noqa_row": 1167,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/extraneous-parentheses"
+  },
+  {
+    "cell": null,
+    "code": "UP034",
+    "end_location": {
+      "column": 97,
+      "row": 2241
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "\"legacy date entry must not claim a condition\" + \"al Validator report\"",
+          "end_location": {
+            "column": 97,
+            "row": 2241
+          },
+          "location": {
+            "column": 25,
+            "row": 2241
+          }
+        }
+      ],
+      "message": "Remove extraneous parentheses"
+    },
+    "location": {
+      "column": 25,
+      "row": 2241
+    },
+    "message": "Avoid extraneous parentheses",
+    "name": "extraneous-parentheses",
+    "noqa_row": 2241,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/extraneous-parentheses"
+  },
+  {
+    "cell": null,
+    "code": "UP034",
+    "end_location": {
+      "column": 89,
+      "row": 2253
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "\"strict illtyped entry must not claim a Valid\" + \"ator report\"",
+          "end_location": {
+            "column": 89,
+            "row": 2253
+          },
+          "location": {
+            "column": 25,
+            "row": 2253
+          }
+        }
+      ],
+      "message": "Remove extraneous parentheses"
+    },
+    "location": {
+      "column": 25,
+      "row": 2253
+    },
+    "message": "Avoid extraneous parentheses",
+    "name": "extraneous-parentheses",
+    "noqa_row": 2253,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/extraneous-parentheses"
+  },
+  {
+    "cell": null,
+    "code": "B905",
+    "end_location": {
+      "column": 64,
+      "row": 3058
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": ", strict=False",
+          "end_location": {
+            "column": 63,
+            "row": 3058
+          },
+          "location": {
+            "column": 63,
+            "row": 3058
+          }
+        }
+      ],
+      "message": "Add explicit value for parameter `strict=`"
+    },
+    "location": {
+      "column": 29,
+      "row": 3058
+    },
+    "message": "`zip()` without an explicit `strict=` parameter",
+    "name": "zip-without-explicit-strict",
+    "noqa_row": 3058,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/zip-without-explicit-strict"
+  },
+  {
+    "cell": null,
+    "code": "B905",
+    "end_location": {
+      "column": 42,
+      "row": 3118
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/build-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": ", strict=False",
+          "end_location": {
+            "column": 41,
+            "row": 3118
+          },
+          "location": {
+            "column": 41,
+            "row": 3118
+          }
+        }
+      ],
+      "message": "Add explicit value for parameter `strict=`"
+    },
+    "location": {
+      "column": 21,
+      "row": 3118
+    },
+    "message": "`zip()` without an explicit `strict=` parameter",
+    "name": "zip-without-explicit-strict",
+    "noqa_row": 3118,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/zip-without-explicit-strict"
+  },
+  {
+    "cell": null,
+    "code": "B905",
+    "end_location": {
+      "column": 49,
+      "row": 739
+    },
+    "filename": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-source-package-oracle/scripts/test-i05-source-package-oracle.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": ", strict=False",
+          "end_location": {
+            "column": 48,
+            "row": 739
+          },
+          "location": {
+            "column": 48,
+            "row": 739
+          }
+        }
+      ],
+      "message": "Add explicit value for parameter `strict=`"
+    },
+    "location": {
+      "column": 30,
+      "row": 739
+    },
+    "message": "`zip()` without an explicit `strict=` parameter",
+    "name": "zip-without-explicit-strict",
+    "noqa_row": 739,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/zip-without-explicit-strict"
+  }
+]

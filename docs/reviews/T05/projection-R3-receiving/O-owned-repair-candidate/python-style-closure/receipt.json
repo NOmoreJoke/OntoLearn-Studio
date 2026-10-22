@@ -1,0 +1,107 @@
+{
+  "scope": "Only four owned active source/policy surface and two newly authored process helpers; no archived source changed",
+  "records": [
+    {
+      "path": "scripts/build-i05-source-package-oracle.py",
+      "beforeBytes": 106245,
+      "beforeSHA256": "b155116db59910626190024cec290d1bfc76447d6f8e716b2daf4a6d840431b8",
+      "wrappedLiteralCount": 110,
+      "literalWrappingExactASTEqual": true,
+      "afterBytes": 126757,
+      "afterSHA256": "3f7cc5b7d8444b7052837d638b7f643c307f194bd31b2062e9f319113cfe1eb6",
+      "nonImportASTEqualAfterFormatter": false
+    },
+    {
+      "path": "scripts/test-i05-source-package-oracle.py",
+      "beforeBytes": 43390,
+      "beforeSHA256": "12cd0049ad3ad8101bd88e7798e6b32e672e6db1f9d1d39f7edd2826e0fb5952",
+      "wrappedLiteralCount": 1,
+      "literalWrappingExactASTEqual": true,
+      "afterBytes": 46913,
+      "afterSHA256": "cfdf0003e154b112a494b5406f0acf32b7534aa4cb88fac628edd5510c1faa5d",
+      "nonImportASTEqualAfterFormatter": true
+    },
+    {
+      "path": "docs/reviews/T05/source-package-oracle/record-command.py",
+      "beforeBytes": 2227,
+      "beforeSHA256": "46e780ca3ae0a6ca48bb5a3fb955337cb19b5d14dddd149a081cc9d90994ebd9",
+      "wrappedLiteralCount": 1,
+      "literalWrappingExactASTEqual": true,
+      "afterBytes": 2424,
+      "afterSHA256": "03e63a0dfa70fc0bd40b9b4c24fa6be9087ca7885649f1476bf6d71d8923b18d",
+      "nonImportASTEqualAfterFormatter": true
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+      "beforeBytes": 2850,
+      "beforeSHA256": "dc8656fa2c00eb320af9e326e8609b3c9f7b0a01444cbc638b72763620c16f0a",
+      "wrappedLiteralCount": 0,
+      "literalWrappingExactASTEqual": true,
+      "afterBytes": 3186,
+      "afterSHA256": "96adefea04f4407f72f0767e2f6f3e7422f200be1657a416c805986a72acb8c0",
+      "nonImportASTEqualAfterFormatter": true
+    },
+    {
+      "path": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py",
+      "beforeBytes": 2877,
+      "beforeSHA256": "3e6d8088547bcbd24dab0af9c3bb58b16477c4c4bfb11d3aa74704fe4d117223",
+      "wrappedLiteralCount": 2,
+      "literalWrappingExactASTEqual": true,
+      "afterBytes": 3004,
+      "afterSHA256": "e32edaf288f0c3fee6266c53abd1228fbcdf31645387499d29dd9466cfb270f1",
+      "nonImportASTEqualAfterFormatter": true
+    }
+  ],
+  "commands": [
+    {
+      "label": "imports",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--select",
+        "I",
+        "--fix",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdoutBytes": 39,
+      "stderrBytes": 0
+    },
+    {
+      "label": "format",
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 0,
+      "stdoutBytes": 20,
+      "stderrBytes": 0
+    },
+    {
+      "label": "check",
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "--output-format",
+        "json",
+        "scripts/build-i05-source-package-oracle.py",
+        "scripts/test-i05-source-package-oracle.py",
+        "docs/reviews/T05/source-package-oracle/record-command.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/environment-setup.py",
+        "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/run-full-check.py"
+      ],
+      "exit": 1,
+      "stdoutBytes": 18853,
+      "stderrBytes": 0
+    }
+  ]
+}
