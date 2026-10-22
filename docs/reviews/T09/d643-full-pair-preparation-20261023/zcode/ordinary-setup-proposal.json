@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "role": "zcode",
+  "status": "PROPOSED_NOT_EXECUTED_AWAITING_EXACT_ROOT_TICKET",
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023",
+  "reviewHead": "60b0672c91d2fa4b87f2481b40f24bbbf22b3d2d",
+  "sourceAuthority": "d643c5a41f42d4d5395ab7d6c457c6e002cf481f",
+  "setupGrantedNow": false,
+  "runtimeGrantedNow": false,
+  "existingState": {
+    "nodeModulesPresent": false,
+    "venvPresent": false,
+    "noSetupPerformed": true
+  },
+  "futureEnvironment": {
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode/tmp",
+    "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode/npm-cache",
+    "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode/uv-cache",
+    "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/.venv",
+    "T09_HEADLESS_UI": "1",
+    "T09_CHROME_EXECUTABLE": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+  },
+  "unsetInherited": ["T09_UI_CAPTURE", "PLAYWRIGHT_BROWSERS_PATH"],
+  "setupPlan": [
+    {
+      "step": 1,
+      "action": "static own cwd/ref/source/guide/lock and assigned write-path preflight; mkdir only own declared cache/tmp/log paths after ticket",
+      "runNow": false
+    },
+    {
+      "step": 2,
+      "argv": ["/usr/local/bin/node", "--version"],
+      "expected": "Node >=24 <25; owner previous observed 24.15.0 is historical, new actual must be recorded",
+      "runNow": false
+    },
+    {
+      "step": 3,
+      "argv": ["/usr/local/bin/npm", "--version"],
+      "expected": "packageManager npm@11.12.1; do not upgrade or use global installs",
+      "runNow": false
+    },
+    {
+      "step": 4,
+      "argv": ["/Users/kyle/.local/bin/uv", "--version"],
+      "expected": "actual UNKNOWN until ticket; do not discover global credentials/config",
+      "runNow": false
+    },
+    {
+      "step": 5,
+      "argv": ["/usr/local/bin/npm", "ci"],
+      "envAdditional": {
+        "ELECTRON_SKIP_BINARY_DOWNLOAD": "1"
+      },
+      "writes": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/node_modules",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode/npm-cache",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode/tmp"
+      ],
+      "sourceOrLockChangesAllowed": false,
+      "runNow": false
+    },
+    {
+      "step": 6,
+      "argv": ["/Users/kyle/.local/bin/uv", "sync", "--frozen"],
+      "writes": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/.venv",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode/uv-cache",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode/tmp"
+      ],
+      "sourceOrLockChangesAllowed": false,
+      "runNow": false
+    },
+    {
+      "step": 7,
+      "action": "static inspect own installed package versions and exact known Playwright browsers.json; fixed Chrome executable/Info.plist existence/bytes/SHA/plist executable binding only; no app/cache scan or launch",
+      "readExactPaths": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/node_modules/@playwright/test/package.json",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/node_modules/playwright-core/package.json",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/node_modules/playwright-core/browsers.json",
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "/Applications/Google Chrome.app/Contents/Info.plist"
+      ],
+      "expectedPlaywright": "1.64.1 from fixed lock",
+      "expectedChromeExecutable": {
+        "bytes": 367696,
+        "sha256": "6e156f2271cef44afce9db36a5b920e94518857b94a4160f082696f8c3bd1c9d"
+      },
+      "expectedChromePlist": {
+        "bytes": 18856,
+        "sha256": "0c994f7cd1de97963191ac6e54341f5d20a551a544606636b58fc1852ee2ee23"
+      },
+      "observedHistoricalBrowserVersion": "155.0.8059.85 at prior first own launch only; not current future launch proof",
+      "runNow": false
+    },
+    {
+      "step": 8,
+      "action": "record actual setup receipt and source/locks/guide after-vector, with all original streams/child integers; report to root before GUI scheduling; no runtime in setup-only ticket",
+      "runNow": false
+    }
+  ],
+  "necessaryOrdinaryCommandsAfterSeparateExecutionTicket": [
+    [
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/.venv/bin/python",
+      "scripts/verify-product-baselines.py"
+    ],
+    [
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/.venv/bin/python",
+      "scripts/verify-product-baselines.py",
+      "--reset",
+      "G-base"
+    ],
+    [
+      "/Users/kyle/.local/bin/uv",
+      "run",
+      "--frozen",
+      "pytest",
+      "packages/engine/tests/test_learning_baselines.py",
+      "packages/engine/tests/test_learning_service.py",
+      "packages/engine/tests/test_learning_jobstore_integration.py",
+      "-q"
+    ],
+    [
+      "/usr/local/bin/node",
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "tests/unit/learning-workspace.test.ts",
+      "tests/unit/learning-presentation.test.ts"
+    ],
+    ["/usr/local/bin/npm", "run", "check"],
+    ["/usr/local/bin/npm", "run", "verify:sources"],
+    ["git", "diff", "--check"]
+  ],
+  "ordinaryRule": "select necessary commands for a concrete doubt after current source/evidence reading; not a command to repeat all unchanged tests; any component run uses explicit UI1/fixedChrome, never default skip",
+  "trace": "full raw stdout and stderr, real child PID/integer exit/cwd/argv/relevant env/UTC and source before/after; no inherited-secret dump; do not use pipeline/echo or tool success as child exit",
+  "writeNamespace": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_d643_full_pair_review/zcode",
+  "modelRaw": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/docs/reviews/T09/d643-full-review-20261023/runtime/zcode/raw",
+  "modelScratch": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-d643-zcode-full-review-20261023/docs/reviews/T09/d643-full-review-20261023/runtime/zcode/scratch",
+  "browserDownloadOrInstall": false,
+  "electronNativeGUIProductService": false,
+  "noUserProfileOrExistingTabsOrPort": true,
+  "stopConditions": [
+    "any official guard/permission rejection: stop same target/purpose, do not retry by another tool/argv/mirror",
+    "version/lock/source/guide/Chrome identity mismatch: preserve actual facts and seek exact root disposition, do not substitute",
+    "no global/native/config/memory/unknown hook reads, cleanup or global cache scan",
+    "no new model/task/GUI/START under this preparation"
+  ]
+}

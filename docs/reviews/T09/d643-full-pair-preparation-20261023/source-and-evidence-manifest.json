@@ -1,0 +1,1179 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "scope": "complete T09-S1 source, original acceptance and historical evidence; not delta-only",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "productSource": "d643c5a41f42d4d5395ab7d6c457c6e002cf481f",
+  "productTree": "fbbe968e500d98eed8277588a0a535036260f12d",
+  "reviewHead": "60b0672c91d2fa4b87f2481b40f24bbbf22b3d2d",
+  "reviewTree": "a5070a7e47c6e7170a384382f483e2d94963ceb1",
+  "historicalProduct": "76596656908ed84e577e8202a602e3256d5febcc",
+  "historicalOriginalEvidence": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+  "historicalTerminalPacket": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+  "guide": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "role": "unstaged operational overlay"
+  },
+  "source32": [
+    {
+      "path": "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+      "baselineBytes": 18386,
+      "baselineSHA256": "e11e970092b2412be8e5ced8bf77aa4f7a7311a7d1197aa6298da4a5f7cdfd40",
+      "candidateBytes": 18669,
+      "candidateSHA256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a",
+      "candidateGitBlob": "ace26715348e0a3ba1e47229fae3f03c9ee88408",
+      "changedFrom765": true,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/learning/content.ts",
+      "baselineBytes": 398,
+      "baselineSHA256": "83bbf24aa27e14d721731fc108de2179be5d220f13139101dafb0ede3f7ba70a",
+      "candidateBytes": 398,
+      "candidateSHA256": "83bbf24aa27e14d721731fc108de2179be5d220f13139101dafb0ede3f7ba70a",
+      "candidateGitBlob": "72d03611035759a370f9d7ae739321282726ba14",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "apps/desktop/src/renderer/src/learning/content.ts"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/learning/learning.css",
+      "baselineBytes": 10765,
+      "baselineSHA256": "34c48260f9819ae82eb8b30243c32fec5997065d1740443142d4acadc631a83c",
+      "candidateBytes": 10765,
+      "candidateSHA256": "34c48260f9819ae82eb8b30243c32fec5997065d1740443142d4acadc631a83c",
+      "candidateGitBlob": "9872f21bf71649c45eaecbca8e6b212fa69794fe",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "apps/desktop/src/renderer/src/learning/learning.css"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/learning/presentation.ts",
+      "baselineBytes": 6215,
+      "baselineSHA256": "5ff4fa501a710c4d1384ad7917feca3273bcd57b7fb783af4272894077719c3b",
+      "candidateBytes": 6215,
+      "candidateSHA256": "5ff4fa501a710c4d1384ad7917feca3273bcd57b7fb783af4272894077719c3b",
+      "candidateGitBlob": "4002d75cbaf24ac9bf84bb49af905b1fdd9232eb",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "apps/desktop/src/renderer/src/learning/presentation.ts"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/learning/types.ts",
+      "baselineBytes": 2407,
+      "baselineSHA256": "49526151f9a29fef3f440e55c45a080667fbf9ec3b5fbf00afa7c3fa53ffb373",
+      "candidateBytes": 2407,
+      "candidateSHA256": "49526151f9a29fef3f440e55c45a080667fbf9ec3b5fbf00afa7c3fa53ffb373",
+      "candidateGitBlob": "5dff5be9bab73fe304fbeabbfaa8791fa57e16f8",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "apps/desktop/src/renderer/src/learning/types.ts"
+    },
+    {
+      "path": "content/learning/checks.json",
+      "baselineBytes": 881942,
+      "baselineSHA256": "c32159000cdad9e63081379564dc710f824823ca3fa3626fa135aec3daf63d90",
+      "candidateBytes": 881942,
+      "candidateSHA256": "c32159000cdad9e63081379564dc710f824823ca3fa3626fa135aec3daf63d90",
+      "candidateGitBlob": "6c3b03a95a4f441a863250a1a9e0d90c327304d6",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "content/learning/checks.json"
+    },
+    {
+      "path": "content/learning/course.json",
+      "baselineBytes": 15178,
+      "baselineSHA256": "c1f3cf080d6192ad528d4fa9318d18fd7baeef3beb6fd9a217dfe0080b2a439b",
+      "candidateBytes": 15178,
+      "candidateSHA256": "c1f3cf080d6192ad528d4fa9318d18fd7baeef3beb6fd9a217dfe0080b2a439b",
+      "candidateGitBlob": "b7b027f76cfcdff03ec396bfae523ec769df166e",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "content/learning/course.json"
+    },
+    {
+      "path": "content/learning/glossary.json",
+      "baselineBytes": 5173,
+      "baselineSHA256": "a1a588683e11ad84940e2bb9a558f8c6684c712ada44d160ecb541df2fd0d0c1",
+      "candidateBytes": 5173,
+      "candidateSHA256": "a1a588683e11ad84940e2bb9a558f8c6684c712ada44d160ecb541df2fd0d0c1",
+      "candidateGitBlob": "416ab1c860428713f52e68a70fc1fe502cf0ad3e",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "content/learning/glossary.json"
+    },
+    {
+      "path": "content/learning/transfer-inputs.json",
+      "baselineBytes": 9091,
+      "baselineSHA256": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6",
+      "candidateBytes": 9091,
+      "candidateSHA256": "3ae8b7fd952680283b9e2b2573afee94ba88357efa4849da4e4b3e0d7e681aa6",
+      "candidateGitBlob": "e5c710f26399b12ff4958d44ad137fe98281d86c",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "content/learning/transfer-inputs.json"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/learning/__init__.py",
+      "baselineBytes": 89,
+      "baselineSHA256": "daad19bb53b8341d69f62c25374f0f60a2aa313a4ebea485cd9a4d65fe0c7b1b",
+      "candidateBytes": 89,
+      "candidateSHA256": "daad19bb53b8341d69f62c25374f0f60a2aa313a4ebea485cd9a4d65fe0c7b1b",
+      "candidateGitBlob": "6eb806367e471a458cbff43c74e441dc1d77d24d",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "packages/engine/src/ontolearn_engine/learning/__init__.py"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/learning/baselines.py",
+      "baselineBytes": 9201,
+      "baselineSHA256": "a2b8921903f460fa1128c45e8c92f2b14e2a493d9d1e99901bf6d9b707e04d94",
+      "candidateBytes": 9201,
+      "candidateSHA256": "a2b8921903f460fa1128c45e8c92f2b14e2a493d9d1e99901bf6d9b707e04d94",
+      "candidateGitBlob": "1651f2f880f053153971ff8331ca045d9c760038",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "packages/engine/src/ontolearn_engine/learning/baselines.py"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/learning/service.py",
+      "baselineBytes": 9559,
+      "baselineSHA256": "87d26be67856b66a19c212e820b0f29e76af5d51cc11e8b3b2bce4aa6b7344f4",
+      "candidateBytes": 9559,
+      "candidateSHA256": "87d26be67856b66a19c212e820b0f29e76af5d51cc11e8b3b2bce4aa6b7344f4",
+      "candidateGitBlob": "5ec4cafbb13315ca92df925dfb4b65b8da0ea0d7",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "packages/engine/src/ontolearn_engine/learning/service.py"
+    },
+    {
+      "path": "packages/engine/tests/test_learning_baselines.py",
+      "baselineBytes": 11784,
+      "baselineSHA256": "4b8fbf3c8d7abe076b0d619a89596404777fb21332c4c6b507895f191fe0c3c9",
+      "candidateBytes": 11784,
+      "candidateSHA256": "4b8fbf3c8d7abe076b0d619a89596404777fb21332c4c6b507895f191fe0c3c9",
+      "candidateGitBlob": "d28024abc7aef552074d94efe6e0c3048d2f388b",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "packages/engine/tests/test_learning_baselines.py"
+    },
+    {
+      "path": "packages/engine/tests/test_learning_jobstore_integration.py",
+      "baselineBytes": 8383,
+      "baselineSHA256": "43f69686bbde294bd177ae9389d05372a2e9e0611b7b527574ce7d674b4816b0",
+      "candidateBytes": 8383,
+      "candidateSHA256": "43f69686bbde294bd177ae9389d05372a2e9e0611b7b527574ce7d674b4816b0",
+      "candidateGitBlob": "239a690478804a5c968be79f7632f5a5f7d0a532",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "packages/engine/tests/test_learning_jobstore_integration.py"
+    },
+    {
+      "path": "packages/engine/tests/test_learning_service.py",
+      "baselineBytes": 9207,
+      "baselineSHA256": "9d301fedaa8582599541a3fed4351a60921889706bf799431cce60ecb8a0f40e",
+      "candidateBytes": 9207,
+      "candidateSHA256": "9d301fedaa8582599541a3fed4351a60921889706bf799431cce60ecb8a0f40e",
+      "candidateGitBlob": "734117fe163dc7c8ea89a8fc9d66aa92fabb13a7",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "packages/engine/tests/test_learning_service.py"
+    },
+    {
+      "path": "scripts/verify-product-baselines.py",
+      "baselineBytes": 921,
+      "baselineSHA256": "7df27bfc8f4ff8c096a684b9a70a846e6af2048a36a49a2f98c8892e7a8b10aa",
+      "candidateBytes": 921,
+      "candidateSHA256": "7df27bfc8f4ff8c096a684b9a70a846e6af2048a36a49a2f98c8892e7a8b10aa",
+      "candidateGitBlob": "36c3794560890625d0ed10ece5f0a24c35597864",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "scripts/verify-product-baselines.py"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/E.5.json",
+      "baselineBytes": 169895,
+      "baselineSHA256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5",
+      "candidateBytes": 169895,
+      "candidateSHA256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5",
+      "candidateGitBlob": "925f772b6831d6951eb395b961119f59e372ecbe",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/E.5.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/G-base.json",
+      "baselineBytes": 8219,
+      "baselineSHA256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+      "candidateBytes": 8219,
+      "candidateSHA256": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+      "candidateGitBlob": "31c11c833ccb5e2a54f48c2d1fbe1459a60302f3",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/G-base.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/G-behavior.json",
+      "baselineBytes": 12868,
+      "baselineSHA256": "d5e7645cfaa1c4e0de527a7c7c121644e4f78e24af94292deab26eee478d0780",
+      "candidateBytes": 12868,
+      "candidateSHA256": "d5e7645cfaa1c4e0de527a7c7c121644e4f78e24af94292deab26eee478d0780",
+      "candidateGitBlob": "e9a0f87adbd5950a6bb1660a20281b3ba1ea4715",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/G-behavior.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/G-map-empty.json",
+      "baselineBytes": 4404,
+      "baselineSHA256": "e80076ae445dbe88ba36fa4f4ef26809c6d12253d018e5661a0a6f7e8efb0864",
+      "candidateBytes": 4404,
+      "candidateSHA256": "e80076ae445dbe88ba36fa4f4ef26809c6d12253d018e5661a0a6f7e8efb0864",
+      "candidateGitBlob": "f055bd388aa1920f8185bf7fa830a2c204edf2a7",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/G-map-empty.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/alarms.csv",
+      "baselineBytes": 90,
+      "baselineSHA256": "7967e4520493261e764035a2387450f1df1c0c8433be2519fdebeabe40197aa3",
+      "candidateBytes": 90,
+      "candidateSHA256": "7967e4520493261e764035a2387450f1df1c0c8433be2519fdebeabe40197aa3",
+      "candidateGitBlob": "8ae7ecdf0507dbdfd76ea17ed609c6a0a357d684",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/alarms.csv"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/cases.json",
+      "baselineBytes": 188023,
+      "baselineSHA256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa",
+      "candidateBytes": 188023,
+      "candidateSHA256": "a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa",
+      "candidateGitBlob": "2bad92dc2cf146c729e06bb58b341b9dde2ab848",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/cases.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/conventions.json",
+      "baselineBytes": 1165,
+      "baselineSHA256": "26c03d12be2ea4f0e09c15f8bc1ade161233487f254da0c947f680ae9f533b47",
+      "candidateBytes": 1165,
+      "candidateSHA256": "26c03d12be2ea4f0e09c15f8bc1ade161233487f254da0c947f680ae9f533b47",
+      "candidateGitBlob": "01c0c501f2bd7dab6c2330e40d95d857e116a541",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/conventions.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/coverage.json",
+      "baselineBytes": 10824,
+      "baselineSHA256": "c8bb5ab210be5f1b6f3e6413adce3ad7749393f8d978098185facf58709aaeea",
+      "candidateBytes": 10824,
+      "candidateSHA256": "c8bb5ab210be5f1b6f3e6413adce3ad7749393f8d978098185facf58709aaeea",
+      "candidateGitBlob": "366d92faa07f9ed7ad891349684853e295429020",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/coverage.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/equipment-duplicate-key.csv",
+      "baselineBytes": 69,
+      "baselineSHA256": "e1017dfdcd6396f41b9b54d786caff712d733cf6a461da218dbdfa4be56dae86",
+      "candidateBytes": 69,
+      "candidateSHA256": "e1017dfdcd6396f41b9b54d786caff712d733cf6a461da218dbdfa4be56dae86",
+      "candidateGitBlob": "cf5d171834151630c1bc65ce9e69ae86dba10d2c",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/equipment-duplicate-key.csv"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/equipment-missing-key.csv",
+      "baselineBytes": 69,
+      "baselineSHA256": "c02d6e9b85b91d8431e37269aa68e535997583555b6874d2f6d7015070dee42b",
+      "candidateBytes": 69,
+      "candidateSHA256": "c02d6e9b85b91d8431e37269aa68e535997583555b6874d2f6d7015070dee42b",
+      "candidateGitBlob": "8cd63ecc645b481e782c539172404c69fdb2ecbe",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/equipment-missing-key.csv"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/equipment-updated.csv",
+      "baselineBytes": 60,
+      "baselineSHA256": "f513469aa39a37603bf367d4e94d2de680f5303eb1a8e1163eadfc83487ce171",
+      "candidateBytes": 60,
+      "candidateSHA256": "f513469aa39a37603bf367d4e94d2de680f5303eb1a8e1163eadfc83487ce171",
+      "candidateGitBlob": "3dee0fa2c2477af7f4e0487578d66c6f93f0c28e",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/equipment-updated.csv"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/equipment.csv",
+      "baselineBytes": 52,
+      "baselineSHA256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+      "candidateBytes": 52,
+      "candidateSHA256": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+      "candidateGitBlob": "68b3cb85e60337946db1d1bf81eef90f8015cdb5",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/equipment.csv"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/manifest.json",
+      "baselineBytes": 2268,
+      "baselineSHA256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+      "candidateBytes": 2268,
+      "candidateSHA256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+      "candidateGitBlob": "c8188d8fad0e49308310a558b2eeb7fbd3a68081",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/manifest.json"
+    },
+    {
+      "path": "tests/fixtures/product-baselines/unclosed-high.rq",
+      "baselineBytes": 162,
+      "baselineSHA256": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386",
+      "candidateBytes": 162,
+      "candidateSHA256": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386",
+      "candidateGitBlob": "dcc33df303f8c4be6fc58e8d34bca6aa66706b4e",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/fixtures/product-baselines/unclosed-high.rq"
+    },
+    {
+      "path": "tests/unit/learning-presentation.test.ts",
+      "baselineBytes": 6791,
+      "baselineSHA256": "ccbbd501a6987511c14f1ac38e24ceae2fa69569428a7fa2030d744e8b242474",
+      "candidateBytes": 6791,
+      "candidateSHA256": "ccbbd501a6987511c14f1ac38e24ceae2fa69569428a7fa2030d744e8b242474",
+      "candidateGitBlob": "64e934ac68fd91121a4bfadb66ee2bce6d6bb7f4",
+      "changedFrom765": false,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/unit/learning-presentation.test.ts"
+    },
+    {
+      "path": "tests/unit/learning-workspace.test.ts",
+      "baselineBytes": 21193,
+      "baselineSHA256": "bd1fdf6b770fbe985cecfeea4fa8a359904e5c16e9e85cbede247585fbf8286b",
+      "candidateBytes": 27178,
+      "candidateSHA256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a",
+      "candidateGitBlob": "c90303a42a8b60ad46d5f4717e976ce4433e8b54",
+      "changedFrom765": true,
+      "readRole": "mandatory complete source/data scope",
+      "readPath": "tests/unit/learning-workspace.test.ts"
+    }
+  ],
+  "source32Count": 32,
+  "baseToProductOutsideReviewProcessPaths": [
+    "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+    "apps/desktop/src/renderer/src/learning/content.ts",
+    "apps/desktop/src/renderer/src/learning/learning.css",
+    "apps/desktop/src/renderer/src/learning/presentation.ts",
+    "apps/desktop/src/renderer/src/learning/types.ts",
+    "content/learning/checks.json",
+    "content/learning/course.json",
+    "content/learning/glossary.json",
+    "content/learning/transfer-inputs.json",
+    "docs/iterations/T09/T10-supplier-facts-20261022/facts.md",
+    "docs/iterations/T09/T10-supplier-facts-20261022/source-identities.json",
+    "docs/iterations/T09/handoff.md",
+    "docs/iterations/T09/learning-ui-contract.md",
+    "docs/iterations/T09/user-acceptance.md",
+    "packages/engine/src/ontolearn_engine/learning/__init__.py",
+    "packages/engine/src/ontolearn_engine/learning/baselines.py",
+    "packages/engine/src/ontolearn_engine/learning/service.py",
+    "packages/engine/tests/test_learning_baselines.py",
+    "packages/engine/tests/test_learning_jobstore_integration.py",
+    "packages/engine/tests/test_learning_service.py",
+    "scripts/verify-product-baselines.py",
+    "tests/fixtures/product-baselines/E.5.json",
+    "tests/fixtures/product-baselines/G-base.json",
+    "tests/fixtures/product-baselines/G-behavior.json",
+    "tests/fixtures/product-baselines/G-map-empty.json",
+    "tests/fixtures/product-baselines/alarms.csv",
+    "tests/fixtures/product-baselines/cases.json",
+    "tests/fixtures/product-baselines/conventions.json",
+    "tests/fixtures/product-baselines/coverage.json",
+    "tests/fixtures/product-baselines/equipment-duplicate-key.csv",
+    "tests/fixtures/product-baselines/equipment-missing-key.csv",
+    "tests/fixtures/product-baselines/equipment-updated.csv",
+    "tests/fixtures/product-baselines/equipment.csv",
+    "tests/fixtures/product-baselines/manifest.json",
+    "tests/fixtures/product-baselines/unclosed-high.rq",
+    "tests/unit/learning-presentation.test.ts",
+    "tests/unit/learning-workspace.test.ts"
+  ],
+  "sourceScopeClassification": "32 complete source/data + 3 T09 acceptance docs; 2 T10 supplier-facts docs are process/context, not extra product capability; other docs/reviews history is process/evidence",
+  "evidence": [
+    {
+      "path": "docs/iterations/T09/T10-supplier-facts-20261022/facts.md",
+      "bytes": 8151,
+      "sha256": "4ea09f3ce15bbe32cd50ba5c9c207f486b7b91cb34938389b386b4ecf0d2480b",
+      "gitBlobAtReviewHead": "ea6f2774883cfc9faa44c4a10176382649399ca2",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/iterations/T09/T10-supplier-facts-20261022/source-identities.json",
+      "bytes": 4240,
+      "sha256": "352b145b9f08fbb25448be94e9e83ec3271ea60fefd3536a63ab81e89445b8ae",
+      "gitBlobAtReviewHead": "e04852b7e23ef4d22007dfc89492a7ca655b009b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/iterations/T09/handoff.md",
+      "bytes": 7526,
+      "sha256": "cf45274f1a297e1fbca66d9f447f10cbe56bed8ecead80af5d907eb7c5c159e5",
+      "gitBlobAtReviewHead": "d59d55ce0ec320356190097e1d1414761de1f705",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/iterations/T09/learning-ui-contract.md",
+      "bytes": 3049,
+      "sha256": "0fb4982377c2904663e1f3ac625281a663d5cfaccefcdc368003eb23f96367ce",
+      "gitBlobAtReviewHead": "c3ef3bd9055a2510fae873fcf29d249fe2cebf31",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/iterations/T09/user-acceptance.md",
+      "bytes": 1846,
+      "sha256": "58db452f5cdf3ed371ef9fe26f6eedc1cff998e2d4b22f63561bb6c96e310e4b",
+      "gitBlobAtReviewHead": "882bebe66c64fad54108bd20c41be28a10f1bd9b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/prd/PRD-本体学习与落地Agent工作台.md",
+      "bytes": 93584,
+      "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+      "gitBlobAtReviewHead": "8e7190748fe321c8dc3116fb3f9ec119a3628ac5",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/controller-delivery.json",
+      "bytes": 959,
+      "sha256": "b6dfb074223d4a27bb204f7e6ad9afdcc4de3546867a9485436350b93518579f",
+      "gitBlobAtReviewHead": "eb865bf4fc60cec27bc9333ab63bd2a18c4b57b6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/coordination-authorization.json",
+      "bytes": 712,
+      "sha256": "6f0ce9b5d3d5981e31d5cfcc14368ba7e627a1f8471667a50dbd5e84e9f8a392",
+      "gitBlobAtReviewHead": "885ebd8ac1226bcd4e5d0d57f6a6a8718192e319",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/baseline-verification.json",
+      "bytes": 876,
+      "sha256": "e3cf790a4e1f3cdb3616a8690d106cea59998f4260733535d93c1ec3551758fb",
+      "gitBlobAtReviewHead": "d9963b6694f0d78ecde3f154e193a3744db2a2c8",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/first-learning-pytest.txt",
+      "bytes": 99,
+      "sha256": "4a9570256aa3bdb8aeee7a4c68b5b61967a69334a7de4d49c1f16f6db5606af9",
+      "gitBlobAtReviewHead": "1f714748bde354c834198667a24fd991411b87f4",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/first-npm-check.txt.gz",
+      "bytes": 5664,
+      "sha256": "a4117a43311bf1712e3acd06622d80fc8794b0450e7b22590a65680d8f54a234",
+      "gitBlobAtReviewHead": "3dfbbc3fc4dca9bf8e9e1a449513de4db8c2fa26",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/first-ruff.txt",
+      "bytes": 12579,
+      "sha256": "9e594a33ba2caa7f582b08a24e1f66dc5eb3cbbe87346535ffe47faebd3484d2",
+      "gitBlobAtReviewHead": "dd5efcea7f202baee781a4270808ef7b730d2c8b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/jobstore-after-id-fix-pytest.txt",
+      "bytes": 98,
+      "sha256": "ab17401158ca0ec5dd511428ed2929f0ee2c1cb2fa0cdc832ca91d50a955503e",
+      "gitBlobAtReviewHead": "38ce4fd5a13ea263366ce5cec3e7a8b36788f81f",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/jobstore-first-pytest.txt.gz",
+      "bytes": 1636,
+      "sha256": "0ff5c1b8b4bbc45ed0510007aa9ee5db5c03bcf67b965ba46210a2b35631ebbb",
+      "gitBlobAtReviewHead": "9e6580589c3d89bb8bd5c10d817c8d229725e8a0",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/jobstore-verification.json",
+      "bytes": 2781,
+      "sha256": "7a30b974c14a1c11449a965450c29279c566cfa0d0f47c029208d6bfadc5d96d",
+      "gitBlobAtReviewHead": "41e2a92b89e0f958831e197752f4c15a9172ec6e",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/learning-42-pytest.txt",
+      "bytes": 99,
+      "sha256": "2c24775de471bd6ec8a587376b1d1406c7dfbd58a89d10c1a63d300da0f621ba",
+      "gitBlobAtReviewHead": "78b54cf6a86da0bb1224a850cbf582ad4a624e5f",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/learning-pytest-after-review.txt",
+      "bytes": 99,
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b",
+      "gitBlobAtReviewHead": "b2e23d9b61cfaae1c6aa4dc1289fc43680a26824",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/learning-pytest-final.txt",
+      "bytes": 99,
+      "sha256": "63f4d60d03f934060c793ddaef0feb11de246c6058ff303d8437deb53047859b",
+      "gitBlobAtReviewHead": "b2e23d9b61cfaae1c6aa4dc1289fc43680a26824",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/learning-ui-verification.json",
+      "bytes": 6987,
+      "sha256": "0cf7c7af56db8b6dad5d05b0b44cb18592f71b1cb2803e8b6a901e2357256c23",
+      "gitBlobAtReviewHead": "bb2b1407529843039de43b76b883cc9472573d2e",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/npm-check-after-review.txt",
+      "bytes": 5222,
+      "sha256": "fa97b8f2d1cd43b2548386e97993fb34456dc9436fcd3468fe95986d738de281",
+      "gitBlobAtReviewHead": "8d0f4da7f9d0636d230585662557306efdd01957",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/npm-check-final.txt",
+      "bytes": 5222,
+      "sha256": "0f58ea8f1161dccf8f9db4b39a8517ab0e9db163f734e1b41ee105ac7647509e",
+      "gitBlobAtReviewHead": "b2ca9b19a9490560d27e66a3eff811948904173b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/npm-check-jobstore-final.txt",
+      "bytes": 5302,
+      "sha256": "88d2554a98db7821be1ff9a1eb6870a0e54a6870199fd94fa5422ee79eeb784c",
+      "gitBlobAtReviewHead": "b8180ae902416015175783e17b31571941c87f25",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/npm-check-ui-final.txt",
+      "bytes": 5314,
+      "sha256": "210d3d9bc7254e059f9bc031988226f946251f9d359a577b8a54470a996241e5",
+      "gitBlobAtReviewHead": "645936a4a0e8006c960966d7e66b61ede08a12ca",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/npm-check-ui-first.txt.gz",
+      "bytes": 400,
+      "sha256": "e8239921844f023e938fe701bbd0d674ca4e4582cfe9ff5f9050d626291582cb",
+      "gitBlobAtReviewHead": "cab74da6141b62791bb3e2e337b623e7e5a5eb8a",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/npm-check-ui-intermediate-661.txt.gz",
+      "bytes": 1322,
+      "sha256": "93d73c77d26db0924252db241b66b680fbfc445b88790cb35863ec4b84b2bd0b",
+      "gitBlobAtReviewHead": "0295ba483633efea7872e501b0bb7b177dd97c01",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/npm-check-ui-type-failure.txt.gz",
+      "bytes": 382,
+      "sha256": "ab953419a1b2d643eab9f26f9301443061e41bcf2159e100eac1ddb48cff93d0",
+      "gitBlobAtReviewHead": "c6924e7c804ed87b5e4697458d3875c84f5a07c1",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-browser-install.txt.gz",
+      "bytes": 592,
+      "sha256": "5d1574507e91edf9c5f95cc4dbe42b0bfc40cdf8dea760f43fcd0102dcad788a",
+      "gitBlobAtReviewHead": "790c51601049bd2f16309176611693ae92095a26",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-eslint.txt.gz",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "gitBlobAtReviewHead": "86e43ea3218b5890302b754bbf8927f94e79f7ee",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-first-vitest.txt.gz",
+      "bytes": 704,
+      "sha256": "9a8894c57d5d03450a5a9a9ab38bc7dc31498734fb787524d43610394fa9bc9d",
+      "gitBlobAtReviewHead": "0c8eeb7ff94f48b1b9b75a4de4e96d8a683275cc",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-fixed-baseline-check.json",
+      "bytes": 876,
+      "sha256": "e3cf790a4e1f3cdb3616a8690d106cea59998f4260733535d93c1ec3551758fb",
+      "gitBlobAtReviewHead": "d9963b6694f0d78ecde3f154e193a3744db2a2c8",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-fourth-vitest.txt.gz",
+      "bytes": 215,
+      "sha256": "a9e8e869581d28a5f06d40230aa8d35b59db147c1db54ab6279710a9ee4f5045",
+      "gitBlobAtReviewHead": "2561c3a6c93265b100601adb4c915bd3fde5ab40",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-second-vitest.txt.gz",
+      "bytes": 677,
+      "sha256": "20054a73a726d68ceca55a015e7191f0e0cf40047fbd365d9fce2f2feba42392",
+      "gitBlobAtReviewHead": "05c6966af14e888e3def40e4add84ad1d6088536",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-third-vitest.txt.gz",
+      "bytes": 2213,
+      "sha256": "7c5707d46f0dc7ccd64184891e01a91a66b8b71f7de63f9cca7f572e9224472d",
+      "gitBlobAtReviewHead": "f8cc80843e310233ef3351248be1ed3382e90bf3",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui-typecheck.txt.gz",
+      "bytes": 163,
+      "sha256": "78de9eb1d9ec491fda53df471321d3b859a8b52e0fd0b744260dc2e4e5b5da94",
+      "gitBlobAtReviewHead": "c2482d4055906498f1e1943033c159b176824fd6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui/desktop-course.png",
+      "bytes": 175507,
+      "sha256": "eee450333f00bc3e060da4878a72127f1e5fbb255079f96886f4f2a34482c077",
+      "gitBlobAtReviewHead": "1a3d42c98747c0b2707cc45a85668fc79f5c7ad8",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/ui/mobile-behavior.png",
+      "bytes": 145051,
+      "sha256": "8fb74a101351e5183670cd63d7912a739be60ec891bbdfe35cbd618b8bf8b9b8",
+      "gitBlobAtReviewHead": "8d8019b4b19c04f24abf8ac1ad729828817d366d",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/evidence/verification-summary.json",
+      "bytes": 3972,
+      "sha256": "0acc4fafe1e334118afdb440295ca14d755babaff0494035aeeb087a9f789fa1",
+      "gitBlobAtReviewHead": "3e5a6d0d6d501e05e64e30434b79e939303b4f90",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/independent-review.md",
+      "bytes": 2990,
+      "sha256": "f39e4512a9593dcd1d1211827bf13c7f737b81f2ed201c09ffd91fd43a665368",
+      "gitBlobAtReviewHead": "90e4e6f3771f33ae60ea816eeebdd108e117fc79",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/jobstore-integration-review.md",
+      "bytes": 2166,
+      "sha256": "dfcbc64a1ad97391b52ff377594884ddfdb41b6fb86d1691f65f5914052a3b6f",
+      "gitBlobAtReviewHead": "78c690a925f4e7f9238d5382a24e946f49ee2fba",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/learning-ui-independent-review.md",
+      "bytes": 10807,
+      "sha256": "c9816686940eece6cf4334fc7ba3f3cb61a80f88186074ce93ec9546259e250d",
+      "gitBlobAtReviewHead": "0986eba704fa47dcaf9fd98824312ece873b169f",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/recovery.json",
+      "bytes": 2001,
+      "sha256": "3a05647af94244f5006823b886cd4e87a19265237ca24a23e9e0e29ee6647eff",
+      "gitBlobAtReviewHead": "5fc62567d510ed503a551296bb3959355fa77ee5",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/independent-terminal-receipt-review.md",
+      "bytes": 6676,
+      "sha256": "c5c3e5a978b87b7b04c41103ea8bb9b5de9a418a77c0c35baa1fceb8bc22611e",
+      "gitBlobAtReviewHead": "ead6b4508f852a3101d6f16a3420850c2ee40f73",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/minimax-native-report-binding.json",
+      "bytes": 11579,
+      "sha256": "33a62e6152205f169174836706422cef0c9cf0df400dffc373368ac49a3f9182",
+      "gitBlobAtReviewHead": "adedb1ec4f3fde739e067f725db1c5efc7498027",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/minimax-original-report.md",
+      "bytes": 49469,
+      "sha256": "92cfb9d6433710303355fd7be6754026e54846f24c2853e46a41df2a0f9766b0",
+      "gitBlobAtReviewHead": "918973b321375a7c3653f11c7d89d10b9ff84b09",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/minimax-original-run-receipt.json",
+      "bytes": 6065,
+      "sha256": "9e15046fdbe959300aa28b7e1a923d460c365bfb6232659db067c3d409ef86d4",
+      "gitBlobAtReviewHead": "f000b7e305586a828a5c8b955a5b5f389ed5fbc4",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/opinions-and-disposition.md",
+      "bytes": 10454,
+      "sha256": "1df6b190276cbba942843822a93ae56e9e9ef7e533f9e60b627c4054015526c3",
+      "gitBlobAtReviewHead": "524e2c701372f8b49b41bb539666cb715b7cf461",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/terminal-receipt.json",
+      "bytes": 4028,
+      "sha256": "a209cdb9f115de194c2338481c8fb0419ac80767a94617c06fbb5f1b14627696",
+      "gitBlobAtReviewHead": "a960b047e9b84e9d6979f7684982e8fcc9660cb6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/zcode-original-report.md",
+      "bytes": 19358,
+      "sha256": "5540beb29ab89baf5c72fd9fc3a2fcc9df213c376ad392171c7a291a5b727f79",
+      "gitBlobAtReviewHead": "f69f0d1ff8643cb88f452c0d1298c480bfa87a76",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/zcode-original-run-receipt.json",
+      "bytes": 5815,
+      "sha256": "af96feacf642ae0fbb80bb4b50135028987d63ad0682d1bf9e15c8ef821c8f0d",
+      "gitBlobAtReviewHead": "72b26e04c848ca3f002646076574a304683d0b51",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/replacement-r1-terminal-20261023/zcode-public-process-proof.json",
+      "bytes": 22825,
+      "sha256": "a1754ca0539f539759f3f58d810aa365f2d5020611091457d30d35ad49b5dff5",
+      "gitBlobAtReviewHead": "e2797f61f23aff60ab8475ffc00497c54972c0d6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/round-1/input-manifest.json",
+      "bytes": 42846,
+      "sha256": "11171ff00c9ef67ad11dc55ab80384ad694e3219282dbeb654e4677a0223c774",
+      "gitBlobAtReviewHead": "920fd146f1b9ba690c02344464fc9dfb563adccb",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/round-1/inputs/common-instructions-snapshot.txt",
+      "bytes": 17891,
+      "sha256": "e437121a08053544c2a09151ac5183baf15b5fa67a3a604891aaa9e77ba971b0",
+      "gitBlobAtReviewHead": "c047abc3cf6d12067dd1ad5e8db2337a92170d1b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/round-1/inputs/registered-scope.md",
+      "bytes": 1992,
+      "sha256": "0f2092adc5226267029a36cbc274436ba47235e1bb2efe8c71e6f74f2c8eb021",
+      "gitBlobAtReviewHead": "e78efa4855a7eb07c036817487d8fde42dfee7e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/round-1/verification-and-history-index.md",
+      "bytes": 7470,
+      "sha256": "1b77a37904550bc84e0207137df6bf86fd93449cf945179291f1db334a165d54",
+      "gitBlobAtReviewHead": "edaaf174f0ab648e4ffdc71b80c2b92b7334f7e3",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/actual-launch-receipt.json",
+      "bytes": 5410,
+      "sha256": "5667645d47dfcfaf258976ae929e22dabb04940ea4bfdd7de7e5e8f6d7caa649",
+      "gitBlobAtReviewHead": "0eff0a6abf3ca209ccbc3083c76ed41fa0f02d1e",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/minimax-process-exception-inputs.json",
+      "bytes": 1996,
+      "sha256": "ebe59a09bc68d7f1afce99139ee91b0b0dd419eb88a0a0b389f4c579d264843b",
+      "gitBlobAtReviewHead": "3199cef19c1d77344bb86717de5ad2f2ee1d23c1",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/next-task-source-boundary.md",
+      "bytes": 4525,
+      "sha256": "16876d243eca4b14b4f55457db558d9707fc110190c76273d9684276a15600ad",
+      "gitBlobAtReviewHead": "71ef2f5df9ab26794670bf3c54e68d7ba409353b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/post-stop-fixed-input-guard.json",
+      "bytes": 16961,
+      "sha256": "a0cd7b12896e2fe8e051f54143d1c3b773b60606d2a7445477f18daebf3ac732",
+      "gitBlobAtReviewHead": "89f26a440c2769c5558867abec36980b7b5c36aa",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/zcode-issues-disposition.md",
+      "bytes": 3897,
+      "sha256": "9a45e30999a61f140fd07e0c6ab66b390cf1af37142993d04d4c3a65cc6a2284",
+      "gitBlobAtReviewHead": "c243a39da8adbdd62a31dde861ed8b23fc615495",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/zcode-native-public-results.json",
+      "bytes": 9462,
+      "sha256": "ce7ae33e8aa5551951651cb090a9c0dc4ad0a5a03c7773ee7f16300460c80f0d",
+      "gitBlobAtReviewHead": "754974eae72b630916bde1b4ace8c11cb154009b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/zcode-original-report.md",
+      "bytes": 18673,
+      "sha256": "a00bad85fc7db54f6d80058a09db5d8bda1617c659fcfc3562fc5faeaa85e4b7",
+      "gitBlobAtReviewHead": "43aa708ccf6cc511b8f30fa8dd319b8e06cdcf44",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/s1-launch-20261023/zcode-terminal-receipt.json",
+      "bytes": 4327,
+      "sha256": "69de5d7439e3a1aad11903406ed3c0ffc743803a977a4a3050560e1ebf124131",
+      "gitBlobAtReviewHead": "d61d4e96eab914bd742730f4250fc63a9ffe00aa",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/status.md",
+      "bytes": 10400,
+      "sha256": "330594d16b4b172041a7fa2ef7594fbd1e6fb6255a5c9ba0596bc62366736753",
+      "gitBlobAtReviewHead": "a3cd4b524fe9de553d79f4f9a6f2c5885816869a",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/ui-controller-delivery.json",
+      "bytes": 2297,
+      "sha256": "d65f007acf2673df584adfb75fca9b2d7b49e35cffe1c67e70eb2ad242e1968d",
+      "gitBlobAtReviewHead": "f86b1792a59e528ece1405cc487a92dd2165c82c",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/f05-historical-stage-binding.json",
+      "bytes": 841,
+      "sha256": "e787e0b764fcdc02182dbc0a6370a6ea68db316be7f6725d0065f3a2b671aa05",
+      "gitBlobAtReviewHead": "9c23537fd2ac95799d6aa9c570818e6b7ddb3925",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/fixed-chrome-postflight.json",
+      "bytes": 998,
+      "sha256": "df951e6584ff1b275e5003d4b02461860076d0f59b209f992f1a316bb192ad98",
+      "gitBlobAtReviewHead": "97f3ce2c031834feba5fd53b179cb75b9b789421",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/fixed-chrome-preflight.json",
+      "bytes": 662,
+      "sha256": "83f57d340fe25e7775eef322d0c3fb4aff05e7bad0b98a4213b636822ecf7805",
+      "gitBlobAtReviewHead": "43855d9b3e15aea8aa038b3f42dbf6f4e97b746e",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/independent-locator-correction-review.md",
+      "bytes": 2798,
+      "sha256": "928604258749f8de1f5670c196a2393bf2e5c67868280607ced2340e3c65228b",
+      "gitBlobAtReviewHead": "1607d79857494f123deb5f2170a727f84ebd8f05",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/independent-source-review.md",
+      "bytes": 5303,
+      "sha256": "7129b8ac52c69d681e87a765abf6ce05489f50299ccf1833f5d3c1fcbe098f38",
+      "gitBlobAtReviewHead": "9dd7a276e5baee9ee59a502eda42315eb57a57ff",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/independent-validation-receipt-review.md",
+      "bytes": 8032,
+      "sha256": "b8b7f7c1824f8c6a244c99f6d3ec7d4806666964761f81d231aa188c8ee8e993",
+      "gitBlobAtReviewHead": "9a17f47d025c082c084523634d73e39fafff5456",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/phase-and-validation.md",
+      "bytes": 3850,
+      "sha256": "e0fbe9f1d20ff1e56894b6fef9df57f395ea5d01acd6c31c646253f4da98812e",
+      "gitBlobAtReviewHead": "5930e2cab098e3f596039ac78cd3e8673633583b",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-receipts.json",
+      "bytes": 44945,
+      "sha256": "fc8fe314e38e4d0d837bc4e6aaab09dcb2fa8285a05589837caa6374774d8d24",
+      "gitBlobAtReviewHead": "dad0582c7a8531e151d684bd79598d0a02b74d9e",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned-r2.stderr.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned-r2.stdout.txt.gz",
+      "bytes": 113,
+      "sha256": "7bdef4337e45b42d8e003cb5fb3ec86bbe42e9f1a4eb830ebd123eae290afa60",
+      "gitBlobAtReviewHead": "73fc64379c916d620e7b5bf109e3d651d99e98f3",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned.stderr.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned.stdout.txt.gz",
+      "bytes": 114,
+      "sha256": "1ea9d53676ff8d068328859fedf06229792b6c6f0c83f16c152021e41b092495",
+      "gitBlobAtReviewHead": "51f16a088b184d9f75b37f75f36f45278a354aed",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/full-check.stderr.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/full-check.stdout.txt.gz",
+      "bytes": 1340,
+      "sha256": "52891f1200faa6ce6a9e9296fccaa77ff248fb3ad651a366f9ebbb6ae4ea3166",
+      "gitBlobAtReviewHead": "fc5e0a4f9da7f8ebf37b4a0f436654110371baeb",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-locator-affected.stderr.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-locator-affected.stdout.txt.gz",
+      "bytes": 230,
+      "sha256": "190c77033d33bdb2eefe94c23588a2925c8f49d6a31b28a413136b43c89903a0",
+      "gitBlobAtReviewHead": "c8fa8a7c00b816f9745713a8578109fcfea9aed1",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-runtime-first.stderr.txt.gz",
+      "bytes": 574,
+      "sha256": "8676238ed0ba31494b14d202ef4c8006b850b76ecf2dccfb27a63860da8abce6",
+      "gitBlobAtReviewHead": "e4e19b8091163272f9214da6c0204b06eaaec797",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-runtime-first.stdout.txt.gz",
+      "bytes": 431,
+      "sha256": "eaa4610f05ab79da765f8967e73eaa888fcc5b25a987e2381cba328f4cc364d6",
+      "gitBlobAtReviewHead": "3cd27d2de0381ab08b19c051292232d72e42434c",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-npm.stderr.txt.gz",
+      "bytes": 475,
+      "sha256": "8c2e468e3c7db6af9968e5011c468227c9294567beac5c874fd400e5885472a7",
+      "gitBlobAtReviewHead": "6e2a6ff1691f37909f1db621e293df07e3f5aa9c",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-npm.stdout.txt.gz",
+      "bytes": 122,
+      "sha256": "2b540826b70040843108401816da579b3137ef96dcab99de0772a96c35d933ac",
+      "gitBlobAtReviewHead": "c71198d8863cfdd3ee7427e08ce6236c071190c6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-uv.stderr.txt.gz",
+      "bytes": 467,
+      "sha256": "0b4592f8e82458d69318d19a4e9deac2c5eca7730765af2141fade0e325bdff2",
+      "gitBlobAtReviewHead": "569f1a0e7211cb310b086e450dfcbaac04ad8272",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-uv.stdout.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/source-diff-check.stderr.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/source-diff-check.stdout.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/verify-sources.stderr.txt.gz",
+      "bytes": 20,
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "gitBlobAtReviewHead": "615bb342a6605e7680c152abd369be5292bf11e6",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/verify-sources.stdout.txt.gz",
+      "bytes": 125,
+      "sha256": "68a3694f613b55c97cede69e700f3518ee3af072cf01270e4deafb6ef96c157c",
+      "gitBlobAtReviewHead": "3dc473156b83e7a78d45a6836c7e83f1aeee2448",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/source-32-vector.json",
+      "bytes": 13896,
+      "sha256": "a2362221a1cf3718636b491e8da6f7342a7943152c72792d48b3c5dc74047cd0",
+      "gitBlobAtReviewHead": "439bc16163ab83b1169ba6d2c76d36d7b7afb05e",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/source-start.json",
+      "bytes": 830,
+      "sha256": "00d991b0f913188ca20a771fecd27afb29b18789bf81e189d1a597c8a1409393",
+      "gitBlobAtReviewHead": "d2ac6642eda48d32c21c1713b79915ab75e3e926",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "docs/reviews/T09/zero-record-version-fix-20261023/validation.json",
+      "bytes": 4726,
+      "sha256": "080f601fc28f6171ba3e358074d2540dc5a345c298befefc97bbe12a367476e3",
+      "gitBlobAtReviewHead": "5795f820ee2b56e2a362f08f87ce5b886115f771",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+      "gitBlobAtReviewHead": "99bf9de3805a29713d92c155c12f6de23c80e9f3",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32",
+      "gitBlobAtReviewHead": "0f83067f90b3da1eecb16af8ddcf99e18c99e082",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 351,
+      "sha256": "626b8f7024e8460af3ca42076a953b2827c0d6468903065c71a7fbb819cbce20",
+      "gitBlobAtReviewHead": "0123da2f597a80ed77a16610faedd195d5e59784",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63",
+      "gitBlobAtReviewHead": "08d9cf0fa862356e0f5c6cc0039aebe25c6e861c",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 20999,
+      "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+      "gitBlobAtReviewHead": "48e68bb2635aab2de04ecfb48737d730e1eab62a",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    },
+    {
+      "path": "vitest.config.mts",
+      "bytes": 125,
+      "sha256": "fba5352d9a9d9c4e79e7bf37b72a428fbd666d5c96447e28b195bfe73d964df4",
+      "gitBlobAtReviewHead": "845e04b86d7f08b6034e1eb0976789efd0ca4643",
+      "readPolicy": "own-root fixed copy only; old absolute paths and metadata references are not traversal permission"
+    }
+  ],
+  "evidenceCount": 99,
+  "approvedSharedContext": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "approvedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 55364,
+      "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842",
+      "rule": "read-only approved baseline context, not authority to maintain or import other lines"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "approvedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 64853,
+      "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2",
+      "rule": "read-only approved baseline context, not authority to maintain or import other lines"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "approvedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 29559,
+      "sha256": "597d74e318645d0ae4e7152acc29487efc37cb23b501404e60b21f5ed87fc7cb",
+      "rule": "read-only approved baseline context, not authority to maintain or import other lines"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/worker.py",
+      "approvedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 9314,
+      "sha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+      "rule": "read-only approved baseline context, not authority to maintain or import other lines"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/protocol.py",
+      "approvedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 3770,
+      "sha256": "34f85a3572276dafcb4ef5dceda426c4b8870a89344a0992684b96ae23218ab2",
+      "rule": "read-only approved baseline context, not authority to maintain or import other lines"
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "approvedRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "bytes": 20174,
+      "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe",
+      "rule": "read-only approved baseline context, not authority to maintain or import other lines"
+    }
+  ],
+  "newPreparationReadRoles": [
+    "review-contract.md",
+    "controller-intake.md",
+    "agents-current.txt",
+    "tracked-review-head.json",
+    "own full-input.md",
+    "own review-mapping.json",
+    "own ordinary-setup-proposal.json",
+    "fresh own operator receipt only after actual creation"
+  ],
+  "oldReports": [
+    "docs/reviews/T09/s1-launch-20261023/zcode-original-report.md",
+    "docs/reviews/T09/replacement-r1-terminal-20261023/zcode-original-report.md",
+    "docs/reviews/T09/replacement-r1-terminal-20261023/minimax-original-report.md"
+  ],
+  "forbidden": [
+    "actual old roots or application/global/native state",
+    "blocked global returns or target files",
+    "current new peer input/report/runtime/identity",
+    "unknown hooks or metadata contents"
+  ],
+  "newTasksCreated": 0,
+  "setupExecuted": false,
+  "runtimeExecuted": false,
+  "guiStartAuthorized": false
+}
