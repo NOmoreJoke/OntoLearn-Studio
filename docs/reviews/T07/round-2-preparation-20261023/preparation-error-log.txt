@@ -1,0 +1,4 @@
+1. Read of old dispatch/input-manifest.json failed because only role-specific manifests exist; corrected to exact role paths.
+2. tarfile.extractall(filter=...) unsupported on system Python; preserved partial fresh Z root and resumed with validated regular-file extraction.
+3. Initial short-launch writer failed at Python parse before any write: Non-UTF-8 code starting with byte e5. Reissued an ASCII-source writer with explicit UTF-8 coding; no product executed.
+These are preparation/read/parser errors, not automatic approval rejections; no rejected validation objective was rerouted.
