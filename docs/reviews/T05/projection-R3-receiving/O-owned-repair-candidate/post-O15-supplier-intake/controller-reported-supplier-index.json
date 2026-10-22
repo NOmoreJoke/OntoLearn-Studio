@@ -1,0 +1,99 @@
+{
+  "format": "T05-O15-controller-reported-supplier-pending-integration-index/1",
+  "businessDateAsiaShanghai": "2026-10-23",
+  "authorityThreadId": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "attribution": "Facts below transcribe controller delegation messages. This owner has not independently reopened the supplier archives or rerun their checks.",
+  "frozenO15Source": "b88be226501703f1d5365734dd0e56066bd1bffb",
+  "frozenReviewProcess": "0f87f2c2a1fe5b8085176b530e473a7d51cea509",
+  "existingTriageCommit": "66826f9081c67ce281e4e00d19328276640488da",
+  "controllerOriginalPairIntake": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.private/T05-O15-b88-pair-terminal-controller-intake-20261023.md",
+    "bytes": 9689,
+    "sha256": "87a659850d9dafb830ee3eacb33c0f6f36dabff5db2da458006f865ba5b60876",
+    "locationBoundary": "Shared 本体 root .private, not a worktree or iteration-control/weekly."
+  },
+  "suppliers": [
+    {
+      "item": "8.1",
+      "status": "controller-limited-reception-of-explanation-only",
+      "supplierOwner": "T01 shared contracts/Job unique owner",
+      "proposalZip": {
+        "pathAsProvided": "outputs/20261022_review_backlog/T01-T05-O15-shared-followups-proposals-20261023/8-1-commit-order/8-1-commit-order-proposal-evidence.zip",
+        "bytes": 56405,
+        "sha256": "e13df800ce0b17cf77210cb2c2f71536d30da1f1a53994da3b4971c13adb1694"
+      },
+      "v2Markdown": {
+        "bytes": 25409,
+        "sha256": "539092bc14f39c1c2e39d6c6f5a76e6d0a6c445b35991a31889ba66a8c3f6d66",
+        "exactPathNotProvidedInMessage": true
+      },
+      "controllerIntake": {
+        "pathAsProvided": "weekly.private/T01-shared81-commit-order-v2-proposal-controller-intake-20261023.md",
+        "bytes": 7397,
+        "sha256": "68e4439e483f3848d7da2bfd43aeff02a490207621f5bf349978b8a864e88a25"
+      },
+      "adoptedExplanationAsReported": [
+        "Strong outer COMMIT ordering: full completion F first, then late cancel => alreadyTerminal/succeeded.",
+        "Cancel K first => no new wholeSuccess; retain prior committed rounds, then cancelled or cleanupfailed.",
+        "Existing terminal-first cleanup and late-completion idempotency unchanged.",
+        "Three False arguments, running guards and original I03 conditional edge unchanged."
+      ],
+      "unverifiedAndUnclosed": [
+        "No current normal same-writer durable cancelling->succeeded witness.",
+        "Nine acceptance cases remain future/unrun.",
+        "Receivers not claimed complete."
+      ],
+      "candidateSourceChanged": false,
+      "changesAllowedByThisIndex": "None; carry exact explanation and unmet evidence into later complete package, do not fabricate manual state witnesses."
+    },
+    {
+      "item": "8.5",
+      "status": "controller-limited-reception-of-three-test-unit-candidate",
+      "supplierOwner": "Original I02/CSP unique owner, coordinated by controller",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-csp-unit-8-5-20261023",
+      "candidate": "edd0e2f2d8e9e6bf81ea1af01c74ba04225db42a",
+      "baseAsReported": "5f",
+      "candidatePathsAsReported": [
+        "tests/unit/csp.test.ts",
+        "tests/helpers/csp-violation-projection.ts",
+        "tests/unit/csp-violation-projection.test.ts"
+      ],
+      "boundedCoverageAsReported": [
+        "Complete nine directives and token-duplication checks.",
+        "Production seven / development five semantic tuples; raw event counts and unknown categories preserved.",
+        "blob same-origin uses URL.origin to bound probe classification; no new CSP policy."
+      ],
+      "actualChecksReportedToController": {
+        "targetedTests": 72,
+        "typescriptTests": 700,
+        "pythonTests": 1052,
+        "requiredCheckExit": 0,
+        "executionAttribution": "Supplier execution as received by controller; this owner did not rerun."
+      },
+      "controllerIntake": {
+        "pathAsProvided": "weekly.private/T05-CSP-edd0-three-test-runtime-controller-intake-20261023.md",
+        "bytes": 7481,
+        "sha256": "868abeb3bc9278e4faf60fc42b171d4ddb36228b9912a3732dd6b316607931aa"
+      },
+      "unverifiedAndUnclosed": [
+        "No actual e2e integration yet.",
+        "Three-mode verification not completed.",
+        "Designated fresh pair review not completed.",
+        "This test candidate is not the full CSP gate or an integration/release approval."
+      ],
+      "futureHandshakeAsReported": "T01 released only csp-lifecycle.spec future ownership for handshake with original I02. Original I02 may prepare minimal scratch wiring and 244 userData guard integration; runtime not authorized.",
+      "changesAllowedByThisIndex": "None; do not integrate, run runtime or restart old M merely to obtain wording Pass."
+    }
+  ],
+  "pendingConcreteSupplierItemsNotYetRecordedHere": ["8.2", "8.3"],
+  "remainingBoundaries": {
+    "originalMItem81And85Severity": "中 unchanged",
+    "originalMFull150Verdict": "NotPass unchanged",
+    "original15ExternalWorkflowOpinions": "open unchanged",
+    "originalScope34ReadGapsPreserved": true,
+    "noNewModelOrGUIForTheseUpdates": true,
+    "noUnchangedRuntimeChecksRerun": true,
+    "noFrozenInputsOrOriginalReportsModified": true,
+    "futureActualChangesRequireUniqueOwnerNewCandidateAndCompleteFreshPair": true
+  }
+}
