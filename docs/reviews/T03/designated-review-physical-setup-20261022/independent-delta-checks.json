@@ -1,0 +1,297 @@
+{
+  "at": "2026-10-22T10:33:59.091476+00:00",
+  "candidate": "49cd9092f98485baeb961b2e857aef47fba71c26",
+  "firstReportProcess": "2b49d1dd883574f4f895d1b650c62ff1dd72059c",
+  "finding": "F1/P2",
+  "disposition": "CLOSED",
+  "newFindings": [],
+  "manifestIdentity": {
+    "bytes": 3555,
+    "sha256": "c8e730b080844aa3020c479c1e4c73b3a0316e5927823e7867746b0c66988e9a"
+  },
+  "payloads": [
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/F1-environment-repair.json",
+      "bytes": 8209,
+      "sha256": "51502f41e775e19dd6b21bf6b6df7de34b3b4449f41663feb3735f071d949273"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/README.md",
+      "bytes": 6212,
+      "sha256": "7b170eadeadb10a9fdbe7dde53e95030b6e6b007736c991f92d5899ca9bba821"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/bootstrap.py",
+      "bytes": 8274,
+      "sha256": "9a0670452e994d10b81201302b3685eec95400a86a2fb1d154b06a6f353a31fd"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/make-prompts.py",
+      "bytes": 9960,
+      "sha256": "a34f8ad200b2925f90afd2287e28140573e3d17cb92fcfc4beaf5157ecae50b3"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/mapping-S1-minimax-prompt.md",
+      "bytes": 41661,
+      "sha256": "871e074a2068ca26e3b8b0d0236f322a241b7a3351e6747a73948aa75dfa10fe"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/mapping-S1-zcode-prompt.md",
+      "bytes": 41592,
+      "sha256": "0da4d866874d1ff57368f4e978682e2e37c5a32ff6534538631b6e49282357a4"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/profile-D2-minimax-prompt.md",
+      "bytes": 41926,
+      "sha256": "a6ce3d965a785e6c1419c1bead84459127b6af5438a108cdc8807e38274d979d"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/profile-D2-zcode-prompt.md",
+      "bytes": 41857,
+      "sha256": "bed8621673016df49c34780b3c408278ed48391ab7083f3518cd7698f6b33f33"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/prompt-index.json",
+      "bytes": 24945,
+      "sha256": "7f9ccbe5ddf20a55ab1a98d315a51dc39b6afb254ed725b59ff0bd1d9530fe64"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/repair-environment.py",
+      "bytes": 2513,
+      "sha256": "8d0a9c1c6b5a0368499108511b1947439a606875f7c145ca1881dd569538a4fe"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/source-selection-minimax-prompt.md",
+      "bytes": 41809,
+      "sha256": "161ff3b897416603aee12342c42c21b6d1188b521fee1c3da3ad5ebcee0dc9e5"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/source-selection-zcode-prompt.md",
+      "bytes": 41740,
+      "sha256": "6f4052ceceb8a93dd4859fa50f7fb696492de45615499286ac44b9df30e795fc"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/validate-package.py",
+      "bytes": 4210,
+      "sha256": "6f61c59c437d79bb341b5b54240ca24cecfff9c9dc6278ccc9f74fedd7cb2061"
+    },
+    {
+      "path": "docs/reviews/T03/designated-review-physical-setup-20261022/validation.json",
+      "bytes": 674,
+      "sha256": "3400982619fbef42450cc58570b5a5aaa290156961360d6cd916955defc18afd"
+    }
+  ],
+  "firstReportAndChecksUnchanged": true,
+  "firstCandidateManifestUnchanged": true,
+  "onlyDeclaredGitDelta": true,
+  "sixEnvironmentReadbacks": [
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-zcode-review-3031941",
+      "environmentIdentity": {
+        "bytes": 2315,
+        "sha256": "765c6bcd890b3e334d38ac6fd7ad76d95a270b1246484ac2813160bf64d79278"
+      },
+      "onlyEnvironmentTextDelta": "one export I02_EVIDENCE line",
+      "metadataBefore": {
+        "files": 4,
+        "bytes": 11898
+      },
+      "metadataLiveAfter": {
+        "files": 5,
+        "bytes": 13095
+      },
+      "newOwnReceiptBytes": 1197,
+      "argv": [
+        "/bin/sh",
+        "-c",
+        ". \"$1\"; printf \"%s\" \"$I02_EVIDENCE\"",
+        "sh",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-zcode-review-3031941/build/review-session/environment.sh"
+      ],
+      "injectedInheritedI02_EVIDENCE": "/independent-not-written/stale-c1-evidence.json",
+      "stdout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-zcode-review-3031941/build/review-session/raw/c1-evidence.json",
+      "stderr": "",
+      "exitCode": 0,
+      "promptIdentity": {
+        "bytes": 41592,
+        "sha256": "0da4d866874d1ff57368f4e978682e2e37c5a32ff6534538631b6e49282357a4"
+      },
+      "exactFrozenSuffixPreserved": true,
+      "newC1OutputFileCreated": false
+    },
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941",
+      "environmentIdentity": {
+        "bytes": 2341,
+        "sha256": "b52e5fff45d3b3b20e123a9622897512714eb09fda1e95997c07c2ac8a797c29"
+      },
+      "onlyEnvironmentTextDelta": "one export I02_EVIDENCE line",
+      "metadataBefore": {
+        "files": 4,
+        "bytes": 11968
+      },
+      "metadataLiveAfter": {
+        "files": 5,
+        "bytes": 13171
+      },
+      "newOwnReceiptBytes": 1203,
+      "argv": [
+        "/bin/sh",
+        "-c",
+        ". \"$1\"; printf \"%s\" \"$I02_EVIDENCE\"",
+        "sh",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/environment.sh"
+      ],
+      "injectedInheritedI02_EVIDENCE": "/independent-not-written/stale-c1-evidence.json",
+      "stdout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/raw/c1-evidence.json",
+      "stderr": "",
+      "exitCode": 0,
+      "promptIdentity": {
+        "bytes": 41661,
+        "sha256": "871e074a2068ca26e3b8b0d0236f322a241b7a3351e6747a73948aa75dfa10fe"
+      },
+      "exactFrozenSuffixPreserved": true,
+      "newC1OutputFileCreated": false
+    },
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-zcode-review-8c904b5",
+      "environmentIdentity": {
+        "bytes": 2393,
+        "sha256": "be11b995b26b14afec260403a1229548d16a4d30f48427306e7d42116d7f8976"
+      },
+      "onlyEnvironmentTextDelta": "one export I02_EVIDENCE line",
+      "metadataBefore": {
+        "files": 4,
+        "bytes": 11848
+      },
+      "metadataLiveAfter": {
+        "files": 5,
+        "bytes": 13063
+      },
+      "newOwnReceiptBytes": 1215,
+      "argv": [
+        "/bin/sh",
+        "-c",
+        ". \"$1\"; printf \"%s\" \"$I02_EVIDENCE\"",
+        "sh",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-zcode-review-8c904b5/build/review-session/environment.sh"
+      ],
+      "injectedInheritedI02_EVIDENCE": "/independent-not-written/stale-c1-evidence.json",
+      "stdout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-zcode-review-8c904b5/build/review-session/raw/c1-evidence.json",
+      "stderr": "",
+      "exitCode": 0,
+      "promptIdentity": {
+        "bytes": 41740,
+        "sha256": "6f4052ceceb8a93dd4859fa50f7fb696492de45615499286ac44b9df30e795fc"
+      },
+      "exactFrozenSuffixPreserved": true,
+      "newC1OutputFileCreated": false
+    },
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5",
+      "environmentIdentity": {
+        "bytes": 2419,
+        "sha256": "0d830c607c0116c3d70eaa48e202ae0aac6eedeb5f2096860430665ac20051b7"
+      },
+      "onlyEnvironmentTextDelta": "one export I02_EVIDENCE line",
+      "metadataBefore": {
+        "files": 4,
+        "bytes": 11918
+      },
+      "metadataLiveAfter": {
+        "files": 5,
+        "bytes": 13139
+      },
+      "newOwnReceiptBytes": 1221,
+      "argv": [
+        "/bin/sh",
+        "-c",
+        ". \"$1\"; printf \"%s\" \"$I02_EVIDENCE\"",
+        "sh",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/environment.sh"
+      ],
+      "injectedInheritedI02_EVIDENCE": "/independent-not-written/stale-c1-evidence.json",
+      "stdout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-source-selection-minimax-review-8c904b5/build/review-session/raw/c1-evidence.json",
+      "stderr": "",
+      "exitCode": 0,
+      "promptIdentity": {
+        "bytes": 41809,
+        "sha256": "161ff3b897416603aee12342c42c21b6d1188b521fee1c3da3ad5ebcee0dc9e5"
+      },
+      "exactFrozenSuffixPreserved": true,
+      "newC1OutputFileCreated": false
+    },
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-D2-zcode-review-a4d1457",
+      "environmentIdentity": {
+        "bytes": 2315,
+        "sha256": "e0ac5327cba759361c51b0697f528e9852b30cb798a5fd58ca97c807aa9fb0ca"
+      },
+      "onlyEnvironmentTextDelta": "one export I02_EVIDENCE line",
+      "metadataBefore": {
+        "files": 4,
+        "bytes": 12109
+      },
+      "metadataLiveAfter": {
+        "files": 5,
+        "bytes": 13306
+      },
+      "newOwnReceiptBytes": 1197,
+      "argv": [
+        "/bin/sh",
+        "-c",
+        ". \"$1\"; printf \"%s\" \"$I02_EVIDENCE\"",
+        "sh",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-D2-zcode-review-a4d1457/build/review-session/environment.sh"
+      ],
+      "injectedInheritedI02_EVIDENCE": "/independent-not-written/stale-c1-evidence.json",
+      "stdout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-D2-zcode-review-a4d1457/build/review-session/raw/c1-evidence.json",
+      "stderr": "",
+      "exitCode": 0,
+      "promptIdentity": {
+        "bytes": 41857,
+        "sha256": "bed8621673016df49c34780b3c408278ed48391ab7083f3518cd7698f6b33f33"
+      },
+      "exactFrozenSuffixPreserved": true,
+      "newC1OutputFileCreated": false
+    },
+    {
+      "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-D2-minimax-review-a4d1457",
+      "environmentIdentity": {
+        "bytes": 2341,
+        "sha256": "9de4c81783d652243ce9e01138db9ea5f90e347bd7acc92f07bf2e57029f9040"
+      },
+      "onlyEnvironmentTextDelta": "one export I02_EVIDENCE line",
+      "metadataBefore": {
+        "files": 4,
+        "bytes": 12179
+      },
+      "metadataLiveAfter": {
+        "files": 5,
+        "bytes": 13382
+      },
+      "newOwnReceiptBytes": 1203,
+      "argv": [
+        "/bin/sh",
+        "-c",
+        ". \"$1\"; printf \"%s\" \"$I02_EVIDENCE\"",
+        "sh",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-D2-minimax-review-a4d1457/build/review-session/environment.sh"
+      ],
+      "injectedInheritedI02_EVIDENCE": "/independent-not-written/stale-c1-evidence.json",
+      "stdout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-profile-D2-minimax-review-a4d1457/build/review-session/raw/c1-evidence.json",
+      "stderr": "",
+      "exitCode": 0,
+      "promptIdentity": {
+        "bytes": 41926,
+        "sha256": "a6ce3d965a785e6c1419c1bead84459127b6af5438a108cdc8807e38274d979d"
+      },
+      "exactFrozenSuffixPreserved": true,
+      "newC1OutputFileCreated": false
+    }
+  ],
+  "productCommandsExecuted": [],
+  "dependencyInstallsExecuted": [],
+  "actualOSMetadataOperations": null,
+  "note": "Independent stdlib parsing/byte checks/read-only Git and six pure /bin/sh source+printf readbacks; no author scripts imported/executed and no C1 product run."
+}
