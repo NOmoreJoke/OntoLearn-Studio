@@ -1,7 +1,8 @@
 # T04 查询状态
 
-2026-10-23 第三轮实际创建：**两项全新完整指定任务已GUI受理，fresh本人UI设置及官方SID已核，完整冻结正文原生到达证明通过；两实际HEAD同detached507、同base→head。20:15:03.300Z已立即GUI RELEASE并获总控ack，后续只本人SID+原turn精确后台。尚无新完整报告/正式终态收件或新双Pass。**
+2026-10-23 第三轮实际创建：**两项全新完整指定任务已GUI受理，fresh本人UI设置及官方SID已核，完整冻结正文原生到达证明通过；两实际HEAD同detached507、同base→head。20:15:03.300Z已立即GUI RELEASE并获总控ack，后续只本人SID+原turn精确后台。Z原turn已正式completed并全文收件有界S1 Pass，M仍待正式终态/全文；尚无本轮完整双Pass。**
 
+- 最新单方结果：[R3结果与处置](p3-repair/round3-results-20261023/zcode-owner-disposition.md)。Z官方原turn.completed=`2026-10-22T20:24:27.590Z`；原报告27067B/119行/SHA `7ab676ff90b1ded1b89e573480d2597080bfb950507ae57e7c640fd05c8851d6`，全文读回且前后hash相同，七组收据/raw均核。无新P1/P2/P3、四P3关闭；两观察及报告计数误差另表处置，不代判M/父功能/全流程合规。上一创建增量已获总控正式接收，原UNKNOWN快照保持；新terminal另存，旧R2 Fail保持。
 - 实际Z SID `session_56788899c99e13a8d348bb21b2d62289` / 原turn `turn_dee9efbf-58dc-473e-8f12-b9be14ed1a72`；fresh UI GLM-5.3/最高/完全访问。M SID `mvs_4e9f4b2b7bdd47348293cdbb41f60109` / 原turn `659fd77a-9a0b-49c5-b39f-48aeb928d9f1`；fresh UI M3.1-Flash/xhigh/始终授权。两SID官方菜单复制至本人未发送草稿读回清空，未投递后续。
 - [创建索引](p3-repair/round3-creation-20261023/creation-index.json)、[精确续接路由](p3-repair/round3-creation-20261023/native-evidence-routes.md)：23成员归档36881B/SHA `8dd366a8f5cb38a527e36c933a21d918377ddd4e913b0d33a732b03360b77143`。Z原生编号1–148重建29675B；M两Read1–98、99–147及另见asset尾LF重建29715B。完整输入不等于模型Pass。M附件cd-to-file首败exit1与直接文件hash成功均保留，不当审批拒绝；owner抽取basename首败未写Mproof，修正已知prefix后成功，不重跑模型/产品。
 
