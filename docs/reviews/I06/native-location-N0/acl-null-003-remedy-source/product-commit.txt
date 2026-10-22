@@ -1,0 +1,11 @@
+commit 1217e0f63a9c62b72e01046ef5fbc5c53434251a
+Author:     NOmoreJoke <kai1847756198@gmail.com>
+AuthorDate: Thu Oct 22 08:13:26 2026 +0800
+Commit:     NOmoreJoke <kai1847756198@gmail.com>
+CommitDate: Thu Oct 22 08:13:26 2026 +0800
+
+    fix(i06): require explicit filesec witnesses for ACL absence
+
+ packages/native-location/src/platform_macos.cc     | 132 ++++++++++++---
+ .../native-location/tests/location_core_test.cc    | 178 +++++++++++++++++++++
+ 2 files changed, 287 insertions(+), 23 deletions(-)

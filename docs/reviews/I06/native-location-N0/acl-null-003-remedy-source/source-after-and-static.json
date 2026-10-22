@@ -1,0 +1,189 @@
+{
+  "baseRef": "3cc158e0a62b154d110a6fc80e3ddf171cea0098",
+  "nineSourcePins": [
+    {
+      "path": "packages/native-location/include/location_abi.h",
+      "before": {
+        "bytes": 13296,
+        "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172"
+      },
+      "after": {
+        "bytes": 13296,
+        "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/native-location/src/capability_core.cc",
+      "before": {
+        "bytes": 17304,
+        "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319"
+      },
+      "after": {
+        "bytes": 17304,
+        "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/native-location/src/platform_macos.cc",
+      "before": {
+        "bytes": 8670,
+        "sha256": "e1fbbcd9c9b73916bd9a030da8bc237dd46230fdd8d0366f0e2424168d4cd71a"
+      },
+      "after": {
+        "bytes": 12579,
+        "sha256": "d944a4901b6d3f516f18ab436aed9ec56a78eb1bbd12d1949ebf6a6e171825ce"
+      },
+      "changed": true
+    },
+    {
+      "path": "packages/native-location/src/platform_windows.cc",
+      "before": {
+        "bytes": 12506,
+        "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4"
+      },
+      "after": {
+        "bytes": 12506,
+        "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/native-location/src/node_binding.cc",
+      "before": {
+        "bytes": 13163,
+        "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383"
+      },
+      "after": {
+        "bytes": 13163,
+        "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/desktop/src/main/security/native-location-owner.ts",
+      "before": {
+        "bytes": 12496,
+        "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0"
+      },
+      "after": {
+        "bytes": 12496,
+        "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/native-location/tests/location_core_test.cc",
+      "before": {
+        "bytes": 30037,
+        "sha256": "4cec7d67ba66fdf47d0ae26ba056372dc437e67ac076e768a548c334bd260319"
+      },
+      "after": {
+        "bytes": 37928,
+        "sha256": "2517eb970ef39f37dd99ca9945909331df937d4dd43ce53b74eb722bf47a7053"
+      },
+      "changed": true
+    },
+    {
+      "path": "packages/native-location/tests/location_child_probe.cc",
+      "before": {
+        "bytes": 380,
+        "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c"
+      },
+      "after": {
+        "bytes": 380,
+        "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c"
+      },
+      "changed": false
+    },
+    {
+      "path": "tests/unit/i06-native-location-owner.test.ts",
+      "before": {
+        "bytes": 8424,
+        "sha256": "4552db106b86a8a8a80b9fcb7b55292a1696f69b72a20bd97bdfaae2bdc104ce"
+      },
+      "after": {
+        "bytes": 8424,
+        "sha256": "4552db106b86a8a8a80b9fcb7b55292a1696f69b72a20bd97bdfaae2bdc104ce"
+      },
+      "changed": false
+    }
+  ],
+  "changedPaths": [
+    "packages/native-location/src/platform_macos.cc",
+    "packages/native-location/tests/location_core_test.cc"
+  ],
+  "windowsStaticAssertions": 28,
+  "originalTestExactAfterRemovingNewDarwinBlocks": true,
+  "macOutsideMetadataAndNewHelpersExact": true,
+  "fixedNewOutputMaxBytes": 71,
+  "lineBounds": {
+    "unsupported-filesec-init": 52,
+    "unsupported-fstatx": 46,
+    "unsupported-filesec-owner": 53,
+    "unsupported-filesec-group": 53,
+    "unsupported-filesec-mode": 52,
+    "unsupported-filesec-uuid": 52,
+    "unsupported-filesec-grpuuid": 55,
+    "unsupported-filesec-presence": 56,
+    "unsupported-filesec-acl": 51,
+    "reason-scalar-mismatch": 52,
+    "reason-envelope-missing": 53,
+    "reason-acl-output-invalid": 55,
+    "fixture-cleanup": 32,
+    "owner-cleanup": 30,
+    "empty": 56,
+    "one-ace": 61,
+    "invalid-fd": 71,
+    "fixture-failure-acl-witness-init": 37,
+    "fixture-failure-acl-witness-stat": 37,
+    "fixture-failure-acl-witness-owner": 38,
+    "fixture-failure-acl-witness-group": 38,
+    "fixture-failure-acl-witness-mode": 37,
+    "fixture-failure-acl-witness-scalars": 40,
+    "fixture-failure-acl-witness-uuid": 37,
+    "fixture-failure-acl-witness-grpuuid": 40,
+    "fixture-failure-acl-witness-envelope": 41,
+    "fixture-failure-acl-witness-presence": 41,
+    "fixture-failure-acl-witness-copy": 37,
+    "fixture-failure-acl-witness-valid": 38,
+    "fixture-failure-acl-witness-next": 37,
+    "fixture-failure-acl-witness-empty": 38,
+    "fixture-failure-acl-witness-cleanup": 40,
+    "fixture-failure-acl-one-owner-uuid": 39,
+    "fixture-failure-acl-one-init": 33,
+    "fixture-failure-acl-one-entry": 34,
+    "fixture-failure-acl-one-tag": 32,
+    "fixture-failure-acl-one-qualifier": 38,
+    "fixture-failure-acl-one-permset": 36,
+    "fixture-failure-acl-one-clear-perms": 40,
+    "fixture-failure-acl-one-add-perm": 37,
+    "fixture-failure-acl-one-set-perms": 38,
+    "fixture-failure-acl-one-flags": 34,
+    "fixture-failure-acl-one-clear-flags": 40,
+    "fixture-failure-acl-one-set-flags": 38,
+    "fixture-failure-acl-one-valid": 34,
+    "fixture-failure-acl-one-apply": 34,
+    "fixture-failure-acl-one-cleanup": 36,
+    "fixture-failure-acl-empty-setup": 36,
+    "fixture-failure-acl-empty-owner": 36,
+    "fixture-failure-acl-empty-root": 35,
+    "fixture-failure-acl-empty-metadata": 39,
+    "fixture-failure-acl-empty-close": 36,
+    "fixture-failure-acl-empty-fixture-cleanup": 46,
+    "fixture-failure-acl-one-setup": 34,
+    "fixture-failure-acl-one-owner-close": 40,
+    "fixture-failure-acl-one-denied": 35,
+    "fixture-failure-acl-one-fixture-cleanup": 44,
+    "fixture-failure-acl-invalid-owner-close": 44,
+    "fixture-failure-acl-invalid-fd": 35,
+    "fixture-failure-acl-invalid-fixture-cleanup": 48
+  },
+  "protectedAGENTS": {
+    "bytes": 15852,
+    "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+  },
+  "scope": "Static byte/structure checks only; no C++ compiler or runtime API call.",
+  "productRef": "1217e0f63a9c62b72e01046ef5fbc5c53434251a"
+}

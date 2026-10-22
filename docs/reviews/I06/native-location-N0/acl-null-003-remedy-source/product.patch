@@ -1,0 +1,360 @@
+diff --git a/packages/native-location/src/platform_macos.cc b/packages/native-location/src/platform_macos.cc
+index 74a95a5..b65ba63 100644
+--- a/packages/native-location/src/platform_macos.cc
++++ b/packages/native-location/src/platform_macos.cc
+@@ -29,6 +29,45 @@ void unsupported_clock_reason(const char* reason) noexcept {
+   std::fprintf(stderr, "N0 unsupported stage=clock reason=%s\n", reason);
+   errno = saved_errno;
+ }
++nl_status metadata_error_status(int error) noexcept {
++  if (error == ENOMEM) return NL_BUDGET;
++  if (error == EACCES || error == EPERM) return NL_DENIED;
++  return NL_UNSUPPORTED;
++}
++struct metadata_resources {
++  filesec_t security = nullptr;
++  acl_t acl = nullptr;
++  bool owns_acl = false;
++  bool unknown_acl = false;
++  nl_status finish(nl_status status, int error) noexcept {
++    if (owns_acl) {
++      owns_acl = false; // Retire this attempt even when release fails.
++      const int freed = acl_free(acl);
++      const int release_error = errno;
++      acl = nullptr;
++      if (freed != 0) { status = NL_RETAINED; error = release_error; }
++    }
++    if (unknown_acl) status = NL_RETAINED;
++    if (security != nullptr) {
++      const auto owned = security; security = nullptr;
++      filesec_free(owned); // void API: no fabricated release result.
++    }
++    errno = error;
++    return status;
++  }
++};
++nl_status metadata_query_failure(metadata_resources& resources,
++                                 const char* stage, int error) noexcept {
++  const auto status = metadata_error_status(error);
++  if (status == NL_UNSUPPORTED) unsupported_error(stage, error);
++  return resources.finish(status, error);
++}
++nl_status metadata_unknown(metadata_resources& resources, const char* reason) noexcept {
++  const int saved_errno = errno;
++  std::fprintf(stderr, "N0 unsupported stage=filesec reason=%s\n", reason);
++  errno = saved_errno;
++  return resources.finish(NL_UNSUPPORTED, 0); // No failed OS errno is asserted.
++}
+ void put64(uint8_t* out, uint64_t value) noexcept {
+   for (unsigned i = 0; i < 8; ++i) { out[i] = static_cast<uint8_t>(value); value >>= 8; }
+ }
+@@ -84,36 +123,83 @@ nl_status platform_open_member(handle parent, const char* name, uint32_t bytes,
+ nl_status platform_metadata(handle object, uint32_t kind, nl_metadata& out) noexcept {
+   out = {};
+   if (!valid_fd(object.value)) return NL_INVALID;
++  metadata_resources resources;
++  resources.security = filesec_init();
++  if (resources.security == nullptr) {
++    const int error = errno;
++    return metadata_query_failure(resources, "filesec-init", error);
++  }
+   struct stat value{};
+-  if (fstat(fd(object), &value) != 0) {
++  if (fstatx_np(fd(object), &value, resources.security) != 0) {
+     const int error = errno;
+-    const auto status = error_status(error);
+-    if (status == NL_UNSUPPORTED) unsupported_error("fstat", error);
+-    return status;
++    return metadata_query_failure(resources, "fstatx", error);
+   }
++  uid_t owner{}; gid_t group{}; mode_t mode{};
++  if (filesec_get_property(resources.security, FILESEC_OWNER, &owner) != 0) {
++    const int error = errno;
++    return metadata_query_failure(resources, "filesec-owner", error);
++  }
++  if (filesec_get_property(resources.security, FILESEC_GROUP, &group) != 0) {
++    const int error = errno;
++    return metadata_query_failure(resources, "filesec-group", error);
++  }
++  if (filesec_get_property(resources.security, FILESEC_MODE, &mode) != 0) {
++    const int error = errno;
++    return metadata_query_failure(resources, "filesec-mode", error);
++  }
++  if (owner != value.st_uid || group != value.st_gid || mode != value.st_mode)
++    return metadata_unknown(resources, "scalar-mismatch");
+   if ((kind == NL_DIRECTORY && !S_ISDIR(value.st_mode)) ||
+-      (kind == NL_REGULAR_FILE && !S_ISREG(value.st_mode))) return NL_DENIED;
+-  if (kind != NL_DIRECTORY && kind != NL_REGULAR_FILE) return NL_INVALID;
++      (kind == NL_REGULAR_FILE && !S_ISREG(value.st_mode)))
++    return resources.finish(NL_DENIED, 0);
++  if (kind != NL_DIRECTORY && kind != NL_REGULAR_FILE)
++    return resources.finish(NL_INVALID, 0);
+   if (value.st_uid != geteuid() || (value.st_mode & 0022) != 0 ||
+-      value.st_nlink == 0 || (kind == NL_REGULAR_FILE && value.st_nlink != 1)) return NL_DENIED;
+-  // Deliberately conservative fixture ACL policy: no extended ACE accepted.
+-  // Snapshot is not a continuing namespace/ACL grant. Failed query is unknown.
+-  acl_t acl = acl_get_fd_np(fd(object), ACL_TYPE_EXTENDED);
+-  if (acl == nullptr) {
++      value.st_nlink == 0 || (kind == NL_REGULAR_FILE && value.st_nlink != 1))
++    return resources.finish(NL_DENIED, 0);
++  // Conservative inference from the pinned public Libc implementation, not a
++  // cross-version contract: short/absent security data is still unsupported.
++  int owner_uuid_present = 0, group_uuid_present = 0;
++  if (filesec_query_property(resources.security, FILESEC_UUID, &owner_uuid_present) != 0) {
+     const int error = errno;
+-    const nl_status status = NL_UNSUPPORTED;
+-    unsupported_error("acl-null", error);
+-    return status;
++    return metadata_query_failure(resources, "filesec-uuid", error);
++  }
++  if (filesec_query_property(resources.security, FILESEC_GRPUUID, &group_uuid_present) != 0) {
++    const int error = errno;
++    return metadata_query_failure(resources, "filesec-grpuuid", error);
++  }
++  if (owner_uuid_present == 0 || group_uuid_present == 0)
++    return metadata_unknown(resources, "envelope-missing");
++  int acl_present = 0;
++  if (filesec_query_property(resources.security, FILESEC_ACL, &acl_present) != 0) {
++    const int error = errno;
++    return metadata_query_failure(resources, "filesec-presence", error);
++  }
++  if (acl_present != 0) { // Presence is a nonzero bit, not necessarily 1.
++    const int fetched = filesec_get_property(resources.security, FILESEC_ACL, &resources.acl);
++    const int fetch_error = errno;
++    if (fetched != 0) {
++      resources.unknown_acl = resources.acl != nullptr &&
++        resources.acl != static_cast<acl_t>(_FILESEC_REMOVE_ACL);
++      return metadata_query_failure(resources, "filesec-acl", fetch_error);
++    }
++    if (resources.acl == nullptr || resources.acl == static_cast<acl_t>(_FILESEC_REMOVE_ACL))
++      return metadata_unknown(resources, "acl-output-invalid");
++    resources.owns_acl = true;
++    const int valid = acl_valid(resources.acl);
++    const int valid_error = errno;
++    if (valid != 0) return resources.finish(NL_DENIED, valid_error);
++    acl_entry_t entry{};
++    errno = 0;
++    const int first = acl_get_entry(resources.acl, ACL_FIRST_ENTRY, &entry);
++    const int entry_error = errno;
++    // Preserve the existing valid-and-empty rule; ANY ACE remains denied.
++    if (first != -1 || entry_error != EINVAL)
++      return resources.finish(NL_DENIED, entry_error);
+   }
+-  acl_entry_t entry{};
+-  const int valid = acl_valid(acl);
+-  errno = 0;
+-  const int first = acl_get_entry(acl, ACL_FIRST_ENTRY, &entry);
+-  const int entry_error = errno;
+-  const int freed = acl_free(acl);
+-  // Apple returns 0 for an entry and -1/EINVAL for an empty valid ACL.
+-  if (freed != 0) return NL_RETAINED;
+-  if (valid != 0 || first != -1 || entry_error != EINVAL) return NL_DENIED;
++  const auto finalized = resources.finish(NL_OK, 0);
++  if (finalized != NL_OK) return finalized;
++  // Same-held-object snapshot only, never a continuing namespace/ACL grant.
+   out.abi_version = NL_ABI_VERSION; out.kind = kind;
+   put64(out.identity.volume, static_cast<uint64_t>(value.st_dev));
+   put64(out.identity.file, static_cast<uint64_t>(value.st_ino));
+diff --git a/packages/native-location/tests/location_core_test.cc b/packages/native-location/tests/location_core_test.cc
+index 7406759..e9844d5 100644
+--- a/packages/native-location/tests/location_core_test.cc
++++ b/packages/native-location/tests/location_core_test.cc
+@@ -19,6 +19,7 @@
+ #endif
+ #if defined(__APPLE__)
+ #include <fcntl.h>
++#include <membership.h>
+ #include <spawn.h>
+ #include <signal.h>
+ #include <sys/acl.h>
+@@ -387,6 +388,180 @@ nl_owner_ref make_owner(fixture& tree, const char* case_label = nullptr) {
+   }
+   require(status == NL_OK && owner.value != 0, "owner-create"); return owner;
+ }
++#if defined(__APPLE__)
++struct acl_fixture_resources {
++  filesec_t security = nullptr;
++  acl_t acl = nullptr;
++  bool owns_acl = false;
++  bool unknown_acl = false;
++  bool closed = false;
++  bool cleanup_ok = true;
++  bool close() noexcept {
++    if (closed) return cleanup_ok;
++    closed = true;
++    if (owns_acl) {
++      owns_acl = false;
++      if (acl_free(acl) != 0) cleanup_ok = false;
++      acl = nullptr;
++    }
++    if (unknown_acl) cleanup_ok = false;
++    if (security != nullptr) {
++      const auto owned = security; security = nullptr; filesec_free(owned);
++    }
++    return cleanup_ok;
++  }
++  ~acl_fixture_resources() {
++    if (!close()) {
++      std::fputs("N0 ACL fixture cleanup retained\n", stderr); std::abort();
++    }
++  }
++};
++struct acl_fixture_witness {
++  struct stat object{};
++  bool acl_present = false;
++  bool has_entry = false;
++  bool only_one_entry = false;
++};
++acl_fixture_witness read_acl_fixture(fixture& tree) {
++  acl_fixture_resources resources;
++  resources.security = filesec_init();
++  require(resources.security != nullptr, "acl-witness-init");
++  acl_fixture_witness result;
++  require(fstatx_np(tree.anchor, &result.object, resources.security) == 0, "acl-witness-stat");
++  uid_t owner{}; gid_t group{}; mode_t mode{};
++  require(filesec_get_property(resources.security, FILESEC_OWNER, &owner) == 0, "acl-witness-owner");
++  require(filesec_get_property(resources.security, FILESEC_GROUP, &group) == 0, "acl-witness-group");
++  require(filesec_get_property(resources.security, FILESEC_MODE, &mode) == 0, "acl-witness-mode");
++  require(owner == result.object.st_uid && group == result.object.st_gid &&
++    mode == result.object.st_mode && owner == geteuid() && S_ISDIR(mode) &&
++    (mode & 0022) == 0 && result.object.st_nlink != 0, "acl-witness-scalars");
++  int owner_uuid = 0, group_uuid = 0, present = 0;
++  require(filesec_query_property(resources.security, FILESEC_UUID, &owner_uuid) == 0, "acl-witness-uuid");
++  require(filesec_query_property(resources.security, FILESEC_GRPUUID, &group_uuid) == 0, "acl-witness-grpuuid");
++  require(owner_uuid != 0 && group_uuid != 0, "acl-witness-envelope");
++  require(filesec_query_property(resources.security, FILESEC_ACL, &present) == 0, "acl-witness-presence");
++  result.acl_present = present != 0;
++  if (result.acl_present) {
++    const int fetched = filesec_get_property(resources.security, FILESEC_ACL, &resources.acl);
++    const bool real_acl = resources.acl != nullptr &&
++      resources.acl != static_cast<acl_t>(_FILESEC_REMOVE_ACL);
++    resources.owns_acl = fetched == 0 && real_acl;
++    resources.unknown_acl = fetched != 0 && real_acl;
++    require(fetched == 0 && real_acl, "acl-witness-copy");
++    require(acl_valid(resources.acl) == 0, "acl-witness-valid");
++    acl_entry_t entry{};
++    errno = 0;
++    const int first = acl_get_entry(resources.acl, ACL_FIRST_ENTRY, &entry);
++    const int first_error = errno;
++    if (first == 0) {
++      result.has_entry = true;
++      errno = 0;
++      const int next = acl_get_entry(resources.acl, ACL_NEXT_ENTRY, &entry);
++      const int next_error = errno;
++      require(next == 0 || (next == -1 && next_error == EINVAL), "acl-witness-next");
++      result.only_one_entry = next == -1 && next_error == EINVAL;
++    } else require(first == -1 && first_error == EINVAL, "acl-witness-empty");
++  }
++  require(resources.close(), "acl-witness-cleanup");
++  return result;
++}
++void set_one_owner_ace(fixture& tree) {
++  uuid_t owner_uuid{};
++  require(mbr_uid_to_uuid(geteuid(), owner_uuid) == 0, "acl-one-owner-uuid");
++  acl_fixture_resources resources;
++  resources.acl = acl_init(1);
++  resources.owns_acl = resources.acl != nullptr;
++  require(resources.owns_acl, "acl-one-init");
++  acl_entry_t entry{};
++  require(acl_create_entry(&resources.acl, &entry) == 0, "acl-one-entry");
++  require(acl_set_tag_type(entry, ACL_EXTENDED_ALLOW) == 0, "acl-one-tag");
++  require(acl_set_qualifier(entry, owner_uuid) == 0, "acl-one-qualifier");
++  acl_permset_t permissions{};
++  require(acl_get_permset(entry, &permissions) == 0, "acl-one-permset");
++  require(acl_clear_perms(permissions) == 0, "acl-one-clear-perms");
++  require(acl_add_perm(permissions, ACL_LIST_DIRECTORY) == 0, "acl-one-add-perm");
++  require(acl_set_permset(entry, permissions) == 0, "acl-one-set-perms");
++  acl_flagset_t flags{};
++  require(acl_get_flagset_np(entry, &flags) == 0, "acl-one-flags");
++  require(acl_clear_flags_np(flags) == 0, "acl-one-clear-flags");
++  require(acl_set_flagset_np(entry, flags) == 0, "acl-one-set-flags");
++  require(acl_valid(resources.acl) == 0, "acl-one-valid");
++  require(acl_set_fd_np(tree.anchor, resources.acl, ACL_TYPE_EXTENDED) == 0, "acl-one-apply");
++  require(resources.close(), "acl-one-cleanup");
++}
++struct acl_fixture_owner {
++  nl_owner_ref value{};
++  bool closed = false;
++  bool cleanup_ok = true;
++  bool close() noexcept {
++    if (closed) return cleanup_ok;
++    closed = true;
++    if (value.value != 0) {
++      cleanup_ok = nl_owner_close(value) == NL_OK;
++      value = {};
++    }
++    return cleanup_ok;
++  }
++  ~acl_fixture_owner() {
++    if (!close()) {
++      std::fputs("N0 ACL owner cleanup retained\n", stderr); std::abort();
++    }
++  }
++};
++[[maybe_unused]] void darwin_acl_cases() {
++  {
++    fixture tree;
++    const auto witness = read_acl_fixture(tree); // One independent same-FD read.
++    require(!witness.has_entry, "acl-empty-setup");
++    acl_fixture_owner owner;
++    const auto anchor = tree.input();
++    const auto status = nl_fixture_owner_create(&anchor, &owner.value);
++    require(status == NL_OK && owner.value.value != 0, "acl-empty-owner");
++    nl_cap_ref root{}; nl_metadata metadata{};
++    require(nl_owner_root(owner.value, &root, &metadata) == NL_OK, "acl-empty-root");
++    nl_identity expected{};
++    for (unsigned i = 0; i < 8; ++i) {
++      expected.volume[i] = static_cast<uint8_t>(static_cast<uint64_t>(witness.object.st_dev) >> (8 * i));
++      expected.file[i] = static_cast<uint8_t>(static_cast<uint64_t>(witness.object.st_ino) >> (8 * i));
++    }
++    require(metadata.abi_version == NL_ABI_VERSION && metadata.kind == NL_DIRECTORY &&
++      identity_equal(metadata.identity, expected) &&
++      metadata.link_count == static_cast<uint64_t>(witness.object.st_nlink) &&
++      metadata.acl_checked == 1 && metadata.held_object_only == 1, "acl-empty-metadata");
++    require(owner.close(), "acl-empty-close");
++    require(tree.cleanup(), "acl-empty-fixture-cleanup");
++    std::printf("N0 ACL proof case=empty acl_present=%u absent_observed=%u\n",
++      witness.acl_present ? 1u : 0u, witness.acl_present ? 0u : 1u);
++  }
++  {
++    fixture tree;
++    set_one_owner_ace(tree);
++    const auto witness = read_acl_fixture(tree);
++    require(witness.acl_present && witness.has_entry && witness.only_one_entry, "acl-one-setup");
++    acl_fixture_owner owner;
++    const auto anchor = tree.input();
++    const auto status = nl_fixture_owner_create(&anchor, &owner.value);
++    const bool had_owner = owner.value.value != 0;
++    const bool closed = owner.close(); // Clean even an unexpected failed-adoption owner BEFORE assertions.
++    require(closed, "acl-one-owner-close");
++    require(status == NL_DENIED, "acl-one-denied");
++    require(tree.cleanup(), "acl-one-fixture-cleanup");
++    std::printf("N0 ACL proof case=one-ace status=%d owner_nonzero=%u\n",
++      static_cast<int>(status), had_owner ? 1u : 0u);
++  }
++  {
++    fixture tree;
++    auto anchor = tree.input(); anchor.borrowed_directory = -1;
++    acl_fixture_owner owner;
++    const auto status = nl_fixture_owner_create(&anchor, &owner.value);
++    const bool closed = owner.close();
++    require(closed, "acl-invalid-owner-close");
++    require(status == NL_INVALID, "acl-invalid-fd");
++    require(tree.cleanup(), "acl-invalid-fixture-cleanup");
++    std::printf("N0 ACL proof case=invalid-fd status=%d metadata_not_covered=1\n", static_cast<int>(status));
++  }
++}
++#endif
+ [[maybe_unused]] void metadata_cases(fixture& tree) {
+   const auto owner = make_owner(tree, "metadata");
+   nl_cap_ref root{}, old{}; nl_metadata root_metadata{}, old_metadata{};
+@@ -551,6 +726,9 @@ int main(int argc, char** argv) {
+   if (argc != 2) return 64;
+ #if defined(__APPLE__) || defined(_WIN32)
+   try {
++#if defined(__APPLE__)
++    darwin_acl_cases();
++#endif
+     fixture tree; metadata_cases(tree); child_cases(tree, argv[1]);
+     partial_child_case(tree, argv[1]); revoke_and_budget_cases(tree);
+     require(tree.cleanup(), "fixture-final-cleanup");
