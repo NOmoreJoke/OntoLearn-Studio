@@ -1,0 +1,61 @@
+"""Read-only fixed-source/AST/JSON/hash audit. Never evaluate/import candidate source."""
+import ast
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+R=Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023')
+O=R/'docs/reviews/T03/standalone-profile-implementation-20261023/independent-code-review'
+C='d4686b1769b5925190a9e7afcc23b92d5db04d4d'
+B='c706f8f581785053278f26e48d21d7bebadf09f6'
+paths=['scripts/build-engine.mjs','packages/engine/src/ontolearn_engine/semantic_build_provenance.py','packages/engine/tests/test_semantic_build_provenance.py','docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json']
+expected=[(22269,'8170aea2762477d36c425d086463a6b7ce3a60ad0eecb30b7218fd5c308ff905'),(83012,'fbfc995d0ba324cc4c9b6586570054f21b53ae8ec9eab374c256d01c72857524'),(105310,'ec04fc359b9ff58bb41e2ed13255bb6b7902b3309044573d6bbd4f8faf13f989'),(45744,'4708d5ae4b0b9cedc71e23e33cbfd3efbb710fe3d5edcce1a6f00ece2c7c649f')]
+def git(*args): return subprocess.check_output(['git',*args],cwd=R)
+def source(path,ref=C): return git('show',ref+':'+path)
+def sha(raw): return hashlib.sha256(raw).hexdigest()
+def literal(tree,name):
+ for node in tree.body:
+  if isinstance(node,ast.Assign) and len(node.targets)==1 and isinstance(node.targets[0],ast.Name) and node.targets[0].id==name:
+   return ast.literal_eval(node.value)
+ raise KeyError(name)
+raws={p:source(p) for p in paths};vectors=[]
+for p,(size,digest) in zip(paths,expected):
+ raw=raws[p];assert(len(raw),sha(raw))==(size,digest)
+ assert (R/p).read_bytes()==raw
+ vectors.append(dict(path=p,bytes=len(raw),sha256=sha(raw),lines=len(raw.splitlines()),workingCopyEqualsFrozen=True))
+commit=git('show','-s','--format=%H%n%P%n%T',C).decode().splitlines()
+assert commit==[C,B,'ef6885d15032841a549a7bc179cee2434b44a1af']
+changed=git('diff-tree','--no-commit-id','--name-only','-r',C).decode().splitlines();assert set(changed)==set(paths)
+contract=json.loads(raws[paths[3]])
+reader=ast.parse(raws[paths[1]]);unit=ast.parse(raws[paths[2]])
+assert literal(reader,'STANDALONE_CONTRACT_SHA256')==sha(raws[paths[3]])
+assert literal(reader,'STANDALONE_CONTRACT_BYTES')==len(raws[paths[3]])
+base_unit=ast.parse(source(paths[2],B));base_reader=ast.parse(source(paths[1],B))
+def topfuncs(tree): return {n.name:ast.dump(n,include_attributes=False) for n in tree.body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+oldtests=topfuncs(base_unit);newtests=topfuncs(unit)
+changed_oldtests=[n for n,v in oldtests.items() if newtests.get(n)!=v]
+assert not changed_oldtests
+assert literal(base_unit,'BUILDER_UNIT')==literal(unit,'BUILDER_UNIT')
+js=raws[paths[0]].decode();oldjs=source(paths[0],B).decode()
+old_parent=oldjs[oldjs.index('function fail('):oldjs.index('\nif (process.argv[1]')]
+new_parent=js[js.index('function fail('):js.index('\nconst parityImports')]
+assert old_parent==new_parent
+suppliers=literal(reader,'SUPPLIER_MODULES');private=literal(reader,'PRIVATE_MODULES');public=literal(reader,'PUBLIC_PATHS');inputs=literal(reader,'FIXED_INPUTS')
+assert contract['analysisImports']==list(suppliers+private)+[literal(reader,'STANDALONE_ANCHOR')]
+assert len(set(contract['sourceGuards']))==len(contract['sourceGuards'])==35
+assert len(contract['buildInputs'])==5
+assert len(set(contract['excludedModules']))==10
+assert contract['fixedDistributions']==literal(reader,'FIXED_DISTRIBUTIONS')
+assert contract['schemas']['expectations']['required']==['suppliers','publicResources','inputs','lock','distributions']
+protected=contract['sourceGuards'];unchanged=[]
+for p in protected:
+ if p not in paths:
+  # Object identities only, including sealed assets; do not read their payloads.
+  oid=git('rev-parse',C+':'+p).decode().strip();oldoid=git('rev-parse',B+':'+p).decode().strip()
+  assert oid==oldoid;unchanged.append(dict(path=p,blobOID=oid))
+assert len(unchanged)==32
+oldf=topfuncs(base_reader);newf=topfuncs(reader)
+parent_functions_changed=[n for n,v in oldf.items() if newf.get(n)!=v]
+result={'format':'Independent-standalone-actualcode-static/1','commit':commit[0],'parent':commit[1],'tree':commit[2],'products':vectors,'changedProductPaths':changed,'parentBuilderFunctionBlockExact':True,'oldUnitDefinitionsAllASTIdentical':True,'oldUnitDefinitionCount':len(oldtests),'originalNodeLiteralExact':True,'changedExistingReaderDefinitions':parent_functions_changed,'guard32UnchangedFixedObjectIdentities':unchanged,'literalSetsAndContractHashMatch':True,'fullTextRead':{'builder':[[1,350],[351,683]],'reader':[[1,420],[421,850],[851,1300],[1301,1750],[1751,2165]],'unit':[[1,450],[451,900],[901,1350],[1351,1800],[1801,2230],[2231,2653]],'contract':[[1,400],[401,800],[801,1143]],'contractTruncationRepair':'pathDomains/bindingKindRules JSON subtree and raw955-1030 reread; complete JSON parsed'},'blockingFindings':['F1-P2-new-contract-internal-inconsistency'],'nonblockingFindings':['N1-P3-unconditional-channel-path-references-on-hash-IO-failure'],'unitGate':'NOT_RELEASED','candidateOrUnitOrNodeStubOrArchiveExecuted':False,'nodeCheckExecutedByReviewer':False,'STOPPrivateWIPRead':False,'auditCompleted':True}
+(O/'static-evidence.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps(result,ensure_ascii=False,indent=2))

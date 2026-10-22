@@ -1,0 +1,96 @@
+{
+  "format": "t03-standalone-profile-source-freeze/1",
+  "utc": "2026-10-22T22:52:17.628466+00:00",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023",
+  "branch": "feature/t03-semantic-parity-profile-20261023",
+  "commit": "d4686b1769b5925190a9e7afcc23b92d5db04d4d",
+  "tree": "ef6885d15032841a549a7bc179cee2434b44a1af",
+  "parent": "c706f8f581785053278f26e48d21d7bebadf09f6",
+  "products": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 22269,
+      "sha256": "8170aea2762477d36c425d086463a6b7ce3a60ad0eecb30b7218fd5c308ff905"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 83012,
+      "sha256": "fbfc995d0ba324cc4c9b6586570054f21b53ae8ec9eab374c256d01c72857524"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 105310,
+      "sha256": "ec04fc359b9ff58bb41e2ed13255bb6b7902b3309044573d6bbd4f8faf13f989"
+    },
+    {
+      "path": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
+      "bytes": 45744,
+      "sha256": "4708d5ae4b0b9cedc71e23e33cbfd3efbb710fe3d5edcce1a6f00ece2c7c649f"
+    }
+  ],
+  "contract": {
+    "path": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
+    "bytes": 45744,
+    "sha256": "4708d5ae4b0b9cedc71e23e33cbfd3efbb710fe3d5edcce1a6f00ece2c7c649f"
+  },
+  "sourceGuards": 35,
+  "unchangedGuardCount": 32,
+  "protectedFiles": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 976,
+      "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+    },
+    {
+      "path": "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json",
+      "bytes": 36587,
+      "sha256": "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 1527,
+      "sha256": "74763669b19190b980849bee07c53f0c0bc145417ca488a540333803a3ed3d14"
+    },
+    {
+      "path": "packages/engine/pyproject.toml",
+      "bytes": 398,
+      "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 28440,
+      "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5"
+    }
+  ],
+  "patch": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/docs/reviews/T03/standalone-profile-implementation-20261023/product-source.patch",
+    "bytes": 170577,
+    "sha256": "4f46721e6bd8834cd240a6cbef8a295a56ebc69b33380c776ad36b44793f5a73"
+  },
+  "staticChecks": [
+    "reader+unit Ruff check exit0",
+    "builder Node --check exit0",
+    "unit embedded Node syntax check exit0; no stub execution",
+    "reader+unit AST and contract JSON parse; literal helper Python variants AST parse",
+    "product whitespace check exit0"
+  ],
+  "firstFailures": "preserved own-environment comparison rejection and source/unit lint first failures with raw logs; no runtime failure exists",
+  "runtime": "NOT RUN: product import / prepare / finalize / PyInstaller / CLI / help / smoke / native / unit / Node run stubs",
+  "writeGate": "four product paths frozen; all authors stopped; wait parent actualcode review START and later exact unit START",
+  "AGENTS": "15147 bytes de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4 remains unstaged; no process docs in product commit"
+}

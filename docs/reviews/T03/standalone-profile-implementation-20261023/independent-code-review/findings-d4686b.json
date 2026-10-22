@@ -1,0 +1,39 @@
+{
+  "format": "independent-actualcode-findings/1",
+  "commit": "d4686b1769b5925190a9e7afcc23b92d5db04d4d",
+  "unitGate": "NOT_RELEASED",
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "blocking": true,
+      "file": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
+      "lines": [
+        909,
+        910,
+        912,
+        936,
+        948,
+        950,
+        953,
+        956,
+        975
+      ],
+      "issue": "Standalone contract retains contradictory parent pathDomains/launcher/current-pin/time/negative-test applicability",
+      "minimumFix": "Correct entire new contract applicability; regenerate real bytes/SHA and reader references; add explicit relationship/negative coverage assertions; preserve parent/old contract/I05 source"
+    },
+    {
+      "id": "N1",
+      "priority": "P3",
+      "blocking": false,
+      "file": "scripts/build-engine.mjs",
+      "lines": [
+        443,
+        480
+      ],
+      "issue": "Channel hash IO failure drops independently known path from receipt while original file remains",
+      "minimumFix": "Unconditional stdoutPath/stderrPath; unknown identity/range remains null; complete false; corresponding unit assertions; no public return changes"
+    }
+  ],
+  "execution": "strict static only; no product/unit/Node stub/archive execution"
+}

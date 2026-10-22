@@ -1,0 +1,69 @@
+from pathlib import Path
+import json
+p=Path('docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json');x=json.loads(p.read_bytes())
+layout=x['fixedLayout']; target=layout['target']; source_contract=x['buildInputs'][-1]
+x['identityRules']['finalPins']={
+    'implementationBase':'c706f8f581785053278f26e48d21d7bebadf09f6',
+    'adoptedM08':'a633ef391344cce60807638ecd942d4e2183c7b4',
+    'historicalComponentReferences':['2cf','6891','401a'],
+    'historicalMeaning':'Component provenance only; these historical abbreviated references are not the current implementation base, final source combination, artifact identity or root approval.',
+    'candidateIdentity':'prepare records the actual clean source commit/tree and exact35 guarded source identities, including canonical probe, reader, builder, new contract and lock. Parent entrypoint is excluded from standalone source guards. An arbitrary clean HEAD is a candidate, never self-approved.',
+    'finalApproval':'Root externally freezes the final selectively integrated I05 consumer/source candidate and actual complete artifact/binding identity under separate tickets; source pins or this contract do not approve it.'}
+x['identityRules']['noRuntimeExecutionNow']={
+    'currentScope':'Only the exact four product paths may be implemented and statically parsed/formatted/linted/syntax-checked under the source ticket.',
+    'conditionalUnit':'Only after a frozen actual-code independent review has zero new blocking P1/P2 and the controller gives a separate exact START may the designated single-file unit run in the own environment with controlled run/io/uuid stubs.',
+    'notGranted':['product imports or import smoke','actual prepare_build or finalize_build','actual PyInstaller or build/CLI/help/version','source/frozen probe comparison or target/native/archive execution','OS probes or physical capacity/runtime guarantees'],
+    'apiDoesNotAuthorizeExecution':True,
+    'laterExecution':'I05 consumer/adoption, actual standalone A and source/frozen B, external binding approval and runtime receipts each remain separately owned and gated; neither permit digest nor unit/static success grants build execution.'}
+d=x['pathDomains']
+d['inputs']={
+    'rowPaths':[r['path'] for r in x['fixedInputs']],
+    'sourceRoot':'repository/packages/engine/src',
+    'sourcePaths':[r['sourcePath'] for r in x['inputMappings']],
+    'frozenRoot':'sys._MEIPASS',
+    'conversion':'Use inputMappings sourcePath only under sourceRoot; emit each fixedInputs row at its distinct frozen path, preserving order, bytes and SHA256. No package-data copy of the source probe_inputs domain.',
+    'mappingField':'inputMappings'}
+d['contract']={'rowPath':source_contract,'sourceRoot':'repository','frozenRoot':'sys._MEIPASS','frozenPath':layout['embeddedContract'],'conversion':'Source identity belongs to buildInputs/manifest.contract; exact actual bytes and SHA256 are bundled at fixedLayout.embeddedContract. No self-hash inside this contract.'}
+d['entrypoint']={'rowPath':target,'sourceRoot':'repository','frozenPath':None,'canonicalModule':'ontolearn_engine.semantic_source_package_probe','runtimeDomain':'canonical-PYZ-loader-code-only','externalDomain':'target-CArchive-code-plus-complete-directory-binding','archiveEntry':x['archivePolicy']['businessScript'],'archiveTypecode':'s','targetCodeKeys':['archiveEntry','typecode','sourcePath','codeSha256'],'validationDomain':'The same exact source target is both the private canonical PYZ module and the separately validated CArchive script. Runtime loader evidence covers canonical PYZ code; only external targetCode plus full-directory binding covers the launch target. Neither grants root approval.'}
+d['provenance']={'rowPath':layout['embeddedProvenance'],'source':'prepared canonical manifest bytes under runRoot','frozenRoot':'sys._MEIPASS','frozenPath':layout['embeddedProvenance']}
+d['anchor']={'module':layout['anchorModule'],'generatedPath':layout['generatedAnchor'],'frozenDomain':'separate PYZ anchor module; not one of the exact24 internal ontolearn_engine modules','constants':layout['anchorConstants']}
+d['licenseMirrors']={'sourceRoot':'actual corresponding installed distribution root','sourceRow':'distributions[].licenses[]','frozenRoot':'sys._MEIPASS','rowPath':x['licenseMirrors']['path'],'relation':'exact one-to-one licenseMirrors entries preserve original distribution, sourcePath, byte length and SHA256; no substituted LICENSE may cover declared AUTHORS/NOTICE'}
+d['artifactBindingEntries']['root']='runRoot/dist/'+layout['launcher']+' for the exact immutable standalone artifact directory; separately supplied by the root external executor'
+x['bindingKindRules']['file']['launcherRule']=layout['launcher']+' must be a regular file and mode&0o111 nonzero'
+x['requiredNegativeTests']=[
+    'strict-json: duplicate/missing/extra/nonfinite/bool-int/depth/byte/count/path/escape/collision',
+    'profile: unknown profile before IO; parent/standalone cross-use and old-contract rejection; sealed evidence and changed root/interpreter/anchor rechecked',
+    'source-domains: exact35 source guards and five buildInputs; dirty/symlink/existing-output rejection; distinct source/frozen input mappings, real contract source/bundle SHA and canonical target identity',
+    'contract-relations: fixedLayout/pathDomains/inputMappings/launcher/targetCode/25 imports/internal24 agree with actual reader/builder; historical components never current base or root approval',
+    'resources: source/public-resource/input/lock/version/metadata mismatches and omissions',
+    'license-mirrors: declared License-File plus actual LICENSE/COPYING/NOTICE/AUTHORS; exact one-to-one source/mirror identity, path/count/single/total caps; omissions/substitution rejected',
+    'loader: actual code including nested const/line/flags; sys.modules/module/spec/origin/loader mismatch; unknown internal and eight-package Python child rejection',
+    'python-native: exact full version/cacheTag/SOABI/magic/optimize; missing/fake/outside native ExtensionFileLoader; no fallback or native source-equivalence approval',
+    'carchive: cookie/PKG/TOC/member/type/unique target/duplicate/casefold/Unicode/overlap/nonprogress/trailing/logical-versus-physical caps; unknown hooks/layout option rejected',
+    'pyz: actual header/TOC list/name/type/member bounds, duplicate/casefold/Unicode/overlap/trailing/missing/internal24/anchor/canonical code mismatch',
+    'marshal-budget: bounded compressed and decompressed sizes and exact EOF; pre-load length/container/node/depth/reference/code-field validation; invalid/active/cyclic refs and expansion bombs rejected before allocation; runtime code graph budgets before normalization',
+    'binding: independent target-CArchive targetCode plus canonical PYZ code; whole-directory tamper/symlink escape/missing or changed external expectedSHA; rootApproved stays false and runtime evidence alone never approves',
+    'child-raw: all three child FD stdout/stderr remain separate and complete beyond legacy pipe cap; actual argv/cwd/fixedenv/PID/UTC/status/signal/error/overflow/IO and captured ranges; nonzero/throw/signal/overflow/open/read/hash/receipt IO preserve first raw without replay; known paths remain even if identities/ranges unknown',
+    'control-json: raw file retained separately; exact four string keys and 64KiB inclusive bound; duplicate decoded keys/BOM/invalid UTF8/nonJSON whitespace/trailing/nonstring/unknown/missing rejected; exact helper4 and public6 returns unchanged',
+    'scratch-contract: actual builder path/env/argv relationships match complete own runRoot mapping; external single-domain recursive sampling has exact8589934592-byte policy without double counting; missing external guard remains BUILD_SCRATCH_GUARD_REQUIRED and permit digest cannot bypass; no OS hard-limit or runtime claim',
+    'parent-compatibility: original entrypoint flag/laziness/nonzero behavior, parent default helper/paths/returns/publish rollback and original security/resource/assertions preserved; stubs do not import canonical semantics or execute real build']
+x['buildScratch']={
+    'format':'i05-semantic-parity-build-scratch-map/1',
+    'repositoryRelativeRunRoot':layout['uniqueBuildRoot'],
+    'token':'fresh UUID generated by the builder; the placeholder is not an actual run identity',
+    'pathBase':'runRoot',
+    'paths':{
+        'work':'pyinstaller','spec':'spec','dist':'dist','artifactDirectory':'dist/'+layout['launcher'],
+        'uvCache':'evidence/cache/uv','pyinstallerCache':'evidence/cache/pyinstaller','tmp':'evidence/tmp',
+        'generated':'generated','generatedAnchor':layout['generatedAnchor'],'licenses':'licenses',
+        'provenance':layout['embeddedProvenance'],'contract':layout['embeddedContract'],
+        'binding':layout['artifactBinding'],'evidence':'evidence','buildRequest':'evidence/build-request-v1.json'},
+    'environment':{'UV_CACHE_DIR':'uvCache','PYINSTALLER_CONFIG_DIR':'pyinstallerCache','TMPDIR':'tmp'},
+    'argv':{'--workpath':'work','--specpath':'spec','--distpath':'dist','--paths':'generated'},
+    'phases':['prepare','pyinstaller','finalize'],
+    'phasePaths':{'stdout':'evidence/<phase>.stdout.log','stderr':'evidence/<phase>.stderr.log','receipt':'evidence/<phase>.receipt.json','control':'evidence/<phase>.control.json'},
+    'controlPhases':['prepare','finalize'],
+    'sampling':{'owner':'I05 external caller','root':'runRoot','recursive':True,'limitBytes':8589934592,'accounting':'Sample the entire own runRoot once as one recursive domain, including work/spec/dist/caches/tmp/generated/licenses/provenance/binding/all raw streams and receipts; do not sum child domains again.','strategyOwner':'I05 owns actual before/after sampling and monitoring policy and receipts.','osHardLimitImplemented':False,'runtimeGuarantee':False,'evidenceMeaning':'A machine mapping and external policy only; no sample, actual UUID, measured size, execution receipt or physical capacity proof is asserted.'},
+    'executionGuard':{'owner':'I05 external caller','requiredBeforeActualBuild':True,'missingOutcome':'BUILD_SCRATCH_GUARD_REQUIRED','permitDigestMayBypass':False,'implementation':'This contract defines the required external guard; the four-path source change does not implement OS hard limits or authorize actual build/OS execution.'}}
+p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+b=Path('scripts/build-engine.mjs');s=b.read_text();needle='    complete,\n    stdout,\n';assert s.count(needle)==1;s=s.replace(needle,'    complete,\n    stdoutPath,\n    stderrPath,\n    receiptPath,\n    stdout,\n');b.write_text(s)

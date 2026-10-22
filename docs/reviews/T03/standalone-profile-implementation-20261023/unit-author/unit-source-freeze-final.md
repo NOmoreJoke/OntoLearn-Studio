@@ -1,0 +1,51 @@
+# Standalone unit final source freeze
+
+- Product: `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/packages/engine/tests/test_semantic_build_provenance.py`
+- Bytes: 105320
+- SHA-256: `b65fab2e6f180e8ed1af44833f52b3c4fd583c1c3f02ea74e886cfcca06356bf`
+- Python AST parse, ruff format, ruff check and Node --check passed.
+- Original 58 function/class ASTs and original BUILDER_UNIT are unchanged.
+- Added 37 top-level Python tests, including parametrized negatives and an independent 28-case Node FD-stub block.
+- First lint failure (import order and embedded JS line widths) and all previous static receipts were retained. Fixes only sort imports and wrap the new Node source lines.
+- No product import, unit test, CLI, prepare/finalize/build, child stub or native execution occurred.
+- Writer paused. Independent nonauthor actual-code review and controller single-file unit START remain required before runtime verification.
+
+## Coverage mapping
+
+- `test_standalone_contract_uses_real_hash_and_exact_roles` at line 1375
+- `test_unknown_profile_rejects_before_any_file_read` at line 1402
+- `test_standalone_preflight_has_no_imports_and_preserves_runtime_domain` at line 1414
+- `test_standalone_unknown_internal_and_distribution_children_are_rejected` at line 1438
+- `test_standalone_evidence_context_is_rechecked` at line 1451
+- `test_standalone_paths_and_license_roles_are_exact` at line 1473
+- `test_standalone_missing_authors_cannot_be_covered_by_license` at line 1491
+- `test_standalone_mirror_caps_not_widened` at line 1505
+- `test_standalone_notice_inventory_covers_undeclared_record_notices` at line 1513
+- `test_standalone_prepare_returns_nested_paths_and_preserves_first_output` at line 1538
+- `test_standalone_prepare_only_accepts_exact_builder_reservation` at line 1567
+- `test_standalone_layout_rejects_source_ancestor_symlink_and_foreign_prefix` at line 1595
+- `test_standalone_source_guard_dirty_check_is_exact_and_before_source_adoption` at line 1613
+- `test_bounded_pyz_reads_real_compressed_code_without_execution` at line 1727
+- `test_bounded_pyz_toc_rejects_ambiguous_or_unbounded_records` at line 1743
+- `test_bounded_pyz_header_and_marshal_eof_are_exact` at line 1772
+- `test_bounded_pyz_limits_toc_records_bytes_and_decompression_before_code` at line 1788
+- `test_bounded_compressed_members_and_code_eof_are_exact` at line 1811
+- `test_bounded_carchive_compares_logical_cap_separately_from_physical_size` at line 1834
+- `test_bounded_carchive_toc_rejects_invalid_actual_members` at line 1863
+- `test_bounded_carchive_options_do_not_override_unique_members` at line 1903
+- `test_bounded_carchive_header_caps_and_target_marshal_are_enforced` at line 1930
+- `test_standalone_archive_binds_exact24_anchor_and_independent_target` at line 1974
+- `test_standalone_archive_rejects_missing_or_changed_real_code` at line 2000
+- `test_standalone_finalize_and_external_binding_use_real_synthetic_archive` at line 2025
+- `test_standalone_node_builder_uses_only_fd_run_stubs` at line 2468
+- `test_standalone_exact_builder_reservation_keeps_open_stream_evidence` at line 2488
+- `test_standalone_carchive_unknown_runtimehook_is_not_silently_collected` at line 2512
+- `test_standalone_target_identity_must_equal_canonical_private_writer` at line 2525
+- `test_standalone_declared_contract_bytes_must_be_exact` at line 2535
+- `test_standalone_rejects_parent_contract_before_using_its_schema` at line 2544
+- `test_code_graph_depth_and_node_caps_are_checked_before_normalization` at line 2551
+- `test_standalone_carchive_known_option_cannot_select_another_layout` at line 2563
+- `test_marshal_allocation_and_reference_preflight_happens_before_load` at line 2591
+- `test_code_field_preflight_happens_before_marshal_load` at line 2620
+- `test_loader_code_graph_is_bounded_before_normalization` at line 2629
+- `test_loader_code_graph_preserves_the_existing_fingerprint` at line 2651

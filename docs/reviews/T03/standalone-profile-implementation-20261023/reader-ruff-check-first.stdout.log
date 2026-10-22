@@ -1,0 +1,227 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from __future__ import annotations
+ 9 | |
+10 | | import ast
+11 | | import email
+12 | | import hashlib
+13 | | import importlib.machinery
+14 | | import importlib.metadata
+15 | | import importlib.util
+16 | | import json
+17 | | import io
+18 | | import struct
+19 | | import zlib
+20 | | import marshal
+21 | | import math
+22 | | import os
+23 | | import re
+24 | | import stat
+25 | | import subprocess
+26 | | import sys
+27 | | import sysconfig
+28 | | import types
+29 | | import unicodedata
+30 | | from dataclasses import dataclass
+31 | | from pathlib import Path, PurePosixPath
+   | |_______________________________________^
+32 |
+33 |   CONTRACT_SHA256 = "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04"
+   |
+help: Organize imports
+   |
+15 | import importlib.util
+   - import json
+16 | import io
+   - import struct
+   - import zlib
+17 + import json
+18 | import marshal
+--------------------------------------------------------------------------------
+22 | import stat
+23 + import struct
+24 | import subprocess
+--------------------------------------------------------------------------------
+28 | import unicodedata
+29 + import zlib
+30 | from dataclasses import dataclass
+   |
+
+E501 Line too long (111 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:107:101
+    |
+105 | PARENT_PROFILE = "parent-engine"
+106 | STANDALONE_PROFILE = "i05-source-package-parity"
+107 | STANDALONE_CONTRACT_SOURCE = "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json"
+    |                                                                                                     ^^^^^^^^^^^
+108 | STANDALONE_CONTRACT_SHA256 = "54b805e2550fa982ec3e13fe76f602153a0bd7c19f4286fc66f487f005cc2aba"
+109 | STANDALONE_CONTRACT_BYTES = 47563
+    |
+
+E501 Line too long (151 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:382:101
+    |
+380 | … PUBLIC_PATHS:
+381 | …
+382 | …one_contract(contract) else FIXED_INPUTS) or value["distributions"] != FIXED_DISTRIBUTIONS:
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+383 | …
+    |
+
+E501 Line too long (109 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:401:101
+    |
+399 |         _module_path(row["module"], row["path"])
+400 |     standalone = _standalone_contract(contract)
+401 |     if value["entrypoint"]["path"] != (STANDALONE_TARGET if standalone else "packages/engine/entrypoint.py"):
+    |                                                                                                     ^^^^^^^^^
+402 |         _fail("SCHEMA_INVALID")
+403 |     if value["contract"]["path"] != (STANDALONE_CONTRACT_SOURCE if standalone else CONTRACT_SOURCE):
+    |
+
+E501 Line too long (102 > 100)
+   --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:405:101
+    |
+403 |     if value["contract"]["path"] != (STANDALONE_CONTRACT_SOURCE if standalone else CONTRACT_SOURCE):
+404 |         _fail("SCHEMA_INVALID")
+405 |     if value["contract"]["sha256"] != (STANDALONE_CONTRACT_SHA256 if standalone else CONTRACT_SHA256):
+    |                                                                                                     ^^
+406 |         _fail("CONTRACT_MISMATCH")
+407 |     for row in value["publicResources"]:
+    |
+
+E501 Line too long (113 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1226:101
+     |
+1226 | def finalize_build(repository_root: Path, output_dir: Path, engine_dir: Path, *, profile=PARENT_PROFILE) -> dict:
+     |                                                                                                     ^^^^^^^^^^^^^
+1227 |     """Audit actual output bytes/code and emit an unapproved external proposal."""
+1228 |     if _profile(profile)["name"] == STANDALONE_PROFILE:
+     |
+
+E501 Line too long (112 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1341:101
+     |
+1339 |         _fail("CONTRACT_MISMATCH")
+1340 |     value = _json(raw, CONTRACT_CAP)
+1341 |     if type(value) is not dict or not _standalone_contract(value) or value.get("profile") != STANDALONE_PROFILE:
+     |                                                                                                     ^^^^^^^^^^^^
+1342 |         _fail("CONTRACT_MISMATCH")
+1343 |     return value, raw
+     |
+
+E501 Line too long (103 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1491:101
+     |
+1489 |     library = _read(Path(libdir) / libname, FILE_CAP)
+1490 |     python.update(buildExecutable={"bytes": len(executable), "sha256": _sha(executable)},
+1491 |                   buildSharedLibrary={"name": libname, "bytes": len(library), "sha256": _sha(library)})
+     |                                                                                                     ^^^
+1492 |     target = _read(_inside(root, STANDALONE_TARGET), CODE_CAP)
+1493 |     distributions = [_dist_inventory(n, v, include_notices=True)
+     |
+
+E501 Line too long (107 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1523:101
+     |
+1521 |                 _fail("BUILD_OUTPUT_EXISTS")
+1522 |             evidence = _no_redirects(root, out / "evidence")
+1523 |             allowed = {"build-request-v1.json", "prepare.stdout.log", "prepare.stderr.log", "cache", "tmp"}
+     |                                                                                                     ^^^^^^^
+1524 |             if {p.name for p in evidence.iterdir()} != allowed:
+1525 |                 _fail("BUILD_OUTPUT_EXISTS")
+     |
+
+E501 Line too long (104 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1526:101
+     |
+1524 |             if {p.name for p in evidence.iterdir()} != allowed:
+1525 |                 _fail("BUILD_OUTPUT_EXISTS")
+1526 |             if any(p.is_symlink() or (not p.is_dir() if p.name in ("cache", "tmp") else not p.is_file())
+     |                                                                                                     ^^^^
+1527 |                    for p in evidence.iterdir()):
+1528 |                 _fail("BUILD_LAYOUT_INVALID")
+     |
+
+E501 Line too long (101 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1532:101
+     |
+1530 |             if request != {"profile": STANDALONE_PROFILE, "token": out.name}:
+1531 |                 _fail("BUILD_LAYOUT_INVALID")
+1532 |         contract, contract_raw = _load_standalone_contract(_inside(root, STANDALONE_CONTRACT_SOURCE))
+     |                                                                                                     ^
+1533 |         manifest = _collect_standalone_manifest(root, contract, contract_raw)
+1534 |         raw = _canonical(manifest)
+     |
+
+E501 Line too long (101 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1541:101
+     |
+1539 |         generated = out / "generated"
+1540 |         generated.mkdir()
+1541 |         manifest_path, contract_path = out / STANDALONE_PROVENANCE, out / STANDALONE_CONTRACT_BUNDLED
+     |                                                                                                     ^
+1542 |         manifest_path.parent.mkdir(parents=True, exist_ok=False)
+1543 |         anchor_path = generated / (STANDALONE_ANCHOR + ".py")
+     |
+
+E501 Line too long (104 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1549:101
+     |
+1547 |                 stream.write(data)
+1548 |         for row in manifest["licenseMirrors"]:
+1549 |             original = _read(_inside(Path(sysconfig.get_path("purelib")), row["sourcePath"]), SMALL_CAP)
+     |                                                                                                     ^^^^
+1550 |             if len(original) != row["bytes"] or _sha(original) != row["sha256"]:
+1551 |                 _fail("DISTRIBUTION_MISMATCH")
+     |
+
+E501 Line too long (104 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1712:101
+     |
+1710 |             _fail("ARCHIVE_MISMATCH")
+1711 |         if typecode == b"o":
+1712 |             if name != "pyi-contents-directory _internal" or any((start, packed, unpacked, compressed)):
+     |                                                                                                     ^^^^
+1713 |                 _fail("ARCHIVE_MISMATCH")
+1714 |         if typecode == b"s" and name not in (
+     |
+
+E501 Line too long (104 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1766:101
+     |
+1764 |     raw = _read(_inside(root, STANDALONE_PROVENANCE), MANIFEST_CAP)
+1765 |     anchor = pyz.extract(STANDALONE_ANCHOR)
+1766 |     if _code_sha(anchor) != _code_sha(_compiled(_anchor_source(_sha(raw), profile=STANDALONE_PROFILE))):
+     |                                                                                                     ^^^^
+1767 |         _fail("ANCHOR_MISMATCH")
+1768 |     return {"archiveEntry": "semantic_source_package_probe", "typecode": "s",
+     |
+
+E501 Line too long (101 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1796:101
+     |
+1794 |         pyz, target = _bounded_archive(engine / "ontolearn-semantic-parity")
+1795 |         target_code = _verify_standalone_archive(pyz, target, manifest, root)
+1796 |         binding = {"format": "i05-semantic-parity-artifact-binding/1", "profile": STANDALONE_PROFILE,
+     |                                                                                                     ^
+1797 |                    "provenanceSha256": _sha(raw), "sourceCommit": manifest["source"]["commit"],
+1798 |                    "artifactDomain": "complete-semantic-parity-directory",
+     |
+
+E501 Line too long (114 > 100)
+    --> packages/engine/src/ontolearn_engine/semantic_build_provenance.py:1800:101
+     |
+1798 |                    "artifactDomain": "complete-semantic-parity-directory",
+1799 |                    "launcher": "ontolearn-semantic-parity", "rootApproved": False,
+1800 |                    "targetCode": target_code, "entries": _inventory_artifact(engine, "ontolearn-semantic-parity")}
+     |                                                                                                     ^^^^^^^^^^^^^^
+1801 |         _validate_binding(binding, contract)
+1802 |         data = _canonical(binding)
+     |
+
+Found 17 errors.
+[*] 1 fixable with `--fix`.

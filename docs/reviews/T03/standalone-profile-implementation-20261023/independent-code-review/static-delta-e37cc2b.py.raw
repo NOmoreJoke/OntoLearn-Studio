@@ -1,0 +1,72 @@
+"""Independent fixed-delta AST/JSON/hash/Git audit; never evaluate/import product or unit."""
+import ast
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+R=Path('/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023')
+P=R/'docs/reviews/T03/standalone-profile-implementation-20261023'
+O=P/'independent-code-review'
+C='e37cc2b161b53a6250a4085104ee955c423fb149'; B='d4686b1769b5925190a9e7afcc23b92d5db04d4d'
+def git(*a):return subprocess.check_output(['git',*a],cwd=R)
+def source(path,ref=C):return git('show',ref+':'+path)
+def sha(b):return hashlib.sha256(b).hexdigest()
+def load(p):return json.loads(p.read_bytes())
+def lit(tree,name):
+ for n in tree.body:
+  if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id==name:return ast.literal_eval(n.value)
+ raise KeyError(name)
+def funcs(t):return {n.name:ast.dump(n,include_attributes=False) for n in t.body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+f=load(P/'delta-f1-n1/delta-freeze.json');records=[]
+for row in f['products']:
+ raw=source(row['path']);assert len(raw)==row['bytes'] and sha(raw)==row['sha256'] and (R/row['path']).read_bytes()==raw
+ records.append(dict(row,lines=len(raw.splitlines()),workingCopyEqualsFrozen=True))
+commit=git('show','-s','--format=%H%n%P%n%T',C).decode().splitlines();assert commit==[C,B,'71b99b1ca0408a604c36742d0e3f3b90a5ec2ff1']
+assert set(git('diff-tree','--no-commit-id','--name-only','-r',C).decode().splitlines())=={r['path'] for r in records}
+patch=git('diff','--no-ext-diff','--no-color',B,C)
+assert patch==(P/'delta-f1-n1/delta-product.patch').read_bytes()
+manifest_raw=(P/'delta-f1-n1/delta-manifest.json').read_bytes();assert len(manifest_raw)==9106 and sha(manifest_raw)=='5941ee8b043356abd646d5c70d8c8b631d5fe17fe45fcdf5b57b0fa784c92032'
+m=json.loads(manifest_raw)
+assert all(len((P/r['path']).read_bytes())==r['bytes'] and sha((P/r['path']).read_bytes())==r['sha256'] for r in m['files'])
+contract=json.loads(source('docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json'))
+reader_path='packages/engine/src/ontolearn_engine/semantic_build_provenance.py';reader=ast.parse(source(reader_path));oldreader=ast.parse(source(reader_path,B))
+unit_path='packages/engine/tests/test_semantic_build_provenance.py';unit=ast.parse(source(unit_path));oldunit=ast.parse(source(unit_path,B))
+assert ast.dump(reader,include_attributes=False).replace(lit(reader,'STANDALONE_CONTRACT_SHA256'),lit(oldreader,'STANDALONE_CONTRACT_SHA256')).replace('value=55577','value=45744')==ast.dump(oldreader,include_attributes=False)
+assert lit(reader,'STANDALONE_CONTRACT_SHA256')==sha(source('docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json'))
+assert lit(reader,'STANDALONE_CONTRACT_BYTES')==55577
+js=source('scripts/build-engine.mjs').decode();oldjs=source('scripts/build-engine.mjs',B).decode()
+assert js.replace('    stdoutPath,\n    stderrPath,\n    receiptPath,\n','')==oldjs
+oldfunc=funcs(oldunit);newfunc=funcs(unit)
+changed=[n for n,v in oldfunc.items() if newfunc.get(n)!=v]
+assert changed==['test_standalone_node_builder_uses_only_fd_run_stubs']
+assert lit(unit,'BUILDER_UNIT')==lit(oldunit,'BUILDER_UNIT')
+dom=contract['pathDomains'];layout=contract['fixedLayout'];mappings=contract['inputMappings']
+assert dom['inputs']['sourcePaths']==[r['sourcePath'] for r in mappings]
+assert dom['inputs']['rowPaths']==[r['path'] for r in mappings]==[r['path'] for r in contract['fixedInputs']]
+assert dom['contract']['rowPath']==lit(reader,'STANDALONE_CONTRACT_SOURCE')
+assert dom['contract']['frozenPath']==layout['embeddedContract']==lit(reader,'STANDALONE_CONTRACT_BUNDLED')
+assert dom['entrypoint']['rowPath']==layout['target']==lit(reader,'STANDALONE_TARGET')
+assert dom['entrypoint']['runtimeDomain']=='canonical-PYZ-loader-code-only'
+assert dom['entrypoint']['externalDomain']=='target-CArchive-code-plus-complete-directory-binding'
+assert layout['launcher'] in contract['bindingKindRules']['file']['launcherRule']
+assert len(contract['requiredNegativeTests'])==16
+assert contract['identityRules']['noRuntimeExecutionNow']['apiDoesNotAuthorizeExecution'] is True
+s=contract['buildScratch'];assert s==load(P/'delta-f1-n1/build-scratch-map.json')==f['machineMap']
+assert s['repositoryRelativeRunRoot']==layout['uniqueBuildRoot']=='build/i05-semantic-parity/<fresh-uuid>'
+assert s['paths']=={'work':'pyinstaller','spec':'spec','dist':'dist','artifactDirectory':'dist/ontolearn-semantic-parity','uvCache':'evidence/cache/uv','pyinstallerCache':'evidence/cache/pyinstaller','tmp':'evidence/tmp','generated':'generated','generatedAnchor':'generated/_i05_semantic_parity_build_anchor.py','licenses':'licenses','provenance':lit(reader,'STANDALONE_PROVENANCE'),'contract':lit(reader,'STANDALONE_CONTRACT_BUNDLED'),'binding':'artifact-binding-v1.json','evidence':'evidence','buildRequest':'evidence/build-request-v1.json','provenanceRoot':'provenance'}
+assert s['environment']=={'UV_CACHE_DIR':'uvCache','PYINSTALLER_CONFIG_DIR':'pyinstallerCache','TMPDIR':'tmp'}
+assert s['argv']=={'--workpath':'work','--specpath':'spec','--distpath':'dist','--paths':'generated'}
+assert type(s['sampling']['thresholdBytes']) is int and s['sampling']['thresholdBytes']==8589934592
+assert s['sampling']['root']=='runRoot' and s['sampling']['recursive'] is True
+assert all(s['sampling'][k] is False for k in ('builderEnforced','osHardLimitImplemented','runtimeGuarantee'))
+assert s['executionGuard']['guardRequired'] is True and s['executionGuard']['permitDigestMayBypass'] is False and s['executionGuard']['missingOutcome']=='BUILD_SCRATCH_GUARD_REQUIRED'
+unchanged=[]
+for path in contract['sourceGuards']:
+ if path not in {r['path'] for r in records}:
+  a=git('rev-parse',C+':'+path);b=git('rev-parse',B+':'+path);assert a==b;unchanged.append(path)
+assert len(unchanged)==32
+for path in ['packages/engine/entrypoint.py','docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json','pyproject.toml','packages/engine/pyproject.toml','uv.lock']:
+ assert git('rev-parse',C+':'+path)==git('rev-parse',B+':'+path)
+first=load(O/'manifest-d4686b.json');assert all(len((O/r['path']).read_bytes())==r['bytes'] and sha((O/r['path']).read_bytes())==r['sha256'] for r in first['files'])
+r={'format':'Independent-e37cc2b-delta-static/1','commit':C,'parent':B,'tree':commit[2],'products':records,'actualPatchExact':True,'patchLines':len(patch.splitlines()),'deltaManifest':{'bytes':len(manifest_raw),'sha256':sha(manifest_raw),'membersMatched':len(m['files'])},'readerOnlyContractConstantsChanged':True,'builderOnlyUnconditionalReceiptPathsAdded':True,'oldPythonUnitDefinitionsChanged':changed,'originalParentNodeLiteralUnchanged':True,'newPythonDefinitions':sorted(set(newfunc)-set(oldfunc)),'sourceGuard32Unchanged':unchanged,'firstReportAndEightMemberManifestUnchanged':True,'F1':'CLOSED_STATIC','N1':'CLOSED_STATIC','scratchMapping':'CONSISTENT_STATIC_ONLY; external required guard not executed','newBlockingP1P2':[],'unitGateRecommendation':'Eligible for controller exact single-file unit START; not started by reviewer','auditCompleted':True,'productUnitNodeStubBuildImportGUIExecuted':False}
+(O/'static-delta-e37cc2b-evidence.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n');print(json.dumps(r,ensure_ascii=False,indent=2))

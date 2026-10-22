@@ -1,0 +1,115 @@
+{
+  "format": "t03-approved-single-file-unit/1",
+  "sourceCommit": "e37cc2b161b53a6250a4085104ee955c423fb149",
+  "gate": "explicit controller SINGLE-FILE UNIT START after e37 independent actual delta 0 new blocking P1/P2",
+  "argv": [
+    "/Users/kyle/.local/bin/uv",
+    "run",
+    "--frozen",
+    "pytest",
+    "packages/engine/tests/test_semantic_build_provenance.py",
+    "-q",
+    "--maxfail=1"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023",
+  "environment": {
+    "PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/.venv/bin:/Users/kyle/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
+    "HOME": "/Users/kyle",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "LC_CTYPE": "C.UTF-8",
+    "VIRTUAL_ENV": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/.venv",
+    "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/.venv",
+    "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/build/t03-profile-unit-20261023/cache/uv",
+    "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/build/t03-profile-unit-20261023/tmp",
+    "UV_NO_SYNC": "1",
+    "UV_OFFLINE": "1",
+    "UV_PYTHON_DOWNLOADS": "never",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONNOUSERSITE": "1"
+  },
+  "pid": 83488,
+  "startUtc": "2026-10-22T23:10:43.914439+00:00",
+  "endUtc": "2026-10-22T23:10:49.612665+00:00",
+  "wallSeconds": 5.697999875000001,
+  "wallLimitSeconds": 600,
+  "status": 0,
+  "signal": null,
+  "timeout": false,
+  "error": null,
+  "ioError": null,
+  "overflow": false,
+  "stdoutPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/docs/reviews/T03/standalone-profile-implementation-20261023/unit-run-e37-first/stdout.log",
+  "stderrPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/docs/reviews/T03/standalone-profile-implementation-20261023/unit-run-e37-first/stderr.log",
+  "receiptPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/docs/reviews/T03/standalone-profile-implementation-20261023/unit-run-e37-first/receipt.json",
+  "streams": {
+    "stdout": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/docs/reviews/T03/standalone-profile-implementation-20261023/unit-run-e37-first/stdout.log",
+      "bytes": 340,
+      "sha256": "2953a076a579e2a5c783b6305e60c0c77727746aeae087d869eec91609edfadd"
+    },
+    "stderr": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/docs/reviews/T03/standalone-profile-implementation-20261023/unit-run-e37-first/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "captureRange": {
+    "stdout": [
+      0,
+      340
+    ],
+    "stderr": [
+      0,
+      0
+    ]
+  },
+  "complete": true,
+  "sourceBefore": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 22318,
+      "sha256": "36a2255c2e3e908f1b0421f042d5613843dc9ab5ece0f5b09b2a0a465544965b"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 83012,
+      "sha256": "1ff966ada91525a86f280f5e57d9a719f869986a1adafb90acfd6e8eedf6730d"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 120578,
+      "sha256": "ee09707ab895bdfa8e831f38a200e5445d0a37d12c1fb8a603987efd4700edc9"
+    },
+    {
+      "path": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
+      "bytes": 55577,
+      "sha256": "a93a5dc5b0b002482db8e99e072aab6d27d3a0cf58f59bfd9b0a7643305ead0d"
+    }
+  ],
+  "sourceAfter": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 22318,
+      "sha256": "36a2255c2e3e908f1b0421f042d5613843dc9ab5ece0f5b09b2a0a465544965b"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 83012,
+      "sha256": "1ff966ada91525a86f280f5e57d9a719f869986a1adafb90acfd6e8eedf6730d"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 120578,
+      "sha256": "ee09707ab895bdfa8e831f38a200e5445d0a37d12c1fb8a603987efd4700edc9"
+    },
+    {
+      "path": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
+      "bytes": 55577,
+      "sha256": "a93a5dc5b0b002482db8e99e072aab6d27d3a0cf58f59bfd9b0a7643305ead0d"
+    }
+  ],
+  "sourceUnchanged": true,
+  "firstFailure": false,
+  "afterRun": "STOP: no product edit, no rerun, no process final commit; wait controller intake"
+}

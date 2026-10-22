@@ -1,0 +1,354 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import * as fs from 'node:fs'
+import { createHash } from 'node:crypto'
+import { resolve } from 'node:path'
+const { buildEngine, buildSemanticParity, selectBuild } = await import(process.env.BUILDER_MODULE_URL)
+const token = '11111111-2222-3333-4444-555555555555'
+const profile = 'i05-source-package-parity'
+const expectedImports = [
+  'ontolearn_engine', 'ontolearn_engine.quality',
+  ...['rule_calendar', 'rule_comparator', 'rule_firing', 'rule_numbers', 'rule_profile',
+      'rule_revalidation', 'rule_terms'].map(n => 'ontolearn_engine.quality.' + n),
+  ...['resources', 'semantic', 'semantic_error_adapter', 'semantic_execution', 'semantic_offline',
+      'semantic_profile_directsteps', 'semantic_profile_input', 'semantic_profile_production',
+      'semantic_profile_restore', 'semantic_profile_restore_budget', 'semantic_query',
+      'semantic_scopes', 'semantic_turtle', 'semantic_source_package_probe',
+      'semantic_build_provenance'].map(n => 'ontolearn_engine.' + n),
+  '_i05_semantic_parity_build_anchor',
+]
+const exclusions = ['quality.definitions', 'quality.planning', '__main__', 'worker',
+  'coordinator', 'job_store', 'storage', 'storage_probe', 'protocol', 'semantic_samples']
+  .map(n => 'ontolearn_engine.' + n)
+const phases = ['prepare', 'pyinstaller', 'finalize']
+const rootParent = new URL('./standalone-tmp/', import.meta.url)
+fs.mkdirSync(rootParent, { recursive: true })
+const sha = raw => createHash('sha256').update(raw).digest('hex')
+function fixture(t, behavior = {}) {
+  const root = fs.mkdtempSync(new URL('builder-', rootParent))
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }))
+  const runRoot = resolve(root, 'build/i05-semantic-parity', token)
+  const artifact = resolve(runRoot, 'dist/ontolearn-semantic-parity')
+  const evidence = resolve(runRoot, 'evidence')
+  const calls = []
+  const run = (command, args, options) => {
+    const phase = phases[calls.length]
+    if (!phase) throw new Error('unexpected additional subprocess')
+    calls.push({command, args, options, phase})
+    assert.equal(command, 'uv')
+    assert.equal(options.shell, false)
+    assert.equal(options.stdio[0], 'ignore')
+    assert.equal(typeof options.stdio[1], 'number')
+    assert.equal(typeof options.stdio[2], 'number')
+    assert.notEqual(options.stdio[1], options.stdio[2])
+    assert.equal(options.cwd, root)
+    const controls = phase === 'prepare' ? {
+      provenancePath: resolve(runRoot, 'provenance/i05/source-package-parity-build.json'),
+      contractPath: resolve(runRoot, 'provenance/i05/source-package-parity-private-contract-v1.json'),
+      generatedDir: resolve(runRoot, 'generated'),
+      anchorPath: resolve(runRoot, 'generated/_i05_semantic_parity_build_anchor.py'),
+    } : {
+      bindingPath: resolve(runRoot, 'artifact-binding-v1.json'), bindingSha256: 'a'.repeat(64),
+      engineDirectory: artifact, provenanceSha256: 'b'.repeat(64),
+    }
+    if (phase === 'prepare') {
+      fs.mkdirSync(resolve(runRoot, 'generated'))
+      fs.mkdirSync(resolve(runRoot, 'provenance/i05'), {recursive:true})
+      fs.mkdirSync(resolve(runRoot, 'licenses'))
+    } else if (phase === 'pyinstaller') {
+      fs.mkdirSync(artifact, {recursive:true})
+      fs.writeFileSync(resolve(artifact, 'ontolearn-semantic-parity'), 'inert unit artifact')
+    } else {
+      fs.writeFileSync(controls.bindingPath, 'unit binding; unapproved')
+    }
+    let stdout = phase === 'pyinstaller' ? 'complete package stdout\n' : JSON.stringify(controls)
+    let stderr = `complete ${phase} stderr\n`
+    if (behavior.stdout) stdout = behavior.stdout(phase, stdout, controls)
+    if (behavior.stderr) stderr = behavior.stderr(phase, stderr)
+    fs.writeSync(options.stdio[1], stdout)
+    fs.writeSync(options.stdio[2], stderr)
+    const result = {status:0, signal:null, pid:2000 + calls.length}
+    return behavior.result ? behavior.result(phase, result) : result
+  }
+  return {root, runRoot, artifact, evidence, calls, run}
+}
+function invoke(f, extra = {}) {
+  return buildSemanticParity({repositoryRoot:f.root, run:f.run, uuid:() => token, ...extra})
+}
+function receipt(f, phase) {
+  return JSON.parse(fs.readFileSync(resolve(f.evidence, `${phase}.receipt.json`), 'utf8'))
+}
+function verifyStreams(f, phase, complete) {
+  const observed = receipt(f, phase)
+  const call = f.calls.find(c => c.phase === phase)
+  assert.deepEqual(Object.keys(observed).sort(), ['format', 'profile', 'phase', 'argv', 'cwd',
+    'environment', 'pid', 'startUtc', 'endUtc', 'status', 'signal', 'error', 'ioError', 'overflow',
+    'complete', 'stdout', 'stderr', 'captureRange'].sort())
+  assert.equal(observed.format, 'i05-semantic-parity-child/1')
+  assert.equal(observed.profile, profile)
+  assert.equal(observed.phase, phase)
+  assert.deepEqual(observed.argv, [call.command, ...call.args])
+  assert.equal(observed.cwd, f.root)
+  assert.deepEqual(observed.environment, call.options.env)
+  assert.equal(observed.pid, 2000 + f.calls.indexOf(call) + 1)
+  assert.equal(observed.complete, complete)
+  assert(Number.isFinite(Date.parse(observed.startUtc)))
+  assert(Date.parse(observed.endUtc) >= Date.parse(observed.startUtc))
+  for (const channel of ['stdout', 'stderr']) {
+    const expectedPath = resolve(f.evidence, `${phase}.${channel}.log`)
+    const raw = fs.readFileSync(expectedPath)
+    assert.deepEqual(observed[channel], {path: expectedPath, bytes:raw.length, sha256:sha(raw)})
+    assert.deepEqual(observed.captureRange[channel], [0, raw.length])
+  }
+  return observed
+}
+
+test('standalone dispatch is exact and never runs while choosing', () => {
+  assert.equal(selectBuild([]), buildEngine)
+  assert.equal(selectBuild(['--i05-source-package-parity']), buildSemanticParity)
+  for (const argv of [['--unknown'], ['--i05-source-package-parity', 'extra'],
+    ['--i05-source-package-parity=full-v1']]) assert.throws(() => selectBuild(argv))
+})
+
+test('standalone collects exact code and data, returns6, never publishes parent stage', (t) => {
+  const f = fixture(t)
+  const stage = resolve(f.root, 'build/engine/ontolearn-engine')
+  fs.mkdirSync(stage, {recursive:true})
+  fs.writeFileSync(resolve(stage, 'old'), 'original stage')
+  const result = invoke(f)
+  assert.deepEqual(Object.keys(result).sort(), ['profile','artifactDirectory','bindingPath',
+    'bindingSha256','provenanceSha256','rootApproved'].sort())
+  assert.equal(result.profile, profile)
+  assert.equal(result.artifactDirectory, f.artifact)
+  assert.equal(result.rootApproved, false)
+  assert.equal(f.calls.length, 3)
+  assert.equal(fs.readFileSync(resolve(stage, 'old'), 'utf8'), 'original stage')
+  const args = f.calls[1].args
+  const values = flag => args.flatMap((x, i) => x === flag ? [args[i+1]] : [])
+  assert.deepEqual(values('--hidden-import'), expectedImports)
+  assert.deepEqual(values('--exclude-module'), exclusions)
+  assert.equal(new Set(values('--hidden-import')).size, 25)
+  assert.equal(args.at(-1), 'packages/engine/src/ontolearn_engine/semantic_source_package_probe.py')
+  assert.deepEqual(values('--name'), ['ontolearn-semantic-parity'])
+  assert.deepEqual(values('--optimize'), ['0'])
+  assert.equal(args.includes('--collect-data'), false)
+  const data = values('--add-data')
+  for (const file of ['schema.json','registry.json','errors.json']) {
+    assert(data.includes(`${resolve(f.root,'packages/contracts/v2',file)}:contracts/v2`))
+  }
+  assert(data.includes(`${resolve(f.root,'packages/contracts/python/contract_v2.py')}:contracts/python`))
+  assert(data.includes(`${resolve(f.runRoot,'provenance/i05/source-package-parity-build.json')}:provenance/i05`))
+  assert(data.includes(`${resolve(f.runRoot,'provenance/i05/source-package-parity-private-contract-v1.json')}:provenance/i05`))
+  for (const file of ['i05-source-package-parity-manifest.json','i05-source-package-parity-inputs.json']) {
+    assert(data.includes(`${resolve(f.root,'packages/engine/src/ontolearn_engine/probe_inputs',file)}:provenance/i05/source-package-parity`))
+  }
+  assert.equal(data.some(x => x.startsWith(resolve(f.root,'packages/contracts/v2') + ':')), false)
+  for (const phase of phases) {
+    const raw = verifyStreams(f, phase, true)
+    assert.equal(raw.status, 0)
+    assert.equal(raw.error, null)
+    assert.equal(raw.ioError, null)
+    assert.equal(raw.overflow, false)
+    assert(fs.readFileSync(raw.stderr.path, 'utf8').includes(`${phase} stderr`))
+  }
+})
+
+for (const failedPhase of phases) test(`standalone ${failedPhase} nonzero preserves raw first failure`, (t) => {
+  const f = fixture(t, {result:(phase,result) => phase === failedPhase ? {...result,status:7} : result})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length, phases.indexOf(failedPhase) + 1)
+  const raw = verifyStreams(f, failedPhase, true)
+  assert.equal(raw.status, 7)
+  assert.equal(raw.error, null)
+  assert(fs.readFileSync(raw.stderr.path,'utf8').includes(`${failedPhase} stderr`))
+})
+
+for (const code of ['ENOBUFS','ERR_CHILD_PROCESS_STDIO_MAXBUFFER']) test(`standalone ${code} reports incomplete captured range`, (t) => {
+  const f = fixture(t, {result:(_phase,result) => ({...result,status:null,
+    error:Object.assign(new Error('synthetic overflow'), {code})})})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',false)
+  assert.equal(raw.overflow,true)
+  assert.equal(raw.error.code,code)
+  assert(raw.stdout.bytes > 0 && raw.stderr.bytes > 0)
+})
+
+test('standalone spawn error preserves both direct raw streams without rerun', (t) => {
+  const f = fixture(t, {result:(_phase,result) => ({...result,status:null,
+    error:Object.assign(new Error('synthetic spawn error'), {code:'ENOENT'})})})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',false)
+  assert.equal(raw.overflow,false)
+  assert.equal(raw.error.code,'ENOENT')
+})
+
+for (const invalid of ['malformed','oversize','unknownKey','nonString','duplicate','BOM','nonJSONWhitespace','invalidUTF8']) test(`standalone ${invalid} control preserves full raw`, (t) => {
+  const f = fixture(t, {stdout:(phase,stdout,controls) => {
+    if (phase !== 'prepare') return stdout
+    if (invalid === 'malformed') return '{bad json'
+    if (invalid === 'oversize') return 'x'.repeat(65537)
+    if (invalid === 'unknownKey') return JSON.stringify({...controls, approved:true})
+    if (invalid === 'duplicate') {
+      const {anchorPath, ...rest} = controls
+      return JSON.stringify(rest).slice(0,-1) + ',"anchorPath":"wrong","anchorPath":' + JSON.stringify(anchorPath) + '}'
+    }
+    if (invalid === 'BOM') return '\uFEFF' + stdout
+    if (invalid === 'nonJSONWhitespace') return '\v' + stdout
+    if (invalid === 'invalidUTF8') return Buffer.from([255])
+    return JSON.stringify({...controls, anchorPath:7})
+  }})
+  assert.throws(() => invoke(f), /BUILD_PARITY_HELPER_OUTPUT_INVALID/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',true)
+  assert.equal(raw.status,0)
+  if (invalid === 'oversize') assert.equal(raw.stdout.bytes,65537)
+  assert(fs.existsSync(resolve(f.evidence,'prepare.control.json')))
+})
+
+test('standalone helper output paths cannot redirect the fixed target layout', (t) => {
+  const f = fixture(t, {stdout:(phase,stdout,controls) => phase === 'prepare' ?
+    JSON.stringify({...controls, provenancePath:resolve(f.root,'outside')}) : stdout})
+  assert.throws(() => invoke(f), /HELPER_PATH_INVALID/)
+  assert.equal(f.calls.length,1)
+  verifyStreams(f,'prepare',true)
+})
+
+test('standalone invalid final binding never publishes or adds a child', (t) => {
+  const f = fixture(t, {stdout:(phase,stdout,controls) => phase === 'finalize' ?
+    JSON.stringify({...controls, engineDirectory:resolve(f.root,'foreign')}) : stdout})
+  assert.throws(() => invoke(f), /BINDING_INVALID/)
+  assert.equal(f.calls.length,3)
+  verifyStreams(f,'finalize',true)
+  assert.equal(fs.existsSync(resolve(f.root,'build/engine')),false)
+})
+
+test('standalone evidence read IO failure keeps actual first raw bytes', (t) => {
+  const f = fixture(t)
+  const stdoutReadHandles = new Set()
+  const io = {...fs, openSync:(path,...args) => {
+    const fd = fs.openSync(path,...args)
+    if (String(path).endsWith('prepare.stdout.log') && args[0] === 'r') stdoutReadHandles.add(fd)
+    return fd
+  }, readSync:(fd,...args) => {
+    if (stdoutReadHandles.has(fd)) throw Object.assign(new Error('synthetic read IO'), {code:'EIO'})
+    return fs.readSync(fd,...args)
+  }, closeSync:fd => {stdoutReadHandles.delete(fd); return fs.closeSync(fd)}}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,1)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stdout.log')).length > 0)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stderr.log')).length > 0)
+  const raw = receipt(f,'prepare')
+  assert.equal(raw.complete,false)
+  assert.equal(raw.ioError.code,'EIO')
+  assert.equal(raw.stdout,null)
+  assert.equal(raw.captureRange.stdout,null)
+})
+
+test('standalone control read failure is separate from already complete raw capture', (t) => {
+  const f = fixture(t)
+  const io = {...fs, readFileSync:(path,...args) => {
+    if (String(path).endsWith('prepare.stdout.log')) throw Object.assign(new Error('synthetic control read IO'), {code:'EIO'})
+    return fs.readFileSync(path,...args)
+  }}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = verifyStreams(f,'prepare',true)
+  assert.equal(raw.ioError,null)
+  const control = JSON.parse(fs.readFileSync(resolve(f.evidence,'prepare.control.json'),'utf8'))
+  assert.equal(control.accepted,false)
+  assert.equal(control.code,'BUILD_PARITY_EVIDENCE_IO_FAILED')
+  assert.equal(control.error.code,'EIO')
+  assert.equal(control.stdout.sha256,raw.stdout.sha256)
+})
+
+test('standalone receipt write IO failure keeps channels and never returns success', (t) => {
+  const f = fixture(t)
+  const io = {...fs, writeFileSync:(path,...args) => {
+    if (String(path).endsWith('prepare.receipt.json')) throw Object.assign(new Error('synthetic receipt IO'), {code:'EIO'})
+    return fs.writeFileSync(path,...args)
+  }}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,1)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stdout.log')).length > 0)
+  assert(fs.readFileSync(resolve(f.evidence,'prepare.stderr.log')).length > 0)
+})
+
+test('standalone opening stderr failure closes the first handle and never launches', (t) => {
+  const f = fixture(t)
+  const closed = [], retained = new Set()
+  const io = {...fs, openSync:(path,...args) => {
+    if (String(path).endsWith('prepare.stderr.log')) throw Object.assign(new Error('synthetic open IO'), {code:'EIO'})
+    const fd = fs.openSync(path,...args)
+    retained.add(fd)
+    return fd
+  }, closeSync:fd => {closed.push(fd); retained.delete(fd); return fs.closeSync(fd)}}
+  assert.throws(() => invoke(f,{io}), /BUILD_PARITY_EVIDENCE_IO_FAILED/)
+  assert.equal(f.calls.length,0)
+  assert(closed.length >= 1)
+  assert.equal(retained.size,0)
+})
+
+test('standalone large raw channels exceed the old pipe buffer without truncation', (t) => {
+  const f = fixture(t, {stdout:(phase,stdout) => phase === 'pyinstaller' ?
+    'O'.repeat(4 * 1024 * 1024 + 17) : stdout,
+    stderr:(_phase,_stderr) => 'E'.repeat(4 * 1024 * 1024 + 31)})
+  invoke(f)
+  const raw = verifyStreams(f,'pyinstaller',true)
+  assert.equal(raw.stdout.bytes,4 * 1024 * 1024 + 17)
+  assert.equal(raw.stderr.bytes,4 * 1024 * 1024 + 31)
+  assert.equal(fs.readFileSync(raw.stdout.path).at(-1),79)
+  assert.equal(fs.readFileSync(raw.stderr.path).at(-1),69)
+})
+
+test('standalone thrown runner preserves partial channels and reports actual failure', (t) => {
+  const f = fixture(t)
+  const throwingRun = (...args) => {
+    f.run(...args)
+    throw Object.assign(new Error('synthetic throw after writes'), {code:'EIO'})
+  }
+  assert.throws(() => invoke(f,{run:throwingRun}), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = receipt(f,'prepare')
+  assert.equal(raw.error.code,'EIO')
+  assert.equal(raw.complete,false)
+  assert.equal(raw.status,null)
+  for (const channel of ['stdout','stderr']) {
+    const bytes = fs.readFileSync(resolve(f.evidence,`prepare.${channel}.log`))
+    assert.equal(raw[channel].sha256,sha(bytes))
+    assert(bytes.length > 0)
+  }
+})
+
+test('standalone signal has no synthetic zero exit and does not finalize', (t) => {
+  const f = fixture(t, {result:(_phase,result) => ({...result,status:null,signal:'SIGTERM'})})
+  assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+  assert.equal(f.calls.length,1)
+  const raw = receipt(f,'prepare')
+  assert.equal(raw.status,null)
+  assert.equal(raw.signal,'SIGTERM')
+  assert.equal(raw.stdout.sha256,sha(fs.readFileSync(raw.stdout.path)))
+  assert.equal(raw.stderr.sha256,sha(fs.readFileSync(raw.stderr.path)))
+})
+
+test('standalone repeated UUID preserves all original evidence and artifact', (t) => {
+  const f = fixture(t)
+  const result = invoke(f)
+  const original = fs.readFileSync(result.bindingPath)
+  const originalReceipt = fs.readFileSync(resolve(f.evidence,'prepare.receipt.json'))
+  assert.throws(() => invoke(f), /OUTPUT_EXISTS/)
+  assert.equal(f.calls.length,3)
+  assert.deepEqual(fs.readFileSync(result.bindingPath),original)
+  assert.deepEqual(fs.readFileSync(resolve(f.evidence,'prepare.receipt.json')),originalReceipt)
+})
+
+test('standalone rejects an ancestor symlink before any child or outside write', (t) => {
+  const f = fixture(t)
+  fs.mkdirSync(resolve(f.root,'build'))
+  const outside = resolve(f.root,'outside-not-created')
+  fs.symlinkSync(outside,resolve(f.root,'build/i05-semantic-parity'))
+  assert.throws(() => invoke(f), /DIRECTORY_INVALID/)
+  assert.equal(f.calls.length,0)
+  assert.equal(fs.existsSync(outside),false)
+})

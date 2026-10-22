@@ -1,0 +1,12 @@
+E501 Line too long (104 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2406:101
+     |
+2404 |   const io = {...fs, openSync:(path,...args) => {
+2405 |     const fd = fs.openSync(path,...args)
+2406 |     if (String(path).endsWith(`${failedPhase}.stdout.log`) && args[0] === 'r') stdoutReadHandles.add(fd)
+     |                                                                                                     ^^^^
+2407 |     return fd
+2408 |   }, readSync:(fd,...args) => {
+     |
+
+Found 1 error.

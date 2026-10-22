@@ -1,0 +1,161 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> packages/engine/tests/test_semantic_build_provenance.py:3:1
+   |
+ 1 |   """Private verifier unit boundaries; no real semantic/native/package execution."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import copy
+ 6 | | import importlib.machinery
+ 7 | | import importlib.util
+ 8 | | import json
+ 9 | | import marshal
+10 | | import os
+11 | | import runpy
+12 | | import shutil
+13 | | import subprocess
+14 | | import struct
+15 | | import sys
+16 | | import types
+17 | | import uuid
+18 | | import zlib
+19 | | from dataclasses import FrozenInstanceError
+20 | | from pathlib import Path
+21 | |
+22 | | import pytest
+23 | | from ontolearn_engine import semantic_build_provenance as p
+   | |___________________________________________________________^
+24 |
+25 |   REPOSITORY = Path(__file__).resolve().parents[3]
+   |
+help: Organize imports
+   |
+12 | import shutil
+13 + import struct
+14 | import subprocess
+   - import struct
+15 | import sys
+   |
+
+E501 Line too long (102 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2078:101
+     |
+2076 | import { createHash } from 'node:crypto'
+2077 | import { resolve } from 'node:path'
+2078 | const { buildEngine, buildSemanticParity, selectBuild } = await import(process.env.BUILDER_MODULE_URL)
+     |                                                                                                     ^^
+2079 | const token = '11111111-2222-3333-4444-555555555555'
+2080 | const profile = 'i05-source-package-parity'
+     |
+
+E501 Line too long (102 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2119:101
+     |
+2117 |     const controls = phase === 'prepare' ? {
+2118 |       provenancePath: resolve(runRoot, 'provenance/i05/source-package-parity-build.json'),
+2119 |       contractPath: resolve(runRoot, 'provenance/i05/source-package-parity-private-contract-v1.json'),
+     |                                                                                                     ^^
+2120 |       generatedDir: resolve(runRoot, 'generated'),
+2121 |       anchorPath: resolve(runRoot, 'generated/_i05_semantic_parity_build_anchor.py'),
+     |
+
+E501 Line too long (107 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2228:101
+     |
+2226 |   assert(data.includes(`${resolve(f.runRoot,'provenance/i05/source-package-parity-build.json')}:provenance/i05`))
+2227 |   assert(data.includes(`${resolve(f.runRoot,'provenance/i05/source-package-parity-private-contract-v1.json')}:provenance/i05`))
+2228 |   for (const file of ['i05-source-package-parity-manifest.json','i05-source-package-parity-inputs.json']) {
+     |                                                                                                     ^^^^^^^
+2229 |     assert(data.includes(`${resolve(f.root,'packages/engine/src/ontolearn_engine/probe_inputs',file)}:provenance/i05/source-package-…
+2230 |   }
+     |
+
+E501 Line too long (112 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2242:101
+     |
+2240 | })
+2241 |
+2242 | for (const failedPhase of phases) test(`standalone ${failedPhase} nonzero preserves raw first failure`, (t) => {
+     |                                                                                                     ^^^^^^^^^^^^
+2243 |   const f = fixture(t, {result:(phase,result) => phase === failedPhase ? {...result,status:7} : result})
+2244 |   assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+     |
+
+E501 Line too long (104 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2243:101
+     |
+2242 | for (const failedPhase of phases) test(`standalone ${failedPhase} nonzero preserves raw first failure`, (t) => {
+2243 |   const f = fixture(t, {result:(phase,result) => phase === failedPhase ? {...result,status:7} : result})
+     |                                                                                                     ^^^^
+2244 |   assert.throws(() => invoke(f), /BUILD_PARITY_CHILD_FAILED/)
+2245 |   assert.equal(f.calls.length, phases.indexOf(failedPhase) + 1)
+     |
+
+E501 Line too long (137 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2252:101
+     |
+2250 | …
+2251 | …
+2252 | …O_MAXBUFFER']) test(`standalone ${code} reports incomplete captured range`, (t) => {
+     |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2253 | …..result,status:null,
+2254 | …'), {code})})})
+     |
+
+E501 Line too long (190 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2273:101
+     |
+2271 | …
+2272 | …
+2273 | …e','BOM','nonJSONWhitespace','invalidUTF8']) test(`standalone ${invalid} control preserves full raw`, (t) => {
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2274 | …
+2275 | …
+     |
+
+E501 Line too long (120 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2281:101
+     |
+2279 |     if (invalid === 'duplicate') {
+2280 |       const {anchorPath, ...rest} = controls
+2281 |       return JSON.stringify(rest).slice(0,-1) + ',"anchorPath":"wrong","anchorPath":' + JSON.stringify(anchorPath) + '}'
+     |                                                                                                     ^^^^^^^^^^^^^^^^^^^^
+2282 |     }
+2283 |     if (invalid === 'BOM') return '\uFEFF' + stdout
+     |
+
+E501 Line too long (126 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2350:101
+     |
+2348 |   const f = fixture(t)
+2349 |   const io = {...fs, readFileSync:(path,...args) => {
+2350 |     if (String(path).endsWith('prepare.stdout.log')) throw Object.assign(new Error('synthetic control read IO'), {code:'EIO'})
+     |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+2351 |     return fs.readFileSync(path,...args)
+2352 |   }}
+     |
+
+E501 Line too long (123 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2367:101
+     |
+2365 |   const f = fixture(t)
+2366 |   const io = {...fs, writeFileSync:(path,...args) => {
+2367 |     if (String(path).endsWith('prepare.receipt.json')) throw Object.assign(new Error('synthetic receipt IO'), {code:'EIO'})
+     |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^
+2368 |     return fs.writeFileSync(path,...args)
+2369 |   }}
+     |
+
+E501 Line too long (118 > 100)
+    --> packages/engine/tests/test_semantic_build_provenance.py:2380:101
+     |
+2378 |   const closed = [], retained = new Set()
+2379 |   const io = {...fs, openSync:(path,...args) => {
+2380 |     if (String(path).endsWith('prepare.stderr.log')) throw Object.assign(new Error('synthetic open IO'), {code:'EIO'})
+     |                                                                                                     ^^^^^^^^^^^^^^^^^^
+2381 |     const fd = fs.openSync(path,...args)
+2382 |     retained.add(fd)
+     |
+
+Found 12 errors.
+[*] 1 fixable with `--fix`.

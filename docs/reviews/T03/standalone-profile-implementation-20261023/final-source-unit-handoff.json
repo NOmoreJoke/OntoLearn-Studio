@@ -1,0 +1,282 @@
+{
+  "format": "t03-standalone-source-unit-final-handoff/1",
+  "status": "SOURCE_AND_APPROVED_SINGLE_FILE_UNIT_COMPLETE; NO_ACTUAL_A_OR_B",
+  "generatedUtc": "2026-10-22T23:14:12.777895+00:00",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023",
+  "branch": "feature/t03-semantic-parity-profile-20261023",
+  "sourceBase": "c706f8f581785053278f26e48d21d7bebadf09f6",
+  "adoptedM08": "a633ef391344cce60807638ecd942d4e2183c7b4",
+  "productCommits": [
+    "d4686b1769b5925190a9e7afcc23b92d5db04d4d",
+    "e37cc2b161b53a6250a4085104ee955c423fb149"
+  ],
+  "finalProductCommit": "e37cc2b161b53a6250a4085104ee955c423fb149",
+  "finalProductTree": "71b99b1ca0408a604c36742d0e3f3b90a5ec2ff1",
+  "products": [
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 22318,
+      "sha256": "36a2255c2e3e908f1b0421f042d5613843dc9ab5ece0f5b09b2a0a465544965b"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/semantic_build_provenance.py",
+      "bytes": 83012,
+      "sha256": "1ff966ada91525a86f280f5e57d9a719f869986a1adafb90acfd6e8eedf6730d"
+    },
+    {
+      "path": "packages/engine/tests/test_semantic_build_provenance.py",
+      "bytes": 120578,
+      "sha256": "ee09707ab895bdfa8e831f38a200e5445d0a37d12c1fb8a603987efd4700edc9"
+    },
+    {
+      "path": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
+      "bytes": 55577,
+      "sha256": "a93a5dc5b0b002482db8e99e072aab6d27d3a0cf58f59bfd9b0a7643305ead0d"
+    }
+  ],
+  "totalProductPatch": {
+    "path": "final-product-c706-to-e37.patch",
+    "bytes": 196418,
+    "sha256": "693dd22ffd64221b4e6e29035e970060a0a7bdfc251533cab05feb2959f5db57"
+  },
+  "contractMachineMap": {
+    "sourceCommit": "e37cc2b161b53a6250a4085104ee955c423fb149",
+    "contract": {
+      "path": "docs/iterations/T03/i05-semantic-parity-profile/private-profile-contract-v1.json",
+      "bytes": 55577,
+      "sha256": "a93a5dc5b0b002482db8e99e072aab6d27d3a0cf58f59bfd9b0a7643305ead0d"
+    },
+    "jsonPointer": "/buildScratch",
+    "rootTemplatePointer": "/buildScratch/sampling/rootTemplate",
+    "thresholdBytesPointer": "/buildScratch/sampling/thresholdBytes",
+    "guardRequiredPointer": "/buildScratch/executionGuard/guardRequired",
+    "snapshot": {
+      "path": "final-build-scratch-map.json",
+      "bytes": 2950,
+      "sha256": "7008eeeef08a981bb05fe239487a72cdc20f28663268e05a71410e161a581efe"
+    },
+    "meaning": "Exact mechanical map/policy snapshot; I05 caller owns actual before/after sampling, monitoring, threshold and missing-guard refusal. No actual run UUID, sample, OS hard quota, runtime evidence or build authorization."
+  },
+  "closure": {
+    "analysisImports": 25,
+    "internalEnginePyzModules": 24,
+    "separateAnchorModules": 1,
+    "sourceGuards": 35,
+    "buildInputs": 5,
+    "supplierModules": 22,
+    "privateModules": 2,
+    "publicResources": 4,
+    "fixedInputs": 2,
+    "distributions": 8,
+    "meaning": "Contract, static review and controlled unit scope only; not actual PyInstaller closure, artifact, native or semantic parity evidence."
+  },
+  "independentReviews": [
+    {
+      "report": {
+        "path": "independent-code-review/review-d4686b.md",
+        "bytes": 13488,
+        "sha256": "cd388d24884d678a89d3136339c203ea93a76a6e42d8a37c1e27545a2162f4c0"
+      },
+      "manifest": {
+        "path": "independent-code-review/manifest-d4686b.json",
+        "bytes": 2644,
+        "sha256": "78bad0d5bdad109f6c7ed495c11d82fe72a754f47b68ed275eb75b5b7e2af8a9"
+      },
+      "outcome": "historical first review: F1 blocking P2 and N1 P3; preserved unchanged"
+    },
+    {
+      "report": {
+        "path": "independent-code-review/review-e37cc2b-delta.md",
+        "bytes": 8790,
+        "sha256": "82a2d55fa198f0d5562e07d2cd5283d399435f934c5655babc5092feb72e9cb9"
+      },
+      "manifest": {
+        "path": "independent-code-review/manifest-e37cc2b-delta.json",
+        "bytes": 3512,
+        "sha256": "97af2db6c148f533b76847b7a6b382b0585a6d156aa266325b13bdf479825f92"
+      },
+      "outcome": "F1/N1 CLOSED_STATIC; zero new blocking P1/P2; only controller may separately start unit"
+    }
+  ],
+  "approvedUnit": {
+    "receipt": {
+      "path": "unit-run-e37-first/receipt.json",
+      "bytes": 4931,
+      "sha256": "384b0017b4434a21d13ffad25cabf4a22ed733ac1b2edd04949973db4e7e1ddb"
+    },
+    "stdout": {
+      "path": "unit-run-e37-first/stdout.log",
+      "bytes": 340,
+      "sha256": "2953a076a579e2a5c783b6305e60c0c77727746aeae087d869eec91609edfadd"
+    },
+    "stderr": {
+      "path": "unit-run-e37-first/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "runner": {
+      "path": "unit-run-e37-first/run-unit.py",
+      "bytes": 4786,
+      "sha256": "eb7fe9183645bd7aa522429b916bbe475a18be744c60f5c163e1e17d420a4718"
+    },
+    "sourceBefore": {
+      "path": "unit-run-e37-first/source-before.json",
+      "bytes": 732,
+      "sha256": "ff796ce8d14b890ce5c0cb23cce840ba0106c82cd4671121bb8d4286881604fb"
+    },
+    "sourceAfter": {
+      "path": "unit-run-e37-first/source-after.json",
+      "bytes": 732,
+      "sha256": "ff796ce8d14b890ce5c0cb23cce840ba0106c82cd4671121bb8d4286881604fb"
+    },
+    "argv": [
+      "/Users/kyle/.local/bin/uv",
+      "run",
+      "--frozen",
+      "pytest",
+      "packages/engine/tests/test_semantic_build_provenance.py",
+      "-q",
+      "--maxfail=1"
+    ],
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023",
+    "environment": {
+      "PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/.venv/bin:/Users/kyle/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
+      "HOME": "/Users/kyle",
+      "LANG": "C.UTF-8",
+      "LC_ALL": "C.UTF-8",
+      "LC_CTYPE": "C.UTF-8",
+      "VIRTUAL_ENV": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/.venv",
+      "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/.venv",
+      "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/build/t03-profile-unit-20261023/cache/uv",
+      "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/build/t03-profile-unit-20261023/tmp",
+      "UV_NO_SYNC": "1",
+      "UV_OFFLINE": "1",
+      "UV_PYTHON_DOWNLOADS": "never",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1"
+    },
+    "pid": 83488,
+    "startUtc": "2026-10-22T23:10:43.914439+00:00",
+    "endUtc": "2026-10-22T23:10:49.612665+00:00",
+    "wallSeconds": 5.697999875000001,
+    "wallLimitSeconds": 600,
+    "status": 0,
+    "timeout": false,
+    "ioError": null,
+    "overflow": false,
+    "complete": true,
+    "captureRange": {
+      "stdout": [
+        0,
+        340
+      ],
+      "stderr": [
+        0,
+        0
+      ]
+    },
+    "pytestResult": "217 passed in 3.59s",
+    "sourceUnchanged": true,
+    "node": "Only original run/io/uuid stubs inside this approved single-file unit. New wrapper asserts31 Node cases; no separate retained successful Node TAP stream and no additional Node rerun."
+  },
+  "setup": {
+    "compatibilityComparison": {
+      "path": "environment-source-comparison.json",
+      "bytes": 709,
+      "sha256": "a617622d47aaee42bdf16ca04cdcf321421f448983dbf4c2f993a54a28ba3917"
+    },
+    "firstComparisonErrorNote": {
+      "path": "setup-first-comparison-tool-error.txt",
+      "bytes": 253,
+      "sha256": "c95fbe9b290020a2a51091b4c4ecefbde5b9f3eaea07987ae941b1b1b98ccda2"
+    },
+    "ownUvSetup": {
+      "path": "uv-sync.receipt.json",
+      "bytes": 2841,
+      "sha256": "8bba5cc9e4f0e24eb5cd817b92d41413ec83488fcb28af5bfb9bbcb7289dd077"
+    },
+    "independentNodeCopy": {
+      "path": "copy-node.receipt.json",
+      "bytes": 2250,
+      "sha256": "1a9e2a4702c60535905f81738ac2007e40e8f01d94e7cb0c8d34c366563f1feb"
+    },
+    "scope": "Root pyproject mismatch rejected old Python environment reuse before copy; own uv sync --frozen then package-manifest-compatible independent Node entities. No lock/global configuration/credentials/mirror fallback changes; no Electron/build launched."
+  },
+  "controllerIntakeFirstErrorNote": {
+    "path": "controller-intake-path-base-first-error-note.json",
+    "bytes": 619,
+    "sha256": "498a5831d71c3f151e084e0c682e8be4c4b6d55ba642cfb2f075d46258b225c6"
+  },
+  "processFreezeFirstStageErrorNote": {
+    "path": "process-freeze-first-stage-error-note.json",
+    "bytes": 10204,
+    "sha256": "120d652037fe5b99348c40ac5b6b958d01f3893a6fb32c41336b1e62dfd30b5d"
+  },
+  "protectedGate": {
+    "protectedFiles": [
+      {
+        "path": "AGENTS.md",
+        "bytes": 15147,
+        "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+      },
+      {
+        "path": "packages/engine/entrypoint.py",
+        "bytes": 976,
+        "sha256": "aaf9f85b59f115ae0646fd31f5305ee588c2bd58a0fbb28d9714c707c9035ef3"
+      },
+      {
+        "path": "docs/reviews/T03/i05-m08-provenance-20261023/private-contract-v1.json",
+        "bytes": 36587,
+        "sha256": "9d97a6a233b47abc23064a9a8f8330080d62f39b3db981de14a148880e202a04"
+      },
+      {
+        "path": "pyproject.toml",
+        "bytes": 1527,
+        "sha256": "74763669b19190b980849bee07c53f0c0bc145417ca488a540333803a3ed3d14"
+      },
+      {
+        "path": "packages/engine/pyproject.toml",
+        "bytes": 398,
+        "sha256": "bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365"
+      },
+      {
+        "path": "uv.lock",
+        "bytes": 28440,
+        "sha256": "86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73"
+      },
+      {
+        "path": "package.json",
+        "bytes": 1953,
+        "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32"
+      },
+      {
+        "path": "package-lock.json",
+        "bytes": 224331,
+        "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5"
+      }
+    ],
+    "sourceGuards": 35,
+    "unchangedNonproductGuards": 32,
+    "parentEntrypointOldContractLocks": "unchanged",
+    "AGENTS": "unstaged protected overlay; never staged",
+    "proofReferences": [
+      "protected-before.json",
+      "static-source-audit.json",
+      "delta-f1-n1/static-delta-audit.json",
+      "unit-run-e37-first/source-before.json",
+      "unit-run-e37-first/source-after.json"
+    ]
+  },
+  "preservation": "Historical failures, gate states and first blocking report remain as observed at their original times; final status is supplied here rather than rewriting them. Full actual child env is the explicit safe allowlist actually applied, not a parent environment dump. Initial setup comparison and controller path-base failures are notes of tool/controller observations, not fabricated redirected raw logs.",
+  "notVerified": [
+    "I05 selective source/consumer adoption and independent consumer delta review",
+    "I05 saving and joining full actual reader/loader JSON evidence",
+    "I05 actual external scratch guard, sampling and monitoring receipts",
+    "actual standalone A / prepare / PyInstaller / finalize / artifact",
+    "root complete actual artifact inventory and external binding digest approval",
+    "fresh source/frozen full-v1 B once each",
+    "native/source-byte equivalence, parent platform runtime, GUI, business or release"
+  ],
+  "processCommitIdentity": "Intentionally external to this payload and master manifest to avoid commit/manifest hash cycles; delivered in the final handoff message.",
+  "nextGate": "STOP after pure process local commit; controller verifies master members and sends one immutable handoff. No push/PR/merge/build or rerun."
+}

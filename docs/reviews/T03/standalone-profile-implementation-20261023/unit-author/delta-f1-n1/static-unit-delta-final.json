@@ -1,0 +1,92 @@
+{
+  "format": "standalone-unit-f1-n1-static/1",
+  "file": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/packages/engine/tests/test_semantic_build_provenance.py",
+  "bytes": 120578,
+  "sha256": "ee09707ab895bdfa8e831f38a200e5445d0a37d12c1fb8a603987efd4700edc9",
+  "originalC706DeclarationsPreserved": 58,
+  "priorD468DeclarationsPreservedExceptNodeExpectedCount": 100,
+  "originalBuilderUnitUnchanged": true,
+  "deltaTopLevelTests": [
+    {
+      "name": "test_standalone_contract_source_and_frozen_domains_are_relational",
+      "line": 2731
+    },
+    {
+      "name": "test_standalone_contract_target_and_launcher_domains_match_archive_and_runtime",
+      "line": 2768
+    },
+    {
+      "name": "test_standalone_contract_separates_actual_base_historical_components_and_root_approval",
+      "line": 2820
+    },
+    {
+      "name": "test_standalone_contract_defines_conditional_unit_without_granting_build_execution",
+      "line": 2838
+    },
+    {
+      "name": "test_standalone_contract_requires_all_sixteen_negative_test_domains",
+      "line": 2858
+    },
+    {
+      "name": "test_standalone_scratch_policy_is_single_external_accounting_domain_without_quota_claims",
+      "line": 2895
+    }
+  ],
+  "nodeStubExpectedCases": 31,
+  "nodeLiteralSha256": "cc33b9e0bd2e86f0cee72d7d4a664b823aee85a70c6be2d615eb8daa39c4b14a",
+  "checks": [
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "format",
+        "--check",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023",
+      "pid": 79112,
+      "startUtc": "2026-10-22T23:05:03.978029+00:00",
+      "endUtc": "2026-10-22T23:05:04.036561+00:00",
+      "status": 0,
+      "stdoutBytes": 25,
+      "stderrBytes": 0
+    },
+    {
+      "argv": [
+        ".venv/bin/ruff",
+        "check",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023/packages/engine/tests/test_semantic_build_provenance.py"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023",
+      "pid": 79113,
+      "startUtc": "2026-10-22T23:05:04.037145+00:00",
+      "endUtc": "2026-10-22T23:05:04.061403+00:00",
+      "status": 0,
+      "stdoutBytes": 19,
+      "stderrBytes": 0
+    },
+    {
+      "argv": [
+        "node",
+        "--input-type=module",
+        "--check"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-semantic-parity-profile-20261023",
+      "pid": 79114,
+      "startUtc": "2026-10-22T23:05:04.062086+00:00",
+      "endUtc": "2026-10-22T23:05:04.099875+00:00",
+      "status": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ],
+  "contractReadOnlySnapshot": {
+    "bytes": 55577,
+    "sha256": "a93a5dc5b0b002482db8e99e072aab6d27d3a0cf58f59bfd9b0a7643305ead0d",
+    "requiredNegativeCategories": 16,
+    "scratchPaths": 16,
+    "samplingThresholdBytes": 8589934592
+  },
+  "firstFailure": "ruff-check-initial status1 E501 at embedded Node source line2406; original output preserved, line wrapped without assertion changes",
+  "runtimeExecuted": false,
+  "writerState": "paused after this vector; no product import, unit, Node stub, prepare/finalize/build/CLI/native executed"
+}
