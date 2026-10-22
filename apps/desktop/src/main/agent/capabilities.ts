@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { AgentError } from './errors'
 import { CODEC_VERSION, DEEPSEEK_ENDPOINT, REQUEST_MODEL } from './deepseek-codec'
 
-const signatureSchema = z
+export const providerSignatureSchema = z
   .object({
     endpoint: z.literal(DEEPSEEK_ENDPOINT),
     requestedModel: z.literal(REQUEST_MODEL),
@@ -18,7 +18,7 @@ const probeSchema = z
   .object({
     source: z.enum(['synthetic', 'provider']),
     testedAt: z.iso.datetime(),
-    signature: signatureSchema,
+    signature: providerSignatureSchema,
     connection: z.enum(['passed', 'failed', 'not-run']),
     structuredOutput: z.enum(['passed', 'failed', 'not-run']),
     toolRoundTrip: z.enum(['passed', 'failed', 'not-run']),
@@ -34,11 +34,11 @@ const probeSchema = z
       .nullable(),
   })
   .strict()
-export type ProviderSignature = z.infer<typeof signatureSchema>
+export type ProviderSignature = z.infer<typeof providerSignatureSchema>
 /** Consumes host-verifiable receipts, not model assertions. Does not perform any probe. */
 export function assessCapabilities(value: unknown, pinned: unknown, expectedManifestHash: string) {
   const parsed = probeSchema.safeParse(value)
-  const baseline = signatureSchema.safeParse(pinned)
+  const baseline = providerSignatureSchema.safeParse(pinned)
   if (!parsed.success || !baseline.success || !hash.safeParse(expectedManifestHash).success) {
     throw new AgentError('INVALID_PROTOCOL')
   }

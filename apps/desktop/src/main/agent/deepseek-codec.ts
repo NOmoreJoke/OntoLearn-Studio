@@ -69,9 +69,9 @@ export function encodeChatRequest(input: unknown) {
     }
     if (!message.tool_calls && !message.content?.trim()) throw new AgentError('INVALID_PROTOCOL')
     for (const call of message.tool_calls ?? []) {
-      if (seen.has(call.id) || !availableTools.some((name) => name === call.function.name)) {
+      if (seen.has(call.id)) throw new AgentError('INVALID_PROTOCOL')
+      if (!availableTools.some((name) => name === call.function.name))
         throw new AgentError('TOOL_NOT_ALLOWED')
-      }
       parseToolArguments(call.function.name, call.function.arguments)
       seen.add(call.id)
       pending.add(call.id)

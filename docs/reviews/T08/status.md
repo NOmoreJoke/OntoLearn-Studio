@@ -177,3 +177,11 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 03:28观察取得Z原turn官方`turn.completed`事件（03:27:15北京时间），并原字节封存27221B/SHA `d97250234022978231d34430ecd7914ce13d5b65c7cb34cf096d7879b4d3e4c8`完整报告及原main_turn最终assistant正文，见independent-review-roots-20261022/zcode-terminal-20261023/。owner已全文读取189行报告与最终正文；明确结论为NotPass，已实现纯模块无新P0/P1/P2，3项P3；关键完整原验收缺失仍阻断，不能改称局部指定Pass。报告自行披露三份gz原件及两份中间verification未逐字段展开的读取限制，原样保留，不静默升级覆盖。三份报告明确引用的本方raw已按精确路径逐字节保全；owner仅读档未重跑。该时点M原turnterminal仍null、报告尚无，未将Z结论传给M，继续自身精确路由取证。
 
 03:31精确官方四scalar读取取得M原turn `completed`（更新时间03:30:33北京时间），session=idle。原字节封存37123B/SHA `a707127833feff9b22291ffd5a3cb8fa0b944608950a172df424e104f75ea44c`完整282行报告、同原turn第157行最终assistant正文、metadata及3份明确引用raw，见independent-review-roots-20261022/minimax-terminal-20261023/。最终报告与owner此前全文读取的观测副本逐字节一致。M同样NotPass，提出1P1/7P2/3P3；这些仅为审方发现，尚未由owner逐项裁定或修复，不把与Z意见差异静默抹平。原报告/metadata称ruff format 179文件，而本轮raw为224，作为转述不一致保留原件；审方探针首跑原生结果已另行保全：9项中1失败/8通过、内部exit1，修正后10项通过/exit0；原raw被审方同路径覆盖，不能称原raw仍完整保留首失败。verify:sources原生管道未pipefail，12源成功文案可核，但npm独立退出码UNKNOWN，包装0不冒npm0。双方完整输入/自身cwd/ref/实际设置/正式原turn终态/报告已收，仍无指定Pass；未变更实现、冻结输入或原Goal，未push/PR/合并。
+
+## 指定审后 owned 修复候选（2026-10-23）
+
+按根新明确授权继续原开发线，对14条原意见逐项给确切位置、触发、采纳/争议依据及最小patch或依赖，见[技术裁定](post-designated-review-20261023/finding-disposition.md)。不自行降低原P1/P2或关闭双方NotPass；不写SPARQL黑名单、不把BASE/CONSTRUCT混称网络/写入、不改变选中顺序，也不建立第二隐私权威。真实语义执行器/DOM/离线/公共映射/隐私接口缺件逐项保留。
+
+六个owned源码补受测身份pin及工具前精确复验、enabled响应字段、报告输出token超请求拒绝、安全枚举失败投影、BUSY/重复ID诊断；不把prompt/total token与已请求输出预算混用。先737TS/1052Py完整check通过；独审1仍发现运行时变异AgentError.code可进入本地收据，保留暂不通过及修前hash。收据入口和会话catch现重建安全实例，getter/proxy异常固定回退，独立复核2通过。最终完整check-02为739TS/1052Py、exit0，源hash前后一致；所有26源/测试/fixture hash及原始日志见[候选验证](post-designated-review-20261023/candidate-verification.json)。7文件109项T08用例包含在该739全套中；早期105定向只属于早期WIP，不冒充最终另跑。
+
+本批无真实API/凭据/付款、GUI/浏览器/Electron、e2e/package/native、两OS/真人/CI/远端或正式共享接线；原Goal保持blocked、完整目标不重建。两棵旧审查树仍5b64/de15且实现未改。运行scratch/cache/pytest库及journal本地保留，不删除或ignore求绿，只精确归档本任务txt/JSON证据；不stage受保护AGENTS或数据库。新字节须固定新候选并连同全部原要求、争议和缺件重新同版指定双审，不继承旧局部意见为Pass。

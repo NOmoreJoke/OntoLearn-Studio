@@ -1,0 +1,69 @@
+{
+  "baselineProduct": "93516fa8455cf4b195cbfb699aa7a6652d428b6f",
+  "developmentParent": "7476dae2d622fc965efe4a8c4340a33ea70dd050",
+  "candidate": "pending exact product commit; all26 source hashes fixed below",
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "files": {
+    "apps/desktop/src/main/agent/agent-service.ts": "915b334c0cd0e35f683750f148d331b9e14f7d0d3344e54fd532619b789ebded",
+    "apps/desktop/src/main/agent/capabilities.ts": "3b05b573ff3cbddb6bcbd1b97679efe084096e9a4856e0ca8648b967ef308303",
+    "apps/desktop/src/main/agent/conversation.ts": "0304e444d925eb7d44603471fcde2d04b1900eb5a08ca6765a1ddff4be10aacd",
+    "apps/desktop/src/main/agent/deepseek-codec.ts": "f89db7df0298f2fd56cb7c98adccbfc3d42709f75e96f47d0372c541cac07065",
+    "apps/desktop/src/main/agent/errors.ts": "9269319454eb6ed640789e24420cd5e0516057697b2b97e2e0e733ec6ec92c45",
+    "apps/desktop/src/main/agent/tools.ts": "be30f3d9a88e23ed3cacc6c63de9ebba2668283be98ee1933b5dc213ce2370c8",
+    "apps/desktop/src/renderer/src/agent/AgentSidebar.tsx": "6eef997da2f2fb20da58219332b272e57b0002f12a6a764ad99711248f7e949a",
+    "apps/desktop/src/renderer/src/agent/agent-sidebar.css": "0ebec6a168ff28532679fb1130addccc7658cadbbf42132829c5b04804fc3748",
+    "apps/desktop/src/renderer/src/agent/context-actions.ts": "c4b743dc94869ecf088ae892b7996b50f25da225e1235e0d9456f0b61696a1d0",
+    "apps/desktop/src/renderer/src/agent/sidebar-presentation.ts": "0169ab89a41070b8b70d35ef34fbc6b6dce9d7502e9ab86abfdf02ff67cf1e55",
+    "tests/fixtures/agent/fixed-input-cases.v2.json": "ca3df8cbe46dc82f92ae1663fbdb792e87b7e1b7bbd11512c297b8c074c77952",
+    "tests/fixtures/agent/fixed-input-probe.py": "6ca511b904a0bfe7b99cd3c9cbd19b13556786680735f7c65b53f30391a0f854",
+    "tests/fixtures/agent/manifest.v1.json": "19fe2e407368a21a081b83cbd92c70478cbbf3f45006148d02d404724ce4100f",
+    "tests/fixtures/agent/manifest.v2.json": "02165ae0a93193d04e84bf21e051dc926f9555376fe37f6fcea2352d9b4a3459",
+    "tests/fixtures/agent/synthetic-cases.v1.json": "38f332e4f2d1e7cb59817f66c4db9b4d73defa04149650074fd890e1f0ad1f88",
+    "tests/fixtures/agent/t09-873c8c0/G-base.json": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+    "tests/fixtures/agent/t09-873c8c0/equipment.csv": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+    "tests/fixtures/agent/t09-873c8c0/origin-manifest.json": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "tests/fixtures/agent/t09-873c8c0/unclosed-high.rq": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386",
+    "tests/unit/t08-agent.test.ts": "6d5d5869a81e0bc71e6778c77c72e8952ae5c49f1542410e06e80fab2f179f1e",
+    "tests/unit/t08-codec.test.ts": "818869ba7443d6ec66aeb80019c49187ac62ce8475cbb213b4339d61a8e37e44",
+    "tests/unit/t08-conversation.test.ts": "41faf2bf7b8982bb4c2e059c78222e372342bfef05eb20feffc6ed21c72f7649",
+    "tests/unit/t08-evaluation.test.ts": "ab5a3705eddcda7e30efa5d5feb589a153296e35888019e0ffdd0e7afe8b7b3c",
+    "tests/unit/t08-fixed-input.test.ts": "e323563aa88532694d25fb1685071350b9441c4e27c673861b4e079273f81c95",
+    "tests/unit/t08-sidebar.test.ts": "7d9e543cdddd347ad5703787983228a986025675580eb3a64c9125ae6284cc0c",
+    "tests/unit/t08-review-regressions.test.ts": "962348e162c5d3aa634f648c495c5eba377b1c404aa00de3013b4ed1d587e946"
+  },
+  "sourceCount": 26,
+  "fullCheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "typescriptFiles": 22,
+    "typescriptTests": 739,
+    "pythonTests": 1052,
+    "t08Files": 7,
+    "t08Tests": 109,
+    "raw": "evidence/check-02.raw.txt",
+    "rawSha256": "97cbfcd478818af92fd4dcf298120c4c5db4fc1d3dc7c4cee4bdf8e79587de79",
+    "sourceUnchangedDuringCheck": true
+  },
+  "previousCheck": {
+    "typescriptTests": 737,
+    "pythonTests": 1052,
+    "exitCode": 0,
+    "reasonRepeated": "new independently reproduced mutable AgentError code leak fixed after check-01; no unchanged repeated validation"
+  },
+  "independentReview": [
+    "independent-patch-review-1.md: NotPass; original P2 retained",
+    "independent-patch-review-2.md: local sanitization increment passed;7 exact hashes checked by owner"
+  ],
+  "originalDesignatedReports": "NotPass / NotPass; original severity/open disputes preserved; no designated re-review for new bytes yet",
+  "disposition": "finding-disposition.md",
+  "notRun": [
+    "real provider or credentials/payment",
+    "SPARQL real domain/parser integration",
+    "mounted DOM/Electron/e2e/native",
+    "privacy/real offline/App/bridge integration",
+    "targetOS/real users/CI/remote/push/PR/merge"
+  ],
+  "protectedAgentsSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+  "runtimeRetention": "own TMPDIR/pytest databases, journals and caches remain local and untracked; not deleted or ignored for a clean tree; excluded from commits by exact file staging"
+}

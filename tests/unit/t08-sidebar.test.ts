@@ -135,6 +135,13 @@ describe('T08 sidebar: actual React server markup, not mounted UI integration', 
     expect(html).toContain('<label')
     expect(html).toContain('<textarea')
   })
+  it('keeps a supplied local hint available while model actions stay disabled in local mode', () => {
+    const html = render({ onAction: () => undefined, onSubmit: () => undefined })
+    expect(html).toMatch(/<button type="button"><strong>给我一点提示<\/strong>/)
+    expect(html).toContain('离线本地功能')
+    expect(html).toMatch(/<button type="submit" disabled="">发送问题<\/button>/)
+    // Markup availability is distinct from a mounted click or a real T09 lesson handler.
+  })
   it('marks prior context explicitly and disables its preview even if a callback exists', () => {
     const html = render({
       context: { ...context, projectRevision: 2 },

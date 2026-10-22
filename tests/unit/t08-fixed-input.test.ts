@@ -6,6 +6,11 @@ import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { AgentConversation } from '../../apps/desktop/src/main/agent/conversation'
 import type { TrustedContext } from '../../apps/desktop/src/main/agent/agent-service'
+import {
+  CODEC_VERSION,
+  DEEPSEEK_ENDPOINT,
+  REQUEST_MODEL,
+} from '../../apps/desktop/src/main/agent/deepseek-codec'
 import suite from '../fixtures/agent/fixed-input-cases.v2.json'
 import originManifest from '../fixtures/agent/t09-873c8c0/origin-manifest.json'
 import manifestV2 from '../fixtures/agent/manifest.v2.json'
@@ -186,6 +191,15 @@ describe('T08 approved T09 fixed input: real library observations, not product a
         maxTotalRequestedTokens: 3072,
         toolTimeoutMs: 1000,
         projectedFieldIds: fields.map((field) => field.fieldId),
+        expectedProviderSignature: {
+          endpoint: DEEPSEEK_ENDPOINT,
+          requestedModel: REQUEST_MODEL,
+          returnedModel: 'hand-authored-protocol-not-provider',
+          fingerprint: null,
+          mode: 'enabled',
+          effort: 'high',
+          codecVersion: CODEC_VERSION,
+        },
       },
       {
         query_execute: {

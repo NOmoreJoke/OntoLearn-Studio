@@ -143,7 +143,9 @@ describe('T08 pure Agent boundary, injected adapters are synthetic only', () => 
     expect(receipts).toEqual([
       { callId: 'call1', tool: 'query_execute', outcome: { kind: 'failure', code: 'TOOL_FAILED' } },
     ])
-    expect(projectToolMessage(receipts[0], ['private']).content).toBe('{"kind":"failure"}')
+    expect(projectToolMessage(receipts[0], ['private']).content).toBe(
+      '{"kind":"failure","code":"TOOL_FAILED"}',
+    )
   })
   it('fails invalid evidence including cross-project, cross-scope and old-current inputs', async () => {
     for (const altered of [
@@ -254,7 +256,7 @@ describe('T08 pure Agent boundary, injected adapters are synthetic only', () => 
       'BUDGET_EXCEEDED',
     )
     const pending = session.executeCalls([call], current, signal())
-    await expect(session.executeCalls([call], current, signal())).rejects.toThrow('BUDGET_EXCEEDED')
+    await expect(session.executeCalls([call], current, signal())).rejects.toThrow('BUSY')
     await pending
     await expect(session.executeCalls([call], current, signal())).rejects.toThrow('BUDGET_EXCEEDED')
     expect(execute).toHaveBeenCalledTimes(1)

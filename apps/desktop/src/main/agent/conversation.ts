@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AgentError, type AgentErrorCode } from './errors'
+import { AgentError, normalizeAgentError, type AgentErrorCode } from './errors'
 import {
   AgentSession,
   AGENT_SYSTEM_PROMPT,
@@ -10,6 +10,7 @@ import {
   type TrustedContext,
 } from './agent-service'
 import { decodeChatResponse, encodeChatRequest, type ChatMessage } from './deepseek-codec'
+import { providerSignatureSchema } from './capabilities'
 import type { ToolName } from './tools'
 
 const optionsSchema = z
@@ -21,8 +22,14 @@ const optionsSchema = z
     maxTotalRequestedTokens: z.number().int().min(1).max(524288),
     toolTimeoutMs: z.number().int().min(1).max(60000),
     projectedFieldIds: z.array(z.string().regex(/^[A-Za-z0-9:_-]{1,128}$/)).max(1000),
+    expectedProviderSignature: providerSignatureSchema,
   })
   .strict()
+  .refine(
+    (value) =>
+      value.mode === value.expectedProviderSignature.mode &&
+      value.effort === value.expectedProviderSignature.effort,
+  )
 export type ConversationOptions = z.infer<typeof optionsSchema>
 type Phase = 'ready' | 'awaiting-provider' | 'executing-tools' | 'answered' | 'failed' | 'cancelled'
 type Answer = ReturnType<AgentSession['resolveAnswer']>
@@ -35,6 +42,8 @@ export interface ExchangeData {
  * Private main-process conversation state only. No transport or approval API.
  * Every prepared body still requires the sole I06 final-byte authorization and send.
  * Supplied ports must be the actual approved domain adapters, never simulated runtime results.
+ * The expected signature is a host-supplied snapshot of the tested configuration, not TOFU
+ * or proof of capability/quality. I06 must still revalidate the live configuration before sending.
  */
 export class AgentConversation {
   private readonly context: TrustedContext
@@ -126,7 +135,7 @@ export class AgentConversation {
       this.phase = 'awaiting-provider'
       return { exchangeId: this.exchanges, body: structuredClone(body) }
     } catch (error) {
-      const safe = error instanceof AgentError ? error : new AgentError('INVALID_PROTOCOL')
+      const safe = normalizeAgentError(error, 'INVALID_PROTOCOL')
       this.fail(safe.code)
       throw safe
     }
@@ -155,13 +164,19 @@ export class AgentConversation {
       if (combined.aborted) throw new AgentError('CANCELLED')
       this.assertCurrent(readCurrent)
       const response = decodeChatResponse(json)
+      const expected = this.options.expectedProviderSignature
+      if (
+        response.model !== expected.returnedModel ||
+        (response.system_fingerprint ?? null) !== expected.fingerprint
+      ) {
+        throw new AgentError('PROVIDER_DRIFT')
+      }
+      // Check a reported protocol contradiction, not prompt/total tokens or a spending limit.
+      if (response.usage && response.usage.completion_tokens > this.options.maxTokens)
+        throw new AgentError('INVALID_PROTOCOL')
       if (this.responseIds.has(response.id)) throw new AgentError('INVALID_PROTOCOL')
       const message = response.choices[0].message
-      if (
-        this.options.mode === 'enabled' &&
-        this.session.availableTools().length &&
-        typeof message.reasoning_content !== 'string'
-      ) {
+      if (this.options.mode === 'enabled' && typeof message.reasoning_content !== 'string') {
         throw new AgentError('INVALID_PROTOCOL')
       }
       this.responseIds.add(response.id)
@@ -198,7 +213,7 @@ export class AgentConversation {
         state: this.state(),
       }
     } catch (error) {
-      const safe = error instanceof AgentError ? error : new AgentError('INVALID_PROTOCOL')
+      const safe = normalizeAgentError(error, 'INVALID_PROTOCOL')
       this.fail(safe.code)
       throw safe
     }

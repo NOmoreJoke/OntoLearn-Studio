@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AgentError, type AgentErrorCode } from './errors'
+import { AgentError, normalizeAgentError, safeAgentErrorCode, type AgentErrorCode } from './errors'
 import {
   parseToolArguments,
   toolAccess,
@@ -142,7 +142,7 @@ export class AgentSession {
     signal: AbortSignal,
     timeoutMs = 5000,
   ): Promise<ToolReceipt[]> {
-    if (this.running) throw new AgentError('BUDGET_EXCEEDED')
+    if (this.running) throw new AgentError('BUSY')
     const checked = z.array(toolCallSchema).min(1).max(16).safeParse(callsInput)
     if (!checked.success) throw new AgentError('INVALID_PROTOCOL')
     const calls = checked.data
@@ -157,9 +157,9 @@ export class AgentSession {
     )
       throw new AgentError('BUDGET_EXCEEDED')
     // Validate the whole model batch before any service is invoked.
-    const prepared = calls.map((call) => this.prepare(call))
     if (new Set(calls.map((call) => call.id)).size !== calls.length)
       throw new AgentError('INVALID_PROTOCOL')
+    const prepared = calls.map((call) => this.prepare(call))
     for (const call of calls) this.usedCalls.add(call.id)
     this.consumed += calls.length
     this.running = true
@@ -265,7 +265,7 @@ export class AgentSession {
         tool: item.tool,
         outcome: {
           kind: 'failure',
-          code: error instanceof AgentError ? error.code : 'TOOL_FAILED',
+          code: normalizeAgentError(error).code,
         },
       }
     } finally {
@@ -318,8 +318,15 @@ export function projectToolMessage(
   allowedFieldIds: readonly string[],
 ): ChatMessage {
   const outcome = receipt.outcome
+  if (outcome.kind === 'failure') {
+    return {
+      role: 'tool',
+      tool_call_id: receipt.callId,
+      content: JSON.stringify({ kind: 'failure', code: safeAgentErrorCode(outcome.code) }),
+    }
+  }
   if (outcome.kind !== 'evidence') {
-    // Drafts/errors may contain private text; never echo their body to a provider by default.
+    // Drafts may contain private text; never echo their body to a provider by default.
     return {
       role: 'tool',
       tool_call_id: receipt.callId,

@@ -23,6 +23,8 @@ T08 新增模块只处理文字 Chat Completions 数据、Agent 白名单调度�
 
 成功输出：有限长度完整响应文本（交decodeChatResponse）、真实请求/响应身份、实际接收端点/主体版本与授权记录引用、时间、usage、返回model/fingerprint。失败输出：固定安全错误码、是否已发送、是否已取消本地等待、审查记录引用；不得返回provider原始错误、业务正文、路径、密钥。禁止自动跨端点重定向或自动付费重试。完全本地阻止新发送；在途取消需明确已发数据无法撤回。
 
+2026-10-23 指定审后补明确：每笔发送还须由 I06 从唯一设置权威读取**当前隐私档位及策略版本**并在最终发送前复验，不能从模型 body、页面旧 prop 或 T08 构造时快照推断。隐私策略不是 provider 请求字段；T08 的纯 body 不能构成该判定。实际 I06 设置/最终授权接口尚未交付，本段补足接口需求，不创建第二策略存储或宣称 FR-902 已通过。
+
 例（仅形状提案，不是公共schema或新增网关）：
 
 ```json
@@ -78,11 +80,15 @@ UI当前只有context-actions纯策略，没有页面已接线。每页不超过
 
 `main/agent/conversation.ts` 把已存在codec和AgentSession串成纯数据会话：`prepareExchange → acceptResponse → 实际已批准工具端口 → prepareExchange → 真实收据回答`。只有最后接入I06后才存在实际发送；prepareExchange返回exchangeId/body并不授予外发权限。
 
+2026-10-23 指定审后，构造参数必须提供宿主预先受测的 `expectedProviderSignature`（复用已有严格 signature 形状）；mode/effort 必须与该 pin 一致。响应解码后、任何领域工具或答案处理前精确比较 returnedModel/fingerprint，不同或必需指纹消失即 `PROVIDER_DRIFT`。请求别名不硬等同实际返回版本，不做首次响应自建 baseline，也不忽略版本后缀。此处只消费宿主 pin 的只读快照，不生成能力 ready、评估收据或配置权威；I06 仍须复验实时配置、端点/主体及实际发送模式。没有真实 provider 评估，不能把字符串相等当真实权重/effort 已验。
+
 会话仅在ready时准备一笔请求，并绑定递增exchangeId；未知/旧exchangeId不能消费当前待响应笔数。已消费provider响应ID、同session工具调用ID均不可复用，异步工具执行时拒绝并行响应。当前项目/snapshot/scope变化则终止旧会话，禁止把旧结果标为新结果。所有工具输出按宿主给出的字段列表做最小化，完整正文/历史/思考/工具参数仍须I06最终字节授权。
 
-思考模式携带工具时，响应缺少reasoning_content在工具执行前失败；后续请求与追加用户回合保留此前所有assistant的思考字段及工具ID关联。模型最终JSON仍经AgentSession真实收据规则解析；原始模型文本不会替代结果。
+enabled 模式收到的每个响应（含无领域端口时）必须有 string reasoning_content，缺失或 null 在工具/答案处理前失败，不伪造空串补字段或降为 disabled。字段存在仍不是实际 effort 的独立证明。请求历史规则与响应不同：携带 tools 时保留此前所有 assistant 的完整思考字段及工具 ID 关联；不带 tools 的历史按官方协议允许不回传 reasoning_content，不能据此推断请求模式退化。模型最终 JSON 仍经 AgentSession 真实收据规则解析；原始模型文本不会替代结果。
 
 会话具有有限exchange数、每请求输出token上限、累计已请求输出token上限与工具超时；一笔请求准备时即占用上限，失败也不退还。此处是请求数量/输出token的保守本地上限，不是费用核算或输入token预算，I06仍须控制实际总token、请求时间、费用硬上限和API主体权限。providerFailed只记录安全错误，不自动重试；失败后由页面保留用户输入并通过显式重试建立新操作。取消传播至正在等待的领域端口并忽略迟到响应；真实引擎是否已取消、已提交多少轮仍由I04/T01持久记录证明。
+
+收到 usage 时，若其 completion_tokens 超过本笔请求 maxTokens，在任何工具/答案处理前按协议矛盾拒绝；prompt_tokens/total_tokens 不与“累计已请求输出上限”混比。usage 缺失仍为 null（未知），不是零。这个响应后的检查不能撤回已发生费用，不替代 I06 发送前的真实预算闸门。失败工具投影现只附本地安全枚举 code；未知运行时 code 回退 TOOL_FAILED，草稿正文和原异常仍不投影。新增枚举分类同样须 I06 最终字节授权，不自动获得外发许可。
 
 `state()`只暴露本地安全状态、计数、错误码与宿主答案，不暴露prompt/history/provider异常。单测使用合成响应与注入端口验证往返，不能计入真实DeepSeek或领域集成验收。对应测试：`tests/unit/t08-conversation.test.ts`。
 

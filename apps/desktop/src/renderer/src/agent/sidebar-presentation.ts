@@ -32,6 +32,8 @@ const errorText: Record<AgentErrorCode, string> = {
   INVALID_EVIDENCE: '结果缺少有效依据或身份不匹配。',
   STALE_CONTEXT: '项目或输入版本已变化。',
   BUDGET_EXCEEDED: '本次操作已达请求上限。',
+  BUSY: '本次操作仍在执行，请等待完成。',
+  PROVIDER_DRIFT: '模型返回标识与受测配置不一致，请重新验证。',
   CANCELLED: '本地等待已取消；实际任务状态请查运行记录。',
   TIMED_OUT: '等待超时；实际任务状态请查运行记录。',
   TOOL_FAILED: '工具执行失败。',

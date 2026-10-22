@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import { AgentConversation } from '../../apps/desktop/src/main/agent/conversation'
 import type { TrustedContext } from '../../apps/desktop/src/main/agent/agent-service'
+import {
+  CODEC_VERSION,
+  DEEPSEEK_ENDPOINT,
+  REQUEST_MODEL,
+} from '../../apps/desktop/src/main/agent/deepseek-codec'
 const context: TrustedContext = {
   projectId: 'p1',
   projectRevision: 1,
@@ -18,6 +23,15 @@ const options = {
   maxTotalRequestedTokens: 4096,
   toolTimeoutMs: 1000,
   projectedFieldIds: ['public'],
+  expectedProviderSignature: {
+    endpoint: DEEPSEEK_ENDPOINT,
+    requestedModel: REQUEST_MODEL,
+    returnedModel: 'synthetic-model',
+    fingerprint: null,
+    mode: 'enabled',
+    effort: 'high',
+    codecVersion: CODEC_VERSION,
+  },
 }
 const evidence = {
   kind: 'evidence',
