@@ -251,3 +251,89 @@ def test_readding_an_existing_assertion_is_an_exact_idempotent_empty_diff():
 
 def test_bad_deletion_target_is_rejected_before_set_membership():
     assert_rejected("invalid_iri", "target", lambda: deletion_impact(base(), {}))
+
+
+@pytest.mark.parametrize("bad", [chr(0xD800), chr(0xDFFF)])
+@pytest.mark.parametrize(
+    "field,reason,location",
+    [
+        ("project", "invalid_text", "project"),
+        ("synonyms", "invalid_text", "synonyms"),
+        ("examples", "invalid_text", "examples"),
+        ("labels", "invalid_text", "labels"),
+        ("definitions", "invalid_text", "definitions"),
+        ("iri", "invalid_iri", ""),
+        ("external_source", "invalid_external_reference", ""),
+    ],
+)
+def test_json_lone_surrogates_in_base_text_have_fixed_errors_without_replacement(
+    bad, field, reason, location
+):
+    import json
+
+    # This is an ordinary JSON-decoded str, not an object with custom Python methods.
+    value = json.loads(json.dumps("raw-" + bad))
+    entity = Entity("urn:e", "class", "E")
+    snapshot = Snapshot("p", 0, (entity,))
+    if field == "project":
+        snapshot = replace(snapshot, project=value)
+    elif field == "external_source":
+        snapshot = replace(snapshot, external_references=(ExternalReference(value, entity.iri),))
+    else:
+        values = ((value, "zh"),) if field in {"labels", "definitions"} else (value,)
+        changed = replace(entity, **{field: "urn:" + value if field == "iri" else values})
+        snapshot = replace(snapshot, entities=(changed,))
+    original = deepcopy(snapshot)
+    assert_rejected(reason, location, lambda: change_preview(snapshot))
+    assert snapshot == original
+
+
+@pytest.mark.parametrize("bad", [chr(0xD800), chr(0xDFFF)])
+@pytest.mark.parametrize("field", ["synonyms", "examples", "labels", "definitions", "iri"])
+def test_put_lone_surrogates_fail_before_diff_and_leave_base_unchanged(bad, field):
+    snapshot = Snapshot("p", 0, (Entity("urn:e", "class", "E"),))
+    value = "raw-" + bad
+    values = ((value, "zh"),) if field in {"labels", "definitions"} else (value,)
+    changed = replace(snapshot.entities[0], **{field: "urn:" + value if field == "iri" else values})
+    commands = (Put(changed, field == "iri"),)
+    reason, location = ("invalid_iri", "") if field == "iri" else ("invalid_text", field)
+    original = deepcopy((snapshot, commands))
+    assert_rejected(reason, location, lambda: change_preview(snapshot, commands))
+    assert (snapshot, commands) == original
+
+
+@pytest.mark.parametrize("bad", [chr(0xD800), chr(0xDFFF)])
+@pytest.mark.parametrize("field", ["subject", "predicate", "object"])
+def test_rdf_terms_reject_unencodable_text_with_fixed_diagnostics(bad, field):
+    values = {"subject": "urn:s", "predicate": "urn:p", "object": '"value"'}
+    values[field] = f'"{bad}"' if field == "object" else "urn:" + bad
+    assert_rejected("invalid_rdf_term", "", lambda: Triple(**values))
+
+
+def test_valid_unicode_is_preserved_verbatim_in_base_and_put_previews():
+    from rdflib import Literal
+
+    text = "泵站🚀 e\u0301"  # deliberately decomposed accent; do not silently normalize it
+    entity = Entity(
+        "urn:设备:🚀",
+        "class",
+        "Equipment",
+        labels=((text, "zh"),),
+        definitions=((text, "zh"),),
+        synonyms=(text,),
+        examples=(text,),
+    )
+    snapshot = Snapshot("项目🚀", 0, (entity,))
+    unchanged = change_preview(snapshot)
+    assert unchanged.added == unchanged.removed == ()
+    assert unchanged.candidate.entities == (entity,)
+    changed = replace(entity, definitions=((text + "更新", "zh"),))
+    preview = change_preview(snapshot, (Put(changed, False),))
+    assert preview.added == (
+        Triple(entity.iri, str(RDFS.comment), Literal(text + "更新", lang="zh").n3()),
+    )
+    assert preview.removed == (
+        Triple(entity.iri, str(RDFS.comment), Literal(text, lang="zh").n3()),
+    )
+    assert preview.candidate.entities == (changed,)
+    assert snapshot.entities == (entity,)

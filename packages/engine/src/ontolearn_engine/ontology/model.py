@@ -17,6 +17,15 @@ DATATYPES = frozenset(
 )
 
 
+def _is_utf8(value: str) -> bool:
+    # JSON escapes can decode to lone surrogates; reject, never replace or normalize.
+    try:
+        value.encode("utf-8")
+    except UnicodeEncodeError:
+        return False
+    return True
+
+
 class OntologyError(ValueError):
     """Internal fixed reason and field location, never an underlying parser message."""
 
@@ -34,6 +43,11 @@ class Triple:
 
     def __post_init__(self):
         try:
+            if any(
+                not isinstance(value, str) or not _is_utf8(value)
+                for value in (self.subject, self.predicate, self.object)
+            ):
+                raise ValueError("Unencodable RDF term")
             iri(self.subject)
             iri(self.predicate)
             if term(self.object).n3() != self.object:
@@ -100,6 +114,8 @@ def validate(snapshot: Snapshot) -> None:
         raise OntologyError("invalid_snapshot")
     if not isinstance(snapshot.project, str) or not snapshot.project:
         raise OntologyError("project_required")
+    if not _is_utf8(snapshot.project):
+        raise OntologyError("invalid_text", "project")
     if type(snapshot.revision) is not int or snapshot.revision < 0:
         raise OntologyError("invalid_revision")
     for field, element_type, reason in (
@@ -119,6 +135,8 @@ def validate(snapshot: Snapshot) -> None:
         raise OntologyError("duplicate_iri")
     for item in snapshot.entities:
         try:
+            if not isinstance(item.iri, str) or not _is_utf8(item.iri):
+                raise ValueError("Unencodable IRI")
             iri(item.iri)
         except (ValueError, TypeError):
             raise OntologyError("invalid_iri") from None
@@ -139,7 +157,12 @@ def validate(snapshot: Snapshot) -> None:
                 if not isinstance(value, tuple) or len(value) != 2:
                     raise OntologyError("invalid_text", field)
                 text, language = value
-                if not isinstance(text, str) or not text.strip() or len(text) > 16000:
+                if (
+                    not isinstance(text, str)
+                    or not text.strip()
+                    or len(text) > 16000
+                    or not _is_utf8(text)
+                ):
                     raise OntologyError("invalid_text", field)
                 if not isinstance(language, str) or (
                     language and not re.fullmatch(r"[a-z]+(?:-[a-z0-9]+)*", language)
@@ -148,7 +171,10 @@ def validate(snapshot: Snapshot) -> None:
         for field in ("synonyms", "examples"):
             values = getattr(item, field)
             _unique_tuple(values, field)
-            if any(not isinstance(v, str) or not v.strip() or len(v) > 16000 for v in values):
+            if any(
+                not isinstance(v, str) or not v.strip() or len(v) > 16000 or not _is_utf8(v)
+                for v in values
+            ):
                 raise OntologyError("invalid_text", field)
         for field in ("parents", "domain", "range", "types"):
             values = getattr(item, field)
@@ -196,7 +222,11 @@ def validate(snapshot: Snapshot) -> None:
         elif not isinstance(obj, RDFLiteral):
             raise OntologyError("literal_required", "object")
     for reference in snapshot.external_references:
-        if not isinstance(reference.source, str) or not reference.source:
+        if (
+            not isinstance(reference.source, str)
+            or not reference.source
+            or not _is_utf8(reference.source)
+        ):
             raise OntologyError("invalid_external_reference")
         if reference.target not in entities:
             raise OntologyError("dangling_external_reference")
