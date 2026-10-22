@@ -150,6 +150,18 @@ describe('T08 sidebar: actual React server markup, not mounted UI integration', 
     expect(html).toContain('先前项目或输入版本')
     expect(html).toMatch(/<button[^>]*disabled[^>]*>查看真实 Diff<\/button>/)
   })
+  it('disables cancellation of a prior context while keeping the matching in-flight cancel available', () => {
+    const pending = { ...state, phase: 'awaiting-provider' }
+    const stale = render({
+      state: pending,
+      context: { ...context, projectId: 'p2' },
+      onCancel: () => undefined,
+    })
+    expect(stale).toMatch(/<button[^>]*disabled[^>]*>取消本地等待<\/button>/)
+    const current = render({ state: pending, onCancel: () => undefined })
+    expect(current).toContain('<button type="button">取消本地等待</button>')
+    // SSR checks control availability, not a mounted click or actual task cancellation.
+  })
   it.each(['stale', 'historical', 'failed', 'cancelled'] as const)(
     'renders %s exactly and does not relabel as success',
     (status) => {

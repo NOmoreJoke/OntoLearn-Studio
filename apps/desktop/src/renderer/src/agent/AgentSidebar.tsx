@@ -7,8 +7,13 @@ import {
   displayScalar,
   preparedDraft,
   resultLabels,
+  sidebarContextKey,
+  sidebarInteraction,
   sidebarIsCurrent,
   toolLabels,
+  updateSidebarInteraction,
+  type SidebarInteraction,
+  type SidebarInteractions,
   type SidebarState,
 } from './sidebar-presentation'
 import './agent-sidebar.css'
@@ -111,10 +116,14 @@ function ReceiptView({
 /** Prop-driven view only; no bridge, network, credentials, grants, or project writes. */
 export function AgentSidebar(props: AgentSidebarProps) {
   const { context, state, privacy, modelReady } = props
-  const [question, setQuestion] = useState('')
-  const inFlight = useRef(false)
-  const [dispatching, setDispatching] = useState(false)
-  const [localError, setLocalError] = useState(false)
+  const [interactions, setInteractions] = useState<SidebarInteractions>({})
+  const key = sidebarContextKey(context)
+  const { question, dispatching, localError } = sidebarInteraction(interactions, key)
+  const inFlight = useRef(new Set<string>())
+  function updateInteraction(patch: Partial<SidebarInteraction>) {
+    // Async callbacks retain their starting key and merge into its latest UI state.
+    setInteractions((previous) => updateSidebarInteraction(previous, key, patch))
+  }
   const titleId = useId(),
     inputId = useId()
   const isCurrent = sidebarIsCurrent(state, context)
@@ -123,17 +132,16 @@ export function AgentSidebar(props: AgentSidebarProps) {
   const modelAvailable = privacy !== 'local' && modelReady
   const actions = contextActions(context.module, modelAvailable, props.localActions)
   async function invoke(operation: () => void | Promise<void>) {
-    if (inFlight.current) return
-    inFlight.current = true
-    setDispatching(true)
-    setLocalError(false)
+    if (inFlight.current.has(key)) return
+    inFlight.current.add(key)
+    updateInteraction({ dispatching: true, localError: false })
     try {
       await operation()
     } catch {
-      setLocalError(true)
+      updateInteraction({ localError: true })
     } finally {
-      inFlight.current = false
-      setDispatching(false)
+      inFlight.current.delete(key)
+      updateInteraction({ dispatching: false })
     }
   }
   return (
@@ -243,7 +251,7 @@ export function AgentSidebar(props: AgentSidebarProps) {
           maxLength={32000}
           rows={4}
           value={question}
-          onChange={(event) => setQuestion(event.target.value)}
+          onChange={(event) => updateInteraction({ question: event.target.value })}
           placeholder="描述目标或希望获得的提示"
         />
         <p className="t08-meta">发送前仍需由唯一网关检查最终内容及授权范围；失败不会清空输入。</p>
@@ -258,11 +266,13 @@ export function AgentSidebar(props: AgentSidebarProps) {
             props.onCancel && (
               <button
                 type="button"
+                disabled={!isCurrent}
                 onClick={() => {
+                  if (!isCurrent) return
                   try {
                     props.onCancel?.()
                   } catch {
-                    setLocalError(true)
+                    updateInteraction({ localError: true })
                   }
                 }}
               >

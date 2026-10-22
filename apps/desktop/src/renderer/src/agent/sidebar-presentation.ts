@@ -3,6 +3,39 @@ import type { PreparedDraft, ToolReceipt, TrustedContext } from '../../../main/a
 import type { AgentErrorCode } from '../../../main/agent/errors'
 import type { ToolName } from '../../../main/agent/tools'
 export type SidebarState = ReturnType<AgentConversation['state']>
+export type SidebarInteraction = Readonly<{
+  question: string
+  dispatching: boolean
+  localError: boolean
+}>
+export type SidebarInteractions = Readonly<Record<string, SidebarInteraction>>
+const emptyInteraction: SidebarInteraction = Object.freeze({
+  question: '',
+  dispatching: false,
+  localError: false,
+})
+/** UI memory only; every context field participates and selection order is preserved. */
+export function sidebarContextKey(context: TrustedContext): string {
+  return JSON.stringify([
+    context.projectId,
+    context.projectRevision,
+    context.inputSnapshotId,
+    context.scopeRef,
+    context.module,
+    context.mode,
+    context.selectedObjectIds,
+  ])
+}
+export function sidebarInteraction(states: SidebarInteractions, key: string): SidebarInteraction {
+  return states[key] ?? emptyInteraction
+}
+export function updateSidebarInteraction(
+  states: SidebarInteractions,
+  key: string,
+  patch: Partial<SidebarInteraction>,
+): SidebarInteractions {
+  return { ...states, [key]: { ...sidebarInteraction(states, key), ...patch } }
+}
 export const toolLabels: Record<ToolName, string> = {
   ontology_read: '读取选中本体对象',
   ontology_propose: '本体草稿',

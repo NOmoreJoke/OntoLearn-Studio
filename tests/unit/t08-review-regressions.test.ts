@@ -15,7 +15,12 @@ import {
   REQUEST_MODEL,
   encodeChatRequest,
 } from '../../apps/desktop/src/main/agent/deepseek-codec'
-import { sidebarIsCurrent } from '../../apps/desktop/src/renderer/src/agent/sidebar-presentation'
+import {
+  sidebarContextKey,
+  sidebarInteraction,
+  sidebarIsCurrent,
+  updateSidebarInteraction,
+} from '../../apps/desktop/src/renderer/src/agent/sidebar-presentation'
 
 const context: TrustedContext = {
   projectId: 'p1',
@@ -79,6 +84,100 @@ const toolChoice = [
 ]
 
 describe('T08 designated review regressions: synthetic pure-module boundaries', () => {
+  it('keeps input and late async transitions bound to their originating context', () => {
+    const a = sidebarContextKey(context)
+    const b = sidebarContextKey({ ...context, projectId: 'p2' })
+    let interactions = updateSidebarInteraction({}, a, {
+      question: 'A private question',
+      dispatching: true,
+    })
+    expect(sidebarInteraction(interactions, b)).toEqual({
+      question: '',
+      dispatching: false,
+      localError: false,
+    })
+    interactions = updateSidebarInteraction(interactions, b, {
+      question: 'B question',
+      dispatching: true,
+    })
+    interactions = updateSidebarInteraction(interactions, a, { question: 'A later edit' })
+    interactions = updateSidebarInteraction(interactions, a, {
+      localError: true,
+      dispatching: false,
+    })
+    expect(sidebarInteraction(interactions, a)).toEqual({
+      question: 'A later edit',
+      dispatching: false,
+      localError: true,
+    })
+    expect(sidebarInteraction(interactions, b)).toEqual({
+      question: 'B question',
+      dispatching: true,
+      localError: false,
+    })
+  })
+  it.each([
+    { projectId: 'p2' },
+    { projectRevision: 2 },
+    { inputSnapshotId: 's2' },
+    { scopeRef: 'scope2' },
+    { module: 'mapping' as const },
+    { mode: 'project' as const },
+    { selectedObjectIds: ['002', '001'] },
+  ])('binds interaction memory to each context field without sorting: %j', (change) => {
+    expect(sidebarContextKey({ ...context, ...change })).not.toBe(sidebarContextKey(context))
+  })
+  it('ignores property insertion order when deriving the sidebar interaction identity', () => {
+    const reordered = Object.fromEntries(Object.entries(context).reverse()) as TrustedContext
+    expect(sidebarContextKey(reordered)).toBe(sidebarContextKey(context))
+  })
+  it('rechecks context at the deferred port invocation before executing the first call', async () => {
+    let active = context
+    const execute = vi.fn(async () => draft)
+    const session = new AgentSession(context, { ontology_propose: { execute } })
+    const pending = session.executeCalls([call], () => active, signal())
+    active = { ...context, projectId: 'p2' }
+    await expect(pending).rejects.toThrow('STALE_CONTEXT')
+    expect(execute).not.toHaveBeenCalled()
+    expect(session.currentTurnReceipts()).toEqual([])
+  })
+  it('rechecks each deferred call and retains the preceding completed receipt', async () => {
+    let active = context
+    const execute = vi.fn(async () => draft)
+    const session = new AgentSession(context, { ontology_propose: { execute } })
+    let scheduled = false
+    const readCurrent = () => {
+      if (execute.mock.calls.length === 1 && !scheduled) {
+        scheduled = true
+        queueMicrotask(() => {
+          active = { ...context, inputSnapshotId: 's2' }
+        })
+      }
+      return active
+    }
+    await expect(
+      session.executeCalls([call, { ...call, id: 'review.call/2' }], readCurrent, signal()),
+    ).rejects.toThrow('STALE_CONTEXT')
+    expect(execute).toHaveBeenCalledTimes(1)
+    expect(session.currentTurnReceipts()).toMatchObject([{ callId: call.id, outcome: draft }])
+  })
+  it('fails closed with a safe context code when authority becomes unreadable before dispatch', async () => {
+    let readable = true
+    const execute = vi.fn(async () => draft)
+    const session = new AgentSession(context, { ontology_propose: { execute } })
+    const pending = session.executeCalls(
+      [call],
+      () => {
+        if (!readable) throw new Error('private-path/private-cell')
+        return context
+      },
+      signal(),
+    )
+    readable = false
+    await expect(pending).rejects.toThrow('STALE_CONTEXT')
+    expect(execute).not.toHaveBeenCalled()
+    expect(session.currentTurnReceipts()).toEqual([])
+  })
   it('preserves the same ordered selection identity in main and sidebar, without sorting', () => {
     const reordered = { ...context, selectedObjectIds: ['002', '001'] }
     expect(sameContext(context, reordered)).toBe(false)

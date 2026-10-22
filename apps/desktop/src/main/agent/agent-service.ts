@@ -136,6 +136,14 @@ export class AgentSession {
   availableTools() {
     return toolDefinitions(Object.keys(this.ports) as ToolName[])
   }
+  private assertCurrent(readCurrent: () => unknown) {
+    try {
+      if (sameContext(this.context, readContext(readCurrent()))) return
+    } catch {
+      // Authority failures must not expose host exceptions or permit stale dispatch.
+    }
+    throw new AgentError('STALE_CONTEXT')
+  }
   async executeCalls(
     callsInput: unknown,
     readCurrent: () => unknown,
@@ -146,8 +154,7 @@ export class AgentSession {
     const checked = z.array(toolCallSchema).min(1).max(16).safeParse(callsInput)
     if (!checked.success) throw new AgentError('INVALID_PROTOCOL')
     const calls = checked.data
-    const current = readContext(readCurrent())
-    if (!sameContext(this.context, current)) throw new AgentError('STALE_CONTEXT')
+    this.assertCurrent(readCurrent)
     if (signal.aborted) throw new AgentError('CANCELLED')
     if (
       !Number.isInteger(timeoutMs) ||
@@ -167,9 +174,8 @@ export class AgentSession {
       const results: ToolReceipt[] = []
       for (const item of prepared) {
         if (signal.aborted) throw new AgentError('CANCELLED')
-        const receipt = await this.executeOne(item, signal, timeoutMs)
-        if (!sameContext(this.context, readContext(readCurrent())))
-          throw new AgentError('STALE_CONTEXT')
+        const receipt = await this.executeOne(item, readCurrent, signal, timeoutMs)
+        this.assertCurrent(readCurrent)
         this.receipts.set(receipt.callId, structuredClone(receipt))
         results.push(receipt)
       }
@@ -197,6 +203,7 @@ export class AgentSession {
   }
   private async executeOne(
     item: { callId: string; tool: ToolName; args: Record<string, unknown>; port: DomainPort },
+    readCurrent: () => unknown,
     signal: AbortSignal,
     timeoutMs: number,
   ): Promise<ToolReceipt> {
@@ -218,6 +225,8 @@ export class AgentSession {
       const raw = await Promise.race([
         Promise.resolve().then(() => {
           if (controller.signal.aborted) throw new AgentError('CANCELLED')
+          // This microtask can run after the batch check or a preceding result check.
+          this.assertCurrent(readCurrent)
           return item.port.execute(
             structuredClone(this.context),
             structuredClone(item.args),
