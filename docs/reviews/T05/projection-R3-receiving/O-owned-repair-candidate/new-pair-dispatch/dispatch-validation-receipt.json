@@ -1,0 +1,40 @@
+{
+  "scope": "Only new dispatch author-written README/JSON and independent intake Markdown; native input originals/reconstructed attachments remain byte-preserved. No source/config or product command changed.",
+  "checks": [
+    {
+      "command": "./node_modules/.bin/prettier --check --ignore-path /dev/null <five initial author-written files>",
+      "exit": 1,
+      "diagnostic": "Only minimax-initial-runtime-status.json needed Prettier style."
+    },
+    {
+      "command": "./node_modules/.bin/prettier --write --ignore-path /dev/null <minimax-initial-runtime-status.json>",
+      "exit": 0
+    },
+    {
+      "command": "./node_modules/.bin/prettier --check --ignore-path /dev/null <five initial author-written files>",
+      "exit": 0
+    }
+  ],
+  "independentReport": {
+    "bytes": 7035,
+    "sha256": "89500254c5d3512ec337caaf2e9d92059fd9e27c2d77682b3a763cd3de77fb43",
+    "scope": "dispatch/input chain only",
+    "conclusion": "Pass",
+    "firstTargetedPrettierExit": 1,
+    "finalTargetedPrettierExit": 0
+  },
+  "productValidationRerun": false,
+  "frozenInputModified": false,
+  "terminalNotYetReceived": true,
+  "stagedWhitespaceCheck": {
+    "actualExitCode": 2,
+    "diagnosticsExact": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:2: trailing whitespace.\n+2\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:4: trailing whitespace.\n+4\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:6: trailing whitespace.\n+6\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:8: trailing whitespace.\n+8\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:10: trailing whitespace.\n+10\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:12: trailing whitespace.\n+12\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:14: trailing whitespace.\n+14\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:16: trailing whitespace.\n+16\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:18: trailing whitespace.\n+18\t\ndocs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-dispatch/zcode-native-own-attachment-numbered.txt:20: trailing whitespace.\n+20\t\n",
+    "disposition": "Preserve native original numbered attachment bytes. Exactly ten blank native attachment lines contain the client numeric TAB prefix. No code/source/authored whitespace error, no whitespace/Git ignore configuration change.",
+    "rawOriginalNotRewritten": true
+  },
+  "independentReportAfterNativeWhitespaceAddendum": {
+    "bytes": 8727,
+    "sha256": "e97e9f5cf28742249afc5b3ea08c6e73cbdc839cbfa169b7d6c110f4c2ca64d0",
+    "conclusion": "Limited dispatch/input chain and original native whitespace preservation Pass; full staged check remains 2, other fifteen members check 0."
+  }
+}

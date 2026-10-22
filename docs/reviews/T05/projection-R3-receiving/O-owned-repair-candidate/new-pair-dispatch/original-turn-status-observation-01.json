@@ -1,0 +1,24 @@
+{
+  "observedUtc": "2026-10-22T18:37:00.284237+00:00",
+  "zcode": {
+    "source": "/Users/kyle/.zcode/cli/log/zcode-2026-10-23.jsonl",
+    "filterSessionId": "session_b89ca579bc1862a94909bd1503bafbc6",
+    "filterOriginalTurnId": "turn_a4a74b36-8465-458a-a385-cdfd22c33d3c",
+    "terminalEvents": [],
+    "terminalStatus": "UNKNOWN"
+  },
+  "minimax": {
+    "source": "/Users/kyle/.minimax/v2/sqlite/runtime-state.sqlite",
+    "readOnlyQueryOnly": true,
+    "sql": "SELECT session_id,turn_id,terminal_outcome,updated_at_ms FROM local_runtime_session_agent_state WHERE session_id=? AND turn_id=?",
+    "parameters": ["mvs_c28510d4b96a4ecbaea7be3f838c5110", "677c3d52-3d00-45ec-96af-2005b0a71d58"],
+    "rows": [
+      {
+        "session_id": "mvs_c28510d4b96a4ecbaea7be3f838c5110",
+        "turn_id": "677c3d52-3d00-45ec-96af-2005b0a71d58",
+        "terminal_outcome": null,
+        "updated_at_ms": 1792693530712
+      }
+    ]
+  }
+}
