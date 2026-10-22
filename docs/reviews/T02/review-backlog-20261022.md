@@ -49,3 +49,10 @@
 ## C5 R2实际创建追加（原准备表不改）
 
 同产品e5ad、同review HEAD7c52，两实际独立树已真实创建：ZCode session_70e23e92b6da020a8bf5e58fe51cc04e（GLM5.3/最高/完全访问）；MiniMax mvs_1cdba3c3802647838bc5f5091a866e22（M3.1-Flash/xhigh/始终授权）。完整原文受理与逐方证据见 `round-2/actual-launch-20261022/`；M少一个末LF的表示差异如实保留，Z首次请求synthetic附件重建字节相同，不以标题/附件存在冒Pass。GUI已明确释放；当前两方终态/全文报告/逐项处置均待，不沿493结论。新接口矩阵和创建记录只在owner过程源，不写两冻结审查树，不缩父验收。
+
+
+### C5 R2双方正式终态追加（当前进展）
+
+同候选e5ad、同审查HEAD7c52的两方现均真实stop且完整报告已收件：ZCode20343B/SHA c3f5efd5858a568b2ed4843eac8a0210ed0ea66832bc6b37ebfae278c90bd8a2；MiniMax40420B/SHA449cf074c463105e286d0d42fe5ce1506632dc57bda6f5af667db3a221d4a181。均明确有界S1 Pass，各自实际634TS/1164Py、ontology112、合成callback headless21 exit0。全部原始流／首失败／完整报告及终态原回复在round-2/received-20261022各方目录；Z 21成员、M 26成员归档逐成员读回匹配。owner仅静态读取，不重跑产品。
+
+仍有M 3项P3（内部digest边界／当前交付指针／深链代价）和Z 1项P3（localGraph非graph页签也重算），均接收待后继，未修、未宣称全部关闭；M的T01范围外观察只经总控路由。完整处置与原报告覆盖描述纠偏见round-2/received-20261022/dual-review-disposition.md。R1延期／部分接受及全部父验收保留。候选和两审查树仍冻结，不改实现／测试／配置／锁／验收、不占GUI；后继产品改变须新候选及现行重审。原Goal仍blocked，正式接线／CI／合并／远端门未完成。
