@@ -1,0 +1,421 @@
+{
+  "date": "2026-10-22",
+  "scope": "all T07 retained implementation, technical substage, proposal, process and unready parent backlog; INV IDs do not authorize new stages",
+  "ownerChat": "01a15bce-0706-7360-8e99-df8fe9b15ad2",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario",
+  "branch": "feature/weekly-t07-scenario",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "firstImplementation": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5",
+  "currentProduct": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "processHeadBeforeInventory": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+  "markdown": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/docs/reviews/T07/current-dual-review-backlog-20261022.md",
+    "sha256": "3788114ac93b8ce197dcb6c512ed17282440b8e6a25c417368857f5368e965be"
+  },
+  "items": [
+    {
+      "id": "INV-01",
+      "stageAndKind": "INV-01 不可变定义、事件、FIFO和轮次编排；已实现，属S1",
+      "kind": "retained-implementation",
+      "officialStage": "T07-S1",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5",
+      "actualVersionOwnerAndScope": "B→I首次落盘；当前B→P，过程D。T07：`scenario/{__init__,model,runner}.py`、`test_scenario_rounds.py`",
+      "acceptanceAndEvidence": "项目/输入/规则/行为/参数/语义/引擎/锁身份，轮次顺序、事件去重/未来事件、FIFO/历史ID、三指标、失败/取消/恢复校验。轮次文件最终46 Python；`evidence/validation.json`、原始final 1～6。领域端口为合成",
+      "gapsSupersessionAndNextAction": "真实T05/T06和正式任务适配未接。全部保留于P，等待短创建lease后随完整S1双方新审；不因本清单重复测试",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-02",
+      "stageAndKind": "INV-02 私有场景页面、view身份及headless探针；已实现，属S1",
+      "kind": "retained-implementation",
+      "officialStage": "T07-S1",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5",
+      "actualVersionOwnerAndScope": "B→I首次落盘；当前B→P，过程D。T07：renderer `scenario/{ScenarioPage.tsx,presentation.ts,scenario.css}`、`tests/unit/t07-scenario.test.ts`、`evidence/render-probe.mjs`",
+      "acceptanceAndEvidence": "项目/场景创建、结构化输入、两产能、任务/历史依据/详情、逐轮/最终比较、缺轮和受限操作禁用。27 TS；Chromium151.0.7922.34、1440×1100/390×844合成headless，`evidence/ui-probe.json`；原始final 2～4",
+      "gapsSupersessionAndNextAction": "未挂App/bridge，无真实数据/执行/删除/恢复联验。保留于P完整S1；正式页面接线需对应owner批准，合成页面证据不替代产品",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-03",
+      "stageAndKind": "INV-03 批准T09输入及E5资源/指标投影；已有测试/fixture，属S1",
+      "kind": "retained-implementation",
+      "officialStage": "T07-S1",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5",
+      "actualVersionOwnerAndScope": "B→I首次落盘；当前B→P，过程D。T07：`e5.json`、`t09-e5.json`、`t09-manifest.json`及轮次测试",
+      "acceptanceAndEvidence": "批准T09 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380` 的17项hash及两份原字节副本；两产能工单/资源集合、消费/未来事件/指标/重放。公共告警4/8/12/16，私有零告警fixture独立。`evidence/t09-input-receipt.json`、原始final 5",
+      "gapsSupersessionAndNextAction": "未验真实 facts/inferred/actionTrace/triggeredInstances，未消费T09服务。保留于P，不把资源投影改称完整E5；随完整S1审，真实领域依赖批准后另联验",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-04",
+      "stageAndKind": "INV-04 显式Context及冻结计划/完整逐动作轨迹；已实现，属S1",
+      "kind": "retained-implementation",
+      "officialStage": "T07-S1",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5",
+      "actualVersionOwnerAndScope": "B→I首次落盘；当前B→P，过程D。T07：`runner.py`、轮次测试及私有接线提案",
+      "acceptanceAndEvidence": "`Context(round,phase)`贯穿并检查推理阶段；动作三元身份/eventId/behaviorId/actionIndex、数量/唯一性、冻结计划保存，1～1000轮/每轮1000动作。原始final 6，最终轮次46项包含这些用例，不能另加重复计数",
+      "gapsSupersessionAndNextAction": "私有形状校验未代替T06真实条件、顺序、冲突、动作语义/动作间取消。保留于P完整S1，正式adapter等待精确批准接口",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-05",
+      "stageAndKind": "INV-05 真实批准Store故障/取消/崩溃边界；已有测试，属S1",
+      "kind": "retained-implementation",
+      "officialStage": "T07-S1",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "actualVersionOwnerAndScope": "B→P新增，过程D。T07仅 `packages/engine/tests/test_scenario_persistence.py`，生产共享源码未改",
+      "acceptanceAndEvidence": "最终44专项：两产能完整Round保存/重开/缓存隔离，前轮0/1×五事务阶段×异常/取消/真实READONLY，10真实子进程退出、禁注入负对照及交接一致性。最终check657 TS/1142 Python；T07共46+44=90 Python/27 TS。`evidence/persistence-validation.json`、原始final 7～9",
+      "gapsSupersessionAndNextAction": "首批42项READONLY证明已失效；修复后runner外严格断言OperationalError/SQLITE_READONLY码名。仅真Store＋合成领域测试，正式Job/取消/终态未验。随P完整S1新双审，不能重用失效证明",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-06",
+      "stageAndKind": "INV-06 完整Round/Checkpoint投影交接样例；已有fixture/一致性测试，属S1",
+      "kind": "retained-implementation",
+      "officialStage": "T07-S1",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "actualVersionOwnerAndScope": "B→P新增，过程D。T07：`round-projection-handoff.json`、持久化测试、交接文档",
+      "acceptanceAndEvidence": "runner实际输出完整JSON/stateDigest相同，区分未消费全集与T09已注入pending子集；原始final 9、`persistence-validation.json` handoff段。44持久化包含此用例，不重复累计",
+      "gapsSupersessionAndNextAction": "operation-id权威幂等/ack-loss API是待批准提案。`test.rounds`只接toy载荷，示例job/run身份不是实际任务。样例保留于P完整S1；T01/T00冻结真实接口后联验",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-07",
+      "stageAndKind": "INV-07 正式领域/事务/契约/页面/导出接口方案；纯提案，不是产品实现",
+      "kind": "design-only",
+      "officialStage": null,
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": null,
+      "actualVersionOwnerAndScope": "`integration-request.md`起于I并在P扩充；`round-projection-handoff.md`于P新增，base B，过程D。T07仅文档/样例，供应实现由各唯一owner维护",
+      "acceptanceAndEvidence": "`docs/iterations/T07/integration-request.md`、`round-projection-handoff.md`；普通独审final 8～9核过toy限制及样例/提案边界，不是供应方API批准，也没有指定Pass",
+      "gapsSupersessionAndNextAction": "无单独生产实现，不伪造技术阶段完成。root按当前唯一owners路由原固定提案，确认具体源码/接口/运行窗口；旧原件与hash不改",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-08",
+      "stageAndKind": "INV-08 外审准备、原件封存、fresh文档核验；过程材料，非产品实现",
+      "kind": "process-only",
+      "officialStage": null,
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": null,
+      "actualVersionOwnerAndScope": "base B，所绑定产品P；准备F，独立文档核验D。T07仅 `docs/reviews/T07/`，旧25候选原件不改",
+      "acceptanceAndEvidence": "`round-1/`：25全路径/14身份、75归档成员、9原始final/3加密中间消息元信息、18packet封存项；`preparation-audit.md`过程核验通过，无阻断P1/P2。root限定接收不等于指定审查或新租约",
+      "gapsSupersessionAndNextAction": "指定两方ID/实际设置/报告/终态均缺失。完整原文及历史报告保留；派发前附当前操作政策addendum，完成root提示词/source全文审核、base/输入核验和短创建lease",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-09",
+      "stageAndKind": "INV-09 真实T05/T06领域与完整E5；未实施/未就绪父积压",
+      "kind": "not-implemented",
+      "officialStage": null,
+      "base": null,
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": null,
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": null,
+      "actualVersionOwnerAndScope": "**无产品/测试候选SHA、无实现base**；仅参考B提案，过程D。所需owner：T05推理/T06行为；T07仅其批准私有adapter",
+      "acceptanceAndEvidence": "待验：初始/事件后/资源后真实推理；冻结条件/排序/冲突/动作/取消/新事件，完整E5四类领域结果及G.4。现有合成测试不关闭此行",
+      "gapsSupersessionAndNextAction": "依赖具体批准API/身份/错误/fixture，不能消费未批准变化代码。下一步由root精确路由供给；接口到达后唯一owner接线、必要验证、新同版完整双审",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-10",
+      "stageAndKind": "INV-10 T01/I04正式scenario生命周期与恢复；未实施/未就绪父积压",
+      "kind": "not-implemented",
+      "officialStage": null,
+      "base": null,
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": null,
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": null,
+      "actualVersionOwnerAndScope": "**无T07生产adapter候选SHA、无实现base**；仅参考B提案，过程D。T01持共享Store/Job/coordinator/worker，公共契约按现owner",
+      "acceptanceAndEvidence": "待验：业务注册、project/run/job身份、原子Round+progress、取消/最后提交/终态竞态、operation-id/expectedRound与ack-loss/崩溃对账、正式数据隔离；FR-705删除/恢复/来源合法的快照续跑",
+      "gapsSupersessionAndNextAction": "44真实Store测试未覆盖正式Job，toy能力不可冒用。下一步T01冻结内部API/受限错误/恢复fixture并批准，T07在私有写面适配联验，不绕过不可变触发器",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-11",
+      "stageAndKind": "INV-11 公共契约/bridge/App真实页面与Agent依据；未实施/未就绪父积压",
+      "kind": "not-implemented",
+      "officialStage": null,
+      "base": null,
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": null,
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": null,
+      "actualVersionOwnerAndScope": "**无T07正式接线候选SHA、无实现base**；参考B提案，过程D。T01 canonical/main，I06 preload/env/App/style，T08 Agent消费者；当前具体交接由root复核",
+      "acceptanceAndEvidence": "待验：创建/复制/运行/取消/详情/比较/删除/恢复/续跑业务方法严格校验；FR-700～704真实记录进入页面，Agent按真实依据解释。现有props/callback页面只属INV-02",
+      "gapsSupersessionAndNextAction": "无正式IPC/mount/真实操作验收。下一步root确认owners与批准方法，按唯一责任接线；不因页面已做而假定App完成",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    },
+    {
+      "id": "INV-12",
+      "stageAndKind": "INV-12 完整运行依据、T10跨设备及产品/平台/发布；未实施/未就绪父积压",
+      "kind": "not-implemented",
+      "officialStage": null,
+      "base": null,
+      "referenceBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": null,
+      "processHead": "24f3703ecf4fce75e0d0375f7291ed928f083c41",
+      "firstImplementationCommit": null,
+      "actualVersionOwnerAndScope": "**无T07完整产品/跨设备候选SHA、无实现base**；参考B提案，过程D。T07运行语义，T10包/重放，T11平台/发布及对应维护者",
+      "acceptanceAndEvidence": "待验：FR-703完整输入/配置/规则/行为/引擎/锁/语义齐全才能标可重放，跨设备实际结果核对、G.6恢复迁移、FR-700～705父验收；必要CI、两OS、真人、远端develop及发布门",
+      "gapsSupersessionAndNextAction": "无完整真实运行包/跨设备/完整产品平台证据。永久保留在积压，实际adapter/包齐全后安排验证；不得用私有S1、基础I04或阶段体验包关闭父门",
+      "designatedTaskState": "commonDesignatedReviewState: neither T07 task exists"
+    }
+  ],
+  "implementationTestFixtureFiles": [
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx",
+      "sha256": "65ac6a8efd6a9f395088403be8e0133cd1f32f3f70f34334e1f5a135f65c30ac",
+      "bytes": 20270,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/presentation.ts",
+      "sha256": "3474e356ffc7dd9f3c5bddaea4ba9a1e6e6259020e9ee22dd2e9769d15a5e463",
+      "bytes": 5924,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/scenario.css",
+      "sha256": "d3889694abc93c3bc3973f20a01c176187b927c5ce4a53cf84d21108d74807b3",
+      "bytes": 3633,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/render-probe.mjs",
+      "sha256": "259c46a35de4f0edcf3be260c24d9df8a9554e991a91ba02df8c781333cdc308",
+      "bytes": 7984,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/__init__.py",
+      "sha256": "6643227cd723fd3a1de0e41da31e634389d91ab7869863ef3736862cb7a31773",
+      "bytes": 90,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/model.py",
+      "sha256": "f30ce8d84b117805379933ce93025d9b0bcf61a3e8b0400feb0ad7ca4aa8f632",
+      "bytes": 8300,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/runner.py",
+      "sha256": "69600dc9c9222b5102a75c261165bee309b4db0a72195b45de6915ff2104c702",
+      "bytes": 11287,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_persistence.py",
+      "sha256": "0180923002708bad9d5e1806cfefc41616ae587d66fa34c9f44ec2ab75baf3e3",
+      "bytes": 11511,
+      "lastContentCommit": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3"
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_rounds.py",
+      "sha256": "6038e0cd2d64c002dd9e6ec232afdeadb673663e6629f6e117a269d77785cc5c",
+      "bytes": 17612,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "tests/fixtures/scenario/e5.json",
+      "sha256": "84c299fa61de136965699a2b02c7b0c9cc7cde949abd86e8e68343c8a264e53b",
+      "bytes": 4024,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "tests/fixtures/scenario/round-projection-handoff.json",
+      "sha256": "924a5f2f8f3cc5d5777acea8f0e5da98937a7c466644303e1623e1b1ab34328e",
+      "bytes": 13004,
+      "lastContentCommit": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3"
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-e5.json",
+      "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5",
+      "bytes": 169895,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-manifest.json",
+      "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+      "bytes": 2268,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    },
+    {
+      "path": "tests/unit/t07-scenario.test.ts",
+      "sha256": "ce1ca32e272825fcf33bd5b38d78f371264c4e50ebba502cf3c13e1bf493a099",
+      "bytes": 5388,
+      "lastContentCommit": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5"
+    }
+  ],
+  "commonDesignatedReviewState": {
+    "zcode": {
+      "requiredModel": "GLM-5.3",
+      "requiredThinking": "max",
+      "requiredPermission": "yolo",
+      "actualTaskId": null,
+      "actualSessionId": null,
+      "actualTurnId": null,
+      "actualTaskSettings": null,
+      "actualReport": null,
+      "actualVerdict": "not started; no designated Pass",
+      "futureReportTarget": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/docs/reviews/T07/round-1/zcode-glm53.md"
+    },
+    "minimax": {
+      "requiredModel": "M3.1-Flash",
+      "requiredThinking": "xhigh",
+      "requiredPermission": "bypassPermissions",
+      "actualTaskId": null,
+      "actualSessionId": null,
+      "actualTurnId": null,
+      "actualTaskSettings": null,
+      "actualReport": null,
+      "actualVerdict": "not started; no designated Pass",
+      "futureReportTarget": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario/docs/reviews/T07/round-1/minimax-m31flash.md"
+    }
+  },
+  "reviewUnit": "one complete B-to-P T07-S1: all25 paths/14 entries; do not narrow or duplicate tasks for INV01-06",
+  "lease": "no T07 lease granted; root coordinates short creation/verification access, not whole background reasoning time; preserve T06 tasks",
+  "ordinaryReviewOriginalFinals": [
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 174,
+      "messageId": "amsg_01a15bec-6e25-7d93-80cd-3bf9df7e96ce",
+      "timestamp": "2026-10-21T00:46:23.781Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "5e94a237d3439e2ec8476463d7ab7689f0c3471255b3b9dae2b654c79b338ce3"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 269,
+      "messageId": "amsg_01a15bef-098d-75b3-8b96-fd69244c6bea",
+      "timestamp": "2026-10-21T00:49:14.637Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "69e1e798d3c06b684a11ed0ccdaba4dc23722429e3c66a2d7a236d921591e34c"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 314,
+      "messageId": "amsg_01a15bef-fde6-7d51-9baa-73e01df366e8",
+      "timestamp": "2026-10-21T00:50:17.190Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "398f2a37f9e0679cf7ce7e099ab66a7bf5db894db57161f762879c1b4f48aaef"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 390,
+      "messageId": "amsg_01a15bf1-902d-7011-8efb-31cd794a04f6",
+      "timestamp": "2026-10-21T00:52:00.173Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "6b6dacaaf5f883ad8ad688f42fdc1600ddc07d7ffcd5862798c24d6a63dce414"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 503,
+      "messageId": "amsg_01a15bf3-dae1-7e23-9fdc-b75740ceeaa9",
+      "timestamp": "2026-10-21T00:54:30.369Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "da4fabc1f1ff8e7aa30ee4fa07ec8a8879216d8c6a7d8aada05a14547c392c06"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 552,
+      "messageId": "amsg_01a15bf5-0d92-7220-a2bc-305b03dc16b5",
+      "timestamp": "2026-10-21T00:55:48.882Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "a963ab3978d6bfeaf42359b5d06700d5bd58d1ed44123da3d4d96f8da5ac51e3"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 726,
+      "messageId": "amsg_01a15bf9-9cf7-7531-893f-a9a7dfd3bf60",
+      "timestamp": "2026-10-21T01:00:47.735Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "2ddbb16b84bc9ac893fa272a57f7a9f0afe87f2f10306b845131da686b2bc9ce"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 763,
+      "messageId": "amsg_01a15bfb-832b-71b2-a3c7-d3df3a7606be",
+      "timestamp": "2026-10-21T01:02:52.203Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "ef2d76532c711ed26b37bb7903a33b7d47e0196bf813bfcc1720e86c7d04c566"
+    },
+    {
+      "sourceSession": "/Users/kyle/.codex/sessions/2026/10/21/rollout-2026-10-21T08-13-11-01a15bce-0706-7360-8e99-df8fe9b15ad2.jsonl",
+      "line": 808,
+      "messageId": "amsg_01a15bfe-a3bf-7ad1-8787-7a498555c6e2",
+      "timestamp": "2026-10-21T01:06:17.151Z",
+      "author": "/root/t07_internal_review",
+      "rawLineSha256": "de44688c36104560239f9797b0d3f94bc7426cb24274ebe0796dec22d3f7aa0d"
+    }
+  ],
+  "ordinaryReviewOriginalFile": "round-1/internal-review-original-finals.jsonl",
+  "ordinaryReviewProvenance": "nine historical original finals; first six before I, final three after I and before P while persistence tests were uncommitted; no per-message exact full working candidate Git SHA recorded, do not invent one; developer internal-review.md is a summary",
+  "currentDocumentAudit": "round-1/preparation-audit.md: preparation-only ordinary audit, not external review",
+  "history": {
+    "commits": [
+      "791a7b2b9ea831105e3aa7ef2e95f80001942ba5 feat: implement private T07 scenario rounds and views",
+      "833c6a1d836f76b6714d11e6a7ad2fd94049749d docs: record T07 validated local recovery point",
+      "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3 test: verify T07 rounds across real Store transaction faults",
+      "48b14dabeb769dc45e36a8e4be936d244a9c8b14 docs: pin T07 designated review readiness evidence",
+      "982e4535e864c17275e51ed67664c0b7fac367bc docs: record T07 external dependency blocked audit",
+      "f50ebc0fb9db792aceec103e623768d585a6175d docs: seal T07-S1 round-one full independent review inputs",
+      "24f3703ecf4fce75e0d0375f7291ed928f083c41 docs: record fresh independent audit of T07 review preparation"
+    ],
+    "supersededCandidate": {
+      "fromHead": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5",
+      "toHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+      "reason": "added realStore tests/full handoff fixture/acceptance and evidence; original product source unchanged"
+    },
+    "invalidatedEvidence": "initial uncommitted42 persistence READONLY assertion was false-positive; fixed43, handoff44 retained at P",
+    "withdrawnDesignatedCandidates": [],
+    "priorDesignatedPassExists": false
+  },
+  "currentPolicySources": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md",
+      "sha256": "7b54d589d39bfe71c0f67d61c00995bb4d60b5156a74a6ae25ac69a2f491f5eb",
+      "bytes": 3172
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1",
+      "bytes": 16867
+    }
+  ],
+  "currentPolicy": "silent desktop restrictions withdrawn; no user timeslot/CLI login/isolated desktop prerequisite; specific stage/run permissions remain; frozen prompts/manifests untouched",
+  "verification": "read-only Git/docs/current14 byte identities, markdown and JSON only; no product tests/GUI/model tasks/Goal changes"
+}
