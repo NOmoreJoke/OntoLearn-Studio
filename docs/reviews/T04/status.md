@@ -2,6 +2,8 @@
 
 2026-10-23 总控已正式有限接收**第5组同base5f→product507、完整有界S1双方明确Pass**；新增创建0、接收pair+1。[接收回执](controller-r3-limited-acceptance-20261023.json)追加记录，已冻结的创建/收件原件不改。两模型产品Pass不升级为全native合规、零曝光或父验收；旧R2过程Fail与全部父缺口保留。F-R3-01原P3非阻断未修未关，T01已接未来唯一责任，延期至正式结果metadata度量/错误分类契约冻结后由T04/I05消费。原父Goal仍blocked；未因本次接收获准push/PR/merge。
 
+- 最新实际供方对照：[T01 cd880与507消费shape](../../iterations/T04/t01-cd880-query-consumer-shape-20261023.md)。只读公开交付/固定源确认后端已有query受理、真实jobId、原子终态/完整payload；根最终收件进行中。精确待接为桌面命名创建、已提交定义与编辑draft的身份/CAS、canonical查询展示投影；现public页是JSON-pointer证据叶，不直接当SELECT表格。当前无consumer写票/运行票。
+
 - 固定供消费源码：[QueryPage 507小包](../../iterations/T04/querypage-consumer-507/README.md)。5份可读逐字源码＋16项共享依赖/宿主上下文Git blob身份；props/callback、CSS与有限reader契约只取获接收507，不以live需求稿代替源，不新增presentation政策。供T08/T01按成熟接口接线；T01 asserted后端票与旧C4真worker复用核验不在本包验收内。
 
 - 下一步：[正式query.execute最小集成需求与现有入口](../../iterations/T04/query-execute-integration-requirements-20261023.md)。只读固定507入口并列实缺；[I05供方事实收件](i05-supplier-facts-intake-20261023.json)确认真实SELECT/ASK与execute_request算法已存在，正式Job/worker/Store metadata/App接线仍待成熟接口与接收。纯asserted可先解其实际依赖，不缩减selected/profile、ASK、网络拒绝、历史或保存要求。既有命名reader继续保留，不重复S1验证或为未闭门自动新审。

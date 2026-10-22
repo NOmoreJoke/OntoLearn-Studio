@@ -1,0 +1,36 @@
+# T01 cd880 → 固定 507 QueryPage：实际 shape 对照
+
+结论：**后端受理、真实 jobId、终态与完整结果存储已有；尚不足以直接实施 QueryPage 的正式执行/结果适配。** 缺口是桌面命名创建入口、已提交定义与编辑草稿的身份/版本连接，以及获批查询展示投影。无需再向 T01 请求重做 executor 或终态。
+
+依据：总控指定的公开 `parent-final-handoff.json`（5699B，SHA `240c2cfe00a1dc8084c0d4b33c195f55adf0e3b41f01e9e41885e2242b0355ae`），其公开 entry/sourcevector/delivery 与固定源码 `cd880936e406d392b4e57da67d5b03b23b33ef27`（parent `9310bef25ed17b14f77d09b377023b8071031fd4`）；消费口仍是 [固定 507 七文件包](querypage-consumer-507/README.md)。只读必要源，无 raw/private/native、运行、整包验收或 consumer 改动；交付状态见 [T04 状态](../../reviews/T04/status.md)。
+
+## 哪些已经存在
+
+下列后端/TS 行号均属于 cd880；QueryPage/reader 指固定 507。
+
+| 实际入口                                                                                   | 真实 shape 与消费结论                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/engine/src/ontolearn_engine/coordinator.py:380–428`                              | 现有 `job.create` 已接受 query.execute，返回真实 job；并非新增 query.execute RPC。Store 在 `job_store.py:1068–1102` 发行 UUID jobId、queued/stateVersion=1、resultRef=null，后续由真实状态更新。                                                                                                                                      |
+| `job_store.py:991–1008,1413–1459`                                                          | input 为 inputSnapshotId/scope/definitionId/parametersHash/derivedResultIds/preparedPlanRef。parametersHash 指向本项目已存 blob，其内容必须精确 `{inputSelection:'current'或'historical'}`；仅 asserted、空 derivedResultIds、null preparedPlanRef/confirmationRef。current 必须匹配真实当前 snapshot；定义必须已在冻结 snapshot 中。 |
+| `semantic_execution.py:154–159`；`job_store.py:1496–1510`                                  | 已提交 query 定义是 `{text,references?}`，实际 queryText 来自该 text，不是页面 QueryDraft。后端不会因收到某个 definitionId 自动消费当前编辑器的新文本。                                                                                                                                                                               |
+| `job_store.py:1591–1663`                                                                   | finish_query_job 在同事务发布 rows、完整 payload 与摘要，并转 succeeded/resultRef；semantic_result(project,resultId) 内部读取返回 `(metadata,payload)`，核摘要、成功 job/resultRef 与输入绑定，不重跑查询。后端终态/重开认证已有，不将此项继续写为“缺 executor”。                                                                     |
+| `job_store.py:1516–1538`                                                                   | payload.query 的 SELECT 是 type/variables/rows（N3 string 或 null）；ASK 是 type/value:boolean。payload.queryText、输入/范围/定义/选择、provenance 真实持久化；尚不是公共 typed RDF 或 QueryPage presentation。                                                                                                                       |
+| `packages/contracts/src/index.ts:179–233`；`apps/desktop/src/main/task-service.ts:771–804` | getResult 返回17字段 metadata；getResultPage 返回 binding/rows/nextCursor，main 由所选项目和实际 metadata 形成 binding。getJob/cancelJob/subscribeJob/restoreTasks/onTaskUpdate 已存在，受理后应复用这些真实 job 读/订阅链。                                                                                                          |
+
+## 精确不匹配点与 T01 请求
+
+| 缺口                              | 固定源证据                                                                                                                                                                                                        | 请 T01/唯一 bridge owner 给出的最小接口                                                                                                                                                                                                                                                                                            |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 桌面无法从页面发起现有 job.create | cd880 `contracts/src/index.ts:221–267`、`preload/index.ts:15–39`、`main/desktop-ipc.ts:46–84` 只有读取/订阅/取消，没有创建方法                                                                                    | 提供按业务命名、由 main 所选项目授权的执行入口，负责真实 snapshot/定义/parameters blob 与 operation 身份准备，调用现有 job.create，并回传实际 accepted job/错误。确切方法名/DTO由唯一 owner 冻结；不暴露通用 invoke 或 renderer put_blob。                                                                                         |
+| 执行定义与可编辑 draft 未连接     | 固定507 `QueryPage.tsx:42–46,489–525` 的执行回调只有 draft+current/historical，返回 Promise<void>，既无 definitionId/load-base 也无返回 jobId；保存回调仅返 persisted ID。后端则只执行已提交 `{text,references?}` | 给权威查询读取的 definitionId、载入版本依据与可编辑字段来源，以及 draft→正式定义的保存/CAS回执。明确执行请求如何绑定“用户所见这个版本”的定义；不能静默执行旧 text、按同名猜 ID、把 draftDigest 当 parametersHash，或从 Promise<void> 伪造 jobId。未保存/已编辑文本如何进入正式执行须由真实接口决定，当前不自动保存或默认执行旧稿。 |
+| 公共分页不是 QueryPage 表格       | cd880 `semantic_execution.py:299–328` 首行 cells 为5项 `columns/path/value/part/parts`，后续叶/分片行为4项 path/JSONpiece/part/parts；固定507 `results.ts:45–66` 要所有行宽等于 columns.length                    | 在唯一 canonical 查询读取/投影接口中固定：权威 executedSparql、SELECT 列/行、ASK 类型和值、空结果/零列语义、完整结果绑定及有界续页。可以由 owner 选择批准的投影/读取接法；不能由 T04 将现有证据投影 header 认成查询列、删除首行后冒充 SELECT，或自造 ASK 行。                                                                      |
+
+公共 result.get 本身没有 queryText/variables/ASK 字段；完整 `(metadata,payload)` 的直接读取目前只在内部 semantic_result，coordinator:475–480 没有该公开路由。**这不等于 RPC 完全取不到内容**：现有 result.page 会逐页投影整个 payload，因而能出现 `/queryText`、`/query/type`、variables/rows 或 `/query/value` 的编码叶；但它未冻结为 QueryPage 查询投影。不得在消费端自行收齐所有页、重建 payload 再确立新的 presentation 政策。
+
+17字段 metadata 与既有页绑定可继续作为身份依据；resultRef 由真实 succeeded job 给出。缺少的是从新建受理入口拿到该实际 job 并纳入主 authority/订阅，而非后端没有终态。cancel ACK 后重读真实状态、等待后续终态观测的原 reader 行为保持。
+
+## 给下一实施票的具体边界
+
+目前先向 T01 返回上述三项接口请求，**不申请当前 consumer 源码实施票**。接口成熟后，T04 自有改动才落 `apps/desktop/src/renderer/src/query/{QueryPage.tsx,draft.ts,reader.ts,results.ts}` 中实际所需的最小子集；App、contracts、main/preload 仍由唯一 owner 接线。本次不预先写 adapter、改 callback 或扩 schema。
+
+下一票的针对性验收应随成熟接口固定：真实受理 jobId→订阅/终态/resultRef；载入 A 后编辑 B 不静默执行旧 A；SELECT 完整行与 ASK=false/空 SELECT 的不同语义及实际分页；旧载入版本保存冲突与真实 persisted ID。现证据叶投影须与查询表格明确区分。F-R3-01 的结果长度/错误分类政策仍待唯一契约冻结，不在本次设默认；asserted 后端可消费范围也不替代 selected/profile 等完整原要求。
