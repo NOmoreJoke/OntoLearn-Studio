@@ -10,6 +10,10 @@
 
 本包目录为`docs/reviews/T03/mapping-p2-dual-review-preparation-20261023/`。同目录README、input-copy-provenance、history-agent和旧完整fixed manifest均需读。独立派发包中的完整candidate tree索引绑定此HEAD；blob OID/清单/数量是身份元数据，不是已经全文阅读载荷的声明。
 
+**完整1028项索引的可用入口**：`@@TREE@@/build/review-session/metadata/full-candidate-tree-c1e44f81.json`，SHA-256 **`@@TREE_INDEX_SHA@@`**。这是owner从同一固定HEAD生成后原字节复制到你自己metadata的文件；不要猜HEAD内不存在的dispatch/full-candidate-tree路径。自己的prepared派发索引在`@@TREE@@/build/review-session/metadata/dispatch-index-v2.prepared.json`，只有请求值/null，不是任何任务实际状态。首版70f432派发定位缺口保留，当前提示是v2修订。
+
+本次索引定位修订的生成工具/模板也在自己`build/review-session/metadata/preparation-tools-v2/`保存原字节副本及manifest，作为额外过程工具源码一并静审；不执行生成器或安装器。实际工程HEAD仍是上述c1e44，不能把这些后加metadata当作已经进入该HEAD或改变产品。历史fixed索引的旧路径仍按其固定Git ref读取，不能去其他树当前WIP。
+
 ## 完整审查范围，不能缩成新六项或两个diff
 
 1. **完整工程**：本固定HEAD全部tracked源码、tools、tests、fixtures、配置、锁、公共契约、CSS、构建/CI和docs中的证据工具。继承工程和I01–I04不因owner不同而排除；docs/.py.raw/.input.py.txt/.mjs不能被当散文漏审。两产品delta只是导航。审业务正确性、异常、事务/撤销、来源所有权、历史重放、缓存/草稿/序列化与安全边界；未实测性能不量化。
