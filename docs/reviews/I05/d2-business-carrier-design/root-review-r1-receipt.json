@@ -1,0 +1,164 @@
+{
+  "format": "i05-business-carrier-root-r1-receipt/1",
+  "base": "dc3fc7768167f206e09b410da4f737199d2c5e18",
+  "candidate": "cedefb069ddf77e48c2764793490517ab967aae3",
+  "reviewedProcess": "3f171f7d1fb481d669acb92b835b4bb96a3bc584",
+  "conclusion": "Fail limited to pure design; two P2 findings require a new candidate",
+  "findings": [
+    {
+      "id": "R1-F01",
+      "priority": 2,
+      "summary": "Dispatched pre-context failure lacks lawful child-run identity branch through binding and receipt; retain attempt/raw, do not fabricate runId or change old1241/schema"
+    },
+    {
+      "id": "R1-F02",
+      "priority": 2,
+      "summary": "Caller-only lifecycle witness lacks lawful artifact origin; child-piece stage/piece/raw range cannot be fabricated"
+    }
+  ],
+  "rootEvidence": {
+    "fullReadSpecHandoffMissingMaterialsAndCompleteIndependentReport": true,
+    "readSelectedRunCoreBindingBusinessValidationBindingCarrierRawRangeArtifactProcessLifecycleFailureAndAllRelationshipRules": true,
+    "fixedNew33CurrentEqualsProcessGitVerified": true,
+    "old57CurrentEqualsBaseGitVerified": true,
+    "new22ReviewFilesReceiptMembershipAndHashesVerified": true,
+    "independentlyExecutedReviewersAuditAgain": false
+  },
+  "independentEvidence": {
+    "fullReadSevenDesignDocuments": true,
+    "definitions": 52,
+    "exactRecords": 39,
+    "fields": 251,
+    "checks": 22,
+    "legacyMandatoryMaterials": 15,
+    "legacyFamilies": 13,
+    "hashVectors": 7,
+    "newCrossStructureGuards": 9,
+    "note": "Checks pass including stable reproduction of candidate defects; candidate verdict is Fail"
+  },
+  "historicalFailures": "Author check01-04 exit1 and readonly diagnostic exit1 preserved; check05 finite pass does not replace them. No product/model execution.",
+  "reviewFiles": [
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-proof-r1.json",
+      "bytes": 29396,
+      "sha256": "4938fd766b5d624354c0faa1d16d9fe58a9c2366b54f738c8a38774011a48363"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-audit-execution-02.json",
+      "bytes": 17245,
+      "sha256": "6c83635260e9d824a242fc447321a45a36a0a839f3bb8e55f57837c7db32d4f1"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-audit-execution-03.json",
+      "bytes": 17505,
+      "sha256": "1eead4e82948a2bbe47f6dc9b3c6e13761a62808b9a043f0b634bc9393f8ae3d"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-audit-execution.json",
+      "bytes": 6564,
+      "sha256": "5686613ed2f41d598c7e06d70b9049d8b0ac268d4d48fcb9223dff80b0a6b6a7"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-audit.py",
+      "bytes": 20414,
+      "sha256": "d887f80bf70019c48475aa0ec2d277b2fa17de595b39bcc9a81b355906e89ce5"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-capture.py",
+      "bytes": 982,
+      "sha256": "791661c56c0df707c0cd46204b486231d080b52e3754fc45efb37fb1f56a8a78"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-commands-identity.json",
+      "bytes": 14486930,
+      "sha256": "e959b1f310581fc61133f39186d7e33af8d3cd3e8ad03a81d3c1eeeaf021cc7e"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-final-commands.json",
+      "bytes": 4896,
+      "sha256": "f06a2f128ffdd2097f6a50dcf9656ae9730376329cebddc66192453b246f63fd"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-format-check.json",
+      "bytes": 1004,
+      "sha256": "e5a696f5d14c0df6ad828aa9d3c45a7507416c6128cc0029b453ec73432fba77"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-format-write.json",
+      "bytes": 1357,
+      "sha256": "9b6ee2a512de4fb9d02d79f180553dfe2a394f3a7a06093eba38a40fa9cd4b6e"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-identity-execution.json",
+      "bytes": 4906,
+      "sha256": "9aec0445d44f378793697a4d05b4fb3b1d144bea17dda9e6796c549828f59ab7"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-identity.json",
+      "bytes": 1682078,
+      "sha256": "6f5510c489de851bf2045ed1acfd898bed2c3e199c5b55d78b49432f9a267d92"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-inspect.py",
+      "bytes": 4897,
+      "sha256": "d221f4699a08d59739c0f33e8cb64731c5e8b840e8952ea8247950f26783e591"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-provenance-commands.json",
+      "bytes": 1360189,
+      "sha256": "dc0166c5168ff3f4744beb4a400e50488736a4116800327963e6fa3405a53098"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-provenance-execution.json",
+      "bytes": 832,
+      "sha256": "f3cb1c3476f774dac70af934b0c1545722b47c853ac7e5064f8b710167a75d04"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-provenance.json",
+      "bytes": 10147,
+      "sha256": "9667ee2640bcdd7bd9f737025412f9e837028d3bfa0bc025ee095b6cddffe917"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-provenance.py",
+      "bytes": 3697,
+      "sha256": "67e8a72822f9dc0c3003b56d2add13542574ac10a2eb545ba0bebad13883a23a"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-receipt.json",
+      "bytes": 25303,
+      "sha256": "c836732c745a159b80876c9ab21107a141fcabe74c910fe13d995360ac885ef9"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-seal-execution.json",
+      "bytes": 6735,
+      "sha256": "87152fd078a4abba4619a16dc9ffcf91985a1aca40cbd44e7f963261e554ccfb"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-seal.py",
+      "bytes": 4300,
+      "sha256": "0ffdc2770f193d012689cb88778e380f2c46bdd1653cf14df1bac9f7bf27a15c"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-r1-wire-read.json",
+      "bytes": 117816,
+      "sha256": "b0d5525d85f9632b814e87ba0acf775db2e78e004f06131cdf46c7e7ff0904d0"
+    },
+    {
+      "path": "docs/reviews/I05/d2-business-carrier-design/independent-review-r1.md",
+      "bytes": 11022,
+      "sha256": "9b8b9e2bd36542858d8c002b8269203ee13bfb0de034cb3ab7a29d43458b5b9f"
+    }
+  ],
+  "protectedAGENTS": {
+    "path": "AGENTS.md",
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "indexEmptyBeforeRootSeal": true,
+  "next": "Original author minimal R2 delta in new filenames, preserve all33 candidate and57 old plus formal Fail evidence; independent delta review afterward",
+  "pending": "Actual codec/layout/digest/live verifier/permissions/full v3 adoption/runtime/integration/specified dual review/CI/develop/remote remain unclosed",
+  "productExecuted": false,
+  "pushPRMerge": false,
+  "parentGoal": "active",
+  "selfExclusion": "Self excluded; final local seal commit binds receipt bytes"
+}

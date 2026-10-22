@@ -1,0 +1,873 @@
+{
+  "scope": "limited pure-design independent static arithmetic/grammar/relationship audit; no runtime/product/model execution",
+  "identityEvidence": "independent-r1-identity.json",
+  "checks": [
+    {
+      "name": "52 finite definitions / 39 exact records / 251 fields",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "every record exact required field set without repeated required names",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all finite type references resolve",
+      "pass": true,
+      "detail": [
+        "Artifact",
+        "Base64",
+        "Bool",
+        "BusinessFrame",
+        "ContextFrame",
+        "DecimalInt",
+        "DomainPair",
+        "EvidenceValue",
+        "Failure",
+        "FileRef",
+        "FrameIndex",
+        "GitPin",
+        "HeaderCapture",
+        "Id",
+        "IdentityDomain",
+        "InlineBytes",
+        "Inventory",
+        "MetadataBinding",
+        "NamedEvidence",
+        "Nat",
+        "Negotiation",
+        "Null",
+        "ObservationFrame",
+        "Piece",
+        "PinnedHeader",
+        "ProcessLifecycle",
+        "RawRange",
+        "RdfSlot",
+        "Ref40",
+        "RunCoreBinding",
+        "SafePath",
+        "SameIssue",
+        "Sha",
+        "StageDisposition",
+        "StageFrame",
+        "StagePlan",
+        "TerminalFrame",
+        "Text",
+        "Tree",
+        "TreeBool",
+        "TreeBytes",
+        "TreeInt",
+        "TreeList",
+        "TreeMap",
+        "TreeMember",
+        "TreeNull",
+        "TreeRecord",
+        "TreeString",
+        "TreeTuple"
+      ]
+    },
+    {
+      "name": "251 field map exact membership with no duplicate",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all 251 mapping values and rule refs agree",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "header 18 exact old keys and only explicit D1 changes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "26 package versions, six direct requirements, eight runtime values preserve fixed D1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all scope sets preserve fixed D1 matrix exact counts",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "9 conflict and 21 old-only full rows copied exactly",
+      "pass": true,
+      "detail": [
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/1",
+          "path": "packages/contracts/python/contract_v2.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/4",
+          "path": "packages/contracts/v2/errors.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/7",
+          "path": "packages/contracts/v2/registry.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/8",
+          "path": "packages/contracts/v2/schema.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/11",
+          "path": "packages/engine/pyproject.toml",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/37",
+          "path": "packages/engine/src/ontolearn_engine/resources.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/38",
+          "path": "packages/engine/src/ontolearn_engine/semantic.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/40",
+          "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "nineConflicts",
+          "sourcePointer": "/rows/57",
+          "path": "uv.lock",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/0",
+          "path": "docs/iterations/I05/profile-probe-inputs.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/2",
+          "path": "packages/contracts/v2/binding-regressions.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/3",
+          "path": "packages/contracts/v2/dependencies.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/5",
+          "path": "packages/contracts/v2/fixtures.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/6",
+          "path": "packages/contracts/v2/frame-fixtures.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/9",
+          "path": "packages/contracts/v2/states.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/13",
+          "path": "packages/engine/src/ontolearn_engine/__main__.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/14",
+          "path": "packages/engine/src/ontolearn_engine/contract_probe.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/15",
+          "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/16",
+          "path": "packages/engine/src/ontolearn_engine/invalidation-v2.json",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/17",
+          "path": "packages/engine/src/ontolearn_engine/invalidation.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/18",
+          "path": "packages/engine/src/ontolearn_engine/job_store.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/23",
+          "path": "packages/engine/src/ontolearn_engine/memory_guard.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/26",
+          "path": "packages/engine/src/ontolearn_engine/process_environment.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/27",
+          "path": "packages/engine/src/ontolearn_engine/protocol.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/36",
+          "path": "packages/engine/src/ontolearn_engine/rdf_snapshot.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/44",
+          "path": "packages/engine/src/ontolearn_engine/semantic_profile_probe.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/49",
+          "path": "packages/engine/src/ontolearn_engine/semantic_samples.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/53",
+          "path": "packages/engine/src/ontolearn_engine/storage.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/54",
+          "path": "packages/engine/src/ontolearn_engine/storage_probe.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        },
+        {
+          "group": "twentyOneOldOnly",
+          "sourcePointer": "/rows/55",
+          "path": "packages/engine/src/ontolearn_engine/worker.py",
+          "matchesOriginal": true,
+          "extraColumns": {}
+        }
+      ]
+    },
+    {
+      "name": "futureApprovedPins all remain null",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "13 original full family cells exact fixed source lines",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "15 mandatory material map rows",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all 15 mandatory original rows preserved and concrete destinations added",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all 13 original family rows complete and unchanged",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all seven declared H vector original preimages independently reconstructed",
+      "pass": true,
+      "detail": [
+        {
+          "tag": "inventory-full/1",
+          "canonicalMatch": true,
+          "preimageMatch": true,
+          "hashMatch": true,
+          "preimageBytes": 60,
+          "digest": "3a7672760bccf985d02cea75b71a653516e46a4c3f8b4790d8470443e9f55d4d"
+        },
+        {
+          "tag": "inventory-selected/1",
+          "canonicalMatch": true,
+          "preimageMatch": true,
+          "hashMatch": true,
+          "preimageBytes": 50,
+          "digest": "32b6cbbcd6fa490106a4f0f0429ad88ed07be26bdde55f5a08bcf5e5bd808000"
+        },
+        {
+          "tag": "stage-plan/1",
+          "canonicalMatch": true,
+          "preimageMatch": true,
+          "hashMatch": true,
+          "preimageBytes": 29,
+          "digest": "f744b03efd63c088950fd4716b7f107d59651a8af4203bda9450d5601697a739"
+        },
+        {
+          "tag": "return-tree/1",
+          "canonicalMatch": true,
+          "preimageMatch": true,
+          "hashMatch": true,
+          "preimageBytes": 146,
+          "digest": "44ce3d89763be5d9ecb58ccb722c9de689f1e7b4803050e13f5dea1b3f0545b2"
+        },
+        {
+          "tag": "metadata-export/1",
+          "canonicalMatch": true,
+          "preimageMatch": true,
+          "hashMatch": true,
+          "preimageBytes": 178,
+          "digest": "4ccb27524b8ea4b19c6255122158512ce6d74b8db31366d63296fab4382000c3"
+        },
+        {
+          "tag": "artifact-domain/1",
+          "canonicalMatch": true,
+          "preimageMatch": true,
+          "hashMatch": true,
+          "preimageBytes": 135,
+          "digest": "3ee8c2cd9e8395a5bb2762fe3092e6f98e10c767ac7bb8fb0a22ade2a8345f24"
+        },
+        {
+          "tag": "mapping-witness/1",
+          "canonicalMatch": true,
+          "preimageMatch": true,
+          "hashMatch": true,
+          "preimageBytes": 167,
+          "digest": "c924a981b9526ece2ec9a121c5d1d155af8706a04fdef22a8c0b2b56804dd656"
+        }
+      ]
+    },
+    {
+      "name": "independent false/null/repetition Unicode vector is domain separated",
+      "pass": true,
+      "detail": {
+        "value": {
+          "z": [false, null, false],
+          "é": "\b\f\n\r\t/\\\"",
+          "😀": "原词法"
+        },
+        "canonicalBase64": "eyJ6IjpbZmFsc2UsbnVsbCxmYWxzZV0sIsOpIjoiXGJcZlxuXHJcdC9cXFwiIiwi8J+YgCI6IuWOn+ivjeazlSJ9",
+        "hashes": {
+          "return-tree/1": "67a8baddf8138e946a8ac2af8945bd3caf8101be5403409970c8b0d876b2c393",
+          "metadata-export/1": "bf4f2654a94db39cce2a176ceb89ab68b6e1e871d407ca8326c25207004014a0"
+        }
+      }
+    },
+    {
+      "name": "terminal prefix excludes terminal and differs full raw",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "counterexample confirms no null runId arm before context",
+      "pass": true,
+      "detail": ["/runCore/runId: expected exact string"]
+    },
+    {
+      "name": "independent dispatched pre-context failure carrier has legal finite record shape",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "full mandatory companion binding rejects only unobserved runId",
+      "pass": true,
+      "detail": ["/binding/runCore/runId: expected exact string"]
+    },
+    {
+      "name": "counterexample confirms no caller-origin artifact arm",
+      "pass": true,
+      "detail": [
+        "/callerWitness/stageId: expected exact string",
+        "/callerWitness/pieceId: expected exact string",
+        "/callerWitness/originRange: expected exact record"
+      ]
+    },
+    {
+      "name": "independent detached cross-structure guard cases",
+      "pass": true,
+      "detail": [
+        {
+          "name": "opaque bytes only remain pending",
+          "actual": "pending",
+          "expected": "pending",
+          "pass": true
+        },
+        {
+          "name": "opaque cannot claim compatible",
+          "actual": "reject",
+          "expected": "reject",
+          "pass": true
+        },
+        {
+          "name": "equal issue strings without live verifier do not authorize",
+          "actual": "reject",
+          "expected": "reject",
+          "pass": true
+        },
+        {
+          "name": "earlier success pieces retained after rejection",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "later rejection cannot erase prior rows tail",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "independent parse same label cannot merge ownership",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "all slots same graph accept one bijection only",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "noninjective BNode map rejects",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "B1 never full417",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "allIndependentChecksPassed": true,
+  "fieldMapAdditionalColumnValues": {
+    "sourceKind": ["new explicit normative proposal, not current actual"],
+    "missingDecision": ["reject or explicit permitted null/state, never drop"],
+    "runtimeEvidence": ["pending later authorized window"],
+    "fixedBasis": [
+      [
+        "oldD2 R30 G02/G03",
+        "old27 consumer CR-R/CR-H",
+        "old27 ee2b §4.2/4.3",
+        "old27 projection spec source/identity pending"
+      ]
+    ]
+  },
+  "fullSevenInputParse": [
+    {
+      "path": "docs/iterations/I05/d2-business-carrier-design/acceptance-rejects.json",
+      "bytes": 62681,
+      "sha256": "d203da1a969ee6a33522d08b749864bd372b5a9c266bcae3274357839611edfe"
+    },
+    {
+      "path": "docs/iterations/I05/d2-business-carrier-design/field-map.json",
+      "bytes": 236506,
+      "sha256": "efc0017367a77a7af6ccc9eae7a5a366459dae1b614a3710f1efe494ab3e7b8d"
+    },
+    {
+      "path": "docs/iterations/I05/d2-business-carrier-design/forward-delta.json",
+      "bytes": 114315,
+      "sha256": "8e36f8616053aa78f8d533aaad95088abdce55a28feb39fb880b824a5c881485"
+    },
+    {
+      "path": "docs/iterations/I05/d2-business-carrier-design/handoff.md",
+      "bytes": 6337,
+      "sha256": "bd1249289cfe1213660de7d71790e8eb62dbb4f2ca322fffb9c838831d7db15f"
+    },
+    {
+      "path": "docs/iterations/I05/d2-business-carrier-design/missing-materials.json",
+      "bytes": 4299,
+      "sha256": "b3b05129ec62d071a96fcc731d714f87a73b43b4ad0c2bbd1f4796ff475a3b07"
+    },
+    {
+      "path": "docs/iterations/I05/d2-business-carrier-design/spec.md",
+      "bytes": 17616,
+      "sha256": "95061228a15f3927e99b0500311e282a227f957aaced33ad687a46408f8f1092"
+    },
+    {
+      "path": "docs/iterations/I05/d2-business-carrier-design/wire-grammar.json",
+      "bytes": 123828,
+      "sha256": "4657f99896423d81363436143f708b01ef37a06e63fd1b661ce7c52f5f1acead"
+    }
+  ],
+  "oldFieldMapTopKeys": [
+    "format",
+    "status",
+    "schemaPropertyCounts",
+    "propertyCount",
+    "instanceReachableCount",
+    "definitionOnlyCount",
+    "fieldRows",
+    "arrayInstanceRules",
+    "objectInstanceRules",
+    "profileConcreteLeaves",
+    "projectionExpectedLeaves",
+    "templateSemantics",
+    "trustBoundary"
+  ],
+  "oldMaterialMatches": [],
+  "oldFamilyMatches": [],
+  "counterexamples": [
+    {
+      "id": "R1-F01",
+      "severity": "P2",
+      "scenario": "Dispatch occurred; child exited before emitting context; stdout/stderr both zero bytes; caller observed real process exit. Child runId never existed/was observed.",
+      "input": {
+        "runId": null,
+        "mode": "source",
+        "selector": "full-v1",
+        "stdout": {
+          "root": "approved-witness",
+          "path": "synthetic-r1/stdout.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "root": "approved-witness",
+          "path": "synthetic-r1/stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "headerRange": null,
+        "terminalRange": null
+      },
+      "fullFiniteShapeCarrier": {
+        "format": "i05-business-carrier/1",
+        "attemptId": "independent-r1-dispatched-before-context",
+        "runId": null,
+        "negotiation": {
+          "expectedStreamVersion": "i05-business-stream/2",
+          "protocolVersion": "3.0.0",
+          "profileFormat": "i05-semantic-build-protocol-profile/4",
+          "headerFormat": "i05-semantic-runtime-header/2",
+          "protocolPin": {
+            "repositoryId": "synthetic-external-approval-assumption",
+            "ref": "0000000000000000000000000000000000000000",
+            "gitBlob": "0000000000000000000000000000000000000000",
+            "path": "synthetic-r1/adopted-spec.md",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "profilePin": {
+            "repositoryId": "synthetic-external-approval-assumption",
+            "ref": "0000000000000000000000000000000000000000",
+            "gitBlob": "0000000000000000000000000000000000000000",
+            "path": "synthetic-r1/adopted-spec.md",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "businessAdoptionPin": {
+            "repositoryId": "synthetic-external-approval-assumption",
+            "ref": "0000000000000000000000000000000000000000",
+            "gitBlob": "0000000000000000000000000000000000000000",
+            "path": "synthetic-r1/adopted-spec.md",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "consumerPin": {
+            "repositoryId": "synthetic-external-approval-assumption",
+            "ref": "0000000000000000000000000000000000000000",
+            "gitBlob": "0000000000000000000000000000000000000000",
+            "path": "synthetic-r1/adopted-spec.md",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "buildReceipt": {
+            "root": "approved-witness",
+            "path": "synthetic-r1/build-receipt.json",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "approvedBuildRecord": {
+            "repositoryId": "synthetic-external-approval-assumption",
+            "ref": "0000000000000000000000000000000000000000",
+            "gitBlob": "0000000000000000000000000000000000000000",
+            "path": "synthetic-r1/adopted-spec.md",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "state": "matched"
+        },
+        "observationState": "pre-header-rejected",
+        "stdout": {
+          "root": "approved-witness",
+          "path": "synthetic-r1/stdout.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "root": "approved-witness",
+          "path": "synthetic-r1/stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "header": {
+          "state": "absent",
+          "range": null,
+          "payload": null
+        },
+        "frames": [],
+        "artifacts": [],
+        "stages": [],
+        "metadataBindings": [],
+        "identityDomains": [],
+        "actualExitCode": 7,
+        "signal": null,
+        "collectionComplete": false,
+        "fullSuiteCollectionComplete": false,
+        "firstCollectionFailure": {
+          "actor": "caller",
+          "phase": "header",
+          "reason": "raw-incomplete",
+          "stageId": null,
+          "firstRange": null,
+          "diagnosticArtifactId": null
+        },
+        "pendingMaterialIds": [],
+        "lifecycle": {
+          "commandContext": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "targetBinding": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "cancelRequested": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "stopping": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "targetTerminated": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "readerJoined": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "referencesReleased": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "timing": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "physicalTicket": {
+            "state": "unavailable",
+            "value": null,
+            "sourceRanges": [],
+            "artifactIds": [],
+            "reason": "not-observed"
+          },
+          "dispatchState": "dispatched",
+          "argv": ["--semantic-source-package-probe", "full-v1"],
+          "stdin": "dev-null",
+          "rawComplete": true
+        }
+      },
+      "fullBindingAttempt": {
+        "format": "i05-business-validation-binding/1",
+        "carrier": {
+          "root": "approved-witness",
+          "path": "synthetic-r1/carrier.json",
+          "bytes": 3889,
+          "sha256": "f9b6b9a6c9937fad608b340507474dd8fc06da2a8c530e1db24aac0c69b63deb"
+        },
+        "attemptId": "independent-r1-dispatched-before-context",
+        "buildReceipt": {
+          "root": "approved-witness",
+          "path": "synthetic-r1/build-receipt.json",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "runCore": {
+          "runId": null,
+          "mode": "source",
+          "selector": "full-v1",
+          "stdout": {
+            "root": "approved-witness",
+            "path": "synthetic-r1/stdout.bin",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "root": "approved-witness",
+            "path": "synthetic-r1/stderr.bin",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "headerRange": null,
+          "terminalRange": null
+        },
+        "grammarPin": {
+          "repositoryId": "synthetic-external-approval-assumption",
+          "ref": "0000000000000000000000000000000000000000",
+          "gitBlob": "0000000000000000000000000000000000000000",
+          "path": "synthetic-r1/adopted-spec.md",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "state": "incomplete"
+      },
+      "shapeErrors": ["/runCore/runId: expected exact string"],
+      "fullBindingErrors": ["/binding/runCore/runId: expected exact string"],
+      "assumptions": "Synthetic external approval pins are shape placeholders for this detached design counterexample only. No actual approval/runtime claimed. Lifecycle unobserved fields remain null; caller witness path is separately F02.",
+      "alternatives": [
+        {
+          "encoding": "runCore.runId=null",
+          "result": "RunCoreBinding rejects Id shape"
+        },
+        {
+          "encoding": "runCore=null",
+          "result": "Contradicts BINDING dispatched core requirement; loses raw binding"
+        },
+        {
+          "encoding": "runCore.runId=invented string",
+          "result": "Shape only; no carrier/context/receipt observed child identity; violates no expected fill and same run requirement"
+        }
+      ],
+      "requiredFix": "Make dispatched failure run identity availability explicit; nullable runId with exact same availability guard, or a separate pre-context failure core union; include complete binding example."
+    },
+    {
+      "id": "R1-F02",
+      "severity": "P2",
+      "scenario": "Caller-only owned-process exit/reader-join/reference-release witness exists externally after child stdout/stderr end; child emitted no stage frame. Caller facts must not be manufactured as child observations.",
+      "externalWitnessAttempt": {
+        "artifactId": "caller-exit",
+        "stageId": null,
+        "pieceId": null,
+        "representation": "captured-original-bytes",
+        "codecId": null,
+        "file": {
+          "root": "approved-witness",
+          "path": "synthetic-r1/caller-exit.json",
+          "bytes": 111,
+          "sha256": "65ac2ad97cc26029c8154c86890b4d4f34decdba4b7f0b4ebbb90369f0600c27"
+        },
+        "originRange": null,
+        "fieldPointer": "/exit",
+        "parentArtifactIds": []
+      },
+      "externalWitnessBytesBase64": "eyJhdHRlbXB0SWQiOiJpbmRlcGVuZGVudC1yMS1kaXNwYXRjaGVkLWJlZm9yZS1jb250ZXh0IiwiZXhpdCI6NywicmVhZGVySm9pbmVkIjp0cnVlLCJyZWZlcmVuY2VzUmVsZWFzZWQiOnRydWV9",
+      "shapeErrors": [
+        "/callerWitness/stageId: expected exact string",
+        "/callerWitness/pieceId: expected exact string",
+        "/callerWitness/originRange: expected exact record"
+      ],
+      "alternatives": [
+        {
+          "encoding": "observed EvidenceValue without sourceRanges/artifactIds",
+          "result": "Violates EVIDENCE actual raw/artifact provenance rule"
+        },
+        {
+          "encoding": "invent stageId/pieceId/originRange",
+          "result": "Violates Artifact actual owner stage/piece/whole source stage frame requirement"
+        },
+        {
+          "encoding": "mark actual observed caller event unavailable",
+          "result": "Drops actual evidence / falsely states availability"
+        }
+      ],
+      "requiredFix": "Add an explicit caller-owned witness origin/file branch tied to attempt/lifecycle and external source pin; preserve child-piece branch unchanged. Require resolvable artifact IDs and no invented child ranges."
+    }
+  ],
+  "findingCount": 2,
+  "verdict": "Fail limited pure-design; two unrepresentable mandatory failure/evidence paths",
+  "deferred": [
+    "complete v3 adopted schema/header engine validation",
+    "old metadata codec/layout/recipe/live handle verification",
+    "RDF semantic comparison and complete 417 independent oracle",
+    "all source/runtime/authority/native/caller permissions and release gates"
+  ]
+}
