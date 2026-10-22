@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "observedAtUTC": "2026-10-22T19:53:11.957668+00:00",
+  "scope": "Owner minimal-native readback process exception, not model review verdict",
+  "sessionId": "session_8b120f9cd410a68dbf141a7216ac0308",
+  "turnId": "turn_9ee07ab5-c812-41ca-b03e-f83fac40acdb",
+  "event": "A role-only diagnostic printed up to 1600 characters from first user text part, which was injected context rather than the submitted own short request",
+  "source": "Exact own model-io JSONL; no direct global AGENTS/config file access",
+  "retainedWhere": "Tool transcript only; injected text not copied into receipt files or supplied to either model",
+  "correction": "Stop role-only export. Only exact own T11-prefix user part and file_path-delimited own full-prompt attachment block are eligible. Never export system/header/thinking or unrelated context.",
+  "notClaimed": "This exception is not silently counted as compliant readback; controller must disposition process boundary separately."
+}
