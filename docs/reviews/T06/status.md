@@ -2,6 +2,8 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-22 16:20+08：ZCode 第一方固定源码3c5b227的生产CLI/TUI构建与help/version/模块解析已通过；owner在工具PTY实际启动，显示Yolo但无可用模型、需Coding Plan登录，未提交审查。新空设置probe已正式close；TUI37972已双CtrlC实际exit0。阶段线核非凭据使用元数据明确既有BigModel individual/GLM5.3/max路由，经正式CLI login bigmodel --no-browser生成唯一本人登录入口并由阶段主聊天集中交本人；工具85505有界等待，不开浏览器、不代登录、不读取或搬运凭据，未把链接/state写入仓库。准备证据见round-1/zcode-cli-login-readiness-20261022.json。必须真正登录成功、逐会话读回指定设置后才发ZCode正文，当前MiniMax原任务继续，不因登录等待中断。
+
 2026-10-22 16:10+08：MiniMax 实际全新后台审查已启动，session `mvs_a864253984c3453f982eeaa1cdfb43d8`、turn `04fe413a-9d81-433c-84ac-a16030e1f1aa`。完整新输入 a795b582… 已于16:10:14.637提交，正式message accepted，流中已核用户正文持久消息和running/agent_start/工具事件。提交前GET session与session模型清单实际读回M3.1-Flash/xhigh，同运行时GET permission为bypassPermissions，官方默认共享目录account/read authenticated。详见round-1/minimax-start-receipt-20261022.json。正在完整审查，尚无最终报告/Pass，双审仍未通过。
 
 先前后台超时原因已纠正：自有Node REPL跨cell闭包绑旧进程，替换进程stdin记录0B，请求未送到正确进程；不能把它归因平台启动或握手故障。改稳定每进程client后MiniMax认证/模型/会话正常；ZCode正式capabilities与客户端偏好握手正常，但新空会话实际模型/思考清单为空（非standalone），无审查正文。TUI实际缺包，正在授权范围内准备第一方完整CLI发行，禁止伪造host账号。旧错误原件保留，以下更早快照不代表当前任务数。
