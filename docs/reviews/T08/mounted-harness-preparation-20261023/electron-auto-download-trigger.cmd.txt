@@ -1,0 +1,9 @@
+node --input-type=module - <<'JS'
+import fs from 'node:fs'
+import {createRequire} from 'node:module'
+const require=createRequire(import.meta.url)
+try {const path=require('electron');console.log(JSON.stringify({electronExecutablePath:path,exists:fs.existsSync(path),launched:false}))}catch(error){console.log(JSON.stringify({electronExecutableAvailable:false,code:error.code}))}
+for(const name of ['vite','electron-vite','rolldown','@rolldown/binding-darwin-arm64']){
+ try {const p=require.resolve(name);console.log(JSON.stringify({module:name,path:p}))}catch(error){console.log(JSON.stringify({module:name,available:false,code:error.code}))}
+}
+JS

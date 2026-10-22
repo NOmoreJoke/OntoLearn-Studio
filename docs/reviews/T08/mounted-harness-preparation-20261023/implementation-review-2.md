@@ -1,0 +1,7 @@
+# 挂载实现三项增量复核2：通过
+
+来源：独立agent对固定e3c727dd90e22e7add5f0db94cefb57901af61f0最终回复，owner归档；未运行或写文件。
+
+非busy基线、变轴警告/Diff拒绝与实际负向dispatch补齐原覆盖缺口；9依赖前后hash、固定lock/installed version检查落实；mkdir前realpath阻止父symlink逃逸；取消完整state与迟到结果对照保留，合成端口边界准确。
+
+runner实际SHA256 `304d54217a8949da24081a591ecc5ec67ec5bd5c7e0e0ba160e9a6b355c9e7d1`，与agent报告304d5421…55c9e7d1相符；harness未改。该静态复核当时未采纳尚未终态run03，实际证据另记下一件，不改写首轮NotPass。

@@ -195,3 +195,11 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 
 
 随后总控明确授权独立ownenv/cache/tmp执行原完整check，7a33a920faf92fe0d19de3a0a1b0efad80b93d5b已自然exit0：22文件752项TS、1052项Python，lint/format/types/build/ruff通过，全部26源hash前后相同。fullcheck-01原始日志/真实exit及环境身份已归档；上文“完整check pending”是初始收据历史，现已完成此门。普通运行不报hostidle或量化性能。环境核查require(electron)触发包自身二进制下载，未启动应用；Chromium缺失、真实mounted probe/harness尚无，e2e/实际取消/领域服务仍未运行。实际argv、owner、缺件及原验收边界见dispatch-boundary-20261023/remaining-real-acceptance-plan.json；尚无新指定Pass，源候选仍7a33。
+
+## 真实 headless 挂载与新测试候选（2026-10-23）
+
+按根明确授权，已在原 owned fixtures 实现两份挂载文件。现有 Chrome155.0.8059.85/Playwright1.64.1、独立新 profile，真实挂载 ReactDOM/Sidebar；Node SSR 运行原 Conversation/Session/codec，无 Buffer/DOM/hook shim、共享 App/桥接/锁改动，不启 Electron 或占 C1 GUI。方案／实现独审均保留首轮 NotPass 与纠正 Pass。首跑44f取消oracle错误地期待一条收据，实际exit1；按既有完成草稿+CANCELLED收据合同改完整deepEqual。3896六组通过后，独审又发现busy掩盖Diff，8d9/e3补正反对照、依赖hash及realpath门，旧成功不冒最终覆盖。
+
+最终候选 `e3c727dd90e22e7add5f0db94cefb57901af61f0`：原26字节同7a33，新增两fixture共28；run03真实六组（含14模块模式组合、七上下文轴、双submit、迟到回调、草稿原文/更新、文本安全、纯模块取消）pass/exit0，28源、2固定输入、9依赖前后相同，页面请求/pageerror为空。symlink负例实际拒绝exit1、外部未创建。该e3另跑原完整check752TS/1052Python、exit0/28前后相同；实现增量、DOM原件与新check分别独立核验。详见 [真实交接](mounted-harness-preparation-20261023/handoff.md) 与 [完整索引](mounted-harness-preparation-20261023/controller-handoff-index.json)。
+
+组件事件证据现已存在，待指定模型复核，不由owner关闭原P2-6；P1仍缺获批供方，T04 QueryPage消费及T00/I04真实job取消/ACK、I06/T01/T09真实链条、原11.3/12.2/平台/真人/新同候选指定双审仍待。原两NotPass、P1/P2、Goal blocked保持；无provider/API/key/spend/Q5默认，未push/PR/merge。所有profile/raw/cache/DB留own runtime，不stage、不删除或ignore求绿，保留全部实际失败。
