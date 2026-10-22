@@ -2,6 +2,10 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-22 17:20+08：按本人全量补审指令，已登记 S1、独立 UI 与未实现正式接线三个当前阶段，以及全部历史后继；清单 external-review-backlog-20261022.{md,json}。S1 ZCode 已写出19238B完整报告（首写 SHA bf381a82cf16bad608d8c15ca1a8e928a504d4689ecf0537a0249eee80a58638），文本结论为独立 S1 通过并有两项P3文档建议，但尚未观测真实turn终态，暂不归档作最终双审通过；MiniMax仍有新工具/流，原任务保持。
+
+UI完整两提示、当前政策/实际路径补充和两个detached3b3af94独立reviewtree已准备；各npm ci/uv sync exit0、7源码匹配、每树42归档成员安全恢复并读回SHA，原三输入不改。当前真实缺口为官方Headless Shell1248下载TLS失败，browserReady=false，不以旧cache替代，不宣称headless通过；详见ui-round-1/prepared-environments.json。待环境缺口及root真实预检/短lease后创建UI双任务，当前UI指定新任务0。桌面创建焦点已交下一开发线，本线仅后台原流/官方日志监控，不因长推理占整应用。产品冻结、完整父验收和全部发布门保留。
+
 2026-10-22 16:57+08：按本人最新真实指令直接使用 computer use，旧静默/预约时段偏好撤回。ZCode 已实际新建并提交完整独立审查，session `session_863fdf5a03a40f74ea7b4b7289b097d1`；提交前后实际新任务 UI 均为 GLM-5.3／最高／完全访问，当前工作中。17003B 完整正文 SHA `a56121060048737ac48a72f05cdd0c1654f9ed46d0a8c266a8ca5a2509421786`；已通过原生消息复制→未发送输入区逐字读回确认受理全文，核验草稿清空。独立工作树 T06-zcode-review-61396a5 detached10f1，12来源哈希全部一致，AGENTS de15f6，新 npm ci/uv sync --frozen 均 exit0。仅补最新操作政策及路径映射，原完整输入保留；未改候选。详情见 round-1/zcode-desktop-start-receipt-20261022.json。
 
 新 CLI 登录65980在旧人工就绪后开启，随后被更新桌面方式指令取代；自有Ctrl-C实际exit1，无登录成功，不再要求人工CLI认证或再发链接。MiniMax 原会话继续运行，实际已有check exit0留存尾部及探索探针，但尚无完整报告/真终态，不能记Pass。指定双审现均有真实在途任务，不再属于“未创建”；以下旧状态均按各自时间保留。Goal仍blocked是既有正式状态，真实依赖/父模块验收仍开放，未push/PR/CI/merge。

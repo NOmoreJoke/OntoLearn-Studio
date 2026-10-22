@@ -1,0 +1,1530 @@
+{
+  "preparedAt": "2026-10-22T09:16:33.187411+00:00",
+  "preparer": "/root/ui_review_dispatch_prep",
+  "stage": "static_evidence_inputs_and_node_python_dependencies_prepared_browser_gap_not_dispatched",
+  "originalThreeFilesUnchanged": {
+    "zcode-glm53-input.md": "e2d3a0e6ce84427b9cc2b5b2f31dececad34175b1ac78f51effea94786b0cc7a",
+    "minimax-m31flash-input.md": "1dd600c234cfc7958ccad2599701c85e71357b23dfeeb27a2bdcbad2cd07ed38",
+    "dispatch-preflight.json": "86dc3d2be18a820f1e8e9f0be166b1309e37f3e9539432c5698d2063fc49818a"
+  },
+  "environments": [
+    {
+      "model": "zcode",
+      "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709",
+      "branch": "detached",
+      "head": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "product": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
+      "agentsSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "sourceChecks": [
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/BehaviorWorkspace.tsx",
+          "expected": "0e7012e1a5d2791fda1aafd5eea0a8248d78d7329e8513ea7ad2062ae39f671b",
+          "actual": "0e7012e1a5d2791fda1aafd5eea0a8248d78d7329e8513ea7ad2062ae39f671b",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/controller.ts",
+          "expected": "36d59ea11907fe44e73bb84849b20839944a02b8d538f602dc88ef82657217d3",
+          "actual": "36d59ea11907fe44e73bb84849b20839944a02b8d538f602dc88ef82657217d3",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/model.ts",
+          "expected": "b246491a46387f4b33079266c10d2a41f36648875e240330191ff3ba8a09f90f",
+          "actual": "b246491a46387f4b33079266c10d2a41f36648875e240330191ff3ba8a09f90f",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/presentation.ts",
+          "expected": "5966010c9a052cc2bbd7524e759fe06d9806c698259e84039aae54fcb28fa1d2",
+          "actual": "5966010c9a052cc2bbd7524e759fe06d9806c698259e84039aae54fcb28fa1d2",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/behavior.css",
+          "expected": "869ebea1be9dcbfb839814c5c610bd7bc698420edc5f4c05e315ad37347c1465",
+          "actual": "869ebea1be9dcbfb839814c5c610bd7bc698420edc5f4c05e315ad37347c1465",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/verify-headless.mjs",
+          "expected": "a4573ccca0725aa1db18c4953ae213213493423927ca435401a7f9c152eba742",
+          "actual": "a4573ccca0725aa1db18c4953ae213213493423927ca435401a7f9c152eba742",
+          "matched": true
+        },
+        {
+          "path": "tests/unit/t06-behavior-ui.test.ts",
+          "expected": "cad7082f2c0da281fd0256b09834dda2857e99da5bba47866c1619bc4480440c",
+          "actual": "cad7082f2c0da281fd0256b09834dda2857e99da5bba47866c1619bc4480440c",
+          "matched": true
+        }
+      ],
+      "documentMappings": [
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-integration-handoff.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/documents/ui-integration-handoff.md",
+          "bytes": 5145,
+          "sha256": "b0403445b1fd3c368231fa233fd97edbc6c9bb77184727de412a6fc905cb715d"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-local-review-1.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/documents/ui-local-review-1.md",
+          "bytes": 6356,
+          "sha256": "628f2370edb030f636fa671188b8e344f953b693918a404db70ae85734ec0292"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-local-review-2.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/documents/ui-local-review-2.md",
+          "bytes": 7552,
+          "sha256": "0ed80af74646509741dc0e7a40fb142713b0605c30dc97735b1eba8c1680c9b3"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-validation-da37709.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/documents/evidence/ui-validation-da37709.json",
+          "bytes": 5569,
+          "sha256": "a7cfcdb01cc1c2dff14a0503744c74dc1d982c27e86b1d154b7fdc3cc2419820"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-archive-index-20261021.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/documents/evidence/ui-archive-index-20261021.json",
+          "bytes": 7428,
+          "sha256": "a21315870ddc3726b73547a1920ab74b45c43c4cff85c6923424bf580314d231"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-archive-20261021.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/documents/evidence/ui-archive-20261021.md",
+          "bytes": 2741,
+          "sha256": "33c33705d0f3f078f83a79769f574a373906b81f8e5d378a529c53a0045a7232"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-571b4d6-negative-probes.mjs",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/documents/evidence/ui-571b4d6-negative-probes.mjs",
+          "bytes": 2965,
+          "sha256": "dc8b54956bbfda1f0b2d0548ca7a8eecaa6fdbbf07c54306d0ef4c65b69562ab"
+        }
+      ],
+      "archives": [
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-original-artifacts-20261021.tar.gz",
+          "archiveCopy": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/archives/ui-original-artifacts-20261021.tar.gz",
+            "bytes": 2232198,
+            "sha256": "a51bfec8089f9a7db1578ebbfcc3570e1591beda51b956f2d8bf165a0cfab433"
+          },
+          "extractedRoot": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021",
+          "memberCount": 34,
+          "manifestSha256": "42950c37fededf9175de2433f35f420a7e30fa4b147e29edcda2f1cb344b629d",
+          "allMembersRegularWhitelistedAndReadbackMatched": true
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-session-tool-records-20261021.tar.gz",
+          "archiveCopy": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/archives/ui-session-tool-records-20261021.tar.gz",
+            "bytes": 6698,
+            "sha256": "06d2e8636bbef29c6bb131bb3605c4f15e679d784137a2bffec5e58d472f5a3b"
+          },
+          "extractedRoot": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021",
+          "memberCount": 8,
+          "manifestSha256": "b35e8ae09fd445463dca559b1baa2390dbc3eb26060c0657840656b7315e2156",
+          "allMembersRegularWhitelistedAndReadbackMatched": true
+        }
+      ],
+      "members": [
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/debug-structure.txt",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/debug-structure.txt",
+          "bytes": 5920,
+          "sha256": "59a7c4b847ef0a58e9c1566cfae950430b36d0d505749cb2ce1bb761f424a997",
+          "manifestExpected": {
+            "bytes": 5920,
+            "sha256": "59a7c4b847ef0a58e9c1566cfae950430b36d0d505749cb2ce1bb761f424a997",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/debug-structure.txt"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/index.html",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/index.html",
+          "bytes": 316,
+          "sha256": "46fc25b3d2bda45d8f772cb365f297d906bc40f5bd79f80720302f130606f2c8",
+          "manifestExpected": {
+            "bytes": 316,
+            "sha256": "46fc25b3d2bda45d8f772cb365f297d906bc40f5bd79f80720302f130606f2c8",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/index.html"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/preview.css",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/preview.css",
+          "bytes": 6236,
+          "sha256": "30cd029ab0ad767a72d6a2c51406afb512f6df93b89700a3858be536f730cdff",
+          "manifestExpected": {
+            "bytes": 6236,
+            "sha256": "30cd029ab0ad767a72d6a2c51406afb512f6df93b89700a3858be536f730cdff",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/preview.css"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/preview.js",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/preview.js",
+          "bytes": 808760,
+          "sha256": "665cc0f15379cd062bade069ec45b5eb47b6dabeeeafccfab39fcec38e2d405a",
+          "manifestExpected": {
+            "bytes": 808760,
+            "sha256": "665cc0f15379cd062bade069ec45b5eb47b6dabeeeafccfab39fcec38e2d405a",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/preview.js"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/verify.mjs",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/verify.mjs",
+          "bytes": 15839,
+          "sha256": "7535549485e96e875c7c080029c8b50ced19c63cb8e90350d7683da75c9b1aec",
+          "manifestExpected": {
+            "bytes": 15839,
+            "sha256": "7535549485e96e875c7c080029c8b50ced19c63cb8e90350d7683da75c9b1aec",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/verify.mjs"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/headless.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/headless.log",
+          "bytes": 1294,
+          "sha256": "4fec298d4036559f5e3d98dee626dc8880266dfcd1ae6e11dc4471ed3fbd637f",
+          "manifestExpected": {
+            "bytes": 1294,
+            "sha256": "4fec298d4036559f5e3d98dee626dc8880266dfcd1ae6e11dc4471ed3fbd637f",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/headless.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/evidence.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/evidence.json",
+          "bytes": 912,
+          "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+          "manifestExpected": {
+            "bytes": 912,
+            "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/evidence.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/viewport-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/viewport-390.png",
+          "bytes": 53963,
+          "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+          "manifestExpected": {
+            "bytes": 53963,
+            "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/viewport-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/width-1440.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/width-1440.png",
+          "bytes": 345005,
+          "sha256": "dcc98ea6bcf8deac340bb3a0098f1c8d5738fecbef30f8ddab0d432549797008",
+          "manifestExpected": {
+            "bytes": 345005,
+            "sha256": "dcc98ea6bcf8deac340bb3a0098f1c8d5738fecbef30f8ddab0d432549797008",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/width-1440.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/width-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/width-390.png",
+          "bytes": 326681,
+          "sha256": "d06b34c7041d77d37d9dbe18d3ab6526bb1cddb3096b636f45cbc6b1755ee057",
+          "manifestExpected": {
+            "bytes": 326681,
+            "sha256": "d06b34c7041d77d37d9dbe18d3ab6526bb1cddb3096b636f45cbc6b1755ee057",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/width-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "manifest.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/manifest.json",
+          "bytes": 15797,
+          "sha256": "42950c37fededf9175de2433f35f420a7e30fa4b147e29edcda2f1cb344b629d",
+          "manifestExpected": null,
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "provenance/main-ui-validation.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/provenance/main-ui-validation.json",
+          "bytes": 5569,
+          "sha256": "a7cfcdb01cc1c2dff14a0503744c74dc1d982c27e86b1d154b7fdc3cc2419820",
+          "manifestExpected": {
+            "bytes": 5569,
+            "sha256": "a7cfcdb01cc1c2dff14a0503744c74dc1d982c27e86b1d154b7fdc3cc2419820",
+            "source": "git:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior:e2fca19ceae38b335d572f5099d399fa28d18f1b:docs/reviews/T06/evidence/ui-validation-da37709.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "provenance/ui-571-verification.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/provenance/ui-571-verification.json",
+          "bytes": 3662,
+          "sha256": "ddd1bc99026c51d444755ad2363423f428d84a57f2a7092b4bd42e20a3d18bc9",
+          "manifestExpected": {
+            "bytes": 3662,
+            "sha256": "ddd1bc99026c51d444755ad2363423f428d84a57f2a7092b4bd42e20a3d18bc9",
+            "source": "git:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui:571b4d64120c8420d527f9fda2a3cb81bbd47d3f:apps/desktop/src/renderer/src/behavior/verification.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "provenance/ui-current-verification.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/provenance/ui-current-verification.json",
+          "bytes": 7130,
+          "sha256": "839448ed49ac41dde2388179dd90fd796ef329fe89f5b0b40b79153b66305fc0",
+          "manifestExpected": {
+            "bytes": 7130,
+            "sha256": "839448ed49ac41dde2388179dd90fd796ef329fe89f5b0b40b79153b66305fc0",
+            "source": "git:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui:3b3af941c73b7a5d416fda50ec6fb8102992551f:apps/desktop/src/renderer/src/behavior/verification.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/evidence.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/evidence.json",
+          "bytes": 598,
+          "sha256": "3b1bffd5dab1f12c7a7fdd83bd375c4eabd948f94476d3176a6c406578500ee1",
+          "manifestExpected": {
+            "bytes": 598,
+            "sha256": "3b1bffd5dab1f12c7a7fdd83bd375c4eabd948f94476d3176a6c406578500ee1",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/evidence.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/viewport-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/viewport-390.png",
+          "bytes": 44751,
+          "sha256": "24a1167ac513a4f6447038dbe10302dc42af03161ac9f2fca5e4a0b640e750d9",
+          "manifestExpected": {
+            "bytes": 44751,
+            "sha256": "24a1167ac513a4f6447038dbe10302dc42af03161ac9f2fca5e4a0b640e750d9",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/viewport-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/width-1440.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/width-1440.png",
+          "bytes": 342329,
+          "sha256": "445458d44db5ec46a10af3fff488ef44d77954338d25807a36dbbe24e1ae65a9",
+          "manifestExpected": {
+            "bytes": 342329,
+            "sha256": "445458d44db5ec46a10af3fff488ef44d77954338d25807a36dbbe24e1ae65a9",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/width-1440.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/width-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/width-390.png",
+          "bytes": 323838,
+          "sha256": "070df1ace76abdf8f89a1e38bd53ec7a7552dcc094d5243e68bca2015cc083f6",
+          "manifestExpected": {
+            "bytes": 323838,
+            "sha256": "070df1ace76abdf8f89a1e38bd53ec7a7552dcc094d5243e68bca2015cc083f6",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/width-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-check-2.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-check-2.log",
+          "bytes": 5049,
+          "sha256": "2eb59b68ab54953f055f4913f06d6cff4a26b270f9bf1d22b0d6340038412340",
+          "manifestExpected": {
+            "bytes": 5049,
+            "sha256": "2eb59b68ab54953f055f4913f06d6cff4a26b270f9bf1d22b0d6340038412340",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-check-2.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-check-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-check-final.log",
+          "bytes": 5048,
+          "sha256": "a3752ddc8bb1aedeb86043c135bd63b4b95caf6b451c60c453b33b221997b554",
+          "manifestExpected": {
+            "bytes": 5048,
+            "sha256": "a3752ddc8bb1aedeb86043c135bd63b4b95caf6b451c60c453b33b221997b554",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-check-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-check.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-check.log",
+          "bytes": 440,
+          "sha256": "18dbd6e48a4c6077a6bc04dc8a8eb26a04c01201c10f577fe2f98246c30798d3",
+          "manifestExpected": {
+            "bytes": 440,
+            "sha256": "18dbd6e48a4c6077a6bc04dc8a8eb26a04c01201c10f577fe2f98246c30798d3",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-check.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless-2.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless-2.log",
+          "bytes": 890,
+          "sha256": "9a9f6e4ea4b14b6af3261acd3c8b9515d2bcc90640c4710fd9732394d1d5bb17",
+          "manifestExpected": {
+            "bytes": 890,
+            "sha256": "9a9f6e4ea4b14b6af3261acd3c8b9515d2bcc90640c4710fd9732394d1d5bb17",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless-2.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless-3.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless-3.log",
+          "bytes": 884,
+          "sha256": "b46d018f41923d7c81fbb1b7565e370f8fb71c04ed361bc4f1ee087b3b058331",
+          "manifestExpected": {
+            "bytes": 884,
+            "sha256": "b46d018f41923d7c81fbb1b7565e370f8fb71c04ed361bc4f1ee087b3b058331",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless-3.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless-final.log",
+          "bytes": 909,
+          "sha256": "dc88493ebd4a4843957340c757227902fa17a6fa6a6c1606add3f73ab77d7e8b",
+          "manifestExpected": {
+            "bytes": 909,
+            "sha256": "dc88493ebd4a4843957340c757227902fa17a6fa6a6c1606add3f73ab77d7e8b",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless.log",
+          "bytes": 890,
+          "sha256": "bbf658e2319e7b251db10fa9b5170c81b9bc403f966fc42514c562e066b2a841",
+          "manifestExpected": {
+            "bytes": 890,
+            "sha256": "bbf658e2319e7b251db10fa9b5170c81b9bc403f966fc42514c562e066b2a841",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/evidence.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/evidence.json",
+          "bytes": 912,
+          "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+          "manifestExpected": {
+            "bytes": 912,
+            "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/evidence.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/viewport-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/viewport-390.png",
+          "bytes": 53963,
+          "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+          "manifestExpected": {
+            "bytes": 53963,
+            "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/viewport-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/width-1440.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/width-1440.png",
+          "bytes": 345644,
+          "sha256": "2a2ea63a3bad3aaf0eebb8e98a6e931469d2793f19b31c5a2d12832fa414efc1",
+          "manifestExpected": {
+            "bytes": 345644,
+            "sha256": "2a2ea63a3bad3aaf0eebb8e98a6e931469d2793f19b31c5a2d12832fa414efc1",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/width-1440.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/width-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/width-390.png",
+          "bytes": 327219,
+          "sha256": "a0d4a800d9008ca485a28361491b0bae1764ac5501e636afa5a4e3edd2e6d635",
+          "manifestExpected": {
+            "bytes": 327219,
+            "sha256": "a0d4a800d9008ca485a28361491b0bae1764ac5501e636afa5a4e3edd2e6d635",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/width-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-check-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-check-final.log",
+          "bytes": 5048,
+          "sha256": "d2edb183dedd37abdfe59c877d5e6101361ea1a5b5713063d4c05e46de8b9fe1",
+          "manifestExpected": {
+            "bytes": 5048,
+            "sha256": "d2edb183dedd37abdfe59c877d5e6101361ea1a5b5713063d4c05e46de8b9fe1",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-check-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-check-first.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-check-first.log",
+          "bytes": 5048,
+          "sha256": "98218de282b2ba58fc334aaca3071a187b8bcb4a569100e39537bc7aa4314a3b",
+          "manifestExpected": {
+            "bytes": 5048,
+            "sha256": "98218de282b2ba58fc334aaca3071a187b8bcb4a569100e39537bc7aa4314a3b",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-check-first.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-headless-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-headless-final.log",
+          "bytes": 1228,
+          "sha256": "7a39f6a19e023f86c8662601bab8e26ae70fae5d7d531bc96d4e7bed7dad56fe",
+          "manifestExpected": {
+            "bytes": 1228,
+            "sha256": "7a39f6a19e023f86c8662601bab8e26ae70fae5d7d531bc96d4e7bed7dad56fe",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-headless-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-headless-first.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-headless-first.log",
+          "bytes": 804,
+          "sha256": "aaf1df2e53ad439c13a1d1107e366f427ecb240893fe42d2ee1133c62202978c",
+          "manifestExpected": {
+            "bytes": 804,
+            "sha256": "aaf1df2e53ad439c13a1d1107e366f427ecb240893fe42d2ee1133c62202978c",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-headless-first.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-unit-first.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-unit-first.log",
+          "bytes": 232,
+          "sha256": "53377a0c25b4b1ed04b694f03c86c3aa15031d8171054ed265a6f96555510bde",
+          "manifestExpected": {
+            "bytes": 232,
+            "sha256": "53377a0c25b4b1ed04b694f03c86c3aa15031d8171054ed265a6f96555510bde",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-unit-first.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-build-result-shape-failure.call.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-build-result-shape-failure.call.jsonl",
+          "bytes": 3069,
+          "sha256": "145f4813a91c687da84519752a2895e7d1ab6c6dad997652ba94f600964ce8ee",
+          "manifestExpected": {
+            "bytes": 3069,
+            "sha256": "145f4813a91c687da84519752a2895e7d1ab6c6dad997652ba94f600964ce8ee",
+            "source_line": 491,
+            "call_id": "call_1c6b1a1f4999430988f63271156acceb"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-build-result-shape-failure.output.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-build-result-shape-failure.output.jsonl",
+          "bytes": 1116,
+          "sha256": "49507de7bf7d8bfacf68932c74a16b95bc3a94490550ac41c1b41472298b29e7",
+          "manifestExpected": {
+            "bytes": 1116,
+            "sha256": "49507de7bf7d8bfacf68932c74a16b95bc3a94490550ac41c1b41472298b29e7",
+            "source_line": 494,
+            "call_id": "call_1c6b1a1f4999430988f63271156acceb"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-virtual-entry-failure.call.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-virtual-entry-failure.call.jsonl",
+          "bytes": 3069,
+          "sha256": "e12843d1ad0cc6d1af38d8f74e84f2b4e93f17ba44891b9d660d7bea791df4f6",
+          "manifestExpected": {
+            "bytes": 3069,
+            "sha256": "e12843d1ad0cc6d1af38d8f74e84f2b4e93f17ba44891b9d660d7bea791df4f6",
+            "source_line": 484,
+            "call_id": "call_5f52ff5f3fdc4952a24af55d22cbab35"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-virtual-entry-failure.output.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-virtual-entry-failure.output.jsonl",
+          "bytes": 2086,
+          "sha256": "0fe025850226f0c0b001a3bc0b048da4547c8ee622020978a799168d549ec166",
+          "manifestExpected": {
+            "bytes": 2086,
+            "sha256": "0fe025850226f0c0b001a3bc0b048da4547c8ee622020978a799168d549ec166",
+            "source_line": 487,
+            "call_id": "call_5f52ff5f3fdc4952a24af55d22cbab35"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "README.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/README.md",
+          "bytes": 1371,
+          "sha256": "b976e3ba3686e6b34646d04b303b277817bcb378a5415da0be895dc50208a332",
+          "manifestExpected": null,
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "da37709-independent-vitest-34.call.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/da37709-independent-vitest-34.call.jsonl",
+          "bytes": 2212,
+          "sha256": "f7cf78ed3a8a1dbcc7903df0e0428b9515141933a914b73796dd66cf5c757210",
+          "manifestExpected": {
+            "bytes": 2212,
+            "sha256": "f7cf78ed3a8a1dbcc7903df0e0428b9515141933a914b73796dd66cf5c757210",
+            "source_line": 647,
+            "call_id": "call_7aa271d781e945bbb62215f7175b8599"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "da37709-independent-vitest-34.output.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/da37709-independent-vitest-34.output.jsonl",
+          "bytes": 1302,
+          "sha256": "45e4e19ea5b9e50b858f126922f007dd0bcfdd659bdcf6fbf6798ea4b82bf3a8",
+          "manifestExpected": {
+            "bytes": 1302,
+            "sha256": "45e4e19ea5b9e50b858f126922f007dd0bcfdd659bdcf6fbf6798ea4b82bf3a8",
+            "source_line": 651,
+            "call_id": "call_7aa271d781e945bbb62215f7175b8599"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "manifest.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/manifest.json",
+          "bytes": 7908,
+          "sha256": "b35e8ae09fd445463dca559b1baa2390dbc3eb26060c0657840656b7315e2156",
+          "manifestExpected": null,
+          "readbackMatched": true
+        }
+      ],
+      "all42MemberHashesMatched": true,
+      "originalInputCopy": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/docs/reviews/T06/ui-round-1/zcode-glm53-input.md",
+        "bytes": 20978,
+        "sha256": "e2d3a0e6ce84427b9cc2b5b2f31dececad34175b1ac78f51effea94786b0cc7a"
+      },
+      "fullDispatchInMain": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-round-1/zcode-glm53-dispatch-20261022.md",
+        "bytes": 30774,
+        "sha256": "acefdd54146760a1fb6e2a378a4cb8909a191ca4d77db5a0f06cc57f6112cc18"
+      },
+      "fullDispatchInReviewTree": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/docs/reviews/T06/ui-round-1/zcode-glm53-dispatch-20261022.md",
+        "bytes": 30774,
+        "sha256": "acefdd54146760a1fb6e2a378a4cb8909a191ca4d77db5a0f06cc57f6112cc18"
+      },
+      "rawOriginalInputSuffixMatched": true,
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/docs/reviews/T06/ui-round-1/zcode-glm53.md",
+      "ownerDependencyReceipt": {
+        "source": "parent /root explicit tool-result receipt relayed to this agent",
+        "runBy": "owner, not static preparation agent",
+        "npmCi": {
+          "toolSession": 68471,
+          "exitCode": 0,
+          "added": 440,
+          "audited": 443,
+          "vulnerabilities": 0
+        },
+        "uvSyncFrozen": {
+          "toolSession": 49169,
+          "exitCode": 0,
+          "installedPackages": 14
+        },
+        "exactSessionMappingConfirmedByOwner": true
+      },
+      "testsBrowserAndModelStartedByThisTask": false,
+      "actualModelTaskId": null,
+      "browserPreparation": {
+        "PLAYWRIGHT_BROWSERS_PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-zcode-review-da37709/out/t06-ui-review-browser",
+        "ready": false,
+        "requiredCurrentBrowserRevision": 1248,
+        "completeDownloadOrInstallation": false,
+        "browserLaunched": false,
+        "headlessRun": false,
+        "ownerActualAttempts": [
+          {
+            "id": 95403,
+            "kind": "official CLI install without added per-process proxy",
+            "exitCode": 1,
+            "error": "ECONNRESET",
+            "originalPreservedByOwner": true
+          },
+          {
+            "id": 14040,
+            "kind": "curl same official download URL",
+            "exitCode": 35,
+            "error": "SSL_ERROR_SYSCALL / TLS to storage.googleapis.com failed",
+            "originalPreservedByOwner": true
+          },
+          {
+            "id": 86209,
+            "kind": "official CLI install with only process HTTPS_PROXY/HTTP_PROXY=existing system 127.0.0.1:7890",
+            "exitCode": 1,
+            "error": "ECONNRESET",
+            "originalPreservedByOwner": true
+          },
+          {
+            "id": "owner final synchronous exec",
+            "kind": "curl explicit --proxy existing 127.0.0.1:7890 and --noproxy '' to same official URL",
+            "exitCode": 35,
+            "error": "TLS to storage.googleapis.com failed",
+            "originalPreservedByOwner": true
+          }
+        ],
+        "source": "Parent /root explicit final actual tool-result relay; this static agent did not run downloads or launch browser",
+        "systemNetworkSettingsChanged": false,
+        "tlsWeakened": false,
+        "oldGlobalBrowserCacheNotSubstituted": [
+          1208,
+          1217,
+          1234
+        ],
+        "gap": "Current lock requires revision1248; missing complete official browser installation prevents current headless validation. Keep UI backlog open; do not claim complete runtime environment ready or product/UI Pass."
+      }
+    },
+    {
+      "model": "minimax",
+      "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709",
+      "branch": "detached",
+      "head": "3b3af941c73b7a5d416fda50ec6fb8102992551f",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "product": "da37709dcf09e04ded767ab2d08c26bbd8df24f3",
+      "agentsSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "sourceChecks": [
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/BehaviorWorkspace.tsx",
+          "expected": "0e7012e1a5d2791fda1aafd5eea0a8248d78d7329e8513ea7ad2062ae39f671b",
+          "actual": "0e7012e1a5d2791fda1aafd5eea0a8248d78d7329e8513ea7ad2062ae39f671b",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/controller.ts",
+          "expected": "36d59ea11907fe44e73bb84849b20839944a02b8d538f602dc88ef82657217d3",
+          "actual": "36d59ea11907fe44e73bb84849b20839944a02b8d538f602dc88ef82657217d3",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/model.ts",
+          "expected": "b246491a46387f4b33079266c10d2a41f36648875e240330191ff3ba8a09f90f",
+          "actual": "b246491a46387f4b33079266c10d2a41f36648875e240330191ff3ba8a09f90f",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/presentation.ts",
+          "expected": "5966010c9a052cc2bbd7524e759fe06d9806c698259e84039aae54fcb28fa1d2",
+          "actual": "5966010c9a052cc2bbd7524e759fe06d9806c698259e84039aae54fcb28fa1d2",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/behavior.css",
+          "expected": "869ebea1be9dcbfb839814c5c610bd7bc698420edc5f4c05e315ad37347c1465",
+          "actual": "869ebea1be9dcbfb839814c5c610bd7bc698420edc5f4c05e315ad37347c1465",
+          "matched": true
+        },
+        {
+          "path": "apps/desktop/src/renderer/src/behavior/verify-headless.mjs",
+          "expected": "a4573ccca0725aa1db18c4953ae213213493423927ca435401a7f9c152eba742",
+          "actual": "a4573ccca0725aa1db18c4953ae213213493423927ca435401a7f9c152eba742",
+          "matched": true
+        },
+        {
+          "path": "tests/unit/t06-behavior-ui.test.ts",
+          "expected": "cad7082f2c0da281fd0256b09834dda2857e99da5bba47866c1619bc4480440c",
+          "actual": "cad7082f2c0da281fd0256b09834dda2857e99da5bba47866c1619bc4480440c",
+          "matched": true
+        }
+      ],
+      "documentMappings": [
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-integration-handoff.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/documents/ui-integration-handoff.md",
+          "bytes": 5145,
+          "sha256": "b0403445b1fd3c368231fa233fd97edbc6c9bb77184727de412a6fc905cb715d"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-local-review-1.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/documents/ui-local-review-1.md",
+          "bytes": 6356,
+          "sha256": "628f2370edb030f636fa671188b8e344f953b693918a404db70ae85734ec0292"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-local-review-2.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/documents/ui-local-review-2.md",
+          "bytes": 7552,
+          "sha256": "0ed80af74646509741dc0e7a40fb142713b0605c30dc97735b1eba8c1680c9b3"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-validation-da37709.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/documents/evidence/ui-validation-da37709.json",
+          "bytes": 5569,
+          "sha256": "a7cfcdb01cc1c2dff14a0503744c74dc1d982c27e86b1d154b7fdc3cc2419820"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-archive-index-20261021.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/documents/evidence/ui-archive-index-20261021.json",
+          "bytes": 7428,
+          "sha256": "a21315870ddc3726b73547a1920ab74b45c43c4cff85c6923424bf580314d231"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-archive-20261021.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/documents/evidence/ui-archive-20261021.md",
+          "bytes": 2741,
+          "sha256": "33c33705d0f3f078f83a79769f574a373906b81f8e5d378a529c53a0045a7232"
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-571b4d6-negative-probes.mjs",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/documents/evidence/ui-571b4d6-negative-probes.mjs",
+          "bytes": 2965,
+          "sha256": "dc8b54956bbfda1f0b2d0548ca7a8eecaa6fdbbf07c54306d0ef4c65b69562ab"
+        }
+      ],
+      "archives": [
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-original-artifacts-20261021.tar.gz",
+          "archiveCopy": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/archives/ui-original-artifacts-20261021.tar.gz",
+            "bytes": 2232198,
+            "sha256": "a51bfec8089f9a7db1578ebbfcc3570e1591beda51b956f2d8bf165a0cfab433"
+          },
+          "extractedRoot": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021",
+          "memberCount": 34,
+          "manifestSha256": "42950c37fededf9175de2433f35f420a7e30fa4b147e29edcda2f1cb344b629d",
+          "allMembersRegularWhitelistedAndReadbackMatched": true
+        },
+        {
+          "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/evidence/ui-session-tool-records-20261021.tar.gz",
+          "archiveCopy": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/archives/ui-session-tool-records-20261021.tar.gz",
+            "bytes": 6698,
+            "sha256": "06d2e8636bbef29c6bb131bb3605c4f15e679d784137a2bffec5e58d472f5a3b"
+          },
+          "extractedRoot": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021",
+          "memberCount": 8,
+          "manifestSha256": "b35e8ae09fd445463dca559b1baa2390dbc3eb26060c0657840656b7315e2156",
+          "allMembersRegularWhitelistedAndReadbackMatched": true
+        }
+      ],
+      "members": [
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/debug-structure.txt",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/debug-structure.txt",
+          "bytes": 5920,
+          "sha256": "59a7c4b847ef0a58e9c1566cfae950430b36d0d505749cb2ce1bb761f424a997",
+          "manifestExpected": {
+            "bytes": 5920,
+            "sha256": "59a7c4b847ef0a58e9c1566cfae950430b36d0d505749cb2ce1bb761f424a997",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/debug-structure.txt"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/index.html",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/index.html",
+          "bytes": 316,
+          "sha256": "46fc25b3d2bda45d8f772cb365f297d906bc40f5bd79f80720302f130606f2c8",
+          "manifestExpected": {
+            "bytes": 316,
+            "sha256": "46fc25b3d2bda45d8f772cb365f297d906bc40f5bd79f80720302f130606f2c8",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/index.html"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/preview.css",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/preview.css",
+          "bytes": 6236,
+          "sha256": "30cd029ab0ad767a72d6a2c51406afb512f6df93b89700a3858be536f730cdff",
+          "manifestExpected": {
+            "bytes": 6236,
+            "sha256": "30cd029ab0ad767a72d6a2c51406afb512f6df93b89700a3858be536f730cdff",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/preview.css"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/output/preview.js",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/output/preview.js",
+          "bytes": 808760,
+          "sha256": "665cc0f15379cd062bade069ec45b5eb47b6dabeeeafccfab39fcec38e2d405a",
+          "manifestExpected": {
+            "bytes": 808760,
+            "sha256": "665cc0f15379cd062bade069ec45b5eb47b6dabeeeafccfab39fcec38e2d405a",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/output/preview.js"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-build/verify.mjs",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-build/verify.mjs",
+          "bytes": 15839,
+          "sha256": "7535549485e96e875c7c080029c8b50ced19c63cb8e90350d7683da75c9b1aec",
+          "manifestExpected": {
+            "bytes": 15839,
+            "sha256": "7535549485e96e875c7c080029c8b50ced19c63cb8e90350d7683da75c9b1aec",
+            "source": "/tmp/t06-ui-da37709-review-6R9rwE/verify.mjs"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/headless.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/headless.log",
+          "bytes": 1294,
+          "sha256": "4fec298d4036559f5e3d98dee626dc8880266dfcd1ae6e11dc4471ed3fbd637f",
+          "manifestExpected": {
+            "bytes": 1294,
+            "sha256": "4fec298d4036559f5e3d98dee626dc8880266dfcd1ae6e11dc4471ed3fbd637f",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/headless.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/evidence.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/evidence.json",
+          "bytes": 912,
+          "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+          "manifestExpected": {
+            "bytes": 912,
+            "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/evidence.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/viewport-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/viewport-390.png",
+          "bytes": 53963,
+          "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+          "manifestExpected": {
+            "bytes": 53963,
+            "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/viewport-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/width-1440.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/width-1440.png",
+          "bytes": 345005,
+          "sha256": "dcc98ea6bcf8deac340bb3a0098f1c8d5738fecbef30f8ddab0d432549797008",
+          "manifestExpected": {
+            "bytes": 345005,
+            "sha256": "dcc98ea6bcf8deac340bb3a0098f1c8d5738fecbef30f8ddab0d432549797008",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/width-1440.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "independent-preserved/output/width-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/independent-preserved/output/width-390.png",
+          "bytes": 326681,
+          "sha256": "d06b34c7041d77d37d9dbe18d3ab6526bb1cddb3096b636f45cbc6b1755ee057",
+          "manifestExpected": {
+            "bytes": 326681,
+            "sha256": "d06b34c7041d77d37d9dbe18d3ab6526bb1cddb3096b636f45cbc6b1755ee057",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/out/t06-ui-da37709-independent-review/output/width-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "manifest.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/manifest.json",
+          "bytes": 15797,
+          "sha256": "42950c37fededf9175de2433f35f420a7e30fa4b147e29edcda2f1cb344b629d",
+          "manifestExpected": null,
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "provenance/main-ui-validation.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/provenance/main-ui-validation.json",
+          "bytes": 5569,
+          "sha256": "a7cfcdb01cc1c2dff14a0503744c74dc1d982c27e86b1d154b7fdc3cc2419820",
+          "manifestExpected": {
+            "bytes": 5569,
+            "sha256": "a7cfcdb01cc1c2dff14a0503744c74dc1d982c27e86b1d154b7fdc3cc2419820",
+            "source": "git:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior:e2fca19ceae38b335d572f5099d399fa28d18f1b:docs/reviews/T06/evidence/ui-validation-da37709.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "provenance/ui-571-verification.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/provenance/ui-571-verification.json",
+          "bytes": 3662,
+          "sha256": "ddd1bc99026c51d444755ad2363423f428d84a57f2a7092b4bd42e20a3d18bc9",
+          "manifestExpected": {
+            "bytes": 3662,
+            "sha256": "ddd1bc99026c51d444755ad2363423f428d84a57f2a7092b4bd42e20a3d18bc9",
+            "source": "git:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui:571b4d64120c8420d527f9fda2a3cb81bbd47d3f:apps/desktop/src/renderer/src/behavior/verification.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "provenance/ui-current-verification.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/provenance/ui-current-verification.json",
+          "bytes": 7130,
+          "sha256": "839448ed49ac41dde2388179dd90fd796ef329fe89f5b0b40b79153b66305fc0",
+          "manifestExpected": {
+            "bytes": 7130,
+            "sha256": "839448ed49ac41dde2388179dd90fd796ef329fe89f5b0b40b79153b66305fc0",
+            "source": "git:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui:3b3af941c73b7a5d416fda50ec6fb8102992551f:apps/desktop/src/renderer/src/behavior/verification.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/evidence.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/evidence.json",
+          "bytes": 598,
+          "sha256": "3b1bffd5dab1f12c7a7fdd83bd375c4eabd948f94476d3176a6c406578500ee1",
+          "manifestExpected": {
+            "bytes": 598,
+            "sha256": "3b1bffd5dab1f12c7a7fdd83bd375c4eabd948f94476d3176a6c406578500ee1",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/evidence.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/viewport-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/viewport-390.png",
+          "bytes": 44751,
+          "sha256": "24a1167ac513a4f6447038dbe10302dc42af03161ac9f2fca5e4a0b640e750d9",
+          "manifestExpected": {
+            "bytes": 44751,
+            "sha256": "24a1167ac513a4f6447038dbe10302dc42af03161ac9f2fca5e4a0b640e750d9",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/viewport-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/width-1440.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/width-1440.png",
+          "bytes": 342329,
+          "sha256": "445458d44db5ec46a10af3fff488ef44d77954338d25807a36dbbe24e1ae65a9",
+          "manifestExpected": {
+            "bytes": 342329,
+            "sha256": "445458d44db5ec46a10af3fff488ef44d77954338d25807a36dbbe24e1ae65a9",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/width-1440.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-behavior-ui/width-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-behavior-ui/width-390.png",
+          "bytes": 323838,
+          "sha256": "070df1ace76abdf8f89a1e38bd53ec7a7552dcc094d5243e68bca2015cc083f6",
+          "manifestExpected": {
+            "bytes": 323838,
+            "sha256": "070df1ace76abdf8f89a1e38bd53ec7a7552dcc094d5243e68bca2015cc083f6",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui/width-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-check-2.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-check-2.log",
+          "bytes": 5049,
+          "sha256": "2eb59b68ab54953f055f4913f06d6cff4a26b270f9bf1d22b0d6340038412340",
+          "manifestExpected": {
+            "bytes": 5049,
+            "sha256": "2eb59b68ab54953f055f4913f06d6cff4a26b270f9bf1d22b0d6340038412340",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-check-2.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-check-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-check-final.log",
+          "bytes": 5048,
+          "sha256": "a3752ddc8bb1aedeb86043c135bd63b4b95caf6b451c60c453b33b221997b554",
+          "manifestExpected": {
+            "bytes": 5048,
+            "sha256": "a3752ddc8bb1aedeb86043c135bd63b4b95caf6b451c60c453b33b221997b554",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-check-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-check.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-check.log",
+          "bytes": 440,
+          "sha256": "18dbd6e48a4c6077a6bc04dc8a8eb26a04c01201c10f577fe2f98246c30798d3",
+          "manifestExpected": {
+            "bytes": 440,
+            "sha256": "18dbd6e48a4c6077a6bc04dc8a8eb26a04c01201c10f577fe2f98246c30798d3",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-check.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless-2.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless-2.log",
+          "bytes": 890,
+          "sha256": "9a9f6e4ea4b14b6af3261acd3c8b9515d2bcc90640c4710fd9732394d1d5bb17",
+          "manifestExpected": {
+            "bytes": 890,
+            "sha256": "9a9f6e4ea4b14b6af3261acd3c8b9515d2bcc90640c4710fd9732394d1d5bb17",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless-2.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless-3.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless-3.log",
+          "bytes": 884,
+          "sha256": "b46d018f41923d7c81fbb1b7565e370f8fb71c04ed361bc4f1ee087b3b058331",
+          "manifestExpected": {
+            "bytes": 884,
+            "sha256": "b46d018f41923d7c81fbb1b7565e370f8fb71c04ed361bc4f1ee087b3b058331",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless-3.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless-final.log",
+          "bytes": 909,
+          "sha256": "dc88493ebd4a4843957340c757227902fa17a6fa6a6c1606add3f73ab77d7e8b",
+          "manifestExpected": {
+            "bytes": 909,
+            "sha256": "dc88493ebd4a4843957340c757227902fa17a6fa6a6c1606add3f73ab77d7e8b",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-571/test-results/t06-ui-headless.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-571/test-results/t06-ui-headless.log",
+          "bytes": 890,
+          "sha256": "bbf658e2319e7b251db10fa9b5170c81b9bc403f966fc42514c562e066b2a841",
+          "manifestExpected": {
+            "bytes": 890,
+            "sha256": "bbf658e2319e7b251db10fa9b5170c81b9bc403f966fc42514c562e066b2a841",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-headless.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/evidence.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/evidence.json",
+          "bytes": 912,
+          "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+          "manifestExpected": {
+            "bytes": 912,
+            "sha256": "d7397917d1446c5901f10d92481666c477e7bc6ae529fa919b82241bc5ee0b56",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/evidence.json"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/viewport-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/viewport-390.png",
+          "bytes": 53963,
+          "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+          "manifestExpected": {
+            "bytes": 53963,
+            "sha256": "d1d42788e64416585133f023a26aeaf54a460268a853fe807eaae484a6ba902f",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/viewport-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/width-1440.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/width-1440.png",
+          "bytes": 345644,
+          "sha256": "2a2ea63a3bad3aaf0eebb8e98a6e931469d2793f19b31c5a2d12832fa414efc1",
+          "manifestExpected": {
+            "bytes": 345644,
+            "sha256": "2a2ea63a3bad3aaf0eebb8e98a6e931469d2793f19b31c5a2d12832fa414efc1",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/width-1440.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-behavior-ui-r2/width-390.png",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-behavior-ui-r2/width-390.png",
+          "bytes": 327219,
+          "sha256": "a0d4a800d9008ca485a28361491b0bae1764ac5501e636afa5a4e3edd2e6d635",
+          "manifestExpected": {
+            "bytes": 327219,
+            "sha256": "a0d4a800d9008ca485a28361491b0bae1764ac5501e636afa5a4e3edd2e6d635",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-behavior-ui-r2/width-390.png"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-check-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-check-final.log",
+          "bytes": 5048,
+          "sha256": "d2edb183dedd37abdfe59c877d5e6101361ea1a5b5713063d4c05e46de8b9fe1",
+          "manifestExpected": {
+            "bytes": 5048,
+            "sha256": "d2edb183dedd37abdfe59c877d5e6101361ea1a5b5713063d4c05e46de8b9fe1",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-check-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-check-first.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-check-first.log",
+          "bytes": 5048,
+          "sha256": "98218de282b2ba58fc334aaca3071a187b8bcb4a569100e39537bc7aa4314a3b",
+          "manifestExpected": {
+            "bytes": 5048,
+            "sha256": "98218de282b2ba58fc334aaca3071a187b8bcb4a569100e39537bc7aa4314a3b",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-check-first.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-headless-final.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-headless-final.log",
+          "bytes": 1228,
+          "sha256": "7a39f6a19e023f86c8662601bab8e26ae70fae5d7d531bc96d4e7bed7dad56fe",
+          "manifestExpected": {
+            "bytes": 1228,
+            "sha256": "7a39f6a19e023f86c8662601bab8e26ae70fae5d7d531bc96d4e7bed7dad56fe",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-headless-final.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-headless-first.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-headless-first.log",
+          "bytes": 804,
+          "sha256": "aaf1df2e53ad439c13a1d1107e366f427ecb240893fe42d2ee1133c62202978c",
+          "manifestExpected": {
+            "bytes": 804,
+            "sha256": "aaf1df2e53ad439c13a1d1107e366f427ecb240893fe42d2ee1133c62202978c",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-headless-first.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-original-artifacts-20261021.tar.gz",
+          "member": "ui-current/test-results/t06-ui-r2-unit-first.log",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-original-artifacts-20261021/ui-current/test-results/t06-ui-r2-unit-first.log",
+          "bytes": 232,
+          "sha256": "53377a0c25b4b1ed04b694f03c86c3aa15031d8171054ed265a6f96555510bde",
+          "manifestExpected": {
+            "bytes": 232,
+            "sha256": "53377a0c25b4b1ed04b694f03c86c3aa15031d8171054ed265a6f96555510bde",
+            "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior-ui/test-results/t06-ui-r2-unit-first.log"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-build-result-shape-failure.call.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-build-result-shape-failure.call.jsonl",
+          "bytes": 3069,
+          "sha256": "145f4813a91c687da84519752a2895e7d1ab6c6dad997652ba94f600964ce8ee",
+          "manifestExpected": {
+            "bytes": 3069,
+            "sha256": "145f4813a91c687da84519752a2895e7d1ab6c6dad997652ba94f600964ce8ee",
+            "source_line": 491,
+            "call_id": "call_1c6b1a1f4999430988f63271156acceb"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-build-result-shape-failure.output.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-build-result-shape-failure.output.jsonl",
+          "bytes": 1116,
+          "sha256": "49507de7bf7d8bfacf68932c74a16b95bc3a94490550ac41c1b41472298b29e7",
+          "manifestExpected": {
+            "bytes": 1116,
+            "sha256": "49507de7bf7d8bfacf68932c74a16b95bc3a94490550ac41c1b41472298b29e7",
+            "source_line": 494,
+            "call_id": "call_1c6b1a1f4999430988f63271156acceb"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-virtual-entry-failure.call.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-virtual-entry-failure.call.jsonl",
+          "bytes": 3069,
+          "sha256": "e12843d1ad0cc6d1af38d8f74e84f2b4e93f17ba44891b9d660d7bea791df4f6",
+          "manifestExpected": {
+            "bytes": 3069,
+            "sha256": "e12843d1ad0cc6d1af38d8f74e84f2b4e93f17ba44891b9d660d7bea791df4f6",
+            "source_line": 484,
+            "call_id": "call_5f52ff5f3fdc4952a24af55d22cbab35"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "571-virtual-entry-failure.output.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/571-virtual-entry-failure.output.jsonl",
+          "bytes": 2086,
+          "sha256": "0fe025850226f0c0b001a3bc0b048da4547c8ee622020978a799168d549ec166",
+          "manifestExpected": {
+            "bytes": 2086,
+            "sha256": "0fe025850226f0c0b001a3bc0b048da4547c8ee622020978a799168d549ec166",
+            "source_line": 487,
+            "call_id": "call_5f52ff5f3fdc4952a24af55d22cbab35"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "README.md",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/README.md",
+          "bytes": 1371,
+          "sha256": "b976e3ba3686e6b34646d04b303b277817bcb378a5415da0be895dc50208a332",
+          "manifestExpected": null,
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "da37709-independent-vitest-34.call.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/da37709-independent-vitest-34.call.jsonl",
+          "bytes": 2212,
+          "sha256": "f7cf78ed3a8a1dbcc7903df0e0428b9515141933a914b73796dd66cf5c757210",
+          "manifestExpected": {
+            "bytes": 2212,
+            "sha256": "f7cf78ed3a8a1dbcc7903df0e0428b9515141933a914b73796dd66cf5c757210",
+            "source_line": 647,
+            "call_id": "call_7aa271d781e945bbb62215f7175b8599"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "da37709-independent-vitest-34.output.jsonl",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/da37709-independent-vitest-34.output.jsonl",
+          "bytes": 1302,
+          "sha256": "45e4e19ea5b9e50b858f126922f007dd0bcfdd659bdcf6fbf6798ea4b82bf3a8",
+          "manifestExpected": {
+            "bytes": 1302,
+            "sha256": "45e4e19ea5b9e50b858f126922f007dd0bcfdd659bdcf6fbf6798ea4b82bf3a8",
+            "source_line": 651,
+            "call_id": "call_7aa271d781e945bbb62215f7175b8599"
+          },
+          "readbackMatched": true
+        },
+        {
+          "archive": "ui-session-tool-records-20261021.tar.gz",
+          "member": "manifest.json",
+          "destination": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/ui-review-evidence/ui-session-tool-records-20261021/manifest.json",
+          "bytes": 7908,
+          "sha256": "b35e8ae09fd445463dca559b1baa2390dbc3eb26060c0657840656b7315e2156",
+          "manifestExpected": null,
+          "readbackMatched": true
+        }
+      ],
+      "all42MemberHashesMatched": true,
+      "originalInputCopy": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/docs/reviews/T06/ui-round-1/minimax-m31flash-input.md",
+        "bytes": 21006,
+        "sha256": "1dd600c234cfc7958ccad2599701c85e71357b23dfeeb27a2bdcbad2cd07ed38"
+      },
+      "fullDispatchInMain": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/ui-round-1/minimax-m31flash-dispatch-20261022.md",
+        "bytes": 30874,
+        "sha256": "33b2b827f47285dc40b702d9d092e9170263f357452676fa0c2bc7dc9d56dcd8"
+      },
+      "fullDispatchInReviewTree": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/docs/reviews/T06/ui-round-1/minimax-m31flash-dispatch-20261022.md",
+        "bytes": 30874,
+        "sha256": "33b2b827f47285dc40b702d9d092e9170263f357452676fa0c2bc7dc9d56dcd8"
+      },
+      "rawOriginalInputSuffixMatched": true,
+      "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/docs/reviews/T06/ui-round-1/minimax-m31flash.md",
+      "ownerDependencyReceipt": {
+        "source": "parent /root explicit tool-result receipt relayed to this agent",
+        "runBy": "owner, not static preparation agent",
+        "npmCi": {
+          "toolSession": 88997,
+          "exitCode": 0,
+          "added": 440,
+          "audited": 443,
+          "vulnerabilities": 0
+        },
+        "uvSyncFrozen": {
+          "toolSession": 59533,
+          "exitCode": 0,
+          "installedPackages": 14
+        },
+        "exactSessionMappingConfirmedByOwner": true
+      },
+      "testsBrowserAndModelStartedByThisTask": false,
+      "actualModelTaskId": null,
+      "browserPreparation": {
+        "PLAYWRIGHT_BROWSERS_PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-ui-minimax-review-da37709/out/t06-ui-review-browser",
+        "ready": false,
+        "requiredCurrentBrowserRevision": 1248,
+        "completeDownloadOrInstallation": false,
+        "browserLaunched": false,
+        "headlessRun": false,
+        "ownerActualAttempts": [
+          {
+            "id": 95403,
+            "kind": "official CLI install without added per-process proxy",
+            "exitCode": 1,
+            "error": "ECONNRESET",
+            "originalPreservedByOwner": true
+          },
+          {
+            "id": 14040,
+            "kind": "curl same official download URL",
+            "exitCode": 35,
+            "error": "SSL_ERROR_SYSCALL / TLS to storage.googleapis.com failed",
+            "originalPreservedByOwner": true
+          },
+          {
+            "id": 86209,
+            "kind": "official CLI install with only process HTTPS_PROXY/HTTP_PROXY=existing system 127.0.0.1:7890",
+            "exitCode": 1,
+            "error": "ECONNRESET",
+            "originalPreservedByOwner": true
+          },
+          {
+            "id": "owner final synchronous exec",
+            "kind": "curl explicit --proxy existing 127.0.0.1:7890 and --noproxy '' to same official URL",
+            "exitCode": 35,
+            "error": "TLS to storage.googleapis.com failed",
+            "originalPreservedByOwner": true
+          }
+        ],
+        "source": "Parent /root explicit final actual tool-result relay; this static agent did not run downloads or launch browser",
+        "systemNetworkSettingsChanged": false,
+        "tlsWeakened": false,
+        "oldGlobalBrowserCacheNotSubstituted": [
+          1208,
+          1217,
+          1234
+        ],
+        "gap": "Current lock requires revision1248; missing complete official browser installation prevents current headless validation. Keep UI backlog open; do not claim complete runtime environment ready or product/UI Pass."
+      }
+    }
+  ],
+  "noProductOrTestConfigLockChanges": true,
+  "archiveExecution": false,
+  "sourceGaps": [
+    "Historical browser binary SHA and complete argv were never recorded.",
+    "No UI original native two-OS/full product integration evidence exists; private fixture scope only."
+  ],
+  "remainingOwnerPreconditions": [
+    "Root preflight complete full dispatched body hashes, workspaces and evidence mappings.",
+    "Current short model-creation/resource lease and actual per-new-task model/thinking/permission readback.",
+    "Current official browser1248 remains unavailable after two real CLI install failures and two real curl failures. Resolve actual browser installation in each own tree before current headless run; do not substitute old cache or claim full runtime readiness.",
+    "Submit each full body once; capture real IDs, full terminal and report; no UI task exists from this preparation."
+  ],
+  "archiveVerificationMethod": "tarfile read only in-memory -> reject non-regular, absolute, dotdot/backslash, duplicate names -> exact manifest whitelist -> member bytes/SHA -> exclusive write under own evidence root -> readback; no extractall and no member code execution.",
+  "finalizedAt": "2026-10-22T09:19:13.851751+00:00",
+  "formatValidation": {
+    "command": "npx prettier --check docs/reviews/T06/ui-round-1/zcode-glm53-dispatch-20261022.md docs/reviews/T06/ui-round-1/minimax-m31flash-dispatch-20261022.md docs/reviews/T06/ui-round-1/prepared-environments.json",
+    "exitCode": 0,
+    "result": "All matched files use Prettier code style!",
+    "productTestsExecuted": false
+  }
+}
