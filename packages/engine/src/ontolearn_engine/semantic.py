@@ -5,6 +5,7 @@ never feeds another rule or RDFS. No OWL-RL or SHACL-AF expansion is enabled.
 """
 
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal
 from functools import cmp_to_key
 from math import isfinite
@@ -25,6 +26,10 @@ MAX_RULE_MATCHES = 100_000
 MAX_WORK = 1_000_000
 SEMANTICS_VERSION = "i05-finite-6"
 SHACL_TEXT_ENTRY_VERSION = "i05-shacl-text-1"
+_SHACL_DATE_ENTRY_VERSION = "i05-shacl-text-2"
+_UTC_DATE_RANGE_POLICY = "utc-date-range-v1"
+_UTC_DATE_WORK_VERSION = "i05-utc-date-preflight/1"
+_UTC_DATE_WORK_CAP = 1_000_000
 Triple = tuple[Identifier, Identifier, Identifier]
 
 
@@ -1265,7 +1270,7 @@ _DATATYPES = {
 }
 
 
-def _shapes(graph):
+def _shapes(graph, *, _utc_date=False):
     _terms(graph, shapes=True)
     nodes = set(graph.subjects(RDF.type, SH.NodeShape))
     properties = set(graph.objects(None, SH.property))
@@ -1332,15 +1337,18 @@ def _shapes(graph):
         if p in {SH.minInclusive, SH.maxInclusive} and (
             not isinstance(o, Literal)
             or o.datatype
-            not in {
-                XSD.integer,
-                XSD.int,
-                XSD.nonNegativeInteger,
-                XSD.decimal,
-                XSD.float,
-                XSD.double,
-                XSD.dateTime,
-            }
+            not in (
+                {
+                    XSD.integer,
+                    XSD.int,
+                    XSD.nonNegativeInteger,
+                    XSD.decimal,
+                    XSD.float,
+                    XSD.double,
+                    XSD.dateTime,
+                }
+                | ({XSD.date} if _utc_date else set())
+            )
             or o.ill_typed
         ):
             raise SemanticError("INVALID_SHAPE")
@@ -1357,6 +1365,166 @@ def _shapes(graph):
         raise SemanticError("INVALID_SHAPE")
 
 
+class _UtcDateWork:
+    """Fixed policy units, not an estimate of native memory or library CPU.
+
+    Helpers charge before the operation, including iterator exhaustion. Sorting
+    reserves a fixed integer cost instead of depending on comparison count.
+    """
+
+    version = _UTC_DATE_WORK_VERSION
+
+    def __init__(self):
+        self.remaining = _UTC_DATE_WORK_CAP
+        self.used = 0
+        self.stage = "date-bound"
+
+    def charge(self, amount=1):
+        if amount > self.remaining:
+            raise SemanticError("GRAPH_INPUT_LIMIT")
+        self.remaining -= amount
+        self.used += amount
+
+    def ordered(self, graph, pattern, position, key=str):
+        self.charge()
+        iterator = graph.triples(pattern)
+        result = []
+        while True:
+            self.charge()
+            try:
+                triple = next(iterator)
+            except StopIteration:
+                break
+            self.charge()  # Construct one key, before accessing its term fields.
+            term = triple[position]
+            sort_key = key(term)
+            self.charge()  # Retain one member, before append.
+            result.append((sort_key, term))
+        count = len(result)
+        self.charge(1 + count * (max(2, count) - 1).bit_length())
+        result.sort(key=lambda pair: pair[0])
+        return result
+
+    def read(self, members):
+        for member in members:
+            self.charge()
+            yield member[1]
+
+
+def _utc_date_fields(term, work, error):
+    """Check original spelling before bounded conversions; never rewrite it."""
+    work.charge()
+    if len(term) != 11:
+        raise SemanticError(error)
+    spelling = str(term)
+    work.charge()
+    if not spelling.isascii():
+        raise SemanticError(error)
+    work.charge()
+    if (
+        spelling[4] != "-"
+        or spelling[7] != "-"
+        or spelling[10] != "Z"
+        or not all("0" <= spelling[i] <= "9" for i in (0, 1, 2, 3, 5, 6, 8, 9))
+    ):
+        raise SemanticError(error)
+    work.charge()
+    year = int(spelling[:4])
+    work.charge()
+    month = int(spelling[5:7])
+    work.charge()
+    day = int(spelling[8:10])
+    work.charge()
+    leap = year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+    if not 1 <= year <= 9999 or not 1 <= month <= 12:
+        raise SemanticError(error)
+    days = (31, 29 if leap else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    if not 1 <= day <= days[month - 1]:
+        raise SemanticError(error)
+    work.charge()  # Fixed-library compatibility follows this operand's own domain.
+    value = term.value
+    if type(value) is not date or (value.year, value.month, value.day) != (year, month, day):
+        raise SemanticError("VALIDATION_FAILED")
+
+
+def _utc_date_term_key(term):
+    if isinstance(term, URIRef):
+        return (0, str(term))
+    return (1, str(term.datatype) if term.datatype else "", term.language or "", str(term))
+
+
+class _UtcDatePreflight:
+    """Stable, paid plans; no target x property x value Cartesian materialization."""
+
+    def __init__(self, shapes):
+        work = self.work = _UtcDateWork()
+        self.nodes = []
+        nodes = work.ordered(shapes, (None, RDF.type, SH.NodeShape), 0)
+        for node in work.read(nodes):
+            targets = work.ordered(shapes, (node, SH.targetClass, None), 2)
+            target = next(work.read(targets))  # Generic structure proved exactly one.
+            links = work.ordered(shapes, (node, SH.property, None), 2)
+            work.charge()
+            self.nodes.append((node, target, links))
+        self.bounds = {}
+        # Generic structure proved one path per property, so this enumerates each
+        # property once, even when multiple NodeShapes share its reference.
+        properties = work.ordered(shapes, (None, SH.path, None), 0)
+        for prop in work.read(properties):
+            bounds = []
+            has_date = has_other = False
+            for predicate in (SH.minInclusive, SH.maxInclusive):
+                values = work.ordered(shapes, (prop, predicate, None), 2, _utc_date_term_key)
+                for bound in work.read(values):
+                    work.charge()
+                    is_date = bound.datatype == XSD.date
+                    if is_date:
+                        _utc_date_fields(bound, work, "INVALID_SHAPE")
+                        has_date = True
+                    else:
+                        has_other = True
+                    if has_date and has_other:
+                        raise SemanticError("INVALID_SHAPE")
+                    work.charge()
+                    bounds.append((predicate, bound))
+            work.charge()
+            self.bounds[prop] = bounds
+        self.shapes = shapes
+
+    def values(self, data):
+        work = self.work
+        work.stage = "date-value"
+        focuses = {}
+        for node_plan in self.nodes:
+            work.charge()  # Read one already ordered NodeShape plan.
+            _node, target, links = node_plan
+            for prop in work.read(links):
+                work.charge()
+                bounds = self.bounds[prop]
+                if not bounds:
+                    continue
+                paths = work.ordered(self.shapes, (prop, SH.path, None), 2)
+                path = next(work.read(paths))
+                work.charge()  # Same charge for a hit or a miss.
+                if target not in focuses:
+                    members = work.ordered(data, (None, RDF.type, target), 0)
+                    work.charge()
+                    focuses[target] = members
+                for focus in work.read(focuses[target]):
+                    values = work.ordered(data, (focus, path, None), 2, _utc_date_term_key)
+                    for value in work.read(values):
+                        for bound in work.read(bounds):
+                            work.charge()
+                            bound_date = bound.datatype == XSD.date
+                            value_date = isinstance(value, Literal) and value.datatype == XSD.date
+                            if not bound_date and not value_date:
+                                continue
+                            if not bound_date or not value_date:
+                                raise SemanticError("RDF_TERM_INVALID")
+                            _utc_date_fields(bound, work, "INVALID_SHAPE")
+                            _utc_date_fields(value, work, "RDF_TERM_INVALID")
+
+
 def check_shapes(data: Graph, shapes: Graph) -> dict:
     """Validate exactly the supplied asserted scope; return real pySHACL details."""
     return _check_shapes(data, shapes)
@@ -1365,38 +1533,49 @@ def check_shapes(data: Graph, shapes: Graph) -> dict:
 def validate_shacl_text(data_text, shapes_text, *, data_policy, range_policy) -> dict:
     """Independent explicit-policy entry; not an execution/Store/cache interface.
 
-    Only the data object's ill-typed xsd:integer lexical gate can be relaxed.
-    Target selection and constraints still decide the real validation outcome.
+    Data policy only relaxes the data object's ill-typed xsd:integer gate.
+    UTC date range policy has independent lexical, target and budget preflight.
+    Only the real Validator decides conformance and supplies report results.
     """
     if (
         type(data_policy) is not str
         or data_policy not in {"strict", "integer-illtyped-report-v1"}
         or type(range_policy) is not str
-        or range_policy != "legacy"
+        or range_policy not in {"legacy", _UTC_DATE_RANGE_POLICY}
     ):
         raise SemanticError("SCOPE_SELECTION_TYPE_INVALID")
     allow_integer = data_policy == "integer-illtyped-report-v1"
     with offline():
         data = _parse_turtle(data_text, _allow_illtyped_integer=allow_integer, _check_iris=True)
         shapes = _parse_turtle(shapes_text, shapes=True, _check_iris=True)
-        report = _check_shapes(data, shapes, _allow_illtyped_integer=allow_integer)
+        report = _check_shapes(
+            data, shapes, _allow_illtyped_integer=allow_integer, _range_policy=range_policy
+        )
         return {
-            "entryVersion": SHACL_TEXT_ENTRY_VERSION,
+            "entryVersion": (
+                _SHACL_DATE_ENTRY_VERSION
+                if range_policy == _UTC_DATE_RANGE_POLICY
+                else SHACL_TEXT_ENTRY_VERSION
+            ),
             "dataPolicy": data_policy,
             "rangePolicy": range_policy,
             "report": report,
         }
 
 
-def _check_shapes(data, shapes, *, _allow_illtyped_integer=False):
+def _check_shapes(data, shapes, *, _allow_illtyped_integer=False, _range_policy="legacy"):
     with offline():
         local, constraints = _copy(data), _copy(shapes)
         _terms(local, _allow_illtyped_integer=_allow_illtyped_integer)
-        _shapes(constraints)
+        utc_date = _range_policy == _UTC_DATE_RANGE_POLICY
+        _shapes(constraints, _utc_date=utc_date)
+        date_plan = _UtcDatePreflight(constraints) if utc_date else None
         if any(p in {RDFS.subClassOf, RDFS.domain, RDFS.range} for _s, p, _o in local):
             # Even without inference pySHACL follows targetClass subclass paths.
             # Require an explicit asserted/derived fact scope, never mixed ontology.
             raise SemanticError("FACT_SCOPE_CONTAINS_AXIOMS")
+        if date_plan is not None:
+            date_plan.values(local)
         # Pin the real Validator API, bypassing validate()'s Graph/URL loader and
         # process-global temporary RDFLib boolean conversion monkeypatch.
         # No ontology loader, imports, metaSHACL, AF, JS or remote store path exists.
