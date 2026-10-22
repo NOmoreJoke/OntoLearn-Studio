@@ -1,0 +1,178 @@
+{
+  "session_id": "mvs_a864253984c3453f982eeaa1cdfb43d8",
+  "turn_id": "04fe413a-9d81-433c-84ac-a16030e1f1aa",
+  "request_id": "t06-review-stream-26d88a3d-63df-4045-a7ee-79d4507767c3",
+  "report_sha256": "1404505d57ec6310f1a0d62646f63441a03913afd895aaa5772c0166be1f90b5",
+  "report_bytes": 25539,
+  "report_conclusion": "Pass with Conditions; 0 P1, 2 P2, 4 P3; not dual Pass",
+  "trace_phase_counts": {
+    "pi_agent_start": 1,
+    "pi_turn_start": 126,
+    "tool_call_started": 172,
+    "tool_call_completed": 172,
+    "pi_turn_end": 126,
+    "pi_agent_end": 1,
+    "turn_completed": 1
+  },
+  "source_scope_differences": [
+    {
+      "field": "prompt",
+      "original_frozen_sha256": "5096382b813ea6b12d2c6d14702631f43c4196b95b30ec52428d84453c2ded07",
+      "actual_send_sha256": "a795b5823cffef870c070d9692222a4980cd23892d745bb9e2e8817bf6d00d71",
+      "actual_send_bytes": 15831,
+      "evidence": "actual-send-body.json content, frozen-inputs/*; both exact bytes archived"
+    },
+    {
+      "field": "AGENTS policy",
+      "start_snapshot_sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+      "current_snapshot_sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "meaning": "starting policy snapshot and later owner policy update; do not label product source drift"
+    },
+    {
+      "field": "full check",
+      "command_call": "call_01a162b533da7544862711c8",
+      "observed": "npm run check piped to tail -40; CHECK_EXIT=0; 1174 Python passed visible; full upstream stdout unavailable",
+      "separate_630_typescript_call": "call_01a162b8a7a373e6a0b29c56",
+      "separate_630_typescript_observed": "npm test tail -12; 15 files / 630 tests / VITEST_EXIT=0"
+    },
+    {
+      "field": "behavior pytest",
+      "command_call": "call_01a162aac10271538f18983e",
+      "observed": "122 passed in 2.32s, retained tail -20 only"
+    },
+    {
+      "field": "T09 baseline probe",
+      "case_count": 9,
+      "raw_sha256": "d18e5059394b11f6f783d4247c8e4f074a102a58d5ef3d48c3272fc248339c9e",
+      "canonical_sha256": "0e6d1a210b593c9689612eb56b58ae3ff98a1d4a84ee83dec97fb42c451dbd66",
+      "canonical_encoding": "UTF-8 json.dumps ensure_ascii=False sort_keys=True separators=(comma,colon), no trailing newline",
+      "limitations": "formal_acceptance false; product_runtime not-executed; manual gold test input, no reasoner executed"
+    },
+    {
+      "field": "scale probe17",
+      "evidence": "probe-final/probe17_scale_confirm.py, call_01a162fc4a8b7492b43837c6, terminal call_01a162fef06c713bad1b6ba4",
+      "observed": "200/400/800 creates each 50 repeated initial entries for same status=S1 slot; 8.1/30.0/119.4 seconds; not 50 distinct properties"
+    },
+    {
+      "field": "matrix probe18",
+      "evidence": "probe-final/probe18_matrix_mem.py; corrected call_01a162ff5b0b71dfa5e69d31",
+      "observed": "never trigger vs test event creates no actions; 80,000 decisions 30MB 0.9s; 1,000,000 decisions 346MB 10.7s; memory is tracemalloc traced Python peak, time measured with tracing enabled, not RSS"
+    },
+    {
+      "field": "permission provenance",
+      "observed": "runtime permission GET actually returns bypassPermissions separately in owner-readbacks; this is runtime mode, not a session field; report author selected config grep alone is weaker evidence"
+    },
+    {
+      "field": "model and effort",
+      "observed": "own session get and owner live/final readbacks minimax/MiniMax-M3.1-Flash variant thinking effort xhigh; config field not model thought text"
+    }
+  ],
+  "failure_correction_chains": [
+    {
+      "probe": "2",
+      "calls": [
+        "call_01a162b7e61072e194edc3dd",
+        "call_01a162b83f8676fe9d0129d4",
+        "call_01a162b876d474d0839e7e14",
+        "call_01a162b8a27c76669045857e",
+        "call_01a162bfb98277fbbe2da72e"
+      ],
+      "observed": [
+        "KeyError accepted",
+        "invalid_class definition.value",
+        "invalid_class fact.value",
+        "cardinality_violation state.facts",
+        "invalid_object definition.subject"
+      ],
+      "disposition": "input/API mistakes corrected in later probes; preserve errors, not product regressions"
+    },
+    {
+      "probe": "3",
+      "calls": [
+        "call_01a162bb4c8373868173c01a",
+        "call_01a162bcd0b6766698c99ce1",
+        "call_01a162bdd4f47304ba5fd803"
+      ],
+      "observed": "initial action_limit; adjusted test then terminal successful output"
+    },
+    {
+      "probe": "6 -> 7",
+      "calls": [
+        "call_01a162cea69d71189d9fc9cd",
+        "call_01a162d278a8708c90e9672f",
+        "call_01a162d34977712293231e27"
+      ],
+      "observed": "probe6 takes orig snapshot before changing behaviors so false unchanged comparison; probe7 snapshots after setup and obtains True; not demonstrated product mutation"
+    },
+    {
+      "probe": "13",
+      "calls": [
+        "call_01a162ef4da772129c5f4aaf",
+        "call_01a162f5c9f771568662606b"
+      ],
+      "task_id": "bg_ec8e3d0d-a99c-4085-9e08-c6d3060ed1bb",
+      "observed": "50k writes ~1.25B pairs stopped intentionally; canceled status, no numeric subprocess exit observed; subsequent bounded attribution"
+    },
+    {
+      "probe": "14",
+      "calls": [
+        "call_01a162f2e62377fa98cb224e",
+        "call_01a162f34994770998cafeea"
+      ],
+      "observed": "ev unexpected payload keyword corrected before rerun"
+    },
+    {
+      "probe": "15 -> 16",
+      "calls": [
+        "call_01a162f5f57472ce9843d878",
+        "call_01a162fbfe797433b0cc6690",
+        "call_01a162f6ab6d73a1995cfc95",
+        "call_01a162fc2f2872dbbab931f7"
+      ],
+      "observed": "probe15 first combinations timing completes, later dict-in-set raises unhashable dict twice; probe16 fixes JSON needle and measures scan table. Do not describe whole probe15 as passing"
+    },
+    {
+      "probe": "18",
+      "calls": [
+        "call_01a162ff167876afa8c8cb8e",
+        "call_01a162ff5b0b71dfa5e69d31"
+      ],
+      "observed": "initial matched trigger causes action_limit; corrected unmatched trigger produces decision matrix evidence"
+    },
+    {
+      "probe": "22",
+      "calls": [
+        "call_01a16300d2d47128a9a87d20"
+      ],
+      "observed": "output keys/event trace/consumption/diff printed; then KeyError executed_actions; final has-index print not reached"
+    },
+    {
+      "probe": "23 -> 24",
+      "calls": [
+        "call_01a163012da271b3942592e2",
+        "call_01a163016f1f7232aafa573a"
+      ],
+      "observed": "probe23 prints header only, no error branch; probe24 actually yields competing_write with committed false and decision count2"
+    },
+    {
+      "probe": "corpus formatting",
+      "calls": [
+        "call_01a162e7328d728f9c9dc640",
+        "call_01a162e812ed704ab98c05e9"
+      ],
+      "observed": "regenerated bytes differ in formatting; prettier Python parser error; later semantic deep equality true does not prove byte equality. Original source/cache unaltered by this collector"
+    }
+  ],
+  "exit_limits": "Tool completed/succeeded and outer shell exit 0 do not establish each upstream Python exit. Many commands pipe to tail without pipefail, masking tracebacks; exact command, raw output, host exit and persistence/truncation retained per call. No missing upstream logs invented.",
+  "collection_scope": {
+    "tool_calls": 172,
+    "bash_background_logs": 99,
+    "final_probe_scripts": 24,
+    "final_temp_files_total": 28,
+    "initial_probe_heredoc_versions": 25,
+    "probe_reruns_by_collector": 0,
+    "GUI_calls_by_collector": 0,
+    "source_mutations_by_collector": 0
+  },
+  "privacy": "Private raw SSE/events/full messages/tool versions/transport frames include thought text, built-in persona/system prompt and/or headers; mode0600 under mode0700 directory, never included in shareable archive. Shareable tools omit entire built-in agent-list return."
+}

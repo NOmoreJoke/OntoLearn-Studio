@@ -1,0 +1,289 @@
+{
+  "at": "2026-10-22T09:59:23.513Z",
+  "stage": "original_review_terminal_report_sealed_and_process_addendum_independently_verified_root_disposition_pending",
+  "sessionId": "session_863fdf5a03a40f74ea7b4b7289b097d1",
+  "terminal": {
+    "timestamp": "2026-10-22T09:20:05.738Z",
+    "level": "info",
+    "event": "turn.completed",
+    "module": "core.runtime",
+    "message": "Turn completed",
+    "traceId": "2047a61c-9e33-47e7-bf2e-f50089c539c9",
+    "spanId": "2f1d2f06-9638-4e",
+    "parentSpanId": "c6c594ec-0831-4d",
+    "sessionId": "session_863fdf5a03a40f74ea7b4b7289b097d1",
+    "turnId": "turn_d6df0167-a59d-4c9c-93c4-8d4779f2e3c2",
+    "durationMs": 1390576,
+    "status": "completed",
+    "context": {
+      "queryId": "01a162d3-e03d-7cca-895d-077830332739",
+      "turnNumber": 0,
+      "toolCallCount": 58
+    }
+  },
+  "report": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5/docs/reviews/T06/round-1/zcode-glm53.md",
+    "bytes": 19238,
+    "sha256": "bf381a82cf16bad608d8c15ca1a8e928a504d4689ecf0537a0249eee80a58638",
+    "ownerFullRead": true,
+    "verdict": "pass_only_private_S1",
+    "observations": [
+      "P3 document precision: explicitly exclude event.sequence from fingerprint",
+      "P3 boundary declaration: adapter action attribute values are raw JSON scalars",
+      "information: rdf:type remains many-valued"
+    ],
+    "archivedByteIdenticalPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-behavior/docs/reviews/T06/round-1/zcode-glm53.md",
+    "archivedSha256": "bf381a82cf16bad608d8c15ca1a8e928a504d4689ecf0537a0249eee80a58638"
+  },
+  "sourceAfter": [
+    {
+      "path": "docs/iterations/T06/interface.md",
+      "expected": "e733c03db0b9af5946f55bdcefaccdb31e394aa61c855a283dd1763fb7330871",
+      "main": "e733c03db0b9af5946f55bdcefaccdb31e394aa61c855a283dd1763fb7330871",
+      "review": "e733c03db0b9af5946f55bdcefaccdb31e394aa61c855a283dd1763fb7330871"
+    },
+    {
+      "path": "docs/iterations/T06/probe_t09_baselines.py",
+      "expected": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+      "main": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565",
+      "review": "d960d1c95e34d40398bb9a280745bdf690020e47b6730d8f59d45e6efba16565"
+    },
+    {
+      "path": "docs/iterations/T06/t09-adaptation.md",
+      "expected": "5ca08046134b422c3427d136e06e6a6054c8d06c214f0ae5728d1f1a81a4b548",
+      "main": "5ca08046134b422c3427d136e06e6a6054c8d06c214f0ae5728d1f1a81a4b548",
+      "review": "5ca08046134b422c3427d136e06e6a6054c8d06c214f0ae5728d1f1a81a4b548"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/__init__.py",
+      "expected": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+      "main": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9",
+      "review": "0519496083ecaf23ad3a606c8be5f461b21bfb1507f313678083d212cec676d9"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/baseline_adapter.py",
+      "expected": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+      "main": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af",
+      "review": "18f6eb0133b12db950d07dfffe881fb38192af4b14d0b67003c47b67af5a32af"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/behavior/planner.py",
+      "expected": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+      "main": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a",
+      "review": "9d2474a377c3d57da28aed0461e33d1846f21e34c8a862749122e029b522970a"
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_baseline_adapter.py",
+      "expected": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+      "main": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859",
+      "review": "59a07e8b8d7f0caba8cca1d4f31f684fefafc295473f10ee0dd165439ed50859"
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_creation.py",
+      "expected": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+      "main": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c",
+      "review": "96e99469d2057e56fd702d43bc3c0373e90809e6f624e49a5a19f675222d999c"
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_failures.py",
+      "expected": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+      "main": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e",
+      "review": "02f9698299f224019e9aed01617d108a06cd4a16a591c5ec08624b2c9c96839e"
+    },
+    {
+      "path": "packages/engine/tests/test_behavior_planner.py",
+      "expected": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+      "main": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d",
+      "review": "940e54c1a94ec1b0ac9a8baec0bf7d98270fcaff2a476818033571a78db3285d"
+    },
+    {
+      "path": "tests/fixtures/behavior/build_corpus.py",
+      "expected": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+      "main": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4",
+      "review": "9bbe4db97895c5ead7588acf22a25fa21e5358743b83755a9549141f5b66c5b4"
+    },
+    {
+      "path": "tests/fixtures/behavior/counterexamples.json",
+      "expected": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+      "main": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9",
+      "review": "17de133b6a13efd14197b4d7dc09a51c7df097db5161b9acb6f7b92e5f9796f9"
+    }
+  ],
+  "all12MainAndReviewMatch": true,
+  "persistentFinalMessageRead": true,
+  "minimaxStillRunning": false,
+  "notDualPass": true,
+  "finalMessage": {
+    "sourceFile": "/Users/kyle/.zcode/cli/rollout/model-io-session_863fdf5a03a40f74ea7b4b7289b097d1.jsonl",
+    "line": 43,
+    "byteOffset": 61072740,
+    "byteLength": 2297588,
+    "rawLineSha256": "c4e29c29966363a2ba56894d8e6ddc7726d9922a69d6c5a962bfc2391a6412f8",
+    "completedAt": "2026-10-22T09:20:04.840Z",
+    "startedAt": "2026-10-22T09:19:47.894Z",
+    "finishReason": "stop",
+    "querySource": "main_turn",
+    "characters": 1210,
+    "textSha256": "4614773546f7e7d7d7b9045107264f0c126a9ddad022de22d0b864f96afdd309",
+    "ownerFullRead": true
+  },
+  "rawVerificationArtifacts": [
+    {
+      "source": "/tmp/T06-zcode-glm53-61396a5-probe.json",
+      "preserved": "T06-zcode-glm53-61396a5-probe.json.d18e5059394b11f6f783d4247c8e4f074a102a58d5ef3d48c3272fc248339c9e",
+      "bytes": 77789,
+      "sha256": "d18e5059394b11f6f783d4247c8e4f074a102a58d5ef3d48c3272fc248339c9e"
+    },
+    {
+      "source": "/tmp/T06-zcode-glm53-full-diff.patch",
+      "preserved": "T06-zcode-glm53-full-diff.patch.e1b08e5c89b72f4d8a0a7e1ca57feadd91ced235301d1096fdfd07d8e5d507dc",
+      "bytes": 493640,
+      "sha256": "e1b08e5c89b72f4d8a0a7e1ca57feadd91ced235301d1096fdfd07d8e5d507dc"
+    },
+    {
+      "source": "/tmp/T06-zcode-glm53-corpus/counterexamples.json",
+      "preserved": "counterexamples.json.43efd27fbbc201b69e42b6808e739524f24acc0afae22aa4f35566d763db7af2",
+      "bytes": 218068,
+      "sha256": "43efd27fbbc201b69e42b6808e739524f24acc0afae22aa4f35566d763db7af2"
+    }
+  ],
+  "rawToolRecordPreservation": "complete original review tools archive, 439 members parent byte/hash readback; full modelIO private excluded from Git",
+  "rejectionBoundary": "Preserve both prior Mimosa write-/tmp rejections and subsequent stdin records as actually occurred; no owner rerun or new workaround.",
+  "processAudit": {
+    "reportSaidRejections": 2,
+    "actualPreToolRejections": 4,
+    "actualToolExecutions": 54,
+    "uniqueToolCallIds": 58,
+    "rejectedCallIds": [
+      "call_67914d26ddab4f49bfafb495",
+      "call_910c19fab36745cdba47bf98",
+      "call_7feca54864624a23b076b5bf",
+      "call_895e85ce6771468ba1b1e6d2"
+    ],
+    "originalReportPreserved": true,
+    "rejectedOperationsNotRerunByOwner": true,
+    "fullRawCoveragePending": false,
+    "processGate": "pending_root_process_disposition_after_author_addendum_and_independent_fact_audit",
+    "ownerAudit": "zcode-owner-audit-20261022.md"
+  },
+  "latestObservation": {
+    "at": "2026-10-22T09:58:26.015Z",
+    "rawToolArchive": "docs/reviews/T06/evidence/zcode-original-tool-evidence-20261022.tar.gz",
+    "archiveBytes": 918318,
+    "archiveSha256": "32c7b83753b572d085ce0703208e2f82f587c05d695cbd3509cb16234cb330c4",
+    "parentReadbackAll439": true,
+    "processCorrection": {
+      "session_id": "session_863fdf5a03a40f74ea7b4b7289b097d1",
+      "query_id": "01a162fb-827f-7fb2-811c-ebea3c4e4037",
+      "turn_id": "turn_79ec95c1-8beb-4ed6-ab8d-e353bd7bb91a",
+      "terminal": "2026-10-22T09:46:56.411Z turn.completed",
+      "new_tool_count": 17,
+      "final_assistant": [
+        {
+          "source_line": 55,
+          "turn_id": "turn_79ec95c1-8beb-4ed6-ab8d-e353bd7bb91a",
+          "request_id": "111e2f41-786e-4560-9540-3dfc4ccd8030",
+          "startedAt": "2026-10-22T09:46:35.003Z",
+          "completedAt": "2026-10-22T09:46:56.154Z",
+          "response_nonreasoning_keys": [
+            "headers",
+            "modelId",
+            "providerMetadata",
+            "responseId",
+            "text",
+            "toolCalls",
+            "usage"
+          ],
+          "message": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_external_review/ui-zcode-dispatch-verification/s1-correction/assistant-line-55.txt",
+            "bytes": 2339,
+            "sha256": "a241a9652815cb6894ff1a89d6a3449e0958e7ef10a9e4a3c88242a3448be689"
+          }
+        }
+      ],
+      "addendum": {
+        "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5/docs/reviews/T06/round-1/zcode-glm53-process-addendum-20261022.md",
+        "bytes": 9494,
+        "mtime_ns": 1792662384431801000,
+        "mtime_utc": "2026-10-22T09:46:24.431801+00:00",
+        "copy": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_external_review/ui-zcode-dispatch-verification/s1-correction/process-addendum-exact.md",
+          "bytes": 9494,
+          "sha256": "b9c8277021b704dfab265a55f3cb84824b9f34a4e69c3be40fd7a66fd1528f1d"
+        }
+      },
+      "assessment": "s1-correction/process-facts-assessment.json",
+      "original_report_unchanged": true
+    },
+    "correctionAssessment": {
+      "read_full_addendum": true,
+      "addendum": {
+        "source": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-zcode-review-61396a5/docs/reviews/T06/round-1/zcode-glm53-process-addendum-20261022.md",
+        "bytes": 9494,
+        "mtime_ns": 1792662384431801000,
+        "mtime_utc": "2026-10-22T09:46:24.431801+00:00",
+        "copy": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_external_review/ui-zcode-dispatch-verification/s1-correction/process-addendum-exact.md",
+          "bytes": 9494,
+          "sha256": "b9c8277021b704dfab265a55f3cb84824b9f34a4e69c3be40fd7a66fd1528f1d"
+        }
+      },
+      "actual_correction_final": [
+        {
+          "source_line": 55,
+          "turn_id": "turn_79ec95c1-8beb-4ed6-ab8d-e353bd7bb91a",
+          "request_id": "111e2f41-786e-4560-9540-3dfc4ccd8030",
+          "startedAt": "2026-10-22T09:46:35.003Z",
+          "completedAt": "2026-10-22T09:46:56.154Z",
+          "response_nonreasoning_keys": [
+            "headers",
+            "modelId",
+            "providerMetadata",
+            "responseId",
+            "text",
+            "toolCalls",
+            "usage"
+          ],
+          "message": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_external_review/ui-zcode-dispatch-verification/s1-correction/assistant-line-55.txt",
+            "bytes": 2339,
+            "sha256": "a241a9652815cb6894ff1a89d6a3449e0958e7ef10a9e4a3c88242a3448be689"
+          }
+        }
+      ],
+      "original_report_byte_identity_preserved": true,
+      "new_correction_tools": {
+        "Bash": 4,
+        "Read": 12,
+        "Write": 1
+      },
+      "new_tool_execution_boundary": "12 Read + 4 Bash (evidence read/hash checks, one npx prettier --check of new addendum) + 1 Write of the addendum; no old rejected script execution or product validation command rerun in these 17 requests.",
+      "core_original_process_facts_covered": [
+        "All four distinct PreToolUse rejects and actual non-execution of the rejected requests",
+        "Three rejected Write script versions and flagged execute(...) lines; zero concatenation qualifier limited to version 3",
+        "Subsequent alternate corpus execution and stdin probe execution disclosed; first stdin exit 1/20 PASS+2 FAIL and correction 5 PASS",
+        "Original final 26/all-conform claim corrected to 22+5=27 returned records and first run failures",
+        "Full npm check output versus tail-piped 122-tests/probe summaries distinguished; actual runtime argv unavailable and not fabricated",
+        "Author false-positive opinion clearly distinguished from platform rejection status; original independent S1 verdict maintained by author"
+      ],
+      "additional_caveats": [
+        "The final assistant says 未重跑任何命令, an overbroad phrase if read literally: four new Bash requests did run, including a new addendum formatting check. Observed boundary is no original product tests or rejected probe rerun.",
+        "The process addendum does not describe the owner accidental query/cancellation. Separate lifecycle evidence here preserves it; cancelled query had one Bash workspace metadata request, no final assistant.",
+        "The author explicitly says 54 execution-row count is based on owner evidence and not independently recounted. The prior extraction independently reconciled all four rejected IDs against official tool started/completed records.",
+        "Maintaining original Pass is the report author conclusion, not a new product review or blanket approval of prior alternate execution."
+      ]
+    },
+    "accidentalOwnerQuery": {
+      "query_id": "01a162f9-ae29-7e17-b5d6-c7fcf0a59b6a",
+      "turn_id": "turn_19e00560-1acd-45a6-8310-568f927e5d9d",
+      "terminal": "2026-10-22T09:38:52.007Z turn.failed/status cancelled/TURN_CANCELLED",
+      "new_tool_count": 1,
+      "final_assistant": null
+    },
+    "processGate": "pending root disposition; original report and addendum sealed, no automatic Pass from author self judgment",
+    "minimaxNowTerminal": true,
+    "minimaxVerdict": "Pass with Conditions; 2P2 and 4P3",
+    "notDualPass": true
+  },
+  "originalObservationAt": "2026-10-22T09:22:24.523Z"
+}

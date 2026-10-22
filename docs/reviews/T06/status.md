@@ -2,6 +2,10 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-22 17:54+08：S1 两指定原审查均已真正终态并全文读取，原件已分别归档 round-1/zcode-glm53.md（19238B/bf381a82…）和 minimax-m31flash.md（25539B/1404505d…）。ZCode 文本结论独立 S1 通过；作者另补正9494B/b9c82770…过程说明，确认四拒绝、首stdin20PASS/2FAIL/exit1、修正后5PASS、原26计数更正27条结果，原件与原最终消息不改，独立过程核验待收。MiniMax 原流turn_completed/finished/done、session GET idle0齐全，但原结论是Pass with Conditions，含两项P2规模资源与四P3，不满足双无阻断通过。12来源在主/S1两审树仍逐字节冻结；原报告/raw封存后评估保语义的新候选，未改源码、未沿旧Pass推送。
+
+UI 两个独立完整任务已实际创建并运行：ZCode session_498d6eba64585a20972eb406372bc4e2（GLM5.3/最高/完全访问）及 MiniMax mvs_1e7a6b7b6e624cc28afb6f4bad4470e3（M3.1-Flash/xhigh/始终授权），各detached3b专树、base5f/productda。MiniMax30874B全文提交前逐字读回，持久用户消息仅去末尾LF、余下30873B完全一致，真实turn bfd918da-dd46-4cf4-9b11-fce69339b18e；ZCode30774B经172行原生附件受理，官方正文精确附件复核进行。两UI不接触本轮S1审查意见；1248浏览器缺口仍是关键待验证，不豁免Pass。17:49已将短CUA窗口正式交回root，仅后台收证，不占长推理焦点。
+
 2026-10-22 17:20+08：按本人全量补审指令，已登记 S1、独立 UI 与未实现正式接线三个当前阶段，以及全部历史后继；清单 external-review-backlog-20261022.{md,json}。S1 ZCode 已写出19238B完整报告（首写 SHA bf381a82cf16bad608d8c15ca1a8e928a504d4689ecf0537a0249eee80a58638），文本结论为独立 S1 通过并有两项P3文档建议，但尚未观测真实turn终态，暂不归档作最终双审通过；MiniMax仍有新工具/流，原任务保持。
 
 UI完整两提示、当前政策/实际路径补充和两个detached3b3af94独立reviewtree已准备；各npm ci/uv sync exit0、7源码匹配、每树42归档成员安全恢复并读回SHA，原三输入不改。当前真实缺口为官方Headless Shell1248下载TLS失败，browserReady=false，不以旧cache替代，不宣称headless通过；详见ui-round-1/prepared-environments.json。待环境缺口及root真实预检/短lease后创建UI双任务，当前UI指定新任务0。桌面创建焦点已交下一开发线，本线仅后台原流/官方日志监控，不因长推理占整应用。产品冻结、完整父验收和全部发布门保留。
