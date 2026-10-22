@@ -1,0 +1,265 @@
+{
+  "version": "transfer-1",
+  "attemptPolicy": "fresh independent case with persisted assistance provenance; no reset-based laundering",
+  "repair": {
+    "id": "transfer-repair",
+    "ontology": [
+      {
+        "subject": "urn:ontolearn:learning:Equipment",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:Alarm",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:WorkOrder",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:HighRiskEquipment",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:name",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:level",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:status",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:alarm",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:workOrderStatus",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:eventOrder",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+      }
+    ],
+    "constraints": [
+      {
+        "id": "name-required",
+        "targetClass": "urn:ontolearn:learning:Equipment",
+        "path": "urn:ontolearn:learning:name",
+        "minCount": 1,
+        "scope": "current-asserted",
+        "includeInferred": false
+      }
+    ],
+    "facts": [
+      {
+        "subject": "urn:ontolearn:learning:equipment/101",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<urn:ontolearn:learning:Equipment>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:equipment/101",
+        "predicate": "urn:ontolearn:learning:name",
+        "object": "\"循环泵\""
+      },
+      {
+        "subject": "urn:ontolearn:learning:equipment/102",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<urn:ontolearn:learning:Equipment>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:equipment/103",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<urn:ontolearn:learning:Equipment>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:equipment/103",
+        "predicate": "urn:ontolearn:learning:name",
+        "object": "\"冷却泵\""
+      }
+    ],
+    "ruleVersion": "rules-1",
+    "referenceCatalogue": [
+      {
+        "equipmentId": "101",
+        "name": "循环泵"
+      },
+      {
+        "equipmentId": "102",
+        "name": "供水泵"
+      },
+      {
+        "equipmentId": "103",
+        "name": "冷却泵"
+      }
+    ]
+  },
+  "classification": {
+    "id": "transfer-classify",
+    "ontology": [
+      {
+        "subject": "urn:ontolearn:learning:Equipment",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:Alarm",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:WorkOrder",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:HighRiskEquipment",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#Class>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:name",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:level",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:status",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:alarm",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:workOrderStatus",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:eventOrder",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+      }
+    ],
+    "rules": [
+      {
+        "id": "R-risk",
+        "version": 1,
+        "enabled": true,
+        "conditions": [
+          {
+            "subject": "?equipment",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Equipment>"
+          },
+          {
+            "subject": "?equipment",
+            "predicate": "urn:ontolearn:learning:alarm",
+            "object": "?alarm"
+          },
+          {
+            "subject": "?alarm",
+            "predicate": "urn:ontolearn:learning:level",
+            "object": "\"High\""
+          },
+          {
+            "subject": "?alarm",
+            "predicate": "urn:ontolearn:learning:status",
+            "object": "\"Open\""
+          }
+        ],
+        "conclusions": [
+          {
+            "subject": "?equipment",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+          }
+        ],
+        "inputScope": "asserted-plus-rdfs",
+        "outputReentry": false
+      }
+    ],
+    "facts": [
+      {
+        "subject": "urn:ontolearn:learning:equipment/201",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<urn:ontolearn:learning:Equipment>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:equipment/201",
+        "predicate": "urn:ontolearn:learning:name",
+        "object": "\"检测泵\""
+      },
+      {
+        "subject": "urn:ontolearn:learning:alarm/T-A1",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<urn:ontolearn:learning:Alarm>"
+      },
+      {
+        "subject": "urn:ontolearn:learning:alarm/T-A1",
+        "predicate": "urn:ontolearn:learning:level",
+        "object": "\"High\""
+      },
+      {
+        "subject": "urn:ontolearn:learning:alarm/T-A1",
+        "predicate": "urn:ontolearn:learning:status",
+        "object": "\"Open\""
+      },
+      {
+        "subject": "urn:ontolearn:learning:equipment/201",
+        "predicate": "urn:ontolearn:learning:alarm",
+        "object": "<urn:ontolearn:learning:alarm/T-A1>"
+      }
+    ],
+    "inputScope": "current-asserted",
+    "derivedViewInitially": [],
+    "questionFacts": [
+      {
+        "subject": "urn:ontolearn:learning:equipment/201",
+        "predicate": "urn:ontolearn:learning:name",
+        "object": "\"检测泵\""
+      },
+      {
+        "subject": "urn:ontolearn:learning:equipment/201",
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "object": "<urn:ontolearn:learning:HighRiskEquipment>"
+      }
+    ]
+  },
+  "agentFullAssistanceNegative": {
+    "task": "transfer-repair",
+    "initiallyComplete": false,
+    "mode": "project",
+    "acceptedChanges": [
+      {
+        "subject": "urn:ontolearn:learning:equipment/102",
+        "predicate": "urn:ontolearn:learning:name",
+        "object": "\"供水泵\""
+      }
+    ],
+    "expectedOperationCompleteAfterActualToolCheck": true,
+    "expectedIndependentTransferSuccess": false,
+    "expectedAssistance": "agent-full-assistance"
+  }
+}

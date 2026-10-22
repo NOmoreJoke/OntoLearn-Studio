@@ -1,0 +1,44 @@
+# I05：新私有 source/package probe 源码与纯输入实现窗
+
+2026-10-22；继续原会话 `01a15744-136d-7000-abad-46de101eadaf`，保留同一 Goal。总控已创建 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe`，分支 `feature/I05-source-package-probe`，实际远端核验 base `5f910b52c69d86a1076b2032e5d3c63e715947f3`。开始只有 ` M AGENTS.md`（15852 B，SHA `78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759`），保护不 stage。旧源、日期、合同和失败材料所有树继续冻结。
+
+## 已接收设计与本窗边界
+
+先读 `I05-source-package-contract-limited-root-closure.md`。以 docs head `ee2b30a2dad35b2d395f9c735aff80371ab41110` 的完整 `docs/iterations/I05/source-package-parity/contract.md` 和附件为实现依据；原产品供应 `6891a5842302859a531cf82767c5a482417bc274`／过程 `f79a29f596b2444cba542a906c91727869014886` 不变。main60953 B，SHA `d2cdc2e6017ad0257f30611d2928a60a116f4dc389cacdfc977c17efe13e2a23`。
+
+本窗完成真实新 probe 源码、完整纯输入资产和对应测试源码，并独立静态审查。当前不授予产品 import／执行、pytest／npm check、构建、冻结器、DB／Store／worker／native、安装依赖或任何 GUI／网络操作。测试源码需完整写好，必跑运行验证排队，不能以 AST／hash 当作运行通过；源码阶段完成不等于合并就绪。不得改写既有验收。
+
+## 精确文件责任
+
+允许从6891逐项 Git读取并原样复制 `static-import-closure.json` 的22个已核 canonical Python 模块，单独提交供应字节、清单与原 SHA；这是私有 artifact 不可变供应副本使用，不授予业务逻辑维护／修改权。集合是根包 `ontolearn_engine`、`semantic`、`semantic_error_adapter`、`semantic_execution`、`semantic_offline`、`semantic_query`、`semantic_scopes`、`semantic_turtle`、`resources`、`semantic_profile_input`、`semantic_profile_production`、`semantic_profile_restore`、`semantic_profile_restore_budget`、`semantic_profile_directsteps`、quality根包及 `rule_profile/rule_terms/rule_numbers/rule_calendar/rule_comparator/rule_firing/rule_revalidation`。路径、bytes、SHA以固定 manifest逐项为准，不复制整树或整个quality。其余旧基线成员不构成新probe授权闭包。
+
+本窗可维护新增：
+
+- `packages/engine/src/ontolearn_engine/semantic_source_package_probe.py`
+- `packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json`
+- `packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json`
+- `packages/engine/tests/test_semantic_source_package_probe.py`
+- `scripts/generate-i05-source-package-inputs.py`：明确授权的确定性 stdlib 纯输入生成器，不 import产品、执行旧probe／tests／fixtures或 eval/exec 源代码；只按固定原件字段／显式 AST literal／JSON投影与明确变换生成资产。需可复现，严格固定来源及版本，不把外部expected投影进引擎。
+- `docs/iterations/I05/source-package-probe/` 与 `docs/reviews/I05/source-package-probe-source/` 的设计、来源、静态检查、独审、逐项处理及冻结清单。
+
+只写上述新文件及22个原样供应副本；不改公共contracts四件、resources源码、原probe、`__main__`、pyproject/uv锁、打包writers／spec、CI、协议／Storage／selected接线。不要借用、symlink或安装其他树的可变运行环境。缺真实接口或额外包内路径需求给精确delta返总控，不复制算法或绕过维护者。
+
+T01在另一独立树审查四件6891资源的私有只读接收，此时尚未批准，不复制／import／运行四件；当前5f资源不得冒充新组合。T03当前native计量修复窗不扩展；四writer／依赖／打包offer须待其冻结后另派。本窗不得向T03直接索要临时改动或执行其计量工具，不消费其预算。
+
+## 必须完整实现
+
+实现合同全部命名族和83/C13上下文；修复77、4个E5fragment、106原操作/54检查/50用例均保留准确来源和未执行边界。资产不从观察输出反向制造expected。合法原规则 `definition.heads` 保留，禁入的是已计算 firing/material/result heads；不可用扁平key禁令误删原规则定义。
+
+只有严格三组argv：`[--semantic-source-package-probe, full-v1]`、`[--semantic-source-package-probe, b1-semantic-1x-v1]`、`[--semantic-source-package-probe, b1-semantic-10x-v1]`。严格拒unknown/extra/flag=value/任意路径、case/env选择；单一canonical main，source `python -m` 与未来直接artifact目标相同。不得在 `__main__` 身份定义业务类或私有类型而破坏对象身份。
+
+固定source资产路径与future `_MEIPASS/provenance/i05/source-package-parity/`，无cwd/用户/旧资产/网络fallback。实现合同读取前cap、严格schema、完整JSONL观测、真实codes与unknown/notexecuted/harnessfail分离、所有真实结果的完整序列化；首失败保留原件，不以退出0自证oracle、case通过或等价。资产计数与观测数在冻结前实算，超过合同cap需精确版本delta，禁止删用例满足512。所有cap都是逻辑界限，不是物理RAM/OS/VM证明。
+
+scope必须真实prepare→同次reasoning_result/provenance→project，并实际query/SHACL消费各分支；不以预置结果认证reason1/project0。producer→compute→capture→restore→roots必须共用本次真正签发的expectation/allocation，只能对新鲜接收字节做有限copy扰动；不可按扰动结果另发expectation。只读profilehook按实际Validator.run及semantic.reason的code对象身份，不改业务参数/返回，finally恢复；已有hook前置失败；未执行仍记unknown。性能另启无hook同版本fresh selector，不能混用计量。
+
+保留真正的Turtle/query/RDFS/rules/SHACL整数与有限UTC date/offline族、完整payload/rows/typed元数据、DAG/fullview/restore/roots边界。B1两档实现原C4四ontology输入方法；不能导入含Store的旧helper，不能将十ontology完整suite的图数混入fresh尺度。原S1 snapshotLoad保持HOLD，不能替换成0或声称新私有B1关闭S1/parent package:dir。执行身份header须真实可得，不预填source SHA冒充future包代码指纹，未具备的外部build来源标unknown/precondition failure，不造循环selfhash。
+
+## 可执行的静态准备与交付
+
+允许普通 Git/文本/stdlib AST/JSON/hash，以及纯stdlib生成器的固定原件→纯资产转换和严格结构校验（不加载产品、不计算语义结果）；这些是数据准备，不是运行验收。按实际输入核对投影、metadata、来源、大小与cap、集合完整性；不要在新生成器中夹带业务推理／oracle／动态运行。写好后冻结本地候选，用新独立agent审查完整源码和纯资产静态正确性，重点防结果污染、遗漏原上下文、非canonical调用、闭包扩张、hook/退出路径问题。审查期间不改被审路径；新发现实际修复后新candidate复审，全文读并逐条处理，首轮不通过不覆写。
+
+交付base、供应commit、实现candidate、审查及过程commit、准确状态、全清单bytes/SHA、实际静态命令结果、未执行的验证及阻断依赖。总控接收后再安排 T01 接收组合、T03打包／依赖、T05独立oracle与源/包运行窗口。最终check/package/指定双模型/CI/目标OS/真人/develop全部保留，不推送、PR或合并，不操作当前桌面、不创建替代会话或Goal。

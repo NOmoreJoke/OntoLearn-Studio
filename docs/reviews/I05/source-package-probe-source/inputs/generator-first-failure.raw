@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe/scripts/generate-i05-source-package-inputs.py", line 755, in <module>
+    main()
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe/scripts/generate-i05-source-package-inputs.py", line 679, in main
+    contexts = build()
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe/scripts/generate-i05-source-package-inputs.py", line 239, in build
+    add_original_qv(original, profile_path)
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe/scripts/generate-i05-source-package-inputs.py", line 340, in add_original_qv
+    query_text = raw_source(query_path).decode()
+  File "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-source-package-probe/scripts/generate-i05-source-package-inputs.py", line 46, in raw_source
+    raw = subprocess.run(["git", "show", ref + ":" + path], cwd=ROOT, check=True, capture_output=True).stdout
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'show', '6891a5842302859a531cf82767c5a482417bc274:tests/fixtures/quality/approved-T09-873c8c0/tests/fixtures/product-baselines/queries/unclosed-high.rq']' returned non-zero exit status 128.
