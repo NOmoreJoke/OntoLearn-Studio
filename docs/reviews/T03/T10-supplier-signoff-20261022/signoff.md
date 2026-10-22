@@ -14,7 +14,7 @@
 | mapping版本/typed来源保留     | S6“项目与事务”已描述mapping id/version/全部规则/source hash/sheet，facts.owner/source_row/managed_value及实际source-row JSON；T2 §3另要求checkpoint/identity规则和完整options                                                                                    | **已有私有plan/Store输入事实及设计要求**；未供给可移植typed来源角色/version/identity schema与真实export provider。保留墓碑/合法undo归T01控制闭包；不由T03猜空集合                                                         |
 | 无raw/重关联                  | S6、S2缺口6、S4 §4及T2 §3：缺raw不能直接重跑，仍保已存当前值/来源；重关联需新选择、完整options与Table、mapping定义/version、project/domain基线、新完整预演/确认                                                                                                  | **设计可复用，正式迁移/重关联API未实现供给**。同hash不同options仍新预演；不要求用户重新提供hash/GC技术选择                                                                                                                |
 
-最小正例复用S5的equipment完整Table（保CSV `001`、物理行2/3）；另保multiline行2/4、header-only空rows、稀疏XLSX与公式明确空缓存。它们是固定历史有限实取样例，本轮不重新执行。最小反例复用S5的EMPTY_SOURCE/重复header/ROW_WIDTH/缺公式缓存；另有**未执行设计反例**：同raw不同encoding复用旧摘要、把i04-infrastructure-v1当parser producer、丢行/重排fields后沿用Table摘要，均应拒绝。缺cell与保存None在既有Table都为empty、无presence，不能承诺恢复原XML差异。
+最小正例复用S5的equipment完整Table（保CSV `001`、物理行2/3）；另保multiline行2/4、header-only空rows、稀疏XLSX与公式明确空缓存。它们是固定历史有限实取样例，本轮不重新执行。最小反例复用S5实际5项：空源、重复header、短行、空记录、空表头（EMPTY_SOURCE/INVALID_HEADER/ROW_WIDTH）。缺公式缓存触发FORMULA_CACHE_MISSING仅按S3既有语义说明保留，不是S5已封存反例，本轮未补fixture/未执行；另有**未执行设计反例**：同raw不同encoding复用旧摘要、把i04-infrastructure-v1当parser producer、丢行/重排fields后沿用Table摘要，均应拒绝。缺cell与保存None在既有Table都为empty、无presence，不能承诺恢复原XML差异。
 
 ## 二、来源对象准备/传输
 
