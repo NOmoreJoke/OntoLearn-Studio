@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUTC": "2026-10-22T11:07:19.871108+00:00",
+  "scope": "T09 S1 short GUI launch attempt; stage not created",
+  "product": "76596656908ed84e577e8202a602e3256d5febcc",
+  "reviewHead": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+  "preparation": "821f0c4a63532604fc25f675f9533b96c1b23422",
+  "completeDesignatedTasksProven": 0,
+  "guiLease": "explicitly released to controller before recording this receipt",
+  "eventTimeRule": "Events below preserve observed order only. Individual wall-clock times were not captured; no invented timestamp is assigned. recordedAtUTC is receipt time, not event/release time.",
+  "events": [
+    {
+      "seq": 1,
+      "app": "ZCode",
+      "observation": "Created own project T09-S1-ZCode-review-7659665; native folder picker and trust dialog showed exact own absolute review root; project editor re-read correct project. UI model GLM-5.3, reasoning最高, permission完全访问. These composer observations alone do not establish settings of an actual complete task."
+    },
+    {
+      "seq": 2,
+      "app": "ZCode",
+      "action": "Pasted complete fixed 51699-byte string with expected SHA through official native paste",
+      "observed": "UI converted it to 粘贴文本 · 265行 attachment; it was removed only from own unsubmitted draft while trying inline input; no complete accepted payload hash/ID established."
+    },
+    {
+      "seq": 3,
+      "app": "ZCode",
+      "action": "Long typeText was attempted; it produced incomplete text and triggered a short-entry creation/send workflow. This input method must not be repeated.",
+      "observed": "Own UI later showed title # T09-S1 round-1ZCode and 已停止; menu Copy session ID was disabled. Underlying task/session ID, complete submitted native payload and backend terminal remain unverified/null. This is an incomplete launch, not a complete designated review."
+    },
+    {
+      "seq": 4,
+      "app": "ZCode",
+      "observed": "Two explicit CUA user-changed errors occurred. Owner refreshed state; current display could change, so did not act on peer content. Controller first allowed one bounded correction/new full draft, then instructed stop Z. Own blank new draft was opened before final stop; no full paste/send occurred there."
+    },
+    {
+      "seq": 5,
+      "app": "MiniMax",
+      "observed": "Opened one new empty draft. Composer displayed M3.1-Flash订阅限免/xhigh/始终授权; selected directory was still prior T02 root. No own cwd confirmation or task settings receipt established."
+    },
+    {
+      "seq": 6,
+      "app": "MiniMax",
+      "action": "Opened Select new project native folder picker; attempted Go to Folder shortcut",
+      "observed": "One CUA user-changed error. No complete body paste, Send, own-root confirmation or complete task ID."
+    },
+    {
+      "seq": 7,
+      "action": "Stopped all GUI actions and explicitly released lease to controller immediately; no quota reset/retry/upgrade/new paid API or stage task."
+    }
+  ],
+  "zcode": {
+    "locatableProject": "T09-S1-ZCode-review-7659665",
+    "locatableShortTitle": "# T09-S1 round-1ZCode",
+    "actualTaskId": null,
+    "actualSessionId": null,
+    "uiShortEntryStopObserved": true,
+    "backendTerminal": null,
+    "completeBodyAccepted": false,
+    "completeTaskSettingsEstablished": false,
+    "composerUIOnly": {
+      "model": "GLM-5.3",
+      "reasoning": "最高",
+      "permission": "完全访问"
+    },
+    "remainingDraft": "One own empty draft opened, not submitted; no further Z editing under final controller stop"
+  },
+  "minimax": {
+    "actualTaskId": null,
+    "actualSessionId": null,
+    "completeBodyAccepted": false,
+    "ownCwdConfirmed": false,
+    "completeTaskSettingsEstablished": false,
+    "composerUIOnly": {
+      "model": "M3.1-Flash（订阅限免）",
+      "reasoning": "xhigh",
+      "permission": "始终授权"
+    },
+    "remainingUI": "May remain in new draft native directory picker; next owner must inspect safe state, not presume task created"
+  },
+  "rawAX": {
+    "minimax-new-draft-unbound.ax.txt": {
+      "bytes": 2326,
+      "sha256": "b9a460b912c751dc0005e3eca9c4257a34a3963ec44ba151435c4466c49b1dd9",
+      "source": "previously captured CUA AX return preserved verbatim; no new UI query after release"
+    },
+    "zcode-initial-paste-attachment.ax.txt": {
+      "bytes": 603,
+      "sha256": "40f30341dc13339ea7b38ab992201c7985a678671483571a9ab94627dd8bb838",
+      "source": "previously captured CUA AX return preserved verbatim; no new UI query after release"
+    },
+    "zcode-short-entry-stopped.ax.txt": {
+      "bytes": 1769,
+      "sha256": "4883ea7a0c4d8beb5c209f871962fc5547dc207eb222cae0ebc229b37cc648dc",
+      "source": "previously captured CUA AX return preserved verbatim; no new UI query after release"
+    }
+  },
+  "rawErrorMessages": {
+    "zcode": "The user changed '/Applications/ZCode.app'. Re-query the latest state with `get_app_state` before sending more actions.",
+    "minimax": "The user changed '/Applications/MiniMax Code.app'. Re-query the latest state with `get_app_state` before sending more actions."
+  },
+  "fixedInputProtection": "post-attempt-fixed-input-check.json verifies own two reviewHeads unchanged, both full prompt exact bytes/hash, tracked diff only protected AGENTS; unknown/untracked paths only lstat, no unknown metadata/global config/log contents read",
+  "scopeLimits": {
+    "productTestsRunByOwner": false,
+    "modelCompleteReviewClaimed": false,
+    "quotaReadbackThisLease": "not completed; no quota error observed in own task, no inference about other tasks",
+    "quotaOrResetConsumed": false,
+    "peerCurrentOpinionsSharedToEitherModel": false,
+    "noGuiCallsAfterExplicitRelease": true
+  },
+  "next": "Controller reschedules/takes over bounded creation. Preserve failed short entry, empty drafts and evidence; do not loop resend, reset, scan unknown metadata or retest unchanged product.",
+  "processChecks": {
+    "jsonParsingAndRawHashes": "pass",
+    "gitDiffCachedCheck": {
+      "exitCode": 2,
+      "onlyWarnings": "Four native AX empty Value fields end in spaces; raw returns intentionally preserved byte-for-byte, not trimmed or ignored to make green. No product/source whitespace change."
+    },
+    "productTests": "not run"
+  }
+}
