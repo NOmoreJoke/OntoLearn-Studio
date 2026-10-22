@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "originalInputManifestRef": "93c1125c56c3910a83835761cda852271d5964bd",
+  "scope": "Operational source changed during preparation, not a product/test/config/acceptance change. Preserve original two prompt and input-manifest bytes. No task or lease created.",
+  "originalPolicy": {
+    "absolutePath": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T06-supported-background-external-review-window.md",
+    "bytes": 4792,
+    "sha256": "5fd7ef28089c6dde7efffaadaf1adca77c249f4e76670d8a9b53a28db7085433",
+    "snapshotPath": "docs/reviews/T02/round-1/background-window-at-freeze.txt",
+    "recoveryMethod": "Current document minus exactly the inserted diagnostic paragraph; recovered full bytes match the SHA and byte length captured before that update. Not a previously stored backup."
+  },
+  "observedUpdate": {
+    "bytes": 5446,
+    "sha256": "9a2d722dc86c64d66929cadd12631cc85042bdd820aba9ec76de882fa3ed5de4",
+    "changedText": "Inserted actual backend diagnosis correction: old cross-cell stdin0B, MiniMax official0.6.12 default-dir account/catalog metadata, ZCode bundle TUI missing module. Not T02 review success.",
+    "readInFull": true
+  },
+  "interpretation": "input-manifest operationalPolicies are captured snapshots; use snapshotPath for the old exact window hash, and current root policy plus actual lease at future launch. Old source path is mutable. Other four policy snapshots were hash-matched at final preparation check.",
+  "futureLaunch": "Read latest root operation policy and receive explicit T02 exclusive lease; attach any new operational/workspace mapping hash separately, preserve original prompts. T06 remains the only current backend recovery owner; T02 has no task/lease and starts nothing.",
+  "promptsPreserved": {
+    "zcode-glm53-input.md": {
+      "bytes": 28991,
+      "sha256": "58a62654038514f80528b147e73631acb70ddeaaa7a607f920dfccc76f761f35"
+    },
+    "minimax-m31flash-input.md": {
+      "bytes": 29048,
+      "sha256": "20e90310c471bb46ddb24dc1df31969be657382d13af2dac6498be7eedc94e5f"
+    }
+  }
+}

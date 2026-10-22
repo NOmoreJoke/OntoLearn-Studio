@@ -40,3 +40,9 @@
 T06是当前唯一后台入口恢复owner；T02只准备输入，等待总控独占lease，不自行启动协议服务、CLI、模型任务或GUI。后台支持方式以root `T06-supported-background-external-review-window.md` 为准；昨日短时GUI答复不能沿用今天。真实taskID、正文接收、设置读回、前后source hash和完整终态须实际产生后记录，不能根据草稿或文件名预填。
 
 默认静态审查与原证据读回。没有变化不复测；确需具体独立产品复现时，先给未验原因/精确命令和隔离需求，待root另授，不能自行改测试或执行原生/界面探针。完全访问权限不改变只读审查职责。
+
+## 准备期间操作来源更新补充
+
+初次冻结后台窗口为4792B/SHA `5fd7ef28089c6dde7efffaadaf1adca77c249f4e76670d8a9b53a28db7085433`；root随后在原文件插入诊断纠正，实际全文读回5446B/SHA `9a2d722dc86c64d66929cadd12631cc85042bdd820aba9ec76de882fa3ed5de4`。已从新文档扣除该新增段精确恢复旧全文，大小/hash与初读记录相同，保存在 `background-window-at-freeze.txt`，不宣称此前已有备份。
+
+`input-manifest.json` 的operationalPolicies为捕获时快照，旧后台窗口hash按上述快照读回；绝对控制文件是可变路径，不能因其后来操作纠正就篡改原manifest或假称产品变化。具体绑定见 `policy-readback-update.json`。两份93c原提示保持原字节；未来启动须再核root最新政策与实际T02独占lease，必要追加独立hash附录，不继承旧GUI时段，也不把T06入口诊断/认证metadata当T02真实任务。

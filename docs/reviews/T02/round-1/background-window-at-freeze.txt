@@ -1,0 +1,31 @@
+# T06 指定双审后台恢复窗口
+
+2026-10-22。原 T06 聊天 `01a15bba-0c8a-7dc2-b612-5b5c4ec4a4b9` 是两个新审查任务的唯一创建、设置核验与监控负责人；总控与阶段验收线不重复创建。
+
+## 授权及历史纠正
+
+总控已通过正式 read_thread 核验阶段验收聊天 `01a1628e-1220-7fb1-9135-97cbea4a3ed5` 的人类消息 `01a16293-8c4a-73e2-ae7f-56061e6554c9`（turn `01a16293-8c19-7710-be64-7fa427d3288b`）：准备可手动操作的阶段验收包，同时协调总控恢复指定双审，优先不打扰桌面的后台方式。该指令允许支持的后台入口，不改变指定模型和原质量门。
+
+昨日“现在可操作，仅限两个审查应用”真实已答复，旧 turn `01a15c92-8ed0-7370-89c8-5ad64ff9edc5`、user `01a15c92-8ef9-7960-8b80-3ea9feb20908`、startedAt `1792554471`。此前未传总控是协调遗漏，旧“未答复”阻塞理由纠正；昨日短时许可不能延长至今天。总控本轮核查最近三轮，当前 turn `01a16296-8b89-70c2-90ee-40a4eb1c95e9` 无新的人类 GUI 授权。原 T06 于本轮回执承认将压缩后的旧答复误当新许可，16:01+08 已停止新增 GUI。MiniMax 仅产生草稿和设置显示，未提交正文、无实际 task ID；ZCode 无 GUI 触碰。不得记为实际模型审查。
+
+## 固定范围与证据
+
+- base：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。
+- 产品候选：`61396a598b2dffc1d3d2fd4660f9af1d5c93d266`；流程点 `10f1d8c33820d9a882a153590d8488f6d3fa7723`。
+- 原树：`.worktrees/T06-behavior`，分支 `feature/weekly-t06-behavior`。12 source 与完整 diff 必须保持，diff SHA `e1b08e5c89b72f4d8a0a7e1ca57feadd91ced235301d1096fdfd07d8e5d507dc`。
+- 原冻结提示 `docs/reviews/T06/round-1/zcode-glm53-input.md` SHA `f5b0c53bda018c4b85270dd250268d413c5d4d70be438f694cd8e6e030faa39c`；MiniMax 对应提示 SHA `5096382b813ea6b12d2c6d14702631f43c4196b95b30ec52428d84453c2ded07`。
+- 可使用独立固定候选 review worktree 隔离工作区最后选择、依赖及输出；原提示保留，另附真实源码/报告绝对路径及新输入 hash。不得隐含扩大到 UI、Store、真实推理或父功能。
+
+## 支持的执行路线
+
+ZCode 优先安装自带 `node /Applications/ZCode.app/Contents/Resources/glm/zcode.cjs app-server --stdio --surface terminal --no-browser --no-color` 正式 JSON-RPC。从真实 registry 获取 GLM-5.3 provider/model，逐任务读回最高思考 `max`、可用等级与 `yolo` 后才提交完整正文。`persistAsWorkspaceLastUsed:false` 虽在 schema 中，本版 handler 未使用，不能保证不改变工作区最后选择；使用独立 review 工作区，不修改日常默认。协议进程或 storage ready 不等于会话或审查创建。当前两次后台尝试均无 task ID、无正文；第一进程配置错误 exit1，第二握手超时，原 T06 已清理自有 PID 52565，保留异常证据。
+
+MiniMax 同时核验官方 `@minimax-ai/code` CLI/app-server 及当前订阅登录兼容性；允许必要固定版本安装至任务私有工具目录，核验官方包、版本及 integrity，不执行 curl 管道脚本，不改产品依赖/锁或全局认证。安装包所列官方安装器为 `https://filecdn.minimax.chat/public/install.sh`；其存在不证明安装或订阅兼容。可由原 T06 派独立入口核验子任务与 ZCode 握手并行，但只有原 T06 创建实际模型任务。不得制造 runtime host、逆向调用内部 HTTP、手写任务数据库或读取输出密钥。
+
+## 租约、回执与门禁
+
+本窗已实际发送原 T06 的独占后台恢复租约有效；不包含当前桌面操作。若未来出现真实新的人类时段许可，先记录原文、时间和消息 ID，仅按该范围串行使用两个审查应用。已有真正开始的任务保存并继续后台监控，不因控制记录纠正而终止；草稿不得冒充开始。
+
+两个新任务分别使用 GLM-5.3/max/yolo 与 M3.1-Flash/xhigh/bypassPermissions，同一 base/head、完整独立输入，不互传本轮意见。实现只读，约定验证隔离运行，只写各自报告；不得运行 HMR、产品 GUI/e2e/native、修改产品、提交或推送。每方回执包含实际 task ID、任务创建/正文接收时间、设置读回、完整终态和全文报告、来源 hash 与前后冻结一致性。所有意见有处置，同版双方明确通过及完整验收/CI/远端门满足后才可推送、PR 与正常合并。
+
+不新增付费 API/订阅、读取密钥、重置额度或替换模型。认证、服务或额度阻断须给具体官方错误及恢复条件，不能重回泛化“没有桌面”阻塞。原 Goal 保留，不创建替代 Goal 或用户线程。纯后台恢复和内部子组件就绪不等于完整首版验收。
