@@ -1,0 +1,645 @@
+{
+  "method": "Independent Python stdlib reread of persistent source snapshots/evidence/control, no product execution",
+  "packageRoot": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering",
+  "counts": {
+    "snapshots": 20,
+    "sourceFiles": 16793,
+    "sourceBytes": 340464684,
+    "evidenceFiles": 476,
+    "controlFiles": 104
+  },
+  "errors": [],
+  "inputIdentities": {
+    "README.md": {
+      "bytes": 2695,
+      "sha256": "1f6096b1c7da49395d68b364fa348c0651223b4e0ea3067ec37111c3fbcb9f01"
+    },
+    "backlog.json": {
+      "bytes": 189018,
+      "sha256": "47381bf0396fd07a8c6e8b1ec0fd6d6660129293fc4eebd0b0b041fc4598689d"
+    },
+    "backlog.md": {
+      "bytes": 37762,
+      "sha256": "ad0781dd344605ad7c9aa83c0bb53a62b9196ccc6be158d877954b1c271c40eb"
+    },
+    "coverage/build_coverage.py": {
+      "bytes": 15281,
+      "sha256": "bf96c4ba086549d2445b5b40dad71a5b3f59a5cb7e78608e8b0b782d9a9add30"
+    },
+    "coverage/coverage-summary.json": {
+      "bytes": 1377,
+      "sha256": "3cab5ee21717f811ab652fc0f46fd1e14aea368abcbe6cb68554a9c499c1346c"
+    },
+    "coverage/coverage.json": {
+      "bytes": 5113270,
+      "sha256": "af6b79061d48d20d8372591e6e8e70f7e66494925b1f692f5898a398d3ca65de"
+    },
+    "coverage/coverage.md": {
+      "bytes": 1026815,
+      "sha256": "4ccbea482faff2db5e24d80611719b5efd115137ad2bc5c2b337781a5327a21c"
+    },
+    "coverage/static-verification.json": {
+      "bytes": 901,
+      "sha256": "cc0eaabc31f5c13ab9c2b548f88b5d53d1f866187f8a9af8551c2b196627b7bc"
+    },
+    "evidence-manifest.json": {
+      "bytes": 166983,
+      "sha256": "635e596c7bd5dfb932fa6310b087deb29d546092d2f7333d35db629ae39f742d"
+    },
+    "frozen-wip/S1-current-WIP-full-project.tar.gz": {
+      "bytes": 4188913,
+      "sha256": "6aa013bf525c0631f80280c16df76c4b945d9e25785e122bab2fa4930094ee14"
+    },
+    "frozen-wip/archive-manifest.json": {
+      "bytes": 1110,
+      "sha256": "6804f44e3295b511fdbd20dc7d8a11ef350745e61fb0e125fc29b1716bf365eb"
+    },
+    "frozen-wip/producer-current-WIP-full-project.tar.gz": {
+      "bytes": 4560386,
+      "sha256": "57d70e5fc9ab2ec92cf5cb0b9af6c714a1cb38de56b3d6845ee05aa8e4386080"
+    },
+    "review-entries/C1-cumulative/minimax-prompt.md": {
+      "bytes": 4907,
+      "sha256": "7f0eac876747e19a1b833077204e43ea6fa3937fb52574f0746625ded2039546"
+    },
+    "review-entries/C1-cumulative/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/C1-cumulative/prompt.md": {
+      "bytes": 4442,
+      "sha256": "53e1141f15917bb37befae965427c0391f12ec14b63a9df73b28ca5a1bfd0584"
+    },
+    "review-entries/C1-cumulative/stage-scope.json": {
+      "bytes": 65730,
+      "sha256": "7ebbcb14ff4fb25569dc8da56bbb0eea1e70048cc14292bb37e469e20ffb83f4"
+    },
+    "review-entries/C1-cumulative/zcode-prompt.md": {
+      "bytes": 4896,
+      "sha256": "bb1f02279948cb4fdbd7312f35dd4959fd8a58963d491cd86dea56390ff1c8f6"
+    },
+    "review-entries/C1-cumulative/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/C2-current/minimax-prompt.md": {
+      "bytes": 4772,
+      "sha256": "50bb9c2ce29970508086e99025010c7d7e799c3cb7fd538eaf7b7426ecfd2395"
+    },
+    "review-entries/C2-current/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/C2-current/prompt.md": {
+      "bytes": 4310,
+      "sha256": "8de50e2ed55fe1e5e8a208f165d85b1eb0f671c68fbeaf79b884a3bb11f999e2"
+    },
+    "review-entries/C2-current/stage-scope.json": {
+      "bytes": 13558,
+      "sha256": "3274be9ee5ec0aa82b277d334b5f47c15bb95e9ade90576178ee9797e6fa6189"
+    },
+    "review-entries/C2-current/zcode-prompt.md": {
+      "bytes": 4761,
+      "sha256": "9724e0e9ea54a52aac87a3d0cec552f5e6c9878d5e7f9b3835bdd7c99032bacb"
+    },
+    "review-entries/C2-current/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/dispatch-current/minimax-prompt.md": {
+      "bytes": 4768,
+      "sha256": "e1774ebf604e2fab2f439f45b55c117e40360a7228edf35d7aaab6492aff534c"
+    },
+    "review-entries/dispatch-current/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/dispatch-current/prompt.md": {
+      "bytes": 4300,
+      "sha256": "b3ba23c5b4047048b218a5031ead8f5a0aa445e92fca6c7a050861422b9bf7c2"
+    },
+    "review-entries/dispatch-current/stage-scope.json": {
+      "bytes": 9401,
+      "sha256": "6f7fc043b2c4d6ee9d3e3f24e7af79099eb4251a591efeae5bb468a30504319c"
+    },
+    "review-entries/dispatch-current/zcode-prompt.md": {
+      "bytes": 4757,
+      "sha256": "dc1bdc0f48a589faa8c14fee92576577dc09eac19c12351fc6227038b0075c1d"
+    },
+    "review-entries/dispatch-current/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/ontology-current-WIP/minimax-prompt.md": {
+      "bytes": 4852,
+      "sha256": "6c368dac6cf4613055ea01124f9952f1951b4269f5fa9cbe549145963df79e8f"
+    },
+    "review-entries/ontology-current-WIP/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/ontology-current-WIP/prompt.md": {
+      "bytes": 4380,
+      "sha256": "4866403f7b7a6b431cbf1aed2cd65e46992782fe2bb5b6afac5399422e3cb9d1"
+    },
+    "review-entries/ontology-current-WIP/stage-scope.json": {
+      "bytes": 14521,
+      "sha256": "868b0242433c08019799697615f7ed8dc8102fdb74e2cbae674e0cb216b4ffd0"
+    },
+    "review-entries/ontology-current-WIP/zcode-prompt.md": {
+      "bytes": 4841,
+      "sha256": "e4115d6de9323bf26a8e0cc40638638ec3f92c672cba5e2dc4eb400996ac806e"
+    },
+    "review-entries/ontology-current-WIP/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/owner-offer-documents/minimax-prompt.md": {
+      "bytes": 5249,
+      "sha256": "001fb0aba7cde7bf400ca4a7ce19e936d9f4d14c5b7edc5d5ded904b067a40e2"
+    },
+    "review-entries/owner-offer-documents/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/owner-offer-documents/prompt.md": {
+      "bytes": 4776,
+      "sha256": "413c0dca4caac4f441b2dbc4cbe50f68fec2b763041ef1ff80876dd18a958243"
+    },
+    "review-entries/owner-offer-documents/stage-scope.json": {
+      "bytes": 2618,
+      "sha256": "3e2706801f022a3a5d4b2029255f0f5ba86b82cd06128f68196513e553bf9705"
+    },
+    "review-entries/owner-offer-documents/zcode-prompt.md": {
+      "bytes": 5238,
+      "sha256": "13680a2c9e7c8b12f9214ad0be289717f138c7ddd001fb7f67a431b08083d239"
+    },
+    "review-entries/owner-offer-documents/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/producer-current-WIP/minimax-prompt.md": {
+      "bytes": 4876,
+      "sha256": "211239312125a0029536af76dea15c14c22cce9c423cd42b6928d0e3fa3bfa27"
+    },
+    "review-entries/producer-current-WIP/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/producer-current-WIP/prompt.md": {
+      "bytes": 4404,
+      "sha256": "2763151216b3d4d2d272910538199d228c0eb6f123e218aea23f25936bdd7b2c"
+    },
+    "review-entries/producer-current-WIP/stage-scope.json": {
+      "bytes": 30102,
+      "sha256": "e9f24136eb8fe2edc71800b22d293e2fc35bc1567fc6b6970792ff282feacb4d"
+    },
+    "review-entries/producer-current-WIP/zcode-prompt.md": {
+      "bytes": 4865,
+      "sha256": "1bffa979ade1f8baac9045e65be0202983068029b7cfad593e1b8433ad101d84"
+    },
+    "review-entries/producer-current-WIP/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "source-evidence-manifest.json": {
+      "bytes": 18822,
+      "sha256": "d0dbeb0595357ae6d44dfcc6b18b4936f16cff78142dbd067f344b429be50bb2"
+    },
+    "source-snapshot-static-readback.json": {
+      "bytes": 233,
+      "sha256": "9cf9445415bfc64e2df65227b15464d31811cd6e59a366a530afabd7cd1d4198"
+    },
+    "submission-index.json": {
+      "bytes": 20414,
+      "sha256": "b292c93a634cf9259f5023c27e96b5287b35d71a21c63a80377f7ed5c87f6ea3"
+    }
+  },
+  "finalInputIdentities": {
+    "README.md": {
+      "bytes": 2695,
+      "sha256": "1f6096b1c7da49395d68b364fa348c0651223b4e0ea3067ec37111c3fbcb9f01"
+    },
+    "backlog.json": {
+      "bytes": 189018,
+      "sha256": "47381bf0396fd07a8c6e8b1ec0fd6d6660129293fc4eebd0b0b041fc4598689d"
+    },
+    "backlog.md": {
+      "bytes": 37762,
+      "sha256": "ad0781dd344605ad7c9aa83c0bb53a62b9196ccc6be158d877954b1c271c40eb"
+    },
+    "coverage/build_coverage.py": {
+      "bytes": 15281,
+      "sha256": "bf96c4ba086549d2445b5b40dad71a5b3f59a5cb7e78608e8b0b782d9a9add30"
+    },
+    "coverage/coverage-summary.json": {
+      "bytes": 1377,
+      "sha256": "3cab5ee21717f811ab652fc0f46fd1e14aea368abcbe6cb68554a9c499c1346c"
+    },
+    "coverage/coverage.json": {
+      "bytes": 5113270,
+      "sha256": "af6b79061d48d20d8372591e6e8e70f7e66494925b1f692f5898a398d3ca65de"
+    },
+    "coverage/coverage.md": {
+      "bytes": 1026815,
+      "sha256": "4ccbea482faff2db5e24d80611719b5efd115137ad2bc5c2b337781a5327a21c"
+    },
+    "coverage/static-verification.json": {
+      "bytes": 901,
+      "sha256": "cc0eaabc31f5c13ab9c2b548f88b5d53d1f866187f8a9af8551c2b196627b7bc"
+    },
+    "evidence-manifest.json": {
+      "bytes": 166983,
+      "sha256": "635e596c7bd5dfb932fa6310b087deb29d546092d2f7333d35db629ae39f742d"
+    },
+    "frozen-wip/S1-current-WIP-full-project.tar.gz": {
+      "bytes": 4188913,
+      "sha256": "6aa013bf525c0631f80280c16df76c4b945d9e25785e122bab2fa4930094ee14"
+    },
+    "frozen-wip/archive-manifest.json": {
+      "bytes": 1110,
+      "sha256": "6804f44e3295b511fdbd20dc7d8a11ef350745e61fb0e125fc29b1716bf365eb"
+    },
+    "frozen-wip/producer-current-WIP-full-project.tar.gz": {
+      "bytes": 4560386,
+      "sha256": "57d70e5fc9ab2ec92cf5cb0b9af6c714a1cb38de56b3d6845ee05aa8e4386080"
+    },
+    "review-entries/C1-cumulative/minimax-prompt.md": {
+      "bytes": 4907,
+      "sha256": "7f0eac876747e19a1b833077204e43ea6fa3937fb52574f0746625ded2039546"
+    },
+    "review-entries/C1-cumulative/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/C1-cumulative/prompt.md": {
+      "bytes": 4442,
+      "sha256": "53e1141f15917bb37befae965427c0391f12ec14b63a9df73b28ca5a1bfd0584"
+    },
+    "review-entries/C1-cumulative/stage-scope.json": {
+      "bytes": 65730,
+      "sha256": "7ebbcb14ff4fb25569dc8da56bbb0eea1e70048cc14292bb37e469e20ffb83f4"
+    },
+    "review-entries/C1-cumulative/zcode-prompt.md": {
+      "bytes": 4896,
+      "sha256": "bb1f02279948cb4fdbd7312f35dd4959fd8a58963d491cd86dea56390ff1c8f6"
+    },
+    "review-entries/C1-cumulative/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/C2-current/minimax-prompt.md": {
+      "bytes": 4772,
+      "sha256": "50bb9c2ce29970508086e99025010c7d7e799c3cb7fd538eaf7b7426ecfd2395"
+    },
+    "review-entries/C2-current/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/C2-current/prompt.md": {
+      "bytes": 4310,
+      "sha256": "8de50e2ed55fe1e5e8a208f165d85b1eb0f671c68fbeaf79b884a3bb11f999e2"
+    },
+    "review-entries/C2-current/stage-scope.json": {
+      "bytes": 13558,
+      "sha256": "3274be9ee5ec0aa82b277d334b5f47c15bb95e9ade90576178ee9797e6fa6189"
+    },
+    "review-entries/C2-current/zcode-prompt.md": {
+      "bytes": 4761,
+      "sha256": "9724e0e9ea54a52aac87a3d0cec552f5e6c9878d5e7f9b3835bdd7c99032bacb"
+    },
+    "review-entries/C2-current/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/dispatch-current/minimax-prompt.md": {
+      "bytes": 4768,
+      "sha256": "e1774ebf604e2fab2f439f45b55c117e40360a7228edf35d7aaab6492aff534c"
+    },
+    "review-entries/dispatch-current/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/dispatch-current/prompt.md": {
+      "bytes": 4300,
+      "sha256": "b3ba23c5b4047048b218a5031ead8f5a0aa445e92fca6c7a050861422b9bf7c2"
+    },
+    "review-entries/dispatch-current/stage-scope.json": {
+      "bytes": 9401,
+      "sha256": "6f7fc043b2c4d6ee9d3e3f24e7af79099eb4251a591efeae5bb468a30504319c"
+    },
+    "review-entries/dispatch-current/zcode-prompt.md": {
+      "bytes": 4757,
+      "sha256": "dc1bdc0f48a589faa8c14fee92576577dc09eac19c12351fc6227038b0075c1d"
+    },
+    "review-entries/dispatch-current/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/ontology-current-WIP/minimax-prompt.md": {
+      "bytes": 4852,
+      "sha256": "6c368dac6cf4613055ea01124f9952f1951b4269f5fa9cbe549145963df79e8f"
+    },
+    "review-entries/ontology-current-WIP/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/ontology-current-WIP/prompt.md": {
+      "bytes": 4380,
+      "sha256": "4866403f7b7a6b431cbf1aed2cd65e46992782fe2bb5b6afac5399422e3cb9d1"
+    },
+    "review-entries/ontology-current-WIP/stage-scope.json": {
+      "bytes": 14521,
+      "sha256": "868b0242433c08019799697615f7ed8dc8102fdb74e2cbae674e0cb216b4ffd0"
+    },
+    "review-entries/ontology-current-WIP/zcode-prompt.md": {
+      "bytes": 4841,
+      "sha256": "e4115d6de9323bf26a8e0cc40638638ec3f92c672cba5e2dc4eb400996ac806e"
+    },
+    "review-entries/ontology-current-WIP/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/owner-offer-documents/minimax-prompt.md": {
+      "bytes": 5249,
+      "sha256": "001fb0aba7cde7bf400ca4a7ce19e936d9f4d14c5b7edc5d5ded904b067a40e2"
+    },
+    "review-entries/owner-offer-documents/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/owner-offer-documents/prompt.md": {
+      "bytes": 4776,
+      "sha256": "413c0dca4caac4f441b2dbc4cbe50f68fec2b763041ef1ff80876dd18a958243"
+    },
+    "review-entries/owner-offer-documents/stage-scope.json": {
+      "bytes": 2618,
+      "sha256": "3e2706801f022a3a5d4b2029255f0f5ba86b82cd06128f68196513e553bf9705"
+    },
+    "review-entries/owner-offer-documents/zcode-prompt.md": {
+      "bytes": 5238,
+      "sha256": "13680a2c9e7c8b12f9214ad0be289717f138c7ddd001fb7f67a431b08083d239"
+    },
+    "review-entries/owner-offer-documents/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "review-entries/producer-current-WIP/minimax-prompt.md": {
+      "bytes": 4876,
+      "sha256": "211239312125a0029536af76dea15c14c22cce9c423cd42b6928d0e3fa3bfa27"
+    },
+    "review-entries/producer-current-WIP/minimax-task-record.json": {
+      "bytes": 219,
+      "sha256": "f35344f8ec8e6a27fadf7997aa6f1e24edb0de35d96ae9f0e2b2dde82fd92195"
+    },
+    "review-entries/producer-current-WIP/prompt.md": {
+      "bytes": 4404,
+      "sha256": "2763151216b3d4d2d272910538199d228c0eb6f123e218aea23f25936bdd7b2c"
+    },
+    "review-entries/producer-current-WIP/stage-scope.json": {
+      "bytes": 30102,
+      "sha256": "e9f24136eb8fe2edc71800b22d293e2fc35bc1567fc6b6970792ff282feacb4d"
+    },
+    "review-entries/producer-current-WIP/zcode-prompt.md": {
+      "bytes": 4865,
+      "sha256": "1bffa979ade1f8baac9045e65be0202983068029b7cfad593e1b8433ad101d84"
+    },
+    "review-entries/producer-current-WIP/zcode-task-record.json": {
+      "bytes": 205,
+      "sha256": "32a89f4d9e83e47ed4a5a568fac114350ddf72e275f4e20209f92eb81dd234e5"
+    },
+    "source-evidence-manifest.json": {
+      "bytes": 18822,
+      "sha256": "d0dbeb0595357ae6d44dfcc6b18b4936f16cff78142dbd067f344b429be50bb2"
+    },
+    "source-snapshot-static-readback.json": {
+      "bytes": 233,
+      "sha256": "9cf9445415bfc64e2df65227b15464d31811cd6e59a366a530afabd7cd1d4198"
+    },
+    "submission-index.json": {
+      "bytes": 20414,
+      "sha256": "b292c93a634cf9259f5023c27e96b5287b35d71a21c63a80377f7ed5c87f6ea3"
+    }
+  },
+  "wipArchiveReadback": [
+    {
+      "archive": "S1-current-WIP-full-project.tar.gz",
+      "projectFiles": 820,
+      "embeddedManifestSame": true,
+      "mismatches": []
+    },
+    {
+      "archive": "producer-current-WIP-full-project.tar.gz",
+      "projectFiles": 901,
+      "embeddedManifestSame": true,
+      "mismatches": []
+    }
+  ],
+  "formatEvidence": {
+    "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-transactions",
+    "fileCount": 40,
+    "check1": {
+      "argv": [
+        "npx",
+        "--no-install",
+        "prettier",
+        "--check",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/README.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/backlog.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/backlog.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/submission-index.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/zcode-task-record.json"
+      ],
+      "exit": 1
+    },
+    "write": {
+      "argv": [
+        "npx",
+        "--no-install",
+        "prettier",
+        "--write",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/README.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/backlog.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/backlog.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/submission-index.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/zcode-task-record.json"
+      ],
+      "exit": 0
+    },
+    "checkFinal": {
+      "argv": [
+        "npx",
+        "--no-install",
+        "prettier",
+        "--check",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/README.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/backlog.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/backlog.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/submission-index.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/zcode-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/minimax-prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/prompt.md",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/stage-scope.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/producer-current-WIP/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/ontology-current-WIP/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C2-current/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/dispatch-current/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/C1-cumulative/zcode-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/minimax-task-record.json",
+        "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering/review-entries/owner-offer-documents/zcode-task-record.json"
+      ],
+      "exit": 0
+    }
+  },
+  "coverageCrosscheck": {
+    "independentPairs": 54,
+    "pathClassificationMismatches": [],
+    "matrixPairs": 126,
+    "byteCoveredPairs": [
+      [
+        "E11",
+        "early-5de"
+      ],
+      [
+        "E11",
+        "host-a816"
+      ],
+      [
+        "E12",
+        "host-a816"
+      ],
+      [
+        "E13",
+        "C1-423b"
+      ],
+      [
+        "E13",
+        "C2-ab792"
+      ],
+      [
+        "E13",
+        "S1-current54"
+      ],
+      [
+        "C2-2",
+        "C2-ab792"
+      ],
+      [
+        "D-2",
+        "dispatch-7dfa"
+      ]
+    ]
+  },
+  "stageMapping": {
+    "uniqueStages": 47,
+    "mappedStages": 45,
+    "mappedUnique": 45,
+    "unmapped": [
+      "FULL",
+      "N13"
+    ]
+  },
+  "promptAssertions": {
+    "files": 18,
+    "failures": []
+  },
+  "realTaskRecords": {
+    "count": 12,
+    "allActualFieldsNull": true
+  }
+}
