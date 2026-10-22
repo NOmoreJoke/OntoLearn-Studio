@@ -1,0 +1,166 @@
+{
+  "format": "T05-O-minimax-original-report-all-opinions-register/1",
+  "source": {
+    "path": "minimax-original-final-report.md",
+    "bytes": 56586,
+    "sha256": "b145d9cbc74fd39182bff3d87fb5a5553094ff4a98a7b4be81a5e4dcd7b881e1",
+    "lines": 390,
+    "ownerFullRead": true,
+    "initialCombinedPrintTruncated": true,
+    "missingMiddleReadInSeparate160to245and243to303Chunks": true
+  },
+  "findings": [
+    {
+      "id": "F-01",
+      "reportedSeverity": "中",
+      "title": "fixture Turtle 解码器的 blank node 标签无数据集作用域，跨图合并与跨图比较会混淆不同 blank node",
+      "originalReportLine": 210,
+      "verbatimFinding": "### F-01 [中] fixture Turtle 解码器的 blank node 标签无数据集作用域，跨图合并与跨图比较会混淆不同 blank node\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:249`（`self.blank = 0` 每次解析重置）、`:272-273`（`'list-' + str(self.blank)`）、`:330-331`（`turtle()` 每次新建解码器实例）、`:774`（`scope_expected` 合并 `asserted` + `ontology`）、`:801`（`b1_expected` 合并 `modified` + `ontology`）、`:376-383`（`shacl_report` 把 data 的对象与 shapes 的 `sh:in` 成员列表做 `value not in allowed` 跨图比较）。\n- **触发条件**：任一被独立解析的 Turtle 含集合语法 `(...)`。当前 Turtle 解码器为集合生成 `list-N` 形 blank node，而 N 计数在**每个解码器实例**内重置，因此不同被独立解析的图共享同一 blank node 标签空间。\n- **影响**：(a) 两图合并时，不同 blank node 被当作同一节点；(b) `sh:in` 成员比较时，data 中的 blank node 若与 shapes 列表中同名 blank node 标签相同，会被误判为\"在允许集合内\"，**漏报违规**。这正是本轮要求核对的\"统一 BNode 域\"缺口——解码器没有数据集作用域命名域。\n- **证据**：`raw/o-bnode-collision-probe.txt` —— 320 个数据集中 `assertedText`/`ontologyText`/`dataText` **均不含 `(`**（含 `(` 的仅 21 个 `shapesText`、1 个 `queryText`、1 个 `turtle/front-2` 的 `text`，且 data 侧从不同时含 `(`）。故**已发布的 oracle 字节与本次 `--check` 复现结果不受影响**；本条是方法层面的潜在缺陷，不是当前数据的实际错误。\n- **修复建议**：为每次 Turtle 解析分配数据集作用域前缀（如 `<datasetId>:list-N`），并在 `shacl_report` 跨图比较时使用带作用域的节点标识；或在解码器入口显式拒绝集合语法，并把该限制写成受测边界（例如新增一条\"含集合的输入必须被拒绝\"的测试），而不是让标签域隐含。\n- **等级理由**：不改变当前 417 条 expected 的任何字节（已实测无 `(`），但属于\"正确性依赖调用方数据形状\"的方法缺陷，且与本轮明确要求的\"全 BNode 域\"直接相关，故列中。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-02",
+      "reportedSeverity": "中",
+      "title": "17 条 observation 把 `consumer-C-goldens.json` 声明为独立 expected 来源，但机器交叉核对只覆盖 9/13 个 golden、且只比对 2 个字段",
+      "originalReportLine": 219,
+      "verbatimFinding": "### F-02 [中] 17 条 observation 把 `consumer-C-goldens.json` 声明为独立 expected 来源，但机器交叉核对只覆盖 9/13 个 golden、且只比对 2 个字段\n\n- **位置**：声明处 `scripts/build-i05-source-package-oracle.py:1050-1055`（对 `C-` 前缀 observation 追加 `{'local':'inputs/consumer-C-goldens.json','pointer':'/cases/<i>/expected','type':'independent pre-existing C expected'}`）；唯一交叉核对处 `scripts/test-i05-source-package-oracle.py:363-375`（`test_original_C_full_fields_stay_consistent_with_independent_golden`）。\n- **触发条件**：任一 `C-` observation 的 builder 自算 expected 与 `consumer-C-goldens.json` 对应条目发生分歧。\n- **影响**：**8 条 observation 的\"独立金标\"权威声明完全没有机器校验**——`/cases/0`（C-query-numeric-promotion）、`/cases/1`（C-query-type-error）、`/cases/11`（C-inclusive-date-entry，展开为 4 条 observation）、`/cases/12`（C-illtyped-entry，展开为 2 条）。已覆盖的 9 条也只比对 `report.conforms` 与（存在时的）`requiredResultRows`，**未比对** golden 的 `reason`、`components`、`currentEntryGap`、`valueNodeCount`、`directSHACLNormativeResult`、`entryAndReportAreSeparate`。即 `expectedSourceRefs` 声明的权威强度高于实际校验强度。\n- **证据**：`raw/o-json-audit.txt`（13 个 golden 的 expected 键集与 `golden[2:11]` 覆盖名单）、`raw/o-json-audit2.txt`（17 条带 C-golden 指针的 observation 全表）。\n- **修复建议**：建立 golden→observation 的**显式映射表**（覆盖 `/cases/11`、`/cases/12` 的子路径分裂形态），对全部 13 个 golden 逐条核对 `conforms` + `requiredResultRows` + `reason`；对 `currentEntryGap` 标记的条目（如 C-inclusive-dateTime-equal / -before / C-inclusive-nni / C-langString）要么纳入比对、要么在 `pendingFields` 显式登记\"golden 自述有缺口但 oracle 未反映\"，不能靠\"sourceRef 指向它\"充当校验。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-03",
+      "reportedSeverity": "中",
+      "title": "`explanation-goldens.json` 被列为\"外部独立 expected 来源\"，但未被任何 expected 派生或校验",
+      "originalReportLine": 227,
+      "verbatimFinding": "### F-03 [中] `explanation-goldens.json` 被列为\"外部独立 expected 来源\"，但未被任何 expected 派生或校验\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:30`（`PINS` 固定）、`:52`（`SOURCE_PATHS`）、`:1083`（`read_pinned('explanation-goldens.json')`，**结果被丢弃**）、`:1210-1212`（写入 `sources.json`，role = \"previous independently authored external expected, never engine input\"）。\n- **触发条件**：审计者以 `sources.json` 为权威来源清单判断每条 expected 的独立支撑。\n- **影响**：`oracle.json` 全文出现字符串 `explanation-goldens` **0 次**；该文件的 `completeHeads` / `falseThenError` / `directSteps` / `expectedCatalogObservations` / `additionalDirectStepCases` 未与任何 observation 的 expected 建立绑定。`sources.json` 却把它列为 expected 类来源，**权威声明与实际消费不一致**，会让人误以为 explanation 侧期望有独立金标支撑。\n- **证据**：`raw/o-json-audit.txt`（`raw text occurrences of 'explanation-goldens': 0`）、`raw/o-json-audit2.txt`（`count: 0`）。\n- **修复建议**：二选一并落到机器可检：(a) 把 explanation-goldens 的对应条目实际绑进相关 observation 的 `expected` 并加交叉断言；(b) 把 `sources.json` 中该行 role 改为\"pinned input，本 oracle 未消费\"，并在 `forbiddenAsOracle` 或限制字段中显式声明，不得留在\"external expected\"类。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-04",
+      "reportedSeverity": "中",
+      "title": "七池总额是手工复制的常量，与所引规范行之间没有机器交叉校验（规范本身要求\"不复制一套可漂移常量\"）",
+      "originalReportLine": 235,
+      "verbatimFinding": "### F-04 [中] 七池总额是手工复制的常量，与所引规范行之间没有机器交叉校验（规范本身要求\"不复制一套可漂移常量\"）\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:92-94`（`DECLARED_POOLS` 硬编码）、`:108`（`DECLARED_ALLOCATION_POLICY.sources` 仅以字符串指到 `guidance/allocation-integration-plan.md.raw` lines `[72, 80]`）。\n- **触发条件**：规范原文中的池总额发生变化，或本常量被改动。\n- **影响**：`allocation-restore-plan.md.raw` §5 明确要求「池来自只读原 `semantic._PROFILE_POOLS`，**不复制一套可漂移常量**」。builder 受\"不 import 产品\"约束而复制了常量（合理），但**没有把常量与被 SHA 固定的规范行做任何机器比对**：规范行只以指针字符串形式登记。将来常量与所引行不再一致时，`--check` 仍会通过（因为它只比对\"重建结果 vs 已提交字节\"），权威链断裂而无人察觉。\n- **证据**：`raw/o-ledger-align.txt`（DOC_PINS 覆盖表）、§5.3 的逐条比对（本次人工比对相符，但无自动保证）。\n- **修复建议**：在 `construct()` 中对 `allocation-integration-plan.md.raw` 做一次有界的字面量抽取（正则取七个池名与总额），与 `DECLARED_POOLS` 断言相等，不符即 `raise`；把该断言加入 47 项测试之一。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-05",
+      "reportedSeverity": "中",
+      "title": "三份来源清单互不包含且命名口径不一致，\"来源真实身份\"无法机器对账；且有一条实际来源完全未登记",
+      "originalReportLine": 243,
+      "verbatimFinding": "### F-05 [中] 三份来源清单互不包含且命名口径不一致，\"来源真实身份\"无法机器对账；且有一条实际来源完全未登记\n\n- **位置**：三处清单分别为 ① `inputs/i05-source-package-parity-manifest.json` 的 `sources`（**22 条**，逐条带 `path`/`ref`/`sha256`/`corpusPath`）；② `oracle.json` 每条 observation 的 `sourceRefs`（**11 个不同 path**，逐条带 `ref`/`sha256`/`bytes`/`pointer`）；③ 本包产出的 `tests/fixtures/quality/i05-source-package-oracle/sources.json`（**26 行**，`local`/`bytes`/`sha256`，部分带 `ref`）。\n- **触发条件**：任何以 `sources.json` 为准做来源对账的下游。\n- **影响（三点，均实测）**：\n  1. `oracle.json` 的 `sourceRefs` 引用了 `ref = 523c478d5f39671c4ac7c1ea6997e51d3047d58e`（3 条 observation：`b1-semantic/1x`、`b1-semantic/10x`、`offline/implicit-jsonld`），该提交在 `sources.json` 与 `source-identities.json` 中**均未出现**（只在被固定的 manifest.sources[0] 里登记）。本包交付的权威来源清单里缺一条实际在用的来源。\n  2. `expectedSourceRefs.local` 用短名（`guidance/contract.md`、`inputs/consumer-C-goldens.json` 等，14 个不同短名），`sources.json.local` 用全路径（`docs/reviews/T05/source-package-oracle/guidance/contract.md` 等）。按 `local` 精确匹配，**26 行里有 18 行匹配不上任何 `expectedSourceRefs`**，自动对账会误报 18 个来源\"未被使用\"。\n  3. manifest.sources 的 22 条逐条来源**没有一条**被带入 `sources.json`；`sources.json` 的 26 行与前两者互不包含。\n- **证据**：`raw/o-sourcerefs-gap.txt`（三份清单逐项比对、10/11 个 sourceRefs path 不在本工作树）、`raw/o-subagent-crosscheck.txt`（18 行未匹配清单、manifest.sources 22 条全表）。\n- **修复建议**：以 manifest.sources 为唯一来源母表生成 `sources.json`（保留 `ref`/`sha256`/`corpusPath`），把 `expectedSourceRefs.local` 统一为与 `sources.json` 相同的全路径（或在两处都加 `sourceId` 稳定键），并在构建时断言\"每条 observation 的每个 sourceRefs 条目都能在 `sources.json` 找到同 ref+path+sha256 行\"，不匹配即 fail。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-06",
+      "reportedSeverity": "低-中",
+      "title": "`schema.json` 声明的 RDFTerm 形状未覆盖 288 处真实数据",
+      "originalReportLine": 254,
+      "verbatimFinding": "### F-06 [低-中] `schema.json` 声明的 RDFTerm 形状未覆盖 288 处真实数据\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:946`（`FIELD_POLICIES['RDFTerm']['oneOfExactKeys']` = `[['kind','value'],['kind','lexical','datatype','language'],['kind','label']]`）与 `:822-825`（`record_term()` 生成的 5 键形状 `kind`/`lexical_form`/`datatype_iri`/`language_raw`/`source`）。\n- **触发条件**：下游按 `schema.json` 的 `normalization.RDFTerm.oneOfExactKeys` 校验 observation 的 `expected`。\n- **影响**：**25 条 observation**（dag/* 与 fullview/* 中的 records 类数据集）内共 **288 处** RDF term 使用 5 键原始记录形状，不在 schema 声明的三个 `oneOfExactKeys` 之内。schema 自称\"exact\"，但不能覆盖自身产出的全部数据；下游校验会把合法数据误判为非法。\n- **证据**：`raw/o-subagent-crosscheck.txt`（288 处计数与 5 键形状样例）、`raw/data-audit-stdout.txt`（子代理同口径发现）。\n- **修复建议**：在 `FIELD_POLICIES['RDFTerm']` 增列第四个 exact 形状（原始 occurrence 形状），或把 `rawTermSourceOccurrences` 明确标注为\"原始记录形状，与 RDFTerm 身份形状分域\"，并在 `schema.json` 里给出两者的显式分域字段。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-07",
+      "reportedSeverity": "低-中",
+      "title": "`scope` 的 `factSources.basis` 只保留首个匹配 firing 的 leafBasis，丢弃同一 head 三元的其它 occurrence",
+      "originalReportLine": 262,
+      "verbatimFinding": "### F-07 [低-中] `scope` 的 `factSources.basis` 只保留首个匹配 firing 的 leafBasis，丢弃同一 head 三元的其它 occurrence\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:791-793`。\n- **触发条件**：同一条事实（同一 head 三元）由多个 firing 产生。\n- **影响**：`next(...)` 只取第一个匹配的 firing 的 `leafBasis`，与本包 `FIELD_POLICIES['profile']` 自述的 \"every binding/when/comparison/index/operator/operand/result/accepted/**head occurrence**/leaf/source/definition preserved\" 不一致；也与本轮要求保留的\"重复 head occurrence\"口径不符。当前 scope 数据集无重复 head，故已发布字节未受影响。\n- **证据**：静态读码 + `raw/o-json-audit.txt`（scope 观测 facts 计数 6/9/9，与 `test_scope_branches_consume_different_complete_fact_sets` 一致）。\n- **修复建议**：收集**全部**匹配 firing 的 leafBasis 序列，按 occurrence 顺序保留；同时在 `test_scope_branches_consume_different_complete_fact_sets` 增加一条\"同 head 多 occurrence 时 basis 不被折叠\"的断言。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-08",
+      "reportedSeverity": "低",
+      "title": "`source-identities.json` 被 builder 消费但未纳入固定身份白名单",
+      "originalReportLine": 270,
+      "verbatimFinding": "### F-08 [低] `source-identities.json` 被 builder 消费但未纳入固定身份白名单\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:33-46`（`DOC_PINS`，**12 项**）与 `:1213`（`strict_json((EVIDENCE/'guidance/source-identities.json').read_bytes())`，**无 size/SHA 校验**）。\n- **触发条件**：`source-identities.json` 字节变化。\n- **影响**：builder 消费的 13 个外部文件中只有它没有固定身份；其字节变化会改变 `sources.json`。当前靠 `--check` 的\"重建 vs 已提交字节\"比对兜住，不会产出错数据，但与 builder 自述的 pinned-input 契约不一致（`read_pinned` 对 7 个 inputs 与 13 个 guidance 都做 size+SHA 校验，唯独它没有）。\n- **证据**：`raw/o-ledger-align.txt` 的 DOC_PINS 覆盖表逐项列出（`source-identities.json: referenced=True, pinned=False`；其余消费项 pinned=True）。\n- **修复建议**：把 `source-identities.json` 加入 `DOC_PINS`（或在 `allocation-source-receipt.json` 已有的固定身份里合并其内容），使其与其它消费项同等对待。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-09",
+      "reportedSeverity": "低",
+      "title": "`sources.json` 的 `sourcePath` 指向本树不存在的历史路径且不带 ref/sha256",
+      "originalReportLine": 278,
+      "verbatimFinding": "### F-09 [低] `sources.json` 的 `sourcePath` 指向本树不存在的历史路径且不带 ref/sha256\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:47-54`（`SOURCE_PATHS`）与 `:1210-1212`。\n- **触发条件**：消费方按 `sourcePath` 定位历史原件。\n- **影响**：4 个 `sourcePath` 目标在本工作树**全部不存在**（`tests/fixtures/quality/approved-T09-873c8c0/...`、`tests/fixtures/quality/real-executor-acceptance-inputs.json`、`docs/reviews/T05/profile-M1-math-explanation-input-contract/{explanation,consumer-C}-goldens.json`），且该字段不带 gitRef/blob/sha256，消费者无法据此验证历史原件身份；只有 `local` + `bytes` + `sha256` 可核。这是历史归属信息被放在一个看起来像\"可定位路径\"的字段里。\n- **证据**：`raw/o-ledger-align.txt` 的 SOURCE_PATHS 逐项 `exists=False` 输出。\n- **修复建议**：为每个 `sourcePath` 补 `gitRef`/`gitBlob`/`sha256`，或改名为 `historicalSourcePath` 并在字段说明中写明\"本树不保证存在\"。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-10",
+      "reportedSeverity": "低",
+      "title": "索引→错误码映射表对越界索引无防护，会以异常中断构建而非记为 pending",
+      "originalReportLine": 286,
+      "verbatimFinding": "### F-10 [低] 索引→错误码映射表对越界索引无防护，会以异常中断构建而非记为 pending\n\n- **位置**：`scripts/build-i05-source-package-oracle.py:590`（`integer/other-datatype-` 字典字面量）、`:593`（`integer/bound-front-` 列表下标）、`:601`（`shape/front-` 字典字面量）。\n- **触发条件**：输入集中出现索引超出映射表长度的序列。\n- **影响**：`KeyError`/`IndexError` 直接中断 `construct()`，而不是把该 observation 归入 pending——与本包\"缺证据必须显式 pending、不得冒充完成\"的核心纪律相悖（虽然当前固定输入下不触发）。\n- **证据**：静态读码；`build --check` exit 0 证明当前固定输入不触发。\n- **修复建议**：全部改为 `.get(index)` / 边界检查 + 未知索引回落为 `('pending', reason+phase)`，并在测试中加入越界索引用例。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    },
+    {
+      "id": "F-11",
+      "reportedSeverity": "低-信息",
+      "title": "固定 argv 的解释器与项目声明的 Python 版本不一致（本次已用 3.12 对照复验，结果一致）",
+      "originalReportLine": 294,
+      "verbatimFinding": "### F-11 [低-信息] 固定 argv 的解释器与项目声明的 Python 版本不一致（本次已用 3.12 对照复验，结果一致）\n\n- **位置**：`launch-O/scope-contract.json` 两条 argv 均以 `python3` 开头；`pyproject.toml` `requires-python = \">=3.12,<3.13\"`、`[tool.ruff] target-version = \"py312\"`；本机 `python3` 实测 **3.9.6**。\n- **触发条件**：在不同机器上按同一条 argv 执行。\n- **影响**：同一条 argv 可能解析到不同解释器；builder 依赖 `str.removesuffix`（3.9+）等特性，跨版本行为差异不可由 argv 固定。\n- **证据**：`raw/o-run-test-python3.txt`（3.9.6，47 OK）与 `raw/o-run-test-python312.txt`（3.12.12，47 OK）——**两个版本结果一致**，本次结论不受影响。\n- **修复建议**：在 `scope-contract.json` 里把解释器固定为 `python3.12`，或显式记录允许的最低解释器版本。",
+      "ownerDisposition": "reported-open-awaiting-adjudication; no source fix or rejection inferred",
+      "originalReportByteIdentityFixed": true,
+      "productSourceFixedByThisIntake": false
+    }
+  ],
+  "reportedSeverityCounts": {
+    "中": 5,
+    "低-中": 2,
+    "低": 3,
+    "低-信息": 1
+  },
+  "severityOverviewInconsistenciesPreserved": [
+    "Opening conclusion says 1 medium + 5 middle/low, inconsistent with 11 section headings.",
+    "Opening table names F-11 medium; actual F-11 heading is low-information.",
+    "Section9.1 groups F-01..F-05 medium and F-06..F-11 lower; register uses exact section6 headings without rewriting original."
+  ],
+  "coverageNotComplete": {
+    "reportedRemainingProductFilesApprox": 55,
+    "reportedProductSubreviewStillRunningAtOriginalFinalization": true,
+    "notFullyReadExamples": [
+      "storage.py",
+      "job_store.py",
+      "coordinator.py",
+      "task-service.ts",
+      "App.tsx",
+      "engine tests",
+      "unit/e2e tests"
+    ],
+    "explicitUnverified": [
+      "storage atomicity",
+      "RDF only rebuilt from snapshot",
+      "memory_guard history isolation",
+      "zod strict coverage",
+      "ruff/Python3.12",
+      "lock drift",
+      "FR500-505 implementation inventory"
+    ]
+  },
+  "historicalOpinions": "All original section7 tables and successor dispositions retained in full original report; not converted to owner acceptance.",
+  "executionDisclosuresNotClosed": [
+    "importlib loaded fixed builder and called read_pinned outside two exact authorized argv",
+    "additional python3.12 test argv outside two exact scope-contract commands",
+    "reviewer reports reading user-global config; owner did not read it or adopt defaults as current-task permission",
+    "original phase-observe occurred before operational supplement delivery; no retrospective claim supplement governed original turn"
+  ],
+  "dualModelCompletePass": false,
+  "parentClosed": false
+}
