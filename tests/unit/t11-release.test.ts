@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import {
   mkdirSync,
   statSync,
+  truncateSync,
   mkdtempSync,
   readFileSync,
   rmSync,
@@ -1139,6 +1140,56 @@ describe('T11 evidence consistency (all fixtures are synthetic)', () => {
     expect(result.issues).toContain('PRODUCT_EXPECTATION_PIN')
     expect(result.issues).toContain('ROLLBACK_IDENTITY_PIN')
   })
+  it('reports a missing migration destination explicitly after duplicate-target rejection', () => {
+    const { root, m, expected } = fixture()
+    m.artifacts[1] = m.artifacts[0]
+    expect(verifyManifest(m, root, expected).issues).toEqual(
+      expect.arrayContaining(['TARGET_MATRIX', 'MIGRATION_DESTINATION']),
+    )
+  })
+  it('CLI replaces forged freeze.now with the current local clock', () => {
+    const { root, m, expected } = fixture()
+    m.users[0].testedAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    writeFileSync(join(root, 'manifest.json'), JSON.stringify(m))
+    writeFileSync(
+      join(root, 'freeze.json'),
+      JSON.stringify({ ...expected, now: '2099-12-31T00:00:00Z' }),
+    )
+    const run = spawnSync(
+      process.execPath,
+      [
+        'scripts/release/verify-release.mjs',
+        join(root, 'manifest.json'),
+        root,
+        join(root, 'freeze.json'),
+      ],
+      { encoding: 'utf8' },
+    )
+    expect(run.status).toBe(1)
+    expect(JSON.parse(run.stdout).issues).toContain('USER_STALE')
+  })
+  it.each(['manifest', 'freeze'])(
+    'CLI rejects oversized %s with fixed stderr before parse',
+    (name) => {
+      const { root, m, expected } = fixture()
+      writeFileSync(join(root, 'manifest.json'), JSON.stringify(m))
+      writeFileSync(join(root, 'freeze.json'), JSON.stringify(expected))
+      truncateSync(join(root, `${name}.json`), 16 * 1024 * 1024 + 1)
+      const run = spawnSync(
+        process.execPath,
+        [
+          'scripts/release/verify-release.mjs',
+          join(root, 'manifest.json'),
+          root,
+          join(root, 'freeze.json'),
+        ],
+        { encoding: 'utf8' },
+      )
+      expect(run.status).toBe(2)
+      expect(run.stdout).toBe('')
+      expect(run.stderr.trim().split('\n').at(-1)).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID')
+    },
+  )
   it('CLI fails closed for synthetic and malformed inputs without printing contents', () => {
     const { root, m, expected } = fixture()
     const path = join(root, 'manifest.json')
