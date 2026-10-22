@@ -2,6 +2,10 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-22 16:10+08：MiniMax 实际全新后台审查已启动，session `mvs_a864253984c3453f982eeaa1cdfb43d8`、turn `04fe413a-9d81-433c-84ac-a16030e1f1aa`。完整新输入 a795b582… 已于16:10:14.637提交，正式message accepted，流中已核用户正文持久消息和running/agent_start/工具事件。提交前GET session与session模型清单实际读回M3.1-Flash/xhigh，同运行时GET permission为bypassPermissions，官方默认共享目录account/read authenticated。详见round-1/minimax-start-receipt-20261022.json。正在完整审查，尚无最终报告/Pass，双审仍未通过。
+
+先前后台超时原因已纠正：自有Node REPL跨cell闭包绑旧进程，替换进程stdin记录0B，请求未送到正确进程；不能把它归因平台启动或握手故障。改稳定每进程client后MiniMax认证/模型/会话正常；ZCode正式capabilities与客户端偏好握手正常，但新空会话实际模型/思考清单为空（非standalone），无审查正文。TUI实际缺包，正在授权范围内准备第一方完整CLI发行，禁止伪造host账号。旧错误原件保留，以下更早快照不代表当前任务数。
+
 2026-10-22 16:01+08：总控已正式授原 T06 唯一后台双审创建/监控及串行租约；阶段验收协调线仅核入口，不建重复任务。产品61396a与12项来源/完整diff未漂移。新增独立审查树T06-review-61396a5固定detached10f1，携最新保护AGENTS，npm ci/uv sync --frozen均exit0，环境隔离。
 
 实际指定模型审查正文仍发送0次、真实审查taskID0：ZCode官方app-server第一次缺默认相对Provider文件exit1；按正式env定位安装包Provider及既有personal配置后第二进程仅storage ready，session/create和runtime/capabilities无返回，自有pid52565已SIGTERM/exit143保全。MiniMax仅新任务空草稿，观察M3.1-Flash/xhigh/始终授权并选审查树，未提交正文。继续调查官方后台入口，不能将进程/草稿/设置当外审启动或Pass。

@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-22T16:12:04.731178+08:00",
+  "stage": "actual_review_running_not_pass",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "product": "61396a598b2dffc1d3d2fd4660f9af1d5c93d266",
+  "development_procedure_before_receipt": "5e1c00052fdbadcdaa5627445bcc2ead899535f7",
+  "review_workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5",
+  "review_head": "10f1d8c33820d9a882a153590d8488f6d3fa7723",
+  "handle": {
+    "sessionId": "mvs_a864253984c3453f982eeaa1cdfb43d8",
+    "turnId": "04fe413a-9d81-433c-84ac-a16030e1f1aa",
+    "requestId": "t06-review-stream-26d88a3d-63df-4045-a7ee-79d4507767c3",
+    "submittedAt": "2026-10-22T08:10:14.637Z",
+    "promptSha256": "a795b5823cffef870c070d9692222a4980cd23892d745bb9e2e8817bf6d00d71",
+    "model": {
+      "provider_id": "minimax",
+      "model_id": "MiniMax-M3.1-Flash",
+      "thinking": {
+        "effort": "xhigh"
+      }
+    },
+    "runtimePermission": "bypassPermissions",
+    "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-review-61396a5",
+    "accepted": {
+      "id": "shared-7",
+      "result": {
+        "accepted": true,
+        "requestId": "t06-review-stream-26d88a3d-63df-4045-a7ee-79d4507767c3"
+      }
+    }
+  },
+  "actual_session_settings": {
+    "provider_id": "minimax",
+    "model_id": "MiniMax-M3.1-Flash",
+    "variant": "thinking",
+    "context_limit": 512000,
+    "reasoning": true,
+    "thinking": {
+      "effort": "xhigh"
+    }
+  },
+  "actual_runtime_permission": {
+    "mode": "bypassPermissions"
+  },
+  "authentication_projection": {
+    "state": "authenticated",
+    "region": "cn",
+    "buildEnv": "prod"
+  },
+  "raw_directory": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_t06_external_review",
+  "raw_files": {
+    "minimax-review-handle.json": {
+      "bytes": 747,
+      "sha256": "f570e930c079ea7e221b8c7656e9c6552cec292c9598dcd3c60d579ad4113a29"
+    },
+    "minimax-initialize.json": {
+      "bytes": 2258,
+      "sha256": "fbb631966dbe7664fd4e0d0809c8bb4e78d28ab02f13fe669025325e6fb00bf7"
+    },
+    "minimax-shared-initialize.json": {
+      "bytes": 2183,
+      "sha256": "f41a6b0c21e9e20b269fcfeaec43210bbecfcd3564388651321649a840e92311"
+    },
+    "minimax-review-session-create.json": {
+      "bytes": 1359,
+      "sha256": "32c297d1cc8f2cdb1d83015a57d27f797bff35e5a053e859ac1149895c348031"
+    },
+    "minimax-review-session-read.json": {
+      "bytes": 1274,
+      "sha256": "a6ae5098c25b55cb61c150c5f729ed81e9054a74048019746b0dd0aab3519efb"
+    },
+    "minimax-review-session-models.json": {
+      "bytes": 6028,
+      "sha256": "e08f0b7d94bfd41f7e91590b08e33a9df54c82079facd6d4a4ad0b399861a530"
+    },
+    "minimax-shared-permission.json": {
+      "bytes": 133,
+      "sha256": "f059f73b37e9bc64bec24b89e138eb8f9772a2c1cc45895e259b3d05309458c2"
+    },
+    "minimax-review-progress.json": {
+      "bytes": 2987,
+      "sha256": "ebd9512aacaa74e83b07d988ec6da0aaaf769e985aca5227cb02e171e3afe451"
+    },
+    "zcode-03-create-with-preferences.json": {
+      "bytes": 2913,
+      "sha256": "baf289734a5363d905c27edffd086b1db5bdcd6657c58945d57c66cf7f9a1bd6"
+    }
+  },
+  "old_timeouts_correction": "Node REPL cross-cell closures bound original exited child; replacement stdin logs were 0 bytes. Corrected with stable per-process client object. Do not attribute these timeouts to platform startup.",
+  "zcode_current": "Correct client capabilities works; new empty session returned yolo but model.available=[], thoughtLevel.available=[]; no review prompt sent. Official complete distribution preparation assigned to independent agent.",
+  "report_exists": false,
+  "terminal_verified": false,
+  "source12_unchanged": true,
+  "push_pr_ci_merge": false
+}
