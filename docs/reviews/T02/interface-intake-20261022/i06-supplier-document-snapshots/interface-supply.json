@@ -1,0 +1,313 @@
+{
+  "kind": "T02-request-B-I06-formal-App-bridge-supplier-evidence-handoff",
+  "scope": "Fixed Git source/spec static read only; not a product/runtime adoption or new implementation.",
+  "approvedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "T02FixedC5": "e5ad54e5762157cafe532c2a0c07c22e8dd737cb",
+  "I06Product": "e2c269ad78a78e1a042cadc93b1c81a874707153",
+  "I06FullRetainedSourceRef": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+  "approvedFormalOntologySupplierRef": null,
+  "approvedFormalOntologySupplierMeaning": "No approved I06 ontology-specific App/bridge supplier has been supplied in this handoff. The approved baseline surface and retained unapproved I06 surface below do not expose an ontology edit route; this is not a claim that all later T01 code has been audited.",
+  "I06RetainedBridgeMethodNames": [
+    "getModelAccessStatus",
+    "configureModel",
+    "storeModelCredential",
+    "setModelPrivacy",
+    "selectModelResults",
+    "getModelFieldCatalog",
+    "selectModelFields",
+    "previewModelExplanation",
+    "confirmModelAuthorization",
+    "startModelExplanation",
+    "getModelExplanationOutcome",
+    "cancelModelExplanation",
+    "getEngineHealth",
+    "restoreTasks",
+    "getActiveProject",
+    "getJob",
+    "listJobs",
+    "cancelJob",
+    "subscribeJob",
+    "unsubscribeJob",
+    "getResult",
+    "getResultPage",
+    "getOperation",
+    "onTaskUpdate"
+  ],
+  "capabilityAssessment": [
+    {
+      "stage": "get",
+      "observed": "getActiveProject, getJob, getResult, getResultPage, getOperation and model status/catalog/outcome exist as named preload invocations.",
+      "ontologySupply": "No ontology current complete domain/metadata projection method exposed in this fixed preload. Get by ID is not an ontology source/proof/permission."
+    },
+    {
+      "stage": "typed-proof",
+      "observed": "env.d.ts binds Window.ontolearn to DesktopBridge. Renderer task updates use isTaskUpdate.",
+      "ontologySupply": "Type declarations and result/job IDs do not prove a trusted current ontology snapshot, public/internal binding, typed ChangeSet plan or sourceBinding. T02 private Preview is not T01 persistent previewHash/planRef."
+    },
+    {
+      "stage": "human-confirmation",
+      "observed": "confirmModelAuthorization(contextId,previewId) obtains a model external-send grant.",
+      "ontologySupply": "It is not confirmation of an ontology edit or a complete typed ChangeSet Diff. No such ontology action exists in the fixed App/bridge surface."
+    },
+    {
+      "stage": "Job",
+      "observed": "get/list/cancel/subscribe/unsubscribe and restore of existing Jobs; model start is a distinct model explanation action.",
+      "ontologySupply": "No ontology edit/create Job entry in the fixed preload/App. Existing generic Job presentation is not an accepted T02 write path."
+    },
+    {
+      "stage": "commit",
+      "observed": "No Store.commit or ontology commit bridge entry in the four I06 App/bridge files.",
+      "ontologySupply": "T01 owns original preview/confirmation/Job/atomic Store path. I06 model gateway is not a substitute; later T01 implementation status is not re-audited here."
+    }
+  ],
+  "lifecycleObserved": [
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "lines": [
+        40,
+        64
+      ],
+      "meaning": "Task restore rejects lower generations and restores task state; this is not ontology draft restoration."
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "lines": [
+        65,
+        137
+      ],
+      "meaning": "Task events reject lower generation and same-generation wrong project connection; connection increments local epoch and marks uncertainty, clears progress/summaries, restored/task events follow generation/project/stateVersion guards. Cleanup unsubscribes existing Jobs."
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "lines": [
+        138,
+        171
+      ],
+      "meaning": "Result summary reads check generation after awaits; engine health additionally checks generation plus connection epoch. These scoped guards do not prove a future ontology proof lifecycle."
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "lines": [
+        369,
+        420
+      ],
+      "meaning": "ModelPanel is keyed by current projectId; changed model context/privacy/config/selections clears model preview/grant."
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "lines": [
+        497,
+        526
+      ],
+      "meaning": "Model selection invalidates model preview/grant before requesting new result/field selection."
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "lines": [
+        823,
+        886
+      ],
+      "meaning": "Model send confirmation and cancellation are scoped to context/preview/grant/invocation; cancellation can stop local waiting, cannot retract content already sent."
+    }
+  ],
+  "ontologyLifecycleRequestedNotImplementedByThisHandoff": [
+    "Bind complete trusted current source/project/public-internal identity/revision/vector/metadata and all supports before generating the real T02 Preview.",
+    "T01 original preview/full Diff/confirmation/Job/commit must revalidate exact sourceBinding, planRef and previewHash; renderer confirmed=true is not authority.",
+    "Project/session change, late reply, cancelled draft and old cursor/preview must not supply current write authority. T02 revision change preserves draft input and disables stale preview.",
+    "Queued/running cancellation and response-loss recovery use original operation/receipt reconciliation; no automatic replay, confirmation or new Job from UI restoration.",
+    "These are fixed T02 plan requirements, not I06 implemented production assertions."
+  ],
+  "ownership": {
+    "T01Exclusive": [
+      "apps/desktop/src/main/index.ts",
+      "apps/desktop/src/main/task-service.ts",
+      "apps/desktop/src/main/jsonl.ts",
+      "apps/desktop/src/renderer/src/task-presentation.ts"
+    ],
+    "I06Remaining": [
+      "apps/desktop/src/preload/index.ts",
+      "apps/desktop/src/renderer/src/env.d.ts",
+      "apps/desktop/src/renderer/src/App.tsx",
+      "apps/desktop/src/renderer/src/style.css"
+    ],
+    "rules": "Current root delegation controls. Historical six-file/main ownership wording does not authorize I06 or T02 edits."
+  },
+  "nextSupplyRequest": {
+    "owner": "T01/root freezes exact approved supplier refs and adoption scope; I06 only remaining owned UI/bridge paths in a separately authorized candidate.",
+    "required": "T01 S1/S2 projection and independent revalidation/transaction/budget contract; S3 metadata policy as needed; S4 canonical/named engine/current host scope and App entry. T02 adapter remains pure translation and cannot create second authority.",
+    "notGranted": [
+      "whole-commit gateway adoption",
+      "unapproved helper import",
+      "shared-source edits",
+      "product/native/probe runs",
+      "automatic user confirmation"
+    ]
+  },
+  "evidence": [
+    {
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "path": "apps/desktop/src/preload/index.ts",
+      "bytes": 1230,
+      "sha256": "727e1ff11c5acbd23c098e5c3a6f4161320b0fec02fb62b9291c702c06e7fe94",
+      "classification": "approved-baseline-source-not-ontology-supplier"
+    },
+    {
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "path": "apps/desktop/src/renderer/src/env.d.ts",
+      "bytes": 132,
+      "sha256": "1233f06ae3c3a5ef20f4f1eac935f01862e42e3728155679ca0d0d8c745a1ae5",
+      "classification": "approved-baseline-source-not-ontology-supplier"
+    },
+    {
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "bytes": 14413,
+      "sha256": "e4310bc3e905f83a4f58acb9d12c7caaee010e89b2bc2c3b23dbc4e2c111d637",
+      "classification": "approved-baseline-source-not-ontology-supplier"
+    },
+    {
+      "ref": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "path": "apps/desktop/src/renderer/src/style.css",
+      "bytes": 5279,
+      "sha256": "e4aff5a4fc375cba40578b597aac6fb4845a62c1cdbd6bb4a6b90d7eb56356f6",
+      "classification": "approved-baseline-source-not-ontology-supplier"
+    },
+    {
+      "ref": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+      "path": "apps/desktop/src/preload/index.ts",
+      "bytes": 2223,
+      "sha256": "5b5de03144d313de76a06c8e9e71f194dad40ba37e26a7ed86d932f3617b46a6",
+      "classification": "retained-unapproved-I06-source-read-only-no-adoption"
+    },
+    {
+      "ref": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+      "path": "apps/desktop/src/renderer/src/env.d.ts",
+      "bytes": 132,
+      "sha256": "1233f06ae3c3a5ef20f4f1eac935f01862e42e3728155679ca0d0d8c745a1ae5",
+      "classification": "retained-unapproved-I06-source-read-only-no-adoption"
+    },
+    {
+      "ref": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+      "path": "apps/desktop/src/renderer/src/App.tsx",
+      "bytes": 35840,
+      "sha256": "d66e74cd77b4ef1e5b0e97f3ddefe10481dccd8466bbc40c1f403eaee1b22716",
+      "classification": "retained-unapproved-I06-source-read-only-no-adoption"
+    },
+    {
+      "ref": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+      "path": "apps/desktop/src/renderer/src/style.css",
+      "bytes": 6981,
+      "sha256": "9febd43e63ceeee76f4cd97ec886fa5f27ad816e5d8ccc7aae62ba75fbcadca1",
+      "classification": "retained-unapproved-I06-source-read-only-no-adoption"
+    },
+    {
+      "ref": "e5ad54e5762157cafe532c2a0c07c22e8dd737cb",
+      "path": "docs/iterations/T02/interface-handoff.md",
+      "bytes": 5052,
+      "sha256": "fd2239404473ae48f73f45199d84fc1976e12ec9ab1a7468161b2f84a737c186",
+      "classification": "T02-fixed-C5-spec-and-scope-not-implementation-approval"
+    },
+    {
+      "ref": "e5ad54e5762157cafe532c2a0c07c22e8dd737cb",
+      "path": "docs/iterations/T02/stage-registration-request.md",
+      "bytes": 6751,
+      "sha256": "70c94baba5a637281019c95feb265d0cd05042cf4534b9cdc8e7c53d9c2ecc32",
+      "classification": "T02-fixed-C5-spec-and-scope-not-implementation-approval"
+    },
+    {
+      "ref": "e5ad54e5762157cafe532c2a0c07c22e8dd737cb",
+      "path": "docs/iterations/T02/typed-changeset-integration-plan.md",
+      "bytes": 44243,
+      "sha256": "6b88b1f7a8e9b7b08719f6b48dda16905a3eb800a7b8baef21f4b7a26b06983c",
+      "classification": "T02-fixed-C5-spec-and-scope-not-implementation-approval"
+    },
+    {
+      "ref": "e5ad54e5762157cafe532c2a0c07c22e8dd737cb",
+      "path": "docs/iterations/T02/delivery.md",
+      "bytes": 5927,
+      "sha256": "2a8c814afddf769eb43b7a68aa5d1c2a86cea7b14fd5bf81ff5fff4c19ad8213",
+      "classification": "T02-fixed-C5-spec-and-scope-not-implementation-approval"
+    },
+    {
+      "ref": "e5ad54e5762157cafe532c2a0c07c22e8dd737cb",
+      "path": "docs/iterations/T02/source-projection.md",
+      "bytes": 3597,
+      "sha256": "60b2f5226985874d5dc74fb886faead4c9be5ccbe6d92bdee5e03d4268ca1153",
+      "classification": "T02-fixed-C5-spec-and-scope-not-implementation-approval"
+    },
+    {
+      "ref": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+      "path": "packages/contracts/src/index.ts",
+      "bytes": 11668,
+      "sha256": "76c44e3465b5ad5c76b9b1bb6ad5ad61a206531ec8717455286a95f7665ffa28",
+      "classification": "retained-historical-contract-or-T01-owned-main-read-only-no-adoption"
+    },
+    {
+      "ref": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+      "path": "apps/desktop/src/main/index.ts",
+      "bytes": 12088,
+      "sha256": "d88c1df806dc913b85a719026640ee6502762153c82c148e57aa32d5dbd9c60b",
+      "classification": "retained-historical-contract-or-T01-owned-main-read-only-no-adoption"
+    },
+    {
+      "ref": "1f3b053d8a69d1f7ddb1e29c143f648d910fe689",
+      "path": "apps/desktop/src/main/task-service.ts",
+      "bytes": 33131,
+      "sha256": "7ed65bd689a8cfa445b4d349a1a996750f67c190600d0f46b2dceb324ebd0a68",
+      "classification": "retained-historical-contract-or-T01-owned-main-read-only-no-adoption"
+    }
+  ],
+  "verification": {
+    "method": "git show exact refs, SHA256/byte count, scoped full preload surface/App source and fixed T02 plan read; apps/packages e2c→1f3 diff empty",
+    "runtimeTests": 0,
+    "GUIActions": 0,
+    "productEdits": 0,
+    "sourceHEAD": "b22a36fd1b6524011d3e6cf645e62963d1379c06",
+    "evidenceEntries": 16
+  },
+  "historicalMainLifecycleObserved": [
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "lines": [
+        94,
+        108
+      ],
+      "meaning": "Trusted main selectProject chooses project; projectContext is distinct from renderer view generation/recovery. Renderer UUID is not current-project authority."
+    },
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "lines": [
+        122,
+        148,
+        292,
+        319,
+        332,
+        355
+      ],
+      "meaning": "Clearing views advances generation; await replies check generation/schema/associated ID, project revision advancement also changes view generation. Generic task fences are not ontology typed proof."
+    },
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "lines": [
+        398,
+        400,
+        518,
+        541
+      ],
+      "meaning": "job.cancel returns decision-time snapshot, not authoritative final state; unsubscribe only removes subscription, not cancellation."
+    },
+    {
+      "path": "apps/desktop/src/main/task-service.ts",
+      "lines": [
+        157,
+        205,
+        544,
+        557,
+        724,
+        725
+      ],
+      "meaning": "Connection/session restoration and operation.get are existing task recovery/read-only reconciliation, not automatic typed confirmation or commit replay."
+    }
+  ],
+  "requestBLabel": "Request B is current root delegation terminology. No literal fixed T02 heading named Request B was found; correspondence is T02 typed-changeset-integration-plan S4 and interface-handoff formal port requests."
+}
