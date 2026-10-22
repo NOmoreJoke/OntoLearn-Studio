@@ -41,24 +41,39 @@
       },
       "designated": {
         "zcode": {
-          "state": "not_created",
-          "sessionId": null,
-          "verdict": null,
-          "requires": "fresh complete same-version task after root preflight/GUI coordination"
+          "state": "accepted_original_turn_terminal_and_full_report_pending",
+          "sessionId": "session_6f01f2e4b4e2b589b2c21916110aa5f0",
+          "queryId": "01a16510-1174-799f-b66c-0a249f6f83d0",
+          "turnId": "turn_cc86ce6d-d84d-42ca-849c-6c37d7274a2e",
+          "model": "GLM-5.3",
+          "thinking": "max",
+          "permission": "yolo",
+          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-zcode-review-3be0397",
+          "fullOriginalInputBytes": 40359,
+          "inputSHA256": "74a96e1460d6bb81be3f5697616b93bc6bdfadeb72078ef52cd0664c1697e426",
+          "actualNativeFullInputInRequest": true,
+          "verdict": null
         },
         "minimax": {
-          "state": "not_created",
-          "sessionId": null,
-          "verdict": null,
-          "requires": "fresh complete same-version task after root preflight/GUI coordination"
+          "state": "accepted_original_turn_terminal_and_full_report_pending",
+          "sessionId": "mvs_055614846c1142d08810f229513d46ca",
+          "turnId": "f29ceef1-6c25-4939-99ce-cc498045152e",
+          "model": "M3.1-Flash",
+          "thinking": "xhigh",
+          "permission": "始终授权",
+          "workspace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T06-s1-minimax-review-3be0397",
+          "fullOriginalInputBytes": 40372,
+          "inputSHA256": "38096163d2278fca1def97411d91bd16bfd0813cb5d6f312a56cd3f1f422fac9",
+          "actualNativeCompleteInputReadReturned": true,
+          "verdict": null
         }
       },
-      "next": "Root complete preflight of frozen new full inputs/environments, then fresh same-version complete M and Z tasks under actual account/GUI coordination; no prior Pass transfer.",
+      "next": "Collect exact original-turn official terminal, complete actual Read evidence, full original reports and all findings; no new message/GUI or Pass inference.",
       "successorInProgress": {
         "newProduct": "3be0397faf03de6520c47bf7d86f3dc2fd004287",
         "frozen": true,
         "completeIndependentReview": "completed current private scope Pass; new designated verdicts pending",
-        "newDesignatedTasksCreated": 0,
+        "newDesignatedTasksCreated": 2,
         "notDualPass": true
       },
       "previousCandidateReview": {
@@ -102,10 +117,14 @@
       "newDesignatedPreparation": {
         "inputs": "docs/reviews/T06/round-2/frozen-inputs.json",
         "environments": "docs/reviews/T06/round-2/prepared-environments.json",
-        "rootPreflight": "requested, pending actual root result",
-        "taskIds": [],
-        "guiUsed": false,
-        "sourceCandidateFrozen": true
+        "rootPreflight": "accepted complete static preparation by root; no product/Pass transfer",
+        "taskIds": [
+          "session_6f01f2e4b4e2b589b2c21916110aa5f0",
+          "mvs_055614846c1142d08810f229513d46ca"
+        ],
+        "guiUsed": "authorized short creation lease then released",
+        "sourceCandidateFrozen": true,
+        "startReceipt": "docs/reviews/T06/round-2/desktop-start-receipt-20261023.json"
       }
     },
     {
@@ -248,7 +267,7 @@
       "newDesignatedPreparation": {
         "inputs": "docs/reviews/T06/ui-round-2/frozen-inputs.json",
         "environments": "docs/reviews/T06/ui-round-2/prepared-environments.json",
-        "rootPreflight": "requested, pending actual root result",
+        "rootPreflight": "accepted complete static preparation plus f9699 operation addendum; still awaiting separate UI lease",
         "taskIds": [],
         "guiUsed": false,
         "sourceCandidateFrozen": true
@@ -420,11 +439,11 @@
     "Full parent 57P0/release and real two OS/human acceptance gates retained"
   ],
   "noSourceChangesOrUnchangedRetestsForInventory": true,
-  "updatedAt": "2026-10-22T10:55:46.897961+00:00",
+  "updatedAt": "2026-10-22T19:31:52.070433+00:00",
   "reviewResourceState": {
     "source": "root actual notification",
-    "zcode": "account recovery uniquely owned by original T05 chat; no new Z/duplicate reset/GUI by T06",
-    "newMinimax": "pending root explicit window",
+    "zcode": "root observed availability restored; reason unknown/no reset consumed; no account-wide hold",
+    "newMinimax": "S1 accepted; UI queued",
     "otherZTasks": "not inferred failed from other owners task errors",
     "sameRoundOpinionIsolation": true
   }
