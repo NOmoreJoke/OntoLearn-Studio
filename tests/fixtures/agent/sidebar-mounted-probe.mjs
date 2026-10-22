@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
-import { mkdir, readFile, writeFile, stat, readdir } from 'node:fs/promises'
-import { resolve, relative, join } from 'node:path'
+import { mkdir, readFile, writeFile, stat, readdir, realpath } from 'node:fs/promises'
+import { resolve, relative, join, dirname } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { build } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -18,6 +18,14 @@ const candidate = args[1],
   output = resolve(args[3])
 const runtime = resolve(root, 'docs/reviews/T08/review-runtime-post-designated-20261023')
 assert.ok(relative(runtime, output) && !relative(runtime, output).startsWith('..'))
+const runtimeReal = await realpath(runtime)
+assert.equal(
+  runtimeReal,
+  resolve(await realpath(root), relative(root, runtime)),
+  'runtime symlink escape',
+)
+const outputParentReal = await realpath(dirname(output))
+assert.ok(!relative(runtimeReal, outputParentReal).startsWith('..'), 'output parent symlink escape')
 await mkdir(output) // Refuse existing output; failed profiles/raw are never erased.
 const out = join(output, 'out')
 await mkdir(out)
@@ -30,6 +38,21 @@ const fixturePaths = [
   'tests/fixtures/agent/sidebar-mounted-probe.mjs',
 ]
 let paths = []
+const dependencyPaths = [
+  'package-lock.json',
+  'node_modules/playwright/package.json',
+  'node_modules/playwright-core/browsers.json',
+  'node_modules/playwright-core/package.json',
+  'node_modules/@playwright/test/package.json',
+  'node_modules/react/package.json',
+  'node_modules/react-dom/package.json',
+  'node_modules/vite/package.json',
+  'node_modules/@vitejs/plugin-react/package.json',
+]
+const dependencyHashes = async () =>
+  Object.fromEntries(
+    await Promise.all(dependencyPaths.map(async (path) => [path, sha(await readFile(path))])),
+  )
 const hashes = async () =>
   Object.fromEntries(
     await Promise.all(paths.map(async (path) => [path, sha(await readFile(path))])),
@@ -120,6 +143,21 @@ try {
       path,
     )
   const facts = JSON.parse(await readFile(factsPath, 'utf8'))
+  report.dependencyBefore = await dependencyHashes()
+  assert.equal(report.dependencyBefore['package-lock.json'], facts.lockIdentity.sha256)
+  for (const path of [
+    'node_modules/playwright/package.json',
+    'node_modules/playwright-core/browsers.json',
+  ])
+    assert.equal(report.dependencyBefore[path], facts.files[path].sha256, path)
+  const lock = JSON.parse(await readFile('package-lock.json', 'utf8'))
+  report.installedVersions = {}
+  for (const path of dependencyPaths.filter((path) => path.endsWith('/package.json'))) {
+    const version = JSON.parse(await readFile(path, 'utf8')).version
+    assert.equal(version, lock.packages[path.slice(0, -'/package.json'.length)].version, path)
+    report.installedVersions[path] = version
+  }
+  report.node = { version: process.version, executablePath: process.execPath }
   const executablePath = facts.systemChromeExecutable.path
   report.browserExecutable = {
     path: executablePath,
@@ -532,6 +570,9 @@ try {
   }
   try {
     report.sourceAfter = await hashes()
+    report.dependencyAfter = await dependencyHashes()
+    if (JSON.stringify(report.dependencyBefore) !== JSON.stringify(report.dependencyAfter))
+      report.exitCode = 1
     report.fixedInputsAfter = Object.fromEntries(
       await Promise.all(
         [manifestPath, factsPath].map(async (path) => [path, sha(await readFile(path))]),
