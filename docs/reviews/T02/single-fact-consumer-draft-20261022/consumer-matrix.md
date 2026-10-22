@@ -21,10 +21,12 @@ C5 `bind_rdf_projection` 只接受其固定Store2来源形状：project/projectR
 | DraftSourceBundle | 同连接一致读取的完整当前domain/RDF原记录、完整definition payload/control/mappingState、全部支持含triples下标、owner/source_row/managed_value与墓碑、显式跨层引用 | T01 S1；损坏/漏项/未知profile/不能完整投影则拒绝当前切片，不猜值。当前完整读view的source_ref与S2 proof分别解释 |
 | DraftMetadataBinding | M五字段identifier/labels/definitions/synonyms/examples的真实home、完整集合/顺序/语言/缺失语义、schema/profile身份及其与source/proof的绑定 | T01 M；真实identifier缺失不派生/填localName。未改metadata也必须完整读取并保真；不要求全概念CRUD先完成，但不能少读字段或写第二metadata库 |
 | DraftEditorBaseAndBinding | 从同一受信源完整投影的实际Snapshot，实际bind_rdf_projection结果；project/revision相符、全部RDF集合相等、所有支持原ID保留 | T01供应并可信编排调用C5；legacy绑定成功仅证其RDF域，不能抵M/proof授权。不能只用客户端Snapshot/hash/总数 |
-| DraftFactEditIntent | 目标原fact记录的选择来源、旧S/P/O与本次新canonical object；不变的S/P、受支持dataProperty/domain/range；无entity命令 | 用户草稿不决定原ID，原ID从绑定源定位；值必须经已批准词项/模型校验。无效Unicode/N3/type固定分类，不显示解析器原文 |
+| DraftFactEditIntent | 目标原fact记录的选择来源、旧S/P/O与本次新canonical object；不变的S/P、既有dataProperty与新canonical literal；domain/range原声明完整保留，不充实例类型或值合法性判据；无entity命令 | 用户草稿不决定原ID，原ID从绑定源定位；值必须经已批准词项/模型校验。无效Unicode/N3/type固定分类，不显示解析器原文 |
 | DraftActualPreview | 上述可信编排真实调用C5 change_preview所得完整Preview及原editor绑定，非手填expected/typed plan/proof | T01 S2独立复算与整域比对；初次成功不抵confirm/Job/commit再取源。new adapter不能直接裸调未校验snapshot_digest |
 
 ## 可翻译条件与保真oracle
+
+语义护栏：PRD V0.6第688/970行明确domain/range用于RDFS推理，不是必填或类型校验。C5校验property/literal形态、词项datatype白名单及ill_typed，不比较prop.range与object的datatype；这里不新增该比较；range声明本身的支持域、类引用等既有结构检查仍保持，移除的是新增的事实值匹配门。声明range=xsd:string而新O为canonical integer literal，不能**仅因此**拒绝；其余真实守卫仍适用，这只是防误拒判据，不是正向supplier fixture或整链成功声明。真正SHACL验证须按独立获批合同，不能借range声明代填。
 
 下列条件必须**全部**成立；其余合法编辑仅是当前单事实段不可表示，保留草稿，不假称永久不支持或改变父FR范围。完整比较受同一CostSession执行前预扣，不能先复制/解析再检查预算。
 
@@ -65,7 +67,7 @@ C5 `bind_rdf_projection` 只接受其固定Store2来源形状：project/projectR
 | F08 支持非唯一人工 | old由manual＋ontology payload重叠支持、两个fact支持、mapped/override或object=None墓碑 | 全部支持查询后拒绝，不挑其中manual、不删全部来源；所有记录/墓碑保持 |
 | F09 slot／目标冲突 | 同(S,P)另一活动值；或new Triple已经由其它fact/definition支持 | 拒绝当前替换；不去重合并、不删旧保新而谎称单原ID更新 |
 | F10 ID不兼容 | 原ID合法在源存在但不满足新typed形状；或candidate试图使用新content-hash ID | 固定不可表示分类；不重算/迁移ID。单条成功oracle必须核同原ID及所有归属字段 |
-| F11 词项错误 | 非canonical N3、未配对surrogate、非法类型/语言、声明range不容新O | 通过获准模型/decoder给固定reason/location；不显示底层异常/原值，不替换Unicode或改digest编码 |
+| F11 词项错误 | 非canonical N3、未配对surrogate、未支持的词项datatype、非法语言形式或literal ill_typed（按实际批准模型/decoder检查） | 通过获准模型/decoder给固定reason/location；不显示底层异常/原值，不替换Unicode或改digest编码 |
 | F12 不完整after | 原Store回滚预演RDF正确但改了无关M、definition payload/reference、mappingState或control | 完整记录/metadata/control oracle拒绝；纯RDF核同不能替代。回滚预演不发布领域变更 |
 | F13 四阶段同revision漂移 | preview保存前、confirm、Job接纳、排队后commit分别替换metadata/profile/policy/vector/control/支持，revision保持相同 | 各阶段在其原事务真实重取源拒绝，不能“包装层查过再跨await写”。已存在合法历史不修复/删除，当前新请求无部分领域写 |
 | F14 绑定混淆 | 相同旧previewHash却不同新proof/planRef，跨项目复用plan，或同hash对应多个歧义plan | 新持久envelope/身份链拒绝，不选扫描第一项；旧Store preview identity不冒新proof |
