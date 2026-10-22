@@ -1,0 +1,109 @@
+{
+  "format": "i05-independent-fee-root-r4-receipt/1",
+  "revisionBase": "6bb1c1e5a4250468f894033e42864d480ccdb815",
+  "candidate": "f6b886208839037aeae93947549d32fc3ddc6b89",
+  "reviewedProcess": "29705204c9f8274d7ab17433bd6ac3094461244b",
+  "conclusion": "Pass limited to approved pure fee specification, complete error entry and fee mathematics",
+  "closedFindings": ["R3-F1/P1", "R3-F2/P2"],
+  "newPriorityFindings": [],
+  "rootEvidence": {
+    "fullReadHandoffDispositionAndCompleteIndependentReport": true,
+    "fixed269CurrentEqualsProcessGitVerified": true,
+    "old203CurrentEqualsRevisionBaseGitVerified": true,
+    "all12NewReviewFilesHashesAndReceiptMembershipVerified": true,
+    "readTwoRecomputeSummaryFieldsAndBoundarySummary": true,
+    "ranIndependentMathematicalVerifierAgain": false
+  },
+  "independentEvidence": {
+    "fixedCount": 114,
+    "completeEntryCases": 27,
+    "seeds": [1, 2],
+    "all141CompleteFieldsMatch": true,
+    "bothTapesIndependentlyReplayed": true,
+    "IFR3IndependentlyDecoded": true,
+    "perIdE00WhenR16FeeDeltaVerified": true,
+    "freshBoundaryCalls": 25,
+    "expectedRejections": 21,
+    "successes": 4,
+    "fixedAnalysisEvents": 236545,
+    "fixedExecutionEvents": 236484
+  },
+  "limits": [
+    "Pure mathematical IFR3/17L decoding does not establish actual codec, issuer, same-issue permission or usage",
+    "Actual source and Catalog permissions, owner H, JobStore/runtime/platform/417/parent acceptance remain pending",
+    "No product, native, build, database, network, install or model execution in this window"
+  ],
+  "history": "R1/R2/R3 failures and author first failures unchanged; independent no-index diff exit1 is expected difference, not test failure; unknown historical exits remain unknown",
+  "reviewFiles": [
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-proof-r4.json",
+      "bytes": 81805,
+      "sha256": "c6d0ba9ee342608a330a8820b4b8fa68ec4b16bc186162c2df52f35e170212c7"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-boundaries.json",
+      "bytes": 6264551,
+      "sha256": "db5eba7d639a346c08270f3d77caf3abade388f979d9624bce7398762598a2fb"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-boundaries.py",
+      "bytes": 8747,
+      "sha256": "be7315a5c84f588f1c4545eb60f42c4ea516f4ef909a26e27bc94df7c9985433"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-command-log.json",
+      "bytes": 2077244,
+      "sha256": "0196d9797b679b03c93b10950d712b1dc5b494f989b0f4185e88ae0683fa971c"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-command.py",
+      "bytes": 1109,
+      "sha256": "6af806a28419d914e5a48ae6bdf99b2f5a9bc7bc91286e46da5745bf4089f565"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-finalize.py",
+      "bytes": 6504,
+      "sha256": "7a03060e1572c9a5f218bd1812abdfa3241564c81ed81bc09304b298f52d404a"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-integrity.json",
+      "bytes": 463046,
+      "sha256": "ad73829728e59036dccf634d5b44bc6ed3c2b0ada51df76e0af982912ba2ec57"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-recompute-1.json",
+      "bytes": 142059,
+      "sha256": "afecdddc4bf6f389511ba62e7de9393cb59ace9d7dd23bc0a2c2f2790de159cb"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-recompute-2.json",
+      "bytes": 142059,
+      "sha256": "091df468ad8c669f34e16e8671f6d43a6945943d94472998178d0d605d0a9b35"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-verify.py",
+      "bytes": 18427,
+      "sha256": "04194f466974594f9d07ecf12908770d814fae398ecf8a559ef7f528dd268f62"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-review-r4.md",
+      "bytes": 10582,
+      "sha256": "c22ca14a291986d38caab945d825de0d86a468b87249990ad977f260dc685f9b"
+    },
+    {
+      "path": "docs/reviews/I05/independent-fee-spec/independent-r4-final-check.json",
+      "bytes": 239010,
+      "sha256": "cf74f22f365927a30f69b3c82e9ec2871def60cbf22847d98973b78f092924a0"
+    }
+  ],
+  "protectedAGENTS": {
+    "path": "AGENTS.md",
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "indexEmptyBeforeRootSeal": true,
+  "productExecuted": false,
+  "pushPRMerge": false,
+  "parentGoal": "active",
+  "selfExclusion": "Self excluded; final local process commit binds receipt bytes"
+}
