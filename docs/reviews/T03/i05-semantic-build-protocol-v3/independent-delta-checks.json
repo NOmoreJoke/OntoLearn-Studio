@@ -1,0 +1,55 @@
+{
+  "candidate": "15401ec287e33becc09ad7154388b4814644cd47",
+  "repairBase": "289fa9877e864a5ae5aa4f3b0593f6d454dce351",
+  "manifestIdentityVerified": true,
+  "deltaPayloads": 14,
+  "newManifestSelfBytes": 19571,
+  "deltaPaths": 15,
+  "unchangedBaseFiles": 44,
+  "currentPayloadsVerified": 58,
+  "currentPayloadBytes": 3857741,
+  "profileExactIndexRows": 21,
+  "onlyIndexAddition": {
+    "pointer": "#/independentParentProfile",
+    "old": null,
+    "new": null,
+    "newProperty": true
+  },
+  "threePresenceNegatives": [
+    {
+      "id": "F1-omit-new-explicit-null-key",
+      "pointer": "#/index/changes",
+      "rejectedIndependently": true
+    },
+    {
+      "id": "F1-unindexed-new-key",
+      "pointer": "#/profile",
+      "rejectedIndependently": true
+    },
+    {
+      "id": "F1-falsely-label-new-key-as-old",
+      "pointer": "#/index/changes/10/newProperty",
+      "rejectedIndependently": true
+    }
+  ],
+  "candidateScriptsExecuted": false,
+  "productExecuted": false,
+  "reviewerFirstFailures": [
+    {
+      "toolChunk": "5ecf09",
+      "exitCode": 1,
+      "stdout": "negative top ['format', 'sampleKind', 'cases'] ids ['F1-omit-new-explicit-null-key', 'F1-unindexed-new-key', 'F1-falsely-label-new-key-as-old']\n",
+      "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 47, in <module>\nAssertionError\n",
+      "cause": "Reviewer extra intent check guessed the arbitrary synthetic null key as unindexedExplicitNull; actual key is syntheticUnindexedNull. Earlier exact identity/index checks and all three independent mutation rejections had passed. Corrected intent check to inspect actual presence rather than guess the name."
+    },
+    {
+      "toolChunk": "f87c4e",
+      "exitCode": 1,
+      "stdout": "F1-omit-new-explicit-null-key #/index/changes\nrows 20 null row []\nF1-unindexed-new-key #/profile\nnew keys {'syntheticUnindexedNull'} changed [('syntheticUnindexedNull', None)]\nF1-falsely-label-new-key-as-old #/index/changes/10/newProperty\n",
+      "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 8, in <module>\nTypeError: object of type 'bool' has no len()\n",
+      "cause": "Reviewer display helper assumed every mutation value was dict/list; third case is the intended scalar false. Read actual pointer/type and corrected documentary checker only."
+    }
+  ],
+  "newFindings": [],
+  "F1": "CLOSED_ONLY_DOCUMENTARY_DELTA"
+}
