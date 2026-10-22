@@ -1,0 +1,104 @@
+# T01 → T02 最小供方交付计划（纯设计，2026-10-22）
+
+结论：现在可并行完成字段／失败表、费用调用图、四事务 proof 接点与发行闭包设计；下一实现申请拆为「纯 metadata 校验」「可信 owner 费用基础」「完整只读源」「内部严格 canonical」「M 最小写门＋S2 原链闭合」「命名产品接线」。不必等待完整 M 编辑器、Turtle 交换或 M0 总完成。**目前只有本 /tmp 设计写面；下列实现、健康临时库验证及新公共启用均是待根逐段发窗口的建议，不是本报告自授票。** C1 A/B 当前修复窗口优先，所有共享原文件等其冻结新候选后再由根指定累计基线和串行 writer，不从可变工作文件取输入。
+
+## 1. 固定依据与已决定事项
+
+仓库根为 `/Users/kyle/Documents/工作/知爻/本体`。本报告全文读取以下材料；最初合并输出截断的 typed-contract 中段已单独补读。没有读本轮模型意见或借用 S1/C2/producer WIP。
+
+| 代号／精确输入 | bytes／SHA256 | 使用边界 |
+| --- | --- | --- |
+| Q：`.worktrees/T02-s1-review-fixes` 中 Git `fa9881ed84c0dd2b39a7a1185a60a16f168dc9d7:docs/iterations/T02/next-integration-segment-20261022.md`，1–88行 | 28339／`af8a40d5ee2d5514f84e4188487b1a1616e281c94af05ca10de384439e25eae3` | 本段消费需求；Git 原 bytes 已核同；T02 产品 e5ad 与过程 fa 分开 |
+| R：`iteration-control/2026-10-21-weekly-release/.private/T02-next-integration-controller-audit-20261022.md`，1–79行 | 10613／`99538ee5b24fbdeeffb63747bb817933c1ff9e437ce4a559ae09541f38177f05` | 已按补正实际路径全文读；设计可先行，未授 runtime／采用票 |
+| B：`outputs/20261022_review_backlog/T01-T02-interface-B/interface-B-for-T02.md`，1–86行 | 15474／`6e0fd6cac443e60e2cd98106ca11c991dee51cd9edf262e7d1eba4d0fa3b46f1` | 固定 423 合同事实与后续缺项 |
+| F：同目录 `typed-contract-findings.md`，1–149行 | 21309／`1de928c9a5076137883cfc93156f60c585bde480fe7725cbf69367f1f1761da2` | 原入口、strict DTO、原事务、预算的固定源码定位；本轮没有重算其全部源码闭包 |
+| P：同目录 `design-context-raw/ontology-projection-and-changeset-supplier-plan.md.raw`，1–274行 | 81538／`c752d7bdebe1b60ab5ecaae3dcf87a6a5829d21d45313c2f3d2c04b034205db5` | 已全文读；原 ref `7753666d2cfda48c76ce59fa1ad6f34802c48eed`，原路径 `docs/iterations/T01/ontology-projection-and-changeset-supplier-plan.md`，blob `f08cabf26d27817022074bcb11cfe2ef7bdf7324`；设计非实现 |
+| A：`iteration-control/2026-10-21-weekly-release/T01-ontology-projection-S1-implementation-authorization.md` | 9912／`727fb240ef6a2588a6f56d97bfc9b03354eef8b6fe91005b228e8abb6cf79d2d`（本轮已全文读，身份沿 B 附 identity） | 历史技术选择原件；其中旧运行窗口受当前 HOLD 约束，不据此恢复运行 |
+
+B 的 `design-context-raw/identity.json` 757B／`7ab78ea7972da72b3cd9760aed5573bf600b9556f6906b9143538d111b7d8bda` 已读。P 中“等待选择”的历史语句由 A 明确选择覆盖：**L1 保原源并报告缺失；真实五字段 payload 唯一 home；同 project 跨四类精确字符串 identifier 唯一、区分大小写且不 trim/NFC/casefold；同 IRI 唯一 home；显式 semantic profile2 方向。** 不再次把这些列为未决。仍未给出的是真实业务值、具体 home 选择／补录动作、升级激活所需权限与备份／位置供应，以及新实现精确 ref。缺 identifier 拒绝可编辑构造，不能派生或将未记录等同空列表。
+
+唯一旧产品来源为 `423b7e4c799f188cf2ce6e8e7121893ce85624cd`，旧 base `5f910b52c69d86a1076b2032e5d3c63e715947f3`，旧 C1 process `a33cc80e82475e54d74b4e48c1fd32f32979983a`。B/F 已证其内部 business3 真实 preview／Diff／confirm／Job／commit／receipt／undo，默认 productRuntime 仍仅 health；旧 typed ontology value 严格限 triples／singleValuedPredicates／references。不能加任意 metadata／proof／cost-ticket，不能把 Store opaque state、project metadata 或旧 previewHash 改名当新接口（B:26–36,52–66；F:25–86）。新 base 不由本报告重选，更不能 whole-commit 采用旧树。
+
+## 2. 依赖图与最小边界
+
+```text
+立即的纯设计 D（消费形状／失败／费用图／闭包）
+        ├─ M0：纯 metadata 语义校验及 home 冲突规则（不接 DB、不启写）
+        ├─ C：可信 Store owner 的 CostSession 发行／生命周期／深层计费
+        └─ K：内部严格 canonical 设计；host／I06 命名桥及 I05/T05 交换设计
+M0 + C ── S1：同连接完整只读投影（旧源可给保真缺失材料）
+M0 + C + S1 + K ── M1＋S2：最小五字段持久能力／profile 写门＋四原事务 proof
+M1＋S2 新同版供方 ── T02 实际 Preview／纯适配／原 Job 临时机制链
+再加真实 host/scope＋命名 canonical＋I06 ── App 真人确认和产品闭环
+```
+
+M0 是本报告的交付切片代号，不是外部 M0 工程总门。内部严格 canonical（K）与 M1＋S2 共同冻结前禁止开放 metadata 写消费；这避免“先用假 proof 写 metadata，再拿它证明 S2”的循环。第一段只需能从真实五字段来源编辑一条既有单人工 fact，并保持全部 metadata／支持／control；**不要求先做完完整四类 CRUD／多支持编辑／跨层删除／Turtle serializer／T08 草稿／T10 包**。这些父项保留，不能以有限第一段永久拒绝它们。
+
+## 3. 可协调的短窗口与准确路径
+
+下表 `E/` 全称 `packages/engine/src/ontolearn_engine/`，`ET/` 为 `packages/engine/tests/`；每个“新”均指 P 中拟议新文件，未核或采用任何同名 WIP。阶段数按独立可冻结成果拆分，不是日历／性能承诺。根可先接收 D，并行路由三个设计面；运行窗口只在对应依赖齐备时给。
+
+| 窗口 | 可独立交付／真正前置 | 新／旧精确写面申请与边界 | 是否 public |
+| --- | --- | --- | --- |
+| D：立即的设计短窗 | 本报告＋T02 的消费字段／固定拒绝表；T01 给实际读取／解析／复制／历史／持久增长调用库存和四事务切点；列 baseline→adoption→候选关系 | 当前只本 /tmp；未来归档仅根指定的新 docs prefix。并行 canonical／I06／I05/T05 设计不要求先有全部 runtime ref | 无新 API／schema／启用 |
+| M0：纯字段校验短窗 | 已选 A 政策足够准备实现；不依赖 App、Turtle、物理 caller 或已完成 S2。实施仍需根独占新树／writer 票 | **新** `E/project/entity_metadata.py`、`ET/test_project_entity_metadata.py`。仅不可变有限输入的字段/home/集合一致性与 profile-aware 规则，不持 SQL／commit。可先交纯 helper，不能认证 caller 自报 profile/provenance，也不把 opaque 形似值当 home | 私有；不扩旧 wire；无 M 写成功承诺 |
+| C：费用／原 owner 短窗 | 根指定可信 Store owner 的发行入口及同版 bootstrap policy 来源；先固定 session identity／scope／TTL／spent-reserved／release-ack／历史读与新 undo 边界，再实施。不能仅造 costId | 复用 P 的新 `E/project/ontology_projection.py` 中私有费用/gate 定义和 **旧** `E/job_store.py` 的 owner 绑定；按库存申请 `E/storage.py`、`E/project/{format3.py,transactions.py,applications.py,domain_changesets.py,compensation.py}` 实际深层 hook，专测归对应 S1/S2 新 tests。此处不假设仅两个新文件能包住全部旧 helper。无需收费变更的路径删出申请并给依据。生产生命周期后续才申请 `E/coordinator.py` | 内部健康 TMPDB 可先设计／后获票验证；public 默认 health 不变；内部 issuer 不冒当前物理 scope |
+| S1：完整只读源短窗 | C 的真实发行／reader 强制 session 已固定；M0 解释规则已固定。旧 profile1 无 metadata 可交真实 source＋缺失材料，无需等 M 完整写；不能据此给 T02 可编辑 Entity | **新** `E/project/ontology_projection.py`、`ET/test_project_ontology_projection.py`；52 个旧 423 输入只读（P:19–28）。同一原 JobStore 连接，public/internal、revision/vector/current CP.domainSnapshotRef、全 state/payload/references、全部支持／owner/source_row/managed_value/墓碑／retirement 与 metadata/absence 同读。只回滚自己事务；不调 Store.snapshot 补写、不连接另一库 | 私有 source 供方；初始四键 source 与旁侧 control/metadata/policy 分开；不是新公共 DTO |
+| K：内部严格 canonical 短窗 | 旧 ontology value 的 additionalProperties=false，不可承载真实 entityMetadata 或新增 proof。K 必须在 M1/S2 共同冻结及内部 TMPDB 真链前给同版严格 schema/helpers，不能推到 App 启用阶段 | T01 申请必要 **旧** `packages/contracts/v2/{schema.json,registry.json,fixtures.json,binding-regressions.json}`、`packages/contracts/{python/contract_v2.py,src/v2.ts,src/index.ts}` 的精确 delta；仅选实际需要路径，两个新 M/S2 专测承接正反例，旧测试如需改另列 owner。新严格版本/tag 与 profile 绑定，旧合法 value 与默认 v2 原字节/语义保留；不只给旧 v1 追加可选字段 | 内部 business3/private 新版合同；不等 productRuntime、命名 engine/main 或 I06 启用，也不自动授任何公共方法 |
+| M1：profile 与最小 home 写门短窗 | A 方向已选；根仍需给 profile 激活／唯一升级入口／生产备份与位置用途的精确票。内部纯校验与健康 TMPDB 机制可先申请，不等生产位置；不能借临时库绕 HOLD | **新** metadata helper；**旧** `E/storage.py`、`E/project/{format3.py,transactions.py,compensation.py,domain_changesets.py,applications.py}`、`E/job_store.py` 的必要 delta（P:95–131,235–244）。原 profile1 opaque／历史保真；全已知历史载体 namespace 碰撞先界检查后拒升级；旧 reader 拒新 profile；migration_id／CP1 保留。metadata 与 RDF 全支持一致、唯一 home 与 identifier 原子约束。M 写开放必须和 S2 同版验收 | 不公开升级或 metadata 写；不另建 metadata 表／plan／Job／receipt |
+| S2：原四事务闭合短窗 | C＋S1＋K＋M1 已有固定候选，T02 新 owner 提供精确 C5 模型／service／source_projection 来源及纯 adapter 合同；原 Job 状态／canonical owner 逐路径票 | **新** `E/project/ontology_changesets.py`、`ET/test_project_ontology_changesets.py`；**旧** `E/project/domain_changesets.py`、`E/job_store.py`、`E/project/transactions.py` 主要切点；必要 `storage.py/format3.py/compensation.py/ontology_projection.py` meter/proof 接点依清单串行。原 job_plans 的 versioned envelope／parameters／confirmation／cursor，唯一 validator 区分 current/historical；不造第二 authority | 只内部新严格版本；不把 v1 追加可选字段便放行新写。canonical 未给同版严格扩展前不经旧 DTO 发送新字段 |
+| T02 机制消费短窗 | 新同版 M/S1/S2/C 完整发行、根指定新 base／逐路径 C5 采用。完整 Turtle／App 尚可未完成 | **T02 owner** 新 `E/ontology/typed_changeset_adapter.py`、`ET/test_ontology_typed_changeset_integration.py`；必要原 `E/ontology/{model.py,service.py,source_projection.py}` meter delta 必须另列，不因两个新文件自带。P3 service.py 和 `apps/desktop/src/renderer/src/ontology/OntologyPage.tsx` 新候选修复由 T02 自管（Q:62–67） | adapter 无 DB／path／confirm／commit 权限；实际 T02 Preview 恰一 removed/added、同 S/P、单人工原 ID、无 Entity 变化才译为原 edits。不能手填被测 plan/proof 正向成功 |
+| 产品接线短窗 | T01 canonical／命名 engine／当前 host scope 和 I06 固定供方；真实页面／真人交互资源就绪 | T01 **旧** `packages/contracts/v2/{schema.json,registry.json,fixtures.json,binding-regressions.json}`、`packages/contracts/{python/contract_v2.py,src/v2.ts,src/index.ts}` 按真实差异；`E/coordinator.py`、`apps/desktop/src/main/{index.ts,task-service.ts,jsonl.ts}`、`apps/desktop/src/renderer/src/task-presentation.ts` 及对应原 owner tests。I06 **旧** `apps/desktop/src/preload/index.ts`、`apps/desktop/src/renderer/src/{env.d.ts,App.tsx,style.css}` 与其新专测。不得一次申请全改；与 C1 共享文件先串行冻结 | 内部严格 canonical 已由 K 与 M1/S2 共同固定；此窗只明确正式命名 engine/main/I06 与 productRuntime 启用差异；无通用 invoke／模型 grant 代授权 |
+
+canonical 是 T01 维护面，仍非当前 C1 五 writer 的随意扩权；其余旧 47 readonly 需根具体 delta 票。I06、T02、I05/T05/T10 各原 owner 保持写权。新目录／分支不复用被 HOLD 的同名树，也不在本报告指定未经根确认的 ref。上述窗口优先采取“两个独立新 helper 先冻结 → 共享原文件一个累计窗口 → T02 消费窗口”；如 C 与 M1/S2 必须同时碰同一原文件，则由同一 T01 writer 在累计候选顺序提交，不平行争写。
+
+## 4. 供方要给的真实合同与固定失败
+
+**源／M。** 入口沿 P:34 的私有 `read_ontology_source(real_job_store, publicProjectId, *, readerLimits, costSession)` 设计，不把此签名当已实现。发行者在首次任何本次源读取、decode、materialize 之前创建／取得 session、固定 policy/profile；reader 必须携带该实际对象并先预扣。对于 owner 已打开的 Store，须说明 bootstrap 已由哪个受信 owner/policy 供给和当前覆盖从何处开始，不能将开库先读追记为 session 保护。同连接事务中 current CP 引用必须确实存在且与 state/vector/revision 一致；不写 snapshot 凑 ref。旧源 identifier 缺失给 L1 缺失材料，未知 namespace 或 typed label 无法保真给 coverage 材料；都不是可编辑成功。真实 home 的五字段全读，包括多语言集合与全部真实支持，不从项目名、IRI 尾部或 definition ID 合成（Q:45；P:34–48,67–115）。
+
+**内部严格 canonical 先于机制链。** K 先固定可承载真实 entityMetadata before/after、sourceBinding/proof 与相应版本身份的最小严格 schema、两端 helper 和必要 fixture；M1/S2 新候选实际走该合同。旧 strict ontology v1 继续拒绝这些字段，不能先用旧 DTO 运行失败后再说 App 阶段补齐。内部新版合法正例、未知字段/跨版本/profile 混用拒绝与两端同判都纳入共同冻结；正式命名桥与默认产品启用仍后置。
+
+**S2／原 Job。** 固定 `sourceBinding` 的真实 public/internal、snapshot、revision、完整 vector、CP、retirement、metadata home 或 absence、profile/policy 和 T02 来源身份；独立 ontologyPreviewHash 与原 storePreviewIdentity 分域。四个切点均在原事务内重取／重投影／重演，而非 wrapper 先检查后跨事务：① `domain_changesets.preview_changeset` 保存 snapshot/blob/plan 之前；② `confirm_changeset` 签新确认之前；③ `JobStore.create_changeset_job → create_job` 首 claim 之前；④ `commit_job → domain_changesets.commit → ProjectTransactions.commit` 首领域写之前。preview 的完整 after/control 必须等于真实 T02 candidate；同 revision 的 metadata/policy/support/control 改动仍会拒旧 proof（P:137–153；Q:46–50）。
+
+**历史例外必须明确。** 原 operation 已受理的精确重试、已提交 receipt 和 undo target 用完整 immutable historical 校验，不因后来 metadata 改动伪称原成功无效；新 confirm／新 Job／首次 commit 才核 current。commit 后响应丢失仅按原 operation 只读对账，unknown 不当未提交，不重派新 operation。undo 用新的真实 Preview／完整影响／显式确认／新 Job 与新当前 proof，目标旧 proof 是历史证据。领域、evidence、receipt、result、succeeded 沿原唯一 writer 的一个外层事务；不得拆成若干 CAS／SQL commit（F:78–86；P:147–155）。
+
+**费用。** C/S1/S2/T02/分页/confirm/Job/commit、重复与失败均同 session；执行前扣 spent/reserved，已花不退；只有实际释放并 ack 才回收 reserved。要覆盖旧 helper 的全历史、所有 segment 列表、重复 parse/copy、回滚预演的临时增长、确认两行、Job claim/context、最终发布。原 schema/row/page/JSON 限额和 creation ReadLimits 只作更紧交集。旧全链建议中的 1MiB／8MiB／64MiB-work、会话数／TTL／页数／Tail 数字不能直接成为本段新全链限额；A 曾对旧 S1 局部窗口限定相应界，不等于已批准或证明新的整链 CostSession。新全链值仍须同版实际调用图／可执行正例与费用合同固定。原嵌套事务清理与 Job terminal floor／取消/失败收尾须有独立封存额度；不允许业务额度耗尽后借 legacy ownership 详情侧写开启未计费事务。无计费模板的分支应进入前有限拒绝；不能凭全部拒绝通过充可执行供方（R:23–29；P:157–229）。
+
+| 类别 | 设计中需固定的原因与行为 | 当前 wire 兼容要求 |
+| --- | --- | --- |
+| 源形状／权限／事务 | invalid-input；未获准 issuer/对象；unknown caller active transaction 不进入且不回滚 caller | P 的八类内部错误尚非新增 public enum；不得自创 canonical code |
+| 身份／来源／表示 | identity-conflict、incomplete-source、unsupported-source；细分缺 identifier/home、重复 home/identifier、unknown/legacy namespace、typed term 不可保真、支持遗漏、CP/vector/control/proof/policy 过期 | 私有原因有限；不泄业务正文/SQL。缺字段或合法不支持与 storage failure 分开；不能统一降成 missing |
+| 资源 | resource-limit；首读前／首次深层函数前／首写前拒，首次失败与重试累积，TTL 到期不重置预算；清理与唯一受控 terminal 尝试按预留 | 固定映射由 canonical owner 决定；不要把 OWNERSHIP_CONFLICT 必须 detailRef 的旧 DTO 用空 UUID 满足 |
+| 存储／清理 | storage-busy、storage-failure；保首因、实际 cleanup/持久事实；健康引擎的业务拒绝应自己事务完整回滚 | 真 I/O/连接故障不承诺一定关闭或 terminal，不自动循环重试；原已提交成功不回写失败 |
+| 页／确认／受理 | 错 segment/hash/offset/UTF8/页链、跨项目/host/session、v1 cursor 确认 v2、过期 proof、错误 confirmation/context；零部分签名或新 claim | versioned strict schema/envelope 与 registry 同版；历史 v1 只读继续，旧合法输入字节/hash不重算 |
+
+## 5. 必要健康 TMPDB 验证（建议清单，本轮全部未运行）
+
+未来只在根新票、独立固定 env/cache、受控临时数据／测试 worker 下验证实际候选。健康临时库不证明 arbitrary SQLite 文件保护／whole-H 物理界／生产位置或 caller。原物理 HOLD、被拒 SQL/heap/OS 绕路证明、native／新 producer 都不进入本计划。
+
+1. **M0 纯规格与版本兼容。** 真实五字段合法/非法、home/identifier冲突、精确大小写与不归一化、完整多语言/typed term/支持交叉校验；profile1 opaque 同名键保留且不认证。仅 helper 单测不记完整 M 或新可信 provenance 成功。
+2. **C/S1 健康非空源。** 用原真实 API 建 fixture、被测 reader 实读。至少一份非空完整源成功；独立 fixture 原值逐项核对全部支持／control／CP；authorizer 禁全写、完整 dump 不变、自己的 BEGIN→read→ROLLBACK，caller transaction 未动。每项首读前计费、失败累计、未知模板、实际释放 ack 与 cleanup 首因逐项；不沿旧 S1 probe/SQL 研究重新证明物理界。
+3. **M1/profile 与内部 canonical 机制。** 新版完整 metadata/proof 正例必须经 K 的实际严格 schema/helpers，旧 v1 仍拒该新形状，旧合法值与默认 v2 回归保持；不能以绕过 DTO 的 helper 成功代内部链成功。 在明确获票的临时库运行真实升级入口；旧 profile 的历史 namespace 碰撞、包括已删旧键，升级拒绝且 dump/catalog/trigger 不变；无碰撞正常库的真实 profile 激活与固定旧 reader 拒新 profile。首次 M 成功必须等 S2 真 proof 原链，不能 fixture token/opaque Store 直写 home 冒成功。生产备份/位置无票仍禁生产激活。
+4. **M1＋S2/T02 原链。** 实际 source→实际 T02 constructor/bind/change_preview→纯 adapter→原 preview→完整 Diff 页→显式机制 fixture 确认→queued/running/commit→原 receipt 对账→新 undo 链。保全 RDF、全部记录 ID、metadata、支持、vector/control/history；确认只记机制，不记真人。四事务分别注入同 revision 内容/metadata/policy 漂移；缺页/错链/中文跨段、同 storePreview 不同 proof、排队后变更、取消/预算耗尽、提交后丢响应、重开/历史查询、undo 冲突均真走原链；健康事务业务失败核零部分 artifact/域写。
+5. **资源与收尾。** 固定最终实际调用图后测各界 ±1，首函数尚未进入、失败/重复页/重试未退款、一次完整正例确能完成；预演嵌套清理、ownership 回滚外侧写、Job terminal 预留、过期/耗尽时合法一次收尾按真实受影响分支测。仅健康 TEMP 的受控异常/原正常工具使用在未来票中定义；不扩展为损坏库、native 计量或 OS OOM。
+6. **产品后验另记。** 真实 App 可见全 Diff、实际人类动作、切项目/连接/session 代次晚返失效、queued/terminal 对账与 undo。合成 callback 不替真人，临时库不替正式 scope；平台、CI/develop/远端/发布门仍由原阶段要求验收。
+
+每个窗口冻结后运行其必要新专测、受影响旧回归与现行要求的 check／verify:sources，保实际 argv/首败/双流/退出/超时/收尾；不预填通过。旧正常 suite 的既有 guard 不因含 native/sqlite/child 字符串被本设计擅自过滤，运行范围由相应新票的原未改 suite 与具体边界决定。复杂新候选仍须独审和当前指定同版新审，不继承旧有界阶段结论。
+
+## 6. 固定发行与本地 import／资源闭包
+
+每段都交 **base、逐路径 adoption、product、process 完整 SHA**，manifest 列 path/blob/bytes/SHA、相对精确 base 的累计 delta、writer/readonly；文档 HEAD 不能代产品。只有上述实际 Git 身份产生后才填值。旧 52 项可作起始 adoption 目录，旧 B 的 14 raw 文件只供静态核对；两者都不是未来 M/S2 全部发行闭包（Q:19,37）。
+
+M0 列纯 helper 的全部本地 imports 与实际常量/schema 引用；C/S1 除 projection 新模块，还列真实 Store/JobStore、format3、transactions、applications、compensation、domain_changesets、RDF term/parser 与直接/晚导入的必要本地模块。S2 再加实际 T02 固定 model/service/source_projection、adapter、完整 canonical schema/registry/fixtures/binding/helper 和 policy/profile/implementation/limits 身份。依 AST 和资源定位逐项收口，不从旧数量推定闭包完成。测试用输入与正式资源分开；无 test stub／假 supplier 混入发行面。
+
+任何 package-data/resource 打包变化、PYZ/目标平台实际包含性由 T03 原 owner 固定发行后证明，先列缺项，不把静态 import 清单说成运行包证明；本计划不改 `packages/engine/pyproject.toml`、锁或 build 脚本。T02 只采用根批准的精确供方 paths 与 closure，新增依赖或 meter 导致 model/service 等变化时重列新 candidate，不接 WIP 目录。
+
+## 7. 根可立即路由的具体请求
+
+- **T01 设计面**：将已选 A 政策带入 M0 纯字段表；列 C 的可信 owner 发行/取得点、bootstrap policy 来源、跨页/失败/Job/重开/undo 生命周期以及实际深层 meter 接点；给 S1 失败表、M1/profile 最小原文件 delta、S2 四事务接点及历史/current 分派。无需等所有外部父模块；实现票等 C1 A/B 冻结后按上表串行给。
+- **T02 设计面**：固定新 C5 依赖 paths/hash，交真实 Preview 单 fact 可译条件、保原 ID/完整 after 比较和预算调用库存；列两 P3 的新候选 delta，暂不实现或 import 未供新 supplier。
+- **canonical/host/I06 面**：T01 给最小命名 DTO／有限错误／engine/current host 边界；I06 给 page/session/generation 失效和全 Diff／真人确认呈现合同。原可信内部 Store issuer 可先有受控机制实现，不能冒外部 scope 供方已齐；正式桥启用等真实发行。
+- **数据与引用面**：实际 identifier/五字段/home 选择或 L1 补录材料由真实业务/用户动作供给，不再问已选的精确唯一规则。跨层 Entity IRI 引用到源的完整映射是完整删除前置；第一段单人工 object 编辑可在证明不变的完整已知 source 上推进，不先借缺供方断言引用为零。
+- **I05/T05/T10 面**：可并行冻结 Turtle 逐构造支持/拒绝、模板 sh:in 单一表示、serializer/profile/错误与 T10 metadata 包角色/minReader。无需阻塞 M0 或单 fact 准备；实际整批 import 仍须同一无损 preview/确认/Job/writer，完整包/metadata 往返不能用 Turtle 冒充。新 owner 路径/pin 由根转回，不由 T01 猜写。
+
+本次只执行只读 Git／文本／stdlib hash，并新增本 /tmp 文档；未 import、测试、SQL/DB/native/GUI、安装或调用产品，未改源／schema／受审树／Goal，未向 T02 或其它聊天发消息。本文没有新产品供方 ref、运行 Pass 或物理保护结论。

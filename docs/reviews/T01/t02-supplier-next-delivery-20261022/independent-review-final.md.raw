@@ -1,0 +1,27 @@
+# T01→T02 供方计划：P2-DEP-01独立定点复核
+
+结论：**设计层可接收；P2-DEP-01关闭，未发现新增实质问题。** 这只接收修订后的供方交付顺序与窗口建议，不是实现、运行、指定外审、采用或产品启用通过。新供方ref尚未产生，不阻断立即的纯设计准备。
+
+## 输入身份与首Fail保留
+
+本轮修订 `/tmp/t01-c1-remediation-20261022/T02-minimal-supplier-delivery-plan-v2.md`：25696B，SHA256 `6964fa5bb767b009d9e6b3949bb53ba8f44628c29b879b4d52a9ef05083e7c6b`。逐字断言等于持久副本 `/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-T02-minimal-supplier-plan-20261022/revised-plan.md`。
+
+首稿23980B／`e90dea34cdcd048c02eaecd51c5b3222d8dadc6175a71ea753f17fe31a6030d0`与首独审5026B／`c15747c455952a2afe0437ddcba021b90718e7293ebf3f771c8e084d5ab7f035`均重新核同，原件未改。首轮不通过及其真实metadata进入旧strict typed链被拒的反例继续有效；本报告不倒填首轮结论。
+
+## 关闭依据
+
+已完整读取首稿→修订稿文本diff，并核相关最终行：
+
+- 3、28–35行将内部严格canonical切片K明确提前，作为M1＋S2的共同冻结前置，而非等App接线时补。
+- 47行给出T01 canonical owner的必要schema、registry、fixtures、binding及Python/TS helper精确候选路径；仅按实际delta申请，旧测试如需改另列，未授整目录或全量共享写权。新严格版本/tag与profile绑定，不以旧v1追加可选字段放行新写。
+- 49、59行要求M1/S2使用同版K实际严格合同；真实entityMetadata before/after、proof与版本身份不能经旧DTO或opaque Store绕过。内部机制成功不再以尚未扩展的旧strict合同为前提。
+- 81行将新版metadata/proof正例、旧形状/跨版本/profile拒绝、两端同判及旧合法值回归纳入共同验收；92行原有S2 canonical发行闭包现在有相应前置窗口。
+- 51行仍将正式命名engine/main/I06及productRuntime启用留在后续产品窗。K的内部合同设计没有自行批准公共RPC、生产scope或启用接口。
+
+这关闭了首轮“闭包要求存在、早期writer/冻结窗口缺位”的具体P2。具体schema形状、proof存放位置与版本边界仍需K阶段实际设计并经唯一owner/根逐路径审定；本计划中的拟议名称或切片代号不构成现有批准API。
+
+## 连带变化与限制
+
+diff仅涉及开头阶段拆分、依赖图、K窗口、S2前置、产品窗说明、内部canonical段及相应机制验收。原L1/真实五字段唯一home/identifier不派生、完整同连接源、四事务重取重演、历史/current分派、原writer与receipt/新undo、首读前可信同一CostSession、失败累计/实际释放ack、HOLD和各owner边界未被放宽。无需重问已选政策；也无需等完整M编辑器、Turtle或全部父模块才能准备字段/调用/失败/依赖设计。
+
+实际执行仅stdlib读取、SHA256、文本diff与逐字断言，命令退出均0。没有重跑固定源码闭包、产品、import、测试、SQL/DB/native、GUI、网络或模型；没有修改repo、计划或首独审。未执行formatter，无格式通过结论。所有实现/健康TMPDB/公共接线仍待相应精确授权与同版真实供方，运行、指定审查和父验收门未由本报告关闭。

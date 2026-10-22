@@ -1,0 +1,31 @@
+# T01→T02 最小供方交付计划：独立纯设计审查
+
+结论：**当前稿不通过，1项P2阶段依赖表达须修正。** 可立即继续纯字段表、调用图、失败表和事务切点设计；缺新供方ref不阻断这些准备。未发现需要重新选择L1、唯一home或精确字符串identifier政策的理由。本结论不评价实现或运行。
+
+## 固定输入与范围
+
+全文审查 `/tmp/t01-c1-remediation-20261022/T02-minimal-supplier-delivery-plan.md`：23980B，SHA256 `e90dea34cdcd048c02eaecd51c5b3222d8dadc6175a71ea753f17fe31a6030d0`，101行。
+
+核对消费文档固定Git `fa9881ed84c0dd2b39a7a1185a60a16f168dc9d7:docs/iterations/T02/next-integration-segment-20261022.md`：28339B／`af8a40d5ee2d5514f84e4188487b1a1616e281c94af05ca10de384439e25eae3`，以及根审10613B／`99538ee5b24fbdeeffb63747bb817933c1ff9e437ce4a559ae09541f38177f05`。必要定位核B15474B／`6e0fd6cac443e60e2cd98106ca11c991dee51cd9edf262e7d1eba4d0fa3b46f1`、F21309B／`1de928c9a5076137883cfc93156f60c585bde480fe7725cbf69367f1f1761da2`；P原方案81538B／`c752d7bdebe1b60ab5ecaae3dcf87a6a5829d21d45313c2f3d2c04b034205db5`的§2–4、§6–7、逐路径表，以及A授权9912B／`727fb240ef6a2588a6f56d97bfc9b03354eef8b6fe91005b228e8abb6cf79d2d`相关选择与运行边界。没有重审825源码或采用WIP。
+
+## P2-DEP-01：内部M1/S2所需严格canonical扩展没有落到对应实施窗口
+
+位置：计划29–32、47–50、89行。图与窗口把M1＋S2和T02原Job临时机制链排在产品接线前；schema/registry/fixtures/bindings及严格helper的精确写面却只出现在产品窗50行，并称“此窗才明确命名DTO”。48行禁止未扩展时经旧DTO发送新字段，89行又把完整canonical列为S2发行闭包；这些约束正确，但未给出该前置实际在哪个早期窗口完成。因此现表不能直接作为内部机制的逐路径开工/冻结单。
+
+反例：真实home含entityMetadata的profile2 definition进入原preview及完整before/after Diff。B31及F42明确旧typed ontology只允许triples/singleValuedPredicates/references、additionalProperties=false。P30已将严格metadata union及相应registry/helper列为M申请。按当前表若仅实施47–49行、保留50行canonical未改，该真实M输入/after不能沿旧严格typed链通过；若跳过校验或走opaque Store又违反计划自己的唯一原链要求。此处不是要求把新proof直接塞进旧DTO；proof/envelope、metadata value各自仍须明确版本与严格消费边界。
+
+最小修正：在图、M1/S2前置及写面中明确列入**内部机制真正需要的最小严格metadata/版本化契约扩展**，由T01 canonical owner经根单独精确授权，与M1/S2共同固定发行；实际不需改的文件按diff删出。说明哪些proof材料仅存私有envelope、哪些跨原typed参数/响应须新schema。将命名engine/current-host生产scope、productRuntime启用及I06/App接线继续留在产品窗。无需提前实现所有公共API或扩大整套contracts写权，也不重问已选字段政策。
+
+## 其余已成立的设计边界
+
+- 18、35、44–47、56、98行将纯校验、完整只读源、最小持久门和业务补录分开；不从IRI/项目名/definition ID派生identifier，不把profile1形似值认证为五字段。缺真实业务值仍是可编辑Entity前置，非纯设计前置。
+- 46、56行保同一原连接、完整支持/owner/source_row/managed值/墓碑/retirement/metadata和真实CP；unknown coverage不充空集合，不写snapshot凑身份。98行保留完整IRI引用映射与完整删除的边界。
+- 58–60行把重取/重投影/重演放在四原事务写入前；历史精确幂等与首次current校验分开，receipt/result/succeeded同writer，undo取新当前proof，不以hash代人类或物理授权。
+- 45、56、62、77–80行明确可信issuer在首次源读/解码/物化前供给同一session，失败工作累计、实际释放ack、深层helper与收尾额度；旧ReadLimits/局部S1限额不是全链新预算或物理票。内部issuer不冒生产位置/scope。
+- 3、39、52、74、83、87–99行保留根逐路径窗口、累计基线、串行原owner、真实闭包与新候选验证；未将423、C2、S1或producer WIP当批准新实现。HOLD/whole-H/被拒物理研究及父项保持不变。
+
+## 实际操作与限制
+
+实际仅普通Git show固定消费文档、stdlib文本/字节读取与SHA256、原材料相关行定位；所执行命令退出均0，最终计划身份重读断言通过。输出过长的材料只按本报告所列必要段使用，不声称重新全文审计P/F闭包。未执行formatter，故无格式通过结论。
+
+未修改repo、原计划或证据；未运行产品/import/测试/pytest collect/SQL/DB/native/child业务/GUI/网络/模型，未读取本轮模型意见或联系T02/根chat。只新增本文件。**本轮是设计审查；P2修正前不把阶段表接收为完整可执行申请单，立即纯设计准备仍可进行。**
