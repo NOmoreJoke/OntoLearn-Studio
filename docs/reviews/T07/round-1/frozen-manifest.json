@@ -1,0 +1,271 @@
+{
+  "stage": "T07-S1",
+  "scope": "完整私有轮次编排/资源FIFO指标/独立场景页及现有验证",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "preparationParent": "982e4535e864c17275e51ed67664c0b7fac367bc",
+  "branch": "feature/weekly-t07-scenario",
+  "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-scenario",
+  "fullDiff": {
+    "file": "candidate.patch",
+    "bytes": 340601,
+    "sha256": "3e697c94bae835307e1012bb30ea65bbbce680555e488135bfcb267b4210b8a3",
+    "pathCount": 25
+  },
+  "candidateFiles": [
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx",
+      "bytes": 20270,
+      "sha256": "65ac6a8efd6a9f395088403be8e0133cd1f32f3f70f34334e1f5a135f65c30ac",
+      "gitBlob": "a5d0a729d2aa8624461ab88efe0e2caa27576e10",
+      "physicalMatches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/presentation.ts",
+      "bytes": 5924,
+      "sha256": "3474e356ffc7dd9f3c5bddaea4ba9a1e6e6259020e9ee22dd2e9769d15a5e463",
+      "gitBlob": "6b4817621aa3c342dfbb7299217b6041a89135db",
+      "physicalMatches": true
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/scenario.css",
+      "bytes": 3633,
+      "sha256": "d3889694abc93c3bc3973f20a01c176187b927c5ce4a53cf84d21108d74807b3",
+      "gitBlob": "78bfb6d41d64963111c32b497dab07ba3c76a9f9",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/iterations/T07/acceptance.md",
+      "bytes": 6766,
+      "sha256": "d5f816cbd21bcfaefa91eee6a2a4d4e2398d4e517b7229c121c2d46cc0666d04",
+      "gitBlob": "da2d90092654229f2407d1d15ca173d6f0556490",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/iterations/T07/integration-request.md",
+      "bytes": 6502,
+      "sha256": "9cfa95c4a464b58db35b1ed902be56494e69ed8a502e993151213ed8682afa3b",
+      "gitBlob": "bd11e920626c6ed04655dd923241fc7371787954",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/iterations/T07/round-projection-handoff.md",
+      "bytes": 4060,
+      "sha256": "74af4b1c298b7d0b39ffded90a1067229c5f057d1914fdf6765d44707cf8199d",
+      "gitBlob": "7156ab47acaa5c3bb7afe31686d19f44e24fd228",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/.gitignore",
+      "bytes": 122,
+      "sha256": "a7daf91a4dea0bb886a9f42aad2760a97ae638454e36dbc6a34e89107652f568",
+      "gitBlob": "071e1c39088cc61733ea270a867e4365cce9a565",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/evidence/candidate-files.json",
+      "bytes": 2458,
+      "sha256": "9457e18ec32ea7ac4b2629c9cbcaf25f8bd5a98db5d2157b37238d4d34cf6baa",
+      "gitBlob": "bc40ec0471b2d1d58adb7600fc96b2551510840c",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/evidence/persistence-validation.json",
+      "bytes": 3037,
+      "sha256": "da0ec490d4600cab18ba0fbd1a056512b7f6bc7e8ed07852f61f48ff33ecd4f0",
+      "gitBlob": "5212a4cc23a28b595bec8804a827804576de68b8",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/evidence/render-probe.mjs",
+      "bytes": 7984,
+      "sha256": "259c46a35de4f0edcf3be260c24d9df8a9554e991a91ba02df8c781333cdc308",
+      "gitBlob": "16310a9eb647c38e7f9ba49779d75c45915fe908",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/evidence/t09-input-receipt.json",
+      "bytes": 3708,
+      "sha256": "31c2a5c2a34f688788be3e65a343f94d2abc22b15ac228e51e7c15f35e968808",
+      "gitBlob": "a9b2e2a0fc3976be2d9d73c32ffc8a7de8652c53",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/evidence/ui-probe.json",
+      "bytes": 1628,
+      "sha256": "6e5edcec50ee0bffcb0e63c3f2e39023ab5379297cbe1cb64688f204f8361ba8",
+      "gitBlob": "df49b7075711a17eac318b7a1ffe9f8c2aa66db4",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/evidence/validation.json",
+      "bytes": 2770,
+      "sha256": "35262b4383ace959d69d7b6f8f4f806d8902805138febaa3c04729599397c1e8",
+      "gitBlob": "23bf18ea803393996afd7ce23e758bcc9b37ea77",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/internal-review.md",
+      "bytes": 3769,
+      "sha256": "d36ae15a4f8510004c1b3de5230b45d103dc3ee417be5cdcac49cd5605594692",
+      "gitBlob": "7f3a83f1d69c07fae2d2766c5df230c03cce2db6",
+      "physicalMatches": true
+    },
+    {
+      "path": "docs/reviews/T07/status.md",
+      "bytes": 8383,
+      "sha256": "9a0d5668a79f122d83e1e1b4315d44754c047c4bd65845027cf8abf2c4fe47f2",
+      "gitBlob": "fa8fab95eee1065ca6f207c92b72fbfd6204ac09",
+      "physicalMatches": false
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/__init__.py",
+      "bytes": 90,
+      "sha256": "6643227cd723fd3a1de0e41da31e634389d91ab7869863ef3736862cb7a31773",
+      "gitBlob": "84de3159d19d929f0e4fec1bb5ffd73ee58b3174",
+      "physicalMatches": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/model.py",
+      "bytes": 8300,
+      "sha256": "f30ce8d84b117805379933ce93025d9b0bcf61a3e8b0400feb0ad7ca4aa8f632",
+      "gitBlob": "86c40de9a4597fcbdb9a79bd081103663388758b",
+      "physicalMatches": true
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/runner.py",
+      "bytes": 11287,
+      "sha256": "69600dc9c9222b5102a75c261165bee309b4db0a72195b45de6915ff2104c702",
+      "gitBlob": "ad20436274d6fb9ac4ff99edd6bc206779324611",
+      "physicalMatches": true
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_persistence.py",
+      "bytes": 11511,
+      "sha256": "0180923002708bad9d5e1806cfefc41616ae587d66fa34c9f44ec2ab75baf3e3",
+      "gitBlob": "a16e527a1a8762e3dd3dd26f3f6cd536c7ce4e71",
+      "physicalMatches": true
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_rounds.py",
+      "bytes": 17612,
+      "sha256": "6038e0cd2d64c002dd9e6ec232afdeadb673663e6629f6e117a269d77785cc5c",
+      "gitBlob": "fecdb78b9940722cfddf0d30c9da25e64b2bd694",
+      "physicalMatches": true
+    },
+    {
+      "path": "tests/fixtures/scenario/e5.json",
+      "bytes": 4024,
+      "sha256": "84c299fa61de136965699a2b02c7b0c9cc7cde949abd86e8e68343c8a264e53b",
+      "gitBlob": "d07aacbdf73e800309080eed617dd9fd3cd8a6a0",
+      "physicalMatches": true
+    },
+    {
+      "path": "tests/fixtures/scenario/round-projection-handoff.json",
+      "bytes": 13004,
+      "sha256": "924a5f2f8f3cc5d5777acea8f0e5da98937a7c466644303e1623e1b1ab34328e",
+      "gitBlob": "75234c73b37c34644eb8574a850ddab4a9f0c683",
+      "physicalMatches": true
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-e5.json",
+      "bytes": 169895,
+      "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5",
+      "gitBlob": "925f772b6831d6951eb395b961119f59e372ecbe",
+      "physicalMatches": true
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-manifest.json",
+      "bytes": 2268,
+      "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+      "gitBlob": "c8188d8fad0e49308310a558b2eeb7fbd3a68081",
+      "physicalMatches": true
+    },
+    {
+      "path": "tests/unit/t07-scenario.test.ts",
+      "bytes": 5388,
+      "sha256": "ce1ca32e272825fcf33bd5b38d78f371264c4e50ebba502cf3c13e1bf493a099",
+      "gitBlob": "d1c37d2a8f7324bd872433dfa3e57fcb32a4707a",
+      "physicalMatches": true
+    }
+  ],
+  "implementationTestFixtureEntries": [
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/ScenarioPage.tsx",
+      "sha256": "65ac6a8efd6a9f395088403be8e0133cd1f32f3f70f34334e1f5a135f65c30ac"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/presentation.ts",
+      "sha256": "3474e356ffc7dd9f3c5bddaea4ba9a1e6e6259020e9ee22dd2e9769d15a5e463"
+    },
+    {
+      "path": "apps/desktop/src/renderer/src/scenario/scenario.css",
+      "sha256": "d3889694abc93c3bc3973f20a01c176187b927c5ce4a53cf84d21108d74807b3"
+    },
+    {
+      "path": "docs/reviews/T07/evidence/render-probe.mjs",
+      "sha256": "259c46a35de4f0edcf3be260c24d9df8a9554e991a91ba02df8c781333cdc308"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/__init__.py",
+      "sha256": "6643227cd723fd3a1de0e41da31e634389d91ab7869863ef3736862cb7a31773"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/model.py",
+      "sha256": "f30ce8d84b117805379933ce93025d9b0bcf61a3e8b0400feb0ad7ca4aa8f632"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/scenario/runner.py",
+      "sha256": "69600dc9c9222b5102a75c261165bee309b4db0a72195b45de6915ff2104c702"
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_persistence.py",
+      "sha256": "0180923002708bad9d5e1806cfefc41616ae587d66fa34c9f44ec2ab75baf3e3"
+    },
+    {
+      "path": "packages/engine/tests/test_scenario_rounds.py",
+      "sha256": "6038e0cd2d64c002dd9e6ec232afdeadb673663e6629f6e117a269d77785cc5c"
+    },
+    {
+      "path": "tests/fixtures/scenario/e5.json",
+      "sha256": "84c299fa61de136965699a2b02c7b0c9cc7cde949abd86e8e68343c8a264e53b"
+    },
+    {
+      "path": "tests/fixtures/scenario/round-projection-handoff.json",
+      "sha256": "924a5f2f8f3cc5d5777acea8f0e5da98937a7c466644303e1623e1b1ab34328e"
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-e5.json",
+      "sha256": "e81b0d02ac5f673552e1bd1e3e87206e7561e3c7fa9c658d5e0dbb41d426a5e5"
+    },
+    {
+      "path": "tests/fixtures/scenario/t09-manifest.json",
+      "sha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e"
+    },
+    {
+      "path": "tests/unit/t07-scenario.test.ts",
+      "sha256": "ce1ca32e272825fcf33bd5b38d78f371264c4e50ebba502cf3c13e1bf493a099"
+    }
+  ],
+  "implementationEntryCount": 14,
+  "approvedT09Source": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+  "sourceRules": "Read fixed product head for25 paths; current status/process may differ. Operations follow current guidance. Product/base changes require new candidate and both full reviews.",
+  "externalTaskState": {
+    "zcode": "not created",
+    "minimax": "not created",
+    "T07Lease": "not granted; T06 owns current background recovery lease"
+  },
+  "missingGates": [
+    "real T05 inference initial/before/end",
+    "real T06 conditions/order/conflict/actions",
+    "T01/I04 scenario lifecycle/cancel/atomic progress/terminal/operation-id ack-loss reconciliation",
+    "public contract/bridge/App",
+    "real delete/restore/create from snapshot/resume",
+    "full E5 facts/inferred/actionTrace/triggeredInstances",
+    "T10 cross-device replay",
+    "FR-700–705 and E.2–E.5/G.4/G.6 parent acceptance",
+    "macOS/Windows full product/platform/release",
+    "designated dual review/CI/remote develop verification"
+  ],
+  "priorValidation": "2026-10-21 full check657TS/1142Py; T07 46+44Py/27TS; synthetic headless UI. No product tests rerun for packet."
+}

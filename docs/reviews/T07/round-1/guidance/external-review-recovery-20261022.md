@@ -1,0 +1,31 @@
+# 指定双审恢复与就绪队列
+
+本页记录2026-10-22的实际协调，不把内部候选或后台进程计为指定审查。当前原T06是后台入口恢复及两任务唯一owner，已有正式租约。16:01+08时双方无ID、MiniMax仅草稿；随后16:10:14.637+08 MiniMax完整正文实际受理，session `mvs_a864253984c3453f982eeaa1cdfb43d8`、turn `04fe413a-9d81-433c-84ac-a16030e1f1aa`，root读回M3.1-Flash/xhigh/runtime bypassPermissions并核12source/完整diff及原提示精确suffix。当前实际指定任务1，完整终态/报告待收；ZCode尚未提交。无当前GUI许可，16:01已停止新增GUI，不沿用昨日时段。
+
+## 当前实际路线
+
+- MiniMax：官方 `@minimax-ai/code@0.6.12`任务私有安装及help成功，默认目录认证/catalog核验后，实际新session前后读回指定模型/思考及同runtime权限，并已完整提交。本次input15831B/SHA `a795b5823cffef870c070d9692222a4980cd23892d745bb9e2e8817bf6d00d71`；root核原冻结提示为精确suffix、review detached10f1与12source/完整diff保持。证据 `T06-minimax-actual-start-controller-readback.json`，受理不是Pass。
+- 客户端首错已更正：原T06发现跨cell闭包指向旧proc，zcode-02与minimax-shared实际stdin日志0B，请求误写已退出进程。旧timeout原件保留，不能据此断言服务startup或认证失败。已改每进程稳定对象，因新证据而重新核正式app-server，并非无变化盲试。
+- ZCode：桌面bundle TUI缺包与非standalone空模型均已保留；原T06已按固定第一方源码3c5b227实际成功构建完整CLI/TUI，help/version0.17.0、正式工具PTY/yolo成功。当前具体缺口为独立CLI尚未完成CodingPlan登录，不是假设桌面认证可复用。已核BigModel国内route，唯一官方`login bigmodel --no-browser`于约16:20:07在自有工具session85505启动，只给阶段主聊天向本人交链接；16:25:00实际exit1 Authorization timed out，无ready，旧URL失效。不把点击当认证、不重复开flow、不自动浏览器、不复制token或转API；后继本人准备时由原owner统一续接。当前没有ZCode审查正文/真实审查任务。
+
+## 现有固定候选
+
+以下base均为 `5f910b52c69d86a1076b2032e5d3c63e715947f3`，表内顺序仅T06首位已获恢复租约，其他顺位按依赖和派发前最新基线决定。原owner已实际回执者列“owner就绪”，不是总控新一轮完整运行验证或指定Pass。每个候选只审原登记S1，不能以父功能缺口全面阻止其独立审查，也不能由S1关闭父验收。
+
+| 范围                                       | 固定产品/审查输入                                                                                         | 当前流程点                                              | 就绪证据和具体下一步                                                                                                                                                                                                                                      |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T06 S1 私有行为计划/固定输入适配           | 产品61396a598b2dffc1d3d2fd4660f9af1d5c93d266                                                              | 10f1d8c33820d9a882a153590d8488f6d3fa7723                | 12source/完整diff/原双prompt固定；原owner实际后台恢复中，MiniMax完整任务1已受理、ZCode未提交。隔离review树及路径映射由原owner冻结。                                                                                                                       |
+| T02 S1 私有本体模块/独立页面               | 49321221733ea927484647352e05e7d833cebc86                                                                  | d597b3c00980652042163d250c875d660d4d371e                | owner实核19路径与固定产品一致；既有check633TS/1091Py、39专项/11合成回调headless；只准备并提交双方完整提示及manifest，不启动任务。                                                                                                                         |
+| T04 S1 查询编写/私有页面/批准reader        | 554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6                                                                  | e761d2962aa18c83885dde4cc0dcd15fd9aba322                | owner既有check666TS/1083Py、24合成reader/14SSR；root本轮33manifest成员对固定Git全部match，仅status物理不同。已实际授权准备完整提示，不启动任务。                                                                                                          |
+| T09 S1 离线课程/术语/私有学习页面          | 76596656908ed84e577e8202a602e3256d5febcc                                                                  | d96924e715a1b2139a75b70aea40fc30ae1129fe                | owner实核产品与固定来源一致；既有check664TS/1094Py，42学习/7真实I04基础通信联验、16真实headless；已实际授权准备完整提示，不启动任务。                                                                                                                     |
+| T10 S1 draft ZIP检查/安全HTML/私有报告发布 | 产品c3c7e90f721344113c4279d663127f9c8d5bda59；审查输入a1e7efef4bd47c97b630753c0e7c4dc34de1d8ae            | f00e1b74213a76ba573dd38bde20191eb39d1cfa                | 原packet/manifest已准备，既有check691TS/1112Py及Linux私有保存边界；root本轮147成员对固定Git全部match，仅status物理不同。等待支持入口/独占lease/最终预检。                                                                                                 |
+| T03 S1 私有CSV/XLSX/准备计划/三步页面      | 产品/包输入0ad7e0a75cc4583918b057885631934c0a9bd859；最终测试验收30319412daf8ae4745987babf7bbed93c53b6b42 | 0b3ccdeb0732610b1483993c0cb70ab888b19ce3                | owner实核18source一致，既有check638TS/1110Py及58mapping，原包11probe；包未覆盖新增OOXML测试/目标两OS。已实际授权只准备base5f→303双方完整提示，不重测，不动另树native/D0，不启用其真实运行票。                                                             |
+| I05 最新完整组合                           | 旧C4 523c已撤出当前队列；后继supplier6891构成新组合                                                       | source-only固定61f53dbe76262f5003065900a4e97d9a6130014b | 原owner已确认523被Q6/date/producer等后继来源取代；最新完整I05仍无具备新oracle/依赖锁/包内运行/父集成前置的发布候选。source-only 2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64仅静态核验，不自动派指定外审；fee/projection规范与T03供应准备继续，运行门不解除。 |
+
+现成manifest核验见 `external-ready-manifest-readback-20261022.json`。T02/T03/T04/T09已分别实际提交冻结双方提示与完整输入包，过程ce1c3df41a233a07de4ef8fad54d5f201b222a23、3c396070c74fbf09cf319b0230c6f96ed2858482、2d5826bc6830a430f95f243faf42f05126400a48、72aa83a80a973a3edeb62ed95518bf1a22178985。root只机械核14/6/8/106清单项及固定Git/hash，尚未全文批准各prompt或给外审lease；T09物理handoff/recovery/status与各固定ref不同，须按固定ref阅读，不宣称全106物理相同。两次root机械检查首错已保在 `ready-review-prompt-packages-static-proof.json`，最终固定blob无差异。T10复用已有packet；不抢建任务。轮到前若base或受审输入改变仍按原规则必要验证与双方新审。
+
+## 阶段验收包的限定接收
+
+原阶段验收聊天独立交付 `outputs/20261022_stage_acceptance/README.md` 和 `stage-delivery.json`。总控全文读取总指南、两份manifest与verification、独立报告/proof；本轮stdlib实核7交付、9桌面附件、34snapshot逐字对固定Git、proof16文件全部match，记录为 `stage-acceptance-controller-readback.json`。浏览器index SHA `adff7f408e1844392d550a7e0a3bdacb5e1c1cd167b24d3b236a517456033a81`；桌面ZIP SHA `a54ad42daed0713101eea9163eb3723c2ffea1feaedb8c54b880d1f1708bc163`。
+
+仅接收人工阶段体验范围：四个现有组件+合成样例的本地交互，以及固定5f基础桌面/内置引擎包。root未运行产品或GUI；运行结果来自原作者和独审记录，不将其冒作总控重跑。真实项目/Store/Job/bridge接线、保存执行、父跨模块、指定双审、双平台、签名和发布仍未完成。T06 S1审查也不覆盖阶段组合外壳或另树UI。
