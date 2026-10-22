@@ -1,5 +1,17 @@
 # T04 查询状态
 
+2026-10-23 固定后过程更新：**产品候选 5070004 已固定；完整验证、固定候选内审及新双审准备包独审通过，两个新审查树已部署，等待总控内部创建窗口。新指定任务、报告和实际设置读回均未产生。**
+
+- 固定产品：`5070004ec8e3219bea33960bd88f57f1976e9cf8`；共享批准基线仍为 5f。
+- 两个新 review 树实际 HEAD：`f2102f0738706d7ed29907ac84f10ad0a506555a`（detached）；名称为 `T04-s1-zcode-review-5070004`、`T04-s1-minimax-review-5070004`，位于同一 `.worktrees/`。42 项产品字节均等固定 507，23 项支持 payload 均等过程 Git；各自独立依赖，仅 de15 指南保护 M。
+- 准备包 manifest：`ff8c08b632b93bd8e5fd7a77a722f89dd7eb99a05ca60590aa836efe63c1bff4`；实际部署收据见 [deployment-receipt.json](p3-repair/deployment-receipt.json)，准备独审见 [preparation-audit.md](p3-repair/preparation-audit.md)，固定后内审见 [post-freeze-review.md](p3-repair/post-freeze-review.md)。
+- 为新增过程命令记录 helper 按指南另跑完整 check，实际 TS719/Python1167 exit0；不将安装成功或过程准备冒充指定模型审查。双方完整正文和原件在各自部署树 `docs/reviews/T04/p3-repair/launch/`。
+- 本方已向总控发送固定候选、实际部署与完整包身份申请内部调度；尚未取得新创建窗口，不抢其他 owner GUI。未 push/PR/CI/合并/发布，父验收不变；实际 Goal 仍 blocked，未新建 Goal。
+
+本段是纯追加过程状态。以下保留固定 507 时的原实现/验证状态；审查该产品原文须从固定 507 Git blob 读取。本开发树的 status 后续过程追加不改变固定产品和两个 review 树，不沿用旧 554 双 Pass。
+
+## 固定 507 时的记录
+
 2026-10-23；owner/chat `01a15bcd-fcba-7583-a307-56497cdde347`。**四项 P3 已在新树修复，完整检查与独立内审通过；正在固定新候选、准备双方全新完整同版审查。父功能及发布未完成。** 实际 Goal 工具状态仍为 `blocked`，依总控具体授权续接原目标，未新建 Goal。
 
 ## 当前修复身份
