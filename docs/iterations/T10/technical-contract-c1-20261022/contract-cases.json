@@ -1,0 +1,113 @@
+{
+  "status": "proposed_design_cases_only_not_wire_fixture_or_runtime_tests",
+  "actualSchemaApproved": false,
+  "formatVersion": null,
+  "resourcePolicyApproved": false,
+  "cases": [
+    {
+      "id": "C01",
+      "input": "same format version label but schema content digest differs",
+      "designExpected": "reject exact registry mismatch; no minor fallback",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C02",
+      "input": "seven full roles present, one genuinely empty with zero memberIds and approved complete empty coverage",
+      "designExpected": "empty role eligible for semantic validation; no claim actual pass",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C03",
+      "input": "all listed typed edges resolve, but retired control root missing from complete source enumeration",
+      "designExpected": "reject coverage; local graph closure insufficient",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C04",
+      "input": "same logical records reshared to different byte members with same owner canonical",
+      "designExpected": "package/member hashes differ; logical collection digest follows same canonical",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C05",
+      "input": "duplicate recordKey only across separate shards, correct individual hashes and first/last summaries",
+      "designExpected": "reject global duplicate/order; no dedupe",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C06",
+      "input": "role ordinal missing1, manifest counts otherwise match",
+      "designExpected": "reject exact catalog continuity",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C07",
+      "input": "actual deflate output beyond local budget though declared small",
+      "designExpected": "bounded stop before excess allocation; no prefix-success",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C08",
+      "input": "full raw=false current core complete, one mapping source bytes absent",
+      "designExpected": "current core separately validated; mapping missing material; no automatic template",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C09",
+      "input": "raw object bigger than approved per-member cap",
+      "designExpected": "C1 reject whole object; no truncate/recode/implicit chunks",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C10",
+      "input": "well formed unsigned full foreign learning check claims independent",
+      "designExpected": "preserve origin/unverified; no local check or automatic core rejection",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C11",
+      "input": "ZIP extra/data descriptor/ZIP64/directory/comment/prefix or hidden trailing bytes",
+      "designExpected": "reject candidate normative producer profile; not claim all external ZIP behavior",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C12",
+      "input": "known source capabilityClaim says replay=true but local support unknown or no selected run history",
+      "designExpected": "do not elevate; explicit per-subject support/availability, no global replay true",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C13",
+      "input": "negative terminal fence after admitted, user re-previews and re-confirms",
+      "designExpected": "new business op only after authoritative no-late-commit proof; unknown keeps old op",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C14",
+      "input": "InputSeal pre-preview persistence asks final plan digest not yet generated",
+      "designExpected": "reject cyclic protocol shape; protect initial seal via independent prepare then bind plan",
+      "testExecuted": false,
+      "actualResult": null
+    },
+    {
+      "id": "C15",
+      "input": "manifest contains own package byte hash or renderer-supplied canConfirm/ticket",
+      "designExpected": "reject self-binding or capability injection; trusted main computes seal digest and confirmation authority",
+      "testExecuted": false,
+      "actualResult": null
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "status": "static_design_contract_checks_only_no_runtime_pass",
+  "at": "2026-10-22T23:40:44.380245+08:00",
+  "base": "94e766bd5b258e74f8534a4c102cd81447f4977d",
+  "changes": "only new technical-contract-c1-20261022 docs prefix",
+  "oldR1AndClarificationFilesUnchanged": 21,
+  "current225FilesUnchangedFromBase": true,
+  "historical66ccStatusDifference": "unchanged existing pre88bbc status update; not claim current225 matches66cc",
+  "sourceInputs": [
+    {
+      "ref": "88bbc18160f433f96c44d10f9eed1b21ac77e289",
+      "prefix": "formal-transfer-proposal-r1-20261022",
+      "scope": "format-and-versioning.md full read; other earlier sources tracked in frozen R1 provenance"
+    },
+    {
+      "ref": "94e766bd5b258e74f8534a4c102cd81447f4977d",
+      "prefix": "formal-transfer-r1-clarifications-20261022",
+      "scope": "existing adopted-policy boundaries retained, no P3 re-review"
+    },
+    {
+      "record": "T09-fixed-intake.json",
+      "scope": "seven exact pure docs fully read and Git bytes/SHA/blob checked; no transitive permission"
+    }
+  ],
+  "designCases": 15,
+  "allCaseActualResultsNull": true,
+  "formatAndResourcePolicyUnapprovedNoAssignedVersion": true,
+  "noSupplierSourceHEADTransitiveCodeOrModelRead": true,
+  "privateGuardAndCanonicalOwnerNotReimplemented": true,
+  "protectedAGENTSSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+  "productTestsExecuted": false,
+  "notExecuted": ["product/runtime", "GUI/native/platform", "new Z/M", "CI/PR/push/merge"],
+  "checks": "JSON parse, unique case IDs/null actuals, fixed input bytes/SHA and Git equality; final Prettier and manifest integrity separately verified before commit",
+  "pending": "actual owner schema/canonical/profile fields/resource values, durable providers and permissions; F16 final policy unknown and fresh input necessary not sufficient",
+  "independentReviews": {
+    "contract": "new C1 four-doc full review, no new substantial blocker",
+    "T09Intake": "two new intake docs + root permission + two supplier facts/identities full review and seven metadata comparison, no D1-D5 full read claim for delegate",
+    "record": "independent-review.md",
+    "closedP3ReReviewed": false
+  }
+}
