@@ -1,0 +1,16 @@
+CASE                                   OUTCOME    CODE/KIND
+eocd-count-larger-than-actual          REJECTED   ARCHIVE_LIMIT
+zip64-locator-appended                 REJECTED   ARCHIVE_LIMIT
+name-81-chars                          REJECTED   UNSAFE_PATH
+uppercase-extension                    REJECTED   UNSAFE_PATH
+template-empty-files                   ACCEPTED   template
+manifest-bom                           REJECTED   MANIFEST_SHAPE
+deflate-concatenated-stream            REJECTED   SIZE_MISMATCH
+store-baseline                         REJECTED   UNLISTED_OR_MISSING_FILE
+two-roles-one-path                     REJECTED   DUPLICATE_PATH
+budget-boundary-32mb-accepted          REJECTED   ARCHIVE_LIMIT
+budget-over-32mb-rejected              REJECTED   ARCHIVE_LIMIT
+central-region-garbage                 REJECTED   UNSAFE_ENTRY
+uppercase-hash-rejected                REJECTED   MANIFEST_SHAPE
+record-duplicate-path-key              REJECTED   MANIFEST_SHAPE
+data-manifest-role-member              REJECTED   UNLISTED_OR_MISSING_FILE
