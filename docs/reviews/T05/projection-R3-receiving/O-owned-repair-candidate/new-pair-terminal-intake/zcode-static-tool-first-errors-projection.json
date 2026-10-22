@@ -1,0 +1,87 @@
+{
+  "observedUtc": "2026-10-22T18:48:23.460641+00:00",
+  "nativeSource": "/Users/kyle/.zcode/cli/rollout/model-io-session_b89ca579bc1862a94909bd1503bafbc6.jsonl",
+  "errors": [
+    {
+      "kind": "Own read path omitted 工作; file not found, then corrected",
+      "callRecord": 24,
+      "callRecordScalars": {
+        "sessionId": "session_b89ca579bc1862a94909bd1503bafbc6",
+        "turnId": "turn_a4a74b36-8465-458a-a385-cdfd22c33d3c",
+        "requestId": "7faa6898-35d2-43ac-b7d3-de26ee9498c4",
+        "querySource": "main_turn",
+        "startedAt": "2026-10-22T18:26:47.659Z",
+        "completedAt": "2026-10-22T18:26:59.897Z"
+      },
+      "call": {
+        "id": "call_9f69cddf3dfa4b49b229ecd5",
+        "name": "Read",
+        "input": {
+          "file_path": "/Users/kyle/Documents/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226/apps/desktop/electron.vite.config.ts"
+        }
+      },
+      "resultRecord": 25,
+      "resultRecordScalars": {
+        "sessionId": "session_b89ca579bc1862a94909bd1503bafbc6",
+        "turnId": "turn_a4a74b36-8465-458a-a385-cdfd22c33d3c",
+        "requestId": "1805def3-83b7-4937-8b11-c3ab4eddda94",
+        "querySource": "main_turn",
+        "startedAt": "2026-10-22T18:26:59.953Z",
+        "completedAt": "2026-10-22T18:27:07.961Z"
+      },
+      "publicResult": {
+        "role": "tool",
+        "content": "File does not exist. Note: your current working directory is /Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226.",
+        "toolCallId": "call_9f69cddf3dfa4b49b229ecd5",
+        "toolName": "Read",
+        "isError": true
+      },
+      "correctedReadCall": {
+        "id": "call_76287c88f146427fbfb4e308",
+        "name": "Read",
+        "input": {
+          "file_path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226/apps/desktop/electron.vite.config.ts"
+        }
+      },
+      "correctedResultRecord": 26,
+      "correctedResultIsError": false
+    },
+    {
+      "kind": "Static JSON traversal len UTF8 with isolated surrogate raised caught UnicodeEncodeError; not product parser failure",
+      "firstBashCall": {
+        "id": "call_9e0c7344e49445f59d2d2f9b",
+        "name": "Bash",
+        "input": {
+          "command": "cd \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226\" && .venv/bin/python - <<'EOF' > docs/reviews/T05/projection-R3-receiving/launch-O15/scratch/json-traversal-results.txt 2>&1\nimport json, hashlib, sys\n\nsys.setrecursionlimit(100000)\n\ndef full_walk(value, stats, depth=0):\n    stats['nodes'] += 1\n    if depth > stats['maxdepth']: stats['maxdepth'] = depth\n    if isinstance(value, dict):\n        stats['objects'] += 1\n        for k, v in value.items():\n            stats['keys'] += 1\n            kl = len(k.encode('utf-8'))\n            if kl > stats['maxkeylen']: stats['maxkeylen'] = kl\n            full_walk(v, stats, depth+1)\n    elif isinstance(value, list):\n        stats['arrays'] += 1\n        for v in value:\n            full_walk(v, stats, depth+1)\n    elif isinstance(value, str):\n        stats['strings'] += 1\n        bl = len(value.encode('utf-8'))\n        stats['strbytes'] += bl\n        if bl > stats['maxstrlen']: stats['maxstrlen'] = bl\n    elif isinstance(value, bool):\n        stats['bools'] += 1\n    elif value is None:\n        stats['nulls'] += 1\n    elif isinstance(value, (int, float)):\n        stats['numbers'] += 1\n\ndef report(path, extra=None):\n    data = open(path, 'rb').read()\n    stats = dict(nodes=0, objects=0, arrays=0, keys=0, strings=0, strbytes=0, numbers=0,\n                 bools=0, nulls=0, maxdepth=0, maxkeylen=0, maxstrlen=0)\n    try:\n        parsed = json.loads(data)\n        full_walk(parsed, stats)\n        top = list(parsed.keys()) if isinstance(parsed, dict) else f\"list[{len(parsed)}]\"\n        print(f\"\\n=== {path}\")\n        print(f\"  bytes={len(data)} sha256={hashlib.sha256(data).hexdigest()[:16]}… parse=OK\")\n        print(f\"  top-level: {str(top)[:300]}\")\n        print(f\"  walk: {stats}\")\n        if extra:\n            try:\n                extra(parsed)\n            except Exception as e:\n                print(f\"  EXTRA-CHECK-ERROR: {e}\")\n    except Exception as e:\n        print(f\"\\n=== {path}\\n  PARSE-FAILED: {type(e).__name__}: {e}; bytes={len(data)}\")\n\n# ---- oracle five fixtures ----\ndef extra_oracle(p):\n    cases = p.get('cases') if isinstance(p, dict) else p\n    if isinstance(cases, list):\n        ids = [c.get('caseId') or c.get('id') for c in cases if isinstance(c, dict)]\n        print(f\"  cases={len(cases)} uniqueIds={len(set(map(str,ids)))}\")\nreport(\"tests/fixtures/quality/i05-source-package-oracle/oracle.json\", extra_oracle)\nreport(\"tests/fixtures/quality/i05-source-package-oracle/schema.json\")\nreport(\"tests/fixtures/quality/i05-source-package-oracle/sources.json\")\nreport(\"tests/fixtures/quality/i05-source-package-oracle/coverage.json\")\nreport(\"tests/fixtures/quality/i05-source-package-oracle/budget-gaps.json\")\n\n# ---- contracts v2 JSON ----\nfor f in [\"binding-regressions.json\",\"dependencies.json\",\"errors.json\",\"fixtures.json\",\n          \"frame-fixtures.json\",\"registry.json\",\"schema.json\",\"states.json\"]:\n    report(f\"packages/contracts/v2/{f}\")\n\n# ---- engine invalidation-v2 ----\nreport(\"packages/engine/src/ontolearn_engine/invalidation-v2.json\")\n\n# ---- oracle inputs ----\nreport(\"docs/reviews/T05/source-package-oracle/inputs/consumer-C-goldens.json\")\nreport(\"docs/reviews/T05/source-package-oracle/inputs/explanation-goldens.json\")\nreport(\"docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-inputs.json\")\nreport(\"docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-manifest.json\")\nreport(\"docs/reviews/T05/source-package-oracle/inputs/product-cases.json\")\nreport(\"docs/reviews/T05/source-package-oracle/inputs/real-executor-acceptance-inputs.json\")\n\n# ---- guidance JSON ----\nfor f in [\"allocation-selective-adoption.json.raw\",\"allocation-source-receipt.json\",\n          \"native-child-declaration-reference.json\",\"pre-registered-date-source.json\",\n          \"source-identities.json\"]:\n    report(f\"docs/reviews/T05/source-package-oracle/guidance/{f}\")\n\nprint(\"\\nALL TRAVERSALS DONE\")\nEOF\ntail -5 docs/reviews/T05/projection-R3-receiving/launch-O15/scratch/json-traversal-results.txt && wc -l docs/reviews/T05/projection-R3-receiving/launch-O15/scratch/json-traversal-results.txt",
+          "description": "Full parse and traversal of all large JSON files in 150 scope",
+          "timeout": 300000
+        }
+      },
+      "firstBashRecord": 32,
+      "firstBashResultIsError": false,
+      "firstFailureVisibleReadCallId": "call_cd966c67399c4bd5a466497d",
+      "firstFailureVisibleReadResultRecord": 34,
+      "firstFailurePublicLines": [
+        "83\t  PARSE-FAILED: UnicodeEncodeError: 'utf-8' codec can't encode character '\\ud800' in position 0: surrogates not allowed; bytes=8205267"
+      ],
+      "retryBashCall": {
+        "id": "call_7e1bedb1504843a38ea03ef1",
+        "name": "Bash",
+        "input": {
+          "command": "cd \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226\" && .venv/bin/python - <<'EOF' >> docs/reviews/T05/projection-R3-receiving/launch-O15/scratch/json-traversal-results.txt 2>&1\nimport json, hashlib, sys\nsys.setrecursionlimit(100000)\n\npath = \"docs/reviews/T05/source-package-oracle/inputs/i05-source-package-parity-inputs.json\"\ndata = open(path, \"rb\").read()\nstats = dict(nodes=0, objects=0, arrays=0, keys=0, strings=0, strbytes=0, numbers=0,\n             bools=0, nulls=0, surrogates=0, maxdepth=0, maxkeylen=0, maxstrlen=0)\n\ndef blen(s):\n    try:\n        return len(s.encode('utf-8'))\n    except UnicodeEncodeError:\n        return len(s.encode('utf-8', 'surrogatepass'))\n\ndef full_walk(value, depth=0):\n    stats['nodes'] += 1\n    stats['maxdepth'] = max(stats['maxdepth'], depth)\n    if isinstance(value, dict):\n        stats['objects'] += 1\n        for k, v in value.items():\n            stats['keys'] += 1\n            stats['maxkeylen'] = max(stats['maxkeylen'], blen(k))\n            full_walk(v, depth+1)\n    elif isinstance(value, list):\n        stats['arrays'] += 1\n        for v in value: full_walk(v, depth+1)\n    elif isinstance(value, str):\n        stats['strings'] += 1\n        b = blen(value)\n        stats['strbytes'] += b\n        stats['maxstrlen'] = max(stats['maxstrlen'], b)\n        if any(0xD800 <= ord(c) <= 0xDFFF for c in value):\n            stats['surrogates'] += 1\n    elif isinstance(value, bool): stats['bools'] += 1\n    elif value is None: stats['nulls'] += 1\n    else: stats['numbers'] += 1\n\nparsed = json.loads(data)   # json accepts lone-surrogate escapes\nfull_walk(parsed)\nprint(f\"\\n=== {path} (re-run with surrogatepass)\")\nprint(f\"  bytes={len(data)} sha256={hashlib.sha256(data).hexdigest()[:16]}… parse=OK\")\nprint(f\"  top-level: {list(parsed.keys())[:20] if isinstance(parsed, dict) else type(parsed)}\")\nprint(f\"  walk: {stats}\")\nprint(\"DONE-RERUN\")\nEOF\ngrep -A5 \"re-run with surrogatepass\" docs/reviews/T05/projection-R3-receiving/launch-O15/scratch/json-traversal-results.txt",
+          "description": "Re-run parity-inputs traversal with surrogatepass",
+          "timeout": 180000
+        }
+      },
+      "retryResultRecord": 35,
+      "retryResultIsError": false,
+      "scratchSource": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226/docs/reviews/T05/projection-R3-receiving/launch-O15/scratch/json-traversal-results.txt",
+      "scratchCurrentBytes": 11473,
+      "scratchCurrentSHA256": "cbc37d0e7a7ec3daf29e471231a0cce096f4f486cf010ad1bb38d91f61a1242a",
+      "scratchPreservation": "Current 131-line file includes original PARSE-FAILED and append-only successful DONE-RERUN; not an unmodified first-only file.",
+      "copy": "docs/reviews/T05/projection-R3-receiving/O-owned-repair-candidate/new-pair-terminal-intake/zcode-json-traversal-first-error-and-appended-rerun.txt.raw"
+    }
+  ],
+  "originalReportNotRewritten": true,
+  "ownerProductValidationRerun": false
+}

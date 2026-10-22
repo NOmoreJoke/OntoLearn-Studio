@@ -1,0 +1,143 @@
+{
+  "sourceReportSHA256": "65379ed2e765a9388438245dbb140d6d3ff5dd2d1b5b68d4ca54bd9402b72965",
+  "sourceReportBytes": 17338,
+  "reviewerReportedConclusion": "Pass for complete O static 150 files plus five read gaps and shared history; not runtime/packaging/production",
+  "reportedInThisReviewSubstantiveClosed": [
+    "F-01",
+    "F-02",
+    "F-03",
+    "F-04",
+    "F-05",
+    "F-06",
+    "F-07",
+    "F-08",
+    "F-09",
+    "F-10",
+    "F-11"
+  ],
+  "reportedRemainingForRootOrT01": ["F-12", "F-13", "F-14", "F-15"],
+  "externalWorkflowAll15StillOpen": true,
+  "coverageEvidenceAttribution": "Whole-file reading/structured full traversal and semantic review are reviewer report claims. Owner verified original report, native input, allowed command streams and declared-input identity; owner did not redo 150 product review. Native read coverage independent intake pending.",
+  "opinions": [
+    {
+      "id": "F-01 blank node 无数据集作用域",
+      "reportLine": 49,
+      "originalSeverityAsReported": "中",
+      "reviewerIndependentEvidenceText": "builder `FixtureTurtle` 仅 shapes 角色放行 list（`build…py:417-434,801`）；`turtle()` 默认拒绝；test_list_blank_nodes 锁定；field-policies §1 同口径",
+      "reviewerDispositionText": "修复符合最小动作；意见**实体闭合（本方）**，余留跨独立图合并仍属未来有限语料外风险，已由拒绝边界防护",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-02 C 金标 9/13、两字段",
+      "reportLine": 50,
+      "originalSeverityAsReported": "中",
+      "reviewerIndependentEvidenceText": "`expected_authority_consumption` 现 13 金标→17 观察、14 适用分支比对 query rows/六字段、3 入口拒绝 reference-only；test_all_C_authority…+test_C_query_tail… 锁定",
+      "reviewerDispositionText": "修复充分；**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-03 explanation-goldens 未消费",
+      "reportLine": 51,
+      "originalSeverityAsReported": "中",
+      "reviewerIndependentEvidenceText": "现明确 `retained-reference-only`+retainedPointers，test 锁定不混入 expectedSourceRefs",
+      "reviewerDispositionText": "披露诚实；**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-04 七池常量无机器校验",
+      "reportLine": 52,
+      "originalSeverityAsReported": "中",
+      "reviewerIndependentEvidenceText": "`check_declared_pool_sources()` 从两固定规范段提取并比对（input/output/trace 别名显式）；test_seven_pools_are_bound… 含改常量负例",
+      "reviewerDispositionText": "修复充分；**闭合（本方）**；声明非生产 Budget 实证，边界正确",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-05 三清单互不包含/来源未登记",
+      "reportLine": 53,
+      "originalSeverityAsReported": "中",
+      "reviewerIndependentEvidenceText": "sources 27 行/19 唯一 local 校验；111 input-origin 单列 provenance-only lineage；test_source_registry… 锁定（含 523c ref 登记与 5 类非法路径拒绝）",
+      "reviewerDispositionText": "修复充分；**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-06 RDFTerm 未覆盖 288 raw 数据",
+      "reportLine": 54,
+      "originalSeverityAsReported": "低-中",
+      "reviewerIndependentEvidenceText": "私有 FIELD_POLICIES 分离 `RawTermSourceOccurrence` 五键域；validate_raw_term_domains 25 数组全绑定；公共 schema 未改",
+      "reviewerDispositionText": "修复充分；**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-07 scope factSources 首个 basis",
+      "reportLine": 55,
+      "originalSeverityAsReported": "低-中",
+      "reviewerIndependentEvidenceText": "scope_rule_basis 要求唯一独立 basis，异 basis 拒绝（fail-closed）；validate_oracle 对 scope normal 逐 source 复核",
+      "reviewerDispositionText": "有限域修复符合不扩 all-proofs 的最小动作；**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-08 source-identities 未 pin",
+      "reportLine": 56,
+      "originalSeverityAsReported": "低",
+      "reviewerIndependentEvidenceText": "已入 DOC_PINS（1379/74323865…），construct 逐字节验证；test_source_identity_pin 改内容负例",
+      "reviewerDispositionText": "**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-09 sourcePath 历史路径无 ref/sha",
+      "reportLine": 57,
+      "originalSeverityAsReported": "低",
+      "reviewerIndependentEvidenceText": "每行 SHA 校验、历史 path/ref 角色明示、originRefStatus 区分；F-05 同链",
+      "reviewerDispositionText": "**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-10 索引越界无防护",
+      "reportLine": 58,
+      "originalSeverityAsReported": "低",
+      "reviewerIndependentEvidenceText": "indexed_fixture_domain 九族精确集合/side/policy 校验；`unapproved finite fixture index` fail-closed；test_unapproved_indices…（含 main 真实拒绝且不写产物）；all-15 账本记「首 P2 修复，独立 54 非法探针拒绝」",
+      "reviewerDispositionText": "**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-11 解释器版本不一致",
+      "reportLine": 59,
+      "originalSeverityAsReported": "低-信息",
+      "reviewerIndependentEvidenceText": "record-command.py 现记 executable/version/versionInfo/env 白名单；本方实测 3.12.14；旧流不改",
+      "reviewerDispositionText": "**闭合（本方）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-12 verify-i01 v1 信封失配",
+      "reportLine": 60,
+      "originalSeverityAsReported": "中",
+      "reviewerIndependentEvidenceText": "属实（51–69 v1 信封）；现行 CI/npm/I04 链已核不调用；field-policies §工具运行记录 明示历史限制；原脚本/149 保留",
+      "reviewerDispositionText": "性质=历史不兼容、当前依赖未证；**维持开放归 root**（W3-doc-only 处置正确，未强删）",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-13 commit_job_round 绕过 permits_transition",
+      "reportLine": 61,
+      "originalSeverityAsReported": "低-中",
+      "reviewerIndependentEvidenceText": "本方读码：running/rounds 前置、state 名不变仅进度版本 +1、状态边仍走 `_transition`；测试锁 2→3→4→5",
+      "reviewerDispositionText": "未证实状态边违规；**维持开放归 root/T01**（no-T05-write 正确）",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-14 Conflict 文本内嵌原值",
+      "reportLine": 62,
+      "originalSeverityAsReported": "低-中",
+      "reviewerIndependentEvidenceText": "classify 只取 code/params；ownership detail 持久化为 uuid+固定类别；未见跨边界泄露路径",
+      "reviewerDispositionText": "加固候选非缺陷；**维持开放归 root/T01**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    },
+    {
+      "id": "F-15 Darwin 内存非硬限",
+      "reportLine": 63,
+      "originalSeverityAsReported": "低-信息",
+      "reviewerIndependentEvidenceText": "memory_guard docstring 明示；coordinator:443-448 确有父侧 RSS 兜底（原报告「不做父采样」有误）",
+      "reviewerDispositionText": "文档化平台限制；**维持开放归 root（I04 归属）**",
+      "externalWorkflowOwnerStatus": "open-awaiting-both-designated-reviews-and-controller-adjudication"
+    }
+  ]
+}

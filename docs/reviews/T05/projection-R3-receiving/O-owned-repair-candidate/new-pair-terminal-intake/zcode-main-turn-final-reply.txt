@@ -1,0 +1,13 @@
+O15 修复版完整独立新审已完成，唯一报告已写入 [report.md](/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226/docs/reviews/T05/projection-R3-receiving/launch-O15/report.md)（17,338 B，SHA256 `65379ed2…2965`）。
+
+**最终结论：完整 O 静态范围 Pass（静态）**——精确限定为封存候选 `b88be226` 的 150 文件静态读面一致、可复现、自洽、无越界；不关闭 15 条意见流程关单、137+26 pending、`whole=false` 及全部运行/父/发布门。
+
+关键实测结果（均为本会话在本方 worktree/3.12.14 venv 独立执行）：
+
+- **预检全部相符**：launch-prompt 7231 B/SHA 一致、cwd/HEAD `0f87f2c2`/source `b88be226`、AGENTS 三重身份（15147 B 覆盖层 + Git 1056 B blob）核实；150 清单与 1246 树对固定 Git 全量核对 **0 不符**。
+- **两项获准 oracle 命令**：selftest exit 0（实测 `Ran 57 tests / OK`，与回执 57 一致）；`--check` exit 0，五产物与提交字节完全一致，417/280 specified/137 pending/whole=false 精确复现，运行后工作树零改动。
+- **五项全文缺口补齐**：PRD 1255 行、两份 allocation 计划 .raw（159/249 行）、package-lock 6423 行、uv.lock 240 行全部逐行读毕。
+- **150 scope 全读**：含 3169 行 oracle builder、1529 行 job_store、全部 guidance 契约文档与历史首失败证据；大 JSON 以完整解析+全节点遍历方式读取（oracle.json 134,785 节点等）。
+- **15 条原意见逐项独立裁定**：F-01..F-11 修复经本方独立核实闭合；F-12（verify-i01 v1 失配）、F-13（round 版本边）、F-14（Conflict 文本）、F-15（Darwin 非硬限）维持开放并正确归属 root/T01——未抄 owner 结论。build-01/02、style 首错、fullcheck-01/02、组件三败、whitespace2、档案 77 诊断含 15 B023 全部原件保全并逐项处置。
+
+边界保持：未执行任何产品/native/GUI/模型/网络；owner 的 fullcheck03 exit 0 按回执归属未代签；peer 本轮材料、M 的 ZIP、未知 metadata 内容均未读取；父 T05/P0/CI/真人/develop 门全部保持开放。

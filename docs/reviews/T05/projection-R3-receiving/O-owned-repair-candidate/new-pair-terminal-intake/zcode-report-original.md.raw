@@ -1,0 +1,95 @@
+# O15 修复版完整工程指定独立审查报告 — ZCode (GLM-5.3)
+
+- 报告路径（唯一可写报告）：`docs/reviews/T05/projection-R3-receiving/launch-O15/report.md`
+- 生成时间：2026-10-23（本会话）；仅本报告与本方 `raw/`、`scratch/` 有写入，冻结 launch 输入只读
+- 审查身份：全新任务输入，不续接旧 Z 有限 Pass（不带入）、不续接旧 M；未读另一方本轮任何新报告/状态/全局会话；未打开 M 三份 local actual ZIP（只登记路径）
+- 输入核验：launch-prompt.md 7231 B / SHA256 `1c51fb3284ed83158e304d689cbe686154d64f6c207926939dbda706d3f9f94f` 与要求一致；scope-contract.json SHA256 `757682e1a0e3d389cc7cc4b89c4ea3a7ba6c38623ad66c4c01771cb4cd6e86f5` 一致
+
+## 1. 最终结论（真实、限定范围）
+
+**完整 O 静态范围（source b88be226 的 150 文件 + 五项全文缺口 + 历史/原验收共同输入）：Pass（静态）。**
+
+该 Pass 精确限定为：封存候选 `b88be226501703f1d5365734dd0e56066bd1bffb`（树 `e90c6e47…`，1246 tracked）在静态读面一致、可复现、自洽，owner 修复未引入越界或业务 delta，本方独立重跑的两项获准 oracle 命令全部通过且与封存字节一致。它**不**关闭：15 条原外部意见的流程关单（本报告给出本方逐项独立裁定，见 §5）、137 pending + 26 declared-allocation pending、`wholeOracleComplete=false`、父 T05/P0/正式 JobStore/selected/wholeH/S1/B1/费用接口/两 OS CI/真人/develop/生产门（见 §8）。运行/打包/生产证据本轮未采集，按归属引用（§4）。
+
+## 2. 实际设置与身份读回（诚实区分实测与不可测）
+
+| 项 | 实际值 | 依据 |
+| --- | --- | --- |
+| workspace | `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O15-zcode-review-b88be226` | `pwd` 实测 |
+| HEAD（detached） | `0f87f2c2a1fe5b8085176b530e473a7d51cea509` | `git rev-parse HEAD` 实测 |
+| source（固定） | `b88be226501703f1d5365734dd0e56066bd1bffb`；base `5f910b52c69d86a1076b2032e5d3c63e715947f3` | `git rev-parse` 实测，与 scope-contract 一致 |
+| process tracked | 1262 条（`git ls-tree -r`），其中 source 树 1246 条与 final-source-tracked-tree.json 逐条相等（0 不符） | 本方脚本全量核对 |
+| 工作树状态 | 仅 `M AGENTS.md`（15147 B/de15f6ce 授权未暂存政策覆盖层）+ 未跟踪 launch-O15/；Git blob@0f87f2c2 = 1056 B/1b3c0291/blob f3876f66 | `git status`/`git show` 实测，与 launch-map 声明一致 |
+| 模型 | GLM-5.3（`account:bigmodel-individual-coding-plan/GLM-5.3`） | 本会话系统身份；符合要求值 |
+| 权限 | 用户级 ZCode 默认 yolo（external-review-permissions.md 实据）；应用内 per-task 模式无法从会话内部读回，如实记未核 | 诚实边界 |
+| task/session/turn ID、GUI lease | 本会话内部不可读；未创建任何新 actual task（`newActualTasksCreated: 0` 维持），无 GUI 操作 | 诚实边界 |
+| 解释器 | 本方 `.venv/bin/python` = 3.12.14 (Clang 21.0.0)，独立 stdlib venv（without-pip） | 实测；未装依赖、未用系统 3.9/他树环境 |
+
+## 3. 实际执行的命令（argv / cwd / env / exit / hash）
+
+1. `.venv/bin/python -B scripts/test-i05-source-package-oracle.py`（cwd=本 worktree；env `TMPDIR=launch-O15/scratch/tmp, PYTHONDONTWRITEBYTECODE=1, PYTHONHASHSEED=0`）→ **exit 0**；stderr（unittest verbosity=2）末行 `Ran 57 tests in 5.656s` / `OK`；stdout 0 B（`e3b0c442…`）。证据 `raw/oracle-selftest.stderr.raw`（SHA256 `4bd3544eeef3f3888b6ca39c7dc72a19db914cd26e69f4ac7f0f28984873ed61`）。本方实测 57 tests，与回执 o15-owned-candidate-test-03 的 57 一致。
+2. `.venv/bin/python -B scripts/build-i05-source-package-oracle.py --check`（同 cwd/env）→ **exit 0**；stdout JSON：mode=check、observations=417、datasets=320、statuses `{"pending":137,"specified":280}`、wholeOracleComplete=false，五产物 bytes+sha256 与提交完全一致（oracle.json 5938727/`374f223f…`；coverage 154032/`95d73957…`；sources 79253/`b06bef47…`；schema 10220/`2c1fefc9…`；budget-gaps 362492/`e68188dd…`）；stderr 0 B。证据 `raw/oracle-check.stdout.raw`（`030cabee…`）。运行后 `git status` 不变（--check 无写回，未省略 --check）。
+3. `.venv/bin/python -B docs/reviews/T05/projection-R3-receiving/launch-O15/verify-input.py --phase observe` → **exit 0**；protected=450、launchInputs=10 全部字节+SHA 验证通过、tracked=1262、未知条目 141 个仅 path/lstat（`.mimosa` 工具状态内容未打开/未解析）、noModelTaskIdentity=true、noProductExec=true → `preflight-observe.json`（一次性）。
+4. 结构化全遍历（只读静态 JSON 解析）：150 清单全部条目对固定 `git show b88be226:<path>` 核 bytes+sha256+gitBlob（**0 不符**），1246 树逐条对 `git ls-tree -r -l b88be226`（**0 不符**）；大 JSON 全量 parse+全节点遍历统计落 `scratch/json-traversal-results.txt`（oracle.json 134,785 节点、parity-inputs 33,846 节点含 2 处孤立代理项与 1,048,577 B 超限字符串——均为蓄意词法边界测试输入，非损坏）。
+5. 未执行：产品 pytest/npm/build/package/native/GUI/model/probe/matches/selftest/collector/reader-helper/网络/安装/付款/凭据/物理资源研究/SQLite 损坏 HOLD/未签 caller；owner 树的 `npm run check`（fullcheck03 exit 0）按 final-validation-receipt 精确归属，本报告不代签。
+
+## 4. 本轮已读范围（实际读法，非 stat/hash）
+
+- **冻结启动输入全文**：launch-prompt、frozen-original-prompt（24 行原冻结全文）、launch-input-manifest.json（2328 行全文，450+10+1 条目）、launch-map、scope-contract、verify-input.py（164 行）、两份 preflight、guidance 5 件。
+- **O-owned-repair-candidate 关键回执全文**：next-pair-five-full-read-requirements、final-validation-receipt、sealed-source-candidate、final-full-engineering-inventory（150 全列）、all-15-owned-disposition（15 行全文）、independent-review-version-binding、runner-pytest-action-delta-verification、full-check-02-finite-format-blocker、raw-evidence-whitespace-disposition、style-transform-first-failure 等。
+- **五项全文缺口（全部逐行读完，非 selected lines）**：PRD 1255 行（含旧缺 1–395、1020–1255；FR500–505/附录 C/D/E/G.2/G/10–12 完整）；allocation-integration-plan.md.raw 159 行；allocation-restore-plan.md.raw 249 行；package-lock.json 6423 行；uv.lock 240 行。
+- **150 scope 全文件**：根配置 11；apps/desktop 22（含 engine.ts 537 行、task-service.ts 887 行、App.tsx 等）；contracts TS 5 + python contract_v2.py 507 行 + 8 个 v2 JSON（全遍历）；engine src 16（storage.py 1229 行、job_store.py 1529 行、coordinator.py 659 行等）；engine tests 19（test_storage 1310 行、test_job_store 1409 行等）；scripts 8（含 build-i05 oracle 3169 行、test-i05 oracle 987 行全文）；tests/e2e 5；tests/unit 15（含 task-service.test 1200 行、task-runtime.test 622 行）；guidance 全部 md/json（contract.md、directsteps-contract.md、q6-profile.md、q6-mechanism.md、date-policy.md、semantic-boundaries.md、window.md、field-policies.md、AGENTS-current.md、两份 allocation 计划、pre-registered-date 断言等）；I02 三份 probe 全文。大 fixture/oracle JSON 按「完整解析+全遍历+约束核对」方式读取（方法已在 §3.4 声明）。
+- **历史共同输入**：R1-failure/R1-repair-disposition、independent-combined-config-review（B023/77 诊断段）、o15 十一条命令回执（build-01/02 exit 1 首败、check/test 系列）、full-check-01/02、component-build/test/typecheck/engine-check/engine-pytest 结果、style-transform 首错、whitespace 处置。
+- 未读：peer 本轮新 workspace/意见/自动状态/全局会话日志；未知 metadata 内容（仅 lstat）；M 三份 actual ZIP 内容；档案 B023 helper 未执行。
+
+## 5. 15 条原外部意见逐项独立裁定（本方，不抄 owner 结论）
+
+| ID | 原严重度 | 本方独立核实 | 裁定 |
+| --- | --- | --- | --- |
+| F-01 blank node 无数据集作用域 | 中 | builder `FixtureTurtle` 仅 shapes 角色放行 list（`build…py:417-434,801`）；`turtle()` 默认拒绝；test_list_blank_nodes 锁定；field-policies §1 同口径 | 修复符合最小动作；意见**实体闭合（本方）**，余留跨独立图合并仍属未来有限语料外风险，已由拒绝边界防护 |
+| F-02 C 金标 9/13、两字段 | 中 | `expected_authority_consumption` 现 13 金标→17 观察、14 适用分支比对 query rows/六字段、3 入口拒绝 reference-only；test_all_C_authority…+test_C_query_tail… 锁定 | 修复充分；**闭合（本方）** |
+| F-03 explanation-goldens 未消费 | 中 | 现明确 `retained-reference-only`+retainedPointers，test 锁定不混入 expectedSourceRefs | 披露诚实；**闭合（本方）** |
+| F-04 七池常量无机器校验 | 中 | `check_declared_pool_sources()` 从两固定规范段提取并比对（input/output/trace 别名显式）；test_seven_pools_are_bound… 含改常量负例 | 修复充分；**闭合（本方）**；声明非生产 Budget 实证，边界正确 |
+| F-05 三清单互不包含/来源未登记 | 中 | sources 27 行/19 唯一 local 校验；111 input-origin 单列 provenance-only lineage；test_source_registry… 锁定（含 523c ref 登记与 5 类非法路径拒绝） | 修复充分；**闭合（本方）** |
+| F-06 RDFTerm 未覆盖 288 raw 数据 | 低-中 | 私有 FIELD_POLICIES 分离 `RawTermSourceOccurrence` 五键域；validate_raw_term_domains 25 数组全绑定；公共 schema 未改 | 修复充分；**闭合（本方）** |
+| F-07 scope factSources 首个 basis | 低-中 | scope_rule_basis 要求唯一独立 basis，异 basis 拒绝（fail-closed）；validate_oracle 对 scope normal 逐 source 复核 | 有限域修复符合不扩 all-proofs 的最小动作；**闭合（本方）** |
+| F-08 source-identities 未 pin | 低 | 已入 DOC_PINS（1379/74323865…），construct 逐字节验证；test_source_identity_pin 改内容负例 | **闭合（本方）** |
+| F-09 sourcePath 历史路径无 ref/sha | 低 | 每行 SHA 校验、历史 path/ref 角色明示、originRefStatus 区分；F-05 同链 | **闭合（本方）** |
+| F-10 索引越界无防护 | 低 | indexed_fixture_domain 九族精确集合/side/policy 校验；`unapproved finite fixture index` fail-closed；test_unapproved_indices…（含 main 真实拒绝且不写产物）；all-15 账本记「首 P2 修复，独立 54 非法探针拒绝」 | **闭合（本方）** |
+| F-11 解释器版本不一致 | 低-信息 | record-command.py 现记 executable/version/versionInfo/env 白名单；本方实测 3.12.14；旧流不改 | **闭合（本方）** |
+| F-12 verify-i01 v1 信封失配 | 中 | 属实（51–69 v1 信封）；现行 CI/npm/I04 链已核不调用；field-policies §工具运行记录 明示历史限制；原脚本/149 保留 | 性质=历史不兼容、当前依赖未证；**维持开放归 root**（W3-doc-only 处置正确，未强删） |
+| F-13 commit_job_round 绕过 permits_transition | 低-中 | 本方读码：running/rounds 前置、state 名不变仅进度版本 +1、状态边仍走 `_transition`；测试锁 2→3→4→5 | 未证实状态边违规；**维持开放归 root/T01**（no-T05-write 正确） |
+| F-14 Conflict 文本内嵌原值 | 低-中 | classify 只取 code/params；ownership detail 持久化为 uuid+固定类别；未见跨边界泄露路径 | 加固候选非缺陷；**维持开放归 root/T01** |
+| F-15 Darwin 内存非硬限 | 低-信息 | memory_guard docstring 明示；coordinator:443-448 确有父侧 RSS 兜底（原报告「不做父采样」有误） | 文档化平台限制；**维持开放归 root（I04 归属）** |
+
+流程状态：15 条的**外部流程关单**仍为 open（`all15ExternalOpinionsStillOpen: true`）——本报告的逐项裁定即为新指定对的输入，与另一模型同版结论汇合后按门处理；本报告不单方把 open 改为 closed。
+
+## 6. 全部历史首失败与处置（逐项，原件均保全）
+
+| 项 | 实况 | 本方核实 |
+| --- | --- | --- |
+| build-01（exit 1） | `check_declared_pool_sources` 抛错（七池规范绑定首败） | 回执 stderr 原件在 commands/o15-owned-candidate-build-01；后续 build-03/04 exit 0 |
+| build-02（exit 1） | `validate_oracle` 阶段抛错 | 同上保全；check-01..04 exit 0 |
+| style 变换首错 | 生成 builder L1182 SyntaxError：AST `end_col_offset` 按 UTF8 字节、owner 助手按 Unicode 字符切片致 docstring 并句 | style-transform-first-failure.json + 126,791 B 草稿（716f23ac…）保全；解法=tokenize 字符偏移+不动原 docstring；未用该无效草稿跑 builder/产品 |
+| fullcheck-01（exit 1） | prettier 对 T05 冻结证据/oracle 五 fixture 报 warn（未加 .prettierignore） | stderr 原件；修复=新增 `.prettierignore`（第 150 个 scope 文件）保留权威字节 |
+| components：test-01/build-01（rolldown native binding 缺失）/engine-check-01 均 exit 1；typecheck-01/engine-pytest-01 exit 0 | build-01 stderr 明确 npm optional-deps bug；同锁修复后 build-02/test-02 通过 | 全部原件在 component-* 目录 |
+| fullcheck-02（exit 1） | eslint/prettier/3 typecheck/15 文件 630 vitest/build/ruff-lint 通过，停于 ruff format --check 对 first 报告 Markdown 内 Python fenced code | blocker JSON 定界最小修复：仅 owner 自格式化 active 报告 Python 代码块（14157→14132/e7cc56d9…）+ `.md.raw` 14157 原件（0809441b…=Git 17b7917a）+ pyproject ruff.format.exclude 精确 8+1 路径；version-binding 记录「先提交 14157、后 style、.raw 事后自固定 Git 复制」的诚实时序 |
+| raw-evidence-whitespace2（fullEvidenceCheck exit 2） | 六个 exact raw 工件留尾随空白 | disposition 明示仅六件、字节固定、不改流重跑 |
+| 档案 77 诊断含 15 B023 | 五份 launch-dispatch check-protected-stat-only.py 的 B023 闭包语义风险 | 以精确 per-file-ignores 保留历史字节（pyproject 注释明示「不修 B023 闭包」）；independent-combined-config-review 明确不称已修复；本方同意：**lint 静默≠闭包修复**，维持档案风险 |
+| R1 Fail（de301e1d） | P2×2（清单/73 显示路径缺陷），处置保全于 bbaf58ae；修复后 R2 | R1/R2 报告原件在 projection-R3-receiving/；73 路径以 NUL ls-tree 重建（6390 raw UTF8） |
+| O15 命令系列 | test-01/02/03 与 check-01..04 全 exit 0（stderr 8697 B 为 verbosity 输出非失败） | 本方独立重跑 57 tests OK + --check 字节一致 |
+
+## 7. 150 静态范围的实质审查发现
+
+- 一致性：150 文件 working tree = 固定 Git b88be226（bytes+sha256+blob 三重，0 不符）；149 原清单保留 + `.prettierignore` 为唯一新增配置；owner 最小补丁 9 精确路径与 sealed-source-candidate 一致，base a570cd2b→head b88be226。
+- 接口/异常/类型/预算/原子性/来源/历史隔离/安全逐轴读查（§4 所列全文件）：契约编译器 fail-closed（未知 JSON-Schema 词汇拒绝）；`semantic()` 26 项跨域不变量；帧/页/内存/队列限额全部先检后复制；S1/S2 全部不可变证据表有 SQL 触发器 + 测试矩阵（3 模式×8 阶段×4 故障含真子进程 exit/READONLY）；错误跨界仅四字段固定码；env 白名单双向测试；worker owner 监控 win/posix 双路；订阅/游标/恢复三读上界与 generation 单调。未发现新的越界、业务 delta 或安全缺陷。
+- 复现性：oracle --check 五产物字节精确；selftest 57/57；DOC_PINS/PINS 任何输入字节变化会使构建失败（本方读码确认 + build-01 首败即因此类绑定触发）。
+- 遗留（非本轮新增，均已在档）：137 pending（82 profile 预算准入、32 fullview/DAG/restore typed 投影、legacy DTO、scope provenance、7 前门码、implicit-jsonld 等）、26 declared-allocation pending、`wholeOracleComplete=false`、F-12..F-15 归 root/T01、B023 档案风险。
+
+## 8. 未验证边界与不关闭的门
+
+运行/打包/生产证据本轮零采集：产品 pytest/npm check/e2e/package、native/GUI、模型 API、网络、SQLite 损坏 HOLD、whole-H、OS/heap 研究全部未执行（owner fullcheck03 exit 0 属 owner 树证据，按回执归属）。费用 WIP/未审接口未消费。以下不由本静态审关闭：父 T05/P0、正式 JobStore/selected、wholeH、S1/B1、两 OS CI、真人验收、develop/生产/push/PR/merge。137/26 pending 与 `whole=false` 原样保留；本报告结论不得被引为运行通过。
+
+## 9. 结论重述
+
+对 b88be226 的完整 O 静态范围（150 文件 + 五项全文缺口 + 共同历史输入）：**Pass（静态）**。两项获准 oracle 命令本方实测 exit 0/57 tests OK/五产物字节一致；150 清单与 1246 树对固定 Git 全量核对 0 不符；owner 修复链（R1→O15）首失败全保全、处置自洽、无越界。15 条原意见本方逐项裁定：F-01..F-11 修复闭合（本方独立核实）、F-12..F-15 维持开放并正确归属 root/T01；流程关单仍待双指定对汇合。所有运行/父/发布门保持开放。
