@@ -1,0 +1,117 @@
+{
+  "schema": "T03_FULL_REVIEW_PACKET_INDEPENDENT_CHECKS_V1",
+  "reviewer": "/root/t03_full_review_packet_independent",
+  "status": "NEEDS_CHANGE_F1_P2_SHARED_PACKAGE_LOCATION",
+  "candidate": "ed9cef968b17a1edefc0977b509906fb9f81a336",
+  "baseProcess": "3c396070c74fbf09cf319b0230c6f96ed2858482",
+  "candidateManifest": {
+    "bytes": 4301,
+    "sha256": "60c52bd13dac43bb9685b5233db817118dda10341357794d9f27500f07301e6c",
+    "payloadFiles": 18,
+    "payloadBytes": 3369151,
+    "completeFiles": 19,
+    "completeBytes": 3373452
+  },
+  "checks": {
+    "all19CurrentEqualGitAndManifest": true,
+    "exact19BaseCandidatePathSet": true,
+    "oldRound1AndProductUnchanged": true,
+    "fullMarkdownRead": true,
+    "JSONFullyParsed": true,
+    "allFixedFullTreeObjectsIndependentlyVerified": true,
+    "allBaseDeltaPathStatusSetsVerified": true,
+    "allProjectNonDocsProductProcessEqual": true,
+    "all29Stage1222EngineeringRowsVerified": true,
+    "allStageNonidenticalEvidenceSetsAndAllDeltaCountsVerified": true,
+    "all6CrossGroupConflictSetsVerified": true,
+    "all8PromptFullReadAnd4ModelPairsSymmetric": true,
+    "allFirstReadEntryPathsPresentInFixedTree": true,
+    "allActualModelTaskSettingReportFieldsNull": true,
+    "allLeasesNotGranted": true,
+    "nativePromptDispatchForbidden": true,
+    "sourceAndPayloadContentsRead": false,
+    "productOrPreparedFunctionsRun": false,
+    "CUAUsed": false,
+    "networkUsed": false,
+    "stageOrCommit": false
+  },
+  "fixedGroups": [
+    {
+      "id": "mapping-S1",
+      "fullTree": 866,
+      "baseDelta": 75,
+      "evidenceHelpersAdded": 0
+    },
+    {
+      "id": "source-selection",
+      "fullTree": 823,
+      "baseDelta": 15,
+      "evidenceHelpersAdded": 0
+    },
+    {
+      "id": "profile-D2",
+      "fullTree": 941,
+      "baseDelta": 116,
+      "evidenceHelpersAdded": 9
+    },
+    {
+      "id": "native-current",
+      "fullTree": 2602,
+      "baseDelta": 1814,
+      "evidenceHelpersAdded": 0
+    }
+  ],
+  "totalFullTreeRecords": 5232,
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "title": "Cross-worktree prompts omit actual shared review package root and immutable identity",
+      "files": [
+        "source-selection-zcode-prompt.md",
+        "source-selection-minimax-prompt.md",
+        "profile-D2-zcode-prompt.md",
+        "profile-D2-minimax-prompt.md",
+        "native-current-zcode-prompt.md",
+        "native-current-minimax-prompt.md"
+      ],
+      "lines": [5, 9],
+      "actualSharedPackageRoot": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping/docs/reviews/T03/designated-review-backlog-20261022",
+      "targetTreeSameRelativeBundleExists": false,
+      "sharedRootOrPacketRefPinnedInPrompt": false
+    }
+  ],
+  "protectedAGENTS": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+    "staged": false
+  },
+  "currentGuidance": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md",
+      "bytes": 3160,
+      "sha256": "2032bd9e1cdbf398a0d505e092e1a08b80ff15df26b1d06c7d7e1c2e0a5a8ec1",
+      "fullTextRead": true
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+      "bytes": 16867,
+      "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1",
+      "fullTextRead": true
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/external-review-permissions.md",
+      "bytes": 4462,
+      "sha256": "feea1595894b347ff1151e5526bc21e2055911f2ba744670f08ba85765f8b53a",
+      "fullTextRead": true
+    }
+  ],
+  "rootClosuresFullRead": [
+    "T03-profile-D2-package-root-closure.md",
+    "T03-controller-artifact-recovery-audit.md",
+    "T03-sixth-acl-build-root-closure.md",
+    "T03-forward-binding-limited-root-closure.md"
+  ],
+  "scope": "metadata/text preparation only, not source-code/runtime/formal-model pass",
+  "next": "freeze this report before owner forward locator delta; do not modify19 originals or dispatch stale native input"
+}

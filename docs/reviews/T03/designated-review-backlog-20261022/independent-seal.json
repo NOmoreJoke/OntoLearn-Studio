@@ -1,0 +1,38 @@
+{
+  "schema": "T03_FULL_REVIEW_PACKET_INDEPENDENT_SEAL_V1",
+  "status": "SEALED_NEEDS_CHANGE_F1_P2",
+  "candidate": "ed9cef968b17a1edefc0977b509906fb9f81a336",
+  "reviewer": "/root/t03_full_review_packet_independent",
+  "artifacts": [
+    {
+      "path": "independent-review.md",
+      "bytes": 8832,
+      "sha256": "898e656a45930d037e64c30aae4169059ca3af2fa1ec4455c189f328a1b98398"
+    },
+    {
+      "path": "independent-checks.json",
+      "bytes": 4204,
+      "sha256": "e7b8d4c8bc6fbbf3313609b1c00db317e32a0434db163e5eb2c1add88c325e88"
+    }
+  ],
+  "finalChecks": {
+    "all19CandidateArtifactsUnchanged": true,
+    "candidateHEADUnchanged": true,
+    "indexEmpty": true,
+    "trackedModificationOnlyProtectedAGENTS": true,
+    "ownReportAndChecksFullReadback": true,
+    "prettierWriteExit": 0,
+    "prettierCheckExit": 0,
+    "prettierCheckStdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+    "ownReportWhitespaceCheckExit": 1,
+    "ownReportWhitespaceDiagnostics": "",
+    "whitespaceExitMeaning": "no-index against /dev/null has new content; no whitespace diagnostic",
+    "productOrSourceOrPreparedFunctionExecution": false,
+    "payloadRead": false,
+    "sourceEdited": false,
+    "stageOrCommit": false
+  },
+  "finding": "F1/P2 cross-worktree shared package locator and immutable identity missing",
+  "next": "Parent full read and commit first report; forward exact locator delta only; frozen19 unchanged; no stale native dispatch",
+  "selfExcluded": true
+}
