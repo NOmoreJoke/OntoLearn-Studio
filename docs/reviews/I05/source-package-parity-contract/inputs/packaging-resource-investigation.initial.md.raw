@@ -1,0 +1,146 @@
+# 源码／包同版补验：包装、资源与 S1 独立调查
+
+2026-10-22。本文件只提供静态事实、缺口及可审查的合同建议，不是构建许可、T03 四文件实现或正式运行方案。调查未导入产品，未运行测试、probe、CLI、生成器、构建、native、GUI 或数据库，未安装／下载依赖，未改任何产品和旧证据。唯一新增交付为本文件；主合同由另一 writer 维护。
+
+结论：固定 `6891a5842302859a531cf82767c5a482417bc274` 的已收组件需要新的同版源码／包证据。旧 build guard、旧 83 数学投影 probe 和历史 C4/S1 数值不能填这个缺口。独立语义 artifact 可让同一新 I05 canonical 模块分别作为 source `-m` 和 PyInstaller target，避免经旧 entrypoint 静态牵入 worker/Store；这只补 finite B1 证据。未来 parent `package:dir` 仍须运行同一语义 suite，并保留正式接线、T01 adoption、物理准入、指定双审、CI、目标 OS、真人与合并门。
+
+## 1. 固定依据及证据域
+
+| 依据 | 固定身份／位置 | 本调查的使用边界 |
+| --- | --- | --- |
+| 当前资料窗口 | 本目录 `inputs/I05-source-package-parity-contract-preparation.md.raw`、`operating-AGENTS.md.raw`、`developer-common-instructions.md.raw`、setup 与四份组件／消费 closure | 全文读取；base=`5f910b52c69d86a1076b2032e5d3c63e715947f3`，资料施工不等于产品／运行采用 |
+| 最新供应组件 | `6891a5842302859a531cf82767c5a482417bc274`，`.worktrees/I05-shacl-date-policy` | 按固定 Git 读取 build、entrypoint、resources、旧 probe、相关语义 import 链；不复跑组件绿测，不把 146 已核源全部采用 |
+| T03 offer | `4fa5d62eb13269351384527b1f84761c08811e79:docs/iterations/T03/I05-profile-build-dependency-offer.md` | 全文读取；它是早于新恢复／DAG／date 组合的设计 offer，不是已完成新构建 |
+| 原 S1 实现／小原件 | 6891 Git 下 `storage_probe.py`、`scripts/verify-i01.py`、`docs/iterations/I01/acceptance.md`、`evidence/round-3/{packaged-1x-0.json,packaged-10x-0.json,package-manifest.json}` | 原方法和历史原值；不是 6891 新语义包的测量 |
+| 历史 B1 方法 | `523c478d5f39671c4ac7c1ea6997e51d3047d58e:packages/engine/src/ontolearn_engine/semantic_probe.py`、`docs/reviews/I05/integrated-c4-verification.md` | 固定 C4 方法／结果，不能继承为当前组合的通过；未解包、重建其归档 |
+| 原 B1/S1 要求 | 本体主目录 `OntoLearn-Studio/docs/architecture/m0-review-and-update-plan-2026-10-19.md`，35812 B，SHA256 `c289a1cd1a9cf40187ef6e506e134b0edcae6dea95d9e99805d4f3045e67cf96`，第 53、155–161 行 | 此文件不在 6891 Git；按本地固定文档引用，不能列为供应产品成员。本次未找到可绑定的该路径历史 Git ref |
+
+原 83 项应保留其原始上下文状态：82 eligible、1 repair 缺上下文未执行；79 项 `fullOriginalInputContext=true`、4 项 E5 fragment 为 false。106 original operations 与 54 learning checks 仍有明确未执行项。数学投影的完整收集不是原操作完整验收；consumer-C 的 13 项是 2 query + 11 SHACL，不能用“83 + date 三例”代替。
+
+## 2. 已定位的包装缺口与最小修正请求
+
+固定 6891 的 `scripts/build-engine.mjs` 是 13264 B／SHA256 `5dab9850ba97e3c5e916ac45386a05f540c671f342f5ebf5c911ccc5e4772894`，仍以 `0475d0ec6c486a63c7e8f62f11f35181da6b2576` 为 `sourceRef`。其 semantic guard 是 52609 B／`5a3a53fc79928a7aa7de280a8477541db4053ec9b2bec489bf28a2ad4e935549`，已收 semantic 则是 65749 B／`60008130fe0db368ea87948c2c8f079b1161f2aa951693b69635558ed1f56a07`。root 已调查 43 个 guard 中 13 个不匹配，本调查没有重复全源 hash。此处是静态 identity 缺口，未运行构建，不能称为“新构建失败”。
+
+旧 canonical 列表来自 `fixedInputs` 的有限切片，未显式列入以下五个新模块：`semantic_profile_input`、`semantic_profile_production`、`semantic_profile_restore`、`semantic_profile_restore_budget`、`semantic_profile_directsteps`。它们在固定供应树的 production／restore／explanation 调用链上可达；PyInstaller 的自动 import 分析仍可能收集它们，故静态可达及名单遗漏都不等于已证明实际 archive 丢模块。后续应精确列入批准闭包，并以真实 archive 清单、canonical 单实例和实际调用验证。
+
+已证实更直接的冲突：`semantic_profile_restore.py` 无条件导入 `ontolearn_engine.quality.rule_revalidation.check_firing_batch`，而旧 build 对 `ontolearn_engine.quality.rule_revalidation` 有明确 `--exclude-module`。若新 suite 包含实际 production／完整 restore，这项排除必须精确解除并收集固定版本。它的静态直接依赖是原 rule_firing／rule_profile／rule_terms 等有限子模块，没有理由同时开放 `quality.definitions` 或 `quality.planning`。最小相关 quality 闭包为根包、原六个规则子模块，再加 rule_revalidation；根包旧四个懒导出也不因此得到使用许可。
+
+T03 的唯一四 writer 仍须由 T03 单独施工：
+
+| writer | 下一轮应收到的具体输入及实现边界 |
+| --- | --- |
+| `packages/engine/pyproject.toml` | 固定批准的依赖增量，不改 engine 版本冒充身份。offer A 为 rdflib 7.6.0、pyshacl 0.30.1、pyparsing 3.3.3，及实际需要的 html extra／传递依赖；若采用 XLSX，须 root 另行选择同版组合，不能自动并入本语义 artifact |
+| `uv.lock` | T03 产生唯一完整、冻结、可追溯的实际 lock，记录 platform markers、每个 distribution/artifact hash 和完整传递集。5f 18 包 lock、C4 23 包 lock、XLSX 21 包 lock 是不同来源；offer 中 26 包并集没有证明 solver／跨平台兼容，不能整份复制旧 lock |
+| `scripts/build-engine.mjs` | 明列新 canonical probe target、批准模块闭包、精确资源／输入映射、完整 guard 集及来源；重建原 43 guard 的批准组合，补新增成员，不能仅换 semantic 的一个 hash。核验源字节、writer delta、固定组合 ref、实际构建 HEAD；同版不等于当前 checkout 任意 HEAD。独立语义 target 不以旧 entrypoint 为 target；parent 包后续另验同 suite |
+| `packages/engine/entrypoint.py` | 如 parent 未来需要 dispatch，仅精确新 flag + 固定 canonical 函数／参数域，未知参数和 `flag=...` 等歧义显式拒绝；不接受任意文件／URL／表达式，不给 shell／网络入口。独立语义 artifact 的生产入口直接是新模块，不能先导旧 dispatcher 再选择分支；旧 `--semantic-profile-probe` 不应静默改成新覆盖含义 |
+
+新 probe 的精确路径、flag、asset 格式、source locator／frozen locator、输入 manifest、全部 guard 成员和 canonical module identity 应由主合同固定后再发下一窗。T03 offer 的原最小收集建议是父包及六子模块，现需明确增加恢复链；不能把早期 offer 当作已经涵盖新组合。
+
+## 3. 资源、契约与 owner adoption 的实际闭包
+
+`resources.py` 的 frozen 根为 `_MEIPASS/contracts`，source 根为 checkout 的 `packages/contracts`。它通过 `spec_from_file_location("ontolearn_contract_v2", .../python/contract_v2.py)` 执行公共 checker；checker 顶层立即读 `v2/schema.json`、`v2/registry.json`、`v2/errors.json`。`resource_manifest()` 还遍历 `v2/*.json`，因此若保留原函数，fixtures 和 binding-regressions 也是真实读取资源，不能仅在文字中把它们删除而继续调用原函数。`uv.lock` 的 frozen 路径是 `_MEIPASS/provenance/uv.lock`；该函数报告实际 lock hash，不验证采用许可。
+
+仅对这些相关路径做了定点固定 Git 字节核验，均与 5f 不同：
+
+| 6891 路径（相对仓库） | B | SHA256 |
+| --- | ---: | --- |
+| `packages/engine/src/ontolearn_engine/resources.py` | 3065 | `177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238` |
+| `packages/contracts/python/contract_v2.py` | 34608 | `17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7` |
+| `packages/contracts/v2/schema.json` | 207256 | `e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf` |
+| `packages/contracts/v2/registry.json` | 15962 | `1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b` |
+| `packages/contracts/v2/errors.json` | 16299 | `ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c` |
+| `packages/contracts/v2/fixtures.json` | 1179996 | `b6edba394693d98dea613fb9dcc128d3d8eb0f2f6ee0268b0c5a2e8af8cedd5f` |
+| `packages/contracts/v2/binding-regressions.json` | 304069 | `352b95dbb17eb7f359ac9cd7a16fc6bab3b92a361d9b77488f5668c151895e1c` |
+| `uv.lock` | 28440 | `86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73` |
+
+以上是观察，绝非默认采用清单。contract_v2.py 及 canonical TS／JSON 公共契约未来维护已交 T01；resources 仍非自动交接。最小可审查选择是：
+
+1. 若继续用固定原 checker／resource_manifest，则列明实际 checker + 五 JSON + lock 的全部固定身份，并先获 T01 对精确共享字节及该私有使用面的 adoption 接收；这不会启用 business3、registry capability、Job 或正式 ready。
+2. 若要资源更小，须另授 resources 最小适配，逐项说明为何不再遍历 fixtures／binding-regressions，继续只读唯一 canonical checker／schema／error catalog。不能另复制一套公共契约、假 registry、简化 error catalog 来绕 owner，也不能把未来 T01 shared HEAD 替换进冻结组合。
+
+新 probe 固定 asset 只能 source 从主合同批准的单一路径、frozen 从自身 bundle 的单一路径读取，核 bytes/hash/format/全量计数后执行；缺失、错版、多余替代物直接失败。包不能回落到 checkout、用户目录、当前工作目录或网络。输入、oracle／expected、输出原件分开：输入包不能携带被执行器读取的预期结果来制造通过；比较器的原 oracle 来源仍需保全。
+
+`resources.LIMITS` 是旧协调器运行参数，不能借给新 probe 当已审资源方案；其 `cancelGraceMs` 实际为 5000。新 artifact 的私有输出也不应通过修改公共 schema／registry 来获得承载许可。
+
+## 4. distribution、许可证与包内身份
+
+旧构建显式处理八个 distribution：rdflib 7.6.0、pyshacl 0.30.1、pyparsing 3.3.3、owlrl 7.6.2、html5rdf 1.2.1、prettytable 3.18.0、wcwidth 0.9.2、packaging 26.3。它会复制 metadata，收集 rdflib／pyshacl／owlrl／html5rdf 等代码与数据，对 prettytable／wcwidth／packaging 加 hidden imports。构建检查脚本会枚举实际 dist.files，核文件存在及 hash，保存 Requires-Dist、License-Expression／License，并查找 basename 含 license/licence/copying/notice 的文件。这些是已读的静态实现，不是当前八库许可证已入新包的运行证据。
+
+后继 offer 必须给实际环境的完整依赖树、markers／extras、lock 的 wheel/sdist 身份、installed distribution 文件清单和 code/data/metadata/license 字节映射，明确包内实际路径；仅 `metadata.version()` 相同不足以复用许可证。HTML extra、RDFLib plugin/data、pySHACL／owlrl／html5rdf 资源与传递 metadata 均需核实，不以 hidden import 成功替代。Python runtime、PyInstaller／bootloader、stdlib、动态库和其许可／notice 与上述八库是不同证据域，须绑定具体平台与实际 bundle，不借旧 macOS 或 Linux 记录。
+
+旧 I01 原件仅证明其当时 rdflib `rdflib-7.6.0.dist-info/LICENSE`（BSD-3-Clause）和 pyparsing `pyparsing-3.3.3.dist-info/licenses/LICENSE`（MIT），不能据版本未变推定新八库覆盖。历史 C4 的分平台许可记录也只能在实际 lock／distribution／module／resource／runtime 身份和范围完全匹配后逐项复用，否则列缺件，不写“许可证同前”。
+
+源码 SHA、PYZ／pyc 字节、代码对象指纹、最终 executable SHA 是不同域。包内 `module.__name__`／`__spec__.name`、canonical 类型单实例、实际导入来源均需核对；两个同字节 alias 不是同一个 ProfileValue／CompiledPlan 发行身份。编译对照必须先固定 Python／PyInstaller、optimization、文件名归一化及代码对象比较规则，不能让包把 provenance 中预填的源 hash 当成已验证的包代码 hash。真实新包的 archive inventory、目标入口和运行采集尚未发生。
+
+## 5. 同一 canonical probe 的完整输出、预算与终态建议
+
+主合同可固定同一个新 canonical 模块作为 source `-m` 与独立 PyInstaller target，使用同一新 flag、同一固定输入 bytes、同一 API 调用及同一观测结构。两端不分别维护 case 构造器／expected 生成器；独立 artifact 也不执行 old storage_probe、worker 或 `__main__` 来凑 identity。parent 包后续应通过严格 dispatch 调同一模块，并保留其自身资源／依赖／装配验证，不能用独立 artifact 成功代替 parent 成功。
+
+已读旧 `semantic_profile_probe.py` 的边界是：输入 1839011 B、读取 cap 2097152 B、aggregate report cap 67108864 B、83 math records、每计算 payload+rows 8388608 B、120 秒边界检查。它只调用 `execute_profile_records`，没有 `validate_shacl_text`；构造函数中未被 main 使用的功能不算执行覆盖。它保留完整 case 后再限额，不截尾；其时限需要 caller 硬进程 timeout。新 suite 不能沿用这些数字而不审新增输入、完整图报告、DAG／restore 及并持副本。
+
+建议下一实施窗先固定以下资源合同，具体数值、进程实现与资源票另行授权；本文件不提供已批准的 heap／OS／H 算式：
+
+| 对象 | 应先固定的合同和可验证事件 |
+| --- | --- |
+| 输入 | 固定各文件及总 bytes/hash、最大展开规模、case 数量和完整性校验；先限量读取，拒绝后不继续 parse／构造；输入原文和实际 source provenance 均完整保留 |
+| 单 case 观测 | 保存实际 API／显式政策、原始 Turtle／query／shapes／规则／禁用项，完整返回／已知失败及诊断；需要原输入、完整 wire／rows、DAG directSteps／restore、六字段 SHACL 实际报告的 case 不得只留摘要或末尾几行 |
+| 总收集 | 预先固定每 case 与 aggregate 编码上界，连同输入、结果树、编码缓冲／rows、parse／比较和已保留 case 并持考虑；完整 item 未通过预算不得 append／宣布成功。hash／计数仅辅助，不能代替全量原件；不缩写 source、tail row、失败报告或重复项 |
+| 输出载体 | stdout 只发固定格式机器数据，stderr 是有限安全代码／已授权的完整原始捕获；采用单 JSON 或逐完整 case 的 JSONL 由主合同冻结。若将来采用文件分片，必须显式批准唯一输出前缀、每件 bytes/hash 和总 manifest，不能由临时磁盘无限承接绕预算 |
+| 运行采集 | 完整记录 argv、环境删除／设置项、cwd、Git ref／实际源与资产身份、运行前后固定输入、起止、退出码／signal、stdout 与 stderr 的原始 bytes/hash；原件不只保存 tail／摘要。捕获工具的长度上限也须有界且可观察地失败 |
+| 已知否例 | 明确预期拒绝与未执行原因，采集完成／覆盖通过／原业务操作通过为不同字段。missing-context repair 和 E5 fragment 不变成 executed 原操作；禁止将 exception 当成功报告 |
+
+退出／取消应采用有限可复核状态，而非单看 shell 返回码：建议 `0` 只代表约定采集完整，覆盖／oracle 比较另判；参数／资产前置非法可为 `2`，异常／资源失败可为 `1`，主合同必须冻结具体值及已知否例是否影响退出码。旧 probe 实际是任一 failure／not-executed 返回 1；若新语义改变，必须在新格式说明，不能混读旧结果。
+
+取消请求、边界检查和最终停止是三个事件。纯 Python 边界检查不能声称打断 opaque validator／parser；硬超时和停止策略必须由下一窗实际资源准入确定。只有目标进程实际结束、reader/join／pipe 收尾且持有输入／结果／资源引用完成清理后，才记录最终 cancelled／timed-out／failed；保留此前完整项并将 run 标记 incomplete，不以部分 stdout 判 pass，不自动续跑或杀无关进程。这里是私有证据采集终态，不借公共 Job 的 persisted cancelled 语义。
+
+组件逻辑预算、完整 payload 上界和上述文档建议均不证明解释器／第三方库 CPU、whole-H 或物理内存安全。T01 损坏 SQLite 输入保护／whole-H HOLD、被拒资源分析停止线保持；纯 CLI／独立 executable 也必须经过未来实际物理准入，不能把“独立 artifact”当豁免。
+
+## 6. 原 S1 两档及历史 B1 的精确测量口径
+
+原 architecture 第 53 行要求至少两档、独立 ID／命名空间、稳定 seed、真实 triples、输入／query 摘要、设备／库版本、冷暖／重复／方法和超时／OOM／中止原件；Q5 未确认前没有业务容量通过线。第 155–161 行的 B1 要求真实候选库对同输入执行 Turtle、query、RDFS／受控规则、SHACL，再在包内复做，记录隐式 import／资源／动态库／许可、网络拒绝、包体／启动／峰值，首轮 arm64 开发机不能代替干净无 Python／断网／签名安装／目标平台。
+
+原 `storage_probe.py` 固定 seed=`20261019`，谓词 namespace=`urn:ontolearn:`，对象按 `urn:case:{i}:equipment/{001,002,003}` 与 `urn:case:{i}:alarm/{A01,A02,A03}` 独立复制。每份 3 equipment ×2 +3 alarm ×3 +3 link =18 triples，两档 18／180；不是相同 ID 重复追加。
+
+固定 query 是以下两行字符串，行间为 LF，字符串末尾没有换行；摘要按该实际字节域计算：
+
+```sparql
+PREFIX : <urn:ontolearn:>
+SELECT ?alarm WHERE { ?alarm :level "High"; :status "Open" } ORDER BY ?alarm
+```
+
+query SHA256=`7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5`；1× input=`b0bcc466774f37d4f6a520900b8e7caa5f4fb7f827bbcf8c5ad0e9d12946ea0c`，10× input=`25393c99db270c57a75cd75c675876d148659fef7e7624e4197e90754b257ed2`。返回各份 A01；实际 ordered results、snapshot identity 与 source／package 同档保持一致。
+
+`scripts/verify-i01.py` 原测量为 source／package ×1×／10× ×3 fresh-process trials，共 12 原始记录；每个进程内依次 `snapshotLoad`、`rdflibBuild`、`fixedSelect` 及其 Warm 三项。timer=`perf_counter_ns`；tracemalloc 每 phase reset_peak，保留 `pythonBytesBefore`／`After`／`Peak`；`processHighWaterRssBytes` 是进程生命周期 `ru_maxrss` 高水位，不是该 phase 独占 RSS。Darwin 原值为 bytes，Linux转换为 bytes；resource 不可用时显式 null／unavailable，不伪填 0。外部 child wall time 包含 import／启动，与 phase time 分开。Store reopen；OS cache uncontrolled；Warm 为同进程第二遍，不能称物理磁盘冷读。
+
+以下仅摘录已全文读取的旧 round-3 两个 packaged trial-0 原件，单位 ns／B；它们是历史原值定位例，不是两档全部三次记录的统计，也不是新候选成绩：
+
+| scale／phase | elapsedNs | pythonBytesPeak | processHighWaterRssBytes |
+| --- | ---: | ---: | ---: |
+| 1× snapshotLoad | 216417 | 41034 | 39206912 |
+| 1× rdflibBuild | 6144750 | 154921 | 39387136 |
+| 1× fixedSelect | 529888291 | 7884399 | 52674560 |
+| 1× snapshotLoadWarm | 311167 | 7919999 | 52707328 |
+| 1× rdflibBuildWarm | 6645125 | 7978411 | 52903936 |
+| 1× fixedSelectWarm | 9185917 | 8042822 | 52953088 |
+| 10× snapshotLoad | 1544000 | 393823 | 40288256 |
+| 10× rdflibBuild | 58673125 | 574016 | 40747008 |
+| 10× fixedSelect | 531158542 | 8164541 | 53641216 |
+| 10× snapshotLoadWarm | 1872417 | 8489186 | 53854208 |
+| 10× rdflibBuildWarm | 64825500 | 8488739 | 54247424 |
+| 10× fixedSelectWarm | 9920583 | 8505754 | 54312960 |
+
+原件同时保留 before／after、完整 results／expected、snapshotId、stderr 和 processElapsedNs（1×2511209542，10×789059042）；不能以上表替代它们。设备为 macOS-27.0.1-arm64-arm-64bit、Python 3.12.12、SQLite 3.50.4、RDFLib 7.6.0。旧 round-3 package-manifest：engine directory 25123766 B／154 files，executable SHA256=`bbcfdc3c7a0b98bcd7e5c8013d51f90a99a2510180bddd316a7b711b7736ac86`，lock SHA256=`d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e`；它是旧 health 包，明确不含 clean-device／install／signing 结论。
+
+历史 C4 的 B1 semantic sample 加 4 ontology triples，将 equipment001 类型替换为 CriticalPump；asserted 18／180，semantic 总数 22／184。其 `measurement()` 先调用原 S1 `measure()`，所以 `FirstAfterS1` 已经过 S1／RDFLib／query，不能写成库冷启动。另一 `fresh_measurements()` 不先执行 S1／suite／shapes parse，在 fresh process 内记录 Turtle、ontology、graphBuild、SELECT、RDFS/rules、shapes、SHACL 的 First／Warm，imports 仍先发生；父采集 first 完整 JSONL 到达时间、whole child wall time、workload time是不同字段。旧 C4 报告的每平台 12 原 S1 记录 +12 fresh 记录也不是当前候选的测量次数。
+
+旧 C4 macOS engine 37648261 B／400 files，Linux 43884087 B／409 files；报告同时保留 Linux 脚本最初 appBytes=0 的原记录和独立实际包体修正，不能静默改原件或用 0 宣称包小。所有历史性能／包体／许可／网络拒绝仅约束其当时真实产品与环境，不自动继承到 6891 或未来新 artifact；本调查不作性能提升、容量或跨 OS 通过结论。
+
+尤其注意：原 S1 `measure()` 会创建临时 Store／SQLite、项目和 snapshot，再 reopen load。它不是纯数据数组测量。新的有限语义 suite 不应为取得 S1 数字而导入该函数；将来重做同版 S1 的 Store／snapshot 指标须先取得 T01 owner／物理／H 准入，不能借独立 source `-m` 或 CLI 绕过。可以并行冻结设计，但本窗没有重测、也未重新施工损坏 SQLite 或 heap／OS 分析。
+
+## 7. 后继可接收点及当前未完成项
+
+建议先由主合同冻结新 probe／flag／输入与 oracle 分离／case 全覆盖／最小模块和资源闭包；T01 先对共享契约精确字节及私有使用面接收；再由 T03 独占四 writer 给同版 implementation offer。未来实际 source／artifact 必须来自同一批准组合，保存全输入输出、包清单与许可身份，独立核对真实 API／报告／否例和完整性。之后 parent `package:dir` 重跑同 suite；S1 的 Store 测量、正式接线和目标平台各按自己的实际许可及验收门执行。
+
+本调查未解决、也不能以静态报告关闭：新 probe 实现和新输入包；T01 对 6891 共享契约的 adoption；T03 四文件 delta 和唯一 lock；真实 PyInstaller archive／canonical 单实例／全部资源／许可检查；新资源数值及硬取消实现／物理票；同版完整 source／artifact／parent 包运行；新 S1 与两目标 OS／CI／真人／指定外审及正式集成。原失败、缺上下文与未执行原件继续保留。
+
+写锁声明：本文件完成必要资料格式核对后停止编辑；不追加运行结论、不改主合同或冻结原件。最终 bytes／SHA256 由交付消息从磁盘实际读取报告，不在文件内自引用 hash。

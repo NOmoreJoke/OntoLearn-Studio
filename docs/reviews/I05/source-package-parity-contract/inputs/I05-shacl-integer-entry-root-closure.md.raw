@@ -1,0 +1,9 @@
+# I05 非法整数独立入口：受限收件
+
+2026-10-22。总控全文读3446B主文、5380B作者复审、validation及7906B根独审，SHA256 `09323ce3991b1d0645dd93b7c98ab0e3c6e67f50ad8346207147682df36e3630`；受限接收产品91e98074a334931648e9b7c8f58a3b5e8f93a642/纯过程ec85a09210790cf09154168462e662e00c5ef64f。
+
+只有semantic一改与新test一加；145来源/143只读、新298过程current/Git/hash、旧1238 Git身份及全部差异集合成立。显式必填policy、精确整数object/ill_typed唯一宽口、原lexical与严格旧API、仅新入口IRI分类门及原真实Validator报告均核。最终03实际1125TS/5060Python通过、44skip/1库warning，145来源前后=91e，12sources0；78观察中14真实Validator报告逐RDF六字段/conforms独核，64前门。不是78个新增测试或费用/性能结论。
+
+首be61的坏IRI原库Exception、1fail/5051pass、首审不通过、原70观察和所有raw保留；新91e没有改旧断言求绿，原坏object和8向量修复后固定错误/0调用。完整空白检查2仅四精确raw例外，其余0，不冒全量绿。
+
+仅关闭独立组件B及其新入口IE-O1，旧parse/query/reason/check仍严格；不倒写T05历史pending。date政策、正式execution/Store/Job/selected、父功能、指定同版双外审、CI/OS/真人和develop门保持。原I05两树冻结，不纯ack提交或无变化复测。T05按另发精确窗口只采用semantic并独立消费B。

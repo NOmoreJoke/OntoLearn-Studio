@@ -1,0 +1,238 @@
+# I05 源码／包同输入合同 v1
+
+2026-10-22；设计候选。**本合同固定后继最小实现与验收，不宣告新 probe、构建、运行、S1 或 B1 整体通过。** 本次唯一改动为资料；接受的组件与旧失败原件不变。原 Goal、57 项 P0、附录 C–G、PRD 10–12、正式 Job/H 及指定双审／CI／目标 OS／真人／develop／远端门继续保留。
+
+## 1. 固定组合、来源及权威
+
+| 角色           | 固定身份                                                                                                                                                                          | 用途与边界                                                                                                                                                         |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 本资料树       | `docs/I05-source-package-contract`，base `5f910b52c69d86a1076b2032e5d3c63e715947f3`                                                                                               | 只写本合同及 `docs/reviews/I05/source-package-parity-contract/**`。AGENTS 15852 B／`78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759` 保持未暂存 M |
+| 已接受语义产品 | `6891a5842302859a531cf82767c5a482417bc274`                                                                                                                                        | 固定供应字节；过程 `f79a29f596b2444cba542a906c91727869014886`。不把该树全部实现、146 已核源码或 493 过程件自动采用为包                                             |
+| T03 历史 offer | `4fa5d62eb13269351384527b1f84761c08811e79:docs/iterations/T03/I05-profile-build-dependency-offer.md`，19386 B／`5bcbc99714765bd65585ac02dce4c2878af9f4e827ebebf3353940d13d7c6788` | `inputs/T03-fixed-offer.md.raw` 保全。新恢复／DAG／date 闭包须本合同补齐，不称旧 offer 已构建                                                                      |
+| T05 date 消费  | 产品 `107208858229ef518c458aec96a29d4d2b366c46`；运行 `8e6f469ac7a64a1b3ec43edb13a8dc976ee8c4c4`；过程 `525c91717c07dc4b386fcec00f897e1e6a75caf1`                                 | 原 C-date／before／offset 的 3 输入、7 stage、3 真实报告；不是包内证据，不重跑或改写                                                                               |
+| 原 B1/S1 需求  | 本体主目录 `OntoLearn-Studio/docs/architecture/m0-review-and-update-plan-2026-10-19.md`，35812 B／`c289a1cd1a9cf40187ef6e506e134b0edcae6dea95d9e99805d4f3045e67cf96`              | 原文 L53、155–161 已保全到 `inputs/original-B1-S1-requirements.md.raw`；该路径不在 6891/5f Git，按命名本地原件绑定，不伪造 supplier ref                            |
+| 原 PRD         | 6891 的 `docs/prd/PRD-本体学习与落地Agent工作台.md`，93584 B／`7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb`                                                  | FR-400、500–505、附录 C–G 与 10–12。语义证据不能替代状态、事务、行为、来源、事件或交付验收                                                                         |
+
+以下附件均在新 reviews 前缀，属于合同的一部分：`case-catalog.json` 为**仅 metadata**的全量来源清单；`inputs-and-coverage-investigation.md` 固定逐族输入／未执行范围；`static-import-closure.json` 固定 22 个 canonical 模块的 AST 证据；`guard-delta-audit.json` 给原 43 guard 的每项旧值／6891 值／处置；`packaging-resource-investigation.md` 给资源／许可／原 S1 方法。附件不得作为运行输入、oracle 或自动采用授权。冻结清单另列各件实际 bytes/SHA。
+
+## 2. 完整输入账本与原上下文
+
+原 `docs/iterations/I05/profile-probe-inputs.json` 为 1839011 B／`6c6ffc3a1a57d1817583c0a71d24e2847cc5d2d673848878c6e6e72dfe6c39de`，`i05-profile-input-projection/1`，原 ref `f9af899fad31ea19c7540e9624c437a189b8b5bf`，`expectedIncluded=false`。新 runtime asset 将逐字段投影真实输入，保留每项原 `sourceRefs`、JSON pointer、原 SHA、inputProjectionJsonSha256、scopeNotes 和 false 权威标志。输入摘要不授予 producer、Store、snapshot 或来源认证。
+
+| 账本          | 必须保留的全量范围                                                                                                                                                  | 新 probe 可验证／不能升级的事实                                                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 原数学投影    | `/mathInputs/0..82` 全 83；22 extensions 为其中 55..76                                                                                                              | 82 eligible；79 full；两者交集 78。4 个 E.5 fragment eligible 但 full=false；索引 77 repair full=true 但 eligible=false。不可写成 82 个完整原上下文 |
+| 原操作        | `/originalOperations/0..105`、全部 50 productCases、54 learningChecks                                                                                               | 原操作／lifecycle／check 全未执行；账本只存引用，完整 setup/steps 正文仍绑定原 cases.json。数学输出不能将这些状态改为 true                          |
+| 原操作正文    | `approved-T09-873c8c0/.../product-baselines/cases.json`，188023 B／`a774a8d9615fd6fcacf81b567dff96c5cb202b6c35ef2d74a2943fe12b3e9baa`；逐 `/cases/i/setup`、`steps` | 保留 baseline/reset、scope、版本、定义、操作顺序、behavior/event/capacity 上下文；未来投影只取输入字段，不取 expected。未授权的写入／生命周期不执行 |
+| C 全集        | `consumer-C-inputs.json`，8505 B／`eeab821ccd71d55eed425a08b34d07648e623c0aa34eb2eabf66b839bbb426f6`；`/cases/0..12`                                                | 2 query +11 SHACL，逐格及两种 policy 变体见第 3 节；不是 13 个 SHACL，不省略 0..10                                                                  |
+| C 独立 oracle | `consumer-C-goldens.json`，8163 B／`c25e7afcc593a7be09fc8b2ca29af9cff28a7a1e030a13b98aa5e7d88d596440`                                                               | 只给外部比较器；保持原 core／extension 条件分支，不改 golden 迎合实际输出                                                                           |
+| Q/V 原输入    | Q01 `/cases/41/steps/0`，Q02 `/cases/42/{setup/0,steps/0}`，V01 `/cases/49/steps/0..3`，R04 `/cases/46/steps/0..2`                                                  | 新增真正 query／shape 调用；旧 probe 对这些投影只调用 reason。原发布／stale／history／save 顺序仍由正式 owner 执行                                  |
+
+完整逐项 ID、指针、原始 SHA 及状态在 `case-catalog.json`，不以本表代替；该清单没有原 text/triples/rules、expected、actual，不能装进包冒充业务输入。原 query `unclosed-high.rq` 为 162 B／`8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386`。原结构化约束转 Turtle 时须逐字段唯一模板映射及新来源，不从 expectedReport 倒造。
+
+具体未执行／缺件保持可见：repair 索引 77 不继承 R-risk，原 `/repair` 仅有 5 facts、10 ontology、name-required 与 referenceCatalogue，可独立验证缺名 before／引用名称 after，不能签真实 repair 提交；ontology-model 只有 4 条新增、无完整项目；learning-report 无固定 RDF 项目；G-list-13 的 edit-and-undo 无 selected subject；G-list-05 的 late-V1 缺轮次／载荷；四个 E.5 片段缺前序完整行为／资源图。106 操作的非图部分仍各自 not-executed，不将五条 unresolved 误作全部缺口。
+
+原 N3/JSON 没有原 CSV/Turtle token span 时，保留 span 缺件；新序列化 Turtle 另给新 ID／字节摘要，不冒充原导入文件。原 83 与 C 的 `urn:ontolearn:learning:`、`urn:m1:` 保持各自身份，不批量替换命名空间。
+
+## 3. 支持、拒绝及完整观测矩阵
+
+下表入口均为 **6891 的真实 canonical 业务函数**；新 source 与包直接调用同一函数和参数，不另写 matcher、validator、比较器或 fake Catalog。未来纯输入 case 每项须记录 `familyId/caseId/sourceRef/path/bytes/sha256/pointer/projectionSha256/api/parameters/contextStatus`；完整样本选择依据 `inputs-and-coverage-investigation.md` 的命名源码／测试纯输入行，不能将测试函数、monkeypatch 或 pytest 对象装入包。
+
+| familyId／输入面                                    | source 与包同一调用                                                                                     | 必须保存的完整结果／外部比较                                                                                                                                                                                                                                                                          | 明确拒绝／不执行                                                                                                                                                                                                                 |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `turtle-*`：原 G-base、字符串身份、词法族           | `semantic.parse_turtle(text, format="turtle", shapes=...)` L111                                         | 完整 RDF term 集：IRI、lexical、datatype、language 原文；原输入字节与解析身份分别保留。blank-node 仅对 shape list 的合法结构允许                                                                                                                                                                      | 非 Turtle、坏 Unicode／lexical、非有限数、未知 datatype、data blank node、owl:imports、原文／图限额；不先删坏项再成功                                                                                                            |
+| `query-*`：原 Q01/Q02、C0/1、SELECT/ASK/COUNT/ORDER | parse→`semantic.query(graph,text)` L160                                                                 | type、全部 variables／二维 rows／None、ASK bool、稳定顺序与同值 term tie；保留 integer01/1 原词法及 FILTER type-error 空行                                                                                                                                                                            | SERVICE/SILENT/变量/嵌套、FROM/NAMED/BASE relative/file 外联；非 SELECT/ASK、非 COUNT 聚合、非确定函数、LIMIT/Slice、named GRAPH、非允许 ORDER。literal 中 SERVICE 字样正向保留                                                  |
+| `rdfs-*`：四个有限分支、cycle／R04                  | parse／真实规则定义→`semantic.reason` L1234 的 legacy 分支                                              | 完整 rdfs、custom rules、warnings、每条 evidence/source/head；先有限 RDFS 闭包再固定一阶段规则；range literal 不产生 literal 主语                                                                                                                                                                     | 不扩 full RDFS、subProperty、OWL-RL／AF，不将规则头反馈 RDFS／其他规则；空图也不能绕过非法／unbound head                                                                                                                         |
+| `scope-*`：原scope纯输入／asserted+derived差异      | `semantic_scopes.prepare_validation_scope` L301 与 `project_validation_scope` L234；只用legacy Rule域   | asserted-only；fresh prepare(include_derived=True)真实reason一次；再以同次reasoning_result及provenance.reasoningSource给project（reason零次），随后query/SHACL实际消费facts；保存完整facts/ontology/reasoning_result/provenance，含selectedFacts/selectedRuleIds/warnings/derivedAxioms与两个view摘要 | 缺／错reasoning_source、缺result、非exact include_derived、unselected rules/result/source、facts混公理均保原码。输入不携带derived结果／expected；不得将profile /2或DAG /3结果喂legacyhelper，不建立formal selected/Store/Job权威 |
+| `profile-83/*`：原 83 及 22 扩展                    | `execute_profile_records` L844；真实 text 另用 `execute_profile` L822                                   | 完整 payload、rows、typed when/comparison/head、basis/source/definition/implementation；false、类型错、未匹配分别观测；原 disabled 全保留                                                                                                                                                             | repair 77 不执行原旧数学调用；片段只称 fragment 数学；无 given-binding／matches／expected／编译 seal 作输入                                                                                                                      |
+| `production-fullview/*`                             | `prepare_profile_material`→`execute_admitted_profile_job`→`restore_profile_result`                      | 本次真正发行的 material、catalog、allocation、完整 payload_json/rows_json/source/definitions/catalog bytes 与 wire；/2 finite7、schema1、7/15/11 全字段；全量恢复 view 逐字段对应                                                                                                                     | 名称中的 admitted_job 不证明正式 Job；expectation/allocation 只能由本次真实生产结果在进程内捕获，不能从 JSON 输入伪造／跨进程复用；恢复不再 reason                                                                               |
+| `dag-fullview/*`                                    | 同 material→`execute_profile_explanation`→`restore_profile_explanation_result`→`explanation_roots`      | /3 finite8、schema2、7/16/11；有序双 premise、depth、叶 union、首见证与全部 head occurrence、alias/raw source、所有 roots；两端分别真实发行，比较 wire／typed 内容，不比较地址                                                                                                                        | 仅 structured material；新解释 Turtle 路径明确拒绝；旧 reader 拒新版本／未知字段；不可 JSON 构造外来 class／metaclass。controlled late-shorter／MemoryError 留原单测边界                                                         |
+| `restore-reject/*`                                  | 对本次真实生产的接收 bytes 副本作冻结的有限扰动→同 restore                                              | 末 child/source/definition/limits、DAG step/premise/depth、伪 leaf 全链及 head 1023/15 等必须 atomic 拒绝；保原 allocation、输入、完整错误／阶段，不发部分 view                                                                                                                                       | 扰动只由固定 enum／case ID 选择，不能外部提供 arbitrary bytes/expected/native_reason；不可重 reason 或重造 allocation 迎合坏载荷                                                                                                 |
+| `shape-*`：C2–10、已收四个 shape 修复               | `parse_turtle(data)`＋`parse_turtle(shape,shapes=True)`→`check_shapes` L1528；显式 text policy 路径另列 | 全部 conforms 与 violations 六字段，named NodeShape/property、直接 path、min/maxCount/datatype/in/inclusive；无 target/value 与 minCount 单独观测                                                                                                                                                     | literal target/datatype、literal/inverse/unclassified path、重复／缺 target/path、非法 bound、事实混公理分别原码；复杂 SHACL 不开放                                                                                              |
+| `integer-entry/*`：C12 与已收 B 整数族              | `validate_shacl_text(...,data_policy=...,range_policy="legacy")` L1533                                  | strict 原前门；`integer-illtyped-report-v1` 仅放宽 data object 的 exact xsd:integer ill_typed，交真实 Datatype false／六字段，原 entry1/version 保留                                                                                                                                                  | shape、xsd:int/nni/decimal 等不随之放宽；未知／非 exact policy 先拒；新入口成功不改变旧 parse/query/reason/check 的 strict                                                                                                       |
+| `utc-date/*`：原 C11、T05 before/offset、已收边界族 | 同 L1533，明确 `range_policy="utc-date-range-v1"`；data_policy 仍逐项显式                               | entry2；合法 ASCII `YYYY-MM-DDZ`、0001–9999、真实闰年；minInclusive/maxInclusive 含等号；before/equal/after、反向双 bound、多值／共享 property／无 target/value/minCount 全量报告                                                                                                                     | offset／非 Z 不转 UTC；date/non-date 双向错配拒；shape 混 bound 即使无 target 仍拒；坏词法仍原 parser 门优先；minExclusive/maxExclusive 仍 `UNSUPPORTED_SHACL`，Validator 0                                                      |
+| `logical-budget/*`                                  | 同公开 semantic／direct／restore 入口及原有限账本                                                       | date 公共 1000000 恰界／公开超界、D1早错/晚超界/三插入序；DAG四域及完整失败诊断。逻辑票版本／费用／阶段保留                                                                                                                                                                                           | 私有少一票、foreign object、受控 MemoryError 不伪装 JSON public case 或真实 OS OOM；票不证明 native／CPU／whole-H                                                                                                                |
+| `offline-*`                                         | 上述真实 parser/query/validator 入口与 `semantic_offline.offline()`                                     | SERVICE/FROM/import data/ontology/shapes 的真实拒绝及无访问证据；JSON-LD/XML/N3 先拒格式；无 remote loader/ont_graph、AF/JS off 是实现事实，实际无访问另留证据                                                                                                                                        | 不用配置开关代替实际拒绝；本窗不启网络／监听／CLI。未来 sentinel／隔离验证须另授；拒绝前文／stderr 不泄露原 URL／异常堆栈                                                                                                        |
+
+`scope-*` 的纯输入来源固定为6891 `semantic_samples.py` 的 `scope_suite`（L449起）及原Q/V输入字段，只提取asserted/ontology/legacy Rule/query/shapes文字与明确bool；不import该helper，也不带其expected/已有result。legacy reason的五字段结果只在本次fresh prepare内部真实产生；将同次返回的`reasoning_result`和`provenance["reasoningSource"]`与原asserted/ontology/rules给project，不从JSON复原或另算结果。两分支各保存完整事实范围与报告，拒绝用同一个终态图代表asserted/derived两种范围。组件provenance仅核输入一致性，不认证producer或历史selected。
+
+C 的 13 个 ID／输入 pointer 一一保留，政策变体作为同一原 case 的独立 observation ID：
+
+| index／ID                       | 固定实际调用及外部 oracle 分支                                                                                                           |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 `C-query-numeric-promotion`   | parse→query，完整 promotion SELECT；不用 rule exact comparator 的 false 替代                                                             |
+| 1 `C-query-type-error`          | parse→query，FILTER type-error 正常空 rows                                                                                               |
+| 2 `C-datatype-exact`            | strict shape，exact int 与 integer 不合，Datatype 六字段                                                                                 |
+| 3 `C-langString`                | rdf:langString，真实 conforms／空 violations                                                                                             |
+| 4 `C-count-term-identity`       | integer01／1 为两个 term，MaxCount false，全部六字段                                                                                     |
+| 5 `C-in-term-identity`          | 词法01保留，In false                                                                                                                     |
+| 6 `C-inclusive-numeric`         | integer2 min=max，true                                                                                                                   |
+| 7 `C-inclusive-nni`             | nni2 同型界，true；非法 nni 另属前门                                                                                                     |
+| 8 `C-inclusive-dateTime-equal`  | offset 同时刻 true，保持非 date 路径                                                                                                     |
+| 9 `C-inclusive-dateTime-before` | false MinInclusive，原 dateTime 词法保留                                                                                                 |
+| 10 `C-inclusive-type-error`     | string/integer 比较为正常 MinInclusive false，不被 date 门吞掉                                                                           |
+| 11 `C-inclusive-date-entry`     | legacy INVALID_SHAPE／Validator0；新 UTC policy ×两 data_policy 都真实 true；选择原 extension=true 条件分支，原 core/historical gap 不改 |
+| 12 `C-illtyped-entry`           | strict INVALID_LITERAL_LEXICAL／Validator0；显式整数放宽为真实 Datatype false；输入不改                                                  |
+
+T05 date 三输入七 stage 原身份保持：原 C-date 调用序列 0/1/1/0/0，before 真 MinInclusive false，offset `2000-01-01+00:00` 为 date-value/RDF_TERM_INVALID／Validator0。包不把三输入折成一个“date passed”。六字段为 focus/path/value/sourceShape/constraint/severity；外部映射 golden 的 focusNode/resultPath/sourceConstraintComponent/resultSeverity，None 的缺 value 保留。报告 BNode 以结构同构映射而非临时 ID 比；数据 lexical term 不做数值／时区归一。比较全 rows、全部 result multiplicity 与 conforms，不能只比 count／首项／摘要。
+
+## 4. 单一新私有 probe 的具体接口
+
+**后继唯一模块：** `packages/engine/src/ontolearn_engine/semantic_source_package_probe.py`，I05 owner。新 flag 精确为 `--semantic-source-package-probe`。`main(argv=None)` **只接受三组完整argv**：`[flag,"full-v1"]`、`[flag,"b1-semantic-1x-v1"]`、`[flag,"b1-semantic-10x-v1"]`；单flag、未知selector、`flag=value`、额外args全部拒绝。selector只选sealed manifest内的三个固定case-set，不接受任意case/path/URL/expression，不接受环境变量隐藏选择。source为 `python -m ontolearn_engine.semantic_source_package_probe --semantic-source-package-probe full-v1`；独立包为 `ontolearn-semantic-parity --semantic-source-package-probe full-v1`；两种B1测量只将最后一个固定selector替换，调用同一`run_fixed_suite(selected_case_set)`。以上是未来接口设计，当前未实现、未批准这些进程运行。
+
+`full-v1`运行第3节全部命名族并保83/106/54/50上下文；两个B1 selector仅各尺度的纯语义First/Warm，instrumentation=false，在新fresh进程内不先运行full/另一尺度/validator/query；它们不执行Store/SQLite。完整full inventory与所选set inventory均写header/terminal；`collectionComplete`只针对所选set，另有`fullSuiteCollectionComplete`（子集固定false），外部equivalence只判同selector的全项。不能以子集采集完整替代full覆盖或原12个S1快照试验。
+
+T03 的独立语义 build profile 直接以该新文件为 PyInstaller target、只用 absolute canonical imports，不 import 旧 entrypoint／`__main__`／worker／storage_probe。源 `-m` 与脚本 `__main__` 只负责调同一 canonical 模块函数，业务类／函数不由 probe 定义或 alias；新模块不得同时以两种模块名发行类型。未来 parent 的 T03 `entrypoint.py` 只接受上述三组argv并原样调同一`main([flag,selector])`，保留旧flag原义，非法组合不落default分支；parent仍另作同suite验收。本独立产物只补有限语义证据，不能单独关闭原parent `package:dir` 或整项B1。
+
+stdin 必须由获准 caller 接 `/dev/null`，probe 不读取 stdin，也不把 stdin 当取消／动态输入通道。stdout 为固定 UTF-8 JSONL：首行 run header、逐完整 case observation、最后唯一 terminal；stderr 仅稳定安全代码／有限诊断。不写 DB、项目、用户目录或任意输出文件，不启子进程／网络。完整原文在 sealed asset；报告给其 byte-range／pointer 与 hash，观测 payload/wire 等全量发出，原始 stdout/stderr 由外部 collector 全字节保存。
+
+### 4.1 固定资产与输入域
+
+后继新增且仅限：
+
+- `packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-inputs.json`：唯一真实纯输入集合，包含原83的审计上下文／未执行状态、C全13及第3节命名族。只有 asserted/ontology 原 lexical records、真实 rules/disabled、Turtle/query/shapes 文本、显式 policy、target keys 和固定扰动 enum；不含 expected/given-binding/closure/matches/heads/basis/native result/restore expectation/allocation。
+- `packages/engine/src/ontolearn_engine/probe_inputs/i05-source-package-parity-manifest.json`：固定 format/version、输入 bytes/SHA、全部来源 ref/path/sha/pointer、逐 observation ID/API/参数／contextStatus、统计与版本清单及三个固定case-set的有序ID集合（full-v1、b1-semantic-1x-v1、b1-semantic-10x-v1）。输入总数须在实现冻结时逐项精确列明，不能用原测试数或 cap 冒充实际 case 数。
+
+source 从模块 `__file__` 的同包 `probe_inputs/` 读取这两件；frozen **只**从 `_MEIPASS/provenance/i05/source-package-parity/` 的对应文件读取。模块内固化 descriptor 的 bytes/SHA，descriptor 固化 input 的 bytes/SHA；package 与 source 必须两件同字节。bounded binary read→核 size/hash→严格UTF-8/JSON解码（拒重复key、非有限数、BOM）→核 format/exact keys/counts/unique IDs→才构造业务对象；禁止 fallback 到 cwd、checkout、用户目录、系统 Python、旧83 asset 或网络。manifest 也不是公共能力注册／权限证明。
+
+原数据 source SHA 与本次投影 SHA 分列：例如原83输入引用 f9 原件，运行投影引用新 sealed asset 的真实字节与字段位置；不声称同一次 source authenticated。完整原 operations 上下文必须在独立审计账本可追溯，非图操作即使文字完整也不装为可执行模拟器。
+
+### 4.2 全量输出与 canonical 调用顺序
+
+header 必须有格式 `i05-source-package-observations/1`、run ID、source/bundle 模式、批准 composition/product/process refs、actual writer/asset/lock/resource SHA、Python/PyInstaller/各 distribution、模块名称/spec/origin/code 域、语义与各 policy/budget 版本、完整 case inventory digest、selectedCaseSet/所选有序inventory/完整full inventory/各实际数目、instrumentation标志、所有 nonClaims。不得把预填 source SHA 当包代码已核。
+
+每 observation 包含 caseId/familyId/stage/API/全部显式参数、sourceRefs/input pointer/projection hash/context 状态、实际开始/结束与 terminal 状态、完整返回或安全 error+diagnostic。parse 返完整 RDF 图；query 返全表；reason 返完整图与证据；SHACL 返全部 API 报告六字段。所调用公开 API 没有返回 raw Validator Graph 时，不伪造该对象已采集；六字段覆盖 API 全结果，原 raw RDF 图核验属于已收组件证据，若新包要捕获该 Graph 需另授固定观测边界，不 monkeypatch 主业务制造通过。
+
+矩阵中的 Validator0／真实调用次数是验收要求，不由预填值自证。新probe的语义观测模式需固定只读 Python call hook：只按当前真实 `pyshacl.validator.Validator.run.__code__` 和 `semantic.reason.__code__` 的对象身份分别计 event=call（不读参数、不改返回、不替换Validator），逐observation登记实际次数，finally恢复原hook；启动时已有非空profile hook则前置失败，不叠加未知hook。该计数不能将函数名相同的alias算真实API；绑定实际distribution/code指纹。具体hook实现需下一窗审查；未取得实际计数标unknown、不能宣称Validator0、prepare reason1或project reason0通过；scope中fresh prepare与project分stage单独计数。性能测量另启无hook的同版run并标识instrumentation=false，不能混用其耗时。
+
+production/DAG 每端各自 prepare→真实 compute→捕获同次发行的 expectation/allocation→完整 restore→roots。输出完整 wire、payload_json/rows_json/source_encoded/definitions_encoded/catalog_json 原 bytes（固定 base64、另列 bytes/SHA）、capture/direct/restore receipt 与全恢复 projection；输入资产不得携带这些值。真正返回的 ProfileValue/Number/Calendar 等按固定只读字段投影，不调用不受控 repr、不以已计算 native_reason 作入参。输出 schema／投影规则须实现窗审查，不能为凑同版删除未知字段或 tail。
+
+restore 否例仅复制本次 receiver bytes 并按 manifest 内固定枚举扰动，保原 caller-held premises；用独立代码审查确认不会伪造期望。对照同成功 call 的完整 immutable view 校验原结果未变。已知 SemanticError/ProfileExecutionFault/MaterialFailure/RestoreFailure/DirectStepsFailure 保留稳定 code/classification/stage/location/rule_id 及已有全部安全诊断；未知异常只发 INTERNAL_ERROR 标记、当前 stage 和实际 incomplete，完整原 stderr/exit/signal 由 collector 保存，不打印任意对象／机密。
+
+### 4.3 逻辑 cap、退出、取消与首失败
+
+本设计冻结下列 **probe 收集逻辑上界**，不作为 native/CPU/whole-H 租约或容量通过线；实现前仍须实际输入 tally 与独立复核，若超界申请显式版本 delta，不截断或悄悄加大：
+
+| 对象             | 上界与触发行为                                                                                                                                                                                                               |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| descriptor       | 1048576 B，输入 asset 8388608 B；二者合计不超过9437184 B；各读 cap+1 即拒，不继续业务                                                                                                                                        |
+| inventory        | 最多512 observations，实际数由冻结 descriptor 精确列举；原83/C13/全部待执行上下文均不能因 cap 删除                                                                                                                           |
+| 业务输入         | semantic 现有限额原样：text1048576 B、graph100000 triples、rule matches100000、work1000000；生产payload+rows8388608 B；各 direct/restore 独立政策不降级                                                                      |
+| 每条输出／总输出 | 单 observation 编码上界33554432 B，stdout 全流67108864 B；含 base64/receipt/header/terminal。先预算并编码完整 item，再顺序写出整行；不以截尾记录冒充完整item。OS pipe写入不保证原子，强停导致半行时保留原bytes并判incomplete |
+| 终态预留         | 总流内预留65536 B给 terminal，保完整失败 code/stage/已完成IDs与未开始IDs／collectionComplete=false；若实际参数诊断不能放入，固定safe code且完整前项仍保留，不宣布成功                                                        |
+| 时间             | 120 s monotonic 边界检查，调用前后／逐 case 采样；这不能中断 opaque parser/Validator。外部 hard timeout／grace／reader join 方法另由资源窗口授权，不能仅有 deadline 字段就叫可取消                                           |
+
+0＝协议采集完整且无 harness/未知/逻辑资源失败；它允许记录业务已知拒绝或 missing-context/not-executed，**不表示 oracle/覆盖/业务通过**。1＝harness/未知异常、逻辑资源／deadline失败或无法完整收集；2＝argv/asset/格式/版本前置非法；协作取消 terminal 有实际 stopping 证据后返回130。外部硬超时/强停按实际 signal/exit/null记录，不能编成0或130。旧 probe 的 not-executed 使其 exit1 的历史原义不变，两个格式不能混读。
+
+case 状态固定 `observed-return`、`observed-rejection`、`not-executed`、`missing-context`、`unexpected-failure`；前两项只陈述真实调用，是否支持／符合外部预期另判。unsupported 构造被正确拒绝也只能判“拒绝合同满足”，不能列“能力通过”。全 run 的 collectionComplete、sourcePackageEquivalent、externalOracleMatched、originalOperationPassed 四项分开；最后三项由外部验收填写，probe 固定为未比较／false，不自签。
+
+取消仅在 caller 发给自身目标进程的获准取消请求后，于安全边界停止新增 case；不声称即时打断 opaque 调用。terminal 的 `cancelled/timed-out` 只能在目标实际结束、reader/pipe 收尾、输入/结果引用释放的外部 receipt 中成立；probe 内只能先记 cancel-requested/stopping。报告不得用请求时刻冒充停止时刻；强停无 terminal＝incomplete。只处理本次明确 PID/句柄，不杀其他进程、不自动无限重试。具体进程/物理票未授则该验证待验。
+
+首错／unknown／非零原件 append-only保全：每轮新的 candidate/run ID、完整 argv/cwd/环境非敏感差异、起止/退出/signal、stdout/stderr原 bytes/SHA。保失败时输入／资源／writer身份，修复后另 run，不覆盖首失败、不把旧unknown改成passed；输出超限也保已完整项和失败 terminal，不能只留下 tail 或退出摘要。
+
+## 5. 真正最小的包内闭包与 T03 四 writer
+
+### 5.1 独立语义 artifact 的选择
+
+`static-import-closure.json` 用 stdlib AST 从 semantic、semantic_execution、input/production/restore/directsteps/restore_budget 七个根追 literal Import/ImportFrom（含所有分支），得到 22 个 canonical 模块及逐边行号／每文件 bytes/SHA。它是保守静态候选闭包，不是实际 archive 导入结果，更不是采用许可。新 probe 实现后需再审其完整 imports，新增成员必须显式列入 offer。
+
+精确模块组：根包 `ontolearn_engine`；`semantic`、`semantic_error_adapter`、`semantic_execution`、`semantic_offline`、`semantic_query`、`semantic_scopes`、`semantic_turtle`、`resources`；`semantic_profile_input`、`semantic_profile_production`、`semantic_profile_restore`、`semantic_profile_restore_budget`、`semantic_profile_directsteps`；quality 根包及 `rule_profile/rule_terms/rule_numbers/rule_calendar/rule_comparator/rule_firing/rule_revalidation`。再加**唯一新 canonical probe**；不导入 `semantic_samples`（它引用storage_probe），也不采用整个 quality、旧 D2 产品树、worker／coordinator／job_store／storage／`__main__`／protocol 等无本 profile 调用依据的成员。
+
+restore L35 无条件 import rule_revalidation；旧显式 exclude 必须精确解除，definitions/planning 继续排除，quality 根懒导出不调用。五个新 profile 模块不在旧显式名单，但静态 import 可能被自动收集；不声称已实测缺包，最终需实际 archive+真实调用证明。不能以“hidden import声明存在”当实际 canonical 类型同一身份。
+
+### 5.2 资源与公共 owner 边界
+
+本 profile **不调用 `resources.resource_manifest()`**，改由新 probe 对固定白名单路径只读hash，不需修改 resources.py。仍原样使用 canonical `resources.CONTRACT` 与 semantic_identity。checker 顶层真实读的最小资源是：
+
+| 固定 supplier 路径                         | frozen 路径                                                                       | owner／采用门                                                                                                                          |
+| ------------------------------------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/contracts/python/contract_v2.py` | `contracts/python/contract_v2.py`                                                 | T01，6891为34608 B／`17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7`；必须逐路径明确仅私有只读语义使用的接收         |
+| `packages/contracts/v2/schema.json`        | `contracts/v2/schema.json`                                                        | T01，207256 B／`e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf`                                                      |
+| `packages/contracts/v2/registry.json`      | `contracts/v2/registry.json`                                                      | T01，15962 B／`1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b`                                                       |
+| `packages/contracts/v2/errors.json`        | `contracts/v2/errors.json`                                                        | T01，16299 B／`ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c`                                                       |
+| `uv.lock`                                  | `provenance/uv.lock`                                                              | T03；当前6891是28440 B／`86dfe82d952e2c88edcfc5658f488f6e1f0d04b4ec3b1e6f5c5d3bc4f57e8b73`，仅为提议的固定依赖身份，最终由T03/root锁定 |
+| 两件新 sealed asset                        | `provenance/i05/source-package-parity/`                                           | I05；未来实现冻结后提供真实 bytes/SHA，当前未生成                                                                                      |
+| build provenance／许可                     | T03 offer 固定的 `provenance/i05/source-package-parity-build.json` 与 `licenses/` | 构建实际产生，映射源／已安装distribution／archive及每个实际文件，不用预填hash冒充采集                                                  |
+
+本 profile 不调 `build_request/execute_request`、contract derive_dependencies/permits_transition、resource_manifest，故不读 dependencies.json/states.json 或 glob 其他 v2 JSON；`fixtures.json/binding-regressions.json/frame-fixtures.json` 不作为运行资源加入独立产物。它们在原43 guard的身份仍完整保留，不删除历史。若实现实际需要这些函数／资源，就触发新 delta、T01逐路径接收及重审，不能 fallback、复制checker或伪造registry。公共契约只取现有安全错误schema/目录，不因此启用business3、ready、capability或公共结果。
+
+此处明确选择6891这四件共享字节为**待 owner 接收的最小提议**，不是声称已采用。若T01另给批准5f或新ref，必须生成组合差异与同版重新验证，不能静默拼接／替换。其余22模块中 I05 可维护范围与 quality 供应者范围由root在实施票逐项确认；只读打包采用与后续源码维护分开，T03不获得其逻辑编辑权。
+
+### 5.3 完整 guard 改动与四文件请求
+
+原builder为13264 B／`5dab9850ba97e3c5e916ac45386a05f540c671f342f5ebf5c911ccc5e4772894`；sourceRef仍0475d0ec6c486a63c7e8f62f11f35181da6b2576。`guard-delta-audit.json` 逐43列明旧guard／6891实际值，30相同、13不同。13项是 resources/semantic/semantic_execution、contract_v2、binding-regressions/errors/fixtures/registry/schema、`__main__`/coordinator/job_store/storage。固定检查在构建前拒不符；本窗未执行构建，不能写“新build失败”。
+
+T03须给**profile分立的完整descriptor**，不能只改semantic一个hash：独立profile guard 22模块＋checker/三JSON＋pyproject/lock共28个现有supplier文件、唯一新probe、两asset、实际T03writers身份；源文件都含ref/bytes/SHA/owner接收。原43逐项 dispositions 已给：在独立profile无调用的T01/worker/测试fixture等成员从该profile guard／收集面排除，parent旧profile不擅改为新pass，须由root/T01给独立采用组合后再接入。新descriptor不能靠数组slice位置／硬编码旧17数目求模块；必须明列与guard集合一致、去重、拒未知项。sourceRef应是可恢复的已批准组合ref及逐来源，不把任意HEAD当来源；实际build HEAD另记。
+
+| 唯一 T03 writer                  | 精确后继需求与提交界面                                                                                                                                                                                                                                                                                                                                    |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/engine/pyproject.toml` | 不复制旧C4/D2/XLSX锁。当前提议398 B／`bcc8825b1f2902a66ae539e687df57e5b2554247f48a48a65215601a77958365`；A依赖rdflib7.6.0、pyshacl0.30.1、pyparsing3.3.3及实际传递/HTML extra；是否保此字节由root/T03决定，不为本probe加无关库。与lock单独依赖提交                                                                                                        |
+| `uv.lock`                        | 唯一T03冻结完整lock、marker/extra/wheel/sdist摘要与每platform适用性；版本相同也不自证身份。当前23包身份提议与XLSX线不混用；如果solver确实需新lock，另有可审delta，不在I05私自写                                                                                                                                                                           |
+| `scripts/build-engine.mjs`       | 新明确独立 profile `--i05-source-package-parity`（只选择固定target/descriptor，不接受任意source路径）；直接target新模块、name=`ontolearn-semantic-parity`，固定输出隔离前缀由root下一票给出。先全guard/clean受控路径核验，再构建；collect/import/data/metadata/license完整offer、实际archive/输出/源编译映射；禁止scan-all/adopt-all或复制旧inventory脚本 |
+| `packages/engine/entrypoint.py`  | 新flag仅对上述三个exact argv严格dispatch到同一模块`main([flag,selector])`、拒未知组合与extra、无fallback，不重定义旧83flag语义。独立profile不把该file作PyInstaller target；parent以后同suite另验。此file与build作为单独包装提交，不夹依赖或I05业务修复                                                                                                    |
+
+T03仅四writer；新probe/asset/test归I05，外部oracle归T05，公共contract采用归T01/root；本窗均不施工。T03需等待本合同固定接收、当前native候选冻结／写锁释放后另派新offer，不并发抢其当前四文件。后继接收先依赖commit→I05 module+asset候选→owner批准组合→T03包装commit→同版验证，四者真实refs/parents/diffs分列；每一执行输入变化触发必要验证及指定新完整双审，纯流程追加不制造产品变化。
+
+### 5.4 distribution／资源／许可证的接收条件
+
+提议八个运行distribution：rdflib7.6.0、pyshacl0.30.1、pyparsing3.3.3、owlrl7.6.2、prettytable3.18.0、wcwidth0.9.2、html5rdf1.2.1、packaging26.3。完整lock另含tool/build依赖，不能把八个当整lock。RDFLib插件/数据、pySHACL/owlrl/html5rdf代码与资源、prettytable/wcwidth/packaging imports及八库metadata须实际采集；保实际Requires-Dist/marker/extra与wheel/sdist/installed-file映射。最小引擎模块闭包不意味着可删第三方必需runtime资源。
+
+许可证逐artifact核：lock identity→实际installed dist files/RECORD、metadata、LICENSE/NOTICE/COPYING原字节与source→最终bundle path/bytes/SHA/archive覆盖。没有文件或映射就列精确缺件，不能以metadata的License字符串代替。Python解释器/stdlib/动态库、PyInstaller/bootloader及平台组件许可单列；扫描所有basename包含license并不能证明法律文本完整覆盖。沿用旧证据仅当同lock/artifact/distribution/module/resource/runtime身份、平台与采用范围逐项匹配，保复用对应表；否则新采集。当前缺的是新构建的`source-package-parity-build.json`、installed-dist文件/许可映射、archive清单、平台runtime/license清单，不是笼统“许可证待补”。
+
+包内pyc/PYZ与source SHA不同域：固定Python/PyInstaller/optimization、规范文件名及code object规则；由外部构建核验将真实archive code指纹对应到受审source，再绑定executable/目录完整manifest。运行header的`__name__/__spec__.name/origin`、canonical类对象同一性、dynamic contract模块唯一实例及资源实际digest相互印证；预填provenance不能证明自己。实际源码／包任一模块或资源错版／缺失／alias直接不通过，不回退。
+
+## 6. 外部比较、同版验收与证据等级
+
+独立oracle与引擎输入隔离。C原goldens、`real-executor-acceptance-inputs.json`（767826 B／`87220503f9983146c974fe3e35025d520cad70e54fdd994aebfa86fb1ff7259f`）里的triples/graphs/rdfsWitnesses/matches是外部expected，不能因文件叫inputs而传入业务。T05维护新族完整独立预期与旧oracle匹配指针；新输入无独立oracle时记pending，不把source输出固化为唯一golden。
+
+同一批准composition/lock、同probe与asset、同selector及所选inventory、同环境/政策/case顺序分别运行source与独立artifact，按完整结构比：图集合及必要BNode同构、query schema/全rows/order/None、SHACL全部六字段/数量/conforms、profile所有groups/typed/source/definition/implementation、payload/rows/wire/sidecars/DAG/root/失败诊断。按字段预先列允许不同的运行时identity（run ID/时间/真实source-vs-frozen路径/代码编译域），不得一般性删“变化字段”；语义input/source IDs与词法不可归一。再各自比独立oracle；相互相同可能共同错误，两个结论分开。B1子集等效只对其selector成立，完整覆盖必须另有full-v1全量原件；不能合并不同selector来补缺失观察。
+
+| 证据级别          | 真正可关闭的范围                                                                          | 本窗状态                                |
+| ----------------- | ----------------------------------------------------------------------------------------- | --------------------------------------- |
+| 静态              | 源身份、AST可达、guard差异、纯输入/外部oracle和设计完整性                                 | 本次执行的范围；独立审查另件            |
+| source运行        | 真实库/函数/报告/否例/完整捕获                                                            | 新probe未实现，待授权实施/运行          |
+| 独立包运行        | 实际PyInstaller产物、canonical code/resource/license/同输入完整观测                       | 未构建；不能拿已有组件绿测替代          |
+| parent包/正式接线 | parent package:dir同suite＋真实Job/Store/worker/selected/历史/取消/恢复等                 | 未闭；独立artifact不替代                |
+| 发布/生产         | 干净Windows/macOS、无系统Python、离线/签名/安装、真实CI、真人、指定同版双模型、合并与远端 | 各据真实证据，arm64/Linux不代替两目标OS |
+
+新实现需适用check/sources及原case对应验证；本次仅docs/JSON格式、静态完整性、diff/路径/AGENTS保护核对，不调用产品或测试。未来实际进程/构建/测量/sentinel/hard cancel资源票由root另授，不能将本文argv当执行批准。
+
+## 7. S1两档及B1测量合同
+
+S1必须保原fixture而非重复相同ID：seed=`20261019`，schema=`urn:ontolearn:`，对象`urn:case:{i}:equipment/{001,002,003}`与`alarm/{A01,A02,A03}`。1×／10×为18／180 asserted triples，各独立namespace；原query bytes的SHA为`7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5`，原fixture input SHA分别`b0bcc466774f37d4f6a520900b8e7caa5f4fb7f827bbcf8c5ad0e9d12946ea0c`／`25393c99db270c57a75cd75c675876d148659fef7e7624e4197e90754b257ed2`。固定QUERY为：
+
+```sparql
+PREFIX : <urn:ontolearn:>
+SELECT ?alarm WHERE { ?alarm :level "High"; :status "Open" } ORDER BY ?alarm
+```
+
+行间LF、末尾无换行；原结果为各namespace的A01，须保完整ordered结果。Q01的162B Equipment关联query另有身份，不混为此query。原fixture文本字节及输入digest的实际算法由固定storage_probe L35–57／原method约束，未来资产需再次对原件逐字核，不靠记录摘要就假定已展开。
+
+原S1观察为source/package ×1×/10× ×3 fresh-process trial＝12原件；每个进程`snapshotLoad/rdflibBuild/fixedSelect`及三个Warm。保timer=`perf_counter_ns`，每phase Python allocation before/after/peak、进程high-water RSS（Darwin bytes/Linux换算，unavailable写null），外部process wall/import/startup单列。Warm同进程二遍、OS cache uncontrolled，不称物理冷读；统计附每次原件、失败/超时/OOM/中止，不能只报均值。具体采用的测量工具/权限/目标进程票在下一资源窗口审定，本窗不运行或重开被拒heap/OS分析。
+
+**S1真实snapshot load进入Store/SQLite。** 不调用原storage_probe.measure来绕T01损坏输入保护/HOLD，也不拿内存数组冒充snapshotLoad=0。原snapshot阶段需T01固定实际schema/source/owner和资源准入后重做；未取得就明确not-executed，不因此删原S1验收。纯语义probe只先验证同18/180纯输入上的parse/build/query/reason/SHACL，不导入Store。
+
+B1两个固定selector采用**历史C4 fresh语义方法的四ontology版本**，来源`523c478d5f39671c4ac7c1ea6997e51d3047d58e:packages/engine/src/ontolearn_engine/semantic_probe.py` L229–259；只作为输入/阶段方法来源，不采用该probe或其Store imports/expected/计量成绩。两档均从原18/180的fixture文本解析；保一份原asserted facts供SHACL，再以显式纯输入构造步骤将每个equipment/001的rdf:type替换为CriticalPump，合并四条ontology（CriticalPump subclass Pump、Pump subclass Equipment、alarm domain MonitoredEquipment、alarm range Event）。这是一套固定graphBuild输入处理，source/包同序执行RDFLib Graph操作，不写Store，也不是推理得到的值。替换后事实数仍18/180，合并图22/184；各阶段实际输入、四ontology原文、新投影摘要及真实图数单列，原S1fixture SHA不能冒充改型/合并后图SHA。
+
+新semantic_samples的十ontology suite为28/190，是full-v1另可覆盖的不同case，**不用于这两个B1测量selector**；不得在1×/10×间混用四/十ontology。源／包同selector的实际输入／query hash／顺序相同；不得将DAG/83/C图统称S1。固定纯输入在下一资产窗口生成后独立核原输入，不import原带Store helper；外部oracle包含的expected不投影入asset。
+
+B1每档每trial以对应固定selector启动独立fresh进程（source/包×两档×三trial＝另12份B1语义原件），不先执行full或另一档。这12份不得填入原S1 snapshot指标；B1每档分别记录fresh import/启动wall、Turtle parse、ontology parse、graph build、query、RDFS/rules、shapes parse、真实SHACL的First/Warm和完整输出；FirstAfterS1已热，不叫库冷。cold定义为fresh process，无先跑suite/validator/查询；是否含import由字段精确定义。package目录总bytes/filecount/每filehash、executablehash、CPU/架构/OS/内存规格/Python/库/构建工具、采样重复数和工具分辨率、所有原stdout/stderr/elapsed/exit/signal完整保留。原C4/health包体、冷暖、峰值数字不继承、不量化未实测提升、不捏容量阈值（Q5未确认）。100×仅可另批准扩展，不取代1×/10×。
+
+同版12原S1＋必要B1fresh trials只定义未来验收计划，不授进程数或测量执行权。macOS arm64开发机首轮仅该平台证据，Linux不代替Windows/macOS；干净无Python/断网/签名安装与CI/真人均单列。数据完整性：试验前后sealed input/资源/lock/probe/executablehash、原trial schema/bytes/hash、全部12预定ID和实际终态、缺项/失败清单、统计方法版本与manifest；原失败不覆盖，实际未完成不能填历史数。
+
+## 8. 最小下一实施票与冻结门
+
+以下是可直接派发的路径级请求，**当前未授实现／运行**；先接收本合同，无需等正式Job/H完成才做这些设计接收。
+
+| 阶段／唯一责任     | 精确路径或固定交付                                                                                                                                                                            | 前置与冻结门                                                                                                                                                    |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| I05新私有模块/资产 | 新增 `semantic_source_package_probe.py`、`probe_inputs/i05-source-package-parity-{inputs,manifest}.json`（完整路径见4.1）；新增 `packages/engine/tests/test_semantic_source_package_probe.py` | 只实现三个固定set选择/固定输入/真实canonical编排/完整输出/安全失败；不改已收semantic/旧probe/公共contracts/resources。若真实缺接口，精确delta返root，不复制业务 |
+| T05外部oracle      | 新 `docs/reviews/T05/source-package-parity-oracle/` 内逐新输入的完整独立预期、来源/审查/旧golden映射                                                                                          | root另派唯一owner；对照原83/C/新增族，无source输出自充oracle；全部固定输入hash后冻结                                                                            |
+| I05外部纯比较器    | 未来新增 `scripts/verify-i05-source-package-parity.py`                                                                                                                                        | 独立路径申请，仅读原件/独立oracle/全量比较；进程启动/网络/包构建/DB不因该脚本获权。若需caller/资源票另列，不做通用runner                                        |
+| T01共享资源接收    | checker+schema/registry/errors精确6891身份及仅private read-use声明                                                                                                                            | 未接收前不自动采用；替换ref触发组合差异/适用验证。损坏SQLite保护与whole-H HOLD不变                                                                              |
+| T03新包装offer     | 仅四writer，descriptor/closure/data/import/license/精确输出前缀及依赖/包装拆分refs                                                                                                            | 本合同固定接收且T03当前native候选写锁释放后由root另派；不并发改其当前候选、不整包adoptD2                                                                        |
+| root实施组合接收   | 真实approved base、I05/T05/T01/T03每项ref/字节差异及owner接受、无WIP混入                                                                                                                      | 以完整可恢复组合ref冻结，不用任意HEAD拼装。新probe/source/package/许可/逻辑cap/取消完整性独立审查                                                               |
+| runtime/构建/测量  | 精确进程/资源票/有界原件前缀/终止方案                                                                                                                                                         | 另授；独立artifact、CLI或无GUI都不豁免物理准入；不重开已拒SQLite/heap/OS原题                                                                                    |
+| 同版完整验收/发布  | source/独立包/parent同suite、S1、正式Job链、全部原验收、目标OS/CI/真人/指定双审                                                                                                               | ZCode GLM-5.3最高与MiniMax M3.1-Flash xhigh双方新完整只读实际终态并处置，之后才可预约push/PR/CI/正常develop合并与远端核验                                       |
+
+本合同完成条件：原要求与全输入账本固定、矩阵/唯一probe/四writer/资源许可/S1/下一票可审，一次独立新delta审查和逐项处置、纯docs本地提交与清单。它不关闭任何未运行项目；原组件收件、首失败/unknown、T01/whole-H、公共selected、发布门保持原状态。

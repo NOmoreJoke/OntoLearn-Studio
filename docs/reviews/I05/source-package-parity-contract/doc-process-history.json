@@ -1,0 +1,57 @@
+{
+  "format": "i05-contract-doc-process-history/1",
+  "notRuntimeEvidence": true,
+  "events": [
+    {
+      "id": "doc-edit-first-error",
+      "type": "documentation-text-edit-command",
+      "interpreter": "python3 resolved by shell; exact binary version not measured for this command",
+      "exitCode": 1,
+      "stderr": "inputs/doc-edit-first-error.stderr.raw",
+      "provenance": "exact stderr transcribed from tool result chunk 8bb9f8; not a new execution capture",
+      "effect": "interpreter rejected stdin before executing; contract file unchanged by this attempt",
+      "disposition": "same intended text replacements completed with explicit UTF-8 declaration and pinned /Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12; no product imported or run"
+    },
+    {
+      "id": "packaging-investigation-resource-correction",
+      "initial": "inputs/packaging-resource-investigation.initial.md.raw",
+      "current": "packaging-resource-investigation.md",
+      "issue": "resource_manifest glob has eight JSON, not five; added delayed dependencies/states reads and selected startup-only use",
+      "productChanged": false
+    },
+    {
+      "id": "static-validation-first-error",
+      "type": "documentation-metadata-only-validation",
+      "exitCode": 1,
+      "stderr": "inputs/static-validation-first-error.stderr.raw",
+      "provenance": "exact stderr transcribed from tool result e19dbd, not new execution capture",
+      "cause": "validator assumed source consumer-C had kind; original has dataTurtle plus query or shapesTurtle, catalog correctly derives kind",
+      "effect": "no report written or product touched by failed command",
+      "disposition": "derive source kind from presence of query or shapesTurtle and rerun only static validation"
+    },
+    {
+      "id": "static-validation-second-error",
+      "type": "documentation-metadata-only-validation",
+      "exitCode": 1,
+      "stderr": "inputs/static-validation-second-error.stderr.raw",
+      "provenance": "exact stderr transcribed from tool result 384fbb, not new execution capture",
+      "cause": "static validator added implicit parent/self for empty-module ImportFrom; evidence intentionally records explicit child module targets",
+      "effect": "no validation report written or product touched",
+      "disposition": "clarified edgePolicy and two unresolved quality lazy literal targets; validate 128 explicit edges with implicit parents kept separate"
+    },
+    {
+      "id": "delta-edge-table-format-check",
+      "type": "documentation-formatter-check",
+      "exitCode": 1,
+      "exactToolOutput": "Checking formatting...\n[warn] docs/reviews/I05/source-package-parity-contract/static-import-closure.json\n[warn] Code style issues found in the above file. Run Prettier with --write to fix.\n",
+      "source": "tool receipt 2ee57a",
+      "disposition": "format only this changed root-owned JSON; preserve semantic 22 modules and128 explicit edges; no product change"
+    }
+  ],
+  "firstReviewedProvenancePreservation": {
+    "path": "inputs/source-provenance.rc1.json.raw",
+    "method": "reconstructed from unchanged first24 named Git entries and first12 raw inputs with original serializer, then exact bytes/SHA verified against independent first-review receipt",
+    "sha256": "0425a2915d3b85bc40064623c5933dfc1cf2cd566e5f614d2e52258fd4a2fbeb",
+    "notClaimedOriginalCapture": true
+  }
+}
