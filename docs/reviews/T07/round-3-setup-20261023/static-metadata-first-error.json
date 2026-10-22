@@ -1,0 +1,9 @@
+{
+  "scope": "operator static metadata follow-up only; not an installer/product failure",
+  "originalToolCommand": "python3 stdin metadata lock comparison",
+  "realShellExit": 1,
+  "exactStderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 15, in <module>\nKeyError: 'tomli'\n",
+  "cause": "Recursive dist-info collection includes vendored tomli metadata under setuptools/_vendor; it is not a top-level installed distribution in uv.lock.",
+  "correction": "Keep all 105 collected metadata files as original static evidence; compare only top-level site-packages/*.dist-info/METADATA against uv.lock. Do not rerun any installation or product command.",
+  "captureProvenance": "Exact stderr transcribed from the returned tool result, not claimed to be a separately captured original subprocess stream."
+}

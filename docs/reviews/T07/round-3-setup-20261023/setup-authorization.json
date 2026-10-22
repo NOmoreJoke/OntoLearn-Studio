@@ -1,0 +1,209 @@
+{
+  "status": "START_EXACT_TWO_ROLE_LOCKED_DEPENDENCY_SETUP_ONLY",
+  "issuedUTC": "2026-10-22T23:24:11.655628+00:00",
+  "ownerThread": "01a15bce-0706-7360-8e99-df8fe9b15ad2",
+  "product": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "reviewHEAD": "7fd17f93ebb4b68bac69faec15cb657e60c90729",
+  "preparationCommit": "3b4591258d62607224b39cca31db7304cd15b5c7",
+  "rootFullIndependentPreflight": {
+    "bytes": 6393,
+    "sha256": "f7fccf8c0e95f2e2bd86af2b4ba958bfba4bb399616b06bc238946ac7b2318f2"
+  },
+  "actualSourceRootsAlreadyExistRootHEADRead": true,
+  "doNotRecreateSwitchOrResetRoots": true,
+  "roles": [
+    {
+      "role": "zcode",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157",
+      "namespace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime",
+      "environmentExactReplacement": {
+        "PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157/node_modules/.bin:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157/.venv/bin:/Users/kyle/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/home",
+        "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/tmp/",
+        "TMP": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/tmp",
+        "TEMP": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/tmp",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "SHELL": "/bin/zsh",
+        "XDG_CACHE_HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/xdg-cache",
+        "XDG_CONFIG_HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/xdg-config",
+        "XDG_DATA_HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/xdg-data",
+        "NPM_CONFIG_USERCONFIG": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/setup/npm-user-empty.npmrc",
+        "NPM_CONFIG_GLOBALCONFIG": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/setup/npm-global-empty.npmrc",
+        "NPM_CONFIG_CACHE": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/npm-cache",
+        "NPM_CONFIG_REGISTRY": "https://registry.npmjs.org",
+        "NPM_CONFIG_AUDIT": "false",
+        "NPM_CONFIG_FUND": "false",
+        "NPM_CONFIG_UPDATE_NOTIFIER": "false",
+        "ELECTRON_SKIP_BINARY_DOWNLOAD": "1",
+        "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157.runtime/uv-cache",
+        "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r3-f9a1157/.venv",
+        "UV_PYTHON": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12",
+        "UV_PYTHON_DOWNLOADS": "never",
+        "UV_KEYRING_PROVIDER": "disabled",
+        "UV_DEFAULT_INDEX": "https://pypi.org/simple",
+        "UV_LINK_MODE": "copy",
+        "PYTHONNOUSERSITE": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "commandsOnceInOrder": [
+        [
+          "/usr/local/bin/node",
+          "--version"
+        ],
+        [
+          "/usr/local/bin/npm",
+          "--version"
+        ],
+        [
+          "/Users/kyle/.local/bin/uv",
+          "--version"
+        ],
+        [
+          "/usr/local/bin/npm",
+          "ci",
+          "--ignore-scripts",
+          "--no-audit",
+          "--fund=false"
+        ],
+        [
+          "/Users/kyle/.local/bin/uv",
+          "sync",
+          "--frozen",
+          "--no-python-downloads"
+        ]
+      ],
+      "scratchDependencyInstallation": false
+    },
+    {
+      "role": "minimax",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157",
+      "namespace": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime",
+      "environmentExactReplacement": {
+        "PATH": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157/node_modules/.bin:/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157/.venv/bin:/Users/kyle/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/home",
+        "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/tmp/",
+        "TMP": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/tmp",
+        "TEMP": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/tmp",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "SHELL": "/bin/zsh",
+        "XDG_CACHE_HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/xdg-cache",
+        "XDG_CONFIG_HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/xdg-config",
+        "XDG_DATA_HOME": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/xdg-data",
+        "NPM_CONFIG_USERCONFIG": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/setup/npm-user-empty.npmrc",
+        "NPM_CONFIG_GLOBALCONFIG": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/setup/npm-global-empty.npmrc",
+        "NPM_CONFIG_CACHE": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/npm-cache",
+        "NPM_CONFIG_REGISTRY": "https://registry.npmjs.org",
+        "NPM_CONFIG_AUDIT": "false",
+        "NPM_CONFIG_FUND": "false",
+        "NPM_CONFIG_UPDATE_NOTIFIER": "false",
+        "ELECTRON_SKIP_BINARY_DOWNLOAD": "1",
+        "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157.runtime/uv-cache",
+        "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r3-f9a1157/.venv",
+        "UV_PYTHON": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12",
+        "UV_PYTHON_DOWNLOADS": "never",
+        "UV_KEYRING_PROVIDER": "disabled",
+        "UV_DEFAULT_INDEX": "https://pypi.org/simple",
+        "UV_LINK_MODE": "copy",
+        "PYTHONNOUSERSITE": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "commandsOnceInOrder": [
+        [
+          "/usr/local/bin/node",
+          "--version"
+        ],
+        [
+          "/usr/local/bin/npm",
+          "--version"
+        ],
+        [
+          "/Users/kyle/.local/bin/uv",
+          "--version"
+        ],
+        [
+          "/usr/local/bin/npm",
+          "ci",
+          "--ignore-scripts",
+          "--no-audit",
+          "--fund=false"
+        ],
+        [
+          "/Users/kyle/.local/bin/uv",
+          "sync",
+          "--frozen",
+          "--no-python-downloads"
+        ]
+      ],
+      "scratchDependencyInstallation": false
+    }
+  ],
+  "fixedDependencyInputs": [
+    {
+      "path": "package.json",
+      "bytes": 1953,
+      "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 20999,
+      "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+    }
+  ],
+  "pinnedExistingPython": {
+    "path": "/Users/kyle/.local/share/uv/python/cpython-3.12.12-macos-aarch64-none/bin/python3.12",
+    "bytes": 49968,
+    "sha256": "322572c8d73b308856d23a07f26afe9d65b9159f8174575e14fb23503a7f734e",
+    "rootOnlyReadBytesAndMetadataNotExecuted": true
+  },
+  "expectedVersions": {
+    "node": "24.15.0",
+    "npm": "11.12.1",
+    "uv": "0.11.12",
+    "Python": "3.12.12"
+  },
+  "network": "Only required locked npm/uv dependency registry retrieval allowed. Caches currentlyempty: no falseoffline assertion or borrowedglobal mutablecache. No browser/Electron/newPython download or install scripts.",
+  "setupPreflight": [
+    "ExistingownHEAD7fd/sourcef9a/full1020tracked unchanged andcurrent15147/de15 AGENTSoverlay. Preserve exactpreexisting owninput/runtime/scratch andstatus; no source/input/archive/ignore cleanup or edits",
+    "Create only own declared HOME/tmp/XDG/npmuvcache/setup logs andempty user/globalnpm config files0600. Complete replacement env, nohostoverlay/credentials/globalconfig. UV_PYTHON existingpin+downloadsnever",
+    "Install only root .venv/node_modules independentphysicaldirs; do not install scratch/probe-copy deps or run scratch source",
+    "Capture source1020+locks/guide/own236requiredinputpins beforeafter eachchain/command, raw files outside checkout",
+    "Per-side firstfailed/mismatch/guard rejection stops affectedchain, fullraw preserved; no retry/fallback/differentwrapper. Otherindependent role maycontinue",
+    "After0 static packageJSON/uvmetadata/direct_url/venv link/lock andisolateddirectory identity only; no products import or executable smokes"
+  ],
+  "operationalLimits": {
+    "versionSeconds": 30,
+    "npmInstallSeconds": 300,
+    "uvSyncSeconds": 300,
+    "termGraceSeconds": 5,
+    "killCloseSeconds": 5,
+    "stdoutBytesEach": 16777216,
+    "stderrBytesEach": 16777216,
+    "meaning": "operational/capture bounds only, no physicalwholeH/hardquota/fullprocess-tree assertion"
+  },
+  "return": "singlefixedsetupmanifest sourcevectors/exactargv/env/cwd/PID/UTC/realchildintegerexit/fullseparate stdoutstderr andindependentactual audit; role-only facts forfuturemodel, aggregate/operator material notpeerread. No mechanicalunchangedcheck retest.",
+  "notGranted": [
+    "Oldpytest/vitest/npmcheck samepurpose denial HOLD is notlifted; no substitute tool/argv/role/scratch/mirror",
+    "Any product/test/build/validateprobe/DB/stdio/native/GUI/e2e/browser runtime",
+    "Source/test/lock/config/ignore/historical16whitespace edits",
+    "Global/private/peer material read orunknownPID cleanup",
+    "Newthirdparty task/CUA/modelmessage until separateGUI START",
+    "Push/PR/merge/Goal recreation/completion"
+  ],
+  "historicalGates": [
+    "SevenoriginalP3 andNR01–05 andR2 originalseverity preserved",
+    "M P2/P3 contractdispute notclosed/normalizationnotdefault",
+    "OriginalPROCESSFAIL/Pair0/sourceEOFgaps/firstrejections retained"
+  ]
+}
