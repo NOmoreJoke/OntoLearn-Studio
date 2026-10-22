@@ -156,3 +156,9 @@ T01现在唯一维护 `apps/desktop/src/main/jsonl.ts`、`apps/desktop/src/rende
 两个原任务已真实终态：ZCode model-io finishReason=stop，报告19506B/SHA af43f9ab…d0e4f；MiniMax assistant stop，报告36714B/SHA51e3b498…579f6。均在完整同版493上给有界S1 Pass，分别5项P3、P2-1及P3-1..5共6项，合计11项必须处置；MiniMax摘要误记4P3，原报告保留不改。完整报告、终态回复、原始验证证据分别11和27份已归档`round-1/received-20261022/{zcode,minimax}/`，receipt绑定真实ID/turn/终态及字节hash，两方58受审项终态无漂移。双方全check各独立633 TS/1091 Python，MiniMax另独立重跑11项合成callback UI并复现截图；不当父功能/平台/生产证据。
 
 原T02已全文读取双方报告，MiniMax六项经独立agent静态triage，合并清单见`triage-initial.md`。root明确原493先冻结至两报告到齐；现已收齐，下一步在新独立树沿原T02独占ontology/专tests/harness最小修P2及采纳的P3、其余按事实记延期/部分接受，不改公共契约/共享路径/验收。所有改变须新candidate、必要完整验证、双方全新同版完整复审，不沿用原Pass；未push/PR/merge，父门与原Goal保留。
+
+## 2026-10-22 C4失败保留与C5当前候选
+
+当前修复源在独立树`.worktrees/T02-s1-review-fixes`、分支`feature/t02-s1-review-fixes`，固定产品`e5ad54e5762157cafe532c2a0c07c22e8dd737cb`，base5f。原T02先修类型守卫/补21项UI行为形成35aa，完整634TS/1133Py通过，但独立内审发现JSON未配对surrogate造成UnicodeEncodeError，C4原Fail与原始流完整保留于round-2，不改成通过。C5新增UTF-8文本守卫及31用例，无静默替换/归一化或改digest编码；完整check实际634TS/1164Py exit0，ontology112passed，独立C5内审通过，无新P级。UI六输入hash未变，沿C4的21项headless证据，不复跑/不当正式服务证据。
+
+所有R1十一项意见逐项事实/修复/部分接受/延期见`round-2/disposition-c4.md`及`disposition-c5.md`；小写语言子集与正式前置parser仍有明确父门，原acceptance/公共共享/锁/CI未改。C5尚无指定新任务/新Pass，下一步完整同版双方全新审，不沿493双Pass或35aa内审。全量积压与历史候选保持，不关闭原Goal/父验收/发布门。
