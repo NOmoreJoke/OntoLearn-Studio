@@ -1,0 +1,28 @@
+SOURCE posix1e/acl_perm.c L89-L96
+acl_add_perm(acl_permset_t permset, acl_perm_t perm)
+{
+	/* XXX validate perms */
+	_ACL_VALIDATE_PERM(perm);
+
+	permset->ap_perms |= perm;
+	return(0);
+}
+
+SOURCE posix1e/acl_perm.c L99-L105
+acl_clear_perms(acl_permset_t permset)
+{
+	/* XXX validate perms */
+
+	permset->ap_perms = 0;
+	return(0);
+}
+
+SOURCE posix1e/acl_perm.c L135-L141
+acl_set_permset(acl_entry_t entry, acl_permset_t permset)
+{
+	_ACL_VALIDATE_ENTRY(entry);
+
+	entry->ae_perms = permset->ap_perms;
+	return(0);
+}
+

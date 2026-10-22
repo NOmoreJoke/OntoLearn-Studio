@@ -1,0 +1,143 @@
+SOURCE sys/kauth.h L145-L235
+#define IDENTITYSVC_ENTITLEMENT         "com.apple.private.identitysvc"
+
+#if defined(KERNEL) || defined (_SYS_ACL_H)
+#pragma mark - kauth
+#pragma mark kauth: Generic Access Control Lists.
+
+typedef u_int32_t kauth_ace_rights_t;
+
+/* Access Control List Entry (ACE) */
+struct kauth_ace {
+	guid_t          ace_applicable;
+	u_int32_t       ace_flags;
+#define KAUTH_ACE_KINDMASK              0xf
+#define KAUTH_ACE_PERMIT                1
+#define KAUTH_ACE_DENY                  2
+#define KAUTH_ACE_AUDIT                 3       /* not implemented */
+#define KAUTH_ACE_ALARM                 4       /* not implemented */
+#define KAUTH_ACE_INHERITED             (1<<4)
+#define KAUTH_ACE_FILE_INHERIT          (1<<5)
+#define KAUTH_ACE_DIRECTORY_INHERIT     (1<<6)
+#define KAUTH_ACE_LIMIT_INHERIT         (1<<7)
+#define KAUTH_ACE_ONLY_INHERIT          (1<<8)
+#define KAUTH_ACE_SUCCESS               (1<<9)  /* not implemented (AUDIT/ALARM) */
+#define KAUTH_ACE_FAILURE               (1<<10) /* not implemented (AUDIT/ALARM) */
+/* All flag bits controlling ACE inheritance */
+#define KAUTH_ACE_INHERIT_CONTROL_FLAGS         \
+	        (KAUTH_ACE_FILE_INHERIT |       \
+	         KAUTH_ACE_DIRECTORY_INHERIT |  \
+	         KAUTH_ACE_LIMIT_INHERIT |      \
+	         KAUTH_ACE_ONLY_INHERIT)
+	kauth_ace_rights_t ace_rights;          /* scope specific */
+	/* These rights are never tested, but may be present in an ACL */
+#define KAUTH_ACE_GENERIC_ALL           (1<<21)
+#define KAUTH_ACE_GENERIC_EXECUTE       (1<<22)
+#define KAUTH_ACE_GENERIC_WRITE         (1<<23)
+#define KAUTH_ACE_GENERIC_READ          (1<<24)
+};
+
+#ifndef _KAUTH_ACE
+#define _KAUTH_ACE
+typedef struct kauth_ace *kauth_ace_t;
+#endif
+
+
+/* Access Control List */
+struct kauth_acl {
+	u_int32_t       acl_entrycount;
+	u_int32_t       acl_flags;
+
+	struct kauth_ace acl_ace[1];
+};
+
+/*
+ * XXX this value needs to be raised - 3893388
+ */
+#define KAUTH_ACL_MAX_ENTRIES           128
+
+/*
+ * The low 16 bits of the flags field are reserved for filesystem
+ * internal use and must be preserved by all APIs.  This includes
+ * round-tripping flags through user-space interfaces.
+ */
+#define KAUTH_ACL_FLAGS_PRIVATE (0xffff)
+
+/*
+ * The high 16 bits of the flags are used to store attributes and
+ * to request specific handling of the ACL.
+ */
+
+/* inheritance will be deferred until the first rename operation */
+#define KAUTH_ACL_DEFER_INHERIT (1<<16)
+/* this ACL must not be overwritten as part of an inheritance operation */
+#define KAUTH_ACL_NO_INHERIT    (1<<17)
+
+/* acl_entrycount that tells us the ACL is not valid */
+#define KAUTH_FILESEC_NOACL ((u_int32_t)(-1))
+
+/*
+ * If the acl_entrycount field is KAUTH_FILESEC_NOACL, then the size is the
+ * same as a kauth_acl structure; the intent is to put an actual entrycount of
+ * KAUTH_FILESEC_NOACL on disk to distinguish a kauth_filesec_t with an empty
+ * entry (Windows treats this as "deny all") from one that merely indicates a
+ * file group and/or owner guid values.
+ */
+#define KAUTH_ACL_SIZE(c)       (__offsetof(struct kauth_acl, acl_ace) + ((u_int32_t)(c) != KAUTH_FILESEC_NOACL ? ((c) * sizeof(struct kauth_ace)) : 0))
+#define KAUTH_ACL_COPYSIZE(p)   KAUTH_ACL_SIZE((p)->acl_entrycount)
+
+
+#ifndef _KAUTH_ACL
+#define _KAUTH_ACL
+typedef struct kauth_acl *kauth_acl_t;
+
+SOURCE sys/kauth.h L240-L287
+/*
+ * Extended File Security.
+ */
+
+/* File Security information */
+struct kauth_filesec {
+	u_int32_t       fsec_magic;
+#define KAUTH_FILESEC_MAGIC     0x012cc16d
+	guid_t          fsec_owner;
+	guid_t          fsec_group;
+
+	struct kauth_acl fsec_acl;
+};
+
+/* backwards compatibility */
+#define fsec_entrycount fsec_acl.acl_entrycount
+#define fsec_flags      fsec_acl.acl_flags
+#define fsec_ace        fsec_acl.acl_ace
+#define KAUTH_FILESEC_FLAGS_PRIVATE     KAUTH_ACL_FLAGS_PRIVATE
+#define KAUTH_FILESEC_DEFER_INHERIT     KAUTH_ACL_DEFER_INHERIT
+#define KAUTH_FILESEC_NO_INHERIT        KAUTH_ACL_NO_INHERIT
+#define KAUTH_FILESEC_NONE      ((kauth_filesec_t)0)
+#define KAUTH_FILESEC_WANTED    ((kauth_filesec_t)1)
+
+#ifndef _KAUTH_FILESEC
+#define _KAUTH_FILESEC
+typedef struct kauth_filesec *kauth_filesec_t;
+#endif
+
+#define KAUTH_FILESEC_SIZE(c)           (__offsetof(struct kauth_filesec, fsec_acl) + __offsetof(struct kauth_acl, acl_ace) + (c) * sizeof(struct kauth_ace))
+#define KAUTH_FILESEC_COPYSIZE(p)       KAUTH_FILESEC_SIZE(((p)->fsec_entrycount == KAUTH_FILESEC_NOACL) ? 0 : (p)->fsec_entrycount)
+#define KAUTH_FILESEC_COUNT(s)          (((s)  - KAUTH_FILESEC_SIZE(0)) / sizeof(struct kauth_ace))
+#define KAUTH_FILESEC_VALID(s)          ((s) >= KAUTH_FILESEC_SIZE(0) && (((s) - KAUTH_FILESEC_SIZE(0)) % sizeof(struct kauth_ace)) == 0)
+
+#define KAUTH_FILESEC_XATTR     "com.apple.system.Security"
+
+/* Allowable first arguments to kauth_filesec_acl_setendian() */
+#define KAUTH_ENDIAN_HOST       0x00000001      /* set host endianness */
+#define KAUTH_ENDIAN_DISK       0x00000002      /* set disk endianness */
+
+#endif /* KERNEL || <sys/acl.h> */
+
+/* Actions, also rights bits in an ACE */
+
+#if defined(KERNEL) || defined (_SYS_ACL_H)
+#define KAUTH_VNODE_READ_DATA                   (1U<<1)
+#define KAUTH_VNODE_LIST_DIRECTORY              KAUTH_VNODE_READ_DATA
+#define KAUTH_VNODE_WRITE_DATA                  (1U<<2)
+

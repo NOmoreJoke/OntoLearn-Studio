@@ -1,0 +1,15 @@
+SOURCE sys/vnode.h L76-L88
+ */
+
+/*
+ * Vnode types.  VNON means no type.
+ */
+enum vtype      {
+	/* 0 */
+	VNON,
+	/* 1 - 5 */
+	VREG, VDIR, VBLK, VCHR, VLNK,
+	/* 6 - 10 */
+	VSOCK, VFIFO, VBAD, VSTR, VCPLX
+};
+

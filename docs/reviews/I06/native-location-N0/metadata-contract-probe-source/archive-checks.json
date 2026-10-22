@@ -1,0 +1,138 @@
+{
+  "status": "PASS_WITH_EXACT_RAW_EXCERPT_WHITESPACE_EXCEPTIONS",
+  "defaultWhitespacePass": false,
+  "reason": "Preserve already-reviewed verbatim SDK/Libc excerpt segments and section separators. Seven excerpt files contain terminal blank lines; pinned Libc native-export excerpt also has three original trailing-tab lines. No source snippet or root window normalized, no persistent Git setting changed.",
+  "defaultCachedCheck": {
+    "command": ["git", "diff", "--cached", "--check"],
+    "exitCode": 2,
+    "stdout": "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_entry.c.excerpts.txt:97: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_perm.c.excerpts.txt:28: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_translate.c.excerpts.txt:29: trailing whitespace.\n+\t\t\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_translate.c.excerpts.txt:33: trailing whitespace.\n+\t\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_translate.c.excerpts.txt:42: trailing whitespace.\n+\t}\t\t\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_translate.c.excerpts.txt:46: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--acl.h.excerpts.txt:149: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--attr.h.excerpts.txt:108: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--kauth.h.excerpts.txt:143: new blank line at EOF.\ndocs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--vnode.h.excerpts.txt:15: new blank line at EOF.\n",
+    "stderr": ""
+  },
+  "otherProcessFilesDefaultCheck": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/I06-metadata-contract-probe-source-window.md",
+      "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/handoff.md",
+      "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/independent-source-review.md",
+      "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/source-contract-and-build-input.md",
+      "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/source-evidence.json",
+      "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/static-source-check.json"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "exactRawPathScopedChecks": [
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_entry.c.excerpts.txt"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_perm.c.excerpts.txt"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof,-trailing-space",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/Libc-posix1e--acl_translate.c.excerpts.txt"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--acl.h.excerpts.txt"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--attr.h.excerpts.txt"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--kauth.h.excerpts.txt"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=-blank-at-eof",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/reviews/I06/native-location-N0/metadata-contract-probe-source/SDK-sys--vnode.h.excerpts.txt"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "sourceCommitWhitespaceCheck": "exit0 before source-only commit 2b724f0188c233de5c8ef107d39fe0c4cb50311f",
+  "nativeOrCompilerExecution": false
+}

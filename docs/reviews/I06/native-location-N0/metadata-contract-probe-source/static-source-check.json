@@ -1,0 +1,136 @@
+{
+  "status": "NOT_BUILT/NOT_RUN",
+  "method": "Source text allowlist/call sites; explicit bounded path accounting (not C++ execution or API trace); static formatting arithmetic; protected byte hashes.",
+  "staticExtractorCorrection": "Initial text-only assertion included numeric_limits<T>::min/max as global calls; excluded template qualification and reran successfully. No compiler or native code ran.",
+  "baselineRef": "7ea3bfb06ff117f80f0aa770ab5f563b6b5c3b3e",
+  "source": {
+    "path": "packages/native-location/tests/location_metadata_contract_probe.cc",
+    "bytes": 20278,
+    "sha256": "6b6ff0969396c243c425dca507d0ea05732a0edb0123a264ab834cd2531690dd"
+  },
+  "nativeAPICallSites": {
+    "close": 1,
+    "unlinkat": 2,
+    "rmdir": 1,
+    "acl_init": 1,
+    "acl_create_entry": 1,
+    "acl_set_tag_type": 1,
+    "acl_set_qualifier": 1,
+    "acl_get_permset": 1,
+    "acl_clear_perms": 1,
+    "acl_add_perm": 1,
+    "acl_set_permset": 1,
+    "acl_get_flagset_np": 1,
+    "acl_clear_flags_np": 1,
+    "acl_set_flagset_np": 1,
+    "acl_valid": 1,
+    "acl_set_fd_np": 1,
+    "acl_free": 1,
+    "mkdtemp": 1,
+    "open": 1,
+    "mkdirat": 1,
+    "openat": 4,
+    "fstat": 2,
+    "fgetattrlist": 1,
+    "geteuid": 1,
+    "mbr_uid_to_uuid": 1
+  },
+  "maxNativeAPICallsPerCompletePath": {
+    "fstat": 7,
+    "fgetattrlist": 5,
+    "geteuid": 1,
+    "mbr_uid_to_uuid": 1,
+    "mkdtemp": 2,
+    "open": 2,
+    "mkdirat": 2,
+    "openat": 5,
+    "close": 7,
+    "unlinkat": 4,
+    "rmdir": 2,
+    "acl_init": 4,
+    "acl_valid": 2,
+    "acl_set_fd_np": 4,
+    "acl_free": 4,
+    "acl_create_entry": 2,
+    "acl_set_tag_type": 2,
+    "acl_set_qualifier": 2,
+    "acl_get_permset": 2,
+    "acl_clear_perms": 2,
+    "acl_add_perm": 2,
+    "acl_set_permset": 2,
+    "acl_get_flagset_np": 2,
+    "acl_clear_flags_np": 2,
+    "acl_set_flagset_np": 2
+  },
+  "bounds": {
+    "metadataFDs": 5,
+    "transientCreationFDs": 1,
+    "knownFDsAcquiredOrClosedTotal": 7,
+    "ownedACLSetupAtOnce": 1,
+    "fixtures": 2,
+    "responseBufferBytes": 4096,
+    "observationBookkeepingBytes": 340,
+    "lineScratchBytes": 97,
+    "observationLineMaxBytes": [71, 63, 64],
+    "maxStdoutBytes": 1018,
+    "stderrWrites": 0,
+    "lineLimit": 96,
+    "stdioSetvbufCalls": 1,
+    "snprintfAndFwriteCallsEachMax": 16
+  },
+  "protection": {
+    "nineSources": [
+      {
+        "path": "packages/native-location/include/location_abi.h",
+        "bytes": 13296,
+        "sha256": "fc3f7983d62b0ef4f5a3a056198c00a0b971d2ae722acc33bc6f61937ec8e172"
+      },
+      {
+        "path": "packages/native-location/src/capability_core.cc",
+        "bytes": 17304,
+        "sha256": "eae2d2dcf4ccf1f648dbec5fdd0424c0a2dac31a94a45d493e819948f2309319"
+      },
+      {
+        "path": "packages/native-location/src/platform_macos.cc",
+        "bytes": 12579,
+        "sha256": "d944a4901b6d3f516f18ab436aed9ec56a78eb1bbd12d1949ebf6a6e171825ce"
+      },
+      {
+        "path": "packages/native-location/src/platform_windows.cc",
+        "bytes": 12506,
+        "sha256": "bcf474ca9d9e5ce4efdf06284dd71b9504c5e69027d3a53c96fa7df56bc2b4c4"
+      },
+      {
+        "path": "packages/native-location/src/node_binding.cc",
+        "bytes": 13163,
+        "sha256": "e10e59bdb200460310489bb4fc5b8c64ab79c1b8e2cfc9e7353a10a0c8667383"
+      },
+      {
+        "path": "apps/desktop/src/main/security/native-location-owner.ts",
+        "bytes": 12496,
+        "sha256": "e354b0830469647d70690f3e1d6e567c816f70cbbbe5c211dabba817fa7cc8d0"
+      },
+      {
+        "path": "packages/native-location/tests/location_core_test.cc",
+        "bytes": 37928,
+        "sha256": "2517eb970ef39f37dd99ca9945909331df937d4dd43ce53b74eb722bf47a7053"
+      },
+      {
+        "path": "packages/native-location/tests/location_child_probe.cc",
+        "bytes": 380,
+        "sha256": "041e60f57b34ec1b04157e73e2161b332acc3bc8f804d7f7fcd6baf575d34b9c"
+      },
+      {
+        "path": "tests/unit/i06-native-location-owner.test.ts",
+        "bytes": 8424,
+        "sha256": "4552db106b86a8a8a80b9fcb7b55292a1696f69b72a20bd97bdfaae2bdc104ce"
+      }
+    ],
+    "AGENTS": {
+      "bytes": 15852,
+      "sha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    }
+  },
+  "noRecordRunOrFixtureDirectoryCreated": true,
+  "compilerOrRuntimeValidation": false
+}
