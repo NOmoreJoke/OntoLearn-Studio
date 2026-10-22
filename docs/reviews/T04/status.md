@@ -1,6 +1,11 @@
 # T04 查询状态
 
-2026-10-23 第三轮准备：**新两clean审查树已部署，独立准备复核通过；两实际HEAD均精确detached507，同base→head。当前仅ready待总控内部队列，尚未创建新任务、投递正文或读回设置；新报告/终态为0/UNKNOWN。**
+2026-10-23 第三轮实际创建：**两项全新完整指定任务已GUI受理，fresh本人UI设置及官方SID已核，完整冻结正文原生到达证明通过；两实际HEAD同detached507、同base→head。20:15:03.300Z已立即GUI RELEASE并获总控ack，后续只本人SID+原turn精确后台。尚无新完整报告/正式终态收件或新双Pass。**
+
+- 实际Z SID `session_56788899c99e13a8d348bb21b2d62289` / 原turn `turn_dee9efbf-58dc-473e-8f12-b9be14ed1a72`；fresh UI GLM-5.3/最高/完全访问。M SID `mvs_4e9f4b2b7bdd47348293cdbb41f60109` / 原turn `659fd77a-9a0b-49c5-b39f-48aeb928d9f1`；fresh UI M3.1-Flash/xhigh/始终授权。两SID官方菜单复制至本人未发送草稿读回清空，未投递后续。
+- [创建索引](p3-repair/round3-creation-20261023/creation-index.json)、[精确续接路由](p3-repair/round3-creation-20261023/native-evidence-routes.md)：23成员归档36881B/SHA `8dd366a8f5cb38a527e36c933a21d918377ddd4e913b0d33a732b03360b77143`。Z原生编号1–148重建29675B；M两Read1–98、99–147及另见asset尾LF重建29715B。完整输入不等于模型Pass。M附件cd-to-file首败exit1与直接文件hash成功均保留，不当审批拒绝；owner抽取basename首败未写Mproof，修正已知prefix后成功，不重跑模型/产品。
+
+以下准备包为创建前冻结原件，原UNKNOWN/待排队按记录时点读取。
 
 - 完整输入各147行：Z29675B/SHA `45828e0984d527d2a105dca0b6cd6bc5823713e96f0b802ade914d603bc5bf1c`；M29715B/SHA `1985d7c54e0d1f0b8804018542e7d57d070c3d4da08b3055e1940f8dc53f1c40`。
 - 新树为同级`.worktrees/T04-s1-zcode-r3-5070004`与`T04-s1-minimax-r3-5070004`；42产品逐字等固定507，19角色支持输入各自未跟踪、由本owner过程ref/外部manifest封存。两树均只有保护AGENTS M和本角色未跟踪输入，无上一轮产品意见/peerprompt/新报告占位。
