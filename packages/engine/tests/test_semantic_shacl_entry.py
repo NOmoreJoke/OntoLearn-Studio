@@ -297,7 +297,7 @@ def test_date_bound_remains_rejected_without_a_date_policy(observe, policy):
         {"data_policy": {}, "range_policy": "legacy"},
         {"data_policy": True, "range_policy": "legacy"},
         {"data_policy": "strict ", "range_policy": "legacy"},
-        {"data_policy": WIDE, "range_policy": "utc-date-range-v1"},
+        {"data_policy": WIDE, "range_policy": "utc-date-range-v2"},
         {"data_policy": WIDE, "range_policy": "core-no-date-operators"},
         {"data_policy": WIDE, "range_policy": None},
         {"data_policy": WIDE, "range_policy": []},
