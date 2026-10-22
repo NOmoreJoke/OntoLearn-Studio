@@ -52,8 +52,7 @@ summary = {
     "caseCount": len(cases),
     "allMemberBytesSha256AndCrcVerified": True,
     "scope": (
-        "One explicit integer text component; "
-        "old regression not recaptured; no Job/Store authority"
+        "One explicit integer text component; old regression not recaptured; no Job/Store authority"
     ),
 }
 (base / (tag + "-original-members.json")).write_text(
