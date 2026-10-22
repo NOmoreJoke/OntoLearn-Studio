@@ -1,6 +1,0 @@
-entry: 'manifest.json' | orig: 'manifest.json'
-  PATH.fullmatch(filename) -> False
-  orig_filename == filename -> True
-entry: 'data/definitions.json' | orig: 'data/definitions.json\x00\x00\x00\x00\x00'
-  PATH.fullmatch(filename) -> True
-  orig_filename == filename -> False
