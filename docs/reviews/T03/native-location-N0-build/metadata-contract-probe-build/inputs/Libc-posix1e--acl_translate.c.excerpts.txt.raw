@@ -1,0 +1,46 @@
+SOURCE posix1e/acl_translate.c L93-L136
+/*
+ * acl_t -> external representation, native system endianity
+ */
+ssize_t
+acl_copy_ext_native(void *buf, acl_t acl, ssize_t size)
+{
+	struct kauth_filesec *ext = (struct kauth_filesec *)buf;
+	ssize_t		reqsize;
+	int		i;
+
+	/* validate arguments, compute required size */
+	reqsize = acl_size(acl);
+	if (reqsize < 0)
+		return(-1);
+	if (reqsize > size) {
+		errno = ERANGE;
+		return(-1);
+	}
+
+	bzero(ext, reqsize);
+	ext->fsec_magic = KAUTH_FILESEC_MAGIC;
+
+	/* special case for _FILESEC_REMOVE_ACL */
+	if (acl == (acl_t)_FILESEC_REMOVE_ACL) {
+		ext->fsec_entrycount = KAUTH_FILESEC_NOACL;
+		return(reqsize);
+	}
+		
+	/* export the header */
+	ext->fsec_entrycount = acl->a_entries;
+	ext->fsec_flags = acl->a_flags;
+	
+	/* copy ACEs */
+	for (i = 0; i < acl->a_entries; i++) {
+		/* ACE contents are almost identical */
+		ext->fsec_ace[i].ace_applicable = acl->a_ace[i].ae_applicable;
+		ext->fsec_ace[i].ace_flags =
+		    (acl->a_ace[i].ae_tag & KAUTH_ACE_KINDMASK) |
+		    (acl->a_ace[i].ae_flags & ~KAUTH_ACE_KINDMASK);
+		ext->fsec_ace[i].ace_rights = acl->a_ace[i].ae_perms;
+	}		
+
+	return(reqsize);
+}
+

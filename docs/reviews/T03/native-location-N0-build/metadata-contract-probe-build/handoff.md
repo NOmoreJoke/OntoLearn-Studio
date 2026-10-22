@@ -1,0 +1,19 @@
+# T03 固定输入与 runner：准备收尾
+
+结论：PREPARATION_ONLY / NOT_BUILT / NOT_RUN。runner实现修订经独立窄审接收；未来metadata admission仍BLOCKED，尚不能执行helper、compiler或任何检查器/实验。必须先闭合完整累计访问计数、真实准备debit与相应分票，并由root接受；不是只缺一个可自行补写的授权布尔。
+
+固定供方source2b724f0188c233de5c8ef107d39fe0c4cb50311f，20278B/SHA6b6ff0969396c243c425dca507d0ea05732a0edb0123a264ab834cd2531690dd；process119a8bef651a81ae80a6ef8bacdc64d4129e5373。仅不可变docs inputs副本，未cherry-pick产品、修源、读当前I06工作区或创建新build/record/run目录。无参数main，后继I06 argc必须1，不沿用旧child argv。
+
+固定runner29217B/SHA8ee38b02aefb6208b56a0621b420b84dd9d3e9b783be3523147e0d4972dd29ca；只做stdlib AST parse/文本静态检查，未import或调用，包括dry-run/verify-only。call-plan给单源C++17/arm64/min15的一条compile/link及5个固定静态工具，helper永不调用输出产物。输入绑定、0600原流、管道端合计cap、独占输出、首因/cleanup/持久化回退和未知drain边界见control-method。
+
+identity先元信息求和发现128MiB不足3667162B，root显式在同256MiB池改144/48/16/16/32。115physical/117logical payload已且仅一次hash137864612B，compiler/既有inspectors核原pin，新Python/ld/stdlib清单待root接收；无SDK header payload。最终身份保守预留140047578B，余144MiB10947366B。后继只能root接受的metadata-only复用，不可再hash138MB挤同票；actual loaded/open/dylib/linker/stub/archive closure未证明。
+
+依赖只准备capture/reuse/defer：未来命名3MiB旧witness一次读取本轮未发生；源4SDKpin固定hash，未知≤64保pending。没有读取SDK/42772索引主体或旧205包。有界locator只是方案，缺定位/immutable-membership须先交root，不能碰巧命中就签完整绑定。直接18headers/34预写assertions和源API白名单已保存，均非编译/链接或实验结果。
+
+已全文读9756B独审，SHA59e477a68c8c4fc1caddd9ce7ca7d0204ce637ba893db3fcea531d0f8e0085bd；三类旧实现问题关闭。独审历史34515次显式内存候选访问、至少超原4000票30515保留，root另补历史40000+定点2000；新定点复核保守≤1950、全作者应用读取≤2MiB，未借root票/重hash工具。未预签owner后续清单。
+
+不能使用旧512/4980计数证明：preflight已知583显式访问尚未含其它阶段，deps已知8055尚未含完整pipeline；原2000/5000重分方案已撤回、未应用。owner当前准备原1000票的完整上界证明也撤回：已知数组候选922，另有module候选/其它明确访问，实际全量未知，不能唯一115或0代替。root已显式保留历史4000，不是实际次数或历史上界证明，不追认/退款原1000，也不可借给未来。此补账不替未来计数/票接收，不隐借closure/旧票。
+
+最终累计账、owner缺口处理、静态封存收据和manifest以本目录收尾记录为准；review表内budget等SHA描述其受审时身份，后验root补票/owner披露另列，不冒称均经作者重新审查。下一门是root收准备/剩余阻断→补计数方法和票→再明确一次真实构建/静态窗口→root收新产物→原I06另授一次CLI。所有旧pair/12/product/锁冻结、失败/unknown/255、T01 HOLD、SQLite/heap/OS拒线及双OS/父N0/指定外审/CI/真人/远端门保留；无Goal/GUI/DB/付费/push/PR/merge。
+
+最终状态 PREPARATION_ONLY / NOT_CALL_READY，未来metadata admission BLOCKED。root两次补充共作者42000+owner4000只加一次，metadata累计2125263/2250000余124737；build109015059496/137438953472B、combined118760786581、实体521456/600000不变。原16,628池/全部旧预留保持；未知/原失败保留。14项早期静态收据记录作者补票后2121263的时点，后验owner4000由root原件/本账单列，不能把旧时点当最终累计。没有再改runner或计数实现；root明确允许先按此受限准备状态交件，后继完整计数与分票另行阶段处理。最终closure仅用原owner1000票，独审未预签这些后验补票/清单。

@@ -1,0 +1,11 @@
+# T03 实验构建身份分票：显式重分配
+
+2026-10-22。仅调整已保留256MiB池内分项，不增加总票/metadata/实体/guard，不授编译或runner执行。原T03输入/runner准备窗口继续适用。
+
+实际原会话turn01a16184-3520-7510-9d0b-831eb7e6f179的exec-da6b0d00-e86c-4683-9e93-428353e8bd88记录：109 module rows、115 distinct physical files、absentCacheRows=0，身份文件加已固定source合计137884890B；原128MiB=134217728B，未计runner已超3667162B。该记录仅是元信息/合计，尚非工具payload哈希或完整运行闭包通过。
+
+现root明确批准分项改为：sourceAndToolIdentityPayloadMax=144MiB=150994944B；boundedEvidenceAndArtifactsMax=48MiB=50331648B。其余作者独审16MiB、root独审16MiB、preflight/closure32MiB保持。总数144+48+16+16+32=256MiB；当前元信息合计距身份新票余13110054B，runner及任何新增必需项仍须先求和、在票内再hash。
+
+metadata16628/SDK-resource8192与原分票不变，原累计build109015059496、combined118760786581、metadata2079263、实体保守521456不再加同一池。旧8MiB静态准备、全部旧票/unknown/255保留，不退款或换分类记账；这是未来分项显式调整，不把未执行算消费为0。
+
+T03应把本补充原字节并入计划/收据和独审。精确记录分项变更、实际读取/保留；新证据/产物若超48MiB或任一票触顶则停止并报具体缺口，不截断归档签完整，不再默挪。当前只允许原窗口的固定输入/runner/有票只读身份核验，编译、运行、索引主体读取、额外探针及所有旧禁止项均未解禁。

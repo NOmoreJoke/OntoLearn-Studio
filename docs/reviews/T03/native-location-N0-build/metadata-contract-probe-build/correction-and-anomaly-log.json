@@ -1,0 +1,67 @@
+{
+  "runnerNeverInvoked": true,
+  "initialReviewedCandidate": {
+    "bytes": 23475,
+    "sha256": "d196f975c75c097035b7977b605edb3d8708fb28cba56e1cdbfef51f3fff06a8"
+  },
+  "finalPreparedCandidate": {
+    "bytes": 29217,
+    "sha256": "8ee38b02aefb6208b56a0621b420b84dd9d3e9b783be3523147e0d4972dd29ca"
+  },
+  "staticFindings": [
+    {
+      "issue": "unbound descriptor supplied identity metadata expectations",
+      "resolution": "auth binds descriptor SHA; authenticated pin fields compared to descriptor and physical metadata",
+      "runtimeTest": "NOT_RUN"
+    },
+    {
+      "issue": "source-evidence used for approved SDK binding without immutable pin check",
+      "resolution": "3621 bytes and fixed5afb SHA before parse; SDK root metadata before/after remains limited",
+      "runtimeTest": "NOT_RUN"
+    },
+    {
+      "issue": "close could overwrite write/fsync first cause and terminal persistence could lose command context",
+      "resolution": "first/cleanup separated; CaptureFailure carries command; one structured emergency fallback within16MiB budget",
+      "runtimeTest": "NOT_RUN"
+    },
+    {
+      "issue": "self-found duplicate output could receive new failure record; ownership/FD ambiguity",
+      "resolution": "single attempt marker, dirfd nofollow exclusive output owned only after creation, retire FDs before close",
+      "runtimeTest": "NOT_RUN"
+    }
+  ],
+  "withdrawnBudgetClaims": [
+    {
+      "claim": "future512 preflight and4980 deps proof",
+      "reason": "explicit repeated traversals omitted",
+      "status": "WITHDRAWN; no repartition applied; future execution BLOCKED"
+    },
+    {
+      "claim": "owner current preflight1000 is a proven complete conservative upper",
+      "reason": "explicit metadata loop counts and module candidate visits not fully metered; known array visits922 plus other iterations",
+      "status": "WITHDRAWN; root historical supplement decision pending at receipt creation"
+    }
+  ],
+  "authorHistoricalCount": {
+    "knownNextCandidateVisits": 34515,
+    "minimumPastOver4000": 30515,
+    "rootExplicitHistoricalReserveAdded": 40000,
+    "rootNewNarrowFinishAdded": 2000,
+    "notRetroactivelyCompliant": true,
+    "noRefundOrReclassification": true
+  },
+  "ownerAnomaly": {
+    "knownArrayCandidateVisits": 922,
+    "otherExplicitModuleMetadataAndReceiptVisits": "actual total UNKNOWN; not zero",
+    "originalPreflightTicketRetained": 1000,
+    "requestedHistoricalExtraReserveNotYetAppliedAtCreation": 4000,
+    "noNewFrontdoorInputReadsWhilePending": true,
+    "status": "ROOT_CONFIRMED_ACTUAL_UNKNOWN_HISTORICAL4000_RESERVED",
+    "historicalReserve4000AppliedExactlyOnce": true,
+    "actualHistoricalUpperStillUnknown": true,
+    "original1000NotRetroactivelyProvenCompliant": true,
+    "new4000NotAnActualHistoricalUpper": true
+  },
+  "futureMetadataAdmission": "BLOCKED until full cumulative method/tickets/current prepared-debit history reconciled and root accepts; numeric source gate floors not sufficient proof",
+  "oldFailuresUnknownAnd255Unchanged": true
+}

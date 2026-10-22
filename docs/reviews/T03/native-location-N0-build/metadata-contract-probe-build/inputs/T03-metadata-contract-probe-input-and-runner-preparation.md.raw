@@ -1,0 +1,31 @@
+# T03 固定实验输入与单次构建runner准备
+
+2026-10-22。原T03从74a04b08ee4cac6dfb27e9366538ffa18719fe65继续同一Goal/树/分支。先读T03-metadata-probe-static-preparation-root-closure.md和I06-metadata-contract-probe-source-root-closure.md。本窗口仅授权固定输入/runner源码与静态前门准备，**不授权compiler/cmake/xcrun/旧driver、新产物或API/实验执行**。
+
+## 可消费的供方固定输入
+
+原I06源码2b724f0188c233de5c8ef107d39fe0c4cb50311f，唯一packages/native-location/tests/location_metadata_contract_probe.cc，20278B/SHA256 6b6ff0969396c243c425dca507d0ea05732a0edb0123a264ab834cd2531690dd。过程119a8bef651a81ae80a6ef8bacdc64d4129e5373的metadata-contract-probe-source目录包含source-contract-and-build-input.md、source-evidence.json、static-source-check.json、8996B independent-source-review.md、handoff及七份必要映射摘录。仅消费这些固定Git blob，不读/采用其它I06产品路径或当前工作区半成品。
+
+可将供方源和有限证据原字节物化为本阶段docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/inputs/的不可变副本，保真实source/process/ref/path/bytes/SHA；不是cherry-pick产品实现，也不修改packages、CMake、driver或锁。源不得修正；不合或缺项报root。future build/input副本只在另授执行窗口的独占输出根建立，本轮不建build/record/run目录。
+
+实验为独立C++17单源main，不链接产品owner/core、Node或child probe，无参数entrypoint。仅未来compiler编译/链接及5个静态产物检查，实验本身不在T03执行。任何当前或未来调用不能给实验main沿用旧core的child-probe argv。
+
+## 预算分配与前门
+
+现在明确从未分配余额保留74a04方案的候选256MiB应用读取/16628 metadata/8192 SDK-resource实体，供本输入准备、后继单次构建、收尾/独审/root合计使用；不是当前已真实消费或执行许可。原分项暂按budget.json，所有cap共同先触顶停；不得把本轮准备后又将同一候选票重复加账。累计声明build109015059496B（余28423893976）、combined118760786581B，metadata2079263（余170737）、实体保守521456（余78544）；原guards、supply及全部旧票/unknown不变，不退款。
+
+先用现有已核descriptor及指定文件的只读元信息求精确身份总和，再决定是否可在各票内hash。compiler及其它必需工具/source/interpreter合计不能超128MiB身份分票。若不足，给具体清单/缺口和在同一256MiB总cap内的显式重分配建议，待root接受；不默挪票、换工具或涨guard。本阶段允许有票范围内精确已指定源/脚本/工具/SDK输入的只读身份核对，不允版本命令或临时能力探针。
+
+## 唯一runner writer及交付
+
+唯一新增可执行辅助源为docs/reviews/T03/native-location-N0-build/metadata-contract-probe-build/run-once.py，配套仅本阶段有限plan/receipt/预算/输入/独审。不要在准备时运行runner主函数，即使以verify-only/dry-run命名；可用stdlib AST/文本/静态算术检查。明确固定解释器真实身份、私有隔离入口、argv/cwd/env/flags、全部输入和授权绑定，不接收任意路径/命令参数。
+
+固定一条单源compile/link argv、独占digest输出、0600原始双流、实际planned/dispatched/terminal记录、depfile和有限静态检查需求。日志须在实际捕获端限合计16MiB，不能事后截断充完整。timeout候选600000ms/parallel1；超时/取消只处理本次有明确身份的自有调用，保存终态/未知，不扫/kill旧PID或宣称leader退出等于后代drain。精确控制算法及停止条件先交root，不在本窗口试运行。
+
+填入源实际headers/symbols/layout/mapping与检查宏需求。保留未编译断言不是已通过，普通声明/系统库名字不是实际选中link闭包。若预期新API/import不在已收描述中，准确列新增身份/静态取证需求，不以旧libSystem名字放行。
+
+有限依赖方案可以在票内读取已封存的必要小型witness/生成器metadata来说明复用依据，但不能全扫SDK、旧205包、42772条原索引或重做171088双前门。对于缺原行定位，先提出有可核验证据的定位/有界seek方法及字节/记录上限；本窗口不读取旧全索引主体或做无定位搜索。原计划new records≤64、定位文本≤512KiB、raw deps≤3072/unique≤1024保持；旧证据复用、实际重核与仍unknown分别列明。不能隐去必要绑定来强行省票。
+
+独立agent仅审新runner/固定输入/预算和有限依赖方法，不重审供方新源或旧供应史。全部准备固定ref、精确call准备、有限manifest、累计分票使用/保留和pending清单交root。只有root接受源码、身份/预算、控制算法和依赖方法后，才另授一次compiler/静态检查窗口；不因runner已写或票已保留就执行。
+
+第六pair和12原产品输入继续冻结，无新API/fixture/CLI、GUI/DB/付费/Goal变更/push/PR/merge。SQLite/heap/OS资源拒线停止、T01损坏保护HOLD及原完整功能/双OS/同版外审/CI/真人/远端门不缩减。
