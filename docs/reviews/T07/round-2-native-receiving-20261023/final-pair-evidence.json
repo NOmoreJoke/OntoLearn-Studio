@@ -1,0 +1,153 @@
+{
+  "state": "R2_PROCESS_FAIL_COMPLETE_PAIR_GATE_NOT_PASSED",
+  "recordedAtUTC": "2026-10-22T21:43:17.587754+00:00",
+  "launchCommit": "79af791a",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "reviewHead": "fdfd908e36a85140078aa1509f091de369157973",
+  "nativeOriginalTurnsCompleted": 2,
+  "validPassPairs": 0,
+  "formalSendsPerTask": 1,
+  "postStartExtraMessages": 0,
+  "GUIReleased": true,
+  "GoalMutated": false,
+  "R1ProcessFailureAndNR01To05Preserved": true,
+  "existingSevenOpinionsUnchanged": true,
+  "newAuthorEngineeringOpinionsRootDecisionPending": 2,
+  "roles": {
+    "zcode": {
+      "sessionId": "session_0b35de3fed06d21bd17ec25a5848c29d",
+      "originalTurnId": "turn_2f496dde-637e-490a-85a5-b4a30abea550",
+      "formalTerminal": {
+        "timestamp": "2026-10-22T21:38:00.562Z",
+        "event": "turn.completed",
+        "sessionId": "session_0b35de3fed06d21bd17ec25a5848c29d",
+        "turnId": "turn_2f496dde-637e-490a-85a5-b4a30abea550",
+        "status": "completed"
+      },
+      "reportBinding": {
+        "sessionId": "session_0b35de3fed06d21bd17ec25a5848c29d",
+        "originalTurnId": "turn_2f496dde-637e-490a-85a5-b4a30abea550",
+        "officialTerminal": {
+          "timestamp": "2026-10-22T21:38:00.562Z",
+          "event": "turn.completed",
+          "sessionId": "session_0b35de3fed06d21bd17ec25a5848c29d",
+          "turnId": "turn_2f496dde-637e-490a-85a5-b4a30abea550",
+          "status": "completed"
+        },
+        "reportBytes": 14464,
+        "reportSHA256": "b8923de36fde820c4e87373af55270a48eeeab97a22d6cb38122612d6625fbec",
+        "writeBindings": [
+          {
+            "callId": "call_2d79eaa4e3ca4efaa9880717",
+            "tool": "Write",
+            "bytes": 14464,
+            "sha256": "b8923de36fde820c4e87373af55270a48eeeab97a22d6cb38122612d6625fbec",
+            "equalsReportSnapshot": true,
+            "matchingResults": [
+              {
+                "isError": false,
+                "toolName": "Write"
+              }
+            ]
+          }
+        ],
+        "publicLastAnswerBytes": 3000,
+        "publicLastAnswerSHA256": "d5a7426528faba6d0d1c6029ef5ed95408822a1ae09d6938af83f0bdc7c3b379"
+      },
+      "authorVerdict": "NotPass / incomplete",
+      "actualInputReading": {
+        "first": 1,
+        "last": 1701,
+        "holes": [],
+        "conflicts": [],
+        "rebuiltBytes": 242491,
+        "rebuiltSHA256": "513da17b6f17e8004244cbc72c8f98dbc55a837862bd9c4d6d5c5ae80814c87d",
+        "equalsFrozen": true,
+        "expectedUsedToFillBytes": false
+      },
+      "capturedUniqueToolCalls": 139,
+      "capturedResultVariants": 139,
+      "completeOriginalToolChainAvailable": true,
+      "fullEngineeringReadGatePassed": false
+    },
+    "minimax": {
+      "sessionId": "mvs_58e4985c72594853ac34354567ea2468",
+      "originalTurnId": "8de34221-3863-486b-a4ee-8b58fe4c9833",
+      "formalTerminal": "completed",
+      "reportBinding": {
+        "sessionId": "mvs_58e4985c72594853ac34354567ea2468",
+        "originalTurnId": "8de34221-3863-486b-a4ee-8b58fe4c9833",
+        "officialTerminal": "completed",
+        "reportBytes": 34061,
+        "reportSHA256": "ee282bd9297ef05c174a4037968d49f90b734ec00c0066081d426797ae5c3307",
+        "writeBindings": [
+          {
+            "callId": "call_01a1658a1af375eca91f552d",
+            "tool": "write",
+            "bytes": 34061,
+            "sha256": "ee282bd9297ef05c174a4037968d49f90b734ec00c0066081d426797ae5c3307",
+            "equalsReportSnapshot": true,
+            "matchingResults": [
+              {
+                "isError": false,
+                "toolName": "write"
+              }
+            ]
+          }
+        ],
+        "publicLastAnswerBytes": 2808,
+        "publicLastAnswerSHA256": "8a1bdaab8ce6ca9f7fc0ae622cb63bfc25bad6ff9a8720050fde1d9f09663a59"
+      },
+      "authorVerdict": "PASS limited to S1, author P2/P3 pending integration",
+      "actualInputReading": {
+        "first": null,
+        "last": 0,
+        "holes": [],
+        "conflicts": [],
+        "rebuiltBytes": null,
+        "rebuiltSHA256": null,
+        "equalsFrozen": false,
+        "expectedUsedToFillBytes": false
+      },
+      "capturedUniqueToolCalls": 89,
+      "capturedResultVariants": 89,
+      "completeOriginalToolChainAvailable": false,
+      "fullEngineeringReadGatePassed": false,
+      "officialTurnFourColumns": [
+        [
+          "mvs_58e4985c72594853ac34354567ea2468",
+          "8de34221-3863-486b-a4ee-8b58fe4c9833",
+          "completed",
+          1792704994723
+        ]
+      ],
+      "originalAttachmentAndGap": {
+        "originalUserMessageId": "msg-user-v1-bEZboC-cf5XjAZDayAoPmpP8c40SOjd8SDcCVZe0614",
+        "sessionId": "mvs_58e4985c72594853ac34354567ea2468",
+        "originalTurnId": "8de34221-3863-486b-a4ee-8b58fe4c9833",
+        "explicitOriginalAttachmentPath": "/Users/kyle/.minimax/v2/assets/2026/10/23/05-14-13-421-asset_20261023-051413-421_525ac36e5e50_cf0b39f2-full-input.txt",
+        "bytes": 242581,
+        "sha256": "525ac36e5e505c103760501ada799c4399b3780559891a3a1b6b28f8e2ed8ede",
+        "equalsFrozen": true,
+        "source": "Exact original user attachment tag observed before native compaction in current operator tool output. Explicit asset only; no history discovery.",
+        "earlyMessagesBytesObserved": 2256800,
+        "laterMessagesBytesObserved": 23494,
+        "actualReadChainComplete": false,
+        "gap": "Original messages replaced/compacted during receiving before complete original tool return capture; expected never supplies missing return bytes.",
+        "recordedAtUTC": "2026-10-22T21:22:45.668176+00:00"
+      }
+    }
+  },
+  "independentProcessFindingPriorities": [
+    "P2",
+    "P2",
+    "P2",
+    "P2",
+    "P2"
+  ],
+  "ZAutomaticRejectionLifted": false,
+  "operatorProductTestsRun": 0,
+  "operatorUIUsedAfterRelease": false,
+  "unknownOtherTaskContentReadNotInferred": true
+}

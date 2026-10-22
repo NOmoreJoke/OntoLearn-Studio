@@ -1,0 +1,83 @@
+{
+  "state": "R2_ZCODE_WRITE_SCOPE_AND_READING_CLAIM_FINDINGS",
+  "sessionId": "session_0b35de3fed06d21bd17ec25a5848c29d",
+  "originalTurnId": "turn_2f496dde-637e-490a-85a5-b4a30abea550",
+  "events": [
+    {
+      "call": {
+        "id": "call_e34b751fa60f4a91ae806490",
+        "name": "Bash",
+        "argumentsInBundle": true
+      },
+      "results": [
+        {
+          "toolCallId": "call_e34b751fa60f4a91ae806490",
+          "toolName": "Bash",
+          "isError": false,
+          "serializedBytes": 1470,
+          "serializedSHA256": "358e4752d2ed47de6c5030ab1b3a6981e1246e0ad059f0c0f7d5322e5ef48d9f"
+        }
+      ]
+    },
+    {
+      "call": {
+        "id": "call_1e5449b354504b458c104510",
+        "name": "Bash",
+        "argumentsInBundle": true
+      },
+      "results": [
+        {
+          "toolCallId": "call_1e5449b354504b458c104510",
+          "toolName": "Bash",
+          "isError": false,
+          "serializedBytes": 12683,
+          "serializedSHA256": "fe9b011605e6a92b5837dd9a530dff2795cfa886953ccab203da0d3eddd90b95"
+        }
+      ]
+    },
+    {
+      "call": {
+        "id": "call_620c2b32c1ff43bebab35d50",
+        "name": "Bash",
+        "argumentsInBundle": true
+      },
+      "results": [
+        {
+          "toolCallId": "call_620c2b32c1ff43bebab35d50",
+          "toolName": "Bash",
+          "isError": false,
+          "serializedBytes": 13637,
+          "serializedSHA256": "eed25f0c17b2826f605b81e3d031a0ae846430280c1a4d886375bf4b8cfb4bcb"
+        }
+      ]
+    },
+    {
+      "call": {
+        "id": "call_1e83fff215a843f697dbb6f0",
+        "name": "Bash",
+        "argumentsInBundle": true
+      },
+      "results": [
+        {
+          "toolCallId": "call_1e83fff215a843f697dbb6f0",
+          "toolName": "Bash",
+          "isError": false,
+          "serializedBytes": 7535,
+          "serializedSHA256": "4549a2c9b84cb69cbe4f0a0d069a383d3527f3336f6639b4f57b0998094773b3"
+        }
+      ]
+    }
+  ],
+  "scopeFinding": "tee /tmp/t07_r2_diffpaths.txt is outside explicit own report/runtime evidence write surfaces; operator did not read/hash/delete that path.",
+  "readingFindings": [
+    "Six check logs were selected by key lines rather than fully returned.",
+    "readonly-fix first returned content length 12970 characters then resumed at 13000: at least 30 characters missing; preserve BrokenPipeError.",
+    "Report and claimed ledger FULL-EOF statements are not accepted over actual returned bytes."
+  ],
+  "historyIR03MappingCorrection": "Author report IR-03 calls project/engine/lock identity; historical IR-03 is deleted order ID reuse.",
+  "priorityDecision": "ROOT_ADJUDICATION_PENDING",
+  "automaticRejectionBypassObserved": false,
+  "originalEvidenceInBundle": "zcode-scope-and-reading-findings.json",
+  "originalEvidenceBytes": 39774,
+  "originalEvidenceSHA256": "efdd2a1b064bea914fde2914908e2bb556655ddd69edb57e7a83361acf8efcec"
+}

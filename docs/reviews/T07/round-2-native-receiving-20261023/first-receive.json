@@ -1,0 +1,113 @@
+{
+  "state": "FIRST_RECEIVING_PENDING_ORIGINAL_TERMINALS_AND_FULL_REPORTS",
+  "observedAtUTC": "2026-10-22T21:28:15.254830+00:00",
+  "launchReceiptCommit": "79af791a",
+  "reviewHead": "fdfd908e36a85140078aa1509f091de369157973",
+  "productHead": "f9a1157c2fff06c8bef17fa1ec44d8eb1ebacad3",
+  "GUIReleased": true,
+  "noAdditionalSends": true,
+  "pairCountDecision": "NOT_A_PASS_PAIR",
+  "roles": {
+    "zcode": {
+      "sessionId": "session_0b35de3fed06d21bd17ec25a5848c29d",
+      "originalTurnId": "turn_2f496dde-637e-490a-85a5-b4a30abea550",
+      "snapshotAtUTC": "2026-10-22T21:27:25.306837+00:00",
+      "source": "/Users/kyle/.zcode/cli/rollout/model-io-session_0b35de3fed06d21bd17ec25a5848c29d.jsonl",
+      "sourceCurrentBytes": 358772012,
+      "operatorReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r2-f9a1157.runtime/metadata/operator-identity-receipt.json",
+        "bytes": 2460,
+        "sha256": "d494da18f3be017a173bc9f413a65c342e4e280ca8cb044c284b98ef1653b60e"
+      },
+      "report": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-zcode-review-r2-f9a1157/docs/reviews/T07/round-2/zcode-glm53.md",
+        "exists": false
+      },
+      "officialTerminal": null,
+      "toolCallCount": 98,
+      "toolResultVariantCount": 97,
+      "originalShortLaunchMatchesFrozenAfterOuterWhitespace": true,
+      "actualInputReading": {
+        "first": 1,
+        "last": 1701,
+        "holes": [],
+        "conflicts": [],
+        "rebuiltBytes": 242491,
+        "rebuiltSHA256": "513da17b6f17e8004244cbc72c8f98dbc55a837862bd9c4d6d5c5ae80814c87d",
+        "equalsFrozen": true,
+        "expectedUsedToFillBytes": false
+      },
+      "settingsSource": "Actual official UI pre-submit/accepted receipts frozen in 79af791a; native model scalar corroboration where exposed; no global configuration read.",
+      "officialMinimalTurnEvents": [
+        {
+          "timestamp": "2026-10-22T21:10:36.883Z",
+          "event": "turn.started",
+          "sessionId": "session_0b35de3fed06d21bd17ec25a5848c29d",
+          "turnId": "turn_2f496dde-637e-490a-85a5-b4a30abea550",
+          "status": "started"
+        }
+      ]
+    },
+    "minimax": {
+      "sessionId": "mvs_58e4985c72594853ac34354567ea2468",
+      "originalTurnId": "8de34221-3863-486b-a4ee-8b58fe4c9833",
+      "snapshotAtUTC": "2026-10-22T21:27:25.346050+00:00",
+      "source": "/Users/kyle/.minimax/v2/sessions/2026/10/22/21-14-13-182-session_bXZzXzU4ZTQ5ODVjNzI1OTQ4NTNhYzM0MzU0NTY3ZWEyNDY4/messages.jsonl",
+      "sourceCurrentBytes": 1052185,
+      "operatorReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r2-f9a1157.runtime/metadata/operator-identity-receipt.json",
+        "bytes": 2530,
+        "sha256": "0539c4c3c7cb158a59d0f370894e2cfcc37b33eb84290324add140dd7c5fb363"
+      },
+      "report": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T07-minimax-review-r2-f9a1157/docs/reviews/T07/round-2/minimax-m31flash.md",
+        "exists": false
+      },
+      "officialTerminal": null,
+      "toolCallCount": 46,
+      "toolResultVariantCount": 46,
+      "originalShortLaunchMatchesFrozenAfterOuterWhitespace": null,
+      "actualInputReading": {
+        "first": null,
+        "last": 0,
+        "holes": [],
+        "conflicts": [],
+        "rebuiltBytes": null,
+        "rebuiltSHA256": null,
+        "equalsFrozen": false,
+        "expectedUsedToFillBytes": false
+      },
+      "settingsSource": "Actual official UI pre-submit/accepted receipts frozen in 79af791a; native model scalar corroboration where exposed; no global configuration read.",
+      "originalAttachmentAndGap": {
+        "originalUserMessageId": "msg-user-v1-bEZboC-cf5XjAZDayAoPmpP8c40SOjd8SDcCVZe0614",
+        "sessionId": "mvs_58e4985c72594853ac34354567ea2468",
+        "originalTurnId": "8de34221-3863-486b-a4ee-8b58fe4c9833",
+        "explicitOriginalAttachmentPath": "/Users/kyle/.minimax/v2/assets/2026/10/23/05-14-13-421-asset_20261023-051413-421_525ac36e5e50_cf0b39f2-full-input.txt",
+        "bytes": 242581,
+        "sha256": "525ac36e5e505c103760501ada799c4399b3780559891a3a1b6b28f8e2ed8ede",
+        "equalsFrozen": true,
+        "source": "Exact original user attachment tag observed before native compaction in current operator tool output. Explicit asset only; no history discovery.",
+        "earlyMessagesBytesObserved": 2256800,
+        "laterMessagesBytesObserved": 23494,
+        "actualReadChainComplete": false,
+        "gap": "Original messages replaced/compacted during receiving before complete original tool return capture; expected never supplies missing return bytes.",
+        "recordedAtUTC": "2026-10-22T21:22:45.668176+00:00"
+      },
+      "officialTurnFourColumns": [
+        [
+          "mvs_58e4985c72594853ac34354567ea2468",
+          "8de34221-3863-486b-a4ee-8b58fe4c9833",
+          null,
+          1792703653536
+        ]
+      ],
+      "nativeModelScalars": [
+        {
+          "model": "MiniMax-M3.1-Flash",
+          "provider": "minimax",
+          "api": "anthropic-messages"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "state": "ROOT_ADJUDICATION_PENDING",
+  "sourceReportSHA256": "ee282bd9297ef05c174a4037968d49f90b734ec00c0066081d426797ae5c3307",
+  "existingSevenDispositionsChanged": false,
+  "existingOtherOwnerAcknowledgementsChanged": false,
+  "items": [
+    {
+      "id": "R2-M-P2-1",
+      "authorPriority": "P2",
+      "topic": "Definition digest distinguishes duplicate/reordered event representations and rejects cross-definition resume",
+      "authorDisposition": "Nonblocking S1; settle before integration",
+      "independentStaticAssessment": "Phenomenon plausible; present PRD/integration text does not establish output-equivalent definitions must share resume identity. S1 implementation defect not proven. Checkpoint.events/pending order and scenario/input identity constrain equivalence.",
+      "rootDecision": null,
+      "responsibilityAcknowledgedByOtherOwner": false,
+      "implementationChangeMade": false
+    },
+    {
+      "id": "R2-M-P3-1",
+      "authorPriority": "P3",
+      "topic": "Digest depends on asdict field representation",
+      "authorDisposition": "Define explicit field list and normalization before integration",
+      "independentStaticAssessment": "Contract risk worth recording; canonical sort_keys already removes declaration-order dependence, JSON does not distinguish tuple/list array representation. Field additions changing digest may be intentional.",
+      "rootDecision": null,
+      "responsibilityAcknowledgedByOtherOwner": false,
+      "implementationChangeMade": false
+    }
+  ],
+  "definiteReportCorrection": {
+    "authorLocation": "runner.py:2108-2111",
+    "actualFileLines": 334,
+    "actualDigestGuardLines": [
+      158,
+      160
+    ],
+    "source": "Independent static engineering opinion audit"
+  },
+  "noPriorityOrDeferralWaiverByOwner": true
+}
