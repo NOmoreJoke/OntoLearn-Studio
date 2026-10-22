@@ -1,0 +1,64 @@
+# T02 请求B：T08既有草稿接口固定回报
+
+本回报只给原T02独立接口讨论引用，不提供已批准运行依赖，不导入、复制或拼接未批实现。总控本次给出的T02 C5短ref `e5ad54e`仅说明其有界S1正在新双审准备；本回报未读取其实现，不推断其通过、API闭环或可直接消费T08私有协议。
+
+## 固定身份及可引用入口
+
+- T08原owner聊天：`01a15bc2-40dd-7393-a1cb-1e87086e6993`。
+- 代码ref：`93516fa8455cf4b195cbfb699aa7a6652d428b6f`；批准base仍`5f910b52c69d86a1076b2032e5d3c63e715947f3`。本线现有双审准备reviewHead `5b64bfea538b638310cd3ce79e595c3b482e003d`只额外保存过程输入，不是新product。
+- 唯一开发worktree：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model`，branch `feature/weekly-t08-agent-model`。
+- 以下SHA均由固定Git对象重新计算，并与本树文件字节一致；T02只可据此定位设计/审查，不把未指定双审/未合并的T08实现当已批准公共契约。
+
+| 路径                                                   | SHA256                                                             |
+| ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `apps/desktop/src/main/agent/tools.ts`                 | `be30f3d9a88e23ed3cacc6c63de9ebba2668283be98ee1933b5dc213ce2370c8` |
+| `apps/desktop/src/main/agent/deepseek-codec.ts`        | `399ed11640b9c0433ac3627e83fec39b28cd05bc26b9a999895481d36dc21074` |
+| `apps/desktop/src/main/agent/agent-service.ts`         | `1d85c1f85f1a81e48f960405950240cafb55123e0823682d42edc927a0f9d659` |
+| `apps/desktop/src/main/agent/conversation.ts`          | `dca459044105cbb119179d10313c6634ff7c624f4bed29ae7e69371ebbf1918a` |
+| `apps/desktop/src/main/agent/capabilities.ts`          | `30d1e6079b3f16d01f080a1dca9fb10a14d24357bbfc39a5ea2bfb2deb3612e4` |
+| `apps/desktop/src/main/agent/errors.ts`                | `34b2e9b862cbeb6d82d45b73adac977dec05a872e2059231ae5ea73a715bf56e` |
+| `apps/desktop/src/renderer/src/agent/AgentSidebar.tsx` | `6eef997da2f2fb20da58219332b272e57b0002f12a6a764ad99711248f7e949a` |
+
+旧完整需求/接口提案：`docs/iterations/T08/design-and-integration.md`；验证清单：`docs/reviews/T08/evidence/verification-93516fa.json`（25项SHA）；真实未验与全部历史：`docs/reviews/T08/dual-review-backlog-2026-10-22.md`。本回报不修改这些原件。
+
+## 现有私有形状：不是canonical/公共bridge协议
+
+`tools.ts`仅有私有适配名。`ontology_propose`参数是严格对象`{instruction:string}`，trim后非空、最多8000个JS字符串长度单位；没有project、revision、确认或授权字段可由模型覆盖。可信宿主上下文单独传入`projectId/projectRevision/inputSnapshotId/scopeRef/module/mode/selectedObjectIds`。默认没有安装任何领域端口，工具不可用，不是一个可远程调用的服务。
+
+`DomainPort.execute(context,args,signal):Promise<unknown>`仅由获批主进程composition root安装实际适配器。对于`ontology_propose`，现有校验期望领域端口返回：
+
+```json
+{
+  "kind": "draft",
+  "draftType": "ontology",
+  "summary": "业务摘要",
+  "detail": "详细建议纯文本"
+}
+```
+
+这是形状示意，非实际模型生成或T02执行结果。`outcomeSchema`严格拒绝多余字段；summary经trim后长度1–4000，detail经trim后1–32000。Zod字符串长度不是UTF-8字节预算，且trim会改变首尾空白，不能宣称该草稿文本与provider原字节一致。这里没有Turtle/RDF解析器、语义支持验证、引用完整性、TypedChangeSet或正式本体Command转换；summary/detail不得当可直接执行的本体修改。
+
+`AgentSession`校验工具与draftType一致后由宿主附：`projectId`、`baseRevision`、`inputSnapshotId`、`requiresHumanDiffConfirmation:true`，收据结构为`{callId,tool,outcome}`。这些是生成基准印记，不是T01真实preview身份或真人确认。`assertDraftBase`检查project/revision/snapshot；正式结构/引用检查、完整Diff、确认复验、原子事务、撤销冲突及单独快照恢复仍由T01负责，不能由上述布尔值替代。
+
+## codec、session和receipt的实际职责
+
+- `deepseek-codec.ts`只有数据编解码：固定首选endpoint/model、文字非流式Chat Completions，严格消息/响应/工具参数，完整thinking历史与ID关联，JSON body及response各有524288字节上限。没有HTTP、fetch、密钥或发送入口；每条message文本另有262144个JS字符串长度单位上限。
+- `AgentConversation.prepareExchange`生成body与exchangeId，不发请求，也不授予发送；`acceptResponse`消费匹配响应并调用显式注入端口。默认端口空，因此不能凭codec+会话就形成实际provider→T02草稿回路。最终模型JSON只能选既有receipt或有限固定教育提示/uncertain，自由模型正文不能直接充当已验证草稿或计算成功结果。
+- `state().localReceipts`保留当前问题中已完成收据与完整原上下文，和final answer分开；模型失败/预算尽/部分取消不抹掉已完成项。新增问题清当前收据，但不清全会话tool ID/协议历史/预算。超时/取消传播signal及隔离迟到结果，不证明领域执行已取消或数据库已回滚。
+- `projectToolMessage`只是字段最小化，不是外发授权。draft或failure默认只回传kind，不把summary/detail/原异常正文默认回传；evidence只筛宿主给出的fieldId。所有实际messages/tools/reasoning/摘要/历史/错误仍需I06最终字节与范围/端点/主体授权。
+
+## 生成文本安全契约与未覆盖语义
+
+1. 导入内容、工具结果、provider文本及其中的“忽略权限”“自动确认”等语句一律作为不受信数据，不能升级工具、外发或写入权限。应用system指令由宿主提供；T08的提示本身不是注入安全或真实外发验收证明。
+2. 草稿summary/detail保持纯文本展示。当前AgentSidebar使用React文本节点及`<pre>{detail}</pre>`，没有dangerouslySetInnerHTML、自动执行代码/命令、Markdown HTML解释或模型文本带来的资源加载。这仅有组件SSR证据，尚未证明T02页面接入后的真实事件与安全显示。
+3. 不将summary/detail作为文件路径、shell、JavaScript、URL导航、SQL或正式RDF更新执行；若T02要解析成其支持的结构，需要唯一业务层明确支持矩阵、schema/语义/引用检查和失败定位，再由T01产生真实Diff并等真人确认。此条是安全接线要求，不代表已有上述解析/事务实现。
+4. 当前query_execute的SPARQL参数另作只校验不trim，保持原字节；这不能外推为ontology草稿detail原字节保全或SPARQL本身已安全。只读/禁外联仍需真实T04/I05执行器。
+5. 失败跨边界只用固定安全AgentError码，不转发provider/工具原异常、堆栈、文件路径、单元格原值或凭据。来源/授权材料不能根据字段名字猜，须由实际owner交接。不能把error/failure文本改写成成功本体结论。
+
+## 真实provider/批准/工具回路与下一交接
+
+本线现有证据只证明纯编解码/调度/收据、SSR及固定测试专用RDFLib/CSV观测。`npm run check`717 TS/1052 Python和内审8不证明真实DeepSeek调用、实际模型草稿质量、T02本体语义、T01事务或页面闭环。没有本线指定模型Pass；当前独立审查树setup也不是provider验证。
+
+真实闭环仍缺：I06获批唯一最终body发送/字段溯源/配置与安全存储、真实API主体/网络/批准消费硬上限、正式模式与服务漂移记录；获批T02草稿结构/语义与适配器；T01 preview/确认/事务/撤销；唯一canonical/public接线；原11.3建议正确性/旧基准/撤销和12.2真实UI/离线闭环。未获API许可前不读取.env/secret、不调用或付费探针；不能把手写tool call/合成draft作为真实模型产物。
+
+建议T02下一步只在既有独立接口回报面明确其真实预览输入/输出、结构与引用失败、scopeRef/选中对象/版本来源、取消边界与可交接的字段身份；由T00/T01/I06相应唯一owner批准后再落正式映射。不要求T02先消费T08未批源码，也不从本文件推出可直接import、合并或启用公共方法。T08保留原完整验收，不因本回报或审查准备重建Goal、调用API或改变product。

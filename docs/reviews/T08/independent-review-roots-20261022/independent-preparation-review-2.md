@@ -1,0 +1,9 @@
+# 独立物理审查树新材料修复复核2
+
+独立agent `/root/t08_internal_review`。
+
+原始明确结论：**材料修复复核通过**。中央索引SHA fd2121a7f6a345640a6c621ee489fc13f044f31eabf1b77198fa282163f7e168与模板SHA437b190b13f3d1031d3f5280ab9e02cfd2afd082bff374220e2e087de1fb3b57均匹配；JSON结构及模板非空白文本未变，两方canonical完整提示与执行补充未改。无需重做此前两树各941源码字节与环境核验。
+
+新派发正文仍为ZCode8951b0e305e9326dbb41ff8a2f16c4de5f1c35dc0163d19601b2daa08683029d（59804字节）、MiniMax65104b0ce095ed1c163d16645cc408c8798bf3bb7fd8fc5132494c82f8eea65f（59859字节）。旧完整prompt前缀、旧input-manifest33de、完整范围/原验收、盲审/独占资源及正常检查边界维持。
+
+未修改文件，未运行安装、产品、测试、API或GUI，未读取peer模型任务状态或报告。本结论仅为准备材料核验，不是产品或两指定模型Pass。

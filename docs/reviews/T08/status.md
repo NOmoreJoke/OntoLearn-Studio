@@ -146,3 +146,14 @@ Goal工具实际回执：已调用 `update_goal(status="blocked")` 并返回bloc
 独立准备核验1暂不通过，发现源码快照扩展名可能被静态工具扫描及历史成功日志表述过宽；原意见与旧manifest保留包外。已改23份快照为数据后缀、原字节不变，并明确679/691/706仅摘要/hash而717有完整成功日志。复核2明确准备包通过，100项输入/来源、完整范围、两提示同正文和原门一致；见dual-review-preparation-review-1.md、-2.md及receipt.json。
 
 随后暂存发现CSV换行规范化及原PRD硬换行被当新空白；仅给本包inputs新增归档属性以保全原字节，未改产品配置。实际新增字节问题触发独立增量复核3并明确通过，101项工作区/暂存blob/manifest一致；原材料复核2与其4d85清单保留。当前input-manifest SHA256 `33deedd2aaeb18852d513bef4d46ab047a27ded380d7fff9ef03e3eb9e9ba317`。定向新文档/JSON Prettier通过，只做材料核验；产品/旧manifest未改，未运行产品测试、probe、API或GUI。实际指定任务/设置/报告仍不存在，待root短创建lease；准备通过不等于产品/指定双审/发布通过，原Goal保持blocked。
+
+
+## 物理独立审查树setup与完整派发补充（2026-10-22）
+
+总控真实创建T08-zcode-review-93516fa与T08-minimax-review-93516fa，均detached reviewHead5b64bfea；stage已传播de15保护AGENTS，保持M不stage。本聊天仅setup owner，两树npm ci --ignore-scripts与uv sync --frozen实际均exit0，依赖/锁未改，环境及editable/contract来源各自独占。每树941tracked字节与固定Git对象一致，除AGENTS获准政策覆盖；source25/旧input manifest33de及原prompt未变。
+
+新完整派发正文为旧完整role prompt原字节前缀加精确实际workspace/报告/资源、当前完整政策及执行补充，全部范围/原验收/历史失败与关闭保留。明确允许必要普通原check及既有受控child/SQLite/worker平台回归，不泛禁原suite、不扩被拒HOLD物理研究或新增native/API票。盲审禁peer本轮发现读取；metadata/raw/失败保持，不删除或ignore求绿。原owner未执行产品检查/API/GUI、未创建任务。
+
+中央新材料初次仅两格式告警，修正后独立复核2通过；见independent-review-roots-20261022/root-readiness-receipt.json及复核原件。ZCode完整正文59804B/SHA8951b0e3…；MiniMax59859B/SHA65104b0c…，精确路径/全文/hash/原check与source证明齐备，待root预检及短创建lease，不预填指定Pass或恢复Goal。
+
+同期总控请求T02 B草稿依赖事实回报，已在docs/iterations/T08/T02-request-B-draft-interface-response-20261022.md给固定935ref/7源码SHA、私有draft/codec/session/receipt与文本安全/真实未验边界。独立事实复核指出上下文字段位置一句不准，已修为localReceipts保存收据、同级inputContext保存上下文；修前原件/意见保留，复核2通过。仅可作接口设计/审查引用，不批准消费未批T08源码或声称T02 C5/真实API闭环通过。
