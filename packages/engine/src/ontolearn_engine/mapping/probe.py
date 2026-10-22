@@ -6,13 +6,20 @@ A successful probe is not a registered mapping capability or platform acceptance
 
 import io
 import json
+import socket
 import zipfile
+from contextlib import contextmanager
+from importlib import import_module
 from importlib.metadata import version
 from xml.etree.ElementTree import SubElement, tostring
 
 from ontolearn_engine.mapping.plan import Binding, Mapping, preview
 from ontolearn_engine.mapping.source import (
     MAX_BYTES,
+    MAX_CELL,
+    MAX_COLUMNS,
+    MAX_EXPANDED,
+    MAX_ROWS,
     SourceError,
     parse_csv,
     parse_xlsx,
@@ -57,7 +64,7 @@ def _variant(
     return output.getvalue()
 
 
-def run() -> dict:
+def _legacy_cases() -> dict:
     from openpyxl import Workbook
 
     versions = {name: version(name) for name in ("openpyxl", "et-xmlfile", "defusedxml")}
@@ -179,6 +186,182 @@ def run() -> dict:
         "cases": cases,
         "registeredBusinessCapability": False,
     }
+
+
+@contextmanager
+def _socket_guard():
+    """Count and refuse attempts during fixed parsing; never call the network."""
+    names = ("socket", "create_connection", "getaddrinfo")
+    originals = {name: getattr(socket, name) for name in names}
+    calls = dict.fromkeys(names, 0)
+
+    def forbidden(name):
+        def reject(*_args, **_kwargs):
+            calls[name] += 1
+            raise RuntimeError("MAPPING_PROBE_NETWORK_ATTEMPT")
+
+        return reject
+
+    try:
+        for name in names:
+            setattr(socket, name, forbidden(name))
+        yield calls
+    finally:
+        for name, original in originals.items():
+            setattr(socket, name, original)
+
+
+def _external_workbook(reference: str) -> bytes:
+    """The two fixed synthetic OOXML inputs; no paths or values from callers."""
+    ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    rels = "http://schemas.openxmlformats.org/package/2006/relationships"
+    docrel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    first = '<c r="A2" t="inlineStr"><is><t>001</t></is></c>'
+    if reference == "external-cached-formula":
+        second = (
+            '<c r="B2" t="str"><f>WEBSERVICE("https://example.invalid/ref")</f>'
+            "<v>只读已保存值</v></c>"
+        )
+        links = ""
+    elif reference == "external-hyperlink":
+        second = '<c r="B2" t="inlineStr"><is><t>显示文本</t></is></c>'
+        links = f'<hyperlinks><hyperlink xmlns:r="{docrel}" ref="B2" r:id="rId1"/></hyperlinks>'
+    else:
+        raise RuntimeError("MAPPING_PROBE_FIXED_CASE_INVALID")
+    header = (
+        '<row r="1"><c r="A1" t="inlineStr"><is><t>id</t></is></c>'
+        '<c r="B1" t="inlineStr"><is><t>name</t></is></c></row>'
+    )
+    items = {
+        "[Content_Types].xml": (
+            '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+            '<Default Extension="rels" '
+            'ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+            '<Default Extension="xml" ContentType="application/xml"/>'
+            '<Override PartName="/xl/workbook.xml" '
+            'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+            '<Override PartName="/xl/worksheets/sheet1.xml" '
+            'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+            "</Types>"
+        ),
+        "_rels/.rels": (
+            f'<Relationships xmlns="{rels}"><Relationship Id="rId1" '
+            f'Type="{docrel}/officeDocument" Target="xl/workbook.xml"/></Relationships>'
+        ),
+        "xl/workbook.xml": (
+            f'<workbook xmlns="{ns}" xmlns:r="{docrel}">'
+            '<sheets><sheet name="设备" sheetId="1" r:id="rId1"/></sheets></workbook>'
+        ),
+        "xl/_rels/workbook.xml.rels": (
+            f'<Relationships xmlns="{rels}"><Relationship Id="rId1" '
+            f'Type="{docrel}/worksheet" Target="worksheets/sheet1.xml"/></Relationships>'
+        ),
+        "xl/worksheets/sheet1.xml": (
+            f'<worksheet xmlns="{ns}"><sheetData>{header}'
+            f'<row r="2">{first}{second}</row></sheetData>{links}</worksheet>'
+        ),
+    }
+    if reference == "external-hyperlink":
+        items["xl/worksheets/_rels/sheet1.xml.rels"] = (
+            f'<Relationships xmlns="{rels}"><Relationship Id="rId1" '
+            f'Type="{docrel}/hyperlink" Target="https://example.invalid/ref" '
+            'TargetMode="External"/></Relationships>'
+        )
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w") as archive:
+        for name, value in items.items():
+            info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            archive.writestr(info, value.encode())
+    return output.getvalue()
+
+
+def _boundary_cases(calls: dict) -> dict:
+    evidence = {}
+    for name, value in (
+        ("external-cached-formula", "只读已保存值"),
+        ("external-hyperlink", "显示文本"),
+    ):
+        table = parse_xlsx(_external_workbook(name), sheet="设备")
+        cells = [cell.text for cell in table.rows[0].cells]
+        _require(cells == ["001", value], "EXTERNAL_REFERENCE_VALUE_MISMATCH")
+        _require(not any(calls.values()), "MAPPING_PROBE_NETWORK_ATTEMPT")
+        evidence[name] = {
+            "cells": cells,
+            "code": "",
+            "sheet": table.sheet,
+            "row": table.rows[0].number,
+            "column": 2,
+            "socketCalls": dict(calls),
+        }
+    csv_cases = (
+        ("csv-file-limit-located", b"x" * (MAX_BYTES + 1), "SOURCE_LIMIT", "", 0, 0),
+        (
+            "csv-column-limit-located",
+            (",".join(f"c{i}" for i in range(MAX_COLUMNS + 1)) + "\n").encode(),
+            "SOURCE_LIMIT",
+            "CSV",
+            1,
+            0,
+        ),
+        (
+            "csv-cell-limit-located",
+            ("id\n" + "x" * (MAX_CELL + 1) + "\n").encode(),
+            "INVALID_CELL",
+            "CSV",
+            2,
+            1,
+        ),
+        (
+            "csv-row-limit-located",
+            ("id\n" + "x\n" * (MAX_ROWS + 1)).encode(),
+            "SOURCE_LIMIT",
+            "CSV",
+            MAX_ROWS + 2,
+            0,
+        ),
+    )
+    for name, data, code, sheet, row, column in csv_cases:
+        try:
+            parse_csv(data)
+        except SourceError as error:
+            issue = error.issue
+            _require(
+                (issue.code, issue.sheet, issue.row, issue.column) == (code, sheet, row, column),
+                "CSV_BOUNDARY_LOCATION_MISMATCH",
+            )
+            _require(not any(calls.values()), "MAPPING_PROBE_NETWORK_ATTEMPT")
+            evidence[name] = {
+                "cells": [],
+                "code": issue.code,
+                "sheet": issue.sheet,
+                "row": issue.row,
+                "column": issue.column,
+                "socketCalls": dict(calls),
+            }
+        else:
+            raise RuntimeError("CSV_BOUNDARY_REFUSAL_MISSING")
+    return evidence
+
+
+def run() -> dict:
+    # Dependency import is not a network-attempt measurement. The guard covers
+    # all fixed parsing and input construction, including the six new cases.
+    import_module("openpyxl")
+    with _socket_guard() as calls:
+        result = _legacy_cases()
+        _require(not any(calls.values()), "MAPPING_PROBE_NETWORK_ATTEMPT")
+        evidence = _boundary_cases(calls)
+        result["cases"].update({name: row["code"] or "passed" for name, row in evidence.items()})
+        result["boundaryEvidence"] = evidence
+        result["boundaryVersion"] = 1
+        result["limits"] = {
+            "maxBytes": MAX_BYTES,
+            "maxExpanded": MAX_EXPANDED,
+            "maxRows": MAX_ROWS,
+            "maxColumns": MAX_COLUMNS,
+            "maxCell": MAX_CELL,
+        }
+    return result
 
 
 def main() -> None:

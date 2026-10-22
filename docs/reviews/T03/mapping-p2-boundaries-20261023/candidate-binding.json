@@ -1,0 +1,91 @@
+{
+  "format": "T03-P2-candidate-binding/1",
+  "recordedUtc": "2026-10-22T18:48:05.616631+00:00",
+  "baseCommit": "30319412daf8ae4745987babf7bbed93c53b6b42",
+  "branch": "fix/T03-mapping-p2-boundaries",
+  "sourceIdentities": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/probe.py",
+      "bytes": 13911,
+      "sha256": "219d65813b0f77f2b5f60952fab4ad45007ca4290a59b40031bc3f15062b20bb"
+    },
+    {
+      "path": "packages/engine/tests/test_mapping_entrypoint.py",
+      "bytes": 5647,
+      "sha256": "30d2abe60a94b85d31801411a77ec8f510098d8eccea04cdd7a6312c17fca862"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/source.py",
+      "bytes": 10399,
+      "sha256": "93bf09e10723c8522f1e9fbb8e170ffece596143c5e00ddcf7be950d15e1ddc8"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/mapping/plan.py",
+      "bytes": 14608,
+      "sha256": "cea9ca3264fcf54b1f3714057f4b085aa6d821670c37a5bf3fcc01c934af75a0"
+    },
+    {
+      "path": "packages/engine/entrypoint.py",
+      "bytes": 1232,
+      "sha256": "7653ddf2d0dda19f1a12b1ed93afa694f722f84d7ec95d979d33268d946afc47"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 23393,
+      "sha256": "9f5b6d2b93d994a3e4f8a46ce5cccae99d4e024ea7531ab62dd8e85d6aa1152e"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 224331,
+      "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "55674b4f13c4185b5db8629db363aed3e506df836ed0d7e67dcfe7db8154ea63"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "bytes": 1349,
+      "sha256": "c53d704b6cc6ffacde1a1a9c40717bfae32f743cc518a5e3a0729aa2e8ce7341"
+    },
+    {
+      "path": "apps/desktop/electron-builder.yml",
+      "bytes": 389,
+      "sha256": "95b993d58a6dc5847e103b43ba556ecee149417fe848f44ad2c6b34268e894d2"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 15147,
+      "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+    }
+  ],
+  "allowedProductPaths": [
+    "packages/engine/src/ontolearn_engine/mapping/probe.py",
+    "packages/engine/tests/test_mapping_entrypoint.py"
+  ],
+  "runtimeState": "HEAD30319412 plus exact two-product path contents shown here; candidate commit comes after these observations",
+  "actualVerifierRawReceipt": {
+    "path": "build/mapping-p2-boundaries-20261023/verification-20261022T184720Z-d7249835/receipt.json",
+    "bytes": 28825,
+    "sha256": "5ad2ea0f5dd16463cba097b60127188ba7d41eff5b5e2b4ca138d8c2d37a076f"
+  },
+  "oracle": {
+    "path": "docs/reviews/T03/mapping-p2-boundaries-20261023/fixed-probe-v2-expected.json",
+    "bytes": 3123,
+    "sha256": "e7a8c0d3e0e9152d56da781a1705837e7987ac44cc4e450a8707293e2641eebc"
+  },
+  "optimizedSource": {
+    "path": "build/mapping-p2-boundaries-20261023/commands/20261022T184730Z-source-probe-optimized-831e5af3/stdout.bin",
+    "bytes": 2447,
+    "sha256": "da7c4574bbe6e7e6ea82dd79032e3132a676710a7eac397403e32971c0ca492d"
+  },
+  "optimizedSourceExactPreauthoredExpected": true,
+  "checks": {
+    "check": "exit0; TS638/Python1116",
+    "verifySources": "exit0;12 archived sources",
+    "packageDir": "exit0; new isolated actual mac-arm64 bundle",
+    "actualPackageVerification": "exit0; source/package fixed17, three rejected args"
+  },
+  "boundary": "no GUI, nativecaller, DB, I05, SDK, target-platform or registered-business acceptance"
+}
