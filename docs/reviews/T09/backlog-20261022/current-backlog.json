@@ -1,0 +1,708 @@
+{
+  "schemaVersion": 1,
+  "task": "T09",
+  "date": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "inventoryType": "complete implementation, technical stage, supersession and nonimplementation evidence backlog; not runtime/acceptance approval",
+  "authorizationSource": {
+    "reportedVerifiedByController": true,
+    "chat": "01a1628e-1220-7fb1-9135-97cbea4a3ed5",
+    "turn": "01a162dc-942d-7c00-8fcf-72413e57244e",
+    "humanMessage": "01a162dc-945e-7700-bd45-ad6302d1712c",
+    "text": "把之前没有通过zcode和minimax的审查都补上",
+    "receiptBoundary": "T09 received controller authorization relay; does not claim to have independently re-read the human source in this inventory turn"
+  },
+  "observedParentGoal": "get_goal actually returned blocked this turn; objective unchanged",
+  "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "worktreeInventory": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+      "branch": "feature/weekly-t09-learning-baselines",
+      "head": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+      "gitStatus": [" M AGENTS.md"]
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence",
+      "branch": "feature/weekly-t09-stage-evidence",
+      "head": "9a1baa74f2b6482106eb7c8090efef7f7ba065e2",
+      "gitStatus": [" M AGENTS.md"]
+    }
+  ],
+  "t09TrackedWorktreesFound": 2,
+  "t09LocalBranchesFound": 2,
+  "rows": [
+    {
+      "id": "T09-H1",
+      "title": "原内容、固定基线、reset与纯服务实现",
+      "kind": "historical-implementation",
+      "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productCommit": "51cdc0e9d138c98cdd4ace865074a71883657a68",
+      "productTree": "1472d1f8b792dd15fd4c2ea666ea2459d34c6a37",
+      "processCommit": "1eee9efb3b4cb3752470d72af614abdbae757ac0",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+      "branch": "feature/weekly-t09-learning-baselines",
+      "originalOwner": "T09原开发聊天01a15bba-1133-7933-9c6f-156f70f60c60",
+      "exclusiveWriteScope": [
+        "content/learning/",
+        "tests/fixtures/product-baselines/",
+        "scripts/verify-product-baselines.py",
+        "packages/engine/src/ontolearn_engine/learning/{__init__,baselines,service}.py",
+        "packages/engine/tests/test_learning_{baselines,service}.py",
+        "docs/iterations/T09/",
+        "docs/reviews/T09/"
+      ],
+      "observedValidationAndAcceptance": {
+        "status": "历史有界验证/内审通过；非产品域执行",
+        "baseline": "17文件/50案例计划；不是50域用例通过",
+        "specialPytest": 35,
+        "fullCheck": {
+          "vitest": 630,
+          "pytest": 1087,
+          "exitCode": 0
+        },
+        "internalReview": {
+          "commit": "51cdc0e9d138c98cdd4ace865074a71883657a68",
+          "path": "docs/reviews/T09/independent-review.md",
+          "bytes": 2990,
+          "sha256": "f39e4512a9593dcd1d1211827bf13c7f737b81f2ed201c09ffd91fd43a665368",
+          "gitBlob": "90e4e6f3771f33ae60ea816eeebdd108e117fc79"
+        },
+        "verification": {
+          "commit": "51cdc0e9d138c98cdd4ace865074a71883657a68",
+          "path": "docs/reviews/T09/evidence/verification-summary.json",
+          "bytes": 3972,
+          "sha256": "0acc4fafe1e334118afdb440295ca14d755babaff0494035aeeb087a9f789fa1",
+          "gitBlob": "3e5a6d0d6d501e05e64e30434b79e939303b4f90"
+        }
+      },
+      "designatedReviews": {
+        "ZCode": {
+          "requiredModel": "GLM-5.3",
+          "requiredReasoning": "max (highest)",
+          "requiredPermission": "yolo",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        },
+        "MiniMax": {
+          "requiredModel": "M3.1-Flash",
+          "requiredReasoning": "xhigh",
+          "requiredPermission": "bypassPermissions",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        }
+      },
+      "previousDesignatedPassExists": false,
+      "oldPassInvalidation": "无本线指定Pass可失效；旧内审/旧测试仅绑定各自候选，不能替代后继候选验证或指定双审",
+      "historicallyWithdrawn": false,
+      "successor": {
+        "product": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+        "then": "76596656908ed84e577e8202a602e3256d5febcc",
+        "relationship": "实际代码修复后继，非历史撤回/无代码版本；完整S1必须覆盖本阶段保留实现。"
+      },
+      "readinessGaps": [
+        "旧seed包装ID随后被真实I04联验发现canonical不合法；不得用于后继产品导入",
+        "UI、实际I04通道、stage等当时尚未实现",
+        "T01受信attempt/最高辅助与跨attempt来源、完成时原子持久化ledger、实际当前输入/epoch/祖先、一致读及消费CAS接口仍未获本线批准采用",
+        "T00批准命名业务桥与各领域真实adapter，正式App/bridge/生命周期接线",
+        "课程及固定输入入包、离线无模型路径、T08真实完整代做和T10实际学习报告联验",
+        "Windows/macOS完整离线案例与原生/包验收、至少5位非开发新手及80%原标准",
+        "同版指定双审、全部意见处置、push/PR/实际CI/正常合并develop/远端核验与父57P0门"
+      ],
+      "nextIndependentAction": "保留固定原件与已知失败；在完整S1双审中复查保留内容及历史问题处置，不把旧失败包装ID用于运行。"
+    },
+    {
+      "id": "T09-H2",
+      "title": "seed包装ID修复与真实批准I04七项联验",
+      "kind": "historical-implementation",
+      "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+      "productTree": "a3b6008a56394789cb1328eb781f1ddead25a4d9",
+      "processCommit": "6f6264bd6c090e54abf1919157e1a1127c8916ba",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+      "branch": "feature/weekly-t09-learning-baselines",
+      "originalOwner": "T09原开发聊天01a15bba-1133-7933-9c6f-156f70f60c60",
+      "exclusiveWriteScope": [
+        "packages/engine/src/ontolearn_engine/learning/baselines.py",
+        "packages/engine/tests/test_learning_jobstore_integration.py",
+        "docs/iterations/T09/",
+        "docs/reviews/T09/"
+      ],
+      "observedValidationAndAcceptance": {
+        "status": "历史修后有界验证/内审通过",
+        "firstRun": "4失败/3通过原件保留，不能计Pass",
+        "specialPytest": {
+          "newRealI04": 7,
+          "allLearning": 42
+        },
+        "fullCheck": {
+          "vitest": 630,
+          "pytest": 1094,
+          "exitCode": 0
+        },
+        "internalReview": {
+          "commit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+          "path": "docs/reviews/T09/jobstore-integration-review.md",
+          "bytes": 2166,
+          "sha256": "dfcbc64a1ad97391b52ff377594884ddfdb41b6fb86d1691f65f5914052a3b6f",
+          "gitBlob": "78c690a925f4e7f9238d5382a24e946f49ee2fba"
+        },
+        "verification": {
+          "commit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+          "path": "docs/reviews/T09/evidence/jobstore-verification.json",
+          "bytes": 2781,
+          "sha256": "7a30b974c14a1c11449a965450c29279c566cfa0d0f47c029208d6bfadc5d96d",
+          "gitBlob": "41e2a92b89e0f958831e197752f4c15a9172ec6e"
+        },
+        "boundary": "真实stdio/test.atomic基础设施与重开通过，不是正式领域/人类业务确认"
+      },
+      "designatedReviews": {
+        "ZCode": {
+          "requiredModel": "GLM-5.3",
+          "requiredReasoning": "max (highest)",
+          "requiredPermission": "yolo",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        },
+        "MiniMax": {
+          "requiredModel": "M3.1-Flash",
+          "requiredReasoning": "xhigh",
+          "requiredPermission": "bypassPermissions",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        }
+      },
+      "previousDesignatedPassExists": false,
+      "oldPassInvalidation": "无本线指定Pass可失效；旧内审/旧测试仅绑定各自候选，不能替代后继候选验证或指定双审",
+      "historicallyWithdrawn": false,
+      "successor": {
+        "product": "76596656908ed84e577e8202a602e3256d5febcc",
+        "relationship": "新增独立UI的累积后继；seed修复/测试保留字节不变。"
+      },
+      "readinessGaps": [
+        "UI随后新增，旧873核验不覆盖UI；内容/reducer随S1保留",
+        "T01受信attempt/最高辅助与跨attempt来源、完成时原子持久化ledger、实际当前输入/epoch/祖先、一致读及消费CAS接口仍未获本线批准采用",
+        "T00批准命名业务桥与各领域真实adapter，正式App/bridge/生命周期接线",
+        "课程及固定输入入包、离线无模型路径、T08真实完整代做和T10实际学习报告联验",
+        "Windows/macOS完整离线案例与原生/包验收、至少5位非开发新手及80%原标准",
+        "同版指定双审、全部意见处置、push/PR/实际CI/正常合并develop/远端核验与父57P0门"
+      ],
+      "nextIndependentAction": "在S1完整新任务中核对ID修复、四套输入和三负例、首次失败/修后原件及基础设施边界。"
+    },
+    {
+      "id": "T09-S1",
+      "title": "完整离线内容、reducer、I04基础设施与独立学习页面",
+      "kind": "current-retained-implementation",
+      "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productCommit": "76596656908ed84e577e8202a602e3256d5febcc",
+      "productTree": "8b646570108026a8deabe8330c548cab0280122d",
+      "processCommit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+      "branch": "feature/weekly-t09-learning-baselines",
+      "originalOwner": "T09原开发聊天01a15bba-1133-7933-9c6f-156f70f60c60",
+      "exclusiveWriteScope": [
+        "content/learning/",
+        "tests/fixtures/product-baselines/",
+        "scripts/verify-product-baselines.py",
+        "packages/engine/src/ontolearn_engine/learning/{__init__,baselines,service}.py",
+        "packages/engine/tests/test_learning_{baselines,service}.py",
+        "docs/iterations/T09/",
+        "docs/reviews/T09/",
+        "packages/engine/tests/test_learning_jobstore_integration.py",
+        "apps/desktop/src/renderer/src/learning/",
+        "tests/unit/learning-*.test.ts"
+      ],
+      "observedValidationAndAcceptance": {
+        "status": "当前S1范围验证/独立内审通过；指定外审0；父验收未完成",
+        "productBaseDiffPaths": 55,
+        "fixedSourceDataTestPaths": 32,
+        "specialPytest": 42,
+        "fullCheck": {
+          "vitest": 664,
+          "learningPure": 18,
+          "learningHeadless": 16,
+          "pytest": 1094,
+          "exitCode": 0
+        },
+        "internalReviews": [
+          {
+            "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+            "path": "docs/reviews/T09/independent-review.md",
+            "bytes": 2990,
+            "sha256": "f39e4512a9593dcd1d1211827bf13c7f737b81f2ed201c09ffd91fd43a665368",
+            "gitBlob": "90e4e6f3771f33ae60ea816eeebdd108e117fc79"
+          },
+          {
+            "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+            "path": "docs/reviews/T09/jobstore-integration-review.md",
+            "bytes": 2166,
+            "sha256": "dfcbc64a1ad97391b52ff377594884ddfdb41b6fb86d1691f65f5914052a3b6f",
+            "gitBlob": "78c690a925f4e7f9238d5382a24e946f49ee2fba"
+          },
+          {
+            "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+            "path": "docs/reviews/T09/learning-ui-independent-review.md",
+            "bytes": 10807,
+            "sha256": "c9816686940eece6cf4334fc7ba3f3cb61a80f88186074ce93ec9546259e250d",
+            "gitBlob": "0986eba704fa47dcaf9fd98824312ece873b169f"
+          }
+        ],
+        "verification": {
+          "commit": "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+          "path": "docs/reviews/T09/evidence/learning-ui-verification.json",
+          "bytes": 6987,
+          "sha256": "0cf7c7af56db8b6dad5d05b0b44cb18592f71b1cb2803e8b6a901e2357256c23",
+          "gitBlob": "bb2b1407529843039de43b76b883cc9472573d2e"
+        },
+        "fullLog": {
+          "commit": "74b17a43fd51b0fa89d810c664d185583a140e48",
+          "path": "docs/reviews/T09/evidence/npm-check-ui-final.txt",
+          "bytes": 5314,
+          "sha256": "210d3d9bc7254e059f9bc031988226f946251f9d359a577b8a54470a996241e5",
+          "gitBlob": "645936a4a0e8006c960966d7e66b61ede08a12ca"
+        },
+        "parentAcceptance": "尚未正式App/bridge/实际领域/持久账本/入包/平台/真人验收；所有门保留"
+      },
+      "designatedReviews": {
+        "ZCode": {
+          "requiredModel": "GLM-5.3",
+          "requiredReasoning": "max (highest)",
+          "requiredPermission": "yolo",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        },
+        "MiniMax": {
+          "requiredModel": "M3.1-Flash",
+          "requiredReasoning": "xhigh",
+          "requiredPermission": "bypassPermissions",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        }
+      },
+      "previousDesignatedPassExists": false,
+      "oldPassInvalidation": "无本线指定Pass可失效；旧内审/旧测试仅绑定各自候选，不能替代后继候选验证或指定双审",
+      "historicallyWithdrawn": false,
+      "successor": {
+        "product": "12699cc0f536f5875e8b021349b58c2c954145cc",
+        "relationship": "后继私有stage原型在另树新增三个文件，未取代/解冻/自动关闭S1；S1外审范围明确排除其实现。"
+      },
+      "readinessGaps": [
+        "已冻结两提示/106项manifest，待root短创建租约与逐任务真实设置读回",
+        "派发时须另附当前政策及固定ref物化映射；不可运行变化的物理过程HEAD冒充旧ref",
+        "T01受信attempt/最高辅助与跨attempt来源、完成时原子持久化ledger、实际当前输入/epoch/祖先、一致读及消费CAS接口仍未获本线批准采用",
+        "T00批准命名业务桥与各领域真实adapter，正式App/bridge/生命周期接线",
+        "课程及固定输入入包、离线无模型路径、T08真实完整代做和T10实际学习报告联验",
+        "Windows/macOS完整离线案例与原生/包验收、至少5位非开发新手及80%原标准",
+        "同版指定双审、全部意见处置、push/PR/实际CI/正常合并develop/远端核验与父57P0门"
+      ],
+      "nextIndependentAction": "按原round-1精确字节准备独立审查工作区映射/当前政策addendum；获root短租约后创建两个完整新任务。",
+      "fixedInputs": {
+        "input-manifest.json": {
+          "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "path": "docs/reviews/T09/round-1/input-manifest.json",
+          "bytes": 42846,
+          "sha256": "11171ff00c9ef67ad11dc55ab80384ad694e3219282dbeb654e4677a0223c774",
+          "gitBlob": "920fd146f1b9ba690c02344464fc9dfb563adccb"
+        },
+        "zcode-glm53-input.md": {
+          "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "path": "docs/reviews/T09/round-1/zcode-glm53-input.md",
+          "bytes": 21006,
+          "sha256": "3739457dd391a75e67358ffc77492fcde774f667e85c9ca8c7014ab3b326b5e8",
+          "gitBlob": "75fddc12b88ac7e054e57e26a559674ec2209854"
+        },
+        "minimax-m31flash-input.md": {
+          "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "path": "docs/reviews/T09/round-1/minimax-m31flash-input.md",
+          "bytes": 21017,
+          "sha256": "f13421911c6dd1b72898dbb145ba10c98f4f20879971cbcbc2a574a3f5b88f16",
+          "gitBlob": "842694eecca8d1b277e45341c998821ebbd03bd2"
+        },
+        "freeze-receipt.json": {
+          "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "path": "docs/reviews/T09/round-1/freeze-receipt.json",
+          "bytes": 4242,
+          "sha256": "207d6634d6b02cf3d69735440c90608646d1509f9324489d4916c88c7557d7ec",
+          "gitBlob": "0b3492c6df9c40c9e885c33e851757a73b4b95d3"
+        },
+        "verification-and-history-index.md": {
+          "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "path": "docs/reviews/T09/round-1/verification-and-history-index.md",
+          "bytes": 7470,
+          "sha256": "1b77a37904550bc84e0207137df6bf86fd93449cf945179291f1db334a165d54",
+          "gitBlob": "edaaf174f0ab648e4ffdc71b80c2b92b7334f7e3"
+        },
+        "prompt-preparation-review.md": {
+          "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "path": "docs/reviews/T09/round-1/prompt-preparation-review.md",
+          "bytes": 7586,
+          "sha256": "44b78db73d87a78735d7f6d33632e6098d6530cce9edd6109c7d64a6a5cd4189",
+          "gitBlob": "c9ad346bf27c2e2fd5be58f8d2b79f6c6b0c6573"
+        }
+      },
+      "evidenceProcessHistory": [
+        "74b17a43fd51b0fa89d810c664d185583a140e48",
+        "d96924e715a1b2139a75b70aea40fc30ae1129fe",
+        "72aa83a80a973a3edeb62ed95518bf1a22178985"
+      ],
+      "fixedRefDispatchExceptions": [
+        {
+          "path": "docs/iterations/T09/handoff.md",
+          "productRef": "76596656908ed84e577e8202a602e3256d5febcc",
+          "laterPhysicalRef": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "meaning": "product-diff项按manifest的productCommit取原字节；另一个existing-process-evidence角色按其d969 ref读取，不覆盖/混淆"
+        },
+        {
+          "path": "docs/reviews/T09/recovery.json",
+          "productRef": "76596656908ed84e577e8202a602e3256d5febcc",
+          "laterPhysicalRef": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "meaning": "product-diff项按manifest的productCommit取原字节；另一个existing-process-evidence角色按其d969 ref读取，不覆盖/混淆"
+        },
+        {
+          "path": "docs/reviews/T09/status.md",
+          "productRef": "76596656908ed84e577e8202a602e3256d5febcc",
+          "laterPhysicalRef": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+          "meaning": "product-diff项按manifest的productCommit取原字节；另一个existing-process-evidence角色按其d969 ref读取，不覆盖/混淆"
+        }
+      ],
+      "notASeparateCandidate": "UI是765提交新增8路径；当前S1完整55路径审查包含H1/H2，不能缩为这8路径。原首失败/中间Ui/内审历史全保留。"
+    },
+    {
+      "id": "T09-PRIVATE-STAGE",
+      "title": "私有只读多阶段证据绑定原型（未登记为S2）",
+      "kind": "current-retained-technical-implementation",
+      "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productCommit": "12699cc0f536f5875e8b021349b58c2c954145cc",
+      "productTree": "813af592a58396bf0a90a7f9f22076a5e5862266",
+      "processCommit": "9a1baa74f2b6482106eb7c8090efef7f7ba065e2",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence",
+      "branch": "feature/weekly-t09-stage-evidence",
+      "originalOwner": "T09原开发聊天01a15bba-1133-7933-9c6f-156f70f60c60",
+      "exclusiveWriteScope": [
+        "packages/engine/src/ontolearn_engine/learning/stages.py",
+        "packages/engine/tests/test_learning_stages.py",
+        "docs/iterations/T09/stage-evidence-contract.md",
+        "docs/reviews/T09/"
+      ],
+      "observedValidationAndAcceptance": {
+        "status": "当前私有原型验证/独立内审通过；指定外审0；不授予产品完成",
+        "incrementalDiffPaths": 3,
+        "specialPytest": 80,
+        "newActualI04Probes": 2,
+        "fullCheck": {
+          "vitest": 648,
+          "headlessSkipped": 16,
+          "pytest": 1174,
+          "exitCode": 0
+        },
+        "internalReview": {
+          "commit": "e6519932b0b20fd1862dcd6f038a621fce8177f5",
+          "path": "docs/reviews/T09/stage-evidence-independent-review.md",
+          "bytes": 10498,
+          "sha256": "5d10a6296dd5c90d88ba3182fac821c9d6950dd09981fcf71edb45d73c15ad3f",
+          "gitBlob": "4af29783e6ca17b3772cefabe279c2b1de52dcae"
+        },
+        "verification": {
+          "commit": "e6519932b0b20fd1862dcd6f038a621fce8177f5",
+          "path": "docs/reviews/T09/evidence/stage-evidence-verification.json",
+          "bytes": 7374,
+          "sha256": "a3528b3dec8ee6e4a18618ab79ad64d05d88d83c2b5dd1253b9abe51befc91ec",
+          "gitBlob": "e9df04fb76f40cb7adff22d93fffe59d3ef20efb"
+        },
+        "fullLog": {
+          "commit": "e6519932b0b20fd1862dcd6f038a621fce8177f5",
+          "path": "docs/reviews/T09/evidence/npm-check-stage-final.txt",
+          "bytes": 5479,
+          "sha256": "842822b3029753ec9a226ca79dedb184b11780b270e95a5e0d20299b240fe9a9",
+          "gitBlob": "c56bdba90268aa046700d1b5fb67d72b31a6cd07"
+        },
+        "boundary": "completion/plan/ledger为测试内存，test.read回显给定rows；不算T01持久化或SPARQL/SHACL；不写Store/公共contract或接LearningService"
+      },
+      "designatedReviews": {
+        "ZCode": {
+          "requiredModel": "GLM-5.3",
+          "requiredReasoning": "max (highest)",
+          "requiredPermission": "yolo",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        },
+        "MiniMax": {
+          "requiredModel": "M3.1-Flash",
+          "requiredReasoning": "xhigh",
+          "requiredPermission": "bypassPermissions",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        }
+      },
+      "previousDesignatedPassExists": false,
+      "oldPassInvalidation": "无本线指定Pass可失效；旧内审/旧测试仅绑定各自候选，不能替代后继候选验证或指定双审",
+      "historicallyWithdrawn": false,
+      "successor": null,
+      "readinessGaps": [
+        "尚无本阶段完整双提示与固定输入manifest/工作区映射；须独立准备后获短创建lease",
+        "原型有界外审可先行，无须假装已接入T01；正式集成仍受T01/T00批准与领域依赖限制",
+        "T01受信attempt/最高辅助与跨attempt来源、完成时原子持久化ledger、实际当前输入/epoch/祖先、一致读及消费CAS接口仍未获本线批准采用",
+        "T00批准命名业务桥与各领域真实adapter，正式App/bridge/生命周期接线",
+        "课程及固定输入入包、离线无模型路径、T08真实完整代做和T10实际学习报告联验",
+        "Windows/macOS完整离线案例与原生/包验收、至少5位非开发新手及80%原标准",
+        "同版指定双审、全部意见处置、push/PR/实际CI/正常合并develop/远端核验与父57P0门"
+      ],
+      "nextIndependentAction": "独立冻结3文件增量及完整继承依赖上下文，准备同base/12699完整任务提示、全部失败/内审处置与精确process refs；不夹入S1当前两个任务。",
+      "localContinuationParent": "74b17a43fd51b0fa89d810c664d185583a140e48",
+      "approvedSharedBaseIsNotLocalParent": true,
+      "evidenceProcessHistory": [
+        "e6519932b0b20fd1862dcd6f038a621fce8177f5",
+        "a9ad87902b4b61b3660486fa904f0d6bf897fc54",
+        "0923232376e87822949f0313c5257b6cc892ca37",
+        "9a1baa74f2b6482106eb7c8090efef7f7ba065e2"
+      ],
+      "fixedImplementationFiles": [
+        {
+          "commit": "12699cc0f536f5875e8b021349b58c2c954145cc",
+          "path": "packages/engine/src/ontolearn_engine/learning/stages.py",
+          "bytes": 14136,
+          "sha256": "08fd02db01aea7a31806775c5b077efd70f431b5a10da753c72cd7925e4e3955",
+          "gitBlob": "e7e3fe399b858f1a45215c0e9cf9c422e1fe8359"
+        },
+        {
+          "commit": "12699cc0f536f5875e8b021349b58c2c954145cc",
+          "path": "packages/engine/tests/test_learning_stages.py",
+          "bytes": 27308,
+          "sha256": "8cda15cf6656ef5deae6c8530b1f14cde3eaac208b5fb03452fb853bba1cc855",
+          "gitBlob": "7355ac2d053a136b67c1fdf2e40b8da765dfe2a3"
+        },
+        {
+          "commit": "12699cc0f536f5875e8b021349b58c2c954145cc",
+          "path": "docs/iterations/T09/stage-evidence-contract.md",
+          "bytes": 6602,
+          "sha256": "637daea093465952aab800e329317f31514325285077850b81589e5cdd1e4ce7",
+          "gitBlob": "01ad4253cce0eb63703b75adffc98c4f9a9d4890"
+        }
+      ],
+      "inheritedS1": "继承74b中的765产品字节；不含d969/72aa后流程提交；S1运行源32完全相同，但stage全check中的16 headless明确skip，不拿它替代原664证据。",
+      "historicalIntermediateCandidates": "首跑49通过/3失败；中间53、57通过，完成回执首跑55通过/1失败、第二次67通过/2失败、中间69通过，以及首次完整检查1163 Py只存原始日志，无独立冻结可发布候选SHA；均已被12699的80专项/1174 Py同版后继替代。保留失败和中间原件，不登记为指定Pass。"
+    },
+    {
+      "id": "T09-DESIGN-RECEIPT",
+      "title": "T01第4节stage完成账本设计对齐回执",
+      "kind": "documentation-only",
+      "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productCommit": null,
+      "productTree": null,
+      "processCommit": "9a1baa74f2b6482106eb7c8090efef7f7ba065e2",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-stage-evidence",
+      "branch": "feature/weekly-t09-stage-evidence",
+      "originalOwner": "T09原开发聊天01a15bba-1133-7933-9c6f-156f70f60c60",
+      "exclusiveWriteScope": [
+        "docs/reviews/T09/t01-stage-design-acceptance-r1.json",
+        "docs/reviews/T09/status.md"
+      ],
+      "observedValidationAndAcceptance": {
+        "status": "仅accept-design-alignment；无runtime adoption批准",
+        "receipt": {
+          "commit": "9a1baa74f2b6482106eb7c8090efef7f7ba065e2",
+          "path": "docs/reviews/T09/t01-stage-design-acceptance-r1.json",
+          "bytes": 2093,
+          "sha256": "75a8ce75517f2bf31f12402727aa40ecd6730b4b5c92daa4a93955f9a13669ad",
+          "gitBlob": "493f1d552c731d93f5dc45b12f3e40c847174750"
+        },
+        "implementationChanged": false,
+        "independentReview": "未见本回执单独独立内审报告；相关私有合同已在stage独立内审中审阅，不将其扩作T01实现内审/指定Pass"
+      },
+      "designatedReviews": {
+        "ZCode": {
+          "requiredModel": "GLM-5.3",
+          "requiredReasoning": "max (highest)",
+          "requiredPermission": "yolo",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        },
+        "MiniMax": {
+          "requiredModel": "M3.1-Flash",
+          "requiredReasoning": "xhigh",
+          "requiredPermission": "bypassPermissions",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        }
+      },
+      "previousDesignatedPassExists": false,
+      "oldPassInvalidation": "无本线指定Pass可失效；旧内审/旧测试仅绑定各自候选，不能替代后继候选验证或指定双审",
+      "historicallyWithdrawn": false,
+      "successor": null,
+      "readinessGaps": [
+        "非实现；T01实际能力仍需固定接口/真实完成ledger/CAS来源与批准",
+        "未对T01实际代码作本线验收"
+      ],
+      "nextIndependentAction": "在真实接口交付后由原owner核对，不从设计对齐推定运行通过；文档不伪作指定实现Pass。",
+      "relatedPrivateProduct": "12699cc0f536f5875e8b021349b58c2c954145cc",
+      "externalImplementationReviewEligibility": "not-an-implementation; retained evidence context for stage review"
+    },
+    {
+      "id": "T09-PLAN",
+      "title": "离线学习正式接线、平台与真人验收方案",
+      "kind": "plan-and-unimplemented-parent",
+      "approvedSharedBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productCommit": null,
+      "productTree": null,
+      "processCommit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines",
+      "branch": "feature/weekly-t09-learning-baselines",
+      "originalOwner": "T09原开发聊天01a15bba-1133-7933-9c6f-156f70f60c60",
+      "exclusiveWriteScope": [
+        "docs/iterations/T09/learning-ui-contract.md",
+        "docs/iterations/T09/user-acceptance.md",
+        "docs/iterations/T09/handoff.md"
+      ],
+      "observedValidationAndAcceptance": {
+        "status": "验收方案/接口需求保留；没有本线正式接线实现或真人结果",
+        "plans": [
+          {
+            "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+            "path": "docs/iterations/T09/learning-ui-contract.md",
+            "bytes": 3049,
+            "sha256": "0fb4982377c2904663e1f3ac625281a663d5cfaccefcdc368003eb23f96367ce",
+            "gitBlob": "c3ef3bd9055a2510fae873fcf29d249fe2cebf31"
+          },
+          {
+            "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+            "path": "docs/iterations/T09/user-acceptance.md",
+            "bytes": 1846,
+            "sha256": "58db452f5cdf3ed371ef9fe26f6eedc1cff998e2d4b22f63561bb6c96e310e4b",
+            "gitBlob": "882bebe66c64fad54108bd20c41be28a10f1bd9b"
+          },
+          {
+            "commit": "72aa83a80a973a3edeb62ed95518bf1a22178985",
+            "path": "docs/iterations/T09/handoff.md",
+            "bytes": 7526,
+            "sha256": "cf45274f1a297e1fbca66d9f447f10cbe56bed8ecead80af5d907eb7c5c159e5",
+            "gitBlob": "d59d55ce0ec320356190097e1d1414761de1f705"
+          }
+        ],
+        "internalReview": "方案上下文分别随内容/UI/stage内审；没有独立真人、平台或父产品通过报告",
+        "actualHumanParticipants": 0,
+        "formalPublicContractOrAppWiring": false
+      },
+      "designatedReviews": {
+        "ZCode": {
+          "requiredModel": "GLM-5.3",
+          "requiredReasoning": "max (highest)",
+          "requiredPermission": "yolo",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        },
+        "MiniMax": {
+          "requiredModel": "M3.1-Flash",
+          "requiredReasoning": "xhigh",
+          "requiredPermission": "bypassPermissions",
+          "actualTaskId": null,
+          "actualSessionId": null,
+          "actualSettingsReadback": null,
+          "actualReport": null,
+          "actualTerminal": null,
+          "conclusion": "未启动；未取得指定Pass"
+        }
+      },
+      "previousDesignatedPassExists": false,
+      "oldPassInvalidation": "无本线指定Pass可失效；旧内审/旧测试仅绑定各自候选，不能替代后继候选验证或指定双审",
+      "historicallyWithdrawn": false,
+      "successor": null,
+      "readinessGaps": [
+        "T01受信attempt/最高辅助与跨attempt来源、完成时原子持久化ledger、实际当前输入/epoch/祖先、一致读及消费CAS接口仍未获本线批准采用",
+        "T00批准命名业务桥与各领域真实adapter，正式App/bridge/生命周期接线",
+        "课程及固定输入入包、离线无模型路径、T08真实完整代做和T10实际学习报告联验",
+        "Windows/macOS完整离线案例与原生/包验收、至少5位非开发新手及80%原标准",
+        "同版指定双审、全部意见处置、push/PR/实际CI/正常合并develop/远端核验与父57P0门"
+      ],
+      "nextIndependentAction": "待批准owner接口/依赖和精确写面授权，沿原owner增量接线及实际验收；保留父完整交付积压，不永久排除未ready项。",
+      "externalImplementationReviewEligibility": "not-an-implementation-yet; new actual product candidate must be validated and independently dual-reviewed when implemented"
+    }
+  ],
+  "designatedModelActualTasksTotal": 0,
+  "designatedModelActualPassesTotal": 0,
+  "noHistoricalWithdrawalFound": true,
+  "reviewCoverageRule": "Current S1 new complete dual review must explicitly cover every retained H1/H2/UI implementation and historical dispositions; these rows are not deleted from backlog. Whether controller also requests historical-only tasks remains explicit scheduling, never inferred as an old pass. Private stage stays separately pending.",
+  "policy": {
+    "currentSources": [
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-learning-baselines/AGENTS.md",
+        "bytes": 15147,
+        "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md",
+        "bytes": 3172,
+        "sha256": "7b54d589d39bfe71c0f67d61c00995bb4d60b5156a74a6ae25ac69a2f491f5eb"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md",
+        "bytes": 16867,
+        "sha256": "567b6e7064bf123dac46742aefa57e06f6ed2fe87ceec5225c395049be888fc1"
+      }
+    ],
+    "currentDesktopPolicy": "User revoked quiet-desktop requirement; no user-timeslot/CLI-login prerequisite. Internal root short lease still required for shared CUA creation/settings verification. No current T09 lease; no new task/authflow created.",
+    "oldFrozenPromptAndManifest": "remain exact 72aa83a bytes; a future independently hashed current-policy/fixed-ref workspace addendum is allowed, no silent rewrite."
+  },
+  "verificationThisTurn": {
+    "staticGitJsonHashOnly": true,
+    "productTestsRun": false,
+    "productBuildRun": false,
+    "externalTasksStarted": false,
+    "newGoalCreated": false,
+    "goalStatusUpdated": false,
+    "pushOrPR": false
+  },
+  "limits": [
+    "No formal T09 parent acceptance, designated pass, CI/remote/merge/release is asserted.",
+    "Old no-GUI/user-timeslot wording in historical raw records describes that time only; it is not a current blocker.",
+    "T01/T00 receipt is historical scoped evidence; this inventory does not claim their current implementation stopped or independently verify latest capability availability."
+  ],
+  "nextDispatchUnits": [
+    "T09-S1 complete cumulative candidate765 with fixed106 manifest and original prompts plus current-policy/ref mapping addendum",
+    "T09-PRIVATE-STAGE complete private prototype12699 and inherited fixed context, needs its own frozen task package before short lease"
+  ],
+  "historicalRowsRemainVisible": ["T09-H1", "T09-H2"],
+  "nonImplementationRowsRemainVisible": ["T09-DESIGN-RECEIPT", "T09-PLAN"]
+}
