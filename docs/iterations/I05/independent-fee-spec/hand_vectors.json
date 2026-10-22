@@ -1,0 +1,857 @@
+{
+  "format": "i05-independent-math-event-vectors/1",
+  "status": "hand computed proposal-only, never product invoices",
+  "commonCaps": {
+    "work": 16777216,
+    "input_bytes": 262144,
+    "output_bytes": 262144,
+    "trace_items": 8192,
+    "firings": 1024,
+    "head_occurrences": 16384,
+    "bindings": 1024,
+    "scan_copy": 1000,
+    "hash_bytes": 1000,
+    "objects": 100,
+    "scalar": 100
+  },
+  "finalizer": {
+    "id": "finalization-prepay",
+    "kind": "finalize",
+    "handles": 2,
+    "slots": 4,
+    "fields": 2,
+    "bytes": 3,
+    "domain_bytes": 1
+  },
+  "vectors": [
+    {
+      "id": "complete-zero-balance",
+      "overrides": {
+        "work": 23,
+        "objects": 70,
+        "scalar": 30
+      },
+      "events": [
+        {
+          "id": "bootstrap64",
+          "kind": "hold",
+          "handle": "control",
+          "objects": 64,
+          "scalar": 0
+        },
+        "FINAL",
+        {
+          "id": "raw3",
+          "kind": "input",
+          "n": 3
+        },
+        {
+          "id": "fields2",
+          "kind": "item",
+          "n": 2
+        },
+        {
+          "id": "limb-mul",
+          "kind": "mul",
+          "a": 4294967296,
+          "b": 1
+        },
+        {
+          "id": "output2",
+          "kind": "output",
+          "n": 2
+        },
+        {
+          "id": "digest2",
+          "kind": "hash",
+          "n": 2
+        },
+        {
+          "id": "data",
+          "kind": "hold",
+          "handle": "data",
+          "objects": 2,
+          "scalar": 5
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "first": null,
+        "domain": null,
+        "used": {
+          "work": 23,
+          "input_bytes": 3,
+          "output_bytes": 2,
+          "scan_copy": 6,
+          "hash_bytes": 6
+        },
+        "peak": {
+          "objects": 69,
+          "scalar": 8
+        },
+        "live": {
+          "objects": 3,
+          "scalar": 3
+        }
+      }
+    },
+    {
+      "id": "one-work-short",
+      "sameEvents": "complete-zero-balance",
+      "overrides": {
+        "work": 22,
+        "objects": 70,
+        "scalar": 30
+      },
+      "expected": {
+        "state": "failed",
+        "first": "output2",
+        "domain": "work",
+        "used": {
+          "work": 21,
+          "input_bytes": 3,
+          "output_bytes": 0,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "peak": {
+          "objects": 67,
+          "scalar": 3
+        },
+        "live": {
+          "objects": 0,
+          "scalar": 0
+        }
+      }
+    },
+    {
+      "id": "false-then-type-error",
+      "overrides": {
+        "work": 17
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "first-check",
+          "kind": "item",
+          "n": 1
+        },
+        {
+          "id": "false-1-lt-0",
+          "kind": "cmp",
+          "a": 1,
+          "b": 0
+        },
+        {
+          "id": "later-domain-check",
+          "kind": "item",
+          "n": 1
+        },
+        {
+          "id": "second-error",
+          "kind": "error",
+          "reason": "RULE_COMPARISON_TYPE_MISMATCH"
+        }
+      ],
+      "expected": {
+        "state": "failed",
+        "first": "second-error",
+        "domain": "RULE_COMPARISON_TYPE_MISMATCH",
+        "used": {
+          "work": 17,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "live": {
+          "objects": 0,
+          "scalar": 0
+        },
+        "peak": {
+          "objects": 3,
+          "scalar": 3
+        }
+      }
+    },
+    {
+      "id": "false-then-earlier-resource",
+      "sameEvents": "false-then-type-error",
+      "overrides": {
+        "work": 16
+      },
+      "expected": {
+        "state": "failed",
+        "first": "later-domain-check",
+        "domain": "work",
+        "used": {
+          "work": 16,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "live": {
+          "objects": 0,
+          "scalar": 0
+        }
+      }
+    },
+    {
+      "id": "duplicate-comparisons-all-heads",
+      "overrides": {
+        "work": 32
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "binding",
+          "kind": "item",
+          "n": 1,
+          "category": "bindings"
+        },
+        {
+          "id": "two-comparisons",
+          "kind": "item",
+          "n": 2
+        },
+        {
+          "id": "same-operands-first",
+          "kind": "scan",
+          "n": 2
+        },
+        {
+          "id": "equal-first",
+          "kind": "cmp",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "id": "same-operands-second",
+          "kind": "scan",
+          "n": 2
+        },
+        {
+          "id": "equal-second",
+          "kind": "cmp",
+          "a": 1,
+          "b": 1
+        },
+        {
+          "id": "both-head-occurrences",
+          "kind": "item",
+          "n": 2,
+          "category": "head_occurrences"
+        },
+        {
+          "id": "one-firing",
+          "kind": "item",
+          "n": 1,
+          "category": "firings"
+        },
+        {
+          "id": "head0-three-bytes",
+          "kind": "output",
+          "n": 3
+        },
+        {
+          "id": "head1-same-three-bytes",
+          "kind": "output",
+          "n": 3
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "first": null,
+        "domain": null,
+        "used": {
+          "work": 32,
+          "bindings": 1,
+          "head_occurrences": 2,
+          "firings": 1,
+          "output_bytes": 6,
+          "scan_copy": 10,
+          "hash_bytes": 4
+        }
+      }
+    },
+    {
+      "id": "alias-source-twice",
+      "overrides": {
+        "work": 34
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "source-first",
+          "kind": "input",
+          "n": 5
+        },
+        {
+          "id": "source-second-alias",
+          "kind": "input",
+          "n": 5
+        },
+        {
+          "id": "wire-copy-first",
+          "kind": "copy",
+          "n": 5
+        },
+        {
+          "id": "wire-copy-second",
+          "kind": "copy",
+          "n": 5
+        },
+        {
+          "id": "owner-two-slots-one-source",
+          "kind": "hold",
+          "handle": "source",
+          "objects": 2,
+          "scalar": 5
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 34,
+          "input_bytes": 10,
+          "scan_copy": 16,
+          "hash_bytes": 4
+        },
+        "peak": {
+          "objects": 5,
+          "scalar": 8
+        }
+      }
+    },
+    {
+      "id": "cache-miss-then-hit",
+      "overrides": {
+        "work": 269
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "key-first-scan",
+          "kind": "scan",
+          "n": 57
+        },
+        {
+          "id": "key-first-write",
+          "kind": "copy",
+          "n": 57
+        },
+        {
+          "id": "lookup1",
+          "kind": "item",
+          "n": 1
+        },
+        {
+          "id": "parse-once",
+          "kind": "block",
+          "proof": "hand mathematical parse subinvoice 5work/3input only, no issuer claim",
+          "charges": {
+            "work": 5,
+            "input_bytes": 3
+          }
+        },
+        {
+          "id": "key-first-audit",
+          "kind": "hash",
+          "n": 89
+        },
+        {
+          "id": "saved-first-allfields",
+          "kind": "scan",
+          "n": 10
+        },
+        {
+          "id": "key-second-scan",
+          "kind": "scan",
+          "n": 57
+        },
+        {
+          "id": "key-second-write",
+          "kind": "copy",
+          "n": 57
+        },
+        {
+          "id": "lookup2-hit",
+          "kind": "item",
+          "n": 1
+        },
+        {
+          "id": "key-second-audit",
+          "kind": "hash",
+          "n": 89
+        },
+        {
+          "id": "saved-second-allfields",
+          "kind": "scan",
+          "n": 10
+        },
+        {
+          "id": "fresh-strongref",
+          "kind": "hold",
+          "handle": "fresh",
+          "objects": 1,
+          "scalar": 2
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 269,
+          "input_bytes": 3,
+          "scan_copy": 254,
+          "hash_bytes": 182
+        },
+        "peak": {
+          "objects": 4,
+          "scalar": 5
+        }
+      }
+    },
+    {
+      "id": "whole-stream-restore-one",
+      "overrides": {
+        "work": 28
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "wire-seven",
+          "kind": "scan",
+          "n": 7
+        },
+        {
+          "id": "copy-seven",
+          "kind": "copy",
+          "n": 7
+        },
+        {
+          "id": "hash-seven",
+          "kind": "hash",
+          "n": 7
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 28,
+          "scan_copy": 20,
+          "hash_bytes": 11
+        }
+      }
+    },
+    {
+      "id": "repeated-roots-targets",
+      "overrides": {
+        "work": 32
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "targets-two",
+          "kind": "item",
+          "n": 2
+        },
+        {
+          "id": "first-key",
+          "kind": "scan",
+          "n": 6
+        },
+        {
+          "id": "first-two-head-roots",
+          "kind": "item",
+          "n": 2
+        },
+        {
+          "id": "second-same-key",
+          "kind": "scan",
+          "n": 6
+        },
+        {
+          "id": "second-two-head-roots",
+          "kind": "item",
+          "n": 2
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 32,
+          "scan_copy": 18,
+          "hash_bytes": 4
+        }
+      }
+    },
+    {
+      "id": "overlap-success",
+      "overrides": {
+        "objects": 7,
+        "scalar": 15
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "old",
+          "kind": "hold",
+          "handle": "old",
+          "objects": 2,
+          "scalar": 5
+        },
+        {
+          "id": "temporary",
+          "kind": "hold",
+          "handle": "temporary",
+          "objects": 2,
+          "scalar": 7
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 14,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "peak": {
+          "objects": 7,
+          "scalar": 15
+        },
+        "live": {
+          "objects": 3,
+          "scalar": 3
+        }
+      }
+    },
+    {
+      "id": "overlap-one-slot-short",
+      "sameEvents": "overlap-success",
+      "overrides": {
+        "objects": 6,
+        "scalar": 15
+      },
+      "expected": {
+        "state": "failed",
+        "first": "temporary",
+        "domain": "objects",
+        "used": {
+          "work": 14,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "peak": {
+          "objects": 5,
+          "scalar": 8
+        },
+        "live": {
+          "objects": 0,
+          "scalar": 0
+        }
+      }
+    },
+    {
+      "id": "dag-fixed-plus-whole-actions",
+      "overrides": {
+        "work": 121
+      },
+      "events": [
+        "FINAL",
+        {
+          "id": "two-candidates",
+          "kind": "block",
+          "proof": "D fixed8 per candidate occurrence, including discarded candidate",
+          "charges": {
+            "work": 16
+          }
+        },
+        {
+          "id": "one-insertion",
+          "kind": "block",
+          "proof": "D fixed32 per actual step",
+          "charges": {
+            "work": 32
+          }
+        },
+        {
+          "id": "three-index-bytes",
+          "kind": "block",
+          "proof": "D 16 traversal work plus 2 scan work per byte; scan charged to scan_copy too; analytic16K subbound excludes scan work",
+          "charges": {
+            "work": 54,
+            "scan_copy": 6
+          }
+        },
+        {
+          "id": "copy-two",
+          "kind": "copy",
+          "n": 2
+        },
+        {
+          "id": "scan-two",
+          "kind": "scan",
+          "n": 2
+        },
+        {
+          "id": "link-one",
+          "kind": "item",
+          "n": 1
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 121,
+          "scan_copy": 16,
+          "hash_bytes": 4
+        }
+      }
+    },
+    {
+      "id": "last-item-semantic-error",
+      "events": [
+        "FINAL",
+        {
+          "id": "first-child-checks",
+          "kind": "item",
+          "n": 4
+        },
+        {
+          "id": "tail-field-check",
+          "kind": "item",
+          "n": 1
+        },
+        {
+          "id": "tail-source-error",
+          "kind": "error",
+          "reason": "SAVED_VALUE_MISMATCH"
+        }
+      ],
+      "expected": {
+        "state": "failed",
+        "first": "tail-source-error",
+        "domain": "SAVED_VALUE_MISMATCH",
+        "used": {
+          "work": 19,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        },
+        "live": {
+          "objects": 0,
+          "scalar": 0
+        }
+      }
+    },
+    {
+      "id": "bootstrap-63",
+      "overrides": {
+        "objects": 63
+      },
+      "events": [
+        {
+          "id": "bootstrap64",
+          "kind": "hold",
+          "handle": "control",
+          "objects": 64,
+          "scalar": 0
+        },
+        "FINAL",
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "failed",
+        "first": "bootstrap64",
+        "domain": "objects",
+        "used": {
+          "work": 0,
+          "scan_copy": 0,
+          "hash_bytes": 0
+        },
+        "peak": {
+          "objects": 0,
+          "scalar": 0
+        },
+        "live": {
+          "objects": 0,
+          "scalar": 0
+        }
+      }
+    },
+    {
+      "id": "last-head-one-short",
+      "sameEvents": "duplicate-comparisons-all-heads",
+      "overrides": {
+        "work": 31
+      },
+      "expected": {
+        "state": "failed",
+        "first": "head1-same-three-bytes",
+        "domain": "work",
+        "used": {
+          "work": 29,
+          "output_bytes": 3,
+          "head_occurrences": 2,
+          "scan_copy": 10
+        }
+      }
+    },
+    {
+      "id": "cache-tail-one-short",
+      "sameEvents": "cache-miss-then-hit",
+      "overrides": {
+        "work": 268
+      },
+      "expected": {
+        "state": "failed",
+        "first": "saved-second-allfields",
+        "domain": "work",
+        "used": {
+          "work": 259,
+          "input_bytes": 3,
+          "scan_copy": 244,
+          "hash_bytes": 182
+        }
+      }
+    },
+    {
+      "id": "roots-tail-one-short",
+      "sameEvents": "repeated-roots-targets",
+      "overrides": {
+        "work": 31
+      },
+      "expected": {
+        "state": "failed",
+        "first": "second-two-head-roots",
+        "domain": "work",
+        "used": {
+          "work": 30,
+          "scan_copy": 18,
+          "hash_bytes": 4
+        }
+      }
+    },
+    {
+      "id": "gcd-three-steps",
+      "events": [
+        "FINAL",
+        {
+          "id": "48mod18",
+          "kind": "divstep",
+          "a": 48,
+          "b": 18
+        },
+        {
+          "id": "18mod12",
+          "kind": "divstep",
+          "a": 18,
+          "b": 12
+        },
+        {
+          "id": "12mod6",
+          "kind": "divstep",
+          "a": 12,
+          "b": 6
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 17,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        }
+      }
+    },
+    {
+      "id": "decimal-horner-123",
+      "events": [
+        "FINAL",
+        {
+          "id": "0times10",
+          "kind": "mul",
+          "a": 0,
+          "b": 10
+        },
+        {
+          "id": "plus1",
+          "kind": "add",
+          "a": 0,
+          "b": 1
+        },
+        {
+          "id": "1times10",
+          "kind": "mul",
+          "a": 1,
+          "b": 10
+        },
+        {
+          "id": "plus2",
+          "kind": "add",
+          "a": 10,
+          "b": 2
+        },
+        {
+          "id": "12times10",
+          "kind": "mul",
+          "a": 12,
+          "b": 10
+        },
+        {
+          "id": "plus3",
+          "kind": "add",
+          "a": 120,
+          "b": 3
+        },
+        {
+          "id": "done",
+          "kind": "finish"
+        }
+      ],
+      "expected": {
+        "state": "completed",
+        "used": {
+          "work": 20,
+          "scan_copy": 6,
+          "hash_bytes": 4
+        }
+      }
+    }
+  ]
+}

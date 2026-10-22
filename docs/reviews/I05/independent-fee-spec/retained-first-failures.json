@@ -1,0 +1,9 @@
+{
+  "format":"i05-author-v2-retained-command-failures/1",
+  "recordKind":"transcription of observed tool combined output; not reconstructed raw stdout/stderr files",
+  "failures":[
+    {"ordinal":1,"command":"git rev-parse HEAD docs/I05-independent-fee-spec 6891 851e6241233d8b7a8f944944207260436b524e9f 0e42 2cf 057d","observed":"error: short object ID 0e42 is ambiguous; candidates 0e42a0f commit and 0e42524 blob; fatal ambiguous argument 0e42","exactOriginalExit":null,"exitEvidence":"unknown: early tool wrapper printed output only; Git fatal convention128 is not a preserved original exit file","disposition":"use full 0e42a0fe349054a92817cb4d463bccdc15f6c042; no product read"},
+    {"ordinal":2,"command":"git rev-parse 0e42a0f^{commit} 2cf^{commit} 057d^{commit}","observed":"0e42a0fe349054a92817cb4d463bccdc15f6c042; fatal ambiguous argument 2cf^{commit}; command did not produce 057d full commit","exactOriginalExit":null,"exitEvidence":"unknown: early tool wrapper printed output only; Git fatal convention128 is not a preserved original exit file","disposition":"no further short-ref probes; used window full named refs; did not read 2cf"},
+    {"ordinal":3,"command":"pure JSON input field inventory: d['rules'] on profile input","observed":"input fields ['asserted', 'definitions', 'disabled_rule_ids', 'ontology']; Traceback KeyError: 'rules'","exactOriginalExit":null,"exitEvidence":"unknown: early tool wrapper printed output only; uncaught Python KeyError convention1 is not a preserved original exit file","disposition":"profile pure input uses definitions; no product execution or expected derived from actual"}
+  ]
+}

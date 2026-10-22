@@ -1,0 +1,1940 @@
+[
+  {
+    "source": {
+      "name": "q6",
+      "ref": "9333e69234a6f54a0dfc1485f49d8fdeb4b69cfd",
+      "path": "docs/iterations/T05/q6-profile-mechanism-stage-plan.md",
+      "bytes": 26782,
+      "sha256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
+      "lines": 122,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/q6.md"
+    },
+    "startLine": 13,
+    "endLine": 21,
+    "level": "behavior-exact",
+    "excerptBytes": 2046,
+    "excerptSha256": "03aeb246737a43f3482facbf8697180fc81dac86fda1daedaa9f24d44de1f22a",
+    "lines": [
+      {
+        "line": 13,
+        "utf8": "- `compile_rules(definitions, catalog, budget)`→`CompiledPlan`：控制定义/变量闭合、全部常量/heads/RDF位置/合法引用预检，**成功后才允许处理任何binding**，即使caller最终给零匹配也要先编译。constants预检失败立即整批失败，不承诺返回多错误清单。",
+        "bytes": 313,
+        "sha256": "78ee24d43caf39155f2ea8869f93896a1af005c9ab949ddff125530ac3656096"
+      },
+      {
+        "line": 14,
+        "utf8": "- `evaluate_bound_batch(plan, matches, budget)`→完整不可变`PreparedFiringBatch`；matches只能是有界list/tuple的冻结`BindingMatch`，包含实际变量term、按原位置排列when triples及其已有proof leaves。拒绝无限generator/任意用户代码。每组核绑定闭合及与给定when模式实例化一致，**不证明when在图中或caller已枚举全部匹配**。",
+        "bytes": 393,
+        "sha256": "283fca84ab9530b17261b857be62453cbfd670bbf00a93ead03a80329efd547c"
+      },
+      {
+        "line": 15,
+        "utf8": "- `check_firing_group(plan, group,budget)`复核给定完整组的comparisons/全heads/binding/when/basis内部一致；不调用reason，不认证producer或全局完备。未来I05 selected复用同一机制，T01另认证真实producer/快照/依赖/定义/payload/rows hash与权限。",
+        "bytes": 290,
+        "sha256": "41fcfc4b5bf9a7ebc274577846270508619388d88788b3a8ecded5798352d603"
+      },
+      {
+        "line": 16,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 17,
+        "utf8": "## 2. 原子多head与真实位置",
+        "bytes": 35,
+        "sha256": "782b2c0e554b2ce29648038e9c996412925026c05009e60d2c0cab4934ac656c"
+      },
+      {
+        "line": 18,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 19,
+        "utf8": "规则最多100条；when至多16、comparison至多32、heads至多16，变量名沿现私有语法`?[A-Za-z][A-Za-z0-9_]{0,63}`，最多64变量。它们是拟阶段预算，不是新公共语言或已测业务容量。RuleSpec保原rule id/实际revision或prepared-plan摘要、原定义digest、当时policy、原when/comparison/head位置；新增内部IR不直接灌I05旧exact-key payload。",
+        "bytes": 400,
+        "sha256": "5b605914eed4782aeb3848d72ef11e11e10d7e91e0da5a23c9b57b097a417c4d"
+      },
+      {
+        "line": 20,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 21,
+        "utf8": "给定每完整when binding：先核全部使用变量；按源comparison位置计算**全部comparison，不因前false短路**。发现真实错误可立即整个batch失败，不汇总所有错误；无错误且全true后才实例化所有heads到局部临时tuple，逐项核RDF位置/类与对象/数据属性受控引用。全部通过才向局部batch缓冲追加；整批所有binding/预算/完整序列化成功后一次return。任何后项head/后binding/最终输出超限都丢弃整个本次缓冲，不返partial。无匹配/全false是成功空批，不是UNBOUND；没有发布current能力。",
+        "bytes": 612,
+        "sha256": "695f8770917bc098fb7dc2edbb84fa41e3a59e7186dfb7418fdcf635b2fe0155"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "q6",
+      "ref": "9333e69234a6f54a0dfc1485f49d8fdeb4b69cfd",
+      "path": "docs/iterations/T05/q6-profile-mechanism-stage-plan.md",
+      "bytes": 26782,
+      "sha256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
+      "lines": 122,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/q6.md"
+    },
+    "startLine": 50,
+    "endLine": 50,
+    "level": "first-error-order",
+    "excerptBytes": 545,
+    "excerptSha256": "4191f1c14d3bd65c3cff1361e2b455ea3fd6fce1d562408ed8e0eae52ec6d5d4",
+    "lines": [
+      {
+        "line": 50,
+        "utf8": "本地确定错误顺序：输入计数/字节/结构护栏→定义顺序与原位置的闭合/常量/heads预检→每binding完整性→原comparison顺序左右operand解析/域/算子→all-true后原head顺序→完整batch输出预检。false不跳后项；一旦错误整批失败。预检先触发资源可覆盖未扫描词法；预算内非法词法与合法非有限分开。未知内部/取消由真实权威边界即失败，不伪造多诊断或重跑。多个真实错误仅保证以上稳定首错，无多错误汇总承诺。",
+        "bytes": 545,
+        "sha256": "4191f1c14d3bd65c3cff1361e2b455ea3fd6fce1d562408ed8e0eae52ec6d5d4"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "q6",
+      "ref": "9333e69234a6f54a0dfc1485f49d8fdeb4b69cfd",
+      "path": "docs/iterations/T05/q6-profile-mechanism-stage-plan.md",
+      "bytes": 26782,
+      "sha256": "8008e906c7b20dbd9c9ba2d0a1bce0661ec32336f78d477831103cbc9bc27424",
+      "lines": 122,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/q6.md"
+    },
+    "startLine": 58,
+    "endLine": 67,
+    "level": "caps-and-lower-bound-not-full-exact",
+    "excerptBytes": 2857,
+    "excerptSha256": "76578598df91bca60c43c9b34adcc7c6de8c4a320feca94345a6380e40c3d78a",
+    "lines": [
+      {
+        "line": 58,
+        "utf8": "| 一次机制输入总UTF8字节          | 262144，含term/source/结构内容，对已解码受控输入先数长度、流式UTF8计数再复制/构造；真实上游解码/transport自身另限，纯函数不能追溯阻止caller先前分配；不是使用transport帧证明semantic容量 |",
+        "bytes": 296,
+        "sha256": "75ac598b484a47a24f42be61020141b11c92b814dd08704b65ec482b990a6188"
+      },
+      {
+        "line": 59,
+        "utf8": "| 单term lexical／单source原文    | 分别16384／65536 UTF8字节；总额仍262144；空S/L文本按实际字节计，不用泛化非空text helper                                                                                                  |",
+        "bytes": 254,
+        "sha256": "ecf7233a1ab1f1be56b456540486355371d79bda0e76418cc572363ad74896f0"
+      },
+      {
+        "line": 60,
+        "utf8": "| 数字组件长度                    | 整数/浮点significand/指数文本/年份/fraction分别≤4096 ASCII digits，处理前查限；float巨大指数先有界流式远界判定，不能先int全部指数或分配10幂                                              |",
+        "bytes": 275,
+        "sha256": "f0976c91bb2bea6b9a11316508628be136162eeb2f1114d8accf0a0ec082eced"
+      },
+      {
+        "line": 61,
+        "utf8": "| 持久中间整数组件                | 每个p/q/日序等≤16384 bits；乘/移位/除法临时≤32768 bits，**运算前**以上界估算；不调全局int限制/Decimal context/RDFLib normalize                                                           |",
+        "bytes": 264,
+        "sha256": "1c08d975982c3810d0a55e825a2acb2b4d4c6a5574574cdbdd66959ea3acccbe"
+      },
+      {
+        "line": 62,
+        "utf8": "| 定义/when/comparison/heads/变量 | 100 / 每规则16 / 32 / 16 / 64；原编辑128草稿不是运行容量，本阶段不改UI或公共limits                                                                                                       |",
+        "bytes": 251,
+        "sha256": "8dc1678ac39d47d496218ac8e3e3e351930b18fece3d310fa199f3246dbcb7fa"
+      },
+      {
+        "line": 63,
+        "utf8": "| 给定完整binding数               | 总计≤1024；只接有界序列，超限前不构造完整输出，不把1024称真实匹配容量                                                                                                                    |",
+        "bytes": 260,
+        "sha256": "171231cbd3b5f67ef5f3ce73e1358eae44847d44c765b661bf947e748621c444"
+      },
+      {
+        "line": 64,
+        "utf8": "| 输出                            | firing≤1024、head occurrence≤16384、trace逻辑项≤8192、完整安全私有载荷UTF8≤262144；同时限制，失败不截断成功                                                                              |",
+        "bytes": 260,
+        "sha256": "bcba76b133e82051b311f5069d8c51fe6f8bceae838fe6e6e0c2e472d9cc9107"
+      },
+      {
+        "line": 65,
+        "utf8": "| 累计work                        | ≤16777216确定单位；每次昂贵操作前扣费，超限即失败；不按墙钟伪装semanticWork，不预填未测ms/MB容量                                                                                         |",
+        "bytes": 262,
+        "sha256": "a81a4900e447b449d17fa8db0441266d108cc60db76ec82752057da90aaf43f7"
+      },
+      {
+        "line": 66,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 67,
+        "utf8": "确定计费：扫描/UTF8计数按字节；定义/绑定/比较/head/proof leaf/trace项各至少1；bigint以32-bit limb数L=max(1,ceil(abs.bit_length/32))，乘法预扣L(a)×L(b)，除法/余数/GCD每步按被除/除数limb乘积，shift/十进小段转换/有界幂每一步按输出/参与limb收费；交叉乘与GCD不免费，构造10^n前估bit上界。序列化按字段/UTF8字节在追加前计数，整数值内部若需证据采用有界hex numerator/denominator，不对大int无界decimal str；常量预解析只在compile收费，binding与每次comparison有实际事件，缓存不得绕过计费。sorting按比较/term字符检查计费，新增缓存/算法变更需同版更新成本约定与边界证据。",
+        "bytes": 734,
+        "sha256": "964cabef1821b475deb9a64083029e1c92a0a0b651f6f0d0448f7b6a74e58fde"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "integration",
+      "ref": "de37ff64fab7f40b69fbf900e4657137ca18ce74",
+      "path": "docs/iterations/I05/profile-integration-new-candidate-plan.md",
+      "bytes": 36922,
+      "sha256": "990555ae61b086d40c33212115728bd1914063af25e34b3815345decc85ed66d",
+      "lines": 159,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/integration.md"
+    },
+    "startLine": 63,
+    "endLine": 80,
+    "level": "allocator-exact-and-graph-cap",
+    "excerptBytes": 5430,
+    "excerptSha256": "bf32205b64c71a6ade066d76594ed74c8d9cacd1fda977ce82173c690a7db005",
+    "lines": [
+      {
+        "line": 63,
+        "utf8": "1. 有界接收原始图/定义与可信上下文；拆分前先校验整次定义（含停用）至多100条、RuleSpec确切类型和所有rule_id类型/有界字节/唯一性，不能靠每次单条compile的len1门代替；重复id或坏外层结构先安全拒绝，再排序/分配。原term抽象身份/原写法/source分层。以实际ontology声明形成Catalog；类/对象属性/数据属性从真实输入明确声明或已批准T01定义映射而来，不能看见rule常量就自动补进Catalog来绕过引用校验。pure后端只核输入一致性，不自称producer授权。",
+        "bytes": 595,
+        "sha256": "a320256f6d6174234a856c3c28219a46c1146e474b1a554929abc8d70e0f60cf"
+      },
+      {
+        "line": 64,
+        "utf8": "2. **任何匹配前预检全部规则**，包括零匹配常量对、全部when/comparison/head/引用与变量闭合。新定义的enabled状态在有界定义表中保存；新profile停用定义也作完整编译预检但不送匹配/执行，不能借停用遮坏定义。旧停用行为不暗改。",
+        "bytes": 305,
+        "sha256": "e9dba050d804dbb36175eb46c12f05fe75bf6718c58d2ba895e77e89c483f2c7"
+      },
+      {
+        "line": 65,
+        "utf8": "3. 计算同一输入的完整有限RDFS闭包；保持现支持构造和稳定首witness政策，不新增全RDFS/OWL、全部形式证明或最短proof。每条实际proof叶由原 asserted/ontology triple映射到有界稳定引用；叶表与原term/source映射随结果保存，不能把比较阈值填入basis。",
+        "bytes": 320,
+        "sha256": "aa1c4d30aab0a1d101cb82ed1048fc71de68266a941bec8ac8563e25ebded486"
+      },
+      {
+        "line": 66,
+        "utf8": "4. 所有启用规则只读同一closure。共同join逐候选/绑定扩展先扣费，next match**计数/上限检查后**才追加，不能先造100000旧匹配再截为1024。重复变量按term key一致；每个完整匹配保有序when、真实bindings及每个when输入的实际proof leaf引用。helper不能证明图成员和穷尽性，这两项仍由I05匹配器及独立完整oracle验证。",
+        "bytes": 405,
+        "sha256": "37d03eed6dc5d343355e0c91c490735b2e25760a9de24edc2e416e5b0e10f544"
+      },
+      {
+        "line": 67,
+        "utf8": "5. 调用固定 `evaluate_bound_batch`，只收其完整成功 `PreparedFiringBatch`；保留全部成功firing/全部head occurrence与比较证据。合法false组被机制实际逐comparison检查后不出firing；不虚构该API未返回的false-group trace。整次调用所有规则全部成功才统一组装结果；后rule/后match/后head/最终序列化错误均不return部分批、不写current。",
+        "bytes": 411,
+        "sha256": "2e8343381b5c68dd64d2809fc55d976d5c8cab85d73400f8ddd0373f2306a35b"
+      },
+      {
+        "line": 68,
+        "utf8": "6. 输出规则事实按抽象term去重，全部firing单独保留；规则事实不减asserted/RDFS，另计算新增/撤回差异。不反馈任何自定义结果，不在最后补RDFS。潜在链warning按全部heads扩检查，规则次序不影响可观察结果；warnings不伪装为支持规则链或编辑器已接线。",
+        "bytes": 331,
+        "sha256": "76bdb250240fdf3437207c2aec66ae44819725545e286c62520adc8e3be3dcc7"
+      },
+      {
+        "line": 69,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 70,
+        "utf8": "### 4.1 固定API的安全位置与一次调用预算",
+        "bytes": 54,
+        "sha256": "294adcddda74bc71c17cb086d974b9ea6d2bcfe37fef9a7cdd6f86e67c26785b"
+      },
+      {
+        "line": 71,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 72,
+        "utf8": "固定 helper 的 ProfileFailure 只有reason/location/classification，location没有rule_id；因此**按完整rule_id的Unicode码点稳定序为每个RuleSpec单独compile一个plan（原定义位置另保用于source定位）**，I05在调用边界持有真实rule_id/revision/source。捕获失败时才可准确附上此规则身份，不猜“上一条规则”、不反复试跑寻找出错规则。不调用helper私有方法、不改固定机制加回调。先完成所有plan编译，再建闭包/匹配；每个启用plan调用evaluate恰一次。",
+        "bytes": 561,
+        "sha256": "23370309e9f225452d92b77871ec813c5395d0355c07751ec0e3fe524b908bcb"
+      },
+      {
+        "line": 73,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 74,
+        "utf8": "每个生产plan的compile与evaluate必须同一个Budget对象，phase只由compile/evaluate各推进一次；不会跨调用复用、重置计数、跨worker缓存/反序列化CompiledPlan。不能直接信任从JSON构造的ProfileValue或复制seal。固定1e3的逐组check_firing_group不能直接沿用生产预算做整批selected验证，批量复核前置见§6.1；本方案撤回此前“执行同池自然覆盖全部group复核”的表述。",
+        "bytes": 458,
+        "sha256": "0ab6c1366f93079f793e562c622ed6ab382b530f197af56d86e6a06f22d5bd29"
+      },
+      {
+        "line": 75,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 76,
+        "utf8": "为避免每规则默认预算乘100，拟冻结 `i05-profile-graph-budget/1` 的**整次调用预留**：令N=max(1,定义数，含停用)，按完整rule_id的Unicode码点稳定序将下列总池各作 `divmod(total,N)`，前余数个child多1；不得按保存/数组顺序发余数，否则预算边界会改变成功/失败。原definition ordinal仅作真实source定位，不参与额度分配；child ProfileLimits固定为所分配值，未用部分不回流/抬高后续child。总池沿固定机制上限：work16777216、input_bytes262144、output_bytes262144、trace_items8192、firings1024、head_occurrences16384、bindings1024。每个规则获独立Budget但其compile/evaluate始终同一对象，bindings限额亦按池分配；定义数为0时使用一个空plan/空matches校验Catalog并产空规则批。其余term/source/digits/bits/结构上限不高于固定ProfileLimits默认。",
+        "bytes": 908,
+        "sha256": "caa989e41c5179553be9208badb27e30e896061137c61cb92da192c8c93e594f"
+      },
+      {
+        "line": 77,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 78,
+        "utf8": "预留是新后端拟防护政策，**不宣称原机制一次全rules默认容量，也不承诺100条重规则都能跑满**；不能将资源失败误报非法语言或静默跳过规则。编译时Catalog重复计入不同child，按实际成本收费，分配可致更早资源失败，接受这一保守边界。若将来要共享动态剩余额度/一次全plan执行且精准rule定位，须T05精确新API/delta、预算和同版验证，不能私改Budget/type门。",
+        "bytes": 477,
+        "sha256": "f16a5d7c21a0e546c37e71b01688923ba0df4ae0cfc3adc9d6542c647c0d3f41"
+      },
+      {
+        "line": 79,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 80,
+        "utf8": "图侧另保留100000 triples、输入文本1MiB、RDFS/匹配/排序/union/leaf/封装累计1000000确定工作单位，拟对profile路径在昂贵操作/复制/追加前预扣；预算类留semantic.py内部。node/term字节先过明确入口门，不能从纯Graph“已有1MiB通用逐项门”作推断。各child总预留不超总池，图工作与机制工作分开记录；最终JSON/rows仍8MiB、10000rows、8192字符分片，不能把私有262144编码上限当总RDFS/public载荷容量。限额±1和首触发分类必须真实测，数字是拟上限非性能/业务容量证明。",
+        "bytes": 599,
+        "sha256": "9d10a502ad8b54938dc858edf6fae5aeb701375244787f8d24ab353471e9c2fc"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 23,
+    "endLine": 23,
+    "level": "16c-contract",
+    "excerptBytes": 415,
+    "excerptSha256": "0161b2591a788f122d78def54fc97f0f8d90aa5a68353d7a015809f7dab5fcda",
+    "lines": [
+      {
+        "line": 23,
+        "utf8": "16c实际合同：`check_firing_batch(definitions, catalog, original_matches, saved, *, limits, disabled)`；返回 `batch-consistent` 或 `definition-only`，预算版本 `mechanism-revalidation-budget/2`。它一次compile、一次evaluate完整matches；一次完整保存typed编码；逐比较operand检查本进程发行。其三池与控制池不含恢复、缓存、外层hash、allocator或保留成本。",
+        "bytes": 415,
+        "sha256": "0161b2591a788f122d78def54fc97f0f8d90aa5a68353d7a015809f7dab5fcda"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 45,
+    "endLine": 51,
+    "level": "wire-exact-and-physical-node-bound",
+    "excerptBytes": 2327,
+    "excerptSha256": "bc57b9fcfb86dc397be80eb66d56dbd5ee9f940979941f5a7a5f7f3ba3ec6083",
+    "lines": [
+      {
+        "line": 45,
+        "utf8": "恢复分接canonical payload与rows两个blob，`B=len(payload_json)+len(rows_json)≤8,388,608`。不以整个execute返回四键JSON套同一8MiB门：旧返回封套另多187B，故选择分blob合同保留所有原合法成功。rows是精确list[list[str]]，每行恰一cell、cell≤8192字符、行数≤10000，按原切片原顺序拼回payload UTF8；空尾不得丢。两个原blob分别核原摘要、canonical字节及行切片，不接受重排/多余空白后的“等价JSON”。",
+        "bytes": 499,
+        "sha256": "5e86026fa4ba2feac3bca1ba29ac811fb0e983cfc1d309d3b09ed4a9bd6f565c"
+      },
+      {
+        "line": 46,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 47,
+        "utf8": "先长度/UTF8词法门，再按位置schema构建；禁止先无限制json.loads整棵树再声称分配前门。固定词法器不接数字token（包括float、exponent、-0）、NaN/Infinity、重复key、非法UTF8/孤立surrogate、深度/节点超限、未知字段/缺字段/额外字段、错位置合法tag。对象按当前schema固定key表匹配，不能由untrusted recordType做import/getattr/构造器分派。对象最多32键、key≤64 UTF8字节，实际固定表更小；只在明确JSON对象位置读key。字符串按实际UTF8与原投影len门收费。",
+        "bytes": 579,
+        "sha256": "953283d97baea61918099c5fef1ad27beb0f4251531c1990a043fc0f2ad7e234"
+      },
+      {
+        "line": 48,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 49,
+        "utf8": "物理JSON值/键节点 `J` 与native投影计数分开。每个节点至少消费一个不同的wire byte，取新解码硬界 `J≤B+Q`；物理根depth0，每条容器→成员/字段值为一边，硬界35，key也计访问/字节。合法0475完整返回最深scalar14/container13，分blobpayload少一层；35为从native32及包装保守导出的新恢复门，不声称原native1M等于JSON1M。重建后另按原 `_ProfileProjection` 的32层/1M节点/保守字节收费重放：result→source→definitions共用一实例，structured原records按原独立实例；所有原门仍保留。不能把JSON展开数直接塞原1M而误拒合法输出。",
+        "bytes": 662,
+        "sha256": "5bcf9aa2ca77438c70f508032ed6256c4157e90457c44da32aa579984694300e"
+      },
+      {
+        "line": 50,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 51,
+        "utf8": "integer只用exact `{\"integerHex\":hex(n)}`：先检查形状、符号/前缀/lowercase/长度，再分块解码；canonical回编码逐字相同，拒前导零、`-0x0`、大写/加号等。magnitude≤8192hex digits、bit_length≤32768，按字段再紧限（索引、限额、ordinal非负且在所在tuple范围内；ProfileLimits不超过其固定默认值）。bool必须exact bool，不能当int。bytes只用exact二字段 `encoding=\"hex\",bytes=lowercase-even-hex`；先以可信O_i核长度再分配，不能先bytes.fromhex巨量分配。不要改全局int/decimal策略。",
+        "bytes": 584,
+        "sha256": "450b53ff7d96dbe064319ba955dcf4372388ac286f863d26e8ddd26464123efb"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 59,
+    "endLine": 89,
+    "level": "schema-declarations-not-algorithms",
+    "excerptBytes": 5654,
+    "excerptSha256": "2d91ba076dee98eea33feb3bc28cea5f0cbf09021a703509d03fd2d4197420de",
+    "lines": [
+      {
+        "line": 59,
+        "utf8": "| SourceRecord | reference,digest,revision,text；各为str或None；None≠空串；每字段source_bytes≤65536，不能误套caller reference/revision的16KiB门 |",
+        "bytes": 168,
+        "sha256": "86beb28ef4740a22dbfbd489a72590cffe7b688e696767122487cc54d5f9fe71"
+      },
+      {
+        "line": 60,
+        "utf8": "| TermInput | kind,lexical_form,datatype_iri,language_raw,source；前三/四字段按实际str/nullable，source为None或完整SourceRecord；kind仅iri/literal；term UTF8≤16384，再交canonical验证 |",
+        "bytes": 209,
+        "sha256": "4d41d23e784d4b11dfd7ddf46b4d55af71df49897c94b8f1fcaa09424f847ad6"
+      },
+      {
+        "line": 61,
+        "utf8": "| Variable | name；仅RuleSpec模板subject/object及Comparison operand，VAR完整语法由原compiler核；不能在ground when/head/match里出现 |",
+        "bytes": 153,
+        "sha256": "02e46d6ca6037f10a31e5c8306fa2d76fd2f60b3e45bb645e1ce9c87c33100ee"
+      },
+      {
+        "line": 62,
+        "utf8": "| Triple | subject,predicate,object；predicate必须TermInput；模板subject/object可Variable；其他位置三项均TermInput |",
+        "bytes": 132,
+        "sha256": "b8371734d49804f94bf22664181281bfe582619afa678e31802f08026d6b13da"
+      },
+      {
+        "line": 63,
+        "utf8": "| Comparison | left,operator,right；operand为TermInput/Variable，operator属于原OPS |",
+        "bytes": 91,
+        "sha256": "fb0385a110b28d244cb3ce19a861097236b91955961b4922e779286bb1640851"
+      },
+      {
+        "line": 64,
+        "utf8": "| RuleSpec | rule_id,when,comparisons,heads,source,revision,definition_digest,policy；when/comparisons/heads为ordered tuple，全部metadata逐字保留，policy必须PROFILE |",
+        "bytes": 179,
+        "sha256": "ac446ea7becff639a62b7ba6c1826f43b38809452658a60e92756b13a2ab755b"
+      },
+      {
+        "line": 65,
+        "utf8": "| Catalog | classes,object_properties,data_properties；三ordered tuple[str,...]，不由缓存/图重算替换 |",
+        "bytes": 115,
+        "sha256": "02d456a4ce79c91f425b83837ce39784305524dbdbfade156c72926c2dec01cd"
+      },
+      {
+        "line": 66,
+        "utf8": "| BindingMatch | rule_id,bindings,when,proof_leaves；bindings为tuple[tuple[str,TermInput],...]，when为ground Triple tuple，proof_leaves为tuple[tuple[str,...],...]；保存原false与true全部顺序 |",
+        "bytes": 207,
+        "sha256": "8e53dab20e6b242acb9cd347303aa673fe7a1ddb8a4dff776efa2975a1e44ca5"
+      },
+      {
+        "line": 67,
+        "utf8": "| ComparisonEvidence | index,left,operator,right,result；exact int索引、bool结果；left/right最终仅用canonical parse新发行ProfileValue |",
+        "bytes": 150,
+        "sha256": "f4a5d468302392ab77511b040c37ddcf3fa82e360281ec94db4ad4e63764124d"
+      },
+      {
+        "line": 68,
+        "utf8": "| HeadEvidence | index,triple；每个head出现、顺序和完整ground triple保留，不按fact集合去重 |",
+        "bytes": 113,
+        "sha256": "0c65fa713663ee2a366456f7c1aa18f4f5abe2c6e719297a08a75fe8d9683974"
+      },
+      {
+        "line": 69,
+        "utf8": "| PreparedFiring | rule_id,bindings,when,proof_leaves,comparisons,heads,basis,source,revision,definition_digest,policy；所有机制数组还原tuple，basis为ordered tuple[str,...] |",
+        "bytes": 186,
+        "sha256": "7b9bf9eadd047f1c62f09b5898c094b860d17399f3200d0b71bd8f04edcf7370"
+      },
+      {
+        "line": 70,
+        "utf8": "| PreparedFiringBatch | firings,facts,payload,digest,profile；前二为tuple；payload解成exact bytes，digest为64小写hex，profile逐字核 |",
+        "bytes": 149,
+        "sha256": "87b83fc69857f1ba927ebef1715b16cf7bc679f29fc1586d37c3811160292936"
+      },
+      {
+        "line": 71,
+        "utf8": "| ProfileLimits | input_bytes,term_bytes,source_bytes,digits,integer_bits,temporary_bits,rules,when,comparisons,heads,variables,bindings,firings,head_occurrences,trace_items,output_bytes,work；固定17项exact int，不从保存映射动态反射 |",
+        "bytes": 250,
+        "sha256": "74e443447f1bcc473b0cceb27dcc80aa6d7440cadab78b920da11a9b76e46541"
+      },
+      {
+        "line": 72,
+        "utf8": "| ProfileValue | term,domain,value,language；只读待比较descriptor，**不能直接调用ProfileValue构造器**；见第4节 |",
+        "bytes": 133,
+        "sha256": "f0a7c078b320089f5c8cf500b95fd580a2f58901f962672832f58ed0110c4661"
+      },
+      {
+        "line": 73,
+        "utf8": "| Number | numerator,denominator,negative_zero；精确int/int/bool、denominator>0；不得约分/忽略负零后接受保存值 |",
+        "bytes": 132,
+        "sha256": "df998d648e29ba0cb82983a96810c92a4bac78a25362c314b4b6dbcec83f6866"
+      },
+      {
+        "line": 74,
+        "utf8": "| Calendar | day,second,explicit_offset,is_datetime；exact int、完整Number、exact bool/bool |",
+        "bytes": 99,
+        "sha256": "5f6ba5bedd135a3ba85de9dbde845d9e2522c5b19828bf2111562e8d68e7e4a2"
+      },
+      {
+        "line": 75,
+        "utf8": "| InputLocation | section,index,side,span为原批准record的完整字段；本成功payload没有允许位置，因此任何成功载体里出现它也拒绝；若未来另批诊断schema，span才为None或二元tuple，不能在本轮扩大 |",
+        "bytes": 247,
+        "sha256": "97099c4dbba68c7522f4755c2fe8006d6e2a3b18c0bca992d27ddc9ca693e22a"
+      },
+      {
+        "line": 76,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 77,
+        "utf8": "RuleSpec长度上限rules100/when16/comparisons32/heads16、variables64等由固定原limits和compiler核；original_matches/firings/head_occurrences分别服从该child可信L。先做tuple长度/全局数量门再逐项发行，不能信保存L放宽。catalog和proof字符串不随意加比原版更紧的限制；先用原投影B及对应机制检查接纳原合法值。",
+        "bytes": 378,
+        "sha256": "1ad5c08c4ed1b145469bcb478ab331070e4f0b23f7fa032929159e7c667b2d24"
+      },
+      {
+        "line": 78,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 79,
+        "utf8": "### 3.3 外层 exact shape 与保全范围",
+        "bytes": 43,
+        "sha256": "e8b8975b478a6a68a527b0b961ea69e8bc5638e0340a96d887d64c1f8a5b49ae"
+      },
+      {
+        "line": 80,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 81,
+        "utf8": "payload字段恰为format,implementation,reasoning,inputDigest,inputDigestDomain,sourceDigest,definitionsDigest。reasoning字段恰为formatVersion,semanticsVersion,profile,rdfs,rules,warnings,evidence,rdfsEvidence,firingGroups,mechanismBatches,definitions,catalog,proofLeaves,termSources,graphBudget。",
+        "bytes": 305,
+        "sha256": "33d97786863cf281ccf6f32f9d23a2c74aa9af8ff8ada6cd2c4a2911b640e11c"
+      },
+      {
+        "line": 82,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 83,
+        "utf8": "- rdfs/rules为exact list[tuple[str,str,str]]；warnings为exact list[str]。evidence是exact list[{rule,firingIndex,headIndex,result,inputs,basis}]：result为exact tuple[str,str,str]，inputs为exact list[tuple[str,str,str]]，basis恢复exact tuple[str,...]；rdfsEvidence为exact list[{result,basis,proofLeaves}]，result为exact tuple[str,str,str]、basis为exact list[tuple[str,str,str]]、proofLeaves为exact tuple[str,...]。整数均inthex；不把这些图metadata的自洽视为重新推理。",
+        "bytes": 505,
+        "sha256": "e3839394d5aab4375240fb2395c59f82f3b78d225afc2e85369f6163bc718b86"
+      },
+      {
+        "line": 84,
+        "utf8": "- firingGroups、mechanismBatches、definitions、proofLeaves、termSources为原tuple；Catalog为native。proofLeaves每项exact {reference,triple}，triple为三str tuple；termSources每项exact {term,value,ordinal,span}，value完整TermInput，ordinal exact int，span为None或二int tuple，原顺序保留。source rawtext与parser-only prefix occurrence都不得删。",
+        "bytes": 379,
+        "sha256": "9709ff1ccccd504dcfb84c04821e9fd1d79d3e8f738d4a8ccc83e7f4a5d5466c"
+      },
+      {
+        "line": 85,
+        "utf8": "- 每child恰有ruleId,definitionOrdinal,disabled,planDigest,batch,originalMatches,definitions,catalog,limits,budgetLimits,budgetUsage。planDigest为64hex；budgetLimits为固定17 int字段并等于limits；budgetUsage恰work,input_bytes,output_bytes,trace_items,firings,head_occurrences，逐项在实际L内、且与原payload绑定，不能拿保存usage重设池。",
+        "bytes": 372,
+        "sha256": "415c81ae6052386db48b2746f0a7f5998ee4fa6dfe52135a5120a689a7fa67d7"
+      },
+      {
+        "line": 86,
+        "utf8": "- graphBudget恰version,limits,entryLimits,entryUsage,usage；limits恰work,triples,inputTermBytes,sidecarScalarBytes,sidecarTermBytes，核固定0475常数；entryLimits为17项dict，entryUsage为上述6项dict，usage恰work,inputTermBytes。保留原数值并核范围/版本，不宣称恢复器重算了图用量。",
+        "bytes": 322,
+        "sha256": "07e40ecebee68ac75b172a3da2523e42b37ed0f28844abe64ec188299497cec5"
+      },
+      {
+        "line": 87,
+        "utf8": "- top firingGroups逐child按生产顺序concatenate batch.firings，逐字段完整核同；ruleId→slot查找另计费用。不得只挑一个重复位置核，也不得用一个位置覆盖另一个位置。",
+        "bytes": 212,
+        "sha256": "a6a315bb644b56e71d8f61fc1a0d10ab95a1a03f7ce0265bf39c46abbac9f93e"
+      },
+      {
+        "line": 88,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 89,
+        "utf8": "definitionsDigest按原定义tuple的原投影canonical JSON域重算；Catalog另核可信捕获摘要；input/source按第2节前像核同，structured还核逆向分组。原planDigest、proof refs、aggregate evidence/RDFS/termSources/graphBudget通过严格schema与独立原payload摘要保全；16c不重新证明这些外层结论或完整matcher。禁止额外compile补planDigest而把成本藏进16c三池。",
+        "bytes": 420,
+        "sha256": "14d3d623a15397dda6680cdd63322f3ff748a5f2a830bb93e9268a73d207697d"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 93,
+    "endLine": 99,
+    "level": "exact-key-and-cache-local-policy",
+    "excerptBytes": 2415,
+    "excerptSha256": "4ceb1cf667596e0dcb4ad8f21bb30cfa587341d92f3310b504a12d0422e4d370",
+    "lines": [
+      {
+        "line": 93,
+        "utf8": "所有保存PV都来自比较证据left/right两位置。每个PV.term先严格解完整TermInput；每child独立cache，完整key包含kind/lexical_form/datatype_iri/language_raw、source存在位及SourceRecord四字段。None/空串、source=None/四None source、plain/xsd:string、raw语言大小写、不同source都不同。key固定二进制header为8B `b\"I05RTK1\\x00\"`，长版本名只在操作域metadata；接一个source存在位（None=0、SourceRecord=1），再按kind/lexical_form/datatype_iri/language_raw/reference/digest/revision/text顺序编码8字段。每字段固定1B marker（None=0、str=1）+4B无符号big-endian UTF8字节数+实际bytes；None长度必须0且无data，source=None时最后四字段必须均按None编码。最大framing=8+1+8×5=49B，严格小于所留64B；模块/profile固定在本次cache域，不能又向每key追加未计的模块SHA。缓存不跨child/操作/版本共享。",
+        "bytes": 935,
+        "sha256": "bb71d063d7cf12b1bcb2f6a9d0720d8c245a0b4f1ac04b8ed1fdaa66a44863a8"
+      },
+      {
+        "line": 94,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 95,
+        "utf8": "miss仅调用当前 `parse_value(term, None, R_parse_i)` 一次；hit仅复用该fresh发行对象的强引用。每个occurrence无论命中与否，都完整核保存domain/value/language：I/S/L exact str；B exact bool；N为Number全部三字段；Dz/Dl/Tz/Tl为Calendar全部四字段及second的完整Number。还核term完整字段和语言；不得仅数值等价、忽略负零或自动改写损坏保存字段。不同domain/value/language任何末项不一致整次失败。缓存强引用持有到所有批次API完成，否则弱发行身份会消失。",
+        "bytes": 568,
+        "sha256": "95c6080eac696ca9e41182f203c0858c350920cbccab44115fc6c5d1d8e83b96"
+      },
+      {
+        "line": 96,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 97,
+        "utf8": "不会恢复旧alias身份或weakref/id；按完整相同值intern是新进程实现细节。重复source仍按每次wire/键/对照收费，T05之后的每occurrence typed编码和check_value也照收费。禁止直接构造PV、导入别名模块发行、反序列化pickle签发、复用父进程native PV；这些均不能获得canonical发行身份。",
+        "bytes": 357,
+        "sha256": "3fc5346bc7196be6914b81b69dfa259dbc72907b2b7278ca4c7df2b273be9094"
+      },
+      {
+        "line": 98,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 99,
+        "utf8": "选择确定性**字节压缩前缀索引**，不用hash平均O(1)作最坏证明。每child一root；edge label为已保留完整key上的(start,end)视图，edge长度≥1，沿key位置严格前进。分支最多256个native byte索引，线性检查最多256项；比较edge前预扣min(remaining_key,edge_len)，首字节失配也不退。split只改视图/引用，不复制长key尾。SHA256(separator+fullkey)仅审计标识，separator精确为32B `b\"I05RKEY1\" + b\"\\x00\" * 24`；查找等价只用完整key，摘要碰撞不能合并source。",
+        "bytes": 552,
+        "sha256": "19bb185d477ca698fcc939010c60e91d72fce4f7515a3edaf29cc716a469f80b"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 103,
+    "endLine": 111,
+    "level": "allocator-lifecycle",
+    "excerptBytes": 2561,
+    "excerptSha256": "4b409eb8b7f5a11f63aa09312ea4141f13cbda0c8519c60b41c25b9f36a3ef58",
+    "lines": [
+      {
+        "line": 103,
+        "utf8": "原规则tuple先核exact RuleSpec、ID非空/唯一、字符与UTF8≤16384；按rule_id Unicode稳定排序，保存原ordinal。`N=max(1,规则数)≤100`，disabled也占槽。每个原池总额T、排序位置j的额度为 `T//N + (j<T%N)`。池来自只读原 `semantic._PROFILE_POOLS`，不复制一套可漂移常量：work16777216/input262144/output262144/trace8192/firings1024/head_occurrences16384/bindings1024；逐field的Σ恰原T，特别ΣF=1024。其他17字段沿用原固定默认结构上限，不因child数乘大。",
+        "bytes": 538,
+        "sha256": "8d64702b92e871ba3a13ed3957fc897e57a0f131a2d0526eae3d238bf7127031"
+      },
+      {
+        "line": 104,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 105,
+        "utf8": "`OriginalAllocation`的原ordered ID/ordinal/disabled、N、17字段child L来自第2节同次生产捕获；恢复前从原rules/disabled复算divmod并同时核捕获与saved L/budgetLimits。仅复算数值不能证明出处；没有捕获拒绝。definitions原输入顺序和各child实际单定义关系、Catalog、matches均与独立原payload绑定；不重跑matcher。",
+        "bytes": 380,
+        "sha256": "40fd29cd97c0cf14708ade0601d35a13584ea4baba26cf99eb5dc65435fc1c23"
+      },
+      {
+        "line": 106,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 107,
+        "utf8": "ledger为一次逻辑恢复操作建立固定N槽，状态new→running→success或failed。整次R与每槽R_parse原L、T05预留次数绑定后不能替换/重置/借池。任何失败即终止所有槽，已花费用/已用slot不退；本版本同ledger重试一律拒绝。创建新ledger代表新的独立纯操作，不能声称它延续或覆盖旧操作；跨进程/持久化重试身份和不可信调用者任意新建ledger由未来T01负责，本纯测试不得冒充全系统防刷。",
+        "bytes": 501,
+        "sha256": "ef71983e812f71dae79405a1ccf99fed42933af2f2109d582ca03a3f86487f93"
+      },
+      {
+        "line": 108,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 109,
+        "utf8": "disabled必须保持outer originalMatches=None/batch=None；仅在给16c definition-only参数时显式映射matches=()，说明原未evaluate。不能造空saved batch。空定义dummy child须ruleId/ordinal=None、definitions=()、originalMatches=()、实际空batch存在，仍调用16c replay核该空batch。enabled非空定义缺saved一律拒绝。真实无match但非空定义的空batch也必须保留并核。",
+        "bytes": 420,
+        "sha256": "93ae3c89f0ece99e60105f2e7eeed22f00e4e709115f007b38e578767d9a08fb"
+      },
+      {
+        "line": 110,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 111,
+        "utf8": "恢复所有child、全PV对照、rows/原投影/摘要全部通过后，再按slot次序每个child调用16c一次，limits用同原L。最后才返回不可变RestoredBatchSet（restored child definitions/Catalog/完整matches/batch、有限child事实、各R使用量、版本与捕获摘要）。中途没有yield/callback/外部写/partial-success list；最后child坏也无前缀发布。错误只给私有有限reason/classification/阶段/slot，不泄漏source/text/文件路径/traceback：input、expectation、resource与internal分开；不改公共error catalog。receipt明示原payload绑定/前像检查/机制批次一致性，formalAuthority=false，不称完整图语义重算或selected成功。",
+        "bytes": 718,
+        "sha256": "51022ca1e8c4cd67d09cce2f799576f5e439e54808b18b8164cba8c54392acf5"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 117,
+    "endLine": 136,
+    "level": "conservative-R-domain-bounds",
+    "excerptBytes": 5788,
+    "excerptSha256": "96494a0b77a3d0730ee6f96e1fda2f17385ddaa9d8ca37d36b910f2c910ad1f5",
+    "lines": [
+      {
+        "line": 117,
+        "utf8": "符号：B为payload+rows≤8388608；Q为独立input/source前像≤16777216；J为两类JSON的值及key节点≤B+Q（raw Turtle不当JSON）；N≤100；F为实际firing总数≤ΣF_i=1024；M为两处投影的PV occurrence数≤4×32×1024=131072；U为各child不同完整key总数≤M；K为单次key长，S=ΣK≤B+64M≤16777216。每PV.term保存子树互不重叠，decoded UTF8长度不超过各原JSON token字节，故S界涵盖重复source的每个实际出现。typed payload总D≤ΣO_i=262144。上下文ID总bytes≤B、固定17N限额/版本/摘要表另给65536N结构与字节余量；不允许任意自由字段。",
+        "bytes": 638,
+        "sha256": "a83b2971eaec25c800af3509e5bac7d9dcc6766ebc02225047fcff50210e0756"
+      },
+      {
+        "line": 118,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 119,
+        "utf8": "| R域 | 固定上限与逐操作收费合同 | 来源/边界 |",
+        "bytes": 64,
+        "sha256": "7e306298ff3dbc68b9dff7258adbd85b43c10f9af6ae64b6ba01731917cb7e16"
+      },
+      {
+        "line": 120,
+        "utf8": "| --- | --- | --- |",
+        "bytes": 20,
+        "sha256": "a9e436d2babd638ade86791e162e7de5a6b1b3128c6ae9ed93504fbf3c53dc93"
+      },
+      {
+        "line": 121,
+        "utf8": "| wire passes | `6(B+Q)` byte-pass；至多原UTF8/词法一遍、strict parse一遍、canonical读回与对照两遍、rows/source分域核验两遍；raw前像不适用的遍不花，但不回补别域 | 来自原wire/preimage长度；若实现委托json解码，其一次完整输入处理也必须预扣，不能因库调用免费 |",
+        "bytes": 337,
+        "sha256": "51a4129fb76982140b62380069372bdec2466773daf002792e13dbd3e1471c5c"
+      },
+      {
+        "line": 122,
+        "utf8": "| schema key checks | `4096(B+Q+J)` 字符/固定字段检查单位；每对象≤32固定键、每键≤64B，逐候选完整字节比较前扣，不走任意攻击键hash桶 | 固定位置schema的有限表界，包含重复键、recordType与未知键拒绝；不是原W/I |",
+        "bytes": 278,
+        "sha256": "19a571750d3cb2464c5d1e1588f069d4771c27f6fc5161ce00d59b24788677cf"
+      },
+      {
+        "line": 123,
+        "utf8": "| traversal/native construction | `512J+64M+65536N` 节点/引用/小元数据单位；每list/tuple/record按项与固定字段先扣；词法/构建、恢复、原投影、rows、前像重建的完整walk均计，固定算法最多16次树访问，每次≤32单位；metadata按固定N项 | J的wire来源覆盖所有重复occurrence；16是本版本遍历上限，施工代码若多一次必须合并遍历或提交预算合同delta，不可静默增 |",
+        "bytes": 457,
+        "sha256": "bb0e3b29edf34ec6745c8e3c5431e5ab655d69df068ddf40112fbdb3b31ac1c9"
+      },
+      {
+        "line": 124,
+        "utf8": "| integerHex | `2048(B+Q)` hex-char/32bit-limb步；逐8hex块移位或合并，q≤1024；各项先留`q(q+1)+8h+16`，Σh≤B+Q、Σq≤Σh，故≤1049(B+Q)，余量付canonical hex回编码/字段比特门 | 32768bit与wire字符门，含随整数增大的移位/复制，不能只付最终bit数；无decimal解析 |",
+        "bytes": 322,
+        "sha256": "833bba4e5eaf942801ccdefe11f42e3e0c61865dcbb16b286ca4493bad4ba3c3"
+      },
+      {
+        "line": 125,
+        "utf8": "| non-index scan/encode/copy | `64(B+Q+S)+65536M+65536N` byte/char单位；包含UTF8尺寸与编码、key全部字段/framing写、rows逐片拼回、canonical再投影/编码、hex bytes检验/解码、context/摘要字段复制、PV fresh字符串对照的临时编码；每次实际处理长度先扣 | 每PV fresh输出受canonical term/source/bit门，逐值65536余量；其余数据至多固定16阶段、每阶段至多4遍；禁止无账额外复制/临时全树序列化 |",
+        "bytes": 484,
+        "sha256": "7c17855a99f523da1eaa83d221cae81250b040ac661d94c3249eb9657809fd58"
+      },
+      {
+        "line": 126,
+        "utf8": "| cache query | `257(S+M)`，最大4345430016；每key的edge预扣总≤K，分支扫描≤256(K+1) | 确定性完整键查找，首失配预扣亦不退，不假设摘要无碰撞 |",
+        "bytes": 184,
+        "sha256": "771fefa42bde19e2f616c74a8eff53b967c5f9df979ec486d753415c67fc2744"
+      },
+      {
+        "line": 127,
+        "utf8": "| cache split refs | `512U`，最大67108864引用复制单位 | 只cover branch索引引用复制；不声称是所有split成本 |",
+        "bytes": 133,
+        "sha256": "2ca83c449b82fafb834de6a0e50828d8cdb6ab11013f0c52ca16d8e53c21d80f"
+      },
+      {
+        "line": 128,
+        "utf8": "| cache allocation/update | `320(2U+N)+64U+16M` 固定slot/元数据单位；每新node最多256branch slot清零+64字段/链接单位，每miss另64固定更新、每lookup另16；node tickets≤2U+N | edge只保视图；若实际slice复制key尾必须另计byte且重新核S来源，不能藏在split常数 |",
+        "bytes": 313,
+        "sha256": "735edd027b1f8d0258c88e0e37d62b6651bf20ea077777f5e40f7a5b0f6aec89"
+      },
+      {
+        "line": 129,
+        "utf8": "| rule/slot/allocator lookup | `(F+2N+1)×(101B+N)+65536N` 字符/槽检查单位；固定≤N线性完整ID比较，查询≤F+2N+1；ID排序用N有界插入，lim字段逐17项 | 单query候选ID总≤B、query重复≤100B；排序/disabled/allocator校验另余量覆盖；term trie不支付此域 |",
+        "bytes": 305,
+        "sha256": "3a5a20159a1904dc809eab46c17941a313ce5076ac5158f69471dff5bb8f01e7"
+      },
+      {
+        "line": 130,
+        "utf8": "| PV saved-vs-fresh compare | `1048576M` 字符/32bit-limb/字段单位；每occurrence按实际两边长度/limbs先扣，Number/Calendar字段全核、term/source逐字段，绝不只在不等后少计 | exact schema最多固定字段，str≤16384、source≤65536、int≤32768bit，单PV常量界保守；cache hit也付全额实际费 |",
+        "bytes": 343,
+        "sha256": "c0a460b47f1f1b36be59071f5aed2a990eecde66e2c1599b7965af2299320086"
+      },
+      {
+        "line": 131,
+        "utf8": "| hash/digest | `32B+8Q+S+32M+65536N` 读取字节单位；payload/rows、前像、definition/Catalog、typed payload、每occurrence key含32B separator、固定receipt metadata分别列调用记录 | key hash不参与相等判定；typed hash、原JSON摘要和metadata hash独立于R_parse与T05，不免费 |",
+        "bytes": 313,
+        "sha256": "95155be04f45349d7ddae070c67ea71ba29e682a4825656d5e43fb8311438905"
+      },
+      {
+        "line": 132,
+        "utf8": "| retained scalar payload | `16(B+Q+S+65536M+65536N)+4096` 逻辑byte/limb存储tickets；含raw、decoded、canonical临时buffer、cache key、fresh值/指纹和metadata，申请前留峰值，释放仅降live不退累计work | 为有界数据载荷tickets，Unicode按最多4B/code point、fresh值按单PV上限留余量；**不是Python对象RSS字节承诺** |",
+        "bytes": 367,
+        "sha256": "df12c4b4ef39a50edc0f492c86068ee01d0ff9b1a7a653aff92e790d14ba2c8e"
+      },
+      {
+        "line": 133,
+        "utf8": "| retained objects/slots | `8J+16M+2048N+4096` record/container tickets，加trie branch slots `256(2U+N)`、node `2U+N`；每次分配先reserve，PV强引用保留至最终API结束 | 原始/解码/native/reprojection/缓存各固定阶段；旧alias不作为免收费依据；实际Python对象head/allocator开销未转成RSS |",
+        "bytes": 332,
+        "sha256": "72db56476c52893e912591eb459ba4e737822d125a6a8b8b02e96fbe629eb1bd"
+      },
+      {
+        "line": 134,
+        "utf8": "| opaque delegate peak（另预留） | 逻辑scalar bytes `8(ΣI_i+ΣO_i)+2^29`，object/slot tickets `8(ΣI_i+ΣO_i)+4096`；仅一个canonical parse/API/encoder调用在途，调用前reserve整块，返回后解除live预留；保留结果先转上两行 | typed sink的bytearray/bytes及本地replay数据按I/O总量预留；固定栈/数字临时另留64帧×64槽，每槽≤65536+4096逻辑bytes，285212672<2^29；不是实际申请同量内存或RSS承诺 |",
+        "bytes": 469,
+        "sha256": "cecd38db5bd7b41a8fa69d9fa2c9ba93d80d440995ca06708a11cf116842376c"
+      },
+      {
+        "line": 135,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 136,
+        "utf8": "这些域允许保守多付，但不能跨域借余额；source40000不因复用免单。wire/节点/字符串/整数字段预门必须在昂贵操作/分配前生效。字节/节点界先约束恶意输入，PV数/各slot长度在parse前核；若恶意值失败，保证费用有限和原子拒绝，不保证其成功。峰值tickets与累计费用分开，逐项报告实际使用，不用默认总限额冒充已用量。",
+        "bytes": 427,
+        "sha256": "3da6c403eb37defc7fe5786c293b1acab3764e01585d5d9526c9657ba071c96f"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 140,
+    "endLine": 184,
+    "level": "R-proposed-fixed-schedule-and-local-proof",
+    "excerptBytes": 6929,
+    "excerptSha256": "ba1d30ae04ee812ed82105718798f6c5e7373d4e96153fad2ee103469bd27097",
+    "lines": [
+      {
+        "line": 140,
+        "utf8": "本版本只允许下表算法，不把所有未来实现视为满足R。新代码按所属域逐操作扣；不可改的 `_ProfileProjection` / `_profile_json_bytes` 在调用前按对应块整体预付，不用未存在的内部hook。严格构建的native树仅含exact类和普通容器，无任意getter/iterator；固定类分派、对应字段槽访问保守摊为每wire节点≤32结构单位（最多17类、17字段；字段槽各由其wire key节点分摊），字节扫描/大整数/索引另域。typed编码、numeric/regex、fingerprint已有R_parse或16c本地Budget；不把它们假作免费普通walk，其临时持有另reserve opaque peak。",
+        "bytes": 664,
+        "sha256": "85dee703b950c4ac35a630769d14a825b5609191978d390e180803e7111e384d"
+      },
+      {
+        "line": 141,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 142,
+        "utf8": "一“树遍”按本阶段读取的value/key/字段槽累计。每行≤J，多子树累计，不能分别领J。source/definitions合计使用source前像Q的一部分和payload B的一部分；Catalog只编码top一次。child重复Catalog照各自wire出现核同；crosslink比较将相同前缀摊给两份保存出现，首个不等立即失败，不N次无账重扫未在wire出现的top。实现按ordinal直索引child；rule ID只用于排序N次线性插入、disabled最多N次查找、top F次查找及一个入口核对，故查询≤F+2N+1，其字符成本归rule域。",
+        "bytes": 587,
+        "sha256": "ad2d3ba870ed3c966b20c0281f77b5876f6f805c06b870c54c14815708e9cae9"
+      },
+      {
+        "line": 143,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 144,
+        "utf8": "| 阶段 | 固定操作 | 树访问 | scan/encode/copy上限 | live集合、委托前预留 |",
+        "bytes": 94,
+        "sha256": "f3df9d803704ec29f4c5ec1dd8514d3ec91158eaa799beac86402e3582e16492"
+      },
+      {
+        "line": 145,
+        "utf8": "| --- | --- | ---: | --- | --- |",
+        "bytes": 33,
+        "sha256": "d8d10a3fa184fd11d17c736c3848745b7ec62f45570cfc97806e3d203fd9e91b"
+      },
+      {
+        "line": 146,
+        "utf8": "| A1 | strict parser构建payload/rows/witness AST；Turtle前像只UTF8 | J | 4(B+Q) | raw B+Q、AST≤2J tickets、decoded strings≤B+Q；分配前门 |",
+        "bytes": 156,
+        "sha256": "c4ffbf14e392bcb33891fdc528bf83965e30393780d454db9b408b8cac957f15"
+      },
+      {
+        "line": 147,
+        "utf8": "| A2 | schema核字段/int/hex、构建native与未发行PV descriptors | J | 4(B+Q) | AST+native≤4J；字符串复用，整数另域 |",
+        "bytes": 138,
+        "sha256": "ef8de0cf53c5dbf3163931a22b21732d80bcdf6962f43711f2f17f574364bb4b"
+      },
+      {
+        "line": 148,
+        "utf8": "| A3 | exact版本、limits/usage/ordinal/span、child与定义/Catalog关系 | J | 4(B+Q) | 同上；按ordinal索引，无额外ID查询 |",
+        "bytes": 141,
+        "sha256": "10e588f712423d6d606cf9aac5886cb1b167667025b3dcd6e9ba60969639dac1"
+      },
+      {
+        "line": 149,
+        "utf8": "| A4 | 一次处理全部PV occurrence：key/trie/parse/保存值核同 | J | 4S，fresh字符串另65536M | 预留U强引用、S与trie；每parse先留opaque peak和原L_i parse池；其内部工作归R_parse |",
+        "bytes": 213,
+        "sha256": "3fc1717e0a38a081b53e2d6b7096cf9cb5db4eb01cbf8a38504da59e83913f1f"
+      },
+      {
+        "line": 150,
+        "utf8": "| A5 | top firingGroups对child batch逐字段核同左侧 | J | 4(B+Q) | 两份native都在wire；PV全等另域 |",
+        "bytes": 116,
+        "sha256": "fca0f0da0a4fde9ad9e9ff6499f20ab19dd82791e6b69e8845e8a3e7c360e5f0"
+      },
+      {
+        "line": 151,
+        "utf8": "| A6 | 上步右侧访问及最后失败边 | J | 4(B+Q) | 首不等即停，无第三份全树/修复 |",
+        "bytes": 105,
+        "sha256": "7510e8cf8587d3eba31930194c7c2cbe70beb796c392bfcd36d37a132c287b69"
+      },
+      {
+        "line": 152,
+        "utf8": "| A7 | 原result的 `_ProfileProjection.value` | J | 4(B+Q) | 委托前预付32J+4(B+Q)块；safe树≤2J；旧32/1M门照常 |",
+        "bytes": 128,
+        "sha256": "69756970516b5fdd2b2ddc27c4671082d6753c254377517b60e473d64c366c9a"
+      },
+      {
+        "line": 153,
+        "utf8": "| A8 | 同一原projection实例继续source、definitions，累计 | J | 4(B+Q) | 同A7，不重设计数；source来自独立前像，不每child重做top defs |",
+        "bytes": 164,
+        "sha256": "65969c66ad68088e9fd890885a52ed89fa1e7ee1de8842581cb4ef9ab774c1aa"
+      },
+      {
+        "line": 154,
+        "utf8": "| A9 | structured ordinal三项分组重建records/source；Turtle核四字段/域 | J | 4(B+Q) | 仅引用/tuple、临时≤J；不从expected补saved缺字段 |",
+        "bytes": 163,
+        "sha256": "298d54cc167cc0e7b8ebf02beefd2d46535ec8d9fdd747390384a0713cc8c9fa"
+      },
+      {
+        "line": 155,
+        "utf8": "| A10 | structured原独立projection(records) | J | 4(B+Q) | 同A7预付；只一次，消费后释放 |",
+        "bytes": 106,
+        "sha256": "f801e60f85f67b0c39eca80daeaf78399d794fe458f1348f41ec156d9f336b2d"
+      },
+      {
+        "line": 156,
+        "utf8": "| A11 | canonical payload流编码、逐字对照原blob | J | 4(B+Q) | encoder调用前预付本行；bytearray+bytes≤2B，chunk逐个释放 |",
+        "bytes": 146,
+        "sha256": "4244dd509a83d92568cf1bf198a0fab38a606e68df5bdadf072b145bdae7d43e"
+      },
+      {
+        "line": 157,
+        "utf8": "| A12 | rows切片核同与canonical rows流编码 | J | 4(B+Q) | 拼回/编码buffer≤2B；先留tickets，验证后释放 |",
+        "bytes": 127,
+        "sha256": "5ff9ce30623a396ecda7b936827773ea98c34f1478c9629b1b082fc1a60535d5"
+      },
+      {
+        "line": 158,
+        "utf8": "| A13 | source与definitions canonical编码/核前像，累计 | J | 4(B+Q) | 使用A8 safe值；encoder逐次预付，完成释放，不并持各版本 |",
+        "bytes": 156,
+        "sha256": "767264e306bfe4caba8f7e2420412e26612310d02abc71b5413a4c2f458fe1f5"
+      },
+      {
+        "line": 159,
+        "utf8": "| A14 | top Catalog一次canonical编码与可信摘要核 | J | 4(B+Q) | 仅一buffer≤B；child各Catalog由A3核同 |",
+        "bytes": 122,
+        "sha256": "e7cd58f74b1c8689cf298f9192c8cb036e6a1567db7c35e17b15f23add1d17d8"
+      },
+      {
+        "line": 160,
+        "utf8": "| A15 | structured重建records/source与前像逐字核；必要records编码 | J | 4(B+Q) | source复用A13；累计≤Q+B；摘要另域 |",
+        "bytes": 142,
+        "sha256": "45bf372fba95c00ab2eb2cdf37a5ef03a36056bc6fb136f95a7e5466eef49b0f"
+      },
+      {
+        "line": 161,
+        "utf8": "| A16 | 固定receipt、中间树/临时引用清理、最终原子发布 | J | 4(B+Q)+65536N | metadata归N余量；API另池均结束；释放live不退work |",
+        "bytes": 161,
+        "sha256": "c2e21be50a8d013729c3a9e26c291b6608b8adb309cc039e56ed3665d356e09f"
+      },
+      {
+        "line": 162,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 163,
+        "utf8": "16J访问×每节点/字段槽固定摊费≤32，得512J；每行至多4倍数据处理、16行，得64(B+Q+S)，对S保守多付，fresh值字符串另65536M、固定上下文/receipt另65536N。A4的全值比较/R_parse/trie另域，不把大字符串比较藏进32单位。委托的块在调用前整块扣，不事后拿实际usage补扣；原projection计数仅核原门，不替新R付费。",
+        "bytes": 399,
+        "sha256": "d0efdc7e5d332ecfbe2900b6b6c32fd8c924197e3624644101901757b24a6777"
+      },
+      {
+        "line": 164,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 165,
+        "utf8": "同时活跃集合至多AST+native+一份safe tree+一份records/witness临时，覆盖8J tickets；descriptor/native PV/strongref另16M，固定上下文2048N、栈4096，trie另列。raw/decoded/一份canonical/keys/fresh scalar由16倍载荷余量覆盖；已有canonical typed/算术内部不确定临时另外预留opaque peak。普通native重建可逐项reserve；不可改委托前整体reserve其本行全部树和buffer，成功后结果转普通live账、再释放临时块，异常finally清理，不能声称已经逐内部allocate计费。",
+        "bytes": 554,
+        "sha256": "167b5c032e63b959e0db454352cc67c511ee9abd1683735f1b5af8892ec04d04"
+      },
+      {
+        "line": 166,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 167,
+        "utf8": "六个wire pass只数读取原blob/preimage，不是hash或native编码输出：W1 UTF8≤B+Q；W2词法深度/节点/长度/重复key前门≤B+Q；W3受限parse≤B+Q；W4 canonical原wire逐字对照≤B+Q；W5 rows拼回对原payload≤B；W6 structured/source前像最终逐字对照≤Q。合计5(B+Q)，第六整pass为余量，总cap6(B+Q)。hash另域，UTF8编码/rows复制/encoder输出归copy域；不允许未列的额外wire扫描。",
+        "bytes": 449,
+        "sha256": "396ba5f3b2ef2219172917ac335fbfdc410ce914e5acb08722f8155204e40611"
+      },
+      {
+        "line": 168,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 169,
+        "utf8": "| hash调度（所有调用累计） | 最大输入bytes |",
+        "bytes": 59,
+        "sha256": "3fc5997d5ec5332b2d138c2dbaf1f83705a1e3516385de2896fe6e91f7a5cb4f"
+      },
+      {
+        "line": 170,
+        "utf8": "| --- | ---: |",
+        "bytes": 15,
+        "sha256": "68d5d2430e1e4dc47e0eeaf3a4988a6b73e5693f9bca7889f13cb717ff83317a"
+      },
+      {
+        "line": 171,
+        "utf8": "| 原payload、rows两个摘要 | B |",
+        "bytes": 38,
+        "sha256": "92d0ddfdec119096305734290e09ff3a4603fd6b9c1652bb061cd2a037a7ffc1"
+      },
+      {
+        "line": 172,
+        "utf8": "| 原input、source两前像摘要 | Q |",
+        "bytes": 41,
+        "sha256": "2cf195c41bb0b99df9df1ef594acd5e126eaade494abca2f3355cd18480a74b9"
+      },
+      {
+        "line": 173,
+        "utf8": "| definitions、top Catalog | 2B |",
+        "bytes": 35,
+        "sha256": "c6a4ad7707a4a3a9bf24e83dae0173c38846e7c7098c30ad06b3dc13b6b1cd36"
+      },
+      {
+        "line": 174,
+        "utf8": "| 各child保存typed payload各一次 | D≤262144，且D≤B |",
+        "bytes": 65,
+        "sha256": "fac744ca77ab0666ef020eea68b0e06afa109be19ee562b61347264dc189d855"
+      },
+      {
+        "line": 175,
+        "utf8": "| key审计逐occurrence一次 | S+32M |",
+        "bytes": 41,
+        "sha256": "cde11e3dba51d051802a9c0aa5308a79a067ee8fa3d70cf7cad27614c81c63ec"
+      },
+      {
+        "line": 176,
+        "utf8": "| 固定expected/receipt metadata，ID总量≤B | B+65536N |",
+        "bytes": 62,
+        "sha256": "d2a31d4938a2338b1f9b4c3e5f47b4b970e3e13549f4c08fb43eefaaada2460c"
+      },
+      {
+        "line": 177,
+        "utf8": "| structured重建input/source摘要，最多两次 | Q |",
+        "bytes": 58,
+        "sha256": "61262349dc59704cc8f99c5675ffaf9263fe78c68cfaddaedc74907a0a9da790"
+      },
+      {
+        "line": 178,
+        "utf8": "| 可选canonical payload/rows复核摘要 | B |",
+        "bytes": 49,
+        "sha256": "c5a784378f6fc67747df335ec439c17ade7125a0491735211d19218bc73c9b38"
+      },
+      {
+        "line": 179,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 180,
+        "utf8": "累计≤6B+2Q+S+32M+65536N，被32B+8Q+S+32M+65536N覆盖。parse内发行fingerprint归R_parse原机制work/input；16c内fingerprint/typed hash归其三池，临时保留仍用opaque peak，绝非未计hash。",
+        "bytes": 213,
+        "sha256": "196fa1c3d7695f54d5045e4905c569c3eeb51fff3bc5a51e7698370fd4dbe904"
+      },
+      {
+        "line": 181,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 182,
+        "utf8": "opaque peak只证固定源码的逻辑载荷：非递归数字链与至多32层typed walker少于64在途帧，每帧局部/参数/固定schema字段槽少于64；typed/数字处理的原生临时标量文本≤65536、整数limb≤4096。JSON encoder转义后的chunk可大于65536（65536个NUL约393216B），其chunk/sink按A11–A15的B/Q普通buffer reservation预留，不用小槽界覆盖。大typed sink、整批native数组分别由I/O项和已有树tickets负责，不假作小槽。64×64×(65536+4096)=285212672<2^29；typed sink/bytes复制/本地replay另外8(ΣI+ΣO)。不计Python header、解释器、regex/allocator/hash实现或OS RSS，不将此logical模型当512MiB/120秒容量证据。",
+        "bytes": 713,
+        "sha256": "a2ce5cccef6b4ef226f31c445cbd2d07f2f7eada54d599392f60e10d67f98054"
+      },
+      {
+        "line": 183,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 184,
+        "utf8": "本节证明固定算法与debit合同的界，不证明尚未写出的源码已遵守。实施独审必须把实际每循环/委托/同时存活集合映回本表；额外扫描或共存数据表示实现不合本版合同，应在发布前修算法或另报预算版本方案，不能增池/删source/false/head换绿。原成功蕴含以这份实现合同得到证明并完成真实跨进程实测为前提；本轮仅静态方案，未宣称恢复运行通过。",
+        "bytes": 467,
+        "sha256": "4dc31203e0c73d76d24d34ed2b68b295455bda9b617f16383b2695fb3cf78b6a"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "restore",
+      "ref": "851e6241233d8b7a8f944944207260436b524e9f",
+      "path": "docs/iterations/I05/profile-saved-restore-next-plan.md",
+      "bytes": 45463,
+      "sha256": "3f72f07ba535983ca324226be769de2c157303b35b723aa107bf4e6252a1f41b",
+      "lines": 249,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/restore.md"
+    },
+    "startLine": 188,
+    "endLine": 194,
+    "level": "conditional-parse-subset-and-16c-caps",
+    "excerptBytes": 1371,
+    "excerptSha256": "1ad95628cbd6f56ab32f3a9c76bdb4de8ab357af7d713ec7f91c4d3b11bedc3b",
+    "lines": [
+      {
+        "line": 188,
+        "utf8": "每child一个canonical `Budget`，使用原L_i的work/input/结构上限，仅把output_bytes设0；这只是R_parse池，不是改变给新API的原L_i。仅对该child保存PV的不同完整TermInput调用一次parse，不给普通TermInput/termSources全部另parse。0475保留PV只来自成功firing比较，constants由原compile parse、bound值由原_one parse；不同完整key可单射到原child至少一次不同的parse调用。同term重复位置不增加miss；原location非None时恢复None只减少位置校验，其余canonical值处理/发行成本同源。",
+        "bytes": 579,
+        "sha256": "d719324aa40e1e7ea8240cdf935febf60fbf2881f6870874b891ad41edf988be"
+      },
+      {
+        "line": 189,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 190,
+        "utf8": "因此对未篡改、同版、可信原L的原成功：`R_parse_i.work≤W_i`、`input≤I_i`、`output=0`，整次Σwork≤16777216、Σinput≤262144。此证明不能扩大到原source前像处理、JSON/键/对照/hash/保留，也不能扩大到parser-only prefix IRI；那些归上表新域。失败不返还，N槽不各领整次默认池。",
+        "bytes": 349,
+        "sha256": "7e863b11ab7e26760c579008df4f72027ee419ad62bc2585c50b1c4f1c858552"
+      },
+      {
+        "line": 191,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 192,
+        "utf8": "### 6.2 T05三池另计",
+        "bytes": 24,
+        "sha256": "d8694807f6d517febf26e5c8be6a99ae54f4e1f20ac625a4c66496ca035acae7"
+      },
+      {
+        "line": 193,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 194,
+        "utf8": "16c每child三个Budget各同原L_i，及 `K_i=1+F_i+32F_i+4O_i+2×64+2×35+4` 控制单位。全机制revalidation cap为work `3ΣW_i+ΣK_i`、input `2ΣI_i`、output `2ΣO_i`；`ΣK=N(2×64+2×35+5)+33ΣF+4ΣO`。disabled/空批次也占原slot，实际费用由API发生。不能把上表R或R_parse塞进其三池，不能给每个group重开整池。原L provenance仍由外层捕获提供，API不能补证。",
+        "bytes": 416,
+        "sha256": "b0199eca1ac530b8c27721da7582ed20d3a9cb4c904a12a3ca0865ce2db80b1a"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "producer",
+      "ref": "a3592837d854628948ef4c468b6c839f21763273",
+      "path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "bytes": 69523,
+      "sha256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c",
+      "lines": 219,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/producer.md"
+    },
+    "startLine": 128,
+    "endLine": 157,
+    "level": "proposed-C-T-S-H-bounds",
+    "excerptBytes": 11032,
+    "excerptSha256": "74fe7f742f1f89fa441d4c225d3b618cc1e17ca879a4516f64d1da65d289ef09",
+    "lines": [
+      {
+        "line": 128,
+        "utf8": "符号：B=payload_json+rows_json≤8388608；Q=input_preimage+source_preimage≤16777216；N≤100且N=max(1,原rules数)。Turtle原输入≤1048576；structured原input编码≤8388608。原17 L逐Unicode-ID稳定排序/divmod，disabled仍占槽，ΣW=16777216、ΣI=ΣO=262144、ΣF=1024、Σhead=16384、Σtrace=8192、Σbindings=1024，未改。",
+        "bytes": 353,
+        "sha256": "0bead068eb2d94797f3dd833dcabff780775b18577f305a2cdeb82b51bc8fae6"
+      },
+      {
+        "line": 129,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 130,
+        "utf8": "另设P为origin/capture数据metadata（不含大B/Q），按固定字段和两组完整ID/17L记录先界，拟cap16MiB；单次B+Q+P≤40MiB。P界来源须在供应实现逐字段/编码证明，不能允许任意extra JSON；不是新业务容量承诺。origin上游snapshot/定义body/blob既有门另计，不偷并入P。",
+        "bytes": 331,
+        "sha256": "40f9c1333ba111005d1f688c8ccdf9f705b169c27be985c1a5bd90e7c789e762"
+      },
+      {
+        "line": 131,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 132,
+        "utf8": "选定私有worker编码为**lowercase hex**，每chunk原bytes≤32768，hex≤65536；固定header（ID/版本/role/phase/ordinal/length/hash）canonical编码≤4096B，LF单计，所以单frame≤69633<262144。header先校exact primitive、长度与Unicode，再遍历/编码；总长度或header不合门先拒。number字段只允许受限safe int且不接受bool，不用JSON大整数；原L等大/精确int用已声明canonical hex字段。",
+        "bytes": 450,
+        "sha256": "ca8e18ea552359b432a32f9244c0ecb2bf5b42d1582fcdc728482f68667f2cb6"
+      },
+      {
+        "line": 133,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 134,
+        "utf8": "角色/方向按phase固定：production阶段 parent→worker 为 `input-preimage/source-preimage/definitions-material`，worker→parent 为 `payload-json/rows-json/capture`；selected阶段 parent→worker 对所有K均有 **`consumer-input-preimage/consumer-source-preimage/consumer-definition`**，再加每个原结果的 `origin/payload-json/rows-json/input-preimage/source-preimage`，worker→parent 仅本consumer的 `consumer-output`。consumer-input/source为§4实际本consumer snapshot的asserted/ontology及source分层物料，合U≤16MiB，不以producer旧input替代；consumer own role绑consumer Job/op/context/snapshot/scope，producer role再绑producerResultId/index，不能因同名role跨phase/原结果串流。origin由原Store reader供给，不能用child自报capture覆盖。Catalog来自实际原计算；Job/op/context/role manifest绑定，不接受任意path/blob id让worker自行开库。definitions-material及consumer-definition记D，D≤8388608B独立硬门；相关ontology同时保原1MiB图词法/1M图work门，不发送无关家族whole snapshot，原受理owner仍保存完整snapshot。各role连续ordinal、逐chunk累计/增量hash、唯一end/完整长度，重复/截断/错来源/结束后数据拒绝。请求及响应总encoded bytes按实际role manifest先算 `2*Σraw + frames*(header+LF)`，不能只计decoded或借source_content的128chunk门覆盖全部Q/P。T01必须在canonical实现冻结完整request/response各role上限及总量，当前请求不是现成wire。",
+        "bytes": 1538,
+        "sha256": "b0c0487f7a512e6a36a514391be6f10647d3dab645b5148e4e67e439ee950b35"
+      },
+      {
+        "line": 135,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 136,
+        "utf8": "全流一阶段一role、最多一个未ack chunk；先预留再解码/append，backpressure绑定原deadline，不重置totalMs。worker正常complete与exit之前不提交。接收暂存不另开DB/HTTP服务，只有原owner的有界内存/同事务blob staging；二选一实现须T01精确固定，主计划选择**同Store事务外的owner内存有界staging，最终同事务写入**，不从子进程开第二Store。大物料无法在保留限内处理即资源失败，不提高帧/内存阈值。",
+        "bytes": 508,
+        "sha256": "d2cdda14b8526207accd85a84ca965413ba4ed7287788537d31a29e49df372c7"
+      },
+      {
+        "line": 137,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 138,
+        "utf8": "### 8.2 每域实际付费与生命周期",
+        "bytes": 42,
+        "sha256": "76855d825da2f22c917abc5bfcff9c76cc8a4987147d35a32da36d1dc8359d56"
+      },
+      {
+        "line": 139,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 140,
+        "utf8": "| 域                | owner/收费前门                                                                                                                                                         | 不能借用/漏掉                                                                                                                                    |",
+        "bytes": 349,
+        "sha256": "99dd145373195ee87699faf4a28aa33cbb9746de16ed6c59cdcd2b932b595836"
+      },
+      {
+        "line": 141,
+        "utf8": "| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |",
+        "bytes": 338,
+        "sha256": "db7d5d5d30329e9eba524d6531ead147191f5a08c349697b08ed72ba1d481689"
+      },
+      {
+        "line": 142,
+        "utf8": "| capture C         | I05生产record/codec，输入source前固定、实际L/defs/Catalog平行捕获、一次投影/原字节保留；新增每扫描/UTF8/hex/hash/copy/record先计费。                                   | 不声称原W/I支付新metadata；不可因alias免费，不把原projection内部逐allocate假装有hook。实施前给C固定公式/逐loop证明及紧池，不以本表当已证。       |",
+        "bytes": 420,
+        "sha256": "c0f397eba9dbc6fa21bbc55627084362e35ec3d5fb0e73903eff388991f2fc0b"
+      },
+      {
+        "line": 143,
+        "utf8": "| 传输 T            | T01收发原actor；按原byte与encoded frame两侧分别计扫描/hex/hash/组装/副本、header/role/node、活动+退役inflight。                                                        | source_content缓存票据、纯恢复R、16c旧池均不可重复认领。P与definitions role也计总量；不先拼大JSON再拒。                                          |",
+        "bytes": 397,
+        "sha256": "9ca7c1e0b60be10e401fa89f7c808d87cc941f89ab0bd61b5afc50a8b8cd63c9"
+      },
+      {
+        "line": 144,
+        "utf8": "| restore R/R_parse | 每原artifact j恰一个独立pure R_j ledger和原N_j/L_j，consumer Job另有不可重置聚合账；3ef每次原多域与每child唯一完整term parse保持，新projection freeze需实际delta证明。 | 不复用已终态pure ledger、不把K×N塞N≤100、不跨artifact重新divmod。每个原artifact全child和全部K预核完才发布，不从payload拿L或删false/source/head。 |",
+        "bytes": 418,
+        "sha256": "292cdf409a0aee73fe5678d0423c74f7eef67d0e9ac58d1935d73d6e8edfd9f7"
+      },
+      {
+        "line": 145,
+        "utf8": "| 16c               | 每child一次同原L：三池work≤3W_i+K_i，input≤2I_i、output≤2O_i；K_i=1+33F_i+4O_i+128+70+4。                                                                              | 不把source/JSON/R/cache费塞进三池，不每head另开池。disabled None按原唯一映射。                                                                   |",
+        "bytes": 377,
+        "sha256": "2dd3fdc337aaba903bd78ebaf7d5c9c95a09977de9e72f4d812688d40d7717c8"
+      },
+      {
+        "line": 146,
+        "utf8": "| selected投影 S    | I05只读scope owner；完整原input/ontology与validated view遍历、RDFLib值构造、排序/去重/解释/输出另先付。                                                                | 不无账二次JSON解析，不用legacy ill_typed修复profile值，不重算closure或reason；query/SHACL本身另有原门。                                          |",
+        "bytes": 392,
+        "sha256": "97a1bee4e7642a1d8a5cb96450af4192b4b4efaf8c286e295e894b259e1db8c3"
+      },
+      {
+        "line": 147,
+        "utf8": "| 保留 H            | T01原library/Job/lease唯一账本计raw B/Q/P、AST/native/PV/索引、display rows、pipe、source pins和retired。persistent history与可回收cache分账。                         | logical tickets不是RSS/CPU/512MiB保证；临时释放需实际drop/流关闭/child终态；原Job/claim/receipt/origin/L不能GC。                                 |",
+        "bytes": 383,
+        "sha256": "7aa15e66a3de3cc72e61797d17efed93bf164f34253d7f478fc7d5b9680fe86a"
+      },
+      {
+        "line": 148,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 149,
+        "utf8": "拟固定算法预算如下，都是待批准的逻辑合同，不是运行/容量结论。设A=Q+D+8388608+16777216≤48MiB，J取实际相关canonical物料byte上界；每次delegate调用前整块预付，不能事后补usage。C遍历≤128A+65536N、scan/copy≤64A+65536N、hash≤16A+65536N，scalar live≤16A+131072N、objects≤8A+2048N+4096。固定8个准备/投影/metadata阶段各至多16J字段访问、byte扫描有界，typed算术仍原W/I；若实际实现新增第9遍或超此来源，先修改方案/证明而不照常运行。大encoder仍按chunk/data/sink/final bytes普通票，不塞小opaque槽。",
+        "bytes": 628,
+        "sha256": "a1d19dd8e62ce32107d9fc4d3308bf366f41b357efe4691a60c0f6cdf9ae5b32"
+      },
+      {
+        "line": 150,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 151,
+        "utf8": "T按每actor实际收发合计raw X和role数r先算h=Σceil(roleBytes/32768)，data及ack/role begin/end/control总帧数n≤2h+2r+8，E=2X+4097n。production的X含Q/D/B/P，≤48MiB；selected的X≤U+Σ原结果(B_j+Q_j+P_j)+D_consumer+O_consumer，K≤32、U≤16MiB、D/O各≤8MiB，所以累计≤1312MiB；K=0仍X≤32MiB，不把累计传输当同时内存。wire/scan≤6E、copy≤16E、hash≤8E、objects≤64(n+r)+4096、scalar live预留以实际在途/未释放X_live为8X_live+262144；每阶段一role/一未ack chunk、一次只打开一个原结果。有限offset/ordinal，增量hash和有界append，最终转bytes双buffer同时预留。parent原输入仍持有时接收输出、worker旧/新role暂存和退休管道、所有K的U/D都各按真实owner入H；不可在两actor间复用同票。source/definition准备和code manifest查验在parent已有供应预算，不由worker T免费支付。完整envelope的keys/引号/分隔均计4096B header口径，不能另漏data framing；role manifest分有界role-begin传递，不能先把5K+4个role的大清单塞一frame。",
+        "bytes": 1103,
+        "sha256": "7d451a1b5695238e98a58fb82d886d3b6a64ddea23093599e04853a0220f2391"
+      },
+      {
+        "line": 152,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 153,
+        "utf8": "S令V=U+Σ原结果(B_j+Q_j)、N_total=ΣN_j、t为最终待构图三元组数（先界≤100000，超限资源失败不截断），普通fixed-schema view遍历≤128V+65536N_total、scan/copy≤64V+65536N_total、scalar≤16V+131072N_total、objects≤8V+2048N_total+4096。U包含consumer全部asserted/ontology词法与source，K=0时非空或明确空图的canonical物料仍U>0；其严格codec解码/词法扫描/term/value构造及保留不得免费，先由S预付。RDFLib Graph.add/term哈希等不可改库调用按一次图构建opaque块额外预付32(V+1)(t+1)逻辑扫描/比较上界，覆盖最坏碰撞的全串比较，不冒称每个内部操作接hook或O(1)。展示使用原已定顺序，不加隐式无限sort；consumer asserted/ontology从U一次构图，producer input/source只复核原推理，不重复注入其asserted；各validated rdfs/head occurrence按原scope分层一次构图，完整term/value/source对照另按长度付。不得把此大逻辑上界当实际CPU/RSS；固定120s/worker memory监督仍独立。query/SHACL另按其原执行门，不重用S当计算免费。",
+        "bytes": 1118,
+        "sha256": "4e0ec2c6b1d61953b0120efa75ef990aaee5859177e9cfcc92856b5fe88c6b06"
+      },
+      {
+        "line": 154,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 155,
+        "utf8": "R与16c多artifact合同独立于上述S：每producer j分配一个`R_j`，只针对其B_j/Q_j/N_j原界执行new→running→terminal一次；不把N_total≤3200塞进N≤100纯ledger，也不将K个payload/source合并解析。consumer Job持不可重置的外层聚合账（不是第二个pure ledger/Store），受理时从可信角色长度/原allocation计算每域`Σ_j cap(R_j)`并核原owner有限job quota，运行前逐阶段预付、累计`Σ_j actual_usage(R_j)`；每child原term parse记录也按(j,i)唯一记入，切换/失败/重读不退累计费用。若总quota不能覆盖本次预付，潜在超分配前有限失败，不借S/H或另一actor票。串行R临时peak按实际当前R_j及尚未释放部分计，已转交view/native/图由S/H继续同时持有，不能以max单个R_j冒充全部live。16c控制项记`k_ji=1+33F_ji+4O_ji+128+70+4`，总体三池上界为`Σ_jΣ_i(3W_ji+k_ji), 2Σ_jΣ_i I_ji, 2Σ_jΣ_i O_ji`，每原child仍只一次原L的API，不跨结果重分。K=0无R_j/16c，但U的parent C、双方T、worker S及H仍按原owner先付。新view所需R_j delta未证明前不采用，旧3ef单次cap/算法不因聚合而扩大。",
+        "bytes": 1182,
+        "sha256": "85aac5876547c7df0b68f3d099a76b1140939c50e720cbaa701b236f0508b131"
+      },
+      {
+        "line": 156,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 157,
+        "utf8": "这些公式要求C/T/S supplier对最终实际代码逐loop/库委托/并持证明、低限±1和实物资源观测再接收，不假称本轮已证明不存在的实现。H只有T01真实owner能核全actor/retired与持久history累计；提出的production单次准备原物料48MiB、selected累计raw1312MiB都不是全进程内存或产品Q5容量线，不能以48MiB作为selected累计上界。新artifact/history quota字段必须由root/T01冻结实际有限配置，未设置生产准入关闭，内部真实Job验收显式给有限配置；不设Q5默认答案。已闭3ef R不重测充新证据，新view不能自动沿用其R证明。原request/total/memory/concurrency不增。",
+        "bytes": 694,
+        "sha256": "80b38439af9522f6708143b58add375a2e2875a177b54e83a4b5bc22ae3b4538"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "producer",
+      "ref": "a3592837d854628948ef4c468b6c839f21763273",
+      "path": "docs/iterations/I05/formal-producer-and-selected-integration-plan.md",
+      "bytes": 69523,
+      "sha256": "23a4ae9f7974185db61664fb1db892586140ea20995f1bb5950943717bd0ed4c",
+      "lines": 219,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/producer.md"
+    },
+    "startLine": 161,
+    "endLine": 180,
+    "level": "same-issue-selection-authority-and-retention",
+    "excerptBytes": 7358,
+    "excerptSha256": "d687657ed62f405411201712066289f11769e3a7a911808de946f46a58304799",
+    "lines": [
+      {
+        "line": 161,
+        "utf8": "`open_profile_selection(binding_with_full_ordered_ids,current_scope,consumerJob)`由T01owner核完整选择及本consumer U/D。C1 canonical的derivedResultIds为0..32（无uniqueItems）；formal adapter保留原数组顺序，重复ID作为明确semantic-invalid拒绝，不静默去重。asserted-only为K=0；含derived为K=1..32；33项拒绝，不沿用旧_request的len=1限制。每个原结果均核同真实库binding/public/internal project、原result→Job→operation→origin→context→snapshot/definition/source/params/implementation/L闭包、succeeded终态、内容可用、当前权限、current/historical显式选择。binding包括全部有序producer result/Job、consumer原Job/operation、snapshot/scope/parameters、semantics/lock/profile版本和原dispatch。明确保留423b `_dependencies:758–773/create_job:895–898`的实际约束：每selected kind必须reasoning、inputSnapshotId等于consumer原inputSnapshotId、payload available、重叠definition manifests完全一致、完整implementation三字段相同；完整source/definition/参数/代码身份另按本方案更严格核。historical consumer选择相应原historical snapshot，不将V1推作当前V2或以“兼容”暗放宽现门；未来若要改变由canonical owner/root另行版本化批准，不补答Q3/Q8。不能renderer传expected或将metadata resultId恰同当整条来源成立。内部逐原结果的open_profile_result只服务这次完整选择，不授权任意子集。",
+        "bytes": 1496,
+        "sha256": "43b8e391f0675488580744484ad2a3ee35ada078aa497b424ba7a1f278039c5d"
+      },
+      {
+        "line": 162,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 163,
+        "utf8": "I05新adapter只接受该完整selection handle及同consumer原U/D。对每个原结果j建立独立pure expected/allocation和R_j，新worker对该原artifact调用一次restore_profile_result；原N_j/L_j和每child一次16c不跨结果重分池。核完整原false/true/child排序/全部L/disabled/dummy/空batch/source，全部K个原结果的全child核完才提供scope；K=0直接由已付费U建立本次asserted/ontology只读scope，不调用reason或R_j。一次只打开一个原结果lease；向同只读scope/provenance转交时先同时预留，实际drop未转交的原native/缓存/pipe再开下一原结果；已经转交的view/图/索引仍在S/H计持有，失败清整个选择，不发布已完成前缀。C/T/R聚合/S/H累计不随切换清零，全部active/retired计原owner；图并集先界100000三元组，超限资源失败不截断。输出derived先按原result选择顺序、再按完整when/comparison/head/basis/source原次序供解释，展示排序单独稳定定义，不改保存顺序。RDFS、custom、asserted、ontology分层，不能让derived axiom写回或由当前重算代替已选历史。",
+        "bytes": 1145,
+        "sha256": "6b30446b775a2d750201bf3831bafc5e77bf8be542066dcfecd4eb618cb84f09"
+      },
+      {
+        "line": 164,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 165,
+        "utf8": "以consumer原immutable U和新view建立RDFLib图：TermInput保原词法/语言与source，禁止宿主默认normalize改变binary/date/lang身份。K=0与K>0同样使用本consumer的asserted/ontology物料；producer的input/source只服务其严格一致性与来源，不代本次图。RDFS当前仅有限受控闭包；GraphExplanation直接边缺口按M1另补真实生产载体/版本，不能将leaf union标成直接链。query与validation走各自真正语义，scope选择必须与consumer原Job一致；新profile不直接塞legacy五键_selected_output，也不永久返回unsupported：S1–S4和M1就绪后必须接实际consumer与真实UI入口验收。",
+        "bytes": 674,
+        "sha256": "deb5a6f92b643e1917c8c6f8922c80431c05c87f2e80f3b9e5f7e9e8a9caa467"
+      },
+      {
+        "line": 166,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 167,
+        "utf8": "同consumer Job重读只能复用同一活跃readonly handle，不重开R_j/聚合账/三池；worker死亡/取消后该Job按实际终态处理，不自动重试计算。新operation是新的受理/配额操作，建立自己受理时已界的R_j与聚合配额，不能借旧Job已付票或跨Job缓存跳过其一次核验。关闭重开后，原非terminal Job依T01真实reconcile处理；新的合法consumer Job无缓存时从原持久角色恢复一次。缺源/回收/锁版本变化明确有限失败，绝不默默reason。",
+        "bytes": 535,
+        "sha256": "5cc87e684d3e9ec30385cc17844978c0ddcdf0074e68883e71669b12049f20f1"
+      },
+      {
+        "line": 168,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 169,
+        "utf8": "## 10. 活跃/退役/历史保留与释放",
+        "bytes": 43,
+        "sha256": "2410e6c44b990f2a3716ee837456ee69e4ad340c7e49ea7289964128498ccf89"
+      },
+      {
+        "line": 170,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 171,
+        "utf8": "| 对象                         | 活跃持有与唯一owner                                                                   | 失败/取消/撤权/关闭/重开/GC                                                                                                                                           |",
+        "bytes": 308,
+        "sha256": "87d6e5cad04a7d41a97716c48b0a2f8406d5ce26dc6399e33349e0939bee974b"
+      },
+      {
+        "line": 172,
+        "utf8": "| ---------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |",
+        "bytes": 289,
+        "sha256": "56bfe7dacfe605f41ee2386f111be18a554d5fd9f131eee8bed59da28085a7d3"
+      },
+      {
+        "line": 173,
+        "utf8": "| 原source/input/defs          | T01受理物料pin；worker只拿data；original body/reference完整保留。                     | 先fence新读；实际worker/reader/pipe终止后解active pin。仍在immutable job_blobs的内容继续计persistent，不造DELETE；新可回收role payload依owner schema处理。            |",
+        "bytes": 334,
+        "sha256": "5a1c29acc664447355f9c6f4fff93029bef3f937788d5e947888863ca2e4baf0"
+      },
+      {
+        "line": 174,
+        "utf8": "| origin/Job/claim/receipt/原L | 原Store immutable history及同事务关系。                                               | 不因cache压力回收，不改原context补源；响应丢失按原claim对账，重开非terminal按真实reconcile，不自动重算。                                                              |",
+        "bytes": 333,
+        "sha256": "5cfeb6aa1ab4581d9b67a9c01329d0fb3161e137b1530c5bd9ed7baf2c315fa4"
+      },
+      {
+        "line": 175,
+        "utf8": "| artifact cache与display rows | 原Store派生payload+role-aware pin；当前result page只展示普通rows。                    | GC只可清无active/retired pin的payload；metadata retained，payload/source不可用分开有限状态。损坏≠正常evicted；有原字节也须先验当前权限，不能自动补页面伪成功。        |",
+        "bytes": 350,
+        "sha256": "aa8c6f98c23df84cdf77ba561a066d4a91bf47934ec841887839f8ca7a41dfac"
+      },
+      {
+        "line": 176,
+        "utf8": "| native/PV/trie/view          | I05 consumer实际持有强引用，登记在同T01 lease；R临时转交给S/H必须显式同时预留后转移。 | 失败error/traceback清全部native locals，含新增view/Graph；成功只转唯一handle，不留公开半结果。最后用户/worker/pipe真实释放后才降live；不以live0证明GC。               |",
+        "bytes": 361,
+        "sha256": "c998e398f58f9805d90285cb4ee37408362236e6b0d91636237552a9afa62feb"
+      },
+      {
+        "line": 177,
+        "utf8": "| worker/session/pipe/timer    | T01 active+retired cohort；原limits名额包括仍未真正终态者。                           | cancel/permission失效先关闭新任务入口，kill只是请求，await实际exit/stdio/timer/native终态；pending0/stop(void)不释放。窗口detach不等后台结束，须原owner政策完成排空。 |",
+        "bytes": 346,
+        "sha256": "3aff727d48071e8574b9872bde9db4ab74d72b05f0b0b9e8ac5fb0936c9f5d4e"
+      },
+      {
+        "line": 178,
+        "utf8": "| current/历史可见性           | T01 current指针/vector/manifests与invalidation-v2原因；I06真实scope/原dispatch。      | stale按原原因，历史选择明确；历史页可保留metadata但撤权先拒内容。旧库复制/移位不能靠logicalId冒充physical绑定。                                                       |",
+        "bytes": 344,
+        "sha256": "995542912790a079c8a7d30d0df528fdd7d05a68beb3e49de7a1ae02544a7198"
+      },
+      {
+        "line": 179,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 180,
+        "utf8": "缓存键不是摘要相等：完整比较 `{library physical+logical binding, public/internal project, producer Job/operation/result/stateVersion/contextFingerprint, snapshot/vector/manifests, input/source/defs/Catalog/parameters identities, full implementation+lock, all codec/profile/schema/budget/cache versions, original allocation完整tuple, consumer Job/operation/contextFingerprint/snapshot/U/D/scope/ordered selection/permission generation}`。摘要仅索引/完整性；命中仍核原完整身份、origin和权限。保留账本至少区分stage/owner/raw+encoded/live+retired/pins/实际terminal；失败不退累计工作，不借其他actor额度或靠新ledger清账。consumer U/D的parent pin、raw/encoded与worker native/Graph引用同样逐owner记H，K=0也不能漏。",
+        "bytes": 794,
+        "sha256": "1a227222d6bac8492424cfb21396b02f7376bd3c08f0fd08d7bb5faafbdf4655"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "direct",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "docs/reviews/I05/profile-directsteps/inputs/profile-M1-directsteps-consumer-contract.md.raw",
+      "bytes": 34958,
+      "sha256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba",
+      "lines": 229,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/direct.md"
+    },
+    "startLine": 32,
+    "endLine": 52,
+    "level": "direct-occurrence-order-and-issuance-contract",
+    "excerptBytes": 2958,
+    "excerptSha256": "2929efbd1de8fa5468d6cd1a0706e4f0e2d8992ca8d1fd024f0281c2077ec6c1",
+    "lines": [
+      {
+        "line": 32,
+        "utf8": "| `rdfs9-type-via-subclass` | type propagation | `[(x rdf:type A),(A rdfs:subClassOf B)] → (x rdf:type B)` |",
+        "bytes": 111,
+        "sha256": "33fd21ba9ccc84d9e75de1265a1a3af034cc840c542ccb77a1ce7e48d5695f28"
+      },
+      {
+        "line": 33,
+        "utf8": "| `rdfs11-subclass-transitive` | subclass transitive | `[(A rdfs:subClassOf B),(B rdfs:subClassOf C)] → (A rdfs:subClassOf C)` |",
+        "bytes": 131,
+        "sha256": "46b009a08e1b2189098c67184a8c362523db93baf98438e6824a71202db30dbf"
+      },
+      {
+        "line": 34,
+        "utf8": "| `rdfs2-domain` | domain branch | `[(p rdfs:domain A),(x p y)] → (x rdf:type A)` |",
+        "bytes": 86,
+        "sha256": "65242c4f61fa3eae5da9a3e172cf2ac2a45f5a17442a763ebbf3be6786005fe5"
+      },
+      {
+        "line": 35,
+        "utf8": "| `rdfs3-range` | range branch | `[(p rdfs:range A),(x p y)] → (y rdf:type A)`；实际代码已有 URIRef subject 门 |",
+        "bytes": 123,
+        "sha256": "d2394c3699bfe88ee4c30233f3099694e40ee357f319dfa7562274c1df24d9a4"
+      },
+      {
+        "line": 36,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 37,
+        "utf8": "每次 `append` 的新增 tag/额外 tuple slot 均先计新池；**重复/已存在结果、最终未入选的候选也计费**。在原 `if triple not in closure` 内，先通过旧 MAX_TRIPLES、旧 debit/union，再在任何新增容器构造前预留新池；保存当前两个输入的临时`SeedKey(真实canonical TripleKey)`或`StepOrdinal`引用、tag、result、`ordinal=len(steps)`、`depth=1+max(d0,d1)`，然后随该次实际成功插入一起确立。此时leaf ID尚不存在：6c的leaf_ids/leaf_records在闭包返回后的958–973才创建。新sink不得提前再hash leaf、从expected拿ID或增加另一来源表。由该唯一既有leaf发生点在原ID确立时执行`link_seed(actual_key, existing_leaf_id)`；wire编码前必须全量resolve为§3的最终DirectRef，悬空即整任务失败，native公开结果与wire都不得残留SeedKey。link的每次索引查找/键扫描/引用或字符串复制/临时释放都先计D池；临时SeedKey/索引与最终carrier并持峰值不相互抵扣，resolve完成再释放临时票。发生任意后续错误，整次生产不返回 carrier，不发布 partial steps。不得把失败后短暂留存的数组当成功观察。",
+        "bytes": 1206,
+        "sha256": "7d6b51d16b6934e4ff19091cef5d0407516bde3f2ce2706f904bf64ad6c50067"
+      },
+      {
+        "line": 38,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 39,
+        "utf8": "seed leaf depth=0；每个 result 只登记一次。引用前件来自生成该批候选时已经存在的 closure，故只能是 seed leaf 或此前实际 step；保存全局首插入序号，不按最终 result 排序重编号。即使某条后续更短 witness 被发现，保第一次选择及实际 depth，不覆写。原 `proofs[result]` 的叶 union 仍由原代码产生。",
+        "bytes": 383,
+        "sha256": "9ffd690520fc77b9047ac66f8d03cd9deedf5287d3203d1b4eaa53b7fec2045f"
+      },
+      {
+        "line": 40,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 41,
+        "utf8": "**不用再次 reason/replay 整图来生成解释**，也不扫描叶 union 搜索一套“看起来合理”的直接边。接收端对给定两前件做四模板局部一致性检查，不枚举候选、不补结果、不评估 false 比较，因而不是第二推理器。",
+        "bytes": 277,
+        "sha256": "c94b6068545d8bbdf05cf5ffe761867f742e2892429217e46fe9419b428df63e"
+      },
+      {
+        "line": 42,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 43,
+        "utf8": "## 3. 最小完整新 wire 合同",
+        "bytes": 34,
+        "sha256": "9153992184362adaa096a13047bc5c3a6a66a7718ea7a550fd94db97900a2683"
+      },
+      {
+        "line": 44,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 45,
+        "utf8": "申请在新的 reasoning 对象只增加 `directSteps` 一个字段；除§4明确升级的formatVersion/semanticsVersion，其余13字段原值原形保留。外 payload 仍七字段，mechanismBatches 每 child 仍十一字段。`directSteps` 的 exact key set：",
+        "bytes": 267,
+        "sha256": "43a61ea1afa0fc1714cfdcaf54a816d00a130c4686970fc65b0da3063fcd3abe"
+      },
+      {
+        "line": 46,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 47,
+        "utf8": "```text",
+        "bytes": 8,
+        "sha256": "d6f1fa7b57337afbb66754f2ed1e7eb7c1afb830e9efef50b338105bf948bac6"
+      },
+      {
+        "line": 48,
+        "utf8": "DirectSteps = { format: \"i05-direct-rdfs-steps/1\", steps: tuple[DirectStep,...] }",
+        "bytes": 82,
+        "sha256": "e0722e47b0b09f05d7d23fc5a17bb8446d599330c93d532d3caa13fc2cc2e370"
+      },
+      {
+        "line": 49,
+        "utf8": "DirectStep  = { ordinal: int, rule: enum4, result: TripleKey,",
+        "bytes": 62,
+        "sha256": "6c7340f2d5aea2df59bb14474d6442154388b58a3ed4711ef12f4149d5911414"
+      },
+      {
+        "line": 50,
+        "utf8": "                premises: tuple[DirectRef, DirectRef], depth: int }",
+        "bytes": 68,
+        "sha256": "3173032f4af7436733b056a9db1a7554a4c2b4e996b7b1312be5bccc8fffe8f7"
+      },
+      {
+        "line": 51,
+        "utf8": "DirectRef   = { kind: \"leaf\", reference: existing_i05_proof_leaf_id }",
+        "bytes": 70,
+        "sha256": "d8051a9c57537f014deebf47766d8234eadfb707ab49fa25ff99d74f7c3c4f44"
+      },
+      {
+        "line": 52,
+        "utf8": "           | { kind: \"step\", ordinal: int }",
+        "bytes": 44,
+        "sha256": "91a52a77f9985d8a7f4d58b87c84d4d9f7a296e50e8508a770093de3ce76030f"
+      }
+    ]
+  },
+  {
+    "source": {
+      "name": "direct",
+      "ref": "6891a5842302859a531cf82767c5a482417bc274",
+      "path": "docs/reviews/I05/profile-directsteps/inputs/profile-M1-directsteps-consumer-contract.md.raw",
+      "bytes": 34958,
+      "sha256": "c947430801e6b3cca113c15a856704c3d5bed418efa9083d67819830a6961fba",
+      "lines": 229,
+      "copy": "docs/reviews/I05/independent-fee-spec/author-v2-inputs/direct.md"
+    },
+    "startLine": 117,
+    "endLine": 155,
+    "level": "direct-fixed-charge-and-partial-upper-bounds",
+    "excerptBytes": 8562,
+    "excerptSha256": "f1d32564c4401e8057ca5449e722ef450e78fc985d110198939a990e9058294b",
+    "lines": [
+      {
+        "line": 117,
+        "utf8": "```",
+        "bytes": 4,
+        "sha256": "47c06c561d5c327343685268a46b3391f3998eee890d2be51f0d21cc4a53ae6d"
+      },
+      {
+        "line": 118,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 119,
+        "utf8": "`ExplanationRestoreExpectation`是独立exact class：包含与旧RestoreExpectation相同的实际digest/implementation/input/source前像字段，加固定schema2/direct-budget1标识，不继承旧class伪装为schema1。`OriginalAllocation`仍仅来自这次producer实际L，新增direct limits/usage/retained独立进入DirectStepsReceipt，不改原allocation子表或原L。",
+        "bytes": 383,
+        "sha256": "b9a158b593de8dc9ea1aaf4030f8c451c993b3191ef0e1eb093543e81db32361"
+      },
+      {
+        "line": 120,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 121,
+        "utf8": "roots仅返回已有节点的引用：leaf、finite-step，或 `{kind:\"ruleHead\",firingIndex,headIndex}`；相同目标匹配的所有真实head occurrence都保留。无目标返回空tuple，不推理补齐。它是已获准完整artifact的**内部只读定位API**，不是过滤权限、单目标传输DTO或正式selected入口；持有view本身已经持有完整结果，不用“只返root”冒充安全裁剪。",
+        "bytes": 423,
+        "sha256": "d2be7b68872d3081b19b2d0954e7869b2a5721513a41e3e52ee82fad4c616052"
+      },
+      {
+        "line": 122,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 123,
+        "utf8": "旧 `execute_admitted_profile_job`、`restore_profile_batches`、`restore_profile_result` 继续精确 /2 + finite7 + schema1；旧 private `reason` 不默认产生新字段。新API只接受 /3 + finite8 + schema2 + directsteps1；未知/混配版本立即有限拒绝，**不靠key存在猜版本、不删字段降级、不重签历史**。历史/legacy五key selected沿原函数；schema1解码不扩全局JSON_KEYS来容忍新字段。新Reader以显式schema模式选择固定新增key集，仍严格拒unknown/duplicate。",
+        "bytes": 530,
+        "sha256": "08c66da7f1927b513bc99c06e990ec131efc4313609ec447a0fb9ad45d1f6c9a"
+      },
+      {
+        "line": 124,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 125,
+        "utf8": "`resources.semantic_identity`申请唯一owner增加 exact bool `explanation=False`（旧参数默认不变）；explanation=True仅允许profile=True，只有新真实计算分支调用，返回finite8；`IMPLEMENTATION`的infrastructure身份、engineVersion、lock hash及公共registry不改。所有相同version必须从这一个函数取得，不在T05/test临时改字典冒充新producer身份。",
+        "bytes": 406,
+        "sha256": "1e78b67bb105755d00fdb8e430a89da8dcb1fc49ef493020e05db70a696e67e6"
+      },
+      {
+        "line": 126,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 127,
+        "utf8": "新私有 `DirectStepsFailure` 仅含固定reason/classification/stage/domain，无输入值/路径/trace；invalid/limit/reused/internal四类，失败不退累计工作。旧图/规则错误仍保原diagnostic/public adapter。此内部API不新增公共error code；将它接入真实Job前由I05错误适配与T01边界另固定现有公共错误映射，未授前不得跨边界原样抛异常。",
+        "bytes": 402,
+        "sha256": "13ccd15624d7c8f0444abd5990d8083714760a90ffc0f5fe354e12031b6c95db"
+      },
+      {
+        "line": 128,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 129,
+        "utf8": "## 5. 有限费用增量：所有候选、DAG展开、整流与并持",
+        "bytes": 70,
+        "sha256": "868f0dc2f284f8c94f9f7601ca63e05fcff90f60a00967f5e422f307ee173b77"
+      },
+      {
+        "line": 130,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 131,
+        "utf8": "原L/原图work/旧C/R不能提高或用新池抵扣。申请新 `DirectStepsLedger` 分池记录capture与每个restore/roots操作；lower-only override、一次使用、成功转移retention、失败清引用但累计费不退。额外池可使新解释模式更早有限失败，不宣称原最大图现在可解释。",
+        "bytes": 323,
+        "sha256": "132a3a513ef3c3dc926b895d98f00f31e17c4bad08326c399ac2fb3ccbd13747"
+      },
+      {
+        "line": 132,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 133,
+        "utf8": "固定物理上界沿6c：`MAX_TRIPLES=100000`、`MAX_WORK=1000000`、payload+rows联合`M=8388608`字节。新capture只走profile meter路径：每候选原有charge1+append debit3，因此被接受的全程候选数A≤250000；失败attempt仍先对本次新动作计费/限额。步S≤100000−N（N为真实seed去重三元组数），E=2S、depth≤S；不是A=S。新池另限制累计新索引key字节K≤M、carrier编码字节B≤M，整payload+rows仍≤M。所有限额均为提案，不是容量验收。构造计数器/容器前先开固定128-unit控制票；不足128不初始化池容器。",
+        "bytes": 611,
+        "sha256": "319ad717c7a83dfa3a48590efa37750bcc682c62cafc1b9ae55969fbfe0cac80"
+      },
+      {
+        "line": 134,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 135,
+        "utf8": "**索引实现约束**：不另 reason，不对每步扫描全图。新增TripleKey→leaf/step索引采用有限二叉byte trie（UTF8、三段显式长度前缀），每字节8次边访问；node至多 `1+8K_unique`、每node固定2槽，所有构造/边访问/原字节复制预扣。key encode先按原str字符长度预扣UTF8最坏4倍，再分段写入有界buffer，实际每次重复编码/比较计入K；累计K而非仅unique长度限额。候选只增加固定tag/slot，不重新生成key或排序；借用原已生成真实key，索引所需新拷贝另计。禁止把native dict/hash lookup、全串比较或sort当无成本无限操作；若owner复用另一已证有界索引，须给相同精确计费证据后改本实现申请。",
+        "bytes": 751,
+        "sha256": "4f61b8382fa1e1d2108ce364b90f13356ab512be3bf7cba5cb53ec1689d70ab4"
+      },
+      {
+        "line": 136,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 137,
+        "utf8": "| 发生阶段 | 每次实际新增工作的计费规则（逻辑单位，不是CPU/RSS） | 同时持有内容 |",
+        "bytes": 114,
+        "sha256": "293af64f1c94d26eb4c389ddff8e4990f818b9f5a6135f19f14f3e4923c80e3f"
+      },
+      {
+        "line": 138,
+        "utf8": "| --- | --- | --- |",
+        "bytes": 20,
+        "sha256": "a9e436d2babd638ade86791e162e7de5a6b1b3128c6ae9ed93504fbf3c53dc93"
+      },
+      {
+        "line": 139,
+        "utf8": "| 候选产生/首插入 C_D | 每候选8 traversal、4 objects峰值票；每step32 traversal、12 objects；每索引字节16 traversal、2 scan/copy；每新byte复制1 scan/copy | 本批候选A_live、临时SeedKey、全steps、索引、原closure/proofs和既有key同持；借用新增引用也预留D票，原物料实际保留责任另列，不能由旧L推断物理字节已收费或释放 |",
+        "bytes": 401,
+        "sha256": "00dcd8accb981d35f94543c7f732dde19eb33e181c3e2d402ac1292681f7377c"
+      },
+      {
+        "line": 140,
+        "utf8": "| leaf linkage/全result coverage | 每实际表项/边/字段访问1 traversal，str比较按访问字节，union每输入leaf occurrence与每输出leaf引用各1 traversal并各预留slot | 原proofLeaves/evidence仍活；新DAG临时与其核对表同持，完成核对才释放临时票 |",
+        "bytes": 294,
+        "sha256": "b3861625280eeeba10eb586528364dcf8c24c9afb60b9a69715dd7f6f20ee74f"
+      },
+      {
+        "line": 141,
+        "utf8": "| 新 JSON 投影/冻结 | 遍历字段/数组槽每项1，复制str/bytes每byte1；新carrier B字节编码/解码buffer各先预留；int仍走原bounded codec | native carrier、projected tree、encoding buffer、payload/rows buffers与原字节同时计峰；不得仅保最后一份B |",
+        "bytes": 292,
+        "sha256": "d755dcf1f2392d1b4ed53042e9be0c4ad080f9c5957c9b1f9cf6373ae316d8bf"
+      },
+      {
+        "line": 142,
+        "utf8": "| R_D 每次接收 | schema/type/ref/template/depth逐项计；leaf-union DP逐实际输入/输出收费；canonical key索引创建/查找逐byte计；完整冻结/receipt计 | incoming payload/rows/preimages、raw解析树、typed view、索引、leaf-DP暂存、原恢复batch、opaque revalidation同时保票；每R_j新池，不能缓存跳过最后字段 |",
+        "bytes": 364,
+        "sha256": "b220bbdd20b5147ba187fb89840e3a36bc5216ddbab5857cae7bf664a63e7349"
+      },
+      {
+        "line": 143,
+        "utf8": "| roots/S | 目标与全结果索引实际访问计费；一旦输出完整selected物料，输入J、扫描字段V、输出J_S与所有重编码/复制均按全量计，不只新字段B | root结果若借view，则H保整个view/bytes/indices；不能按root数量计retention |",
+        "bytes": 280,
+        "sha256": "5aff1c40a7ced4f309fe91b1d44408ad854b6b0dd2616eecda1d9673ec96105f"
+      },
+      {
+        "line": 144,
+        "utf8": "| T/持久化复制 | 每次真实serialize、hash、拼帧、copy、parse按实际完整J=payload+rows+必要前像计；已有C/R的whole-stream预算也必须用实际新J | 发送缓冲、接收缓冲、Store bytes和解码对象同时保票；不得把Δcarrier B当成每次全流复制的收费量 |",
+        "bytes": 307,
+        "sha256": "3058ccf55576f038dfa5399d34043413a98d4bd8e2d3212245ac1401dd7064f6"
+      },
+      {
+        "line": 145,
+        "utf8": "| H/退役 | 接收之前reserve实际转移票；旧current变history/retired仍按实际引用承担，drop引用后才归还live票 | source/原件、视图、steps、所有共享返回引用的真实责任，不因R.cleanup/live0免H |",
+        "bytes": 240,
+        "sha256": "85e577abdc36154b0c91a3648bcb5809a3b1cb0dfd1845d6b355c89370c28c02"
+      },
+      {
+        "line": 146,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 147,
+        "utf8": "新ledger累计域精确为work/scan_copy，live域为objects/scalar；表中的traversal统一记入work，所有copy/encode/compare扫描同时计work和scan_copy，不能只减live。stage为entry/capture/link/encode/restore/roots/receipt/cleanup，new→running→completed或failed；复用拒绝，不改前次票。费用上界用“有限池+实际动作扣费”确保失败终止，不预言运行耗时。capture固定项目的分析子界为 work `128+8A_cap+32S_cap+16K_cap`、objects `128+4A_cap+12S_cap+4(1+8K_cap)`、scalar `128+2K_cap+4B_cap`；这些是分析子界，不再开一个可重复借用的work钱包；所有项目合并计入同一work/scan_copy通用上限，leaf-union/coverage等也扣同一池，不能漏记。work/scan_copy各设lower-only `64M+128(A_cap+S_cap+1)`，objects/scalar仍按实际reservation受本池与8MiB总流门双约束；若所有项目之和超限即有限失败，不得额外借原L。预算模型JSON列整数展开，属于静态算式，不是实跑usage。",
+        "bytes": 1021,
+        "sha256": "4cc7d7012b3b57c9ff1e71123aebbde4c4517515482939c52b36728b5936e9ff"
+      },
+      {
+        "line": 148,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 149,
+        "utf8": "接收端叶DP最坏复制可达N×S；实际扣费且被通用池截断，不能仅以2S直接边承诺线性整体空间。每步leafset用有界索引/bitset，输入/输出/排序均收费；若使用bitset，每次读写的全部machine word和零初始化也收费。不同时构造不收费的全路径树。",
+        "bytes": 316,
+        "sha256": "fdfde9b7645b677e6ccd5e31a386fec8e15dd8431344a8020ff36a4aa9d9dab9"
+      },
+      {
+        "line": 150,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 151,
+        "utf8": "现C0预扣基于M覆盖整树投影/编码；R0原读流/strict child遍历按实际新J执行。新增模式的generic整流动作不因此免费；在对应原C/R记录后，新增D池可保守重复覆盖其新字段部分，但两池都不得事后退款或假称互相替代。T/S/H尚无本窗口正式实现/配额，必须由T01受理时独立保留各R_j与聚合Σ；K0…32每artifact的全部原费用/新费用累加，H跨current/retired保留。新JSON大于旧帧时保持真实分页/行上限，不能偷偷加frame或锁文件。",
+        "bytes": 550,
+        "sha256": "b3599b597088354d129d28377864033bc87a0131b824a08337ccea8c4cdd7ff0"
+      },
+      {
+        "line": 152,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 153,
+        "utf8": "## 6. 原writer与精确源码申请（本轮全为只读）",
+        "bytes": 61,
+        "sha256": "28673fdfdcb111e6ba1dc1f9f7b7bc5eb257633bce4b3416be7da664b73946ba"
+      },
+      {
+        "line": 154,
+        "utf8": "",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      {
+        "line": 155,
+        "utf8": "所有现有路径旧ref/字节/SHA见 `source-window-request.json`；新路径oldSHA=null且本树不存在。根须逐路径授写，不把本申请当整commit/全树授权。原I05在独立实施树一次集成共享writer，T05不抢写。规则七quality模块、原restore_budget逻辑、material语法、Turtle parser、Store/worker/公共contracts/锁/构建默认delta=0。",
+        "bytes": 384,
+        "sha256": "2c316b5de0d8f77ed4bc0cc1f2d0d91f4287b0a1ce5dd51a177c9c51cb482e6b"
+      }
+    ]
+  }
+]

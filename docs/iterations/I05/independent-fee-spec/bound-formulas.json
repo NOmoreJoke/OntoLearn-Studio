@@ -1,0 +1,106 @@
+{
+  "format": "i05-independent-bound-formulas/1",
+  "classification": "exact cap formulas and conservative local bounds, not current exact invoices or actual usage",
+  "R": {
+    "source": "851e6241233d8b7a8f944944207260436b524e9f:docs/iterations/I05/profile-saved-restore-next-plan.md:117-184",
+    "parameters": {
+      "B": "payload+rows actual bytes <=8388608",
+      "Qp": "input+source preimage bytes <=16777216",
+      "Jnode": "value+key nodes <=B+Qp",
+      "N": "original child count 1..100",
+      "Fused": "actual firing count <=1024",
+      "Mpv": "PV occurrences <=128*Fused <=131072",
+      "Ukey": "different full keys <=Mpv",
+      "Kocc": "sum full key occurrence bytes <=B+64*Mpv <=16777216",
+      "Icap": "sum original child input caps <=262144",
+      "Ocap": "sum original child output caps <=262144"
+    },
+    "domains": {
+      "wire": "6*(B+Qp)",
+      "schema": "4096*(B+Qp+Jnode)",
+      "traversal": "512*Jnode+64*Mpv+65536*N",
+      "integerHex": "2048*(B+Qp)",
+      "scanCopy": "64*(B+Qp+Kocc)+65536*Mpv+65536*N",
+      "cacheQuery": "257*(Kocc+Mpv)",
+      "cacheSplitRefs": "512*Ukey",
+      "cacheAllocation": "320*(2*Ukey+N)+64*Ukey+16*Mpv",
+      "ruleLookup": "(Fused+2*N+1)*(101*B+N)+65536*N",
+      "pvCompare": "1048576*Mpv",
+      "hash": "32*B+8*Qp+Kocc+32*Mpv+65536*N",
+      "scalarLive": "16*(B+Qp+Kocc+65536*Mpv+65536*N)+4096",
+      "objectsLive": "8*Jnode+16*Mpv+2048*N+4096+256*(2*Ukey+N)+(2*Ukey+N)",
+      "opaqueScalarLive": "8*(Icap+Ocap)+536870912",
+      "opaqueObjectsLive": "8*(Icap+Ocap)+4096"
+    },
+    "requiredPremise": "fixed A1..A16 schedule; no extra pass/delegate/live representation; same original limits and exact original preimages"
+  },
+  "C": {
+    "source": "a3592837d854628948ef4c468b6c839f21763273:docs/iterations/I05/formal-producer-and-selected-integration-plan.md:149",
+    "classification": "proposed eight-stage conservative caps, not already-proven full invoice",
+    "A": "Qp+D+8388608+16777216 <=50331648",
+    "traversal": "128*A+65536*N",
+    "scanCopy": "64*A+65536*N",
+    "hash": "16*A+65536*N",
+    "scalarLive": "16*A+131072*N",
+    "objectsLive": "8*A+2048*N+4096",
+    "localProofOnly": {
+      "bootstrapObjects": 64,
+      "hashBeforeFiveDigests": "4*8388608; input+source<=2M, definitions<=M, payload+rows<=M; Catalog separately actual length",
+      "sourceExcerptSha256": "7f66f8cdddf35462b55fb226f7ed76fe362ec3c490af3cc461f1aa6b20acf713"
+    }
+  },
+  "D": {
+    "source": "6891a5842302859a531cf82767c5a482417bc274:docs/reviews/I05/profile-directsteps/inputs/profile-M1-directsteps-consumer-contract.md.raw:133-151",
+    "fixedCaps": { "M": 8388608, "Acap": 250000, "Scap": 100000, "Kcap": 8388608, "Bcap": 8388608 },
+    "fixedTraversalSubBound": {
+      "formula": "128+8*Acap+32*Scap+16*Kcap",
+      "value": 139417856,
+      "notExtraWallet": true,
+      "excludes": "all independent scanning/copying, link/coverage/DP/whole-J/receipt/cleanup not covered by a proved containment"
+    },
+    "objects": { "formula": "128+4*Acap+12*Scap+4*(1+8*Kcap)", "value": 270635588 },
+    "scalar": { "formula": "128+2*Kcap+4*Bcap", "value": 50331776 },
+    "generalWorkAndScanEach": { "formula": "64*M+128*(Acap+Scap+1)", "value": 581671040 },
+    "newProposalIndexedByte": "16 traversal work + 2 scan_copy; those 2 scans also cost 2 work unless proved already included; this proposal pays 18 work/2 scan_copy; analytic16K remains a traversal subbound",
+    "otherPremises": [
+      "all candidates not just inserted steps",
+      "temporary and final indices/carrier overlap",
+      "all repeated keys cumulative",
+      "DP may require seedCount*stepCount leaf copies",
+      "all old C/R whole-J flows remain charged"
+    ]
+  },
+  "T": {
+    "source": "P:151",
+    "classification": "proposed actor-specific bounds",
+    "h": "sum ceil(roleBytes/32768)",
+    "nUpper": "2*h+2*roles+8",
+    "EUpper": "2*X+4097*nUpper",
+    "wireScan": "6*EUpper",
+    "copy": "16*EUpper",
+    "hash": "8*EUpper",
+    "objects": "64*(nUpper+roles)+4096",
+    "scalarLive": "8*X_live+262144",
+    "notActual": "nUpper/EUpper are not actual frame/byte counts; both actors have separate costs"
+  },
+  "S": {
+    "source": "P:153",
+    "classification": "proposed conservative scope bounds",
+    "V": "consumerU+sum(Bj+Qpj)",
+    "Ntotal": "sum Nj; not a single R ledger N",
+    "traversal": "128*V+65536*Ntotal",
+    "scanCopy": "64*V+65536*Ntotal",
+    "scalarLive": "16*V+131072*Ntotal",
+    "objectsLive": "8*V+2048*Ntotal+4096",
+    "graphOpaque": "32*(V+1)*(t+1), t<=100000",
+    "consumer": "K=0 still pays U/C/T/S/H; query/SHACL own computation separately"
+  },
+  "H": {
+    "source": "P:169-180 and D:145",
+    "classification": "real owner supplies finite caps, not present proof of RSS/CPU or production quota",
+    "required": "active+retired raw/encoded/native/PV/view/indices/pins/history, receive-before-release, actual terminal before dropping responsibility"
+  },
+  "mechanism": "actual original W/I/O and structural17 gates remain; no cap raised by any formula here",
+  "revalidation": "sum(3*Wi+203+33*Fcap_i+4*Ocap_i), 2*sum Ii, 2*sum Oi; cap not usage",
+  "Rparse": "conditional same-version original success subset <=sum Wi, <=sum Ii, output0; not all R"
+}

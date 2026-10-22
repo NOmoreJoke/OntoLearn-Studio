@@ -1,0 +1,31 @@
+{
+  "format": "i05-permitted-local-mathematical-proof-excerpts/1",
+  "sourceRef": "2d5cbc55a7e33c9c890f29bc4e2ff0eb8bebdad5",
+  "sourcePath": "docs/reviews/I05/profile-production-fullview/independent-budget/delta-6c1eec4-report.md",
+  "sourceBytes": 6464,
+  "sourceSHA256": "1a1289b5a516d9acb2e06a1e0f4f1dc62ec50a1b7aba84ed6d1a3bdb2bff0ba9",
+  "classification": "postimplementation independent local proof only; not complete invoice or prior pure standard",
+  "selectedLines": [
+    {
+      "line": 18,
+      "text": "production.py:98–115：enter stage6后立即debit hash 4M，发生在任何projection/三次摘要委托前；stage7的旧4M debit已删除。stage8 Catalog仍用原按实际len先扣 `_hash`。五个原摘要的来源界是 input+source≤2M、defs≤M、payload+rows≤M；最后一项的联合长度门在两次wire摘要之前，因此4M覆盖实际五次，失败路径也不会先执行无票摘要。无第九stage、无重复收费或扩cap，原C五域默认公式未变。",
+      "utf8LineBytes": 485,
+      "sha256": "d01675b2ddfff7948746c76089d943aa5678d7b0f57b4b62712a576edb359820"
+    },
+    {
+      "line": 28,
+      "text": "begin:97–131先要求new并立即转running，再exact Q/D/N及范围门；只从固定参数和≤5项已验证override计算effective objects lowercap。control_limit<64在创建六个计数/阶段容器之前拒绝。通过门后，live/peaks直接初始化objects64；不是先分配再reserve，也不加64到cap。0/63无法借容器初始化取得超界预分配，失败后原prepare清理将ledger设failed，不能重新begin。",
+      "utf8LineBytes": 441,
+      "sha256": "ea871f2a9a59c9b4217f35a24e9faa0fb36673f225009c28be09a2c2a3548806"
+    },
+    {
+      "line": 30,
+      "text": "64控制票的归属是固定bootstrap元数据，既不是raw/source/native数据，也不是可重复使用的对象余额。按比现有容器票更保守的“每dict对象+键/值引用、每stage list对象+8引用，并另计五个新caps整数”计数：caps≤16、used≤7、live≤5、peaks≤5、stage arrays≤18，总51；剩余13覆盖这些固定构建的iterator/短暂单元素乘法builder/固定计算临时对象。dict键/域元组为模块常量；调用者已存在的exact ledger、override tuple及其成员不是这里新复制的容器。构造验证和开户谓词是固定≤5域控制前门，不是按用户数据大小遍历的额外stage，也没有把它说成大数据遍历已扣traversal。新代码的注释将“effective lowercap检查通过即开启控制票、初始化64只是记账”写明，避免后置补票解释。上界是逻辑对象/引用合同，不是CPython allocator/RSS精确字节。",
+      "utf8LineBytes": 946,
+      "sha256": "8ceb385025b29b3dfba1c498cab2f4dbc3fe088ef9e39efe9e25d8e50f69bb11"
+    }
+  ],
+  "restriction": "Read these exact excerpt lines only. Other source lines are not author inputs. Local mathematical bounds do not establish per-ID execution or actual usage.",
+  "joinedExcerptBytes": 1872,
+  "joinedExcerptSHA256": "06f4fc74cde31fd6233e1f607546c9d792798df35717cd4320ad182f318c6925"
+}

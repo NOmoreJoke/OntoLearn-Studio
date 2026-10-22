@@ -1,0 +1,159 @@
+# I05：profile 接入的新隔离候选方案
+
+本方案申请一个以批准 `5f910b52c69d86a1076b2032e5d3c63e715947f3` 为起点的**新后端计算候选**。保持现 C4 原封，选择性采用 I05 自有语义源码并改造，按固定字节采用 T05 七模块；不继承 C4 未批准的 worker/coordinator/JobStore。先完成真实图计算，正式领域任务、持久化、公共入口和最终替代 C4 另按实际依赖推进。当前仅方案，未创建产品树、复制机制、import、执行或改产品。
+
+## 1. 准备授权、树与候选关系
+
+- 准备授权：`iteration-control/2026-10-21-weekly-release/real-executor-next-preparation-authorization.md`，6389 B / SHA `6346b48f7d69219f2e5b574732d7a6198a11746732d69b70aa7cdc5e876c9682`。本轮只新增本文件与 `docs/reviews/I05/profile-integration-plan/`。
+- 当前文档树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-semantic-validation`，`feature/I05-semantic-validation`；本轮起始 HEAD `6c2d9faf265fb27e08c1f8bf4fbfef35de2b9e51`。受保护 AGENTS 原 dirty 不纳入提交。
+- 拟新产品树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-profile-integration`；拟分支 `feature/I05-profile-integration`；起点固定为批准 5f。已静态核该树/分支尚不存在，**本轮未创建**。此处是后续精确实施申请，并非已经存在的 checkout。
+- 5f 是来源基线，不将它当已具领域能力：该版有 RDFLib7.6.0、没有 I05 语义八模块/quality 包，领域 registry 仍 design-only。5f 的原 runtime 保持批准字节；后端阶段不把它当新语义 worker 使用，也不通过 test-runtime 伪接线。
+- C4 固定 `523c478d5f39671c4ac7c1ea6997e51d3047d58e` 的1284路径/205执行输入保留。新候选与其是显式分叉重组，**不是在 C4 树修补或直接整树 cherry-pick**。C4 的产品来源 `1a79731`、回归 `40c18ea`、完整接口事实 `400259f`/SHA `502d7c70…999fcae` 可只读比较；旧绿不背书新候选。
+- 新后端阶段产出后由 root 实核、批准精确计算依赖；完整 I05 的 C4 替代点由 root 另明确登记，必须包括新计算及真实批准 T01/T03/I06 接线的完整范围。不会自动取消 C4、占新外审租约或将“后端通过”标为原 Goal 完成。T06首、I05第二条件预约、0新指定任务保持；原 Goal 不重建。
+
+## 2. T05 固定七模块：采用面、包布局与唯一责任
+
+输入固定 `1e3e0ee1d9d5b70f1f59233d0a3c64f6d85fd2cb`。本轮已全文静态读取七模块，逐 bytes/SHA、Git blob 和 AST 符号见 [输入绑定](../../reviews/I05/profile-integration-plan/inputs.json)。当前只获读取许可；下表是待 root 批准的采用清单，不是许可已生效。
+
+完整前缀 `packages/engine/src/ontolearn_engine/quality/`：`__init__.py`、`rule_profile.py`、`rule_terms.py`、`rule_numbers.py`、`rule_calendar.py`、`rule_comparator.py`、`rule_firing.py`。实施获批后仅这七文件在**原相对位置**按清单原字节进入新候选；不整 commit/整 quality 目录复制，不改算法、预算或发行身份。七文件未来唯一维护者仍 T05，I05只消费；需修改任何一个时先给 root 精确反例/delta，由 T05 形成新固定字节和对应独审，不在 I05 私改 fork。
+
+| I05实际消费                     | 符号与用途                                                                                                                                                                                                                                |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `quality.rule_profile`          | `PROFILE/BUDGET_VERSION/PINS`；`TermInput/SourceRecord/InputLocation`；`ProfileLimits/Budget/ProfileFailure`。仅受控内部构造，有界来源与安全失败。                                                                                        |
+| `quality.rule_firing`           | `RuleSpec/Triple/Variable/Comparison/Catalog/BindingMatch`；`compile_rules/evaluate_bound_batch/check_firing_group`；选定结果重建所需 `ComparisonEvidence/HeadEvidence/PreparedFiring`。不访问 `_SEAL/_ISSUED_*` 或私有 `_one/_resolve`。 |
+| `quality.rule_terms`            | `parse_value/term_key`，从真实解码 term 签发本进程 ProfileValue、作 RDF term key；不按值 eq 去重。                                                                                                                                        |
+| 其余三个 rule 模块与 comparator | 由上述模块的相对 import 递归加载；I05不直接调用其数字/日期算法另造一条规则比较路径。                                                                                                                                                      |
+
+`__init__.py` **原字节保留但其旧服务不在采用面**。它的 `DefinitionError/ValidatedDefinition/validate_definition/build_plan` 懒导出分别依赖未交的 `definitions.py/planning.py`；C4/5f没有 quality API，七路径并不构成旧 quality 完整服务。I05只写 `from ...quality.rule_firing import ...` 等明确子模块导入；禁止 `from quality import *`、根四导出、探测其懒属性或调用旧服务。不能声称 T05 旧 fresh-subprocess兼容测试在此部分布局可通过，也不能加空 stub 来凑齐。
+
+这是有意限定的**私有子模块采用面**，不是对根包所有可见名字作可用承诺。若最终发布/其他模块要求四旧服务可用，必须先由 root 向 T05取得精确递归依赖路径、必要性、固定 ref/blob/SHA和测试；本方案未申请这些额外字节，不把七模块安装状态当完整T05服务。root可单独批准本私有采用面；旧服务依赖不阻止它自身的直接子模块联验。
+
+包不得重命名、别名重复装载或同时装两套 class。`rule_profile._walk` 根据 `__package__ + '.rule_*'` 在 `sys.modules`识别实际record class，CompiledPlan/ProfileValue又有进程本地发行登记；相同源码的重复模块实例仍不兼容。包内导入与源码必须采用同一 canonical module 名。
+
+## 3. I05 产品路径与同版前置依赖
+
+以下是实施申请清单；本轮不复制。`engine/src/ontolearn_engine/`指 `packages/engine/src/ontolearn_engine/`。
+
+| 路径/输入                                                         | 新候选处理与唯一writer                                                                                                                                                                    |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `semantic.py`                                                     | I05；以固定 C4 自有字节为来源，拆出同一内部有限闭包/有界 join，旧 Rule 路径和新 profile 路径复用；新 profile 编译、真实 BindingMatch 与终态组装在此接唯一机制。                           |
+| `semantic_scopes.py`                                              | I05；固定C4来源，再扩新身份/source/完整group的 selected 内部核验；不重算所选结果、不以 consistency 冒充全局完备/认证。                                                                    |
+| `semantic_execution.py`                                           | I05；固定C4来源，再加私有受控定义适配/词法入口/结果与安全位置。正式 snapshot 编码/公开DTO先等T01批准。                                                                                    |
+| `semantic_turtle.py`                                              | I05；固定C4来源，最小新增 profile 解析/term sidecar 入口，见§5。legacy解析默认不改。                                                                                                      |
+| `semantic_error_adapter.py`                                       | I05；固定C4来源，按§7精确补新reason/context、保既有白名单与安全兜底。                                                                                                                     |
+| `semantic_offline.py`、`semantic_query.py`、`semantic_samples.py` | I05；分别采用固定C4原字节。包括 samples 是因为旧 pure 验证依赖它，不能漏列后宣称旧测试自然可跑。新规则不调用query作comparator；不修改query/SHACL合同或样例expected。                      |
+| `resources.py`                                                    | I05；**从批准5f适配**，不当成C4原字节拷入。加入/更新新语义身份与实际锁绑定所需最小项；不附带未批准的C4 runtime依赖。若真实基础接口要求T01配套，先固定双方delta，未就绪时不发可用能力。    |
+| `semantic_profile_probe.py`（新增）                               | I05；源/包相同的内部计算探针，调用同一 `reason`，仅读取受控输入并返回实际完整结果；不写Store、不伪造Job/预期、不建第二matcher。实际CLI选择由T03精确接入，不能从5f domain registry走捷径。 |
+| 上述 quality 七文件                                               | 按§2同字节消费，维护者T05；I05后续采用须root明确授权，不取得原路径维护权。                                                                                                                |
+
+这里明确列出八个 C4 自有语义来源（semantic/scopes/execution/turtle/adapter/offline/query/samples），另有5f resources适配和一个新probe，共10个I05产品路径；不是九模块“全原字节”。改动/原字节来源逐项在新候选输入清单中区分。**不采用 C4 的 worker.py/coordinator.py/job_store.py/protocol.py 或 contracts/entrypoint/lock/build/桌面字节**。
+
+5f仅有 `rdflib==7.6.0`，不满足C4模块对 `pyshacl==0.30.1`、`pyparsing==3.3.3` 的完整依赖。T03唯一维护 `packages/engine/pyproject.toml`、`uv.lock`、`scripts/build-engine.mjs`、`packages/engine/entrypoint.py`。实施前须 root给T03精确阶段：固定上述pin/实际传递依赖和新lock，冻结probe分派、七模块收集及实际包内模块身份/输入资产；不得借C4 venv/lock/已打包产物绕过批准。此依赖未有时新树保持“环境/包依赖缺失”，不能记后端或package通过。
+
+T01维护正式定义/引用/Catalog/快照/版本/source授权、canonical schema/错误/结果、Store/ChangeSet/Job/worker/coordinator；T01 `fd3944a`的内部startup收口不等于这些领域依赖已批准。root随后已通知固定文档 `f51a9e10647d75cd07fe28007ab73c0e65451f63` 的 ChangeSet计划（27888B/SHA `39ebbf378386004eb9e8654bf9dbd7465e50d5215a87c55fde01cffc258d71e1`）获10产品/4测试实施授权；本轮只读该固定计划及根 `T01-changeset-business-service-implementation-authorization.md`（8818B/SHA前缀421f974c）。这是在建的typed人工RDF/ontology triples、single/reference子集与strict3 preview/diff.page/confirm、正式commit/undo，不是完整规则Catalog、新source/producer/公共诊断/worker或host/UI已经交付。其历史计划中的待审时态由根授权更新，不读取/消费WIP，也不因此将新规则权威标ready。I06保留preload/env/App/style，main基础owner仍按根记录；后端不靠未批准桥接完成页面验收。
+
+## 4. 一个真实闭包/匹配器，两种显式语言模式
+
+现 `reason(graph, rules=())` 和 `Rule(id, when, then)` 保留旧模式默认行为。拟仅在同一入口增加 keyword-only 的 `profile=None, catalog=None, term_context=None`；这些是**拟私有Python参数**，不是现有callable或公共DTO。profile明确为固定PROFILE时，rules必须是该版RuleSpec序列；一次调用不混两种IR，不按字段猜版本，不自动把legacy Rule转换为新profile。
+
+legacy仍用原term门、变量语法（含`?_`起名）、允许的变量predicate/type object、单head及原输出保护/结果形状。新profile固定Triple.predicate为TermInput，rdf:type object必须为已声明类TermInput，变量按 `?[A-Za-z][A-Za-z0-9_]{0,63}`；这些差异由显式版本入口拒绝/定位，不能静默缩减legacy可达能力。legacy原有单head终点只保原计算，不另造新profile比较器。两模式复用同一闭包与join内部实现；profile比较/全head只由唯一T05机制完成。
+
+拟profile顺序：
+
+1. 有界接收原始图/定义与可信上下文；拆分前先校验整次定义（含停用）至多100条、RuleSpec确切类型和所有rule_id类型/有界字节/唯一性，不能靠每次单条compile的len1门代替；重复id或坏外层结构先安全拒绝，再排序/分配。原term抽象身份/原写法/source分层。以实际ontology声明形成Catalog；类/对象属性/数据属性从真实输入明确声明或已批准T01定义映射而来，不能看见rule常量就自动补进Catalog来绕过引用校验。pure后端只核输入一致性，不自称producer授权。
+2. **任何匹配前预检全部规则**，包括零匹配常量对、全部when/comparison/head/引用与变量闭合。新定义的enabled状态在有界定义表中保存；新profile停用定义也作完整编译预检但不送匹配/执行，不能借停用遮坏定义。旧停用行为不暗改。
+3. 计算同一输入的完整有限RDFS闭包；保持现支持构造和稳定首witness政策，不新增全RDFS/OWL、全部形式证明或最短proof。每条实际proof叶由原 asserted/ontology triple映射到有界稳定引用；叶表与原term/source映射随结果保存，不能把比较阈值填入basis。
+4. 所有启用规则只读同一closure。共同join逐候选/绑定扩展先扣费，next match**计数/上限检查后**才追加，不能先造100000旧匹配再截为1024。重复变量按term key一致；每个完整匹配保有序when、真实bindings及每个when输入的实际proof leaf引用。helper不能证明图成员和穷尽性，这两项仍由I05匹配器及独立完整oracle验证。
+5. 调用固定 `evaluate_bound_batch`，只收其完整成功 `PreparedFiringBatch`；保留全部成功firing/全部head occurrence与比较证据。合法false组被机制实际逐comparison检查后不出firing；不虚构该API未返回的false-group trace。整次调用所有规则全部成功才统一组装结果；后rule/后match/后head/最终序列化错误均不return部分批、不写current。
+6. 输出规则事实按抽象term去重，全部firing单独保留；规则事实不减asserted/RDFS，另计算新增/撤回差异。不反馈任何自定义结果，不在最后补RDFS。潜在链warning按全部heads扩检查，规则次序不影响可观察结果；warnings不伪装为支持规则链或编辑器已接线。
+
+### 4.1 固定API的安全位置与一次调用预算
+
+固定 helper 的 ProfileFailure 只有reason/location/classification，location没有rule_id；因此**按完整rule_id的Unicode码点稳定序为每个RuleSpec单独compile一个plan（原定义位置另保用于source定位）**，I05在调用边界持有真实rule_id/revision/source。捕获失败时才可准确附上此规则身份，不猜“上一条规则”、不反复试跑寻找出错规则。不调用helper私有方法、不改固定机制加回调。先完成所有plan编译，再建闭包/匹配；每个启用plan调用evaluate恰一次。
+
+每个生产plan的compile与evaluate必须同一个Budget对象，phase只由compile/evaluate各推进一次；不会跨调用复用、重置计数、跨worker缓存/反序列化CompiledPlan。不能直接信任从JSON构造的ProfileValue或复制seal。固定1e3的逐组check_firing_group不能直接沿用生产预算做整批selected验证，批量复核前置见§6.1；本方案撤回此前“执行同池自然覆盖全部group复核”的表述。
+
+为避免每规则默认预算乘100，拟冻结 `i05-profile-graph-budget/1` 的**整次调用预留**：令N=max(1,定义数，含停用)，按完整rule_id的Unicode码点稳定序将下列总池各作 `divmod(total,N)`，前余数个child多1；不得按保存/数组顺序发余数，否则预算边界会改变成功/失败。原definition ordinal仅作真实source定位，不参与额度分配；child ProfileLimits固定为所分配值，未用部分不回流/抬高后续child。总池沿固定机制上限：work16777216、input_bytes262144、output_bytes262144、trace_items8192、firings1024、head_occurrences16384、bindings1024。每个规则获独立Budget但其compile/evaluate始终同一对象，bindings限额亦按池分配；定义数为0时使用一个空plan/空matches校验Catalog并产空规则批。其余term/source/digits/bits/结构上限不高于固定ProfileLimits默认。
+
+预留是新后端拟防护政策，**不宣称原机制一次全rules默认容量，也不承诺100条重规则都能跑满**；不能将资源失败误报非法语言或静默跳过规则。编译时Catalog重复计入不同child，按实际成本收费，分配可致更早资源失败，接受这一保守边界。若将来要共享动态剩余额度/一次全plan执行且精准rule定位，须T05精确新API/delta、预算和同版验证，不能私改Budget/type门。
+
+图侧另保留100000 triples、输入文本1MiB、RDFS/匹配/排序/union/leaf/封装累计1000000确定工作单位，拟对profile路径在昂贵操作/复制/追加前预扣；预算类留semantic.py内部。node/term字节先过明确入口门，不能从纯Graph“已有1MiB通用逐项门”作推断。各child总预留不超总池，图工作与机制工作分开记录；最终JSON/rows仍8MiB、10000rows、8192字符分片，不能把私有262144编码上限当总RDFS/public载荷容量。限额±1和首触发分类必须真实测，数字是拟上限非性能/业务容量证明。
+
+## 5. 词法入口与 semantic_turtle 的最小必要 delta
+
+最小对照输入包括合法 `"0000-02-29"^^xsd:date`、`"10000-01-01"^^xsd:date`、超宿主微秒精度dateTime以及直接binary32舍入见证。固定profile以原lexical独立解值；C4 `_terms`依赖RDFLib ill_typed/toPython，可在comparator前先拒宿主不能表示的合法日期，float也不能凭宿主float认定binary32。以上是静态必要性见证，**本轮未执行这些反例**。完整数值/日历预期消费T05既有独立fixture与本次唯一oracle，不在I05推导第二份。
+
+拟只对新增profile路径：
+
+- `semantic_turtle.py`新增显式profile解析入口/受控sink sidecar；复用现LexicalSinkParser真实Turtle生产式、orphan拒绝、文本/外联/位置/IRI门。legacy `parse_graph/parse_turtle`的默认行为/词法guard不变，不设置全局normalize/ill_typed或SPARQL行为。
+- sink在canonical_string之前记录实际解析器提供的 decoded lexical/datatype/language，保原lexical与language_raw，抽象key仍由term_key保持simple/explicit string同term、numeric不同lexical不合并。source sidecar按同一term的多个真实occurrence保存，不能Graph去重后捏造原写法或丢多来源。
+- profile专用IRI门在同一semantic_turtle.py内落实采用RDF1.1所要求的绝对IRI语法校验（包含Unicode/控制字符/百分号转义/IRI结构），有界扫描且不解引用或URL规范化；Turtle parser或现scheme/禁字符门不能自称已完成完整RFC3987验证。该新增门是P1必需实际实现/定向正反测试，未完成时入口precondition仍待验，不能只贴validated标记。profile专用term门逐已识别literal调用同一parse_value，不用RDFLib的宿主value/ill_typed裁profile值域；同时保RDF位置、schema词表、IRI与网络门。legacy/query/SHACL继续原门。未经该显式profile验证的ill_typed值不能混入通过图。
+- 不在本阶段承诺原token引号/转义/UTF8 span自动采集；没有真实span就None。SourceRecord只用实际输入引用、原字节digest、已知revision；可取得的原文按预算保存，无法对应term时text=None/unavailable。若定义数组的comparison/head索引是实际原数组位置可用；不得把排序后位置或term.n3逆推为原source。
+- 真实Graph对象若已在上游被规范化/丢原文，不能恢复原始写法。profile入口要求有实际lexical term及显式unavailable状态；不能凭调用者声明的source获得认证。整图Turtle与snapshot N3的适配分别处理，严格单项N3防注入规则不因新profile放宽；legacy `_term`保持原样，新增私有profile decoder复用受控sink和相应门。
+
+这种局部模式会使profile结果包含legacy/query/SHACL原来不能接的合法term；转消费者时必须做明确兼容检查/准确unsupported与未验记录，不能把profile采用偷偷扩成query FILTER/SHACL能力，也不能把合法但暂不能消费说成坏词法。原TA-C/90c未支持格仍保留。
+
+## 6. 版本、结果、selected与来源
+
+明确选择三种实际身份，不能把5f全局IMPLEMENTATION改成新profile身份：5f默认基础runtime继续 `i04-infrastructure-v1`；legacy计算的 `semantic.SEMANTICS_VERSION`保留 `i05-finite-6`；仅显式新profile计算使用新增 `PROFILE_SEMANTICS_VERSION="i05-finite-7"` 和新私有结果格式 `i05-reasoning-result/2`。resources.py从5f最小适配是保留原IMPLEMENTATION语义字段，另增加私有语义identity选择函数，按实际legacy/profile分支返回finite6/7及本候选实际engineVersion、新lock hash。纯probe与semantic_execution同分支选用；默认health/hello/基础runtime不冒充新领域能力。T01正式domain接线以后必须在受理/producer结果处使用该精确模式身份，不从当前未接线runtime全局值猜测或由调用者自报。
+
+上述具体值/选择函数是待实施方案，不是已注册的公共schema或已运行身份。legacy保留finite6算法身份并不沿用旧implementation三字段：engineVersion与实际新锁仍绑定本候选，旧lock结果不直接进入新任务。固定机制仍PROFILE/1、mechanism-budget/1。新profile实质变化或批量接口/预算变动均按真实新固定输入和版本绑定，不复用既有Pass。
+
+legacy默认返回旧五键形状；profile明确新格式，不能塞进旧 `_selected_output` exact-key validator。新reasoning仍分别返回完整rdfs、rules、warnings、RDFS稳定basis和全部成功firingGroups。每group保存真实rule/revision/definition digest/profile、binding/有序when与各proof leaf、全comparison左右原term/实际值/算子/结果/原位置、全部head原index及basis；source sidecar/leaf表与版本化定义分别绑定。类/属性声明和output保护以实际Catalog校验，不能因caller目录列过schema predicate就放行。
+
+helper `batch.payload`是私有typed编码bytes，`batch.digest`只对应这域；它不是Store canonical JSON digest、JSON-payload或rows hash。I05显式有界序列化（Number整数/有理字段用有界无损表示，不经float/任意repr），分别记录机制bytes摘要、JSON payload摘要、rows摘要与source/definition/inputs摘要，不相互替代或重签历史。
+
+selected只从已认证保存结果重建：整次先检查完整已保存定义数<=100及唯一id，T01先校producer/成功终态/项目与快照/作用域/完整implementation/定义版本/payload与rows hash/权限。不能直接把所有group交固定check_firing_group并假定生产预算必够；该复核链暂不启用，须先取得下述T05批量接口的实际固定实现/独立预算证明。它只核已有完整批的内部一致性，不重新跑图匹配、不用当前规则补旧载荷，不证明全局完备。来源leaf仍要映射回已保存输入及实际proof表；helper的非空引用/预算检查不能自证这些叶来自图。
+
+### 6.1 必需的T05最小批量复核接口请求（当前未提供、未授权消费）
+
+根静态反例成立：固定1e3的check_firing_group每组都调用_check_plan并再次encode_input(plan)，另account_input(group)，最后encode_output(expected)与encode_output(group)双份收费；生产evaluate只_check_plan一次、整批编码一次。因此重复计划/原文/编码费用不能从“生产成功”推导为“复核同池成功”。本轮未运行反例，不把先前独审有限Pass沿用于这个已指出的缺口。
+
+选择请求T05最小批量接口，不在I05复制或另写comparator。拟私有签名需求：`verify_firing_batch(plan, matches, saved_payload, saved_digest, verification_budget) -> bool`（尚不存在）。名字/实际类型由T05固定，语义须满足：
+
+1. 使用同进程fresh编译的原定义/profile/Catalog及受控TermInput构造的BindingMatch；matches从已认证保存的全部成功firing完整重建，保原bindings/有序when/proof/source，拒绝未知/多/少字段、重复匹配、任意class。不从JSON信任已签发ProfileValue/CompiledPlan，不用当前定义替换原定义。
+2. 一次批量计划完整性检查、逐组相同validator/比较/全head检查、一次整批typed输出核对，精确比较已保存完整payload bytes/digest。组/比较/head/source/事实不可丢弃，不为过预算删原文、缩groups或填补结果。若内部复用evaluate，须明确只对保存绑定复核，不做图搜索/RDFS或发布新current；源图成员/全部触发/producer授权仍在原责任边界。
+3. 采用独立且有界的复核预算用途/版本，不把producer的child Budget或同额默认上限当保证，不每group重置默认Budget。T05 offer须给实际类型/API、fresh编译与批量复核阶段关系、整次总池/每rule子池、原始bytes核验预算；若超现ProfileLimits最大值/类型门，给精确受控扩展与不能抬高生产限额的隔离设计，不在I05覆写类/模块/扣费。
+4. 给出从保存生产批的定义/原文bytes、成功matches、firing/head/trace数、typed输出长度到复核最坏成本上界的逐项映射，涵盖计划编码次数、解码/签发、比较/大整数、proof/排序/编码/raw bytes/hash；据此导出具体上限、资源类别与版本，经独立审查核对。明确哪些合法生产成功批保证能在批准范围复核，不能只写“增大预算”或借未来测试替代上界证明。
+5. 后续真实验证包括大合法source.text与多短bindings/heads的生产成功→完整复核、零group、各界±1、重复/缺组/换binding/改source/少comparison或head/改bytes与digest、资源失败无部分投影。仍消费T05唯一语义oracle；这是复核接口预算专项，不造第二推理器或golden。
+
+最小路径需求为T05已拥有的quality/rule_firing.py；只有实际设计证明必要时另精确列quality/rule_profile.py的预算用途扩展及其专属tests/fixture。它是待T05交的新接口/固定字节依赖，非修改1e3的授权。七码原字节首先只用于生产计算；selected须改为采用T05另交并由root批准的新ref/hash，变化路径和不变六文件逐字区分。不整包/整commit复制，不预填未知hash为批准。
+
+T05 offer/证明未到时，P1可单独批准真实后端生产计算准备/实现；selected批量复核及其完成声明保持依赖缺失，P3亦不得绕过。整次复核仍至多100定义/id唯一，明确其独立总预算后才分稳定子池，不能用每组默认额度累乘。每rule fresh plan是身份/完整性要求，不构成尚未证明的计费等价。
+
+旧finite6历史只按原身份/可用性读取展示，旧payload/rows/hash不改；新任务current或historical选择旧实现均按既有三字段分区拒绝，不能因显式historical豁免。legacy新计算若采用新engine/lock也使用新implementation，不贴旧绿。不同私有结果格式分别严格解析，不尝试“补缺字段变新结果”。公共错误/结果/diagnostic引用及正式持久化仍须T01批准载体，I05不在四字段error.params里私塞原值/ruleId/index。
+
+## 7. 错误与位置的精确改动
+
+沿 [原M表](../../reviews/I05/t05-design-response-c3/owner-response.md) 的正确范围M1–M11：已有INVALID_RULE、UNBOUND_RULE_VARIABLE、INVALID_LITERAL_LEXICAL、UNSUPPORTED_LITERAL_DATATYPE/NONFINITE、UNSUPPORTED_RULE_OUTPUT、WORK_LIMIT、RULE_EVIDENCE_RESULT_LIMIT按真实producer/stage/origin；新增RULE_COMPARISON_TYPE_MISMATCH、RULE_INPUT_BUDGET、RULE_POLICY_UNSUPPORTED分别落实M3/M8a/M9的caller/adapter/spec/golden，不从canonical目录存在推断路由已接线。
+
+只有真实可信用户规则入口可给REASON/RULE/VERIFIED_USER_INPUT；纯helper不授信该枚举。初始事实/本体、legacy/query/SHACL保各自准确context，普通SHACL违规不进adapter。可信计划/绑定/持久载荷损坏与未知组合Internal；真实资源/网络既有优先分类保留。
+
+profile纯后端捕获ProfileFailure，保安全reason/classification/实际InputLocation及I05按§4.1调用边界持有的rule身份；source span未知明确None。公开error仍只四字段；新私有诊断由T01提供实际有界、授权、可失效的引用/投影后才挂载。没有该正式载体时，只能验后端私有安全位置，不能宣称FR503/505页面错误定位完成。
+
+## 8. 精确测试、唯一oracle与分阶段出口
+
+I05拟新增 `packages/engine/tests/test_semantic_profile_integration.py`、`test_semantic_profile_limits.py`、`test_semantic_profile_source.py`、`test_semantic_profile_selected.py`、`test_semantic_profile_imports.py`、`test_semantic_profile_errors.py`。它们调用同一真实图入口，消费T05冻结fixture/独立oracle；不实现第二matcher/comparator，不从actual生成expected。仅结构/权限/失败原子性对照可在测试中构造精确输入；不并行编写T09/22第二份语义golden。
+
+其中profile_selected测试在§6.1实际新依赖批准后才创建/运行，不先放空测试或skip占位。P1先获批生产计算时，不开放新profile selected分支或声称已消费；显式标该阶段未接入，不把它误报用户坏词法。P1计算、P2源包与后续selected/正式领域出口分别登记，父selected要求完整保留。
+
+固定C4旧回归拟逐路径按原字节采用：`test_semantic.py`、`test_semantic_scopes.py`、`test_semantic_selected_projection.py`、`test_semantic_execution.py`、`test_semantic_lexical.py`、`test_semantic_query_tokens.py`、`test_semantic_rdfs_basis_determinism.py`、`test_semantic_string_identity.py`、`test_semantic_error_adapter.py`、`test_semantic_error_reasons.py`（均packages/engine/tests下）。其中test_semantic_execution.py:148仍原样硬断言payload身份等于SEMANTICS_VERSION等于finite6，因§6已明确保留legacy算法身份；撤回中间稿的finite7断言迁移提案，不删或放松旧断言。六个新增profile测试另对profile7/legacy6/默认i04分支及实际新lock绑定作真实断言。新错误测试覆盖实际caller/adapter的正确context及错误来源/unknown/canary/定位，不只测token存在。本轮已静态核这10文件导入/关键调用；storage_probe.py、errors.json与批准5f逐字相同，schema的error节点规范结构相同；无需拷C4公共schema/Store来调用这些私有API。仍须在新环境实际全跑，不能由静态相等宣称通过。其他需要C4 Store/runtime的旧测试待批准T01接线，不补未批模块、不删验收或skip换绿。真实legacy runtime/stdio/native及原Goal完整范围仍留最终组合联验，不用这10文件清单缩范围。
+
+新增import测试只验证本部分包的canonical子模块身份、固定七源hash、无旧RDF parser策略副作用、class同源和必要默认行为；不复制T05旧四导出兼容测试、不声称旧服务可用。源包新增probe实际运行同一输入，检查完整rdfs/custom/firing/source/版本/所有依据及安全失败，实核实际模块/资源/lock，不能只打印版本或数量。T03采集参数明确绑定以后方可跑package，缺依赖即待验。
+
+唯一oracle工作已由root授T05原线：`tests/fixtures/quality/real-executor-acceptance-inputs.json`、`docs/iterations/T05/real-executor-independent-oracle.md`、`docs/reviews/T05/real-executor-oracle/`。本方案只引用这三个位置和固定T09 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380`的17原输入文件、既有22扩展与profile fixture；**17是文件数，不当17次运行案例**。实际消费须等作者交固定ref/hash并独审、root批准；未交不填预期、不沿用旧不同namespace样例冒充。
+
+| 阶段              | 必须有的实际依赖/出口                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| P1 隔离后端计算   | root精确采用清单/文件writer/新树许可；T03批准依赖/锁；T05固定七模块及唯一oracle。真实lexical→有限完整closure→匹配→每规则唯一机制→完整实际结果及安全位置，全部原类型/比较/多head/词表/无反馈/顺序/0匹配/false后错/后项失败/预算/多来源。专项+完整npm check/source验证、独立实现审查及可恢复原件；selected部分另待§6.1新批量接口及独立预算证明，不能把生产计算绿当复核绿。 |
+| P2 同版源包       | T03实际入口/收集/lock和新probe；新构建包与源码运行同一完整输入/失败矩阵、实际产物与模块/资源绑定。真实B1与受影响平台项按原要求，宿主Mac不启动窗口。                                                                                                                                                                                                                      |
+| P3 领域持久与消费 | T01批准正式定义/引用/Catalog/producer/source/快照/结果/安全诊断/worker接口；Store唯一原子整批替换、取消/deadline/晚到/失败不current、撤回/启停/当前历史/旧结果分区、完整FR/D/G.2。不得借旧C4 runtime完成。                                                                                                                                                               |
+| P4 完整替代与发布 | root刷新实际批准develop/依赖，组合新候选完整Goal与全部原意见处置，必要新平台/真人/包/B1与消费者联验；按真实变更验证。安全入口/实际租约就绪后指定双方新完整同版审查、双Pass、push/PR/CI/正常develop合并/远端核验；普通agent独审不代替。                                                                                                                                   |
+
+FR502最低仍是相关公理与直接输入可反查，不新增穷尽全部形式证明路径或DAG的要求。完整有限closure独立预期、全部实际规则匹配/明确多依据和source要求不减少。新结果跨query/SHACL、存储、页面的未支持格不能通过局部后端绿关闭。
+
+## 9. 本次可直接审批的边界
+
+本方案待 root 审批的后续 P1/P2 精确对象是：5f固定起点/新树名；I05十产品路径、T05七文件同字节私有采用面及各自唯一writer；本节明确的两种语言兼容、新版本/私有格式、per-rule固定API与整次预留预算、T03四路径依赖/包阶段和T05唯一oracle前置。T01/I06的正式领域与UI写权**不在本次申请中一并推定**，P3另需其精确实际交付与实施授权。
+
+如 root 不接受七模块的私有子模块采用面、预算预留或现有helper类型边界，先固定最小必要T05接口/依赖增量，不以空stub/别名类/第二实现绕过。本轮只有静态方案/输入绑定/自己的独审与docs提交，不创建产品树，不消费代码、不改C4/旧tests、不重跑旧绿、不启GUI/外审、不新增Goal；`task-runtime.test.ts`窗口已明确关闭、未来ownerI05，原C4测试仍冻结原字节。
