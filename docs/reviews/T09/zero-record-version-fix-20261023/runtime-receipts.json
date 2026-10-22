@@ -1,0 +1,852 @@
+{
+  "schemaVersion": 1,
+  "scope": "owned ordinary validation; full original streams preserved in deterministic lossless archives; no GUI/native/old review process",
+  "runs": [
+    {
+      "name": "setup-npm",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-npm.json",
+        "bytes": 2701,
+        "sha256": "34bac750869be274de59ab6fdd970884555d2a65030f46469cfabfaee2484ea2"
+      },
+      "receipt": {
+        "argv": ["npm", "ci"],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "0",
+          "ELECTRON_SKIP_BINARY_DOWNLOAD": "1"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:43:31.627290+00:00",
+        "runnerPID": 9759,
+        "childPID": 9761,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:44:10.736291+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-npm.stdout.txt",
+          "bytes": 144,
+          "sha256": "238ff914a54206af267c7080149f33fe45874cc60b56075439c8141479aad234"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-npm.stderr.txt",
+          "bytes": 814,
+          "sha256": "c8b5e212c8115aa7c7efb457da4419789a7e5d3dc4cfda83ccff499131c109d0"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-npm.stdout.txt",
+            "bytes": 144,
+            "sha256": "238ff914a54206af267c7080149f33fe45874cc60b56075439c8141479aad234"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-npm.stdout.txt.gz",
+            "bytes": 122,
+            "sha256": "2b540826b70040843108401816da579b3137ef96dcab99de0772a96c35d933ac"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-npm.stderr.txt",
+            "bytes": 814,
+            "sha256": "c8b5e212c8115aa7c7efb457da4419789a7e5d3dc4cfda83ccff499131c109d0"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-npm.stderr.txt.gz",
+            "bytes": 475,
+            "sha256": "8c2e468e3c7db6af9968e5011c468227c9294567beac5c874fd400e5885472a7"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "setup-uv",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-uv.json",
+        "bytes": 2696,
+        "sha256": "455b7e1c7745c12a3895e0989f8f8320f2d973b3d17688d7d5c188e527db3ff4"
+      },
+      "receipt": {
+        "argv": ["/Users/kyle/.local/bin/uv", "sync", "--frozen"],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "0"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:43:32.765466+00:00",
+        "runnerPID": 9769,
+        "childPID": 9771,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:44:02.957900+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-uv.stdout.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-uv.stderr.txt",
+          "bytes": 1087,
+          "sha256": "19fb59d69fbd2ca127d27655a936a970b8b96aaa4e100f51ac24284b6500ec2d"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-uv.stdout.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-uv.stdout.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/setup-uv.stderr.txt",
+            "bytes": 1087,
+            "sha256": "19fb59d69fbd2ca127d27655a936a970b8b96aaa4e100f51ac24284b6500ec2d"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/setup-uv.stderr.txt.gz",
+            "bytes": 467,
+            "sha256": "0b4592f8e82458d69318d19a4e9deac2c5eca7730765af2141fade0e325bdff2"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "format-owned",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned.json",
+        "bytes": 2830,
+        "sha256": "3cb875f30832d3589388a03e278de3206a530cc541fdcb92ae3e89d6561f842e"
+      },
+      "receipt": {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--write",
+          "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+          "tests/unit/learning-workspace.test.ts"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "0"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:44:24.928339+00:00",
+        "runnerPID": 10636,
+        "childPID": 10638,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:44:25.176426+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned.stdout.txt",
+          "bytes": 133,
+          "sha256": "baf8096292d032c9378eb9591a0e9dfe6e247bf9ec7f87606358b34c56ef129d"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned.stdout.txt",
+            "bytes": 133,
+            "sha256": "baf8096292d032c9378eb9591a0e9dfe6e247bf9ec7f87606358b34c56ef129d"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned.stdout.txt.gz",
+            "bytes": 114,
+            "sha256": "1ea9d53676ff8d068328859fedf06229792b6c6f0c83f16c152021e41b092495"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned.stderr.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned.stderr.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "format-owned-r2",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned-r2.json",
+        "bytes": 2836,
+        "sha256": "6ace15e3105a71d4fc0b020bd74906554ef8047296a6868cd5de2a6093c37b1c"
+      },
+      "receipt": {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--write",
+          "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+          "tests/unit/learning-workspace.test.ts"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "0"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:51:12.385166+00:00",
+        "runnerPID": 20722,
+        "childPID": 20724,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:51:12.619855+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned-r2.stdout.txt",
+          "bytes": 133,
+          "sha256": "53fecf386ba36bed7736fe58cd6ae3bc982113f64cd984197666c9a78d01135f"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned-r2.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned-r2.stdout.txt",
+            "bytes": 133,
+            "sha256": "53fecf386ba36bed7736fe58cd6ae3bc982113f64cd984197666c9a78d01135f"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned-r2.stdout.txt.gz",
+            "bytes": 113,
+            "sha256": "7bdef4337e45b42d8e003cb5fb3ec86bbe42e9f1a4eb830ebd123eae290afa60"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/format-owned-r2.stderr.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/format-owned-r2.stderr.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "learning-runtime-first",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-runtime-first.json",
+        "bytes": 2914,
+        "sha256": "eaa609c060836e464071b0de16b116cb0a23dbadec1eb875c702927eb04c2492"
+      },
+      "receipt": {
+        "argv": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/unit/learning-workspace.test.ts",
+          "tests/unit/learning-presentation.test.ts"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "1",
+          "T09_CHROME_EXECUTABLE": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:50:18.483374+00:00",
+        "runnerPID": 19632,
+        "childPID": 19636,
+        "returncode": 1,
+        "endedUTC": "2026-10-22T21:50:34.530501+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-runtime-first.stdout.txt",
+          "bytes": 699,
+          "sha256": "679f5973b2c82c3b73731a92ed92ba7662eb280554477f8f7ac33fdb5c0f90f7"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-runtime-first.stderr.txt",
+          "bytes": 1190,
+          "sha256": "77e738d66007a08c4f4862309699d3c9cba890f8c53cb700cebbd58e6c57c9d6"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-runtime-first.stdout.txt",
+            "bytes": 699,
+            "sha256": "679f5973b2c82c3b73731a92ed92ba7662eb280554477f8f7ac33fdb5c0f90f7"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-runtime-first.stdout.txt.gz",
+            "bytes": 431,
+            "sha256": "eaa4610f05ab79da765f8967e73eaa888fcc5b25a987e2381cba328f4cc364d6"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-runtime-first.stderr.txt",
+            "bytes": 1190,
+            "sha256": "77e738d66007a08c4f4862309699d3c9cba890f8c53cb700cebbd58e6c57c9d6"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-runtime-first.stderr.txt.gz",
+            "bytes": 574,
+            "sha256": "8676238ed0ba31494b14d202ef4c8006b850b76ecf2dccfb27a63860da8abce6"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "learning-locator-affected",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-locator-affected.json",
+        "bytes": 2962,
+        "sha256": "1117e8dd64c9acee04a94cab379996d00293a4041263ab48a1ccbbc5ed46dc00"
+      },
+      "receipt": {
+        "argv": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/unit/learning-workspace.test.ts",
+          "-t",
+          "rejects a same-context zero hint replay and accepts a later greater version"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "1",
+          "T09_CHROME_EXECUTABLE": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:51:42.476172+00:00",
+        "runnerPID": 21265,
+        "childPID": 21267,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:51:44.737284+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-locator-affected.stdout.txt",
+          "bytes": 253,
+          "sha256": "45470edea9db939cf55fbaf073ce8152f245906b427534c5526b69dde99ab65c"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-locator-affected.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-locator-affected.stdout.txt",
+            "bytes": 253,
+            "sha256": "45470edea9db939cf55fbaf073ce8152f245906b427534c5526b69dde99ab65c"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-locator-affected.stdout.txt.gz",
+            "bytes": 230,
+            "sha256": "190c77033d33bdb2eefe94c23588a2925c8f49d6a31b28a413136b43c89903a0"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/learning-locator-affected.stderr.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/learning-locator-affected.stderr.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "full-check",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/full-check.json",
+        "bytes": 2769,
+        "sha256": "60715846d5a8a9526e0251ce764766eb7e4ad730cb98149ff51c8dd57e57b22f"
+      },
+      "receipt": {
+        "argv": ["npm", "run", "check"],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "1",
+          "T09_CHROME_EXECUTABLE": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:52:02.955087+00:00",
+        "runnerPID": 21513,
+        "childPID": 21515,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:53:22.598595+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/full-check.stdout.txt",
+          "bytes": 5331,
+          "sha256": "b236a1dfa5af2ae25fa215b97bc604640264ebbda0757008a9aa43adb438f713"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/full-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/full-check.stdout.txt",
+            "bytes": 5331,
+            "sha256": "b236a1dfa5af2ae25fa215b97bc604640264ebbda0757008a9aa43adb438f713"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/full-check.stdout.txt.gz",
+            "bytes": 1340,
+            "sha256": "52891f1200faa6ce6a9e9296fccaa77ff248fb3ad651a366f9ebbb6ae4ea3166"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/full-check.stderr.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/full-check.stderr.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "verify-sources",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/verify-sources.json",
+        "bytes": 2692,
+        "sha256": "8c5238c575a27d4f9a31a7345baba15a10cdecb784696a24c1047b09b17fb0a2"
+      },
+      "receipt": {
+        "argv": ["npm", "run", "verify:sources"],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "0"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:50:18.483387+00:00",
+        "runnerPID": 19631,
+        "childPID": 19635,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:50:18.660331+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27162,
+            "sha256": "b45db359bc3b5571786eb84864b9e74294f09f4277492818b440743371149074"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/verify-sources.stdout.txt",
+          "bytes": 111,
+          "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/verify-sources.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/verify-sources.stdout.txt",
+            "bytes": 111,
+            "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/verify-sources.stdout.txt.gz",
+            "bytes": 125,
+            "sha256": "68a3694f613b55c97cede69e700f3518ee3af072cf01270e4deafb6ef96c157c"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/verify-sources.stderr.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/verify-sources.stderr.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    },
+    {
+      "name": "source-diff-check",
+      "originalReceipt": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/source-diff-check.json",
+        "bytes": 2813,
+        "sha256": "4eac031db584b11617c5c81dc305891a6a1c267619a737e158d0a937c29f271c"
+      },
+      "receipt": {
+        "argv": [
+          "git",
+          "diff",
+          "--check",
+          "--",
+          "apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+          "tests/unit/learning-workspace.test.ts"
+        ],
+        "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023",
+        "explicitEnvironment": {
+          "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-tmp",
+          "npm_config_cache": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-npm-cache",
+          "UV_CACHE_DIR": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/owned-uv-cache",
+          "UV_PROJECT_ENVIRONMENT": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/.venv",
+          "T09_HEADLESS_UI": "0"
+        },
+        "inheritedEnvironment": "not exported; T09_UI_CAPTURE and T09_CHROME_EXECUTABLE removed before explicit overrides",
+        "head": "0cde6a11604214f4ff34d2a9fbcfb80b6f72bfd2",
+        "before": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "startedUTC": "2026-10-22T21:53:20.802537+00:00",
+        "runnerPID": 22956,
+        "childPID": 22958,
+        "returncode": 0,
+        "endedUTC": "2026-10-22T21:53:20.821577+00:00",
+        "after": [
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx",
+            "bytes": 18669,
+            "sha256": "5bd90f57bdb25874839c7f43bd4c61e42cf46b945675129a8a59eadce149fa9a"
+          },
+          {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/tests/unit/learning-workspace.test.ts",
+            "bytes": 27178,
+            "sha256": "b779a723fe46545e10f7d98c39e9da8bf69238bc0d77f2416a9c3d8055ef005a"
+          }
+        ],
+        "stdout": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/source-diff-check.stdout.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/source-diff-check.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "streamArchives": [
+        {
+          "channel": "stdout",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/source-diff-check.stdout.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/source-diff-check.stdout.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        },
+        {
+          "channel": "stderr",
+          "raw": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_t09_zero_record_version_fix/source-diff-check.stderr.txt",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "archive": {
+            "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T09-zero-record-version-fix-20261023/docs/reviews/T09/zero-record-version-fix-20261023/runtime-streams/source-diff-check.stderr.txt.gz",
+            "bytes": 20,
+            "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+          },
+          "losslessRoundTripVerified": true
+        }
+      ]
+    }
+  ]
+}
