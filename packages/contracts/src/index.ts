@@ -153,6 +153,70 @@ export interface ResultPageOptions {
   pageSize: number
   cursor: string | null
 }
+// Display DTOs for already-validated result payloads. Runtime bounds and authority remain
+// with the profile-selected canonical validators and the original request binding.
+export type ResultScopeDTO = 'asserted' | 'asserted+derived' | 'scenario'
+export type ResultDefinitionLayerDTO =
+  'ontology' | 'rule' | 'constraint' | 'behavior' | 'scenario' | 'mapping' | 'query'
+export type ResultStaleDependenciesDTO = {
+  ONTOLOGY_CHANGED: `ontology:${string}`
+  FACTS_CHANGED: 'facts:asserted'
+  MAPPING_INPUT_CHANGED: `mapping:${string}`
+  VALIDATION_DEFINITION_CHANGED: `constraint:${string}`
+  RULE_CHANGED: `rule:${string}`
+  BEHAVIOR_CHANGED: `behavior:${string}`
+  SCENARIO_CHANGED: `scenario:${string}`
+  QUERY_CHANGED: `query:${string}`
+}
+export type ResultStaleReasonDTO = {
+  [Code in keyof ResultStaleDependenciesDTO]: {
+    code: Code
+    dependency: ResultStaleDependenciesDTO[Code]
+    before: number
+    after: number
+  }
+}[keyof ResultStaleDependenciesDTO]
+export type ResultMetadataDTO = {
+  resultId: string
+  projectId: string
+  jobId: string
+  kind: 'query' | 'reasoning' | 'validation' | 'behavior' | 'scenario' | 'test' | 'receipt'
+  definitionId: string
+  inputSnapshotId: string
+  inputProjectRevision: number
+  dependencyVector: Record<string, number>
+  definitionSetDigests: Partial<Record<ResultDefinitionLayerDTO, string>>
+  implementation: {
+    executionSemanticsVersion: string
+    engineVersion: string
+    dependencyLockHash: string
+  }
+  scope: ResultScopeDTO
+  parametersHash: string
+  state: 'current' | 'stale' | 'historical'
+  staleReason: ResultStaleReasonDTO[]
+  payloadStatus: 'available' | 'evicted'
+  createdAtMs: number
+  historicalSelectionRequired: boolean
+}
+export type ResultPageBindingDTO = {
+  projectId: string
+  resultId: string
+  inputSnapshotId: string
+  scope: ResultScopeDTO
+  parametersHash: string
+  order: 'ordinal+rowId:asc'
+}
+export type ResultRowDTO = {
+  rowId: string
+  ordinal: number
+  cells: Array<string | number | boolean | null>
+}
+export type ResultPageDTO = {
+  binding: ResultPageBindingDTO
+  rows: ResultRowDTO[]
+  nextCursor: string | null
+}
 // Renderer receives named operations only; project authority comes from main, never a supplied UUID.
 export interface DesktopBridge {
   getEngineHealth(): Promise<HealthResult>
@@ -163,10 +227,49 @@ export interface DesktopBridge {
   cancelJob(jobId: string): Promise<BridgeResult<Record<string, unknown>>>
   subscribeJob(jobId: string): Promise<BridgeResult<JobView>>
   unsubscribeJob(jobId: string, generation: number): Promise<BridgeResult<null>>
-  getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>>
-  getResultPage(options: ResultPageOptions): Promise<BridgeResult<Record<string, unknown>>>
+  getResult(resultId: string): Promise<BridgeResult<ResultMetadataDTO>>
+  getResultPage(options: ResultPageOptions): Promise<BridgeResult<ResultPageDTO>>
   getOperation(operationId: string): Promise<BridgeResult<Record<string, unknown> | null>>
   onTaskUpdate(listener: (update: TaskUpdate) => void): () => void
+}
+
+/** Main/preload-only finite channel association; no generic invoke is exposed to renderer. */
+export type DesktopIpcMap = {
+  'engine:health': { args: []; result: Awaited<ReturnType<DesktopBridge['getEngineHealth']>> }
+  'tasks:restore': { args: []; result: Awaited<ReturnType<DesktopBridge['restoreTasks']>> }
+  'project:active': { args: []; result: Awaited<ReturnType<DesktopBridge['getActiveProject']>> }
+  'job:get': { args: [jobId: string]; result: Awaited<ReturnType<DesktopBridge['getJob']>> }
+  'job:list': {
+    args: [options: JobListOptions]
+    result: Awaited<ReturnType<DesktopBridge['listJobs']>>
+  }
+  'job:cancel': { args: [jobId: string]; result: Awaited<ReturnType<DesktopBridge['cancelJob']>> }
+  'job:subscribe': {
+    args: [jobId: string]
+    result: Awaited<ReturnType<DesktopBridge['subscribeJob']>>
+  }
+  'job:unsubscribe': {
+    args: [request: { jobId: string; generation: number }]
+    result: Awaited<ReturnType<DesktopBridge['unsubscribeJob']>>
+  }
+  'result:get': {
+    args: [resultId: string]
+    result: Awaited<ReturnType<DesktopBridge['getResult']>>
+  }
+  'result:page': {
+    args: [options: ResultPageOptions]
+    result: Awaited<ReturnType<DesktopBridge['getResultPage']>>
+  }
+  'operation:get': {
+    args: [operationId: string]
+    result: Awaited<ReturnType<DesktopBridge['getOperation']>>
+  }
+}
+export type DesktopIpcChannel = keyof DesktopIpcMap
+export type DesktopIpcHandlers = {
+  [Channel in DesktopIpcChannel]: (
+    ...args: DesktopIpcMap[Channel]['args']
+  ) => Promise<DesktopIpcMap[Channel]['result']>
 }
 
 /** Immutable ChangeSet transport DTOs; none of these values grants confirmation authority. */

@@ -1,19 +1,29 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { isTaskUpdate, type DesktopBridge } from '@ontolearn/contracts'
+import {
+  isTaskUpdate,
+  type DesktopBridge,
+  type DesktopIpcChannel,
+  type DesktopIpcMap,
+} from '@ontolearn/contracts'
+
+// The Electron serialization boundary is private; renderer receives named methods only.
+function invokeFor<Channel extends DesktopIpcChannel>(channel: Channel) {
+  return (...args: DesktopIpcMap[Channel]['args']): Promise<DesktopIpcMap[Channel]['result']> =>
+    ipcRenderer.invoke(channel, ...args)
+}
 
 const bridge: DesktopBridge = {
-  getEngineHealth: () => ipcRenderer.invoke('engine:health'),
-  restoreTasks: () => ipcRenderer.invoke('tasks:restore'),
-  getActiveProject: () => ipcRenderer.invoke('project:active'),
-  getJob: (id) => ipcRenderer.invoke('job:get', id),
-  listJobs: (options) => ipcRenderer.invoke('job:list', options),
-  cancelJob: (id) => ipcRenderer.invoke('job:cancel', id),
-  subscribeJob: (id) => ipcRenderer.invoke('job:subscribe', id),
-  unsubscribeJob: (jobId, generation) =>
-    ipcRenderer.invoke('job:unsubscribe', { jobId, generation }),
-  getResult: (id) => ipcRenderer.invoke('result:get', id),
-  getResultPage: (options) => ipcRenderer.invoke('result:page', options),
-  getOperation: (id) => ipcRenderer.invoke('operation:get', id),
+  getEngineHealth: () => invokeFor('engine:health')(),
+  restoreTasks: () => invokeFor('tasks:restore')(),
+  getActiveProject: () => invokeFor('project:active')(),
+  getJob: (id) => invokeFor('job:get')(id),
+  listJobs: (options) => invokeFor('job:list')(options),
+  cancelJob: (id) => invokeFor('job:cancel')(id),
+  subscribeJob: (id) => invokeFor('job:subscribe')(id),
+  unsubscribeJob: (jobId, generation) => invokeFor('job:unsubscribe')({ jobId, generation }),
+  getResult: (id) => invokeFor('result:get')(id),
+  getResultPage: (options) => invokeFor('result:page')(options),
+  getOperation: (id) => invokeFor('operation:get')(id),
   onTaskUpdate: (listener) => {
     const receive = (_event: Electron.IpcRendererEvent, update: unknown) => {
       if (isTaskUpdate(update)) listener(update)

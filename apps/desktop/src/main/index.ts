@@ -10,7 +10,7 @@ import { contentSecurityPolicy } from '../csp'
 import { hardenWebContents, securePreferences } from './window-security'
 import { installWindowRecovery } from './window-recovery'
 import { installViewNavigation } from './view-navigation'
-import { safeError, type HealthResult } from '@ontolearn/contracts'
+import { registerDesktopIpc } from './desktop-ipc'
 import { validateV2 } from '../../../../packages/contracts/src/v2'
 
 declare const __DEV_CSP_NONCE__: string
@@ -146,42 +146,7 @@ void app.whenReady().then(async () => {
       isTrustedDocument(event.senderFrame.url, trustedURL)
     )
   }
-  const permission = () => ({
-    ok: false as const,
-    error: safeError({
-      code: 'PERMISSION_DENIED',
-      messageKey: 'permission.denied',
-      params: {},
-      retryable: false,
-    }),
-  })
-  ipcMain.handle('engine:health', async (event): Promise<HealthResult> => {
-    if (!trusted(event)) return permission()
-    const operation = supervisor.health()
-    try {
-      return { ok: true, data: await operation }
-    } catch (error) {
-      return { ok: false, error: supervisor.projectFailure(error, operation) }
-    }
-  })
-  // This routing table is main-only and finite. No generic method crosses preload.
-  const routes: Record<string, (argument: never) => Promise<unknown>> = {
-    'tasks:restore': () => tasks.restore(),
-    'project:active': () => tasks.activeProject(),
-    'job:get': (id) => tasks.getJob(id),
-    'job:list': (options) => tasks.listJobs(options),
-    'job:cancel': (id) => tasks.cancelJob(id),
-    'job:subscribe': (id) => tasks.subscribeJob(id),
-    'job:unsubscribe': (request) => tasks.unsubscribeView(request),
-    'result:get': (id) => tasks.getResult(id),
-    'result:page': (options) => tasks.getResultPage(options),
-    'operation:get': (id) => tasks.getOperation(id),
-  }
-  for (const [channel, handler] of Object.entries(routes)) {
-    ipcMain.handle(channel, (event, argument) =>
-      trusted(event) ? handler(argument as never) : permission(),
-    )
-  }
+  registerDesktopIpc({ ipcMain, trusted, tasks, supervisor })
   createWindow()
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

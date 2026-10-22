@@ -8,6 +8,8 @@ import {
   type ProjectView,
   type ProgressView,
   type ResultPageOptions,
+  type ResultMetadataDTO,
+  type ResultPageDTO,
   type TaskUpdate,
   type TaskView,
   type SafeError,
@@ -766,11 +768,13 @@ export class TaskService {
         throw { error: invalid }
     }
   }
-  getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>> {
-    return this.guard(() => this.call('result.get', { projectId: this.project(), resultId }))
+  getResult(resultId: string): Promise<BridgeResult<ResultMetadataDTO>> {
+    return this.guard<ResultMetadataDTO>(() =>
+      this.call<ResultMetadataDTO>('result.get', { projectId: this.project(), resultId }),
+    )
   }
-  getResultPage(options: ResultPageOptions): Promise<BridgeResult<Record<string, unknown>>> {
-    return this.guard(async () => {
+  getResultPage(options: ResultPageOptions): Promise<BridgeResult<ResultPageDTO>> {
+    return this.guard<ResultPageDTO>(async () => {
       if (
         !z
           .object({
@@ -782,11 +786,11 @@ export class TaskService {
           .safeParse(options).success
       )
         throw { error: invalid }
-      const result = await this.call<Record<string, unknown>>('result.get', {
+      const result = await this.call<ResultMetadataDTO>('result.get', {
         projectId: this.project(),
         resultId: options.resultId,
       })
-      return this.call('result.page', {
+      return this.call<ResultPageDTO>('result.page', {
         binding: {
           projectId: this.project(),
           resultId: options.resultId,
