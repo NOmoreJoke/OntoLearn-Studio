@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "method": "static inspection only; no npm check/pytest/product runtime executed",
+  "scripts": {
+    "dev": "npm run dev --workspace @ontolearn/desktop",
+    "build": "npm run build --workspace @ontolearn/desktop",
+    "typecheck": "npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:e2e": "install-electron && playwright test",
+    "engine:check": "uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest",
+    "engine:build": "node scripts/build-engine.mjs",
+    "package:dir": "npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
+    "verify:sources": "node scripts/verify-sources.mjs",
+    "typecheck:contracts": "npm run typecheck --workspace @ontolearn/contracts",
+    "typecheck:unit": "tsc --noEmit -p tsconfig.unit.json"
+  },
+  "vitestConfig": {
+    "path": "vitest.config.mts",
+    "include": "tests/unit/**/*.test.ts"
+  },
+  "normalCheckCallGraph": [
+    "lint eslint .",
+    "format:check prettier --check .",
+    "typecheck contracts/unit/desktop",
+    "vitest run tests/unit/**/*.test.ts",
+    "electron-vite build only; does not launch product",
+    "uv frozen ruff check/format --check and ordinary pytest"
+  ],
+  "controlledRegression": {
+    "allowed": "Necessary ordinary matching regression, including existing stdio coordinator/isolated worker/test.atomic and temporary SQLite tests",
+    "source": "packages/engine/tests/test_resident_runtime.py Session uses subprocess.Popen([sys.executable, -I, -m, ontolearn_engine]) with own temp DB/test mode; learning_jobstore reuses it",
+    "blockedExpansion": "No new native/caller/producer, rejected physical-resource investigation, user DB, persistent extra services/dev/HMR/product window or external paid API"
+  },
+  "headlessBoundary": "16 component tests skip unless T09_HEADLESS_UI=1; setup installed no Chromium runtime and did not run component suite. Missing matching explicit runtime never counts as pass.",
+  "environmentSetup": "npm ci --ignore-scripts + uv sync --frozen in each independent root; uv editable wheel preparation is dependency setup, not product build/runtime evidence",
+  "perRootStaticResults": {
+    "s1-zcode": {
+      "fullPromptPrefixExact": true,
+      "fullSourceFiles": 869,
+      "fixedInputs": 106,
+      "envSetupExitCodes": [
+        0,
+        0
+      ],
+      "actualTaskCreated": false,
+      "status": [
+        " M AGENTS.md",
+        "?? docs/reviews/T09/dispatch-20261022/",
+        "?? docs/reviews/T09/dispatch-inputs/",
+        "?? docs/reviews/T09/dispatch-runtime/"
+      ]
+    },
+    "s1-minimax": {
+      "fullPromptPrefixExact": true,
+      "fullSourceFiles": 869,
+      "fixedInputs": 106,
+      "envSetupExitCodes": [
+        0,
+        0
+      ],
+      "actualTaskCreated": false,
+      "status": [
+        " M AGENTS.md",
+        "?? docs/reviews/T09/dispatch-20261022/",
+        "?? docs/reviews/T09/dispatch-inputs/",
+        "?? docs/reviews/T09/dispatch-runtime/"
+      ]
+    },
+    "stage-zcode": {
+      "fullPromptPrefixExact": true,
+      "fullSourceFiles": 891,
+      "fixedInputs": 168,
+      "envSetupExitCodes": [
+        0,
+        0
+      ],
+      "actualTaskCreated": false,
+      "status": [
+        " M AGENTS.md",
+        "?? docs/reviews/T09/dispatch-20261022/",
+        "?? docs/reviews/T09/dispatch-inputs/",
+        "?? docs/reviews/T09/dispatch-runtime/"
+      ]
+    },
+    "stage-minimax": {
+      "fullPromptPrefixExact": true,
+      "fullSourceFiles": 891,
+      "fixedInputs": 168,
+      "envSetupExitCodes": [
+        0,
+        0
+      ],
+      "actualTaskCreated": false,
+      "status": [
+        " M AGENTS.md",
+        "?? docs/reviews/T09/dispatch-20261022/",
+        "?? docs/reviews/T09/dispatch-inputs/",
+        "?? docs/reviews/T09/dispatch-runtime/"
+      ]
+    }
+  }
+}
