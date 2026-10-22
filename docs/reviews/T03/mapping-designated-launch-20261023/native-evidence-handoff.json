@@ -1,0 +1,79 @@
+{
+  "format": "T03-mapping-native-evidence-handoff/1",
+  "observedAt": "2026-10-22T16:41:35.873435+00:00",
+  "state": "CURRENT_EVIDENCE_HANDED_OFF_NOT_FULL_DESIGNATED_PASS",
+  "zcode": {
+    "sessionId": "session_0a2c4afdc82a7ff337650697c1ad0140",
+    "originalTurnId": "turn_59381397-d861-4161-9acd-96bba4c8c1ef",
+    "observedOwnModelRequests": 54,
+    "effortScalarsObserved": ["low", "max"],
+    "lastRequest": {
+      "modelIoLine": 54,
+      "requestId": "2543d449-7e58-4574-a7d6-55f8169ce22a",
+      "model": "GLM-5.3",
+      "effort": "low",
+      "startedAt": "2026-10-22T16:37:39.772Z",
+      "completedAt": "2026-10-22T16:37:41.857Z",
+      "finishReason": "stop"
+    },
+    "requestRoleClassification": "UNKNOWN; querySource single-scalar clarification requested, not read without clarified route",
+    "officialExactDayLogTerminalEvents": [],
+    "officialTerminal": "UNKNOWN",
+    "full230AttachmentNativeRead": "UNKNOWN",
+    "firstRequestExactAutomaticAttachmentBlockCheck": "messages/body.messages/sdkMessages: no exact filename/path numbered body; no target heading or numbered lines",
+    "oneKnownBashCall": {
+      "toolCallId": "call_d936bde014cc4d068f6a347c",
+      "exactAttachmentPathPresent": true,
+      "hashOrWc": true,
+      "completeCat": false,
+      "outputRead": false
+    },
+    "noRootCauseOrActorInference": true
+  },
+  "minimax": {
+    "sessionId": "mvs_10d369cf314843fab6f3d0bc5e213dd6",
+    "originalTurnId": "9c66220e-50d5-403a-b43b-d7bdb35de586",
+    "nativeAttachmentRead": "230/230 exact; native-evidence-initial.json messages lines3/6 and associated exact read calls",
+    "modelNativeScalar": "MiniMax-M3.1-Flash",
+    "officialFourFields": [
+      [
+        "mvs_10d369cf314843fab6f3d0bc5e213dd6",
+        "9c66220e-50d5-403a-b43b-d7bdb35de586",
+        "failed",
+        1792686381710
+      ]
+    ],
+    "officialTerminal": "failed",
+    "lastAssistantStopAtFailedTurn": "toolUse",
+    "publicError": "UNKNOWN; not in approved current receipt fields, no further table/general log search",
+    "sameSidNewTurnOrRetry": false
+  },
+  "reports": [
+    {
+      "role": "zcode",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-zcode-review-3031941/build/review-session/reports/mapping-S1-zcode-full-report.md",
+      "bytes": 19751,
+      "sha256": "f8b937a36c4879c79c57c1bb744728fa0eb124e16c7d02d56c4b0822ef858066",
+      "primaryFullRead": true,
+      "stableAfterRead": true
+    },
+    {
+      "role": "minimax",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/reports/mapping-S1-minimax-full-report.md",
+      "bytes": 49079,
+      "sha256": "827c8c1a9e026f503a40aa3df4e0cb2b0470e82d31b97c169421efb6e3ca928d",
+      "primaryFullRead": true,
+      "stableAfterRead": true
+    }
+  ],
+  "reportSelfPassDoesNotOverrideNativeOrCompletenessGaps": true,
+  "ownerIssueDispositionRecords": ["zcode-report-readback.json", "minimax-report-readback.json"],
+  "scopeIncidentRecord": "scope-note.json; not a whole-time zero system exposure claim",
+  "guiReleasedAndUnusedThroughoutBackground": true,
+  "currentGuiOwner": "T01 per controller; no GUI operations",
+  "frozenSourceChanges": false,
+  "productExecutionByPrimary": false,
+  "callerSTOPOrPhysicalHOLDChanged": false,
+  "followupToActualTasksSent": false,
+  "next": "Controller assesses same-task minimal input/scope/terminal follow-up in an explicit later window; do not resend now or read unapproved logs to force proof"
+}
