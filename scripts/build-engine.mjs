@@ -1,67 +1,252 @@
 import { spawnSync } from 'node:child_process'
+import { randomUUID } from 'node:crypto'
+import * as fs from 'node:fs'
+import { dirname, isAbsolute, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { dirname, resolve } from 'node:path'
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const result = spawnSync(
-  'uv',
-  [
-    'run',
-    '--frozen',
-    'pyinstaller',
-    '--noconfirm',
-    '--clean',
-    '--onedir',
-    '--collect-all',
-    'rdflib',
-    '--collect-all',
-    'pyshacl',
-    '--collect-all',
-    'owlrl',
-    '--collect-all',
-    'html5rdf',
-    '--collect-data',
-    'ontolearn_engine',
-    '--copy-metadata',
-    'rdflib',
-    '--copy-metadata',
-    'pyparsing',
-    '--copy-metadata',
-    'pyshacl',
-    '--copy-metadata',
-    'owlrl',
-    '--copy-metadata',
-    'packaging',
-    '--copy-metadata',
-    'prettytable',
-    '--copy-metadata',
-    'wcwidth',
-    '--copy-metadata',
-    'html5rdf',
-    '--add-data',
-    `${resolve(root, 'packages/contracts/python/contract_v2.py')}:contracts/python`,
-    '--add-data',
-    `${resolve(root, 'packages/contracts/v2')}:contracts/v2`,
-    '--add-data',
-    `${resolve(root, 'uv.lock')}:provenance`,
-    '--name',
-    'ontolearn-engine',
-    '--distpath',
-    'build/engine',
-    '--workpath',
-    'build/pyinstaller',
-    '--specpath',
-    'build',
-    'packages/engine/entrypoint.py',
-  ],
-  {
-    cwd: root,
-    stdio: 'inherit',
-    shell: false,
-    env: { ...process.env, PYINSTALLER_CONFIG_DIR: resolve(root, 'build/pyinstaller-cache') },
-  },
-)
-if (result.error) {
-  console.error('需要先安装 uv 并执行 uv sync --frozen。')
-  process.exit(1)
+
+const defaultRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+const distributions = [
+  'rdflib',
+  'pyparsing',
+  'pyshacl',
+  'owlrl',
+  'packaging',
+  'prettytable',
+  'wcwidth',
+  'html5rdf',
+]
+const prepareProgram = [
+  'import json,sys',
+  'from pathlib import Path',
+  'from ontolearn_engine.semantic_build_provenance import prepare_build',
+  'print(json.dumps(prepare_build(Path(sys.argv[1]),Path(sys.argv[2]))))',
+].join('\n')
+const finalizeProgram = [
+  'import json,sys',
+  'from pathlib import Path',
+  'from ontolearn_engine.semantic_build_provenance import finalize_build',
+  'print(json.dumps(finalize_build(Path(sys.argv[1]),Path(sys.argv[2]),Path(sys.argv[3]))))',
+].join('\n')
+
+function fail(code) {
+  throw new Error(code)
 }
-process.exit(result.status ?? 1)
+
+function contained(root, path) {
+  const suffix = relative(root, path)
+  return suffix !== '' && !isAbsolute(suffix) && suffix !== '..' && !suffix.startsWith('../')
+}
+
+function entry(io, path) {
+  try {
+    return io.lstatSync(path)
+  } catch (error) {
+    if (error && error.code === 'ENOENT') return null
+    throw error
+  }
+}
+
+function directory(io, root, path) {
+  if (!contained(root, path)) fail('BUILD_ENGINE_DIRECTORY_INVALID')
+  // Build/staging ancestors must not redirect writes outside this checkout.
+  let current = path
+  while (current !== root) {
+    const info = entry(io, current)
+    if (info !== null) {
+      if (!info.isDirectory() || info.isSymbolicLink()) fail('BUILD_ENGINE_DIRECTORY_INVALID')
+    }
+    current = dirname(current)
+  }
+  io.mkdirSync(path, { recursive: true })
+}
+
+function helper(run, root, runRoot, program, arguments_, keys) {
+  const result = run('uv', ['run', '--frozen', 'python', '-c', program, ...arguments_], {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+    shell: false,
+    maxBuffer: 4 * 1024 * 1024,
+    env: { ...process.env, PYINSTALLER_CONFIG_DIR: resolve(runRoot, 'cache') },
+  })
+  if (typeof result.stderr === 'string' && result.stderr) process.stderr.write(result.stderr)
+  if (result.error || result.status !== 0) {
+    if (typeof result.stdout === 'string' && result.stdout) process.stderr.write(result.stdout)
+    if (result.error) process.stderr.write(`${String(result.error)}\n`)
+    fail('BUILD_ENGINE_PROVENANCE_HELPER_FAILED')
+  }
+  if (typeof result.stdout !== 'string' || Buffer.byteLength(result.stdout) > 65536)
+    fail('BUILD_ENGINE_HELPER_OUTPUT_INVALID')
+  let value
+  try {
+    value = JSON.parse(result.stdout)
+  } catch {
+    fail('BUILD_ENGINE_HELPER_OUTPUT_INVALID')
+  }
+  if (
+    value === null ||
+    typeof value !== 'object' ||
+    Array.isArray(value) ||
+    Object.keys(value).length !== keys.length ||
+    keys.some((key) => typeof value[key] !== 'string')
+  )
+    fail('BUILD_ENGINE_HELPER_OUTPUT_INVALID')
+  return value
+}
+
+// Private programmatic build API; no application CLI accepting arbitrary paths.
+export function publishEngineCopy({ root, runRoot, engineDirectory, token, io = fs }) {
+  if (
+    typeof root !== 'string' ||
+    !isAbsolute(root) ||
+    root !== resolve(root) ||
+    !uuidPattern.test(token) ||
+    runRoot !== resolve(root, 'build/i05-provenance', token)
+  )
+    fail('BUILD_ENGINE_ARTIFACT_PATH_INVALID')
+  if (engineDirectory !== resolve(runRoot, 'dist/ontolearn-engine'))
+    fail('BUILD_ENGINE_ARTIFACT_PATH_INVALID')
+  let source = engineDirectory
+  while (source !== root) {
+    const info = entry(io, source)
+    if (info === null || !info.isDirectory() || info.isSymbolicLink())
+      fail('BUILD_ENGINE_ARTIFACT_PATH_INVALID')
+    source = dirname(source)
+  }
+  const stagingParent = resolve(root, 'build/engine')
+  directory(io, root, stagingParent)
+  const target = resolve(stagingParent, 'ontolearn-engine')
+  const temporary = resolve(stagingParent, `.ontolearn-engine-${token}`)
+  if (entry(io, temporary) !== null) fail('BUILD_ENGINE_STAGING_EXISTS')
+  io.cpSync(engineDirectory, temporary, {
+    recursive: true,
+    force: false,
+    errorOnExist: true,
+    preserveTimestamps: true,
+    verbatimSymlinks: true,
+  })
+  let archived = null
+  if (entry(io, target) !== null) {
+    const archiveRoot = resolve(runRoot, 'staging-archive')
+    directory(io, root, archiveRoot)
+    archived = resolve(archiveRoot, 'ontolearn-engine')
+    if (entry(io, archived) !== null) fail('BUILD_ENGINE_STAGING_EXISTS')
+    io.renameSync(target, archived)
+  }
+  try {
+    io.renameSync(temporary, target)
+  } catch (error) {
+    // Publication failure restores staging; immutable run artifacts stay intact.
+    if (archived !== null && entry(io, target) === null) io.renameSync(archived, target)
+    throw error
+  }
+  return target
+}
+
+export function buildEngine({
+  repositoryRoot = defaultRoot,
+  run = spawnSync,
+  io = fs,
+  uuid = randomUUID,
+} = {}) {
+  const root = resolve(repositoryRoot)
+  const token = uuid()
+  if (!uuidPattern.test(token)) fail('BUILD_ENGINE_ID_INVALID')
+  const parent = resolve(root, 'build/i05-provenance')
+  directory(io, root, parent)
+  const runRoot = resolve(parent, token)
+  if (entry(io, runRoot) !== null) fail('BUILD_ENGINE_OUTPUT_EXISTS')
+  const prepared = helper(
+    run,
+    root,
+    runRoot,
+    prepareProgram,
+    [root, runRoot],
+    ['provenancePath', 'contractPath', 'generatedDir', 'anchorPath'],
+  )
+  const expected = {
+    provenancePath: resolve(runRoot, 'provenance/i05-private-build-provenance-v1.json'),
+    contractPath: resolve(runRoot, 'provenance/i05-private-contract-v1.json'),
+    generatedDir: resolve(runRoot, 'generated'),
+    anchorPath: resolve(runRoot, 'generated/_i05_private_build_anchor.py'),
+  }
+  if (Object.keys(expected).some((key) => prepared[key] !== expected[key]))
+    fail('BUILD_ENGINE_HELPER_PATH_INVALID')
+  const engineDirectory = resolve(runRoot, 'dist/ontolearn-engine')
+  const result = run(
+    'uv',
+    [
+      'run',
+      '--frozen',
+      'pyinstaller',
+      '--noconfirm',
+      '--clean',
+      '--onedir',
+      '--optimize',
+      '0',
+      '--paths',
+      prepared.generatedDir,
+      '--hidden-import',
+      '_i05_private_build_anchor',
+      '--hidden-import',
+      'ontolearn_engine.semantic_build_provenance',
+      ...distributions.flatMap((name) => ['--collect-all', name]),
+      '--collect-data',
+      'ontolearn_engine',
+      ...distributions.flatMap((name) => ['--copy-metadata', name]),
+      '--add-data',
+      `${resolve(root, 'packages/contracts/python/contract_v2.py')}:contracts/python`,
+      '--add-data',
+      `${resolve(root, 'packages/contracts/v2')}:contracts/v2`,
+      '--add-data',
+      `${resolve(root, 'uv.lock')}:provenance`,
+      '--add-data',
+      `${prepared.provenancePath}:provenance`,
+      '--add-data',
+      `${prepared.contractPath}:provenance`,
+      '--name',
+      'ontolearn-engine',
+      '--distpath',
+      resolve(runRoot, 'dist'),
+      '--workpath',
+      resolve(runRoot, 'pyinstaller'),
+      '--specpath',
+      resolve(runRoot, 'spec'),
+      'packages/engine/entrypoint.py',
+    ],
+    {
+      cwd: root,
+      stdio: 'inherit',
+      shell: false,
+      env: { ...process.env, PYINSTALLER_CONFIG_DIR: resolve(runRoot, 'cache') },
+    },
+  )
+  if (result.error || result.status !== 0) fail('BUILD_ENGINE_PYINSTALLER_FAILED')
+  const finalized = helper(
+    run,
+    root,
+    runRoot,
+    finalizeProgram,
+    [root, runRoot, engineDirectory],
+    ['bindingPath', 'bindingSha256', 'engineDirectory', 'provenanceSha256'],
+  )
+  if (
+    finalized.bindingPath !== resolve(runRoot, 'artifact-binding-v1.json') ||
+    finalized.engineDirectory !== engineDirectory ||
+    !/^[0-9a-f]{64}$/.test(finalized.bindingSha256) ||
+    !/^[0-9a-f]{64}$/.test(finalized.provenanceSha256)
+  )
+    fail('BUILD_ENGINE_BINDING_INVALID')
+  const stagingDirectory = publishEngineCopy({ root, runRoot, engineDirectory, token, io })
+  return { ...finalized, stagingDirectory, rootApproved: false }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  try {
+    console.log(JSON.stringify(buildEngine()))
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : 'BUILD_ENGINE_FAILED')
+    process.exitCode = 1
+  }
+}
