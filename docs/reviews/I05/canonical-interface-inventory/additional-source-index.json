@@ -1,0 +1,3009 @@
+{
+  "format": "i05-bound-interface-declarations/1",
+  "records": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "bytes": 33916,
+      "sha256": "4180feb9d0c775669b65338e1cfb37a8d5bb7f3ce155b4804dd53a43efad5214",
+      "namedTargets": [
+        "canonical_string",
+        "parse_graph",
+        "parse_profile_graph",
+        "profile_graph_from_records",
+        "bind_profile_disabled_rules"
+      ],
+      "permittedTextScope": "specified pure serialization/parser API layout facts only",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "canonical_string",
+          "kind": "FunctionDef",
+          "line": 20
+        },
+        {
+          "name": "LexicalSink",
+          "kind": "ClassDef",
+          "line": 31
+        },
+        {
+          "name": "LexicalSinkParser",
+          "kind": "ClassDef",
+          "line": 41
+        },
+        {
+          "name": "parse_graph",
+          "kind": "FunctionDef",
+          "line": 92
+        },
+        {
+          "name": "_profile_fail",
+          "kind": "FunctionDef",
+          "line": 115
+        },
+        {
+          "name": "_utf8_bound",
+          "kind": "FunctionDef",
+          "line": 121
+        },
+        {
+          "name": "_ucschar",
+          "kind": "FunctionDef",
+          "line": 136
+        },
+        {
+          "name": "_iri_chars",
+          "kind": "FunctionDef",
+          "line": 148
+        },
+        {
+          "name": "_iri_authority",
+          "kind": "FunctionDef",
+          "line": 171
+        },
+        {
+          "name": "validate_profile_iri",
+          "kind": "FunctionDef",
+          "line": 209
+        },
+        {
+          "name": "_term_input",
+          "kind": "FunctionDef",
+          "line": 236
+        },
+        {
+          "name": "_profile_vocabulary",
+          "kind": "FunctionDef",
+          "line": 258
+        },
+        {
+          "name": "ProfileTermOccurrence",
+          "kind": "ClassDef",
+          "line": 291
+        },
+        {
+          "name": "ProfileTermContext",
+          "kind": "ClassDef",
+          "line": 299
+        },
+        {
+          "name": "_require_context",
+          "kind": "FunctionDef",
+          "line": 343
+        },
+        {
+          "name": "_native_fields",
+          "kind": "FunctionDef",
+          "line": 362
+        },
+        {
+          "name": "_value_fields",
+          "kind": "FunctionDef",
+          "line": 371
+        },
+        {
+          "name": "_identity_fields",
+          "kind": "FunctionDef",
+          "line": 396
+        },
+        {
+          "name": "_node_identity",
+          "kind": "FunctionDef",
+          "line": 405
+        },
+        {
+          "name": "_value_snapshot",
+          "kind": "FunctionDef",
+          "line": 423
+        },
+        {
+          "name": "_same_native_fields",
+          "kind": "FunctionDef",
+          "line": 431
+        },
+        {
+          "name": "_value_work",
+          "kind": "FunctionDef",
+          "line": 437
+        },
+        {
+          "name": "_validate_value",
+          "kind": "FunctionDef",
+          "line": 443
+        },
+        {
+          "name": "_validate_context_values",
+          "kind": "FunctionDef",
+          "line": 458
+        },
+        {
+          "name": "_disabled_ids",
+          "kind": "FunctionDef",
+          "line": 480
+        },
+        {
+          "name": "_issue_context",
+          "kind": "FunctionDef",
+          "line": 492
+        },
+        {
+          "name": "bind_profile_disabled_rules",
+          "kind": "FunctionDef",
+          "line": 564
+        },
+        {
+          "name": "_ProfileSink",
+          "kind": "ClassDef",
+          "line": 572
+        },
+        {
+          "name": "_ProfileParser",
+          "kind": "ClassDef",
+          "line": 622
+        },
+        {
+          "name": "_profile_source",
+          "kind": "FunctionDef",
+          "line": 674
+        },
+        {
+          "name": "parse_profile_graph",
+          "kind": "FunctionDef",
+          "line": 692
+        },
+        {
+          "name": "profile_context_for_graph",
+          "kind": "FunctionDef",
+          "line": 725
+        },
+        {
+          "name": "_profile_record_node",
+          "kind": "FunctionDef",
+          "line": 764
+        },
+        {
+          "name": "profile_graph_from_records",
+          "kind": "FunctionDef",
+          "line": 815
+        },
+        {
+          "name": "decode_profile_term",
+          "kind": "FunctionDef",
+          "line": 842
+        }
+      ],
+      "definitions": [
+        {
+          "name": "canonical_string",
+          "line": 20,
+          "endLine": 28,
+          "signature": "term",
+          "returnAnnotation": null
+        },
+        {
+          "name": "parse_graph",
+          "line": 92,
+          "endLine": 99,
+          "signature": "text, *, base_uri",
+          "returnAnnotation": null
+        },
+        {
+          "name": "parse_profile_graph",
+          "line": 692,
+          "endLine": 722,
+          "signature": "text, *, base_uri, source=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "profile_graph_from_records",
+          "line": 815,
+          "endLine": 839,
+          "signature": "records, *, disabled_rule_ids=()",
+          "returnAnnotation": null
+        },
+        {
+          "name": "bind_profile_disabled_rules",
+          "line": 564,
+          "endLine": 569,
+          "signature": "context, disabled_rule_ids",
+          "returnAnnotation": null
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "bytes": 11987,
+      "sha256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "namedTargets": [
+        "SourceRecord",
+        "TermInput",
+        "InputLocation",
+        "ProfileLimits",
+        "ProfileFailure"
+      ],
+      "permittedTextScope": "named class/type declarations,constructor field assignments,dataclass fields only",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "InputLocation",
+          "kind": "ClassDef",
+          "line": 19
+        },
+        {
+          "name": "_location_shape",
+          "kind": "FunctionDef",
+          "line": 26
+        },
+        {
+          "name": "check_location",
+          "kind": "FunctionDef",
+          "line": 50
+        },
+        {
+          "name": "SourceRecord",
+          "kind": "ClassDef",
+          "line": 67
+        },
+        {
+          "name": "TermInput",
+          "kind": "ClassDef",
+          "line": 75
+        },
+        {
+          "name": "ProfileFailure",
+          "kind": "ClassDef",
+          "line": 83
+        },
+        {
+          "name": "fail",
+          "kind": "FunctionDef",
+          "line": 109
+        },
+        {
+          "name": "internal",
+          "kind": "FunctionDef",
+          "line": 113
+        },
+        {
+          "name": "ProfileLimits",
+          "kind": "ClassDef",
+          "line": 118
+        },
+        {
+          "name": "Budget",
+          "kind": "ClassDef",
+          "line": 144
+        },
+        {
+          "name": "require_budget",
+          "kind": "FunctionDef",
+          "line": 212
+        },
+        {
+          "name": "utf8_size",
+          "kind": "FunctionDef",
+          "line": 217
+        },
+        {
+          "name": "text_compare",
+          "kind": "FunctionDef",
+          "line": 238
+        },
+        {
+          "name": "tuple_compare",
+          "kind": "FunctionDef",
+          "line": 246
+        },
+        {
+          "name": "_walk",
+          "kind": "FunctionDef",
+          "line": 270
+        },
+        {
+          "name": "account_input",
+          "kind": "FunctionDef",
+          "line": 355
+        },
+        {
+          "name": "encode_input",
+          "kind": "FunctionDef",
+          "line": 360
+        },
+        {
+          "name": "encode_output",
+          "kind": "FunctionDef",
+          "line": 367
+        },
+        {
+          "name": "fingerprint",
+          "kind": "FunctionDef",
+          "line": 374
+        }
+      ],
+      "definitions": [
+        {
+          "name": "SourceRecord",
+          "line": 67,
+          "endLine": 71,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "reference",
+              "annotation": "str | None",
+              "line": 68,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "digest",
+              "annotation": "str | None",
+              "line": 69,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None",
+              "line": 70,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "text",
+              "annotation": "str | None",
+              "line": 71,
+              "defaultSyntax": "None"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "TermInput",
+          "line": 75,
+          "endLine": 80,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "kind",
+              "annotation": "str",
+              "line": 76,
+              "defaultSyntax": null
+            },
+            {
+              "name": "lexical_form",
+              "annotation": "str",
+              "line": 77,
+              "defaultSyntax": null
+            },
+            {
+              "name": "datatype_iri",
+              "annotation": "str | None",
+              "line": 78,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "language_raw",
+              "annotation": "str | None",
+              "line": 79,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None",
+              "line": 80,
+              "defaultSyntax": "None"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "InputLocation",
+          "line": 19,
+          "endLine": 23,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "section",
+              "annotation": "str | None",
+              "line": 20,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "index",
+              "annotation": "int | None",
+              "line": 21,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "side",
+              "annotation": "str | None",
+              "line": 22,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "span",
+              "annotation": "tuple[int, int] | None",
+              "line": 23,
+              "defaultSyntax": "None"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ProfileLimits",
+          "line": 118,
+          "endLine": 141,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "input_bytes",
+              "annotation": "int",
+              "line": 119,
+              "defaultSyntax": "262144"
+            },
+            {
+              "name": "term_bytes",
+              "annotation": "int",
+              "line": 120,
+              "defaultSyntax": "16384"
+            },
+            {
+              "name": "source_bytes",
+              "annotation": "int",
+              "line": 121,
+              "defaultSyntax": "65536"
+            },
+            {
+              "name": "digits",
+              "annotation": "int",
+              "line": 122,
+              "defaultSyntax": "4096"
+            },
+            {
+              "name": "integer_bits",
+              "annotation": "int",
+              "line": 123,
+              "defaultSyntax": "16384"
+            },
+            {
+              "name": "temporary_bits",
+              "annotation": "int",
+              "line": 124,
+              "defaultSyntax": "32768"
+            },
+            {
+              "name": "rules",
+              "annotation": "int",
+              "line": 125,
+              "defaultSyntax": "100"
+            },
+            {
+              "name": "when",
+              "annotation": "int",
+              "line": 126,
+              "defaultSyntax": "16"
+            },
+            {
+              "name": "comparisons",
+              "annotation": "int",
+              "line": 127,
+              "defaultSyntax": "32"
+            },
+            {
+              "name": "heads",
+              "annotation": "int",
+              "line": 128,
+              "defaultSyntax": "16"
+            },
+            {
+              "name": "variables",
+              "annotation": "int",
+              "line": 129,
+              "defaultSyntax": "64"
+            },
+            {
+              "name": "bindings",
+              "annotation": "int",
+              "line": 130,
+              "defaultSyntax": "1024"
+            },
+            {
+              "name": "firings",
+              "annotation": "int",
+              "line": 131,
+              "defaultSyntax": "1024"
+            },
+            {
+              "name": "head_occurrences",
+              "annotation": "int",
+              "line": 132,
+              "defaultSyntax": "16384"
+            },
+            {
+              "name": "trace_items",
+              "annotation": "int",
+              "line": 133,
+              "defaultSyntax": "8192"
+            },
+            {
+              "name": "output_bytes",
+              "annotation": "int",
+              "line": 134,
+              "defaultSyntax": "262144"
+            },
+            {
+              "name": "work",
+              "annotation": "int",
+              "line": 135,
+              "defaultSyntax": "16777216"
+            }
+          ],
+          "methodInterfacesOnly": [
+            {
+              "name": "__post_init__",
+              "line": 137,
+              "endLine": 141,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ProfileFailure",
+          "line": 83,
+          "endLine": 106,
+          "bases": ["Exception"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 86,
+              "endLine": 94,
+              "signature": "self, reason, location=None, classification='input'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "reason",
+              "line": 97,
+              "endLine": 98,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "location",
+              "line": 101,
+              "endLine": 102,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "classification",
+              "line": 105,
+              "endLine": 106,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "_safe",
+              "line": 94
+            }
+          ]
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "bytes": 19149,
+      "sha256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "namedTargets": [
+        "Variable",
+        "Triple",
+        "Comparison",
+        "RuleSpec",
+        "Catalog",
+        "BindingMatch",
+        "ComparisonEvidence",
+        "HeadEvidence",
+        "PreparedFiring",
+        "PreparedFiringBatch"
+      ],
+      "permittedTextScope": "named class/type declarations,constructor field assignments,dataclass fields only",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "Variable",
+          "kind": "ClassDef",
+          "line": 42
+        },
+        {
+          "name": "Triple",
+          "kind": "ClassDef",
+          "line": 47
+        },
+        {
+          "name": "Comparison",
+          "kind": "ClassDef",
+          "line": 54
+        },
+        {
+          "name": "RuleSpec",
+          "kind": "ClassDef",
+          "line": 61
+        },
+        {
+          "name": "Catalog",
+          "kind": "ClassDef",
+          "line": 73
+        },
+        {
+          "name": "BindingMatch",
+          "kind": "ClassDef",
+          "line": 80
+        },
+        {
+          "name": "_CompiledRule",
+          "kind": "ClassDef",
+          "line": 88
+        },
+        {
+          "name": "CompiledPlan",
+          "kind": "ClassDef",
+          "line": 96
+        },
+        {
+          "name": "ComparisonEvidence",
+          "kind": "ClassDef",
+          "line": 117
+        },
+        {
+          "name": "HeadEvidence",
+          "kind": "ClassDef",
+          "line": 126
+        },
+        {
+          "name": "PreparedFiring",
+          "kind": "ClassDef",
+          "line": 132
+        },
+        {
+          "name": "PreparedFiringBatch",
+          "kind": "ClassDef",
+          "line": 147
+        },
+        {
+          "name": "_sequence",
+          "kind": "FunctionDef",
+          "line": 155
+        },
+        {
+          "name": "_contains",
+          "kind": "FunctionDef",
+          "line": 163
+        },
+        {
+          "name": "_sort_unique",
+          "kind": "FunctionDef",
+          "line": 167
+        },
+        {
+          "name": "_variable",
+          "kind": "FunctionDef",
+          "line": 176
+        },
+        {
+          "name": "_check_triple",
+          "kind": "FunctionDef",
+          "line": 186
+        },
+        {
+          "name": "compile_rules",
+          "kind": "FunctionDef",
+          "line": 232
+        },
+        {
+          "name": "_check_plan",
+          "kind": "FunctionDef",
+          "line": 334
+        },
+        {
+          "name": "_resolve",
+          "kind": "FunctionDef",
+          "line": 352
+        },
+        {
+          "name": "_triple_key",
+          "kind": "FunctionDef",
+          "line": 365
+        },
+        {
+          "name": "_triple_equal",
+          "kind": "FunctionDef",
+          "line": 371
+        },
+        {
+          "name": "_instantiate",
+          "kind": "FunctionDef",
+          "line": 375
+        },
+        {
+          "name": "_one",
+          "kind": "FunctionDef",
+          "line": 381
+        },
+        {
+          "name": "evaluate_bound_batch",
+          "kind": "FunctionDef",
+          "line": 461
+        },
+        {
+          "name": "_evaluate_bound_batch",
+          "kind": "FunctionDef",
+          "line": 470
+        },
+        {
+          "name": "check_firing_group",
+          "kind": "FunctionDef",
+          "line": 526
+        },
+        {
+          "name": "_check_firing_group",
+          "kind": "FunctionDef",
+          "line": 537
+        }
+      ],
+      "definitions": [
+        {
+          "name": "Variable",
+          "line": 42,
+          "endLine": 43,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "name",
+              "annotation": "str",
+              "line": 43,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "Triple",
+          "line": 47,
+          "endLine": 50,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "subject",
+              "annotation": "TermInput | Variable",
+              "line": 48,
+              "defaultSyntax": null
+            },
+            {
+              "name": "predicate",
+              "annotation": "TermInput",
+              "line": 49,
+              "defaultSyntax": null
+            },
+            {
+              "name": "object",
+              "annotation": "TermInput | Variable",
+              "line": 50,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "Comparison",
+          "line": 54,
+          "endLine": 57,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "left",
+              "annotation": "TermInput | Variable",
+              "line": 55,
+              "defaultSyntax": null
+            },
+            {
+              "name": "operator",
+              "annotation": "str",
+              "line": 56,
+              "defaultSyntax": null
+            },
+            {
+              "name": "right",
+              "annotation": "TermInput | Variable",
+              "line": 57,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "RuleSpec",
+          "line": 61,
+          "endLine": 69,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str",
+              "line": 62,
+              "defaultSyntax": null
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]",
+              "line": 63,
+              "defaultSyntax": null
+            },
+            {
+              "name": "comparisons",
+              "annotation": "tuple[Comparison, ...]",
+              "line": 64,
+              "defaultSyntax": null
+            },
+            {
+              "name": "heads",
+              "annotation": "tuple[Triple, ...]",
+              "line": 65,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None",
+              "line": 66,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None",
+              "line": 67,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "definition_digest",
+              "annotation": "str | None",
+              "line": 68,
+              "defaultSyntax": "None"
+            },
+            {
+              "name": "policy",
+              "annotation": "str",
+              "line": 69,
+              "defaultSyntax": "PROFILE"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "Catalog",
+          "line": 73,
+          "endLine": 76,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "classes",
+              "annotation": "tuple[str, ...]",
+              "line": 74,
+              "defaultSyntax": "()"
+            },
+            {
+              "name": "object_properties",
+              "annotation": "tuple[str, ...]",
+              "line": 75,
+              "defaultSyntax": "()"
+            },
+            {
+              "name": "data_properties",
+              "annotation": "tuple[str, ...]",
+              "line": 76,
+              "defaultSyntax": "()"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "BindingMatch",
+          "line": 80,
+          "endLine": 84,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str",
+              "line": 81,
+              "defaultSyntax": null
+            },
+            {
+              "name": "bindings",
+              "annotation": "tuple[tuple[str, TermInput], ...]",
+              "line": 82,
+              "defaultSyntax": null
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]",
+              "line": 83,
+              "defaultSyntax": null
+            },
+            {
+              "name": "proof_leaves",
+              "annotation": "tuple[tuple[str, ...], ...]",
+              "line": 84,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ComparisonEvidence",
+          "line": 117,
+          "endLine": 122,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "index",
+              "annotation": "int",
+              "line": 118,
+              "defaultSyntax": null
+            },
+            {
+              "name": "left",
+              "annotation": "ProfileValue",
+              "line": 119,
+              "defaultSyntax": null
+            },
+            {
+              "name": "operator",
+              "annotation": "str",
+              "line": 120,
+              "defaultSyntax": null
+            },
+            {
+              "name": "right",
+              "annotation": "ProfileValue",
+              "line": 121,
+              "defaultSyntax": null
+            },
+            {
+              "name": "result",
+              "annotation": "bool",
+              "line": 122,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "HeadEvidence",
+          "line": 126,
+          "endLine": 128,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "index",
+              "annotation": "int",
+              "line": 127,
+              "defaultSyntax": null
+            },
+            {
+              "name": "triple",
+              "annotation": "Triple",
+              "line": 128,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "PreparedFiring",
+          "line": 132,
+          "endLine": 143,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "rule_id",
+              "annotation": "str",
+              "line": 133,
+              "defaultSyntax": null
+            },
+            {
+              "name": "bindings",
+              "annotation": "tuple[tuple[str, TermInput], ...]",
+              "line": 134,
+              "defaultSyntax": null
+            },
+            {
+              "name": "when",
+              "annotation": "tuple[Triple, ...]",
+              "line": 135,
+              "defaultSyntax": null
+            },
+            {
+              "name": "proof_leaves",
+              "annotation": "tuple[tuple[str, ...], ...]",
+              "line": 136,
+              "defaultSyntax": null
+            },
+            {
+              "name": "comparisons",
+              "annotation": "tuple[ComparisonEvidence, ...]",
+              "line": 137,
+              "defaultSyntax": null
+            },
+            {
+              "name": "heads",
+              "annotation": "tuple[HeadEvidence, ...]",
+              "line": 138,
+              "defaultSyntax": null
+            },
+            {
+              "name": "basis",
+              "annotation": "tuple[str, ...]",
+              "line": 139,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source",
+              "annotation": "SourceRecord | None",
+              "line": 140,
+              "defaultSyntax": null
+            },
+            {
+              "name": "revision",
+              "annotation": "str | None",
+              "line": 141,
+              "defaultSyntax": null
+            },
+            {
+              "name": "definition_digest",
+              "annotation": "str | None",
+              "line": 142,
+              "defaultSyntax": null
+            },
+            {
+              "name": "policy",
+              "annotation": "str",
+              "line": 143,
+              "defaultSyntax": "PROFILE"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "PreparedFiringBatch",
+          "line": 147,
+          "endLine": 152,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "firings",
+              "annotation": "tuple[PreparedFiring, ...]",
+              "line": 148,
+              "defaultSyntax": null
+            },
+            {
+              "name": "facts",
+              "annotation": "tuple[Triple, ...]",
+              "line": 149,
+              "defaultSyntax": null
+            },
+            {
+              "name": "payload",
+              "annotation": "bytes",
+              "line": 150,
+              "defaultSyntax": null
+            },
+            {
+              "name": "digest",
+              "annotation": "str",
+              "line": 151,
+              "defaultSyntax": null
+            },
+            {
+              "name": "profile",
+              "annotation": "str",
+              "line": 152,
+              "defaultSyntax": "PROFILE"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "bytes": 6176,
+      "sha256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+      "namedTargets": ["ProfileValue"],
+      "permittedTextScope": "named class/type declarations only",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "ProfileValue",
+          "kind": "ClassDef",
+          "line": 47
+        },
+        {
+          "name": "_signed_value",
+          "kind": "FunctionDef",
+          "line": 57
+        },
+        {
+          "name": "check_value",
+          "kind": "FunctionDef",
+          "line": 70
+        },
+        {
+          "name": "iri_minimum",
+          "kind": "FunctionDef",
+          "line": 87
+        },
+        {
+          "name": "parse_value",
+          "kind": "FunctionDef",
+          "line": 103
+        },
+        {
+          "name": "term_key",
+          "kind": "FunctionDef",
+          "line": 173
+        }
+      ],
+      "definitions": [
+        {
+          "name": "ProfileValue",
+          "line": 47,
+          "endLine": 51,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True, weakref_slot=True)"],
+          "fields": [
+            {
+              "name": "term",
+              "annotation": "TermInput",
+              "line": 48,
+              "defaultSyntax": null
+            },
+            {
+              "name": "domain",
+              "annotation": "str",
+              "line": 49,
+              "defaultSyntax": null
+            },
+            {
+              "name": "value",
+              "annotation": "object",
+              "line": 50,
+              "defaultSyntax": null
+            },
+            {
+              "name": "language",
+              "annotation": "str",
+              "line": 51,
+              "defaultSyntax": "''"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "bytes": 7372,
+      "sha256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "namedTargets": ["Number"],
+      "permittedTextScope": "named class/type declarations only",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "Number",
+          "kind": "ClassDef",
+          "line": 14
+        },
+        {
+          "name": "check_ints",
+          "kind": "FunctionDef",
+          "line": 20
+        },
+        {
+          "name": "check_number",
+          "kind": "FunctionDef",
+          "line": 28
+        },
+        {
+          "name": "limbs",
+          "kind": "FunctionDef",
+          "line": 38
+        },
+        {
+          "name": "mul",
+          "kind": "FunctionDef",
+          "line": 44
+        },
+        {
+          "name": "shift",
+          "kind": "FunctionDef",
+          "line": 51
+        },
+        {
+          "name": "add",
+          "kind": "FunctionDef",
+          "line": 60
+        },
+        {
+          "name": "divide",
+          "kind": "FunctionDef",
+          "line": 67
+        },
+        {
+          "name": "rational",
+          "kind": "FunctionDef",
+          "line": 75
+        },
+        {
+          "name": "digits",
+          "kind": "FunctionDef",
+          "line": 92
+        },
+        {
+          "name": "power10",
+          "kind": "FunctionDef",
+          "line": 109
+        },
+        {
+          "name": "compare_numbers",
+          "kind": "FunctionDef",
+          "line": 126
+        },
+        {
+          "name": "_quantize",
+          "kind": "FunctionDef",
+          "line": 135
+        },
+        {
+          "name": "parse_number",
+          "kind": "FunctionDef",
+          "line": 155
+        }
+      ],
+      "definitions": [
+        {
+          "name": "Number",
+          "line": 14,
+          "endLine": 17,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "numerator",
+              "annotation": "int",
+              "line": 15,
+              "defaultSyntax": null
+            },
+            {
+              "name": "denominator",
+              "annotation": "int",
+              "line": 16,
+              "defaultSyntax": "1"
+            },
+            {
+              "name": "negative_zero",
+              "annotation": "bool",
+              "line": 17,
+              "defaultSyntax": "False"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "bytes": 4047,
+      "sha256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "namedTargets": ["Calendar"],
+      "permittedTextScope": "named class/type declarations only",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "Calendar",
+          "kind": "ClassDef",
+          "line": 28
+        },
+        {
+          "name": "day_serial",
+          "kind": "FunctionDef",
+          "line": 35
+        },
+        {
+          "name": "parse_calendar",
+          "kind": "FunctionDef",
+          "line": 46
+        },
+        {
+          "name": "compare_calendar",
+          "kind": "FunctionDef",
+          "line": 96
+        }
+      ],
+      "definitions": [
+        {
+          "name": "Calendar",
+          "line": 28,
+          "endLine": 32,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "day",
+              "annotation": "int",
+              "line": 29,
+              "defaultSyntax": null
+            },
+            {
+              "name": "second",
+              "annotation": "Number",
+              "line": 30,
+              "defaultSyntax": null
+            },
+            {
+              "name": "explicit_offset",
+              "annotation": "bool",
+              "line": 31,
+              "defaultSyntax": null
+            },
+            {
+              "name": "is_datetime",
+              "annotation": "bool",
+              "line": 32,
+              "defaultSyntax": null
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "bytes": 19993,
+      "sha256": "5c857470890bd810370ad877db930848ba08e80096c640037d39bea83c14a320",
+      "namedTargets": [
+        "_ProductionCapture",
+        "execute_admitted_profile_job",
+        "execute_profile_explanation"
+      ],
+      "permittedTextScope": "API signatures/return shape/classes/catalog-source-definition codec fields only;not fee/resource logic",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "CapturedSlot",
+          "kind": "ClassDef",
+          "line": 27
+        },
+        {
+          "name": "ProfileComputation",
+          "kind": "ClassDef",
+          "line": 34
+        },
+        {
+          "name": "ProfileExplanationComputation",
+          "kind": "ClassDef",
+          "line": 52
+        },
+        {
+          "name": "_direct_bound",
+          "kind": "FunctionDef",
+          "line": 57
+        },
+        {
+          "name": "_direct_json_size",
+          "kind": "FunctionDef",
+          "line": 110
+        },
+        {
+          "name": "_direct_stream",
+          "kind": "FunctionDef",
+          "line": 160
+        },
+        {
+          "name": "_ProductionCapture",
+          "kind": "ClassDef",
+          "line": 170
+        },
+        {
+          "name": "_same_bytes",
+          "kind": "FunctionDef",
+          "line": 280
+        },
+        {
+          "name": "_execute_admitted_profile_job",
+          "kind": "FunctionDef",
+          "line": 287
+        },
+        {
+          "name": "execute_admitted_profile_job",
+          "kind": "FunctionDef",
+          "line": 445
+        },
+        {
+          "name": "execute_profile_explanation",
+          "kind": "FunctionDef",
+          "line": 459
+        }
+      ],
+      "definitions": [
+        {
+          "name": "_ProductionCapture",
+          "line": 170,
+          "endLine": 277,
+          "bases": [],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 173,
+              "endLine": 188,
+              "signature": "self, material, ledger, direct_ledger=None",
+              "returnAnnotation": null
+            },
+            {
+              "name": "definitions",
+              "line": 190,
+              "endLine": 195,
+              "signature": "self, ordered_specs, rules",
+              "returnAnnotation": null
+            },
+            {
+              "name": "context",
+              "line": 197,
+              "endLine": 201,
+              "signature": "self, disabled",
+              "returnAnnotation": null
+            },
+            {
+              "name": "catalog",
+              "line": 203,
+              "endLine": 207,
+              "signature": "self, value",
+              "returnAnnotation": null
+            },
+            {
+              "name": "allocation",
+              "line": 209,
+              "endLine": 214,
+              "signature": "self, spec, ordinal, limits",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_input",
+              "line": 216,
+              "endLine": 221,
+              "signature": "self, original_bytes, source, input_domain",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_explanation_projection",
+              "line": 223,
+              "endLine": 229,
+              "signature": "self, native, source, rules",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_projection",
+              "line": 231,
+              "endLine": 242,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "projected",
+              "line": 244,
+              "endLine": 248,
+              "signature": "self, safe_result",
+              "returnAnnotation": null
+            },
+            {
+              "name": "before_rows",
+              "line": 250,
+              "endLine": 255,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "completed",
+              "line": 257,
+              "endLine": 268,
+              "signature": "self, native, encoded, rows_encoded, source_encoded, definitions_encoded, wire",
+              "returnAnnotation": null
+            },
+            {
+              "name": "drop",
+              "line": 270,
+              "endLine": 277,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "direct_ledger",
+              "line": 176
+            },
+            {
+              "field": "direct_capture",
+              "line": 177
+            },
+            {
+              "field": "actual_definitions",
+              "line": 182
+            },
+            {
+              "field": "actual_catalog",
+              "line": 182
+            },
+            {
+              "field": "raw_rules",
+              "line": 182
+            },
+            {
+              "field": "disabled",
+              "line": 183
+            },
+            {
+              "field": "slots",
+              "line": 185
+            },
+            {
+              "field": "native",
+              "line": 186
+            },
+            {
+              "field": "encoded",
+              "line": 186
+            },
+            {
+              "field": "rows_encoded",
+              "line": 186
+            },
+            {
+              "field": "source_encoded",
+              "line": 187
+            },
+            {
+              "field": "definitions_encoded",
+              "line": 187
+            },
+            {
+              "field": "wire",
+              "line": 188
+            },
+            {
+              "field": "material",
+              "line": 175
+            },
+            {
+              "field": "ledger",
+              "line": 175
+            },
+            {
+              "field": "direct_capture",
+              "line": 181
+            }
+          ]
+        },
+        {
+          "name": "execute_admitted_profile_job",
+          "line": 445,
+          "endLine": 456,
+          "signature": "material, *, error_catalog, error_schema, ledger=None",
+          "returnAnnotation": null
+        },
+        {
+          "name": "execute_profile_explanation",
+          "line": 459,
+          "endLine": 471,
+          "signature": "material, *, error_catalog, error_schema, ledger, direct_ledger",
+          "returnAnnotation": null
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "bytes": 70203,
+      "sha256": "1607d2968d2ba76ad0711be446fea7965641fb845226d0e683ac35e5d0f57243",
+      "namedTargets": [
+        "RestoreExpectation",
+        "ExplanationRestoreExpectation",
+        "restore_profile_result",
+        "restore_profile_explanation_result",
+        "explanation_roots"
+      ],
+      "permittedTextScope": "API signatures/return classes/serialized field layout only;not recovery/resource algorithm analysis",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "RestoreExpectation",
+          "kind": "ClassDef",
+          "line": 111
+        },
+        {
+          "name": "ExplanationRestoreExpectation",
+          "kind": "ClassDef",
+          "line": 128
+        },
+        {
+          "name": "ChildAllocation",
+          "kind": "ClassDef",
+          "line": 147
+        },
+        {
+          "name": "OriginalAllocation",
+          "kind": "ClassDef",
+          "line": 154
+        },
+        {
+          "name": "RestoredChild",
+          "kind": "ClassDef",
+          "line": 162
+        },
+        {
+          "name": "RestoredBatchSet",
+          "kind": "ClassDef",
+          "line": 174
+        },
+        {
+          "name": "ReadonlyObject",
+          "kind": "ClassDef",
+          "line": 190
+        },
+        {
+          "name": "ReadonlySequence",
+          "kind": "ClassDef",
+          "line": 205
+        },
+        {
+          "name": "RestoredProfileProjection",
+          "kind": "ClassDef",
+          "line": 213
+        },
+        {
+          "name": "RestoredProfileResult",
+          "kind": "ClassDef",
+          "line": 219
+        },
+        {
+          "name": "RestoredExplanationProjection",
+          "kind": "ClassDef",
+          "line": 234
+        },
+        {
+          "name": "RestoredExplanationResult",
+          "kind": "ClassDef",
+          "line": 240
+        },
+        {
+          "name": "_invalid",
+          "kind": "FunctionDef",
+          "line": 297
+        },
+        {
+          "name": "_require",
+          "kind": "FunctionDef",
+          "line": 301
+        },
+        {
+          "name": "_same",
+          "kind": "FunctionDef",
+          "line": 306
+        },
+        {
+          "name": "_Decoder",
+          "kind": "ClassDef",
+          "line": 344
+        },
+        {
+          "name": "_check_expectation",
+          "kind": "FunctionDef",
+          "line": 1018
+        },
+        {
+          "name": "_project",
+          "kind": "FunctionDef",
+          "line": 1091
+        },
+        {
+          "name": "_bytes_same",
+          "kind": "FunctionDef",
+          "line": 1112
+        },
+        {
+          "name": "_freeze_native",
+          "kind": "FunctionDef",
+          "line": 1118
+        },
+        {
+          "name": "_freeze_projection",
+          "kind": "FunctionDef",
+          "line": 1167
+        },
+        {
+          "name": "_restore",
+          "kind": "FunctionDef",
+          "line": 1189
+        },
+        {
+          "name": "_input_triple",
+          "kind": "FunctionDef",
+          "line": 1357
+        },
+        {
+          "name": "_check_rows",
+          "kind": "FunctionDef",
+          "line": 1363
+        },
+        {
+          "name": "_restore_operation",
+          "kind": "FunctionDef",
+          "line": 1387
+        },
+        {
+          "name": "restore_profile_batches",
+          "kind": "FunctionDef",
+          "line": 1550
+        },
+        {
+          "name": "restore_profile_result",
+          "kind": "FunctionDef",
+          "line": 1569
+        },
+        {
+          "name": "_explanation_key",
+          "kind": "FunctionDef",
+          "line": 1592
+        },
+        {
+          "name": "_validate_explanation",
+          "kind": "FunctionDef",
+          "line": 1606
+        },
+        {
+          "name": "restore_profile_explanation_result",
+          "kind": "FunctionDef",
+          "line": 1677
+        },
+        {
+          "name": "explanation_roots",
+          "kind": "FunctionDef",
+          "line": 1696
+        }
+      ],
+      "definitions": [
+        {
+          "name": "RestoreExpectation",
+          "line": 111,
+          "endLine": 124,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "payload_digest",
+              "annotation": "str",
+              "line": 112,
+              "defaultSyntax": null
+            },
+            {
+              "name": "rows_digest",
+              "annotation": "str",
+              "line": 113,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_digest",
+              "annotation": "str",
+              "line": 114,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_domain",
+              "annotation": "str",
+              "line": 115,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_digest",
+              "annotation": "str",
+              "line": 116,
+              "defaultSyntax": null
+            },
+            {
+              "name": "definitions_digest",
+              "annotation": "str",
+              "line": 117,
+              "defaultSyntax": null
+            },
+            {
+              "name": "catalog_digest",
+              "annotation": "str",
+              "line": 118,
+              "defaultSyntax": null
+            },
+            {
+              "name": "implementation",
+              "annotation": "tuple[tuple[str, str], ...]",
+              "line": 119,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_preimage",
+              "annotation": "bytes",
+              "line": 120,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_preimage",
+              "annotation": "bytes",
+              "line": 121,
+              "defaultSyntax": null
+            },
+            {
+              "name": "schema_version",
+              "annotation": "str",
+              "line": 122,
+              "defaultSyntax": "SCHEMA_VERSION"
+            },
+            {
+              "name": "budget_version",
+              "annotation": "str",
+              "line": 123,
+              "defaultSyntax": "RESTORE_BUDGET_VERSION"
+            },
+            {
+              "name": "cache_version",
+              "annotation": "str",
+              "line": 124,
+              "defaultSyntax": "CACHE_VERSION"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "ExplanationRestoreExpectation",
+          "line": 128,
+          "endLine": 143,
+          "bases": [],
+          "decorators": ["dataclass(frozen=True, slots=True)"],
+          "fields": [
+            {
+              "name": "payload_digest",
+              "annotation": "str",
+              "line": 129,
+              "defaultSyntax": null
+            },
+            {
+              "name": "rows_digest",
+              "annotation": "str",
+              "line": 130,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_digest",
+              "annotation": "str",
+              "line": 131,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_domain",
+              "annotation": "str",
+              "line": 132,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_digest",
+              "annotation": "str",
+              "line": 133,
+              "defaultSyntax": null
+            },
+            {
+              "name": "definitions_digest",
+              "annotation": "str",
+              "line": 134,
+              "defaultSyntax": null
+            },
+            {
+              "name": "catalog_digest",
+              "annotation": "str",
+              "line": 135,
+              "defaultSyntax": null
+            },
+            {
+              "name": "implementation",
+              "annotation": "tuple[tuple[str, str], ...]",
+              "line": 136,
+              "defaultSyntax": null
+            },
+            {
+              "name": "input_preimage",
+              "annotation": "bytes",
+              "line": 137,
+              "defaultSyntax": null
+            },
+            {
+              "name": "source_preimage",
+              "annotation": "bytes",
+              "line": 138,
+              "defaultSyntax": null
+            },
+            {
+              "name": "schema_version",
+              "annotation": "str",
+              "line": 139,
+              "defaultSyntax": "'i05-profile-restore-schema/2'"
+            },
+            {
+              "name": "budget_version",
+              "annotation": "str",
+              "line": 140,
+              "defaultSyntax": "RESTORE_BUDGET_VERSION"
+            },
+            {
+              "name": "cache_version",
+              "annotation": "str",
+              "line": 141,
+              "defaultSyntax": "CACHE_VERSION"
+            },
+            {
+              "name": "direct_budget_version",
+              "annotation": "str",
+              "line": 143,
+              "defaultSyntax": "'i05-direct-steps-budget/1'"
+            }
+          ],
+          "methodInterfacesOnly": [],
+          "constructorAssignedFieldNamesOnly": []
+        },
+        {
+          "name": "restore_profile_result",
+          "line": 1569,
+          "endLine": 1589,
+          "signature": "payload_json: bytes, rows_json: bytes, *, expected: RestoreExpectation, allocation: OriginalAllocation, ledger: RestoreLedger",
+          "returnAnnotation": "RestoredProfileResult"
+        },
+        {
+          "name": "restore_profile_explanation_result",
+          "line": 1677,
+          "endLine": 1693,
+          "signature": "payload_json, rows_json, *, expected, allocation, ledger, direct_ledger",
+          "returnAnnotation": null
+        },
+        {
+          "name": "explanation_roots",
+          "line": 1696,
+          "endLine": 1767,
+          "signature": "view, target_keys, *, direct_ledger",
+          "returnAnnotation": null
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "bytes": 37889,
+      "sha256": "ffde8fd243696ab4e8812e8994e6a8fc2b5832f411e5fdf1e4c7753fe19c93d0",
+      "namedTargets": ["RestoreFailure", "RestoreLedger"],
+      "permittedTextScope": "only named exception/ledger interface/receipt field declarations;no fee/rate/physicalbudget algorithm bodies",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "RestoreFailure",
+          "kind": "ClassDef",
+          "line": 169
+        },
+        {
+          "name": "reject",
+          "kind": "FunctionDef",
+          "line": 206
+        },
+        {
+          "name": "_integer",
+          "kind": "FunctionDef",
+          "line": 212
+        },
+        {
+          "name": "RestoreLedger",
+          "kind": "ClassDef",
+          "line": 216
+        },
+        {
+          "name": "utf8",
+          "kind": "FunctionDef",
+          "line": 474
+        },
+        {
+          "name": "release_utf8",
+          "kind": "FunctionDef",
+          "line": 492
+        },
+        {
+          "name": "_Reader",
+          "kind": "ClassDef",
+          "line": 497
+        },
+        {
+          "name": "read_json",
+          "kind": "FunctionDef",
+          "line": 728
+        },
+        {
+          "name": "_width",
+          "kind": "FunctionDef",
+          "line": 755
+        },
+        {
+          "name": "canonical_bytes",
+          "kind": "FunctionDef",
+          "line": 765
+        },
+        {
+          "name": "digest",
+          "kind": "FunctionDef",
+          "line": 795
+        },
+        {
+          "name": "hex_integer",
+          "kind": "FunctionDef",
+          "line": 804
+        },
+        {
+          "name": "hex_bytes",
+          "kind": "FunctionDef",
+          "line": 844
+        },
+        {
+          "name": "_text_size",
+          "kind": "FunctionDef",
+          "line": 863
+        },
+        {
+          "name": "term_key",
+          "kind": "FunctionDef",
+          "line": 878
+        },
+        {
+          "name": "release_bytes",
+          "kind": "FunctionDef",
+          "line": 939
+        },
+        {
+          "name": "release_key",
+          "kind": "FunctionDef",
+          "line": 946
+        },
+        {
+          "name": "_Node",
+          "kind": "ClassDef",
+          "line": 953
+        },
+        {
+          "name": "TermCache",
+          "kind": "ClassDef",
+          "line": 965
+        }
+      ],
+      "definitions": [
+        {
+          "name": "RestoreFailure",
+          "line": 169,
+          "endLine": 203,
+          "bases": ["Exception"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 172,
+              "endLine": 203,
+              "signature": "self, reason='RESTORE_INPUT_INVALID', classification='input', *, stage='entry', slot=None, domain=None",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "reason",
+              "line": 198
+            },
+            {
+              "field": "classification",
+              "line": 199
+            },
+            {
+              "field": "stage",
+              "line": 200
+            },
+            {
+              "field": "slot",
+              "line": 201
+            },
+            {
+              "field": "domain",
+              "line": 202
+            }
+          ]
+        },
+        {
+          "name": "RestoreLedger",
+          "line": 216,
+          "endLine": 471,
+          "bases": [],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 219,
+              "endLine": 249,
+              "signature": "self, *, overrides=()",
+              "returnAnnotation": null
+            },
+            {
+              "name": "begin",
+              "line": 251,
+              "endLine": 294,
+              "signature": "self, B, Q, N",
+              "returnAnnotation": null
+            },
+            {
+              "name": "_running",
+              "line": 296,
+              "endLine": 298,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "limit",
+              "line": 300,
+              "endLine": 303,
+              "signature": "self, domain",
+              "returnAnnotation": null
+            },
+            {
+              "name": "charge",
+              "line": 305,
+              "endLine": 312,
+              "signature": "self, domain, amount=1, *, stage='entry'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "visit",
+              "line": 314,
+              "endLine": 315,
+              "signature": "self, amount=1, *, stage='A2'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "reserve",
+              "line": 317,
+              "endLine": 325,
+              "signature": "self, domain, amount=1, *, stage='entry'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "release",
+              "line": 327,
+              "endLine": 336,
+              "signature": "self, domain, amount=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "prepay",
+              "line": 338,
+              "endLine": 349,
+              "signature": "self, stage",
+              "returnAnnotation": null
+            },
+            {
+              "name": "opaque",
+              "line": 352,
+              "endLine": 372,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "start_slot",
+              "line": 374,
+              "endLine": 379,
+              "signature": "self, slot",
+              "returnAnnotation": null
+            },
+            {
+              "name": "complete_slot",
+              "line": 381,
+              "endLine": 386,
+              "signature": "self, slot",
+              "returnAnnotation": null
+            },
+            {
+              "name": "finish",
+              "line": 388,
+              "endLine": 397,
+              "signature": "self, success",
+              "returnAnnotation": null
+            },
+            {
+              "name": "cleanup",
+              "line": 399,
+              "endLine": 404,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "record_key",
+              "line": 406,
+              "endLine": 413,
+              "signature": "self, length",
+              "returnAnnotation": null
+            },
+            {
+              "name": "new_cache",
+              "line": 415,
+              "endLine": 419,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "B",
+              "line": 422,
+              "endLine": 423,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "Q",
+              "line": 426,
+              "endLine": 427,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "N",
+              "line": 430,
+              "endLine": 431,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "J",
+              "line": 434,
+              "endLine": 435,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "S",
+              "line": 438,
+              "endLine": 439,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "state",
+              "line": 442,
+              "endLine": 443,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "caps",
+              "line": 446,
+              "endLine": 447,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "usage",
+              "line": 450,
+              "endLine": 451,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "live",
+              "line": 454,
+              "endLine": 455,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "peaks",
+              "line": 458,
+              "endLine": 459,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "slot_states",
+              "line": 462,
+              "endLine": 463,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "json_nodes",
+              "line": 466,
+              "endLine": 467,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "json_depth",
+              "line": 470,
+              "endLine": 471,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "_overrides",
+              "line": 235
+            },
+            {
+              "field": "_state",
+              "line": 236
+            },
+            {
+              "field": "_caps",
+              "line": 237
+            },
+            {
+              "field": "_used",
+              "line": 238
+            },
+            {
+              "field": "_live",
+              "line": 239
+            },
+            {
+              "field": "_peaks",
+              "line": 240
+            },
+            {
+              "field": "_prepaid",
+              "line": 241
+            },
+            {
+              "field": "_slots",
+              "line": 242
+            },
+            {
+              "field": "_opaque_active",
+              "line": 243
+            },
+            {
+              "field": "_json_nodes",
+              "line": 244
+            },
+            {
+              "field": "_json_depth",
+              "line": 245
+            },
+            {
+              "field": "_key_total",
+              "line": 246
+            },
+            {
+              "field": "_key_occurrences",
+              "line": 247
+            },
+            {
+              "field": "_cache_roots",
+              "line": 248
+            },
+            {
+              "field": "_B",
+              "line": 249
+            },
+            {
+              "field": "_Q",
+              "line": 249
+            },
+            {
+              "field": "_N",
+              "line": 249
+            },
+            {
+              "field": "_J",
+              "line": 249
+            },
+            {
+              "field": "_S",
+              "line": 249
+            }
+          ]
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "bytes": 46459,
+      "sha256": "7927769077e363b23741f6dc78b7c0ec2ad00b7d3285f8403a190c0e00169b22",
+      "namedTargets": ["DirectStepsFailure", "DirectStepsLedger"],
+      "permittedTextScope": "only named exception/ledger interface/receipt field declarations;no fee/rate/physicalbudget algorithm bodies",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "DirectStepsFailure",
+          "kind": "ClassDef",
+          "line": 45
+        },
+        {
+          "name": "_require",
+          "kind": "FunctionDef",
+          "line": 64
+        },
+        {
+          "name": "DirectStepsReceipt",
+          "kind": "ClassDef",
+          "line": 70
+        },
+        {
+          "name": "DirectStepsLedger",
+          "kind": "ClassDef",
+          "line": 84
+        },
+        {
+          "name": "_active",
+          "kind": "FunctionDef",
+          "line": 315
+        },
+        {
+          "name": "_triple",
+          "kind": "FunctionDef",
+          "line": 320
+        },
+        {
+          "name": "_parts",
+          "kind": "FunctionDef",
+          "line": 328
+        },
+        {
+          "name": "encode_triple_key",
+          "kind": "FunctionDef",
+          "line": 377
+        },
+        {
+          "name": "_term_identity",
+          "kind": "FunctionDef",
+          "line": 383
+        },
+        {
+          "name": "encode_identity_key",
+          "kind": "FunctionDef",
+          "line": 432
+        },
+        {
+          "name": "_ByteIndex",
+          "kind": "ClassDef",
+          "line": 469
+        },
+        {
+          "name": "_Seed",
+          "kind": "ClassDef",
+          "line": 528
+        },
+        {
+          "name": "_Step",
+          "kind": "ClassDef",
+          "line": 534
+        },
+        {
+          "name": "_DirectStepsCapture",
+          "kind": "ClassDef",
+          "line": 543
+        },
+        {
+          "name": "_SeedGroup",
+          "kind": "ClassDef",
+          "line": 727
+        },
+        {
+          "name": "_Leaf",
+          "kind": "ClassDef",
+          "line": 734
+        },
+        {
+          "name": "_ValidatedStep",
+          "kind": "ClassDef",
+          "line": 742
+        },
+        {
+          "name": "ValidationSummary",
+          "kind": "ClassDef",
+          "line": 750
+        },
+        {
+          "name": "_object",
+          "kind": "FunctionDef",
+          "line": 756
+        },
+        {
+          "name": "_sequence",
+          "kind": "FunctionDef",
+          "line": 765
+        },
+        {
+          "name": "_integer",
+          "kind": "FunctionDef",
+          "line": 774
+        },
+        {
+          "name": "_equal_strings",
+          "kind": "FunctionDef",
+          "line": 780
+        },
+        {
+          "name": "_same_key",
+          "kind": "FunctionDef",
+          "line": 786
+        },
+        {
+          "name": "_template",
+          "kind": "FunctionDef",
+          "line": 795
+        },
+        {
+          "name": "_union",
+          "kind": "FunctionDef",
+          "line": 832
+        },
+        {
+          "name": "_lookup",
+          "kind": "FunctionDef",
+          "line": 865
+        },
+        {
+          "name": "_put_key",
+          "kind": "FunctionDef",
+          "line": 875
+        },
+        {
+          "name": "_leaf_id",
+          "kind": "FunctionDef",
+          "line": 885
+        },
+        {
+          "name": "_reference_key",
+          "kind": "FunctionDef",
+          "line": 895
+        },
+        {
+          "name": "_lookup_reference",
+          "kind": "FunctionDef",
+          "line": 900
+        },
+        {
+          "name": "_put_reference",
+          "kind": "FunctionDef",
+          "line": 910
+        },
+        {
+          "name": "validate_direct_steps",
+          "kind": "FunctionDef",
+          "line": 920
+        },
+        {
+          "name": "RootRef",
+          "kind": "ClassDef",
+          "line": 1121
+        },
+        {
+          "name": "locate_roots",
+          "kind": "FunctionDef",
+          "line": 1129
+        }
+      ],
+      "definitions": [
+        {
+          "name": "DirectStepsFailure",
+          "line": 45,
+          "endLine": 61,
+          "bases": ["ValueError"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 48,
+              "endLine": 61,
+              "signature": "self, reason='DIRECT_STEPS_INVALID', classification=None, *, stage='entry', domain=None",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "stage",
+              "line": 59
+            },
+            {
+              "field": "domain",
+              "line": 60
+            },
+            {
+              "field": "reason",
+              "line": 58
+            },
+            {
+              "field": "classification",
+              "line": 58
+            }
+          ]
+        },
+        {
+          "name": "DirectStepsLedger",
+          "line": 84,
+          "endLine": 312,
+          "bases": [],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 87,
+              "endLine": 105,
+              "signature": "self, *, overrides=()",
+              "returnAnnotation": null
+            },
+            {
+              "name": "begin",
+              "line": 107,
+              "endLine": 136,
+              "signature": "self, *, stage='capture'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "usage",
+              "line": 139,
+              "endLine": 140,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "events",
+              "line": 143,
+              "endLine": 145,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "_running",
+              "line": 147,
+              "endLine": 149,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "_apply",
+              "line": 151,
+              "endLine": 197,
+              "signature": "self, action, domain, count",
+              "returnAnnotation": null
+            },
+            {
+              "name": "debit",
+              "line": 199,
+              "endLine": 200,
+              "signature": "self, domain, count=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "reserve",
+              "line": 204,
+              "endLine": 205,
+              "signature": "self, domain, count=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "release",
+              "line": 207,
+              "endLine": 214,
+              "signature": "self, domain, count=1",
+              "returnAnnotation": null
+            },
+            {
+              "name": "enter",
+              "line": 216,
+              "endLine": 220,
+              "signature": "self, stage",
+              "returnAnnotation": null
+            },
+            {
+              "name": "consume_key",
+              "line": 222,
+              "endLine": 228,
+              "signature": "self, count",
+              "returnAnnotation": null
+            },
+            {
+              "name": "note_carrier",
+              "line": 230,
+              "endLine": 234,
+              "signature": "self, count",
+              "returnAnnotation": null
+            },
+            {
+              "name": "discard",
+              "line": 236,
+              "endLine": 279,
+              "signature": "self, *, objects=0, scalar=0, action='discard'",
+              "returnAnnotation": null
+            },
+            {
+              "name": "receipt",
+              "line": 281,
+              "endLine": 301,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "completed",
+              "line": 303,
+              "endLine": 306,
+              "signature": "self",
+              "returnAnnotation": null
+            },
+            {
+              "name": "failed",
+              "line": 310,
+              "endLine": 312,
+              "signature": "self",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "overrides",
+              "line": 96
+            },
+            {
+              "field": "used",
+              "line": 98
+            },
+            {
+              "field": "live",
+              "line": 98
+            },
+            {
+              "field": "peaks",
+              "line": 98
+            },
+            {
+              "field": "caps",
+              "line": 98
+            },
+            {
+              "field": "_events",
+              "line": 99
+            },
+            {
+              "field": "_receipt_taken",
+              "line": 100
+            },
+            {
+              "field": "candidates",
+              "line": 101
+            },
+            {
+              "field": "steps",
+              "line": 101
+            },
+            {
+              "field": "key_bytes",
+              "line": 101
+            },
+            {
+              "field": "carrier_bytes",
+              "line": 101
+            },
+            {
+              "field": "last_action",
+              "line": 102
+            },
+            {
+              "field": "last_domain",
+              "line": 102
+            },
+            {
+              "field": "last_count",
+              "line": 103
+            },
+            {
+              "field": "_cleanup_objects",
+              "line": 104
+            },
+            {
+              "field": "_cleanup_scalar",
+              "line": 104
+            },
+            {
+              "field": "_data_objects",
+              "line": 105
+            },
+            {
+              "field": "_data_scalar",
+              "line": 105
+            },
+            {
+              "field": "_cleanup_credit",
+              "line": 105
+            },
+            {
+              "field": "state",
+              "line": 97
+            },
+            {
+              "field": "stage",
+              "line": 97
+            }
+          ]
+        }
+      ],
+      "missingNamedTargets": []
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "bytes": 1351,
+      "sha256": "4897d9c6a07756d5f8ed4908b4b7a28ca96c67b2670753b74f73e41bf4b67488",
+      "namedTargets": ["SemanticError", "OfflineAccessDenied"],
+      "permittedTextScope": "named existing safe exception fields/signatures only",
+      "sourceMode": "fixed Git object only,currenttree not adopted",
+      "topLevelNamesForLocationOnly": [
+        {
+          "name": "SemanticError",
+          "kind": "ClassDef",
+          "line": 13
+        },
+        {
+          "name": "_audit",
+          "kind": "FunctionDef",
+          "line": 24
+        },
+        {
+          "name": "_NoRawLiteralDiagnostics",
+          "kind": "ClassDef",
+          "line": 35
+        },
+        {
+          "name": "offline",
+          "kind": "FunctionDef",
+          "line": 46
+        }
+      ],
+      "definitions": [
+        {
+          "name": "SemanticError",
+          "line": 13,
+          "endLine": 18,
+          "bases": ["ValueError"],
+          "decorators": [],
+          "fields": [],
+          "methodInterfacesOnly": [
+            {
+              "name": "__init__",
+              "line": 16,
+              "endLine": 18,
+              "signature": "self, code: str",
+              "returnAnnotation": null
+            }
+          ],
+          "constructorAssignedFieldNamesOnly": [
+            {
+              "field": "code",
+              "line": 17
+            }
+          ]
+        }
+      ],
+      "missingNamedTargets": ["OfflineAccessDenied"]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "wholeSourceBytesOpaque": 3065,
+      "wholeSourceSHA256": "177f57db2c3e768b9fc17d0c9e0665677e6aab55c16003ac7f304254c10d2238",
+      "functionOnly": "semantic_identity",
+      "firstLine": 35,
+      "lastLine": 48,
+      "approvedFragment": "I05-M02-M05-resources-semantic-identity-fixed-fragment.py.txt",
+      "fragmentBytes": 646,
+      "fragmentSHA256": "2943b2094019ae07aefdf93dfe845ae75c19e69af8b24ecfa6f9150ec7800920",
+      "permittedTextScope": "only exact fragment;not other resources.py bodies/globals;sourceAST parsed solely to locate this top-level function",
+      "textSource": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/I05-M02-M05-resources-semantic-identity-fixed-fragment.py.txt",
+      "definitions": [
+        {
+          "name": "semantic_identity",
+          "line": 1,
+          "endLine": 14,
+          "signature": "*, profile=False, explanation=False",
+          "returnAnnotation": "dict"
+        }
+      ],
+      "definitionLineBasis": "approved fragment-relative; fixed Git line = firstLine + definition.line - 1"
+    }
+  ],
+  "resourceWholeSourceRead": false,
+  "ledgerArithmeticOrRatesInspected": false,
+  "declarationIndexIsNotNormativeAdoption": true
+}

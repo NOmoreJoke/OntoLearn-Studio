@@ -1,0 +1,158 @@
+{
+  "format": "i05-canonical-interface-missing-definitions/1",
+  "sourceFactsOnly": true,
+  "additionalTextReadsPerformed": false,
+  "rows": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_turtle.py",
+      "requestedDefinitions": [
+        "canonical_string",
+        "parse_graph",
+        "parse_profile_graph",
+        "profile_graph_from_records",
+        "bind_profile_disabled_rules"
+      ],
+      "literalReferenceWithinApprovedEight": "semantic.py21/316 and semantic_execution.py650",
+      "neededFor": "canonical term/string behavior and parser context input/source exact definition",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "requestedDefinitions": [
+        "SourceRecord",
+        "TermInput",
+        "InputLocation",
+        "ProfileLimits",
+        "ProfileFailure"
+      ],
+      "literalReferenceWithinApprovedEight": "semantic_execution.py522-580; semantic_profile_input.py12",
+      "neededFor": "actual class definitions and all field constraints",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "requestedDefinitions": [
+        "Variable",
+        "Triple",
+        "Comparison",
+        "RuleSpec",
+        "Catalog",
+        "BindingMatch",
+        "ComparisonEvidence",
+        "HeadEvidence",
+        "PreparedFiring",
+        "PreparedFiringBatch"
+      ],
+      "literalReferenceWithinApprovedEight": "semantic_execution.py563-580; semantic_profile_input.py11",
+      "neededFor": "actual declared dataclass field directory and nested return layouts",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "requestedDefinitions": ["ProfileValue"],
+      "literalReferenceWithinApprovedEight": "semantic_execution.py526",
+      "neededFor": "full canonical value adapter fields",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "requestedDefinitions": ["Number"],
+      "literalReferenceWithinApprovedEight": "semantic_execution.py524/578",
+      "neededFor": "full exact Number field/type layout",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "requestedDefinitions": ["Calendar"],
+      "literalReferenceWithinApprovedEight": "semantic_execution.py522/579",
+      "neededFor": "full exact Calendar field/type layout",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "requestedDefinitions": [
+        "_ProductionCapture",
+        "execute_admitted_profile_job",
+        "execute_profile_explanation"
+      ],
+      "literalReferenceWithinApprovedEight": "semantic_execution.py709/866; probe1227-1343",
+      "neededFor": "complete produced class, catalog byte codec, source/definition/payload sidecars and existing capture relationship",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "requestedDefinitions": [
+        "RestoreExpectation",
+        "ExplanationRestoreExpectation",
+        "restore_profile_result",
+        "restore_profile_explanation_result",
+        "explanation_roots"
+      ],
+      "literalReferenceWithinApprovedEight": "probe1227-1257/1260-1343",
+      "neededFor": "complete expectation/restored classes and roots output; existing exact codecs only",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore_budget.py",
+      "requestedDefinitions": ["RestoreFailure", "RestoreLedger interface/receipt declarations"],
+      "literalReferenceWithinApprovedEight": "probe1127/1245",
+      "neededFor": "safe exception fields and receipt/allocation layouts only; not rates or physical-resource research",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "requestedDefinitions": [
+        "DirectStepsFailure",
+        "DirectStepsLedger interface/receipt declarations"
+      ],
+      "literalReferenceWithinApprovedEight": "probe1128/1246",
+      "neededFor": "safe exception fields and existing receipt/typed layouts only; not rates or runtime authority",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_offline.py",
+      "requestedDefinitions": ["SemanticError", "OfflineAccessDenied"],
+      "literalReferenceWithinApprovedEight": "semantic.py19; probe1124-1159",
+      "neededFor": "complete exact safe exception class fields",
+      "textRead": false,
+      "status": "additional exact read request required before text access"
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "requestedDefinitions": [
+        "semantic_identity only, or existing approved pure interface equivalent"
+      ],
+      "literalReferenceWithinApprovedEight": "semantic_execution.py646/731",
+      "neededFor": "full implementation payload layout; do not inspect other resource/physical/fee helpers",
+      "textRead": false,
+      "status": "seek precise function-only or pure interface binding; no resource research authorization"
+    }
+  ],
+  "M02": "legacy four-key metadata layout identified; dedicated original metadata wire not defined by the inspected functions; new export approval still required",
+  "M03": "listed recipes identified; external canonical term/class/production/catalog/implementation codec dependencies unresolved",
+  "M04": "legacy module expressly disclaims authority; no approved same-issue live verifier provided in inspected eight; do not assert universal absence",
+  "M05": "known return fields/serializers indexed; complete full417 nested canonical class/sidecar/error inventory remains unresolved",
+  "notPermissionToFollowReferences": true
+}

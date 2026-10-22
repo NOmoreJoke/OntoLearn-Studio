@@ -1,0 +1,1284 @@
+{
+  "format": "i05-bound-existing-api-return-declarations/1",
+  "sourceFactsOnly": true,
+  "records": [
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "class": "CapturedSlot",
+      "line": 27,
+      "endLine": 30,
+      "fields": [
+        {
+          "name": "rule_id",
+          "typeAnnotation": "str | None",
+          "line": 28,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definition_ordinal",
+          "typeAnnotation": "int | None",
+          "line": 29,
+          "defaultSyntax": null
+        },
+        {
+          "name": "limits",
+          "typeAnnotation": "ProfileLimits",
+          "line": 30,
+          "defaultSyntax": null
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "rule_id",
+          "typeAnnotation": "str | None",
+          "line": 28,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definition_ordinal",
+          "typeAnnotation": "int | None",
+          "line": 29,
+          "defaultSyntax": null
+        },
+        {
+          "name": "limits",
+          "typeAnnotation": "ProfileLimits",
+          "line": 30,
+          "defaultSyntax": null
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "class": "ProfileComputation",
+      "line": 34,
+      "endLine": 48,
+      "fields": [
+        {
+          "name": "material",
+          "typeAnnotation": "ProfileMaterial",
+          "line": 35,
+          "defaultSyntax": null
+        },
+        {
+          "name": "native_result",
+          "typeAnnotation": "dict",
+          "line": 36,
+          "defaultSyntax": null
+        },
+        {
+          "name": "original_allocation",
+          "typeAnnotation": "OriginalAllocation",
+          "line": 37,
+          "defaultSyntax": null
+        },
+        {
+          "name": "actual_definitions",
+          "typeAnnotation": "tuple",
+          "line": 38,
+          "defaultSyntax": null
+        },
+        {
+          "name": "actual_catalog",
+          "typeAnnotation": "Catalog",
+          "line": 39,
+          "defaultSyntax": null
+        },
+        {
+          "name": "payload_json",
+          "typeAnnotation": "bytes",
+          "line": 40,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_json",
+          "typeAnnotation": "bytes",
+          "line": 41,
+          "defaultSyntax": null
+        },
+        {
+          "name": "source_encoded",
+          "typeAnnotation": "bytes",
+          "line": 42,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definitions_encoded",
+          "typeAnnotation": "bytes",
+          "line": 43,
+          "defaultSyntax": null
+        },
+        {
+          "name": "catalog_json",
+          "typeAnnotation": "bytes",
+          "line": 44,
+          "defaultSyntax": null
+        },
+        {
+          "name": "wire",
+          "typeAnnotation": "dict",
+          "line": 45,
+          "defaultSyntax": null
+        },
+        {
+          "name": "capture_receipt",
+          "typeAnnotation": "CaptureReceipt",
+          "line": 46,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 47,
+          "defaultSyntax": "'i05-profile-computation/1'"
+        },
+        {
+          "name": "retention_owner",
+          "typeAnnotation": "str",
+          "line": 48,
+          "defaultSyntax": "'receiving caller; native, wire and bytes remain live'"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "material",
+          "typeAnnotation": "ProfileMaterial",
+          "line": 35,
+          "defaultSyntax": null
+        },
+        {
+          "name": "native_result",
+          "typeAnnotation": "dict",
+          "line": 36,
+          "defaultSyntax": null
+        },
+        {
+          "name": "original_allocation",
+          "typeAnnotation": "OriginalAllocation",
+          "line": 37,
+          "defaultSyntax": null
+        },
+        {
+          "name": "actual_definitions",
+          "typeAnnotation": "tuple",
+          "line": 38,
+          "defaultSyntax": null
+        },
+        {
+          "name": "actual_catalog",
+          "typeAnnotation": "Catalog",
+          "line": 39,
+          "defaultSyntax": null
+        },
+        {
+          "name": "payload_json",
+          "typeAnnotation": "bytes",
+          "line": 40,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_json",
+          "typeAnnotation": "bytes",
+          "line": 41,
+          "defaultSyntax": null
+        },
+        {
+          "name": "source_encoded",
+          "typeAnnotation": "bytes",
+          "line": 42,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definitions_encoded",
+          "typeAnnotation": "bytes",
+          "line": 43,
+          "defaultSyntax": null
+        },
+        {
+          "name": "catalog_json",
+          "typeAnnotation": "bytes",
+          "line": 44,
+          "defaultSyntax": null
+        },
+        {
+          "name": "wire",
+          "typeAnnotation": "dict",
+          "line": 45,
+          "defaultSyntax": null
+        },
+        {
+          "name": "capture_receipt",
+          "typeAnnotation": "CaptureReceipt",
+          "line": 46,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 47,
+          "defaultSyntax": "'i05-profile-computation/1'"
+        },
+        {
+          "name": "retention_owner",
+          "typeAnnotation": "str",
+          "line": 48,
+          "defaultSyntax": "'receiving caller; native, wire and bytes remain live'"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_production.py",
+      "class": "ProfileExplanationComputation",
+      "line": 52,
+      "endLine": 54,
+      "fields": [
+        {
+          "name": "direct_receipt",
+          "typeAnnotation": "object",
+          "line": 53,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 54,
+          "defaultSyntax": "'i05-profile-explanation-computation/1'"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": ["ProfileComputation"],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "material",
+          "typeAnnotation": "ProfileMaterial",
+          "line": 35,
+          "defaultSyntax": null
+        },
+        {
+          "name": "native_result",
+          "typeAnnotation": "dict",
+          "line": 36,
+          "defaultSyntax": null
+        },
+        {
+          "name": "original_allocation",
+          "typeAnnotation": "OriginalAllocation",
+          "line": 37,
+          "defaultSyntax": null
+        },
+        {
+          "name": "actual_definitions",
+          "typeAnnotation": "tuple",
+          "line": 38,
+          "defaultSyntax": null
+        },
+        {
+          "name": "actual_catalog",
+          "typeAnnotation": "Catalog",
+          "line": 39,
+          "defaultSyntax": null
+        },
+        {
+          "name": "payload_json",
+          "typeAnnotation": "bytes",
+          "line": 40,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_json",
+          "typeAnnotation": "bytes",
+          "line": 41,
+          "defaultSyntax": null
+        },
+        {
+          "name": "source_encoded",
+          "typeAnnotation": "bytes",
+          "line": 42,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definitions_encoded",
+          "typeAnnotation": "bytes",
+          "line": 43,
+          "defaultSyntax": null
+        },
+        {
+          "name": "catalog_json",
+          "typeAnnotation": "bytes",
+          "line": 44,
+          "defaultSyntax": null
+        },
+        {
+          "name": "wire",
+          "typeAnnotation": "dict",
+          "line": 45,
+          "defaultSyntax": null
+        },
+        {
+          "name": "capture_receipt",
+          "typeAnnotation": "CaptureReceipt",
+          "line": 46,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 54,
+          "defaultSyntax": "'i05-profile-explanation-computation/1'"
+        },
+        {
+          "name": "retention_owner",
+          "typeAnnotation": "str",
+          "line": 48,
+          "defaultSyntax": "'receiving caller; native, wire and bytes remain live'"
+        },
+        {
+          "name": "direct_receipt",
+          "typeAnnotation": "object",
+          "line": 53,
+          "defaultSyntax": null
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "ChildAllocation",
+      "line": 147,
+      "endLine": 150,
+      "fields": [
+        {
+          "name": "rule_id",
+          "typeAnnotation": "str | None",
+          "line": 148,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definition_ordinal",
+          "typeAnnotation": "int | None",
+          "line": 149,
+          "defaultSyntax": null
+        },
+        {
+          "name": "limits",
+          "typeAnnotation": "ProfileLimits",
+          "line": 150,
+          "defaultSyntax": null
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "rule_id",
+          "typeAnnotation": "str | None",
+          "line": 148,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definition_ordinal",
+          "typeAnnotation": "int | None",
+          "line": 149,
+          "defaultSyntax": null
+        },
+        {
+          "name": "limits",
+          "typeAnnotation": "ProfileLimits",
+          "line": 150,
+          "defaultSyntax": null
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "OriginalAllocation",
+      "line": 154,
+      "endLine": 158,
+      "fields": [
+        {
+          "name": "rule_ids",
+          "typeAnnotation": "tuple[str, ...]",
+          "line": 155,
+          "defaultSyntax": null
+        },
+        {
+          "name": "disabled_rule_ids",
+          "typeAnnotation": "tuple[str, ...]",
+          "line": 156,
+          "defaultSyntax": null
+        },
+        {
+          "name": "children",
+          "typeAnnotation": "tuple[ChildAllocation, ...]",
+          "line": 157,
+          "defaultSyntax": null
+        },
+        {
+          "name": "budget_version",
+          "typeAnnotation": "str",
+          "line": 158,
+          "defaultSyntax": "BUDGET_VERSION"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "rule_ids",
+          "typeAnnotation": "tuple[str, ...]",
+          "line": 155,
+          "defaultSyntax": null
+        },
+        {
+          "name": "disabled_rule_ids",
+          "typeAnnotation": "tuple[str, ...]",
+          "line": 156,
+          "defaultSyntax": null
+        },
+        {
+          "name": "children",
+          "typeAnnotation": "tuple[ChildAllocation, ...]",
+          "line": 157,
+          "defaultSyntax": null
+        },
+        {
+          "name": "budget_version",
+          "typeAnnotation": "str",
+          "line": 158,
+          "defaultSyntax": "BUDGET_VERSION"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "RestoredChild",
+      "line": 162,
+      "endLine": 170,
+      "fields": [
+        {
+          "name": "rule_id",
+          "typeAnnotation": "str | None",
+          "line": 163,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definition_ordinal",
+          "typeAnnotation": "int | None",
+          "line": 164,
+          "defaultSyntax": null
+        },
+        {
+          "name": "disabled",
+          "typeAnnotation": "bool",
+          "line": 165,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definitions",
+          "typeAnnotation": "tuple[RuleSpec, ...]",
+          "line": 166,
+          "defaultSyntax": null
+        },
+        {
+          "name": "catalog",
+          "typeAnnotation": "Catalog",
+          "line": 167,
+          "defaultSyntax": null
+        },
+        {
+          "name": "original_matches",
+          "typeAnnotation": "tuple[BindingMatch, ...] | None",
+          "line": 168,
+          "defaultSyntax": null
+        },
+        {
+          "name": "batch",
+          "typeAnnotation": "PreparedFiringBatch | None",
+          "line": 169,
+          "defaultSyntax": null
+        },
+        {
+          "name": "fact",
+          "typeAnnotation": "str",
+          "line": 170,
+          "defaultSyntax": null
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "rule_id",
+          "typeAnnotation": "str | None",
+          "line": 163,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definition_ordinal",
+          "typeAnnotation": "int | None",
+          "line": 164,
+          "defaultSyntax": null
+        },
+        {
+          "name": "disabled",
+          "typeAnnotation": "bool",
+          "line": 165,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definitions",
+          "typeAnnotation": "tuple[RuleSpec, ...]",
+          "line": 166,
+          "defaultSyntax": null
+        },
+        {
+          "name": "catalog",
+          "typeAnnotation": "Catalog",
+          "line": 167,
+          "defaultSyntax": null
+        },
+        {
+          "name": "original_matches",
+          "typeAnnotation": "tuple[BindingMatch, ...] | None",
+          "line": 168,
+          "defaultSyntax": null
+        },
+        {
+          "name": "batch",
+          "typeAnnotation": "PreparedFiringBatch | None",
+          "line": 169,
+          "defaultSyntax": null
+        },
+        {
+          "name": "fact",
+          "typeAnnotation": "str",
+          "line": 170,
+          "defaultSyntax": null
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "RestoredBatchSet",
+      "line": 174,
+      "endLine": 186,
+      "fields": [
+        {
+          "name": "children",
+          "typeAnnotation": "tuple[RestoredChild, ...]",
+          "line": 175,
+          "defaultSyntax": null
+        },
+        {
+          "name": "implementation",
+          "typeAnnotation": "tuple[tuple[str, str], ...]",
+          "line": 176,
+          "defaultSyntax": null
+        },
+        {
+          "name": "payload_digest",
+          "typeAnnotation": "str",
+          "line": 177,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_digest",
+          "typeAnnotation": "str",
+          "line": 178,
+          "defaultSyntax": null
+        },
+        {
+          "name": "usage",
+          "typeAnnotation": "tuple",
+          "line": 179,
+          "defaultSyntax": null
+        },
+        {
+          "name": "peaks",
+          "typeAnnotation": "tuple",
+          "line": 180,
+          "defaultSyntax": null
+        },
+        {
+          "name": "parse_usage",
+          "typeAnnotation": "tuple",
+          "line": 181,
+          "defaultSyntax": null
+        },
+        {
+          "name": "revalidation_caps",
+          "typeAnnotation": "tuple",
+          "line": 182,
+          "defaultSyntax": null
+        },
+        {
+          "name": "format",
+          "typeAnnotation": "str",
+          "line": 183,
+          "defaultSyntax": "RESULT_VERSION"
+        },
+        {
+          "name": "profile",
+          "typeAnnotation": "str",
+          "line": 184,
+          "defaultSyntax": "PROFILE"
+        },
+        {
+          "name": "formal_authority",
+          "typeAnnotation": "bool",
+          "line": 185,
+          "defaultSyntax": "False"
+        },
+        {
+          "name": "aggregate_recomputed",
+          "typeAnnotation": "bool",
+          "line": 186,
+          "defaultSyntax": "False"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "children",
+          "typeAnnotation": "tuple[RestoredChild, ...]",
+          "line": 175,
+          "defaultSyntax": null
+        },
+        {
+          "name": "implementation",
+          "typeAnnotation": "tuple[tuple[str, str], ...]",
+          "line": 176,
+          "defaultSyntax": null
+        },
+        {
+          "name": "payload_digest",
+          "typeAnnotation": "str",
+          "line": 177,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_digest",
+          "typeAnnotation": "str",
+          "line": 178,
+          "defaultSyntax": null
+        },
+        {
+          "name": "usage",
+          "typeAnnotation": "tuple",
+          "line": 179,
+          "defaultSyntax": null
+        },
+        {
+          "name": "peaks",
+          "typeAnnotation": "tuple",
+          "line": 180,
+          "defaultSyntax": null
+        },
+        {
+          "name": "parse_usage",
+          "typeAnnotation": "tuple",
+          "line": 181,
+          "defaultSyntax": null
+        },
+        {
+          "name": "revalidation_caps",
+          "typeAnnotation": "tuple",
+          "line": 182,
+          "defaultSyntax": null
+        },
+        {
+          "name": "format",
+          "typeAnnotation": "str",
+          "line": 183,
+          "defaultSyntax": "RESULT_VERSION"
+        },
+        {
+          "name": "profile",
+          "typeAnnotation": "str",
+          "line": 184,
+          "defaultSyntax": "PROFILE"
+        },
+        {
+          "name": "formal_authority",
+          "typeAnnotation": "bool",
+          "line": 185,
+          "defaultSyntax": "False"
+        },
+        {
+          "name": "aggregate_recomputed",
+          "typeAnnotation": "bool",
+          "line": 186,
+          "defaultSyntax": "False"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "ReadonlyObject",
+      "line": 190,
+      "endLine": 201,
+      "fields": [
+        {
+          "name": "entries",
+          "typeAnnotation": "tuple[tuple[str, object], ...]",
+          "line": 193,
+          "defaultSyntax": null
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "entries",
+          "typeAnnotation": "tuple[tuple[str, object], ...]",
+          "line": 193,
+          "defaultSyntax": null
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "ReadonlySequence",
+      "line": 205,
+      "endLine": 209,
+      "fields": [
+        {
+          "name": "native_kind",
+          "typeAnnotation": "str",
+          "line": 208,
+          "defaultSyntax": null
+        },
+        {
+          "name": "items",
+          "typeAnnotation": "tuple",
+          "line": 209,
+          "defaultSyntax": null
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "native_kind",
+          "typeAnnotation": "str",
+          "line": 208,
+          "defaultSyntax": null
+        },
+        {
+          "name": "items",
+          "typeAnnotation": "tuple",
+          "line": 209,
+          "defaultSyntax": null
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "RestoredProfileProjection",
+      "line": 213,
+      "endLine": 215,
+      "fields": [
+        {
+          "name": "payload",
+          "typeAnnotation": "ReadonlyObject",
+          "line": 214,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 215,
+          "defaultSyntax": "PROJECTION_VERSION"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "payload",
+          "typeAnnotation": "ReadonlyObject",
+          "line": 214,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 215,
+          "defaultSyntax": "PROJECTION_VERSION"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "RestoredProfileResult",
+      "line": 219,
+      "endLine": 230,
+      "fields": [
+        {
+          "name": "batches",
+          "typeAnnotation": "RestoredBatchSet",
+          "line": 226,
+          "defaultSyntax": null
+        },
+        {
+          "name": "projection",
+          "typeAnnotation": "RestoredProfileProjection",
+          "line": 227,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_json",
+          "typeAnnotation": "bytes",
+          "line": 228,
+          "defaultSyntax": null
+        },
+        {
+          "name": "retention",
+          "typeAnnotation": "tuple",
+          "line": 229,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 230,
+          "defaultSyntax": "FULL_RESULT_VERSION"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "batches",
+          "typeAnnotation": "RestoredBatchSet",
+          "line": 226,
+          "defaultSyntax": null
+        },
+        {
+          "name": "projection",
+          "typeAnnotation": "RestoredProfileProjection",
+          "line": 227,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_json",
+          "typeAnnotation": "bytes",
+          "line": 228,
+          "defaultSyntax": null
+        },
+        {
+          "name": "retention",
+          "typeAnnotation": "tuple",
+          "line": 229,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 230,
+          "defaultSyntax": "FULL_RESULT_VERSION"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "RestoredExplanationProjection",
+      "line": 234,
+      "endLine": 236,
+      "fields": [
+        {
+          "name": "payload",
+          "typeAnnotation": "ReadonlyObject",
+          "line": 235,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 236,
+          "defaultSyntax": "'i05-profile-explanation-projection/1'"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "payload",
+          "typeAnnotation": "ReadonlyObject",
+          "line": 235,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 236,
+          "defaultSyntax": "'i05-profile-explanation-projection/1'"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_restore.py",
+      "class": "RestoredExplanationResult",
+      "line": 240,
+      "endLine": 246,
+      "fields": [
+        {
+          "name": "batches",
+          "typeAnnotation": "RestoredBatchSet",
+          "line": 241,
+          "defaultSyntax": null
+        },
+        {
+          "name": "projection",
+          "typeAnnotation": "RestoredExplanationProjection",
+          "line": 242,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_json",
+          "typeAnnotation": "bytes",
+          "line": 243,
+          "defaultSyntax": null
+        },
+        {
+          "name": "retention",
+          "typeAnnotation": "tuple",
+          "line": 244,
+          "defaultSyntax": null
+        },
+        {
+          "name": "direct_receipt",
+          "typeAnnotation": "object",
+          "line": 245,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 246,
+          "defaultSyntax": "'i05-profile-explanation-restored/1'"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "batches",
+          "typeAnnotation": "RestoredBatchSet",
+          "line": 241,
+          "defaultSyntax": null
+        },
+        {
+          "name": "projection",
+          "typeAnnotation": "RestoredExplanationProjection",
+          "line": 242,
+          "defaultSyntax": null
+        },
+        {
+          "name": "rows_json",
+          "typeAnnotation": "bytes",
+          "line": 243,
+          "defaultSyntax": null
+        },
+        {
+          "name": "retention",
+          "typeAnnotation": "tuple",
+          "line": 244,
+          "defaultSyntax": null
+        },
+        {
+          "name": "direct_receipt",
+          "typeAnnotation": "object",
+          "line": 245,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 246,
+          "defaultSyntax": "'i05-profile-explanation-restored/1'"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "class": "DirectStepsReceipt",
+      "line": 70,
+      "endLine": 81,
+      "fields": [
+        {
+          "name": "usage",
+          "typeAnnotation": "tuple",
+          "line": 71,
+          "defaultSyntax": null
+        },
+        {
+          "name": "retained",
+          "typeAnnotation": "tuple",
+          "line": 72,
+          "defaultSyntax": null
+        },
+        {
+          "name": "peaks",
+          "typeAnnotation": "tuple",
+          "line": 73,
+          "defaultSyntax": null
+        },
+        {
+          "name": "caps",
+          "typeAnnotation": "tuple",
+          "line": 74,
+          "defaultSyntax": null
+        },
+        {
+          "name": "events",
+          "typeAnnotation": "tuple",
+          "line": 75,
+          "defaultSyntax": null
+        },
+        {
+          "name": "candidates",
+          "typeAnnotation": "int",
+          "line": 76,
+          "defaultSyntax": null
+        },
+        {
+          "name": "steps",
+          "typeAnnotation": "int",
+          "line": 77,
+          "defaultSyntax": null
+        },
+        {
+          "name": "key_bytes",
+          "typeAnnotation": "int",
+          "line": 78,
+          "defaultSyntax": null
+        },
+        {
+          "name": "carrier_bytes",
+          "typeAnnotation": "int",
+          "line": 79,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 80,
+          "defaultSyntax": "BUDGET_VERSION"
+        },
+        {
+          "name": "retention_owner",
+          "typeAnnotation": "str",
+          "line": 81,
+          "defaultSyntax": "'receiving caller; carrier/view/diagnostic references remain live'"
+        }
+      ],
+      "slotDeclarations": [],
+      "constructorFieldNamesOnly": [],
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "bases": [],
+      "fieldMeaning": "fields lists local annotations; staticallyExpandedInheritedFields uses only bound local declarations, not product runtime dataclasses.fields",
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "usage",
+          "typeAnnotation": "tuple",
+          "line": 71,
+          "defaultSyntax": null
+        },
+        {
+          "name": "retained",
+          "typeAnnotation": "tuple",
+          "line": 72,
+          "defaultSyntax": null
+        },
+        {
+          "name": "peaks",
+          "typeAnnotation": "tuple",
+          "line": 73,
+          "defaultSyntax": null
+        },
+        {
+          "name": "caps",
+          "typeAnnotation": "tuple",
+          "line": 74,
+          "defaultSyntax": null
+        },
+        {
+          "name": "events",
+          "typeAnnotation": "tuple",
+          "line": 75,
+          "defaultSyntax": null
+        },
+        {
+          "name": "candidates",
+          "typeAnnotation": "int",
+          "line": 76,
+          "defaultSyntax": null
+        },
+        {
+          "name": "steps",
+          "typeAnnotation": "int",
+          "line": 77,
+          "defaultSyntax": null
+        },
+        {
+          "name": "key_bytes",
+          "typeAnnotation": "int",
+          "line": 78,
+          "defaultSyntax": null
+        },
+        {
+          "name": "carrier_bytes",
+          "typeAnnotation": "int",
+          "line": 79,
+          "defaultSyntax": null
+        },
+        {
+          "name": "version",
+          "typeAnnotation": "str",
+          "line": 80,
+          "defaultSyntax": "BUDGET_VERSION"
+        },
+        {
+          "name": "retention_owner",
+          "typeAnnotation": "str",
+          "line": 81,
+          "defaultSyntax": "'receiving caller; carrier/view/diagnostic references remain live'"
+        }
+      ]
+    },
+    {
+      "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "path": "packages/engine/src/ontolearn_engine/semantic_profile_directsteps.py",
+      "class": "RootRef",
+      "line": 1121,
+      "endLine": 1126,
+      "decorators": ["dataclass(frozen=True, slots=True)"],
+      "fields": [
+        {
+          "name": "kind",
+          "typeAnnotation": "str",
+          "line": 1122,
+          "defaultSyntax": null
+        },
+        {
+          "name": "reference",
+          "typeAnnotation": "str | None",
+          "line": 1123,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "ordinal",
+          "typeAnnotation": "int | None",
+          "line": 1124,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "firing_index",
+          "typeAnnotation": "int | None",
+          "line": 1125,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "head_index",
+          "typeAnnotation": "int | None",
+          "line": 1126,
+          "defaultSyntax": "None"
+        }
+      ],
+      "bases": [],
+      "fieldMeaning": "exact controller-supplied field declarations only; no methods or algorithms read",
+      "noAlgorithmBodiesOrRatesInterpreted": true,
+      "staticallyExpandedInheritedFields": [
+        {
+          "name": "kind",
+          "typeAnnotation": "str",
+          "line": 1122,
+          "defaultSyntax": null
+        },
+        {
+          "name": "reference",
+          "typeAnnotation": "str | None",
+          "line": 1123,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "ordinal",
+          "typeAnnotation": "int | None",
+          "line": 1124,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "firing_index",
+          "typeAnnotation": "int | None",
+          "line": 1125,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "head_index",
+          "typeAnnotation": "int | None",
+          "line": 1126,
+          "defaultSyntax": "None"
+        }
+      ]
+    }
+  ],
+  "notRuntimeOrNormativeAcceptance": true
+}

@@ -1,0 +1,621 @@
+{
+  "format": "i05-existing-source-api-layouts/1",
+  "sourceFactsOnly": true,
+  "normativeAdoption": false,
+  "layouts": [
+    {
+      "id": "legacy-source",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "_source",
+        "line": 73,
+        "endLine": 85
+      },
+      "pythonKind": "dict",
+      "orderedKeys": [
+        "executionSemanticsVersion",
+        "assertedInputSha256",
+        "ontologyInputSha256",
+        "selectedRulesSha256"
+      ],
+      "dedicatedOriginalByteWireDefinedHere": false
+    },
+    {
+      "id": "legacy-provenance",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "project_validation_scope",
+        "line": 234,
+        "endLine": 298
+      },
+      "pythonKind": "dict",
+      "orderedKeys": [
+        "scope",
+        "executionSemanticsVersion",
+        "assertedInputSha256",
+        "ontologyInputSha256",
+        "selectedRulesSha256",
+        "reasoningSource",
+        "selectedRuleIds",
+        "warnings",
+        "selectedFacts",
+        "derivedAxioms",
+        "ontologyView",
+        "factViewSha256",
+        "ontologyViewSha256"
+      ],
+      "reasoningSource": "None for asserted; dict(source) copy for derived",
+      "selectedFacts": "list of {triple,sources}; asserted source {kind}; rdfs source {kind,basis}; rule source {kind,rule,inputs,basis}"
+    },
+    {
+      "id": "legacy-reason",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "function": "_legacy_reason",
+        "line": 551,
+        "endLine": 603
+      },
+      "pythonKind": "dict",
+      "orderedKeys": ["rdfs", "warnings", "rules", "evidence", "rdfsEvidence"],
+      "evidenceKeys": ["rule", "result", "inputs", "basis"],
+      "rdfsEvidenceKeys": ["result", "basis"],
+      "tripleRepresentation": "tuple of three term.n3() strings"
+    },
+    {
+      "id": "query-ask",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "function": "query",
+        "line": 160,
+        "endLine": 237
+      },
+      "orderedKeys": ["type", "value"],
+      "value": "bool; type literal ASK"
+    },
+    {
+      "id": "query-select",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "function": "query",
+        "line": 160,
+        "endLine": 237
+      },
+      "orderedKeys": ["type", "variables", "rows"],
+      "cells": "N3 string or None; ordered full rows; type literal SELECT"
+    },
+    {
+      "id": "shacl-api",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "function": "_check_shapes",
+        "line": 1566,
+        "endLine": 1614
+      },
+      "orderedKeys": ["conforms", "violations"],
+      "violationKeys": ["focus", "path", "constraint", "sourceShape", "value", "severity"],
+      "value": "N3 string or None",
+      "originalValidatorGraphReturned": false
+    },
+    {
+      "id": "profile-wire",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_execute_profile",
+        "line": 626,
+        "endLine": 819
+      },
+      "orderedKeys": ["payload", "rows", "jsonPayloadDigest", "rowsDigest"],
+      "payloadKeys": [
+        "format",
+        "implementation",
+        "reasoning",
+        "inputDigest",
+        "inputDigestDomain",
+        "sourceDigest",
+        "definitionsDigest"
+      ],
+      "rows": "list of one-column string lists, payload UTF8-decoded string slices of MAX_CELL8192 characters"
+    },
+    {
+      "id": "public-error",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "function": "SemanticErrorAdapter._emit",
+        "line": 308,
+        "endLine": 322
+      },
+      "orderedKeys": ["code", "messageKey", "params", "retryable"],
+      "completeRegistryValidatedInThisWindow": false
+    },
+    {
+      "id": "profile-private-diagnostic",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_execution.py",
+        "function": "_profile_diagnostic",
+        "line": 609,
+        "endLine": 623
+      },
+      "orderedKeys": ["reason", "classification", "ruleId", "location"],
+      "locationKeys": ["section", "index", "side", "span"],
+      "locationNullable": true
+    },
+    {
+      "id": "probe-bytes-wrapper",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "function": "_bytes_value",
+        "line": 709,
+        "endLine": 714
+      },
+      "orderedKeys": ["encoding", "bytes", "sha256", "data"],
+      "encoding": "base64; SHA256 and length of original full bytes"
+    },
+    {
+      "id": "probe-graph-wrapper",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "function": "_graph_value",
+        "line": 717,
+        "endLine": 719
+      },
+      "orderedKeys": ["triples", "tripleCount"],
+      "triples": "sorted tuple(term.n3() for term in triple)"
+    },
+    {
+      "id": "probe-production-observation",
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "function": "_production_observation",
+        "line": 1260,
+        "endLine": 1343
+      },
+      "orderedKeys": [
+        "wire",
+        "payloadBytes",
+        "rowsBytes",
+        "sourceBytes",
+        "definitionBytes",
+        "catalogBytes",
+        "actualDefinitions",
+        "actualCatalog",
+        "allocation",
+        "expectedCapture",
+        "restored",
+        "roots",
+        "receipts"
+      ],
+      "receiptsKeys": ["capture", "direct"],
+      "optionalBranch": "mutation; complete returned class definitions outside eight-file window remain pending"
+    }
+  ],
+  "classAnnotationIndex": [
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic.py",
+        "function": "Rule",
+        "line": 241,
+        "endLine": 244
+      },
+      "annotatedFields": [
+        {
+          "name": "id",
+          "annotation": "str",
+          "line": 242,
+          "hasDefault": false
+        },
+        {
+          "name": "when",
+          "annotation": "tuple[Triple, ...]",
+          "line": 243,
+          "hasDefault": false
+        },
+        {
+          "name": "then",
+          "annotation": "Triple",
+          "line": 244,
+          "hasDefault": false
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_scopes.py",
+        "function": "ValidationScope",
+        "line": 227,
+        "endLine": 231
+      },
+      "annotatedFields": [
+        {
+          "name": "facts",
+          "annotation": "Graph",
+          "line": 228,
+          "hasDefault": false
+        },
+        {
+          "name": "ontology",
+          "annotation": "Graph",
+          "line": 229,
+          "hasDefault": false
+        },
+        {
+          "name": "provenance",
+          "annotation": "dict",
+          "line": 230,
+          "hasDefault": false
+        },
+        {
+          "name": "reasoning_result",
+          "annotation": "dict | None",
+          "line": 231,
+          "hasDefault": false
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "function": "ErrorContext",
+        "line": 39,
+        "endLine": 41
+      },
+      "annotatedFields": [
+        {
+          "name": "stage",
+          "annotation": "Stage",
+          "line": 40,
+          "hasDefault": false
+        },
+        {
+          "name": "origin",
+          "annotation": "Origin",
+          "line": 41,
+          "hasDefault": false
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_error_adapter.py",
+        "function": "_Spec",
+        "line": 45,
+        "endLine": 49
+      },
+      "annotatedFields": [
+        {
+          "name": "message_key",
+          "annotation": "str",
+          "line": 46,
+          "hasDefault": false
+        },
+        {
+          "name": "retryable",
+          "annotation": "bool",
+          "line": 47,
+          "hasDefault": false
+        },
+        {
+          "name": "parameter",
+          "annotation": "str | None",
+          "line": 48,
+          "hasDefault": false
+        },
+        {
+          "name": "values",
+          "annotation": "frozenset[str]",
+          "line": 49,
+          "hasDefault": false
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "function": "CaptureReceipt",
+        "line": 209,
+        "endLine": 217
+      },
+      "annotatedFields": [
+        {
+          "name": "usage",
+          "annotation": "tuple",
+          "line": 210,
+          "hasDefault": false
+        },
+        {
+          "name": "retained",
+          "annotation": "tuple",
+          "line": 211,
+          "hasDefault": false
+        },
+        {
+          "name": "peaks",
+          "annotation": "tuple",
+          "line": 212,
+          "hasDefault": false
+        },
+        {
+          "name": "caps",
+          "annotation": "tuple",
+          "line": 213,
+          "hasDefault": false
+        },
+        {
+          "name": "stage_visits",
+          "annotation": "tuple",
+          "line": 214,
+          "hasDefault": false
+        },
+        {
+          "name": "stage_bounds",
+          "annotation": "tuple",
+          "line": 215,
+          "hasDefault": false
+        },
+        {
+          "name": "version",
+          "annotation": "str",
+          "line": 216,
+          "hasDefault": true
+        },
+        {
+          "name": "retention_owner",
+          "annotation": "str",
+          "line": 217,
+          "hasDefault": true
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "function": "ProfileMaterial",
+        "line": 221,
+        "endLine": 234
+      },
+      "annotatedFields": [
+        {
+          "name": "text",
+          "annotation": "str | None",
+          "line": 222,
+          "hasDefault": false
+        },
+        {
+          "name": "records",
+          "annotation": "tuple | None",
+          "line": 223,
+          "hasDefault": false
+        },
+        {
+          "name": "rules",
+          "annotation": "tuple[RuleSpec, ...]",
+          "line": 224,
+          "hasDefault": false
+        },
+        {
+          "name": "disabled_rule_ids",
+          "annotation": "tuple[str, ...]",
+          "line": 225,
+          "hasDefault": false
+        },
+        {
+          "name": "source",
+          "annotation": "SourceRecord | tuple",
+          "line": 226,
+          "hasDefault": false
+        },
+        {
+          "name": "input_domain",
+          "annotation": "str",
+          "line": 227,
+          "hasDefault": false
+        },
+        {
+          "name": "input_preimage",
+          "annotation": "bytes",
+          "line": 228,
+          "hasDefault": false
+        },
+        {
+          "name": "source_preimage",
+          "annotation": "bytes",
+          "line": 229,
+          "hasDefault": false
+        },
+        {
+          "name": "definitions_preimage",
+          "annotation": "bytes",
+          "line": 230,
+          "hasDefault": false
+        },
+        {
+          "name": "definition_material",
+          "annotation": "bytes",
+          "line": 231,
+          "hasDefault": false
+        },
+        {
+          "name": "parser_identity",
+          "annotation": "tuple[str, str]",
+          "line": 232,
+          "hasDefault": false
+        },
+        {
+          "name": "capture_receipt",
+          "annotation": "CaptureReceipt",
+          "line": 233,
+          "hasDefault": false
+        },
+        {
+          "name": "version",
+          "annotation": "str",
+          "line": 234,
+          "hasDefault": true
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "function": "ProfileInputLayer",
+        "line": 238,
+        "endLine": 242
+      },
+      "annotatedFields": [
+        {
+          "name": "input_domain",
+          "annotation": "str",
+          "line": 239,
+          "hasDefault": false
+        },
+        {
+          "name": "content",
+          "annotation": "bytes | tuple",
+          "line": 240,
+          "hasDefault": false
+        },
+        {
+          "name": "source",
+          "annotation": "SourceRecord | None",
+          "line": 241,
+          "hasDefault": false
+        },
+        {
+          "name": "parser_identity",
+          "annotation": "tuple[str, str]",
+          "line": 242,
+          "hasDefault": false
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "function": "SelectedMaterial",
+        "line": 246,
+        "endLine": 254
+      },
+      "annotatedFields": [
+        {
+          "name": "asserted_records",
+          "annotation": "ProfileInputLayer",
+          "line": 247,
+          "hasDefault": false
+        },
+        {
+          "name": "ontology_records",
+          "annotation": "ProfileInputLayer",
+          "line": 248,
+          "hasDefault": false
+        },
+        {
+          "name": "input_preimage",
+          "annotation": "bytes",
+          "line": 249,
+          "hasDefault": false
+        },
+        {
+          "name": "source_preimage",
+          "annotation": "bytes",
+          "line": 250,
+          "hasDefault": false
+        },
+        {
+          "name": "definition_material",
+          "annotation": "bytes",
+          "line": 251,
+          "hasDefault": false
+        },
+        {
+          "name": "parser_identity",
+          "annotation": "tuple[str, str]",
+          "line": 252,
+          "hasDefault": false
+        },
+        {
+          "name": "capture_receipt",
+          "annotation": "CaptureReceipt",
+          "line": 253,
+          "hasDefault": false
+        },
+        {
+          "name": "version",
+          "annotation": "str",
+          "line": 254,
+          "hasDefault": true
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    },
+    {
+      "source": {
+        "ref": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+        "path": "packages/engine/src/ontolearn_engine/semantic_profile_input.py",
+        "function": "RuleDefinitions",
+        "line": 514,
+        "endLine": 519
+      },
+      "annotatedFields": [
+        {
+          "name": "rules",
+          "annotation": "tuple[RuleSpec, ...]",
+          "line": 515,
+          "hasDefault": false
+        },
+        {
+          "name": "disabled_rule_ids",
+          "annotation": "tuple[str, ...]",
+          "line": 516,
+          "hasDefault": false
+        },
+        {
+          "name": "definitions_preimage",
+          "annotation": "bytes",
+          "line": 517,
+          "hasDefault": false
+        },
+        {
+          "name": "definition_material",
+          "annotation": "bytes",
+          "line": 518,
+          "hasDefault": false
+        },
+        {
+          "name": "capture_receipt",
+          "annotation": "CaptureReceipt",
+          "line": 519,
+          "hasDefault": false
+        }
+      ],
+      "meaning": "annotation-only source index; not a substitute for validation, runtime ownership or complete external type definition"
+    }
+  ],
+  "completeFull417Adapter": false,
+  "productExecuted": false
+}
