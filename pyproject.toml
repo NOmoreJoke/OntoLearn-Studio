@@ -22,3 +22,18 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+# Fixed historical I05 checkers retain bytes; rule exceptions are not semantic repairs.
+[tool.ruff.format]
+exclude = [
+  "docs/reviews/I05/active-source-hygiene/independent-applied-checker.py",
+  "docs/reviews/I05/retained-source-review-triage/independent-triage-r1-applied-check.py",
+  "docs/reviews/I05/retained-source-review-triage/independent-triage-r1-check.py",
+  "docs/reviews/I05/source-package-probe-source/static-verify.py",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"docs/reviews/I05/active-source-hygiene/independent-applied-checker.py" = ["B007", "B905", "E401", "E501", "E701", "E702", "I001"]
+"docs/reviews/I05/retained-source-review-triage/independent-triage-r1-applied-check.py" = ["E401", "E501", "E701", "E702", "I001", "UP022"]
+"docs/reviews/I05/retained-source-review-triage/independent-triage-r1-check.py" = ["E401", "E501", "E701", "E702", "F401", "I001", "UP022"]
+"docs/reviews/I05/source-package-probe-source/static-verify.py" = ["E501"]
