@@ -1,0 +1,37 @@
+{
+  "format_step": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+      "--ignore-path",
+      "/dev/null",
+      "--stdin-filepath",
+      "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_b1_closure_lifecycle_triage/result-final.json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "result-final.json",
+    "stdout_bytes": 4676,
+    "stdout_sha256": "5b6fb32ed32f97d5c2b9ec497b2da57e6c33fe6329e94989639b206a1dfa67d8",
+    "stderr": ""
+  },
+  "check_step": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-formal-profile-integration/node_modules/prettier/bin/prettier.cjs",
+      "--ignore-path",
+      "/dev/null",
+      "--check",
+      "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_b1_closure_lifecycle_triage/report.md",
+      "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_b1_closure_lifecycle_triage/result-final.json",
+      "/Users/kyle/Documents/工作/知爻/本体/outputs/20261023_i05_b1_closure_lifecycle_triage/receipt-clarification.json"
+    ],
+    "exit_code": 0,
+    "stdout_file": "document-check-final.stdout.raw",
+    "stderr_file": "document-check-final.stderr.raw",
+    "stdout_bytes": 66,
+    "stdout_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "stderr_bytes": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "prior_attempt": "document-check-receipt.json: exit 1 for unformatted result-corrected.json; retained without overwriting. Initial result.json had descriptive five-lambdas typo, corrected to four."
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "receipt-field-clarification/1",
+  "read-receipt.json": "git step stdout is exact for branch/HEAD; full source blob stdout is intentionally not persisted, exact byte length and SHA recorded. stderr and exit_code are actual subprocess results.",
+  "b1-extract-receipt.json": "argv describes inner git read. stdout field is exact extraction wrapper output; it is not inner Git full blob stdout. blob_bytes/blob_sha256 describe actual inner Git stdout. stderr/exit_code describe inner Git.",
+  "boundary-extract-receipt.json": "Same wrapper-vs-inner Git stdout distinction as b1-extract-receipt.json.",
+  "initial_selection": "First exact-name selector found CollectionBoundary.call and _checked_call but not supplied _b1_measurement/_collection. Successful diagnostic-enclosing AST follow-up found _b1_observation. No command failed.",
+  "no_full_source_copy": "Only approved function bodies retained as text; no other modules read or source run."
+}

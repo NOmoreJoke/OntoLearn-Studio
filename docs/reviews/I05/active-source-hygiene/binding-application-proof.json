@@ -1,0 +1,49 @@
+{
+  "format": "i05-b023-applied-explicit-bindings/1",
+  "base": "401a6844d25b8990606ae82fc85f932cac352d40",
+  "lifecycleIndependentReport": {
+    "path": "docs/reviews/I05/active-source-hygiene/lifecycle-review-r1/report.md",
+    "bytes": 10951,
+    "sha256": "e8687d8bf11800723b7269d3da1106b559811feef95deec3c23a2a3f8482b3a7"
+  },
+  "copiedIndependentRecords": 25,
+  "reportFullyRead": true,
+  "priorReadFunctionAliasErrorPreserved": true,
+  "beforeBindingSourceSHA256": "0c1db027b0ba84a5eb938283012d39f859e81de69282914f8056d595924ea986",
+  "afterBindingBeforeFinalFormatSHA256": "55ce476b82eed47c444167ac6ce31068c4cc054bc7a170b6d320f6ba989eb42d",
+  "exactSites": [
+    {
+      "callable": "timed",
+      "bindings": ["name", "phases"]
+    },
+    {
+      "callable": "build",
+      "bindings": ["asserted", "ontology"]
+    },
+    {
+      "callable": "semantic.query(combined, dataset['queryText'])",
+      "bindings": ["combined"]
+    },
+    {
+      "callable": "semantic.reason(combined, _legacy_rules(dataset, modules))",
+      "bindings": ["combined"]
+    },
+    {
+      "callable": "semantic.check_shapes(asserted, shapes)",
+      "bindings": ["asserted", "shapes"]
+    },
+    {
+      "callable": "canonical_bytes(outputs)",
+      "bindings": ["outputs"]
+    }
+  ],
+  "onlyNineKeywordDefaultBindingsAfterPureFormatAndI001": true,
+  "wholeASTEqualsPreBindingAfterRemovingOnlyThoseNewDefaults": true,
+  "currentPriorLoopWrongBindingObserved": false,
+  "reason": "explicit sameiterationobject ownership; existing direct synchronous caller retained, not claiming actual observed runtime bug",
+  "signatureChanged": "privatecallables add optionalkeywordonlyparams; original3positional timed/zeroarg othercalls remaincompatible",
+  "mutableObjectsCopiedOrFrozen": false,
+  "timingOrMemoryImprovementClaim": false,
+  "runtimeExecuted": false,
+  "testOrFullcheckRunNow": false
+}

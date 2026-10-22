@@ -1,0 +1,110 @@
+{
+  "schema": "independent-applied-hygiene-review/1",
+  "base": "401a6844d25b8990606ae82fc85f932cac352d40",
+  "branch": "fix/I05-active-source-hygiene",
+  "HEAD": "401a6844d25b8990606ae82fc85f932cac352d40",
+  "files": {
+    "probe": {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "current_bytes": 102669,
+      "current_sha256": "05f4ac85f883f40142782e9ee3943b8df9593ddf5a35e318ca35bbd6781a6dd4",
+      "base_bytes": 93915,
+      "base_sha256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230"
+    },
+    "test": {
+      "path": "packages/engine/tests/test_semantic_source_package_probe.py",
+      "current_bytes": 75277,
+      "current_sha256": "920883c27b6390a2f38aa71bbb399d3b588fe819b1298282da60e6217f11694b",
+      "base_bytes": 73863,
+      "base_sha256": "c99a6acc40ab9c612a906cc72db336c9079a41c6fa8d2aa53b7c0c5c72b80752"
+    }
+  },
+  "checks": {
+    "probe_comments_sequence_unchanged": true,
+    "test_comments_sequence_unchanged": true,
+    "exact_six_sites_nine_optional_keyword_defaults": true,
+    "only_one_exact_unaliased_rdflib_import_permutation": true,
+    "whole_probe_AST_equal_after_only_explicit_normalizations": true,
+    "whole_test_AST_equal_without_normalization": true,
+    "ProbeFault_AST_unchanged": true,
+    "CollectionBoundary_AST_unchanged": true,
+    "_checked_call_AST_unchanged": true,
+    "whole_scope_observation_AST_unchanged": true,
+    "M06_exact_regression_AST_unchanged": true,
+    "current_source_hashes_rechecked_at_end": true
+  },
+  "binding_sites": [
+    {
+      "site": "timed",
+      "current_line": 2111,
+      "defaults": ["name", "phases"],
+      "base_signature": "phase, api, call",
+      "current_signature": "phase, api, call, *, name=name, phases=phases",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "build",
+      "current_line": 2132,
+      "defaults": ["asserted", "ontology"],
+      "base_signature": "",
+      "current_signature": "*, asserted=asserted, ontology=ontology",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "semantic.query",
+      "current_line": 2152,
+      "defaults": ["combined"],
+      "base_signature": "",
+      "current_signature": "*, combined=combined",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "semantic.reason",
+      "current_line": 2157,
+      "defaults": ["combined"],
+      "base_signature": "",
+      "current_signature": "*, combined=combined",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "semantic.check_shapes",
+      "current_line": 2167,
+      "defaults": ["asserted", "shapes"],
+      "base_signature": "",
+      "current_signature": "*, asserted=asserted, shapes=shapes",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "canonical_bytes",
+      "current_line": 2182,
+      "defaults": ["outputs"],
+      "base_signature": "",
+      "current_signature": "*, outputs=outputs",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    }
+  ],
+  "findings": {
+    "P1": [],
+    "P2": [],
+    "scope": "no actionable P1/P2 found in permitted narrow static change; not full behavioral equivalence or release approval"
+  },
+  "observed_owner_lint_exit": 0,
+  "observed_owner_lint_stdout": "[]",
+  "observed_owner_format_check_exit": 0,
+  "source_lint_or_formatter_rerun": false,
+  "product_or_tests_run": false,
+  "runtime_equivalence_claim": false,
+  "limitations": [
+    "private signatures changed; optional keyword-only parameters added",
+    "same mutable objects bound strongly; mutations remain visible",
+    "future async/dynamic replacement not automatically safe",
+    "no performance or physical-memory claim",
+    "required fullcheck and integrated candidate gates remain owner work"
+  ]
+}

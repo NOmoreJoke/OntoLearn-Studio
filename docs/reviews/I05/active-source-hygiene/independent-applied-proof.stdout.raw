@@ -1,0 +1,330 @@
+{
+  "kind": "independent static bytes/AST review; no product import or execution",
+  "base": "401a6844d25b8990606ae82fc85f932cac352d40",
+  "git_reads": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-active-source-hygiene",
+        "show",
+        "401a6844d25b8990606ae82fc85f932cac352d40:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout_bytes": 93915,
+      "stdout_sha256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+      "stdout_text": null
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-active-source-hygiene",
+        "show",
+        "401a6844d25b8990606ae82fc85f932cac352d40:packages/engine/tests/test_semantic_source_package_probe.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout_bytes": 73863,
+      "stdout_sha256": "c99a6acc40ab9c612a906cc72db336c9079a41c6fa8d2aa53b7c0c5c72b80752",
+      "stdout_text": null
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-active-source-hygiene",
+        "branch",
+        "--show-current"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout_bytes": 30,
+      "stdout_sha256": "cf577598381a07ae9feaab7297e48816564949d21cf2865ede271a1d715f6224",
+      "stdout_text": "fix/I05-active-source-hygiene\n"
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-active-source-hygiene",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout_bytes": 41,
+      "stdout_sha256": "c13916c7615d9e7e3bfe0e428459f3b738adc3610e345f094e0566b1a8b5438b",
+      "stdout_text": "401a6844d25b8990606ae82fc85f932cac352d40\n"
+    }
+  ],
+  "files": {
+    "probe": {
+      "path": "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+      "current_bytes": 102669,
+      "current_sha256": "05f4ac85f883f40142782e9ee3943b8df9593ddf5a35e318ca35bbd6781a6dd4",
+      "base_bytes": 93915,
+      "base_sha256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230"
+    },
+    "test": {
+      "path": "packages/engine/tests/test_semantic_source_package_probe.py",
+      "current_bytes": 75277,
+      "current_sha256": "920883c27b6390a2f38aa71bbb399d3b588fe819b1298282da60e6217f11694b",
+      "base_bytes": 73863,
+      "base_sha256": "c99a6acc40ab9c612a906cc72db336c9079a41c6fa8d2aa53b7c0c5c72b80752"
+    }
+  },
+  "checks": {
+    "probe_comments_sequence_unchanged": true,
+    "test_comments_sequence_unchanged": true,
+    "exact_six_sites_nine_optional_keyword_defaults": true,
+    "only_one_exact_unaliased_rdflib_import_permutation": true,
+    "whole_probe_AST_equal_after_only_explicit_normalizations": true,
+    "whole_test_AST_equal_without_normalization": true,
+    "ProbeFault_AST_unchanged": true,
+    "CollectionBoundary_AST_unchanged": true,
+    "_checked_call_AST_unchanged": true,
+    "whole_scope_observation_AST_unchanged": true,
+    "M06_exact_regression_AST_unchanged": true,
+    "current_source_hashes_rechecked_at_end": true
+  },
+  "binding_sites": [
+    {
+      "site": "timed",
+      "current_line": 2111,
+      "defaults": [
+        "name",
+        "phases"
+      ],
+      "base_signature": "phase, api, call",
+      "current_signature": "phase, api, call, *, name=name, phases=phases",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "build",
+      "current_line": 2132,
+      "defaults": [
+        "asserted",
+        "ontology"
+      ],
+      "base_signature": "",
+      "current_signature": "*, asserted=asserted, ontology=ontology",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "semantic.query",
+      "current_line": 2152,
+      "defaults": [
+        "combined"
+      ],
+      "base_signature": "",
+      "current_signature": "*, combined=combined",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "semantic.reason",
+      "current_line": 2157,
+      "defaults": [
+        "combined"
+      ],
+      "base_signature": "",
+      "current_signature": "*, combined=combined",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "semantic.check_shapes",
+      "current_line": 2167,
+      "defaults": [
+        "asserted",
+        "shapes"
+      ],
+      "base_signature": "",
+      "current_signature": "*, asserted=asserted, shapes=shapes",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    },
+    {
+      "site": "canonical_bytes",
+      "current_line": 2182,
+      "defaults": [
+        "outputs"
+      ],
+      "base_signature": "",
+      "current_signature": "*, outputs=outputs",
+      "optional_keyword_only": true,
+      "default_values": "same-name Load nodes evaluated at callable creation"
+    }
+  ],
+  "snippets": [
+    {
+      "label": "ProbeFault",
+      "line_start": 261,
+      "line_end": 266,
+      "text": "261: class ProbeFault(ValueError):\n262:     \"\"\"Stable harness code only; never stringify an incoming exception.\"\"\"\n263: \n264:     def __init__(self, code):\n265:         self.code = code if type(code) is str and code.isascii() else \"HARNESS_FAILED\"\n266:         super().__init__(self.code)"
+    },
+    {
+      "label": "CollectionBoundary",
+      "line_start": 278,
+      "line_end": 311,
+      "text": "278: class CollectionBoundary:\n279:     \"\"\"Caller observation only; never replaces a canonical business callable.\"\"\"\n280: \n281:     def __init__(self, monotonic, started, cancel_requested):\n282:         self.monotonic, self.started = monotonic, started\n283:         self.cancel_requested = cancel_requested\n284:         self.stage, self.api = \"dispatch/input\", None\n285:         self.completed = []\n286:         self.attempts = []\n287: \n288:     def check(self):\n289:         if self.cancel_requested():\n290:             raise BoundaryStop(\"COLLECTION_STOP_REQUESTED\", 130, \"stopping\")\n291:         if self.monotonic() - self.started >= DEADLINE_SECONDS:\n292:             raise BoundaryStop(\"COLLECTION_DEADLINE\", 1, \"deadline-boundary\")\n293: \n294:     def call(self, stage, api, function, args, kwargs, capture=True):\n295:         self.stage, self.api = stage, api\n296:         self.check()\n297:         attempt = {\"stage\": stage, \"api\": api, \"start\": self.monotonic(), \"returned\": False}\n298:         self.attempts.append(attempt)\n299:         tick = time.perf_counter_ns()\n300:         try:\n301:             value = function(*args, **kwargs)\n302:         finally:\n303:             attempt[\"end\"] = self.monotonic()\n304:             attempt[\"elapsedNs\"] = time.perf_counter_ns() - tick\n305:         attempt[\"returned\"] = True\n306:         if capture:\n307:             # Retain actual references until this observation is written.\n308:             # No fake success, cross-case cache or native reconstruction.\n309:             self.completed.append({**attempt, \"value\": value})\n310:         self.check()  # An opaque call may finish late; never start the next one.\n311:         return value"
+    },
+    {
+      "label": "_checked_call",
+      "line_start": 314,
+      "line_end": 318,
+      "text": "314: def _checked_call(stage, api, function, *args, **kwargs):\n315:     boundary = _COLLECTION_CONTEXT.get()\n316:     if boundary is None:\n317:         return function(*args, **kwargs)\n318:     return boundary.call(stage, api, function, args, kwargs)"
+    },
+    {
+      "label": "scope ProbeFault guard statement",
+      "line_start": 1550,
+      "line_end": 1551,
+      "text": "1550:     if counter is None:\n1551:         raise ProbeFault(\"INTERNAL_ERROR\")"
+    },
+    {
+      "label": "test_scope_without_counter_fails_before_loading_canonical_inputs",
+      "line_start": 845,
+      "line_end": 850,
+      "text": "845: def test_scope_without_counter_fails_before_loading_canonical_inputs(probe):\n846:     # Empty mappings prove admission fails before module/dataset lookup or any\n847:     # canonical parse/prepare call; they do not stand in for a business result.\n848:     with pytest.raises(probe.ProbeFault) as failure:\n849:         probe._scope_observation({}, \"fresh\", {}, None)\n850:     assert failure.value.code == \"INTERNAL_ERROR\""
+    },
+    {
+      "label": "_b1_observation",
+      "line_start": 2101,
+      "line_end": 2225,
+      "text": "2101: def _b1_observation(dataset, modules, instrumentation):\n2102:     \"\"\"Future measurements of fixed pure inputs; no Store or heap/OS sampler.\"\"\"\n2103:     from rdflib import RDF, Graph, URIRef\n2104: \n2105:     semantic = modules[\"ontolearn_engine.semantic\"]\n2106:     passes = []\n2107:     first_graphs = None\n2108:     for name in (\"First\", \"Warm\"):\n2109:         phases = {}\n2110: \n2111:         def timed(phase, api, call, *, name=name, phases=phases):\n2112:             start = time.perf_counter_ns()\n2113:             value = _checked_call(name + \"/\" + phase, api, call)\n2114:             phases[phase] = {\n2115:                 \"elapsedNs\": time.perf_counter_ns() - start,\n2116:                 \"pythonAllocation\": \"unknown\",\n2117:                 \"processHighWaterRss\": \"unknown\",\n2118:             }\n2119:             return value\n2120: \n2121:         asserted = timed(\n2122:             \"turtleParse\",\n2123:             \"semantic.parse_turtle\",\n2124:             lambda: semantic.parse_turtle(dataset[\"assertedText\"]),\n2125:         )\n2126:         ontology = timed(\n2127:             \"ontologyParse\",\n2128:             \"semantic.parse_turtle\",\n2129:             lambda: semantic.parse_turtle(dataset[\"ontologyText\"]),\n2130:         )\n2131: \n2132:         def build(*, asserted=asserted, ontology=ontology):\n2133:             # Explicit input transformation, not derived facts or an alternate reasoner.\n2134:             facts = Graph()\n2135:             for triple in asserted:\n2136:                 facts.add(triple)\n2137:             for replacement in dataset[\"replaceEquipmentTypes\"]:\n2138:                 subject = URIRef(replacement[\"subject\"])\n2139:                 facts.remove((subject, RDF.type, None))\n2140:                 facts.add((subject, RDF.type, URIRef(replacement[\"type\"])))\n2141:             combined = Graph()\n2142:             for triple in facts:\n2143:                 combined.add(triple)\n2144:             for triple in ontology:\n2145:                 combined.add(triple)\n2146:             return facts, combined\n2147: \n2148:         transformed, combined = timed(\"graphBuild\", \"probe.explicitInputGraphBuild\", build)\n2149:         query = timed(\n2150:             \"fixedSelect\",\n2151:             \"semantic.query\",\n2152:             lambda *, combined=combined: semantic.query(combined, dataset[\"queryText\"]),\n2153:         )\n2154:         reason = timed(\n2155:             \"rdfsRules\",\n2156:             \"semantic.reason\",\n2157:             lambda *, combined=combined: semantic.reason(combined, _legacy_rules(dataset, modules)),\n2158:         )\n2159:         shapes = timed(\n2160:             \"shapesParse\",\n2161:             \"semantic.parse_turtle\",\n2162:             lambda: semantic.parse_turtle(dataset[\"shapesText\"], shapes=True),\n2163:         )\n2164:         report = timed(\n2165:             \"shacl\",\n2166:             \"semantic.check_shapes\",\n2167:             lambda *, asserted=asserted, shapes=shapes: semantic.check_shapes(asserted, shapes),\n2168:         )\n2169:         outputs = {\n2170:             \"assertedOriginal\": _graph_value(asserted),\n2171:             \"transformedFacts\": _graph_value(transformed),\n2172:             \"ontology\": _graph_value(ontology),\n2173:             \"graph\": _graph_value(combined),\n2174:             \"query\": query,\n2175:             \"reason\": reason,\n2176:             \"report\": report,\n2177:         }\n2178:         # The timer observes encoding only; JSONL transport/parent wall is a distinct domain.\n2179:         encoded = timed(\n2180:             \"resultSerialization\",\n2181:             \"probe.canonical_bytes\",\n2182:             lambda *, outputs=outputs: canonical_bytes(outputs),\n2183:         )\n2184:         passes.append(\n2185:             {\n2186:                 \"name\": name,\n2187:                 \"phases\": phases,\n2188:                 \"outputs\": outputs,\n2189:                 \"serializationBytes\": len(encoded),\n2190:                 \"serializationSha256\": hashlib.sha256(encoded).hexdigest(),\n2191:             }\n2192:         )\n2193:         if first_graphs is None:\n2194:             first_graphs = (asserted, ontology, combined)\n2195:     asserted, ontology, combined = first_graphs\n2196:     return {\n2197:         \"scale\": dataset[\"scale\"],\n2198:         \"seed\": dataset[\"seed\"],\n2199:         \"assertedInput\": _graph_value(asserted),\n2200:         \"ontology\": _graph_value(ontology),\n2201:         \"semanticGraph\": _graph_value(combined),\n2202:         \"actualCounts\": {\n2203:             \"asserted\": len(asserted),\n2204:             \"ontology\": len(ontology),\n2205:             \"merged\": len(combined),\n2206:         },\n2207:         \"inputSha256\": hashlib.sha256(dataset[\"assertedText\"].encode(\"utf-8\")).hexdigest(),\n2208:         \"ontologyTextSha256\": hashlib.sha256(dataset[\"ontologyText\"].encode(\"utf-8\")).hexdigest(),\n2209:         \"querySha256\": hashlib.sha256(dataset[\"queryText\"].encode(\"utf-8\")).hexdigest(),\n2210:         \"transformedGraphSha256\": hashlib.sha256(\n2211:             canonical_bytes(_graph_value(combined))\n2212:         ).hexdigest(),\n2213:         \"instrumentation\": instrumentation,\n2214:         \"coldClaim\": False,\n2215:         \"freshProcessRequestedBySelector\": not instrumentation,\n2216:         \"freshProcessExternallyVerified\": False,\n2217:         \"timer\": \"perf_counter_ns\",\n2218:         \"timerResolutionSeconds\": time.get_clock_info(\"perf_counter\").resolution,\n2219:         \"importStartupWall\": \"unknown\",\n2220:         \"physicalColdRead\": \"unknown\",\n2221:         \"snapshotLoad\": \"not-executed; Store HOLD\",\n2222:         \"capacityThreshold\": \"unknown\",\n2223:         \"memoryMeasurementStatus\": \"unknown; requires later resource/tool ticket\",\n2224:         \"passes\": passes,\n2225:     }"
+    },
+    {
+      "label": "direct _b1_observation caller expression",
+      "line_start": 2316,
+      "line_end": 2316,
+      "text": "_b1_observation(dataset, modules, instrumentation)"
+    }
+  ],
+  "owner_evidence_streams": [
+    {
+      "receipt": "docs/reviews/I05/active-source-hygiene/environment-01.json",
+      "exit": 0,
+      "receipt_sha256": "777048a7a82429b0bb44a05c970e5d885dd50a2e37c39f07e932a177fa2041bc",
+      "streams": [
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/environment-01.stdout.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exact_text": ""
+        },
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/environment-01.stderr.raw",
+          "bytes": 1152,
+          "sha256": "8b2e7ba22a2946a9553ba0548b141080ee4d501e3c128a1073a83f15b000e353",
+          "exact_text": "Using CPython 3.12.12 interpreter at: /Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12\nCreating virtual environment at: .venv\n   Building ontolearn-engine @ file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/I05-active-source-hygiene/packages/engine\nDownloading pygments (1.2MiB)\nDownloading ruff (8.8MiB)\nDownloading pyinstaller (1.0MiB)\n Downloaded pyinstaller\n Downloaded pygments\n Downloaded ruff\n      Built ontolearn-engine @ file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/I05-active-source-hygiene/packages/engine\nPrepared 14 packages in 7.00s\nInstalled 14 packages in 509ms\n + altgraph==0.17.5\n + iniconfig==2.3.1\n + macholib==1.16.4\n + ontolearn-engine==0.1.0 (from file:///Users/kyle/Documents/%E5%B7%A5%E4%BD%9C/%E7%9F%A5%E7%88%BB/%E6%9C%AC%E4%BD%93/.worktrees/I05-active-source-hygiene/packages/engine)\n + packaging==26.3\n + pluggy==1.7.0\n + pygments==2.21.0\n + pyinstaller==6.22.3\n + pyinstaller-hooks-contrib==2026.8\n + pyparsing==3.3.3\n + pytest==9.1.1\n + rdflib==7.6.0\n + ruff==0.17.1\n + setuptools==84.0.0\n"
+        }
+      ]
+    },
+    {
+      "receipt": "docs/reviews/I05/active-source-hygiene/import-order-fix-01.json",
+      "exit": 0,
+      "receipt_sha256": "6f46437a2ac95750b85984ac4fa28291d37435b53dfd4803b0155c5ffc4dc6f5",
+      "streams": [
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/import-order-fix-01.stdout.raw",
+          "bytes": 38,
+          "sha256": "aac3a0503d8b95052cc85fb9f1717dc82b74aa55853a5aa9749b41e30275d472",
+          "exact_text": "Found 1 error (1 fixed, 0 remaining).\n"
+        },
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/import-order-fix-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exact_text": ""
+        }
+      ]
+    },
+    {
+      "receipt": "docs/reviews/I05/active-source-hygiene/format-write-01.json",
+      "exit": 0,
+      "receipt_sha256": "71f356d751a4ad326768c404bf8046cfef2ee09b26a87fc2e8b8bbf0c64e0982",
+      "streams": [
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/format-write-01.stdout.raw",
+          "bytes": 20,
+          "sha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df",
+          "exact_text": "2 files reformatted\n"
+        },
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/format-write-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exact_text": ""
+        }
+      ]
+    },
+    {
+      "receipt": "docs/reviews/I05/active-source-hygiene/binding-format-write-01.json",
+      "exit": 0,
+      "receipt_sha256": "bd63659fec58011eca7e039959d52aae16f7842b4cb714373348e84bbba812f0",
+      "streams": [
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/binding-format-write-01.stdout.raw",
+          "bytes": 42,
+          "sha256": "10869b88a75066aa23546ef1f95fcd4678c3fb92a56ed46ef91688052b67976a",
+          "exact_text": "1 file reformatted, 1 file left unchanged\n"
+        },
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/binding-format-write-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exact_text": ""
+        }
+      ]
+    },
+    {
+      "receipt": "docs/reviews/I05/active-source-hygiene/two-source-lint-01.json",
+      "exit": 0,
+      "receipt_sha256": "fc5cc81da960813ec60b8833df34bf8ba5796ee33a0016a087c436304fd5323d",
+      "streams": [
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/two-source-lint-01.stdout.raw",
+          "bytes": 2,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "exact_text": "[]"
+        },
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/two-source-lint-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exact_text": ""
+        }
+      ]
+    },
+    {
+      "receipt": "docs/reviews/I05/active-source-hygiene/two-source-format-check-01.json",
+      "exit": 0,
+      "receipt_sha256": "0194541030952b6711c6994a0d34b764a3f2eaf0ea254dc53545540760468c0e",
+      "streams": [
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/two-source-format-check-01.stdout.raw",
+          "bytes": 26,
+          "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+          "exact_text": "2 files already formatted\n"
+        },
+        {
+          "path": "docs/reviews/I05/active-source-hygiene/two-source-format-check-01.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exact_text": ""
+        }
+      ]
+    }
+  ],
+  "branch": "fix/I05-active-source-hygiene",
+  "HEAD": "401a6844d25b8990606ae82fc85f932cac352d40",
+  "findings": {
+    "P1": [],
+    "P2": [],
+    "scope": "no actionable P1/P2 found in permitted narrow static change; not full behavioral equivalence or release approval"
+  }
+}

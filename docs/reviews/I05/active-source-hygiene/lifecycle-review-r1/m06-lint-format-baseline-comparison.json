@@ -1,0 +1,140 @@
+{
+  "format": "i05-M06-existing-lint-format-baseline/1",
+  "baselineRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "fullCurrentRuffExit": 1,
+  "fullCurrentRuffCount": 10,
+  "baselineRuffCount": 10,
+  "issueSignaturesIdenticalAfterExactInsertionLineMap": true,
+  "newRuffIssues": 0,
+  "fullCurrentFormatExit": 1,
+  "eachBaselineSourceFormatExit": 1,
+  "addedGuardAndTestFormatExit": 0,
+  "noWholeFileFormatApplied": true,
+  "sourceSyntaxASTBothPass": true,
+  "productTests": "only exact new boundary case red1/green0; no canonical/full417/B1",
+  "commandReceipts": [
+    {
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/.venv/bin/ruff",
+        "check",
+        "--output-format",
+        "json",
+        "--stdin-filename",
+        "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "-"
+      ],
+      "stdinBytes": 93848,
+      "stdinSHA256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+      "startedAt": "2026-10-22T17:20:12.218587+00:00",
+      "finishedAt": "2026-10-22T17:20:12.261265+00:00",
+      "exit": 1,
+      "stdoutBytes": 6442,
+      "stdoutSHA256": "07bccac1b26fd46e196c6833052b181189aa38ea4d188e1874b6088707137953",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--stdin-filename",
+        "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py",
+        "-"
+      ],
+      "stdinBytes": 93848,
+      "stdinSHA256": "b3456f021afdbd53ec8677bf317a5ffdff636b55bae760eb8b7fec6e399e41b9",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+      "startedAt": "2026-10-22T17:20:12.261634+00:00",
+      "finishedAt": "2026-10-22T17:20:12.273789+00:00",
+      "exit": 1,
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/.venv/bin/ruff",
+        "check",
+        "--output-format",
+        "json",
+        "--stdin-filename",
+        "packages/engine/tests/test_semantic_source_package_probe.py",
+        "-"
+      ],
+      "stdinBytes": 73466,
+      "stdinSHA256": "8055c398ca4d03bb99bdec06f599db1c342b2bc6a49a0a247e2ffc54c8652da5",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+      "startedAt": "2026-10-22T17:20:12.289081+00:00",
+      "finishedAt": "2026-10-22T17:20:12.300523+00:00",
+      "exit": 0,
+      "stdoutBytes": 2,
+      "stdoutSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--stdin-filename",
+        "packages/engine/tests/test_semantic_source_package_probe.py",
+        "-"
+      ],
+      "stdinBytes": 73466,
+      "stdinSHA256": "8055c398ca4d03bb99bdec06f599db1c342b2bc6a49a0a247e2ffc54c8652da5",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+      "startedAt": "2026-10-22T17:20:12.300906+00:00",
+      "finishedAt": "2026-10-22T17:20:12.314500+00:00",
+      "exit": 1,
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--stdin-filename",
+        "m06_changed.py",
+        "-"
+      ],
+      "stdinBytes": 124,
+      "stdinSHA256": "531176e61addc68b5e83dc720e3d7508912e092df35b558ce7edcd5d87d95406",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+      "startedAt": "2026-10-22T17:20:12.325322+00:00",
+      "finishedAt": "2026-10-22T17:20:12.336115+00:00",
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--stdin-filename",
+        "m06_changed.py",
+        "-"
+      ],
+      "stdinBytes": 395,
+      "stdinSHA256": "2e2183a62f71c8e72e140cc39e40e26ae07084906d14fe9a89433e7843536a93",
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+      "startedAt": "2026-10-22T17:20:12.336460+00:00",
+      "finishedAt": "2026-10-22T17:20:12.344740+00:00",
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "firstCurrentFormatOutputLarge": "Raw full stream retained; root display truncated, no false full-display claim"
+}

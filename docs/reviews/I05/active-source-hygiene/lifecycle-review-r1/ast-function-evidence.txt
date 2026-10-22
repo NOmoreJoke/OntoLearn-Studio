@@ -1,0 +1,26 @@
+FUNCTION CollectionBoundary.call L167-L184
+167:     def call(self, stage, api, function, args, kwargs, capture=True):
+168:         self.stage, self.api = stage, api
+169:         self.check()
+170:         attempt = {"stage": stage, "api": api, "start": self.monotonic(), "returned": False}
+171:         self.attempts.append(attempt)
+172:         tick = time.perf_counter_ns()
+173:         try:
+174:             value = function(*args, **kwargs)
+175:         finally:
+176:             attempt["end"] = self.monotonic()
+177:             attempt["elapsedNs"] = time.perf_counter_ns() - tick
+178:         attempt["returned"] = True
+179:         if capture:
+180:             # Retain actual references until this observation is written.
+181:             # No fake success, cross-case cache or native reconstruction.
+182:             self.completed.append({**attempt, "value": value})
+183:         self.check()  # An opaque call may finish late; never start the next one.
+184:         return value
+
+FUNCTION _checked_call L187-L191
+187: def _checked_call(stage, api, function, *args, **kwargs):
+188:     boundary = _COLLECTION_CONTEXT.get()
+189:     if boundary is None:
+190:         return function(*args, **kwargs)
+191:     return boundary.call(stage, api, function, args, kwargs)

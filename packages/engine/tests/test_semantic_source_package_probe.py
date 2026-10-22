@@ -20,9 +20,7 @@ from pathlib import Path
 import pytest
 
 REPOSITORY = Path(__file__).resolve().parents[3]
-PROBE_SOURCE = (
-    REPOSITORY / "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
-)
+PROBE_SOURCE = REPOSITORY / "packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
 FLAG = "--semantic-source-package-probe"
 SELECTORS = ("full-v1", "b1-semantic-1x-v1", "b1-semantic-10x-v1")
 RESOURCE_PINS = {
@@ -47,11 +45,7 @@ RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 RDFS = "http://www.w3.org/2000/01/rdf-schema#"
 XSD = "http://www.w3.org/2001/XMLSchema#"
 SH = "http://www.w3.org/ns/shacl#"
-PREFIX = (
-    "@prefix ex: <urn:probe-test:> .\n"
-    f"@prefix xsd: <{XSD}> .\n"
-    f"@prefix sh: <{SH}> .\n"
-)
+PREFIX = f"@prefix ex: <urn:probe-test:> .\n@prefix xsd: <{XSD}> .\n@prefix sh: <{SH}> .\n"
 
 
 def _sha(raw):
@@ -87,12 +81,23 @@ def test_three_exact_argv(probe, selector):
 @pytest.mark.parametrize(
     "argv",
     [
-        [], [FLAG], ["full-v1"], [FLAG, "unknown"], [FLAG, "FULL-V1"],
-        [FLAG + "=full-v1"], [FLAG, "full-v1", "extra"],
-        [FLAG, "full-v1", FLAG, "full-v1"], [FLAG, "../full-v1"],
-        [FLAG, "/tmp/input.json"], [FLAG, "https://example.invalid/input"],
-        ["--semantic-profile-probe", "full-v1"], [FLAG, "full-v1\x00"],
-        (FLAG, "full-v1"), FLAG + " full-v1", None, True,
+        [],
+        [FLAG],
+        ["full-v1"],
+        [FLAG, "unknown"],
+        [FLAG, "FULL-V1"],
+        [FLAG + "=full-v1"],
+        [FLAG, "full-v1", "extra"],
+        [FLAG, "full-v1", FLAG, "full-v1"],
+        [FLAG, "../full-v1"],
+        [FLAG, "/tmp/input.json"],
+        [FLAG, "https://example.invalid/input"],
+        ["--semantic-profile-probe", "full-v1"],
+        [FLAG, "full-v1\x00"],
+        (FLAG, "full-v1"),
+        FLAG + " full-v1",
+        None,
+        True,
     ],
 )
 def test_argv_rejects_nonliteral_shapes_before_loading(probe, argv):
@@ -108,7 +113,8 @@ def test_argv_rejects_subclass_carriers_even_when_values_compare_equal(probe):
         pass
 
     for value in (
-        [ForeignText(FLAG), "full-v1"], [FLAG, ForeignText("full-v1")],
+        [ForeignText(FLAG), "full-v1"],
+        [FLAG, ForeignText("full-v1")],
         ForeignList([FLAG, "full-v1"]),
     ):
         with pytest.raises(probe.ProbeFault):
@@ -241,9 +247,15 @@ def test_bounded_reader_real_missing_path_is_safely_classified(probe, tmp_path):
 @pytest.mark.parametrize(
     "raw",
     [
-        b'{"x":1,"x":2}', b'{"x":{"y":1,"y":2}}', b'{"x":NaN}',
-        b'{"x":Infinity}', b'{"x":-Infinity}', b'{"x":1e999}', b'\xef\xbb\xbf{}',
-        b'\xff', b'{} trailing',
+        b'{"x":1,"x":2}',
+        b'{"x":{"y":1,"y":2}}',
+        b'{"x":NaN}',
+        b'{"x":Infinity}',
+        b'{"x":-Infinity}',
+        b'{"x":1e999}',
+        b"\xef\xbb\xbf{}",
+        b"\xff",
+        b"{} trailing",
     ],
 )
 def test_strict_json_rejects_ambiguous_or_non_unicode_input(probe, raw):
@@ -253,7 +265,9 @@ def test_strict_json_rejects_ambiguous_or_non_unicode_input(probe, raw):
 
 def test_strict_json_preserves_exact_lexical_strings_and_false(probe):
     assert probe.strict_json(b'{"v":"01","u":"\\u4e2d","f":false}') == {
-        "v": "01", "u": "中", "f": False
+        "v": "01",
+        "u": "中",
+        "f": False,
     }
     assert probe.strict_json(b'{"x":"\\ud800"}') == {"x": "\ud800"}
 
@@ -309,7 +323,9 @@ def sealed_assets(probe):
 def test_asset_exact_schemas_reject_extra_keys(probe, sealed_assets, area):
     inputs, manifest = copy.deepcopy(sealed_assets)
     targets = {
-        "input": inputs, "manifest": manifest, "observation": inputs["observations"][0],
+        "input": inputs,
+        "manifest": manifest,
+        "observation": inputs["observations"][0],
         "inputAsset": manifest["inputAsset"],
     }
     targets[area]["unapproved"] = 1
@@ -389,8 +405,11 @@ def test_descriptor_pin_is_frozen_in_module_and_not_derived_from_runtime_asset(p
     assert len({row[1] for row in probe.SUPPLIER_PINS}) == 22
     tree = ast.parse(PROBE_SOURCE.read_text(encoding="utf-8"))
     assignments = {
-        target.id: node.value for node in tree.body if isinstance(node, ast.Assign)
-        for target in node.targets if isinstance(target, ast.Name)
+        target.id: node.value
+        for node in tree.body
+        if isinstance(node, ast.Assign)
+        for target in node.targets
+        if isinstance(target, ast.Name)
     }
     assert ast.literal_eval(assignments["MANIFEST_BYTES"]) == len(raw)
     assert ast.literal_eval(assignments["MANIFEST_SHA256"]) == _sha(raw)
@@ -406,12 +425,19 @@ def test_runtime_preconditions_require_actual_adopted_pins(probe, real_resources
     assert identity["externalBuildProvenance"] == "unknown"
     assert len(identity["resources"]) == 4
     for relative, expected in RESOURCE_PINS.items():
-        row = next(row for row in identity["resources"]
-                   if Path(row["path"]) == real_resources / relative)
+        row = next(
+            row for row in identity["resources"] if Path(row["path"]) == real_resources / relative
+        )
         assert (row["bytes"], row["sha256"]) == expected
     assert identity["distributions"] == {
-        "rdflib": "7.6.0", "pyshacl": "0.30.1", "pyparsing": "3.3.3", "owlrl": "7.6.2",
-        "prettytable": "3.18.0", "wcwidth": "0.9.2", "html5rdf": "1.2.1", "packaging": "26.3",
+        "rdflib": "7.6.0",
+        "pyshacl": "0.30.1",
+        "pyparsing": "3.3.3",
+        "owlrl": "7.6.2",
+        "prettytable": "3.18.0",
+        "wcwidth": "0.9.2",
+        "html5rdf": "1.2.1",
+        "packaging": "26.3",
     }
 
 
@@ -440,8 +466,12 @@ def _jsonl(raw):
 def test_jsonl_complete_unicode_and_tail_fields(probe):
     stream = io.BytesIO()
     writer = probe.JSONLWriter(stream, total_cap=10000, item_cap=9000, reserve=500)
-    value = {"type": "observation", "id": "unicode-tail", "rows": [["中文"]] * 30,
-             "tail": {"source": "last", "raw": "\\\"\n"}}
+    value = {
+        "type": "observation",
+        "id": "unicode-tail",
+        "rows": [["中文"]] * 30,
+        "tail": {"source": "last", "raw": '\\"\n'},
+    }
     writer.emit(value)
     writer.emit({"type": "terminal", "collectionComplete": True}, terminal=True)
     assert _jsonl(stream.getvalue()) == [value, {"type": "terminal", "collectionComplete": True}]
@@ -465,9 +495,7 @@ def test_jsonl_exact_encoded_byte_cap_includes_newline(probe):
     writer.emit(value)
     assert stream.getvalue() == encoded
     too_small = io.BytesIO()
-    writer = probe.JSONLWriter(
-        too_small, total_cap=1000, item_cap=len(encoded) - 1, reserve=100
-    )
+    writer = probe.JSONLWriter(too_small, total_cap=1000, item_cap=len(encoded) - 1, reserve=100)
     with pytest.raises(probe.ProbeFault) as error:
         writer.emit(value)
     assert error.value.code == "OUTPUT_ITEM_LIMIT"
@@ -483,8 +511,13 @@ def test_jsonl_total_cap_preserves_terminal_reservation_and_complete_prior_items
     with pytest.raises(probe.ProbeFault):
         writer.emit({"type": "observation", "id": "second", "v": "x" * 110})
     assert stream.getvalue() == before
-    terminal = {"type": "terminal", "collectionComplete": False, "completedIds": ["first"],
-                "unstartedIds": ["second"], "state": "failed"}
+    terminal = {
+        "type": "terminal",
+        "collectionComplete": False,
+        "completedIds": ["first"],
+        "unstartedIds": ["second"],
+        "state": "failed",
+    }
     writer.emit(terminal, terminal=True)
     assert len(stream.getvalue()) <= 400
     assert _jsonl(stream.getvalue()) == [first, terminal]
@@ -568,10 +601,25 @@ def test_inputs_retain_definition_heads_but_contain_no_computed_oracle(probe, se
     before = _asset_canonical(inputs)
     definitions_with_heads = []
     forbidden = {
-        "expected", "expectedReport", "expectedRows", "given_binding", "input_binding",
-        "matches", "originalMatches", "closure", "native_result", "native_reason",
-        "firingGroups", "mechanismBatches", "proofLeaves", "directSteps", "rdfsEvidence",
-        "payload_json", "rows_json", "allocation", "expectation",
+        "expected",
+        "expectedReport",
+        "expectedRows",
+        "given_binding",
+        "input_binding",
+        "matches",
+        "originalMatches",
+        "closure",
+        "native_result",
+        "native_reason",
+        "firingGroups",
+        "mechanismBatches",
+        "proofLeaves",
+        "directSteps",
+        "rdfsEvidence",
+        "payload_json",
+        "rows_json",
+        "allocation",
+        "expectation",
     }
     for path, record in _walk_json(inputs["datasets"]):
         assert not (set(record) & forbidden), path
@@ -599,8 +647,12 @@ def test_original_context_denominators_do_not_become_operation_passes(sealed_ass
     inputs, _ = sealed_assets
     contexts = inputs["contexts"]
     assert set(contexts) == {
-        "mathInputContexts", "originalOperations", "productCases", "learningChecks",
-        "unresolved", "nonClaims",
+        "mathInputContexts",
+        "originalOperations",
+        "productCases",
+        "learningChecks",
+        "unresolved",
+        "nonClaims",
     }
     math = contexts["mathInputContexts"]
     assert len(math) == 83
@@ -608,15 +660,22 @@ def test_original_context_denominators_do_not_become_operation_passes(sealed_ass
     assert [item["index"] for item in math] == list(range(83))
     assert sum(item["eligibleStandaloneMathInput"] for item in math) == 82
     assert sum(item["fullOriginalInputContext"] for item in math) == 79
-    assert sum(item["eligibleStandaloneMathInput"] and item["fullOriginalInputContext"]
-               for item in math) == 78
+    assert (
+        sum(
+            item["eligibleStandaloneMathInput"] and item["fullOriginalInputContext"]
+            for item in math
+        )
+        == 78
+    )
     assert math[77]["eligibleStandaloneMathInput"] is False
     assert math[77]["fullOriginalInputContext"] is True
     fragments = [item for item in math if not item["fullOriginalInputContext"]]
     assert len(fragments) == 4
     assert [(item["index"], item["id"]) for item in fragments] == [
-        (79, "E.5:event-fragment:round:1"), (80, "E.5:event-fragment:round:2"),
-        (81, "E.5:event-fragment:round:3"), (82, "E.5:event-fragment:round:4"),
+        (79, "E.5:event-fragment:round:1"),
+        (80, "E.5:event-fragment:round:2"),
+        (81, "E.5:event-fragment:round:3"),
+        (82, "E.5:event-fragment:round:4"),
     ]
     assert all(item["eligibleStandaloneMathInput"] for item in fragments)
     for item in math:
@@ -629,11 +688,15 @@ def test_original_context_denominators_do_not_become_operation_passes(sealed_ass
     assert len(contexts["learningChecks"]) == 54
     assert len(contexts["productCases"]) == 50
     assert len({item["id"] for item in contexts["originalOperations"]}) == 106
-    assert all(item["originalOperationExecuted"] is False and item["lifecycleExecuted"] is False
-               for item in contexts["originalOperations"])
+    assert all(
+        item["originalOperationExecuted"] is False and item["lifecycleExecuted"] is False
+        for item in contexts["originalOperations"]
+    )
     assert all(item["checkExecuted"] is False for item in contexts["learningChecks"])
-    assert all(item["originalLifecycleAndNonGraphAcceptance"] == "not-executed"
-               for item in contexts["productCases"])
+    assert all(
+        item["originalLifecycleAndNonGraphAcceptance"] == "not-executed"
+        for item in contexts["productCases"]
+    )
     for group in ("originalOperations", "learningChecks", "productCases"):
         assert all(item["source"]["pointer"] for item in contexts[group])
     assert contexts["unresolved"] and contexts["nonClaims"]
@@ -642,25 +705,39 @@ def test_original_context_denominators_do_not_become_operation_passes(sealed_ass
 def test_consumer_c_preserves_two_queries_eleven_shapes_and_policy_variants(sealed_assets):
     inputs, _ = sealed_assets
     ids = {
-        "C-query-numeric-promotion", "C-query-type-error", "C-datatype-exact", "C-langString",
-        "C-count-term-identity", "C-in-term-identity", "C-inclusive-numeric", "C-inclusive-nni",
-        "C-inclusive-dateTime-equal", "C-inclusive-dateTime-before", "C-inclusive-type-error",
-        "C-inclusive-date-entry", "C-illtyped-entry",
+        "C-query-numeric-promotion",
+        "C-query-type-error",
+        "C-datatype-exact",
+        "C-langString",
+        "C-count-term-identity",
+        "C-in-term-identity",
+        "C-inclusive-numeric",
+        "C-inclusive-nni",
+        "C-inclusive-dateTime-equal",
+        "C-inclusive-dateTime-before",
+        "C-inclusive-type-error",
+        "C-inclusive-date-entry",
+        "C-illtyped-entry",
     }
     observations = [item for item in inputs["observations"] if item["sourceCaseId"] in ids]
     assert {item["sourceCaseId"] for item in observations} == ids
     query_ids = {item["sourceCaseId"] for item in observations if item["operation"] == "query"}
     assert query_ids == {"C-query-numeric-promotion", "C-query-type-error"}
     assert len(ids - query_ids) == 11
-    date_parameters = [item["parameters"] for item in observations
-                       if item["sourceCaseId"] == "C-inclusive-date-entry"]
+    date_parameters = [
+        item["parameters"]
+        for item in observations
+        if item["sourceCaseId"] == "C-inclusive-date-entry"
+    ]
     for data_policy in ("strict", "integer-illtyped-report-v1"):
         assert {"dataPolicy": data_policy, "rangePolicy": "utc-date-range-v1"} in date_parameters
-    integer_parameters = [item["parameters"] for item in observations
-                          if item["sourceCaseId"] == "C-illtyped-entry"]
+    integer_parameters = [
+        item["parameters"] for item in observations if item["sourceCaseId"] == "C-illtyped-entry"
+    ]
     assert {"dataPolicy": "strict", "rangePolicy": "legacy"} in integer_parameters
     assert {
-        "dataPolicy": "integer-illtyped-report-v1", "rangePolicy": "legacy"
+        "dataPolicy": "integer-illtyped-report-v1",
+        "rangePolicy": "legacy",
     } in integer_parameters
 
 
@@ -676,8 +753,11 @@ def test_case_sets_select_only_their_own_b1_pure_inputs(sealed_assets):
             assert item["operation"] == "b1-measurement"
             assert item["parameters"] == {}
             dataset = inputs["datasets"][item["datasetId"]]
-            assert not any(key in {"snapshot", "snapshotLoad", "Store", "sqlite"}
-                           for _, record in _walk_json(dataset) for key in record)
+            assert not any(
+                key in {"snapshot", "snapshotLoad", "Store", "sqlite"}
+                for _, record in _walk_json(dataset)
+                for key in record
+            )
             assert dataset["seed"] == 20261019
             assert _sha(dataset["queryText"].encode()) == (
                 "7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5"
@@ -708,7 +788,8 @@ def test_call_counter_counts_real_code_identity_and_restores_hook(probe, canonic
         semantic.validate_shacl_text(
             _data("2000-01-01Z"),
             _shape('sh:minInclusive "2000-01-01Z"^^xsd:date'),
-            data_policy="strict", range_policy="utc-date-range-v1",
+            data_policy="strict",
+            range_policy="utc-date-range-v1",
         )
         assert counter.counts == {"validator": 1, "reason": 1}
     assert sys.getprofile() is previous
@@ -752,8 +833,10 @@ def test_call_counter_restores_hook_on_real_policy_rejection(probe, canonical):
     with pytest.raises(SemanticError):
         with probe.CallCounter(canonical["semantic"], canonical["semantic"].Validator) as counter:
             canonical["semantic"].validate_shacl_text(
-                _data("2000-01-01Z"), _shape("sh:minCount 1"),
-                data_policy="not-a-policy", range_policy="legacy",
+                _data("2000-01-01Z"),
+                _shape("sh:minCount 1"),
+                data_policy="not-a-policy",
+                range_policy="legacy",
             )
     assert counter.counts == {"validator": 0, "reason": 0}
     assert sys.getprofile() is previous
@@ -776,7 +859,10 @@ def test_scope_counts_real_prepare_and_project_as_separate_stages(probe, canonic
     assert prepared_count.counts == {"validator": 0, "reason": 1}
     with probe.CallCounter(semantic, semantic.Validator) as project_count:
         projected = scopes.project_validation_scope(
-            facts, axioms, include_derived=True, reasoning_result=prepared.reasoning_result,
+            facts,
+            axioms,
+            include_derived=True,
+            reasoning_result=prepared.reasoning_result,
             reasoning_source=prepared.provenance["reasoningSource"],
         )
     assert project_count.counts == {"validator": 0, "reason": 0}
@@ -785,18 +871,28 @@ def test_scope_counts_real_prepare_and_project_as_separate_stages(probe, canonic
 
 def test_source_main_guard_precedes_types_and_calls_canonical_main_only():
     tree = ast.parse(PROBE_SOURCE.read_text(encoding="utf-8"))
-    guards = [node for node in tree.body if isinstance(node, ast.If)
-              and any(isinstance(n, ast.Constant) and n.value == "__main__"
-                      for n in ast.walk(node.test))]
+    guards = [
+        node
+        for node in tree.body
+        if isinstance(node, ast.If)
+        and any(isinstance(n, ast.Constant) and n.value == "__main__" for n in ast.walk(node.test))
+    ]
     assert len(guards) == 1
     guard = guards[0]
     definitions = [node for node in tree.body if isinstance(node, (ast.ClassDef, ast.FunctionDef))]
     assert definitions and guard.lineno < min(node.lineno for node in definitions)
     imports = [node for node in ast.walk(guard) if isinstance(node, ast.ImportFrom)]
-    assert any(node.module == "ontolearn_engine.semantic_source_package_probe"
-               and any(alias.name == "main" for alias in node.names) for node in imports)
-    assert any(isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
-               and node.func.id == "SystemExit" for node in ast.walk(guard))
+    assert any(
+        node.module == "ontolearn_engine.semantic_source_package_probe"
+        and any(alias.name == "main" for alias in node.names)
+        for node in imports
+    )
+    assert any(
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "SystemExit"
+        for node in ast.walk(guard)
+    )
     assert not any(isinstance(node, (ast.ClassDef, ast.FunctionDef)) for node in ast.walk(guard))
 
 
@@ -812,8 +908,18 @@ def test_imported_probe_classes_have_only_canonical_module_identity(probe):
 
 def test_probe_does_not_import_old_runtime_store_or_observation_helpers():
     tree = ast.parse(PROBE_SOURCE.read_text(encoding="utf-8"))
-    forbidden = {"semantic_samples", "semantic_probe", "semantic_profile_probe", "storage_probe",
-                 "storage", "worker", "coordinator", "job_store", "__main__", "entrypoint"}
+    forbidden = {
+        "semantic_samples",
+        "semantic_probe",
+        "semantic_profile_probe",
+        "storage_probe",
+        "storage",
+        "worker",
+        "coordinator",
+        "job_store",
+        "__main__",
+        "entrypoint",
+    }
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             assert all(not (set(alias.name.split(".")) & forbidden) for alias in node.names)
@@ -822,7 +928,10 @@ def test_probe_does_not_import_old_runtime_store_or_observation_helpers():
             assert all(alias.name not in forbidden for alias in node.names)
         elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
             assert node.func.attr not in {
-                "resource_manifest", "build_request", "execute_request", "derive_dependencies",
+                "resource_manifest",
+                "build_request",
+                "execute_request",
+                "derive_dependencies",
                 "permits_transition",
             }
 
@@ -870,9 +979,7 @@ def test_full_header_records_actual_identity_and_retains_context_ledger(full_run
     assert header["contexts"] == inputs["contexts"]
     assert header["fullInventory"] == manifest["caseSets"]["full-v1"]
     assert header["selectedInventory"] == manifest["caseSets"]["full-v1"]
-    assert header["fullInventorySha256"] == _sha(
-        _asset_canonical(manifest["caseSets"]["full-v1"])
-    )
+    assert header["fullInventorySha256"] == _sha(_asset_canonical(manifest["caseSets"]["full-v1"]))
     assert header["selectedInventorySha256"] == header["fullInventorySha256"]
     assert header["instrumentation"] is True
     assert header["sourcePackageEquivalent"] is False
@@ -891,7 +998,10 @@ def test_full_header_records_actual_identity_and_retains_context_ledger(full_run
         )
         assert len(row["actualCode"]["sha256"]) == 64
     assert set(identity["functionCode"]) == {
-        "semantic.reason", "semantic.query", "semantic.validate_shacl_text", "Validator.run"
+        "semantic.reason",
+        "semantic.query",
+        "semantic.validate_shacl_text",
+        "Validator.run",
     }
 
 
@@ -903,14 +1013,23 @@ def test_full_observations_keep_parameters_sources_counts_and_statuses(full_run,
     for observed in records[1:-1]:
         original = declared[observed["id"]]
         for field in (
-            "sourceCaseId", "family", "operation", "datasetId", "parameters", "sourceRefs",
-            "contextStatus", "projectionSha256",
+            "sourceCaseId",
+            "family",
+            "operation",
+            "datasetId",
+            "parameters",
+            "sourceRefs",
+            "contextStatus",
+            "projectionSha256",
         ):
             assert observed[field] == original[field], (observed["id"], field)
         assert observed["start"] <= observed["end"]
         statuses.add(observed["status"])
         assert observed["status"] in {
-            "observed-return", "observed-rejection", "not-executed", "missing-context"
+            "observed-return",
+            "observed-rejection",
+            "not-executed",
+            "missing-context",
         }
         if observed["status"] == "observed-return":
             assert "result" in observed
@@ -925,9 +1044,12 @@ def test_full_observations_keep_parameters_sources_counts_and_statuses(full_run,
     assert "observed-return" in statuses
     assert "observed-rejection" in statuses
     assert statuses & {"not-executed", "missing-context"}
-    repair = [item for item in records[1:-1]
-              if item["sourceCaseId"] == inputs["contexts"]["mathInputContexts"][77]["id"]
-              and item["operation"] == "profile"]
+    repair = [
+        item
+        for item in records[1:-1]
+        if item["sourceCaseId"] == inputs["contexts"]["mathInputContexts"][77]["id"]
+        and item["operation"] == "profile"
+    ]
     assert repair and all(item["status"] in {"not-executed", "missing-context"} for item in repair)
 
 
@@ -951,8 +1073,12 @@ def test_missing_mandatory_policy_keywords_are_actual_call_contract_rejections(
 ):
     _, records, _, _ = full_run
     inputs, _ = sealed_assets
-    omitted = [item for item in inputs["observations"] if item["operation"] == "shacl-text"
-               and set(item["parameters"]) != {"dataPolicy", "rangePolicy"}]
+    omitted = [
+        item
+        for item in inputs["observations"]
+        if item["operation"] == "shacl-text"
+        and set(item["parameters"]) != {"dataPolicy", "rangePolicy"}
+    ]
     assert omitted
     by_id = {item["id"]: item for item in records[1:-1]}
     for declaration in omitted:
@@ -964,14 +1090,20 @@ def test_missing_mandatory_policy_keywords_are_actual_call_contract_rejections(
 
 def test_full_production_bytes_are_complete_and_restore_uses_actual_capture(full_run):
     _, records, _, _ = full_run
-    produced = [item for item in records[1:-1]
-                if item["operation"] in {"fullview", "dag"}
-                and item["status"] == "observed-return"]
+    produced = [
+        item
+        for item in records[1:-1]
+        if item["operation"] in {"fullview", "dag"} and item["status"] == "observed-return"
+    ]
     assert {item["operation"] for item in produced} == {"fullview", "dag"}
     for item in produced:
         result = item["result"]
         for field in (
-            "payloadBytes", "rowsBytes", "sourceBytes", "definitionBytes", "catalogBytes"
+            "payloadBytes",
+            "rowsBytes",
+            "sourceBytes",
+            "definitionBytes",
+            "catalogBytes",
         ):
             packet = result[field]
             assert packet["encoding"] == "base64"
@@ -982,9 +1114,10 @@ def test_full_production_bytes_are_complete_and_restore_uses_actual_capture(full
         rows = json.loads(base64.b64decode(result["rowsBytes"]["data"]))
         assert payload == result["wire"]["payload"]
         assert rows == result["wire"]["rows"]
-        assert "".join(row[0] for row in rows) == base64.b64decode(
-            result["payloadBytes"]["data"]
-        ).decode()
+        assert (
+            "".join(row[0] for row in rows)
+            == base64.b64decode(result["payloadBytes"]["data"]).decode()
+        )
         assert result["expectedCapture"] and result["allocation"] and result["receipts"]
         assert result["restored"]
         if item["operation"] == "dag":
@@ -994,18 +1127,24 @@ def test_full_production_bytes_are_complete_and_restore_uses_actual_capture(full
 
 def test_full_run_b1_actual_scales_four_ontology_and_no_s1_claim(full_run):
     _, records, _, _ = full_run
-    measurements = [item["result"] for item in records[1:-1]
-                    if item["operation"] == "b1-measurement"
-                    and item["status"] == "observed-return"]
+    measurements = [
+        item["result"]
+        for item in records[1:-1]
+        if item["operation"] == "b1-measurement" and item["status"] == "observed-return"
+    ]
     assert {item["scale"] for item in measurements} == {1, 10}
     for result in measurements:
         scale = result["scale"]
         assert result["seed"] == 20261019
         assert result["actualCounts"] == {
-            "asserted": 18 * scale, "ontology": 4, "merged": 18 * scale + 4
+            "asserted": 18 * scale,
+            "ontology": 4,
+            "merged": 18 * scale + 4,
         }
         for field, count in (
-            ("assertedInput", 18 * scale), ("ontology", 4), ("semanticGraph", 18 * scale + 4)
+            ("assertedInput", 18 * scale),
+            ("ontology", 4),
+            ("semanticGraph", 18 * scale + 4),
         ):
             graph = result[field]
             assert len(graph["triples"]) == graph["tripleCount"] == count
@@ -1069,9 +1208,11 @@ def test_b1_selectors_are_uninstrumented_subsets_without_claiming_fresh_process(
 
 def test_restore_negative_copies_bytes_but_keeps_same_caller_capture(full_run):
     _, records, _, _ = full_run
-    negatives = [item for item in records[1:-1]
-                 if item["operation"] == "restore-negative"
-                 and item["status"] == "observed-return"]
+    negatives = [
+        item
+        for item in records[1:-1]
+        if item["operation"] == "restore-negative" and item["status"] == "observed-return"
+    ]
     assert negatives
     for observed in negatives:
         result = observed["result"]
@@ -1196,17 +1337,32 @@ def test_r1_real_first_outputs_survive_warm_shacl_unknown_failure(probe, canonic
     assert failed["diagnostic"]["api"] == "semantic.check_shapes"
     assert "result" not in failed, "no complete B1 result was returned"
     partial = _partial_by_stage(failed)
-    assert {"First/turtleParse", "First/ontologyParse", "First/graphBuild", "First/fixedSelect",
-            "First/rdfsRules", "First/shapesParse", "First/shacl",
-            "First/resultSerialization"} <= set(partial)
-    assert {"Warm/turtleParse", "Warm/ontologyParse", "Warm/graphBuild", "Warm/fixedSelect",
-            "Warm/rdfsRules", "Warm/shapesParse"} <= set(partial)
+    assert {
+        "First/turtleParse",
+        "First/ontologyParse",
+        "First/graphBuild",
+        "First/fixedSelect",
+        "First/rdfsRules",
+        "First/shapesParse",
+        "First/shacl",
+        "First/resultSerialization",
+    } <= set(partial)
+    assert {
+        "Warm/turtleParse",
+        "Warm/ontologyParse",
+        "Warm/graphBuild",
+        "Warm/fixedSelect",
+        "Warm/rdfsRules",
+        "Warm/shapesParse",
+    } <= set(partial)
     assert "Warm/shacl" not in partial, "a throwing call has no returned value"
     attempts = [item for item in failed["stageAttempts"] if item["stage"] == "Warm/shacl"]
     assert len(attempts) == 1 and "value" not in attempts[0]
     assert attempts[0]["returned"] is False
     assert partial["First/fixedSelect"]["value"] == {
-        "type": "SELECT", "variables": ["alarm"], "rows": [["<urn:case:0:alarm/A01>"]]
+        "type": "SELECT",
+        "variables": ["alarm"],
+        "rows": [["<urn:case:0:alarm/A01>"]],
     }
     assert partial["First/shacl"]["value"] == {"conforms": True, "violations": []}
     encoded = partial["First/resultSerialization"]["value"]
@@ -1271,12 +1427,19 @@ def test_r1_real_producer_capture_survives_restore_unknown_failure(probe, canoni
     partial = _partial_by_stage(failed)
     assert {"material/prepare", "production/compute", "production/expectation"} <= set(partial)
     assert "restore/result" not in partial and "restore/roots" not in partial
-    for raw in (produced.payload_json, produced.rows_json, produced.source_encoded,
-                produced.definitions_encoded, produced.catalog_json):
+    for raw in (
+        produced.payload_json,
+        produced.rows_json,
+        produced.source_encoded,
+        produced.definitions_encoded,
+        produced.catalog_json,
+    ):
         assert _snapshot_has_exact_bytes(partial["production/compute"]["value"], raw)
-    assert any(record.get("payload_digest") == expected.payload_digest
-               and record.get("rows_digest") == expected.rows_digest
-               for _, record in _walk_json(partial["production/expectation"]["value"]))
+    assert any(
+        record.get("payload_digest") == expected.payload_digest
+        and record.get("rows_digest") == expected.rows_digest
+        for _, record in _walk_json(partial["production/expectation"]["value"])
+    )
     assert "result" not in failed, "a failed restore must not publish a partial restored view"
     assert records[-1]["collectionComplete"] is False
     assert b"private-restore-detail" not in stdout.getvalue() + stderr.getvalue()
@@ -1305,8 +1468,11 @@ def test_r1_boundary_after_real_parse_prevents_next_canonical_stage(
     monkeypatch.setattr(semantic, "parse_turtle", actual_parse_then_stop)
     stdout, stderr = io.BytesIO(), io.BytesIO()
     code = probe.run_fixed_suite(
-        "b1-semantic-1x-v1", stdout=stdout, stderr=stderr,
-        monotonic=lambda: state["now"], cancel_requested=lambda: state["cancel"],
+        "b1-semantic-1x-v1",
+        stdout=stdout,
+        stderr=stderr,
+        monotonic=lambda: state["now"],
+        cancel_requested=lambda: state["cancel"],
     )
     records = _jsonl(stdout.getvalue())
     failed = _failed_observation(records)
@@ -1333,9 +1499,7 @@ def test_r1_boundary_after_real_parse_prevents_next_canonical_stage(
     assert terminal.get("readerJoin", "unknown") == "unknown"
 
 
-def test_r1_preflight_elapsed_time_counts_before_first_business_call(
-    probe, canonical, monkeypatch
-):
+def test_r1_preflight_elapsed_time_counts_before_first_business_call(probe, canonical, monkeypatch):
     original_preflight = probe.check_runtime_preconditions
     original_parse = canonical["semantic"].parse_turtle
     state = {"now": 0.0, "parseCalls": 0}
@@ -1438,7 +1602,8 @@ def test_real_parse_query_preserves_lexical_identity_and_numeric_promotion(canon
         graph, "SELECT ?s ?v WHERE { ?s <urn:probe-test:p> ?v . FILTER(?v = 1.0) } ORDER BY ?s"
     )
     assert result == {
-        "type": "SELECT", "variables": ["s", "v"],
+        "type": "SELECT",
+        "variables": ["s", "v"],
         "rows": [
             ["<urn:probe-test:a>", f'"01"^^<{XSD}integer>'],
             ["<urn:probe-test:b>", f'"1"^^<{XSD}integer>'],
@@ -1471,9 +1636,11 @@ def test_real_offline_query_rejection_is_a_code_not_a_network_success(canonical,
 def test_real_service_word_inside_literal_is_not_rejected(canonical):
     semantic = canonical["semantic"]
     graph = semantic.parse_turtle('<urn:offline:s> <urn:offline:p> "SERVICE" .')
-    assert semantic.query(
-        graph, 'SELECT ?s WHERE { ?s <urn:offline:p> "SERVICE" }'
-    ) == {"type": "SELECT", "variables": ["s"], "rows": [["<urn:offline:s>"]]}
+    assert semantic.query(graph, 'SELECT ?s WHERE { ?s <urn:offline:p> "SERVICE" }') == {
+        "type": "SELECT",
+        "variables": ["s"],
+        "rows": [["<urn:offline:s>"]],
+    }
 
 
 @pytest.mark.parametrize("spelling,conforms", [("1999-12-31Z", False), ("2000-01-01Z", True)])
@@ -1484,9 +1651,11 @@ def test_real_date_policy_full_six_fields(canonical, spelling, conforms):
         data_policy="strict",
         range_policy="utc-date-range-v1",
     )
-    expected = [] if conforms else [
-        _violation(f'"{spelling}"^^<{XSD}date>', "MinInclusiveConstraintComponent")
-    ]
+    expected = (
+        []
+        if conforms
+        else [_violation(f'"{spelling}"^^<{XSD}date>', "MinInclusiveConstraintComponent")]
+    )
     assert result["report"] == {"conforms": conforms, "violations": expected}
     assert result["entryVersion"] == "i05-shacl-text-2"
     assert result["dataPolicy"] == "strict"
@@ -1509,9 +1678,7 @@ def test_real_integer_entry_keeps_bad_lexical_and_strict_front_door(canonical):
     assert result["entryVersion"] == "i05-shacl-text-1"
     assert result["report"] == {
         "conforms": False,
-        "violations": [
-            _violation(f'"not-an-int"^^<{XSD}integer>', "DatatypeConstraintComponent")
-        ],
+        "violations": [_violation(f'"not-an-int"^^<{XSD}integer>', "DatatypeConstraintComponent")],
     }
     with pytest.raises(SemanticError) as strict_again:
         canonical["semantic"].parse_turtle(text)
@@ -1570,18 +1737,21 @@ def test_real_scope_consumes_the_same_fresh_prepare_result(canonical):
         shapes=True,
     )
     assert semantic.check_shapes(asserted_only.facts, shapes) == {
-        "conforms": True, "violations": []
+        "conforms": True,
+        "violations": [],
     }
     assert semantic.check_shapes(projected.facts, shapes) == {
         "conforms": False,
-        "violations": [{
-            "focus": "<urn:scope:x>",
-            "path": "<urn:scope:p>",
-            "value": None,
-            "sourceShape": "<urn:probe-test:shape>",
-            "constraint": f"<{SH}MinCountConstraintComponent>",
-            "severity": f"<{SH}Violation>",
-        }],
+        "violations": [
+            {
+                "focus": "<urn:scope:x>",
+                "path": "<urn:scope:p>",
+                "value": None,
+                "sourceShape": "<urn:probe-test:shape>",
+                "constraint": f"<{SH}MinCountConstraintComponent>",
+                "severity": f"<{SH}Violation>",
+            }
+        ],
     }
 
 
@@ -1589,8 +1759,10 @@ def _fresh_production(canonical, explanation):
     term = canonical["TermInput"]
     records = tuple(
         tuple(term("iri", value) for value in row)
-        for row in (("urn:dag:x", RDF + "type", "urn:dag:A"),
-                    ("urn:dag:A", RDFS + "subClassOf", "urn:dag:B"))
+        for row in (
+            ("urn:dag:x", RDF + "type", "urn:dag:A"),
+            ("urn:dag:A", RDFS + "subClassOf", "urn:dag:B"),
+        )
     )
     material = canonical["prepare"](records=records)
     keywords = {
@@ -1606,7 +1778,8 @@ def _fresh_production(canonical, explanation):
     payload = produced.wire["payload"]
     expectation_class = (
         canonical["restore"].ExplanationRestoreExpectation
-        if explanation else canonical["restore"].RestoreExpectation
+        if explanation
+        else canonical["restore"].RestoreExpectation
     )
     expected = expectation_class(
         payload_digest=_sha(produced.payload_json),
@@ -1630,12 +1803,16 @@ def test_real_capture_restore_retains_original_expectation_on_bad_bytes(canonica
     restore = canonical["restore"]
     receive = (
         restore.restore_profile_explanation_result
-        if explanation else restore.restore_profile_result
+        if explanation
+        else restore.restore_profile_result
     )
 
     def receive_bytes(payload, rows):
-        keywords = {"expected": expected, "allocation": allocation,
-                    "ledger": canonical["RestoreLedger"]()}
+        keywords = {
+            "expected": expected,
+            "allocation": allocation,
+            "ledger": canonical["RestoreLedger"](),
+        }
         if explanation:
             keywords["direct_ledger"] = canonical["direct"].DirectStepsLedger()
         return receive(payload, rows, **keywords)
@@ -1673,9 +1850,11 @@ def test_real_capture_restore_retains_original_expectation_on_bad_bytes(canonica
             ("<urn:dag:A>", f"<{RDFS}subClassOf>", "<urn:dag:B>"),
         )
         expected_premises = tuple(
-            {"kind": "leaf", "reference": "i05-proof:" + _sha(
-                ("i05-profile-proof-leaf/1\0" + "\0".join(triple)).encode()
-            )}
+            {
+                "kind": "leaf",
+                "reference": "i05-proof:"
+                + _sha(("i05-profile-proof-leaf/1\0" + "\0".join(triple)).encode()),
+            }
             for triple in seeds
         )
         assert steps[0]["premises"] == expected_premises

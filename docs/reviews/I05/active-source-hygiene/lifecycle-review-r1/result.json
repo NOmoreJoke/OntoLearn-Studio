@@ -1,0 +1,106 @@
+{
+  "schema": "i05-b1-closure-lifecycle-static-triage/1",
+  "analysis_kind": "static-only; no product execution",
+  "candidate": "401a6844d25b8990606ae82fc85f932cac352d40",
+  "process": "4c84586ce9e7337d57dd4a71f00761d02deb246e",
+  "source_bytes": 93915,
+  "source_sha256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+  "actual_function": "_b1_observation",
+  "requested_function_aliases_not_found": ["_b1_measurement", "_collection"],
+  "current_diagnostics": {
+    "I001": 1,
+    "B023": 9,
+    "lint_rerun": false
+  },
+  "diagnostics": [
+    {
+      "row": 1529,
+      "column": 35,
+      "callable": "timed",
+      "variable": "name",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1530,
+      "column": 13,
+      "callable": "timed",
+      "variable": "phases",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1540,
+      "column": 27,
+      "callable": "build",
+      "variable": "asserted",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1549,
+      "column": 27,
+      "callable": "build",
+      "variable": "ontology",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1554,
+      "column": 46,
+      "callable": "fixedSelect lambda",
+      "variable": "combined",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1556,
+      "column": 48,
+      "callable": "rdfsRules lambda",
+      "variable": "combined",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1560,
+      "column": 54,
+      "callable": "shacl lambda",
+      "variable": "asserted",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1560,
+      "column": 64,
+      "callable": "shacl lambda",
+      "variable": "shapes",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    },
+    {
+      "row": 1567,
+      "column": 49,
+      "callable": "resultSerialization lambda",
+      "variable": "outputs",
+      "current_static_path": "immediate synchronous consumption before next iteration; no observed late-binding actual error",
+      "future_risk": "retained or deferred callable could read rebound loop cell",
+      "proposal": "keyword-only default bound to current object"
+    }
+  ],
+  "recommendation": "local keyword-only defaults for timed, build and five lambdas; no apply",
+  "retention_observation": "CollectionBoundary stores returned value, not function/args/kwargs",
+  "limits": [
+    "opaque module bodies and runtime context replacement not inspected",
+    "no test or product run",
+    "no claim of physical memory/performance improvement",
+    "required fullcheck and candidate reviews remain owner work"
+  ]
+}

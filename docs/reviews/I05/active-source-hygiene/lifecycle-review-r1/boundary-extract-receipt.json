@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "git",
+    "-C",
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+    "show",
+    "401a6844d25b8990606ae82fc85f932cac352d40:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+  ],
+  "exit_code": 0,
+  "stderr": "",
+  "blob_bytes": 93915,
+  "blob_sha256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+  "stdout": "DIRECT CALLABLE BOUNDARY CLASS\n151: class CollectionBoundary:\n152:     \"\"\"Caller observation only; never replaces a canonical business callable.\"\"\"\n153: \n154:     def __init__(self, monotonic, started, cancel_requested):\n155:         self.monotonic, self.started = monotonic, started\n156:         self.cancel_requested = cancel_requested\n157:         self.stage, self.api = \"dispatch/input\", None\n158:         self.completed = []\n159:         self.attempts = []\n160: \n161:     def check(self):\n162:         if self.cancel_requested():\n163:             raise BoundaryStop(\"COLLECTION_STOP_REQUESTED\", 130, \"stopping\")\n164:         if self.monotonic() - self.started >= DEADLINE_SECONDS:\n165:             raise BoundaryStop(\"COLLECTION_DEADLINE\", 1, \"deadline-boundary\")\n166: \n167:     def call(self, stage, api, function, args, kwargs, capture=True):\n168:         self.stage, self.api = stage, api\n169:         self.check()\n170:         attempt = {\"stage\": stage, \"api\": api, \"start\": self.monotonic(), \"returned\": False}\n171:         self.attempts.append(attempt)\n172:         tick = time.perf_counter_ns()\n173:         try:\n174:             value = function(*args, **kwargs)\n175:         finally:\n176:             attempt[\"end\"] = self.monotonic()\n177:             attempt[\"elapsedNs\"] = time.perf_counter_ns() - tick\n178:         attempt[\"returned\"] = True\n179:         if capture:\n180:             # Retain actual references until this observation is written.\n181:             # No fake success, cross-case cache or native reconstruction.\n182:             self.completed.append({**attempt, \"value\": value})\n183:         self.check()  # An opaque call may finish late; never start the next one.\n184:         return value\n\nDIRECT CALLER _dispatch\n1644:         return _b1_observation(dataset, modules, instrumentation)\n\nDEFINITION NAME CHECK\n[{\"name\": \"CollectionBoundary\", \"line\": 151}, {\"name\": \"_checked_call\", \"line\": 187}, {\"name\": \"_b1_observation\", \"line\": 1518}]\n",
+  "scope": "CollectionBoundary class; exact statement calling _b1_observation; AST named-definition metadata only."
+}

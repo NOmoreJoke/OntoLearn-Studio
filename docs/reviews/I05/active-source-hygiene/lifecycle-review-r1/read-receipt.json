@@ -1,0 +1,79 @@
+{
+  "interpreter": "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+  "flags": [
+    "-B"
+  ],
+  "PYTHONDONTWRITEBYTECODE": "1",
+  "steps": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+        "branch",
+        "--show-current"
+      ],
+      "exit_code": 0,
+      "stdout_bytes": 38,
+      "stdout_sha256": "8ec3758501131c1574e4cc6aca67c238ac55088010e75dad457de2b15666eaa4",
+      "stderr": "",
+      "stdout": "fix/I05-retained-source-review-triage\n"
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout_bytes": 41,
+      "stdout_sha256": "89a21b229b6a475797da00e4b808365c749ff21b4171b2918f1527fb42e4e245",
+      "stderr": "",
+      "stdout": "4c84586ce9e7337d57dd4a71f00761d02deb246e\n"
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+        "show",
+        "401a6844d25b8990606ae82fc85f932cac352d40:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+      ],
+      "exit_code": 0,
+      "stdout_bytes": 93915,
+      "stdout_sha256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+      "stderr": "",
+      "stdout_policy": "Source blob captured only in process memory; exact approved function snippets appear in ast-function-evidence.txt."
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage",
+        "show",
+        "4c84586ce9e7337d57dd4a71f00761d02deb246e:packages/engine/src/ontolearn_engine/semantic_source_package_probe.py"
+      ],
+      "exit_code": 0,
+      "stdout_bytes": 93915,
+      "stdout_sha256": "43d083eebefbf315509d5fb6276369506dd760006264afd076d754ab3b027230",
+      "stderr": "",
+      "stdout_policy": "Source blob captured only in process memory; exact approved function snippets appear in ast-function-evidence.txt."
+    },
+    {
+      "operation": "read_bytes",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/docs/reviews/I05/retained-source-review-triage/m06-two-source-ruff-check-01.stdout.raw",
+      "bytes": 6442,
+      "sha256": "db7b14bafaf286b4be8be683cfa5f5fb50f1185da0a5dfc4335f4b3f6b4138ec",
+      "exit_code": 0
+    },
+    {
+      "operation": "read_bytes",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-retained-source-review-triage/docs/reviews/I05/retained-source-review-triage/m06-lint-format-baseline-comparison.json",
+      "bytes": 5917,
+      "sha256": "063fd2ccf0940ab7185d543137e69d3e04f8ac18545e6227367a0c48f7e2d11d",
+      "exit_code": 0
+    }
+  ]
+}
