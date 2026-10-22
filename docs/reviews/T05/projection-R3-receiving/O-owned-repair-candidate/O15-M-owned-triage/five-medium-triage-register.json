@@ -1,0 +1,89 @@
+{
+  "format": "T05-O15-M-five-medium-static-triage-register/1",
+  "observedUtc": "2026-10-22T19:04:25.633380+00:00",
+  "fixedSource": "b88be226501703f1d5365734dd0e56066bd1bffb",
+  "originalMReportSHA256": "256f7af033f4141bea9b26cc0895272e39076beeec1f39f69eda2b52ce6f2ada",
+  "originalHeadingsMediumCount": 5,
+  "rows": [
+    {
+      "id": "O15-M-8.1",
+      "originalSeverity": "中",
+      "status": "reported-open-awaiting-controller-and-unique-owner-adjudication",
+      "staticFacts": [
+        "Conditional cancelling->succeeded edge declared; three consumers pass False; JobStore normal success paths require running",
+        "Late cancel after complete successful commit returns alreadyTerminal/succeeded; exact existing test definitions preserve full Job/history",
+        "Notification consumers False have explicit protocol reconciliation requirement"
+      ],
+      "notProved": "Current reachable sequence violating completion/cancel time semantics",
+      "supplier": "root/T01 shared contracts/Job",
+      "concreteSupplierAction": "Decide abstract-state vs persisted-state refinement and record current atomic-success/alreadyTerminal trace; if persisted edge mandatory, supply reachable failing sequence before changing state policy.",
+      "t05OwnedCodeFixRequiredByCurrentEvidence": false
+    },
+    {
+      "id": "O15-M-8.2",
+      "originalSeverity": "中",
+      "status": "reported-open-awaiting-controller-and-unique-owner-adjudication",
+      "staticFacts": [
+        "No independent literal expected digest in three corpus consumers",
+        "All v2 JSON already covered by dynamic resource SHA and package/source equality; registry hash also dynamic",
+        "Some independent inline semantic expectations exist"
+      ],
+      "notProved": "Concrete current wrong accept/reject or a specific coupled mutation passing every retained independent check",
+      "supplier": "root/T01 shared contract corpus",
+      "concreteSupplierAction": "Specify immutable approved corpus authority/change gate if required; distinguish source/package identity from independent gold pin; do not copy dynamic REGISTRY_HASH as independent pin.",
+      "t05OwnedCodeFixRequiredByCurrentEvidence": false
+    },
+    {
+      "id": "O15-M-8.3",
+      "originalSeverity": "中",
+      "status": "reported-open-awaiting-controller-and-unique-owner-adjudication",
+      "staticFacts": [
+        "Internal Record<string,(argument:never)=>Promise<unknown>> lacks shared channel/argument/result association",
+        "Three bridge method names zero direct test references; activeProject service already tested",
+        "Result get/page and preload channel/filter/cleanup combination coverage not located",
+        "Trusted sender/frame/URL and runtime Zod/v2/project/generation guards remain; current routes read correctly"
+      ],
+      "notProved": "Current permission bypass or incorrect result caused by an actually wrong route",
+      "supplier": "root/T01 desktop/bridge/contracts",
+      "concreteSupplierAction": "Consider shared internal channel map plus exact result-get/page request/binding/result/error tests and actual IPC summary path; keep public bridge business-named.",
+      "t05OwnedCodeFixRequiredByCurrentEvidence": false
+    },
+    {
+      "id": "O15-M-8.4",
+      "originalSeverity": "中",
+      "status": "reported-open-awaiting-controller-and-unique-owner-adjudication",
+      "staticFacts": [
+        "AGENTS says not only count/button, not a ban on auxiliary assertions",
+        "Desktop buttons have adjacent engine/status/isolation assertions",
+        "Frame loaded_cases equality is controlled runpy/cp1252 comparison, not logical tautology",
+        "JobStore has full marker/snapshot expectations; Wire count alone does not prove production no-replay"
+      ],
+      "notProved": "The report aggregated30/12/17 locations all violate the rule or all permit a concrete current wrong behavior",
+      "supplier": "root and respective engine/desktop test owners",
+      "concreteSupplierAction": "Request each weak-assertion location with full context, fixed requirement and minimal surviving mutation; strengthen actual missing semantic paths without deleting useful counts.",
+      "t05OwnedCodeFixRequiredByCurrentEvidence": false
+    },
+    {
+      "id": "O15-M-8.5",
+      "originalSeverity": "中",
+      "status": "reported-open-awaiting-controller-and-unique-owner-adjudication",
+      "staticFacts": [
+        "Dev unit test does not fix full policy tokens; adding unsafe-inline alone preserves its text assertions",
+        "Valid nonce prevents inferring inline behavior relaxation from that token alone under CSP3",
+        "Existing e2e asserts concrete blocked behavior and no HTTP requests, while four some predicates accept unexpected extras",
+        "Raw violation events vary by mode/actions; exact four-event baseline not specified"
+      ],
+      "notProved": "Current browser CSP violation or that lone unsafe-inline addition necessarily fails dev e2e",
+      "supplier": "root/I02/CSP unique owner (coordinate through root/T01)",
+      "concreteSupplierAction": "Define exact intended two-mode policy and semantically finite event projections; add precise policy tests as necessary; verify meaningful behavior under authorized true e2e/native evidence.",
+      "t05OwnedCodeFixRequiredByCurrentEvidence": false
+    }
+  ],
+  "noSeverityChanged": true,
+  "mFull150VerdictRemainsNotPass": true,
+  "all15OriginalExternalWorkflowOpinionsStillOpen": true,
+  "mSection34ReadGapsRemain": true,
+  "t05OwnedW1W2W3NewImplementationChanges": 0,
+  "productOrOracleTestsExecutedForTriage": false,
+  "supplierMessagesSentDirectlyByThisOwner": false
+}

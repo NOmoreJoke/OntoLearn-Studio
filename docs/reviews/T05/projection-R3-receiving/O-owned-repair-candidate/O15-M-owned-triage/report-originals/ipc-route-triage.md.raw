@@ -1,0 +1,147 @@
+# M §8.3：IPC路由与测试覆盖的隔离静态triage
+
+结论：**通道映射的编译期关联缺口、两个result组合方法的直接覆盖缺口可以静态定位；尚未证明当前路由产生可触发的权限绕过、错误结果或线上产品故障。** 三个桥方法名在tests零引用成立，但不能推出三个对应服务方法都无测试。`activeProject()` 已有服务单测；可信URL、异窗口IPC拒绝和TaskUpdate谓词也已有不同层级测试。需补的是这些层之间的组合证明与未覆盖分支，不能把已有测试一并抹除。
+
+M原§8.3的[中]严重度及其原文不改；本条仍 `reported-open-awaiting-adjudication`。本报告不替M改判，不降低B150全工程NotPass，也不关闭原15项外部流程。共有改动仅由root/T01唯一owner决定；T05自有W1–W3没有因此取得desktop/contracts/test写权。
+
+## 1. 固定范围和方法
+
+- 固定source：`b88be226501703f1d5365734dd0e56066bd1bffb`；分工所记受审process：`0f87f2c2a1fe5b8085176b530e473a7d51cea509`。
+- 仅读本人owner树、固定Git源码/需求/同scope测试、`triage-assignment.md`，以及已冻结M原稿§8.3（L379–385；L386为分隔空行）。没有读取其他新审报告或其他子线工作报告。
+- 使用固定ref的 `git show` / `git grep` / `git ls-tree`、文本对照及哈希；相关源码均先核当前字节与固定source相等。固定AGENTS读取Git blob，避免把工作区受保护更新误当原source规则。
+- 未执行TypeScript编译、vitest、e2e、产品、正常oracle、observe、GUI、网络、依赖安装或Goal；未修改源/测试/契约。下面的“正确/错误反例”分现有测试定义与静态推演，没有声称本次运行复现。
+
+## 2. 固定需求及供方归属
+
+| 固定依据 | 原文要求与本项关系 |
+|---|---|
+| `AGENTS.md@b88be226:L5` | “渲染端不得直接使用 Node、文件系统、shell 或通用 IPC。”当前具名bridge/主进程有限路由需按此核，不应因内部Record而直接判公开通用IPC。 |
+| `AGENTS.md@b88be226:L9–10` | 桌面或桥接改动需实际e2e；复杂交付独立审查，区分静态/运行/打包/生产证据。本次无实现和运行，不能签该验证门。 |
+| `docs/architecture/0001-desktop-framework.md:L23` | preload不得暴露ipcRenderer、通用invoke、FS/shell或renderer指定路径；sandbox/contextIsolation、导航和权限请求限制继续成立。其早期“唯一health桥”按已采用ADR-0003扩展后的具名方法解释，不能拿旧阶段数量否定后续桥。 |
+| `docs/architecture/0003-resident-coordinator-and-jobs.md:L13` | 主进程持有可信项目、请求关联与视图订阅；preload仅业务命名读取/取消/订阅，renderer不得创建任务、指定路径或通用IPC。 |
+| `packages/contracts/src/index.ts:L125–138` | DesktopBridge明确具名方法与TS参数/返回签名；注释明确项目权威来自main，不来自renderer UUID。这是编译期公共bridge接口，尚不是两侧channel映射规范。 |
+| `docs/iterations/I04/acceptance.md:L9,13,15` | 要求旧代次/旧项目/订阅归属、实际Python→main→preload→UI安全错误、不可变分页绑定等有意义反例。语料或纯展示函数通过不能替代这条组合链。 |
+
+没有找到固定需求要求必须使用某一种 `IpcMap` 类型或必须抽取trusted纯函数。它们是实现防错/可测性的建议；具名最小暴露、可信项目、完整参数/结果校验与真实错误边界才是需求。供方为desktop main/preload/TaskService与共享bridge契约的**root/T01唯一owner**。T05只提交本条证据和必要反例建议，不并发修改这些文件。
+
+## 3. 11个request通道与“零引用”的精确含义
+
+固定main有1个单独health handler及10个routes；preload有11个 `ipcRenderer.invoke` 具名方法。`tasks:update` 是另外的main→renderer事件订阅，不计为第12个request通道。
+
+下列计数来自固定ref `tests/` 中TS/TSX/JS/CJS/MJS文件的**独立桥方法名token文本命中**；不是运行覆盖率，也不是测试用例数。完整限定词检索排除把 `getResultPage` 算作 `getResult`。所有三个channel字符串在tests亦未找到直接引用。
+
+| channel | bridge方法 | 桥方法名文本命中 | 覆盖解释 |
+|---|---|---:|---|
+| engine:health | getEngineHealth | 4 | e2e/csp-lifecycle、desktop、native-recovery有直接调用。 |
+| tasks:restore | restoreTasks | 7 | i04-jobs e2e有直接调用。 |
+| project:active | getActiveProject | 0 | **桥层零引用；对应TaskService.activeProject已有单测，见下文。** |
+| job:get | getJob | 6 | TaskService/TaskRuntime单测及i04-jobs e2e可定位。 |
+| job:list | listJobs | 2 | TaskService单测及i04-jobs e2e可定位。 |
+| job:cancel | cancelJob | 1 | 方法名出现在服务单测；UI动作覆盖不能仅靠这个数字判有无。 |
+| job:subscribe | subscribeJob | 4 | 服务单测直接调用；没有由此证明其IPC每分支覆盖。 |
+| job:unsubscribe | unsubscribeJob | 2 | 主要为订阅生命周期断言；main实际服务入口名unsubscribeView不同。 |
+| result:get | getResult | 0 | 未找到测试直接调用该bridge或TaskService.getResult。 |
+| result:page | getResultPage | 0 | 未找到测试直接调用该bridge或TaskService.getResultPage。 |
+| operation:get | getOperation | 6 | TaskRuntime单测及i04-jobs e2e可定位。 |
+
+### 3.1 已有覆盖不能被“零grep”注销
+
+- `tests/unit/task-service.test.ts:L275–280` 已断言没有main选定项目时activeProject返回 `{ok:true,data:null}`，getJob拒绝且engine无调用。L830–851直接覆盖activeProject同revision仅project.get、revision前进时重建读订阅、旧projection拒绝。故把getActiveProject零命中泛化为“该服务完全无单测”不成立。
+- `tests/unit/contract.test.ts:L30–40` 直接测试 `isTrustedDocument`：本地hash锚点允许，异站/异文件/额外query拒绝。这覆盖URL子谓词，未覆盖main的sender与mainFrame组合。
+- `tests/e2e/csp-lifecycle.spec.ts:L193–224` 创建同来源、同preload的其他BrowserWindow，实际调用getEngineHealth并要求完整PERMISSION_DENIED对象。这是已有IPC信任门负例定义，不能称信任门完全零测试；但未证明10个路由均绑定了同一拒绝逻辑。
+- `tests/unit/task-update-boundary.test.ts:L2–37` 有isTaskUpdate正负例，包括错误generation、空jobs元素、非法connection与rawPath；preload的“注册正确channel→过滤→调用listener→removeListener”组合仍没有直接单测入口。
+- `tests/unit/task-service.test.ts:L1162–1198` 只直接调用resultSummary展示函数；不能充当TaskService.getResultPage先取metadata、构造binding、再分页的组合验证。`tests/unit/contract-v2.test.ts` 出现result.get/result.page契约案例，也不等于bridge调用链覆盖。
+
+### 3.2 两个result入口的实际使用与缺口
+
+renderer `App.tsx:L132–158` 的loadSummary确实先 `bridge.getResult` 再 `bridge.getResultPage`；L334–337的“查看运行摘要”按钮触发它。tests中未找到该按钮动作、这两个方法的直接调用或对应结果摘要链的断言。静态上缺乏这段组合逻辑的有意义直接证据；本次没有运行覆盖图，不能证明所有e2e执行均绝不经过该路径，更不能把缺测试写成已发生业务错误。
+
+`tests/` 对main/index与preload/index路径文本仅见csp e2e的打包preload路径；未找到Vitest直接导入这两个有Electron启动副作用的模块。这个机械事实成立，但现有抽出模块的单测和真实e2e边界必须分别保留。
+
+## 4. `(argument: never)` 的静态影响与runtime守卫
+
+### 4.1 可确认的编译期关联缺口
+
+main L163为 `Record<string, (argument: never) => Promise<unknown>>`，L175–177迭代后把IPC argument断言为never。它没有声明合法channel键与每个请求参数、返回值的对应关系：
+
+- `string`键没有把11个已定channel限定为一个共享键集合；拼写错误或漏掉预期channel不能靠此Record自身发现。
+- 每个lambda参数上下文为never；never可传给string、ResultPageOptions等参数，所以表不能把“这个channel必须收string”关联到正确服务签名。所有Promise结果又汇成unknown，返回业务形状不再与channel一一对应。
+- 例如把 `'job:get'` 错接成 `(argument) => tasks.getResultPage(argument)`，这个表的注解本身不表达应拒绝的映射差异。此为类型规则/源码结构推演，**未执行tsc来宣称实际编译通过**，更不是当前代码已存在该错接。
+- preload的 `bridge: DesktopBridge` 和renderer的Window接口仍保方法名、参数与调用侧返回类型；并非“整个应用所有编译期签名都被never抹除”。但具名bridge对象不能单独证明 `invoke('channel', args)` 字符串与main实现映射正确；两侧目前没有共享的channel→request/result类型绑定。
+
+### 4.2 当前runtime检查没有被类型断言移除
+
+TypeScript的never断言不会生成IPC参数校验，也不会删除已有JavaScript分支。当前代码并非任意renderer可自由调用任意服务：
+
+1. preload L4–25只公开具名bridge，没有公开ipcRenderer或generic invoke；main表是内部有限10键，health另一个有限入口，没有产品任务创建API。
+2. main L137–143同时核当前window、event.sender、senderFrame==mainFrame和可信文档URL；L176–177所有10路由先过同一trusted，失败返回固定PERMISSION_DENIED。
+3. TaskService主进程独占projectId，selectProject L91–99未通过IPC暴露；project() L311–313在未选项目时拒绝。
+4. call L282–309对请求/返回做validateV2，核generation并对适用的顶层project/job/result/operation ID核对应；guard L315–320把异常收敛成safeError。它不是“无runtime类型检查”。
+5. getResultPage L685–695用严格Zod检resultId/pageSize/cursor，额外projectId等字段拒绝；L696–711从main项目取result metadata再构造包含inputSnapshotId/scope/parametersHash/order的page binding。不能让renderer自报这些权威字段。
+
+当前11条映射逐条读取均接到对应服务，未看到实际错接。上述检查有覆盖和关联证明缺口，但本次未找到已被证明的runtime权限绕过或结果泄露路径。
+
+## 5. 具体正反例与未测边界
+
+| 例子 | 固定代码/已有测试支持的结果 | 本次证据等级 |
+|---|---|---|
+| 当前window主frame、同一可信URL只换hash | trusted三个identity条件成立且isTrustedDocument允许hash；URL谓词已有正例 | 静态推演+已有单测定义，未运行 |
+| 同来源其他BrowserWindow发health | sender不同，固定PERMISSION_DENIED；csp e2e已有精确对象断言 | 已有e2e测试定义，未重跑 |
+| 同window子frame、错误URL路径/query发任一路由 | mainFrame或URL失败，应在service前拒绝；尚缺全部组合入口断言 | 静态反例，应由供方补实际测试 |
+| 无main项目选择调用activeProject/getJob | activeProject null、getJob拒绝且无engine调用 | 已有服务单测定义 |
+| selected项目下getResult收到非UUID；getResultPage页大小0/201、非UUID cursor或额外projectId | validateV2/Zod失败，安全INVALID_REQUEST；page应在任何engine请求之前拒绝 | 静态反例，未为这两个组合入口观察运行结果 |
+| getResultPage合法请求 | 按序发result.get，再发带main项目及metadata绑定的result.page；不能让测试只断“两次调用” | 静态正确路径，仍需精确参数/完整结果测试 |
+| metadata/分页响应项目或result身份错误、旧generation在await期间到达 | 现有call/schema/generation机制应拒绝或安全收敛；需明确每层边界及具体fixture | 静态检查面；未宣称所有嵌套binding字段都已由TaskService顶层ID循环覆盖 |
+| 错接job:get→getResultPage或preload改错channel | 属未来代码变异，Record/当前桥类型没有完整映射证明；runtime可能安全拒绝但业务会坏 | 维护风险/硬化负例，不是当前已复现故障 |
+| malformed tasks:update / listener清理后再发事件 | isTaskUpdate谓词已有拒绝例；preload是否正确订阅、调用和移除listener仍需组合验证 | 谓词测试与桥组合缺口分开 |
+
+不把这些静态例子称作已跑反例，也不以safeError可能兜底宣告无需补测。未发现实际缺陷与缺乏证明是两种结论，原M意见仍开着。
+
+## 6. 最小必要后继与唯一owner
+
+**唯一供方决策owner：root/T01。** 本T05只提交triage；不在O oracle W1–W3或本隔离报告分支顺手写desktop/bridge/contracts测试。供方先接受证据和边界，再决定是否形成必要新候选：
+
+1. 如采纳类型硬化，以内部共享channel map约束合法键、每channel参数tuple和返回结果，并让main注册与preload内部invoke使用该约束；对错channel、错参数、错返回形状设编译期负例。保公开DesktopBridge仍只有具名方法，不能为了类型复用公开generic invoke，也不能以TS替代runtime验证。相同参数形状但语义错接仍需行为测试，不能承诺类型表检测一切错路由。
+2. result.get/page优先补TaskService层精确正反例：两次请求的完整方法与params/binding、完整返回、严格参数拒绝且零engine调用、错误metadata/身份/代次响应安全拒绝。activeProject已有服务单测不重造数量，应补真正缺少的桥接/错误分支。
+3. 为信任门组合核当前sender+mainFrame+URL及拒绝时service零调用；可提取可注入注册/信任判断，也可在main注册边界注入测试替身，由供方选最小结构。保留已有trusted-document单测、异窗口health e2e，不以抽函数降低真实窗口边界。
+4. preload补“11个具名channel及精确参数映射、合法/非法TaskUpdate、订阅清理”的组合断言。至少一条真实IPC result读取/分页或查看运行摘要正路径，另保异窗口/subframe拒绝负例；断言完整业务结果与固定安全错误，不只按钮可点或调用数量。
+5. 若供方实际修改desktop/桥接，按固定规则运行对应check/verify:sources及e2e，并记录首失败、确切argv/cwd/env/stdout/stderr与新候选身份；当前没有运行授权，也没有新候选通过。不得把本条static triage或既有测试定义当作这些运行结果。
+
+最终处置：**机械零引用成立但须按层限定；无直接main/preload Vitest入口成立；channel↔类型关联缺口成立；当前已触发产品缺陷未证。** 保留M原[中]、B150 NotPass、§3.4未读及原15流程open。是否实施、补测、裁意见及后续同候选审查由root/T01唯一owner决定，本报告不签产品或父门。
+
+## 7. 输入身份与固定源码核验
+
+M original report: 59291 bytes / 548 lines / SHA-256 `256f7af033f4141bea9b26cc0895272e39076beeec1f39f69eda2b52ce6f2ada`. Section 8.3 (strip separating blank lines, retain one final LF): 1756 bytes / SHA-256 `d3c99946fd39eeac5de91ce05991f9e869e4fce23a6c21907e0a1781637a339c`. Only this section is substantively reviewed.
+
+| Review input | bytes | SHA-256 |
+|---|---:|---|
+| `triage-assignment.md` | 1580 | `8e6f5276ca64d743c0b3d0e556e311e4f9f39a485073534e1fb133f9a0b0eb1f` |
+| `minimax-report-original.md.raw` | 59291 | `256f7af033f4141bea9b26cc0895272e39076beeec1f39f69eda2b52ce6f2ada` |
+
+23 fixed-source files. Canonical source fingerprint `6b8fd1b07213835f06f43245963b073cae6c6418c7717da5d25eb508827c74f6` uses filename-sorted UTF-8 `path<TAB>bytes<TAB>sha256<LF>`. All 22 non-AGENTS current files equal the fixed blobs; AGENTS evidence uses only its fixed blob. Hash equality is source identity evidence, not runtime verification.
+
+| Fixed-source file | bytes | SHA-256 |
+|---|---:|---|
+| `AGENTS.md` | 1056 | `1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb` |
+| `apps/desktop/src/main/index.ts` | 6769 | `7df36c6d51a63de4ba6a302cb5063affffeb2dd6a1d9598bec29da8b09ea6bc9` |
+| `apps/desktop/src/main/task-service.ts` | 32727 | `8d513fe5a25a4dc82839cdc6200ae1972b7743620175bc7e309834a712655122` |
+| `apps/desktop/src/main/trusted-document.ts` | 388 | `0c5026ae830375de1ee307c5ae26231a2fd81e2701f62e800839ee3f241e3549` |
+| `apps/desktop/src/main/window-security.ts` | 886 | `682d84cf5bc7422050de56b3bdeae4dfbb216210dbfdc3bb37af36119783ebad` |
+| `apps/desktop/src/preload/index.ts` | 1230 | `727e1ff11c5acbd23c098e5c3a6f4161320b0fec02fb62b9291c702c06e7fe94` |
+| `apps/desktop/src/renderer/src/App.tsx` | 14413 | `e4310bc3e905f83a4f58acb9d12c7caaee010e89b2bc2c3b23dbc4e2c111d637` |
+| `apps/desktop/src/renderer/src/env.d.ts` | 132 | `1233f06ae3c3a5ef20f4f1eac935f01862e42e3728155679ca0d0d8c745a1ae5` |
+| `apps/desktop/tsconfig.json` | 396 | `158bae6a063f36d687307f0a117a4f5f88f4e4632088ad086be191c2ae0a7186` |
+| `docs/architecture/0001-desktop-framework.md` | 3876 | `6a7f9448df6815929c589dee0f322c02af9dfda28d68e73769ac5ec028107463` |
+| `docs/architecture/0003-resident-coordinator-and-jobs.md` | 4406 | `b22821d55982b671f2f5ac270b351effa97da2b644d09628694374ea1e797aeb` |
+| `docs/iterations/I02/acceptance.md` | 5136 | `65b5e2d611427c46eee327f97297e8b03512eb53a20c251526294755dc5867b2` |
+| `docs/iterations/I04/acceptance.md` | 11805 | `4f2d8654f350f7b2f9967b1bbcd8ffa493c92f37c143b6701b320160ee6a10de` |
+| `packages/contracts/src/index.ts` | 4881 | `e105ebcf8263e0b513992ff80cb8ea0396f485b2156f5360fb63274162b6066c` |
+| `packages/contracts/src/v2.ts` | 20514 | `eebc99f3502f44b1e37fa3e7b7da88122a0469a86dd668a6c864a4cc83db29e2` |
+| `tests/e2e/csp-lifecycle.spec.ts` | 14104 | `9d4389074f5366363a895aef6977aaf5c5b2008b4014c4f868975c912138c7af` |
+| `tests/e2e/desktop.spec.ts` | 7194 | `d3b704f0c13627490f7b489bb42da35661c7df40572c18bbf70568334950c9c7` |
+| `tests/e2e/i04-jobs.spec.ts` | 23914 | `babc479a2ff80ead80b3659ddbda6dbe0ce4013ba1b9acfac2aaddf1c575dae5` |
+| `tests/e2e/native-recovery.cjs` | 4728 | `078d13b8f10bdeeabf99401b114a30022ba355a9661368c543f6023ecf402937` |
+| `tests/unit/contract-v2.test.ts` | 10907 | `dedb2bbcb50d072731e77692544d068ea5da053ab4dbde23926ad862ae4fbe07` |
+| `tests/unit/contract.test.ts` | 2131 | `04e694a508217f5f193a8bf0c3e0305b4cd87e52d5c0b83520f8b65921201b5d` |
+| `tests/unit/task-service.test.ts` | 45315 | `ac28e584ff86926a0a3683da4c7d4974f79682a49dd678b588fdf81ae46eba61` |
+| `tests/unit/task-update-boundary.test.ts` | 1469 | `e3ee962b47dbd8848f56bb0ea7608a0762f42b5fa923d1fd2b3cde13318c5e86` |

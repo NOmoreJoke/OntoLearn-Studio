@@ -1,0 +1,67 @@
+# O15 owner §8.4–§8.5 triage 独立静态复核
+
+结论：owner 关于 AGENTS“不只”的解释、desktop 邻近语义断言、frame L41 非逻辑恒真、JobStore marker 强断言、Wire 计数证据边界及“不能机械固定四条 CSP 原始事件”的主要判断均有固定源码支持。**owner 报告 L22 有一处必要更正：带有效 nonce 的开发 script-src 仅追加 unsafe-inline，不能直接推导内联脚本会执行，因而不能断言这个具体变异一定会被开发 e2e 捕获。** 文本政策单测盲点与真实浏览器放宽须分开。原 M 的 [中]、B150 NotPass 和原15 open 维持，复核不替模型改判。
+
+## 对象与边界
+
+- 复核对象：`owner-test-and-csp-triage.md`，读取时 6299 B，SHA-256 `68d542d38189b7b4da702688a35b959858653fbee9cf0ff4e1e61d87975fa607`。该身份只描述本次所读版本，owner 后续修订应另记。
+- 唯一源码 ref：`b88be226501703f1d5365734dd0e56066bd1bffb`；均用 `git show <ref>:<path>` 只读。现行 AGENTS 仅核当前 L93 的“不只”规则。只复核指定关键推论，未机械全量复探，也未扩展为产品审查。
+- 原稿只核 `new-pair-minimax-terminal-intake/minimax-report-original.md.raw` 的 §8.4–§8.5 对应段。未修改 owner 报告、原稿、源码、测试或配置；唯一写入本文件。
+- 未运行产品、测试、oracle、GUI、安装、网络或模型。下文均为 static；现有测试中的运行操作仅作为被读源码，不是本轮实际操作。CSP nonce 交互的浏览器语义未在本轮用外部规范查证或本机浏览器实测，不将它记录为新运行证据。
+
+## 逐项核验
+
+| owner 关键推论 | 固定源码／规则依据 | 独立结论与限制 |
+| --- | --- | --- |
+| “不只”不等于禁止辅助按钮／数量断言 | 当前 `AGENTS.md:93` 原文要求“测试断言真实需求和错误边界（完整预期集合/顺序），不只断言数量或按钮可点击” | 解释成立。出现辅助断言本身不构成规则违反；这不证明整套已覆盖全部需求，仍应逐条评估完整预期。 |
+| desktop 三处 toBeEnabled 不能脱离上下文认定“只测按钮” | `tests/e2e/desktop.spec.ts:18-25` 有标题、初始状态、点击后连接文本与协议 v2；`:26-34` 有 require 不可见及三个隔离偏好；`:39-49` 有窗口布局、导航和再次连接 | owner L9 成立。这里的“真实连接”是测试写法所意图检查的行为和调用链，不是本轮已运行成功；owner 已明确这一限制。不能由此推出所有业务或错误路径均有覆盖。 |
+| frame L41 非逻辑恒真 | `packages/engine/tests/test_frame_corpus.py:12` 初次显式 UTF-8 加载全局 CORPUS；`:16-31` monkeypatch 默认编码；`:35-37` 在补丁内用缺省编码读取 default_cases，再 runpy 二次加载 loaded_cases；`:38-43` 断言实际中文帧、两次加载相等、缺省编码结果不同及精确乱码 | owner L10 成立。等式两侧不是同一对象的别名，也不是同一环境中不受控制的重复赋值。删除显式编码后，在初次默认 UTF-8、补丁后 cp1252 的条件下可静态推出差异；其他宿主条件也会受具体断言约束。本轮未运行该变异，不称“已复现”。 |
+| job_store L166 辅助同源 planHash 并不代表整套无独立预期 | `packages/engine/tests/test_job_store.py:164-169` 是该单条辅助关联；`:417-431` 另构造 expected_after_snapshot 与完整 marker 字典；`:432-444` 核持久 commitProgress、raw marker、plan 内容、前后快照 | owner L11 总体成立。marker 精确字段和人工构造 expected_state 的快照比较能拦住大量错误，不能把 L166 单独当成全部证据。`planHash` 的 expected 在 L430 仍取先前冻结的 job_context plan，不能再扩大称为独立证明“计划业务内容正确”；owner 目前没有作此扩大。其 before 快照断言精确在 L444，引用范围可写成 417–444。 |
+| Wire count=7 无法单独证明引擎或生产驱动绝不重放 | `packages/engine/tests/test_stdio_session_shutdown.py:18-72` 是手动 Wire，无自动恢复／重试；`:64-69` 计一次 call 后校验 response schema、ok、精确 id/method；`:213-247` 手动建立新 Wire，六个读取逐项比对 final Job、marker、receipt、project、失败终态／完整错误四字段、无 busy marker | owner L12 成立，且保持了正确边界。count 是 `call` 次数，不是引擎内部提交次数，也不是完整实际字节写出账；直接 `send` 在 `:54-56` 不增此计数。现有六读强断言支持持久恢复结果，但没有测试 Electron 自动恢复驱动。若补完整方法序列，须明确捕获哪一层，不能只给 Wire 加日志就宣称生产自动恢复无重放已证。 |
+| 开发 CSP 单测不固定完整指令／禁词 | `tests/unit/csp.test.ts:12-20` 只匹配 nonce/ws 及两个非法输入；生产测试 `:5-10` 调用无 development 参数 | owner L21 的**文本单测盲点**成立：只在 development 分支附加 unsafe-inline 不改变该文件已有期望。但它不自动等于浏览器安全行为已经放宽，见下节必要更正。 |
+| CSP e2e 并非只有四个 some | `tests/e2e/csp-lifecycle.spec.ts:171-183` 精确断言 inline/remote 执行、fetch、分模式样式、CSSOM、require 及 HTTP requests 空集合；`:178-182` 才是四类 some/enforce | owner 对既有行为守卫的事实描述成立；它不证明任意策略文本变异都可见，也不证明本轮运行或开发模式已经发生。 |
+| 四个 some 不是完整事件集合相等 | `csp-lifecycle.spec.ts:178-182` 逐类存在性匹配 | owner L23 的逻辑反例成立：保留四类匹配后追加额外事件不影响四条谓词。反之，缺失四类中任一唯一匹配会失败，不能泛称“所有缺失都不可见”。本轮没有浏览器额外事件实例。 |
+| 不能把四类存在性直接改成四条原始事件 | `csp-lifecycle.spec.ts:129-154` 同时创建 inline／remote 两个 script、image、iframe、style 元素、style 属性、CSSOM 并 fetch；`apps/desktop/src/csp.ts:19-21` 开发允许内联 style，生产不允许；raw 记录在 `csp-lifecycle.spec.ts:115-121` 含 directive/blocked/disposition | owner L24 成立。四个 some 是四类 directive 条件，不是本 probe 产生四次动作；生产样式和开发样式不同，脚本也有两个独立动作。静态源码无法给出跨平台实际原始事件条数与顺序。应先保留原生证据、定义分模式语义投影和允许重复，再对完整允许语义集合下断言。 |
+
+另核 `csp-lifecycle.spec.ts:300-302`：原生恢复事件的 `killed || crashed` 存在性是显式允许平台二选一，另要求 unresponsive；它与前述四类 CSP directive 不是同一事件数组。完整集合改造不能把这两种原始来源揉成一个“四条事件”基准。本轮不评判原生驱动全部覆盖。
+
+## 必要更正：owner L22 的 nonce／unsafe-inline 推导
+
+固定 `apps/desktop/src/csp.ts:5,19` 的开发 script-src 同时包含 self 和 nonce。CSP 对 nonce 与 unsafe-inline 有交互：支持 nonce 的策略中，保留有效 nonce 时额外写 unsafe-inline 并不等于放行所有无 nonce 内联脚本。因此，“仅添加这个 token”能穿过开发单测的文本期望，不能单凭源码再推出 `__inlineProbe` 会从 false 变 true。
+
+owner L22 原句“开发e2e若实际运行可抓到上述inline脚本放宽”“M的‘仅开发e2e可暴露’在这条静态变异下有依据”应更正。这里既没有运行变异，也未证明该特定变异实际放宽；现有 probe 没有比对开发 script-src 的完整字面 token。若 token 被 nonce 语义忽略，行为断言和四类违规存在性可能保持原值。此处不宣布任何具体浏览器实测结果，亦不把该语义提示当成新增产品漏洞。
+
+建议替换为：
+
+> 现有 e2e 明确检查内联脚本未执行等实际行为，不能称为只有弱 some。若一个真实生效的策略差异使该 probe 的内联脚本执行，`inlineExecuted=false` 会失败。但单独在带有效 nonce 的开发策略追加 unsafe-inline，尚不能认定会产生这种行为；该特定例子本轮仅证实文本策略单测未钉禁止 token，浏览器生效性及失败位置未验证。
+
+这项更正不会消除开发 CSP 指令集缺完整单测的供方问题；它只避免把一个文本变异跳步写成确定的 e2e 捕获能力。若 owner 后续需要该行为反例，应在新候选规则和授权下先明确语义有效的差异及真实运行证据，不用未经运行的新变异替换成另一项“已经证明”。
+
+## 接收意见与未解决项
+
+- 接收 owner 的 §8.4 上下文纠偏与 §8.5 文本测试盲点分析，保留证据层次和 owner 权限。
+- owner 报告接收前应修正上述 L22 的确定性表述；另可把 L11 的强断言引用延伸到 L444，L19 的 `csp.ts:3–28` 改为实际文件 `:3–26`。后两处只是定位精度，不作为新增产品缺陷。
+- 未核验约30／12／17项汇总的全清单；不将它们计为本轮已证问题数，也不声称全部排除。未复核 owner 未在本次分工中授权的其他产品范围。
+- 原 M §8.4／§8.5 的 [中]、B150 NotPass、原15 open 与报告阅读边界均保持；独立复核要求精确改文，不代模型降严重度或关单。
+
+本次只新增本报告；没有运行验证或生产证据，也没有更改共有文件。后续如实际修改测试／CSP／验收，由相应唯一 owner 形成新候选并履行现行审查门禁。
+
+
+## 纠正后版本 binding 核回（追加，2026-10-23）
+
+本节仅接收 owner 对初审指出推论的纠正，不重审既有条目，也不追加产品探查。以上初审正文 9660 B 原字节保持，SHA-256 为 `ee2d11f03fce180c088aaa90ed925e131b79f9dca7b793f375f10655c5dbb9ab`；本节没有覆盖首意见。
+
+本次核读身份：
+
+| 文件（本目录） | 字节 | SHA-256 |
+| --- | ---: | --- |
+| `owner-test-and-csp-triage.md` | 7414 | `3d7ac1b8596df36ca3ae6cd8404b101d5562956e51260e9d39177f8cbbc009b1` |
+| `owner-csp-inference-correction.json` | 1359 | `1414f286c5a1e49cccb3179dddceaf01aa33c8527d717f7e6d7bc0e5f9942255` |
+
+核回结果：修订 owner L22 已删除“单独追加 unsafe-inline 必导致内联放宽／开发 e2e 必捕获”的确定推论，明确保留文本断言盲点与既有行为守卫两个事实，并注明规范核对不是本机浏览器实测；L32–34 将初版推理错误归于 owner。纠错 JSON 单独保留原错误句、边界、W3C 主源链接及原 M0 路径查询失败／归档副本定位，不伪称保存了完整初版 owner 原件。初审已绑定完整初版的字节身份，本次纠错记录只作为所列摘句与修订过程证据。
+
+修订 owner L26 已补固定 source `b88be226501703f1d5365734dd0e56066bd1bffb` 中归档 M0 C1 的路径和 L145–153 引用；L22／纠错 JSON 已补 [W3C CSP3 source-list inline 算法](https://www.w3.org/TR/CSP3/#allow-all-inline) 及 nonce/hash 边界。本次只确认这些补充确实落入修订文件，没有重新打开外部规范、重读 C1 或把 owner 的规范读取升级成我方浏览器／产品运行证据。
+
+修订 owner L3、L15、L26、L30 继续保留原 [中]、reported-open、B150／完整 scope NotPass、原15外部意见及阅读边界；没有替 M 改判。因此对上述 bytes／SHA 绑定版本的**推论纠正予以限定接收**。初审末尾两处小定位仍见旧范围（L11 为417–443，L19 为3–28），owner 已说明将自行修到444及3–26；这不阻断本次对 nonce 实质纠正的接收，也不把尚未发生的定位编辑计为已完成。若这些定位后续修改，本次身份不冒充后续新版本，应由总控按新字节另记。
+
+本次仅追加本节；未运行任何产品／测试／oracle／GUI／安装或网络，未改 owner 报告、纠错 JSON、源码或测试。限定接收不关原 M 意见，不改变原严重度、NotPass 或15 open。

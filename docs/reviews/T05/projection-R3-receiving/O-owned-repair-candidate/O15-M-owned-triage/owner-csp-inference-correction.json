@@ -1,0 +1,16 @@
+{
+  "scope": "Owner static CSP triage inference correction, not external model or product failure",
+  "initialIncorrectExcerpt": "开发e2e若实际运行可抓到上述inline脚本放宽。因此不能说只有弱some、没有行为守卫；M的“仅开发e2e可暴露”在这条静态变异下有依据，是否在哪个OS/构建模式实际运行需供方真实证据，本次不推断。",
+  "issue": "Development script-src already contains nonce. Merely appending unsafe-inline does not prove inline execution under CSP3; keyword can be overridden by nonce/hash. Text assertion gap is distinct from behavior regression.",
+  "correctedBoundary": "Only static test-text gap and existing e2e behavior assertions are confirmed. No browser or mutation run performed.",
+  "primaryStandardSource": "https://www.w3.org/TR/CSP3/#allow-all-inline",
+  "primaryAlgorithmSection": "6.7.3.2; nonce-source/hash-source returns Does Not Allow for allow-all-inline",
+  "initialM0ReferenceLookup": {
+    "path": "docs/architecture/m0-review-and-update-plan-2026-10-19.md",
+    "rgExit": 2,
+    "error": "No such file or directory",
+    "recovery": "Read fixed b88be226 docs/iterations/I01/inputs/m0-review-and-update-plan-2026-10-19.md lines145-153; no fabricated C1 raw-event exact set."
+  },
+  "sourceTestsOrCSPModified": false,
+  "productValidationExecuted": false
+}

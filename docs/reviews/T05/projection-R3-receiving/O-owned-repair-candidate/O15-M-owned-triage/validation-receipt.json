@@ -1,0 +1,42 @@
+{
+  "observedUtc": "2026-10-22T19:06:11.848504+00:00",
+  "scope": "Five original M medium headings static triage and supplier handoff; documentation only",
+  "fixedSource": "b88be226501703f1d5365734dd0e56066bd1bffb",
+  "initialTargetedPrettierExit": 1,
+  "initialWarnings": [
+    "contracts-and-job-triage.md",
+    "ipc-route-triage.md",
+    "independent-owner-test-and-csp-review.md"
+  ],
+  "originalAuthorReportsPreservedBeforeReadableCopyFormatting": true,
+  "noFormattingIgnoreOrGitWhitespaceConfigurationModified": true,
+  "independentReportFirst9660BytePrefixSHA256": "ee2d11f03fce180c088aaa90ed925e131b79f9dca7b793f375f10655c5dbb9ab",
+  "noProductSourceChangeSinceB88": true,
+  "allCommittedChangesSinceB88LimitedToReviewProcessOrFourExistingCheck04Receipts": true,
+  "committedProcessPathsSinceB88": 128,
+  "fourOtherKnownProcessReceipts": [
+    "docs/reviews/T05/source-package-oracle/commands/o15-owned-candidate-check-04/invocation.json",
+    "docs/reviews/T05/source-package-oracle/commands/o15-owned-candidate-check-04/result.json",
+    "docs/reviews/T05/source-package-oracle/commands/o15-owned-candidate-check-04/stderr.raw",
+    "docs/reviews/T05/source-package-oracle/commands/o15-owned-candidate-check-04/stdout.raw"
+  ],
+  "sourceTestsConfigsOrDependenciesEditedForTriage": false,
+  "productOracleObserveOrGUIExecutedForTriage": false,
+  "allFiveOriginalSeverityMediumAndOpenPreserved": true,
+  "originalMFull150NotPassAndReadGapsPreserved": true,
+  "original15ExternalWorkflowOpinionsStillOpen": true,
+  "ownerFirstAuditError": {
+    "pythonProjectionExit": 1,
+    "issue": "Overly narrow assumption that all post-b88 process paths start projection-R3-receiving; four known original check04 receipts live under source-package-oracle/commands. No product delta.",
+    "followingPrettierExit": 2,
+    "followingIssue": "validation receipt not written after assertion, so formatter correctly found no file.",
+    "correction": "Explicitly permit exactly the four existing check04 receipt paths plus review process prefix; source/config/tests still absent; prefix hash check was already successful."
+  },
+  "independentConsolidation": {
+    "bytes": 3249,
+    "sha256": "5d99f77f12d968804e961035f3f910c499c770c65131b3da7afb72ec20900d8f",
+    "conclusion": "Limited summary/original preservation accepted; not product or overall designated pair acceptance"
+  },
+  "finalAuthorMarkdownJSONTargetedPrettierExit": 0,
+  "fullStagedWhitespaceCheckExit": 0
+}
