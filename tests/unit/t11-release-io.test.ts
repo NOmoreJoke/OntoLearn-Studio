@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import * as fs from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { digest, readBound, readJsonFile, verifyLargeFile } from '../../scripts/release/verify'
+import { digest, readBound, readJsonFile, verifyLargeFile } from '../../scripts/release/verify.mjs'
 
 vi.mock('node:fs', async (importOriginal) => {
   const original = await importOriginal<typeof import('node:fs')>()

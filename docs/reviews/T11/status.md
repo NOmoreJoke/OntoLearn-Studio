@@ -1,5 +1,15 @@
 # T11 状态入口
 
+## 当前回执：2026-10-23 F-1 修复窗
+
+本轮起点为 `550d47ad064f4d3899c844e8f791841498851ec5`，仍在 `.worktrees/T11-review-fixes` / `feature/weekly-t11-review-fixes`。原036同版两指定任务均正式completed，完整原件与18项逐条处置见 `fresh-review-boundary-exceptions-20261023/handoff.md` 和索引：Z工程Pass，M工程NotPass（新增中级F-1，Node前置警告含路径、末行断言未修完整错误面）；不是双审通过，owner未自行关闭18项。
+
+总控已明确授权继续F-1实质修复。最小方案和独立静态确认见 `f1-fix-20261023/design.json`、`design-review.md`：唯一实现原字节改为明确ESM的verify.mts，CLI纯JS参数/Node24.3以上24.x门后在try内动态加载；完整stderr严格负例，保留其他真实诊断。仅改T11独占路径，不改根package/锁/tsconfig/CI，不另建package/schema。原036两审树/提示/报告不改。
+
+本地实际验证（Node v24.15.0）：首轮专项122/122零skip；随后补入3个参数/schema合同用例，末版125项已纳入显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 的755个TS测试（零skip），另有1052个Python测试、构建、ruff、格式和类型检查通过，完整子进程exit0。四固定输入探针实际启用；受验六路径before/after/当前hash一致。`tsc --listFiles`实际纳入唯一verify.mts、无旧verify.ts；显式release lint通过。原始输出、实际计数、首轮/末版区别与边界见 `f1-fix-20261023/verification.json` 和raw索引；独立实现复核见 `implementation-review.md`，其核对原件但未重跑。F-1处于已实现并本地验证、待新候选完整指定审查状态，未自行签关闭或新Pass。
+
+两审提交输入的临时git commit、真实collector/native越界及此前owner回读偏差仍按原输入收据保留，实际越界返回不读不转，不事后补授权。GUI持续RELEASED；旧18最终关闭、新F-1完整新候选指定审查、真实目标平台/同包/API/真人/Q5/CI/合并/远端/发布门均未由本修复关闭。下方旧owned修复窗为当时历史入口，由本段取代其当前性。
+
 ## 当前回执：2026-10-23 owned修复窗
 
 当前修复工作树为 `.worktrees/T11-review-fixes`、分支 `feature/weekly-t11-review-fixes`，启动base `692077da9754a303915798789b7b0c5b4f609125`；首个实现候选 `640cf49d627dc4796bc90ee37abf9bb3857eb42b`（含collector修复936a4313），W1–W6实现和新增回归已落地，已完成独立静态内审及本地验证，当前待全新指定双审。冻结后的最新精确候选、命令/计数/hash和内审结论统一见 `owned-fixes-20261023/verification.json` 与 `handoff.md`。下方2026-10-21起的“当前/active/仅计划”等句仅描述各段当时状态，均由此入口取代；原7d28、65/695及v2/旧核验器hash是历史，不能作为新实现验收。旧回执/原报告/triage矩阵不追写或重新归并，同updatedAt的不同来源hash保留各自快照，不能推为同一原件。

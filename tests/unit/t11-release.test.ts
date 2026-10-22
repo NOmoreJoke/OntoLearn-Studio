@@ -11,6 +11,7 @@ import {
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
 import {
   APPROVED_MODEL,
@@ -26,7 +27,7 @@ import {
   type Manifest,
   type Expected,
   type Report,
-} from '../../scripts/release/verify'
+} from '../../scripts/release/verify.mjs'
 
 const profile = JSON.parse(readFileSync('tests/fixtures/release/synthetic-profile.json', 'utf8'))
 const roots: string[] = []
@@ -1166,7 +1167,45 @@ describe('T11 evidence consistency (all fixtures are synthetic)', () => {
       { encoding: 'utf8' },
     )
     expect(run.status).toBe(1)
+    expect(run.stderr).toBe('')
     expect(JSON.parse(run.stdout).issues).toContain('USER_STALE')
+  })
+  it.each([
+    { label: 'no arguments', args: [] },
+    { label: 'missing arguments', args: ['sensitive-only'] },
+    { label: 'an empty required argument', args: ['manifest.json', '', 'freeze.json'] },
+    { label: 'extra arguments', args: ['one', 'two', 'three', 'sensitive-extra'] },
+  ])('CLI refuses $label with fixed usage and no path disclosure', ({ args }) => {
+    const run = spawnSync(process.execPath, ['scripts/release/verify-release.mjs', ...args], {
+      encoding: 'utf8',
+    })
+    expect(run.status).toBe(2)
+    expect(run.stdout).toBe('')
+    expect(run.stderr).toBe(
+      'Usage: node scripts/release/verify-release.mjs MANIFEST EVIDENCE_ROOT TRUSTED_FREEZE.json\n',
+    )
+  })
+  it.each([
+    { name: 'manifest', failure: 'missing' },
+    { name: 'freeze', failure: 'missing' },
+    { name: 'manifest', failure: 'malformed' },
+    { name: 'freeze', failure: 'malformed' },
+  ])('CLI rejects $failure $name with the whole fixed error surface', ({ name, failure }) => {
+    const { root, m, expected } = fixture()
+    const paths = { manifest: join(root, 'manifest.json'), freeze: join(root, 'freeze.json') }
+    writeFileSync(paths.manifest, JSON.stringify(m))
+    writeFileSync(paths.freeze, JSON.stringify(expected))
+    const selected = name as keyof typeof paths
+    if (failure === 'missing') paths[selected] = join(root, 'sensitive-missing.json')
+    else writeFileSync(paths[selected], 'sensitive invalid contents')
+    const run = spawnSync(
+      process.execPath,
+      ['scripts/release/verify-release.mjs', paths.manifest, root, paths.freeze],
+      { encoding: 'utf8' },
+    )
+    expect(run.status).toBe(2)
+    expect(run.stdout).toBe('')
+    expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\n')
   })
   it.each(['manifest', 'freeze'])(
     'CLI rejects oversized %s with fixed stderr before parse',
@@ -1187,7 +1226,37 @@ describe('T11 evidence consistency (all fixtures are synthetic)', () => {
       )
       expect(run.status).toBe(2)
       expect(run.stdout).toBe('')
-      expect(run.stderr.trim().split('\n').at(-1)).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID')
+      expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\n')
+    },
+  )
+  it.each(['manifest', 'freeze'])(
+    'CLI preserves the schema failure contract for %s without printing input data',
+    (name) => {
+      const { root, m, expected } = fixture()
+      const manifest = join(root, 'manifest.json')
+      const freeze = join(root, 'freeze.json')
+      writeFileSync(manifest, JSON.stringify(m))
+      writeFileSync(freeze, JSON.stringify(expected))
+      writeFileSync(join(root, `${name}.json`), JSON.stringify({ sensitive: 'invalid schema' }))
+      const run = spawnSync(
+        process.execPath,
+        ['scripts/release/verify-release.mjs', manifest, root, freeze],
+        { encoding: 'utf8' },
+      )
+      if (name === 'freeze') {
+        expect(run.status).toBe(2)
+        expect(run.stdout).toBe('')
+        expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\n')
+      } else {
+        expect(run.status).toBe(1)
+        expect(run.stderr).toBe('')
+        expect(JSON.parse(run.stdout)).toEqual({
+          consistent: false,
+          releaseAuthorized: false,
+          mode: 'invalid',
+          issues: ['MANIFEST_SCHEMA'],
+        })
+      }
     },
   )
   it('CLI fails closed for synthetic and malformed inputs without printing contents', () => {
@@ -1200,10 +1269,70 @@ describe('T11 evidence consistency (all fixtures are synthetic)', () => {
     const args = ['scripts/release/verify-release.mjs', path, root, join(root, 'freeze.json')]
     const run = spawnSync(process.execPath, args, { encoding: 'utf8' })
     expect(run.status).toBe(1)
+    expect(run.stderr).toBe('')
     expect(JSON.parse(run.stdout).releaseAuthorized).toBe(false)
     writeFileSync(path, 'sensitive invalid contents')
     const bad = spawnSync(process.execPath, args, { encoding: 'utf8' })
     expect(bad.status).toBe(2)
-    expect(bad.stderr).not.toContain('sensitive')
+    expect(bad.stdout).toBe('')
+    expect(bad.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\n')
+  })
+  it('CLI reports an actual implementation import failure without a stack or path', () => {
+    const { root } = fixture()
+    const cli = join(root, 'isolated-cli.mjs')
+    writeFileSync(cli, readFileSync('scripts/release/verify-release.mjs'))
+    const run = spawnSync(process.execPath, [cli, 'missing.json', root, 'missing-freeze.json'], {
+      encoding: 'utf8',
+    })
+    expect(run.status).toBe(2)
+    expect(run.stdout).toBe('')
+    expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\n')
+  })
+  it.each(['24.0.0', '24.2.9', '23.9.0', '25.0.0'])(
+    'CLI rejects simulated unsupported Node %s before loading TypeScript',
+    (version) => {
+      const { root } = fixture()
+      const cli = join(root, 'isolated-cli.mjs')
+      const preload = join(root, 'runtime-version.mjs')
+      writeFileSync(cli, readFileSync('scripts/release/verify-release.mjs'))
+      writeFileSync(
+        preload,
+        `Object.defineProperty(process.versions, 'node', { value: ${JSON.stringify(version)} })`,
+      )
+      const run = spawnSync(
+        process.execPath,
+        ['--import', pathToFileURL(preload).href, cli, 'missing.json', root, 'missing-freeze.json'],
+        { encoding: 'utf8' },
+      )
+      expect(run.status).toBe(2)
+      expect(run.stdout).toBe('')
+      expect(run.stderr).toBe('UNSUPPORTED_NODE_RUNTIME\n')
+    },
+  )
+  it('CLI preserves an independent runtime warning while failing a real input read', () => {
+    const { root } = fixture()
+    const preload = join(root, 'runtime-warning.mjs')
+    writeFileSync(
+      preload,
+      "process.emitWarning('T11 controlled diagnostic', { code: 'T11_TEST_WARNING' })",
+    )
+    const run = spawnSync(
+      process.execPath,
+      [
+        '--import',
+        pathToFileURL(preload).href,
+        'scripts/release/verify-release.mjs',
+        join(root, 'missing.json'),
+        root,
+        join(root, 'missing-freeze.json'),
+      ],
+      { encoding: 'utf8' },
+    )
+    expect(run.status).toBe(2)
+    expect(run.stdout).toBe('')
+    expect(run.stderr).toContain('[T11_TEST_WARNING]')
+    expect(run.stderr).toContain('T11 controlled diagnostic')
+    expect(run.stderr).toContain('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\n')
+    expect(run.stderr).not.toContain('MODULE_TYPELESS_PACKAGE_JSON')
   })
 })

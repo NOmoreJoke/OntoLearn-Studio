@@ -1,5 +1,13 @@
 # T11 独立工具验收与后续门
 
+## 2026-10-23 F-1 新候选回归
+
+唯一实现由 `verify.ts` 原字节重命名为 `verify.mts`，CLI直指真实扩展名；两专项通过 `.mjs` specifier的TS/Vite扩展替换引用同一 `.mts`，必须留 `tsc --listFiles` 的精确纳入证据。根package/锁/tsconfig/CI不变，不新增package或第二schema。原036及两份指定报告保持冻结；新候选另走完整指定双审。
+
+CLI参数不足/过多、manifest与freeze分别缺失/格式错/16MiB超限、真实实现模块加载失败均须整段stderr严格固定、stdout空、exit2；禁止仅核最后一行。正常synthetic与CLI时钟回归须stderr空、原JSON/exit1语义不变。纯JS入口先拒绝Node24.0–24.2或非24.x（固定 `UNSUPPORTED_NODE_RUNTIME`），支持的Node24.3以上24.x才在try内加载 `.mts`。实际环境与模拟版本guard分开记录；不把version preload模拟当旧Node实机。独立warning preload须保留受控诊断，真实输入失败仍exit2，不能全局吞warning或以文档披露替代固定错误面。
+
+## 原完整验收条件
+
 原依据：PRD V0.6 第10–12节、附录C–G；外部本轮plan/requirements/acceptance、共同指令和T11启动提示。状态唯一入口：`docs/reviews/T11/status.md`。
 
 独立交付应具备：严格manifest v1；源/候选/受审/构建/报告SHA绑定；完整双目标与签名/公证/许可证/下载哈希一致性；T09固定案例manifest文件和G预期绑定；真实目标设备证据结构；恢复/迁移完整比较；冻结后指定模型/真人数据与辅助区分；错误路径拒绝。合成测试只验证核验器，不计其中任何真实发布验收。
@@ -12,12 +20,12 @@ T11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release*.test.ts
 npm run check
 T11_FIXED_BASELINE_PROBE=1 npm run check
 npm run verify:sources
-npx prettier --ignore-path /dev/null --check scripts/release/verify.ts scripts/release/verify-release.mjs tests/unit/t11-release*.test.ts tests/fixtures/release/*.json docs/release/*.md docs/iterations/T11/*.md
+npx prettier --ignore-path /dev/null --check scripts/release/verify.mts scripts/release/verify-release.mjs tests/unit/t11-release*.test.ts tests/fixtures/release/*.json docs/release/*.md docs/iterations/T11/*.md
 bash -n scripts/release/collect-macos.sh
 git diff --check
 ```
 
-路径名 `release` 被现有 eslint/prettier 全局忽略，必须显式 `--ignore-path /dev/null` 格式核验且对TS通过测试引用纳入typecheck。显式lint脚本另用 `npx eslint --no-ignore scripts/release/verify.ts scripts/release/verify-release.mjs`；若忽略规则无法覆盖则使用配置的 `--ignore-pattern '!scripts/release/**'` 并核验确实进入文件。Windows collector因无批准Windows执行环境只静态审阅，不记运行通过。
+路径名 `release` 被现有 eslint/prettier 全局忽略，必须显式 `--ignore-path /dev/null` 格式核验且对TS通过测试引用纳入typecheck。显式lint脚本另用 `npx eslint --no-ignore scripts/release/verify.mts scripts/release/verify-release.mjs`；若忽略规则无法覆盖则使用配置的 `--ignore-pattern '!scripts/release/**'` 并核验确实进入文件。Windows collector因无批准Windows执行环境只静态审阅，不记运行通过。
 
 固定输入联验需显式 `T11_FIXED_BASELINE_PROBE=1`：只读 `git show 873c8c051b9870aa12fc7e1dbbd3e0c358e7c380:<path>`，先核对总控给定manifest SHA `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`、PRD SHA和全部17文件，再仅在临时目录形成工具证据fixture。没有该Git对象时显式探针失败；不转读变化中HEAD或加载T09服务。默认单测把这4项标为skipped，不能将默认通过当固定基线联验；本轮完整检查必须显式启用探针，实际新结果以owned-fixes记录为准；历史65/695等仅对应7d28旧候选。未来CI接线须确保批准的固定输入可取并显式执行，不能以skip关闭验收。
 

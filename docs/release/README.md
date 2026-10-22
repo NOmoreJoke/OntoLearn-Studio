@@ -4,7 +4,7 @@ T11 的版本化证据工具入口是 `scripts/release/verify-release.mjs`；它
 
 ## 证据清单 v1
 
-唯一 schema 是 `scripts/release/verify.ts` 的 `manifestSchema`。不再维护另一份 JSON schema 或 builder 配置。`tests/unit/t11-release.test.ts` 的完整合成样例展示所有字段；样例身份、签名和参与者均为测试构造，不能转作实际证据。
+唯一 schema 是 `scripts/release/verify.mts` 的 `manifestSchema`。不再维护另一份 JSON schema 或 builder 配置。`tests/unit/t11-release.test.ts` 的完整合成样例展示所有字段；样例身份、签名和参与者均为测试构造，不能转作实际证据。
 
 在受控取证目录保存实际安装包、来源文件、T09 manifest 引用的原文件、签名验证输出、完整预期/实际结果和报告；清单仅含相对路径与 SHA256。大文件/录屏放受控 CI artifact 或负责人证据目录，入库仅留摘要与哈希。不得纳入私钥、密码、token、未经授权的个人或业务数据。普通用户不需要 Node/Python，核验器运行在独立工程审查机。
 
@@ -13,6 +13,8 @@ node scripts/release/verify-release.mjs MANIFEST.json EVIDENCE_ROOT TRUSTED_FREE
 ```
 
 TRUSTED_FREEZE.json 必须从总控冻结候选独立取得，不能从待检清单复制作为信任依据。字段为 candidateSha、prdSha256、baselineSha256、candidateFrozenAt、modelEndpoint、requestedModel、modelDecisionSha256、modelMode、evaluationSha256、returnedModel、serviceVersion、recoverySnapshotSha256、recoveryComparisonCase、migrationSnapshotSha256、migrationComparisonCases、previousAssets、expectedResults；不填 now，CLI使用当前时间。冻结时刻、模型/评估版本、恢复/双向迁移源快照、上一版双平台版本/源码/资产哈希和每项预期结果哈希都由外部pin约束，不能自填两边相同假数据绕过重验。所有 source/candidate/reviewed/build/report SHA 必须与该候选一致，报告时间在冻结之后且不在未来；任何实现、配置、依赖、验收、基线或模型变化都按原规则重验。测试模式 `synthetic` 的 CLI 总是退出 1；`evidence` 一致时退出 0，也不授予发布权限；不一致退出 1，无法读取或格式错退出 2。工具不调用网络、不启动产品、不签名或触碰凭据。
+
+CLI要求Node 24.3及以上的24.x；实际验证版本随候选记录。入口先用纯JavaScript核参数和运行时，再在错误边界内加载唯一 `verify.mts`，不依赖根package的模块类型探测。参数数量错误只输出固定usage并退出2；不支持的运行时只输出 `UNSUPPORTED_NODE_RUNTIME` 并退出2；模块加载、清单/freeze无法读取、JSON解析/freeze schema错误或超限只输出 `MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID` 并退出2，stdout为空。无注入的正常CLI调用对以上错误严格核对整段stderr（固定一行及LF），正常synthetic或一致性结果的stderr为空。可解析JSON但manifest schema不合法仍按原合同输出 `MANIFEST_SCHEMA` 的一致性结果并退出1，不改成exit2。这里不屏蔽Node诊断：操作者额外注入的preload/运行时警告仍可见，不把全局关闭warning当错误面修复。
 
 expectedResults 键为报告 label 加冒号加 check id（如 `PRODUCT:FR-001`），值为该完整预期文件SHA256。各验收owner冻结预期后交总控，不能从待验manifest生成真实freeze；测试自动生成只供合成fixture。迁移label为 `MIGRATION_<from>_<to>`，回退label为 `ROLLBACK_<target>`；其余label见核验器中evidence调用。migrationSnapshotSha256按源target索引；previousAssets每条包含target/version/sourceSha/sha256，必须覆盖双平台。
 

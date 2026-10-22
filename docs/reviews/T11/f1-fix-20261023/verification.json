@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "startingHead": "550d47ad064f4d3899c844e8f791841498851ec5",
+  "frozenHistoricalReviewCandidate": "036d7172ddba8502fe81e6e7ce375ce09ef7fa1c",
+  "implementationCandidate": "This file records tested working-tree inputs by exact hashes; immutable implementation commit assigned after this packet. See later handoff for commit binding.",
+  "ownerWorktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+  "branch": "feature/weekly-t11-review-fixes",
+  "node": "v24.15.0",
+  "resourceAuthorization": "Root CPU START received after independent I05/CSP checks naturally finished. Ordinary isolated CLI/scoped typecheck/fullcheck only; root message source01a154de.",
+  "sourceProtection": {
+    "protected": [
+      {
+        "path": "package.json",
+        "bytes": 1953,
+        "sha256": "be16490f2fcddad19fdffec0b3efc63ae3f887dc40dc2146293c86cbc93b9c32",
+        "sameAs550d47": true
+      },
+      {
+        "path": "package-lock.json",
+        "bytes": 224331,
+        "sha256": "a462ba7092588c325829e0b05bbcb1a0fa97e6914307b84d97103875b3c29bb5",
+        "sameAs550d47": true
+      },
+      {
+        "path": "uv.lock",
+        "bytes": 20999,
+        "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e",
+        "sameAs550d47": true
+      },
+      {
+        "path": "tsconfig.unit.json",
+        "bytes": 141,
+        "sha256": "293dbe9fdfc132c159ccde0d3f67c68671a6e22d9c65c0373f72e1dfe246fdb1",
+        "sameAs550d47": true
+      },
+      {
+        "path": "eslint.config.mjs",
+        "bytes": 631,
+        "sha256": "c4608e671c07c35ba20d17fa81f0c885c3a6743a629a5fbf09f406953194d68d",
+        "sameAs550d47": true
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "bytes": 6860,
+        "sha256": "b5d92d19383ef12adf9b96764b9eaf16d3ae9ffa9c88a3a678ec2b24454a05f4",
+        "sameAs550d47": true
+      }
+    ],
+    "rename": {
+      "from": "scripts/release/verify.ts",
+      "to": "scripts/release/verify.mts",
+      "bytes": 38220,
+      "sha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+      "exact": true,
+      "oldFileExists": false
+    },
+    "fullCheck": {
+      "exitCode": 0,
+      "inputHashMatchesCurrent": true,
+      "T11_FIXED_BASELINE_PROBE": "1"
+    },
+    "AGENTSUnstaged": true,
+    "firstUnitEnvQualification": "01 runtime metadata omits environment; actual executed owner wrapper input explicitly set flag=1. Do not present metadata as recording this field."
+  },
+  "commands": [
+    {
+      "cmd": [
+        "./node_modules/.bin/vitest",
+        "run",
+        "tests/unit/t11-release.test.ts",
+        "tests/unit/t11-release-io.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+      "exitCode": 0,
+      "seconds": 13.608461458,
+      "log": "docs/reviews/T11/f1-fix-20261023/runtime/raw/01-first-explicit-unit.log"
+    },
+    {
+      "cmd": ["./node_modules/.bin/tsc", "--noEmit", "-p", "tsconfig.unit.json", "--listFiles"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+      "exitCode": 0,
+      "seconds": 2.270183458,
+      "log": "docs/reviews/T11/f1-fix-20261023/runtime/raw/02-typecheck-list-files.log"
+    },
+    {
+      "cmd": [
+        "./node_modules/.bin/eslint",
+        "--no-ignore",
+        "--ignore-pattern",
+        "!scripts/release/**",
+        "scripts/release/verify.mts",
+        "scripts/release/verify-release.mjs",
+        "tests/unit/t11-release.test.ts",
+        "tests/unit/t11-release-io.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+      "exitCode": 0,
+      "seconds": 1.559608791,
+      "log": "docs/reviews/T11/f1-fix-20261023/runtime/raw/03-explicit-lint.log"
+    },
+    {
+      "cmd": [
+        "./node_modules/.bin/prettier",
+        "--ignore-path",
+        "/dev/null",
+        "--check",
+        "scripts/release/verify.mts",
+        "scripts/release/verify-release.mjs",
+        "tests/unit/t11-release.test.ts",
+        "tests/unit/t11-release-io.test.ts",
+        "docs/release/README.md",
+        "docs/iterations/T11/acceptance.md",
+        "docs/reviews/T11/status.md",
+        "docs/reviews/T11/f1-fix-20261023/design.json",
+        "docs/reviews/T11/f1-fix-20261023/design-review.md"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+      "exitCode": 0,
+      "seconds": 0.4896223749999997,
+      "log": "docs/reviews/T11/f1-fix-20261023/runtime/raw/04-explicit-format.log"
+    },
+    {
+      "cmd": [
+        "./node_modules/.bin/eslint",
+        "--no-ignore",
+        "--ignore-pattern",
+        "!scripts/release/**",
+        "scripts/release/verify.mts",
+        "scripts/release/verify-release.mjs",
+        "tests/unit/t11-release.test.ts",
+        "tests/unit/t11-release-io.test.ts"
+      ],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+      "node": "v24.15.0",
+      "T11_FIXED_BASELINE_PROBE": "1",
+      "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/docs/reviews/T11/f1-fix-20261023/runtime/tmp",
+      "exitCode": 0,
+      "seconds": 1.361831333,
+      "before": {
+        "scripts/release/verify.mts": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+        "scripts/release/verify-release.mjs": "c83e455f63032ac81d2a6c2e4f7b420528d0f72007a603da468acc2f17df0e4e",
+        "tests/unit/t11-release.test.ts": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+        "tests/unit/t11-release-io.test.ts": "93129e89f371ec75c826b8ca822c68327ba280c95027ea67e6296a1c2f81c0b7",
+        "docs/release/README.md": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+        "docs/iterations/T11/acceptance.md": "2e1a0aeb0b0e7d4dd323c32d6c88bd4803d5704f450960b79e90a561df43e982"
+      },
+      "after": {
+        "scripts/release/verify.mts": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+        "scripts/release/verify-release.mjs": "c83e455f63032ac81d2a6c2e4f7b420528d0f72007a603da468acc2f17df0e4e",
+        "tests/unit/t11-release.test.ts": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+        "tests/unit/t11-release-io.test.ts": "93129e89f371ec75c826b8ca822c68327ba280c95027ea67e6296a1c2f81c0b7",
+        "docs/release/README.md": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+        "docs/iterations/T11/acceptance.md": "2e1a0aeb0b0e7d4dd323c32d6c88bd4803d5704f450960b79e90a561df43e982"
+      },
+      "unchanged": true,
+      "log": "docs/reviews/T11/f1-fix-20261023/runtime/raw/05-final-explicit-lint.log"
+    },
+    {
+      "cmd": ["npm", "run", "check"],
+      "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes",
+      "node": "v24.15.0",
+      "T11_FIXED_BASELINE_PROBE": "1",
+      "TMPDIR": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-review-fixes/docs/reviews/T11/f1-fix-20261023/runtime/tmp",
+      "exitCode": 0,
+      "seconds": 80.922623708,
+      "before": {
+        "scripts/release/verify.mts": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+        "scripts/release/verify-release.mjs": "c83e455f63032ac81d2a6c2e4f7b420528d0f72007a603da468acc2f17df0e4e",
+        "tests/unit/t11-release.test.ts": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+        "tests/unit/t11-release-io.test.ts": "93129e89f371ec75c826b8ca822c68327ba280c95027ea67e6296a1c2f81c0b7",
+        "docs/release/README.md": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+        "docs/iterations/T11/acceptance.md": "2e1a0aeb0b0e7d4dd323c32d6c88bd4803d5704f450960b79e90a561df43e982"
+      },
+      "after": {
+        "scripts/release/verify.mts": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+        "scripts/release/verify-release.mjs": "c83e455f63032ac81d2a6c2e4f7b420528d0f72007a603da468acc2f17df0e4e",
+        "tests/unit/t11-release.test.ts": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+        "tests/unit/t11-release-io.test.ts": "93129e89f371ec75c826b8ca822c68327ba280c95027ea67e6296a1c2f81c0b7",
+        "docs/release/README.md": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+        "docs/iterations/T11/acceptance.md": "2e1a0aeb0b0e7d4dd323c32d6c88bd4803d5704f450960b79e90a561df43e982"
+      },
+      "unchanged": true,
+      "log": "docs/reviews/T11/f1-fix-20261023/runtime/raw/06-first-full-check.log"
+    }
+  ],
+  "result": {
+    "firstSpecializedBeforeFinal3Cases": {
+      "passed": 122,
+      "skipped": 0,
+      "flag": "Executed wrapper explicitly set1, original01metadata omittedenv; not claimed to be metadata-recorded."
+    },
+    "finalSpecialized": {
+      "caseCount": 125,
+      "evidence": "Included in full755 TS on final test hashes; not independently rerun after final3 cases"
+    },
+    "finalFullCheck": {
+      "T11_FIXED_BASELINE_PROBE": "1",
+      "exitCode": 0,
+      "tsFilesPassed": 17,
+      "tsPassed": 755,
+      "tsSkipped": 0,
+      "pythonPassed": 1052,
+      "pythonSkipped": 0,
+      "pythonSeconds": 53.9,
+      "ruffFormattedFiles": 224,
+      "build": true,
+      "typechecks": true,
+      "lint": true,
+      "format": true,
+      "inputHashesUnchanged": true
+    },
+    "exactMtsIncludedInTypecheck": true,
+    "oldTsIncluded": false,
+    "explicitLintFinalExit": 0
+  },
+  "scope": {
+    "schemaBusinessLogic": "Exact rename bytes only, c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+    "CLI": "JS argument/runtime24.3+24.x guards, try-contained dynamic .mts import, unchanged valid and manifest-schema semantics, fixed error whole stderr",
+    "regressions": "16 new test cases versus036/550; full stderr malformed/missing/oversize/usage/import failure; runtime guard is simulated-version decision test, not oldNode real runtime; independent warning retained",
+    "unchangedSharedFiles": [
+      "package.json",
+      "package-lock.json",
+      "uv.lock",
+      "tsconfig.unit.json",
+      "eslint.config.mjs",
+      ".github/workflows/ci.yml"
+    ],
+    "oldFrozenReviewRoots": "Unmodified036; no new task/prompt/GUI/collector/native/API"
+  },
+  "operatorDiagnosticsPreserved": [
+    {
+      "operation": "First combined doc writer",
+      "result": "Python SyntaxError: Non-UTF-8 code starting with byte0xe5 before any doc edit; corrected with apply_patch. No product check ran."
+    },
+    {
+      "operation": "First multi-file apply_patch",
+      "result": "Expected placeholder # not found in acceptance; verification failed before writes. Corrected with exact contexts. No product check ran."
+    }
+  ],
+  "review": "design-review.md and implementation-review.md are independent internal static/evidence review, not designated external Pass.",
+  "disposition": {
+    "newM036F1": "Implemented and ordinary checks verified; OPEN awaiting full same-candidate designated review/closure",
+    "original18ClosedByOwner": 0,
+    "designatedDualPass": false,
+    "releaseAuthorized": false,
+    "priorProcessExceptions": "OPEN; corresponding prohibited tool returns excluded, no retrospective permission"
+  },
+  "rawIndex": "raw-logs-index.json",
+  "rawArchiveSha256": "95067c1679eb1bfe1dab15219f74b41e9993ccfdd1d25b5a3afaa663436d901b",
+  "verifiedAtUTC": "2026-10-22T20:50:34.476255+00:00"
+}

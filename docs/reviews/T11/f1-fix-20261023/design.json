@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "startingHead": "550d47ad064f4d3899c844e8f791841498851ec5",
+  "oldFrozenReviewHead": "036d7172ddba8502fe81e6e7ce375ce09ef7fa1c",
+  "owner": "T11 / feature/weekly-t11-review-fixes",
+  "authorizingMessageSourceThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+  "authorization": "Continue actual CLI full error surface fix in own new candidate; original036 remains frozen. Design, independent static review, precise sole-owner check, complete-stderr negatives and necessary verification. No retrospective permission for prior reviewer boundary incidents.",
+  "ownershipEvidence": {
+    "path": "docs/reviews/T11/status.md",
+    "lines": [24, 25],
+    "owned": [
+      "scripts/release/",
+      "tests/unit/t11-*.test.ts",
+      "docs/reviews/T11/",
+      "docs/iterations/T11/",
+      "docs/release/"
+    ],
+    "protectedShared": [
+      "package.json",
+      "package-lock.json",
+      "uv.lock",
+      "tsconfig.unit.json",
+      "eslint.config.mjs",
+      ".github/workflows/ci.yml"
+    ],
+    "scopeEffect": "Rename within T11 owned scripts, same bytes/schema; no second package/schema, no shared config change."
+  },
+  "plan": {
+    "rename": ["scripts/release/verify.ts", "scripts/release/verify.mts"],
+    "updateOwned": [
+      "scripts/release/verify-release.mjs",
+      "tests/unit/t11-release.test.ts",
+      "tests/unit/t11-release-io.test.ts",
+      "docs/release/README.md",
+      "docs/iterations/T11/acceptance.md",
+      "docs/reviews/T11/status.md"
+    ],
+    "assertions": [
+      "Whole stderr fixed usage/error, exit2 and empty stdout for invalid args/unreadable/malformed/oversized manifest or freeze",
+      "Normal synthetic: JSON result/releaseAuthorizedfalse/exit1 and no stderr",
+      "Future-time override still rejects and no stderr",
+      "Controlled preload warning remains observable with invalid input exit2, proving no broad suppression",
+      "Typecheck resolves .mjs test import to sole .mts; Vitest runtime agrees",
+      "Copied CLI without implementation module: real import failure fixed whole stderr/exit2/empty stdout",
+      "Controlled preload version override covers unsupported-runtime guard only; does not pretend old Node runtime proof"
+    ],
+    "sourceReference": "https://nodejs.org/docs/latest-v24.x/api/typescript.html#determining-module-system",
+    "prerequisites": "Independent static design review before source edits; precise known owner paths only.",
+    "runtimeGuard": "Pure JS CLI validates args and Node24 minor>=3 before dynamic import. Unsupported -> UNSUPPORTED_NODE_RUNTIME/exit2; supported await import(verify.mts) inside catch boundary. No root engines edit.",
+    "runtimeEvidenceBoundary": "Official Node24 docs: .mts always ESM; strip ExperimentalWarning stopped24.3. Actual validated Node24.15; earlier-runtime gate simulation recorded separately."
+  },
+  "resourceCoordination": {
+    "ordinaryCLI": "Original bounded Node CLI child processes with own fixtures/TMPDIR and source root; no product/native/collector/API/GUI",
+    "cpu": "Necessary full flag npm check to be coordinated with root CPU lane; no global queue discovery",
+    "requestToRoot": "Resource request: after static design/edits, bounded explicit T11 tests+typecheck then flag full-check (739 plus new tests TS,1052Py/build). Exact commands recorded in design; root may steer timing while independent work continues."
+  },
+  "unchangedGates": [
+    "old18 final closure pending",
+    "newF1 open until verified new candidate and fresh designated full review",
+    "prior operator/readback exceptions and two reviewer inputs remain open",
+    "no push/PR/CI/merge/release authorization"
+  ],
+  "createdAtUTC": "2026-10-22T20:42:09.283336+00:00"
+}

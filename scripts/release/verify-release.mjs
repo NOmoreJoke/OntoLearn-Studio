@@ -1,14 +1,19 @@
-import { expectedSchema, readJsonFile, verifyManifest } from './verify.ts'
-
 // Freeze pins must come independently from the controller; this command never derives them from the manifest.
 const [manifestPath, root, freezePath] = process.argv.slice(2)
+const [major, minor] = process.versions.node.split('.').map(Number)
 if (!manifestPath || !root || !freezePath || process.argv.length !== 5) {
   console.error(
     'Usage: node scripts/release/verify-release.mjs MANIFEST EVIDENCE_ROOT TRUSTED_FREEZE.json',
   )
   process.exitCode = 2
+} else if (major !== 24 || !Number.isInteger(minor) || minor < 3) {
+  // Earlier Node 24 releases emit a TypeScript experimental warning before loading the verifier.
+  console.error('UNSUPPORTED_NODE_RUNTIME')
+  process.exitCode = 2
 } else {
   try {
+    // Explicit ESM avoids module-type probing; catch loading errors before they expose paths.
+    const { expectedSchema, readJsonFile, verifyManifest } = await import('./verify.mts')
     const expected = expectedSchema.parse({
       ...readJsonFile(freezePath),
       now: new Date().toISOString(),
