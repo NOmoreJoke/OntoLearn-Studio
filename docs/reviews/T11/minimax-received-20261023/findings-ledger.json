@@ -1,0 +1,119 @@
+{
+  "date": "2026-10-23",
+  "findings": [
+    {
+      "id": "F-A",
+      "reviewerSeverity": "高",
+      "title": "比较投影 v2 必需层口径：文档声明与实现直接冲突",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-B",
+      "reviewerSeverity": "中",
+      "title": "核验器把厂商端点与模型名硬编码为字面量，且无 PRD/文档依据",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-C",
+      "reviewerSeverity": "中",
+      "title": "T09 基线的 17 文件全集未在核验器内约束，完全依赖外部 freeze pin",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-L",
+      "reviewerSeverity": "中",
+      "title": "状态文档\"失败原件保留\"表述超出归档实际内容",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-D",
+      "reviewerSeverity": "低",
+      "title": "80% 分子口径：工具比用户研究文档更严，且不单列迁移成功率",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-E",
+      "reviewerSeverity": "低",
+      "title": "固定输入联验的边界表述准确，但\"实际启用探针\"的口径应限定为命令级",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-F",
+      "reviewerSeverity": "低",
+      "title": "回退与恢复的部分文档子项没有对应的强制 check id",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-G",
+      "reviewerSeverity": "低",
+      "title": "真人研究的部分文档要求在 participant schema 中无字段承载",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-H",
+      "reviewerSeverity": "低",
+      "title": "两个 collector 的失败处理与绑定存在缺口（Windows collector 仅静态审阅）",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-I",
+      "reviewerSeverity": "低",
+      "title": "安装包格式与签名真伪属结构/声明级校验",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-J",
+      "reviewerSeverity": "低",
+      "title": "新鲜度判定依赖本地墙钟",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    },
+    {
+      "id": "F-K",
+      "reviewerSeverity": "低",
+      "title": "流程文档存在并存的版本双值（多数已由文档自身标注为历史阶段）",
+      "ownerDisposition": "pending; not closed; report received without adopting remedy"
+    }
+  ],
+  "metadataAndProcessLimits": [
+    {
+      "id": "M-C1",
+      "issue": "报告13.1将cbcd9805原始aborted turn称续轮turn",
+      "correction": "真实本次正常完成turn是2bd54f89-0d87-4cce-b126-fb91175019ae；中间6746...failed，旧cbcd...aborted，均不追改原件。"
+    },
+    {
+      "id": "M-C2",
+      "issue": "delivery-record原件的self hash/metadata可能不是当前字节",
+      "correction": "逐项actual/expected见reception-proof.metadataChecks；不把自填哈希当独立证明。"
+    },
+    {
+      "id": "M-C3",
+      "issue": "report.lines写376",
+      "correction": "375正文行，按LF分割376段含末空段；正文完整读375行。"
+    },
+    {
+      "id": "M-C4",
+      "issue": "报告使用首38失败raw永久缺失",
+      "correction": "当前未取得独立完整raw，仅摘录/transcript线索；永久无法取得未被证明。"
+    },
+    {
+      "id": "M-C5",
+      "issue": "报告/交付记录称原件均未覆盖",
+      "correction": "同路径report在新turn实际继续edit，原件不能称字节不变；owner已从旧turn Write+2 Edit重建42053B并匹配原现场哈希。"
+    },
+    {
+      "id": "M-C6",
+      "issue": "整轮检查的时间与最新继续边界",
+      "correction": "65/62+3/695/1052及check exit1属原会话累积证据；最新短继续不自动等于重跑全检查，原exit1与拆步C10必须分别报告。"
+    },
+    {
+      "id": "M-C7",
+      "issue": "F-B声称端点/模型无依据",
+      "correction": "根此前已采用DeepSeek方向；本冻结review树未携该总控决定。来源对应仍待owner处置，不因M缺外部材料便自动关项或改判。"
+    }
+  ],
+  "finalReportReceived": true,
+  "notPassPreserved": true,
+  "newCandidateCreated": false,
+  "productChanges": false,
+  "designatedDualPass": false
+}

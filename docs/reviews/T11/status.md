@@ -46,3 +46,7 @@
 ## 2026-10-23：指定 Z 报告收件与 M 续接准备
 
 原工具产品候选仍为 `7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4`。Z 原 session 新 turn 已核真实 completed，183行报告已全文收件并保全原字节、Write关联、设置/范围及日志hash；审者自述工程范围通过，6项建议仍待处置，不能当双审或发布通过。M当前精确sid为网络错误50113/failed、processing已结束，尚无正常完成；只准备397B短继续，等总控后续短lease及fresh核再发，本次未发送。详见 `zcode-received-20261023/owner-reception.md` 及索引；旧failed/aborted、此前未发送回执均保留，不推断重试操作者或触发来源。Q5方案已交总控集中询问、用户仍待答；本次未benchmark、未改产品或既有验收，原Goal与全部发布门保持。
+
+## 2026-10-23：M 单次正常续接后真实完成
+
+在总控显式短GUI交接下，仅向原M session正常发送一次短继续，立即释放；应用canonical正文396B仅去源397B唯一尾LF。新turn `2bd54f89-0d87-4cce-b126-fb91175019ae` 后台已核assistant stop、runtime idle/agent completed。最新375行50693B报告已全文收件，审者工程终态仍NotPass，12项意见全部待处置；Z已收的工程Pass自述及6项建议不覆盖M不通过，不成立双Pass。旧failed/aborted、旧非正常终态报告的可核重建原字节和本次受理/终态证据均保留，见 `minimax-continue-20261023/README.md`、`minimax-received-20261023/owner-reception.md`。Z自述读另一提示的规定与最小Read证据另核，仅证读本方准备索引，正文Read未独立证实，不绝对宣称无违规。冻结产品/验收未改、未重测产品、Q5仍待用户答复，原Goal及全部发布门不变。

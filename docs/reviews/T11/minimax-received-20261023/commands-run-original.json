@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "role": "minimax",
+  "purpose": "Actual commands executed by this independent review, with cwd, environment scope, exit codes and raw log hashes",
+  "observedAt": "2026-10-22T15:30:00Z",
+  "reviewRoot": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb",
+  "environment": {
+    "TMPDIR": ".t11-review-runtime/tmp",
+    "TMP": ".t11-review-runtime/tmp",
+    "TEMP": ".t11-review-runtime/tmp",
+    "nodeModules": "own worktree node_modules",
+    "pythonEnv": "own worktree .venv",
+    "peerOrDevTreeRuntimeUsed": false
+  },
+  "commands": [
+    {
+      "id": "C1",
+      "command": "git diff --name-status BASE PRODUCT; git diff --name-status PRODUCT PROCESS_ANCHOR; git diff --name-status PROCESS_ANCHOR REVIEW_HEAD",
+      "exitCode": 0,
+      "result": "BASE->PRODUCT = exactly 25 added paths; PRODUCT->ANCHOR = 8 process-only changes; ANCHOR->HEAD = 9 round-1 preparation files",
+      "raw": ".t11-review-runtime/raw/hash-verify-25product.log"
+    },
+    {
+      "id": "C2",
+      "command": "per-path: git cat-file -s PRODUCT:path; git show PRODUCT:path | sha256; wc -c; sha256 of worktree file",
+      "exitCode": 0,
+      "result": "25/25 git blob SHA256 and byte counts equal manifest.productSHA256/productBytes; 4 process paths equal manifest.currentSHA256",
+      "raw": ".t11-review-runtime/raw/hash-verify-25product.log",
+      "rawSHA256": "7efe9f0add904c5f28063abb7b1b5a1bffaf96d8d92d89085963229b00e31af1"
+    },
+    {
+      "id": "C3",
+      "command": "per-path: git show PROCESS_ANCHOR:path | sha256 for the 8 process-only paths",
+      "exitCode": 0,
+      "result": "8/8 anchor bytes and SHA256 equal manifest.processOnlyChanges entries",
+      "raw": ".t11-review-runtime/raw/hash-verify-8process.log",
+      "rawSHA256": "0c2fb7b4c97fe197dec26a72b8e77f63b33dec9a7c179a0bc5cf95e495a7cd1e"
+    },
+    {
+      "id": "C4",
+      "command": "source-setup.json 822 controlled files: git rev-parse HEAD:path vs recorded gitBlob; sha256 of git blob and of worktree bytes vs recorded sha256/actualSHA256",
+      "exitCode": 0,
+      "result": "822/822 match; 0 gitBlob mismatch; 0 physical mismatch; AGENTS.md is the single declared difference (product blob 1b3c0291... vs propagated policy de15f6ce..., equal to expectedAGENTSSHA256)",
+      "raw": ".t11-review-runtime/raw/source-setup-drift-verify.log"
+    },
+    {
+      "id": "C5",
+      "command": "tar -tzf docs/reviews/T11/round-1/raw-logs.tar.gz; extract; compare every entry sha256/bytes with raw-logs-index.json",
+      "exitCode": 0,
+      "result": "archive sha256 c1f34bd3... = index archiveSHA256, bytes 7208 = index archiveBytes; 48 entries; ALL_48_MATCH; no entry missing or mismatched",
+      "raw": ".t11-review-runtime/raw/raw-logs-archive-verify.log",
+      "rawSHA256": "bde0821b32f7bfcf2e0e9fc72299a0900536d7ec2ca73bc415fda8b1fc57d612"
+    },
+    {
+      "id": "C6",
+      "command": "preparation-index.json: recompute bytes+sha256 of all 7 declared preparation files",
+      "exitCode": 0,
+      "result": "7/7 match; attachment prefix [0:29857] byte-identical to committed docs/reviews/T11/round-1/minimax-m31flash-prompt.md (sha256 36a3c694...)",
+      "raw": null
+    },
+    {
+      "id": "C7",
+      "command": "T11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release.test.ts",
+      "exitCode": 0,
+      "result": "Test Files 1 passed; Tests 65 passed (65); zero skip",
+      "raw": ".t11-review-runtime/raw/t11-specialized-probe.log",
+      "rawSHA256": "56519284cd880ce3d3579143ef5c1923f49263be216668a3c95010ee49728e3d"
+    },
+    {
+      "id": "C8",
+      "command": "npx vitest run tests/unit/t11-release.test.ts (no probe flag)",
+      "exitCode": 0,
+      "result": "Tests 62 passed | 3 skipped (65) - the 3 fixed-input probe tests skip by default",
+      "raw": ".t11-review-runtime/raw/t11-default-mode.log",
+      "rawSHA256": "7a71d780dc43059e164e516be1f926afabec8fd932fd22a88450194454709956"
+    },
+    {
+      "id": "C9",
+      "command": "T11_FIXED_BASELINE_PROBE=1 npm run check",
+      "exitCode": 1,
+      "result": "lint PASSED; format:check FAILED on exactly one file: .t11-review-runtime/metadata/setup.json (this review's own runtime metadata, not product code, not in the 25 frozen paths). Chain stopped there by npm && semantics.",
+      "raw": ".t11-review-runtime/raw/full-check-with-probe.log",
+      "rawSHA256": "ddd7af3be678ef09e5af99d577bd0bdce4221f21695b6d70ec2e5f4900bffd24",
+      "note": "the flagged file was NOT deleted, ignored or excluded; no ignore rule added; the owner receipt was left byte-identical"
+    },
+    {
+      "id": "C10",
+      "command": "T11_FIXED_BASELINE_PROBE=1 npm run typecheck && npm test && npm run build && npm run engine:check",
+      "exitCode": 0,
+      "result": "typecheck PASS (contracts/unit/desktop tsc); vitest 16 files / 695 tests passed; electron-vite build PASS; uv frozen ruff check + ruff format --check PASS; pytest 1052 passed",
+      "raw": ".t11-review-runtime/raw/full-check-rest.log",
+      "rawSHA256": "3572d0392990c86f256670a3722606f3abdf09cb6a21d695550f3296fadf1e8f",
+      "note": "the remaining steps of the same npm run check chain, run directly because C9 stopped at the self-inflicted format:check item"
+    },
+    {
+      "id": "C11",
+      "command": "npx eslint --no-ignore scripts/release/verify.ts scripts/release/verify-release.mjs",
+      "exitCode": 0,
+      "result": "no findings",
+      "raw": ".t11-review-runtime/raw/release-explicit-checks.log",
+      "rawSHA256": "6c5c0d15efb77a12142c9a0e0064202c437b49f03abd5c205a64545ff15d8cdd"
+    },
+    {
+      "id": "C12",
+      "command": "npx prettier --ignore-path /dev/null --check scripts/release/verify.ts scripts/release/verify-release.mjs tests/unit/t11-release.test.ts tests/fixtures/release/*.json docs/release/*.md docs/iterations/T11/*.md",
+      "exitCode": 0,
+      "result": "All matched files use Prettier code style",
+      "raw": ".t11-review-runtime/raw/release-explicit-checks.log"
+    },
+    {
+      "id": "C13",
+      "command": "bash -n scripts/release/collect-macos.sh",
+      "exitCode": 0,
+      "result": "syntax OK (no execution of the collector)",
+      "raw": ".t11-review-runtime/raw/release-explicit-checks.log"
+    },
+    {
+      "id": "C14",
+      "command": "npm run verify:sources",
+      "exitCode": 0,
+      "result": "已核对 12 个归档源文件",
+      "raw": ".t11-review-runtime/raw/release-explicit-checks.log"
+    },
+    {
+      "id": "C15",
+      "command": "git diff --check BASE PRODUCT",
+      "exitCode": 0,
+      "result": "no whitespace errors in the frozen candidate diff",
+      "raw": null
+    },
+    {
+      "id": "C16",
+      "command": "independent PRD parse: count '^### FR-nn ...P0...' headings; count G.1 table ids + G.4 list items; sha256 of PRD",
+      "exitCode": 0,
+      "result": "57 unique P0 headings; 37 table ids + 13 list items = 50 G entries; PRD sha256 7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb (equal to the pin in approved-fixed-baseline-probe.json / t09-readonly-alignment.json)",
+      "raw": null
+    },
+    {
+      "id": "C17",
+      "command": "grep for '38 failed' across all 48 archived logs; grep for 'deepseek' across the repository",
+      "exitCode": 0,
+      "result": "no archived log contains '38 failed' (first-run raw genuinely absent); the deepseek endpoint/model literal appears only in scripts/release/verify.ts:114-115 and tests/unit/t11-release.test.ts:338-339, with no PRD or docs basis",
+      "raw": null
+    },
+    {
+      "id": "C18",
+      "command": "attachment line-structure probe: tail -c 1 | xxd; python split on newline; grep -rn ERR_NETWORK_CHANGED over .t11-review-runtime/, docs/, scripts/, tests/",
+      "exitCode": 0,
+      "result": "file ends with 0x0a; 321 newlines; 321 content lines; 322 split parts (last empty). ERR_NETWORK_CHANGED: 0 matches inside this review root.",
+      "raw": "inline command output (no file written); conclusions recorded in metadata/review-session.json"
+    },
+    {
+      "id": "C19",
+      "command": "attachment full-read coverage (4 Read tool calls, offsets 1/149/283/1)",
+      "exitCode": 0,
+      "result": "contiguous coverage of body lines 1-321 with no gap or overlap; independent byte/hash agreement (53774 / 35a8ee75...)",
+      "raw": "metadata/review-session.json prompt.toolReadCoverage"
+    }
+  ],
+  "commandsNotRunByAuthority": [
+    "npm run test:e2e / install-electron / package:dir",
+    "real macOS/Windows collector execution",
+    "signing, notarization, ticket submission",
+    "real model API evaluation",
+    "human user study",
+    "any product/UI launch, desktop focus, credential or secret read",
+    "network egress, paid action"
+  ]
+}

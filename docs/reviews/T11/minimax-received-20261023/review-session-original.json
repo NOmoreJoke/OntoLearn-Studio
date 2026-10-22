@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "role": "minimax",
+  "purpose": "T11 round-1 independent read-only review: actual task/session/stream and setting read-back",
+  "observedAt": "2026-10-22T15:20:00Z",
+  "session": {
+    "sessionId": "mvs_52775b8f354f485a919e2c0e8ebe6bd2",
+    "agentName": "mavis",
+    "frameworkType": "pi-agent",
+    "workspaceDir": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-minimax-review-7d28fdb",
+    "effective_model": "minimax/MiniMax-M3.1-Flash",
+    "model_variant": "thinking",
+    "thinking_effort": "xhigh",
+    "createdAt": 1792667526487,
+    "status": "started",
+    "source": "mavis session get --session me (own session only)",
+    "note": "session get does not expose turn/stream identifiers in this runtime; no turn/stream id is available to record and none was invented"
+  },
+  "designatedSettingsReadback": {
+    "model": "M3.1-Flash",
+    "effort": "xhigh",
+    "permissionMode": "bypassPermissions",
+    "permissionUiLabel": "始终授权",
+    "receipt": ".t11-review-runtime/metadata/owner-task-settings.json",
+    "receiptSHA256": "64c7f506d3c5a8fdcaa257e358e9937c868aa8d9cde49ed2ad8d1ebe809dc843",
+    "receiptReadBack": {
+      "model": "M3.1-Flash",
+      "effort": "xhigh",
+      "permission": "始终授权",
+      "taskId": "mvs_52775b8f354f485a919e2c0e8ebe6bd2",
+      "submission": true,
+      "globalConfigRead": false
+    },
+    "crossCheck": "session get (own session) reports effective_model minimax/MiniMax-M3.1-Flash, variant thinking, thinking.effort xhigh, workspaceDir = this review worktree; session id equals receipt taskId"
+  },
+  "ownerTaskSettingsSHA256": "64c7f506d3c5a8fdcaa257e358e9937c868aa8d9cde49ed2ad8d1ebe809dc843",
+  "prompt": {
+    "attachmentBytes": 53774,
+    "attachmentSHA256": "35a8ee75e450d16b199dd25d052c43f57613b5b473b99c291844131779f40978",
+    "linesRead": 321,
+    "committedPrefix": {
+      "path": "docs/reviews/T11/round-1/minimax-m31flash-prompt.md",
+      "bytes": 29857,
+      "sha256": "36a3c694722f78d16e1815d7e11360ed187521963711ffa753ea2e4110dde4c0",
+      "prefixMatch": true,
+      "verified": "attachment[0:29857] == committed round-1 prompt bytes"
+    },
+    "lineStructure": {
+      "bytes": 53774,
+      "sha256": "35a8ee75e450d16b199dd25d052c43f57613b5b473b99c291844131779f40978",
+      "endsWithNewline": true,
+      "newlineCount": 321,
+      "contentLines": 321,
+      "splitOnNewlineParts": 322,
+      "note": "user phrased 322 lines = split parts incl. trailing empty part; actual body is 321 lines",
+      "toolReadCoverage": [
+        {
+          "call": 1,
+          "offset": 1,
+          "limit": null,
+          "returnedLines": "1-148",
+          "note": "tool byte-limit truncation hint: continue with offset=149"
+        },
+        {
+          "call": 2,
+          "offset": 149,
+          "limit": null,
+          "returnedLines": "149-282",
+          "note": "hint: continue with offset=283"
+        },
+        {
+          "call": 3,
+          "offset": 283,
+          "limit": null,
+          "returnedLines": "283-321",
+          "note": "no further truncation hint; file body ends here"
+        },
+        {
+          "call": 4,
+          "offset": 1,
+          "limit": 1,
+          "returnedLines": "1",
+          "note": "re-check of row-count hint: \"321 more lines in file\""
+        }
+      ],
+      "coverageContiguous": true,
+      "gaps": 0,
+      "overlaps": 0
+    }
+  },
+  "frozenInputs": {
+    "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "product": "7d28fdb27c0aac39ed7df1f9fd5fa0f127b5d9f4",
+    "processAnchor": "9f12f17b74f1e26f310c8298232a7fe66cb026ad",
+    "reviewHead": "b6e57a0534c94316dd07c3a87b4b8931d5a39501",
+    "checkout": "detached at b6e57a0534c94316dd07c3a87b4b8931d5a39501; no branch switch performed",
+    "productPathCount": 25,
+    "processOnlyChangeCount": 8,
+    "allProductGitBlobSHA256MatchManifest": true,
+    "allProcessAnchorBytesMatchManifest": true
+  },
+  "workspaceDrift": {
+    "AGENTS.md": {
+      "expectedSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "actualSHA256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4",
+      "matches": true,
+      "staged": false,
+      "note": "operational-policy-only difference; manifest excludedFromStaging still records the earlier hash 78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+    },
+    "otherControlledSourceDrift": "none detected"
+  },
+  "runtimePaths": {
+    "tmp": ".t11-review-runtime/tmp",
+    "raw": ".t11-review-runtime/raw",
+    "report": ".t11-review-runtime/report/review.md",
+    "metadata": ".t11-review-runtime/metadata"
+  },
+  "actionsNotPerformed": [
+    "no product/test/config/dependency/assertion/manifest modification",
+    "no stage/commit/push/PR/branch switch",
+    "no GUI/app launch, no desktop focus, no credential or secret read",
+    "no network/API/external egress/paid action",
+    "no install, signing or notarization submission",
+    "no peer worktree/peer report/peer metadata read",
+    "no read of any file outside this review root, including the declared native proof file in the development worktree"
+  ],
+  "continuationTurn": {
+    "turnId": "cbcd9805-5962-433d-87cd-436c50f819be",
+    "source": ".t11-review-runtime/metadata/native-dispatch-readback.json (app-created, preserved byte-identical)",
+    "terminal": "aborted",
+    "reviewPass": false,
+    "completeContentRead": true,
+    "attachmentExactBytes": true,
+    "noGUI": true,
+    "proofPathDeclaredOutsideOwnRoot": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-release/docs/reviews/T11/native-readback-20261022/minimax-minimal-native-proof.json",
+    "proofReadByThisReview": false,
+    "note": "declared path/hash recorded only; not read because it lies outside this review root"
+  },
+  "appCreatedMetadataPreserved": {
+    "dispatch-created.json": {
+      "bytes": 1426,
+      "sha256": "e5ea09c9dcede83c21600df4e63fe7719971087664faaac6eff667a03d378e92",
+      "key": "reviewPass=false; actualCompleteReadToolEvidenceVerified=false; turnId/streamId=null; guiReleased=true; newAttempts=0"
+    },
+    "native-dispatch-readback.json": {
+      "bytes": 483,
+      "sha256": "072ef0e93654edda67e2c23101ea7fa7036ee4e71326b0c8e97fe7cb0c36a212",
+      "key": "turnId cbcd9805-5962-433d-87cd-436c50f819be; terminal=aborted; reviewPass=false"
+    },
+    "attachment-read-first.ax.txt": {
+      "bytes": 1760,
+      "sha256": "32940de9bcd8fa7d1bce05614fb85a6531fd8694748bdfeaa2a61b82a823be67",
+      "key": "app accessibility-tree delta showing attachment read"
+    },
+    "owner-task-settings.json": {
+      "bytes": 505,
+      "sha256": "64c7f506d3c5a8fdcaa257e358e9937c868aa8d9cde49ed2ad8d1ebe809dc843",
+      "key": "unchanged owner receipt"
+    },
+    "setup.json": {
+      "bytes": 2988,
+      "sha256": "51647169d792449426d3a17375f89c3c7f59a66d6826bf7fa69cd760590eaa03",
+      "key": "unchanged owner setup receipt"
+    },
+    "source-setup.json": {
+      "bytes": 342929,
+      "sha256": "c3ed0996071d5cc5eba221095dbb893b4546093f4c257e8be7ad75e8fc98e152",
+      "key": "unchanged 822-file control record"
+    }
+  },
+  "errNetworkChangedOccurrence": {
+    "searched": [
+      ".t11-review-runtime/ (metadata, raw, tmp/extract)",
+      "docs/",
+      "scripts/",
+      "tests/"
+    ],
+    "matches": 0,
+    "conclusion": "net::ERR_NETWORK_CHANGED has no artifact inside this review root; it belongs to the dispatch/native-readback chain whose proof file lies outside this root (declared, not read). Nothing was deleted or rewritten.",
+    "preservedFailureArtifacts": [
+      "raw/full-check-with-probe.log (this round npm run check exit 1)",
+      "tmp/extract/unit-third-run.log (historical 40 failed)",
+      "tmp/extract/check-first-run.log (historical typecheck declaration-missing failure)",
+      "tmp/extract/check-second-run.log (historical .venv/bin/python ENOENT, 8 failed)",
+      "raw/prettier-final-state.log (exit 1, 2 own-runtime files)",
+      "raw/eslint-final-state.log (exit 0, empty)"
+    ],
+    "notInventedGap": "first-run 38-failure raw remains absent (no archived log contains \"38 failed\"); not back-filled"
+  }
+}

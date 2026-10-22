@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-23",
+  "zDispatch": {
+    "path": "../review-root-setup-20261022/zcode-full-prompt.md",
+    "sha256": "1c044e9a98d984528b2a73a33940501bff64d074dfd9dc544e4ee7634d13c911",
+    "bytes": 53740
+  },
+  "fixedMPreparationPromptInOwnZCheckout": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/docs/reviews/T11/round-1/minimax-m31flash-prompt.md",
+    "gitCommit": "b6e57a0534c94316dd07c3a87b4b8931d5a39501",
+    "bytes": 29857,
+    "sha256": "36a3c694722f78d16e1815d7e11360ed187521963711ffa753ea2e4110dde4c0",
+    "physicalEqualsFrozenGit": true,
+    "classification": "Pre-existing frozen preparation instructions, not peer runtime/report/state",
+    "listedInOwnPreparationIndex": true
+  },
+  "ownZMinimalReadEvidence": {
+    "sourceFile": "/Users/kyle/.zcode/cli/rollout/model-io-session_31c8c641b36907791bdab363f7473a01.jsonl",
+    "preparationIndexReadCalls": [
+      {
+        "sessionId": "session_31c8c641b36907791bdab363f7473a01",
+        "turnId": "turn_1b2a8b28-1eab-4f29-ad08-6a8385491485",
+        "requestId": "35fc5d8b-4489-453b-b8ab-6e8c7d7dd9f0",
+        "toolCallId": "call_fef4ce01686d40ef869b80ec",
+        "filePath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T11-zcode-review-7d28fdb/docs/reviews/T11/round-1/preparation-index.json"
+      }
+    ],
+    "preparationIndexToolResultMetadata": [
+      {
+        "toolCallId": "call_fef4ce01686d40ef869b80ec",
+        "toolName": "Read",
+        "isError": false
+      }
+    ],
+    "directKnownMPreparationPromptBodyCallsFound": [],
+    "exactMBodyReadIndependentlyVerified": false,
+    "limit": "Only known own session tool-call inputs checked; not proof no indirect/other access occurred"
+  },
+  "zReportStatement": "Section2 says minimax prompt read as preparation input for scope equivalence; retained as reviewer statement",
+  "explicitNamedMPreparationPromptPermission": "not found",
+  "explicitBanOnThisFrozenOwnGitPrompt": "not found; bans current peer opinions/report/state/metadata and parent scans",
+  "blanketIndependenceComplianceProven": false,
+  "peerRuntimeOrMCurrentInformationReadForThisAudit": false,
+  "noGlobalIngressOrUnknownLogTracing": true
+}
