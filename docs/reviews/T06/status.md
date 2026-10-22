@@ -2,6 +2,12 @@
 
 ## 当前状态：blocked，完整目标保留
 
+2026-10-22 16:01+08：总控已正式授原 T06 唯一后台双审创建/监控及串行租约；阶段验收协调线仅核入口，不建重复任务。产品61396a与12项来源/完整diff未漂移。新增独立审查树T06-review-61396a5固定detached10f1，携最新保护AGENTS，npm ci/uv sync --frozen均exit0，环境隔离。
+
+实际指定模型审查正文仍发送0次、真实审查taskID0：ZCode官方app-server第一次缺默认相对Provider文件exit1；按正式env定位安装包Provider及既有personal配置后第二进程仅storage ready，session/create和runtime/capabilities无返回，自有pid52565已SIGTERM/exit143保全。MiniMax仅新任务空草稿，观察M3.1-Flash/xhigh/始终授权并选审查树，未提交正文。继续调查官方后台入口，不能将进程/草稿/设置当外审启动或Pass。
+
+操作时间纠正：正式read_thread证实“现在可操作，仅限两个审查应用”是旧turn01a15c92/用户消息01a15c92-8ef9-7960-8b80-3ea9feb20908，startedAt1792554471，非本轮新许可。owner误读压缩后重现消息，已停止新增GUI、向用户/总控/协调线正式纠正；当前无桌面许可。此后只按已授权后台路线继续。现行过程补充已纠正，旧冻结提示不改。见round-1/dispatch-progress-20261022.json；下方10/21快照为历史记录，不代表当前待答或当前租约。
+
 2026-10-21 11:48+08已收到原资源问题的实际人类答复：“现在可操作，仅限两个审查应用”。该问题已回答，不再按未答处理，不重复询问；当前短时范围仅ZCode/MiniMax创建指定任务及核设置。按总控既有要求先交串行协调，实查root currentActualLease仍none/指定任务0，条件首位不当租约，尚无本次应用操作或任务创建。回执 round-1/desktop-approval-receipt.json；派发前12产品来源/两冻结提示hash匹配，产品diff为空，实际远端develop仍5f。此许可不扩为产品GUI/永久桌面授权，不重建Goal，不关闭正式接口/验收门。
 
 最新队列通知：T06 S1仍首条件，I05 C4已完成总控固定文件/完整双审输入预检，列第二条件。两项指定新任务均0，安全独立应用入口及租约仍未核验，无新增GUI许可/时间窗口；原在途资源问题不重复询问，不在当前Mac启动应用/e2e/native。
