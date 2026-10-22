@@ -1,0 +1,41 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/charge-reference-v3/run_reference.py",
+        "--attempt",
+        "baseline-01",
+        "--baseline-only"
+      ],
+      "exit": 0,
+      "stdout": "profile-83/baseline:G-base 2298 fits\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/charge-reference-v3/produce_failures_r3.py"
+      ],
+      "exit": 0,
+      "stdout": "late-input-invalid-integer failed {'kind': 'semantic', 'reason': 'INVALID_LITERAL_LEXICAL', 'event': 27, 'wallet': 'ENTRY', 'stage': 'binder/preimages', 'label': 'real normative check rejected', 'phase': 'parse_math'}\nfalse-then-type-error failed {'kind': 'semantic', 'reason': 'RULE_COMPARISON_TYPE_MISMATCH', 'event': 191, 'wallet': 'M0', 'stage': 'M0:evaluate', 'label': 'real normative check rejected', 'phase': 'compare_math'}\nuncontrolled-head-zero-match failed {'kind': 'semantic', 'reason': 'INVALID_RULE', 'event': 52, 'wallet': 'M0', 'stage': 'M0:compile', 'label': 'real normative check rejected', 'phase': 'compile:head'}\nuncontrolled-head-disabled failed {'kind': 'semantic', 'reason': 'INVALID_RULE', 'event': 52, 'wallet': 'M0', 'stage': 'M0:compile', 'label': 'real normative check rejected', 'phase': 'compile:head'}\nvariable-predicate-disabled failed {'kind': 'semantic', 'reason': 'INVALID_RULE', 'event': 41, 'wallet': 'M0', 'stage': 'M0:compile', 'label': 'real normative check rejected', 'phase': 'compile:when'}\nresource-before-late-lexical failed {'kind': 'resource', 'reason': 'RESOURCE_LIMIT', 'event': 53, 'wallet': 'ENTRY', 'domain': 'input_bytes', 'stage': 'binder/preimages', 'label': 'term+source occurrence encoding', 'before': {'work': 502398, 'input_bytes': 250824, 'output_bytes': 0, 'trace_items': 0, 'firings': 0, 'head_occurrences': 0, 'bindings': 0, 'scan_copy': 21, 'hash_bytes': 251289}, 'liveBefore': {'objects': 180, 'scalar': 405712}, 'requested': {'work': 50221, 'input_bytes': 50202}, 'attemptedHold': None, 'cap': 262144}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "docs/iterations/I05/independent-fee-spec/charge-reference-v3/run_reference.py",
+        "--attempt",
+        "all114-01"
+      ],
+      "exit": 0,
+      "stdout": "profile-83/baseline:G-base 2298 fits\nprofile-83/baseline:G-behavior 3460 fits\nprofile-83/baseline:G-map-empty 528 fits\nprofile-83/baseline:E.5 661 fits\nprofile-83/A-01:steps:1 2295 fits\nprofile-83/B-01:steps:0 2916 fits\nprofile-83/B-02:steps:0 2739 fits\nprofile-83/B-03:setup:0 1734 fits\nprofile-83/B-03:steps:0 2300 fits\nprofile-83/B-04:steps:0 3460 fits\nprofile-83/B-04:steps:1 2750 fits\nprofile-83/B-05:steps:0 3460 fits\nprofile-83/B-06:steps:0 3460 fits\nprofile-83/B-07:steps:0 2916 fits\nprofile-83/B-09:steps:0 3460 fits\nprofile-83/B-10:steps:0 3460 fits\nprofile-83/B-11:steps:0 3460 fits\nprofile-83/M-01:steps:0 808 fits\nprofile-83/M-02:steps:0 808 fits\nprofile-83/M-02:steps:1 808 fits\nprofile-83/M-03:steps:0 808 fits\nprofile-83/M-03:steps:1 863 fits\nprofile-83/M-03:steps:2 712 fits\nprofile-83/M-04:steps:0 808 fits\nprofile-83/M-04:steps:1 812 fits\nprofile-83/M-06:steps:0 808 fits\nprofile-83/M-06:steps:2 812 fits\nprofile-83/O-01:setup:0 1887 fits\nprofile-83/O-01:steps:0 1887 fits\nprofile-83/Q-01:steps:0 2298 fits\nprofile-83/Q-02:setup:0 2252 fits\nprofile-83/Q-02:steps:0 2252 fits\nprofile-83/R-01:steps:0 2298 fits\nprofile-83/R-02:steps:0 2298 fits\nprofile-83/R-02:steps:1 1734 fits\nprofile-83/R-02:steps:2 1734 fits\nprofile-83/R-02:steps:3 1734 fits\nprofile-83/R-03:steps:0 2298 fits\nprofile-83/R-03:steps:1 2916 fits\nprofile-83/R-03:steps:2 2300 fits\nprofile-83/R-03:steps:3 2300 fits\nprofile-83/R-04:steps:0 2495 fits\nprofile-83/R-04:steps:1 4325 fits\nprofile-83/R-04:steps:2 4325 fits\nprofile-83/R-05:steps:0 2366 fits\nprofile-83/R-05:steps:1 2602 fits\nprofile-83/R-05:steps:2:order:0 2602 fits\nprofile-83/R-06:steps:0 2366 fits\nprofile-83/R-06:steps:1 2602 fits\nprofile-83/R-06:steps:2:order:0 2602 fits\nprofile-83/R-06:steps:2:order:1 2601 fits\nprofile-83/V-01:steps:0 2203 fits\nprofile-83/V-01:steps:1 2203 fits\nprofile-83/V-01:steps:2 2278 fits\nprofile-83/V-01:steps:3 2278 fits\nprofile-83/extension:CMP-EQ-TRUE 2038 fits\nprofile-83/extension:CMP-EQ-FALSE 2008 fits\nprofile-83/extension:CMP-NE-TRUE 2037 fits\nprofile-83/extension:CMP-NE-FALSE 2008 fits\nprofile-83/extension:CMP-LT-TRUE 2037 fits\nprofile-83/extension:CMP-LT-FALSE 2008 fits\nprofile-83/extension:CMP-LE-TRUE 2038 fits\nprofile-83/extension:CMP-LE-FALSE 2008 fits\nprofile-83/extension:CMP-GT-TRUE 2037 fits\nprofile-83/extension:CMP-GT-FALSE 2008 fits\nprofile-83/extension:CMP-GE-TRUE 2038 fits\nprofile-83/extension:CMP-GE-FALSE 2008 fits\nprofile-83/extension:JOIN-NO-CROSS-ALARM 2885 fits\nprofile-83/extension:MULTI-OUTPUT-ONE-FIRING 2533 fits\nprofile-83/extension:DISABLED-RULE-NO-OUTPUT 1435 fits\nprofile-83/extension:MISSING-PROPERTY-IS-NOT-A-NEGATION 1889 fits\nprofile-83/extension:CMP-EQ-ABOVE-FALSE 2008 fits\nprofile-83/extension:CMP-NE-ABOVE-TRUE 2037 fits\nprofile-83/extension:CMP-LT-ABOVE-FALSE 2008 fits\nprofile-83/extension:CMP-LE-BELOW-TRUE 2037 fits\nprofile-83/extension:CMP-GT-BELOW-FALSE 2008 fits\nprofile-83/extension:CMP-GE-ABOVE-TRUE 2037 fits\nprofile-83/transfer:classification 1049 fits\nprofile-83/E.5:event-fragment:round:1 2565 fits\nprofile-83/E.5:event-fragment:round:2 5331 fits\nprofile-83/E.5:event-fragment:round:3 8957 fits\nprofile-83/E.5:event-fragment:round:4 13451 prefix-refusal\ndag/type 303 fits\ndag/domain-depth2 482 fits\ndag/range 300 fits\ndag/subclass 318 fits\ndag/first-witness 421 fits\ndag/cross-rule-witness 410 fits\ndag/range-literal 228 fits\nfullview/raw-aliases 384 fits\ndag/raw-aliases 405 fits\nfullview/two-head-occurrences 541 fits\ndag/two-head-occurrences 578 fits\nrestore/fullview/payload-unknown-key 299 fits\nrestore/fullview/tail-source-tamper 299 fits\nrestore/fullview/tail-definition-tamper 299 fits\nrestore/fullview/tail-limits-tamper 299 fits\nrestore/fullview/tail-child-tamper 299 fits\nrestore/explanation/payload-unknown-key 316 fits\nrestore/explanation/tail-source-tamper 316 fits\nrestore/explanation/tail-definition-tamper 316 fits\nrestore/explanation/tail-limits-tamper 316 fits\nrestore/explanation/tail-child-tamper 316 fits\nrestore/explanation/dag-depth-plus-one 321 fits\nrestore/explanation/dag-last-premise-forward 321 fits\nrestore/explanation/leaf-rename-all 321 fits\nrestore/explanation/head-occurrence-1023-15 316 fits\nfullview/turtle-entry 271 fits\nfullview/profile-0 2649 fits\nfullview/profile-55 2463 fits\nfullview/profile-73 2331 fits\nfullview/profile-74 2461 fits\nfullview/profile-75 2331 fits\nfullview/profile-76 2461 fits\n",
+      "stderr": ""
+    }
+  ],
+  "sourceSha256": "d69b50910c22e4a7fa7ed59e791448a67cdd06733305b2ece2c1104ca3c56833",
+  "exit": 0
+}

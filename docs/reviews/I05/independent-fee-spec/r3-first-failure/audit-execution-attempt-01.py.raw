@@ -1,0 +1,144 @@
+"""Independent artifact arithmetic/receipt decoder. No reference/model imports."""
+from pathlib import Path
+import hashlib
+import json
+
+HERE=Path(__file__).resolve().parent
+DOMAINS=('work','input_bytes','output_bytes','trace_items','firings','head_occurrences','bindings','scan_copy','hash_bytes','objects','scalar')
+REASONS=('NONE','INVALID_RULE','INVALID_LITERAL_LEXICAL','UNSUPPORTED_LITERAL_DATATYPE','UNSUPPORTED_NONFINITE_LITERAL','RULE_COMPARISON_TYPE_MISMATCH','RESOURCE_LIMIT','INTERNAL_MATHEMATICAL_CHECK')
+def canonical(v):return json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+def digest(b):return hashlib.sha256(b).hexdigest()
+
+def replay(p,execution):
+    used={w:{d:0 for d in DOMAINS[:9]} for w in p['caps']}
+    live={w:{'objects':0,'scalar':0} for w in p['caps']};peak=json.loads(json.dumps(live))
+    active={};seen=set();handles=slots=0;hpeak={'objects':0,'scalar':0}
+    events=p['executionEvents'] if execution else p['events']
+    stopped=False
+    for index,e in enumerate(events,1):
+        assert e['ordinal']==index
+        w=e['wallet'];charges=e['charges'];hold=e['hold'];release=e['release']
+        assert all(type(n) is int and n>=0 for n in charges.values())
+        if e.get('debited') is False:
+            assert execution and not stopped and not charges and not hold and not release
+            attempted=e['attemptedCharges'];candidate={d:used[w][d]+n for d,n in attempted.items()}
+            if e['attemptedHold']:
+                _,o,s=e['attemptedHold'];candidate.update(objects=live[w]['objects']+o,scalar=live[w]['scalar']+s)
+            d=next(d for d in DOMAINS if d in candidate and candidate[d]>p['caps'][w][d])
+            assert d==e['failure']['domain'] and e['failure']==p['firstError']
+            assert e['failure']['before']==used[w] and e['failure']['liveBefore']==live[w]
+            stopped=True
+        else:
+            if execution and stopped:assert not charges and not hold and e.get('cleanupPrepaidBy')=='H01'
+            attempt={d:used[w][d]+n for d,n in charges.items()}
+            if hold:
+                name,o,s=hold
+                assert name not in seen and type(o) is int and type(s) is int and min(o,s)>=0
+                attempt.update(objects=live[w]['objects']+o,scalar=live[w]['scalar']+s)
+                if name!='receipt' and not name.startswith('control'):handles+=1;slots+=o
+            if execution:assert all(n<=p['caps'][w][d] for d,n in attempt.items())
+            for d,n in charges.items():used[w][d]+=n
+            if hold:
+                seen.add(name);active[name]=(w,o,s)
+                for d,n in zip(('objects','scalar'),(o,s)):live[w][d]+=n;peak[w][d]=max(peak[w][d],live[w][d])
+            if release:
+                assert release in active
+                if release.startswith('control'):assert e['action']=='terminal cleanup control'
+                owner,o,s=active.pop(release)
+                live[owner]['objects']-=o;live[owner]['scalar']-=s
+            if execution and e.get('semanticError'):
+                assert not stopped and e['failure']==p['firstError'];stopped=True
+        assert e['requiredPrefix']==used[w] and e['live']==live[w] and e['peak']==peak[w]
+        total={d:sum(x[d] for x in live.values()) for d in ('objects','scalar')}
+        for d,n in total.items():hpeak[d]=max(hpeak[d],n)
+        assert e['wholeOwnerHLive']==total and e['wholeOwnerHPeak']==hpeak
+    if execution:
+        assert used==p['paidPrefix'] and peak==p['paidPrefixPeak'] and live==p['terminalLive']
+        assert {n:list(v) for n,v in active.items()}==p['terminalRetainedHandles']
+        assert hpeak==p['paidWholeOwnerHPeak']
+        assert handles==p['executionLifetime']['handles'] and slots==p['executionLifetime']['slots']
+        if p['firstError']:assert stopped and not active and not any(any(x.values()) for x in live.values()) and p['noSuccessPrefix']
+        assert digest(canonical(events))==p['executionSha256']
+    else:
+        assert used==p['amount'] and peak==p['peak'] and hpeak==p['wholeOwnerHRequiredPeak']
+        assert digest(canonical(events))==p['programSha256']
+        assert handles==p['finalization']['handles'] and slots==p['finalization']['cumulativeSlots']
+
+def receipt(p):
+    raw=bytes.fromhex(p['finalization']['receiptHex']);pos=0
+    def take(n):
+        nonlocal pos
+        b=raw[pos:pos+n];assert len(b)==n;pos+=n;return b
+    def uint(n):return int.from_bytes(take(n),'big')
+    def text():return take(uint(4)).decode()
+    assert take(5)==b'IFR3\3' and text()==p['id'];take(32)
+    h=uint(4);s=uint(8);assert (h,s)==(p['finalization']['handles'],p['finalization']['cumulativeSlots'])
+    assert take(2)==b'\0\0';wallets=[]
+    for _ in range(uint(4)):
+        w=text();wallets.append(w)
+        for d in DOMAINS:assert uint(8)==(p['paidPrefixPeak'][w][d] if d in ('objects','scalar') else p['paidPrefix'][w][d])
+    assert wallets==list(p['caps'])
+    n=uint(4)
+    for _ in range(n):
+        text();assert uint(1) in (0,1);uint(4);assert uint(1) in (0,1)
+        for _ in range(17):uint(8)
+    status=uint(1);reason=REASONS[uint(2)];ordinal=uint(8)
+    assert take(32).hex()==p['executionSha256']
+    footer=take(32);assert pos==len(raw)
+    assert footer==hashlib.sha256(b'I05-FEE-RECEIPT/3\0'+raw[:-32]+b'\0'*32).digest()
+    err=p['firstError'];assert reason==(err['reason'] if err else 'NONE') and ordinal==(err['event'] if err else 0)
+    assert status==(2 if err and reason=='RESOURCE_LIMIT' else 3 if err and err['kind']=='internal' else 1 if err else 0)
+    f=14+12*len(wallets)+20*n;assert f==p['finalization']['fields']
+    assert p['finalization']['vector']=={'work':f+3*h+s+4*len(raw),'scan_copy':4*len(raw),'hash_bytes':18+len(raw)}
+    assert len(raw)==p['finalization']['receiptBytes'] and digest(raw)==p['finalization']['receiptSha256']
+    assert p['finalization']['staticProofBeforeExecution'] and p['finalization']['H01Paid']
+
+def fee_encode(v):
+    def framed(tag,b):return tag+len(b).to_bytes(4,'big')+b
+    if v is None:return b'N'
+    if type(v) is bool:return b'T' if v else b'F'
+    if type(v) is int:return framed(b'I',hex(v).encode())
+    if type(v) is str:return framed(b'S',v.encode())
+    if type(v) is list:return b'A'+len(v).to_bytes(4,'big')+b''.join(fee_encode(x) for x in v)
+    if type(v) is dict:
+        if set(v)=={'integerHex'}:return fee_encode(int(v['integerHex'],16))
+        if set(v)=={'encoding','bytes'} and v['encoding']=='hex':return framed(b'B',bytes.fromhex(v['bytes']))
+        return b'R'+len(v).to_bytes(4,'big')+b''.join(fee_encode(k)+fee_encode(x) for k,x in v.items())
+    raise AssertionError(type(v))
+
+def main():
+    baseline=json.loads((HERE/'baseline-prefix-r3.json').read_text());failures=json.loads((HERE/'complete-failure-programs-r3.json').read_text())
+    allp=[baseline]+[c['invoice'] for c in failures['cases']]
+    for p in allp:replay(p,False);replay(p,True);receipt(p)
+    # Independent literal hand account. Values were derived before this audit,
+    # not regenerated by the reference or copied from its assertions.
+    assert baseline['programEventCount']==2298 and baseline['executionEventCount']==2298
+    assert {w:v['work'] for w,v in baseline['paidPrefix'].items()}=={'C0':3215492,'ENTRY':176580,'G':185814,'M0':141562,'WIRE8M':0}
+    assert baseline['finalization']['handles']==8 and baseline['finalization']['cumulativeSlots']==149538
+    assert baseline['finalization']['receiptBytes']==792 and baseline['finalization']['vector']['work']==152824
+    assert baseline['wholeOwnerHRequiredPeak']=={'objects':149697,'scalar':6819815}
+    material=json.loads((HERE/'baseline-fee-material-r3.json').read_text())
+    encoded=fee_encode(material);assert encoded.hex()==(HERE/'baseline-fee-material-r3.bytes.hex').read_text().strip()
+    assert len(encoded)==85953 and digest(encoded)=='5bc7b79b64ae371f95078a21eb152fb90e7884a1380764d2b9823a879bda9f8d'
+    by={c['id']:c['invoice'] for c in failures['cases']}
+    literals={
+      'late-input-invalid-integer':('INVALID_LITERAL_LEXICAL',27,32,3,2741,692,7586,819),
+      'false-then-type-error':('RULE_COMPARISON_TYPE_MISMATCH',191,198,5,12153,792,23485,3191),
+      'uncontrolled-head-zero-match':('INVALID_RULE',52,58,4,6773,799,14681,2037),
+      'uncontrolled-head-disabled':('INVALID_RULE',52,58,4,6863,797,14785,2037),
+      'variable-predicate-disabled':('INVALID_RULE',41,47,4,6367,798,13893,2037),
+      'resource-before-late-lexical':('RESOURCE_LIMIT',53,58,3,7089,694,2416695,502398)}
+    for label,(reason,ordinal,count,h,s,r,c0,entry) in literals.items():
+        p=by[label];assert (p['firstError']['reason'],p['firstError']['event'],p['executionEventCount'])==(reason,ordinal,count)
+        assert (p['finalization']['handles'],p['finalization']['cumulativeSlots'],p['finalization']['receiptBytes'])==(h,s,r)
+        assert (p['paidPrefix']['C0']['work'],p['paidPrefix']['ENTRY']['work'])==(c0,entry)
+    p=by['resource-before-late-lexical'];e=p['firstError']
+    assert e['domain']=='input_bytes' and e['before']['input_bytes']==250824 and e['requested']['input_bytes']==50202 and e['cap']==262144
+    assert p['semanticAnalysis']['reachedByExecution'] is False and not any(e.get('semanticError') for e in p['executionEvents'])
+    assert by['late-input-invalid-integer']['paidPrefix']['ENTRY']['input_bytes']==337
+    assert by['false-then-type-error']['paidPrefix']['M0']['trace_items']==1 and by['false-then-type-error']['paidPrefix']['M0']['work']==10168
+    assert by['uncontrolled-head-disabled']['paidPrefix']['M0']['work']==1217
+    assert by['variable-predicate-disabled']['paidPrefix']['M0']['work']==1091
+    print('independent arithmetic, atomic replay, literal hand accounts, IFR3 decode/hash and baseline fee-codec: 7 programs passed')
+
+if __name__=='__main__':main()

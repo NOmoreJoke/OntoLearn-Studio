@@ -1,0 +1,26 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/produce_failures_r3.py"
+      ],
+      "exit": 0,
+      "stdout": "late-input-invalid-integer failed {'kind': 'semantic', 'reason': 'INVALID_LITERAL_LEXICAL', 'event': 27, 'wallet': 'ENTRY', 'stage': 'binder/preimages', 'label': 'real normative check rejected', 'phase': 'parse_math'}\nfalse-then-type-error failed {'kind': 'semantic', 'reason': 'RULE_COMPARISON_TYPE_MISMATCH', 'event': 191, 'wallet': 'M0', 'stage': 'M0:evaluate', 'label': 'real normative check rejected', 'phase': 'compare_math'}\nuncontrolled-head-zero-match failed {'kind': 'semantic', 'reason': 'INVALID_RULE', 'event': 52, 'wallet': 'M0', 'stage': 'M0:compile', 'label': 'real normative check rejected', 'phase': 'compile:head'}\nuncontrolled-head-disabled failed {'kind': 'semantic', 'reason': 'INVALID_RULE', 'event': 52, 'wallet': 'M0', 'stage': 'M0:compile', 'label': 'real normative check rejected', 'phase': 'compile:head'}\nvariable-predicate-disabled failed {'kind': 'semantic', 'reason': 'INVALID_RULE', 'event': 41, 'wallet': 'M0', 'stage': 'M0:compile', 'label': 'real normative check rejected', 'phase': 'compile:when'}\nresource-before-late-lexical failed {'kind': 'resource', 'reason': 'RESOURCE_LIMIT', 'event': 53, 'wallet': 'ENTRY', 'domain': 'input_bytes', 'stage': 'binder/preimages', 'label': 'term+source occurrence encoding', 'before': {'work': 502398, 'input_bytes': 250824, 'output_bytes': 0, 'trace_items': 0, 'firings': 0, 'head_occurrences': 0, 'bindings': 0, 'scan_copy': 21, 'hash_bytes': 251289}, 'liveBefore': {'objects': 180, 'scalar': 405712}, 'requested': {'work': 50221, 'input_bytes': 50202}, 'attemptedHold': None, 'cap': 262144}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py\", line 144, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py\", line 112, in main\n    for p in allp:replay(p,False);replay(p,True);receipt(p)\n                                                 ^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py\", line 80, in receipt\n    assert wallets==list(p['caps'])\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    }
+  ],
+  "firstFailure": 1,
+  "exit": 1
+}

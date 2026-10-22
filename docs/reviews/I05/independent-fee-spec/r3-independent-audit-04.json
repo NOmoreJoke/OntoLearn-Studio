@@ -1,0 +1,16 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/Users/kyle/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12",
+        "-B",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py\", line 170, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py\", line 119, in main\n    for p in allp:replay(p,False);replay(p,True);receipt(p)\n                                                 ^^^^^^^^^^\n  File \"/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-independent-fee-spec/docs/iterations/I05/independent-fee-spec/charge-reference-v3/audit_execution_r3.py\", line 88, in receipt\n    assert limits[:7]==[p['caps']['M'+str(i)][d] for d in DOMAINS[:7]]\n                        ~~~~~~~~~^^^^^^^^^^^^\nKeyError: 'M0'\n"
+    }
+  ],
+  "firstFailure": 0,
+  "exit": 1
+}
