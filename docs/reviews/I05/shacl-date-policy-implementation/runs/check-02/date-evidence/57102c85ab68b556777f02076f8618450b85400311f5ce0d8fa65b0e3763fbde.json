@@ -1,0 +1,121 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_non_date_original_normative_cells_keep_full_reports[C-langString]/C-langString",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"a\"@en .\nex:s a ex:Focus .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:datatype rdf:langString .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "complete",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 42,
+      "remaining": 999958,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          8
+        ],
+        [
+          "date-value",
+          1,
+          3
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [
+    {
+      "dataTriples": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"a\"@en"
+        ]
+      ],
+      "conforms": true,
+      "rawReportNTriples": "_:Ncf48011c41764179b110cb73556f67ce <http://www.w3.org/ns/shacl#conforms> \"true\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n_:Ncf48011c41764179b110cb73556f67ce <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationReport> .\n",
+      "reportTriples": [
+        [
+          "_:Ncf48011c41764179b110cb73556f67ce",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:Ncf48011c41764179b110cb73556f67ce",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-2",
+    "dataPolicy": "strict",
+    "rangePolicy": "utc-date-range-v1",
+    "report": {
+      "conforms": true,
+      "violations": []
+    }
+  },
+  "error": null,
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "5bd68463e7fc4649fda7708c087fe61d0a7064c7eb2ebfd264d6ca25fc61bf74"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 6,
+      "sha256": "20fbb6b7e1e9ee13a4863d4cf3dc3b324576c32fd9ce62e70eb6ed2519ef4b1f"
+    }
+  ]
+}

@@ -1,0 +1,592 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  08:11:25
+   Duration  7.23s (tests 81%, transform 11%, import 7%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 28ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 18ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 53ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+266 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 5209 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  0%]
+...................                                                      [  0%]
+packages/engine/tests/test_contract_v2.py .............................. [  1%]
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  8%]
+...........................................                              [  9%]
+packages/engine/tests/test_coordinator_control.py ...................    [  9%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 10%]
+........................                                                 [ 10%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 10%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 10%]
+packages/engine/tests/test_i04_progress.py ......                        [ 10%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 11%]
+.................................                                        [ 12%]
+packages/engine/tests/test_job_store.py ................................ [ 12%]
+........................................................................ [ 14%]
+.............................................................            [ 15%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 15%]
+packages/engine/tests/test_project_applications.py ..................... [ 15%]
+........................................................................ [ 17%]
+.................                                                        [ 17%]
+packages/engine/tests/test_project_business3_contract.py ............... [ 17%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+....................................                                     [ 21%]
+packages/engine/tests/test_project_changeset_service.py ................ [ 21%]
+..............................................................           [ 22%]
+packages/engine/tests/test_project_changeset_stdio.py .....              [ 22%]
+packages/engine/tests/test_project_compensation.py ..................... [ 23%]
+..........................................................               [ 24%]
+packages/engine/tests/test_project_create_contract.py .................. [ 24%]
+........................................................................ [ 26%]
+......................................                                   [ 26%]
+packages/engine/tests/test_project_draft_plan.py ....................    [ 27%]
+packages/engine/tests/test_project_format3.py ...................ss..s.. [ 27%]
+s..s..s..s..s..s..s..................................................... [ 29%]
+.............s........................ss..s..s..s..s..s..s..s..s........ [ 30%]
+..........................................................s............. [ 31%]
+...........ss..s..s..s..s..s..s..s..s................................... [ 33%]
+...............................s........................ss..s..s..s..s.. [ 34%]
+s..s..s..s.............................................................. [ 35%]
+....s................................................................... [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 40%]
+........................                                                 [ 40%]
+packages/engine/tests/test_project_host_read_services.py ............... [ 40%]
+.....................................                                    [ 41%]
+packages/engine/tests/test_project_job_format3.py ...................... [ 41%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+....................................................................     [ 46%]
+packages/engine/tests/test_project_source_table_material.py ............ [ 46%]
+........................................................................ [ 47%]
+................................................                         [ 48%]
+packages/engine/tests/test_project_source_transport.py ................. [ 48%]
+......................................................................   [ 50%]
+packages/engine/tests/test_project_startup_contract.py ................. [ 50%]
+...................................                                      [ 51%]
+packages/engine/tests/test_project_startup_stdio.py .................... [ 51%]
+......                                                                   [ 51%]
+packages/engine/tests/test_project_transactions.py ..................... [ 52%]
+.................................                                        [ 52%]
+packages/engine/tests/test_project_workspace.py ...........              [ 52%]
+packages/engine/tests/test_protocol.py .............                     [ 53%]
+packages/engine/tests/test_quality_profile_revalidation.py ............. [ 53%]
+........................................................................ [ 54%]
+.............................................................            [ 56%]
+packages/engine/tests/test_resident_runtime.py .............             [ 56%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 56%]
+packages/engine/tests/test_semantic.py ................................. [ 56%]
+........................................................                 [ 58%]
+packages/engine/tests/test_semantic_error_adapter.py ................... [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 61%]
+..............................................                           [ 62%]
+packages/engine/tests/test_semantic_error_reasons.py ................... [ 62%]
+                                                                         [ 62%]
+packages/engine/tests/test_semantic_execution.py ....................... [ 62%]
+.........                                                                [ 63%]
+packages/engine/tests/test_semantic_lexical.py ......................... [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 66%]
+..............                                                           [ 66%]
+packages/engine/tests/test_semantic_profile_directsteps.py ............. [ 66%]
+................................................................         [ 67%]
+packages/engine/tests/test_semantic_profile_errors.py .................. [ 68%]
+...                                                                      [ 68%]
+packages/engine/tests/test_semantic_profile_imports.py ....              [ 68%]
+packages/engine/tests/test_semantic_profile_input.py ................... [ 68%]
+..............                                                           [ 69%]
+packages/engine/tests/test_semantic_profile_integration.py ............. [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+......................................................                   [ 82%]
+packages/engine/tests/test_semantic_profile_limits.py ......             [ 82%]
+packages/engine/tests/test_semantic_profile_production.py .............. [ 83%]
+.......                                                                  [ 83%]
+packages/engine/tests/test_semantic_profile_restore.py ................. [ 83%]
+......................................................................   [ 85%]
+packages/engine/tests/test_semantic_profile_restore_limits.py .......... [ 85%]
+........................................................................ [ 86%]
+...................                                                      [ 86%]
+packages/engine/tests/test_semantic_profile_shape_entry.py ............. [ 87%]
+.............                                                            [ 87%]
+packages/engine/tests/test_semantic_profile_source.py .................. [ 87%]
+.....................................                                    [ 88%]
+packages/engine/tests/test_semantic_query_tokens.py .................... [ 88%]
+................................                                         [ 89%]
+packages/engine/tests/test_semantic_rdfs_basis_determinism.py .......... [ 89%]
+                                                                         [ 89%]
+packages/engine/tests/test_semantic_scopes.py ..............             [ 89%]
+packages/engine/tests/test_semantic_selected_projection.py ............. [ 90%]
+...................................                                      [ 90%]
+packages/engine/tests/test_semantic_shacl_date_policy.py ............... [ 91%]
+........................................................................ [ 92%]
+.......F...F..F...                                                       [ 92%]
+packages/engine/tests/test_semantic_shacl_entry.py ..................... [ 93%]
+.................................................                        [ 94%]
+packages/engine/tests/test_semantic_string_identity.py ................. [ 94%]
+........................................................                 [ 95%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 95%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 95%]
+packages/engine/tests/test_storage.py .................................. [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 99%]
+.........                                                                [ 99%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 99%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+=================================== FAILURES ===================================
+_ test_existing_front_doors_are_preserved[@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\n<relative> ex:p 1 .-@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "2000-01-01Z"^^xsd:date .-ABSOLUTE_IRI_REQUIRED] _
+
+observe = <function observe.<locals>.invoke at 0x10bbdd580>
+text = '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/...> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\n<relative> ex:p 1 .'
+constraints = '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/...ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "2000-01-01Z"^^xsd:date .'
+code = 'ABSOLUTE_IRI_REQUIRED'
+
+    @pytest.mark.parametrize(
+        "text,constraints,code",
+        [
+            (None, shape(), "TEXT_TYPE_INVALID"),
+            ("not Turtle", shape(), "INVALID_TURTLE"),
+            ("\ud800", shape(), "INVALID_UNICODE"),
+            ("#" * (1_048_576 + 1), shape(), "TEXT_INPUT_LIMIT"),
+            (PREFIX + "[] ex:p 1 .", shape(), "UNSUPPORTED_BLANK_NODE"),
+            (data('"1"^^<urn:unknown>'), shape(), "UNSUPPORTED_LITERAL_DATATYPE"),
+            (data('"NaN"^^xsd:double'), shape(), "UNSUPPORTED_NONFINITE_LITERAL"),
+            (
+                PREFIX + "ex:s owl:imports <https://example.invalid/o> .",
+                shape(),
+                "EXTERNAL_ACCESS_DENIED",
+            ),
+            (PREFIX + "<relative> ex:p 1 .", shape(), "ABSOLUTE_IRI_REQUIRED"),
+            (data(literal()), shape().replace("sh:path ex:p", "sh:path ex:p, ex:q"), "INVALID_SHAPE"),
+            (
+                data(literal()) + "\nex:A rdfs:subClassOf ex:Focus .",
+                shape(),
+                "FACT_SCOPE_CONTAINS_AXIOMS",
+            ),
+        ],
+    )
+    def test_existing_front_doors_are_preserved(observe, text, constraints, code):
+>       reject(observe, code, text, constraints)
+
+packages/engine/tests/test_semantic_shacl_date_policy.py:530: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+observe = <function observe.<locals>.invoke at 0x10bbdd580>
+code = 'ABSOLUTE_IRI_REQUIRED'
+text = '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/...> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\n<relative> ex:p 1 .'
+constraints = '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/...ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "2000-01-01Z"^^xsd:date .'
+options = {}
+
+    def reject(observe, code, text, constraints, **options):
+>       with pytest.raises(SemanticError, match="^" + code + "$"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: 
+E       - INVALID_TURTLE
+E       + ABSOLUTE_IRI_REQUIRED
+
+packages/engine/tests/test_semantic_shacl_date_policy.py:184: AssertionError
+_______ test_utc_policy_does_not_change_legacy_or_global_entry_semantics _______
+
+observe = <function observe.<locals>.invoke at 0x10d02ed40>
+
+    def test_utc_policy_does_not_change_legacy_or_global_entry_semantics(observe):
+        actual, record = observe("utc", data(literal()), shape())
+        assert_report(actual, record)
+        reject(observe, "INVALID_SHAPE", data(literal()), shape(), range_policy="legacy")
+        graph = semantic.parse_turtle(data(literal()))
+        shapes = semantic.parse_turtle(shape(), shapes=True)
+        with pytest.raises(SemanticError, match="^INVALID_SHAPE$"):
+            semantic.check_shapes(graph, shapes)
+        assert semantic.SEMANTICS_VERSION == "i05-finite-6"
+        assert semantic.SHACL_TEXT_ENTRY_VERSION == "i05-shacl-text-1"
+>       assert semantic.query(graph, "SELECT ?s WHERE {?s <urn:m1:p> ?v}")["rows"] == [
+            {"s": "<urn:m1:s>"}
+        ]
+E       AssertionError: assert [['<urn:m1:s>']] == [{'s': '<urn:m1:s>'}]
+E         
+E         At index 0 diff: ['<urn:m1:s>'] != {'s': '<urn:m1:s>'}
+E         Use -v to get more diff
+
+packages/engine/tests/test_semantic_shacl_date_policy.py:551: AssertionError
+_______ test_public_one_million_unit_boundary_is_an_independent_invoice ________
+
+suffix = 'GRAPH_INPUT_LIMIT'
+text = '@prefix : <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n:f0 a :Focus .\n:f1 a :Focus .\n:f2 a :Foc...1-05Z"^^xsd:date, "2000-01-06Z"^^xsd:date, "2000-01-07Z"^^xsd:date, "2000-01-08Z"^^xsd:date, "2000-01-09Z"^^xsd:date .'
+constraints = '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/...ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "0001-01-01Z"^^xsd:date .'
+data_policy = 'strict', range_policy = 'utc-date-range-v1'
+
+    def invoke(suffix, text, constraints, *, data_policy="strict", range_policy=UTC):
+        original_run = semantic.Validator.run
+        original_init = semantic._UtcDateWork.__init__
+        original_charge = semantic._UtcDateWork.charge
+        original_parse = semantic._parse_turtle
+        record = {
+            "id": request.node.nodeid + "/" + suffix,
+            "dataTurtle": text,
+            "shapesTurtle": constraints,
+            "dataPolicy": data_policy,
+            "rangePolicy": range_policy,
+            "stage": "policy",
+            "work": [],
+            "validatorCalls": [],
+            "result": None,
+            "error": None,
+        }
+        records.append(record)
+        meters = {}
+    
+        def parse(*args, **kwargs):
+            record["stage"] = "parse-shapes" if kwargs.get("shapes") else "parse-data"
+            graph = original_parse(*args, **kwargs)
+            triples = sorted(semantic._key(t) for t in graph)
+            record.setdefault("parsedGraphs", []).append(
+                {
+                    "stage": record["stage"],
+                    "triples": len(graph),
+                    "sha256": hashlib.sha256(json.dumps(triples).encode()).hexdigest(),
+                }
+            )
+            return graph
+    
+        def init(self):
+            original_init(self)
+            item = {
+                "version": self.version,
+                "initial": self.remaining,
+                "used": 0,
+                "remaining": self.remaining,
+                "chargesRLE": [],
+                "failure": None,
+            }
+            meters[id(self)] = item
+            record["work"].append(item)
+    
+        def charge(self, amount=1):
+            item = meters[id(self)]
+            record["stage"] = self.stage
+            try:
+                original_charge(self, amount)
+            except SemanticError:
+                item["failure"] = {
+                    "stage": self.stage,
+                    "requested": amount,
+                    "remaining": self.remaining,
+                    "used": self.used,
+                }
+                raise
+            else:
+                runs = item["chargesRLE"]
+                if runs and runs[-1][:2] == [self.stage, amount]:
+                    runs[-1][2] += 1
+                else:
+                    runs.append([self.stage, amount, 1])
+            finally:
+                item["used"], item["remaining"] = self.used, self.remaining
+    
+        def run(self, *args, **kwargs):
+            record["stage"] = "validator"
+            call = {"dataTriples": sorted(semantic._key(t) for t in self.data_graph)}
+            record["validatorCalls"].append(call)
+            actual = original_run(self, *args, **kwargs)
+            call["conforms"] = bool(actual[0])
+            call["rawReportNTriples"] = actual[1].serialize(format="nt")
+            call["reportTriples"] = sorted(semantic._key(t) for t in actual[1])
+            return actual
+    
+        try:
+            with (
+                patch.object(semantic.Validator, "run", run),
+                patch.object(semantic._UtcDateWork, "__init__", init),
+                patch.object(semantic._UtcDateWork, "charge", charge),
+                patch.object(semantic, "_parse_turtle", parse),
+            ):
+>               result = semantic.validate_shacl_text(
+                    text, constraints, data_policy=data_policy, range_policy=range_policy
+                )
+
+packages/engine/tests/test_semantic_shacl_date_policy.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/src/ontolearn_engine/semantic.py:1551: in validate_shacl_text
+    report = _check_shapes(
+packages/engine/src/ontolearn_engine/semantic.py:1578: in _check_shapes
+    date_plan.values(local)
+packages/engine/src/ontolearn_engine/semantic.py:1514: in values
+    values = work.ordered(data, (focus, path, None), 2, _utc_date_term_key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packages/engine/src/ontolearn_engine/semantic.py:1389: in ordered
+    self.charge()
+packages/engine/tests/test_semantic_shacl_date_policy.py:121: in charge
+    original_charge(self, amount)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <ontolearn_engine.semantic._UtcDateWork object at 0x10d9a5cd0>
+amount = 1
+
+    def charge(self, amount=1):
+        if amount > self.remaining:
+>           raise SemanticError("GRAPH_INPUT_LIMIT")
+E           ontolearn_engine.semantic_offline.SemanticError: GRAPH_INPUT_LIMIT
+
+packages/engine/src/ontolearn_engine/semantic.py:1384: SemanticError
+
+During handling of the above exception, another exception occurred:
+
+observe = <function observe.<locals>.invoke at 0x10d4e9c60>
+
+    def test_public_one_million_unit_boundary_is_an_independent_invoice(observe):
+        # C(n)=3+3n+n*ceil(log2(max(2,n))); the independent plan fixes this invoice.
+        # One shape costs 54 in bound phase, then 16 fixed + (7+16)*n in value phase.
+        # Six and eight values on different focuses add 6*(22+3)+8*(22+3)=350.
+        # 70 + 23*43460 + 350 = 1,000,000. No measured usage feeds this expected value.
+        text = budget_input(43460, extra_values=True)
+        assert len(text.encode()) <= 1_048_576
+        constraints = shape("sh:minInclusive " + literal("0001-01-01Z"))
+        actual, record = observe("exact-million", text, constraints)
+        assert_report(actual, record)
+        assert record["work"][0]["used"] == 1_000_000
+        assert record["work"][0]["remaining"] == 0
+        # The same real public input with one fewer private ticket is a distinct seam test.
+        with patch.object(semantic, "_UTC_DATE_WORK_CAP", 999_999):
+            record = reject(observe, "GRAPH_INPUT_LIMIT", text, constraints)
+        assert record["work"][0]["initial"] == 999_999
+        assert record["work"][0]["failure"] == {
+            "stage": "date-value",
+            "requested": 1,
+            "remaining": 0,
+            "used": 999_999,
+        }
+        # A separate larger public input crosses the real fixed cap; no cap override.
+>       record = reject(
+            observe, "GRAPH_INPUT_LIMIT", budget_input(43461, extra_values=True), constraints
+        )
+
+packages/engine/tests/test_semantic_shacl_date_policy.py:631: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+packages/engine/tests/test_semantic_shacl_date_policy.py:185: in reject
+    observe(code, text, constraints, **options)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+suffix = 'GRAPH_INPUT_LIMIT'
+text = '@prefix : <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n:f0 a :Focus .\n:f1 a :Focus .\n:f2 a :Foc...1-05Z"^^xsd:date, "2000-01-06Z"^^xsd:date, "2000-01-07Z"^^xsd:date, "2000-01-08Z"^^xsd:date, "2000-01-09Z"^^xsd:date .'
+constraints = '@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/...ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "0001-01-01Z"^^xsd:date .'
+data_policy = 'strict', range_policy = 'utc-date-range-v1'
+
+    def invoke(suffix, text, constraints, *, data_policy="strict", range_policy=UTC):
+        original_run = semantic.Validator.run
+        original_init = semantic._UtcDateWork.__init__
+        original_charge = semantic._UtcDateWork.charge
+        original_parse = semantic._parse_turtle
+        record = {
+            "id": request.node.nodeid + "/" + suffix,
+            "dataTurtle": text,
+            "shapesTurtle": constraints,
+            "dataPolicy": data_policy,
+            "rangePolicy": range_policy,
+            "stage": "policy",
+            "work": [],
+            "validatorCalls": [],
+            "result": None,
+            "error": None,
+        }
+        records.append(record)
+        meters = {}
+    
+        def parse(*args, **kwargs):
+            record["stage"] = "parse-shapes" if kwargs.get("shapes") else "parse-data"
+            graph = original_parse(*args, **kwargs)
+            triples = sorted(semantic._key(t) for t in graph)
+            record.setdefault("parsedGraphs", []).append(
+                {
+                    "stage": record["stage"],
+                    "triples": len(graph),
+                    "sha256": hashlib.sha256(json.dumps(triples).encode()).hexdigest(),
+                }
+            )
+            return graph
+    
+        def init(self):
+            original_init(self)
+            item = {
+                "version": self.version,
+                "initial": self.remaining,
+                "used": 0,
+                "remaining": self.remaining,
+                "chargesRLE": [],
+                "failure": None,
+            }
+            meters[id(self)] = item
+            record["work"].append(item)
+    
+        def charge(self, amount=1):
+            item = meters[id(self)]
+            record["stage"] = self.stage
+            try:
+                original_charge(self, amount)
+            except SemanticError:
+                item["failure"] = {
+                    "stage": self.stage,
+                    "requested": amount,
+                    "remaining": self.remaining,
+                    "used": self.used,
+                }
+                raise
+            else:
+                runs = item["chargesRLE"]
+                if runs and runs[-1][:2] == [self.stage, amount]:
+                    runs[-1][2] += 1
+                else:
+                    runs.append([self.stage, amount, 1])
+            finally:
+                item["used"], item["remaining"] = self.used, self.remaining
+    
+        def run(self, *args, **kwargs):
+            record["stage"] = "validator"
+            call = {"dataTriples": sorted(semantic._key(t) for t in self.data_graph)}
+            record["validatorCalls"].append(call)
+            actual = original_run(self, *args, **kwargs)
+            call["conforms"] = bool(actual[0])
+            call["rawReportNTriples"] = actual[1].serialize(format="nt")
+            call["reportTriples"] = sorted(semantic._key(t) for t in actual[1])
+            return actual
+    
+        try:
+            with (
+                patch.object(semantic.Validator, "run", run),
+                patch.object(semantic._UtcDateWork, "__init__", init),
+                patch.object(semantic._UtcDateWork, "charge", charge),
+                patch.object(semantic, "_parse_turtle", parse),
+            ):
+                result = semantic.validate_shacl_text(
+                    text, constraints, data_policy=data_policy, range_policy=range_policy
+                )
+            record["result"] = result
+            record["stage"] = "complete"
+            return result, record
+        except Exception as error:
+            record["error"] = {
+                "type": type(error).__name__,
+                "code": error.code if isinstance(error, SemanticError) else None,
+            }
+            if record["error"]["code"] == "FACT_SCOPE_CONTAINS_AXIOMS":
+                record["stage"] = "fact-scope"
+            raise
+        finally:
+            directory = os.environ.get("I05_SHACL_DATE_EVIDENCE_DIR")
+            if directory:
+                dest = Path(directory)
+                dest.mkdir(parents=True, exist_ok=True)
+                target = dest / (hashlib.sha256(record["id"].encode()).hexdigest() + ".json")
+>               assert not target.exists(), "do not overwrite first failure or evidence identity"
+E               AssertionError: do not overwrite first failure or evidence identity
+E               assert not True
+E                +  where True = exists()
+E                +    where exists = PosixPath('/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy/docs/reviews/I05/shacl-date-policy-implementation/runs/check-01/date-evidence/1900da3013b83c99d4071f375644ad0d7bf14817763db47cedaa5ca13b1cf05f.json').exists
+
+packages/engine/tests/test_semantic_shacl_date_policy.py:176: AssertionError
+=============================== warnings summary ===============================
+packages/engine/tests/test_semantic_shacl_entry.py::test_other_literal_iri_and_blank_node_gates_remain_strict["bad"^^xsd:decimal-INVALID_LITERAL_LEXICAL]
+  /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy/.venv/lib/python3.12/site-packages/rdflib/term.py:1715: UserWarning: Serializing weird numerical rdflib.term.Literal('bad', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+    warnings.warn(f"Serializing weird numerical {self!r}")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED packages/engine/tests/test_semantic_shacl_date_policy.py::test_existing_front_doors_are_preserved[@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\n<relative> ex:p 1 .-@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive "2000-01-01Z"^^xsd:date .-ABSOLUTE_IRI_REQUIRED]
+FAILED packages/engine/tests/test_semantic_shacl_date_policy.py::test_utc_policy_does_not_change_legacy_or_global_entry_semantics
+FAILED packages/engine/tests/test_semantic_shacl_date_policy.py::test_public_one_million_unit_boundary_is_an_independent_invoice
+====== 3 failed, 5162 passed, 44 skipped, 1 warning in 158.91s (0:02:38) =======

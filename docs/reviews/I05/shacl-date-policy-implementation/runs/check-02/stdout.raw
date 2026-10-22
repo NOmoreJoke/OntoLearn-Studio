@@ -1,0 +1,238 @@
+
+> ontolearn-studio@0.1.0 check
+> npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check
+
+
+> ontolearn-studio@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+> ontolearn-studio@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> ontolearn-studio@0.1.0 typecheck
+> npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop
+
+
+> ontolearn-studio@0.1.0 typecheck:contracts
+> npm run typecheck --workspace @ontolearn/contracts
+
+
+> @ontolearn/contracts@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 typecheck:unit
+> tsc --noEmit -p tsconfig.unit.json
+
+
+> @ontolearn/desktop@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> ontolearn-studio@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy
+
+
+ Test Files  22 passed (22)
+      Tests  1125 passed (1125)
+   Start at  08:42:14
+   Duration  6.63s (tests 88%, import 7%, transform 4%)
+
+
+> ontolearn-studio@0.1.0 build
+> npm run build --workspace @ontolearn/desktop
+
+
+> @ontolearn/desktop@0.1.0 build
+> electron-vite build
+
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 115 modules transformed.
+rendering chunks...
+out/main/index.js  404.50 kB
+
+✓ built in 29ms
+vite v8.3.4 building ssr environment for production...
+transforming...
+✓ 104 modules transformed.
+rendering chunks...
+out/preload/index.js  330.22 kB
+
+✓ built in 17ms
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 119 modules transformed.
+rendering chunks...
+out/renderer/index.html                   0.70 kB
+out/renderer/assets/index-Cnac3bzq.css    5.47 kB
+out/renderer/assets/index-Bms3LrTp.js   919.74 kB
+
+✓ built in 49ms
+
+> ontolearn-studio@0.1.0 engine:check
+> uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest
+
+All checks passed!
+266 files already formatted
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy
+configfile: pyproject.toml
+testpaths: packages/engine/tests
+collected 5210 items
+
+packages/engine/tests/test_binding_regressions.py ...................... [  0%]
+...................                                                      [  0%]
+packages/engine/tests/test_contract_v2.py .............................. [  1%]
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  8%]
+...........................................                              [  9%]
+packages/engine/tests/test_coordinator_control.py ...................    [  9%]
+packages/engine/tests/test_frame_corpus.py ............................. [ 10%]
+........................                                                 [ 10%]
+packages/engine/tests/test_handshake_deadline.py ...                     [ 10%]
+packages/engine/tests/test_i04_lifecycle_boundaries.py .............     [ 10%]
+packages/engine/tests/test_i04_progress.py ......                        [ 10%]
+packages/engine/tests/test_i04_round_faults.py ......................... [ 11%]
+.................................                                        [ 12%]
+packages/engine/tests/test_job_store.py ................................ [ 12%]
+........................................................................ [ 14%]
+.............................................................            [ 15%]
+packages/engine/tests/test_memory_guard_exit.py ........                 [ 15%]
+packages/engine/tests/test_project_applications.py ..................... [ 15%]
+........................................................................ [ 17%]
+.................                                                        [ 17%]
+packages/engine/tests/test_project_business3_contract.py ............... [ 17%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+....................................                                     [ 21%]
+packages/engine/tests/test_project_changeset_service.py ................ [ 21%]
+..............................................................           [ 22%]
+packages/engine/tests/test_project_changeset_stdio.py .....              [ 22%]
+packages/engine/tests/test_project_compensation.py ..................... [ 23%]
+..........................................................               [ 24%]
+packages/engine/tests/test_project_create_contract.py .................. [ 24%]
+........................................................................ [ 26%]
+......................................                                   [ 26%]
+packages/engine/tests/test_project_draft_plan.py ....................    [ 27%]
+packages/engine/tests/test_project_format3.py ...................ss..s.. [ 27%]
+s..s..s..s..s..s..s..................................................... [ 29%]
+.............s........................ss..s..s..s..s..s..s..s..s........ [ 30%]
+..........................................................s............. [ 31%]
+...........ss..s..s..s..s..s..s..s..s................................... [ 33%]
+...............................s........................ss..s..s..s..s.. [ 34%]
+s..s..s..s.............................................................. [ 35%]
+....s................................................................... [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 40%]
+........................                                                 [ 40%]
+packages/engine/tests/test_project_host_read_services.py ............... [ 40%]
+.....................................                                    [ 41%]
+packages/engine/tests/test_project_job_format3.py ...................... [ 41%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+....................................................................     [ 46%]
+packages/engine/tests/test_project_source_table_material.py ............ [ 46%]
+........................................................................ [ 47%]
+................................................                         [ 48%]
+packages/engine/tests/test_project_source_transport.py ................. [ 48%]
+......................................................................   [ 50%]
+packages/engine/tests/test_project_startup_contract.py ................. [ 50%]
+...................................                                      [ 51%]
+packages/engine/tests/test_project_startup_stdio.py .................... [ 51%]
+......                                                                   [ 51%]
+packages/engine/tests/test_project_transactions.py ..................... [ 52%]
+.................................                                        [ 52%]
+packages/engine/tests/test_project_workspace.py ...........              [ 52%]
+packages/engine/tests/test_protocol.py .............                     [ 53%]
+packages/engine/tests/test_quality_profile_revalidation.py ............. [ 53%]
+........................................................................ [ 54%]
+.............................................................            [ 56%]
+packages/engine/tests/test_resident_runtime.py .............             [ 56%]
+packages/engine/tests/test_runtime_bounds.py .                           [ 56%]
+packages/engine/tests/test_semantic.py ................................. [ 56%]
+........................................................                 [ 58%]
+packages/engine/tests/test_semantic_error_adapter.py ................... [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 61%]
+..............................................                           [ 62%]
+packages/engine/tests/test_semantic_error_reasons.py ................... [ 62%]
+                                                                         [ 62%]
+packages/engine/tests/test_semantic_execution.py ....................... [ 62%]
+.........                                                                [ 62%]
+packages/engine/tests/test_semantic_lexical.py ......................... [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 66%]
+..............                                                           [ 66%]
+packages/engine/tests/test_semantic_profile_directsteps.py ............. [ 66%]
+................................................................         [ 67%]
+packages/engine/tests/test_semantic_profile_errors.py .................. [ 68%]
+...                                                                      [ 68%]
+packages/engine/tests/test_semantic_profile_imports.py ....              [ 68%]
+packages/engine/tests/test_semantic_profile_input.py ................... [ 68%]
+..............                                                           [ 69%]
+packages/engine/tests/test_semantic_profile_integration.py ............. [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+......................................................                   [ 82%]
+packages/engine/tests/test_semantic_profile_limits.py ......             [ 82%]
+packages/engine/tests/test_semantic_profile_production.py .............. [ 83%]
+.......                                                                  [ 83%]
+packages/engine/tests/test_semantic_profile_restore.py ................. [ 83%]
+......................................................................   [ 85%]
+packages/engine/tests/test_semantic_profile_restore_limits.py .......... [ 85%]
+........................................................................ [ 86%]
+...................                                                      [ 86%]
+packages/engine/tests/test_semantic_profile_shape_entry.py ............. [ 87%]
+.............                                                            [ 87%]
+packages/engine/tests/test_semantic_profile_source.py .................. [ 87%]
+.....................................                                    [ 88%]
+packages/engine/tests/test_semantic_query_tokens.py .................... [ 88%]
+................................                                         [ 89%]
+packages/engine/tests/test_semantic_rdfs_basis_determinism.py .......... [ 89%]
+                                                                         [ 89%]
+packages/engine/tests/test_semantic_scopes.py ..............             [ 89%]
+packages/engine/tests/test_semantic_selected_projection.py ............. [ 90%]
+...................................                                      [ 90%]
+packages/engine/tests/test_semantic_shacl_date_policy.py ............... [ 91%]
+........................................................................ [ 92%]
+...................                                                      [ 92%]
+packages/engine/tests/test_semantic_shacl_entry.py ..................... [ 93%]
+.................................................                        [ 94%]
+packages/engine/tests/test_semantic_string_identity.py ................. [ 94%]
+........................................................                 [ 95%]
+packages/engine/tests/test_session_page_limits.py ...                    [ 95%]
+packages/engine/tests/test_stdio_session_shutdown.py .....               [ 95%]
+packages/engine/tests/test_storage.py .................................. [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 99%]
+.........                                                                [ 99%]
+packages/engine/tests/test_worker_owner_bootstrap.py ................... [ 99%]
+...........                                                              [ 99%]
+packages/engine/tests/test_worker_parent.py .                            [100%]
+
+=============================== warnings summary ===============================
+packages/engine/tests/test_semantic_shacl_entry.py::test_other_literal_iri_and_blank_node_gates_remain_strict["bad"^^xsd:decimal-INVALID_LITERAL_LEXICAL]
+  /Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy/.venv/lib/python3.12/site-packages/rdflib/term.py:1715: UserWarning: Serializing weird numerical rdflib.term.Literal('bad', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+    warnings.warn(f"Serializing weird numerical {self!r}")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========== 5166 passed, 44 skipped, 1 warning in 150.15s (0:02:30) ============

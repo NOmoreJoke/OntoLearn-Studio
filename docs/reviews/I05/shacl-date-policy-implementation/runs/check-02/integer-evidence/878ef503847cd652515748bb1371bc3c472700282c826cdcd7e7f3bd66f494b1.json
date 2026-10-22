@@ -1,0 +1,42 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_entry.py::test_valid_integer_keeps_lexical_and_explicit_policy_identity[integer-illtyped-report-v1]/valid",
+  "validatorCalls": [
+    {
+      "data": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"+01\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "conforms": true,
+      "reportTriples": [
+        [
+          "_:Nc5287f4d022c4744aa1f57d0e62f53a4",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:Nc5287f4d022c4744aa1f57d0e62f53a4",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-1",
+    "dataPolicy": "integer-illtyped-report-v1",
+    "rangePolicy": "legacy",
+    "report": {
+      "conforms": true,
+      "violations": []
+    }
+  },
+  "error": null
+}

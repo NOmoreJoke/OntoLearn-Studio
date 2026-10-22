@@ -1,0 +1,102 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_mixed_bounds_rejected_even_without_target/INVALID_SHAPE",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2000-01-01Z\"^^xsd:date; sh:maxInclusive \"1\"^^xsd:integer .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "date-bound",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 59,
+      "remaining": 999941,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          16
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          2
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [],
+  "result": null,
+  "error": {
+    "type": "SemanticError",
+    "code": "INVALID_SHAPE"
+  },
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 7,
+      "sha256": "baa5cca47c8e61778bc1fb18fa8b83a7604860f0435c61d4315ce45c8a9dacb6"
+    }
+  ]
+}

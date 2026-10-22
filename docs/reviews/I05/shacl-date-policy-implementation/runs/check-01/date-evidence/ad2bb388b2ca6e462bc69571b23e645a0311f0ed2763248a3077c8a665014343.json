@@ -1,0 +1,22 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_exact_lexical_domain_rejects_both_sides_before_validator[\\uff12\\uff10\\uff10\\uff10-01-01Z-True-bound]/INVALID_LITERAL_LEXICAL",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s a ex:Focus; ex:p \"2000-01-01Z\"^^xsd:date .",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"\uff12\uff10\uff10\uff10-01-01Z\"^^xsd:date .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "parse-shapes",
+  "work": [],
+  "validatorCalls": [],
+  "result": null,
+  "error": {
+    "type": "SemanticError",
+    "code": "INVALID_LITERAL_LEXICAL"
+  },
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "bc113ae4a80616befa4df1be74676e77043517add8358c6a880ccedef421f9da"
+    }
+  ]
+}

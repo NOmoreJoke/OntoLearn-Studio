@@ -1,0 +1,140 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_reversed_bounds_are_real_independent_constraints/reverse-no-focus",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2000-01-02Z\"^^xsd:date; sh:maxInclusive \"1999-12-31Z\"^^xsd:date .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "complete",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 85,
+      "remaining": 999915,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          16
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          12
+        ],
+        [
+          "date-value",
+          1,
+          8
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          6
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [
+    {
+      "dataTriples": [],
+      "conforms": true,
+      "rawReportNTriples": "_:Na02223c4b30d4882a4dc8cc9a4868877 <http://www.w3.org/ns/shacl#conforms> \"true\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n_:Na02223c4b30d4882a4dc8cc9a4868877 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationReport> .\n",
+      "reportTriples": [
+        [
+          "_:Na02223c4b30d4882a4dc8cc9a4868877",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:Na02223c4b30d4882a4dc8cc9a4868877",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-2",
+    "dataPolicy": "strict",
+    "rangePolicy": "utc-date-range-v1",
+    "report": {
+      "conforms": true,
+      "violations": []
+    }
+  },
+  "error": null,
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 7,
+      "sha256": "ed4f7ae7f6621c2e4c913979951a94ce5ec0abb25ea6c661ccbb86e5e449f859"
+    }
+  ]
+}

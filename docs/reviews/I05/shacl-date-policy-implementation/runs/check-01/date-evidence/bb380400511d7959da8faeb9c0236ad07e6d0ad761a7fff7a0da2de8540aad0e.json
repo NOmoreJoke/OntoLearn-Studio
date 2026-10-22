@@ -1,0 +1,171 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_non_date_original_normative_cells_keep_full_reports[C-inclusive-dateTime-equal]/C-inclusive-dateTime-equal",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"2000-01-01T01:00:00+01:00\"^^xsd:dateTime .\nex:s a ex:Focus .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime; sh:maxInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "complete",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 86,
+      "remaining": 999914,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          8
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          4
+        ],
+        [
+          "date-value",
+          1,
+          8
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          5
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [
+    {
+      "dataTriples": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"2000-01-01T01:00:00+01:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
+        ]
+      ],
+      "conforms": true,
+      "rawReportNTriples": "_:N18d31684fb5d40a38acb737949ba81cc <http://www.w3.org/ns/shacl#conforms> \"true\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n_:N18d31684fb5d40a38acb737949ba81cc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationReport> .\n",
+      "reportTriples": [
+        [
+          "_:N18d31684fb5d40a38acb737949ba81cc",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:N18d31684fb5d40a38acb737949ba81cc",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-2",
+    "dataPolicy": "strict",
+    "rangePolicy": "utc-date-range-v1",
+    "report": {
+      "conforms": true,
+      "violations": []
+    }
+  },
+  "error": null,
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "2ffdc865571dd8ad90e669abba7b7e0fdfa7cd13436cac5ef3364bf09ae1db82"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 7,
+      "sha256": "83eaf5a0c97869f9d33c5a876c0c1fae6ab4eb8eb3a880858dab31327041732f"
+    }
+  ]
+}

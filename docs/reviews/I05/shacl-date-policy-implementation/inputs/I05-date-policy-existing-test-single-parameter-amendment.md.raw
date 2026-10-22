@@ -1,0 +1,11 @@
+# I05 date：旧未知policy测试单参数修订授权
+
+2026-10-22。原独立oracle发现测试前提已被本次用户采用的v1政策取代。总控实际只读固定65e31d331b315c245e1f921c3558bb7886adbd27及新施工树同一测试字节，确认唯一完整参数项：`{"data_policy": WIDE, "range_policy": "utc-date-range-v1"},`。固定源码实际在第300行；不沿用回执中的其它行号。
+
+批准原I05在已授date施工树/原聊天/Goal内，仅将packages/engine/tests/test_semantic_shacl_entry.py这一参数的字符串由utc-date-range-v1改成utc-date-range-v2。原SCOPE_SELECTION_TYPE_INVALID断言、None/None输入、其它参数与整个文件所有其余字节保持。v2目前仍未知；新date测试另明确v1合法而None文本产生TEXT_TYPE_INVALID，Validator0，不能对None特判保旧错误、删断言、skip/xfail或缩减已采政策。
+
+旧文件14604B/SHA f86de5f1a41e186d80a0042d574e7e15ec3421966a873c930169f685bb6b63a0。完整输入清单同步为两个既有writer、143只读、一个新test writer，最终146受控总数不变；旧测试writer只限上述一字字符串变化。清单保固定源pin，并另列唯一允许新hash/bytes，不把允许修订写成已改或已测。原清单字节保存在.private/I05-shacl-date-policy-fixed-inputs.before-policy-test-amendment.json.raw，源窗口及旧收件原件保持历史；本补充是唯一例外。
+
+保存本静态冲突、原固定测试及新旧精确diff；若正常首失败已经发生保原件，未发生则无须为重现已知静态冲突额外跑一次整套失败。实施/新测试完成后仍按原窗口一次必要正常check+12sources，独审核单参数差异、v1合法文本门和所有回归；新固定candidate/manifest反映三个实际改动路径，不签原“两个产品writer”计数。
+
+不开放其它整数测试/原C输入/goldens、语义合同或额外路径；不改变SQLite HOLD、原source-only/无GUI/native/付费/pushmerge限制，不重建Goal。原owner直接继续，无需再问此常规测试前提同步。

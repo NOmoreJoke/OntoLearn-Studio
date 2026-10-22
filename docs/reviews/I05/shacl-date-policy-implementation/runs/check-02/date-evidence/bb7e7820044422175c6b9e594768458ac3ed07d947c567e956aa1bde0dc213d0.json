@@ -1,0 +1,121 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_integer_policy_and_identity_four_combinations[utc-date-range-v1-integer-illtyped-report-v1]/wide-no-target",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"not-an-int\"^^xsd:integer .\nex:s a ex:Other .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:datatype xsd:integer .",
+  "dataPolicy": "integer-illtyped-report-v1",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "complete",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 42,
+      "remaining": 999958,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          8
+        ],
+        [
+          "date-value",
+          1,
+          3
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [
+    {
+      "dataTriples": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Other>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "conforms": true,
+      "rawReportNTriples": "_:N2b1e281008d34499856efda3edb7f93a <http://www.w3.org/ns/shacl#conforms> \"true\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n_:N2b1e281008d34499856efda3edb7f93a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationReport> .\n",
+      "reportTriples": [
+        [
+          "_:N2b1e281008d34499856efda3edb7f93a",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:N2b1e281008d34499856efda3edb7f93a",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-2",
+    "dataPolicy": "integer-illtyped-report-v1",
+    "rangePolicy": "utc-date-range-v1",
+    "report": {
+      "conforms": true,
+      "violations": []
+    }
+  },
+  "error": null,
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "bc70ec1d28c708d4108deb01945b765e99de4879d5686ac8b02966dc577a32f1"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 6,
+      "sha256": "b362e61b935a57cbd3947e835338c22052de4762f7441b81044c4a7a54d25307"
+    }
+  ]
+}

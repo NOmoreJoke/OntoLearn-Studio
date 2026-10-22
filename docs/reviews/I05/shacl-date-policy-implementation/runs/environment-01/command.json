@@ -1,0 +1,15 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "-c",
+    "import importlib.metadata as m,json,os,platform,subprocess,sys; print(json.dumps({\"python\":sys.version,\"platform\":platform.platform(),\"venv\":sys.prefix,\"venvIsLocal\":sys.prefix==os.path.join(os.getcwd(),\".venv\"),\"node\":subprocess.check_output([\"node\",\"--version\"],text=True).strip(),\"npm\":subprocess.check_output([\"npm\",\"--version\"],text=True).strip(),\"uv\":subprocess.check_output([\"uv\",\"--version\"],text=True).strip(),\"versions\":{k:m.version(k) for k in [\"rdflib\",\"pyshacl\",\"pytest\",\"ruff\"]}},indent=2))"
+  ],
+  "cwd": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I05-shacl-date-policy",
+  "startUTC": "2026-10-22T00:12:16.642486+00:00",
+  "endUTC": "2026-10-22T00:12:16.783752+00:00",
+  "elapsedSeconds": 0.1411659159930423,
+  "exitCode": 0,
+  "environment": {
+    "PATH": "/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/usr/local/co.palokaj.battery:/Library/Apple/usr/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/kyle/.codex/tmp/arg0-macos/codex-arg0BTk2AZ:/Users/kyle/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/kyle/.antigravity-ide/antigravity-ide/bin:/Users/kyle/.minimax/bin:/Users/kyle/.kimi-code/bin:/Users/kyle/.npm-global/bin:/Users/kyle/.local/bin:/Users/kyle/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS"
+  }
+}

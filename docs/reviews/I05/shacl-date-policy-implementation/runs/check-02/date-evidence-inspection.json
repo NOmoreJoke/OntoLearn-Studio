@@ -1,0 +1,396 @@
+{
+  "run": "docs/reviews/I05/shacl-date-policy-implementation/runs/check-02",
+  "dateEvidenceRecords": 117,
+  "realValidatorCalls": 34,
+  "trueReports": 22,
+  "falseReports": 12,
+  "zeroCallRejections": 83,
+  "errorCounts": {
+    "INVALID_SHAPE": 15,
+    "FACT_SCOPE_CONTAINS_AXIOMS": 2,
+    "RDF_TERM_INVALID": 17,
+    "INVALID_UNICODE": 1,
+    "INVALID_TURTLE": 2,
+    "SCOPE_SELECTION_TYPE_INVALID": 6,
+    "INVALID_LITERAL_LEXICAL": 24,
+    "TEXT_TYPE_INVALID": 2,
+    "UNSUPPORTED_BLANK_NODE": 1,
+    "EXTERNAL_ACCESS_DENIED": 1,
+    "UNSUPPORTED_NONFINITE_LITERAL": 1,
+    "GRAPH_INPUT_LIMIT": 6,
+    "UNSUPPORTED_SHACL": 2,
+    "TEXT_INPUT_LIMIT": 1,
+    "UNSUPPORTED_LITERAL_DATATYPE": 1,
+    "ABSOLUTE_IRI_REQUIRED": 1
+  },
+  "allActualReportsSixFieldsRebuiltFromRawRDFTriples": true,
+  "allWorkRLEAmountsBalance": true,
+  "d1Groups": 2,
+  "d1ThreeOrdersSameParsedRdfCostStageError": true,
+  "budget": [
+    {
+      "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_public_one_million_unit_boundary_is_an_independent_invoice/exact-million",
+      "error": null,
+      "calls": 1,
+      "work": [
+        {
+          "version": "i05-utc-date-preflight/1",
+          "initial": 1000000,
+          "used": 1000000,
+          "remaining": 0,
+          "chargesRLE": [
+            [
+              "date-bound",
+              1,
+              5
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              15
+            ],
+            [
+              "date-value",
+              1,
+              8
+            ],
+            [
+              "date-value",
+              2,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              130384
+            ],
+            [
+              "date-value",
+              695361,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              22
+            ],
+            [
+              "date-value",
+              19,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              141
+            ],
+            [
+              "date-value",
+              25,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              173984
+            ]
+          ],
+          "failure": null
+        }
+      ]
+    },
+    {
+      "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_public_one_million_unit_boundary_is_an_independent_invoice/public-overcap",
+      "error": {
+        "type": "SemanticError",
+        "code": "GRAPH_INPUT_LIMIT"
+      },
+      "calls": 0,
+      "work": [
+        {
+          "version": "i05-utc-date-preflight/1",
+          "initial": 1000000,
+          "used": 1000000,
+          "remaining": 0,
+          "chargesRLE": [
+            [
+              "date-bound",
+              1,
+              5
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              15
+            ],
+            [
+              "date-value",
+              1,
+              8
+            ],
+            [
+              "date-value",
+              2,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              130387
+            ],
+            [
+              "date-value",
+              695377,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              22
+            ],
+            [
+              "date-value",
+              19,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              141
+            ],
+            [
+              "date-value",
+              25,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              173965
+            ]
+          ],
+          "failure": {
+            "stage": "date-value",
+            "requested": 1,
+            "remaining": 0,
+            "used": 1000000
+          }
+        }
+      ]
+    },
+    {
+      "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_public_one_million_unit_boundary_is_an_independent_invoice/private-999999",
+      "error": {
+        "type": "SemanticError",
+        "code": "GRAPH_INPUT_LIMIT"
+      },
+      "calls": 0,
+      "work": [
+        {
+          "version": "i05-utc-date-preflight/1",
+          "initial": 999999,
+          "used": 999999,
+          "remaining": 0,
+          "chargesRLE": [
+            [
+              "date-bound",
+              1,
+              5
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              6
+            ],
+            [
+              "date-bound",
+              2,
+              1
+            ],
+            [
+              "date-bound",
+              1,
+              15
+            ],
+            [
+              "date-value",
+              1,
+              8
+            ],
+            [
+              "date-value",
+              2,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              130384
+            ],
+            [
+              "date-value",
+              695361,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              22
+            ],
+            [
+              "date-value",
+              19,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              141
+            ],
+            [
+              "date-value",
+              25,
+              1
+            ],
+            [
+              "date-value",
+              1,
+              173983
+            ]
+          ],
+          "failure": {
+            "stage": "date-value",
+            "requested": 1,
+            "remaining": 0,
+            "used": 999999
+          }
+        }
+      ]
+    }
+  ]
+}

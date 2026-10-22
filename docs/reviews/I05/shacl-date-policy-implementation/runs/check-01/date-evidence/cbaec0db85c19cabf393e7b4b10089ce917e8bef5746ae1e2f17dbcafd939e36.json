@@ -1,0 +1,127 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_date_incompatible_pairs_both_directions[bound-\"2000-01-01T00:00:00Z\"^^xsd:dateTime]/RDF_TERM_INVALID",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s a ex:Focus; ex:p \"2000-01-01Z\"^^xsd:date .",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix owl: <http://www.w3.org/2002/07/owl#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "date-value",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 77,
+      "remaining": 999923,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          1,
+          8
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          3
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [],
+  "result": null,
+  "error": {
+    "type": "SemanticError",
+    "code": "RDF_TERM_INVALID"
+  },
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "bc113ae4a80616befa4df1be74676e77043517add8358c6a880ccedef421f9da"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 6,
+      "sha256": "925c1eb62cbd1acaf9555334bb585f58ce48b359b950703f1d65ff593b23ec92"
+    }
+  ]
+}

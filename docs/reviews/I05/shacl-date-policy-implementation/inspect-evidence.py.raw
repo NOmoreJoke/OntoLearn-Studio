@@ -1,0 +1,71 @@
+"""Read completed evidence only; never execute the product or a third-party library."""
+import collections
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+run = Path(sys.argv[1])
+root = run.parent.parent.parent.parent.parent.parent
+records = [json.loads(p.read_bytes()) for p in sorted((run / "date-evidence").glob("*.json"))]
+assert len({r["id"] for r in records}) == len(records)
+fields = {"focus": "focusNode", "path": "resultPath", "constraint": "sourceConstraintComponent", "sourceShape": "sourceShape", "value": "value", "severity": "resultSeverity"}
+sh = "<http://www.w3.org/ns/shacl#"
+rdf_type = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+calls = true = false = errors = 0
+codes = collections.Counter()
+for record in records:
+    for work in record["work"]:
+        assert sum(amount * count for stage, amount, count in work["chargesRLE"]) == work["used"]
+        assert work["initial"] == work["used"] + work["remaining"]
+        if work["failure"]:
+            assert work["failure"]["requested"] > work["remaining"]
+    if record["error"]:
+        errors += 1
+        codes[record["error"]["code"]] += 1
+        assert record["result"] is None and not record["validatorCalls"]
+        continue
+    actual = record["result"]
+    assert set(actual) == {"entryVersion", "dataPolicy", "rangePolicy", "report"}
+    assert actual["rangePolicy"] == record["rangePolicy"]
+    assert actual["dataPolicy"] == record["dataPolicy"]
+    assert actual["entryVersion"] == ("i05-shacl-text-2" if record["rangePolicy"] == "utc-date-range-v1" else "i05-shacl-text-1")
+    assert len(record["validatorCalls"]) == 1
+    call = record["validatorCalls"][0]
+    calls += 1
+    true += call["conforms"] is True
+    false += call["conforms"] is False
+    assert call["conforms"] is actual["report"]["conforms"]
+    triples = call["reportTriples"]
+    results = {s for s,p,o in triples if p == rdf_type and o == sh + "ValidationResult>"}
+    rebuilt = []
+    for subject in results:
+        values = {}
+        for field, predicate in fields.items():
+            found = [o for s,p,o in triples if s == subject and p == sh + predicate + ">"]
+            assert len(found) == (0 if field == "value" and not found else 1)
+            values[field] = found[0] if found else None
+        rebuilt.append(values)
+    normalize = lambda rows: sorted(json.dumps(r, sort_keys=True) for r in rows)
+    assert normalize(rebuilt) == normalize(actual["report"]["violations"])
+    assert bool(rebuilt) is (not call["conforms"])
+    assert call["rawReportNTriples"]
+
+d1 = {}
+budget = []
+for record in records:
+    if "test_D1_" in record["id"]:
+        group = record["id"].rsplit("/", 1)[0]
+        d1.setdefault(group, []).append(record)
+    if "test_public_one_million" in record["id"]:
+        budget.append({"id":record["id"], "error":record["error"], "calls":len(record["validatorCalls"]), "work":record["work"]})
+for group, rows in d1.items():
+    assert len(rows) == 3
+    assert all(r["work"] == rows[0]["work"] and r["stage"] == rows[0]["stage"] and r["parsedGraphs"] == rows[0]["parsedGraphs"] for r in rows)
+    expected = 366042 if "RDF_TERM_INVALID" in group else 1000000
+    assert rows[0]["work"][0]["used"] == expected
+summary = {"run":str(run), "dateEvidenceRecords":len(records), "realValidatorCalls":calls, "trueReports":true, "falseReports":false, "zeroCallRejections":errors, "errorCounts":dict(codes), "allActualReportsSixFieldsRebuiltFromRawRDFTriples":True, "allWorkRLEAmountsBalance":True, "d1Groups":len(d1), "d1ThreeOrdersSameParsedRdfCostStageError":True, "budget":budget}
+output = run / "date-evidence-inspection.json"
+assert not output.exists()
+output.write_text(json.dumps(summary, ensure_ascii=False, indent=2)+"\n")
+print(json.dumps({k:v for k,v in summary.items() if k != "budget"}, ensure_ascii=False))

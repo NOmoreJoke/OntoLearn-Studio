@@ -1,0 +1,175 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_non_date_original_normative_cells_keep_full_reports[C-datatype-exact]/C-datatype-exact",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"1\"^^xsd:int .\nex:s a ex:Focus .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:datatype xsd:integer .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "complete",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 42,
+      "remaining": 999958,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          8
+        ],
+        [
+          "date-value",
+          1,
+          3
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [
+    {
+      "dataTriples": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#int>"
+        ]
+      ],
+      "conforms": false,
+      "rawReportNTriples": "_:Nf81753c280c041138ec61c0531a7ad8f <http://www.w3.org/ns/shacl#result> _:Neb2a26c3de2a4d7195c90147296f6c1e .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationResult> .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/ns/shacl#sourceShape> <urn:m1:shape> .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/ns/shacl#resultSeverity> <http://www.w3.org/ns/shacl#Violation> .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/ns/shacl#focusNode> <urn:m1:s> .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/ns/shacl#value> \"1\"^^<http://www.w3.org/2001/XMLSchema#int> .\n_:Nf81753c280c041138ec61c0531a7ad8f <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationReport> .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/ns/shacl#resultPath> <urn:m1:p> .\n_:Nf81753c280c041138ec61c0531a7ad8f <http://www.w3.org/ns/shacl#conforms> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/ns/shacl#sourceConstraintComponent> <http://www.w3.org/ns/shacl#DatatypeConstraintComponent> .\n_:Neb2a26c3de2a4d7195c90147296f6c1e <http://www.w3.org/ns/shacl#resultMessage> \"Value is not Literal with datatype xsd:integer\" .\n",
+      "reportTriples": [
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationResult>"
+        ],
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/ns/shacl#focusNode>",
+          "<urn:m1:s>"
+        ],
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/ns/shacl#resultMessage>",
+          "\"Value is not Literal with datatype xsd:integer\""
+        ],
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/ns/shacl#resultPath>",
+          "<urn:m1:p>"
+        ],
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/ns/shacl#resultSeverity>",
+          "<http://www.w3.org/ns/shacl#Violation>"
+        ],
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/ns/shacl#sourceConstraintComponent>",
+          "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>"
+        ],
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/ns/shacl#sourceShape>",
+          "<urn:m1:shape>"
+        ],
+        [
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e",
+          "<http://www.w3.org/ns/shacl#value>",
+          "\"1\"^^<http://www.w3.org/2001/XMLSchema#int>"
+        ],
+        [
+          "_:Nf81753c280c041138ec61c0531a7ad8f",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:Nf81753c280c041138ec61c0531a7ad8f",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ],
+        [
+          "_:Nf81753c280c041138ec61c0531a7ad8f",
+          "<http://www.w3.org/ns/shacl#result>",
+          "_:Neb2a26c3de2a4d7195c90147296f6c1e"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-2",
+    "dataPolicy": "strict",
+    "rangePolicy": "utc-date-range-v1",
+    "report": {
+      "conforms": false,
+      "violations": [
+        {
+          "focus": "<urn:m1:s>",
+          "path": "<urn:m1:p>",
+          "constraint": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
+          "sourceShape": "<urn:m1:shape>",
+          "value": "\"1\"^^<http://www.w3.org/2001/XMLSchema#int>",
+          "severity": "<http://www.w3.org/ns/shacl#Violation>"
+        }
+      ]
+    }
+  },
+  "error": null,
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "16a12b5887953efc0f566616a0a7d30573fdf836eb3be62006fae63866ce3fea"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 6,
+      "sha256": "b362e61b935a57cbd3947e835338c22052de4762f7441b81044c4a7a54d25307"
+    }
+  ]
+}

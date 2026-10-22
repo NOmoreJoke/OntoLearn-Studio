@@ -1,0 +1,215 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_non_date_original_normative_cells_keep_full_reports[C-inclusive-dateTime-before]/C-inclusive-dateTime-before",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"1999-12-31T23:59:59Z\"^^xsd:dateTime .\nex:s a ex:Focus .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:minInclusive \"2000-01-01T00:00:00Z\"^^xsd:dateTime .",
+  "dataPolicy": "strict",
+  "rangePolicy": "utc-date-range-v1",
+  "stage": "complete",
+  "work": [
+    {
+      "version": "i05-utc-date-preflight/1",
+      "initial": 1000000,
+      "used": 77,
+      "remaining": 999923,
+      "chargesRLE": [
+        [
+          "date-bound",
+          1,
+          5
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          6
+        ],
+        [
+          "date-bound",
+          2,
+          1
+        ],
+        [
+          "date-bound",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          1,
+          8
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          7
+        ],
+        [
+          "date-value",
+          2,
+          1
+        ],
+        [
+          "date-value",
+          1,
+          3
+        ]
+      ],
+      "failure": null
+    }
+  ],
+  "validatorCalls": [
+    {
+      "dataTriples": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
+        ]
+      ],
+      "conforms": false,
+      "rawReportNTriples": "_:N49bef2f99dbc4af391a1fa0b69e6cda7 <http://www.w3.org/ns/shacl#result> _:N30abf78c0b434f00812e720004136aae .\n_:N49bef2f99dbc4af391a1fa0b69e6cda7 <http://www.w3.org/ns/shacl#conforms> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/ns/shacl#resultSeverity> <http://www.w3.org/ns/shacl#Violation> .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/ns/shacl#sourceConstraintComponent> <http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent> .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/ns/shacl#resultMessage> \"Value is not >= Literal(\\\"2000-01-01T00:00:00Z\\\" = 2000-01-01 00:00:00+00:00, datatype=xsd:dateTime)\" .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/ns/shacl#sourceShape> <urn:m1:shape> .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/ns/shacl#focusNode> <urn:m1:s> .\n_:N49bef2f99dbc4af391a1fa0b69e6cda7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationReport> .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/ns/shacl#resultPath> <urn:m1:p> .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationResult> .\n_:N30abf78c0b434f00812e720004136aae <http://www.w3.org/ns/shacl#value> \"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n",
+      "reportTriples": [
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationResult>"
+        ],
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/ns/shacl#focusNode>",
+          "<urn:m1:s>"
+        ],
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/ns/shacl#resultMessage>",
+          "\"Value is not >= Literal(\\\"2000-01-01T00:00:00Z\\\" = 2000-01-01 00:00:00+00:00, datatype=xsd:dateTime)\""
+        ],
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/ns/shacl#resultPath>",
+          "<urn:m1:p>"
+        ],
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/ns/shacl#resultSeverity>",
+          "<http://www.w3.org/ns/shacl#Violation>"
+        ],
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/ns/shacl#sourceConstraintComponent>",
+          "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>"
+        ],
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/ns/shacl#sourceShape>",
+          "<urn:m1:shape>"
+        ],
+        [
+          "_:N30abf78c0b434f00812e720004136aae",
+          "<http://www.w3.org/ns/shacl#value>",
+          "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>"
+        ],
+        [
+          "_:N49bef2f99dbc4af391a1fa0b69e6cda7",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:N49bef2f99dbc4af391a1fa0b69e6cda7",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ],
+        [
+          "_:N49bef2f99dbc4af391a1fa0b69e6cda7",
+          "<http://www.w3.org/ns/shacl#result>",
+          "_:N30abf78c0b434f00812e720004136aae"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-2",
+    "dataPolicy": "strict",
+    "rangePolicy": "utc-date-range-v1",
+    "report": {
+      "conforms": false,
+      "violations": [
+        {
+          "focus": "<urn:m1:s>",
+          "path": "<urn:m1:p>",
+          "constraint": "<http://www.w3.org/ns/shacl#MinInclusiveConstraintComponent>",
+          "sourceShape": "<urn:m1:shape>",
+          "value": "\"1999-12-31T23:59:59Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>",
+          "severity": "<http://www.w3.org/ns/shacl#Violation>"
+        }
+      ]
+    }
+  },
+  "error": null,
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "85d1c5e1524f24d2eab39e0d55562e32e858feb6f321a9ecef6306fb91bf16c6"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 6,
+      "sha256": "925c1eb62cbd1acaf9555334bb585f58ce48b359b950703f1d65ff593b23ec92"
+    }
+  ]
+}

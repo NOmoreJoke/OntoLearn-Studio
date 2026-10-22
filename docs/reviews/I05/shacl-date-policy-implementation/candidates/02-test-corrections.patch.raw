@@ -1,0 +1,63 @@
+diff --git a/packages/engine/tests/test_semantic_shacl_date_policy.py b/packages/engine/tests/test_semantic_shacl_date_policy.py
+index a1e62c7..2d2ebf9 100644
+--- a/packages/engine/tests/test_semantic_shacl_date_policy.py
++++ b/packages/engine/tests/test_semantic_shacl_date_policy.py
+@@ -180,9 +180,9 @@ def observe(request):
+     return invoke
+ 
+ 
+-def reject(observe, code, text, constraints, **options):
++def reject(observe, code, text, constraints, *, suffix=None, **options):
+     with pytest.raises(SemanticError, match="^" + code + "$"):
+-        observe(code, text, constraints, **options)
++        observe(suffix or code, text, constraints, **options)
+     record = observe.records[-1]
+     assert record["validatorCalls"] == [] and record["result"] is None
+     return record
+@@ -517,7 +517,8 @@ def test_exclusive_stays_unsupported(observe, predicate):
+             shape(),
+             "EXTERNAL_ACCESS_DENIED",
+         ),
+-        (PREFIX + "<relative> ex:p 1 .", shape(), "ABSOLUTE_IRI_REQUIRED"),
++        (PREFIX + "<relative> ex:p 1 .", shape(), "INVALID_TURTLE"),
++        (PREFIX + "<urn:bad iri> ex:p 1 .", shape(), "ABSOLUTE_IRI_REQUIRED"),
+         (data(literal()), shape().replace("sh:path ex:p", "sh:path ex:p, ex:q"), "INVALID_SHAPE"),
+         (
+             data(literal()) + "\nex:A rdfs:subClassOf ex:Focus .",
+@@ -548,9 +549,11 @@ def test_utc_policy_does_not_change_legacy_or_global_entry_semantics(observe):
+         semantic.check_shapes(graph, shapes)
+     assert semantic.SEMANTICS_VERSION == "i05-finite-6"
+     assert semantic.SHACL_TEXT_ENTRY_VERSION == "i05-shacl-text-1"
+-    assert semantic.query(graph, "SELECT ?s WHERE {?s <urn:m1:p> ?v}")["rows"] == [
+-        {"s": "<urn:m1:s>"}
+-    ]
++    assert semantic.query(graph, "SELECT ?s WHERE {?s <urn:m1:p> ?v}") == {
++        "type": "SELECT",
++        "variables": ["s"],
++        "rows": [["<urn:m1:s>"]],
++    }
+ 
+ 
+ def test_private_library_compatibility_guard_never_casts_or_shrinks_domain():
+@@ -619,7 +622,7 @@ def test_public_one_million_unit_boundary_is_an_independent_invoice(observe):
+     assert record["work"][0]["remaining"] == 0
+     # The same real public input with one fewer private ticket is a distinct seam test.
+     with patch.object(semantic, "_UTC_DATE_WORK_CAP", 999_999):
+-        record = reject(observe, "GRAPH_INPUT_LIMIT", text, constraints)
++        record = reject(observe, "GRAPH_INPUT_LIMIT", text, constraints, suffix="private-999999")
+     assert record["work"][0]["initial"] == 999_999
+     assert record["work"][0]["failure"] == {
+         "stage": "date-value",
+@@ -629,7 +632,11 @@ def test_public_one_million_unit_boundary_is_an_independent_invoice(observe):
+     }
+     # A separate larger public input crosses the real fixed cap; no cap override.
+     record = reject(
+-        observe, "GRAPH_INPUT_LIMIT", budget_input(43461, extra_values=True), constraints
++        observe,
++        "GRAPH_INPUT_LIMIT",
++        budget_input(43461, extra_values=True),
++        constraints,
++        suffix="public-overcap",
+     )
+     assert record["work"][0]["initial"] == 1_000_000
+ 

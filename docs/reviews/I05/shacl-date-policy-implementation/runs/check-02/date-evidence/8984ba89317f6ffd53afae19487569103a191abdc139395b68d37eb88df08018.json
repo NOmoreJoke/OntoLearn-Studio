@@ -1,0 +1,115 @@
+{
+  "id": "packages/engine/tests/test_semantic_shacl_date_policy.py::test_integer_policy_and_identity_four_combinations[legacy-integer-illtyped-report-v1]/wide",
+  "dataTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:s ex:p \"not-an-int\"^^xsd:integer .\nex:s a ex:Focus .\n",
+  "shapesTurtle": "@prefix ex: <urn:m1:> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix sh: <http://www.w3.org/ns/shacl#> .\nex:node a sh:NodeShape; sh:targetClass ex:Focus; sh:property ex:shape .\nex:shape a sh:PropertyShape; sh:path ex:p; sh:datatype xsd:integer .",
+  "dataPolicy": "integer-illtyped-report-v1",
+  "rangePolicy": "legacy",
+  "stage": "complete",
+  "work": [],
+  "validatorCalls": [
+    {
+      "dataTriples": [
+        [
+          "<urn:m1:s>",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<urn:m1:Focus>"
+        ],
+        [
+          "<urn:m1:s>",
+          "<urn:m1:p>",
+          "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ],
+      "conforms": false,
+      "rawReportNTriples": "_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/ns/shacl#focusNode> <urn:m1:s> .\n_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/ns/shacl#sourceShape> <urn:m1:shape> .\n_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/ns/shacl#resultMessage> \"Value is not Literal with datatype xsd:integer\" .\n_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/ns/shacl#sourceConstraintComponent> <http://www.w3.org/ns/shacl#DatatypeConstraintComponent> .\n_:N3c2ee61c4640402999b87f1855db65e2 <http://www.w3.org/ns/shacl#conforms> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationResult> .\n_:N3c2ee61c4640402999b87f1855db65e2 <http://www.w3.org/ns/shacl#result> _:Nf15ac7aba14b420e9c651218d2411027 .\n_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/ns/shacl#resultSeverity> <http://www.w3.org/ns/shacl#Violation> .\n_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/ns/shacl#resultPath> <urn:m1:p> .\n_:N3c2ee61c4640402999b87f1855db65e2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#ValidationReport> .\n_:Nf15ac7aba14b420e9c651218d2411027 <http://www.w3.org/ns/shacl#value> \"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n",
+      "reportTriples": [
+        [
+          "_:N3c2ee61c4640402999b87f1855db65e2",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationReport>"
+        ],
+        [
+          "_:N3c2ee61c4640402999b87f1855db65e2",
+          "<http://www.w3.org/ns/shacl#conforms>",
+          "\"false\"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        ],
+        [
+          "_:N3c2ee61c4640402999b87f1855db65e2",
+          "<http://www.w3.org/ns/shacl#result>",
+          "_:Nf15ac7aba14b420e9c651218d2411027"
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+          "<http://www.w3.org/ns/shacl#ValidationResult>"
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/ns/shacl#focusNode>",
+          "<urn:m1:s>"
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/ns/shacl#resultMessage>",
+          "\"Value is not Literal with datatype xsd:integer\""
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/ns/shacl#resultPath>",
+          "<urn:m1:p>"
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/ns/shacl#resultSeverity>",
+          "<http://www.w3.org/ns/shacl#Violation>"
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/ns/shacl#sourceConstraintComponent>",
+          "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>"
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/ns/shacl#sourceShape>",
+          "<urn:m1:shape>"
+        ],
+        [
+          "_:Nf15ac7aba14b420e9c651218d2411027",
+          "<http://www.w3.org/ns/shacl#value>",
+          "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>"
+        ]
+      ]
+    }
+  ],
+  "result": {
+    "entryVersion": "i05-shacl-text-1",
+    "dataPolicy": "integer-illtyped-report-v1",
+    "rangePolicy": "legacy",
+    "report": {
+      "conforms": false,
+      "violations": [
+        {
+          "focus": "<urn:m1:s>",
+          "path": "<urn:m1:p>",
+          "constraint": "<http://www.w3.org/ns/shacl#DatatypeConstraintComponent>",
+          "sourceShape": "<urn:m1:shape>",
+          "value": "\"not-an-int\"^^<http://www.w3.org/2001/XMLSchema#integer>",
+          "severity": "<http://www.w3.org/ns/shacl#Violation>"
+        }
+      ]
+    }
+  },
+  "error": null,
+  "parsedGraphs": [
+    {
+      "stage": "parse-data",
+      "triples": 2,
+      "sha256": "9535ef42df20d399630ac675fb484bed14d92a37d2b4d661ca7f547c4f789e71"
+    },
+    {
+      "stage": "parse-shapes",
+      "triples": 6,
+      "sha256": "b362e61b935a57cbd3947e835338c22052de4762f7441b81044c4a7a54d25307"
+    }
+  ]
+}
