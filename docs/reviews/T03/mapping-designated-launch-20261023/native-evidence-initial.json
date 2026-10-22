@@ -1,0 +1,147 @@
+{
+  "format": "T03-mapping-pair-strict-native-evidence/1",
+  "observedAt": "2026-10-22T16:33:14.916968+00:00",
+  "snapshotNotTerminalAcceptance": true,
+  "zcode": {
+    "sessionId": "session_0a2c4afdc82a7ff337650697c1ad0140",
+    "turnId": "turn_59381397-d861-4161-9acd-96bba4c8c1ef",
+    "source": "/Users/kyle/.zcode/cli/rollout/model-io-session_0a2c4afdc82a7ff337650697c1ad0140.jsonl",
+    "strictSessionAndTurn": true,
+    "observedModelIoCount": 43,
+    "firstAndLastAllowedScalars": [
+      {
+        "line": 1,
+        "requestId": "85f800e8-ab35-4bb8-b546-262cb98d15fa",
+        "startedAt": "2026-10-22T16:09:53.776Z",
+        "completedAt": "2026-10-22T16:11:24.578Z",
+        "modelId": "GLM-5.3",
+        "effort": "max",
+        "stop": "tool-calls"
+      },
+      {
+        "line": 43,
+        "requestId": "f79da29f-a89f-4d42-9a54-13be46937b9b",
+        "startedAt": "2026-10-22T16:33:05.485Z",
+        "completedAt": "2026-10-22T16:33:09.772Z",
+        "modelId": "GLM-5.3",
+        "effort": "max",
+        "stop": "tool-calls"
+      }
+    ],
+    "modelEffortPairs": ["('GLM-5.3', 'max')"],
+    "exactAttachmentNativeReadCalls": [],
+    "full230NativeRead": "UNKNOWN; task-authored readFully and Bash identity check are not native numbered Read proof",
+    "officialTerminalSource": "/Users/kyle/.zcode/cli/log/zcode-2026-10-22.jsonl",
+    "officialTerminalEvents": [],
+    "terminalState": "UNKNOWN"
+  },
+  "minimax": {
+    "sessionId": "mvs_10d369cf314843fab6f3d0bc5e213dd6",
+    "turnId": "9c66220e-50d5-403a-b43b-d7bdb35de586",
+    "sessionDirectory": "/Users/kyle/.minimax/v2/sessions/2026/10/22/16-14-03-112-session_bXZzXzEwZDM2OWNmMzE0ODQzZmFiNmYzZDBiYzVlMjEzZGQ2",
+    "manifestSessionIdExact": true,
+    "messagesSource": "/Users/kyle/.minimax/v2/sessions/2026/10/22/16-14-03-112-session_bXZzXzEwZDM2OWNmMzE0ODQzZmFiNmYzZDBiYzVlMjEzZGQ2/messages.jsonl",
+    "launchTurnFromActualOwnUser": true,
+    "attachmentReadResults": [
+      {
+        "call": {
+          "line": 2,
+          "messageId": "msg-rWjFQbb7br6oXDWPBton_OH89CZ75p_qbtqX7Pdk8DU",
+          "toolCallId": "call_01a164641ee273f1a43e87da",
+          "arguments": {
+            "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/00-14-03-342-asset_20261023-001403-342_871e074a2068_a86727e8-mapping-S1-minimax-prompt.md"
+          }
+        },
+        "resultLine": 3,
+        "resultMessageId": "msg-ZuGQlhC8m-yzwEPkLGyNr61aUP-drYRbnn9AFylMXxQ",
+        "timestamp": 1792685646570,
+        "range": [1, 109],
+        "numberedLineCount": 109,
+        "mismatchLines": [],
+        "numberedTextSha256": "60780346856d9900c340700d25fa72d39317477079a2f19ed71e32d67080547a"
+      },
+      {
+        "call": {
+          "line": 5,
+          "messageId": "msg--AddFtBX7v1XOd7EPlBGFJPxZmMJdhGbqcQ01_AsMyk",
+          "toolCallId": "call_01a164642c3470b484871265",
+          "arguments": {
+            "path": "/Users/kyle/.minimax/v2/assets/2026/10/23/00-14-03-342-asset_20261023-001403-342_871e074a2068_a86727e8-mapping-S1-minimax-prompt.md",
+            "offset": 110
+          }
+        },
+        "resultLine": 6,
+        "resultMessageId": "msg-LGbjtudGvGzNd37HhAnSkCyV_1smz2dkS1Qp7_Ry9U0",
+        "timestamp": 1792685650008,
+        "range": [110, 230],
+        "numberedLineCount": 121,
+        "mismatchLines": [],
+        "numberedTextSha256": "d669c84661c72050dd29082a3652be9ad63d540cc83f1d754187d76a1503868e"
+      }
+    ],
+    "nativeNumberedCoverage": 230,
+    "expectedLines": 230,
+    "missingLines": [],
+    "all230ExactToFrozen": true,
+    "frozenBytes": 41661,
+    "frozenSha256": "871e074a2068ca26e3b8b0d0236f322a241b7a3351e6747a73948aa75dfa10fe",
+    "firstAndLastAssistantScalars": [
+      {
+        "line": 2,
+        "messageId": "msg-rWjFQbb7br6oXDWPBton_OH89CZ75p_qbtqX7Pdk8DU",
+        "provider": "minimax",
+        "model": "MiniMax-M3.1-Flash",
+        "stopReason": "toolUse",
+        "timestamp": 1792685643539
+      },
+      {
+        "line": 177,
+        "messageId": "msg-QGrDbAbfh3P2C6jZaM1pyu4qgQyYNpi4NEp6UjqjzpY",
+        "provider": "minimax",
+        "model": "MiniMax-M3.1-Flash",
+        "stopReason": "toolUse",
+        "timestamp": 1792686369011
+      }
+    ],
+    "runtimeExactFourFields": [
+      [
+        "mvs_10d369cf314843fab6f3d0bc5e213dd6",
+        "9c66220e-50d5-403a-b43b-d7bdb35de586",
+        "failed",
+        1792686381710
+      ]
+    ],
+    "runtimeFields": ["session_id", "turn_id", "terminal_outcome", "updated_at_ms"],
+    "runtimeTerminal": "failed",
+    "cwdExactFourFields": [
+      [
+        "mvs_10d369cf314843fab6f3d0bc5e213dd6",
+        "error",
+        "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941",
+        "/Users/kyle/Documents/工作/知爻/本体"
+      ]
+    ],
+    "cwdFields": ["session_id", "status", "workspace_dir", "project_workspace_dir"],
+    "sqliteMode": "mode=ro, timeout=1, PRAGMA query_only=ON; no immutable/schema scan/writes; no same-sid fallback used"
+  },
+  "reports": [
+    {
+      "role": "zcode",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-zcode-review-3031941/build/review-session/reports/mapping-S1-zcode-full-report.md",
+      "exists": false,
+      "bytes": null,
+      "contentRead": false
+    },
+    {
+      "role": "minimax",
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T03-mapping-S1-minimax-review-3031941/build/review-session/reports/mapping-S1-minimax-full-report.md",
+      "exists": true,
+      "bytes": 49079,
+      "contentRead": false
+    }
+  ],
+  "filteringIncident": "First M own-user prefix print omitted stripping mixed system-reminder and exposed first1800 characters of reminder in tool output. Disclosed to controller immediately; not copied here or used as evidence; later exact launch extraction strips reminders first. No headers/thinking/globalconfig/peer/general stdout readout.",
+  "guiUsed": false,
+  "callerSTOPOrPhysicalHOLDChanged": false,
+  "sourceOrFrozenCandidateChanged": false
+}

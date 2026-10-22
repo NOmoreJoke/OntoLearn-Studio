@@ -1,0 +1,17 @@
+{
+  "format": "T03-native-evidence-scope-note/1",
+  "event": "M own user extraction printed mixed system-reminder prefix before stripping",
+  "observedAt": "2026-10-22T16:36:12.840699+00:00",
+  "affectedSession": "mvs_10d369cf314843fab6f3d0bc5e213dd6",
+  "affectedTurn": "9c66220e-50d5-403a-b43b-d7bdb35de586",
+  "outputLimitCharacters": 1800,
+  "cause": "First extraction printed own launch user content prefix without first removing its mixed system-reminder block",
+  "disclosedToController": true,
+  "correction": "All subsequent launch extraction strips system-reminder first and emits only exact own launch line; attachment results bound by strict own turn + call ID and only numbered input body",
+  "forbiddenPrefixCopiedIntoEvidenceArtifacts": false,
+  "reminderUsedAsModelOrPermissionEvidence": false,
+  "headersThinkingGlobalConfigGeneralStdoutPeerReadout": false,
+  "wholeTimeZeroSystemExposureClaim": false,
+  "scopeExpansionAuthorizedByIncident": false,
+  "guiReleasedAndUnused": true
+}
