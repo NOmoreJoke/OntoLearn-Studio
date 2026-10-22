@@ -479,12 +479,20 @@ try {
       })
       await expect(page.getByText('已完成草稿', { exact: true })).toBeVisible()
       assert.equal(conversation.state().phase, 'cancelled')
-      assert.equal(conversation.state().localReceipts.length, 1)
       report.pureToolCancellation = {
         signalAborted: portAborted,
         state: conversation.state(),
         actualI04Job: false,
       }
+      // Existing cancellation contract retains both the completed draft and cancelled call.
+      assert.deepEqual(conversation.state().localReceipts, [
+        { ...draft, outcome: { ...draft.outcome, summary: '已完成草稿' } },
+        {
+          callId: 'query1',
+          tool: 'query_execute',
+          outcome: { kind: 'failure', code: 'CANCELLED' },
+        },
+      ])
     },
   )
   assert.deepEqual(report.pageErrors, [])
