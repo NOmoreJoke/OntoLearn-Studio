@@ -1,0 +1,1090 @@
+{
+  "format": "i05-canonical-interface-type-record-blueprints/1-proposal",
+  "status": "ALL17 record definitions NEW-PROPOSED-NOT-ADOPTED, not old codec, product constructors or adopted classes",
+  "baselineNewExportGrammar": {
+    "path": "docs/iterations/I05/d2-canonical-interface-design/proposed-export-grammar.json",
+    "bytes": 24642,
+    "sha256": "892e327932e143e6e601d66bbadde3c3c5fe5046d1f9bf2a953edcc259610257",
+    "ref": "6b94c152a8fca0f0e26d377b0e4d79ff4d64b8b5"
+  },
+  "fieldSlotRule": "retain baseline explicit actualNone/false/original-bytes/layout-blocked/not-reached distinctions. All declared record fields mandatory in export including source defaulted fields. No reflection/getattr/__dict__/str/repr or default evaluation.",
+  "annotationExpressionShapeLanguage": "Declaration-only NEW blueprint: primitives str/int/bool/bytes; None; exact named class; union A|B; tuple[T,...] preserving full ordered members; tuple[T1,T2] exact positional annotation. It is not an executable serializer or complete original value grammar. No enum inferred from str, no actual cap from defaults.",
+  "records": [
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:SourceRecord",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "SourceRecord",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["reference", "digest", "revision", "text"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "reference",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "digest",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "revision",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "text",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/0"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:TermInput",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "TermInput",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["kind", "lexical_form", "datatype_iri", "language_raw", "source"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "kind",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "lexical_form",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "datatype_iri",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "language_raw",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "source",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "SourceRecord | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/1"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:InputLocation",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "InputLocation",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["section", "index", "side", "span"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "section",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "index",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "side",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "span",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[int, int] | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/2"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:ProfileLimits",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "ProfileLimits",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": [
+        "input_bytes",
+        "term_bytes",
+        "source_bytes",
+        "digits",
+        "integer_bits",
+        "temporary_bits",
+        "rules",
+        "when",
+        "comparisons",
+        "heads",
+        "variables",
+        "bindings",
+        "firings",
+        "head_occurrences",
+        "trace_items",
+        "output_bytes",
+        "work"
+      ],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "input_bytes",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "262144",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "term_bytes",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "16384",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "source_bytes",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "65536",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "digits",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "4096",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "integer_bits",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "16384",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "temporary_bits",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "32768",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "rules",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "100",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "when",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "16",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "comparisons",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "32",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "heads",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "16",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "variables",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "64",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "bindings",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "1024",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "firings",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "1024",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "head_occurrences",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "16384",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "trace_items",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "8192",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "output_bytes",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "262144",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "work",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "16777216",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/3"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:Variable",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "Variable",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["name"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "name",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/4"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:Triple",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "Triple",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["subject", "predicate", "object"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "subject",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "TermInput | Variable",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "predicate",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "TermInput",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "object",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "TermInput | Variable",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/5"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:Comparison",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "Comparison",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["left", "operator", "right"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "left",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "TermInput | Variable",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "operator",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "right",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "TermInput | Variable",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/6"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:RuleSpec",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "RuleSpec",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": [
+        "rule_id",
+        "when",
+        "comparisons",
+        "heads",
+        "source",
+        "revision",
+        "definition_digest",
+        "policy"
+      ],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "rule_id",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "when",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[Triple, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "comparisons",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[Comparison, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "heads",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[Triple, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "source",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "SourceRecord | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "revision",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "definition_digest",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": "None",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "policy",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": "PROFILE",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/7"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:Catalog",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "Catalog",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["classes", "object_properties", "data_properties"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "classes",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[str, ...]",
+          "declaredDefaultSyntax": "()",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "object_properties",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[str, ...]",
+          "declaredDefaultSyntax": "()",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "data_properties",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[str, ...]",
+          "declaredDefaultSyntax": "()",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/8"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:BindingMatch",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "BindingMatch",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["rule_id", "bindings", "when", "proof_leaves"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "rule_id",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "bindings",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[tuple[str, TermInput], ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "when",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[Triple, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "proof_leaves",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[tuple[str, ...], ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/9"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:ComparisonEvidence",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "ComparisonEvidence",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["index", "left", "operator", "right", "result"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "index",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "left",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "ProfileValue",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "operator",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "right",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "ProfileValue",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "result",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "bool",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/10"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:HeadEvidence",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "HeadEvidence",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["index", "triple"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "index",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "triple",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "Triple",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/11"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:PreparedFiring",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "PreparedFiring",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": [
+        "rule_id",
+        "bindings",
+        "when",
+        "proof_leaves",
+        "comparisons",
+        "heads",
+        "basis",
+        "source",
+        "revision",
+        "definition_digest",
+        "policy"
+      ],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "rule_id",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "bindings",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[tuple[str, TermInput], ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "when",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[Triple, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "proof_leaves",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[tuple[str, ...], ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "comparisons",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[ComparisonEvidence, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "heads",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[HeadEvidence, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "basis",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[str, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "source",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "SourceRecord | None",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "revision",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "definition_digest",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str | None",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "policy",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": "PROFILE",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/12"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:PreparedFiringBatch",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "PreparedFiringBatch",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["firings", "facts", "payload", "digest", "profile"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "firings",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[PreparedFiring, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "facts",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "tuple[Triple, ...]",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "payload",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "bytes",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "digest",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "profile",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": "PROFILE",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/13"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:ProfileValue",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "ProfileValue",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["term", "domain", "value", "language"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "term",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "TermInput",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "domain",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "value",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "object",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "language",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "str",
+          "declaredDefaultSyntax": "''",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/14"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:Number",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "Number",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["numerator", "denominator", "negative_zero"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "numerator",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "denominator",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": "1",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "negative_zero",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "bool",
+          "declaredDefaultSyntax": "False",
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/15"
+    },
+    {
+      "definitionId": "NEW-PROPOSED:TypeDirectory:Calendar",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "classNameIsSourceLocatorNotWireTag": "Calendar",
+      "originalWireDiscriminator": null,
+      "adoptedAdapterPin": null,
+      "registrationApprovedSetEquivalence": false,
+      "requiredFields": ["day", "second", "explicit_offset", "is_datetime"],
+      "additionalProperties": false,
+      "fieldBlueprints": [
+        {
+          "name": "day",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "int",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "second",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "Number",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "explicit_offset",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "bool",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        },
+        {
+          "name": "is_datetime",
+          "newSlotType": "baseline NEW FieldSlot",
+          "annotationExpressionShape": "bool",
+          "declaredDefaultSyntax": null,
+          "requiredEvenWithDeclaredDefault": true,
+          "knownOriginalValueDomain": "not established by annotation alone",
+          "transitiveGate": "object -> layout-blocked; class/str domain/enum/tuple bounds and old codec need exact owner adoption"
+        }
+      ],
+      "basisPointer": "/records/16"
+    }
+  ],
+  "explicitUnclosedPaths": [
+    "ProfileValue.value:object and domain->value relation",
+    "ComparisonEvidence.left/right->ProfileValue.value",
+    "PreparedFiring.comparisons[*]->ComparisonEvidence.left/right->ProfileValue.value",
+    "PreparedFiringBatch.firings[*]->PreparedFiring.comparisons[*]->ProfileValue.value",
+    "TermInput.kind/Variable.name/Comparison.operator/RuleSpec.policy/ProfileValue.domain and other str legality not defined by type str",
+    "native_result:dict and unrefined tuple/dict/object elsewhere in fixed R1"
+  ],
+  "defaultSourceExamplesOnly": ["None", "False", "1", "()", "PROFILE", "262144", "16777216", "''"],
+  "allCurrentAdapterCodecAuthorityRuntimeGatesFalse": true,
+  "newProposedNestedBlueprints": [
+    {
+      "definitionId": "NEW-PROPOSED:selectedFactItem",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "requiredFields": ["triple", "sources"],
+      "fullFieldMapDirectory": "api:legacy-provenance/selectedFacts[*]",
+      "sourcesInstancesLink": {
+        "parentField": "api:legacy-provenance/selectedFacts[*]/sources",
+        "childDirectories": [
+          "legacy-selected-source:asserted",
+          "legacy-selected-source:rdfs",
+          "legacy-selected-source:rule"
+        ],
+        "selector": "selectedFacts[i].sources[j]",
+        "order": "all i,j in original order; retain every complete source including unrefined inputs/basis; no arbitrary branch coercion",
+        "unknownKind": "preserve original full value and layout-blocked; do not infer enum completeness"
+      },
+      "tripleValueGrammarClosed": false,
+      "adoptedAdapterPin": null
+    },
+    {
+      "definitionId": "NEW-PROPOSED:productionObservationOptionalMutation",
+      "status": "NEW-PROPOSED-NOT-ADOPTED",
+      "optionalField": "mutation",
+      "mandatoryParentKeysUnchanged": 13,
+      "fullFieldMapDirectory": "api:probe-production-observation/known-optional-branches",
+      "states": ["absent", "present-original-value-unknown-inner"],
+      "presentNull": "preserve actual null only; legality unknown; never map to absent",
+      "innerFields": null,
+      "adoptedAdapterPin": null
+    }
+  ]
+}

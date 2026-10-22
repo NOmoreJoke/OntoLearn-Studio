@@ -1,0 +1,795 @@
+{
+  "format": "i05-existing-annotated-type-directory/1",
+  "sourceFactsOnly": true,
+  "newNormativeCodec": false,
+  "sourceInventoryFinal": "39a91de416eb2692aea079c637309f9d8770b08a",
+  "productFactRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+  "recordCount": 17,
+  "fieldCount": 86,
+  "records": [
+    {
+      "className": "SourceRecord",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "sourceBytes": 11987,
+      "sourceSHA256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "classLine": 67,
+      "classEndLine": 71,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "reference",
+          "annotationSyntax": "str | None",
+          "sourceLine": 68,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "digest",
+          "annotationSyntax": "str | None",
+          "sourceLine": 69,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "revision",
+          "annotationSyntax": "str | None",
+          "sourceLine": 70,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "text",
+          "annotationSyntax": "str | None",
+          "sourceLine": 71,
+          "defaultSyntax": "None"
+        }
+      ],
+      "fieldCount": 4,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "TermInput",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "sourceBytes": 11987,
+      "sourceSHA256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "classLine": 75,
+      "classEndLine": 80,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "kind",
+          "annotationSyntax": "str",
+          "sourceLine": 76,
+          "defaultSyntax": null
+        },
+        {
+          "name": "lexical_form",
+          "annotationSyntax": "str",
+          "sourceLine": 77,
+          "defaultSyntax": null
+        },
+        {
+          "name": "datatype_iri",
+          "annotationSyntax": "str | None",
+          "sourceLine": 78,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "language_raw",
+          "annotationSyntax": "str | None",
+          "sourceLine": 79,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "source",
+          "annotationSyntax": "SourceRecord | None",
+          "sourceLine": 80,
+          "defaultSyntax": "None"
+        }
+      ],
+      "fieldCount": 5,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "InputLocation",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "sourceBytes": 11987,
+      "sourceSHA256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "classLine": 19,
+      "classEndLine": 23,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "section",
+          "annotationSyntax": "str | None",
+          "sourceLine": 20,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "index",
+          "annotationSyntax": "int | None",
+          "sourceLine": 21,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "side",
+          "annotationSyntax": "str | None",
+          "sourceLine": 22,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "span",
+          "annotationSyntax": "tuple[int, int] | None",
+          "sourceLine": 23,
+          "defaultSyntax": "None"
+        }
+      ],
+      "fieldCount": 4,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "ProfileLimits",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_profile.py",
+      "sourceBytes": 11987,
+      "sourceSHA256": "b40b73f65f474cda32ac42caeeb837ad6470a7daeeba9013d8f69e7f0c5a261c",
+      "classLine": 118,
+      "classEndLine": 141,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "input_bytes",
+          "annotationSyntax": "int",
+          "sourceLine": 119,
+          "defaultSyntax": "262144"
+        },
+        {
+          "name": "term_bytes",
+          "annotationSyntax": "int",
+          "sourceLine": 120,
+          "defaultSyntax": "16384"
+        },
+        {
+          "name": "source_bytes",
+          "annotationSyntax": "int",
+          "sourceLine": 121,
+          "defaultSyntax": "65536"
+        },
+        {
+          "name": "digits",
+          "annotationSyntax": "int",
+          "sourceLine": 122,
+          "defaultSyntax": "4096"
+        },
+        {
+          "name": "integer_bits",
+          "annotationSyntax": "int",
+          "sourceLine": 123,
+          "defaultSyntax": "16384"
+        },
+        {
+          "name": "temporary_bits",
+          "annotationSyntax": "int",
+          "sourceLine": 124,
+          "defaultSyntax": "32768"
+        },
+        {
+          "name": "rules",
+          "annotationSyntax": "int",
+          "sourceLine": 125,
+          "defaultSyntax": "100"
+        },
+        {
+          "name": "when",
+          "annotationSyntax": "int",
+          "sourceLine": 126,
+          "defaultSyntax": "16"
+        },
+        {
+          "name": "comparisons",
+          "annotationSyntax": "int",
+          "sourceLine": 127,
+          "defaultSyntax": "32"
+        },
+        {
+          "name": "heads",
+          "annotationSyntax": "int",
+          "sourceLine": 128,
+          "defaultSyntax": "16"
+        },
+        {
+          "name": "variables",
+          "annotationSyntax": "int",
+          "sourceLine": 129,
+          "defaultSyntax": "64"
+        },
+        {
+          "name": "bindings",
+          "annotationSyntax": "int",
+          "sourceLine": 130,
+          "defaultSyntax": "1024"
+        },
+        {
+          "name": "firings",
+          "annotationSyntax": "int",
+          "sourceLine": 131,
+          "defaultSyntax": "1024"
+        },
+        {
+          "name": "head_occurrences",
+          "annotationSyntax": "int",
+          "sourceLine": 132,
+          "defaultSyntax": "16384"
+        },
+        {
+          "name": "trace_items",
+          "annotationSyntax": "int",
+          "sourceLine": 133,
+          "defaultSyntax": "8192"
+        },
+        {
+          "name": "output_bytes",
+          "annotationSyntax": "int",
+          "sourceLine": 134,
+          "defaultSyntax": "262144"
+        },
+        {
+          "name": "work",
+          "annotationSyntax": "int",
+          "sourceLine": 135,
+          "defaultSyntax": "16777216"
+        }
+      ],
+      "fieldCount": 17,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "Variable",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 42,
+      "classEndLine": 43,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "name",
+          "annotationSyntax": "str",
+          "sourceLine": 43,
+          "defaultSyntax": null
+        }
+      ],
+      "fieldCount": 1,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "Triple",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 47,
+      "classEndLine": 50,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "subject",
+          "annotationSyntax": "TermInput | Variable",
+          "sourceLine": 48,
+          "defaultSyntax": null
+        },
+        {
+          "name": "predicate",
+          "annotationSyntax": "TermInput",
+          "sourceLine": 49,
+          "defaultSyntax": null
+        },
+        {
+          "name": "object",
+          "annotationSyntax": "TermInput | Variable",
+          "sourceLine": 50,
+          "defaultSyntax": null
+        }
+      ],
+      "fieldCount": 3,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "Comparison",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 54,
+      "classEndLine": 57,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "left",
+          "annotationSyntax": "TermInput | Variable",
+          "sourceLine": 55,
+          "defaultSyntax": null
+        },
+        {
+          "name": "operator",
+          "annotationSyntax": "str",
+          "sourceLine": 56,
+          "defaultSyntax": null
+        },
+        {
+          "name": "right",
+          "annotationSyntax": "TermInput | Variable",
+          "sourceLine": 57,
+          "defaultSyntax": null
+        }
+      ],
+      "fieldCount": 3,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "RuleSpec",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 61,
+      "classEndLine": 69,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "rule_id",
+          "annotationSyntax": "str",
+          "sourceLine": 62,
+          "defaultSyntax": null
+        },
+        {
+          "name": "when",
+          "annotationSyntax": "tuple[Triple, ...]",
+          "sourceLine": 63,
+          "defaultSyntax": null
+        },
+        {
+          "name": "comparisons",
+          "annotationSyntax": "tuple[Comparison, ...]",
+          "sourceLine": 64,
+          "defaultSyntax": null
+        },
+        {
+          "name": "heads",
+          "annotationSyntax": "tuple[Triple, ...]",
+          "sourceLine": 65,
+          "defaultSyntax": null
+        },
+        {
+          "name": "source",
+          "annotationSyntax": "SourceRecord | None",
+          "sourceLine": 66,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "revision",
+          "annotationSyntax": "str | None",
+          "sourceLine": 67,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "definition_digest",
+          "annotationSyntax": "str | None",
+          "sourceLine": 68,
+          "defaultSyntax": "None"
+        },
+        {
+          "name": "policy",
+          "annotationSyntax": "str",
+          "sourceLine": 69,
+          "defaultSyntax": "PROFILE"
+        }
+      ],
+      "fieldCount": 8,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "Catalog",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 73,
+      "classEndLine": 76,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "classes",
+          "annotationSyntax": "tuple[str, ...]",
+          "sourceLine": 74,
+          "defaultSyntax": "()"
+        },
+        {
+          "name": "object_properties",
+          "annotationSyntax": "tuple[str, ...]",
+          "sourceLine": 75,
+          "defaultSyntax": "()"
+        },
+        {
+          "name": "data_properties",
+          "annotationSyntax": "tuple[str, ...]",
+          "sourceLine": 76,
+          "defaultSyntax": "()"
+        }
+      ],
+      "fieldCount": 3,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "BindingMatch",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 80,
+      "classEndLine": 84,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "rule_id",
+          "annotationSyntax": "str",
+          "sourceLine": 81,
+          "defaultSyntax": null
+        },
+        {
+          "name": "bindings",
+          "annotationSyntax": "tuple[tuple[str, TermInput], ...]",
+          "sourceLine": 82,
+          "defaultSyntax": null
+        },
+        {
+          "name": "when",
+          "annotationSyntax": "tuple[Triple, ...]",
+          "sourceLine": 83,
+          "defaultSyntax": null
+        },
+        {
+          "name": "proof_leaves",
+          "annotationSyntax": "tuple[tuple[str, ...], ...]",
+          "sourceLine": 84,
+          "defaultSyntax": null
+        }
+      ],
+      "fieldCount": 4,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "ComparisonEvidence",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 117,
+      "classEndLine": 122,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "index",
+          "annotationSyntax": "int",
+          "sourceLine": 118,
+          "defaultSyntax": null
+        },
+        {
+          "name": "left",
+          "annotationSyntax": "ProfileValue",
+          "sourceLine": 119,
+          "defaultSyntax": null
+        },
+        {
+          "name": "operator",
+          "annotationSyntax": "str",
+          "sourceLine": 120,
+          "defaultSyntax": null
+        },
+        {
+          "name": "right",
+          "annotationSyntax": "ProfileValue",
+          "sourceLine": 121,
+          "defaultSyntax": null
+        },
+        {
+          "name": "result",
+          "annotationSyntax": "bool",
+          "sourceLine": 122,
+          "defaultSyntax": null
+        }
+      ],
+      "fieldCount": 5,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "HeadEvidence",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 126,
+      "classEndLine": 128,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "index",
+          "annotationSyntax": "int",
+          "sourceLine": 127,
+          "defaultSyntax": null
+        },
+        {
+          "name": "triple",
+          "annotationSyntax": "Triple",
+          "sourceLine": 128,
+          "defaultSyntax": null
+        }
+      ],
+      "fieldCount": 2,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "PreparedFiring",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 132,
+      "classEndLine": 143,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "rule_id",
+          "annotationSyntax": "str",
+          "sourceLine": 133,
+          "defaultSyntax": null
+        },
+        {
+          "name": "bindings",
+          "annotationSyntax": "tuple[tuple[str, TermInput], ...]",
+          "sourceLine": 134,
+          "defaultSyntax": null
+        },
+        {
+          "name": "when",
+          "annotationSyntax": "tuple[Triple, ...]",
+          "sourceLine": 135,
+          "defaultSyntax": null
+        },
+        {
+          "name": "proof_leaves",
+          "annotationSyntax": "tuple[tuple[str, ...], ...]",
+          "sourceLine": 136,
+          "defaultSyntax": null
+        },
+        {
+          "name": "comparisons",
+          "annotationSyntax": "tuple[ComparisonEvidence, ...]",
+          "sourceLine": 137,
+          "defaultSyntax": null
+        },
+        {
+          "name": "heads",
+          "annotationSyntax": "tuple[HeadEvidence, ...]",
+          "sourceLine": 138,
+          "defaultSyntax": null
+        },
+        {
+          "name": "basis",
+          "annotationSyntax": "tuple[str, ...]",
+          "sourceLine": 139,
+          "defaultSyntax": null
+        },
+        {
+          "name": "source",
+          "annotationSyntax": "SourceRecord | None",
+          "sourceLine": 140,
+          "defaultSyntax": null
+        },
+        {
+          "name": "revision",
+          "annotationSyntax": "str | None",
+          "sourceLine": 141,
+          "defaultSyntax": null
+        },
+        {
+          "name": "definition_digest",
+          "annotationSyntax": "str | None",
+          "sourceLine": 142,
+          "defaultSyntax": null
+        },
+        {
+          "name": "policy",
+          "annotationSyntax": "str",
+          "sourceLine": 143,
+          "defaultSyntax": "PROFILE"
+        }
+      ],
+      "fieldCount": 11,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "PreparedFiringBatch",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_firing.py",
+      "sourceBytes": 19149,
+      "sourceSHA256": "5116aa3e96ae10e7f37eb7afddceef50879869d38af116f9c794437edf49243c",
+      "classLine": 147,
+      "classEndLine": 152,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "firings",
+          "annotationSyntax": "tuple[PreparedFiring, ...]",
+          "sourceLine": 148,
+          "defaultSyntax": null
+        },
+        {
+          "name": "facts",
+          "annotationSyntax": "tuple[Triple, ...]",
+          "sourceLine": 149,
+          "defaultSyntax": null
+        },
+        {
+          "name": "payload",
+          "annotationSyntax": "bytes",
+          "sourceLine": 150,
+          "defaultSyntax": null
+        },
+        {
+          "name": "digest",
+          "annotationSyntax": "str",
+          "sourceLine": 151,
+          "defaultSyntax": null
+        },
+        {
+          "name": "profile",
+          "annotationSyntax": "str",
+          "sourceLine": 152,
+          "defaultSyntax": "PROFILE"
+        }
+      ],
+      "fieldCount": 5,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "ProfileValue",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_terms.py",
+      "sourceBytes": 6176,
+      "sourceSHA256": "218c4790e9b35236e393407b5b4e0207890d46fe3ea48a9a69e26aa08ddba1d1",
+      "classLine": 47,
+      "classEndLine": 51,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True, weakref_slot=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "term",
+          "annotationSyntax": "TermInput",
+          "sourceLine": 48,
+          "defaultSyntax": null
+        },
+        {
+          "name": "domain",
+          "annotationSyntax": "str",
+          "sourceLine": 49,
+          "defaultSyntax": null
+        },
+        {
+          "name": "value",
+          "annotationSyntax": "object",
+          "sourceLine": 50,
+          "defaultSyntax": null
+        },
+        {
+          "name": "language",
+          "annotationSyntax": "str",
+          "sourceLine": 51,
+          "defaultSyntax": "''"
+        }
+      ],
+      "fieldCount": 4,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "Number",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_numbers.py",
+      "sourceBytes": 7372,
+      "sourceSHA256": "6b080a55bd8f4af1a1120b55448e02a1a442c231a32ab575ce6e82de054164f9",
+      "classLine": 14,
+      "classEndLine": 17,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "numerator",
+          "annotationSyntax": "int",
+          "sourceLine": 15,
+          "defaultSyntax": null
+        },
+        {
+          "name": "denominator",
+          "annotationSyntax": "int",
+          "sourceLine": 16,
+          "defaultSyntax": "1"
+        },
+        {
+          "name": "negative_zero",
+          "annotationSyntax": "bool",
+          "sourceLine": 17,
+          "defaultSyntax": "False"
+        }
+      ],
+      "fieldCount": 3,
+      "sourceLocatorNotWireDiscriminator": true
+    },
+    {
+      "className": "Calendar",
+      "sourceRef": "2cf0c3328de464e15a3fa9cdbfdf6aa88d0b4a64",
+      "sourcePath": "packages/engine/src/ontolearn_engine/quality/rule_calendar.py",
+      "sourceBytes": 4047,
+      "sourceSHA256": "6a2e43b029f7069e398f696ff19948d9e806f06fecd9a1e239b889a55e528aec",
+      "classLine": 28,
+      "classEndLine": 32,
+      "decoratorSyntax": ["dataclass(frozen=True, slots=True)"],
+      "baseSyntax": [],
+      "fieldsInSourceOrder": [
+        {
+          "name": "day",
+          "annotationSyntax": "int",
+          "sourceLine": 29,
+          "defaultSyntax": null
+        },
+        {
+          "name": "second",
+          "annotationSyntax": "Number",
+          "sourceLine": 30,
+          "defaultSyntax": null
+        },
+        {
+          "name": "explicit_offset",
+          "annotationSyntax": "bool",
+          "sourceLine": 31,
+          "defaultSyntax": null
+        },
+        {
+          "name": "is_datetime",
+          "annotationSyntax": "bool",
+          "sourceLine": 32,
+          "defaultSyntax": null
+        }
+      ],
+      "fieldCount": 4,
+      "sourceLocatorNotWireDiscriminator": true
+    }
+  ],
+  "readBoundary": "Root extracted only already fixed declaration-index fields; no new source file read, method body or expression evaluation",
+  "annotationDoesNotCloseAdmissionGrammar": true,
+  "defaultsNotConsumerFallbackOrApprovedFeeCaps": true,
+  "isExistingProfileProjectionApprovedSetEquivalenceProvenHere": false,
+  "unresolved": [
+    "ProfileValue.value:object closed alternatives and domain-to-value relation",
+    "native_result:dict closed layout",
+    "str fields do not establish legal enum/vocabulary",
+    "annotation/default syntax not runtime type/authority proof",
+    "complete legacy same-issue live issuer/handle/verifier and original byte codec remain unadopted"
+  ],
+  "D2ReadAuthorization": "pending controller exact fixed pure document reception",
+  "productExecuted": false
+}

@@ -1,0 +1,63 @@
+{
+  "format": "i05-canonical-interface-r2-revision-disposition/1",
+  "status": "author design response awaiting independent delta review",
+  "typeReception": {
+    "source": "d6ecbc887e1bf9acd5e98b18237d6740d2e61796 two authorized pure docs",
+    "scope": "17 classes86 local field declaration metadata; Q01 directory-only received, not semantic/codec/live adoption"
+  },
+  "formalReview": {
+    "findingId": "IR1-P2-01",
+    "severity": "P2",
+    "source": "root authorized formal two originals; readback in r1-formal-readback.json",
+    "reportPin": {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-report.md",
+      "bytes": 11122,
+      "sha256": "35b1d913c4baf3bbe07d3a582ae16fd9ed76479d77841e865b89b0ec5efc5b11",
+      "gitRef": null,
+      "identityBasis": "root authorized formal current original; root will seal reviewer files separately"
+    },
+    "legacyResult": "Fail; 949 structural checks passed while semantic coverage omissions were found; no claim that structural count proves completeness",
+    "triggers": [
+      {
+        "id": "selectedFact-wrapper",
+        "sourcePointer": "api-layouts.json#/layouts/1/selectedFacts",
+        "oldGap": "outer selectedFacts and three source branches existed, wrapper triple/sources directory and rows missing",
+        "newDirectory": "api:legacy-provenance/selectedFacts[*]",
+        "newRows": 2,
+        "valueGrammarClosed": false
+      },
+      {
+        "id": "known-optional-mutation",
+        "sourcePointer": "api-layouts.json#/layouts/11/optionalBranch",
+        "oldGap": "only generic extra-key blocker, no known optional mutation branch directory",
+        "newDirectory": "api:probe-production-observation/known-optional-branches",
+        "newRows": 1,
+        "valueGrammarClosed": false
+      }
+    ],
+    "actualRawLossClaim": false,
+    "rawFailClosedRulesRetained": true,
+    "old29And205Modified": false,
+    "formalReceiptPin": {
+      "path": "docs/reviews/I05/d2-canonical-interface-design/independent-r1-receipt.json",
+      "bytes": 5188,
+      "sha256": "59e20cd2a31de65a0f4a220b20eafcf565cb2ca27295aef21900fc0e6b7da600",
+      "gitRef": null,
+      "identityBasis": "root authorized formal current original; self-excluded independent receipt"
+    },
+    "formalReportStatus": "both authorized formal originals fully read, bytesSHA matched; no other reviewer attachments read"
+  },
+  "coverageClaim": "Known key directory of received facts and explicit instance links only; not full value grammar, old codec, adopted DTO, runtime authority or actual wiring closure",
+  "effectiveCounts": {
+    "baselineDirectories": 52,
+    "baselineRows": 263,
+    "typeReplacementOldDirectories": 7,
+    "typeReplacementOldRows": 27,
+    "typeDirectories": 17,
+    "typeRows": 86,
+    "p2AdditionalDirectories": 2,
+    "p2AdditionalRows": 3,
+    "effectiveDirectories": 64,
+    "effectiveRows": 325
+  }
+}

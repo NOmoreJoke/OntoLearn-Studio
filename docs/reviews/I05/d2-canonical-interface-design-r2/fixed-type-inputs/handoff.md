@@ -1,0 +1,7 @@
+# 已有类型字段目录补件
+
+本件只补原固定11份纯事实正文未展开的指定helper字段，提取源为fixed39a91的additional-source-index.json（索引本身不转授D2）。type-directory.json逐项给17个指定class、86个本地声明字段的源顺序、注解/default源码语法、行号和源文件pin；计数以JSON实际fieldCount为准。没有新读源码、执行产品、追imports或求值默认表达式，没有输出任何method/算法、ledger算术、费率或运行材料。旧48件库存全部保持fixed39a91字节。
+
+目录className/sourcePath只是源码定位，不是新wire discriminator；这里不以17计数证明它与某个投影approved集合相同，也不推造recordType。既有production平铺字段、probe嵌套fields和原material codec继续分开。注解中的str不补enum，object/未细化tuple/dict不补封闭grammar；默认值语法不授费用cap，不允许consumer自行补值后声称原返回完整。具体value/domain关系、native_result全布局、同issue/live authority及完整codec采用仍pending。
+
+独立窄审与总控精确固定接收前不给D2；接收后也只读获准纯文档，不能沿source pin读取索引/源码。D2可据明确字段继续设计，全部原wholeGate与实施/运行门保持，不回改旧冻结false，也不把此补件加入retained两外审输入。
