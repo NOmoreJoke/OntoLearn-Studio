@@ -1,0 +1,54 @@
+{
+  "format": "T05-O-own-operation-turn-official-runtime-minimal-readback/1",
+  "observedUtc": "2026-10-22T14:06:20.299223+00:00",
+  "database": "/Users/kyle/.minimax/v2/sqlite/runtime-state.sqlite",
+  "connection": {
+    "mode": "ro",
+    "timeout": 1,
+    "query_only": true,
+    "immutable": false
+  },
+  "approvedSessionId": "mvs_8262fb931cf34f3dae99b85683d65fd7",
+  "requestedTurnId": "turn_514d9775-9ba0-4431-9196-0c9e7206ddcd",
+  "queries": [
+    {
+      "sql": "SELECT session_id,turn_id,terminal_outcome,updated_at_ms FROM local_runtime_session_agent_state WHERE session_id=? AND turn_id=?",
+      "parameters": [
+        "mvs_8262fb931cf34f3dae99b85683d65fd7",
+        "turn_514d9775-9ba0-4431-9196-0c9e7206ddcd"
+      ],
+      "rows": []
+    },
+    {
+      "sql": "SELECT session_id,turn_id,terminal_outcome,updated_at_ms FROM local_runtime_session_agent_state WHERE session_id=?",
+      "parameters": [
+        "mvs_8262fb931cf34f3dae99b85683d65fd7"
+      ],
+      "rows": [
+        {
+          "session_id": "mvs_8262fb931cf34f3dae99b85683d65fd7",
+          "turn_id": "turn_task_delivery_e7ed5d7a9fcf4986ad7d458a14a26c4f",
+          "terminal_outcome": "completed",
+          "updated_at_ms": 1792669955649
+        }
+      ]
+    },
+    {
+      "sql": "SELECT session_id,status,workspace_dir,project_workspace_dir FROM local_runtime_sessions WHERE session_id=?",
+      "parameters": [
+        "mvs_8262fb931cf34f3dae99b85683d65fd7"
+      ],
+      "rows": [
+        {
+          "session_id": "mvs_8262fb931cf34f3dae99b85683d65fd7",
+          "status": "idle",
+          "workspace_dir": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O-minimax-review-e15ce44",
+          "project_workspace_dir": "/Users/kyle/Documents/工作/知爻/本体"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "originalReviewStopNotOverridden": true,
+  "noGUIMessagesRuntimeStartOrJournalChanges": true
+}

@@ -1,0 +1,40 @@
+{
+  "format": "T05-O-raw-unified-diff-whitespace-validation-exception/1",
+  "firstCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "firstExit": 2,
+  "exactRawPath": "docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/post-intake-terminal-readback/post-delivery-report-diff.txt",
+  "rawBytes": 4735,
+  "rawSHA256": "77231b57b9f8c15d45935228209f3daf06d97d4d364b75efee927cfda1bd657a",
+  "reportedLineNumbers": [
+    15,
+    20,
+    22,
+    25,
+    32,
+    34
+  ],
+  "reportedWarnings": [
+    "trailing whitespace on context blank line represented by one ASCII space",
+    "new blank line at EOF on raw unified diff context"
+  ],
+  "rawFormatReason": "Unified diff preserves a one-space prefix for unchanged empty context lines. Raw source-derived diff remains byte-exact.",
+  "independentlyReconstructedFromBothReports": true,
+  "allOtherStagedPathsCheckExit": 0,
+  "otherPathsCheck": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)docs/reviews/T05/projection-R3-receiving/O-launch-dispatch/post-intake-terminal-readback/post-delivery-report-diff.txt"
+  ],
+  "rawDiffNotEdited": true,
+  "noGitConfigAttributesOrIgnoreChanges": true,
+  "notProductOrCandidateFailure": true
+}

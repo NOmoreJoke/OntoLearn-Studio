@@ -1,0 +1,34 @@
+--- original-56586
++++ post-delivery-58279
+@@ -39,7 +39,7 @@
+ | turn | 本轮单次连续执行，未跨会话 | 同上 |
+ | model（实际生效） | `minimax/MiniMax-M3.1-Flash`（`effective_model` 与 `model.model_id` 一致） | 同上 |
+ | thinking（实际生效） | `model.thinking.effort = "xhigh"`、`effective_model_variant = "thinking"` | 同上 |
+-| permission | **本会话实际权限模式未由 harness 向我暴露 → 未核**；用户级 `/Users/kyle/.minimax/config.yaml:107` 实测 `permissionMode: bypassPermissions`（文件 mtime 2026-10-22 18:49） | `mavis session get` + 直接读 config.yaml |
++| permission | **本会话实际权限模式未由 harness 向我暴露 → 未核**。按本轮新增约束，逐任务设置**由 owner 已核官方回执供给**；本方**不读全局 config/log 验证默认**，故本项在收到 owner 官方回执前保持未核 | `mavis session get`（该工具未返回 permissionMode） |
+ | worktree | `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T05-O-minimax-review-e15ce44` | `session get.workspaceDir` + `pwd` |
+ | branch | **detached HEAD**（`git branch --show-current` 为空） | `git branch --show-current` |
+ | HEAD | `86df64a2c707355ed177d536ef5975a1986c0f0b` | `git rev-parse HEAD` |
+@@ -49,7 +49,9 @@
+ | 本方 scope 契约 | `scope-contract.json` SHA256 `371fcf080d86eb1649dc1edea16ff6066c96dced83ed059af05336ea148c93d9`（与 launch-map 声明一致） | `shasum -a 256` |
+ | 当前 AGENTS | 15147 bytes / SHA256 `de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4`（未暂存，保持 ` M AGENTS.md`，未改） | `shasum -a 256` + `git status` |
+ 
+-**权限说明（不夸大）**：`external-review-permissions.md` 第 18 行明确「用户级文件不能证明已有会话即时切换」。本轮 harness 未向我暴露本会话的实际 permissionMode，因此该一项按**未核**记录。用户级配置实测为 `bypassPermissions`；本轮全部工具调用均未被权限门拦截，且本审查未执行任何超出授权的动作。
++**权限说明（不夸大）**：`external-review-permissions.md` 第 18 行明确「用户级文件不能证明已有会话即时切换」。本轮 harness 未向我暴露本会话的实际 permissionMode，`mavis session get` 也未返回该字段，故该一项按**未核**记录。
++
++**本轮约束更新后的更正登记**：本报告初稿曾以读取用户级 `/Users/kyle/.minimax/config.yaml` 的方式记录 `permissionMode: bypassPermissions`。按本轮新增约束「逐任务设置由 owner 已核官方回执供给，不读 global config/log 验证默认」，该条用户级读数**已从本报告撤除**，不再作为设置证据；permission 一项在收到 owner 官方核验回执前**保持未核**。撤回的是"以全局默认值证明本会话设置"这一推断，**不是**撤回已发生的读取事件本身（该事件如实保留在此登记中）。本轮全部工具调用均未被权限门拦截，且本审查未执行任何超出授权的动作。
+ 
+ ---
+ 
+@@ -75,6 +77,11 @@
+ | `python3 -B docs/reviews/T05/projection-R3-receiving/launch-O/verify-launch-input.py --phase observe` | 0 | `{"phase":"observe","sourceAndInputBytesVerified":true,"protectedUniqueCurrentGitSHAFiles":290,"setupReady":false,"unknownNewMetadataPaths":[]}` | `launch-O/preflight-observe.json`（本方新增元数据） |
+ 
+ 说明：`setupReady:false` 属该工具对 setup 阶段的判定口径，**不代表**本审查未就绪；该工具自述不检查模型真实 taskID/终态、不代表指定审查 Pass。本方新增元数据与冻结输入分列登记。
++
++**该次 observe 的边界（按本轮新增约束复核）**：
++- 该次调用发生在**本方写入任何新文件之前**（工作树当时的全部未跟踪项均为 setup 产出的 `launch-O/` 文件，归属本任务已声明写面）。其哈希对象为：受保护的 **290 个固定输入** + 本方已声明写面内的 setup 产物；`unknownNewMetadataPaths` 为 **空数组**，即**不存在**任何未知自动元数据。
++- 该工具的产出 `preflight-observe.json`（61333 B）保留为**已有真实事件**，不重跑、不删除、不改写。
++- 按本轮新增约束「不运行会读取未知文件内容的 observe」，本报告定稿时**未再次运行** observe；今后如出现未知自动元数据，只做 **path/lstat 与归属=unknown** 记录，**不 hash、不 parse**。当前工作树内经 path/lstat 核对**不存在**未知自动元数据：全部未跟踪项均在 `launch-O/` 内、归属本任务，唯一 tracked 修改为受保护的 `AGENTS.md`（本方未改、未暂存）。
+ 
+ ### 4.2 两个授权既有正常 O 命令（复验）
+ 
