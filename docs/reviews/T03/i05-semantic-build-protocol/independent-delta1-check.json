@@ -1,0 +1,290 @@
+{
+  "kind": "independent affected-delta pure document review; not schema engine or actual run",
+  "candidate": "4a32b9540a267601a25f21d0602cda73cde2d275",
+  "selfcheck": {
+    "exitCode": 0,
+    "stdoutBytes": 5251,
+    "stdoutSHA256": "1471417a510039cdaccec606a5a8725e4cb891777ae6568c202e3ebd291f449c",
+    "stderrBytes": 0,
+    "schemaCount": 4,
+    "propertyIndexRows": 1241,
+    "validTriplets": 1,
+    "validVariants": 15,
+    "invalidRejected": 54,
+    "refs": 3
+  },
+  "ownerManifest": {
+    "files": 58,
+    "payloads": 57,
+    "payloadBytes": 3100072,
+    "manifestBytes": 12301,
+    "manifestSHA256": "1f4b4f6264c0210d4837685f17086cef72938e02fd3d1b82e4b4bd5d7830c141",
+    "allCurrentGitSHA": true,
+    "exactBasePathSet": true
+  },
+  "headerCoreExactlyEqual": true,
+  "all15SyntheticRawHeadersManifestHashMatch": [
+    {
+      "path": "synthetic-headers/base-frozen.json",
+      "bytes": 24754,
+      "sha256": "5539a7351efe79db19e1c0256b721c98331d61a494fa9e66915b59041c4251ff"
+    },
+    {
+      "path": "synthetic-headers/R-source-complete-header.json",
+      "bytes": 25890,
+      "sha256": "c00fded1d923b63da2b57cc25fbdcb86eeed631d0cd48e841fef510f4aa567a3"
+    },
+    {
+      "path": "synthetic-headers/R-known-rejection-collected.json",
+      "bytes": 24754,
+      "sha256": "5539a7351efe79db19e1c0256b721c98331d61a494fa9e66915b59041c4251ff"
+    },
+    {
+      "path": "synthetic-headers/R-malformed-header-raw.partial",
+      "bytes": 17,
+      "sha256": "a8021cfed2409e857850e0fb61a5c859e9a861e6634df84caf11f971d332a099"
+    },
+    {
+      "path": "synthetic-headers/R-header-partial-loader-no-terminal.json",
+      "bytes": 10414,
+      "sha256": "081e7fc50b269859094519f012c5fa79408d873fdcebf463723a8d4a84912b1f"
+    },
+    {
+      "path": "synthetic-headers/R-observed-non-CodeType-false.json",
+      "bytes": 10173,
+      "sha256": "676b0e0fc4814ebbb380aa4c6a777fad3e9fd342bf1a9d77307fbc7c16c5fce1"
+    },
+    {
+      "path": "synthetic-headers/R-observed-alias-false.json",
+      "bytes": 10415,
+      "sha256": "6305b04d04b926a8f408869110107c53f38f7af55010c5c33a2720358fd53af7"
+    },
+    {
+      "path": "synthetic-headers/R-checker-object-false.json",
+      "bytes": 10958,
+      "sha256": "fcf91be2a89a2e5ebe269ed3862c82015ca37a97e27b8bda1be09a39dd2256cc"
+    },
+    {
+      "path": "synthetic-headers/R-false-swallowed-as-null.json",
+      "bytes": 10415,
+      "sha256": "6305b04d04b926a8f408869110107c53f38f7af55010c5c33a2720358fd53af7"
+    },
+    {
+      "path": "synthetic-headers/R-incomplete-pretends-full.json",
+      "bytes": 10414,
+      "sha256": "081e7fc50b269859094519f012c5fa79408d873fdcebf463723a8d4a84912b1f"
+    },
+    {
+      "path": "synthetic-headers/R-source-cannot-read-frozen-provenance.json",
+      "bytes": 25973,
+      "sha256": "3fe926fd909c66898ab65c0cecb0bc08fe976a4269004b8836809341373d0b6f"
+    },
+    {
+      "path": "synthetic-headers/R-frozen-missing-source23-declaration.json",
+      "bytes": 24409,
+      "sha256": "ca826f8fdc13fb62226316c35fdfeef32b28c38b97a2666850202399db71e237"
+    },
+    {
+      "path": "synthetic-headers/R-header-wrong-kind.json",
+      "bytes": 24755,
+      "sha256": "fc2195b9d37fa47ca1a85800fff3b898c853990c8e620706e8659fb094be75d5"
+    },
+    {
+      "path": "synthetic-headers/R-parsed-header-binding-mismatch.json",
+      "bytes": 24754,
+      "sha256": "0e99ef14d37ca76133213806a45b1bc2d8de00bdf87ffa0aca557750132dd6b1"
+    },
+    {
+      "path": "synthetic-headers/R-strict-shape-invalid-header.json",
+      "bytes": 36,
+      "sha256": "4d6a8084fdf6785c6bbba7d4f84ea6007722b8c8449fc6900f2dcc5df3b6e555"
+    }
+  ],
+  "newVariantStates": [
+    {
+      "id": "R-source-complete-header",
+      "observationState": "collected",
+      "exit": 0,
+      "signal": null,
+      "headerState": "parsed",
+      "terminalState": "parsed",
+      "moduleCount": 23,
+      "functionCount": 4,
+      "observedPathCount": 496,
+      "collectionComplete": true,
+      "fullSuiteCollectionComplete": true
+    },
+    {
+      "id": "R-known-rejection-collected",
+      "observationState": "collected",
+      "exit": 0,
+      "signal": null,
+      "headerState": "parsed",
+      "terminalState": "parsed",
+      "moduleCount": 23,
+      "functionCount": 4,
+      "observedPathCount": 444,
+      "collectionComplete": true,
+      "fullSuiteCollectionComplete": true
+    },
+    {
+      "id": "R-precondition-no-header-no-loader",
+      "observationState": "pre-header-rejected",
+      "exit": 2,
+      "signal": null,
+      "headerState": "absent",
+      "terminalState": "absent",
+      "moduleCount": 0,
+      "functionCount": 0,
+      "observedPathCount": 0,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-invalid-argv-preserved",
+      "observationState": "pre-header-rejected",
+      "exit": 2,
+      "signal": null,
+      "headerState": "absent",
+      "terminalState": "absent",
+      "moduleCount": 0,
+      "functionCount": 0,
+      "observedPathCount": 0,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-kill-no-header",
+      "observationState": "incomplete",
+      "exit": null,
+      "signal": "SIGKILL",
+      "headerState": "absent",
+      "terminalState": "absent",
+      "moduleCount": 0,
+      "functionCount": 0,
+      "observedPathCount": 0,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-malformed-header-raw",
+      "observationState": "incomplete",
+      "exit": null,
+      "signal": "SIGKILL",
+      "headerState": "malformed",
+      "terminalState": "absent",
+      "moduleCount": 0,
+      "functionCount": 0,
+      "observedPathCount": 0,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-header-partial-loader-no-terminal",
+      "observationState": "incomplete",
+      "exit": null,
+      "signal": "SIGKILL",
+      "headerState": "parsed",
+      "terminalState": "absent",
+      "moduleCount": 2,
+      "functionCount": 0,
+      "observedPathCount": 65,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-observed-non-CodeType-false",
+      "observationState": "incomplete",
+      "exit": 2,
+      "signal": null,
+      "headerState": "parsed",
+      "terminalState": "absent",
+      "moduleCount": 2,
+      "functionCount": 0,
+      "observedPathCount": 61,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-observed-alias-false",
+      "observationState": "incomplete",
+      "exit": 2,
+      "signal": null,
+      "headerState": "parsed",
+      "terminalState": "absent",
+      "moduleCount": 2,
+      "functionCount": 0,
+      "observedPathCount": 65,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-checker-object-false",
+      "observationState": "incomplete",
+      "exit": 2,
+      "signal": null,
+      "headerState": "parsed",
+      "terminalState": "absent",
+      "moduleCount": 2,
+      "functionCount": 0,
+      "observedPathCount": 81,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-observed-wrong-python-domain",
+      "observationState": "pre-header-rejected",
+      "exit": 2,
+      "signal": null,
+      "headerState": "absent",
+      "terminalState": "absent",
+      "moduleCount": 0,
+      "functionCount": 0,
+      "observedPathCount": 32,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-caller-not-started",
+      "observationState": "not-started",
+      "exit": null,
+      "signal": null,
+      "headerState": "absent",
+      "terminalState": "absent",
+      "moduleCount": 0,
+      "functionCount": 0,
+      "observedPathCount": 0,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-parsed-header-binding-mismatch",
+      "observationState": "incomplete",
+      "exit": 0,
+      "signal": null,
+      "headerState": "parsed",
+      "terminalState": "parsed",
+      "moduleCount": 23,
+      "functionCount": 4,
+      "observedPathCount": 444,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    },
+    {
+      "id": "R-strict-shape-invalid-header-raw",
+      "observationState": "incomplete",
+      "exit": null,
+      "signal": "SIGKILL",
+      "headerState": "malformed",
+      "terminalState": "absent",
+      "moduleCount": 0,
+      "functionCount": 0,
+      "observedPathCount": 0,
+      "collectionComplete": false,
+      "fullSuiteCollectionComplete": false
+    }
+  ],
+  "twoBuildSchemasAndOriginal32InvalidUnchanged": true,
+  "firstReportUnchanged": true,
+  "actualProductBuildLoaderRun": false
+}
