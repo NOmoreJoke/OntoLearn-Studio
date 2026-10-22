@@ -43,7 +43,7 @@
 
 - **唯一 owner／已有依据**：T01 原 preview／Diff owner；下一段方案第3槽、T01 矩阵“真实回滚预演与完整 Diff”“prepared plan／分页确认”。已有 changeset.preview、changeset.diff.page／JobStore.changeset_diff_page 仅作旧合同名称引用。
 - **实际输入→输出**：按新同版 proof／预览身份读取原完整 Diff，各段包含 definition、fact、definition-status、metadata 与 undo-impact 的实际适用内容；保 segment、offset、rawByteLength/hash、cursor 页链及合并 UTF-8 信息，不能以 T02 RDF 差集替代原 record/control Diff。跨页／重试继续 R2 会话计费。
-- **固定失败与返回证据**：缺页、错链、重复／跨项目或旧 proof 页、截断、中文跨 segment 合并错误必须固定拒绝确认；返回实际原完整 Diff 的全段重组对照及每类失败的原始页链和费用。末页到达不等页面已显示，更不等真人已读。
+- **固定失败与返回证据**：缺页、错链、组装材料重复拼段、跨项目或旧 proof 页、截断、中文跨 segment 合并错误必须固定拒绝确认；同页受控重试依真实供方合同处理并计入 R2 同会话，不预定新的 cursor 协议；返回实际原完整 Diff 的全段重组对照及每类失败的原始页链和费用。末页到达不等页面已显示，更不等真人已读。
 - **来源身份／硬前置**：回报实际分页/envelope/存储段与对应 strict DTO 的新 pin。M 需全页真实读取和机制确认门控；P 的可见完整 Diff 与真人动作另由 R10 验证，不能用 fixture 消费所有 cursor 宣称真人通过。
 
 ## R6 — 原确认、Job 受理、排队后 commit 的四阶段 guard

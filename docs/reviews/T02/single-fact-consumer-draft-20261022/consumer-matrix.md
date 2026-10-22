@@ -69,7 +69,7 @@ C5 `bind_rdf_projection` 只接受其固定Store2来源形状：project/projectR
 | F12 不完整after | 原Store回滚预演RDF正确但改了无关M、definition payload/reference、mappingState或control | 完整记录/metadata/control oracle拒绝；纯RDF核同不能替代。回滚预演不发布领域变更 |
 | F13 四阶段同revision漂移 | preview保存前、confirm、Job接纳、排队后commit分别替换metadata/profile/policy/vector/control/支持，revision保持相同 | 各阶段在其原事务真实重取源拒绝，不能“包装层查过再跨await写”。已存在合法历史不修复/删除，当前新请求无部分领域写 |
 | F14 绑定混淆 | 相同旧previewHash却不同新proof/planRef，跨项目复用plan，或同hash对应多个歧义plan | 新持久envelope/身份链拒绝，不选扫描第一项；旧Store preview identity不冒新proof |
-| F15 Diff不完整／错页 | 少中段、跳页/重复/错ordinal-offset、错误rawByteLength/hash、跨proof cursor、UTF-8字符恰跨segment | 原字节完整核同并合并后解码；未完整不得确认；真实Diff保definition-status/M/undo-impact，不只渲染可见摘要 |
+| F15 Diff不完整／错页 | 少中段、跳页/同一段被重复拼入文档/错ordinal-offset、错误rawByteLength/hash、跨proof cursor、UTF-8字符恰跨segment | 原字节完整核同并合并后解码；受控同页重试依真实供方合同并计入同CostSession，不等于允许重复拼段；未完整不得确认；真实Diff保definition-status/M/undo-impact，不只渲染可见摘要 |
 | F16 非真人或旧动作 | 模型grant/renderer布尔/自动恢复触发confirm；或真人点的是已切项目/版本/连接代次的旧Diff | 具名桥/原确认机制拒绝或失效；不自动重新确认/提交。仅fixture显式调用未来可验证机制，不记真人通过 |
 | F17 首读预算失败 | 未有真实issuer/policy/session就调用reader；或首次源读预扣失败/reader中途失败 | 第一种不进入读取；预扣不足先拒绝；实际已执行失败成本累计，spent不退，槽2不新建/重置session。实际入口观察证明顺序，当前未运行 |
 | F18 累计／驻留预算失败 | 各helper单独未超但合计超限；分页/重试/坏输入/旧plan历史消耗后再尝试；未释放却伪造reserved归还 | 同会话执行前拒绝、失败累计；真实释放ack才返还reserved。所用数值由新政策固定，不能拿旧方案工程数字填Pass |
