@@ -1,0 +1,45 @@
+{
+  "kind": "STATIC_PREPARATION_VERIFICATION_ONLY",
+  "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+  "logicalFiles": 107,
+  "textPages": 274,
+  "archiveMembers": 75,
+  "archivePages": 91,
+  "commonArchiveMembers": 404,
+  "sourceBoundFindings": 19,
+  "sourceExcerptsVerified": 57,
+  "roleInputs": {
+    "zcode": {
+      "bytes": 85602,
+      "sha256": "a11242212eea9429c189b734ac711ba00ca047d92474e8f798283dec2e187c26",
+      "pages": 16
+    },
+    "minimax": {
+      "bytes": 85736,
+      "sha256": "857927b24df672a9b80eea8587883005fc1ea5c34125e62dcbc0ebaa956c880f",
+      "pages": 16
+    }
+  },
+  "actualReadProven": false,
+  "setupExecuted": false,
+  "productCommandsExecuted": [],
+  "newNamespaceExists": false,
+  "command": [
+    "python3",
+    "docs/reviews/T11/fresh-review-02a-r2-preparation-20261023/verify_preparation.py"
+  ],
+  "observedDirectExit": 0,
+  "scope": "Author material verification only; not reviewer/fullcheck/product/production proof",
+  "verifierAuthorCorrections": [
+    {
+      "result": "exit1 KeyError files",
+      "reason": "Supplemental index schema uses entries, corrected verifier only"
+    },
+    {
+      "result": "exit1 KeyError pages",
+      "reason": "Binary supplemental raw archive intentionally has no text pages, corrected verifier to conditional get; binary byte hash still checked"
+    }
+  ],
+  "canonicalManifestSource": "f94ebafb409940b3973f7df1dd99b80325f380d0:docs/reviews/T11/fresh-review-02a-write-addendum-20261023/zcode-handoff-manifest.json",
+  "afterVerifierCanonicalPinCheckDirectExit": 0
+}

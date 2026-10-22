@@ -1,0 +1,760 @@
+{
+  "schemaVersion": 1,
+  "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+  "preparationOnly": true,
+  "findingCount": 19,
+  "ownerClosedCount": 0,
+  "originalSeverityChanged": false,
+  "sameTopicZ036O1": "Information observation of M036-F1; not twentieth finding",
+  "MNewTurnFailedMeaning": "Review did not complete; product pass/fail not inferred",
+  "originalMNotPass": "7d28 and036 preserved unchanged",
+  "historicalEvidence": {
+    "E1": {
+      "record": "docs/reviews/T11/owned-fixes-20261023/verification.json",
+      "candidate": "33894063fcf17bc865f4c91556a8ca01845812e7",
+      "targeted": 109,
+      "fullTS": 739,
+      "fullPython": 1052,
+      "archiveSha256": "2e714950bfcba075d2d01d464ed8cbef1c4c3c473e8299419cceb2b5bb67dba0",
+      "layer": "Historical owner controlled/static/synthetic/build; not product/native/production"
+    },
+    "E2": {
+      "record": "docs/reviews/T11/f1-fix-20261023/verification.json",
+      "immutableBinding": {
+        "suppliedHistoricalFile": "supplemental-history/02a-postcommit-binding.json",
+        "originalPath": "docs/reviews/T11/f1-candidate-handoff-20261023/binding.json",
+        "fixed107Changed": false
+      },
+      "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+      "node": "v24.15.0",
+      "firstTargeted": 122,
+      "finalTargeted125IncludedInFull": true,
+      "final125StandaloneRerun": false,
+      "fullTS": 755,
+      "fullPython": 1052,
+      "archiveSha256": "95067c1679eb1bfe1dab15219f74b41e9993ccfdd1d25b5a3afaa663436d901b",
+      "layer": "Historical owner run, early env from wrapper qualification; no inherited designated Pass"
+    }
+  },
+  "currentPreparationProductCommands": [],
+  "findings": [
+    {
+      "id": "M-F-A",
+      "originalSeverity": "高",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "v3显式case和独立case pin；通用合法空层与G.6六层非空分开，模板不能restoreCurrent，旧v2拒绝。",
+      "originalOwnerActionRecord": "v3 current-state/g6-conflict plus independent case pin; template boundary retained",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [232, 239],
+          "excerptSha256": "b73e5aaaef0b1751fe24af4ce77180aeea93fb9bfd492ac0164a5f02cbac91de",
+          "excerpt": "    recoveryComparisonCase: comparisonCase,\n    migrationComparisonCases: z\n      .object({\n        'windows11-x64': z.literal('g6-conflict'),\n        'macos15-arm64': z.literal('g6-conflict'),\n      })\n      .strict(),\n    migrationSnapshotSha256: z.object({ 'windows11-x64': sha, 'macos15-arm64': sha }).strict(),\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [946, 985],
+          "excerptSha256": "7b839eca21cdd08ef9aec4e56f9909f448b44415a467204b2d843d4a06976431",
+          "excerpt": "      definitions: rows,\n      ownership: rows,\n      mappingState: rows,\n      queries: rows,\n      results: rows,\n      derivedResults: rows,\n      history: rows,\n      rounds: rows,\n      rawSources: rows,\n      agentSessions: rows,\n      undo: rows,\n      executionVersions: z.object({ semantics: text, engine: text, lock: text }).strict(),\n    })\n    .strict()\n    .superRefine((value, ctx) => {\n      const reject = (message: string) => ctx.addIssue({ code: 'custom', message })\n      // PRD G.6 template boundary remains mandatory, including generic recovery.\n      if (!value.facts.length || !value.ownership.length) reject('TEMPLATE_NOT_RESTORABLE')\n      if (\n        value.comparisonCase === 'g6-conflict' &&\n        ['facts', 'definitions', 'ownership', 'mappingState', 'queries', 'results'].some(\n          (key) => !value[key as 'facts'].length,\n        )\n      )\n        reject('G6_REQUIRED_LAYER')\n      if (\n        (!value.selection.currentDerived && value.derivedResults.length > 0) ||\n        (!value.selection.historicalRuns &&\n          (value.history.length > 0 || value.rounds.length > 0)) ||\n        (!value.selection.rawSources && value.rawSources.length > 0) ||\n        (!value.selection.agentSessions && value.agentSessions.length > 0) ||\n        (!value.selection.priorUndo && value.undo.length > 0)\n      )\n        reject('UNSELECTED_CONTENT')\n      const canRerun =\n        value.selection.rawSources &&\n        value.rawSources.length > 0 &&\n        value.dependencies.mappingSources === 'embedded'\n      if (\n        (value.dependencies.mappingSources === 'embedded' && !canRerun) ||\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [645, 715],
+          "excerptSha256": "ee19e3e2a79b503e654b8ab6bdb729abdfee8ddac5d49c3189809f7f6b482e11",
+          "excerpt": "  it('permits empty generic query/definition layers while retaining carried facts and ownership', () => {\n    const { root, m, expected, put } = fixture()\n    const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))\n    current.comparisonCase = 'current-state'\n    for (const field of ['definitions', 'mappingState', 'queries', 'results']) current[field] = []\n    m.recovery.backup = m.recovery.restored = put(current)\n    expected.recoverySnapshotSha256 = m.recovery.backup.sha256\n    expected.recoveryComparisonCase = 'current-state'\n    expect(verifyManifest(m, root, expected).issues).toEqual([])\n  })\n  it.each(['facts', 'ownership'])(\n    'refuses a template as current recovery even with both pins updated: %s',\n    (field) => {\n      const { root, m, expected, put } = fixture()\n      const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))\n      current.comparisonCase = 'current-state'\n      current[field] = []\n      m.recovery.backup = m.recovery.restored = put(current)\n      expected.recoverySnapshotSha256 = m.recovery.backup.sha256\n      expected.recoveryComparisonCase = 'current-state'\n      expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_BACKUP_SCHEMA')\n    },\n  )\n  it.each(['facts', 'definitions', 'ownership', 'mappingState', 'queries', 'results'])(\n    'keeps every G.6 layer nonempty in both directions: %s',\n    (field) => {\n      const { root, m, expected, put } = fixture()\n      for (const x of m.migration) {\n        const current = JSON.parse(readFileSync(join(root, x.before.path), 'utf8'))\n        current[field] = []\n        x.before = x.after = put(current)\n        expected.migrationSnapshotSha256[x.from] = x.before.sha256\n      }\n      const issues = verifyManifest(m, root, expected).issues\n      expect(issues).toContain('MIGRATION_BEFORE_SCHEMA')\n      expect(issues).toContain('MIGRATION_AFTER_SCHEMA')\n    },\n  )\n  it('rejects migration case downgrade even if source snapshots and both case pins are changed', () => {\n    const { root, m, expected, put } = fixture()\n    const current = JSON.parse(readFileSync(join(root, m.migration[0].before.path), 'utf8'))\n    current.comparisonCase = 'current-state'\n    m.migration[0].before = m.migration[0].after = put(current)\n    expected.migrationSnapshotSha256['windows11-x64'] = m.migration[0].before.sha256\n    expect(verifyManifest(m, root, expected).issues).toContain('MIGRATION_BEFORE_CASE')\n    const badFreeze = structuredClone(expected) as unknown as {\n      migrationComparisonCases: Record<string, string>\n    }\n    badFreeze.migrationComparisonCases['windows11-x64'] = 'current-state'\n    expect(verifyManifest(m, root, badFreeze as unknown as Expected).issues).toEqual([\n      'EXPECTED_IDENTITY',\n    ])\n  })\n  it.each(['t11-comparison-v2', 't11-comparison-v1'])(\n    'does not convert historical comparison format %s',\n    (format) => {\n      const { root, m, expected, put } = fixture()\n      const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))\n      current.format = format\n      m.recovery.restored = put(current)\n      expect(verifyManifest(m, root, expected).issues).toContain('RECOVERY_RESTORED_SCHEMA')\n    },\n  )\n  it('rejects an approved-case drift between before and after even when payload is otherwise equal', () => {\n    const { root, m, expected, put } = fixture()\n    const current = JSON.parse(readFileSync(join(root, m.recovery.backup.path), 'utf8'))\n    current.comparisonCase = 'current-state'\n    m.recovery.restored = put(current)\n    expect(verifyManifest(m, root, expected).issues).toEqual(\n      expect.arrayContaining(['RECOVERY_RESTORED_CASE', 'RECOVERY_DATA']),\n    )\n"
+        },
+        {
+          "path": "docs/release/migration-recovery.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "d5ac30d8a4426d9bbbd556f964f3f12cb23261d19496ce4ffe6d59f771add4b4",
+          "physicalLines": [19, 23],
+          "excerptSha256": "6850db406b9d9f2a5b933b9cf09d73ceeba6eb0899b056b21c8f7cad60dd3ee8",
+          "excerpt": "双向 Win→Mac 与 Mac→Win 分别留完整报告，绑定实际源/目标设备、candidate/T09/安装包 SHA和时间。`RECOVERY_*`/`MIGRATION_*` checks 在核验器中是强制覆盖，不代表其中任何真实验收已经执行。\n\nv3明确通用场景允许definitions/mappingState/queries/results合法空集合，但集合字段必须完整，且不能把丢失事实或来源/ownership解释为空项目：这两层为空/缺失时不得restoreCurrent=true，只能作为模板负向check。G.6六层仍全部非空。此约束保持PRD G.6模板拒恢复，不裁决F01的产品模板新范围。完整字段见 [v3规范](../iterations/T11/selection-comparison-v3.md)。\n\n恢复报告和每个上一版资产的回退报告均强制 `rollback-retain-new-version-copy`、`rollback-refuse-incompatible-format`，必须有独立冻结的完整expected/actual与原件。前者核保留新版本副本及其身份，后者核旧版拒开不兼容格式并通过兼容备份恢复；不得用一个“通过”布尔或工具fixture代替实际操作。\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_SYNTHETIC_E1_E2"],
+      "stillDependentOn": "T01/T10正式接口、真实双向G.6迁移与重关联冲突、继续编辑查询撤销；F01不代答。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-B",
+      "originalSeverity": "中",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "Q9批准来源/日期/hash入树，route/model与独立freeze及APPROVED_MODEL双向pin；任意共同tuple和Base URL误用拒绝。",
+      "originalOwnerActionRecord": "Adopted Q9 source/date/hash; route and requested model independently pinned and approved",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [13, 18],
+          "excerptSha256": "6f4cf68f73dc3df187c5b9a543c140300a6b33af24a6c30d52da31eadb70fbbd",
+          "excerpt": "// Adopted controller decision, not a live service claim. endpoint means the request route.\nexport const APPROVED_MODEL = {\n  endpoint: 'https://api.deepseek.com/chat/completions',\n  requestedModel: 'deepseek-v4-pro',\n  decisionSha256: 'def9817dc35c11514335fce5ecf859878e00cdfccc259659edb7925fee9d84a7',\n} as const\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [843, 857],
+          "excerptSha256": "ac4222aaa3519da09498414004c5a3cb6ba315acfdc08b18d7e9c5b0bd652434",
+          "excerpt": "    m.model.endpoint !== APPROVED_MODEL.endpoint ||\n    m.model.requestedModel !== APPROVED_MODEL.requestedModel ||\n    m.model.decisionSha256 !== APPROVED_MODEL.decisionSha256 ||\n    expected.modelEndpoint !== APPROVED_MODEL.endpoint ||\n    expected.requestedModel !== APPROVED_MODEL.requestedModel ||\n    expected.modelDecisionSha256 !== APPROVED_MODEL.decisionSha256 ||\n    m.model.endpoint !== expected.modelEndpoint ||\n    m.model.requestedModel !== expected.requestedModel ||\n    m.model.decisionSha256 !== expected.modelDecisionSha256 ||\n    m.model.mode !== expected.modelMode ||\n    m.model.returnedModel !== expected.returnedModel ||\n    m.model.serviceVersion !== expected.serviceVersion ||\n    m.model.evaluation.sha256 !== expected.evaluationSha256\n  )\n    fail('MODEL_PROFILE_DRIFT')\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [717, 736],
+          "excerptSha256": "282a3cdacd88b7da56bb4f0b2a466281b5ecef1367cf89439932d7fc3f54f945",
+          "excerpt": "  it.each(['modelEndpoint', 'requestedModel', 'modelDecisionSha256'] as const)(\n    'requires independent service pin %s',\n    (field) => {\n      const { root, m, expected } = fixture()\n      const missing = { ...expected }\n      delete (missing as Partial<Expected>)[field]\n      expect(verifyManifest(m, root, missing).issues).toEqual(['EXPECTED_IDENTITY'])\n    },\n  )\n  it('rejects arbitrary service tuples even if the actual and freeze agree', () => {\n    const { root, m, expected } = fixture()\n    m.model.endpoint = expected.modelEndpoint =\n      'https://unapproved.example.invalid/chat/completions'\n    m.model.requestedModel = expected.requestedModel = 'unapproved-model'\n    expect(verifyManifest(m, root, expected).issues).toContain('MODEL_PROFILE_DRIFT')\n  })\n  it('rejects the Base URL in a field explicitly defined as the Chat Completions route', () => {\n    const { root, m, expected } = fixture()\n    m.model.endpoint = expected.modelEndpoint = 'https://api.deepseek.com'\n    expect(verifyManifest(m, root, expected).issues).toContain('MODEL_PROFILE_DRIFT')\n"
+        },
+        {
+          "path": "docs/release/README.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+          "physicalLines": [27, 31],
+          "excerptSha256": "7bc1ba685ce70d8ce75633927c0d07d5cb24562020916423fefc741476c07e3f",
+          "excerpt": "回退资产同时记录双平台上一版版本/来源SHA/签名报告，检查文件格式与独立上一版记录，不接受任意文本或当前资产冒充上一版。恢复和每个回退资产报告都必须有 `rollback-retain-new-version-copy`、`rollback-refuse-incompatible-format`，保留其余原check。恢复/迁移使用新的 `t11-comparison-v3`；旧v2不静默转换，历史规范/报告原样保留。通用恢复允许合法空定义/映射/查询层，事实及来源所有权仍须齐全；正式双向迁移固定 `g6-conflict`，六必需层非空，全部22项迁移check保留。独立freeze同时pin源字节和case，不能用通用场景替代G.6。完整规范见 [v3](../iterations/T11/selection-comparison-v3.md) 与 [迁移流程](migration-recovery.md)。不修改T01/T10权威格式或决定F01。\n\nQ9批准元组来自2026-10-21总控决定，原件SHA与采用段落见 [来源记录](../reviews/T11/q9-decision-source-20261023.json)。`model.endpoint` 和freeze的 `modelEndpoint` 均指具体Chat Completions请求路由 `https://api.deepseek.com/chat/completions`，其Base URL是 `https://api.deepseek.com`；requestedModel固定 `deepseek-v4-pro`，两边decisionSha256固定同份批准来源。任意URL/模型即使与freeze相同仍拒绝。返回标识、服务版本、模式、评估哈希继续独立冻结。这里只固化已有选型，不接API或推断服务可用。\n\n生产 `mode=evidence` 另强制批准T09的873提交manifest SHA、`prd-v0.6-learning-1`、PRD SHA及17个精确路径；每文件内容hash仍来自唯一manifest，不复制第二产品基线。`synthetic` 允许工具用自标合成baseline；它永远不授发布权限。改变freeze不能扩大生产批准profile。\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_SYNTHETIC_E1_E2"],
+      "stillDependentOn": "合法API凭据、真实返回版本/模式、评估hash和零伪造原件；不授新服务、网关或消费。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-C",
+      "originalSeverity": "中",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "evidence固定873唯一manifest/PRD SHA、版本及17精确路径；内容hash仍来自唯一manifest，缺/多/版本共同改pin仍拒绝。",
+      "originalOwnerActionRecord": "Evidence mode fixes approved manifest hash/version/PRD/17 exact paths; content hashes remain unique manifest",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [19, 44],
+          "excerptSha256": "59cd56c4e1730222f905978a5aeb98f4a2442dbf997cbfad31d5faacbc2a07c2",
+          "excerpt": "export const APPROVED_BASELINE = {\n  commit: '873c8c051b9870aa12fc7e1dbbd3e0c358e7c380',\n  sha256: 'aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e',\n  prdSha256: '7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb',\n  version: 'prd-v0.6-learning-1',\n  paths: [\n    'content/learning/checks.json',\n    'content/learning/course.json',\n    'content/learning/glossary.json',\n    'content/learning/transfer-inputs.json',\n    ...[\n      'E.5.json',\n      'G-base.json',\n      'G-behavior.json',\n      'G-map-empty.json',\n      'alarms.csv',\n      'cases.json',\n      'conventions.json',\n      'coverage.json',\n      'equipment-duplicate-key.csv',\n      'equipment-missing-key.csv',\n      'equipment-updated.csv',\n      'equipment.csv',\n      'unclosed-high.rq',\n    ].map((name) => `tests/fixtures/product-baselines/${name}`),\n  ],\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [565, 580],
+          "excerptSha256": "2781c6adfd17d96cb2412d7149afc54bde6e02760d19eaa01cab529ae1c9ffd7",
+          "excerpt": "    if (\n      m.mode === 'evidence' &&\n      (m.baseline.path !== 'tests/fixtures/product-baselines/manifest.json' ||\n        m.baseline.sha256 !== APPROVED_BASELINE.sha256 ||\n        m.prd.sha256 !== APPROVED_BASELINE.prdSha256 ||\n        baseline.data.version !== APPROVED_BASELINE.version ||\n        !compareComplete(\n          Object.keys(baseline.data.files).sort(),\n          [...APPROVED_BASELINE.paths].sort(),\n        ))\n    )\n      fail('BASELINE_APPROVED_PROFILE')\n    if (baseline.data.source.sha256 !== m.prd.sha256) fail('BASELINE_PRD')\n    read(baseline.data.source, 'BASELINE_SOURCE')\n    for (const [path, sha256] of Object.entries(baseline.data.files))\n      read({ path, sha256 }, 'BASELINE_CONTENT')\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [803, 824],
+          "excerptSha256": "86747a901993ec307d5b56e62e4481c497cbb9a95933a49403f45d4f76ddcbc7",
+          "excerpt": "  it('refuses unapproved production profiles even when both manifest and freeze pin the same bytes', () => {\n    const { root, m, expected } = fixture()\n    m.mode = 'evidence'\n    expect(verifyManifest(m, root, expected).issues).toContain('BASELINE_APPROVED_PROFILE')\n  })\n  it.runIf(fixedBaselineProbe)(\n    'enforces the approved 17-path production profile/version/hash independently of the freeze',\n    () => {\n      const { root, m, expected, put } = fixture({ fixedBaseline: true })\n      m.mode = 'evidence'\n      expect(verifyManifest(m, root, expected).issues).not.toContain('BASELINE_APPROVED_PROFILE')\n      const original = JSON.parse(readFileSync(join(root, m.baseline.path), 'utf8'))\n      for (const mutation of ['missing', 'extra', 'version']) {\n        const value = structuredClone(original)\n        if (mutation === 'missing') delete value.files['content/learning/checks.json']\n        if (mutation === 'extra')\n          value.files['unapproved.json'] = put('unapproved', 'unapproved.json').sha256\n        if (mutation === 'version') value.version = 'unapproved-version'\n        m.baseline = put(value, 'tests/fixtures/product-baselines/manifest.json')\n        expected.baselineSha256 = m.baseline.sha256\n        expect(verifyManifest(m, root, expected).issues).toContain('BASELINE_APPROVED_PROFILE')\n      }\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_EXPLICIT_FIXED873_E1_E2"],
+      "stillDependentOn": "真实领域50例输出、57P0产品集成及CI显式探针；oracle构造不作领域执行。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-D",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "保完整八步core&&transferCompleted并拒矛盾；产品提示完成与独立迁移/辅助分记，保4/5和3/5边界。",
+      "originalOwnerActionRecord": "Complete eight-step/core+transfer kept; contradiction reject, independent transfer separate from guided operation",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [888, 902],
+          "excerptSha256": "10bcd765a3b740ded446ff3200463ca4f29459c73344c9f44859fc240eab402f",
+          "excerpt": "    if (u.coreCompleted && !u.transferCompleted) fail('USER_CORE_TRANSFER_CONTRADICTION')\n    if (\n      !u.agentFullCounterexample ||\n      u.agentMarkedIndependent ||\n      (u.transferIndependent && (!u.transferCompleted || u.assistance !== 'independent'))\n    )\n      fail('USER_ASSISTANCE')\n    if (\n      u.coreCompleted &&\n      u.transferCompleted &&\n      ['independent', 'product-hints'].includes(u.assistance)\n    )\n      successes++\n  }\n  if (successes / m.users.length < 0.8) fail('USER_COMPLETION_RATE')\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [785, 801],
+          "excerptSha256": "e4630473a466fd729cf727010b2bb81294b8a65efcd4d7e42cd64b0b1b7e9773",
+          "excerpt": "  it('retains eight-step completion at 4/5 and rejects 3/5 or core/transfer contradictions', () => {\n    const { root, m, expected } = fixture()\n    expect(verifyManifest(m, root, expected).issues).toEqual([])\n    m.users[3].coreCompleted = false\n    expect(verifyManifest(m, root, expected).issues).toContain('USER_COMPLETION_RATE')\n    m.users[0].transferCompleted = false\n    expect(verifyManifest(m, root, expected).issues).toContain('USER_CORE_TRANSFER_CONTRADICTION')\n  })\n  it('counts product guidance for operation completion but records it separately from independence', () => {\n    const { root, m, expected } = fixture()\n    m.users[0].assistance = 'product-hints'\n    m.users[0].transferIndependent = false\n    expect(verifyManifest(m, root, expected).issues).toEqual([])\n    m.users[0].transferIndependent = true\n    expect(verifyManifest(m, root, expected).issues).toContain('USER_ASSISTANCE')\n    m.users[0].assistance = 'agent-full'\n    expect(verifyManifest(m, root, expected).issues).toContain('USER_ASSISTANCE')\n"
+        },
+        {
+          "path": "docs/release/user-study.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb279ddd6d06451ea7352ac54c922bc139acb16f6b4c08f6a3864a3cf5674c2d",
+          "physicalLines": [25, 29],
+          "excerptSha256": "58833e5b8211f804fb9db0822adde24ede1b3bbee37319aed1034465d37bcfc5",
+          "excerpt": "`coreCompleted` 指PRD12.1全部八步（含最小迁移任务和HTML报告）闭环；`transferCompleted` 单记操作是否完成。两者不能出现core=true、transfer=false矛盾；80%分子保留coreCompleted && transferCompleted且assistance为independent/product-hints。`transferIndependent` 另记真实独立迁移结果，不能由操作完成推得，也不设额外百分比门。同次Agent完整代做、口头帮助或产品提示不得标独立；各段和各尝试实际帮助仍保留在原记录，不能用一个全流程最高级别掩盖。\n\n辅助后跨尝试是否重新具备资格属F16待决：新任务版本、换输入、重置或另开目录均不能自行恢复资格。本脚本的“另开重置负向尝试”只用于保留独立首测和Agent反例，不授予后继独立资格；未决重测须标待核，不能进入独立成功数或擅改80%分母。\n\n工具只hash `record`，不解析或验证同意、逐段观察、尝试先后、完整示范次数或录屏真实性。主持人留同意范围/匿名资格/各段结果与帮助/尝试关联/完整示范和Agent次数原件；独立验收负责人对照这些原件核人数、八步完成率、独立迁移及反例，核验者姓名与结论写入真实报告。缺原件记待核，不用添加自证布尔冒充已检查。\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_SYNTHETIC_E1_E2"],
+      "stillDependentOn": "至少5真人、逐段/逐次辅助及Agent完整示范反例；F16跨尝试资格待决，不改分母。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-E",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "命令/日期/候选与默认四skip、显式flag分层，旧65/695等仅属原候选。",
+      "originalOwnerActionRecord": "Historical counts labeled; current explicit probe commands and four default skips documented",
+      "sourceEvidence": [
+        {
+          "path": "docs/iterations/T11/acceptance.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "2e1a0aeb0b0e7d4dd323c32d6c88bd4803d5704f450960b79e90a561df43e982",
+          "physicalLines": [18, 32],
+          "excerptSha256": "076afe3f5e6e425896812f0ac77631b9daab217418f766a157b3fdfc66b63fa1",
+          "excerpt": "npx vitest run tests/unit/t11-release*.test.ts\nT11_FIXED_BASELINE_PROBE=1 npx vitest run tests/unit/t11-release*.test.ts\nnpm run check\nT11_FIXED_BASELINE_PROBE=1 npm run check\nnpm run verify:sources\nnpx prettier --ignore-path /dev/null --check scripts/release/verify.mts scripts/release/verify-release.mjs tests/unit/t11-release*.test.ts tests/fixtures/release/*.json docs/release/*.md docs/iterations/T11/*.md\nbash -n scripts/release/collect-macos.sh\ngit diff --check\n```\n\n路径名 `release` 被现有 eslint/prettier 全局忽略，必须显式 `--ignore-path /dev/null` 格式核验且对TS通过测试引用纳入typecheck。显式lint脚本另用 `npx eslint --no-ignore scripts/release/verify.mts scripts/release/verify-release.mjs`；若忽略规则无法覆盖则使用配置的 `--ignore-pattern '!scripts/release/**'` 并核验确实进入文件。Windows collector因无批准Windows执行环境只静态审阅，不记运行通过。\n\n固定输入联验需显式 `T11_FIXED_BASELINE_PROBE=1`：只读 `git show 873c8c051b9870aa12fc7e1dbbd3e0c358e7c380:<path>`，先核对总控给定manifest SHA `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`、PRD SHA和全部17文件，再仅在临时目录形成工具证据fixture。没有该Git对象时显式探针失败；不转读变化中HEAD或加载T09服务。默认单测把这4项标为skipped，不能将默认通过当固定基线联验；本轮完整检查必须显式启用探针，实际新结果以owned-fixes记录为准；历史65/695等仅对应7d28旧候选。未来CI接线须确保批准的固定输入可取并显式执行，不能以skip关闭验收。\n\n探针里的actual文件仍为由固定oracle构造的合成核验器输入，用于验证50条预期解析、RDF事实集合比较、E.5保序和拒绝行为；没有执行领域工具、模型或Store，不表示50项产品用例通过。\n"
+        },
+        {
+          "path": "docs/reviews/T11/status.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "4cae2fe536961ea5d381dce3db2950f3c9294c5d9f2bbdd31721a4181059824f",
+          "physicalLines": [3, 23],
+          "excerptSha256": "39e2b2c0ba76d87cbc6b70a83937db1717d274c403af903a6925638ffac2b752",
+          "excerpt": "## 当前回执：2026-10-23 F-1 修复窗\n\n本轮起点为 `550d47ad064f4d3899c844e8f791841498851ec5`，仍在 `.worktrees/T11-review-fixes` / `feature/weekly-t11-review-fixes`。原036同版两指定任务均正式completed，完整原件与18项逐条处置见 `fresh-review-boundary-exceptions-20261023/handoff.md` 和索引：Z工程Pass，M工程NotPass（新增中级F-1，Node前置警告含路径、末行断言未修完整错误面）；不是双审通过，owner未自行关闭18项。\n\n总控已明确授权继续F-1实质修复。最小方案和独立静态确认见 `f1-fix-20261023/design.json`、`design-review.md`：唯一实现原字节改为明确ESM的verify.mts，CLI纯JS参数/Node24.3以上24.x门后在try内动态加载；完整stderr严格负例，保留其他真实诊断。仅改T11独占路径，不改根package/锁/tsconfig/CI，不另建package/schema。原036两审树/提示/报告不改。\n\n本地实际验证（Node v24.15.0）：首轮专项122/122零skip；随后补入3个参数/schema合同用例，末版125项已纳入显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 的755个TS测试（零skip），另有1052个Python测试、构建、ruff、格式和类型检查通过，完整子进程exit0。四固定输入探针实际启用；受验六路径before/after/当前hash一致。`tsc --listFiles`实际纳入唯一verify.mts、无旧verify.ts；显式release lint通过。原始输出、实际计数、首轮/末版区别与边界见 `f1-fix-20261023/verification.json` 和raw索引；独立实现复核见 `implementation-review.md`，其核对原件但未重跑。F-1处于已实现并本地验证、待新候选完整指定审查状态，未自行签关闭或新Pass。\n\n两审提交输入的临时git commit、真实collector/native越界及此前owner回读偏差仍按原输入收据保留，实际越界返回不读不转，不事后补授权。GUI持续RELEASED；旧18最终关闭、新F-1完整新候选指定审查、真实目标平台/同包/API/真人/Q5/CI/合并/远端/发布门均未由本修复关闭。下方旧owned修复窗为当时历史入口，由本段取代其当前性。\n\n## 当前回执：2026-10-23 owned修复窗\n\n当前修复工作树为 `.worktrees/T11-review-fixes`、分支 `feature/weekly-t11-review-fixes`，启动base `692077da9754a303915798789b7b0c5b4f609125`；首个实现候选 `640cf49d627dc4796bc90ee37abf9bb3857eb42b`（含collector修复936a4313），W1–W6实现和新增回归已落地，已完成独立静态内审及本地验证，当前待全新指定双审。冻结后的最新精确候选、命令/计数/hash和内审结论统一见 `owned-fixes-20261023/verification.json` 与 `handoff.md`。下方2026-10-21起的“当前/active/仅计划”等句仅描述各段当时状态，均由此入口取代；原7d28、65/695及v2/旧核验器hash是历史，不能作为新实现验收。旧回执/原报告/triage矩阵不追写或重新归并，同updatedAt的不同来源hash保留各自快照，不能推为同一原件。\n\n最终实现/测试候选 `33894063fcf17bc865f4c91556a8ca01845812e7`：专项109/109零skip；显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 通过739 TS/1052 Python、构建、ruff，四个固定输入探针执行。此前105/735只对应首版640cf；新增CLI时钟/限额与目标缺失回归已复验。独立内审发现的状态文档R1已在338 delta复核关闭；18原项不由此关闭。最终结果以本轮verification记录为准；默认不启用flag会skip四项，默认通过不作固定输入联验。所有actual仍为合成/固定oracle构造，不是产品50项或实际设备/服务/真人通过。\n\nM原NotPass及12项原高/中/低、Z原P4六项全部保留、18项仍open，owner处置见本轮disposition。独立agent内审不替指定双审；新候选须两个全新完整同版指定任务、全文收件和原CI/合并门。当前GUI资源属T03，本线不启动GUI/真实collector/凭据/API/模型审查；真实同包来源须T03唯一清单和安装/解包原件，marker和声明hash不能替代。F01/F16/Q5不由本线代答，也不阻塞获准工具修复。原完整发布Goal的blocked回执保留，本次不调用Goal状态变更，不把工具修复当完整T11发布完成。\n\n历史失败保留范围更正：首跑38失败目前只有 `first-failure.json` 的摘录和原会话transcript线索，归档中没有独立完整首跑raw，不能声称所有失败完整原件齐全，也不声称永久不可获得；其后48个现存日志在 `round-1/raw-logs.tar.gz`，本轮已只读逐成员核字节/hash，见本轮history-archive-verification。原verification.json中失败保留说明及历史结论不回写；本轮首输出/后继重跑日志另存新目录，不覆盖旧失败。\n\n## 历史阶段记录（原文保留）\n"
+        }
+      ],
+      "existingVerificationLevels": ["DOCUMENT_STATIC", "OWNER_HISTORICAL_EXPLICIT_FLAG_E1_E2"],
+      "stillDependentOn": "新指定审查和CI须实际取到873并显式执行，默认绿/skip不关闭固定输入门。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-F",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "恢复与每个旧资产报告都强制rollback-retain-new-version-copy及rollback-refuse-incompatible-format。",
+      "originalOwnerActionRecord": "Both new rollback check IDs required in recovery and each previous asset",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [308, 317],
+          "excerptSha256": "c6779084dc51f6cb95e43d727fbf8480882b89bdd12517ce9c6eb320bee6c879",
+          "excerpt": "export const RECOVERY_CHECKS = [\n  'backup-readable',\n  'restore-complete',\n  'rollback-format-compatible',\n  'rollback-install',\n  'rollback-retain-new-version-copy',\n  'rollback-refuse-incompatible-format',\n  'no-uncommitted-data',\n  'no-auto-write-replay',\n]\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [1041, 1055],
+          "excerptSha256": "134e68f4fae94932b8fbb2ef1a354e0f37495c912bd6ad566bf27b96ce26f5ca",
+          "excerpt": "    evidence(\n      old.signature.report,\n      [\n        'previous-source-version',\n        'previous-signature',\n        'rollback-format-compatible',\n        'rollback-install',\n        'rollback-retain-new-version-copy',\n        'rollback-refuse-incompatible-format',\n      ],\n      `ROLLBACK_${old.target}`,\n      old.file.sha256,\n    )\n  }\n  evidence(m.recovery.report, RECOVERY_CHECKS, 'RECOVERY')\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [773, 783],
+          "excerptSha256": "19999b7ca8c0844110ffbe592e6c191e806278dc32f91ea9dc5dbfb0fbec4b16",
+          "excerpt": "  it.each(['rollback-retain-new-version-copy', 'rollback-refuse-incompatible-format'])(\n    'requires explicit recovery and per-asset rollback evidence %s',\n    (id) => {\n      const { root, m, expected } = fixture()\n      m.recovery.report.checks = m.recovery.report.checks.filter((c) => c.id !== id)\n      m.recovery.rollbackInstallers[0].signature.report.checks =\n        m.recovery.rollbackInstallers[0].signature.report.checks.filter((c) => c.id !== id)\n      expect(verifyManifest(m, root, expected).issues).toEqual(\n        expect.arrayContaining(['RECOVERY_COVERAGE', 'ROLLBACK_windows11-x64_COVERAGE']),\n      )\n    },\n"
+        },
+        {
+          "path": "docs/release/migration-recovery.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "d5ac30d8a4426d9bbbd556f964f3f12cb23261d19496ce4ffe6d59f771add4b4",
+          "physicalLines": [21, 23],
+          "excerptSha256": "a354d582ecd073bf8732d2224f8635a999ef13cdc1a2ff1004c6fa3ec9a15a20",
+          "excerpt": "v3明确通用场景允许definitions/mappingState/queries/results合法空集合，但集合字段必须完整，且不能把丢失事实或来源/ownership解释为空项目：这两层为空/缺失时不得restoreCurrent=true，只能作为模板负向check。G.6六层仍全部非空。此约束保持PRD G.6模板拒恢复，不裁决F01的产品模板新范围。完整字段见 [v3规范](../iterations/T11/selection-comparison-v3.md)。\n\n恢复报告和每个上一版资产的回退报告均强制 `rollback-retain-new-version-copy`、`rollback-refuse-incompatible-format`，必须有独立冻结的完整expected/actual与原件。前者核保留新版本副本及其身份，后者核旧版拒开不兼容格式并通过兼容备份恢复；不得用一个“通过”布尔或工具fixture代替实际操作。\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_SYNTHETIC_E1_E2"],
+      "stillDependentOn": "真实上一版双平台签名包、保留新数据副本、旧版拒新格式及备份恢复原件。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-G",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "主持人/独立验收者核同意、资格、逐段尝试与示范计数；工具record只hash，不添布尔认证真人。",
+      "originalOwnerActionRecord": "Observer/independent reviewer responsibilities and raw record hash-only boundary specified",
+      "sourceEvidence": [
+        {
+          "path": "docs/release/user-study.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb279ddd6d06451ea7352ac54c922bc139acb16f6b4c08f6a3864a3cf5674c2d",
+          "physicalLines": [7, 21],
+          "excerptSha256": "cfd245b8da754fca97419f10a63398d348b34caf2d5854f5de05f1ea9744c017",
+          "excerpt": "本次观察的是产品是否容易使用。请使用产品自己的引导完成设备运维案例，并说出当前理解、操作和卡点；没有完成也有价值。主持人先不解释术语、不代操作，可按请求记录帮助。可随时停止。个人标识只用匿名编号；观察/录屏范围和保存方式由主持人事前取得同意，凭据录入不录屏、不进入观察表。测试不需要提供真实企业数据或在聊天发送 API Key。\n\n## 主持脚本\n\n1. 核对资格、同意、匿名ID、实际安装包SHA、候选SHA、设备系统/构建/架构、T09 manifest版本/哈希、reset操作及时间。每名用户使用独立目录并重新还原基线；复测另记，不覆盖首测。工程侧引用T09的 `python3 scripts/verify-product-baselines.py --reset G-base`（或对应G-map-empty/G-behavior/E.5），它仅导出初始JSON，须经批准T01服务创建全新测试项目；输出JSON或seed测试不代表产品reset已接线。\n2. 在无模型 API、无开发人员帮助的起点，交给参与者真实安装资产和内置案例。依 PRD12.1 观察安装打开、概念关系/RDF、CSV映射/重复、查询完整/空结果、约束规则失败/修复/依据、行为触发/不触发/幂等、两场景逐轮/指标/重放、迁移任务和HTML报告八段。每段记录真实结果/卡点/帮助来源。固定结果使用 T09 唯一 manifest 的 G/E 文件，不主持人临场补预期。\n3. 参与者需要帮助时先指向产品已存在的术语和分级提示。口头解释、外部资料、开发协助、完整示范、Agent完整代做分别记录，禁止主持人代点击后勾“独立”。若不得不接管，记录接管起止和原因，该路径不计无协助成功。\n4. 最小迁移任务采用 T09 的 `content/learning/transfer-inputs.json`（待批准集成后使用，核对manifest）。观察参与者独立修复约束错误并解释断言/推导。保留独立尝试结果，再另开重置尝试切项目模式，接受足以完成迁移任务的真实 Agent 完整修改。预期：操作可以完成，独立迁移标记必须为否，学习报告显示 Agent 辅助。不能为做反例覆盖原独立尝试。\n5. 记录退出点和主流程严重障碍、用词误解、错误自行修复、迁移解释及导出结果。严重阻断必须处理；T11不能自行缩小P0范围。\n\n## 统计口径\n\n所有符合资格并开始的参与者都入分母，失败/退出不删除。至少5人且依靠产品引导完成核心案例人数/总人数≥80%；5人至少4人。允许产品内部离线分级提示，独立和产品提示分开记录。口头帮助/外部文档/开发介入、完整示范或 Agent代做不计无协助核心成功。记录完整示范完成数但不得混入独立指标。迁移成功另外统计，仅实际未获辅助、独立修复约束并区分断言/推导的尝试可计独立；product-hints操作完成不改称独立迁移成功；不把该小样本比例外推总体效果。未完成的真人结果或过期候选结果不能用虚构记录补足。\n\n核验器每人 `assistance` 为该核心流程的最高辅助级别；transferIndependent 指原独立尝试，agentFullCounterexample 指另一次重置负向尝试已验证，agentMarkedIndependent 必须为 false。记录文件需保存每段/每次尝试细节，不能仅填总布尔。报告绑定冻结后同候选及真实安装产物；候选改变按原门禁判断重验，不能沿用过期真人证据冒充通过。\n"
+        },
+        {
+          "path": "docs/release/user-study.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb279ddd6d06451ea7352ac54c922bc139acb16f6b4c08f6a3864a3cf5674c2d",
+          "physicalLines": [29, 29],
+          "excerptSha256": "7148cb697eff9ffeca2bf06dc380c6af45cc9df56f322c4d0fd49c2c44a44663",
+          "excerpt": "工具只hash `record`，不解析或验证同意、逐段观察、尝试先后、完整示范次数或录屏真实性。主持人留同意范围/匿名资格/各段结果与帮助/尝试关联/完整示范和Agent次数原件；独立验收负责人对照这些原件核人数、八步完成率、独立迁移及反例，核验者姓名与结论写入真实报告。缺原件记待核，不用添加自证布尔冒充已检查。\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [880, 885],
+          "excerptSha256": "ea7f001784277ddba61eccdea0fca2b387ec9f6b980c94facd88f7d6559a5b01",
+          "excerpt": "  let successes = 0\n  if (new Set(m.users.map((u) => u.id)).size !== m.users.length) fail('USER_DUPLICATE')\n  for (const u of m.users) {\n    read(u.record, 'USER_RECORD')\n    fresh(u.testedAt, 'USER_STALE')\n    if (!u.human || u.developer || !u.ontologyNovice || !assets.has(u.artifactSha256))\n"
+        }
+      ],
+      "existingVerificationLevels": ["DOCUMENT_AND_SOURCE_STATIC"],
+      "stillDependentOn": "真实同意/观察原件、人数/八步完成率、辅助来源与尝试关系由主持人及独立验收者核。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-H",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "原①半成品：状态/步骤/首raw保留；原②同包：package/inventory/app/engine/provenance声明字节绑定；原③PE：界限/固定错误/关闭流。",
+      "originalOwnerActionRecord": "Half-output state/first raw preservation and PE bounds; declared package provenance bytes bound",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/collect-macos.sh",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "195d8561098b3a282a50af41bc62c81361910d10cafdebe7b99d176023b6965e",
+          "physicalLines": [19, 42],
+          "excerptSha256": "30b39bfcedb08283befab6a38e8f1f445aa569bffb2bc7a598d37f217117f562",
+          "excerpt": "[[ -d \"$app_path/Contents\" && -f \"$dmg_path\" && ! -e \"$output_dir\" ]] || exit 2\n/bin/mkdir \"$output_dir\"\nstep='initializing'\ncomplete=0\nwrite_status() {\n  printf '{\"schemaVersion\":1,\"status\":\"%s\",\"step\":\"%s\",\"exitCode\":%d}\\n' \"$1\" \"$step\" \"$2\" > \"$output_dir/collector-status.json.tmp\"\n  /bin/mv -f \"$output_dir/collector-status.json.tmp\" \"$output_dir/collector-status.json\"\n}\nfinish() {\n  local result=\"$1\"\n  trap - EXIT INT TERM\n  if [[ \"$complete\" -ne 1 ]]; then\n    [[ \"$result\" -ne 0 ]] || result=1\n    # If storage fails, retain the previous pending/malformed marker and all raw files; neither passes verification.\n    set +e\n    write_status failed \"$result\"\n    printf '%s\\n' 'COLLECTION_FAILED' >&2\n  fi\n  exit \"$result\"\n}\ntrap 'finish \"$?\"' EXIT\ntrap 'exit 130' INT\ntrap 'exit 143' TERM\nwrite_status pending 0\n"
+        },
+        {
+          "path": "scripts/release/collect-macos.sh",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "195d8561098b3a282a50af41bc62c81361910d10cafdebe7b99d176023b6965e",
+          "physicalLines": [69, 71],
+          "excerptSha256": "0b6e9a85910435920177ecd28f44d65d4992f57b659e07cf47670d6d9ac6dc81",
+          "excerpt": "step='complete'\nwrite_status complete 0\ncomplete=1\n"
+        },
+        {
+          "path": "scripts/release/collect-windows.ps1",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "cc572372e657fc348cffcdcbc35a2b6e86b236d66118b5c237c98f46da573628",
+          "physicalLines": [16, 42],
+          "excerptSha256": "9ef00baa69a9f5853a4157ca62c1b7ec336247fad9f6350429885727d6416ffe",
+          "excerpt": "  if (Test-Path -LiteralPath $NewOutputDirectory) { throw 'OUTPUT_MUST_BE_NEW' }\n  foreach ($item in @($Installer, $AppExe, $EngineExe)) {\n    if (-not (Test-Path -LiteralPath $item -PathType Leaf)) { throw 'INPUT_REQUIRED' }\n  }\n  New-Item -ItemType Directory -Path $NewOutputDirectory | Out-Null\n} catch {\n  [Console]::Error.WriteLine('TARGET_INPUT_OR_NEW_OUTPUT_REQUIRED')\n  exit 2\n}\n$step = 'initializing'\nfunction Write-CollectorStatus([string]$Status, [int]$ExitCode) {\n  $content = @{ schemaVersion=1; status=$Status; step=$step; exitCode=$ExitCode } | ConvertTo-Json -Compress\n  $statusPath = Join-Path $NewOutputDirectory 'collector-status.json'\n  $temporaryPath = Join-Path $NewOutputDirectory 'collector-status.json.tmp'\n  [System.IO.File]::WriteAllText($temporaryPath, $content, [System.Text.UTF8Encoding]::new($false))\n  if ([System.IO.File]::Exists($statusPath)) {\n    [System.IO.File]::Replace($temporaryPath, $statusPath, $null)\n  } else {\n    [System.IO.File]::Move($temporaryPath, $statusPath)\n  }\n}\nfunction Start-CollectorStep([string]$Name) {\n  $script:step = $Name\n  Write-CollectorStatus 'pending' 0\n}\ntry {\n  Write-CollectorStatus 'pending' 0\n"
+        },
+        {
+          "path": "scripts/release/collect-windows.ps1",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "cc572372e657fc348cffcdcbc35a2b6e86b236d66118b5c237c98f46da573628",
+          "physicalLines": [84, 93],
+          "excerptSha256": "32009633aeb6ce15f0a47799fbf25a11885273dab14373b6f5fc576a58eb2be3",
+          "excerpt": "  $step = 'complete'\n  Write-CollectorStatus 'complete' 0\n} catch {\n  try { Write-CollectorStatus 'failed' 1 } catch {\n    # Storage failures leave the prior pending/malformed marker and raw files; verification rejects them.\n    [Console]::Error.WriteLine('COLLECTOR_STATUS_WRITE_FAILED')\n  }\n  [Console]::Error.WriteLine('COLLECTION_FAILED')\n  exit 1\n}\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [777, 804],
+          "excerptSha256": "da375b92e46eff266381b46d250a3dafb1861599ac13b1a28f4d23dde40d4150",
+          "excerpt": "    if (!collectorStatus.safeParse(json(d.collectorStatus, `${label}_COLLECTOR_STATUS`)).success)\n      fail(`${label}_COLLECTOR_INCOMPLETE`)\n    const complete = d.report.checks.find((c) => c.id === 'collector-complete')\n    if (!complete || complete.actual.sha256 !== d.collectorStatus.sha256)\n      fail(`${label}_COLLECTOR_BINDING`)\n    const samePackage = d.report.checks.find((c) => c.id === 'installed-components-match-package')\n    const installedSchema = z\n      .object({\n        packageSha256: sha,\n        inventory: ref,\n        app: ref,\n        engine: ref,\n        method: z.enum(['installed', 'extracted']),\n        provenance: ref,\n      })\n      .strict()\n    const installed =\n      samePackage && installedSchema.safeParse(json(samePackage.actual, `${label}_PACKAGE_SOURCE`))\n    if (!installed || !installed.success || installed.data.packageSha256 !== a.file.sha256)\n      fail(`${label}_PACKAGE_SOURCE`)\n    else {\n      // This binds the declared bytes, not the truth of the installation/extraction transcript.\n      read(installed.data.inventory, `${label}_PACKAGE_INVENTORY`)\n      read(installed.data.provenance, `${label}_PACKAGE_PROVENANCE`)\n      large(installed.data.app, `${label}_INSTALLED_APP`)\n      large(installed.data.engine, `${label}_INSTALLED_ENGINE`)\n    }\n    evidence(d.report, DEVICE_CHECKS, `${label}_DEVICE`, a.file.sha256)\n"
+        },
+        {
+          "path": "scripts/release/pe-machine.ps1",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "62b8f743a95311bbbe7b20de59dd4fa8a63e6455c544b71f1e0390479e910249",
+          "physicalLines": [7, 28],
+          "excerptSha256": "0cfb716ae99df87ad3d4a02092ece2eb582fb0c0998829b8b731b5f45decbc09",
+          "excerpt": "    $stream = [System.IO.File]::Open($FilePath, [System.IO.FileMode]::Open,\n      [System.IO.FileAccess]::Read, [System.IO.FileShare]::Read)\n    $length = $stream.Length\n    if ($length -lt 64) { throw 'PE_DOS_BOUNDS' }\n    $reader = [System.IO.BinaryReader]::new($stream)\n    if ($reader.ReadUInt16() -ne 0x5a4d) { throw 'PE_MZ_REQUIRED' }\n    $stream.Position = 0x3c\n    $offset = [long]$reader.ReadUInt32()\n    if ($offset -lt 64 -or $offset -gt $length - 6) { throw 'PE_HEADER_BOUNDS' }\n    $stream.Position = $offset\n    if ($reader.ReadUInt32() -ne 0x00004550) { throw 'PE_SIGNATURE_REQUIRED' }\n    $machine = $reader.ReadUInt16()\n    if ($stream.Length -ne $length) { throw 'PE_SIZE_CHANGED' }\n    return ('0x{0:x4}' -f $machine)\n  } catch {\n    # No original exception/path escapes to the collector's fixed error surface.\n    throw 'PE_INVALID'\n  } finally {\n    if ($null -ne $reader) { $reader.Dispose() }\n    if ($null -ne $stream) { $stream.Dispose() }\n  }\n}\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [738, 771],
+          "excerptSha256": "c9a496285d9de73798b01a3f63ee95cc44917e68c4d5c6b339c877634c78310a",
+          "excerpt": "  it.each(['pending', 'failed', 'missing', 'malformed'])(\n    'rejects incomplete collector state: %s',\n    (status) => {\n      const { root, m, expected, put } = fixture()\n      const d = m.artifacts[0].device\n      if (status === 'missing') rmSync(join(root, d.collectorStatus.path))\n      else\n        d.collectorStatus = put(\n          status === 'malformed'\n            ? { status: 'complete' }\n            : { schemaVersion: 1, status, step: 'signature', exitCode: 1 },\n        )\n      expect(verifyManifest(m, root, expected).issues).toContain('WIN_COLLECTOR_INCOMPLETE')\n    },\n  )\n  it.each(['collector-complete', 'installed-components-match-package'])(\n    'requires device evidence %s',\n    (id) => {\n      const { root, m, expected } = fixture()\n      m.artifacts[0].device.report.checks = m.artifacts[0].device.report.checks.filter(\n        (c) => c.id !== id,\n      )\n      expect(verifyManifest(m, root, expected).issues).toContain('WIN_DEVICE_COVERAGE')\n    },\n  )\n  it('rejects package-source drift despite an unchanged complete marker', () => {\n    const { root, m, expected, put } = fixture()\n    const c = m.artifacts[0].device.report.checks.find(\n      (c) => c.id === 'installed-components-match-package',\n    )!\n    const payload = JSON.parse(readFileSync(join(root, c.actual.path), 'utf8'))\n    payload.packageSha256 = '0'.repeat(64)\n    c.actual = put(payload)\n    expect(verifyManifest(m, root, expected).issues).toContain('WIN_PACKAGE_SOURCE')\n"
+        }
+      ],
+      "existingVerificationLevels": [
+        "COLLECTOR_STATIC",
+        "OWNER_HISTORICAL_BASH_N_E1",
+        "OWNER_HISTORICAL_SYNTHETIC_E1_E2"
+      ],
+      "stillDependentOn": "①真实两OS首步/中途失败、成功和防覆盖；②T03唯一包内清单及真实安装/解包来源；③Windows PowerShell语法及小PE运行。三子项不互替。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-I",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "同fd有限结构/hash；PE/koly不认证安装器实质、签名链或来源，valid仅绑定报告声明字节。",
+      "originalOwnerActionRecord": "Same-fd hash/structure plus explicit signature/native/format provenance limits",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [417, 451],
+          "excerptSha256": "69d13cc2054c600db873f60fd923cdc20de888dddbb5be3a5d3c8a3b774bed82",
+          "excerpt": "function installerFormat(fd: number, size: number, mac: boolean): boolean {\n  if (mac) {\n    if (size < 512) return false\n    const tail = Buffer.alloc(4)\n    readExact(fd, tail, size - 512)\n    return tail.toString() === 'koly'\n  }\n  if (size < 64) return false\n  const head = Buffer.alloc(64)\n  readExact(fd, head, 0)\n  if (head.readUInt16LE(0) !== 0x5a4d) return false\n  const offset = head.readUInt32LE(0x3c)\n  if (offset < 64 || offset > size - 6) return false\n  const pe = Buffer.alloc(6)\n  readExact(fd, pe, offset)\n  return pe.readUInt32LE(0) === 0x4550 && [0x14c, 0x8664].includes(pe.readUInt16LE(4))\n}\nexport function verifyLargeFile(\n  root: string,\n  file: z.infer<typeof ref>,\n  mac?: boolean,\n): { size: number; format: boolean } {\n  return withFile(boundPath(root, file), 8 * 1024 ** 3, (fd, size) => {\n    const hash = createHash('sha256')\n    const buffer = Buffer.alloc(Math.min(size, 1024 * 1024))\n    for (let position = 0; position < size;) {\n      const part = buffer.subarray(0, Math.min(buffer.length, size - position))\n      readExact(fd, part, position)\n      hash.update(part)\n      position += part.length\n    }\n    if (hash.digest('hex') !== file.sha256) throw new Error('FILE_HASH')\n    return { size, format: mac === undefined || installerFormat(fd, size, mac) }\n  })\n}\n"
+        },
+        {
+          "path": "docs/release/README.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+          "physicalLines": [35, 47],
+          "excerptSha256": "f529b6ed967f3827e9b74a35253788fca72094c501bca58cc4759693aa1990ee",
+          "excerpt": "## 核验的实际边界\n\n哈希能证明提交给工具的字节一致，不能证明报告签发者、真人资格、真实操作或签名链可信。清单中的 valid/human 等声明必须由指定负责人对照原生命令原件、预约/观察证据独立核验。组件 inventory 应来自实际包和固定依赖图，不能由同一遗漏清单自证完整。工程 check 的 expected 文件应由原验收负责人冻结，actual 来自真实驱动；把两者都写成相同虚构值无法变成产品通过。此工具是必要的一致性检查，不能作为独立上线放行器。\n\n## 官方协议依据与唯一配置交接\n\n2026-10-21 核对：[Electron 签名说明](https://www.electronjs.org/docs/latest/tutorial/code-signing) 区分签名、公证，并说明代码身份对 Keychain 升级识别的影响；[Apple 公证说明](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution) 与 [Microsoft SignTool](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool) 用于原生验证。electron.build 旧签名页此次返回 404，改以实际锁定 `electron-builder@26.15.3` 自带类型/实现核对可用配置字段；不根据失效链接猜配置。具体共享变更见 `docs/iterations/T11/shared-file-handoff.md`。\n\n## 取证目录与时钟\n\n普通文件和CLI manifest/freeze限16MiB，安装/下载/回退包及组件流式hash限8GiB；这是工具工程边界，不是Q5业务容量或性能指标。读取先打开受控fd并fstat核普通非空文件及限额，再分配/解析；同fd做完整读取、hash和PE/koly结构检查，结束检查增长、短读及文件元数据漂移，异常关闭自有fd。叶节点无跟随/非阻塞打开依赖平台提供的flag；证据根及祖先目录须可信且在读取期间不受不可信并发修改，此实现未消除全部TOCTOU。\n\nCLI用审查机当前墙钟覆盖freeze.now，没有生产任意时间开关。操作者须核对该机日期/时区/同步来源和可知偏差，并将无法核实的偏差作为未验证限制；本工具既不认证时钟，也不伪称发生过网络校时。签名valid等声明与时间戳链仍依赖原生原件审查。PE仅检查DOS/PE标记、偏移界限及允许机器字段，DMG仅检查尾部koly；这些均不能证明NSIS/DMG实质有效或签名可信。\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_CONTROLLED_IO_E1_E2"],
+      "stillDependentOn": "真实Authenticode/时间戳链、Developer ID/嵌套代码/公证/Gatekeeper、下载安装和来源原件。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-J",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "CLI墙钟覆盖freeze.now并拒伪未来now；同步来源/偏差外部记录，工具不认证时钟正确。",
+      "originalOwnerActionRecord": "CLI current wall clock and operator synchronization/skew trust documented",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify-release.mjs",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c83e455f63032ac81d2a6c2e4f7b420528d0f72007a603da468acc2f17df0e4e",
+          "physicalLines": [17, 26],
+          "excerptSha256": "04df2596277924fbb049624d0e8acb5fa412f2169a150446498dc491bf1402c8",
+          "excerpt": "    const expected = expectedSchema.parse({\n      ...readJsonFile(freezePath),\n      now: new Date().toISOString(),\n    })\n    const result = verifyManifest(readJsonFile(manifestPath), root, expected)\n    console.log(JSON.stringify(result, null, 2))\n    process.exitCode = result.consistent && result.mode === 'evidence' ? 0 : 1\n  } catch {\n    console.error('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID')\n    process.exitCode = 2\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [1151, 1171],
+          "excerptSha256": "1bbf05c8554b57ac02b49adb31dc11d4c06717e5c19d11aad12c0adb6e7d18a5",
+          "excerpt": "  it('CLI replaces forged freeze.now with the current local clock', () => {\n    const { root, m, expected } = fixture()\n    m.users[0].testedAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()\n    writeFileSync(join(root, 'manifest.json'), JSON.stringify(m))\n    writeFileSync(\n      join(root, 'freeze.json'),\n      JSON.stringify({ ...expected, now: '2099-12-31T00:00:00Z' }),\n    )\n    const run = spawnSync(\n      process.execPath,\n      [\n        'scripts/release/verify-release.mjs',\n        join(root, 'manifest.json'),\n        root,\n        join(root, 'freeze.json'),\n      ],\n      { encoding: 'utf8' },\n    )\n    expect(run.status).toBe(1)\n    expect(run.stderr).toBe('')\n    expect(JSON.parse(run.stdout).issues).toContain('USER_STALE')\n"
+        },
+        {
+          "path": "docs/release/README.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+          "physicalLines": [45, 47],
+          "excerptSha256": "a2104ff5838871775fbeffa8069b8366af08cebb48109a3ff1a45781f0071d64",
+          "excerpt": "普通文件和CLI manifest/freeze限16MiB，安装/下载/回退包及组件流式hash限8GiB；这是工具工程边界，不是Q5业务容量或性能指标。读取先打开受控fd并fstat核普通非空文件及限额，再分配/解析；同fd做完整读取、hash和PE/koly结构检查，结束检查增长、短读及文件元数据漂移，异常关闭自有fd。叶节点无跟随/非阻塞打开依赖平台提供的flag；证据根及祖先目录须可信且在读取期间不受不可信并发修改，此实现未消除全部TOCTOU。\n\nCLI用审查机当前墙钟覆盖freeze.now，没有生产任意时间开关。操作者须核对该机日期/时区/同步来源和可知偏差，并将无法核实的偏差作为未验证限制；本工具既不认证时钟，也不伪称发生过网络校时。签名valid等声明与时间戳链仍依赖原生原件审查。PE仅检查DOS/PE标记、偏移界限及允许机器字段，DMG仅检查尾部koly；这些均不能证明NSIS/DMG实质有效或签名可信。\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_CLI_E1_E2"],
+      "stillDependentOn": "真实取证机日期/时区/同步来源、可知偏差及报告时间链须操作者记录并独审核对。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-K",
+      "originalSeverity": "低",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "dated当前入口、适用候选/取代关系；旧active/current和不同来源hash不合并，不回写旧原件或Goal。",
+      "originalOwnerActionRecord": "Dated current status supersedes historical active/current text; originals untouched",
+      "sourceEvidence": [
+        {
+          "path": "docs/reviews/T11/status.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "4cae2fe536961ea5d381dce3db2950f3c9294c5d9f2bbdd31721a4181059824f",
+          "physicalLines": [3, 23],
+          "excerptSha256": "39e2b2c0ba76d87cbc6b70a83937db1717d274c403af903a6925638ffac2b752",
+          "excerpt": "## 当前回执：2026-10-23 F-1 修复窗\n\n本轮起点为 `550d47ad064f4d3899c844e8f791841498851ec5`，仍在 `.worktrees/T11-review-fixes` / `feature/weekly-t11-review-fixes`。原036同版两指定任务均正式completed，完整原件与18项逐条处置见 `fresh-review-boundary-exceptions-20261023/handoff.md` 和索引：Z工程Pass，M工程NotPass（新增中级F-1，Node前置警告含路径、末行断言未修完整错误面）；不是双审通过，owner未自行关闭18项。\n\n总控已明确授权继续F-1实质修复。最小方案和独立静态确认见 `f1-fix-20261023/design.json`、`design-review.md`：唯一实现原字节改为明确ESM的verify.mts，CLI纯JS参数/Node24.3以上24.x门后在try内动态加载；完整stderr严格负例，保留其他真实诊断。仅改T11独占路径，不改根package/锁/tsconfig/CI，不另建package/schema。原036两审树/提示/报告不改。\n\n本地实际验证（Node v24.15.0）：首轮专项122/122零skip；随后补入3个参数/schema合同用例，末版125项已纳入显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 的755个TS测试（零skip），另有1052个Python测试、构建、ruff、格式和类型检查通过，完整子进程exit0。四固定输入探针实际启用；受验六路径before/after/当前hash一致。`tsc --listFiles`实际纳入唯一verify.mts、无旧verify.ts；显式release lint通过。原始输出、实际计数、首轮/末版区别与边界见 `f1-fix-20261023/verification.json` 和raw索引；独立实现复核见 `implementation-review.md`，其核对原件但未重跑。F-1处于已实现并本地验证、待新候选完整指定审查状态，未自行签关闭或新Pass。\n\n两审提交输入的临时git commit、真实collector/native越界及此前owner回读偏差仍按原输入收据保留，实际越界返回不读不转，不事后补授权。GUI持续RELEASED；旧18最终关闭、新F-1完整新候选指定审查、真实目标平台/同包/API/真人/Q5/CI/合并/远端/发布门均未由本修复关闭。下方旧owned修复窗为当时历史入口，由本段取代其当前性。\n\n## 当前回执：2026-10-23 owned修复窗\n\n当前修复工作树为 `.worktrees/T11-review-fixes`、分支 `feature/weekly-t11-review-fixes`，启动base `692077da9754a303915798789b7b0c5b4f609125`；首个实现候选 `640cf49d627dc4796bc90ee37abf9bb3857eb42b`（含collector修复936a4313），W1–W6实现和新增回归已落地，已完成独立静态内审及本地验证，当前待全新指定双审。冻结后的最新精确候选、命令/计数/hash和内审结论统一见 `owned-fixes-20261023/verification.json` 与 `handoff.md`。下方2026-10-21起的“当前/active/仅计划”等句仅描述各段当时状态，均由此入口取代；原7d28、65/695及v2/旧核验器hash是历史，不能作为新实现验收。旧回执/原报告/triage矩阵不追写或重新归并，同updatedAt的不同来源hash保留各自快照，不能推为同一原件。\n\n最终实现/测试候选 `33894063fcf17bc865f4c91556a8ca01845812e7`：专项109/109零skip；显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 通过739 TS/1052 Python、构建、ruff，四个固定输入探针执行。此前105/735只对应首版640cf；新增CLI时钟/限额与目标缺失回归已复验。独立内审发现的状态文档R1已在338 delta复核关闭；18原项不由此关闭。最终结果以本轮verification记录为准；默认不启用flag会skip四项，默认通过不作固定输入联验。所有actual仍为合成/固定oracle构造，不是产品50项或实际设备/服务/真人通过。\n\nM原NotPass及12项原高/中/低、Z原P4六项全部保留、18项仍open，owner处置见本轮disposition。独立agent内审不替指定双审；新候选须两个全新完整同版指定任务、全文收件和原CI/合并门。当前GUI资源属T03，本线不启动GUI/真实collector/凭据/API/模型审查；真实同包来源须T03唯一清单和安装/解包原件，marker和声明hash不能替代。F01/F16/Q5不由本线代答，也不阻塞获准工具修复。原完整发布Goal的blocked回执保留，本次不调用Goal状态变更，不把工具修复当完整T11发布完成。\n\n历史失败保留范围更正：首跑38失败目前只有 `first-failure.json` 的摘录和原会话transcript线索，归档中没有独立完整首跑raw，不能声称所有失败完整原件齐全，也不声称永久不可获得；其后48个现存日志在 `round-1/raw-logs.tar.gz`，本轮已只读逐成员核字节/hash，见本轮history-archive-verification。原verification.json中失败保留说明及历史结论不回写；本轮首输出/后继重跑日志另存新目录，不覆盖旧失败。\n\n## 历史阶段记录（原文保留）\n"
+        }
+      ],
+      "existingVerificationLevels": ["DOCUMENT_STATIC"],
+      "stillDependentOn": "持续收件核原件身份和适用期，原状态/来源矛盾保留。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M-F-L",
+      "originalSeverity": "中",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "首38仅摘录/transcript、缺独立完整raw；其后48归档另列，不补造或推断永久不可获得。",
+      "originalOwnerActionRecord": "First38 raw gap distinguished from later48 archive originals",
+      "sourceEvidence": [
+        {
+          "path": "docs/reviews/T11/status.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "4cae2fe536961ea5d381dce3db2950f3c9294c5d9f2bbdd31721a4181059824f",
+          "physicalLines": [17, 23],
+          "excerptSha256": "351a9e794a3c7b7d67cb63290ab5d0f93856e1eb8fda6b82a904b09a04a8e1b0",
+          "excerpt": "最终实现/测试候选 `33894063fcf17bc865f4c91556a8ca01845812e7`：专项109/109零skip；显式 `T11_FIXED_BASELINE_PROBE=1 npm run check` 通过739 TS/1052 Python、构建、ruff，四个固定输入探针执行。此前105/735只对应首版640cf；新增CLI时钟/限额与目标缺失回归已复验。独立内审发现的状态文档R1已在338 delta复核关闭；18原项不由此关闭。最终结果以本轮verification记录为准；默认不启用flag会skip四项，默认通过不作固定输入联验。所有actual仍为合成/固定oracle构造，不是产品50项或实际设备/服务/真人通过。\n\nM原NotPass及12项原高/中/低、Z原P4六项全部保留、18项仍open，owner处置见本轮disposition。独立agent内审不替指定双审；新候选须两个全新完整同版指定任务、全文收件和原CI/合并门。当前GUI资源属T03，本线不启动GUI/真实collector/凭据/API/模型审查；真实同包来源须T03唯一清单和安装/解包原件，marker和声明hash不能替代。F01/F16/Q5不由本线代答，也不阻塞获准工具修复。原完整发布Goal的blocked回执保留，本次不调用Goal状态变更，不把工具修复当完整T11发布完成。\n\n历史失败保留范围更正：首跑38失败目前只有 `first-failure.json` 的摘录和原会话transcript线索，归档中没有独立完整首跑raw，不能声称所有失败完整原件齐全，也不声称永久不可获得；其后48个现存日志在 `round-1/raw-logs.tar.gz`，本轮已只读逐成员核字节/hash，见本轮history-archive-verification。原verification.json中失败保留说明及历史结论不回写；本轮首输出/后继重跑日志另存新目录，不覆盖旧失败。\n\n## 历史阶段记录（原文保留）\n"
+        }
+      ],
+      "existingVerificationLevels": ["DOCUMENT_STATIC", "OWNER_HISTORICAL_ARCHIVE_IDENTITY"],
+      "stillDependentOn": "当前首38独立完整raw缺口UNKNOWN；不重跑冒充首败或以后继回填。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "Z-F1",
+      "originalSeverity": "P4",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "Expected只safeParse一次，finite日期检查保留。",
+      "originalOwnerActionRecord": "Duplicate expected schema parse removed, finite date retained",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [509, 517],
+          "excerptSha256": "aa84562546e06f82a1ed33d8cadcd1d52092c981dd65a4b2228f15cff9a64a87",
+          "excerpt": "  if (!expectedSchema.safeParse(expected).success)\n    return {\n      consistent: false,\n      releaseAuthorized: false,\n      mode: m.mode,\n      issues: ['EXPECTED_IDENTITY'],\n    }\n  const now = Date.parse(expected.now)\n  if (!Number.isFinite(now)) fail('EXPECTED_IDENTITY')\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_FREEZE_TYPECHECK_E1_E2"],
+      "stillDependentOn": "新指定审者按真实语义处置，无需调用次数镜像测试；owner不签关闭。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "Z-F2",
+      "originalSeverity": "P4",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "受控打开/fstat、限额先于分配parse、同fd读取/hash/格式、尾部漂移检查及finally关闭；可信稳定祖先前提保留。",
+      "originalOwnerActionRecord": "Bound before allocation/parse; same fd fstat/read/hash/format; trusted ancestor precondition",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [345, 407],
+          "excerptSha256": "46cca2ebcc30dadbcae2c97a51a3a348f1a5da006395a24d12d105b670d39747",
+          "excerpt": "// Resolve containment first. Ancestor directories must remain trusted and stable while reading.\nfunction boundPath(root: string, file: z.infer<typeof ref>): string {\n  if (\n    isAbsolute(file.path) ||\n    file.path.includes('\\\\') ||\n    file.path.split('/').some((p) => p === '..' || p === '.')\n  )\n    throw new Error('UNSAFE_PATH')\n  const base = realpathSync(root)\n  const path = realpathSync(resolve(base, file.path))\n  const rel = relative(base, path)\n  if (!rel || rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel))\n    throw new Error('UNSAFE_PATH')\n  return path\n}\n\n// No-follow protects the resolved leaf; nonblocking permits rejecting FIFOs without blocking.\n// Neither protects concurrently replaced ancestors. One fd supplies size, bytes, hash and format.\nfunction withFile<T>(path: string, limit: number, consume: (fd: number, size: number) => T): T {\n  const fd = openSync(\n    path,\n    constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0) | (constants.O_NONBLOCK ?? 0),\n  )\n  try {\n    const before = fstatSync(fd)\n    if (!before.isFile() || before.size < 1 || before.size > limit) throw new Error('FILE_BOUNDS')\n    const result = consume(fd, before.size)\n    const extra = Buffer.alloc(1)\n    if (readSync(fd, extra, 0, 1, before.size) !== 0) throw new Error('FILE_CHANGED')\n    const after = fstatSync(fd)\n    if (\n      !after.isFile() ||\n      after.size !== before.size ||\n      after.ino !== before.ino ||\n      after.dev !== before.dev ||\n      after.mtimeMs !== before.mtimeMs ||\n      after.ctimeMs !== before.ctimeMs\n    )\n      throw new Error('FILE_CHANGED')\n    return result\n  } finally {\n    closeSync(fd)\n  }\n}\nfunction readExact(fd: number, buffer: Buffer, position: number): void {\n  let offset = 0\n  while (offset < buffer.length) {\n    const count = readSync(fd, buffer, offset, buffer.length - offset, position + offset)\n    if (count === 0) throw new Error('FILE_SHORT_READ')\n    offset += count\n  }\n}\nfunction readSmallFile(path: string, limit: number): Buffer {\n  return withFile(path, limit, (fd, size) => {\n    const bytes = Buffer.alloc(size)\n    readExact(fd, bytes, 0)\n    return bytes\n  })\n}\nexport function readJsonFile(path: string): unknown {\n  // Limit is enforced before allocation and JSON.parse, including the CLI's trusted freeze.\n  return JSON.parse(readSmallFile(path, 16 * 1024 * 1024).toString('utf8'))\n}\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [434, 451],
+          "excerptSha256": "664e664e13e66dbf4c2e091500f3f40faa52afee549e7c74b1823b7e571d5fc9",
+          "excerpt": "export function verifyLargeFile(\n  root: string,\n  file: z.infer<typeof ref>,\n  mac?: boolean,\n): { size: number; format: boolean } {\n  return withFile(boundPath(root, file), 8 * 1024 ** 3, (fd, size) => {\n    const hash = createHash('sha256')\n    const buffer = Buffer.alloc(Math.min(size, 1024 * 1024))\n    for (let position = 0; position < size;) {\n      const part = buffer.subarray(0, Math.min(buffer.length, size - position))\n      readExact(fd, part, position)\n      hash.update(part)\n      position += part.length\n    }\n    if (hash.digest('hex') !== file.sha256) throw new Error('FILE_HASH')\n    return { size, format: mac === undefined || installerFormat(fd, size, mac) }\n  })\n}\n"
+        },
+        {
+          "path": "tests/unit/t11-release-io.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "93129e89f371ec75c826b8ca822c68327ba280c95027ea67e6296a1c2f81c0b7",
+          "physicalLines": [39, 125],
+          "excerptSha256": "7fcaf6e3fd3836b8e5239686c6cd2256b1234e35f21e7ad3b3457088f8084f50",
+          "excerpt": "  it('reads and hashes complete bytes and closes its fd', () => {\n    const { root, path, file } = fixture()\n    expect(readBound(root, file).toString()).toBe('{\"ok\":true}')\n    expect(readJsonFile(path)).toEqual({ ok: true })\n    closed()\n  })\n  it('rejects oversized JSON before reading or parsing (sparse file, no large allocation)', () => {\n    const { path } = fixture()\n    fs.truncateSync(path, 16 * 1024 * 1024 + 1)\n    const parse = vi.spyOn(JSON, 'parse')\n    expect(() => readJsonFile(path)).toThrow('FILE_BOUNDS')\n    expect(fs.readSync).not.toHaveBeenCalled()\n    expect(parse).not.toHaveBeenCalled()\n    closed()\n  })\n  it('enforces each caller bound before reading and rejects nonregular files', () => {\n    const { root, file } = fixture('1234')\n    expect(() => readBound(root, file, 3)).toThrow('FILE_BOUNDS')\n    expect(fs.readSync).not.toHaveBeenCalled()\n    expect(() => readJsonFile(root)).toThrow('FILE_BOUNDS')\n    closed()\n  })\n  it('rejects growth during a read and closes the fd', () => {\n    const { root, path, file } = fixture('abcd')\n    vi.mocked(fs.readSync).mockImplementationOnce((...args: Parameters<typeof fs.readSync>) => {\n      fs.appendFileSync(path, 'e')\n      return realRead(...args)\n    })\n    expect(() => readBound(root, file)).toThrow('FILE_CHANGED')\n    closed()\n  })\n  it('rejects truncation/short reads and closes the fd', () => {\n    const { root, path, file } = fixture('abcd')\n    vi.mocked(fs.readSync).mockImplementationOnce((...args: Parameters<typeof fs.readSync>) => {\n      fs.truncateSync(path, 1)\n      return realRead(...args)\n    })\n    expect(() => readBound(root, file)).toThrow('FILE_SHORT_READ')\n    closed()\n  })\n  it('closes the fd on read exceptions and rejects wrong hashes', () => {\n    const { root, file } = fixture()\n    vi.mocked(fs.readSync).mockImplementationOnce(() => {\n      throw new Error('TEST_IO')\n    })\n    expect(() => readBound(root, file)).toThrow('TEST_IO')\n    closed()\n    expect(() => readBound(root, { ...file, sha256: '0'.repeat(64) })).toThrow('FILE_HASH')\n  })\n  it('rejects outside symlinks and replacement of the resolved leaf before open', () => {\n    const outside = fixture('outside'),\n      inside = fixture('inside')\n    fs.symlinkSync(outside.path, join(inside.root, 'link'))\n    expect(() => readBound(inside.root, { path: 'link', sha256: outside.file.sha256 })).toThrow(\n      'UNSAFE_PATH',\n    )\n    vi.mocked(fs.openSync).mockImplementationOnce((...args: Parameters<typeof fs.openSync>) => {\n      fs.unlinkSync(inside.path)\n      fs.symlinkSync(outside.path, inside.path)\n      return realOpen(...args)\n    })\n    expect(() => readBound(inside.root, inside.file)).toThrow()\n  })\n  it('checks large-file hash and PE/DMG structures using the opened fd', () => {\n    const pe = Buffer.alloc(70)\n    pe.writeUInt16LE(0x5a4d)\n    pe.writeUInt32LE(64, 0x3c)\n    pe.writeUInt32LE(0x4550, 64)\n    pe.writeUInt16LE(0x8664, 68)\n    const win = fixture(pe)\n    expect(verifyLargeFile(win.root, win.file, false)).toEqual({ size: 70, format: true })\n    pe.writeUInt32LE(0xffffffff, 0x3c)\n    fs.writeFileSync(win.path, pe)\n    expect(verifyLargeFile(win.root, { ...win.file, sha256: digest(pe) }, false).format).toBe(false)\n    const mac = fixture(Buffer.concat([Buffer.from('koly'), Buffer.alloc(508)]))\n    expect(verifyLargeFile(mac.root, mac.file, true)).toEqual({ size: 512, format: true })\n    closed()\n  })\n  it('rejects streaming-file growth before accepting the hash or structure', () => {\n    const { root, path, file } = fixture('abcd')\n    vi.mocked(fs.readSync).mockImplementationOnce((...args: Parameters<typeof fs.readSync>) => {\n      fs.appendFileSync(path, 'e')\n      return realRead(...args)\n    })\n    expect(() => verifyLargeFile(root, file, false)).toThrow('FILE_CHANGED')\n    closed()\n  })\n"
+        },
+        {
+          "path": "docs/release/README.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "bba8de74501456df7ff0fb65e5277d1970c2a5b4843de4dc1d2b10034179d87b",
+          "physicalLines": [43, 47],
+          "excerptSha256": "47c3acd9ee7c7b56cdb86ffd497aab644a1d1e2312821efaa65b7cfebf2cc787",
+          "excerpt": "## 取证目录与时钟\n\n普通文件和CLI manifest/freeze限16MiB，安装/下载/回退包及组件流式hash限8GiB；这是工具工程边界，不是Q5业务容量或性能指标。读取先打开受控fd并fstat核普通非空文件及限额，再分配/解析；同fd做完整读取、hash和PE/koly结构检查，结束检查增长、短读及文件元数据漂移，异常关闭自有fd。叶节点无跟随/非阻塞打开依赖平台提供的flag；证据根及祖先目录须可信且在读取期间不受不可信并发修改，此实现未消除全部TOCTOU。\n\nCLI用审查机当前墙钟覆盖freeze.now，没有生产任意时间开关。操作者须核对该机日期/时区/同步来源和可知偏差，并将无法核实的偏差作为未验证限制；本工具既不认证时钟，也不伪称发生过网络校时。签名valid等声明与时间戳链仍依赖原生原件审查。PE仅检查DOS/PE标记、偏移界限及允许机器字段，DMG仅检查尾部koly；这些均不能证明NSIS/DMG实质有效或签名可信。\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_CONTROLLED_IO_E1_E2"],
+      "stillDependentOn": "确定性小文件模拟不证明所有祖先目录并发替换安全；不做新压力/native/SQLite损坏研究。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "Z-F3",
+      "originalSeverity": "P4",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "缺dest显式MIGRATION_DESTINATION并continue，不传undefined跳过绑定；不反称原分支不可达。",
+      "originalOwnerActionRecord": "Missing destination explicitly fails and skips binding",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [1067, 1074],
+          "excerptSha256": "c6b65b40919a8c13f0795f8d10401f831b2ea62b7c7f52dc70de1e4dffbd5ca7",
+          "excerpt": "    const dest = m.artifacts.find((a) => a.target === x.to)\n    if (!dest) {\n      fail('MIGRATION_DESTINATION')\n      continue\n    }\n    evidence(x.report, MIGRATION_CHECKS, `MIGRATION_${x.from}_${x.to}`, dest.file.sha256)\n  }\n  return { consistent: issues.length === 0, releaseAuthorized: false, mode: m.mode, issues }\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [1144, 1149],
+          "excerptSha256": "57e0115171eb36e59c6fc9ff72e9e829b8cd9a71b6cf3fb1f90af583bcdd1eb6",
+          "excerpt": "  it('reports a missing migration destination explicitly after duplicate-target rejection', () => {\n    const { root, m, expected } = fixture()\n    m.artifacts[1] = m.artifacts[0]\n    expect(verifyManifest(m, root, expected).issues).toEqual(\n      expect.arrayContaining(['TARGET_MATRIX', 'MIGRATION_DESTINATION']),\n    )\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_SYNTHETIC_E1_E2"],
+      "stillDependentOn": "真实双向资产及迁移报告仍待验。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "Z-F4",
+      "originalSeverity": "P4",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "Mac全部已知系统命令含最前OS/arch门及xcrun改绝对路径。",
+      "originalOwnerActionRecord": "Absolute Mac command paths including OS/arch gate",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/collect-macos.sh",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "195d8561098b3a282a50af41bc62c81361910d10cafdebe7b99d176023b6965e",
+          "physicalLines": [8, 16],
+          "excerptSha256": "58b3bf2cb311e6ba03075ff25be58265da49133a41a5b0048949623b8d6545e9",
+          "excerpt": "if [[ \"$(/usr/bin/uname -m)\" != arm64 || \"$(/usr/bin/sw_vers -productVersion)\" != 15.* ]]; then\n  printf '%s\\n' 'TARGET_REQUIRED: macOS 15 arm64' >&2\n  exit 1\nfi\napp_path=\"$2\"\ndmg_path=\"$3\"\noutput_dir=\"$4\"\n# Absolute input/output arguments also prevent paths beginning with '-' becoming command options.\n[[ \"$app_path\" = /* ]] || app_path=\"$PWD/$app_path\"\n"
+        },
+        {
+          "path": "scripts/release/collect-macos.sh",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "195d8561098b3a282a50af41bc62c81361910d10cafdebe7b99d176023b6965e",
+          "physicalLines": [20, 71],
+          "excerptSha256": "87375e36da944989cf58942943afeceac8ea8a3a50854e112303d9c5cd36139e",
+          "excerpt": "/bin/mkdir \"$output_dir\"\nstep='initializing'\ncomplete=0\nwrite_status() {\n  printf '{\"schemaVersion\":1,\"status\":\"%s\",\"step\":\"%s\",\"exitCode\":%d}\\n' \"$1\" \"$step\" \"$2\" > \"$output_dir/collector-status.json.tmp\"\n  /bin/mv -f \"$output_dir/collector-status.json.tmp\" \"$output_dir/collector-status.json\"\n}\nfinish() {\n  local result=\"$1\"\n  trap - EXIT INT TERM\n  if [[ \"$complete\" -ne 1 ]]; then\n    [[ \"$result\" -ne 0 ]] || result=1\n    # If storage fails, retain the previous pending/malformed marker and all raw files; neither passes verification.\n    set +e\n    write_status failed \"$result\"\n    printf '%s\\n' 'COLLECTION_FAILED' >&2\n  fi\n  exit \"$result\"\n}\ntrap 'finish \"$?\"' EXIT\ntrap 'exit 130' INT\ntrap 'exit 143' TERM\nwrite_status pending 0\nstep='os'; write_status pending 0\n/usr/bin/sw_vers > \"$output_dir/os.txt\" 2>&1\nstep='architecture'; write_status pending 0\n/usr/bin/uname -m > \"$output_dir/architecture.txt\" 2>&1\n# Avoid serial numbers, host names, user names and Keychain enumeration.\nstep='hardware'; write_status pending 0\n/usr/sbin/sysctl -n machdep.cpu.brand_string hw.memsize > \"$output_dir/hardware.txt\" 2>&1\nstep='installer-hash'; write_status pending 0\n/usr/bin/shasum -a 256 \"$dmg_path\" > \"$output_dir/installer-sha256.txt\" 2>&1\nstep='version'; write_status pending 0\n/usr/bin/plutil -extract CFBundleShortVersionString raw \"$app_path/Contents/Info.plist\" > \"$output_dir/version.txt\" 2>&1\nstep='app-architecture'; write_status pending 0\n/usr/bin/file \"$app_path/Contents/MacOS/\"* > \"$output_dir/app-architecture.txt\" 2>&1\nstep='engine-architecture'; write_status pending 0\n/usr/bin/file \"$app_path/Contents/Resources/engine/ontolearn-engine\" > \"$output_dir/engine-architecture.txt\" 2>&1\nstep='signature'; write_status pending 0\n/usr/bin/codesign --display --verbose=4 \"$app_path\" > \"$output_dir/signature.txt\" 2>&1\nstep='codesign-verify'; write_status pending 0\n/usr/bin/codesign --verify --deep --strict --verbose=4 \"$app_path\" > \"$output_dir/codesign-verify.txt\" 2>&1\nstep='gatekeeper'; write_status pending 0\n/usr/sbin/spctl --assess --type execute --verbose=4 \"$app_path\" > \"$output_dir/gatekeeper.txt\" 2>&1\n# stapler validate is read-only. Never submits notarization, signs, unlocks, installs or launches.\nstep='stapler'; write_status pending 0\n/usr/bin/xcrun stapler validate \"$dmg_path\" > \"$output_dir/stapler.txt\" 2>&1\nstep='scope'; write_status pending 0\nprintf '%s\\n' 'Metadata collected. Completion marker is not signature, native-operation or same-package provenance proof; independent evidence review remains required.' > \"$output_dir/scope.txt\"\nstep='complete'\nwrite_status complete 0\ncomplete=1\n"
+        }
+      ],
+      "existingVerificationLevels": ["SOURCE_STATIC", "OWNER_HISTORICAL_BASH_N_E1"],
+      "stillDependentOn": "真实macOS15 arm64可用性及成功/失败流程；禁止真实collector即使预期早拒绝。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "Z-F5",
+      "originalSeverity": "P4",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "DOS长度/e_lfanew范围/PE签名machine/size/finally与固定PE_INVALID；Win组件架构约束。",
+      "originalOwnerActionRecord": "PE DOS length/offset/required fields bounded; stream closed with fixed error",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/pe-machine.ps1",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "62b8f743a95311bbbe7b20de59dd4fa8a63e6455c544b71f1e0390479e910249",
+          "physicalLines": [7, 28],
+          "excerptSha256": "0cfb716ae99df87ad3d4a02092ece2eb582fb0c0998829b8b731b5f45decbc09",
+          "excerpt": "    $stream = [System.IO.File]::Open($FilePath, [System.IO.FileMode]::Open,\n      [System.IO.FileAccess]::Read, [System.IO.FileShare]::Read)\n    $length = $stream.Length\n    if ($length -lt 64) { throw 'PE_DOS_BOUNDS' }\n    $reader = [System.IO.BinaryReader]::new($stream)\n    if ($reader.ReadUInt16() -ne 0x5a4d) { throw 'PE_MZ_REQUIRED' }\n    $stream.Position = 0x3c\n    $offset = [long]$reader.ReadUInt32()\n    if ($offset -lt 64 -or $offset -gt $length - 6) { throw 'PE_HEADER_BOUNDS' }\n    $stream.Position = $offset\n    if ($reader.ReadUInt32() -ne 0x00004550) { throw 'PE_SIGNATURE_REQUIRED' }\n    $machine = $reader.ReadUInt16()\n    if ($stream.Length -ne $length) { throw 'PE_SIZE_CHANGED' }\n    return ('0x{0:x4}' -f $machine)\n  } catch {\n    # No original exception/path escapes to the collector's fixed error surface.\n    throw 'PE_INVALID'\n  } finally {\n    if ($null -ne $reader) { $reader.Dispose() }\n    if ($null -ne $stream) { $stream.Dispose() }\n  }\n}\n"
+        },
+        {
+          "path": "scripts/release/collect-windows.ps1",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "cc572372e657fc348cffcdcbc35a2b6e86b236d66118b5c237c98f46da573628",
+          "physicalLines": [63, 68],
+          "excerptSha256": "c94cfd0e2bcbf3ad0c5fc602f94f3cbdc66772387a416cfa62fad4ae8eff4cc7",
+          "excerpt": "    Start-CollectorStep \"pe-$index\"\n    $machine = Get-PeMachine $item\n    if ($index -eq 0 -and $machine -notin @('0x014c', '0x8664')) { throw 'INSTALLER_MACHINE_REQUIRED' }\n    if ($index -ne 0 -and $machine -ne '0x8664') { throw 'EXECUTABLE_X64_REQUIRED' }\n    Start-CollectorStep \"artifact-$index\"\n    $record = @{ fileName=[System.IO.Path]::GetFileName($item);\n"
+        },
+        {
+          "path": "tests/unit/t11-release-io.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "93129e89f371ec75c826b8ca822c68327ba280c95027ea67e6296a1c2f81c0b7",
+          "physicalLines": [102, 115],
+          "excerptSha256": "7082c47fa757ac61bba8326eb59d5282e640831d8de87ae74b4c88a28e343d16",
+          "excerpt": "  it('checks large-file hash and PE/DMG structures using the opened fd', () => {\n    const pe = Buffer.alloc(70)\n    pe.writeUInt16LE(0x5a4d)\n    pe.writeUInt32LE(64, 0x3c)\n    pe.writeUInt32LE(0x4550, 64)\n    pe.writeUInt16LE(0x8664, 68)\n    const win = fixture(pe)\n    expect(verifyLargeFile(win.root, win.file, false)).toEqual({ size: 70, format: true })\n    pe.writeUInt32LE(0xffffffff, 0x3c)\n    fs.writeFileSync(win.path, pe)\n    expect(verifyLargeFile(win.root, { ...win.file, sha256: digest(pe) }, false).format).toBe(false)\n    const mac = fixture(Buffer.concat([Buffer.from('koly'), Buffer.alloc(508)]))\n    expect(verifyLargeFile(mac.root, mac.file, true)).toEqual({ size: 512, format: true })\n    closed()\n"
+        }
+      ],
+      "existingVerificationLevels": [
+        "POWERSHELL_SOURCE_STATIC",
+        "OWNER_HISTORICAL_TS_SMALL_PE_E1_E2"
+      ],
+      "stillDependentOn": "真实Windows PowerShell语法、有效/截断/越界小PE及签名/架构；TS不代替PS运行。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "Z-F6",
+      "originalSeverity": "P4",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "pending/failed/complete及步骤，成功末尾才complete；strict marker/check绑定，missing/pending/failed/malformed负例拒绝。",
+      "originalOwnerActionRecord": "Pending/failed/complete marker, steps and first outputs retained; verifier rejects incomplete",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [46, 53],
+          "excerptSha256": "5dd190f2df213ef39ad6da83b1158182c389daea60bfe7d2ef67500a22d54130",
+          "excerpt": "const collectorStatus = z\n  .object({\n    schemaVersion: z.literal(1),\n    status: z.literal('complete'),\n    step: z.literal('complete'),\n    exitCode: z.literal(0),\n  })\n  .strict()\n"
+        },
+        {
+          "path": "scripts/release/verify.mts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c3e670e66594af4a7ff4be3d0802f559117ded12d9dceab4a985f576ba930b9b",
+          "physicalLines": [777, 781],
+          "excerptSha256": "ab96137b81dbe7cad8ef33fb989ece62c18d415920fa7831d335d27643baa116",
+          "excerpt": "    if (!collectorStatus.safeParse(json(d.collectorStatus, `${label}_COLLECTOR_STATUS`)).success)\n      fail(`${label}_COLLECTOR_INCOMPLETE`)\n    const complete = d.report.checks.find((c) => c.id === 'collector-complete')\n    if (!complete || complete.actual.sha256 !== d.collectorStatus.sha256)\n      fail(`${label}_COLLECTOR_BINDING`)\n"
+        },
+        {
+          "path": "scripts/release/collect-macos.sh",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "195d8561098b3a282a50af41bc62c81361910d10cafdebe7b99d176023b6965e",
+          "physicalLines": [19, 42],
+          "excerptSha256": "30b39bfcedb08283befab6a38e8f1f445aa569bffb2bc7a598d37f217117f562",
+          "excerpt": "[[ -d \"$app_path/Contents\" && -f \"$dmg_path\" && ! -e \"$output_dir\" ]] || exit 2\n/bin/mkdir \"$output_dir\"\nstep='initializing'\ncomplete=0\nwrite_status() {\n  printf '{\"schemaVersion\":1,\"status\":\"%s\",\"step\":\"%s\",\"exitCode\":%d}\\n' \"$1\" \"$step\" \"$2\" > \"$output_dir/collector-status.json.tmp\"\n  /bin/mv -f \"$output_dir/collector-status.json.tmp\" \"$output_dir/collector-status.json\"\n}\nfinish() {\n  local result=\"$1\"\n  trap - EXIT INT TERM\n  if [[ \"$complete\" -ne 1 ]]; then\n    [[ \"$result\" -ne 0 ]] || result=1\n    # If storage fails, retain the previous pending/malformed marker and all raw files; neither passes verification.\n    set +e\n    write_status failed \"$result\"\n    printf '%s\\n' 'COLLECTION_FAILED' >&2\n  fi\n  exit \"$result\"\n}\ntrap 'finish \"$?\"' EXIT\ntrap 'exit 130' INT\ntrap 'exit 143' TERM\nwrite_status pending 0\n"
+        },
+        {
+          "path": "scripts/release/collect-windows.ps1",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "cc572372e657fc348cffcdcbc35a2b6e86b236d66118b5c237c98f46da573628",
+          "physicalLines": [16, 42],
+          "excerptSha256": "9ef00baa69a9f5853a4157ca62c1b7ec336247fad9f6350429885727d6416ffe",
+          "excerpt": "  if (Test-Path -LiteralPath $NewOutputDirectory) { throw 'OUTPUT_MUST_BE_NEW' }\n  foreach ($item in @($Installer, $AppExe, $EngineExe)) {\n    if (-not (Test-Path -LiteralPath $item -PathType Leaf)) { throw 'INPUT_REQUIRED' }\n  }\n  New-Item -ItemType Directory -Path $NewOutputDirectory | Out-Null\n} catch {\n  [Console]::Error.WriteLine('TARGET_INPUT_OR_NEW_OUTPUT_REQUIRED')\n  exit 2\n}\n$step = 'initializing'\nfunction Write-CollectorStatus([string]$Status, [int]$ExitCode) {\n  $content = @{ schemaVersion=1; status=$Status; step=$step; exitCode=$ExitCode } | ConvertTo-Json -Compress\n  $statusPath = Join-Path $NewOutputDirectory 'collector-status.json'\n  $temporaryPath = Join-Path $NewOutputDirectory 'collector-status.json.tmp'\n  [System.IO.File]::WriteAllText($temporaryPath, $content, [System.Text.UTF8Encoding]::new($false))\n  if ([System.IO.File]::Exists($statusPath)) {\n    [System.IO.File]::Replace($temporaryPath, $statusPath, $null)\n  } else {\n    [System.IO.File]::Move($temporaryPath, $statusPath)\n  }\n}\nfunction Start-CollectorStep([string]$Name) {\n  $script:step = $Name\n  Write-CollectorStatus 'pending' 0\n}\ntry {\n  Write-CollectorStatus 'pending' 0\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [738, 762],
+          "excerptSha256": "9241f54098e3891e66d9621c0fba5b661653830e453fcaf66a6402ffc9070201",
+          "excerpt": "  it.each(['pending', 'failed', 'missing', 'malformed'])(\n    'rejects incomplete collector state: %s',\n    (status) => {\n      const { root, m, expected, put } = fixture()\n      const d = m.artifacts[0].device\n      if (status === 'missing') rmSync(join(root, d.collectorStatus.path))\n      else\n        d.collectorStatus = put(\n          status === 'malformed'\n            ? { status: 'complete' }\n            : { schemaVersion: 1, status, step: 'signature', exitCode: 1 },\n        )\n      expect(verifyManifest(m, root, expected).issues).toContain('WIN_COLLECTOR_INCOMPLETE')\n    },\n  )\n  it.each(['collector-complete', 'installed-components-match-package'])(\n    'requires device evidence %s',\n    (id) => {\n      const { root, m, expected } = fixture()\n      m.artifacts[0].device.report.checks = m.artifacts[0].device.report.checks.filter(\n        (c) => c.id !== id,\n      )\n      expect(verifyManifest(m, root, expected).issues).toContain('WIN_DEVICE_COVERAGE')\n    },\n  )\n"
+        }
+      ],
+      "existingVerificationLevels": [
+        "COLLECTOR_STATIC",
+        "OWNER_HISTORICAL_BASH_N_E1",
+        "OWNER_HISTORICAL_SYNTHETIC_E1_E2"
+      ],
+      "stillDependentOn": "真实两OS首步/中途失败、成功/新目录防覆盖；marker不证明native、签名或同包。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    },
+    {
+      "id": "M036-F1",
+      "originalSeverity": "中",
+      "ownerStatus": "OPEN",
+      "ownerClosed": false,
+      "sourceTreatment": "verify.ts原字节rename唯一verify.mts；纯JS参数/Node24.3+24.x门、try内动态import；整段stderr/空stdout/exit2恢复，manifest-schema仍exit1，独立warning保留。",
+      "originalOwnerActionRecord": "F1 exact ESM/error-surface repair",
+      "sourceEvidence": [
+        {
+          "path": "scripts/release/verify-release.mjs",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "c83e455f63032ac81d2a6c2e4f7b420528d0f72007a603da468acc2f17df0e4e",
+          "physicalLines": [2, 27],
+          "excerptSha256": "996b36e15cc73a00385813e27fc30e15d9537741231eff6a591ded76a658e1f7",
+          "excerpt": "const [manifestPath, root, freezePath] = process.argv.slice(2)\nconst [major, minor] = process.versions.node.split('.').map(Number)\nif (!manifestPath || !root || !freezePath || process.argv.length !== 5) {\n  console.error(\n    'Usage: node scripts/release/verify-release.mjs MANIFEST EVIDENCE_ROOT TRUSTED_FREEZE.json',\n  )\n  process.exitCode = 2\n} else if (major !== 24 || !Number.isInteger(minor) || minor < 3) {\n  // Earlier Node 24 releases emit a TypeScript experimental warning before loading the verifier.\n  console.error('UNSUPPORTED_NODE_RUNTIME')\n  process.exitCode = 2\n} else {\n  try {\n    // Explicit ESM avoids module-type probing; catch loading errors before they expose paths.\n    const { expectedSchema, readJsonFile, verifyManifest } = await import('./verify.mts')\n    const expected = expectedSchema.parse({\n      ...readJsonFile(freezePath),\n      now: new Date().toISOString(),\n    })\n    const result = verifyManifest(readJsonFile(manifestPath), root, expected)\n    console.log(JSON.stringify(result, null, 2))\n    process.exitCode = result.consistent && result.mode === 'evidence' ? 0 : 1\n  } catch {\n    console.error('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID')\n    process.exitCode = 2\n  }\n"
+        },
+        {
+          "path": "tests/unit/t11-release.test.ts",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "fb69c5b01d4cd0c98ff19ed4591ef756a59e612e7e5b407fe871a35f678b2c5e",
+          "physicalLines": [1173, 1338],
+          "excerptSha256": "c443f22e281a40ae0c5bdf3d4ae45a14d05d88a2b26010209685643782531f60",
+          "excerpt": "  it.each([\n    { label: 'no arguments', args: [] },\n    { label: 'missing arguments', args: ['sensitive-only'] },\n    { label: 'an empty required argument', args: ['manifest.json', '', 'freeze.json'] },\n    { label: 'extra arguments', args: ['one', 'two', 'three', 'sensitive-extra'] },\n  ])('CLI refuses $label with fixed usage and no path disclosure', ({ args }) => {\n    const run = spawnSync(process.execPath, ['scripts/release/verify-release.mjs', ...args], {\n      encoding: 'utf8',\n    })\n    expect(run.status).toBe(2)\n    expect(run.stdout).toBe('')\n    expect(run.stderr).toBe(\n      'Usage: node scripts/release/verify-release.mjs MANIFEST EVIDENCE_ROOT TRUSTED_FREEZE.json\\n',\n    )\n  })\n  it.each([\n    { name: 'manifest', failure: 'missing' },\n    { name: 'freeze', failure: 'missing' },\n    { name: 'manifest', failure: 'malformed' },\n    { name: 'freeze', failure: 'malformed' },\n  ])('CLI rejects $failure $name with the whole fixed error surface', ({ name, failure }) => {\n    const { root, m, expected } = fixture()\n    const paths = { manifest: join(root, 'manifest.json'), freeze: join(root, 'freeze.json') }\n    writeFileSync(paths.manifest, JSON.stringify(m))\n    writeFileSync(paths.freeze, JSON.stringify(expected))\n    const selected = name as keyof typeof paths\n    if (failure === 'missing') paths[selected] = join(root, 'sensitive-missing.json')\n    else writeFileSync(paths[selected], 'sensitive invalid contents')\n    const run = spawnSync(\n      process.execPath,\n      ['scripts/release/verify-release.mjs', paths.manifest, root, paths.freeze],\n      { encoding: 'utf8' },\n    )\n    expect(run.status).toBe(2)\n    expect(run.stdout).toBe('')\n    expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\\n')\n  })\n  it.each(['manifest', 'freeze'])(\n    'CLI rejects oversized %s with fixed stderr before parse',\n    (name) => {\n      const { root, m, expected } = fixture()\n      writeFileSync(join(root, 'manifest.json'), JSON.stringify(m))\n      writeFileSync(join(root, 'freeze.json'), JSON.stringify(expected))\n      truncateSync(join(root, `${name}.json`), 16 * 1024 * 1024 + 1)\n      const run = spawnSync(\n        process.execPath,\n        [\n          'scripts/release/verify-release.mjs',\n          join(root, 'manifest.json'),\n          root,\n          join(root, 'freeze.json'),\n        ],\n        { encoding: 'utf8' },\n      )\n      expect(run.status).toBe(2)\n      expect(run.stdout).toBe('')\n      expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\\n')\n    },\n  )\n  it.each(['manifest', 'freeze'])(\n    'CLI preserves the schema failure contract for %s without printing input data',\n    (name) => {\n      const { root, m, expected } = fixture()\n      const manifest = join(root, 'manifest.json')\n      const freeze = join(root, 'freeze.json')\n      writeFileSync(manifest, JSON.stringify(m))\n      writeFileSync(freeze, JSON.stringify(expected))\n      writeFileSync(join(root, `${name}.json`), JSON.stringify({ sensitive: 'invalid schema' }))\n      const run = spawnSync(\n        process.execPath,\n        ['scripts/release/verify-release.mjs', manifest, root, freeze],\n        { encoding: 'utf8' },\n      )\n      if (name === 'freeze') {\n        expect(run.status).toBe(2)\n        expect(run.stdout).toBe('')\n        expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\\n')\n      } else {\n        expect(run.status).toBe(1)\n        expect(run.stderr).toBe('')\n        expect(JSON.parse(run.stdout)).toEqual({\n          consistent: false,\n          releaseAuthorized: false,\n          mode: 'invalid',\n          issues: ['MANIFEST_SCHEMA'],\n        })\n      }\n    },\n  )\n  it('CLI fails closed for synthetic and malformed inputs without printing contents', () => {\n    const { root, m, expected } = fixture()\n    const path = join(root, 'manifest.json')\n    writeFileSync(path, JSON.stringify(m))\n    const { now: _now, ...pins } = expected\n    void _now\n    writeFileSync(join(root, 'freeze.json'), JSON.stringify(pins))\n    const args = ['scripts/release/verify-release.mjs', path, root, join(root, 'freeze.json')]\n    const run = spawnSync(process.execPath, args, { encoding: 'utf8' })\n    expect(run.status).toBe(1)\n    expect(run.stderr).toBe('')\n    expect(JSON.parse(run.stdout).releaseAuthorized).toBe(false)\n    writeFileSync(path, 'sensitive invalid contents')\n    const bad = spawnSync(process.execPath, args, { encoding: 'utf8' })\n    expect(bad.status).toBe(2)\n    expect(bad.stdout).toBe('')\n    expect(bad.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\\n')\n  })\n  it('CLI reports an actual implementation import failure without a stack or path', () => {\n    const { root } = fixture()\n    const cli = join(root, 'isolated-cli.mjs')\n    writeFileSync(cli, readFileSync('scripts/release/verify-release.mjs'))\n    const run = spawnSync(process.execPath, [cli, 'missing.json', root, 'missing-freeze.json'], {\n      encoding: 'utf8',\n    })\n    expect(run.status).toBe(2)\n    expect(run.stdout).toBe('')\n    expect(run.stderr).toBe('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\\n')\n  })\n  it.each(['24.0.0', '24.2.9', '23.9.0', '25.0.0'])(\n    'CLI rejects simulated unsupported Node %s before loading TypeScript',\n    (version) => {\n      const { root } = fixture()\n      const cli = join(root, 'isolated-cli.mjs')\n      const preload = join(root, 'runtime-version.mjs')\n      writeFileSync(cli, readFileSync('scripts/release/verify-release.mjs'))\n      writeFileSync(\n        preload,\n        `Object.defineProperty(process.versions, 'node', { value: ${JSON.stringify(version)} })`,\n      )\n      const run = spawnSync(\n        process.execPath,\n        ['--import', pathToFileURL(preload).href, cli, 'missing.json', root, 'missing-freeze.json'],\n        { encoding: 'utf8' },\n      )\n      expect(run.status).toBe(2)\n      expect(run.stdout).toBe('')\n      expect(run.stderr).toBe('UNSUPPORTED_NODE_RUNTIME\\n')\n    },\n  )\n  it('CLI preserves an independent runtime warning while failing a real input read', () => {\n    const { root } = fixture()\n    const preload = join(root, 'runtime-warning.mjs')\n    writeFileSync(\n      preload,\n      \"process.emitWarning('T11 controlled diagnostic', { code: 'T11_TEST_WARNING' })\",\n    )\n    const run = spawnSync(\n      process.execPath,\n      [\n        '--import',\n        pathToFileURL(preload).href,\n        'scripts/release/verify-release.mjs',\n        join(root, 'missing.json'),\n        root,\n        join(root, 'missing-freeze.json'),\n      ],\n      { encoding: 'utf8' },\n    )\n    expect(run.status).toBe(2)\n    expect(run.stdout).toBe('')\n    expect(run.stderr).toContain('[T11_TEST_WARNING]')\n    expect(run.stderr).toContain('T11 controlled diagnostic')\n    expect(run.stderr).toContain('MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID\\n')\n    expect(run.stderr).not.toContain('MODULE_TYPELESS_PACKAGE_JSON')\n  })\n})\n"
+        },
+        {
+          "path": "docs/iterations/T11/acceptance.md",
+          "candidate": "02a4738a220b2c6e881f7161ee658c61bf4328dc",
+          "sourceSha256": "2e1a0aeb0b0e7d4dd323c32d6c88bd4803d5704f450960b79e90a561df43e982",
+          "physicalLines": [3, 7],
+          "excerptSha256": "c1f5ec09f7aa00802a79042cc5214a07d84653dca65f042586f99262fa8f8ba3",
+          "excerpt": "## 2026-10-23 F-1 新候选回归\n\n唯一实现由 `verify.ts` 原字节重命名为 `verify.mts`，CLI直指真实扩展名；两专项通过 `.mjs` specifier的TS/Vite扩展替换引用同一 `.mts`，必须留 `tsc --listFiles` 的精确纳入证据。根package/锁/tsconfig/CI不变，不新增package或第二schema。原036及两份指定报告保持冻结；新候选另走完整指定双审。\n\nCLI参数不足/过多、manifest与freeze分别缺失/格式错/16MiB超限、真实实现模块加载失败均须整段stderr严格固定、stdout空、exit2；禁止仅核最后一行。正常synthetic与CLI时钟回归须stderr空、原JSON/exit1语义不变。纯JS入口先拒绝Node24.0–24.2或非24.x（固定 `UNSUPPORTED_NODE_RUNTIME`），支持的Node24.3以上24.x才在try内加载 `.mts`。实际环境与模拟版本guard分开记录；不把version preload模拟当旧Node实机。独立warning preload须保留受控诊断，真实输入失败仍exit2，不能全局吞warning或以文档披露替代固定错误面。\n"
+        }
+      ],
+      "existingVerificationLevels": [
+        "SOURCE_STATIC",
+        "OWNER_HISTORICAL_NODE24_15_CLI_TYPECHECK_FULLCHECK_E2"
+      ],
+      "stillDependentOn": "旧Node仅guard模拟，非旧Node实机；须完整新同02a指定双审与全文处置，不能替代原18。",
+      "nextDisposition": "Independent close/reopen/partial/unverifiable by original severity and actual evidence; no preset Pass"
+    }
+  ],
+  "releaseAuthorized": false
+}

@@ -1,0 +1,80 @@
+{
+  "recordKind": "NEW_PREPARATION_ONLY_NOT_TASK_CREATION",
+  "sourceOldCommon": {
+    "path": "docs/reviews/T11/fresh-review-02a-preparation-20261023/common-review-scope.md",
+    "bytes": 29976,
+    "sha256": "6d00516f4fd71031ad4b1685b408fc8eb25d55f871438544bb63847bfaf76a11"
+  },
+  "semanticScope": "Original13criteria/original107/18+F1 preserved; only current preparation, exact coverage and runtime planning corrected; no product/acceptance mutation",
+  "targetedInstructionReplacements": [
+    {
+      "old": "根当前GUI归T09，T11不CUA；须根给予具体创建窗口后才派发。",
+      "new": "本轮只有准备授权，不GUI、不创建审查任务、不执行setup或产品检查；未来须根分别授予精确setup/普通运行/GUI窗口后才派发。",
+      "count": 1
+    },
+    {
+      "old": "本次准备根明确GUI归T09，T11仅后台准备、不操作CUA、不查询队列。",
+      "new": "本次仅准备，不操作CUA、不查询队列、不轮询或续发任何旧turn。未来根另排具体窗口，计划路径/元数据不是实际任务身份。",
+      "count": 1
+    },
+    {
+      "old": "准备仅静态/离线依赖setup，不创建任务或运行产品。",
+      "new": "当前仅生成准备文档与静态字节派生，不创建roots、缓存、依赖环境或任务，不执行setup、测试、构建或产品。",
+      "count": 1
+    },
+    {
+      "old": "每条命令在自己的精确根；node_modules/.venv/tmp/raw/报告均独立，不采用原开发树或peer可变环境；TMPDIR/TMP/TEMP为自己的.t11-review-runtime/tmp。",
+      "new": "未来每条获准普通命令均在封面本方精确repo根，逐子进程使用本方environment-plan全部literal环境值，不依赖继承或同一export的变量展开。node_modules/.venv物理独立留在repo（既有工具硬路径要求），tmp/cache/raw/metadata/input/report及负例fixture均在repo同级的本方外置runtime，禁止共享peer可变环境。",
+      "count": 1
+    },
+    {
+      "old": "只写自己的.t11-review-runtime/；最终完整报告固定report/review.md。",
+      "new": "未来报告、tmp、raw、metadata只写本方封面列定外置runtime；repo仅允许根另批的必要生成路径，原源码/测试/配置/锁只读。最终报告路径以本方封面为准。旧根grant路径不授权本方新路径。",
+      "count": 1
+    },
+    {
+      "old": "独立完整raw缺口不补造、永久性未知。",
+      "new": "当前独立完整raw缺口UNKNOWN，不补造，也不推断永久不可获得。",
+      "count": 1
+    }
+  ],
+  "guide": {
+    "bytes": 15147,
+    "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+  },
+  "actualSetupExecuted": false,
+  "actualNewRootsCreated": false,
+  "newReviewTasksCreated": false,
+  "GUI": false,
+  "newProductCommands": [],
+  "diagnostics": [
+    {
+      "attempt": "Initial one-off19binding extraction ended at displayed line72 for Mac source physical71",
+      "result": "Assertion before writing finding outputs",
+      "correction": "Newsource binding uses physical source lines, Mac ends71; original source untouched"
+    },
+    {
+      "attempt": "Oldpreparation index.json reference absent",
+      "result": "Used fixed knownf94manifest and actualpreparation-index.json; no invented path identity"
+    },
+    {
+      "attempt": "Preparation directory file inventory included ownuntrackedoldruntime pathnames",
+      "result": "No runtime file contents/native/global read; subsequent reads limited exact fixed files"
+    }
+  ],
+  "authorFormatQualification": {
+    "firstAttempt": {
+      "command": "localprettier --write exactnewpreparation MD/JSON paths",
+      "exitCode": 0,
+      "observedFiles": 0,
+      "meaning": "Existing docs/reviews ignore made this non-proof; no formatpass claimed"
+    },
+    "actualAuthorFormatting": {
+      "command": "localprettier --ignore-path /dev/null --write exactnewpreparation MD/JSON paths",
+      "exitCode": 0,
+      "meaning": "Included newauthored files, didnot change ignoreconfig or oldpinned pages/history"
+    },
+    "productExecution": false,
+    "setupExecuted": false
+  }
+}
