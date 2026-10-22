@@ -1,0 +1,695 @@
+{
+  "kind": "T04-complete-retained-review-backlog-factual-inventory",
+  "observedDate": "2026-10-22 Asia/Shanghai",
+  "authorizationSource": {
+    "controllerThread": "01a154de-843b-7a00-8a80-51ba1c0aebce",
+    "controllerVerifiedHumanMessage": "01a162dc-945e-7700-bd45-ad6302d1712c",
+    "request": "补齐之前未通过ZCode和MiniMax的审查；本线完整积压事实登记，非任务lease或Pass。"
+  },
+  "owner": "T04 / 01a15bcd-fcba-7583-a307-56497cdde347",
+  "goalState": "blocked; not restored or recreated by inventory",
+  "main": {
+    "id": "T04-S1-full",
+    "kind": "registered_full_independent_review_candidate",
+    "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "productHead": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+    "processHeadObserved": "2d5826bc6830a430f95f243faf42f05126400a48",
+    "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query",
+    "branch": "feature/weekly-t04-query",
+    "owner": "T04 / 01a15bcd-fcba-7583-a307-56497cdde347",
+    "components": [
+      "S1-A",
+      "S1-B",
+      "S1-C",
+      "S1-D"
+    ],
+    "scope": "全33产品文件及完整diff，含Python/TS服务/页面/reader/全部测试/fixtures/SSR/文档；不是只UI或stage组合摘要。",
+    "manifest": {
+      "path": "docs/reviews/T04/evidence/service-candidate-554ec89.json",
+      "sha256": "87136a08763e4bc59322ac04a6a8ef400c39994ba159df6d65c0eebccc6cdbc3"
+    },
+    "reviewInputPackage": {
+      "commit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "path": "docs/reviews/T04/round-1/frozen-input-manifest.json",
+      "sha256": "804ce95a0bbded75895fd18d19d7c33981e106abe961581615cc6f6179ba446c"
+    },
+    "fullCheck": {
+      "candidate": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "command": "npm run check",
+      "exitCode": 0,
+      "tsFiles": 18,
+      "tsTests": 666,
+      "pythonTests": 1083,
+      "readerSyntheticTests": 24,
+      "staticSsrChecks": 14,
+      "ssrRawMember": "raw/reader-ssr-first.log",
+      "noNewPackageOrNativeAcceptance": true
+    },
+    "independentReview": {
+      "report": "docs/reviews/T04/internal-review-8.md",
+      "candidate": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "result": "passed_internal_only"
+    },
+    "specifiedReview": {
+      "zcode": {
+        "actualTaskId": null,
+        "actualSettingsReadback": null,
+        "requiredModel": "GLM-5.3",
+        "requiredThinking": "highest/max",
+        "requiredMode": "yolo",
+        "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/zcode-glm53.md",
+        "reportExists": false,
+        "conclusion": "not_started_no_specified_pass"
+      },
+      "minimax": {
+        "actualTaskId": null,
+        "actualSettingsReadback": null,
+        "requiredModel": "M3.1-Flash",
+        "requiredThinking": "xhigh",
+        "requiredMode": "bypassPermissions",
+        "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/minimax-m31flash.md",
+        "reportExists": false,
+        "conclusion": "not_started_no_specified_pass"
+      }
+    },
+    "parentComplete": false,
+    "readiness": "内部完整S1准备就绪；暂无本线指定任务/短lease，未来actual设置/完整终态/报告/意见处置与push/PR/CI/正常合并/远端未完成。",
+    "processEvidence": "37 raw无损归档/R1由root Git blob核验关闭；首次失败保留。",
+    "frozenSourceStatus": "产品代码/tests/fixtures/SSR与554一致，manifest33物理仅status流程字节不同；AGENTS为受保护未暂存操作规则，不入产品提交。"
+  },
+  "implementedComponents": [
+    {
+      "id": "S1-A",
+      "kind": "retained_implementation_or_executable_test_component",
+      "scope": "离线编写/模板/可视条件/RDF项/保存意图",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "processHeadObserved": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "firstProductCandidate": "4c17a38195982164cf01541fd212c385e558ac7e",
+      "lastChangeAmongOwnedPaths": "6d87b6df250996417a2f734bcbd555c78387a1f1",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query",
+      "branch": "feature/weekly-t04-query",
+      "originalAndCurrentOwner": "T04 / 01a15bcd-fcba-7583-a307-56497cdde347",
+      "ownedPaths": [
+        "packages/engine/src/ontolearn_engine/query_service/",
+        "apps/desktop/src/renderer/src/query/draft.ts",
+        "packages/engine/tests/test_query_service_authoring.py",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/fixtures/query/authoring-case.json"
+      ],
+      "currentAcceptance": "Python/TS编译黄金样例和完整内容/RDF序列化边界已覆盖；save_intent仅私有意图，无Store写入/执行。",
+      "fullCheckEvidence": "docs/reviews/T04/evidence/reader-service-verification.json; final554 exit0/TS666/Python1083",
+      "specifiedReview": {
+        "zcode": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "GLM-5.3",
+          "requiredThinking": "highest/max",
+          "requiredMode": "yolo",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/zcode-glm53.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        },
+        "minimax": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "M3.1-Flash",
+          "requiredThinking": "xhigh",
+          "requiredMode": "bypassPermissions",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/minimax-m31flash.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        }
+      },
+      "reviewScheduling": "必须纳入同一个完整554 S1双新审，不能仅单审本组件替代完整范围；没有从积压永久排除。",
+      "oldPassApplicability": "从未有指定模型Pass；历史Codex内审和静态证据仅按其SHA/范围适用，非新指定Pass。",
+      "readinessGap": "本组件无新独立代码阻断；等待root授T04短创建/设置核验lease，实际任务前追加当前桌面政策及如需的新workspace映射；不能抢T06。",
+      "nextIndependentAction": "保持冻结，完整提示与原验证/历史索引已准备；据新实际发现由唯一owner修复后必要验证和双方同版新完整审。"
+    },
+    {
+      "id": "S1-B",
+      "kind": "retained_implementation_or_executable_test_component",
+      "scope": "独立查询页面/结果展示/当前页CSV/保存复用UI",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "processHeadObserved": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "firstProductCandidate": "4c17a38195982164cf01541fd212c385e558ac7e",
+      "lastChangeAmongOwnedPaths": "c3f771b1dbdbee18d53f629bd8c7dd79985b8883",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query",
+      "branch": "feature/weekly-t04-query",
+      "originalAndCurrentOwner": "T04 / 01a15bcd-fcba-7583-a307-56497cdde347",
+      "ownedPaths": [
+        "apps/desktop/src/renderer/src/query/QueryPage.tsx",
+        "apps/desktop/src/renderer/src/query/results.ts",
+        "apps/desktop/src/renderer/src/query/query.css",
+        "tests/unit/t04-query-results.test.ts",
+        "docs/iterations/T04/ssr-probe.mjs"
+      ],
+      "currentAcceptance": "范围/历史/实际原文/表格/null未记录/空方向/当前页CSV/保存ID与代次隔离已做私有边界和静态SSR；无实际App、浏览器下载或持久化。",
+      "fullCheckEvidence": "docs/reviews/T04/evidence/reader-service-verification.json; final554 exit0/TS666/Python1083",
+      "specifiedReview": {
+        "zcode": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "GLM-5.3",
+          "requiredThinking": "highest/max",
+          "requiredMode": "yolo",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/zcode-glm53.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        },
+        "minimax": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "M3.1-Flash",
+          "requiredThinking": "xhigh",
+          "requiredMode": "bypassPermissions",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/minimax-m31flash.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        }
+      },
+      "reviewScheduling": "必须纳入同一个完整554 S1双新审，不能仅单审本组件替代完整范围；没有从积压永久排除。",
+      "oldPassApplicability": "从未有指定模型Pass；历史Codex内审和静态证据仅按其SHA/范围适用，非新指定Pass。",
+      "readinessGap": "本组件无新独立代码阻断；等待root授T04短创建/设置核验lease，实际任务前追加当前桌面政策及如需的新workspace映射；不能抢T06。",
+      "nextIndependentAction": "保持冻结，完整提示与原验证/历史索引已准备；据新实际发现由唯一owner修复后必要验证和双方同版新完整审。"
+    },
+    {
+      "id": "S1-C",
+      "kind": "retained_implementation_or_executable_test_component",
+      "scope": "批准T09固定输入互操作及同数量错义反例",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "processHeadObserved": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "firstProductCandidate": "c4aa5f9c7508d8f439b547ff13f9334906e74744",
+      "lastChangeAmongOwnedPaths": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query",
+      "branch": "feature/weekly-t04-query",
+      "originalAndCurrentOwner": "T04 / 01a15bcd-fcba-7583-a307-56497cdde347",
+      "ownedPaths": [
+        "packages/engine/tests/test_query_service_approved_baseline.py",
+        "tests/fixtures/query/approved-baseline/"
+      ],
+      "currentAcceptance": "固定873输入manifest17项/PRD源已核；原/生成查询独立还原G-base完整A01、Closed空、同数量错误A02；标准RDFLib编写互操作，无真实query.execute/Store/规则/行为。",
+      "fullCheckEvidence": "docs/reviews/T04/evidence/reader-service-verification.json; final554 exit0/TS666/Python1083",
+      "specifiedReview": {
+        "zcode": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "GLM-5.3",
+          "requiredThinking": "highest/max",
+          "requiredMode": "yolo",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/zcode-glm53.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        },
+        "minimax": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "M3.1-Flash",
+          "requiredThinking": "xhigh",
+          "requiredMode": "bypassPermissions",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/minimax-m31flash.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        }
+      },
+      "reviewScheduling": "必须纳入同一个完整554 S1双新审，不能仅单审本组件替代完整范围；没有从积压永久排除。",
+      "oldPassApplicability": "从未有指定模型Pass；历史Codex内审和静态证据仅按其SHA/范围适用，非新指定Pass。",
+      "readinessGap": "本组件无新独立代码阻断；等待root授T04短创建/设置核验lease，实际任务前追加当前桌面政策及如需的新workspace映射；不能抢T06。",
+      "nextIndependentAction": "保持冻结，完整提示与原验证/历史索引已准备；据新实际发现由唯一owner修复后必要验证和双方同版新完整审。"
+    },
+    {
+      "id": "S1-D",
+      "kind": "retained_implementation_or_executable_test_component",
+      "scope": "批准读取bridge客户端/任务取消与分页生命周期",
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "processHeadObserved": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "firstProductCandidate": "c3f771b1dbdbee18d53f629bd8c7dd79985b8883",
+      "lastChangeAmongOwnedPaths": "070b1fa011b0b7d3bdb9af61b07ea748c5b3ffa7",
+      "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query",
+      "branch": "feature/weekly-t04-query",
+      "originalAndCurrentOwner": "T04 / 01a15bcd-fcba-7583-a307-56497cdde347",
+      "ownedPaths": [
+        "apps/desktop/src/renderer/src/query/reader.ts",
+        "tests/unit/t04-query-reader.test.ts",
+        "docs/iterations/T04/reader-integration.md"
+      ],
+      "currentAcceptance": "24项明确合成transport故障测试；复用批准4个命名bridge、TaskView/TaskUpdate，含代次/身份/游标/排序/ACK与真实终态及版本下限/错误形状；无真实IPC或业务执行。",
+      "fullCheckEvidence": "docs/reviews/T04/evidence/reader-service-verification.json; final554 exit0/TS666/Python1083",
+      "specifiedReview": {
+        "zcode": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "GLM-5.3",
+          "requiredThinking": "highest/max",
+          "requiredMode": "yolo",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/zcode-glm53.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        },
+        "minimax": {
+          "actualTaskId": null,
+          "actualSettingsReadback": null,
+          "requiredModel": "M3.1-Flash",
+          "requiredThinking": "xhigh",
+          "requiredMode": "bypassPermissions",
+          "reportPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query/docs/reviews/T04/round-1/minimax-m31flash.md",
+          "reportExists": false,
+          "conclusion": "not_started_no_specified_pass"
+        }
+      },
+      "reviewScheduling": "必须纳入同一个完整554 S1双新审，不能仅单审本组件替代完整范围；没有从积压永久排除。",
+      "oldPassApplicability": "从未有指定模型Pass；历史Codex内审和静态证据仅按其SHA/范围适用，非新指定Pass。",
+      "readinessGap": "本组件无新独立代码阻断；等待root授T04短创建/设置核验lease，实际任务前追加当前桌面政策及如需的新workspace映射；不能抢T06。",
+      "nextIndependentAction": "保持冻结，完整提示与原验证/历史索引已准备；据新实际发现由唯一owner修复后必要验证和双方同版新完整审。"
+    }
+  ],
+  "historicalProductCandidates": [
+    {
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "4c17a38195982164cf01541fd212c385e558ac7e",
+      "internalReport": "docs/reviews/T04/internal-review-1.md",
+      "internalConclusion": "不通过；保存定义身份/其他能力job取消两P2",
+      "specifiedTaskIds": {
+        "zcode": null,
+        "minimax": null
+      },
+      "specifiedSettingsReadback": null,
+      "specifiedReports": null,
+      "specifiedPassEverExisted": false,
+      "formalWithdrawalRecord": "没有独立撤回声明；Git证明后续修复/扩展候选，旧原件保留，不能自造撤回或Pass。",
+      "directSuccessorProductHead": "1cd155518da58d081b35f30d3abf505c059f7ff8",
+      "currentRetainedSuccessor": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "scopeCoverage": "原功能继续保留在当前完整554新双审积压；不把旧错误版本结论改成通过，也不漏掉其功能。",
+      "retainedInternalReportSourceCommit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "specifiedReviewProcessHead": null,
+      "specifiedReviewProcessHeadReason": "从未创建指定任务，因此没有外审process锚；原内审文件只给固定候选head，不能另造原流程SHA。"
+    },
+    {
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "1cd155518da58d081b35f30d3abf505c059f7ff8",
+      "internalReport": "docs/reviews/T04/internal-review-2.md",
+      "internalConclusion": "暂不通过；新建保存不回真实ID",
+      "specifiedTaskIds": {
+        "zcode": null,
+        "minimax": null
+      },
+      "specifiedSettingsReadback": null,
+      "specifiedReports": null,
+      "specifiedPassEverExisted": false,
+      "formalWithdrawalRecord": "没有独立撤回声明；Git证明后续修复/扩展候选，旧原件保留，不能自造撤回或Pass。",
+      "directSuccessorProductHead": "6d87b6df250996417a2f734bcbd555c78387a1f1",
+      "currentRetainedSuccessor": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "scopeCoverage": "原功能继续保留在当前完整554新双审积压；不把旧错误版本结论改成通过，也不漏掉其功能。",
+      "retainedInternalReportSourceCommit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "specifiedReviewProcessHead": null,
+      "specifiedReviewProcessHeadReason": "从未创建指定任务，因此没有外审process锚；原内审文件只给固定候选head，不能另造原流程SHA。"
+    },
+    {
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "6d87b6df250996417a2f734bcbd555c78387a1f1",
+      "internalReport": "docs/reviews/T04/internal-review-3.md",
+      "internalConclusion": "内部通过；后续c4新增固定输入/测试，旧通过不覆盖新完整范围",
+      "specifiedTaskIds": {
+        "zcode": null,
+        "minimax": null
+      },
+      "specifiedSettingsReadback": null,
+      "specifiedReports": null,
+      "specifiedPassEverExisted": false,
+      "formalWithdrawalRecord": "没有独立撤回声明；Git证明后续修复/扩展候选，旧原件保留，不能自造撤回或Pass。",
+      "directSuccessorProductHead": "c4aa5f9c7508d8f439b547ff13f9334906e74744",
+      "currentRetainedSuccessor": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "scopeCoverage": "原功能继续保留在当前完整554新双审积压；不把旧错误版本结论改成通过，也不漏掉其功能。",
+      "retainedInternalReportSourceCommit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "specifiedReviewProcessHead": null,
+      "specifiedReviewProcessHeadReason": "从未创建指定任务，因此没有外审process锚；原内审文件只给固定候选head，不能另造原流程SHA。"
+    },
+    {
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "c4aa5f9c7508d8f439b547ff13f9334906e74744",
+      "internalReport": "docs/reviews/T04/internal-review-4.md",
+      "internalConclusion": "内部通过；后续c3增加reader与UI/测试，旧通过不覆盖新实现",
+      "specifiedTaskIds": {
+        "zcode": null,
+        "minimax": null
+      },
+      "specifiedSettingsReadback": null,
+      "specifiedReports": null,
+      "specifiedPassEverExisted": false,
+      "formalWithdrawalRecord": "没有独立撤回声明；Git证明后续修复/扩展候选，旧原件保留，不能自造撤回或Pass。",
+      "directSuccessorProductHead": "c3f771b1dbdbee18d53f629bd8c7dd79985b8883",
+      "currentRetainedSuccessor": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "scopeCoverage": "原功能继续保留在当前完整554新双审积压；不把旧错误版本结论改成通过，也不漏掉其功能。",
+      "retainedInternalReportSourceCommit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "specifiedReviewProcessHead": null,
+      "specifiedReviewProcessHeadReason": "从未创建指定任务，因此没有外审process锚；原内审文件只给固定候选head，不能另造原流程SHA。"
+    },
+    {
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "c3f771b1dbdbee18d53f629bd8c7dd79985b8883",
+      "internalReport": "docs/reviews/T04/internal-review-5.md",
+      "internalConclusion": "不通过；取消锁/跨空页锚/ACK下限3P2与原文trim P3",
+      "specifiedTaskIds": {
+        "zcode": null,
+        "minimax": null
+      },
+      "specifiedSettingsReadback": null,
+      "specifiedReports": null,
+      "specifiedPassEverExisted": false,
+      "formalWithdrawalRecord": "没有独立撤回声明；Git证明后续修复/扩展候选，旧原件保留，不能自造撤回或Pass。",
+      "directSuccessorProductHead": "f68d3c5560516d8401ace55b7d3736242eea903a",
+      "currentRetainedSuccessor": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "scopeCoverage": "原功能继续保留在当前完整554新双审积压；不把旧错误版本结论改成通过，也不漏掉其功能。",
+      "retainedInternalReportSourceCommit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "specifiedReviewProcessHead": null,
+      "specifiedReviewProcessHeadReason": "从未创建指定任务，因此没有外审process锚；原内审文件只给固定候选head，不能另造原流程SHA。"
+    },
+    {
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "f68d3c5560516d8401ace55b7d3736242eea903a",
+      "internalReport": "docs/reviews/T04/internal-review-6.md",
+      "internalConclusion": "暂不通过；旧项关闭，INVALID_REQUEST参数形状新P2",
+      "specifiedTaskIds": {
+        "zcode": null,
+        "minimax": null
+      },
+      "specifiedSettingsReadback": null,
+      "specifiedReports": null,
+      "specifiedPassEverExisted": false,
+      "formalWithdrawalRecord": "没有独立撤回声明；Git证明后续修复/扩展候选，旧原件保留，不能自造撤回或Pass。",
+      "directSuccessorProductHead": "070b1fa011b0b7d3bdb9af61b07ea748c5b3ffa7",
+      "currentRetainedSuccessor": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "scopeCoverage": "原功能继续保留在当前完整554新双审积压；不把旧错误版本结论改成通过，也不漏掉其功能。",
+      "retainedInternalReportSourceCommit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "specifiedReviewProcessHead": null,
+      "specifiedReviewProcessHeadReason": "从未创建指定任务，因此没有外审process锚；原内审文件只给固定候选head，不能另造原流程SHA。"
+    },
+    {
+      "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+      "productHead": "070b1fa011b0b7d3bdb9af61b07ea748c5b3ffa7",
+      "internalReport": "docs/reviews/T04/internal-review-7.md",
+      "internalConclusion": "内部通过；后续554新增同数量错义测试，旧结论不覆盖新增范围",
+      "specifiedTaskIds": {
+        "zcode": null,
+        "minimax": null
+      },
+      "specifiedSettingsReadback": null,
+      "specifiedReports": null,
+      "specifiedPassEverExisted": false,
+      "formalWithdrawalRecord": "没有独立撤回声明；Git证明后续修复/扩展候选，旧原件保留，不能自造撤回或Pass。",
+      "directSuccessorProductHead": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "currentRetainedSuccessor": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "scopeCoverage": "原功能继续保留在当前完整554新双审积压；不把旧错误版本结论改成通过，也不漏掉其功能。",
+      "retainedInternalReportSourceCommit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "specifiedReviewProcessHead": null,
+      "specifiedReviewProcessHeadReason": "从未创建指定任务，因此没有外审process锚；原内审文件只给固定候选head，不能另造原流程SHA。"
+    }
+  ],
+  "allMainBranchCommitsSinceBase": [
+    {
+      "commit": "4c17a38195982164cf01541fd212c385e558ac7e",
+      "subject": "feat: add private T04 query authoring and result page",
+      "processOnly": false,
+      "changedPaths": [
+        "apps/desktop/src/renderer/src/query/QueryPage.tsx",
+        "apps/desktop/src/renderer/src/query/draft.ts",
+        "apps/desktop/src/renderer/src/query/query.css",
+        "apps/desktop/src/renderer/src/query/results.ts",
+        "docs/iterations/T04/integration-handoff.md",
+        "docs/iterations/T04/ssr-probe.mjs",
+        "docs/reviews/T04/internal-candidate.md",
+        "docs/reviews/T04/status.md",
+        "packages/engine/src/ontolearn_engine/query_service/__init__.py",
+        "packages/engine/src/ontolearn_engine/query_service/drafts.py",
+        "packages/engine/tests/test_query_service_authoring.py",
+        "tests/fixtures/query/authoring-case.json",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/unit/t04-query-results.test.ts"
+      ]
+    },
+    {
+      "commit": "1cd155518da58d081b35f30d3abf505c059f7ff8",
+      "subject": "fix: preserve query identity and reject unrelated jobs",
+      "processOnly": false,
+      "changedPaths": [
+        "apps/desktop/src/renderer/src/query/QueryPage.tsx",
+        "apps/desktop/src/renderer/src/query/draft.ts",
+        "apps/desktop/src/renderer/src/query/results.ts",
+        "docs/iterations/T04/acceptance.md",
+        "docs/iterations/T04/integration-handoff.md",
+        "docs/iterations/T04/ssr-probe.mjs",
+        "docs/reviews/T04/evidence/verification-summary.json",
+        "docs/reviews/T04/internal-review-1.md",
+        "docs/reviews/T04/status.md",
+        "tests/unit/t04-query-authoring.test.ts",
+        "tests/unit/t04-query-results.test.ts"
+      ]
+    },
+    {
+      "commit": "6d87b6df250996417a2f734bcbd555c78387a1f1",
+      "subject": "fix: bind newly saved queries to persisted identity",
+      "processOnly": false,
+      "changedPaths": [
+        "apps/desktop/src/renderer/src/query/QueryPage.tsx",
+        "apps/desktop/src/renderer/src/query/draft.ts",
+        "docs/iterations/T04/integration-handoff.md",
+        "docs/reviews/T04/internal-review-2.md",
+        "docs/reviews/T04/status.md"
+      ]
+    },
+    {
+      "commit": "c4aa5f9c7508d8f439b547ff13f9334906e74744",
+      "subject": "test: verify query authoring against approved fixed baseline",
+      "processOnly": false,
+      "changedPaths": [
+        "docs/iterations/T04/acceptance.md",
+        "docs/iterations/T04/integration-handoff.md",
+        "docs/reviews/T04/internal-review-3.md",
+        "packages/engine/tests/test_query_service_approved_baseline.py",
+        "tests/fixtures/query/approved-baseline/G-base.json",
+        "tests/fixtures/query/approved-baseline/conventions.json",
+        "tests/fixtures/query/approved-baseline/manifest.json",
+        "tests/fixtures/query/approved-baseline/provenance.json",
+        "tests/fixtures/query/approved-baseline/unclosed-high.rq"
+      ]
+    },
+    {
+      "commit": "99b8ab913d2cb3176d36b33fed4e75262525bf1f",
+      "subject": "docs: record T04 validated candidate and integration gates",
+      "processOnly": true,
+      "changedPaths": [
+        "docs/reviews/T04/evidence/final-verification.json",
+        "docs/reviews/T04/internal-review-4.md",
+        "docs/reviews/T04/status.md"
+      ]
+    },
+    {
+      "commit": "c3f771b1dbdbee18d53f629bd8c7dd79985b8883",
+      "subject": "feat: adapt approved query reads with lifecycle guards",
+      "processOnly": false,
+      "changedPaths": [
+        "apps/desktop/src/renderer/src/query/QueryPage.tsx",
+        "apps/desktop/src/renderer/src/query/reader.ts",
+        "docs/iterations/T04/integration-handoff.md",
+        "docs/iterations/T04/reader-integration.md",
+        "docs/iterations/T04/ssr-probe.mjs",
+        "docs/reviews/T04/status.md",
+        "tests/unit/t04-query-reader.test.ts"
+      ]
+    },
+    {
+      "commit": "f68d3c5560516d8401ace55b7d3736242eea903a",
+      "subject": "fix: retain query pagination and cancel acknowledgement bounds",
+      "processOnly": false,
+      "changedPaths": [
+        "apps/desktop/src/renderer/src/query/reader.ts",
+        "docs/iterations/T04/reader-integration.md",
+        "docs/reviews/T04/internal-review-5.md",
+        "docs/reviews/T04/status.md",
+        "tests/unit/t04-query-reader.test.ts"
+      ]
+    },
+    {
+      "commit": "070b1fa011b0b7d3bdb9af61b07ea748c5b3ffa7",
+      "subject": "fix: preserve canonical query read error classification",
+      "processOnly": false,
+      "changedPaths": [
+        "apps/desktop/src/renderer/src/query/reader.ts",
+        "docs/iterations/T04/reader-integration.md",
+        "docs/reviews/T04/internal-review-6.md",
+        "tests/unit/t04-query-reader.test.ts"
+      ]
+    },
+    {
+      "commit": "554ec89844ae5e8efcc4ac0d4f7e21d955a4b6a6",
+      "subject": "test: reject equal-count query semantic counterexample",
+      "processOnly": false,
+      "changedPaths": [
+        "docs/reviews/T04/internal-review-7.md",
+        "packages/engine/tests/test_query_service_approved_baseline.py"
+      ]
+    },
+    {
+      "commit": "19ef25259e6304949cef4a1993b006de11fb885b",
+      "subject": "docs: freeze T04-S1 readiness evidence for controller review",
+      "processOnly": true,
+      "changedPaths": [
+        "docs/iterations/T04/service-stage.md",
+        "docs/reviews/T04/evidence/reader-service-verification.json",
+        "docs/reviews/T04/evidence/service-candidate-554ec89.json",
+        "docs/reviews/T04/internal-review-8.md",
+        "docs/reviews/T04/status.md"
+      ]
+    },
+    {
+      "commit": "ae86f294a19befc94247733ee7ea186b5fab3d6d",
+      "subject": "docs(t04): preserve audited raw verification logs losslessly",
+      "processOnly": true,
+      "changedPaths": [
+        "docs/reviews/T04/evidence/raw-logs-554ec89.index.json",
+        "docs/reviews/T04/evidence/raw-logs-554ec89.tar.gz",
+        "docs/reviews/T04/evidence/raw-logs-recovery.md",
+        "docs/reviews/T04/status.md"
+      ]
+    },
+    {
+      "commit": "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "subject": "docs(t04): record controller raw-evidence closure and review availability",
+      "processOnly": true,
+      "changedPaths": [
+        "docs/reviews/T04/status.md"
+      ]
+    },
+    {
+      "commit": "2d5826bc6830a430f95f243faf42f05126400a48",
+      "subject": "docs(t04): freeze full S1 round-one external review inputs",
+      "processOnly": true,
+      "changedPaths": [
+        "docs/reviews/T04/round-1/background-route-snapshot.md",
+        "docs/reviews/T04/round-1/frozen-input-manifest.json",
+        "docs/reviews/T04/round-1/minimax-m31flash-input.md",
+        "docs/reviews/T04/round-1/operating-policy-snapshot.md",
+        "docs/reviews/T04/round-1/preparation-audit.md",
+        "docs/reviews/T04/round-1/protected-guide-snapshot.md",
+        "docs/reviews/T04/round-1/review-inputs.md",
+        "docs/reviews/T04/round-1/verification-and-history-index.md",
+        "docs/reviews/T04/round-1/zcode-glm53-input.md"
+      ]
+    }
+  ],
+  "nonImplementationStage": {
+    "id": "T04-next-integration-discussion",
+    "kind": "proposal_and_sample_shape_only_no_implementation",
+    "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "productHead": null,
+    "documentCommit": "82630f50def6aac2a5ba60470757791dd39053db",
+    "processHead": "82630f50def6aac2a5ba60470757791dd39053db",
+    "worktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-integration-next",
+    "branch": "feature/weekly-t04-integration-next",
+    "owner": "T04 / 01a15bcd-fcba-7583-a307-56497cdde347",
+    "ownedPaths": [
+      "docs/iterations/T04/next-integration/",
+      "docs/reviews/T04/next-integration/"
+    ],
+    "actualFiles": [
+      "docs/iterations/T04/next-integration/owner-discussion-cases.json",
+      "docs/iterations/T04/next-integration/owner-inputs.md",
+      "docs/reviews/T04/next-integration/independent-review.md",
+      "docs/reviews/T04/next-integration/sample-shape-check.json",
+      "docs/reviews/T04/next-integration/status.md"
+    ],
+    "scope": "16个保存base/CAS/receipt/响应丢失和真实presentation/ASK/RDF项讨论案例，不含新runtime/schema/writer/执行器。",
+    "validation": "文档格式/16唯一case ID/4个批准错误schema形状校验，仅结构验证，不是业务运行。",
+    "independentReview": {
+      "report": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T04-query-integration-next/docs/reviews/T04/next-integration/independent-review.md",
+      "result": "passed_document_review_only"
+    },
+    "specifiedReview": {
+      "zcodeTaskId": null,
+      "minimaxTaskId": null,
+      "settingsReadback": null,
+      "reports": null,
+      "conclusion": "非实现方案，尚无指定Pass；若root决定单独审方案可后续调度，不能假充实现通过。"
+    },
+    "formalWithdrawalRecord": null,
+    "successor": "批准owner统一接口后的真实适配候选尚未创建，不杜撰实现SHA。",
+    "readinessGap": "T01唯一canonical/Store/主进程及实际执行owner的已批准同版load-base/CAS/receipt/presentation来源；不消费其WIP。",
+    "nextIndependentAction": "保留16例作精确联验输入；收到批准字段/实现后只在T04私有路径适配，按新实际改动验证和双方新完整审。"
+  },
+  "unimplementedOrUnverifiedParentWork": [
+    {
+      "scope": "真实query.execute及项目内只读/禁止外联、完整Q-01/02与O-01业务语义、真实分页/游标/取消/历史输入",
+      "implementationHead": null,
+      "specifiedTaskIds": null,
+      "state": "未接入/未实现或未实测，不是漏登记的已完成技术实现；需形成真实候选后追加双审积压，未永久排除。"
+    },
+    {
+      "scope": "T01保存/preview/confirm/commit/CAS/response-loss对账/恢复/撤销/过期",
+      "implementationHead": null,
+      "specifiedTaskIds": null,
+      "state": "未接入/未实现或未实测，不是漏登记的已完成技术实现；需形成真实候选后追加双审积压，未永久排除。"
+    },
+    {
+      "scope": "T08真实自然语言草稿与工具闭环",
+      "implementationHead": null,
+      "specifiedTaskIds": null,
+      "state": "未接入/未实现或未实测，不是漏登记的已完成技术实现；需形成真实候选后追加双审积压，未永久排除。"
+    },
+    {
+      "scope": "ASK/RDF项/实际执行presentation来源与适用局部关系图",
+      "implementationHead": null,
+      "specifiedTaskIds": null,
+      "state": "未接入/未实现或未实测，不是漏登记的已完成技术实现；需形成真实候选后追加双审积压，未永久排除。"
+    },
+    {
+      "scope": "App/preload实际接线、T10跨设备项目包/复用、Windows/macOS、真人与父P0/跨模块/发布",
+      "implementationHead": null,
+      "specifiedTaskIds": null,
+      "state": "未接入/未实现或未实测，不是漏登记的已完成技术实现；需形成真实候选后追加双审积压，未永久排除。"
+    }
+  ],
+  "pureEvidenceAndPromptPreparation": {
+    "kind": "process_only_not_product_implementation",
+    "commits": [
+      "99b8ab913d2cb3176d36b33fed4e75262525bf1f",
+      "19ef25259e6304949cef4a1993b006de11fb885b",
+      "ae86f294a19befc94247733ee7ea186b5fab3d6d",
+      "e761d2962aa18c83885dde4cc0dcd15fd9aba322",
+      "2d5826bc6830a430f95f243faf42f05126400a48"
+    ],
+    "preparationReview": "docs/reviews/T04/round-1/preparation-audit.md; P2/P3 fixed and independent documentation pass, not externalPass",
+    "specifiedReviewTasksCreated": false
+  },
+  "inventoryCoverage": {
+    "localT04Branches": [
+      {
+        "branch": "feature/weekly-t04-query",
+        "head": "2d5826bc6830a430f95f243faf42f05126400a48"
+      },
+      {
+        "branch": "feature/weekly-t04-integration-next",
+        "head": "82630f50def6aac2a5ba60470757791dd39053db"
+      }
+    ],
+    "otherRetainedT04ImplementationBranchFound": false,
+    "gitHistoryDoesNotProveExternalProviderState": "Task absence also based on actual controller no-T04-lease notice and absence of own reports, not git alone."
+  },
+  "currentOperationalPolicy": "静默限制已撤回；已授权任务可直接CUA，桌面只创建/设置核验短lease内部协调，不占整个后台推理时长；T06两任务保留，T04不抢建/不以CLI登录或用户时段为前提。旧冻结提示不改，实际新任务须附当前政策独立addendum及真实workspace映射。",
+  "remainingGates": [
+    "whole registered S1 two new independent specified reviews",
+    "actual settings and task IDs/terminal reports/all dispositions",
+    "necessary acceptance then push/attached PR/actual CI/normal merge/remote verification",
+    "all original FR-400..404 and parent 57P0-related C/D/G/11..12/cross-module/platform/user/release gates"
+  ],
+  "noChangedProductTestsConfigDependenciesOrAcceptance": true,
+  "inventoryIndependentAudit": {
+    "agent": "/root/t04_private_review",
+    "result": "passed factual documentation audit",
+    "findings": [],
+    "verified": "13 existing commits = 8 product/test + 5 process; 7 predecessor candidates/internal1..7/current554; all4 components in full scope; other82630 only5 docs; all parent gaps/owners/frozen inputs retained",
+    "boundary": "read-only documents/git; platform task/settings not independently queried, absence relies on actual controller notice plus no own report files; no product/tests/external review/Goal restoration"
+  }
+}
