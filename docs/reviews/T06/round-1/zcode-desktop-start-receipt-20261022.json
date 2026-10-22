@@ -57,5 +57,37 @@
   },
   "minimaxOriginalTaskPreserved": true,
   "reportExists": false,
-  "externalReviewPass": false
+  "externalReviewPass": false,
+  "actualTurnStarted": {
+    "timestamp": "2026-10-22T08:56:55.629Z",
+    "sessionId": "session_863fdf5a03a40f74ea7b4b7289b097d1",
+    "traceId": "2047a61c-9e33-47e7-bf2e-f50089c539c9",
+    "queryId": "01a162d3-e03d-7cca-895d-077830332739",
+    "turnNumber": 0,
+    "inputLength": 8196
+  },
+  "actualModelRequest": {
+    "timestamp": "2026-10-22T08:59:03.031Z",
+    "event": "model.network.completed",
+    "sessionId": "session_863fdf5a03a40f74ea7b4b7289b097d1",
+    "traceId": "2047a61c-9e33-47e7-bf2e-f50089c539c9",
+    "queryId": "01a162d3-e03d-7cca-895d-077830332739",
+    "providerId": "account:bigmodel-individual-coding-plan",
+    "modelId": "GLM-5.3",
+    "iteration": 0,
+    "finishReason": "tool-calls"
+  },
+  "inputLengthExplained": {
+    "bodyWithFinalNewline": 8197,
+    "trimmedByApp": 8196,
+    "loggedTurnInputLength": 8196
+  },
+  "policyReadback": {
+    "at": "2026-10-22T09:05:13.753Z",
+    "files": {
+      "desktop-operation-policy-20261022.md": "e790228a07128bf38bce26b5b8c28121126ce2d2fe59867a569e4fe70008765b",
+      "developer-common-instructions.md": "6412e08e53606c073170764f1b56078772210ddf8b75cf70983e67b657f0c45a"
+    },
+    "receivedAndAcknowledgedToRoot": true
+  }
 }
