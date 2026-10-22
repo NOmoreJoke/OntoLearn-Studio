@@ -1,0 +1,1093 @@
+{
+  "kind": "independent finite document assertions; not JSONSchema engine",
+  "candidate": "76c774ec7612998cdcb1079deff5c988c15053e6",
+  "manifestPayloads": 28,
+  "candidatePathSet": 29,
+  "allCurrentGitSHA": true,
+  "all917ResponsibilityPointersExactAndComplete": true,
+  "frozenAdoption12AndFourWriters": true,
+  "threeSyntheticShapes": true,
+  "failureEvidenceRepresentationCounterexamples": [
+    {
+      "id": "precondition-no-header-no-loader",
+      "syntheticOnly": true,
+      "changes": {
+        "header": null,
+        "terminal": null,
+        "actualExitCode": 2,
+        "collectionComplete": false,
+        "fullSuiteCollectionComplete": false,
+        "moduleLoaders": [],
+        "distributionModuleLoader": null,
+        "functionCodes": [],
+        "dynamicChecker": null,
+        "python": null,
+        "declaredCompositionRef": null,
+        "provenanceSha256": null,
+        "packageCodeBoundToSource": null
+      },
+      "candidateShapeRejects": [
+        "/runs/0/dynamicChecker:type",
+        "/runs/0/distributionModuleLoader:type",
+        "/runs/0/declaredCompositionRef:type",
+        "/runs/0/header:type",
+        "/runs/0/python:type",
+        "/runs/0/terminal:type",
+        "/runs/0/moduleLoaders:array-length",
+        "/runs/0/provenanceSha256:type",
+        "/runs/0/functionCodes:array-length",
+        "/runs/0/packageCodeBoundToSource:const"
+      ]
+    },
+    {
+      "id": "hardkill-partial-raw",
+      "syntheticOnly": true,
+      "changes": {
+        "header": null,
+        "terminal": null,
+        "actualExitCode": null,
+        "signal": "SIGKILL",
+        "collectionComplete": false,
+        "fullSuiteCollectionComplete": false,
+        "moduleLoaders": []
+      },
+      "candidateShapeRejects": [
+        "/runs/0/header:type",
+        "/runs/0/terminal:type",
+        "/runs/0/moduleLoaders:array-length"
+      ]
+    },
+    {
+      "id": "header-then-partial-loaders",
+      "syntheticOnly": true,
+      "changes": {
+        "terminal": null,
+        "actualExitCode": 1,
+        "collectionComplete": false,
+        "fullSuiteCollectionComplete": false,
+        "moduleLoaders": [
+          {
+            "bindingId": "canonical:ontolearn_engine",
+            "canonicalName": "ontolearn_engine",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/0.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          }
+        ]
+      },
+      "candidateShapeRejects": [
+        "/runs/0/terminal:type",
+        "/runs/0/moduleLoaders:array-length"
+      ]
+    },
+    {
+      "id": "observed-non-CodeType",
+      "syntheticOnly": true,
+      "changes": {
+        "actualExitCode": 2,
+        "collectionComplete": false,
+        "fullSuiteCollectionComplete": false,
+        "moduleLoaders": [
+          {
+            "bindingId": "canonical:ontolearn_engine",
+            "canonicalName": "ontolearn_engine",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine",
+            "origin": "synthetic",
+            "exactCodeType": false,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/0.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality",
+            "canonicalName": "ontolearn_engine.quality",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/1.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_calendar",
+            "canonicalName": "ontolearn_engine.quality.rule_calendar",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_calendar",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/2.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_comparator",
+            "canonicalName": "ontolearn_engine.quality.rule_comparator",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_comparator",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/3.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_firing",
+            "canonicalName": "ontolearn_engine.quality.rule_firing",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_firing",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/4.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_numbers",
+            "canonicalName": "ontolearn_engine.quality.rule_numbers",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_numbers",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/5.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_profile",
+            "canonicalName": "ontolearn_engine.quality.rule_profile",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_profile",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/6.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_revalidation",
+            "canonicalName": "ontolearn_engine.quality.rule_revalidation",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_revalidation",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/7.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_terms",
+            "canonicalName": "ontolearn_engine.quality.rule_terms",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_terms",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/8.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.resources",
+            "canonicalName": "ontolearn_engine.resources",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.resources",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/9.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic",
+            "canonicalName": "ontolearn_engine.semantic",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/10.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_error_adapter",
+            "canonicalName": "ontolearn_engine.semantic_error_adapter",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_error_adapter",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/11.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_execution",
+            "canonicalName": "ontolearn_engine.semantic_execution",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_execution",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/12.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_offline",
+            "canonicalName": "ontolearn_engine.semantic_offline",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_offline",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/13.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_directsteps",
+            "canonicalName": "ontolearn_engine.semantic_profile_directsteps",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_directsteps",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/14.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_input",
+            "canonicalName": "ontolearn_engine.semantic_profile_input",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_input",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/15.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_production",
+            "canonicalName": "ontolearn_engine.semantic_profile_production",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_production",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/16.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_restore",
+            "canonicalName": "ontolearn_engine.semantic_profile_restore",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_restore",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/17.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_restore_budget",
+            "canonicalName": "ontolearn_engine.semantic_profile_restore_budget",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_restore_budget",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/18.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_query",
+            "canonicalName": "ontolearn_engine.semantic_query",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_query",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/19.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_scopes",
+            "canonicalName": "ontolearn_engine.semantic_scopes",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_scopes",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/20.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_turtle",
+            "canonicalName": "ontolearn_engine.semantic_turtle",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_turtle",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/21.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_source_package_probe",
+            "canonicalName": "ontolearn_engine.semantic_source_package_probe",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_source_package_probe",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/22.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          }
+        ]
+      },
+      "candidateShapeRejects": [
+        "/runs/0/moduleLoaders/0/exactCodeType:const"
+      ]
+    },
+    {
+      "id": "observed-alias-mismatch",
+      "syntheticOnly": true,
+      "changes": {
+        "actualExitCode": 2,
+        "collectionComplete": false,
+        "fullSuiteCollectionComplete": false,
+        "moduleLoaders": [
+          {
+            "bindingId": "canonical:ontolearn_engine",
+            "canonicalName": "ontolearn_engine",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": false,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/0.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality",
+            "canonicalName": "ontolearn_engine.quality",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/1.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_calendar",
+            "canonicalName": "ontolearn_engine.quality.rule_calendar",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_calendar",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/2.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_comparator",
+            "canonicalName": "ontolearn_engine.quality.rule_comparator",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_comparator",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/3.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_firing",
+            "canonicalName": "ontolearn_engine.quality.rule_firing",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_firing",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/4.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_numbers",
+            "canonicalName": "ontolearn_engine.quality.rule_numbers",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_numbers",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/5.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_profile",
+            "canonicalName": "ontolearn_engine.quality.rule_profile",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_profile",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/6.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_revalidation",
+            "canonicalName": "ontolearn_engine.quality.rule_revalidation",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_revalidation",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/7.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.quality.rule_terms",
+            "canonicalName": "ontolearn_engine.quality.rule_terms",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.quality.rule_terms",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/8.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.resources",
+            "canonicalName": "ontolearn_engine.resources",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.resources",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/9.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic",
+            "canonicalName": "ontolearn_engine.semantic",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/10.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_error_adapter",
+            "canonicalName": "ontolearn_engine.semantic_error_adapter",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_error_adapter",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/11.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_execution",
+            "canonicalName": "ontolearn_engine.semantic_execution",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_execution",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/12.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_offline",
+            "canonicalName": "ontolearn_engine.semantic_offline",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_offline",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/13.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_directsteps",
+            "canonicalName": "ontolearn_engine.semantic_profile_directsteps",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_directsteps",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/14.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_input",
+            "canonicalName": "ontolearn_engine.semantic_profile_input",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_input",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/15.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_production",
+            "canonicalName": "ontolearn_engine.semantic_profile_production",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_production",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/16.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_restore",
+            "canonicalName": "ontolearn_engine.semantic_profile_restore",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_restore",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/17.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_profile_restore_budget",
+            "canonicalName": "ontolearn_engine.semantic_profile_restore_budget",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_profile_restore_budget",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/18.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_query",
+            "canonicalName": "ontolearn_engine.semantic_query",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_query",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/19.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_scopes",
+            "canonicalName": "ontolearn_engine.semantic_scopes",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_scopes",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/20.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_turtle",
+            "canonicalName": "ontolearn_engine.semantic_turtle",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_turtle",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/21.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          {
+            "bindingId": "canonical:ontolearn_engine.semantic_source_package_probe",
+            "canonicalName": "ontolearn_engine.semantic_source_package_probe",
+            "loaderClass": "synthetic",
+            "specName": "ontolearn_engine.semantic_source_package_probe",
+            "origin": "synthetic",
+            "exactCodeType": true,
+            "singleCanonicalObject": true,
+            "runtimeLoaderCode": {
+              "algorithm": "i05-code-object-marshal-filename-normalized/1",
+              "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "pythonCacheTag": "synthetic-cpython-312",
+              "domain": "actual-loader-code; not source bytes or a build approval"
+            },
+            "freshColdWarmEvidence": {
+              "root": "approved-witness",
+              "path": "code/22.json",
+              "bytes": 1,
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          }
+        ]
+      },
+      "candidateShapeRejects": [
+        "/runs/0/moduleLoaders/0/singleCanonicalObject:const"
+      ]
+    }
+  ],
+  "actualProductBuildLoaderRun": false
+}

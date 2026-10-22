@@ -1,0 +1,93 @@
+{
+  "kind": "independent finite document assertions; not JSONSchema engine",
+  "candidate": "76c774ec7612998cdcb1079deff5c988c15053e6",
+  "manifestPayloads": 28,
+  "candidatePathSet": 29,
+  "allCurrentGitSHA": true,
+  "all917ResponsibilityPointersExactAndComplete": true,
+  "frozenAdoption12AndFourWriters": true,
+  "threeSyntheticShapes": true,
+  "actualProductBuildLoaderRun": false,
+  "counterexamples": [
+    {
+      "id": "precondition-no-header-no-loader",
+      "shapeErrors": [
+        "/runs/0/dynamicChecker:type",
+        "/runs/0/distributionModuleLoader:type",
+        "/runs/0/declaredCompositionRef:type",
+        "/runs/0/header:type",
+        "/runs/0/python:type",
+        "/runs/0/terminal:type",
+        "/runs/0/moduleLoaders:array-length",
+        "/runs/0/provenanceSha256:type",
+        "/runs/0/functionCodes:array-length",
+        "/runs/0/packageCodeBoundToSource:const"
+      ],
+      "changedFields": [
+        "header",
+        "terminal",
+        "actualExitCode",
+        "collectionComplete",
+        "fullSuiteCollectionComplete",
+        "moduleLoaders",
+        "distributionModuleLoader",
+        "functionCodes",
+        "dynamicChecker",
+        "python",
+        "declaredCompositionRef",
+        "provenanceSha256",
+        "packageCodeBoundToSource"
+      ]
+    },
+    {
+      "id": "hardkill-partial-raw",
+      "shapeErrors": [
+        "/runs/0/header:type",
+        "/runs/0/terminal:type",
+        "/runs/0/moduleLoaders:array-length"
+      ],
+      "changedFields": [
+        "header",
+        "terminal",
+        "actualExitCode",
+        "signal",
+        "collectionComplete",
+        "fullSuiteCollectionComplete",
+        "moduleLoaders"
+      ]
+    },
+    {
+      "id": "header-then-partial-loaders",
+      "shapeErrors": ["/runs/0/terminal:type", "/runs/0/moduleLoaders:array-length"],
+      "changedFields": [
+        "terminal",
+        "actualExitCode",
+        "collectionComplete",
+        "fullSuiteCollectionComplete",
+        "moduleLoaders"
+      ]
+    },
+    {
+      "id": "observed-non-CodeType",
+      "shapeErrors": ["/runs/0/moduleLoaders/0/exactCodeType:const"],
+      "changedFields": [
+        "actualExitCode",
+        "collectionComplete",
+        "fullSuiteCollectionComplete",
+        "moduleLoaders"
+      ]
+    },
+    {
+      "id": "observed-alias-mismatch",
+      "shapeErrors": ["/runs/0/moduleLoaders/0/singleCanonicalObject:const"],
+      "changedFields": [
+        "actualExitCode",
+        "collectionComplete",
+        "fullSuiteCollectionComplete",
+        "moduleLoaders"
+      ]
+    }
+  ],
+  "newSyntheticRecordRawCSVRowsChecked": 36,
+  "allNewCheckStderrEmpty": true
+}
