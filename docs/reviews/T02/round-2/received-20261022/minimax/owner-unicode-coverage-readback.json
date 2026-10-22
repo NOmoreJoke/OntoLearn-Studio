@@ -1,0 +1,41 @@
+{
+  "kind": "owner static report-coverage clarification, not product rerun or rewritten model report",
+  "scriptPath": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-c5-minimax-review-e5ad54e/test-results/t02-c5-r2-review/probe_unicode_independent.py",
+  "script": {
+    "bytes": 12325,
+    "sha256": "19a1682ba9ae59564dd55a3a15d215cd98c33c69be9a09ec690bac1f7cc57f42"
+  },
+  "actualDistinctInjectionPoints": 19,
+  "full2048CodepointPoints": [
+    "base.project",
+    "base.entity.iri",
+    "base.entity.labels.text",
+    "base.entity.synonyms",
+    "base.entity.examples",
+    "base.fact.subject",
+    "base.fact.predicate",
+    "base.fact.object"
+  ],
+  "otherEndpointOnlyPoints": [
+    "base.entity.class_type",
+    "base.entity.definitions.text",
+    "base.entity.domain",
+    "base.entity.identifier",
+    "base.entity.kind",
+    "base.entity.labels.language",
+    "base.entity.parents",
+    "base.entity.range",
+    "base.entity.types",
+    "base.external_reference.source",
+    "base.external_reference.target"
+  ],
+  "otherPointCodepoints": [
+    "0xD800",
+    "0xDFFF"
+  ],
+  "actualTotal": 16406,
+  "calculation": "8*2048 + 11*2 = 16406",
+  "reportOverstatement": "Report says20 points*2048=16406 and repeats all-point full-surrogate coverage; original text retained, this claim is not accepted",
+  "rawLogTotalMatchesActual": true,
+  "notAClaimOfProductFailure": true
+}

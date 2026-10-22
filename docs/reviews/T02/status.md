@@ -172,3 +172,7 @@ MiniMax实际session `mvs_1cdba3c3802647838bc5f5091a866e22`、turn `e35cefa5-8ed
 总控已明确接收GUI释放；当前不占桌面、不为Z scratch未确认清空追占窗口，没有额外user Send、重发、重置/申领权益或付款。双方完整报告/终态与所有意见尚未完成，不计本轮Pass，旧493两个Pass不转授。原owner继续精确本人后台监控，当前同轮意见不透给另一方。
 
 I05/I06/T01接口依赖静态核对另见 `interface-intake-20261022/` 及各矩阵；仅文档复核通过，不采用未批实现或拼入C5。Entity五字段metadata、S2proof/统一CostSession、完整Turtle往返、正式App/bridge、T08草稿与全部父门仍待。原父Goal保留blocked，未重建/关闭；未push/PR/CI/merge或远端验收。
+
+### C5 R2 MiniMax已真实终态；ZCode仍待
+
+MiniMax实际assistant msg-k6hBoZISiyvzvO3FYM48ceXPsYEd65qrTEfUuM9uT7o/原turn的stopReason=stop，正式报告40420B/SHA449cf074c463105e286d0d42fe5ce1506632dc57bda6f5af667db3a221d4a181已全文收件。该方给有界S1 Pass，3项新P3（未导出digest入口、交付指针、深链代价）及T01范围外观察仍需处置，不能写为无意见或双方通过。26成员raw归档与首失败保全；报告扫描覆盖夸大已按原脚本静态登记实际8*2048+11*2=16406，原报告不改。详见round-2/received-20261022/minimax/owner-readback.md。ZCode当前尚无终态，不向其提供本方意见；受审代码/两冻结树不变，不修补/重发或抢GUI。
