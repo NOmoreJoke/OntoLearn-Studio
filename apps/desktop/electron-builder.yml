@@ -12,6 +12,12 @@ extraResources:
     to: contracts/v2
   - from: ../../build/release-resources/fr003-bundle-v2/examples/equipment-maintenance
     to: examples/equipment-maintenance
+  - from: ../../node_modules/electron/dist/LICENSE
+    to: licenses/electron/LICENSE
+  - from: ../../node_modules/electron/dist/LICENSES.chromium.html
+    to: licenses/electron/LICENSES.chromium.html
+  - from: ../../licenses
+    to: licenses
 asar: true
 npmRebuild: false
 mac:
