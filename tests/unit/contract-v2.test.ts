@@ -101,7 +101,7 @@ describe('shared v2 contract corpus', () => {
     )
     expect(rules.rules.find((r) => r.family === 'model')!.staleReason).toBeNull()
   })
-  it('registry schema references resolve, and v2 advertises no unimplemented runtime', () => {
+  it('registry schema references resolve and the v2 method surface stays explicit', () => {
     for (const entry of Object.values(v2Registry.capabilities))
       for (const ref of [entry.paramsSchema, entry.resultSchema])
         expect(ref.slice(8) in schema.$defs).toBe(true)
@@ -120,6 +120,11 @@ describe('shared v2 contract corpus', () => {
       'result.current',
       'result.page',
       'operation.get',
+      'query.definition.load',
+      'query.execution.prepare',
+      'query.result.describe',
+      'query.result.textPage',
+      'query.result.rowsPage',
     ])
     expect(v2Registry.v2Runtime.some((name) => name.startsWith('test.'))).toBe(false)
     expect(v2Registry.productRuntime).toEqual(['health'])

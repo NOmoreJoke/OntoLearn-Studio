@@ -22,3 +22,18 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+# Frozen review generators: exact bytes guarded by preengine:check.
+[tool.ruff.lint.per-file-ignores]
+"docs/reviews/T01/designated-review-backlog-20261022/coverage/build_coverage.py" = ["E501", "E702", "UP017"]
+"docs/reviews/T01/designated-review-backlog-20261022/preparation-scripts/build_inventory.py" = ["E501", "E702", "E701", "I001", "E401", "UP017"]
+"docs/reviews/T01/designated-review-backlog-20261022/preparation-scripts/build_submission.py" = ["E702", "E501", "E701", "F401", "I001", "E401", "B007", "UP017"]
+"docs/reviews/T01/designated-review-backlog-20261022/preparation-scripts/verify_persistent_package.py" = ["E702", "E501", "E701", "I001", "E401", "F401", "UP017"]
+
+[tool.ruff.format]
+exclude = [
+  "docs/reviews/T01/designated-review-backlog-20261022/coverage/build_coverage.py",
+  "docs/reviews/T01/designated-review-backlog-20261022/preparation-scripts/build_inventory.py",
+  "docs/reviews/T01/designated-review-backlog-20261022/preparation-scripts/build_submission.py",
+  "docs/reviews/T01/designated-review-backlog-20261022/preparation-scripts/verify_persistent_package.py",
+]

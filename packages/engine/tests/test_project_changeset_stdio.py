@@ -123,6 +123,11 @@ class Session:
                 "hello", {"supportedVersions": [version], "clientId": self.client}
             )
             assert self.hello["selectedVersion"] == version
+            if version == 3:
+                # Business3 authority comes from this actual session's explicit
+                # selected-project open, not the legacy allowed-projects env.
+                opened = self.call("project.open", {"projectId": project})
+                assert opened["projectId"] == project
         except BaseException:
             self.close()
             raise

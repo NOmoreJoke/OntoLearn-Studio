@@ -1406,3 +1406,342 @@ def test_existing_round_claim_rechecks_frozen_event_blob_binding(store, monkeypa
             IMPL,
             LIMITS,
         )
+
+
+class TestColdSnapshotAcceptance:
+    def test_accepted_claim_does_not_reconstruct_an_unavailable_snapshot(self, store, monkeypatch):
+        s = store
+        job = create(s)
+        original_load = s.load_snapshot
+
+        def unavailable(identity):
+            if identity == job["inputSnapshotId"]:
+                raise KeyError("Missing replay input snapshot")
+            return original_load(identity)
+
+        # Read-fault injection into our own real store, not a damaged database
+        # experiment: accepted idempotence must retain the strict history read.
+        monkeypatch.setattr(s, "load_snapshot", unavailable)
+        trace = []
+        before = "\n".join(s._db.iterdump())
+        s._db.set_trace_callback(trace.append)
+        with pytest.raises(KeyError, match="Missing replay input snapshot"):
+            s.create_job(
+                s.project, job["operationId"], job["capability"], job["input"], None, IMPL, LIMITS
+            )
+        s._db.set_trace_callback(None)
+        assert not any("INSERT" in sql.upper() and "SNAPSHOTS" in sql.upper() for sql in trace)
+        assert "\n".join(s._db.iterdump()) == before
+
+    def test_cold_input_materializes_atomically_and_replays_after_revision_and_reopen(self, store):
+        s = store
+        cold = s.project_get(s.project)
+        assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        job = create(s)
+        assert job["inputSnapshotId"] == cold["inputSnapshotId"]
+        frozen = s.job_context(job["jobId"])["snapshot"]
+        assert s.load_snapshot(cold["inputSnapshotId"]) == frozen
+        s.commit(
+            "legacy-project",
+            0,
+            uid(),
+            uid(),
+            manual=[
+                {
+                    "id": digest(["urn:cold", "urn:value", '"later"']),
+                    "subject": "urn:cold",
+                    "predicate": "urn:value",
+                    "object": '"later"',
+                }
+            ],
+        )
+        assert s.project_get(s.project)["inputSnapshotId"] != cold["inputSnapshotId"]
+        s.start_job(job["jobId"])
+        done = s.finish_read_job(job["jobId"], [row(0)])
+        result_id = done["resultRef"]["resultId"]
+        result = s.result_get(s.project, result_id)
+        assert result["inputSnapshotId"] == cold["inputSnapshotId"]
+        assert result["inputProjectRevision"] == 0 and result["state"] == "stale"
+        public, path = s.project, s.path
+        s.close()
+        reopened = JobStore(path, contract=CONTRACT)
+        try:
+            assert (
+                reopened.create_job(
+                    public, job["operationId"], job["capability"], job["input"], None, IMPL, LIMITS
+                )
+                == done
+            )
+            assert reopened.load_snapshot(cold["inputSnapshotId"]) == frozen
+            assert reopened._project_snapshot(cold["inputSnapshotId"], "legacy-project") == frozen
+            assert reopened.result_get(public, result_id)["inputProjectRevision"] == 0
+        finally:
+            reopened.close()
+
+    @pytest.mark.parametrize("failure", ["invalid-parameters", "before-commit"])
+    def test_rejected_acceptance_rolls_back_snapshot_job_and_claim_together(self, store, failure):
+        s = store
+        cold = s.project_get(s.project)
+        parameters = {"arbitrary": True} if failure == "invalid-parameters" else {}
+        input_ = {
+            "inputSnapshotId": cold["inputSnapshotId"],
+            "scope": "asserted",
+            "definitionId": "probe",
+            "parametersHash": s.put_blob(s.project, parameters),
+            "derivedResultIds": [],
+            "preparedPlanRef": None,
+        }
+        before = "\n".join(s._db.iterdump())
+
+        def hook(phase):
+            if failure == "before-commit" and phase == "before_commit":
+                raise RuntimeError("acceptance rollback")
+
+        expected = JobFault if failure == "invalid-parameters" else RuntimeError
+        with pytest.raises(expected):
+            s.create_job(
+                s.project,
+                uid(),
+                "test.read",
+                input_,
+                None,
+                IMPL,
+                LIMITS,
+                _acceptance_hook=hook,
+            )
+        assert "\n".join(s._db.iterdump()) == before
+        assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        assert s._db.execute("SELECT count(*) FROM jobs").fetchone()[0] == 0
+        assert s._db.execute("SELECT count(*) FROM operation_claims").fetchone()[0] == 0
+        assert not s._db.in_transaction
+
+    def test_missing_wrong_project_identity_rejects_without_current_substitution(self, store):
+        from ontolearn_engine.storage import Conflict
+
+        s = store
+        s.create_project("other-cold")
+        other = s.public_project("other-cold")
+        foreign = s.project_get(other)["inputSnapshotId"]
+        input_ = {
+            "inputSnapshotId": foreign,
+            "scope": "asserted",
+            "definitionId": "probe",
+            "parametersHash": s.put_blob(s.project, {}),
+            "derivedResultIds": [],
+            "preparedPlanRef": None,
+        }
+        before = "\n".join(s._db.iterdump())
+        with pytest.raises(Conflict, match="Current snapshot identity changed") as caught:
+            s.create_job(s.project, uid(), "test.read", input_, None, IMPL, LIMITS)
+        assert caught.value.code == "IDENTITY_CONFLICT"
+        assert "\n".join(s._db.iterdump()) == before
+        with pytest.raises(KeyError, match="Missing replay input snapshot"):
+            s.load_snapshot(foreign)
+        with pytest.raises(KeyError, match="Missing replay input snapshot"):
+            s._project_snapshot(foreign, "legacy-project")
+
+    def test_cold_atomic_prepare_materializes_before_strict_plan_consumption(self, store):
+        s = store
+        cold = s.project_get(s.project)
+        assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        job = create(
+            s,
+            "test.atomic",
+            plan={
+                "definitions": [{"layer": "rule", "id": "cold-rule", "value": {"enabled": True}}]
+            },
+        )
+        assert job["inputSnapshotId"] == cold["inputSnapshotId"]
+        assert s.job_context(job["jobId"])["snapshot"] == s.load_snapshot(cold["inputSnapshotId"])
+        s.start_job(job["jobId"])
+        done = s.commit_job(job["jobId"])
+        assert done["state"] == "succeeded"
+        marker = s.marker("legacy-project", job["operationId"])
+        assert marker["before_snapshot"] == cold["inputSnapshotId"]
+        assert (
+            s._project_snapshot(marker["after_snapshot"], "legacy-project")["projectRevision"] == 1
+        )
+
+    def test_existing_wrong_hash_row_is_rejected_without_repair(self, store):
+        s = store
+        cold = s.project_get(s.project)
+        malformed = deepcopy(s._snapshot_projection("legacy-project"))
+        malformed["projectRevision"] = 99
+        s._db.execute(
+            "INSERT INTO snapshots VALUES(?,?)",
+            (cold["inputSnapshotId"], json.dumps(malformed)),
+        )
+        parameters = s.put_blob(s.project, {})
+        before = "\n".join(s._db.iterdump())
+        with pytest.raises(ValueError, match="Snapshot integrity failure"):
+            s.project_get(s.project)
+        with pytest.raises(ValueError, match="Snapshot integrity failure"):
+            s.create_job(
+                s.project,
+                uid(),
+                "test.read",
+                {
+                    "inputSnapshotId": cold["inputSnapshotId"],
+                    "scope": "asserted",
+                    "definitionId": "probe",
+                    "parametersHash": parameters,
+                    "derivedResultIds": [],
+                    "preparedPlanRef": None,
+                },
+                None,
+                IMPL,
+                LIMITS,
+            )
+        assert "\n".join(s._db.iterdump()) == before
+
+    @pytest.mark.parametrize(
+        "variant",
+        ["missing", "whitespace", "quoted-name", "wrong-type", "wrong-table", "duplicate"],
+    )
+    def test_noncanonical_reopen_probe_never_takes_the_healthy_shortcut(
+        self, tmp_path, monkeypatch, variant
+    ):
+        path = tmp_path / "catalog-probe.sqlite"
+        original = JobStore(path, contract=CONTRACT)
+        before = "\n".join(original._db.iterdump())
+        original.close()
+        connect = sqlite3.connect
+        probes = []
+        writes = []
+
+        class CatalogConnection(sqlite3.Connection):
+            def execute(self, statement, parameters=()):
+                if statement.startswith(
+                    "SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name IN ("
+                ):
+                    rows = [tuple(value) for value in super().execute(statement, parameters)]
+                    assert len(rows) == 30
+                    changed = list(rows[0])
+                    if variant == "missing":
+                        rows.pop()
+                    elif variant == "whitespace":
+                        changed[3] = changed[3].replace("CREATE ", "CREATE  ", 1)
+                        rows[0] = tuple(changed)
+                    elif variant == "quoted-name":
+                        changed[3] = changed[3].replace(changed[1], '"' + changed[1] + '"', 1)
+                        rows[0] = tuple(changed)
+                    elif variant == "wrong-type":
+                        changed[0] = "index"
+                        rows[0] = tuple(changed)
+                    elif variant == "wrong-table":
+                        changed[2] = "not_the_original_owner"
+                        rows[0] = tuple(changed)
+                    else:
+                        rows.append(rows[0])
+                    probes.append(rows)
+                    return rows
+                if statement == "BEGIN IMMEDIATE":
+                    writes.append(statement)
+                    # A fake catalog observation, not a physical schema mutation.
+                    # Stop at the unchanged fallback writer entry, before any DDL.
+                    raise RuntimeError("original catalog creation path")
+                return super().execute(statement, parameters)
+
+        def observed_connect(*args, **kwargs):
+            return connect(*args, **kwargs, factory=CatalogConnection)
+
+        monkeypatch.setattr(sqlite3, "connect", observed_connect)
+        with pytest.raises(RuntimeError, match="original catalog creation path"):
+            JobStore(path, contract=CONTRACT)
+        assert len(probes) == 1
+        assert writes == ["BEGIN IMMEDIATE"]
+        readback = connect(path, isolation_level=None)
+        try:
+            assert "\n".join(readback.iterdump()) == before
+        finally:
+            readback.close()
+
+
+class TestColdRestoreSnapshot:
+    def test_cold_project_get_identity_is_consumed_by_restore_preview_and_commit(self, store):
+        from ontolearn_engine.project import ProjectTransactions
+
+        s = store
+        cold = s.project_get(s.project)
+        identity = cold["inputSnapshotId"]
+        expected = s._snapshot_projection("legacy-project")
+        assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        before_state = s.state("legacy-project")
+        service = ProjectTransactions(s)
+        preview = service.preview_restore("legacy-project", identity)
+        assert preview.intent == "restore" and preview.target == identity
+        assert preview.base == cold["projectRevision"] == 0
+        assert json.loads(preview.before_json) == before_state
+        assert json.loads(preview.after_json) == before_state
+        assert preview.overwritten_operations == ()
+        assert s.load_snapshot(identity) == expected
+        assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 1
+        assert s._db.execute("SELECT count(*) FROM commits").fetchone()[0] == 0
+        assert s.revision("legacy-project") == 0
+        marker = service.commit(preview, uid(), uid(), confirmed_preview=preview.identity)
+        assert marker["before_snapshot"] == identity
+        assert marker["revision"] == 1
+        assert s.state("legacy-project") == before_state
+        assert s._project_snapshot(identity, "legacy-project") == expected
+        assert not s._db.in_transaction
+
+    @pytest.mark.parametrize("kind", ["foreign", "future", "wrong-digest"])
+    def test_restore_rejection_keeps_whole_database_unchanged(self, store, kind):
+        from ontolearn_engine.project import ProjectFault, ProjectTransactions
+        from ontolearn_engine.storage import Conflict
+
+        s = store
+        if kind == "foreign":
+            s.create_project("foreign-restore")
+            public = s.public_project("foreign-restore")
+            identity = s.project_get(public)["inputSnapshotId"]
+            assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        elif kind == "future":
+            # Shape-valid future-row negative evidence, not a warmed cold success fixture.
+            future = deepcopy(s._snapshot_projection("legacy-project"))
+            future["projectRevision"] += 1
+            with s._transaction():
+                identity = s._snapshot(future)
+        else:
+            identity = digest({"not": "a project snapshot"})
+        before = "\n".join(s._db.iterdump())
+        error = ProjectFault if kind == "future" else Conflict
+        with pytest.raises(error) as caught:
+            ProjectTransactions(s).preview_restore("legacy-project", identity)
+        if kind == "future":
+            assert caught.value.code == "RESTORE_FUTURE_SNAPSHOT"
+        else:
+            assert caught.value.category == "identity"
+        assert "\n".join(s._db.iterdump()) == before
+        assert not s._db.in_transaction
+
+    def test_failed_restore_preview_rolls_back_cold_materialization_and_domain_write(
+        self, store, monkeypatch
+    ):
+        from ontolearn_engine.project import ProjectTransactions
+
+        s = store
+        cold = s.project_get(s.project)
+        identity = cold["inputSnapshotId"]
+        assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        before = "\n".join(s._db.iterdump())
+        original_commit = s.commit
+        reached = []
+
+        def fail_after_domain_write(*args, **kwargs):
+            marker = original_commit(*args, **kwargs)
+            assert marker["before_snapshot"] == identity
+            assert s.load_snapshot(identity)["projectRevision"] == 0
+            reached.append(marker["revision"])
+            raise RuntimeError("restore preview transaction failure")
+
+        monkeypatch.setattr(s, "commit", fail_after_domain_write)
+        with pytest.raises(RuntimeError, match="restore preview transaction failure"):
+            ProjectTransactions(s).preview_restore("legacy-project", identity)
+        assert reached == [1]
+        assert "\n".join(s._db.iterdump()) == before
+        assert s._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        assert s._db.execute("SELECT count(*) FROM commits").fetchone()[0] == 0
+        assert not s._db.in_transaction
+        with pytest.raises(KeyError, match="Missing replay input snapshot"):
+            s.load_snapshot(identity)

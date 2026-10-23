@@ -313,7 +313,6 @@ runpy.run_module('ontolearn_engine',run_name='__main__')
       profile: 'business3',
       registryPath,
       dataPath: database,
-      allowedProjects: [project],
       command: { command: getEngineCommand(location).command, args: ['-I', '-c', script] },
     })
     active.push(engine)
@@ -321,6 +320,13 @@ runpy.run_module('ontolearn_engine',run_name='__main__')
     const rememberedJob = randomUUID()
     tasks.selectProject(project, [rememberedJob])
     try {
+      const client = engine.mainlineProjectClient()
+      expect(client).not.toBeNull()
+      if (!client) throw new Error('Expected actual business3 mainline client')
+      expect(await client.request('project.open', { projectId: project })).toMatchObject({
+        projectId: project,
+        formatVersion: 3,
+      })
       expect(await tasks.restore()).toEqual({
         ok: false,
         error: {

@@ -1,7 +1,68 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { isTaskUpdate, type DesktopBridge } from '@ontolearn/contracts'
+import {
+  isTaskUpdate,
+  mainlineDeliveryEnvelopeSchema,
+  mainlineDeliveryAcceptedSchema,
+  internalError,
+  mainlineNoDeliverySchema,
+  type DesktopBridge,
+  type DesktopIpcChannel,
+  type DesktopIpcMap,
+} from '@ontolearn/contracts'
+
+/** Private receipt confirmation; renderer receives only the named business result. */
+async function receiveMainline<Channel extends DesktopIpcChannel>(
+  channel: Channel,
+  ...args: DesktopIpcMap[Channel]['args']
+): Promise<DesktopIpcMap[Channel]['result']> {
+  const raw: unknown = await ipcRenderer.invoke(channel, ...args)
+  const delivery = mainlineDeliveryEnvelopeSchema.safeParse(raw)
+  if (!delivery.success) {
+    // A denied route can reply before any delivery lease is admitted.
+    const denied = mainlineNoDeliverySchema.safeParse(raw)
+    if (denied.success) return denied.data as DesktopIpcMap[Channel]['result']
+    return { ok: false, error: internalError } as DesktopIpcMap[Channel]['result']
+  }
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    const accepted: unknown = await Promise.race([
+      ipcRenderer.invoke('project:reply-received', {
+        deliveryVersion: 1,
+        deliveryId: delivery.data.deliveryId,
+      }),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error('delivery acknowledgment timeout')), 5000)
+      }),
+    ])
+    const parsed = mainlineDeliveryAcceptedSchema.safeParse(accepted)
+    if (!parsed.success || parsed.data.deliveryId !== delivery.data.deliveryId)
+      throw new Error('delivery acknowledgment rejected')
+  } catch {
+    // The payload was actually received. Preserve its known durable outcome.
+    // Main keeps the original unacknowledged lease; no retry/clear is fabricated.
+  } finally {
+    clearTimeout(timer)
+  }
+  return delivery.data.payload as DesktopIpcMap[Channel]['result']
+}
 
 const bridge: DesktopBridge = {
+  getProjectCatalog: (args) => receiveMainline('project:catalog', args),
+  createBlankProject: (args) => receiveMainline('project:create-blank', args),
+  createExampleProject: (args) => receiveMainline('project:create-example', args),
+  saveProjectDraft: (args) => receiveMainline('project:draft-save', args),
+  openProject: (args) => receiveMainline('project:open', args),
+  readProject: (args) => receiveMainline('project:read', args),
+  previewProjectChangeset: (args) => receiveMainline('project:changeset-preview', args),
+  getProjectDiffPage: (args) => receiveMainline('project:changeset-diff-page', args),
+  confirmProjectChangeset: (args) => receiveMainline('project:changeset-confirm', args),
+  commitProjectChangeSet: (args) => receiveMainline('project:changeset-commit', args),
+  getQueryDefinitionBase: () => receiveMainline('query:definition-base'),
+  loadQueryDefinition: (args) => receiveMainline('query:definition-load', args),
+  executeSavedQuery: (args) => receiveMainline('query:execute-saved', args),
+  getQueryResultDescriptor: (args) => receiveMainline('query:result-describe', args),
+  getQueryExecutedTextPage: (args) => receiveMainline('query:result-text-page', args),
+  getQueryRowsPage: (args) => receiveMainline('query:result-rows-page', args),
   getEngineHealth: () => ipcRenderer.invoke('engine:health'),
   restoreTasks: () => ipcRenderer.invoke('tasks:restore'),
   getActiveProject: () => ipcRenderer.invoke('project:active'),

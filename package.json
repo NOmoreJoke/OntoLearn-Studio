@@ -25,7 +25,8 @@
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
     "verify:sources": "node scripts/verify-sources.mjs",
     "typecheck:contracts": "npm run typecheck --workspace @ontolearn/contracts",
-    "typecheck:unit": "tsc --noEmit -p tsconfig.unit.json"
+    "typecheck:unit": "tsc --noEmit -p tsconfig.unit.json",
+    "preengine:check": "node scripts/verify-frozen-review-sources.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

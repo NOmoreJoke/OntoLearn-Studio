@@ -1,6 +1,7 @@
 """Single application writer; isolated workers never open the SQLite source of truth."""
 
 import asyncio
+import hashlib
 import json
 import os
 import queue
@@ -19,9 +20,22 @@ from ontolearn_engine.job_store import JobFault, JobStore
 from ontolearn_engine.memory_guard import MEMORY_LIMIT_EXIT, resident_bytes
 from ontolearn_engine.process_environment import worker_environment
 from ontolearn_engine.protocol import JsonlReader, ProtocolFault
-from ontolearn_engine.resources import CONTRACT, IMPLEMENTATION, LIMITS, REGISTRY_HASH, safe_error
+from ontolearn_engine.resources import (
+    CONTRACT,
+    IMPLEMENTATION,
+    LIMITS,
+    REGISTRY_HASH,
+    safe_error,
+    semantic_identity,
+)
 from ontolearn_engine.storage import Conflict, UnsupportedProjectFormat
-from ontolearn_engine.worker import worker_owner_arguments
+from ontolearn_engine.worker import (
+    query_decode,
+    query_encode,
+    query_parts,
+    query_transport_limits,
+    worker_owner_arguments,
+)
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
 _JOB_READY = object()
@@ -110,6 +124,9 @@ class Coordinator:
         emit=None,
         profile="legacy2",
         _ready=None,
+        ordinary_authority=None,
+        query_dispatch=None,
+        example_provider=None,
     ):
         if profile not in {"legacy2", "business3"}:
             raise ValueError("INVALID_PROFILE")
@@ -128,7 +145,7 @@ class Coordinator:
         )
         self.store = store
         self.test_mode = test_mode
-        self.allowed_projects = allowed_projects or set()
+        self.allowed_projects = frozenset(allowed_projects or set())
         self.limits = LIMITS | (limits or {})
         if not CONTRACT.validate("limits", self.limits):
             raise ValueError("INVALID_LIMITS")
@@ -143,6 +160,25 @@ class Coordinator:
         self._output = emit or self._emit
         self.emit = self._validated_emit
         self.tasks = set()
+        from ontolearn_engine.project.ordinary_library import OrdinaryLibrary
+
+        self.ordinary = OrdinaryLibrary(self, ordinary_authority)
+        from ontolearn_engine.project.query_definitions import QueryDispatchAuthority
+
+        self.query_dispatch = (
+            query_dispatch if isinstance(query_dispatch, QueryDispatchAuthority) else None
+        )
+        self._query_project_get = None
+        self._query_replies = {}
+        self.mainline = None
+        if version == 3 and not test_mode and ordinary_authority is None and query_dispatch is None:
+            # _JOB_READY and the actual original JobStore were checked above.
+            # The named production adapter is never installed from a wire DTO.
+            from ontolearn_engine.project.mainline import MainlineHost
+
+            self.mainline = MainlineHost(self, example_provider=example_provider)
+            self.ordinary = self.mainline
+            self.query_dispatch = self.mainline
 
     def _validated_emit(self, value):
         if not self.validate("envelope", value):
@@ -158,8 +194,10 @@ class Coordinator:
         sys.stdout.buffer.flush()
 
     def _authorize(self, params: dict) -> str | None:
+        if self.mainline is not None:
+            return self.mainline.authorize(params)
         project = params.get("projectId", params.get("binding", {}).get("projectId"))
-        if project and project not in self.allowed_projects:
+        if project and project not in self.allowed_projects | self.ordinary.projects():
             raise ServiceFault("PERMISSION_DENIED")
         return project
 
@@ -237,7 +275,9 @@ class Coordinator:
         if not isinstance(value, dict) or not CONTRACT.validate("id", value.get("id")):
             raise ProtocolFault()
         method = value.get("method")
-        if not isinstance(method, str) or method not in self.methods:
+        if not isinstance(method, str) or (
+            method not in self.methods and not (self.version == 2 and method == "ordinary.library")
+        ):
             raise ProtocolFault()
         if value["id"] in self.seen or len(self.seen) >= 65536:
             raise ProtocolFault()
@@ -287,12 +327,19 @@ class Coordinator:
                     raise ServiceFault("INVALID_REQUEST", {"field": "params"})
                 self.session = str(uuid4())
                 self.host_client_id = value["params"]["clientId"]
+                if self.mainline is not None:
+                    self.mainline.bind_handshake()
                 response["engineSessionId"] = self.session
                 data = {
                     "selectedVersion": self.version,
                     "engineVersion": __version__,
                     "engineSessionId": self.session,
-                    "capabilities": self.methods,
+                    "capabilities": [*self.methods]
+                    + (
+                        ["ordinary.library"]
+                        if self.mainline is None and self.ordinary.enabled()
+                        else []
+                    ),
                     "limits": self.limits,
                     "registryHash": REGISTRY_HASH,
                 }
@@ -303,7 +350,39 @@ class Coordinator:
                     raise ServiceFault("SESSION_MISMATCH")
                 if self.version == 3 and not self.validate("request", value):
                     raise ServiceFault("INVALID_REQUEST", {"field": "params"})
-                self._authorize(value["params"])
+                # Liveness does not read project material or acquire authority.
+                # A held/damaged project must not turn heartbeat into a restart
+                # loop, or prevent the original owner from reporting its state.
+                if method not in {"health", "session.ping"}:
+                    if self.mainline is not None:
+                        self.mainline.begin(value)
+                    self._authorize(value["params"])
+                if method == "project.get" and self.query_dispatch is not None:
+                    from ontolearn_engine.project.query_definitions import ProjectGetReadTicket
+
+                    # Reserve before the external issuer callback can reenter.
+                    # A callback failure with no returned receipt stays UNKNOWN;
+                    # the real external issuer retains that request's work/aliases.
+                    if len(self._query_replies) >= 16:
+                        raise ServiceFault("INVALID_STATE")
+                    self._query_replies[value["id"]] = None
+                    ticket = self.query_dispatch.take(self, value)
+                    if ticket is None:
+                        del self._query_replies[value["id"]]  # genuine ordinary dispatch
+                    else:
+                        if (
+                            not isinstance(ticket, ProjectGetReadTicket)
+                            or ticket.issuer is not self.query_dispatch
+                        ):
+                            raise ServiceFault("PERMISSION_DENIED")
+                        self._query_replies[value["id"]] = ticket
+                        if (
+                            ticket.request_id != value["id"]
+                            or ticket.read.session != self.session
+                            or ticket.project != value["params"]["projectId"]
+                        ):
+                            raise ServiceFault("PERMISSION_DENIED")
+                        self._query_project_get = ticket
                 data = self.dispatch(method, value["params"])
                 if (
                     method in {"result.page", "job.list"}
@@ -312,6 +391,8 @@ class Coordinator:
                     raise ServiceFault("RESOURCE_LIMIT", {"resource": "page"})
             response.update(ok=True, result=data)
         except Exception as error:
+            if self.mainline is not None:
+                self.mainline.observe_error(value["id"], error)
             response.update(
                 ok=False,
                 error=classify(
@@ -330,12 +411,57 @@ class Coordinator:
             self.closed = True  # No second hello after a rejected3 bootstrap.
         return response
 
+    def ordinary_project_get(self, book, ticket, project):
+        # A stack-local one-use permit, never a temporary allowed-project set.
+        if book is not self.ordinary:
+            raise ServiceFault("PERMISSION_DENIED")
+        book.consume(ticket, self.store, "project.get", project)
+        return self.dispatch("project.get", {"projectId": project})
+
+    def finish_query_reply(self, request_id, *, emitted, failure=None):
+        ticket = self._query_replies.get(request_id)
+        if ticket is not None:
+            ticket.finish(emitted=emitted, failure=failure)
+            if self._query_replies.get(request_id) is ticket and ticket.finished:
+                del self._query_replies[request_id]
+        if self.mainline is not None:
+            self.mainline.finish_reply(request_id, emitted=emitted, failure=failure)
+
     def dispatch(self, method: str, p: dict):
+        if method in {
+            "project.catalog",
+            "project.create",
+            "project.example.create",
+            "project.draft.save",
+            "project.open",
+            "project.read",
+        }:
+            if self.mainline is None:
+                raise ServiceFault("PERMISSION_DENIED")
+            return self.mainline.dispatch(method, p)
+        if method.startswith("query."):
+            from ontolearn_engine.project.query_definitions import METHODS, query_read
+
+            if method not in METHODS:
+                raise ServiceFault("METHOD_NOT_ALLOWED")
+            with query_read(self, method, p) as ticket:
+                if method == "query.definition.load":
+                    return self.store.load_query_definition(p, ticket=ticket)
+                if method == "query.execution.prepare":
+                    return self.store.prepare_query_execution_input(
+                        p, semantic_identity(), self.limits, REGISTRY_HASH, ticket=ticket
+                    )
+                return self.store.query_presentation(method, p, self.limits, ticket=ticket)
+        if method == "ordinary.library":
+            return self.ordinary.dispatch(p)
         if method == "health":
             return {"status": "ok", "engineVersion": __version__}
         if method == "session.ping":
             return {"nonce": p["nonce"]}
         if method == "project.get":
+            ticket, self._query_project_get = self._query_project_get, None
+            if ticket is not None:
+                return self.store.query_project_get(p["projectId"], actor=self, ticket=ticket)
             return self.store.project_get(p["projectId"])
         if method in {"changeset.preview", "changeset.diff.page", "changeset.confirm"}:
             if self.version != 3 or self.host_client_id is None or self.session is None:
@@ -365,14 +491,19 @@ class Coordinator:
             return self.store.get_job(p["projectId"], p["jobId"])
         if method == "job.create":
             formal = self.version == 3 and p["capability"] == "changeset.commit"
-            if not formal and (
-                not self.test_mode
-                or p["capability"]
-                not in {
-                    "test.read",
-                    "test.atomic",
-                    "test.rounds",
-                }
+            query = p["capability"] == "query.execute"
+            if (
+                not formal
+                and not query
+                and (
+                    not self.test_mode
+                    or p["capability"]
+                    not in {
+                        "test.read",
+                        "test.atomic",
+                        "test.rounds",
+                    }
+                )
             ):
                 raise ServiceFault("UNSUPPORTED_CAPABILITY")
             if len(self.queued) >= self.limits[
@@ -397,10 +528,14 @@ class Coordinator:
                     p["capability"],
                     p["input"],
                     p["confirmationRef"],
-                    IMPLEMENTATION,
+                    semantic_identity() if query else IMPLEMENTATION,
                     self.limits,
                 )
-            if job["state"] == "queued" and job["jobId"] not in self.queued:
+            if (
+                job["state"] == "queued"
+                and job["jobId"] not in self.queued
+                and job["jobId"] not in self.active
+            ):
                 self.queued.append(job["jobId"])
             return job
         if method == "job.cancel":
@@ -567,6 +702,11 @@ class Coordinator:
             def commit_boundary(_phase):
                 if time.monotonic() >= deadline:
                     raise ServiceFault("TIMEOUT", {"phase": "total"})
+                if (
+                    job["capability"] == "query.execute"
+                    and self.store.get_job(active["project"], identity)["state"] == "cancelling"
+                ):
+                    raise asyncio.CancelledError()
 
             async def controlled(work, phase, maximum_ms, on_completed=None):
                 pending = asyncio.create_task(work)
@@ -578,6 +718,21 @@ class Coordinator:
                         commit_boundary("waiting")
                         if time.monotonic() >= phase_deadline:
                             raise ServiceFault("TIMEOUT", {"phase": phase})
+                        child = active.get("process")
+                        if (
+                            job["capability"] == "query.execute"
+                            and sys.platform == "darwin"
+                            and child is not None
+                            and child.returncode is None
+                        ):
+                            try:
+                                if (
+                                    resident_bytes(child.pid)
+                                    > job["limits"]["maxWorkerMemoryBytes"]
+                                ):
+                                    raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
+                            except ProcessLookupError:
+                                pass
                         await asyncio.wait({pending}, timeout=0.02)
                     result = pending.result()
                     if on_completed:
@@ -604,6 +759,42 @@ class Coordinator:
                 lambda child: active.update(process=child),
             )
             active["process"] = process
+            if job["capability"] == "query.execute":
+                frame, maximum = query_transport_limits(job["limits"])
+                encoded = query_encode(context["queryRequest"], maximum)
+                pieces = query_parts(encoded, frame)
+                header = {
+                    "capability": "query.execute",
+                    "memoryBytes": job["limits"]["maxWorkerMemoryBytes"],
+                    "frameBytes": frame,
+                    "byteLimit": maximum,
+                    "parts": len(pieces),
+                    "bytes": len(encoded),
+                    "sha256": hashlib.sha256(encoded).hexdigest(),
+                }
+                for message in [header]:
+                    process.stdin.write(query_encode(message, frame) + b"\n")
+                    await controlled(process.stdin.drain(), "startup", self.limits["startupMs"])
+                for index, text in enumerate(pieces):
+                    process.stdin.write(query_encode({"index": index, "text": text}, frame) + b"\n")
+                    await controlled(process.stdin.drain(), "startup", self.limits["startupMs"])
+                process.stdin.close()
+                self._stage(identity, "computing")
+                output = await controlled(
+                    self._query_output(process, job), "total", job["limits"]["totalMs"]
+                )
+                self._stage(identity, "reconciling")
+                await controlled(process.wait(), "total", job["limits"]["totalMs"])
+                if process.returncode == MEMORY_LIMIT_EXIT:
+                    raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
+                if process.returncode != 0:
+                    raise ServiceFault("ENGINE_EXITED")
+                if "error" in output:
+                    raise ServiceFault(output["error"]["code"], output["error"]["params"])
+                commit_boundary("before")
+                self._stage(identity, "committing")
+                self._notify(self.store.finish_query_job(identity, output, hook=commit_boundary))
+                return
             raw = json.dumps(
                 {
                     "capability": job["capability"],
@@ -753,16 +944,96 @@ class Coordinator:
         finally:
             self.active.pop(identity, None)
 
+    async def _query_output(self, process, job):
+        """Private query stream: complete is evidence only after strict EOF and exit.
+
+        Unlike legacy test streams, every post-terminal byte/frame is rejected.
+        The caller separately reconciles the actual child exit and cancel fence.
+        """
+        frame, maximum = query_transport_limits(job["limits"])
+        reader = JsonlReader(frame)
+        pieces, size = [], 0
+        done = complete = False
+        failure = None
+        while True:
+            raw = await process.stdout.read(min(16384, frame + 1))
+            if not raw:
+                reader.finish()
+                await process.wait()
+                if process.returncode == MEMORY_LIMIT_EXIT:
+                    raise ServiceFault("RESOURCE_LIMIT", {"resource": "memory"})
+                break
+            for message in reader.feed(raw):
+                if complete or type(message) is not dict:
+                    raise ProtocolFault()
+                kind = message.get("type")
+                if kind == "query.chunk" and not done and failure is None:
+                    if (
+                        set(message) != {"type", "index", "text"}
+                        or type(message["index"]) is not int
+                        or message["index"] != len(pieces)
+                        or type(message["text"]) is not str
+                        or not message["text"]
+                        or len(message["text"]) > (frame - 256) // 12
+                    ):
+                        raise ProtocolFault()
+                    text = message["text"].encode("utf-8", errors="strict")
+                    if len(text) > maximum - size:
+                        raise ProtocolFault()
+                    size += len(text)
+                    pieces.append(text)
+                elif kind == "query.done" and not done and failure is None:
+                    if (
+                        set(message) != {"type", "parts", "bytes", "sha256"}
+                        or type(message["parts"]) is not int
+                        or message["parts"] != len(pieces)
+                        or not pieces
+                        or type(message["bytes"]) is not int
+                        or message["bytes"] != size
+                        or message["sha256"] != hashlib.sha256(b"".join(pieces)).hexdigest()
+                    ):
+                        raise ProtocolFault()
+                    done = True
+                elif kind == "query.error" and not done and failure is None and not pieces:
+                    if set(message) != {"type", "error"} or not CONTRACT.validate(
+                        "error", message["error"]
+                    ):
+                        raise ProtocolFault()
+                    failure = message["error"]
+                elif message == {"type": "complete"} and (done or failure is not None):
+                    complete = True
+                else:
+                    raise ProtocolFault()
+        if not complete:
+            raise ProtocolFault()
+        if failure is not None:
+            return {"error": failure}
+        output = query_decode(b"".join(pieces), maximum)
+        if type(output) is not dict or set(output) != {"payload", "rows"}:
+            raise ProtocolFault()
+        return output
+
     async def stop(self) -> None:
         self.closed = True
+        if self.mainline is not None:
+            self.mainline.close()
         for task in list(self.tasks):
             task.cancel()
         await asyncio.gather(*self.tasks, return_exceptions=True)
         self.subscriptions.clear()
 
 
-async def serve(*, profile="legacy2", backup_path=None) -> dict:
+async def serve(
+    *,
+    profile="legacy2",
+    backup_path=None,
+    ordinary_authority=None,
+    query_dispatch=None,
+    example_provider=None,
+) -> dict:
     if profile not in {"legacy2", "business3"}:
+        raise ValueError("INVALID_PROFILE")
+    if example_provider is not None and profile != "business3":
         raise ValueError("INVALID_PROFILE")
     if backup_path is not None and (profile != "business3" or not Path(backup_path).is_absolute()):
         raise ValueError("INVALID_BACKUP")
@@ -782,6 +1053,8 @@ async def serve(*, profile="legacy2", backup_path=None) -> dict:
         "threadFinished": False,
         "threadAlive": False,
         "settled": False,
+        "queryCleanupAttempted": False,
+        "queryCleanupSettled": False,
     }
 
     def read() -> None:
@@ -852,6 +1125,9 @@ async def serve(*, profile="legacy2", backup_path=None) -> dict:
             allowed_projects=set(allowed),
             profile=profile,
             _ready=_JOB_READY,
+            ordinary_authority=ordinary_authority,
+            query_dispatch=query_dispatch,
+            example_provider=example_provider,
         )
         loop = asyncio.get_running_loop()
         previous_signal = signal.signal(
@@ -877,7 +1153,20 @@ async def serve(*, profile="legacy2", backup_path=None) -> dict:
                 continue
             if value is None:
                 break
-            coordinator.emit(coordinator.request(value))
+            response = None
+            try:
+                response = coordinator.request(value)
+                coordinator.emit(response)
+            except BaseException as error:
+                try:
+                    coordinator.finish_query_reply(value.get("id"), emitted=False, failure=error)
+                except BaseException as cleanup:
+                    cleanup_failures.append(("queryReadHolding", cleanup))
+                raise
+            else:
+                request_id = value["id"]
+                response = None  # Drop this owner alias before successful finish.
+                coordinator.finish_query_reply(request_id, emitted=True)
             await coordinator.tick()
             await asyncio.sleep(0)
     except (ProtocolFault, BrokenPipeError) as error:
@@ -904,6 +1193,26 @@ async def serve(*, profile="legacy2", backup_path=None) -> dict:
             and reader_state["threadAlive"] is False
         )
         if coordinator is not None:
+            reader_state["queryCleanupAttempted"] = True
+            try:
+                # Access and finite snapshot creation are cleanup operations too.
+                # A missing/damaged holding book cannot replace the primary
+                # initialization failure or silently be treated as empty.
+                query_replies = coordinator._query_replies
+                if type(query_replies) is not dict or len(query_replies) > 16:
+                    raise RuntimeError("QUERY_CLEANUP_UNKNOWN")
+                query_cleanup_failed = False
+                for request_id in list(query_replies):
+                    try:
+                        coordinator.finish_query_reply(request_id, emitted=False, failure=failure)
+                    except BaseException as error:
+                        query_cleanup_failed = True
+                        cleanup_failures.append(("queryReadHolding", error))
+                if query_replies:
+                    raise RuntimeError("QUERY_CLEANUP_UNKNOWN")
+                reader_state["queryCleanupSettled"] = not query_cleanup_failed
+            except BaseException as error:
+                cleanup_failures.append(("queryReadHolding", error))
             try:
                 await coordinator.stop()
             except BaseException as error:

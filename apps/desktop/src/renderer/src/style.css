@@ -307,3 +307,35 @@ footer {
     scroll-behavior: auto;
   }
 }
+.project-library {
+  margin-block: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border, #dce5df);
+  border-radius: 1rem;
+  background: var(--surface, #fff);
+}
+.project-library form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+.project-library input {
+  min-width: 12rem;
+  padding: 0.75rem;
+  border: 1px solid #b9c9c0;
+  border-radius: 0.5rem;
+  font: inherit;
+}
+.project-library li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.75rem;
+}
+.project-library ul {
+  list-style: none;
+  padding: 0;
+}

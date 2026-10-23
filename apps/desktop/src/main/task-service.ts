@@ -8,6 +8,8 @@ import {
   type ProjectView,
   type ProgressView,
   type ResultPageOptions,
+  type ResultMetadataDTO,
+  type ResultPageDTO,
   type TaskUpdate,
   type TaskView,
   type SafeError,
@@ -19,7 +21,7 @@ import {
   validateV2,
   type EventBinding,
 } from '../../../../packages/contracts/src/v2'
-import { EngineSupervisor, type EngineConnectionState } from './engine'
+import { EngineError, EngineSupervisor, type EngineConnectionState } from './engine'
 
 interface TaskEngine {
   request(method: string, params: Record<string, unknown>): Promise<unknown>
@@ -75,6 +77,11 @@ export class TaskService {
   private projectId: string | null = null
   private generation = 0
   private projectRevision: number | undefined
+  private lastProject: ProjectView | null = null
+  private projectObservers = new Map<
+    object,
+    (project: ProjectView | null, session: string | undefined) => void
+  >()
   private projectRefresh = new Map<number, Promise<TaskView | undefined>>()
   private projectTransition:
     | {
@@ -89,6 +96,68 @@ export class TaskService {
   private remembered = new Set<string>()
   private earlyBytes = 0
   private earlyEvents = new Map<string, unknown[]>()
+  #queryWatchReservations = new Map<
+    object,
+    { projectId: string; generation: number; supervisor: EngineSupervisor }
+  >()
+  queryViewGeneration(projectId: string, supervisor: EngineSupervisor): number {
+    if (this.disposed || this.#supervisor !== supervisor || this.projectId !== projectId)
+      throw new EngineError(denied)
+    return this.generation
+  }
+  reserveQueryWatch(projectId: string, supervisor: EngineSupervisor): object {
+    if (
+      this.disposed ||
+      this.#supervisor !== supervisor ||
+      this.projectId !== projectId ||
+      this.remembered.size + this.#queryWatchReservations.size >= 16
+    )
+      throw new EngineError({
+        code: 'RESOURCE_LIMIT',
+        messageKey: 'resource.limitExceeded',
+        params: { resource: 'memory' },
+        retryable: false,
+      })
+    const token = Object.freeze({})
+    this.#queryWatchReservations.set(token, { projectId, generation: this.generation, supervisor })
+    return token
+  }
+  releaseQueryWatch(token: object): void {
+    this.#queryWatchReservations.delete(token)
+  }
+  queryWatchReserved(token: object): boolean {
+    return this.#queryWatchReservations.has(token)
+  }
+  async watchAcceptedQuery(
+    token: object,
+    job: JobView,
+    supervisor: EngineSupervisor,
+  ): Promise<BridgeResult<JobView>> {
+    const reservation = this.#queryWatchReservations.get(token)
+    if (
+      !reservation ||
+      reservation.supervisor !== supervisor ||
+      this.#supervisor !== supervisor ||
+      reservation.projectId !== job.projectId ||
+      this.projectId !== job.projectId ||
+      reservation.generation !== this.generation ||
+      !this.validate('job', job) ||
+      job.capability !== 'query.execute'
+    )
+      return { ok: false, error: safeError(denied) }
+    // Transfer this one reserved watch into the original remembered16, never mint another cap.
+    this.#queryWatchReservations.delete(token)
+    this.remembered.add(job.jobId)
+    const result = await this.subscribeJob(job.jobId)
+    if (
+      this.disposed ||
+      this.#supervisor !== supervisor ||
+      this.projectId !== reservation.projectId ||
+      this.generation !== reservation.generation
+    )
+      return { ok: false, error: safeError(denied) }
+    return result
+  }
   private cancelledSubscriptions = new Set<string>()
   private dirtyWatches = new WeakSet<Watch>()
   private reconciliations = new Map<string, Promise<void>>()
@@ -116,7 +185,52 @@ export class TaskService {
     this.detachView()
     this.projectId = projectId
     this.projectRevision = undefined
+    this.lastProject = null
     this.remembered = new Set(jobs)
+  }
+  /** Main-only selection fence; never cancels a durable accepted Job. */
+  clearProject(): void {
+    const previousSink = this.sink
+    this.detachView()
+    this.projectId = null
+    this.projectRevision = undefined
+    this.lastProject = null
+    this.remembered.clear()
+    this.notifyProject()
+    try {
+      previousSink?.({
+        kind: 'restored',
+        generation: this.generation,
+        view: { generation: this.generation, project: null, jobs: [] },
+      })
+    } catch {
+      /* selection is already fenced; a destroyed view cannot undo it */
+    }
+  }
+  observeActiveProject(
+    listener: (project: ProjectView | null, session: string | undefined) => void,
+  ): () => void {
+    if (this.disposed || this.projectObservers.size >= 8) throw new Error('INVALID_STATE')
+    const registration = Object.freeze({})
+    this.projectObservers.set(registration, listener)
+    try {
+      listener(this.lastProject, this.engine.engineSessionId)
+    } catch (cause) {
+      this.projectObservers.delete(registration)
+      throw cause
+    }
+    return () => {
+      this.projectObservers.delete(registration)
+    }
+  }
+  private notifyProject(): void {
+    for (const listener of this.projectObservers.values()) {
+      try {
+        listener(this.lastProject, this.engine.engineSessionId)
+      } catch {
+        /* isolate observers */
+      }
+    }
   }
   attachView(sink: (value: TaskUpdate) => void): void {
     this.detachView()
@@ -163,6 +277,7 @@ export class TaskService {
     this.detachView()
     this.release()
     this.releaseConnection()
+    this.projectObservers.clear()
   }
   private connectionChanged(event: EngineConnectionState): void {
     if (this.#supervisor && event.state === 'disconnected') {
@@ -411,6 +526,8 @@ export class TaskService {
     const advanced =
       this.projectRevision !== undefined && project.projectRevision > this.projectRevision
     this.projectRevision = project.projectRevision
+    this.lastProject = project
+    this.notifyProject()
     if (advanced && !alreadyFenced) {
       // A revision is a new view generation. Preserve the view delivery target,
       // discard its subscriptions, and keep each job's immutable input grouping.
@@ -506,7 +623,10 @@ export class TaskService {
     return this.guard(async () => {
       const projectId = this.project()
       if (!id.safeParse(jobId).success) throw { error: invalid }
-      if (!this.remembered.has(jobId) && this.remembered.size >= 16)
+      if (
+        !this.remembered.has(jobId) &&
+        this.remembered.size + this.#queryWatchReservations.size >= 16
+      )
         throw {
           error: {
             code: 'RESOURCE_LIMIT',
@@ -766,11 +886,13 @@ export class TaskService {
         throw { error: invalid }
     }
   }
-  getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>> {
-    return this.guard(() => this.call('result.get', { projectId: this.project(), resultId }))
+  getResult(resultId: string): Promise<BridgeResult<ResultMetadataDTO>> {
+    return this.guard<ResultMetadataDTO>(() =>
+      this.call<ResultMetadataDTO>('result.get', { projectId: this.project(), resultId }),
+    )
   }
-  getResultPage(options: ResultPageOptions): Promise<BridgeResult<Record<string, unknown>>> {
-    return this.guard(async () => {
+  getResultPage(options: ResultPageOptions): Promise<BridgeResult<ResultPageDTO>> {
+    return this.guard<ResultPageDTO>(async () => {
       if (
         !z
           .object({
@@ -782,11 +904,11 @@ export class TaskService {
           .safeParse(options).success
       )
         throw { error: invalid }
-      const result = await this.call<Record<string, unknown>>('result.get', {
+      const result = await this.call<ResultMetadataDTO>('result.get', {
         projectId: this.project(),
         resultId: options.resultId,
       })
-      return this.call('result.page', {
+      return this.call<ResultPageDTO>('result.page', {
         binding: {
           projectId: this.project(),
           resultId: options.resultId,

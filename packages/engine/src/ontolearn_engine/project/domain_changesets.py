@@ -11,6 +11,13 @@ from copy import deepcopy
 from uuid import uuid4
 
 from ontolearn_engine.project import compensation
+from ontolearn_engine.project.entity_metadata import (
+    MetadataError,
+    merge_plan,
+    validate_change,
+    validate_compensation,
+    validate_supported_pair,
+)
 from ontolearn_engine.project.transactions import (
     ChangePreview,
     ProjectFault,
@@ -86,15 +93,38 @@ def unpack(value):
 
 
 def _definition(store, record):
-    if record["layer"] != "ontology":
+    if record["layer"] not in {"ontology", "query"}:
         raise ValueError("Unsupported touched definition")
     value = json.loads(record["payload"])
-    if not isinstance(value, dict) or set(value) - {
-        "triples",
-        "singleValuedPredicates",
-        "references",
-    }:
+    if not isinstance(value, dict):
         raise ValueError("Unsupported touched payload")
+    if record["layer"] != "ontology":
+        from ontolearn_engine.project.query_definitions import draft, scalar
+
+        if not scalar(value.get("text")):
+            raise ValueError("Unsupported query text")
+        if "descriptor" not in value:
+            # Existing snapshots may predate managed query definitions. The
+            # incoming ChangeSet schema still requires a managed descriptor;
+            # this branch authenticates the historical side of a real Diff/Undo.
+            if set(value) - {"text", "references"}:
+                raise ValueError("Unsupported legacy query payload")
+        else:
+            if set(value) != {"text", "references", "descriptor"}:
+                raise ValueError("Unsupported managed query payload")
+            descriptor = value["descriptor"]
+            if (
+                type(descriptor) is not dict
+                or set(descriptor)
+                != {"version", "name", "description", "scope", "capabilityQuestion", "source"}
+                or type(descriptor["version"]) is not int
+                or descriptor["version"] != 1
+            ):
+                raise ValueError("Unsupported query descriptor")
+            visible = {key: item for key, item in descriptor.items() if key != "version"}
+            visible["sparql"] = value["text"]
+            if draft(visible, stored=True) != visible:
+                raise ValueError("Noncanonical managed query definition")
     store._definition(value)
     for ref in value.get("references", []):
         if (
@@ -109,8 +139,16 @@ def _definition(store, record):
 
 def supported(store, preview):
     """Historical records have no incoming-frame size limit; only typed shape."""
-    for item in state_diff(json.loads(preview.before_json), json.loads(preview.after_json)):
+    before, after = json.loads(preview.before_json), json.loads(preview.after_json)
+    restoring = preview.intent == "undo"
+    if restoring:
+        validate_compensation(before, after)
+    else:
+        validate_change(before, after)
+    for item in state_diff(before, after):
         key = item["resource"][0]
+        if key == "definition" and item["resource"][1] == "ontology":
+            validate_supported_pair(item["before"], item["after"], compensation=restoring)
         for record in (item["before"], item["after"]):
             if record is None:
                 continue
@@ -393,7 +431,14 @@ def preview_changeset(
         transactions = ProjectTransactions(store)
         conflict = None
         if request["intent"] == "change":
-            preview = transactions.preview(internal, base, request["plan"])
+            try:
+                effective_plan = merge_plan(store.state(internal), request["plan"])
+            except (ValueError, KeyError, TypeError):
+                fail("INVALID_REQUEST", field="params")
+            try:
+                preview = transactions.preview(internal, base, effective_plan)
+            except MetadataError:
+                fail("INVALID_REQUEST", field="params")
             try:
                 supported(store, preview)
             except (ValueError, KeyError, TypeError):

@@ -283,8 +283,10 @@ class ProjectTransactions:
                 raise
 
     def preview_restore(self, project: str, snapshot: str) -> ChangePreview:
-        with self.store._transaction():
-            target = self._snapshot(project, snapshot)
+        with self.store._snapshot_writer() as snapshot_writer:
+            target = self.store._materialize_snapshot(
+                snapshot, project, _write_scope=snapshot_writer
+            )
             base = self.store.revision(project)
             if target["projectRevision"] > base:
                 raise ProjectFault("RESTORE_FUTURE_SNAPSHOT")

@@ -127,7 +127,7 @@ s.close(); print(json.dumps(out,ensure_ascii=False))
   }
 }
 
-function engineFor(
+async function engineFor(
   database: string,
   projectId: string,
   profile: 'business3' | 'legacy2' = 'business3',
@@ -135,9 +135,18 @@ function engineFor(
   const engine = new EngineSupervisor(location, {
     profile,
     dataPath: database,
-    allowedProjects: [projectId],
+    ...(profile === 'legacy2' ? { allowedProjects: [projectId] } : {}),
   })
   engines.push(engine)
+  if (profile === 'business3') {
+    const client = engine.mainlineProjectClient()
+    expect(client).not.toBeNull()
+    if (!client) throw new Error('Expected actual business3 mainline client')
+    expect(await client.request('project.open', { projectId })).toMatchObject({
+      projectId,
+      formatVersion: 3,
+    })
+  }
   return engine
 }
 
@@ -265,7 +274,7 @@ afterEach(async () => {
 describe('formal ChangeSet through the real supervisor and Python coordinator', () => {
   it('assembles the complete actual Diff, commits and undoes, then reconciles the same operation in a new Session', async () => {
     const fixture_ = fixture()
-    const engine = engineFor(fixture_.database, fixture_.projectId)
+    const engine = await engineFor(fixture_.database, fixture_.projectId)
     const definition = {
       layer: 'ontology',
       id: 'Asset',
@@ -309,7 +318,7 @@ describe('formal ChangeSet through the real supervisor and Python coordinator', 
     ])
     expect((await terminal(engine, reversed.job)).state).toBe('succeeded')
     await stop(engine)
-    const successor = engineFor(fixture_.database, fixture_.projectId)
+    const successor = await engineFor(fixture_.database, fixture_.projectId)
     expect(await successor.request('job.create', first.request)).toMatchObject({
       jobId: first.job.jobId,
       state: 'succeeded',
@@ -349,7 +358,7 @@ s.close();print(json.dumps(state))
 
   it('returns a multi-frame old typed value in full and rejects reordered pages in the actual consumer helper', async () => {
     const fixture_ = fixture(true)
-    const engine = engineFor(fixture_.database, fixture_.projectId)
+    const engine = await engineFor(fixture_.database, fixture_.projectId)
     const value = {
       triples: [{ subject: 'urn:Asset', predicate: 'urn:label', object: '"new"' }],
       references: [],

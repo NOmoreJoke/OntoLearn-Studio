@@ -1,4 +1,5 @@
-import { test, expect, _electron as electron } from '@playwright/test'
+import { launchIsolatedDesktop } from './isolated-desktop'
+import { test, expect } from '@playwright/test'
 import { resolve } from 'node:path'
 import { writeFile } from 'node:fs/promises'
 import type { HealthResult } from '@ontolearn/contracts'
@@ -6,7 +7,7 @@ import type { HealthResult } from '@ontolearn/contracts'
 test('desktop calls real engine, keeps isolation and fits minimum window', async () => {
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
-  const application = await electron.launch({
+  const application = await launchIsolatedDesktop({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
       : { args: [resolve('apps/desktop')] }),
@@ -16,13 +17,13 @@ test('desktop calls real engine, keeps isolation and fits minimum window', async
   try {
     const page = await application.firstWindow()
     await expect(page.getByRole('heading', { level: 1 })).toContainText('转化为可验证的知识')
-    await expect(page.getByRole('status')).toContainText('尚未检查')
+    await expect(page.locator('.health-result')).toContainText('尚未检查')
     await page.getByRole('button', { name: '检查本地引擎' }).click()
     await expect(page.getByRole('button', { name: '检查本地引擎' })).toBeEnabled()
-    await expect(page.getByRole('status')).toContainText('本地引擎已连接')
+    await expect(page.locator('.health-result')).toContainText('本地引擎已连接')
     await page.getByRole('button', { name: '检查本地引擎' }).click()
     await expect(page.getByRole('button', { name: '检查本地引擎' })).toBeEnabled()
-    await expect(page.getByRole('status')).toContainText('协议 v2')
+    await expect(page.locator('.health-result')).toContainText('协议 v3')
     expect(
       await page.evaluate(() => typeof (window as unknown as { require?: unknown }).require),
     ).toBe('undefined')
@@ -44,8 +45,8 @@ test('desktop calls real engine, keeps isolation and fits minimum window', async
     await expect(page.getByRole('heading', { name: '六个模块，一条学习路径' })).toBeInViewport()
     await page.getByRole('button', { name: '检查本地引擎' }).click()
     await expect(page.getByRole('button', { name: '检查本地引擎' })).toBeEnabled()
-    await expect(page.getByRole('status')).toContainText('本地引擎已连接')
-    await page.getByRole('link', { name: '开发概览' }).click()
+    await expect(page.locator('.health-result')).toContainText('本地引擎已连接')
+    await page.getByRole('link', { name: '项目工作台' }).click()
     await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
     await page.screenshot({ path: 'test-results/desktop-1024.png' })
   } finally {
@@ -58,7 +59,7 @@ test('a health reply from before connection loss cannot replace the current stat
   const replies: { outcome: string; before: string | null; after: string | null }[] = []
   const env = { ...process.env }
   delete env.ELECTRON_RUN_AS_NODE
-  const application = await electron.launch({
+  const application = await launchIsolatedDesktop({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
       : { args: [resolve('apps/desktop')] }),

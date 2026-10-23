@@ -1,0 +1,14 @@
+import type { QueryConsumerBridge, MainlineProjectBridge, BridgeResult, JobView, TaskUpdate } from '../../../apps/desktop/src/renderer/src/query/api002-source-types'
+export interface JobListOptions {
+  filter: 'all' | 'active' | 'terminal'
+  pageSize: number
+  listSnapshotId: string | null
+  cursor: string | null
+}
+export interface ActualPageBridge extends QueryConsumerBridge,MainlineProjectBridge {
+getJob(jobId: string): Promise<BridgeResult<JobView>>
+listJobs(options: JobListOptions): Promise<BridgeResult<Record<string, unknown>>>
+cancelJob(jobId: string): Promise<BridgeResult<Record<string, unknown>>>
+getOperation(operationId: string): Promise<BridgeResult<Record<string, unknown> | null>>
+onTaskUpdate(listener: (update: TaskUpdate) => void): () => void
+}

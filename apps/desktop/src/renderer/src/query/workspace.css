@@ -1,0 +1,49 @@
+.query-workspace-page {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+  min-width: 0;
+}
+.query-workspace-page code,
+.query-workspace-page p {
+  overflow-wrap: anywhere;
+}
+.query-workspace-page label {
+  display: grid;
+  gap: 0.35rem;
+  margin-block: 0.5rem;
+}
+.query-workspace-page input,
+.query-workspace-page select,
+.query-workspace-page textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+.query-workspace-page input[type='checkbox'] {
+  justify-self: start;
+}
+.query-workspace-page button {
+  margin: 0.25rem;
+}
+.query-workspace-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  gap: 1.5rem;
+}
+.query-workspace-columns section {
+  min-width: 0;
+}
+.query-workspace-page pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 36rem;
+  overflow: auto;
+}
+.query-workspace-code {
+  min-height: 16rem;
+  font-family: monospace;
+}
+.query-workspace-condition {
+  border-bottom: 1px solid currentColor;
+  padding-block: 0.75rem;
+}

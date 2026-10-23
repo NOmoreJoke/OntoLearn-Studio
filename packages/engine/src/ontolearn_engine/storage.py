@@ -470,6 +470,8 @@ class Store:
         preview_control: dict | None = None,
         compensate: dict | None = None,
         application: dict | None = None,
+        creation: dict | None = None,
+        example_creation: dict | None = None,
         hook: Hook = lambda _: None,
     ) -> dict:
         """Atomic ChangeSet or whole managed-range replacement.
@@ -477,6 +479,47 @@ class Store:
         mapping = {id, rows:[{row, facts:[...]}]}; a prepared storage plan,
         NOT a CSV parser or complete mapping executor. No silent takeover exists.
         """
+        if example_creation is not None:
+            from ontolearn_engine.project.project_lifecycle import commit_example
+
+            if any(
+                value is not None
+                for value in (
+                    definitions,
+                    remove_definitions,
+                    manual,
+                    edits,
+                    remove,
+                    mapping,
+                    preview_identity,
+                    preview_control,
+                    compensate,
+                    application,
+                    creation,
+                )
+            ):
+                raise ValueError("Example creation cannot mix with another mutation branch")
+            return commit_example(self, project, base, operation, job, example_creation, hook)
+        if creation is not None:
+            from ontolearn_engine.project.project_lifecycle import commit as commit_creation
+
+            if any(
+                value is not None
+                for value in (
+                    definitions,
+                    remove_definitions,
+                    manual,
+                    edits,
+                    remove,
+                    mapping,
+                    preview_identity,
+                    preview_control,
+                    compensate,
+                    application,
+                )
+            ):
+                raise ValueError("Creation cannot mix with an existing mutation branch")
+            return commit_creation(self, project, base, operation, job, creation, hook)
         if application is not None:
             from ontolearn_engine.project.applications import commit as commit_application
 
@@ -757,6 +800,17 @@ class Store:
             self._validate_references(project)
             self._validate_single_slots(project)
             after_state = self.state(project)
+            from ontolearn_engine.project.entity_metadata import (
+                validate_change,
+                validate_compensation,
+            )
+
+            # The original selector was authenticated by compensation.resolve
+            # above. No public validation bypass or second writer is introduced.
+            if compensate is None:
+                validate_change(before_state, after_state)
+            else:
+                validate_compensation(before_state, after_state)
             if after_state["facts"] == before_state["facts"]:
                 changed.discard("facts:asserted")
             before_definitions = {
@@ -1184,6 +1238,62 @@ class Store:
         ).fetchone()
         return dict(row) if row else None
 
+    def _snapshot_projection(self, project: str) -> dict:
+        """A coherent canonical value, not a promise that a row was persisted.
+
+        Reads never acquire write authority or populate snapshots. A normal
+        writer must compare this content identity again in its own transaction
+        before materializing an absent current input.
+        """
+        with self._read():
+            payload = {
+                "project": project,
+                "projectRevision": self.revision(project),
+                "dependencyVector": self.vector(project),
+                "state": self.state(project),
+            }
+            return self._validate_project_snapshot(payload, project)
+
+    @contextmanager
+    def _snapshot_writer(self, hook: Hook = lambda _: None) -> Iterator[object]:
+        """Internal normal-write scope; never issued to a read ticket.
+
+        Existing writer entry points own the transaction and retain their normal
+        authorization/CAS checks. The identity token prevents a plain _read or
+        caller-created SQLite transaction from being treated as this write scope.
+        """
+        with self._transaction(hook):
+            previous = getattr(self, "_snapshot_write_scope", None)
+            scope = object()
+            self._snapshot_write_scope = scope
+            try:
+                yield scope
+            finally:
+                self._snapshot_write_scope = previous
+
+    def _materialize_snapshot(self, identity: str, project: str, *, _write_scope) -> dict:
+        """Consume stored history, or atomically CAS an exact current projection.
+
+        There is no historical/current fallback in load_snapshot. An absent
+        identity can be materialized only by an existing normal writer and only
+        when every canonical current byte still derives that supplied identity.
+        """
+        if (
+            _write_scope is None
+            or _write_scope is not getattr(self, "_snapshot_write_scope", None)
+            or not self._db.in_transaction
+        ):
+            raise Conflict("Snapshot write scope required", category="state")
+        row = self._db.execute("SELECT 1 FROM snapshots WHERE id=?", (identity,)).fetchone()
+        if row is None:
+            payload = self._snapshot_projection(project)
+            if digest(payload) != identity:
+                raise Conflict("Current snapshot identity changed", category="identity")
+            self._snapshot(payload)
+        # Persisted rows (including historical inputs) always take the original
+        # strict hash/shape/project path. Corrupt rows are never repaired here.
+        return self._project_snapshot(identity, project)
+
     def snapshot(self, project: str) -> str:
         with self._transaction():
             payload = {
@@ -1213,6 +1323,10 @@ class Store:
     def _project_snapshot(self, identity: str, project: str) -> dict:
         """Validate storage shape; round evidence is not a formal project input."""
         snap = self.load_snapshot(identity)
+        return self._validate_project_snapshot(snap, project)
+
+    def _validate_project_snapshot(self, snap: dict, project: str) -> dict:
+        """The same strict validation for projected and persisted project values."""
         if not isinstance(snap, dict) or not isinstance(snap.get("project"), str):
             raise ValueError("Project state snapshot required")
         if snap["project"] != project:
@@ -1349,8 +1463,8 @@ class Store:
     ) -> str:
         """Append result evidence, publish current only after in-transaction revalidation."""
         self._result_identity(kind, implementation)
-        with self._transaction():
-            snap = self._project_snapshot(snapshot, project)
+        with self._snapshot_writer() as snapshot_writer:
+            snap = self._materialize_snapshot(snapshot, project, _write_scope=snapshot_writer)
             if not isinstance(dependencies, list) or not dependencies:
                 raise ValueError("At least one registered dependency required")
             for key in dependencies:
@@ -1484,8 +1598,8 @@ class Store:
     def start_run(self, project: str, snapshot: str, config: dict, implementation: dict) -> str:
         if not isinstance(config, dict) or not isinstance(implementation, dict):
             raise ValueError("Run config and implementation must be objects")
-        with self._transaction():
-            self._project_snapshot(snapshot, project)
+        with self._snapshot_writer() as snapshot_writer:
+            self._materialize_snapshot(snapshot, project, _write_scope=snapshot_writer)
             identity = str(uuid4())
             self._db.execute(
                 "INSERT INTO runs VALUES(?,?,?,?,?)",

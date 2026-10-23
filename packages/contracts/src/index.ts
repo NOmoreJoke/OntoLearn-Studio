@@ -2,6 +2,30 @@ import { z } from 'zod'
 import { validateBusiness3, validateStartupError, validateV2 } from './v2'
 
 export const PROTOCOL_VERSION = 2 as const
+// Private preload delivery protocol. These are never exposed on DesktopBridge
+// and grant no project, read, write, or backend terminal authority.
+export const mainlineDeliveryEnvelopeSchema = z
+  .object({ deliveryVersion: z.literal(1), deliveryId: z.uuid(), payload: z.unknown() })
+  .strict()
+export const mainlineDeliveryAckSchema = z
+  .object({ deliveryVersion: z.literal(1), deliveryId: z.uuid() })
+  .strict()
+export const mainlineDeliveryAcceptedSchema = mainlineDeliveryAckSchema
+  .extend({ accepted: z.literal(true) })
+  .strict()
+export const mainlineNoDeliverySchema = z
+  .object({
+    ok: z.literal(false),
+    error: z
+      .object({
+        code: z.literal('PERMISSION_DENIED'),
+        messageKey: z.literal('permission.denied'),
+        params: z.object({}).strict(),
+        retryable: z.literal(false),
+      })
+      .strict(),
+  })
+  .strict()
 export const healthSchema = z
   .object({
     protocolVersion: z.literal(PROTOCOL_VERSION),
@@ -153,8 +177,72 @@ export interface ResultPageOptions {
   pageSize: number
   cursor: string | null
 }
+// Display DTOs for already-validated result payloads. Runtime bounds and authority remain
+// with the profile-selected canonical validators and the original request binding.
+export type ResultScopeDTO = 'asserted' | 'asserted+derived' | 'scenario'
+export type ResultDefinitionLayerDTO =
+  'ontology' | 'rule' | 'constraint' | 'behavior' | 'scenario' | 'mapping' | 'query'
+export type ResultStaleDependenciesDTO = {
+  ONTOLOGY_CHANGED: `ontology:${string}`
+  FACTS_CHANGED: 'facts:asserted'
+  MAPPING_INPUT_CHANGED: `mapping:${string}`
+  VALIDATION_DEFINITION_CHANGED: `constraint:${string}`
+  RULE_CHANGED: `rule:${string}`
+  BEHAVIOR_CHANGED: `behavior:${string}`
+  SCENARIO_CHANGED: `scenario:${string}`
+  QUERY_CHANGED: `query:${string}`
+}
+export type ResultStaleReasonDTO = {
+  [Code in keyof ResultStaleDependenciesDTO]: {
+    code: Code
+    dependency: ResultStaleDependenciesDTO[Code]
+    before: number
+    after: number
+  }
+}[keyof ResultStaleDependenciesDTO]
+export type ResultMetadataDTO = {
+  resultId: string
+  projectId: string
+  jobId: string
+  kind: 'query' | 'reasoning' | 'validation' | 'behavior' | 'scenario' | 'test' | 'receipt'
+  definitionId: string
+  inputSnapshotId: string
+  inputProjectRevision: number
+  dependencyVector: Record<string, number>
+  definitionSetDigests: Partial<Record<ResultDefinitionLayerDTO, string>>
+  implementation: {
+    executionSemanticsVersion: string
+    engineVersion: string
+    dependencyLockHash: string
+  }
+  scope: ResultScopeDTO
+  parametersHash: string
+  state: 'current' | 'stale' | 'historical'
+  staleReason: ResultStaleReasonDTO[]
+  payloadStatus: 'available' | 'evicted'
+  createdAtMs: number
+  historicalSelectionRequired: boolean
+}
+export type ResultPageBindingDTO = {
+  projectId: string
+  resultId: string
+  inputSnapshotId: string
+  scope: ResultScopeDTO
+  parametersHash: string
+  order: 'ordinal+rowId:asc'
+}
+export type ResultRowDTO = {
+  rowId: string
+  ordinal: number
+  cells: Array<string | number | boolean | null>
+}
+export type ResultPageDTO = {
+  binding: ResultPageBindingDTO
+  rows: ResultRowDTO[]
+  nextCursor: string | null
+}
 // Renderer receives named operations only; project authority comes from main, never a supplied UUID.
-export interface DesktopBridge {
+export interface DesktopBridge extends QueryConsumerBridge, MainlineProjectBridge {
   getEngineHealth(): Promise<HealthResult>
   restoreTasks(): Promise<BridgeResult<TaskView>>
   getActiveProject(): Promise<BridgeResult<ProjectView | null>>
@@ -163,10 +251,113 @@ export interface DesktopBridge {
   cancelJob(jobId: string): Promise<BridgeResult<Record<string, unknown>>>
   subscribeJob(jobId: string): Promise<BridgeResult<JobView>>
   unsubscribeJob(jobId: string, generation: number): Promise<BridgeResult<null>>
-  getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>>
-  getResultPage(options: ResultPageOptions): Promise<BridgeResult<Record<string, unknown>>>
+  getResult(resultId: string): Promise<BridgeResult<ResultMetadataDTO>>
+  getResultPage(options: ResultPageOptions): Promise<BridgeResult<ResultPageDTO>>
   getOperation(operationId: string): Promise<BridgeResult<Record<string, unknown> | null>>
   onTaskUpdate(listener: (update: TaskUpdate) => void): () => void
+}
+
+/** Main/preload-only finite channel association; no generic invoke is exposed to renderer. */
+export type DesktopIpcMap = {
+  'project:draft-save': {
+    args: [args: Parameters<MainlineProjectBridge['saveProjectDraft']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['saveProjectDraft']>>
+  }
+  'project:catalog': {
+    args: [args: Parameters<MainlineProjectBridge['getProjectCatalog']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['getProjectCatalog']>>
+  }
+  'project:create-blank': {
+    args: [args: Parameters<MainlineProjectBridge['createBlankProject']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['createBlankProject']>>
+  }
+  'project:create-example': {
+    args: [args: Parameters<MainlineProjectBridge['createExampleProject']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['createExampleProject']>>
+  }
+  'project:open': {
+    args: [args: Parameters<MainlineProjectBridge['openProject']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['openProject']>>
+  }
+  'project:read': {
+    args: [args: Parameters<MainlineProjectBridge['readProject']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['readProject']>>
+  }
+  'project:changeset-preview': {
+    args: [args: Parameters<MainlineProjectBridge['previewProjectChangeset']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['previewProjectChangeset']>>
+  }
+  'project:changeset-diff-page': {
+    args: [args: Parameters<MainlineProjectBridge['getProjectDiffPage']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['getProjectDiffPage']>>
+  }
+  'project:changeset-confirm': {
+    args: [args: Parameters<MainlineProjectBridge['confirmProjectChangeset']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['confirmProjectChangeset']>>
+  }
+  'project:changeset-commit': {
+    args: [args: Parameters<MainlineProjectBridge['commitProjectChangeSet']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['commitProjectChangeSet']>>
+  }
+  'query:definition-base': {
+    args: []
+    result: Awaited<ReturnType<QueryConsumerBridge['getQueryDefinitionBase']>>
+  }
+  'query:definition-load': {
+    args: [args: Parameters<QueryConsumerBridge['loadQueryDefinition']>[0]]
+    result: Awaited<ReturnType<QueryConsumerBridge['loadQueryDefinition']>>
+  }
+  'query:execute-saved': {
+    args: [args: QueryExecuteArgs]
+    result: Awaited<ReturnType<QueryConsumerBridge['executeSavedQuery']>>
+  }
+  'query:result-describe': {
+    args: [args: { resultId: string }]
+    result: Awaited<ReturnType<QueryConsumerBridge['getQueryResultDescriptor']>>
+  }
+  'query:result-text-page': {
+    args: [args: Parameters<QueryConsumerBridge['getQueryExecutedTextPage']>[0]]
+    result: Awaited<ReturnType<QueryConsumerBridge['getQueryExecutedTextPage']>>
+  }
+  'query:result-rows-page': {
+    args: [args: Parameters<QueryConsumerBridge['getQueryRowsPage']>[0]]
+    result: Awaited<ReturnType<QueryConsumerBridge['getQueryRowsPage']>>
+  }
+  'engine:health': { args: []; result: Awaited<ReturnType<DesktopBridge['getEngineHealth']>> }
+  'tasks:restore': { args: []; result: Awaited<ReturnType<DesktopBridge['restoreTasks']>> }
+  'project:active': { args: []; result: Awaited<ReturnType<DesktopBridge['getActiveProject']>> }
+  'job:get': { args: [jobId: string]; result: Awaited<ReturnType<DesktopBridge['getJob']>> }
+  'job:list': {
+    args: [options: JobListOptions]
+    result: Awaited<ReturnType<DesktopBridge['listJobs']>>
+  }
+  'job:cancel': { args: [jobId: string]; result: Awaited<ReturnType<DesktopBridge['cancelJob']>> }
+  'job:subscribe': {
+    args: [jobId: string]
+    result: Awaited<ReturnType<DesktopBridge['subscribeJob']>>
+  }
+  'job:unsubscribe': {
+    args: [request: { jobId: string; generation: number }]
+    result: Awaited<ReturnType<DesktopBridge['unsubscribeJob']>>
+  }
+  'result:get': {
+    args: [resultId: string]
+    result: Awaited<ReturnType<DesktopBridge['getResult']>>
+  }
+  'result:page': {
+    args: [options: ResultPageOptions]
+    result: Awaited<ReturnType<DesktopBridge['getResultPage']>>
+  }
+  'operation:get': {
+    args: [operationId: string]
+    result: Awaited<ReturnType<DesktopBridge['getOperation']>>
+  }
+}
+export type DesktopIpcChannel = keyof DesktopIpcMap
+export type DesktopIpcHandlers = {
+  [Channel in DesktopIpcChannel]: (
+    ...args: DesktopIpcMap[Channel]['args']
+  ) => Promise<DesktopIpcMap[Channel]['result']>
 }
 
 /** Immutable ChangeSet transport DTOs; none of these values grants confirmation authority. */
@@ -407,4 +598,326 @@ export async function reassembleChangeSetDocument(
     return v === null || typeof v === 'boolean'
   }
   return Array.isArray(value) && data(value) ? value : invalid()
+}
+
+/** Query consumer contract, source ticket 2026-10-23. Save/confirm is not registered. */
+export type QuerySelectionDTO = { kind: 'current' } | { kind: 'historical'; snapshotId: string }
+export type QueryDraftDTO = {
+  name: string
+  description: string
+  sparql: string
+  scope: 'asserted' | 'asserted+derived'
+  capabilityQuestion: string
+  source: 'template' | 'visual' | 'editor' | 'model'
+}
+export type QueryDefinitionBindingDTO = {
+  definitionId: string
+  definitionVersion: number
+  definitionSha256: string
+  descriptorVersion: 1
+  descriptorSha256: string
+}
+export type QueryExecutionIdentityDTO = {
+  implementation: ResultMetadataDTO['implementation']
+  limits: Record<string, number>
+  registryHash: string
+}
+export type QueryDefinitionRecordDTO = {
+  projectId: string
+  definitionId: string
+  baseProjectRevision: number
+  inputSnapshotId: string
+  definitionVersion: number
+  definitionSha256: string
+} & (
+  | { kind: 'legacy'; text: string }
+  | { kind: 'managed'; descriptorVersion: 1; descriptorSha256: string; draft: QueryDraftDTO }
+)
+export type QueryDefinitionLoadDTO = QueryDefinitionRecordDTO & { loadRef: string }
+export type QueryIdentityDTO = {
+  projectId: string
+  resultId: string
+  jobId: string
+  inputSnapshotId: string
+  inputProjectRevision: number
+  scope: 'asserted'
+  definitionId: string
+  parametersHash: string
+  implementation: ResultMetadataDTO['implementation']
+  payloadSha256: string
+  definitionSha256: string
+  inputSelection: 'current' | 'historical'
+  projectionVersion: 1
+  lengthPolicyId: 'query-presentation-scalars-v1'
+}
+export type QueryCellDTO =
+  | null
+  | { kind: 'iri'; iri: string; n3: string }
+  | {
+      kind: 'literal'
+      lexical: string
+      n3: string
+      literalType:
+        { kind: 'plain' } | { kind: 'language'; tag: string } | { kind: 'datatype'; iri: string }
+    }
+export type QueryDescriptorWireDTO = {
+  identity: QueryIdentityDTO
+  metadata: ResultMetadataDTO
+  executedText: { sha256: string; utf8Bytes: number; unicodeScalars: number; utf16Units: number }
+  query:
+    | { kind: 'ASK'; value: boolean }
+    | { kind: 'SELECT'; columns: Array<{ index: number; name: string }>; rowCount: number }
+}
+export type QueryDescriptorDTO = QueryDescriptorWireDTO & { descriptorRef: string }
+export type QueryTextPageDTO = {
+  identity: QueryIdentityDTO
+  kind: 'text'
+  order: 'utf8-byte:asc'
+  startUtf8Byte: number
+  utf8Length: number
+  text: string
+  nextCursor: string | null
+}
+export type QueryRowsPageDTO = {
+  identity: QueryIdentityDTO
+  kind: 'rows'
+  order: 'query-index:asc'
+  rows: Array<{ index: number; rowKey: string; cells: QueryCellDTO[] }>
+  nextCursor: string | null
+}
+export type QueryExecutionReceiptDTO = {
+  operationId: string
+  acceptedJob: JobView
+  watch: { state: 'subscribed' } | { state: 'pending'; error: SafeError }
+}
+export type QueryExecuteArgs = {
+  operationId: string
+  loadRef: string
+  visibleDraft: QueryDraftDTO
+  selection: QuerySelectionDTO
+}
+export interface QueryConsumerBridge {
+  getQueryDefinitionBase(): Promise<
+    BridgeResult<{ baseRef: string; projectRevision: number; inputSnapshotId: string }>
+  >
+  loadQueryDefinition(args: {
+    definitionId: string
+    selection: QuerySelectionDTO
+  }): Promise<BridgeResult<QueryDefinitionLoadDTO>>
+  executeSavedQuery(args: QueryExecuteArgs): Promise<BridgeResult<QueryExecutionReceiptDTO>>
+  getQueryResultDescriptor(args: { resultId: string }): Promise<BridgeResult<QueryDescriptorDTO>>
+  getQueryExecutedTextPage(args: {
+    descriptorRef: string
+    maxUtf8Bytes: number
+    cursor: string | null
+  }): Promise<BridgeResult<QueryTextPageDTO>>
+  getQueryRowsPage(args: {
+    descriptorRef: string
+    pageSize: number
+    cursor: string | null
+  }): Promise<BridgeResult<QueryRowsPageDTO>>
+}
+
+export type MainlineMetadataDTO = {
+  name: string | null
+  templateRef: string | null
+  archived: boolean
+  mode: 'guided' | 'assisted'
+  origin: 'created' | 'migration-default'
+}
+export type MainlineCatalogItemDTO = {
+  projectId: string
+  domainRevision: number
+  metadataVersion: number
+  metadata: MainlineMetadataDTO
+  operationSequence: number
+  checkpointRef: string
+}
+export type MainlineCatalogDTO = {
+  catalogVersion: 1
+  snapshotId: string
+  items: MainlineCatalogItemDTO[]
+  total: number
+  offset: number
+  nextCursor: string | null
+}
+export type MainlineCreateRequestDTO = {
+  requestVersion: 1
+  operationId: string
+  name: string
+  initialization: { kind: 'blank' }
+}
+export type MainlineCreateResultDTO = {
+  createResultVersion: 1
+  operationId: string
+  projectId: string
+  requestHash: string
+  receipt: {
+    projectCreateReceiptVersion: 1
+    libraryEvidenceRef: string
+    projectId: string
+    operationId: string
+    requestHash: string
+    contextHash: string
+    planHash: string
+    operationSequence: 1
+    domainRevision: 0
+    metadataVersion: 1
+    inputSnapshotId: string
+    beforeCheckpointRef: string
+    afterCheckpointRef: string
+  }
+}
+export type MainlineDraftDTO =
+  | { editor: string; state: 'missing' }
+  | {
+      editor: string
+      state: 'present' | 'tombstone'
+      generation: number
+      present: boolean
+      boundDomainRevision: number
+      contentHash: string | null
+      contentJson: string | null
+    }
+export type MainlineProjectReadDTO = {
+  readVersion: 1
+  projectId: string
+  inputSnapshotId: string
+  workspace: MainlineCatalogItemDTO & {
+    workspaceVersion: 1
+    inputSnapshotId: string
+    draft: MainlineDraftDTO
+  }
+  domain: {
+    projectRevision: number
+    dependencyVector: Record<string, number>
+    state: {
+      definitions: Array<{ layer: ResultDefinitionLayerDTO; id: string; payload: string }>
+      facts: Array<{
+        id: string
+        subject: string
+        predicate: string
+        object: string | null
+        owner: string | null
+        source_row: string | null
+        managed_value: string | null
+      }>
+      mappingState: Record<
+        string,
+        {
+          generatedVersion: number
+          stale: Array<{ code: string; dependency: string; before: number; after: number }>
+        }
+      >
+    }
+  }
+}
+export interface OntologyEntityMetadataDTO {
+  entityMetadataVersion: 1
+  entities: Record<
+    string,
+    {
+      identifier: string
+      labels: Array<[string, string]>
+      definitions: Array<[string, string]>
+      synonyms: string[]
+      examples: string[]
+    }
+  >
+}
+export type MainlineChangePlanDTO = {
+  definitions?: Array<
+    | {
+        layer: 'ontology'
+        id: string
+        value: {
+          triples: Array<{ subject: string; predicate: string; object: string }>
+          references?: Array<{ layer: string; id: string }>
+          singleValuedPredicates?: string[]
+          entityMetadata?: OntologyEntityMetadataDTO
+        }
+      }
+    | {
+        layer: 'query'
+        id: string
+        value: {
+          text: string
+          references: Array<{ layer: string; id: string }>
+          descriptor: Omit<QueryDraftDTO, 'sparql'> & { version: 1 }
+        }
+      }
+  >
+  remove_definitions?: Array<{ layer: 'ontology' | 'query'; id: string }>
+  manual?: Array<{ id: string; subject: string; predicate: string; object: string }>
+  edits?: Record<string, string>
+  remove?: string[]
+}
+export type MainlinePreviewArgs =
+  | { baseRevision: number; intent: 'change'; plan: MainlineChangePlanDTO }
+  | { baseRevision: number; intent: 'undo'; targetOperationId: string }
+export interface MainlineProjectBridge {
+  saveProjectDraft(args: MainlineDraftSaveArgs): Promise<BridgeResult<MainlineDraftSaveResultDTO>>
+  getProjectCatalog(args: {
+    pageSize: number
+    cursor: string | null
+  }): Promise<BridgeResult<MainlineCatalogDTO>>
+  createBlankProject(args: MainlineCreateRequestDTO): Promise<BridgeResult<MainlineCreateResultDTO>>
+  createExampleProject(
+    args: MainlineExampleCreateRequestDTO,
+  ): Promise<BridgeResult<MainlineExampleCreateResultDTO>>
+  openProject(args: { projectId: string }): Promise<BridgeResult<ProjectView>>
+  readProject(args: { editor: string }): Promise<BridgeResult<MainlineProjectReadDTO>>
+  previewProjectChangeset(args: MainlinePreviewArgs): Promise<BridgeResult<ChangeSetPreview>>
+  getProjectDiffPage(args: {
+    previewHash: string
+    documentKind: 'diff' | 'undo-impact'
+    pageSize: number
+    cursor: string | null
+  }): Promise<BridgeResult<ChangeSetPage>>
+  confirmProjectChangeset(args: {
+    previewHash: string
+    completionCursor: string
+  }): Promise<BridgeResult<ChangeSetConfirmation>>
+  commitProjectChangeSet(args: {
+    operationId: string
+    confirmation: ChangeSetConfirmation
+  }): Promise<BridgeResult<JobView>>
+}
+
+export type MainlineDraftSaveArgs = {
+  operationId: string
+  editor: string
+  expectedGeneration: number
+  boundDomainRevision: number
+  contentJson: string
+}
+export type MainlineDraftSaveResultDTO = {
+  draftSaveVersion: 1
+  projectId: string
+  operationId: string
+  operationSequence: number
+  editor: string
+  generation: number
+  boundDomainRevision: number
+  contentHash: string
+  afterCheckpointRef: string
+}
+
+export type MainlineExampleCreateRequestDTO = {
+  exampleCreateRequestVersion: 1
+  operationId: string
+  name: string
+  exampleId: 'equipment-maintenance'
+  inputDigest: '52952b637b02ba283d47a9e0c34a1691c1d850b94bb9b366a9863a55507c435e'
+}
+export type MainlineExampleCreateResultDTO = Omit<MainlineCreateResultDTO, 'receipt'> & {
+  receipt: Omit<
+    MainlineCreateResultDTO['receipt'],
+    'projectCreateReceiptVersion' | 'domainRevision'
+  > & {
+    exampleCreateReceiptVersion: 1
+    exampleId: 'equipment-maintenance'
+    inputDigest: MainlineExampleCreateRequestDTO['inputDigest']
+    domainRevision: 1
+  }
 }

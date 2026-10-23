@@ -1,0 +1,58 @@
+.typed-query-results {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+  min-width: 0;
+}
+.typed-query-results p,
+.typed-query-results code,
+.typed-query-results li {
+  overflow-wrap: anywhere;
+}
+.typed-query-results pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 24rem;
+  overflow: auto;
+}
+.typed-query-table {
+  max-height: 32rem;
+  overflow: auto;
+}
+.typed-query-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.typed-query-table th,
+.typed-query-table td {
+  padding: 0.75rem;
+  border: 1px solid currentColor;
+  text-align: left;
+  vertical-align: top;
+}
+.typed-query-table td {
+  min-width: 10rem;
+}
+.typed-query-graph {
+  border-top: 1px solid currentColor;
+  padding-top: 1rem;
+}
+.typed-query-graph svg {
+  display: block;
+  width: 100%;
+  max-width: 48rem;
+}
+.typed-query-graph line,
+.typed-query-graph circle {
+  stroke: currentColor;
+}
+.typed-query-graph circle {
+  fill: none;
+}
+.typed-query-graph text {
+  fill: currentColor;
+  font-size: 14px;
+}
+.typed-query-results button {
+  margin: 0.25rem;
+}
