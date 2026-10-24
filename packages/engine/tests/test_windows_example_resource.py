@@ -7,6 +7,7 @@ import subprocess
 import pytest
 from ontolearn_engine.project import _windows_resource as resource
 from ontolearn_engine.project.mainline import ExampleResourceFault, make_example_provider
+from test_mainline_example_provider import bundle as bundle
 from test_mainline_example_provider import load
 
 
