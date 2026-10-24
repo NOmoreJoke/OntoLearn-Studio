@@ -1,0 +1,206 @@
+{
+  "schema": "ontolearn.rdflib.fr201.typed-source-provenance/1",
+  "status": "ARTIFACT_AND_LIBRARY_FIXTURE_VERIFIED_NOT_ADOPTED_NOT_PRODUCT_ACCEPTED",
+  "upstream": {
+    "path": "upstream/rdflib-7.6.0-py3-none-any.whl",
+    "bytes": 615416,
+    "sha256": "30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd"
+  },
+  "upstreamURL": "https://files.pythonhosted.org/packages/10/c2/6604a71269e0c1bd75656d5a001432d16f2cc5b8c057140ec797155c295e/rdflib-7.6.0-py3-none-any.whl",
+  "upstreamVersion": "7.6.0",
+  "localVersion": "7.6.0+ontolearn.fr201.1",
+  "sourceBefore": {
+    "path": "upstream/notation3.py",
+    "bytes": 67404,
+    "sha256": "a3e361632567b5326a06318e93e081f31f93c7497d1b52cbb91f2ef460a9d3ca"
+  },
+  "sourceAfter": {
+    "path": "after/notation3.py",
+    "bytes": 67880,
+    "sha256": "a1f8eef3d99793d533e4b60da3299abc627fb2d164c1fa92b894c414333cb3b1"
+  },
+  "patch": {
+    "path": "notation3-input-types.patch",
+    "bytes": 1748,
+    "sha256": "03e12f742d8f52a105f9513f1788df928def25b06663efc616fa3eaaa3077b65"
+  },
+  "repackScript": {
+    "path": "scripts/repack-rdflib-input-types.py",
+    "bytes": 7112,
+    "sha256": "837aa03bb6ab6f65fd668123bbbb4af69ed15977bede4cb0a753f4625fdced4a",
+    "pathBasis": "Canonical repository root after separate ROOT-authorized adoption"
+  },
+  "repackResults": [
+    {
+      "path": "after/repack-001/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl",
+      "bytes": 2378177,
+      "sha256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137"
+    },
+    {
+      "path": "after/repack-002/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl",
+      "bytes": 2378177,
+      "sha256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137"
+    }
+  ],
+  "repackDeterministicByteIdentity": true,
+  "determinism": "stdlib ZIP_STORED, lexicographic filenames, fixed1980 timestamp, fixed regular0644 mode; no compression-library variability",
+  "baseWheelWHEELMetadata": "Wheel-Version: 1.0\nGenerator: poetry-core 1.9.1\nRoot-Is-Purelib: true\nTag: py3-none-any\n",
+  "inheritedGeneratorMeaning": "WHEEL Generator poetry-core1.9.1 is preserved upstream-base metadata, not a claim that poetry-core made this downstream repack. This local version was resealed by the pinned script above. Original release __date__ is also inherited.",
+  "changedContentMembers": [
+    "rdflib/plugins/parsers/notation3.py",
+    "rdflib-7.6.0+ontolearn.fr201.1.dist-info/METADATA (Version only)",
+    "rdflib-7.6.0+ontolearn.fr201.1.dist-info/RECORD"
+  ],
+  "distInfoDirectoryRenamedForHonestLocalVersion": true,
+  "memberCount": 142,
+  "license": {
+    "path": "upstream/LICENSE",
+    "bytes": 1524,
+    "sha256": "53a705e51bfd199e8c97d0442376cb4bbd4ffcf13ba4f2c4c2794211400e4012"
+  },
+  "licenseInsideWheelUnchanged": true,
+  "codeScope": [
+    "join pre-existing opaque-base-relative rejection raises RelativeIRIBaseError",
+    "unicodeExpand code>0x10FFFF only raises UnicodeCodePointError; no broad catch and no new surrogate policy",
+    "_unicodeEscape catches only UnicodeCodePointError into existing BadSyntax; unknown internal exceptions propagate",
+    "necessary typed declarations in same notation3 module; no other source edits"
+  ],
+  "typedBase": "rdflib.plugins.parsers.notation3.Notation3InputError",
+  "approvedDependencyMetadata": {
+    "sourceGitCheckout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-transactions",
+    "commit": "583c05c7870ba0f8f642e3eeea1d0590e5859ca2",
+    "readGitObjectsOnly": true,
+    "members": [
+      {
+        "path": "pyproject.toml",
+        "bytes": 1593,
+        "sha256": "e4b989aab1b3b2025f19a29791295522a8cbbc98005adf528ad9fa6565105e16"
+      },
+      {
+        "path": "packages/engine/pyproject.toml",
+        "bytes": 398,
+        "sha256": "ef9354acbac0387eb8706cb309113a98dc183553cf8fe09ef38b9db75e12e2ff"
+      },
+      {
+        "path": "uv.lock",
+        "bytes": 28439,
+        "sha256": "95c536cb993c40331cb2e50aa9bec6acadeb3bb7997401b29dfabeba3fd76ce5"
+      }
+    ]
+  },
+  "prospectiveEnginePyproject": {
+    "path": "prospective/after/packages/engine/pyproject.toml",
+    "bytes": 519,
+    "sha256": "2c361292ed87c2a2520c80f4e5c6ae08d0238b1b3a89cfe7cd66af6454d1f2ae"
+  },
+  "prospectiveLock": {
+    "path": "prospective/after/uv.lock",
+    "bytes": 29015,
+    "sha256": "10a062d5ffe323dad220a47d1b8d0ea545a52949a7e67f2b0546cf72a2fa4da8"
+  },
+  "lockConstruction": "Restricted mechanical transform of approved583; real uv lock --check --offline natural0 in prospective-lock-check-005; not a fresh resolver-generated lock. Complete original requirements/extras metadata copied from verified wheel for local-source validation. 21 other package blocks plus top-level metadata byte/value unchanged.",
+  "offlineFixture": "Separate output env-old/env-new. Runtime7 primed with UV from individually locked/hash-verified local wheels, no deps or indexes. Old official wheel primed likewise then frozen audit0. New local wheel actually installed by frozen sync0; final lock frozen audit0. No global or oldvenv writes.",
+  "libraryRegression": {
+    "oldRaw": {
+      "path": "evidence/regression-old-001/stdout.raw",
+      "bytes": 169427,
+      "sha256": "9f41aff43168fc15150ab0e76ee5f4a5a5dd0cbf246879bd4d949c3775b4199c"
+    },
+    "oldNaturalExit": 1,
+    "oldKnownBaselineFailures": 0,
+    "oldTargetFailures": 21,
+    "newRaw": {
+      "path": "evidence/regression-new-001/stdout.raw",
+      "bytes": 153518,
+      "sha256": "6f9e22d0c9eb0e752787d9acbfc539f585eef0a0b51fdaabbdbae5e2ea4e4ff1"
+    },
+    "newNaturalExit": 0,
+    "newTargetFailures": 0,
+    "comparison": {
+      "path": "evidence/old-new-comparison.json",
+      "bytes": 18258,
+      "sha256": "3c11f2871da7a4fbce537ed9bea9750361c68e79c339fe4aa93ca8574baadbbb"
+    },
+    "successResultsExactlyEqual": 21,
+    "realGraphSuccessN3ExactlyEqual": 11,
+    "injectedFaultExactObjectPassthrough": 24,
+    "scope": "Finite library regressions, not proof of full grammar equivalence; no application UNKNOWN/HOLD receiver/stdio execution."
+  },
+  "firstFailuresPreserved": [
+    "urllib incomplete fetch tool1f9b39 transcribed receipt",
+    "wheel tag selector failure tool8ef4fc",
+    "owlrl curl35 first fetch",
+    "old-frozen-sync-001 missing URL-keyed cache",
+    "prospective-lock-001 and checks001-004 missing local metadata/registry cache",
+    "regression-old-001 expected target-red natural1"
+  ],
+  "futureObligations": [
+    "ROOT exact adoption ticket before canonical writes or dependency changes",
+    "T01 exact typed catches and app/receiver/stdio UNKNOWN-HOLD regression on new candidate",
+    "T11 physical package local version, PYZ source, metadata RECORD licenses NOTICE and same APP cases",
+    "Supported Windows/macOS/Linux Python3.12 validation, full affected checks, designated reviews and existing release gates",
+    "Q6 RDF/SHACL/SPARQL/XSD REC pins and acceptance policies remain unchanged; library local identifier is not a spec version change"
+  ],
+  "canonicalSourceModified": false,
+  "originalT03GoalResumed": false,
+  "allNonTargetMemberContentsUnchanged": true,
+  "unchangedContentMemberCount": 139,
+  "originalTreeProtection": {
+    "before": "evidence/original-tree-before.json",
+    "after": "evidence/original-tree-after.json",
+    "eligibleCount": 2612,
+    "allBeforeAfterEqual": true,
+    "ignoredObjectsNotAudited": true
+  },
+  "historicalRepackScript": {
+    "path": "scripts/repack-rdflib-input-types.py",
+    "bytes": 6716,
+    "sha256": "37e97de7168aed4594c066a78357fc02b1137df2331db371e29bd85db87384b9"
+  },
+  "canonicalReproduction": {
+    "workingDirectory": "canonical repository root",
+    "argv": [
+      "python3.12",
+      "-I",
+      "-S",
+      "-B",
+      "scripts/repack-rdflib-input-types.py",
+      "--upstream",
+      "packages/engine/vendor/rdflib/upstream/rdflib-7.6.0-py3-none-any.whl",
+      "--patch",
+      "packages/engine/vendor/rdflib/notation3-input-types.patch",
+      "--output-dir",
+      "build/rdflib-fr201-reproduce-style-001"
+    ],
+    "freshOutputRequirement": "Use a fresh --output-dir; the script refuses to overwrite an existing wheel. No UV or project imports are involved.",
+    "pythonRequirement": "Use an existing supported Python3.12 interpreter. The recorded run substitutes its actual absolute path for python3.12; every script/input/output path argument was repository-relative."
+  },
+  "styleCompatibilityOverlay": {
+    "parentENTRY": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261024_t03_rdflib_fr201_typed_source_001/ENTRY.json",
+      "bytes": 12260,
+      "sha256": "36d56e7aa1037cb93d9b9063072c185ad4eb0bee82030ccd06c39d970e73bbad"
+    },
+    "parentManifest": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261024_t03_rdflib_fr201_typed_source_001/delivery-manifest.json",
+      "bytes": 43825,
+      "sha256": "5f2032ad948e6106fd6a2436535ffd4e975bd6acbe868290564f1631be0b4782"
+    },
+    "parentProvenance": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261024_t03_rdflib_fr201_typed_source_001/PROVENANCE.json",
+      "bytes": 7294,
+      "sha256": "b0fb38edccfe989f9fbdc156ef25df2566c3512f50ab7501920d740b92366a2b"
+    },
+    "reason": "Original ruff check and format-check each exited1 under approved583 config; output-only import sort and formatting now both natural0.",
+    "ASTProof": "style-compat-001/AST-equivalence.json: same stdlib imports, order only; all functions and import-normalized module AST equal.",
+    "newScriptRepack": {
+      "receipt": "style-compat-001/formatted-repack.receipt.json",
+      "wheelBytes": 2378177,
+      "wheelSHA256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137",
+      "unchangedFromParentWheel": true
+    },
+    "scope": "Only canonical script and vendor PROVENANCE adoption leaves supersede the parent. Library patch/source/wheel/dependencies/other6 adoption leaves remain unchanged; no55-case rerun.",
+    "auditRootRelativeToParentSupply": "style-compat-001"
+  },
+  "auditReferencePathBasis": "Existing relative paths such as upstream/, after/, evidence/ and prospective/ refer to the immutable parent supply archive, not directories promised to exist inside canonical vendor. New style audit references prefixed style-compat-001/ are relative to that same parent archive root. Canonical reproduction uses only canonicalReproduction.argv paths."
+}

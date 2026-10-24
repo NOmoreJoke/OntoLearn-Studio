@@ -53,6 +53,7 @@ const bridge: DesktopBridge = {
   saveProjectDraft: (args) => receiveMainline('project:draft-save', args),
   openProject: (args) => receiveMainline('project:open', args),
   readProject: (args) => receiveMainline('project:read', args),
+  getOwnershipConflictDetailPage: (args) => receiveMainline('project:ownership-detail', args),
   previewProjectChangeset: (args) => receiveMainline('project:changeset-preview', args),
   getProjectDiffPage: (args) => receiveMainline('project:changeset-diff-page', args),
   confirmProjectChangeset: (args) => receiveMainline('project:changeset-confirm', args),

@@ -563,13 +563,27 @@ class JobStore(Store):
             fault("INVALID_REQUEST", field=field)
 
     @contextmanager
-    def _application(self, project, resource, hook: Hook = lambda _: None):
+    def _application(self, project, resource, hook: Hook = lambda _: None, *, ownership_proof=None):
+        # A diagnostic must never commit inside a caller's savepoint. Only the
+        # real selected preview receives this stack-owned issuer capability.
+        if ownership_proof is not None:
+            self._ownership_proof(ownership_proof, project, "changeset.preview")
+            if self._db.in_transaction:
+                fault("INVALID_STATE")
         try:
             with self._transaction(hook):
                 yield
         except Conflict as error:
             if error.category != "ownership":
                 raise
+            from ontolearn_engine.storage import ManualOwnershipConflict, SingleDeclarationConflict
+
+            if (
+                isinstance(error, (ManualOwnershipConflict, SingleDeclarationConflict))
+                and ownership_proof is not None
+            ):
+                identity = self._persist_ownership_detail(project, error, ownership_proof, hook)
+                fault("OWNERSHIP_CONFLICT", detailRef=identity)
             # Persist only fixed categories and authorized opaque identities,
             # outside the rolled-back write. No exception text/values/paths.
             identity = str(uuid4())
@@ -579,6 +593,347 @@ class JobStore(Store):
                     "INSERT INTO job_details VALUES(?,?,?)", (identity, project, canonical(detail))
                 )
             fault("OWNERSHIP_CONFLICT", detailRef=identity)
+
+    def _ownership_proof(self, proof, project, method):
+        from ontolearn_engine.project.mainline import _OwnershipProof
+
+        if type(proof) is not _OwnershipProof or proof.method != method:
+            fault("PERMISSION_DENIED")
+        proof.check(self, project)
+
+    def _ownership_json(self, raw):
+        try:
+            return json.loads(raw)
+        except (json.JSONDecodeError, UnicodeError, RecursionError):
+            fault("STORAGE_FAILURE")
+
+    def _ownership_header(self, project, identity, proof):
+        from ontolearn_engine.project.domain_changesets import MAX_DOCUMENT, SEGMENT_BYTES
+
+        proof.check(self, project)
+        size = self._db.execute(
+            "SELECT length(CAST(payload AS BLOB)) FROM job_details WHERE project=? AND id=?",
+            (project, identity),
+        ).fetchone()
+        if size is None:
+            fault("NOT_FOUND", resource="result")
+        # A header is part of decoded mainline material, not opaque blob data.
+        if type(size[0]) is not int or size[0] > proof.owner.reader_limits.validation_bytes:
+            fault("STORAGE_FAILURE")
+        proof.reserve(
+            "ownership header",
+            bytes_=32 * size[0] + 4096,
+            objects=8 * size[0] + 128,
+            work=16 * size[0] + 4096,
+        )
+        row = self._db.execute(
+            "SELECT payload FROM job_details WHERE project=? AND id=?", (project, identity)
+        ).fetchone()
+        header = self._ownership_json(row[0])
+        if isinstance(header, dict) and "ownershipDetailVersion" not in header:
+            if (
+                set(header) == {"category", "resource", "projectId"}
+                and header["category"] == "ownership"
+                and header["projectId"] == project
+                and type(header["resource"]) is str
+                and header["resource"] in {"plan", "application", "commit"}
+            ):
+                fault("INVALID_STATE")  # Exact legitimate historical detail only.
+            from ontolearn_engine.project.domain_changesets import RECEIPT_VERSION
+
+            if (
+                set(header)
+                == {
+                    RECEIPT_VERSION,
+                    "request",
+                    "requestHash",
+                    "hostClientId",
+                    "engineSessionId",
+                    "result",
+                }
+                and header[RECEIPT_VERSION] == 1
+                and self.contract.validate("params_changeset.confirm", header["request"])
+                and self.contract.validate("result_changeset.confirm", header["result"])
+                and header["request"]["projectId"] == project
+                and header["requestHash"] == digest(header["request"])
+            ):
+                fault("NOT_FOUND", resource="result")  # Another actual detail type.
+            fault("STORAGE_FAILURE")
+        if not self.contract.validate("ownershipDetailHeader", header):
+            fault("STORAGE_FAILURE")
+        manifest = header["manifest"]
+        total = manifest["totalBytes"]
+        count = (total + SEGMENT_BYTES - 1) // SEGMENT_BYTES
+        if (
+            header["projectId"] != project
+            or header["detailRef"] != identity
+            or manifest["segmentCount"] != count
+            or not 1 <= total <= MAX_DOCUMENT
+            or len(header["segmentBlobRefs"]) != count
+        ):
+            fault("STORAGE_FAILURE")
+        if header["origin"] != proof.origin:
+            fault("NOT_FOUND", resource="result")
+        expected = digest(
+            {
+                "origin": header["origin"],
+                "requestHash": header["requestHash"],
+                "documentHash": manifest["documentHash"],
+            }
+        )
+        if header["fingerprint"] != expected:
+            fault("STORAGE_FAILURE")
+        return header
+
+    def _ownership_segment(self, project, header, ordinal, proof):
+        import base64
+        import binascii
+        import hashlib
+
+        from ontolearn_engine.project.domain_changesets import SEGMENT_BYTES
+
+        ref = header["segmentBlobRefs"][ordinal]
+        size = self._db.execute(
+            "SELECT length(CAST(payload AS BLOB)) FROM job_blobs WHERE project=? AND ref=?",
+            (project, ref),
+        ).fetchone()
+        if size is None or type(size[0]) is not int or size[0] > 65536:
+            fault("STORAGE_FAILURE")
+        proof.reserve(
+            "ownership segment",
+            bytes_=32 * size[0] + 4096,
+            objects=8 * size[0] + 128,
+            work=16 * size[0] + 4096,
+        )
+        row = self._db.execute(
+            "SELECT payload FROM job_blobs WHERE project=? AND ref=?", (project, ref)
+        ).fetchone()
+        segment = self._ownership_json(row[0])
+        if not self.contract.validate("changeSetSegment", segment) or digest(segment) != ref:
+            fault("STORAGE_FAILURE")
+        expected_length = min(
+            SEGMENT_BYTES, header["manifest"]["totalBytes"] - ordinal * SEGMENT_BYTES
+        )
+        if (
+            segment["ordinal"] != ordinal
+            or segment["byteOffset"] != ordinal * SEGMENT_BYTES
+            or segment["rawByteLength"] != expected_length
+        ):
+            fault("STORAGE_FAILURE")
+        try:
+            raw = base64.b64decode(segment["dataBase64"], validate=True)
+        except (ValueError, binascii.Error):
+            fault("STORAGE_FAILURE")
+        if len(raw) != expected_length or hashlib.sha256(raw).hexdigest() != segment["sha256"]:
+            fault("STORAGE_FAILURE")
+        return segment, raw
+
+    def _persist_ownership_detail(self, project, conflict, proof, hook):
+        from ontolearn_engine.project.domain_changesets import MAX_DOCUMENT, _document, _intern_blob
+
+        self._ownership_proof(proof, project, "changeset.preview")
+        if self._db.in_transaction:
+            fault("INVALID_STATE")
+        # Strings are references to the already admitted real blocking row.
+        # Reserve before JSON, UTF-8, hashing, base64 or cloning materializes them.
+        witness = conflict.witness
+
+        def characters(value):
+            if isinstance(value, str):
+                return len(value)
+            if isinstance(value, dict):
+                return sum(characters(item) for item in value.values())
+            if isinstance(value, list):
+                return sum(characters(item) for item in value)
+            return 0
+
+        chars = characters(witness)
+        estimate = 6 * chars + 8192
+        if estimate > MAX_DOCUMENT:
+            fault("RESOURCE_LIMIT", resource="page")
+        proof.reserve(
+            "ownership document",
+            bytes_=8 * estimate + 65536,
+            objects=4096,
+            work=8 * estimate + 65536,
+        )
+        document = {
+            "ownershipDetailVersion": 1,
+            "stage": "preview",
+            "projectId": project,
+            "sourceBaseRevision": proof.base,
+            **witness,
+        }
+        if not self.contract.validate("ownershipDetailDocument", document):
+            fault("STORAGE_FAILURE")
+        manifest, segments = _document(document, "ownership-conflict")
+        fingerprint = digest(
+            {
+                "origin": proof.origin,
+                "requestHash": proof.request_hash,
+                "documentHash": manifest["documentHash"],
+            }
+        )
+        compact = {
+            key: manifest[key]
+            for key in ("documentKind", "documentHash", "totalBytes", "segmentCount")
+        }
+        with self._transaction():
+            self._ownership_proof(proof, project, "changeset.preview")
+            if self.revision(self._project(project)) != proof.base:
+                fault(
+                    "REVISION_CONFLICT",
+                    expected=proof.base,
+                    actual=self.revision(self._project(project)),
+                )
+            before = proof.admissions()
+            if not before[0]:
+                fault("RESOURCE_LIMIT", resource="page")
+            # Already bounded by the original row/material admission. Validate
+            # each old candidate before reuse; immutability alone is not proof.
+            for identity, size in self._db.execute(
+                "SELECT id,length(CAST(payload AS BLOB)) FROM job_details WHERE project=?",
+                (project,),
+            ).fetchall():
+                if type(size) is not int or size > proof.owner.reader_limits.validation_bytes:
+                    fault("STORAGE_FAILURE")
+                proof.reserve(
+                    "ownership dedup candidate",
+                    bytes_=32 * size + 4096,
+                    objects=8 * size + 128,
+                    work=16 * size + 4096,
+                )
+                raw = self._db.execute(
+                    "SELECT payload FROM job_details WHERE project=? AND id=?", (project, identity)
+                ).fetchone()[0]
+                candidate = self._ownership_json(raw)
+                if not isinstance(candidate, dict) or candidate.get("ownershipDetailVersion") != 1:
+                    if isinstance(candidate, dict) and candidate.get("kind") in {
+                        "manual-ownership-conflict",
+                        "single-declaration-conflict",
+                    }:
+                        fault("STORAGE_FAILURE")
+                    continue
+                if not self.contract.validate("ownershipDetailHeader", candidate):
+                    fault("STORAGE_FAILURE")
+                if candidate["origin"] != proof.origin or candidate["fingerprint"] != fingerprint:
+                    continue
+                old = self._ownership_header(project, identity, proof)
+                chunks = [
+                    self._ownership_segment(project, old, i, proof)[1]
+                    for i in range(old["manifest"]["segmentCount"])
+                ]
+                if b"".join(chunks) != canonical(document).encode("utf-8"):
+                    fault("STORAGE_FAILURE")
+                return identity
+            identity = str(uuid4())
+            header = {
+                "ownershipDetailVersion": 1,
+                "kind": witness["kind"],
+                "projectId": project,
+                "detailRef": identity,
+                "origin": proof.origin,
+                "requestHash": proof.request_hash,
+                "fingerprint": fingerprint,
+                "manifest": compact,
+                "segmentBlobRefs": [digest(s) for s in segments],
+            }
+            if not self.contract.validate("ownershipDetailHeader", header):
+                fault("STORAGE_FAILURE")
+            for segment in segments:
+                sample = {
+                    "detailReadVersion": 1,
+                    "projectId": project,
+                    "detailRef": identity,
+                    "manifest": compact,
+                    "startOrdinal": segment["ordinal"],
+                    "segments": [segment],
+                    "nextOrdinal": segment["ordinal"] + 1,
+                    "complete": False,
+                }
+                if len(canonical(sample).encode()) + 1024 > min(
+                    proof.owner.actor.limits["maxPageBytes"],
+                    proof.owner.actor.limits["maxFrameBytes"],
+                    262144,
+                ):
+                    fault("RESOURCE_LIMIT", resource="page")
+            encoded = canonical(header)
+            header_bytes = len(project.encode()) + len(identity.encode()) + len(encoded.encode())
+            rows, added = 1, header_bytes
+            for ordinal, (ref, segment) in enumerate(
+                zip(header["segmentBlobRefs"], segments, strict=True)
+            ):
+                if (
+                    self._db.execute(
+                        "SELECT 1 FROM job_blobs WHERE project=? AND ref=?", (project, ref)
+                    ).fetchone()
+                    is None
+                ):
+                    rows += 1
+                    added += len(project.encode()) + len(ref) + len(canonical(segment).encode())
+                else:
+                    # A matching opaque key does not prove old JSON is bounded.
+                    old_segment, _ = self._ownership_segment(project, header, ordinal, proof)
+                    if old_segment != segment:
+                        fault("STORAGE_FAILURE")
+            proof.project_admissions(before, proof.material_profile(), rows, added, header_bytes)
+            for segment in segments:
+                _intern_blob(self, project, segment)
+                hook("ownership_segment")
+            self._db.execute("INSERT INTO job_details VALUES(?,?,?)", (identity, project, encoded))
+            hook("ownership_detail")
+            after = proof.admissions()
+            if not after[0] or any(was and not now for was, now in zip(before, after, strict=True)):
+                fault("RESOURCE_LIMIT", resource="page")
+            proof.check(self, project)
+        return identity
+
+    def ownership_detail_page(self, params, proof, limits):
+        project = params["projectId"]
+        self._ownership_proof(proof, project, "project.ownership.detail")
+        with self._read():
+            header = self._ownership_header(project, params["detailRef"], proof)
+            manifest, start = header["manifest"], params["startOrdinal"]
+            if (
+                params["documentHash"] is not None
+                and params["documentHash"] != manifest["documentHash"]
+            ):
+                fault("IDENTITY_CONFLICT")
+            if start >= manifest["segmentCount"]:
+                fault("INVALID_REQUEST", field="params")
+            chosen = []
+            for ordinal in range(start, min(start + params["pageSize"], manifest["segmentCount"])):
+                segment, _ = self._ownership_segment(project, header, ordinal, proof)
+                end = ordinal + 1
+                result = {
+                    "detailReadVersion": 1,
+                    "projectId": project,
+                    "detailRef": params["detailRef"],
+                    "manifest": manifest,
+                    "startOrdinal": start,
+                    "segments": [*chosen, segment],
+                    "nextOrdinal": None if end == manifest["segmentCount"] else end,
+                    "complete": end == manifest["segmentCount"],
+                }
+                if len(canonical(result).encode()) + 1024 > min(
+                    limits["maxPageBytes"], limits["maxFrameBytes"], 262144
+                ):
+                    if not chosen:
+                        fault("RESOURCE_LIMIT", resource="page")
+                    break
+                chosen.append(segment)
+            end = start + len(chosen)
+            proof.check(self, project)
+            return {
+                "detailReadVersion": 1,
+                "projectId": project,
+                "detailRef": params["detailRef"],
+                "manifest": manifest,
+                "startOrdinal": start,
+                "segments": chosen,
+                "nextOrdinal": None if end == manifest["segmentCount"] else end,
+                "complete": end == manifest["segmentCount"],
+            }
 
     def detail_get(self, project, identity):
         self._project(project)
@@ -807,6 +1162,7 @@ class JobStore(Store):
         host_client_id,
         engine_session_id,
         limits,
+        ownership_proof=None,
         hook: Hook = lambda _: None,
     ):
         from ontolearn_engine.project.domain_changesets import preview_changeset
@@ -820,6 +1176,7 @@ class JobStore(Store):
             engine_session_id=engine_session_id,
             limits=limits,
             hook=hook,
+            ownership_proof=ownership_proof,
         )
 
     def changeset_diff_page(

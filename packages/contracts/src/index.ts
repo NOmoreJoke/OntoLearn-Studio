@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { validateBusiness3, validateStartupError, validateV2 } from './v2'
+import { matchesOwnershipDetail, validateBusiness3, validateStartupError, validateV2 } from './v2'
 
 export const PROTOCOL_VERSION = 2 as const
 // Private preload delivery protocol. These are never exposed on DesktopBridge
@@ -282,6 +282,10 @@ export type DesktopIpcMap = {
   'project:read': {
     args: [args: Parameters<MainlineProjectBridge['readProject']>[0]]
     result: Awaited<ReturnType<MainlineProjectBridge['readProject']>>
+  }
+  'project:ownership-detail': {
+    args: [args: Parameters<MainlineProjectBridge['getOwnershipConflictDetailPage']>[0]]
+    result: Awaited<ReturnType<MainlineProjectBridge['getOwnershipConflictDetailPage']>>
   }
   'project:changeset-preview': {
     args: [args: Parameters<MainlineProjectBridge['previewProjectChangeset']>[0]]
@@ -856,6 +860,9 @@ export type MainlinePreviewArgs =
   | { baseRevision: number; intent: 'change'; plan: MainlineChangePlanDTO }
   | { baseRevision: number; intent: 'undo'; targetOperationId: string }
 export interface MainlineProjectBridge {
+  getOwnershipConflictDetailPage(
+    args: OwnershipDetailArgs,
+  ): Promise<BridgeResult<OwnershipDetailPage>>
   saveProjectDraft(args: MainlineDraftSaveArgs): Promise<BridgeResult<MainlineDraftSaveResultDTO>>
   getProjectCatalog(args: {
     pageSize: number
@@ -882,6 +889,157 @@ export interface MainlineProjectBridge {
     operationId: string
     confirmation: ChangeSetConfirmation
   }): Promise<BridgeResult<JobView>>
+}
+
+export type OwnershipDetailArgs =
+  | { detailRef: string; documentHash: null; startOrdinal: 0; pageSize: number }
+  | { detailRef: string; documentHash: string; startOrdinal: number; pageSize: number }
+export type OwnershipLocator = {
+  id: string
+  owner: string | null
+  sourceRow: string | null
+  slot: { subject: string; predicate: string }
+}
+export type OwnershipDetailDocument =
+  | {
+      ownershipDetailVersion: 1
+      kind: 'manual-ownership-conflict'
+      stage: 'preview'
+      projectId: string
+      sourceBaseRevision: number
+      reason: 'reservedIdentity' | 'sameStatement' | 'singleSlot'
+      existing: OwnershipLocator
+      incoming: OwnershipLocator
+    }
+  | {
+      ownershipDetailVersion: 1
+      kind: 'single-declaration-conflict'
+      stage: 'preview'
+      projectId: string
+      sourceBaseRevision: number
+      reason: 'singleDeclaration'
+      declaration: { layer: 'ontology'; id: string; predicate: string }
+      slot: { subject: string; predicate: string }
+      existing: [Omit<OwnershipLocator, 'slot'>, Omit<OwnershipLocator, 'slot'>]
+    }
+export type OwnershipDetailPage = {
+  detailReadVersion: 1
+  projectId: string
+  detailRef: string
+  manifest: {
+    documentKind: 'ownership-conflict'
+    documentHash: string
+    totalBytes: number
+    segmentCount: number
+  }
+  startOrdinal: number
+  segments: ChangeSetPage['segments']
+  nextOrdinal: number | null
+  complete: boolean
+}
+
+/** First/last page receipt is not completeness: verify a private, complete byte stream. */
+export async function reassembleOwnershipDetail(
+  expected: { projectId: string; detailRef: string },
+  pages: readonly OwnershipDetailPage[],
+): Promise<OwnershipDetailDocument> {
+  const invalid = (): never => {
+    throw new Error('INVALID_OWNERSHIP_DETAIL')
+  }
+  let nodes = 0,
+    characters = 0
+  const capture = (value: unknown, depth = 0): unknown => {
+    if (++nodes > 16384 || depth > 8) return invalid()
+    if (value === null || typeof value === 'boolean') return value
+    if (typeof value === 'number') return Number.isFinite(value) ? value : invalid()
+    if (typeof value === 'string') {
+      characters += value.length
+      if (value.length > 43692 || characters > 512 * (43692 + 1024)) return invalid()
+      return value
+    }
+    if (
+      !value ||
+      typeof value !== 'object' ||
+      ![Object.prototype, null, Array.prototype].includes(Object.getPrototypeOf(value))
+    )
+      return invalid()
+    const keys = Reflect.ownKeys(value)
+    if (keys.length > (Array.isArray(value) ? 513 : 10) || keys.some((k) => typeof k !== 'string'))
+      return invalid()
+    if (Array.isArray(value)) {
+      const length = Object.getOwnPropertyDescriptor(value, 'length')?.value
+      if (!Number.isSafeInteger(length) || length < 0 || length > 512 || keys.length !== length + 1)
+        return invalid()
+      const result: unknown[] = []
+      for (let i = 0; i < length; i++) {
+        const d = Object.getOwnPropertyDescriptor(value, String(i))
+        if (!d || !Object.hasOwn(d, 'value') || !d.enumerable) return invalid()
+        result.push(capture(d.value, depth + 1))
+      }
+      return result
+    }
+    const result: Record<string, unknown> = Object.create(null)
+    for (const key of keys as string[]) {
+      const d = Object.getOwnPropertyDescriptor(value, key)
+      if (key.length > 64 || !d || !Object.hasOwn(d, 'value') || !d.enumerable) return invalid()
+      result[key] = capture(d.value, depth + 1)
+    }
+    return result
+  }
+  const input = capture({ expected, pages }) as {
+    expected: typeof expected
+    pages: OwnershipDetailPage[]
+  }
+  if (
+    !validateV2('id', input.expected.projectId) ||
+    !validateV2('id', input.expected.detailRef) ||
+    input.pages.length < 1
+  )
+    return invalid()
+  const first = input.pages[0]!
+  if (!validateBusiness3('result_project.ownership.detail', first)) return invalid()
+  let ordinal = 0
+  for (const page of input.pages) {
+    if (
+      !matchesOwnershipDetail(
+        {
+          ...input.expected,
+          documentHash: ordinal === 0 ? null : first.manifest.documentHash,
+          startOrdinal: ordinal,
+          pageSize: 64,
+        },
+        page,
+      ) ||
+      page.manifest.totalBytes !== first.manifest.totalBytes ||
+      page.manifest.segmentCount !== first.manifest.segmentCount
+    )
+      return invalid()
+    ordinal += page.segments.length
+  }
+  if (ordinal !== first.manifest.segmentCount || !input.pages.at(-1)!.complete) return invalid()
+  // All declared totals were checked before allocation; raw binary, decoded
+  // text and typed result remain bounded by the original 16MiB document policy.
+  const bytes = new Uint8Array(first.manifest.totalBytes)
+  for (const page of input.pages)
+    for (const part of page.segments) {
+      const raw = Uint8Array.from(atob(part.dataBase64), (c) => c.charCodeAt(0))
+      bytes.set(raw, part.byteOffset)
+    }
+  const hash = await globalThis.crypto.subtle.digest('SHA-256', bytes)
+  const hex = Array.from(new Uint8Array(hash), (n) => n.toString(16).padStart(2, '0')).join('')
+  if (hex !== first.manifest.documentHash) return invalid()
+  let document: unknown
+  try {
+    document = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes))
+  } catch {
+    return invalid()
+  }
+  if (
+    !validateBusiness3('ownershipDetailDocument', document) ||
+    (document as OwnershipDetailDocument).projectId !== input.expected.projectId
+  )
+    return invalid()
+  return document as OwnershipDetailDocument
 }
 
 export type MainlineDraftSaveArgs = {

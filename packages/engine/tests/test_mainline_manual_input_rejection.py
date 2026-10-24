@@ -211,6 +211,10 @@ def test_non_input_failures_keep_original_unknown_and_hold(owned, monkeypatch, f
         ("edit", ALIAS),
         ("edit", "泵站A"),
         ("manual", "[]"),
+        ("manual", '"x"^^<../relative>'),
+        ("edit", '"x"^^<../relative>'),
+        ("manual", r'"x"^^<urn:\U00110000>'),
+        ("edit", r'"x"^^<urn:\U00110000>'),
     ],
 )
 def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path, family, value):
@@ -389,6 +393,10 @@ INPUT_CASES = [
     ("edit", "泵站A"),
     ("edit", ALIAS),
     ("manual", "[]"),
+    ("manual", '"x"^^<../relative>'),
+    ("edit", '"x"^^<../relative>'),
+    ("manual", r'"x"^^<urn:\U00110000>'),
+    ("edit", r'"x"^^<urn:\U00110000>'),
     ("manual", '"one", "two"'),
     ("manual", "<urn:missing"),
     ("manual", "<urn:bad space>"),
@@ -531,15 +539,15 @@ def test_reserved_original_identity_is_controlled_ownership_conflict(owned, tmp_
     refused = exchange(actor, "changeset.preview", change(project, PLAIN, 2))
     assert not refused["ok"] and refused["error"]["code"] == "OWNERSHIP_CONFLICT", refused
     detail_ref = refused["error"]["params"]["detailRef"]
-    assert store.detail_get(project, detail_ref) == {
-        "category": "ownership",
-        "resource": "plan",
-        "projectId": project,
-    }
+    detail = store.detail_get(project, detail_ref)
+    assert detail["ownershipDetailVersion"] == 1 and detail["kind"] == "manual-ownership-conflict"
+    assert detail["projectId"] == project and detail["detailRef"] == detail_ref
     after_dump = list(store._db.iterdump())
-    assert [line for line in before_dump if not line.startswith('INSERT INTO "job_details"')] == [
-        line for line in after_dump if not line.startswith('INSERT INTO "job_details"')
+    diagnostic_rows = ('INSERT INTO "job_details"', 'INSERT INTO "job_blobs"')
+    assert [line for line in before_dump if not line.startswith(diagnostic_rows)] == [
+        line for line in after_dump if not line.startswith(diagnostic_rows)
     ]
+    assert set(before_dump).issubset(set(after_dump))
     assert store._db.execute("SELECT count(*) FROM job_details").fetchone()[0] == before_details + 1
     assert actor.mainline is host and not host.hold and host.replies == {}
     assert read(actor, project) == before
@@ -569,30 +577,294 @@ def test_reserved_original_identity_is_controlled_ownership_conflict(owned, tmp_
 
 
 @pytest.mark.parametrize("value", ['"x"^^<../relative>', r'"x"^^<urn:\U00110000>'])
-def test_real_untyped_library_failures_remain_unknown(owned, tmp_path, value):
+def test_vendor_source_errors_have_dedicated_input_type(value):
+    from importlib.metadata import version
+
+    assert version("rdflib") == "7.6.0+ontolearn.fr201.1"
+    with pytest.raises(rdf_snapshot.TermInputError):
+        rdf_snapshot.term(value)
+
+
+@pytest.mark.parametrize("site", ["join", "int", "group"])
+@pytest.mark.parametrize("error_type", [ValueError, Exception, ParserError])
+def test_same_bad_vendor_input_does_not_hide_internal_failures(
+    owned, monkeypatch, tmp_path, site, error_type
+):
+    from rdflib.plugins.parsers import notation3
+
     actor, store = owned
     project = create(actor)[0]["projectId"]
-    with pytest.raises(ValueError) as original:
-        rdf_snapshot.term(value)
-    assert not isinstance(original.value, rdf_snapshot.TermInputError)
-    before = "\n".join(store._db.iterdump())
+    value = '"x"^^<../relative>' if site == "join" else r'"x"^^<urn:\U00110000>'
+    called = []
+
+    def broken(*args, **kwargs):
+        called.append(site)
+        raise error_type("private injected source failure")
+
+    if site == "join":
+        monkeypatch.setattr(notation3, "join", broken)
+    elif site == "int":
+        monkeypatch.setattr(notation3, "int", broken, raising=False)
+    else:
+        original = notation3.unicodeEscape8
+
+        class Match:
+            group = staticmethod(broken)
+
+        class Regex:
+            def sub(self, callback, text):
+                return original.sub(lambda _: callback(Match()), text)
+
+        monkeypatch.setattr(notation3, "unicodeEscape8", Regex())
+    database = list(store._db.iterdump())
     host = actor.mainline
     refused = exchange(actor, "changeset.preview", change(project, value))
-    assert not refused["ok"] and refused["error"]["code"] == "INTERNAL_ERROR", refused
+    assert called and not refused["ok"] and refused["error"]["code"] == "INTERNAL_ERROR", refused
     assert actor.mainline is host and host.hold
     unknown = dict(host.replies)
     assert len(unknown) == 1 and all(item.unknown for item in unknown.values())
-    after_error = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
-    assert not after_error["ok"] and after_error["error"]["code"] == "STORAGE_FAILURE"
-    assert "\n".join(store._db.iterdump()) == before
-    (tmp_path / "untyped-library-trace.json").write_text(
+    after = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    assert not after["ok"] and after["error"]["code"] == "STORAGE_FAILURE"
+    assert list(store._db.iterdump()) == database
+    (tmp_path / "vendor-internal-fault-trace.json").write_text(
         json.dumps(
             {
-                "value": value,
+                "site": site,
+                "exceptionType": error_type.__name__,
+                "called": called,
                 "refused": refused,
-                "afterError": after_error,
-                "held": host.hold,
+                "afterError": after,
                 "unknown": list(unknown),
+                "held": host.hold,
             }
         )
     )
+
+
+@pytest.mark.parametrize("reason", ["reservedIdentity", "sameStatement", "singleSlot"])
+def test_manual_ownership_detail_full_pages_then_original_id_job(owned, tmp_path, reason):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    initial = change(project)
+    if reason == "singleSlot":
+        initial["plan"]["definitions"] = [
+            {
+                "layer": "ontology",
+                "id": "single-slot",
+                "value": {
+                    "triples": [],
+                    "singleValuedPredicates": [fact(PLAIN)["predicate"]],
+                    "references": [],
+                },
+            }
+        ]
+    confirmed_job(actor, project, initial)
+    drain_owned_changesets(actor)
+    base = 1
+    if reason != "singleSlot":
+        confirmed_job(actor, project, input_change(project, "edit", '"B"', base))
+        drain_owned_changesets(actor)
+        base += 1
+    before = read(actor, project)
+    incoming = PLAIN if reason == "reservedIdentity" else '"B"'
+    refused = exchange(actor, "changeset.preview", change(project, incoming, base))
+    assert not refused["ok"] and refused["error"]["code"] == "OWNERSHIP_CONFLICT", refused
+    ref = refused["error"]["params"]["detailRef"]
+    header = store.detail_get(project, ref)
+    path = tmp_path / "ownership-detail-trace.json"
+    path.write_text(json.dumps({"reason": reason, "refused": refused, "header": header}))
+    assert header.get("ownershipDetailVersion") == 1, header
+    parts, ordinal, expected_hash = [], 0, None
+    pages = []
+    while True:
+        response = exchange(
+            actor,
+            "project.ownership.detail",
+            {
+                "projectId": project,
+                "detailRef": ref,
+                "documentHash": expected_hash,
+                "startOrdinal": ordinal,
+                "pageSize": 1,
+            },
+        )
+        assert response["ok"], canonical(response)
+        page = response["result"]
+        pages.append(page)
+        expected_hash = page["manifest"]["documentHash"]
+        for segment in page["segments"]:
+            raw = base64.b64decode(segment["dataBase64"], validate=True)
+            assert len(raw) == segment["rawByteLength"]
+            import hashlib
+
+            assert hashlib.sha256(raw).hexdigest() == segment["sha256"]
+            parts.append(raw)
+        if page["complete"]:
+            break
+        ordinal = page["nextOrdinal"]
+    raw = b"".join(parts)
+    assert len(raw) == page["manifest"]["totalBytes"]
+    assert hashlib.sha256(raw).hexdigest() == expected_hash
+    document = json.loads(raw)
+    assert document["reason"] == reason
+    existing = before["domain"]["state"]["facts"][0]
+    assert document["existing"] == {
+        "id": existing["id"],
+        "owner": existing["owner"],
+        "sourceRow": existing["source_row"],
+        "slot": {"subject": existing["subject"], "predicate": existing["predicate"]},
+    }
+    assert document["incoming"]["id"] == fact(incoming)["id"]
+    assert read(actor, project) == before and not actor.mainline.hold
+    dump = list(store._db.iterdump())
+    repeated = exchange(actor, "changeset.preview", change(project, incoming, base))
+    assert repeated["error"]["params"]["detailRef"] == ref
+    assert list(store._db.iterdump()) == dump
+    accepted = confirmed_job(actor, project, input_change(project, "edit", '"C"', base))
+    drain_owned_changesets(actor)
+    assert store.get_job(project, accepted["jobId"])["state"] == "succeeded"
+    marker = exchange(
+        actor, "operation.get", {"projectId": project, "operationId": accepted["operationId"]}
+    )
+    assert marker["ok"] and marker["result"]["jobId"] == accepted["jobId"]
+    after = read(actor, project)
+    assert after["domain"]["projectRevision"] == base + 1
+    assert after["domain"]["state"]["facts"][0]["id"] == fact(PLAIN)["id"]
+    path.write_text(
+        json.dumps(
+            {
+                "reason": reason,
+                "refused": refused,
+                "pages": pages,
+                "document": document,
+                "accepted": accepted,
+                "marker": marker,
+                "after": after,
+            }
+        )
+    )
+
+
+@pytest.mark.parametrize("effective", ["same", "removed-first", "overwritten-first"])
+def test_single_declaration_preserves_real_home_and_two_existing_locators(
+    owned, tmp_path, effective
+):
+    from test_ontology_metadata_changeset import definition, value
+
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    payload = value()
+    request = change(project, '"A"')
+    request["plan"]["manual"].append(fact('"B"'))
+    request["plan"]["definitions"] = [definition(payload)]
+    confirmed_job(actor, project, request)
+    drain_owned_changesets(actor)
+    before = read(actor, project)
+    incoming = deepcopy(payload)
+    incoming["singleValuedPredicates"] = [fact(PLAIN)["predicate"]]
+    proposed = {
+        "projectId": project,
+        "baseRevision": 1,
+        "intent": "change",
+        "plan": {"definitions": [definition(incoming)]},
+    }
+    expected_id = "Equipment"
+    if effective != "same":
+        first = {
+            "layer": "ontology",
+            "id": "A",
+            "value": {"triples": [], "singleValuedPredicates": [fact(PLAIN)["predicate"]]},
+        }
+        last = {**first, "id": "B"}
+        proposed["plan"]["definitions"] = [definition(payload), first]
+        if effective == "overwritten-first":
+            proposed["plan"]["definitions"].append(
+                {"layer": "ontology", "id": "A", "value": {"triples": []}}
+            )
+        proposed["plan"]["definitions"].append(last)
+        if effective == "removed-first":
+            proposed["plan"]["remove_definitions"] = [{"layer": "ontology", "id": "A"}]
+        expected_id = "B"
+    database = list(store._db.iterdump())
+    refused = exchange(actor, "changeset.preview", proposed)
+    if effective == "removed-first":
+        # Original Store explicitly rejects changing AND removing the same key
+        # before entering declaration validation. Preserve this old UNKNOWN,
+        # rather than weakening that guard to make an invalid fixture pass.
+        assert not refused["ok"] and refused["error"]["code"] == "INTERNAL_ERROR", refused
+        assert actor.mainline.hold and list(store._db.iterdump()) == database
+        assert "detailRef" not in refused["error"]["params"]
+        (tmp_path / "original-contradictory-plan-trace.json").write_text(
+            json.dumps(
+                {
+                    "originalContradictoryPlan": True,
+                    "proposed": proposed,
+                    "refused": refused,
+                    "held": actor.mainline.hold,
+                    "unknown": list(actor.mainline.replies),
+                }
+            )
+        )
+        return
+    assert not refused["ok"] and refused["error"]["code"] == "OWNERSHIP_CONFLICT", refused
+    ref = refused["error"]["params"]["detailRef"]
+    header = store.detail_get(project, ref)
+    trace = {"before": before, "proposed": proposed, "refused": refused, "header": header}
+    path = tmp_path / "declaration-detail-trace.json"
+    path.write_text(json.dumps(trace))
+    assert header.get("ownershipDetailVersion") == 1, header
+    response = exchange(
+        actor,
+        "project.ownership.detail",
+        {
+            "projectId": project,
+            "detailRef": ref,
+            "documentHash": None,
+            "startOrdinal": 0,
+            "pageSize": 64,
+        },
+    )
+    assert response["ok"] and response["result"]["complete"], response
+    document = json.loads(
+        b"".join(base64.b64decode(s["dataBase64"]) for s in response["result"]["segments"])
+    )
+    assert document["kind"] == "single-declaration-conflict"
+    assert document["reason"] == "singleDeclaration" and "incoming" not in document
+    assert document["declaration"] == {
+        "layer": "ontology",
+        "id": expected_id,
+        "predicate": fact(PLAIN)["predicate"],
+    }
+    assert {row["id"] for row in document["existing"]} == {fact('"A"')["id"], fact('"B"')["id"]}
+    assert read(actor, project) == before and not actor.mainline.hold
+    # A real follow-up removes one conflicting value, then the same declaration
+    # can be confirmed and committed without changing its complete M/triples.
+    confirmed_job(
+        actor,
+        project,
+        {
+            "projectId": project,
+            "baseRevision": 1,
+            "intent": "change",
+            "plan": {"remove": [fact('"B"')["id"]]},
+        },
+    )
+    drain_owned_changesets(actor)
+    proposed["baseRevision"] = 2
+    accepted = confirmed_job(actor, project, proposed)
+    drain_owned_changesets(actor)
+    assert store.get_job(project, accepted["jobId"])["state"] == "succeeded"
+    marker = exchange(
+        actor, "operation.get", {"projectId": project, "operationId": accepted["operationId"]}
+    )
+    assert marker["ok"] and marker["result"]["jobId"] == accepted["jobId"]
+    after = read(actor, project)
+    assert after["domain"]["projectRevision"] == 3
+    persisted = json.loads(
+        next(
+            d["payload"] for d in after["domain"]["state"]["definitions"] if d["id"] == "Equipment"
+        )
+    )
+    assert persisted == (incoming if effective == "same" else payload)
+    trace.update({"document": document, "accepted": accepted, "marker": marker, "after": after})
+    path.write_text(json.dumps(trace))

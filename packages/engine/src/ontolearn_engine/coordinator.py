@@ -435,6 +435,7 @@ class Coordinator:
             "project.draft.save",
             "project.open",
             "project.read",
+            "project.ownership.detail",
         }:
             if self.mainline is None:
                 raise ServiceFault("PERMISSION_DENIED")
@@ -472,7 +473,14 @@ class Coordinator:
             }
             if method == "changeset.preview":
                 return self.store.preview_changeset(
-                    p["projectId"], p["baseRevision"], p, limits=self.limits, **origin
+                    p["projectId"],
+                    p["baseRevision"],
+                    p,
+                    limits=self.limits,
+                    ownership_proof=self.mainline.ownership_proof(p, method=method)
+                    if self.mainline is not None
+                    else None,
+                    **origin,
                 )
             if method == "changeset.diff.page":
                 return self.store.changeset_diff_page(

@@ -346,6 +346,7 @@ export type MainlineMethod =
   | 'project.example.create'
   | 'project.open'
   | 'project.read'
+  | 'project.ownership.detail'
   | 'project.draft.save'
 export abstract class MainlineProjectTransport {
   #mainlineTransport = true
@@ -1228,6 +1229,7 @@ export class EngineSupervisor {
               'project.draft.save',
               'project.open',
               'project.read',
+              'project.ownership.detail',
             ].includes(method)
           )
             throw invalid()
@@ -1238,7 +1240,9 @@ export class EngineSupervisor {
             budget.beforeArguments(params)
             if (!validateBusiness3('params_' + method, params)) throw invalid()
             if (
-              (method === 'project.read' || method === 'project.draft.save') &&
+              (method === 'project.read' ||
+                method === 'project.draft.save' ||
+                method === 'project.ownership.detail') &&
               params.projectId !== record.selected?.projectId
             )
               throw deniedOrdinary()

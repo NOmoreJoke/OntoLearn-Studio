@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { matchesBusiness3Response, validateV2 } from '../../packages/contracts/src/v2'
+import { reassembleOwnershipDetail, type OwnershipDetailPage } from '../../packages/contracts/src'
 
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const registryHash = createHash('sha256')
@@ -19,6 +20,70 @@ const otherHash = 'b'.repeat(64)
 const inputDigest = '52952b637b02ba283d47a9e0c34a1691c1d850b94bb9b366a9863a55507c435e'
 const cursor = `${'a'.repeat(32)}.${'b'.repeat(16)}.${'C'.repeat(43)}`
 const name = '设备 "A"\n𠮷'
+
+describe('complete ownership location document', () => {
+  const slot = { subject: 'urn:large:' + 'x'.repeat(40000), predicate: 'urn:ownership:value' }
+  const document = {
+    ownershipDetailVersion: 1,
+    kind: 'manual-ownership-conflict',
+    stage: 'preview',
+    projectId,
+    sourceBaseRevision: 2,
+    reason: 'reservedIdentity',
+    existing: { id: 'legacy-key-kept', owner: 'mapping-origin', sourceRow: 'original-row', slot },
+    incoming: { id: 'd'.repeat(64), owner: null, sourceRow: null, slot },
+  }
+  const raw = Buffer.from(JSON.stringify(document)),
+    documentHash = createHash('sha256').update(raw).digest('hex')
+  const segmentCount = Math.ceil(raw.length / 32768)
+  const makePages = (): OwnershipDetailPage[] =>
+    Array.from({ length: segmentCount }, (_, ordinal) => {
+      const bytes = raw.subarray(ordinal * 32768, (ordinal + 1) * 32768)
+      return {
+        detailReadVersion: 1,
+        projectId,
+        detailRef: otherId,
+        manifest: {
+          documentKind: 'ownership-conflict',
+          documentHash,
+          totalBytes: raw.length,
+          segmentCount,
+        },
+        startOrdinal: ordinal,
+        segments: [
+          {
+            ordinal,
+            byteOffset: ordinal * 32768,
+            rawByteLength: bytes.length,
+            sha256: createHash('sha256').update(bytes).digest('hex'),
+            dataBase64: bytes.toString('base64'),
+          },
+        ],
+        nextOrdinal: ordinal + 1 === segmentCount ? null : ordinal + 1,
+        complete: ordinal + 1 === segmentCount,
+      }
+    })
+  it('captures all pages privately and preserves >16KiB location and legacy identity', async () => {
+    const pages = makePages()
+    const promise = reassembleOwnershipDetail({ projectId, detailRef: otherId }, pages)
+    pages[0]!.segments[0]!.dataBase64 = ''
+    expect(await promise).toEqual(document)
+  })
+  it('rejects random final page, missing/repeated chunks and corrupted bytes', async () => {
+    const pages = makePages()
+    expect(pages.at(-1)!.complete).toBe(true)
+    await expect(
+      reassembleOwnershipDetail({ projectId, detailRef: otherId }, [pages.at(-1)!]),
+    ).rejects.toThrow('INVALID_OWNERSHIP_DETAIL')
+    await expect(
+      reassembleOwnershipDetail({ projectId, detailRef: otherId }, [pages[0]!, ...pages]),
+    ).rejects.toThrow('INVALID_OWNERSHIP_DETAIL')
+    pages[0]!.segments[0]!.sha256 = 'f'.repeat(64)
+    await expect(
+      reassembleOwnershipDetail({ projectId, detailRef: otherId }, pages),
+    ).rejects.toThrow('INVALID_OWNERSHIP_DETAIL')
+  })
+})
 
 // These are new literal vectors, not candidate valid/expected fixture values.
 function request(method: string, params: unknown) {

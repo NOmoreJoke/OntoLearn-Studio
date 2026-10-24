@@ -31,6 +31,7 @@ METHODS = frozenset(
         "project.draft.save",
         "project.open",
         "project.read",
+        "project.ownership.detail",
     }
 )
 # First-chain rejection bounds, within the original reader's limits. These are
@@ -222,6 +223,131 @@ class _MainlineReader(ProjectHostReader):
         )
 
 
+@dataclass(frozen=True)
+class _OwnershipProof:
+    """Stack-owned issuer proof; no constructor or authority is exposed on wire."""
+
+    owner: object
+    reply: object
+    store: object
+    connection: object
+    lease: object
+    project: str
+    generation: int
+    method: str
+    base: int | None
+    request_hash: str
+
+    def check(self, store, project):
+        owner = self.owner
+        owner.check_reply(self.reply)
+        if (
+            store is not self.store
+            or owner.store is not store
+            or store._db is not self.connection
+            or store._format3_lease is not self.lease
+            or project != self.project
+            or owner.selected != project
+            or owner.generation != self.generation
+            or self.reply.method != self.method
+            or self.reply.project != project
+        ):
+            fault("PERMISSION_DENIED")
+        owner.authorize({"projectId": project})
+
+    @property
+    def origin(self):
+        return {
+            "ownerId": self.owner.owner_id,
+            "hostClientId": self.owner.host,
+            "engineSessionId": self.owner.session,
+        }
+
+    def reserve(self, stage, *, bytes_, objects, work):
+        self.check(self.store, self.project)
+        self.owner._budget().reserve(stage, bytes_=bytes_, objects=objects, work=work)
+
+    def admissions(self):
+        self.reserve(
+            "ownership admission scans",
+            bytes_=4 * READ_LIMITS.validation_bytes,
+            objects=4096,
+            work=2 * READ_LIMITS.validation_work,
+        )
+        reader = ProjectHostReader(self.store, limits=READ_LIMITS)
+        values = []
+        for core in (True, False):
+            try:
+                reader._preflight(_mainline_core_material=core)
+            except HostReadFault as error:
+                if error.reason != "limit":
+                    self.owner._host_fault(error)
+                values.append(False)
+            else:
+                values.append(True)
+        return tuple(values)
+
+    def material_profile(self):
+        # Admission already authenticated schema; identifiers still come only
+        # from SQLite. This measures exact prospective row/column byte deltas.
+        self.reserve(
+            "ownership projected material",
+            bytes_=2 * READ_LIMITS.validation_bytes,
+            objects=4096,
+            work=READ_LIMITS.validation_work // 2,
+        )
+        db = self.store._db
+        total = scan = decoded = 0
+        counts, plan_sizes = {}, None
+        tables = list(db.execute("SELECT name FROM sqlite_master WHERE type='table'"))
+        for (table,) in tables:
+            quoted = '"' + table.replace('"', '""') + '"'
+            columns = db.execute(f"PRAGMA table_info({quoted})").fetchall()
+            sizes = "+".join(
+                'coalesce(length(CAST("' + row[1].replace('"', '""') + '" AS BLOB)),0)'
+                for row in columns
+            )
+            count, size = db.execute(
+                f"SELECT count(*),coalesce(sum({sizes}),0) FROM {quoted}"
+            ).fetchone()
+            counts[table] = count
+            total += count
+            scan += size
+            if table not in {"job_blobs", "job_plans"}:
+                decoded += size
+            if table == "job_plans":
+                plan_sizes = sizes
+        plans = db.execute(
+            f"SELECT coalesce(sum({plan_sizes}),0) FROM job_plans WHERE ref IN ("
+            "SELECT CASE WHEN json_valid(context) THEN "
+            "json_extract(context,'$.request.authorization.preparedPlanRef') END "
+            "FROM operation_claims WHERE kind='application')"
+        ).fetchone()[0]
+        return (
+            total,
+            scan,
+            decoded,
+            plans,
+            counts.get("app_operations", 0) + counts.get("snapshots", 0),
+        )
+
+    def project_admissions(self, before, profile, rows, scan_delta, decoded_delta):
+        count, scan, decoded, plans, repeats = profile
+        core = (
+            count + rows <= READ_LIMITS.validation_rows
+            and decoded + decoded_delta + plans <= READ_LIMITS.validation_bytes
+            and 2 * (scan + scan_delta) + (decoded + decoded_delta + plans) * repeats
+            <= READ_LIMITS.validation_work
+        )
+        full = (
+            count + rows <= READ_LIMITS.validation_rows
+            and scan + scan_delta <= READ_LIMITS.validation_bytes
+            and (scan + scan_delta) * (1 + repeats) <= READ_LIMITS.validation_work
+        )
+        if not core or (before[1] and not full):
+            fault("RESOURCE_LIMIT", resource="page")
+
+
 class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
     """One real actor/store/handshake owner; no authority derived from a DTO."""
 
@@ -294,6 +420,36 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         if project is not None and project != self.selected:
             fault("PERMISSION_DENIED")
         return project
+
+    def ownership_proof(self, params, *, method):
+        self.require_owner(self.owner_id)
+        self.check_reply(self.current)
+        if (
+            method not in {"changeset.preview", "project.ownership.detail"}
+            or self.current.method != method
+        ):
+            fault("PERMISSION_DENIED")
+        self.authorize(params)
+        from ontolearn_engine.storage import digest
+
+        self._budget().reserve(
+            "ownership request binding",
+            bytes_=4 * self.actor.limits["maxFrameBytes"],
+            objects=4096,
+            work=8 * self.actor.limits["maxFrameBytes"],
+        )
+        return _OwnershipProof(
+            self,
+            self.current,
+            self.store,
+            self.store._db,
+            self.store._format3_lease,
+            params["projectId"],
+            self.generation,
+            method,
+            params.get("baseRevision"),
+            digest(params),
+        )
 
     def begin(self, request):
         self.require_owner(self.owner_id)
@@ -628,6 +784,11 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
                 self._room(result, budget, "result_project.open")
                 self._select(params["projectId"])
                 return result
+            elif method == "project.ownership.detail":
+                self.authorize(params)
+                budget.reserve_store("ownership detail read", params)
+                proof = self.ownership_proof(params, method=method)
+                result = self.store.ownership_detail_page(params, proof, self.actor.limits)
             else:
                 project = params["projectId"]
                 self.authorize(params)

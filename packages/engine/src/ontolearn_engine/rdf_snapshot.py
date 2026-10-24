@@ -7,7 +7,7 @@ Full PRD ontology semantics and reasoning remain later capability work.
 from urllib.parse import urlsplit
 
 from rdflib import XSD, Graph, Literal, URIRef
-from rdflib.plugins.parsers.notation3 import BadSyntax
+from rdflib.plugins.parsers.notation3 import BadSyntax, RelativeIRIBaseError, UnicodeCodePointError
 
 
 class TermInputError(ValueError):
@@ -36,7 +36,7 @@ def term(value: str) -> URIRef | Literal:
             format="turtle",
             publicID="urn:ontolearn:s1:",
         )
-    except BadSyntax as error:
+    except (BadSyntax, RelativeIRIBaseError, UnicodeCodePointError) as error:
         raise TermInputError("Unsupported S1 RDF object") from error
     except Exception as error:
         raise ValueError("Unsupported S1 RDF object") from error

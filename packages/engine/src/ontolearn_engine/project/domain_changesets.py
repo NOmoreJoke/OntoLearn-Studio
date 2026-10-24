@@ -415,7 +415,16 @@ def impact(store, internal, target, base):
 
 
 def preview_changeset(
-    store, project, base, request, *, host_client_id, engine_session_id, limits, hook
+    store,
+    project,
+    base,
+    request,
+    *,
+    host_client_id,
+    engine_session_id,
+    limits,
+    hook,
+    ownership_proof=None,
 ):
     if store.actual_format != 3:
         fail("INVALID_STATE")
@@ -425,8 +434,12 @@ def preview_changeset(
     _wire_room(store, request, limits)
     if request["projectId"] != project or request["baseRevision"] != base:
         fail("IDENTITY_CONFLICT")
+    if ownership_proof is not None:
+        store._ownership_proof(ownership_proof, project, "changeset.preview")
+        if ownership_proof.request_hash != digest(request) or ownership_proof.base != base:
+            fail("PERMISSION_DENIED")
     internal = store._project(project)
-    with store._application(project, "plan", hook):
+    with store._application(project, "plan", hook, ownership_proof=ownership_proof):
         if store.revision(internal) != base:
             fail("REVISION_CONFLICT", expected=base, actual=store.revision(internal))
         transactions = ProjectTransactions(store)

@@ -19,6 +19,8 @@ import {
   type MainlineExampleCreateResultDTO,
   type MainlineDraftSaveArgs,
   type MainlineDraftSaveResultDTO,
+  type OwnershipDetailArgs,
+  type OwnershipDetailPage,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '../../../../packages/contracts/src/v2'
 import {
@@ -551,6 +553,28 @@ export class ProjectMainlineService implements MainlineProjectBridge {
       // Preserve an actual durable receipt even if the user switched views while
       // awaiting it. No result is published into the replacement editor.
       return result
+    })
+  }
+  getOwnershipConflictDetailPage(
+    args: OwnershipDetailArgs,
+  ): Promise<BridgeResult<OwnershipDetailPage>> {
+    return this.#run(async () => {
+      const current = this.#current(),
+        client = this.#client(),
+        epoch = this.#selectionEpoch
+      if (client.owner !== current.owner) throw denied()
+      const result = await this.#call<OwnershipDetailPage>(client, 'project.ownership.detail', {
+        ...args,
+        projectId: current.project.projectId,
+      })
+      if (
+        this.#selectionEpoch !== epoch ||
+        this.source.current()?.owner !== current.owner ||
+        this.source.current()?.project.projectId !== current.project.projectId ||
+        client.engineSessionId !== current.engineSessionId
+      )
+        throw denied()
+      return result // Never publish a workspace, selection or snapshot projection.
     })
   }
   readProject(args: { editor: string }): Promise<BridgeResult<MainlineRead>> {

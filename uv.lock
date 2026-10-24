@@ -70,7 +70,7 @@ dependencies = [
 requires-dist = [
     { name = "pyparsing", specifier = "==3.3.3" },
     { name = "pyshacl", specifier = "==0.30.1" },
-    { name = "rdflib", specifier = "==7.6.0" },
+    { name = "rdflib", path = "packages/engine/vendor/rdflib/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl", specifier = "==7.6.0+ontolearn.fr201.1" },
 ]
 
 [[package]]
@@ -249,20 +249,32 @@ wheels = [
 
 [[package]]
 name = "rdflib"
-version = "7.6.0"
-source = { registry = "https://pypi.org/simple" }
+version = "7.6.0+ontolearn.fr201.1"
+source = { path = "packages/engine/vendor/rdflib/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl" }
 dependencies = [
     { name = "pyparsing" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/98/f5/18bb77b7af9526add0c727a3b2048959847dc5fb030913e2918bf384fec3/rdflib-7.6.0.tar.gz", hash = "sha256:6c831288d5e4a5a7ece85d0ccde9877d512a3d0f02d7c06455d00d6d0ea379df", size = 4943826, upload-time = "2026-02-13T07:15:55.938Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/c2/6604a71269e0c1bd75656d5a001432d16f2cc5b8c057140ec797155c295e/rdflib-7.6.0-py3-none-any.whl", hash = "sha256:30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd", size = 615416, upload-time = "2026-02-13T07:15:46.487Z" },
+    { filename = "rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl", hash = "sha256:13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137", size = 2378177 },
 ]
 
 [package.optional-dependencies]
 html = [
     { name = "html5rdf" },
 ]
+
+[package.metadata]
+requires-dist = [
+    { name = "berkeleydb", specifier = ">=18.1.0,<19.0.0", marker = "extra == \"berkeleydb\"" },
+    { name = "html5rdf", specifier = ">=1.2,<2", marker = "extra == \"html\"" },
+    { name = "httpx", specifier = ">=0.28.1,<0.29.0", marker = "extra == \"rdf4j\" or extra == \"graphdb\"" },
+    { name = "isodate", specifier = ">=0.7.2,<1.0.0", marker = "python_version < \"3.11\"" },
+    { name = "lxml", specifier = ">=4.3,<6.0", marker = "extra == \"lxml\"" },
+    { name = "networkx", specifier = ">=2,<4", marker = "extra == \"networkx\"" },
+    { name = "orjson", specifier = ">=3.9.14,<4", marker = "extra == \"orjson\"" },
+    { name = "pyparsing", specifier = ">=2.1.0,<4" },
+]
+provides-extras = ["berkeleydb", "graphdb", "html", "lxml", "networkx", "orjson", "rdf4j"]
 
 [[package]]
 name = "ruff"

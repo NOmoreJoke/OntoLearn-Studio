@@ -56,6 +56,515 @@ def owned(tmp_path):
     store.close()
 
 
+def ownership_fixture(actor, store, *, large=False, managed=False):
+    project = create(actor)[0]["projectId"]
+    subject = "urn:ownership:" + ("x" * 40000 if large and not managed else "subject")
+    record = {
+        "id": digest([subject, "urn:ownership:value", '"A"']),
+        "subject": subject,
+        "predicate": "urn:ownership:value",
+        "object": '"A"',
+    }
+    if managed:
+        store.commit(
+            store._project(project),
+            0,
+            uid(),
+            uid(),
+            definitions=[{"layer": "mapping", "id": "M1", "value": {}}],
+            mapping={
+                "id": "M1",
+                "rows": [{"row": "original-row-" + "x" * 40000, "facts": [record]}],
+            },
+        )
+        base = 1
+    else:
+        confirmed_job(
+            actor,
+            project,
+            {
+                "projectId": project,
+                "baseRevision": 0,
+                "intent": "change",
+                "plan": {"manual": [record]},
+            },
+        )
+        drain_owned_changesets(actor)
+        confirmed_job(
+            actor,
+            project,
+            {
+                "projectId": project,
+                "baseRevision": 1,
+                "intent": "change",
+                "plan": {"edits": {record["id"]: '"B"'}},
+            },
+        )
+        drain_owned_changesets(actor)
+        base = 2
+    params = {
+        "projectId": project,
+        "baseRevision": base,
+        "intent": "change",
+        "plan": {"manual": [record]},
+    }
+    return project, record, params
+
+
+def ownership_pages(actor, project, ref, *, page_size=1):
+    import hashlib
+
+    ordinal, expected, pages, parts = 0, None, [], []
+    while True:
+        response = exchange(
+            actor,
+            "project.ownership.detail",
+            {
+                "projectId": project,
+                "detailRef": ref,
+                "documentHash": expected,
+                "startOrdinal": ordinal,
+                "pageSize": page_size,
+            },
+        )
+        assert response["ok"], response
+        page = response["result"]
+        pages.append(page)
+        expected = page["manifest"]["documentHash"]
+        for segment in page["segments"]:
+            raw = base64.b64decode(segment["dataBase64"], validate=True)
+            assert hashlib.sha256(raw).hexdigest() == segment["sha256"]
+            parts.append(raw)
+        if page["complete"]:
+            break
+        ordinal = page["nextOrdinal"]
+    raw = b"".join(parts)
+    assert len(raw) == page["manifest"]["totalBytes"]
+    assert hashlib.sha256(raw).hexdigest() == expected
+    return pages, json.loads(raw)
+
+
+@pytest.mark.parametrize("managed", [False, True])
+def test_ownership_large_locator_is_complete_pure_and_bound(owned, tmp_path, managed):
+    actor, store = owned
+    project, record, params = ownership_fixture(actor, store, large=True, managed=managed)
+    before = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    refused = exchange(actor, "changeset.preview", params)
+    assert refused["error"]["code"] == "OWNERSHIP_CONFLICT", refused
+    ref = refused["error"]["params"]["detailRef"]
+    database = list(store._db.iterdump())
+    pages, document = ownership_pages(actor, project, ref)
+    assert len(pages) >= 2 and pages[0]["manifest"]["totalBytes"] > 32768
+    assert document["existing"]["id"] == record["id"]
+    assert document["existing"]["slot"]["subject"] == record["subject"]
+    if managed:
+        assert document["existing"]["owner"] == "M1"
+        assert document["existing"]["sourceRow"] == "original-row-" + "x" * 40000
+    assert list(store._db.iterdump()) == database  # Including no new cursor rows.
+    header = pages[0]["manifest"]
+    wrong = exchange(
+        actor,
+        "project.ownership.detail",
+        {
+            "projectId": project,
+            "detailRef": ref,
+            "documentHash": "f" * 64,
+            "startOrdinal": 1,
+            "pageSize": 1,
+        },
+    )
+    assert not wrong["ok"] and wrong["error"]["code"] == "IDENTITY_CONFLICT"
+    last = exchange(
+        actor,
+        "project.ownership.detail",
+        {
+            "projectId": project,
+            "detailRef": ref,
+            "documentHash": header["documentHash"],
+            "startOrdinal": header["segmentCount"] - 1,
+            "pageSize": 1,
+        },
+    )
+    assert last["ok"] and last["result"]["complete"]  # End, not whole-document authority.
+    assert not actor.mainline.hold
+    after = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    assert after["result"] == before["result"]
+    accepted = confirmed_job(
+        actor,
+        project,
+        {
+            "projectId": project,
+            "baseRevision": params["baseRevision"],
+            "intent": "change",
+            "plan": {
+                "manual": [
+                    {
+                        **record,
+                        "id": digest([record["subject"], record["predicate"], '"C"']),
+                        "object": '"C"',
+                    }
+                ]
+            },
+        },
+    )
+    drain_owned_changesets(actor)
+    assert store.get_job(project, accepted["jobId"])["state"] == "succeeded"
+    marker = exchange(
+        actor, "operation.get", {"projectId": project, "operationId": accepted["operationId"]}
+    )
+    assert marker["ok"] and marker["result"]["jobId"] == accepted["jobId"]
+    other = create(actor)[0]["projectId"]
+    denied = exchange(
+        actor,
+        "project.ownership.detail",
+        {
+            "projectId": other,
+            "detailRef": ref,
+            "documentHash": None,
+            "startOrdinal": 0,
+            "pageSize": 1,
+        },
+    )
+    assert not denied["ok"] and denied["error"]["code"] == "NOT_FOUND"
+    (tmp_path / "large-ownership-trace.json").write_text(
+        json.dumps(
+            {
+                "managed": managed,
+                "refused": refused,
+                "pages": pages,
+                "document": document,
+                "wrongHash": wrong,
+                "randomLast": last,
+                "accepted": accepted,
+                "marker": marker,
+                "otherProject": denied,
+            }
+        )
+    )
+
+
+def damage_ownership_fixture(store, table, key, identity, payload):
+    assert (table, key) in {("job_details", "id"), ("job_blobs", "ref")}
+    name = "immutable_" + table + "_UPDATE"
+    trigger = store._db.execute("SELECT sql FROM sqlite_master WHERE name=?", (name,)).fetchone()[0]
+    with store._transaction():
+        store._db.execute("DROP TRIGGER " + name)
+        store._db.execute(f"UPDATE {table} SET payload=? WHERE {key}=?", (payload, identity))
+        store._db.execute(trigger)
+
+
+@pytest.mark.parametrize("damage", ["missing-version", "empty-header", "bad-json", "bad-segment"])
+def test_ownership_corruption_is_storage_hold(owned, damage):
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    refused = exchange(actor, "changeset.preview", params)
+    ref = refused["error"]["params"]["detailRef"]
+    header = store.detail_get(project, ref)
+    if damage == "bad-segment":
+        damage_ownership_fixture(
+            store, "job_blobs", "ref", header["segmentBlobRefs"][0], canonical([[]] * 20000)
+        )
+    else:
+        payload = (
+            "{"
+            if damage == "bad-json"
+            else "{}"
+            if damage == "empty-header"
+            else canonical({k: v for k, v in header.items() if k != "ownershipDetailVersion"})
+        )
+        damage_ownership_fixture(store, "job_details", "id", ref, payload)
+    database = list(store._db.iterdump())
+    denied = exchange(
+        actor,
+        "project.ownership.detail",
+        {
+            "projectId": project,
+            "detailRef": ref,
+            "documentHash": None,
+            "startOrdinal": 0,
+            "pageSize": 1,
+        },
+    )
+    assert not denied["ok"] and denied["error"]["code"] == "STORAGE_FAILURE", denied
+    assert actor.mainline.hold and list(store._db.iterdump()) == database
+
+
+def test_ownership_segment_failure_rolls_back_all_diagnostic_rows(owned, monkeypatch):
+    import sqlite3
+
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store, large=True)
+    database = list(store._db.iterdump())
+    original = store.put_blob
+    calls = []
+
+    def fail_second(project, value):
+        if "dataBase64" in value:
+            calls.append(True)
+            if len(calls) == 2:
+                raise sqlite3.IntegrityError("owned diagnostic fixture failure")
+        return original(project, value)
+
+    monkeypatch.setattr(store, "put_blob", fail_second)
+    denied = exchange(actor, "changeset.preview", params)
+    assert len(calls) == 2 and not denied["ok"] and denied["error"]["code"] == "INTERNAL_ERROR"
+    assert "detailRef" not in denied["error"]["params"]
+    assert list(store._db.iterdump()) == database
+    assert actor.mainline.hold and len(actor.mainline.replies) == 1
+
+
+@pytest.mark.parametrize("late", [False, True])
+def test_ownership_diagnostic_cannot_poison_an_admitted_full_reader(owned, monkeypatch, late):
+    from ontolearn_engine.project.mainline import READ_LIMITS
+    from ontolearn_engine.project.project_host import ProjectHostReader
+    from test_mainline_read_work_budget import pad_scan_to
+
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    pad_scan_to(store, project, READ_LIMITS.validation_bytes - (3000 if late else 64))
+    reader = ProjectHostReader(store, limits=READ_LIMITS)
+    before = reader.workspace(project, editor="ontology")
+    database = list(store._db.iterdump())
+    if late:
+        original = store.put_blob
+        inserted = []
+
+        def extra_after_projection(project, value):
+            result = original(project, value)
+            if "dataBase64" in value and not inserted:
+                inserted.append(True)
+                original(project, {"owned-late-admission-fixture": "x" * 6000})
+            return result
+
+        monkeypatch.setattr(store, "put_blob", extra_after_projection)
+    refused = exchange(actor, "changeset.preview", params)
+    assert not refused["ok"] and refused["error"]["code"] == "RESOURCE_LIMIT", refused
+    assert "detailRef" not in refused["error"]["params"] and not actor.mainline.hold
+    if late:
+        assert inserted
+    assert list(store._db.iterdump()) == database
+    assert reader.workspace(project, editor="ontology") == before
+    assert exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})["ok"]
+
+
+def test_ownership_private_admission_preserves_already_core_only_vector(owned):
+    from ontolearn_engine.project.mainline import READ_LIMITS
+    from ontolearn_engine.project.project_host import HostReadFault, ProjectHostReader
+    from test_mainline_read_work_budget import pad_scan_to
+
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    pad_scan_to(store, project, READ_LIMITS.validation_bytes + 64)
+    with pytest.raises(HostReadFault) as original_full:
+        ProjectHostReader(store, limits=READ_LIMITS).workspace(project, editor="ontology")
+    assert original_full.value.reason == "limit"
+    # Unit of the actual private issuer/admission, not a claimed wire path:
+    # public preview's original full-purpose preflight remains unchanged.
+    request = frame(actor, "changeset.preview", params)
+    actor.mainline.begin(request)
+    proof = actor.mainline.ownership_proof(params, method="changeset.preview")
+    assert proof.admissions() == (True, False)
+    try:
+        with pytest.raises(JobFault) as refused:
+            store.preview_changeset(
+                project,
+                params["baseRevision"],
+                params,
+                host_client_id=actor.host_client_id,
+                engine_session_id=actor.session,
+                limits=actor.limits,
+                ownership_proof=proof,
+            )
+        assert refused.value.code == "OWNERSHIP_CONFLICT"
+        actor.mainline.observe_error(request["id"], refused.value)
+    finally:
+        actor.finish_query_reply(request["id"], emitted=True)
+    assert not actor.mainline.hold
+    assert exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})["ok"]
+    with pytest.raises(HostReadFault) as still_full:
+        ProjectHostReader(store, limits=READ_LIMITS).workspace(project, editor="ontology")
+    assert still_full.value.reason == "limit"
+
+
+def test_ownership_bad_existing_blob_is_bounded_before_intern_reuse(owned, monkeypatch):
+    from ontolearn_engine.project.mainline import _OwnershipProof
+
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    ref = exchange(actor, "changeset.preview", params)["error"]["params"]["detailRef"]
+    header = store.detail_get(project, ref)
+    blob_ref = header["segmentBlobRefs"][0]
+    corrupted = canonical([[]] * 20000)
+    damage_ownership_fixture(store, "job_blobs", "ref", blob_ref, corrupted)
+    budget, decoded, blob_reads = [], [], []
+    original_reserve, original_json, original_blob = (
+        _OwnershipProof.reserve,
+        store._ownership_json,
+        store.blob,
+    )
+
+    def reserve(proof, stage, **cost):
+        if stage == "ownership segment":
+            budget.append(cost)
+        return original_reserve(proof, stage, **cost)
+
+    def observe_json(raw):
+        if raw == corrupted:
+            assert budget and budget[-1]["objects"] >= 8 * len(corrupted.encode()) + 128
+            decoded.append(True)
+        return original_json(raw)
+
+    def observe_blob(project, identity):
+        if identity == blob_ref:
+            blob_reads.append(True)
+        return original_blob(project, identity)
+
+    monkeypatch.setattr(_OwnershipProof, "reserve", reserve)
+    monkeypatch.setattr(store, "_ownership_json", observe_json)
+    monkeypatch.setattr(store, "blob", observe_blob)
+    changed_request = json.loads(canonical(params))
+    changed_request["plan"]["definitions"] = []  # Different request hash, same locator bytes.
+    database = list(store._db.iterdump())
+    denied = exchange(actor, "changeset.preview", changed_request)
+    assert not denied["ok"] and denied["error"]["code"] == "STORAGE_FAILURE", denied
+    assert decoded and not blob_reads and actor.mainline.hold
+    assert list(store._db.iterdump()) == database
+
+
+def test_ownership_raw_segment_budget_refusal_happens_before_json_loads(owned, monkeypatch):
+    from ontolearn_engine.project.mainline import _OwnershipProof
+
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    ref = exchange(actor, "changeset.preview", params)["error"]["params"]["detailRef"]
+    header = store.detail_get(project, ref)
+    payload = canonical([[]] * 20000)
+    damage_ownership_fixture(store, "job_blobs", "ref", header["segmentBlobRefs"][0], payload)
+    original_reserve, original_json = _OwnershipProof.reserve, store._ownership_json
+    denied_before_decode, decoded = [], []
+
+    def refuse(proof, stage, **cost):
+        if stage == "ownership segment":
+            assert cost["objects"] >= 8 * len(payload.encode()) + 128
+            denied_before_decode.append(True)
+            raise JobFault("RESOURCE_LIMIT", {"resource": "memory"})
+        return original_reserve(proof, stage, **cost)
+
+    def observe(raw):
+        if raw == payload:
+            decoded.append(True)
+        return original_json(raw)
+
+    monkeypatch.setattr(_OwnershipProof, "reserve", refuse)
+    monkeypatch.setattr(store, "_ownership_json", observe)
+    response = exchange(
+        actor,
+        "project.ownership.detail",
+        {
+            "projectId": project,
+            "detailRef": ref,
+            "documentHash": None,
+            "startOrdinal": 0,
+            "pageSize": 1,
+        },
+    )
+    assert not response["ok"] and response["error"]["code"] == "RESOURCE_LIMIT"
+    assert denied_before_decode and not decoded and not actor.mainline.hold
+
+
+def test_ownership_duplicate_reuses_at_row_cap_new_context_rolls_back(owned):
+    from ontolearn_engine.project.mainline import READ_LIMITS
+    from test_mainline_read_work_budget import scalar_profile
+
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    original = exchange(actor, "changeset.preview", params)
+    ref = original["error"]["params"]["detailRef"]
+    count = sum(row["rows"] for row in scalar_profile(store)["tables"].values())
+    for index in range(READ_LIMITS.validation_rows - count):
+        store.put_blob(project, {"owned-row-cap": index})
+    database = list(store._db.iterdump())
+    repeated = exchange(actor, "changeset.preview", params)
+    assert repeated["error"]["code"] == "OWNERSHIP_CONFLICT", repeated
+    assert repeated["error"]["params"]["detailRef"] == ref
+    assert list(store._db.iterdump()) == database
+    changed = json.loads(canonical(params))
+    changed["plan"]["definitions"] = []
+    rejected = exchange(actor, "changeset.preview", changed)
+    assert rejected["error"]["code"] == "RESOURCE_LIMIT", rejected
+    assert "detailRef" not in rejected["error"]["params"]
+    assert list(store._db.iterdump()) == database and not actor.mainline.hold
+    assert exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})["ok"]
+
+
+def test_ownership_exact_legacy_detail_does_not_invent_locator(owned):
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    # The real pre-existing internal API creates its actual old three fields;
+    # it has no stack-owned mainline issuer and cannot mint a new locator.
+    with pytest.raises(JobFault) as old:
+        store.preview_changeset(
+            project,
+            params["baseRevision"],
+            params,
+            host_client_id=actor.host_client_id,
+            engine_session_id=actor.session,
+            limits=actor.limits,
+        )
+    assert old.value.code == "OWNERSHIP_CONFLICT"
+    ref = old.value.params["detailRef"]
+    assert store.detail_get(project, ref) == {
+        "category": "ownership",
+        "resource": "plan",
+        "projectId": project,
+    }
+    response = exchange(
+        actor,
+        "project.ownership.detail",
+        {
+            "projectId": project,
+            "detailRef": ref,
+            "documentHash": None,
+            "startOrdinal": 0,
+            "pageSize": 1,
+        },
+    )
+    assert response["error"]["code"] == "INVALID_STATE" and not actor.mainline.hold
+
+
+def test_ownership_reference_does_not_cross_actual_successor_session(owned):
+    actor, store = owned
+    project, _, params = ownership_fixture(actor, store)
+    ref = exchange(actor, "changeset.preview", params)["error"]["params"]["detailRef"]
+    old_session = actor.session
+    actor.mainline.close()
+    successor = Coordinator(store, profile="business3", _ready=_JOB_READY)
+    try:
+        assert exchange(successor, "hello", {"supportedVersions": [3], "clientId": uid()})["ok"]
+        assert successor.session != old_session
+        assert exchange(successor, "project.open", {"projectId": project})["ok"]
+        response = exchange(
+            successor,
+            "project.ownership.detail",
+            {
+                "projectId": project,
+                "detailRef": ref,
+                "documentHash": None,
+                "startOrdinal": 0,
+                "pageSize": 1,
+            },
+        )
+        assert response["error"]["code"] == "NOT_FOUND" and not successor.mainline.hold
+        # Only a new explicit preview in the new actual session can issue a
+        # new ref. Reading the old UUID never recreates its source authority.
+        fresh = exchange(successor, "changeset.preview", params)
+        assert fresh["error"]["code"] == "OWNERSHIP_CONFLICT", fresh
+        assert fresh["error"]["params"]["detailRef"] != ref
+        ownership_pages(successor, project, fresh["error"]["params"]["detailRef"])
+    finally:
+        successor.mainline.close()
+
+
 def create(actor, name="项目A", operation=None):
     params = {
         "requestVersion": 1,

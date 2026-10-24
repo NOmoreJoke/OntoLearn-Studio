@@ -64,6 +64,47 @@ class Conflict(ValueError):
         }.get(category, "INTERNAL_ERROR")
 
 
+class ManualOwnershipConflict(Conflict):
+    """The actual first blocking row, never reconstructed from diagnostic text."""
+
+    def __init__(self, message, reason, existing, incoming):
+        super().__init__(message, category="ownership")
+
+        def locator(row):
+            return {
+                "id": row["id"],
+                "owner": row["owner"],
+                "sourceRow": row["source_row"],
+                "slot": {"subject": row["subject"], "predicate": row["predicate"]},
+            }
+
+        self.witness = {
+            "kind": "manual-ownership-conflict",
+            "reason": reason,
+            "existing": locator(existing),
+            "incoming": locator({**incoming, "owner": None, "source_row": None}),
+        }
+
+
+class SingleDeclarationConflict(Conflict):
+    """An introduced declaration and the actual first two blocking records."""
+
+    def __init__(self, definition, predicate, subject, rows):
+        super().__init__(
+            "Single-valued declaration conflicts with existing facts", category="ownership"
+        )
+        self.witness = {
+            "kind": "single-declaration-conflict",
+            "reason": "singleDeclaration",
+            "declaration": {"layer": "ontology", "id": definition, "predicate": predicate},
+            "slot": {"subject": subject, "predicate": predicate},
+            "existing": [
+                {"id": row["id"], "owner": row["owner"], "sourceRow": row["source_row"]}
+                for row in rows
+            ],
+        }
+
+
 class Store:
     def __init__(
         self,
@@ -669,6 +710,8 @@ class Store:
                 changed, rebound, membership_changed = self._apply_compensation(
                     project, before_state, desired, hook
                 )
+            original_singles = self._single_predicates(project) if definitions else set()
+            introduced_singles = {}
             for definition in definitions or []:
                 if not isinstance(definition, dict) or set(definition) != {"layer", "id", "value"}:
                     raise ValueError("Definition requires layer/id/value")
@@ -681,6 +724,10 @@ class Store:
                 ):
                     raise ValueError("Invalid definition layer/identity")
                 self._definition(definition["value"])
+                if layer == "ontology" and isinstance(definition["value"], dict):
+                    for predicate in definition["value"].get("singleValuedPredicates", []):
+                        if predicate not in original_singles:
+                            introduced_singles.setdefault(predicate, []).append(identity)
                 payload = canonical(definition["value"])
                 old = self._db.execute(
                     "SELECT payload FROM definitions WHERE project=? AND layer=? AND id=?",
@@ -748,7 +795,14 @@ class Store:
                 ).fetchone()
                 if old is None:
                     raise Conflict("Edited fact no longer exists", category="state")
-                self._check_slot(project, old["subject"], old["predicate"], value, {identity})
+                self._check_slot(
+                    project,
+                    old["subject"],
+                    old["predicate"],
+                    value,
+                    {identity},
+                    manual_incoming=dict(old) if old["owner"] is None else None,
+                )
                 if value != old["object"]:
                     self._db.execute(
                         "UPDATE facts SET object=? WHERE project=? AND id=?",
@@ -764,15 +818,24 @@ class Store:
                 ).fetchone()
                 if existing:
                     if existing["owner"] or existing["object"] != fact["object"]:
-                        raise Conflict(
+                        raise ManualOwnershipConflict(
                             "Explicit fact edit required; cannot take ownership: "
                             f"slot={existing['subject']} {existing['predicate']}, "
                             f"other={existing['owner'] or 'manual'}, row={existing['source_row']}, "
                             f"id={existing['id']}",
-                            category="ownership",
+                            "reservedIdentity",
+                            existing,
+                            fact,
                         )
                     continue
-                self._check_slot(project, fact["subject"], fact["predicate"], fact["object"], set())
+                self._check_slot(
+                    project,
+                    fact["subject"],
+                    fact["predicate"],
+                    fact["object"],
+                    set(),
+                    manual_incoming=fact,
+                )
                 self._db.execute(
                     "INSERT INTO facts VALUES(?,?,?,?,?,NULL,NULL,NULL)",
                     (project, fact["id"], fact["subject"], fact["predicate"], fact["object"]),
@@ -798,7 +861,7 @@ class Store:
                 if self._replace_mapping(project, mapping):
                     changed.update({"facts:asserted", f"mapping:{mapping['id']}"})
             self._validate_references(project)
-            self._validate_single_slots(project)
+            self._validate_single_slots(project, introduced_singles)
             after_state = self.state(project)
             from ontolearn_engine.project.entity_metadata import (
                 validate_change,
@@ -1081,13 +1144,33 @@ class Store:
                 predicates.update(value.get("singleValuedPredicates", []))
         return predicates
 
-    def _validate_single_slots(self, project: str) -> None:
+    def _validate_single_slots(self, project: str, declarations=None) -> None:
         for predicate in self._single_predicates(project):
-            if self._db.execute(
+            group = self._db.execute(
                 "SELECT subject FROM facts WHERE project=? AND predicate=? AND object IS NOT NULL "
                 "GROUP BY subject HAVING COUNT(*)>1 LIMIT 1",
                 (project, predicate),
-            ).fetchone():
+            ).fetchone()
+            if group:
+                if declarations and predicate in declarations:
+                    # A same-plan removal/overwrite cannot remain the issuer.
+                    for identity in declarations[predicate]:
+                        definition = self._db.execute(
+                            "SELECT payload FROM definitions WHERE project=? "
+                            "AND layer='ontology' AND id=?",
+                            (project, identity),
+                        ).fetchone()
+                        payload = json.loads(definition[0]) if definition is not None else None
+                        if isinstance(payload, dict) and predicate in payload.get(
+                            "singleValuedPredicates", []
+                        ):
+                            rows = self._db.execute(
+                                "SELECT id,owner,source_row FROM facts "
+                                "WHERE project=? AND predicate=? "
+                                "AND subject=? AND object IS NOT NULL LIMIT 2",
+                                (project, predicate, group[0]),
+                            ).fetchall()
+                            raise SingleDeclarationConflict(identity, predicate, group[0], rows)
                 raise Conflict(
                     "Single-valued declaration conflicts with existing facts", category="ownership"
                 )
@@ -1119,6 +1202,8 @@ class Store:
         value: str,
         excluded: set[str],
         single_predicates: set[str] | None = None,
+        *,
+        manual_incoming=None,
     ) -> None:
         single = predicate in (
             self._single_predicates(project) if single_predicates is None else single_predicates
@@ -1132,11 +1217,18 @@ class Store:
                 row["id"] == reserved_id
                 or (row["object"] is not None and (single or row["object"] == value))
             ):
-                raise Conflict(
+                message = (
                     f"Ownership conflict: slot={subject} {predicate}, "
-                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}",
-                    category="ownership",
+                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}"
                 )
+                if manual_incoming is not None:
+                    reason = (
+                        "reservedIdentity"
+                        if row["id"] == reserved_id
+                        else ("sameStatement" if row["object"] == value else "singleSlot")
+                    )
+                    raise ManualOwnershipConflict(message, reason, row, manual_incoming)
+                raise Conflict(message, category="ownership")
 
     def _replace_mapping(self, project: str, mapping: dict) -> bool:
         if (

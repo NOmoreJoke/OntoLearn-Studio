@@ -61,6 +61,8 @@ export function registerDesktopIpc({
       projects?.saveProjectDraft(args) ?? Promise.resolve(permission()),
     'project:open': (args) => projects?.openProject(args) ?? Promise.resolve(permission()),
     'project:read': (args) => projects?.readProject(args) ?? Promise.resolve(permission()),
+    'project:ownership-detail': (args) =>
+      projects?.getOwnershipConflictDetailPage(args) ?? Promise.resolve(permission()),
     'project:changeset-preview': (args) =>
       projects?.previewProjectChangeset(args) ?? Promise.resolve(permission()),
     'project:changeset-diff-page': (args) =>
@@ -189,6 +191,7 @@ export function registerDesktopIpc({
   register('project:draft-save', handlers['project:draft-save'])
   register('project:open', handlers['project:open'])
   register('project:read', handlers['project:read'])
+  register('project:ownership-detail', handlers['project:ownership-detail'])
   register('project:changeset-preview', handlers['project:changeset-preview'])
   register('project:changeset-diff-page', handlers['project:changeset-diff-page'])
   register('project:changeset-confirm', handlers['project:changeset-confirm'])
