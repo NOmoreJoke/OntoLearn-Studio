@@ -265,8 +265,12 @@ async function fields(page: Page, entity: Entity, initial: boolean) {
     ['range', '客体类 / 数据类型 IRI（值域）'],
     ['types', '所属类 IRI'],
   ] as const) {
+    // Populated textareas contribute default text to getByLabel's label text.
+    // Match the exact accessible textbox name, independent of its current value.
     if (entity[key] !== undefined)
-      await target.getByLabel(`${label}（每行一项）`, { exact: true }).fill(entity[key])
+      await target
+        .getByRole('textbox', { name: `${label}（每行一项）`, exact: true })
+        .fill(entity[key])
   }
 }
 async function select(page: Page, entity: Entity) {
