@@ -50,23 +50,33 @@ export function manualFactPlan(
   return { edits: { [fact.id]: object } }
 }
 
-export function newManualFactPlan(source: DomainRead, fact: RdfRow): EditPlan {
-  if (!fact.subject || !fact.predicate || !fact.object) throw new Error('INVALID_FACT')
+export async function newManualFactPlan(source: DomainRead, fact: RdfRow): Promise<EditPlan> {
+  const triple = { subject: fact.subject, predicate: fact.predicate, object: fact.object }
+  if (!triple.subject || !triple.predicate || !triple.object) throw new Error('INVALID_FACT')
+  // Store canonical JSON encodes Unicode scalars as UTF-8. Reject lone surrogates
+  // rather than hash JSON.stringify's surrogate escape as a different statement.
+  for (const value of Object.values(triple))
+    for (const character of value) {
+      const code = character.codePointAt(0)!
+      if (code >= 0xd800 && code <= 0xdfff) throw new Error('INVALID_FACT')
+    }
   if (
     source.domain.state.facts.some(
-      (row) => row.object !== null && sameTriple({ ...row, object: row.object }, fact),
+      (row) => row.object !== null && sameTriple({ ...row, object: row.object }, triple),
     )
   )
     throw new Error('FACT_ALREADY_EXISTS')
   for (const definition of source.domain.state.definitions) {
     if (definition.layer !== 'ontology') continue
     const value = JSON.parse(definition.payload) as { triples?: RdfRow[] }
-    if (value.triples?.some((row) => sameTriple(row, fact))) throw new Error('FACT_ALREADY_EXISTS')
+    if (value.triples?.some((row) => sameTriple(row, triple)))
+      throw new Error('FACT_ALREADY_EXISTS')
   }
-  // New manual records get a fresh stable identity, retained by the prepared plan.
-  // Editing an existing record never enters this path or changes its record ID.
-  const id = Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
-    byte.toString(16).padStart(2, '0'),
-  ).join('')
-  return { manual: [{ id, ...fact }] }
+  // Match Store.digest([S,P,O]) for creation only. Edits/removals keep the old ID.
+  const bytes = new TextEncoder().encode(
+    JSON.stringify([triple.subject, triple.predicate, triple.object]),
+  )
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))
+  const id = Array.from(digest, (byte) => byte.toString(16).padStart(2, '0')).join('')
+  return { manual: [{ id, ...triple }] }
 }

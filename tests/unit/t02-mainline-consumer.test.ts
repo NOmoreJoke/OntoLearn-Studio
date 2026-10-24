@@ -1586,25 +1586,25 @@ describe('T02 fact plan retains source records', () => {
       expect(read).toEqual(before)
     },
   )
-  it('new assertions use one fresh record ID without copying managed records', () => {
+  it('new assertions use the Store content ID without copying managed records', async () => {
     const read = source()
     const before = structuredClone(read)
-    const plan = newManualFactPlan(read, {
+    const plan = await newManualFactPlan(read, {
       subject: 'urn:002',
       predicate: 'urn:name',
       object: '"new"',
     })
     expect(plan.manual).toEqual([
       {
-        id: expect.stringMatching(/^[a-f0-9]{64}$/),
+        id: '979e31c274423dbe08c091a4ad25f11d7cb9b19e0a9ceb34f57eab6958ce4dbb',
         subject: 'urn:002',
         predicate: 'urn:name',
         object: '"new"',
       },
     ])
     expect(read).toEqual(before)
-    expect(() =>
+    await expect(
       newManualFactPlan(read, { subject: 'urn:001', predicate: 'urn:name', object: '"泵站A"@zh' }),
-    ).toThrow('FACT_ALREADY_EXISTS')
+    ).rejects.toThrow('FACT_ALREADY_EXISTS')
   })
 })

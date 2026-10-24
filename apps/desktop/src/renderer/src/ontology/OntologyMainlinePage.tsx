@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { manualFactPlan, newManualFactPlan } from './mainline-facts'
 import { type OntologySession, sourceIdentity } from './mainline-session'
 import { OntologyPage } from './OntologyPage'
@@ -26,6 +26,20 @@ function MainlineEditor({ session }: { session: OntologySession }) {
 
 function SessionEditor({ session }: { session: OntologySession }) {
   const state = useSyncExternalStore(session.subscribe, session.getSnapshot)
+  const factLifetime = useRef<
+    { session: OntologySession; sequence: number; active: boolean } | undefined
+  >(undefined)
+  // Detach synchronously at commit, before the owner's passive session disposal.
+  // A new attachment never revives an older hash continuation, even in StrictMode.
+  useLayoutEffect(() => {
+    const lifetime = { session, sequence: 0, active: true }
+    factLifetime.current = lifetime
+    return () => {
+      lifetime.active = false
+      lifetime.sequence++
+      if (factLifetime.current === lifetime) factLifetime.current = undefined
+    }
+  }, [session])
   const [recordId, setRecordId] = useState('')
   const [fact, setFact] = useState<RdfRow>({ subject: '', predicate: '', object: '' })
   const [draftBase, setDraftBase] = useState('')
@@ -52,8 +66,14 @@ function SessionEditor({ session }: { session: OntologySession }) {
         [row.id, row.subject, row.predicate, row.object].some((cell) => cell?.includes(search)),
     ) ?? []
   const currentPage = Math.min(page, Math.max(0, Math.ceil(facts.length / 20) - 1))
-  function reset() {
+  function invalidateFactPreview() {
+    const lifetime = factLifetime.current
+    const sequence = lifetime ? ++lifetime.sequence : undefined
     session.discardPreview()
+    return sequence
+  }
+  function reset() {
+    invalidateFactPreview()
     setRecordId('')
     setFact({ subject: '', predicate: '', object: '' })
     setDraftBase(identity)
@@ -61,14 +81,43 @@ function SessionEditor({ session }: { session: OntologySession }) {
   }
   async function preview(action: 'edit' | 'remove' | 'add') {
     if (!source || blocked) return
+    const lifetime = factLifetime.current
+    if (!lifetime?.active || lifetime.session !== session) return
+    const sequence = invalidateFactPreview()
+    // Capture after discardPreview's synchronous subscribers have settled.
+    const snapshot = session.getSnapshot()
+    const boundSource = snapshot.source
+    if (!boundSource || boundSource !== source) return
+    const boundIdentity = sourceIdentity(boundSource)
+    if (boundIdentity !== identity) return
+    const current = () => {
+      const live = session.getSnapshot()
+      return (
+        lifetime.active &&
+        factLifetime.current === lifetime &&
+        lifetime.sequence === sequence &&
+        lifetime.session === session &&
+        live === snapshot &&
+        live.source === boundSource &&
+        sourceIdentity(boundSource) === boundIdentity &&
+        !live.stale &&
+        !live.pending &&
+        !['reading', 'preparing', 'submitting'].includes(live.phase)
+      )
+    }
+    if (!current()) return
+    const tuple = { subject: fact.subject, predicate: fact.predicate, object: fact.object }
     setFormError('')
     try {
       const plan =
         action === 'add'
-          ? newManualFactPlan(source, fact)
-          : manualFactPlan(source, action, recordId, fact.object)
+          ? await newManualFactPlan(boundSource, tuple)
+          : manualFactPlan(boundSource, action, recordId, tuple.object)
+      if (!current()) return
+      // No await/publication between this fence and Session's existing dispatch guard.
       await session.prepare(plan)
     } catch (cause) {
+      if (!current()) return
       const errors: Record<string, string> = {
         FACT_NOT_FOUND: '原事实已不存在，请读取当前项目后重新选择。',
         MANAGED_FACT_REQUIRES_OWNER: '此事实由映射管理，须在对应管理流程处理冲突。',
@@ -91,7 +140,13 @@ function SessionEditor({ session }: { session: OntologySession }) {
           <h1>本体构建</h1>
           <p>{source ? `项目版本 ${source.domain.projectRevision}` : '尚未读取当前项目'}</p>
         </div>
-        <button disabled={busy} onClick={() => void session.read()}>
+        <button
+          disabled={busy}
+          onClick={() => {
+            invalidateFactPreview()
+            void session.read()
+          }}
+        >
           读取当前项目
         </button>
       </header>
@@ -115,7 +170,7 @@ function SessionEditor({ session }: { session: OntologySession }) {
                 view={projection.view}
                 transactionBusy={busy || !!state.pending || state.stale}
                 factsManagedExternally
-                onDraftChange={() => session.discardPreview()}
+                onDraftChange={invalidateFactPreview}
                 previewManagedEdit={async (intent, base) => {
                   if (
                     base.project !== source.projectId ||
@@ -184,7 +239,7 @@ function SessionEditor({ session }: { session: OntologySession }) {
                       <button
                         disabled={busy || !!state.pending}
                         onClick={() => {
-                          session.discardPreview()
+                          invalidateFactPreview()
                           setRecordId(row.id)
                           setFact({
                             subject: row.subject,
@@ -243,7 +298,7 @@ function SessionEditor({ session }: { session: OntologySession }) {
                     value={fact[field]}
                     disabled={busy || !!state.pending || (!!recordId && field !== 'object')}
                     onChange={(event) => {
-                      session.discardPreview()
+                      invalidateFactPreview()
                       if (!draftBase) setDraftBase(identity)
                       setFact((old) => ({ ...old, [field]: event.target.value }))
                     }}
