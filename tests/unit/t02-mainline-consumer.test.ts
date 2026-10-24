@@ -266,6 +266,104 @@ function harness() {
   }
 }
 
+describe('T02 ownership conflict error handling (unit only)', () => {
+  it('keeps a controlled ownership conflict actionable and permits the next valid preview', async () => {
+    const h = harness()
+    await h.session.read()
+    const before = structuredClone(h.session.getSnapshot().source)
+    const detailRef = crypto.randomUUID()
+    const plan = { edits: { ['f'.repeat(64)]: '"changed value"' } }
+    const originalPlan = structuredClone(plan)
+    vi.mocked(h.bridge.previewProjectChangeset).mockResolvedValueOnce({
+      ok: false,
+      error: {
+        code: 'OWNERSHIP_CONFLICT',
+        messageKey: 'project.ownershipConflict',
+        params: { detailRef },
+        retryable: false,
+      },
+    })
+
+    await h.session.prepare(plan)
+
+    const rejected = h.session.getSnapshot()
+    expect(rejected.error).toBe('OWNERSHIP_CONFLICT')
+    expect(rejected.phase).toBe('idle')
+    expect(rejected.stale).toBe(false)
+    expect(rejected.source).toEqual(before)
+    expect(rejected.prepared).toBeUndefined()
+    expect(rejected.pending).toBeUndefined()
+    expect(rejected.receipt).toBeUndefined()
+    expect(plan).toEqual(originalPlan)
+    expect(JSON.stringify(rejected)).not.toContain(detailRef)
+    expect(JSON.stringify(rejected)).not.toContain('project.ownershipConflict')
+    expect(h.bridge.getProjectDiffPage).not.toHaveBeenCalled()
+    expect(h.bridge.confirmProjectChangeset).not.toHaveBeenCalled()
+    expect(h.bridge.saveProjectDraft).not.toHaveBeenCalled()
+    expect(h.bridge.commitProjectChangeSet).not.toHaveBeenCalled()
+
+    await h.session.prepare(plan)
+
+    expect(h.bridge.previewProjectChangeset).toHaveBeenCalledTimes(2)
+    expect(h.bridge.previewProjectChangeset).toHaveBeenLastCalledWith({
+      baseRevision: before!.domain.projectRevision,
+      intent: 'change',
+      plan: originalPlan,
+    })
+    expect(h.session.getSnapshot().phase).toBe('ready')
+    expect(h.session.getSnapshot().error).toBeUndefined()
+    expect(h.session.getSnapshot().prepared?.rows).toEqual([
+      { kind: '事实变化', before: '泵站A', after: '泵站B' },
+    ])
+    expect(h.session.getSnapshot().source).toEqual(before)
+    expect(h.bridge.commitProjectChangeSet).not.toHaveBeenCalled()
+    h.session.dispose()
+  })
+
+  it.each(['unknown-code', 'thrown-error'] as const)(
+    'does not expose untrusted preview %s or its private payload',
+    async (kind) => {
+      const h = harness()
+      await h.session.read()
+      const before = structuredClone(h.session.getSnapshot().source)
+      const secret = 'private-value-not-for-display'
+      // Adversarial bridge/exception injection, not a valid engine error fixture.
+      if (kind === 'unknown-code')
+        vi.mocked(h.bridge.previewProjectChangeset).mockResolvedValueOnce({
+          ok: false,
+          error: {
+            code: `OWNERSHIP_CONFLICT:${secret}`,
+            messageKey: secret,
+            params: { privateValue: secret },
+            retryable: false,
+          },
+        })
+      else
+        vi.mocked(h.bridge.previewProjectChangeset).mockRejectedValueOnce(
+          new Error(`OWNERSHIP_CONFLICT:${secret}`),
+        )
+
+      await h.session.prepare({ edits: { ['f'.repeat(64)]: '"changed value"' } })
+
+      expect(h.session.getSnapshot().error).toBe('INTERNAL_ERROR')
+      expect(JSON.stringify(h.session.getSnapshot())).not.toContain(secret)
+      expect(h.session.getSnapshot().source).toEqual(before)
+      expect(h.session.getSnapshot().prepared).toBeUndefined()
+      expect(h.session.getSnapshot().pending).toBeUndefined()
+      expect(h.bridge.confirmProjectChangeset).not.toHaveBeenCalled()
+      expect(h.bridge.saveProjectDraft).not.toHaveBeenCalled()
+      expect(h.bridge.commitProjectChangeSet).not.toHaveBeenCalled()
+
+      await h.session.prepare({ edits: { ['f'.repeat(64)]: '"changed value"' } })
+
+      expect(h.session.getSnapshot().phase).toBe('ready')
+      expect(h.session.getSnapshot().error).toBeUndefined()
+      expect(h.session.getSnapshot().source).toEqual(before)
+      h.session.dispose()
+    },
+  )
+})
+
 describe('T02 actual named API consumer state (unit only)', () => {
   it('requires complete Diff and explicit confirmation, queued is not saved, then reconciles', async () => {
     const h = harness()

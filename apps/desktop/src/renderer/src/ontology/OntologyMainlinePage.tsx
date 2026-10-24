@@ -322,7 +322,10 @@ function SessionEditor({ session }: { session: OntologySession }) {
       {formError && <p role="alert">{formError}</p>}
       {state.error && (
         <p role="alert">
-          操作未能完成：{state.error}。请核对当前项目或查询原操作；已输入内容保留。
+          操作未能完成：{state.error}。
+          {state.error === 'OWNERSHIP_CONFLICT'
+            ? '事实来源、保留身份或属性约束存在冲突。请核对原记录，修改输入后重新预览；已输入内容保留。'
+            : '请核对当前项目或查询原操作；已输入内容保留。'}
         </p>
       )}
       {state.prepared && (

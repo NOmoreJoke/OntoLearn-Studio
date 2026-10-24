@@ -728,6 +728,84 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           location: { ...location, url: clip(location.url, 256) },
         })
       })
+      const rejectCallerObject = async (
+        action: 'add' | 'edit',
+        object: string,
+        expected: Read,
+        attachment: string,
+        code: 'INVALID_REQUEST' | 'OWNERSHIP_CONFLICT' = 'INVALID_REQUEST',
+      ) => {
+        const section = panel(page)
+        const input = section.getByRole('textbox', { name: '规范 RDF 对象', exact: true })
+        const subject = section.getByRole('textbox', { name: '主体个体 IRI', exact: true })
+        const predicate = section.getByRole('textbox', { name: '属性 IRI', exact: true })
+        const entered = {
+          subject: await subject.inputValue(),
+          predicate: await predicate.inputValue(),
+          object,
+        }
+        const button = section.getByRole('button', {
+          name: action === 'add' ? '预览新增事实' : '预览事实修改',
+          exact: true,
+        })
+        const rejection = section.getByRole('alert').filter({ hasText: `操作未能完成：${code}。` })
+        // An explicit same-window read clears the previous error. No restart,
+        // new selection, write replay or private Session/receiver hook is used.
+        await section.getByRole('button', { name: '读取当前项目', exact: true }).click()
+        await expect(button).toBeEnabled()
+        await expect(rejection).toHaveCount(0)
+        const before = await read(page)
+        expect(before.domain).toEqual(expected.domain)
+        expect(before.inputSnapshotId).toBe(expected.inputSnapshotId)
+        await expect(subject).toHaveValue(entered.subject)
+        await expect(predicate).toHaveValue(entered.predicate)
+        await input.fill(object)
+        await expect(input).toHaveValue(object)
+        await button.click()
+        await expect(rejection).toHaveText(
+          code === 'OWNERSHIP_CONFLICT'
+            ? '操作未能完成：OWNERSHIP_CONFLICT。事实来源、保留身份或属性约束存在冲突。请核对原记录，修改输入后重新预览；已输入内容保留。'
+            : '操作未能完成：INVALID_REQUEST。请核对当前项目或查询原操作；已输入内容保留。',
+        )
+        await expect(button).toBeEnabled()
+        await expect(input).toHaveValue(object)
+        await expect(subject).toHaveValue(entered.subject)
+        await expect(predicate).toHaveValue(entered.predicate)
+        const completeDiff = section.getByRole('region', {
+          name: '完整事务差异',
+          exact: true,
+        })
+        const confirmation = section.getByRole('button', {
+          name: '我已核对完整差异，确认提交',
+          exact: true,
+        })
+        await expect(completeDiff).toHaveCount(0)
+        await expect(confirmation).toHaveCount(0)
+        const after = await read(page)
+        expect(after).toEqual(before)
+        const active = data(await page.evaluate(() => window.ontolearn!.getActiveProject()))
+        expect(active?.projectId).toBe(before.projectId)
+        expect(active?.projectRevision).toBe(before.domain.projectRevision)
+        expect(active?.inputSnapshotId).toBe(before.inputSnapshotId)
+        await test.info().attach(attachment, {
+          body: JSON.stringify(
+            {
+              action,
+              entered,
+              expectedCode: code,
+              errorText: await rejection.textContent(),
+              before,
+              after,
+              active,
+              completeDiffCount: await completeDiff.count(),
+              confirmationCount: await confirmation.count(),
+            },
+            null,
+            2,
+          ),
+          contentType: 'application/json',
+        })
+      }
       let current = await start(page, 'FR201 多值真实事实')
       current = await create(page, classA, current, evidence)
       const entities: Entity[] = ['subject', 'object1', 'object2', 'object3'].map((name) => ({
@@ -889,6 +967,8 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
             contentType: 'application/json',
           })
         }
+        if (triple === requested[5])
+          await rejectCallerObject('add', '泵站A', current, 'fr201-rejected-unparseable-new-object')
         // For the string case, this is a visible user correction, never normalization.
         await objectInput.fill(triple.object)
         if (triple === requested[5]) await expect(objectInput).toHaveValue('"typed string"')
@@ -959,6 +1039,33 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         })
         originals[index] = changed
       }
+      await loadFact(page, originals[2]!)
+      // Unique canonical value: a sibling overlap must not mask the receiver's
+      // edited-object canonical rejection.
+      const editAlias = `"edit-only-noncanonical"^^<${XSD}string>`
+      expect(
+        current.domain.state.facts.some((fact) => fact.object === '"edit-only-noncanonical"'),
+      ).toBe(false)
+      await rejectCallerObject('edit', editAlias, current, 'fr201-rejected-noncanonical-edit')
+      await rejectCallerObject('edit', '泵站A', current, 'fr201-rejected-unparseable-edit')
+      // Reuse the existing positive sequence: its old content ID is reserved
+      // after the original plain-value record was explicitly edited above.
+      const reserved = requested[2]!
+      expect(originals[2]!.object).not.toBe(reserved.object)
+      await panel(page).getByRole('button', { name: '新建事实并读取当前基准', exact: true }).click()
+      await panel(page)
+        .getByRole('textbox', { name: '主体个体 IRI', exact: true })
+        .fill(reserved.subject)
+      await panel(page)
+        .getByRole('textbox', { name: '属性 IRI', exact: true })
+        .fill(reserved.predicate)
+      await rejectCallerObject(
+        'add',
+        reserved.object,
+        current,
+        'fr201-rejected-reserved-original-id',
+        'OWNERSHIP_CONFLICT',
+      )
       // Delete each selected original record independently while its same-S/P
       // sibling and canonical language/datatype spellings remain byte-exact.
       for (const index of [1, 3]) {

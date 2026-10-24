@@ -90,6 +90,7 @@ const message = (cause: unknown) => {
     'STORAGE_FAILURE',
     'STORAGE_BUSY',
     'IDENTITY_CONFLICT',
+    'OWNERSHIP_CONFLICT',
     'REVISION_CONFLICT',
     'ENGINE_DISCONNECTED',
     'ENGINE_UNAVAILABLE',
