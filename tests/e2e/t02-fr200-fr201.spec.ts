@@ -730,20 +730,22 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       })
       const rejectCallerObject = async (
         action: 'add' | 'edit',
-        object: string,
+        value: string,
         expected: Read,
         attachment: string,
         code: 'INVALID_REQUEST' | 'OWNERSHIP_CONFLICT' = 'INVALID_REQUEST',
+        targetField: 'subject' | 'predicate' | 'object' = 'object',
       ) => {
         const section = panel(page)
         const input = section.getByRole('textbox', { name: '规范 RDF 对象', exact: true })
         const subject = section.getByRole('textbox', { name: '主体个体 IRI', exact: true })
         const predicate = section.getByRole('textbox', { name: '属性 IRI', exact: true })
-        const entered = {
+        const retained = {
           subject: await subject.inputValue(),
           predicate: await predicate.inputValue(),
-          object,
+          object: await input.inputValue(),
         }
+        const entered = { ...retained, [targetField]: value }
         const button = section.getByRole('button', {
           name: action === 'add' ? '预览新增事实' : '预览事实修改',
           exact: true,
@@ -757,10 +759,10 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         const before = await read(page)
         expect(before.domain).toEqual(expected.domain)
         expect(before.inputSnapshotId).toBe(expected.inputSnapshotId)
-        await expect(subject).toHaveValue(entered.subject)
-        await expect(predicate).toHaveValue(entered.predicate)
-        await input.fill(object)
-        await expect(input).toHaveValue(object)
+        await expect(subject).toHaveValue(retained.subject)
+        await expect(predicate).toHaveValue(retained.predicate)
+        await { subject, predicate, object: input }[targetField].fill(value)
+        await expect(input).toHaveValue(entered.object)
         await button.click()
         await expect(rejection).toHaveText(
           code === 'OWNERSHIP_CONFLICT'
@@ -768,7 +770,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
             : '操作未能完成：INVALID_REQUEST。请核对当前项目或查询原操作；已输入内容保留。',
         )
         await expect(button).toBeEnabled()
-        await expect(input).toHaveValue(object)
+        await expect(input).toHaveValue(entered.object)
         await expect(subject).toHaveValue(entered.subject)
         await expect(predicate).toHaveValue(entered.predicate)
         const completeDiff = section.getByRole('region', {
@@ -791,6 +793,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           body: JSON.stringify(
             {
               action,
+              targetField,
               entered,
               expectedCode: code,
               errorText: await rejection.textContent(),
@@ -809,6 +812,21 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       const knownDatatypeInputs = [
         ['relative-datatype', '"x"^^<../relative>'],
         ['invalid-unicode-datatype', String.raw`"x"^^<urn:\U00110000>`],
+      ] as const
+      // R02: preserve exact caller lexemes; never repair or normalize them.
+      const knownQuoteAndDatatypeInputs = [
+        ['unterminated-quote', '"abc'],
+        ['unterminated-chinese-quote', '"设备编号'],
+        ['missing-datatype', '"abc"^^'],
+        ['empty-literal-missing-datatype', '""^^'],
+        ['unterminated-triple-quote', '"""abc'],
+      ] as const
+      const knownAuthorityInputs = [
+        ['unclosed-ipv6', '<http://[>', 'http://['],
+        ['unopened-ipv6', '<http://]>', 'http://]'],
+        ['invalid-ipv6', '<http://[invalid]>', 'http://[invalid]'],
+        // U+FF0F FULLWIDTH SOLIDUS is the original caller character.
+        ['fullwidth-slash-authority', '<http://example.com／path>', 'http://example.com／path'],
       ] as const
       let current = await start(page, 'FR201 多值真实事实')
       current = await create(page, classA, current, evidence)
@@ -977,6 +995,36 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           for (const [name, input] of knownDatatypeInputs)
             await rejectCallerObject('add', input, current, `fr201-rejected-new-${name}`)
         }
+        if (triple === requested[5]) {
+          for (const [name, input] of knownQuoteAndDatatypeInputs)
+            await rejectCallerObject('add', input, current, `fr201-rejected-new-${name}`)
+        }
+        if (triple === requested[5]) {
+          const subject = panel(page).getByRole('textbox', { name: '主体个体 IRI', exact: true })
+          const predicate = panel(page).getByRole('textbox', { name: '属性 IRI', exact: true })
+          for (const [name, object, iri] of knownAuthorityInputs) {
+            await subject.fill(triple.subject)
+            await predicate.fill(triple.predicate)
+            await rejectCallerObject('add', object, current, `fr201-rejected-new-${name}`)
+            for (const field of ['subject', 'predicate'] as const) {
+              // Isolate one invalid field; neither the previous bad subject nor
+              // object may mask a predicate rejection (or the reverse).
+              await subject.fill(triple.subject)
+              await predicate.fill(triple.predicate)
+              await objectInput.fill(triple.object)
+              await rejectCallerObject(
+                'add',
+                iri,
+                current,
+                `fr201-rejected-new-${field}-${name}`,
+                'INVALID_REQUEST',
+                field,
+              )
+            }
+          }
+          await subject.fill(triple.subject)
+          await predicate.fill(triple.predicate)
+        }
         // For the string case, this is a visible user correction, never normalization.
         await objectInput.fill(triple.object)
         if (triple === requested[5]) await expect(objectInput).toHaveValue('"typed string"')
@@ -1028,6 +1076,27 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       ] as const) {
         const original = originals[index]!
         await loadFact(page, original)
+        if (index === 2) {
+          // Use the real committed plain fact and its original ID. The unchanged
+          // legal edit below must still commit in this same window/session.
+          expect(current.domain.state.facts.find((fact) => fact.id === original.id)).toEqual(
+            original,
+          )
+          const originalId = panel(page)
+            .locator('p')
+            .filter({ hasText: '原记录 ID：' })
+            .locator('code')
+          for (const [name, input] of knownQuoteAndDatatypeInputs) {
+            await expect(originalId).toHaveText(original.id)
+            await rejectCallerObject('edit', input, current, `fr201-rejected-edit-${name}`)
+            await expect(originalId).toHaveText(original.id)
+          }
+          for (const [name, object] of knownAuthorityInputs) {
+            await expect(originalId).toHaveText(original.id)
+            await rejectCallerObject('edit', object, current, `fr201-rejected-edit-${name}`)
+            await expect(originalId).toHaveText(original.id)
+          }
+        }
         await panel(page).getByRole('textbox', { name: '规范 RDF 对象', exact: true }).fill(object)
         await panel(page).getByRole('button', { name: '预览事实修改', exact: true }).click()
         const changed = { ...original, object },
