@@ -1,6 +1,14 @@
 --- a/rdflib/plugins/parsers/notation3.py
 +++ b/rdflib/plugins/parsers/notation3.py
-@@ -119,6 +119,26 @@
+@@ -67,6 +67,7 @@
+     Node,
+     URIRef,
+     Variable,
++    _is_valid_langtag,
+     _unique_id,
+ )
+ 
+@@ -119,6 +120,34 @@
  _StrT = TypeVar("_StrT", bound=str)
  
  
@@ -24,10 +32,18 @@
 +    """A literal datatype suffix has no syntactically valid URI reference."""
 +
 +
++class InvalidLanguageTagError(Notation3InputError, ValueError):
++    """A language tag fails the Literal constructor's existing validation."""
++
++
++class IntegerDigitLimitError(Notation3InputError, ValueError):
++    """A bare decimal integer exceeds Python's active conversion digit limit."""
++
++
  def join(here: str, there: str) -> str:
      """join an absolute URI and URI reference
      (non-ascii characters are supported/doctested;
-@@ -184,7 +204,7 @@
+@@ -184,7 +213,7 @@
  
      # join('mid:foo@example', '../foo') bzzt
      if here[bcolonl + 1 : bcolonl + 2] != "/":
@@ -36,7 +52,7 @@
              "Base <%s> has no slash after "
              "colon - with relative '%s'." % (here, there)
          )
-@@ -360,10 +380,11 @@
+@@ -360,10 +389,11 @@
  
  
  def unicodeExpand(m: Match) -> str:
@@ -52,7 +68,20 @@
  
  
  unicodeEscape4 = re.compile(r"\\u([0-9a-fA-F]{4})")
-@@ -1586,6 +1607,8 @@
+@@ -1553,6 +1583,12 @@
+                 m = integer_syntax.match(argstr, i)
+                 if m:
+                     j = m.end()
++                    # The matched token is an ASCII decimal integer with an optional sign.
++                    # Preserve the active runtime limit and let all other conversion errors escape.
++                    digit_limit = sys.get_int_max_str_digits()
++                    digit_count = j - i - (argstr[i] in "+-")
++                    if digit_limit and digit_count > digit_limit:
++                        raise IntegerDigitLimitError("Integer exceeds active conversion digit limit")
+                     res.append(long_type(argstr[i:j]))
+                     return j
+ 
+@@ -1586,6 +1622,8 @@
                  if argstr[j : j + 2] == "^^":
                      res2: typing.List[Any] = []
                      j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
@@ -61,7 +90,7 @@
                      dt = res2[0]
                  res.append(self._store.newLiteral(s, dt, lang))
                  return j
-@@ -1636,10 +1659,11 @@
+@@ -1636,10 +1674,11 @@
  
              m = interesting.search(argstr, j)  # was argstr[j:].
              # Note for pos param to work, MUST be compiled  ... re bug?
@@ -77,7 +106,7 @@
  
              i = m.start()
              try:
-@@ -1684,6 +1708,8 @@
+@@ -1684,6 +1723,8 @@
  
              elif ch == "\\":
                  j = i + 1
@@ -86,7 +115,7 @@
                  ch = argstr[j]  # Will be empty if string ends
                  if not ch:
                      raise BadSyntax(
-@@ -1724,7 +1750,7 @@
+@@ -1724,7 +1765,7 @@
              )
          try:
              return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])
@@ -95,3 +124,13 @@
              raise BadSyntax(
                  self._thisDoc,
                  startline,
+@@ -1869,6 +1910,9 @@
+         if dt:
+             return Literal(s, datatype=dt)
+         else:
++            # Reuse Literal's pinned validator; datatype literals continue to ignore lang.
++            if lang is not None and lang != "" and not _is_valid_langtag(lang):
++                raise InvalidLanguageTagError("Invalid language tag")
+             return Literal(s, lang=lang)
+ 
+     def newList(self, n: typing.List[Any], f: Optional[Formula]) -> IdentifiedNode:

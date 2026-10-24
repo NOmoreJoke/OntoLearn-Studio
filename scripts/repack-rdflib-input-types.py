@@ -15,11 +15,11 @@ import stat
 import zipfile
 from pathlib import Path
 
-VERSION = "7.6.0+ontolearn.fr201.2"
+VERSION = "7.6.0+ontolearn.fr201.3"
 UPSTREAM_SHA = "30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd"
 SOURCE_SHA = "a3e361632567b5326a06318e93e081f31f93c7497d1b52cbb91f2ef460a9d3ca"
-PATCH_SHA = "f78643991ff95602fc00b06e16fc380b31263866d9df67e6cecdb131220f39f9"
-AFTER_SHA = "497c80f5254e1bcd0dd6caab79b0b37447b54d382573aa6dc05a074202eaae6b"
+PATCH_SHA = "de5755d6cd8053a4d1a40fdf55f967a8bd1a660a22c83de00bbe2e72e711e5c8"
+AFTER_SHA = "a78a592a7994fc5c24b93582bc40cdc27b00c963488546256e4df388bf0ac454"
 MODULE = "rdflib/plugins/parsers/notation3.py"
 OLD_INFO = "rdflib-7.6.0.dist-info/"
 NEW_INFO = f"rdflib-{VERSION}.dist-info/"

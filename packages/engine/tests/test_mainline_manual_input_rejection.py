@@ -738,7 +738,7 @@ def test_reserved_original_identity_is_controlled_ownership_conflict(owned, tmp_
 def test_vendor_source_errors_have_dedicated_input_type(value):
     from importlib.metadata import version
 
-    assert version("rdflib") == "7.6.0+ontolearn.fr201.2"
+    assert version("rdflib") == "7.6.0+ontolearn.fr201.3"
     with pytest.raises(rdf_snapshot.TermInputError):
         rdf_snapshot.term(value)
 

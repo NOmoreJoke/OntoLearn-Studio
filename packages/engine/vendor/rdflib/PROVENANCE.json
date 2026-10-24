@@ -1,248 +1,193 @@
 {
-  "schema": "ontolearn.rdflib.fr201.2-source-provenance/1",
-  "createdAt": "2026-10-25T01:22:56.715858+08:00",
-  "state": "LIBRARY_ARTIFACT_SUPPLY_NOT_ADOPTED_NOT_APP_ACCEPTED",
+  "schema": "ontolearn.rdflib.local-artifact-provenance/3",
+  "artifactVersion": "7.6.0+ontolearn.fr201.3",
+  "upstreamVersion": "7.6.0",
+  "state": "IMMUTABLE_LIBRARY_ARTIFACT_SUPPLIER_CREATION_RECORD",
+  "lifecycle": {
+    "stateMeaning": "This file records creation and library validation of this exact supplier artifact. It is not a live repository adoption status.",
+    "atCreation": "Library-only verified; ROOT qualification and consumer adoption are separate later records.",
+    "historicalBaseline": "fr201.2 remains preserved, its old NOT_ADOPTED state describes its historical supply creation only; ROOT/T01 later adopted it separately.",
+    "currentConsumerStatus": "Not asserted by this supplier. Consult ROOT/T01 exact adoption record for the target candidate.",
+    "supplierRole": "T03 source/vendor/repack only",
+    "consumerRole": "T01 sole pyproject/uv.lock/application adopter after ROOT qualification",
+    "noticeBuildRole": "T11 owns NOTICE and physical package checks"
+  },
+  "pathSemantics": {
+    "repositoryPaths": "Fields repositoryRelativePath name intended future target files, not an assertion they are currently installed.",
+    "externalEvidence": "All scope=repository-external entries are absolute files under this supplier output domain, not files committed to repository. Preserve ENTRY and delivery-manifest as external seals.",
+    "wheelMembers": "Upstream source and LICENSE are identified by member within pinned upstream wheel, not fictitious unpacked repo paths.",
+    "externalSupplyRoot": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001",
+    "externalEntry": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/ENTRY.json",
+    "externalManifest": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/delivery-manifest.json",
+    "manifestSelfBinding": "Final ENTRY+manifest pin all non-fixture payloads; fixture inventory separately binds fixture files/symlinks. No circular hashes."
+  },
   "upstream": {
-    "version": "7.6.0",
     "wheel": {
-      "path": "upstream/rdflib-7.6.0-py3-none-any.whl",
+      "repositoryRelativePath": "packages/engine/vendor/rdflib/upstream/rdflib-7.6.0-py3-none-any.whl",
       "bytes": 615416,
       "sha256": "30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd"
     },
     "source": {
-      "path": "upstream/notation3-official.py",
+      "wheelMember": "rdflib/plugins/parsers/notation3.py",
       "bytes": 67404,
       "sha256": "a3e361632567b5326a06318e93e081f31f93c7497d1b52cbb91f2ef460a9d3ca"
     },
     "license": {
-      "path": "upstream/LICENSE",
+      "wheelMember": "rdflib-7.6.0.dist-info/LICENSE",
+      "repositoryRelativePath": "packages/engine/vendor/rdflib/LICENSE",
       "bytes": 1524,
-      "sha256": "53a705e51bfd199e8c97d0442376cb4bbd4ffcf13ba4f2c4c2794211400e4012"
-    },
-    "url": "https://files.pythonhosted.org/packages/10/c2/6604a71269e0c1bd75656d5a001432d16f2cc5b8c057140ec797155c295e/rdflib-7.6.0-py3-none-any.whl",
-    "inputMethod": "Original approved official bytes read from adopted b779 Git object; no upstream upgrade or new download"
-  },
-  "adoptedBaseline": {
-    "localVersion": "7.6.0+ontolearn.fr201.1",
-    "commit": "b779492ef9f7bbded93c9f1941aabf1ed5a3ab70",
-    "source": {
-      "path": "upstream/notation3-fr201.1.py",
-      "bytes": 67880,
-      "sha256": "a1f8eef3d99793d533e4b60da3299abc627fb2d164c1fa92b894c414333cb3b1"
-    },
-    "wheel": {
-      "path": "prospective/before/packages/engine/vendor/rdflib/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl",
-      "bytes": 2378177,
-      "sha256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137"
-    },
-    "previousCumulativePatch": {
-      "path": "prospective/before/packages/engine/vendor/rdflib/notation3-input-types.patch",
-      "bytes": 1748,
-      "sha256": "03e12f742d8f52a105f9513f1788df928def25b06663efc616fa3eaaa3077b65"
-    },
-    "previousProvenance": {
-      "path": "prospective/before/packages/engine/vendor/rdflib/PROVENANCE.json",
-      "bytes": 10405,
-      "sha256": "2b3898411a84f3d96c67ffb83974e59e0e7ea03badd40fac55c3e73c9bd4e266"
-    },
-    "input9Pins": {
-      "path": "evidence/adopted-baseline.json",
-      "bytes": 2003,
-      "sha256": "4ef6d95e9428bb71bfedfe1198f6a9e4a0ae3291d4d049b6ab82150466082006"
-    },
-    "actualT02InstalledSourceInitiallyEqualBaselineWheel": true
-  },
-  "localVersion": "7.6.0+ontolearn.fr201.2",
-  "sourceAfter": {
-    "path": "after/notation3.py",
-    "bytes": 68439,
-    "sha256": "497c80f5254e1bcd0dd6caab79b0b37447b54d382573aa6dc05a074202eaae6b"
-  },
-  "incrementalPatchFromAdoptedFr2011": {
-    "path": "fr201.1-to-fr201.2.patch",
-    "bytes": 1968,
-    "sha256": "90e17083fd48535daca1a17643bca29fa72dfa0efa234004f11d25c66d3e96dd"
-  },
-  "cumulativePatchFromOfficial760": {
-    "path": "notation3-input-types.patch",
-    "bytes": 3431,
-    "sha256": "f78643991ff95602fc00b06e16fc380b31263866d9df67e6cecdb131220f39f9"
-  },
-  "repackScript": {
-    "path": "scripts/repack-rdflib-input-types.py",
-    "bytes": 7112,
-    "sha256": "d0a87261e9c15ce69548a474357ce8e1e8ba1e7e08e2e7f1a86aa5264a8e2691"
-  },
-  "repackResults": [
-    {
-      "path": "after/repack-001/rdflib-7.6.0+ontolearn.fr201.2-py3-none-any.whl",
-      "bytes": 2378736,
-      "sha256": "f30e6279edcc31dbcb0c84eb1ee79e43776e7a30cd8813bcde7cfa85848bc0ef"
-    },
-    {
-      "path": "after/repack-002/rdflib-7.6.0+ontolearn.fr201.2-py3-none-any.whl",
-      "bytes": 2378736,
-      "sha256": "f30e6279edcc31dbcb0c84eb1ee79e43776e7a30cd8813bcde7cfa85848bc0ef"
+      "sha256": "53a705e51bfd199e8c97d0442376cb4bbd4ffcf13ba4f2c4c2794211400e4012",
+      "unchanged": true
     }
-  ],
-  "repackNaturalExits": [0, 0],
-  "twoRepackOutputsByteIdentical": true,
-  "repackFunctionsUnchangedFromAdoptedStyleScript": true,
-  "onlyRepackConstantChanges": ["VERSION", "PATCH_SHA", "AFTER_SHA"],
-  "determinism": "ZIP_STORED; sorted member names; fixed1980 timestamp and regular0644 mode; exact upstream/patch/source hash checks; no fuzzy apply or overwrite",
-  "WHEELGeneratorAndReleaseDate": "Inherited original poetry-core1.9.1 generator and release __date__ identify upstream base only. The local version is resealed by the pinned downstream script; it is not an unmodified official wheel.",
-  "canonicalReproduction": {
-    "workingDirectory": "canonical repository root after ROOT-authorized adoption",
-    "argv": [
-      "python3.12",
-      "-I",
-      "-S",
-      "-B",
-      "scripts/repack-rdflib-input-types.py",
-      "--upstream",
-      "packages/engine/vendor/rdflib/upstream/rdflib-7.6.0-py3-none-any.whl",
-      "--patch",
-      "packages/engine/vendor/rdflib/notation3-input-types.patch",
-      "--output-dir",
-      "build/rdflib-fr201.2-reproduce-fresh-001"
+  },
+  "artifact": {
+    "repositoryRelativePath": "packages/engine/vendor/rdflib/rdflib-7.6.0+ontolearn.fr201.3-py3-none-any.whl",
+    "bytes": 2379774,
+    "sha256": "99fab7bdd9148267ac0fcbd49363fc10d9a1edd47a4744726c14a7d14fc51edf",
+    "officialUpstreamUnchanged": false,
+    "transparentLocalVersion": true,
+    "metadataChange": "Only Version 7.6.0→7.6.0+ontolearn.fr201.3; original dist-info renamed and RECORD rebuilt.",
+    "verifiedRuntime": "CPython 3.12.12 macOS arm64 (project >=3.12,<3.13); no claim for older Python or other platforms."
+  },
+  "patch": {
+    "repositoryRelativePath": "packages/engine/vendor/rdflib/notation3-input-types.patch",
+    "bytes": 5012,
+    "sha256": "de5755d6cd8053a4d1a40fdf55f967a8bd1a660a22c83de00bbe2e72e711e5c8",
+    "sourceAfter": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/after/notation3.py",
+        "bytes": 69477,
+        "sha256": "a78a592a7994fc5c24b93582bc40cdc27b00c963488546256e4df388bf0ac454"
+      }
+    },
+    "incrementFromFr201_2": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/fr201.2-to-fr201.3.patch",
+        "bytes": 1874,
+        "sha256": "3188557f2a6ea355f58b845b7966256124e12b6d19b87d2b959f02af24389b40"
+      }
+    },
+    "changeScope": [
+      "notation3 imports existing private _is_valid_langtag from already loaded rdflib.term, no term.py edit or new cycle",
+      "InvalidLanguageTagError(Notation3InputError, ValueError), before existing Literal validation on non-empty lang branch",
+      "Preserve dt truthiness precedence, empty/None language acceptance and raw values; no supplier normalization",
+      "IntegerDigitLimitError(Notation3InputError, ValueError), only original matched ASCII signed-decimal token over actual active conversion digit limit",
+      "No catch added; no message/cause/traceback classifier; no integer settings/cap/policy writes; all other exceptions propagate"
     ],
-    "freshOutputRequired": true,
-    "actualRunBoundary": "Two actual runs used equivalent supply-archive-relative paths under after/repack-001 and002. This is the canonical layout command, not a claim of an additional canonical/product execution."
+    "modifiedExistingFunctions": ["nodeOrLiteral", "RDFSink.newLiteral"],
+    "priorFr201_1And2ChangesRetained": true
   },
-  "codeChangesFromFr2011": [
-    "Add UnterminatedStringError(Notation3InputError, AssertionError) and MissingDatatypeError(Notation3InputError, IndexError)",
-    "strconst only interesting.search is None is the known no-closing-token state; falsey non-None damaged matches remain unclassified",
-    "literal datatype only uri_ref2 negative return is classified; successful parse with corrupt empty res2 remains ordinary IndexError",
-    "strconst terminal-backslash knownEOF only j==len_argstr raises dedicated unterminated input type; do not use >= to absorb corrupted internal cursors"
-  ],
-  "existingFr2011JoinAndUnicodeFixesPreserved": true,
-  "noBroadCatchTextClassificationScanNormalizeOrPublicIDChange": true,
-  "memberAndLicenseProof": {
-    "path": "evidence/wheel-members-record.json",
-    "bytes": 28662,
-    "sha256": "2f83afe6a4500a63d3c8b365090d846887fb5094cf751bb27e77c6bddd340ef2"
-  },
-  "memberCount": 142,
-  "RECORDRowsVerified": 142,
-  "nonTargetLogicalMemberContentsUnchanged": 139,
-  "BSDOriginalBytesUnchanged": true,
-  "dependencyMetadata": {
-    "beforeRootPyproject": {
-      "path": "prospective/before/pyproject.toml",
-      "bytes": 1593,
-      "sha256": "e4b989aab1b3b2025f19a29791295522a8cbbc98005adf528ad9fa6565105e16"
-    },
-    "afterEnginePyproject": {
-      "path": "prospective/after/packages/engine/pyproject.toml",
-      "bytes": 519,
-      "sha256": "d0f6fde0a3f8fb7e05848cf3189108f9996bd405c9b12a67fadbf4adaa6c0ad3"
-    },
-    "afterLock": {
-      "path": "prospective/after/uv.lock",
-      "bytes": 29015,
-      "sha256": "5afbdfa32f48db45bdc4449d14047e8b64c26583bfcaa868d5fb070053934104"
-    },
-    "construction": "Restricted mechanical version/source/artifactSHA/size update from adopted b779 lock; actual offline lock-check0, not fresh solver generation",
-    "other21PackageBlocksUnchanged": true,
-    "topLevelLockMetadataUnchanged": true,
-    "noDependencyOrSelectedExtrasAdded": true,
-    "proof": {
-      "path": "evidence/lock-delta-proof.json",
-      "bytes": 907,
-      "sha256": "22b67c835c0c3991bf34eaaaa33529c194b9eb6f37b2df513b0fb27421c1e59c"
-    }
-  },
-  "isolatedFixture": {
-    "old": "7.6.0+ontolearn.fr201.1",
-    "new": "7.6.0+ontolearn.fr201.2",
-    "python": "Fixed existing CPython3.12.12",
-    "cacheAndEnvironmentWrites": "Only this new output",
-    "runtime7": "Copied existing previously locked/hash-verified wheels into fixture-only wheelhouse, UV no-deps/no-index offline priming",
-    "rdflibInstall": "Each local wheel actually installed by frozen offline sync; no installed source editing",
-    "installedIdentityOld": {
-      "path": "evidence/installed-identity-old-001/stdout.raw",
-      "bytes": 175338,
-      "sha256": "0f859ff935b028db3ccb1cbde2b153eb11e8a096b81ac1d001a797302e65483a"
-    },
-    "installedIdentityNew": {
-      "path": "evidence/installed-identity-new-001/stdout.raw",
-      "bytes": 175306,
-      "sha256": "f78f48c22e5c9a1b9cca5ac417c7ef5db2bab4349141d4ea5d2849f9a95223e5"
-    }
+  "repack": {
+    "repositoryRelativePath": "scripts/repack-rdflib-input-types.py",
+    "bytes": 7112,
+    "sha256": "166b0919890891d3a493ea7271021b6330a9e55e52173b9886aebebcaad977f9",
+    "deltaFromFr201_2": "VERSION/PATCH_SHA/AFTER_SHA constants only; all functions AST identical",
+    "finalRuns": [
+      {
+        "scope": "repository-external supplier original",
+        "file": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/repack-003/receipt.json",
+          "bytes": 1756,
+          "sha256": "ff8f0e4ce2a9ded66911a2a237a03e21014dbd57dfc9481a9de46b2ee8918f24"
+        }
+      },
+      {
+        "scope": "repository-external supplier original",
+        "file": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/repack-004/receipt.json",
+          "bytes": 1757,
+          "sha256": "2a1c54d73d4e4ac5ed20c5c364c60834f1b8adb126fbc03e87f3f2fe3295976e"
+        }
+      }
+    ],
+    "naturalExits": [0, 0],
+    "entireWheelBytesEqual": true,
+    "format": "ZIP_STORED, sorted names, fixed timestamp 1980-01-01, fixed modes"
   },
   "regression": {
     "harness": {
-      "path": "tests/library_regression.py",
-      "bytes": 30782,
-      "sha256": "a9a5e13406fe248cf1b540f6c3823a2961a5470ce97a0f848654b6bad940e893"
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/tests/language_integer_regression.py",
+        "bytes": 8460,
+        "sha256": "2d00d75533a38bd77b5ce307f2af1c1f320a3acad0422f4e5b425dbb0b17f990"
+      }
     },
-    "oldRaw": {
-      "path": "evidence/regression-old-001/stdout.raw",
-      "bytes": 696026,
-      "sha256": "d99369b7232f9a4e37ba4577edee3a30c62171c2c0642c56b0ed9c56665cbdb5"
+    "inheritedHarness": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/tests/inherited-158.py",
+        "bytes": 30741,
+        "sha256": "d5815d33b2721fc6aa379a3e4c101c549287af5d74435a8c5dcf59170a6cd9bd"
+      }
     },
-    "oldNaturalExit": 1,
-    "oldKnownBaselineFailures": 0,
-    "oldTargetFailures": 26,
-    "oldFailureMeaning": "25 known syntax rejects +1 falsey non-None corrupt-output safety case",
-    "newRaw": {
-      "path": "evidence/regression-new-001/stdout.raw",
-      "bytes": 697842,
-      "sha256": "ea0328ff0e38e736d48f9d2e4706d8cef221f9e8f7733e7a2608f9675b8c9948"
-    },
-    "newNaturalExit": 0,
-    "casesPerMode": 158,
-    "newTargetFailures": 0,
-    "sameSuccessfulValues": 40,
-    "sameGraphN3Values": 30,
-    "unknownInjectedErrorsExactObjectPassthrough": 60,
-    "damagedOutputStatesUnclassified": 3,
-    "exactLexicalUTF8BytesPreserved": true,
     "comparison": {
-      "path": "evidence/old-new-comparison.json",
-      "bytes": 58341,
-      "sha256": "eec864173d87376905056743d348dd339008709df6c26dd9efd6abd2fbc77296"
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/regression-comparison.json",
+        "bytes": 8863,
+        "sha256": "715eb55b6b9d9601878dcf1c50d696414110297538d150c5a4924aa2a6750e9a"
+      }
     },
-    "boundary": "Finite library-only probes. Eight fully closed bare-literal EOF ordinary IndexError observations remain unclassified; no claim to classify every caller syntax error. No APP receiver/stdio/Store/snapshot UNKNOWN-HOLD execution."
+    "newCases": 172,
+    "inheritedCases": 158,
+    "oldExtendedNaturalExit": 1,
+    "oldExtendedTargetFailures": 36,
+    "oldExtendedExpectedBaselineFailures": 0,
+    "finalNaturalExits": [0, 0],
+    "inheritedOldNaturalExit": 0,
+    "successfulRawExactlyEqual": 155,
+    "unknownExactObjectInjection": {
+      "inherited": 60,
+      "new": 20
+    },
+    "corruptInternalOutputsInherited": 3,
+    "actualIntegerLimit": 4300,
+    "integerBoundary": "4299/4300/4301 digits; unsigned/plus/minus; repeated 9 and leading-zero/all-zero; Graph and direct parser; no settings modification",
+    "languageBoundary": "first segment digits rejected; en-001/de-CH-1901 retained as syntax; preserves case/canonical policies of consumer; truthy datatype ignores lang as before; empty/None sink controls accepted",
+    "reviewRegression": "Initial167 green missed direct empty lang. Reviewer found it; original draft, actual5-case natural1 red, final five acceptance controls preserved.",
+    "reviewDisposition": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/review-finding-disposition.json",
+        "bytes": 2090,
+        "sha256": "076f1973ffba566e63a8b8afe9e0106d093e21721887c1d660c25cc4ac6f211f"
+      }
+    },
+    "installedIdentity": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/installed-identity-summary.json",
+        "bytes": 608,
+        "sha256": "56150ee0bc0efe18a9f65256e07d0c0ad7ad6aeee003524e5e925987a18f6035"
+      }
+    },
+    "noParserWideExhaustiveness": true,
+    "applicationSuiteNotRun": true
   },
-  "supplierIntegrationStyle": {
-    "ruffCheckNaturalExit": 0,
-    "ruffFormatCheckNaturalExit": 0,
-    "approvedRootConfig": {
-      "path": "prospective/before/pyproject.toml",
-      "bytes": 1593,
-      "sha256": "e4b989aab1b3b2025f19a29791295522a8cbbc98005adf528ad9fa6565105e16"
-    },
-    "noCacheOrRuleDowngrade": true
+  "memberIntegrity": {
+    "scope": "repository-external supplier original",
+    "file": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/wheel-members-record.json",
+      "bytes": 117341,
+      "sha256": "605d79c659ab774e95dbdb4504aa6a9639a9a3ad0173af37ec59312a966e56c6"
+    }
   },
-  "sourceAndHistoryProtection": {
-    "originalT03Before": {
-      "path": "evidence/original-tree-before.json",
-      "bytes": 703246,
-      "sha256": "eafceb769d250c62471189b115fc5e90a88bbb8192d8e21da1fc7388d8d31262"
-    },
-    "originalT03After": {
-      "path": "evidence/original-tree-after.json",
-      "bytes": 703470,
-      "sha256": "537156cbe8df6cb1e78281080f048c7efb0792ad5a854a2e83a882ce778f152b"
-    },
-    "all2612EligibleAndStatusIndexHeadBranchDiffsSame": true,
-    "ignoredNotEnumeratedOrExecuted": true,
-    "previousSupplies": {
-      "path": "evidence/prior-supplies-protected.json",
-      "bytes": 696,
-      "sha256": "0eef27c353dba8661761ee42daae9cc6a86c1e998a9e80daf61dadec82773ad2"
-    },
-    "oldFr2011WheelNotDeletedOrOverwritten": true
-  },
-  "futureAdoptionFamily": "Same8 logical leaves: engine pyproject;uv.lock;repack script;new uniquely namedfr201.2 wheel;unchanged officialwheel;new cumulative patch;unchanged LICENSE;new PROVENANCE. Keep oldfr201.1 wheel and archived provenance/history.",
-  "auditReferencePathBasis": "All non-canonical paths in this record are relative to this immutable supply archive root, not to canonical vendor. The adopted-baseline provenance is preserved with its own original archive-path meaning. Only canonicalReproduction.argv specifies canonical repository-relative paths.",
-  "requiredConsumerChecks": [
-    "ROOT exact adoption decision before canonical changes",
-    "T01 precise new types + real caller/receiver/stdio and unknown Graph.parse/N3/Store/snapshot HOLD tests",
-    "T11 original owner supplies NOTICE for new version and actual package PYZ/local metadata/RECORD/LICENSE/same App checks",
-    "Supported platform/signing/damagedSQLiteHOLD/Q6REC/strategy/budget gates unchanged",
-    "Old b779 ZCode Pass and prior090/091 package evidence do not carry to this new candidate"
+  "license": "BSD-3-Clause original retained byte-for-byte; T11 retains NOTICE aggregation ownership",
+  "limitations": [
+    "No pyproject.toml or uv.lock changes/supplier adoption in any checkout; consumer must choose version/path/hash under ROOT ticket",
+    "No application new/edit/Read/HOLD/Store/stdio/GUI validation by this supplier",
+    "No product fullcheck/build/package/signing/notarization/cross-platform/designated external review",
+    "Old45f64/.2/package092 Fail is not closed by library artifact alone; other Q6/capacity/damagedSQLite/payment/remote gates unchanged"
   ],
-  "noAppGUIPackageRemoteDesignatedReviewOrGoalResume": true
+  "authorization": {
+    "scope": "repository-external supplier original",
+    "file": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/user-grants/T02-D8-choice-A-20261025.json",
+      "bytes": 2172,
+      "sha256": "72c8fca8376d421e4fe8593ffccd5f79de5e605b34763a7008685d8be746b26c"
+    }
+  }
 }
