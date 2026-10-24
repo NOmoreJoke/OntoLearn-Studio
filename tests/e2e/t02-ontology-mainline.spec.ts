@@ -188,16 +188,21 @@ async function confirmAndRead(page: Page, before: MainlineProjectReadDTO, revisi
   let needsReconciliation = false
   await expect
     .poll(async () => {
-      if (await receipt.count()) {
-        const text = await receipt.textContent()
-        if (text?.includes(`提交版本 ${revision}。`)) return 'receipt'
-      }
-      if (await pending.count()) {
-        const text = await pending.textContent()
-        if (text?.includes('succeeded')) {
-          needsReconciliation = true
-          return 'terminal-needs-reconciliation'
-        }
+      // A normal pending-to-receipt transition may remove either region between
+      // count() and textContent(). Read both in one DOM turn, with no locator wait.
+      const snapshot = await receipt.or(pending).evaluateAll((regions) => {
+        const receipts = regions.filter((node) => node.getAttribute('aria-label') === '已提交回执')
+        const operations = regions.filter(
+          (node) => node.getAttribute('aria-label') === '原操作状态',
+        )
+        if (receipts.length > 1 || operations.length > 1)
+          throw new Error('Duplicate original commit status regions')
+        return { receipt: receipts[0]?.textContent, pending: operations[0]?.textContent }
+      })
+      if (snapshot.receipt?.includes(`提交版本 ${revision}。`)) return 'receipt'
+      if (snapshot.pending?.includes('succeeded')) {
+        needsReconciliation = true
+        return 'terminal-needs-reconciliation'
       }
       return 'waiting'
     })
