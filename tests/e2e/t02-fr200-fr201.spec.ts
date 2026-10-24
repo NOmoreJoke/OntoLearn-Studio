@@ -684,10 +684,50 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
 
   test('FR201 UI relations and multivalue manual records keep original IDs, other literals and deletion impacts', async () => {
     test.setTimeout(180000)
+    const observedCaseStart = performance.now()
     const application = await launchIsolatedDesktop(launchOptions())
     const evidence: Evidence[] = []
+    let observedPage: Page | undefined
+    const observedErrors: Record<string, unknown>[] = []
+    let droppedErrors = 0
+    const clip = (text: string, maxBytes: number) => {
+      const bytes = Buffer.from(text, 'utf8')
+      let end = Math.min(bytes.length, maxBytes)
+      while (end < bytes.length && end > 0 && (bytes[end]! & 0xc0) === 0x80) end--
+      return {
+        value: bytes.subarray(0, end).toString('utf8'),
+        bytes: bytes.length,
+        truncated: end < bytes.length,
+      }
+    }
     try {
       const page = await application.firstWindow()
+      observedPage = page
+      page.on('pageerror', (error) => {
+        if (observedErrors.length >= 12) {
+          droppedErrors++
+          return
+        }
+        observedErrors.push({
+          source: 'pageerror',
+          at: new Date().toISOString(),
+          text: clip(error.stack ?? error.message, 1024),
+        })
+      })
+      page.on('console', (message) => {
+        if (message.type() !== 'error') return
+        if (observedErrors.length >= 12) {
+          droppedErrors++
+          return
+        }
+        const location = message.location()
+        observedErrors.push({
+          source: 'console.error',
+          at: new Date().toISOString(),
+          text: clip(message.text(), 1024),
+          location: { ...location, url: clip(location.url, 256) },
+        })
+      })
       let current = await start(page, 'FR201 多值真实事实')
       current = await create(page, classA, current, evidence)
       const entities: Entity[] = ['subject', 'object1', 'object2', 'object3'].map((name) => ({
@@ -942,6 +982,232 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       expect(current.domain.state.facts).toEqual(
         sortFacts(originals.filter((_, index) => index !== 1 && index !== 3)),
       )
+    } catch (originalError) {
+      // Observation only: at most 2s, inside the original case deadline with 1s
+      // margin. Never reconcile, confirm, retry, replace a bridge or expose Session.
+      const deadline = Math.min(performance.now() + 2000, observedCaseStart + 179000)
+      const collectionDeadline = deadline - 250 // Reserve time to persist captured results.
+      const pack = (value: unknown, maxBytes: number) => {
+        const raw = Buffer.from(JSON.stringify(value), 'utf8')
+        if (raw.length <= maxBytes) return value as Record<string, unknown>
+        return {
+          status: 'truncated',
+          originalJSONBytes: raw.length,
+          utf8JSONPrefixBase64: raw
+            .subarray(0, Math.floor((maxBytes - 512) * 0.75))
+            .toString('base64'),
+        }
+      }
+      const observe = async (
+        source: string,
+        work: () => Promise<unknown>,
+        maxBytes: number,
+        until = collectionDeadline,
+      ) => {
+        const timeoutMs = Math.max(0, Math.min(500, Math.floor(until - performance.now())))
+        if (!timeoutMs) return { source, status: 'not-attempted', reason: 'diagnostic time budget' }
+        const at = new Date().toISOString(),
+          began = performance.now()
+        let timer: ReturnType<typeof setTimeout> | undefined
+        try {
+          const result = await Promise.race([
+            Promise.resolve()
+              .then(work)
+              .then(
+                (value) => ({ status: 'fulfilled', value }),
+                (error: unknown) => ({ status: 'threw', error: clip(String(error), 2048) }),
+              ),
+            new Promise<{ status: string; outstandingReadMayRemain: boolean }>((resolve) => {
+              timer = setTimeout(
+                () => resolve({ status: 'timeout', outstandingReadMayRemain: true }),
+                timeoutMs,
+              )
+            }),
+          ])
+          return pack(
+            { source, at, timeoutMs, elapsedMs: performance.now() - began, ...result },
+            maxBytes,
+          )
+        } finally {
+          if (timer) clearTimeout(timer)
+        }
+      }
+      try {
+        const page = observedPage
+        const diagnostic: Record<string, unknown> = {
+          source: 'FR201 failure catch before original finally close',
+          at: new Date().toISOString(),
+          originalError: clip(
+            originalError instanceof Error
+              ? (originalError.stack ?? originalError.message)
+              : String(originalError),
+            4096,
+          ),
+          maxObservationMs: 2000,
+          maxAttachmentBytes: 262144,
+          maxAttachments: 2,
+          maxTotalAttachmentBytes: 524288,
+          lastSuccessful: evidence.at(-1)?.marker ?? null,
+          localSessionState:
+            'Not exposed by the existing bridge; DOM is only a projection. No new Session getter or bridge interception.',
+          writeInvokeAndSettle:
+            'Not observable through these permitted hooks; absent records do not prove no invocation.',
+          errorsBeforeReads: [...observedErrors],
+          droppedErrorsBeforeReads: droppedErrors,
+        }
+        if (page && !page.isClosed()) {
+          const dom = () =>
+            page.evaluate(() => {
+              const cut = (text: string, maxBytes: number) => {
+                const bytes = new TextEncoder().encode(text)
+                let end = Math.min(bytes.length, maxBytes)
+                while (end < bytes.length && end > 0 && (bytes[end]! & 0xc0) === 0x80) end--
+                return {
+                  value: new TextDecoder().decode(bytes.subarray(0, end)),
+                  bytes: bytes.length,
+                  truncated: end < bytes.length,
+                }
+              }
+              const region = document.querySelector<HTMLElement>('[aria-label="本体项目编辑"]')
+              const pending = region?.querySelector<HTMLElement>('[aria-label="原操作状态"]')
+              const receipt = region?.querySelector<HTMLElement>('[aria-label="已提交回执"]')
+              return {
+                at: new Date().toISOString(),
+                panelPresent: !!region,
+                operationIdCandidate: pending?.querySelector('code')?.textContent?.trim() ?? null,
+                panelText: cut((region ?? document.body).innerText, 16384),
+                alerts: Array.from(
+                  (region ?? document.body).querySelectorAll<HTMLElement>('[role="alert"]'),
+                )
+                  .slice(0, 8)
+                  .map((node) => ({
+                    visible: !!node.getClientRects().length,
+                    text: cut(node.innerText, 1024),
+                  })),
+                pending: cut(pending?.innerText ?? '', 2048),
+                receipt: cut(receipt?.innerText ?? '', 2048),
+                completeDiffCount:
+                  region?.querySelectorAll('[aria-label="完整事务差异"]').length ?? 0,
+                buttons: Array.from(region?.querySelectorAll('button') ?? [])
+                  .slice(0, 32)
+                  .map((node) => ({ text: cut(node.innerText, 128), disabled: node.disabled })),
+                factInputs: Array.from(region?.querySelectorAll('input') ?? [])
+                  .filter((node) =>
+                    ['主体个体 IRI', '属性 IRI', '规范 RDF 对象'].includes(
+                      node.closest('label')?.textContent?.trim() ?? '',
+                    ),
+                  )
+                  .slice(0, 3)
+                  .map((node) => ({
+                    label: cut(node.closest('label')?.textContent ?? '', 128),
+                    value: cut(node.value, 2048),
+                    disabled: node.disabled,
+                  })),
+              }
+            })
+          const beforeReads = await observe('DOM before any diagnostic bridge query', dom, 49152)
+          diagnostic.domBeforeReads = beforeReads
+          // Persist the original view before a diagnostic query can change any view.
+          await observe(
+            'bounded original DOM attachment before bridge queries',
+            () =>
+              test.info().attach('fr201-failure-dom-before-reads', {
+                body: JSON.stringify(pack({ ...diagnostic }, 262144)),
+                contentType: 'application/json',
+              }),
+            1024,
+          )
+          const beforeValue = beforeReads.value as { operationIdCandidate?: unknown } | undefined
+          const originalId =
+            typeof beforeValue?.operationIdCandidate === 'string' &&
+            new RegExp(`^${UUID}$`).test(beforeValue.operationIdCandidate)
+              ? beforeValue.operationIdCandidate
+              : null
+          diagnostic.originalOperationFromDOM = originalId
+          const expectedProject = evidence.at(-1)?.after.projectId ?? null
+          diagnostic.expectedProjectFromLastSuccessfulRead = expectedProject
+          let allowReads = beforeReads.status === 'fulfilled'
+          if (allowReads && originalId) {
+            const operation = await observe(
+              'existing readonly getOperation(original DOM ID)',
+              () => page.evaluate((id) => window.ontolearn!.getOperation(id), originalId),
+              24576,
+            )
+            diagnostic.operation = operation
+            allowReads = operation.status !== 'timeout'
+            const reply = operation.value as
+              | {
+                  ok?: boolean
+                  data?: { operationId?: string; projectId?: string; jobId?: string } | null
+                }
+              | undefined
+            if (
+              allowReads &&
+              reply?.ok &&
+              reply.data?.operationId === originalId &&
+              reply.data.projectId === expectedProject &&
+              typeof reply.data.jobId === 'string'
+            ) {
+              const jobId = reply.data.jobId
+              const job = await observe(
+                'existing readonly getJob(original marker Job ID)',
+                () => page.evaluate((id) => window.ontolearn!.getJob(id), jobId),
+                24576,
+              )
+              diagnostic.job = job
+              allowReads = job.status !== 'timeout'
+            }
+          }
+          if (allowReads) {
+            const active = await observe(
+              'existing readonly getActiveProject after original DOM',
+              () => page.evaluate(() => window.ontolearn!.getActiveProject()),
+              24576,
+            )
+            diagnostic.activeProject = active
+            allowReads = active.status !== 'timeout'
+            const reply = active.value as
+              { ok?: boolean; data?: { projectId?: string } | null } | undefined
+            if (allowReads && reply?.ok && reply.data?.projectId === expectedProject) {
+              diagnostic.projectRead = await observe(
+                'existing readonly readProject after original DOM; may update observed service view',
+                () =>
+                  page.evaluate(() =>
+                    window.ontolearn!.readProject({ editor: 'ontology-transaction' }),
+                  ),
+                24576,
+              )
+            } else
+              diagnostic.projectRead = {
+                status: 'not-attempted',
+                reason: 'No same-project active identity or prior diagnostic timeout',
+              }
+          }
+          diagnostic.domAfterReads = await observe(
+            'DOM after diagnostic queries; not original failure state',
+            dom,
+            49152,
+          )
+        } else diagnostic.domBeforeReads = { status: 'unavailable', reason: 'No open owned Page' }
+        diagnostic.errorsAfterReads = [...observedErrors]
+        diagnostic.droppedErrorsAfterReads = droppedErrors
+        diagnostic.finishedAt = new Date().toISOString()
+        if (performance.now() < deadline) {
+          await observe(
+            'bounded diagnostic attachment',
+            () =>
+              test.info().attach('fr201-failure-readonly-diagnostic', {
+                body: JSON.stringify(pack(diagnostic, 262144)),
+                contentType: 'application/json',
+              }),
+            1024,
+            deadline,
+          )
+        }
+      } catch {
+        /* Diagnostic failure never replaces the original test failure. */
+      }
+      throw originalError
     } finally {
       try {
         await test.info().attach('fr201-original-records-and-literals', {
