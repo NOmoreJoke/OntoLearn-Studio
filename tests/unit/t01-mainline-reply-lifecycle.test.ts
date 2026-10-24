@@ -537,4 +537,64 @@ describe('main-only delivery receipts with actual supervisor and memory stdio', 
     expect(s.receiver.diagnostic().unknown).toBe(1)
     expect(s.receiver.diagnostic().slots).toBe(1)
   })
+  it('keeps the exact receipt after partial cache cleanup failure without double refund', async () => {
+    const s = setup(),
+      opened = await s.receiver.receive(s.open)
+    s.receiver.consume(opened.receipt)
+    const client = s.supervisor.mainlineProjectClient()!
+    const budget = s.supervisor.queryReadBudget(client.owner)
+    const first = {},
+      second = {}
+    const cleaned = vi.fn(() => budget.releaseHolding(first))
+    let fail = true
+    const retried = vi.fn(() => {
+      if (fail) throw new Error('cleanup remains owned')
+      budget.releaseHolding(second)
+    })
+    const offered = await s.receiver.receive(async () => {
+      budget.retainHolding(first, { full: 'first' })
+      budget.retainHolding(second, { full: 'second' })
+      budget.onReplyConsumed(first, cleaned)
+      budget.onReplyConsumed(second, retried)
+      return { ok: true, data: { ready: true } }
+    })
+    expect(cleaned).not.toHaveBeenCalled()
+    expect(retried).not.toHaveBeenCalled()
+    const before = s.receiver.diagnostic()
+    expect(() => s.receiver.consume(new (class extends MainlineReplyReceipt {})())).toThrow(
+      EngineError,
+    )
+    expect(() => s.receiver.consume(offered.receipt)).toThrow('cleanup remains owned')
+    expect(cleaned).toHaveBeenCalledTimes(1)
+    expect(s.receiver.diagnostic().holdingCount).toBe(before.holdingCount - 1)
+    expect(s.receiver.diagnostic().deliveryBytes).toBe(before.deliveryBytes)
+    expect(s.receiver.diagnostic().offered).toBe(1)
+    fail = false
+    s.receiver.consume(offered.receipt)
+    s.receiver.consume(offered.receipt)
+    expect(cleaned).toHaveBeenCalledTimes(1)
+    expect(retried).toHaveBeenCalledTimes(2)
+    expect(s.receiver.diagnostic().holdingCount).toBe(before.holdingCount - 2)
+    expect(s.receiver.diagnostic().slots).toBe(0)
+  })
+  it('does not run registered cache retirement when the original delivery becomes UNKNOWN', async () => {
+    const s = setup(),
+      opened = await s.receiver.receive(s.open)
+    s.receiver.consume(opened.receipt)
+    const budget = s.supervisor.queryReadBudget(s.supervisor.mainlineProjectClient()!.owner)
+    const entry = {},
+      retire = vi.fn(() => budget.releaseHolding(entry))
+    const before = s.receiver.diagnostic().holdingCount
+    await expect(
+      s.receiver.receive(async () => {
+        budget.retainHolding(entry, { full: 'unacknowledged' })
+        budget.onReplyConsumed(entry, retire)
+        throw new Error('original delivery failure')
+      }),
+    ).rejects.toThrow('original delivery failure')
+    expect(retire).not.toHaveBeenCalled()
+    expect(s.receiver.diagnostic().holdingCount).toBe(before + 1)
+    expect(s.receiver.diagnostic().unknown).toBe(1)
+    expect(s.receiver.diagnostic().slots).toBe(1)
+  })
 })

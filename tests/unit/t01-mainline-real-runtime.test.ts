@@ -2,7 +2,7 @@
  * SOURCE definition only until the parent runs this exact candidate. This is
  * main-process service evidence, not Electron/preload/renderer/packaging proof.
  */
-import { it, expect } from 'vitest'
+import { it, expect, vi } from 'vitest'
 import { ChildProcess } from 'node:child_process'
 import { createHash, randomUUID } from 'node:crypto'
 import { mkdtemp, rm } from 'node:fs/promises'
@@ -483,6 +483,152 @@ it('real business3 creates, saves, commits, queries and reopens its own persiste
     ).toBe(true)
     // A cleanup failure preserves its own directory instead of deleting a DB
     // still held by an unreaped child. The failure remains visible to the runner.
+    await rm(directory, { recursive: true, force: true })
+  }
+}, 30000)
+
+it('seventeen acknowledged real commits preserve old operation identity without replay', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 't01-intent-lifetime-real-'))
+  const value = runtime(join(directory, 'owned.sqlite'))
+  const issued = vi.spyOn(value.supervisor, 'requestPinned') // Observe real dispatch; no replacement.
+  const deadline = Date.now() + 25000
+  const receive = async <T>(
+    work: () => Promise<BridgeResult<T>>,
+    context = 'real business RPC',
+  ): Promise<T> => {
+    const offered = await value.replies.receive(work)
+    expect(offered.value.ok, context).toBe(true)
+    const result = data(offered.value)
+    value.replies.consume(offered.receipt)
+    return result
+  }
+  let original: Parameters<ProjectMainlineService['commitProjectChangeSet']>[0] | undefined
+  let originalJob: JobView | undefined
+  try {
+    await receive(() => value.projects.getProjectCatalog({ pageSize: 64, cursor: null }))
+    const created = await receive(() =>
+      value.projects.createBlankProject({
+        requestVersion: 1,
+        operationId: randomUUID(),
+        name: 'ACK 生命周期回归',
+        initialization: { kind: 'blank' },
+      }),
+    )
+    await receive(() => value.projects.openProject({ projectId: created.projectId }))
+    for (let index = 0; index < 17; index++) {
+      expect(Date.now()).toBeLessThan(deadline)
+      const current = await receive(() => value.projects.readProject({ editor: 'ontology' }))
+      const subject = `urn:intent-lifetime:${index}`
+      const predicate = 'urn:intent-lifetime:value'
+      const object = `"value-${index}"`
+      const preview = await receive(() =>
+        value.projects.previewProjectChangeset({
+          baseRevision: current.domain.projectRevision,
+          intent: 'change',
+          plan: {
+            manual: [
+              {
+                id: createHash('sha256')
+                  .update(JSON.stringify([subject, predicate, object]))
+                  .digest('hex'),
+                subject,
+                predicate,
+                object,
+              },
+            ],
+          },
+        }),
+      )
+      if (preview.status !== 'ready') throw new Error('Actual capacity preview conflicts')
+      let cursor: string | null = null
+      let complete = false
+      for (let page = 0; page < 8; page++) {
+        const part: ChangeSetPage = await receive(() =>
+          value.projects.getProjectDiffPage({
+            previewHash: preview.previewHash,
+            documentKind: 'diff',
+            pageSize: 32,
+            cursor,
+          }),
+        )
+        cursor = part.nextCursor
+        if (part.complete) {
+          complete = true
+          break
+        }
+      }
+      expect(complete).toBe(true)
+      const confirmation = await receive(() =>
+        value.projects.confirmProjectChangeset({
+          previewHash: preview.previewHash,
+          completionCursor: cursor!,
+        }),
+      )
+      const request = { operationId: randomUUID(), confirmation }
+      let accepted: JobView
+      if (index === 0) {
+        const first = await value.replies.receive(() =>
+          value.projects.commitProjectChangeSet(request),
+        )
+        accepted = data(first.value)
+        const duplicate = await value.replies.receive(() =>
+          value.projects.commitProjectChangeSet(request),
+        )
+        expect(data(duplicate.value).jobId).toBe(accepted.jobId)
+        const holdings = value.replies.diagnostic().holdingCount
+        value.replies.consume(first.receipt)
+        expect(value.replies.diagnostic().holdingCount).toBe(holdings) // Another exact ACK remains.
+        const budget = value.supervisor.queryReadBudget(value.projects.source.current()!.owner)
+        const failure = vi.spyOn(budget, 'releaseHolding').mockImplementationOnce(() => {
+          throw new Error('injected exact payload cleanup failure')
+        })
+        try {
+          expect(() => value.replies.consume(duplicate.receipt)).toThrow(
+            'injected exact payload cleanup failure',
+          )
+          expect(value.replies.diagnostic().holdingCount).toBe(holdings)
+          expect(value.replies.diagnostic().offered).toBe(1)
+        } finally {
+          failure.mockRestore()
+        }
+        value.replies.consume(duplicate.receipt)
+        expect(value.replies.diagnostic().holdingCount).toBe(holdings - 1)
+      } else {
+        accepted = await receive(
+          () => value.projects.commitProjectChangeSet(request),
+          `real acknowledged commit ${index + 1}`,
+        )
+      }
+      if (!original) {
+        original = request
+        originalJob = accepted
+      }
+      let terminal: JobView = accepted
+      while (!['succeeded', 'failed', 'cancelled'].includes(terminal.state)) {
+        if (Date.now() >= deadline) throw new Error('Actual intent lifetime deadline')
+        await new Promise<void>((done) => setTimeout(done, 10))
+        terminal = data(await value.tasks.getJob(accepted.jobId))
+      }
+      expect(terminal.state, JSON.stringify(terminal.error)).toBe('succeeded')
+      expect(value.replies.diagnostic().slots).toBe(0)
+    }
+    const restored = await receive(() => value.projects.commitProjectChangeSet(original!))
+    expect(restored.jobId).toBe(originalJob!.jobId)
+    expect(restored.operationId).toBe(original!.operationId)
+    expect(issued.mock.calls.filter(([method]) => method === 'job.create')).toHaveLength(17)
+    expect(issued.mock.calls.at(-1)?.[0]).toBe('job.get')
+    const mismatched = await value.projects.commitProjectChangeSet({
+      ...original!,
+      confirmation: { ...original!.confirmation, confirmationRef: randomUUID() },
+    })
+    expect(mismatched.ok).toBe(false)
+    expect(issued.mock.calls.filter(([method]) => method === 'job.create')).toHaveLength(17)
+    const final = await receive(() => value.projects.readProject({ editor: 'ontology' }))
+    expect(final.domain.projectRevision).toBe(17)
+    expect(final.domain.state.facts).toHaveLength(17)
+  } finally {
+    issued.mockRestore()
+    await closeRuntime(value, directory)
     await rm(directory, { recursive: true, force: true })
   }
 }, 30000)

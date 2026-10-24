@@ -237,11 +237,16 @@ export class MainlineProjectSource extends OrdinaryProjectSource {
 }
 
 type MainlineIntent = {
+  operationId: string
   request: string
   owner: object
   session: string
   budget: QueryMainReadBudget
   accepted?: JobView
+  jobId?: string
+  payloadEntry: object
+  pendingReplies: Set<object>
+  active: number
   unknown: boolean
 }
 
@@ -277,6 +282,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   #recoveryPrincipal?: MainlineRecoveryHandle
   #retiredRecovery = new Set<MainlineRecoveryHandle>()
   #intents = new Map<string, MainlineIntent>()
+  #fullIntents = new Set<MainlineIntent>()
   constructor(
     readonly supervisor: EngineSupervisor,
     readonly tasks: TaskService,
@@ -613,12 +619,83 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     return this.#run(() => this.#selectedCall('changeset.confirm', args))
   }
   #keepIntent(intent: MainlineIntent, accepted = intent.accepted): void {
+    // The compact identity (including the Map key and original binding) is
+    // prepaid separately and never FIFO-forgotten. Existing global hard budgets
+    // still bound its lifetime storage, including after payload retirement.
     intent.budget.retainHolding(intent, {
+      operationId: intent.operationId,
       request: intent.request,
       engineSessionId: intent.session,
-      ...(accepted ? { accepted } : {}),
+      jobId: accepted?.jobId ?? intent.jobId ?? null,
     })
-    intent.accepted = accepted
+    if (accepted) {
+      intent.budget.retainHolding(intent.payloadEntry, accepted)
+      intent.accepted = accepted
+      intent.jobId = accepted.jobId
+    }
+  }
+  #offerIntent(intent: MainlineIntent): JobView {
+    if (!intent.accepted || intent.unknown) throw denied()
+    const pending = Object.freeze({})
+    intent.budget.onReplyConsumed(intent.payloadEntry, () => {
+      if (!intent.pendingReplies.has(pending)) throw invalid()
+      if (intent.pendingReplies.size > 1) {
+        intent.pendingReplies.delete(pending)
+        return
+      }
+      if (intent.active !== 0 || intent.unknown || !intent.accepted) throw invalid()
+      const accepted = intent.accepted
+      intent.accepted = undefined
+      try {
+        intent.budget.releaseHolding(intent.payloadEntry)
+      } catch (cause) {
+        intent.accepted = accepted
+        throw cause
+      }
+      intent.pendingReplies.delete(pending)
+      this.#fullIntents.delete(intent)
+    })
+    intent.pendingReplies.add(pending)
+    return intent.accepted
+  }
+  async #readAcceptedIntent(
+    intent: MainlineIntent,
+    current: NonNullable<OrdinaryCurrent>,
+    request: RecordValue,
+  ): Promise<JobView> {
+    const budget = intent.budget,
+      finish = budget.beginConsumerRequest()
+    try {
+      const params = { projectId: current.project.projectId, jobId: intent.jobId }
+      budget.beforeArguments(params)
+      const pin = this.supervisor.issueQueryPin(
+        current.owner,
+        current.engineSessionId,
+        () => this.source.current() === current,
+      )
+      const operation = this.supervisor.requestPinned('job.get', params, pin)
+      let job: JobView
+      try {
+        job = (await operation) as JobView
+      } catch (cause) {
+        throw this.#operationError(cause, operation)
+      }
+      if (
+        !validateBusiness3('job', job) ||
+        job.jobId !== intent.jobId ||
+        job.projectId !== current.project.projectId ||
+        job.operationId !== intent.operationId ||
+        job.capability !== request.capability ||
+        job.confirmationRef !== request.confirmationRef ||
+        stable(job.input) !== stable(request.input)
+      )
+        throw invalid()
+      if (this.source.current() !== current) throw denied()
+      budget.handoff(job)
+      return job
+    } finally {
+      finish()
+    }
   }
   commitProjectChangeSet(args: {
     operationId: string
@@ -655,58 +732,69 @@ export class ProjectMainlineService implements MainlineProjectBridge {
       )
         throw invalid()
       if (!intent) {
-        if (this.#intents.size >= 16) throw invalid()
+        if (this.#fullIntents.size >= 16) throw invalid()
         intent = {
+          operationId: args.operationId,
           request: fingerprint,
           owner: current.owner,
           session: current.engineSessionId,
           budget: this.supervisor.queryReadBudget(current.owner),
+          payloadEntry: Object.freeze({}),
+          pendingReplies: new Set(),
+          active: 0,
           unknown: false,
         }
         this.#keepIntent(intent)
         this.#intents.set(args.operationId, intent)
+        this.#fullIntents.add(intent)
       }
-      if (intent.accepted) return intent.accepted
       if (intent.unknown) throw denied() // No automatic replay of an entered write.
-      intent.unknown = true
-      const budget = this.supervisor.queryReadBudget(current.owner),
-        finish = budget.beginConsumerRequest()
+      intent.active++
       try {
-        budget.beforeArguments(request)
-        const pin = this.supervisor.issueQueryPin(
-          current.owner,
-          current.engineSessionId,
-          () => this.source.current() === current,
-        )
-        const operation = this.supervisor.requestPinned(
-          'job.create',
-          { ...request, projectId: current.project.projectId },
-          pin,
-        )
-        let accepted: JobView
+        if (intent.accepted) return this.#offerIntent(intent)
+        if (intent.jobId) return await this.#readAcceptedIntent(intent, current, request)
+        intent.unknown = true
+        const budget = this.supervisor.queryReadBudget(current.owner),
+          finish = budget.beginConsumerRequest()
         try {
-          accepted = (await operation) as JobView
-        } catch (cause) {
-          intent.unknown = this.supervisor.queryWriteEntered(pin)
-          throw this.#operationError(cause, operation)
+          budget.beforeArguments(request)
+          const pin = this.supervisor.issueQueryPin(
+            current.owner,
+            current.engineSessionId,
+            () => this.source.current() === current,
+          )
+          const operation = this.supervisor.requestPinned(
+            'job.create',
+            { ...request, projectId: current.project.projectId },
+            pin,
+          )
+          let accepted: JobView
+          try {
+            accepted = (await operation) as JobView
+          } catch (cause) {
+            intent.unknown = this.supervisor.queryWriteEntered(pin)
+            throw this.#operationError(cause, operation)
+          }
+          if (
+            !validateBusiness3('job', accepted) ||
+            accepted.operationId !== args.operationId ||
+            accepted.projectId !== current.project.projectId ||
+            accepted.capability !== 'changeset.commit' ||
+            stable(accepted.input) !== stable(request.input)
+          )
+            throw invalid()
+          this.#keepIntent(intent, accepted)
+          intent.unknown = false
+          budget.handoff(accepted)
+          if (this.source.current() !== current) throw denied()
+          // The real accepted Job is returned even when later view subscription fails.
+          void this.tasks.subscribeJob(accepted.jobId).catch(() => {})
+          return this.#offerIntent(intent)
+        } finally {
+          finish()
         }
-        if (
-          !validateBusiness3('job', accepted) ||
-          accepted.operationId !== args.operationId ||
-          accepted.projectId !== current.project.projectId ||
-          accepted.capability !== 'changeset.commit' ||
-          stable(accepted.input) !== stable(request.input)
-        )
-          throw invalid()
-        this.#keepIntent(intent, accepted)
-        intent.unknown = false
-        budget.handoff(accepted)
-        if (this.source.current() !== current) throw denied()
-        // The real accepted Job is returned even when later view subscription fails.
-        void this.tasks.subscribeJob(accepted.jobId).catch(() => {})
-        return accepted
       } finally {
-        finish()
+        intent.active--
       }
     })
   }

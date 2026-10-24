@@ -298,6 +298,8 @@ interface MainlineDelivery {
   session?: Session
   aliases: unknown[]
   wires: Map<string, { session: Session; terminal: boolean }>
+  consumptions: Map<object, () => void>
+  consuming: boolean
 }
 interface MainlineHolding {
   record: MainlineOwnerRecord
@@ -494,6 +496,11 @@ export abstract class QueryMainReadBudget {
   }
   releaseHolding(originalEntry: object): void
   releaseHolding(): void {
+    throw invalidStateOrdinary()
+  }
+  /** Main-only cache retirement, authenticated by this entry's original reply ACK. */
+  onReplyConsumed(originalEntry: object, retire: () => void): void
+  onReplyConsumed(): void {
     throw invalidStateOrdinary()
   }
 }
@@ -773,6 +780,8 @@ export class EngineSupervisor {
       records: new Set(),
       aliases: [],
       wires: new Map(),
+      consumptions: new Map(),
+      consuming: false,
       session: this.#session && this.#current(this.#session) ? this.#session : undefined,
     }
     this.#mainlineDeliveries.add(delivery)
@@ -940,6 +949,7 @@ export class EngineSupervisor {
         const delivery = this.supervisor.#mainlineReceipts.get(originalReceipt)
         if (
           !delivery ||
+          delivery.consuming ||
           delivery.state !== 'OFFERED' ||
           !delivery.callbackDone ||
           delivery.computations !== 0 ||
@@ -948,6 +958,18 @@ export class EngineSupervisor {
           (delivery.session && !this.supervisor.#current(delivery.session))
         )
           throw invalidStateOrdinary()
+        // A failing cache cleanup retains this exact receipt and its delivery
+        // aliases. Completed cleanups are removed individually, so a retry
+        // cannot refund another entry twice. No timeout/UNKNOWN runs callbacks.
+        delivery.consuming = true
+        try {
+          for (const [entry, retire] of delivery.consumptions) {
+            retire()
+            delivery.consumptions.delete(entry)
+          }
+        } finally {
+          delivery.consuming = false
+        }
         this.supervisor.#mainlineCost.bytes -= delivery.bytes
         this.supervisor.#mainlineCost.objects -= delivery.objects
         delivery.aliases.length = 0
@@ -1033,6 +1055,27 @@ export class EngineSupervisor {
       }
       releaseHolding(originalEntry: object): void {
         this.supervisor.#releaseHolding(record, originalEntry)
+      }
+      onReplyConsumed(originalEntry: object, retire: () => void): void {
+        const session = this.supervisor.#mainlineReady(record)
+        const holding = this.supervisor.#mainlineHoldingEntries.get(originalEntry)
+        if (
+          !holding ||
+          holding.record !== record ||
+          holding.session !== session ||
+          holding.bytes === 0 ||
+          typeof retire !== 'function'
+        )
+          throw deniedOrdinary()
+        const delivery = this.supervisor.#delivery(record)
+        if (
+          delivery.session !== session ||
+          delivery.consumptions.has(originalEntry) ||
+          delivery.consumptions.size >= 16
+        )
+          throw invalidStateOrdinary()
+        this.supervisor.#deliveryReserve(delivery, 512, 8, 4096)
+        delivery.consumptions.set(originalEntry, retire)
       }
       beforeArguments(value: unknown): void {
         // Pay a complete admitted-frame material bound before any caller traversal.
@@ -1660,7 +1703,9 @@ export class EngineSupervisor {
         ].includes(method) &&
         !(
           mainline &&
-          ['changeset.preview', 'changeset.diff.page', 'changeset.confirm'].includes(method)
+          ['changeset.preview', 'changeset.diff.page', 'changeset.confirm', 'job.get'].includes(
+            method,
+          )
         )
       )
         throw deniedOrdinary()
