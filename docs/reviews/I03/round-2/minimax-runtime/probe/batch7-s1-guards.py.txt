@@ -1,0 +1,121 @@
+"""Batch 7: independent S1 boundary guard probes (kind identity, legacy rows, zero side effects)."""
+import json
+import sqlite3
+import tempfile
+from pathlib import Path
+
+import sys
+
+sys.path.insert(0, "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/engine/src")
+from ontolearn_engine.storage import Store  # noqa: E402
+
+IMPL = {
+    "executionSemanticsVersion": "test-v1",
+    "engineVersion": "0.1.0",
+    "dependencyLockHash": "test-lock",
+}
+findings = []
+
+
+def ok(name, cond, detail=""):
+    findings.append({"name": name, "pass": bool(cond), "detail": detail})
+
+
+tmp = Path(tempfile.mkdtemp(prefix="i03r2-b7-"))
+
+# --- 1. invalid kinds rejected with zero writes ---
+for kind in [None, "", "   ", 1, False, [], {}]:
+    store = Store(tmp / f"k{abs(hash(str(kind)))}.db")
+    try:
+        store.create_project("p")
+        snapshot = store.snapshot("p")
+        before = list(store._db.iterdump())
+        raised = False
+        try:
+            store.publish("p", snapshot, ["facts:asserted"], kind, [], IMPL)
+        except ValueError as error:
+            raised = "kind" in str(error)
+        ok(f"publish rejects kind={kind!r}", raised)
+        raised_current = False
+        try:
+            store.current("p", kind, IMPL)
+        except ValueError as error:
+            raised_current = "kind" in str(error)
+        ok(f"current rejects kind={kind!r}", raised_current)
+        ok(f"kind={kind!r} zero write side effects", list(store._db.iterdump()) == before)
+    finally:
+        store.close()
+
+# --- 2. whitespace-padded kind: not trimmed, not merged (Z P3-3 / processing item) ---
+store = Store(tmp / "ws.db")
+try:
+    store.create_project("p")
+    snapshot = store.snapshot("p")
+    store.publish("p", snapshot, ["facts:asserted"], "query", ["a"], IMPL)
+    padded = store.publish("p", snapshot, ["facts:asserted"], " query ", ["b"], IMPL)
+    rows = store._db.execute("SELECT kind FROM results ORDER BY id").fetchall()
+    kinds = [r[0] for r in rows]
+    ok("padded kind stored verbatim (no trim)", " query " in kinds, str(kinds))
+    current_rows = store._db.execute("SELECT kind FROM current_results").fetchall()
+    current_kinds = sorted(r[0] for r in current_rows)
+    ok("padded kind not merged into 'query' current key", current_kinds == [" query ", "query"], str(current_kinds))
+    ok("padded kind current lookup is distinct",
+       store.current("p", " query ", IMPL) is not None and store.current("p", "query", IMPL) is not None)
+    ok("padded publish returns distinct result id", padded != store.current("p", "query", IMPL)["id"])
+finally:
+    store.close()
+
+# --- 3. legacy NULL kind rejected at open, no silent cleanup ---
+store = Store(tmp / "legacy-null.db")
+try:
+    store.create_project("p")
+    snapshot = store.snapshot("p")
+    result = store.publish("p", snapshot, ["facts:asserted"], "query", [], IMPL)
+    store._db.execute("UPDATE results SET kind=NULL WHERE id=?", (result,))
+    before = list(store._db.iterdump())
+finally:
+    store.close()
+raised = False
+try:
+    Store(tmp / "legacy-null.db")
+except ValueError as error:
+    raised = "legacy result kind" in str(error)
+ok("legacy NULL kind rejected at open", raised)
+raw = sqlite3.connect(tmp / "legacy-null.db")
+try:
+    ok("legacy NULL kind no silent cleanup", list(raw.iterdump()) == before)
+finally:
+    raw.close()
+
+# --- 4. legacy non-object run config ---
+store = Store(tmp / "legacy-config.db")
+try:
+    store.create_project("p")
+    run = store.start_run("p", store.snapshot("p"), {"maxRounds": 4}, IMPL)
+    store._db.execute("DROP TRIGGER immutable_runs_update")
+    store._db.execute("UPDATE runs SET config=? WHERE id=?", (json.dumps("legacy"), run))
+    before = list(store._db.iterdump())
+    raised = False
+    try:
+        store.commit_round(run, 1, {}, "op", "job")
+    except ValueError as error:
+        raised = "config" in str(error)
+    ok("legacy non-object config raises ValueError", raised)
+    ok("legacy config zero side effects", list(store._db.iterdump()) == before)
+    ok("legacy config progress unchanged", store.progress(run) is None)
+finally:
+    store.close()
+
+# --- 5. open-time guard scan count (Z P3-2 deferred item: two full scans) ---
+src = Path(
+    "/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts/packages/engine/src/ontolearn_engine/storage.py"
+).read_text(encoding="utf-8")
+ok("open-time guard still scans results and current_results",
+   "SELECT 1 FROM results WHERE typeof(kind) != 'text'" in src
+   and "SELECT 1 FROM current_results" in src)
+
+failed = [f for f in findings if not f["pass"]]
+print(json.dumps({"total": len(findings), "failed": len(failed)}, ensure_ascii=False))
+for f in findings:
+    print(f"{'PASS' if f['pass'] else 'FAIL'}  {f['name']}" + (f" :: {f['detail']}" if f["detail"] else ""))
+raise SystemExit(1 if failed else 0)

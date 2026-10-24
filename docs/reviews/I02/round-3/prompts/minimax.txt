@@ -1,0 +1,27 @@
+请作为独立对抗性审查者，审查本次功能迭代。请独立判断，不预设应当通过，不以历史或另一模型通过作为本轮依据。
+
+项目绝对路径：/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio
+迭代：I02 / C1 显式 CSP 与窗口生命周期，Round 3，必须是本轮全新独立任务。
+任务标识：I02-R3-MiniMax-M31Flash-20261020-1040；模型 M3.1-Flash，思考程度 xhigh（来源为派发方创建本任务时实际应用UI核验）。
+分支：feature/I02-csp-window-lifecycle。
+固定审查范围：1b6df7a220fc9a67d7046133a340085f03f0a96c → 09a2e6648edfb465debe47bc9fb15e2c6f23e088。审查完整I02，不限最后一笔差异。
+报告输出：docs/reviews/I02/round-3/minimax-m31flash.md。
+
+需求和验收依据：仓库AGENTS.md；docs/iterations/I01/inputs/goal-objective.md第四至六节完整流程；同目录scope.md的I02/C1完整冻结行；m0-review-and-update-plan-2026-10-19.md C1全文；PRD V0.6（docs/prd/PRD-本体学习与落地Agent工作台.md）8.7/10.3/10.4/12.5；docs/iterations/I02/design.md、acceptance.md、commands.md与evidence/inputs。不要用开发方摘要替代原始要求。
+
+重点仍包括单配置开发header/生产首项meta、锁定版本及交付理由、开发nonce/HMR与生产meta隔离、脚本禁unsafe-inline/eval、样式元素/属性/CSSOM分别验证、实际CSP enforce和接收端零请求、正常UI/CSS/导航/health、全contents加固与sender/mainFrame/文档来源校验、真实崩溃/无响应提示及显式恢复、新窗尚未检查与零重放/零写入。I04任务重连仅核对接入边界，不虚构未实现任务。
+
+不得修改实现、测试、配置、依赖、验收；不得提交、push、切分支或写全局/跨会话记忆。仅写指定本模型本轮报告。允许必要验证生成正常out/release/test-results及/tmp临时产物；不得把asar提取到仓库根；不得运行I02_HMR=1写源探针。16项冻结清单round-3/frozen-files.json、64项既有文件docs/iterations/I02/preexisting-files.json均须核验。受审代码在两方审查结束前保持冻结。
+
+历史与新候选事实（请独立核对）：
+- Round1/Round2两份历史报告、所有意见与处理均在docs/reviews/I02/round-{1,2}/。本轮须逐项复核，不能把旧通过沿用。Round2 candidate76b9d18、流程head7e26155曾双通过并push，PR#3未合并。Round2 GLM原文及同任务门禁/计数勘误都有保留；其“MiniMax未创建/执行”为初始上下文，实际时序以tasks/UI记录为准。
+- 新CI run39359486479：macOS成功，Linux Quality与Windows失败。两份原始job日志与Linux完整artifact在round-3；Windows日志原始CRLF另有字节保真gzip和hash说明，未取得Windows完整matrix。两平台均已到达native结束，唯一已报告失败断言为期望killed、实收[crashed,unresponsive]；随后desktop冒烟成功。Linux artifact的nativeRecovery为PASS、3窗/2提示/3health、inspector关闭、hangMonitor开且无no-sandbox、可见获焦、receiver零请求。整体CI仍为failure，不当作通过。
+- 锁定Electron44.9.0官方electron.d.ts18656–18666写明forcefullyCrashRenderer允许reason=killed||crashed，SHA/位置见round-3/electron-force-crash-contract.json。新候选只修tests/e2e/csp-lifecycle.spec.ts一处终止理由断言，接受这两种契约值；不接受clean-exit/oom等任意理由，保留真实unresponsive及其他全部断言/原90/40/45秒上限。产品apps/packages、CI、依赖与冻结验收未变。请判断是否符合原验收，不把开发者解释当结论。
+- round-3/preparation.md、candidate-validation.json与原始三环境JSON/日志：完整check退出0（15TS/198Python），verify:sources工作区13/独立git archive12，build2/2、真实packaged2/2、development1/1通过。新candidate尚未push，未在目标runner执行新版CI；不得预写CI通过。R1原90s超时根因仍不明，本次具体理由断言不能替代旧根因。R2 GLM未归因失败/取消及MiniMax失焦失败均完整保留，成功样本不代表确定性。
+- 原自动化整体stub showMessageBox，不能单独证明native sheet实际显示；真实packaged sheet/按钮/恢复见native-dialog-probe/README.md Run2，为同一产品源码历史实测，非本轮新拍。HMR写源探针也是归档证据，本轮仅只读。M01跨构建nonce和dev watch覆写out、M03非法devorigin无窗口拒绝、空catch诊断、hash-only路由及pushState后health拒绝等事实/延期边界见Round2两报告和processing.md，必须独立复核，不自动关闭。
+
+报告必须包含：任务/模型/思考设置来源；绝对路径、分支、完整base/head；检查范围、实际命令与真实结果、未验证事项；每项问题编号/严重度/位置/触发条件/影响/证据/建议；对所有历史问题逐项给出关闭或未关闭判断；最终明确“通过 / 不通过 / 无法完成验证”。阻断未关闭或关键验收无法验证不得通过，非阻断可明确允许延期。不得为对抗编造问题，不隐藏任何失败或证据缺口。
+
+本轮独立性：不要读取另一模型任何当前round-3产物、报告或/tmp运行记录；Round1/Round2历史两方报告与候选前共同证据允许读取。运行资源须错开以免共享out/5173/OS焦点互扰。Begin static/history/unit checks first; do not run build/package/Electron/Playwright/dev server before this same task receives explicit runtime resource release. Then finish all necessary runtime validation and final report without lowering scope.
+
+流程门禁按原文：双方同版明确通过且意见处理完毕后才push feature，push/PR产生远端CI；实际全部CI成功前禁止合并develop。CI若需要受审文件再改，新candidate双方新任务重审。任何条件尚缺均如实记录，不把代码审查通过当CI或发布完成。

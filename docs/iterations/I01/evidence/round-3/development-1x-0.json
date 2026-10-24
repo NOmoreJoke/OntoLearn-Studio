@@ -1,0 +1,66 @@
+{
+  "scale": 1,
+  "trial": 0,
+  "seed": 20261019,
+  "triples": 18,
+  "inputSha256": "b0bcc466774f37d4f6a520900b8e7caa5f4fb7f827bbcf8c5ad0e9d12946ea0c",
+  "querySha256": "7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5",
+  "result": ["urn:case:0:alarm/A01"],
+  "expected": ["urn:case:0:alarm/A01"],
+  "snapshotId": "71930b09f2647f134670536bb2d4e24272c574d8c248d3795cf3ccf0cda2ba52",
+  "measurement": {
+    "snapshotLoad": {
+      "elapsedNs": 211583,
+      "pythonBytesBefore": 320,
+      "pythonBytesAfter": 10668,
+      "pythonBytesPeak": 41034,
+      "processHighWaterRssBytes": 34357248
+    },
+    "rdflibBuild": {
+      "elapsedNs": 6241708,
+      "pythonBytesBefore": 11261,
+      "pythonBytesAfter": 95914,
+      "pythonBytesPeak": 164222,
+      "processHighWaterRssBytes": 34570240
+    },
+    "fixedSelect": {
+      "elapsedNs": 546940334,
+      "pythonBytesBefore": 95978,
+      "pythonBytesAfter": 8457098,
+      "pythonBytesPeak": 8464119,
+      "processHighWaterRssBytes": 48955392
+    },
+    "snapshotLoadWarm": {
+      "elapsedNs": 316625,
+      "pythonBytesBefore": 8457776,
+      "pythonBytesAfter": 8467974,
+      "pythonBytesPeak": 8498340,
+      "processHighWaterRssBytes": 48971776
+    },
+    "rdflibBuildWarm": {
+      "elapsedNs": 7413333,
+      "pythonBytesBefore": 8457966,
+      "pythonBytesAfter": 8374782,
+      "pythonBytesPeak": 8555217,
+      "processHighWaterRssBytes": 49119232
+    },
+    "fixedSelectWarm": {
+      "elapsedNs": 9560750,
+      "pythonBytesBefore": 8374846,
+      "pythonBytesAfter": 8418194,
+      "pythonBytesPeak": 8515865,
+      "processHighWaterRssBytes": 49135616
+    }
+  },
+  "device": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "python": "3.12.12",
+  "sqlite": "3.50.4",
+  "rdflib": "7.6.0",
+  "condition": "store reopened; OS cache uncontrolled; Warm phases repeat in process",
+  "method": "perf_counter_ns; tracemalloc phase peaks; process lifetime ru_maxrss",
+  "rssAvailable": true,
+  "runtime": "development",
+  "processElapsedNs": 663557417,
+  "stderr": ""
+}

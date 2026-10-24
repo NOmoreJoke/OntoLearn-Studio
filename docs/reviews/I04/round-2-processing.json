@@ -1,0 +1,309 @@
+{
+  "candidate": 2,
+  "base": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+  "head": "0462e0825f3bda2774ce5d43f4422327f2d5fbd9",
+  "completedAndReadAtUtc": "2026-10-20T16:03:31.142514+00:00",
+  "reports": {
+    "ZCode": {
+      "path": "docs/reviews/I04/round-2/zcode-glm53.md",
+      "sha256": "72c6d226d0b4a7adc06fedc3da6b94bad7926f62994cd4f153c4cf2ba3154d32",
+      "bytes": 30376,
+      "lines": 153,
+      "conclusion": "通过",
+      "model": "GLM-5.3",
+      "thinking": "最高",
+      "taskTitleObserved": "I04-R2-ZCode 只读复审派发任务",
+      "terminal": true
+    },
+    "MiniMax": {
+      "path": "docs/reviews/I04/round-2/minimax-m31flash.md",
+      "sha256": "5ce6e74926fb98c75fc371c8eed16a55bb13dbdca1639c3c390f79e487907752",
+      "bytes": 50528,
+      "lines": 312,
+      "conclusion": "通过",
+      "model": "M3.1-Flash（订阅限免）",
+      "thinking": "xhigh",
+      "taskTitleObserved": "复审 I04-resident-jobs 分支变更",
+      "terminal": true
+    }
+  },
+  "gateDecision": "Do not push C2. Both qualified Pass judgments are preserved, but original acceptance #4 independent engine handshake deadline is not satisfied. Adopt the concrete fix in C3, revalidate, then require two NEW full designated tasks on the same complete base/head; no C2 approval is carried forward.",
+  "items": [
+    {
+      "id": "R2-N1",
+      "severity": "P3",
+      "reviewer": "ZCode",
+      "originalJudgment": "nonblocking, may defer",
+      "disposition": "adopt",
+      "implementation": "bc098d0d8eaa0d786039a0a9d154c4be81b27103",
+      "details": "In-tree Darwin parent RSS sampler-unavailable regression targets the actual live PID: failed/INTERNAL_ERROR, no result/operation; sibling succeeds with exact immutable rows; scoped monkeypatch and both workers reaped.",
+      "verification": "C3 full check: macOS 1020 Python/630 TS; Linux 1017 Python+3 Darwin skips/630 TS; independent real-worker patch review."
+    },
+    {
+      "id": "R2-N2",
+      "severity": "P2",
+      "reviewer": "ZCode",
+      "originalJudgment": "nonblocking this round; must fix next candidate",
+      "disposition": "adopt",
+      "implementation": "7d4cfaf63c2a1ddf5d7b07c1844e1587b08ceaa3",
+      "details": "Before every inbox dequeue, enforce the original absolute deadline with >= while session is None; rejected requests do not renew it, timely negotiated sessions remain usable. Three exact-edge regressions plus actual default stdio source/package evidence; additional in-tree default runtime case c5c1961 automatically runs against packages.",
+      "verification": "Old exact tests: 2 failed/1 normal passed; fixed 3 passed. Independent default source closes naturally near 5.09s and timely session health still works after 5.8s. Both immutable packages now pass 13 runtime tests."
+    },
+    {
+      "id": "R2-P1",
+      "severity": "P2",
+      "reviewer": "MiniMax",
+      "originalJudgment": "nonblocking, explicit fix/new full dual review or justified deferral required before merge",
+      "disposition": "adopt",
+      "sameRootAs": "R2-N2",
+      "implementation": "7d4cfaf63c2a1ddf5d7b07c1844e1587b08ceaa3",
+      "details": "Choose fix and new complete dual review, not request-count-only mitigation or deferral. Preserve own 10.639s/65536-response probe and independent late-hello reproduction (5.3121s sent, 5.3928s accepted beyond latest deadline 5.0704s). C2 source stays frozen through both actual terminal tasks.",
+      "verification": "Same C3 evidence as R2-N2; no independent reviewer closure of C3 is claimed yet."
+    }
+  ],
+  "C1All19Retained": [
+    {
+      "id": "B1",
+      "severity": "P2",
+      "reviewer": "zcode-glm53",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "Z1",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "Z2",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "Z3",
+      "severity": "P3",
+      "reviewer": "zcode-glm53",
+      "disposition": "deferred with I03 O1; not claimed closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "deferred/open"
+    },
+    {
+      "id": "P1-1",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P1-2",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P1-3",
+      "severity": "P1",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P2-4",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P2-5",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P2-6",
+      "severity": "P2",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-7",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-8",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-9",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-10",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-11",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-12",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-13",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-14",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    },
+    {
+      "id": "P3-15",
+      "severity": "P3",
+      "reviewer": "minimax-m31flash",
+      "disposition": "retain previous implementation/disposition; both C2 reports independently judge closed",
+      "previousDisposition": "round-1-disposition.json",
+      "C2ReviewJudgment": "closed"
+    }
+  ],
+  "inheritedOpen": [
+    "Z3 / I03 O1 future vocabulary and nonpaged budget policy",
+    "I03 O3 / I01 R6 historical growth/capacity",
+    "Domain E.2/E.5/G.4/FR-704 and I05/I06 integration not completed by I04"
+  ],
+  "methodAndEvidenceDispositions": [
+    {
+      "issue": "ZCode initial piped exit codes were tail/grep status, not target command status",
+      "disposition": "Corrected in the SAME task using full output redirection and true return codes; eight aggregate/individual logs then one isolated probe log; all true rc0. Original logs and failed probe harnesses preserved; no claim initial exit markers were valid."
+    },
+    {
+      "issue": "MiniMax first 17m32s turn ended without report",
+      "disposition": "Continued SAME original task, preserved tests and export editable-path failure diagnosis; no quota/service failure was observed and no replacement task/model/Goal/reset was used. Full report and subsequent factual evidence continuation both actually terminal."
+    },
+    {
+      "issue": "Independent developer-line handshake facts delivered to both reviewers",
+      "disposition": "Identical raw facts/scripts/JSON/hash paths only; no other current reviewer report or judgment sent. Both independently checked source/artifact identity. MiniMax also used a separately written harness. No original frozen source changed."
+    },
+    {
+      "issue": "Report wording/count limits",
+      "disposition": "C1 has 19 original IDs despite Z heading saying18; all19 retained here. Full C2 interval has43 commits (41 nonmerge+2merge), not41 total. Finite request budget is a count bound and proves neither indefinite lifetime nor a valid independent time budget. Exact overrun facts retained without unlimited-life/resource-exhaustion/performance claims."
+    },
+    {
+      "issue": "Duplicate .log/.json handshake probe files",
+      "disposition": "They are byte-identical report copies, counted once as an observation; not independent stdout/stderr logs. Scripts directly record stdout/stderr measurements and explicit cleanup; no natural deadline claim from SIGTERM exit0."
+    },
+    {
+      "issue": "MiniMax post-Pass required steps and unverified scope",
+      "disposition": "Adopt fresh C3 complete reviews and actual three-platform CI/push/PR/normal merge/remote verification; prior appropriate full checks/build/source/package/native evidence is preserved and new test-only changes rechecked. Signing, clean-device and domain production remain unverified scope limits, not newly invented I04 requirements."
+    }
+  ],
+  "freezeAudit": {
+    "declaredFiles": 93,
+    "onlyAllowedDifference": [
+      {
+        "path": "docs/reviews/I04/status.md",
+        "pureAppendBytes": 5041
+      }
+    ],
+    "allOtherFrozenFilesMatch": true,
+    "protectedAGENTS": "db1fb184809932a27c5bfd8c91b72837d719cdbdc07d7a83860e5cba38529786",
+    "externalBothTerminalNoQueue": true
+  },
+  "artifacts": [
+    {
+      "path": "build/I04-evidence/zcode-r2-final-full-terminal-ax.txt",
+      "sha256": "6b045e0d1b6896c7cdfa506ee9f3fc5602e5001e50cb167f394ed2f6f47acceb",
+      "bytes": 28596
+    },
+    {
+      "path": "build/I04-evidence/minimax-r2-final-full-terminal-ax.txt",
+      "sha256": "a8413a2797754308c5cfe19eb796946482015622545f2e3fdbbc9391d1de7cc6",
+      "bytes": 25981
+    },
+    {
+      "path": "build/I04-evidence/minimax-r2-before-independent-evidence-report.md",
+      "sha256": "84c5e5f2a042a47ca77601b6f3070f3c57643bdd46962dbd310f86e7bdea4bf1",
+      "bytes": 39448
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C2/probe_late_hello.py",
+      "sha256": "313ce866f6cd1d923653c31932ce8613f2cc426f826fcd20889042d44a6dd7f2",
+      "bytes": 4953
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C2/probe_late_hello.json",
+      "sha256": "e76b302081252ea7ab7e394ebf83ef96cf248a0a50306037d0876609c5e9a51d",
+      "bytes": 789
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C2/probe_handshake.py",
+      "sha256": "646d35a2f46c94158aedb892ddf5bfd415b6ad51d6a81ecf81dbc4a07230219a",
+      "bytes": 3358
+    },
+    {
+      "path": "build/I04-review-MiniMax-M31Flash-C2/probe_handshake.json",
+      "sha256": "6b64e0be443415eb5bb94d40f6f22c3bd2f8f7d85d050876d4e8139b433f529a",
+      "bytes": 273
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C2/exitcode-rerun/summary.txt",
+      "sha256": "f41778e9e62ebec9ff26b3bef0164945f699c1fef7bfa6b3b10e1f721f5fdf29",
+      "bytes": 143
+    },
+    {
+      "path": "build/I04-review-ZCode-GLM53-C2/exitcode-rerun/probe-exit.txt",
+      "sha256": "900911084fc4d9b3062a2bb224a4572a47726617c2cc71e8eeb7e48be42c2522",
+      "bytes": 132
+    }
+  ],
+  "next": "Commit this process-only C2 archive, integrate independently validated C3, freeze its full base/head and dispatch both NEW full designated reviews. No push/PR/CI/merge yet."
+}

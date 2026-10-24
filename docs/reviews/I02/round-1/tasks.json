@@ -1,0 +1,37 @@
+{
+  "round": 1,
+  "base": "1b6df7a220fc9a67d7046133a340085f03f0a96c",
+  "head": "2cc03da82ffccc8448c7b03dc6cff87595027653",
+  "repository": "/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio",
+  "branch": "feature/I02-csp-window-lifecycle",
+  "tasks": [
+    {
+      "label": "I02-R1-ZCode-GLM53-20261020-0735",
+      "app": "dev.zcode.app",
+      "model": "GLM-5.3",
+      "thinking": "最高",
+      "source": "current new blank task UI; reselected exact root using native Open chooser; current branch selected; sent and observed 工作中/停止生成",
+      "report": "docs/reviews/I02/round-1/zcode-glm53.md",
+      "status": "completed_ui_pass_full_report_read",
+      "uiTitle": "I02 C1 CSP窗口生命周期对抗性代码审查",
+      "completionEvidence": "UI 已工作28分26秒; 独立审查完成; 最终结论通过(无阻断问题); disabled send, no stop"
+    },
+    {
+      "label": "I02-R1-MiniMax-M31Flash-20261020-0735",
+      "app": "com.minimax.agent.cn",
+      "model": "M3.1-Flash",
+      "thinking": "xhigh",
+      "uiTitle": "审查 I02 CSP 与窗口生命周期迭代",
+      "source": "current new blank task UI; reselected exact root using native Select chooser; local/current feature branch displayed; sent and observed 执行2条命令/停止生成",
+      "report": "docs/reviews/I02/round-1/minimax-m31flash.md",
+      "status": "completed_ui_pass_full_report_read",
+      "completionEvidence": "MiniMax UI: 共执行11分41秒; 审查完成—结论:通过(Pass); 5项问题0阻断; report artifact rendered; task no longer generating"
+    }
+  ],
+  "prompt": "Original full adversarial prompt (I01/inputs/goal-objective.md section4) with exact base/head/paths, full I02 acceptance source pointers, independent judgment; identical scope for both; neither saw other current-round findings",
+  "freeze": "No implementation/test/config/dependency/acceptance changes during review; only process evidence appended",
+  "reportHashes": {
+    "zcode-glm53.md": "2663176708d7cea68e73c7d1324d7cbc18e15f969228f8d43875a2acf266a7ea",
+    "minimax-m31flash.md": "f66c8af2e809ef893738355e5694dac86deb2917779e565f12dde9a9257ecc37"
+  }
+}

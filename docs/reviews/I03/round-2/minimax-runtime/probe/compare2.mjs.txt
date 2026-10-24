@@ -1,0 +1,22 @@
+import { readFileSync, writeFileSync } from 'node:fs'
+
+const ts = JSON.parse(readFileSync('/tmp/i03-r2-minimax/probe/results-ts2.json', 'utf8'))
+const py = JSON.parse(readFileSync('/tmp/i03-r2-minimax/probe/results-py2.json', 'utf8'))
+const tsMap = new Map(ts.map((r) => [r.id, r]))
+const pyMap = new Map(py.map((r) => [r.id, r]))
+const divergences = []
+const ids = new Set([...tsMap.keys(), ...pyMap.keys()])
+for (const id of ids) {
+  const a = tsMap.get(id)
+  const b = pyMap.get(id)
+  if (!a || !b) divergences.push({ id, ts: a ?? 'MISSING', py: b ?? 'MISSING' })
+  else if (a.result !== b.result)
+    divergences.push({ id, ts: a.result, py: b.result, tsError: a.error, pyError: b.error })
+}
+writeFileSync(
+  '/tmp/i03-r2-minimax/probe/divergences2.json',
+  JSON.stringify({ total: ids.size, divergences, tsThrows: ts.filter((r) => r.result === 'THROW'), pyThrows: py.filter((r) => r.result === 'THROW') }, null, 1),
+)
+console.log('batch2 compared', ids.size, 'divergences', divergences.length)
+console.log('ts throws', ts.filter((r) => r.result === 'THROW').length, 'py throws', py.filter((r) => r.result === 'THROW').length)
+for (const d of divergences.slice(0, 30)) console.log('DIVERGE', JSON.stringify(d))

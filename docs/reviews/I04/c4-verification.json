@@ -1,0 +1,1482 @@
+{
+  "iteration": "I04",
+  "candidate": 4,
+  "collectedAtUtc": "2026-10-20T17:39:44.598823+00:00",
+  "runtimeSourceCheckpoint": "9eb0b6e33870629c99d917feb18e0cd253712868",
+  "laterDocHead": "9eb0b6e33870629c99d917feb18e0cd253712868; subsequent commits only documents/process before candidate freeze",
+  "runtimeInputs": {
+    "path": "build/I04-evidence/c4-sealed-runtime-inputs.json",
+    "sha256": "41c9588c1bc8e6dfdfc848e5ef45b9dc0bfe7db633fdf9a54b5058d701ea37e8",
+    "bytes": 18652
+  },
+  "runtimeInputCount": 124,
+  "currentDifferences": [],
+  "sourceArchive": {
+    "path": "build/I04-evidence/c4-sealed-runtime-source.tar",
+    "sha256": "c422c524ad1e9c420697e1a4bd1ab98877d145c5b4f8e9439c3aa58c6027a2db",
+    "bytes": 12574720
+  },
+  "scope": "Complete original I04 acceptance and integration obligations retained; no business/I05/I06 completion.",
+  "checks": [
+    {
+      "platform": "macOS arm64; no GUI",
+      "command": "npm run check",
+      "exit": 0,
+      "typescriptPassed": 630,
+      "pythonPassed": 1052,
+      "pythonSkipped": 0,
+      "log": "build/I04-evidence/c4-sealed-check.log"
+    },
+    {
+      "platform": "isolated Linux arm64",
+      "command": "npm run check",
+      "exit": 0,
+      "typescriptPassed": 630,
+      "pythonPassed": 1049,
+      "pythonSkipped": 3,
+      "skipReason": "Darwin-only RSS/exit/parent-sampler probes; covered on actual Darwin above",
+      "log": "build/I04-evidence/c4-final-linux/sealed-check.log"
+    }
+  ],
+  "sourceArchivesVerified": {
+    "count": 12,
+    "log": "build/I04-evidence/c4-root/sources.log"
+  },
+  "packages": [
+    {
+      "platform": "macOS arm64",
+      "command": "npm run package:dir; verify-i04-package.py",
+      "exit": 0,
+      "engineSha256": "1f5a5eb81476d6b38b7ba26bc7891c2e675db553e186d152adb06c7bce10e83d",
+      "runtimeCasesPassed": 17,
+      "commonExamples": [321, 11, 30, 9, 7, 41, 51],
+      "temporaryCwdIndependent": true,
+      "evidence": "build/I04-evidence/c4-sealed-macos-probe"
+    },
+    {
+      "platform": "isolated Linux arm64",
+      "command": "npm run package:dir; verify-i04-package.py",
+      "exit": 0,
+      "engineSha256": "a2099042ece8a6e375a07fedff723f734ed5f307870c31bd11514ca4f69a7444",
+      "runtimeCasesPassed": 17,
+      "commonExamples": [321, 11, 30, 9, 7, 41, 51],
+      "temporaryCwdIndependent": true,
+      "evidence": "build/I04-evidence/c4-final-linux/sealed-package-probe"
+    }
+  ],
+  "desktop": {
+    "platform": "Existing private Linux arm64 Docker container; Xvfb/Openbox/xdotool; no host GUI",
+    "sourcePassed": 6,
+    "packagedPassed": 6,
+    "cases": "3 desktop/CSP/health reply ordering plus actual reload/stage, coordinator kill/stage, renderer crash/unresponsive with actual visible dialogs and external X focus",
+    "driver": {
+      "path": "build/I04-evidence/c4-linux-validation.sh",
+      "sha256": "3ec8fb4ee27e8b2af369b40b77634a8421e385f0aee2a5b6966c00627863e34f",
+      "bytes": 1605
+    },
+    "native": [
+      {
+        "mode": "packaged",
+        "raw": {
+          "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+          "sha256": "a19993fd0600009f7eb1af561108a0137ae1937aa10d87bced45cf231ff9e6f8",
+          "bytes": 33373
+        },
+        "events": ["crashed", "unresponsive"],
+        "inspectorClosed": true,
+        "hangMonitorEnabled": true,
+        "nativeDialogs": [
+          {
+            "phase": "crash",
+            "windowId": "6291458",
+            "title": "OntoLearn Studio \u7a97\u53e3\u6062\u590d",
+            "visible": true
+          },
+          {
+            "phase": "hang",
+            "windowId": "6291613",
+            "title": "OntoLearn Studio \u7a97\u53e3\u6062\u590d",
+            "visible": true
+          }
+        ],
+        "dialogObserver": "external xdotool visible-window inventory",
+        "windows": [
+          {
+            "ordinal": 1,
+            "visible": true,
+            "focused": null,
+            "x11Focus": null,
+            "project": {
+              "projectId": "1f4ef44a-4c31-417a-ab4c-4139aa09ce97",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "50f99578-e952-4bdc-bc8f-5241e834a87e",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "e5b9e360-da81-4a93-bb86-27527700d42c"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "5d97e67b-5524-4f0f-859b-f0344de01ee7"
+                }
+              },
+              {
+                "jobId": "fc088a3f-1f82-46f9-855c-3d750b3b4a16",
+                "state": "running",
+                "stateVersion": 2,
+                "commitProgress": {
+                  "committedProgress": null,
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "d172024e-b1c9-45c9-9c2b-0c6662f8ac6f",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          },
+          {
+            "ordinal": 2,
+            "visible": true,
+            "focused": true,
+            "x11Focus": {
+              "observer": "xdotool/XGetInputFocus",
+              "windowId": "4194323",
+              "title": "OntoLearn Studio",
+              "visible": true
+            },
+            "project": {
+              "projectId": "1f4ef44a-4c31-417a-ab4c-4139aa09ce97",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "50f99578-e952-4bdc-bc8f-5241e834a87e",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "e5b9e360-da81-4a93-bb86-27527700d42c"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "5d97e67b-5524-4f0f-859b-f0344de01ee7"
+                }
+              },
+              {
+                "jobId": "fc088a3f-1f82-46f9-855c-3d750b3b4a16",
+                "state": "running",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 1,
+                    "runId": "7b3d82eb-c1d4-4800-9590-8a5ff237cb76",
+                    "snapshotRef": "ce7545f1bc5a801329532ac903ad08a5a6117333ae2161554c9a7f93a476a310"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "d172024e-b1c9-45c9-9c2b-0c6662f8ac6f",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          },
+          {
+            "ordinal": 3,
+            "visible": true,
+            "focused": null,
+            "x11Focus": null,
+            "project": {
+              "projectId": "1f4ef44a-4c31-417a-ab4c-4139aa09ce97",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "50f99578-e952-4bdc-bc8f-5241e834a87e",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "e5b9e360-da81-4a93-bb86-27527700d42c"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "5d97e67b-5524-4f0f-859b-f0344de01ee7"
+                }
+              },
+              {
+                "jobId": "fc088a3f-1f82-46f9-855c-3d750b3b4a16",
+                "state": "running",
+                "stateVersion": 36,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 34,
+                    "runId": "7b3d82eb-c1d4-4800-9590-8a5ff237cb76",
+                    "snapshotRef": "04daa82545b438918744e495b2455cff36092454580f715690a355754540a6c0"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "d172024e-b1c9-45c9-9c2b-0c6662f8ac6f",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "mode": "source",
+        "raw": {
+          "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+          "sha256": "e46b8f172d473bcb528067ea30e3fcb8eb8b043f8035254f3bb9d2f97684dcdf",
+          "bytes": 33373
+        },
+        "events": ["crashed", "unresponsive"],
+        "inspectorClosed": true,
+        "hangMonitorEnabled": true,
+        "nativeDialogs": [
+          {
+            "phase": "crash",
+            "windowId": "6291458",
+            "title": "OntoLearn Studio \u7a97\u53e3\u6062\u590d",
+            "visible": true
+          },
+          {
+            "phase": "hang",
+            "windowId": "6291613",
+            "title": "OntoLearn Studio \u7a97\u53e3\u6062\u590d",
+            "visible": true
+          }
+        ],
+        "dialogObserver": "external xdotool visible-window inventory",
+        "windows": [
+          {
+            "ordinal": 1,
+            "visible": true,
+            "focused": null,
+            "x11Focus": null,
+            "project": {
+              "projectId": "bd6c0cc7-56a1-4847-ac93-1999db85a866",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "3724d14e-3051-4c02-b675-d702f6331bd3",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "9eda4460-81fe-42be-923a-8082c57f81b4"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "0a7f629f-ba78-49dc-a7c5-f1b55e5f6250"
+                }
+              },
+              {
+                "jobId": "9926ebfb-9593-4edd-a894-acef034b363b",
+                "state": "running",
+                "stateVersion": 2,
+                "commitProgress": {
+                  "committedProgress": null,
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "f66de8f3-9842-4d61-a6fd-744ae30d1901",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          },
+          {
+            "ordinal": 2,
+            "visible": true,
+            "focused": true,
+            "x11Focus": {
+              "observer": "xdotool/XGetInputFocus",
+              "windowId": "4194323",
+              "title": "OntoLearn Studio",
+              "visible": true
+            },
+            "project": {
+              "projectId": "bd6c0cc7-56a1-4847-ac93-1999db85a866",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "3724d14e-3051-4c02-b675-d702f6331bd3",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "9eda4460-81fe-42be-923a-8082c57f81b4"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "0a7f629f-ba78-49dc-a7c5-f1b55e5f6250"
+                }
+              },
+              {
+                "jobId": "9926ebfb-9593-4edd-a894-acef034b363b",
+                "state": "running",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 1,
+                    "runId": "3c948ee4-d0ce-42d4-84a3-ab58869fb21b",
+                    "snapshotRef": "5822ad8306b855a947a7de6a41868e6a88445127b8b21026a471bcf12516954f"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "f66de8f3-9842-4d61-a6fd-744ae30d1901",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          },
+          {
+            "ordinal": 3,
+            "visible": true,
+            "focused": null,
+            "x11Focus": null,
+            "project": {
+              "projectId": "bd6c0cc7-56a1-4847-ac93-1999db85a866",
+              "projectRevision": 1,
+              "inputSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+              "dependencyVector": {
+                "ontology:native-committed": 1
+              },
+              "formatVersion": 2
+            },
+            "jobs": [
+              {
+                "jobId": "3724d14e-3051-4c02-b675-d702f6331bd3",
+                "state": "succeeded",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "marker": {
+                    "afterSnapshotId": "8abb76bf498b4d08ccf6d50e6b9d2aa03fb773ecfe163b0cc55cee606b2516e7",
+                    "beforeSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                    "planHash": "234190bd423417d0486fe886c39254be88ea3d8e619152bde9bbff4d854f92cd",
+                    "projectRevision": 1
+                  },
+                  "mode": "atomic",
+                  "operationId": "9eda4460-81fe-42be-923a-8082c57f81b4"
+                },
+                "error": null,
+                "resultRef": {
+                  "inputSnapshotId": "89004abca3586e0a50786f17e891c0d02e077a41e692669ec8bd0df1eb7806bc",
+                  "resultId": "0a7f629f-ba78-49dc-a7c5-f1b55e5f6250"
+                }
+              },
+              {
+                "jobId": "9926ebfb-9593-4edd-a894-acef034b363b",
+                "state": "running",
+                "stateVersion": 36,
+                "commitProgress": {
+                  "committedProgress": {
+                    "lastCommittedRound": 34,
+                    "runId": "3c948ee4-d0ce-42d4-84a3-ab58869fb21b",
+                    "snapshotRef": "4e3ca1349962e9fe5398549bfe9477631efe41fbef8c1f8a023c14d71e1f4d6b"
+                  },
+                  "mode": "rounds"
+                },
+                "error": null,
+                "resultRef": null
+              },
+              {
+                "jobId": "f66de8f3-9842-4d61-a6fd-744ae30d1901",
+                "state": "failed",
+                "stateVersion": 3,
+                "commitProgress": {
+                  "mode": "none"
+                },
+                "error": {
+                  "code": "INTERNAL_ERROR",
+                  "messageKey": "engine.internal",
+                  "params": {},
+                  "retryable": false
+                },
+                "resultRef": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "noRetryOrAssertionRelaxation": true,
+    "sandbox": "Both source and package chrome-sandbox root:root4755; hang monitor enabled, no hidden/minimized/stub substitution"
+  },
+  "matrices": [
+    {
+      "summary": {
+        "path": "build/I04-evidence/c4-matrix/summary.json",
+        "sha256": "847ded50229c44590059b752f6a04fe32861fd625cd9eac851c3a3fd71359cbc",
+        "bytes": 76422
+      },
+      "matrices": {
+        "atomic": {
+          "expected": 96,
+          "collected": 96,
+          "passed": 96
+        },
+        "round": {
+          "expected": 48,
+          "collected": 48,
+          "passed": 48
+        }
+      },
+      "sourceRevisionRequested": "HEAD",
+      "sourceBinding": "Mac HEAD at ccdbadb; Linux FETCH_HEAD fetched from the same root Git bundle, source subset verified by recorder.",
+      "sourceFiles": {
+        "packages/engine/tests/test_job_store.py": {
+          "sha256": "0cf93ea0ccc9b6832901d07e099692fc7bbbddc4cc1606b4353727cc6894c55e",
+          "function": "test_atomic_job_fault_reconcile_matrix",
+          "functionStartLine": 184,
+          "functionSha256": "1aaaf6f1ac4f5983cf08779156ea7acba413b567d517b110b0a0afc2f63d61a0",
+          "matrix": "atomic"
+        },
+        "packages/engine/tests/test_i04_round_faults.py": {
+          "sha256": "03f80c391ec46fdd8dbd10f9544858d21234e8237af0eb2e0a1cbbf9c5fa2c57",
+          "function": "test_round_job_progress_atomic_fault_matrix_fences_and_preserves_previous_round",
+          "functionStartLine": 64,
+          "functionSha256": "f27873f0ea207fba3a9df3743f15956fd1987c3917003a4c2843319dc2baa3c5",
+          "matrix": "round"
+        },
+        "packages/engine/src/ontolearn_engine/job_store.py": {
+          "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2"
+        },
+        "packages/engine/src/ontolearn_engine/storage.py": {
+          "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842"
+        },
+        "packages/contracts/python/contract_v2.py": {
+          "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe"
+        },
+        "packages/contracts/v2/schema.json": {
+          "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79"
+        },
+        "packages/contracts/v2/registry.json": {
+          "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb"
+        },
+        "packages/contracts/v2/states.json": {
+          "sha256": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416"
+        },
+        "packages/contracts/v2/errors.json": {
+          "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1"
+        },
+        "packages/contracts/v2/dependencies.json": {
+          "sha256": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4"
+        },
+        "uv.lock": {
+          "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+        }
+      }
+    },
+    {
+      "summary": {
+        "path": "build/I04-evidence/c4-final-linux/matrix/summary.json",
+        "sha256": "1bd7071e3549de71b347ce28798af1ef5110b742c10b303dfde680b2877ca420",
+        "bytes": 76428
+      },
+      "matrices": {
+        "atomic": {
+          "expected": 96,
+          "collected": 96,
+          "passed": 96
+        },
+        "round": {
+          "expected": 48,
+          "collected": 48,
+          "passed": 48
+        }
+      },
+      "sourceRevisionRequested": "FETCH_HEAD",
+      "sourceBinding": "Mac HEAD at ccdbadb; Linux FETCH_HEAD fetched from the same root Git bundle, source subset verified by recorder.",
+      "sourceFiles": {
+        "packages/engine/tests/test_job_store.py": {
+          "sha256": "0cf93ea0ccc9b6832901d07e099692fc7bbbddc4cc1606b4353727cc6894c55e",
+          "function": "test_atomic_job_fault_reconcile_matrix",
+          "functionStartLine": 184,
+          "functionSha256": "1aaaf6f1ac4f5983cf08779156ea7acba413b567d517b110b0a0afc2f63d61a0",
+          "matrix": "atomic"
+        },
+        "packages/engine/tests/test_i04_round_faults.py": {
+          "sha256": "03f80c391ec46fdd8dbd10f9544858d21234e8237af0eb2e0a1cbbf9c5fa2c57",
+          "function": "test_round_job_progress_atomic_fault_matrix_fences_and_preserves_previous_round",
+          "functionStartLine": 64,
+          "functionSha256": "f27873f0ea207fba3a9df3743f15956fd1987c3917003a4c2843319dc2baa3c5",
+          "matrix": "round"
+        },
+        "packages/engine/src/ontolearn_engine/job_store.py": {
+          "sha256": "42cd05b91f03f4ec9d4d38d49e621094d0246b8b898385032d7c3005a0afd4f2"
+        },
+        "packages/engine/src/ontolearn_engine/storage.py": {
+          "sha256": "4abf1082f1b864eb9efa155c7cbc890ef70cb196f30e09ad12629ce7a0cf6842"
+        },
+        "packages/contracts/python/contract_v2.py": {
+          "sha256": "0dc96a67cc47a03843a783cc47e649f13d5b5b80a43d520d0f6963b408d274fe"
+        },
+        "packages/contracts/v2/schema.json": {
+          "sha256": "9215266523f539c81282bbc96ca88de52b79c99ef39f7696b3a49c58fa7a2b79"
+        },
+        "packages/contracts/v2/registry.json": {
+          "sha256": "59bfb09bbb142f56ff07e759e0d964d5910fa861c6a16edcf5cfa5e47f920efb"
+        },
+        "packages/contracts/v2/states.json": {
+          "sha256": "ab54cac024f0f6b31a8a229198ae1c4ab13f63ff88184cdcef78113b9e893416"
+        },
+        "packages/contracts/v2/errors.json": {
+          "sha256": "6986be7cb6742fe955f6ad55b5f1c8565ead3b8b27b80ddfbcdd593187e181f1"
+        },
+        "packages/contracts/v2/dependencies.json": {
+          "sha256": "dee118b368915df4172a77b875d31ce29ad8374cb5fce3915678f7f950cedad4"
+        },
+        "uv.lock": {
+          "sha256": "d5d027da6628a2f4fc2e73730ce3a5e40d85aebba95188b0d4c3801ebdde949e"
+        }
+      }
+    }
+  ],
+  "internalReviews": {
+    "encoding": "Independent storage P2 C4-ENC-01 exposed first simulation defect in UTF-8 mode; fixed223f978 independently rechecked in both modes. Old failure retained.",
+    "rootTests": "Independent bridge dded7bc finite review; exact original two cases passed; Windows-specific behavior statically reviewed only.",
+    "owner": "Independent storage06e5e51 passed_limited_scope, no remaining implementation blockers; exact Win ABI not executed locally. Final package owner coverage addresses the separately identified frozen13 measurement gap; old report remains historical.",
+    "packagedOwnerHarness": "Independent supervisor58e270c and final9eb0b6e limited reviews passed; final actual Mac frozen4 cases passed, fixed source snapshot; no Windows/Linux claim from that review."
+  },
+  "failuresAndLimits": [
+    "C3 PR actual CI39462746525 failed, preserved in c4-ci-trigger.json; no C4 CI yet.",
+    "Windows actual native ABI/launcher/death behavior still requires CI after new full dual Pass; doubles and cp1252 emulation do not establish it.",
+    "macOS hosted runner was not acquired in original run, not a code validation result.",
+    "Author owner fix validation had two separate harness/environment failures before clean export; original logs retained.",
+    "Parent monitor supports current controlled workload/current source and POSIX onedir; future onefile/brokers or arbitrary native GIL behavior require separate validation.",
+    "Signed release, clean-device install, production and domain/I05/I06 integration not verified."
+  ],
+  "priorEvidenceBoundary": "C1/C2/C3 artifacts and C3 immutable full packages retained. New C4 check/build/package/GUI/matrix evidence uses separate paths; old hashes are not reused as new source proof.",
+  "rawArtifacts": [
+    {
+      "path": "build/I04-evidence/c4-root/check.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-root/check.log",
+      "sha256": "3f6c88b594c51410cff065a0da2fd7323a73b62b81cc6679b8d6c3eef786b262",
+      "bytes": 5044
+    },
+    {
+      "path": "build/I04-evidence/c4-root/matrix.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-root/matrix.log",
+      "sha256": "9c6809c2b4e40fb91ec16a58b2c4e6bca1763f59a97f5600f0532b43a451dbca",
+      "bytes": 400
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package-probe/runtime.stdout",
+      "sha256": "754dcde78720c05a9c46380607067a30954ca755a5bdad23771acb1ee77db666",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package-probe.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package-probe.log",
+      "sha256": "deabce6c207b3c8a4cf361f5657b311802a71bb71c9ab08fe0951beab84b033e",
+      "bytes": 365
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-root/package.log",
+      "sha256": "fb306617448fe58b65cfb6c7f0dfb72c5c2666fb2a321380963005758062291f",
+      "bytes": 13905
+    },
+    {
+      "path": "build/I04-evidence/c4-root/sources.log",
+      "sha256": "1439dca3a0fd2dbc3702b336e9accceedc93893d0d65264c69da1aa175c45536",
+      "bytes": 111
+    },
+    {
+      "path": "build/I04-evidence/c4-root/targeted-utf8.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-root/targeted-utf8.log",
+      "sha256": "7092b1c7545e751fd949206d65d1e95b21142219cfb018463f35e518b05d0915",
+      "bytes": 180
+    },
+    {
+      "path": "build/I04-evidence/c4-matrix/cases.jsonl",
+      "sha256": "93f0eb3d48c17edaf16ac997db28787460aa9b01f3fbfb10b68036ba36f8fbe9",
+      "bytes": 881820
+    },
+    {
+      "path": "build/I04-evidence/c4-matrix/summary.json",
+      "sha256": "847ded50229c44590059b752f6a04fe32861fd625cd9eac851c3a3fd71359cbc",
+      "bytes": 76422
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/check.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/check.log",
+      "sha256": "19de6002a6d9bef814829fbc0b1947f393b89f63e6ae02e7f8182b9c0d57b816",
+      "bytes": 8451
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/matrix/cases.jsonl",
+      "sha256": "1a682ac2a115354b99319a51ff3e472c8dba6b8316f594685fb6e3054b9411c7",
+      "bytes": 881820
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/matrix/summary.json",
+      "sha256": "1bd7071e3549de71b347ce28798af1ef5110b742c10b303dfde680b2877ca420",
+      "bytes": 76428
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/matrix.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/matrix.log",
+      "sha256": "5a375cee5efe2d0bec53e18703d4b237dba0ace8e4849998b3abc95706bebeb5",
+      "bytes": 343
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package-probe/runtime.stdout",
+      "sha256": "9b9454e70e13c62b579c069dc03109f1fef63c755f60f4a3a770a35aef860d5e",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package-probe.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package-probe.log",
+      "sha256": "2acdf8d42a228e347d19ae12b6c5089190f4a3fd0e574e91079145e743946af8",
+      "bytes": 265
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/package.log",
+      "sha256": "45a4ac29a46d6909e2afb285e8639e594c9d86a6f60682a89299848084c278ae",
+      "bytes": 10924
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-csp.json",
+      "sha256": "05d45638a75214e62ceec56b2df70c816f546d4af375f0eecbab79b8c74bf166",
+      "bytes": 7539
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-disconnect-fixture.log",
+      "sha256": "f67e51898be32402338f632a10090276952c2873ec58b5086014b52c42567389",
+      "bytes": 51
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-disconnect.log",
+      "sha256": "4bc3d2581a109c0ab66aeef078485bc5f0517c7f294a5e4cc59d849e9c561229",
+      "bytes": 172
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-general.log",
+      "sha256": "fb0d4041145db0bd0c8753167846c069ed81a3842e728602b0dce808df568188",
+      "bytes": 661
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-native-fixture.log",
+      "sha256": "824bd45be64bcd8fb2b0350c88d3c85014b05228a087d60e26e0e0453e84f067",
+      "bytes": 47
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-native.log",
+      "sha256": "1a569b255e28ffd089fd6153c8a93047ab1c43c210f5dac6ad083614eaf0b0e3",
+      "bytes": 181
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-reload-fixture.log",
+      "sha256": "75a1987bb2b5d3bbdea06cec716100f4096a15b3831601159c16b43c2129baa5",
+      "bytes": 47
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/packaged-reload.log",
+      "sha256": "08701a3653447289f24e73795ee09a6a598aec4b56fbb2aa3ee68dd42a7593ea",
+      "bytes": 183
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-csp.json",
+      "sha256": "70ffb882545f78e9a9bacf03233a856d1f16e57d412eb134c67dd74f14dfba5b",
+      "bytes": 7558
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-disconnect-fixture.log",
+      "sha256": "cfe2d449aa633b27d5d57c8a6ba6fa37cb802ba2a78c2cc89e4083fdb97323fe",
+      "bytes": 49
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-disconnect.log",
+      "sha256": "4bc3d2581a109c0ab66aeef078485bc5f0517c7f294a5e4cc59d849e9c561229",
+      "bytes": 172
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-general.log",
+      "sha256": "7ce699521018c33816e8ab91a592e03592136dd321b7a8c6e1fdce046dce44f9",
+      "bytes": 661
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-native-fixture.log",
+      "sha256": "aa270000389c5b18d1eef36e43a0935f8db80bd98a6400e5c3493ea81b06588d",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-native.log",
+      "sha256": "c4a538dd768f39d4937b9398f92d11f7a7992af07638021c9b8cc668ed530eae",
+      "bytes": 181
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-reload-fixture.log",
+      "sha256": "3cf518ac067cdf3be381a25d211b6bb4a97b97e07ba4be9e6e199250d03d27b7",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/source-reload.log",
+      "sha256": "08701a3653447289f24e73795ee09a6a598aec4b56fbb2aa3ee68dd42a7593ea",
+      "bytes": 183
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-disconnect/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/attachments/i04-coordinator-recovery-a767e0882c1be02253701a0d95560a94e5269289.json",
+      "sha256": "8306b6fb0a16631c4abd586fe88157fcf769e1121abd367d644c79775d5766bd",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+      "sha256": "8306b6fb0a16631c4abd586fe88157fcf769e1121abd367d644c79775d5766bd",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-general/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/attachments/i04-health-replies-b351d42401c7ac2ebf61143ee1d43fe2e3749bfa.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-native/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-11e9c7ed4b13ccfd3b7ab6a519745727bbf63359.json",
+      "sha256": "8cc5603a5eb3aef3bb0fb7321018284d536cafc6e96011b26d7047083d011abe",
+      "bytes": 33012
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-final-evidence-11e9c7ed4b13ccfd3b7ab6a519745727bbf63359.json",
+      "sha256": "8cc5603a5eb3aef3bb0fb7321018284d536cafc6e96011b26d7047083d011abe",
+      "bytes": 33012
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-verified-evidence-2b6a9b446e1300f8e286a8ff93be5dc7ec7e6492.json",
+      "sha256": "a19993fd0600009f7eb1af561108a0137ae1937aa10d87bced45cf231ff9e6f8",
+      "bytes": 33373
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+      "sha256": "a19993fd0600009f7eb1af561108a0137ae1937aa10d87bced45cf231ff9e6f8",
+      "bytes": 33373
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-packaged-reload/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-disconnect/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/attachments/i04-coordinator-recovery-f2b1d52d60c7370ab3850349ee543f58e8e6f4b9.json",
+      "sha256": "df69b0074dfb63665adce459d0d275bd2bc899f258daa26afc5de6a5e6e57b76",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-disconnect/i04-jobs-I04-coordinator-e-ea211-view-without-replaying-jobs/i04-coordinator-recovery.json",
+      "sha256": "df69b0074dfb63665adce459d0d275bd2bc899f258daa26afc5de6a5e6e57b76",
+      "bytes": 16671
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-general/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/attachments/i04-health-replies-50c05d3d4b2c1fde2e1794115d96ada20588236e.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-general/desktop-a-health-reply-fro-c8588--replace-the-current-status/i04-health-replies.json",
+      "sha256": "ef756916757bbfdd720e0c5d4dea76a97b479a74f15ac69b065b38bafcf35b00",
+      "bytes": 1559
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-native/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-evidence-cf35e1dba9f2f315baef03fe81c7166bc15d80f4.json",
+      "sha256": "7b9baa3bbcf3833fe86c8fd53ce78331c6242fde09324efb3d4870243480d4b9",
+      "bytes": 33012
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-final-evidence-cf35e1dba9f2f315baef03fe81c7166bc15d80f4.json",
+      "sha256": "7b9baa3bbcf3833fe86c8fd53ce78331c6242fde09324efb3d4870243480d4b9",
+      "bytes": 33012
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/attachments/i04-native-verified-evidence-d624824f1c60b51742cd78006b69421fb223822b.json",
+      "sha256": "e46b8f172d473bcb528067ea30e3fcb8eb8b043f8035254f3bb9d2f97684dcdf",
+      "bytes": 33373
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-native/i04-jobs-I04-native-render-1f7bc--dialog-retain-durable-jobs/i04-native-verified-evidence.json",
+      "sha256": "e46b8f172d473bcb528067ea30e3fcb8eb8b043f8035254f3bb9d2f97684dcdf",
+      "bytes": 33373
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/test-results/i04-c4-source-reload/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/uv-sync.log",
+      "sha256": "fa5241b5dde07a4d391a80f51cec69a796c9e848c1c228cb6d8d6ef6b180e9eb",
+      "bytes": 270
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding/check.log",
+      "sha256": "87e03ebc10d7a33ed6cc98b3c1d01351bbcf9549c65ba89b755a990a64ba5663",
+      "bytes": 4878
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding/contract-cli.log",
+      "sha256": "7aa863eb432c13eb1dc9b7443525e40a2f195dfdfd7f139ad809e9db89f09a7e",
+      "bytes": 138
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding/probe.json",
+      "sha256": "59d9dfa752d4904edf9f8bc878fce8dcb11331cc18ff7cbc0f00e360327c8284",
+      "bytes": 2523
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding/probe.log",
+      "sha256": "a340e45de492803e3a8a956667af4ff2efdc8d25c3f548e7e9ef01479fbf148e",
+      "bytes": 2013
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding/probe.py",
+      "sha256": "df131c7f603ab6573890d5de5b912f6559181876276a9a9244e7d04fae198bf8",
+      "bytes": 3052
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding/targeted.log",
+      "sha256": "8db0254ebafb84d23b112fc26ba453cd893e8d2f415519547e67bb05e2e0a27e",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/check.log",
+      "sha256": "2cbf885326aff2cc445a9e9bc27208afa2754e50be91c19e96a8198939415ff1",
+      "bytes": 4878
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/normal.log",
+      "sha256": "8db0254ebafb84d23b112fc26ba453cd893e8d2f415519547e67bb05e2e0a27e",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/original-utf8-mode.log",
+      "sha256": "da2e6dfb88ed81ced48a55221ec86a659c2586c24879a98ca48007df4804c5f5",
+      "bytes": 1724
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-normal.json",
+      "sha256": "75d429a213fc1f77dfa2743d760615069cac1a4208a35ff3af9746e43b78386d",
+      "bytes": 2616
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-normal.log",
+      "sha256": "993511a2252266b9386ad5307bcd86a7d6a9f0aba3b2cb9312933f528437cead",
+      "bytes": 2102
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-utf8-mode.json",
+      "sha256": "97cbdb6a3b16e172df539b589377e99133c7c9f533c68fe2785f0a619af48dbc",
+      "bytes": 2616
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe-utf8-mode.log",
+      "sha256": "e37bb1def88a2280e2f73e292f210a5b34bc296f4ec4b5104fe4a6bc8cfbf624",
+      "bytes": 2102
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/probe.py",
+      "sha256": "7b9de7e8d5232eaa7a7ed4f213570e71a08ace2aa5e285a7f2b98c1259fc425c",
+      "bytes": 3221
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/test_original_5cbe39c.py",
+      "sha256": "44e4712311e9a4445a794d5825e673046dac2f9ffa7fe283c3c242147cc0a2e3",
+      "bytes": 3036
+    },
+    {
+      "path": "build/I04-bridge-handoff/c4-encoding-v2/utf8-mode.log",
+      "sha256": "8db0254ebafb84d23b112fc26ba453cd893e8d2f415519547e67bb05e2e0a27e",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-bridge-handoff/review-dded7bc/review.json",
+      "sha256": "52536cc3803f97c732566bda5fa06f616422b26fe327df2b2938c8e51872977d",
+      "bytes": 2114
+    },
+    {
+      "path": "build/I04-bridge-handoff/review-dded7bc/targeted.log",
+      "sha256": "9e44a19be4516df69a46f145f58b1202638c6a5f1cb441bb138fd841e25920ce",
+      "bytes": 98
+    },
+    {
+      "path": "build/I04-bridge-handoff/review-dded7bc/test_coordinator_control.py",
+      "sha256": "51e6c1c729e2c9995cfd608d2299a9dd0a3dc7359f1dbc526b16a247ef48c8ea",
+      "bytes": 5103
+    },
+    {
+      "path": "build/I04-bridge-handoff/review-dded7bc/test_resident_runtime.py",
+      "sha256": "ba9ab70b7d29d232f2e02f68c95ba75387577d8e44086bfe9c5348be0a419062",
+      "bytes": 20364
+    },
+    {
+      "path": "build/I04-evidence/c4-runtime-inputs.json",
+      "sha256": "2457f5de92c55c533a6fbea310286011c9cda0a90f4de7c01bc7a1f26d3b21e6",
+      "bytes": 18607
+    },
+    {
+      "path": "build/I04-evidence/c4-linux-validation.sh",
+      "sha256": "3ec8fb4ee27e8b2af369b40b77634a8421e385f0aee2a5b6966c00627863e34f",
+      "bytes": 1605
+    },
+    {
+      "path": "build/I04-evidence/c4-original-protection.json",
+      "sha256": "86aa0c9d48965cea13f74b641f51c5061ab5297a9555aab585ba66237c7102f0",
+      "bytes": 286
+    },
+    {
+      "path": "build/I04-evidence/c3-immutable-package/archive.json",
+      "sha256": "6a391c08026fc8423827c248ecc455157f285ab53ffbb7c87e8241d3a7320791",
+      "bytes": 640
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/owner-fix-evidence.json",
+      "sha256": "0381d25a1de18036bece85c691395a67eead08373dabc8dc85a56852f17bbfe9",
+      "bytes": 7302
+    },
+    {
+      "path": "build/I04-evidence/I04-c4-encoding-review-5cbe39c/review.json",
+      "sha256": "46e192e0496368cf0e2fe1d174ff6fd700be024e83957dbd0549e78a334f897b",
+      "bytes": 3705
+    },
+    {
+      "path": "build/I04-evidence/I04-c4-encoding-review-223f978/review.json",
+      "sha256": "156723a216f3efd2e25b4f1b3941e5a38605efce77245ac8a050b1a505257ace",
+      "bytes": 6710
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/original-windows-attempt1-job.log",
+      "sha256": "e25ac2a7f019fb3beddc5152e34bcff1a2391630dcc0535d992697618c7c730a",
+      "bytes": 165361
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/PC-launcher.c",
+      "sha256": "5f22f9a9be91601e323d8ffc5e74279af4676acbc01daeeba0b92457f67590a1",
+      "bytes": 67152
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/PCbuild-venvlauncher.vcxproj",
+      "sha256": "e1960f17be3d7674286e57f0220dafdd7fc1753ecdadc2ab0c4a67edd4989d4a",
+      "bytes": 4670
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/targeted-2.log",
+      "sha256": "8c02e76eeaadd4a5b53037530000aea7821db3ee45333660667ce2c19c2dab92",
+      "bytes": 99
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/full-check.log",
+      "sha256": "6cf62b5b2ab4d7c47b0777a3e688b1293e40001a175faca1d37ba6353d6bcfaa",
+      "bytes": 335582
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/clean-full-check.log",
+      "sha256": "99713155a4d79be4cc716d69e9a8c8fb30366ccae8bbe686e7afba9aaa4e8ca0",
+      "bytes": 23834
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/mac-final-verify.log",
+      "sha256": "29f67ca8f4c79840e832a97bb1d05d50355ef6d6bf686c32855b420b0027ea7f",
+      "bytes": 331
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/mac-final-package/runtime.stdout",
+      "sha256": "1c52bbf4d4f62ccfa845f907a6153e975edb01a29fef2bc11d79d6938d03413a",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/linux-source-final.log",
+      "sha256": "5305ec468d168f18a54f6fe5530d0996107deef937714703cfc4d7c1d74faf06",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/linux-final-package/runtime.stdout",
+      "sha256": "f9cfa861d1d8e321a3a6602157cc3abf13312740d5ae1e4b1934a321dcd26f85",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-author/clean-full-check-2.log",
+      "sha256": "5db356160148388139120776fa4bc7b8e41fabc868e7f47411296943eadcb3ea",
+      "bytes": 5098
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-macos-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-macos-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-macos-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-macos-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-macos-probe/runtime.stdout",
+      "sha256": "c898db7dee2496688279354b674a1019387a3ae0b7f7a9b05ba9c4d0fca2868f",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-check.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-check.log",
+      "sha256": "fdaefde964452328c653f02575d4c4ab883316c395c8ee92fc7694125b208768",
+      "bytes": 8452
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-package-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-package-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-package-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-package-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-package-probe/runtime.stdout",
+      "sha256": "92faf4370d60d2919691529f806fdf7e3bf02b23a8ce9e8eaa6e493a5a83a7cc",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-package-probe.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/current-package-probe.log",
+      "sha256": "3e97c3159738fd5760c5d040baa3eebd4590129dca9b5ea339d977797a07c1c7",
+      "bytes": 445
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-check.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-check.log",
+      "sha256": "d8ce5d628478856bf5ee54b905436f34bc7d0f5c2f94442b7eac7c9fa7be8a08",
+      "bytes": 8631
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-package-probe/common-examples.json",
+      "sha256": "465b1dbd3503baa0dccd4480fc83c43b7679828cc45488fe6c29f20848f3265f",
+      "bytes": 192
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-package-probe/resources.json",
+      "sha256": "89751756982f76ef1871c62fc4ab4107f656cc1a2b2afcb37bd80658a4d2f1eb",
+      "bytes": 1184
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-package-probe/runtime.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-package-probe/runtime.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-package-probe/runtime.stdout",
+      "sha256": "40055f38b0b9d7cf7c73f7829febd6995eceff1ed979795e298c5cc6009bb862",
+      "bytes": 100
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-package-probe.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-final-linux/sealed-package-probe.log",
+      "sha256": "2acdf8d42a228e347d19ae12b6c5089190f4a3fd0e574e91079145e743946af8",
+      "bytes": 265
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-adaptation-review/result.log",
+      "sha256": "daff90bc58f8ebeeb58feab8832d6356cc2c5e4658cc33f393f49f474c97c90d",
+      "bytes": 963
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-adaptation-review/review.json",
+      "sha256": "104ce790ca4857fa58e8c1e5967fbab19668d4ff5392c0b332b2d6d7f484f442",
+      "bytes": 2236
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-adaptation-final-review/result.log",
+      "sha256": "1ac4a68d24c83f545119c946cbd84d7fdda5ced1db17491e7cf05322f1419077",
+      "bytes": 1146
+    },
+    {
+      "path": "build/I04-evidence/c4-owner-adaptation-final-review/review.json",
+      "sha256": "fc5957441544af755e3a32f0ce8430ea75146942a261a39dab9a50d015e475d3",
+      "bytes": 2399
+    },
+    {
+      "path": "build/I04-evidence/I04-c4-owner-review-06e5e51/additional-probes.json",
+      "sha256": "9231f10f7454bf263433c65d7f35d64ef5e09fffbd7b46ceed40e5bb480de5d8",
+      "bytes": 1204
+    },
+    {
+      "path": "build/I04-evidence/I04-c4-owner-review-06e5e51/review.json",
+      "sha256": "4faaec5f73ed294cc58f3ff178b3f5ea709fb7fcf93f805a59b929f8a5a25bd3",
+      "bytes": 10890
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-runtime-inputs.json",
+      "sha256": "41c9588c1bc8e6dfdfc848e5ef45b9dc0bfe7db633fdf9a54b5058d701ea37e8",
+      "bytes": 18652
+    },
+    {
+      "path": "build/I04-evidence/c4-final-runtime-inputs.json",
+      "sha256": "f9c85f76cdae5f2f60f4ad2f0bd85e1b4c71dff5ba5fa99edbf6d397ecea2c2b",
+      "bytes": 18636
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-check.log",
+      "sha256": "58993b4309958eab1301367864ccc4badf124fbe2d678339b9daab45705160ac",
+      "bytes": 5044
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-check.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-macos-probe.log",
+      "sha256": "deabce6c207b3c8a4cf361f5657b311802a71bb71c9ab08fe0951beab84b033e",
+      "bytes": 365
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-macos-probe.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "build/I04-evidence/c4-sealed-container-identity.json",
+      "sha256": "9ecdac88463b3ed696befbca594a260d249f20beb85dc215b933fcff780a38cd",
+      "bytes": 13854
+    }
+  ],
+  "containerRuntimeIdentity": {
+    "path": "build/I04-evidence/c4-sealed-container-identity.json",
+    "sha256": "9ecdac88463b3ed696befbca594a260d249f20beb85dc215b933fcff780a38cd",
+    "bytes": 13854
+  },
+  "productionAndDesktopRunCheckpoint": {
+    "source": "f504b304266bfa04647790bc37a77c7a9d03cb05",
+    "runtimeInputs": {
+      "path": "build/I04-evidence/c4-runtime-inputs.json",
+      "sha256": "2457f5de92c55c533a6fbea310286011c9cda0a90f4de7c01bc7a1f26d3b21e6",
+      "bytes": 18607
+    },
+    "sourceArchive": {
+      "path": "build/I04-evidence/c4-runtime-source.tar",
+      "sha256": "ca664d7db64f385bc2b24bf7db41df014ab3443f7a7c7893f1a030e46969f746",
+      "bytes": 12564480
+    },
+    "checks": [
+      {
+        "platform": "macOS arm64; no GUI",
+        "command": "npm run check",
+        "exit": 0,
+        "typescriptPassed": 630,
+        "pythonPassed": 1052,
+        "pythonSkipped": 0,
+        "log": "build/I04-evidence/c4-sealed-check.log"
+      },
+      {
+        "platform": "isolated Linux arm64",
+        "command": "npm run check",
+        "exit": 0,
+        "typescriptPassed": 630,
+        "pythonPassed": 1049,
+        "pythonSkipped": 3,
+        "skipReason": "Darwin-only RSS/exit/parent-sampler probes; covered on actual Darwin above",
+        "log": "build/I04-evidence/c4-final-linux/sealed-check.log"
+      }
+    ],
+    "packageRuntimeCases": 13,
+    "unchangedAfterThisRun": "All app/engine/build/config/dependency/resource inputs; only the three explicitly named host test/verification files changed. Source/package GUI and144 matrices remain valid for identical production/Store inputs.",
+    "laterChangedHostHarnessFiles": [
+      "packages/engine/tests/test_worker_owner_bootstrap.py",
+      "packages/engine/tests/test_worker_parent.py",
+      "scripts/verify-i04-package.py"
+    ],
+    "containerRuntimeIdentity": {
+      "path": "build/I04-evidence/c4-container-runtime-identity.json",
+      "sha256": "68bc6989d0f000159cea75e1157ebeef00ecf1d8c85f28729351088c64d33bb0",
+      "bytes": 13969
+    }
+  },
+  "packageRuntimeCoverage": "Original complete resident runtime13 plus actual coordinator/Store launching the frozen worker and killing exact owner within unchanged3s; three real missing/dead/mismatched-owner bootstrap cases leave stdin open without a request and require73 with empty output.",
+  "priorHarnessBoundary": "The13/16-case checkpoints and pre-seal checks are retained separately and are superseded for current host test coverage. Final sealed9eb0b6e source was unchanged during final full checks and17-case verification; no earlier count is relabeled as17."
+}

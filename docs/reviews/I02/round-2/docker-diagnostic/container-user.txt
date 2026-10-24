@@ -1,0 +1,146 @@
+Using CPython 3.12.13
+Creating virtual environment at: .venv
+   Building ontolearn-engine @ file:///work/packages/engine
+Downloading pygments (1.2MiB)
+Downloading ruff (9.5MiB)
+ Downloaded pygments
+ Downloaded ruff
+      Built ontolearn-engine @ file:///work/packages/engine
+Prepared 13 packages in 3.66s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 13 packages in 1.47s
+ + altgraph==0.17.5
+ + iniconfig==2.3.1
+ + ontolearn-engine==0.1.0 (from file:///work/packages/engine)
+ + packaging==26.3
+ + pluggy==1.7.0
+ + pygments==2.21.0
+ + pyinstaller==6.22.3
+ + pyinstaller-hooks-contrib==2026.8
+ + pyparsing==3.3.3
+ + pytest==9.1.1
+ + rdflib==7.6.0
+ + ruff==0.17.1
+ + setuptools==84.0.0
+
+> ontolearn-studio@0.1.0 test:e2e
+> install-electron && playwright test
+
+
+Running 2 tests using 1 worker
+
+[I02] launch
+  pw:browser <launching> /work/node_modules/electron/dist/electron -r /work/node_modules/playwright-core/lib/server/electron/loader.js --no-sandbox --inspect=0 --remote-debugging-port=0 /work/apps/desktop +0ms
+  pw:browser <launched> pid=111 +4ms
+  pw:browser [pid=111][err] [111:1020/004924.362945:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory +70ms
+  pw:browser [pid=111][err] [111:1020/004924.363396:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +1ms
+  pw:browser [pid=111][err] Debugger listening on ws://127.0.0.1:39411/a411cb8b-8adf-4735-9c07-85f73d32053d +13ms
+  pw:browser [pid=111][err] For help, see: https://nodejs.org/learn/getting-started/debugging +1ms
+  pw:browser <ws connecting> ws://127.0.0.1:39411/a411cb8b-8adf-4735-9c07-85f73d32053d +0ms
+  pw:browser <ws connected> ws://127.0.0.1:39411/a411cb8b-8adf-4735-9c07-85f73d32053d +3ms
+  pw:browser [pid=111][err] Debugger attached. +0ms
+  pw:browser [pid=111][err] [111:1020/004924.422171:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory +41ms
+  pw:browser [pid=111][err] [111:1020/004924.422208:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory +0ms
+  pw:browser [pid=111][err]  +3ms
+  pw:browser [pid=111][err] DevTools listening on ws://127.0.0.1:40429/devtools/browser/1d62f49a-e2a3-448f-b572-808a4bb4c1f9 +0ms
+  pw:browser <ws connecting> ws://127.0.0.1:40429/devtools/browser/1d62f49a-e2a3-448f-b572-808a4bb4c1f9 +0ms
+  pw:browser [pid=111][err] [111:1020/004924.426945:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +2ms
+  pw:browser [pid=111][err] [111:1020/004924.427036:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +0ms
+  pw:browser [pid=111][err] [111:1020/004924.436157:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +9ms
+  pw:browser <ws connected> ws://127.0.0.1:40429/devtools/browser/1d62f49a-e2a3-448f-b572-808a4bb4c1f9 +2ms
+  pw:browser [pid=111][err] [111:1020/004924.480618:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +43ms
+[I02] launched
+[I02] first-window
+[I02] normal-ui
+[I02] csp-probe
+  pw:browser [pid=111][err] (node:111) electron: Failed to load URL: http://127.0.0.1:43155/frame with error: ERR_BLOCKED_BY_CSP +366ms
+  pw:browser [pid=111][err] (Use `electron --trace-warnings ...` to show where the warning was created) +0ms
+[I02] foreign-window-create
+  pw:browser [pid=111][err] [111:1020/004925.322538:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +476ms
+[I02] foreign-window-event
+[I02] crash-reopen
+  pw:browser [pid=111][err] [189:1020/004925.399448:FATAL:content/child/child_thread_impl.cc:380] Crashing because hung +76ms
+[I02] reopened-window-event
+  pw:browser [pid=111][err] [111:1020/004925.406387:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +7ms
+[I02] reopened-window-ui
+[I02] native-recovery
+[I02] cleanup-enter
+  pw:browser <ws disconnected> ws://127.0.0.1:40429/devtools/browser/1d62f49a-e2a3-448f-b572-808a4bb4c1f9 code=1006 reason= +281ms
+  pw:browser <ws disconnected> ws://127.0.0.1:39411/a411cb8b-8adf-4735-9c07-85f73d32053d code=1006 reason= +4ms
+  pw:browser [pid=111] <process did exit: exitCode=null, signal=SIGKILL> +14ms
+  pw:browser [pid=111] starting temporary directories cleanup +0ms
+  pw:browser [pid=111] finished temporary directories cleanup +1ms
+  ✘  1 tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery (1.4s)
+  pw:browser <launching> /work/node_modules/electron/dist/electron -r /work/node_modules/playwright-core/lib/server/electron/loader.js --no-sandbox --inspect=0 --remote-debugging-port=0 /work/apps/desktop +0ms
+  pw:browser <launched> pid=263 +5ms
+  pw:browser [pid=263][err] [263:1020/004925.985986:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory +72ms
+  pw:browser [pid=263][err] [263:1020/004925.986420:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +0ms
+  pw:browser [pid=263][err] Debugger listening on ws://127.0.0.1:34417/15bbe917-16a6-462f-b3a3-3742d107290a +16ms
+  pw:browser [pid=263][err] For help, see: https://nodejs.org/learn/getting-started/debugging +0ms
+  pw:browser <ws connecting> ws://127.0.0.1:34417/15bbe917-16a6-462f-b3a3-3742d107290a +1ms
+  pw:browser <ws connected> ws://127.0.0.1:34417/15bbe917-16a6-462f-b3a3-3742d107290a +3ms
+  pw:browser [pid=263][err] Debugger attached. +1ms
+  pw:browser [pid=263][err] [263:1020/004926.045617:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory +38ms
+  pw:browser [pid=263][err] [263:1020/004926.045663:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory +0ms
+  pw:browser [pid=263][err]  +2ms
+  pw:browser [pid=263][err] DevTools listening on ws://127.0.0.1:42989/devtools/browser/5566e50b-1572-41cf-822b-5e4b4338af37 +0ms
+  pw:browser <ws connecting> ws://127.0.0.1:42989/devtools/browser/5566e50b-1572-41cf-822b-5e4b4338af37 +1ms
+  pw:browser [pid=263][err] [263:1020/004926.049931:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +2ms
+  pw:browser [pid=263][err] [263:1020/004926.050019:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +0ms
+  pw:browser [pid=263][err] [263:1020/004926.055232:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +5ms
+  pw:browser <ws connected> ws://127.0.0.1:42989/devtools/browser/5566e50b-1572-41cf-822b-5e4b4338af37 +2ms
+  pw:browser [pid=263][err] [263:1020/004926.098379:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +42ms
+  pw:browser [pid=263][err] [263:1020/004926.322866:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +223ms
+  pw:browser [pid=263][err] [263:1020/004926.322915:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +1ms
+  pw:browser [pid=263][err] [263:1020/004926.322949:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +0ms
+  pw:browser [pid=263][err] [263:1020/004926.322971:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +0ms
+  pw:browser [pid=263][err] [263:1020/004926.541362:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +218ms
+  pw:browser [pid=263][err] [263:1020/004926.541473:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +0ms
+  pw:browser [pid=263][err] [263:1020/004926.541502:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix") +0ms
+  pw:browser [pid=263][err] [263:1020/004926.541574:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:  +0ms
+  pw:browser <ws disconnecting> ws://127.0.0.1:34417/15bbe917-16a6-462f-b3a3-3742d107290a +27ms
+  pw:browser [pid=263][err] Debugger ending on ws://127.0.0.1:34417/15bbe917-16a6-462f-b3a3-3742d107290a +1ms
+  pw:browser [pid=263][err] For help, see: https://nodejs.org/learn/getting-started/debugging +0ms
+  pw:browser <ws disconnected> ws://127.0.0.1:34417/15bbe917-16a6-462f-b3a3-3742d107290a code=1005 reason= +0ms
+  pw:browser <ws disconnected> ws://127.0.0.1:42989/devtools/browser/5566e50b-1572-41cf-822b-5e4b4338af37 code=1006 reason= +23ms
+  pw:browser [pid=263] <process did exit: exitCode=0, signal=null> +5ms
+  pw:browser [pid=263] starting temporary directories cleanup +0ms
+  ✓  2 tests/e2e/desktop.spec.ts:4:5 › desktop calls real engine, keeps isolation and fits minimum window (692ms)
+  pw:browser [pid=263] finished temporary directories cleanup +4ms
+
+
+  1) tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ─
+
+    Error: native closed before inspector: {"executable":"/work/node_modules/electron/dist/electron","args":["--user-data-dir=/tmp/ontolearn-i02-pMGhar","/work/apps/desktop"],"exitCode":null,"stderr":"[246:1020/004925.640727:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /work/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.\n[248:0100/000000.678966:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)\n","stdout":""}
+
+       at native-driver.ts:53
+
+      51 |         child.on('error', reject)
+      52 |         child.on('close', () =>
+    > 53 |           reject(new Error(`native closed before inspector: ${diagnostics()}`)),
+         |                  ^
+      54 |         )
+      55 |       }),
+      56 |     )
+        at ChildProcess.<anonymous> (/work/tests/e2e/native-driver.ts:53:18)
+
+    Error Context: test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/csp-lifecycle-C1-real-CSP--1e87a-ality-and-renderer-recovery/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/csp-lifecycle.spec.ts:9:5 › C1 real CSP, normal functionality and renderer recovery ──
+  1 passed (2.6s)
+npm notice
+npm notice New major version of npm available! 11.19.1 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

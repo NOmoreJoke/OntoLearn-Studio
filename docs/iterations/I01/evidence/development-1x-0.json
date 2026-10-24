@@ -1,0 +1,65 @@
+{
+  "scale": 1,
+  "trial": 0,
+  "seed": 20261019,
+  "triples": 18,
+  "inputSha256": "b0bcc466774f37d4f6a520900b8e7caa5f4fb7f827bbcf8c5ad0e9d12946ea0c",
+  "querySha256": "7879b25f2833b8e485b53d3f6664220836ada716ec29ae7de82f907eae014ab5",
+  "result": ["urn:case:0:alarm/A01"],
+  "expected": ["urn:case:0:alarm/A01"],
+  "snapshotId": "71930b09f2647f134670536bb2d4e24272c574d8c248d3795cf3ccf0cda2ba52",
+  "measurement": {
+    "snapshotLoad": {
+      "elapsedNs": 257125,
+      "pythonBytesBefore": 320,
+      "pythonBytesAfter": 10876,
+      "pythonBytesPeak": 41242,
+      "processHighWaterRssBytes": 34258944
+    },
+    "rdflibBuild": {
+      "elapsedNs": 6499375,
+      "pythonBytesBefore": 11469,
+      "pythonBytesAfter": 152654,
+      "pythonBytesPeak": 161911,
+      "processHighWaterRssBytes": 34471936
+    },
+    "fixedSelect": {
+      "elapsedNs": 550745292,
+      "pythonBytesBefore": 152718,
+      "pythonBytesAfter": 8447307,
+      "pythonBytesPeak": 8454651,
+      "processHighWaterRssBytes": 48906240
+    },
+    "snapshotLoadWarm": {
+      "elapsedNs": 341333,
+      "pythonBytesBefore": 8447930,
+      "pythonBytesAfter": 8458119,
+      "pythonBytesPeak": 8488485,
+      "processHighWaterRssBytes": 48939008
+    },
+    "rdflibBuildWarm": {
+      "elapsedNs": 7879708,
+      "pythonBytesBefore": 8448111,
+      "pythonBytesAfter": 8365251,
+      "pythonBytesPeak": 8545694,
+      "processHighWaterRssBytes": 49086464
+    },
+    "fixedSelectWarm": {
+      "elapsedNs": 9324000,
+      "pythonBytesBefore": 8365315,
+      "pythonBytesAfter": 8408836,
+      "pythonBytesPeak": 8506499,
+      "processHighWaterRssBytes": 49102848
+    }
+  },
+  "device": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "python": "3.12.12",
+  "sqlite": "3.50.4",
+  "rdflib": "7.6.0",
+  "condition": "store reopened; OS cache uncontrolled; Warm phases repeat in process",
+  "method": "perf_counter_ns; tracemalloc phase peaks; process lifetime ru_maxrss",
+  "runtime": "development",
+  "processElapsedNs": 667949042,
+  "stderr": ""
+}

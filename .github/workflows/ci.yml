@@ -1,0 +1,136 @@
+name: CI
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: '0.11.12'
+          enable-cache: true
+      - run: npm ci
+      - run: uv sync --frozen
+      - name: I04 complete matrix per-cell evidence
+        run: >-
+          uv run --frozen python -m pytest -p scripts.i04_matrix_evidence
+          --i04-matrix-evidence build/i04-matrix-ci
+          --i04-matrix-source-revision HEAD
+          packages/engine/tests/test_job_store.py::test_atomic_job_fault_reconcile_matrix
+          packages/engine/tests/test_i04_round_faults.py::test_round_job_progress_atomic_fault_matrix_fences_and_preserves_previous_round
+          -q
+      - run: npm run check
+      - run: npm run verify:sources
+      - name: Prepare Linux Chromium sandbox
+        run: |
+          ./node_modules/.bin/install-electron
+          sudo chown root:root node_modules/electron/dist/chrome-sandbox
+          sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
+          stat -c '%U:%G %a %n' node_modules/electron/dist/chrome-sandbox
+      - name: Install isolated native display controls
+        run: sudo apt-get update && sudo apt-get install -y openbox xdotool
+      - run: xvfb-run -a sh -c 'openbox > /tmp/i04-openbox.log 2>&1 & npm run test:e2e'
+        env:
+          DEBUG: pw:browser
+          I02_EVIDENCE: test-results/i02-linux-evidence.json
+      - name: I04 actual native recovery and persistent jobs
+        run: |
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-native-ci
+          xvfb-run -a sh -c 'openbox > /tmp/i04-native-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" --output=test-results/i04-native'
+        env:
+          I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-native-ci/fixture.json
+          I04_NATIVE_ISOLATED: '1'
+      - name: I04 reload and safe errors through the actual preload
+        run: |
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-reload-ci --background-rounds 12
+          xvfb-run -a sh -c 'openbox > /tmp/i04-reload-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "reload re-queries" --output=test-results/i04-reload'
+        env:
+          I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-reload-ci/fixture.json
+      - run: npm run package:dir
+      - name: I04 coordinator exit reconciles the active renderer
+        run: |
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-disconnect-ci
+          xvfb-run -a sh -c 'openbox > /tmp/i04-disconnect-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "coordinator exit" --output=test-results/i04-disconnect'
+        env:
+          I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-disconnect-ci/fixture.json
+      - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
+      - name: I04 packaged application recovery
+        shell: bash
+        run: |
+          mapfile -t sandboxes < <(find release -type f -name chrome-sandbox)
+          mapfile -t executables < <(find release -type f -name '@ontolearndesktop')
+          test "${#sandboxes[@]}" -eq 1
+          test "${#executables[@]}" -eq 1
+          sudo chown root:root "${sandboxes[0]}"
+          sudo chmod 4755 "${sandboxes[0]}"
+          export ONTOLEARN_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/${executables[0]}"
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-disconnect-ci
+          I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-disconnect-ci/fixture.json" xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-disconnect-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "coordinator exit" --output=test-results/i04-packaged-disconnect'
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-reload-ci --background-rounds 12
+          I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-reload-ci/fixture.json" xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-reload-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "reload re-queries" --output=test-results/i04-packaged-reload'
+          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-native-ci
+          I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-native-ci/fixture.json" I04_NATIVE_ISOLATED=1 xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-native-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" --output=test-results/i04-packaged-native'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: i04-package-linux
+          path: |
+            build/i04-package-ci/
+            build/i04-matrix-ci/summary.json
+            build/i04-matrix-ci/cases.jsonl
+            test-results/i04-*/
+          retention-days: 7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: failure()
+        with:
+          name: failure-traces-linux
+          path: test-results/
+          retention-days: 7
+  desktop:
+    name: Desktop (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: '0.11.12'
+          enable-cache: true
+      - run: npm ci
+      - run: uv sync --frozen
+      - run: npm run engine:check
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run test:e2e
+      - run: npm run package:dir
+      - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: i04-package-${{ matrix.os }}
+          path: build/i04-package-ci/
+          retention-days: 7

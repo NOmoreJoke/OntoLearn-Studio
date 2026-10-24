@@ -1,0 +1,29 @@
+请作为独立对抗性审查者，审查本次功能迭代。
+
+项目绝对路径：/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio
+迭代编号及功能：I02 / C1 显式 CSP 与窗口生命周期，Round 2。
+任务标识：I02-R2-ZCode-GLM53-20261020-0900；指定模型 GLM-5.3，思考程度 最高（以本次任务创建时应用UI实际核验为来源）。
+需求和验收依据：AGENTS.md；docs/iterations/I01/inputs/goal-objective.md 第四至六节完整流程；同目录 scope.md 的 I02/C1；m0-review-and-update-plan-2026-10-19.md 的 C1；docs/prd/PRD-本体学习与落地Agent工作台.md 8.7/10.3/10.4/12.5；docs/iterations/I02/design.md、acceptance.md、commands.md 及 evidence/inputs。
+审查范围：1b6df7a220fc9a67d7046133a340085f03f0a96c → 76b9d18bd87b9090551eb0dc39dfd6aa061eea79（完整I02范围，不仅最后一笔修订）。
+分支：feature/I02-csp-window-lifecycle。
+报告输出路径：docs/reviews/I02/round-2/zcode-glm53.md
+
+请直接检查实际代码和必要上下文，主动寻找需求遗漏、错误假设、反例、边界条件、异常路径和回归风险。安全、数据一致性或性能问题应根据本次改动的实际影响检查，不作无依据推断。
+
+不得修改实现代码，不得提交、推送或切换分支。可以运行必要验证，并仅写入指定审查报告。实现、测试、配置、依赖、验收已经冻结；不得运行I02_HMR=1写源探针。npm构建/运行验证生成正常临时产物允许，但不要向仓库根提取asar；临时验证产物放/tmp。不要写全局或跨会话记忆。既有64项未提交文件必须保持，清单docs/iterations/I02/preexisting-files.json；16项冻结清单docs/reviews/I02/round-2/frozen-files.json，核验hash。
+
+历史与本轮上下文：Round1两份原始报告及逐项处理在docs/reviews/I02/round-1/，请复核所有历史意见，包括M-01/M-02/M-03与ZCode P3/观察；不以历史通过为本轮通过依据。Round1受审2cc03da，已发布流程证据caa0847，PR#3未合并。实际CI曾Windows native启动失败、Linux先磁盘耗尽再重跑90s超时，原始日志在round-2。新候选修订native真实exe读取/退出诊断、Linux官方sandbox helper准备、C1显式Chromium sandbox、真实hang故障注入与焦点前提，产品apps/协议/依赖与Round1未改。详细失败、诊断、边界和本机验证见round-2/preparation.md、candidate-validation.json及三份*matrix*direct-loop.json。Docker只是非等价Linux诊断，不是远端CI通过；GitHub90s与旧本机timeout根因未证实，不把候选方案当已证明根因。
+
+原自动化整体stub showMessageBox，仅证明请求与选择分支；不替换API的真实packaged sheet/按钮/恢复另见docs/reviews/I02/native-dialog-probe/README.md Run2及原始AX/截图/事件/driver日志，对应相同产品源码。区分这些证据，不以控制台无错或meta存在当CSP enforce通过。M-01 same-build与跨build不可复现说明见package-manifest-semantics.json；M-03非法手工开发origin与catch诊断等延期事实仍须独立判断，不自动消失。
+
+报告必须包含：
+- 评审任务、模型及思考设置的来源记录；
+- 项目路径、分支、base SHA、head SHA；
+- 已检查范围、验证命令与实际结果、未验证事项；
+- 每项问题的编号、严重程度、文件位置、触发条件、影响、证据及修复建议；
+- 复审时，对历史问题逐项给出关闭或仍未关闭的判断；
+- 最终明确结论：通过 / 不通过 / 无法完成验证。
+
+所有问题必须有处理结论。阻断问题尚未关闭，或关键验收仍无法验证时，不得出具通过。非阻断建议可以明确说明允许延期。
+
+请独立判断，不以其他模型或开发者的通过意见作为依据。未发现问题时也应说明检查范围和证据边界，不必为了对抗而编造问题。本轮不要打开、读取或引用另一模型的round-2报告；原Round1历史报告允许读取。本轮任务只读，运行验证会错开以避免共享out/端口/窗口焦点干扰，仍须完整核查同一base/head及全部原验收。

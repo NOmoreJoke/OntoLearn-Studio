@@ -1,0 +1,93 @@
+// Generate systematic mutations of the shared fixture corpus for TS/Python differential testing.
+import { readFileSync, writeFileSync } from 'node:fs'
+
+const ROOT = '/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts'
+const fixtures = JSON.parse(readFileSync(`${ROOT}/packages/contracts/v2/fixtures.json`, 'utf8'))
+const schema = JSON.parse(readFileSync(`${ROOT}/packages/contracts/v2/schema.json`, 'utf8'))
+
+const defs = schema.$defs
+const out = []
+const seen = new Set()
+
+function push(id, schemaName, value) {
+  const key = `${schemaName}::${id}`
+  if (seen.has(key)) return
+  seen.add(key)
+  out.push({ id, schema: schemaName, value })
+}
+
+// 1. every fixture case verbatim
+for (const c of fixtures.cases) push(`fixture:${c.name}`, c.schema, c.value)
+
+// 2. systematic mutations of each fixture value
+function mutate(id, schemaName, value, depth) {
+  if (value === null || typeof value !== 'object') return
+  if (Array.isArray(value)) {
+    if (value.length) {
+      const dup = [...value, value[0]]
+      push(`${id}|dup-last`, schemaName, dup)
+      const rev = [...value].reverse()
+      push(`${id}|reversed`, schemaName, rev)
+      const extra = [...value, '__extra__']
+      push(`${id}|extra-elem`, schemaName, extra)
+      if (depth < 2) mutate(`${id}|first`, schemaName, value[0], depth + 1)
+    }
+    return
+  }
+  const keys = Object.keys(value)
+  push(`${id}|unknown-key`, schemaName, { ...value, __unknownKey__: 'x' })
+  for (const k of keys) {
+    const v = value[k]
+    push(`${id}|drop:${k}`, schemaName, { ...value, [k]: undefined, ...(v === undefined ? {} : {}) })
+    const clone = JSON.parse(JSON.stringify(value))
+    delete clone[k]
+    push(`${id}|drop:${k}`, schemaName, clone)
+    push(`${id}|null:${k}`, schemaName, { ...clone, [k]: null })
+    if (typeof v === 'string') {
+      push(`${id}|num:${k}`, schemaName, { ...clone, [k]: 1 })
+      push(`${id}|empty:${k}`, schemaName, { ...clone, [k]: '' })
+      push(`${id}|enum:${k}`, schemaName, { ...clone, [k]: '__not_in_enum__' })
+      push(`${id}|surrogate:${k}`, schemaName, { ...clone, [k]: v + '\ud800' })
+    } else if (typeof v === 'number') {
+      push(`${id}|str:${k}`, schemaName, { ...clone, [k]: String(v) })
+      push(`${id}|neg:${k}`, schemaName, { ...clone, [k]: v - 1 })
+      push(`${id}|float:${k}`, schemaName, { ...clone, [k]: v + 0.5 })
+      push(`${id}|huge:${k}`, schemaName, { ...clone, [k]: 1e308 })
+      push(`${id}|bool:${k}`, schemaName, { ...clone, [k]: true })
+    } else if (typeof v === 'boolean') {
+      push(`${id}|flip:${k}`, schemaName, { ...clone, [k]: !v })
+    } else if (v && typeof v === 'object' && depth < 2) {
+      mutate(`${id}|nested:${k}`, schemaName, v, depth + 1)
+      push(`${id}|nested-null:${k}`, schemaName, { ...clone, [k]: null })
+      push(`${id}|nested-arr:${k}`, schemaName, { ...clone, [k]: [v] })
+      push(`${id}|nested-str:${k}`, schemaName, { ...clone, [k]: 'x' })
+    }
+  }
+}
+
+for (const c of fixtures.cases) mutate(`case:${c.name}`, c.schema, c.value, 0)
+
+// 3. direct schema-level probes of the error catalog and envelope shapes
+const errDefs = Object.keys(defs).filter((k) => k.startsWith('params_') || k === 'error')
+for (const name of errDefs) {
+  push(`probe:empty:${name}`, name, {})
+  push(`probe:null:${name}`, name, null)
+  push(`probe:str:${name}`, name, 'x')
+  push(`probe:arr:${name}`, name, [])
+}
+
+// 4. every $defs name against a few hostile shapes
+for (const name of Object.keys(defs)) {
+  push(`probe:empty:${name}`, name, {})
+  push(`probe:null:${name}`, name, null)
+  push(`probe:num:${name}`, name, 7)
+  push(`probe:arr:${name}`, name, [1, 2])
+  push(`probe:str:${name}`, name, 'x')
+  push(`probe:bool:${name}`, name, true)
+}
+
+writeFileSync(
+  '/tmp/i03-r2-minimax/probe/cases.json',
+  JSON.stringify({ generatedFrom: 'fixtures.json + schema probes', count: out.length, cases: out }),
+)
+console.log('generated', out.length, 'cases')

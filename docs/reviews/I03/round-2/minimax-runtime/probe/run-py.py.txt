@@ -1,0 +1,59 @@
+"""Python side: run the real repository validator over the same generated cases."""
+import importlib.util
+import json
+from pathlib import Path
+
+ROOT = Path("/Users/kyle/Documents/工作/知爻/本体/.worktrees/I03-protocol-contracts")
+spec = importlib.util.spec_from_file_location(
+    "contract_v2", ROOT / "packages/contracts/python/contract_v2.py"
+)
+contract = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(contract)
+
+fixtures = json.loads((ROOT / "packages/contracts/v2/fixtures.json").read_text(encoding="utf-8"))
+generated = json.loads(Path("/tmp/i03-r2-minimax/probe/cases.json").read_text(encoding="utf-8"))
+
+results = []
+
+
+def run(cid, fn):
+    try:
+        results.append({"id": cid, "result": fn()})
+    except Exception as error:  # noqa: BLE001 - probe records the exception class
+        results.append({"id": cid, "result": "THROW", "error": type(error).__name__})
+
+
+for case in generated["cases"]:
+    run(f"case:{case['id']}", lambda c=case: contract.validate(c["schema"], c["value"]))
+for case in fixtures["routing"]:
+    run(
+        f"routing:{case['name']}",
+        lambda c=case: contract.accepts_job_event(c["value"], c["binding"]),
+    )
+for case in fixtures["cursors"]:
+    run(
+        f"cursor:{case['name']}",
+        lambda c=case: contract.cursor_matches(c["record"], c["request"], c["nowMs"]),
+    )
+for case in fixtures["jobListCursors"]:
+    run(
+        f"jobListCursor:{case['name']}",
+        lambda c=case: contract.job_list_cursor_matches(
+            c["record"], c["request"], c["nowMs"]
+        ),
+    )
+for case in fixtures["responses"]:
+    run(
+        f"response:{case['name']}",
+        lambda c=case: contract.matches_response(c["request"], c["response"]),
+    )
+for case in fixtures["validationBindings"]:
+    run(
+        f"validationBinding:{case['name']}",
+        lambda c=case: contract.validation_projection_matches_resources(
+            c["projection"], c["resources"]
+        ),
+    )
+
+Path("/tmp/i03-r2-minimax/probe/results-py.json").write_text(json.dumps(results))
+print("py results", len(results), "throws", sum(1 for r in results if r["result"] == "THROW"))

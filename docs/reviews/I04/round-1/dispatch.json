@@ -1,0 +1,67 @@
+{
+  "tasks": [
+    {
+      "dispatchLabel": "I04-R1-ZCode-GLM53-C1-ce6fd54",
+      "nativeTaskId": null,
+      "model": "GLM-5.3",
+      "thinking": "highest",
+      "base": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+      "head": "ce6fd54fd51bb16a6eda5f45d2675506799710f5",
+      "prompt": "docs/reviews/I04/round-1/zcode-glm53-prompt.txt",
+      "promptSHA256": "05d943014da0897beae7a74d82ee612f7fe894636247ccc6f5a008a4dc709221",
+      "dispatchAX": "build/I04-evidence/zcode-dispatch-ax.txt",
+      "dispatchAXSHA256": "cfc9b356fa465ffceff7af596f97ac2135079fbd91b6725a967e7fc76a992b18",
+      "state": "Completed; full report actually read; final conclusion \u4e0d\u901a\u8fc7",
+      "report": "docs/reviews/I04/round-1/zcode-glm53.md",
+      "reportSHA256": "c81f46f2cf521d3826e847d66a5f4443fb99b4d16a2f13d12ebd8a09da17bd4b",
+      "terminalAX": "build/I04-evidence/zcode-r1-terminal-ax.txt",
+      "terminalAXSHA256": "a400b917aba3bc9531ee022fc4b97cc38ef0ef29d024fdb3228ed4cf28f75dbf",
+      "blockingFindings": [
+        "B1 P2 Darwin RSS child-exit classification race"
+      ],
+      "nonBlockingFindings": [
+        "Z1 P3 manifest documentation timing",
+        "Z2 P3 unreachable reconcile branch",
+        "Z3 P3 future non-paged response byte budget observation"
+      ]
+    },
+    {
+      "dispatchLabel": "I04-R1-MiniMax-M31Flash-C1-ce6fd54",
+      "nativeTaskId": null,
+      "model": "M3.1-Flash",
+      "thinking": "xhigh",
+      "base": "e45e6038b5e0f8f4adc69ed55aafccd75b3d3500",
+      "head": "ce6fd54fd51bb16a6eda5f45d2675506799710f5",
+      "prompt": "docs/reviews/I04/round-1/minimax-m31flash-prompt.txt",
+      "promptSHA256": "25fe8bc7af202662a65741bc2d00562532dd44ed307e33b2394accdcf8ab6a86",
+      "dispatchAX": "build/I04-evidence/minimax-dispatch-ax.txt",
+      "dispatchAXSHA256": "0f8426bbb0263f128d834200d2ed2574836247b46050a7836ec51bcdd7070e8b",
+      "state": "Completed; full 325-line report actually read; final conclusion \u4e0d\u901a\u8fc7",
+      "report": "docs/reviews/I04/round-1/minimax-m31flash.md",
+      "reportSHA256": "fb371ceb7bab46a406175f1464741815d17b099e15cde54c300d05f01100d749",
+      "terminalAX": "build/I04-evidence/minimax-r1-terminal-ax.txt",
+      "terminalAXSHA256": "7c9c498c16f79bc23e7d930404b5dc135c6ca598daa0bc687288f36703764e9f",
+      "blockingFindings": [
+        "P1-1 reconnect",
+        "P1-2 matrix assertions",
+        "P1-3 resource classification"
+      ],
+      "otherFindings": [
+        "P2-4 page limit",
+        "P2-5 real stage producer",
+        "P2-6 session identity budget",
+        "P3-7 provenance",
+        "P3-8 internal review lineage",
+        "P3-9 failure indexing",
+        "P3-10 status chronology",
+        "P3-11 matrix per-cell evidence",
+        "P3-12 X focus/dialog observations",
+        "P3-13 unreachable branch",
+        "P3-14 same-state durable version rationale",
+        "P3-15 advisory claim lookup"
+      ]
+    }
+  ],
+  "sharedBuildReservation": "Both C1 tasks completed; ZCode explicitly released. No C1 reviewer holds shared output reservation.",
+  "codeFrozen": true
+}
