@@ -24,7 +24,7 @@ from ontolearn_engine.project.transactions import (
     ProjectTransactions,
     state_diff,
 )
-from ontolearn_engine.rdf_snapshot import term
+from ontolearn_engine.rdf_snapshot import TermInputError, term
 from ontolearn_engine.storage import LAYERS, Conflict, canonical, digest
 
 MAX_DOCUMENT = 16 * 1024 * 1024
@@ -432,12 +432,17 @@ def preview_changeset(
         transactions = ProjectTransactions(store)
         conflict = None
         if request["intent"] == "change":
-            # Only a successfully parsed caller-new object with a definite N3
-            # mismatch is a known input rejection. Parser/Store/preview failures
-            # still escape to the original UNKNOWN/HOLD path; edits and undo keep
-            # their original fact identities and are not new manual tuples.
-            for fact in request["plan"].get("manual", []):
-                if term(fact["object"]).n3() != fact["object"]:
+            # Only direct caller objects get known syntax/policy rejection.
+            # Unknown parser/N3/Store/preview failures retain UNKNOWN/HOLD;
+            # edits validate values without deriving or replacing their IDs.
+            values = [fact["object"] for fact in request["plan"].get("manual", [])]
+            values.extend(request["plan"].get("edits", {}).values())
+            for value in values:
+                try:
+                    parsed = term(value)
+                except TermInputError:
+                    fail("INVALID_REQUEST", field="params")
+                if parsed.n3() != value:
                     fail("INVALID_REQUEST", field="params")
             try:
                 effective_plan = merge_plan(store.state(internal), request["plan"])

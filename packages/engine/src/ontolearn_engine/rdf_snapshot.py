@@ -7,6 +7,11 @@ Full PRD ontology semantics and reasoning remain later capability work.
 from urllib.parse import urlsplit
 
 from rdflib import XSD, Graph, Literal, URIRef
+from rdflib.plugins.parsers.notation3 import BadSyntax
+
+
+class TermInputError(ValueError):
+    """Definite RDF syntax/policy rejection; never an unknown parser failure."""
 
 
 def iri(value: str) -> URIRef:
@@ -15,14 +20,14 @@ def iri(value: str) -> URIRef:
         or not urlsplit(value).scheme
         or any(c.isspace() or c in '<>"{}|^`\\' for c in value)
     ):
-        raise ValueError("Absolute stable IRI required")
+        raise TermInputError("Absolute stable IRI required")
     return URIRef(value)
 
 
 def term(value: str) -> URIRef | Literal:
     if value.startswith("<"):
         if not value.endswith(">"):
-            raise ValueError("Malformed IRI object")
+            raise TermInputError("Malformed IRI object")
         iri(value[1:-1])
     subject, predicate = URIRef("urn:ontolearn:term"), URIRef("urn:ontolearn:value")
     try:
@@ -31,13 +36,15 @@ def term(value: str) -> URIRef | Literal:
             format="turtle",
             publicID="urn:ontolearn:s1:",
         )
-        if len(parsed) != 1 or len(list(parsed.objects(subject, predicate))) != 1:
-            raise ValueError("Object must contain exactly one RDF term")
-        result = next(parsed.objects(subject, predicate))
+    except BadSyntax as error:
+        raise TermInputError("Unsupported S1 RDF object") from error
     except Exception as error:
         raise ValueError("Unsupported S1 RDF object") from error
+    if len(parsed) != 1 or len(list(parsed.objects(subject, predicate))) != 1:
+        raise TermInputError("Object must contain exactly one RDF term")
+    result = next(parsed.objects(subject, predicate))
     if not isinstance(result, URIRef | Literal):
-        raise ValueError("Only stable IRI and literal objects supported in S1")
+        raise TermInputError("Only stable IRI and literal objects supported in S1")
     if isinstance(result, URIRef):
         iri(str(result))
     if isinstance(result, Literal):

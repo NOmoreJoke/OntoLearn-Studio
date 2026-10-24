@@ -8,9 +8,11 @@ import sys
 from copy import deepcopy
 
 import pytest
+from ontolearn_engine import rdf_snapshot
 from ontolearn_engine.project import domain_changesets
 from ontolearn_engine.project.transactions import ProjectTransactions
-from ontolearn_engine.storage import Store, digest
+from ontolearn_engine.storage import Store, canonical, digest
+from rdflib.exceptions import ParserError
 from test_mainline_dispatch import (
     confirmed_job,
     create,
@@ -201,7 +203,17 @@ def test_non_input_failures_keep_original_unknown_and_hold(owned, monkeypatch, f
     )
 
 
-def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path):
+@pytest.mark.parametrize(
+    ("family", "value"),
+    [
+        ("manual", ALIAS),
+        ("manual", "泵站A"),
+        ("edit", ALIAS),
+        ("edit", "泵站A"),
+        ("manual", "[]"),
+    ],
+)
+def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path, family, value):
     async def run():
         env = {**os.environ, "ONTOLEARN_DB_PATH": str(tmp_path / "stdio.sqlite")}
         env.pop("ONTOLEARN_TEST_MODE", None)
@@ -216,8 +228,7 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
             stderr=asyncio.subprocess.PIPE,
             env=env,
         )
-        session = None
-        wire = []
+        session, wire = None, []
 
         async def call(method, params):
             request = {
@@ -228,8 +239,8 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
                 "method": method,
                 "params": params,
             }
-            process.stdin.write((json.dumps(request, ensure_ascii=False) + "\n").encode())
             wire.append({"sent": request})
+            process.stdin.write((json.dumps(request, ensure_ascii=False) + "\n").encode())
             await process.stdin.drain()
             while True:
                 raw = await asyncio.wait_for(process.stdout.readline(), 10)
@@ -243,27 +254,11 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
 
         async def ok(method, params):
             response = await call(method, params)
-            assert response["ok"], response
+            assert response["ok"], canonical(response)
             return response["result"]
 
-        try:
-            hello = await ok("hello", {"supportedVersions": [3], "clientId": uid()})
-            session = hello["engineSessionId"]
-            created = await ok(
-                "project.create",
-                {
-                    "requestVersion": 1,
-                    "operationId": uid(),
-                    "name": "同宿主规范输入",
-                    "initialization": {"kind": "blank"},
-                },
-            )
-            project = created["projectId"]
-            read_params = {"projectId": project, "editor": "ontology"}
-            before = await ok("project.read", read_params)
-            assert_rejected(await call("changeset.preview", change(project, ALIAS)))
-            assert await ok("project.read", read_params) == before
-            ready = await ok("changeset.preview", change(project))
+        async def commit(request):
+            ready = await ok("changeset.preview", request)
             assert ready["status"] == "ready"
             cursor, parts = None, []
             while True:
@@ -283,7 +278,12 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
                     break
             document = json.loads(b"".join(base64.b64decode(p["dataBase64"]) for p in parts))
             assert digest(document) == ready["manifest"]["documentHash"]
-            assert document[0]["after"]["object"] == PLAIN
+            expected = (
+                next(iter(request["plan"]["edits"].values()))
+                if "edits" in request["plan"]
+                else request["plan"]["manual"][0]["object"]
+            )
+            assert document[0]["after"]["object"] == expected
             confirmation = await ok(
                 "changeset.confirm",
                 {
@@ -318,19 +318,281 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
             assert job["state"] == "succeeded", job
             marker = await ok("operation.get", {"projectId": project, "operationId": operation})
             assert marker["jobId"] == job["jobId"]
-            after = await ok("project.read", read_params)
-            assert after["domain"]["projectRevision"] == 1
-            assert after["domain"]["state"]["facts"][0]["object"] == PLAIN
+            return job, marker
+
+        try:
+            hello = await ok("hello", {"supportedVersions": [3], "clientId": uid()})
+            session = hello["engineSessionId"]
+            project = (
+                await ok(
+                    "project.create",
+                    {
+                        "requestVersion": 1,
+                        "operationId": uid(),
+                        "name": "同宿主规范输入",
+                        "initialization": {"kind": "blank"},
+                    },
+                )
+            )["projectId"]
+            base = 0
+            if family == "edit":
+                await commit(change(project))
+                base = 1
+            params = {"projectId": project, "editor": "ontology"}
+            before = await ok("project.read", params)
+            refused = await call("changeset.preview", input_change(project, family, value, base))
+            current = await call("project.get", {"projectId": project})
+            after_error = await call("project.read", params)
+            (tmp_path / "stdio-rejection-trace.json").write_text(
+                json.dumps(
+                    {
+                        "before": before,
+                        "refused": refused,
+                        "current": current,
+                        "afterError": after_error,
+                    },
+                    ensure_ascii=False,
+                )
+            )
+            assert_rejected(refused)
+            assert current["ok"] and current["result"]["projectRevision"] == base
+            assert after_error["ok"] and after_error["result"] == before
+            expected = PLAIN if family == "manual" else '"changed"'
+            await commit(input_change(project, family, expected, base))
+            after = await ok("project.read", params)
+            assert after["domain"]["projectRevision"] == base + 1
+            assert after["domain"]["state"]["facts"][0]["object"] == expected
+            assert after["domain"]["state"]["facts"][0]["id"] == fact(PLAIN)["id"]
             assert session == hello["engineSessionId"]
         finally:
             process.stdin.close()
+            forced = False
             try:
                 await asyncio.wait_for(process.wait(), 10)
             finally:
                 if process.returncode is None:
+                    forced = True
                     process.kill()
                     await process.wait()
                 (tmp_path / "stdio-wire.json").write_text(json.dumps(wire, ensure_ascii=False))
-        assert process.returncode == 0, (await process.stderr.read()).decode()
+                (tmp_path / "stdio.stderr.txt").write_bytes(await process.stderr.read())
+                (tmp_path / "stdio-exit.json").write_text(
+                    json.dumps({"returnCode": process.returncode, "forcedKill": forced})
+                )
+        assert process.returncode == 0 and not forced
 
     asyncio.run(run())
+
+
+INPUT_CASES = [
+    ("manual", "泵站A"),
+    ("edit", "泵站A"),
+    ("edit", ALIAS),
+    ("manual", "[]"),
+    ("manual", '"one", "two"'),
+    ("manual", "<urn:missing"),
+    ("manual", "<urn:bad space>"),
+]
+
+
+def input_change(project, family, value, base):
+    request = change(project, value, base)
+    if family == "edit":
+        request["plan"] = {"edits": {fact(PLAIN)["id"]: value}}
+    return request
+
+
+@pytest.mark.parametrize(("family", "value"), INPUT_CASES)
+def test_known_caller_objects_reject_then_same_host_reads_and_commits(
+    owned, tmp_path, family, value
+):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    confirmed_job(actor, project, change(project))
+    drain_owned_changesets(actor)
+    host, connection = actor.mainline, store._db
+    lease = store._format3_lease
+    identities = (host.owner_id, host.host, host.session, host.generation)
+    selected = host.selected
+    before = read(actor, project)
+    database = "\n".join(connection.iterdump())
+    request = input_change(project, family, value, 1)
+    original = deepcopy(request)
+    refused = exchange(actor, "changeset.preview", request)
+    # Preserve the real post-error read responses even on the RED baseline.
+    current = exchange(actor, "project.get", {"projectId": project})
+    after_error = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    trace = {
+        "inputFamily": family,
+        "before": before,
+        "refused": refused,
+        "current": current,
+        "afterError": after_error,
+        "held": host.hold,
+        "unknown": [key for key, item in host.replies.items() if item.unknown],
+    }
+    path = tmp_path / "typed-rejection-trace.json"
+    path.write_text(json.dumps(trace, ensure_ascii=False))
+    assert_rejected(refused)
+    assert current["ok"] and current["result"]["projectRevision"] == 1, canonical(current)
+    assert after_error["ok"] and after_error["result"] == before, canonical(after_error)
+    assert request == original and "\n".join(connection.iterdump()) == database
+    assert actor.mainline is host and store._db is connection and host.selected is selected
+    assert store._format3_lease is lease
+    assert (host.owner_id, host.host, host.session, host.generation) == identities
+    assert not host.hold and host.replies == {}
+    valid = (
+        change(project, '"next"', 1)
+        if family == "manual"
+        else input_change(project, "edit", '"next"', 1)
+    )
+    accepted = confirmed_job(actor, project, valid)
+    drain_owned_changesets(actor)
+    job = store.get_job(project, accepted["jobId"])
+    marker = exchange(
+        actor, "operation.get", {"projectId": project, "operationId": accepted["operationId"]}
+    )
+    assert job["state"] == "succeeded" and marker["ok"]
+    assert marker["result"]["jobId"] == accepted["jobId"]
+    after = read(actor, project)
+    assert after["domain"]["projectRevision"] == 2
+    if family == "edit":
+        expected = deepcopy(before["domain"]["state"]["facts"])
+        expected[0]["object"] = '"next"'
+        assert after["domain"]["state"]["facts"] == expected
+    trace.update({"accepted": accepted, "job": job, "marker": marker, "after": after})
+    path.write_text(json.dumps(trace, ensure_ascii=False))
+
+
+@pytest.mark.parametrize("failure", ["parser-value", "parser-exception", "parser-config", "n3"])
+def test_new_input_boundary_keeps_unclassified_parser_and_n3_unknown(
+    owned, monkeypatch, tmp_path, failure
+):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    before = read(actor, project)
+    database = "\n".join(store._db.iterdump())
+    calls = []
+
+    def unexpected(*args, **kwargs):
+        calls.append(True)
+        error = {
+            "parser-value": ValueError,
+            "parser-exception": Exception,
+            "parser-config": ParserError,
+            "n3": ValueError,
+        }[failure]
+        raise error("Unsupported S1 RDF object")
+
+    if failure == "n3":
+
+        class UnknownTerm:
+            n3 = staticmethod(unexpected)
+
+        monkeypatch.setattr(domain_changesets, "term", lambda _: UnknownTerm())
+    else:
+        monkeypatch.setattr(rdf_snapshot.Graph, "parse", unexpected)
+    host = actor.mainline
+    refused = exchange(actor, "changeset.preview", change(project))
+    assert calls and not refused["ok"] and refused["error"]["code"] == "INTERNAL_ERROR"
+    assert host.hold and actor.mainline is host
+    unknown = dict(host.replies)
+    assert len(unknown) == 1 and all(item.unknown for item in unknown.values())
+    after_error = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    assert not after_error["ok"] and after_error["error"]["code"] == "STORAGE_FAILURE"
+    assert all(host.replies[key] is item for key, item in unknown.items())
+    assert "\n".join(store._db.iterdump()) == database
+    (tmp_path / "parser-unknown-trace.json").write_text(
+        json.dumps(
+            {
+                "failure": failure,
+                "before": before,
+                "refused": refused,
+                "afterError": after_error,
+                "held": host.hold,
+                "unknown": list(unknown),
+            }
+        )
+    )
+
+
+def test_reserved_original_identity_is_controlled_ownership_conflict(owned, tmp_path):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    confirmed_job(actor, project, change(project))
+    drain_owned_changesets(actor)
+    edited = confirmed_job(actor, project, input_change(project, "edit", '"B"', 1))
+    drain_owned_changesets(actor)
+    assert store.get_job(project, edited["jobId"])["state"] == "succeeded"
+    before = read(actor, project)
+    host = actor.mainline
+    before_dump = list(store._db.iterdump())
+    before_details = store._db.execute("SELECT count(*) FROM job_details").fetchone()[0]
+    refused = exchange(actor, "changeset.preview", change(project, PLAIN, 2))
+    assert not refused["ok"] and refused["error"]["code"] == "OWNERSHIP_CONFLICT", refused
+    detail_ref = refused["error"]["params"]["detailRef"]
+    assert store.detail_get(project, detail_ref) == {
+        "category": "ownership",
+        "resource": "plan",
+        "projectId": project,
+    }
+    after_dump = list(store._db.iterdump())
+    assert [line for line in before_dump if not line.startswith('INSERT INTO "job_details"')] == [
+        line for line in after_dump if not line.startswith('INSERT INTO "job_details"')
+    ]
+    assert store._db.execute("SELECT count(*) FROM job_details").fetchone()[0] == before_details + 1
+    assert actor.mainline is host and not host.hold and host.replies == {}
+    assert read(actor, project) == before
+    accepted = confirmed_job(actor, project, input_change(project, "edit", '"C"', 2))
+    drain_owned_changesets(actor)
+    marker = exchange(
+        actor, "operation.get", {"projectId": project, "operationId": accepted["operationId"]}
+    )
+    assert marker["ok"] and marker["result"]["jobId"] == accepted["jobId"]
+    assert store.get_job(project, accepted["jobId"])["state"] == "succeeded"
+    after = read(actor, project)
+    assert after["domain"]["projectRevision"] == 3
+    assert after["domain"]["state"]["facts"][0]["id"] == fact(PLAIN)["id"]
+    assert after["domain"]["state"]["facts"][0]["object"] == '"C"'
+    (tmp_path / "ownership-trace.json").write_text(
+        json.dumps(
+            {
+                "before": before,
+                "refused": refused,
+                "detailRef": detail_ref,
+                "accepted": accepted,
+                "marker": marker,
+                "after": after,
+            }
+        )
+    )
+
+
+@pytest.mark.parametrize("value", ['"x"^^<../relative>', r'"x"^^<urn:\U00110000>'])
+def test_real_untyped_library_failures_remain_unknown(owned, tmp_path, value):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    with pytest.raises(ValueError) as original:
+        rdf_snapshot.term(value)
+    assert not isinstance(original.value, rdf_snapshot.TermInputError)
+    before = "\n".join(store._db.iterdump())
+    host = actor.mainline
+    refused = exchange(actor, "changeset.preview", change(project, value))
+    assert not refused["ok"] and refused["error"]["code"] == "INTERNAL_ERROR", refused
+    assert actor.mainline is host and host.hold
+    unknown = dict(host.replies)
+    assert len(unknown) == 1 and all(item.unknown for item in unknown.values())
+    after_error = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    assert not after_error["ok"] and after_error["error"]["code"] == "STORAGE_FAILURE"
+    assert "\n".join(store._db.iterdump()) == before
+    (tmp_path / "untyped-library-trace.json").write_text(
+        json.dumps(
+            {
+                "value": value,
+                "refused": refused,
+                "afterError": after_error,
+                "held": host.hold,
+                "unknown": list(unknown),
+            }
+        )
+    )
