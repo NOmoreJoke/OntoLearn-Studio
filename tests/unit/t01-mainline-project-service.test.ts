@@ -19,7 +19,7 @@ import {
 import { TaskService } from '../../apps/desktop/src/main/task-service'
 import { v2Registry } from '../../packages/contracts/src/v2'
 import corpus from '../../packages/contracts/v2/fixtures.json'
-import type { ProjectView } from '@ontolearn/contracts'
+import type { ProjectView, BridgeResult } from '@ontolearn/contracts'
 
 type Row = Record<string, unknown>
 const id = (n: number) => '00000000-0000-4000-8000-' + String(n).padStart(12, '0')
@@ -42,9 +42,16 @@ class MemoryChild extends EventEmitter {
   exitCode: number | null = null
   signalCode: NodeJS.Signals | null = null
   calls: Row[] = []
+  responses: Row[] = []
   projection: ProjectView = project()
   holdGet = false
+  holdHello = false
+  holdOpen = false
+  pendingHelloFrame?: string
+  pendingOpenFrame?: string
+  selectedProject: string | null = null
   failOpen = false
+  openError?: Row
   forgeCreateHash = false
   forgeDraftHash = false
   pendingGet?: Row
@@ -94,14 +101,26 @@ class MemoryChild extends EventEmitter {
       }
     else if (q.method === 'session.ping') result = { nonce: (q.params as Row).nonce }
     else if (q.method === 'project.open' && this.failOpen)
-      error = {
+      error = this.openError ?? {
         code: 'PERMISSION_DENIED',
         messageKey: 'permission.denied',
         retryable: false,
         params: {},
       }
-    else if (q.method === 'project.open' || q.method === 'project.get') result = this.projection
-    else if (q.method === 'project.create' || q.method === 'project.example.create') {
+    else if (q.method === 'project.open') {
+      this.selectedProject = String((q.params as Row).projectId)
+      this.projection = { ...this.projection, projectId: this.selectedProject }
+      result = { ...this.projection }
+    } else if (q.method === 'project.get') {
+      if (this.selectedProject !== (q.params as Row).projectId)
+        error = {
+          code: 'PERMISSION_DENIED',
+          messageKey: 'permission.denied',
+          params: {},
+          retryable: false,
+        }
+      else result = this.projection
+    } else if (q.method === 'project.create' || q.method === 'project.example.create') {
       const params = q.params as Row
       const canonical = Object.fromEntries(
         Object.keys(params)
@@ -167,19 +186,22 @@ class MemoryChild extends EventEmitter {
         nextCursor: null,
       }
     else result = { status: 'ok', engineVersion: '0.1.0' }
-    queueMicrotask(() =>
-      this.stdout.write(
-        JSON.stringify({
-          kind: 'response',
-          protocolVersion: q.method === 'hello' ? 2 : 3,
-          engineSessionId: this.session,
-          id: q.id,
-          method: q.method,
-          ok: !error,
-          ...(error ? { error } : { result }),
-        }) + '\n',
-      ),
-    )
+    const frame =
+      JSON.stringify({
+        kind: 'response',
+        protocolVersion: q.method === 'hello' ? 2 : 3,
+        engineSessionId: this.session,
+        id: q.id,
+        method: q.method,
+        ok: !error,
+        ...(error ? { error } : { result }),
+      }) + '\n'
+    this.responses.push(JSON.parse(frame) as Row)
+    // Hold delivery of the authentic response, after applying the host selection.
+    // These finite transport gates never grant project access or mint a Job.
+    if (q.method === 'hello' && this.holdHello) this.pendingHelloFrame = frame
+    else if (q.method === 'project.open' && this.holdOpen) this.pendingOpenFrame = frame
+    else queueMicrotask(() => this.stdout.write(frame))
   }
   kill(): boolean {
     this.exitCode = 0
@@ -187,7 +209,7 @@ class MemoryChild extends EventEmitter {
     return true
   }
 }
-async function setup(advertise = true) {
+async function setup(advertise = true, requestMs = 100) {
   const child = new MemoryChild(id(2), advertise)
   processDouble.spawn.mockReset().mockImplementationOnce(() => {
     queueMicrotask(() => child.emit('spawn'))
@@ -199,7 +221,7 @@ async function setup(advertise = true) {
       profile: 'business3',
       registryPath,
       command: { command: '/memory/engine', args: [] },
-      requestMs: 100,
+      requestMs,
     },
   )
   const tasks = new TaskService(supervisor),
@@ -253,6 +275,7 @@ describe('actual business3 runtime issuer with memory transport only', () => {
     })()
     const source = new MainlineProjectSource()
     expect(() => source.publish(forged)).toThrow(EngineError)
+    expect(() => supervisor.issueMainlineRecovery(forged, () => true)).toThrow(EngineError)
     expect(source.current()).toBeNull()
     supervisor.stop()
   })
@@ -500,4 +523,237 @@ describe('actual business3 runtime issuer with memory transport only', () => {
       }
     })
   }
+})
+
+// Transport scheduling counterexamples; the production service/TaskService and
+// Supervisor remain real. The Python business3 positive lives in task-runtime.
+describe('business3 recovery selection authority at actual transport boundaries', () => {
+  const waitFor = async (predicate: () => boolean): Promise<void> => {
+    await vi.waitFor(() => expect(predicate()).toBe(true), { timeout: 2000, interval: 5 })
+  }
+  const begin = async (gate: 'hello' | 'open' | 'none' = 'none') => {
+    const s = await setup(true, 1500)
+    const replies = s.supervisor.mainlineReplyReceiver()
+    const receive = async <T>(work: () => Promise<BridgeResult<T>>): Promise<BridgeResult<T>> => {
+      const delivery = await replies.receive(work)
+      if (delivery.value.ok) replies.consume(delivery.receipt)
+      return delivery.value
+    }
+    expect((await receive(() => s.service.openProject({ projectId: id(1) }))).ok).toBe(true)
+    const next = new MemoryChild(id(3))
+    next.holdHello = gate === 'hello'
+    next.holdOpen = gate === 'open'
+    processDouble.spawn.mockImplementationOnce(() => {
+      queueMicrotask(() => next.emit('spawn'))
+      return next
+    })
+    const updates: import('@ontolearn/contracts').TaskUpdate[] = []
+    s.tasks.attachView((update) => updates.push(update))
+    return { ...s, next, receive, updates }
+  }
+  const disconnect = (s: Awaited<ReturnType<typeof begin>>) => {
+    s.child.exitCode = 73
+    s.child.emit('close', 73)
+  }
+  it('reopens the trusted project before any new-session project read and shares manual restore', async () => {
+    const s = await begin('open')
+    try {
+      const old = s.service.source.current()!
+      disconnect(s)
+      await waitFor(() => !!s.next.pendingOpenFrame)
+      expect(s.service.source.current()).toBeNull()
+      expect(s.next.calls.filter((q) => q.method === 'project.get')).toHaveLength(0)
+      const manual = s.tasks.restore()
+      s.next.stdout.write(s.next.pendingOpenFrame!)
+      const restored = await manual
+      expect(restored.ok).toBe(true)
+      if (!restored.ok) throw Error('expected original project recovery')
+      expect(restored.data.project?.projectId).toBe(id(1))
+      expect(s.next.calls.filter((q) => q.method === 'project.open')).toHaveLength(1)
+      expect(s.next.calls.findIndex((q) => q.method === 'project.open')).toBeLessThan(
+        s.next.calls.findIndex((q) => q.method === 'project.get'),
+      )
+      const current = s.service.source.current()!
+      expect(current.project.projectId).toBe(id(1))
+      expect(current.engineSessionId).toBe(id(3))
+      expect(current.owner).not.toBe(old.owner)
+      expect(
+        s.updates.some((u) => u.kind === 'restored' && u.view.project?.projectId === id(1)),
+      ).toBe(true)
+      expect(
+        s.next.calls.some((q) => ['job.create', 'job.cancel'].includes(String(q.method))),
+      ).toBe(false)
+    } finally {
+      s.close()
+    }
+  })
+  const switchSelection = (s: Awaited<ReturnType<typeof begin>>) => {
+    const generation = s.tasks.queryViewGeneration(id(1), s.supervisor)
+    const watermark = s.updates.length
+    // Enter the real main-only selection before receiver admission can refuse
+    // a concurrent Q request. This is service authority, not an IPC success.
+    const selection = s.service.openProject({ projectId: id(4) })
+    expect(() => s.tasks.queryViewGeneration(id(1), s.supervisor)).toThrow(EngineError)
+    expect(
+      s.updates
+        .slice(watermark)
+        .some((u) => u.kind === 'restored' && u.generation > generation && u.view.project === null),
+    ).toBe(true)
+    return selection
+  }
+  for (const action of ['switch', 'close', 'dispose'] as const) {
+    it(`${action} during new hello prevents a stale recovery project.open send`, async () => {
+      const s = await begin('hello')
+      try {
+        disconnect(s)
+        await waitFor(() => !!s.next.pendingHelloFrame)
+        const selection =
+          action === 'switch'
+            ? switchSelection(s).catch((cause: unknown) => {
+                if (!(cause instanceof EngineError)) throw cause
+                expect(['INVALID_STATE', 'RESOURCE_LIMIT']).toContain(cause.error.code)
+                return { ok: false as const, error: cause.error }
+              })
+            : undefined
+        if (action === 'close') await s.service.source.closeSelection()
+        if (action === 'dispose') s.service.dispose()
+        s.next.stdout.write(s.next.pendingHelloFrame!)
+        const selected = selection ? await selection : undefined
+        if (selected && !selected.ok)
+          expect(['INVALID_STATE', 'RESOURCE_LIMIT']).toContain(selected.error.code)
+        await new Promise<void>((done) => setImmediate(done))
+        expect(
+          s.next.calls.some(
+            (q) => q.method === 'project.open' && (q.params as Row).projectId === id(1),
+          ),
+        ).toBe(false)
+        expect(s.service.source.current()?.project.projectId ?? null).toBe(
+          selected?.ok ? id(4) : null,
+        )
+      } finally {
+        s.close()
+      }
+    })
+    it(`${action} after an open was sent rejects its late selected-project publication`, async () => {
+      const s = await begin('open')
+      try {
+        disconnect(s)
+        await waitFor(() => !!s.next.pendingOpenFrame)
+        const late = s.next.pendingOpenFrame!
+        s.next.holdOpen = false
+        let selected = false
+        if (action === 'switch') {
+          const result = await switchSelection(s).catch((cause: unknown) => {
+            if (!(cause instanceof EngineError)) throw cause
+            expect(['INVALID_STATE', 'RESOURCE_LIMIT']).toContain(cause.error.code)
+            return { ok: false as const, error: cause.error }
+          })
+          if (!result.ok) expect(['INVALID_STATE', 'RESOURCE_LIMIT']).toContain(result.error.code)
+          selected = result.ok
+        }
+        if (action === 'close') await s.service.source.closeSelection()
+        if (action === 'dispose') s.service.dispose()
+        s.next.stdout.write(late)
+        await new Promise<void>((done) => setImmediate(done))
+        expect(s.service.source.current()?.project.projectId ?? null).toBe(selected ? id(4) : null)
+        expect(
+          s.next.calls.filter(
+            (q) => q.method === 'project.open' && (q.params as Row).projectId === id(1),
+          ),
+        ).toHaveLength(1)
+        expect(
+          s.updates.some((u) => u.kind === 'restored' && u.view.project?.projectId === id(1)),
+        ).toBe(false)
+      } finally {
+        s.close()
+      }
+    })
+  }
+  it('does not emit a stale ready after a synchronous source observer disposes its owner', async () => {
+    const s = await begin()
+    let released = () => {}
+    try {
+      released = s.service.source.observe((current) => {
+        if (current?.engineSessionId === id(3)) s.service.dispose()
+      })
+      disconnect(s)
+      await waitFor(() => s.next.calls.some((q) => q.method === 'project.get'))
+      await new Promise<void>((done) => setImmediate(done))
+      expect(s.service.source.current()).toBeNull()
+      expect(
+        s.updates.some((u) => u.kind === 'restored' && u.view.project?.projectId === id(1)),
+      ).toBe(false)
+    } finally {
+      released()
+      s.close()
+    }
+  })
+  it('never refunds an unmatched old reply when a recovery uses another session', async () => {
+    const s = await begin()
+    try {
+      s.child.holdGet = true
+      expect((await s.receive(() => s.service.queries.getQueryDefinitionBase())).ok).toBe(false)
+      const before = s.supervisor.mainlineReplyReceiver().diagnostic()
+      expect(before.unknown).toBeGreaterThan(0)
+      disconnect(s)
+      await s.tasks.restore()
+      const after = s.supervisor.mainlineReplyReceiver().diagnostic()
+      expect(after.unknown).toBeGreaterThanOrEqual(before.unknown)
+      expect(after.slots).toBeGreaterThanOrEqual(before.unknown)
+      expect(
+        s.next.calls.some((q) => ['job.create', 'job.cancel'].includes(String(q.method))),
+      ).toBe(false)
+    } finally {
+      s.close()
+    }
+  })
+  for (const error of [
+    { code: 'PERMISSION_DENIED', messageKey: 'permission.denied', params: {}, retryable: false },
+    {
+      code: 'RESOURCE_LIMIT',
+      messageKey: 'resource.limitExceeded',
+      params: { resource: 'memory' },
+      retryable: false,
+    },
+    { code: 'STORAGE_FAILURE', messageKey: 'storage.failure', params: {}, retryable: false },
+  ])
+    it(`preserves ${error.code} refusal/offline without a new issuer or project read`, async () => {
+      const s = await begin()
+      s.next.failOpen = true
+      s.next.openError = error
+      const before = s.supervisor.mainlineReplyReceiver().diagnostic()
+      expect(
+        s.supervisor.isMainlineRecoveryRefusal(new EngineError(error), Promise.resolve(null)),
+      ).toBe(false)
+      try {
+        disconnect(s)
+        await waitFor(() => s.updates.some((u) => u.kind === 'connection' && u.state === 'offline'))
+        expect(s.service.source.current()).toBeNull()
+        const offline = s.updates.find((u) => u.kind === 'connection' && u.state === 'offline')
+        expect(offline?.kind === 'connection' && offline.error).toEqual(error)
+        expect(offline?.kind === 'connection' && offline.attempt).toBe(1)
+        const opens = s.next.calls.filter((q) => q.method === 'project.open')
+        expect(opens).toHaveLength(1)
+        expect(opens[0].params).toEqual({ projectId: id(1) })
+        const frame = s.next.responses.find((r) => r.id === opens[0].id)
+        expect(frame).toMatchObject({
+          kind: 'response',
+          method: 'project.open',
+          engineSessionId: id(3),
+          protocolVersion: 3,
+          ok: false,
+          error,
+        })
+        const after = s.supervisor.mainlineReplyReceiver().diagnostic()
+        expect(after.unknown).toBeGreaterThanOrEqual(before.unknown + 1)
+        expect(after.slots).toBeGreaterThanOrEqual(before.slots + 1)
+        expect(s.next.calls.some((q) => q.method === 'project.get')).toBe(false)
+        expect(s.updates.some((u) => u.kind === 'restored' && u.view.project !== null)).toBe(false)
+        expect(
+          s.next.calls.some((q) => ['job.create', 'job.cancel'].includes(String(q.method))),
+        ).toBe(false)
+      } finally {
+        s.close()
+      }
+    })
 })

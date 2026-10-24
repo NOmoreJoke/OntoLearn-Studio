@@ -5,6 +5,7 @@ import {
   type BridgeResult,
   type ProjectView,
   type JobView,
+  type TaskView,
   type ChangeSetConfirmation,
   type ChangeSetPreview,
   type ChangeSetPage,
@@ -29,7 +30,7 @@ import {
 } from './engine'
 import { OrdinaryProjectSource, type OrdinaryCurrent } from './ordinary-project-source'
 import { QueryDefinitionService } from './query-definition-service'
-import type { TaskService } from './task-service'
+import type { TaskService, TaskRecoveryContext, TaskRecoveryRequest } from './task-service'
 
 type RecordValue = Record<string, unknown>
 export type MainlineCatalog = MainlineCatalogDTO
@@ -78,7 +79,7 @@ export class MainlineProjectSource extends OrdinaryProjectSource {
   #disposedMainline = false
   #selectionHolding?: { entry: object; budget: QueryMainReadBudget }
   #selectionHoldingUnknown = false
-  constructor() {
+  constructor(private readonly closeOwner?: (fence: () => void) => void) {
     super(null)
   }
   override get available(): boolean {
@@ -148,7 +149,7 @@ export class MainlineProjectSource extends OrdinaryProjectSource {
     }
     this.#selectionHolding = { entry, budget }
   }
-  publish(client: MainlineProjectTransport): void {
+  preparePublication(client: MainlineProjectTransport, current: () => boolean): () => void {
     if (
       this.#disposedMainline ||
       !MainlineProjectTransport.owns(client) ||
@@ -159,16 +160,43 @@ export class MainlineProjectSource extends OrdinaryProjectSource {
     )
       throw denied()
     if (!validateBusiness3('result_project.get', client.selected)) throw invalid()
+    if (!current()) throw denied()
     this.#keepSelection(client)
-    this.#client = client
-    this.#value = Object.freeze({
-      owner: client.owner,
-      supervisor: client.supervisor,
-      engineSessionId: client.engineSessionId,
-      selectionSeq: this.#sequence,
-      project: client.selected,
-    })
-    this.#notify()
+    // Reserve this independently while still inside the real receiver scope.
+    // Committing the staged source after consume does not allocate a new holding.
+    const sequence = this.#sequence,
+      holding = this.#selectionHolding,
+      selected = client.selected,
+      value = Object.freeze({
+        owner: client.owner,
+        supervisor: client.supervisor,
+        engineSessionId: client.engineSessionId,
+        selectionSeq: sequence,
+        project: selected,
+      })
+    let committed = false
+    return () => {
+      if (
+        committed ||
+        this.#disposedMainline ||
+        !current() ||
+        this.#sequence !== sequence ||
+        this.#selectionHolding !== holding ||
+        client.selected !== selected ||
+        !client.supervisor.ownsMainlineClient(client)
+      )
+        throw denied()
+      committed = true
+      this.#client = client
+      this.#value = value
+      this.#notify()
+      // An observer can synchronously close/select/dispose. It cannot make this
+      // old publication a successful recovery or cause a subsequent restored.
+      if (!current() || this.#value !== value || this.#sequence !== sequence) throw denied()
+    }
+  }
+  publish(client: MainlineProjectTransport): void {
+    this.preparePublication(client, () => true)()
   }
   override observeProject(
     project: ProjectView,
@@ -195,12 +223,14 @@ export class MainlineProjectSource extends OrdinaryProjectSource {
     this.#notify()
   }
   override async closeSelection(): Promise<void> {
-    this.fence()
+    if (this.closeOwner) this.closeOwner(() => this.fence())
+    else this.fence()
   }
   override async dispose(): Promise<void> {
     if (!this.#disposedMainline) {
-      this.fence()
       this.#disposedMainline = true
+      if (this.closeOwner) this.closeOwner(() => this.fence())
+      else this.fence()
       this.#listeners.clear()
     }
   }
@@ -215,15 +245,37 @@ type MainlineIntent = {
   unknown: boolean
 }
 
+type MainlineRecoveryHandle = {
+  client: MainlineProjectTransport
+  token: object
+  projectId: string
+  epoch: number
+}
+
 /** Named main-only application service. No generic renderer invoke or issuer DTO. */
 export class ProjectMainlineService implements MainlineProjectBridge {
-  readonly source = new MainlineProjectSource()
+  readonly source = new MainlineProjectSource((fence) => {
+    this.#invalidateRecovery()
+    try {
+      fence() // Revoke issuer before clearProject can notify any view/observer.
+      if (!this.#closed) this.tasks.clearProject()
+    } catch (cause) {
+      this.#retireRecoveryPending()
+      throw cause
+    }
+    const failure = this.#retireRecoveryPending()
+    if (failure) throw failure
+  })
   readonly queries: QueryDefinitionService
   #projectedErrors = new WeakSet<EngineError>()
   #closed = false
   #busy = false
   #connectionRelease: () => void
   #projectRelease: () => void
+  #recoveryRelease: () => void
+  #selectionEpoch = 0
+  #recoveryPrincipal?: MainlineRecoveryHandle
+  #retiredRecovery = new Set<MainlineRecoveryHandle>()
   #intents = new Map<string, MainlineIntent>()
   constructor(
     readonly supervisor: EngineSupervisor,
@@ -232,19 +284,108 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   ) {
     if (supervisor.profile !== 'business3') throw denied()
     this.queries = new QueryDefinitionService(this.source, tasks)
+    // Installed before any connection event or recovery microtask can occur.
+    this.#recoveryRelease = tasks.installMainlineRecovery(supervisor, {
+      run: (context, restore) => this.#recover(context, restore),
+    })
     this.#connectionRelease = supervisor.onConnectionState((state) => {
       const current = this.source.current()
       if (
         current &&
         (state.state === 'disconnected' || state.engineSessionId !== current.engineSessionId)
       ) {
+        // Revoke old source/issuer immediately, but retain TaskService's P/J
+        // recovery responsibility. User clear/select is a different operation.
         this.source.fence()
-        tasks.clearProject()
       }
     })
     this.#projectRelease = tasks.observeActiveProject((project, session) => {
       if (project && session) this.source.observeProject(project, supervisor, session)
     })
+  }
+  #invalidateRecovery(): void {
+    const principal = this.#recoveryPrincipal
+    // Revoke first. Keep the original owner/token handle until Engine reports
+    // actual completion; dropping a field or timing out cannot release it.
+    this.#recoveryPrincipal = undefined
+    if (principal) this.#retiredRecovery.add(principal)
+    if (this.#selectionEpoch >= Number.MAX_SAFE_INTEGER) throw invalid()
+    this.#selectionEpoch++
+  }
+  #retireRecoveryPending(): unknown {
+    let firstFailure: unknown
+    // At most16 handles: issuance refuses another principal at that bound.
+    // Engine cleanup has no observer callbacks; deletion cannot hide a pending
+    // or failed handle, and a repeated dispose can retry the exact same entry.
+    for (const principal of this.#retiredRecovery) {
+      try {
+        if (this.supervisor.retireMainlineRecovery(principal.client, principal.token))
+          this.#retiredRecovery.delete(principal)
+      } catch (cause) {
+        firstFailure ??= cause
+      }
+    }
+    return firstFailure
+  }
+  #recover(
+    context: TaskRecoveryContext,
+    restore: (request: TaskRecoveryRequest) => Promise<BridgeResult<TaskView>>,
+  ): Promise<BridgeResult<TaskView>> {
+    const principal = this.#recoveryPrincipal
+    const current = () =>
+      !this.#closed &&
+      !this.#busy &&
+      this.#recoveryPrincipal === principal &&
+      this.#selectionEpoch === principal?.epoch &&
+      context.isCurrent()
+    if (!principal || context.projectId !== principal.projectId || !current()) throw denied()
+    let publish: (() => void) | undefined
+    let restored: BridgeResult<TaskView> | undefined
+    // Return the original Engine operation promise. TaskService can project an
+    // authentic startup/business failure against its actual originating promise.
+    const operation = this.supervisor.runMainlineRecovery(
+      principal.token,
+      current,
+      async (client, request) => {
+        if (!current()) throw denied()
+        const result = await restore(request)
+        if (!current()) throw denied()
+        if (result.ok) {
+          const project = result.data.project
+          if (
+            !project ||
+            project.projectId !== principal.projectId ||
+            result.data.generation !== context.generation ||
+            !client.engineSessionId ||
+            client.engineSessionId !== this.supervisor.engineSessionId
+          )
+            throw denied()
+          // Actual project.get response brand, not a caller DTO or old snapshot.
+          client.acceptProject(project)
+          publish = this.source.preparePublication(client, current)
+        }
+        restored = result
+        return result
+      },
+      (view) => {
+        if (!current() || !publish || !restored?.ok || restored.data !== view) throw denied()
+        // Engine has completed/consumed the real background reply. Its selected
+        // alias and restored view, and this source's staged selection, remain held.
+        publish()
+        if (!current()) throw denied()
+      },
+    )
+    // This observes the real operation's settlement without wrapping/replacing
+    // its error-provenance identity or masking its first rejection.
+    void operation.then(
+      () => {
+        this.#retireRecoveryPending()
+      },
+      () => {
+        this.#retireRecoveryPending()
+      },
+    )
+    return operation
   }
   #client(): MainlineProjectTransport {
     if (this.#closed) throw denied()
@@ -294,23 +435,47 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   }): Promise<BridgeResult<MainlineCatalog>> {
     return this.#run(() => this.#call<MainlineCatalog>(this.#client(), 'project.catalog', args))
   }
-  async #selection<T>(work: (client: MainlineProjectTransport) => Promise<T>): Promise<T> {
-    if (this.#busy) throw invalid()
+  async #selection<T>(
+    work: (client: MainlineProjectTransport, current: () => boolean) => Promise<T>,
+  ): Promise<T> {
+    if (this.#busy || this.#closed) throw invalid()
     this.#busy = true
-    this.source.fence()
-    this.tasks.clearProject()
     try {
-      return await work(this.#client())
+      this.#invalidateRecovery()
+      const epoch = this.#selectionEpoch
+      const current = () => !this.#closed && this.#selectionEpoch === epoch
+      this.source.fence()
+      this.tasks.clearProject()
+      const failure = this.#retireRecoveryPending()
+      if (failure) throw failure
+      if (!current()) throw denied()
+      return await work(this.#client(), current)
     } finally {
       this.#busy = false
     }
   }
-  #publish(client: MainlineProjectTransport): void {
-    if (!client.selected || client.engineSessionId !== this.supervisor.engineSessionId)
+  #publish(client: MainlineProjectTransport, current: () => boolean): void {
+    if (
+      !current() ||
+      !client.selected ||
+      client.engineSessionId !== this.supervisor.engineSessionId
+    )
       throw denied()
     this.tasks.selectProject(client.selected.projectId)
     this.reattachView() // Real window attachment is supplied by main; no fake sink.
+    if (!current()) throw denied()
+    const failure = this.#retireRecoveryPending()
+    if (failure) throw failure
+    if (this.#retiredRecovery.size >= 16) throw invalid()
+    const epoch = this.#selectionEpoch
+    const token: object = this.supervisor.issueMainlineRecovery(
+      client,
+      () =>
+        !this.#closed && this.#selectionEpoch === epoch && this.#recoveryPrincipal?.token === token,
+    )
+    this.#recoveryPrincipal = { client, token, projectId: client.selected.projectId, epoch }
     this.source.publish(client)
+    if (!current()) throw denied()
   }
   createBlankProject(args: CreateArgs): Promise<BridgeResult<MainlineCreate>> {
     return this.#run(() =>
@@ -352,9 +517,9 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   }
   openProject(args: { projectId: string }): Promise<BridgeResult<ProjectView>> {
     return this.#run(() =>
-      this.#selection(async (client) => {
+      this.#selection(async (client, current) => {
         const result = await this.#call<ProjectView>(client, 'project.open', args)
-        this.#publish(client)
+        this.#publish(client, current)
         return result
       }),
     )
@@ -546,11 +711,20 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     })
   }
   dispose(): void {
-    if (this.#closed) return
+    if (this.#closed) {
+      this.#retireRecoveryPending()
+      return
+    }
     this.#closed = true
+    this.#invalidateRecovery()
+    this.#recoveryRelease()
     this.#connectionRelease()
     this.#projectRelease()
     this.queries.dispose()
-    void this.source.dispose()
+    void this.source.dispose().catch(() => {
+      // The original handles remain in #retiredRecovery. A failed cleanup does
+      // not make disposal proof of release or erase a preceding operation error.
+    })
+    this.#retireRecoveryPending()
   }
 }

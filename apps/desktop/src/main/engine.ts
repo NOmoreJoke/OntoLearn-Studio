@@ -10,6 +10,8 @@ import {
   type SafeError,
   type EngineHealth,
   type ProjectView,
+  type BridgeResult,
+  type TaskView,
 } from '@ontolearn/contracts'
 import {
   matchesResponse,
@@ -273,6 +275,16 @@ interface MainlineOwnerRecord {
   lastOrphanDelivery?: MainlineDelivery
   uncertain?: boolean
   budget?: QueryMainReadBudget
+}
+interface MainlineRecoveryPrincipal {
+  origin: MainlineOwnerRecord
+  session?: Session
+  project?: ProjectView
+  current?: () => boolean
+  active: number
+  retired: boolean
+  released: boolean
+  cleanupFailed: boolean
 }
 interface MainlineDelivery {
   state: 'COMPUTING' | 'OFFERED' | 'UNKNOWN' | 'ORPHAN'
@@ -611,6 +623,13 @@ export class EngineSupervisor {
     }
   >()
   #mainlineProjects = new WeakMap<object, { record: MainlineOwnerRecord; session: Session }>()
+  #mainlineRecoveryPrincipals = new WeakMap<object, MainlineRecoveryPrincipal>()
+  #mainlineRecoveryOperations = new WeakSet<Promise<unknown>>()
+  #mainlineRecoveryOpen = new WeakMap<
+    MainlineProjectTransport,
+    (projectId: string, current: () => void) => Promise<unknown>
+  >()
+  #mainlineRecoveryViews = new WeakMap<MainlineOwnerRecord, object>()
   #mainlineCost = { bytes: 0, objects: 0, work: 0 }
   #mainlineScratch = { bytes: 0, objects: 0 }
   #mainlineAsync = new AsyncLocalStorage<MainlineDelivery>()
@@ -1113,6 +1132,9 @@ export class EngineSupervisor {
       readonly owner = record.owner
       constructor(readonly supervisor: EngineSupervisor) {
         super()
+        supervisor.#mainlineRecoveryOpen.set(this, (projectId, current) =>
+          this.#request('project.open', { projectId }, current),
+        )
       }
       get engineSessionId(): string | undefined {
         return record.session?.hello?.engineSessionId
@@ -1143,8 +1165,17 @@ export class EngineSupervisor {
         this.supervisor.#selectMainlineProject(record, project)
       }
       request(method: MainlineMethod, params: Record<string, unknown>): Promise<unknown> {
+        return this.#request(method, params)
+      }
+      #request(
+        method: MainlineMethod,
+        params: Record<string, unknown>,
+        recoveryCurrent?: () => void,
+      ): Promise<unknown> {
         return this.supervisor.#operation(async () => {
+          recoveryCurrent?.()
           if (!record.session) record.session = await this.supervisor.#ensure()
+          recoveryCurrent?.()
           const session = this.supervisor.#mainlineReady(record)
           if (
             ![
@@ -1180,8 +1211,10 @@ export class EngineSupervisor {
               undefined,
               undefined,
               record,
+              recoveryCurrent,
             )
             this.supervisor.#mainlineReady(record)
+            recoveryCurrent?.()
             if (!validateBusiness3('result_' + method, value)) throw invalid()
             if (method === 'project.open') {
               const project = value as ProjectView
@@ -1190,6 +1223,9 @@ export class EngineSupervisor {
                 ...project,
                 dependencyVector: Object.freeze({ ...project.dependencyVector }),
               })
+              // Recheck immediately before selecting the actual reply. A user
+              // switch during ensure/write/reply must never publish this old P.
+              recoveryCurrent?.()
               this.supervisor.#selectMainlineProject(record, selected)
               this.supervisor.#mainlineProjects.set(selected, { record, session })
             } else if (method === 'project.create' || method === 'project.example.create') {
@@ -1231,6 +1267,271 @@ export class EngineSupervisor {
     this.#mainlineRecords.set(client, record)
     this.#mainlineClient = client
     return client
+  }
+  /** Main-only, issued while a real selected client is still authenticated.
+   * The original project is independently held; retiring a principal cannot wash
+   * that reservation or an unknown reply into a replacement session's book.
+   */
+  issueMainlineRecovery(client: MainlineProjectTransport, current: () => boolean): object {
+    const record = this.#mainlineRecords.get(client)
+    if (!record || !MainlineProjectTransport.owns(client) || typeof current !== 'function')
+      throw deniedOrdinary()
+    const session = this.#mainlineReady(record),
+      project = record.selected,
+      proof = project && this.#mainlineProjects.get(project)
+    if (!project || proof?.record !== record || proof.session !== session) throw deniedOrdinary()
+    const token = Object.freeze({})
+    this.#mainlineReserve(1024, 16, 1024, this.#delivery(record))
+    this.#retainHolding(record, token, {
+      engineSessionId: session.hello!.engineSessionId,
+      project,
+    })
+    this.#mainlineRecoveryPrincipals.set(token, {
+      origin: record,
+      session,
+      project,
+      current,
+      active: 0,
+      retired: false,
+      released: false,
+      cleanupFailed: false,
+    })
+    return token
+  }
+  #finishMainlineRetirement(token: object, principal: MainlineRecoveryPrincipal): boolean {
+    if (principal.released) return true
+    if (!principal.retired || principal.active !== 0) return false
+    // End the principal's own aliases before closing its exact logical holding.
+    // A failed release still has the original token/origin and funded holding;
+    // retry needs neither an old project DTO nor its service-current closure.
+    principal.project = undefined
+    principal.session = undefined
+    principal.current = undefined
+    this.#releaseHolding(principal.origin, token)
+    principal.released = true
+    principal.cleanupFailed = false
+    return true
+  }
+  #endMainlineRecovery(token: object, principal: MainlineRecoveryPrincipal): void {
+    principal.active--
+    if (principal.retired) {
+      try {
+        this.#finishMainlineRetirement(token, principal)
+      } catch {
+        // The service retains the original authenticated cleanup handle. Its
+        // later retry must not be replaced by this attempt's cleanup exception.
+        principal.cleanupFailed = true
+      }
+    }
+  }
+  retireMainlineRecovery(client: MainlineProjectTransport, token: object): boolean {
+    const record = this.#mainlineRecords.get(client),
+      principal = this.#mainlineRecoveryPrincipals.get(token)
+    if (
+      !MainlineProjectTransport.owns(client) ||
+      !record ||
+      !principal ||
+      principal.origin !== record
+    )
+      throw deniedOrdinary()
+    // Revocation precedes cleanup and is permanent, including when active work
+    // or a cleanup failure keeps the original handle/holding alive.
+    principal.retired = true
+    try {
+      return this.#finishMainlineRetirement(token, principal)
+    } catch (cause) {
+      principal.cleanupFailed = true
+      throw cause
+    }
+  }
+  isMainlineRecoveryRefusal(cause: unknown, operation: Promise<unknown>): boolean {
+    const issued = this.#operations.get(operation)
+    return (
+      this.#mainlineRecoveryOperations.has(operation) &&
+      !!issued &&
+      issued.cause === cause &&
+      this.#origins.get(issued.cause) === issued.origin &&
+      issued.origin.profile === 'business3' &&
+      ['business3', 'bootstrap3', 'startup3'].includes(issued.origin.provenance) &&
+      issued.origin.value.retryable === false
+    )
+  }
+  /** A fresh receiver owns this whole background attempt. No old ALS delivery,
+   * receipt or client is adopted. Only a fully matched success is consumed;
+   * the selected alias, principal and restored view have separate holdings.
+   */
+  runMainlineRecovery(
+    token: object,
+    current: () => boolean,
+    work: (
+      client: MainlineProjectTransport,
+      request: (method: string, params: Record<string, unknown>) => Promise<unknown>,
+    ) => Promise<BridgeResult<TaskView>>,
+    publish: (view: TaskView) => void,
+  ): Promise<BridgeResult<TaskView>> {
+    const principal = this.#mainlineRecoveryPrincipals.get(token)
+    if (!principal || principal.retired || principal.released || principal.active >= 16)
+      return this.#operation(async () => {
+        throw deniedOrdinary()
+      })
+    // Count the original attempt before #operation can queue anything. Retiring
+    // during ensure, a pending wire, or a timeout cannot release this principal.
+    principal.active++
+    let attemptActive = true
+    const operation = this.#operation(async () => {
+      try {
+        return await this.#mainlineAsync.exit(async () => {
+          const check = () => {
+            if (
+              !attemptActive ||
+              principal.retired ||
+              principal.released ||
+              !principal.project ||
+              !principal.session ||
+              this.#stopped ||
+              typeof current !== 'function' ||
+              !principal.current?.() ||
+              !current()
+            )
+              throw deniedOrdinary()
+          }
+          check()
+          if (typeof work !== 'function' || typeof publish !== 'function') throw deniedOrdinary()
+          const receiver = this.mainlineReplyReceiver()
+          let offered: { value: BridgeResult<TaskView>; receipt: MainlineReplyReceipt } | undefined
+          try {
+            offered = await receiver.receive(async () => {
+              check()
+              const client = this.mainlineProjectClient(),
+                record = client && this.#mainlineRecords.get(client),
+                open = client && this.#mainlineRecoveryOpen.get(client)
+              if (!client || !record || !open || record === principal.origin) throw deniedOrdinary()
+              // This is a real project.open in the new authentic stdio session.
+              // The private transport checks before actual write and reply select.
+              if (!principal.project) throw deniedOrdinary()
+              const opening = open(principal.project.projectId, check)
+              this.#mainlineRecoveryOperations.add(opening)
+              await opening
+              check()
+              const session = this.#mainlineReady(record)
+              if (session === principal.session) throw deniedOrdinary()
+              const budget = this.#mainlineBudget(record)
+              const request = (
+                method: string,
+                params: Record<string, unknown>,
+              ): Promise<unknown> => {
+                if (!attemptActive || principal.retired || principal.active >= 16)
+                  return this.#operation(async () => {
+                    throw deniedOrdinary()
+                  })
+                // Also cover a real readonly consumer that can outlive its
+                // caller's wait. Its true finally, not the outer timeout, closes
+                // this reference to the original principal.
+                principal.active++
+                const reading = this.#operation(async () => {
+                  try {
+                    check()
+                    if (
+                      this.#mainlineReady(record) !== session ||
+                      ![
+                        'project.get',
+                        'job.get',
+                        'job.subscribe',
+                        'job.unsubscribe',
+                        'operation.get',
+                      ].includes(method) ||
+                      !principal.project ||
+                      params.projectId !== principal.project.projectId
+                    )
+                      throw deniedOrdinary()
+                    const finish = budget.beginConsumerRequest()
+                    try {
+                      budget.beforeArguments(params)
+                      const frame = Math.min(262144, session.hello!.limits.maxFrameBytes)
+                      budget.reserve(
+                        'mainline recovery frame',
+                        32 * frame,
+                        frame + 1024,
+                        32 * frame,
+                      )
+                      const value = await this.#send(
+                        session,
+                        method,
+                        params,
+                        Math.min(this.#requestMs, session.hello!.limits.requestMs),
+                        'request',
+                        false,
+                        undefined,
+                        undefined,
+                        undefined,
+                        record,
+                        check,
+                      )
+                      check()
+                      if (this.#mainlineReady(record) !== session) throw deniedOrdinary()
+                      return value
+                    } finally {
+                      finish()
+                    }
+                  } finally {
+                    this.#endMainlineRecovery(token, principal)
+                  }
+                })
+                this.#mainlineRecoveryOperations.add(reading)
+                return reading
+              }
+              const result = await work(client, request)
+              check()
+              if (result.ok) {
+                const project = result.data.project
+                if (
+                  !project ||
+                  !principal.project ||
+                  project.projectId !== principal.project.projectId ||
+                  project.projectRevision < principal.project.projectRevision ||
+                  !validateBusiness3('result_project.get', project) ||
+                  this.#mainlineProjects.get(project)?.record !== record ||
+                  this.#mainlineProjects.get(project)?.session !== session
+                )
+                  throw invalidStateOrdinary()
+                let entry = this.#mainlineRecoveryViews.get(record)
+                if (!entry) {
+                  entry = Object.freeze({})
+                  this.#mainlineRecoveryViews.set(record, entry)
+                }
+                // TaskService keeps this exact restored view after delivery closes.
+                // It is not freed by consume, a source fence or a new owner.
+                budget.retainHolding(entry, result.data)
+                budget.handoff(result.data)
+              }
+              return result
+            })
+            check()
+            if (offered.value.ok) {
+              receiver.consume(offered.receipt)
+              check()
+              publish(offered.value.data)
+              check()
+            }
+            return offered.value
+          } catch (cause) {
+            if (offered) {
+              const delivery = this.#mainlineReceipts.get(offered.receipt)
+              if (delivery) this.#unknownDelivery(delivery)
+            }
+            throw cause
+          }
+        })
+      } finally {
+        // This is the real end of the original asynchronous attempt, not the
+        // outer TaskService timeout/cancellation. Other UNKNOWN/delivery/cache
+        // responsibilities are untouched. Cleanup must not mask its first cause.
+        attemptActive = false
+        this.#endMainlineRecovery(token, principal)
+      }
+    })
+    this.#mainlineRecoveryOperations.add(operation)
+    return operation
   }
   queryReadBudget(owner: object): QueryMainReadBudget {
     const mainline = [...this.#mainlineRecords.values()].find((record) => record.owner === owner)
@@ -2097,6 +2398,7 @@ export class EngineSupervisor {
     queryPin?: object,
     queryRead?: { ticket: QueryProjectReadTicket; binding: Readonly<Record<string, unknown>> },
     mainlineOwner?: MainlineOwnerRecord,
+    recoveryCurrent?: () => void,
   ): Promise<unknown> {
     if (!this.#current(session)) return Promise.reject(exited())
     if (!mainlineOwner && queryPin) {
@@ -2196,6 +2498,9 @@ export class EngineSupervisor {
           }
         }
         if (queryPin) this.#checkQueryPin(queryPin, session)
+        // Only a private mainline recovery open/read supplies this guard. No
+        // asynchronous work or observer callback may follow it before write.
+        recoveryCurrent?.()
       } catch (cause) {
         clearTimeout(timer)
         session.pending.delete(request.id)

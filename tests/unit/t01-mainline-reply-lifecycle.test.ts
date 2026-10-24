@@ -42,6 +42,8 @@ class MemoryChild extends EventEmitter {
   exitCode: number | null = null
   signalCode: NodeJS.Signals | null = null
   holdCatalog = false
+  holdOpen = false
+  pendingOpenFrame?: string
   wrongId = false
   calls: Wire[] = []
   constructor(readonly session: string) {
@@ -82,19 +84,18 @@ class MemoryChild extends EventEmitter {
                     offset: 0,
                     nextCursor: null,
                   }
-        queueMicrotask(() =>
-          this.stdout.write(
-            JSON.stringify({
-              kind: 'response',
-              protocolVersion: q.method === 'hello' ? 2 : 3,
-              id: this.wrongId && q.method !== 'hello' ? id(99) : q.id,
-              engineSessionId: session,
-              method: q.method,
-              ok: true,
-              result,
-            }) + '\n',
-          ),
-        )
+        const frame =
+          JSON.stringify({
+            kind: 'response',
+            protocolVersion: q.method === 'hello' ? 2 : 3,
+            id: this.wrongId && q.method !== 'hello' ? id(99) : q.id,
+            engineSessionId: session,
+            method: q.method,
+            ok: true,
+            result,
+          }) + '\n'
+        if (q.method === 'project.open' && this.holdOpen) this.pendingOpenFrame = frame
+        else queueMicrotask(() => this.stdout.write(frame))
         done()
       },
     })
@@ -106,7 +107,7 @@ class MemoryChild extends EventEmitter {
   }
 }
 const supervisors: EngineSupervisor[] = []
-function setup() {
+function setup(requestMs = 20) {
   const children: MemoryChild[] = []
   controlled.spawn.mockReset().mockImplementation(() => {
     const child = new MemoryChild(id(2 + children.length))
@@ -120,7 +121,7 @@ function setup() {
       profile: 'business3',
       registryPath,
       command: { command: '/memory/engine', args: [] },
-      requestMs: 20,
+      requestMs,
     },
   )
   supervisors.push(supervisor)
@@ -261,12 +262,130 @@ describe('main-only delivery receipts with actual supervisor and memory stdio', 
       const client = s.supervisor.mainlineProjectClient()!
       const selected = client.selected
       expect(projects.source.current()?.project).toBe(selected)
-      expect(s.receiver.diagnostic().holdingCount).toBe(2)
+      expect(s.receiver.diagnostic().holdingCount).toBe(3) // selected, source, principal
       projects.source.fence()
       expect(projects.source.current()).toBeNull()
       expect(client.selected).toBe(selected)
-      expect(s.receiver.diagnostic().holdingCount).toBe(1)
+      expect(s.receiver.diagnostic().holdingCount).toBe(2) // raw fence retains recovery authority
       expect(s.receiver.diagnostic().slots).toBe(0)
+      await projects.source.closeSelection()
+      expect(s.receiver.diagnostic().holdingCount).toBe(1) // actual owner close retires principal
+      expect(client.selected).toBe(selected)
+    } finally {
+      projects.dispose()
+      tasks.dispose()
+    }
+  })
+  it('retires completed principal holdings on reselection and repeated actual disposal', async () => {
+    const s = setup(),
+      tasks = new TaskService(s.supervisor)
+    const projects = new ProjectMainlineService(s.supervisor, tasks, () => {})
+    try {
+      for (let i = 0; i < 5; i++) {
+        const reply = await s.receiver.receive(() => projects.openProject({ projectId: id(1) }))
+        expect(reply.value.ok).toBe(true)
+        s.receiver.consume(reply.receipt)
+        expect(s.receiver.diagnostic().holdingCount).toBe(3)
+        expect(s.receiver.diagnostic().slots).toBe(0)
+      }
+      const before = s.receiver.diagnostic()
+      projects.dispose()
+      expect(s.receiver.diagnostic().holdingCount).toBe(1)
+      projects.dispose()
+      expect(s.receiver.diagnostic().holdingCount).toBe(1)
+      expect(s.receiver.diagnostic().scratchBytes).toBe(before.scratchBytes)
+      expect(s.receiver.diagnostic().totalWork).toBeGreaterThanOrEqual(before.totalWork)
+      expect(s.receiver.diagnostic().unknown).toBe(before.unknown)
+    } finally {
+      projects.dispose()
+      tasks.dispose()
+    }
+  })
+  it('authenticates exact retirement tokens and origin owners without refunding other responsibility', async () => {
+    const s = setup()
+    let token: object | undefined
+    const offered = await s.receiver.receive(async () => {
+      const value = await s.open()
+      const client = s.supervisor.mainlineProjectClient()!
+      token = s.supervisor.issueMainlineRecovery(client, () => true)
+      return value
+    })
+    s.receiver.consume(offered.receipt)
+    const origin = s.supervisor.mainlineProjectClient()!
+    expect(token).toBeDefined()
+    const before = s.receiver.diagnostic()
+    const foreign = setup()
+    const foreignClient = foreign.supervisor.mainlineProjectClient()!
+    expect(() => s.supervisor.retireMainlineRecovery(origin, {})).toThrow(EngineError)
+    expect(() => s.supervisor.retireMainlineRecovery(foreignClient, token!)).toThrow(EngineError)
+    expect(() => foreign.supervisor.retireMainlineRecovery(origin, token!)).toThrow(EngineError)
+    s.children[0].exitCode = 1
+    s.children[0].emit('close', 1)
+    const successor = s.supervisor.mainlineProjectClient()!
+    expect(successor.owner).not.toBe(origin.owner)
+    expect(() => s.supervisor.retireMainlineRecovery(successor, token!)).toThrow(EngineError)
+    expect(s.receiver.diagnostic().holdingCount).toBe(before.holdingCount)
+    expect(s.supervisor.retireMainlineRecovery(origin, token!)).toBe(true)
+    expect(s.supervisor.retireMainlineRecovery(origin, token!)).toBe(true)
+    const after = s.receiver.diagnostic()
+    expect(after.holdingCount).toBe(before.holdingCount - 1)
+    expect(after.unknown).toBe(before.unknown)
+    expect(after.slots).toBe(before.slots)
+    expect(after.scratchBytes).toBe(before.scratchBytes)
+    expect(after.totalWork).toBeGreaterThanOrEqual(before.totalWork)
+  })
+  it('keeps a retired principal charged until its actual pending open finally ends', async () => {
+    const s = setup(1500),
+      tasks = new TaskService(s.supervisor)
+    const updates: import('@ontolearn/contracts').TaskUpdate[] = []
+    const projects = new ProjectMainlineService(s.supervisor, tasks, () =>
+      tasks.attachView((u) => updates.push(u)),
+    )
+    try {
+      const offered = await s.receiver.receive(() => projects.openProject({ projectId: id(1) }))
+      expect(offered.value.ok).toBe(true)
+      s.receiver.consume(offered.receipt)
+      const next = new MemoryChild(id(3))
+      next.holdOpen = true
+      controlled.spawn.mockImplementationOnce(() => {
+        s.children.push(next)
+        queueMicrotask(() => next.emit('spawn'))
+        return next
+      })
+      s.children[0].exitCode = 1
+      s.children[0].emit('close', 1)
+      await vi.waitFor(() => expect(next.pendingOpenFrame).toBeDefined(), {
+        timeout: 1000,
+        interval: 5,
+      })
+      const before = s.receiver.diagnostic()
+      const watermark = updates.length
+      expect(before.holdingCount).toBe(2) // old selected + principal, real open pending
+      await projects.source.closeSelection()
+      expect(s.receiver.diagnostic().holdingCount).toBe(before.holdingCount)
+      expect(projects.source.current()).toBeNull()
+      next.stdout.write(next.pendingOpenFrame!)
+      await vi.waitFor(
+        () => {
+          const after = s.receiver.diagnostic()
+          expect(after.computing).toBe(0)
+          expect(after.holdingCount).toBe(before.holdingCount - 1)
+        },
+        { timeout: 1000, interval: 5 },
+      )
+      const after = s.receiver.diagnostic()
+      expect(after.unknown).toBeGreaterThanOrEqual(before.unknown + 1)
+      expect(after.slots).toBeGreaterThanOrEqual(before.slots)
+      expect(after.scratchBytes).toBe(before.scratchBytes)
+      expect(after.totalWork).toBeGreaterThanOrEqual(before.totalWork)
+      expect(projects.source.current()).toBeNull()
+      expect(
+        updates.slice(watermark).some((u) => u.kind === 'restored' && u.view.project !== null),
+      ).toBe(false)
+      expect(next.calls.filter((q) => q.method === 'project.open')).toHaveLength(1)
+      expect(
+        next.calls.some((q) => ['project.get', 'job.create', 'job.cancel'].includes(q.method)),
+      ).toBe(false)
     } finally {
       projects.dispose()
       tasks.dispose()
