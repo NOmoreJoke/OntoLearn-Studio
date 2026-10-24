@@ -1,164 +1,98 @@
 {
-  "schema": "ontolearn.rdflib.fr201.typed-source-provenance/1",
-  "status": "ARTIFACT_AND_LIBRARY_FIXTURE_VERIFIED_NOT_ADOPTED_NOT_PRODUCT_ACCEPTED",
+  "schema": "ontolearn.rdflib.fr201.2-source-provenance/1",
+  "createdAt": "2026-10-25T01:22:56.715858+08:00",
+  "state": "LIBRARY_ARTIFACT_SUPPLY_NOT_ADOPTED_NOT_APP_ACCEPTED",
   "upstream": {
-    "path": "upstream/rdflib-7.6.0-py3-none-any.whl",
-    "bytes": 615416,
-    "sha256": "30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd"
+    "version": "7.6.0",
+    "wheel": {
+      "path": "upstream/rdflib-7.6.0-py3-none-any.whl",
+      "bytes": 615416,
+      "sha256": "30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd"
+    },
+    "source": {
+      "path": "upstream/notation3-official.py",
+      "bytes": 67404,
+      "sha256": "a3e361632567b5326a06318e93e081f31f93c7497d1b52cbb91f2ef460a9d3ca"
+    },
+    "license": {
+      "path": "upstream/LICENSE",
+      "bytes": 1524,
+      "sha256": "53a705e51bfd199e8c97d0442376cb4bbd4ffcf13ba4f2c4c2794211400e4012"
+    },
+    "url": "https://files.pythonhosted.org/packages/10/c2/6604a71269e0c1bd75656d5a001432d16f2cc5b8c057140ec797155c295e/rdflib-7.6.0-py3-none-any.whl",
+    "inputMethod": "Original approved official bytes read from adopted b779 Git object; no upstream upgrade or new download"
   },
-  "upstreamURL": "https://files.pythonhosted.org/packages/10/c2/6604a71269e0c1bd75656d5a001432d16f2cc5b8c057140ec797155c295e/rdflib-7.6.0-py3-none-any.whl",
-  "upstreamVersion": "7.6.0",
-  "localVersion": "7.6.0+ontolearn.fr201.1",
-  "sourceBefore": {
-    "path": "upstream/notation3.py",
-    "bytes": 67404,
-    "sha256": "a3e361632567b5326a06318e93e081f31f93c7497d1b52cbb91f2ef460a9d3ca"
+  "adoptedBaseline": {
+    "localVersion": "7.6.0+ontolearn.fr201.1",
+    "commit": "b779492ef9f7bbded93c9f1941aabf1ed5a3ab70",
+    "source": {
+      "path": "upstream/notation3-fr201.1.py",
+      "bytes": 67880,
+      "sha256": "a1f8eef3d99793d533e4b60da3299abc627fb2d164c1fa92b894c414333cb3b1"
+    },
+    "wheel": {
+      "path": "prospective/before/packages/engine/vendor/rdflib/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl",
+      "bytes": 2378177,
+      "sha256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137"
+    },
+    "previousCumulativePatch": {
+      "path": "prospective/before/packages/engine/vendor/rdflib/notation3-input-types.patch",
+      "bytes": 1748,
+      "sha256": "03e12f742d8f52a105f9513f1788df928def25b06663efc616fa3eaaa3077b65"
+    },
+    "previousProvenance": {
+      "path": "prospective/before/packages/engine/vendor/rdflib/PROVENANCE.json",
+      "bytes": 10405,
+      "sha256": "2b3898411a84f3d96c67ffb83974e59e0e7ea03badd40fac55c3e73c9bd4e266"
+    },
+    "input9Pins": {
+      "path": "evidence/adopted-baseline.json",
+      "bytes": 2003,
+      "sha256": "4ef6d95e9428bb71bfedfe1198f6a9e4a0ae3291d4d049b6ab82150466082006"
+    },
+    "actualT02InstalledSourceInitiallyEqualBaselineWheel": true
   },
+  "localVersion": "7.6.0+ontolearn.fr201.2",
   "sourceAfter": {
     "path": "after/notation3.py",
-    "bytes": 67880,
-    "sha256": "a1f8eef3d99793d533e4b60da3299abc627fb2d164c1fa92b894c414333cb3b1"
+    "bytes": 68439,
+    "sha256": "497c80f5254e1bcd0dd6caab79b0b37447b54d382573aa6dc05a074202eaae6b"
   },
-  "patch": {
+  "incrementalPatchFromAdoptedFr2011": {
+    "path": "fr201.1-to-fr201.2.patch",
+    "bytes": 1968,
+    "sha256": "90e17083fd48535daca1a17643bca29fa72dfa0efa234004f11d25c66d3e96dd"
+  },
+  "cumulativePatchFromOfficial760": {
     "path": "notation3-input-types.patch",
-    "bytes": 1748,
-    "sha256": "03e12f742d8f52a105f9513f1788df928def25b06663efc616fa3eaaa3077b65"
+    "bytes": 3431,
+    "sha256": "f78643991ff95602fc00b06e16fc380b31263866d9df67e6cecdb131220f39f9"
   },
   "repackScript": {
     "path": "scripts/repack-rdflib-input-types.py",
     "bytes": 7112,
-    "sha256": "837aa03bb6ab6f65fd668123bbbb4af69ed15977bede4cb0a753f4625fdced4a",
-    "pathBasis": "Canonical repository root after separate ROOT-authorized adoption"
+    "sha256": "d0a87261e9c15ce69548a474357ce8e1e8ba1e7e08e2e7f1a86aa5264a8e2691"
   },
   "repackResults": [
     {
-      "path": "after/repack-001/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl",
-      "bytes": 2378177,
-      "sha256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137"
+      "path": "after/repack-001/rdflib-7.6.0+ontolearn.fr201.2-py3-none-any.whl",
+      "bytes": 2378736,
+      "sha256": "f30e6279edcc31dbcb0c84eb1ee79e43776e7a30cd8813bcde7cfa85848bc0ef"
     },
     {
-      "path": "after/repack-002/rdflib-7.6.0+ontolearn.fr201.1-py3-none-any.whl",
-      "bytes": 2378177,
-      "sha256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137"
+      "path": "after/repack-002/rdflib-7.6.0+ontolearn.fr201.2-py3-none-any.whl",
+      "bytes": 2378736,
+      "sha256": "f30e6279edcc31dbcb0c84eb1ee79e43776e7a30cd8813bcde7cfa85848bc0ef"
     }
   ],
-  "repackDeterministicByteIdentity": true,
-  "determinism": "stdlib ZIP_STORED, lexicographic filenames, fixed1980 timestamp, fixed regular0644 mode; no compression-library variability",
-  "baseWheelWHEELMetadata": "Wheel-Version: 1.0\nGenerator: poetry-core 1.9.1\nRoot-Is-Purelib: true\nTag: py3-none-any\n",
-  "inheritedGeneratorMeaning": "WHEEL Generator poetry-core1.9.1 is preserved upstream-base metadata, not a claim that poetry-core made this downstream repack. This local version was resealed by the pinned script above. Original release __date__ is also inherited.",
-  "changedContentMembers": [
-    "rdflib/plugins/parsers/notation3.py",
-    "rdflib-7.6.0+ontolearn.fr201.1.dist-info/METADATA (Version only)",
-    "rdflib-7.6.0+ontolearn.fr201.1.dist-info/RECORD"
-  ],
-  "distInfoDirectoryRenamedForHonestLocalVersion": true,
-  "memberCount": 142,
-  "license": {
-    "path": "upstream/LICENSE",
-    "bytes": 1524,
-    "sha256": "53a705e51bfd199e8c97d0442376cb4bbd4ffcf13ba4f2c4c2794211400e4012"
-  },
-  "licenseInsideWheelUnchanged": true,
-  "codeScope": [
-    "join pre-existing opaque-base-relative rejection raises RelativeIRIBaseError",
-    "unicodeExpand code>0x10FFFF only raises UnicodeCodePointError; no broad catch and no new surrogate policy",
-    "_unicodeEscape catches only UnicodeCodePointError into existing BadSyntax; unknown internal exceptions propagate",
-    "necessary typed declarations in same notation3 module; no other source edits"
-  ],
-  "typedBase": "rdflib.plugins.parsers.notation3.Notation3InputError",
-  "approvedDependencyMetadata": {
-    "sourceGitCheckout": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-transactions",
-    "commit": "583c05c7870ba0f8f642e3eeea1d0590e5859ca2",
-    "readGitObjectsOnly": true,
-    "members": [
-      {
-        "path": "pyproject.toml",
-        "bytes": 1593,
-        "sha256": "e4b989aab1b3b2025f19a29791295522a8cbbc98005adf528ad9fa6565105e16"
-      },
-      {
-        "path": "packages/engine/pyproject.toml",
-        "bytes": 398,
-        "sha256": "ef9354acbac0387eb8706cb309113a98dc183553cf8fe09ef38b9db75e12e2ff"
-      },
-      {
-        "path": "uv.lock",
-        "bytes": 28439,
-        "sha256": "95c536cb993c40331cb2e50aa9bec6acadeb3bb7997401b29dfabeba3fd76ce5"
-      }
-    ]
-  },
-  "prospectiveEnginePyproject": {
-    "path": "prospective/after/packages/engine/pyproject.toml",
-    "bytes": 519,
-    "sha256": "2c361292ed87c2a2520c80f4e5c6ae08d0238b1b3a89cfe7cd66af6454d1f2ae"
-  },
-  "prospectiveLock": {
-    "path": "prospective/after/uv.lock",
-    "bytes": 29015,
-    "sha256": "10a062d5ffe323dad220a47d1b8d0ea545a52949a7e67f2b0546cf72a2fa4da8"
-  },
-  "lockConstruction": "Restricted mechanical transform of approved583; real uv lock --check --offline natural0 in prospective-lock-check-005; not a fresh resolver-generated lock. Complete original requirements/extras metadata copied from verified wheel for local-source validation. 21 other package blocks plus top-level metadata byte/value unchanged.",
-  "offlineFixture": "Separate output env-old/env-new. Runtime7 primed with UV from individually locked/hash-verified local wheels, no deps or indexes. Old official wheel primed likewise then frozen audit0. New local wheel actually installed by frozen sync0; final lock frozen audit0. No global or oldvenv writes.",
-  "libraryRegression": {
-    "oldRaw": {
-      "path": "evidence/regression-old-001/stdout.raw",
-      "bytes": 169427,
-      "sha256": "9f41aff43168fc15150ab0e76ee5f4a5a5dd0cbf246879bd4d949c3775b4199c"
-    },
-    "oldNaturalExit": 1,
-    "oldKnownBaselineFailures": 0,
-    "oldTargetFailures": 21,
-    "newRaw": {
-      "path": "evidence/regression-new-001/stdout.raw",
-      "bytes": 153518,
-      "sha256": "6f9e22d0c9eb0e752787d9acbfc539f585eef0a0b51fdaabbdbae5e2ea4e4ff1"
-    },
-    "newNaturalExit": 0,
-    "newTargetFailures": 0,
-    "comparison": {
-      "path": "evidence/old-new-comparison.json",
-      "bytes": 18258,
-      "sha256": "3c11f2871da7a4fbce537ed9bea9750361c68e79c339fe4aa93ca8574baadbbb"
-    },
-    "successResultsExactlyEqual": 21,
-    "realGraphSuccessN3ExactlyEqual": 11,
-    "injectedFaultExactObjectPassthrough": 24,
-    "scope": "Finite library regressions, not proof of full grammar equivalence; no application UNKNOWN/HOLD receiver/stdio execution."
-  },
-  "firstFailuresPreserved": [
-    "urllib incomplete fetch tool1f9b39 transcribed receipt",
-    "wheel tag selector failure tool8ef4fc",
-    "owlrl curl35 first fetch",
-    "old-frozen-sync-001 missing URL-keyed cache",
-    "prospective-lock-001 and checks001-004 missing local metadata/registry cache",
-    "regression-old-001 expected target-red natural1"
-  ],
-  "futureObligations": [
-    "ROOT exact adoption ticket before canonical writes or dependency changes",
-    "T01 exact typed catches and app/receiver/stdio UNKNOWN-HOLD regression on new candidate",
-    "T11 physical package local version, PYZ source, metadata RECORD licenses NOTICE and same APP cases",
-    "Supported Windows/macOS/Linux Python3.12 validation, full affected checks, designated reviews and existing release gates",
-    "Q6 RDF/SHACL/SPARQL/XSD REC pins and acceptance policies remain unchanged; library local identifier is not a spec version change"
-  ],
-  "canonicalSourceModified": false,
-  "originalT03GoalResumed": false,
-  "allNonTargetMemberContentsUnchanged": true,
-  "unchangedContentMemberCount": 139,
-  "originalTreeProtection": {
-    "before": "evidence/original-tree-before.json",
-    "after": "evidence/original-tree-after.json",
-    "eligibleCount": 2612,
-    "allBeforeAfterEqual": true,
-    "ignoredObjectsNotAudited": true
-  },
-  "historicalRepackScript": {
-    "path": "scripts/repack-rdflib-input-types.py",
-    "bytes": 6716,
-    "sha256": "37e97de7168aed4594c066a78357fc02b1137df2331db371e29bd85db87384b9"
-  },
+  "repackNaturalExits": [0, 0],
+  "twoRepackOutputsByteIdentical": true,
+  "repackFunctionsUnchangedFromAdoptedStyleScript": true,
+  "onlyRepackConstantChanges": ["VERSION", "PATCH_SHA", "AFTER_SHA"],
+  "determinism": "ZIP_STORED; sorted member names; fixed1980 timestamp and regular0644 mode; exact upstream/patch/source hash checks; no fuzzy apply or overwrite",
+  "WHEELGeneratorAndReleaseDate": "Inherited original poetry-core1.9.1 generator and release __date__ identify upstream base only. The local version is resealed by the pinned downstream script; it is not an unmodified official wheel.",
   "canonicalReproduction": {
-    "workingDirectory": "canonical repository root",
+    "workingDirectory": "canonical repository root after ROOT-authorized adoption",
     "argv": [
       "python3.12",
       "-I",
@@ -170,37 +104,145 @@
       "--patch",
       "packages/engine/vendor/rdflib/notation3-input-types.patch",
       "--output-dir",
-      "build/rdflib-fr201-reproduce-style-001"
+      "build/rdflib-fr201.2-reproduce-fresh-001"
     ],
-    "freshOutputRequirement": "Use a fresh --output-dir; the script refuses to overwrite an existing wheel. No UV or project imports are involved.",
-    "pythonRequirement": "Use an existing supported Python3.12 interpreter. The recorded run substitutes its actual absolute path for python3.12; every script/input/output path argument was repository-relative."
+    "freshOutputRequired": true,
+    "actualRunBoundary": "Two actual runs used equivalent supply-archive-relative paths under after/repack-001 and002. This is the canonical layout command, not a claim of an additional canonical/product execution."
   },
-  "styleCompatibilityOverlay": {
-    "parentENTRY": {
-      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261024_t03_rdflib_fr201_typed_source_001/ENTRY.json",
-      "bytes": 12260,
-      "sha256": "36d56e7aa1037cb93d9b9063072c185ad4eb0bee82030ccd06c39d970e73bbad"
-    },
-    "parentManifest": {
-      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261024_t03_rdflib_fr201_typed_source_001/delivery-manifest.json",
-      "bytes": 43825,
-      "sha256": "5f2032ad948e6106fd6a2436535ffd4e975bd6acbe868290564f1631be0b4782"
-    },
-    "parentProvenance": {
-      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261024_t03_rdflib_fr201_typed_source_001/PROVENANCE.json",
-      "bytes": 7294,
-      "sha256": "b0fb38edccfe989f9fbdc156ef25df2566c3512f50ab7501920d740b92366a2b"
-    },
-    "reason": "Original ruff check and format-check each exited1 under approved583 config; output-only import sort and formatting now both natural0.",
-    "ASTProof": "style-compat-001/AST-equivalence.json: same stdlib imports, order only; all functions and import-normalized module AST equal.",
-    "newScriptRepack": {
-      "receipt": "style-compat-001/formatted-repack.receipt.json",
-      "wheelBytes": 2378177,
-      "wheelSHA256": "13be2a17b60fbbadfefbb5b00d41fe12c9dd97d2844c41c22d1d00fc86d99137",
-      "unchangedFromParentWheel": true
-    },
-    "scope": "Only canonical script and vendor PROVENANCE adoption leaves supersede the parent. Library patch/source/wheel/dependencies/other6 adoption leaves remain unchanged; no55-case rerun.",
-    "auditRootRelativeToParentSupply": "style-compat-001"
+  "codeChangesFromFr2011": [
+    "Add UnterminatedStringError(Notation3InputError, AssertionError) and MissingDatatypeError(Notation3InputError, IndexError)",
+    "strconst only interesting.search is None is the known no-closing-token state; falsey non-None damaged matches remain unclassified",
+    "literal datatype only uri_ref2 negative return is classified; successful parse with corrupt empty res2 remains ordinary IndexError",
+    "strconst terminal-backslash knownEOF only j==len_argstr raises dedicated unterminated input type; do not use >= to absorb corrupted internal cursors"
+  ],
+  "existingFr2011JoinAndUnicodeFixesPreserved": true,
+  "noBroadCatchTextClassificationScanNormalizeOrPublicIDChange": true,
+  "memberAndLicenseProof": {
+    "path": "evidence/wheel-members-record.json",
+    "bytes": 28662,
+    "sha256": "2f83afe6a4500a63d3c8b365090d846887fb5094cf751bb27e77c6bddd340ef2"
   },
-  "auditReferencePathBasis": "Existing relative paths such as upstream/, after/, evidence/ and prospective/ refer to the immutable parent supply archive, not directories promised to exist inside canonical vendor. New style audit references prefixed style-compat-001/ are relative to that same parent archive root. Canonical reproduction uses only canonicalReproduction.argv paths."
+  "memberCount": 142,
+  "RECORDRowsVerified": 142,
+  "nonTargetLogicalMemberContentsUnchanged": 139,
+  "BSDOriginalBytesUnchanged": true,
+  "dependencyMetadata": {
+    "beforeRootPyproject": {
+      "path": "prospective/before/pyproject.toml",
+      "bytes": 1593,
+      "sha256": "e4b989aab1b3b2025f19a29791295522a8cbbc98005adf528ad9fa6565105e16"
+    },
+    "afterEnginePyproject": {
+      "path": "prospective/after/packages/engine/pyproject.toml",
+      "bytes": 519,
+      "sha256": "d0f6fde0a3f8fb7e05848cf3189108f9996bd405c9b12a67fadbf4adaa6c0ad3"
+    },
+    "afterLock": {
+      "path": "prospective/after/uv.lock",
+      "bytes": 29015,
+      "sha256": "5afbdfa32f48db45bdc4449d14047e8b64c26583bfcaa868d5fb070053934104"
+    },
+    "construction": "Restricted mechanical version/source/artifactSHA/size update from adopted b779 lock; actual offline lock-check0, not fresh solver generation",
+    "other21PackageBlocksUnchanged": true,
+    "topLevelLockMetadataUnchanged": true,
+    "noDependencyOrSelectedExtrasAdded": true,
+    "proof": {
+      "path": "evidence/lock-delta-proof.json",
+      "bytes": 907,
+      "sha256": "22b67c835c0c3991bf34eaaaa33529c194b9eb6f37b2df513b0fb27421c1e59c"
+    }
+  },
+  "isolatedFixture": {
+    "old": "7.6.0+ontolearn.fr201.1",
+    "new": "7.6.0+ontolearn.fr201.2",
+    "python": "Fixed existing CPython3.12.12",
+    "cacheAndEnvironmentWrites": "Only this new output",
+    "runtime7": "Copied existing previously locked/hash-verified wheels into fixture-only wheelhouse, UV no-deps/no-index offline priming",
+    "rdflibInstall": "Each local wheel actually installed by frozen offline sync; no installed source editing",
+    "installedIdentityOld": {
+      "path": "evidence/installed-identity-old-001/stdout.raw",
+      "bytes": 175338,
+      "sha256": "0f859ff935b028db3ccb1cbde2b153eb11e8a096b81ac1d001a797302e65483a"
+    },
+    "installedIdentityNew": {
+      "path": "evidence/installed-identity-new-001/stdout.raw",
+      "bytes": 175306,
+      "sha256": "f78f48c22e5c9a1b9cca5ac417c7ef5db2bab4349141d4ea5d2849f9a95223e5"
+    }
+  },
+  "regression": {
+    "harness": {
+      "path": "tests/library_regression.py",
+      "bytes": 30782,
+      "sha256": "a9a5e13406fe248cf1b540f6c3823a2961a5470ce97a0f848654b6bad940e893"
+    },
+    "oldRaw": {
+      "path": "evidence/regression-old-001/stdout.raw",
+      "bytes": 696026,
+      "sha256": "d99369b7232f9a4e37ba4577edee3a30c62171c2c0642c56b0ed9c56665cbdb5"
+    },
+    "oldNaturalExit": 1,
+    "oldKnownBaselineFailures": 0,
+    "oldTargetFailures": 26,
+    "oldFailureMeaning": "25 known syntax rejects +1 falsey non-None corrupt-output safety case",
+    "newRaw": {
+      "path": "evidence/regression-new-001/stdout.raw",
+      "bytes": 697842,
+      "sha256": "ea0328ff0e38e736d48f9d2e4706d8cef221f9e8f7733e7a2608f9675b8c9948"
+    },
+    "newNaturalExit": 0,
+    "casesPerMode": 158,
+    "newTargetFailures": 0,
+    "sameSuccessfulValues": 40,
+    "sameGraphN3Values": 30,
+    "unknownInjectedErrorsExactObjectPassthrough": 60,
+    "damagedOutputStatesUnclassified": 3,
+    "exactLexicalUTF8BytesPreserved": true,
+    "comparison": {
+      "path": "evidence/old-new-comparison.json",
+      "bytes": 58341,
+      "sha256": "eec864173d87376905056743d348dd339008709df6c26dd9efd6abd2fbc77296"
+    },
+    "boundary": "Finite library-only probes. Eight fully closed bare-literal EOF ordinary IndexError observations remain unclassified; no claim to classify every caller syntax error. No APP receiver/stdio/Store/snapshot UNKNOWN-HOLD execution."
+  },
+  "supplierIntegrationStyle": {
+    "ruffCheckNaturalExit": 0,
+    "ruffFormatCheckNaturalExit": 0,
+    "approvedRootConfig": {
+      "path": "prospective/before/pyproject.toml",
+      "bytes": 1593,
+      "sha256": "e4b989aab1b3b2025f19a29791295522a8cbbc98005adf528ad9fa6565105e16"
+    },
+    "noCacheOrRuleDowngrade": true
+  },
+  "sourceAndHistoryProtection": {
+    "originalT03Before": {
+      "path": "evidence/original-tree-before.json",
+      "bytes": 703246,
+      "sha256": "eafceb769d250c62471189b115fc5e90a88bbb8192d8e21da1fc7388d8d31262"
+    },
+    "originalT03After": {
+      "path": "evidence/original-tree-after.json",
+      "bytes": 703470,
+      "sha256": "537156cbe8df6cb1e78281080f048c7efb0792ad5a854a2e83a882ce778f152b"
+    },
+    "all2612EligibleAndStatusIndexHeadBranchDiffsSame": true,
+    "ignoredNotEnumeratedOrExecuted": true,
+    "previousSupplies": {
+      "path": "evidence/prior-supplies-protected.json",
+      "bytes": 696,
+      "sha256": "0eef27c353dba8661761ee42daae9cc6a86c1e998a9e80daf61dadec82773ad2"
+    },
+    "oldFr2011WheelNotDeletedOrOverwritten": true
+  },
+  "futureAdoptionFamily": "Same8 logical leaves: engine pyproject;uv.lock;repack script;new uniquely namedfr201.2 wheel;unchanged officialwheel;new cumulative patch;unchanged LICENSE;new PROVENANCE. Keep oldfr201.1 wheel and archived provenance/history.",
+  "auditReferencePathBasis": "All non-canonical paths in this record are relative to this immutable supply archive root, not to canonical vendor. The adopted-baseline provenance is preserved with its own original archive-path meaning. Only canonicalReproduction.argv specifies canonical repository-relative paths.",
+  "requiredConsumerChecks": [
+    "ROOT exact adoption decision before canonical changes",
+    "T01 precise new types + real caller/receiver/stdio and unknown Graph.parse/N3/Store/snapshot HOLD tests",
+    "T11 original owner supplies NOTICE for new version and actual package PYZ/local metadata/RECORD/LICENSE/same App checks",
+    "Supported platform/signing/damagedSQLiteHOLD/Q6REC/strategy/budget gates unchanged",
+    "Old b779 ZCode Pass and prior090/091 package evidence do not carry to this new candidate"
+  ],
+  "noAppGUIPackageRemoteDesignatedReviewOrGoalResume": true
 }

@@ -24,6 +24,25 @@ from test_mainline_dispatch import owned as owned
 
 ALIAS = '"typed string"^^<http://www.w3.org/2001/XMLSchema#string>'
 PLAIN = '"typed string"'
+R02_SYNTAX_CASES = [
+    (family, value)
+    for family in ("manual", "edit")
+    for value in ('"abc', '"设备编号', '"abc"^^', '""^^', '"""abc')
+]
+URLSPLIT_INPUT_CASES = [
+    pytest.param(family, value, id=f"urlsplit-{family}-{index}")
+    for family in ("manual", "edit")
+    for index, value in enumerate(
+        ("<http://[>", "<http://]>", "<http://[invalid]>", "<http://example.com／path>")
+    )
+]
+MANUAL_IRI_FIELD_CASES = [
+    pytest.param(field, value, id=f"manual-iri-{field}-{index}")
+    for field in ("subject", "predicate")
+    for index, value in enumerate(
+        ("http://[", "http://]", "http://[invalid]", "http://example.com／path")
+    )
+]
 
 
 def fact(value):
@@ -215,7 +234,10 @@ def test_non_input_failures_keep_original_unknown_and_hold(owned, monkeypatch, f
         ("edit", '"x"^^<../relative>'),
         ("manual", r'"x"^^<urn:\U00110000>'),
         ("edit", r'"x"^^<urn:\U00110000>'),
-    ],
+    ]
+    + R02_SYNTAX_CASES
+    + URLSPLIT_INPUT_CASES
+    + MANUAL_IRI_FIELD_CASES,
 )
 def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path, family, value):
     async def run():
@@ -338,10 +360,8 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
                     },
                 )
             )["projectId"]
-            base = 0
-            if family == "edit":
-                await commit(change(project))
-                base = 1
+            await commit(change(project))
+            base = 1
             params = {"projectId": project, "editor": "ontology"}
             before = await ok("project.read", params)
             refused = await call("changeset.preview", input_change(project, family, value, base))
@@ -361,13 +381,27 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
             assert_rejected(refused)
             assert current["ok"] and current["result"]["projectRevision"] == base
             assert after_error["ok"] and after_error["result"] == before
-            expected = PLAIN if family == "manual" else '"changed"'
-            await commit(input_change(project, family, expected, base))
+            expected = '"changed"' if family == "edit" else '"next"'
+            valid = (
+                input_change(project, "edit", expected, base)
+                if family == "edit"
+                else change(project, expected, base)
+            )
+            job, marker = await commit(valid)
             after = await ok("project.read", params)
             assert after["domain"]["projectRevision"] == base + 1
-            assert after["domain"]["state"]["facts"][0]["object"] == expected
-            assert after["domain"]["state"]["facts"][0]["id"] == fact(PLAIN)["id"]
+            facts = {item["id"]: item for item in after["domain"]["state"]["facts"]}
+            original = before["domain"]["state"]["facts"][0]
+            assert original["id"] == fact(PLAIN)["id"]
+            if family != "edit":
+                added = {**fact(expected), "owner": None, "source_row": None, "managed_value": None}
+                assert facts == {original["id"]: original, added["id"]: added}
+            else:
+                assert facts == {original["id"]: {**original, "object": expected}}
             assert session == hello["engineSessionId"]
+            (tmp_path / "stdio-recovery-trace.json").write_text(
+                json.dumps({"job": job, "marker": marker, "after": after}, ensure_ascii=False)
+            )
         finally:
             process.stdin.close()
             forced = False
@@ -407,10 +441,18 @@ def input_change(project, family, value, base):
     request = change(project, value, base)
     if family == "edit":
         request["plan"] = {"edits": {fact(PLAIN)["id"]: value}}
+    elif family in {"subject", "predicate"}:
+        record = fact(PLAIN)
+        record[family] = value
+        record["id"] = digest([record["subject"], record["predicate"], record["object"]])
+        request["plan"] = {"manual": [record]}
     return request
 
 
-@pytest.mark.parametrize(("family", "value"), INPUT_CASES)
+@pytest.mark.parametrize(
+    ("family", "value"),
+    INPUT_CASES + R02_SYNTAX_CASES + URLSPLIT_INPUT_CASES + MANUAL_IRI_FIELD_CASES,
+)
 def test_known_caller_objects_reject_then_same_host_reads_and_commits(
     owned, tmp_path, family, value
 ):
@@ -432,6 +474,7 @@ def test_known_caller_objects_reject_then_same_host_reads_and_commits(
     after_error = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
     trace = {
         "inputFamily": family,
+        "request": original,
         "before": before,
         "refused": refused,
         "current": current,
@@ -451,7 +494,7 @@ def test_known_caller_objects_reject_then_same_host_reads_and_commits(
     assert not host.hold and host.replies == {}
     valid = (
         change(project, '"next"', 1)
-        if family == "manual"
+        if family != "edit"
         else input_change(project, "edit", '"next"', 1)
     )
     accepted = confirmed_job(actor, project, valid)
@@ -468,11 +511,19 @@ def test_known_caller_objects_reject_then_same_host_reads_and_commits(
         expected = deepcopy(before["domain"]["state"]["facts"])
         expected[0]["object"] = '"next"'
         assert after["domain"]["state"]["facts"] == expected
+    else:
+        facts = {item["id"]: item for item in after["domain"]["state"]["facts"]}
+        original_fact = before["domain"]["state"]["facts"][0]
+        added = {**fact('"next"'), "owner": None, "source_row": None, "managed_value": None}
+        assert facts == {original_fact["id"]: original_fact, added["id"]: added}
     trace.update({"accepted": accepted, "job": job, "marker": marker, "after": after})
     path.write_text(json.dumps(trace, ensure_ascii=False))
 
 
-@pytest.mark.parametrize("failure", ["parser-value", "parser-exception", "parser-config", "n3"])
+@pytest.mark.parametrize(
+    "failure",
+    ["parser-value", "parser-exception", "parser-config", "parser-assertion", "parser-index", "n3"],
+)
 def test_new_input_boundary_keeps_unclassified_parser_and_n3_unknown(
     owned, monkeypatch, tmp_path, failure
 ):
@@ -488,6 +539,8 @@ def test_new_input_boundary_keeps_unclassified_parser_and_n3_unknown(
             "parser-value": ValueError,
             "parser-exception": Exception,
             "parser-config": ParserError,
+            "parser-assertion": AssertionError,
+            "parser-index": IndexError,
             "n3": ValueError,
         }[failure]
         raise error("Unsupported S1 RDF object")
@@ -515,6 +568,111 @@ def test_new_input_boundary_keeps_unclassified_parser_and_n3_unknown(
             {
                 "failure": failure,
                 "before": before,
+                "refused": refused,
+                "afterError": after_error,
+                "held": host.hold,
+                "unknown": list(unknown),
+            }
+        )
+    )
+
+
+@pytest.mark.parametrize(
+    ("site", "error_type"),
+    [("call", error) for error in (Exception, AssertionError, IndexError, TypeError)]
+    + [("scheme", ValueError)],
+)
+def test_urlsplit_noncontract_failures_keep_unknown_and_hold(
+    owned, monkeypatch, tmp_path, site, error_type
+):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    confirmed_job(actor, project, change(project))
+    drain_owned_changesets(actor)
+    database = list(store._db.iterdump())
+    host = actor.mainline
+    called = []
+    original_urlsplit = rdf_snapshot.urlsplit
+
+    def unexpected(value):
+        if value != "http://[":
+            return original_urlsplit(value)
+        called.append(value)
+        if site == "scheme":
+
+            class BrokenResult:
+                @property
+                def scheme(self):
+                    raise error_type("Invalid IPv6 URL")
+
+            return BrokenResult()
+        raise error_type("Invalid IPv6 URL")
+
+    monkeypatch.setattr(rdf_snapshot, "urlsplit", unexpected)
+    refused = exchange(actor, "changeset.preview", change(project, "<http://[>", 1))
+    assert called == ["http://["]
+    assert not refused["ok"] and refused["error"]["code"] == "INTERNAL_ERROR"
+    assert actor.mainline is host and host.hold
+    unknown = dict(host.replies)
+    assert len(unknown) == 1 and all(item.unknown for item in unknown.values())
+    after_error = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    assert not after_error["ok"] and after_error["error"]["code"] == "STORAGE_FAILURE"
+    assert all(host.replies[key] is item for key, item in unknown.items())
+    assert list(store._db.iterdump()) == database
+    (tmp_path / "urlsplit-unknown-trace.json").write_text(
+        json.dumps(
+            {
+                "site": site,
+                "errorType": error_type.__name__,
+                "called": called,
+                "refused": refused,
+                "afterError": after_error,
+                "held": host.hold,
+                "unknown": list(unknown),
+            }
+        )
+    )
+
+
+@pytest.mark.parametrize("field", ["subject", "predicate"])
+@pytest.mark.parametrize("error_type", [ValueError, AssertionError, IndexError])
+def test_manual_iri_preflight_does_not_classify_unknown_failures(
+    owned, monkeypatch, tmp_path, field, error_type
+):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    confirmed_job(actor, project, change(project))
+    drain_owned_changesets(actor)
+    database = list(store._db.iterdump())
+    host = actor.mainline
+    original = domain_changesets.iri
+    called = []
+
+    def unexpected(value):
+        if value == "http://[":
+            called.append(value)
+            raise error_type("Absolute stable IRI required")
+        return original(value)
+
+    monkeypatch.setattr(domain_changesets, "iri", unexpected)
+    request = input_change(project, field, "http://[", 1)
+    refused = exchange(actor, "changeset.preview", request)
+    assert called == ["http://["]
+    assert not refused["ok"] and refused["error"]["code"] == "INTERNAL_ERROR"
+    assert actor.mainline is host and host.hold
+    unknown = dict(host.replies)
+    assert len(unknown) == 1 and all(item.unknown for item in unknown.values())
+    after_error = exchange(actor, "project.read", {"projectId": project, "editor": "ontology"})
+    assert not after_error["ok"] and after_error["error"]["code"] == "STORAGE_FAILURE"
+    assert all(host.replies[key] is item for key, item in unknown.items())
+    assert list(store._db.iterdump()) == database
+    (tmp_path / "manual-iri-unknown-trace.json").write_text(
+        json.dumps(
+            {
+                "field": field,
+                "errorType": error_type.__name__,
+                "request": request,
+                "called": called,
                 "refused": refused,
                 "afterError": after_error,
                 "held": host.hold,
@@ -580,13 +738,15 @@ def test_reserved_original_identity_is_controlled_ownership_conflict(owned, tmp_
 def test_vendor_source_errors_have_dedicated_input_type(value):
     from importlib.metadata import version
 
-    assert version("rdflib") == "7.6.0+ontolearn.fr201.1"
+    assert version("rdflib") == "7.6.0+ontolearn.fr201.2"
     with pytest.raises(rdf_snapshot.TermInputError):
         rdf_snapshot.term(value)
 
 
 @pytest.mark.parametrize("site", ["join", "int", "group"])
-@pytest.mark.parametrize("error_type", [ValueError, Exception, ParserError])
+@pytest.mark.parametrize(
+    "error_type", [ValueError, Exception, ParserError, AssertionError, IndexError]
+)
 def test_same_bad_vendor_input_does_not_hide_internal_failures(
     owned, monkeypatch, tmp_path, site, error_type
 ):

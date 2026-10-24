@@ -24,7 +24,7 @@ from ontolearn_engine.project.transactions import (
     ProjectTransactions,
     state_diff,
 )
-from ontolearn_engine.rdf_snapshot import TermInputError, term
+from ontolearn_engine.rdf_snapshot import TermInputError, iri, term
 from ontolearn_engine.storage import LAYERS, Conflict, canonical, digest
 
 MAX_DOCUMENT = 16 * 1024 * 1024
@@ -445,9 +445,15 @@ def preview_changeset(
         transactions = ProjectTransactions(store)
         conflict = None
         if request["intent"] == "change":
-            # Only direct caller objects get known syntax/policy rejection.
+            # Only direct caller terms get known syntax/policy rejection.
             # Unknown parser/N3/Store/preview failures retain UNKNOWN/HOLD;
             # edits validate values without deriving or replacing their IDs.
+            for fact in request["plan"].get("manual", []):
+                try:
+                    iri(fact["subject"])
+                    iri(fact["predicate"])
+                except TermInputError:
+                    fail("INVALID_REQUEST", field="params")
             values = [fact["object"] for fact in request["plan"].get("manual", [])]
             values.extend(request["plan"].get("edits", {}).values())
             for value in values:

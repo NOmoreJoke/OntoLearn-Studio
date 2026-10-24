@@ -1,6 +1,6 @@
 --- a/rdflib/plugins/parsers/notation3.py
 +++ b/rdflib/plugins/parsers/notation3.py
-@@ -119,6 +119,18 @@
+@@ -119,6 +119,26 @@
  _StrT = TypeVar("_StrT", bound=str)
  
  
@@ -16,10 +16,18 @@
 +    """An escaped code point exceeds the range accepted by chr()."""
 +
 +
++class UnterminatedStringError(Notation3InputError, AssertionError):
++    """A string's remaining input cannot contain its closing delimiter."""
++
++
++class MissingDatatypeError(Notation3InputError, IndexError):
++    """A literal datatype suffix has no syntactically valid URI reference."""
++
++
  def join(here: str, there: str) -> str:
      """join an absolute URI and URI reference
      (non-ascii characters are supported/doctested;
-@@ -184,7 +196,7 @@
+@@ -184,7 +204,7 @@
  
      # join('mid:foo@example', '../foo') bzzt
      if here[bcolonl + 1 : bcolonl + 2] != "/":
@@ -28,7 +36,7 @@
              "Base <%s> has no slash after "
              "colon - with relative '%s'." % (here, there)
          )
-@@ -360,10 +372,11 @@
+@@ -360,10 +380,11 @@
  
  
  def unicodeExpand(m: Match) -> str:
@@ -44,7 +52,41 @@
  
  
  unicodeEscape4 = re.compile(r"\\u([0-9a-fA-F]{4})")
-@@ -1724,7 +1737,7 @@
+@@ -1586,6 +1607,8 @@
+                 if argstr[j : j + 2] == "^^":
+                     res2: typing.List[Any] = []
+                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
++                    if j < 0:
++                        raise MissingDatatypeError("Datatype URI expected after ^^")
+                     dt = res2[0]
+                 res.append(self._store.newLiteral(s, dt, lang))
+                 return j
+@@ -1636,10 +1659,11 @@
+ 
+             m = interesting.search(argstr, j)  # was argstr[j:].
+             # Note for pos param to work, MUST be compiled  ... re bug?
+-            assert m, "Quote expected in string at ^ in %s^%s" % (
+-                argstr[j - 20 : j],
+-                argstr[j : j + 20],
+-            )  # at least need a quote
++            if m is None:
++                raise UnterminatedStringError(
++                    "Quote expected in string at ^ in %s^%s"
++                    % (argstr[j - 20 : j], argstr[j : j + 20])
++                )
+ 
+             i = m.start()
+             try:
+@@ -1684,6 +1708,8 @@
+ 
+             elif ch == "\\":
+                 j = i + 1
++                if j == len_argstr:
++                    raise UnterminatedStringError("unterminated string literal (2)")
+                 ch = argstr[j]  # Will be empty if string ends
+                 if not ch:
+                     raise BadSyntax(
+@@ -1724,7 +1750,7 @@
              )
          try:
              return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])

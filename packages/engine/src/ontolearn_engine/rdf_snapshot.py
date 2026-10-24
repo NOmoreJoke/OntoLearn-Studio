@@ -7,7 +7,7 @@ Full PRD ontology semantics and reasoning remain later capability work.
 from urllib.parse import urlsplit
 
 from rdflib import XSD, Graph, Literal, URIRef
-from rdflib.plugins.parsers.notation3 import BadSyntax, RelativeIRIBaseError, UnicodeCodePointError
+from rdflib.plugins.parsers.notation3 import BadSyntax, Notation3InputError
 
 
 class TermInputError(ValueError):
@@ -15,11 +15,14 @@ class TermInputError(ValueError):
 
 
 def iri(value: str) -> URIRef:
-    if (
-        not isinstance(value, str)
-        or not urlsplit(value).scheme
-        or any(c.isspace() or c in '<>"{}|^`\\' for c in value)
-    ):
+    if not isinstance(value, str):
+        raise TermInputError("Absolute stable IRI required")
+    try:
+        parsed = urlsplit(value)
+    except ValueError as error:
+        # urlsplit's invalid authority input contract; no RDF parser catch here.
+        raise TermInputError("Absolute stable IRI required") from error
+    if not parsed.scheme or any(c.isspace() or c in '<>"{}|^`\\' for c in value):
         raise TermInputError("Absolute stable IRI required")
     return URIRef(value)
 
@@ -36,7 +39,7 @@ def term(value: str) -> URIRef | Literal:
             format="turtle",
             publicID="urn:ontolearn:s1:",
         )
-    except (BadSyntax, RelativeIRIBaseError, UnicodeCodePointError) as error:
+    except (BadSyntax, Notation3InputError) as error:
         raise TermInputError("Unsupported S1 RDF object") from error
     except Exception as error:
         raise ValueError("Unsupported S1 RDF object") from error
