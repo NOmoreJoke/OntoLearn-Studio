@@ -1,5 +1,5 @@
 import { _electron as electron, test, expect } from '@playwright/test'
-import { mkdtemp } from 'node:fs/promises'
+import { mkdtemp, realpath } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -10,7 +10,7 @@ export async function launchIsolatedDesktop(
   const args = options.args ?? []
   if (args.some((arg) => arg === '--user-data-dir' || arg.startsWith('--user-data-dir=')))
     throw new Error('An existing profile argument must have one owner')
-  const userData = await mkdtemp(join(tmpdir(), 'ontolearn-e2e-profile-'))
+  const userData = await realpath(await mkdtemp(join(tmpdir(), 'ontolearn-e2e-profile-')))
   const application = await electron.launch({
     ...options,
     acceptDownloads: options.acceptDownloads ?? true,
