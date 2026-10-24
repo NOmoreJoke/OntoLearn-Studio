@@ -197,7 +197,13 @@ class ProjectHostReader:
         count = counts.get("projects", 0)
         # Conservative repeated-decode work guard for immutable histories.
         # Not a timer or an assertion of exact CPU/RSS usage.
-        work = scan_bytes * (1 + counts.get("app_operations", 0) + counts.get("snapshots", 0))
+        repeats = counts.get("app_operations", 0) + counts.get("snapshots", 0)
+        work = scan_bytes * (1 + repeats)
+        if _mainline_core_material:
+            # Prepay scan/authorization aggregation and repeated decoded material.
+            # Authorized plan bytes are nonnegative and added below; this lower
+            # bound rejects inevitable excess before the second SQL aggregate.
+            work = 2 * scan_bytes + total_bytes * repeats
         if count > limits.projects or work > limits.validation_work:
             raise HostReadFault("limit")
         if _mainline_core_material:
@@ -212,7 +218,10 @@ class ProjectHostReader:
                 "json_extract(context,'$.request.authorization.preparedPlanRef') END "
                 "FROM operation_claims WHERE kind='application')"
             ).fetchone()[0]
-            if total_bytes + plan_bytes > limits.validation_bytes:
+            if (
+                total_bytes + plan_bytes > limits.validation_bytes
+                or work + plan_bytes * repeats > limits.validation_work
+            ):
                 raise HostReadFault("limit")
         return count
 
