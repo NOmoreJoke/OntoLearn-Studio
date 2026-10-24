@@ -174,7 +174,7 @@ def migration_backup(store, destination: str | Path | None, hook) -> tuple[str, 
     finally:
         backup.close()
     # Backup must be durable before publishing the migration transaction.
-    with target.open("rb") as saved:
+    with target.open("r+b" if os.name == "nt" else "rb") as saved:
         os.fsync(saved.fileno())
     if os.name != "nt":
         directory = os.open(target.parent, os.O_RDONLY)

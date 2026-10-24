@@ -198,8 +198,8 @@ def test_cross_project_save_denies_before_sql_and_never_changes_selection(owned)
         "NaN",
         "Infinity",
         '"\\ud800"',
-        '"' + "x" * 65535 + '"',
-        '"' + "中" * 21845 + '"',
+        pytest.param('"' + "x" * 65535 + '"', id="oversized-ascii-json"),
+        pytest.param('"' + "中" * 21845 + '"', id="oversized-utf8-json"),
     ],
 )
 def test_invalid_noncanonical_or_oversized_json_never_becomes_a_draft(owned, content_json):

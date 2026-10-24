@@ -592,3 +592,37 @@ Store(sys.argv[1],hook,target_format=3,backup_path=sys.argv[2])
     assert frozen(path)["format"] == version
     lease = format3.acquire_lease(path)
     lease.close()
+
+
+@pytest.mark.parametrize("version", [0, 1, 2])
+def test_backup_flush_failure_never_publishes_migration(tmp_path, monkeypatch, version):
+    path, backup = tmp_path / "source.db", tmp_path / "backup.db"
+    synthetic(path, version)
+    before = frozen(path)
+    phases, flush_modes = [], []
+    original_open = type(backup).open
+
+    def tracked_open(self, mode="r", *args, **kwargs):
+        if self == backup and mode in {"rb", "r+b"}:
+            flush_modes.append(mode)
+        return original_open(self, mode, *args, **kwargs)
+
+    def failed_flush(fd):
+        assert fd >= 0
+        raise OSError("injected backup flush failure")
+
+    original_fsync = format3.os.fsync
+    monkeypatch.setattr(type(backup), "open", tracked_open)
+    monkeypatch.setattr(format3.os, "fsync", failed_flush)
+    with pytest.raises(OSError, match="^injected backup flush failure$"):
+        Store(path, phases.append, target_format=3, backup_path=backup)
+    monkeypatch.setattr(format3.os, "fsync", original_fsync)
+    assert flush_modes == ["r+b" if os.name == "nt" else "rb"]
+    assert phases == ["before_backup"]
+    assert frozen(path) == before and frozen(backup) == before
+    assert frozen(path)["format"] == version
+    lease = format3.acquire_lease(path)
+    lease.close()
+    migrated = Store(path, target_format=3, backup_path=tmp_path / "retry-backup.db")
+    assert migrated.actual_format == 3
+    migrated.close()

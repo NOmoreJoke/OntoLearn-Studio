@@ -636,7 +636,7 @@ raise AssertionError('exit hook not reached')
         capture_output=True,
         timeout=30,
     )
-    log = Path(f"/tmp/t01-changeset-realexit-{kind}-{phase}.json")
+    log = tmp_path / f"t01-changeset-realexit-{kind}-{phase}.json"
     log.write_text(
         json.dumps(
             {
@@ -645,7 +645,8 @@ raise AssertionError('exit hook not reached')
                 "stderr": process.stderr.decode(),
             },
             ensure_ascii=False,
-        )
+        ),
+        encoding="utf-8",
     )
     assert process.returncode == 73, log.read_text()
     assert json.loads(process.stdout.splitlines()[-1])["actual"] == phase

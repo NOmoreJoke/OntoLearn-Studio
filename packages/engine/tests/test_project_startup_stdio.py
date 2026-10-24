@@ -98,7 +98,7 @@ def test_real_future_and_default_two_behavior(tmp_path, target):
         assert (
             result.returncode == 1
             and result.stdout == b""
-            and result.stderr == b"ENGINE_SESSION_FAILED\n"
+            and result.stderr == b"ENGINE_SESSION_FAILED" + os.linesep.encode("ascii")
         )
     with sqlite3.connect(path) as db:
         assert db.execute("PRAGMA user_version").fetchone()[0] == 4
@@ -187,7 +187,7 @@ main()
     assert (
         result.returncode == 1
         and result.stdout == b""
-        and result.stderr == b"ENGINE_SESSION_FAILED\n"
+        and result.stderr == b"ENGINE_SESSION_FAILED" + os.linesep.encode("ascii")
     )
 
 
@@ -358,7 +358,7 @@ def test_actual_default_two_rejects_three_and_ignores_profile_environment(tmp_pa
     assert (
         rejected.returncode == 1
         and rejected.stdout == b""
-        and rejected.stderr == b"ENGINE_SESSION_FAILED\n"
+        and rejected.stderr == b"ENGINE_SESSION_FAILED" + os.linesep.encode("ascii")
     )
     path = tmp_path / "two"
     env = environment(path)
@@ -414,6 +414,8 @@ Coordinator.tick = fail
 main()
 """
     result = run_cli(tmp_path / "db", script=script, payload=json.dumps(request()).encode() + b"\n")
-    assert result.returncode == 1 and result.stderr == b"ENGINE_SESSION_FAILED\n"
+    assert result.returncode == 1 and result.stderr == b"ENGINE_SESSION_FAILED" + os.linesep.encode(
+        "ascii"
+    )
     value = json.loads(result.stdout)
     assert value["kind"] == "response" and value["ok"]

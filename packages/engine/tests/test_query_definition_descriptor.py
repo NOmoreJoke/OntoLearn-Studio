@@ -179,7 +179,10 @@ def test_descriptor_preserves_optional_text_whitespace(field, value):
     assert actual["descriptor"][field] == value
 
 
-@pytest.mark.parametrize("text", ["", " ", " " + QUERY, QUERY + "\ufeff", "x" * 65537])
+@pytest.mark.parametrize(
+    "text",
+    ["", " ", " " + QUERY, QUERY + "\ufeff", pytest.param("x" * 65537, id="oversized-query-text")],
+)
 def test_managed_text_must_be_canonical_draft_sparql(text):
     definition = managed_definition()
     definition["text"] = text

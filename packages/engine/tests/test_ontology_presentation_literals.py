@@ -34,6 +34,7 @@ def test_browser_metadata_literals_match_actual_rdflib():
         input=json.dumps(values),
         capture_output=True,
         text=True,
+        encoding="utf-8",
         check=True,
         timeout=30,
         cwd=root,

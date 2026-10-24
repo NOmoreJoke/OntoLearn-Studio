@@ -10,6 +10,7 @@ import any test Harness.
 import base64
 import hashlib
 import json
+import os
 import sys
 import tracemalloc
 
@@ -193,6 +194,26 @@ def test_prepared_real_format3_full_diff_job_reopen_and_original_core(prepared_p
     # No monkeypatch, readiness token, artificial authority, or direct commit.
     before_profile = sys.getprofile()
     result = storage_probe.measure_prepared(1, 0, *prepared_pair)
+    if os.name == "nt":
+        assert result["status"] == "measurement-failed"
+        assert result["failure"] == {
+            "type": "_PreparedFault",
+            "reason": "prepared-stdio-platform-not-supplied",
+            "detail": None,
+        }
+        assert result["actualMeasurementCommand"] is None
+        assert not {
+            "workflow",
+            "wire",
+            "measurement",
+            "actualQuery",
+            "producerFirst",
+            "producerWarm",
+            "persisted",
+        }.intersection(result)
+        assert sys.getprofile() is before_profile
+        assert not tracemalloc.is_tracing()
+        return
     assert result["status"] == "observed", json.dumps(result, ensure_ascii=False)
     assert sys.getprofile() is before_profile
     assert not tracemalloc.is_tracing()

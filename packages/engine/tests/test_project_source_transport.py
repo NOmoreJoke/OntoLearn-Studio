@@ -70,7 +70,13 @@ def test_exact_binary_snapshot_boundaries_and_reopen(store, length):
 
 
 @pytest.mark.parametrize(
-    "raw", ["bytes", bytearray(b"x"), None, b"x" * (source.MAX_SOURCE_BYTES + 1)]
+    "raw",
+    [
+        "bytes",
+        bytearray(b"x"),
+        None,
+        pytest.param(b"x" * (source.MAX_SOURCE_BYTES + 1), id="oversized-source-bytes"),
+    ],
 )
 def test_invalid_input_zero_writes(store, raw):
     before = logical(store.path)

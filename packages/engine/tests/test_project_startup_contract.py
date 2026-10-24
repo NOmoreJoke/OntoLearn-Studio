@@ -137,13 +137,16 @@ def test_cli_rejects_unknown_conflicting_or_untrusted_arguments(arguments):
         startup_arguments(arguments)
 
 
-def test_profile_does_not_come_from_environment(monkeypatch):
+def test_profile_does_not_come_from_environment(monkeypatch, tmp_path):
     monkeypatch.setenv("ONTOLEARN_INTERNAL_PROFILE", "business3")
     monkeypatch.setenv("ONTOLEARN_TARGET_FORMAT", "3")
     assert startup_arguments([]) == ("legacy2", None)
-    assert startup_arguments(["--t01-internal-profile=business3", "--t01-internal-backup=/a"]) == (
+    backup = str(tmp_path / "backup.sqlite")
+    assert startup_arguments(
+        ["--t01-internal-profile=business3", f"--t01-internal-backup={backup}"]
+    ) == (
         "business3",
-        "/a",
+        backup,
     )
 
 

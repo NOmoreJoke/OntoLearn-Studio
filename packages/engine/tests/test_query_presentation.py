@@ -202,7 +202,13 @@ def test_column_name_over_policy_or_invalid_scalar(name, code):
     assert error.value.code == code
 
 
-@pytest.mark.parametrize("text", ["x" * 65536, "😀" * 65536])
+@pytest.mark.parametrize(
+    "text",
+    [
+        pytest.param("x" * 65536, id="ascii-at-text-limit"),
+        pytest.param("😀" * 65536, id="astral-at-text-limit"),
+    ],
+)
 def test_executed_text_l2_boundary_manifest(text):
     store = MaterialDouble()
     store.payload["queryText"] = text
@@ -214,8 +220,8 @@ def test_executed_text_l2_boundary_manifest(text):
 @pytest.mark.parametrize(
     "text,code",
     [
-        ("x" * 65537, "UNSUPPORTED_CAPABILITY"),
-        ("😀" * 65537, "UNSUPPORTED_CAPABILITY"),
+        pytest.param("x" * 65537, "UNSUPPORTED_CAPABILITY", id="ascii-over-text-limit"),
+        pytest.param("😀" * 65537, "UNSUPPORTED_CAPABILITY", id="astral-over-text-limit"),
         ("\udfff", "INVALID_STATE"),
     ],
 )

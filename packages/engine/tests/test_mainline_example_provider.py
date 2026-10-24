@@ -107,7 +107,11 @@ def test_untrusted_or_relative_factory_input_is_not_a_resource_authority(bundle)
 def test_fifo_is_rejected_without_waiting_for_a_writer(bundle, member):
     root, pin = bundle
     (root / member).unlink()
-    os.mkfifo(root / member)
+    if os.name == "nt":
+        # Windows has no filesystem FIFO: reject an actual non-regular directory.
+        (root / member).mkdir()
+    else:
+        os.mkfifo(root / member)
     # A bounded actual child keeps a broken open from hanging the test owner.
     script = """
 import sys

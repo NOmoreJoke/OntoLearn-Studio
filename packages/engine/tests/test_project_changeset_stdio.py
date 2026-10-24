@@ -81,6 +81,7 @@ main()
 class Session:
     def __init__(self, path, project, *, version=3, gate=None, executable=None):
         self.project = project
+        self.trace_directory = Path(path).parent / "changeset-stdio-traces"
         self.version = version
         self.session = None
         self.client = uid()
@@ -261,7 +262,7 @@ class Session:
         finally:
             self.reader.join(timeout=2)
             stderr = self.process.stderr.read()
-            directory = Path("/tmp/t01-changeset-stdio-traces")
+            directory = self.trace_directory
             directory.mkdir(exist_ok=True)
 
             def raw(data):
@@ -279,7 +280,9 @@ class Session:
                 "stdout": raw(b"".join(self.output)),
                 "stderr": raw(stderr),
             }
-            (directory / f"{uid()}.json").write_text(json.dumps(record, indent=2) + "\n")
+            (directory / f"{uid()}.json").write_text(
+                json.dumps(record, indent=2) + "\n", encoding="utf-8"
+            )
         assert self.process.returncode == 0 and stderr == b"", record
 
 

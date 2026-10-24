@@ -49,6 +49,47 @@ class ExampleResourceFault(ValueError):
     """Fixed internal resource failure; paths and OS errors never cross RPC."""
 
 
+@contextmanager
+def _example_resource_reader(root, input_bytes):
+    import os
+    import stat
+
+    if os.name == "nt":
+        from ontolearn_engine.project._windows_resource import windows_resource
+
+        with windows_resource(root, input_bytes) as read_member:
+            yield read_member
+        return
+
+    root_fd = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+
+        def read_member(name, maximum):
+            # Nonblocking open lets fstat reject FIFO without waiting for a writer.
+            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=root_fd)
+            try:
+                before = os.fstat(fd)
+                if not stat.S_ISREG(before.st_mode) or before.st_size > maximum:
+                    raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
+                with os.fdopen(fd, "rb", closefd=False) as handle:
+                    raw = handle.read(maximum + 1)
+                after = os.fstat(fd)
+                if (
+                    len(raw) != before.st_size
+                    or len(raw) > maximum
+                    or (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
+                    != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)
+                ):
+                    raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
+                return raw
+            finally:
+                os.close(fd)
+
+        yield read_member
+    finally:
+        os.close(root_fd)
+
+
 class BuiltinExampleProvider:
     """A fixed named resource in an explicitly installed, trusted bundle root.
 
@@ -73,8 +114,6 @@ class BuiltinExampleProvider:
     def load(self, *, example_id, input_digest):
         import hashlib
         import json
-        import os
-        import stat
 
         from ontolearn_engine.project.project_lifecycle import (
             EXAMPLE_ID,
@@ -84,60 +123,33 @@ class BuiltinExampleProvider:
 
         if example_id != EXAMPLE_ID or input_digest != EXAMPLE_INPUT_SHA256:
             raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
-        root_fd = None
         try:
-            root_fd = os.open(self._root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-
-            def read_member(name, maximum):
-                # Reject special files after a nonblocking open. A FIFO must
-                # never block this bootstrap read before fstat can reject it.
-                fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=root_fd)
-                try:
-                    before = os.fstat(fd)
-                    if not stat.S_ISREG(before.st_mode) or before.st_size > maximum:
-                        raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
-                    with os.fdopen(fd, "rb", closefd=False) as handle:
-                        raw = handle.read(maximum + 1)
-                    after = os.fstat(fd)
-                    if (
-                        len(raw) != before.st_size
-                        or len(raw) > maximum
-                        or (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
-                        != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)
-                    ):
-                        raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
-                    return raw
-                finally:
-                    os.close(fd)
-
-            manifest_raw = read_member("t01-provider.json", 8192)
-            if hashlib.sha256(manifest_raw).hexdigest() != self._manifest_sha256:
-                raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
-            manifest = json.loads(manifest_raw.decode("utf-8"))
-            expected = {
-                "exampleProviderManifestVersion": 1,
-                "exampleId": EXAMPLE_ID,
-                "input": {
-                    "path": "load-input.json",
-                    "bytes": EXAMPLE_INPUT_BYTES,
-                    "sha256": EXAMPLE_INPUT_SHA256,
-                },
-            }
-            # Canonical representation distinguishes booleans from integer 1.
-            if canonical(manifest) != canonical(expected):
-                raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
-            raw = read_member("load-input.json", EXAMPLE_INPUT_BYTES)
-            if (
-                len(raw) != EXAMPLE_INPUT_BYTES
-                or hashlib.sha256(raw).hexdigest() != EXAMPLE_INPUT_SHA256
-            ):
-                raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
-            return raw
+            with _example_resource_reader(self._root, EXAMPLE_INPUT_BYTES) as read_member:
+                manifest_raw = read_member("t01-provider.json", 8192)
+                if hashlib.sha256(manifest_raw).hexdigest() != self._manifest_sha256:
+                    raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
+                manifest = json.loads(manifest_raw.decode("utf-8"))
+                expected = {
+                    "exampleProviderManifestVersion": 1,
+                    "exampleId": EXAMPLE_ID,
+                    "input": {
+                        "path": "load-input.json",
+                        "bytes": EXAMPLE_INPUT_BYTES,
+                        "sha256": EXAMPLE_INPUT_SHA256,
+                    },
+                }
+                # Canonical representation distinguishes booleans from integer 1.
+                if canonical(manifest) != canonical(expected):
+                    raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
+                raw = read_member("load-input.json", EXAMPLE_INPUT_BYTES)
+                if (
+                    len(raw) != EXAMPLE_INPUT_BYTES
+                    or hashlib.sha256(raw).hexdigest() != EXAMPLE_INPUT_SHA256
+                ):
+                    raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE")
+                return raw
         except (OSError, ValueError, UnicodeError, RecursionError):
             raise ExampleResourceFault("EXAMPLE_RESOURCE_UNAVAILABLE") from None
-        finally:
-            if root_fd is not None:
-                os.close(root_fd)
 
 
 def make_example_provider(*, root, manifest_sha256):
