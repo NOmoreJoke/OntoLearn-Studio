@@ -1,4 +1,5 @@
-import { test, expect, _electron as electron, type Page } from '@playwright/test'
+import { launchIsolatedDesktop } from './isolated-desktop'
+import { test, expect, type Page } from '@playwright/test'
 import { resolve } from 'node:path'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
@@ -27,7 +28,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     console.info(`[I02] ${value}`)
   }
   stage('launch')
-  const application = await electron.launch({
+  const application = await launchIsolatedDesktop({
     chromiumSandbox: true,
     ...(env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
@@ -44,7 +45,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     await page.getByRole('link', { name: '模块规划' }).click()
     await expect(page.getByRole('heading', { name: '六个模块，一条学习路径' })).toBeInViewport()
     await page.getByRole('button', { name: '检查本地引擎' }).click()
-    await expect(page.getByRole('status')).toContainText('本地引擎已连接')
+    await expect(page.locator('.health-result')).toContainText('本地引擎已连接')
   }
   try {
     stage('first-window')
@@ -101,7 +102,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
         expect(
           await page.evaluate(() => (window as unknown as { hmrCanary: string }).hmrCanary),
         ).toBe('retained')
-        await expect(page.getByRole('status')).toContainText('本地引擎已连接')
+        await expect(page.locator('.health-result')).toContainText('本地引擎已连接')
         evidence.hmr = { css: true, reactRefresh: true, documentAndStateRetained: true }
       } finally {
         await writeFile(cssPath, css)
@@ -256,7 +257,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     stage('reopened-window-event')
     page = await reopened
     stage('reopened-window-ui')
-    await expect(page.getByRole('status')).toContainText('尚未检查')
+    await expect(page.locator('.health-result')).toContainText('尚未检查')
     await normal(page)
     evidence.recoveryPrompts = await application.evaluate(
       () => (globalThis as unknown as { recoveryPrompts: unknown[] }).recoveryPrompts,

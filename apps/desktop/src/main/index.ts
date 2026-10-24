@@ -1,16 +1,19 @@
-import { app, BrowserWindow, ipcMain, session } from 'electron'
-import { isAbsolute, join } from 'node:path'
+import { app, BrowserWindow, ipcMain, session, Menu } from 'electron'
+import { isAbsolute, join, resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { z } from 'zod'
 import { pathToFileURL } from 'node:url'
 import { EngineSupervisor } from './engine'
 import { TaskService } from './task-service'
+import { OrdinaryProjectSource, type OrdinaryCurrent } from './ordinary-project-source'
+import { QueryDefinitionService } from './query-definition-service'
+import { ProjectMainlineService } from './project-mainline-service'
 import { isTrustedDocument } from './trusted-document'
 import { contentSecurityPolicy } from '../csp'
 import { hardenWebContents, securePreferences } from './window-security'
 import { installWindowRecovery } from './window-recovery'
 import { installViewNavigation } from './view-navigation'
-import { safeError, type HealthResult } from '@ontolearn/contracts'
+import { registerDesktopIpc } from './desktop-ipc'
 import { validateV2 } from '../../../../packages/contracts/src/v2'
 
 declare const __DEV_CSP_NONCE__: string
@@ -20,6 +23,10 @@ app.enableSandbox()
 let quitting = false
 app.on('before-quit', () => {
   quitting = true
+  // Release stays pinned to the original owner; stop below remains the original process owner.
+  void ordinary?.dispose().catch(() => {})
+  queries?.dispose()
+  projects?.dispose()
   tasks?.dispose()
   supervisor?.stop()
 })
@@ -27,6 +34,19 @@ app.on('before-quit', () => {
 let window: BrowserWindow | null = null
 let supervisor: EngineSupervisor
 let tasks: TaskService
+let ordinary: OrdinaryProjectSource | undefined
+let queries: QueryDefinitionService | undefined
+let projects: ProjectMainlineService | undefined
+const retiredQueries = new Set<QueryDefinitionService>()
+function retireQueries(): void {
+  if (!queries) return
+  const old = queries
+  old.dispose()
+  if (old.hasOutstanding) retiredQueries.add(old)
+  queries = undefined
+}
+let selectedOrdinary: OrdinaryCurrent = null
+const retiredOrdinary = new Set<OrdinaryProjectSource>()
 const devURL = !app.isPackaged ? process.env.ELECTRON_RENDERER_URL : undefined
 const rendererPath = join(__dirname, '../renderer/index.html')
 const trustedURL = devURL ?? pathToFileURL(rendererPath).href
@@ -73,6 +93,103 @@ function createWindow(): void {
   else void window.loadFile(rendererPath)
 }
 
+/** Attach to the actual current window after selectProject/clearProject detached its old sink. */
+function attachCurrentTaskView(): void {
+  const created = window
+  if (!created || created.isDestroyed()) return
+  tasks.attachView((update) => {
+    if (window === created && !created.isDestroyed())
+      created.webContents.send('tasks:update', update)
+  })
+}
+function publishOrdinary(value: OrdinaryCurrent): void {
+  const previous = selectedOrdinary
+  selectedOrdinary = value
+  if (!value) {
+    tasks.clearProject()
+    attachCurrentTaskView()
+    return
+  }
+  // Atomic successors update the source projection, not the durable Job/view selection.
+  if (
+    previous &&
+    previous.owner === value.owner &&
+    previous.supervisor === value.supervisor &&
+    previous.engineSessionId === value.engineSessionId &&
+    previous.selectionSeq === value.selectionSeq
+  )
+    return
+  tasks.selectProject(value.project.projectId)
+  attachCurrentTaskView()
+  void tasks.restore().then((result) => {
+    const current = ordinary?.current(),
+      created = window
+    if (
+      !result.ok ||
+      !current ||
+      current.owner !== value.owner ||
+      current.selectionSeq !== value.selectionSeq ||
+      current.supervisor !== value.supervisor ||
+      current.engineSessionId !== value.engineSessionId ||
+      result.data.project?.projectId !== current.project.projectId ||
+      result.data.project.projectRevision !== current.project.projectRevision ||
+      result.data.project.inputSnapshotId !== current.project.inputSnapshotId ||
+      !created ||
+      created.isDestroyed()
+    )
+      return
+    created.webContents.send('tasks:update', {
+      kind: 'restored',
+      generation: result.data.generation,
+      view: result.data,
+    })
+  })
+}
+function installOrdinaryMenu(source: OrdinaryProjectSource): void {
+  const library: Electron.MenuItemConstructorOptions = {
+    label: '项目',
+    submenu: [
+      { label: '创建空白项目', enabled: false },
+      {
+        label: '打开默认库中的项目',
+        enabled: source.available,
+        click: () => {
+          void source
+            .choices()
+            .then((choices) => {
+              if (ordinary !== source || quitting) return
+              const entries: Electron.MenuItemConstructorOptions[] = choices.length
+                ? choices.map((choice) => ({
+                    label: choice.projectId,
+                    click: () => {
+                      void source.open(choice)
+                    },
+                  }))
+                : [{ label: '没有可打开的项目', enabled: false }]
+              const menu = Menu.buildFromTemplate(entries)
+              if (window && !window.isDestroyed()) menu.popup({ window })
+            })
+            .catch(() => {})
+        },
+      },
+      {
+        label: '关闭活动选择',
+        click: () => {
+          void source.closeSelection().catch(() => {})
+        },
+      },
+    ],
+  }
+  const template: Electron.MenuItemConstructorOptions[] = [
+    ...(process.platform === 'darwin' ? [{ role: 'appMenu' as const }] : []),
+    library,
+    { role: 'editMenu' },
+    { role: 'viewMenu' },
+    { role: 'windowMenu' },
+  ]
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}
+
 app.on('web-contents-created', (_event, contents) => hardenWebContents(contents))
 
 void app.whenReady().then(async () => {
@@ -117,14 +234,77 @@ void app.whenReady().then(async () => {
           .strict()
           .parse(JSON.parse(readFileSync(fixturePath, 'utf8')))
       : undefined
+  const profile =
+    !fixture || (!app.isPackaged && process.argv.includes('--t01-internal-business3'))
+      ? 'business3'
+      : 'legacy2'
+  // The host owns these exact adopted layouts. No existence search or fallback.
+  const exampleRoot =
+    profile === 'business3' && !fixture
+      ? app.isPackaged
+        ? join(process.resourcesPath, 'examples', 'equipment-maintenance', 'loader')
+        : resolve(
+            app.getAppPath(),
+            '../../build/release-resources/fr003-bundle-v2/examples/equipment-maintenance/loader',
+          )
+      : undefined
   supervisor = new EngineSupervisor(
     { packaged: app.isPackaged, appPath: app.getAppPath(), resourcesPath: process.resourcesPath },
     {
+      profile,
+      exampleRoot,
       dataPath: fixture?.databasePath ?? join(app.getPath('userData'), 'engine.sqlite'),
       ...(fixture ? { allowedProjects: [fixture.projectId], testMode: true } : {}),
     },
   )
   tasks = new TaskService(supervisor)
+  if (!fixture && supervisor.profile === 'business3')
+    projects = new ProjectMainlineService(supervisor, tasks, attachCurrentTaskView)
+  if (!fixture && supervisor.profile === 'legacy2') {
+    const refreshOrdinary = () => {
+      let transport: ReturnType<EngineSupervisor['ordinaryLibraryClient']>
+      try {
+        transport = supervisor.ordinaryLibraryClient()
+      } catch {
+        // The shared active+retired owner book is full. Fence old view, retain
+        // every old responsibility, and refuse issuance without a new grant.
+        if (ordinary) {
+          const previous = ordinary
+          if (previous.available) retiredOrdinary.add(previous)
+          void previous.dispose().catch(() => {})
+          retireQueries()
+          ordinary = undefined
+        }
+        return
+      }
+      if (ordinary?.hasTransport(transport)) return
+      if (ordinary) {
+        const previous = ordinary
+        if (previous.available) retiredOrdinary.add(previous)
+        // dispose fences synchronously before new publication. It never clears
+        // an unresolved action or returns its shared book credit.
+        void previous.dispose().catch(() => {})
+        retireQueries()
+        ordinary = undefined
+      }
+      const source = new OrdinaryProjectSource(transport)
+      ordinary = source
+      queries = new QueryDefinitionService(source, tasks)
+      source.observe((value) => {
+        if (ordinary === source) publishOrdinary(value)
+      })
+      installOrdinaryMenu(source)
+    }
+    // Subscribe before initial factory/current read. A same-project new Session
+    // receives a fresh source owner; old client records never bind that Session.
+    supervisor.onConnectionState((state) => {
+      if (state.state === 'ready') refreshOrdinary()
+    })
+    refreshOrdinary()
+    tasks.observeActiveProject((project, session) => {
+      if (project && session) ordinary?.observeProject(project, supervisor, session)
+    })
+  }
   if (fixture) {
     const jobIds = [...fixture.jobIds]
     for (const request of fixture.startRequests ?? []) {
@@ -142,41 +322,14 @@ void app.whenReady().then(async () => {
       isTrustedDocument(event.senderFrame.url, trustedURL)
     )
   }
-  const permission = () => ({
-    ok: false as const,
-    error: safeError({
-      code: 'PERMISSION_DENIED',
-      messageKey: 'permission.denied',
-      params: {},
-      retryable: false,
-    }),
+  registerDesktopIpc({
+    ipcMain,
+    trusted,
+    tasks,
+    supervisor,
+    projects,
+    replies: projects ? supervisor.mainlineReplyReceiver() : undefined,
   })
-  ipcMain.handle('engine:health', async (event): Promise<HealthResult> => {
-    if (!trusted(event)) return permission()
-    try {
-      return { ok: true, data: await supervisor.health() }
-    } catch (error) {
-      return { ok: false, error: safeError((error as { error?: unknown } | null)?.error) }
-    }
-  })
-  // This routing table is main-only and finite. No generic method crosses preload.
-  const routes: Record<string, (argument: never) => Promise<unknown>> = {
-    'tasks:restore': () => tasks.restore(),
-    'project:active': () => tasks.activeProject(),
-    'job:get': (id) => tasks.getJob(id),
-    'job:list': (options) => tasks.listJobs(options),
-    'job:cancel': (id) => tasks.cancelJob(id),
-    'job:subscribe': (id) => tasks.subscribeJob(id),
-    'job:unsubscribe': (request) => tasks.unsubscribeView(request),
-    'result:get': (id) => tasks.getResult(id),
-    'result:page': (options) => tasks.getResultPage(options),
-    'operation:get': (id) => tasks.getOperation(id),
-  }
-  for (const [channel, handler] of Object.entries(routes)) {
-    ipcMain.handle(channel, (event, argument) =>
-      trusted(event) ? handler(argument as never) : permission(),
-    )
-  }
   createWindow()
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

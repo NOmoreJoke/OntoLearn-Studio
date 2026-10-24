@@ -1,15 +1,46 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { EngineSupervisor, getEngineCommand } from '../../apps/desktop/src/main/engine'
+import { JsonlReader } from '../../apps/desktop/src/main/jsonl'
 import { TaskService } from '../../apps/desktop/src/main/task-service'
+import { ProjectMainlineService } from '../../apps/desktop/src/main/project-mainline-service'
 import { explainError } from '../../apps/desktop/src/renderer/src/task-presentation'
-import { validateV2 } from '../../packages/contracts/src/v2'
-import type { JobView, TaskUpdate, TaskView } from '@ontolearn/contracts'
+import { matchesResponse, validateV2 } from '../../packages/contracts/src/v2'
+import {
+  reassembleChangeSetDocument,
+  type BridgeResult,
+  type ChangeSetPage,
+  type JobView,
+  type TaskUpdate,
+  type TaskView,
+} from '@ontolearn/contracts'
 
+// Test-owned interception observes actual child stdio, without reflecting private engine state.
+const spawnControl = vi.hoisted(() => ({
+  observe: undefined as undefined | ((child: ChildProcessWithoutNullStreams) => void),
+  fail: false,
+}))
+vi.mock('node:child_process', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('node:child_process')>()
+  return {
+    ...actual,
+    spawn: (...args: unknown[]) => {
+      const child = Reflect.apply(
+        actual.spawn,
+        undefined,
+        spawnControl.observe && spawnControl.fail
+          ? [args[0], ['-I', '-c', 'raise SystemExit(73)'], args[2]]
+          : args,
+      ) as ChildProcessWithoutNullStreams
+      spawnControl.observe?.(child)
+      return child
+    },
+  }
+})
 const workspace = resolve('.')
 // Development-only read of another checkout's sources; dependencies, database,
 // Python process and Node runtime always belong to this test's own worktree.
@@ -313,6 +344,51 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
       capability,
     ]) as Fixture
     const command = getEngineCommand(location)
+    const observed: Array<{
+      child: ChildProcessWithoutNullStreams
+      pending: Map<string, Record<string, unknown>>
+      framingFailed: boolean
+      bufferedBytes: () => number
+    }> = []
+    spawnControl.fail = false
+    spawnControl.observe = (child) => {
+      const item: (typeof observed)[number] = {
+        child,
+        pending: new Map(),
+        framingFailed: false,
+        bufferedBytes: () => outgoing.bufferedBytes + incoming.bufferedBytes,
+      }
+      observed.push(item)
+      const outgoing = new JsonlReader(
+        (value) => {
+          const request = value as Record<string, unknown>
+          if (validateV2('request', request)) item.pending.set(String(request.id), request)
+          else item.framingFailed = true
+        },
+        () => {
+          item.framingFailed = true
+        },
+      )
+      const incoming = new JsonlReader(
+        (value) => {
+          const response = value as Record<string, unknown>
+          const request = item.pending.get(String(response.id))
+          if (request && matchesResponse(request, response))
+            item.pending.delete(String(response.id))
+        },
+        () => {
+          item.framingFailed = true
+        },
+      )
+      child.stdout.on('data', (bytes: Buffer) => incoming.push(bytes))
+      const write = child.stdin.write
+      child.stdin.write = new Proxy(write, {
+        apply(target, receiver, args: unknown[]) {
+          outgoing.push(typeof args[0] === 'string' ? Buffer.from(args[0]) : (args[0] as Buffer))
+          return Reflect.apply(target, receiver, args)
+        },
+      })
+    }
     supervisor = new EngineSupervisor(location, {
       dataPath: database,
       allowedProjects: [fixture.projectId],
@@ -396,23 +472,21 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     if (!initial.ok) throw new Error('initial real view missing')
     const before = await bounded(checkpointReady)
     await new Promise<void>((done) => setImmediate(done))
-    const internal = engine as unknown as {
-      session?: { child: ChildProcessWithoutNullStreams; pending: Map<unknown, unknown> }
-      starts: number[]
-    }
-    const old = internal.session!
+    const old = observed.at(-1)!
+    expect(old.framingFailed).toBe(false)
     expect(old.pending.size).toBe(0)
+    expect(old.bufferedBytes()).toBe(0)
     const oldPid = old.child.pid
     const oldSession = engine.engineSessionId
     const callCount = calls.length
-    if (failRestarts) command.args = ['-I', '-c', 'raise SystemExit(73)']
+    if (failRestarts) spawnControl.fail = true
     const closed = new Promise<void>((done) => old.child.once('close', () => done()))
     expect(old.child.kill('SIGKILL')).toBe(true)
     await bounded(closed)
     let firstManual: Awaited<ReturnType<TaskService['restore']>> | undefined
     if (failRestarts) {
       await bounded(offline)
-      expect(internal.starts).toHaveLength(4) // one original and exactly three real failed child starts
+      expect(observed).toHaveLength(4) // one original and exactly three real failed child starts
       expect(engine.engineSessionId).toBeUndefined()
       expect(
         updates.filter(
@@ -421,8 +495,8 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
         ),
       ).toEqual([])
       await new Promise((done) => setTimeout(done, 800))
-      expect(internal.starts).toHaveLength(4)
-      command.args = getEngineCommand(location).args
+      expect(observed).toHaveLength(4)
+      spawnControl.fail = false
       firstManual = await bounded(service.restore())
     } else {
       // A user's first read during automatic recovery shares its pending result.
@@ -432,7 +506,7 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     const view = await bounded(restored)
     expect(firstManual.ok && firstManual.data).toEqual(view)
     expect(engine.engineSessionId).not.toBe(oldSession)
-    expect(internal.session?.child.pid).not.toBe(oldPid)
+    expect(observed.at(-1)?.child.pid).not.toBe(oldPid)
     const evidence = pythonJson(evidenceScript, [database, created.jobId]) as {
       job: JobView
       rounds: number[]
@@ -449,11 +523,13 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     expect(view.jobs[0]).toEqual(evidence.job)
     expect(evidence.jobs).toBe(1)
     expect(evidence.claims).toBe(1)
-    return { before, view, evidence, marker, updates, starts: internal.starts.length, raw }
+    return { before, view, evidence, marker, updates, starts: observed.length, raw }
   } finally {
     clearTimeout(deadline)
     tasks?.dispose()
     supervisor?.stop()
+    spawnControl.observe = undefined
+    spawnControl.fail = false
     await rm(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 50 })
   }
 }
@@ -619,3 +695,284 @@ describe('actual Python → supervisor → task service runtime', () => {
     expect(explanation.detail).toContain('INTERNAL_ERROR')
   }, 20000)
 })
+
+it('restores real business3 selection, original Jobs and atomic marker through a fresh coordinator without test grants', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'ontolearn-business3-recovery-'))
+  const database = join(directory, 'owned.sqlite')
+  const children: Array<{
+    child: ChildProcessWithoutNullStreams
+    calls: Array<Record<string, unknown>>
+    closed: Promise<void>
+  }> = []
+  const updates: TaskUpdate[] = []
+  let supervisor: EngineSupervisor | undefined
+  let tasks: TaskService | undefined
+  let projects: ProjectMainlineService | undefined
+  const deadline = Date.now() + 25000
+  const step = async <T>(operation: Promise<T>): Promise<T> => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    try {
+      return await Promise.race([
+        operation,
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(
+            () => reject(Error('business3 recovery source test deadline')),
+            Math.max(1, deadline - Date.now()),
+          )
+        }),
+      ])
+    } finally {
+      clearTimeout(timer)
+    }
+  }
+  const take = <T>(reply: BridgeResult<T>): T => {
+    if (!reply.ok) throw Error(`Real business3 refused ${JSON.stringify(reply.error)}`)
+    return reply.data
+  }
+  try {
+    spawnControl.fail = false
+    spawnControl.observe = (child) => {
+      const calls: Array<Record<string, unknown>> = []
+      const reader = new JsonlReader(
+        (frame) => calls.push(frame as Record<string, unknown>),
+        () => {
+          throw Error('invalid real outgoing frame')
+        },
+      )
+      const write = child.stdin.write
+      child.stdin.write = new Proxy(write, {
+        apply(target, receiver, args: unknown[]) {
+          reader.push(typeof args[0] === 'string' ? Buffer.from(args[0]) : (args[0] as Buffer))
+          return Reflect.apply(target, receiver, args)
+        },
+      })
+      children.push({
+        child,
+        calls,
+        closed: new Promise<void>((done) => child.once('close', () => done())),
+      })
+    }
+    // Real production authority, no testMode, allowedProjects, worker fixture or SQL.
+    supervisor = new EngineSupervisor(location, { profile: 'business3', dataPath: database })
+    const engine = supervisor
+    tasks = new TaskService(engine)
+    const taskService = tasks
+    projects = new ProjectMainlineService(engine, taskService, () =>
+      taskService.attachView((update) => updates.push(update)),
+    )
+    const service = projects
+    const receiver = engine.mainlineReplyReceiver()
+    const receive = async <T>(work: () => Promise<BridgeResult<T>>): Promise<T> => {
+      const delivery = await step(receiver.receive(work))
+      if (delivery.value.ok) receiver.consume(delivery.receipt)
+      return take(delivery.value)
+    }
+    const created = await receive(() =>
+      service.createBlankProject({
+        requestVersion: 1,
+        operationId: randomUUID(),
+        name: '真实生产恢复',
+        initialization: { kind: 'blank' },
+      }),
+    )
+    const selected = await receive(() => service.openProject({ projectId: created.projectId }))
+    const preview = await receive(() =>
+      service.previewProjectChangeset({
+        baseRevision: selected.projectRevision,
+        intent: 'change',
+        plan: {
+          definitions: [
+            {
+              layer: 'ontology',
+              id: 'Recovery',
+              value: { triples: [], references: [], singleValuedPredicates: [] },
+            },
+            {
+              layer: 'query',
+              id: 'Q1',
+              value: {
+                text: 'ASK {}',
+                references: [{ layer: 'ontology', id: 'Recovery' }],
+                descriptor: {
+                  version: 1,
+                  name: '恢复原查询',
+                  description: '真实有限ASK',
+                  scope: 'asserted',
+                  capabilityQuestion: 'Can the original result survive?',
+                  source: 'editor',
+                },
+              },
+            },
+          ],
+        },
+      }),
+    )
+    if (preview.status !== 'ready') throw Error('Expected actual baseline preview')
+    const pages: ChangeSetPage[] = []
+    let cursor: string | null = null
+    for (let count = 0; count < 8; count++) {
+      const page = await receive(() =>
+        service.getProjectDiffPage({
+          previewHash: preview.previewHash,
+          documentKind: 'diff',
+          pageSize: 2,
+          cursor,
+        }),
+      )
+      pages.push(page)
+      cursor = page.nextCursor
+      if (page.complete) break
+    }
+    expect(pages.at(-1)?.complete).toBe(true)
+    expect(await step(reassembleChangeSetDocument(preview, pages))).toHaveLength(2)
+    const confirmation = await receive(() =>
+      service.confirmProjectChangeset({
+        previewHash: preview.previewHash,
+        completionCursor: cursor!,
+      }),
+    )
+    const accepted = await receive(() =>
+      service.commitProjectChangeSet({ operationId: randomUUID(), confirmation }),
+    )
+    const terminal = async (job: JobView): Promise<JobView> => {
+      while (Date.now() < deadline) {
+        const value = take(await step(taskService.getJob(job.jobId)))
+        expect(value.jobId).toBe(job.jobId)
+        expect(value.operationId).toBe(job.operationId)
+        if (['succeeded', 'failed', 'cancelled'].includes(value.state)) return value
+        await step(new Promise<void>((done) => setTimeout(done, 10)))
+      }
+      throw Error('real original Job did not terminate')
+    }
+    const baseline = await terminal(accepted)
+    expect(baseline.state).toBe('succeeded')
+    const marker = take(await step(taskService.getOperation(baseline.operationId)))
+    expect(marker?.jobId).toBe(baseline.jobId)
+    // Establish the committed baseline through the real public read before
+    // testing coordinator recovery; this does not assert automatic refresh.
+    const preparedDomain = await receive(() => service.readProject({ editor: 'query' }))
+    const atomic = baseline.commitProgress as {
+      mode: string
+      operationId?: string
+      marker?: {
+        projectRevision: number
+        beforeSnapshotId: string
+        afterSnapshotId: string
+        planHash: string
+      } | null
+    }
+    if (atomic.mode !== 'atomic' || !atomic.marker) throw Error('Expected real atomic marker')
+    expect(atomic.operationId).toBe(baseline.operationId)
+    expect(marker).toEqual({
+      projectId: created.projectId,
+      operationId: baseline.operationId,
+      jobId: baseline.jobId,
+      ...atomic.marker,
+    })
+    expect(preparedDomain.domain.projectRevision).toBe(atomic.marker.projectRevision)
+    expect(preparedDomain.workspace.domainRevision).toBe(atomic.marker.projectRevision)
+    expect(preparedDomain.inputSnapshotId).toBe(atomic.marker.afterSnapshotId)
+    const preparedSource = service.source.current()!
+    expect(preparedSource.project.projectId).toBe(created.projectId)
+    expect(preparedSource.project.projectRevision).toBe(atomic.marker.projectRevision)
+    expect(preparedSource.project.inputSnapshotId).toBe(atomic.marker.afterSnapshotId)
+    expect(preparedSource.project.dependencyVector['query:Q1']).toBeGreaterThan(0)
+    const loaded = await receive(() =>
+      service.queries.loadQueryDefinition({ definitionId: 'Q1', selection: { kind: 'current' } }),
+    )
+    if (loaded.kind !== 'managed') throw Error('Expected actual managed query')
+    expect(loaded.projectId).toBe(created.projectId)
+    expect(loaded.baseProjectRevision).toBe(preparedSource.project.projectRevision)
+    expect(loaded.inputSnapshotId).toBe(preparedSource.project.inputSnapshotId)
+    expect(loaded.definitionVersion).toBe(preparedSource.project.dependencyVector['query:Q1'])
+    const executed = await receive(() =>
+      service.queries.executeSavedQuery({
+        operationId: randomUUID(),
+        loadRef: loaded.loadRef,
+        visibleDraft: loaded.draft,
+        selection: { kind: 'current' },
+      }),
+    )
+    const query = await terminal(executed.acceptedJob)
+    expect(query.state).toBe('succeeded')
+    const domainBefore = await receive(() => service.readProject({ editor: 'query' }))
+    const oldSource = service.source.current()!
+    const replyBookBeforeFault = receiver.diagnostic()
+    const old = children[0]
+    const watermark = updates.length
+    const oldSession = engine.engineSessionId
+    expect(children).toHaveLength(1)
+    expect(old.child.kill('SIGKILL')).toBe(true)
+    await step(old.closed)
+    // Manual and automatic recovery share the authentic same-project reauthorization.
+    const restored = take(await step(taskService.restore()))
+    expect(engine.engineSessionId).not.toBe(oldSession)
+    expect(children).toHaveLength(2)
+    const successor = children[1]
+    expect(successor.child.pid).not.toBe(old.child.pid)
+    const openIndex = successor.calls.findIndex((call) => call.method === 'project.open')
+    const firstProjectRead = successor.calls.findIndex((call) => call.method === 'project.get')
+    expect(openIndex).toBeGreaterThanOrEqual(0)
+    expect(firstProjectRead).toBeGreaterThan(openIndex)
+    expect(successor.calls.filter((call) => call.method === 'project.open')).toHaveLength(1)
+    expect(successor.calls[openIndex].params).toEqual({ projectId: created.projectId })
+    expect(
+      successor.calls.some((call) => ['job.create', 'job.cancel'].includes(String(call.method))),
+    ).toBe(false)
+    expect(restored.project?.projectId).toBe(created.projectId)
+    expect(new Set(restored.jobs.map((job) => job.jobId))).toEqual(
+      new Set([baseline.jobId, query.jobId]),
+    )
+    expect(restored.jobs.find((job) => job.jobId === baseline.jobId)).toEqual(baseline)
+    expect(restored.jobs.find((job) => job.jobId === query.jobId)).toEqual(query)
+    expect(take(await step(taskService.getOperation(baseline.operationId)))).toEqual(marker)
+    expect(take(await step(taskService.getOperation(query.operationId)))).toBeNull()
+    const domainAfter = await receive(() => service.readProject({ editor: 'query' }))
+    expect(domainAfter.domain).toEqual(domainBefore.domain)
+    expect(service.source.current()?.engineSessionId).toBe(engine.engineSessionId)
+    expect(service.source.current()?.owner).not.toBe(oldSource.owner)
+    const faultUpdates = updates.slice(watermark)
+    const reconnect = faultUpdates.findIndex(
+      (u) =>
+        u.kind === 'connection' && u.projectId === created.projectId && u.state === 'reconnecting',
+    )
+    const ready = faultUpdates.findIndex(
+      (u) => u.kind === 'restored' && u.view.project?.projectId === created.projectId,
+    )
+    expect(reconnect).toBeGreaterThanOrEqual(0)
+    expect(ready).toBeGreaterThan(reconnect)
+    const replyBookAfterRecovery = receiver.diagnostic()
+    expect(replyBookAfterRecovery.orphans).toBe(replyBookBeforeFault.orphans)
+    expect(replyBookAfterRecovery.offered).toBe(0)
+    expect(replyBookAfterRecovery.computing).toBe(0)
+    expect(replyBookAfterRecovery.unknown).toBeGreaterThanOrEqual(replyBookBeforeFault.unknown)
+    expect(replyBookAfterRecovery.holdingCount).toBeGreaterThan(0)
+    // This completed-Job/atomic-marker positive does not claim an active query fault,
+    // rounds recovery or GUI evidence; those remain distinct actual acceptance gates.
+  } finally {
+    projects?.dispose()
+    tasks?.dispose()
+    supervisor?.stop()
+    try {
+      await Promise.all(
+        children.map(async (entry) => {
+          let timer: ReturnType<typeof setTimeout> | undefined
+          try {
+            await Promise.race([
+              entry.closed,
+              new Promise<never>((_, reject) => {
+                timer = setTimeout(() => reject(Error('owned business3 child close missing')), 3500)
+              }),
+            ])
+          } finally {
+            clearTimeout(timer)
+          }
+        }),
+      )
+      await rm(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 50 })
+    } finally {
+      spawnControl.observe = undefined
+      spawnControl.fail = false
+    }
+  }
+}, 30000)

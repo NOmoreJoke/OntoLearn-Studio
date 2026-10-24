@@ -1,0 +1,31 @@
+# 接口B独审后主文差异：独立窄核
+
+结论：**本次文档delta静态核验Pass，无新增问题。** 15318B旧受审主文与15474B提交主文身份不同；本报告独立覆盖后者新增的156B，不能用原审计表声称两者同SHA。唯一变化是收到的独审报告链接、原P2关闭及仅材料静态准确性Pass说明，不改变技术合同、产品实现或接口权限/成本边界。
+
+## 身份与唯一差异
+
+| 对象 | bytes | SHA256 |
+| --- | ---: | --- |
+| 派生复原旧主文 | 15318 | af5c4b7195ed099cc6dfdc3d4407c8db622ce7bf30be085eb82c920fd580a3e1 |
+| a1a66bde提交主文 | 15474 | 6e0fd6cac443e60e2cd98106ca11c991dee51cd9edf262e7d1eba4d0fa3b46f1 |
+
+旧件是反向替换已知一句得到的**派生复原**，不是原时点捕获；其完整bytes/SHA精确匹配保留独审最终表。已实际断言旧句/新句各唯一，正向替换恰等新全文，反向替换恰等旧全文。重算unified diff与所交1309B差异原件逐bytes相同，恰一个hunk `@@ -83,4 +83,4 @@`：原“独立审查报告另存本目录，结论仅覆盖本材料的静态准确性与边界。”替换为已收到报告的链接、首P2与定点关闭及同一限定结论。其余全文原bytes相同。
+
+提交为`a1a66bde3e8078b85d5ea4d48909b96ce6417705`，路径`docs/reviews/T01/designated-review-backlog-20261022/interface-B-T02/interface-B-for-T02.md`；新全文Git blob实算为`4cc31b5113245d506188b9c1c2e20cba0e1b7df5`，且实际`git show`固定提交该文档与所交current原件逐bytes相等。未据此推断整个提交的其它变动。
+
+## 旧最终输入与失败历史保留
+
+只按固定a1a66bde文档blob核身份，以下均与原独审**最终**表精确相同：
+
+- typed-contract-findings.md：21309B / `1de928c9a5076137883cfc93156f60c585bde480fe7725cbf69367f1f1761da2`。
+- typed-contract-findings.json：66336B / `84c03e520db18f30e8dd1b3022323546fc750dddfd02541170acf6ebe4f16377`。
+- C1-complete-source-identity.json：307575B / `33b2466e8116cad3870e4fe8b5631fec5a24ec6ad9a41238798edd332f8fa54e`；这里只核清单自身身份，未重审825项。
+- independent-interface-B-review.md.raw：10039B / `30d89fffc2e047b37c93ed9a6fab06cfbc475a528cf30f78c31d91a2f1551ae2`；与/tmp保留原报告逐bytes一致，首轮Fail及全部旧表未改。
+
+首轮typed的21086B/6f5b…是保留失败版，不能替代最终21309B/1de928…。本窄核新写独立报告，没有回写旧表或修改回收M意见报告。
+
+## 方法与边界
+
+全文读doc-delta-notes、identity及唯一diff，Python标准库读取/hash/替换/difflib断言与限定固定文档`git show`实际结束exit0。identity为2373B/SHA256 `2b33faac3c35b0a8abd773eb3e4c9ff29120e2974696d38571910859bbd56b03`；diff为1309B/SHA256 `21ec749df33f9ba133e88cf6ae52bd8504aed768f2475fb58703c8533947b797`。
+
+未重读更多源码、825源对象、产品/模型任务或报告，未GUI、产品执行、测试/import/SQL/DB/native。此delta仅补上主文审后链接的身份链；不形成产品运行或指定双审Pass，不改变原Goal/HOLD及验收门。

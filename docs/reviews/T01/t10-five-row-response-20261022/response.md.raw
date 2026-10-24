@@ -1,0 +1,40 @@
+# T01 对 T10 的五行有限回件（纯设计，2026-10-22）
+
+**接受设计方向；五项仍缺新同版实现/批准字段表。** 423仅有部分私有原语。本件只回T01责任，不代T03/I06签认，不用blank-create充import。
+
+## 输入身份及批准层级
+
+完整ref/path/blob/bytes/SHA256见 `T10-five-row-supplier-input-identities.json` 的inputs；下列八件已全文Git读回，均为**设计候选**：
+
+- N：`7d96b3a71bc3590983a4b4c51942993898805663:docs/iterations/T10/T08-intake-and-F16-candidates-20261022/next-supplier-signoff.md`（7276B）。
+- F/P/I/L：`88bbc18160f433f96c44d10f9eed1b21ac77e289:docs/iterations/T10/formal-transfer-proposal-r1-20261022/` 下 `format-and-versioning.md`（14992B）、`trusted-projection-and-privacy.md`（11501B）、`import-plan-and-receipt.md`（17812B）、`learning-and-report.md`（10303B）。
+- C：`94e766bd5b258e74f8534a4c102cd81447f4977d:docs/iterations/T10/formal-transfer-r1-clarifications-20261022/clarifications.md`（8715B）。
+- E/V：`eabbe6250c1bdfda76bf8a5d6f9ec2c047d200c1:docs/iterations/T10/technical-contract-c1-20261022/` 下 `envelope-contract.md`（9559B）、`validation-and-results.md`（7705B）。
+
+T01既有四件回件均与 `5abfc69904395017cddb07da9165c010746c614b:docs/reviews/T01/designated-review-backlog-20261022/T10-existing-interface-facts/` 逐bytes核同，身份附JSON。X=`T10-checkpoint-fixed-facts.md.raw`（4655B／`c56c689f0a728f75b0a9ecf096fa47907e4ba5d6a69f7a8b2e7c12ac11469524`）。本轮复用 X 的固定观察，不重审825件；其唯一实现ref=`423b7e4c799f188cf2ce6e8e7121893ce85624cd`。以下 `src/` 全称 `packages/engine/src/ontolearn_engine/`，代码行号绑定423。历史f51为设计/验收地图；**新transfer注册/角色schema/API没有获批证据**，已批schema只认既有v2实际边界。
+
+## 五行响应（唯一签认责任均为 T01）
+
+| 签认产物 | 原合同已覆盖的设计；423真实原语 | 本次有限响应、缺项及最小正反例 |
+| --- | --- | --- |
+| 1．格式/canonical 精确注册组合 | E §1–4、F §3/4/7、C F02–04：精确六Ref组合；JSONL完整记录/LF、角色顺序与recordKey；空集合有role项/无成员；raw完整对象；ZIP候选限制。此为设计，非423数据库format3或正式包schema | **接受技术收敛，不签实际注册。** 缺六Ref各id/version/digest、七角色strict字段/recordKey提取及排序、canonical空集合digest、兼容纯迁移表、ZIP flag/系统版本/时间戳/属性/压缩参数精确值、本地resourcePolicy批准值。未知组合/同标签异digest拒绝；不默认F01 template内容，不借旧S1数值当容量。准备正例：同一typed逻辑集合重分片后collectionDigest相同；反例：同版标签异digest、乱序/重复recordKey、空role无coverage均拒。无新字段值由本报告冒定。 |
+| 2．一致业务typed投影＋全ledger/root | F §1/5/6、P §1/2、L §1、C F07/F09/F10；X对应 `src/storage.py:359–440,862–873,1208–1348`、`src/project/format3.py:190–276,416–480,587–775`、`src/project/project_host.py:338–390`。已有CP一致读、完整opaque payload保留、facts来源/managed墓碑与部分应用CAS | **不签完整 ExportProjection。** 缺同operationSequence的七核心typed族：project-metadata/definitions/assertions/provenance-ownership/state-versions/recovery-closure/learning-state，以及全源族、完整version/retirement/control-root枚举/count/digest/合法排除/coverageRef、typed边与source→portable映射。当前vector滤missing/retired；CP引用不内嵌全部闭包；learning/audit仅dict形状、workspace单editor draft不足。snapshot()会写，不当只读导出。正例：同一一致源逐族count/digest与完整根相符；反例：删一个未连边但合法控制根仍须发现，不能只验已列边无悬空。没有实际learning provider不能造空。 |
+| 3．typed新项目plan | I §2/3、F §7、C F13、E §1/2、V V4–V6；X的 `src/project/transactions.py:146–178,201–240,285–308` 为同项目真实回滚预演/CAS；`src/project/applications.py:1–5,85–170,415–469` 是受限应用链；`src/project/domain_changesets.py:87–127` 仅ontology/manual | **不签 ImportPlan/公开API。** 缺逐类型source/portable/local作用域表、目标reservation或符号namespace具体定案、全局ID分配、typed边重写/含project digest重算、origin映射、planFingerprint/inputSealDigest/scopeDigest/versionSet/CAS/context绑定、main-only ticket与安全摘要。保原fact ID/owner/source_row/managed/tombstone/合法undo；不递归换literal，不复制active job/claim/grant。不先建空项目。正例：含文字“p-old”的业务literal原样、真正typed project引用映到新目标并重算digest；反例：确认后换seal/options/目标/版本拒旧plan，无可见半项目。 |
+| 4．唯一writer／durable recovery／global claim／负fence／receipt | I §4/5、C F14/F19与P3-01、V V7。X的 `src/storage.py:120–146,283–303,481–519`、`src/project/transactions.py:180–199`、`src/job_store.py:358–420,1015–1078` 有同Store外层事务、原claim/CP/receipt与精确历史幂等原语 | **不签完整import协议。** 缺首dispatch前耐久recovery的本机归属/计划seal引用；稳定businessRequestId/operationId与RPC id分离；同全局claim权威的admitted/committed/terminal-not-committed及单调fence；最终事务复验claim/pin generation。新project/全部业务与源引用/checkpoint/marker/import receipt/映射范围digest必须同一外层Store事务，不能多个CAS拼接。unknown只原op对账、保pin；无receipt不是未提交。lookup在新project尚未知时按当前合法本机operation归属，非旧lease/CAS授权。正例：commit后丢响应返回同receipt/目标；反例：取消负fence先胜出后迟到admission/commit均拒；同op异fingerprint冲突。 |
+| 5．固定错误与能力三轴 | V §2/3、L §4、I §5/6；423 `packages/contracts/v2/errors.json` 16299B／`ad242d93ced7a0c8a463b708b7a1f3105e65f03c3980e0a0c6c4309f8c26544c`，blob `9eff779f69be0dc0a5a65bee2b3ce3744dd57b1b`，真实既有26码；X列私有异常，不是transfer错误合同 | **仅既有码为既有合同，不签新阶段映射/能力schema。** 缺固定code/messageKey/受限params与stage/reasonRefs字典；RESOURCE_LIMIT/NOT_FOUND不能扩参数，TIMEOUT不推未提交。候选能力restore-current/mapping-rerun/run-replay按各subject分别给materialState=complete/missing/unknown、supportState=supported/unsupported/unknown、verificationState=not-run/verified/failed/unknown；仍待批准，实际值未验。receipt/结构valid不独立给恢复verified；foreign合法记录保origin/unverified，不冒本机学习。正例：缺raw仅某mapping材料缺失、不必否定full核心；反例：hash/receipt/空learning或模型主张直接置verified拒。commit未知/已提交/权威负终态须由writer事实分开。 |
+
+## T01 单权威 prepare/pin/GC 交点
+
+I §4/5、C F14 是**待实现设计**：独立prepare先保护seal/对象，不反依赖未来plan；随后同权威原子绑定operation/fingerprint/对象集合digest/stateVersion/pin generation。GC可见前或同时durable preparing/pin先存在；完整flush/身份/hash后才sealed-ready。不可变/耐久/禁GC不同，Map/WeakMap/TTL不代持久pin。
+
+T01要提供一个权威registry排序：prepare/bind/admission/负fence/GC claim/最终Store引用＋receipt＋pin接管；GC只能原子claim无prepare/admission/unknown pin、无committed引用且generation匹配的对象，GC claim胜出后import不得引用。unknown保pin；只有committed引用正式接管，或writer已证明负终态且阻断迟到请求，才走对应释放分支。取消按钮、超时、查无receipt都不足。实际删除还需重验claim/generation与合法IO能力，不能早先查无引用后无限期删。
+
+I06交点**不签最新状态**：I06/main给可信代次、InputSeal/对象IO、flush/删除身份与失效、首dispatch前durable recovery的本机归属及生命周期；T01给registry/pin/fence/当前operation归属lookup。持久载体/方法/归属待两owner同版定案。receipt后打开按当前权限/末次await代次，迟到不抢切项目。T03来源/字节是另一能力，本件不推其readiness、不另立pin账。
+
+## 下一可独立准备的最小窗口
+
+可先交字段/类型作用域、根枚举/引用算法、canonical排序/空集合例、错误映射与prepare/claim/GC正反例，无须泛等F01/F16/Q5/M0。F01阻模板范围，F16影响资格而非删除学习事实；Q5不阻预算算法设计，正式policy值/目标机证明仍缺。hash/GC由技术owner收敛，不另问用户。
+
+实现前根给base/候选/逐路径票。候选新增 **`src/project/{transfer_projection.py,transfer_import.py,import_prepares.py}`** 与 `packages/engine/tests/test_project_transfer_{projection,import,prepares}.py`，未声称存在/获批。旧面 `src/{storage.py,job_store.py}`、`src/project/{format3.py,transactions.py,applications.py,compensation.py}` 接一致源/原子writer/CP/undo/registry。新DDL/catalog/migration另授schema兼容票；禁opaque/blank-create替代。canonical `packages/contracts/v2/{schema.json,registry.json,errors.json,fixtures.json,binding-regressions.json}`、`packages/contracts/{python/contract_v2.py,src/v2.ts,src/index.ts}` 仅实际批准delta，命名路由/桥另窗。不动C1冻结树/sharedwriter/锁；T03/I06路径由原owner经根定。
+
+健康TMPDB另票：七族投影/漏根、typed预演、失败无半项目、丢响应原op对账、负fence迟到拒绝、prepare/bind/commit/GC排序、unknown重开保pin；不充真人/物理安全。交product/process SHA、逐path/blob/bytes/SHA、import/schema闭包、argv/首败/双流退出。本轮仅Git/文本/hash，运行0，未联系T10。首Git误在非仓库根exit128，改工作树核同并记JSON。

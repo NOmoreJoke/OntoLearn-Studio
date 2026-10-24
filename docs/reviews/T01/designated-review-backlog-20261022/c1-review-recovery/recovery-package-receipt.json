@@ -1,0 +1,80 @@
+{
+  "generatedAtUtc": "2026-10-22T10:52:54.177856+00:00",
+  "scope": "Own C1 report recovery plus pure interface doc delta, no source fix/runner",
+  "sourceRef": "423b7e4c799f188cf2ce6e8e7121893ce85624cd",
+  "acceptanceRef": "a33cc80e82475e54d74b4e48c1fd32f32979983a",
+  "reviewHead": "c0b61fd245c1b3bd2a84e488f00a742a1942fd8c",
+  "previousDocumentationCommit": "a1a66bde3e8078b85d5ea4d48909b96ce6417705",
+  "archiveSha256": "e0959c0246576d7c71438baf98af90c222aa2874808679336d04e7dc1bf67df5",
+  "archiveBytes": 166441,
+  "memberCount": 98,
+  "originalReports": {
+    "zcode": {
+      "bytes": 18106,
+      "sha256": "a5a425c1b467d9442d601b8c795a3e9147848f08fb71d3495c053d2db8673309",
+      "conclusion": "conditional internal product Pass; HEAD check not pass"
+    },
+    "minimax": {
+      "bytes": 54679,
+      "sha256": "82920511ab69ae5154d303114394c7d96be9548732aabf51bdd9ac9a98804b44",
+      "conclusion": "overall Not Pass"
+    }
+  },
+  "officialApplicationTaskTerminal": {
+    "zcode": null,
+    "minimax": null
+  },
+  "ownQuotaFailure": {
+    "zcode": null,
+    "minimax": null
+  },
+  "completeCheckGreen": false,
+  "dualPass": false,
+  "modelIssueDispositions": {
+    "miniMaxP1": 2,
+    "miniMaxP2": 10,
+    "zcodeFindings": 3,
+    "recoveryRecordIssues": 3,
+    "implementationFixesPerformed": 0
+  },
+  "staticIndependentReviews": [
+    {
+      "name": "M recovery material",
+      "bytes": 7008,
+      "sha256": "9de095a9069bc0c2a55f87eb5a277fc269262ba78b2438d9ed692f1101d5e4f7"
+    },
+    {
+      "name": "Z second recovery material",
+      "bytes": 8792,
+      "sha256": "b5d4699a8e42e0ba49b3c345a0247f42f18ff2508f8203cd1edc713a4c7c2700"
+    },
+    {
+      "name": "interface postreview one-hunk delta",
+      "bytes": 3090,
+      "sha256": "90a27e7d70d100d581a1f80f411153c821968273937c49d7d0b199c25f839d6f"
+    }
+  ],
+  "minimaxPriorAuditedReport": {
+    "bytes": 47204,
+    "sha256": "9097649f587902ececaaea62c91dca6bc9d9ea806df5db7b9b02b669929c3196"
+  },
+  "newMinimaxSnapshotCutoff": "2026-10-22T10:50:50.784330Z; later mutable source is outside this package observation",
+  "thirdReportDiffIndependentReview": {
+    "bytes": 4977,
+    "sha256": "b81aa32fd25f3c89b3c63970a3b3369100ca591230dd958259bbcb9ba5f4da75",
+    "scope": "five-hunk difference only; does not transfer old audit to new report whole body"
+  },
+  "originalPreseal93MemberZip": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-recovery-first93-preseal.zip",
+    "bytes": 128497,
+    "sha256": "e7810f6ca5008bbd79fac24cb689ad379d3cee9fee4adae9435519639be89802"
+  },
+  "notExecuted": [
+    "product/tests",
+    "SQL/DB/native/physical research",
+    "GUI/reset/new model/replay",
+    "push/PR/merge"
+  ],
+  "originalInputsReportsPreserved": true,
+  "goalOrHoldChanged": false
+}

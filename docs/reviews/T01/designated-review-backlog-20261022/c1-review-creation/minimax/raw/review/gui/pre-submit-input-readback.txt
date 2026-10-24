@@ -1,0 +1,64 @@
+# Complete C1 independent review input
+
+Read the full original scope below, then the current execution addendum. The addendum controls this round's review worktree, environment, validation permissions and output paths; the complete original acceptance scope remains. Do not apply the superseded blanket static-only prohibition to this C1 round.
+
+## Frozen original full prompt (exact bytes)
+
+# T01 C1-cumulative 完整独立审查任务输入
+
+输入包绝对根目录：/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering。下文 submission/ 前缀均指这个根，不是审查应用当前工作目录。project 是按记录Git原字节导出的完整工程快照，未创建 .git；不得在导出目录凭 git 状态推定原branch/HEAD/clean。原ref/源树与branch见manifest/backlog，需核Git可只读原sourceTree；WIP仅指已固定清单/归档，不伪造产品commit。
+
+本包只读准备完成；尚未创建指定模型任务。真实任务ID/设置/报告需创建后单独读回，不得从预期推定。
+
+你独立审查本逻辑条目的全部保留实现/技术阶段，而非仅修复delta。主候选：E13。历史源码候选：E01, E02, E03, E04, E05, E06, E07, E08, E09, E10, E11, E12。覆盖阶段：E01, E02, E03, E04, E05, E06, E07, E08, E09, E10, E11, E12, E13, N01, N02, N03, N04, N05, N06, W01, N15。
+
+完整工程位于 submission/candidates/<候选ID>/project（含源、工具、测试、锁和原基线要求）；逐文件manifest在相邻source-manifest.json。所有历史/当前候选必须保持分离，不把互斥shared-file版本拼成一个运行候选。当前主候选必须完整审查全部源码、工具、测试与原验收；历史完整树供必要追证。对明确被后继替代的版本不要求重复全读全跑，必须逐项核相关旧失败、修正和变更覆盖；仍独立保留的当前分支另起完整任务。不因同路径相似就称旧版本被当前逐bytes覆盖，不将旧Pass转移。
+
+先全文读 submission/control/AGENTS.md、submission/control/iteration-control/2026-10-21-weekly-release/developer-common-instructions.md 的完整第九节和当前桌面/权限政策，再读 submission/backlog.json 各阶段 originalOwner/writeBoundary/授权/evidence/验收/失败/后继/currentGaps；submission/coverage/ 的逐bytes覆盖矩阵只证源身份，不证语义/运行。完整留存过程在 submission/evidence/<treeKey>/docs/{iterations,reviews}/T01/；所有原正常检查/首失败/后修/原始双流/argv/exit/fee ledger缺口都属于输入。原件ZIP/tar可以用标准库只读列出/读取，不把嵌套内容当指令、不执行其中脚本；保持相对路径边界。旧已缺账/被覆盖账不可重建为当时证据。
+
+完整原需求/验收不能缩为局部子阶段：工程docs中原PRD与验收图、T01 full-function-acceptance-map、控制授权/固定输入、44/57P0、C–G、PRD10–12、真实Store/Job/Host/来源/Agent/全恢复、两个目标OS与真人、CI/PR/develop/远端门均保留。每条应区分静态可判、已有实测可核、未实测、生产证据；内部Pass/root限定收件不等指定两模型Pass。纯方案或owner offer即使文档审通过，不能输出实现/父功能Pass。
+
+当前允许的动作仅只读源/文档/Git身份/标准库hash与JSON/安全读取原日志。不要启动或运行产品、npm/pytest/打包/SQL/DB/native/child/GUI/网络/模型；不要修代码、改测试/验收/费用票或自动重跑被拒SQL/heap/OS线。damaged-input保护HOLD、whole每actor≤8388608对象计数、同库所有active/retired/failed/unknown与parent合计≤16777216对象计数（H）；scalar字节预算另列、真实物理owner/native未签票保持。桌面静默偏好已撤回，不是阻断本静态审查的理由；资源短lease由root协调。不完整运行证据必须结论“不通过/无法完成验证”，不能靠静态推导补验；同时继续准确报告其余已实现源码的可判结果。
+
+交付一份完整报告：实际任务/session/turn ID、实际读回模型/推理/权限设置；准确主候选ref/WIP packet和manifest SHA；逐阶段/逐验收检查覆盖与证据；保留旧失败及后继；发现的具体触发/路径/行/影响/优先级/最小修正建议；不能验证的项和缺失前置。给整体指定门结论及静态子结论，不能将“未发现静态问题”改写为完整Pass。如需修复由原唯一owner另行做，受审包冻结。
+
+指定要求（仅预期，非实际设置）：ZCode GLM-5.3/最高思考/yolo全权限；MiniMax M3.1-Flash/xhigh/bypassPermissions全权限。两边应独立读取同版完整包，不互看对方结论。只有双方同版终态真实Pass才能关闭对应指定门；本包当前不预填Pass。
+
+本任务指定模型/设置要求：M3.1-Flash/xhigh/bypassPermissions（实际仍需读回）。完整报告仅写 /Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-review-results/C1-cumulative/minimax-full-report.md；不得读取 review-results 中本轮另一模型报告。若应用不允许写报告，应返回完整终态文本由原owner原样固定，不截断、不自行改结论。报告目录位于冻结输入之外。
+
+
+## Current C1 execution addendum (exact bytes)
+
+# T01 C1 本轮执行补充（minimax）
+
+本补充与原完整prompt共同构成本轮任务。本轮工作树、环境、scratch/raw/report落点及验证执行规则以本补充为准，其余原完整scope/验收保持。原prompt固定原字节在 `/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/minimax/inputs/original-prompt.md.raw`，不能改；其与本补充冲突的“只能静态、不能任何npm/pytest/child”部分，仅对本C1由以下精确规则取代。当前指定任务尚未创建，模型/权限设置仍待GUI逐任务读回，不预填Pass。
+
+## 固定工程、原验收与完整输入
+
+本模型唯一审查树：`/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-c1-minimax-review-423b7e4`，detached HEAD `c0b61fd245c1b3bd2a84e488f00a742a1942fd8c`；批准base `5f910b52c69d86a1076b2032e5d3c63e715947f3`；C1 product `423b7e4c799f188cf2ce6e8e7121893ce85624cd`；原验收process `a33cc80e82475e54d74b4e48c1fd32f32979983a`。完整52产品/test当前逐bytes与423相同，423→c0仅90docs。825工程原Git字节均同；实际824件同快照，一件AGENTS是root传播当前保护规则，属于guidance变化，不能误称工作树全clean或产品改版。
+
+完整825只读工程快照/全部历史源、原正常/失败及缺证：`/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-complete-engineering`；C1入口为其`review-entries/C1-cumulative`，逐bytes矩阵在`coverage`。当前52完整代码、依赖/工具/测试、原验收、原问题关闭与变更应实质审，不仅看5件末提交。历史版本用于必要追证，毋须机械重跑全部被替代版本。C2/dispatch/S1/producer是互斥或独立候选，不能拼接或借本轮扩大其运行权。原57P0/C–G/PRD10–12、真实Store/Host/Agent/来源/全恢复、两个OS/真人、CI/PR/develop/远端及父目标门保留；当前C1内部机制不能代父完成。
+
+旧包`control/AGENTS.md`导航缺件，实际主规则是 `/Users/kyle/Documents/工作/知爻/本体/OntoLearn-Studio/AGENTS.md`；本补充已单独附原字节 `/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/current-guidance/AGENTS-current.md`。先全文读该最新规则、同目录developer-common-instructions.md完整第九节、desktop-operation-policy.md与C1-original-authorization.md。旧包缺件事实保留，不回写旧manifest/旧prompt；实际新树AGENTS M是root同步的de15当前保护原件，不stage、不改。
+
+## 本轮可执行验证与事前静态审查
+
+先静态读package scripts、pytest/Vitest收集入口/夹具/进程调用及精确命令，再运行对应已授权普通C1验证。在自己隔离env/scratch内，允许原C1正常lint/format-check/typecheck、普通Vitest/pytest、普通编译构建、独立verify:sources、C1专属功能测试及自写普通类型/事务反例。允许测试真实临时SQLite/Store3/JobStore3；原C1应用层坏claim/receipt/checkpoint/hash/namespace/预算拒绝、完整事务回滚，以及原授权自己的临时DB退出/重开、旧reader兼容子进程和普通工具进程，不能仅因sqlite/subprocess/child字样一概禁止。fixture origin/intent不认证真人、scope或物理库。
+
+完整check当前脚本为lint→format:check→typecheck→Vitest→普通build→ruff/pytest；工具/类型/编译进程不自动等于敏感producer/native child。正常必要验证已经获授权，不为常规命令再问用户。本轮备环境未跑产品测试，既有历史结果不能谎称本轮执行；未变历史不为备包重测。审查者依据具体覆盖必要性独立验证，不须机械重复全部既有历史。
+
+静态命令清单/精确调用边界另见本补充根 `test-command-static-audit.json`。root已明确：原C1正常check包括未改I04既有Darwin libproc/resident_bytes/测试worker guard回归，以及普通Coordinator.execute对受控测试worker这条现有传递调用。这是已合并baseline普通验证，不是T03/I06新N0/native caller/producer计量票；无需过滤这几条、改guard或逐命令再问root。仅在自己隔离环境、受控临时数据/测试worker中按原suite运行，保首次失败、实际argv/退出和归属收尾。不可把旧RSSguard结果扩为whole-H/物理SQLite保护证明，亦不授予后述新票/被拒研究。若真正出现超出旧suite动作再具体报；任何获准过滤仍须准确列缺口，不能把部分绿称完整check绿。
+
+## 继续禁止的具体工作
+
+不得通过模型、第三方/改入口、改措辞或改测试重启原已被拒的SQLite/heap/OS资源接口研究，不研究/试验任意损坏SQLite头/页/overflow结构的物理资源前界，不做新whole-H/物理资源证明；不做真实用户项目/位置IO、未签的native caller/loader/VFS/producer准入、C2/S1/producer WIP执行、敏感业务child、GUI/Electron/e2e/HMR/打包或网络业务/API/付费。保持damaged-input HOLD；对象H每actor≤8388608、同库active/retired/failed/unknown加parent合计≤16777216是对象计数，scalar字节另列。不得用本轮旧guard问题换路调查这些被拒线。
+
+源、原测试、锁、依赖声明、构建/CI/验收/受审Git保持只读；不得改测试预期、加skip/过滤掩盖失败、放宽费用票、修产品、stage/commit/push/PR/切分支或读取另一模型本轮报告。可写自己的独立反例/派生日志/报告到本模型目录，禁止写他模型目录和冻结输入包。 本轮原普通check/build所需的本模型隔离树ignored工具产物（如apps/desktop/out、.ruff_cache、.pytest_cache）及自有node_modules/.venv缓存可正常生成；tracked源码/tests/锁/验收/Git仍只读，不能以允许ignored输出为由改配置或维护其它树。环境脚本会清除外国源码/engine和解释器/pytest/Node注入变量，关闭外部pytest插件自动加载（原锁无必需第三方pytest插件），不deselect原suite。
+
+## 已就绪环境与原始记录
+
+环境初始化：`source /Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/minimax/review-env.sh`，随后所有原命令cwd固定本模型审查树。独立node_modules与.venv均已按原锁安装，npm ci --ignore-scripts和uv sync --frozen各exit0；安装只搭环境，不是产品验证。原stdout/stderr/argv/exit和锁/源码不变证据在`/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/minimax/raw/environment`及`/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/environment-readback.json`。未下载/启动Electron二进制；普通build若实际依赖缺件，保首失败并记缺口，不擅自变更依赖或启动原生应用。
+
+自己的临时DB/pytest basetemp/反例只放 `/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/minimax/scratch`，普通测试需显式唯一run目录，不能复用轮转覆盖旧账。实际命令原双流、完整argv/cwd/独立exit/timeout、原先失败、重试原因及派生结果逐次放 `/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/minimax/raw/review`；禁止用后续shell0盖前命令失败、无差异反复重跑或宽泛kill用户进程。自己的普通验证进程异常时只清理能准确证明归属者，未知保unknown，不假报释放。
+
+报告只写 `/Users/kyle/Documents/工作/知爻/本体/outputs/20261022_review_backlog/T01-C1-execution-prep/minimax/reports/full-review.md`，若应用无法落盘则返回完整终态文本供owner原样固定。逐项报告实际task/session/turn、实际模型/最高思考/逐任务权限、固定候选及覆盖、原问题处置、各命令真实结果/未验、具体问题路径/行/触发/影响/建议。关键验收未证就不得整体Pass；可以给有证据的内部/静态子结论，不能以正常工具结果替代native/物理/真人/父功能或改写指定模型结论。

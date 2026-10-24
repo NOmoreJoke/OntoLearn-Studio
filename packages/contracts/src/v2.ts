@@ -313,9 +313,575 @@ export function validateV2(name: string, value: unknown): boolean {
   if (!compiled.has(name)) compiled.set(name, compile(definitions[name]))
   if (!compiled.get(name)!.safeParse(value).success || !semantic(value) || utf8(value) > 262144)
     return false
+  if (!changeSetSemantics(name, value) || !queryConsumerSemantics(name, value)) return false
   if (name === 'params_job.create' || name === 'params_job.list')
     return semantic({ kind: 'request', method: name.slice(7), params: value })
   return true
+}
+
+// Additional invariants apply only to the new typed ChangeSet definitions/strict3 methods.
+function changeSetSemantics(name: string, value: unknown): boolean {
+  const v = value as Record<string, unknown>
+  if (['request3', 'response3', 'envelope3'].includes(name)) {
+    if (v.kind === 'request' && v.method === 'changeset.preview')
+      return changeSetSemantics('params_changeset.preview', v.params)
+    if (v.kind === 'response' && v.ok && String(v.method).startsWith('changeset.'))
+      return changeSetSemantics(`result_${v.method}`, v.result)
+    return true
+  }
+  if (name === 'params_changeset.preview')
+    return v.intent !== 'change' || changeSetSemantics('changeSetPlan', v.plan)
+  if (name === 'changeSetPlan')
+    return ((v.definitions ?? []) as unknown[]).every((item) =>
+      changeSetSemantics('changeSetDefinition', item),
+    )
+  if (name === 'changeSetDefinition' || name === 'changeSetOntologyDefinition')
+    return v.layer !== 'ontology' || changeSetSemantics('changeSetOntologyValue', v.value)
+  if (name === 'changeSetOntologyValue')
+    return !Object.hasOwn(v, 'entityMetadata') || entityMetadataSemantics(v.entityMetadata)
+  if (name === 'changeSetEntityMetadata') return entityMetadataSemantics(value)
+  if (name === 'changeSetManifest') {
+    const parts = v.segments as Array<Record<string, unknown>>
+    let offset = 0
+    if (parts.length !== v.segmentCount) return false
+    for (const [ordinal, part] of parts.entries()) {
+      if (part.ordinal !== ordinal || part.byteOffset !== offset) return false
+      offset += part.rawByteLength as number
+    }
+    return offset === v.totalBytes
+  }
+  if (name === 'result_changeset.preview') {
+    const manifest = v.manifest as Record<string, unknown>
+    return (
+      changeSetSemantics('changeSetManifest', manifest) &&
+      (v.status === 'conflict'
+        ? manifest.documentKind === 'undo-impact'
+        : manifest.documentKind === 'diff' &&
+          (v.intent === 'change' ? v.targetOperationId === null : v.targetOperationId !== null))
+    )
+  }
+  if (name === 'changeSetSegment') {
+    const encoded = v.dataBase64 as string
+    const padding = encoded.endsWith('==') ? 2 : encoded.endsWith('=') ? 1 : 0
+    return (encoded.length / 4) * 3 - padding === v.rawByteLength
+  }
+  if (name === 'changeSetPage' || name === 'result_changeset.diff.page') {
+    const parts = v.segments as Array<Record<string, unknown>>
+    return parts.every(
+      (part, index) =>
+        changeSetSemantics('changeSetSegment', part) &&
+        (index === 0 ||
+          (part.ordinal === (parts[index - 1].ordinal as number) + 1 &&
+            part.byteOffset ===
+              (parts[index - 1].byteOffset as number) +
+                (parts[index - 1].rawByteLength as number))),
+    )
+  }
+  return true
+}
+
+// Python str.isspace(), without normalization or ECMAScript-only FEFF whitespace.
+const metadataWhitespace = new Set([
+  9, 10, 11, 12, 13, 28, 29, 30, 31, 32, 133, 160, 5760, 8192, 8193, 8194, 8195, 8196, 8197, 8198,
+  8199, 8200, 8201, 8202, 8232, 8233, 8239, 8287, 12288,
+])
+function entityMetadataSemantics(value: unknown): boolean {
+  const metadata = value as { entities: Record<string, Record<string, unknown>> }
+  const text = (v: string) =>
+    [...v].length <= 16000 && [...v].some((c) => !metadataWhitespace.has(c.codePointAt(0)!))
+  for (const [iri, entity] of Object.entries(metadata.entities)) {
+    if (
+      !/^[A-Za-z][A-Za-z0-9+.-]*:/.test(iri) ||
+      [...iri].some((c) => metadataWhitespace.has(c.codePointAt(0)!) || '<>"{}|^`\\'.includes(c))
+    )
+      return false
+    for (const field of ['labels', 'definitions']) {
+      const pairs = entity[field] as string[][]
+      if (
+        new Set(pairs.map((pair) => JSON.stringify(pair))).size !== pairs.length ||
+        pairs.some(
+          ([literal, language]) =>
+            !text(literal) || /^(?:[a-z]+(?:-[a-z0-9]+)*)?$/.exec(language)?.[0] !== language,
+        )
+      )
+        return false
+    }
+    for (const field of ['synonyms', 'examples']) {
+      const values = entity[field] as string[]
+      if (new Set(values).size !== values.length || values.some((v) => !text(v))) return false
+    }
+  }
+  return true
+}
+
+/** A value check only: provenance, pre-hello, profile and once belong to the supervisor. */
+export function validateStartupError(value: unknown): boolean {
+  try {
+    return validateV2('error_startup', value)
+  } catch {
+    return false
+  }
+}
+
+/** payloadByteLength must come from the transport's original bytes, never re-encoding. */
+export function validateStartupFailure(
+  value: unknown,
+  payloadByteLength: number,
+  expectedRegistryHash: string,
+): boolean {
+  return (
+    Number.isSafeInteger(payloadByteLength) &&
+    payloadByteLength > 0 &&
+    payloadByteLength <= errorCatalog.startup.maxPayloadBytes &&
+    typeof expectedRegistryHash === 'string' &&
+    /^[0-9a-f]{64}$/.test(expectedRegistryHash) &&
+    validateV2('startupFailure', value) &&
+    (value as Record<string, unknown>).registryHash === expectedRegistryHash
+  )
+}
+
+/** Strict explicit profile validation. It never selects runtime or attests readiness. */
+
+export function validateBusiness3(name: string, value: unknown): boolean {
+  const profiles: Record<string, string> = {
+    request: 'request3',
+    response: 'response3',
+    notification: 'notification3',
+    envelope: 'envelope3',
+    error: 'error3',
+    bootstrapError: 'error_bootstrap3',
+    project: 'project3',
+    'result_project.get': 'result_project.get3',
+    result_hello: 'result_hello3',
+  }
+  try {
+    return validateV2(profiles[name] ?? name, value)
+  } catch {
+    return false
+  }
+}
+
+/** Correlate a pending request; this does not attest Store/Job readiness. */
+export function matchesBusiness3Response(
+  request: unknown,
+  response: unknown,
+  expectedRegistryHash: string,
+): boolean {
+  if (
+    !validateV2('hash', expectedRegistryHash) ||
+    !validateBusiness3('request', request) ||
+    !validateBusiness3('response', response)
+  )
+    return false
+  const q = request as Record<string, unknown>
+  const r = response as Record<string, unknown>
+  if (q.id !== r.id || q.method !== r.method) return false
+  if (q.method === 'project.draft.save') {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>,
+      value = r.result as Record<string, unknown>
+    // The production main service verifies SHA-256 of the original UTF-8 JSON.
+    return (
+      value.projectId === p.projectId &&
+      value.operationId === p.operationId &&
+      value.editor === p.editor &&
+      value.generation === Number(p.expectedGeneration) + 1 &&
+      value.boundDomainRevision === p.boundDomainRevision
+    )
+  }
+  if (
+    [
+      'project.catalog',
+      'project.create',
+      'project.example.create',
+      'project.open',
+      'project.read',
+    ].includes(String(q.method))
+  ) {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>
+    const value = r.result as Record<string, unknown>
+    if (q.method === 'project.catalog') {
+      const items = value.items as unknown[]
+      const end = Number(value.offset) + items.length
+      return (
+        items.length <= Number(p.pageSize) &&
+        end <= Number(value.total) &&
+        (value.nextCursor === null
+          ? end === value.total
+          : items.length > 0 && end < Number(value.total))
+      )
+    }
+    if (q.method === 'project.create' || q.method === 'project.example.create') {
+      const receipt = value.receipt as Record<string, unknown>
+      // The main-process client additionally binds requestHash to SHA-256 of
+      // the actual canonical request before publishing the accepted project.
+      return (
+        p.operationId === value.operationId &&
+        receipt.operationId === p.operationId &&
+        receipt.projectId === value.projectId &&
+        receipt.requestHash === value.requestHash
+      )
+    }
+    if (value.projectId !== p.projectId) return false
+    if (q.method === 'project.open') return true
+    const workspace = value.workspace as Record<string, unknown>
+    const domain = value.domain as Record<string, unknown>
+    const draft = workspace.draft as Record<string, unknown>
+    return (
+      workspace.projectId === p.projectId &&
+      workspace.inputSnapshotId === value.inputSnapshotId &&
+      domain.projectRevision === workspace.domainRevision &&
+      draft.editor === p.editor &&
+      (draft.state === 'missing' ||
+        (draft.state === 'present'
+          ? draft.present === true &&
+            typeof draft.contentJson === 'string' &&
+            typeof draft.contentHash === 'string'
+          : draft.present === false && draft.contentJson === null && draft.contentHash === null))
+    )
+  }
+  if (String(q.method).startsWith('changeset.')) {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>
+    const data = r.result as Record<string, unknown>
+    if (p.projectId !== data.projectId) return false
+    if (q.method === 'changeset.preview')
+      return (
+        p.baseRevision === data.baseRevision &&
+        (p.intent === 'change'
+          ? data.status === 'ready' && data.intent === 'change' && data.targetOperationId === null
+          : data.targetOperationId === p.targetOperationId &&
+            (data.status === 'conflict' || data.intent === 'undo'))
+      )
+    if (p.previewHash !== data.previewHash) return false
+    if (q.method === 'changeset.diff.page')
+      return (
+        p.documentKind === data.documentKind &&
+        (data.segments as unknown[]).length <= (p.pageSize as number)
+      )
+    return q.method === 'changeset.confirm'
+  }
+  if (q.method === 'hello' && r.ok) {
+    const offered = (q.params as Record<string, unknown>).supportedVersions as number[]
+    const result = r.result as Record<string, unknown>
+    if (
+      !offered.includes(3) ||
+      result.registryHash !== expectedRegistryHash ||
+      !(result.capabilities as string[]).every((c) =>
+        (registry.foundationProfiles.business3.methods as string[]).includes(c),
+      )
+    )
+      return false
+    // A successful strict3 hello may advertise internal3-only methods. Projecting
+    // it through the legacy2 capability allowlist would reject this valid build.
+    return true
+  }
+  // Strict v3 validation precedes this binding-only projection. It never sends
+  // a v2 fallback, drops unknown fields or changes the caller's actual objects.
+  const projectedRequest = structuredClone(q)
+  const projectedResponse = structuredClone(r)
+  projectedRequest.protocolVersion = projectedResponse.protocolVersion = 2
+  if (q.method === 'hello') {
+    ;(projectedRequest.params as Record<string, unknown>).supportedVersions = [2]
+    if (r.ok) (projectedResponse.result as Record<string, unknown>).selectedVersion = 2
+  }
+  if (q.method === 'project.get' && r.ok)
+    (projectedResponse.result as Record<string, unknown>).formatVersion = 2
+  if (!r.ok) {
+    const error = projectedResponse.error as Record<string, unknown>
+    if (error.code === 'VERSION_INCOMPATIBLE') error.params = { supportedVersions: [2] }
+  }
+  return matchesResponse(projectedRequest, projectedResponse)
+}
+
+export function business3HelloOutcome(
+  request: unknown,
+  response: unknown,
+  expectedRegistryHash: string,
+): 'success' | 'incompatible-close' | 'rejected-close' | 'invalid-close' {
+  if (
+    !matchesBusiness3Response(request, response, expectedRegistryHash) ||
+    (request as Record<string, unknown>).method !== 'hello'
+  )
+    return 'invalid-close'
+  const r = response as Record<string, unknown>
+  if (r.ok) return 'success'
+  return (r.error as Record<string, unknown>).code === 'VERSION_INCOMPATIBLE'
+    ? 'incompatible-close'
+    : 'rejected-close'
+}
+
+export function acceptsBusiness3JobEvent(value: unknown, binding: EventBinding): boolean {
+  if (!validateBusiness3('notification', value)) return false
+  const projected = structuredClone(value) as Record<string, unknown>
+  projected.protocolVersion = 2
+  return acceptsJobEvent(projected, binding)
+}
+
+/** Owner-internal data-only capture, not an arbitrary-host-object sandbox.
+ * Inputs must come from bounded decoding or the trusted producer adapter.
+ * Descriptor reflection cannot absolutely identify hostile same-process Proxies.
+ */
+export function sourceTableMaterial(
+  table: unknown,
+  options: unknown,
+  implementation: unknown,
+  expectedSourceHash: string,
+  maxEncodedBytes: number,
+): Uint8Array {
+  try {
+    return captureSourceTable(table, options, implementation, expectedSourceHash, maxEncodedBytes)
+  } catch {
+    return fail()
+  }
+}
+
+function captureSourceTable(
+  table: unknown,
+  options: unknown,
+  implementation: unknown,
+  expectedSourceHash: string,
+  maxEncodedBytes: number,
+): Uint8Array {
+  if (
+    !Number.isSafeInteger(maxEncodedBytes) ||
+    maxEncodedBytes < 1 ||
+    !validateV2('hash', expectedSourceHash)
+  )
+    return fail()
+  const ownShape = (value: object, names: string[]) => {
+    // Stop oversized enumerable records before allocating an own-key list.
+    // The owner data-only precondition excludes giant hidden/symbol host trees.
+    let count = 0
+    for (const key in value) {
+      if (!Object.hasOwn(value, key) || ++count > names.length || !names.includes(key))
+        return fail()
+    }
+    const keys = Reflect.ownKeys(value)
+    if (keys.length !== names.length) return fail()
+    if (keys.some((key) => typeof key !== 'string' || !names.includes(key))) return fail()
+  }
+  const record = (value: unknown, names: string[]): Record<string, unknown> => {
+    if (
+      !value ||
+      typeof value !== 'object' ||
+      Array.isArray(value) ||
+      ![Object.prototype, null].includes(Object.getPrototypeOf(value))
+    )
+      return fail()
+    ownShape(value, names)
+    const captured: Record<string, unknown> = Object.create(null)
+    for (const key of names) {
+      const descriptor = Object.getOwnPropertyDescriptor(value, key)
+      if (!descriptor || !('value' in descriptor) || !descriptor.enumerable) return fail()
+      captured[key] = descriptor.value
+    }
+    return captured
+  }
+  const array = (value: unknown, maximum: number): { length: number; at(i: number): unknown } => {
+    if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype) return fail()
+    const descriptor = Object.getOwnPropertyDescriptor(value, 'length')
+    const length = descriptor?.value as unknown
+    if (
+      typeof length !== 'number' ||
+      !Number.isSafeInteger(length) ||
+      length > maximum ||
+      length > maxEncodedBytes
+    )
+      return fail()
+    let count = 0
+    for (const key in value) {
+      const index = Number(key)
+      if (
+        !Object.hasOwn(value, key) ||
+        ++count > length ||
+        !Number.isSafeInteger(index) ||
+        index < 0 ||
+        index >= length ||
+        String(index) !== key
+      )
+        return fail()
+    }
+    if (count !== length) return fail()
+    // The data-only tree's key allocation is bounded by both the domain count
+    // and the encoded-byte lower bound above, not an unbounded descriptor clone.
+    if (Reflect.ownKeys(value).length !== length + 1) return fail()
+    return {
+      length,
+      at(i) {
+        const item = Object.getOwnPropertyDescriptor(value, String(i))
+        if (!item || !('value' in item) || !item.enumerable) return fail()
+        return item.value
+      },
+    }
+  }
+  const t = record(table, ['source_hash', 'sheet', 'fields', 'rows'])
+  const o = record(options, ['format', 'encoding', 'sheet'])
+  const impl = record(implementation, [
+    'executionSemanticsVersion',
+    'engineVersion',
+    'dependencyLockHash',
+  ])
+  if (
+    t.source_hash !== expectedSourceHash ||
+    typeof t.sheet !== 'string' ||
+    (o.format === 'csv'
+      ? !['utf-8', 'utf-8-sig', 'gb18030', 'big5', 'utf-16'].includes(o.encoding as string) ||
+        o.sheet !== null ||
+        t.sheet !== 'CSV'
+      : o.format !== 'xlsx' || o.encoding !== null || !t.sheet || o.sheet !== t.sheet) ||
+    Object.values(impl).some((value) => typeof value !== 'string') ||
+    !validateV2('implementation', impl)
+  )
+    return fail()
+  const fields = array(t.fields, 256)
+  const rows = array(t.rows, 50000)
+  if (!fields.length) return fail()
+  const chunks: Array<{ text: string; bytes: number }> = []
+  let total = 0
+  const reserve = (bytes: number) => {
+    if (bytes > maxEncodedBytes - total) return fail()
+    total += bytes
+  }
+  const token = (text: string) => {
+    reserve(text.length)
+    chunks.push({ text, bytes: text.length })
+  }
+  const whitespace = (cp: number) =>
+    (cp >= 9 && cp <= 13) ||
+    (cp >= 28 && cp <= 32) ||
+    [0x85, 0xa0, 0x1680, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000].includes(cp) ||
+    (cp >= 0x2000 && cp <= 0x200a)
+  const string = (value: unknown, maximum?: number, field = false, noNul = false) => {
+    if (typeof value !== 'string') return fail()
+    let bytes = 2
+    let count = 0
+    let blank = true
+    if (bytes > maxEncodedBytes - total) return fail()
+    for (let i = 0; i < value.length; i++) {
+      let cp = value.charCodeAt(i)
+      if (cp >= 0xd800 && cp <= 0xdbff) {
+        const low = value.charCodeAt(++i)
+        if (!(low >= 0xdc00 && low <= 0xdfff)) return fail()
+        cp = 0x10000 + ((cp - 0xd800) << 10) + low - 0xdc00
+      } else if (cp >= 0xdc00 && cp <= 0xdfff) return fail()
+      if (noNul && cp === 0) return fail()
+      if (!whitespace(cp)) blank = false
+      if (++count > (maximum ?? Number.MAX_SAFE_INTEGER)) return fail()
+      bytes +=
+        cp === 34 || cp === 92 || [8, 9, 10, 12, 13].includes(cp)
+          ? 2
+          : cp < 32
+            ? 6
+            : cp < 128
+              ? 1
+              : cp < 2048
+                ? 2
+                : cp < 65536
+                  ? 3
+                  : 4
+      if (bytes > maxEncodedBytes - total) return fail()
+    }
+    if (field && (!count || blank)) return fail()
+    reserve(bytes)
+    // Immutable captured primitive only, after exact charging. No caller object
+    // or toJSON is passed to the scalar stringifier or saved for later encoding.
+    chunks.push({ text: JSON.stringify(value), bytes })
+  }
+  token('[')
+  string('ontolearn.source-table')
+  token(',1,')
+  string(t.source_hash)
+  token(',[')
+  string(o.format)
+  token(',')
+  if (o.encoding === null) token('null')
+  else string(o.encoding)
+  token(',')
+  if (o.sheet === null) token('null')
+  else string(o.sheet)
+  token('],[')
+  for (const [i, key] of [
+    'executionSemanticsVersion',
+    'engineVersion',
+    'dependencyLockHash',
+  ].entries()) {
+    if (i) token(',')
+    string(impl[key])
+  }
+  token('],')
+  string(t.sheet)
+  token(',[')
+  const seen = new Set<string>()
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields.at(i)
+    if (i) token(',')
+    string(field, 32768, true, true)
+    if (seen.has(field as string)) return fail()
+    seen.add(field as string)
+  }
+  token('],[')
+  let previous = 1
+  const kinds = new Set(['string', 'empty', 'boolean', 'datetime', 'date', 'number'])
+  for (let i = 0; i < rows.length; i++) {
+    const row = record(rows.at(i), ['number', 'cells'])
+    const number = row.number
+    if (
+      typeof number !== 'number' ||
+      !Number.isSafeInteger(number) ||
+      number <= previous ||
+      number > 50001
+    )
+      return fail()
+    previous = number
+    const cells = array(row.cells, 256)
+    if (cells.length !== fields.length) return fail()
+    if (i) token(',')
+    token(`[${number},[`)
+    for (let j = 0; j < cells.length; j++) {
+      const cell = record(cells.at(j), ['text', 'kind'])
+      if (
+        !kinds.has(cell.kind as string) ||
+        (o.format === 'csv' && cell.kind !== 'string') ||
+        (cell.kind === 'empty' && cell.text !== '') ||
+        (cell.kind === 'boolean' && !['true', 'false'].includes(cell.text as string))
+      )
+        return fail()
+      if (j) token(',')
+      token('[')
+      string(cell.text, 32768, false, true)
+      token(',')
+      string(cell.kind)
+      token(']')
+    }
+    token(']]')
+  }
+  token(']]')
+  const output = new Uint8Array(total)
+  const encoder = new TextEncoder()
+  let offset = 0
+  for (const chunk of chunks) {
+    const result = encoder.encodeInto(chunk.text, output.subarray(offset))
+    if (result.written !== chunk.bytes || result.read !== chunk.text.length) return fail()
+    offset += chunk.bytes
+  }
+  if (offset !== total) return fail()
+  return output
+}
+
+export async function sourceTableDigest(
+  ...args: Parameters<typeof sourceTableMaterial>
+): Promise<{ sha256: string; encodedBytes: number }> {
+  const bytes = sourceTableMaterial(...args)
+  const hash = await globalThis.crypto.subtle.digest('SHA-256', bytes.buffer as ArrayBuffer)
+  return {
+    sha256: Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, '0')).join(''),
+    encodedBytes: bytes.length,
+  }
 }
 
 export interface EventBinding {
@@ -398,19 +964,86 @@ export interface DependencyPlan {
   sets: Record<string, string[]>
 }
 
+/** Structural association only; the private transport supplies its issued choice/lease binding. */
+export interface OrdinaryResponseBinding {
+  projectId: string
+  project?: Record<string, unknown>
+}
+export function matchesOrdinaryResponse(
+  request: unknown,
+  response: unknown,
+  binding?: unknown,
+): boolean {
+  if (!validateV2('request', request) || !validateV2('response', response)) return false
+  const q = request as Record<string, unknown>,
+    r = response as Record<string, unknown>
+  if (
+    q.method !== 'ordinary.library' ||
+    r.method !== q.method ||
+    r.id !== q.id ||
+    r.engineSessionId !== q.engineSessionId
+  )
+    return false
+  if (!r.ok) return true
+  const p = q.params as Record<string, unknown>,
+    d = r.result as Record<string, unknown>
+  if (p.op !== d.op || p.ownerId !== d.ownerId) return false
+  if (p.op === 'choices')
+    return (
+      p.menuSeq === d.menuSeq &&
+      new Set((d.choices as Array<{ choiceRef: string }>).map((c) => c.choiceRef)).size ===
+        (d.choices as unknown[]).length &&
+      new Set((d.choices as Array<{ projectId: string }>).map((c) => c.projectId)).size ===
+        (d.choices as unknown[]).length
+    )
+  if (p.actionId !== d.actionId || p.actionSeq !== d.actionSeq) return false
+  if (p.op === 'release') return true
+  if (p.op === 'commit' && p.leaseRef !== d.leaseRef) return false
+  if (!binding || typeof binding !== 'object' || Array.isArray(binding)) return false
+  const project = d.project as Record<string, unknown>
+  const issued = binding as Record<string, unknown>
+  if (project.projectId !== issued.projectId) return false
+  const provided = Object.prototype.hasOwnProperty.call(issued, 'project')
+  if (provided && !validateV2('result_project.get', issued.project)) return false
+  if (p.op === 'commit' && !provided) return false
+  if (!provided) return true
+  const expected = issued.project as Record<string, unknown>
+  if (
+    ['projectId', 'projectRevision', 'inputSnapshotId', 'formatVersion'].some(
+      (key) => expected[key] !== project[key],
+    )
+  )
+    return false
+  const vector = project.dependencyVector as Record<string, number>
+  const expectedVector = expected.dependencyVector as Record<string, number>
+  const keys = Object.keys(expectedVector)
+  return (
+    keys.length === Object.keys(vector).length &&
+    keys.every(
+      (key) =>
+        Object.prototype.hasOwnProperty.call(vector, key) && expectedVector[key] === vector[key],
+    )
+  )
+}
+
 export function matchesResponse(request: unknown, response: unknown): boolean {
   if (!validateV2('request', request) || !validateV2('response', response)) return false
   const q = request as Record<string, unknown>,
     r = response as Record<string, unknown>
   if (q.id !== r.id || q.method !== r.method) return false
   if (q.method !== 'hello' && q.engineSessionId !== r.engineSessionId) return false
+  if (q.method === 'ordinary.library') return matchesOrdinaryResponse(request, response)
+  if (String(q.method).startsWith('query.')) return matchesQueryConsumerResponse(request, response)
   if (!r.ok) return true
   const p = q.params as Record<string, unknown>,
     data = r.result as Record<string, unknown> | null
   if (q.method === 'hello') {
     return (
       (p.supportedVersions as number[]).includes(2) &&
-      (data!.capabilities as string[]).every((c) => (registry.v2Runtime as string[]).includes(c))
+      (data!.capabilities as string[]).every(
+        (c) =>
+          (registry.v2Runtime as string[]).includes(c) || c === registry.ordinaryLibrary.method,
+      )
     )
   }
   if (!data) return true
@@ -569,4 +1202,234 @@ export function validationProjectionMatchesResources(
       row.resultState === null
     )
   })
+}
+
+/** Only the query draft is D1 UTF-16; presentation limits remain scalar L2. */
+function queryConsumerSemantics(name: string, value: unknown): boolean {
+  const v = value as Record<string, unknown>
+  if (['request', 'response', 'envelope', 'request3', 'response3', 'envelope3'].includes(name)) {
+    if (v.kind === 'request' && String(v.method).startsWith('query.'))
+      return queryConsumerSemantics('params_' + v.method, v.params)
+    if (v.kind === 'response' && v.ok && String(v.method).startsWith('query.'))
+      return queryConsumerSemantics('result_' + v.method, v.result)
+    return true
+  }
+  if (name === 'params_query.execution.prepare')
+    return queryConsumerSemantics('query.consumer.draft', v.visibleDraft)
+  if (name === 'result_query.definition.load' || name === 'query.consumer.definitionLoad')
+    return v.kind !== 'managed' || queryConsumerSemantics('query.consumer.draft', v.draft)
+  if (name === 'query.consumer.descriptor') {
+    for (const [key, maximum] of Object.entries({
+      name: 128,
+      description: 4096,
+      capabilityQuestion: 4096,
+    }))
+      if (typeof v[key] !== 'string' || (v[key] as string).length > maximum) return false
+    const nameValue = v.name as string
+    return (
+      !!nameValue &&
+      !queryEdgeSpace.includes(nameValue[0]) &&
+      !queryEdgeSpace.includes(nameValue.at(-1)!)
+    )
+  }
+  if (name !== 'query.consumer.draft') return true
+  for (const [key, maximum] of Object.entries({
+    name: 128,
+    description: 4096,
+    sparql: 65536,
+    capabilityQuestion: 4096,
+  }))
+    if (typeof v[key] !== 'string' || (v[key] as string).length > maximum) return false
+  for (const key of ['name', 'sparql']) {
+    const text = v[key] as string
+    let start = 0,
+      end = text.length
+    while (start < end && queryEdgeSpace.includes(text[start])) start++
+    while (end > start && queryEdgeSpace.includes(text[end - 1])) end--
+    if (start === end) return false
+  }
+  return true
+}
+
+/** Query consumer values share scalar L2; draft D1 alone retains its UTF-16 policy. */
+const queryEdgeSpace =
+  '\t\n\v\f\r\u001c\u001d\u001e\u001f \u0085\u00a0\u1680' +
+  '\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a' +
+  '\u2028\u2029\u202f\u205f\u3000\ufeff'
+export function normalizeQueryDraft(value: unknown): Record<string, unknown> | null {
+  if (!validateV2('query.consumer.draft', value)) return null
+  const draft = { ...(value as Record<string, unknown>) }
+  for (const [key, maximum] of Object.entries({
+    name: 128,
+    description: 4096,
+    sparql: 65536,
+    capabilityQuestion: 4096,
+  }))
+    if ((draft[key] as string).length > maximum) return null
+  for (const key of ['name', 'sparql']) {
+    const text = draft[key] as string
+    let start = 0,
+      end = text.length
+    while (start < end && queryEdgeSpace.includes(text[start])) start++
+    while (end > start && queryEdgeSpace.includes(text[end - 1])) end--
+    draft[key] = text.slice(start, end)
+    if (!draft[key]) return null
+  }
+  return draft
+}
+function queryEqual(left: unknown, right: unknown): boolean {
+  if (left === right) return true
+  if (Array.isArray(left) && Array.isArray(right))
+    return left.length === right.length && left.every((v, i) => queryEqual(v, right[i]))
+  if (!left || !right || typeof left !== 'object' || typeof right !== 'object') return false
+  const a = left as Record<string, unknown>,
+    b = right as Record<string, unknown>
+  return (
+    Object.keys(a).length === Object.keys(b).length &&
+    Object.keys(a).every((k) => Object.hasOwn(b, k) && queryEqual(a[k], b[k]))
+  )
+}
+/** Extra facts come only from an actual issued descriptor/load, never renderer claims. */
+export function matchesQueryConsumerResponse(
+  request: unknown,
+  response: unknown,
+  expected?: Record<string, unknown>,
+): boolean {
+  if (!validateV2('request', request) || !validateV2('response', response)) return false
+  const q = request as Record<string, unknown>,
+    r = response as Record<string, unknown>
+  if (q.id !== r.id || q.method !== r.method || q.engineSessionId !== r.engineSessionId)
+    return false
+  if (!r.ok) return true
+  return queryConsumerResultMatches(
+    q.method as string,
+    q.params as Record<string, unknown>,
+    r.result,
+    expected,
+  )
+}
+export function queryConsumerResultMatches(
+  method: string,
+  p: Record<string, unknown>,
+  value: unknown,
+  expected?: Record<string, unknown>,
+): boolean {
+  if (!validateV2('params_' + method, p) || !validateV2('result_' + method, value)) return false
+  const v = value as Record<string, unknown>
+  if (method === 'query.definition.load') {
+    const selection = p.selection as Record<string, unknown>
+    if (
+      v.projectId !== p.projectId ||
+      v.definitionId !== p.definitionId ||
+      (selection.kind === 'historical' && v.inputSnapshotId !== selection.snapshotId)
+    )
+      return false
+    return !expected || Object.keys(expected).every((k) => queryEqual(expected[k], v[k]))
+  }
+  if (method === 'query.execution.prepare') {
+    const input = v.input as Record<string, unknown>,
+      binding = p.definitionBinding as Record<string, unknown>
+    if (
+      v.projectId !== p.projectId ||
+      v.operationId !== p.operationId ||
+      !queryEqual(v.definitionBinding, binding) ||
+      input.definitionId !== binding.definitionId ||
+      input.scope !== 'asserted' ||
+      !Array.isArray(input.derivedResultIds) ||
+      input.derivedResultIds.length !== 0 ||
+      input.preparedPlanRef !== null
+    )
+      return false
+    const selection = p.selection as Record<string, unknown>
+    if (selection.kind === 'historical' && input.inputSnapshotId !== selection.snapshotId)
+      return false
+    return !expected || Object.keys(expected).every((k) => queryEqual(expected[k], v[k]))
+  }
+  if (method === 'query.result.describe') {
+    const identity = v.identity as Record<string, unknown>,
+      metadata = v.metadata as Record<string, unknown>
+    if (
+      identity.projectId !== p.projectId ||
+      identity.resultId !== p.resultId ||
+      metadata.kind !== 'query'
+    )
+      return false
+    for (const key of [
+      'projectId',
+      'resultId',
+      'jobId',
+      'inputSnapshotId',
+      'definitionId',
+      'parametersHash',
+      'scope',
+      'implementation',
+      'inputProjectRevision',
+    ])
+      if (!queryEqual(identity[key], metadata[key])) return false
+    const text = v.executedText as Record<string, unknown>,
+      query = v.query as Record<string, unknown>
+    if (
+      Number(text.utf8Bytes) < Number(text.unicodeScalars) ||
+      Number(text.utf8Bytes) > 4 * Number(text.unicodeScalars) ||
+      Number(text.utf16Units) < Number(text.unicodeScalars) ||
+      Number(text.utf16Units) > 2 * Number(text.unicodeScalars)
+    )
+      return false
+    if (query.kind === 'SELECT') {
+      const columns = query.columns as Array<Record<string, unknown>>
+      if (
+        columns.some((c, i) => c.index !== i) ||
+        new Set(columns.map((c) => c.name)).size !== columns.length
+      )
+        return false
+    }
+    return !expected || Object.keys(expected).every((k) => queryEqual(expected[k], v[k]))
+  }
+  if (method === 'query.result.textPage' || method === 'query.result.rowsPage') {
+    if (!queryEqual(p.binding, v.identity)) return false
+    if (method.endsWith('textPage')) {
+      const bytes = new TextEncoder().encode(v.text as string).byteLength
+      if (v.utf8Length !== bytes || bytes > Number(p.maxUtf8Bytes)) return false
+      if (
+        expected &&
+        ((expected.nextUtf8Byte !== undefined && v.startUtf8Byte !== expected.nextUtf8Byte) ||
+          Number(v.startUtf8Byte) + bytes >
+            Number((expected.executedText as Record<string, unknown>).utf8Bytes))
+      )
+        return false
+      if (
+        expected &&
+        v.nextCursor === null &&
+        Number(v.startUtf8Byte) + bytes !==
+          Number((expected.executedText as Record<string, unknown>).utf8Bytes)
+      )
+        return false
+    } else {
+      const rows = v.rows as Array<Record<string, unknown>>
+      if (
+        rows.length > Number(p.pageSize) ||
+        rows.some((row, i) => i > 0 && Number(row.index) !== Number(rows[i - 1].index) + 1)
+      )
+        return false
+      if (expected) {
+        const query = expected.query as Record<string, unknown>
+        if (query.kind !== 'SELECT') return false
+        const width = (query.columns as unknown[]).length,
+          start =
+            expected.nextIndex === undefined
+              ? Number(rows[0]?.index ?? query.rowCount)
+              : Number(expected.nextIndex)
+        if (
+          rows.some(
+            (row, i) => row.index !== start + i || (row.cells as unknown[]).length !== width,
+          ) ||
+          start + rows.length > Number(query.rowCount)
+        )
+          return false
+        if (v.nextCursor === null && start + rows.length !== Number(query.rowCount)) return false
+      }
+    }
+    return utf8(v) <= 131072
+  }
+  return false
 }

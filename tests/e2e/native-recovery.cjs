@@ -33,7 +33,7 @@ function observeWindow(window, freshlyCreated = false) {
   const drive = async () => {
     try {
       const state = await window.webContents.executeJavaScript(
-        `({ status: document.querySelector('[role=status]').textContent, bridge: typeof window.ontolearn?.getEngineHealth })`,
+        `({ status: document.querySelector('.health-result').textContent, bridge: typeof window.ontolearn?.getEngineHealth })`,
       )
       if (!state.status.includes('尚未检查') || state.bridge !== 'function')
         throw new Error('unexpected initial state')

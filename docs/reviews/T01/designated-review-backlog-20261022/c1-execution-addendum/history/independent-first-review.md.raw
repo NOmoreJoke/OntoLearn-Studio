@@ -1,0 +1,47 @@
+# C1 执行准备独立定点审查
+
+首轮结论：**当前执行准备不通过，需先修环境注入与写出边界，再完成清单导航。** 固定源码、安装记录与当前guidance身份检查通过；这只是静态准备检查，没有执行产品或测试，不产生指定模型Pass。若后续补充复核，须保留本首轮发现。
+
+审查者 `/root/i05_resource_offer_independent`，只读审查 `outputs/20261022_review_backlog/T01-C1-execution-prep/` 新包及必要固定源码/Git/环境元数据；只在 `/tmp/t01-c1-execution-prep-20261022/` 写独立报告/小证据。未改repo、输入、测试、锁、AGENTS或旧manifest，未import产品、pytest collect、测试、SQL/native/业务child/GUI、安装或启动模型。
+
+## 阻断发现
+
+### EXEC-01 / P1：环境未清理能替换候选的变量
+
+位置：两模型 `review-env.sh:2` 只清PYTHONPATH、PYTEST_ADDOPTS、I02_HMR。原suite真实消费的 `ROOT_SOURCE_PATH` 与 `ONTOLEARN_TEST_ENGINE` 仍会继承。
+
+具体反例：若审查应用环境继承 `ROOT_SOURCE_PATH=<另一候选树>`，`tests/unit/task-runtime.test.ts:41,158` 会选择另一源码/registry并为Python加入该源；`packages/engine/tests/test_i04_lifecycle_boundaries.py:20` 在导入前将该树src插入sys.path。若继承ONTOLEARN_TEST_ENGINE，`test_resident_runtime.py:30,109`、`test_worker_parent.py:50`、`test_worker_owner_bootstrap.py:219` 会启动该外部engine。即使cwd与editable安装正确，也无法保证本轮执行固定C1候选。
+
+必要修复：两脚本至少清ROOT_SOURCE_PATH、ONTOLEARN_TEST_ENGINE及解释器/测试注入（PYTHONPATH/PYTHONHOME、VIRTUAL_ENV、PYTEST_ADDOPTS/PYTEST_PLUGINS、NODE_OPTIONS/NODE_PATH），设PYTEST_DISABLE_PLUGIN_AUTOLOAD=1或提供等效明确插件隔离。不要改suite/deselect旧guard，不需读出当前环境值或重新执行产品来证明脚本文字修复。本轮未观察到实际发生污染，问题是执行入口未封住该原有分支。
+
+### EXEC-02 / P2：普通build获准但默认输出被写面文字排除
+
+位置：两 `inputs/execution-addendum.md` 的“本轮可执行验证”允许原npm check含普通build，后文“源…保持只读”“可写…本模型目录”及dispatch“只能在自己的scratch/raw/reports记录”没有明确允许自己隔离树的构建输出/缓存。
+
+`package.json`的check真实经过build→desktop `electron-vite build`；`apps/desktop/package.json`的main指向`./out/main/index.js`，未覆盖默认outDir。普通build会写自己树`apps/desktop/out/`，ruff/pytest默认也有本树ignored缓存。这不是tracked产品修改。现文字会迫使执行者违约、跳过build或改构建配置，三者均不应发生。
+
+必要修复：明确仅本模型隔离树中原工具正常产生的ignored build/cache（或精确重定向的独占输出）可写，列出具体范围；tracked源码/测试/锁/配置/Git与保护AGENTS仍只读。自己反例、DB、raw/report仍按专属目录，不授权任意ignored路径、另一个模型或原冻结包。不要为此改产品构建脚本。
+
+### EXEC-03 / P2：引用清单尚未交付；摘要clean需带时点
+
+两addendum引用补充根`test-command-static-audit.json`，首轮检查持久包内尚无该文件。临时清单已存在，但其MD第5行“两个树…clean”与当前受保护AGENTS M不符；可注明此前clean观测时点并补当前状态，不能把根传播的M抹掉或称产品改变。
+
+必要修复：将最终清单无损固定到提示词实际路径，并核MD/JSON身份和状态一致。保留旧clean观测及首次缺导航事实，不倒改原日志；不需重跑测试。此项为当前备包未交齐，不质疑该作者已完成的静态源码遍历。
+
+## 已核同的身份与权限边界
+
+两树分别为 `.worktrees/T01-c1-zcode-review-423b7e4`、`.worktrees/T01-c1-minimax-review-423b7e4`，实际detached HEAD均`c0b61fd245c1b3bd2a84e488f00a742a1942fd8c`，批准base为`5f910b52c69d86a1076b2032e5d3c63e715947f3`，C1产品`423b7e4c799f188cf2ce6e8e7121893ce85624cd`。独立核52产品/测试路径原字节全部等423；423→c0恰90件docs。对E13完整825件快照，实际824同，一件AGENTS是root传播15147B/de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4当前guidance。两树均只AGENTS M，staging空；不能称clean。当前附本与主规则文件逐bytes同。
+
+`C1-execution-decision.md`把本C1原正常check/128功能/普通事务范围与新N0/native caller/production producer、被拒C2/S1 SQLite/heap/OS研究清楚区分。addendum明确旧blanket禁npm/pytest/child仅本C1由新精确规则替代；原I04未改libproc/resident_bytes/test-worker及Coordinator现有传递调用属于已授权原suite，不过滤、不再逐命令请示。保留损坏物理SQLite HOLD、whole-H未证、禁止旁路同目的研究、原scope/真人OS/父功能/指定双审门，未把旧RSSguard当新物理资源证明。两方原prompt raw与旧封存原件逐byte相同，不互看本轮结论，源码/tests/锁/Git只读，任务实际字段均null、仍未派发。
+
+四次环境安装receipt均真实exit0，argv分别npm ci --ignore-scripts --no-audit --no-fund、uv sync --frozen --python固定3.12 --no-python-downloads --link-mode copy；四份stdout/stderr bytes/SHA均核同。7件依赖输入before/after及当前原件无变化，cwd分别属于自己的树。两node_modules真实路径独立，venv关闭system-site-packages，editable路径各指自己树；环境metadata读回只importlib.metadata，不import引擎。记录中的Python3.12.12、pytest9.1.1、ruff0.17.1、rdflib7.6.0等只是发行包元数据，不是测试通过。npm原stderr有deprecated警告，没有以exit0掩掉其存在；本审不把安装成功当产品/原生二进制可运行。
+
+## 旧guidance导航缺件的更正
+
+旧完整发审包确实缺`control/AGENTS.md`，旧prompt却指向它；原主规则实际在`OntoLearn-Studio/AGENTS.md`。此前盘点独审只核已列104件控制资料，没有检查这条必读导航的存在性，这是前次审查遗漏。不能把先前静态接收结论解释为该导航曾完整。旧报告、prompt、manifest保持原件，本新addendum显式记录缺件并附当前15147B主规则，补救方向正确。后续实际模型必须读当前附本/完整common第九节/桌面政策/原C1授权，不能靠旧1056B副本替代。
+
+## 实际命令与独立证据
+
+实际只用`rg`、普通Git rev-parse/status/symbolic-ref/diff/show及Python标准库pathlib/json/hashlib/ast文件读取。Git源码blob与52路径、825快照比较、两树身份/状态、4安装receipt和双流哈希、依赖前后/当前字节及原prompt字节比较均完成，脚本exit0。Python准备脚本AST语法可解析；本审未执行它们或source env脚本，未跑product/helper/pytest collect/DB/native/GUI/模型。初次rg无排除地列到cache，输出截断，随后改为只读明确文件；没有把截断列表当完整审查。
+
+独立证据 `independent-execution-prep-check.json` 记录初始输入身份、两个env脚本原文、任务空字段和上述实际结果，后续修复可追加最终delta读回，首轮发现保留。

@@ -1,0 +1,35 @@
+{
+  "scope": "Private pure draft CAS plan, no durable Store3/GUI integration",
+  "baseHead": "0a2a4372dc64f9f6d90a18938f9a42ddc5721af7",
+  "sources": {
+    "packages/engine/src/ontolearn_engine/project/draft_plan.py": "8543f36dbdd480f22ace7cc2dba9bfda511d03db0d8fbd4c1eff0d123da7d2f3",
+    "packages/engine/tests/test_project_draft_plan.py": "e35f16ea76d222ed1a42a6570c70ab252f218ea55be0fba862117443d509d762"
+  },
+  "logs": {
+    "pytest-draft-plan-first.log": {
+      "bytes": 99,
+      "sha256": "4cfcd66179ed487df4129ec54d6a4740d94fe60875b0ec11d0bc2f339f5866b4"
+    },
+    "pytest-draft-plan-utf8.log": {
+      "bytes": 99,
+      "sha256": "db3988c5aa61c1f984246df6ea9d0e2032da7e891357d094b54e240a3ea50fe1"
+    },
+    "check-draft-plan-first.log": {
+      "bytes": 5546,
+      "sha256": "d580a6a7e9712effb61ece98a4d40bcbd8118db489925fc6418eec57418844d9"
+    },
+    "check-draft-plan-utf8.log": {
+      "bytes": 5546,
+      "sha256": "98c15b1838d6d1b011a3a5d57c4e05b3b954cd59bc868429bfa3a6596987efa3"
+    }
+  },
+  "finalCheck": {
+    "command": "npm run check",
+    "log": "check-draft-plan-utf8.log",
+    "exitCode": 0,
+    "TS": 630,
+    "Python": 1216,
+    "independentTargeted": 20
+  },
+  "policyAGENTSSHA": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759"
+}

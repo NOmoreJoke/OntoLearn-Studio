@@ -1,0 +1,86 @@
+# T01 → T02 接口请求 B：固定 C1 的 metadata、引用及 ChangeSet 合同
+
+结论：`423b7e4` 已实现显式内部 business3 的 typed ontology/manual-fact ChangeSet 全链，可按固定 blob 静态核对。**当前 C1 没有 Entity 五字段非 RDF metadata 的已批准实现，也没有其 sourceBinding / ontologyPreparedProof / 统一 CostSession 合同。** 项目 metadata 私有事务、普通 definition 引用和现有逻辑预算各有实际实现，但不能互相替代这些缺项。T02 当前 `e5ad54e` 只作接收方版本背景；本材料不拼接其源码或未批 C2 / S1 / producer WIP。
+
+## 1. 固定身份与使用范围
+
+| 身份                      | 固定值                                                               |
+| ------------------------- | -------------------------------------------------------------------- |
+| T01 原 owner              | 原聊天 `01a15bba-0884-7401-b24f-f50c1fcf60aa`                        |
+| base                      | `5f910b52c69d86a1076b2032e5d3c63e715947f3`                           |
+| 唯一 C1 product sourceRef | `423b7e4c799f188cf2ce6e8e7121893ce85624cd`                           |
+| C1 原收口 process ref     | `a33cc80e82475e54d74b4e48c1fd32f32979983a`                           |
+| 保留树文档 HEAD           | `c0b61fd245c1b3bd2a84e488f00a742a1942fd8c`；相对 423b 仅90件 docs    |
+| T02 背景版本              | `e5ad54e5762157cafe532c2a0c07c22e8dd737cb`；不作为 C1 供方或采用输入 |
+
+[C1 完整身份清单](C1-complete-source-identity.json)逐项列出 **825件 Git 文件 / 14,253,801 B** 的 sourceRef、path、Git blob、mode、bytes、SHA256，以及相对 base 的完整52件产品/测试差异。全部825项 path/bytes/SHA 已与先前固定 C1 快照核同。规范化 files 列表 SHA256 为 `b28cbd332524cfcbe7146499ccd1a3fd4d73470ccada68f2468e678501fdc53a`；该结构额外包含 blob/mode/ref，不能与旧简表的 canonical digest 直接比较。
+
+`fixed-source-raw/` 保留14个实际引用的423b blob原bytes、各加 `.raw` 后缀，仅为静态核对材料。它不构成运行树、包资源证明、当前授权或新产品候选。其余完整路径可在原 Git 用 `git show 423b7e4c799f188cf2ce6e8e7121893ce85624cd:<path>` 提取；以完整清单核身份，不能拿文档 HEAD、adoption 或 WIP 名称替代产品 ref。
+
+本材料由总控转交原 T02 做静态核对。C1 两个指定模型实际 session 已启动，结论本轮未读取/核验，不宣称 Pass；本接口补充不替换其输入、报告或当前受审源码。
+
+## 2. non-RDF metadata：已有能力与缺口
+
+以下源码路径均相对仓库根、行号均绑定 **423b**，不是可变工作文件。
+
+| 主题                      | 当前 C1 实现                                                                                                                                                                             | 给 T02 的边界                                                                                                                      |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 项目 metadata             | `project/format3.py:190–199,417起`：`name/templateRef/archived/mode/origin`；`applications.py:85–120,146–162` 只接受 name/archived/mode patch 与 expectedVersion CAS                     | 这是 project/application 状态；不是每个 Entity 的业务英文标识、名称、定义、同义词、示例                                            |
+| 私有 application 写链     | `job_store.py:290–420` 有 prepare/apply、applicationPlanVersion1、CAS、confirmation 与原 global claim，`Store.commit(application=...)` 同事务落盘；可组合真实 domain 预演                | 它是 coordinator-owned non-Job 内部事务，不等 `changeset.confirm` 的分页确认链，也不被 `changeset.commit` 当作 metadata proof 消费 |
+| 旧 definition payload     | `storage.py:1014–1040`：非 dict canonical JSON 可为 opaque；dict 只验证已知 triples / references / singleValuedPredicates，未在此拒所有未知键；snapshot 保留完整 payload                 | 不能断言旧库不存在同名 entityMetadata；也不能将形似五字段的 opaque 值认证为新 semantic profile 或唯一业务权威                      |
+| 正式 typed ontology value | `domain_changesets.py:88–130` 与 `schema.json:7488–7522`：只允许 triples / singleValuedPredicates / references；schema additionalProperties=false，实际 before/after Diff 也查受支持类型 | **不能在现 DTO 加 entityMetadata、proof 或 cost-ticket，更不能绕正式 API 直接用 opaque Store 写来冒充已实现接口**                  |
+| RDF 名称/定义             | triples 能表示真实 rdfs:label / rdfs:comment 及其 canonical N3 literal                                                                                                                   | RDF 字面值不自动形成五字段 home / identifier / 多语言主显示 / 全支持同步政策；synonyms/examples 没有由 C1 创设 RDF 词汇            |
+
+这里的 `project/` 前缀全称为 `packages/engine/src/ontolearn_engine/project/`；storage/job_store 全称为 `packages/engine/src/ontolearn_engine/` 对应文件。实际 blob 以完整清单为准。
+
+当前可核的是原 payload 全文进入 state/snapshot/before/after，以及原 project metadata CAS/receipt。**没有可供应给 T02 的已实现 Entity metadata reader/schema/profile、唯一 home、五字段原子写/复制删除/undo、五字段与全部 RDF 支持一致性证明。** 这不等于可以丢弃旧 payload 或将缺失字段自动猜出。
+
+## 3. 引用与 RDF 规则：当前检查的确切范围
+
+`storage.py:22` 定义八个 family：ontology、mapping、constraint、rule、behavior、scenario、query、model。`storage.py:1014–1040` 的 triples 记录恰为 subject/predicate/object：前两项合法 IRI，object 是能同版重建为同一 `.n3()` 的 canonical N3 字符串；这不是接受任意未经解析的 object 文本。
+
+`storage.py:1062–1080` 的顶层 `references` 恰为 `{layer,id}`，指同一个 project 的 definition `(layer,id)` 身份，目标必须实际存在。`_snapshot_state:1262–1297` 对完整 snapshot 的 definition identities、payload 已知形状与 references 再核同。正式 ChangeSet 只写 ontology definition，references 的目标仍可在上述八 family 中，不能由此借写其它 family。
+
+该实现检查的是 **definition-record 引用**。它没有遍历所有未知 opaque payload 的潜在 Entity IRI 语义，也没有给 T02 全部 Entity 删除所需的跨层 IRI 反向引用覆盖证明。IRI、载体 definition id 与业务 identifier 是三种身份，当前不能混用。snapshot 保真、同名 key 或 references 目标存在，均不足以证明未来 metadata home / 来源政策 / 全引用闭包成立。
+
+因此静态消费可引用这些原检查；需要“删除实体前已看见全部 RDF subject/predicate/object 与所有业务层引用”的动作，应保留为原 owner 待交的更完整合同，不能在本材料默认为已满足。
+
+## 4. typed ChangeSet proof、确认、Job 与 commit
+
+[详细固定源码核对](typed-contract-findings.md)及[原签名/schema/行块 JSON](typed-contract-findings.json)包含所有请求与返回字段、严格 DTO、真实函数签名和固定 blob 身份。主要合同如下。
+
+1. **入口确已实现，但限定内部 profile。** JobStore 的 preview_changeset / changeset_diff_page / confirm_changeset / create_changeset_job 有实际方法；Coordinator 显式 business3 分派。registry 默认 productRuntime 仍 health，business3 有实际 override。schema 中名字存在不等默认公开启用。
+2. **预演用真实 Store 事务后回滚。** ChangePreview.identity 绑定 project/base/完整 plan/before/after/intent/target/control；preparedChangeSetVersion1 envelope 另绑定 host/session、snapshot、parameters、manifest 与 segment blobs。previewHash/plan digest 是内容绑定，不是外部物理身份或人类授权签名。
+3. **完整 Diff 分段与确认有持久链。** 完整 `ChangePreview.diff` 除 definition/fact 记录差异，还含 `definition-status` 控制项（`transactions.py:68–80`）；删除定义的撤回状态与 undo/重新定义不能漏报。 canonical UTF8 全文≤16MiB，每32768B一段，descriptor/hash/offset 与真实 Diff 核同；cursor 绑定 project/host/session/preview/document/plan/base/pageSize，confirm 回走完整页链并重新实际预演。confirmation 行与 receipt 成对同事务落盘；精确请求可返回原 receipt，孤儿/错链不默默重签。该链不能证明 UI 真显示、真人已读或已点同意。
+4. **Job durable 受理与领域提交分开。** 新 operation 的 snapshot、parameters、confirmed plan 与完整 context fingerprint 核同后，在同一外层事务写 queued Job / operation claim。原 operation 精确幂等返回历史 Job；这不是重新验证当前 physical scope 的新会话授权。
+5. **首次 commit 复验并同 writer 原子落盘。** Coordinator 对 changeset.commit 直接进入原 Store/JobStore；accepted plan、before/control 与真实 after/control 核同。domain revision/evidence、Job result receipt、succeeded 终态同外层事务提交。提交后交付 hook 失败不抹掉真实成功。
+
+这些是已有 domain typed plan 的证明及确认合同。C1 没有 `ontologyPreparedProof`、`sourceBinding`、metadataProfileVersion/homeHash/projection-policy 的同版新 schema/envelope/接收接口。不要把旧 previewHash 改名后当作新 proof，也不要把 trusted host/session UUID 当作 scope issuer、库位置或真人确认。
+
+## 5. 成本与资源：可以引用的数字及其限度
+
+C1 的实际 JSON/plan行数/段/页面/cursor/结果限制、队列和协作 deadline 逐项见子报告§5。关键边界是：4096项结构限额、262144B一般 wire cap、Diff16MiB/32KiB段、页面 maxPageBytes/frame 交集、cursor有限数量/TTL、Job结果行/JSON cap。C1 blank-create 的 ReadLimits 另有 rows/SQL编码 bytes/validation_work、目录/workspace/page/snapshot限额，属于 creation 分支。
+
+**这些不是统一预扣费用接口。** 当前预演会先实际跑 Store 事务，Diff 编码会先构造完整 canonical raw；page 读取段集合后再取当前页。正式 changeset.commit 在 Coordinator 同进程执行并绕过 worker 分支，故不能把 frozen Job limits 里的 maxWorkerMemoryBytes 冒认为该 JSON/SQLite 执行已受 worker guard 保护；也不能把 creation 专属 ReadLimits 转授给任意 metadata/ChangeSet 工作。
+
+当前 C1 没有共同 CostSession 在源读取→T02→adapter→预览→页→确认→Job→commit 的同对象消耗、实际释放 ack 或原 Store owner 资源票接口。这里仅核静态代码次序和接口，不推导峰值、性能或物理安全结论。whole-H、SQLite损坏输入物理前置、native/current_scope、真实 producer 均未由本材料补证；不运行或改写这些受 HOLD 的路径。
+
+## 6. 已选方向与仅设计合同（不得采用为实现）
+
+[设计身份](design-context-raw/identity.json)分别固定7753666方案的 blob/SHA 与根 S1 授权原件 bytes/SHA。方案原文的“等待选择”是历史状态；后续根授权已经选择 **L1旧源保真并明确缺失 + 后续M五字段唯一home/semantic profile2方向**。批准技术方向不等 M/S2 产品实现或可采用 ref。
+
+| 后续合同          | 设计内容                                                                                                                                                                                                     | 423b 状态                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| Entity metadata M | ontology payload 内版本化 entityMetadata 五字段；每 project 同IRI唯一home；identifier为真实业务值、project范围跨类型精确字符串唯一，区分大小写、不trim/NFC/casefold；不从IRI/载体ID推断                      | 未实现；旧profile1 opaque不能认证成新profile2                |
+| 多语言/支持       | labels/definitions保完整(text,language)集合与实际label/comment RDF全部支持交叉一致；synonyms/examples为非RDF业务材料；无唯一zh候选时显式选择材料                                                             | 未实现；不得选第一项或丢typed literal datatype充已支持       |
+| 全引用动作        | 保原definition/Entity身份，完整跨层IRI引用与RDF所有支持决定复制/删除影响；五字段经原完整Diff/confirm/Job/commit/undo写链                                                                                     | 当前只有普通record references与受限ontology/manual typed子集 |
+| S2持久proof       | 原唯一plan authority升级v2；sourceBinding含真实snapshot/revision/完整vector/CP/retirement/metadata/profile/policy/固定T02模型身份；与独立ontologyPreviewHash、参数/确认/cursor/Job上下文在四个原事务阶段复验 | 仅设计，无已批产品ref/消费方法                               |
+| CostSession       | 原可信owner有限临时共享资源对象，全链同对象预扣；失败spent不退、实际释放才还reserved；1MiB源/metadata、8MiB保留与64MiB-work等设计限额均须同版实际reader/生命周期证明                                         | 非423b能力，也非已证明物理whole-H上界                        |
+
+上述方向不是新的施工授权。C2、S1两文件WIP和producer当前未审WIP均未纳入本 C1 供方；T02 不应拼接它们或设计 DTO 来让自己的静态核对看似有完整已批接口。需要的后继交付必须由原 owner 提供精确 product sourceRef/path/blob/bytes/SHA 与真实接口/失败/资源合同，另经当前门禁。
+
+## 7. 本轮验收与交接
+
+本轮只读固定 Git blob、根授权原件与已有固定快照身份，仅新增本接口文档/身份清单/原bytes附件。未改423b受审实现、测试、依赖、canonical、外审输入或旧过程；未读取两模型报告，未运行产品/测试/SQL/DB/native/新producer，不补造运行 Pass。
+
+独立审查报告另存本目录，结论仅覆盖本材料的静态准确性与边界。最终本地纯文档提交只固化这份交接材料。总控可将本目录完整转交原 T02：其现阶段可以核已有 typed domain API 和原引用规则；Entity metadata/proof/共享费用缺项继续明确记为未交付，不自行填补或用项目同名字段替换。

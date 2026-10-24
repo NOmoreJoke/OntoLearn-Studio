@@ -1,14 +1,30 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   safeError,
+  reassembleChangeSetDocument,
   type HealthResult,
   type TaskView,
   type SafeError,
   type ProgressView,
   type TaskUpdate,
+  type MainlineCatalogDTO,
+  type MainlineCreateRequestDTO,
+  type MainlineExampleCreateRequestDTO,
 } from '@ontolearn/contracts'
 import { explainError, jobStatus, resultSummary } from './task-presentation'
 import { TaskProgressBuffer } from './task-progress'
+import { QueryWorkspaceController, QueryWorkspacePage } from './query'
+import { OntologyMainlinePage } from './ontology/OntologyMainlinePage'
+import { OntologySession } from './ontology/mainline-session'
+import type { OntologyMainlineBridge } from './ontology/mainline-api'
+
+type WorkspaceModule = 'query' | 'ontology'
+type OntologyContext = {
+  session: OntologySession
+  contextKey: string
+  projectId: string
+  generation: number
+}
 
 const modules = [
   ['01', '定义业务概念', '本体构建'],
@@ -20,6 +36,29 @@ const modules = [
 ]
 
 export function App() {
+  const [catalog, setCatalog] = useState<MainlineCatalogDTO>()
+  const [projectName, setProjectName] = useState('')
+  const [projectBusy, setProjectBusy] = useState(false)
+  const [projectNotice, setProjectNotice] = useState('')
+  const [projectError, setProjectError] = useState<SafeError>()
+  const [hasCreateIntent, setHasCreateIntent] = useState(false)
+  const queryControllers = useRef(new Map<string, QueryWorkspaceController>())
+  const [queryController, setQueryController] = useState<QueryWorkspaceController>()
+  const selectedQuery = useRef<QueryWorkspaceController | undefined>(undefined)
+  const selectedQueryLease = useRef<(() => void) | undefined>(undefined)
+  const [workspaceModule, setWorkspaceModule] = useState<WorkspaceModule>('query')
+  const selectedModule = useRef<WorkspaceModule>('query')
+  const documentNonce = useRef<string | undefined>(undefined)
+  const contextSerial = useRef(0)
+  const documentLeaving = useRef(false)
+  const ontologyOwner = useRef<OntologyContext | undefined>(undefined)
+  const [ontologyContext, setOntologyContext] = useState<OntologyContext>()
+  const readyWorkspace = useRef<TaskView | undefined>(undefined)
+  const libraryBusy = useRef(false)
+  const selectionTarget = useRef<{ projectId?: string } | undefined>(undefined)
+  const createIntent = useRef<
+    MainlineCreateRequestDTO | MainlineExampleCreateRequestDTO | undefined
+  >(undefined)
   const [result, setResult] = useState<HealthResult>()
   const [tasks, setTasks] = useState<TaskView>()
   const [progress, setProgress] = useState<Record<string, ProgressView>>({})
@@ -31,6 +70,104 @@ export function App() {
   const uncertain = useRef(false)
   const connectionEpoch = useRef(0)
   const pendingProgress = useRef(new TaskProgressBuffer())
+  const retireOntology = useCallback(() => {
+    contextSerial.current++
+    const previous = ontologyOwner.current
+    ontologyOwner.current = undefined
+    previous?.session.retire()
+    setOntologyContext(undefined)
+  }, [setOntologyContext])
+  const disconnectQuery = useCallback(() => {
+    selectedQuery.current?.disconnect()
+    selectedQueryLease.current?.()
+    selectedQueryLease.current = undefined
+    selectedQuery.current = undefined
+    setQueryController(undefined)
+  }, [setQueryController])
+  const selectQueryWorkspace = useCallback(
+    (view: TaskView) => {
+      const bridge = window.ontolearn
+      if (!bridge || selectedModule.current !== 'query' || !view.project) return
+      const projectId = view.project.projectId
+      let controller = queryControllers.current.get(projectId)
+      if (!controller) {
+        controller = new QueryWorkspaceController(projectId, bridge, reassembleChangeSetDocument)
+        queryControllers.current.set(projectId, controller)
+      }
+      // Acquire and seed the new lease before dropping only our previous lease.
+      // A Page cleanup owns its own disposer and cannot disconnect this lease.
+      const previousLease = selectedQueryLease.current
+      const nextLease = controller.connect(view)
+      selectedQueryLease.current = nextLease
+      selectedQuery.current = controller
+      setQueryController(controller)
+      previousLease?.()
+    },
+    [setQueryController],
+  )
+  const activateWorkspace = useCallback(() => {
+    const view = readyWorkspace.current
+    if (documentLeaving.current || libraryBusy.current || uncertain.current || !view?.project)
+      return
+    if (selectedModule.current === 'query') {
+      // The ready view admits this context; the current view also includes later
+      // authentic Job updates received while this retained controller was away.
+      const latest = current.current
+      if (
+        !latest?.project ||
+        latest.generation !== view.generation ||
+        latest.project.projectId !== view.project.projectId
+      )
+        return
+      selectQueryWorkspace(latest)
+      return
+    }
+    const actualBridge = window.ontolearn
+    if (!actualBridge) return
+    // One actual canonical object; this assignment is intentionally checked by T01.
+    const canonicalBridge: OntologyMainlineBridge = actualBridge
+    documentNonce.current ??= crypto.randomUUID()
+    let contextKey = JSON.stringify([
+      documentNonce.current,
+      contextSerial.current,
+      view.generation,
+      view.project.projectId,
+    ])
+    const previous = ontologyOwner.current
+    if (previous?.contextKey === contextKey && previous.session.bridge === canonicalBridge) return
+    if (previous) {
+      retireOntology()
+      contextKey = JSON.stringify([
+        documentNonce.current,
+        contextSerial.current,
+        view.generation,
+        view.project.projectId,
+      ])
+    }
+    const next = {
+      session: new OntologySession(canonicalBridge),
+      contextKey,
+      projectId: view.project.projectId,
+      generation: view.generation,
+    }
+    ontologyOwner.current = next
+    setOntologyContext(next)
+  }, [retireOntology, selectQueryWorkspace, setOntologyContext])
+  function selectWorkspace(module: WorkspaceModule) {
+    if (
+      documentLeaving.current ||
+      libraryBusy.current ||
+      uncertain.current ||
+      !readyWorkspace.current?.project
+    )
+      return
+    if (selectedModule.current === module) return
+    retireOntology()
+    disconnectQuery()
+    selectedModule.current = module
+    setWorkspaceModule(module)
+    activateWorkspace()
+  }
   const updateTasks = useCallback((value: TaskView) => {
     if (value.generation < latestGeneration.current) return false
     latestGeneration.current = value.generation
@@ -40,27 +177,176 @@ export function App() {
   }, [])
   const applyRestored = useCallback(
     (value: TaskView) => {
+      if (documentLeaving.current || value.generation < latestGeneration.current) return
+      const target = selectionTarget.current
+      if (target && (!target.projectId || value.project?.projectId !== target.projectId)) return
+      const previous = readyWorkspace.current
+      if (
+        previous &&
+        (previous.generation !== value.generation ||
+          previous.project?.projectId !== value.project?.projectId)
+      ) {
+        retireOntology()
+        disconnectQuery()
+      }
       if (!updateTasks(value)) return
+      readyWorkspace.current = value
       if (uncertain.current) setResult(undefined)
       uncertain.current = false
       setConnection(undefined)
       setTaskError(undefined)
       setProgress(pendingProgress.current.restore(value))
       setSummaries({})
+      activateWorkspace()
     },
-    [updateTasks],
+    [
+      updateTasks,
+      retireOntology,
+      disconnectQuery,
+      activateWorkspace,
+      setResult,
+      setConnection,
+      setTaskError,
+      setProgress,
+      setSummaries,
+    ],
   )
   async function restore() {
+    if (documentLeaving.current) return
+    const serial = contextSerial.current
     const response = await window.ontolearn?.restoreTasks()
+    if (documentLeaving.current || serial !== contextSerial.current) return
     if (response?.ok) {
       applyRestored(response.data)
     } else if (response) setTaskError(response.error)
+  }
+  async function listProjects(cursor: string | null = null) {
+    const bridge = window.ontolearn
+    if (documentLeaving.current || !bridge || libraryBusy.current) return
+    libraryBusy.current = true
+    setProjectBusy(true)
+    setProjectError(undefined)
+    try {
+      const response = await bridge.getProjectCatalog({ pageSize: 64, cursor })
+      if (response.ok) setCatalog(response.data)
+      else setProjectError(response.error)
+    } catch {
+      setProjectError(safeError(undefined))
+    } finally {
+      libraryBusy.current = false
+      selectionTarget.current = undefined
+      setProjectBusy(false)
+      // No ontology auto-read can race this call's catalog/restore tail.
+      activateWorkspace()
+    }
+  }
+  async function openProject(projectId: string) {
+    const bridge = window.ontolearn
+    if (documentLeaving.current || !bridge || libraryBusy.current) return
+    setProjectBusy(true)
+    setProjectError(undefined)
+    libraryBusy.current = true
+    selectionTarget.current = { projectId }
+    readyWorkspace.current = undefined
+    try {
+      retireOntology()
+      disconnectQuery()
+      const response = await bridge.openProject({ projectId })
+      if (response.ok) {
+        setProjectNotice(`项目已打开 · 版本 ${response.data.projectRevision}`)
+        await restore()
+      } else setProjectError(response.error)
+    } catch {
+      setProjectError(safeError(undefined))
+    } finally {
+      libraryBusy.current = false
+      selectionTarget.current = undefined
+      setProjectBusy(false)
+      // No ontology auto-read can race this call's catalog/restore tail.
+      activateWorkspace()
+    }
+  }
+  async function createProject(example = false) {
+    const bridge = window.ontolearn
+    const name = projectName.trim() ? projectName : example ? '设备运维示例' : ''
+    if (documentLeaving.current || !bridge || libraryBusy.current || !name.trim()) return
+    if (
+      !createIntent.current &&
+      (new TextEncoder().encode(name).length > 4096 || /[\uD800-\uDFFF]/u.test(name))
+    ) {
+      setProjectNotice('项目名称过长或包含无效字符，请修改后重试。')
+      return
+    }
+    setProjectBusy(true)
+    setProjectError(undefined)
+    let createdProjectId: string | undefined
+    libraryBusy.current = true
+    selectionTarget.current = {}
+    readyWorkspace.current = undefined
+    try {
+      retireOntology()
+      disconnectQuery()
+      // Keep the original operation and exact name when delivery is unknown.
+      // A second click reconciles that operation instead of creating a new one.
+      createIntent.current ??= example
+        ? {
+            exampleCreateRequestVersion: 1,
+            operationId: crypto.randomUUID(),
+            name,
+            exampleId: 'equipment-maintenance',
+            inputDigest: '52952b637b02ba283d47a9e0c34a1691c1d850b94bb9b366a9863a55507c435e',
+          }
+        : {
+            requestVersion: 1,
+            operationId: crypto.randomUUID(),
+            name,
+            initialization: { kind: 'blank' },
+          }
+      setProjectName(createIntent.current.name)
+      setHasCreateIntent(true)
+      const created = await ('exampleCreateRequestVersion' in createIntent.current
+        ? bridge.createExampleProject(createIntent.current)
+        : bridge.createBlankProject(createIntent.current))
+      if (!created.ok) {
+        setProjectError(created.error)
+        setProjectNotice('创建结果尚未确认；再次核对将使用同一次请求。')
+        return
+      }
+      createIntent.current = undefined
+      setHasCreateIntent(false)
+      createdProjectId = created.data.projectId
+      setProjectName('')
+      selectionTarget.current = { projectId: created.data.projectId }
+      const opened = await bridge.openProject({ projectId: created.data.projectId })
+      if (opened.ok) {
+        setProjectNotice('项目已创建并打开。已提交的更改将保存在本机。')
+        await restore()
+      } else {
+        setProjectNotice('项目已创建，但打开失败。可刷新项目列表后重新打开。')
+        setProjectError(opened.error)
+      }
+      const listed = await bridge.getProjectCatalog({ pageSize: 64, cursor: null })
+      if (listed.ok) setCatalog(listed.data)
+    } catch {
+      setProjectError(safeError(undefined))
+      setProjectNotice(
+        createdProjectId
+          ? '项目已创建，打开结果尚未确认。可刷新项目列表后重新打开。'
+          : '创建结果尚未确认，请核对原请求或项目列表。',
+      )
+    } finally {
+      libraryBusy.current = false
+      selectionTarget.current = undefined
+      setProjectBusy(false)
+      // No ontology auto-read can race this call's catalog/restore tail.
+      activateWorkspace()
+    }
   }
   useEffect(() => {
     let live = true
     const progressBuffer = pendingProgress.current
     const stop = window.ontolearn?.onTaskUpdate((update) => {
-      if (!live || update.generation < latestGeneration.current) return
+      if (documentLeaving.current || !live || update.generation < latestGeneration.current) return
       const view = current.current
       if (update.kind === 'connection') {
         if (
@@ -69,6 +355,9 @@ export function App() {
           view.project?.projectId !== update.projectId
         )
           return
+        retireOntology()
+        disconnectQuery()
+        readyWorkspace.current = undefined
         latestGeneration.current = update.generation
         connectionEpoch.current++
         uncertain.current = true
@@ -116,8 +405,9 @@ export function App() {
         jobs: view.jobs.map((job) => (job.jobId === update.job.jobId ? update.job : job)),
       })
     })
+    const initialSerial = contextSerial.current
     void window.ontolearn?.restoreTasks().then((response) => {
-      if (!live) return
+      if (documentLeaving.current || !live || initialSerial !== contextSerial.current) return
       if (response.ok) applyRestored(response.data)
       else if (!current.current) setTaskError(response.error)
     })
@@ -128,7 +418,21 @@ export function App() {
       for (const job of current.current?.jobs ?? [])
         void window.ontolearn?.unsubscribeJob(job.jobId, current.current!.generation)
     }
-  }, [applyRestored, updateTasks])
+  }, [applyRestored, updateTasks, retireOntology, disconnectQuery])
+  useEffect(() => {
+    const pageLeaving = () => {
+      documentLeaving.current = true
+      retireOntology()
+      disconnectQuery()
+      readyWorkspace.current = undefined
+    }
+    window.addEventListener('pagehide', pageLeaving)
+    return () => {
+      window.removeEventListener('pagehide', pageLeaving)
+      // Reversible cleanup supports StrictMode. Selection/document events use retire.
+      ontologyOwner.current?.session.dispose()
+    }
+  }, [retireOntology, disconnectQuery])
   async function loadSummary(job: import('@ontolearn/contracts').JobView) {
     const bridge = window.ontolearn
     if (!bridge || !job.resultRef) return
@@ -197,11 +501,37 @@ export function App() {
         <div className="side-label">本体学习与落地工作台</div>
         <nav aria-label="工作台导航">
           <a href="#overview" aria-current="page">
-            开发概览 <span>↗</span>
+            项目工作台 <span>↗</span>
           </a>
           <a href="#modules">
             模块规划 <span>06</span>
           </a>
+          {tasks?.project && (
+            <>
+              <a
+                href="#query-workspace"
+                aria-current={workspaceModule === 'query' ? 'page' : undefined}
+                aria-disabled={projectBusy || Boolean(connection)}
+                onClick={(event) => {
+                  event.preventDefault()
+                  selectWorkspace('query')
+                }}
+              >
+                本体查询
+              </a>
+              <a
+                href="#ontology-workspace"
+                aria-current={workspaceModule === 'ontology' ? 'page' : undefined}
+                aria-disabled={projectBusy || Boolean(connection)}
+                onClick={(event) => {
+                  event.preventDefault()
+                  selectWorkspace('ontology')
+                }}
+              >
+                本体构建
+              </a>
+            </>
+          )}
         </nav>
         <div className="sidebar-note">
           <span className="status-dot" />
@@ -215,8 +545,8 @@ export function App() {
       </aside>
       <main id="overview">
         <header>
-          <span>工作台 / 开发概览</span>
-          <span className="badge">M0 · 开发骨架</span>
+          <span>工作台 / 项目</span>
+          <span className="badge">内部演示候选</span>
         </header>
         <section className="intro">
           <p className="eyebrow">LEARN. MODEL. UNDERSTAND.</p>
@@ -227,6 +557,116 @@ export function App() {
           </h1>
           <p className="lead">从本体建模到情景推演，在一个本地项目中逐步学习与验证。</p>
         </section>
+        <section
+          className="project-library"
+          aria-labelledby="project-library-title"
+          data-testid="project-library"
+        >
+          <h2 id="project-library-title">我的项目</h2>
+          <p>在本机创建项目，或打开已保存的项目继续编辑。</p>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault()
+              void createProject()
+            }}
+          >
+            <label htmlFor="project-name">项目名称</label>
+            <input
+              id="project-name"
+              data-testid="project-name"
+              value={projectName}
+              onChange={(event) => setProjectName(event.target.value)}
+              maxLength={4096}
+              disabled={projectBusy || hasCreateIntent}
+              required
+            />
+            <button
+              type="submit"
+              data-testid="project-create"
+              disabled={projectBusy || !projectName.trim()}
+            >
+              {hasCreateIntent ? '核对创建结果' : '新建空白项目'}
+            </button>
+            <button
+              type="button"
+              data-testid="project-create-example"
+              disabled={projectBusy || hasCreateIntent}
+              onClick={() => void createProject(true)}
+            >
+              从设备运维示例开始
+            </button>
+            <button
+              type="button"
+              data-testid="project-list-refresh"
+              onClick={() => void listProjects()}
+              disabled={projectBusy}
+            >
+              刷新项目列表
+            </button>
+          </form>
+          <div role="status" aria-live="polite">
+            {projectBusy ? '正在处理…' : projectNotice}
+          </div>
+          {tasks?.project && (
+            <p data-testid="selected-project-version">
+              当前项目版本 {tasks.project.projectRevision}
+            </p>
+          )}
+          {catalog && (
+            <>
+              <ul>
+                {catalog.items.map((item) => (
+                  <li key={item.projectId}>
+                    <span>
+                      {item.metadata.name ?? '未命名项目'} · 版本 {item.domainRevision}
+                      {item.metadata.archived ? ' · 已归档' : ''}
+                    </span>
+                    <button
+                      type="button"
+                      data-testid="project-open"
+                      data-project-id={item.projectId}
+                      disabled={projectBusy}
+                      onClick={() => void openProject(item.projectId)}
+                    >
+                      打开
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              {catalog.total === 0 && <p>暂无项目。可以先新建空白项目。</p>}
+              {catalog.nextCursor && (
+                <button
+                  type="button"
+                  disabled={projectBusy}
+                  onClick={() => void listProjects(catalog.nextCursor)}
+                >
+                  下一页
+                </button>
+              )}
+            </>
+          )}
+          {projectError && <ErrorDetails error={projectError} context="task" />}
+        </section>
+        {workspaceModule === 'query' &&
+          queryController &&
+          tasks?.project?.projectId === queryController.projectId &&
+          !connection && (
+            <section id="query-workspace" aria-label="当前项目查询">
+              <QueryWorkspacePage controller={queryController} />
+            </section>
+          )}
+        {workspaceModule === 'ontology' &&
+          ontologyContext &&
+          tasks?.project?.projectId === ontologyContext.projectId &&
+          tasks.generation === ontologyContext.generation &&
+          !connection && (
+            <section id="ontology-workspace" aria-label="当前项目本体">
+              <OntologyMainlinePage
+                session={ontologyContext.session}
+                contextKey={ontologyContext.contextKey}
+              />
+            </section>
+          )}
         <section className="health-panel" aria-labelledby="health-title">
           <div>
             <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
@@ -245,7 +685,7 @@ export function App() {
                 <ErrorDetails error={result.error} context="health" />
               )
             ) : (
-              '尚未检查 · 当前仅开放连接检查能力。'
+              '尚未检查。'
             )}
           </div>
         </section>

@@ -1,0 +1,7 @@
+# T01 指定双审备包状态
+
+已完成九树47阶段积压、20份固定完整工程、126组逐bytes矩阵及六个独立审查入口。当前指定模型实际任务仍为0；不记任何指定Pass。持久原件及精确来源见README与submission-index。完整47阶段与原父目标继续保留。
+
+本目录只保留备包输入、关键manifest、双提示、独审与封存收据；完整既有过程原件仍在原树及持久outputs。两个WIP完整工程归档入此docs-only提交，是为固定现有字节、避免活WIP边审边改与/tmp成为唯一来源；归档不等产品实现提交，不扩写面或解除HOLD。原产品源码/既有报告/旧manifest/AGENTS未改。
+
+本轮静态读取与hash核验已通过；文档prettier首check=1，修正新作格式后最终check=0，原双流保留。没有执行产品测试、DB/SQL、native、业务child或GUI。独立包审已完成：报告11578B/SHA746adbbc91534c0e10739bb4ecee4b49b0a70016c887a10af312bf3af57d1e5d，限定准备包静态可接收，原发现及关闭证据保留。完整报告与全部独立小证据在independent/。输入、双提示、全包manifest及两WIP完整字节归档将在本新prefix的本地docs-only提交绑定；不修改旧冻结资源offer树。

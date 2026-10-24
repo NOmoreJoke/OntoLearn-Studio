@@ -13,7 +13,15 @@ from pathlib import Path
 from uuid import uuid4
 
 from ontolearn_engine.invalidation import reasons
-from ontolearn_engine.storage import FORMAT_VERSION, Conflict, Hook, Store, canonical, digest
+from ontolearn_engine.storage import (
+    FORMAT_VERSION,
+    Conflict,
+    Hook,
+    Store,
+    _close_resources,
+    canonical,
+    digest,
+)
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
 PUBLIC_KINDS = {"query", "reasoning", "validation", "behavior", "scenario", "test", "receipt"}
@@ -43,25 +51,189 @@ class JobStore(Store):
         now_ms=None,
         cursor_ttl_ms: int = 60000,
         max_cursor_records: int = 256,
+        target_format: int = FORMAT_VERSION,
+        backup_path: str | Path | None = None,
+        migration_hook: Hook = lambda _: None,
+        job_migration_hook: Hook = lambda _: None,
     ):
+        if type(target_format) is not int or target_format not in {2, 3}:
+            raise ValueError("Unsupported target project format")
         if not 1 <= cursor_ttl_ms <= 60000 or not 1 <= max_cursor_records <= 4096:
             raise ValueError("Invalid projection bounds")
         self.contract = contract
         self.now_ms = now_ms or (lambda: int(time.time() * 1000))
         self.cursor_ttl_ms = cursor_ttl_ms
         self.max_cursor_records = max_cursor_records
-        self._lease = open(str(path) + ".writer-lock", "a+b")
+        self._lease = None
+        parent_ready = False
         try:
-            self._lock()
-            super().__init__(path)
-            with self._transaction():
-                for sql in JOB_SCHEMA:
-                    self._db.execute(sql)
+            # Default2 keeps the approved lease path. Explicit3 delegates its one
+            # lifetime lease to Store; never acquire that same inode a second time.
+            if target_format == 2:
+                self._lease = open(str(path) + ".writer-lock", "a+b")
+                self._lock()
+            super().__init__(
+                path, migration_hook, target_format=target_format, backup_path=backup_path
+            )
+            parent_ready = True  # Store transfers its resources only after a successful return.
+            if target_format == 3:
+                self._migrate_job3(job_migration_hook)
+            else:
+                # A healthy existing catalog needs no writer transaction merely
+                # to reopen. Unknown/partial/noncanonical catalogs retain the
+                # original creation path; this is not a schema migration/repair.
+                with self._read():
+                    expected = {}
+                    for sql in JOB_SCHEMA:
+                        name = _job_object_name(sql)
+                        kind = "table" if sql.startswith("CREATE TABLE ") else "trigger"
+                        table = name if kind == "table" else sql.split(" ON ", 1)[1].split()[0]
+                        # SQLite drops this exact creation clause in sqlite_master.
+                        # Do not strip quotes, collapse whitespace or normalize
+                        # literals: approximately matching DDL is not healthy.
+                        expected[name] = (kind, name, table, sql.replace("IF NOT EXISTS ", "", 1))
+                    rows = list(
+                        self._db.execute(
+                            "SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name IN ("
+                            + ",".join("?" for _ in expected)
+                            + ")",
+                            tuple(expected),
+                        )
+                    )
+                    ready = (
+                        len(rows) == len(expected)
+                        and len({row[1] for row in rows}) == len(expected)
+                        and all(tuple(row) == expected.get(row[1]) for row in rows)
+                    )
+                if not ready:
+                    with self._transaction():
+                        for sql in JOB_SCHEMA:
+                            self._db.execute(sql)
+            self._migrate_query_payloads(job_migration_hook)
         except BaseException:
-            if hasattr(self, "_db"):
-                self._db.close()
-            self._lease.close()
+            # A failed parent already attempted its own closes. Its leftover
+            # attributes are not a second transfer of resource ownership.
+            owned = [("legacyLease", self._lease)]
+            if parent_ready:
+                owned = [
+                    ("database", self._db),
+                    ("format3Lease", self._format3_lease),
+                    *owned,
+                ]
+            failures = _close_resources(owned)
+            self._cleanup_failures = getattr(self, "_cleanup_failures", []) + failures
             raise
+
+    def _migrate_query_payloads(self, hook):
+        """Add a private catalog without changing either original Job schema hash.
+
+        Old query jobs are explicitly inventoried; they never acquire a fictitious
+        complete payload. Partial/unknown extension catalogs are rejected, not repaired.
+        """
+        from ontolearn_engine.project.format3 import _schema
+
+        names = [_job_object_name(sql) for sql in QUERY_PAYLOAD_SCHEMA]
+        present = {
+            r[0]: r[1]
+            for r in self._db.execute(
+                "SELECT name,sql FROM sqlite_master WHERE name IN ("
+                + ",".join("?" for _ in names)
+                + ")",
+                tuple(names),
+            )
+        }
+        if present:
+            if set(present) != set(names) or any(
+                _schema(present[_job_object_name(sql)]) != _schema(sql)
+                for sql in QUERY_PAYLOAD_SCHEMA
+            ):
+                fault("INVALID_STATE")
+            with self._read():
+                self._validate_query_catalog()
+            return
+        with self._transaction(lambda phase: hook("query_payload_" + phase)):
+            legacy = []
+            for row in self._db.execute("SELECT id,context FROM jobs ORDER BY id"):
+                context = json.loads(row["context"])
+                if "queryRequest" in context:
+                    fault("INVALID_STATE")  # Missing catalog for an already-new producer.
+                if context.get("capability") == "query.execute":
+                    legacy.append(row["id"])
+            for sql in QUERY_PAYLOAD_SCHEMA:
+                self._db.execute(sql)
+                hook("query_payload_ddl:" + _job_object_name(sql))
+            for identity in legacy:
+                self._db.execute("INSERT INTO query_legacy_jobs VALUES(?)", (identity,))
+            self._db.execute(
+                "INSERT INTO query_payload_format VALUES(1,1,?,?)",
+                (QUERY_PAYLOAD_HASH, self.actual_format),
+            )
+            hook("query_payload_catalog")
+            self._validate_query_catalog()
+
+    def _validate_query_catalog(self):
+        catalog = self._db.execute("SELECT * FROM query_payload_format").fetchall()
+        if (
+            len(catalog) != 1
+            or tuple(catalog[0]) != (1, 1, QUERY_PAYLOAD_HASH, catalog[0]["source_format"])
+            or catalog[0]["source_format"] not in {2, 3}
+        ):
+            fault("INVALID_STATE")
+        legacy = {r[0] for r in self._db.execute("SELECT job FROM query_legacy_jobs")}
+        known = set()
+        for row in self._db.execute("SELECT id,context,dto FROM jobs"):
+            context, job = json.loads(row["context"]), json.loads(row["dto"])
+            if context.get("capability") != "query.execute":
+                continue
+            if row["id"] in legacy:
+                if "queryRequest" in context:
+                    fault("INVALID_STATE")
+                known.add(row["id"])
+                continue
+            if "queryRequest" not in context:
+                fault("INVALID_STATE")
+            claim = self._db.execute(
+                "SELECT * FROM operation_claims WHERE operation=?", (job["operationId"],)
+            ).fetchone()
+            if claim is None or claim["job"] != row["id"]:
+                fault("INVALID_STATE")
+            self._accepted_job(
+                claim,
+                job["projectId"],
+                job["capability"],
+                job["input"],
+                job["confirmationRef"],
+                job["implementation"],
+                job["limits"],
+            )
+            records = self._db.execute(
+                "SELECT q.result FROM query_payloads q JOIN job_results r ON r.id=q.result "
+                "WHERE r.job=?",
+                (row["id"],),
+            ).fetchall()
+            if len(records) != (1 if job["state"] == "succeeded" else 0):
+                fault("INVALID_STATE")
+            if records and job["resultRef"] != {
+                "resultId": records[0][0],
+                "inputSnapshotId": job["inputSnapshotId"],
+            }:
+                fault("INVALID_STATE")
+        if (
+            known != legacy
+            or self._db.execute(
+                "SELECT 1 FROM query_payloads q LEFT JOIN job_results r ON r.id=q.result "
+                "LEFT JOIN jobs j ON j.id=r.job WHERE j.id IS NULL OR j.id IN "
+                "(SELECT job FROM query_legacy_jobs) LIMIT 1"
+            ).fetchone()
+        ):
+            fault("INVALID_STATE")
+        for row in self._db.execute(
+            "SELECT j.context FROM query_payloads q JOIN job_results r ON r.id=q.result "
+            "JOIN jobs j ON j.id=r.job"
+        ):
+            context = json.loads(row[0])
+            if context.get("capability") != "query.execute" or "queryRequest" not in context:
+                fault("INVALID_STATE")
 
     def _lock(self):
         try:
@@ -82,10 +254,309 @@ class JobStore(Store):
             fault("STORAGE_BUSY", retryAfterMs=250)
 
     def close(self):
+        self._cleanup_failures = _close_resources(
+            [
+                ("database", self._db),
+                ("format3Lease", self._format3_lease),
+                ("legacyLease", self._lease),
+            ]
+        )
+        if self._cleanup_failures:
+            raise self._cleanup_failures[0][1]
+
+    def _migrate_job3(self, hook):
+        from ontolearn_engine.project.format3 import Format3Fault, _schema
+
+        # A durable layer marker is schema evidence, never session/hello authority.
+        catalog = self._db.execute("SELECT 1 FROM sqlite_master WHERE name='job_format'").fetchone()
+        if catalog:
+            with self._read():
+                self._validate_job3()
+            return
+        old_objects = {_job_object_name(sql): sql for sql in JOB_SCHEMA}
+        present = {
+            r[0]: r[1]
+            for r in self._db.execute(
+                "SELECT name,sql FROM sqlite_master WHERE name IN ("
+                + ",".join("?" for _ in old_objects)
+                + ")",
+                tuple(old_objects),
+            )
+        }
+        if present and (
+            set(present) != set(old_objects)
+            or any(_schema(present[name]) != _schema(sql) for name, sql in old_objects.items())
+        ):
+            raise Format3Fault("structure")
+        source = "v2" if present else "new"
+        with self._transaction(lambda phase: hook("job3_" + phase)):
+            if source == "new":
+                for sql in JOB3_SCHEMA:
+                    self._db.execute(sql)
+                    hook("job3_ddl:" + _job_object_name(sql))
+            else:
+                # Only the actual global claim table is evolved. Original identity,
+                # context fingerprint and job references remain byte-for-byte.
+                self._db.execute("ALTER TABLE operation_claims RENAME TO operation_claims_v2")
+                hook("job3_claims_renamed")
+                self._db.execute(JOB3_CLAIMS)
+                hook("job3_claims_created")
+                self._db.execute(
+                    "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
+                    "SELECT operation,project,job,fingerprint,'job',NULL FROM operation_claims_v2"
+                )
+                hook("job3_claims_copied")
+                self._db.execute("DROP TABLE operation_claims_v2")
+                hook("job3_claims_dropped")
+                for sql in JOB3_SCHEMA:
+                    if _job_object_name(sql).startswith("immutable_operation_claims_"):
+                        self._db.execute(sql)
+                        hook("job3_claims_trigger:" + _job_object_name(sql))
+                hook("job3_claims_swapped")
+            for sql in JOB3_CATALOG:
+                self._db.execute(sql)
+                hook("job3_ddl:" + _job_object_name(sql))
+            for row in self._db.execute("SELECT id FROM projects ORDER BY id").fetchall():
+                self.public_project(row[0])
+                hook("job3_identity")
+            self._db.execute("INSERT INTO job_format VALUES(1,3,?,?)", (JOB3_HASH, source))
+            hook("job3_catalog")
+            self._validate_job3()
+            hook("job3_validated")
+
+    def _validate_job3(self):
+        from ontolearn_engine.project.format3 import Format3Fault, _json, _schema
+
         try:
-            super().close()
-        finally:
-            self._lease.close()  # OS lock releases on close/crash; never unlink a leased inode.
+            for sql in JOB3_SCHEMA + JOB3_CATALOG:
+                row = self._db.execute(
+                    "SELECT sql FROM sqlite_master WHERE name=?", (_job_object_name(sql),)
+                ).fetchone()
+                if row is None or _schema(row[0]) != _schema(sql):
+                    raise Format3Fault("structure")
+            catalog = self._db.execute("SELECT * FROM job_format").fetchall()
+            if (
+                len(catalog) != 1
+                or catalog[0]["schema_version"] != 3
+                or catalog[0]["schema_hash"] != JOB3_HASH
+                or catalog[0]["source_kind"] not in {"new", "v2"}
+            ):
+                raise Format3Fault("structure")
+            if self._db.execute("PRAGMA foreign_key_check").fetchone() is not None:
+                raise Format3Fault("structure")
+            projects = {r[0] for r in self._db.execute("SELECT id FROM projects")}
+            public = self._db.execute("SELECT * FROM public_projects").fetchall()
+            if projects != {r["internal"] for r in public} or any(
+                not isinstance(r["public"], str) or not UUID.fullmatch(r["public"]) for r in public
+            ):
+                raise Format3Fault("structure")
+            jobs = {r[0] for r in self._db.execute("SELECT id FROM jobs")}
+            claimed = set()
+            for claim in self._db.execute("SELECT * FROM operation_claims"):
+                if not isinstance(claim["operation"], str) or not UUID.fullmatch(
+                    claim["operation"]
+                ):
+                    raise Format3Fault("structure")
+                if claim["kind"] == "application":
+                    from ontolearn_engine.project.applications import claim_context
+                    from ontolearn_engine.project.format3 import receipt_for
+                    from ontolearn_engine.project.project_lifecycle import creation_context
+
+                    internal = self._project(claim["project"])
+                    creation = creation_context(self, internal, claim["operation"])
+                    if creation is None:
+                        claim_context(self, internal, claim["operation"])
+                    receipt = receipt_for(self, internal, claim["operation"])
+                    if creation is not None and receipt != creation["receipt"]:
+                        raise Format3Fault("structure")
+                    continue
+                if claim["kind"] != "job" or claim["context"] is not None:
+                    raise Format3Fault("structure")
+                row = self._db.execute("SELECT * FROM jobs WHERE id=?", (claim["job"],)).fetchone()
+                if row is None:
+                    raise Format3Fault("structure")
+                context = _json(row["context"])
+                dto = _json(row["dto"])
+                if not self.contract.validate("job", dto):
+                    raise Format3Fault("structure")
+                if (
+                    dto["jobId"] != row["id"]
+                    or dto["projectId"] != claim["project"]
+                    or dto["operationId"] != claim["operation"]
+                ):
+                    raise Format3Fault("structure")
+                self._accepted_job(
+                    claim,
+                    claim["project"],
+                    context["capability"],
+                    context["input"],
+                    context["confirmationRef"],
+                    context["implementation"],
+                    context["limits"],
+                )
+                claimed.add(claim["job"])
+            if claimed != jobs:
+                raise Format3Fault("structure")
+        except Format3Fault:
+            raise
+        except (ValueError, KeyError, TypeError, OverflowError):
+            raise Format3Fault("structure") from None
+
+    def _application_input(self, project, change, actor, permission):
+        from ontolearn_engine.project.applications import check_change, stable
+
+        if self._target_format != 3:
+            fault("INVALID_STATE")
+        internal = self._project(project)
+        if not isinstance(actor, str) or not UUID.fullmatch(actor) or permission != "write":
+            fault("PERMISSION_DENIED")
+        change = stable(change)
+        check_change(change)
+        if len(canonical(change).encode()) > 262144:
+            fault("RESOURCE_LIMIT", resource="frame")
+        return internal, change
+
+    def _occupied_operation_evidence(self, operation):
+        # Claims are global. Never adopt a legacy/unclaimed marker from this or
+        # another project, or a round suboperation, into a fresh application/job.
+        return any(
+            self._db.execute(
+                f"SELECT 1 FROM {table} WHERE operation=? LIMIT 1", (operation,)
+            ).fetchone()
+            for table in ("commits", "rounds", "app_operations", "app_receipts")
+        )
+
+    def prepare_application(self, project, change, *, actor, permission):
+        """Trusted confirmation service; refs stay in the main application's custody."""
+        from ontolearn_engine.project.applications import construct_plan, prepared_payload
+
+        internal, change = self._application_input(project, change, actor, permission)
+        with self._application(project, "plan"):
+            plan = construct_plan(self, internal, change)
+            payload = prepared_payload(project, actor, plan)
+            ref = digest(payload)
+            base = plan["domain"]["base"] if plan["domain"] else None
+            diff = digest(
+                {"before": plan["before"], "after": plan["after"], "domain": plan["domain"]}
+            )
+            self._db.execute(
+                "INSERT OR IGNORE INTO job_plans VALUES(?,?,?,?,?,?)",
+                (ref, project, base, digest(plan), diff, canonical(payload)),
+            )
+            confirmation = str(uuid4())
+            self._db.execute(
+                "INSERT INTO job_confirmations VALUES(?,?,?,?,?,?,?)",
+                (confirmation, project, ref, base, digest(plan), actor, permission),
+            )
+            return {
+                "preparedPlanRef": ref,
+                "confirmationRef": confirmation,
+                "planHash": digest(plan),
+                "beforeCAS": plan["beforeCAS"],
+                "afterCAS": plan["afterCAS"],
+                "applicationBefore": plan["before"],
+                "applicationAfter": plan["after"],
+                "domain": plan["domain"],
+            }
+
+    def apply_application(
+        self,
+        project,
+        operation,
+        change,
+        *,
+        actor,
+        permission,
+        prepared_plan_ref=None,
+        confirmation_ref=None,
+        hook: Hook = lambda _: None,
+    ):
+        """One coordinator-owned non-Job transaction. Never a worker or renderer entry."""
+        from ontolearn_engine.project.applications import (
+            check_confirmation,
+            claim_context,
+            construct_plan,
+            require,
+            stable,
+        )
+        from ontolearn_engine.project.format3 import receipt_for
+
+        internal, change = self._application_input(project, change, actor, permission)
+        if not isinstance(operation, str) or not UUID.fullmatch(operation):
+            fault("INVALID_REQUEST", field="identity")
+        request = {
+            "change": change,
+            "authorization": {
+                "actor": actor,
+                "permission": permission,
+                "preparedPlanRef": prepared_plan_ref,
+                "confirmationRef": confirmation_ref,
+            },
+        }
+        request = stable(request)
+        with self._application(project, "application", hook):
+            claim = self._db.execute(
+                "SELECT * FROM operation_claims WHERE operation=?", (operation,)
+            ).fetchone()
+            if claim:
+                if claim["kind"] != "application" or claim["project"] != project:
+                    fault("IDENTITY_CONFLICT")
+                from ontolearn_engine.project.project_lifecycle import creation_context
+
+                if creation_context(self, internal, operation) is not None:
+                    fault("IDENTITY_CONFLICT")
+                context = claim_context(self, internal, operation)
+                if canonical(context["request"]) != canonical(request):
+                    fault("IDENTITY_CONFLICT")
+                # Original request/CAS succeeds again only by validated immutable
+                # evidence. No plan reconstruction or current CAS check on retry.
+                return receipt_for(self, internal, operation)
+            if self._occupied_operation_evidence(operation):
+                fault("IDENTITY_CONFLICT")
+            require((prepared_plan_ref is None) == (confirmation_ref is None))
+            if prepared_plan_ref is not None:
+                from ontolearn_engine.project.applications import hash_ref, uuid_ref
+
+                require(hash_ref(prepared_plan_ref) and uuid_ref(confirmation_ref))
+            if prepared_plan_ref is None:
+                require("domain" not in change and change["type"] != "draft.restore")
+                plan = construct_plan(self, internal, change)
+            else:
+                row = self._db.execute(
+                    "SELECT payload FROM job_plans WHERE ref=? AND project=?",
+                    (prepared_plan_ref, project),
+                ).fetchone()
+                require(row is not None)
+                payload = json.loads(row[0])
+                require(
+                    isinstance(payload, dict)
+                    and set(payload) == {"preparedApplicationVersion", "projectId", "actor", "plan"}
+                )
+                require(
+                    type(payload["preparedApplicationVersion"]) is int
+                    and payload["preparedApplicationVersion"] == 1
+                    and payload["projectId"] == project
+                    and payload["actor"] == actor
+                )
+                plan = payload["plan"]
+                require(canonical(plan["change"]) == canonical(change))
+            context = {
+                "applicationContextVersion": 1,
+                "projectId": project,
+                "project": internal,
+                "operationId": operation,
+                "request": request,
+                "plan": plan,
+            }
+            check_confirmation(self, context)
+            self._db.execute(
+                "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
+                "VALUES(?,?,NULL,?,'application',?)",
+                (operation, project, digest(context), canonical(context)),
+            )
+            hook("application_claim")
+            base = plan["domain"]["base"] if plan["domain"] else None
+            return super().commit(internal, base, operation, None, application=context, hook=hook)
 
     def _valid(self, schema, value, field="params"):
         if not self.contract.validate(schema, value):
@@ -163,6 +634,14 @@ class JobStore(Store):
         for row in rows:
             self._valid("row", row, "config")
 
+    def create_project(self, project: str) -> None:
+        if self._target_format != 3:
+            return super().create_project(project)
+        # Format3 publishes domain/app genesis and its public identity atomically.
+        with self._transaction():
+            super().create_project(project)
+            self.public_project(project)
+
     def public_project(self, internal: str) -> str:
         self.revision(internal)
         with self._transaction():
@@ -185,15 +664,49 @@ class JobStore(Store):
             fault("NOT_FOUND", resource="project")
         return row[0]
 
+    def ordinary_project_choices(self, *, limit: int, _read_ticket=None) -> list[dict]:
+        # No directory scan, mapping lookup, revision read, or SQL precedes this
+        # exact same-store issuer ticket. There is no production issuer default.
+        from ontolearn_engine.project.ordinary_library import consume_choices_ticket
+
+        consume_choices_ticket(_read_ticket, self)
+        if type(limit) is not int or not 1 <= limit <= 64:
+            fault("INVALID_REQUEST", field="params")
+        rows = self._db.execute(
+            "SELECT pp.public,p.revision FROM public_projects AS pp "
+            "LEFT JOIN projects AS p ON p.id=pp.internal ORDER BY pp.public"
+        ).fetchmany(limit + 1)
+        # LIMIT/output cardinality is not proof of SQLite internal work; the
+        # already entered authority.read_scope owns that separate execution gate.
+        if len(rows) > limit:
+            fault("RESOURCE_LIMIT", resource="page")
+        answer = []
+        for row in rows:
+            if (
+                not self.contract.validate("id", row[0])
+                or type(row[1]) is not int
+                or not 0 <= row[1] <= 9007199254740991
+            ):
+                fault("INVALID_STATE")
+            answer.append({"projectId": row[0]})
+        return answer
+
     def project_get(self, project):
-        internal = self._project(project)
-        with self._transaction():
+        with self._read():
+            internal = self._project(project)
+            snapshot = self._snapshot_projection(internal)
+            identity = digest(snapshot)
+            if self._db.execute("SELECT 1 FROM snapshots WHERE id=?", (identity,)).fetchone():
+                # A stored row claiming this identity must still authenticate;
+                # a read never repairs or silently replaces malformed evidence.
+                if self._project_snapshot(identity, internal) != snapshot:
+                    fault("INVALID_STATE")
             return {
                 "projectId": project,
-                "projectRevision": self.revision(internal),
-                "inputSnapshotId": self.snapshot(internal),
-                "dependencyVector": self.vector(internal),
-                "formatVersion": FORMAT_VERSION,
+                "projectRevision": snapshot["projectRevision"],
+                "inputSnapshotId": identity,
+                "dependencyVector": snapshot["dependencyVector"],
+                "formatVersion": self.actual_format,
             }
 
     def put_blob(self, project, value):
@@ -285,6 +798,103 @@ class JobStore(Store):
             )
             return {"preparedPlanRef": ref, "confirmationRef": confirmation}
 
+    def preview_changeset(
+        self,
+        project,
+        base,
+        request,
+        *,
+        host_client_id,
+        engine_session_id,
+        limits,
+        hook: Hook = lambda _: None,
+    ):
+        from ontolearn_engine.project.domain_changesets import preview_changeset
+
+        return preview_changeset(
+            self,
+            project,
+            base,
+            request,
+            host_client_id=host_client_id,
+            engine_session_id=engine_session_id,
+            limits=limits,
+            hook=hook,
+        )
+
+    def changeset_diff_page(
+        self,
+        project,
+        preview_hash,
+        document_kind,
+        page_size,
+        cursor,
+        *,
+        host_client_id,
+        engine_session_id,
+        limits,
+    ):
+        from ontolearn_engine.project.domain_changesets import diff_page
+
+        return diff_page(
+            self,
+            project,
+            preview_hash,
+            document_kind,
+            page_size,
+            cursor,
+            host_client_id=host_client_id,
+            engine_session_id=engine_session_id,
+            limits=limits,
+        )
+
+    def confirm_changeset(
+        self,
+        project,
+        preview_hash,
+        completion_cursor,
+        *,
+        host_client_id,
+        engine_session_id,
+        hook: Hook = lambda _: None,
+    ):
+        from ontolearn_engine.project.domain_changesets import confirm
+
+        return confirm(
+            self,
+            project,
+            preview_hash,
+            completion_cursor,
+            host_client_id=host_client_id,
+            engine_session_id=engine_session_id,
+            hook=hook,
+        )
+
+    def create_changeset_job(
+        self,
+        project,
+        operation,
+        input_,
+        confirmation_ref,
+        implementation,
+        limits,
+        *,
+        host_client_id,
+        engine_session_id,
+        hook: Hook = lambda _: None,
+    ):
+        return self.create_job(
+            project,
+            operation,
+            "changeset.commit",
+            input_,
+            confirmation_ref,
+            implementation,
+            limits,
+            _changeset_host=(host_client_id, engine_session_id),
+            _acceptance_hook=hook,
+        )
+
     def _definitions(self, snap):
         output = []
         for d in snap["state"]["definitions"]:
@@ -336,8 +946,96 @@ class JobStore(Store):
                 manifests[key] = members
         return vector, manifests
 
+    def _job_prepared_plan(
+        self,
+        project,
+        input_,
+        confirmation_ref,
+        snapshot,
+        *,
+        error="IDENTITY_CONFLICT",
+        capability=None,
+        changeset_host=None,
+    ):
+        """Validate the ordinary domain-plan namespace before accepting a Job.
+
+        Application previews share immutable tables, but have a distinct envelope
+        and reference derivation. A row's existence is not proof of its type.
+        The actor is supplied only by the trusted prepare service; create_job
+        has no renderer-issued actor or authority to replace that binding.
+        """
+        if capability == "changeset.commit":
+            from ontolearn_engine.project.domain_changesets import accepted_plan
+
+            try:
+                return accepted_plan(
+                    self, project, input_, confirmation_ref, snapshot, host=changeset_host
+                )
+            except JobFault as exc:
+                if error == "INVALID_STATE":
+                    fault(error)
+                raise exc
+        row = self._db.execute(
+            "SELECT * FROM job_plans WHERE project=? AND ref=?",
+            (project, input_["preparedPlanRef"]),
+        ).fetchone()
+        confirmation = self._db.execute(
+            "SELECT * FROM job_confirmations WHERE project=? AND id=?",
+            (project, confirmation_ref),
+        ).fetchone()
+        if row is None or confirmation is None:
+            fault(error)
+        try:
+            plan = json.loads(row["payload"])
+            fields = {"base", "definitions", "manual", "edits", "remove", "mapping"}
+            if not isinstance(plan, dict) or set(plan) not in (
+                fields,
+                fields | {"remove_definitions"},
+            ):
+                fault(error)
+            expected = self._plan(
+                snapshot["projectRevision"], {k: v for k, v in plan.items() if k != "base"}
+            )
+            valid = (
+                canonical(plan) == canonical(expected)
+                and row["plan_hash"] == digest(plan)
+                and row["base"] == snapshot["projectRevision"]
+                and isinstance(row["diff_hash"], str)
+                and re.fullmatch(r"[0-9a-f]{64}", row["diff_hash"]) is not None
+                and digest(
+                    {
+                        "projectId": project,
+                        "plan": plan,
+                        "before": input_["inputSnapshotId"],
+                        "diffHash": row["diff_hash"],
+                    }
+                )
+                == input_["preparedPlanRef"]
+                and confirmation["plan_ref"] == row["ref"]
+                and confirmation["plan_hash"] == row["plan_hash"]
+                and confirmation["base"] == row["base"]
+                and isinstance(confirmation["actor"], str)
+                and UUID.fullmatch(confirmation["actor"]) is not None
+                and confirmation["permission"] == "write"
+            )
+        except (ValueError, TypeError, KeyError):
+            fault(error)
+        if not valid:
+            fault(error)
+        return plan
+
     def create_job(
-        self, project, operation, capability, input_, confirmation_ref, implementation, limits
+        self,
+        project,
+        operation,
+        capability,
+        input_,
+        confirmation_ref,
+        implementation,
+        limits,
+        *,
+        _changeset_host=None,
+        _acceptance_hook: Hook = lambda _: None,
     ):
         self._valid(
             "params_job.create",
@@ -352,7 +1050,7 @@ class JobStore(Store):
         self._valid("implementation", implementation)
         self._valid("limits", limits)
         internal = self._project(project)
-        with self._transaction():
+        with self._snapshot_writer(_acceptance_hook) as snapshot_writer:
             claim = self._db.execute(
                 "SELECT * FROM operation_claims WHERE operation=?", (operation,)
             ).fetchone()
@@ -360,8 +1058,17 @@ class JobStore(Store):
                 return self._accepted_job(
                     claim, project, capability, input_, confirmation_ref, implementation, limits
                 )
-            snap = self._project_snapshot(input_["inputSnapshotId"], internal)
+            if self._target_format == 3 and self._occupied_operation_evidence(operation):
+                fault("IDENTITY_CONFLICT")
+            snap = self._materialize_snapshot(
+                input_["inputSnapshotId"], internal, _write_scope=snapshot_writer
+            )
             parameters = self.blob(project, input_["parametersHash"])
+            query_request = None
+            if capability == "query.execute":
+                query_request = self.prepare_query_request(
+                    project, input_, parameters, snap, implementation, confirmation_ref
+                )
             if capability.startswith("test."):
                 self._test_parameters(parameters)
             vector, manifests = self._dependencies(capability, input_, snap)
@@ -371,25 +1078,16 @@ class JobStore(Store):
                     fault("IDENTITY_CONFLICT")
             writing = capability in {"test.atomic", "changeset.commit", "mapping.commit"}
             if writing:
-                plan_row = self._db.execute(
-                    "SELECT * FROM job_plans WHERE ref=? AND project=?",
-                    (input_["preparedPlanRef"], project),
-                ).fetchone()
-                confirmation = self._db.execute(
-                    "SELECT * FROM job_confirmations WHERE id=? AND project=?",
-                    (confirmation_ref, project),
-                ).fetchone()
-                if (
-                    not plan_row
-                    or not confirmation
-                    or confirmation["plan_ref"] != plan_row["ref"]
-                    or confirmation["plan_hash"] != plan_row["plan_hash"]
-                    or confirmation["base"] != snap["projectRevision"]
-                    or plan_row["base"] != snap["projectRevision"]
-                    or confirmation["permission"] != "write"
-                ):
+                if capability == "changeset.commit" and _changeset_host is None:
                     fault("IDENTITY_CONFLICT")
-                plan = json.loads(plan_row["payload"])
+                plan = self._job_prepared_plan(
+                    project,
+                    input_,
+                    confirmation_ref,
+                    snap,
+                    capability=capability,
+                    changeset_host=_changeset_host,
+                )
             else:
                 if input_["preparedPlanRef"] is not None or confirmation_ref is not None:
                     fault("INVALID_REQUEST", field="identity")
@@ -407,6 +1105,8 @@ class JobStore(Store):
                 "dependencyVector": vector,
                 "manifests": manifests,
             }
+            if query_request is not None:
+                context["queryRequest"] = query_request
             if capability == "test.rounds":
                 events = parameters.get("events", [])
                 context["runConfig"] = {
@@ -476,10 +1176,22 @@ class JobStore(Store):
                     fingerprint,
                 ),
             )
-            self._db.execute(
-                "INSERT INTO operation_claims VALUES(?,?,?,?)",
-                (operation, project, identity, fingerprint),
-            )
+            if capability == "changeset.commit":
+                _acceptance_hook("changeset_queued")
+            if self._target_format == 3:
+                self._db.execute(
+                    "INSERT INTO operation_claims(operation,project,job,fingerprint,kind,context) "
+                    "VALUES(?,?,?,?,'job',NULL)",
+                    (operation, project, identity, fingerprint),
+                )
+            else:
+                self._db.execute(
+                    "INSERT INTO operation_claims(operation,project,job,fingerprint) "
+                    "VALUES(?,?,?,?)",
+                    (operation, project, identity, fingerprint),
+                )
+            if capability == "changeset.commit":
+                _acceptance_hook("changeset_claim")
             return job
 
     def _accepted_job(
@@ -491,7 +1203,7 @@ class JobStore(Store):
         accepted source's present payload availability/currentness is irrelevant.
         New operations still use all normal live-reference validation above.
         """
-        if claim["project"] != project:
+        if claim["project"] != project or (self._target_format == 3 and claim["kind"] != "job"):
             fault("IDENTITY_CONFLICT")
         row = self._db.execute("SELECT * FROM jobs WHERE id=?", (claim["job"],)).fetchone()
         if row is None:
@@ -520,6 +1232,12 @@ class JobStore(Store):
         parameters = self.blob(project, input_["parametersHash"])
         if parameters != context["parameters"] or digest(parameters) != input_["parametersHash"]:
             fault("INVALID_STATE")
+        if "queryRequest" in context:
+            expected = self.prepare_query_request(
+                project, input_, parameters, snapshot, implementation, confirmation_ref, live=False
+            )
+            if context["queryRequest"] != expected:
+                fault("INVALID_STATE")
         if "runConfig" in context:
             config = context["runConfig"]
             if (
@@ -533,34 +1251,15 @@ class JobStore(Store):
             ):
                 fault("INVALID_STATE")
         if input_["preparedPlanRef"] is not None:
-            plan = self._db.execute(
-                "SELECT * FROM job_plans WHERE project=? AND ref=?",
-                (project, input_["preparedPlanRef"]),
-            ).fetchone()
-            confirmation = self._db.execute(
-                "SELECT * FROM job_confirmations WHERE project=? AND id=?",
-                (project, confirmation_ref),
-            ).fetchone()
-            if (
-                not plan
-                or not confirmation
-                or json.loads(plan["payload"]) != context["plan"]
-                or plan["plan_hash"] != digest(context["plan"])
-                or plan["base"] != snapshot["projectRevision"]
-                or digest(
-                    {
-                        "projectId": project,
-                        "plan": context["plan"],
-                        "before": input_["inputSnapshotId"],
-                        "diffHash": plan["diff_hash"],
-                    }
-                )
-                != input_["preparedPlanRef"]
-                or confirmation["plan_ref"] != plan["ref"]
-                or confirmation["plan_hash"] != plan["plan_hash"]
-                or confirmation["base"] != plan["base"]
-                or confirmation["permission"] != "write"
-            ):
+            plan = self._job_prepared_plan(
+                project,
+                input_,
+                confirmation_ref,
+                snapshot,
+                error="INVALID_STATE",
+                capability=capability,
+            )
+            if canonical(plan) != canonical(context["plan"]):
                 fault("INVALID_STATE")
         elif context["plan"] is not None or confirmation_ref is not None:
             fault("INVALID_STATE")
@@ -723,16 +1422,21 @@ class JobStore(Store):
             context = self.job_context(identity)
             plan = context["plan"]
             internal = self._project(job["projectId"])
-            if self.revision(internal) != plan["base"]:
+            if job["capability"] == "changeset.commit":
+                from ontolearn_engine.project.domain_changesets import commit
+
+                marker = commit(self, job, context, hook)
+            elif self.revision(internal) != plan["base"]:
                 fault("REVISION_CONFLICT", expected=plan["base"], actual=self.revision(internal))
-            marker = super().commit(
-                internal,
-                plan["base"],
-                job["operationId"],
-                identity,
-                hook=hook,
-                **{k: v for k, v in plan.items() if k != "base"},
-            )
+            else:
+                marker = super().commit(
+                    internal,
+                    plan["base"],
+                    job["operationId"],
+                    identity,
+                    hook=hook,
+                    **{k: v for k, v in plan.items() if k != "base"},
+                )
             job["commitProgress"]["marker"] = self._marker_dto(marker)
             rows = [
                 {
@@ -749,6 +1453,8 @@ class JobStore(Store):
                 }
             ]
             result = self._publish_job(job, rows, "receipt")
+            if job["capability"] == "changeset.commit":
+                hook("changeset_result")
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)
@@ -760,10 +1466,302 @@ class JobStore(Store):
                 return job
             if job["state"] != "running" or job["commitProgress"]["mode"] != "none":
                 fault("INVALID_STATE")
+            if job["capability"] == "query.execute":
+                fault("INVALID_STATE")  # New query success requires the complete private bundle.
             result = self._publish_job(job, rows, kind)
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)
+
+    def query_project_get(self, project, *, actor, ticket):
+        from ontolearn_engine.project.query_definitions import ProjectGetReadTicket
+
+        if not isinstance(ticket, ProjectGetReadTicket):
+            fault("PERMISSION_DENIED")
+        ticket.consume(actor, self, project)
+        # The adopted project_get reads the coherent pure projection and checks
+        # any already persisted row without minting a snapshot or write scope.
+        # Reply still authenticates the original issuer, revision and digest.
+        return ticket.reply(self, self.project_get(project))
+
+    def load_query_definition(self, params, *, ticket):
+        from ontolearn_engine.project.query_definitions import load
+
+        ticket.check(self)
+        return load(self, params, ticket)
+
+    def prepare_query_execution_input(
+        self, params, implementation, limits, registry_hash, *, ticket
+    ):
+        from ontolearn_engine.project.query_definitions import prepare
+
+        ticket.check(self)
+        return prepare(self, params, implementation, limits, registry_hash, ticket)
+
+    def query_presentation(self, method, params, limits, *, ticket):
+        from ontolearn_engine.project.query_presentation import describe, rows_page, text_page
+
+        ticket.check(self)
+        handler = {
+            "query.result.describe": describe,
+            "query.result.textPage": text_page,
+            "query.result.rowsPage": rows_page,
+        }.get(method)
+        if handler is None:
+            fault("PERMISSION_DENIED")
+        return handler(self, params, limits, ticket)
+
+    def prepare_query_request(
+        self, project, input_, parameters, snap, implementation, confirmation_ref, *, live=True
+    ):
+        from ontolearn_engine.resources import semantic_identity
+        from ontolearn_engine.semantic_execution import SemanticExecutionFault, build_request
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        if type(parameters) is not dict or set(parameters) != {"inputSelection"}:
+            fault("INVALID_REQUEST", field="params")
+        if parameters["inputSelection"] not in ("current", "historical"):
+            fault("INVALID_REQUEST", field="params")
+        if (
+            input_["scope"] != "asserted"
+            or input_["derivedResultIds"]
+            or input_["preparedPlanRef"] is not None
+            or confirmation_ref is not None
+        ):
+            fault("INVALID_REQUEST", field="identity")
+        if live and implementation != semantic_identity():
+            fault("IDENTITY_CONFLICT")
+        if implementation["executionSemanticsVersion"] != "i05-finite-6":
+            fault("IDENTITY_CONFLICT")
+        if not any(
+            d["layer"] == "query" and d["id"] == input_["definitionId"]
+            for d in snap["state"]["definitions"]
+        ):
+            fault("INVALID_REQUEST", field="dependency")
+        if (
+            live
+            and parameters["inputSelection"] == "current"
+            and input_["inputSnapshotId"] != self.snapshot(self._project(project))
+        ):
+            fault("IDENTITY_CONFLICT")
+        try:
+            request = build_request(
+                snap,
+                "query.execute",
+                input_,
+                parameters,
+                error_catalog=self.contract.ERROR_CATALOG,
+                error_schema=self.contract.DOCUMENT,
+            )
+            from ontolearn_engine.resources import LIMITS
+
+            _, maximum = query_transport_limits(LIMITS)
+            query_encode(request, maximum)
+            return request
+        except SemanticExecutionFault as error:
+            raise JobFault(error.error["code"], error.error["params"]) from None
+
+    def _query_payload_binding(self, job, payload, rows):
+        """Authenticate accepted source and complete output, without re-running SPARQL."""
+        from ontolearn_engine.semantic_execution import _rows, _term
+
+        context = self.job_context(job["jobId"])
+        claim = self._db.execute(
+            "SELECT * FROM operation_claims WHERE operation=?", (job["operationId"],)
+        ).fetchone()
+        if claim is None or claim["job"] != job["jobId"]:
+            fault("INVALID_STATE")
+        self._accepted_job(
+            claim,
+            job["projectId"],
+            job["capability"],
+            job["input"],
+            job["confirmationRef"],
+            job["implementation"],
+            job["limits"],
+        )
+        request = context.get("queryRequest")
+        if request is None:
+            fault("UNSUPPORTED_CAPABILITY")  # Explicit legacy no-complete-payload distinction.
+        expected = self.prepare_query_request(
+            job["projectId"],
+            job["input"],
+            context["parameters"],
+            context["snapshot"],
+            job["implementation"],
+            job["confirmationRef"],
+            live=False,
+        )
+        if request != expected:
+            fault("INVALID_STATE")
+        query_text = next(
+            json.loads(d["payload"])["text"]
+            for d in context["snapshot"]["state"]["definitions"]
+            if d["layer"] == "query" and d["id"] == job["input"]["definitionId"]
+        )
+        common = {
+            "kind": "query",
+            "inputSnapshotId": job["inputSnapshotId"],
+            "inputProjectRevision": context["snapshot"]["projectRevision"],
+            "executionSemanticsVersion": job["implementation"]["executionSemanticsVersion"],
+            "scope": "asserted",
+            "definitionId": job["input"]["definitionId"],
+            "inputSelection": context["parameters"]["inputSelection"],
+            "selectedResultIds": [],
+            "queryText": query_text,
+        }
+        if type(payload) is not dict or set(payload) != set(common) | {"query", "provenance"}:
+            fault("INVALID_STATE")
+        if any(payload[k] != v for k, v in common.items()):
+            fault("INVALID_STATE")
+        query = payload["query"]
+        if type(query) is not dict:
+            fault("INVALID_STATE")
+        if query.get("type") == "ASK":
+            if set(query) != {"type", "value"} or type(query["value"]) is not bool:
+                fault("INVALID_STATE")
+        elif query.get("type") == "SELECT":
+            if (
+                set(query) != {"type", "variables", "rows"}
+                or type(query["variables"]) is not list
+                or any(type(v) is not str for v in query["variables"])
+                or len(set(query["variables"])) != len(query["variables"])
+                or type(query["rows"]) is not list
+                or any(
+                    type(r) is not list
+                    or len(r) != len(query["variables"])
+                    or any(v is not None and type(v) is not str for v in r)
+                    for r in query["rows"]
+                )
+            ):
+                fault("INVALID_STATE")
+        else:
+            fault("INVALID_STATE")
+        state = context["snapshot"]["state"]
+
+        # Only bounded RDF term canonicalization for binding; never execute the
+        # query (or invoke execute_request) again in the Store/coordinator.
+        def triple(record):
+            return [
+                f"<{record['subject']}>",
+                f"<{record['predicate']}>",
+                _term(record["object"]).n3(),
+            ]
+
+        facts = sorted({tuple(triple(r)) for r in state["facts"] if r["object"] is not None})
+        ontology = sorted(
+            {
+                tuple(triple(r))
+                for d in state["definitions"]
+                if d["layer"] == "ontology"
+                for r in json.loads(d["payload"])["triples"]
+            }
+        )
+        facts, ontology = [list(t) for t in facts], [list(t) for t in ontology]
+        expected_provenance = {
+            "scope": "asserted",
+            "executionSemanticsVersion": common["executionSemanticsVersion"],
+            "assertedInputSha256": digest(facts),
+            "ontologyInputSha256": digest(ontology),
+            "selectedRulesSha256": digest([]),
+            "reasoningSource": None,
+            "selectedRuleIds": [],
+            "warnings": [],
+            "selectedFacts": [{"triple": t, "sources": [{"kind": "asserted"}]} for t in facts],
+            "derivedAxioms": [],
+            "ontologyView": ontology,
+            "factViewSha256": digest(facts),
+            "ontologyViewSha256": digest(ontology),
+        }
+        if payload["provenance"] != expected_provenance:
+            fault("INVALID_STATE")
+        # Fixed supplier projection is pure JSON walking, not graph/query execution.
+        projected = _rows(payload)
+        if (
+            type(rows) is not list
+            or len(rows) != len(projected)
+            or any(
+                not self.contract.validate("row", row)
+                or row["ordinal"] != expected_row["ordinal"]
+                or row["cells"] != expected_row["cells"]
+                for row, expected_row in zip(rows, projected, strict=True)
+            )
+        ):
+            fault("INVALID_STATE")
+
+    def finish_query_job(self, identity, output, hook: Hook = lambda _: None):
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        with self._transaction(hook):
+            job = self._job(identity)
+            if job["state"] in TERMINAL:
+                return job
+            if job["state"] != "running" or job["capability"] != "query.execute":
+                fault("INVALID_STATE")
+            if type(output) is not dict or set(output) != {"payload", "rows"}:
+                fault("INVALID_STATE")
+            _, maximum = query_transport_limits(job["limits"])
+            query_encode(output, maximum)
+            self._query_payload_binding(job, output["payload"], output["rows"])
+            result = self._publish_job(job, output["rows"], "query")
+            hook("query_rows_published")
+            self._db.execute(
+                "INSERT INTO query_payloads VALUES(?,?,?,?)",
+                (
+                    result["resultId"],
+                    canonical(output["payload"]),
+                    digest(output["payload"]),
+                    digest(output["rows"]),
+                ),
+            )
+            hook("query_payload_published")
+            self._transition(job, "succeeded", result=result)
+            hook("mid_job_terminal")
+        return self._job(identity)
+
+    def semantic_result(self, project, identity):
+        """Internal full query material; public metadata/page schemas are unchanged."""
+        with self._read():
+            metadata = self.result_get(project, identity)
+            if metadata["kind"] != "query":
+                fault("UNSUPPORTED_CAPABILITY")
+            if metadata["payloadStatus"] != "available":
+                fault("PAYLOAD_EVICTED", resultId=identity)
+            job = self.get_job(project, metadata["jobId"])
+            if self._db.execute(
+                "SELECT 1 FROM query_legacy_jobs WHERE job=?", (job["jobId"],)
+            ).fetchone():
+                fault("UNSUPPORTED_CAPABILITY")
+            record = self._db.execute(
+                "SELECT * FROM query_payloads WHERE result=?", (identity,)
+            ).fetchone()
+            if record is None or record["payload"] is None:
+                fault("INVALID_STATE")
+            payload = json.loads(record["payload"])
+            rows = self.result(identity)["payload"]
+            if (
+                digest(payload) != record["payload_hash"]
+                or digest(rows) != record["rows_hash"]
+                or job["state"] != "succeeded"
+                or job["capability"] != "query.execute"
+                or job["resultRef"]
+                != {"resultId": identity, "inputSnapshotId": metadata["inputSnapshotId"]}
+                or any(
+                    job[k] != metadata[k]
+                    for k in (
+                        "inputSnapshotId",
+                        "implementation",
+                        "dependencyVector",
+                        "definitionSetDigests",
+                        "parametersHash",
+                        "scope",
+                    )
+                )
+                or job["input"]["definitionId"] != metadata["definitionId"]
+            ):
+                fault("INVALID_STATE")
+            self._query_payload_binding(job, payload, rows)
+            return metadata, payload
 
     def start_job_run(self, identity, config):
         with self._transaction():
@@ -1208,6 +2206,8 @@ class JobStore(Store):
             fault("INVALID_STATE")
         if result["kind"] == "scenario":
             self._check_summary(result, payload)
+        if result["kind"] == "query" and "queryRequest" in self.job_context(result["jobId"]):
+            self.semantic_result(project, identity)
         return result, payload
 
     def _check_summary(self, result, payload):
@@ -1469,6 +2469,9 @@ class JobStore(Store):
             ]
             for identity in ids:
                 self._db.execute("UPDATE results SET payload=NULL WHERE id=?", (identity,))
+                self._db.execute(
+                    "UPDATE query_payloads SET payload=NULL WHERE result=?", (identity,)
+                )
             return ids
 
 
@@ -1526,3 +2529,61 @@ JOB_SCHEMA.append(
     "CREATE TRIGGER IF NOT EXISTS immutable_jobs_DELETE BEFORE DELETE ON jobs "
     "BEGIN SELECT RAISE(ABORT,'immutable job history'); END"
 )
+
+
+# Explicit3 evolves the one approved schema; default2 retains JOB_SCHEMA unchanged.
+def _job_object_name(sql):
+    normalized = sql.replace("IF NOT EXISTS ", "")
+    return (
+        normalized.split()[2]
+        if normalized.startswith("CREATE TRIGGER")
+        else normalized.partition("(")[0].split()[-1]
+    )
+
+
+JOB3_CLAIMS = (
+    "CREATE TABLE operation_claims(operation TEXT PRIMARY KEY NOT NULL,"
+    "project TEXT NOT NULL REFERENCES public_projects(public),"
+    "job TEXT UNIQUE REFERENCES jobs(id),fingerprint TEXT NOT NULL,"
+    "kind TEXT NOT NULL CHECK(kind IN ('job','application')),context TEXT,"
+    "CHECK((kind='job' AND job IS NOT NULL AND context IS NULL) OR "
+    "(kind='application' AND job IS NULL AND context IS NOT NULL)))"
+)
+JOB3_SCHEMA = [
+    JOB3_CLAIMS
+    if _job_object_name(sql) == "operation_claims"
+    else sql.replace("IF NOT EXISTS ", "")
+    for sql in JOB_SCHEMA
+]
+JOB3_CATALOG = [
+    "CREATE TABLE job_format(singleton INTEGER PRIMARY KEY CHECK(singleton=1),"
+    "schema_version INTEGER NOT NULL CHECK(schema_version=3),schema_hash TEXT NOT NULL,"
+    "source_kind TEXT NOT NULL CHECK(source_kind IN ('new','v2')))"
+] + [
+    f"CREATE TRIGGER immutable_job_format_{action} BEFORE {action} ON job_format "
+    "BEGIN SELECT RAISE(ABORT,'immutable job schema evidence'); END"
+    for action in ("UPDATE", "DELETE")
+]
+JOB3_HASH = digest(JOB3_SCHEMA + JOB3_CATALOG)
+
+# An additive private extension: never append these to JOB_SCHEMA/JOB3_SCHEMA.
+QUERY_PAYLOAD_SCHEMA = [
+    "CREATE TABLE query_payloads(result TEXT PRIMARY KEY NOT NULL REFERENCES job_results(id),"
+    "payload TEXT,payload_hash TEXT NOT NULL,rows_hash TEXT NOT NULL)",
+    "CREATE TABLE query_legacy_jobs(job TEXT PRIMARY KEY NOT NULL REFERENCES jobs(id))",
+    "CREATE TABLE query_payload_format(singleton INTEGER PRIMARY KEY CHECK(singleton=1),"
+    "version INTEGER NOT NULL CHECK(version=1),schema_hash TEXT NOT NULL,"
+    "source_format INTEGER NOT NULL CHECK(source_format IN (2,3)))",
+    "CREATE TRIGGER immutable_query_payloads_UPDATE BEFORE UPDATE ON query_payloads "
+    "WHEN NEW.result IS NOT OLD.result OR NEW.payload_hash IS NOT OLD.payload_hash "
+    "OR NEW.rows_hash IS NOT OLD.rows_hash OR NEW.payload IS NOT NULL "
+    "BEGIN SELECT RAISE(ABORT,'immutable query payload'); END",
+    "CREATE TRIGGER immutable_query_payloads_DELETE BEFORE DELETE ON query_payloads "
+    "BEGIN SELECT RAISE(ABORT,'immutable query evidence'); END",
+] + [
+    f"CREATE TRIGGER immutable_{table}_{action} BEFORE {action} ON {table} "
+    "BEGIN SELECT RAISE(ABORT,'immutable query catalog'); END"
+    for table in ("query_legacy_jobs", "query_payload_format")
+    for action in ("UPDATE", "DELETE")
+]
+QUERY_PAYLOAD_HASH = digest(QUERY_PAYLOAD_SCHEMA)

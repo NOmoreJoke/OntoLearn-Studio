@@ -1,0 +1,2613 @@
+{
+  "schemaVersion": 1,
+  "sourceRef": "423b7e4c799f188cf2ce6e8e7121893ce85624cd",
+  "repositoryUsed": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-create-core",
+  "auditMode": "exact Git blob and stdlib AST/JSON only; no review trees/model reports/product import/tests/SQL/native",
+  "runtimePass": false,
+  "blobs": [
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/domain_changesets.py",
+      "bytes": 34728,
+      "sha256": "e38f9d58a31f3bb38dc7b2da58f3da26811d3a6cfcc2a5f43a5a10f9b71dfb9a",
+      "gitBlob": "3eab70271258cb3b3ce1258c85d662189ead9399"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/job_store.py",
+      "bytes": 87227,
+      "sha256": "8896c3e30007e1dec04eaf47ae5bb5c33a1e9b3a1d016cb9165f99d8b4deeacc",
+      "gitBlob": "13ac3febf5ccd9a38de5b072e5e4548f7230bce4"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/coordinator.py",
+      "bytes": 41168,
+      "sha256": "6e057cbdd76c674813d9f90e231306cb9cf5611ef7fcbeb234de13d698afa18c",
+      "gitBlob": "6dd989ff4ebd6767d2d4b365f9a76e1b50fb1695"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/storage.py",
+      "bytes": 76042,
+      "sha256": "fbef0d0ace0a01b9ced5eaecaf83aeb9306258c0cbfa5fd98a6d79e46bc5a39a",
+      "gitBlob": "702cd45ee560bc0376e46aac5781933b35c79c83"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/transactions.py",
+      "bytes": 11924,
+      "sha256": "13a9f9a104e2f7d0d71ba4b7f66a7adfb40e32631d6d67a9dbd5835ae590a123",
+      "gitBlob": "5ded260cc0b7dc3356a366e847d88c9c993ef35b"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/applications.py",
+      "bytes": 20012,
+      "sha256": "888bac463c27156a012e08ebfe1df33769a2405c117174611b82a63576a8d90f",
+      "gitBlob": "e8e4a7c9a3bd5b1b69172682cd92f21e4d2183d8"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/project/project_lifecycle.py",
+      "bytes": 20932,
+      "sha256": "a43365c1615082a0229de0d8e48569227fa930a7c3a7f869360975d72f30d104",
+      "gitBlob": "4bbb260008e7226d1d6e6c1d5faff95149373e7d"
+    },
+    {
+      "path": "packages/contracts/python/contract_v2.py",
+      "bytes": 34608,
+      "sha256": "17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7",
+      "gitBlob": "e80835e92dacec15717acfaeaedfc8e9a6611d76"
+    },
+    {
+      "path": "packages/contracts/v2/schema.json",
+      "bytes": 207256,
+      "sha256": "e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf",
+      "gitBlob": "114d963d0967d2a9ce347195b5ee536e09a8195a"
+    },
+    {
+      "path": "packages/contracts/v2/registry.json",
+      "bytes": 15962,
+      "sha256": "1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b",
+      "gitBlob": "8d2195b04a193501b90bbfc432e3af2d2f6e489d"
+    },
+    {
+      "path": "packages/engine/src/ontolearn_engine/resources.py",
+      "bytes": 2415,
+      "sha256": "8bba36a3f97eedf972b4d9165e71b8046b225948b0864542a1fc3f1095c6f188",
+      "gitBlob": "db107e7404b29f8bd81730f30666e173cf0276cd"
+    }
+  ],
+  "functions": {
+    "packages/engine/src/ontolearn_engine/project/domain_changesets.py": [
+      {
+        "name": "fail",
+        "line": 31,
+        "endLine": 35,
+        "signature": "code, **params"
+      },
+      {
+        "name": "_host",
+        "line": 38,
+        "endLine": 42,
+        "signature": "host, session"
+      },
+      {
+        "name": "pack",
+        "line": 45,
+        "endLine": 57,
+        "signature": "preview"
+      },
+      {
+        "name": "unpack",
+        "line": 60,
+        "endLine": 85,
+        "signature": "value"
+      },
+      {
+        "name": "_definition",
+        "line": 88,
+        "endLine": 107,
+        "signature": "store, record"
+      },
+      {
+        "name": "supported",
+        "line": 110,
+        "endLine": 127,
+        "signature": "store, preview"
+      },
+      {
+        "name": "_document",
+        "line": 130,
+        "endLine": 152,
+        "signature": "items, kind"
+      },
+      {
+        "name": "_wire_room",
+        "line": 155,
+        "endLine": 159,
+        "signature": "store, result, limits"
+      },
+      {
+        "name": "_page_room",
+        "line": 162,
+        "endLine": 178,
+        "signature": "project, preview_hash, manifest, segments, limits"
+      },
+      {
+        "name": "_persist_segments",
+        "line": 181,
+        "endLine": 186,
+        "signature": "store, project, segments, hook"
+      },
+      {
+        "name": "_intern_blob",
+        "line": 189,
+        "endLine": 194,
+        "signature": "store, project, value"
+      },
+      {
+        "name": "_snapshot_id",
+        "line": 197,
+        "endLine": 204,
+        "signature": "store, preview"
+      },
+      {
+        "name": "_ready",
+        "line": 207,
+        "endLine": 221,
+        "signature": "store, project, ref, envelope"
+      },
+      {
+        "name": "_evidence_state",
+        "line": 224,
+        "endLine": 229,
+        "signature": "store, internal, ref"
+      },
+      {
+        "name": "_unsupported_item",
+        "line": 232,
+        "endLine": 233,
+        "signature": "target, reason='evidence-unavailable'"
+      },
+      {
+        "name": "impact",
+        "line": 236,
+        "endLine": 375,
+        "signature": "store, internal, target, base"
+      },
+      {
+        "name": "preview_changeset",
+        "line": 378,
+        "endLine": 498,
+        "signature": "store, project, base, request, *, host_client_id, engine_session_id, limits, hook"
+      },
+      {
+        "name": "_envelope",
+        "line": 501,
+        "endLine": 521,
+        "signature": "store, project, preview_hash, host, session, kind"
+      },
+      {
+        "name": "_verify_document",
+        "line": 524,
+        "endLine": 533,
+        "signature": "store, project, envelope, items"
+      },
+      {
+        "name": "_verify_plan",
+        "line": 536,
+        "endLine": 581,
+        "signature": "store, project, row, envelope"
+      },
+      {
+        "name": "_binding",
+        "line": 584,
+        "endLine": 594,
+        "signature": "project, ref, envelope, preview_hash"
+      },
+      {
+        "name": "diff_page",
+        "line": 597,
+        "endLine": 675,
+        "signature": "store, project, preview_hash, document_kind, page_size, cursor, *, host_client_id, engine_session_id, limits"
+      },
+      {
+        "name": "_receipt",
+        "line": 678,
+        "endLine": 724,
+        "signature": "store, project, ref, envelope, confirmation, *, request=None"
+      },
+      {
+        "name": "confirm",
+        "line": 727,
+        "endLine": 839,
+        "signature": "store, project, preview_hash, completion_cursor, *, host_client_id, engine_session_id, hook"
+      },
+      {
+        "name": "accepted_plan",
+        "line": 842,
+        "endLine": 872,
+        "signature": "store, project, input_, confirmation, snapshot, *, host=None"
+      },
+      {
+        "name": "commit",
+        "line": 875,
+        "endLine": 888,
+        "signature": "store, job, context, hook"
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/job_store.py": [
+      {
+        "name": "fault",
+        "line": 41,
+        "endLine": 42,
+        "signature": "code, **params"
+      },
+      {
+        "name": "_job_object_name",
+        "line": 2050,
+        "endLine": 2056,
+        "signature": "sql"
+      },
+      {
+        "name": "__init__",
+        "line": 35,
+        "endLine": 38,
+        "signature": "self, code: str, params: dict | None=None"
+      },
+      {
+        "name": "__init__",
+        "line": 46,
+        "endLine": 97,
+        "signature": "self, path: str | Path, *, contract, now_ms=None, cursor_ttl_ms: int=60000, max_cursor_records: int=256, target_format: int=FORMAT_VERSION, backup_path: str | Path | None=None, migration_hook: Hook=lambda _: None, job_migration_hook: Hook=lambda _: None"
+      },
+      {
+        "name": "_lock",
+        "line": 99,
+        "endLine": 115,
+        "signature": "self"
+      },
+      {
+        "name": "close",
+        "line": 117,
+        "endLine": 126,
+        "signature": "self"
+      },
+      {
+        "name": "_migrate_job3",
+        "line": 128,
+        "endLine": 186,
+        "signature": "self, hook"
+      },
+      {
+        "name": "_validate_job3",
+        "line": 188,
+        "endLine": 264,
+        "signature": "self"
+      },
+      {
+        "name": "_application_input",
+        "line": 266,
+        "endLine": 278,
+        "signature": "self, project, change, actor, permission"
+      },
+      {
+        "name": "_occupied_operation_evidence",
+        "line": 280,
+        "endLine": 288,
+        "signature": "self, operation"
+      },
+      {
+        "name": "prepare_application",
+        "line": 290,
+        "endLine": 321,
+        "signature": "self, project, change, *, actor, permission"
+      },
+      {
+        "name": "apply_application",
+        "line": 323,
+        "endLine": 420,
+        "signature": "self, project, operation, change, *, actor, permission, prepared_plan_ref=None, confirmation_ref=None, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "_valid",
+        "line": 422,
+        "endLine": 424,
+        "signature": "self, schema, value, field='params'"
+      },
+      {
+        "name": "_application",
+        "line": 427,
+        "endLine": 442,
+        "signature": "self, project, resource, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "detail_get",
+        "line": 444,
+        "endLine": 451,
+        "signature": "self, project, identity"
+      },
+      {
+        "name": "has_operation_claim",
+        "line": 453,
+        "endLine": 459,
+        "signature": "self, operation"
+      },
+      {
+        "name": "_test_parameters",
+        "line": 461,
+        "endLine": 496,
+        "signature": "self, parameters"
+      },
+      {
+        "name": "create_project",
+        "line": 498,
+        "endLine": 504,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "public_project",
+        "line": 506,
+        "endLine": 516,
+        "signature": "self, internal: str"
+      },
+      {
+        "name": "_project",
+        "line": 518,
+        "endLine": 526,
+        "signature": "self, public"
+      },
+      {
+        "name": "project_get",
+        "line": 528,
+        "endLine": 537,
+        "signature": "self, project"
+      },
+      {
+        "name": "put_blob",
+        "line": 539,
+        "endLine": 549,
+        "signature": "self, project, value"
+      },
+      {
+        "name": "blob",
+        "line": 551,
+        "endLine": 561,
+        "signature": "self, project, ref"
+      },
+      {
+        "name": "_plan",
+        "line": 564,
+        "endLine": 580,
+        "signature": "base, plan"
+      },
+      {
+        "name": "prepare_plan",
+        "line": 582,
+        "endLine": 626,
+        "signature": "self, project, base, plan, *, actor, permission"
+      },
+      {
+        "name": "preview_changeset",
+        "line": 628,
+        "endLine": 650,
+        "signature": "self, project, base, request, *, host_client_id, engine_session_id, limits, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "changeset_diff_page",
+        "line": 652,
+        "endLine": 676,
+        "signature": "self, project, preview_hash, document_kind, page_size, cursor, *, host_client_id, engine_session_id, limits"
+      },
+      {
+        "name": "confirm_changeset",
+        "line": 678,
+        "endLine": 698,
+        "signature": "self, project, preview_hash, completion_cursor, *, host_client_id, engine_session_id, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "create_changeset_job",
+        "line": 700,
+        "endLine": 723,
+        "signature": "self, project, operation, input_, confirmation_ref, implementation, limits, *, host_client_id, engine_session_id, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "_definitions",
+        "line": 725,
+        "endLine": 740,
+        "signature": "self, snap"
+      },
+      {
+        "name": "_dependencies",
+        "line": 742,
+        "endLine": 774,
+        "signature": "self, capability, input_, snap"
+      },
+      {
+        "name": "_job_prepared_plan",
+        "line": 776,
+        "endLine": 852,
+        "signature": "self, project, input_, confirmation_ref, snapshot, *, error='IDENTITY_CONFLICT', capability=None, changeset_host=None"
+      },
+      {
+        "name": "create_job",
+        "line": 854,
+        "endLine": 1013,
+        "signature": "self, project, operation, capability, input_, confirmation_ref, implementation, limits, *, _changeset_host=None, _acceptance_hook: Hook=lambda _: None"
+      },
+      {
+        "name": "_accepted_job",
+        "line": 1015,
+        "endLine": 1078,
+        "signature": "self, claim, project, capability, input_, confirmation_ref, implementation, limits"
+      },
+      {
+        "name": "get_job",
+        "line": 1080,
+        "endLine": 1106,
+        "signature": "self, project, identity"
+      },
+      {
+        "name": "job_context",
+        "line": 1108,
+        "endLine": 1118,
+        "signature": "self, identity"
+      },
+      {
+        "name": "_job",
+        "line": 1120,
+        "endLine": 1124,
+        "signature": "self, identity"
+      },
+      {
+        "name": "_save",
+        "line": 1126,
+        "endLine": 1129,
+        "signature": "self, job"
+      },
+      {
+        "name": "_transition",
+        "line": 1131,
+        "endLine": 1145,
+        "signature": "self, job, state, *, result=None, error=None"
+      },
+      {
+        "name": "start_job",
+        "line": 1147,
+        "endLine": 1149,
+        "signature": "self, identity"
+      },
+      {
+        "name": "cancel_job",
+        "line": 1151,
+        "endLine": 1172,
+        "signature": "self, project, identity"
+      },
+      {
+        "name": "fail_job",
+        "line": 1174,
+        "endLine": 1180,
+        "signature": "self, identity, error"
+      },
+      {
+        "name": "cancelled_job",
+        "line": 1182,
+        "endLine": 1187,
+        "signature": "self, identity"
+      },
+      {
+        "name": "_finish_unsuccessful",
+        "line": 1189,
+        "endLine": 1199,
+        "signature": "self, job, state, error"
+      },
+      {
+        "name": "_marker_dto",
+        "line": 1202,
+        "endLine": 1208,
+        "signature": "marker"
+      },
+      {
+        "name": "operation_get",
+        "line": 1210,
+        "endLine": 1225,
+        "signature": "self, project, operation"
+      },
+      {
+        "name": "commit_job",
+        "line": 1227,
+        "endLine": 1272,
+        "signature": "self, identity, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "finish_read_job",
+        "line": 1274,
+        "endLine": 1284,
+        "signature": "self, identity, rows, kind='test', hook: Hook=lambda _: None"
+      },
+      {
+        "name": "start_job_run",
+        "line": 1286,
+        "endLine": 1315,
+        "signature": "self, identity, config"
+      },
+      {
+        "name": "commit_job_round",
+        "line": 1317,
+        "endLine": 1358,
+        "signature": "self, identity, state, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "_finish_run_once",
+        "line": 1360,
+        "endLine": 1366,
+        "signature": "self, run, state, evidence"
+      },
+      {
+        "name": "finish_job_run",
+        "line": 1368,
+        "endLine": 1442,
+        "signature": "self, identity, *, pending_events, event_consumption, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "reconcile_jobs",
+        "line": 1444,
+        "endLine": 1471,
+        "signature": "self"
+      },
+      {
+        "name": "_set_reasons",
+        "line": 1473,
+        "endLine": 1488,
+        "signature": "self, vector, manifests, internal"
+      },
+      {
+        "name": "_invalidate",
+        "line": 1490,
+        "endLine": 1514,
+        "signature": "self, project"
+      },
+      {
+        "name": "_publish_job",
+        "line": 1516,
+        "endLine": 1604,
+        "signature": "self, job, rows, kind"
+      },
+      {
+        "name": "_current_key",
+        "line": 1607,
+        "endLine": 1608,
+        "signature": "project, kind, definition, scope, parameters, implementation"
+      },
+      {
+        "name": "result_get",
+        "line": 1610,
+        "endLine": 1645,
+        "signature": "self, project, identity"
+      },
+      {
+        "name": "result_current",
+        "line": 1647,
+        "endLine": 1670,
+        "signature": "self, project, kind, definition_id, scope, parameters_hash, implementation"
+      },
+      {
+        "name": "_projection_room",
+        "line": 1672,
+        "endLine": 1683,
+        "signature": "self"
+      },
+      {
+        "name": "_cursor",
+        "line": 1685,
+        "endLine": 1693,
+        "signature": "self, token, kind, binding, size"
+      },
+      {
+        "name": "_new_cursor",
+        "line": 1695,
+        "endLine": 1718,
+        "signature": "self, kind, binding, size, position, *, expires=None"
+      },
+      {
+        "name": "_result_rows",
+        "line": 1720,
+        "endLine": 1729,
+        "signature": "self, project, identity"
+      },
+      {
+        "name": "_check_summary",
+        "line": 1731,
+        "endLine": 1796,
+        "signature": "self, result, payload"
+      },
+      {
+        "name": "_round_audit_cells",
+        "line": 1798,
+        "endLine": 1819,
+        "signature": "self, run, identity, committed"
+      },
+      {
+        "name": "result_page",
+        "line": 1821,
+        "endLine": 1854,
+        "signature": "self, binding, page_size, cursor"
+      },
+      {
+        "name": "job_list",
+        "line": 1856,
+        "endLine": 1951,
+        "signature": "self, project, filter, page_size, list_snapshot_id, cursor"
+      },
+      {
+        "name": "pin_result",
+        "line": 1953,
+        "endLine": 1958,
+        "signature": "self, identity, report"
+      },
+      {
+        "name": "pin_report",
+        "line": 1960,
+        "endLine": 1976,
+        "signature": "self, project, identities, report"
+      },
+      {
+        "name": "collect_cache",
+        "line": 1978,
+        "endLine": 1990,
+        "signature": "self"
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/coordinator.py": [
+      {
+        "name": "startup_code",
+        "line": 40,
+        "endLine": 63,
+        "signature": "error"
+      },
+      {
+        "name": "classify",
+        "line": 73,
+        "endLine": 93,
+        "signature": "error: Exception, *, resource: str='job', field: str='params', profile='legacy2'"
+      },
+      {
+        "name": "worker_command",
+        "line": 96,
+        "endLine": 99,
+        "signature": ""
+      },
+      {
+        "name": "serve",
+        "line": 764,
+        "endLine": 934,
+        "signature": "*, profile='legacy2', backup_path=None"
+      },
+      {
+        "name": "__init__",
+        "line": 33,
+        "endLine": 37,
+        "signature": "self, cause, cleanup_failures=(), reader_state=None"
+      },
+      {
+        "name": "__init__",
+        "line": 67,
+        "endLine": 70,
+        "signature": "self, code: str, params: dict | None=None"
+      },
+      {
+        "name": "__init__",
+        "line": 103,
+        "endLine": 145,
+        "signature": "self, store, *, test_mode: bool=False, allowed_projects: set | None=None, limits: dict | None=None, emit=None, profile='legacy2', _ready=None"
+      },
+      {
+        "name": "_validated_emit",
+        "line": 147,
+        "endLine": 150,
+        "signature": "self, value"
+      },
+      {
+        "name": "_emit",
+        "line": 153,
+        "endLine": 158,
+        "signature": "value: dict"
+      },
+      {
+        "name": "_authorize",
+        "line": 160,
+        "endLine": 164,
+        "signature": "self, params: dict"
+      },
+      {
+        "name": "_progress",
+        "line": 166,
+        "endLine": 194,
+        "signature": "self, job: dict, stage: str, subscription: str | None=None"
+      },
+      {
+        "name": "_stage",
+        "line": 196,
+        "endLine": 208,
+        "signature": "self, identity: str, stage: str"
+      },
+      {
+        "name": "_notify",
+        "line": 210,
+        "endLine": 231,
+        "signature": "self, job: dict"
+      },
+      {
+        "name": "request",
+        "line": 233,
+        "endLine": 331,
+        "signature": "self, value: object"
+      },
+      {
+        "name": "dispatch",
+        "line": 333,
+        "endLine": 460,
+        "signature": "self, method: str, p: dict"
+      },
+      {
+        "name": "_snake",
+        "line": 463,
+        "endLine": 472,
+        "signature": "p: dict"
+      },
+      {
+        "name": "tick",
+        "line": 474,
+        "endLine": 498,
+        "signature": "self"
+      },
+      {
+        "name": "execute_changeset",
+        "line": 500,
+        "endLine": 549,
+        "signature": "self, identity: str, context: dict, active: dict"
+      },
+      {
+        "name": "execute",
+        "line": 551,
+        "endLine": 754,
+        "signature": "self, identity: str, context: dict, active: dict"
+      },
+      {
+        "name": "stop",
+        "line": 756,
+        "endLine": 761,
+        "signature": "self"
+      },
+      {
+        "name": "read",
+        "line": 787,
+        "endLine": 827,
+        "signature": ""
+      },
+      {
+        "name": "boundary",
+        "line": 518,
+        "endLine": 523,
+        "signature": "_phase"
+      },
+      {
+        "name": "commit_boundary",
+        "line": 567,
+        "endLine": 569,
+        "signature": "_phase"
+      },
+      {
+        "name": "controlled",
+        "line": 571,
+        "endLine": 590,
+        "signature": "work, phase, maximum_ms, on_completed=None"
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/storage.py": [
+      {
+        "name": "canonical",
+        "line": 24,
+        "endLine": 27,
+        "signature": "value: object"
+      },
+      {
+        "name": "digest",
+        "line": 30,
+        "endLine": 31,
+        "signature": "value: object"
+      },
+      {
+        "name": "_close_resources",
+        "line": 38,
+        "endLine": 47,
+        "signature": "resources"
+      },
+      {
+        "name": "__init__",
+        "line": 53,
+        "endLine": 64,
+        "signature": "self, message: str, *, category: str='unknown', params: dict | None=None"
+      },
+      {
+        "name": "__init__",
+        "line": 68,
+        "endLine": 106,
+        "signature": "self, path: str | Path, migration_hook: Hook=lambda _: None, *, target_format: int=FORMAT_VERSION, backup_path: str | Path | None=None"
+      },
+      {
+        "name": "actual_format",
+        "line": 109,
+        "endLine": 110,
+        "signature": "self"
+      },
+      {
+        "name": "close",
+        "line": 112,
+        "endLine": 117,
+        "signature": "self"
+      },
+      {
+        "name": "_transaction",
+        "line": 120,
+        "endLine": 146,
+        "signature": "self, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "_migrate",
+        "line": 148,
+        "endLine": 257,
+        "signature": "self, hook: Hook, *, backup_path=None, existed=False"
+      },
+      {
+        "name": "create_project",
+        "line": 259,
+        "endLine": 267,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "project_checkpoint",
+        "line": 269,
+        "endLine": 281,
+        "signature": "self, project: str, identity: str | None=None"
+      },
+      {
+        "name": "project_receipt",
+        "line": 283,
+        "endLine": 303,
+        "signature": "self, project: str, operation: str"
+      },
+      {
+        "name": "project_operations",
+        "line": 305,
+        "endLine": 350,
+        "signature": "self, project: str, *, after_sequence: int=0, through_sequence: int | None=None, limit: int=100"
+      },
+      {
+        "name": "revision",
+        "line": 352,
+        "endLine": 356,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "vector",
+        "line": 358,
+        "endLine": 391,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_has_retirements",
+        "line": 393,
+        "endLine": 399,
+        "signature": "self"
+      },
+      {
+        "name": "_read",
+        "line": 402,
+        "endLine": 410,
+        "signature": "self"
+      },
+      {
+        "name": "state",
+        "line": 412,
+        "endLine": 414,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_state",
+        "line": 416,
+        "endLine": 440,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_fact",
+        "line": 443,
+        "endLine": 454,
+        "signature": "fact: dict"
+      },
+      {
+        "name": "commit",
+        "line": 456,
+        "endLine": 860,
+        "signature": "self, project: str, base: int | None, operation: str, job: str | None, *, definitions: list[dict] | None=None, remove_definitions: list[dict] | None=None, manual: list[dict] | None=None, edits: dict[str, str] | None=None, remove: list[str] | None=None, mapping: dict | None=None, preview_identity: str | None=None, preview_control: dict | None=None, compensate: dict | None=None, application: dict | None=None, creation: dict | None=None, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "retirement_control",
+        "line": 862,
+        "endLine": 873,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_apply_compensation",
+        "line": 875,
+        "endLine": 968,
+        "signature": "self, project: str, before: dict, desired: dict, hook: Hook"
+      },
+      {
+        "name": "operation_list",
+        "line": 970,
+        "endLine": 1001,
+        "signature": "self, project: str, *, after_revision: int=0, through_revision: int | None=None, limit: int=100"
+      },
+      {
+        "name": "mapping_status",
+        "line": 1003,
+        "endLine": 1011,
+        "signature": "self, project: str, owner: str"
+      },
+      {
+        "name": "_definition",
+        "line": 1014,
+        "endLine": 1039,
+        "signature": "value: object"
+      },
+      {
+        "name": "_single_predicates",
+        "line": 1041,
+        "endLine": 1049,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_validate_single_slots",
+        "line": 1051,
+        "endLine": 1060,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_validate_references",
+        "line": 1062,
+        "endLine": 1079,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_check_slot",
+        "line": 1081,
+        "endLine": 1106,
+        "signature": "self, project: str, subject: str, predicate: str, value: str, excluded: set[str], single_predicates: set[str] | None=None"
+      },
+      {
+        "name": "_replace_mapping",
+        "line": 1108,
+        "endLine": 1197,
+        "signature": "self, project: str, mapping: dict"
+      },
+      {
+        "name": "marker",
+        "line": 1199,
+        "endLine": 1206,
+        "signature": "self, project: str, operation: str"
+      },
+      {
+        "name": "snapshot",
+        "line": 1208,
+        "endLine": 1216,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_snapshot",
+        "line": 1218,
+        "endLine": 1223,
+        "signature": "self, payload: dict"
+      },
+      {
+        "name": "load_snapshot",
+        "line": 1225,
+        "endLine": 1232,
+        "signature": "self, identity: str"
+      },
+      {
+        "name": "_project_snapshot",
+        "line": 1234,
+        "endLine": 1259,
+        "signature": "self, identity: str, project: str"
+      },
+      {
+        "name": "_snapshot_state",
+        "line": 1262,
+        "endLine": 1348,
+        "signature": "cls, state: dict"
+      },
+      {
+        "name": "_result_identity",
+        "line": 1351,
+        "endLine": 1360,
+        "signature": "kind: str, implementation: dict[str, str]"
+      },
+      {
+        "name": "publish",
+        "line": 1362,
+        "endLine": 1426,
+        "signature": "self, project: str, snapshot: str, dependencies: list[str], kind: str, payload: object, implementation: dict[str, str]"
+      },
+      {
+        "name": "_invalidate",
+        "line": 1428,
+        "endLine": 1438,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "result",
+        "line": 1440,
+        "endLine": 1442,
+        "signature": "self, identity: str"
+      },
+      {
+        "name": "_result",
+        "line": 1444,
+        "endLine": 1460,
+        "signature": "self, identity: str"
+      },
+      {
+        "name": "current",
+        "line": 1462,
+        "endLine": 1465,
+        "signature": "self, project: str, kind: str, implementation: dict[str, str]"
+      },
+      {
+        "name": "_current",
+        "line": 1467,
+        "endLine": 1482,
+        "signature": "self, project: str, kind: str, implementation: dict[str, str]"
+      },
+      {
+        "name": "pin_result",
+        "line": 1484,
+        "endLine": 1489,
+        "signature": "self, identity: str, report: str"
+      },
+      {
+        "name": "collect_cache",
+        "line": 1491,
+        "endLine": 1503,
+        "signature": "self"
+      },
+      {
+        "name": "start_run",
+        "line": 1505,
+        "endLine": 1515,
+        "signature": "self, project: str, snapshot: str, config: dict, implementation: dict"
+      },
+      {
+        "name": "commit_round",
+        "line": 1517,
+        "endLine": 1579,
+        "signature": "self, run: str, number: int, state: dict, operation: str, job: str, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "_run",
+        "line": 1581,
+        "endLine": 1585,
+        "signature": "self, identity: str"
+      },
+      {
+        "name": "progress",
+        "line": 1587,
+        "endLine": 1592,
+        "signature": "self, run: str"
+      },
+      {
+        "name": "finish_run",
+        "line": 1594,
+        "endLine": 1601,
+        "signature": "self, run: str, status: str, evidence: dict"
+      },
+      {
+        "name": "history",
+        "line": 1603,
+        "endLine": 1605,
+        "signature": "self, run: str"
+      },
+      {
+        "name": "_history",
+        "line": 1607,
+        "endLine": 1652,
+        "signature": "self, run: str"
+      },
+      {
+        "name": "backup",
+        "line": 1654,
+        "endLine": 1661,
+        "signature": "self, destination: str | Path"
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/project/transactions.py": [
+      {
+        "name": "_records",
+        "line": 90,
+        "endLine": 95,
+        "signature": "state: dict"
+      },
+      {
+        "name": "state_diff",
+        "line": 98,
+        "endLine": 104,
+        "signature": "before: dict, after: dict"
+      },
+      {
+        "name": "__init__",
+        "line": 29,
+        "endLine": 32,
+        "signature": "self, code: str, resources: tuple[str, ...]=()"
+      },
+      {
+        "name": "identity",
+        "line": 51,
+        "endLine": 65,
+        "signature": "self"
+      },
+      {
+        "name": "diff",
+        "line": 68,
+        "endLine": 80,
+        "signature": "self"
+      },
+      {
+        "name": "summary",
+        "line": 83,
+        "endLine": 87,
+        "signature": "self"
+      },
+      {
+        "name": "__init__",
+        "line": 112,
+        "endLine": 113,
+        "signature": "self, store: Store"
+      },
+      {
+        "name": "_control",
+        "line": 115,
+        "endLine": 116,
+        "signature": "self, project: str"
+      },
+      {
+        "name": "_plan",
+        "line": 119,
+        "endLine": 123,
+        "signature": "plan: dict"
+      },
+      {
+        "name": "_fingerprint",
+        "line": 126,
+        "endLine": 144,
+        "signature": "preview: ChangePreview"
+      },
+      {
+        "name": "preview",
+        "line": 146,
+        "endLine": 178,
+        "signature": "self, project: str, base: int, plan: dict, *, intent: str='change', target: str | None=None, overwritten_operations: tuple[str, ...]=()"
+      },
+      {
+        "name": "reconcile",
+        "line": 180,
+        "endLine": 199,
+        "signature": "self, preview: ChangePreview, operation: str, job: str"
+      },
+      {
+        "name": "commit",
+        "line": 201,
+        "endLine": 240,
+        "signature": "self, preview: ChangePreview, operation: str, job: str, *, confirmed_preview: str, hook: Hook=lambda _: None"
+      },
+      {
+        "name": "checkpoint",
+        "line": 242,
+        "endLine": 247,
+        "signature": "self, project: str, reason: str"
+      },
+      {
+        "name": "_snapshot",
+        "line": 249,
+        "endLine": 251,
+        "signature": "self, project: str, identity: str"
+      },
+      {
+        "name": "preview_undo",
+        "line": 253,
+        "endLine": 283,
+        "signature": "self, project: str, operation: str"
+      },
+      {
+        "name": "preview_restore",
+        "line": 285,
+        "endLine": 308,
+        "signature": "self, project: str, snapshot: str"
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/project/applications.py": [
+      {
+        "name": "require",
+        "line": 34,
+        "endLine": 36,
+        "signature": "condition"
+      },
+      {
+        "name": "integer",
+        "line": 39,
+        "endLine": 42,
+        "signature": "value"
+      },
+      {
+        "name": "next_version",
+        "line": 45,
+        "endLine": 51,
+        "signature": "value"
+      },
+      {
+        "name": "stable",
+        "line": 54,
+        "endLine": 60,
+        "signature": "value"
+      },
+      {
+        "name": "hash_ref",
+        "line": 63,
+        "endLine": 66,
+        "signature": "value"
+      },
+      {
+        "name": "uuid_ref",
+        "line": 69,
+        "endLine": 78,
+        "signature": "value"
+      },
+      {
+        "name": "cas",
+        "line": 81,
+        "endLine": 82,
+        "signature": "scope, identity, version"
+      },
+      {
+        "name": "check_change",
+        "line": 85,
+        "endLine": 120,
+        "signature": "change"
+      },
+      {
+        "name": "_head",
+        "line": 123,
+        "endLine": 133,
+        "signature": "project, row"
+      },
+      {
+        "name": "_draft_row",
+        "line": 136,
+        "endLine": 144,
+        "signature": "head"
+      },
+      {
+        "name": "effects",
+        "line": 147,
+        "endLine": 197,
+        "signature": "project, change, before, domain_before_revision, domain_after_revision, target=None"
+      },
+      {
+        "name": "construct_plan",
+        "line": 200,
+        "endLine": 246,
+        "signature": "store, project, change"
+      },
+      {
+        "name": "validate_plan",
+        "line": 249,
+        "endLine": 306,
+        "signature": "store, project, plan, domain_before_revision, target=None"
+      },
+      {
+        "name": "prepared_payload",
+        "line": 309,
+        "endLine": 310,
+        "signature": "project_id, actor, plan"
+      },
+      {
+        "name": "check_confirmation",
+        "line": 313,
+        "endLine": 347,
+        "signature": "store, context"
+      },
+      {
+        "name": "claim_context",
+        "line": 350,
+        "endLine": 386,
+        "signature": "store, project, operation"
+      },
+      {
+        "name": "allow_domain_marker",
+        "line": 389,
+        "endLine": 393,
+        "signature": "store, project, operation, fingerprint"
+      },
+      {
+        "name": "receipt",
+        "line": 396,
+        "endLine": 412,
+        "signature": "project, operation, kind, sequence, plan, before_ref, after_ref, before_rev, after_rev"
+      },
+      {
+        "name": "commit",
+        "line": 415,
+        "endLine": 526,
+        "signature": "store, project, base, operation, job, supplied, hook"
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/project/project_lifecycle.py": [
+      {
+        "name": "require",
+        "line": 26,
+        "endLine": 28,
+        "signature": "condition, reason='structure'"
+      },
+      {
+        "name": "encoded",
+        "line": 31,
+        "endLine": 37,
+        "signature": "value, maximum"
+      },
+      {
+        "name": "request_value",
+        "line": 40,
+        "endLine": 77,
+        "signature": "value"
+      },
+      {
+        "name": "origin_value",
+        "line": 80,
+        "endLine": 100,
+        "signature": "value"
+      },
+      {
+        "name": "library_evidence",
+        "line": 103,
+        "endLine": 106,
+        "signature": "store"
+      },
+      {
+        "name": "model",
+        "line": 109,
+        "endLine": 218,
+        "signature": "project, request, origin, library, *, actual_genesis=None"
+      },
+      {
+        "name": "creation_context",
+        "line": 221,
+        "endLine": 268,
+        "signature": "store, project, operation"
+      },
+      {
+        "name": "validate_transition",
+        "line": 271,
+        "endLine": 282,
+        "signature": "store, project, op, origin, before, after"
+      },
+      {
+        "name": "_totals",
+        "line": 285,
+        "endLine": 298,
+        "signature": "db"
+      },
+      {
+        "name": "_row_size",
+        "line": 301,
+        "endLine": 304,
+        "signature": "db, row"
+      },
+      {
+        "name": "preflight",
+        "line": 307,
+        "endLine": 374,
+        "signature": "store, candidate, limits"
+      },
+      {
+        "name": "_actual_rows",
+        "line": 377,
+        "endLine": 406,
+        "signature": "store, candidate"
+      },
+      {
+        "name": "commit",
+        "line": 409,
+        "endLine": 539,
+        "signature": "store, project, base, operation, job, supplied, hook"
+      },
+      {
+        "name": "__init__",
+        "line": 19,
+        "endLine": 23,
+        "signature": "self, reason"
+      }
+    ],
+    "packages/contracts/python/contract_v2.py": [
+      {
+        "name": "encoded_size",
+        "line": 40,
+        "endLine": 52,
+        "signature": "value"
+      },
+      {
+        "name": "equal",
+        "line": 55,
+        "endLine": 58,
+        "signature": "a, b"
+      },
+      {
+        "name": "check",
+        "line": 61,
+        "endLine": 116,
+        "signature": "s, value"
+      },
+      {
+        "name": "semantic",
+        "line": 119,
+        "endLine": 246,
+        "signature": "v"
+      },
+      {
+        "name": "validate",
+        "line": 249,
+        "endLine": 263,
+        "signature": "name, value"
+      },
+      {
+        "name": "_changeset_semantics",
+        "line": 266,
+        "endLine": 309,
+        "signature": "name, value"
+      },
+      {
+        "name": "validate_startup_failure",
+        "line": 312,
+        "endLine": 322,
+        "signature": "value, payload_byte_length, expected_registry_hash"
+      },
+      {
+        "name": "startup_error",
+        "line": 325,
+        "endLine": 339,
+        "signature": "code, params=None"
+      },
+      {
+        "name": "business3_error",
+        "line": 342,
+        "endLine": 356,
+        "signature": "code, params=None"
+      },
+      {
+        "name": "validate_business3",
+        "line": 359,
+        "endLine": 372,
+        "signature": "name, value"
+      },
+      {
+        "name": "matches_business3_response",
+        "line": 375,
+        "endLine": 436,
+        "signature": "request, response, expected_registry_hash"
+      },
+      {
+        "name": "business3_hello_outcome",
+        "line": 439,
+        "endLine": 448,
+        "signature": "request, response, expected_registry_hash"
+      },
+      {
+        "name": "accepts_business3_job_event",
+        "line": 451,
+        "endLine": 454,
+        "signature": "value, binding"
+      },
+      {
+        "name": "source_table_material",
+        "line": 457,
+        "endLine": 464,
+        "signature": "table, options, implementation, expected_source_hash, max_encoded_bytes"
+      },
+      {
+        "name": "_capture_source_table",
+        "line": 467,
+        "endLine": 648,
+        "signature": "table, options, implementation, expected_source_hash, max_encoded_bytes"
+      },
+      {
+        "name": "source_table_digest",
+        "line": 651,
+        "endLine": 655,
+        "signature": "table, options, implementation, expected_source_hash, max_encoded_bytes"
+      },
+      {
+        "name": "accepts_job_event",
+        "line": 658,
+        "endLine": 709,
+        "signature": "value, binding"
+      },
+      {
+        "name": "cursor_matches",
+        "line": 712,
+        "endLine": 720,
+        "signature": "record, request, now_ms"
+      },
+      {
+        "name": "derive_dependencies",
+        "line": 723,
+        "endLine": 761,
+        "signature": "capability, definition_id, scope, definitions"
+      },
+      {
+        "name": "matches_response",
+        "line": 764,
+        "endLine": 814,
+        "signature": "request, response"
+      },
+      {
+        "name": "permits_transition",
+        "line": 817,
+        "endLine": 829,
+        "signature": "before, after, before_version, after_version, final_before_cancel"
+      },
+      {
+        "name": "job_list_cursor_matches",
+        "line": 832,
+        "endLine": 842,
+        "signature": "record, request, now_ms"
+      },
+      {
+        "name": "validation_projection_matches_resources",
+        "line": 845,
+        "endLine": 901,
+        "signature": "projection, resources"
+      },
+      {
+        "name": "invalid",
+        "line": 468,
+        "endLine": 469,
+        "signature": ""
+      },
+      {
+        "name": "record",
+        "line": 481,
+        "endLine": 487,
+        "signature": "value, names"
+      },
+      {
+        "name": "array",
+        "line": 489,
+        "endLine": 492,
+        "signature": "value, maximum"
+      },
+      {
+        "name": "reserve",
+        "line": 530,
+        "endLine": 534,
+        "signature": "size"
+      },
+      {
+        "name": "token",
+        "line": 536,
+        "endLine": 538,
+        "signature": "text"
+      },
+      {
+        "name": "string",
+        "line": 540,
+        "endLine": 575,
+        "signature": "value, maximum=None, field=False, no_nul=False"
+      }
+    ],
+    "packages/engine/src/ontolearn_engine/resources.py": [
+      {
+        "name": "resource_manifest",
+        "line": 49,
+        "endLine": 58,
+        "signature": ""
+      },
+      {
+        "name": "safe_error",
+        "line": 61,
+        "endLine": 75,
+        "signature": "code: str, params: dict | None=None"
+      },
+      {
+        "name": "main",
+        "line": 78,
+        "endLine": 79,
+        "signature": ""
+      }
+    ]
+  },
+  "canonicalSchemas": {
+    "limits": {
+      "line": 57,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "startupMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "handshakeMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "requestMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "totalMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3600000
+          },
+          "heartbeatMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "cancelGraceMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "maxFrameBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 262144
+          },
+          "maxQueuedJobs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 128
+          },
+          "maxConcurrentJobs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "maxPageItems": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "maxPageBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 131072
+          },
+          "maxWorkerMemoryBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483648
+          }
+        },
+        "required": [
+          "startupMs",
+          "handshakeMs",
+          "requestMs",
+          "totalMs",
+          "heartbeatMs",
+          "cancelGraceMs",
+          "maxFrameBytes",
+          "maxQueuedJobs",
+          "maxConcurrentJobs",
+          "maxPageItems",
+          "maxPageBytes",
+          "maxWorkerMemoryBytes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "jobInput": {
+      "line": 2351,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "inputSnapshotId": {
+            "$ref": "#/$defs/hash"
+          },
+          "scope": {
+            "$ref": "#/$defs/scope"
+          },
+          "definitionId": {
+            "$ref": "#/$defs/name"
+          },
+          "parametersHash": {
+            "$ref": "#/$defs/hash"
+          },
+          "derivedResultIds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/id"
+            },
+            "minItems": 0,
+            "maxItems": 32
+          },
+          "preparedPlanRef": {
+            "oneOf": [
+              {
+                "const": null
+              },
+              {
+                "$ref": "#/$defs/hash"
+              }
+            ]
+          }
+        },
+        "required": [
+          "inputSnapshotId",
+          "scope",
+          "definitionId",
+          "parametersHash",
+          "derivedResultIds",
+          "preparedPlanRef"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "params_job.create": {
+      "line": 2504,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "$ref": "#/$defs/id"
+          },
+          "operationId": {
+            "$ref": "#/$defs/id"
+          },
+          "capability": {
+            "enum": [
+              "test.read",
+              "test.atomic",
+              "test.rounds",
+              "query.execute",
+              "reasoning.execute",
+              "validation.execute",
+              "mapping.commit",
+              "changeset.commit",
+              "behavior.test",
+              "scenario.run"
+            ]
+          },
+          "input": {
+            "$ref": "#/$defs/jobInput"
+          },
+          "confirmationRef": {
+            "oneOf": [
+              {
+                "const": null
+              },
+              {
+                "$ref": "#/$defs/id"
+              }
+            ]
+          }
+        },
+        "required": [
+          "projectId",
+          "operationId",
+          "capability",
+          "input",
+          "confirmationRef"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSet": {
+      "line": 2792,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "$ref": "#/$defs/id"
+          },
+          "baseProjectRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "operationId": {
+            "$ref": "#/$defs/id"
+          },
+          "planRef": {
+            "$ref": "#/$defs/hash"
+          },
+          "diffRef": {
+            "$ref": "#/$defs/hash"
+          },
+          "confirmationRef": {
+            "$ref": "#/$defs/id"
+          },
+          "intent": {
+            "enum": [
+              "edit",
+              "restore-managed-value",
+              "restore-historical-manual-value",
+              "undo-one-changeset"
+            ]
+          },
+          "beforeSnapshotId": {
+            "$ref": "#/$defs/hash"
+          }
+        },
+        "required": [
+          "projectId",
+          "baseProjectRevision",
+          "operationId",
+          "planRef",
+          "diffRef",
+          "confirmationRef",
+          "intent",
+          "beforeSnapshotId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetDefinitionReference": {
+      "line": 7444,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "layer": {
+            "enum": [
+              "ontology",
+              "mapping",
+              "constraint",
+              "rule",
+              "behavior",
+              "scenario",
+              "query",
+              "model"
+            ]
+          },
+          "id": {
+            "$ref": "#/$defs/name"
+          }
+        },
+        "required": [
+          "layer",
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetTriple": {
+      "line": 7466,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "predicate": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "object": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          }
+        },
+        "required": [
+          "subject",
+          "predicate",
+          "object"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetOntologyValue": {
+      "line": 7488,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "triples": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/changeSetTriple"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          },
+          "singleValuedPredicates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 262144
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/changeSetDefinitionReference"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "changeSetDefinition": {
+      "line": 7521,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "layer": {
+            "const": "ontology"
+          },
+          "id": {
+            "$ref": "#/$defs/name"
+          },
+          "value": {
+            "$ref": "#/$defs/changeSetOntologyValue"
+          }
+        },
+        "required": [
+          "layer",
+          "id",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetDefinitionRemoval": {
+      "line": 7537,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "layer": {
+            "const": "ontology"
+          },
+          "id": {
+            "$ref": "#/$defs/name"
+          }
+        },
+        "required": [
+          "layer",
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetFact": {
+      "line": 7550,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/hash"
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "predicate": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          },
+          "object": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 262144
+          }
+        },
+        "required": [
+          "id",
+          "subject",
+          "predicate",
+          "object"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetPlan": {
+      "line": 7575,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "definitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/changeSetDefinition"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          },
+          "remove_definitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/changeSetDefinitionRemoval"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          },
+          "manual": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/changeSetFact"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          },
+          "edits": {
+            "type": "object",
+            "propertyNames": {
+              "$ref": "#/$defs/hash"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 262144
+            },
+            "maxProperties": 4096
+          },
+          "remove": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/hash"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "changeSetSegmentDescriptor": {
+      "line": 7626,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ordinal": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 511
+          },
+          "byteOffset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 16777215
+          },
+          "rawByteLength": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32768
+          },
+          "sha256": {
+            "$ref": "#/$defs/hash"
+          }
+        },
+        "required": [
+          "ordinal",
+          "byteOffset",
+          "rawByteLength",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetSegment": {
+      "line": 7651,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ordinal": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 511
+          },
+          "byteOffset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 16777215
+          },
+          "rawByteLength": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32768
+          },
+          "sha256": {
+            "$ref": "#/$defs/hash"
+          },
+          "dataBase64": {
+            "type": "string",
+            "maxLength": 43692,
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+          }
+        },
+        "required": [
+          "ordinal",
+          "byteOffset",
+          "rawByteLength",
+          "sha256",
+          "dataBase64"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetManifest": {
+      "line": 7681,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "documentKind": {
+            "enum": [
+              "diff",
+              "undo-impact"
+            ]
+          },
+          "documentHash": {
+            "$ref": "#/$defs/hash"
+          },
+          "totalBytes": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 16777216
+          },
+          "segmentCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 512
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/changeSetSegmentDescriptor"
+            },
+            "minItems": 1,
+            "maxItems": 512
+          }
+        },
+        "required": [
+          "documentKind",
+          "documentHash",
+          "totalBytes",
+          "segmentCount",
+          "segments"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "params_changeset.preview": {
+      "line": 7712,
+      "schema": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "projectId": {
+                "$ref": "#/$defs/id"
+              },
+              "baseRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "intent": {
+                "const": "change"
+              },
+              "plan": {
+                "$ref": "#/$defs/changeSetPlan"
+              }
+            },
+            "required": [
+              "projectId",
+              "baseRevision",
+              "intent",
+              "plan"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "projectId": {
+                "$ref": "#/$defs/id"
+              },
+              "baseRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "intent": {
+                "const": "undo"
+              },
+              "targetOperationId": {
+                "$ref": "#/$defs/id"
+              }
+            },
+            "required": [
+              "projectId",
+              "baseRevision",
+              "intent",
+              "targetOperationId"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "result_changeset.preview": {
+      "line": 7758,
+      "schema": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "ready"
+              },
+              "projectId": {
+                "$ref": "#/$defs/id"
+              },
+              "baseRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "previewHash": {
+                "$ref": "#/$defs/hash"
+              },
+              "preparedPlanRef": {
+                "$ref": "#/$defs/hash"
+              },
+              "inputSnapshotId": {
+                "$ref": "#/$defs/hash"
+              },
+              "parametersHash": {
+                "$ref": "#/$defs/hash"
+              },
+              "intent": {
+                "enum": [
+                  "change",
+                  "undo"
+                ]
+              },
+              "targetOperationId": {
+                "oneOf": [
+                  {
+                    "const": null
+                  },
+                  {
+                    "$ref": "#/$defs/id"
+                  }
+                ]
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "manifest": {
+                "$ref": "#/$defs/changeSetManifest"
+              }
+            },
+            "required": [
+              "status",
+              "projectId",
+              "baseRevision",
+              "previewHash",
+              "preparedPlanRef",
+              "inputSnapshotId",
+              "parametersHash",
+              "intent",
+              "targetOperationId",
+              "summary",
+              "manifest"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "conflict"
+              },
+              "projectId": {
+                "$ref": "#/$defs/id"
+              },
+              "baseRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "previewHash": {
+                "$ref": "#/$defs/hash"
+              },
+              "targetOperationId": {
+                "$ref": "#/$defs/id"
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "impactComplete": {
+                "type": "boolean"
+              },
+              "manifest": {
+                "$ref": "#/$defs/changeSetManifest"
+              }
+            },
+            "required": [
+              "status",
+              "projectId",
+              "baseRevision",
+              "previewHash",
+              "targetOperationId",
+              "summary",
+              "impactComplete",
+              "manifest"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "params_changeset.diff.page": {
+      "line": 7869,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "$ref": "#/$defs/id"
+          },
+          "previewHash": {
+            "$ref": "#/$defs/hash"
+          },
+          "documentKind": {
+            "enum": [
+              "diff",
+              "undo-impact"
+            ]
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "cursor": {
+            "oneOf": [
+              {
+                "const": null
+              },
+              {
+                "$ref": "#/$defs/id"
+              }
+            ]
+          }
+        },
+        "required": [
+          "projectId",
+          "previewHash",
+          "documentKind",
+          "pageSize",
+          "cursor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "changeSetPage": {
+      "line": 7900,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "$ref": "#/$defs/id"
+          },
+          "previewHash": {
+            "$ref": "#/$defs/hash"
+          },
+          "documentKind": {
+            "enum": [
+              "diff",
+              "undo-impact"
+            ]
+          },
+          "documentHash": {
+            "$ref": "#/$defs/hash"
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/changeSetSegment"
+            },
+            "minItems": 0,
+            "maxItems": 200
+          },
+          "nextCursor": {
+            "$ref": "#/$defs/id"
+          },
+          "complete": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "projectId",
+          "previewHash",
+          "documentKind",
+          "documentHash",
+          "segments",
+          "nextCursor",
+          "complete"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "result_changeset.diff.page": {
+      "line": 7941,
+      "schema": {
+        "$ref": "#/$defs/changeSetPage"
+      }
+    },
+    "params_changeset.confirm": {
+      "line": 7944,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "$ref": "#/$defs/id"
+          },
+          "previewHash": {
+            "$ref": "#/$defs/hash"
+          },
+          "completionCursor": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "required": [
+          "projectId",
+          "previewHash",
+          "completionCursor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "result_changeset.confirm": {
+      "line": 7960,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "$ref": "#/$defs/id"
+          },
+          "previewHash": {
+            "$ref": "#/$defs/hash"
+          },
+          "preparedPlanRef": {
+            "$ref": "#/$defs/hash"
+          },
+          "confirmationRef": {
+            "$ref": "#/$defs/id"
+          },
+          "inputSnapshotId": {
+            "$ref": "#/$defs/hash"
+          },
+          "parametersHash": {
+            "$ref": "#/$defs/hash"
+          }
+        },
+        "required": [
+          "projectId",
+          "previewHash",
+          "preparedPlanRef",
+          "confirmationRef",
+          "inputSnapshotId",
+          "parametersHash"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "registry": {
+    "productRuntime": [
+      "health"
+    ],
+    "business3": {
+      "bootstrapVersion": 2,
+      "businessVersion": 3,
+      "databaseFormatVersion": 3,
+      "state": "explicit-internal-opt-in-default2",
+      "methods": [
+        "hello",
+        "health",
+        "session.ping",
+        "project.get",
+        "job.create",
+        "job.get",
+        "job.cancel",
+        "job.list",
+        "job.subscribe",
+        "job.unsubscribe",
+        "result.get",
+        "result.current",
+        "result.page",
+        "operation.get",
+        "changeset.preview",
+        "changeset.diff.page",
+        "changeset.confirm"
+      ],
+      "newSourceOrLearningMethods": [],
+      "capabilityImplementations": {
+        "changeset.commit": "explicit-internal-business3-runtime"
+      }
+    },
+    "changesetCapabilityGlobal": {
+      "owner": "coordinator",
+      "paramsSchema": "#/$defs/jobInput",
+      "resultSchema": "#/$defs/job",
+      "scope": "project",
+      "effect": "formal-write",
+      "requiresChangeSet": true,
+      "requiresConfirmation": true,
+      "agentEligible": true,
+      "exposure": "business-named-bridge-only",
+      "implementation": "design-only",
+      "limitProfile": "atomic",
+      "cancelBoundary": "whole-transaction",
+      "dependencyPolicy": "changeset.commit",
+      "dataScopes": [
+        "asserted"
+      ]
+    }
+  },
+  "changedRelativeToC1Adoption": [
+    "packages/engine/src/ontolearn_engine/job_store.py",
+    "packages/engine/src/ontolearn_engine/project/project_lifecycle.py",
+    "packages/engine/src/ontolearn_engine/storage.py"
+  ],
+  "findings": [
+    {
+      "id": "B01",
+      "status": "implemented_internal_business3",
+      "summary": "Preview/full segmented Diff/confirmation/durable Job acceptance/atomic commit implemented; default productRuntime health only."
+    },
+    {
+      "id": "B02",
+      "status": "typed_subset",
+      "summary": "Only ontology definitions/removals and manual fact edits/removal. No metadata/proof/cost-ticket in strict ChangeSet DTO."
+    },
+    {
+      "id": "B03",
+      "status": "logical_evidence",
+      "summary": "Real Store.commit rollback preview and immutable hash-bound envelope/pages/receipt; not human consent or physical authority."
+    },
+    {
+      "id": "B04",
+      "status": "logical_budgets_no_wholeH_supplier",
+      "summary": "JSON bytes/rows/schema/cursor/TTL and cooperative total deadline. Full ChangeSet bypasses worker; no physical precharge/whole-H caller interface."
+    },
+    {
+      "id": "B05",
+      "status": "private_application_metadata_separate",
+      "summary": "name/archived/mode metadata with application version/CAS/nonJob receipt exists; not same preparedChangeSet namespace. Learning producer proof/full application restore expressly not implemented."
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "stage": "T01 internal compensation candidate, independent review passed; not formal integration",
+  "base": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+  "stageOneCommit": "03376dfb873a67260fd6ef426c603f3ffbe3feb1",
+  "sources": {
+    "packages/engine/src/ontolearn_engine/project/__init__.py": "971ffad39555ffc799e325a9c3665705a4428a60ae6c62f5ac709e35943da190",
+    "packages/engine/src/ontolearn_engine/project/compensation.py": "99ecf0bb4383753accdc0df75f3564d058cfe9945203bc844b9739e0c51ea4cb",
+    "packages/engine/src/ontolearn_engine/project/transactions.py": "13a9f9a104e2f7d0d71ba4b7f66a7adfb40e32631d6d67a9dbd5835ae590a123",
+    "packages/engine/src/ontolearn_engine/project/workspace.py": "07963e2c662b71eac1c380ca311035852c3a6d2cb77ac1dc516b82ca039bd369",
+    "packages/engine/src/ontolearn_engine/storage.py": "8f4c32648d084ba143e031be48762b1324892f4090c79f3c5fb44628bba4f46f",
+    "packages/engine/tests/test_project_compensation.py": "370f8b27a7037e5a483d47a500c39b385ddf389961a8357587790ab96578b548",
+    "packages/engine/tests/test_project_transactions.py": "fe873af6d94ea7b8420f28aec263541d46fcea39b6f8d035fe84ccaf061c4047",
+    "packages/engine/tests/test_project_workspace.py": "f445d0aa9d4edf03bf4081dd386b25452041754cb235eaeab3b0610b6ddcc29f"
+  },
+  "logs": {
+    "check-compensation-control-evidence.log": {
+      "bytes": 5466,
+      "sha256": "374c80ee72214a6683be6072e007687fcfafc360567fdfe61f2abd10ae6e9846"
+    },
+    "check-compensation-final-candidate.log": {
+      "bytes": 5466,
+      "sha256": "d729fb43e06e4c86ba306109c7d43cad68cbe7797d9416f515c3919a074db9ee"
+    },
+    "check-compensation-first.log": {
+      "bytes": 5466,
+      "sha256": "6107862e218d9f90a1e76a5c5aa41a8ca2d8bdb18bc9286b0a3ad6f0363bc2c1"
+    },
+    "check-compensation-review-fix.log": {
+      "bytes": 5466,
+      "sha256": "40bf8076b367af300fe9e9308dc673a12e845cf1da5b8326c12d37090b02ebc8"
+    },
+    "pytest-compensation-control-evidence-fixed.log": {
+      "bytes": 581,
+      "sha256": "29e99bfa7d02c4f6907c821a68f6d97860daf960ce9d748ab9155577ed0b80a4"
+    },
+    "pytest-compensation-control-evidence.log": {
+      "bytes": 10663,
+      "sha256": "2f5382f2ed5d8de8ba99daf1d556f3a08ea1c84c9b7d2624e1d6530cbe9c123d"
+    },
+    "pytest-compensation-final-candidate.log": {
+      "bytes": 581,
+      "sha256": "c9e9d7b8ba967af747d62f1b3fe938a8204fd6516324e327a40e0afbfb99d2db"
+    },
+    "pytest-compensation-first.log": {
+      "bytes": 3271,
+      "sha256": "c364d6adf4f970c67e140f1262d5a70024f28684c97513f9ae2351d97655f936"
+    },
+    "pytest-compensation-review-fix-second.log": {
+      "bytes": 581,
+      "sha256": "96c8e4b3a1d91bf240d6e9f96544b9fcec2612a2a0ac2f34ca902e7812343787"
+    },
+    "pytest-compensation-review-fix.log": {
+      "bytes": 2231,
+      "sha256": "da6b8a0e257d974ba6a530ce7a112deae8eb0b3a080769bd0da3df85047d141a"
+    },
+    "pytest-compensation-second.log": {
+      "bytes": 180,
+      "sha256": "cd4ec5a3ff1c546c05067ad149170013a488258b85c694256403dfc1f62a6ef7"
+    },
+    "pytest-compensation-third.log": {
+      "bytes": 180,
+      "sha256": "138fb60183722cb129cb1e96dba0aa7ade9d9fe8d9d4f042414136e316998834"
+    }
+  },
+  "finalVerification": {
+    "command": "npm run check",
+    "log": "check-compensation-control-evidence.log",
+    "exitCode": 0,
+    "TS": 630,
+    "Python": 1196,
+    "independentTargeted": 496
+  },
+  "boundary": "Local no-window checks only; no GUI/native/e2e/package/production, no designated review/push/CI/merge. Earlier logs include superseded and failed candidates; only final log validates final source."
+}

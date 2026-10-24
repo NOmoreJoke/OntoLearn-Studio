@@ -1,7 +1,33 @@
 import { spawnSync } from 'node:child_process'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+// pyshacl's frozen loader uses sys._MEIPASS/assets, not pyshacl/assets.
+const hooksDir = resolve(root, 'build/pyinstaller-hooks')
+mkdirSync(hooksDir, { recursive: true })
+writeFileSync(
+  resolve(hooksDir, 'hook-pyshacl.py'),
+  [
+    'from pathlib import Path',
+    'from PyInstaller.utils.hooks import get_package_paths',
+    '',
+    '_, package_dir = get_package_paths("pyshacl")',
+    'assets = Path(package_dir) / "assets"',
+    'names = (',
+    '    "dash.pickle", "dash.ttl", "schema.pickle", "schema.ttl",',
+    '    "shacl-shacl.pickle", "shacl-shacl.ttl", "shacl.pickle", "shacl.ttl",',
+    ')',
+    'datas = []',
+    'for name in names:',
+    '    source = assets / name',
+    '    if not source.is_file():',
+    '        raise FileNotFoundError(source)',
+    '    datas.append((str(source), "assets"))',
+    '',
+  ].join('\n'),
+  'utf8',
+)
 const result = spawnSync(
   'uv',
   [
@@ -15,10 +41,28 @@ const result = spawnSync(
     'rdflib',
     '--collect-data',
     'ontolearn_engine',
+    '--additional-hooks-dir',
+    hooksDir,
+    '--hidden-import',
+    'prettytable',
+    '--hidden-import',
+    'wcwidth',
     '--copy-metadata',
     'rdflib',
     '--copy-metadata',
     'pyparsing',
+    '--copy-metadata',
+    'pyshacl',
+    '--copy-metadata',
+    'owlrl',
+    '--copy-metadata',
+    'html5rdf',
+    '--copy-metadata',
+    'packaging',
+    '--copy-metadata',
+    'prettytable',
+    '--copy-metadata',
+    'wcwidth',
     '--add-data',
     `${resolve(root, 'packages/contracts/python/contract_v2.py')}:contracts/python`,
     '--add-data',

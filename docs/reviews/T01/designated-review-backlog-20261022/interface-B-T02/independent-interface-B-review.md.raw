@@ -1,0 +1,70 @@
+# T01→T02 接口B独立静态审查
+
+首轮结论：**不通过：1项P2事实表述需更正。** 其余已核范围未发现P2及以上问题。结论只针对接口文档静态准确性；没有运行产品或测试，不形成C1实现/产品验收或指定双模型Pass。
+
+主作者为原T01，typed事实子作者为t01_backlog_core；本审查者为 `/root/i05_resource_offer_independent`。仅读取本接口包、原S1授权及保留repo中固定423b/7753666的Git对象；未读取两棵指定模型外审树或其报告，也未查看当前受审工作源码。
+
+## P2发现：完整Diff还含definition-status控制变化
+
+位置：`typed-contract-findings.md:114`（首轮格式版21086B/SHA256 `6f5b4222824e05b5604a2b4021ecf0af2782ccc7e578e6aef03dfc7e3bd99e98`）：“D:110–127只支持definition / fact Diff”。这句话把record状态子差集的检查误述为完整Diff资源类别。
+
+固定423b证据：
+
+- `project/domain_changesets.py:110–127` 的supported只遍历 `state_diff(preview.before_json, preview.after_json)`，限定被触及definition/fact记录的类型。
+- `project/transactions.py:68–80` 的ChangePreview.diff在该state_diff之外，另按controlBefore/controlAfter的对称差追加 `resource=["definition-status",layer,id]`，before/after为null或“已撤回”。完整Diff文档由D:454的`_document(preview.diff, "diff")`生成。
+- `storage.py:679–699` 删除真实definition时同时写definition_retirements；`storage.py:673–678` 新定义覆盖时可删除retirement。
+
+精确静态反例：项目中存在无其它definition引用的ontology definition O，发合法typed `remove_definitions=[{layer:"ontology",id:O}]`。按上述固定代码，真实回滚预演会给出definition删除项，以及 `["definition-status","ontology",O]` 的null→“已撤回”控制项；后续undo/重新定义可能反向。这不是新增metadata写接口。
+
+影响：T02若把文档读作完整Diff只含definition/fact，可能漏报撤回状态或拒绝合法Diff。最小修正是明确“supported检查记录状态子差集的definition/fact；完整Diff另有definition-status控制变化”，保留正式typed DTO仍没有Entity metadata/proof/cost-ticket的结论。无需改产品、schema或测试；本审没有执行该反例。
+
+## 已核事实与边界
+
+1. 唯一供方固定product为`423b7e4c799f188cf2ce6e8e7121893ce85624cd`，base为`5f910b52c69d86a1076b2032e5d3c63e715947f3`。对完整825项实际Git tree路径/mode/blob及每个blob的bytes/SHA256独立核对，无差异，总14,253,801B；files规范化SHA256为`b28cbd332524cfcbe7146499ccd1a3fd4d73470ccada68f2468e678501fdc53a`。14份fixed-source-raw原件逐bytes等对应固定blob。C1完整清单本身307575B/SHA256 `33b2466e8116cad3870e4fe8b5631fec5a24ec6ad9a41238798edd332f8fa54e`。
+2. registry默认productRuntime确实仅health；business3显式内部override真实存在。Coordinator相应分派/JobStore薄入口、strict DTO与运行默认启用区分准确。schema名字或全局design-only标签都不能单独说明该内部链不存在或默认产品已开放。
+3. 项目metadata的name/templateRef/archived/mode/origin与Entity五字段不同；私有application有CAS/preparedApplication/同writer非Job事务，不能作为changeset.confirm分页确认或typed metadata proof。legacy non-dict及未知dict字段可保opaque，与正式typed ontology仅triples/singleValuedPredicates/references、additionalProperties=false及触及历史类型校验的区分准确。不能把opaque entityMetadata同名内容认证成新profile2。
+4. references是同project `(layer,id)` definition-record引用，并有现存目标和snapshot再校验；其八family范围不等跨层所有Entity IRI反向引用闭包。IRI、definition id、业务identifier区分准确，未假称全部引用已收齐。
+5. 回滚预演调用真实Store.commit；preview/plan/envelope、segment manifest、完整cursor链、确认receipt与Job context均有实际内容绑定。confirm既有精确请求返回原receipt与新签复验区分正确。新Job durable queued与domain commit分开，accepted重试不重新证明当前physical scope；host/session/actor/permission字面值不能认证真人/位置/issuer。领域提交与Job receipt/succeeded处于同外层writer事务，提交后交付异常保既成成功的描述与固定源码吻合。
+6. JSON/行数/文档/页面/cursor/TTL、协作deadline是既有逻辑限制。Diff在cap前先构造raw，页面先读取段集合，正式changeset.commit直接走Coordinator同进程而绕过worker；因此不能把maxWorkerMemoryBytes或creation专用ReadLimits冒充统一CostSession/whole-H或物理SQLite保护。主报告没有做这类转授。
+7. 7753666设计原件81538B的Git对象与SHA、S1授权9912B原件与SHA核同。后续已选L1+M五字段唯一home/profile2方向、精确大小写identifier、typed label/comment不丢datatype、sourceBinding与未来共享CostSession的描述有设计/授权依据，均明确只是后继方向，不是423b产品能力。没有把C2/S1/producer WIP或T02背景e5ad作为供方采用。
+
+typed JSON中21份canonicalSchemas与固定schema的对应$defs逐结构相等；registry的productRuntime/business3/global capability逐结构相等。用stdlib AST核256条实际函数签名及line/endLine，无差异。上述是静态证据检查，不执行函数或schema产品validator。
+
+## 检查方法、身份与未验证项
+
+实际命令：限定文件读取/rg；普通Git `ls-tree -rz --full-tree 423b…`、`cat-file --batch`及固定7753666 `show ref:path`；Python标准库pathlib/json/hashlib/ast。完整身份检查脚本、14raw/设计身份核验、AST与schema比较均实际结束exit0，未发现身份差异。未import或运行supplier/engine/产品、测试/collect、SQL/DB/native/GUI，也未发消息给T02或外部应用。唯一写入是本/tmp报告。
+
+首轮主报告格式版为15121B/SHA256 `1b2e4a6ca11738a554468c6dabfe3796c6db0b5ab24f15ae61992ee12f07f0ee`；typed JSON格式版66336B/SHA256 `84c03e520db18f30e8dd1b3022323546fc750dddfd02541170acf6ebe4f16377`。子作者格式前md/json.raw作为历史原件保留，本审未格式化它们。若主线修复上述P2，需绑定最终文档身份并追加复核，保留本首次发现。
+
+未独立核验两个指定模型session/设置、实际存储的GUI提交全文或其终态；本接口只记“未读结论”，不能补作Pass。未测运行、性能、两OS/真人、whole-H、损坏输入保护、current_scope或真实producer。原Goal blocked、损坏输入HOLD及既有产品/指定双审/发布门均不因本报告变化。
+
+## 定点修复关闭与最终静态结论
+
+**原P2已关闭；本接口B交接材料静态准确性Pass。** 这只覆盖文档事实及边界，不是C1产品、运行验收或指定双模型通过。首轮6673B不通过全文及发现原样保留，本节追加关闭。
+
+最终 `typed-contract-findings.md:114` 明确D.supported检查state_diff的definition/fact记录子差集，完整ChangePreview.diff另含definition-status控制变化，删除/恢复ontology definition不能按两类Diff穷举。主报告`interface-B-for-T02.md:54`同步说明撤回状态、undo/重新定义不能漏报。与固定423b的T:68–80、D:454及S:673–699吻合，无需改变产品/schema。本轮只重读这两处修正文及其身份，没有重做源码、环境、安装或测试检查。
+
+| 最终文档 | bytes | SHA256 |
+| --- | ---: | --- |
+| interface-B-for-T02.md | 15318 | af5c4b7195ed099cc6dfdc3d4407c8db622ce7bf30be085eb82c920fd580a3e1 |
+| typed-contract-findings.md | 21309 | 1de928c9a5076137883cfc93156f60c585bde480fe7725cbf69367f1f1761da2 |
+| typed-contract-findings.json | 66336 | 84c03e520db18f30e8dd1b3022323546fc750dddfd02541170acf6ebe4f16377 |
+
+完整825源身份清单SHA仍为`33b2466e8116cad3870e4fe8b5631fec5a24ec6ad9a41238798edd332f8fa54e`。原子作者md/json.raw继续保留；本审没有修改它们或接口输入。
+
+## 后时发送正文复制材料的独立字节核验
+
+限定读取 `T01-C1-postaccept-user-readback/` 中两份copied-sent-user-body.txt、对应composer AX原片段/cleared原片段、receipt，以及接口新增postaccept-evidence-supplement.json；只核文件，不开GUI、不读审查结果或外审树。
+
+两边均实际断言通过：`expected == copied + b'\n'`。每份copied原文均为对应composer AX文件中的连续完整字节；预期正文身份与前次已核完整串接输入一致：
+
+| side | copied bytes / SHA256 | expected bytes / SHA256 |
+| --- | --- | --- |
+| ZCode | 13462 / 4917a3686fc11b9766b0781c92c3ed20e28462659e9ed0ad43ca1987f47cd90b | 13463 / 13e864e3bca8a42e2bf249aa8f2e0135870e4f1c8e09631f90b00c04c5bc6e44 |
+| MiniMax | 13489 / 588876cd6dd52cd2eff0108fd537f126da33355722ab97840b27e961e292671e | 13490 / f3a8988345861c0a924383dd5ce29effd56786a984b86fbc166534aadd9b8c08 |
+
+这证明本次保留的官方复制/AX表示与预期正文只差一个末尾LF；**不证明后台存储中的末LF精确相同**。复制来源与session归属依据owner的操作receipt，本审没有独立重演GUI或认证后台存储。cleared AX材料分别显示空Value和输入占位文本，与receipt的清空记载一致；它们不是未发生任何后续发送的全局证据。无效剪贴板尝试内容未保留，不能作证明。
+
+receipt为2384B/SHA256 `ce024738e99d1324b32ac7a013bde9f2b555acecc5135bc7ae737a45b44c611e`；接口postaccept supplement为2761B/SHA256 `81ae9d5c6c1cf9ed7ba04ff63b50e3404a7a858037f75679b8bb535417b0e0e3`，其readback对象与receipt逐结构相同。该补充是后时观察，未覆盖更早身份快照的pending描述；原时间状态保留。
+
+本新增证据只解决已保留正文复制表示的完整性，不提供两模型审查意见、最终结论、运行argv或产品验证。当前静态接口材料Pass不改变原Goal blocked、损坏输入HOLD、whole-H/物理权限与原产品、指定双审、两OS/真人、CI/develop/远端门。

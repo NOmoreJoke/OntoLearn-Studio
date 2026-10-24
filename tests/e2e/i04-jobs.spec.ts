@@ -1,4 +1,5 @@
-import { test, expect, _electron as electron } from '@playwright/test'
+import { launchIsolatedDesktop } from './isolated-desktop'
+import { test, expect } from '@playwright/test'
 import { spawn, execFile } from 'node:child_process'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -20,7 +21,7 @@ function environment() {
 
 test('I04 reload re-queries the same durable jobs without creating or cancelling them', async () => {
   test.skip(!fixturePath, 'Requires a fresh trusted fixture backed by actual SQLite jobs.')
-  const application = await electron.launch({
+  const application = await launchIsolatedDesktop({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE }
       : {}),
@@ -55,7 +56,7 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
       page.locator(`[data-job-id="${active!.jobId}"] p`).filter({ hasText: '阶段：' }),
     ).toHaveText(/^阶段：\s*计算$/)
     await page.getByRole('link', { name: '模块规划' }).click()
-    await page.getByRole('link', { name: '开发概览' }).click()
+    await page.getByRole('link', { name: '项目工作台' }).click()
     const afterAnchor = await page.evaluate(() => window.ontolearn!.restoreTasks())
     expect(afterAnchor.ok && afterAnchor.data.generation).toBe(first.data.generation)
     // No refresh or authority query while awaiting this actual worker terminal.
@@ -100,7 +101,7 @@ test('I04 coordinator exit reconciles the open view without replaying jobs', asy
     process.platform !== 'linux' || !fixturePath,
     'Requires a fresh isolated Linux fixture.',
   )
-  const application = await electron.launch({
+  const application = await launchIsolatedDesktop({
     ...(process.env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: process.env.ONTOLEARN_PACKAGED_EXECUTABLE }
       : {}),

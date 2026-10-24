@@ -1,0 +1,54 @@
+# T01 本体来源 S1：真实一致只读投影实施窗口
+
+2026-10-22。继续同一原T01聊天/Goal，C2与dispatch在各自已批树继续，不重启旧任务。本窗口由不同作者在独立新树实施两文件只读供方，不同时改同一仓库路径、不共享环境或日志；资源槽不足时安排现有作者交接后继续，不重建功能聊天。根已全文读固定7753666d2cfda48c76ce59fa1ad6f34802c48eed主81538B/SHA c752d7bdebe1b60ab5ecaae3dcf87a6a5829d21d45313c2f3d2c04b034205db5及独审23030B/d1b73c28f9487ec4173b76f9a86271dfb20ab65e6ab472af407517c6fa239d5b。原三P2/两控制补充仅在方案层关闭，首全字段写链和预算可执行性未证。
+
+根独立报告 `T01-controller-ontology-supplier-plan-prereview.md` 24648B/SHA256 `81f642b4da802844b9ca8310bbe0f2da84aed66ac7918f54160663de7a85215a` 已全文读回，24docs/69来源及原件绑定通过静态核验，无新增方案阻断；其S1无T02 runtime采用与预算非实证边界纳本授权。
+
+## 技术选择与本窗口边界
+
+采用L1：旧源保真读取并明确报告真实缺失，完整写链按L3顺序先具备metadata和S2持久proof；不默认L2、displayIdentifier或v_IRIhex为业务英文标识。选择后续metadata的project范围跨类/对象属性/数据属性/个体的精确字符串identifier唯一，区分大小写，不NFC/trim/casefold、不改Entity IRI；同IRI唯一home、跨home同值也歧义拒。该唯一性是后续M的明确技术合同，S1不创造identifier、不写补录、不认当前493已实现该范围。
+
+采用后续M的五字段payload唯一home与显式semantic profile2方向：原schema_hash扩展为带payloadSchemas/readerSemantics的明确签名，物理user_version3/原CP1/migration_id保留；profile1旧opaque语义保真，全历史namespace碰撞先界扫描后拒升级。旧reader拒新profile必须未来实测。这里只批准该技术方向，不准S1改catalog/trigger/namespace、升级profile、写metadata、放宽旧reader或更改canonical；M/S2实际writer、备份/位置和升级激活仍另给具体窗口。与I05供方schema必须由同一T01 owner统筹，不能造平行迁移。
+
+中文主显示无唯一真实zh候选时输出完整选择材料，不排序/语言回退充业务主名称；typed label/comment不能丢datatype，unknown opaque/coverage不足不能当不存在。后续T02表示扩展与全引用/多支持动作由原owner供给，不把有限失败变永久功能删除。
+
+## 新树与逐路径输入
+
+批准从5f910b52c69d86a1076b2032e5d3c63e715947f3创建 `.worktrees/T01-ontology-projection`，branch `feature/weekly-t01-ontology-projection`。仅按同控制目录 `T01-ontology-projection-S1-fixed-inputs.json` 14848B/SHA256 `e7f4eeaa0ffda66249d932bd1d841421ecc8415d27bd9866d1739adf50af202b` 逐52项423b原Git采用，独立adoption及current/Git/bytes/SHA实际回执；根已逐52真实源/current/hash核同，52全为相对5f真实差异。未列路径保持5f，不wholecommit、不借旧环境或任何T01/I05/I06 WIP，旧52始终只读。
+
+仅新增writer两件：
+
+- `packages/engine/src/ontolearn_engine/project/ontology_projection.py`
+- `packages/engine/tests/test_project_ontology_projection.py`
+
+新过程只 `docs/iterations/T01/ontology-projection-S1.md` 与 `docs/reviews/T01/ontology-projection-S1/`。完整相对5f为54产品/测试加新过程，不只报两writer。AGENTS保新树base原字节；实际全文读主checkout最新15852B/78df规则与common17891B/e437并在新过程保原字节/来源，不stage或改原规则。原C1、ontology24docs及69参考原件保护。
+
+T02固定493四模块只作静态接口参考，当前不复制、import、运行或采用到此树；不给source_projection/model/service新writer。S1可输出有用真实source/ref/支持和缺失材料，缺identifier不必构造T02 Entity。实际493 validate/rdf/bind、typed adapter及完整联验在T02后窗，不用fake supplier/手写成功Snapshot代供。
+
+## 只读入口与真实数据
+
+按主稿§3实现私有 `read_ontology_source(real_job_store, publicProjectId, *, readerLimits, costSession)` 或同义精确入口：真实owner已持有actual/target3 JobStore/原连接，禁止path/factory或currentScope=true充授权。unknown caller transaction进入前拒，绝不rollback caller；只新BEGIN，同连接一致读取，成功/失败finally ROLLBACK自己事务。保原authorizer/progress callback，不调可能补写的snapshot/public_project/reconcile/create/commit、迁移/修库/新连接，不替换real._db或使用透传绑定方法逃过gate。
+
+完整真实材料覆盖public/internal映射、revision/vector/current CP.domainSnapshotRef、完整state、definitions payload/references/原序、facts原ID/owner/source_row/managed_value/墓碑/多支持、mapping、retirementControl，以及完整metadata或可审查absence/coverage材料。已有CP引用与当前state/vector/revision不一致有限失败，不调用snapshot制造ref。T02冻结source恰四键不塞控制字段；控制/政策与metadata材料为旁侧私有输出、同事务取得、来源摘要与原值可核，不新公共DTO、权限位或正式resolved。
+
+profile1的任何顶层entityMetadata旧opaque，无论字符串或形似新v1，都不能认证为五字段，也不能因新代码全局strict拒原合法history；保原值及定位、给coverage-unavailable/legacy-namespace-collision。完整已知schema位置都检查过才出missing，其他unknown opaque不能一概默认无引用/metadata。只读投影应保全部真实源，即使不能构成可编辑Entity也给具体原因而不静默删RDF/source/support。S1只实读definitions.references，不宣称跨层全部IRI引用已完整。
+
+## 执行前费用和清理
+
+costSession是可信有限工程资源对象，不是权限、意图账本或renderer JSON；S1失败已花工作不退，实际释放才还保留。后续T02/S2共享同对象的接口保留，但本窗不假称其它owner已接入。按主稿§7只启S1实际phase/hook，64MiB-work/8MiB真实保留、source+metadata canonical1MiB/depth32/nodes65536/records4096/distinctRDF4096/supports8192/references4096/term16384B及原ReadLimits更紧交集保持，绝不增旧ReaderLimit。全部实际SQL/解码/复制/term/排序/摘要/原history helper工作先计，源码逐操作费用映射；表中63,854,272只是静态全链subtotal，不是已证明全链成功上界。
+
+可在新模块用受控view/gate调用原unbound只读helper，禁止继承构造Store、__getattr__SQL回退或旧方法透传；每个旧helper/SQL模板/返回列需完整登记，unknown模板先有限拒。SQL先count/typeof/长度/rowid/probe，再扣完整行实际存储编码和typed canonical费用，才读body/有界decode；UTF8/UTF16BE/LE分别计算，不先json.loads/CAST整blob入Python再收费。若采用C2已批准的UTF8/UTF16 probe算式，必须在本模块同实际模板/循环上证明，不偷import尚未固定C2代码。重复SQL/read/parse按实际工作重复扣，只有唯一证据行bytes去重；所有Job当前history和引用/snapshots不漏，字段精确type防bool=int、小数/NaN/NUL等不被相等或解析吞掉。原SQLite错误/资源控制用独立Exception穿过旧捕获族，不把busy/I/O误报incomplete。
+
+本S1仅自己BEGIN/ROLLBACK，进入前保完整控制票，最多65536总SQL含全部控制；预算耗尽/TTL/未知业务模板不能挡自己的cleanup。不能因此开启COMMIT/metadata写或使用完整M/S2 SAVEPOINT票。每phase最多16入层/深度8是后续上界，本只读正例必须证只有一个自己事务，caller已有事务仍拒。清理异常保原首因并报告真实状态，不无穷重试或伪称in_transaction=False。
+
+如果实际old helper需要新hook而两newwriter无法在执行前覆盖，请给准确原路径/hash/反例/minimal delta，根另授；不越原52readonly，也不以全非空拒绝拿绿。真实source/meta构造的同时保留、失败traceback/usage/receipt与returned output引用逐一计/清，函数return/ledger0不等owner已释放。
+
+## 真实验证、固定交付与剩余门
+
+允许本新树独立固定锁环境/cache安装、专项和受影响旧回归，正常 `npm run check` 与独立 `npm run verify:sources`，不改锁/升级/借环境。使用真实临时JobStore(target_format=3)及原API建fixture，被测入口不手填source/ref/proof/expected来伪造生产来源。覆盖UTF8/UTF16LE/BE完整正常非空源/全支持/原CP/metadata缺失与unknown opaque、authorizer禁全写/dump不变/trace BEGIN读ROLLBACK/unknown caller不回滚、坏CP/vector/control/映射/墓碑/重复载体/最后字段及所有预算±1/body未读未解码/重复失败累计、busy/I/O与cleanup首因；必要可在原测试注入受控异常但不冒OS OOM或实际断电。
+
+确认至少一个完整正常源能真实成功，returned source/完整支持/absence都与独立原owner fixture材料逐值核同；不把missing当完整五字段编辑通过。实际T02/runtime/Job链/全FR后验另标，不写fake callback宣称供应已消费。
+
+固定54完整候选及过程，给base/adoption/product/process ref、逐current/Git/bytes/SHA全部差异manifest、真实argv/独立exit/timeout/双流及首失败，独立agent实质审实际源/SQL计费/完整coverage/失败持有并修复复审。原64资料/原型/AGENTS以及旧C1/775各项不改。新source可采用须再经根固定交付核，不自动合并C2/dispatch/ontology M/S2或让T02消费WIP。
+
+无GUI/HMR/native/用户目录/位置/备份迁移/公开RPC/模型网络/付费/包/push/PR/merge或Goal状态改动。正式current_scope/dispatch/physicalbinding、M/S2全字段真实确认写入/undo、T10包/引用/端、目标Win11mac15/真人、57P0/C–G/PRD10–12和指定GLM-5.3最高/M3.1-Flash xhigh同版新审、CI/develop/远端门保留。
