@@ -1202,6 +1202,12 @@ test('T04 Q-02 closes A01 through T02 UI, preserves stale history and reopens a 
 
     await workspace.getByRole('combobox', { name: '已提交查询', exact: true }).selectOption(id)
     await workspace.getByRole('combobox', { name: '执行输入', exact: true }).selectOption('current')
+    const currentConsent = workspace.getByRole('checkbox', {
+      name: '我已保留当前编辑，允许重新载入或新建替换它',
+      exact: true,
+    })
+    await expect(currentConsent).toBeVisible()
+    await currentConsent.check()
     const load = button(workspace, '按所选当前/历史输入载入定义')
     await expect(load).toBeEnabled()
     await load.click()
@@ -1277,6 +1283,12 @@ test('T04 Q-02 closes A01 through T02 UI, preserves stale history and reopens a 
       .getByRole('combobox', { name: '执行输入', exact: true })
       .selectOption('historical')
     await workspace.getByLabel('历史快照标识', { exact: true }).fill(original.inputSnapshotId)
+    const historicalConsent = workspace.getByRole('checkbox', {
+      name: '我已保留当前编辑，允许重新载入或新建替换它',
+      exact: true,
+    })
+    await expect(historicalConsent).toBeVisible()
+    await historicalConsent.check()
     await button(workspace, '按所选当前/历史输入载入定义').click()
     await expect(status(workspace)).toHaveText('已载入真实受管定义；后续编辑需先正式提交。')
     const historical = await execute(page, workspace, empty.jobId)
