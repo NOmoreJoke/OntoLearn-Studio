@@ -1,4 +1,11 @@
-import { test, expect, type ConsoleMessage, type Locator, type Page } from '@playwright/test'
+import {
+  test,
+  expect,
+  _electron as electron,
+  type ConsoleMessage,
+  type Locator,
+  type Page,
+} from '@playwright/test'
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
@@ -986,4 +993,341 @@ test('T04 history UI preserves stale result identity and explicitly executes its
     evidence.explicitHistoricalResult = historicBinding
     evidence.explicitHistoricalRows = historicalRows
   })
+})
+
+test('T04 Q-02 closes A01 through T02 UI, preserves stale history and reopens a verified empty SELECT', async () => {
+  // Keep the ordinary 30s/retries:0 budget. This adds coverage; no old case is replaced.
+  const env = Object.fromEntries(
+    Object.entries(process.env).filter(
+      (entry): entry is [string, string] => entry[1] !== undefined,
+    ),
+  )
+  delete env.ELECTRON_RUN_AS_NODE
+  delete env.I04_TEST_FIXTURE
+  const options = {
+    ...(env.ONTOLEARN_PACKAGED_EXECUTABLE
+      ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }
+      : { args: [resolve('apps/desktop')] }),
+    cwd: resolve('apps/desktop'),
+    env,
+    acceptDownloads: true,
+  }
+  let application: Awaited<ReturnType<typeof launchIsolatedDesktop>> | undefined =
+    await launchIsolatedDesktop(options)
+  const evidence: Record<string, unknown> = {
+    boundary:
+      'G-base Q-02: actual T02 fact edit/full Diff/confirmation; T04 UI execution, empty CSV and owned restart. Named APIs only observe after UI actions. No model, SQL, direct bridge write or inferred graph edge.',
+  }
+  try {
+    let page = await application.firstWindow()
+    const { workspace: initialWorkspace, initial } = await setup(
+      page,
+      'T04 Q02 关闭 A01 后查询为空',
+    )
+    let workspace = initialWorkspace
+    const id = 'e2e-q02-open-high'
+    const alarm = 'urn:ontolearn:learning:alarm/A01'
+    const predicate = 'urn:ontolearn:learning:status'
+    const text =
+      'PREFIX l: <urn:ontolearn:learning:>\n' +
+      'SELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ' +
+      '?alarm l:level "High" ; l:status "Open" . } ORDER BY ?alarm'
+    const draft = draftFor('未闭环高等级告警 Q02', text)
+    const saved = await saveDefinition(page, workspace, id, draft)
+    const original = await execute(page, workspace, saved.job.jobId)
+    const before = await readBinding(page, original)
+    assertBinding(before, original, draft, id, 2)
+    expect(before.descriptor.query).toEqual({
+      kind: 'SELECT',
+      columns: [{ index: 0, name: 'alarm' }],
+      rowCount: 1,
+    })
+    await button(resultLane(workspace), '读取 SELECT 结果第一页').click()
+    await assertUiRows(
+      resultPanel(resultLane(workspace)),
+      ['alarm'],
+      [[alarm]],
+      0,
+      original.resultRef!.resultId,
+      before.descriptor.identity.payloadSha256,
+    )
+    const facts = saved.after.domain.state.facts.filter(
+      (fact) => fact.subject === alarm && fact.predicate === predicate,
+    )
+    expect(facts).toHaveLength(1)
+    const fact = facts[0]
+    expect(fact).toMatchObject({
+      subject: alarm,
+      predicate,
+      object: '"Open"',
+      owner: null,
+      source_row: null,
+      managed_value: null,
+    })
+    const changedFact = { ...fact, object: '"Closed"' }
+    const expectedDiff = [{ resource: ['fact', fact.id], before: fact, after: changedFact }]
+
+    await page.getByRole('link', { name: '本体构建', exact: true }).click()
+    const ontology = page.getByRole('region', { name: '本体项目编辑', exact: true })
+    await button(ontology, '读取当前项目').click()
+    await expect(ontology).toContainText('项目版本 2')
+    const factSection = ontology.getByRole('region', { name: '实例事实', exact: true })
+    const factRow = factSection
+      .getByRole('row')
+      .filter({ hasText: alarm })
+      .filter({ hasText: predicate })
+    await expect(factRow).toHaveCount(1)
+    await expect(factRow.locator('code')).toHaveText('"Open"')
+    await button(factRow, '载入事实').click()
+    await expect(factSection.getByLabel('主体个体 IRI', { exact: true })).toHaveValue(alarm)
+    await expect(factSection.getByLabel('属性 IRI', { exact: true })).toHaveValue(predicate)
+    await factSection.getByLabel('规范 RDF 对象', { exact: true }).fill('"Closed"')
+    await button(factSection, '预览事实修改').click()
+    const diff = ontology.getByRole('region', { name: '完整事务差异', exact: true })
+    await expect(diff).toBeVisible()
+    const diffText = await diff.locator('pre').textContent()
+    if (!diffText) throw new Error('Actual complete fact Diff missing')
+    expect(JSON.parse(diffText)).toEqual(expectedDiff)
+    await expect(diff).toContainText('全部 1 项；分段顺序、长度、SHA 与完整文档已核对。')
+    await button(diff, '我已核对完整差异，确认提交').click()
+    const receipt = ontology.getByRole('region', { name: '已提交回执', exact: true })
+    const pending = ontology.getByRole('region', { name: '原操作状态', exact: true })
+    let reconcile = false
+    await expect
+      .poll(async () => {
+        const state = await receipt.or(pending).evaluateAll((nodes) =>
+          nodes.map((node) => ({
+            kind: node.getAttribute('aria-label'),
+            text: node.textContent ?? '',
+          })),
+        )
+        if (state.some((item) => item.kind === '已提交回执' && item.text.includes('提交版本 3。')))
+          return 'receipt'
+        if (state.some((item) => item.kind === '原操作状态' && item.text.includes('succeeded'))) {
+          reconcile = true
+          return 'terminal-needs-reconciliation'
+        }
+        return 'waiting'
+      })
+      .not.toBe('waiting')
+    if (reconcile) await button(pending, '核对原操作与提交回执').click()
+    await expect(receipt).toContainText('提交版本 3。')
+    await expect(receipt).toContainText('当前已读版本 3。')
+    await expect(pending).toHaveCount(0)
+    const receiptText = await receipt.locator('p').first().textContent()
+    const operationId = receiptText?.match(/操作 ([a-f0-9-]{36})，/)?.[1]
+    if (!operationId || !uuid.test(operationId)) throw new Error('Original fact operation missing')
+    const marker = take(
+      await page.evaluate((value) => window.ontolearn!.getOperation(value), operationId),
+    )
+    if (!marker || typeof marker.jobId !== 'string')
+      throw new Error('Actual fact commit marker missing')
+    const factJob = take(
+      await page.evaluate((value) => window.ontolearn!.getJob(value), marker.jobId),
+    )
+    const after = take(
+      await page.evaluate(() => window.ontolearn!.readProject({ editor: 'query-workspace-v1' })),
+    )
+    expect(after.domain.projectRevision).toBe(3)
+    expect(after.projectId).toBe(initial.projectId)
+    expect(after.domain.state.definitions).toEqual(saved.after.domain.state.definitions)
+    expect(after.domain.state.facts).toEqual(
+      saved.after.domain.state.facts.map((row) => (row.id === fact.id ? changedFact : row)),
+    )
+    expect(marker).toEqual({
+      projectId: initial.projectId,
+      operationId,
+      jobId: factJob.jobId,
+      projectRevision: 3,
+      beforeSnapshotId: saved.after.inputSnapshotId,
+      afterSnapshotId: after.inputSnapshotId,
+      planHash: expect.stringMatching(hash),
+    })
+    expect(factJob).toMatchObject({
+      projectId: initial.projectId,
+      operationId,
+      capability: 'changeset.commit',
+      state: 'succeeded',
+      error: null,
+      inputSnapshotId: saved.after.inputSnapshotId,
+      commitProgress: {
+        mode: 'atomic',
+        operationId,
+        marker: {
+          projectRevision: 3,
+          beforeSnapshotId: saved.after.inputSnapshotId,
+          afterSnapshotId: after.inputSnapshotId,
+          planHash: marker.planHash,
+        },
+      },
+    })
+    evidence.initial = initial
+    evidence.originalSaved = saved
+    evidence.originalJob = original
+    evidence.originalResult = before
+    evidence.factChange = { diff: expectedDiff, after, job: factJob, marker }
+
+    await page.getByRole('link', { name: '本体查询', exact: true }).click()
+    workspace = page.getByRole('region', { name: '本体查询工作台', exact: true })
+    await button(workspace, '读取项目与持久工作草稿').click()
+    await expect(status(workspace)).toHaveText(
+      '项目与持久工作草稿已读回；工作草稿不代表正式查询定义。',
+    )
+    let lane = await restore(page, workspace, original)
+    let panel = resultPanel(lane)
+    await expect(panel).toContainText('FACTS_CHANGED · facts:asserted · 1 → 2')
+    await expect(panel.locator('code').first()).toHaveText(original.inputSnapshotId)
+    await button(lane, '读取 SELECT 结果第一页').click()
+    await assertUiRows(
+      panel,
+      ['alarm'],
+      [[alarm]],
+      0,
+      original.resultRef!.resultId,
+      before.descriptor.identity.payloadSha256,
+    )
+    const stale = await readBinding(page, original)
+    const factReason = [
+      { code: 'FACTS_CHANGED', dependency: 'facts:asserted', before: 1, after: 2 },
+    ]
+    expect(stale.descriptor.identity).toEqual(before.descriptor.identity)
+    expect(stale.descriptor.metadata).toEqual({
+      ...before.descriptor.metadata,
+      state: 'stale',
+      staleReason: factReason,
+      historicalSelectionRequired: true,
+    })
+    expect(stale.text).toEqual(before.text)
+    evidence.staleOriginal = stale
+
+    await workspace.getByRole('combobox', { name: '已提交查询', exact: true }).selectOption(id)
+    await workspace.getByRole('combobox', { name: '执行输入', exact: true }).selectOption('current')
+    const load = button(workspace, '按所选当前/历史输入载入定义')
+    await expect(load).toBeEnabled()
+    await load.click()
+    await expect(status(workspace)).toHaveText('已载入真实受管定义；后续编辑需先正式提交。')
+    const empty = await execute(page, workspace, original.jobId)
+    expect(empty.inputSnapshotId).toBe(after.inputSnapshotId)
+    lane = resultLane(workspace)
+    panel = resultPanel(lane)
+    await button(lane, '读取 SELECT 结果第一页').click()
+    await expect(panel.getByRole('table').locator('tbody tr')).toHaveCount(0)
+    await expect(panel.getByRole('table').locator('caption')).toHaveText('当前结果页：0 行')
+    const directions = panel.getByRole('region', { name: 'SELECT 空结果检查', exact: true })
+    await expect(directions).toBeVisible()
+    await expect(directions).toContainText('可逐项放宽条件后复查')
+    await expect(directions).toContainText('检查字段是否有记录，以及映射是否成功提交到当前项目')
+    await expect(directions).toContainText('不能据此证明业务事实不存在')
+    await expect(panel).not.toContainText('ASK：')
+    await expect(button(panel, '下一页结果')).toBeDisabled()
+    await downloadCsv(page, panel, '导出当前页 CSV', csv(['alarm'], []))
+    const emptyBinding = await readBinding(page, empty)
+    assertBinding(emptyBinding, empty, draft, id, 3)
+    expect(emptyBinding.descriptor.query).toEqual({
+      kind: 'SELECT',
+      columns: [{ index: 0, name: 'alarm' }],
+      rowCount: 0,
+    })
+    const emptyRows = await rowsPage(page, emptyBinding.descriptor.descriptorRef, null)
+    assertTypedRows(emptyRows, emptyBinding, [], 0)
+    expect(emptyRows.nextCursor).toBeNull()
+    evidence.emptyJob = empty
+    evidence.emptyResult = emptyBinding
+    evidence.emptyRows = emptyRows
+
+    const userData = await application.evaluate(({ app }) => app.getPath('userData'))
+    await application.close()
+    application = undefined
+    application = await electron.launch({
+      ...options,
+      args: [...options.args, `--user-data-dir=${userData}`],
+    })
+    expect(await application.evaluate(({ app }) => app.getPath('userData'))).toBe(userData)
+    page = await application.firstWindow()
+    await page.getByTestId('project-list-refresh').click()
+    await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
+    await page
+      .locator(`[data-testid="project-open"][data-project-id="${initial.projectId}"]`)
+      .click()
+    await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
+    await page.getByRole('link', { name: '本体查询', exact: true }).click()
+    workspace = page.getByRole('region', { name: '本体查询工作台', exact: true })
+    await button(workspace, '读取项目与持久工作草稿').click()
+    await expect(status(workspace)).toHaveText(
+      '项目与持久工作草稿已读回；工作草稿不代表正式查询定义。',
+    )
+    lane = await restore(page, workspace, empty)
+    panel = resultPanel(lane)
+    await expect(panel.locator('code').first()).toHaveText(after.inputSnapshotId)
+    await button(lane, '读取 SELECT 结果第一页').click()
+    await expect(
+      panel.getByRole('region', { name: 'SELECT 空结果检查', exact: true }),
+    ).toBeVisible()
+    await expect(panel.getByRole('table').locator('tbody tr')).toHaveCount(0)
+    await downloadCsv(page, panel, '导出当前页 CSV', csv(['alarm'], []))
+    const reopened = await readBinding(page, empty)
+    expect(reopened.descriptor.identity).toEqual(emptyBinding.descriptor.identity)
+    expect(reopened.descriptor.metadata).toEqual(emptyBinding.descriptor.metadata)
+    expect(reopened.text).toEqual(emptyBinding.text)
+    evidence.reopenedEmpty = reopened
+
+    // A new execution requires the user's explicit historical selection; restoring did not execute.
+    await workspace.getByRole('combobox', { name: '已提交查询', exact: true }).selectOption(id)
+    await workspace
+      .getByRole('combobox', { name: '执行输入', exact: true })
+      .selectOption('historical')
+    await workspace.getByLabel('历史快照标识', { exact: true }).fill(original.inputSnapshotId)
+    await button(workspace, '按所选当前/历史输入载入定义').click()
+    await expect(status(workspace)).toHaveText('已载入真实受管定义；后续编辑需先正式提交。')
+    const historical = await execute(page, workspace, empty.jobId)
+    expect(historical.inputSnapshotId).toBe(original.inputSnapshotId)
+    const historicalBinding = await readBinding(page, historical)
+    expect(historicalBinding.descriptor.identity).toEqual({
+      ...before.descriptor.identity,
+      resultId: historical.resultRef!.resultId,
+      jobId: historical.jobId,
+      parametersHash: historical.parametersHash,
+      inputSelection: 'historical',
+      payloadSha256: expect.stringMatching(hash),
+    })
+    expect(historicalBinding.descriptor.metadata).toEqual({
+      ...stale.descriptor.metadata,
+      resultId: historical.resultRef!.resultId,
+      jobId: historical.jobId,
+      parametersHash: historical.parametersHash,
+      createdAtMs: expect.any(Number),
+    })
+    expect(historicalBinding.text).toEqual({
+      ...before.text,
+      identity: historicalBinding.descriptor.identity,
+    })
+    expect(historicalBinding.descriptor.query).toEqual(before.descriptor.query)
+    lane = resultLane(workspace)
+    panel = resultPanel(lane)
+    await expect(panel).toContainText('显式选择的历史快照')
+    await expect(panel).toContainText('FACTS_CHANGED · facts:asserted · 1 → 2')
+    await button(lane, '读取 SELECT 结果第一页').click()
+    await assertUiRows(
+      panel,
+      ['alarm'],
+      [[alarm]],
+      0,
+      historical.resultRef!.resultId,
+      historicalBinding.descriptor.identity.payloadSha256,
+    )
+    await expect(panel.getByRole('region', { name: 'SELECT 空结果检查', exact: true })).toHaveCount(
+      0,
+    )
+    evidence.explicitHistoricalJob = historical
+    evidence.explicitHistoricalResult = historicalBinding
+  } finally {
+    try {
+      await test.info().attach('t04-q02-fact-change-empty-and-reopen', {
+        body: JSON.stringify(evidence, null, 2),
+        contentType: 'application/json',
+      })
+    } finally {
+      await application?.close()
+    }
+  }
 })

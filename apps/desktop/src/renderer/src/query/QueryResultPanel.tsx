@@ -11,6 +11,7 @@ import {
   type DisplayRowsPage,
 } from './typed-results'
 import type { QueryResultPanelProps } from './typed-result-panel-props'
+import { emptyDirections } from './draft'
 import './typed-results.css'
 
 function downloadCsv(csv: string, filename: string) {
@@ -300,18 +301,23 @@ export function QueryResultPanel(props: QueryResultPanelProps) {
                       </tbody>
                     </table>
                   </div>
-                  {descriptor.query.rowCount === 0 ? (
-                    <>
-                      <p>SELECT 完整结果为空。以下是检查方向，不是对数据原因的判断。</p>
-                      <ul>
-                        <li>确认所选数据范围与输入快照。</li>
-                        <li>检查结果过期状态，再明确选择输入执行。</li>
-                        <li>核对筛选条件、字段是否存在以及映射结果。</li>
-                      </ul>
-                    </>
-                  ) : (
-                    rows.rows.length === 0 && <p>本页没有记录；完整结果不为空。</p>
-                  )}
+                  {descriptor.query.rowCount === 0
+                    ? !props.rowsLoading &&
+                      !failureInvalid && (
+                        <section aria-label="SELECT 空结果检查">
+                          <p>SELECT 完整结果为空。以下是检查方向，不是对数据原因的判断。</p>
+                          <p>
+                            请先查看本次实际执行的
+                            SPARQL，并按上方显示的数据范围、输入快照和结果状态逐项检查。
+                          </p>
+                          <ul>
+                            {emptyDirections.map((direction) => (
+                              <li key={direction}>{direction}</li>
+                            ))}
+                          </ul>
+                        </section>
+                      )
+                    : rows.rows.length === 0 && <p>本页没有记录；完整结果不为空。</p>}
                   <button
                     onClick={() =>
                       downloadCsv(
