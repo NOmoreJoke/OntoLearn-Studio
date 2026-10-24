@@ -270,6 +270,196 @@ describe('T02 API003 M/RDF consumer mapping; no backend/Job evidence', () => {
       'DELETION_REFERENCED',
     )
   })
+  const RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+  const RDFS = 'http://www.w3.org/2000/01/rdf-schema#'
+  const OWL = 'http://www.w3.org/2002/07/owl#'
+  const XSD = 'http://www.w3.org/2001/XMLSchema#'
+  const variants = [
+    { kind: 'class', classType: 'rdfs', declaration: RDFS + 'Class' },
+    { kind: 'class', classType: 'owl', declaration: OWL + 'Class' },
+    { kind: 'objectProperty', declaration: OWL + 'ObjectProperty' },
+    { kind: 'dataProperty', declaration: OWL + 'DatatypeProperty' },
+    { kind: 'individual', declaration: '' },
+  ] as const
+  function matrixRow(variant: (typeof variants)[number], iri: string): ObjectRow {
+    const fields = row(iri)
+    return {
+      iri,
+      kind: variant.kind,
+      identifier: 'Matrix',
+      labels: fields.labels,
+      definitions: fields.definitions,
+      synonyms: fields.synonyms,
+      examples: fields.examples,
+      parents: variant.kind === 'class' ? ['urn:Other'] : [],
+      domain:
+        variant.kind === 'objectProperty' || variant.kind === 'dataProperty'
+          ? ['urn:Equipment']
+          : [],
+      range:
+        variant.kind === 'objectProperty'
+          ? ['urn:Other']
+          : variant.kind === 'dataProperty'
+            ? [XSD + 'string']
+            : [],
+      types: variant.kind === 'individual' ? ['urn:Equipment'] : [],
+      ...(variant.kind === 'class' ? { classType: variant.classType } : {}),
+    }
+  }
+  function independentlyExpected(variant: (typeof variants)[number], iri: string, edited = false) {
+    const triples: { subject: string; predicate: string; object: string }[] = []
+    if (variant.kind !== 'individual')
+      triples.push({ subject: iri, predicate: RDF + 'type', object: `<${variant.declaration}>` })
+    triples.push(
+      { subject: iri, predicate: RDFS + 'label', object: edited ? '"更名"@zh' : '"设备"@zh' },
+      { subject: iri, predicate: RDFS + 'label', object: '"Equipment"@en' },
+      { subject: iri, predicate: RDFS + 'comment', object: '"""A maintained\nasset."""@en' },
+    )
+    if (variant.kind === 'class')
+      triples.push({
+        subject: iri,
+        predicate: RDFS + 'subClassOf',
+        object: edited ? '<urn:Equipment>' : '<urn:Other>',
+      })
+    if (variant.kind === 'objectProperty' || variant.kind === 'dataProperty') {
+      triples.push({
+        subject: iri,
+        predicate: RDFS + 'domain',
+        object: edited ? '<urn:Other>' : '<urn:Equipment>',
+      })
+      triples.push({
+        subject: iri,
+        predicate: RDFS + 'range',
+        object:
+          variant.kind === 'objectProperty'
+            ? '<urn:Other>'
+            : `<${XSD + (edited ? 'integer' : 'string')}>`,
+      })
+    }
+    if (variant.kind === 'individual')
+      triples.push({
+        subject: iri,
+        predicate: RDF + 'type',
+        object: edited ? '<urn:Other>' : '<urn:Equipment>',
+      })
+    return triples
+  }
+  it.each(variants)(
+    'covers C-subset $kind $declaration create/edit/copy/delete RDF with exact five-field M',
+    (variant) => {
+      const read = source()
+      const originalRead = structuredClone(read)
+      const iri = `urn:matrix:${variant.kind}:${variant.declaration.endsWith('owl#Class') ? 'owl' : 'base'}`
+      const entity = matrixRow(variant, iri)
+      const create = entityEditPlan(projectOntology(read), { action: 'create', object: entity })
+      const definition = create.definitions![0]!
+      expect(definition.value.triples).toEqual(independentlyExpected(variant, iri))
+      expect(definition.value.entityMetadata?.entities[iri]).toEqual({
+        identifier: 'Matrix',
+        labels: entity.labels,
+        definitions: entity.definitions,
+        synonyms: [' 资产 ', '多行\n同义词'],
+        examples: ['泵站A'],
+      })
+      expect(create.manual).toBeUndefined()
+      expect(read).toEqual(originalRead)
+      const created = structuredClone(read)
+      created.domain.state.definitions.push({
+        layer: 'ontology',
+        id: definition.id,
+        payload: JSON.stringify(definition.value),
+      })
+      const projection = projectOntology(created)
+      expect(projection.view.objects.find((item) => item.iri === iri)).toEqual(entity)
+      const changed: ObjectRow = {
+        ...entity,
+        identifier: 'MatrixEdited',
+        labels: [
+          ['更名', 'zh'],
+          ['Equipment', 'en'],
+        ],
+        parents: variant.kind === 'class' ? ['urn:Equipment'] : [],
+        domain:
+          variant.kind === 'objectProperty' || variant.kind === 'dataProperty' ? ['urn:Other'] : [],
+        range: variant.kind === 'dataProperty' ? [XSD + 'integer'] : entity.range,
+        types: variant.kind === 'individual' ? ['urn:Other'] : [],
+      }
+      const edit = entityEditPlan(projection, { action: 'edit', object: changed })
+      expect(edit.definitions![0]!.id).toBe(definition.id)
+      expect(
+        new Set(edit.definitions![0]!.value.triples.map((triple) => JSON.stringify(triple))),
+      ).toEqual(
+        new Set(independentlyExpected(variant, iri, true).map((triple) => JSON.stringify(triple))),
+      )
+      expect(edit.definitions![0]!.value.entityMetadata?.entities[iri]).toEqual({
+        identifier: 'MatrixEdited',
+        labels: changed.labels,
+        definitions: changed.definitions,
+        synonyms: changed.synonyms,
+        examples: changed.examples,
+      })
+      expect(created.domain.state.facts).toEqual(read.domain.state.facts)
+      const copyIri = iri + ':copy'
+      const copy = entityEditPlan(projection, {
+        action: 'create',
+        object: { ...entity, iri: copyIri },
+      })
+      expect(copy.definitions![0]!.id).not.toBe(definition.id)
+      expect(copy.definitions![0]!.value.triples).toEqual(independentlyExpected(variant, copyIri))
+      expect(copy.definitions![0]!.value.entityMetadata?.entities[copyIri]).toEqual(
+        definition.value.entityMetadata?.entities[iri],
+      )
+      expect(copy.manual).toBeUndefined()
+      expect(entityDeletionImpact(projection, iri)).toEqual([])
+      const removed = entityEditPlan(projection, { action: 'delete', iri })
+      expect(removed).toEqual({
+        definitions: [
+          {
+            layer: 'ontology',
+            id: definition.id,
+            value: { triples: [], entityMetadata: { entityMetadataVersion: 1, entities: {} } },
+          },
+        ],
+      })
+      expect(created.domain.state.definitions.slice(0, -1)).toEqual(read.domain.state.definitions)
+      expect(created.domain.state.facts).toEqual(read.domain.state.facts)
+    },
+  )
+  it.each(variants)(
+    'reports exact external references before deleting $kind $declaration',
+    (variant) => {
+      const read = source()
+      const iri = `urn:referenced:${variant.kind}`
+      const created = entityEditPlan(projectOntology(read), {
+        action: 'create',
+        object: matrixRow(variant, iri),
+      }).definitions![0]!
+      read.domain.state.definitions.push({
+        layer: 'ontology',
+        id: created.id,
+        payload: JSON.stringify(created.value),
+      })
+      const usesPredicate = variant.kind === 'objectProperty' || variant.kind === 'dataProperty'
+      read.domain.state.facts.push({
+        id: 'e'.repeat(64),
+        subject: 'urn:external',
+        predicate: usesPredicate ? iri : RDF + 'type',
+        object: usesPredicate ? '"kept"' : `<${iri}>`,
+        owner: null,
+        source_row: null,
+        managed_value: null,
+      })
+      const before = structuredClone(read)
+      const projection = projectOntology(read)
+      expect(entityDeletionImpact(projection, iri)).toEqual([
+        `fact:${'e'.repeat(64)} · <urn:external> <${usesPredicate ? iri : RDF + 'type'}> ${usesPredicate ? '"kept"' : `<${iri}>`}`,
+      ])
+      expect(() => entityEditPlan(projection, { action: 'delete', iri })).toThrow(
+        'DELETION_REFERENCED',
+      )
+      expect(read).toEqual(before)
+    },
+  )
   it('rejects isolated surrogate RDF text instead of replacing it', () => {
     expect(() => literalN3('\ud800', 'zh')).toThrow('UNREPRESENTABLE_RDF_LITERAL')
   })

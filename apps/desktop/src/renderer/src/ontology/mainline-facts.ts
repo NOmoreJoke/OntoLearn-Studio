@@ -17,13 +17,23 @@ export function manualFactPlan(
   if (!fact || fact.object === null) throw new Error('FACT_NOT_FOUND')
   if (fact.owner !== null || fact.source_row !== null || fact.managed_value !== null)
     throw new Error('MANAGED_FACT_REQUIRES_OWNER')
-  const live = source.domain.state.facts.filter(
-    (row) =>
-      row.object !== null && row.subject === fact.subject && row.predicate === fact.predicate,
-  )
-  if (live.length !== 1) throw new Error('AMBIGUOUS_FACT_SUPPORT')
   const original = { subject: fact.subject, predicate: fact.predicate, object: fact.object }
   const replacement = { ...original, object }
+  if (
+    source.domain.state.facts.some(
+      (row) =>
+        row.id !== fact.id &&
+        row.object !== null &&
+        row.subject === fact.subject &&
+        row.predicate === fact.predicate &&
+        (row.owner !== null ||
+          row.source_row !== null ||
+          row.managed_value !== null ||
+          row.object === original.object ||
+          (action === 'edit' && row.object === replacement.object)),
+    )
+  )
+    throw new Error('AMBIGUOUS_FACT_SUPPORT')
   for (const definition of source.domain.state.definitions) {
     if (definition.layer !== 'ontology') continue
     const value = JSON.parse(definition.payload) as { triples?: RdfRow[] }

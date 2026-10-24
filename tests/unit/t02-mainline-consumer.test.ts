@@ -1428,6 +1428,164 @@ describe('T02 fact plan retains source records', () => {
     read.domain.state.facts[0]!.object = null
     expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow('FACT_NOT_FOUND')
   })
+  it.each([
+    ['edit', 'f'.repeat(64)],
+    ['remove', 'f'.repeat(64)],
+    ['edit', 'a'.repeat(64)],
+    ['remove', 'a'.repeat(64)],
+  ] as const)(
+    'handles multi-value manual %s of record %s without touching sibling supports',
+    (action, id) => {
+      const read = source()
+      read.domain.state.facts.push(
+        { ...read.domain.state.facts[0]!, id: 'a'.repeat(64), object: '"second"@en' },
+        {
+          ...read.domain.state.facts[0]!,
+          id: 'b'.repeat(64),
+          object: null,
+          owner: 'retired-mapping',
+          source_row: 'old-row',
+          managed_value: '"old"',
+        },
+      )
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'c'.repeat(64),
+        predicate: 'urn:other',
+        object: '"managed"@en',
+        owner: 'another-mapping',
+        source_row: 'row-other',
+        managed_value: '"managed"@en',
+      })
+      read.domain.state.definitions[0]!.payload = JSON.stringify({
+        triples: [
+          {
+            subject: 'urn:OtherClass',
+            predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+            object: '<http://www.w3.org/2000/01/rdf-schema#Class>',
+          },
+        ],
+        references: [],
+        entityMetadata: {
+          entityMetadataVersion: 1,
+          entities: {
+            'urn:OtherClass': {
+              identifier: 'OtherClass',
+              labels: [],
+              definitions: [],
+              synonyms: [' 原文 '],
+              examples: ['示例\n第二行'],
+            },
+          },
+        },
+        legacyOpaque: { retained: ['原内容', 7] },
+      })
+      read.domain.state.mappingState = { original: { keep: ['opaque', 7] } }
+      const before = structuredClone(read)
+      const plan = manualFactPlan(read, action, id, '"changed"@zh')
+      expect(plan).toEqual(
+        action === 'edit' ? { edits: { [id]: '"changed"@zh' } } : { remove: [id] },
+      )
+      expect(read).toEqual(before)
+    },
+  )
+  it.each([
+    ['"value"', '"value"^^<http://www.w3.org/2001/XMLSchema#string>'],
+    ['"value"@zh', '"value"@en'],
+    [
+      '"01"^^<http://www.w3.org/2001/XMLSchema#integer>',
+      '"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+    ],
+  ])('does not collapse distinct RDF spelling %s / %s when editing one ID', (first, second) => {
+    const read = source()
+    read.domain.state.facts[0]!.object = first!
+    read.domain.state.facts.push({
+      ...read.domain.state.facts[0]!,
+      id: 'a'.repeat(64),
+      object: second!,
+    })
+    const before = structuredClone(read)
+    expect(manualFactPlan(read, 'edit', 'f'.repeat(64), '"replacement"')).toEqual({
+      edits: { ['f'.repeat(64)]: '"replacement"' },
+    })
+    expect(read).toEqual(before) // Planner does not canonicalize lexical/datatype/language.
+  })
+  it.each(['owner', 'source_row', 'managed_value'] as const)(
+    'keeps selected-record and same-slot mapped %s conflicts fenced',
+    (field) => {
+      const read = source()
+      read.domain.state.facts[0]![field] = 'mapped'
+      expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow(
+        'MANAGED_FACT_REQUIRES_OWNER',
+      )
+      read.domain.state.facts[0]![field] = null
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'a'.repeat(64),
+        object: '"different"',
+        [field]: 'mapped',
+      })
+      const before = structuredClone(read)
+      for (const action of ['edit', 'remove'] as const)
+        expect(() => manualFactPlan(read, action, 'f'.repeat(64), '"new"')).toThrow(
+          'AMBIGUOUS_FACT_SUPPORT',
+        )
+      expect(read).toEqual(before)
+    },
+  )
+  it.each(['original', 'replacement'] as const)(
+    'refuses exact %s support from a second manual record',
+    (overlap) => {
+      const read = source()
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'a'.repeat(64),
+        object: overlap === 'original' ? '"泵站A"@zh' : '"new"',
+      })
+      const before = structuredClone(read)
+      expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow(
+        'AMBIGUOUS_FACT_SUPPORT',
+      )
+      if (overlap === 'original')
+        expect(() => manualFactPlan(read, 'remove', 'f'.repeat(64), '')).toThrow(
+          'AMBIGUOUS_FACT_SUPPORT',
+        )
+      expect(read).toEqual(before)
+    },
+  )
+  it.each(['original', 'replacement'] as const)(
+    'keeps exact %s definition overlap fenced in a multi-value manual slot',
+    (overlap) => {
+      const read = source()
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'a'.repeat(64),
+        object: '"second"@en',
+      })
+      read.domain.state.definitions[0]!.payload = JSON.stringify({
+        triples: [
+          {
+            subject: 'urn:001',
+            predicate: 'urn:name',
+            object: overlap === 'original' ? '"泵站A"@zh' : '"new"',
+          },
+        ],
+      })
+      const before = structuredClone(read)
+      expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow(
+        'AMBIGUOUS_FACT_SUPPORT',
+      )
+      if (overlap === 'original')
+        expect(() => manualFactPlan(read, 'remove', 'f'.repeat(64), '')).toThrow(
+          'AMBIGUOUS_FACT_SUPPORT',
+        )
+      else
+        expect(manualFactPlan(read, 'remove', 'f'.repeat(64), '')).toEqual({
+          remove: ['f'.repeat(64)],
+        })
+      expect(read).toEqual(before)
+    },
+  )
   it('new assertions use one fresh record ID without copying managed records', () => {
     const read = source()
     const before = structuredClone(read)
