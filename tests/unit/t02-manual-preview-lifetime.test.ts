@@ -1,5 +1,6 @@
 /** Event/hook unit harness for the actual Page module. No React DOM, IPC or GUI proof. */
 import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import vm from 'node:vm'
 import ts from 'typescript'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -7,9 +8,12 @@ import * as facts from '../../apps/desktop/src/renderer/src/ontology/mainline-fa
 import {
   OntologySession,
   sourceIdentity,
+  type SessionState,
 } from '../../apps/desktop/src/renderer/src/ontology/mainline-session'
+import { OwnershipConflictDetailView } from '../../apps/desktop/src/renderer/src/ontology/OwnershipConflictDetailView'
 import { OntologyOperationBook } from '../../apps/desktop/src/renderer/src/ontology/mainline-operations'
 import { projectOntology } from '../../apps/desktop/src/renderer/src/ontology/mainline-ontology'
+import type { BridgeResult, OwnershipDetailPage } from '@ontolearn/contracts'
 import type {
   DomainRead,
   EditPlan,
@@ -46,14 +50,197 @@ const source = (): DomainRead => ({
     },
   },
 })
+
+describe('actual Page ownership detail mounting and clearing (unit only)', () => {
+  const model = {
+    previewBaseRevision: 7,
+    reason: 'singleSlot' as const,
+    records: [
+      {
+        role: 'existing' as const,
+        id: 'original',
+        owner: null,
+        sourceRow: null,
+        slot: { subject: 'urn:s', predicate: 'urn:p' },
+      },
+      {
+        role: 'incoming' as const,
+        id: 'incoming',
+        owner: null,
+        sourceRow: null,
+        slot: { subject: 'urn:s', predicate: 'urn:p' },
+      },
+    ],
+  }
+  it('mounts the actual component with the exact VM and fixed reading/unavailable text', () => {
+    const h = harness()
+    h.initial.publish({
+      error: 'OWNERSHIP_CONFLICT',
+      ownershipDetail: { status: 'ready', viewModel: model },
+    })
+    h.render()
+    expect(h.detailModels()).toEqual([model])
+    for (const status of ['reading', 'unavailable'] as const) {
+      h.initial.publish({ ownershipDetail: { status } })
+      h.render()
+      expect(h.detailModels()).toEqual([])
+      expect(h.text()).toContain(status === 'reading' ? '正在读取冲突定位' : '冲突详情暂不可用')
+    }
+    h.initial.publish({ stale: true, ownershipDetail: { status: 'ready', viewModel: model } })
+    h.render()
+    expect(h.detailModels()).toEqual([])
+  })
+  it.each([
+    'subject',
+    'predicate',
+    'object',
+    'structure',
+    'load',
+    'reset',
+    'read',
+    'layout',
+    'session',
+  ] as const)('clears or isolates the mounted detail on %s', (kind) => {
+    const h = harness()
+    h.initial.publish({
+      error: 'OWNERSHIP_CONFLICT',
+      ownershipDetail: { status: 'ready', viewModel: model },
+    })
+    h.render()
+    expect(h.detailModels()).toHaveLength(1)
+    if (kind === 'subject') h.field('主体个体 IRI', 'urn:changed')
+    if (kind === 'predicate') h.field('属性 IRI', 'urn:changed')
+    if (kind === 'object') h.field('规范 RDF 对象', '"changed"')
+    if (kind === 'structure') h.structuralChange()
+    if (kind === 'load') h.click('载入事实')
+    if (kind === 'reset') h.click('新建事实并读取当前基准')
+    if (kind === 'read') h.click('读取当前项目')
+    if (kind === 'layout') {
+      h.cleanupLayout()
+      h.render()
+    }
+    if (kind === 'session') h.render(session())
+    expect(h.detailModels()).toEqual([])
+  })
+  it.each(['success', 'failure'] as const)(
+    'real Session cannot restore a late %s detail after the actual Page input handler',
+    async (outcome) => {
+      const base = { ...source(), projectId: '00000000-0000-4000-8000-000000000003' }
+      const ref = '00000000-0000-4000-8000-000000000005'
+      let resolve!: (value: BridgeResult<OwnershipDetailPage>) => void
+      let reject!: (cause: Error) => void
+      const delayed = new Promise<BridgeResult<OwnershipDetailPage>>((yes, no) => {
+        resolve = yes
+        reject = no
+      })
+      const bridge = {
+        readProject: vi.fn(async () => ({ ok: true as const, data: base })),
+        onTaskUpdate: vi.fn(() => () => {}),
+        getActiveProject: vi.fn(async () => ({
+          ok: true as const,
+          data: {
+            projectId: base.projectId,
+            projectRevision: base.domain.projectRevision,
+            inputSnapshotId: base.inputSnapshotId,
+            dependencyVector: base.domain.dependencyVector,
+            formatVersion: 3 as const,
+          },
+        })),
+        previewProjectChangeset: vi.fn(async () => ({
+          ok: false as const,
+          error: {
+            code: 'OWNERSHIP_CONFLICT',
+            messageKey: 'project.ownershipConflict',
+            params: { detailRef: ref },
+            retryable: false,
+          },
+        })),
+        getOwnershipConflictDetailPage: vi.fn(() => delayed),
+      }
+      const real = new OntologySession(
+        bridge as unknown as OntologyMainlineBridge,
+        new OntologyOperationBook(),
+      )
+      real.connect()
+      await real.read()
+      const h = harness(real as unknown as ReturnType<typeof session>)
+      h.submit()
+      await vi.waitFor(() => expect(bridge.getOwnershipConflictDetailPage).toHaveBeenCalledTimes(1))
+      h.render()
+      expect(h.text()).toContain('正在读取冲突定位')
+      h.field('规范 RDF 对象', '"changed during lookup"')
+      const stable = real.getSnapshot()
+      if (outcome === 'failure') reject(new Error('private obsolete exception'))
+      else {
+        const document = {
+          ownershipDetailVersion: 1,
+          kind: 'manual-ownership-conflict',
+          stage: 'preview',
+          projectId: base.projectId,
+          sourceBaseRevision: 7,
+          reason: 'singleSlot',
+          existing: model.records[0],
+          incoming: model.records[1],
+        }
+        // Omit private role labels from the canonical fixture, never from production validation.
+        const { role: existingRole, ...existing } = document.existing!
+        const { role: incomingRole, ...incoming } = document.incoming!
+        void existingRole
+        void incomingRole
+        const bytes = Buffer.from(JSON.stringify({ ...document, existing, incoming }))
+        const hash = createHash('sha256').update(bytes).digest('hex')
+        resolve({
+          ok: true,
+          data: {
+            detailReadVersion: 1,
+            projectId: base.projectId,
+            detailRef: ref,
+            manifest: {
+              documentKind: 'ownership-conflict',
+              documentHash: hash,
+              totalBytes: bytes.length,
+              segmentCount: 1,
+            },
+            startOrdinal: 0,
+            segments: [
+              {
+                ordinal: 0,
+                byteOffset: 0,
+                rawByteLength: bytes.length,
+                sha256: hash,
+                dataBase64: bytes.toString('base64'),
+              },
+            ],
+            nextOrdinal: null,
+            complete: true,
+          },
+        })
+      }
+      await flush()
+      h.render()
+      expect(real.getSnapshot()).toBe(stable)
+      expect(h.detailModels()).toEqual([])
+      expect(h.text()).not.toContain('private obsolete')
+      expect(bridge.previewProjectChangeset).toHaveBeenCalledTimes(1)
+      real.dispose()
+    },
+  )
+})
 function session() {
-  let snapshot = { source: source(), phase: 'idle', stale: false, pending: undefined as unknown }
+  let snapshot = {
+    source: source(),
+    phase: 'idle',
+    stale: false,
+    pending: undefined as unknown,
+    error: undefined as string | undefined,
+    ownershipDetail: undefined as SessionState['ownershipDetail'],
+  }
   const value = {
     getSnapshot: () => snapshot,
     subscribe: () => () => {},
     connectForPage: () => () => {},
     discardPreview: vi.fn(() => {
-      snapshot = { ...snapshot, phase: 'idle' }
+      snapshot = { ...snapshot, phase: 'idle', ownershipDetail: undefined }
     }),
     read: vi.fn(async () => {}),
     prepare: vi.fn(async (plan: EditPlan) => {
@@ -145,6 +332,7 @@ function harness(initial = session()) {
       if (name === './mainline-session') return { sourceIdentity }
       if (name === './mainline-ontology') return { projectOntology }
       if (name === './OntologyPage') return { OntologyPage: marker }
+      if (name === './OwnershipConflictDetailView') return { OwnershipConflictDetailView }
       if (name.endsWith('.css')) return {}
       throw new Error(`Unexpected Page dependency: ${name}`)
     },
@@ -220,6 +408,10 @@ function harness(initial = session()) {
     structuralChange,
     cleanupLayout,
     text: () => text(tree),
+    detailModels: () =>
+      nodes(tree)
+        .filter((node) => Object.is(node.type, OwnershipConflictDetailView))
+        .map((node) => node.props.viewModel),
     cleanupPassive: () => {
       for (const item of passive.values()) item.cleanup?.()
       passive.clear()

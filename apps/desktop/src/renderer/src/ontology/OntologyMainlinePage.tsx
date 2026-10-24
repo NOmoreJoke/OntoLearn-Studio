@@ -5,6 +5,7 @@ import { OntologyPage } from './OntologyPage'
 import { entityDeletionImpact, entityEditPlan, projectOntology } from './mainline-ontology'
 import type { RdfRow } from './view-model'
 import './ontology.css'
+import { OwnershipConflictDetailView } from './OwnershipConflictDetailView'
 
 export type OntologyMainlinePageProps = {
   /** Host owns this instance and retires it synchronously before changing selection.
@@ -37,6 +38,7 @@ function SessionEditor({ session }: { session: OntologySession }) {
     return () => {
       lifetime.active = false
       lifetime.sequence++
+      session.discardPreview()
       if (factLifetime.current === lifetime) factLifetime.current = undefined
     }
   }, [session])
@@ -327,6 +329,17 @@ function SessionEditor({ session }: { session: OntologySession }) {
             ? '事实来源、保留身份或属性约束存在冲突。请核对原记录，修改输入后重新预览；已输入内容保留。'
             : '请核对当前项目或查询原操作；已输入内容保留。'}
         </p>
+      )}
+      {state.error === 'OWNERSHIP_CONFLICT' && !state.stale && state.ownershipDetail && (
+        <>
+          {state.ownershipDetail.status === 'reading' && <p role="status">正在读取冲突定位…</p>}
+          {state.ownershipDetail.status === 'unavailable' && (
+            <p role="status">冲突详情暂不可用。请重新读取项目，核对原记录后再预览。</p>
+          )}
+          {state.ownershipDetail.status === 'ready' && (
+            <OwnershipConflictDetailView viewModel={state.ownershipDetail.viewModel} />
+          )}
+        </>
       )}
       {state.prepared && (
         <section className="ontology-diff" aria-label="完整事务差异">

@@ -806,6 +806,10 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           contentType: 'application/json',
         })
       }
+      const knownDatatypeInputs = [
+        ['relative-datatype', '"x"^^<../relative>'],
+        ['invalid-unicode-datatype', String.raw`"x"^^<urn:\U00110000>`],
+      ] as const
       let current = await start(page, 'FR201 多值真实事实')
       current = await create(page, classA, current, evidence)
       const entities: Entity[] = ['subject', 'object1', 'object2', 'object3'].map((name) => ({
@@ -969,6 +973,10 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         }
         if (triple === requested[5])
           await rejectCallerObject('add', '泵站A', current, 'fr201-rejected-unparseable-new-object')
+        if (triple === requested[5]) {
+          for (const [name, input] of knownDatatypeInputs)
+            await rejectCallerObject('add', input, current, `fr201-rejected-new-${name}`)
+        }
         // For the string case, this is a visible user correction, never normalization.
         await objectInput.fill(triple.object)
         if (triple === requested[5]) await expect(objectInput).toHaveValue('"typed string"')
@@ -1048,6 +1056,8 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       ).toBe(false)
       await rejectCallerObject('edit', editAlias, current, 'fr201-rejected-noncanonical-edit')
       await rejectCallerObject('edit', '泵站A', current, 'fr201-rejected-unparseable-edit')
+      for (const [name, input] of knownDatatypeInputs)
+        await rejectCallerObject('edit', input, current, `fr201-rejected-edit-${name}`)
       // Reuse the existing positive sequence: its old content ID is reserved
       // after the original plain-value record was explicitly edited above.
       const reserved = requested[2]!
@@ -1059,6 +1069,8 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       await panel(page)
         .getByRole('textbox', { name: '属性 IRI', exact: true })
         .fill(reserved.predicate)
+      const ownershipBefore = await read(page)
+      expect(ownershipBefore).toEqual(current)
       await rejectCallerObject(
         'add',
         reserved.object,
@@ -1066,12 +1078,103 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         'fr201-rejected-reserved-original-id',
         'OWNERSHIP_CONFLICT',
       )
+      const ownershipDetail = panel(page).getByRole('region', {
+        name: '首个阻断冲突定位',
+        exact: true,
+      })
+      await expect(ownershipDetail).toBeVisible()
+      await expect(
+        ownershipDetail.getByRole('heading', { name: '首个阻断冲突定位', exact: true }),
+      ).toBeVisible()
+      await expect(ownershipDetail.locator(':scope > dl > dd')).toHaveText([
+        String(current.domain.projectRevision),
+        '保留身份冲突',
+      ])
+      const locations = ownershipDetail.getByRole('list', { name: '原始事实定位', exact: true })
+      await expect(locations.locator(':scope > li')).toHaveCount(2)
+      await expect(locations.getByRole('heading')).toHaveText(['现有记录', '传入记录'])
+      // The original plain-value ID is retained by the earlier real edit; the
+      // incoming original tuple now collides with that exact reserved identity.
+      for (const [index, role] of ['existing', 'incoming'].entries()) {
+        const item = locations.locator(':scope > li').nth(index)
+        await expect(item.locator('dd')).toHaveText([
+          originals[2]!.id,
+          '人工（owner = null）',
+          '无源行（sourceRow = null）',
+          reserved.subject,
+          reserved.predicate,
+        ])
+        await expect(item.getByRole('heading')).toHaveText(
+          role === 'existing' ? '现有记录' : '传入记录',
+        )
+      }
+      const ownershipAfter = await read(page)
+      expect(ownershipAfter).toEqual(ownershipBefore)
+      await test.info().attach('fr201-reserved-identity-visible-detail', {
+        body: JSON.stringify(
+          {
+            actualGuiBranch: 'reservedIdentity manual only; other reasons are not GUI claims',
+            previewBaseRevision: current.domain.projectRevision,
+            before: ownershipBefore,
+            after: ownershipAfter,
+            summary: await ownershipDetail.locator(':scope > dl > dd').allTextContents(),
+            records: await locations.locator(':scope > li').evaluateAll((items) =>
+              items.map((item) => ({
+                roleText: item.querySelector('h3')?.textContent,
+                fields: Array.from(item.querySelectorAll('dd'), (field) => field.textContent),
+              })),
+            ),
+            completeDiffCount: await panel(page)
+              .getByRole('region', { name: '完整事务差异', exact: true })
+              .count(),
+            confirmationCount: await panel(page)
+              .getByRole('button', { name: '我已核对完整差异，确认提交', exact: true })
+              .count(),
+          },
+          null,
+          2,
+        ),
+        contentType: 'application/json',
+      })
+      await test.info().attach('fr201-reserved-identity-original-page', {
+        body: await page.content(),
+        contentType: 'text/html',
+      })
+      await test.info().attach('fr201-reserved-identity-visible-page', {
+        body: await page.screenshot({ fullPage: true }),
+        contentType: 'image/png',
+      })
       // Delete each selected original record independently while its same-S/P
       // sibling and canonical language/datatype spellings remain byte-exact.
       for (const index of [1, 3]) {
         const original = originals[index]!,
           before = current
         await loadFact(page, original)
+        await expect(ownershipDetail).toHaveCount(0)
+        await expect(
+          panel(page).getByRole('region', { name: '完整事务差异', exact: true }),
+        ).toHaveCount(0)
+        await expect(
+          panel(page).getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }),
+        ).toHaveCount(0)
+        if (index === 1) {
+          const objectInput = panel(page).getByRole('textbox', {
+            name: '规范 RDF 对象',
+            exact: true,
+          })
+          await objectInput.fill('"unsaved after-conflict correction"')
+          await expect(ownershipDetail).toHaveCount(0)
+          await expect(
+            panel(page).getByRole('region', { name: '完整事务差异', exact: true }),
+          ).toHaveCount(0)
+          await expect(
+            panel(page).getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }),
+          ).toHaveCount(0)
+          // Restore the original input before the unchanged positive removal.
+          await objectInput.fill(original.object!)
+          await expect(objectInput).toHaveValue(original.object!)
+          await expect(ownershipDetail).toHaveCount(0)
+        }
         await panel(page).getByRole('button', { name: '预览移除原事实', exact: true }).click()
         current = await commit(
           page,

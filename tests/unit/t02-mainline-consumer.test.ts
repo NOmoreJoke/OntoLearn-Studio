@@ -96,6 +96,7 @@ function harness() {
   let listener: ((update: MainlineTaskUpdate) => void) | undefined
   const release = vi.fn()
   const bridge: OntologyMainlineBridge = {
+    getOwnershipConflictDetailPage: vi.fn(async () => failed()),
     saveProjectDraft: vi.fn(async (args) => {
       const contentHash = hash(new TextEncoder().encode(args.contentJson))
       read = {
