@@ -7,7 +7,7 @@ import json
 import pytest
 from test_job_store import CONTRACT
 
-CORPUS = json.loads((CONTRACT.ROOT / "fixtures.json").read_text())["sourceTable"]
+CORPUS = json.loads((CONTRACT.ROOT / "fixtures.json").read_text(encoding="utf-8"))["sourceTable"]
 BASE = CORPUS["cases"][0]
 
 

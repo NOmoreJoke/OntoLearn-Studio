@@ -25,8 +25,10 @@ from ontolearn_engine.resources import CONTRACT
 from ontolearn_engine.storage import digest
 
 ROOT = Path(__file__).resolve().parents[3]
-FIXTURES = json.loads((ROOT / "packages/contracts/v2/fixtures.json").read_text())
-BINDINGS = json.loads((ROOT / "packages/contracts/v2/binding-regressions.json").read_text())
+FIXTURES = json.loads((ROOT / "packages/contracts/v2/fixtures.json").read_text(encoding="utf-8"))
+BINDINGS = json.loads(
+    (ROOT / "packages/contracts/v2/binding-regressions.json").read_text(encoding="utf-8")
+)
 SAMPLES = FIXTURES["queryConsumer"]["samples"]
 SHAPES = [c for c in FIXTURES["cases"] if c["name"].startswith("query consumer ")]
 

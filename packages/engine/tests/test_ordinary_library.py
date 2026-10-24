@@ -398,7 +398,7 @@ class TestPureOrdinary:
             (
                 Path(__file__).resolve().parents[3]
                 / "packages/contracts/v2/binding-regressions.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )["ordinary"]
         for example in examples:
             assert (

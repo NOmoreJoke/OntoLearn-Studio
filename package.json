@@ -11,12 +11,16 @@
     "packages/contracts"
   ],
   "scripts": {
+    "prepare:examples": "uv run --frozen python scripts/prepare-fr003-bundle.py",
+    "predev": "npm run prepare:examples",
     "dev": "npm run dev --workspace @ontolearn/desktop",
+    "prebuild": "npm run prepare:examples",
     "build": "npm run build --workspace @ontolearn/desktop",
     "typecheck": "npm run typecheck:contracts && npm run typecheck:unit && npm run typecheck --workspace @ontolearn/desktop",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "pretest": "npm run prepare:examples",
     "test": "vitest run",
     "test:e2e": "install-electron && playwright test",
     "engine:check": "uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen pytest",

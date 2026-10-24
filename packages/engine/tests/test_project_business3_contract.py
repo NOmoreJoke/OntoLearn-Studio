@@ -8,8 +8,10 @@ import pytest
 from test_job_store import CONTRACT
 
 ROOT = CONTRACT.ROOT
-PROFILE = json.loads((ROOT / "fixtures.json").read_text())["business3"]
-REGRESSIONS = json.loads((ROOT / "binding-regressions.json").read_text())["business3"]
+PROFILE = json.loads((ROOT / "fixtures.json").read_text(encoding="utf-8"))["business3"]
+REGRESSIONS = json.loads((ROOT / "binding-regressions.json").read_text(encoding="utf-8"))[
+    "business3"
+]
 ACTUAL_HASH = hashlib.sha256((ROOT / "registry.json").read_bytes()).hexdigest()
 
 

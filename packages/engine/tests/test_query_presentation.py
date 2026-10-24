@@ -18,7 +18,9 @@ from ontolearn_engine.resources import CONTRACT
 from ontolearn_engine.storage import canonical, digest
 
 ROOT = Path(__file__).resolve().parents[3]
-DATA = json.loads((ROOT / "packages/contracts/v2/fixtures.json").read_text())["queryConsumer"]
+DATA = json.loads((ROOT / "packages/contracts/v2/fixtures.json").read_text(encoding="utf-8"))[
+    "queryConsumer"
+]
 S = DATA["samples"]
 LIMITS = DATA["service"][0]["case"]["limits"]
 

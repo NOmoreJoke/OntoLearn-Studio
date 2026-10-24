@@ -9,6 +9,7 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prepackage:dir": "npm --prefix ../.. run prepare:examples",
     "package:dir": "electron-builder --dir --publish never"
   },
   "dependencies": {
