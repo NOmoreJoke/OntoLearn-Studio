@@ -772,7 +772,8 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         {
           subject: entities[0]!.iri,
           predicate: property.iri,
-          object: `"typed string"^^<${XSD}string>`,
+          // ADR-0002/Q6: plain is the canonical no-language xsd:string term.
+          object: '"typed string"',
         },
         { subject: entities[0]!.iri, predicate: property.iri, object: `"true"^^<${XSD}boolean>` },
         { subject: entities[0]!.iri, predicate: property.iri, object: `"7.5"^^<${XSD}decimal>` },
@@ -799,9 +800,58 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         await panel(page)
           .getByRole('textbox', { name: '属性 IRI', exact: true })
           .fill(triple.predicate)
-        await panel(page)
-          .getByRole('textbox', { name: '规范 RDF 对象', exact: true })
-          .fill(triple.object)
+        const objectInput = panel(page).getByRole('textbox', { name: '规范 RDF 对象', exact: true })
+        if (triple === requested[5]) {
+          const alias = `"typed string"^^<${XSD}string>`
+          const rejection = panel(page)
+            .getByRole('alert')
+            .filter({ hasText: '操作未能完成：INTERNAL_ERROR。' })
+          const rejectedBefore = await read(page)
+          expect(rejectedBefore.domain).toEqual(current.domain)
+          expect(rejectedBefore.inputSnapshotId).toBe(current.inputSnapshotId)
+          await expect(rejection).toHaveCount(0)
+          await objectInput.fill(alias)
+          await expect(objectInput).toHaveValue(alias)
+          await panel(page).getByRole('button', { name: '预览新增事实', exact: true }).click()
+          // Wait for the actual receiver failure, not an early absence of Diff.
+          await expect(rejection).toHaveText(
+            '操作未能完成：INTERNAL_ERROR。请核对当前项目或查询原操作；已输入内容保留。',
+          )
+          await expect(
+            panel(page).getByRole('button', { name: '预览新增事实', exact: true }),
+          ).toBeEnabled()
+          await expect(objectInput).toHaveValue(alias) // No silent normalization.
+          const completeDiff = panel(page).getByRole('region', {
+            name: '完整事务差异',
+            exact: true,
+          })
+          const confirmation = panel(page).getByRole('button', {
+            name: '我已核对完整差异，确认提交',
+            exact: true,
+          })
+          await expect(completeDiff).toHaveCount(0)
+          await expect(confirmation).toHaveCount(0)
+          const rejectedAfter = await read(page)
+          expect(rejectedAfter).toEqual(rejectedBefore)
+          await test.info().attach('fr201-rejected-explicit-string-alias', {
+            body: JSON.stringify(
+              {
+                alias,
+                errorText: await rejection.textContent(),
+                before: rejectedBefore,
+                after: rejectedAfter,
+                completeDiffCount: await completeDiff.count(),
+                confirmationCount: await confirmation.count(),
+              },
+              null,
+              2,
+            ),
+            contentType: 'application/json',
+          })
+        }
+        // For the string case, this is a visible user correction, never normalization.
+        await objectInput.fill(triple.object)
+        if (triple === requested[5]) await expect(objectInput).toHaveValue('"typed string"')
         await panel(page).getByRole('button', { name: '预览新增事实', exact: true }).click()
         const rows = await diff(page)
         expect(rows).toHaveLength(1)
