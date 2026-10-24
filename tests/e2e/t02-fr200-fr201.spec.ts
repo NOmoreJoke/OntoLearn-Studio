@@ -983,8 +983,8 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         sortFacts(originals.filter((_, index) => index !== 1 && index !== 3)),
       )
     } catch (originalError) {
-      // Observation only: at most 2s, inside the original case deadline with 1s
-      // margin. Never reconcile, confirm, retry, replace a bridge or expose Session.
+      // Observation awaits use at most 2s within the original case deadline with
+      // 1s margin. A timed-out read is not cancelled. No recovery or new authority.
       const deadline = Math.min(performance.now() + 2000, observedCaseStart + 179000)
       const collectionDeadline = deadline - 250 // Reserve time to persist captured results.
       const pack = (value: unknown, maxBytes: number) => {
@@ -1043,7 +1043,8 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
               : String(originalError),
             4096,
           ),
-          maxObservationMs: 2000,
+          maxDiagnosticAwaitMs: 2000,
+          timedOutReadsAreNotCancelled: true,
           maxAttachmentBytes: 262144,
           maxAttachments: 2,
           maxTotalAttachmentBytes: 524288,
@@ -1071,6 +1072,19 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
               const region = document.querySelector<HTMLElement>('[aria-label="本体项目编辑"]')
               const pending = region?.querySelector<HTMLElement>('[aria-label="原操作状态"]')
               const receipt = region?.querySelector<HTMLElement>('[aria-label="已提交回执"]')
+              const buttons = Array.from(region?.querySelectorAll('button') ?? [])
+              const keyButtons = buttons.filter((node) =>
+                [
+                  '我已核对完整差异，确认提交',
+                  '读取当前项目',
+                  '核对原操作与提交回执',
+                  '清理未提交意图并重新读取',
+                  '请求取消原任务',
+                  '预览移除原事实',
+                  '预览事实修改',
+                  '预览新增事实',
+                ].includes(node.innerText.trim()),
+              )
               return {
                 at: new Date().toISOString(),
                 panelPresent: !!region,
@@ -1088,18 +1102,37 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
                 receipt: cut(receipt?.innerText ?? '', 2048),
                 completeDiffCount:
                   region?.querySelectorAll('[aria-label="完整事务差异"]').length ?? 0,
-                buttons: Array.from(region?.querySelectorAll('button') ?? [])
+                buttonCount: buttons.length,
+                buttonsTruncated: buttons.length > 32,
+                keyButtonCount: keyButtons.length,
+                keyButtonsTruncated: keyButtons.length > 16,
+                keyButtons: keyButtons.slice(0, 16).map((node) => ({
+                  text: cut(node.innerText, 128),
+                  disabled: node.disabled,
+                  visible: !!node.getClientRects().length,
+                })),
+                buttons: buttons
                   .slice(0, 32)
                   .map((node) => ({ text: cut(node.innerText, 128), disabled: node.disabled })),
-                factInputs: Array.from(region?.querySelectorAll('input') ?? [])
-                  .filter((node) =>
-                    ['主体个体 IRI', '属性 IRI', '规范 RDF 对象'].includes(
-                      node.closest('label')?.textContent?.trim() ?? '',
-                    ),
+                factInputs: Array.from(
+                  region?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+                    'input,textarea',
+                  ) ?? [],
+                )
+                  .map((node) => ({
+                    node,
+                    label: Array.from(node.closest('label')?.childNodes ?? [])
+                      .filter((child) => child.nodeType === Node.TEXT_NODE)
+                      .map((child) => child.textContent ?? '')
+                      .join('')
+                      .trim(),
+                  }))
+                  .filter(({ label }) =>
+                    ['主体个体 IRI', '属性 IRI', '规范 RDF 对象'].includes(label),
                   )
                   .slice(0, 3)
-                  .map((node) => ({
-                    label: cut(node.closest('label')?.textContent ?? '', 128),
+                  .map(({ node, label }) => ({
+                    label: cut(label, 128),
                     value: cut(node.value, 2048),
                     disabled: node.disabled,
                   })),
@@ -1108,7 +1141,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           const beforeReads = await observe('DOM before any diagnostic bridge query', dom, 49152)
           diagnostic.domBeforeReads = beforeReads
           // Persist the original view before a diagnostic query can change any view.
-          await observe(
+          const savedOriginalDOM = await observe(
             'bounded original DOM attachment before bridge queries',
             () =>
               test.info().attach('fr201-failure-dom-before-reads', {
@@ -1117,6 +1150,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
               }),
             1024,
           )
+          diagnostic.originalDOMAttachment = savedOriginalDOM
           const beforeValue = beforeReads.value as { operationIdCandidate?: unknown } | undefined
           const originalId =
             typeof beforeValue?.operationIdCandidate === 'string' &&
@@ -1126,7 +1160,11 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           diagnostic.originalOperationFromDOM = originalId
           const expectedProject = evidence.at(-1)?.after.projectId ?? null
           diagnostic.expectedProjectFromLastSuccessfulRead = expectedProject
-          let allowReads = beforeReads.status === 'fulfilled'
+          let allowReads =
+            beforeReads.status === 'fulfilled' && savedOriginalDOM.status === 'fulfilled'
+          if (!allowReads)
+            diagnostic.bridgeQueriesSkippedReason =
+              'Original DOM capture and its attachment must both complete before bridge queries'
           if (allowReads && originalId) {
             const operation = await observe(
               'existing readonly getOperation(original DOM ID)',
