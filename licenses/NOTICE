@@ -11,15 +11,17 @@ CPython 3.12.12
   Resources/licenses/python/LICENSE.txt
 
 Python runtime packages
-  rdflib 7.6.0+ontolearn.fr201.2 (based on upstream 7.6.0)
+  rdflib 7.6.0+ontolearn.fr201.3 (based on upstream 7.6.0)
     Resources/licenses/python-runtime/rdflib-7.6.0.dist-info/LICENSE
     The unchanged BSD-3-Clause App license copy retains its upstream-version path.
     Transparent local notation3 patch: RelativeIRIBaseError, UnicodeCodePointError,
     UnterminatedStringError and MissingDatatypeError identify known input rejections,
     including unterminated quoted strings and missing or invalid datatype URI references.
+    InvalidLanguageTagError and IntegerDigitLimitError additionally identify invalid
+    language tags and bare integers exceeding Python's active conversion digit limit.
     This is a downstream local revision of upstream RDFLib.
     Engine metadata original:
-    Resources/engine/_internal/rdflib-7.6.0+ontolearn.fr201.2.dist-info/LICENSE
+    Resources/engine/_internal/rdflib-7.6.0+ontolearn.fr201.3.dist-info/LICENSE
     Repository patch: packages/engine/vendor/rdflib/notation3-input-types.patch
     Repository provenance: packages/engine/vendor/rdflib/PROVENANCE.json
     These repository references do not assert their inclusion in the App.

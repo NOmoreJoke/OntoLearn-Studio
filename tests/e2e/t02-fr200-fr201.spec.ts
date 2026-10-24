@@ -821,6 +821,14 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         ['empty-literal-missing-datatype', '""^^'],
         ['unterminated-triple-quote', '"""abc'],
       ] as const
+      const knownLanguageInputs = [
+        ['numeric-primary-language', '"设备"@1'],
+        ['digit-in-primary-language', '"设备"@zh1'],
+        // Valid language syntax, but ADR-0002 requires the exact lowercase
+        // canonical spelling. Do not silently normalize the caller's input.
+        ['noncanonical-language-case', '"canonical-case-control"@de-CH-1901'],
+      ] as const
+      const overlongBareInteger = '9'.repeat(4301)
       const knownAuthorityInputs = [
         ['unclosed-ipv6', '<http://[>', 'http://['],
         ['unopened-ipv6', '<http://]>', 'http://]'],
@@ -928,6 +936,17 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           predicate: property.iri,
           object: `"2026-10-24T10:30:00+00:00"^^<${XSD}dateTime>`,
         },
+        {
+          subject: entities[0]!.iri,
+          predicate: property.iri,
+          object: '"English numeric subtag"@en-001',
+        },
+        {
+          subject: entities[0]!.iri,
+          predicate: property.iri,
+          // Digits in later subtags remain valid; canonical language is lowercase.
+          object: '"Deutsches Zahlensegment"@de-ch-1901',
+        },
       ]
       const originals: Fact[] = []
       for (const triple of requested) {
@@ -998,6 +1017,16 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         if (triple === requested[5]) {
           for (const [name, input] of knownQuoteAndDatatypeInputs)
             await rejectCallerObject('add', input, current, `fr201-rejected-new-${name}`)
+        }
+        if (triple === requested[5]) {
+          for (const [name, input] of knownLanguageInputs)
+            await rejectCallerObject('add', input, current, `fr201-rejected-new-${name}`)
+          await rejectCallerObject(
+            'add',
+            overlongBareInteger,
+            current,
+            'fr201-rejected-new-overlong-integer',
+          )
         }
         if (triple === requested[5]) {
           const subject = panel(page).getByRole('textbox', { name: '主体个体 IRI', exact: true })
@@ -1073,6 +1102,8 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       for (const [index, object] of [
         [0, '<urn:t02:matrix:object3>'],
         [2, '"plain edited"'],
+        [11, '"English numeric subtag edited"@en-001'],
+        [12, '"Deutsches Zahlensegment bearbeitet"@de-ch-1901'],
       ] as const) {
         const original = originals[index]!
         await loadFact(page, original)
@@ -1091,6 +1122,19 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
             await rejectCallerObject('edit', input, current, `fr201-rejected-edit-${name}`)
             await expect(originalId).toHaveText(original.id)
           }
+          for (const [name, input] of knownLanguageInputs) {
+            await expect(originalId).toHaveText(original.id)
+            await rejectCallerObject('edit', input, current, `fr201-rejected-edit-${name}`)
+            await expect(originalId).toHaveText(original.id)
+          }
+          await expect(originalId).toHaveText(original.id)
+          await rejectCallerObject(
+            'edit',
+            overlongBareInteger,
+            current,
+            'fr201-rejected-edit-overlong-integer',
+          )
+          await expect(originalId).toHaveText(original.id)
           for (const [name, object] of knownAuthorityInputs) {
             await expect(originalId).toHaveText(original.id)
             await rejectCallerObject('edit', object, current, `fr201-rejected-edit-${name}`)
