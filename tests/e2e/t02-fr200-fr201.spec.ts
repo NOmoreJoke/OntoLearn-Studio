@@ -805,7 +805,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           const alias = `"typed string"^^<${XSD}string>`
           const rejection = panel(page)
             .getByRole('alert')
-            .filter({ hasText: '操作未能完成：INTERNAL_ERROR。' })
+            .filter({ hasText: '操作未能完成：INVALID_REQUEST。' })
           const rejectedBefore = await read(page)
           expect(rejectedBefore.domain).toEqual(current.domain)
           expect(rejectedBefore.inputSnapshotId).toBe(current.inputSnapshotId)
@@ -813,9 +813,9 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           await objectInput.fill(alias)
           await expect(objectInput).toHaveValue(alias)
           await panel(page).getByRole('button', { name: '预览新增事实', exact: true }).click()
-          // Wait for the actual receiver failure, not an early absence of Diff.
+          // Wait for the controlled receiver rejection, not an early absence of Diff.
           await expect(rejection).toHaveText(
-            '操作未能完成：INTERNAL_ERROR。请核对当前项目或查询原操作；已输入内容保留。',
+            '操作未能完成：INVALID_REQUEST。请核对当前项目或查询原操作；已输入内容保留。',
           )
           await expect(
             panel(page).getByRole('button', { name: '预览新增事实', exact: true }),
