@@ -323,16 +323,18 @@ def test_final_fee_refusal_preserves_scope_and_same_host_continues(
     ]
 
 
+@pytest.mark.parametrize("method", ["query.result.rowsPage", "query.result.textPage"])
 @pytest.mark.parametrize("change", ["unknown", "replacement"])
-def test_rows_scope_cannot_lend_or_refund_prepaid_fee(named_owned, change):
+def test_page_scope_cannot_lend_or_refund_prepaid_fee(named_owned, change, method):
     actor, store, _ = named_owned
     project, binding = saved_query(actor, store)
     host, admission = actor.mainline, store._read_admission
-    params = {"binding": binding, "pageSize": 200, "cursor": None}
-    original, successor = (
-        frame(actor, "query.result.rowsPage", params),
-        frame(actor, "query.result.rowsPage", params),
-    )
+    params = {
+        "binding": binding,
+        "cursor": None,
+        **({"pageSize": 200} if method.endswith("rowsPage") else {"maxUtf8Bytes": 32768}),
+    }
+    original, successor = frame(actor, method, params), frame(actor, method, params)
     host.begin(original)
     reply = host.current
     before = ledger(reply)
@@ -369,13 +371,17 @@ def test_rows_scope_cannot_lend_or_refund_prepaid_fee(named_owned, change):
     assert (original["id"] in host.replies) is (change == "unknown")
 
 
-def test_rows_prepaid_material_cannot_be_consumed_twice(named_owned):
+@pytest.mark.parametrize("method", ["query.result.rowsPage", "query.result.textPage"])
+def test_page_prepaid_material_cannot_be_consumed_twice(named_owned, method):
     actor, store, _ = named_owned
     _, binding = saved_query(actor, store)
     host, admission = actor.mainline, store._read_admission
-    request_ = frame(
-        actor, "query.result.rowsPage", {"binding": binding, "pageSize": 200, "cursor": None}
-    )
+    params = {
+        "binding": binding,
+        "cursor": None,
+        **({"pageSize": 200} if method.endswith("rowsPage") else {"maxUtf8Bytes": 32768}),
+    }
+    request_ = frame(actor, method, params)
     host.begin(request_)
     with pytest.raises(JobFault) as denied:
         with store._transaction():

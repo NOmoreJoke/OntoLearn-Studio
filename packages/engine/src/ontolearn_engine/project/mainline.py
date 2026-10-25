@@ -167,7 +167,7 @@ class _WriteAdmission:
         # A direct privileged Store fixture is not a caller/write grant. Real
         # named requests and original application/job producers mark this scope.
         token = _WriteScope(owner is None or reply is not None, reply)
-        if reply is not None and reply.method == "query.result.rowsPage":
+        if reply is not None and reply.method in {"query.result.rowsPage", "query.result.textPage"}:
             owner.check_reply(reply)
             # This producer greedily fills a legal prefix up to its budget.
             # Keep room for its mandatory outer final check. Other purposes
@@ -208,7 +208,7 @@ class _WriteAdmission:
         owner = self.owner
         if token.reply is not None:
             owner.check_reply(token.reply)
-            if token.reply.method == "query.result.rowsPage":
+            if token.reply.method in {"query.result.rowsPage", "query.result.textPage"}:
                 if token.charged is not token.reply or not self.charged_reply:
                     fault("INVALID_STATE")
             elif token.charged is not None or self.charged_reply:
