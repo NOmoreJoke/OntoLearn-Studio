@@ -376,7 +376,8 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
                         "afterError": after_error,
                     },
                     ensure_ascii=False,
-                )
+                ),
+                encoding="utf-8",
             )
             assert_rejected(refused)
             assert current["ok"] and current["result"]["projectRevision"] == base
@@ -400,7 +401,8 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
                 assert facts == {original["id"]: {**original, "object": expected}}
             assert session == hello["engineSessionId"]
             (tmp_path / "stdio-recovery-trace.json").write_text(
-                json.dumps({"job": job, "marker": marker, "after": after}, ensure_ascii=False)
+                json.dumps({"job": job, "marker": marker, "after": after}, ensure_ascii=False),
+                encoding="utf-8",
             )
         finally:
             process.stdin.close()
@@ -412,7 +414,9 @@ def test_real_stdio_rejection_readback_and_canonical_confirm_job_marker(tmp_path
                     forced = True
                     process.kill()
                     await process.wait()
-                (tmp_path / "stdio-wire.json").write_text(json.dumps(wire, ensure_ascii=False))
+                (tmp_path / "stdio-wire.json").write_text(
+                    json.dumps(wire, ensure_ascii=False), encoding="utf-8"
+                )
                 (tmp_path / "stdio.stderr.txt").write_bytes(await process.stderr.read())
                 (tmp_path / "stdio-exit.json").write_text(
                     json.dumps({"returnCode": process.returncode, "forcedKill": forced})
@@ -483,7 +487,7 @@ def test_known_caller_objects_reject_then_same_host_reads_and_commits(
         "unknown": [key for key, item in host.replies.items() if item.unknown],
     }
     path = tmp_path / "typed-rejection-trace.json"
-    path.write_text(json.dumps(trace, ensure_ascii=False))
+    path.write_text(json.dumps(trace, ensure_ascii=False), encoding="utf-8")
     assert_rejected(refused)
     assert current["ok"] and current["result"]["projectRevision"] == 1, canonical(current)
     assert after_error["ok"] and after_error["result"] == before, canonical(after_error)
@@ -517,7 +521,7 @@ def test_known_caller_objects_reject_then_same_host_reads_and_commits(
         added = {**fact('"next"'), "owner": None, "source_row": None, "managed_value": None}
         assert facts == {original_fact["id"]: original_fact, added["id"]: added}
     trace.update({"accepted": accepted, "job": job, "marker": marker, "after": after})
-    path.write_text(json.dumps(trace, ensure_ascii=False))
+    path.write_text(json.dumps(trace, ensure_ascii=False), encoding="utf-8")
 
 
 @pytest.mark.parametrize(

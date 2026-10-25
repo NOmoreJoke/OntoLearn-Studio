@@ -272,7 +272,7 @@ async def stdio(database, trace_path):
             if process.returncode is None:
                 process.kill()
                 await process.wait()
-            trace_path.write_text(json.dumps(wire, ensure_ascii=False))
+            trace_path.write_text(json.dumps(wire, ensure_ascii=False), encoding="utf-8")
     assert process.returncode == 0, (await process.stderr.read()).decode()
 
 
