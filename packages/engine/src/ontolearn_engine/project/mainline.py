@@ -60,6 +60,7 @@ class _WriteScope:
     reply: object = None
     charged: object = None
     holding: object = None
+    checked: bool = False
 
 
 class _WriteAdmission:
@@ -165,8 +166,23 @@ class _WriteAdmission:
             fault("PERMISSION_DENIED")
         # A direct privileged Store fixture is not a caller/write grant. Real
         # named requests and original application/job producers mark this scope.
-        self.transaction = _WriteScope(owner is None or reply is not None, reply)
-        return self.transaction
+        token = _WriteScope(owner is None or reply is not None, reply)
+        if reply is not None and reply.method == "query.result.rowsPage":
+            owner.check_reply(reply)
+            # This producer greedily fills a legal prefix up to its budget.
+            # Keep room for its mandatory outer final check. Other purposes
+            # retain their original charge timing, including scopes which roll
+            # back before material validation and then persist a diagnostic.
+            scalar, objects, work = self._final_material_cost()
+            owner.reserve(reply, scalar, objects, work)
+            token.charged = reply
+            self.charged_reply = True
+        self.transaction = token
+        return token
+
+    @staticmethod
+    def _final_material_cost():
+        return 8 * READ_LIMITS.schema_bytes + 64 * 32 * 32, 8192, 2 * READ_LIMITS.validation_work
 
     def mark_controlled(self):
         self.check_store()
@@ -182,21 +198,30 @@ class _WriteAdmission:
             fault("PERMISSION_DENIED")
         if not token.controlled:
             return
-        if self.active is not None or self.charged_reply:
+        if self.active is not None or token.checked:
             fault("INVALID_STATE")
+        token.checked = True
         # Only schema/table metadata and scalar aggregates are materialized.
         # 8*schema covers retained names/current PRAGMA/escaped SQL copies;
         # 64*32*32 covers bounded per-column/per-table scaffolding. This is the
         # original logical accounting unit, not an RSS/SQLite-native-I/O claim.
-        scalar = 8 * READ_LIMITS.schema_bytes + 64 * 32 * 32
-        objects, work = 8192, 2 * READ_LIMITS.validation_work
         owner = self.owner
         if token.reply is not None:
             owner.check_reply(token.reply)
-            owner.reserve(token.reply, scalar, objects, work)
-            self.charged_reply = True  # Remains charged until real finish_reply.
-            token.charged = token.reply
+            if token.reply.method == "query.result.rowsPage":
+                if token.charged is not token.reply or not self.charged_reply:
+                    fault("INVALID_STATE")
+            elif token.charged is not None or self.charged_reply:
+                fault("INVALID_STATE")
+            else:
+                scalar, objects, work = self._final_material_cost()
+                owner.reserve(token.reply, scalar, objects, work)
+                token.charged = token.reply
+                self.charged_reply = True
         else:
+            if self.charged_reply:
+                fault("INVALID_STATE")
+            scalar, objects, work = self._final_material_cost()
             others = (list(owner.replies.values()) if owner is not None else []) + self.holdings()
             if (
                 len(self.retained) >= MAX_REPLIES
