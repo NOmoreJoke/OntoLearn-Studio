@@ -127,6 +127,16 @@ jobs:
       - run: npm ci
       - run: uv sync --frozen
       - run: npm run engine:check
+        if: runner.os != 'Windows'
+      # Diagnostic only: first-failure evidence; not acceptance or merge approval.
+      - name: Windows engine first-failure diagnostic (not acceptance)
+        if: runner.os == 'Windows'
+        env:
+          PYTEST_ADDOPTS: '-vv --maxfail=1 --tb=short'
+        run: |
+          uv run --frozen python -c "import json, locale, os, sys; stream = open(os.devnull, 'w'); print(json.dumps({'python': sys.version, 'localeEncoding': locale.getencoding(), 'preferredEncoding': locale.getpreferredencoding(False), 'utf8Mode': sys.flags.utf8_mode, 'defaultFileEncoding': stream.encoding}, sort_keys=True)); stream.close()"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run engine:check
       - run: npm run typecheck
       - run: npm run build
       - run: npm run test:e2e
