@@ -39,3 +39,11 @@ T02 FR-200／FR-201 已完成同版静态、开发GUI、package094机械与包�
 ## 2026-10-25 T02 当前快照追加
 
 受审候选为 `aff386f6`（29 提交／71 差异叶／1355 源）；O036 同源完整 check 自然 0、O037 同版真实六例 GUI 通过。R05 两方原判均为 ConditionalPass，ROOT 已接收推送前技术审查范围，不是无条件整候选双 Pass。PR16 已存在、head 58c9 且未合并；CI36 的 Quality／Windows 取消及 79 个 Windows 失败标记尚未关闭，aff 未 push、无新 CI；本次仅获一次本地证据归档提交，远端需另票。原 094 旧包桥接及所有原 HOLD 保留，合并可用仍 2/17。Q6 用户已采用决定单推荐规则／规范版本；其原验证义务及其他独立边界不因该决定消失。以上旧段落保留为历史快照；当前证据、原条款覆盖与逐意见处置见 [T02 状态追加](reviews/T02/status.md)。
+
+## 2026-10-25 T02 当前快照追加：831813c6／R06
+
+受审候选为 `831813c6`（tree `944724a8`，31提交／79叶／1363源／5构建）；O041三模块151 PASS与原UV完整check自然0，O042本head原六GUI6 PASS。O041执行时Git为934加两测试精确UTF-8修订，提交后物理源桥接，不冒Windows已绿。父934的run40171564866为macOS及Quality成功（含packaged recovery）、Windows因cp1252追踪写首败，旧CI36的79F逐例原因仍未知；新绿不得倒填旧因果。
+
+fresh R06 Z原判ConditionalPass、MiniMax原判verification-incomplete均保留；两作者明确整个候选无push前技术阻断，20当轮位置及35旧位置已处分。ROOT已接收限定技术阶段，本票仅本地纯证据归档，仍无新push／CI／merge授权；当前远端feature934、develop583，PR16 open未合并，8318无新CI。未来须同受审全集、原有有据skip、自然0、无失败／早停／取消／timeout／NOTRUN、Windows后继及三job全success，不能只凭diagnostic绿验收。
+
+FR200层级／domain／range／type／metadata原28笔CRUD已证，不后移范围；D.2具体下游GUI未逐类验，公共失效机制与九行正负例已有。Q6／canonical无新人类前置，全部具名OPEN窗口与法律／设备／容量／SQLite物理保护／UNKNOWN／Undo／退出码HOLD保留；原失败不覆盖、旧094不称新包。合并可用仍2/17，Goal／发布未完成。详见[T02当前追加](reviews/T02/status.md)及[R06索引](reviews/T02/fr200-fr201-20261024/round-06/artifact-manifest.json)；本节不改以上历史快照或R04／R05原件。
