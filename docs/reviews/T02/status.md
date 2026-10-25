@@ -32,3 +32,15 @@
 - unknown parser／N3／Store／坏快照／损坏SQLite物理保护、standalone EOF残余、容量口径／旧超限库恢复、签名／公证／法律与_distutils来源、跨OS／参考设备／低端硬件HOLD保留。FullRead逻辑相等不代表物理DB零写，PID缺席不代表全部自然退出0或全后代回收。
 - 旧R03 ZPass／MMFail、0e7完整check TIMEOUT与GUI容量失败、O027三FAIL、093的13PASS／1FAIL／2skip／2NOTRUN、受控RED、text001及fixture／guard／AX等首败均保留，不覆盖或迁移旧PASS。
 - 本次不复跑产品、不制造包、不修改验收；未push／PR／CI／merge，不增加2/17。远端与发布阶段分别由ROOT按既有门禁决定。
+
+
+## 2026-10-25 当前快照：aff386f6／R05 推送前技术审查已接收
+
+本节追加当前状态；以上 cb8／O029 数值与未推送陈述保留为当时快照，不作为当前远端事实。
+
+- 固定受审候选：base `583c05c7870ba0f8f642e3eeea1d0590e5859ca2` → head `aff386f6b43cf60a847c9c9597265b0b1b477095`，tree `2d9b113b4b6ca25049c157c2b94fc79db42ef38d`；29 累计提交、71 差异叶、1355 tracked 源、5 构建。此后本次只追加证据归档与状态，不改变受审实现。
+- 同版本地证据：O035 裸调用首败两处 Python ENOENT 原样保留；O036 按授权使用原 UV 冻结环境的一次纠正，完整 check 自然 0，TS 1892 PASS、Python 3719 PASS／50 skip、Ruff 379。O029 的 Ruff 369 是另一真实历史口径，差异原因不推定。O037 在 aff 新构建真实六例 6 PASS，57 事务、43 拒绝、58 附件。原 094 包全部 912 成员不变，旧运行按 ROOT 有界桥接保留，不写成 aff 新包运行。
+- 全新 R05 双指定任务均实际自然终态，原文结论均为 ConditionalPass；ROOT 已接收推送前技术审查范围，**不是无条件整候选双 Pass，也未放行合并**。[两终稿及身份索引](fr200-fr201-20261024/round-05/artifact-manifest.json)、[21 新＋14 旧意见处置](fr200-fr201-20261024/round-05/disposition.md)、[原条款与真实证据映射](fr200-fr201-20261024/round-05/fr200-fr201-original-clause-evidence-map.md)均保留精确字节。
+- FR-200 类层级、domain／range、个体类型与全部元数据已在四类表单 28 笔实际 Read／CRUD 中覆盖；不采 ZCode §4.1 将其归后续的句子，不由此推全附录 C 或父 FR 整条完成。Q6 用户已采用决定单推荐规则／规范版本；既有 canonical 政策继续，未来改变才需新人类决定。
+- 当前远端：PR16 已存在且 open／未合并，head 为 `58c9bbb39338b7438e1b8ccf202c0391827d6dfb`；develop 仍 `583c05c7870ba0f8f642e3eeea1d0590e5859ca2`；aff 尚未 push、无新 CI。CI36／run 40164456782 attempt1 在旧 head 58c9，实际 PR checkout 为合成 `681ffbd0bd5e417c7097e7d9bc18ceea2605ee59`：macOS success，Quality 15 分钟取消且 packaged recovery skipped，Windows 20 分钟取消前出现 79 个 F。无真实首败断言栈或最终 pytest 总表，编码根因仍未确认；aff 只增加首败诊断配置，不能称 79F 已修或完整 Windows 验收通过。
+- 本票仅允许一次本地证据提交；push／新 CI／merge 尚未授权，需 ROOT 核证据桥接后另发精确票。完整平台 CI 及全部原 HOLD 保留，整体合并可用仍为 2/17，Goal 未完成。以上历史首败、原七份报告及未提交 AGENTS／旧审查 WIP 均不纳入本次提交。
