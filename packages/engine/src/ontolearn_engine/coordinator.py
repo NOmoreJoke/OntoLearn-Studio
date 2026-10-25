@@ -39,6 +39,7 @@ from ontolearn_engine.worker import (
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
 _JOB_READY = object()
+_BOOTSTRAP_JOB_STORE = JobStore
 
 
 class StartupInitializationFailure(Exception):
@@ -1123,6 +1124,18 @@ async def serve(
             target_format=3 if profile == "business3" else 2,
             backup_path=backup_path,
         )
+        if (
+            profile == "business3"
+            and isinstance(store, _BOOTSTRAP_JOB_STORE)
+            and os.environ.get("ONTOLEARN_TEST_MODE") != "1"
+            and ordinary_authority is None
+            and query_dispatch is None
+        ):
+            from ontolearn_engine.project.mainline import prepare_mainline_store
+
+            # The same original Store/lease restriction already covers startup
+            # reconciliation before any MainlineHost or caller reply exists.
+            prepare_mainline_store(store)
         store.reconcile_jobs()  # Same lifetime lease; no old worker can commit.
         allowed = json.loads(os.environ.get("ONTOLEARN_ALLOWED_PROJECTS", "[]"))
         if not isinstance(allowed, list) or any(not CONTRACT.validate("id", p) for p in allowed):

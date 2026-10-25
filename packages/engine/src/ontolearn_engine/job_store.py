@@ -65,6 +65,7 @@ class JobStore(Store):
         self.cursor_ttl_ms = cursor_ttl_ms
         self.max_cursor_records = max_cursor_records
         self._lease = None
+        self._read_admission = None
         parent_ready = False
         try:
             # Default2 keeps the approved lease path. Explicit3 delegates its one
@@ -123,6 +124,46 @@ class JobStore(Store):
             failures = _close_resources(owned)
             self._cleanup_failures = getattr(self, "_cleanup_failures", []) + failures
             raise
+
+    @contextmanager
+    def _transaction(self, hook: Hook = lambda _: None):
+        admission = self._read_admission
+        if admission is None or self._db.in_transaction:
+            with super()._transaction(hook):
+                yield
+            return
+        # Refused re-entry has no scope to settle. Keep this outside the try
+        # which reconciles ONLY the token this actual outer writer acquired.
+        token = admission.begin_transaction()
+
+        def boundary(phase):
+            hook(phase)
+            if phase == "before_commit":
+                # This is after ALL result/receipt/terminal writes, and after
+                # the original hook, but before the one outer COMMIT. No public
+                # reader, caller DTO, temporary reply or transaction is minted.
+                admission.check_final_material(token)
+
+        try:
+            with super()._transaction(boundary):
+                yield
+        except BaseException as error:
+            try:
+                admission.completed(token, error)
+            except BaseException as cleanup:
+                # Cleanup cannot replace an unknown original transaction cause
+                # with a finite business error or silently release its holding.
+                self._cleanup_failures = getattr(self, "_cleanup_failures", []) + [
+                    ("writeAdmission", cleanup)
+                ]
+                admission.settlement_failed(token)
+            raise
+        else:
+            try:
+                admission.completed(token, None)
+            except BaseException as cleanup:
+                admission.settlement_failed(token)
+                raise RuntimeError("Unknown write admission settlement failure") from cleanup
 
     def _migrate_query_payloads(self, hook):
         """Add a private catalog without changing either original Job schema hash.
@@ -1670,6 +1711,8 @@ class JobStore(Store):
 
     def _save(self, job):
         self._valid("job", job)
+        if self._read_admission is not None:
+            self._read_admission.mark_controlled()
         self._db.execute("UPDATE jobs SET dto=? WHERE id=?", (canonical(job), job["jobId"]))
         return job
 
@@ -1771,6 +1814,8 @@ class JobStore(Store):
 
     def commit_job(self, identity, hook: Hook = lambda _: None):
         with self._application(self._job(identity)["projectId"], "commit", hook):
+            if self._read_admission is not None:
+                self._read_admission.mark_controlled()
             job = self._job(identity)
             if job["state"] in TERMINAL:
                 return job
@@ -2122,6 +2167,8 @@ class JobStore(Store):
 
     def start_job_run(self, identity, config):
         with self._transaction():
+            if self._read_admission is not None:
+                self._read_admission.mark_controlled()
             job = self._job(identity)
             if job["state"] != "running" or job["commitProgress"]["mode"] != "rounds":
                 fault("INVALID_STATE")

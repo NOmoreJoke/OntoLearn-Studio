@@ -61,6 +61,113 @@ class ReadLimits:
 
 
 @dataclass(frozen=True)
+class MaterialProfile:
+    rows: int
+    scan_bytes: int
+    decoded_bytes: int
+    plan_bytes: int
+    repeats: int
+    projects: int
+
+    def admit_terminal_growth(self, limits, pending, pending_runs):
+        # ERROR_CATALOG limits error to 2048 encoded bytes. Existing unsuccessful
+        # paths change a job DTO (<=2742 extra bytes including marker/progress,
+        # safe-integer timestamps/version) and at most one 269-byte run_terminal
+        # row. 4096 per nonterminal includes both, never discounts old fields.
+        extra = 4096 * pending
+        if (
+            self.rows + pending_runs > limits.validation_rows
+            or self.decoded_bytes + self.plan_bytes + extra > limits.validation_bytes
+            or 2 * (self.scan_bytes + extra)
+            + (self.decoded_bytes + self.plan_bytes + extra) * self.repeats
+            > limits.validation_work
+        ):
+            raise HostReadFault("limit")
+
+
+def material_profile(db, limits, *, _mainline_core_material=True):
+    """Same admission aggregates for a reader or an original writer transaction.
+
+    Caller owns authorization, transaction and finite prepayment. No payloads,
+    domain validation, new read authority or transactions are created here.
+    """
+    if type(_mainline_core_material) is not bool:
+        raise HostReadFault("input")
+    schema = db.execute(
+        "SELECT count(*),coalesce(sum(length(CAST(sql AS BLOB))),0) FROM sqlite_master"
+    ).fetchone()
+    if schema[0] > 256 or schema[1] > limits.schema_bytes:
+        raise HostReadFault("limit")
+    tables = [row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+    if len(tables) > 64:
+        raise HostReadFault("limit")
+    total_rows = total_bytes = scan_bytes = 0
+    counts = {}
+    plan_sizes = None
+    # Default readers retain the original all-table material bound. The
+    # mainline core reader additionally distinguishes SQL scans from decoded
+    # material; both passes remain prepaid. Identifiers come from SQLite.
+    for table in tables:
+        quoted = '"' + table.replace('"', '""') + '"'
+        columns = db.execute(f"PRAGMA table_info({quoted})").fetchall()
+        if len(columns) > 32:
+            raise HostReadFault("limit")
+        sizes = "+".join(
+            'coalesce(length(CAST("' + row[1].replace('"', '""') + '" AS BLOB)),0)'
+            for row in columns
+        )
+        count, size = db.execute(
+            f"SELECT count(*),coalesce(sum({sizes}),0) FROM {quoted}"
+        ).fetchone()
+        counts[table] = count
+        total_rows += count
+        scan_bytes += size
+        if not _mainline_core_material or table not in {"job_blobs", "job_plans"}:
+            total_bytes += size
+        if table == "job_plans":
+            plan_sizes = sizes
+        if total_rows > limits.validation_rows or total_bytes > limits.validation_bytes:
+            raise HostReadFault("limit")
+    count = counts.get("projects", 0)
+    # Conservative repeated-decode work guard for immutable histories.
+    # Not a timer or an assertion of exact CPU/RSS usage.
+    repeats = counts.get("app_operations", 0) + counts.get("snapshots", 0)
+    work = scan_bytes * (1 + repeats)
+    if _mainline_core_material:
+        # Prepay scan/authorization aggregation and repeated decoded material.
+        # Authorized plan bytes are nonnegative and added below; this lower
+        # bound rejects inevitable excess before the second SQL aggregate.
+        work = 2 * scan_bytes + total_bytes * repeats
+    if count > limits.projects or work > limits.validation_work:
+        raise HostReadFault("limit")
+    if _mainline_core_material:
+        # All claim contexts and confirmations were bounded in pass one.
+        # Only application-authorized plans can be materialized by _history;
+        # unconsumed preview plans/blobs are not decoded by the core reader.
+        if plan_sizes is None or "operation_claims" not in counts:
+            raise HostReadFault("structure")
+        plan_bytes = db.execute(
+            f"SELECT coalesce(sum({plan_sizes}),0) FROM job_plans WHERE ref IN ("
+            "SELECT CASE WHEN json_valid(context) THEN "
+            "json_extract(context,'$.request.authorization.preparedPlanRef') END "
+            "FROM operation_claims WHERE kind='application')"
+        ).fetchone()[0]
+        if (
+            total_bytes + plan_bytes > limits.validation_bytes
+            or work + plan_bytes * repeats > limits.validation_work
+        ):
+            raise HostReadFault("limit")
+    return MaterialProfile(
+        total_rows,
+        scan_bytes,
+        total_bytes,
+        plan_bytes if _mainline_core_material else 0,
+        repeats,
+        count,
+    )
+
+
+@dataclass(frozen=True)
 class _Catalog:
     identity: str
     items: tuple[bytes, ...]
@@ -156,74 +263,9 @@ class ProjectHostReader:
             raise HostReadFault("structure") from None
 
     def _preflight(self, *, _mainline_core_material: bool = False) -> int:
-        if type(_mainline_core_material) is not bool:
-            raise HostReadFault("input")
-        db, limits = self._store._db, self._limits
-        schema = db.execute(
-            "SELECT count(*),coalesce(sum(length(CAST(sql AS BLOB))),0) FROM sqlite_master"
-        ).fetchone()
-        if schema[0] > 256 or schema[1] > limits.schema_bytes:
-            raise HostReadFault("limit")
-        tables = [row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")]
-        if len(tables) > 64:
-            raise HostReadFault("limit")
-        total_rows = total_bytes = scan_bytes = 0
-        counts = {}
-        plan_sizes = None
-        # Default readers retain the original all-table material bound. The
-        # mainline core reader additionally distinguishes SQL scans from decoded
-        # material; both passes remain prepaid. Identifiers come from SQLite.
-        for table in tables:
-            quoted = '"' + table.replace('"', '""') + '"'
-            columns = db.execute(f"PRAGMA table_info({quoted})").fetchall()
-            if len(columns) > 32:
-                raise HostReadFault("limit")
-            sizes = "+".join(
-                'coalesce(length(CAST("' + row[1].replace('"', '""') + '" AS BLOB)),0)'
-                for row in columns
-            )
-            count, size = db.execute(
-                f"SELECT count(*),coalesce(sum({sizes}),0) FROM {quoted}"
-            ).fetchone()
-            counts[table] = count
-            total_rows += count
-            scan_bytes += size
-            if not _mainline_core_material or table not in {"job_blobs", "job_plans"}:
-                total_bytes += size
-            if table == "job_plans":
-                plan_sizes = sizes
-            if total_rows > limits.validation_rows or total_bytes > limits.validation_bytes:
-                raise HostReadFault("limit")
-        count = counts.get("projects", 0)
-        # Conservative repeated-decode work guard for immutable histories.
-        # Not a timer or an assertion of exact CPU/RSS usage.
-        repeats = counts.get("app_operations", 0) + counts.get("snapshots", 0)
-        work = scan_bytes * (1 + repeats)
-        if _mainline_core_material:
-            # Prepay scan/authorization aggregation and repeated decoded material.
-            # Authorized plan bytes are nonnegative and added below; this lower
-            # bound rejects inevitable excess before the second SQL aggregate.
-            work = 2 * scan_bytes + total_bytes * repeats
-        if count > limits.projects or work > limits.validation_work:
-            raise HostReadFault("limit")
-        if _mainline_core_material:
-            # All claim contexts and confirmations were bounded in pass one.
-            # Only application-authorized plans can be materialized by _history;
-            # unconsumed preview plans/blobs are not decoded by the core reader.
-            if plan_sizes is None or "operation_claims" not in counts:
-                raise HostReadFault("structure")
-            plan_bytes = db.execute(
-                f"SELECT coalesce(sum({plan_sizes}),0) FROM job_plans WHERE ref IN ("
-                "SELECT CASE WHEN json_valid(context) THEN "
-                "json_extract(context,'$.request.authorization.preparedPlanRef') END "
-                "FROM operation_claims WHERE kind='application')"
-            ).fetchone()[0]
-            if (
-                total_bytes + plan_bytes > limits.validation_bytes
-                or work + plan_bytes * repeats > limits.validation_work
-            ):
-                raise HostReadFault("limit")
-        return count
+        return material_profile(
+            self._store._db, self._limits, _mainline_core_material=_mainline_core_material
+        ).projects
 
     def _validate(self) -> None:
         # These are existing read-only validators, not snapshot()/project_get().

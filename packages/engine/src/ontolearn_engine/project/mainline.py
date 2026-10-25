@@ -46,6 +46,186 @@ READ_WORK = 536870912
 MAX_REPLIES = 16
 
 
+@dataclass(eq=False)
+class _WriteHolding:
+    # Actual writer aggregation holding, never a reply/read/permission ticket.
+    scalar: int
+    objects: int
+    work: int
+
+
+@dataclass(eq=False)
+class _WriteScope:
+    controlled: bool
+    reply: object = None
+    charged: object = None
+    holding: object = None
+
+
+class _WriteAdmission:
+    def __init__(self, store):
+        from ontolearn_engine.job_store import JobStore
+
+        if not isinstance(store, JobStore) or store.actual_format != 3:
+            raise ValueError("Original business3 Store required")
+        if store.contract.ERROR_CATALOG["maxEncodedBytes"] != 2048:
+            raise ValueError("Terminal growth proof requires the pinned error contract")
+        self.store, self.connection, self.lease = store, store._db, store._format3_lease
+        self.owner = None
+        self.active = None
+        self.retained = []
+        self.charged_reply = False
+        self.transaction = None
+
+    def holdings(self):
+        return self.retained + ([self.active] if self.active is not None else [])
+
+    def check_store(self):
+        if (
+            self.store._db is not self.connection
+            or self.store._format3_lease is not self.lease
+            or self.lease is None
+            or self.store._read_admission is not self
+        ):
+            fault("PERMISSION_DENIED")
+
+    def bind(self, owner):
+        from ontolearn_engine.coordinator import Coordinator
+
+        self.check_store()
+        if (
+            self.owner is not None
+            or type(owner) is not MainlineHost
+            or not isinstance(owner.actor, Coordinator)
+            or owner.store is not self.store
+            or owner.actor.store is not self.store
+            or owner.actor.profile != "business3"
+            or owner.actor.test_mode
+            or owner.actor.mainline is not None
+            or owner.actor.query_dispatch is not None
+        ):
+            fault("PERMISSION_DENIED")
+        self.owner = owner
+
+    def begin_transaction(self):
+        self.check_store()
+        if self.transaction is not None:
+            # In particular, after_commit callbacks cannot open another outer
+            # scope and settle/refund this still-unfinished writer's holding.
+            fault("INVALID_STATE")
+        owner = self.owner
+        reply = owner.current if owner is not None else None
+        if reply is not None and owner.replies.get(reply.request_id) is not reply:
+            fault("PERMISSION_DENIED")
+        # A direct privileged Store fixture is not a caller/write grant. Real
+        # named requests and original application/job producers mark this scope.
+        self.transaction = _WriteScope(owner is None or reply is not None, reply)
+        return self.transaction
+
+    def mark_controlled(self):
+        self.check_store()
+        if self.transaction is None:
+            fault("INVALID_STATE")
+        self.transaction.controlled = True
+
+    def check_final_material(self, token):
+        from ontolearn_engine.project.project_host import material_profile
+
+        self.check_store()
+        if self.transaction is not token:
+            fault("PERMISSION_DENIED")
+        if not token.controlled:
+            return
+        if self.active is not None or self.charged_reply:
+            fault("INVALID_STATE")
+        # Only schema/table metadata and scalar aggregates are materialized.
+        # 8*schema covers retained names/current PRAGMA/escaped SQL copies;
+        # 64*32*32 covers bounded per-column/per-table scaffolding. This is the
+        # original logical accounting unit, not an RSS/SQLite-native-I/O claim.
+        scalar = 8 * READ_LIMITS.schema_bytes + 64 * 32 * 32
+        objects, work = 8192, 2 * READ_LIMITS.validation_work
+        owner = self.owner
+        if token.reply is not None:
+            owner.check_reply(token.reply)
+            owner.reserve(token.reply, scalar, objects, work)
+            self.charged_reply = True  # Remains charged until real finish_reply.
+            token.charged = token.reply
+        else:
+            others = (list(owner.replies.values()) if owner is not None else []) + self.holdings()
+            if (
+                len(self.retained) >= MAX_REPLIES
+                or sum(item.scalar for item in others) + scalar + READ_LIMITS.retained_bytes
+                > HELD_BYTES
+                or sum(item.objects for item in others) + objects > HELD_OBJECTS
+                or work > READ_WORK
+            ):
+                fault("RESOURCE_LIMIT", resource="memory")
+            self.active = _WriteHolding(scalar, objects, work)
+            token.holding = self.active
+        try:
+            profile = material_profile(self.connection, READ_LIMITS, _mainline_core_material=True)
+            # All accepted, nonterminal jobs in this original DB count, not just
+            # the selected project's job. Invalid JSON is never called terminal.
+            pending, runs = self.connection.execute(
+                "SELECT count(*),coalesce(sum(run IS NOT NULL),0) FROM jobs WHERE "
+                "CASE WHEN json_valid(dto) THEN coalesce(json_extract(dto,'$.state'),'') "
+                "ELSE '' END NOT IN ('succeeded','failed','cancelled')"
+            ).fetchone()
+            profile.admit_terminal_growth(READ_LIMITS, pending, runs)
+        except HostReadFault as error:
+            if error.reason != "limit":
+                raise
+            fault("RESOURCE_LIMIT", resource="page")
+
+    def retain_unknown(self, token):
+        if token.holding is not None and not any(x is token.holding for x in self.retained):
+            self.retained.append(token.holding)
+        for reply in (token.reply, token.charged):
+            if reply is not None:
+                reply.unknown = True
+                if self.owner is not None and self.owner.replies.get(reply.request_id) is not reply:
+                    if not any(x is reply for x in self.retained):
+                        self.retained.append(reply)
+        if self.owner is not None:
+            self.owner.hold = True
+
+    def settlement_failed(self, token):
+        # Scope keeps the original references even if a faulty cleanup callback
+        # already cleared the shared fields. Never retry/refund this scope.
+        self.retain_unknown(token)
+        self.transaction = token
+        self.active = None
+        self.charged_reply = False
+
+    def completed(self, token, error):
+        import asyncio
+
+        from ontolearn_engine.coordinator import ServiceFault
+
+        if self.transaction is not token:
+            fault("PERMISSION_DENIED")
+        known = error is None or isinstance(
+            error, (JobFault, Conflict, ServiceFault, asyncio.CancelledError)
+        )
+        if not known:
+            self.retain_unknown(token)
+        self.active = None
+        self.charged_reply = False
+        self.transaction = None
+
+
+def prepare_mainline_store(store):
+    """Trusted bootstrap/adapter only; adds a restriction, never write authority."""
+    admission = store._read_admission
+    if admission is None:
+        admission = _WriteAdmission(store)
+        store._read_admission = admission
+    if type(admission) is not _WriteAdmission:
+        fault("PERMISSION_DENIED")
+    admission.check_store()
+    return admission
+
+
 class ExampleResourceFault(ValueError):
     """Fixed internal resource failure; paths and OS errors never cross RPC."""
 
@@ -368,6 +548,7 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.replies = {}
         self.closed = False
         self.hold = False
+        prepare_mainline_store(self.store).bind(self)
 
     @property
     def owner_id(self):
@@ -482,6 +663,7 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
 
     def reserve(self, reply, scalar, objects, work):
         others = [r for r in self.replies.values() if r is not reply]
+        others += self.store._read_admission.holdings()
         if (
             sum(r.scalar for r in others)
             + reply.scalar
