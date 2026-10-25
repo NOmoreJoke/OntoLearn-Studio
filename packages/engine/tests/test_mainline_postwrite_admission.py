@@ -467,6 +467,198 @@ def test_same_store_dto_cannot_bind_or_supply_budget(tmp_path):
         store.close()
 
 
+@pytest.mark.parametrize("unfinished", [False, True])
+def test_bootstrap_unsettled_writer_cannot_be_adopted_as_clean(tmp_path, unfinished):
+    store = JobStore(tmp_path / "bootstrap-unsettled.sqlite", contract=CONTRACT, target_format=3)
+    admission = prepare_mainline_store(store)
+    transaction = None
+    try:
+        if unfinished:
+            transaction = store._transaction()
+            transaction.__enter__()
+        else:
+
+            def fail_after_commit(phase):
+                if phase == "after_commit":
+                    raise RuntimeError("original bootstrap uncertainty")
+
+            with pytest.raises(RuntimeError, match="original bootstrap uncertainty"):
+                with store._transaction(fail_after_commit):
+                    pass
+            assert admission.retained
+        original = (tuple(admission.retained), admission.transaction, admission.active)
+        with pytest.raises(JobFault) as denied:
+            Coordinator(store, profile="business3", _ready=_JOB_READY)
+        assert denied.value.code == "PERMISSION_DENIED"
+        assert store._read_admission is admission and admission.owner is None
+        assert (tuple(admission.retained), admission.transaction, admission.active) == original
+    finally:
+        if transaction is not None:
+            transaction.__exit__(None, None, None)
+        store.close()
+
+
+def test_clean_close_hands_original_restriction_to_real_successor(owned):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    previous, admission = actor.mainline, store._read_admission
+    params = {"projectId": project, "baseRevision": 0, "intent": "change", "plan": {}}
+    request = frame(actor, "changeset.preview", params)
+    previous.begin(request)
+    proof = previous.ownership_proof(params, method="changeset.preview")
+    actor.finish_query_reply(request["id"], emitted=True)
+    identity = (previous.owner_id, previous.host, previous.session)
+    connection, lease = store._db, store._format3_lease
+    previous.close()
+    successor = Coordinator(store, profile="business3", _ready=_JOB_READY)
+    try:
+        host = successor.mainline
+        assert store._read_admission is admission and admission.owner is host
+        assert store._db is connection and store._format3_lease is lease
+        assert host is not previous and host.owner_id != identity[0]
+        assert host.host is None and host.session is None and host.selected is None
+        assert host.generation == 0 and not host.replies and not admission.retained
+        assert exchange(successor, "hello", {"supportedVersions": [3], "clientId": uid()})["ok"]
+        assert host.host != identity[1] and host.session != identity[2]
+        with pytest.raises(JobFault) as denied:
+            proof.check(store, project)
+        assert denied.value.code == "PERMISSION_DENIED"
+        assert exchange(successor, "project.open", {"projectId": project})["ok"]
+        saved = exchange(
+            successor,
+            "project.draft.save",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "editor": "ontology",
+                "expectedGeneration": 0,
+                "boundDomainRevision": 0,
+                "contentJson": canonical({"note": "real successor"}),
+            },
+        )
+        assert saved["ok"], saved
+        assert exchange(successor, "project.read", {"projectId": project, "editor": "ontology"})[
+            "ok"
+        ]
+        assert admission.owner is host and not host.hold
+    finally:
+        successor.mainline.close()
+
+
+@pytest.mark.parametrize(
+    "state",
+    [
+        "live",
+        "current",
+        "unknown",
+        "hold",
+        "retained",
+        "unfinished",
+        "close-failure",
+        "query-reply",
+    ],
+)
+def test_successor_never_discards_unsettled_predecessor(owned, monkeypatch, state):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    host, admission = actor.mainline, store._read_admission
+    transaction = None
+    if state in {"current", "unknown"}:
+        request = frame(actor, "project.read", {"projectId": project, "editor": "ontology"})
+        host.begin(request)
+        if state == "unknown":
+            actor.finish_query_reply(request["id"], emitted=False)
+    elif state == "query-reply":
+        request = frame(actor, "project.get", {"projectId": project})
+        assert actor.request(request)["ok"]
+        assert actor._query_replies and host.replies
+    elif state == "hold":
+        with pytest.raises(JobFault):
+            host._host_fault(HostReadFault("structure"))
+    elif state == "retained":
+
+        def fail_after_commit(phase):
+            if phase == "after_commit":
+                raise RuntimeError("original background uncertainty")
+
+        with pytest.raises(RuntimeError, match="original background uncertainty"):
+            with store._transaction(fail_after_commit):
+                admission.mark_controlled()
+        assert host.hold and admission.retained
+    elif state == "unfinished":
+        transaction = store._transaction()
+        transaction.__enter__()
+        admission.mark_controlled()
+    elif state == "close-failure":
+        original_close = host.reader.close
+
+        def broken_close():
+            raise RuntimeError("original reader close failure")
+
+        monkeypatch.setattr(host.reader, "close", broken_close)
+        with pytest.raises(RuntimeError, match="original reader close failure"):
+            host.close()
+        assert not host._clean_close
+        monkeypatch.setattr(host.reader, "close", original_close)
+    if state not in {"live", "close-failure"}:
+        host.close()
+    original = (
+        tuple(host.replies.items()),
+        tuple(admission.retained),
+        admission.transaction,
+        host.hold,
+    )
+    try:
+        with pytest.raises(JobFault) as denied:
+            Coordinator(store, profile="business3", _ready=_JOB_READY)
+        assert denied.value.code == "PERMISSION_DENIED"
+        assert store._read_admission is admission and admission.owner is host
+        assert (
+            tuple(host.replies.items()),
+            tuple(admission.retained),
+            admission.transaction,
+            host.hold,
+        ) == original
+    finally:
+        if transaction is not None:
+            transaction.__exit__(None, None, None)
+
+
+@pytest.mark.parametrize("launched", [False, True])
+def test_successor_cannot_take_original_queued_or_active_job(owned, launched):
+    actor, store = owned
+    project = create(actor)[0]["projectId"]
+    accepted = confirmed_job(
+        actor,
+        project,
+        {
+            "projectId": project,
+            "baseRevision": 0,
+            "intent": "change",
+            "plan": {"manual": [fact('"original queued responsibility"')]},
+        },
+    )
+    host, admission = actor.mainline, store._read_admission
+
+    async def check():
+        if launched:
+            await actor.tick()
+            assert actor.tasks and actor.active and not actor.queued
+        else:
+            assert actor.queued and not actor.tasks
+        host.close()
+        with pytest.raises(JobFault) as denied:
+            Coordinator(store, profile="business3", _ready=_JOB_READY)
+        assert denied.value.code == "PERMISSION_DENIED"
+        assert admission.owner is host and store._read_admission is admission
+        if not launched:
+            await actor.tick()
+        await asyncio.gather(*tuple(actor.tasks))
+
+    asyncio.run(check())
+    assert store.get_job(project, accepted["jobId"])["state"] == "succeeded"
+
+
 @asynccontextmanager
 async def wire_host(database, directory):
     env = {**os.environ, "ONTOLEARN_DB_PATH": str(database)}

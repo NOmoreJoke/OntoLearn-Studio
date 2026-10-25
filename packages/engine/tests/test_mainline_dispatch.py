@@ -364,6 +364,20 @@ def test_ownership_private_admission_preserves_already_core_only_vector(owned):
     actor.mainline.begin(request)
     proof = actor.mainline.ownership_proof(params, method="changeset.preview")
     assert proof.admissions() == (True, False)
+    # The diagnostic scan above is a complete private request of its own. The
+    # actual issuer obtains a fresh request/proof and pays its own before/after
+    # scans; no work is reset or refunded within either original reply.
+    diagnostic_reply = actor.mainline.current
+    diagnostic_work = diagnostic_reply.work
+    actor.finish_query_reply(request["id"], emitted=True)
+    assert diagnostic_reply.work == diagnostic_work
+    assert request["id"] not in actor.mainline.replies
+    request = frame(actor, "changeset.preview", params)
+    actor.mainline.begin(request)
+    with pytest.raises(JobFault) as expired:
+        proof.check(store, project)
+    assert expired.value.code == "PERMISSION_DENIED"
+    proof = actor.mainline.ownership_proof(params, method="changeset.preview")
     try:
         with pytest.raises(JobFault) as refused:
             store.preview_changeset(

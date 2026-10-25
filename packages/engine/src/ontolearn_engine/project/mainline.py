@@ -94,8 +94,7 @@ class _WriteAdmission:
 
         self.check_store()
         if (
-            self.owner is not None
-            or type(owner) is not MainlineHost
+            type(owner) is not MainlineHost
             or not isinstance(owner.actor, Coordinator)
             or owner.store is not self.store
             or owner.actor.store is not self.store
@@ -105,7 +104,54 @@ class _WriteAdmission:
             or owner.actor.query_dispatch is not None
         ):
             fault("PERMISSION_DENIED")
+        # Bootstrap can already own an uncertain writer before any host binds.
+        # Neither a first owner nor a successor may adopt that as a clean book.
+        if (
+            self.active is not None
+            or self.retained
+            or self.transaction is not None
+            or self.charged_reply
+            or self.connection.in_transaction
+        ):
+            fault("PERMISSION_DENIED")
+        previous = self.owner
+        if previous is not None and not self._clean_predecessor(previous):
+            fault("PERMISSION_DENIED")
         self.owner = owner
+
+    def _clean_predecessor(self, owner):
+        from ontolearn_engine.coordinator import Coordinator
+
+        # Explicit close must have returned successfully. Merely fencing a
+        # failed delivery also sets closed, but cannot release its authority.
+        return (
+            type(owner) is MainlineHost
+            and isinstance(owner.actor, Coordinator)
+            and owner._clean_close
+            and owner.closed
+            and not owner.hold
+            and type(owner.reader) is _MainlineReader
+            and owner.reader._owner is owner
+            and owner.reader._store is self.store
+            and owner.reader._closed
+            and not owner.reader._catalogs
+            and owner.store is self.store
+            and owner.actor.store is self.store
+            and owner.actor.mainline is owner
+            and owner.actor.ordinary is owner
+            and owner.actor.query_dispatch is owner
+            and owner.actor.profile == "business3"
+            and not owner.actor.test_mode
+            and owner.actor.session == owner.session
+            and owner.actor.host_client_id == owner.host
+            and owner.current is None
+            and not owner.replies
+            and not owner.actor._query_replies
+            and owner.actor._query_project_get is None
+            and not owner.actor.active
+            and not owner.actor.tasks
+            and not owner.actor.queued
+        )
 
     def begin_transaction(self):
         self.check_store()
@@ -547,6 +593,7 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.current = None
         self.replies = {}
         self.closed = False
+        self._clean_close = False
         self.hold = False
         prepare_mainline_store(self.store).bind(self)
 
@@ -1128,5 +1175,7 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
             self.hold = True
 
     def close(self):
+        self._clean_close = False
         self.closed = True
         self.reader.close()
+        self._clean_close = True
