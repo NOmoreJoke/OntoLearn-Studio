@@ -936,17 +936,6 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           predicate: property.iri,
           object: `"2026-10-24T10:30:00+00:00"^^<${XSD}dateTime>`,
         },
-        {
-          subject: entities[0]!.iri,
-          predicate: property.iri,
-          object: '"English numeric subtag"@en-001',
-        },
-        {
-          subject: entities[0]!.iri,
-          predicate: property.iri,
-          // Digits in later subtags remain valid; canonical language is lowercase.
-          object: '"Deutsches Zahlensegment"@de-ch-1901',
-        },
       ]
       const originals: Fact[] = []
       for (const triple of requested) {
@@ -1102,8 +1091,6 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       for (const [index, object] of [
         [0, '<urn:t02:matrix:object3>'],
         [2, '"plain edited"'],
-        [11, '"English numeric subtag edited"@en-001'],
-        [12, '"Deutsches Zahlensegment bearbeitet"@de-ch-1901'],
       ] as const) {
         const original = originals[index]!
         await loadFact(page, original)
@@ -1573,6 +1560,164 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       try {
         await test.info().attach('fr201-original-records-and-literals', {
           body: JSON.stringify(evidence, null, 2),
+          contentType: 'application/json',
+        })
+      } finally {
+        await application.close()
+      }
+    }
+  })
+
+  test('FR201 canonical numeric language subtags keep new and original-ID edit chains in a fresh cohort', async () => {
+    test.setTimeout(180000)
+    // This fixture separates lexical controls from cumulative history capacity.
+    // It does not close the preserved revision-24 committed-but-unreadable failure.
+    const application = await launchIsolatedDesktop(launchOptions())
+    const evidence: Evidence[] = []
+    try {
+      const page = await application.firstWindow()
+      let current = await start(page, 'FR201 合法数字子标签独立 cohort')
+      const subject: Entity = {
+        iri: 'urn:t02:numeric:subject',
+        kind: 'individual',
+        types: classA.iri,
+        metadata: {
+          identifier: 'NumericSubject',
+          labels: [],
+          definitions: [],
+          synonyms: [],
+          examples: [],
+        },
+        triples: [
+          {
+            subject: 'urn:t02:numeric:subject',
+            predicate: RDF + 'type',
+            object: '<urn:t02:matrix:A>',
+          },
+        ],
+      }
+      const property: Entity = {
+        iri: 'urn:t02:numeric:literal',
+        kind: 'dataProperty',
+        domain: classA.iri,
+        range: '',
+        metadata: {
+          identifier: 'NumericLiteral',
+          labels: [],
+          definitions: [],
+          synonyms: [],
+          examples: [],
+        },
+        triples: [
+          {
+            subject: 'urn:t02:numeric:literal',
+            predicate: RDF + 'type',
+            object: `<${OWL}DatatypeProperty>`,
+          },
+          {
+            subject: 'urn:t02:numeric:literal',
+            predicate: RDFS + 'domain',
+            object: '<urn:t02:matrix:A>',
+          },
+        ],
+      }
+      for (const entity of [classA, subject, property])
+        current = await create(page, entity, current, evidence)
+      expect(current.domain.state.facts).toEqual([])
+      const definitionsBeforeFacts = structuredClone(current.domain.state.definitions)
+      const expectReadAndIdentity = async (expected: Read) => {
+        expect(await read(page)).toEqual(expected)
+        const active = data(await page.evaluate(() => window.ontolearn!.getActiveProject()))
+        expect(active?.projectId).toBe(expected.projectId)
+        expect(active?.projectRevision).toBe(expected.domain.projectRevision)
+        expect(active?.inputSnapshotId).toBe(expected.inputSnapshotId)
+      }
+      const controls = [
+        ['"English numeric subtag"@en-001', '"English numeric subtag edited"@en-001'],
+        ['"Deutsches Zahlensegment"@de-ch-1901', '"Deutsches Zahlensegment bearbeitet"@de-ch-1901'],
+      ] as const
+      const originals: Fact[] = []
+      for (const [object] of controls) {
+        await panel(page)
+          .getByRole('button', { name: '新建事实并读取当前基准', exact: true })
+          .click()
+        await panel(page)
+          .getByRole('textbox', { name: '主体个体 IRI', exact: true })
+          .fill(subject.iri)
+        await panel(page).getByRole('textbox', { name: '属性 IRI', exact: true }).fill(property.iri)
+        const input = panel(page).getByRole('textbox', { name: '规范 RDF 对象', exact: true })
+        await input.fill(object)
+        await expect(input).toHaveValue(object)
+        await expectReadAndIdentity(current)
+        await panel(page).getByRole('button', { name: '预览新增事实', exact: true }).click()
+        await expect(input).toHaveValue(object)
+        const rows = await diff(page)
+        expect(rows).toHaveLength(1)
+        expect(rows[0]?.resource).toEqual(['fact', expect.stringMatching(hash)])
+        const added: Fact = {
+          id: rows[0]!.resource[1]!,
+          subject: subject.iri,
+          predicate: property.iri,
+          object,
+          owner: null,
+          source_row: null,
+          managed_value: null,
+        }
+        const before = current
+        current = await commit(
+          page,
+          `assert ${object}`,
+          before,
+          [{ resource: ['fact', added.id], before: null, after: added }],
+          evidence,
+        )
+        expect(current.domain.state).toEqual({
+          ...before.domain.state,
+          facts: sortFacts([...before.domain.state.facts, added]),
+        })
+        await expectReadAndIdentity(current)
+        originals.push(added)
+      }
+      for (const [index, [, object]] of controls.entries()) {
+        const original = originals[index]!
+        expect(current.domain.state.facts.find((fact) => fact.id === original.id)).toEqual(original)
+        await loadFact(page, original)
+        const originalId = panel(page)
+          .locator('p')
+          .filter({ hasText: '原记录 ID：' })
+          .locator('code')
+        await expect(originalId).toHaveText(original.id)
+        const input = panel(page).getByRole('textbox', { name: '规范 RDF 对象', exact: true })
+        await input.fill(object)
+        await expect(input).toHaveValue(object)
+        await expectReadAndIdentity(current)
+        await panel(page).getByRole('button', { name: '预览事实修改', exact: true }).click()
+        await expect(input).toHaveValue(object)
+        await expect(originalId).toHaveText(original.id)
+        const changed = { ...original, object },
+          before = current
+        current = await commit(
+          page,
+          `edit original ${original.id}`,
+          before,
+          [{ resource: ['fact', original.id], before: original, after: changed }],
+          evidence,
+        )
+        expect(current.domain.state).toEqual({
+          ...before.domain.state,
+          facts: before.domain.state.facts.map((fact) =>
+            fact.id === original.id ? changed : fact,
+          ),
+        })
+        await expectReadAndIdentity(current)
+        originals[index] = changed
+      }
+      expect(current.domain.state.definitions).toEqual(definitionsBeforeFacts)
+      expect(current.domain.state.facts).toEqual(sortFacts(originals))
+    } finally {
+      try {
+        await test.info().attach('fr201-numeric-subtag-isolated-cohort', {
+          body: JSON.stringify({ fixtureIsolationIsNotCapacityRepair: true, evidence }, null, 2),
           contentType: 'application/json',
         })
       } finally {
