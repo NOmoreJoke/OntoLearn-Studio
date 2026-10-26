@@ -67,3 +67,13 @@ R08两指定原任务已自然完成，两作者仍ConditionalPass、无push前�
 F01覆盖接收已完成，F05随当前状态追加和精确九文档归档履行；实际本地child commit/tree、检查退出码与不变证明由仓外O058回执绑定，未预写检查通过。本票仅本地文档检查和普通提交，不授权push/PR修改/新CI/merge。未来仍须同交付Windows完整3769逐node、原有据skip、自然0、无失败/早停/取消/timeout/NOTRUN、全部后继及Quality专用/packaged recovery步骤自身success与三job全success，原15/20分钟不变；case7复发须定因并处置而非仅解释，作者CI后条件、精确merge票和remote SHA/tree/功能复核另验。实际T02 merge/remote之后原T04才更新真实基线并必要重验。
 
 定义级GUI Undo/Undo-of-Undo/owned restart已验仅收窄该子集；特定FR201拒绝字段保留已验不外推全部表单；迁移424P与44条件skip、合成逻辑观察与损坏库物理保护分开。全部原OPEN/原归口窗口、其余Undo/ownership/四具名下游、容量/旧超限库恢复/损坏SQLite、unknown解析/Store/快照、目标设备与跨平台、未知退出、签名公证/wholeApp法律/_distutils/隐私产权与供应链HOLD保留。旧094有界桥接不冒当前新包；整体合并可用仍2/17，Goal/M0/发布未完成。当前详见[T02状态追加](reviews/T02/status.md)，以上历史字节前缀全部保留。
+
+## 2026-10-27 T02 当前快照追加：240b581c／R09
+
+受审实现base583→`240b581c`（tree `0933a331`，38提交／107差异叶／1387源／5构建）已完成fresh R09两方必要覆盖/本人意见处置并被ROOT正式接收为有界推送前技术阶段；原ConditionalPass保留，不是无条件双Pass、不走D8。Z61298B与MM188552B按原字节归档，每方160/31/权威78及Top10/9完整，extra13另列；报告过宽概括按ROOT精确限证，不改raw。见[R09处置](reviews/T02/fr200-fr201-20261024/round-09/disposition.md)、[版本图](reviews/T02/fr200-fr201-20261024/round-09/version-map.json)与[索引](reviews/T02/fr200-fr201-20261024/round-09/artifact-manifest.json)。
+
+O064同源原完整check自然0（TS1905／Python3719P50原skip/3769），native24为21P3原I04skip，本spec六例PASS、57事务43拒绝；执行为2b parent HEAD＋exact APPLIED03，提交后240内容exact。O063无运行。本次仅7证据＋2状态新增段的普通docs后继，不复跑产品/构建/打包，实际commit/tree/文档检查与保护项由仓外O066回执绑定。票时PR16 open未合并、remote2b/base583；本轮不push/PR写/新CI/merge，当前没有240新CI/新包，旧094不冒新包。
+
+CI41仍Quality/Windows失败、Mac成功；引擎3769完整结算不覆盖两E2E失败及后继skip。O059到helper12与060/062容器提前止步分开，根因未证不改已知终态。未来仍需完整同交付Windows逐node/原有据skip/自然0、无失败/早停/取消/timeout/NOTRUN、全部后继与Quality packaged recovery自身success及三job全success，原预算不变。观测/失败annotation不新增硬门禁，原根因UNPROVEN不增合并前必须证因。
+
+全部原owner/事件窗口、容量/损坏SQLite物理保护/跨平台/目标设备/未知退出/其余Undo与ownership/具名下游/签名公证/组织法律供应链HOLD保留，整体合并可用仍2/17，Goal/M0/发布未完成。当前完成度以[T02状态](reviews/T02/status.md)为准；以上历史字节前缀全部保留。

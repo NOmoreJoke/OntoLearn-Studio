@@ -87,3 +87,15 @@
 - 已验子集纠偏：O056第18例真实定义Undo／Undo-of-Undo／owned restart通过，rev1/2/3、三个唯一succeeded Job/operation、状态和重开等式成立；仅收窄该子集，其余Undo/ownership保持HOLD。FR201受控负例S/P/O字段保留有实际toHaveValue，限本屏/具名输入。迁移468＝424P＋44条件skip及显式备份门禁P只证Store合成前向/失败原子中止，不代表人工schema降级、大规模活库、无锁或损坏SQLite物理保护。dependabot配置root npm/actions weekly与workspace实际更新、SLA/EOL未核分开；构建配置预期消费fr201.3不冒当前新包实物。
 - 原件残句按处置限证，不重写：MM readProject也有前置owner与返回身份守卫，epoch/current-project才是相应增量；“仅durations/fulltrace”限CLI参数，同step另加SHARDS2；Z Top10按§5/唯一Z08-ID定位。MM F04空页/base64本人撤回、F11事实ID与operation幂等分开，组织/实际数据/法律角色无法由代码认证，不新增人类签字/产品裁决前置。
 - 全部原OPEN/窗口与HOLD保持：早期definitions、裸ownership、缺码可达性、无序观察、standalone EOF、PATH-python、4299/4300、D.2推导／保存查询／SHACL／报告四下游GUI；Q5/D2容量与旧超限库恢复、损坏SQLite物理保护、unknown parser/N3/Store/坏快照、其它Undo/ownership、native engine/named App和Windows后代UNKNOWN、目标macOS15/Win11/参考设备、签名公证/wholeApp法律/_distutils/隐私产权与供应链。FullRead逻辑相等不证物理DB零写，PID缺席不证全部自然0。旧094的912成员/root0755及旧有界运行保留，不称62d4新包；AGENTS overlay、旧round01/02/03 WIP和历史首败不暂存。整体合并可用仍2/17（FR401/402），Goal/M0/发布未完成。
+
+## 2026-10-27 当前快照追加：240b581c／R09 有界技术接收与证据归档
+
+本节只追加当前事实；以上各轮原候选、原判、首败和远端陈述保留历史字节。受审实现为base583→`240b581c98dbbaec0b4e3773e011c0a14879fa78`（tree `0933a33107da5a645d432538da1582c8c004080d`，38提交／107差异叶／1387源／5构建）。本票仅归档7份round09证据及两状态新增段，一个240直接后继普通docs提交；实际commit/tree、文档检查及不变证明由仓外O066回执绑定，不冒新实现候选。
+
+R09原两任务已自然返回：Z GLM-5.3最高／既有BigModel个人／完全访问，最终61298B；MM M3.1-Flash/xhigh/始终授权，最终188552B。原SID、完整11255B/160条输入、共同元数据勘误、原稿链和自然UI均有精确针；MM用户自行重置后正式0%额度核验才续跑，锁屏恢复后读取终态，未代买/升级/重置，不声称未经billing审计的既往积分为0。双方原判均ConditionalPass；ROOT已接收整候选必要覆盖和本人意见处置，不是无条件双Pass、不走D8。每方160/31/权威78、ZTop10/MMTop9与OBS10完整；extra13不混原78。见[处置](fr200-fr201-20261024/round-09/disposition.md)、[版本图](fr200-fr201-20261024/round-09/version-map.json)及[哈希索引](fr200-fr201-20261024/round-09/artifact-manifest.json)。
+
+O064原完整check自然0（TS1905、Python3769＝3719P＋50原skip／1原warning），native24为21P＋3原I04skip/retry0，本spec六例PASS、57事务／43拒绝；执行时为2b parent HEAD＋exact APPLIED03工作树，提交后240逐字等价。本次不重跑产品/构建/打包；O063无运行。当前无240新CI或新包，旧094包912成员/root0755仅旧有界证据、不冲抵当前包验收。
+
+CI41引擎全集资格保留，但平台终态仍Quality failure、Windows failure、macOS success；两E2E原失败与后继SKIPPED不被抹除。O059已到native-recovery.cjs:12，只有060/062容器helper前止步；根因UNPROVEN与平台结果已知分开。报告过宽概括和Z6/7计数按ROOT限证，不重写raw。F04/F05只后续观测/真实失败annotation，不给成功CI制造失败样本新门禁；语言小写来自term()显式lower。未来完整同交付Windows3769逐node、原有据skip、自然0、无失败/早停/取消/timeout/NOTRUN、全部后继及Quality packaged recovery自身success和三job实际success仍须另票，原15/20分钟不变。
+
+F01覆盖接收完成；F05状态登记由本次新增段和精确归档履行，提交事实由O066回执记录。票时ROOT实核PR16 open未合并、remote head2b/base583；本轮不push/PR写/新CI/merge。全部原owner/窗口及容量/损坏库物理保护/跨平台目标设备/未知退出/具名下游/其它Undo与ownership/签名公证/组织法律供应链等OPEN/HOLD保留，整体合并可用仍2/17（FR401/402），Goal/M0/发布未完成。
