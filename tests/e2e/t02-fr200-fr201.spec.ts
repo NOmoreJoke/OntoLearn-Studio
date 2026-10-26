@@ -7,6 +7,15 @@ import { test, expect, type Locator, type Page } from '@playwright/test'
 import { resolve } from 'node:path'
 import type { BridgeResult, MainlineProjectReadDTO } from '@ontolearn/contracts'
 import { launchIsolatedDesktop } from './isolated-desktop'
+import {
+  observeUI,
+  committedReceiptOperation,
+  exactlyOne,
+  normalizeUIText,
+  updateObservationSlot,
+  type UITarget,
+  type UISnapshot,
+} from './ui-observation'
 
 const RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 const RDFS = 'http://www.w3.org/2000/01/rdf-schema#'
@@ -66,6 +75,32 @@ type CommitPollObservation = {
   pending: BoundedPollText
 }
 const lastCommitPoll = new WeakMap<Page, CommitPollObservation>()
+const lastReadIdentity = new WeakMap<
+  Page,
+  { projectId: string; projectRevision: number; inputSnapshotId: string }
+>()
+function recordObservation(page: Page, stage: string, value: unknown) {
+  updateObservationSlot(test.info().annotations, 't02', stage, {
+    lastReadIdentity: lastReadIdentity.get(page) ?? null,
+    lastCompletedCommitPoll: lastCommitPoll.get(page) ?? null,
+    value,
+  })
+}
+async function ui(
+  page: Page,
+  stage: string,
+  locator: Locator,
+  targets: UITarget[],
+): Promise<UISnapshot> {
+  const started = performance.now()
+  return observeUI(locator, targets, (snapshot) =>
+    recordObservation(page, stage, {
+      startedMonotonicMs: started,
+      completedMonotonicMs: performance.now(),
+      snapshot,
+    }),
+  )
+}
 function pollText(text: string | null | undefined): BoundedPollText {
   return {
     text: text == null ? null : text.slice(0, 4096),
@@ -115,18 +150,46 @@ function form(page: Page): Locator {
   return panel(page).getByRole('region', { name: '本体编辑表单', exact: true })
 }
 async function read(page: Page): Promise<Read> {
-  return data(
+  const result = data(
     await page.evaluate(() => window.ontolearn!.readProject({ editor: 'ontology-transaction' })),
   )
+  lastReadIdentity.set(page, {
+    projectId: result.projectId,
+    projectRevision: result.domain.projectRevision,
+    inputSnapshotId: result.inputSnapshotId,
+  })
+  recordObservation(page, 'actual fresh readProject completed', lastReadIdentity.get(page))
+  return result
 }
-async function diff(page: Page): Promise<Diff[]> {
+async function diff(page: Page, expectedCount?: number): Promise<Diff[]> {
   const region = panel(page).getByRole('region', { name: '完整事务差异', exact: true })
   await expect(region).toBeVisible()
   await expect(
     region.getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }),
   ).toBeEnabled()
-  const text = await region.locator('pre').textContent()
-  const parsed: unknown = JSON.parse(text ?? 'null')
+  let completed: UISnapshot = {}
+  await expect
+    .poll(
+      async () => {
+        completed = await ui(page, 'complete Diff DOM observation', region, [
+          { key: 'diff', kind: 'region', name: '完整事务差异' },
+        ])
+        const actual = exactlyOne(completed, 'diff')
+        return (
+          !!actual &&
+          actual.pre.length === 1 &&
+          (expectedCount === undefined ||
+            actual.paragraphs.filter(
+              (text) =>
+                normalizeUIText(text) ===
+                `全部 ${expectedCount} 项；分段顺序、长度、SHA 与完整文档已核对。`,
+            ).length === 1)
+        )
+      },
+      { intervals: [100], timeout: 5000 },
+    )
+    .toBe(true)
+  const parsed: unknown = JSON.parse(exactlyOne(completed, 'diff')!.pre[0]!)
   if (!Array.isArray(parsed)) throw new Error('Actual complete Diff is not an array')
   return parsed as Diff[]
 }
@@ -148,10 +211,7 @@ async function commit(
   expected: Diff[],
   evidence: Evidence[],
 ): Promise<Read> {
-  expect(await diff(page)).toEqual(expected)
-  await expect(
-    panel(page).getByRole('region', { name: '完整事务差异', exact: true }),
-  ).toContainText(`全部 ${expected.length} 项；`)
+  expect(await diff(page, expected.length)).toEqual(expected)
   const uncommitted = await read(page)
   expect(uncommitted.domain).toEqual(before.domain)
   expect(uncommitted.inputSnapshotId).toBe(before.inputSnapshotId)
@@ -180,6 +240,11 @@ async function commit(
           receipt: pollText(observed.receipt),
           pending: pollText(observed.pending),
         })
+        recordObservation(
+          page,
+          'original commit poll completed DOM observation',
+          lastCommitPoll.get(page),
+        )
         if (observed.receipt?.includes(`提交版本 ${revision}。`)) return true
         if (observed.pending?.includes('succeeded')) {
           reconcile = true
@@ -195,17 +260,32 @@ async function commit(
     await expect(button).toBeEnabled()
     await button.click()
   }
-  await expect(receipt).toContainText(`提交版本 ${revision}。`)
-  await expect(receipt).toContainText(`当前已读版本 ${revision}。`)
-  await expect(pending).toHaveCount(0)
-  const operationId = (await receipt.locator('p').first().textContent())?.match(
-    new RegExp(`操作 (${UUID})，`),
-  )?.[1]
+  let completed: UISnapshot = {}
+  await expect
+    .poll(
+      async () => {
+        completed = await ui(
+          page,
+          'committed receipt and current read revision',
+          receipt.or(pending),
+          [
+            { key: 'receipt', kind: 'region', name: '已提交回执' },
+            { key: 'pending', kind: 'region', name: '原操作状态' },
+          ],
+        )
+        return committedReceiptOperation(completed, revision, UUID) !== undefined
+      },
+      { intervals: [100], timeout: 5000 },
+    )
+    .toBe(true)
+  const operationId = committedReceiptOperation(completed, revision, UUID)
   if (!operationId) throw new Error('Visible receipt lacks its original operation ID')
   const marker = data(await page.evaluate((id) => window.ontolearn!.getOperation(id), operationId))
+  recordObservation(page, 'actual original operation read completed', { operationId, marker })
   if (!marker || typeof marker.jobId !== 'string')
     throw new Error('Original operation marker missing')
   const job = data(await page.evaluate((id) => window.ontolearn!.getJob(id), marker.jobId))
+  recordObservation(page, 'actual original Job read completed', { operationId, marker, job })
   expect(job.jobId).toMatch(new RegExp(`^${UUID}$`))
   const after = await read(page)
   expect(after.projectId).toBe(before.projectId)
@@ -773,10 +853,23 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         const input = section.getByRole('textbox', { name: '规范 RDF 对象', exact: true })
         const subject = section.getByRole('textbox', { name: '主体个体 IRI', exact: true })
         const predicate = section.getByRole('textbox', { name: '属性 IRI', exact: true })
+        const fieldTargets: UITarget[] = [
+          { key: 'subject', kind: 'textbox', name: '主体个体 IRI' },
+          { key: 'predicate', kind: 'textbox', name: '属性 IRI' },
+          { key: 'object', kind: 'textbox', name: '规范 RDF 对象' },
+        ]
+        const fieldsLocator = subject.or(predicate).or(input)
+        const retainedUI = await ui(
+          page,
+          'reject original input values before refresh',
+          fieldsLocator,
+          fieldTargets,
+        )
+        for (const target of fieldTargets) expect(retainedUI[target.key]).toHaveLength(1)
         const retained = {
-          subject: await subject.inputValue(),
-          predicate: await predicate.inputValue(),
-          object: await input.inputValue(),
+          subject: exactlyOne(retainedUI, 'subject')!.value!,
+          predicate: exactlyOne(retainedUI, 'predicate')!.value!,
+          object: exactlyOne(retainedUI, 'object')!.value!,
         }
         const entered = { ...retained, [targetField]: value }
         const button = section.getByRole('button', {
@@ -787,8 +880,29 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         // An explicit same-window read clears the previous error. No restart,
         // new selection, write replay or private Session/receiver hook is used.
         await section.getByRole('button', { name: '读取当前项目', exact: true }).click()
-        await expect(button).toBeEnabled()
-        await expect(rejection).toHaveCount(0)
+        await expect
+          .poll(
+            async () => {
+              const snapshot = await ui(
+                page,
+                'refresh complete before rejection fresh Read',
+                button.or(rejection),
+                [
+                  {
+                    key: 'button',
+                    kind: 'button',
+                    name: action === 'add' ? '预览新增事实' : '预览事实修改',
+                  },
+                  { key: 'rejection', kind: 'alert' },
+                ],
+              )
+              return (
+                exactlyOne(snapshot, 'button')?.enabled === true && snapshot.rejection?.length === 0
+              )
+            },
+            { intervals: [100], timeout: 5000 },
+          )
+          .toBe(true)
         const before = await read(page)
         expect(before.domain).toEqual(expected.domain)
         expect(before.inputSnapshotId).toBe(expected.inputSnapshotId)
@@ -797,15 +911,10 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         await { subject, predicate, object: input }[targetField].fill(value)
         await expect(input).toHaveValue(entered.object)
         await button.click()
-        await expect(rejection).toHaveText(
+        const expectedErrorText =
           code === 'OWNERSHIP_CONFLICT'
             ? '操作未能完成：OWNERSHIP_CONFLICT。事实来源、保留身份或属性约束存在冲突。请核对原记录，修改输入后重新预览；已输入内容保留。'
-            : '操作未能完成：INVALID_REQUEST。请核对当前项目或查询原操作；已输入内容保留。',
-        )
-        await expect(button).toBeEnabled()
-        await expect(input).toHaveValue(entered.object)
-        await expect(subject).toHaveValue(entered.subject)
-        await expect(predicate).toHaveValue(entered.predicate)
+            : '操作未能完成：INVALID_REQUEST。请核对当前项目或查询原操作；已输入内容保留。'
         const completeDiff = section.getByRole('region', {
           name: '完整事务差异',
           exact: true,
@@ -814,11 +923,47 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           name: '我已核对完整差异，确认提交',
           exact: true,
         })
-        await expect(completeDiff).toHaveCount(0)
-        await expect(confirmation).toHaveCount(0)
+        let rejectedUI: UISnapshot = {}
+        let rejectedObservedAt = ''
+        await expect
+          .poll(
+            async () => {
+              rejectedUI = await ui(
+                page,
+                'rejection complete exact UI state before fresh Read',
+                fieldsLocator.or(button).or(rejection).or(completeDiff).or(confirmation),
+                [
+                  ...fieldTargets,
+                  {
+                    key: 'button',
+                    kind: 'button',
+                    name: action === 'add' ? '预览新增事实' : '预览事实修改',
+                  },
+                  { key: 'rejection', kind: 'alert' },
+                  { key: 'diff', kind: 'region', name: '完整事务差异' },
+                  { key: 'confirmation', kind: 'button', name: '我已核对完整差异，确认提交' },
+                ],
+              )
+              rejectedObservedAt = new Date().toISOString()
+              const actualError = exactlyOne(rejectedUI, 'rejection')
+              return (
+                !!actualError &&
+                normalizeUIText(actualError.text) === normalizeUIText(expectedErrorText) &&
+                exactlyOne(rejectedUI, 'button')?.enabled === true &&
+                exactlyOne(rejectedUI, 'object')?.value === entered.object &&
+                exactlyOne(rejectedUI, 'subject')?.value === entered.subject &&
+                exactlyOne(rejectedUI, 'predicate')?.value === entered.predicate &&
+                rejectedUI.diff?.length === 0 &&
+                rejectedUI.confirmation?.length === 0
+              )
+            },
+            { intervals: [100], timeout: 5000 },
+          )
+          .toBe(true)
         const after = await read(page)
         expect(after).toEqual(before)
         const active = data(await page.evaluate(() => window.ontolearn!.getActiveProject()))
+        recordObservation(page, 'actual active project read after complete rejected Read', active)
         expect(active?.projectId).toBe(before.projectId)
         expect(active?.projectRevision).toBe(before.domain.projectRevision)
         expect(active?.inputSnapshotId).toBe(before.inputSnapshotId)
@@ -829,12 +974,13 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
               targetField,
               entered,
               expectedCode: code,
-              errorText: await rejection.textContent(),
+              errorText: exactlyOne(rejectedUI, 'rejection')!.text,
+              uiObservedAt: rejectedObservedAt,
               before,
               after,
               active,
-              completeDiffCount: await completeDiff.count(),
-              confirmationCount: await confirmation.count(),
+              completeDiffCount: rejectedUI.diff!.length,
+              confirmationCount: rejectedUI.confirmation!.length,
             },
             null,
             2,
