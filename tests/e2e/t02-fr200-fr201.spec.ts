@@ -52,6 +52,28 @@ type Evidence = {
   job: unknown
 }
 
+type BoundedPollText = {
+  text: string | null
+  originalUTF16Units: number
+  truncated: boolean
+}
+type CommitPollObservation = {
+  action: BoundedPollText
+  targetRevision: number
+  observedAt: string
+  observedMonotonicMs: number
+  receipt: BoundedPollText
+  pending: BoundedPollText
+}
+const lastCommitPoll = new WeakMap<Page, CommitPollObservation>()
+function pollText(text: string | null | undefined): BoundedPollText {
+  return {
+    text: text == null ? null : text.slice(0, 4096),
+    originalUTF16Units: text?.length ?? 0,
+    truncated: (text?.length ?? 0) > 4096,
+  }
+}
+
 function data<T>(reply: BridgeResult<T>): T {
   if (!reply.ok) throw new Error(`Actual named read refused: ${JSON.stringify(reply.error)}`)
   return reply.data
@@ -142,20 +164,31 @@ async function commit(
   const pending = panel(page).getByRole('region', { name: '原操作状态', exact: true })
   let reconcile = false
   await expect
-    .poll(async () => {
-      const observed = await receipt.or(pending).evaluateAll((nodes) => ({
-        receipt: nodes.find((node) => node.getAttribute('aria-label') === '已提交回执')
-          ?.textContent,
-        pending: nodes.find((node) => node.getAttribute('aria-label') === '原操作状态')
-          ?.textContent,
-      }))
-      if (observed.receipt?.includes(`提交版本 ${revision}。`)) return true
-      if (observed.pending?.includes('succeeded')) {
-        reconcile = true
-        return true
-      }
-      return false
-    })
+    .poll(
+      async () => {
+        const observed = await receipt.or(pending).evaluateAll((nodes) => ({
+          receipt: nodes.find((node) => node.getAttribute('aria-label') === '已提交回执')
+            ?.textContent,
+          pending: nodes.find((node) => node.getAttribute('aria-label') === '原操作状态')
+            ?.textContent,
+        }))
+        lastCommitPoll.set(page, {
+          action: pollText(action),
+          targetRevision: revision,
+          observedAt: new Date().toISOString(),
+          observedMonotonicMs: performance.now(),
+          receipt: pollText(observed.receipt),
+          pending: pollText(observed.pending),
+        })
+        if (observed.receipt?.includes(`提交版本 ${revision}。`)) return true
+        if (observed.pending?.includes('succeeded')) {
+          reconcile = true
+          return true
+        }
+        return false
+      },
+      { intervals: [100], timeout: 5000 },
+    )
     .toBe(true)
   if (reconcile) {
     const button = pending.getByRole('button', { name: '核对原操作与提交回执', exact: true })
@@ -1293,6 +1326,20 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         sortFacts(originals.filter((_, index) => index !== 1 && index !== 3)),
       )
     } catch (originalError) {
+      try {
+        test.info().annotations.push({
+          type: 'fr201-last-completed-commit-poll',
+          description: JSON.stringify({
+            lastCompletedCommitPoll: observedPage
+              ? (lastCommitPoll.get(observedPage) ?? null)
+              : null,
+            boundary:
+              'Earlier completed DOM observation only; may predate failure, does not prove final business state. No new query. Normal report completion can retain it; worker termination may lose it.',
+          }),
+        })
+      } catch {
+        /* Cached diagnostics never replace the original failure. */
+      }
       // Observation awaits use at most 2s within the original case deadline with
       // 1s margin. A timed-out read is not cancelled. No recovery or new authority.
       const deadline = Math.min(performance.now() + 2000, observedCaseStart + 179000)
@@ -1359,6 +1406,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           maxAttachments: 2,
           maxTotalAttachmentBytes: 524288,
           lastSuccessful: evidence.at(-1)?.marker ?? null,
+          lastCompletedCommitPoll: observedPage ? (lastCommitPoll.get(observedPage) ?? null) : null,
           localSessionState:
             'Not exposed by the existing bridge; DOM is only a projection. No new Session getter or bridge interception.',
           writeInvokeAndSettle:
