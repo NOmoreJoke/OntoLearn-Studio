@@ -57,3 +57,13 @@ R07 两作者首稿和同SID一次事实修订均保留 ConditionalPass，最终
 旧330 attempt2三job为Ruff FORMAT首败，完整3769 suite全NOTRUN；Quality此前144专项、TS／typecheck／build已跑，不能概称所有Python或构建未执行。旧79F逐例原因未知保留。b215仍无新CI；票时远端feature330、develop583，PR16 open未合并。本票只归档7叶、两维护文档只追加并作规定本地检查和一个证据commit；实际新commit／tree在仓外O049回执，不授权push／PR修改／新CI／merge。未来完整三job与全部后继、Quality packaged recovery实际成功仍是merge门禁。
 
 FR200层级／domain／range／type／完整metadata原28笔覆盖不后移，公共失效九例不替四具名下游GUI；旧094的912成员及旧运行仅有界桥接，不称b215新包。原具名OPEN、法律隐私产权／供应链／签名公证／_distutils、跨OS与参考设备、容量和旧超限库恢复／损坏SQLite物理保护、unknown parser／N3／Store／快照、UndoGUI／其他ownership家族／未知退出码等HOLD全部保留，事件窗口不后移。整体合并可用仍2/17，Goal／M0／发布未完成，以上所有历史字节前缀保留。详见[T02当前追加](reviews/T02/status.md)。
+
+## 2026-10-26 T02 当前快照追加：62d4b0a2／R08
+
+固定受审 base583→`62d4b0a2`（tree `7ad1d13d`，36提交／98差异叶／1380源／5构建）。O056原完整check自然0（TS1892、Python3719P＋50有据skip／3769）、正确配置mode2完整逐node计账原生0／114.075s、native24为21P＋3原I04skip／retry0，均为原同版运行，本次没有重跑产品、构建或打包。422b配置资格失败/撤销、旧79F、CI40真实case7 FAIL及取消/292未结算均保原件，原因未知不由新绿倒填。
+
+R08两指定原任务已自然完成，两作者仍ConditionalPass、无push前源码技术阻断；各160条清单与78历史独立位置、Z12＋MM19本人裁定和具名窗口完整。ROOT已全文接收同版双技术阶段，覆盖整候选、594行CI控制层及三个主进程delta必要闭包，不继承R07、不走D8、不是无条件双Pass。最终Z78771B／98d298c…、MM167434B／8a5209cf…原字节入库，旧各版/完整输入/同共同事实/UI/自然终态留外部精确针；两指定独核分别7637B和ROOT4098B，未误用额外8728B记录。见[R08处置](reviews/T02/fr200-fr201-20261024/round-08/disposition.md)与[版本索引](reviews/T02/fr200-fr201-20261024/round-08/artifact-manifest.json)。
+
+F01覆盖接收已完成，F05随当前状态追加和精确九文档归档履行；实际本地child commit/tree、检查退出码与不变证明由仓外O058回执绑定，未预写检查通过。本票仅本地文档检查和普通提交，不授权push/PR修改/新CI/merge。未来仍须同交付Windows完整3769逐node、原有据skip、自然0、无失败/早停/取消/timeout/NOTRUN、全部后继及Quality专用/packaged recovery步骤自身success与三job全success，原15/20分钟不变；case7复发须定因并处置而非仅解释，作者CI后条件、精确merge票和remote SHA/tree/功能复核另验。实际T02 merge/remote之后原T04才更新真实基线并必要重验。
+
+定义级GUI Undo/Undo-of-Undo/owned restart已验仅收窄该子集；特定FR201拒绝字段保留已验不外推全部表单；迁移424P与44条件skip、合成逻辑观察与损坏库物理保护分开。全部原OPEN/原归口窗口、其余Undo/ownership/四具名下游、容量/旧超限库恢复/损坏SQLite、unknown解析/Store/快照、目标设备与跨平台、未知退出、签名公证/wholeApp法律/_distutils/隐私产权与供应链HOLD保留。旧094有界桥接不冒当前新包；整体合并可用仍2/17，Goal/M0/发布未完成。当前详见[T02状态追加](reviews/T02/status.md)，以上历史字节前缀全部保留。
