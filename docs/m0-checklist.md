@@ -47,3 +47,13 @@ T02 FR-200／FR-201 已完成同版静态、开发GUI、package094机械与包�
 fresh R06 Z原判ConditionalPass、MiniMax原判verification-incomplete均保留；两作者明确整个候选无push前技术阻断，20当轮位置及35旧位置已处分。ROOT已接收限定技术阶段，本票仅本地纯证据归档，仍无新push／CI／merge授权；当前远端feature934、develop583，PR16 open未合并，8318无新CI。未来须同受审全集、原有有据skip、自然0、无失败／早停／取消／timeout／NOTRUN、Windows后继及三job全success，不能只凭diagnostic绿验收。
 
 FR200层级／domain／range／type／metadata原28笔CRUD已证，不后移范围；D.2具体下游GUI未逐类验，公共失效机制与九行正负例已有。Q6／canonical无新人类前置，全部具名OPEN窗口与法律／设备／容量／SQLite物理保护／UNKNOWN／Undo／退出码HOLD保留；原失败不覆盖、旧094不称新包。合并可用仍2/17，Goal／发布未完成。详见[T02当前追加](reviews/T02/status.md)及[R06索引](reviews/T02/fr200-fr201-20261024/round-06/artifact-manifest.json)；本节不改以上历史快照或R04／R05原件。
+
+## 2026-10-26 T02 当前快照追加：b215f543／R07
+
+固定受审 base583→`b215f543`（tree `7cab46f0`，33 提交／88 叶／1371 源／5 构建），相对父330仅新增一行 Ruff format 排除 literal。O047 同 head 实际完整 check 一次自然0（TS1892、Python3769收集／3719 PASS／50有据skip／1原warning、Ruff379），原六GUI一次6 PASS／0skip／retry／flaky，57事务／43拒绝／58附件已独核。五build仅main的24字符nonce字段内23字节不同，GUI前后5／5相同；不冒Windows或内存代码已验。
+
+R07 两作者首稿和同SID一次事实修订均保留 ConditionalPass，最终原稿分别41817B／`a94b7ef7…19b2c`、81951B／`eee3e39d…f974a`；原首自然稿、diff与收据仓外封存，仓内只按[本轮别名与版本索引](reviews/T02/fr200-fr201-20261024/round-07/artifact-manifest.json)逐字节复制最终报告／独核／版本图／处置。ROOT已接收限定推送前技术阶段，23当前意见位置与20＋35历史位置均处分，不是无条件双Pass。报告残句、Ruff静态计数与SHA连写歧义按[处置](reviews/T02/fr200-fr201-20261024/round-07/disposition.md)限证；ROOT自动流程不冒人类逐行审读，Undo入口存在但GUI未验。
+
+旧330 attempt2三job为Ruff FORMAT首败，完整3769 suite全NOTRUN；Quality此前144专项、TS／typecheck／build已跑，不能概称所有Python或构建未执行。旧79F逐例原因未知保留。b215仍无新CI；票时远端feature330、develop583，PR16 open未合并。本票只归档7叶、两维护文档只追加并作规定本地检查和一个证据commit；实际新commit／tree在仓外O049回执，不授权push／PR修改／新CI／merge。未来完整三job与全部后继、Quality packaged recovery实际成功仍是merge门禁。
+
+FR200层级／domain／range／type／完整metadata原28笔覆盖不后移，公共失效九例不替四具名下游GUI；旧094的912成员及旧运行仅有界桥接，不称b215新包。原具名OPEN、法律隐私产权／供应链／签名公证／_distutils、跨OS与参考设备、容量和旧超限库恢复／损坏SQLite物理保护、unknown parser／N3／Store／快照、UndoGUI／其他ownership家族／未知退出码等HOLD全部保留，事件窗口不后移。整体合并可用仍2/17，Goal／M0／发布未完成，以上所有历史字节前缀保留。详见[T02当前追加](reviews/T02/status.md)。
