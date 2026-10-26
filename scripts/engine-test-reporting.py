@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import locale
 import os
@@ -61,6 +62,15 @@ def pytest_collection_finish(session):
         default_encoding = stream.encoding
     identity = {
         "rootpath": str(session.config.rootpath),
+        "inipath": str(session.config.inipath) if session.config.inipath else None,
+        "configSHA256": (
+            hashlib.sha256(session.config.inipath.read_bytes()).hexdigest()
+            if session.config.inipath
+            else None
+        ),
+        "testpaths": session.config.getini("testpaths"),
+        "pythonpath": [str(path) for path in session.config.getini("pythonpath")],
+        "addopts": session.config.getini("addopts"),
         "executable": sys.executable,
         "pytestVersion": pytest.__version__,
         "platform": sys.platform,

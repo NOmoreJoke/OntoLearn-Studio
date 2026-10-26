@@ -85,18 +85,17 @@ def launch(folder, arguments, assignment=None):
         *arguments,
         "-p",
         PLUGIN,
-        "--engine-ci-report",
-        str(folder),
-        "--engine-ci-owner",
-        owner,
-        "--basetemp",
-        str(folder / "pytest-temp"),
+        # Pytest finds root/config before loading -p plugin options. Keep private
+        # values in their option token so existing report paths aren't test roots.
+        f"--engine-ci-report={folder}",
+        f"--engine-ci-owner={owner}",
+        f"--basetemp={folder / 'pytest-temp'}",
         "-o",
         f"cache_dir={folder / 'pytest-cache'}",
     ]
     if assignment is not None:
         write(folder / "files.json", assignment)
-        command += ["--engine-ci-files", str(folder / "files.json")]
+        command += [f"--engine-ci-files={folder / 'files.json'}"]
     write(folder / "command.json", {"argv": command, "cwd": os.getcwd(), "temp": str(temporary)})
     options = (
         {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
