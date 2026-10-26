@@ -79,6 +79,235 @@ const lastReadIdentity = new WeakMap<
   Page,
   { projectId: string; projectRevision: number; inputSnapshotId: string }
 >()
+
+const pollPhases = [
+  'complete-diff',
+  'commit-outcome',
+  'committed-receipt',
+  'manual-preview',
+  'controlled-rejection',
+] as const
+type PollPhase = (typeof pollPhases)[number]
+type PollPhaseTiming = {
+  polls: number
+  settled: number
+  failed: number
+  active: number
+  attempts: number
+  callbacksSettled: number
+  callbacksThrown: number
+  callbacksActive: number
+  pollMs: number
+  pollMaxMs: number
+  callbackMs: number
+  callbackMaxMs: number
+  gaps: number
+  gapMs: number
+  gapMaxMs: number
+  lastPollStartMs: number
+  lastPollEndMs: number
+  lastCallbackStartMs: number
+  lastCallbackEndMs: number
+}
+type PollTiming = {
+  origin: number
+  wallTime: string
+  phases: Record<PollPhase, PollPhaseTiming>
+  annotation: { type: string; description?: string }
+  sealed: boolean
+  clockErrors: number
+}
+const pollTimings = new WeakMap<object, PollTiming>()
+const pollTimingLimitBytes = 4096
+
+function pollClock(timing: PollTiming): number | undefined {
+  try {
+    const value = performance.now()
+    if (Number.isFinite(value)) return value
+  } catch {
+    // Missing measurement never prevents the original callback or matcher.
+  }
+  timing.clockErrors++
+  return undefined
+}
+
+function publishPollTiming(timing: PollTiming, seal = false) {
+  if (timing.sealed) return
+  try {
+    // Fixed five phases, fixed numeric fields; never serialize Read/DOM payloads.
+    const phases = Object.fromEntries(
+      pollPhases.map((phase) => [
+        phase,
+        Object.fromEntries(
+          Object.entries(timing.phases[phase]).map(([key, value]) => [
+            key,
+            Math.round(value * 1000) / 1000,
+          ]),
+        ),
+      ]),
+    )
+    const observed = pollClock(timing)
+    const description = JSON.stringify({
+      schema: 't02-poll-timing-v1',
+      limitBytes: pollTimingLimitBytes,
+      originWorkerMonotonicMs: timing.origin,
+      originWallTime: timing.wallTime,
+      observedElapsedMs:
+        observed === undefined ? null : Math.round((observed - timing.origin) * 1000) / 1000,
+      clockErrors: timing.clockErrors,
+      sealed: seal,
+      overlap:
+        'poll includes callback; gaps only within one poll; active is unfinished as of snapshot',
+      phases,
+    })
+    timing.annotation.description =
+      Buffer.byteLength(description) <= pollTimingLimitBytes
+        ? description
+        : JSON.stringify({
+            schema: 't02-poll-timing-v1',
+            unavailable: 'fixed measurement capacity exceeded',
+            requiredBytes: Buffer.byteLength(description),
+            limitBytes: pollTimingLimitBytes,
+          })
+  } catch {
+    // Measurement failure must not replace the original matcher/error/cleanup.
+  } finally {
+    if (seal) timing.sealed = true
+  }
+}
+
+function currentPollTiming(): PollTiming | undefined {
+  try {
+    const annotations = test.info().annotations
+    let timing = pollTimings.get(annotations)
+    if (!timing) {
+      const phases = Object.fromEntries(
+        pollPhases.map((phase) => [
+          phase,
+          {
+            polls: 0,
+            settled: 0,
+            failed: 0,
+            active: 0,
+            attempts: 0,
+            callbacksSettled: 0,
+            callbacksThrown: 0,
+            callbacksActive: 0,
+            pollMs: 0,
+            pollMaxMs: 0,
+            callbackMs: 0,
+            callbackMaxMs: 0,
+            gaps: 0,
+            gapMs: 0,
+            gapMaxMs: 0,
+            lastPollStartMs: 0,
+            lastPollEndMs: 0,
+            lastCallbackStartMs: 0,
+            lastCallbackEndMs: 0,
+          },
+        ]),
+      ) as Record<PollPhase, PollPhaseTiming>
+      timing = {
+        origin: performance.now(),
+        wallTime: new Date().toISOString(),
+        phases,
+        annotation: { type: 't02-poll-timing' },
+        sealed: false,
+        clockErrors: 0,
+      }
+      annotations.push(timing.annotation)
+      pollTimings.set(annotations, timing)
+      publishPollTiming(timing)
+    }
+    return timing
+  } catch {
+    return undefined
+  }
+}
+
+function sealPollTiming() {
+  try {
+    const timing = pollTimings.get(test.info().annotations)
+    if (timing) publishPollTiming(timing, true)
+  } catch {
+    // Best-effort synchronous snapshot before the original async cleanup.
+  }
+}
+
+async function observedPoll(
+  page: Page,
+  phase: PollPhase,
+  callback: () => Promise<boolean>,
+  options: { intervals: number[]; timeout: number },
+) {
+  // The page is intentionally not read; only the original callback observes it.
+  void page
+  const timing = currentPollTiming()
+  if (!timing || timing.sealed) {
+    await expect.poll(callback, options).toBe(true)
+    return
+  }
+  const aggregate = timing.phases[phase]
+  const started = pollClock(timing)
+  if (started === undefined) {
+    await expect.poll(callback, options).toBe(true)
+    return
+  }
+  aggregate.polls++
+  aggregate.active++
+  aggregate.lastPollStartMs = started - timing.origin
+  let previousCallbackEnd: number | undefined
+  let succeeded = false
+  try {
+    await expect
+      .poll(async () => {
+        const callbackStarted = pollClock(timing)
+        aggregate.attempts++
+        aggregate.callbacksActive++
+        if (callbackStarted !== undefined)
+          aggregate.lastCallbackStartMs = callbackStarted - timing.origin
+        if (previousCallbackEnd !== undefined && callbackStarted !== undefined) {
+          const gap = callbackStarted - previousCallbackEnd
+          aggregate.gaps++
+          aggregate.gapMs += gap
+          aggregate.gapMaxMs = Math.max(aggregate.gapMaxMs, gap)
+        }
+        let returned = false
+        try {
+          const value = await callback()
+          returned = true
+          return value
+        } finally {
+          const ended = pollClock(timing)
+          aggregate.callbacksSettled++
+          aggregate.callbacksActive--
+          if (!returned) aggregate.callbacksThrown++
+          if (ended !== undefined && callbackStarted !== undefined) {
+            const elapsed = ended - callbackStarted
+            aggregate.callbackMs += elapsed
+            aggregate.callbackMaxMs = Math.max(aggregate.callbackMaxMs, elapsed)
+            aggregate.lastCallbackEndMs = ended - timing.origin
+          }
+          previousCallbackEnd = ended
+        }
+      }, options)
+      .toBe(true)
+    succeeded = true
+  } finally {
+    const ended = pollClock(timing)
+    aggregate.settled++
+    aggregate.active--
+    if (!succeeded) aggregate.failed++
+    if (ended !== undefined) {
+      const elapsed = ended - started
+      aggregate.pollMs += elapsed
+      aggregate.pollMaxMs = Math.max(aggregate.pollMaxMs, elapsed)
+      aggregate.lastPollEndMs = ended - timing.origin
+    }
+    publishPollTiming(timing)
+  }
+}
+
 function recordObservation(page: Page, stage: string, value: unknown) {
   updateObservationSlot(test.info().annotations, 't02', stage, {
     lastReadIdentity: lastReadIdentity.get(page) ?? null,
@@ -168,27 +397,27 @@ async function diff(page: Page, expectedCount?: number): Promise<Diff[]> {
     region.getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }),
   ).toBeEnabled()
   let completed: UISnapshot = {}
-  await expect
-    .poll(
-      async () => {
-        completed = await ui(page, 'complete Diff DOM observation', region, [
-          { key: 'diff', kind: 'region', name: '完整事务差异' },
-        ])
-        const actual = exactlyOne(completed, 'diff')
-        return (
-          !!actual &&
-          actual.pre.length === 1 &&
-          (expectedCount === undefined ||
-            actual.paragraphs.filter(
-              (text) =>
-                normalizeUIText(text) ===
-                `全部 ${expectedCount} 项；分段顺序、长度、SHA 与完整文档已核对。`,
-            ).length === 1)
-        )
-      },
-      { intervals: [100], timeout: 5000 },
-    )
-    .toBe(true)
+  await observedPoll(
+    page,
+    'complete-diff',
+    async () => {
+      completed = await ui(page, 'complete Diff DOM observation', region, [
+        { key: 'diff', kind: 'region', name: '完整事务差异' },
+      ])
+      const actual = exactlyOne(completed, 'diff')
+      return (
+        !!actual &&
+        actual.pre.length === 1 &&
+        (expectedCount === undefined ||
+          actual.paragraphs.filter(
+            (text) =>
+              normalizeUIText(text) ===
+              `全部 ${expectedCount} 项；分段顺序、长度、SHA 与完整文档已核对。`,
+          ).length === 1)
+      )
+    },
+    { intervals: [100], timeout: 5000 },
+  )
   const parsed: unknown = JSON.parse(exactlyOne(completed, 'diff')!.pre[0]!)
   if (!Array.isArray(parsed)) throw new Error('Actual complete Diff is not an array')
   return parsed as Diff[]
@@ -223,61 +452,61 @@ async function commit(
   const receipt = panel(page).getByRole('region', { name: '已提交回执', exact: true })
   const pending = panel(page).getByRole('region', { name: '原操作状态', exact: true })
   let reconcile = false
-  await expect
-    .poll(
-      async () => {
-        const observed = await receipt.or(pending).evaluateAll((nodes) => ({
-          receipt: nodes.find((node) => node.getAttribute('aria-label') === '已提交回执')
-            ?.textContent,
-          pending: nodes.find((node) => node.getAttribute('aria-label') === '原操作状态')
-            ?.textContent,
-        }))
-        lastCommitPoll.set(page, {
-          action: pollText(action),
-          targetRevision: revision,
-          observedAt: new Date().toISOString(),
-          observedMonotonicMs: performance.now(),
-          receipt: pollText(observed.receipt),
-          pending: pollText(observed.pending),
-        })
-        recordObservation(
-          page,
-          'original commit poll completed DOM observation',
-          lastCommitPoll.get(page),
-        )
-        if (observed.receipt?.includes(`提交版本 ${revision}。`)) return true
-        if (observed.pending?.includes('succeeded')) {
-          reconcile = true
-          return true
-        }
-        return false
-      },
-      { intervals: [100], timeout: 5000 },
-    )
-    .toBe(true)
+  await observedPoll(
+    page,
+    'commit-outcome',
+    async () => {
+      const observed = await receipt.or(pending).evaluateAll((nodes) => ({
+        receipt: nodes.find((node) => node.getAttribute('aria-label') === '已提交回执')
+          ?.textContent,
+        pending: nodes.find((node) => node.getAttribute('aria-label') === '原操作状态')
+          ?.textContent,
+      }))
+      lastCommitPoll.set(page, {
+        action: pollText(action),
+        targetRevision: revision,
+        observedAt: new Date().toISOString(),
+        observedMonotonicMs: performance.now(),
+        receipt: pollText(observed.receipt),
+        pending: pollText(observed.pending),
+      })
+      recordObservation(
+        page,
+        'original commit poll completed DOM observation',
+        lastCommitPoll.get(page),
+      )
+      if (observed.receipt?.includes(`提交版本 ${revision}。`)) return true
+      if (observed.pending?.includes('succeeded')) {
+        reconcile = true
+        return true
+      }
+      return false
+    },
+    { intervals: [100], timeout: 5000 },
+  )
   if (reconcile) {
     const button = pending.getByRole('button', { name: '核对原操作与提交回执', exact: true })
     await expect(button).toBeEnabled()
     await button.click()
   }
   let completed: UISnapshot = {}
-  await expect
-    .poll(
-      async () => {
-        completed = await ui(
-          page,
-          'committed receipt and current read revision',
-          receipt.or(pending),
-          [
-            { key: 'receipt', kind: 'region', name: '已提交回执' },
-            { key: 'pending', kind: 'region', name: '原操作状态' },
-          ],
-        )
-        return committedReceiptOperation(completed, revision, UUID) !== undefined
-      },
-      { intervals: [100], timeout: 5000 },
-    )
-    .toBe(true)
+  await observedPoll(
+    page,
+    'committed-receipt',
+    async () => {
+      completed = await ui(
+        page,
+        'committed receipt and current read revision',
+        receipt.or(pending),
+        [
+          { key: 'receipt', kind: 'region', name: '已提交回执' },
+          { key: 'pending', kind: 'region', name: '原操作状态' },
+        ],
+      )
+      return committedReceiptOperation(completed, revision, UUID) !== undefined
+    },
+    { intervals: [100], timeout: 5000 },
+  )
   const operationId = committedReceiptOperation(completed, revision, UUID)
   if (!operationId) throw new Error('Visible receipt lacks its original operation ID')
   const marker = data(await page.evaluate((id) => window.ontolearn!.getOperation(id), operationId))
@@ -783,6 +1012,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           ),
         ).toEqual(prerequisites)
       } finally {
+        sealPollTiming()
         try {
           await test.info().attach('fr200-form-matrix', {
             body: JSON.stringify({ kind: item.kind, evidence }, null, 2),
@@ -880,29 +1110,29 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         // An explicit same-window read clears the previous error. No restart,
         // new selection, write replay or private Session/receiver hook is used.
         await section.getByRole('button', { name: '读取当前项目', exact: true }).click()
-        await expect
-          .poll(
-            async () => {
-              const snapshot = await ui(
-                page,
-                'refresh complete before rejection fresh Read',
-                button.or(rejection),
-                [
-                  {
-                    key: 'button',
-                    kind: 'button',
-                    name: action === 'add' ? '预览新增事实' : '预览事实修改',
-                  },
-                  { key: 'rejection', kind: 'alert' },
-                ],
-              )
-              return (
-                exactlyOne(snapshot, 'button')?.enabled === true && snapshot.rejection?.length === 0
-              )
-            },
-            { intervals: [100], timeout: 5000 },
-          )
-          .toBe(true)
+        await observedPoll(
+          page,
+          'manual-preview',
+          async () => {
+            const snapshot = await ui(
+              page,
+              'refresh complete before rejection fresh Read',
+              button.or(rejection),
+              [
+                {
+                  key: 'button',
+                  kind: 'button',
+                  name: action === 'add' ? '预览新增事实' : '预览事实修改',
+                },
+                { key: 'rejection', kind: 'alert' },
+              ],
+            )
+            return (
+              exactlyOne(snapshot, 'button')?.enabled === true && snapshot.rejection?.length === 0
+            )
+          },
+          { intervals: [100], timeout: 5000 },
+        )
         const before = await read(page)
         expect(before.domain).toEqual(expected.domain)
         expect(before.inputSnapshotId).toBe(expected.inputSnapshotId)
@@ -925,41 +1155,41 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
         })
         let rejectedUI: UISnapshot = {}
         let rejectedObservedAt = ''
-        await expect
-          .poll(
-            async () => {
-              rejectedUI = await ui(
-                page,
-                'rejection complete exact UI state before fresh Read',
-                fieldsLocator.or(button).or(rejection).or(completeDiff).or(confirmation),
-                [
-                  ...fieldTargets,
-                  {
-                    key: 'button',
-                    kind: 'button',
-                    name: action === 'add' ? '预览新增事实' : '预览事实修改',
-                  },
-                  { key: 'rejection', kind: 'alert' },
-                  { key: 'diff', kind: 'region', name: '完整事务差异' },
-                  { key: 'confirmation', kind: 'button', name: '我已核对完整差异，确认提交' },
-                ],
-              )
-              rejectedObservedAt = new Date().toISOString()
-              const actualError = exactlyOne(rejectedUI, 'rejection')
-              return (
-                !!actualError &&
-                normalizeUIText(actualError.text) === normalizeUIText(expectedErrorText) &&
-                exactlyOne(rejectedUI, 'button')?.enabled === true &&
-                exactlyOne(rejectedUI, 'object')?.value === entered.object &&
-                exactlyOne(rejectedUI, 'subject')?.value === entered.subject &&
-                exactlyOne(rejectedUI, 'predicate')?.value === entered.predicate &&
-                rejectedUI.diff?.length === 0 &&
-                rejectedUI.confirmation?.length === 0
-              )
-            },
-            { intervals: [100], timeout: 5000 },
-          )
-          .toBe(true)
+        await observedPoll(
+          page,
+          'controlled-rejection',
+          async () => {
+            rejectedUI = await ui(
+              page,
+              'rejection complete exact UI state before fresh Read',
+              fieldsLocator.or(button).or(rejection).or(completeDiff).or(confirmation),
+              [
+                ...fieldTargets,
+                {
+                  key: 'button',
+                  kind: 'button',
+                  name: action === 'add' ? '预览新增事实' : '预览事实修改',
+                },
+                { key: 'rejection', kind: 'alert' },
+                { key: 'diff', kind: 'region', name: '完整事务差异' },
+                { key: 'confirmation', kind: 'button', name: '我已核对完整差异，确认提交' },
+              ],
+            )
+            rejectedObservedAt = new Date().toISOString()
+            const actualError = exactlyOne(rejectedUI, 'rejection')
+            return (
+              !!actualError &&
+              normalizeUIText(actualError.text) === normalizeUIText(expectedErrorText) &&
+              exactlyOne(rejectedUI, 'button')?.enabled === true &&
+              exactlyOne(rejectedUI, 'object')?.value === entered.object &&
+              exactlyOne(rejectedUI, 'subject')?.value === entered.subject &&
+              exactlyOne(rejectedUI, 'predicate')?.value === entered.predicate &&
+              rejectedUI.diff?.length === 0 &&
+              rejectedUI.confirmation?.length === 0
+            )
+          },
+          { intervals: [100], timeout: 5000 },
+        )
         const after = await read(page)
         expect(after).toEqual(before)
         const active = data(await page.evaluate(() => window.ontolearn!.getActiveProject()))
@@ -1751,6 +1981,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       }
       throw originalError
     } finally {
+      sealPollTiming()
       try {
         await test.info().attach('fr201-original-records-and-literals', {
           body: JSON.stringify(evidence, null, 2),
@@ -1909,6 +2140,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
       expect(current.domain.state.definitions).toEqual(definitionsBeforeFacts)
       expect(current.domain.state.facts).toEqual(sortFacts(originals))
     } finally {
+      sealPollTiming()
       try {
         await test.info().attach('fr201-numeric-subtag-isolated-cohort', {
           body: JSON.stringify({ fixtureIsolationIsNotCapacityRepair: true, evidence }, null, 2),
