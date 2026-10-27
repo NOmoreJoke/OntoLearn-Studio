@@ -101,3 +101,19 @@ CI41同步helper12 TypeError旧根因未证单列；CI43 C1是ready/bootstrap后
 本次soleparent d1aca的普通docs后继仅新增round-11七文件并追加本节到两状态文件；version-map记录受审身份和后继契约，实际新head/tree/检查/独核绑定在仓外outputs/20261027_t02_r11_evidence_archive_076/COMMIT-BINDING.json及HANDOFF.json，避免文档自引用。artifact-manifest绑定O075仓外169针；GUI、日志、运行库和private原件不入Git。作者raw不格式化；仅适用五份新生成文档及两份完整组装状态Prettier、verify:sources，实际退出码见仓外回执。不重跑check/build/Ruff/产品/GUI/SQL。本票不push、PR写入、新CI/rerun/cancel、merge或T04推进。
 
 整体已合并可用FR仍2/17（FR401/402），HOLD关闭0、D8未用、Goal/M0/release未完成。组织法律/IP/隐私/真实human bus-factor、容量与坏SQLite物理保护/旧超限库恢复、包内完整GUI/签名公证、跨OS及参考8GB设备、供应链、engine自然退出及Windows后代、sys.path等价、parser/N3Store坏snapshot、下游/ownership家族/剩余Undo/旧79F等原HOLD/UNKNOWN保持。未新增人类审批需求；后续远端动作等待ROOT精确票。
+
+## 2026-10-27 R12 / dc6 必要技术阶段已接收；受控11路径docs归档
+
+ROOT在2026-10-27T15:09:42.632204Z实际接收base583→dc6c112ecc944116dc421f9ef569eb50e132e217/treeba11405f4e4d9ba88136ed47ce74f2848a12b9ac（sole-parent deac095f，45累计提交/135路径/1412源）的指定双审必要技术阶段与全部意见处置。两作者原ConditionalPass限定技术及首判/更正链不改写，push前源码技术阻断0；不是无条件双Pass、完整产品/CI或发布放行。
+
+ZCode GLM-5.3/最高/完全访问，SID session_a3121c2e640b72b7a56782376270e618，最终93526B/7c4a3e32a6a87f4f877c25c03648c724133f0477fd8c375204c5c16429827a7e；MiniMax M3.1-Flash/xhigh/始终授权，SID mvs_9fdac9995ac940e0aa1105d923ebbaa4，最终310134B/a982d752cf6166f19f7b0813455280d51bbc926fa5080639dbdecd777324f013。同SID必要补读与纠错、误停/续审、原160完整输入和官方自然终态均在O081；Mini额度满后无新请求/积分/购买/reset。两原稿逐字节归档，不格式化。有效160分别30/55/69/6与21正面+17普通/53部分/65NA/4未知（归一38/53/65/4），均不是产品通过数。
+
+stable163+Z新增3+Mini新增9=175位置及17本轮观察逐项有当前处置、理由、原owner/事件窗口和限证；Top9/S01仅alias不增位。Mini汇总算术、F-R09-03撤回/CIUNKNOWN双半面与F-R09-08→F05等由owner窄erratum处理，原稿不改；LEDGER-01只同步四条Z最终理由，独立反演精确复原旧账，其余不变。F01仅本轮必要阅读/技术收件动作闭合，F05/MM12-N1登记缺口由本次两状态追加落实，仅文档状态闭合；R11-F01仍是M0计划版本化事实，不混coverage。详见[处置](reviews/T02/fr200-fr201-20261024/round-12/disposition.md)、[完整owner索引](reviews/T02/fr200-fr201-20261024/round-12/owner-effective-index.json)、[窄勘误](reviews/T02/fr200-fr201-20261024/round-12/owner-errata.json)、[版本图](reviews/T02/fr200-fr201-20261024/round-12/version-map.json)及[247针清单](reviews/T02/fr200-fr201-20261024/round-12/artifact-manifest.json)。
+
+已接收O081原完整check自然0：TS1924/41files、Python3798=3748PASS+50原条件SKIP/1原duplicateZIPwarning、Ruff397；原native24一次自然双0=21PASS+3原I04SKIP/retry0/flaky0，57事务/43拒绝（42INVALID+1ownership）、FR201finalrev22及两原ID编辑、case7原op单commit/0execute/0replay/1Job/完整Read与marker，146业务资格全true。实际运行仍deac checkout+精确四WIP，后四Gitblob映射dc6；不冒未来docs commit重跑。AGENTS政策overlay唯一Git/current例外，其他1411blob相等。C1成功19371ms无failureObservation，新增observer真实平台失败仍未证；FR20156.482s仅本机观察，不量化提速或证明Windows修复。O079首败/底因UNKNOWN完整保留。
+
+旧CI41 helper12与CI43异步新形态、CI44失败/取消/NOTRUN分列。CI44 Quality engine3769=3716P53原S已完整，后verify15min取消不倒称engine未运行。dc6无新CI，本票不push/改PR/触发重跑取消CI/merge。未来须当前完整发现集合（当前3798含新增29）、原有据skip/自然0/无失败早停取消timeoutNOTRUN、全部后继/三job自身success与Quality packaged recovery自身success，原15/20min及40/45/90、5/60/180预算/断言不变。Windows诊断是条件step，maxfail只在失败时早停；单步绿不等产品/merge，不加旧根因先证、余量阈值或故意失败门。
+
+本票直接后继sole-parent dc6，只新增round-12九文件并追加两状态，共11路径。实际新head/tree、逐字节raw/语义等价/旧前缀/原1410源/5build/7保护项及O081247针、7新生成+2完整状态文档检查/verify:sources/独立文档差异审查在仓外outputs/20261027_t02_r12_docs_archive_082回执绑定，避免自引用。仅本地普通docs提交；后继远端动作仍须ROOT精确票。
+
+整体合并可用FR仍2/17（FR401/402），HOLD关闭0、D8未用、Goal/M0/release未完成、T04不推进。法律/IP/隐私/真实human能力与bus-factor、供应链/签名公证/包内GUI、容量/旧超限/坏SQLite物理保护、unknown parser/N3Store、engine退出与Windows后代、sys.path等价、跨OS/参考8GB设备、其余Undo/ownership及四具名下游全部HOLD/UNKNOWN原窗口保留。全部旧状态前缀逐字保留。
