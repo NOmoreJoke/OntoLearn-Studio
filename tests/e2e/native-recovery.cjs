@@ -14,24 +14,158 @@ const evidence = {
   noSandboxSwitch: app.commandLine.hasSwitch('no-sandbox'),
   versions: process.versions,
 }
+// Passive main-process evidence only. Issued calls and synchronous input returns
+// do not acknowledge renderer execution or entry into product recovery handlers.
+const passiveFailure = (() => {
+  const max = 2147483647
+  const limitRecords = 16
+  const limitBytes = 4096
+  const counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  const rows = []
+  let sequence = 0
+  let cursor = 0
+  let size = 0
+  let overwritten = 0
+  let readErrors = 0
+  let latestWindow
+  const increment = (value) => (value < max ? value + 1 : max)
+  const number = (value) => (Number.isInteger(value) && value >= 0 && value <= max ? value : -1)
+  const read = (work) => {
+    try {
+      return work()
+    } catch {
+      readErrors = increment(readErrors)
+      return undefined
+    }
+  }
+  const flag = (work) => {
+    const value = read(work)
+    return value === true ? 1 : value === false ? 0 : -1
+  }
+  const record = (code, window) => {
+    try {
+      if (code === 0) latestWindow = window // At most one retained window alias.
+      sequence = increment(sequence)
+      counts[code] = increment(counts[code])
+      const target = window ?? latestWindow
+      const contents = read(() => target.webContents)
+      const destroyed = flag(() => target.isDestroyed())
+      rows[cursor] = [
+        sequence,
+        code,
+        number(read(() => target.id)),
+        number(read(() => contents.id)),
+        destroyed,
+        destroyed === 1 ? -1 : flag(() => target.isVisible()),
+        destroyed === 1 ? -1 : flag(() => target.isFocused()),
+        flag(() => contents.isDestroyed()),
+      ]
+      cursor = (cursor + 1) % limitRecords
+      if (size < limitRecords) size++
+      else overwritten = increment(overwritten)
+    } catch {
+      // Even failed diagnostic reads/recording must not change the original path.
+    }
+  }
+  const failure = () => {
+    try {
+      record(15, latestWindow)
+      const records = []
+      for (let i = 0; i < size; i++)
+        records.push(rows[(cursor - size + i + limitRecords) % limitRecords])
+      const value = {
+        schema: 'c1-native-passive-v1',
+        limitBytes,
+        limitRecords,
+        sequence,
+        overwritten,
+        readErrors,
+        counts,
+        codes: [
+          'observe-window',
+          'registered',
+          'drive-enter',
+          'render-gone',
+          'unresponsive',
+          'dialog-stub',
+          'fault-call-boundary',
+          'fault-promise-returned',
+          'fault-rejected',
+          'input-callback',
+          'down-call-boundary',
+          'down-returned',
+          'up-call-boundary',
+          'up-returned',
+          'drive-error',
+          'save-failure',
+        ],
+        fields: [
+          'sequence',
+          'code',
+          'windowId',
+          'webContentsId',
+          'destroyed',
+          'visible',
+          'focused',
+          'webContentsDestroyed',
+        ],
+        records,
+        rendererLoopStarted: 'UNKNOWN',
+        productHandlerEntered: 'UNKNOWN',
+      }
+      // Match the original two-space save format, including this added property.
+      if (
+        Buffer.byteLength(JSON.stringify({ failureObservation: value }, null, 2), 'utf8') >
+        limitBytes
+      )
+        return {
+          schema: value.schema,
+          limitBytes,
+          unavailable: 'byte-cap',
+          rendererLoopStarted: 'UNKNOWN',
+          productHandlerEntered: 'UNKNOWN',
+        }
+      return value
+    } catch {
+      return undefined
+    }
+  }
+  return { record, failure }
+})()
 const save = (error) => {
-  if (error) evidence.error = String(error)
+  if (error) {
+    evidence.error = String(error)
+    try {
+      const extra = passiveFailure.failure()
+      if (extra !== undefined) evidence.failureObservation = extra
+    } catch {
+      // Original error formatting, write and exit remain the authoritative path.
+    }
+  }
   writeFileSync(process.env.I02_NATIVE_EVIDENCE, JSON.stringify(evidence, null, 2) + '\n')
   app.exit(error ? 1 : 0)
 }
 setTimeout(() => save('native recovery timeout'), 40000).unref()
 dialog.showMessageBox = async (_window, options) => {
+  passiveFailure.record(5, _window)
   evidence.prompts.push(options)
   return { response: 0, checkboxChecked: false }
 }
 function observeWindow(window, freshlyCreated = false) {
   const index = ++evidence.windows
-  window.webContents.on('render-process-gone', (_e, details) =>
-    evidence.events.push(details.reason),
-  )
-  window.on('unresponsive', () => evidence.events.push('unresponsive'))
+  passiveFailure.record(0, window)
+  window.webContents.on('render-process-gone', (_e, details) => {
+    passiveFailure.record(3, window)
+    return evidence.events.push(details.reason)
+  })
+  window.on('unresponsive', () => {
+    passiveFailure.record(4, window)
+    return evidence.events.push('unresponsive')
+  })
+  passiveFailure.record(1, window)
   const drive = async () => {
     try {
+      passiveFailure.record(2, window)
       const state = await window.webContents.executeJavaScript(
         `({ status: document.querySelector('.health-result').textContent, bridge: typeof window.ontolearn?.getEngineHealth })`,
       )
@@ -55,11 +189,15 @@ function observeWindow(window, freshlyCreated = false) {
         // Start the actual blocking script directly. A renderer timer can be throttled,
         // allowing input to be handled before the scheduled loop begins.
         evidence.hangFault = 'executeJavaScript-infinite-loop'
+        passiveFailure.record(6, window)
         void window.webContents.executeJavaScript('for (;;) {}').catch((error) => {
+          passiveFailure.record(8, window)
           if (window.isDestroyed()) evidence.hangScriptDisposed = String(error)
           else save(error)
         })
+        passiveFailure.record(7, window)
         setTimeout(() => {
+          passiveFailure.record(9, window)
           evidence.hangTrigger = {
             time: new Date().toISOString(),
             visible: window.isVisible(),
@@ -70,6 +208,7 @@ function observeWindow(window, freshlyCreated = false) {
             save('native hang input requires a focused visible window')
             return
           }
+          passiveFailure.record(10, window)
           window.webContents.sendInputEvent({
             type: 'mouseDown',
             x: 400,
@@ -77,6 +216,8 @@ function observeWindow(window, freshlyCreated = false) {
             button: 'left',
             clickCount: 1,
           })
+          passiveFailure.record(11, window)
+          passiveFailure.record(12, window)
           window.webContents.sendInputEvent({
             type: 'mouseUp',
             x: 400,
@@ -84,6 +225,7 @@ function observeWindow(window, freshlyCreated = false) {
             button: 'left',
             clickCount: 1,
           })
+          passiveFailure.record(13, window)
         }, 250)
       } else if (index === 3) {
         if (!evidence.events.includes('unresponsive') || evidence.prompts.length !== 2)
@@ -92,6 +234,7 @@ function observeWindow(window, freshlyCreated = false) {
         save()
       } else throw new Error('unexpected automatic restart')
     } catch (error) {
+      passiveFailure.record(14, window)
       save(error)
     }
   }

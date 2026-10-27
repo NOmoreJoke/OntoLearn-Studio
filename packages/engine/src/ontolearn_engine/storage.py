@@ -14,7 +14,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from ontolearn_engine.invalidation import CODES, RULES, can_publish_current, family, reasons
-from ontolearn_engine.rdf_snapshot import iri, term
+from ontolearn_engine.rdf_snapshot import Graph, URIRef, iri, term
 
 FORMAT_VERSION = 2
 LAYERS = {"ontology", "mapping", "constraint", "rule", "behavior", "scenario", "query", "model"}
@@ -29,6 +29,128 @@ def canonical(value: object) -> str:
 
 def digest(value: object) -> str:
     return hashlib.sha256(canonical(value).encode()).hexdigest()
+
+
+# Identity gates only disable the local optimization. Parsing always uses the
+# current bindings; no captured implementation is ever called as a fallback.
+_MEMO_TERM = term
+_MEMO_TERM_CODE = term.__code__
+_MEMO_IRI = iri
+_MEMO_GRAPH = Graph
+_MEMO_URI = URIRef
+_MEMO_GRAPH_PARSE = Graph.__dict__["parse"]
+_MEMO_URI_N3 = URIRef.__dict__["n3"]
+_MEMO_JSON_LOADS = json.loads
+
+
+def _plain_snapshot_data(state):
+    """Eligibility, not validation: bounded builtin iteration, no parse or callbacks.
+
+    Unknown containers, cycles/depth or inspection capacity simply retain the
+    original path. Iterators retain at most64 container aliases, not a copy or
+    an unbounded visited graph. Raw definition payloads remain opaque strings.
+    """
+    stack = [(iter((state,)), False)]
+    steps = 0
+    while stack:
+        iterator, pairs = stack[-1]
+        try:
+            value = next(iterator)
+        except StopIteration:
+            stack.pop()
+            continue
+        steps += 1
+        if steps > 8192:
+            return False
+        if pairs:
+            key, value = value
+            if type(key) is not str:
+                return False
+        kind = type(value)
+        if kind is str or kind is int or kind is float or kind is bool or kind is type(None):
+            continue
+        if len(stack) >= 64:
+            return False
+        if kind is dict:
+            stack.append((iter(dict.items(value)), True))
+        elif kind is list:
+            stack.append((iter(value), False))
+        else:
+            return False
+    return True
+
+
+def _original_snapshot_definition(cls):
+    # Read raw class namespaces, not a user descriptor/metaclass hook. An
+    # override must retain its original one-argument dispatch for the whole call.
+    if type(cls) is not type:
+        return False
+    for base in type.__getattribute__(cls, "__mro__"):
+        namespace = type.__getattribute__(base, "__dict__")
+        if "_definition" in namespace:
+            descriptor = namespace["_definition"]
+            return (
+                descriptor is _MEMO_DEFINITION
+                and descriptor.__func__.__code__ is _MEMO_DEFINITION_CODE
+            )
+    return False
+
+
+def _original_snapshot_terms():
+    return (
+        term is _MEMO_TERM
+        and term.__code__ is _MEMO_TERM_CODE
+        and iri is _MEMO_IRI
+        and Graph is _MEMO_GRAPH
+        and URIRef is _MEMO_URI
+        and term.__globals__.get("iri") is _MEMO_IRI
+        and term.__globals__.get("Graph") is Graph
+        and term.__globals__.get("URIRef") is URIRef
+        and Graph.__dict__.get("parse") is _MEMO_GRAPH_PARSE
+        and URIRef.__dict__.get("n3") is _MEMO_URI_N3
+        and json.loads is _MEMO_JSON_LOADS
+    )
+
+
+class _SnapshotIRIObjects:
+    """At most16 successful original string aliases, for exactly one validation."""
+
+    __slots__ = ("aliases", "enabled")
+
+    def __init__(self):
+        self.aliases = set()
+        self.enabled = True
+
+    def disable(self):
+        self.aliases.clear()
+        self.enabled = False
+
+    def noncanonical(self, value):
+        if self.enabled:
+            if (
+                type(value) is not str
+                or not value.startswith("<")
+                or not value.endswith(">")
+                or not _original_snapshot_terms()
+            ):
+                # A Literal converter or unknown parser branch may have side
+                # effects. Never carry an earlier success across that branch.
+                self.disable()
+            elif value in self.aliases:
+                return False
+        if not self.enabled:
+            return term(value).n3() != value
+        parsed = term(value)
+        rendered = parsed.n3()
+        noncanonical = rendered != value
+        if self.enabled:
+            if type(parsed) is URIRef and type(rendered) is str and noncanonical is False:
+                if len(self.aliases) < 16:
+                    self.aliases.add(value)
+            else:
+                self.disable()
+        # Preserve even an unusual comparison's original truthiness/exception.
+        return noncanonical
 
 
 class UnsupportedProjectFormat(ValueError):
@@ -1108,6 +1230,10 @@ class Store:
 
     @staticmethod
     def _definition(value: object) -> None:
+        Store._definition_objects(value, None)
+
+    @staticmethod
+    def _definition_objects(value: object, objects) -> None:
         if not isinstance(value, dict):
             return  # Other definition payloads remain opaque canonical JSON in this spike.
         if "references" in value and not isinstance(value["references"], list):
@@ -1125,7 +1251,9 @@ class Store:
                 iri(triple["subject"])
                 iri(triple["predicate"])
                 obj = triple["object"]
-                if not isinstance(obj, str) or term(obj).n3() != obj:
+                if not isinstance(obj, str) or (
+                    objects.noncanonical(obj) if objects is not None else term(obj).n3() != obj
+                ):
                     raise ValueError("Canonical RDF object required in definition")
         if "singleValuedPredicates" in value:
             predicates = value["singleValuedPredicates"]
@@ -1446,6 +1574,13 @@ class Store:
     @classmethod
     def _snapshot_state(cls, state: dict) -> None:
         """Check persisted record shapes, not future business execution semantics."""
+        objects = (
+            _SnapshotIRIObjects()
+            if _plain_snapshot_data(state)
+            and _original_snapshot_definition(cls)
+            and _original_snapshot_terms()
+            else None
+        )
         identities = set()
         definitions = []
         for record in state["definitions"]:
@@ -1465,7 +1600,13 @@ class Store:
             identities.add(key)
             value = json.loads(record["payload"])
             canonical(value)
-            cls._definition(value)
+            if objects is not None and _original_snapshot_definition(cls):
+                Store._definition_objects(value, objects)
+            else:
+                if objects is not None:
+                    objects.disable()
+                    objects = None
+                cls._definition(value)
             definitions.append(value)
         for value in definitions:
             for reference in value.get("references", []) if isinstance(value, dict) else []:
@@ -1505,7 +1646,11 @@ class Store:
                 if record["object"] is not None:
                     values.append(record["object"])
             for value in values:
-                if not isinstance(value, str) or term(value).n3() != value:
+                if not isinstance(value, str) or (
+                    objects.noncanonical(value)
+                    if objects is not None
+                    else term(value).n3() != value
+                ):
                     raise ValueError("Invalid snapshot RDF object")
             # ID stays bound to the original statement across edits and tombstones.
         for owner, status in state["mappingState"].items():
@@ -1844,6 +1989,10 @@ class Store:
             self._db.backup(target)
         finally:
             target.close()
+
+
+_MEMO_DEFINITION = Store.__dict__["_definition"]
+_MEMO_DEFINITION_CODE = _MEMO_DEFINITION.__func__.__code__
 
 
 RETIREMENTS_SCHEMA = (
