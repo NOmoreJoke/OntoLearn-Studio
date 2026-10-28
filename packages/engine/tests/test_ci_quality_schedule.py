@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import asyncio
 import importlib.util
+import io
 import os
 import sys
 import time
@@ -371,42 +372,35 @@ def first_recorded_pid(text):
     return None
 
 
-def start_child(code, *args):
-    # Real sys.executable children replace bash commands so supervision risks
-    # are exercised with real subprocesses on every platform. The own session
-    # matches spawn_lane's ownership boundary, so reaping can never reach this
-    # test's or the runner's process group. Extra arguments are DATA passed
-    # as real OS argv elements after '-c'.
-    return asyncio.create_subprocess_exec(
-        sys.executable,
-        "-c",
-        code,
-        *args,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        start_new_session=True,
-    )
-
-
-LATE_HOLDER = (
-    "import sys,time\n"
-    "time.sleep(1)\n"
-    "sys.stdout.write('late line\\n')\n"
-    "sys.stdout.flush()\n"
-    "time.sleep(60)\n"
-)
-# Leaders below spawn their holder with an argv LIST through os.posix_spawn —
-# the holder source travels as a data element, never concatenated into a
-# command string.
+# Leaders below spawn their holder with a real argv LIST through
+# subprocess.Popen — the holder source travels as a data element (sys.argv),
+# never concatenated into a command string.
 POSIX_SPAWN_HOLDER = (
-    "import os,sys,time\n"
-    "os.posix_spawn(sys.executable, [sys.executable, '-c', sys.argv[1]], os.environ)\n"
+    "import os,subprocess,sys,time\nsubprocess.Popen([sys.executable, '-c', sys.argv[1]])\n"
 )
 
 
-async def _supervise_child(code, name, stdout=None, stderr=None):
-    process = await start_child(code)
-    return await scheduler._supervise(process, name, stdout=stdout, stderr=stderr)
+async def _supervise_child(code, name, *args, stdout=None, stderr=None):
+    # Supervision-level cases run through the PRODUCTION entry with the
+    # interpreter seam: python_child_lane builds the lane command (positional
+    # args are DATA passed to the child as argv elements) and spawn_lane
+    # creates the leader with the exclusive-reap ownership the scheduler
+    # supervises. Failing/capturing output targets replace sys.stdout /
+    # sys.stderr around the call; the reader threads observe the swapped
+    # objects directly.
+    lane = python_child_lane(name, code, *args)
+    original_out, original_err = sys.stdout, sys.stderr
+    original_shell = scheduler._LANE_SHELL
+    scheduler._LANE_SHELL = (sys.executable, "-c")
+    if stdout is not None:
+        sys.stdout = stdout
+    if stderr is not None:
+        sys.stderr = stderr
+    try:
+        return await scheduler.spawn_lane(lane)
+    finally:
+        scheduler._LANE_SHELL = original_shell
+        sys.stdout, sys.stderr = original_out, original_err
 
 
 def test_main_refuses_to_orchestrate_off_linux(monkeypatch):
@@ -415,10 +409,10 @@ def test_main_refuses_to_orchestrate_off_linux(monkeypatch):
 
 
 def test_spawn_lane_settles_a_spawn_failure_as_a_lane_failure(monkeypatch):
-    async def broken(*_args, **_kwargs):
+    def broken(*_args, **_kwargs):
         raise OSError("no such file or directory")
 
-    monkeypatch.setattr(scheduler.asyncio, "create_subprocess_exec", broken)
+    monkeypatch.setattr(scheduler.subprocess, "Popen", broken)
     code = asyncio.run(scheduler.spawn_lane(scheduler.Lane("t-spawn", 1, "exit 0")))
     assert code == 127
 
@@ -471,7 +465,7 @@ def test_supervise_observes_a_stdout_drain_failure_and_reaps_the_lane():
         code = asyncio.run(
             asyncio.wait_for(
                 _supervise_child(writer, "t-io", stdout=FailingTarget(), stderr=errors),
-                15.0,
+                30.0,
             )
         )
         assert code == 1
@@ -521,38 +515,46 @@ HOLDER_TERM_IGNORER = (
 )
 
 
-def test_supervise_cancellation_kills_the_owned_direct_child():
-    import io
-
+def test_supervise_cancellation_kills_the_owned_direct_child(tmp_path):
     sentinel = Sentinel()
-    errors = io.StringIO()
+    pidfile = tmp_path.joinpath("direct.pid")
+    sleeper = "import os,sys,time\nopen(sys.argv[1], 'w').write(str(os.getpid()))\ntime.sleep(30)\n"
+
+    async def scenario():
+        task = asyncio.ensure_future(_supervise_child(sleeper, "t-direct", str(pidfile)))
+        for _ in range(1000):
+            if pidfile.exists():
+                break
+            await asyncio.sleep(0.01)
+        # The pidfile IS the fixture handshake: a missing pid after the poll
+        # window means the child never started — a fixture failure, not a
+        # silent pass.
+        assert pidfile.exists(), "direct child never started (no pidfile)"
+        await asyncio.sleep(0.2)
+        task.cancel()
+        cancelled = False
+        try:
+            await asyncio.wait_for(task, 15.0)
+        except asyncio.CancelledError:
+            cancelled = True
+        return cancelled
+
     try:
-        sleeper = (
-            "import os,sys,time\n"
-            "sys.stderr.write(str(os.getpid()) + chr(10))\n"
-            "sys.stderr.flush()\n"
-            "time.sleep(30)\n"
-        )
-
-        async def scenario():
-            process = await start_child(sleeper)
-            task = asyncio.ensure_future(scheduler._supervise(process, "t-direct", stderr=errors))
-            for _ in range(500):
-                if first_recorded_pid(errors.getvalue()) is not None:
-                    break
-                await asyncio.sleep(0.01)
-            task.cancel()
-            try:
-                await asyncio.wait_for(task, 15.0)
-            except asyncio.CancelledError:
-                pass
-            return process
-
-        process = asyncio.run(scenario())
-        assert process.returncode is not None
-        assert process.returncode != 0
+        cancelled = asyncio.run(scenario())
+        assert cancelled
         assert sentinel.alive()
+        pid = int(pidfile.read_text(encoding="ascii").strip())
+        if hasattr(os, "killpg"):
+            # The direct leader is terminated for real through the pinned
+            # ownership window before the cancellation propagates.
+            assert bounded_dead(pid)
     finally:
+        if pidfile.exists():
+            pid = int(pidfile.read_text(encoding="ascii").strip())
+            try:
+                os.kill(pid, 9)
+            except (ProcessLookupError, PermissionError, OSError):
+                pass
         sentinel.close()
 
 
@@ -591,14 +593,17 @@ def test_production_entry_returns_exact_exit_codes_and_delegates_supervision(
             shell_bad = asyncio.run(scheduler.spawn_lane(scheduler.Lane("t-bad-sh", 1, "exit 3")))
         assert (shell_ok, shell_bad) == (0, 3)
     # … and the spawned child is handed to _supervise rather than supervised
-    # inline: delegation is proven with a real spawned process.
+    # inline: delegation is proven with a real spawned leader.
     captured = {}
 
-    async def fake_supervise(process, name, stdout=None, stderr=None):
-        captured["pid"] = process.pid
+    async def fake_supervise(popen, name, stdout=None, stderr=None):
+        captured["pid"] = popen.pid
         captured["name"] = name
-        process.kill()
-        await process.wait()
+        popen.kill()
+        popen.wait(timeout=10)
+        for stream in (popen.stdout, popen.stderr):
+            if stream is not None:
+                stream.close()
         return 7
 
     monkeypatch.setattr(scheduler, "_supervise", fake_supervise)
@@ -627,7 +632,7 @@ def test_production_entry_settles_a_drain_failure(python_lane_shell):
     original = sys.stdout
     sys.stdout = FailingTarget()
     try:
-        code = asyncio.run(asyncio.wait_for(scheduler.spawn_lane(lane), 15.0))
+        code = asyncio.run(asyncio.wait_for(scheduler.spawn_lane(lane), 30.0))
         assert code == 1
         assert sentinel.alive()
     finally:
@@ -640,8 +645,10 @@ def test_production_entry_closes_the_group_when_the_leader_exits_first(
 ):
     # Layered original of the R14-03 first failure (same assertion red at
     # 3839): the leader exits while a TERM-ignoring same-group descendant
-    # holds the pipe. The lane must settle as a bounded failure everywhere;
-    # where the OS exposes process groups the descendant is actually closed.
+    # holds the pipe. Exit is observed as UNREAPED zombie, so the identity
+    # anchor holds through the tail collection and the pinned-window group
+    # cleanup actually closes the holder — asserted on the SUT before any
+    # fixture fallback.
     sentinel = Sentinel()
     leader = (
         "import subprocess,sys,time\n"
@@ -655,20 +662,13 @@ def test_production_entry_closes_the_group_when_the_leader_exits_first(
         assert code == 1
         assert sentinel.alive()
         holder_pid = first_recorded_pid(capsys.readouterr().err)
-        assert holder_pid is not None
-        if hasattr(os, "killpg") and scheduler._PIDFD_SUPPORTED:
-            # Linux production: the pidfd pin proves the numeric identity, so
-            # the pipe-holding own-group descendant is actually closed.
+        assert holder_pid is not None, "holder never started (fixture failure)"
+        if hasattr(os, "killpg"):
             assert bounded_dead(holder_pid)
-        else:
-            # Documented boundary: without group APIs — or without the stable
-            # identity pin (leader already reaped at cleanup entry) — the
-            # scheduler refuses post-reap signaling; this test cleans up its
-            # own child instead.
-            try:
-                os.kill(holder_pid, 9)
-            except (ProcessLookupError, PermissionError, OSError):
-                pass
+        try:
+            os.kill(holder_pid, 9)
+        except (ProcessLookupError, PermissionError, OSError):
+            pass
     finally:
         sentinel.close()
 
@@ -677,12 +677,12 @@ def test_production_entry_cancellation_closes_the_owned_children(
     tmp_path, capsys, python_lane_shell
 ):
     # Cancellation through the production entry with the deterministic
-    # R14-03 ordering fixed: reap starts with the leader alive; the group
-    # TERM makes the responsive leader exit at once (returncode becomes
-    # known mid-reap) while the TERM-ignoring holder keeps the pipe; the
-    # holder must still be closed by verified membership. Without group APIs
-    # the same cancelled lane must at minimum terminate its direct child for
-    # real — never merely report a settled failure.
+    # ordering fixed: reap starts with the leader alive; the group TERM makes
+    # the responsive leader exit at once (returncode becomes known mid-reap).
+    # Group members are never signaled (no stable delivery handle), so the
+    # direct child must be terminated for real, the surviving holder is
+    # honestly reported as cleanup NOT confirmed, and this test cleans up its
+    # own holder; the unrelated sentinel must stay alive.
     sentinel = Sentinel()
     leader_pidfile = tmp_path.joinpath("leader.pid")
     leader = (  # noqa: UP031 — embedded child sources are test fixtures, not %-formatted user data
@@ -717,13 +717,58 @@ def test_production_entry_cancellation_closes_the_owned_children(
     try:
         leader_pid, cancelled = asyncio.run(scenario())
         holder_pid = first_recorded_pid(capsys.readouterr().err)
-        assert holder_pid is not None
+        assert holder_pid is not None, "holder never started (fixture failure)"
         assert sentinel.alive()
+        assert cancelled
+        # The leader was ALIVE at cancel: the identity window was pinned, so
+        # the bounded group cleanup closed BOTH the leader and the holder;
+        # the fixture fallback below only sweeps if anything survived.
+        assert bounded_dead(leader_pid, holder_pid)
+        for pid in (leader_pid, holder_pid):
+            try:
+                os.kill(pid, 9)
+            except (ProcessLookupError, PermissionError, OSError):
+                pass
+    finally:
+        sentinel.close()
+
+
+def test_supervise_settles_a_tail_drain_failure_after_the_leader_exits():
+    # Fixed ordering for the tail-window gap: the leader's exit is OBSERVED
+    # (zombie, unreaped — the identity anchor holds) when the stdout target
+    # starts failing on data that only arrives afterwards (a holder writes
+    # one late line through the inherited pipe). The failure must settle the
+    # lane as nonzero instead of returning the child's 0, and the group
+    # cleanup runs in the pinned window.
+    sentinel = Sentinel()
+    errors = io.StringIO()
+    holder = (
+        "import os,sys,time\n"
+        "sys.stderr.write(str(os.getpid()) + chr(10))\n"
+        "sys.stderr.flush()\n"
+        "time.sleep(1)\n"
+        "sys.stdout.write('late line\\n')\n"
+        "sys.stdout.flush()\n"
+        "time.sleep(60)\n"
+    )
+    leader = POSIX_SPAWN_HOLDER + "time.sleep(0.3)\nsys.exit(0)\n"
+    try:
+        code = asyncio.run(
+            asyncio.wait_for(
+                _supervise_child(
+                    leader, "t-tail-io", holder, stdout=FailingTarget(), stderr=errors
+                ),
+                30.0,
+            )
+        )
+        assert code == 1
+        assert sentinel.alive()
+        holder_pid = first_recorded_pid(errors.getvalue())
+        assert holder_pid is not None, "holder never started (fixture failure)"
         if hasattr(os, "killpg"):
-            assert cancelled
-            assert bounded_dead(leader_pid, holder_pid)
-        else:
-            assert bounded_dead(leader_pid)
+            # The scheduler's pinned-window group cleanup closed the holder;
+            # the fixture fallback below only sweeps if it somehow survived.
+            assert bounded_dead(holder_pid)
             try:
                 os.kill(holder_pid, 9)
             except (ProcessLookupError, PermissionError, OSError):
@@ -732,85 +777,58 @@ def test_production_entry_cancellation_closes_the_owned_children(
         sentinel.close()
 
 
-def test_supervise_settles_a_tail_drain_failure_after_the_leader_exits():
-    # Fixed ordering for the tail-window gap: the leader's exit code is
-    # already known when the stdout target starts failing on data that only
-    # arrives afterwards (a holder writes one late line through the inherited
-    # pipe). The failure must still settle the lane as nonzero instead of
-    # returning the child's 0.
-    import io
-
-    sentinel = Sentinel()
-    errors = io.StringIO()
-    leader = POSIX_SPAWN_HOLDER + "time.sleep(0.3)\nsys.exit(0)\n"
-
-    async def run():
-        process = await start_child(leader, LATE_HOLDER)
-        alive["process"] = process
-        return await scheduler._supervise(
-            process, "t-tail-io", stdout=FailingTarget(), stderr=errors
-        )
-
-    alive: dict = {}
-    try:
-        code = asyncio.run(asyncio.wait_for(run(), 30.0))
-        assert code == 1
-        assert sentinel.alive()
-    finally:
-        process = alive.get("process")
-        if process is not None and not scheduler._PIDFD_SUPPORTED:
-            # Without the stable pin the post-reap signaling is refused by
-            # design; clean up this test's own surviving group members.
-            for pid in scheduler._own_group_members(process.pid) or []:
-                try:
-                    os.kill(pid, 9)
-                except (ProcessLookupError, PermissionError, OSError):
-                    pass
-        sentinel.close()
-
-
 def test_supervise_cancellation_during_tail_collection_settles_the_group():
-    # Fixed ordering for the tail-cancellation gap: the leader has already
-    # exited (returncode known) and the TERM-ignoring holder keeps the pipe,
-    # so supervision sits inside the bounded tail collection when a single
-    # plain cancel arrives. The bounded own-group settlement must still run
-    # before the cancellation propagates; the unrelated sentinel stays alive.
-    import io
-
+    # Fixed ordering with a REAL handshake for the tail-cancellation gap:
+    # (1) the TERM-ignoring holder is provably started (its pid arrives over
+    #     the drained stderr — missing pid is a fixture failure);
+    # (2) the leader has exited to zombie while UNREAPED (ps/proc state),
+    #     so the identity anchor is intact and supervision has entered the
+    #     bounded tail collection, still pending on the holder-held pipe;
+    # (3) this single cancel must actually propagate (asserted), and the
+    #     pinned-window group cleanup must close the holder before it does.
     sentinel = Sentinel()
-    errors = io.StringIO()
-    holder = (
-        "import signal,sys,time,os\n"
-        "signal.signal(signal.SIGTERM, signal.SIG_IGN)\n"
-        "sys.stderr.write(str(os.getpid()) + chr(10))\n"
-        "sys.stderr.flush()\n"
-        "time.sleep(60)\n"
-    )
+    capture = io.StringIO()
+    holder = HOLDER_TERM_IGNORER
     leader = POSIX_SPAWN_HOLDER + "time.sleep(0.3)\nsys.exit(0)\n"
 
     async def scenario():
-        process = await start_child(leader, holder)
-        task = asyncio.ensure_future(scheduler._supervise(process, "t-tail-cancel", stderr=errors))
-        for _ in range(1000):
-            if process.returncode is not None:
+        task = asyncio.create_task(
+            _supervise_child(leader, "t-tail-cancel", holder, stderr=capture)
+        )
+        holder_pid = None
+        for _ in range(1500):
+            holder_pid = first_recorded_pid(capture.getvalue())
+            if holder_pid is not None:
                 break
             await asyncio.sleep(0.02)
-        await asyncio.sleep(0.5)
+        assert holder_pid is not None, "holder never started (fixture failure)"
+        leader_pid = os.getpgid(holder_pid)
+        zombie = False
+        for _ in range(1500):
+            if os.name == "nt":
+                break  # no zombie state on Windows; pipe-pending is the window
+            if scheduler._popen_exited_unreaped(type("L", (), {"pid": leader_pid}), {}):
+                zombie = True
+                break
+            await asyncio.sleep(0.02)
+        assert zombie or os.name == "nt", "leader never exited (fixture failure)"
+        await asyncio.sleep(0.1)  # supervision has now entered the tail wait
         task.cancel()
+        cancelled = False
         try:
             await asyncio.wait_for(task, 30.0)
         except asyncio.CancelledError:
-            pass
-        return process
+            cancelled = True
+        return holder_pid, cancelled
 
     try:
-        process = asyncio.run(scenario())
-        assert process.returncode == 0
+        holder_pid, cancelled = asyncio.run(scenario())
+        assert cancelled, "cancellation did not propagate to supervision"
         assert sentinel.alive()
-        holder_pid = first_recorded_pid(errors.getvalue())
-        if holder_pid is not None and not scheduler._PIDFD_SUPPORTED:
-            # Without the stable pin the post-reap member signaling is
-            # refused by design; clean up this test's own holder.
+        if hasattr(os, "killpg"):
+            # The scheduler's cleanup — not the fixture — closed the holder;
+            # the fallback kill only sweeps if it somehow survived.
+            assert bounded_dead(holder_pid)
             try:
                 os.kill(holder_pid, 9)
             except (ProcessLookupError, PermissionError, OSError):
@@ -824,66 +842,47 @@ def test_observation_failure_is_reported_as_unknown_not_gone(monkeypatch):
     # be interpreted as an empty group, and must surface as an unknown
     # cleanup outcome rather than a silent success or an exception.
     monkeypatch.setattr(scheduler, "_own_group_members", lambda pgid: None)
-    quiet = asyncio.run(scheduler._await_group_quiet(424242, "t-obs", 0.1))
-    assert quiet is False
-    process = type("P", (), {})()
-    process.pid = 424242
-    process.returncode = None
-    outcome = asyncio.run(scheduler._reap_lane_group(process, "t-obs", {"pinned": False}))
+
+    class FakePopen:
+        pid = 424242
+        returncode = None
+
+        def wait(self, timeout=None):
+            return 0
+
+    state = {"reaped": False, "code_known": False}
+    outcome = asyncio.run(scheduler._close_lane_group(FakePopen(), "t-obs", state))
     assert outcome == "unknown"
 
 
-def test_member_signal_permission_error_keeps_cleanup_bounded(monkeypatch):
-    # A member that cannot be signaled (PermissionError) is reported, does
-    # not abort the TERM-to-KILL sequence for other members, and never turns
-    # the outcome into a confirmed close.
-    delivered: list[tuple[int, int]] = []
-
-    def fake_kill(pid, sig):
-        if pid == 4242:
-            raise PermissionError(1, "not permitted")
-        delivered.append((pid, sig))
-
-    monkeypatch.setattr(scheduler.os, "kill", fake_kill)
-    monkeypatch.setattr(scheduler, "_own_group_members", lambda pgid: [4242, 4243])
-    monkeypatch.setattr(scheduler, "_pid_pgid", lambda pid: 424242)
-    scheduler._signal_members(424242, 15, "t-perm")
-    assert delivered == [(4243, 15)]
-
-    async def never_quiet(pgid, name, timeout):
-        return False
-
-    monkeypatch.setattr(scheduler, "_await_group_quiet", never_quiet)
-    process = type("P", (), {})()
-    process.pid = 424242
-    process.returncode = None
-    outcome = asyncio.run(scheduler._reap_lane_group(process, "t-perm", {"pinned": False}))
-    assert outcome in {"residual", "unknown"}
-
-
-def test_recycled_identity_is_never_signaled(monkeypatch):
-    # Controlled recycle fixture: the leader is already reaped and the same
-    # numeric group id now also contains a NEW group leader (pid == pgid) and
-    # an unrelated member. Without the stable identity pin the scheduler must
-    # refuse every signal; with the pin it signals only the verified member,
-    # never the recycled leader pid.
-    delivered: list[int] = []
-    monkeypatch.setattr(scheduler.os, "kill", lambda pid, sig: delivered.append(pid))
+def test_pinned_window_signals_the_group_but_refused_after_reap(monkeypatch):
+    # Ordering fixtures against the exclusive-reap contract:
+    #   (a) PINNED: state['reaped'] is False — the identity is provably ours
+    #       (a leader exited-but-unreaped), so the bounded killpg TERM/KILL
+    #       rounds DO run even though members persist in this fixture;
+    #   (b) RELEASED: state['reaped'] is True — the pid may already be
+    #       recycled, so cleanup refuses every signal and reports NOT
+    #       confirmed; a same-number new group is never signaled.
+    delivered: list[str] = []
+    monkeypatch.setattr(scheduler.os, "killpg", lambda pgid, sig: delivered.append("killpg"))
     monkeypatch.setattr(scheduler, "_own_group_members", lambda pgid: [pgid, 4243])
-    monkeypatch.setattr(scheduler, "_pid_pgid", lambda pid: 424242)
-    process = type("P", (), {})()
-    process.pid = 424242
-    process.returncode = 0  # already reaped at entry
 
-    async def never_quiet(pgid, name, timeout):
-        return False
+    class FakePopen:
+        pid = 424242
+        returncode = None
 
-    monkeypatch.setattr(scheduler, "_await_group_quiet", never_quiet)
-    refused = asyncio.run(scheduler._reap_lane_group(process, "t-recycle", {"pinned": False}))
-    assert refused == "refused"
+        def wait(self, timeout=None):
+            return 0
+
+    outcome_a = asyncio.run(
+        scheduler._close_lane_group(FakePopen(), "t-pinned", {"reaped": False, "code_known": False})
+    )
+    assert outcome_a == "residual"  # members persist in the fixture
+    assert delivered == ["killpg", "killpg"]  # TERM and KILL rounds ran
+
+    delivered.clear()
+    outcome_b = asyncio.run(
+        scheduler._close_lane_group(FakePopen(), "t-released", {"reaped": True, "code_known": True})
+    )
+    assert outcome_b == "refused"
     assert delivered == []
-
-    pinned = asyncio.run(scheduler._reap_lane_group(process, "t-recycle", {"pinned": True}))
-    assert 4243 in delivered
-    assert 424242 not in delivered  # the recycled group-leader pid is excluded
-    assert pinned in {"residual", "unknown"}

@@ -16,6 +16,7 @@ import os
 import signal
 import subprocess
 import sys
+import threading
 import time
 from dataclasses import dataclass, field
 
@@ -36,9 +37,9 @@ _MEMBER_WAIT_S = 2.0
 _DRAIN_BOUND_S = 10.0
 _EXIT_POLL_S = 0.2
 _LANE_SHELL = ("/bin/bash", "-e", "-c")
-# Linux production offers pidfd as the stable process-identity handle: an open
-# pidfd prevents the leader pid from being recycled for this lane's lifetime.
-_PIDFD_SUPPORTED = hasattr(os, "pidfd_open") and sys.platform == "linux"
+# Set by the SIGINT/SIGTERM handlers in _run_orchestrator; lanes observe it
+# between poll ticks so a runner signal ends supervision promptly.
+_signal = 0
 
 
 def build_plan() -> list[Lane]:
@@ -293,28 +294,6 @@ async def _drain(stream, target, name: str) -> None:
         target.flush()
 
 
-async def _drain_guarded(stream, target, name: str):
-    """Drain one pipe, reporting failures as values so supervision reacts
-    immediately instead of discovering them only after process.wait (the
-    R14-02 gap). Never raises except cancellation: the diagnostic print is
-    itself guarded so a broken diagnostic channel cannot mask the original
-    failure or turn the task into an unobserved exception (R14 feedback 3)."""
-    try:
-        await _drain(stream, target, name)
-        return None
-    except asyncio.CancelledError:
-        raise
-    except Exception as error:
-        try:
-            print(
-                f"[{name}] output drain failure: {type(error).__name__}: {error}",
-                file=sys.stderr,
-            )
-        except Exception:
-            pass  # the diagnostic channel itself failed; the failure is still returned
-        return error
-
-
 def _proc_stat(pid: int) -> str | None:
     try:
         with open(f"/proc/{pid}/stat", "rb") as stream:
@@ -328,35 +307,24 @@ def _pid_pgid(pid: int) -> int | None:
         stat = _proc_stat(pid)
         if stat is None:
             return None
-        # comm may contain spaces and parens; fields restart after the last ')'.
         fields = stat.rpartition(")")[2].split()
         try:
             return int(fields[2])
         except (IndexError, ValueError):
             return None
     if sys.platform == "darwin":
-        try:
-            listing = subprocess.run(
-                ["ps", "-o", "pgid=", "-p", str(pid)],
-                capture_output=True,
-                text=True,
-                timeout=5,
-                check=False,
-            )
-        except (OSError, subprocess.TimeoutExpired):
+        output = _ps_query("pgid", pid)
+        if output is None:
             return None
-        parts = listing.stdout.split()
+        parts = output.split()
         return int(parts[0]) if parts else None
     return None
 
 
 def _own_group_members(pgid: int) -> list[int] | None:
-    """Verifiable own-group anchor: pids whose CURRENT process-group id equals
-    this lane's pgid. Returns None when the observation itself FAILED (unreadable
-    /proc entry, ps error/timeout/nonzero) — an unknown observation is never
-    reported as an empty group, because "could not read" and "does not exist"
-    have different cleanup consequences. Linux reads /proc; macOS shells out
-    to ps once; other platforms are unknown (never empty)."""
+    """Pids whose CURRENT pgid equals this lane's pgid. None = the
+    observation itself failed (unreadable /proc entry, ps error/timeout/
+    nonzero) — unknown is never reported as an empty group."""
     if os.path.isdir("/proc"):
         try:
             entries = os.listdir("/proc")
@@ -369,8 +337,6 @@ def _own_group_members(pgid: int) -> list[int] | None:
                 continue
             stat = _proc_stat(int(entry))
             if stat is None:
-                # A member we cannot read makes the whole observation
-                # unreliable; guessing "gone" from a partial read is forbidden.
                 _note("own group observation failed (unreadable member stat)")
                 return None
             fields = stat.rpartition(")")[2].split()
@@ -379,22 +345,11 @@ def _own_group_members(pgid: int) -> list[int] | None:
             members.append(int(entry))
         return members
     if sys.platform == "darwin":
-        try:
-            listing = subprocess.run(
-                ["ps", "-axo", "pid=,pgid="],
-                capture_output=True,
-                text=True,
-                timeout=5,
-                check=False,
-            )
-        except (OSError, subprocess.TimeoutExpired) as error:
-            _note(f"own group observation failed (ps): {error!r}")
-            return None
-        if listing.returncode != 0:
-            _note(f"own group observation failed (ps exit {listing.returncode})")
+        output = _ps_query("members")
+        if output is None:
             return None
         members = []
-        for line in listing.stdout.splitlines():
+        for line in output.splitlines():
             parts = line.split()
             if len(parts) == 2 and parts[1] == str(pgid):
                 members.append(int(parts[0]))
@@ -404,249 +359,328 @@ def _own_group_members(pgid: int) -> list[int] | None:
 
 def _note(message: str) -> None:
     """Cleanup diagnostics must never raise: a broken diagnostic channel
-    cannot be allowed to interrupt the TERM-to-KILL closure sequence."""
+    cannot be allowed to interrupt the closure sequence."""
     try:
         print(message, file=sys.stderr)
     except Exception:
         pass
 
 
-def _signal_members(pgid: int, deliver, name: str) -> None:
-    # Re-verify membership immediately before each signal so a pid recycled
-    # between enumeration and delivery is still excluded. A member whose pid
-    # equals the pgid would be a GROUP LEADER: our original leader is gone in
-    # the post-reap branch, so such a member can only be a recycled identity
-    # and is never signaled.
-    for pid in _own_group_members(pgid) or []:
-        if pid == pgid:
-            continue
-        if _pid_pgid(pid) == pgid and hasattr(os, "kill"):
-            try:
-                os.kill(pid, deliver)
-            except ProcessLookupError:
-                continue
-            except (PermissionError, OSError) as error:
-                _note(f"[{name}] own group member {pid} not signaled: {error!r}")
-
-
-async def _await_group_quiet(pgid: int, name: str, timeout: float) -> bool:
-    deadline = time.monotonic() + timeout
-    observation = _own_group_members(pgid)
-    while time.monotonic() < deadline:
-        observation = _own_group_members(pgid)
-        if observation is not None and not observation:
-            return True
-        await asyncio.sleep(0.05)
-    observation = _own_group_members(pgid)
-    if observation is None:
-        _note(
-            f"[{name}] own process group state UNKNOWN (observation failed); cleanup NOT confirmed"
-        )
-        return False
-    if observation:
-        _note(f"[{name}] own process group still present: {observation}")
-        return False
-    return True
-
-
-async def _collect_drains_bounded(drains, name: str) -> bool:
-    """Finish or bound output collection. Descendants that survive the group
-    cleanup can keep pipes open; bounding keeps the lane settled-and-failed
-    instead of wedged. Returns True when collection was cut short."""
+def _ps_query(kind: str, pid: int = 0) -> str | None:
+    """The single darwin ps invocation point, restricted to the three fixed
+    read-only queries this supervisor uses: 'pgid' and 'stat' take one pid;
+    'members' lists (pid, pgid) pairs process-wide. The argv is built here
+    from fixed literals plus a validated pid — callers never pass through
+    arbitrary arguments or shell text. None means the observation failed
+    (error/timeout/nonzero exit); callers treat that as UNKNOWN, never as an
+    empty result."""
+    if kind == "members":
+        argv = ["ps", "-axo", "pid=,pgid="]
+    elif kind == "pgid":
+        if not isinstance(pid, int) or isinstance(pid, bool) or pid <= 1:
+            return None
+        argv = ["ps", "-o", "pgid=", "-p", str(pid)]
+    elif kind == "stat":
+        if not isinstance(pid, int) or isinstance(pid, bool) or pid <= 1:
+            return None
+        argv = ["ps", "-o", "stat=", "-p", str(pid)]
+    else:
+        return None
     try:
-        await asyncio.wait_for(asyncio.gather(*drains), timeout=_DRAIN_BOUND_S)
-        return False
-    except TimeoutError:
-        _note(f"[{name}] output collection not complete within {_DRAIN_BOUND_S}s")
-        for task in drains:
-            task.cancel()
-        await asyncio.gather(*drains, return_exceptions=True)
+        listing = subprocess.run(
+            argv,
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        _note(f"ps observation failed: {error!r}")
+        return None
+    if listing.returncode != 0:
+        _note(f"ps observation failed (exit {listing.returncode})")
+        return None
+    return listing.stdout
+
+
+def _pipe_reader_thread(pipe, target, name: str, failures: list) -> None:
+    # Windows-fallback reader thread: byte chunks, no readline limit; a
+    # failing target or read error is recorded and the thread exits. POSIX
+    # uses the readiness-based async reader instead — this thread exists only
+    # where loop.add_reader is unavailable.
+    prefix = f"[{name}] "
+    try:
+        while True:
+            chunk = pipe.read(65536)
+            if not chunk:
+                break
+            target.write(prefix + chunk.decode("utf-8", "replace"))
+            target.flush()
+    except Exception as error:  # noqa: BLE001 — recorded, never escapes
+        failures.append((name, error))
+
+
+async def _read_pipe_ready(fd, target, name: str, failures: list) -> None:
+    """POSIX pipe reader on the raw fd: non-blocking os.read driven by the
+    event loop's readiness notifications. It never blocks the loop, is fully
+    cancellable, and — because it owns no buffered wrapper — its END (this
+    coroutine returning) is real proof nobody holds the object's lock before
+    the fd is closed. EOF, read errors and target failures all terminate it."""
+    loop = asyncio.get_running_loop()
+    prefix = f"[{name}] "
+    try:
+        while True:
+            waiter = loop.create_future()
+            loop.add_reader(fd, waiter.set_result, None)
+            try:
+                await waiter
+            finally:
+                loop.remove_reader(fd)
+            while True:
+                try:
+                    chunk = os.read(fd, 65536)
+                except BlockingIOError:
+                    break  # drained for now; wait for the next readiness
+                except OSError as error:
+                    failures.append((name, error))
+                    return
+                if not chunk:
+                    return  # EOF
+                target.write(prefix + chunk.decode("utf-8", "replace"))
+                target.flush()
+    except asyncio.CancelledError:
+        raise
+    except Exception as error:  # noqa: BLE001 — recorded, never escapes
+        failures.append((name, error))
+
+
+def _popen_exited_unreaped(popen, state: dict) -> bool:
+    """True when the leader has EXITED while WE still hold the reap right.
+
+    Linux reads /proc state 'Z' and macOS uses ps — neither call touches
+    poll()/wait(), so observing exit never releases the pid. Windows has no
+    zombie state; there poll() IS the native non-blocking handle check
+    (WaitForSingleObject(0)) and the Popen-held process handle keeps the
+    identity anchored regardless, so polling there is both safe and the only
+    real terminal observation (no POSIX groups exist to protect)."""
+    if os.name == "nt":
+        exited = popen.poll() is not None
+        if exited:
+            state["code_known"] = True
+        return exited
+    pid = popen.pid
+    if os.path.isdir("/proc"):
+        stat = _proc_stat(pid)
+        if stat is None:
+            return False  # unreadable is NOT proof of exit
+        fields = stat.rpartition(")")[2].split()
+        return bool(fields) and fields[0] == "Z"
+    if sys.platform == "darwin":
+        output = _ps_query("stat", pid)
+        if output is None:
+            return False  # failed observation is NOT proof of exit
+        return output.strip().startswith("Z")
+    return False
+
+
+async def _reap_leader(popen, name: str, state: dict) -> None:
+    """The SINGLE reap point. The blocking wait runs in a worker with its own
+    timeout — the worker thread always ends within that bound even if the
+    outer await is cancelled — and the result is actually collected."""
+    if state["reaped"]:
+        return
+    loop = asyncio.get_running_loop()
+
+    def bounded_wait():
+        try:
+            popen.wait(timeout=_REAP_WAIT_S)
+        except subprocess.TimeoutExpired:
+            return False
         return True
 
+    try:
+        finished = await asyncio.wait_for(
+            loop.run_in_executor(None, bounded_wait), timeout=_REAP_WAIT_S + 3
+        )
+    except TimeoutError:
+        finished = False
+    if finished and popen.returncode is not None:
+        state["reaped"] = True
+    else:
+        _note(f"[{name}] leader reap not confirmed within bound")
+        state["reaped"] = True  # never try again; the honest note above stands
 
-async def _reap_lane_group(process, name: str, identity=None) -> str:
-    # Close exactly this lane's own process group, created with
-    # start_new_session; never signal other lanes, the runner, or unrelated
-    # user processes. Returns an honest outcome string:
-    #   "closed"   — reliably observed empty after bounded TERM→KILL
-    #   "residual" — members provably remain after the bounded sequence
-    #   "unknown"  — membership observation itself failed; nothing claimed
-    #   "refused"  — signaling refused because the original group identity is
-    #                no longer provable (leader reaped, no stable handle)
-    # While the leader is unreaped, killpg and verified member signaling are
-    # provably ours. After the leader was reaped the numeric pgid alone is NOT
-    # a lifecycle proof (the number can be recycled into a new group): member
-    # signaling then requires the stable identity pin (pidfd) held by
-    # _supervise, which prevents the pid from being recycled at all. Without
-    # that pin the scheduler refuses to signal and reports the cleanup as not
-    # confirmed — it never widens the signal scope to compensate.
-    pinned = bool(identity and identity.get("pinned"))
-    # Eligibility is decided ONCE at entry: a leader that was still alive when
-    # cleanup began keeps full member-closure rights even if it exits (and is
-    # reaped) mid-cleanup — the deterministic mid-reap branch. Only a leader
-    # already reaped at entry needs the identity pin for post-reap signaling.
-    entry_reaped = process.returncode is not None
-    pgid = process.pid
-    if hasattr(os, "killpg") and not entry_reaped:
+
+async def _close_lane_group(popen, name: str, state: dict) -> str:
+    """Close the lane's own process group while the reap right is still OURS
+    (state['reaped'] is False), then perform the single final reap.
+
+    The entry check reads the supervisor's OWN lifecycle state — never
+    popen.poll(), which would itself reap an exited (zombie) leader and
+    release the identity exactly in the leader-first case. While unreaped,
+    the pid stays allocated (alive or zombie): killpg(pgid) cannot reach a
+    recycled identity because a new group with that numeric id would need
+    pid == pgid, which is still ours. Group closure happens BEFORE the final
+    wait; honest outcomes are closed/residual/unknown/refused."""
+    pgid = popen.pid
+    if not hasattr(os, "killpg"):
+        await _reap_leader(popen, name, state)
+        return "closed" if state["reaped"] else "unknown"
+    if state["reaped"]:
+        _note(f"[{name}] leader already reaped (identity released); group cleanup NOT confirmed")
+        return "refused"
+    term = getattr(signal, "SIGTERM", None)
+    kill_sig = getattr(signal, "SIGKILL", None)
+    outcome = "unknown"
+    for deliver in [s for s in (term, kill_sig) if s is not None]:
         try:
-            os.killpg(pgid, signal.SIGTERM)
+            os.killpg(pgid, deliver)
         except ProcessLookupError:
-            pass  # group already fully gone; the quiet check below confirms
+            pass  # group already fully gone; member observation confirms
         except (PermissionError, OSError) as error:
             _note(f"[{name}] own process group not signaled: {error!r}")
-    if hasattr(os, "killpg"):
-        if entry_reaped and not pinned:
-            _note(
-                f"[{name}] leader already reaped and no stable identity pin; "
-                "refusing member signals — own process group cleanup NOT confirmed"
-            )
-            return "refused"
-        term = getattr(signal, "SIGTERM", None)
-        kill = getattr(signal, "SIGKILL", None)
-        for deliver in [sig for sig in (term, kill) if sig is not None]:
-            _signal_members(pgid, deliver, name)
-            quiet = await _await_group_quiet(pgid, name, _MEMBER_WAIT_S)
-            if quiet:
-                return "closed"
-            if _own_group_members(pgid) is None:
-                pass
-            else:
-                pass
-        final = _own_group_members(pgid)
-        if final is None:
-            _note(f"[{name}] own process group state UNKNOWN; cleanup NOT confirmed")
-            return "unknown"
-        if final:
-            _note(f"[{name}] own process group exit not confirmed; members remain: {final}")
-        return "residual" if final else "closed"
-    if hasattr(os, "kill") and process.returncode is None:
-        # No process-group API (non-POSIX boundary): bound and close the
-        # direct child only; group descendants are not provable there.
-        try:
-            process.kill()
-        except OSError as error:
-            _note(f"[{name}] own process not killed: {error!r}")
-        try:
-            await asyncio.wait_for(asyncio.shield(process.wait()), timeout=_REAP_WAIT_S)
-            return "closed"
-        except TimeoutError:
-            _note(f"[{name}] own process exit not confirmed (no group API)")
-            return "residual"
-    return "unknown"
-
-
-def _drain_outcome(task) -> Exception | None:
-    """Final result of a drain task in either failure shape: the value
-    returned by _drain_guarded, or an exception it could not swallow."""
-    if task.cancelled():
-        return None
-    error = task.exception()
-    if error is None:
-        error = task.result()
-    return error
-
-
-async def _supervise(process, name: str, stdout=None, stderr=None) -> int:
-    """Watch the child and both output drains concurrently for the WHOLE
-    supervision lifecycle.
-
-    A failing drain — either pipe, including failures of the diagnostic
-    channel, at any time INCLUDING the tail collection — settles the lane as
-    a failure with the own group closed (R14-02). The child's returncode
-    (set by the reaper independently of the pipes) ends the main wait even
-    when a long-lived wait() waiter would stay pending on a pipe held by a
-    same-group descendant (R14-03). Cancellation protection covers the main
-    loop AND the tail collection: a single plain cancel during either phase
-    still runs the bounded own-group settlement before propagating. On Linux
-    a pidfd opened for the leader pins the numeric identity for the lane's
-    lifetime, making post-reap member signaling provably safe; without that
-    stable handle the reap refuses post-reap signaling and reports the
-    cleanup as not confirmed."""
-    # Best-effort stable identity pin: while a pidfd is open the kernel
-    # cannot recycle the leader pid, so the numeric pgid can never name a
-    # different group during this lane's lifetime.
-    identity = {"pinned": False, "handle": None}
-    if _PIDFD_SUPPORTED:
-        try:
-            identity["handle"] = os.pidfd_open(process.pid)
-            identity["pinned"] = True
-        except OSError as error:
-            _note(f"[{name}] identity pin unavailable: {error!r}")
-    drains: list[asyncio.Task] | None = None
-    waiter: asyncio.Future | None = None
-    try:
-        drains = [
-            asyncio.ensure_future(_drain_guarded(process.stdout, stdout or sys.stdout, name)),
-            asyncio.ensure_future(_drain_guarded(process.stderr, stderr or sys.stderr, name)),
-        ]
-        waiter = asyncio.ensure_future(process.wait())
-        drain_failure: Exception | None = None
-
-        def absorb(task) -> None:
-            nonlocal drain_failure
-            if drain_failure is None:
-                drain_failure = _drain_outcome(task)
-
-        unfinished = set(drains)
-        # --- main watch loop -------------------------------------------
-        while process.returncode is None and drain_failure is None:
-            for task in list(unfinished):
-                if task.done():
-                    unfinished.discard(task)
-                    absorb(task)
-            if drain_failure is not None:
+        members: list[int] | None = None
+        deadline = time.monotonic() + _MEMBER_WAIT_S
+        while time.monotonic() < deadline:
+            members = _own_group_members(pgid)
+            if members is None or not members:
                 break
-            await asyncio.wait(
-                {waiter, *unfinished},
-                timeout=_EXIT_POLL_S,
-                return_when=asyncio.FIRST_COMPLETED,
+            await asyncio.sleep(0.05)
+        if members is not None and not members:
+            outcome = "closed"
+            break
+    final = _own_group_members(pgid)
+    if final is None:
+        outcome = "unknown"
+    elif final:
+        _note(f"[{name}] group members remain after bounded rounds; cleanup NOT confirmed: {final}")
+        outcome = "residual"
+    else:
+        outcome = "closed"
+    await _reap_leader(popen, name, state)
+    return outcome
+
+
+async def _settle_readers(readers, failures, name: str) -> bool:
+    """Bounded, PROVEN reader/pipe settlement.
+
+    POSIX: the readiness readers are tasks — unfinished ones are cancelled
+    and awaited (their return IS the end proof), then the raw fd is closed;
+    no buffered wrapper exists, so no lock can be held. Windows fallback:
+    reader threads are joined inside a worker with its own timeout (that
+    join worker always ends), and the buffered pipe is closed ONLY after its
+    reader provably exited, so close can never wait on a lock held by a
+    blocked read. Close/join failures are recorded, never counted settled."""
+    settled = True
+    loop = asyncio.get_running_loop()
+    for entry in readers:
+        if entry["kind"] == "task":
+            task = entry["handle"]
+            if not task.done():
+                task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+            except Exception:  # noqa: BLE001 — reader failures were recorded
+                pass
+            if not task.done() or task.cancelled():
+                settled = False
+            try:
+                os.close(entry["fd"])
+            except OSError as error:
+                _note(f"[{name}] pipe fd close failed: {error!r}")
+                settled = False
+        else:
+            reader = entry["handle"]
+            await loop.run_in_executor(None, reader.join, _DRAIN_BOUND_S)
+            if reader.is_alive():
+                _note(f"[{name}] pipe reader did not finish within bound")
+                settled = False
+                continue  # NEVER close a buffered pipe its reader still holds
+            try:
+                entry["pipe"].close()
+            except OSError as error:
+                _note(f"[{name}] pipe close failed: {error!r}")
+                settled = False
+    if failures:
+        settled = False
+    return settled
+
+
+async def _supervise(popen, name: str, stdout=None, stderr=None) -> int:
+    """Supervise the lane leader for its WHOLE lifecycle with exclusive
+    creation/reap ownership.
+
+    The leader is a plain Popen only this supervisor reaps; state['reaped']
+    is the supervisor's own anchor flag — poll()/wait() never happen outside
+    the two sanctioned points (the Windows terminal observation and the
+    single final reap), so a leader-first exit keeps the identity pinned
+    through group cleanup. A failing reader target — either pipe, at ANY
+    time — settles the lane as failure with the group closed first.
+    Cancellation protection covers the whole lifecycle. On clean supervision
+    the child's REAL exit code is returned; supervision/settlement failures
+    return 1."""
+    state = {"reaped": False, "code_known": False}
+    failures: list = []
+    targets = (stdout or sys.stdout, stderr or sys.stderr)
+    pipes = (popen.stdout, popen.stderr)
+    use_ready_readers = os.name != "nt"
+    readers: list[dict] = []
+    for pipe, target in zip(pipes, targets, strict=True):
+        if use_ready_readers:
+            fd = pipe.fileno()
+            os.set_blocking(fd, False)
+            task = asyncio.ensure_future(_read_pipe_ready(fd, target, name, failures))
+            readers.append({"kind": "task", "handle": task, "fd": fd})
+        else:
+            thread = threading.Thread(
+                target=_pipe_reader_thread,
+                args=(pipe, target, name, failures),
+                daemon=True,
             )
-            for task in list(unfinished):
-                if task.done():
-                    unfinished.discard(task)
-                    absorb(task)
-        if not waiter.done():
-            waiter.cancel()
-            await asyncio.gather(waiter, return_exceptions=True)
-        # --- tail collection -------------------------------------------
-        bounded_short = await _collect_drains_bounded(drains, name)
-        for task in drains:
-            absorb(task)
-        if drain_failure is not None or bounded_short:
-            # Failure or unconfirmable output closes the lane's own group
-            # (leader may already be reaped: the verified member path, gated
-            # by the identity pin) instead of leaving pipe-holding
-            # descendants behind.
-            await _reap_lane_group(process, name, identity)
+            thread.start()
+            readers.append({"kind": "thread", "handle": thread, "pipe": pipe})
+    drain_failure = None
+    exited = False
+    try:
+        while drain_failure is None and not exited and _signal == 0:
+            if failures:
+                drain_failure = failures[0][1]
+                break
+            exited = _popen_exited_unreaped(popen, state)
+            if not exited:
+                await asyncio.sleep(_EXIT_POLL_S)
+        # Tail: bounded reader settlement. A pipe held by a same-group
+        # descendant keeps its reader pending past the bound.
+        ready_tasks = [e["handle"] for e in readers if e["kind"] == "task"]
+        done: set = set()
+        if ready_tasks:
+            done, _pending = await asyncio.wait(ready_tasks, timeout=_DRAIN_BOUND_S)
+        if drain_failure is None and failures:
+            drain_failure = failures[0][1]
+        short = any(e["kind"] == "task" and e["handle"] not in done for e in readers)
+        short = short or any(e["kind"] == "thread" and e["handle"].is_alive() for e in readers)
+        short = short or bool(failures)
+        if drain_failure is not None or short:
+            # Cleanup FIRST — no poll/wait has run, so the identity window is
+            # intact — then settle readers, then fail the lane.
+            await _close_lane_group(popen, name, state)
+            await _settle_readers(readers, failures, name)
             return 1
-        code = process.returncode
-        return 0 if code == 0 else (code if code is not None else 1)
+        settled = await _settle_readers(readers, failures, name)
+        await _reap_leader(popen, name, state)
+        if not settled or popen.returncode is None:
+            return 1
+        # Clean supervision: the child's real exit code, not a flattened 1.
+        return popen.returncode
     except asyncio.CancelledError:
-        # One bounded settlement for the whole lifecycle: main loop, tail
-        # collection, every intermediate await.
         try:
-            await _reap_lane_group(process, name, identity)
+            await _close_lane_group(popen, name, state)
+            await _settle_readers(readers, failures, name)
         except asyncio.CancelledError:
             _note(f"[{name}] cleanup interrupted by repeated cancellation; NOT confirmed")
-            raise
-        try:
-            if drains:
-                for task in drains:
-                    task.cancel()
-                await asyncio.gather(*drains, return_exceptions=True)
-            if waiter is not None and not waiter.done():
-                waiter.cancel()
-                await asyncio.gather(waiter, return_exceptions=True)
-        except asyncio.CancelledError:
-            pass
         raise
-    finally:
-        handle = identity.get("handle")
-        if handle is not None:
-            try:
-                os.close(handle)
-            except OSError:
-                pass
 
 
 async def spawn_lane(lane: Lane) -> int:
@@ -654,20 +688,20 @@ async def spawn_lane(lane: Lane) -> int:
     # is a single test seam: the regression suite swaps it for a real
     # interpreter so the identical spawn → supervise → reap chain exercises
     # real child processes on platforms without bash; Linux production bytes
-    # and behavior are unchanged.
+    # and behavior are unchanged. The leader is created with start_new_session
+    # and EXCLUSIVE reap ownership (plain Popen, no asyncio watcher).
     try:
-        process = await asyncio.create_subprocess_exec(
-            *_LANE_SHELL,
-            lane.command,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
+        popen = subprocess.Popen(
+            [*_LANE_SHELL, lane.command],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             env={**os.environ, **lane.env},
             start_new_session=True,
         )
     except OSError as error:
         print(f"[{lane.name}] spawn failed: {error}", file=sys.stderr)
         return 127
-    return await _supervise(process, lane.name)
+    return await _supervise(popen, lane.name)
 
 
 async def _run_orchestrator() -> dict:
