@@ -1,0 +1,48 @@
+{
+  "schema": "T02.R13.artifact-manifest.v1",
+  "thisArchiveDirectory": "docs/reviews/T02/fr200-fr201-20261024/round-13",
+  "archivedFiles": [
+    {"path": "zcode-glm53.md", "bytes": 67562, "sha256": "71f0b48a0d1beae2af38949f1c4f788645fa3aee4b7736bb901f3edc8e2f28ff", "source": "byte-exact copy of O095/authority/ZCODE-NATURAL-03-FINAL-REPORT.md"},
+    {"path": "minimax-m31flash.md", "bytes": 113461, "sha256": "0522705d8dad6f4d95e9b43d3535e2e797ecec087388643da8a605b0277e8604", "source": "byte-exact copy of O095/authority/MINIMAX-NATURAL-03-FINAL-REPORT.md"},
+    {"path": "owner-effective-index.json", "bytes": 265108, "sha256": "faf7c68afc4f2d4b156084e924bed5809077a1b4a4bee239de0d324f6a9fe6c2", "source": "byte-exact copy of O095/OWNER-EFFECTIVE-DISPOSITION.json (original pointer preserved inside file)"},
+    {"path": "disposition.md", "source": "authored this round; summary of latest effective dispositions only"},
+    {"path": "version-map.json", "source": "authored this round; candidate identity and lineage"},
+    {"path": "artifact-manifest.json", "source": "this file; references real bytes/hashes, self-hash intentionally absent"}
+  ],
+  "statusFilesAppended": [
+    {"path": "docs/reviews/T02/status.md", "beforeBytes": 40450, "beforeSha256": "7bfbce60418deaaba7bf15ba217907a7688a0b2a721364f2b72db73e069856e6"},
+    {"path": "docs/m0-checklist.md", "beforeBytes": 22482, "beforeSha256": "ca376c9d03220bd31c5a534e0f43fd0f082e29e5532f78758f9e03692ead8d63"}
+  ],
+  "externalEvidencePins": {
+    "O095-delivery-index": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261028_t02_candidate_freeze_review_095/DELIVERY-INDEX.json",
+      "bytes": 11919,
+      "sha256": "0bae4b866a3a3b64803800ead08bc767535b91a39f2fcf40ae996bb860f73d22"
+    },
+    "O095-owner-disposition": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261028_t02_candidate_freeze_review_095/OWNER-EFFECTIVE-DISPOSITION.json",
+      "bytes": 265108,
+      "sha256": "faf7c68afc4f2d4b156084e924bed5809077a1b4a4bee239de0d324f6a9fe6c2"
+    },
+    "O095-zcode-natural-final": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261028_t02_candidate_freeze_review_095/authority/ZCODE-NATURAL-03-FINAL-REPORT.md",
+      "bytes": 67562,
+      "sha256": "71f0b48a0d1beae2af38949f1c4f788645fa3aee4b7736bb901f3edc8e2f28ff"
+    },
+    "O095-minimax-natural-final": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261028_t02_candidate_freeze_review_095/authority/MINIMAX-NATURAL-03-FINAL-REPORT.md",
+      "bytes": 113461,
+      "sha256": "0522705d8dad6f4d95e9b43d3535e2e797ecec087388643da8a605b0277e8604"
+    },
+    "O095-freeze-report": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261028_t02_candidate_freeze_review_095/development/FREEZE-REPORT.json",
+      "binding": "12 committed blob → tested source SHA256 all match; newHead b02a39b4 / tree 3284bc38 / parent e9a11470"
+    },
+    "prior-natural-bodydiff-and-final-states": "全部原自然稿/中间 diff/终态与保护核查原件保留于 O095 authority/development，不在本清单逐项复制；O095 已封存，本归档不改动、不重新封印任何 O095 文件"
+  },
+  "verificationThisRound": {
+    "prettierCheck": "见 O096/validation 原始输出；两 raw 报告按现行 ignore 策略跳过（如实登记，不记为格式化成功）",
+    "verifySources": "npm run verify:sources 于提交前执行，结果见 O096/validation 原始输出",
+    "noProductTests": true
+  }
+}

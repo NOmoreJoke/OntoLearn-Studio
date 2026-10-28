@@ -117,3 +117,8 @@ stable163+Z新增3+Mini新增9=175位置及17本轮观察逐项有当前处置�
 本票直接后继sole-parent dc6，只新增round-12九文件并追加两状态，共11路径。实际新head/tree、逐字节raw/语义等价/旧前缀/原1410源/5build/7保护项及O081247针、7新生成+2完整状态文档检查/verify:sources/独立文档差异审查在仓外outputs/20261027_t02_r12_docs_archive_082回执绑定，避免自引用。仅本地普通docs提交；后继远端动作仍须ROOT精确票。
 
 整体合并可用FR仍2/17（FR401/402），HOLD关闭0、D8未用、Goal/M0/release未完成、T04不推进。法律/IP/隐私/真实human能力与bus-factor、供应链/签名公证/包内GUI、容量/旧超限/坏SQLite物理保护、unknown parser/N3Store、engine退出与Windows后代、sys.path等价、跨OS/参考8GB设备、其余Undo/ownership及四具名下游全部HOLD/UNKNOWN原窗口保留。全部旧状态前缀逐字保留。
+
+## Round 13（2026-10-28）双审接收与 docs 归档增量
+
+- T02/FR-200/FR-201 候选 b02a39b4 指定双审双方 ConditionalPass（限定技术阶段），源码前置阻断 0；不改变 M0 完成度口径：12 路径候选冻结+O092 完整 check+O093 包制造/包内验证+O094 packaged 全套（24=21P+3 原 I04 S）均为已接收事实，但三平台完整 CI、merge 与远端核验未发生，FR/Goal/M0/release 不因此关闭。运行边界：O092–O094 发生于 e9a+12 已测 WIP（源码等字节冻结为 b02），不倒写为运行于 b02。
+- 本轮 docs-only 归档：round-13 六文件（两原稿逐字节副本、disposition、owner-effective-index=O095 处置逐字节归档、version-map、artifact-manifest）+status/m0 两追加，sole parent b02；两 raw 按现行 ignore 被 prettier 跳过（如实登记），verify:sources 通过；无产品测试/构建/安装/CI/双审重复。旧 CI45 失败/取消与全部 HOLD/UNKNOWN 原样保留；FR 合并可用仍 2/17、HOLD0、D8 未用；T04 等待真实 T02 合并。子 T02 Goal paused 不变。全部旧前缀逐字保留。
