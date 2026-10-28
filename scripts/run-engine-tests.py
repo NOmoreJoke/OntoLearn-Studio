@@ -456,9 +456,67 @@ def parallel(arguments):
     return 128 + _signal if _signal else (0 if summary["passed"] else 1)
 
 
+def single_report_exec(arguments):
+    """Opt-in mode1 report: one exclusive run dir plus launch manifest, then os.execv
+    the same PID into native pytest appending only the existing report options.
+    Directory/identity/manifest failures return nonzero before any exec."""
+    root = Path(os.environ.get("CI_ENGINE_TEST_OUTPUT", "build/engine-tests")).resolve()
+    try:
+        root.mkdir(parents=True, exist_ok=True)
+        run = root / ("run-" + uuid4().hex)
+        run.mkdir()
+        owner = uuid4().hex
+        control_hashes = {
+            name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+            for name in ("run-engine-tests.py", "engine-test-reporting.py")
+        }
+        checkout = {}
+        for name, revision in (("head", "HEAD"), ("tree", "HEAD^{tree}")):
+            result = subprocess.run(
+                ["git", "rev-parse", revision], capture_output=True, check=False
+            )
+            if result.returncode != 0:
+                raise ValueError(f"git identity unavailable: {revision}")
+            checkout[name] = result.stdout.decode("ascii").strip()
+        argv = [sys.executable, "-m", "pytest", *arguments]
+        exec_argv = [
+            *argv,
+            "-p",
+            PLUGIN,
+            f"--engine-ci-report={run}",
+            f"--engine-ci-owner={owner}",
+        ]
+        write(
+            run / "launch-manifest.json",
+            {
+                "mode": "single-report",
+                "optIn": {
+                    "CI_ENGINE_TEST_SHARDS": "1",
+                    "CI_ENGINE_TEST_REPORT_SINGLE": "1",
+                },
+                "owner": owner,
+                "pid": os.getpid(),
+                "parentPid": os.getppid(),
+                "argv": argv,
+                "execArgv": exec_argv,
+                "cwd": os.getcwd(),
+                "checkout": checkout,
+                "controlHashes": control_hashes,
+                "reportDir": str(run),
+            },
+        )
+    except (OSError, ValueError) as error:
+        print(f"single report initialization failure: {error}", file=sys.stderr)
+        return 1
+    # os.execv replaces this process image: the manifest PID is the PID that runs pytest.
+    os.execv(sys.executable, exec_argv)
+
+
 def main():
     mode = os.environ.get("CI_ENGINE_TEST_SHARDS", "1")
     if mode == "1":
+        if os.environ.get("CI_ENGINE_TEST_REPORT_SINGLE") == "1":
+            return single_report_exec(sys.argv[1:])
         os.execv(sys.executable, [sys.executable, "-m", "pytest", *sys.argv[1:]])
     if mode != "2":
         print("CI_ENGINE_TEST_SHARDS must be 1 or 2", file=sys.stderr)

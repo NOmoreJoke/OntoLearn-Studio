@@ -24,6 +24,7 @@ import {
   v2Registry,
 } from '@ontolearn/contracts/v2'
 import { JsonlReader, parseStrictJson } from './jsonl'
+import { TransportLedger } from './engine-ledger'
 
 export interface EngineLocation {
   packaged: boolean
@@ -550,6 +551,10 @@ export interface SupervisorOptions {
   profile?: EngineProfile
   /** Trusted main-only loader path. Never sourced from renderer, wire, environment or cwd. */
   exampleRoot?: string
+  /** Trusted main-only bounded transport evidence for observed E2E launches.
+   * Resolved by main from its own environment and isolated profile; the
+   * supervisor independently refuses it for packaged locations. */
+  transportLedger?: { path: string; launchId: string | null }
   dataPath?: string
   allowedProjects?: string[]
   testMode?: boolean
@@ -686,6 +691,7 @@ export class EngineSupervisor {
   readonly #requestMs: number
   readonly #heartbeatMs: number
   readonly #maxPending: number
+  readonly #ledger: TransportLedger | undefined
   constructor(location: EngineLocation, options: SupervisorOptions = {}) {
     if (options.profile !== undefined && !['legacy2', 'business3'].includes(options.profile))
       throw invalid()
@@ -706,6 +712,16 @@ export class EngineSupervisor {
     this.#requestMs = bounded(options.requestMs, 5000, 60000)
     this.#heartbeatMs = bounded(options.heartbeatMs, 10000, 60000)
     this.#maxPending = bounded(options.maxPending, 128, 128)
+    // Independent packaged rejection: a packaged location never opens a ledger.
+    this.#ledger =
+      this.#location.packaged || !options.transportLedger
+        ? undefined
+        : TransportLedger.open({
+            path: options.transportLedger.path,
+            launchId: options.transportLedger.launchId,
+            appPid: process.pid,
+            platform: process.platform,
+          })
   }
   #mainlineReady(record: MainlineOwnerRecord): Session {
     const session = record.session
@@ -2089,6 +2105,8 @@ export class EngineSupervisor {
   #finish(session: Session, error: EngineError): void {
     if (session.terminal) return
     error = session.startupCause ?? this.#sign(session, error)
+    // A session fence only; the launch ledger stays open across generations.
+    this.#ledger?.recordFence(session.generation, error.error.code, session.anomalies)
     if (!session.hello) session.startupCause = error
     session.terminal = true
     for (const delivery of this.#mainlineDeliveries)
@@ -2133,6 +2151,9 @@ export class EngineSupervisor {
     if (this.#session) this.#finish(this.#session, exited())
     this.#listeners.clear()
     this.#connectionListeners.clear()
+    // Requests sealing; a complete footer still needs all children closed and
+    // all queued writes to succeed. No waiting is performed here.
+    this.#ledger?.requestStop()
   }
   async #ensure(ordinary?: OrdinaryClientRecord): Promise<Session> {
     if (this.#stopped) throw exited()
@@ -2237,6 +2258,7 @@ export class EngineSupervisor {
       ),
     }
     this.#session = session
+    this.#ledger?.recordSessionStart(session.generation, child.pid ?? null)
     for (const record of this.#ordinaryStartingRecords) {
       if (!record.session) record.session = session
     }
@@ -2257,7 +2279,12 @@ export class EngineSupervisor {
     const fail = (error: EngineError): void => this.#finish(session, error)
     session.startupTimer = setTimeout(() => fail(timeout('startup')), this.#startupMs)
     child.once('error', () => fail(exited()))
-    child.once('close', () => fail(exited()))
+    // Extended in place: original fail first, then record the real close with
+    // this session's generation. No second close/exit listener is added.
+    child.once('close', (code, signal) => {
+      fail(exited())
+      this.#ledger?.recordChildClosed(session.generation, code, signal)
+    })
     child.once('spawn', () => {
       if (!this.#current(session)) {
         fail(exited())
@@ -2332,6 +2359,8 @@ export class EngineSupervisor {
         if (session.profile === 'business3') this.#finish(session, invalid())
         return
       }
+      // After original validation and session match, before listener delivery.
+      this.#ledger?.recordNotification(session.generation, event)
       for (const listener of this.#listeners) {
         try {
           listener(value)
@@ -2388,6 +2417,7 @@ export class EngineSupervisor {
       }
       session.reader.restrictLimit(hello.limits.maxFrameBytes)
       session.hello = hello
+      this.#ledger?.recordHello(session.generation, hello)
       this.#connectionState(session, {
         state: 'ready',
         generation: session.generation,
@@ -2435,6 +2465,14 @@ export class EngineSupervisor {
       pending.reject(error)
       if (pending.request.method === 'hello') this.#finish(session, error)
     }
+    // After original settlement: method comes from the matched pending request.
+    this.#ledger?.recordResponse(
+      session.generation,
+      pending.request,
+      response.ok === true,
+      payloadByteLength,
+      response.ok ? response.result : undefined,
+    )
   }
   #send(
     session: Session,
@@ -2449,7 +2487,10 @@ export class EngineSupervisor {
     mainlineOwner?: MainlineOwnerRecord,
     recoveryCurrent?: () => void,
   ): Promise<unknown> {
-    if (!this.#current(session)) return Promise.reject(exited())
+    if (!this.#current(session)) {
+      this.#ledger?.recordRequestRejected('notCurrent', method)
+      return Promise.reject(exited())
+    }
     if (!mainlineOwner && queryPin) {
       const owner = this.#queryPins.get(queryPin)?.owner
       mainlineOwner = [...this.#mainlineRecords.values()].find((record) => record.owner === owner)
@@ -2461,17 +2502,21 @@ export class EngineSupervisor {
       if (
         !this.#mainlineDeliveries.has(delivery) ||
         !['COMPUTING', 'ORPHAN'].includes(delivery.state)
-      )
+      ) {
+        this.#ledger?.recordRequestRejected('deliveryState', method)
         return Promise.reject(invalidStateOrdinary())
+      }
       try {
         this.#bindDelivery(delivery, mainlineOwner)
         if (delivery.wires.size >= 128) throw invalidStateOrdinary()
         this.#deliveryReserve(delivery, 512, 8, 2097152)
       } catch (cause) {
+        this.#ledger?.recordRequestRejected('deliveryState', method)
         return Promise.reject(cause)
       }
     }
-    if (session.pending.size >= this.#maxPending + (reservedControl ? 1 : 0))
+    if (session.pending.size >= this.#maxPending + (reservedControl ? 1 : 0)) {
+      this.#ledger?.recordRequestRejected('queueFull', method)
       return Promise.reject(
         new EngineError({
           code: 'QUEUE_FULL',
@@ -2480,6 +2525,7 @@ export class EngineSupervisor {
           retryable: true,
         }),
       )
+    }
     const request = {
       kind: 'request',
       id: randomUUID(),
@@ -2488,10 +2534,13 @@ export class EngineSupervisor {
       method,
       params,
     }
-    if (!this.#validate(session, 'request', request))
+    if (!this.#validate(session, 'request', request)) {
+      this.#ledger?.recordRequestRejected('validation', method)
       return Promise.reject(this.#sign(session, invalid()))
+    }
     const encoded = Buffer.from(JSON.stringify(request) + '\n', 'utf8')
-    if (encoded.length - 1 > (session.hello?.limits.maxFrameBytes ?? 262144))
+    if (encoded.length - 1 > (session.hello?.limits.maxFrameBytes ?? 262144)) {
+      this.#ledger?.recordRequestRejected('frameLimit', method)
       return Promise.reject(
         new EngineError({
           code: 'RESOURCE_LIMIT',
@@ -2500,12 +2549,14 @@ export class EngineSupervisor {
           retryable: false,
         }),
       )
+    }
     return new Promise((resolveRequest, rejectRequest) => {
       const timer = setTimeout(() => {
         if (mainlineOwner) mainlineOwner.uncertain = true
         if (delivery) this.#unknownDelivery(delivery)
         session.pending.delete(request.id)
         rejectRequest(this.#sign(session, timeout(phase)))
+        this.#ledger?.recordRequestTimeout(session.generation, request.id)
       }, duration)
       session.pending.set(request.id, {
         request: parseStrictJson(encoded.subarray(0, -1).toString('utf8')) as Record<
@@ -2520,6 +2571,15 @@ export class EngineSupervisor {
         timer,
       })
       if (delivery) delivery.wires.set(request.id, { session, terminal: false })
+      // Reads the already-registered strict clone only; never re-reads params.
+      // Stays before the recovery-pin guard: no observer between pin and write.
+      this.#ledger?.recordRequestPrepared(
+        session.generation,
+        session.pending.get(request.id)?.request,
+        method,
+        phase,
+        encoded.length - 1,
+      )
       try {
         if (queryRead) {
           if (!queryPin) throw deniedOrdinary()
@@ -2556,6 +2616,7 @@ export class EngineSupervisor {
         const wire = delivery?.wires.get(request.id)
         if (wire) wire.terminal = true // Original pin failed before any stdin.write.
         rejectRequest(cause)
+        this.#ledger?.recordRequestRejected('pinGuard', method)
         return
       }
       // Final pin check returned; only private bookkeeping precedes write, with no user callback.
@@ -2563,6 +2624,7 @@ export class EngineSupervisor {
       try {
         session.child.stdin.write(encoded, (error) => {
           if (error) this.#finish(session, exited())
+          this.#ledger?.recordWriteSettled(request.id, error != null)
         })
       } catch (cause) {
         clearTimeout(timer)
@@ -2571,6 +2633,7 @@ export class EngineSupervisor {
         if (delivery) this.#unknownDelivery(delivery)
         rejectRequest(cause)
         this.#finish(session, exited())
+        this.#ledger?.recordWriteThrown(request.id)
       }
     })
   }

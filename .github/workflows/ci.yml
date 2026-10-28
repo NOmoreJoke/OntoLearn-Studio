@@ -135,6 +135,9 @@ jobs:
       - run: uv sync --frozen
       - run: npm run engine:check
         if: runner.os != 'Windows'
+        env:
+          CI_ENGINE_TEST_SHARDS: '1'
+          CI_ENGINE_TEST_REPORT_SINGLE: '1'
       # Diagnostic only: first-failure evidence; not acceptance or merge approval.
       - name: Windows engine first-failure diagnostic (not acceptance)
         if: runner.os == 'Windows'

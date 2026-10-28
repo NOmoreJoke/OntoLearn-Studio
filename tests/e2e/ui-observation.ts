@@ -29,16 +29,19 @@ export function snapshotElements(nodes: Element[], targets: UITarget[]): UISnaps
     const tag = node.tagName.toLowerCase()
     const special =
       'script,noscript,style,input[type="submit"],input[type="button"],input[type="reset"]'
-    if (
-      !node.isConnected ||
-      node.hasAttribute('aria-labelledby') ||
-      node.closest('head') ||
-      node.matches(special) ||
-      node.querySelector(special) ||
-      node.shadowRoot ||
-      Array.from(node.querySelectorAll('*')).some((child) => child.shadowRoot)
-    )
-      throw new Error('Unsupported UI observation markup')
+    // Same predicates, order and short-circuit as the original single guard;
+    // the first true condition stops evaluation and names itself only.
+    let unsupportedReason: string | undefined
+    if (!node.isConnected) unsupportedReason = 'disconnected'
+    else if (node.hasAttribute('aria-labelledby')) unsupportedReason = 'aria-labelledby'
+    else if (node.closest('head')) unsupportedReason = 'head-ancestor'
+    else if (node.matches(special)) unsupportedReason = 'special-self'
+    else if (node.querySelector(special)) unsupportedReason = 'special-descendant'
+    else if (node.shadowRoot) unsupportedReason = 'shadow-self'
+    else if (Array.from(node.querySelectorAll('*')).some((child) => child.shadowRoot))
+      unsupportedReason = 'shadow-descendant'
+    if (unsupportedReason !== undefined)
+      throw new Error(`Unsupported UI observation markup: ${unsupportedReason}`)
     const matches = targets.filter((target) => {
       if (target.kind === 'region')
         return tag === 'section' && node.getAttribute('aria-label') === target.name

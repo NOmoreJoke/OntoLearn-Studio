@@ -108,6 +108,81 @@ describe('pure test observation regression, not product evidence', () => {
     expect(() => snapshotElements([shadow], targets)).toThrow('Unsupported')
   })
 
+  test('unsupported markup names only the first matched guard and never touches later ones', () => {
+    // Every later guard is either a throwing sentinel or a different-reason trap,
+    // so each exact message also proves evaluation stopped at the first match.
+    const later = () => {
+      throw new Error('later guard accessed')
+    }
+    const disconnected = {
+      ...button(undefined, { 'aria-labelledby': 'label' }, { connected: false }),
+      closest: later,
+      matches: later,
+      querySelector: later,
+      querySelectorAll: later,
+      shadowRoot: {},
+    } as unknown as Element
+    expect(() => snapshotElements([disconnected], targets)).toThrow(
+      /^Unsupported UI observation markup: disconnected$/,
+    )
+    const labelled = {
+      ...button(undefined, { 'aria-labelledby': 'label' }),
+      closest: later,
+      matches: later,
+      querySelector: later,
+      querySelectorAll: later,
+      shadowRoot: {},
+    } as unknown as Element
+    expect(() => snapshotElements([labelled], targets)).toThrow(
+      /^Unsupported UI observation markup: aria-labelledby$/,
+    )
+    const inHead = {
+      ...button(),
+      closest: (selector: string) => (selector === 'head' ? ({} as Element) : null),
+      matches: later,
+      querySelector: later,
+      querySelectorAll: later,
+      shadowRoot: {},
+    } as unknown as Element
+    expect(() => snapshotElements([inHead], targets)).toThrow(
+      /^Unsupported UI observation markup: head-ancestor$/,
+    )
+    const specialSelf = {
+      ...button(),
+      matches: () => true,
+      querySelector: later,
+      querySelectorAll: later,
+      shadowRoot: {},
+    } as unknown as Element
+    expect(() => snapshotElements([specialSelf], targets)).toThrow(
+      /^Unsupported UI observation markup: special-self$/,
+    )
+    const specialDescendant = {
+      ...button(),
+      querySelector: () => ({}) as Element,
+      querySelectorAll: later,
+      shadowRoot: {},
+    } as unknown as Element
+    expect(() => snapshotElements([specialDescendant], targets)).toThrow(
+      /^Unsupported UI observation markup: special-descendant$/,
+    )
+    const shadowSelf = {
+      ...button(),
+      shadowRoot: {},
+      querySelectorAll: later,
+    } as unknown as Element
+    expect(() => snapshotElements([shadowSelf], targets)).toThrow(
+      /^Unsupported UI observation markup: shadow-self$/,
+    )
+    const shadowDescendant = {
+      ...button(),
+      querySelectorAll: () => [{ shadowRoot: {} }] as unknown as Element[],
+    } as unknown as Element
+    expect(() => snapshotElements([shadowDescendant], targets)).toThrow(
+      /^Unsupported UI observation markup: shadow-descendant$/,
+    )
+  })
+
   test('normalized text and unnormalized complete input values remain separate', () => {
     expect(normalizeUIText('  操作\u200b未能\u00ad完成：\n INVALID_REQUEST。 ')).toBe(
       '操作未能完成： INVALID_REQUEST。',

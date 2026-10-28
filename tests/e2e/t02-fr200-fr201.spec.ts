@@ -6,7 +6,7 @@
 import { test, expect, type Locator, type Page } from '@playwright/test'
 import { resolve } from 'node:path'
 import type { BridgeResult, MainlineProjectReadDTO } from '@ontolearn/contracts'
-import { launchIsolatedDesktop } from './isolated-desktop'
+import { closeAndCollectLedger, launchIsolatedDesktop } from './isolated-desktop'
 import {
   observeUI,
   committedReceiptOperation,
@@ -905,7 +905,9 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
   for (const item of cases) {
     test(`${item.kind}: UI create/edit/copy/delete preserves complete M/RDF and siblings`, async () => {
       test.setTimeout(180000)
-      const application = await launchIsolatedDesktop(launchOptions())
+      const application = await launchIsolatedDesktop(launchOptions(), {
+        observeTransport: true,
+      })
       const evidence: Evidence[] = []
       try {
         const page = await application.firstWindow()
@@ -1019,7 +1021,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
             contentType: 'application/json',
           })
         } finally {
-          await application.close()
+          await closeAndCollectLedger(application, () => application.close())
         }
       }
     })
@@ -1028,7 +1030,9 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
   test('FR201 UI relations and multivalue manual records keep original IDs, other literals and deletion impacts', async () => {
     test.setTimeout(180000)
     const observedCaseStart = performance.now()
-    const application = await launchIsolatedDesktop(launchOptions())
+    const application = await launchIsolatedDesktop(launchOptions(), {
+      observeTransport: true,
+    })
     const evidence: Evidence[] = []
     let observedPage: Page | undefined
     const observedErrors: Record<string, unknown>[] = []
@@ -1988,7 +1992,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           contentType: 'application/json',
         })
       } finally {
-        await application.close()
+        await closeAndCollectLedger(application, () => application.close())
       }
     }
   })
@@ -1997,7 +2001,9 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
     test.setTimeout(180000)
     // This fixture separates lexical controls from cumulative history capacity.
     // It does not close the preserved revision-24 committed-but-unreadable failure.
-    const application = await launchIsolatedDesktop(launchOptions())
+    const application = await launchIsolatedDesktop(launchOptions(), {
+      observeTransport: true,
+    })
     const evidence: Evidence[] = []
     try {
       const page = await application.firstWindow()
@@ -2147,7 +2153,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
           contentType: 'application/json',
         })
       } finally {
-        await application.close()
+        await closeAndCollectLedger(application, () => application.close())
       }
     }
   })
