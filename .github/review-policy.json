@@ -1,0 +1,110 @@
+{
+  "$comment": "审查分级规则，说明见 docs/process/review-policy.md。按顺序首个匹配生效；未匹配文件默认 L1；PR 等级取所有文件最高值。本文件与 scripts/review-level*.mjs 自身为 L2，防止自我降级。",
+  "version": 1,
+  "defaultLevel": "L1",
+  "rules": [
+    {
+      "level": "L2",
+      "reason": "审查策略自身",
+      "paths": [
+        ".github/review-policy.json",
+        "scripts/review-level.mjs",
+        "scripts/review-level-core.mjs",
+        "scripts/review-level-core.d.mts"
+      ]
+    },
+    {
+      "level": "L2",
+      "reason": "主进程/preload/IPC/CSP/窗口生命周期安全边界",
+      "paths": ["apps/desktop/src/main/**", "apps/desktop/src/preload/**"]
+    },
+    {
+      "level": "L2",
+      "reason": "打包与构建配置",
+      "paths": [
+        "apps/desktop/electron-builder.yml",
+        "apps/desktop/electron.vite.config.ts",
+        "scripts/build-engine.mjs"
+      ]
+    },
+    {
+      "level": "L2",
+      "reason": "公共契约",
+      "paths": [
+        "packages/contracts/src/**",
+        "packages/contracts/v2/**",
+        "packages/contracts/python/**"
+      ]
+    },
+    {
+      "level": "L2",
+      "reason": "引擎核心：存储/事务/任务/语义推理/查询执行",
+      "paths": ["packages/engine/src/**", "packages/engine/entrypoint.py"]
+    },
+    {
+      "level": "L2",
+      "reason": "门禁与证据校验脚本（改动可能削弱门禁）",
+      "paths": ["scripts/verify-*", "scripts/i04_matrix_evidence.py", "docs/source-manifest.json"]
+    },
+    {
+      "level": "L2",
+      "reason": "需求原文（改动即范围变更，另需用户授权）",
+      "paths": ["docs/prd/**"]
+    },
+    {
+      "level": "L0",
+      "reason": "审查/证据/状态记录与设计原型",
+      "paths": [
+        "docs/reviews/**",
+        "docs/verification*",
+        "docs/verification/**",
+        "docs/README.md",
+        "docs/m0-checklist.md",
+        "docs/development.md",
+        "README.md",
+        "CONTRIBUTING.md",
+        "design/**"
+      ]
+    },
+    {
+      "level": "L1",
+      "reason": "渲染层、测试、CI、设计文档、示例资源、工具配置",
+      "paths": [
+        "apps/desktop/src/**",
+        "tests/**",
+        "packages/engine/tests/**",
+        ".github/workflows/**",
+        "docs/architecture/**",
+        "docs/iterations/**",
+        "docs/process/**",
+        "resources/**",
+        "scripts/**",
+        "AGENTS.md",
+        "SECURITY.md",
+        "licenses/**"
+      ]
+    }
+  ],
+  "dependencies": {
+    "$comment": "package.json 依赖变化单独判定；锁文件随其 manifest 结果，单独变动按 L1。",
+    "manifests": [
+      "package.json",
+      "apps/desktop/package.json",
+      "packages/contracts/package.json",
+      "packages/engine/pyproject.toml",
+      "pyproject.toml"
+    ],
+    "lockfiles": ["package-lock.json", "uv.lock"],
+    "critical": [
+      "electron",
+      "electron-builder",
+      "electron-vite",
+      "typescript",
+      "vite",
+      "react",
+      "react-dom",
+      "@types/node",
+      "@playwright/test"
+    ]
+  }
+}
