@@ -27,6 +27,7 @@
     "engine:build": "node scripts/build-engine.mjs",
     "package:dir": "npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
+    "ci:quality": "uv run --frozen python scripts/ci-quality-schedule.py",
     "verify:sources": "node scripts/verify-sources.mjs",
     "typecheck:contracts": "npm run typecheck --workspace @ontolearn/contracts",
     "typecheck:unit": "tsc --noEmit -p tsconfig.unit.json",

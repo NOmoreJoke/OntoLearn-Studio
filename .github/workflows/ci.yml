@@ -29,71 +29,14 @@ jobs:
           enable-cache: true
       - run: npm ci
       - run: uv sync --frozen
-      - name: I04 complete matrix per-cell evidence
-        run: >-
-          uv run --frozen python -m pytest -p scripts.i04_matrix_evidence
-          --i04-matrix-evidence build/i04-matrix-ci
-          --i04-matrix-source-revision HEAD
-          packages/engine/tests/test_job_store.py::test_atomic_job_fault_reconcile_matrix
-          packages/engine/tests/test_i04_round_faults.py::test_round_job_progress_atomic_fault_matrix_fences_and_preserves_previous_round
-          -q
-      - run: npm run check
-        env:
-          CI_ENGINE_TEST_SHARDS: '2'
-      - run: npm run verify:sources
-      - name: Prepare Linux Chromium sandbox
-        run: |
-          ./node_modules/.bin/install-electron
-          sudo chown root:root node_modules/electron/dist/chrome-sandbox
-          sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
-          stat -c '%U:%G %a %n' node_modules/electron/dist/chrome-sandbox
-      - name: Install isolated native display controls
-        run: sudo apt-get update && sudo apt-get install -y openbox xdotool
-      - run: xvfb-run -a sh -c 'openbox > /tmp/i04-openbox.log 2>&1 & npm run test:e2e -- --reporter=list,github,json --output=test-results/main'
-        env:
-          DEBUG: pw:browser
-          I02_EVIDENCE: test-results/i02-linux-evidence.json
-          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/main/report.json
-      - name: I04 actual native recovery and persistent jobs
-        run: |
-          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-native-ci
-          xvfb-run -a sh -c 'openbox > /tmp/i04-native-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" --output=test-results/i04-native --reporter=list,github,json'
-        env:
-          I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-native-ci/fixture.json
-          I04_NATIVE_ISOLATED: '1'
-          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/i04-native/report.json
-      - name: I04 reload and safe errors through the actual preload
-        run: |
-          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-reload-ci --background-rounds 12
-          xvfb-run -a sh -c 'openbox > /tmp/i04-reload-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "reload re-queries" --output=test-results/i04-reload --reporter=list,github,json'
-        env:
-          I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-reload-ci/fixture.json
-          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/i04-reload/report.json
-      - run: npm run package:dir
-      - name: I04 coordinator exit reconciles the active renderer
-        run: |
-          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-disconnect-ci
-          xvfb-run -a sh -c 'openbox > /tmp/i04-disconnect-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "coordinator exit" --output=test-results/i04-disconnect --reporter=list,github,json'
-        env:
-          I04_TEST_FIXTURE: ${{ github.workspace }}/build/i04-disconnect-ci/fixture.json
-          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/i04-disconnect/report.json
-      - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
-      - name: I04 packaged application recovery
-        shell: bash
-        run: |
-          mapfile -t sandboxes < <(find release -type f -name chrome-sandbox)
-          mapfile -t executables < <(find release -type f -name '@ontolearndesktop')
-          test "${#sandboxes[@]}" -eq 1
-          test "${#executables[@]}" -eq 1
-          sudo chown root:root "${sandboxes[0]}"
-          sudo chmod 4755 "${sandboxes[0]}"
-          export ONTOLEARN_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/${executables[0]}"
-          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-disconnect-ci
-          PLAYWRIGHT_JSON_OUTPUT_FILE="$GITHUB_WORKSPACE/test-results/i04-packaged-disconnect/report.json" I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-disconnect-ci/fixture.json" xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-disconnect-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "coordinator exit" --output=test-results/i04-packaged-disconnect --reporter=list,github,json'
-          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-reload-ci --background-rounds 12
-          PLAYWRIGHT_JSON_OUTPUT_FILE="$GITHUB_WORKSPACE/test-results/i04-packaged-reload/report.json" I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-reload-ci/fixture.json" xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-reload-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "reload re-queries" --output=test-results/i04-packaged-reload --reporter=list,github,json'
-          uv run --frozen python scripts/prepare-i04-fixture.py build/i04-packaged-native-ci
-          PLAYWRIGHT_JSON_OUTPUT_FILE="$GITHUB_WORKSPACE/test-results/i04-packaged-native/report.json" I04_TEST_FIXTURE="$GITHUB_WORKSPACE/build/i04-packaged-native-ci/fixture.json" I04_NATIVE_ISOLATED=1 xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-native-openbox.log 2>&1 & npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" --output=test-results/i04-packaged-native --reporter=list,github,json'
+      # O098: one orchestrator runs the original Quality stages with
+      # dependency-aware concurrency (engine measured-weight shards beside the
+      # TypeScript lanes; packaging/recovery lanes inside the e2e window).
+      # Every original command, environment, evidence directory and successor
+      # gate is preserved; failures propagate like step gating. No budget or
+      # timeout change: the job keeps its original 15 minutes.
+      - name: Orchestrate parallel quality pipeline
+        run: npm run ci:quality
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:

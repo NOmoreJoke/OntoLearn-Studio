@@ -119,7 +119,14 @@ function setup() {
   }
 }
 function realm() {
-  const state = { mapped: true, wrongMapping: false, missingAPI: false }
+  const state = {
+    mapped: true,
+    wrongMapping: false,
+    missingAPI: false,
+    // Member paths hidden to stage partial main-API initialization; the
+    // readiness expression must see them appear in the guarded order.
+    hideMembers: [] as string[],
+  }
   const app = {
     isPackaged: false,
     whenReady: vi.fn(async () => {}),
@@ -129,15 +136,29 @@ function realm() {
     focus: vi.fn(),
     commandLine: { hasSwitch: vi.fn() },
   }
-  const load = vi.fn(() =>
-    state.missingAPI
-      ? {}
-      : {
-          app,
-          dialog: { showMessageBox: vi.fn() },
-          BrowserWindow: { getAllWindows: vi.fn() },
-        },
-  )
+  const buildApi = () => {
+    if (state.missingAPI) return {}
+    const hide = new Set(state.hideMembers)
+    if (hide.has('app')) return {}
+    const exposedApp = {
+      isPackaged: app.isPackaged,
+      whenReady: app.whenReady,
+      isReady: app.isReady,
+      on: app.on,
+      exit: app.exit,
+      focus: hide.has('app.focus') ? undefined : app.focus,
+      commandLine: hide.has('app.commandLine') ? undefined : app.commandLine,
+    }
+    const api: Record<string, unknown> = {
+      app: exposedApp,
+      dialog: { showMessageBox: vi.fn() },
+      BrowserWindow: { getAllWindows: vi.fn() },
+    }
+    if (hide.has('dialog')) delete api.dialog
+    if (hide.has('BrowserWindow')) delete api.BrowserWindow
+    return api
+  }
+  const load = vi.fn(() => buildApi())
   const fromHelper = Object.assign(load, {
     cache: {} as Record<string, unknown>,
     resolve: vi.fn(() => (state.wrongMapping ? '/npm/electron/index.js' : 'electron')),
@@ -271,31 +292,104 @@ it('waits for mapping without loading a shim, then checks real readiness and loa
   h.expectClean()
 })
 
-it.each(['wrongMapping', 'missingAPI'] as const)(
-  'fails immediately on %s with no helper or retry',
-  async (kind) => {
-    const h = setup(),
-      r = realm()
-    r.state[kind] = true
-    connect(h, r)
-    const result = h.start()
-    await vi.advanceTimersByTimeAsync(0)
-    expect(await result).toMatchObject({
-      error: expect.objectContaining({
-        message: expect.stringContaining(
-          kind === 'wrongMapping'
-            ? 'unexpected Electron module mapping'
-            : 'missing required Electron main API',
-        ),
-      }),
-    })
-    await vi.advanceTimersByTimeAsync(1000)
-    expect(h.requests).toHaveLength(1)
-    expect(helperRequests(h)).toHaveLength(0)
-    expect(r.load).toHaveBeenCalledTimes(kind === 'wrongMapping' ? 0 : 1)
-    h.expectClean()
-  },
-)
+it('fails immediately on a wrong module mapping with no helper or retry', async () => {
+  const h = setup(),
+    r = realm()
+  r.state.wrongMapping = true
+  connect(h, r)
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(await result).toMatchObject({
+    error: expect.objectContaining({
+      message: expect.stringContaining('unexpected Electron module mapping'),
+    }),
+  })
+  await vi.advanceTimersByTimeAsync(1000)
+  expect(h.requests).toHaveLength(1)
+  expect(helperRequests(h)).toHaveLength(0)
+  expect(r.load).toHaveBeenCalledTimes(0)
+  h.expectClean()
+})
+
+it('keeps a permanently absent main API inside the original bounds, names the member, sends no helper', async () => {
+  const h = setup(),
+    r = realm()
+  r.state.missingAPI = true
+  connect(h, r)
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(45000)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  const message = String((settled as { error: Error }).error.message)
+  expect(message).toMatch(/Electron main API readiness bounds exceeded|deadline exceeded/)
+  expect(message).toContain('"pendingMembers":["app"]')
+  await vi.advanceTimersByTimeAsync(1000)
+  expect(helperRequests(h)).toHaveLength(0)
+  expect(r.load.mock.calls.length).toBeGreaterThan(1)
+  expect(r.app.whenReady).not.toHaveBeenCalled()
+  h.expectClean()
+})
+
+it('names only the first unsatisfied member in the canonical guard order', async () => {
+  const h = setup(),
+    r = realm()
+  r.state.hideMembers = ['BrowserWindow', 'app.focus']
+  connect(h, r)
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(45000)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  const message = String((settled as { error: Error }).error.message)
+  expect(message).toContain('unsatisfied members (first-seen order): app.focus')
+  expect(message).not.toContain('BrowserWindow')
+  expect(helperRequests(h)).toHaveLength(0)
+  h.expectClean()
+})
+
+it('completes bootstrap when main API members finish installing after the first evaluations', async () => {
+  const h = setup(),
+    r = realm()
+  r.state.hideMembers = ['BrowserWindow']
+  connect(h, r)
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(h.requests).toHaveLength(1)
+  expect(r.load).toHaveBeenCalledTimes(1)
+  expect(r.app.whenReady).not.toHaveBeenCalled()
+  r.state.hideMembers = []
+  await vi.advanceTimersByTimeAsync(100)
+  expect(h.requests.map((request) => request.id)).toEqual([1, 2, 3])
+  expect(h.requests[0]!.params).toMatchObject({ awaitPromise: true, returnByValue: true })
+  expect(r.app.whenReady).toHaveBeenCalledOnce()
+  expect(r.app.isReady).toHaveBeenCalledOnce()
+  expect(r.app.focus).not.toHaveBeenCalled()
+  expect(r.app.exit).not.toHaveBeenCalled()
+  expect(r.app.commandLine.hasSwitch).not.toHaveBeenCalled()
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
+it('cancels a pending main-API poll on child exit without any later send', async () => {
+  const h = setup(),
+    r = realm()
+  r.state.hideMembers = ['BrowserWindow']
+  connect(h, r)
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(h.requests).toHaveLength(1)
+  h.finish(7)
+  await vi.advanceTimersByTimeAsync(0)
+  expect(await result).toHaveProperty('error')
+  r.state.hideMembers = []
+  await vi.advanceTimersByTimeAsync(1000)
+  expect(h.requests).toHaveLength(1)
+  expect(helperRequests(h)).toHaveLength(0)
+  h.expectClean()
+})
 
 it('keeps a stalled app.whenReady inside the original deadline and sends no helper after late fulfillment', async () => {
   const h = setup(),
@@ -361,35 +455,49 @@ it('checks the absolute cutoff again before helper send even if the deadline tim
   h.expectClean()
 })
 
-it.each(['invalid-json', 'send-throw', 'unknown-state', 'helper-error'] as const)(
-  'fails on %s and clears the outstanding request without retrying',
-  async (kind) => {
-    const h = setup()
-    h.respond((request) => {
-      if (kind === 'send-throw') throw new Error('send failed')
-      if (kind === 'invalid-json') {
-        h.socket.dispatchEvent(new MessageEvent('message', { data: '{broken' }))
-      } else if (kind === 'unknown-state') {
-        h.socket.reply(request, { type: 'object', value: { state: 'unexpected' } })
-      } else if (request.params.returnByValue) {
-        h.socket.reply(request, { type: 'object', value: { state: 'ready' } })
-      } else {
-        h.socket.dispatchEvent(
-          new MessageEvent('message', {
-            data: JSON.stringify({
-              id: request.id,
-              result: { exceptionDetails: { text: 'original helper failure' } },
-            }),
+it.each([
+  'invalid-json',
+  'send-throw',
+  'unknown-state',
+  'api-pending-type',
+  'api-pending-extra',
+  'helper-error',
+] as const)('fails on %s and clears the outstanding request without retrying', async (kind) => {
+  const h = setup()
+  h.respond((request) => {
+    if (kind === 'send-throw') throw new Error('send failed')
+    if (kind === 'invalid-json') {
+      h.socket.dispatchEvent(new MessageEvent('message', { data: '{broken' }))
+    } else if (kind === 'unknown-state') {
+      h.socket.reply(request, { type: 'object', value: { state: 'unexpected' } })
+    } else if (kind === 'api-pending-type') {
+      h.socket.reply(request, {
+        type: 'object',
+        value: { state: 'api-pending', pending: 7 },
+      })
+    } else if (kind === 'api-pending-extra') {
+      h.socket.reply(request, {
+        type: 'object',
+        value: { state: 'api-pending', pending: 'app', extra: 1 },
+      })
+    } else if (request.params.returnByValue) {
+      h.socket.reply(request, { type: 'object', value: { state: 'ready' } })
+    } else {
+      h.socket.dispatchEvent(
+        new MessageEvent('message', {
+          data: JSON.stringify({
+            id: request.id,
+            result: { exceptionDetails: { text: 'original helper failure' } },
           }),
-        )
-      }
-    })
-    const result = h.start()
-    await vi.advanceTimersByTimeAsync(0)
-    expect(await result).toHaveProperty('error')
-    await vi.advanceTimersByTimeAsync(1000)
-    expect(helperRequests(h)).toHaveLength(kind === 'helper-error' ? 1 : 0)
-    expect(h.requests).toHaveLength(kind === 'helper-error' ? 2 : 1)
-    h.expectClean()
-  },
-)
+        }),
+      )
+    }
+  })
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(await result).toHaveProperty('error')
+  await vi.advanceTimersByTimeAsync(1000)
+  expect(helperRequests(h)).toHaveLength(kind === 'helper-error' ? 1 : 0)
+  expect(h.requests).toHaveLength(kind === 'helper-error' ? 2 : 1)
+  h.expectClean()
+})

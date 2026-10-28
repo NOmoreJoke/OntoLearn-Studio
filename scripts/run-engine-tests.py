@@ -1,4 +1,4 @@
-"""Keep native pytest by default; account for a complete two-process CI run."""
+"""Keep native pytest by default; account for a complete multi-process CI run."""
 
 from __future__ import annotations
 
@@ -28,6 +28,71 @@ HISTORICAL_SCORES = {
     "test_job_store.py": 83.311,
     "test_project_changeset_service.py": 45.996,
     "test_project_applications.py": 37.862,
+}
+# Per-file summed pytest report durations from CI46 Quality run
+# run-e1ba55297a6b4ba2a6ec301d2e2afec4 worker events (58 files, 589.101s
+# total). Selected only via CI_ENGINE_TEST_WEIGHTS=linux-ci46 on the Linux
+# Quality job; still scheduling input only, not a duration promise or budget
+# proof. Files added after CI46 fall back to their collected case count.
+MEASURED_LINUX_SPANS = {
+    "test_mainline_postwrite_admission.py": 70.294,
+    "test_stdio_session_shutdown.py": 53.675,
+    "test_storage_probe_prepared.py": 49.976,
+    "test_mainline_manual_input_rejection.py": 47.870,
+    "test_project_format3.py": 42.310,
+    "test_project_job_format3.py": 33.402,
+    "test_mainline_postwrite_rows_budget.py": 25.475,
+    "test_mainline_read_work_budget.py": 21.094,
+    "test_job_store.py": 20.334,
+    "test_project_changeset_service.py": 19.702,
+    "test_session_page_limits.py": 16.539,
+    "test_resident_runtime.py": 14.627,
+    "test_mainline_dispatch.py": 14.528,
+    "test_i04_round_faults.py": 13.792,
+    "test_project_applications.py": 12.477,
+    "test_project_query_worker.py": 12.268,
+    "test_mainline_postwrite_text_budget.py": 12.261,
+    "test_mainline_language_input_rejection.py": 12.254,
+    "test_ontology_metadata_query.py": 11.527,
+    "test_storage.py": 11.111,
+    "test_project_source_transport.py": 10.640,
+    "test_project_startup_stdio.py": 10.101,
+    "test_ontology_metadata_changeset.py": 9.913,
+    "test_mainline_example_create.py": 7.788,
+    "test_mainline_named_example_dispatch.py": 7.058,
+    "test_project_compensation.py": 4.713,
+    "test_project_changeset_stdio.py": 4.185,
+    "test_mainline_query_changeset.py": 3.266,
+    "test_mainline_draft_dispatch.py": 2.263,
+    "test_i04_progress.py": 2.048,
+    "test_project_transactions.py": 2.008,
+    "test_query_presentation.py": 1.568,
+    "test_i04_lifecycle_boundaries.py": 1.374,
+    "test_contract_v2.py": 1.176,
+    "test_project_source_table_material.py": 1.147,
+    "test_frame_corpus.py": 0.834,
+    "test_mainline_example_provider.py": 0.507,
+    "test_project_business3_contract.py": 0.442,
+    "test_mainline_query_projection.py": 0.425,
+    "test_worker_parent.py": 0.324,
+    "test_prepare_fr003_bundle.py": 0.297,
+    "test_query_definition_service.py": 0.240,
+    "test_project_startup_contract.py": 0.239,
+    "test_ordinary_library.py": 0.225,
+    "test_ontology_presentation_literals.py": 0.156,
+    "test_coordinator_control.py": 0.148,
+    "test_worker_owner_bootstrap.py": 0.144,
+    "test_query_definition_descriptor.py": 0.095,
+    "test_handshake_deadline.py": 0.062,
+    "test_storage_snapshot_iri_memo.py": 0.042,
+    "test_protocol.py": 0.029,
+    "test_binding_regressions.py": 0.027,
+    "test_mainline_cleanup_regressions.py": 0.026,
+    "test_windows_example_resource.py": 0.023,
+    "test_runtime_bounds.py": 0.023,
+    "test_project_draft_plan.py": 0.014,
+    "test_project_workspace.py": 0.007,
+    "test_memory_guard_exit.py": 0.006,
 }
 _signal = 0
 _console = threading.Lock()
@@ -228,14 +293,14 @@ def load_collection(folder):
     return manifest
 
 
-def partition(items):
+def partition(items, workers=2, measured=None):
     counts = Counter(item["file"] for item in items)
-    weights = {
-        name: HISTORICAL_SCORES.get(Path(name).name, float(count)) for name, count in counts.items()
-    }
-    groups, loads = [[], []], [0.0, 0.0]
+    table = HISTORICAL_SCORES if measured is None else measured
+    weights = {name: table.get(Path(name).name, float(count)) for name, count in counts.items()}
+    groups = [[] for _ in range(workers)]
+    loads = [0.0] * workers
     for name in sorted(counts, key=lambda name: (-weights[name], name)):
-        index = min(range(2), key=lambda index: (loads[index], index))
+        index = min(range(workers), key=lambda index: (loads[index], index))
         groups[index].append(name)
         loads[index] += weights[name]
     return [sorted(group) for group in groups if group], weights
@@ -364,13 +429,18 @@ def account(child, expected, identity):
     return outcomes, errors
 
 
-def parallel(arguments):
+def parallel(arguments, requested=2):
     root = Path(os.environ.get("CI_ENGINE_TEST_OUTPUT", "build/engine-tests")).resolve()
     root.mkdir(parents=True, exist_ok=True)
     run = root / ("run-" + uuid4().hex)
     run.mkdir()
     children, outcomes, errors = [], {}, []
-    summary = {"passed": False, "pytestArgs": arguments, "requestedWorkers": 2, "run": str(run)}
+    summary = {
+        "passed": False,
+        "pytestArgs": arguments,
+        "requestedWorkers": requested,
+        "run": str(run),
+    }
     summary["controlHashes"] = {
         name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
         for name in ("run-engine-tests.py", "engine-test-reporting.py")
@@ -401,8 +471,20 @@ def parallel(arguments):
             or collection_events[1].get("exitstatus") != 0
         ):
             raise ValueError("native full collection report missing or invalid")
-        groups, weights = partition(full["items"])
-        write(run / "assignment.json", {"groups": groups, "heuristicScores": weights})
+        measured = None
+        if os.environ.get("CI_ENGINE_TEST_WEIGHTS") == "linux-ci46":
+            measured = MEASURED_LINUX_SPANS
+        groups, weights = partition(full["items"], requested, measured)
+        write(
+            run / "assignment.json",
+            {
+                "workers": len(groups),
+                "requestedWorkers": requested,
+                "weightSource": "linux-ci46-measured" if measured else "historical+counts",
+                "groups": groups,
+                "scores": weights,
+            },
+        )
         summary.update(
             fullManifest=str(collector.folder / "collection.json"),
             fullCount=len(full["items"]),
@@ -518,10 +600,10 @@ def main():
         if os.environ.get("CI_ENGINE_TEST_REPORT_SINGLE") == "1":
             return single_report_exec(sys.argv[1:])
         os.execv(sys.executable, [sys.executable, "-m", "pytest", *sys.argv[1:]])
-    if mode != "2":
-        print("CI_ENGINE_TEST_SHARDS must be 1 or 2", file=sys.stderr)
+    if not mode.isdigit() or not 2 <= int(mode) <= 8:
+        print("CI_ENGINE_TEST_SHARDS must be 1 or an integer 2..8", file=sys.stderr)
         return 2
-    return parallel(sys.argv[1:])
+    return parallel(sys.argv[1:], int(mode))
 
 
 if __name__ == "__main__":

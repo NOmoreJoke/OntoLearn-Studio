@@ -102,14 +102,71 @@ export function snapshotElements(nodes: Element[], targets: UITarget[]): UISnaps
   return result
 }
 
+/** The single retryable observation outcome: a node already selected by the
+ * public locator got disconnected between selection and read (Playwright
+ * evaluates the query and the snapshot in separate awaits). The class cannot
+ * cross the browser boundary, so observeUI re-raises it Node-side; every
+ * other markup reason stays a fatal plain Error with its original message. */
+export class DisconnectedObservationError extends Error {
+  constructor() {
+    super('Unsupported UI observation markup: disconnected')
+    this.name = 'DisconnectedObservationError'
+  }
+}
+
+// Playwright wraps browser-side evaluation errors before they reach Node,
+// and reports prepend their own prefix; the CI46 Windows failure
+// (report.json errors[].message) is exactly:
+//   Error: locator.evaluateAll: Error: Unsupported UI observation markup:
+//   disconnected\n    at snapshotElements …
+// Classification accepts only that proven wrapper shape: the message's FIRST
+// line, after stripping the optional report/evaluator prefixes, must equal
+// the browser error exactly, with any stack strictly after the newline.
+// Arbitrary preceding text, trailing explanation on the same line, other
+// markup reasons, browser-closed and unknown errors all stay fatal; this is
+// never a substring/includes match.
+const DISCONNECTED_PREFIXES = ['Error: ', 'locator.evaluateAll: '] as const
+
+export function isDisconnectedMarkup(error: unknown): boolean {
+  if (!(error instanceof Error)) return false
+  let line = error.message.split('\n', 1)[0] ?? ''
+  for (const prefix of DISCONNECTED_PREFIXES) {
+    if (line.startsWith(prefix)) line = line.slice(prefix.length)
+  }
+  return (
+    line === 'Error: Unsupported UI observation markup: disconnected' ||
+    line === 'Unsupported UI observation markup: disconnected'
+  )
+}
+
 export async function observeUI(
   locator: Locator,
   targets: UITarget[],
   completed: (snapshot: UISnapshot) => void,
 ): Promise<UISnapshot> {
-  const snapshot = await locator.evaluateAll(snapshotElements, targets)
+  let snapshot: UISnapshot
+  try {
+    snapshot = await locator.evaluateAll(snapshotElements, targets)
+  } catch (error) {
+    if (isDisconnectedMarkup(error)) throw new DisconnectedObservationError()
+    throw error
+  }
   completed(snapshot)
   return snapshot
+}
+
+/** One observation round under the caller's original poll deadline: the
+ * identified disconnected outcome means "no valid snapshot this round"
+ * (undefined) and the caller's own poll re-observes fresh nodes. Incomplete
+ * rounds never invoke completed, count as success, or reuse an old snapshot;
+ * every other error stays fatal. */
+export async function validObservation<T>(observe: () => Promise<T>): Promise<T | undefined> {
+  try {
+    return await observe()
+  } catch (error) {
+    if (error instanceof DisconnectedObservationError) return undefined
+    throw error
+  }
 }
 
 export function normalizeUIText(value: string): string {

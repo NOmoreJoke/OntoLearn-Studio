@@ -12,6 +12,7 @@ import {
   receiptHasOperation,
   reconciliationReady,
   updateObservationSlot,
+  validObservation,
   type UISnapshot,
 } from './ui-observation'
 
@@ -400,7 +401,12 @@ test('actual ontology consumer reconciles first lost commit ACK without another 
     await expect
       .poll(
         async () => {
-          if (receiptHasOperation(await reconciliation(), operationId)) return true
+          // A disconnected node means this round produced no valid snapshot:
+          // re-observe fresh nodes inside this poll's original deadline,
+          // without spending a read, clicking, or recording completion.
+          const beforeClick = await validObservation(reconciliation)
+          if (beforeClick === undefined) return false
+          if (receiptHasOperation(beforeClick, operationId)) return true
           if (++reads > 12)
             throw new Error('Bounded original-operation UI reconciliation exhausted')
           await expect(reconcile).toBeEnabled()
@@ -409,7 +415,12 @@ test('actual ontology consumer reconciles first lost commit ACK without another 
           await expect
             .poll(
               async () => {
-                completed = await reconciliation()
+                // Inner waits never re-click or re-submit; a disconnected
+                // round only re-observes within the original 100ms/5000ms
+                // window and leaves the previous completed slot untouched.
+                const observedNow = await validObservation(reconciliation)
+                if (observedNow === undefined) return false
+                completed = observedNow
                 return reconciliationReady(completed)
               },
               { intervals: [100], timeout: 5000 },

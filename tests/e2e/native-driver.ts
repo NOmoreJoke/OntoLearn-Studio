@@ -21,6 +21,9 @@ export async function runNativeRecovery(
   let childExited = false
   let bootstrapComplete = false
   let readinessAttempts = 0
+  // Bounded diagnostics for pending API members: at most the guarded member
+  // count, each a short literal name; nothing else about the API is dumped.
+  const pendingMembers: string[] = []
   let sequence = 0
   const cancellations = new Set<(reason: Error) => void>()
   const diagnostics = () =>
@@ -30,6 +33,7 @@ export async function runNativeRecovery(
       exitCode: child.exitCode,
       signalCode: child.signalCode,
       readinessAttempts,
+      pendingMembers,
       bootstrapComplete,
       stderr,
       stdout,
@@ -216,6 +220,13 @@ export async function runNativeRecovery(
     const helper = JSON.stringify(resolvePath('tests/e2e/native-recovery.cjs'))
     // Electron44.9 common/init installs this cache key and canonical resolver.
     // Never require an unmapped npm shim, clear cache, or replace the resolver.
+    // CI46 (Windows) proved only that the combined main-API guard failed on
+    // the first reply (missing member UNKNOWN; its stack overlapped
+    // browser_init/Object.app). That members may merely be late to install is
+    // the working hypothesis behind the strategy below, not a proven cause:
+    // an unsatisfied member is reported by name and re-polled inside the
+    // original 45s/450-attempt bounds instead of failing immediately.
+    // Permanent absence still fails at those bounds with the member named.
     const readiness = `(() => {
       const fromHelper = process.getBuiltinModule('module').createRequire(${helper});
       if (!Object.prototype.hasOwnProperty.call(fromHelper.cache, 'electron'))
@@ -227,14 +238,23 @@ export async function runNativeRecovery(
       const api = fromHelper('electron');
       if (!api || typeof api !== 'object') throw new Error('missing Electron API object');
       const { app, dialog, BrowserWindow } = api;
-      if (!app || typeof app.isPackaged !== 'boolean' ||
-          typeof app.whenReady !== 'function' || typeof app.isReady !== 'function' ||
-          typeof app.on !== 'function' || typeof app.exit !== 'function' ||
-          typeof app.focus !== 'function' || !app.commandLine ||
-          typeof app.commandLine.hasSwitch !== 'function' ||
-          !dialog || typeof dialog.showMessageBox !== 'function' ||
-          !BrowserWindow || typeof BrowserWindow.getAllWindows !== 'function')
-        throw new Error('missing required Electron main API');
+      const members = [
+        ['app', () => !!app],
+        ['app.isPackaged', () => typeof app.isPackaged === 'boolean'],
+        ['app.whenReady', () => typeof app.whenReady === 'function'],
+        ['app.isReady', () => typeof app.isReady === 'function'],
+        ['app.on', () => typeof app.on === 'function'],
+        ['app.exit', () => typeof app.exit === 'function'],
+        ['app.focus', () => typeof app.focus === 'function'],
+        ['app.commandLine', () => !!app.commandLine],
+        ['app.commandLine.hasSwitch', () => typeof app.commandLine.hasSwitch === 'function'],
+        ['dialog', () => !!dialog],
+        ['dialog.showMessageBox', () => typeof dialog.showMessageBox === 'function'],
+        ['BrowserWindow', () => !!BrowserWindow],
+        ['BrowserWindow.getAllWindows', () => typeof BrowserWindow.getAllWindows === 'function'],
+      ];
+      for (const [member, installed] of members)
+        if (!installed()) return { state: 'api-pending', pending: member };
       return app.whenReady().then(() => {
         if (app.isReady() !== true) throw new Error('inconsistent Electron readiness');
         return { state: 'ready' };
@@ -243,21 +263,33 @@ export async function runNativeRecovery(
     let ready = false
     for (readinessAttempts = 1; readinessAttempts <= 450; readinessAttempts++) {
       const result = await evaluate(readiness, true)
-      const value = result.value
+      const value = result.value as Record<string, unknown> | null | undefined
       if (
         result.type !== 'object' ||
         !value ||
         typeof value !== 'object' ||
         Array.isArray(value) ||
-        Object.keys(value).length !== 1 ||
-        !('state' in value)
+        typeof value.state !== 'string'
       )
         throw new Error('invalid native readiness state')
       if (value.state === 'ready') {
+        if (Object.keys(value).length !== 1) throw new Error('invalid native readiness state')
         ready = true
         break
       }
-      if (value.state !== 'mapping-pending') throw new Error('unknown native readiness state')
+      if (value.state === 'mapping-pending') {
+        if (Object.keys(value).length !== 1) throw new Error('invalid native readiness state')
+      } else if (value.state === 'api-pending') {
+        if (
+          Object.keys(value).length !== 2 ||
+          typeof value.pending !== 'string' ||
+          !value.pending ||
+          value.pending.length > 64
+        )
+          throw new Error('invalid native readiness state')
+        if (pendingMembers.length < 32 && !pendingMembers.includes(value.pending))
+          pendingMembers.push(value.pending)
+      } else throw new Error('unknown native readiness state')
       if (readinessAttempts === 450) break
       assertActive(connected)
       await bounded(
@@ -267,7 +299,12 @@ export async function runNativeRecovery(
         }),
       )
     }
-    if (!ready) throw new Error('Electron mapping readiness attempt limit exceeded')
+    if (!ready)
+      throw new Error(
+        pendingMembers.length
+          ? `Electron main API readiness bounds exceeded; unsatisfied members (first-seen order): ${pendingMembers.join(', ')}; ${diagnostics()}`
+          : 'Electron mapping readiness attempt limit exceeded',
+      )
     // Original target/expression, sent once; failures never retry the helper.
     await evaluate(`process.getBuiltinModule('module').createRequire(process.execPath)(${helper})`)
     bootstrapComplete = true

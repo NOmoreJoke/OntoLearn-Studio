@@ -1,12 +1,16 @@
 import { describe, expect, test } from 'vitest'
+import type { Locator } from '@playwright/test'
 import {
+  DisconnectedObservationError,
   exactlyOne,
   committedReceiptOperation,
   normalizeUIText,
+  observeUI,
   receiptHasOperation,
   reconciliationReady,
   snapshotElements,
   updateObservationSlot,
+  validObservation,
   type UINode,
   type UISnapshot,
 } from '../e2e/ui-observation'
@@ -106,6 +110,93 @@ describe('pure test observation regression, not product evidence', () => {
     const shadow = button()
     Reflect.set(shadow, 'shadowRoot', {})
     expect(() => snapshotElements([shadow], targets)).toThrow('Unsupported')
+  })
+
+  test('disconnected rounds are typed incomplete and never record completion', async () => {
+    // The accepted shape is exactly the proven Playwright wrapper from the
+    // CI46 Windows report.json failure: first line = optional report/evaluator
+    // prefixes + browser error, stack strictly after the newline.
+    const ci46Original =
+      'Error: locator.evaluateAll: Error: Unsupported UI observation markup: disconnected\n' +
+      '    at snapshotElements (...'
+    for (const message of [
+      ci46Original,
+      'locator.evaluateAll: Error: Unsupported UI observation markup: disconnected\n' +
+        '    at snapshotElements (<anonymous>:1:11)',
+      'Error: Unsupported UI observation markup: disconnected',
+      'Unsupported UI observation markup: disconnected',
+    ]) {
+      const locator = {
+        evaluateAll: async () => {
+          throw new Error(message)
+        },
+      } as unknown as Locator
+      const completed: UISnapshot[] = []
+      await expect(
+        observeUI(locator, targets, (snapshot) => completed.push(snapshot)),
+      ).rejects.toBeInstanceOf(DisconnectedObservationError)
+      expect(completed).toEqual([])
+    }
+    const bare = {
+      evaluateAll: async () => {
+        throw new Error('Unsupported UI observation markup: disconnected')
+      },
+    } as unknown as Locator
+    await expect(observeUI(bare, targets, () => {})).rejects.toThrow(
+      /^Unsupported UI observation markup: disconnected$/,
+    )
+  })
+
+  test('only the exact disconnected outcome is retryable; other errors stay fatal', async () => {
+    for (const message of [
+      // Unrelated failure whose diagnostic merely mentions the reason token.
+      'Error: locator.evaluateAll: Error: unrelated failure; diagnostic mentions ' +
+        'Unsupported UI observation markup: disconnected',
+      // Reason with trailing explanation on the same line, or arbitrary
+      // preceding text: outside the proven wrapper, therefore fatal.
+      'Unsupported UI observation markup: disconnected; extra explanation',
+      'preceding text Unsupported UI observation markup: disconnected',
+      'Error: locator.evaluateAll: Error: Unsupported UI observation markup: aria-labelledby',
+      'Unsupported UI observation markup: special-descendant',
+      'Error: locator.evaluateAll: Error: Unsupported UI observation markup: disconnectedX',
+      'Ambiguous or unsupported UI observation target',
+      'Target closed',
+    ]) {
+      const locator = {
+        evaluateAll: async () => {
+          throw new Error(message)
+        },
+      } as unknown as Locator
+      const completed: UISnapshot[] = []
+      await expect(
+        observeUI(locator, targets, (snapshot) => completed.push(snapshot)),
+      ).rejects.toThrow(message.split('\n')[0]!.slice(0, 120))
+      expect(completed).toEqual([])
+      await expect(validObservation(() => observeUI(locator, targets, () => {}))).rejects.toThrow(
+        message.split('\n')[0]!.slice(0, 120),
+      )
+    }
+  })
+
+  test('validObservation passes successful rounds through and maps only disconnected to incomplete', async () => {
+    const snapshot: UISnapshot = { reconcile: [node('button', true)] }
+    const ok = { evaluateAll: async () => snapshot } as unknown as Locator
+    let rounds = 0
+    const observe = () =>
+      observeUI(
+        {
+          evaluateAll: async () => {
+            rounds += 1
+            if (rounds === 1) throw new Error('Unsupported UI observation markup: disconnected')
+            return snapshot
+          },
+        } as unknown as Locator,
+        targets,
+        () => {},
+      )
+    expect(await validObservation(observe)).toBeUndefined()
+    expect(await validObservation(observe)).toEqual(snapshot)
+    expect(await validObservation(() => observeUI(ok, targets, () => {}))).toEqual(snapshot)
   })
 
   test('unsupported markup names only the first matched guard and never touches later ones', () => {
