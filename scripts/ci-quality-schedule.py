@@ -14,7 +14,9 @@ from __future__ import annotations
 import asyncio
 import os
 import signal
+import subprocess
 import sys
+import time
 from dataclasses import dataclass, field
 
 
@@ -25,6 +27,18 @@ class Lane:
     command: str
     deps: tuple[str, ...] = ()
     env: dict[str, str] = field(default_factory=dict)
+
+
+# Lane-local cleanup bounds; they bound per-lane teardown inside the original
+# job budget and never extend it.
+_REAP_WAIT_S = 5.0
+_MEMBER_WAIT_S = 2.0
+_DRAIN_BOUND_S = 10.0
+_EXIT_POLL_S = 0.2
+_LANE_SHELL = ("/bin/bash", "-e", "-c")
+# Linux production offers pidfd as the stable process-identity handle: an open
+# pidfd prevents the leader pid from being recycled for this lane's lifetime.
+_PIDFD_SUPPORTED = hasattr(os, "pidfd_open") and sys.platform == "linux"
 
 
 def build_plan() -> list[Lane]:
@@ -192,7 +206,9 @@ async def run_pipeline(lanes: list[Lane], spawn, log) -> dict:
             code = await spawn(lane)
         except asyncio.CancelledError:
             state[lane.name] = "cancelled"
-            log(f"[{lane.name}] cancelled; own child processes reaped by the lane")
+            log(
+                f"[{lane.name}] cancelled; bounded cleanup ran (outcome recorded via cleanup notes)"
+            )
             raise
         except BaseException as error:
             # Spawn/IO failures settle as this lane's failure instead of
@@ -277,37 +293,371 @@ async def _drain(stream, target, name: str) -> None:
         target.flush()
 
 
-async def _reap_lane_group(process, name: str) -> None:
-    # Terminate exactly this lane's own process group (created with
-    # start_new_session); never signal other lanes, the runner, or unrelated
-    # user processes. Bounded by short waits, no extra job budget.
-    if process.returncode is not None:
-        return
-    killers = [signal.SIGTERM]
-    if hasattr(signal, "SIGKILL"):
-        killers.append(signal.SIGKILL)
-    for deliver in killers:
+async def _drain_guarded(stream, target, name: str):
+    """Drain one pipe, reporting failures as values so supervision reacts
+    immediately instead of discovering them only after process.wait (the
+    R14-02 gap). Never raises except cancellation: the diagnostic print is
+    itself guarded so a broken diagnostic channel cannot mask the original
+    failure or turn the task into an unobserved exception (R14 feedback 3)."""
+    try:
+        await _drain(stream, target, name)
+        return None
+    except asyncio.CancelledError:
+        raise
+    except Exception as error:
         try:
-            if hasattr(os, "killpg"):
-                os.killpg(process.pid, deliver)
-            else:
-                process.kill()
-        except (ProcessLookupError, PermissionError, OSError):
-            return
+            print(
+                f"[{name}] output drain failure: {type(error).__name__}: {error}",
+                file=sys.stderr,
+            )
+        except Exception:
+            pass  # the diagnostic channel itself failed; the failure is still returned
+        return error
+
+
+def _proc_stat(pid: int) -> str | None:
+    try:
+        with open(f"/proc/{pid}/stat", "rb") as stream:
+            return stream.read().decode("ascii", "replace")
+    except OSError:
+        return None
+
+
+def _pid_pgid(pid: int) -> int | None:
+    if os.path.isdir("/proc"):
+        stat = _proc_stat(pid)
+        if stat is None:
+            return None
+        # comm may contain spaces and parens; fields restart after the last ')'.
+        fields = stat.rpartition(")")[2].split()
         try:
-            await asyncio.wait_for(process.wait(), timeout=5)
-            return
-        except TimeoutError:
+            return int(fields[2])
+        except (IndexError, ValueError):
+            return None
+    if sys.platform == "darwin":
+        try:
+            listing = subprocess.run(
+                ["ps", "-o", "pgid=", "-p", str(pid)],
+                capture_output=True,
+                text=True,
+                timeout=5,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return None
+        parts = listing.stdout.split()
+        return int(parts[0]) if parts else None
+    return None
+
+
+def _own_group_members(pgid: int) -> list[int] | None:
+    """Verifiable own-group anchor: pids whose CURRENT process-group id equals
+    this lane's pgid. Returns None when the observation itself FAILED (unreadable
+    /proc entry, ps error/timeout/nonzero) — an unknown observation is never
+    reported as an empty group, because "could not read" and "does not exist"
+    have different cleanup consequences. Linux reads /proc; macOS shells out
+    to ps once; other platforms are unknown (never empty)."""
+    if os.path.isdir("/proc"):
+        try:
+            entries = os.listdir("/proc")
+        except OSError as error:
+            _note(f"own group observation failed (/proc): {error!r}")
+            return None
+        members = []
+        for entry in entries:
+            if not entry.isdigit():
+                continue
+            stat = _proc_stat(int(entry))
+            if stat is None:
+                # A member we cannot read makes the whole observation
+                # unreliable; guessing "gone" from a partial read is forbidden.
+                _note("own group observation failed (unreadable member stat)")
+                return None
+            fields = stat.rpartition(")")[2].split()
+            if len(fields) < 4 or fields[2] != str(pgid) or fields[0] == "Z":
+                continue
+            members.append(int(entry))
+        return members
+    if sys.platform == "darwin":
+        try:
+            listing = subprocess.run(
+                ["ps", "-axo", "pid=,pgid="],
+                capture_output=True,
+                text=True,
+                timeout=5,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as error:
+            _note(f"own group observation failed (ps): {error!r}")
+            return None
+        if listing.returncode != 0:
+            _note(f"own group observation failed (ps exit {listing.returncode})")
+            return None
+        members = []
+        for line in listing.stdout.splitlines():
+            parts = line.split()
+            if len(parts) == 2 and parts[1] == str(pgid):
+                members.append(int(parts[0]))
+        return members
+    return None
+
+
+def _note(message: str) -> None:
+    """Cleanup diagnostics must never raise: a broken diagnostic channel
+    cannot be allowed to interrupt the TERM-to-KILL closure sequence."""
+    try:
+        print(message, file=sys.stderr)
+    except Exception:
+        pass
+
+
+def _signal_members(pgid: int, deliver, name: str) -> None:
+    # Re-verify membership immediately before each signal so a pid recycled
+    # between enumeration and delivery is still excluded. A member whose pid
+    # equals the pgid would be a GROUP LEADER: our original leader is gone in
+    # the post-reap branch, so such a member can only be a recycled identity
+    # and is never signaled.
+    for pid in _own_group_members(pgid) or []:
+        if pid == pgid:
             continue
-    print(f"[{name}] own process group exit not confirmed", file=sys.stderr)
+        if _pid_pgid(pid) == pgid and hasattr(os, "kill"):
+            try:
+                os.kill(pid, deliver)
+            except ProcessLookupError:
+                continue
+            except (PermissionError, OSError) as error:
+                _note(f"[{name}] own group member {pid} not signaled: {error!r}")
+
+
+async def _await_group_quiet(pgid: int, name: str, timeout: float) -> bool:
+    deadline = time.monotonic() + timeout
+    observation = _own_group_members(pgid)
+    while time.monotonic() < deadline:
+        observation = _own_group_members(pgid)
+        if observation is not None and not observation:
+            return True
+        await asyncio.sleep(0.05)
+    observation = _own_group_members(pgid)
+    if observation is None:
+        _note(
+            f"[{name}] own process group state UNKNOWN (observation failed); cleanup NOT confirmed"
+        )
+        return False
+    if observation:
+        _note(f"[{name}] own process group still present: {observation}")
+        return False
+    return True
+
+
+async def _collect_drains_bounded(drains, name: str) -> bool:
+    """Finish or bound output collection. Descendants that survive the group
+    cleanup can keep pipes open; bounding keeps the lane settled-and-failed
+    instead of wedged. Returns True when collection was cut short."""
+    try:
+        await asyncio.wait_for(asyncio.gather(*drains), timeout=_DRAIN_BOUND_S)
+        return False
+    except TimeoutError:
+        _note(f"[{name}] output collection not complete within {_DRAIN_BOUND_S}s")
+        for task in drains:
+            task.cancel()
+        await asyncio.gather(*drains, return_exceptions=True)
+        return True
+
+
+async def _reap_lane_group(process, name: str, identity=None) -> str:
+    # Close exactly this lane's own process group, created with
+    # start_new_session; never signal other lanes, the runner, or unrelated
+    # user processes. Returns an honest outcome string:
+    #   "closed"   — reliably observed empty after bounded TERM→KILL
+    #   "residual" — members provably remain after the bounded sequence
+    #   "unknown"  — membership observation itself failed; nothing claimed
+    #   "refused"  — signaling refused because the original group identity is
+    #                no longer provable (leader reaped, no stable handle)
+    # While the leader is unreaped, killpg and verified member signaling are
+    # provably ours. After the leader was reaped the numeric pgid alone is NOT
+    # a lifecycle proof (the number can be recycled into a new group): member
+    # signaling then requires the stable identity pin (pidfd) held by
+    # _supervise, which prevents the pid from being recycled at all. Without
+    # that pin the scheduler refuses to signal and reports the cleanup as not
+    # confirmed — it never widens the signal scope to compensate.
+    pinned = bool(identity and identity.get("pinned"))
+    # Eligibility is decided ONCE at entry: a leader that was still alive when
+    # cleanup began keeps full member-closure rights even if it exits (and is
+    # reaped) mid-cleanup — the deterministic mid-reap branch. Only a leader
+    # already reaped at entry needs the identity pin for post-reap signaling.
+    entry_reaped = process.returncode is not None
+    pgid = process.pid
+    if hasattr(os, "killpg") and not entry_reaped:
+        try:
+            os.killpg(pgid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass  # group already fully gone; the quiet check below confirms
+        except (PermissionError, OSError) as error:
+            _note(f"[{name}] own process group not signaled: {error!r}")
+    if hasattr(os, "killpg"):
+        if entry_reaped and not pinned:
+            _note(
+                f"[{name}] leader already reaped and no stable identity pin; "
+                "refusing member signals — own process group cleanup NOT confirmed"
+            )
+            return "refused"
+        term = getattr(signal, "SIGTERM", None)
+        kill = getattr(signal, "SIGKILL", None)
+        for deliver in [sig for sig in (term, kill) if sig is not None]:
+            _signal_members(pgid, deliver, name)
+            quiet = await _await_group_quiet(pgid, name, _MEMBER_WAIT_S)
+            if quiet:
+                return "closed"
+            if _own_group_members(pgid) is None:
+                pass
+            else:
+                pass
+        final = _own_group_members(pgid)
+        if final is None:
+            _note(f"[{name}] own process group state UNKNOWN; cleanup NOT confirmed")
+            return "unknown"
+        if final:
+            _note(f"[{name}] own process group exit not confirmed; members remain: {final}")
+        return "residual" if final else "closed"
+    if hasattr(os, "kill") and process.returncode is None:
+        # No process-group API (non-POSIX boundary): bound and close the
+        # direct child only; group descendants are not provable there.
+        try:
+            process.kill()
+        except OSError as error:
+            _note(f"[{name}] own process not killed: {error!r}")
+        try:
+            await asyncio.wait_for(asyncio.shield(process.wait()), timeout=_REAP_WAIT_S)
+            return "closed"
+        except TimeoutError:
+            _note(f"[{name}] own process exit not confirmed (no group API)")
+            return "residual"
+    return "unknown"
+
+
+def _drain_outcome(task) -> Exception | None:
+    """Final result of a drain task in either failure shape: the value
+    returned by _drain_guarded, or an exception it could not swallow."""
+    if task.cancelled():
+        return None
+    error = task.exception()
+    if error is None:
+        error = task.result()
+    return error
+
+
+async def _supervise(process, name: str, stdout=None, stderr=None) -> int:
+    """Watch the child and both output drains concurrently for the WHOLE
+    supervision lifecycle.
+
+    A failing drain — either pipe, including failures of the diagnostic
+    channel, at any time INCLUDING the tail collection — settles the lane as
+    a failure with the own group closed (R14-02). The child's returncode
+    (set by the reaper independently of the pipes) ends the main wait even
+    when a long-lived wait() waiter would stay pending on a pipe held by a
+    same-group descendant (R14-03). Cancellation protection covers the main
+    loop AND the tail collection: a single plain cancel during either phase
+    still runs the bounded own-group settlement before propagating. On Linux
+    a pidfd opened for the leader pins the numeric identity for the lane's
+    lifetime, making post-reap member signaling provably safe; without that
+    stable handle the reap refuses post-reap signaling and reports the
+    cleanup as not confirmed."""
+    # Best-effort stable identity pin: while a pidfd is open the kernel
+    # cannot recycle the leader pid, so the numeric pgid can never name a
+    # different group during this lane's lifetime.
+    identity = {"pinned": False, "handle": None}
+    if _PIDFD_SUPPORTED:
+        try:
+            identity["handle"] = os.pidfd_open(process.pid)
+            identity["pinned"] = True
+        except OSError as error:
+            _note(f"[{name}] identity pin unavailable: {error!r}")
+    drains: list[asyncio.Task] | None = None
+    waiter: asyncio.Future | None = None
+    try:
+        drains = [
+            asyncio.ensure_future(_drain_guarded(process.stdout, stdout or sys.stdout, name)),
+            asyncio.ensure_future(_drain_guarded(process.stderr, stderr or sys.stderr, name)),
+        ]
+        waiter = asyncio.ensure_future(process.wait())
+        drain_failure: Exception | None = None
+
+        def absorb(task) -> None:
+            nonlocal drain_failure
+            if drain_failure is None:
+                drain_failure = _drain_outcome(task)
+
+        unfinished = set(drains)
+        # --- main watch loop -------------------------------------------
+        while process.returncode is None and drain_failure is None:
+            for task in list(unfinished):
+                if task.done():
+                    unfinished.discard(task)
+                    absorb(task)
+            if drain_failure is not None:
+                break
+            await asyncio.wait(
+                {waiter, *unfinished},
+                timeout=_EXIT_POLL_S,
+                return_when=asyncio.FIRST_COMPLETED,
+            )
+            for task in list(unfinished):
+                if task.done():
+                    unfinished.discard(task)
+                    absorb(task)
+        if not waiter.done():
+            waiter.cancel()
+            await asyncio.gather(waiter, return_exceptions=True)
+        # --- tail collection -------------------------------------------
+        bounded_short = await _collect_drains_bounded(drains, name)
+        for task in drains:
+            absorb(task)
+        if drain_failure is not None or bounded_short:
+            # Failure or unconfirmable output closes the lane's own group
+            # (leader may already be reaped: the verified member path, gated
+            # by the identity pin) instead of leaving pipe-holding
+            # descendants behind.
+            await _reap_lane_group(process, name, identity)
+            return 1
+        code = process.returncode
+        return 0 if code == 0 else (code if code is not None else 1)
+    except asyncio.CancelledError:
+        # One bounded settlement for the whole lifecycle: main loop, tail
+        # collection, every intermediate await.
+        try:
+            await _reap_lane_group(process, name, identity)
+        except asyncio.CancelledError:
+            _note(f"[{name}] cleanup interrupted by repeated cancellation; NOT confirmed")
+            raise
+        try:
+            if drains:
+                for task in drains:
+                    task.cancel()
+                await asyncio.gather(*drains, return_exceptions=True)
+            if waiter is not None and not waiter.done():
+                waiter.cancel()
+                await asyncio.gather(waiter, return_exceptions=True)
+        except asyncio.CancelledError:
+            pass
+        raise
+    finally:
+        handle = identity.get("handle")
+        if handle is not None:
+            try:
+                os.close(handle)
+            except OSError:
+                pass
 
 
 async def spawn_lane(lane: Lane) -> int:
+    # Production launches every lane through /bin/bash -e -c. The shell tuple
+    # is a single test seam: the regression suite swaps it for a real
+    # interpreter so the identical spawn → supervise → reap chain exercises
+    # real child processes on platforms without bash; Linux production bytes
+    # and behavior are unchanged.
     try:
         process = await asyncio.create_subprocess_exec(
-            "/bin/bash",
-            "-e",
-            "-c",
+            *_LANE_SHELL,
             lane.command,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
@@ -317,23 +667,7 @@ async def spawn_lane(lane: Lane) -> int:
     except OSError as error:
         print(f"[{lane.name}] spawn failed: {error}", file=sys.stderr)
         return 127
-    outputs = [
-        asyncio.create_task(_drain(process.stdout, sys.stdout, lane.name)),
-        asyncio.create_task(_drain(process.stderr, sys.stderr, lane.name)),
-    ]
-    try:
-        code = await process.wait()
-    except asyncio.CancelledError:
-        await _reap_lane_group(process, lane.name)
-        await asyncio.gather(*outputs, return_exceptions=True)
-        raise
-    drained = await asyncio.gather(*outputs, return_exceptions=True)
-    failures = [item for item in drained if isinstance(item, BaseException)]
-    if failures:
-        for item in failures:
-            print(f"[{lane.name}] output drain failure: {item!r}", file=sys.stderr)
-        return 1
-    return 0 if code == 0 else (code if code is not None else 1)
+    return await _supervise(process, lane.name)
 
 
 async def _run_orchestrator() -> dict:
@@ -357,7 +691,7 @@ def main() -> int:
     try:
         result = asyncio.run(_run_orchestrator())
     except asyncio.CancelledError:
-        print("quality pipeline cancelled; lanes settled and own process groups reaped")
+        print("quality pipeline cancelled; lanes settled (cleanup outcomes recorded via notes)")
         return 130
     for name, value in result["states"].items():
         print(f"quality lane {name}: {value}")
