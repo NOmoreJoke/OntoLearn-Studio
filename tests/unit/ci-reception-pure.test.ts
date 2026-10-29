@@ -148,6 +148,19 @@ describe('receiveCiFinalState（W04/W05 全阻断矩阵）', () => {
     expect(result.status).toBe('fail')
     expect(result.errors.join('\n')).toContain('bootstrap')
   })
+  it('workflow_dispatch fail-closed unknown 报告被拒绝（no-trusted-dispatch-baseline）', () => {
+    const input = goodInput()
+    input.report = {
+      schemaVersion: 1,
+      status: 'unknown',
+      mode: 'report_only',
+      event: 'workflow_dispatch',
+      reason: 'no-trusted-dispatch-baseline',
+    }
+    const result = receiveCiFinalState(input)
+    expect(result.status).toBe('fail')
+    expect(result.errors.join('\n')).toContain('不是 pass')
+  })
   it('needs_triage 未闭合被拒绝', () => {
     const input = goodInput()
     input.report = goodReport({

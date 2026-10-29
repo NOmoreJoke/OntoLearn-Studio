@@ -84,7 +84,12 @@ export function receiveCiFinalState({
 
   // ---- 候选报告自身必须机械干净（W04）----
   push('report-status', 'pass', report.status, report.status === 'pass')
-  if (report.status !== 'pass') errors.push('候选报告不是 pass，终态接收无意义')
+  if (report.status !== 'pass') {
+    // 非 pass 报告（含 fail-closed 的 unknown/no-trusted-*-baseline）立即拒绝；
+    // 此类报告没有 ci/身份字段，继续解析只会崩溃或产生误导性结论。
+    errors.push(`候选报告不是 pass（${report.status}），终态接收无意义`)
+    return { status: 'fail', errors, checks }
+  }
   if (report.bootstrap?.untrusted === true) {
     push('report-bootstrap', 'trusted', 'untrusted_bootstrap', false)
     errors.push('不可信 bootstrap 报告不能作为新 gate 终态通过（须先建立可信基线）')

@@ -167,6 +167,28 @@ jobs:
           EVENT_FILE: ${{ github.event_path }}
         run: |
           set -euo pipefail
+          emit_no_trusted_baseline() {
+            reason="$1"
+            event="$2"
+            mkdir -p build/verify-candidate
+            node -e '
+              const fs = require("fs")
+              const report = {
+                schemaVersion: 1,
+                status: "unknown",
+                mode: "report_only",
+                event: process.argv[1],
+                reason: process.argv[2],
+                note: "未建立已核目标基线绑定：不执行可信 base 校验、不运行可信校验器；本报告不可作为放行依据（终态接收将拒绝 unknown）",
+              }
+              fs.writeFileSync(
+                "build/verify-candidate/report.json",
+                JSON.stringify(report, null, 2) + "\n",
+              )
+            ' "$event" "$reason"
+            echo "::error::verify-candidate fail-closed：${reason}（事件 ${event}），仅生成 unknown 报告，未运行可信校验器"
+            exit 1
+          }
           event="${GITHUB_EVENT_NAME:-local}"
           checkout_sha="${GITHUB_SHA}"
           expect_args=()
@@ -180,12 +202,16 @@ jobs:
           elif [ "$event" = "push" ]; then
             base="$(node -e "const e=JSON.parse(require('fs').readFileSync(process.env.EVENT_FILE,'utf8'));process.stdout.write(e.before ?? '')")"
             if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$base" 2>/dev/null; then
-              base="$(git rev-parse "${checkout_sha}^")"
+              # before 缺失/不可达（force-push 等）时无法建立可信基线绑定；
+              # 父提交不被自动升级为可信 base，fail-closed。
+              emit_no_trusted_baseline "no-trusted-push-baseline" "$event"
             fi
             head="$checkout_sha"
           else
-            base="$(git rev-parse "${checkout_sha}^")"
-            head="$checkout_sha"
+            # workflow_dispatch：无法建立目标分支/审批基线的真实绑定（任意输入
+            # SHA 或 feature 父提交都不构成已核可信 base）。fail-closed：不运行
+            # 可信校验器，仅产出 unknown 报告并以失败退出，防止被当作可信 Pass。
+            emit_no_trusted_baseline "no-trusted-dispatch-baseline" "$event"
           fi
           echo "verify-candidate identities: event=$event base=$base head=$head checkout=$checkout_sha"
           mkdir -p build/verify-candidate build/trusted-verifier/scripts/lib
