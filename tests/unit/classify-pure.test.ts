@@ -483,7 +483,12 @@ describe('候选级组合与人工决策（W07/W09）', () => {
   })
   it('path-hint L2 可被可信决策降级（非核心例外可达，W09）', () => {
     const engine = change({ path: 'packages/engine/src/ontolearn_engine/query.py' })
-    let classification = applyTriageDecisions(classifyCandidate([engine], plainCtx), [], [engine], plainCtx)
+    let classification = applyTriageDecisions(
+      classifyCandidate([engine], plainCtx),
+      [],
+      [engine],
+      plainCtx,
+    )
     expect(classification.level).toBe('L2')
     classification = applyTriageDecisions(
       classification,
@@ -502,7 +507,12 @@ describe('候选级组合与人工决策（W07/W09）', () => {
   })
   it('semantic-proof L2 拒绝决策降级', () => {
     const csp = change({ path: 'apps/desktop/src/csp.ts' })
-    let classification = applyTriageDecisions(classifyCandidate([csp], plainCtx), [], [csp], plainCtx)
+    let classification = applyTriageDecisions(
+      classifyCandidate([csp], plainCtx),
+      [],
+      [csp],
+      plainCtx,
+    )
     classification = applyTriageDecisions(
       classification,
       [{ paths: ['apps/desktop/src/csp.ts'], level: 'L1', reason: '试图降级' }],
