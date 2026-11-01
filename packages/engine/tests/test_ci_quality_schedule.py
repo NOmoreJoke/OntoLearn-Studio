@@ -17,6 +17,7 @@ import asyncio
 import importlib.util
 import io
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -46,8 +47,10 @@ def python_lane_shell(monkeypatch):
     shell seam so the identical spawn_lane → _supervise → reap chain runs a
     REAL interpreter child on every platform (no bash required, nothing
     mocked). Linux production keeps /bin/bash and is exercised additionally
-    on POSIX inside the tests; the group/session surface is asserted wherever
-    the OS actually exposes it, never by skipping the test."""
+    on POSIX inside the tests. Portable DIRECT-CHILD supervision is asserted
+    on every platform; POSIX process-group/zombie scenarios carry their own
+    explicit per-test platform premise because Windows exposes no
+    killpg/getpgid/getsid and no unreaped-zombie observation."""
     monkeypatch.setattr(scheduler, "_LANE_SHELL", (sys.executable, "-c"))
 
 
@@ -688,6 +691,18 @@ def test_production_entry_settles_a_drain_failure(python_lane_shell):
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: the pinned-window killpg cleanup must "
+        "close a TERM-ignoring same-group descendant holding the lane pipes "
+        "after the leader exits unreaped; Windows has no killpg/getpgid/"
+        "getsid and no unreaped-zombie observation (production owns only the "
+        "direct child's native handle - that contract is covered by "
+        "test_supervise_cancellation_kills_the_owned_direct_child and "
+        "test_failed_reap_never_reports_closed_or_reaped)"
+    ),
+)
 def test_production_entry_closes_the_group_when_the_leader_exits_first(
     tmp_path, capsys, python_lane_shell
 ):
@@ -721,6 +736,17 @@ def test_production_entry_closes_the_group_when_the_leader_exits_first(
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: group TERM/KILL must close BOTH the "
+        "leader and the same-group holder (asserted together) under getsid "
+        "session isolation; Windows has no killpg/getpgid/getsid and no "
+        "unreaped-zombie observation (production owns only the direct "
+        "child's native handle - the Windows cancellation contract is "
+        "covered by test_supervise_cancellation_kills_the_owned_direct_child)"
+    ),
+)
 def test_production_entry_cancellation_closes_the_owned_children(
     tmp_path, capsys, python_lane_shell
 ):
@@ -781,6 +807,17 @@ def test_production_entry_cancellation_closes_the_owned_children(
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: an unreaped-zombie identity anchor "
+        "with late data from a same-group descendant through the inherited "
+        "pipes, settled by the pinned-window group cleanup; Windows has no "
+        "killpg/getpgid/getsid and no unreaped-zombie observation (the "
+        "direct-child drain-failure settlement is covered by "
+        "test_supervise_observes_a_stdout_drain_failure_and_reaps_the_lane)"
+    ),
+)
 def test_supervise_settles_a_tail_drain_failure_after_the_leader_exits():
     # Fixed ordering for the tail-window gap: the leader's exit is OBSERVED
     # (zombie, unreaped — the identity anchor holds) when the stdout target
@@ -825,6 +862,17 @@ def test_supervise_settles_a_tail_drain_failure_after_the_leader_exits():
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: tail-collection cancellation must be "
+        "preceded by the pinned-window group cleanup closing the holder, "
+        "with the os.getpgid identity anchor; Windows has no killpg/"
+        "getpgid/getsid and no unreaped-zombie observation (the direct-child "
+        "cancellation settlement is covered by "
+        "test_supervise_cancellation_kills_the_owned_direct_child)"
+    ),
+)
 def test_supervise_cancellation_during_tail_collection_settles_the_group():
     # Fixed ordering with a REAL handshake for the tail-cancellation gap:
     # (1) the TERM-ignoring holder is provably started (its pid arrives over
@@ -888,19 +936,37 @@ def test_supervise_cancellation_during_tail_collection_settles_the_group():
 def test_observation_failure_is_reported_as_unknown_not_gone(monkeypatch):
     # Controlled observation failure: a /proc or ps query that fails must not
     # be interpreted as an empty group, and must surface as an unknown
-    # cleanup outcome rather than a silent success or an exception.
+    # cleanup outcome rather than a silent success or an exception. The
+    # POSIX group branch is selected on EVERY platform by a test-local os
+    # proxy carrying a fake killpg (the real global os has no killpg
+    # attribute to patch on Windows); the fake only records and never sends
+    # a real signal to the fictional pid. A wait that simulates a successful
+    # reap sets its own returncode honestly.
+    delivered: list[str] = []
     monkeypatch.setattr(scheduler, "_own_group_members", lambda pgid: None)
+    monkeypatch.setattr(
+        scheduler,
+        "os",
+        type(
+            "KillpgOS",
+            (),
+            {"killpg": staticmethod(lambda pgid, sig: delivered.append("killpg"))},
+        ),
+    )
 
     class FakePopen:
-        pid = 424242
-        returncode = None
+        def __init__(self):
+            self.pid = 424242
+            self.returncode = None
 
         def wait(self, timeout=None):
+            self.returncode = 0
             return 0
 
     state = {"reaped": False, "code_known": False, "reap_attempted": False}
     outcome = asyncio.run(scheduler._close_lane_group(FakePopen(), "t-obs", state))
     assert outcome == "unknown"
+    assert state["reaped"] is True  # the simulated successful reap is real in the fake
 
 
 def test_failed_reap_never_reports_closed_or_reaped(monkeypatch):
@@ -949,15 +1015,37 @@ def test_pinned_window_signals_the_group_but_refused_after_reap(monkeypatch):
     #   (b) RELEASED: state['reaped'] is True — the pid may already be
     #       recycled, so cleanup refuses every signal and reports NOT
     #       confirmed; a same-number new group is never signaled.
+    # The POSIX group branch is selected on EVERY platform by test-local
+    # proxies: the os proxy carries a fake killpg (the real global os has no
+    # killpg attribute to patch on Windows) and the signal proxy provides
+    # BOTH TERM and KILL (the real signal module lacks SIGKILL on Windows,
+    # so getattr on it would silently drop the second round). Deliveries are
+    # only recorded — never a real signal to the fictional pid. A wait that
+    # simulates a successful reap sets its own returncode honestly.
     delivered: list[str] = []
-    monkeypatch.setattr(scheduler.os, "killpg", lambda pgid, sig: delivered.append("killpg"))
+    monkeypatch.setattr(
+        scheduler,
+        "os",
+        type(
+            "KillpgOS",
+            (),
+            {"killpg": staticmethod(lambda pgid, sig: delivered.append("killpg"))},
+        ),
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "signal",
+        type("ControlSignals", (), {"SIGTERM": signal.SIGTERM, "SIGKILL": 9}),
+    )
     monkeypatch.setattr(scheduler, "_own_group_members", lambda pgid: [pgid, 4243])
 
     class FakePopen:
-        pid = 424242
-        returncode = None
+        def __init__(self):
+            self.pid = 424242
+            self.returncode = None
 
         def wait(self, timeout=None):
+            self.returncode = 0
             return 0
 
     outcome_a = asyncio.run(
