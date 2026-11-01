@@ -2,7 +2,13 @@
  * These are presentation types, not a second wire validator or source authority.
  * T01 supplies the actual DesktopBridge; this module never exposes generic IPC.
  */
-import type { BridgeResult, JobView, ProjectView, TaskUpdate } from '@ontolearn/contracts'
+import type {
+  BridgeResult,
+  JobView,
+  MainlineProjectBridge,
+  ProjectView,
+  TaskUpdate,
+} from '@ontolearn/contracts'
 import type { RdfRow } from './view-model'
 
 /** Exact API003 phase1 presentation shape, not an independent public validator. */
@@ -136,6 +142,7 @@ export type DraftSaveArgs = {
   contentJson: string
 }
 export interface OntologyMainlineBridge {
+  getOwnershipConflictDetailPage: MainlineProjectBridge['getOwnershipConflictDetailPage']
   saveProjectDraft(args: DraftSaveArgs): Promise<
     BridgeResult<{
       draftSaveVersion: 1

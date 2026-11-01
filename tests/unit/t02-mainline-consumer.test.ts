@@ -96,6 +96,7 @@ function harness() {
   let listener: ((update: MainlineTaskUpdate) => void) | undefined
   const release = vi.fn()
   const bridge: OntologyMainlineBridge = {
+    getOwnershipConflictDetailPage: vi.fn(async () => failed()),
     saveProjectDraft: vi.fn(async (args) => {
       const contentHash = hash(new TextEncoder().encode(args.contentJson))
       read = {
@@ -265,6 +266,104 @@ function harness() {
     },
   }
 }
+
+describe('T02 ownership conflict error handling (unit only)', () => {
+  it('keeps a controlled ownership conflict actionable and permits the next valid preview', async () => {
+    const h = harness()
+    await h.session.read()
+    const before = structuredClone(h.session.getSnapshot().source)
+    const detailRef = crypto.randomUUID()
+    const plan = { edits: { ['f'.repeat(64)]: '"changed value"' } }
+    const originalPlan = structuredClone(plan)
+    vi.mocked(h.bridge.previewProjectChangeset).mockResolvedValueOnce({
+      ok: false,
+      error: {
+        code: 'OWNERSHIP_CONFLICT',
+        messageKey: 'project.ownershipConflict',
+        params: { detailRef },
+        retryable: false,
+      },
+    })
+
+    await h.session.prepare(plan)
+
+    const rejected = h.session.getSnapshot()
+    expect(rejected.error).toBe('OWNERSHIP_CONFLICT')
+    expect(rejected.phase).toBe('idle')
+    expect(rejected.stale).toBe(false)
+    expect(rejected.source).toEqual(before)
+    expect(rejected.prepared).toBeUndefined()
+    expect(rejected.pending).toBeUndefined()
+    expect(rejected.receipt).toBeUndefined()
+    expect(plan).toEqual(originalPlan)
+    expect(JSON.stringify(rejected)).not.toContain(detailRef)
+    expect(JSON.stringify(rejected)).not.toContain('project.ownershipConflict')
+    expect(h.bridge.getProjectDiffPage).not.toHaveBeenCalled()
+    expect(h.bridge.confirmProjectChangeset).not.toHaveBeenCalled()
+    expect(h.bridge.saveProjectDraft).not.toHaveBeenCalled()
+    expect(h.bridge.commitProjectChangeSet).not.toHaveBeenCalled()
+
+    await h.session.prepare(plan)
+
+    expect(h.bridge.previewProjectChangeset).toHaveBeenCalledTimes(2)
+    expect(h.bridge.previewProjectChangeset).toHaveBeenLastCalledWith({
+      baseRevision: before!.domain.projectRevision,
+      intent: 'change',
+      plan: originalPlan,
+    })
+    expect(h.session.getSnapshot().phase).toBe('ready')
+    expect(h.session.getSnapshot().error).toBeUndefined()
+    expect(h.session.getSnapshot().prepared?.rows).toEqual([
+      { kind: '事实变化', before: '泵站A', after: '泵站B' },
+    ])
+    expect(h.session.getSnapshot().source).toEqual(before)
+    expect(h.bridge.commitProjectChangeSet).not.toHaveBeenCalled()
+    h.session.dispose()
+  })
+
+  it.each(['unknown-code', 'thrown-error'] as const)(
+    'does not expose untrusted preview %s or its private payload',
+    async (kind) => {
+      const h = harness()
+      await h.session.read()
+      const before = structuredClone(h.session.getSnapshot().source)
+      const secret = 'private-value-not-for-display'
+      // Adversarial bridge/exception injection, not a valid engine error fixture.
+      if (kind === 'unknown-code')
+        vi.mocked(h.bridge.previewProjectChangeset).mockResolvedValueOnce({
+          ok: false,
+          error: {
+            code: `OWNERSHIP_CONFLICT:${secret}`,
+            messageKey: secret,
+            params: { privateValue: secret },
+            retryable: false,
+          },
+        })
+      else
+        vi.mocked(h.bridge.previewProjectChangeset).mockRejectedValueOnce(
+          new Error(`OWNERSHIP_CONFLICT:${secret}`),
+        )
+
+      await h.session.prepare({ edits: { ['f'.repeat(64)]: '"changed value"' } })
+
+      expect(h.session.getSnapshot().error).toBe('INTERNAL_ERROR')
+      expect(JSON.stringify(h.session.getSnapshot())).not.toContain(secret)
+      expect(h.session.getSnapshot().source).toEqual(before)
+      expect(h.session.getSnapshot().prepared).toBeUndefined()
+      expect(h.session.getSnapshot().pending).toBeUndefined()
+      expect(h.bridge.confirmProjectChangeset).not.toHaveBeenCalled()
+      expect(h.bridge.saveProjectDraft).not.toHaveBeenCalled()
+      expect(h.bridge.commitProjectChangeSet).not.toHaveBeenCalled()
+
+      await h.session.prepare({ edits: { ['f'.repeat(64)]: '"changed value"' } })
+
+      expect(h.session.getSnapshot().phase).toBe('ready')
+      expect(h.session.getSnapshot().error).toBeUndefined()
+      expect(h.session.getSnapshot().source).toEqual(before)
+      h.session.dispose()
+    },
+  )
+})
 
 describe('T02 actual named API consumer state (unit only)', () => {
   it('requires complete Diff and explicit confirmation, queued is not saved, then reconciles', async () => {
@@ -1428,25 +1527,183 @@ describe('T02 fact plan retains source records', () => {
     read.domain.state.facts[0]!.object = null
     expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow('FACT_NOT_FOUND')
   })
-  it('new assertions use one fresh record ID without copying managed records', () => {
+  it.each([
+    ['edit', 'f'.repeat(64)],
+    ['remove', 'f'.repeat(64)],
+    ['edit', 'a'.repeat(64)],
+    ['remove', 'a'.repeat(64)],
+  ] as const)(
+    'handles multi-value manual %s of record %s without touching sibling supports',
+    (action, id) => {
+      const read = source()
+      read.domain.state.facts.push(
+        { ...read.domain.state.facts[0]!, id: 'a'.repeat(64), object: '"second"@en' },
+        {
+          ...read.domain.state.facts[0]!,
+          id: 'b'.repeat(64),
+          object: null,
+          owner: 'retired-mapping',
+          source_row: 'old-row',
+          managed_value: '"old"',
+        },
+      )
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'c'.repeat(64),
+        predicate: 'urn:other',
+        object: '"managed"@en',
+        owner: 'another-mapping',
+        source_row: 'row-other',
+        managed_value: '"managed"@en',
+      })
+      read.domain.state.definitions[0]!.payload = JSON.stringify({
+        triples: [
+          {
+            subject: 'urn:OtherClass',
+            predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+            object: '<http://www.w3.org/2000/01/rdf-schema#Class>',
+          },
+        ],
+        references: [],
+        entityMetadata: {
+          entityMetadataVersion: 1,
+          entities: {
+            'urn:OtherClass': {
+              identifier: 'OtherClass',
+              labels: [],
+              definitions: [],
+              synonyms: [' 原文 '],
+              examples: ['示例\n第二行'],
+            },
+          },
+        },
+        legacyOpaque: { retained: ['原内容', 7] },
+      })
+      read.domain.state.mappingState = { original: { keep: ['opaque', 7] } }
+      const before = structuredClone(read)
+      const plan = manualFactPlan(read, action, id, '"changed"@zh')
+      expect(plan).toEqual(
+        action === 'edit' ? { edits: { [id]: '"changed"@zh' } } : { remove: [id] },
+      )
+      expect(read).toEqual(before)
+    },
+  )
+  it.each([
+    ['"value"', '"value"^^<http://www.w3.org/2001/XMLSchema#string>'],
+    ['"value"@zh', '"value"@en'],
+    [
+      '"01"^^<http://www.w3.org/2001/XMLSchema#integer>',
+      '"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+    ],
+  ])('does not collapse distinct RDF spelling %s / %s when editing one ID', (first, second) => {
+    const read = source()
+    read.domain.state.facts[0]!.object = first!
+    read.domain.state.facts.push({
+      ...read.domain.state.facts[0]!,
+      id: 'a'.repeat(64),
+      object: second!,
+    })
+    const before = structuredClone(read)
+    expect(manualFactPlan(read, 'edit', 'f'.repeat(64), '"replacement"')).toEqual({
+      edits: { ['f'.repeat(64)]: '"replacement"' },
+    })
+    expect(read).toEqual(before) // Planner does not canonicalize lexical/datatype/language.
+  })
+  it.each(['owner', 'source_row', 'managed_value'] as const)(
+    'keeps selected-record and same-slot mapped %s conflicts fenced',
+    (field) => {
+      const read = source()
+      read.domain.state.facts[0]![field] = 'mapped'
+      expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow(
+        'MANAGED_FACT_REQUIRES_OWNER',
+      )
+      read.domain.state.facts[0]![field] = null
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'a'.repeat(64),
+        object: '"different"',
+        [field]: 'mapped',
+      })
+      const before = structuredClone(read)
+      for (const action of ['edit', 'remove'] as const)
+        expect(() => manualFactPlan(read, action, 'f'.repeat(64), '"new"')).toThrow(
+          'AMBIGUOUS_FACT_SUPPORT',
+        )
+      expect(read).toEqual(before)
+    },
+  )
+  it.each(['original', 'replacement'] as const)(
+    'refuses exact %s support from a second manual record',
+    (overlap) => {
+      const read = source()
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'a'.repeat(64),
+        object: overlap === 'original' ? '"泵站A"@zh' : '"new"',
+      })
+      const before = structuredClone(read)
+      expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow(
+        'AMBIGUOUS_FACT_SUPPORT',
+      )
+      if (overlap === 'original')
+        expect(() => manualFactPlan(read, 'remove', 'f'.repeat(64), '')).toThrow(
+          'AMBIGUOUS_FACT_SUPPORT',
+        )
+      expect(read).toEqual(before)
+    },
+  )
+  it.each(['original', 'replacement'] as const)(
+    'keeps exact %s definition overlap fenced in a multi-value manual slot',
+    (overlap) => {
+      const read = source()
+      read.domain.state.facts.push({
+        ...read.domain.state.facts[0]!,
+        id: 'a'.repeat(64),
+        object: '"second"@en',
+      })
+      read.domain.state.definitions[0]!.payload = JSON.stringify({
+        triples: [
+          {
+            subject: 'urn:001',
+            predicate: 'urn:name',
+            object: overlap === 'original' ? '"泵站A"@zh' : '"new"',
+          },
+        ],
+      })
+      const before = structuredClone(read)
+      expect(() => manualFactPlan(read, 'edit', 'f'.repeat(64), '"new"')).toThrow(
+        'AMBIGUOUS_FACT_SUPPORT',
+      )
+      if (overlap === 'original')
+        expect(() => manualFactPlan(read, 'remove', 'f'.repeat(64), '')).toThrow(
+          'AMBIGUOUS_FACT_SUPPORT',
+        )
+      else
+        expect(manualFactPlan(read, 'remove', 'f'.repeat(64), '')).toEqual({
+          remove: ['f'.repeat(64)],
+        })
+      expect(read).toEqual(before)
+    },
+  )
+  it('new assertions use the Store content ID without copying managed records', async () => {
     const read = source()
     const before = structuredClone(read)
-    const plan = newManualFactPlan(read, {
+    const plan = await newManualFactPlan(read, {
       subject: 'urn:002',
       predicate: 'urn:name',
       object: '"new"',
     })
     expect(plan.manual).toEqual([
       {
-        id: expect.stringMatching(/^[a-f0-9]{64}$/),
+        id: '979e31c274423dbe08c091a4ad25f11d7cb9b19e0a9ceb34f57eab6958ce4dbb',
         subject: 'urn:002',
         predicate: 'urn:name',
         object: '"new"',
       },
     ])
     expect(read).toEqual(before)
-    expect(() =>
+    await expect(
       newManualFactPlan(read, { subject: 'urn:001', predicate: 'urn:name', object: '"泵站A"@zh' }),
-    ).toThrow('FACT_ALREADY_EXISTS')
+    ).rejects.toThrow('FACT_ALREADY_EXISTS')
   })
 })

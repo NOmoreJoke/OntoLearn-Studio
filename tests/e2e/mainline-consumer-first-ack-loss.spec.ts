@@ -7,6 +7,14 @@ import type {
   QueryExecutionReceiptDTO,
 } from '@ontolearn/contracts'
 import { launchIsolatedDesktop } from './isolated-desktop'
+import {
+  observeUI,
+  receiptHasOperation,
+  reconciliationReady,
+  updateObservationSlot,
+  validObservation,
+  type UISnapshot,
+} from './ui-observation'
 
 const key = '__t01_owned_first_consumer_ack_loss_v1'
 const commitChannel = 'project:changeset-commit'
@@ -259,9 +267,20 @@ test('actual ontology consumer reconciles first lost commit ACK without another 
   let instrumented = false
   const evidence: Record<string, unknown> = {}
   let stage = 'launch'
+  const observed = (value: unknown) => {
+    evidence.lastCompletedObservation = JSON.parse(
+      updateObservationSlot(test.info().annotations, 'first-ack-loss', stage, {
+        operationId: evidence.operationId,
+        jobId: evidence.jobId,
+        value,
+      }),
+    )
+  }
   try {
     const page = await application.firstWindow()
     const initial = await create(page, false)
+    evidence.initial = initial
+    observed({ projectId: initial.projectId, inputSnapshotId: initial.inputSnapshotId })
     expect(initial.domain.projectRevision).toBe(0)
     expect(initial.domain.state).toEqual({ definitions: [], facts: [], mappingState: {} })
     expect(await allJobs(page, initial.projectId)).toEqual([])
@@ -279,6 +298,8 @@ test('actual ontology consumer reconciles first lost commit ACK without another 
     const diff = panel.getByRole('region', { name: '完整事务差异', exact: true })
     await expect(diff).toBeVisible()
     const document: unknown = JSON.parse((await diff.locator('pre').textContent()) ?? 'null')
+    evidence.fullDiff = document
+    observed({ completeDiff: document })
     expect(document).toHaveLength(1)
     const home = (document as Array<{ resource: unknown[] }>)[0]?.resource[2]
     expect(home).toEqual(expect.stringMatching(/^t02-[0-9a-f-]{36}$/))
@@ -320,6 +341,7 @@ test('actual ontology consumer reconciles first lost commit ACK without another 
     await diff.getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }).click()
     await expect.poll(async () => (await inspect(application)).dropped).toBe(true)
     const lost = await inspect(application)
+    evidence.firstDroppedDelivery = lost
     expect(lost.targetOrdinalAtDrop).toBe(1)
     expect(lost.lostAckCalls).toBe(0)
     expect(lost.commitCalls).toBe(1)
@@ -330,6 +352,9 @@ test('actual ontology consumer reconciles first lost commit ACK without another 
     expect(typeof operationId).toBe('string')
     if (typeof operationId !== 'string') throw new Error('Original operation missing')
     expect(operationId).toMatch(uuid)
+    evidence.operationId = operationId
+    evidence.jobId = accepted.jobId
+    observed({ operationId, accepted })
     expect(accepted).toMatchObject({
       projectId: initial.projectId,
       operationId,
@@ -362,28 +387,67 @@ test('actual ontology consumer reconciles first lost commit ACK without another 
       ).toBeEnabled()
     }
     stage = 'real UI reads original operation and complete Job; no commit replay'
+    const reconcile = pending.getByRole('button', { name: '核对原操作与提交回执', exact: true })
+    const reconciliation = () =>
+      observeUI(
+        receipt.or(reconcile),
+        [
+          { key: 'receipt', kind: 'region', name: '已提交回执' },
+          { key: 'reconcile', kind: 'button', name: '核对原操作与提交回执' },
+        ],
+        observed,
+      )
     let reads = 0
     await expect
-      .poll(async () => {
-        if ((await receipt.count()) && (await receipt.textContent())?.includes(operationId))
-          return true
-        if (++reads > 12) throw new Error('Bounded original-operation UI reconciliation exhausted')
-        const reconcile = pending.getByRole('button', { name: '核对原操作与提交回执', exact: true })
-        await expect(reconcile).toBeEnabled()
-        await reconcile.click()
-        await expect
-          .poll(async () => (await receipt.count()) > 0 || (await reconcile.isEnabled()))
-          .toBe(true)
-        return !!(await receipt.count()) && !!(await receipt.textContent())?.includes(operationId)
-      })
+      .poll(
+        async () => {
+          // A disconnected node means this round produced no valid snapshot:
+          // re-observe fresh nodes inside this poll's original deadline,
+          // without spending a read, clicking, or recording completion.
+          const beforeClick = await validObservation(reconciliation)
+          if (beforeClick === undefined) return false
+          if (receiptHasOperation(beforeClick, operationId)) return true
+          if (++reads > 12)
+            throw new Error('Bounded original-operation UI reconciliation exhausted')
+          await expect(reconcile).toBeEnabled()
+          await reconcile.click()
+          let completed: UISnapshot = {}
+          await expect
+            .poll(
+              async () => {
+                // Inner waits never re-click or re-submit; a disconnected
+                // round only re-observes within the original 100ms/5000ms
+                // window and leaves the previous completed slot untouched.
+                const observedNow = await validObservation(reconciliation)
+                if (observedNow === undefined) return false
+                completed = observedNow
+                return reconciliationReady(completed)
+              },
+              { intervals: [100], timeout: 5000 },
+            )
+            .toBe(true)
+          return receiptHasOperation(completed, operationId)
+        },
+        { timeout: 5000 },
+      )
       .toBe(true)
     await expect(receipt).toContainText('当前已读版本 1。')
     await expect(panel.getByRole('button', { name: '读取当前项目', exact: true })).toBeEnabled()
     const marker = data(
       await page.evaluate((id) => window.ontolearn!.getOperation(id), operationId),
     )
+    evidence.marker = marker
+    observed({ marker })
     const job = data(await page.evaluate((id) => window.ontolearn!.getJob(id), accepted.jobId))
+    evidence.job = job
+    observed({ marker, job })
     const after = await read(page)
+    evidence.after = after
+    observed({
+      projectId: after.projectId,
+      projectRevision: after.domain.projectRevision,
+      inputSnapshotId: after.inputSnapshotId,
+    })
     expect(marker).toEqual({
       projectId: initial.projectId,
       operationId,

@@ -176,6 +176,19 @@ def text_page(store, params, limits, ticket):
         )
         if start < len(encoded) and encoded[start] & 0xC0 == 0x80:
             fault("INVALID_STATE")
+        # Candidate encoders may exhaust the original book. Reserve the same
+        # final encoder once before that search, then consume only this local
+        # prepayment; no fee is refunded or borrowed from another reply.
+        final_fees = (
+            4 * limits["maxPageBytes"] + 4096,
+            256,
+            8 * limits["maxPageBytes"] + 4096,
+        )
+        ticket.pay(
+            "text final prepaid", bytes_=final_fees[0], objects=final_fees[1], work=final_fees[2]
+        )
+        ticket.check(store)
+        final = _RowsPrepaid(store, ticket, final_fees)
         maximum = min(len(encoded), start + size)
         ticket.pay(
             "text bounded search",
@@ -223,7 +236,11 @@ def text_page(store, params, limits, ticket):
             result["nextCursor"] = store._new_cursor(
                 "query-text-v1", binding, size, {"nextUtf8Byte": stop}
             )
-        _room(store, result, limits, ticket)
+        # Preserve the original budget's current-reply/unknown/generation check
+        # immediately before encoding, without charging this encoder twice.
+        ticket.pay("text final binding recheck")
+        _room(store, result, limits, final)
+        final.complete()
         _valid(store, "result_query.result.textPage", result)
         return ticket.deliver(result)
 
@@ -291,7 +308,7 @@ def typed_cell(raw, ticket):
 class _RowsPrepaid:
     """Local consumption of one successful original pay; never an authority/credit issuer.
 
-    Instances are created only below, immediately after that original pay and its
+    Instances are created only immediately after that original pay and its
     binding check. Exceptions leave all successful original fees held by its book.
     """
 

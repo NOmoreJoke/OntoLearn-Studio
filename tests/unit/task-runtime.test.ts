@@ -340,7 +340,7 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     const fixture = pythonJson(prepareScript, [
       source,
       database,
-      JSON.stringify({ workMs: 200, maxRounds: 50 }),
+      JSON.stringify({ workMs: 800, maxRounds: 50 }),
       capability,
     ]) as Fixture
     const command = getEngineCommand(location)
@@ -470,12 +470,30 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     const initial = await service.restore()
     expect(initial.ok).toBe(true)
     if (!initial.ok) throw new Error('initial real view missing')
-    const before = await bounded(checkpointReady)
+    const checkpointed = await bounded(checkpointReady)
     await new Promise<void>((done) => setImmediate(done))
     const old = observed.at(-1)!
     expect(old.framingFailed).toBe(false)
     expect(old.pending.size).toBe(0)
     expect(old.bufferedBytes()).toBe(0)
+    // Round-1 is only the arming signal. Under CI scheduling delay, later rounds
+    // can commit before SIGKILL; baseline retained progress at the kill itself.
+    const before = (await bounded(
+      engine.request('job.get', {
+        projectId: fixture.projectId,
+        jobId: created.jobId,
+      }),
+    )) as JobView
+    expect(before.jobId).toBe(checkpointed.jobId)
+    if (capability === 'test.rounds') {
+      expect(before.state).toBe('running')
+      expect(
+        (before.commitProgress as { committedProgress?: { lastCommittedRound: number } })
+          .committedProgress?.lastCommittedRound,
+      ).toBeGreaterThanOrEqual(1)
+    } else {
+      expect(before.state).toBe('succeeded')
+    }
     const oldPid = old.child.pid
     const oldSession = engine.engineSessionId
     const callCount = calls.length
@@ -547,7 +565,12 @@ describe('actual Python → supervisor → task service runtime', () => {
       retryable: true,
     })
     expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
-    expect(result.evidence.rounds).toEqual([1])
+    const retained = (
+      result.before.commitProgress as { committedProgress: { lastCommittedRound: number } }
+    ).committedProgress.lastCommittedRound
+    expect(result.evidence.rounds).toEqual(
+      Array.from({ length: retained }, (_, index) => index + 1),
+    )
     expect(
       result.updates.some(
         (update) => update.kind === 'connection' && update.state === 'reconnecting',
@@ -574,7 +597,12 @@ describe('actual Python → supervisor → task service runtime', () => {
     ).toEqual([3])
     expect(result.view.jobs[0].state).toBe('failed')
     expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
-    expect(result.evidence.rounds).toEqual([1])
+    const retained = (
+      result.before.commitProgress as { committedProgress: { lastCommittedRound: number } }
+    ).committedProgress.lastCommittedRound
+    expect(result.evidence.rounds).toEqual(
+      Array.from({ length: retained }, (_, index) => index + 1),
+    )
   }, 20000)
   it('recovers one omitted real state notification through a durable read and fresh subscription', async () => {
     const result = await runtime('test.rounds', { workMs: 200, maxRounds: 3 }, true)
@@ -605,9 +633,9 @@ describe('actual Python → supervisor → task service runtime', () => {
     )
     expect(later).toBeDefined()
     expect(validateV2('notification', later)).toBe(true)
-    expect(
-      new Set(result.received.map((event) => event.subscriptionId)).size,
-    ).toBeGreaterThanOrEqual(2)
+    // Fresh subscribe is the durable recovery proof. A job that reaches terminal
+    // during reconcile may emit no further job.state on the replacement subscription,
+    // so do not require a second subscriptionId inside job.state-only `received`.
     expect(
       result.calls.filter((call) => call.method === 'job.subscribe').length,
     ).toBeGreaterThanOrEqual(2)

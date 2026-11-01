@@ -5,12 +5,15 @@
 import { it, expect, vi } from 'vitest'
 import { ChildProcess } from 'node:child_process'
 import { createHash, randomUUID } from 'node:crypto'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   reassembleChangeSetDocument,
+  reassembleOwnershipDetail,
+  type DesktopBridge,
+  type OwnershipDetailPage,
   type BridgeResult,
   type ChangeSetPage,
   type JobView,
@@ -27,6 +30,11 @@ import {
 } from '../../apps/desktop/src/main/engine'
 import { TaskService } from '../../apps/desktop/src/main/task-service'
 import { ProjectMainlineService } from '../../apps/desktop/src/main/project-mainline-service'
+import {
+  registerDesktopIpc,
+  type DesktopIpcDependencies,
+} from '../../apps/desktop/src/main/desktop-ipc'
+import type { IpcMainInvokeEvent } from 'electron'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const location = {
@@ -36,6 +44,283 @@ const location = {
 }
 const queryText =
   'SELECT ?subject ?value WHERE { ?subject <urn:runtime:value> ?value } ORDER BY ?subject'
+
+it('actual preload/named IPC/service/stdio exposes four complete ownership families', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 't01-ownership-real-'))
+  const value = runtime(join(directory, 'owned.sqlite'))
+  type Handler = (event: IpcMainInvokeEvent, ...args: unknown[]) => Promise<unknown>
+  const handlers = new Map<string, Handler>()
+  const event = { sender: {}, senderFrame: {} } as IpcMainInvokeEvent
+  let bridge: DesktopBridge | undefined
+  const calls: Array<{ channel: string; args: unknown[]; reply?: unknown }> = []
+  const raw: string[] = [],
+    observed = new Set<ChildProcess>()
+  const watch = () => {
+    for (const child of ownedChildren(directory))
+      if (!observed.has(child)) {
+        observed.add(child)
+        value.children.add(child)
+        child.stdout?.on('data', (chunk: Buffer) => raw.push(chunk.toString('utf8')))
+      }
+  }
+  registerDesktopIpc({
+    ipcMain: {
+      handle: (channel: string, handler: Handler) => handlers.set(channel, handler),
+    } as DesktopIpcDependencies['ipcMain'],
+    trusted: (received) =>
+      received.sender === event.sender && received.senderFrame === event.senderFrame,
+    tasks: value.tasks,
+    projects: value.projects,
+    supervisor: value.supervisor,
+    replies: value.replies,
+  })
+  vi.doMock('electron', () => ({
+    contextBridge: {
+      exposeInMainWorld: (_: string, api: DesktopBridge) => {
+        bridge = api
+      },
+    },
+    ipcRenderer: {
+      invoke: async (channel: string, ...args: unknown[]) => {
+        const entry = { channel, args } as { channel: string; args: unknown[]; reply?: unknown }
+        calls.push(entry)
+        const pending = handlers.get(channel)!(event, ...args)
+        watch()
+        entry.reply = await pending
+        watch()
+        return entry.reply
+      },
+      on: () => {},
+      removeListener: () => {},
+    },
+  }))
+  const trace: unknown[] = []
+  let session: string | undefined
+  try {
+    await import('../../apps/desktop/src/preload/index')
+    const api = bridge!
+    const firstCreate = api.createBlankProject({
+      requestVersion: 1,
+      operationId: randomUUID(),
+      name: 'ownership first',
+      initialization: { kind: 'blank' },
+    })
+    await vi.waitFor(() => {
+      watch()
+      expect(observed.size).toBe(1)
+    })
+    const firstProject = data(await firstCreate).projectId
+    session = value.supervisor.engineSessionId
+    expect(session).toBeDefined()
+    for (const family of [
+      'reservedIdentity',
+      'sameStatement',
+      'singleSlot',
+      'singleDeclaration',
+      'large',
+    ] as const) {
+      const projectId =
+        family === 'reservedIdentity'
+          ? firstProject
+          : data(
+              await api.createBlankProject({
+                requestVersion: 1,
+                operationId: randomUUID(),
+                name: family,
+                initialization: { kind: 'blank' },
+              }),
+            ).projectId
+      data(await api.openProject({ projectId }))
+      const subject = 'urn:owned:' + (family === 'large' ? 'x'.repeat(40000) : family)
+      const predicate = 'urn:ownership:value'
+      const fact = (object: string) => ({
+        subject,
+        predicate,
+        object,
+        id: createHash('sha256')
+          .update(JSON.stringify([subject, predicate, object]))
+          .digest('hex'),
+      })
+      const entity = 'urn:owned:Entity'
+      const home = {
+        triples: [
+          {
+            subject: entity,
+            predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+            object: '<http://www.w3.org/2000/01/rdf-schema#Class>',
+          },
+        ],
+        references: [],
+        singleValuedPredicates: [] as string[],
+        entityMetadata: {
+          entityMetadataVersion: 1 as const,
+          entities: {
+            [entity]: {
+              identifier: 'Entity',
+              labels: [],
+              definitions: [],
+              synonyms: [],
+              examples: [],
+            },
+          },
+        },
+      }
+      let revision = 0
+      const commit = async (plan: MainlineChangePlanDTO) => {
+        const preview = data(
+          await api.previewProjectChangeset({ baseRevision: revision, intent: 'change', plan }),
+        )
+        expect(preview.status).toBe('ready')
+        if (preview.status !== 'ready') throw new Error('actual preview not ready')
+        const pages: ChangeSetPage[] = []
+        let cursor: string | null = null
+        while (true) {
+          const page: ChangeSetPage = data(
+            await api.getProjectDiffPage({
+              previewHash: preview.previewHash,
+              documentKind: 'diff',
+              pageSize: 1,
+              cursor,
+            }),
+          )
+          pages.push(page)
+          cursor = page.nextCursor
+          if (page.complete) break
+        }
+        await reassembleChangeSetDocument(preview, pages)
+        const confirmation = data(
+          await api.confirmProjectChangeset({
+            previewHash: preview.previewHash,
+            completionCursor: cursor!,
+          }),
+        )
+        const job = data(
+          await api.commitProjectChangeSet({ operationId: randomUUID(), confirmation }),
+        )
+        const deadline = Date.now() + 10000
+        let terminal = job
+        while (!['succeeded', 'failed', 'cancelled'].includes(terminal.state)) {
+          if (Date.now() > deadline) throw new Error('actual ownership job timeout')
+          await new Promise((done) => setTimeout(done, 10))
+          terminal = data(await api.getJob(job.jobId))
+        }
+        expect(terminal.state, JSON.stringify(terminal.error)).toBe('succeeded')
+        expect(data(await api.getOperation(job.operationId))).toMatchObject({ jobId: job.jobId })
+        revision++
+        return job
+      }
+      if (family === 'singleDeclaration') {
+        await commit({
+          definitions: [{ layer: 'ontology', id: 'home', value: home }],
+          manual: [fact('"A"'), fact('"B"')],
+        })
+      } else {
+        await commit({
+          manual: [fact('"A"')],
+          ...(family === 'singleSlot'
+            ? {
+                definitions: [
+                  {
+                    layer: 'ontology',
+                    id: 'home',
+                    value: { ...home, singleValuedPredicates: [predicate] },
+                  },
+                ],
+              }
+            : {}),
+        })
+        if (family !== 'singleSlot') await commit({ edits: { [fact('"A"').id]: '"B"' } })
+      }
+      const before = data(await api.readProject({ editor: 'ontology' }))
+      const plan: MainlineChangePlanDTO =
+        family === 'singleDeclaration'
+          ? {
+              definitions: [
+                {
+                  layer: 'ontology',
+                  id: 'home',
+                  value: { ...home, singleValuedPredicates: [predicate] },
+                },
+              ],
+            }
+          : {
+              manual: [fact(family === 'sameStatement' || family === 'singleSlot' ? '"B"' : '"A"')],
+            }
+      const refused = await api.previewProjectChangeset({
+        baseRevision: revision,
+        intent: 'change',
+        plan,
+      })
+      expect(refused.ok).toBe(false)
+      if (refused.ok || refused.error.code !== 'OWNERSHIP_CONFLICT')
+        throw new Error(JSON.stringify(refused))
+      const detailRef = String(refused.error.params.detailRef)
+      expect(Object.keys(refused.error.params)).toEqual(['detailRef'])
+      const pages: OwnershipDetailPage[] = []
+      let startOrdinal = 0,
+        documentHash: string | null = null
+      const selection = value.projects.source.current()
+      while (true) {
+        const page: OwnershipDetailPage = data(
+          await api.getOwnershipConflictDetailPage(
+            documentHash === null
+              ? { detailRef, documentHash: null, startOrdinal: 0, pageSize: 1 }
+              : { detailRef, documentHash, startOrdinal, pageSize: 1 },
+          ),
+        )
+        pages.push(page)
+        documentHash = page.manifest.documentHash
+        expect(value.projects.source.current()).toBe(selection)
+        if (page.complete) break
+        startOrdinal = page.nextOrdinal!
+      }
+      const document = await reassembleOwnershipDetail({ projectId, detailRef }, pages)
+      expect(document.reason).toBe(family === 'large' ? 'reservedIdentity' : family)
+      if (document.kind === 'manual-ownership-conflict') {
+        expect(document.existing.id).toBe(fact('"A"').id)
+        expect(document.existing.slot).toEqual({ subject, predicate })
+      } else {
+        expect(document.declaration).toEqual({ layer: 'ontology', id: 'home', predicate })
+        expect(document.existing.map((row) => row.id).sort()).toEqual(
+          [fact('"A"').id, fact('"B"').id].sort(),
+        )
+      }
+      if (family === 'large') expect(pages.length).toBeGreaterThan(1)
+      expect(data(await api.readProject({ editor: 'ontology' }))).toEqual(before)
+      if (family === 'singleDeclaration') {
+        await commit({ remove: [fact('"B"').id] })
+        await commit(plan)
+      } else await commit({ edits: { [fact('"A"').id]: '"C"' } })
+      const after = data(await api.readProject({ editor: 'ontology' }))
+      expect(after.domain.projectRevision).toBe(revision)
+      expect(value.supervisor.engineSessionId).toBe(session)
+      trace.push({ family, refused, pages, document, before, after })
+    }
+    expect(observed.size).toBe(1)
+    expect(value.replies.diagnostic()).toMatchObject({ slots: 0, offered: 0, unknown: 0 })
+  } finally {
+    await closeRuntime(value, directory)
+    const output = process.env.T01_OWNERSHIP_TRACE_DIRECTORY
+    if (output) {
+      await mkdir(output, { recursive: true })
+      await writeFile(
+        join(output, 'real-preload-stdio.json'),
+        JSON.stringify({
+          session,
+          calls,
+          trace,
+          wire: raw.join(''),
+          children: [...observed].map((c) => ({ exitCode: c.exitCode, signalCode: c.signalCode })),
+        }),
+      )
+    }
+    vi.doUnmock('electron')
+    await rm(directory, { recursive: true, force: true })
+  }
+  expect([...observed].every((child) => child.exitCode === 0 && child.signalCode === null)).toBe(
+    true,
+  )
+}, 60000)
 
 function data<T>(value: BridgeResult<T>): T {
   if (!value.ok) throw new Error(`Actual business RPC rejected: ${JSON.stringify(value.error)}`)

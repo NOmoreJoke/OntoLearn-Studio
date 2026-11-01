@@ -6874,6 +6874,31 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.ownership.detail"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.ownership.detail"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
         }
       ]
     },
@@ -8660,6 +8685,70 @@
             },
             "method": {
               "const": "project.draft.save"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.ownership.detail"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.ownership.detail"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.ownership.detail"
             },
             "ok": {
               "const": false
@@ -11355,6 +11444,442 @@
         "boundDomainRevision",
         "contentHash",
         "afterCheckpointRef"
+      ],
+      "additionalProperties": false
+    },
+    "ownershipDetailDocument": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "ownershipDetailVersion": {
+              "const": 1
+            },
+            "kind": {
+              "const": "manual-ownership-conflict"
+            },
+            "stage": {
+              "const": "preview"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "sourceBaseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "reason": {
+              "enum": ["reservedIdentity", "sameStatement", "singleSlot"]
+            },
+            "existing": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16777216
+                },
+                "owner": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16777216
+                    },
+                    {
+                      "const": null
+                    }
+                  ]
+                },
+                "sourceRow": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16777216
+                    },
+                    {
+                      "const": null
+                    }
+                  ]
+                },
+                "slot": {
+                  "type": "object",
+                  "properties": {
+                    "subject": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16777216
+                    },
+                    "predicate": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16777216
+                    }
+                  },
+                  "required": ["subject", "predicate"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["id", "owner", "sourceRow", "slot"],
+              "additionalProperties": false
+            },
+            "incoming": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/hash"
+                },
+                "owner": {
+                  "const": null
+                },
+                "sourceRow": {
+                  "const": null
+                },
+                "slot": {
+                  "type": "object",
+                  "properties": {
+                    "subject": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16777216
+                    },
+                    "predicate": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16777216
+                    }
+                  },
+                  "required": ["subject", "predicate"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["id", "owner", "sourceRow", "slot"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "ownershipDetailVersion",
+            "kind",
+            "stage",
+            "projectId",
+            "sourceBaseRevision",
+            "reason",
+            "existing",
+            "incoming"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ownershipDetailVersion": {
+              "const": 1
+            },
+            "stage": {
+              "const": "preview"
+            },
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "sourceBaseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "kind": {
+              "const": "single-declaration-conflict"
+            },
+            "reason": {
+              "const": "singleDeclaration"
+            },
+            "declaration": {
+              "type": "object",
+              "properties": {
+                "layer": {
+                  "const": "ontology"
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16777216
+                },
+                "predicate": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16777216
+                }
+              },
+              "required": ["layer", "id", "predicate"],
+              "additionalProperties": false
+            },
+            "slot": {
+              "type": "object",
+              "properties": {
+                "subject": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16777216
+                },
+                "predicate": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16777216
+                }
+              },
+              "required": ["subject", "predicate"],
+              "additionalProperties": false
+            },
+            "existing": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 16777216
+                  },
+                  "owner": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 16777216
+                      },
+                      {
+                        "const": null
+                      }
+                    ]
+                  },
+                  "sourceRow": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 16777216
+                      },
+                      {
+                        "const": null
+                      }
+                    ]
+                  }
+                },
+                "required": ["id", "owner", "sourceRow"],
+                "additionalProperties": false
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "ownershipDetailVersion",
+            "stage",
+            "projectId",
+            "sourceBaseRevision",
+            "kind",
+            "reason",
+            "declaration",
+            "slot",
+            "existing"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ownershipDetailManifest": {
+      "type": "object",
+      "properties": {
+        "documentKind": {
+          "const": "ownership-conflict"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "totalBytes": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 16777216
+        },
+        "segmentCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
+        }
+      },
+      "required": ["documentKind", "documentHash", "totalBytes", "segmentCount"],
+      "additionalProperties": false
+    },
+    "ownershipDetailHeader": {
+      "type": "object",
+      "properties": {
+        "ownershipDetailVersion": {
+          "const": 1
+        },
+        "kind": {
+          "enum": ["manual-ownership-conflict", "single-declaration-conflict"]
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "detailRef": {
+          "$ref": "#/$defs/id"
+        },
+        "origin": {
+          "type": "object",
+          "properties": {
+            "ownerId": {
+              "$ref": "#/$defs/id"
+            },
+            "hostClientId": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "required": ["ownerId", "hostClientId", "engineSessionId"],
+          "additionalProperties": false
+        },
+        "requestHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "fingerprint": {
+          "$ref": "#/$defs/hash"
+        },
+        "manifest": {
+          "$ref": "#/$defs/ownershipDetailManifest"
+        },
+        "segmentBlobRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hash"
+          },
+          "minItems": 1,
+          "maxItems": 512
+        }
+      },
+      "required": [
+        "ownershipDetailVersion",
+        "kind",
+        "projectId",
+        "detailRef",
+        "origin",
+        "requestHash",
+        "fingerprint",
+        "manifest",
+        "segmentBlobRefs"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.ownership.detail": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "detailRef": {
+              "$ref": "#/$defs/id"
+            },
+            "documentHash": {
+              "const": null
+            },
+            "startOrdinal": {
+              "const": 0
+            },
+            "pageSize": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            }
+          },
+          "required": ["projectId", "detailRef", "documentHash", "startOrdinal", "pageSize"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "$ref": "#/$defs/id"
+            },
+            "detailRef": {
+              "$ref": "#/$defs/id"
+            },
+            "documentHash": {
+              "$ref": "#/$defs/hash"
+            },
+            "startOrdinal": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 511
+            },
+            "pageSize": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            }
+          },
+          "required": ["projectId", "detailRef", "documentHash", "startOrdinal", "pageSize"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "result_project.ownership.detail": {
+      "type": "object",
+      "properties": {
+        "detailReadVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "detailRef": {
+          "$ref": "#/$defs/id"
+        },
+        "manifest": {
+          "$ref": "#/$defs/ownershipDetailManifest"
+        },
+        "startOrdinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 511
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeSetSegment"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "nextOrdinal": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 511
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "detailReadVersion",
+        "projectId",
+        "detailRef",
+        "manifest",
+        "startOrdinal",
+        "segments",
+        "nextOrdinal",
+        "complete"
       ],
       "additionalProperties": false
     }

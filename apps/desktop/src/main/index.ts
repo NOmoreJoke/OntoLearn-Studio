@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { z } from 'zod'
 import { pathToFileURL } from 'node:url'
 import { EngineSupervisor } from './engine'
+import { resolveTransportLedger } from './engine-ledger'
 import { TaskService } from './task-service'
 import { OrdinaryProjectSource, type OrdinaryCurrent } from './ordinary-project-source'
 import { QueryDefinitionService } from './query-definition-service'
@@ -254,6 +255,19 @@ void app.whenReady().then(async () => {
       profile,
       exampleRoot,
       dataPath: fixture?.databasePath ?? join(app.getPath('userData'), 'engine.sqlite'),
+      // Main-side gate: boolean flag, a valid launch id, the Windows platform
+      // and the actual unique isolated E2E profile argv must all agree with the
+      // live userData path; the supervisor independently rejects packaged.
+      ...(resolveTransportLedger({
+        flag: process.env.ONTOLEARN_E2E_TRANSPORT_LEDGER,
+        launchId: process.env.ONTOLEARN_E2E_TRANSPORT_LEDGER_LAUNCH_ID,
+        userDataPath: app.getPath('userData'),
+        packaged: app.isPackaged,
+        platform: process.platform,
+        userDataArg: process.argv
+          .find((argument) => argument.startsWith('--user-data-dir='))
+          ?.slice('--user-data-dir='.length),
+      }) ?? {}),
       ...(fixture ? { allowedProjects: [fixture.projectId], testMode: true } : {}),
     },
   )

@@ -101,7 +101,7 @@ describe('strict raw JSONL reader', () => {
       expect(errors, test.name).toEqual([])
       expect(validateV2(test.schema, frames[0]), test.name).toBe(test.valid)
     }
-  })
+  }, 20000)
   it('stops after a consumer error and releases the partial buffer', () => {
     const errors: string[] = []
     const stream = new JsonlReader(

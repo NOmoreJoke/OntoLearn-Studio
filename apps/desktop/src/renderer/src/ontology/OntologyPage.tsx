@@ -435,7 +435,7 @@ function Editor({
               英文标识
               <input
                 required
-                pattern="[A-Za-z0-9_][A-Za-z0-9_-]*"
+                pattern="[A-Za-z0-9_][A-Za-z0-9_\-]*"
                 value={draft.identifier}
                 onChange={(event) => update('identifier', event.target.value)}
               />

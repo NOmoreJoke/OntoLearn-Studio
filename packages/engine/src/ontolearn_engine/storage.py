@@ -14,7 +14,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from ontolearn_engine.invalidation import CODES, RULES, can_publish_current, family, reasons
-from ontolearn_engine.rdf_snapshot import iri, term
+from ontolearn_engine.rdf_snapshot import Graph, URIRef, iri, term
 
 FORMAT_VERSION = 2
 LAYERS = {"ontology", "mapping", "constraint", "rule", "behavior", "scenario", "query", "model"}
@@ -29,6 +29,128 @@ def canonical(value: object) -> str:
 
 def digest(value: object) -> str:
     return hashlib.sha256(canonical(value).encode()).hexdigest()
+
+
+# Identity gates only disable the local optimization. Parsing always uses the
+# current bindings; no captured implementation is ever called as a fallback.
+_MEMO_TERM = term
+_MEMO_TERM_CODE = term.__code__
+_MEMO_IRI = iri
+_MEMO_GRAPH = Graph
+_MEMO_URI = URIRef
+_MEMO_GRAPH_PARSE = Graph.__dict__["parse"]
+_MEMO_URI_N3 = URIRef.__dict__["n3"]
+_MEMO_JSON_LOADS = json.loads
+
+
+def _plain_snapshot_data(state):
+    """Eligibility, not validation: bounded builtin iteration, no parse or callbacks.
+
+    Unknown containers, cycles/depth or inspection capacity simply retain the
+    original path. Iterators retain at most64 container aliases, not a copy or
+    an unbounded visited graph. Raw definition payloads remain opaque strings.
+    """
+    stack = [(iter((state,)), False)]
+    steps = 0
+    while stack:
+        iterator, pairs = stack[-1]
+        try:
+            value = next(iterator)
+        except StopIteration:
+            stack.pop()
+            continue
+        steps += 1
+        if steps > 8192:
+            return False
+        if pairs:
+            key, value = value
+            if type(key) is not str:
+                return False
+        kind = type(value)
+        if kind is str or kind is int or kind is float or kind is bool or kind is type(None):
+            continue
+        if len(stack) >= 64:
+            return False
+        if kind is dict:
+            stack.append((iter(dict.items(value)), True))
+        elif kind is list:
+            stack.append((iter(value), False))
+        else:
+            return False
+    return True
+
+
+def _original_snapshot_definition(cls):
+    # Read raw class namespaces, not a user descriptor/metaclass hook. An
+    # override must retain its original one-argument dispatch for the whole call.
+    if type(cls) is not type:
+        return False
+    for base in type.__getattribute__(cls, "__mro__"):
+        namespace = type.__getattribute__(base, "__dict__")
+        if "_definition" in namespace:
+            descriptor = namespace["_definition"]
+            return (
+                descriptor is _MEMO_DEFINITION
+                and descriptor.__func__.__code__ is _MEMO_DEFINITION_CODE
+            )
+    return False
+
+
+def _original_snapshot_terms():
+    return (
+        term is _MEMO_TERM
+        and term.__code__ is _MEMO_TERM_CODE
+        and iri is _MEMO_IRI
+        and Graph is _MEMO_GRAPH
+        and URIRef is _MEMO_URI
+        and term.__globals__.get("iri") is _MEMO_IRI
+        and term.__globals__.get("Graph") is Graph
+        and term.__globals__.get("URIRef") is URIRef
+        and Graph.__dict__.get("parse") is _MEMO_GRAPH_PARSE
+        and URIRef.__dict__.get("n3") is _MEMO_URI_N3
+        and json.loads is _MEMO_JSON_LOADS
+    )
+
+
+class _SnapshotIRIObjects:
+    """At most16 successful original string aliases, for exactly one validation."""
+
+    __slots__ = ("aliases", "enabled")
+
+    def __init__(self):
+        self.aliases = set()
+        self.enabled = True
+
+    def disable(self):
+        self.aliases.clear()
+        self.enabled = False
+
+    def noncanonical(self, value):
+        if self.enabled:
+            if (
+                type(value) is not str
+                or not value.startswith("<")
+                or not value.endswith(">")
+                or not _original_snapshot_terms()
+            ):
+                # A Literal converter or unknown parser branch may have side
+                # effects. Never carry an earlier success across that branch.
+                self.disable()
+            elif value in self.aliases:
+                return False
+        if not self.enabled:
+            return term(value).n3() != value
+        parsed = term(value)
+        rendered = parsed.n3()
+        noncanonical = rendered != value
+        if self.enabled:
+            if type(parsed) is URIRef and type(rendered) is str and noncanonical is False:
+                if len(self.aliases) < 16:
+                    self.aliases.add(value)
+            else:
+                self.disable()
+        # Preserve even an unusual comparison's original truthiness/exception.
+        return noncanonical
 
 
 class UnsupportedProjectFormat(ValueError):
@@ -62,6 +184,47 @@ class Conflict(ValueError):
             "dependency": "INVALID_REQUEST",
             "input": "INVALID_REQUEST",
         }.get(category, "INTERNAL_ERROR")
+
+
+class ManualOwnershipConflict(Conflict):
+    """The actual first blocking row, never reconstructed from diagnostic text."""
+
+    def __init__(self, message, reason, existing, incoming):
+        super().__init__(message, category="ownership")
+
+        def locator(row):
+            return {
+                "id": row["id"],
+                "owner": row["owner"],
+                "sourceRow": row["source_row"],
+                "slot": {"subject": row["subject"], "predicate": row["predicate"]},
+            }
+
+        self.witness = {
+            "kind": "manual-ownership-conflict",
+            "reason": reason,
+            "existing": locator(existing),
+            "incoming": locator({**incoming, "owner": None, "source_row": None}),
+        }
+
+
+class SingleDeclarationConflict(Conflict):
+    """An introduced declaration and the actual first two blocking records."""
+
+    def __init__(self, definition, predicate, subject, rows):
+        super().__init__(
+            "Single-valued declaration conflicts with existing facts", category="ownership"
+        )
+        self.witness = {
+            "kind": "single-declaration-conflict",
+            "reason": "singleDeclaration",
+            "declaration": {"layer": "ontology", "id": definition, "predicate": predicate},
+            "slot": {"subject": subject, "predicate": predicate},
+            "existing": [
+                {"id": row["id"], "owner": row["owner"], "sourceRow": row["source_row"]}
+                for row in rows
+            ],
+        }
 
 
 class Store:
@@ -669,6 +832,8 @@ class Store:
                 changed, rebound, membership_changed = self._apply_compensation(
                     project, before_state, desired, hook
                 )
+            original_singles = self._single_predicates(project) if definitions else set()
+            introduced_singles = {}
             for definition in definitions or []:
                 if not isinstance(definition, dict) or set(definition) != {"layer", "id", "value"}:
                     raise ValueError("Definition requires layer/id/value")
@@ -681,6 +846,10 @@ class Store:
                 ):
                     raise ValueError("Invalid definition layer/identity")
                 self._definition(definition["value"])
+                if layer == "ontology" and isinstance(definition["value"], dict):
+                    for predicate in definition["value"].get("singleValuedPredicates", []):
+                        if predicate not in original_singles:
+                            introduced_singles.setdefault(predicate, []).append(identity)
                 payload = canonical(definition["value"])
                 old = self._db.execute(
                     "SELECT payload FROM definitions WHERE project=? AND layer=? AND id=?",
@@ -748,7 +917,14 @@ class Store:
                 ).fetchone()
                 if old is None:
                     raise Conflict("Edited fact no longer exists", category="state")
-                self._check_slot(project, old["subject"], old["predicate"], value, {identity})
+                self._check_slot(
+                    project,
+                    old["subject"],
+                    old["predicate"],
+                    value,
+                    {identity},
+                    manual_incoming=dict(old) if old["owner"] is None else None,
+                )
                 if value != old["object"]:
                     self._db.execute(
                         "UPDATE facts SET object=? WHERE project=? AND id=?",
@@ -764,15 +940,24 @@ class Store:
                 ).fetchone()
                 if existing:
                     if existing["owner"] or existing["object"] != fact["object"]:
-                        raise Conflict(
+                        raise ManualOwnershipConflict(
                             "Explicit fact edit required; cannot take ownership: "
                             f"slot={existing['subject']} {existing['predicate']}, "
                             f"other={existing['owner'] or 'manual'}, row={existing['source_row']}, "
                             f"id={existing['id']}",
-                            category="ownership",
+                            "reservedIdentity",
+                            existing,
+                            fact,
                         )
                     continue
-                self._check_slot(project, fact["subject"], fact["predicate"], fact["object"], set())
+                self._check_slot(
+                    project,
+                    fact["subject"],
+                    fact["predicate"],
+                    fact["object"],
+                    set(),
+                    manual_incoming=fact,
+                )
                 self._db.execute(
                     "INSERT INTO facts VALUES(?,?,?,?,?,NULL,NULL,NULL)",
                     (project, fact["id"], fact["subject"], fact["predicate"], fact["object"]),
@@ -798,7 +983,7 @@ class Store:
                 if self._replace_mapping(project, mapping):
                     changed.update({"facts:asserted", f"mapping:{mapping['id']}"})
             self._validate_references(project)
-            self._validate_single_slots(project)
+            self._validate_single_slots(project, introduced_singles)
             after_state = self.state(project)
             from ontolearn_engine.project.entity_metadata import (
                 validate_change,
@@ -1045,6 +1230,10 @@ class Store:
 
     @staticmethod
     def _definition(value: object) -> None:
+        Store._definition_objects(value, None)
+
+    @staticmethod
+    def _definition_objects(value: object, objects) -> None:
         if not isinstance(value, dict):
             return  # Other definition payloads remain opaque canonical JSON in this spike.
         if "references" in value and not isinstance(value["references"], list):
@@ -1062,7 +1251,9 @@ class Store:
                 iri(triple["subject"])
                 iri(triple["predicate"])
                 obj = triple["object"]
-                if not isinstance(obj, str) or term(obj).n3() != obj:
+                if not isinstance(obj, str) or (
+                    objects.noncanonical(obj) if objects is not None else term(obj).n3() != obj
+                ):
                     raise ValueError("Canonical RDF object required in definition")
         if "singleValuedPredicates" in value:
             predicates = value["singleValuedPredicates"]
@@ -1081,13 +1272,33 @@ class Store:
                 predicates.update(value.get("singleValuedPredicates", []))
         return predicates
 
-    def _validate_single_slots(self, project: str) -> None:
+    def _validate_single_slots(self, project: str, declarations=None) -> None:
         for predicate in self._single_predicates(project):
-            if self._db.execute(
+            group = self._db.execute(
                 "SELECT subject FROM facts WHERE project=? AND predicate=? AND object IS NOT NULL "
                 "GROUP BY subject HAVING COUNT(*)>1 LIMIT 1",
                 (project, predicate),
-            ).fetchone():
+            ).fetchone()
+            if group:
+                if declarations and predicate in declarations:
+                    # A same-plan removal/overwrite cannot remain the issuer.
+                    for identity in declarations[predicate]:
+                        definition = self._db.execute(
+                            "SELECT payload FROM definitions WHERE project=? "
+                            "AND layer='ontology' AND id=?",
+                            (project, identity),
+                        ).fetchone()
+                        payload = json.loads(definition[0]) if definition is not None else None
+                        if isinstance(payload, dict) and predicate in payload.get(
+                            "singleValuedPredicates", []
+                        ):
+                            rows = self._db.execute(
+                                "SELECT id,owner,source_row FROM facts "
+                                "WHERE project=? AND predicate=? "
+                                "AND subject=? AND object IS NOT NULL LIMIT 2",
+                                (project, predicate, group[0]),
+                            ).fetchall()
+                            raise SingleDeclarationConflict(identity, predicate, group[0], rows)
                 raise Conflict(
                     "Single-valued declaration conflicts with existing facts", category="ownership"
                 )
@@ -1119,6 +1330,8 @@ class Store:
         value: str,
         excluded: set[str],
         single_predicates: set[str] | None = None,
+        *,
+        manual_incoming=None,
     ) -> None:
         single = predicate in (
             self._single_predicates(project) if single_predicates is None else single_predicates
@@ -1132,11 +1345,18 @@ class Store:
                 row["id"] == reserved_id
                 or (row["object"] is not None and (single or row["object"] == value))
             ):
-                raise Conflict(
+                message = (
                     f"Ownership conflict: slot={subject} {predicate}, "
-                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}",
-                    category="ownership",
+                    f"other={row['owner'] or 'manual'}, row={row['source_row']}, id={row['id']}"
                 )
+                if manual_incoming is not None:
+                    reason = (
+                        "reservedIdentity"
+                        if row["id"] == reserved_id
+                        else ("sameStatement" if row["object"] == value else "singleSlot")
+                    )
+                    raise ManualOwnershipConflict(message, reason, row, manual_incoming)
+                raise Conflict(message, category="ownership")
 
     def _replace_mapping(self, project: str, mapping: dict) -> bool:
         if (
@@ -1354,6 +1574,13 @@ class Store:
     @classmethod
     def _snapshot_state(cls, state: dict) -> None:
         """Check persisted record shapes, not future business execution semantics."""
+        objects = (
+            _SnapshotIRIObjects()
+            if _plain_snapshot_data(state)
+            and _original_snapshot_definition(cls)
+            and _original_snapshot_terms()
+            else None
+        )
         identities = set()
         definitions = []
         for record in state["definitions"]:
@@ -1373,7 +1600,13 @@ class Store:
             identities.add(key)
             value = json.loads(record["payload"])
             canonical(value)
-            cls._definition(value)
+            if objects is not None and _original_snapshot_definition(cls):
+                Store._definition_objects(value, objects)
+            else:
+                if objects is not None:
+                    objects.disable()
+                    objects = None
+                cls._definition(value)
             definitions.append(value)
         for value in definitions:
             for reference in value.get("references", []) if isinstance(value, dict) else []:
@@ -1413,7 +1646,11 @@ class Store:
                 if record["object"] is not None:
                     values.append(record["object"])
             for value in values:
-                if not isinstance(value, str) or term(value).n3() != value:
+                if not isinstance(value, str) or (
+                    objects.noncanonical(value)
+                    if objects is not None
+                    else term(value).n3() != value
+                ):
                     raise ValueError("Invalid snapshot RDF object")
             # ID stays bound to the original statement across edits and tombstones.
         for owner, status in state["mappingState"].items():
@@ -1752,6 +1989,10 @@ class Store:
             self._db.backup(target)
         finally:
             target.close()
+
+
+_MEMO_DEFINITION = Store.__dict__["_definition"]
+_MEMO_DEFINITION_CODE = _MEMO_DEFINITION.__func__.__code__
 
 
 RETIREMENTS_SCHEMA = (

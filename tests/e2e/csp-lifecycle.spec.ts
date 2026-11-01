@@ -278,10 +278,65 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     try {
       await runNativeRecovery(executable, args, { ...env, I02_NATIVE_EVIDENCE: nativeOutput })
     } catch (error) {
-      evidence.nativeFailure = String(error)
-      evidence.nativeRecovery = await readFile(nativeOutput, 'utf8')
-        .then((value) => JSON.parse(value))
-        .catch(() => undefined)
+      // Failure-only evidence: Windows does not set I02_EVIDENCE. Read once,
+      // preserve the actual bytes, and distinguish read, parse and attachment failures.
+      const capture: Record<string, unknown> = {
+        source: 'existing nativeOutput after original native failure',
+        path: nativeOutput,
+        read: 'not-attempted',
+        parse: 'not-attempted',
+        rawAttachment: 'not-attempted',
+      }
+      try {
+        evidence.nativeFailure = String(error)
+        let raw: Buffer | undefined
+        try {
+          raw = await readFile(nativeOutput)
+          capture.read = 'succeeded'
+          capture.bytes = raw.byteLength
+        } catch (readError) {
+          capture.read =
+            readError !== null &&
+            typeof readError === 'object' &&
+            'code' in readError &&
+            readError.code === 'ENOENT'
+              ? 'not-found'
+              : 'failed'
+          capture.readError = String(readError)
+        }
+        if (raw !== undefined) {
+          try {
+            evidence.nativeRecovery = JSON.parse(raw.toString('utf8'))
+            capture.parse = 'succeeded'
+          } catch (parseError) {
+            capture.parse = 'failed'
+            capture.parseError = String(parseError)
+          }
+          try {
+            await test.info().attach('c1-native-failure-original-bytes', {
+              body: raw,
+              contentType: 'application/octet-stream',
+            })
+            capture.rawAttachment = 'succeeded'
+          } catch (attachmentError) {
+            capture.rawAttachment = 'failed'
+            capture.rawAttachmentError = String(attachmentError)
+          }
+        }
+        evidence.nativeFailureCapture = capture
+        await test.info().attach('c1-native-failure-capture-status', {
+          body: JSON.stringify(capture),
+          contentType: 'application/json',
+        })
+      } catch (captureError) {
+        // This is diagnostic failure, never a substitute for the native error.
+        try {
+          capture.captureError = String(captureError)
+          evidence.nativeFailureCapture = capture
+        } catch {
+          // Even diagnostic error formatting may fail; preserve the native error.
+        }
+      }
       throw error
     }
     evidence.nativeRecovery = JSON.parse(await readFile(nativeOutput, 'utf8'))

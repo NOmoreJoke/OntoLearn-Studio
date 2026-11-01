@@ -1,4 +1,4 @@
-import type { BridgeResult, JobView } from '@ontolearn/contracts'
+import { safeBusiness3Error, type BridgeResult, type JobView } from '@ontolearn/contracts'
 import type {
   CurrentProject,
   DraftSaveArgs,
@@ -10,6 +10,8 @@ import type {
 import { readFullDiff } from './mainline-diff'
 import { ontologyOperations, OntologyOperationBook } from './mainline-operations'
 import { closedBookmark, pendingBookmark, recoveredPending } from './mainline-recovery'
+import { readOwnershipConflictDetail } from './mainline-ownership'
+import type { OwnershipConflictDetailViewModel } from './OwnershipConflictDetailView'
 
 export const ONTOLOGY_EDITOR = 'ontology-transaction'
 export type CommitMarker = {
@@ -51,6 +53,9 @@ export type SessionState = {
   pending?: PendingEdit
   receipt?: CommitMarker
   error?: string
+  ownershipDetail?:
+    | { status: 'reading' | 'unavailable' }
+    | { status: 'ready'; viewModel: OwnershipConflictDetailViewModel }
   stale: boolean
 }
 const unwrap = <T>(result: BridgeResult<T>): T => {
@@ -90,6 +95,7 @@ const message = (cause: unknown) => {
     'STORAGE_FAILURE',
     'STORAGE_BUSY',
     'IDENTITY_CONFLICT',
+    'OWNERSHIP_CONFLICT',
     'REVISION_CONFLICT',
     'ENGINE_DISCONNECTED',
     'ENGINE_UNAVAILABLE',
@@ -151,6 +157,7 @@ export class OntologySession {
         receipt: entry?.receipt,
         phase: entry?.pending ? 'unknown' : entry?.receipt ? 'saved' : 'idle',
         prepared: undefined,
+        ownershipDetail: undefined,
         stale: true,
       })
     })
@@ -197,6 +204,7 @@ export class OntologySession {
     this.#set({
       stale: true,
       prepared: undefined,
+      ownershipDetail: undefined,
       error: 'STALE_CONTEXT',
       phase: this.#state.pending ? 'unknown' : 'idle',
     })
@@ -204,6 +212,7 @@ export class OntologySession {
   dispose(): void {
     this.#disposed = true
     this.#sequence++
+    if (this.#state.ownershipDetail) this.#state = { ...this.#state, ownershipDetail: undefined }
     this.#release?.()
     this.#release = undefined
     this.#releaseBook?.()
@@ -323,9 +332,10 @@ export class OntologySession {
         }
         this.#queuedRead = this.#readFlight.then(again, again)
       }
+      if (this.#state.ownershipDetail) this.#set({ ownershipDetail: undefined })
       return this.#queuedRead
     }
-    const requestedSequence = this.#sequence
+    const requestedSequence = ++this.#sequence
     // Reserve the slot before callbacks or state publication can request another
     // read. All entry points share one flight and at most one coalesced refresh.
     const flight = Promise.resolve().then(async () => {
@@ -337,6 +347,7 @@ export class OntologySession {
       if (this.#readFlight === flight) this.#readFlight = undefined
     }
     void flight.then(release, release)
+    if (this.#state.ownershipDetail) this.#set({ ownershipDetail: undefined })
     return flight
   }
   async #readNow(): Promise<void> {
@@ -401,17 +412,63 @@ export class OntologySession {
     )
       return
     const sequence = ++this.#sequence
-    this.#set({ phase: 'preparing', prepared: undefined, error: undefined })
+    this.#set({
+      phase: 'preparing',
+      prepared: undefined,
+      error: undefined,
+      ownershipDetail: undefined,
+    })
+    const identity = sourceIdentity(source)
+    const requireCurrent = () => {
+      this.#guard(sequence)
+      if (
+        this.#state.source !== source ||
+        sourceIdentity(source) !== identity ||
+        this.#state.stale ||
+        this.#state.pending
+      )
+        throw new Error('STALE_CONTEXT')
+    }
     try {
       await this.#current(source, sequence)
-      this.#guard(sequence)
-      const preview = unwrap(
-        await this.bridge.previewProjectChangeset({
-          baseRevision: source.domain.projectRevision,
-          ...intent,
-        }),
-      )
-      this.#guard(sequence)
+      requireCurrent()
+      const result = await this.bridge.previewProjectChangeset({
+        baseRevision: source.domain.projectRevision,
+        ...intent,
+      })
+      requireCurrent()
+      if (!result.ok && result.error.code === 'OWNERSHIP_CONFLICT') {
+        this.#set({ error: 'OWNERSHIP_CONFLICT', ownershipDetail: { status: 'reading' } })
+        try {
+          const error = safeBusiness3Error(result.error)
+          if (error.code !== 'OWNERSHIP_CONFLICT' || typeof error.params.detailRef !== 'string')
+            throw new Error('INVALID_OWNERSHIP_DETAIL')
+          await this.#current(source, sequence)
+          requireCurrent()
+          const viewModel = await readOwnershipConflictDetail(
+            this.bridge,
+            {
+              projectId: source.projectId,
+              detailRef: error.params.detailRef,
+              sourceBaseRevision: source.domain.projectRevision,
+            },
+            requireCurrent,
+          )
+          requireCurrent()
+          await this.#current(source, sequence)
+          requireCurrent()
+          this.#set({ phase: 'idle', ownershipDetail: { status: 'ready', viewModel } })
+        } catch (cause) {
+          requireCurrent()
+          if (cause instanceof Error && cause.message === 'STALE_CONTEXT') {
+            this.invalidate()
+          } else {
+            this.#set({ phase: 'idle', ownershipDetail: { status: 'unavailable' } })
+          }
+        }
+        return
+      }
+      const preview = unwrap(result)
       if (
         preview.projectId !== source.projectId ||
         preview.baseRevision !== source.domain.projectRevision ||
@@ -429,13 +486,18 @@ export class OntologySession {
       this.#set({ phase: 'ready', prepared: { preview, ...full } })
     } catch (cause) {
       if (!this.#disposed && sequence === this.#sequence)
-        this.#set({ phase: 'idle', error: message(cause), prepared: undefined })
+        this.#set({
+          phase: 'idle',
+          error: message(cause),
+          prepared: undefined,
+          ownershipDetail: undefined,
+        })
     }
   }
   discardPreview(): void {
     if (this.#state.pending || this.#state.phase === 'submitting') return
     this.#sequence++
-    this.#set({ prepared: undefined, phase: 'idle' })
+    this.#set({ prepared: undefined, phase: 'idle', ownershipDetail: undefined })
   }
   /** Called only by the explicit human confirmation button after displaying all rows. */
   async confirm(): Promise<void> {

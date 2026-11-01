@@ -1,0 +1,3397 @@
+{
+  "schemaVersion": 1,
+  "scope": "R10受审67的纯证据后继；原实现/测试/依赖/CI/验收不变",
+  "candidate": {
+    "at": "2026-10-26T21:21:44.146744+00:00",
+    "scope": "Both fresh R10 bounded technical review stages and all opinions have disposition; original ConditionalPass and all CI/release conditions retained",
+    "head": "67b7bcbd2d911b4a6898d837dbf20688d793e844",
+    "tree": "78a6b5d5ba4ff4e8e408e8f7da95c5c719be3996",
+    "base": "583c05c7870ba0f8f642e3eeea1d0590e5859ca2",
+    "authorVerdicts": {
+      "ZCode": "ConditionalPass",
+      "MiniMax": "ConditionalPass"
+    },
+    "ROOTBothTechnicalStagesAccepted": true,
+    "unconditionalDualPass": false,
+    "allOpinionsHaveDisposition": true,
+    "identifiedPushBeforeSourceTechnicalBlockers": 0,
+    "ROOTFullReportsAndAppendicesRead": true,
+    "ROOTFinalManifestPinsRehashed": 152,
+    "ROOTCurrentSourceBytesModesRehashed": 1396,
+    "ROOTBuildBytesModesRehashed": 5,
+    "ROOTHeadTreeBranchIndexStatusExact": true,
+    "oldRawPrefixesExact": true,
+    "existingHOLDClosed": 0,
+    "usableMergedFR": "2/17",
+    "noD8": true,
+    "noNewProductValidation": true,
+    "sourceEvidence": [
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/COMPLETION.json",
+        "bytes": 10773,
+        "sha256": "eb69c444045e576222ca8aad9c045938acfff9e00d982b5e5758c5063f70eaad"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/FINAL-MANIFEST.json",
+        "bytes": 29134,
+        "sha256": "12d4ffd1f6033f9c67f6328fad794053b4936650ea80e76c5589cacbc32b49c1"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/HANDOFF.json",
+        "bytes": 2517,
+        "sha256": "ed5596ef70591ade0e1f15772c57bee963e3131e05370795fb52ba9d7131aa5f"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/zcode-natural-02-own-facts.md",
+        "bytes": 77347,
+        "sha256": "fa3a9982104d5cacaa79c4e15cee68bc8959ec0d3de490f81fd99f5d0f5b75e1"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/minimax-natural-03-necessary-coverage.md",
+        "bytes": 165505,
+        "sha256": "216222aae8ec185e25a7e183a58998097c6c8d55c79797813dc995dcf2ecad89"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/zcode-effective-opinion-map-02.json",
+        "bytes": 33199,
+        "sha256": "7eda117dd521062b288e3696190b5df64c6bc6b70ab3f3517781d02d9023b7da"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/minimax-effective-opinion-map-03.json",
+        "bytes": 64177,
+        "sha256": "7c4bdf4bec3efac758c1ba2f9bed4b524232fa9899ffb3e1a9860c4e22144e3f"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/zcode-independent-audit-02.json",
+        "bytes": 10884,
+        "sha256": "0fb2a457cd9fa99e3eebf6e435af6845c74d41c8106b0cf2b1ee6c111e3d3f0d"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/minimax-independent-audit-03.json",
+        "bytes": 11615,
+        "sha256": "6be525d01d4da3e5ea9087192b7e5f0ad08a20d2b102ae5c1debfe479de79415"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/INDEPENDENT-FINAL-EVIDENCE-BINDING-01.json",
+        "bytes": 13761,
+        "sha256": "29e3414142db6fdc721b20df93aee49db13931613e09636281b9f4c9ffb50879"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/FINAL-FROZEN-GUARD-01.json",
+        "bytes": 3256,
+        "sha256": "8d2abaf537501c33aa4876654787080ab9b7800855443613a8c80ed790ee87ab"
+      }
+    ],
+    "ownerLimits": {
+      "ZCode": [
+        "R10-10 stray label is typo, valid Top9 only; test_mainline_postwrite_admission211-213 replay vs231-233 legitimate Read distinct; no author cosmetic loop"
+      ],
+      "MiniMax": [
+        "T11 hashes equal generation/base source and differ from current source is observed; fixture scope says generated so no proven provenance defect or forced refresh to head",
+        "T12 only3/9 assertion coverage inference rejected: fixed test_storage.py190-223 parameterizes all9 RULES with dynamic positive/negative assertions; named literal grep is insufficient; no new test gate",
+        "T05 fixed-stage result14914B =14668base64+212fixed+34stage; totalstage budget1504/current spare1470; author remaining arithmetic shorthand retained with this owner correction, no proven current trigger",
+        "14 saved annotations are seven cases test/result duplicates,542–1212B; case7 uses its own original-operation/Job stage, not all freshRead stage; normalPASS retention does not prove worker-kill/timeout retention",
+        "Source/index/protected preservation does not imply all physical runtime-owned hook-state files were never written; no private hook-store inspection performed"
+      ],
+      "primaryEvidence": {
+        "path": "OWNER-NATURAL03-PRIMARY-LIMITS-01.json",
+        "mode": "0644",
+        "bytes": 3083,
+        "sha256": "37521252e3453af8ea45caa1cad6496508b433b7030ee7e25f3caddd4193182b"
+      }
+    },
+    "maintenanceRouting": {
+      "Z_R10_06_07": "原T02测试维护归口；仅未来实际触及测试/CI控制层时评估，不授权本轮修改或添加门禁。",
+      "Z_R10_08": "原T02 native/测试维护与ROOT；已有Electron/Playwright升级或证据维护窗口。",
+      "Z_R10_09": "ROOT/AGENTS指南维护归口；本票不改共享AGENTS。",
+      "MM_T11": "原T02 fixture维护归口；只采生成来源与head不同事实，可选澄清，不强制刷新来源针。",
+      "MM_T12": "不采仅3/9与新增补五类建议；原静态九行参数化断言在位，独立GUI/HOLD不关闭。"
+    }
+  },
+  "archiveSuccessor": {
+    "soleParentRequired": "67b7bcbd2d911b4a6898d837dbf20688d793e844",
+    "pathsExactly": [
+      "docs/reviews/T02/fr200-fr201-20261024/round-10/zcode-glm53.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-10/minimax-m31flash.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-10/disposition.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-10/version-map.json",
+      "docs/reviews/T02/fr200-fr201-20261024/round-10/artifact-manifest.json",
+      "docs/reviews/T02/fr200-fr201-20261024/round-10/independent-zcode-disposition-audit.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-10/independent-minimax-disposition-audit.md",
+      "docs/reviews/T02/status.md",
+      "docs/m0-checklist.md"
+    ],
+    "actualCommitTree": "由仓外O071实际提交回执绑定，文档不嵌自身未来hash"
+  },
+  "ROOTReceptionTicket": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/six-patches-20261023/controller-t02-r10-67b7-reception-and-evidence-archive-ticket-20261027.json",
+    "bytes": 10338,
+    "sha256": "4fab3b67768d86550eb739719d75755f2b918228f95438f7eb31bf0093913210"
+  },
+  "authorVerdicts": {
+    "ZCode": "ConditionalPass",
+    "MiniMax": "ConditionalPass"
+  },
+  "ROOTBothTechnicalStagesAccepted": true,
+  "unconditionalDualPass": false,
+  "allOpinionsHaveDisposition": true,
+  "D8Used": false,
+  "authorNaturalVersionChains": {
+    "ZCode": [
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/zcode-natural-01.md",
+        "bytes": 57671,
+        "sha256": "66dd65a4b06345fa1645b78d551a3151c254e5f53eb175f72722d6ab4486fb52"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/zcode-natural-02-own-facts.md",
+        "bytes": 77347,
+        "sha256": "fa3a9982104d5cacaa79c4e15cee68bc8959ec0d3de490f81fd99f5d0f5b75e1"
+      }
+    ],
+    "MiniMax": [
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/minimax-natural-01.md",
+        "bytes": 93024,
+        "sha256": "59bb1066dd898e663ffe25c26d393f09dd74f599de639e0267a1651329d4d8b5"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/minimax-natural-02-own-facts.md",
+        "bytes": 135675,
+        "sha256": "284cbec764d92b9c63d46d80f181ef0c8f3c4e659890f144411506eb62e0ee6f"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/minimax-natural-03-necessary-coverage.md",
+        "bytes": 165505,
+        "sha256": "216222aae8ec185e25a7e183a58998097c6c8d55c79797813dc995dcf2ecad89"
+      }
+    ]
+  },
+  "officialTasks": {
+    "ZCode": {
+      "sid": "session_586b0100bd64e62fb1504b88095e8b33",
+      "settings": "GLM-5.3 / 最高 / 完全访问; current configured provider BigModel个人, no StartPlan option observed",
+      "natural": {
+        "path": "zcode-natural-02-own-facts.md",
+        "mode": "0644",
+        "bytes": 77347,
+        "sha256": "fa3a9982104d5cacaa79c4e15cee68bc8959ec0d3de490f81fd99f5d0f5b75e1"
+      },
+      "previous": {
+        "path": "zcode-natural-01.md",
+        "mode": "0644",
+        "bytes": 57671,
+        "sha256": "66dd65a4b06345fa1645b78d551a3151c254e5f53eb175f72722d6ab4486fb52"
+      },
+      "verdict": "ConditionalPass 限定prepush技术阶段；no source blocker identified",
+      "audit": {
+        "path": "zcode-independent-audit-02.json",
+        "mode": "0644",
+        "bytes": 10884,
+        "sha256": "0fb2a457cd9fa99e3eebf6e435af6845c74d41c8106b0cf2b1ee6c111e3d3f0d"
+      },
+      "effectiveOpinions": {
+        "path": "zcode-effective-opinion-map-02.json",
+        "mode": "0644",
+        "bytes": 33199,
+        "sha256": "7eda117dd521062b288e3696190b5df64c6bc6b70ab3f3517781d02d9023b7da"
+      },
+      "checklistEffective": {
+        "applicable": 24,
+        "partial": 50,
+        "notApplicable": 79,
+        "unknown": 7,
+        "total": 160
+      },
+      "topCount": 9
+    },
+    "MiniMax": {
+      "sid": "mvs_e86f1d95643c4044a136ae2f1cca13fe",
+      "settings": "M3.1-Flash / xhigh / 始终授权",
+      "natural": {
+        "path": "minimax-natural-03-necessary-coverage.md",
+        "mode": "0644",
+        "bytes": 165505,
+        "sha256": "216222aae8ec185e25a7e183a58998097c6c8d55c79797813dc995dcf2ecad89"
+      },
+      "previous": [
+        {
+          "path": "minimax-natural-01.md",
+          "mode": "0644",
+          "bytes": 93024,
+          "sha256": "59bb1066dd898e663ffe25c26d393f09dd74f599de639e0267a1651329d4d8b5"
+        },
+        {
+          "path": "minimax-natural-02-own-facts.md",
+          "mode": "0644",
+          "bytes": 135675,
+          "sha256": "284cbec764d92b9c63d46d80f181ef0c8f3c4e659890f144411506eb62e0ee6f"
+        }
+      ],
+      "verdict": "ConditionalPass 限定技术阶段；no source blocker identified",
+      "audit": {
+        "path": "minimax-independent-audit-03.json",
+        "mode": "0644",
+        "bytes": 11615,
+        "sha256": "6be525d01d4da3e5ea9087192b7e5f0ad08a20d2b102ae5c1debfe479de79415"
+      },
+      "effectiveOpinions": {
+        "path": "minimax-effective-opinion-map-03.json",
+        "mode": "0644",
+        "bytes": 64177,
+        "sha256": "7c4bdf4bec3efac758c1ba2f9bed4b524232fa9899ffb3e1a9860c4e22144e3f"
+      },
+      "checklistEffective": {
+        "applicable": 16,
+        "partial": 46,
+        "notApplicable": 90,
+        "unknown": 8,
+        "total": 160
+      },
+      "topCount": 10,
+      "additionalAuthorObservationIDs": ["R10-T11", "R10-T12"]
+    }
+  },
+  "inputIntegrity": {
+    "original": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/ORIGINAL-USER-CHECKLIST-IMMUTABLE.txt",
+      "bytes": 11255,
+      "sha256": "1ca23def39d88ceaace9ad1b8aa14ee8714229871e9d6b1d1edd0f9e847f709c"
+    },
+    "metadata": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/INPUT-METADATA.json",
+      "bytes": 1383,
+      "sha256": "f44b3450f4120a6e7494d019f6f5793ba0407841e5530f1e25d597bad24c5cba"
+    },
+    "independent": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/INDEPENDENT-INPUT-CHECK.json",
+      "bytes": 7155,
+      "sha256": "f752070bbb230f88258b86835500a897e69d27de11505d37ee66f5215c0308f4"
+    }
+  },
+  "effectiveOpinionIndex": {
+    "ZCode": {
+      "kind": "Effective ZCode R10 author-opinion map after accepted natural02 bounded-stage disposition",
+      "sources": {
+        "original": {
+          "path": "zcode-natural-01.md",
+          "bytes": 57671,
+          "sha256": "66dd65a4b06345fa1645b78d551a3151c254e5f53eb175f72722d6ab4486fb52",
+          "lines": 450
+        },
+        "effectiveFull": {
+          "path": "zcode-natural-02-own-facts.md",
+          "bytes": 77347,
+          "sha256": "fa3a9982104d5cacaa79c4e15cee68bc8959ec0d3de490f81fd99f5d0f5b75e1",
+          "lines": 530
+        },
+        "independentBoundaries": {
+          "path": "zcode-independent-audit-02.json",
+          "bytes": 10884,
+          "sha256": "0fb2a457cd9fa99e3eebf6e435af6845c74d41c8106b0cf2b1ee6c111e3d3f0d"
+        }
+      },
+      "lineConvention": "All1-based lines refer to sealed fullnatural02; first450lines equal immutable natural01. This map organizes author judgments; it creates no new author opinion or release decision.",
+      "authorVerdict": {
+        "value": "ConditionalPass",
+        "originalLine": 431,
+        "effectiveConfirmationLines": [526, 528],
+        "noPushBeforeSourceBlockerDeclaredByAuthor": true,
+        "noMergeApproval": true,
+        "HOLDUnchanged": true
+      },
+      "checklist": {
+        "effectiveCounts": {
+          "适用": 24,
+          "不适用": 79,
+          "部分适用": 50,
+          "无法确认": 7
+        },
+        "total": 160,
+        "statisticsLine": 517,
+        "unchangedItems": 156,
+        "replacementLines": [521, 522, 523, 524],
+        "supersededOriginalStatisticsLine": 106,
+        "items": {
+          "1": ["A", 110],
+          "2": ["N", 111],
+          "3": ["N", 112],
+          "4": ["N", 113],
+          "5": ["P", 114],
+          "6": ["N", 115],
+          "7": ["N", 116],
+          "8": ["N", 117],
+          "9": ["P", 118],
+          "10": ["P", 119],
+          "11": ["N", 120],
+          "12": ["N", 121],
+          "13": ["N", 122],
+          "14": ["N", 123],
+          "15": ["P", 124],
+          "16": ["P", 125],
+          "17": ["P", 126],
+          "18": ["N", 127],
+          "19": ["N", 128],
+          "20": ["P", 129],
+          "21": ["N", 130],
+          "22": ["P", 131],
+          "23": ["A", 132],
+          "24": ["P", 133],
+          "25": ["A", 134],
+          "26": ["P", 135],
+          "27": ["N", 136],
+          "28": ["N", 137],
+          "29": ["P", 138],
+          "30": ["A", 139],
+          "31": ["P", 521, 140],
+          "32": ["P", 141],
+          "33": ["P", 522, 142],
+          "34": ["N", 143],
+          "35": ["P", 144],
+          "36": ["A", 145],
+          "37": ["N", 146],
+          "38": ["P", 147],
+          "39": ["P", 148],
+          "40": ["A", 149],
+          "41": ["P", 150],
+          "42": ["P", 151],
+          "43": ["N", 152],
+          "44": ["P", 153],
+          "45": ["P", 154],
+          "46": ["A", 155],
+          "47": ["P", 156],
+          "48": ["N", 157],
+          "49": ["N", 158],
+          "50": ["N", 159],
+          "51": ["P", 160],
+          "52": ["N", 161],
+          "53": ["N", 162],
+          "54": ["N", 163],
+          "55": ["P", 164],
+          "56": ["N", 165],
+          "57": ["U", 523, 166],
+          "58": ["N", 167],
+          "59": ["N", 168],
+          "60": ["P", 169],
+          "61": ["P", 170],
+          "62": ["P", 171],
+          "63": ["N", 172],
+          "64": ["N", 173],
+          "65": ["N", 174],
+          "66": ["N", 175],
+          "67": ["N", 176],
+          "68": ["N", 177],
+          "69": ["A", 178],
+          "70": ["P", 179],
+          "71": ["P", 180],
+          "72": ["N", 181],
+          "73": ["A", 182],
+          "74": ["N", 183],
+          "75": ["N", 184],
+          "76": ["P", 185],
+          "77": ["N", 186],
+          "78": ["N", 187],
+          "79": ["N", 188],
+          "80": ["P", 189],
+          "81": ["N", 190],
+          "82": ["N", 191],
+          "83": ["N", 192],
+          "84": ["N", 193],
+          "85": ["P", 194],
+          "86": ["N", 195],
+          "87": ["P", 196],
+          "88": ["P", 197],
+          "89": ["N", 198],
+          "90": ["A", 199],
+          "91": ["N", 200],
+          "92": ["P", 201],
+          "93": ["N", 202],
+          "94": ["P", 203],
+          "95": ["A", 204],
+          "96": ["U", 205],
+          "97": ["P", 206],
+          "98": ["N", 207],
+          "99": ["N", 207],
+          "100": ["N", 207],
+          "101": ["N", 207],
+          "102": ["N", 207],
+          "103": ["N", 207],
+          "104": ["N", 207],
+          "105": ["N", 207],
+          "106": ["N", 208],
+          "107": ["N", 209],
+          "108": ["P", 210],
+          "109": ["N", 211],
+          "110": ["P", 212],
+          "111": ["N", 213],
+          "112": ["N", 214],
+          "113": ["P", 215],
+          "114": ["N", 216],
+          "115": ["N", 217],
+          "116": ["N", 218],
+          "117": ["N", 219],
+          "118": ["N", 220],
+          "119": ["N", 221],
+          "120": ["N", 222],
+          "121": ["A", 223],
+          "122": ["N", 224],
+          "123": ["A", 225],
+          "124": ["A", 226],
+          "125": ["A", 227],
+          "126": ["N", 228],
+          "127": ["N", 229],
+          "128": ["P", 230],
+          "129": ["P", 231],
+          "130": ["N", 232],
+          "131": ["N", 233],
+          "132": ["P", 234],
+          "133": ["A", 235],
+          "134": ["A", 236],
+          "135": ["P", 237],
+          "136": ["P", 238],
+          "137": ["P", 239],
+          "138": ["P", 240],
+          "139": ["A", 241],
+          "140": ["U", 242],
+          "141": ["A", 243],
+          "142": ["N", 244],
+          "143": ["N", 245],
+          "144": ["N", 246],
+          "145": ["U", 247],
+          "146": ["U", 248],
+          "147": ["U", 249],
+          "148": ["U", 524, 250],
+          "149": ["A", 251],
+          "150": ["A", 252],
+          "151": ["N", 253],
+          "152": ["N", 254],
+          "153": ["P", 255],
+          "154": ["N", 256],
+          "155": ["A", 257],
+          "156": ["P", 258],
+          "157": ["A", 259],
+          "158": ["N", 260],
+          "159": ["P", 261],
+          "160": ["A", 262]
+        },
+        "itemArraySchema": [
+          "effectiveCategoryCode",
+          "effectiveAuthorLine",
+          "supersededOriginalLineIfAny"
+        ],
+        "categoryCodeMeaning": {
+          "A": "适用",
+          "P": "部分适用",
+          "N": "不适用",
+          "U": "无法确认"
+        }
+      },
+      "historicalPositions": {
+        "current31": {
+          "count": 31,
+          "items": [
+            {
+              "id": "Z08-01",
+              "dispositionLine": 274,
+              "ownerWindowLine": 274
+            },
+            {
+              "id": "Z08-02",
+              "dispositionLine": 275,
+              "ownerWindowLine": 275
+            },
+            {
+              "id": "Z08-03",
+              "dispositionLine": 276,
+              "ownerWindowLine": 276
+            },
+            {
+              "id": "Z08-04",
+              "dispositionLine": 277,
+              "ownerWindowLine": 277
+            },
+            {
+              "id": "Z08-05",
+              "dispositionLine": 278,
+              "ownerWindowLine": 278
+            },
+            {
+              "id": "Z08-06",
+              "dispositionLine": 279,
+              "ownerWindowLine": 279
+            },
+            {
+              "id": "Z08-07",
+              "dispositionLine": 280,
+              "ownerWindowLine": 280
+            },
+            {
+              "id": "Z08-08",
+              "dispositionLine": 281,
+              "ownerWindowLine": 281
+            },
+            {
+              "id": "Z08-09",
+              "dispositionLine": 282,
+              "ownerWindowLine": 282
+            },
+            {
+              "id": "Z08-10",
+              "dispositionLine": 283,
+              "ownerWindowLine": 283
+            },
+            {
+              "id": "Z08-11",
+              "dispositionLine": 284,
+              "ownerWindowLine": 284
+            },
+            {
+              "id": "Z08-TOP10-OLD79F",
+              "dispositionLine": 285,
+              "ownerWindowLine": 285
+            },
+            {
+              "id": "F01",
+              "dispositionLine": 481,
+              "ownerWindowLine": 286,
+              "supersedesDispositionLine": 286,
+              "coverageDetailLines": [458, 481]
+            },
+            {
+              "id": "F02",
+              "dispositionLine": 287,
+              "ownerWindowLine": 287
+            },
+            {
+              "id": "F03",
+              "dispositionLine": 288,
+              "ownerWindowLine": 288
+            },
+            {
+              "id": "F04",
+              "dispositionLine": 289,
+              "ownerWindowLine": 289
+            },
+            {
+              "id": "F05",
+              "dispositionLine": 290,
+              "ownerWindowLine": 290
+            },
+            {
+              "id": "F06",
+              "dispositionLine": 291,
+              "ownerWindowLine": 291
+            },
+            {
+              "id": "F07",
+              "dispositionLine": 292,
+              "ownerWindowLine": 292
+            },
+            {
+              "id": "F08",
+              "dispositionLine": 293,
+              "ownerWindowLine": 293
+            },
+            {
+              "id": "F09",
+              "dispositionLine": 294,
+              "ownerWindowLine": 294
+            },
+            {
+              "id": "F10",
+              "dispositionLine": 295,
+              "ownerWindowLine": 295
+            },
+            {
+              "id": "F11",
+              "dispositionLine": 296,
+              "ownerWindowLine": 296
+            },
+            {
+              "id": "F12",
+              "dispositionLine": 297,
+              "ownerWindowLine": 297
+            },
+            {
+              "id": "F13",
+              "dispositionLine": 298,
+              "ownerWindowLine": 298
+            },
+            {
+              "id": "F14",
+              "dispositionLine": 299,
+              "ownerWindowLine": 299
+            },
+            {
+              "id": "F15",
+              "dispositionLine": 300,
+              "ownerWindowLine": 300
+            },
+            {
+              "id": "F16",
+              "dispositionLine": 301,
+              "ownerWindowLine": 301
+            },
+            {
+              "id": "F17",
+              "dispositionLine": 302,
+              "ownerWindowLine": 302
+            },
+            {
+              "id": "F18",
+              "dispositionLine": 303,
+              "ownerWindowLine": 303
+            },
+            {
+              "id": "F19",
+              "dispositionLine": 304,
+              "ownerWindowLine": 304
+            }
+          ]
+        },
+        "authoritative78": {
+          "count": 78,
+          "items": [
+            {
+              "id": "Z F1",
+              "dispositionLine": 310,
+              "ownerWindowLine": 310
+            },
+            {
+              "id": "Z F2",
+              "dispositionLine": 311,
+              "ownerWindowLine": 311
+            },
+            {
+              "id": "Z F3",
+              "dispositionLine": 312,
+              "ownerWindowLine": 312
+            },
+            {
+              "id": "Z F4",
+              "dispositionLine": 313,
+              "ownerWindowLine": 313
+            },
+            {
+              "id": "Z F5",
+              "dispositionLine": 314,
+              "ownerWindowLine": 314
+            },
+            {
+              "id": "Z F6",
+              "dispositionLine": 315,
+              "ownerWindowLine": 315
+            },
+            {
+              "id": "Z F7",
+              "dispositionLine": 316,
+              "ownerWindowLine": 316
+            },
+            {
+              "id": "Z F8",
+              "dispositionLine": 317,
+              "ownerWindowLine": 317
+            },
+            {
+              "id": "Z F9",
+              "dispositionLine": 318,
+              "ownerWindowLine": 318
+            },
+            {
+              "id": "Z F10",
+              "dispositionLine": 319,
+              "ownerWindowLine": 319
+            },
+            {
+              "id": "MM R07-01",
+              "dispositionLine": 320,
+              "ownerWindowLine": 320
+            },
+            {
+              "id": "MM R07-02",
+              "dispositionLine": 321,
+              "ownerWindowLine": 321
+            },
+            {
+              "id": "MM R07-03",
+              "dispositionLine": 322,
+              "ownerWindowLine": 322
+            },
+            {
+              "id": "MM R07-04",
+              "dispositionLine": 323,
+              "ownerWindowLine": 323
+            },
+            {
+              "id": "MM R07-05",
+              "dispositionLine": 324,
+              "ownerWindowLine": 324
+            },
+            {
+              "id": "MM R07-06",
+              "dispositionLine": 325,
+              "ownerWindowLine": 325
+            },
+            {
+              "id": "MM R07-07",
+              "dispositionLine": 326,
+              "ownerWindowLine": 326
+            },
+            {
+              "id": "MM R07-08",
+              "dispositionLine": 327,
+              "ownerWindowLine": 327
+            },
+            {
+              "id": "MM R07-09",
+              "dispositionLine": 328,
+              "ownerWindowLine": 328
+            },
+            {
+              "id": "MM R07-10",
+              "dispositionLine": 329,
+              "ownerWindowLine": 329
+            },
+            {
+              "id": "MM R07-11",
+              "dispositionLine": 330,
+              "ownerWindowLine": 330
+            },
+            {
+              "id": "MM R07-12",
+              "dispositionLine": 331,
+              "ownerWindowLine": 331
+            },
+            {
+              "id": "MM R07-13",
+              "dispositionLine": 332,
+              "ownerWindowLine": 332
+            },
+            {
+              "id": "R06 Z P1",
+              "dispositionLine": 333,
+              "ownerWindowLine": 333
+            },
+            {
+              "id": "R06 Z P2",
+              "dispositionLine": 334,
+              "ownerWindowLine": 334
+            },
+            {
+              "id": "R06 Z P3",
+              "dispositionLine": 335,
+              "ownerWindowLine": 335
+            },
+            {
+              "id": "R06 Z P4",
+              "dispositionLine": 336,
+              "ownerWindowLine": 336
+            },
+            {
+              "id": "R06 Z P5",
+              "dispositionLine": 337,
+              "ownerWindowLine": 337
+            },
+            {
+              "id": "R06 Z P6",
+              "dispositionLine": 338,
+              "ownerWindowLine": 338
+            },
+            {
+              "id": "R06 Z P7",
+              "dispositionLine": 339,
+              "ownerWindowLine": 339
+            },
+            {
+              "id": "R06 Z P8",
+              "dispositionLine": 340,
+              "ownerWindowLine": 340
+            },
+            {
+              "id": "R06 D1",
+              "dispositionLine": 341,
+              "ownerWindowLine": 341
+            },
+            {
+              "id": "R06 D2",
+              "dispositionLine": 342,
+              "ownerWindowLine": 342
+            },
+            {
+              "id": "R06 D3",
+              "dispositionLine": 343,
+              "ownerWindowLine": 343
+            },
+            {
+              "id": "R06 D4",
+              "dispositionLine": 344,
+              "ownerWindowLine": 344
+            },
+            {
+              "id": "R06 D5",
+              "dispositionLine": 345,
+              "ownerWindowLine": 345
+            },
+            {
+              "id": "R06 D6",
+              "dispositionLine": 346,
+              "ownerWindowLine": 346
+            },
+            {
+              "id": "R06 D7",
+              "dispositionLine": 347,
+              "ownerWindowLine": 347
+            },
+            {
+              "id": "R06 D8",
+              "dispositionLine": 348,
+              "ownerWindowLine": 348
+            },
+            {
+              "id": "R06 D9",
+              "dispositionLine": 349,
+              "ownerWindowLine": 349
+            },
+            {
+              "id": "R06 D10",
+              "dispositionLine": 350,
+              "ownerWindowLine": 350
+            },
+            {
+              "id": "R06 D11",
+              "dispositionLine": 351,
+              "ownerWindowLine": 351
+            },
+            {
+              "id": "R06 D12",
+              "dispositionLine": 352,
+              "ownerWindowLine": 352
+            },
+            {
+              "id": "R04 Z01",
+              "dispositionLine": 353,
+              "ownerWindowLine": 353
+            },
+            {
+              "id": "R04 Z02",
+              "dispositionLine": 354,
+              "ownerWindowLine": 354
+            },
+            {
+              "id": "R04 Z03",
+              "dispositionLine": 355,
+              "ownerWindowLine": 355
+            },
+            {
+              "id": "R04 Z04",
+              "dispositionLine": 356,
+              "ownerWindowLine": 356
+            },
+            {
+              "id": "R04 Z05",
+              "dispositionLine": 357,
+              "ownerWindowLine": 357
+            },
+            {
+              "id": "R04 Z06",
+              "dispositionLine": 358,
+              "ownerWindowLine": 358
+            },
+            {
+              "id": "R04 Z07",
+              "dispositionLine": 359,
+              "ownerWindowLine": 359
+            },
+            {
+              "id": "R04 M01",
+              "dispositionLine": 360,
+              "ownerWindowLine": 360
+            },
+            {
+              "id": "R04 M02",
+              "dispositionLine": 361,
+              "ownerWindowLine": 361
+            },
+            {
+              "id": "R04 M03",
+              "dispositionLine": 362,
+              "ownerWindowLine": 362
+            },
+            {
+              "id": "R04 M04",
+              "dispositionLine": 363,
+              "ownerWindowLine": 363
+            },
+            {
+              "id": "R04 M05",
+              "dispositionLine": 364,
+              "ownerWindowLine": 364
+            },
+            {
+              "id": "R04 M06",
+              "dispositionLine": 365,
+              "ownerWindowLine": 365
+            },
+            {
+              "id": "R04 M07",
+              "dispositionLine": 366,
+              "ownerWindowLine": 366
+            },
+            {
+              "id": "R05 Z P1",
+              "dispositionLine": 367,
+              "ownerWindowLine": 367
+            },
+            {
+              "id": "R05 Z P2",
+              "dispositionLine": 368,
+              "ownerWindowLine": 368
+            },
+            {
+              "id": "R05 Z P3",
+              "dispositionLine": 369,
+              "ownerWindowLine": 369
+            },
+            {
+              "id": "R05 Z P4",
+              "dispositionLine": 370,
+              "ownerWindowLine": 370
+            },
+            {
+              "id": "R05 Z P5",
+              "dispositionLine": 371,
+              "ownerWindowLine": 371
+            },
+            {
+              "id": "R05 Z P6",
+              "dispositionLine": 372,
+              "ownerWindowLine": 372
+            },
+            {
+              "id": "R05 Z P7",
+              "dispositionLine": 373,
+              "ownerWindowLine": 373
+            },
+            {
+              "id": "R05 Z P8",
+              "dispositionLine": 374,
+              "ownerWindowLine": 374
+            },
+            {
+              "id": "R05 MM01",
+              "dispositionLine": 375,
+              "ownerWindowLine": 375
+            },
+            {
+              "id": "R05 MM02",
+              "dispositionLine": 376,
+              "ownerWindowLine": 376
+            },
+            {
+              "id": "R05 MM03",
+              "dispositionLine": 377,
+              "ownerWindowLine": 377
+            },
+            {
+              "id": "R05 MM04",
+              "dispositionLine": 378,
+              "ownerWindowLine": 378
+            },
+            {
+              "id": "R05 MM05",
+              "dispositionLine": 379,
+              "ownerWindowLine": 379
+            },
+            {
+              "id": "R05 MM06",
+              "dispositionLine": 380,
+              "ownerWindowLine": 380
+            },
+            {
+              "id": "R05 MM07",
+              "dispositionLine": 381,
+              "ownerWindowLine": 381
+            },
+            {
+              "id": "R05 MM08",
+              "dispositionLine": 382,
+              "ownerWindowLine": 382
+            },
+            {
+              "id": "R05 MM09",
+              "dispositionLine": 383,
+              "ownerWindowLine": 383
+            },
+            {
+              "id": "R05 MM10",
+              "dispositionLine": 384,
+              "ownerWindowLine": 384
+            },
+            {
+              "id": "R05 MM11",
+              "dispositionLine": 385,
+              "ownerWindowLine": 385
+            },
+            {
+              "id": "R05 MM12",
+              "dispositionLine": 386,
+              "ownerWindowLine": 386
+            },
+            {
+              "id": "R05 MM13",
+              "dispositionLine": 387,
+              "ownerWindowLine": 387
+            }
+          ]
+        },
+        "R09New": {
+          "count": 20,
+          "containsZ09Top10AndFR09NineAndOBS": true,
+          "items": [
+            {
+              "id": "Z09-01",
+              "dispositionLine": 393,
+              "ownerWindowLine": 393
+            },
+            {
+              "id": "Z09-02",
+              "dispositionLine": 394,
+              "ownerWindowLine": 394
+            },
+            {
+              "id": "Z09-03",
+              "dispositionLine": 395,
+              "ownerWindowLine": 395
+            },
+            {
+              "id": "Z09-04",
+              "dispositionLine": 396,
+              "ownerWindowLine": 396
+            },
+            {
+              "id": "Z09-05",
+              "dispositionLine": 397,
+              "ownerWindowLine": 397
+            },
+            {
+              "id": "Z09-06",
+              "dispositionLine": 398,
+              "ownerWindowLine": 398
+            },
+            {
+              "id": "Z09-07",
+              "dispositionLine": 399,
+              "ownerWindowLine": 399
+            },
+            {
+              "id": "Z09-08",
+              "dispositionLine": 400,
+              "ownerWindowLine": 400
+            },
+            {
+              "id": "Z09-09",
+              "dispositionLine": 401,
+              "ownerWindowLine": 401
+            },
+            {
+              "id": "Z09-10",
+              "dispositionLine": 402,
+              "ownerWindowLine": 402
+            },
+            {
+              "id": "F-R09-01",
+              "dispositionLine": 403,
+              "ownerWindowLine": 403
+            },
+            {
+              "id": "F-R09-02",
+              "dispositionLine": 404,
+              "ownerWindowLine": 404
+            },
+            {
+              "id": "F-R09-03",
+              "dispositionLine": 405,
+              "ownerWindowLine": 405
+            },
+            {
+              "id": "F-R09-04",
+              "dispositionLine": 406,
+              "ownerWindowLine": 406
+            },
+            {
+              "id": "F-R09-05",
+              "dispositionLine": 407,
+              "ownerWindowLine": 407
+            },
+            {
+              "id": "F-R09-06",
+              "dispositionLine": 408,
+              "ownerWindowLine": 408
+            },
+            {
+              "id": "F-R09-07",
+              "dispositionLine": 409,
+              "ownerWindowLine": 409
+            },
+            {
+              "id": "F-R09-08",
+              "dispositionLine": 410,
+              "ownerWindowLine": 410
+            },
+            {
+              "id": "F-R09-09",
+              "dispositionLine": 411,
+              "ownerWindowLine": 411
+            },
+            {
+              "id": "OBS-R09-10",
+              "dispositionLine": 412,
+              "ownerWindowLine": 412
+            }
+          ]
+        },
+        "extra13": {
+          "count": 13,
+          "separateFrom78": true,
+          "items": [
+            {
+              "id": "R06 MM01",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 499
+            },
+            {
+              "id": "R06 MM02",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 500
+            },
+            {
+              "id": "R06 MM03",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 501
+            },
+            {
+              "id": "R06 MM04",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 502
+            },
+            {
+              "id": "R06 MM05",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 503
+            },
+            {
+              "id": "R06 MM06",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 504
+            },
+            {
+              "id": "R06 MM07",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 505
+            },
+            {
+              "id": "R06 MM08",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 506
+            },
+            {
+              "id": "R06 MM09",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 507
+            },
+            {
+              "id": "R06 MM10",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 508
+            },
+            {
+              "id": "R06 MM11",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 509
+            },
+            {
+              "id": "R06 MM12",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 510
+            },
+            {
+              "id": "R06 MM13",
+              "statusLine": 416,
+              "effectiveMappingBasisOwnerWindowLine": 511
+            }
+          ]
+        }
+      },
+      "top9": [
+        {
+          "id": "R10-01",
+          "rank": 1,
+          "authorSeverityLabel": "高（门禁）",
+          "originalTopLine": 88,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [88, 100, 528],
+          "ownerWindowLines": [393],
+          "ownerWindow": "ROOT；精确push/CI票、merge前。"
+        },
+        {
+          "id": "R10-02",
+          "rank": 2,
+          "authorSeverityLabel": "中（未证根因）",
+          "originalTopLine": 89,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [89, 100, 528],
+          "ownerWindowLines": [394, 404],
+          "ownerWindow": "ROOT/原T02；真实CI归因窗口；UNPROVEN不产生新must-prove-cause门禁。"
+        },
+        {
+          "id": "R10-03",
+          "rank": 3,
+          "authorSeverityLabel": "低（维护）",
+          "originalTopLine": 90,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [90, 100],
+          "ownerWindowLines": [397],
+          "ownerWindow": "契约owner；下次整理。"
+        },
+        {
+          "id": "R10-04",
+          "rank": 4,
+          "authorSeverityLabel": "低（未确认观察）",
+          "originalTopLine": 91,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [91, 100],
+          "ownerWindowLines": [398, 288, 291],
+          "ownerWindow": "witness选取：T01触及时；CI/skip建议：原ROOT/原T02控制层维护票；两个建议分别归原位置，不统一新派责。"
+        },
+        {
+          "id": "R10-05",
+          "rank": 5,
+          "authorSeverityLabel": "低（供应链卫生）",
+          "originalTopLine": 92,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [92, 100],
+          "ownerWindowLines": [396],
+          "ownerWindow": "T11；merge后受控维护。"
+        },
+        {
+          "id": "R10-06",
+          "rank": 6,
+          "authorSeverityLabel": "低（测试质量）",
+          "originalTopLine": 93,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [489],
+          "supersedesOriginalLine": 93,
+          "ownerWindowLines": [489],
+          "ownerWindow": "T02测试/CI控制层下次维护票；原文未专门规定owner，待ROOT归口，不造授权。",
+          "effectiveMeaning": "保留公式边界同源窄盲区，明确存在SQL trace/authorizer/hashlib/product枚举/golden等独立证据，不否定全部测试。"
+        },
+        {
+          "id": "R10-07",
+          "rank": 7,
+          "authorSeverityLabel": "低（测试质量）",
+          "originalTopLine": 94,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [94, 493],
+          "ownerWindowLines": [493, 489],
+          "ownerWindow": "同R10-06；T02测试/CI控制层维护票，待ROOT归口。"
+        },
+        {
+          "id": "R10-08",
+          "rank": 8,
+          "authorSeverityLabel": "低（维护）",
+          "originalTopLine": 95,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [95, 493],
+          "ownerWindowLines": [493],
+          "ownerWindow": "native-driver：原T02 native+ROOT升级/证据维护窗口；ui-observation：T02测试维护/Playwright升级时重证，待ROOT归口。"
+        },
+        {
+          "id": "R10-09",
+          "rank": 9,
+          "authorSeverityLabel": "低（流程）",
+          "originalTopLine": 96,
+          "pushBeforeSourceBlocking": false,
+          "dispositionLines": [491],
+          "supersedesOriginalLine": 96,
+          "ownerWindowLines": [491],
+          "ownerWindow": "ROOT/AGENTS指南维护票；只保失效引用路径维护，不新增门禁。",
+          "effectiveMeaning": "原“未版本化/无hash/只未跟踪”论断撤回；两已入库同blob副本存在，仅旧AGENTS引用路径失效及未跟踪冗余副本维护。"
+        }
+      ],
+      "replacementIndex": [
+        {
+          "topic": "coverage/F01",
+          "oldLines": [46, 51, 52, 53, 286],
+          "effectiveLines": [458, 481]
+        },
+        {
+          "topic": "HANDOFF mismatch and erroneous exclusion explanation withdrawn",
+          "oldLines": [42, 98, 447],
+          "effectiveLines": [483, 485]
+        },
+        {
+          "topic": "R10-06 sharedoracle limitation",
+          "oldLines": [93],
+          "effectiveLines": [489]
+        },
+        {
+          "topic": "M0 versioned original exists;onlypointermaintenance remains",
+          "oldLines": [55, 96],
+          "effectiveLines": [491]
+        },
+        {
+          "topic": "newmaintenanceowners/windows",
+          "effectiveLines": [489, 491, 493]
+        },
+        {
+          "topic": "extra13owner/window/minimum basis",
+          "originalStatusLine": 416,
+          "effectiveLines": [495, 511]
+        }
+      ],
+      "audit02ResidualLimits": [
+        {
+          "line": 493,
+          "text": "R10-10",
+          "disposition": "Stray label not accepted as tenthTopfinding; effectiveTop is exactlyR10-01..09. Author existing judgments not altered."
+        },
+        {
+          "line": 521,
+          "text": "postwrite_admission:211–213/231–233",
+          "disposition": "211–213 is originaljob replay;231–233 is legal follow-up read/host health. Do not attribute a second replay proof to231–233. Main author correction—no four-click experiment—retained."
+        },
+        {
+          "topic": "coverage",
+          "disposition": "Detailed author declaration and exact changed-body boundaries accepted for this bounded technical stage; independent audit does not authenticate every read event or silently promote pattern sweeps into personal full reading."
+        }
+      ],
+      "stateBoundaries": [
+        "No oldb0CI/R09verdict inheritance fornew67.",
+        "Old31/78/R09 positions remain indexed; no invented mass-close.",
+        "Humanreview/legal/platform/unknownparser/capacity/ownershipfamily and2of17HOLD remain.",
+        "Normalannotation evidence does not prove timeout/cancel persistence.",
+        "No product/test/remote operation or communication to author performed by this mapping task."
+      ],
+      "onlyNewWrite": "zcode-effective-opinion-map-02.json",
+      "pointerSemantics": "For compactness, unchanged historical judgments/minimum bases/owners are indexed to exact author table rows, not restated or reinterpreted. F01 is replaced at481; its original owner/window remains at286. Extra13status is416 and effective mapped basis+owner/window is499–511."
+    },
+    "MiniMax": {
+      "schema": "T02.R10.MiniMax.effective-opinion-map.v3",
+      "report": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/minimax-natural-03-necessary-coverage.md",
+        "bytes": 165505,
+        "sha256": "216222aae8ec185e25a7e183a58998097c6c8d55c79797813dc995dcf2ecad89"
+      },
+      "candidate": "67b7bcbd2d911b4a6898d837dbf20688d793e844",
+      "interpretation": "作者有效处置按追加替代原行；ownerDisposition/ownerLimit是本方独核判断，非作者新观点。不删稳定ID，不将位置数等同唯一缺陷数。",
+      "authorVerdict": "ConditionalPass（限定技术阶段）",
+      "checklist": {
+        "count": 160,
+        "distribution": {
+          "不适用": 90,
+          "部分适用": 46,
+          "适用（正面）": 16,
+          "无法确认": 8
+        },
+        "replacementRows": 20,
+        "labelChanges": 17,
+        "items": [
+          {
+            "id": 1,
+            "authorLabel": "不适用",
+            "originalLine": 268
+          },
+          {
+            "id": 2,
+            "authorLabel": "不适用",
+            "originalLine": 269
+          },
+          {
+            "id": 3,
+            "authorLabel": "不适用",
+            "originalLine": 270
+          },
+          {
+            "id": 4,
+            "authorLabel": "不适用",
+            "originalLine": 271
+          },
+          {
+            "id": 5,
+            "authorLabel": "不适用",
+            "originalLine": 272
+          },
+          {
+            "id": 6,
+            "authorLabel": "不适用",
+            "originalLine": 273
+          },
+          {
+            "id": 7,
+            "authorLabel": "不适用",
+            "originalLine": 274
+          },
+          {
+            "id": 8,
+            "authorLabel": "不适用",
+            "originalLine": 275
+          },
+          {
+            "id": 9,
+            "authorLabel": "部分适用",
+            "originalLine": 276
+          },
+          {
+            "id": 10,
+            "authorLabel": "不适用",
+            "originalLine": 277
+          },
+          {
+            "id": 11,
+            "authorLabel": "不适用",
+            "originalLine": 278
+          },
+          {
+            "id": 12,
+            "authorLabel": "不适用",
+            "originalLine": 279
+          },
+          {
+            "id": 13,
+            "authorLabel": "不适用",
+            "originalLine": 280
+          },
+          {
+            "id": 14,
+            "authorLabel": "不适用",
+            "originalLine": 281
+          },
+          {
+            "id": 15,
+            "authorLabel": "部分适用",
+            "originalLine": 282
+          },
+          {
+            "id": 16,
+            "authorLabel": "不适用",
+            "originalLine": 283
+          },
+          {
+            "id": 17,
+            "authorLabel": "部分适用",
+            "originalLine": 284
+          },
+          {
+            "id": 18,
+            "authorLabel": "不适用",
+            "originalLine": 285
+          },
+          {
+            "id": 19,
+            "authorLabel": "部分适用",
+            "originalLine": 286,
+            "replacementLines": [755]
+          },
+          {
+            "id": 20,
+            "authorLabel": "部分适用",
+            "originalLine": 287,
+            "replacementLines": [756]
+          },
+          {
+            "id": 21,
+            "authorLabel": "不适用",
+            "originalLine": 288
+          },
+          {
+            "id": 22,
+            "authorLabel": "不适用",
+            "originalLine": 289
+          },
+          {
+            "id": 23,
+            "authorLabel": "部分适用",
+            "originalLine": 290
+          },
+          {
+            "id": 24,
+            "authorLabel": "不适用",
+            "originalLine": 291
+          },
+          {
+            "id": 25,
+            "authorLabel": "适用（正面）",
+            "originalLine": 292
+          },
+          {
+            "id": 26,
+            "authorLabel": "部分适用",
+            "originalLine": 293,
+            "replacementLines": [757]
+          },
+          {
+            "id": 27,
+            "authorLabel": "不适用",
+            "originalLine": 294
+          },
+          {
+            "id": 28,
+            "authorLabel": "不适用",
+            "originalLine": 295
+          },
+          {
+            "id": 29,
+            "authorLabel": "部分适用",
+            "originalLine": 296
+          },
+          {
+            "id": 30,
+            "authorLabel": "不适用",
+            "originalLine": 297
+          },
+          {
+            "id": 31,
+            "authorLabel": "部分适用",
+            "originalLine": 298,
+            "replacementLines": [758]
+          },
+          {
+            "id": 32,
+            "authorLabel": "部分适用",
+            "originalLine": 299,
+            "replacementLines": [759]
+          },
+          {
+            "id": 33,
+            "authorLabel": "部分适用",
+            "originalLine": 300,
+            "replacementLines": [760]
+          },
+          {
+            "id": 34,
+            "authorLabel": "不适用",
+            "originalLine": 301
+          },
+          {
+            "id": 35,
+            "authorLabel": "不适用",
+            "originalLine": 302
+          },
+          {
+            "id": 36,
+            "authorLabel": "适用（正面）",
+            "originalLine": 303
+          },
+          {
+            "id": 37,
+            "authorLabel": "不适用",
+            "originalLine": 304
+          },
+          {
+            "id": 38,
+            "authorLabel": "部分适用",
+            "originalLine": 305
+          },
+          {
+            "id": 39,
+            "authorLabel": "部分适用",
+            "originalLine": 306
+          },
+          {
+            "id": 40,
+            "authorLabel": "适用（正面）",
+            "originalLine": 307
+          },
+          {
+            "id": 41,
+            "authorLabel": "部分适用",
+            "originalLine": 308,
+            "replacementLines": [761]
+          },
+          {
+            "id": 42,
+            "authorLabel": "不适用",
+            "originalLine": 309
+          },
+          {
+            "id": 43,
+            "authorLabel": "适用（正面）",
+            "originalLine": 310
+          },
+          {
+            "id": 44,
+            "authorLabel": "适用（正面）",
+            "originalLine": 311
+          },
+          {
+            "id": 45,
+            "authorLabel": "不适用",
+            "originalLine": 312
+          },
+          {
+            "id": 46,
+            "authorLabel": "部分适用",
+            "originalLine": 313
+          },
+          {
+            "id": 47,
+            "authorLabel": "适用（正面）",
+            "originalLine": 314
+          },
+          {
+            "id": 48,
+            "authorLabel": "无法确认",
+            "originalLine": 315
+          },
+          {
+            "id": 49,
+            "authorLabel": "部分适用",
+            "originalLine": 316
+          },
+          {
+            "id": 50,
+            "authorLabel": "不适用",
+            "originalLine": 317
+          },
+          {
+            "id": 51,
+            "authorLabel": "不适用",
+            "originalLine": 318
+          },
+          {
+            "id": 52,
+            "authorLabel": "不适用",
+            "originalLine": 319
+          },
+          {
+            "id": 53,
+            "authorLabel": "不适用",
+            "originalLine": 320
+          },
+          {
+            "id": 54,
+            "authorLabel": "不适用",
+            "originalLine": 321
+          },
+          {
+            "id": 55,
+            "authorLabel": "部分适用",
+            "originalLine": 322
+          },
+          {
+            "id": 56,
+            "authorLabel": "不适用",
+            "originalLine": 323
+          },
+          {
+            "id": 57,
+            "authorLabel": "无法确认",
+            "originalLine": 324,
+            "replacementLines": [762]
+          },
+          {
+            "id": 58,
+            "authorLabel": "不适用",
+            "originalLine": 325
+          },
+          {
+            "id": 59,
+            "authorLabel": "不适用",
+            "originalLine": 326
+          },
+          {
+            "id": 60,
+            "authorLabel": "部分适用",
+            "originalLine": 327
+          },
+          {
+            "id": 61,
+            "authorLabel": "部分适用",
+            "originalLine": 328
+          },
+          {
+            "id": 62,
+            "authorLabel": "适用（正面）",
+            "originalLine": 329
+          },
+          {
+            "id": 63,
+            "authorLabel": "不适用",
+            "originalLine": 330
+          },
+          {
+            "id": 64,
+            "authorLabel": "不适用",
+            "originalLine": 331
+          },
+          {
+            "id": 65,
+            "authorLabel": "不适用",
+            "originalLine": 332
+          },
+          {
+            "id": 66,
+            "authorLabel": "不适用",
+            "originalLine": 333
+          },
+          {
+            "id": 67,
+            "authorLabel": "不适用",
+            "originalLine": 334
+          },
+          {
+            "id": 68,
+            "authorLabel": "部分适用",
+            "originalLine": 335
+          },
+          {
+            "id": 69,
+            "authorLabel": "部分适用",
+            "originalLine": 336,
+            "replacementLines": [763]
+          },
+          {
+            "id": 70,
+            "authorLabel": "部分适用",
+            "originalLine": 337
+          },
+          {
+            "id": 71,
+            "authorLabel": "不适用",
+            "originalLine": 338
+          },
+          {
+            "id": 72,
+            "authorLabel": "不适用",
+            "originalLine": 339
+          },
+          {
+            "id": 73,
+            "authorLabel": "部分适用",
+            "originalLine": 340,
+            "replacementLines": [764, 969],
+            "ownerLimit": "不采本人新3/9断言覆盖推论：test_storage190–223九规则参数化正反断言在位；不改作者部分适用标签，不冒新运行/四类GUI通过。"
+          },
+          {
+            "id": 74,
+            "authorLabel": "不适用",
+            "originalLine": 341
+          },
+          {
+            "id": 75,
+            "authorLabel": "不适用",
+            "originalLine": 342
+          },
+          {
+            "id": 76,
+            "authorLabel": "不适用",
+            "originalLine": 343
+          },
+          {
+            "id": 77,
+            "authorLabel": "不适用",
+            "originalLine": 344
+          },
+          {
+            "id": 78,
+            "authorLabel": "不适用",
+            "originalLine": 345
+          },
+          {
+            "id": 79,
+            "authorLabel": "不适用",
+            "originalLine": 346
+          },
+          {
+            "id": 80,
+            "authorLabel": "部分适用",
+            "originalLine": 347
+          },
+          {
+            "id": 81,
+            "authorLabel": "不适用",
+            "originalLine": 348
+          },
+          {
+            "id": 82,
+            "authorLabel": "不适用",
+            "originalLine": 349
+          },
+          {
+            "id": 83,
+            "authorLabel": "不适用",
+            "originalLine": 350
+          },
+          {
+            "id": 84,
+            "authorLabel": "不适用",
+            "originalLine": 351
+          },
+          {
+            "id": 85,
+            "authorLabel": "不适用",
+            "originalLine": 352
+          },
+          {
+            "id": 86,
+            "authorLabel": "不适用",
+            "originalLine": 353
+          },
+          {
+            "id": 87,
+            "authorLabel": "部分适用",
+            "originalLine": 354
+          },
+          {
+            "id": 88,
+            "authorLabel": "不适用",
+            "originalLine": 355
+          },
+          {
+            "id": 89,
+            "authorLabel": "不适用",
+            "originalLine": 356
+          },
+          {
+            "id": 90,
+            "authorLabel": "部分适用",
+            "originalLine": 357
+          },
+          {
+            "id": 91,
+            "authorLabel": "部分适用",
+            "originalLine": 358
+          },
+          {
+            "id": 92,
+            "authorLabel": "适用（正面）",
+            "originalLine": 359
+          },
+          {
+            "id": 93,
+            "authorLabel": "不适用",
+            "originalLine": 360
+          },
+          {
+            "id": 94,
+            "authorLabel": "适用（正面）",
+            "originalLine": 361
+          },
+          {
+            "id": 95,
+            "authorLabel": "适用（正面）",
+            "originalLine": 362
+          },
+          {
+            "id": 96,
+            "authorLabel": "部分适用",
+            "originalLine": 363,
+            "replacementLines": [765]
+          },
+          {
+            "id": 97,
+            "authorLabel": "部分适用",
+            "originalLine": 364,
+            "replacementLines": [766]
+          },
+          {
+            "id": 98,
+            "authorLabel": "不适用",
+            "originalLine": 365
+          },
+          {
+            "id": 99,
+            "authorLabel": "不适用",
+            "originalLine": 366
+          },
+          {
+            "id": 100,
+            "authorLabel": "不适用",
+            "originalLine": 367
+          },
+          {
+            "id": 101,
+            "authorLabel": "不适用",
+            "originalLine": 368
+          },
+          {
+            "id": 102,
+            "authorLabel": "不适用",
+            "originalLine": 369
+          },
+          {
+            "id": 103,
+            "authorLabel": "不适用",
+            "originalLine": 370
+          },
+          {
+            "id": 104,
+            "authorLabel": "不适用",
+            "originalLine": 371
+          },
+          {
+            "id": 105,
+            "authorLabel": "不适用",
+            "originalLine": 372
+          },
+          {
+            "id": 106,
+            "authorLabel": "不适用",
+            "originalLine": 373
+          },
+          {
+            "id": 107,
+            "authorLabel": "不适用",
+            "originalLine": 374
+          },
+          {
+            "id": 108,
+            "authorLabel": "不适用",
+            "originalLine": 375
+          },
+          {
+            "id": 109,
+            "authorLabel": "不适用",
+            "originalLine": 376
+          },
+          {
+            "id": 110,
+            "authorLabel": "不适用",
+            "originalLine": 377
+          },
+          {
+            "id": 111,
+            "authorLabel": "不适用",
+            "originalLine": 378
+          },
+          {
+            "id": 112,
+            "authorLabel": "不适用",
+            "originalLine": 379
+          },
+          {
+            "id": 113,
+            "authorLabel": "不适用",
+            "originalLine": 380
+          },
+          {
+            "id": 114,
+            "authorLabel": "部分适用",
+            "originalLine": 381
+          },
+          {
+            "id": 115,
+            "authorLabel": "不适用",
+            "originalLine": 382
+          },
+          {
+            "id": 116,
+            "authorLabel": "不适用",
+            "originalLine": 383
+          },
+          {
+            "id": 117,
+            "authorLabel": "不适用",
+            "originalLine": 384
+          },
+          {
+            "id": 118,
+            "authorLabel": "不适用",
+            "originalLine": 385
+          },
+          {
+            "id": 119,
+            "authorLabel": "不适用",
+            "originalLine": 386
+          },
+          {
+            "id": 120,
+            "authorLabel": "不适用",
+            "originalLine": 387
+          },
+          {
+            "id": 121,
+            "authorLabel": "适用（正面）",
+            "originalLine": 388
+          },
+          {
+            "id": 122,
+            "authorLabel": "不适用",
+            "originalLine": 389
+          },
+          {
+            "id": 123,
+            "authorLabel": "部分适用",
+            "originalLine": 390
+          },
+          {
+            "id": 124,
+            "authorLabel": "适用（正面）",
+            "originalLine": 391
+          },
+          {
+            "id": 125,
+            "authorLabel": "适用（正面）",
+            "originalLine": 392
+          },
+          {
+            "id": 126,
+            "authorLabel": "不适用",
+            "originalLine": 393
+          },
+          {
+            "id": 127,
+            "authorLabel": "不适用",
+            "originalLine": 394
+          },
+          {
+            "id": 128,
+            "authorLabel": "部分适用",
+            "originalLine": 395
+          },
+          {
+            "id": 129,
+            "authorLabel": "部分适用",
+            "originalLine": 396,
+            "replacementLines": [767, 804]
+          },
+          {
+            "id": 130,
+            "authorLabel": "不适用",
+            "originalLine": 397
+          },
+          {
+            "id": 131,
+            "authorLabel": "不适用",
+            "originalLine": 398
+          },
+          {
+            "id": 132,
+            "authorLabel": "适用（正面）",
+            "originalLine": 399
+          },
+          {
+            "id": 133,
+            "authorLabel": "适用（正面）",
+            "originalLine": 400
+          },
+          {
+            "id": 134,
+            "authorLabel": "部分适用",
+            "originalLine": 401
+          },
+          {
+            "id": 135,
+            "authorLabel": "部分适用",
+            "originalLine": 402,
+            "replacementLines": [768]
+          },
+          {
+            "id": 136,
+            "authorLabel": "部分适用",
+            "originalLine": 403,
+            "replacementLines": [769]
+          },
+          {
+            "id": 137,
+            "authorLabel": "部分适用",
+            "originalLine": 404
+          },
+          {
+            "id": 138,
+            "authorLabel": "部分适用",
+            "originalLine": 405,
+            "replacementLines": [770, 808]
+          },
+          {
+            "id": 139,
+            "authorLabel": "适用（正面）",
+            "originalLine": 406
+          },
+          {
+            "id": 140,
+            "authorLabel": "部分适用",
+            "originalLine": 407
+          },
+          {
+            "id": 141,
+            "authorLabel": "部分适用",
+            "originalLine": 408
+          },
+          {
+            "id": 142,
+            "authorLabel": "不适用",
+            "originalLine": 409
+          },
+          {
+            "id": 143,
+            "authorLabel": "不适用",
+            "originalLine": 410
+          },
+          {
+            "id": 144,
+            "authorLabel": "不适用",
+            "originalLine": 411
+          },
+          {
+            "id": 145,
+            "authorLabel": "部分适用",
+            "originalLine": 412
+          },
+          {
+            "id": 146,
+            "authorLabel": "无法确认",
+            "originalLine": 413,
+            "replacementLines": [771]
+          },
+          {
+            "id": 147,
+            "authorLabel": "无法确认",
+            "originalLine": 414,
+            "replacementLines": [772]
+          },
+          {
+            "id": 148,
+            "authorLabel": "无法确认",
+            "originalLine": 415
+          },
+          {
+            "id": 149,
+            "authorLabel": "无法确认",
+            "originalLine": 416
+          },
+          {
+            "id": 150,
+            "authorLabel": "无法确认",
+            "originalLine": 417
+          },
+          {
+            "id": 151,
+            "authorLabel": "无法确认",
+            "originalLine": 418
+          },
+          {
+            "id": 152,
+            "authorLabel": "不适用",
+            "originalLine": 419
+          },
+          {
+            "id": 153,
+            "authorLabel": "部分适用",
+            "originalLine": 420,
+            "replacementLines": [773]
+          },
+          {
+            "id": 154,
+            "authorLabel": "不适用",
+            "originalLine": 421
+          },
+          {
+            "id": 155,
+            "authorLabel": "部分适用",
+            "originalLine": 422
+          },
+          {
+            "id": 156,
+            "authorLabel": "部分适用",
+            "originalLine": 423,
+            "replacementLines": [774]
+          },
+          {
+            "id": 157,
+            "authorLabel": "不适用",
+            "originalLine": 424
+          },
+          {
+            "id": 158,
+            "authorLabel": "部分适用",
+            "originalLine": 425
+          },
+          {
+            "id": 159,
+            "authorLabel": "不适用",
+            "originalLine": 426
+          },
+          {
+            "id": 160,
+            "authorLabel": "部分适用",
+            "originalLine": 427
+          }
+        ],
+        "tail13": "4未知/4NA/5部分，936–944已修正",
+        "ownerWindow": "清单适用性不新建160个owner/审批；沿原门禁/HOLD归口。"
+      },
+      "current31": [
+        {
+          "id": "Z08-01",
+          "line": 455,
+          "authorApplicability": "保留（仍开，合并门禁）",
+          "authorDisposition": "**保留**。数值更新为 67b7bcbd：仍无新 CI。→ R10-T01",
+          "authorOwnerWindow": "ROOT 未来精确 push/CI 票；merge 前"
+        },
+        {
+          "id": "Z08-02",
+          "line": 456,
+          "authorApplicability": "保留（仍开，未确认）",
+          "authorDisposition": "**保留**。本轮无新工具、无后代回收证据。",
+          "authorOwnerWindow": "Windows 完整 CI 证据接收；Job Object/新工具须 ROOT 另票"
+        },
+        {
+          "id": "Z08-03",
+          "line": 457,
+          "authorApplicability": "保留（仍开，非阻断）",
+          "authorDisposition": "**保留**。→ R10-T06（命名与门禁语义歧义）",
+          "authorOwnerWindow": "未来实际制品回单判断；预算变化须新明确授权"
+        },
+        {
+          "id": "Z08-04",
+          "line": 458,
+          "authorApplicability": "保留（历史 FAIL 缺栈仍开）",
+          "authorDisposition": "**保留**。新结构化栈须真实 CI 复发时取得。",
+          "authorOwnerWindow": "下一真实 CI 若复发按新增结构化栈定因；新绿不倒填"
+        },
+        {
+          "id": "Z08-05",
+          "line": 459,
+          "authorApplicability": "保留（双向因果限定）",
+          "authorDisposition": "**保留（仍开·维护）**，并**与 CI41 helper12 主题分离**——后者归 §2 的 R10-T02 与 §10.7 的 `R06 Z P2`",
+          "authorOwnerWindow": "T01 原测试维护者下次授权触及环境/测试时；**无需重跑旧失败填因果**",
+          "replacementLine": 817,
+          "authorEffectiveTopic": "**两处裸 PATH python 在位 ＋ O056 双原件 ＋ 双向因果限定**：`round-08/disposition.md:26` 逐字为「本人 grep 两处在位（:656/:168）；O056 保留首次 ENOENT 失败与正确 uv 通过双原件」，并把 v1.0「已知与 79F 归因无关」更正为「不作为 79F 根因认定，亦不能排除其为部分环境因素」；`round-09/disposition.md:226` 记「仍开（维护），本轮实测复核代码事实仍在」"
+        },
+        {
+          "id": "Z08-06",
+          "line": 460,
+          "authorApplicability": "保留（远端侧仍待验）",
+          "authorDisposition": "**分层维持**：**本地配置/控制层闭合资格维持，不静默重开**；远端 CI OPEN 保留（合并门禁由 R10-T01 承接）",
+          "authorOwnerWindow": "Windows/Quality 实际 CI 仍待验",
+          "replacementLine": 821,
+          "authorEffectiveTopic": "**本地闭合资格与远端 CI OPEN 分层**：`round-09/disposition.md:227` 逐字为「承接（本地闭合资格）／仍开（远端侧）；**本地控制层资格不再由本轮重述**」，owner/窗口＝「Windows/Quality 实际 CI 仍待验」"
+        },
+        {
+          "id": "Z08-07",
+          "line": 461,
+          "authorApplicability": "保留（未验/文案维护）",
+          "authorDisposition": "**保留**。裸家族延期的代码事实未变。",
+          "authorOwnerWindow": "原 T01/T02 方法接线窗口"
+        },
+        {
+          "id": "Z08-08",
+          "line": 462,
+          "authorApplicability": "保留（P2，发布/供应链缺口）",
+          "authorDisposition": "**保留**。→ R10-T07",
+          "authorOwnerWindow": "发布/供应链 owner 另票"
+        },
+        {
+          "id": "Z08-09",
+          "line": 463,
+          "authorApplicability": "保留（非阻断卫生观察）",
+          "authorDisposition": "**保留**。→ R10-T08",
+          "authorOwnerWindow": "未来 CI 维护票评估去重"
+        },
+        {
+          "id": "Z08-10",
+          "line": 464,
+          "authorApplicability": "保留（部分采纳）",
+          "authorDisposition": "**保留（仍开·部分采纳维持）**。首稿引用的 ruff exclude 事实**在仓库中真实存在**，但属**另一主题**（归档复核 `R08 F10` 口径），**不得**充当 Z08-10 的主题",
+          "authorOwnerWindow": "发布/vendor 原 owner 未来窗口；**配置存在不称执行完成**",
+          "replacementLine": 818,
+          "authorEffectiveTopic": "**dependabot 节奏与核验**：`round-08/disposition.md:31` 逐字为「本人实读 dependabot.yml（npm+github-actions，均 directory /，weekly，target develop；npm open-pull-requests-limit 5）；实际运行/合并记录、uv/vendor 跟进、SLA/EOL 未证——纠正 v1.0『全无节奏』暗示」；`round-09/disposition.md:231` 记「仍开（部分采纳维持）」"
+        },
+        {
+          "id": "Z08-11",
+          "line": 465,
+          "authorApplicability": "保留（独立 HOLD 群）",
+          "authorDisposition": "**保留**。本轮未发现任一 HOLD 被 67 关闭。",
+          "authorOwnerWindow": "原各 owner/父 FR 与发布验收时"
+        },
+        {
+          "id": "Z08-TOP10-OLD79F",
+          "line": 466,
+          "authorApplicability": "保留（未知保原）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT 历史残留登记及未来真实复发证据"
+        },
+        {
+          "id": "F01",
+          "line": 467,
+          "authorApplicability": "保留（流程）",
+          "authorDisposition": "**保留为流程**。本轮完成本方覆盖与处置；接收由 ROOT 决定。",
+          "authorOwnerWindow": "T02 作者完成本票；ROOT 在 push 前接收"
+        },
+        {
+          "id": "F02",
+          "line": 468,
+          "authorApplicability": "保留（合并门禁），数值更新为 67b7bcbd",
+          "authorDisposition": "**保留**。→ R10-T01",
+          "authorOwnerWindow": "ROOT 发精确 push 票后按原 15/20 分钟逐 node 核验"
+        },
+        {
+          "id": "F03",
+          "line": 469,
+          "authorApplicability": "保留 + 限定",
+          "authorDisposition": "**保留**。脚本结算语义本轮**未变**（我在 ci.yml 差异中确认本轮 CI 改动只涉及 shard=2 环境变量与 reporter/artifact，不改计账逻辑）。",
+          "authorOwnerWindow": "ROOT；同交付 3769 逐项核验接收"
+        },
+        {
+          "id": "F04",
+          "line": 470,
+          "authorApplicability": "维持撤回，不复活",
+          "authorDisposition": "**维持撤回**。本轮仍不造失败样本。",
+          "authorOwnerWindow": "本票内闭合"
+        },
+        {
+          "id": "F05",
+          "line": 471,
+          "authorApplicability": "**重新变开（新增事实）**",
+          "authorDisposition": "**重新变开**。67 尚待本轮接收与后续归档，不能自动关闭。→ 本报告仅出报告，不改状态文档（只读职责）。",
+          "authorOwnerWindow": "ROOT 指定文档 owner；状态新增段与普通证据提交"
+        },
+        {
+          "id": "F06",
+          "line": 472,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。13 字段身份仍不证完整 sys.path 等价。",
+          "authorOwnerWindow": "原 T02 开发归口；声称完整导入路径等价之前"
+        },
+        {
+          "id": "F07",
+          "line": 473,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。接收任何无 head/tree 产出前。",
+          "authorOwnerWindow": "原 T02 开发归口；证据控制层维护票"
+        },
+        {
+          "id": "F08",
+          "line": 474,
+          "authorApplicability": "保留（正面复核），并追加本人新发现",
+          "authorDisposition": "**保留并正面复核**：异步预览 fence 在位。**追加**：R10-T10（renderer 歧义判定与引擎 `_check_slot` 口径差）属同一前端归口的新观察。",
+          "authorOwnerWindow": "原 T02 前端归口；UX/异步预览维护窗口"
+        },
+        {
+          "id": "F09",
+          "line": 475,
+          "authorApplicability": "保留（P3）",
+          "authorDisposition": "**保留**。不私自删 wheel。→ R10-T07",
+          "authorOwnerWindow": "原 T11 供应链/发布归口；merge 后受控维护"
+        },
+        {
+          "id": "F10",
+          "line": 476,
+          "authorApplicability": "保留（两覆盖面仍不等）",
+          "authorDisposition": "**保留**。不改 raw、不宽泛排除绕过检查。",
+          "authorOwnerWindow": "ROOT 报告归档归口 + 原 T02 维护归口"
+        },
+        {
+          "id": "F11",
+          "line": 477,
+          "authorApplicability": "维持原审作者收窄",
+          "authorDisposition": "**维持收窄**。本轮未发现需扩大的新证据。",
+          "authorOwnerWindow": "原 MM 作者本票内闭合"
+        },
+        {
+          "id": "F12",
+          "line": 478,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。不延时/重试/隐藏取消。",
+          "authorOwnerWindow": "ROOT 未来 CI 结算逐步核产物"
+        },
+        {
+          "id": "F13",
+          "line": 479,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。不量化未实测提速。",
+          "authorOwnerWindow": "ROOT 后续 PR16 说明/CI 结算窗口"
+        },
+        {
+          "id": "F14",
+          "line": 480,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。→ R10-T09（本轮实测两侧 canonical 逐字节一致，但耦合无全 Unicode 机器校验）。",
+          "authorOwnerWindow": "原 T02 契约归口；后续首个 ownership-detail 契约维护票"
+        },
+        {
+          "id": "F15",
+          "line": 481,
+          "authorApplicability": "保留（未确认观察）",
+          "authorDisposition": "**保留**。SQL 无序事实未确认观察，不升级缺陷。",
+          "authorOwnerWindow": "原 T02 storage/契约归口；原见证顺序合同维护窗口"
+        },
+        {
+          "id": "F16",
+          "line": 482,
+          "authorApplicability": "保留（容量维持）",
+          "authorDisposition": "**保留**。不提高上限、不解除容量 HOLD。",
+          "authorOwnerWindow": "原 T02 契约归口持续保留原 capacity"
+        },
+        {
+          "id": "F17",
+          "line": 483,
+          "authorApplicability": "保留（无需改动）",
+          "authorDisposition": "**保留**。无新增动作。",
+          "authorOwnerWindow": "原 T02 前端归口"
+        },
+        {
+          "id": "F18",
+          "line": 484,
+          "authorApplicability": "保留 + 我方过度陈述更正",
+          "authorDisposition": "**保留**。→ R10-T07",
+          "authorOwnerWindow": "原 T11 供应链 + 原 T02 依赖归口"
+        },
+        {
+          "id": "F19",
+          "line": 485,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。保留旧 raw 与旧标题，不改写旧 79F 或 Ruff 差因。",
+          "authorOwnerWindow": "ROOT 唯一归档归口"
+        }
+      ],
+      "historical78": [
+        {
+          "id": "Z F1",
+          "line": 495,
+          "authorApplicability": "保留（门禁）",
+          "authorDisposition": "**保留**。→ R10-T01",
+          "authorOwnerWindow": "ROOT 精确 CI 票；merge 前"
+        },
+        {
+          "id": "Z F2",
+          "line": 496,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "未来新增 raw/改规则时"
+        },
+        {
+          "id": "Z F3",
+          "line": 497,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "原测试 owner 下次触及"
+        },
+        {
+          "id": "Z F4",
+          "line": 498,
+          "authorApplicability": "保留（口径闭合）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "Z F5",
+          "line": 499,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留（仍开·维护）**；首稿引用的 `t02-manual-fact-id.test.ts:67` 是 `resolve('.venv/bin/python')` **显式路径**，**不能替换**上述两点（见 §10.2 的 R10-T09 更正）",
+          "authorOwnerWindow": "T01 测试维护者下次授权触及两测试或环境适配前",
+          "replacementLine": 819,
+          "authorEffectiveTopic": "**两处裸 PATH python**：`round-09/disposition.md:264` 逐字为「仍开：本人 grep 两处在位（:656/:168）」。本人本轮实测确认：`tests/unit/t01-mainline-contract.test.ts:656` 与 `tests/unit/t01-ontology-metadata-contract.test.ts:168` 两行均为 `execFileSync('python', ['-I','-B','-c', script], {`（**裸 PATH**）"
+        },
+        {
+          "id": "Z F6",
+          "line": 500,
+          "authorApplicability": "保留（集合未集合化关闭）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "各接线/维护事件"
+        },
+        {
+          "id": "Z F7",
+          "line": 501,
+          "authorApplicability": "保留（HOLD 群）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "各 owner 对应验收前"
+        },
+        {
+          "id": "Z F8",
+          "line": 502,
+          "authorApplicability": "保留（部分）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "未知/新家族接线前"
+        },
+        {
+          "id": "Z F9",
+          "line": 503,
+          "authorApplicability": "保留（限本受审面闭合）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01/T02 触及时"
+        },
+        {
+          "id": "Z F10",
+          "line": 504,
+          "authorApplicability": "保留（观察）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "既有 O047 证据接收维持"
+        },
+        {
+          "id": "MM R07-01",
+          "line": 505,
+          "authorApplicability": "保留（已闭合）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "本次静态接收"
+        },
+        {
+          "id": "MM R07-02",
+          "line": 506,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT/T02 未来确增 raw 时"
+        },
+        {
+          "id": "MM R07-03",
+          "line": 507,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "将来独立配置票"
+        },
+        {
+          "id": "MM R07-04",
+          "line": 508,
+          "authorApplicability": "保留（重新变开）",
+          "authorDisposition": "**保留为重新变开**。→ F05",
+          "authorOwnerWindow": "ROOT 文档 owner，归档票后"
+        },
+        {
+          "id": "MM R07-05",
+          "line": 509,
+          "authorApplicability": "保留（overlay 维护）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT/指南 owner 维护时"
+        },
+        {
+          "id": "MM R07-06",
+          "line": 510,
+          "authorApplicability": "保留（口径）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "本次事实修订"
+        },
+        {
+          "id": "MM R07-07",
+          "line": 511,
+          "authorApplicability": "保留（口径）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "原测试 owner，载荷变化时"
+        },
+        {
+          "id": "MM R07-08",
+          "line": 512,
+          "authorApplicability": "保留（口径）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "整父 FR/具名下游由原 owner 另验"
+        },
+        {
+          "id": "MM R07-09",
+          "line": 513,
+          "authorApplicability": "保留（口径）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "本次事实修订"
+        },
+        {
+          "id": "MM R07-10",
+          "line": 514,
+          "authorApplicability": "保留（口径，标题与正文差异）",
+          "authorDisposition": "**保留原口径**。",
+          "authorOwnerWindow": "无新复跑票"
+        },
+        {
+          "id": "MM R07-11",
+          "line": 515,
+          "authorApplicability": "保留（观察）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T02/ROOT 未来 PR 说明可解释"
+        },
+        {
+          "id": "MM R07-12",
+          "line": 516,
+          "authorApplicability": "保留（HOLD）",
+          "authorDisposition": "**保留**。→ R10-T07",
+          "authorOwnerWindow": "原 vendor/发布 owner"
+        },
+        {
+          "id": "MM R07-13",
+          "line": 517,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。→ R10-T09",
+          "authorOwnerWindow": "契约 owner 下次授权整理类型时"
+        },
+        {
+          "id": "R06 Z P1",
+          "line": 523,
+          "authorApplicability": "保留（门禁）",
+          "authorDisposition": "**保留**。→ R10-T01",
+          "authorOwnerWindow": "合并前真实 CI"
+        },
+        {
+          "id": "R06 Z P2",
+          "line": 524,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留（仍开）**，主题更正为「诊断步与完整验收政策/F03」；**与 CI41 根因主题分离**（CI41 根因见 R10-T02）",
+          "authorOwnerWindow": "未来 CI 证据接收标准",
+          "replacementLine": 822,
+          "authorEffectiveTopic": "**诊断步与验收口径分离维持（F03）**：`round-09/disposition.md:284` 逐字为「仍开：诊断步与验收口径分离维持（F03）」"
+        },
+        {
+          "id": "R06 Z P3",
+          "line": 525,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 核心；原始 wire/Agent 接线前"
+        },
+        {
+          "id": "R06 Z P4",
+          "line": 526,
+          "authorApplicability": "保留（部分）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 详情合同 + T02 消费"
+        },
+        {
+          "id": "R06 Z P5",
+          "line": 527,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "对应方法接线前"
+        },
+        {
+          "id": "R06 Z P6",
+          "line": 528,
+          "authorApplicability": "保留（未确认观察）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 下次触及 witness 选取时"
+        },
+        {
+          "id": "R06 Z P7",
+          "line": 529,
+          "authorApplicability": "保留（沿既有决定）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "政策变更才新人类决定"
+        },
+        {
+          "id": "R06 Z P8",
+          "line": 530,
+          "authorApplicability": "保留（逐项）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "各原归口"
+        },
+        {
+          "id": "R06 D1",
+          "line": 531,
+          "authorApplicability": "保留（门禁）",
+          "authorDisposition": "**保留**。→ R10-T01",
+          "authorOwnerWindow": "ROOT 正常票"
+        },
+        {
+          "id": "R06 D2",
+          "line": 532,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT 文档 owner"
+        },
+        {
+          "id": "R06 D3",
+          "line": 533,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 原归口；接线前"
+        },
+        {
+          "id": "R06 D4",
+          "line": 534,
+          "authorApplicability": "保留（部分）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01+T02；随家族接线处理"
+        },
+        {
+          "id": "R06 D5",
+          "line": 535,
+          "authorApplicability": "保留（未确认观察）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 下次触及选取时维护"
+        },
+        {
+          "id": "R06 D6",
+          "line": 536,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T02 vendor/T01 入口；新解析入口前"
+        },
+        {
+          "id": "R06 D7",
+          "line": 537,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01/T02 对应方法接线前"
+        },
+        {
+          "id": "R06 D8",
+          "line": 538,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留（仍开·维护）**，主题同上更正",
+          "authorOwnerWindow": "T01 原测试维护者；下次授权触及或环境适配前",
+          "replacementLine": 820,
+          "authorEffectiveTopic": "**同 Z F5**：`round-09/disposition.md:298` 逐字为「仍开：同 Z F5（本人 grep 两处在位）」"
+        },
+        {
+          "id": "R06 D9",
+          "line": 539,
+          "authorApplicability": "保留（口径）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "文档 owner 归档后追加"
+        },
+        {
+          "id": "R06 D10",
+          "line": 540,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "父 FR/消费链验收前"
+        },
+        {
+          "id": "R06 D11",
+          "line": 541,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T02 输入边界"
+        },
+        {
+          "id": "R06 D12",
+          "line": 542,
+          "authorApplicability": "保留（有界）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R04 Z01",
+          "line": 548,
+          "authorApplicability": "保留（未确认观察）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 下次触及 witness 选取"
+        },
+        {
+          "id": "R04 Z02",
+          "line": 549,
+          "authorApplicability": "保留（撤回维持，不复活）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 详情预算维护"
+        },
+        {
+          "id": "R04 Z03",
+          "line": 550,
+          "authorApplicability": "保留（OPEN）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01；接线前"
+        },
+        {
+          "id": "R04 Z04",
+          "line": 551,
+          "authorApplicability": "保留（部分）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "家族接线前"
+        },
+        {
+          "id": "R04 Z05",
+          "line": 552,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "方法接线前"
+        },
+        {
+          "id": "R04 Z06",
+          "line": 553,
+          "authorApplicability": "保留（沿既有决定）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R04 Z07",
+          "line": 554,
+          "authorApplicability": "保留（信息）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R04 M01",
+          "line": 555,
+          "authorApplicability": "保留（历史演进）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT 归档票"
+        },
+        {
+          "id": "R04 M02",
+          "line": 556,
+          "authorApplicability": "保留（维持）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R04 M03",
+          "line": 557,
+          "authorApplicability": "保留（未来维护）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T02；下次授权触及整数守卫时"
+        },
+        {
+          "id": "R04 M04",
+          "line": 558,
+          "authorApplicability": "保留（OPEN）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "新解析入口前"
+        },
+        {
+          "id": "R04 M05",
+          "line": 559,
+          "authorApplicability": "保留（OPEN）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01"
+        },
+        {
+          "id": "R04 M06",
+          "line": 560,
+          "authorApplicability": "保留（维持分层，非绕过漏洞）",
+          "authorDisposition": "**保留**。→ R10-T09",
+          "authorOwnerWindow": "无待办；不外推为全产品安全认证"
+        },
+        {
+          "id": "R04 M07",
+          "line": 561,
+          "authorApplicability": "保留（维护窗口）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "契约 owner 下次 API 整理时评估"
+        },
+        {
+          "id": "R05 Z P1",
+          "line": 567,
+          "authorApplicability": "保留（门禁）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT 合并门禁"
+        },
+        {
+          "id": "R05 Z P2",
+          "line": 568,
+          "authorApplicability": "保留（事实闭合）",
+          "authorDisposition": "**保留**；不迁移为新 head CI 绿。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R05 Z P3",
+          "line": 569,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 接线前"
+        },
+        {
+          "id": "R05 Z P4",
+          "line": 570,
+          "authorApplicability": "保留（部分）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "家族接线前"
+        },
+        {
+          "id": "R05 Z P5",
+          "line": 571,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "方法接线前"
+        },
+        {
+          "id": "R05 Z P6",
+          "line": 572,
+          "authorApplicability": "保留（口径）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R05 Z P7",
+          "line": 573,
+          "authorApplicability": "保留（口径）",
+          "authorDisposition": "**保留（口径闭合限于诊断选项一半）**；**不得因只列诊断就宣告「文件增长」那一面关闭**——该面维持**信息级**（并与本轮 §10.3 的 #138 事实更正互相印证）。本轮**已读**该更早本人原文（真实来源如上），**未造新原件**",
+          "authorOwnerWindow": "R09 所记 owner/窗口＝无待办；增长面沿原信息级归口",
+          "replacementLine": 823,
+          "authorEffectiveTopic": "**闭合只覆盖一半**：`round-09/disposition.md:323` 逐字为「关闭（口径）：诊断选项演变事实；F03 约束继续」——**只覆盖「诊断选项演变事实」**；本人**更早原稿** `round-07/minimax-m31flash.md:506` 逐字记载「**该条原含两部分**：①诊断参数（当时有效 pytest 选项已随时间变化）；②文件增长信息。本轮只作读回、未重跑；**两部分均按原处分保留**，不因本轮复核改写旧报告」；`round-08/minimax-m31flash.md:410` 记「已闭合（口径），但见 F03」；文件增长一半在 `round-05/minimax-m31flash.md:264` 记为「Z-07 文件增长｜信息级｜aff 实测 2993／1887／1748」"
+        },
+        {
+          "id": "R05 Z P8",
+          "line": 574,
+          "authorApplicability": "保留（重新变开）",
+          "authorDisposition": "**保留为重新变开**。→ F05",
+          "authorOwnerWindow": "ROOT 文档 owner"
+        },
+        {
+          "id": "R05 MM01",
+          "line": 575,
+          "authorApplicability": "保留（门禁）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT；新 CI 后、merge 前"
+        },
+        {
+          "id": "R05 MM02",
+          "line": 576,
+          "authorApplicability": "保留（事实）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "ROOT/新 CI 后"
+        },
+        {
+          "id": "R05 MM03",
+          "line": 577,
+          "authorApplicability": "保留（门禁）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "新包制造票"
+        },
+        {
+          "id": "R05 MM04",
+          "line": 578,
+          "authorApplicability": "保留（重新变开）",
+          "authorDisposition": "**保留为重新变开**。",
+          "authorOwnerWindow": "ROOT 文档 owner"
+        },
+        {
+          "id": "R05 MM05",
+          "line": 579,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "方法接线前"
+        },
+        {
+          "id": "R05 MM06",
+          "line": 580,
+          "authorApplicability": "保留",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 接线前"
+        },
+        {
+          "id": "R05 MM07",
+          "line": 581,
+          "authorApplicability": "保留（部分）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "家族接线前"
+        },
+        {
+          "id": "R05 MM08",
+          "line": 582,
+          "authorApplicability": "保留（未确认观察）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 下次触及选取时"
+        },
+        {
+          "id": "R05 MM09",
+          "line": 583,
+          "authorApplicability": "保留（维持）",
+          "authorDisposition": "**保留**。→ R10-T07",
+          "authorOwnerWindow": "vendor/发布 owner"
+        },
+        {
+          "id": "R05 MM10",
+          "line": 584,
+          "authorApplicability": "保留（维持，非候选缺陷）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R05 MM11",
+          "line": 585,
+          "authorApplicability": "保留（信息）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        },
+        {
+          "id": "R05 MM12",
+          "line": 586,
+          "authorApplicability": "保留（维护）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "T01 原测试维护者"
+        },
+        {
+          "id": "R05 MM13",
+          "line": 587,
+          "authorApplicability": "保留（信息）",
+          "authorDisposition": "**保留**。",
+          "authorOwnerWindow": "无待办"
+        }
+      ],
+      "extra13Separate": [
+        {
+          "id": "R06 MM01",
+          "line": 597,
+          "priorState": "仍开（门禁）",
+          "authorDisposition": "**保留**（旧 79 全因未知）→ R10-T01",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM02",
+          "line": 598,
+          "priorState": "已闭合（事实）",
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM03",
+          "line": 599,
+          "priorState": "仍开（门禁）",
+          "authorDisposition": "**保留**（本 head 未打包/无新 CI）→ R10-T01",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM04",
+          "line": 600,
+          "priorState": "已闭合（分别承接）→ 240b581c 上重新变开",
+          "authorDisposition": "**保留为重新变开**；本轮推进至 67b7bcbd 上仍变开（状态文档未归档 67 段，实测）→ F05",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM05",
+          "line": 601,
+          "priorState": "仍开",
+          "authorDisposition": "**保留 ID 与状态「仍开」**；首稿所加「裸 ownership 家族」主题**无原件依据，予以撤回**；本轮**不删**该 extra 行、**不改**其状态，依据不足即限定并给出真实来源（R09:347）",
+          "authorOwnerWindow": "沿 R09 该行（R09 未另列窗口）",
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。",
+          "replacementLine": 824
+        },
+        {
+          "id": "R06 MM06",
+          "line": 602,
+          "priorState": "仍开",
+          "authorDisposition": "**保留**（definitions 早期 wire）",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM07",
+          "line": 603,
+          "priorState": "部分闭合",
+          "authorDisposition": "**保留**（typed/裸家族分开）",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM08",
+          "line": 604,
+          "priorState": "仍开（未确认观察）",
+          "authorDisposition": "**保留**（SQL 无序）",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM09",
+          "line": 605,
+          "priorState": "已闭合（维持），冗余件见 F09",
+          "authorDisposition": "**保留**；冗余件事实经本人实测仍成立 → R10-T07",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM10",
+          "line": 606,
+          "priorState": "已闭合（维持），overlay 仍在",
+          "authorDisposition": "**保留**；overlay 经本人实测仍在",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM11",
+          "line": 607,
+          "priorState": "已闭合（信息），locator 字段面",
+          "authorDisposition": "**保留**；本人实测 locator 仍无 object",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM12",
+          "line": 608,
+          "priorState": "仍开（维护）",
+          "authorDisposition": "**保留**（PATH python）",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        },
+        {
+          "id": "R06 MM13",
+          "line": 609,
+          "priorState": "已闭合（信息）",
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": null,
+          "ownerProvenance": "本人此表未单列，沿R09同位置原归口；不造owner/新窗口。"
+        }
+      ],
+      "R09NewAndOBS": [
+        {
+          "id": "Z09-01",
+          "line": 617,
+          "authorDisposition": "**保留**（数值更新为 67b7bcbd）→ R10-T01",
+          "authorOwnerWindow": "ROOT；精确CI票/merge前",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:22"
+        },
+        {
+          "id": "Z09-02",
+          "line": 618,
+          "authorDisposition": "**保留** → R10-T02",
+          "authorOwnerWindow": "ROOT；真实CI归因/回单接收",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:23"
+        },
+        {
+          "id": "Z09-03",
+          "line": 619,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "ROOT；CI证据接收，新增工具另票",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:24"
+        },
+        {
+          "id": "Z09-04",
+          "line": 620,
+          "authorDisposition": "**保留** → R10-T07",
+          "authorOwnerWindow": "T11；merge后受控维护",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:25"
+        },
+        {
+          "id": "Z09-05",
+          "line": 621,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "契约owner；下次整理",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:26"
+        },
+        {
+          "id": "Z09-06",
+          "line": 622,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "T01；触及witness选取时",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:27"
+        },
+        {
+          "id": "Z09-07",
+          "line": 623,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "T02；原整数守卫维护窗口",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:28"
+        },
+        {
+          "id": "Z09-08",
+          "line": 624,
+          "authorDisposition": "**保留** → R10-T08",
+          "authorOwnerWindow": "ROOT；下次回单/CI维护票",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:29"
+        },
+        {
+          "id": "Z09-09",
+          "line": 625,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "原T02 native开发线＋ROOT；升级/证据维护",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:30"
+        },
+        {
+          "id": "Z09-10",
+          "line": 626,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "T01/T02；对应家族接线前",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:31"
+        },
+        {
+          "id": "F-R09-01",
+          "line": 632,
+          "authorDisposition": "**保留**：current67 realCI pending；累计 engine/spec 执行证据已存在；原 CI41 Quality/Windows 失败保留",
+          "authorOwnerWindow": "ROOT/原T02；下一精确push后真实CI",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:37"
+        },
+        {
+          "id": "F-R09-02",
+          "line": 633,
+          "authorDisposition": "**保留**：rootcause UNPROVEN 是 HOLD 与声明纪律，**不是**新增「合并前必须证因」门禁",
+          "authorOwnerWindow": "原T02/ROOT；真实CI归因",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:38"
+        },
+        {
+          "id": "F-R09-03",
+          "line": 634,
+          "authorDisposition": "**保留**：readiness-continues-helper 断言与 `app?.isPackaged` 建议已撤回；rootcause HOLD 仍在",
+          "authorOwnerWindow": "原T02测试/打包；真实CI归因",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:39",
+          "effectiveSourceCorrectionLine": 832
+        },
+        {
+          "id": "F-R09-04",
+          "line": 635,
+          "authorDisposition": "**保留**：Windows 观测（145.101449 nonpoll elapsed 等）不构成新合并门禁",
+          "authorOwnerWindow": "原T02测试；真实Windows运行后观测",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:40",
+          "effectiveSourceCorrectionLine": 833
+        },
+        {
+          "id": "F-R09-05",
+          "line": 636,
+          "authorDisposition": "**保留**：failure-only annotation；成功 CI 无需失败样本",
+          "authorOwnerWindow": "原T02；真实失败样本存在时核annotation",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:41"
+        },
+        {
+          "id": "F-R09-06",
+          "line": 637,
+          "authorDisposition": "**保留**：证据绑定接收限制；A 属 base583→240 累计变更，2b→240 未改",
+          "authorOwnerWindow": "ROOT；证据接收拦截无绑定结果",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:42"
+        },
+        {
+          "id": "F-R09-07",
+          "line": 638,
+          "authorDisposition": "**保留**：sys.path 等价限制；collector A 属 base583→240 累计变更",
+          "authorOwnerWindow": "原T02；不得声称完整sys.path等价",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:43"
+        },
+        {
+          "id": "F-R09-08",
+          "line": 639,
+          "authorDisposition": "**保留**：指定文档 owner 的状态归档义务",
+          "authorOwnerWindow": "ROOT指定文档owner；本票归档/状态追加",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:44"
+        },
+        {
+          "id": "F-R09-09",
+          "line": 640,
+          "authorDisposition": "**保留**：完整 CI/制品接收纪律；ci.yml M 属 base583→240 累计变更",
+          "authorOwnerWindow": "ROOT；每次CI完整回单接收",
+          "ownerProvenance": "本人§5声明沿用R09 disposition:45"
+        },
+        {
+          "id": "OBS-R09-10",
+          "line": 642,
+          "authorDisposition": "保留整数上限环境前提观察；不新增门禁、不关闭4299/4300。",
+          "authorOwnerWindow": "沿原T02测试窗口",
+          "ownerProvenance": "本人642及R09 disposition47"
+        }
+      ],
+      "Top10AndNew2": [
+        {
+          "id": "R10-T01",
+          "effectiveLine": 735,
+          "authorDisposition": "**保留（合并门禁）**",
+          "authorOwnerWindow": "ROOT 精确 push/CI 票",
+          "authorPushSourceBlocker": "否（但阻断 merge）"
+        },
+        {
+          "id": "R10-T02",
+          "effectiveLine": 736,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "未来 CI 证据接收标准",
+          "authorPushSourceBlocker": "否"
+        },
+        {
+          "id": "R10-T03",
+          "effectiveLine": 737,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "未来 CI 证据接收标准",
+          "authorPushSourceBlocker": "否"
+        },
+        {
+          "id": "R10-T04",
+          "effectiveLine": 738,
+          "authorDisposition": "**保留（覆盖面限制）**",
+          "authorOwnerWindow": "原 T02 测试维护者",
+          "authorPushSourceBlocker": "否"
+        },
+        {
+          "id": "R10-T05",
+          "effectiveLine": 739,
+          "authorDisposition": "**撤回原证明与原建议**（保留编号与原句）。原证明「11000B base64 ≈ 14668B ＋ JSON 字段**必然大于** 16384」**不成立**：兜底分支丢弃 `observed`、只保留 `stage`／`at`／`monotonicMs`／`truncated`／`originalBytes`／`utf8PrefixBase64`／`boundary` 固定字段，固定开销经本人独立复算为 **212B**（不含 `stage` 与 base64 本身）。**新有效处置**：不再列为当前缺陷；仅保留一条**尚未证明当前可触发**的维护边界——兜底分支无二次长度复核，若 `stage` 长度增至约 **1538 字符**以上（实测余量 1504B），最终 `description` 可能超出 16384。**据此的前缀改法建议一并撤回**",
+          "authorOwnerWindow": "原 T02 测试维护者（命名/常量归口）；**本票不改码**",
+          "authorPushSourceBlocker": "否（撤回后为零）",
+          "latestLines": [929, 946],
+          "ownerLimit": "14668+212=14880，加stage34才14914；总stage预算1504/余1470正确，无当前可达超限反例。"
+        },
+        {
+          "id": "R10-T06",
+          "effectiveLine": 740,
+          "authorDisposition": "**撤回「命名与门禁语义不一致」这一缺陷判定**；**保留真实保守语义**（Windows first-failure diagnostic step 失败即 job 红），与「不是完整验收凭证」**不矛盾**。**不建议**用 `continue-on-error` 解决命名或证据问题；命名维护归 ROOT 窗口，**本票不改 CI**",
+          "authorOwnerWindow": "ROOT／CI 维护窗口",
+          "authorPushSourceBlocker": "否"
+        },
+        {
+          "id": "R10-T07",
+          "effectiveLine": 741,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "发布/供应链 owner",
+          "authorPushSourceBlocker": "否"
+        },
+        {
+          "id": "R10-T08",
+          "effectiveLine": 742,
+          "authorDisposition": "**保留**",
+          "authorOwnerWindow": "CI 维护票",
+          "authorPushSourceBlocker": "否"
+        },
+        {
+          "id": "R10-T09",
+          "effectiveLine": 743,
+          "authorDisposition": "**撤回标题与正文中的「无机器校验」表述**：仓库**存在真实的 Python 机器交叉核验**——`tests/unit/t02-manual-fact-id.test.ts`（本人本轮直读 50–90 段）以 `spawnSync(resolve('.venv/bin/python'), ['-I','-c', pythonCheck, resolve('packages/engine/src')], …)` 调用**真实 `Store._fact` 与 `digest`**，并与 golden 向量逐条比对 `record['id']==digest(values)` 与 `canonical` 输出。`resolve('.venv/bin/python')` 是**显式路径**，**不是**旧裸 PATH python 问题（那两处另见 §10.7 的 `Z F5`／`R06 D8`）。**新有效处置**：收窄为「**未穷尽 Unicode 全空间与未来组合**」的残余风险，非「无机器校验」；原最小建议（补一条覆盖全部 Unicode 形态的机器检查）随之收窄为「扩样」而非「从零建立」",
+          "authorOwnerWindow": "原 T02 测试维护者；**本票不改测试**",
+          "authorPushSourceBlocker": "否",
+          "latestLines": [929],
+          "ownerLimit": "已有真实Python cross-test；Unicode有限样本不是无机器校验。"
+        },
+        {
+          "id": "R10-T10",
+          "effectiveLine": 744,
+          "authorDisposition": "**撤回「renderer 可能更早拒绝 ⇒ 构成缺陷」的推断**：首稿据「原 ID edit／tombstone 存在时 ID 与现值不恒等」推出语义差，**该等价推断不成立**。真实实现中 `reserved_id = digest([subject,predicate,value])`（`storage.py:1211`）与「live object 值／单值谓词」是**独立判断**：`storage.py:1216-1218` 条件为 `row[\"id\"] not in excluded and (row[\"id\"] == reserved_id or (row[\"object\"] is not None and (single or row[\"object\"] == value)))`，`reason` 为 `reservedIdentity`／`sameStatement`／`singleSlot`（`:1226-1228`）。ID 绑定原声明本就是设计（`storage.py:1510`「ID stays bound to the original statement across edits」），**不能据此推出缺陷，更不能据此改契约**。**新有效处置**：降为**可选注释澄清**（若原 T02 前端归口愿意，可补一行说明 renderer 判定刻意严于引擎 `_check_slot` 的两点差异），**非阻断维护项**，不改契约、不改行为",
+          "authorOwnerWindow": "原 T02 前端归口；**本票不改码**",
+          "authorPushSourceBlocker": "否",
+          "latestLines": [929],
+          "ownerLimit": "仅可选注释；不改变reservedIdentity与保原ID契约，不据其推源码缺陷。"
+        },
+        {
+          "id": "R10-T11",
+          "lines": [952, 956, 957, 958, 959],
+          "authorDisposition": "P3来源锚点指向base非head；建议刷新当前hash或说明版本；非阻断、本轮不改。",
+          "authorOwnerWindow": "fixture维护者；原文未列实施时点，本轮不改",
+          "ownerDisposition": "只采hash确等base/不同head；不采历史生成锚失真、应默认刷新head的推论。generated scope允许如实保生成来源；仅可选说明，不造新缺陷/审批。"
+        },
+        {
+          "id": "R10-T12",
+          "lines": [961, 965, 966, 967, 968, 969],
+          "authorDisposition": "P3仅3/9有断言；建议补五类或标无断言；非阻断、本轮不改。",
+          "authorOwnerWindow": "既有测试/规则维护窗口；作者未新设owner或执行票",
+          "ownerDisposition": "不采仅3/9及据此补五类建议。test_storage190–223参数化遍历9规则，动态assert reason，model-null与unrelated负控在位；仅静态定义，不冒新运行/四类GUI。"
+        }
+      ],
+      "counts": {
+        "checklist": 160,
+        "current31": 31,
+        "historical78": 78,
+        "extra13": 13,
+        "R09new": 19,
+        "OBS": 1,
+        "Top10": 10,
+        "newP3": 2
+      },
+      "effectiveSourceOverrides": "§10.7八主题继续；R06ZP2以948的diagnostic/acceptance/F03为准；F-R09-03/04以832/833分离O059/O067。",
+      "notAuthorization": "2/17及原HOLD继续，不授push/merge/修改/运行。"
+    }
+  },
+  "ownerLimits": {
+    "ZCode": [
+      "R10-10 stray label is typo, valid Top9 only; test_mainline_postwrite_admission211-213 replay vs231-233 legitimate Read distinct; no author cosmetic loop"
+    ],
+    "MiniMax": [
+      "T11 hashes equal generation/base source and differ from current source is observed; fixture scope says generated so no proven provenance defect or forced refresh to head",
+      "T12 only3/9 assertion coverage inference rejected: fixed test_storage.py190-223 parameterizes all9 RULES with dynamic positive/negative assertions; named literal grep is insufficient; no new test gate",
+      "T05 fixed-stage result14914B =14668base64+212fixed+34stage; totalstage budget1504/current spare1470; author remaining arithmetic shorthand retained with this owner correction, no proven current trigger",
+      "14 saved annotations are seven cases test/result duplicates,542–1212B; case7 uses its own original-operation/Job stage, not all freshRead stage; normalPASS retention does not prove worker-kill/timeout retention",
+      "Source/index/protected preservation does not imply all physical runtime-owned hook-state files were never written; no private hook-store inspection performed"
+    ],
+    "primaryEvidence": {
+      "path": "OWNER-NATURAL03-PRIMARY-LIMITS-01.json",
+      "mode": "0644",
+      "bytes": 3083,
+      "sha256": "37521252e3453af8ea45caa1cad6496508b433b7030ee7e25f3caddd4193182b"
+    }
+  },
+  "maintenanceRouting": {
+    "Z_R10_06_07": "原T02测试维护归口；仅未来实际触及测试/CI控制层时评估，不授权本轮修改或添加门禁。",
+    "Z_R10_08": "原T02 native/测试维护与ROOT；已有Electron/Playwright升级或证据维护窗口。",
+    "Z_R10_09": "ROOT/AGENTS指南维护归口；本票不改共享AGENTS。",
+    "MM_T11": "原T02 fixture维护归口；只采生成来源与head不同事实，可选澄清，不强制刷新来源针。",
+    "MM_T12": "不采仅3/9与新增补五类建议；原静态九行参数化断言在位，独立GUI/HOLD不关闭。"
+  },
+  "executionBinding": "O069 actual b0 HEAD+exact4WIP与67 Git blob逐字一致；不是committed67时重跑。TS1912/Python3769=3719P50原S、native24=21P3原S/57事务43拒绝为已有本机证据。旧CI41/42失败不改写，无67新CI/包；旧094不冲抵。",
+  "external152Manifest": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_67b7_fresh_r10_070/FINAL-MANIFEST.json",
+    "bytes": 29134,
+    "sha256": "12d4ffd1f6033f9c67f6328fad794053b4936650ea80e76c5589cacbc32b49c1"
+  },
+  "mayPush": false,
+  "mayModifyPR": false,
+  "mayDispatchCI": false,
+  "mayMerge": false
+}

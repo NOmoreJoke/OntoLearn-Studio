@@ -60,6 +60,7 @@ function harness(withReceiver = true) {
     } as DesktopIpcDependencies['supervisor'],
     projects: {
       getProjectCatalog: catalog,
+      getOwnershipConflictDetailPage: catalog,
       queries: {},
     } as unknown as DesktopIpcDependencies['projects'],
     replies: withReceiver ? (replies as unknown as DesktopIpcDependencies['replies']) : undefined,
@@ -90,6 +91,34 @@ beforeEach(() => {
   electron.bridge = undefined
 })
 describe('private mainline delivery adapter', () => {
+  it('ownership pages use the same exact sender/frame and missing-ACK holding', async () => {
+    const h = harness()
+    h.trust(false)
+    expect(await h.invoke('project:ownership-detail')).toMatchObject({ ok: false })
+    expect(h.catalog).not.toHaveBeenCalled()
+    h.trust(true)
+    const args = {
+      detailRef: '00000000-0000-4000-8000-000000000001',
+      documentHash: null,
+      startOrdinal: 0,
+      pageSize: 1,
+    }
+    const offered = (await h.invoke('project:ownership-detail', h.original, args)) as {
+      deliveryId: string
+      payload: unknown
+    }
+    expect(offered.payload).toBe(h.payload)
+    expect(h.catalog).toHaveBeenCalledWith(args)
+    expect(h.consume).not.toHaveBeenCalled()
+    const wrongFrame = { ...h.original, senderFrame: {} } as IpcMainInvokeEvent
+    const ack = { deliveryVersion: 1, deliveryId: offered.deliveryId }
+    expect(await h.invoke('project:reply-received', wrongFrame, ack)).toMatchObject({ ok: false })
+    expect(h.consume).not.toHaveBeenCalled()
+    expect(await h.invoke('project:reply-received', h.original, ack)).toMatchObject({
+      accepted: true,
+    })
+    expect(h.consume).toHaveBeenCalledTimes(1)
+  })
   it('denies absent receiver or untrusted caller before business work', async () => {
     const missing = harness(false)
     expect(await missing.invoke('project:catalog')).toMatchObject({ ok: false })

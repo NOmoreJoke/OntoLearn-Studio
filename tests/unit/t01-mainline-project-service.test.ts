@@ -45,6 +45,8 @@ class MemoryChild extends EventEmitter {
   responses: Row[] = []
   projection: ProjectView = project()
   holdGet = false
+  holdOwnership = false
+  pendingOwnership?: Row
   holdHello = false
   holdOpen = false
   pendingHelloFrame?: string
@@ -66,6 +68,11 @@ class MemoryChild extends EventEmitter {
         this.calls.push(q)
         if (q.method === 'project.get' && this.holdGet) {
           this.pendingGet = q
+          done()
+          return
+        }
+        if (q.method === 'project.ownership.detail' && this.holdOwnership) {
+          this.pendingOwnership = q
           done()
           return
         }
@@ -93,6 +100,7 @@ class MemoryChild extends EventEmitter {
               'project.draft.save',
               'project.open',
               'project.read',
+              'project.ownership.detail',
               'query.definition.load',
             ]
           : ['health', 'session.ping'],
@@ -174,6 +182,33 @@ class MemoryChild extends EventEmitter {
           ? 'f'.repeat(64)
           : createHash('sha256').update(String(params.contentJson), 'utf8').digest('hex'),
       }
+    } else if (q.method === 'project.ownership.detail') {
+      const p = q.params as Row,
+        raw = Buffer.from('{}'),
+        hash = createHash('sha256').update(raw).digest('hex')
+      result = {
+        detailReadVersion: 1,
+        projectId: p.projectId,
+        detailRef: p.detailRef,
+        manifest: {
+          documentKind: 'ownership-conflict',
+          documentHash: hash,
+          totalBytes: raw.length,
+          segmentCount: 1,
+        },
+        startOrdinal: 0,
+        segments: [
+          {
+            ordinal: 0,
+            byteOffset: 0,
+            rawByteLength: raw.length,
+            sha256: hash,
+            dataBase64: raw.toString('base64'),
+          },
+        ],
+        nextOrdinal: null,
+        complete: true,
+      }
     } else if (q.method === 'query.definition.load')
       result = structuredClone(corpus.queryConsumer.samples.managed)
     else if (q.method === 'project.catalog')
@@ -240,6 +275,39 @@ async function setup(advertise = true, requestMs = 100) {
     },
   }
 }
+
+it('ownership pages cannot republish after the real source selection fence', async () => {
+  const h = await setup(true, 1000)
+  try {
+    const replies = h.supervisor.mainlineReplyReceiver()
+    const receive = async <T>(work: () => Promise<BridgeResult<T>>): Promise<BridgeResult<T>> => {
+      const result = await replies.receive(work)
+      replies.consume(result.receipt)
+      return result.value
+    }
+    expect((await receive(() => h.service.openProject({ projectId: id(1) }))).ok).toBe(true)
+    const before = h.service.source.current()
+    const args = { detailRef: id(40), documentHash: null, startOrdinal: 0 as const, pageSize: 1 }
+    expect((await receive(() => h.service.getOwnershipConflictDetailPage(args))).ok).toBe(true)
+    expect(h.service.source.current()).toBe(before)
+    h.child.holdOwnership = true
+    const pending = replies.receive(() => h.service.getOwnershipConflictDetailPage(args))
+    await vi.waitFor(() => expect(h.child.pendingOwnership).toBeDefined())
+    h.service.source.fence()
+    expect(h.service.source.current()).toBeNull()
+    h.child.reply(h.child.pendingOwnership!)
+    const late = await pending
+    expect(late.value.ok).toBe(false)
+    // A revoked selection retains its uncertain delivery under the original receiver gate.
+    expect(() => replies.consume(late.receipt)).toThrow(EngineError)
+    expect(h.service.source.current()).toBeNull()
+    const actual = h.child.calls.filter((q) => q.method === 'project.ownership.detail')
+    expect(actual).toHaveLength(2)
+    expect(actual.every((q) => (q.params as Row).projectId === id(1))).toBe(true)
+  } finally {
+    h.close()
+  }
+})
 
 describe('actual business3 runtime issuer with memory transport only', () => {
   it('keeps original ordinary issuer denied and rejects caller owner DTO', async () => {

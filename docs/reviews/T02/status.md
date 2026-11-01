@@ -1,0 +1,151 @@
+# T02 FR-200／FR-201 状态
+
+当前为**本地证据文档收口、待ROOT远端门禁**，尚未推送、创建PR、运行本候选CI或合并。整体合并可用仍为2/17，本记录不宣布M0或完整产品完成。
+
+## 固定受审实现
+
+- 分支：`feature/weekly-t02-fr200-fr201`；base `583c05c7870ba0f8f642e3eeea1d0590e5859ca2`。
+- 受审head `cb8c9b7a5d780544b2910901ec9141236905d65c`；tree `b8010eea4e04f962598a80d767b7a9ea24d2d7e7`；27累计提交、58差异叶、1344源文件。
+- 范围：真实表单CRUD、事实原ID编辑、多值、词法受控拒绝、ownership可见定位及其共享依赖闭包。已验阶段与发布边界分别记录。
+- 本次后继仅追加审查／处置／状态流程证据，受审实现保持不变；精确文件清单及对应关系见[证据桥接](fr200-fr201-20261024/round-04/evidence-only-bridge.md)。
+
+## 已完成的同版证据
+
+| 类别               | 实际结果                                                                                                     | 范围及原件                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 静态／完整check    | 唯一一次自然exit0；TS39文件1892通过；Python3769收集、3719通过、50跳过、1原duplicate-ZIP警告；Ruff369格式合格 | `outputs/20261025_t02_rows_text_integration_029/`；原始日志与before／after／current守护保留                                                                                                                 |
+| 开发GUI            | 原完整六例6通过、0skip／retry／flaky；57成功事务、43受控拒绝                                                 | 同目录`runtime-full6-001/`；完整Diff／Read／Job／marker绑定；仅reservedIdentity有本轮GUI，不推广其他family或Undo                                                                                            |
+| package094机械     | 新内部未签名mac-arm64包；1344源／5构建同版，912项App成员type／mode／link／hash固定                           | `outputs/20261025_t11_package094_actual_001/`；非签名／公证／法律或全平台通过                                                                                                                               |
+| 包内原验收         | 原18收集、16通过、2原Linux条件skip、0FAIL／NOTRUN／retry                                                     | `outputs/20261025_t01_package094_runtime_inputs_001/`；不称18项均实际执行                                                                                                                                   |
+| 故障与native       | 三query在途故障真实各一次；standalone native响应0／0／1、真实CmdQ后App退出0                                  | `outputs/20261025_t01_package094_fault_native_inputs_001/`；native engine退出仍UNKNOWN，读取到施加故障非原子                                                                                                |
+| named              | 24／24通过，98成功seed／follow-up事务，43拒绝                                                                | `outputs/20261025_t01_package094_named_inputs_001/`；engine24个exit／close0，App退出码UNKNOWN                                                                                                               |
+| controlled text002 | 两fresh profile ASCII／Unicode各通过、0retry；56309 scalars，56309／56314 UTF-8字节、各5页                   | `outputs/20261025_t01_package094_text_inputs_002/`；原text001首败／Unicode NOTRUN及cleanup TypeError保留                                                                                                    |
+| fresh指定双审      | ZCode与MiniMax各新R04任务，均本范围附条件非阻断通过、真实自然终态                                            | [ZCode最终原稿](fr200-fr201-20261024/round-04/zcode-glm53.md)、[MiniMax原稿](fr200-fr201-20261024/round-04/minimax-m31flash.md)、[逐意见处置](fr200-fr201-20261024/round-04/disposition.md)；不改写模型结论 |
+
+上述七项阶段原始ROOT接收票、报告／自然终态针、任务ID和原文清单身份见[归档索引](fr200-fr201-20261024/round-04/artifact-manifest.json)。原执行日志位于仓库外outputs；克隆本仓库不等于已取得全部raw，须按针向原保管位置取得。
+
+## 未关闭边界与后续门禁
+
+- 两模型附条件意见已逐项作事实处置；M-01本次落实纯文档，其余不采／部分采纳／OPEN按原分工。ROOT尚须核全部条件，再发具体远端执行授权。
+- 排序稳定性无构造性反例，保未确认观察；definitions.triples wire的早期坏词法OPEN在原始triples／Agent接线前由T01处理；通用ownership定位合同、实际方法错误码覆盖与边界回归按原负责人延期。
+- 当前canonical精确输入政策按基线ADR执行；没有新human政策批准。可选改变该政策不作为当前新增前置；若改变，须新候选验证与双审。
+- unknown parser／N3／Store／坏快照／损坏SQLite物理保护、standalone EOF残余、容量口径／旧超限库恢复、签名／公证／法律与_distutils来源、跨OS／参考设备／低端硬件HOLD保留。FullRead逻辑相等不代表物理DB零写，PID缺席不代表全部自然退出0或全后代回收。
+- 旧R03 ZPass／MMFail、0e7完整check TIMEOUT与GUI容量失败、O027三FAIL、093的13PASS／1FAIL／2skip／2NOTRUN、受控RED、text001及fixture／guard／AX等首败均保留，不覆盖或迁移旧PASS。
+- 本次不复跑产品、不制造包、不修改验收；未push／PR／CI／merge，不增加2/17。远端与发布阶段分别由ROOT按既有门禁决定。
+
+## 2026-10-25 当前快照：aff386f6／R05 推送前技术审查已接收
+
+本节追加当前状态；以上 cb8／O029 数值与未推送陈述保留为当时快照，不作为当前远端事实。
+
+- 固定受审候选：base `583c05c7870ba0f8f642e3eeea1d0590e5859ca2` → head `aff386f6b43cf60a847c9c9597265b0b1b477095`，tree `2d9b113b4b6ca25049c157c2b94fc79db42ef38d`；29 累计提交、71 差异叶、1355 tracked 源、5 构建。此后本次只追加证据归档与状态，不改变受审实现。
+- 同版本地证据：O035 裸调用首败两处 Python ENOENT 原样保留；O036 按授权使用原 UV 冻结环境的一次纠正，完整 check 自然 0，TS 1892 PASS、Python 3719 PASS／50 skip、Ruff 379。O029 的 Ruff 369 是另一真实历史口径，差异原因不推定。O037 在 aff 新构建真实六例 6 PASS，57 事务、43 拒绝、58 附件。原 094 包全部 912 成员不变，旧运行按 ROOT 有界桥接保留，不写成 aff 新包运行。
+- 全新 R05 双指定任务均实际自然终态，原文结论均为 ConditionalPass；ROOT 已接收推送前技术审查范围，**不是无条件整候选双 Pass，也未放行合并**。[两终稿及身份索引](fr200-fr201-20261024/round-05/artifact-manifest.json)、[21 新＋14 旧意见处置](fr200-fr201-20261024/round-05/disposition.md)、[原条款与真实证据映射](fr200-fr201-20261024/round-05/fr200-fr201-original-clause-evidence-map.md)均保留精确字节。
+- FR-200 类层级、domain／range、个体类型与全部元数据已在四类表单 28 笔实际 Read／CRUD 中覆盖；不采 ZCode §4.1 将其归后续的句子，不由此推全附录 C 或父 FR 整条完成。Q6 用户已采用决定单推荐规则／规范版本；既有 canonical 政策继续，未来改变才需新人类决定。
+- 当前远端：PR16 已存在且 open／未合并，head 为 `58c9bbb39338b7438e1b8ccf202c0391827d6dfb`；develop 仍 `583c05c7870ba0f8f642e3eeea1d0590e5859ca2`；aff 尚未 push、无新 CI。CI36／run 40164456782 attempt1 在旧 head 58c9，实际 PR checkout 为合成 `681ffbd0bd5e417c7097e7d9bc18ceea2605ee59`：macOS success，Quality 15 分钟取消且 packaged recovery skipped，Windows 20 分钟取消前出现 79 个 F。无真实首败断言栈或最终 pytest 总表，编码根因仍未确认；aff 只增加首败诊断配置，不能称 79F 已修或完整 Windows 验收通过。
+- 本票仅允许一次本地证据提交；push／新 CI／merge 尚未授权，需 ROOT 核证据桥接后另发精确票。完整平台 CI 及全部原 HOLD 保留，整体合并可用仍为 2/17，Goal 未完成。以上历史首败、原七份报告及未提交 AGENTS／旧审查 WIP 均不纳入本次提交。
+
+## 2026-10-25 当前快照追加：831813c6／R06 技术接收与本地证据归档
+
+本节为当前时点追加；以上 cb8／aff 数值、未推送陈述及 R04／R05 原判仍保留为当时快照，不改写历史原件。
+
+- 固定受审候选：base `583c05c7870ba0f8f642e3eeea1d0590e5859ca2` → head `831813c60a32155a579a69fc9e2cbc879b8139bb`，tree `944724a8d0e2d03502de3cf6551e0cde97e5e2f4`；31 累计提交、79 差异叶、1363 tracked 物理源、5 构建。本次后继只归档证据及追加状态，产品、测试、配置、依赖与验收标准不变。
+- O040 父候选 `934bd14f` 一次普通推送触发 run `40171564866` attempt1；实际合成 checkout `a0d166c59e619cb3ebbd0be1d57fc3db69ea5a9d` 的 tree 与 934 相同。macOS 593s、Quality 718s 均成功，Quality 含 packaged recovery 真实 success；Windows 328s 失败。首败是 language:47 调用 manual:486 在追踪 JSON 落盘时触发 cp1252 `UnicodeEncodeError`，发生在业务拒绝／Read／身份／HOLD／合法后继断言之前；实际 1 FAIL／980 PASS／3 SKIP／258.55s、exit1、maxfail1，余2785项及 Windows 后继 typecheck／build／E2E／package／verify 未运行。
+- 8318 相对 934 只在两测试文件六处 `write_text` 增加 UTF-8 encoding；去除六关键字后完整 AST 相同。O041 指定三模块一次151 PASS；原 UV 完整 check 一次自然0（TS39文件1892 PASS；Python3769收集／3719 PASS／50 skip／1原warning；Ruff386）。进程启动 Git HEAD 为934加精确两文件工作树修订，提交后全部1363物理源与执行后相同，不冒称启动时已是8318。五build四项全同，main仅一处24字符dev nonce差；不是Windows已绿。
+- O042 在实际8318新构建的原六GUI一次6 PASS／0 skip／retry／flaky，108413.912ms；runner58606自然0。58附件、57事务、43拒绝及完整Diff／Read／Job／marker绑定已独核。原四类28笔实际覆盖层级、domain／range、个体type及完整metadata，不能后移原FR200范围；仍不证明全部附录C或父FR全条完成。旧094包912成员及rootmode不变，原包运行仅有界保留，不称8318新包。
+- fresh R06 两新任务均实际自然终态：Z `session_3656bb05dd7ed7d1ccfe89755a461ace`（Start Plan／GLM-5.3／最高／完全访问）原判ConditionalPass；MiniMax `mvs_e7a25882036e477fa423cd4dd3a5eced`（M3.1-Flash订阅限免／xhigh／始终授权）原判verification-incomplete。两作者均明确整个base→8318无push前技术阻断，未放行合并。两方20个当轮意见位置（含MM正面D12）及35旧意见位置均已事实处分、具名事件延期；完整1–160各自保留。模型原稿、修订优先级和终态针见[本轮索引](fr200-fr201-20261024/round-06/artifact-manifest.json)、[版本图](fr200-fr201-20261024/round-06/version-map.json)、[处置](fr200-fr201-20261024/round-06/disposition.md)。MM首稿加最终r2附录组合阅读；其额外报告命名、仅见peer目录元信息未读正文的边界均披露。
+- ROOT已接收本轮限定推送前技术阶段，未重判为无条件整候选双Pass。本票只允许一次本地纯证据commit；当前远端feature仍934、develop仍583，PR16 open／未合并，8318未push、无新CI。归档commit/tree待实际产生后用外部回执绑定；须ROOT验明证据桥接，再另票决定push／CI，不自动执行远端。
+- 未来CI接收须同受审实现／测试／CI／依赖：3769全集每项由最终通过或原有有据条件skip覆盖、自然0、零失败／早停／取消／timeout／NOTRUN，Windows全部后继步骤及三job真实success。`--maxfail=1`只失败早停，无筛选；Z已独立接受ROOT显式口径并将P2并入P1，不因diagnostic步名自动验收或强制改配置。旧CI36的language6／manual72／read-work1共79F缺逐例栈和完整表，原因保留未知残留；新绿不得追溯证明旧79F全同因。
+- 具名OPEN事件窗口：T01在原始definitions／Agent接线前处理早期wire UNKNOWN／HOLD；T01详情合同与T02消费在对应ownership家族／方法接线前处理裸detail及缺码；T01下次授权触及witness选取时核排序观察、下次两PATH-python测试或新环境适配时维护解释器；T02 vendor与T01在新增不经封装parser入口前复核standalone EOF；T01失效、T02编辑与各下游owner在父FR／消费链整体验收前核D.2具名下游；T02下次授权整数守卫维护时考虑4299／4300。归口不等于本轮新增修复授权，不泛捕ValueError／IndexError、不按文案分类、不静默规范化、不升cap。
+- FR200 GUI编辑到推导／保存查询／SHACL／报告四类真实下游失效未逐类实测；公共ontology／facts规则、同事务stale／current更新与九行正负例存在，不能称完全无证据。Q6用户已采用推荐规则／规范版本；既有canonical继续，未来改政策才新人类决定，不为当前候选重问。
+- 独立HOLD全部保留：签名／公证／wholeApp法律与_distutils、跨OS／参考设备／macOS15／Win11、Q5／D2容量与旧超限库恢复、损坏SQLite物理保护、unknown parser／N3／Store／坏快照、Undo GUI／未验ownership家族、native engine及named App未知退出码。FullRead逻辑相等不证物理DB零写，已知PID缺席不证所有自然0或全部后代回收。0e7／O027／093／text001／R03 ZPass与MMFail／O022被拒probe缺raw、旧取消及首败均保留。本次无产品重跑／新包／SQL／probe，合并可用仍2/17，Goal及发布未完成。
+
+## 2026-10-26 当前快照追加：b215f543／R07 技术接收与本地证据归档
+
+本节追加当前时点；以上 cb8／aff／8318 的数值、远端状态和作者原判均保留为当时快照，不改写历史前缀或旧 manifest。
+
+- 固定受审候选：base `583c05c7870ba0f8f642e3eeea1d0590e5859ca2` → head `b215f5432d0c9f74df9e9e3fbb6120bff57703a9`，tree `7cab46f041140114d5011d86077c54aeb93d537d`；33 累计提交、88 差异叶、1371 tracked 物理源、5 构建。b215 相对父 330 只追加一行 Ruff format 排除 literal，lint、受审实现、测试、依赖、CI、预算与验收标准未改。本次后继仅归档 7 叶与追加两份状态文档；实际本地归档 commit／tree 由仓外 O049 回执绑定，不冒充新的产品验收候选。
+- O047 同 b215 的实际 `uv run --offline --frozen npm run check` 一次自然 0：TS 39 文件 1892 PASS，Python 3769 收集／3719 PASS／50 原有据 skip／1 原 warning，Ruff 379。原六 GUI 一次 6 PASS／0 skip／retry／flaky，runner 自然 0；57 事务、43 拒绝、58 inline body 与完整 Diff／Read／Job／marker 已独核。五 build 在 fullcheck 前后四项 byte-exact，main 仅 24 字符 nonce 字段内 23 字节不同；GUI 前后 5／5 相同。文件身份不证内存模块／serve／HMR，也不证 Windows 已绿。
+- O045 的付款／spending-limit 门禁与 O046 的 330 attempt2 FORMAT 首败分别保原件。O046 三 job Ruff lint 已通过，FORMAT 在 `round-06/minimax-m31flash-r2.md` 的 Python 围栏报 1 would／385 already，完整 3769 suite 三 job 全 NOTRUN，desktop 后继 skipped；同 run Quality 此前 I04 矩阵 144 PASS／21.89s、TS 1892、typecheck／build 实际已跑，不概称所有 Python 或构建未执行。旧 CI36 的 79F 逐例原因仍未知，新绿不能追溯倒填。
+- R07 两个原 SID：Z `session_1f663b7f4a09f84efc0dcd066f28ce63`（GLM-5.3／最高／Start Plan／完全访问）；MM `mvs_8d66d37640404c25bc061bffe6311b0b`（M3.1-Flash／xhigh／始终授权）。首自然稿分别 30400B／`f25d8827…c7723`、57131B／`ce4b1ae7…6b8c8`；各同 SID 一次事实修订后分别 41817B／`a94b7ef7…19b2c`、81951B／`eee3e39d…f974a`。首稿、diff、自然终态与收据仍仓外封存；仓内仅按[别名映射与外部版本针](fr200-fr201-20261024/round-07/artifact-manifest.json)复制最终原报告、独核、版本图与处置，未将所有外部版本复制入 Git。
+- 两作者原判及修订均 ConditionalPass：限定本地实现／验收通过、整个 base→b215 无 push 前源码技术阻断；merge 必须等待未来真实完整 CI。ROOT 已完整核验并接收本轮技术阶段，不是无条件双 Pass、不增加 FR／Goal／M0／发布完成度。23 个当前位置（22 原编号＋MM 原未编号现 R07-13）及 20＋35 个历史位置逐项保留归口与事件窗口，见[最终处置](fr200-fr201-20261024/round-07/disposition.md)；两份最终独核、完整 160 项与 Z 历史 55 行保全。
+- 本方事实包的 372／378 扩展名误计与 `SHA1ca23…` 连写歧义保原并纠正：NUL 路径真实计数为 384／390，真正清单段 11255B、SHA256 `1ca23def…f709c`。386／379 可作静态集合对账，不能称原 run 发现／ignore／选择差因全证；作者残句按处置限定，不重写原件。ROOT 为 Codex 自动总控，不冒人类逐行审读；无新增人类放行门。Undo UI 已在，Undo GUI 未验；必要 E／G 闭包披露不等全部附录通过。
+- 本票仅允许一次本地证据 commit 及规定维护文档格式／`verify:sources`／默认锁定 Ruff FORMAT 检查；不执行产品、fullcheck、GUI、package、SQL 或 probe。ROOT 票时远端 develop 仍 583、feature 仍 330，PR16 open／未合并；b215 尚无新 CI。push／PR 修改／新 CI／merge 均待另票，不能由归档自动授权。
+- 未来 merge 仍须同受审实现／测试／CI／依赖下完整 3769 全集逐项通过或原有有据条件 skip、自然 0、零失败／早停／取消／timeout／NOTRUN，全部后继与三 job 实际 success，Quality packaged recovery 步骤自身 success。旧 094 的全部 912 成员与 root mode 保持，原包运行仅有界桥接，不称 b215 新包或新 runtime。
+- 所有原独立 OPEN／HOLD 与具体事件窗口不变：早期 definitions wire、裸 ownership／其他家族、缺码可达性、无序未确认观察、standalone EOF、PATH-python、4299／4300 应用边界维护、FR200 编辑后推导／保存查询／SHACL／报告四类具名下游 GUI；容量／旧超限库恢复／损坏 SQLite 物理保护、unknown parser／N3／Store／坏快照、Undo GUI、native engine／named App 未知退出码、跨 OS／参考设备／macOS15／Win11、wholeApp／签名公证／_distutils／法律隐私产权与供应链均保留。FullRead 逻辑相等不证物理 DB 零写，PID 缺席不证全部自然 0。整体合并可用仍 2/17，Goal／发布未完成；旧失败、AGENTS 与旧审查 WIP 均保留且不暂存。
+
+## 2026-10-26 当前快照追加：62d4b0a2／R08 技术阶段接收与九文档归档
+
+本节为当前时点追加，以上各轮候选、首败、原判和远端陈述均保留为历史快照；原字节前缀不改。固定受审 base `583c05c7870ba0f8f642e3eeea1d0590e5859ca2` → head `62d4b0a2c3ad49ae37775b875a3e7e31db5fadac`，tree `7ad1d13d6a064aaa07bd046e78427e881e1732b4`，36 提交／98 差异叶／1380 tracked 源／5 构建。本次只归档九条文档路径；实际本地证据 child commit/tree、检查原始结果与其余源／构建／WIP／旧094不变证明由仓外 `outputs/20261026_t02_r08_docs_archive_058/` 回执绑定，不预写尚未发生的检查或提交成功。
+
+- O056 同版完整 check 一次自然0：TS1892、Python3769收集／3719P／50原有据skip／1原warning；正确配置 mode2 原生0／114.075s，七配置字段与原UV基线及ordered3769相同，57整文件分片1638＋2131、setup3769／call3763／teardown3769，无缺失重号未结算。native24为21P＋3原I04skip／retry0；23个Electron自然0与1个原CSP finally SIGKILL分开，engine自然退出UNKNOWN。原422b配置资格失败/撤销保留，不以自洽计数追认资格；本轮没有产品重跑、新构建或新包。
+- fresh R08 原SID：Z `session_044963784e4cae32b7da2231bfc90b43`（现有BigModel个人GLM Coding Pro／GLM-5.3／最高／完全访问，优先Start Plan实际无可用套餐，原ROOT批准同订阅fallback）；MM `mvs_8cda942f8e3b4491b0c79ed3e6ebc9cf`（M3.1-Flash／xhigh／始终授权）。MM人工交还时原任务已提交并自然完成，操作者未见证初始Send、不重复发；通过官方复制全文回读核26703B原提示/SHA054625…及EOF清单精确相同，当前实际xhigh已核。两方原输入、同7917B共同事实、各版raw、UI与自然终态针见[版本图](fr200-fr201-20261024/round-08/version-map.json)和[归档索引](fr200-fr201-20261024/round-08/artifact-manifest.json)，外部日志/旧版本没有假称全部入库。
+- 最终原稿Z78771B／`98d298c20c7557ba014f53a681ee7dbe2b63279ce205b5fa1060fa5f80b00ce4`、MM167434B／`8a5209cf32e6fa458b77597fc84ebf0fd766215f66a0164916bf6311c818537b`逐字归档。两作者仍ConditionalPass、未发现push前源码技术阻断；各160条、78历史独立位置和当前Z12＋MM19本人裁定/owner/窗口完整。ROOT已全文接收同版双技术审查阶段，含594行控制层及三个主进程delta必要闭包，不继承R07，不是无条件双Pass、不走D8、不增加完成度；[31＋78逐项处置](fr200-fr201-20261024/round-08/disposition.md)和两指定独核保留全部原判与未解窗口。
+- F01本轮覆盖接收已完成；F05通过当前两状态文档追加及原报告/版本/针归档履行，实际提交和检查仍按O058真实回执接收。F03接受完整逐node/phase/session/身份/coverage/自然退出和原有据skip，不凭diagnostic名称、step绿或总数验收；F06/F07/F10保原具名后续维护窗口，不声称完整sys.path等价、不接受无head/tree回单、不重写raw或扩大格式排除。ROOT本票只准一次本地文档检查与普通提交，push／PR修改／新CI／merge尚未授权；票时ROOT实核remote develop583／feature9cb、PR16 open未合并，本轮不刷新或修改远端。
+- 未来CI须同交付实现/测试/配置/依赖下Windows3769全集逐项PASS或原有据skip、自然0，无失败／早停／取消／timeout／NOTRUN，全部后继typecheck/build/E2E/package/verify、Quality专项与packaged recovery步骤自身success及原三job实际success，15/20分钟不变。case7若复发须定因并处置且完整CI绿；旧79F和CI40取消／292未结算真实原因未知，新绿不倒填。作者原CI后条件确认、精确merge票与remote develop实际SHA/tree/功能复核仍待；只有实际T02 merge/remote后原T04才更新基线并必要重验。
+- 已验子集纠偏：O056第18例真实定义Undo／Undo-of-Undo／owned restart通过，rev1/2/3、三个唯一succeeded Job/operation、状态和重开等式成立；仅收窄该子集，其余Undo/ownership保持HOLD。FR201受控负例S/P/O字段保留有实际toHaveValue，限本屏/具名输入。迁移468＝424P＋44条件skip及显式备份门禁P只证Store合成前向/失败原子中止，不代表人工schema降级、大规模活库、无锁或损坏SQLite物理保护。dependabot配置root npm/actions weekly与workspace实际更新、SLA/EOL未核分开；构建配置预期消费fr201.3不冒当前新包实物。
+- 原件残句按处置限证，不重写：MM readProject也有前置owner与返回身份守卫，epoch/current-project才是相应增量；“仅durations/fulltrace”限CLI参数，同step另加SHARDS2；Z Top10按§5/唯一Z08-ID定位。MM F04空页/base64本人撤回、F11事实ID与operation幂等分开，组织/实际数据/法律角色无法由代码认证，不新增人类签字/产品裁决前置。
+- 全部原OPEN/窗口与HOLD保持：早期definitions、裸ownership、缺码可达性、无序观察、standalone EOF、PATH-python、4299/4300、D.2推导／保存查询／SHACL／报告四下游GUI；Q5/D2容量与旧超限库恢复、损坏SQLite物理保护、unknown parser/N3/Store/坏快照、其它Undo/ownership、native engine/named App和Windows后代UNKNOWN、目标macOS15/Win11/参考设备、签名公证/wholeApp法律/_distutils/隐私产权与供应链。FullRead逻辑相等不证物理DB零写，PID缺席不证全部自然0。旧094的912成员/root0755及旧有界运行保留，不称62d4新包；AGENTS overlay、旧round01/02/03 WIP和历史首败不暂存。整体合并可用仍2/17（FR401/402），Goal/M0/发布未完成。
+
+## 2026-10-27 当前快照追加：240b581c／R09 有界技术接收与证据归档
+
+本节只追加当前事实；以上各轮原候选、原判、首败和远端陈述保留历史字节。受审实现为base583→`240b581c98dbbaec0b4e3773e011c0a14879fa78`（tree `0933a33107da5a645d432538da1582c8c004080d`，38提交／107差异叶／1387源／5构建）。本票仅归档7份round09证据及两状态新增段，一个240直接后继普通docs提交；实际commit/tree、文档检查及不变证明由仓外O066回执绑定，不冒新实现候选。
+
+R09原两任务已自然返回：Z GLM-5.3最高／既有BigModel个人／完全访问，最终61298B；MM M3.1-Flash/xhigh/始终授权，最终188552B。原SID、完整11255B/160条输入、共同元数据勘误、原稿链和自然UI均有精确针；MM用户自行重置后正式0%额度核验才续跑，锁屏恢复后读取终态，未代买/升级/重置，不声称未经billing审计的既往积分为0。双方原判均ConditionalPass；ROOT已接收整候选必要覆盖和本人意见处置，不是无条件双Pass、不走D8。每方160/31/权威78、ZTop10/MMTop9与OBS10完整；extra13不混原78。见[处置](fr200-fr201-20261024/round-09/disposition.md)、[版本图](fr200-fr201-20261024/round-09/version-map.json)及[哈希索引](fr200-fr201-20261024/round-09/artifact-manifest.json)。
+
+O064原完整check自然0（TS1905、Python3769＝3719P＋50原skip／1原warning），native24为21P＋3原I04skip/retry0，本spec六例PASS、57事务／43拒绝；执行时为2b parent HEAD＋exact APPLIED03工作树，提交后240逐字等价。本次不重跑产品/构建/打包；O063无运行。当前无240新CI或新包，旧094包912成员/root0755仅旧有界证据、不冲抵当前包验收。
+
+CI41引擎全集资格保留，但平台终态仍Quality failure、Windows failure、macOS success；两E2E原失败与后继SKIPPED不被抹除。O059已到native-recovery.cjs:12，只有060/062容器helper前止步；根因UNPROVEN与平台结果已知分开。报告过宽概括和Z6/7计数按ROOT限证，不重写raw。F04/F05只后续观测/真实失败annotation，不给成功CI制造失败样本新门禁；语言小写来自term()显式lower。未来完整同交付Windows3769逐node、原有据skip、自然0、无失败/早停/取消/timeout/NOTRUN、全部后继及Quality packaged recovery自身success和三job实际success仍须另票，原15/20分钟不变。
+
+F01覆盖接收完成；F05状态登记由本次新增段和精确归档履行，提交事实由O066回执记录。票时ROOT实核PR16 open未合并、remote head2b/base583；本轮不push/PR写/新CI/merge。全部原owner/窗口及容量/损坏库物理保护/跨平台目标设备/未知退出/具名下游/其它Undo与ownership/签名公证/组织法律供应链等OPEN/HOLD保留，整体合并可用仍2/17（FR401/402），Goal/M0/发布未完成。
+
+## 2026-10-27 当前快照追加：67b7bcbd／R10 技术接收与证据归档
+
+固定受审base `583c05c7870ba0f8f642e3eeea1d0590e5859ca2` → head `67b7bcbd2d911b4a6898d837dbf20688d793e844`，tree `78a6b5d5ba4ff4e8e408e8f7da95c5c719be3996`；40累计提交／117差异路径／1396源／5build。67相对b0仅4测试/辅助路径；本次仅7证据文件与本状态/M0两份追加段，实际直接后继commit/tree由仓外O071回执绑定，不冒新实现候选。
+
+R10两新原任务均自然完成：ZCode `session_586b0100bd64e62fb1504b88095e8b33`（GLM-5.3／最高／完全访问，既有BigModel个人来源，当前菜单未见StartPlan），最终77347B／`fa3a9982…b75e1`；MiniMax `mvs_e86f1d95643c4044a136ae2f1cca13fe`（M3.1-Flash／xhigh／始终授权），最终165505B／`216222aa…cad89`。同SID事实更正/必要补读各自然前缀保留、160项11255B输入完整。MM用户重置/解锁来源与官方额度读回留仓外，不推断重置机制或账单归因；本方未再购买/重置/积分操作。两作者原ConditionalPass不改写；ROOT已全文接收双方必要覆盖与全部意见处置，不是无条件双Pass、不走D8。见[R10处置](fr200-fr201-20261024/round-10/disposition.md)、[版本图](fr200-fr201-20261024/round-10/version-map.json)与[152外部针索引](fr200-fr201-20261024/round-10/artifact-manifest.json)。双方各160、当前31、权威78、R09新19＋OBS、独立extra13及ZTop9/MMTop10＋新T11/T12逐项有有效位置、原归口/事件窗口。Z24/50/79/7、MM16/46/90/8，MM末13为4未知/4NA/5部分。
+
+O069完整check自然0（TS1912／Python3769=3719P＋50原S／1原warning）和原native24=21P＋3原I04S、retry0/57事务43拒绝，实际运行在b0 HEAD＋exact4WIP；与67四Git blob逐字相同，未改标签冒重跑。main606471B仅开发nonce区间602382:602406的24B变化，其他构建/旧原件映射已核。annotation正常PASS有界留存不证timeout/worker kill留存。两作者未复跑验证，读既有qualification不冒本人逐事务重算。
+
+MM T11只采生成来源hash与head不同事实，fixture scope为generated，不构成错针或默认随head刷新；T12“仅3/9有断言”不采，固定test_storage190–223有九rules参数化正反断言，不新增五类补测门禁，也不冒本轮运行/四类下游GUI通过。Z串号/replay边界、MM T05算式/7case双份14annotation与stage、M0版本副本与HANDOFF目录歧义均按处置限证，保作者原稿、不再开文案循环。维护归原负责线未来实际触及窗口，本票无实现扩展。F01必要覆盖已接收；F05/F-R09-08由本次状态登记与精确归档履行，提交以O071实际回执为准。
+
+CI41原Quality/Windows失败、Mac成功；CI42 attempt1取消、Windows2F、Mac成功；attempt2旧b0 Quality取消/当前run failure及19P3原S部分回执保原。引擎3769独核不冲抵E2E失败/后继SKIP，具体根因UNPROVEN与已知终态分开，新绿不倒填旧79F。67尚未push/无新CI或新包，票时PR16 open未合并、remote feature b0/develop583。本票仅本地docs归档，未授权push/PR写/新CI/旧retry/merge。后续仍须同交付完整Quality/macOS/Windows、逐node3769/原有据skip/自然0、无失败早停取消timeoutNOTRUN、全部后继及Quality packaged recovery自身success，原15/20分钟不变；作者CI条件、case7复发处置及精确merge票另验，T04不推进。
+
+全部原owner/窗口、容量/旧超限库恢复/损坏SQLite物理保护、目标设备/跨OS、未知退出、其他Undo/ownership、四具名下游、签名公证/组织法律隐私产权/供应链/wholeApp与_distutils等OPEN/HOLD保留；旧094912/root0755只旧有界证据，不冒当前新包。整体合并可用仍2/17（FR401/402），Goal/M0/发布未完成。以上所有旧状态字节前缀保留。
+
+## 2026-10-27 R11 / d1aca 必要技术阶段已接收；受控docs归档
+
+ROOT补充票controller-t02-r11-status-three-lf-exception-20261027.json核准status.md旧前缀仅删除三个历史多余LF，原字节范围[6255,6256)、[19564,19565)、[28186,28187)。原32029B/c7f935404ca25e227b391b169e243a12373b64cb6e000ba2e774b23651e039fe保存在O076/status.md.before；修后旧prefix32026B/a81628680410342b5ca3da8586201e38e3b0bda260ce93ea3b42144f7bdce238，其他旧字节顺序精确。M0旧prefix13998B/a812e0cf7d5cc8351becff6e9ff01e02f0779bee1f9a0af18feabcd2b7ad26aa仍逐字精确。保留首次格式化/prefix守卫失败和完整七文件check首败，只对此明确文档例外重验；verify:sources输入未变，沿用实测exit0/12源，不重复执行。
+
+受审base583→d1aca3e34ec4d00095c10a14a413efb552d3776a/tree389848f84fe60325bcdcd1b7827a7ee6e039a0e1，累计43提交/125路径/1403源叶。cfcc R10归档之后，2d6仅修复M0接缝一个LF；d1aca仅两个原E2E观测修补，全部旧记录保持历史。ROOT在2026-10-27T02:36:55Z接收双方R11必要技术阶段和完整意见处置，push前源码技术阻断0；两作者原ConditionalPass保留，不是无条件双Pass或完整产品/CI放行。
+
+ZCode GLM-5.3/最高/完全访问与MiniMax M3.1-Flash/xhigh/始终授权均为新会话同候选审查，natural03原稿逐字归档于round-11；Z74583B/05bf18b5f33991234aa1455d5d48e7049766d70973c464f39b0cf134d88271e0，MM174277B/ab0f072e2eb3a1e3224dff91352a89ff63e24e3abd6243e3c69329cc1015d5e7。各160及原163位置、Z新增3和Top9映射、MM新增9及S01alias/所有原owner窗口逐项保留。有效160分别30/51/70/9与16/48/89/7；不计产品通过数。F01必要正文阅读流程现由ROOT接收，与R11-F01计划版本化事实分开；F05登记缺口以本次两状态追加处理，仅文档状态闭合。
+
+实际已有O074运行仍为2d6+exact2 WIP后经blob绑定d1aca，不能改写运行HEAD。既有完整check exit0：TS1912PASS、Python3769=3719PASS+50原SKIP、Ruff393；原Mac24自然driver0=21PASS+3原I04SKIP、retry0/flaky0、57交易/43拒绝（42INVALID+1ownership）、FR最终rev22及2原ID编辑，case7原op/Job/read/marker/单提交。FR22真实7create/11assert/2edit/2remove；43metadata25add/17edit/1无action字符串alias、语义26add17edit；name new23/edit15；原稿拆分残留只以owner纠正。新计时最大2223B≤4096B，C1本机成功未触发失败catch；Windows附件和超时修复仍未证。434/487资格为既有结果，无本次重算或运行。
+
+CI41同步helper12 TypeError旧根因未证单列；CI43 C1是ready/bootstrap后child close1/null、异步原因UNKNOWN；FR整例180002ms/第21笔后最后Diff名义余474.210ms/最终rev21，新计时仅观测。CI43 failure、Quality完整3769 NOTRUN、后步骤SKIP和所有历史失败/取消不覆盖。不设push前必须证因或预算余量阈值。未来完整CI按ROOT精确票及原15/20min/完整suite和原理据skip/自然0/全部后步骤与Quality回收门禁接收。
+
+本次soleparent d1aca的普通docs后继仅新增round-11七文件并追加本节到两状态文件；version-map记录受审身份和后继契约，实际新head/tree/检查/独核绑定在仓外outputs/20261027_t02_r11_evidence_archive_076/COMMIT-BINDING.json及HANDOFF.json，避免文档自引用。artifact-manifest绑定O075仓外169针；GUI、日志、运行库和private原件不入Git。作者raw不格式化；仅适用五份新生成文档及两份完整组装状态Prettier、verify:sources，实际退出码见仓外回执。不重跑check/build/Ruff/产品/GUI/SQL。本票不push、PR写入、新CI/rerun/cancel、merge或T04推进。
+
+整体已合并可用FR仍2/17（FR401/402），HOLD关闭0、D8未用、Goal/M0/release未完成。组织法律/IP/隐私/真实human bus-factor、容量与坏SQLite物理保护/旧超限库恢复、包内完整GUI/签名公证、跨OS及参考8GB设备、供应链、engine自然退出及Windows后代、sys.path等价、parser/N3Store坏snapshot、下游/ownership家族/剩余Undo/旧79F等原HOLD/UNKNOWN保持。未新增人类审批需求；后续远端动作等待ROOT精确票。
+
+## 2026-10-27 R12 / dc6 必要技术阶段已接收；受控11路径docs归档
+
+ROOT在2026-10-27T15:09:42.632204Z实际接收base583→dc6c112ecc944116dc421f9ef569eb50e132e217/treeba11405f4e4d9ba88136ed47ce74f2848a12b9ac（sole-parent deac095f，45累计提交/135路径/1412源）的指定双审必要技术阶段与全部意见处置。两作者原ConditionalPass限定技术及首判/更正链不改写，push前源码技术阻断0；不是无条件双Pass、完整产品/CI或发布放行。
+
+ZCode GLM-5.3/最高/完全访问，SID session_a3121c2e640b72b7a56782376270e618，最终93526B/7c4a3e32a6a87f4f877c25c03648c724133f0477fd8c375204c5c16429827a7e；MiniMax M3.1-Flash/xhigh/始终授权，SID mvs_9fdac9995ac940e0aa1105d923ebbaa4，最终310134B/a982d752cf6166f19f7b0813455280d51bbc926fa5080639dbdecd777324f013。同SID必要补读与纠错、误停/续审、原160完整输入和官方自然终态均在O081；Mini额度满后无新请求/积分/购买/reset。两原稿逐字节归档，不格式化。有效160分别30/55/69/6与21正面+17普通/53部分/65NA/4未知（归一38/53/65/4），均不是产品通过数。
+
+stable163+Z新增3+Mini新增9=175位置及17本轮观察逐项有当前处置、理由、原owner/事件窗口和限证；Top9/S01仅alias不增位。Mini汇总算术、F-R09-03撤回/CIUNKNOWN双半面与F-R09-08→F05等由owner窄erratum处理，原稿不改；LEDGER-01只同步四条Z最终理由，独立反演精确复原旧账，其余不变。F01仅本轮必要阅读/技术收件动作闭合，F05/MM12-N1登记缺口由本次两状态追加落实，仅文档状态闭合；R11-F01仍是M0计划版本化事实，不混coverage。详见[处置](fr200-fr201-20261024/round-12/disposition.md)、[完整owner索引](fr200-fr201-20261024/round-12/owner-effective-index.json)、[窄勘误](fr200-fr201-20261024/round-12/owner-errata.json)、[版本图](fr200-fr201-20261024/round-12/version-map.json)及[247针清单](fr200-fr201-20261024/round-12/artifact-manifest.json)。
+
+已接收O081原完整check自然0：TS1924/41files、Python3798=3748PASS+50原条件SKIP/1原duplicateZIPwarning、Ruff397；原native24一次自然双0=21PASS+3原I04SKIP/retry0/flaky0，57事务/43拒绝（42INVALID+1ownership）、FR201finalrev22及两原ID编辑、case7原op单commit/0execute/0replay/1Job/完整Read与marker，146业务资格全true。实际运行仍deac checkout+精确四WIP，后四Gitblob映射dc6；不冒未来docs commit重跑。AGENTS政策overlay唯一Git/current例外，其他1411blob相等。C1成功19371ms无failureObservation，新增observer真实平台失败仍未证；FR20156.482s仅本机观察，不量化提速或证明Windows修复。O079首败/底因UNKNOWN完整保留。
+
+旧CI41 helper12与CI43异步新形态、CI44失败/取消/NOTRUN分列。CI44 Quality engine3769=3716P53原S已完整，后verify15min取消不倒称engine未运行。dc6无新CI，本票不push/改PR/触发重跑取消CI/merge。未来须当前完整发现集合（当前3798含新增29）、原有据skip/自然0/无失败早停取消timeoutNOTRUN、全部后继/三job自身success与Quality packaged recovery自身success，原15/20min及40/45/90、5/60/180预算/断言不变。Windows诊断是条件step，maxfail只在失败时早停；单步绿不等产品/merge，不加旧根因先证、余量阈值或故意失败门。
+
+本票直接后继sole-parent dc6，只新增round-12九文件并追加两状态，共11路径。实际新head/tree、逐字节raw/语义等价/旧前缀/原1410源/5build/7保护项及O081247针、7新生成+2完整状态文档检查/verify:sources/独立文档差异审查在仓外outputs/20261027_t02_r12_docs_archive_082回执绑定，避免自引用。仅本地普通docs提交；后继远端动作仍须ROOT精确票。
+
+整体合并可用FR仍2/17（FR401/402），HOLD关闭0、D8未用、Goal/M0/release未完成、T04不推进。法律/IP/隐私/真实human能力与bus-factor、供应链/签名公证/包内GUI、容量/旧超限/坏SQLite物理保护、unknown parser/N3Store、engine退出与Windows后代、sys.path等价、跨OS/参考8GB设备、其余Undo/ownership及四具名下游全部HOLD/UNKNOWN原窗口保留。全部旧状态前缀逐字保留。
+
+## Round 13（2026-10-28）双审必要技术阶段接收与 docs-only 归档
+
+ROOT 接收候选 b02a39b4（tree 3284bc38，sole parent e9a11470，base583 累计 47 commits/150 路径/tracked 1425）的指定双审：ZCode session_f67a67e285d8e9a84fffd39e138e608e（GLM-5.3/最高/完全访问，原自然 22m16+11m56+6m15）与 MiniMax mvs_0ae15e577617475eb48b9247e9a30d62（M3.1-Flash/xhigh/始终授权，原自然 17m7+2m58+2m26）最终均 ConditionalPass（限定技术阶段），push 前源码技术阻断 0；不是无条件双 Pass/产品 Pass/CI 放行或合并授权。owner-effective-index.json 为 O095 已接收完整处置逐字节归档（160/175/17 原判/窗口保留）：Z 有效分类经本人附录机械纠 24 适用/64 部分/71 不适用/1 无法确认（两次原必要漏项补完、原前缀精确、F-R09-09 补齐）；Mini 27/67/63/3。Mini 原 3 源码前置阻断经其 §12 本人事实重核撤回；其 /tmp 依赖探针超票无 raw，不作产品验证；N02 扩大 generic ValueError 捕获不采；unknown parser/N3/Store 保持 UNKNOWN/HOLD；175 信息闭合与 15 控制闭合不构成 HOLD/FR 关闭。两原稿 zcode-glm53.md/minimax-m31flash.md 为 O095 authority 最终自然稿逐字节副本（71f0b48a…/0522705d…）。
+
+运行事实边界：O092 完整 check（TS 1996/44、Python 3798=3748P+50 原 S+1 warning、E2E 24=21P+3 原 I04 S）、O093 新 App（darwin/arm64/electron 44.9.0）制造与包内 17 pytest/525 协议、O094 packaged 全套（24=21P+3 原 I04 S、retry0/flaky0/errors[]、57 事务+43 拒绝）均发生于 e9a+12 已测 WIP，其源码等字节冻结为 b02，不得倒写为运行发生于 b02。旧 CI45 终态完整保留（Quality apt 15m 取消、Win 17P+3S+4F、Mac 20P+3S+1F）；b02 无新 push/CI。后继仍须原完整三平台 CI（15/20min 原预算、packaged recovery 步骤自身 success）、正常 merge 与远端 develop 核验；全部既有 HOLD 保留。整体合并可用 FR 仍 2/17（FR401/402），HOLD 关闭 0、D8 未用，Goal/M0/release 未完成，T04 等待真实 T02 合并基线；子 T02 Goal 面板实际 paused 不由本票更改。本票为 docs-only 直接后继（sole parent b02，8 路径：round-13 六新文件+本文件与 m0-checklist 追加）；两 raw 按现行 ignore 策略被 prettier 跳过（如实登记，非格式化成功），verify:sources 通过；归档/检查/提交原件在仓外 outputs/20261028_t02_r13_docs_archive_096。仅本地普通 docs 提交；远端动作仍须 ROOT 精确票。全部旧状态前缀逐字保留。

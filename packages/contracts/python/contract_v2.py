@@ -460,6 +460,51 @@ def validate_business3(name, value):
     return validate(profiles.get(name, name), value)
 
 
+def ownership_detail_matches(params, value):
+    import base64
+    import binascii
+    import hashlib
+
+    if not (
+        validate("params_project.ownership.detail", params)
+        and validate("result_project.ownership.detail", value)
+    ):
+        return False
+    manifest, start, segments = value["manifest"], params["startOrdinal"], value["segments"]
+    count = (manifest["totalBytes"] + 32767) // 32768
+    end = start + len(segments)
+    if (
+        value["projectId"] != params["projectId"]
+        or value["detailRef"] != params["detailRef"]
+        or value["startOrdinal"] != start
+        or count != manifest["segmentCount"]
+        or len(segments) > params["pageSize"]
+        or not start < end <= count
+        or (
+            params["documentHash"] is not None
+            and params["documentHash"] != manifest["documentHash"]
+        )
+        or value["nextOrdinal"] != (None if end == count else end)
+        or value["complete"] != (end == count)
+    ):
+        return False
+    for ordinal, segment in enumerate(segments, start):
+        length = min(32768, manifest["totalBytes"] - ordinal * 32768)
+        if (
+            segment["ordinal"] != ordinal
+            or segment["byteOffset"] != ordinal * 32768
+            or segment["rawByteLength"] != length
+        ):
+            return False
+        try:
+            raw = base64.b64decode(segment["dataBase64"], validate=True)
+        except (ValueError, binascii.Error):
+            return False
+        if len(raw) != length or hashlib.sha256(raw).hexdigest() != segment["sha256"]:
+            return False
+    return True
+
+
 def matches_business3_response(request, response, expected_registry_hash):
     """Pending-request binding only; actual ready gates remain runtime-owned."""
     from copy import deepcopy
@@ -472,6 +517,10 @@ def matches_business3_response(request, response, expected_registry_hash):
         return False
     if any(request[k] != response[k] for k in ("id", "method")):
         return False
+    if request["method"] == "project.ownership.detail":
+        return request["engineSessionId"] == response["engineSessionId"] and (
+            not response["ok"] or ownership_detail_matches(request["params"], response["result"])
+        )
     if request["method"] == "project.draft.save":
         if request["engineSessionId"] != response["engineSessionId"]:
             return False

@@ -31,6 +31,7 @@ METHODS = frozenset(
         "project.draft.save",
         "project.open",
         "project.read",
+        "project.ownership.detail",
     }
 )
 # First-chain rejection bounds, within the original reader's limits. These are
@@ -43,6 +44,257 @@ HELD_BYTES = 134217728
 HELD_OBJECTS = 1048576
 READ_WORK = 536870912
 MAX_REPLIES = 16
+
+
+@dataclass(eq=False)
+class _WriteHolding:
+    # Actual writer aggregation holding, never a reply/read/permission ticket.
+    scalar: int
+    objects: int
+    work: int
+
+
+@dataclass(eq=False)
+class _WriteScope:
+    controlled: bool
+    reply: object = None
+    charged: object = None
+    holding: object = None
+    checked: bool = False
+
+
+class _WriteAdmission:
+    def __init__(self, store):
+        from ontolearn_engine.job_store import JobStore
+
+        if not isinstance(store, JobStore) or store.actual_format != 3:
+            raise ValueError("Original business3 Store required")
+        if store.contract.ERROR_CATALOG["maxEncodedBytes"] != 2048:
+            raise ValueError("Terminal growth proof requires the pinned error contract")
+        self.store, self.connection, self.lease = store, store._db, store._format3_lease
+        self.owner = None
+        self.active = None
+        self.retained = []
+        self.charged_reply = False
+        self.transaction = None
+
+    def holdings(self):
+        return self.retained + ([self.active] if self.active is not None else [])
+
+    def check_store(self):
+        if (
+            self.store._db is not self.connection
+            or self.store._format3_lease is not self.lease
+            or self.lease is None
+            or self.store._read_admission is not self
+        ):
+            fault("PERMISSION_DENIED")
+
+    def bind(self, owner):
+        from ontolearn_engine.coordinator import Coordinator
+
+        self.check_store()
+        if (
+            type(owner) is not MainlineHost
+            or not isinstance(owner.actor, Coordinator)
+            or owner.store is not self.store
+            or owner.actor.store is not self.store
+            or owner.actor.profile != "business3"
+            or owner.actor.test_mode
+            or owner.actor.mainline is not None
+            or owner.actor.query_dispatch is not None
+        ):
+            fault("PERMISSION_DENIED")
+        # Bootstrap can already own an uncertain writer before any host binds.
+        # Neither a first owner nor a successor may adopt that as a clean book.
+        if (
+            self.active is not None
+            or self.retained
+            or self.transaction is not None
+            or self.charged_reply
+            or self.connection.in_transaction
+        ):
+            fault("PERMISSION_DENIED")
+        previous = self.owner
+        if previous is not None and not self._clean_predecessor(previous):
+            fault("PERMISSION_DENIED")
+        self.owner = owner
+
+    def _clean_predecessor(self, owner):
+        from ontolearn_engine.coordinator import Coordinator
+
+        # Explicit close must have returned successfully. Merely fencing a
+        # failed delivery also sets closed, but cannot release its authority.
+        return (
+            type(owner) is MainlineHost
+            and isinstance(owner.actor, Coordinator)
+            and owner._clean_close
+            and owner.closed
+            and not owner.hold
+            and type(owner.reader) is _MainlineReader
+            and owner.reader._owner is owner
+            and owner.reader._store is self.store
+            and owner.reader._closed
+            and not owner.reader._catalogs
+            and owner.store is self.store
+            and owner.actor.store is self.store
+            and owner.actor.mainline is owner
+            and owner.actor.ordinary is owner
+            and owner.actor.query_dispatch is owner
+            and owner.actor.profile == "business3"
+            and not owner.actor.test_mode
+            and owner.actor.session == owner.session
+            and owner.actor.host_client_id == owner.host
+            and owner.current is None
+            and not owner.replies
+            and not owner.actor._query_replies
+            and owner.actor._query_project_get is None
+            and not owner.actor.active
+            and not owner.actor.tasks
+            and not owner.actor.queued
+        )
+
+    def begin_transaction(self):
+        self.check_store()
+        if self.transaction is not None:
+            # In particular, after_commit callbacks cannot open another outer
+            # scope and settle/refund this still-unfinished writer's holding.
+            fault("INVALID_STATE")
+        owner = self.owner
+        reply = owner.current if owner is not None else None
+        if reply is not None and owner.replies.get(reply.request_id) is not reply:
+            fault("PERMISSION_DENIED")
+        # A direct privileged Store fixture is not a caller/write grant. Real
+        # named requests and original application/job producers mark this scope.
+        token = _WriteScope(owner is None or reply is not None, reply)
+        if reply is not None and reply.method in {"query.result.rowsPage", "query.result.textPage"}:
+            owner.check_reply(reply)
+            # This producer greedily fills a legal prefix up to its budget.
+            # Keep room for its mandatory outer final check. Other purposes
+            # retain their original charge timing, including scopes which roll
+            # back before material validation and then persist a diagnostic.
+            scalar, objects, work = self._final_material_cost()
+            owner.reserve(reply, scalar, objects, work)
+            token.charged = reply
+            self.charged_reply = True
+        self.transaction = token
+        return token
+
+    @staticmethod
+    def _final_material_cost():
+        return 8 * READ_LIMITS.schema_bytes + 64 * 32 * 32, 8192, 2 * READ_LIMITS.validation_work
+
+    def mark_controlled(self):
+        self.check_store()
+        if self.transaction is None:
+            fault("INVALID_STATE")
+        self.transaction.controlled = True
+
+    def check_final_material(self, token):
+        from ontolearn_engine.project.project_host import material_profile
+
+        self.check_store()
+        if self.transaction is not token:
+            fault("PERMISSION_DENIED")
+        if not token.controlled:
+            return
+        if self.active is not None or token.checked:
+            fault("INVALID_STATE")
+        token.checked = True
+        # Only schema/table metadata and scalar aggregates are materialized.
+        # 8*schema covers retained names/current PRAGMA/escaped SQL copies;
+        # 64*32*32 covers bounded per-column/per-table scaffolding. This is the
+        # original logical accounting unit, not an RSS/SQLite-native-I/O claim.
+        owner = self.owner
+        if token.reply is not None:
+            owner.check_reply(token.reply)
+            if token.reply.method in {"query.result.rowsPage", "query.result.textPage"}:
+                if token.charged is not token.reply or not self.charged_reply:
+                    fault("INVALID_STATE")
+            elif token.charged is not None or self.charged_reply:
+                fault("INVALID_STATE")
+            else:
+                scalar, objects, work = self._final_material_cost()
+                owner.reserve(token.reply, scalar, objects, work)
+                token.charged = token.reply
+                self.charged_reply = True
+        else:
+            if self.charged_reply:
+                fault("INVALID_STATE")
+            scalar, objects, work = self._final_material_cost()
+            others = (list(owner.replies.values()) if owner is not None else []) + self.holdings()
+            if (
+                len(self.retained) >= MAX_REPLIES
+                or sum(item.scalar for item in others) + scalar + READ_LIMITS.retained_bytes
+                > HELD_BYTES
+                or sum(item.objects for item in others) + objects > HELD_OBJECTS
+                or work > READ_WORK
+            ):
+                fault("RESOURCE_LIMIT", resource="memory")
+            self.active = _WriteHolding(scalar, objects, work)
+            token.holding = self.active
+        try:
+            profile = material_profile(self.connection, READ_LIMITS, _mainline_core_material=True)
+            # All accepted, nonterminal jobs in this original DB count, not just
+            # the selected project's job. Invalid JSON is never called terminal.
+            pending, runs = self.connection.execute(
+                "SELECT count(*),coalesce(sum(run IS NOT NULL),0) FROM jobs WHERE "
+                "CASE WHEN json_valid(dto) THEN coalesce(json_extract(dto,'$.state'),'') "
+                "ELSE '' END NOT IN ('succeeded','failed','cancelled')"
+            ).fetchone()
+            profile.admit_terminal_growth(READ_LIMITS, pending, runs)
+        except HostReadFault as error:
+            if error.reason != "limit":
+                raise
+            fault("RESOURCE_LIMIT", resource="page")
+
+    def retain_unknown(self, token):
+        if token.holding is not None and not any(x is token.holding for x in self.retained):
+            self.retained.append(token.holding)
+        for reply in (token.reply, token.charged):
+            if reply is not None:
+                reply.unknown = True
+                if self.owner is not None and self.owner.replies.get(reply.request_id) is not reply:
+                    if not any(x is reply for x in self.retained):
+                        self.retained.append(reply)
+        if self.owner is not None:
+            self.owner.hold = True
+
+    def settlement_failed(self, token):
+        # Scope keeps the original references even if a faulty cleanup callback
+        # already cleared the shared fields. Never retry/refund this scope.
+        self.retain_unknown(token)
+        self.transaction = token
+        self.active = None
+        self.charged_reply = False
+
+    def completed(self, token, error):
+        import asyncio
+
+        from ontolearn_engine.coordinator import ServiceFault
+
+        if self.transaction is not token:
+            fault("PERMISSION_DENIED")
+        known = error is None or isinstance(
+            error, (JobFault, Conflict, ServiceFault, asyncio.CancelledError)
+        )
+        if not known:
+            self.retain_unknown(token)
+        self.active = None
+        self.charged_reply = False
+        self.transaction = None
+
+
+def prepare_mainline_store(store):
+    """Trusted bootstrap/adapter only; adds a restriction, never write authority."""
+    admission = store._read_admission
+    if admission is None:
+        admission = _WriteAdmission(store)
+        store._read_admission = admission
+    if type(admission) is not _WriteAdmission:
+        fault("PERMISSION_DENIED")
+    admission.check_store()
+    return admission
 
 
 class ExampleResourceFault(ValueError):
@@ -222,6 +474,131 @@ class _MainlineReader(ProjectHostReader):
         )
 
 
+@dataclass(frozen=True)
+class _OwnershipProof:
+    """Stack-owned issuer proof; no constructor or authority is exposed on wire."""
+
+    owner: object
+    reply: object
+    store: object
+    connection: object
+    lease: object
+    project: str
+    generation: int
+    method: str
+    base: int | None
+    request_hash: str
+
+    def check(self, store, project):
+        owner = self.owner
+        owner.check_reply(self.reply)
+        if (
+            store is not self.store
+            or owner.store is not store
+            or store._db is not self.connection
+            or store._format3_lease is not self.lease
+            or project != self.project
+            or owner.selected != project
+            or owner.generation != self.generation
+            or self.reply.method != self.method
+            or self.reply.project != project
+        ):
+            fault("PERMISSION_DENIED")
+        owner.authorize({"projectId": project})
+
+    @property
+    def origin(self):
+        return {
+            "ownerId": self.owner.owner_id,
+            "hostClientId": self.owner.host,
+            "engineSessionId": self.owner.session,
+        }
+
+    def reserve(self, stage, *, bytes_, objects, work):
+        self.check(self.store, self.project)
+        self.owner._budget().reserve(stage, bytes_=bytes_, objects=objects, work=work)
+
+    def admissions(self):
+        self.reserve(
+            "ownership admission scans",
+            bytes_=4 * READ_LIMITS.validation_bytes,
+            objects=4096,
+            work=2 * READ_LIMITS.validation_work,
+        )
+        reader = ProjectHostReader(self.store, limits=READ_LIMITS)
+        values = []
+        for core in (True, False):
+            try:
+                reader._preflight(_mainline_core_material=core)
+            except HostReadFault as error:
+                if error.reason != "limit":
+                    self.owner._host_fault(error)
+                values.append(False)
+            else:
+                values.append(True)
+        return tuple(values)
+
+    def material_profile(self):
+        # Admission already authenticated schema; identifiers still come only
+        # from SQLite. This measures exact prospective row/column byte deltas.
+        self.reserve(
+            "ownership projected material",
+            bytes_=2 * READ_LIMITS.validation_bytes,
+            objects=4096,
+            work=READ_LIMITS.validation_work // 2,
+        )
+        db = self.store._db
+        total = scan = decoded = 0
+        counts, plan_sizes = {}, None
+        tables = list(db.execute("SELECT name FROM sqlite_master WHERE type='table'"))
+        for (table,) in tables:
+            quoted = '"' + table.replace('"', '""') + '"'
+            columns = db.execute(f"PRAGMA table_info({quoted})").fetchall()
+            sizes = "+".join(
+                'coalesce(length(CAST("' + row[1].replace('"', '""') + '" AS BLOB)),0)'
+                for row in columns
+            )
+            count, size = db.execute(
+                f"SELECT count(*),coalesce(sum({sizes}),0) FROM {quoted}"
+            ).fetchone()
+            counts[table] = count
+            total += count
+            scan += size
+            if table not in {"job_blobs", "job_plans"}:
+                decoded += size
+            if table == "job_plans":
+                plan_sizes = sizes
+        plans = db.execute(
+            f"SELECT coalesce(sum({plan_sizes}),0) FROM job_plans WHERE ref IN ("
+            "SELECT CASE WHEN json_valid(context) THEN "
+            "json_extract(context,'$.request.authorization.preparedPlanRef') END "
+            "FROM operation_claims WHERE kind='application')"
+        ).fetchone()[0]
+        return (
+            total,
+            scan,
+            decoded,
+            plans,
+            counts.get("app_operations", 0) + counts.get("snapshots", 0),
+        )
+
+    def project_admissions(self, before, profile, rows, scan_delta, decoded_delta):
+        count, scan, decoded, plans, repeats = profile
+        core = (
+            count + rows <= READ_LIMITS.validation_rows
+            and decoded + decoded_delta + plans <= READ_LIMITS.validation_bytes
+            and 2 * (scan + scan_delta) + (decoded + decoded_delta + plans) * repeats
+            <= READ_LIMITS.validation_work
+        )
+        full = (
+            count + rows <= READ_LIMITS.validation_rows
+            and scan + scan_delta <= READ_LIMITS.validation_bytes
+            and (scan + scan_delta) * (1 + repeats) <= READ_LIMITS.validation_work
+        )
+        if not core or (before[1] and not full):
+            fault("RESOURCE_LIMIT", resource="page")
+
+
 class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
     """One real actor/store/handshake owner; no authority derived from a DTO."""
 
@@ -241,7 +618,9 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.current = None
         self.replies = {}
         self.closed = False
+        self._clean_close = False
         self.hold = False
+        prepare_mainline_store(self.store).bind(self)
 
     @property
     def owner_id(self):
@@ -295,6 +674,36 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
             fault("PERMISSION_DENIED")
         return project
 
+    def ownership_proof(self, params, *, method):
+        self.require_owner(self.owner_id)
+        self.check_reply(self.current)
+        if (
+            method not in {"changeset.preview", "project.ownership.detail"}
+            or self.current.method != method
+        ):
+            fault("PERMISSION_DENIED")
+        self.authorize(params)
+        from ontolearn_engine.storage import digest
+
+        self._budget().reserve(
+            "ownership request binding",
+            bytes_=4 * self.actor.limits["maxFrameBytes"],
+            objects=4096,
+            work=8 * self.actor.limits["maxFrameBytes"],
+        )
+        return _OwnershipProof(
+            self,
+            self.current,
+            self.store,
+            self.store._db,
+            self.store._format3_lease,
+            params["projectId"],
+            self.generation,
+            method,
+            params.get("baseRevision"),
+            digest(params),
+        )
+
     def begin(self, request):
         self.require_owner(self.owner_id)
         if self.current is not None or len(self.replies) >= MAX_REPLIES:
@@ -326,6 +735,7 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
 
     def reserve(self, reply, scalar, objects, work):
         others = [r for r in self.replies.values() if r is not reply]
+        others += self.store._read_admission.holdings()
         if (
             sum(r.scalar for r in others)
             + reply.scalar
@@ -628,6 +1038,11 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
                 self._room(result, budget, "result_project.open")
                 self._select(params["projectId"])
                 return result
+            elif method == "project.ownership.detail":
+                self.authorize(params)
+                budget.reserve_store("ownership detail read", params)
+                proof = self.ownership_proof(params, method=method)
+                result = self.store.ownership_detail_page(params, proof, self.actor.limits)
             else:
                 project = params["projectId"]
                 self.authorize(params)
@@ -785,5 +1200,7 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
             self.hold = True
 
     def close(self):
+        self._clean_close = False
         self.closed = True
         self.reader.close()
+        self._clean_close = True

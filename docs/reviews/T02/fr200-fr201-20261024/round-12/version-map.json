@@ -1,0 +1,330 @@
+{
+  "schema": "T02.R12.received-review-documentation-lineage.v1",
+  "reviewedCandidate": {
+    "base": "583c05c7870ba0f8f642e3eeea1d0590e5859ca2",
+    "head": "dc6c112ecc944116dc421f9ef569eb50e132e217",
+    "tree": "ba11405f4e4d9ba88136ed47ce74f2848a12b9ac",
+    "parent": "deac095fb86f3704fa76cd4216ecd60409ff3c99",
+    "branch": "feature/weekly-t02-fr200-fr201",
+    "cumulativeCommits": 45,
+    "baseDiffPaths": 135,
+    "trackedSource": 1412
+  },
+  "implementationCommit": {
+    "head": "dc6c112ecc944116dc421f9ef569eb50e132e217",
+    "parent": "deac095fb86f3704fa76cd4216ecd60409ff3c99",
+    "exactFourPaths": {
+      "packages/engine/src/ontolearn_engine/storage.py": {
+        "mode": "0644",
+        "type": "file",
+        "bytes": 89563,
+        "sha256": "23c9040edbc27226dce9aa0f1959f894c1bc68ba0eead4b1adc87ce9ebd55e60",
+        "gitBlob": "b56adac2835150199ec64f61e64df43a7d1197ad"
+      },
+      "packages/engine/tests/test_storage_snapshot_iri_memo.py": {
+        "mode": "0644",
+        "type": "file",
+        "bytes": 12775,
+        "sha256": "aeeaf181f2b1865cfbccabbc5c36d8e4aa73425241d3184cfbe7bfd0cff2b2be",
+        "gitBlob": "c53d39cee4017c4ae4741ebe40d8a1039500144a"
+      },
+      "tests/e2e/native-recovery.cjs": {
+        "mode": "0644",
+        "type": "file",
+        "bytes": 9113,
+        "sha256": "aa1d4fb6b903080bdd7a45fc67635246674e44d98a6b4b231489276bf912ba6f",
+        "gitBlob": "54b6f372c644bf89137bd4fa7761f26e10a42b0d"
+      },
+      "tests/unit/native-recovery-observer.test.ts": {
+        "mode": "0644",
+        "type": "file",
+        "bytes": 11472,
+        "sha256": "d432cbd664394a6306eb56399ff0c7797f70b473f4caca16d17dbf47af2f73a6",
+        "gitBlob": "4137d0dd2af17bb6244987d20b1c5a196ed84493"
+      }
+    }
+  },
+  "archiveSuccessor": {
+    "kind": "normal local documentation direct successor",
+    "requiredSoleParent": "dc6c112ecc944116dc421f9ef569eb50e132e217",
+    "authorizedPathsExactly": [
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/zcode-glm53.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/minimax-m31flash.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/disposition.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/version-map.json",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/artifact-manifest.json",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/independent-zcode-disposition-audit.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/independent-minimax-disposition-audit.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/owner-effective-index.json",
+      "docs/reviews/T02/fr200-fr201-20261024/round-12/owner-errata.json",
+      "docs/reviews/T02/status.md",
+      "docs/m0-checklist.md"
+    ],
+    "expectedOnly11Paths": 11,
+    "actualCommitAndTreeResolvedBy": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_r12_docs_archive_082/COMMIT-BINDING.json",
+    "noSelfReferencingFutureCommitSHA": true,
+    "noProductSourceOrTestConfigDependencyCIBudgetChange": true
+  },
+  "actualRuntimeIdentity": "Original deac checkout+exact four WIP paths at both runs; later commit contains identical validated source blobs. No run relabeled to future head.",
+  "sourceBindingException": [
+    {
+      "path": "AGENTS.md",
+      "validatedCurrentSource": {
+        "mode": "0644",
+        "type": "file",
+        "bytes": 15147,
+        "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+      },
+      "committedSource": {
+        "mode": "0644",
+        "type": "file",
+        "bytes": 1056,
+        "sha256": "1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb"
+      },
+      "gitBlob": "f3876f6690b11ae58f633d1bcb96db05a429d58b"
+    }
+  ],
+  "acceptedLocalValidation": {
+    "completeCheck": {
+      "naturalProcessAndOverallExit": 0,
+      "TS1924Files41": true,
+      "Python3798": {
+        "passed": 3748,
+        "originalSkip": 50,
+        "originalWarning": 1
+      }
+    },
+    "originalNative24": {
+      "naturalProcessAndOverallExit": 0,
+      "passed": 21,
+      "originalI04Skipped": 3,
+      "retry": 0,
+      "flaky": 0,
+      "transactions": 57,
+      "rejections": 43,
+      "FR201FinalRevision": 22,
+      "twoOriginalIDEdits": true,
+      "case7SingleCommit": true,
+      "qualificationChecks146AllTrue": true
+    },
+    "C1": {
+      "passedMs": 19371,
+      "successHasNoFailureObservation": true,
+      "realPlatformFailureObserverProven": false
+    },
+    "FR201SecondsObservationOnly": 56.482,
+    "noRerunInThisArchive": true
+  },
+  "authorIdentities": {
+    "atUTC": "2026-10-27T13:49:18.245569+00:00",
+    "zcode": {
+      "officialSID": "session_a3121c2e640b72b7a56782376270e618",
+      "model": "GLM-5.3",
+      "thinking": "highest",
+      "permission": "full access",
+      "route": "StartPlan inspected onlyGLM5.3Flash; restored BigModel personal + actualGLM5.3/highest before submission",
+      "actualPastedInput": {
+        "path": "/Users/kyle/.zcode/tmp/paste-attachments/2026-10-27/pasted-text-20261027-213805-4eeba574.txt",
+        "bytes": 28139,
+        "sha256": "0fb78032519d61b7226263f863d2acedbada728ae405270154714504d7ec2afe",
+        "equalsOriginalCompleteInput": true
+      },
+      "ownerMisEscapeStopPreserved": true,
+      "sameSIDResumeActuallySent": true,
+      "neutralCorrectionDeliveredSameSID": true,
+      "sourceChange": false
+    },
+    "minimax": {
+      "officialSID": "mvs_9fdac9995ac940e0aa1105d923ebbaa4",
+      "model": "M3.1-Flash",
+      "thinking": "xhigh",
+      "permission": "always-authorized",
+      "originalCompleteInputAXExactBeforeAppend": true,
+      "actualDispatchedInputWithIdenticalNeutralAddendumAXExact": true,
+      "actualBytes": 28845,
+      "actualSHA256": "208d8becfd32de1e2025703a2c611866f31eae7039dc7ca3878b44fa9c8c29f6",
+      "newTaskTitle": "T02 R12 候选独立工程审查",
+      "singleInitialSend": true
+    },
+    "sameCandidate": {
+      "base": "583c05c7870ba0f8f642e3eeea1d0590e5859ca2",
+      "head": "dc6c112ecc944116dc421f9ef569eb50e132e217",
+      "tree": "ba11405f4e4d9ba88136ed47ce74f2848a12b9ac",
+      "parent": "deac095fb86f3704fa76cd4216ecd60409ff3c99",
+      "branch": "feature/weekly-t02-fr200-fr201",
+      "cumulativeCommits": 45,
+      "baseDiffPaths": 135,
+      "trackedSource": 1412
+    },
+    "originalChecklist160Preserved": true,
+    "neutralAddendum": {
+      "bytes": 699,
+      "sha256": "7b52bd3a46f454f58209a1d921e8b2ec99e7f095bb79d803598bd763501fe627",
+      "sameTextDeliveredBoth": true,
+      "oldInputsMetadataNotOverwritten": true
+    },
+    "existingRightsOnlyNoResetPurchase": true,
+    "currentPeerOpinionsExchanged": false,
+    "notVerdictOrROOTFinalAcceptance": true,
+    "finalNaturalReports": {
+      "zcode": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_v2_observer_validation_review_081/zcode-natural-03.md",
+        "bytes": 93526,
+        "sha256": "7c4a3e32a6a87f4f877c25c03648c724133f0477fd8c375204c5c16429827a7e"
+      },
+      "minimax": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_v2_observer_validation_review_081/minimax-natural-03.md",
+        "bytes": 310134,
+        "sha256": "a982d752cf6166f19f7b0813455280d51bbc926fa5080639dbdecd777324f013"
+      }
+    },
+    "officialTerminalUI": {
+      "zcode": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_v2_observer_validation_review_081/zcode-natural-03-terminal-ui.txt",
+        "bytes": 21204,
+        "sha256": "ec0ada91e270fb770c22d98f331b33311ebc039848045b287f826f006edae6ae"
+      },
+      "minimax": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_v2_observer_validation_review_081/minimax-natural-03-terminal-ui.txt",
+        "bytes": 32820,
+        "sha256": "f1f90c40669f61ffc471389c3ce66b68f30fc3fa74c3bf6cb683a2cea150b00e"
+      }
+    },
+    "allPriorPrefixesExact": true,
+    "currentVerdicts": {
+      "zcode": "ConditionalPass limited technical/source blockers0",
+      "minimax": "ConditionalPass limited technical/source blockers0; initialN1/N2 preserved and explicitly revised by same author"
+    },
+    "rootReception": "PENDING_THIS_SEALED_PACKAGE",
+    "miniFreeQuotaExhaustedNoFurtherRequest": true,
+    "noCurrentPeerOpinionsShared": true,
+    "ownerErrata": "OWNER-ERRATA.json"
+  },
+  "rawArchivePins": {
+    "zcode-glm53.md": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/reviews/T02/fr200-fr201-20261024/round-12/zcode-glm53.md",
+      "bytes": 93526,
+      "sha256": "7c4a3e32a6a87f4f877c25c03648c724133f0477fd8c375204c5c16429827a7e"
+    },
+    "minimax-m31flash.md": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/reviews/T02/fr200-fr201-20261024/round-12/minimax-m31flash.md",
+      "bytes": 310134,
+      "sha256": "a982d752cf6166f19f7b0813455280d51bbc926fa5080639dbdecd777324f013"
+    }
+  },
+  "ownerIndex": {
+    "source": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_v2_observer_validation_review_081/OWNER-EFFECTIVE-INDEX.json",
+      "bytes": 753948,
+      "sha256": "41e66bf2c888e1b859b58db7ddec92d6af8a81d6edc913d353b334c696374376"
+    },
+    "archive": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/reviews/T02/fr200-fr201-20261024/round-12/owner-effective-index.json",
+      "bytes": 738200,
+      "sha256": "5ee346fefd5fe559b0b8ff9f456779ebba609700f2a1f3e3618e1e176548247f"
+    },
+    "JSONStructuralEquality": true,
+    "canonicalSemanticSHA256": "7ec4d8dabd2cf4563b17a0e85dc2093492a02f1cf5916e0c174ee342b602758b",
+    "checklist160": 160,
+    "stable163": 163,
+    "zExtra3": 3,
+    "miniExtra9": 9,
+    "totalHistorical175": 175,
+    "newObservations17": 17,
+    "aliasesAddNoPositions": true
+  },
+  "effective160": {
+    "zcode": {
+      "适用": 30,
+      "不适用": 69,
+      "部分适用": 55,
+      "无法确认": 6
+    },
+    "minimax": {
+      "适用（正面）": 21,
+      "不适用": 65,
+      "部分适用": 53,
+      "适用": 17,
+      "无法确认": 4
+    },
+    "minimaxNormalized": {
+      "适用": 38,
+      "部分适用": 53,
+      "不适用": 65,
+      "无法确认": 4
+    },
+    "classificationNotProductPass": true
+  },
+  "narrowErrata": {
+    "archive": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/reviews/T02/fr200-fr201-20261024/round-12/owner-errata.json",
+      "bytes": 3990,
+      "sha256": "c0305b30e2aede8170616227f4e9720999d4bbd515dc59a1f5c135cd324632eb"
+    },
+    "originalSevenPreserved": true,
+    "LEDGER01Closed": true,
+    "rawAuthorTextNeverChanged": true
+  },
+  "rootReception": {
+    "ticket": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_r12_docs_archive_082/authority/controller-t02-r12-dc6-reception-and-evidence-archive-ticket-20261027.json",
+      "bytes": 11480,
+      "sha256": "0a53ca3369d432589374fcb49545b919d9c934df2802b4cced800963a81e874a"
+    },
+    "acceptedAtUTC": "2026-10-27T15:09:42.632204+00:00",
+    "ROOTBothTechnicalStagesAccepted": true,
+    "allOpinionsHaveDisposition": true,
+    "ConditionalPassRetained": true,
+    "sourceBlockers": 0,
+    "unconditionalDualPass": false,
+    "F01OnlyReviewReceptionClosed": true,
+    "F05DocsRegistrationFulfilledByThisExact11": true
+  },
+  "beforeStatePrefixes": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/reviews/T02/status.md",
+      "bytes": 36202,
+      "sha256": "12df8b6e6e965c759e9a76a8c54d0f6ae486033b7ae1100540bea70b8a282109"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/m0-checklist.md",
+      "bytes": 18174,
+      "sha256": "031164d047a65aa6eaa78a3be78a6f198ff9559108642b8a5524f9ee49ca13a4"
+    }
+  ],
+  "assembledStatePins": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/reviews/T02/status.md",
+      "bytes": 40450,
+      "sha256": "7bfbce60418deaaba7bf15ba217907a7688a0b2a721364f2b72db73e069856e6"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T02-s1-review-fixes/docs/m0-checklist.md",
+      "bytes": 22482,
+      "sha256": "ca376c9d03220bd31c5a534e0f43fd0f082e29e5532f78758f9e03692ead8d63"
+    }
+  ],
+  "O081SealedManifest": {
+    "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_v2_observer_validation_review_081/FINAL-MANIFEST.json",
+    "bytes": 73289,
+    "sha256": "ee5cd758b115e54eb6bdd37b5dcc6659a52f5c700d62ac7b972818713bf3e77c"
+  },
+  "O081Sealed247": true,
+  "archiveChecksAndIndependentDocsAuditExternal": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261027_t02_r12_docs_archive_082",
+  "authorityLimits": {
+    "localDocsCommitOnly": true,
+    "mayPush": false,
+    "mayModifyPR": false,
+    "mayDispatchRerunCancelCI": false,
+    "mayMerge": false,
+    "noNewExternalReviewOrPaidMini": true
+  },
+  "postconditions": "All original full CI/merge/release conditions and HOLD/UNKNOWN remain; current complete discovery universe includes29 new memo tests; original budgets/assertions/skips unchanged.",
+  "overall": {
+    "usableMergedFR": "2/17",
+    "HOLDClosed": 0,
+    "D8Used": false,
+    "GoalM0ReleaseComplete": false,
+    "T04Advances": false
+  }
+}

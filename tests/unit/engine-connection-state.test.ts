@@ -59,8 +59,8 @@ function create(mode = 'normal', options: SupervisorOptions = {}) {
     {
       registryPath,
       startupMs: 1000,
-      handshakeMs: 200,
-      requestMs: 200,
+      handshakeMs: 2000,
+      requestMs: 2000,
       heartbeatMs: 1000,
       command: {
         command: process.execPath,

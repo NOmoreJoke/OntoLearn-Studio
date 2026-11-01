@@ -24,6 +24,7 @@ from ontolearn_engine.project.transactions import (
     ProjectTransactions,
     state_diff,
 )
+from ontolearn_engine.rdf_snapshot import TermInputError, iri, term
 from ontolearn_engine.storage import LAYERS, Conflict, canonical, digest
 
 MAX_DOCUMENT = 16 * 1024 * 1024
@@ -414,7 +415,16 @@ def impact(store, internal, target, base):
 
 
 def preview_changeset(
-    store, project, base, request, *, host_client_id, engine_session_id, limits, hook
+    store,
+    project,
+    base,
+    request,
+    *,
+    host_client_id,
+    engine_session_id,
+    limits,
+    hook,
+    ownership_proof=None,
 ):
     if store.actual_format != 3:
         fail("INVALID_STATE")
@@ -424,13 +434,35 @@ def preview_changeset(
     _wire_room(store, request, limits)
     if request["projectId"] != project or request["baseRevision"] != base:
         fail("IDENTITY_CONFLICT")
+    if ownership_proof is not None:
+        store._ownership_proof(ownership_proof, project, "changeset.preview")
+        if ownership_proof.request_hash != digest(request) or ownership_proof.base != base:
+            fail("PERMISSION_DENIED")
     internal = store._project(project)
-    with store._application(project, "plan", hook):
+    with store._application(project, "plan", hook, ownership_proof=ownership_proof):
         if store.revision(internal) != base:
             fail("REVISION_CONFLICT", expected=base, actual=store.revision(internal))
         transactions = ProjectTransactions(store)
         conflict = None
         if request["intent"] == "change":
+            # Only direct caller terms get known syntax/policy rejection.
+            # Unknown parser/N3/Store/preview failures retain UNKNOWN/HOLD;
+            # edits validate values without deriving or replacing their IDs.
+            for fact in request["plan"].get("manual", []):
+                try:
+                    iri(fact["subject"])
+                    iri(fact["predicate"])
+                except TermInputError:
+                    fail("INVALID_REQUEST", field="params")
+            values = [fact["object"] for fact in request["plan"].get("manual", [])]
+            values.extend(request["plan"].get("edits", {}).values())
+            for value in values:
+                try:
+                    parsed = term(value)
+                except TermInputError:
+                    fail("INVALID_REQUEST", field="params")
+                if parsed.n3() != value:
+                    fail("INVALID_REQUEST", field="params")
             try:
                 effective_plan = merge_plan(store.state(internal), request["plan"])
             except (ValueError, KeyError, TypeError):
