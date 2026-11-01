@@ -1038,8 +1038,11 @@ describe('transport ledger writer control', () => {
     ledger.recordSessionStart(1, 11)
     ledger.recordChildClosed(1, 0, null)
     ledger.requestStop()
-    await new Promise((done) => setImmediate(done))
-    await new Promise((done) => setTimeout(done, 20))
+    const deadline = Date.now() + 5000
+    while (!['closed', 'failed'].includes(ledger.state) && Date.now() < deadline) {
+      await new Promise((done) => setImmediate(done))
+      await new Promise((done) => setTimeout(done, 10))
+    }
     expect(ledger.state).toBe('closed')
     expect(ledger.counters.footerWritten).toBe(true)
     const { readFile } = await import('node:fs/promises')
