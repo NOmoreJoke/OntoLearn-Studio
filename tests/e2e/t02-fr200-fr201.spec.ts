@@ -13,6 +13,7 @@ import {
   exactlyOne,
   normalizeUIText,
   updateObservationSlot,
+  validObservation,
   type UITarget,
   type UISnapshot,
 } from './ui-observation'
@@ -494,15 +495,20 @@ async function commit(
     page,
     'committed-receipt',
     async () => {
-      completed = await ui(
-        page,
-        'committed receipt and current read revision',
-        receipt.or(pending),
-        [
+      // Right after the reconcile click the receipt/pending regions can be
+      // re-rendered between locator selection and the snapshot read; that
+      // round has no valid snapshot (the poll re-observes fresh nodes next
+      // round) instead of aborting. Only a fresh valid snapshot may complete
+      // the receipt identity check — an invalid round never reuses or
+      // records an older one.
+      const observed = await validObservation(() =>
+        ui(page, 'committed receipt and current read revision', receipt.or(pending), [
           { key: 'receipt', kind: 'region', name: '已提交回执' },
           { key: 'pending', kind: 'region', name: '原操作状态' },
-        ],
+        ]),
       )
+      if (observed === undefined) return false
+      completed = observed
       return committedReceiptOperation(completed, revision, UUID) !== undefined
     },
     { intervals: [100], timeout: 5000 },
