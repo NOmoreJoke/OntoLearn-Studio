@@ -50,6 +50,57 @@ const source = process.env.ROOT_SOURCE_PATH ? resolve(process.env.ROOT_SOURCE_PA
 const location = { packaged: false, appPath: join(workspace, 'apps/desktop'), resourcesPath: '' }
 const python = getEngineCommand(location).command
 
+// Trusted-test-only engine launchers (the same trusted-command seam as the
+// ROOT_SOURCE_PATH probe above): they run the REAL serve(), REAL Store and
+// REAL workers, injecting only the coordinator's test-mode scheduling hooks.
+// round1Gate: parks after the REAL round-1 commit, so round 2 is structurally
+// uncommittable while parked (the kill IS the release). subscriptionGate:
+// before the worker launches it waits for the job's first REAL subscription
+// binding (S1) and records its identity per jobId; after the real round-1
+// commit it waits until a REAL DIFFERENT binding exists for the job (S2,
+// whose subscribe response was emitted synchronously with the binding) and
+// only then lets round 2 begin. No frame, ID, seq or DTO is ever changed.
+const gateLauncher = (hooks: string) => ({
+  command: python,
+  args: [
+    '-I',
+    '-c',
+    `import asyncio,sys;sys.path.insert(0,${JSON.stringify(join(source, 'packages/engine/src'))});\n${hooks}`,
+  ],
+})
+const round1GateCommand = () =>
+  gateLauncher(String.raw`
+from ontolearn_engine.coordinator import serve
+async def after_round(coordinator, job, round_number):
+    if round_number >= 1:
+        await asyncio.Future()
+asyncio.run(serve(_test_schedule={'after_round_commit': after_round}))
+`)
+const subscriptionGateCommand = () =>
+  gateLauncher(String.raw`
+from ontolearn_engine.coordinator import serve
+first_by_job = {}
+async def before_worker(coordinator, job):
+    while True:
+        ids = [i for i, b in coordinator.subscriptions.items() if b['jobId'] == job['jobId']]
+        if ids:
+            first_by_job.setdefault(job['jobId'], ids[0])
+            return
+        await asyncio.sleep(0.01)
+async def after_round(coordinator, job, round_number):
+    if round_number != 1:
+        return
+    first = first_by_job.get(job['jobId'])
+    while True:
+        if any(
+            i != first and b['jobId'] == job['jobId']
+            for i, b in coordinator.subscriptions.items()
+        ):
+            return
+        await asyncio.sleep(0.01)
+asyncio.run(serve(_test_schedule={'before_worker': before_worker, 'after_round_commit': after_round}))
+`)
+
 function pythonJson(script: string, args: string[]): unknown {
   const result = spawnSync(python, ['-I', '-c', script, ...args], {
     cwd: workspace,
@@ -141,6 +192,7 @@ async function runtime(
   dropFirstState = false,
   coalesceAtomicCompletion = false,
   commitBeforeFirstJobRead = false,
+  gateSubscriptions = false,
 ) {
   const directory = await mkdtemp(join(tmpdir(), 'ontolearn-task-runtime-'))
   try {
@@ -175,9 +227,28 @@ async function runtime(
             },
           }
         : {}),
+      // The gating launcher wins over any source-probe default: it already
+      // launches the same real sources through gateLauncher's own path.
+      ...(gateSubscriptions ? { command: subscriptionGateCommand() } : {}),
     })
     const calls: Array<{ method: string; params: Record<string, unknown> }> = []
     const received: Notification[] = []
+    // Events actually handed to the TaskService listener AND matched to a
+    // view TaskUpdate: consumption proof is the observed update, not merely
+    // the hand-off.
+    const forwarded: Notification[] = []
+    const jobReads: JobView[] = []
+    const subscribeResponses: Array<{
+      subscriptionId: string
+      projectId: string
+      jobId: string
+      seq: number
+      stateVersion: number
+      requestJobId: string
+      requestProjectId: string
+      engineSessionId: string
+      precedingReadStateVersion: number | undefined
+    }> = []
     const allReceived: WireNotification[] = []
     let dropped: Notification | undefined
     let jobId = ''
@@ -196,6 +267,34 @@ async function runtime(
       async request(method: string, params: Record<string, unknown>) {
         calls.push({ method, params: structuredClone(params) })
         const response = await supervisor.request(method, params)
+        if (method === 'job.get' && String(params.jobId) === jobId) {
+          // The real durable read preceding each subscribe: kept in order so
+          // every subscription can be tied to the state version its own
+          // preceding read actually returned.
+          jobReads.push(structuredClone(response as JobView))
+        }
+        if (method === 'job.subscribe') {
+          // Recorded ONLY after the real request succeeded: the full real
+          // binding validated against its actual result schema, plus the
+          // request params, the engine session and the LAST preceding real
+          // job.get state version, so S1/S2 association is proven on real
+          // protocol values — never on call counting.
+          const binding = response as {
+            subscriptionId: string
+            projectId: string
+            jobId: string
+            seq: number
+            stateVersion: number
+          }
+          expect(validateV2('result_job.subscribe', binding)).toBe(true)
+          subscribeResponses.push({
+            ...binding,
+            requestJobId: String(params.jobId),
+            requestProjectId: String(params.projectId),
+            engineSessionId: supervisor.engineSessionId ?? '',
+            precedingReadStateVersion: jobReads.at(-1)?.stateVersion,
+          })
+        }
         if (commitBeforeFirstJobRead && method === 'project.get' && !heldProject) {
           heldProject = structuredClone(response)
           // Only delay a real response: the worker and every returned DTO stay real.
@@ -264,6 +363,11 @@ async function runtime(
               return
             }
           }
+          const handedOff =
+            event.event === 'job.state' && event.jobId === jobId
+              ? structuredClone(event)
+              : undefined
+          if (handedOff) forwarded.push(handedOff)
           listener(value)
         })
       },
@@ -271,8 +375,37 @@ async function runtime(
     const tasks = new TaskService(transport)
     const waiting = terminalWait()
     const views: TaskView[] = []
+    // Causal (event → observed TaskUpdate) pairs. The snapshot is taken in a
+    // pass-through spy on the REAL TaskService.receive: the constructor's
+    // listener AND the pendingSubscription early-event replay both call
+    // this.receive dynamically, so a job update observed while receive
+    // processes one exact notification — including replayed early events —
+    // pairs with precisely that notification. The original receiver, its
+    // this-binding, arguments, return value and exceptions are all
+    // preserved; nothing is called extra and no frame is altered.
+    const jobUpdates: Array<{ event: Notification; job: JobView }> = []
+    let inFlight: Notification | undefined
+    const tasksAny = tasks as unknown as {
+      receive: (value: unknown) => void
+    }
+    const realReceive = tasksAny.receive.bind(tasks)
+    const receiveSpy = vi.spyOn(tasksAny, 'receive').mockImplementation(function (
+      this: unknown,
+      value: unknown,
+    ) {
+      const event = value as Notification
+      const previous = inFlight
+      if (event.event === 'job.state' && event.jobId === jobId) inFlight = structuredClone(event)
+      try {
+        return Reflect.apply(realReceive, this, [value])
+      } finally {
+        inFlight = previous
+      }
+    })
     const observe = (update: TaskUpdate) => {
       if (update.kind === 'restored') views.push(update.view)
+      if (update.kind === 'job' && inFlight)
+        jobUpdates.push({ event: structuredClone(inFlight), job: structuredClone(update.job) })
       waiting.observe(update)
     }
     tasks.attachView(observe)
@@ -311,6 +444,10 @@ async function runtime(
         job: result.data,
         evidence,
         received,
+        forwarded,
+        jobUpdates,
+        jobReads,
+        subscribeResponses,
         allReceived,
         dropped,
         calls,
@@ -322,6 +459,7 @@ async function runtime(
       }
     } finally {
       waiting.stop()
+      receiveSpy.mockRestore()
       tasks.dispose()
       supervisor.stop()
     }
@@ -330,7 +468,11 @@ async function runtime(
   }
 }
 
-async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', failRestarts = false) {
+async function disconnectRuntime(
+  capability: 'test.rounds' | 'test.atomic',
+  failRestarts = false,
+  gateRound1 = false,
+) {
   const directory = await mkdtemp(join(tmpdir(), 'ontolearn-disconnect-runtime-'))
   let supervisor: EngineSupervisor | undefined
   let tasks: TaskService | undefined
@@ -340,7 +482,7 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     const fixture = pythonJson(prepareScript, [
       source,
       database,
-      JSON.stringify({ workMs: 800, maxRounds: 50 }),
+      JSON.stringify({ workMs: 200, maxRounds: 50 }),
       capability,
     ]) as Fixture
     const command = getEngineCommand(location)
@@ -395,6 +537,11 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
       testMode: true,
       registryPath: join(source, 'packages/contracts/v2/registry.json'),
       command,
+      // The round-1 gating launcher overrides the resolved command: it runs
+      // the same real serve()/Store/worker with only the test-mode scheduling
+      // hook, parking after the REAL round-1 commit so the post-checkpoint
+      // SIGKILL lands while round 2 is structurally uncommittable.
+      ...(gateRound1 ? { command: round1GateCommand() } : {}),
     })
     const engine = supervisor
     const calls: Array<{ method: string; params: Record<string, unknown> }> = []
@@ -470,30 +617,12 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     const initial = await service.restore()
     expect(initial.ok).toBe(true)
     if (!initial.ok) throw new Error('initial real view missing')
-    const checkpointed = await bounded(checkpointReady)
+    const before = await bounded(checkpointReady)
     await new Promise<void>((done) => setImmediate(done))
     const old = observed.at(-1)!
     expect(old.framingFailed).toBe(false)
     expect(old.pending.size).toBe(0)
     expect(old.bufferedBytes()).toBe(0)
-    // Round-1 is only the arming signal. Under CI scheduling delay, later rounds
-    // can commit before SIGKILL; baseline retained progress at the kill itself.
-    const before = (await bounded(
-      engine.request('job.get', {
-        projectId: fixture.projectId,
-        jobId: created.jobId,
-      }),
-    )) as JobView
-    expect(before.jobId).toBe(checkpointed.jobId)
-    if (capability === 'test.rounds') {
-      expect(before.state).toBe('running')
-      expect(
-        (before.commitProgress as { committedProgress?: { lastCommittedRound: number } })
-          .committedProgress?.lastCommittedRound,
-      ).toBeGreaterThanOrEqual(1)
-    } else {
-      expect(before.state).toBe('succeeded')
-    }
     const oldPid = old.child.pid
     const oldSession = engine.engineSessionId
     const callCount = calls.length
@@ -554,7 +683,10 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
 
 describe('actual Python → supervisor → task service runtime', () => {
   it('automatically reconciles a real coordinator exit with zero pending requests and retained rounds', async () => {
-    const result = await disconnectRuntime('test.rounds')
+    // gateRound1: the coordinator parks after the REAL round-1 commit, so
+    // the post-checkpoint SIGKILL lands while round 2 is structurally
+    // uncommittable — the fixed [1] assertion is deterministic, not timed.
+    const result = await disconnectRuntime('test.rounds', false, true)
     expect(result.starts).toBe(2)
     expect(result.before.state).toBe('running')
     expect(result.view.jobs[0].state).toBe('failed')
@@ -565,12 +697,7 @@ describe('actual Python → supervisor → task service runtime', () => {
       retryable: true,
     })
     expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
-    const retained = (
-      result.before.commitProgress as { committedProgress: { lastCommittedRound: number } }
-    ).committedProgress.lastCommittedRound
-    expect(result.evidence.rounds).toEqual(
-      Array.from({ length: retained }, (_, index) => index + 1),
-    )
+    expect(result.evidence.rounds).toEqual([1])
     expect(
       result.updates.some(
         (update) => update.kind === 'connection' && update.state === 'reconnecting',
@@ -589,7 +716,7 @@ describe('actual Python → supervisor → task service runtime', () => {
     expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
   }, 20000)
   it('enters explicit offline after three real failed restarts, then permits an explicit read recovery', async () => {
-    const result = await disconnectRuntime('test.rounds', true)
+    const result = await disconnectRuntime('test.rounds', true, true)
     expect(result.starts).toBe(5)
     const states = result.updates.filter((update) => update.kind === 'connection')
     expect(
@@ -597,15 +724,21 @@ describe('actual Python → supervisor → task service runtime', () => {
     ).toEqual([3])
     expect(result.view.jobs[0].state).toBe('failed')
     expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
-    const retained = (
-      result.before.commitProgress as { committedProgress: { lastCommittedRound: number } }
-    ).committedProgress.lastCommittedRound
-    expect(result.evidence.rounds).toEqual(
-      Array.from({ length: retained }, (_, index) => index + 1),
-    )
+    expect(result.evidence.rounds).toEqual([1])
   }, 20000)
   it('recovers one omitted real state notification through a durable read and fresh subscription', async () => {
-    const result = await runtime('test.rounds', { workMs: 200, maxRounds: 3 }, true)
+    // gateSubscriptions: S1 is established (real response emitted) BEFORE the
+    // worker launches, and round 2 only begins after a REAL different
+    // subscription binding S2 exists — so the ≥2-IDs, fresh-subscription and
+    // S2-consumption assertions below are deterministic, not timing luck.
+    const result = await runtime(
+      'test.rounds',
+      { workMs: 200, maxRounds: 3 },
+      true,
+      false,
+      false,
+      true,
+    )
     expect(
       result.terminal.state,
       JSON.stringify({
@@ -623,8 +756,41 @@ describe('actual Python → supervisor → task service runtime', () => {
       jobs: 1,
       claims: 1,
     })
-    expect(result.dropped).toBeDefined()
-    expect(validateV2('notification', result.dropped)).toBe(true)
+    // S1/S2 association on REAL protocol values: both are real successful
+    // job.subscribe results for the same job/project in the same engine
+    // session, with distinct IDs, and each subscribe's stateVersion EQUALS
+    // the state version of its own preceding real durable job.get read.
+    const subs = result.subscribeResponses
+    expect(subs.length).toBeGreaterThanOrEqual(2)
+    const s1 = subs[0]!
+    const s2 = subs.find((binding) => binding.subscriptionId !== s1.subscriptionId)
+    expect(s2).toBeDefined()
+    for (const binding of [s1, s2!]) {
+      expect(binding.jobId).toBe(result.job.jobId)
+      expect(binding.projectId).toBe(result.job.projectId)
+      expect(binding.requestJobId).toBe(result.job.jobId)
+      expect(binding.requestProjectId).toBe(result.job.projectId)
+      expect(binding.engineSessionId).toBe(s1.engineSessionId)
+      expect(binding.seq).toBe(0)
+      expect(binding.precedingReadStateVersion).toBeDefined()
+      expect(binding.stateVersion).toBe(binding.precedingReadStateVersion)
+    }
+    // The dropped frame is EXACTLY the round-1 running state on the
+    // established S1 — the original gap proof, made precise (not "any first
+    // state"): same job/project as S1, running, one committed round.
+    const dropped = result.dropped!
+    expect(dropped).toBeDefined()
+    expect(validateV2('notification', dropped)).toBe(true)
+    expect(dropped.subscriptionId).toBe(s1.subscriptionId)
+    expect(dropped.projectId).toBe(result.job.projectId)
+    expect(dropped.engineSessionId).toBe(s1.engineSessionId)
+    const droppedView = dropped.data as JobView
+    expect(droppedView.state).toBe('running')
+    expect(droppedView.jobId).toBe(result.job.jobId)
+    expect(
+      (droppedView.commitProgress as { committedProgress?: { lastCommittedRound: number } })
+        .committedProgress?.lastCommittedRound,
+    ).toBe(1)
     // A genuine progress frame can expose the missing state sequence before
     // another state arrives. It must trigger the same durable reconciliation.
     const later = result.allReceived.find(
@@ -633,9 +799,9 @@ describe('actual Python → supervisor → task service runtime', () => {
     )
     expect(later).toBeDefined()
     expect(validateV2('notification', later)).toBe(true)
-    // Fresh subscribe is the durable recovery proof. A job that reaches terminal
-    // during reconcile may emit no further job.state on the replacement subscription,
-    // so do not require a second subscriptionId inside job.state-only `received`.
+    expect(
+      new Set(result.received.map((event) => event.subscriptionId)).size,
+    ).toBeGreaterThanOrEqual(2)
     expect(
       result.calls.filter((call) => call.method === 'job.subscribe').length,
     ).toBeGreaterThanOrEqual(2)
@@ -648,6 +814,18 @@ describe('actual Python → supervisor → task service runtime', () => {
           call.method,
         ),
       ),
+    ).toBe(true)
+    // S2 must be genuinely USABLE, not merely established: the exact S2
+    // state notification was processed by the real TaskService pipeline —
+    // proven by a strict causal pair (same job/project, payload stateVersion
+    // EXACTLY matching the event), never by counting calls or >= ranges.
+    expect(
+      result.jobUpdates.some((pair) => {
+        if (pair.event.subscriptionId !== s2!.subscriptionId) return false
+        if (pair.event.projectId !== result.job.projectId) return false
+        if (pair.event.jobId !== result.job.jobId) return false
+        return pair.job.stateVersion === (pair.event.data as JobView).stateVersion
+      }),
     ).toBe(true)
   }, 20000)
   it('observes real atomic commit revision and sends a rebuilt historical-input view', async () => {

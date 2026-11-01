@@ -492,8 +492,7 @@ def test_real_round_cancel_preserves_exact_last_committed_boundary(prepared, wai
     try:
         job = session.call("job.create", request)
         if wait_for_round:
-            # First committed round can arrive slowly under packaged Quality load.
-            deadline = time.monotonic() + 15
+            deadline = time.monotonic() + 6
             while time.monotonic() < deadline:
                 previous = session.job(projects[0], job["jobId"])
                 if previous["commitProgress"]["committedProgress"]:
@@ -504,24 +503,8 @@ def test_real_round_cancel_preserves_exact_last_committed_boundary(prepared, wai
         decision = session.call("job.cancel", {"projectId": projects[0], "jobId": job["jobId"]})
         assert decision["disposition"] == "accepted"
         assert decision["state"] in {"queued", "cancelling"}
-        # cancelGraceMs is 5s; poll past that under CI contention so the cancel
-        # fence can settle to cancelled before the assertion reads terminal.
-        final = session.terminal(projects[0], job["jobId"], timeout=30)
-        if final["state"] == "cancelled":
-            assert final["resultRef"] is None
-        else:
-            # CI#51 verify-package flake (flake_contention_new_surface): after an
-            # accepted running→cancelling cancel, worker-exit Exception can mark
-            # failed before cancelled_job runs. Align with cancel-issued semantics
-            # only for that race — accepted + cancelling + no resultRef. Queued
-            # cancel stays strict cancelled; resultRef or other terminals remain
-            # regressions.
-            assert (
-                wait_for_round
-                and decision["state"] == "cancelling"
-                and final["state"] == "failed"
-                and final["resultRef"] is None
-            ), final
+        final = session.terminal(projects[0], job["jobId"])
+        assert final["state"] == "cancelled" and final["resultRef"] is None
         progress = final["commitProgress"]["committedProgress"]
         if wait_for_round:
             assert progress is not None
