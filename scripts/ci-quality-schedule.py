@@ -590,12 +590,16 @@ async def _settle_readers(readers, failures, name: str) -> bool:
     """Bounded, PROVEN reader/pipe settlement.
 
     POSIX: the readiness readers are tasks — unfinished ones are cancelled
-    and awaited (their return IS the end proof), then the raw fd is closed;
-    no buffered wrapper exists, so no lock can be held. Windows fallback:
-    reader threads are joined inside a worker with its own timeout (that
-    join worker always ends), and the buffered pipe is closed ONLY after its
-    reader provably exited, so close can never wait on a lock held by a
-    blocked read. Close/join failures are recorded, never counted settled."""
+    and awaited (their return IS the end proof), then the pipe is closed by
+    its ONE owning wrapper (Popen's pipe object): wrapper.close() releases
+    the fd exactly once and marks the wrapper closed, so no later
+    finalizer can close a reused fd number. The reader coroutine itself
+    never reads through the wrapper, so no lock can be held. Windows
+    fallback: reader threads are joined inside a worker with its own
+    timeout (that join worker always ends), and the buffered pipe is
+    closed ONLY after its reader provably exited, so close can never wait
+    on a lock held by a blocked read. Close/join failures are recorded,
+    never counted settled."""
     settled = True
     loop = asyncio.get_running_loop()
     for entry in readers:
@@ -612,7 +616,7 @@ async def _settle_readers(readers, failures, name: str) -> bool:
             if not task.done() or task.cancelled():
                 settled = False
             try:
-                os.close(entry["fd"])
+                entry["pipe"].close()
             except OSError as error:
                 _note(f"[{name}] pipe fd close failed: {error!r}")
                 settled = False
@@ -657,7 +661,10 @@ async def _supervise(popen, name: str, stdout=None, stderr=None) -> int:
             fd = pipe.fileno()
             os.set_blocking(fd, False)
             task = asyncio.ensure_future(_read_pipe_ready(fd, target, name, failures))
-            readers.append({"kind": "task", "handle": task, "fd": fd})
+            # Keep the OWNING wrapper in the entry: the raw fd is only a
+            # reader handle here, and settlement must close through the
+            # wrapper so the fd is released exactly once.
+            readers.append({"kind": "task", "handle": task, "pipe": pipe})
         else:
             thread = threading.Thread(
                 target=_pipe_reader_thread,

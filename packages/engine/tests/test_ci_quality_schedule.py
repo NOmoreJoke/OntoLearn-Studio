@@ -1066,3 +1066,214 @@ def test_pinned_window_signals_the_group_but_refused_after_reap(monkeypatch):
     )
     assert outcome_b == "refused"
     assert delivered == []
+
+
+# POSIX-only ownership regression premise: the readiness-reader branch hands a
+# RAW fd (from Popen's owning pipe wrapper) to os.read and, at settlement,
+# used to os.close(fd) directly — the owning wrapper stayed open with
+# wrapper.closed == False until its finalizer ran (at coroutine death) and
+# silently closed whatever fd number then occupied that slot: a double close
+# when the number was still free, or EBADF for whoever had reused it. The
+# Windows fallback never takes a raw fd: its buffered pipe is closed only
+# after the reader thread provably exited, so the dual-ownership defect and
+# the fd-number reuse semantics are POSIX-specific here.
+#
+# Deterministic window: a gate around _settle_readers signals the test AFTER
+# the real settlement finished (fds freed in both code variants) while the
+# supervisor coroutine still holds the wrappers. Inside that window the test
+# asserts wrapper ownership and allocates kept-open pipes until the retired
+# lane fd numbers are covered — successive os.pipe calls take the two lowest
+# unused descriptors and nothing is closed in between, so the walk-up is
+# guaranteed to cover every free number below the bound, including both
+# retired fds. Releasing the gate lets the coroutine die; on the defective
+# code the wrapper finalizers then close the sentinel-held numbers and the
+# sentinel exchange fails with EBADF.
+def _pipes_covering(fds, limit=200):
+    covered: set = set()
+    pipes: list = []
+    for _ in range(limit):
+        pair = os.pipe()
+        pipes.append(pair)
+        covered.update(pair)
+        if set(fds) <= covered:
+            return pipes
+    raise AssertionError(f"walk-up allocation never covered {sorted(fds)}: {sorted(covered)}")
+
+
+def _assert_pipes_still_alive(pipes):
+    for read_fd, write_fd in pipes:
+        os.write(write_fd, b"fd-owner-sentinel")
+        assert os.read(read_fd, 64) == b"fd-owner-sentinel"
+
+
+def _close_pipe_pairs(pipes):
+    for read_fd, write_fd in pipes:
+        for fd in (read_fd, write_fd):
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+
+
+@pytest.mark.skipif(
+    os.name == "nt",
+    reason="POSIX readiness readers own raw fds; Windows closes its buffered pipe after join",
+)
+def test_supervise_settlement_releases_pipe_ownership_and_survives_fd_reuse(monkeypatch):
+    import io
+
+    real_supervise = scheduler._supervise
+    real_settle = scheduler._settle_readers
+    captured: dict = {}
+    settled_event = asyncio.Event()
+    release_event = asyncio.Event()
+
+    async def capturing_supervise(popen, name, stdout=None, stderr=None):
+        # Capture the LANE LEADER only: the scheduler's own state observation
+        # (ps-backed on non-/proc platforms) spawns internal Popen objects we
+        # must not mistake for the lane.
+        captured["popen"] = popen
+        captured["stdout_fd"] = popen.stdout.fileno()
+        captured["stderr_fd"] = popen.stderr.fileno()
+        return await real_supervise(popen, name, stdout, stderr)
+
+    gate_used = False
+
+    async def gated_settle(readers, failures, name):
+        nonlocal gate_used
+        settled = await real_settle(readers, failures, name)
+        if not gate_used:
+            # One-shot window: only the FIRST settlement waits. A cleanup
+            # re-entry (cancellation settling again) must never block on a
+            # barrier the scenario may already have abandoned.
+            gate_used = True
+            settled_event.set()
+            await release_event.wait()
+        return settled
+
+    monkeypatch.setattr(scheduler, "_supervise", capturing_supervise)
+    monkeypatch.setattr(scheduler, "_settle_readers", gated_settle)
+    out, err = io.StringIO(), io.StringIO()
+    writer = "import sys\nsys.stdout.write('owner-out\\n')\nsys.stderr.write('owner-err\\n')\n"
+    pipes: list = []
+
+    async def scenario():
+        try:
+            task = asyncio.create_task(
+                _supervise_child(writer, "t-fd-owner", stdout=out, stderr=err)
+            )
+            await asyncio.wait_for(settled_event.wait(), 30.0)
+            popen = captured["popen"]
+            # Ownership: settlement itself must close BOTH owning wrappers. The
+            # raw os.close(fd) variant leaves wrapper.closed False here — its
+            # finalizer at coroutine death then closes the number a second time
+            # (EBADF when still free, or the reused owner's fd when taken).
+            assert popen.stdout.closed, "stdout pipe owner still open after settlement"
+            assert popen.stderr.closed, "stderr pipe owner still open after settlement"
+            pipes.extend(_pipes_covering({captured["stdout_fd"], captured["stderr_fd"]}))
+            release_event.set()
+            code = await asyncio.wait_for(task, 30.0)
+            assert code == 0
+            # Coroutine death released the supervisor's wrapper references; on
+            # the defective code their finalizers closed the sentinel-held fd
+            # numbers inside that await. The sentinel exchange must still work.
+            _assert_pipes_still_alive(pipes)
+        finally:
+            # ANY scenario exit releases the gate: a failing ownership assert
+            # must not strand the gated settlement (attempt-4 hang).
+            release_event.set()
+
+    try:
+        asyncio.run(scenario())
+        assert "owner-out" in out.getvalue()
+        assert "owner-err" in err.getvalue()
+    finally:
+        _close_pipe_pairs(pipes)
+
+
+@pytest.mark.skipif(
+    os.name == "nt",
+    reason="POSIX readiness readers own raw fds; Windows closes its buffered pipe after join",
+)
+def test_supervise_cancellation_settlement_releases_pipe_ownership_and_survives_fd_reuse(
+    monkeypatch,
+):
+    import io
+
+    real_supervise = scheduler._supervise
+    real_settle = scheduler._settle_readers
+    captured: dict = {}
+    settled_event = asyncio.Event()
+    release_event = asyncio.Event()
+
+    async def capturing_supervise(popen, name, stdout=None, stderr=None):
+        captured["popen"] = popen
+        captured["stdout_fd"] = popen.stdout.fileno()
+        captured["stderr_fd"] = popen.stderr.fileno()
+        return await real_supervise(popen, name, stdout, stderr)
+
+    gate_used = False
+
+    async def gated_settle(readers, failures, name):
+        nonlocal gate_used
+        settled = await real_settle(readers, failures, name)
+        if not gate_used:
+            gate_used = True
+            settled_event.set()
+            await release_event.wait()
+        return settled
+
+    monkeypatch.setattr(scheduler, "_supervise", capturing_supervise)
+    monkeypatch.setattr(scheduler, "_settle_readers", gated_settle)
+    out, err = io.StringIO(), io.StringIO()
+    writer = (
+        "import os,sys,time\n"
+        "sys.stdout.write(str(os.getpid()) + chr(10))\n"
+        "sys.stdout.flush()\n"
+        "time.sleep(60)\n"
+    )
+    pipes: list = []
+
+    async def scenario():
+        try:
+            task = asyncio.create_task(
+                _supervise_child(writer, "t-fd-owner-cancel", stdout=out, stderr=err)
+            )
+            child_pid = None
+            for _ in range(1500):
+                child_pid = first_recorded_pid(out.getvalue())
+                if child_pid is not None:
+                    break
+                await asyncio.sleep(0.02)
+            assert child_pid is not None, "child never started (fixture failure)"
+            task.cancel()
+            # Cancellation drives the cleanup chain (group close, then gated
+            # reader settlement) into the deterministic ownership window.
+            await asyncio.wait_for(settled_event.wait(), 30.0)
+            popen = captured["popen"]
+            assert popen.stdout.closed, "stdout pipe owner still open after cancellation settlement"
+            assert popen.stderr.closed, "stderr pipe owner still open after cancellation settlement"
+            pipes.extend(_pipes_covering({captured["stdout_fd"], captured["stderr_fd"]}))
+            release_event.set()
+            cancelled = False
+            try:
+                await asyncio.wait_for(task, 30.0)
+            except asyncio.CancelledError:
+                cancelled = True
+            assert cancelled, "cancellation did not propagate to supervision"
+            # Supervisor death finalized its wrapper references; the sentinel
+            # exchange must still work on the reused fd numbers.
+            _assert_pipes_still_alive(pipes)
+            # Sweep the cancelled group if the scheduler's own cleanup somehow
+            # raced the observation; the ownership assertions above already ran.
+            try:
+                os.kill(child_pid, 9)
+            except (ProcessLookupError, PermissionError, OSError):
+                pass
+        finally:
+            release_event.set()
+
+    try:
+        asyncio.run(scenario())
+    finally:
+        _close_pipe_pairs(pipes)
