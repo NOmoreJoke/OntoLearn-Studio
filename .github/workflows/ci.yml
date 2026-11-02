@@ -14,7 +14,7 @@ jobs:
   quality:
     name: Quality
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -61,7 +61,7 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 25 || 20 }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -81,11 +81,14 @@ jobs:
         env:
           CI_ENGINE_TEST_SHARDS: '1'
           CI_ENGINE_TEST_REPORT_SINGLE: '1'
-      # Diagnostic only: first-failure evidence; not acceptance or merge approval.
-      - name: Windows engine first-failure diagnostic (not acceptance)
+      # Full formal Windows engine acceptance: two shards with the complete
+      # parallel() accounting (full collection, per-node phases, session
+      # identity, coverage), replacing the temporary first-failure diagnostic
+      # (--maxfail=1) which stopped at the first failure and could never
+      # settle the full set. The locale probe stays as plain diagnostics.
+      - name: Windows engine full acceptance
         if: runner.os == 'Windows'
         env:
-          PYTEST_ADDOPTS: '-vv --maxfail=1 --tb=short --durations=20 --full-trace'
           CI_ENGINE_TEST_SHARDS: '2'
         run: |
           uv run --frozen python -c "import json, locale, os, sys; stream = open(os.devnull, 'w'); print(json.dumps({'python': sys.version, 'localeEncoding': locale.getencoding(), 'preferredEncoding': locale.getpreferredencoding(False), 'utf8Mode': sys.flags.utf8_mode, 'defaultFileEncoding': stream.encoding}, sort_keys=True)); stream.close()"

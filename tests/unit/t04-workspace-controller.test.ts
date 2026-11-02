@@ -1376,7 +1376,7 @@ describe('API002 query workspace private consumer', () => {
         .getPreEmitDiagnostics(program)
         .map((d) => ts.flattenDiagnosticMessageText(d.messageText, '\n')),
     ).toEqual([])
-  }, 20000)
+  })
   it('persists and restores incomplete working content without pretending it is a managed definition', async () => {
     const x = setup()
     await x.controller.open()

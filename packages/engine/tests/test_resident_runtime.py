@@ -1,6 +1,7 @@
 """Real Python coordinator/isolated worker/SQLite integration; no Electron windows."""
 
 import errno
+import hashlib
 import json
 import os
 import queue
@@ -9,6 +10,7 @@ import subprocess
 import sys
 import threading
 import time
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -451,7 +453,265 @@ def test_real_worker_summary_corruption_is_safe_at_runtime_read_boundary(prepare
         session.close()
 
 
-def test_coordinator_kill_reconciles_partial_round_without_replay(prepared):
+SIDECAR_SUFFIXES = ("-journal", "-wal", "-shm")
+BOUNDARY_KEYS = (
+    "runId",
+    "operation",
+    "ledger",
+    "snapshotPayloads",
+    "snapshotHashes",
+    "progress",
+    "dtoProgress",
+    "revision",
+    "runs",
+    "results",
+)
+
+
+def _reject_links_below_root(candidate, resolved_root):
+    """Reject symbolic links in every ORIGINAL path component strictly below
+    the allowed root — resolve() alone would silently follow them."""
+    for depth in range(1, len(candidate.parts) + 1):
+        ancestor = Path(*candidate.parts[:depth])
+        if ancestor == resolved_root or resolved_root not in ancestor.parents:
+            continue
+        if ancestor.is_symlink():
+            raise ValueError("rejected: symbolic link in path")
+
+
+def _confined_existing_file(raw, allowed_root):
+    """Resolve one existing source file inside the exclusive pytest tmp_path
+    root: any '..' component is rejected outright, symbolic links anywhere
+    below the root are rejected, containment is proven with resolve() +
+    relative_to (never a string prefix), and the result must be a regular
+    file."""
+    candidate = Path(raw)
+    if any(part == ".." for part in candidate.parts):
+        raise ValueError("rejected: '..' path component")
+    root = allowed_root.resolve(strict=True)
+    _reject_links_below_root(candidate, root)
+    resolved = candidate.resolve(strict=True)
+    try:
+        resolved.relative_to(root)
+    except ValueError:
+        raise ValueError("rejected: path escapes the allowed root") from None
+    if not resolved.is_file():
+        raise ValueError("rejected: not a regular file")
+    return resolved
+
+
+def _confined_new_directory(raw, allowed_root, keep_out):
+    """Validate and exclusively create the forensic target directory: no '..'
+    components, no symlink at the location, inside the allowed root, neither
+    the root itself nor the source directory; creation fails on any existing
+    directory, and validation happens before anything is written."""
+    candidate = Path(raw)
+    if any(part == ".." for part in candidate.parts):
+        raise ValueError("rejected: '..' path component")
+    if candidate.is_symlink():
+        raise ValueError("rejected: target location is a symbolic link")
+    resolved = candidate.resolve(strict=False)
+    root = allowed_root.resolve(strict=True)
+    _reject_links_below_root(candidate, root)
+    try:
+        resolved.relative_to(root)
+    except ValueError:
+        raise ValueError("rejected: target escapes the allowed root") from None
+    if resolved == root or resolved == keep_out:
+        raise ValueError("rejected: target must be a fresh independent directory")
+    resolved.mkdir()
+    return resolved
+
+
+def _confined_exclusive_output(directory, name):
+    """Exclusively create (never truncate) one output file inside an already
+    validated target directory; a plain file name only, and any existing
+    file or symlink is refused."""
+    if Path(name).name != name:
+        raise ValueError("rejected: file name is not a plain name")
+    target = directory / name
+    if target.exists() or target.is_symlink():
+        raise FileExistsError(target)
+    return open(target, "xb")
+
+
+def _copy_stream_to(source_stream, output_stream):
+    """Copy one already-open readable stream into one already-open writable
+    stream; every output stream in this file comes from
+    _confined_exclusive_output, so no generic path-taking writer exists."""
+    source_stream.seek(0)
+    while True:
+        chunk = source_stream.read(65536)
+        if not chunk:
+            break
+        output_stream.write(chunk)
+
+
+def _stream_fingerprint(stream):
+    """(size, sha256) of one already-open stream; the caller owns the stream
+    and every main-database byte in this file flows through such a stream."""
+    stream.seek(0)
+    digest = hashlib.sha256()
+    size = 0
+    while True:
+        chunk = stream.read(65536)
+        if not chunk:
+            break
+        size += len(chunk)
+        digest.update(chunk)
+    return size, digest.hexdigest()
+
+
+def forensic_database_copy(database, destination, allowed_root, maindb_reader=None):
+    """Copy a database plus every existing fixed-suffix SQLite sidecar file
+    into a fresh confined target directory; only a later standard-SQLite open
+    of the COPY performs native crash recovery. Complete preflight — every
+    source validated, the target validated — happens before anything is
+    created or written.
+
+    Dead-writer path (maindb_reader omitted): the validated original is
+    opened here directly, safe only because the caller proved the sole
+    writer dead. Live-writer path (maindb_reader supplied): a quiescent
+    SQLite connection may still hold the file and POSIX close() of a second
+    same-inode descriptor would drop this process's advisory locks, so the
+    caller-owned read-only stream provides every main-database byte; the
+    helper verifies the stream's file identity against the validated source
+    and never closes it. Sidecar files are distinct inodes: short-lived read
+    handles, closed promptly (Windows delete sharing), always before any
+    source rollback."""
+    root = allowed_root.resolve(strict=True)
+    main = _confined_existing_file(database, root)
+    sidecars = []
+    for suffix in SIDECAR_SUFFIXES:
+        candidate = Path(str(database) + suffix)
+        if candidate.is_symlink() or candidate.exists():
+            sidecars.append(_confined_existing_file(candidate, root))
+    # Complete input preflight BEFORE the target directory is created: a
+    # rejected borrowed stream (wrong file identity, unreadable) must not
+    # leave any directory or file behind.
+    if maindb_reader is not None:
+        if not maindb_reader.readable():
+            raise ValueError("rejected: borrowed stream is not readable")
+        borrowed = os.fstat(maindb_reader.fileno())
+        actual = os.stat(main)
+        if (borrowed.st_dev, borrowed.st_ino) != (actual.st_dev, actual.st_ino):
+            raise ValueError("rejected: borrowed stream is not the validated source")
+    target = _confined_new_directory(destination, root, main.parent)
+    output = _confined_exclusive_output(target, main.name)
+    try:
+        if maindb_reader is None:
+            with open(main, "rb") as source_stream:
+                _copy_stream_to(source_stream, output)
+        else:
+            _copy_stream_to(maindb_reader, output)
+    finally:
+        output.close()
+    copied = [main.name]
+    for sidecar in sidecars:
+        output = _confined_exclusive_output(target, sidecar.name)
+        try:
+            with open(sidecar, "rb") as source_stream:
+                _copy_stream_to(source_stream, output)
+        finally:
+            output.close()
+        copied.append(sidecar.name)
+    return copied
+
+
+def _boundary_record(connection, job_id):
+    job = connection.execute(
+        "SELECT project,operation,run,dto FROM jobs WHERE id=?", (job_id,)
+    ).fetchone()
+    assert job is not None, "boundary: job row missing"
+    dto = json.loads(job["dto"])
+    assert "commitProgress" in dto and "committedProgress" in dto["commitProgress"]
+    # Public→internal project identity: jobs and dto carry the PUBLIC id
+    # while projects/runs/results are keyed internally. The read-only
+    # public_projects mapping and the job/run/project ownership chain are
+    # verified, never assumed — two mismatched empty sets can never pass.
+    assert job["project"] == dto["projectId"], "boundary: job project identity mismatch"
+    mapping = connection.execute(
+        "SELECT internal FROM public_projects WHERE public=?", (dto["projectId"],)
+    ).fetchone()
+    assert mapping is not None, "boundary: public project mapping missing"
+    run = connection.execute("SELECT project FROM runs WHERE id=?", (job["run"],)).fetchone()
+    assert run is not None, "boundary: run row missing"
+    assert run[0] == mapping[0], "boundary: run project ownership mismatch"
+    ledger = connection.execute(
+        "SELECT number,snapshot,operation,job FROM rounds WHERE run=? ORDER BY number",
+        (job["run"],),
+    ).fetchall()
+    snapshots = {}
+    for row in ledger:
+        snapshots[row["snapshot"]] = connection.execute(
+            "SELECT payload FROM snapshots WHERE id=?", (row["snapshot"],)
+        ).fetchone()[0]
+    progress = None
+    if ledger:
+        progress = {
+            "runId": job["run"],
+            "lastCommittedRound": ledger[-1]["number"],
+            "snapshotRef": ledger[-1]["snapshot"],
+        }
+    revision = connection.execute(
+        "SELECT revision FROM projects WHERE id=?", (mapping[0],)
+    ).fetchone()
+    assert revision is not None, "boundary: internal project row missing"
+    return {
+        "state": dto["state"],
+        "resultRef": dto["resultRef"],
+        "runId": job["run"],
+        "operation": job["operation"],
+        "ledger": [(r["number"], r["snapshot"], r["operation"], r["job"]) for r in ledger],
+        "snapshotPayloads": snapshots,
+        "snapshotHashes": {
+            identity: hashlib.sha256(payload.encode()).hexdigest()
+            for identity, payload in snapshots.items()
+        },
+        "progress": progress,
+        "dtoProgress": dto["commitProgress"]["committedProgress"],
+        "revision": revision[0],
+        "runs": sorted(
+            row[0]
+            for row in connection.execute("SELECT id FROM runs WHERE project=?", (mapping[0],))
+        ),
+        "results": sorted(
+            row[0]
+            for row in connection.execute("SELECT id FROM results WHERE project=?", (mapping[0],))
+        ),
+    }
+
+
+def dead_boundary_oracle(copy, job_id, allowed_dir):
+    """Read the death-time durable boundary from the forensic copy with plain
+    SQLite (read-write open of the COPY only — native recovery happens there,
+    never on the original): the complete durable evidence recovery must
+    neither advance, rewind nor rewrite."""
+    resolved = _confined_existing_file(copy, allowed_dir)
+    connection = sqlite3.connect(str(resolved))
+    try:
+        connection.row_factory = sqlite3.Row
+        return _boundary_record(connection, job_id)
+    finally:
+        connection.close()
+
+
+def live_ledger_snapshot(database, job_id, allowed_root):
+    """One consistent logical snapshot of the LIVE original database through
+    a read-only connection in a single read transaction — never a raw copy
+    while the process runs, never a read-write open, never recovery on the
+    original. Same record shape as the death oracle."""
+    resolved = _confined_existing_file(database, allowed_root)
+    connection = sqlite3.connect(resolved.as_uri() + "?mode=ro", uri=True)
+    try:
+        connection.row_factory = sqlite3.Row
+        connection.execute("BEGIN")
+        return _boundary_record(connection, job_id)
+    finally:
+        connection.close()
+
+
+def test_coordinator_kill_reconciles_partial_round_without_replay(prepared, tmp_path):
     database, store, projects = prepared
     request = prepare(store, projects[0], "test.rounds", {"maxRounds": 20, "workMs": 150})
     store.close()
@@ -469,18 +729,277 @@ def test_coordinator_kill_reconciles_partial_round_without_replay(prepared):
     first.process.wait(timeout=5)
     first.process.stdin.close()
     first.close()
+    # The last poll value is only a possibly-stale COPY: on a slow runner the
+    # durable boundary may already be one round further when the kill lands.
+    # After the only writer is provably dead, the confined forensic copy is
+    # taken once and plain SQLite recovers and reads it. Whatever is durable
+    # at death — including the job progress persisted with the last committed
+    # round — is the exact boundary recovery must preserve, and the polled
+    # full identity (runId/round/snapshot) must be a committed ledger prefix.
+    forensic = tmp_path / "forensic-dead"
+    copied = forensic_database_copy(database, forensic, tmp_path)
+    assert copied[0] == "runtime.sqlite"
+    oracle = dead_boundary_oracle(forensic / "runtime.sqlite", job["jobId"], forensic)
+    assert oracle["state"] not in ("succeeded", "failed", "cancelled"), "job finished naturally"
+    assert oracle["resultRef"] is None
+    assert 1 <= len(oracle["ledger"]) < 20
+    assert oracle["dtoProgress"] == oracle["progress"], "durable job progress diverged"
+    poll = value["commitProgress"]["committedProgress"]
+    assert (poll["runId"], poll["lastCommittedRound"], poll["snapshotRef"]) in [
+        (oracle["runId"], number, snapshot)
+        for number, snapshot, _operation, _job in oracle["ledger"]
+    ]
     restored = Session(database, projects)
     try:
         after = restored.job(projects[0], job["jobId"])
         assert after["state"] == "failed" and after["resultRef"] is None
-        assert (
-            after["commitProgress"]["committedProgress"]
-            == value["commitProgress"]["committedProgress"]
-        )
+        assert after["error"]["code"] == "ENGINE_EXITED"
+        assert after["commitProgress"]["committedProgress"] == oracle["progress"]
+        # While the restored process is alive the original is never copied
+        # raw: two read-only consistent snapshots — right after recovery and
+        # again after the idempotent duplicate create — must each equal the
+        # complete death-time evidence, except the failed terminal state.
+        recovered = live_ledger_snapshot(database, job["jobId"], tmp_path)
+        assert recovered["state"] == "failed" and recovered["resultRef"] is None
+        assert recovered["dtoProgress"] == recovered["progress"]
+        for key in BOUNDARY_KEYS:
+            assert recovered[key] == oracle[key], key
         assert restored.call("job.create", request)["jobId"] == job["jobId"]
         assert restored.job(projects[0], job["jobId"])["state"] == "failed"
+        repeated = live_ledger_snapshot(database, job["jobId"], tmp_path)
+        assert repeated["state"] == "failed" and repeated["resultRef"] is None
+        assert repeated["dtoProgress"] == repeated["progress"]
+        for key in BOUNDARY_KEYS:
+            assert repeated[key] == oracle[key], key
     finally:
         restored.close()
+
+
+def test_synthetic_hot_journal_copy_recovery_from_a_quiescent_uncommitted_transaction(
+    tmp_path,
+):
+    # Quiescent-uncommitted-transaction synthetic hot-journal copy recovery:
+    # NO new process, command, script or forced exit. One exclusive small
+    # synthetic database inside the pytest root holds an open uncommitted
+    # transaction whose dirty pages have provably spilled into the main file;
+    # the confined forensic helper — fed the caller-owned main-DB stream —
+    # copies DB and journal to fresh independent files, and standard SQLite
+    # natively recovers the copy back to the committed baseline. This covers
+    # the oracle's file-recovery risk only; the resident test above owns the
+    # real kill/restart acceptance.
+    database = tmp_path / "synthetic.sqlite"
+    marker = "UNCOMMITTED-B-MARKER-7f3ac9"
+    baseline_rows = [(index, f"committed-A-row-{index:03d}") for index in range(40)]
+    spill_rows = [(1000 + index, f"{marker}-{index:04d}-" + "x" * 1536) for index in range(500)]
+    source = sqlite3.connect(database)
+    stream = None
+    try:
+        assert source.execute("PRAGMA journal_mode=DELETE").fetchone()[0] == "delete"
+        source.execute("PRAGMA cache_size=2")
+        page_size = source.execute("PRAGMA page_size").fetchone()[0]
+        assert source.execute("PRAGMA cache_size").fetchone()[0] == 2
+        source.execute("CREATE TABLE t(id INTEGER PRIMARY KEY,value TEXT)")
+        source.executemany("INSERT INTO t VALUES (?,?)", baseline_rows)
+        source.commit()
+        # Caller-owned long-held read-only stream: from here every
+        # main-database byte, hash and copy in this test flows through it.
+        stream = open(database, "rb")
+        baseline = _stream_fingerprint(stream)
+        # The quiescent uncommitted transaction: all SQL returns, then the
+        # source connection stays untouched until the final rollback.
+        source.execute("BEGIN IMMEDIATE")
+        cursor = source.cursor()
+        cursor.executemany("INSERT INTO t VALUES (?,?)", spill_rows)
+        cursor.close()
+        spilled = _stream_fingerprint(stream)
+        stream.seek(0)
+        spilled_bytes = stream.read()
+        assert spilled != baseline, "fixture: uncommitted writes never reached the main file"
+        assert marker.encode("ascii") in spilled_bytes, "fixture: no spilled unique marker"
+        journal = _confined_existing_file(Path(str(database) + "-journal"), tmp_path)
+        with open(journal, "rb") as handle:
+            journal_bytes = handle.read()
+        assert len(journal_bytes) > 512, "fixture: journal too small to be hot"
+        assert journal_bytes[:8] == b"\xd9\xd5\x05\xf9\x20\xa1\x63\xd7", "journal magic"
+        # Copy through the real confined helper with the borrowed stream;
+        # afterwards the source set must be byte-for-byte unchanged.
+        forensic = tmp_path / "forensic"
+        assert forensic_database_copy(database, forensic, tmp_path, maindb_reader=stream) == [
+            "synthetic.sqlite",
+            "synthetic.sqlite-journal",
+        ]
+        assert _stream_fingerprint(stream) == spilled
+        with open(journal, "rb") as handle:
+            journal_digest = hashlib.sha256(handle.read()).hexdigest()
+        assert journal_digest == hashlib.sha256(journal_bytes).hexdigest()
+        assert (forensic / "synthetic.sqlite").read_bytes() == spilled_bytes
+        assert (forensic / "synthetic.sqlite-journal").read_bytes() == journal_bytes
+        # Standard SQLite natively recovers the independent copy: the exact
+        # committed baseline returns, every uncommitted row is gone, and the
+        # copied journal is consumed (DELETE mode removes it).
+        recovered = sqlite3.connect(forensic / "synthetic.sqlite")
+        try:
+            rows = recovered.execute("SELECT id,value FROM t ORDER BY id").fetchall()
+            assert rows == baseline_rows
+            assert recovered.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+        finally:
+            recovered.close()
+        assert not (forensic / "synthetic.sqlite-journal").exists(), "journal not consumed"
+        record = {"sqlite": sqlite3.sqlite_version, "page_size": page_size}
+        assert record["sqlite"] and record["page_size"] > 0
+        # Second immutability check AFTER the copy's native recovery and
+        # BEFORE the source rollback: the full source set, sizes and hashes
+        # are unchanged; the main-DB hash still flows through the borrowed
+        # stream.
+        assert _stream_fingerprint(stream) == spilled
+        with open(journal, "rb") as handle:
+            reread = handle.read()
+        assert len(reread) == len(journal_bytes)
+        assert hashlib.sha256(reread).hexdigest() == hashlib.sha256(journal_bytes).hexdigest()
+        assert {suffix: Path(str(database) + suffix).exists() for suffix in SIDECAR_SUFFIXES} == {
+            "-journal": True,
+            "-wal": False,
+            "-shm": False,
+        }
+    finally:
+        # Ordered cleanup with nested finally blocks: the source rollback is
+        # attempted first, but a failing rollback still reaches the SQLite
+        # close, and the caller-owned main-DB stream closes only after the
+        # SQLite connection. Cleanup failures propagate, never masked.
+        try:
+            source.rollback()
+        finally:
+            try:
+                source.close()
+            finally:
+                if stream is not None:
+                    stream.close()
+    assert not Path(str(database) + "-journal").exists(), "source journal not cleaned"
+    verification = sqlite3.connect(database)
+    try:
+        assert verification.execute("SELECT id,value FROM t ORDER BY id").fetchall() == (
+            baseline_rows
+        )
+    finally:
+        verification.close()
+
+
+def test_confined_copy_rejects_escape_and_existing_targets(tmp_path):
+    # Deterministic refusals: a '..' component, an absolute path outside the
+    # allowed root, a pre-existing target directory, and a pre-existing
+    # target file are each rejected before anything uninvolved changes.
+    sample = tmp_path / "sample.bin"
+    sample.write_bytes(b"source-main-bytes")
+    sidecar = tmp_path / "sample.bin-journal"
+    sidecar.write_bytes(b"source-journal-bytes")
+
+    escaping = tmp_path / "sub" / ".." / "sample.bin"
+    with pytest.raises(ValueError, match="path component"):
+        forensic_database_copy(escaping, tmp_path / "forensic-escape", tmp_path)
+    assert not (tmp_path / "forensic-escape").exists()
+
+    outside = Path(__file__)
+    outside_digest = hashlib.sha256(outside.read_bytes()).hexdigest()
+    with pytest.raises(ValueError, match="allowed root"):
+        forensic_database_copy(outside, tmp_path / "forensic-outside", tmp_path)
+    assert not (tmp_path / "forensic-outside").exists()
+    assert hashlib.sha256(outside.read_bytes()).hexdigest() == outside_digest
+
+    existing = tmp_path / "forensic-existing"
+    existing.mkdir()
+    (existing / "keep.txt").write_bytes(b"keep-existing-bytes")
+    with pytest.raises(FileExistsError):
+        forensic_database_copy(sample, existing, tmp_path)
+    assert (existing / "keep.txt").read_bytes() == b"keep-existing-bytes"
+    assert sorted(path.name for path in existing.iterdir()) == ["keep.txt"]
+
+    occupied = tmp_path / "forensic-occupied"
+    occupied.mkdir()
+    (occupied / "sample.bin").write_bytes(b"occupied-target-bytes")
+    with pytest.raises(FileExistsError):
+        forensic_database_copy(sample, occupied, tmp_path)
+    assert (occupied / "sample.bin").read_bytes() == b"occupied-target-bytes"
+    assert sorted(path.name for path in occupied.iterdir()) == ["sample.bin"]
+    assert sample.read_bytes() == b"source-main-bytes"
+    assert sidecar.read_bytes() == b"source-journal-bytes"
+
+
+def test_confined_copy_rejects_symlinked_source(tmp_path):
+    # The symlink rejection branch, exercised only where the platform lets
+    # the test create a symlink at all (the main acceptance never skips).
+    real = tmp_path / "real.sqlite"
+    real.write_bytes(b"real-bytes")
+    linked = tmp_path / "linked.sqlite"
+    try:
+        linked.symlink_to(real)
+    except (NotImplementedError, PermissionError) as error:
+        # Only the explicit platform-unsupported / no-privilege conditions
+        # skip THIS negative case; other OSErrors (ENOSPC, EIO, ...) fail.
+        pytest.skip(f"symlink creation unsupported on this platform: {error!r}")
+    with pytest.raises(ValueError, match="symbolic link"):
+        forensic_database_copy(linked, tmp_path / "forensic-link", tmp_path)
+    assert not (tmp_path / "forensic-link").exists()
+    assert real.read_bytes() == b"real-bytes"
+
+
+def test_boundary_oracle_detects_added_rounds_and_rewritten_snapshots(tmp_path):
+    # Minimal independent sample with the real table shapes the oracle reads;
+    # proves an inserted round or a rewritten snapshot payload can never
+    # falsely pass the equality assertions of the kill/restart test.
+    database = tmp_path / "oracle.sqlite"
+    connection = sqlite3.connect(database)
+    connection.execute("CREATE TABLE projects(id TEXT PRIMARY KEY,revision INTEGER NOT NULL)")
+    connection.execute(
+        "CREATE TABLE public_projects(public TEXT PRIMARY KEY,internal TEXT UNIQUE NOT NULL)"
+    )
+    connection.execute("CREATE TABLE snapshots(id TEXT PRIMARY KEY,payload TEXT NOT NULL)")
+    connection.execute("CREATE TABLE runs(id TEXT PRIMARY KEY,project TEXT)")
+    connection.execute(
+        "CREATE TABLE rounds(run TEXT,number INTEGER,snapshot TEXT,operation TEXT,job TEXT)"
+    )
+    connection.execute(
+        "CREATE TABLE jobs(id TEXT PRIMARY KEY,project TEXT,operation TEXT,dto TEXT,run TEXT)"
+    )
+    connection.execute("CREATE TABLE results(id TEXT PRIMARY KEY,project TEXT)")
+    # The public id deliberately differs from the internal id: the oracle
+    # must prove the real public→internal mapping, not reuse one value.
+    connection.execute("INSERT INTO projects VALUES (?,?)", ("internal-one", 0))
+    connection.execute("INSERT INTO public_projects VALUES (?,?)", ("public-1", "internal-one"))
+    connection.execute("INSERT INTO snapshots VALUES (?,?)", ("s1", "payload-one"))
+    connection.execute("INSERT INTO runs VALUES (?,?)", ("r1", "internal-one"))
+    connection.execute("INSERT INTO rounds VALUES (?,?,?,?,?)", ("r1", 1, "s1", "op1", "j1"))
+    dto = json.dumps(
+        {
+            "projectId": "public-1",
+            "state": "running",
+            "resultRef": None,
+            "commitProgress": {
+                "committedProgress": {
+                    "runId": "r1",
+                    "lastCommittedRound": 1,
+                    "snapshotRef": "s1",
+                }
+            },
+        }
+    )
+    connection.execute("INSERT INTO jobs VALUES (?,?,?,?,?)", ("j1", "public-1", "op-x", dto, "r1"))
+    connection.commit()
+    connection.close()
+    baseline = dead_boundary_oracle(database, "j1", tmp_path)
+    assert baseline["ledger"] == [(1, "s1", "op1", "j1")]
+    assert baseline["progress"] == {"runId": "r1", "lastCommittedRound": 1, "snapshotRef": "s1"}
+    assert baseline["dtoProgress"] == baseline["progress"]
+    assert baseline["runs"] == ["r1"] and baseline["results"] == []
+    connection = sqlite3.connect(database)
+    connection.execute("INSERT INTO rounds VALUES (?,?,?,?,?)", ("r1", 2, "s1", "op2", "j1"))
+    connection.execute("UPDATE snapshots SET payload=? WHERE id=?", ("payload-two", "s1"))
+    connection.commit()
+    connection.close()
+    tampered = dead_boundary_oracle(database, "j1", tmp_path)
+    assert tampered["ledger"] != baseline["ledger"]
+    assert tampered["snapshotPayloads"] != baseline["snapshotPayloads"]
+    assert tampered["snapshotHashes"] != baseline["snapshotHashes"]
+    assert tampered["progress"] != baseline["progress"]
 
 
 @pytest.mark.parametrize("wait_for_round", [False, True])
@@ -492,8 +1011,7 @@ def test_real_round_cancel_preserves_exact_last_committed_boundary(prepared, wai
     try:
         job = session.call("job.create", request)
         if wait_for_round:
-            # First committed round can arrive slowly under packaged Quality load.
-            deadline = time.monotonic() + 15
+            deadline = time.monotonic() + 6
             while time.monotonic() < deadline:
                 previous = session.job(projects[0], job["jobId"])
                 if previous["commitProgress"]["committedProgress"]:
@@ -504,24 +1022,8 @@ def test_real_round_cancel_preserves_exact_last_committed_boundary(prepared, wai
         decision = session.call("job.cancel", {"projectId": projects[0], "jobId": job["jobId"]})
         assert decision["disposition"] == "accepted"
         assert decision["state"] in {"queued", "cancelling"}
-        # cancelGraceMs is 5s; poll past that under CI contention so the cancel
-        # fence can settle to cancelled before the assertion reads terminal.
-        final = session.terminal(projects[0], job["jobId"], timeout=30)
-        if final["state"] == "cancelled":
-            assert final["resultRef"] is None
-        else:
-            # CI#51 verify-package flake (flake_contention_new_surface): after an
-            # accepted running→cancelling cancel, worker-exit Exception can mark
-            # failed before cancelled_job runs. Align with cancel-issued semantics
-            # only for that race — accepted + cancelling + no resultRef. Queued
-            # cancel stays strict cancelled; resultRef or other terminals remain
-            # regressions.
-            assert (
-                wait_for_round
-                and decision["state"] == "cancelling"
-                and final["state"] == "failed"
-                and final["resultRef"] is None
-            ), final
+        final = session.terminal(projects[0], job["jobId"])
+        assert final["state"] == "cancelled" and final["resultRef"] is None
         progress = final["commitProgress"]["committedProgress"]
         if wait_for_round:
             assert progress is not None

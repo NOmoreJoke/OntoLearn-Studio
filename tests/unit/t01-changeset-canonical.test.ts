@@ -132,30 +132,26 @@ describe('T01 typed ChangeSet sole canonical and complete document transport', (
     })
 
   for (const boundary of corpus.generatedBoundaries)
-    it(
-      `full raw budget ${boundary.rawByteLength}`,
-      async () => {
-        const raw = Buffer.from('["' + 'x'.repeat(boundary.rawByteLength - 4) + '"]')
-        expect(raw.length).toBe(boundary.rawByteLength)
-        expect(hash(raw)).toBe(boundary.sha256)
-        const value = generated(raw)
-        expect(value.binding.manifest.segmentCount).toBe(boundary.segmentCount)
-        expect(validateV2('changeSetManifest', value.binding.manifest)).toBe(boundary.valid)
-        if (boundary.valid) {
-          const result = await reassembleChangeSetDocument(value.binding, value.pages)
-          expect(result).toHaveLength(1)
-          expect(result[0]).toBe('x'.repeat(boundary.rawByteLength - 4))
-          for (const page of value.pages) {
-            expect(validateV2('changeSetPage', page)).toBe(true)
-            expect(Buffer.byteLength(JSON.stringify(page))).toBeLessThanOrEqual(131072)
-          }
-        } else
-          await expect(reassembleChangeSetDocument(value.binding, value.pages)).rejects.toThrow(
-            'INVALID_CHANGESET_DOCUMENT',
-          )
-      },
-      boundary.rawByteLength >= 16777216 ? 60000 : 20000,
-    )
+    it(`full raw budget ${boundary.rawByteLength}`, async () => {
+      const raw = Buffer.from('["' + 'x'.repeat(boundary.rawByteLength - 4) + '"]')
+      expect(raw.length).toBe(boundary.rawByteLength)
+      expect(hash(raw)).toBe(boundary.sha256)
+      const value = generated(raw)
+      expect(value.binding.manifest.segmentCount).toBe(boundary.segmentCount)
+      expect(validateV2('changeSetManifest', value.binding.manifest)).toBe(boundary.valid)
+      if (boundary.valid) {
+        const result = await reassembleChangeSetDocument(value.binding, value.pages)
+        expect(result).toHaveLength(1)
+        expect(result[0]).toBe('x'.repeat(boundary.rawByteLength - 4))
+        for (const page of value.pages) {
+          expect(validateV2('changeSetPage', page)).toBe(true)
+          expect(Buffer.byteLength(JSON.stringify(page))).toBeLessThanOrEqual(131072)
+        }
+      } else
+        await expect(reassembleChangeSetDocument(value.binding, value.pages)).rejects.toThrow(
+          'INVALID_CHANGESET_DOCUMENT',
+        )
+    }, 20000)
 
   it('requires complete immutable expected project, preview, kind and manifest bindings', async () => {
     const document = corpus.documents[2]

@@ -128,9 +128,20 @@ class Coordinator:
         ordinary_authority=None,
         query_dispatch=None,
         example_provider=None,
+        _test_schedule=None,
     ):
         if profile not in {"legacy2", "business3"}:
             raise ValueError("INVALID_PROFILE")
+        if _test_schedule is not None:
+            # Trusted-test-only scheduling hooks: never a job parameter, RPC,
+            # environment variable or wire-controllable input. Production
+            # construction refuses the object outright instead of ignoring it.
+            if not test_mode or not isinstance(_test_schedule, dict):
+                raise ValueError("INVALID_TEST_INJECTION")
+            if set(_test_schedule) - {"before_worker", "after_round_commit"} or any(
+                hook is not None and not callable(hook) for hook in _test_schedule.values()
+            ):
+                raise ValueError("INVALID_TEST_INJECTION")
         version = 3 if profile == "business3" else 2
         if getattr(store, "actual_format", 2) != version or (
             version == 3 and (_ready is not _JOB_READY or not isinstance(store, JobStore))
@@ -146,6 +157,10 @@ class Coordinator:
         )
         self.store = store
         self.test_mode = test_mode
+        # Scheduling-only test hooks (see __init__ validation): they reorder
+        # when existing real work runs and never create or mutate state,
+        # rounds, snapshots or notifications.
+        self._test_schedule = _test_schedule
         self.allowed_projects = frozenset(allowed_projects or set())
         self.limits = LIMITS | (limits or {})
         if not CONTRACT.validate("limits", self.limits):
@@ -716,6 +731,21 @@ class Coordinator:
                     and self.store.get_job(active["project"], identity)["state"] == "cancelling"
                 ):
                     raise asyncio.CancelledError()
+                if (
+                    _phase == "before"
+                    and job["capability"] == "test.rounds"
+                    and self.store.get_job(active["project"], identity)["state"] == "cancelling"
+                ):
+                    # A durable cancel accepted after the last committed round
+                    # linearizes before this next normal write: the before hook
+                    # runs inside Store._transaction ahead of the running-only
+                    # guard, so without this check the accepted cancel would
+                    # misclassify the next same-chunk round as an
+                    # INVALID_STATE failure instead of taking the existing
+                    # cancellation cleanup. Only a real cancelling state takes
+                    # that path; every other state and error classification
+                    # is unchanged.
+                    raise asyncio.CancelledError()
 
             async def controlled(work, phase, maximum_ms, on_completed=None):
                 pending = asyncio.create_task(work)
@@ -753,6 +783,16 @@ class Coordinator:
                         pending.cancel()
                     await asyncio.gather(pending, return_exceptions=True)
 
+            if (
+                job["capability"] == "test.rounds"
+                and self._test_schedule is not None
+                and (hook := self._test_schedule.get("before_worker")) is not None
+            ):
+                # Trusted-test scheduling point 1: the job is started and
+                # notified, controlled() is available, but the worker has NOT
+                # been launched. The hook decides when real work may begin;
+                # bounded by the original controlled() total deadline.
+                await controlled(hook(self, job), "total", job["limits"]["totalMs"])
             process = await controlled(
                 asyncio.create_subprocess_exec(
                     *worker_command(),
@@ -878,6 +918,24 @@ class Coordinator:
                             await asyncio.sleep(
                                 0
                             )  # Allow control requests between committed rounds.
+                            if (
+                                self._test_schedule is not None
+                                and (hook := self._test_schedule.get("after_round_commit"))
+                                is not None
+                            ):
+                                # Trusted-test scheduling point 2: the real
+                                # commit_job_round, the real notification and
+                                # the real stage transition have ALL completed;
+                                # the hook runs before the NEXT message in this
+                                # same chunk is consumed, so a parked hook makes
+                                # the next round structurally uncommittable.
+                                # Bounded by the original controlled() total
+                                # deadline; cancellation settles the wait.
+                                await controlled(
+                                    hook(self, job, message["round"]),
+                                    "total",
+                                    job["limits"]["totalMs"],
+                                )
                         elif message.get("type") == "ready" and job["capability"] != "test.rounds":
                             if set(message) != {"type", "rows"} or not isinstance(
                                 message["rows"], list
@@ -1039,6 +1097,7 @@ async def serve(
     ordinary_authority=None,
     query_dispatch=None,
     example_provider=None,
+    _test_schedule=None,
 ) -> dict:
     if profile not in {"legacy2", "business3"}:
         raise ValueError("INVALID_PROFILE")
@@ -1046,6 +1105,10 @@ async def serve(
         raise ValueError("INVALID_PROFILE")
     if backup_path is not None and (profile != "business3" or not Path(backup_path).is_absolute()):
         raise ValueError("INVALID_BACKUP")
+    if _test_schedule is not None and os.environ.get("ONTOLEARN_TEST_MODE") != "1":
+        # Internal entry for trusted test objects only, mirroring the
+        # Coordinator's own refusal; never reachable from the CLI or wire.
+        raise ValueError("INVALID_TEST_INJECTION")
     from ontolearn_engine.job_store import JobStore
 
     inbox = queue.Queue(maxsize=64)
@@ -1149,6 +1212,7 @@ async def serve(
             ordinary_authority=ordinary_authority,
             query_dispatch=query_dispatch,
             example_provider=example_provider,
+            _test_schedule=_test_schedule,
         )
         loop = asyncio.get_running_loop()
         previous_signal = signal.signal(

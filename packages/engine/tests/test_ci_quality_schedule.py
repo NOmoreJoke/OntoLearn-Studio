@@ -17,6 +17,8 @@ import asyncio
 import importlib.util
 import io
 import os
+import signal
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -45,8 +47,10 @@ def python_lane_shell(monkeypatch):
     shell seam so the identical spawn_lane → _supervise → reap chain runs a
     REAL interpreter child on every platform (no bash required, nothing
     mocked). Linux production keeps /bin/bash and is exercised additionally
-    on POSIX inside the tests; the group/session surface is asserted wherever
-    the OS actually exposes it, never by skipping the test."""
+    on POSIX inside the tests. Portable DIRECT-CHILD supervision is asserted
+    on every platform; POSIX process-group/zombie scenarios carry their own
+    explicit per-test platform premise because Windows exposes no
+    killpg/getpgid/getsid and no unreaped-zombie observation."""
     monkeypatch.setattr(scheduler, "_LANE_SHELL", (sys.executable, "-c"))
 
 
@@ -114,7 +118,10 @@ def test_plan_dependencies_and_engine_sharding_shape():
         "i04-unpackaged",
         "packaged-recovery",
     }
-    assert by_name["engine"].deps == ("static-gates",)
+    # CI49 ordering (isolation variable, not proven root cause): the engine
+    # shards start only after unit-build; a contention-free run decides
+    # causation. This assertion pins the ordering, not any failure's fix.
+    assert by_name["engine"].deps == ("static-gates", "unit-build")
     assert by_name["unit-build"].deps == ("static-gates",)
     assert by_name["engine"].env == {
         "CI_ENGINE_TEST_SHARDS": "4",
@@ -228,7 +235,15 @@ def test_pipeline_opens_phase_two_only_after_full_phase_one_success():
             await _
         assert "engine" not in started
         gates["static-gates"].set()
-        for _ in _wait_for(lambda: {"engine", "unit-build"} <= set(started)):
+        # CI49 ordering (isolation variable, not proven root cause): engine
+        # starts only after unit-build completes, so
+        # releasing static-gates first starts unit-build alone…
+        for _ in _wait_for(lambda: "unit-build" in started):
+            await _
+        assert "engine" not in started
+        # …and unit-build completing (gate released) is what starts engine.
+        gates["unit-build"].set()
+        for _ in _wait_for(lambda: "engine" in started):
             await _
         # Phase two stays closed while i04-matrix is still running even though
         # its own prerequisites (none) would allow an immediate start.
@@ -515,10 +530,26 @@ HOLDER_TERM_IGNORER = (
 )
 
 
-def test_supervise_cancellation_kills_the_owned_direct_child(tmp_path):
+def test_supervise_cancellation_kills_the_owned_direct_child(tmp_path, monkeypatch):
     sentinel = Sentinel()
     pidfile = tmp_path.joinpath("direct.pid")
     sleeper = "import os,sys,time\nopen(sys.argv[1], 'w').write(str(os.getpid()))\ntime.sleep(30)\n"
+    # Capture the REAL Popen object spawn_lane creates (a pass-through wrapper
+    # around the genuine constructor — not a mock), so death evidence uses the
+    # supervisor's own handle: alive BEFORE cancel and exited AFTER cancel are
+    # proven on the SAME object, immune to pid reuse, before any fixture
+    # fallback. On Windows poll() is the native non-blocking handle check and
+    # the Popen-held handle anchors the identity; on POSIX the pinned-window
+    # killpg covers termination and poll() here only confirms it.
+    created: list = []
+    real_popen = scheduler.subprocess.Popen
+
+    def capturing_popen(*args, **kwargs):
+        popen = real_popen(*args, **kwargs)
+        created.append(popen)
+        return popen
+
+    monkeypatch.setattr(scheduler.subprocess, "Popen", capturing_popen)
 
     async def scenario():
         task = asyncio.ensure_future(_supervise_child(sleeper, "t-direct", str(pidfile)))
@@ -530,6 +561,9 @@ def test_supervise_cancellation_kills_the_owned_direct_child(tmp_path):
         # window means the child never started — a fixture failure, not a
         # silent pass.
         assert pidfile.exists(), "direct child never started (no pidfile)"
+        assert created, "spawn_lane never created the leader (fixture failure)"
+        popen = created[0]
+        assert popen.poll() is None, "leader already exited before cancel (fixture failure)"
         await asyncio.sleep(0.2)
         task.cancel()
         cancelled = False
@@ -537,25 +571,42 @@ def test_supervise_cancellation_kills_the_owned_direct_child(tmp_path):
             await asyncio.wait_for(task, 15.0)
         except asyncio.CancelledError:
             cancelled = True
-        return cancelled
+        return popen, cancelled
 
     try:
-        cancelled = asyncio.run(scenario())
+        popen, cancelled = asyncio.run(scenario())
         assert cancelled
         assert sentinel.alive()
-        pid = int(pidfile.read_text(encoding="ascii").strip())
+        # SUT termination proof on the SAME captured handle, BEFORE any
+        # fixture fallback: the supervisor really killed and reaped the child.
+        assert popen.returncode is not None, "leader exit not confirmed by SUT"
+        assert popen.returncode != 0
         if hasattr(os, "killpg"):
-            # The direct leader is terminated for real through the pinned
-            # ownership window before the cancellation propagates.
+            pid = int(pidfile.read_text(encoding="ascii").strip())
             assert bounded_dead(pid)
     finally:
-        if pidfile.exists():
-            pid = int(pidfile.read_text(encoding="ascii").strip())
-            try:
-                os.kill(pid, 9)
-            except (ProcessLookupError, PermissionError, OSError):
-                pass
-        sentinel.close()
+        # Outermost cleanup. The same captured Popen objects are killed via
+        # their own handle and then waited with a bounded wait; a wait that
+        # times out is REPORTED to stderr as a cleanup failure — it is never
+        # swallowed into an implied success, and it never masks the original
+        # test outcome above. This fallback is not counted as SUT success.
+        try:
+            for popen in created:
+                if popen.poll() is None:
+                    try:
+                        popen.kill()
+                    except OSError:
+                        pass
+                    try:
+                        popen.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        print(
+                            f"FIXTURE CLEANUP FAILURE: leader pid {popen.pid} "
+                            "not reaped within bound",
+                            file=sys.stderr,
+                        )
+        finally:
+            sentinel.close()
 
 
 def bounded_dead(*pids, timeout=5.0):
@@ -640,6 +691,18 @@ def test_production_entry_settles_a_drain_failure(python_lane_shell):
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: the pinned-window killpg cleanup must "
+        "close a TERM-ignoring same-group descendant holding the lane pipes "
+        "after the leader exits unreaped; Windows has no killpg/getpgid/"
+        "getsid and no unreaped-zombie observation (production owns only the "
+        "direct child's native handle - that contract is covered by "
+        "test_supervise_cancellation_kills_the_owned_direct_child and "
+        "test_failed_reap_never_reports_closed_or_reaped)"
+    ),
+)
 def test_production_entry_closes_the_group_when_the_leader_exits_first(
     tmp_path, capsys, python_lane_shell
 ):
@@ -673,6 +736,17 @@ def test_production_entry_closes_the_group_when_the_leader_exits_first(
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: group TERM/KILL must close BOTH the "
+        "leader and the same-group holder (asserted together) under getsid "
+        "session isolation; Windows has no killpg/getpgid/getsid and no "
+        "unreaped-zombie observation (production owns only the direct "
+        "child's native handle - the Windows cancellation contract is "
+        "covered by test_supervise_cancellation_kills_the_owned_direct_child)"
+    ),
+)
 def test_production_entry_cancellation_closes_the_owned_children(
     tmp_path, capsys, python_lane_shell
 ):
@@ -733,6 +807,17 @@ def test_production_entry_cancellation_closes_the_owned_children(
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: an unreaped-zombie identity anchor "
+        "with late data from a same-group descendant through the inherited "
+        "pipes, settled by the pinned-window group cleanup; Windows has no "
+        "killpg/getpgid/getsid and no unreaped-zombie observation (the "
+        "direct-child drain-failure settlement is covered by "
+        "test_supervise_observes_a_stdout_drain_failure_and_reaps_the_lane)"
+    ),
+)
 def test_supervise_settles_a_tail_drain_failure_after_the_leader_exits():
     # Fixed ordering for the tail-window gap: the leader's exit is OBSERVED
     # (zombie, unreaped — the identity anchor holds) when the stdout target
@@ -777,6 +862,17 @@ def test_supervise_settles_a_tail_drain_failure_after_the_leader_exits():
         sentinel.close()
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "killpg"),
+    reason=(
+        "POSIX process-group fixture: tail-collection cancellation must be "
+        "preceded by the pinned-window group cleanup closing the holder, "
+        "with the os.getpgid identity anchor; Windows has no killpg/"
+        "getpgid/getsid and no unreaped-zombie observation (the direct-child "
+        "cancellation settlement is covered by "
+        "test_supervise_cancellation_kills_the_owned_direct_child)"
+    ),
+)
 def test_supervise_cancellation_during_tail_collection_settles_the_group():
     # Fixed ordering with a REAL handshake for the tail-cancellation gap:
     # (1) the TERM-ignoring holder is provably started (its pid arrives over
@@ -840,19 +936,75 @@ def test_supervise_cancellation_during_tail_collection_settles_the_group():
 def test_observation_failure_is_reported_as_unknown_not_gone(monkeypatch):
     # Controlled observation failure: a /proc or ps query that fails must not
     # be interpreted as an empty group, and must surface as an unknown
-    # cleanup outcome rather than a silent success or an exception.
+    # cleanup outcome rather than a silent success or an exception. The
+    # POSIX group branch is selected on EVERY platform by a test-local os
+    # proxy carrying a fake killpg (the real global os has no killpg
+    # attribute to patch on Windows); the fake only records and never sends
+    # a real signal to the fictional pid. A wait that simulates a successful
+    # reap sets its own returncode honestly.
+    delivered: list[str] = []
     monkeypatch.setattr(scheduler, "_own_group_members", lambda pgid: None)
+    monkeypatch.setattr(
+        scheduler,
+        "os",
+        type(
+            "KillpgOS",
+            (),
+            {"killpg": staticmethod(lambda pgid, sig: delivered.append("killpg"))},
+        ),
+    )
 
     class FakePopen:
+        def __init__(self):
+            self.pid = 424242
+            self.returncode = None
+
+        def wait(self, timeout=None):
+            self.returncode = 0
+            return 0
+
+    state = {"reaped": False, "code_known": False, "reap_attempted": False}
+    outcome = asyncio.run(scheduler._close_lane_group(FakePopen(), "t-obs", state))
+    assert outcome == "unknown"
+    assert state["reaped"] is True  # the simulated successful reap is real in the fake
+
+
+def test_failed_reap_never_reports_closed_or_reaped(monkeypatch):
+    # Ordering fixture for the honest-reap contract on the no-killpg branch:
+    # terminate fails AND the bounded wait never yields a returncode, so the
+    # cleanup must NOT mark the leader reaped and must NOT return closed —
+    # "attempted" and "confirmed" stay separate, and a second cleanup call
+    # does not repeat the bounded wait.
+    terminated: list[bool] = []
+    waits: list[float] = []
+
+    class StubbornPopen:
         pid = 424242
         returncode = None
 
-        def wait(self, timeout=None):
-            return 0
+        def terminate(self):
+            terminated.append(True)
+            raise OSError("access denied")
 
-    state = {"reaped": False, "code_known": False}
-    outcome = asyncio.run(scheduler._close_lane_group(FakePopen(), "t-obs", state))
-    assert outcome == "unknown"
+        def wait(self, timeout=None):
+            waits.append(timeout)
+            raise subprocess.TimeoutExpired(cmd="stubborn", timeout=timeout)
+
+    # A local os proxy WITHOUT a killpg attribute routes cleanup into the
+    # Windows-style branch without touching the real global os module.
+    monkeypatch.setattr(
+        scheduler, "os", type("NoKillpgOS", (), {"kill": staticmethod(os.kill), "name": "nt"})
+    )
+    state = {"reaped": False, "code_known": False, "reap_attempted": False}
+    outcome = asyncio.run(scheduler._close_lane_group(StubbornPopen(), "t-stubborn", state))
+    assert terminated == [True]  # termination was genuinely attempted once
+    assert outcome == "unknown"  # … but never confirmed as closed
+    assert state["reaped"] is False  # and never marked reaped
+    assert state["reap_attempted"] is True  # idempotency without lying
+    # Second cleanup call: no additional bounded wait, still honest.
+    outcome2 = asyncio.run(scheduler._close_lane_group(StubbornPopen(), "t-stubborn", state))
+    assert outcome2 == "unknown"
+    assert len(waits) == 1
 
 
 def test_pinned_window_signals_the_group_but_refused_after_reap(monkeypatch):
@@ -863,26 +1015,54 @@ def test_pinned_window_signals_the_group_but_refused_after_reap(monkeypatch):
     #   (b) RELEASED: state['reaped'] is True — the pid may already be
     #       recycled, so cleanup refuses every signal and reports NOT
     #       confirmed; a same-number new group is never signaled.
+    # The POSIX group branch is selected on EVERY platform by test-local
+    # proxies: the os proxy carries a fake killpg (the real global os has no
+    # killpg attribute to patch on Windows) and the signal proxy provides
+    # BOTH TERM and KILL (the real signal module lacks SIGKILL on Windows,
+    # so getattr on it would silently drop the second round). Deliveries are
+    # only recorded — never a real signal to the fictional pid. A wait that
+    # simulates a successful reap sets its own returncode honestly.
     delivered: list[str] = []
-    monkeypatch.setattr(scheduler.os, "killpg", lambda pgid, sig: delivered.append("killpg"))
+    monkeypatch.setattr(
+        scheduler,
+        "os",
+        type(
+            "KillpgOS",
+            (),
+            {"killpg": staticmethod(lambda pgid, sig: delivered.append("killpg"))},
+        ),
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "signal",
+        type("ControlSignals", (), {"SIGTERM": signal.SIGTERM, "SIGKILL": 9}),
+    )
     monkeypatch.setattr(scheduler, "_own_group_members", lambda pgid: [pgid, 4243])
 
     class FakePopen:
-        pid = 424242
-        returncode = None
+        def __init__(self):
+            self.pid = 424242
+            self.returncode = None
 
         def wait(self, timeout=None):
+            self.returncode = 0
             return 0
 
     outcome_a = asyncio.run(
-        scheduler._close_lane_group(FakePopen(), "t-pinned", {"reaped": False, "code_known": False})
+        scheduler._close_lane_group(
+            FakePopen(), "t-pinned", {"reaped": False, "code_known": False, "reap_attempted": False}
+        )
     )
     assert outcome_a == "residual"  # members persist in the fixture
     assert delivered == ["killpg", "killpg"]  # TERM and KILL rounds ran
 
     delivered.clear()
     outcome_b = asyncio.run(
-        scheduler._close_lane_group(FakePopen(), "t-released", {"reaped": True, "code_known": True})
+        scheduler._close_lane_group(
+            FakePopen(),
+            "t-released",
+            {"reaped": True, "code_known": True, "reap_attempted": True},
+        )
     )
     assert outcome_b == "refused"
     assert delivered == []

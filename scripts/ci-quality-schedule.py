@@ -74,7 +74,15 @@ def build_plan() -> list[Lane]:
             "engine",
             1,
             "npm run engine:check",
-            deps=("static-gates",),
+            # CI49 observation: the engine shards running concurrently with
+            # vitest (unit-build) are the leading SUSPECTED scheduling
+            # variable pending isolation — NOT proven as the root cause of
+            # the four failures. This ordering removes the variable so a
+            # contention-free run can decide causation; it is not itself
+            # evidence any failure is fixed. Phase gating, commands, sets,
+            # assertions, successors and the 15-minute budget are unchanged
+            # — this is ordering, not parallelism removal.
+            deps=("static-gates", "unit-build"),
             env={
                 "CI_ENGINE_TEST_SHARDS": "4",
                 "CI_ENGINE_TEST_WEIGHTS": "linux-ci46",
@@ -486,8 +494,9 @@ def _popen_exited_unreaped(popen, state: dict) -> bool:
 async def _reap_leader(popen, name: str, state: dict) -> None:
     """The SINGLE reap point. The blocking wait runs in a worker with its own
     timeout — the worker thread always ends within that bound even if the
-    outer await is cancelled — and the result is actually collected."""
-    if state["reaped"]:
+    outer await is cancelled — and the result is actually collected.
+    reap_attempted makes a second call a no-op WITHOUT claiming success."""
+    if state["reaped"] or state.get("reap_attempted"):
         return
     loop = asyncio.get_running_loop()
 
@@ -508,7 +517,10 @@ async def _reap_leader(popen, name: str, state: dict) -> None:
         state["reaped"] = True
     else:
         _note(f"[{name}] leader reap not confirmed within bound")
-        state["reaped"] = True  # never try again; the honest note above stands
+    # Idempotency without lying: only the observation of a REAL returncode
+    # sets 'reaped'; a bounded-out attempt just prevents a second wait, and
+    # every consumer reports the outcome honestly as NOT confirmed.
+    state["reap_attempted"] = True
 
 
 async def _close_lane_group(popen, name: str, state: dict) -> str:
@@ -521,9 +533,22 @@ async def _close_lane_group(popen, name: str, state: dict) -> str:
     the pid stays allocated (alive or zombie): killpg(pgid) cannot reach a
     recycled identity because a new group with that numeric id would need
     pid == pgid, which is still ours. Group closure happens BEFORE the final
-    wait; honest outcomes are closed/residual/unknown/refused."""
+    wait; honest outcomes are closed/residual/unknown/refused.
+
+    Without process-group APIs (Windows), the ONLY owned termination handle
+    is this supervisor's own Popen: popen.terminate() delivers through the
+    native process handle (TerminateProcess), never a numeric pid, so the
+    direct child is terminated before the bounded reap — a live child is
+    never merely waited on, and 'closed' is returned only when the reap is
+    actually confirmed by a real returncode."""
     pgid = popen.pid
     if not hasattr(os, "killpg"):
+        if not state["reaped"] and not state.get("reap_attempted"):
+            if popen.returncode is None:
+                try:
+                    popen.terminate()
+                except OSError as error:
+                    _note(f"[{name}] own process not terminated: {error!r}")
         await _reap_leader(popen, name, state)
         return "closed" if state["reaped"] else "unknown"
     if state["reaped"]:
@@ -621,7 +646,7 @@ async def _supervise(popen, name: str, stdout=None, stderr=None) -> int:
     Cancellation protection covers the whole lifecycle. On clean supervision
     the child's REAL exit code is returned; supervision/settlement failures
     return 1."""
-    state = {"reaped": False, "code_known": False}
+    state = {"reaped": False, "code_known": False, "reap_attempted": False}
     failures: list = []
     targets = (stdout or sys.stdout, stderr or sys.stderr)
     pipes = (popen.stdout, popen.stderr)
