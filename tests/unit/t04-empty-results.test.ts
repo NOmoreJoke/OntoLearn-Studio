@@ -93,6 +93,19 @@ describe('verified SELECT empty results', () => {
     expect(markup).toContain('可逐项放宽条件后复查')
     expect(markup).toContain('检查字段是否有记录，以及映射是否成功提交到当前项目')
     expect(markup).toContain('不能据此证明业务事实不存在')
+    // Expected texts are written here on purpose; importing emptyDirections would
+    // make these assertions circular and blind to silent edits of the constant.
+    const sectionPattern = /<section aria-label="SELECT 空结果检查">[\s\S]*?<\/section>/
+    const checks = markup.match(sectionPattern)?.[0]
+    if (!checks) throw new Error('SELECT empty-result checks section missing')
+    expect(checks.match(/<li>/g)).toHaveLength(5)
+    expect(checks).toContain('检查所选数据范围；断言事实不包含尚未推导的事实。')
+    expect(checks).toContain('检查过期标识；明确选择当前输入或历史快照后重新执行。')
+    expect(checks).toContain('检查筛选值、类型、语言标签和条件；可逐项放宽条件后复查。')
+    expect(checks).toContain('检查字段是否有记录，以及映射是否成功提交到当前项目。')
+    expect(checks).toContain('空结果表示本次查询未记录匹配项，不能据此证明业务事实不存在。')
+    expect(checks).toContain('请先查看本次实际执行的')
+    expect(checks).toContain('SPARQL，并按上方显示的数据范围、输入快照和结果状态逐项检查。')
     expect(markup).toContain('导出当前页 CSV')
     expect(markup).not.toContain('typed-query-graph')
     expect(markup).not.toContain('ASK：')
