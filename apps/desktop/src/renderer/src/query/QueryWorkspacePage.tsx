@@ -719,6 +719,7 @@ function WorkspaceDocument({
           <QueryResultPanel
             key={`${resultLane}:${result.resultId}`}
             {...result}
+            graphSource={state.read}
             rowsLoading={state.busy}
             textLoading={state.busy}
             onNextRows={(request) =>

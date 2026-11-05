@@ -1343,3 +1343,116 @@ test('T04 Q-02 closes A01 through T02 UI, preserves stale history and reopens a 
     }
   }
 })
+
+test('T04 same-input local graph uses actual directed assertions and withholds stale-source edges', async () => {
+  await withDesktop(async (page, evidence) => {
+    const { workspace, initial } = await setup(page, 'T04 同输入局部关系图')
+    const id = 'e2e-authoritative-local-graph'
+    const alarm = 'urn:ontolearn:learning:alarm/A01'
+    const alarmType = 'urn:ontolearn:learning:Alarm'
+    const alarmPredicate = 'urn:ontolearn:learning:alarm'
+    const text =
+      'PREFIX l: <urn:ontolearn:learning:>\n' +
+      'SELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ' +
+      '?alarm l:level "High" ; l:status "Open" . } ORDER BY ?alarm'
+    const draft = draftFor('真实实例断言关系', text)
+    const saved = await saveDefinition(page, workspace, id, draft)
+    const job = await execute(page, workspace, saved.job.jobId)
+    const lane = resultLane(workspace),
+      panel = resultPanel(lane)
+    await button(lane, '读取 SELECT 结果第一页').click()
+    const graph = panel.getByRole('region', { name: '结果输入的局部关系图', exact: true })
+    await expect(graph).toBeVisible()
+    await expect(graph.locator('code').first()).toHaveText(saved.after.inputSnapshotId)
+    await expect(graph).toContainText('项目版本 2，断言事实')
+    const expected = [
+      [alarm, typePredicate, alarmType],
+      [equipment[0], alarmPredicate, alarm],
+    ].sort((a, b) => canonical(a).localeCompare(canonical(b)))
+    const actual = await graph
+      .locator('svg g[data-predicate]')
+      .evaluateAll((nodes) =>
+        nodes.map((node) =>
+          ['data-subject', 'data-predicate', 'data-object'].map((key) => node.getAttribute(key)),
+        ),
+      )
+    expect(actual.sort((a, b) => canonical(a).localeCompare(canonical(b)))).toEqual(expected)
+    const facts = saved.after.domain.state.facts.filter((fact) =>
+      expected.some(
+        ([subject, predicate, object]) =>
+          fact.subject === subject && fact.predicate === predicate && fact.object === `<${object}>`,
+      ),
+    )
+    expect(facts).toHaveLength(2)
+    expect(
+      facts
+        .map((fact) => [fact.subject, fact.predicate, fact.object])
+        .sort((a, b) => canonical(a).localeCompare(canonical(b))),
+    ).toEqual(expected.map(([subject, predicate, object]) => [subject, predicate, `<${object}>`]))
+    expect(
+      facts.every(
+        (fact) => fact.owner === null && fact.source_row === null && fact.managed_value === null,
+      ),
+    ).toBe(true)
+    expect(
+      await graph
+        .locator('li[data-fact-id]')
+        .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-fact-id')).sort()),
+    ).toEqual(facts.map((fact) => fact.id).sort())
+    await expect(graph).toContainText('人工来源')
+    await expect(
+      graph.getByRole('img', { name: '来自同快照事实记录的有向关系', exact: true }),
+    ).toBeVisible()
+    await expect(panel.getByRole('region', { name: '当前页 IRI 关联', exact: true })).toContainText(
+      '不推断本体关系',
+    )
+    const binding = await readBinding(page, job)
+    assertBinding(binding, job, draft, id, 2)
+    await assertUiRows(
+      panel,
+      ['alarm'],
+      [[alarm]],
+      0,
+      job.resultRef!.resultId,
+      binding.descriptor.identity.payloadSha256,
+    )
+    await downloadCsv(page, panel, '导出当前页 CSV', csv(['alarm'], [[alarm]]))
+
+    // A query-definition edit changes the input namespace. The old result remains
+    // readable, but the current read must never supply edges to its stale graph.
+    const changed = { ...draft, description: '只改说明，旧结果保留原输入；不能借当前库补旧图。' }
+    const edited = await saveDefinition(page, workspace, id, changed, {
+      draft,
+      previousJobId: job.jobId,
+    })
+    const historyLane = await restore(page, workspace, job)
+    const historyPanel = resultPanel(historyLane)
+    await button(historyLane, '读取 SELECT 结果第一页').click()
+    const heldGraph = historyPanel.getByRole('region', {
+      name: '结果输入的局部关系图',
+      exact: true,
+    })
+    await expect(historyPanel).toContainText(`QUERY_CHANGED · query:${id} · 1 → 2`)
+    await expect(heldGraph).toContainText('历史或过期结果尚无对应快照的关系事实来源')
+    await expect(
+      heldGraph.getByRole('img', { name: '来自同快照事实记录的有向关系', exact: true }),
+    ).toHaveCount(0)
+    await assertUiRows(
+      historyPanel,
+      ['alarm'],
+      [[alarm]],
+      0,
+      job.resultRef!.resultId,
+      binding.descriptor.identity.payloadSha256,
+    )
+    evidence.initial = initial
+    evidence.saved = saved
+    evidence.originalJob = job
+    evidence.sameInputBinding = binding
+    evidence.expectedDirectedTriples = expected
+    evidence.sourceFactRecords = facts
+    evidence.edited = edited
+    evidence.boundary =
+      'Actual same-input manual asserted graph and stale hold via real UI; mapped behavior is consumer-unit evidence only. No inferred edge, extra write API, historical graph source or model proof.'
+  })
+})

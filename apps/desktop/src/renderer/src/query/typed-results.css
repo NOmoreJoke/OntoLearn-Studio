@@ -56,3 +56,28 @@
 .typed-query-results button {
   margin: 0.25rem;
 }
+.typed-query-actual-graph {
+  border-top: 1px solid currentColor;
+  padding-top: 1rem;
+}
+.typed-query-relation-canvas {
+  overflow: auto;
+  max-height: 30rem;
+}
+.typed-query-relation-canvas svg {
+  width: 100%;
+  min-width: 42rem;
+  display: block;
+}
+.typed-query-relation-canvas circle,
+.typed-query-relation-canvas line {
+  stroke: currentColor;
+  fill: none;
+}
+.typed-query-relation-canvas path,
+.typed-query-relation-canvas text {
+  fill: currentColor;
+}
+.typed-query-relation-evidence > li {
+  padding-block: 0.5rem;
+}
