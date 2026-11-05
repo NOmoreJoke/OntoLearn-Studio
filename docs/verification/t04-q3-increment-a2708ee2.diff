@@ -1,0 +1,1085 @@
+diff --git a/apps/desktop/src/renderer/src/query/QueryResultPanel.tsx b/apps/desktop/src/renderer/src/query/QueryResultPanel.tsx
+index 3dc4df51..440f873d 100644
+--- a/apps/desktop/src/renderer/src/query/QueryResultPanel.tsx
++++ b/apps/desktop/src/renderer/src/query/QueryResultPanel.tsx
+@@ -1,4 +1,4 @@
+-import { useState } from 'react'
++import { useId, useState } from 'react'
+ import {
+   cellText,
+   currentPageCsv,
+@@ -12,6 +12,7 @@ import {
+ } from './typed-results'
+ import type { QueryResultPanelProps } from './typed-result-panel-props'
+ import { emptyDirections } from './draft'
++import { buildResultGraph, graphLimits } from './result-graph'
+ import './typed-results.css'
+ 
+ function downloadCsv(csv: string, filename: string) {
+@@ -23,12 +24,198 @@ function downloadCsv(csv: string, filename: string) {
+   URL.revokeObjectURL(url)
+ }
+ 
++const sourceText = (text: string) => {
++  let output = '',
++    count = 0
++  for (const character of text) {
++    if (count++ === 256) return output + '…（来源文本已截短）'
++    output += character
++  }
++  return output
++}
++
++function ActualRelations({
++  page,
++  descriptor,
++  requested,
++  source,
++  rowKey,
++  blocked,
++}: {
++  page: DisplayRowsPage
++  descriptor: DisplayDescriptor
++  requested: NonNullable<QueryResultPanelProps['rows']>['requested']
++  source: unknown
++  rowKey: string
++  blocked: boolean
++}) {
++  const arrow = useId()
++  const graph = blocked
++    ? { state: 'unavailable' as const, reason: '正在读取或核对结果，暂不绘制关系。' }
++    : buildResultGraph(source, descriptor, page, requested, rowKey)
++  return (
++    <section className="typed-query-actual-graph" aria-label="结果输入的局部关系图">
++      <h3>结果输入的局部关系图</h3>
++      {graph.state === 'unavailable' ? (
++        <p role="status">{graph.reason}</p>
++      ) : (
++        <>
++          <p>
++            来源：此结果同一输入快照 <code>{graph.snapshotId}</code>，项目版本 {graph.revision}
++            ，断言事实。
++          </p>
++          <p>
++            以当前页第 {graph.rowIndex + 1} 行的 IRI 为起点，只展示一跳实例断言；箭头严格按原主体 →
++            对象，标注原谓词。结构定义中的三元组未纳入本图。
++          </p>
++          <p>
++            最多 {graphLimits.anchors} 个起点、{graphLimits.edges} 条关系；当前显示{' '}
++            {graph.edges.length} / {graph.totalEdges} 条。
++            {graph.omittedAnchors > 0 && `另有 ${graph.omittedAnchors} 个行内起点未显示。`}
++          </p>
++          {graph.edges.length === 0 ? (
++            <p>此局部范围未显示可呈现的关系，不表示该快照不存在关系。</p>
++          ) : (
++            <>
++              <div className="typed-query-relation-canvas">
++                <svg
++                  viewBox={`0 0 960 ${graph.edges.length * 100 + 20}`}
++                  role="img"
++                  aria-label="来自同快照事实记录的有向关系"
++                >
++                  <defs>
++                    <marker
++                      id={arrow}
++                      viewBox="0 0 10 10"
++                      refX="9"
++                      refY="5"
++                      markerWidth="8"
++                      markerHeight="8"
++                      orient="auto"
++                    >
++                      <path d="M 0 0 L 10 5 L 0 10 z" />
++                    </marker>
++                  </defs>
++                  {graph.edges.map((edge, index) => (
++                    <g
++                      key={JSON.stringify([edge.subject, edge.predicate, edge.object])}
++                      data-subject={edge.subject}
++                      data-predicate={edge.predicate}
++                      data-object={edge.object}
++                    >
++                      <title>
++                        {edge.subject} → {edge.predicate} → {edge.object}
++                      </title>
++                      <circle cx="56" cy={index * 100 + 55} r="12" />
++                      <line
++                        x1="68"
++                        y1={index * 100 + 55}
++                        x2="892"
++                        y2={index * 100 + 55}
++                        markerEnd={`url(#${arrow})`}
++                      />
++                      <circle cx="908" cy={index * 100 + 55} r="12" />
++                      <text x="24" y={index * 100 + 24}>
++                        主体 {index + 1}
++                      </text>
++                      <text x="860" y={index * 100 + 24}>
++                        对象 {index + 1}
++                      </text>
++                      <text x="200" y={index * 100 + 42}>
++                        {Array.from(edge.predicate).slice(0, 64).join('')}
++                        {Array.from(edge.predicate).length > 64 ? '…' : ''}
++                      </text>
++                    </g>
++                  ))}
++                </svg>
++              </div>
++              <ol className="typed-query-relation-evidence">
++                {graph.edges.map((edge) => (
++                  <li
++                    key={JSON.stringify([edge.subject, edge.predicate, edge.object])}
++                    data-subject={edge.subject}
++                    data-predicate={edge.predicate}
++                    data-object={edge.object}
++                  >
++                    <p>
++                      主体 <code>{edge.subject}</code> → 谓词 <code>{edge.predicate}</code> → 对象{' '}
++                      <code>{edge.object}</code>
++                    </p>
++                    <ul>
++                      {edge.supports.slice(0, graphLimits.visibleSupports).map((support) => (
++                        <li key={support.id} data-fact-id={support.id}>
++                          事实记录 <code>{support.id}</code>；
++                          {support.owner === null ? (
++                            '人工来源'
++                          ) : (
++                            <>
++                              映射 <code>{sourceText(support.owner)}</code>，源行{' '}
++                              <code>{sourceText(support.source_row!)}</code>。
++                              {support.object !== support.managed_value && (
++                                <p>
++                                  当前值与映射生成值不同；边使用当前实际对象，生成值仅供溯源：
++                                  <code>{sourceText(support.managed_value!)}</code>。
++                                </p>
++                              )}
++                              {support.mappingState === null ? (
++                                <p>映射来源状态未提供。</p>
++                              ) : (
++                                <>
++                                  <p>
++                                    映射生成版本 {support.mappingState.generatedVersion}；来源状态
++                                    {support.mappingState.stale.length
++                                      ? '有过期记录'
++                                      : '未标记过期'}
++                                    ，不据此删除实际断言。
++                                  </p>
++                                  {support.mappingState.stale.slice(0, 8).map((reason, index) => (
++                                    <p key={index}>
++                                      {reason.code} · {sourceText(reason.dependency)} ·{' '}
++                                      {reason.before} → {reason.after}
++                                    </p>
++                                  ))}
++                                  {support.mappingState.stale.length > 8 && (
++                                    <p>其余来源状态未展开。</p>
++                                  )}
++                                </>
++                              )}
++                            </>
++                          )}
++                        </li>
++                      ))}
++                    </ul>
++                    {edge.supports.length > graphLimits.visibleSupports && (
++                      <p>
++                        另有 {edge.supports.length - graphLimits.visibleSupports} 个来源记录未展开。
++                      </p>
++                    )}
++                  </li>
++                ))}
++              </ol>
++            </>
++          )}
++          <p>
++            同一 SPO 的多个来源合为一条边，原记录 ID 保留；墓碑不成边。输入中 {graph.omittedRecords}{' '}
++            条字面量、超出本图 IRI 支持范围或来源字段不完整的记录未作为对象关系显示。
++          </p>
++        </>
++      )}
++    </section>
++  )
++}
++
+ function RowConnections({
+   page,
+   descriptor,
++  requested,
++  source,
++  blocked,
+ }: {
+   page: DisplayRowsPage
+   descriptor: DisplayDescriptor
++  requested: NonNullable<QueryResultPanelProps['rows']>['requested']
++  source: unknown
++  blocked: boolean
+ }) {
+   const [selectedKey, setSelectedKey] = useState('')
+   const [windowIndex, setWindowIndex] = useState(0)
+@@ -38,75 +225,88 @@ function RowConnections({
+   const currentWindow = Math.min(windowIndex, Math.max(0, Math.ceil(connections.length / 16) - 1))
+   const visible = connections.slice(currentWindow * 16, (currentWindow + 1) * 16)
+   return (
+-    <section className="typed-query-graph" aria-label="当前页 IRI 关联">
+-      <h3>当前页 IRI 关联</h3>
+-      <label>
+-        查看结果行
+-        <select
+-          value={row.rowKey}
+-          onChange={(event) => {
+-            setSelectedKey(event.target.value)
+-            setWindowIndex(0)
+-          }}
+-        >
+-          {page.rows.map((value) => (
+-            <option key={value.rowKey} value={value.rowKey}>
+-              第 {value.index + 1} 行
+-            </option>
+-          ))}
+-        </select>
+-      </label>
+-      <p>连线表示结果行包含该列的 IRI 单元格，不推断本体关系。字面量不作为 IRI 节点。</p>
+-      {visible.length === 0 ? (
+-        <p>此行没有 IRI 单元格。</p>
+-      ) : (
+-        <>
+-          <svg
+-            viewBox={`0 0 640 ${Math.max(100, visible.length * 60)}`}
+-            role="img"
+-            aria-label={`第 ${row.index + 1} 行的 IRI 关联示意`}
++    <>
++      <section className="typed-query-graph" aria-label="当前页 IRI 关联">
++        <h3>当前页 IRI 关联</h3>
++        <label>
++          查看结果行
++          <select
++            value={row.rowKey}
++            onChange={(event) => {
++              setSelectedKey(event.target.value)
++              setWindowIndex(0)
++            }}
+           >
+-            <title>结果行与实际 IRI 单元格的关联；完整 IRI 列在图后</title>
+-            <circle cx="72" cy="40" r="24" />
+-            <text x="72" y="44" textAnchor="middle">
+-              {row.index + 1}
+-            </text>
+-            {visible.map((connection, index) => (
+-              <g key={currentWindow * 16 + index}>
+-                <line x1="96" y1="40" x2="400" y2={30 + index * 60} />
+-                <circle cx="412" cy={30 + index * 60} r="8" />
+-                <text x="180" y={22 + index * 60}>
+-                  {Array.from(connection.column).slice(0, 24).join('')}
+-                </text>
+-                <text x="432" y={34 + index * 60}>
+-                  IRI {currentWindow * 16 + index + 1}
+-                </text>
+-              </g>
+-            ))}
+-          </svg>
+-          <p>
+-            图中显示第 {currentWindow * 16 + 1}–{currentWindow * 16 + visible.length} 个 IRI
+-            关联，共 {connections.length} 个。
+-          </p>
+-          <ul>
+-            {visible.map((connection, index) => (
+-              <li key={index}>
+-                <strong>{connection.column}</strong>：<code>{connection.iri}</code>
+-              </li>
++            {page.rows.map((value) => (
++              <option key={value.rowKey} value={value.rowKey}>
++                第 {value.index + 1} 行
++              </option>
+             ))}
+-          </ul>
+-          <button disabled={currentWindow === 0} onClick={() => setWindowIndex(currentWindow - 1)}>
+-            前一组关联
+-          </button>
+-          <button
+-            disabled={(currentWindow + 1) * 16 >= connections.length}
+-            onClick={() => setWindowIndex(currentWindow + 1)}
+-          >
+-            后一组关联
+-          </button>
+-        </>
+-      )}
+-    </section>
++          </select>
++        </label>
++        <p>连线表示结果行包含该列的 IRI 单元格，不推断本体关系。字面量不作为 IRI 节点。</p>
++        {visible.length === 0 ? (
++          <p>此行没有 IRI 单元格。</p>
++        ) : (
++          <>
++            <svg
++              viewBox={`0 0 640 ${Math.max(100, visible.length * 60)}`}
++              role="img"
++              aria-label={`第 ${row.index + 1} 行的 IRI 关联示意`}
++            >
++              <title>结果行与实际 IRI 单元格的关联；完整 IRI 列在图后</title>
++              <circle cx="72" cy="40" r="24" />
++              <text x="72" y="44" textAnchor="middle">
++                {row.index + 1}
++              </text>
++              {visible.map((connection, index) => (
++                <g key={currentWindow * 16 + index}>
++                  <line x1="96" y1="40" x2="400" y2={30 + index * 60} />
++                  <circle cx="412" cy={30 + index * 60} r="8" />
++                  <text x="180" y={22 + index * 60}>
++                    {Array.from(connection.column).slice(0, 24).join('')}
++                  </text>
++                  <text x="432" y={34 + index * 60}>
++                    IRI {currentWindow * 16 + index + 1}
++                  </text>
++                </g>
++              ))}
++            </svg>
++            <p>
++              图中显示第 {currentWindow * 16 + 1}–{currentWindow * 16 + visible.length} 个 IRI
++              关联，共 {connections.length} 个。
++            </p>
++            <ul>
++              {visible.map((connection, index) => (
++                <li key={index}>
++                  <strong>{connection.column}</strong>：<code>{connection.iri}</code>
++                </li>
++              ))}
++            </ul>
++            <button
++              disabled={currentWindow === 0}
++              onClick={() => setWindowIndex(currentWindow - 1)}
++            >
++              前一组关联
++            </button>
++            <button
++              disabled={(currentWindow + 1) * 16 >= connections.length}
++              onClick={() => setWindowIndex(currentWindow + 1)}
++            >
++              后一组关联
++            </button>
++          </>
++        )}
++      </section>
++      <ActualRelations
++        page={page}
++        descriptor={descriptor}
++        requested={requested}
++        source={source}
++        rowKey={row.rowKey}
++        blocked={blocked}
++      />
++    </>
+   )
+ }
+ 
+@@ -342,7 +542,13 @@ export function QueryResultPanel(props: QueryResultPanelProps) {
+                   >
+                     下一页结果
+                   </button>
+-                  <RowConnections page={rows} descriptor={descriptor} />
++                  <RowConnections
++                    page={rows}
++                    descriptor={descriptor}
++                    requested={props.rows!.requested}
++                    source={props.graphSource}
++                    blocked={!!props.rowsLoading || failureInvalid}
++                  />
+                 </>
+               )}
+             </>
+diff --git a/apps/desktop/src/renderer/src/query/QueryWorkspacePage.tsx b/apps/desktop/src/renderer/src/query/QueryWorkspacePage.tsx
+index 11caf9e4..ee95a5c2 100644
+--- a/apps/desktop/src/renderer/src/query/QueryWorkspacePage.tsx
++++ b/apps/desktop/src/renderer/src/query/QueryWorkspacePage.tsx
+@@ -719,6 +719,7 @@ function WorkspaceDocument({
+           <QueryResultPanel
+             key={`${resultLane}:${result.resultId}`}
+             {...result}
++            graphSource={state.read}
+             rowsLoading={state.busy}
+             textLoading={state.busy}
+             onNextRows={(request) =>
+diff --git a/apps/desktop/src/renderer/src/query/result-graph.ts b/apps/desktop/src/renderer/src/query/result-graph.ts
+new file mode 100644
+index 00000000..2ccec82a
+--- /dev/null
++++ b/apps/desktop/src/renderer/src/query/result-graph.ts
+@@ -0,0 +1,145 @@
++import { validateBusiness3 } from '../../../../../../packages/contracts/src/v2'
++import type { MainlineProjectReadDTO } from './api002-source-types'
++import { iriSchema } from './draft'
++import { displayRows, type DisplayDescriptor, type DisplayRowsPage } from './typed-results'
++import type { QueryResultPanelProps } from './typed-result-panel-props'
++
++// Presentation limits only; no query, transport, or execution budget is changed.
++export const graphLimits = { anchors: 16, edges: 24, visibleSupports: 8 } as const
++type Fact = MainlineProjectReadDTO['domain']['state']['facts'][number]
++export type GraphSupport = Fact & {
++  mappingState: MainlineProjectReadDTO['domain']['state']['mappingState'][string] | null
++}
++export type GraphEdge = {
++  subject: string
++  predicate: string
++  object: string
++  supports: GraphSupport[]
++}
++export type ResultGraph =
++  | { state: 'unavailable'; reason: string }
++  | {
++      state: 'ready'
++      snapshotId: string
++      revision: number
++      rowIndex: number
++      anchors: string[]
++      omittedAnchors: number
++      edges: GraphEdge[]
++      totalEdges: number
++      omittedRecords: number
++    }
++const unavailable = (reason: string): ResultGraph => ({ state: 'unavailable', reason })
++const iriObject = (raw: string): string | undefined => {
++  if (!raw.startsWith('<') || !raw.endsWith('>')) return undefined
++  const iri = raw.slice(1, -1)
++  return iriSchema.safeParse(iri).success ? iri : undefined
++}
++
++/** One hop around a selected, verified result row. Only actual same-input facts
++ * supply SPO edges. Metadata is provenance, never another triple or a target.
++ */
++export function buildResultGraph(
++  source: unknown,
++  descriptor: DisplayDescriptor,
++  page: DisplayRowsPage,
++  requested: NonNullable<QueryResultPanelProps['rows']>['requested'],
++  rowKey: string,
++): ResultGraph {
++  if (
++    descriptor.identity.scope !== 'asserted' ||
++    descriptor.identity.inputSelection !== 'current' ||
++    descriptor.metadata.state !== 'current' ||
++    descriptor.metadata.staleReason.length !== 0 ||
++    descriptor.metadata.historicalSelectionRequired ||
++    descriptor.metadata.payloadStatus !== 'available'
++  )
++    return unavailable('历史或过期结果尚无对应快照的关系事实来源；不使用当前项目为它补边。')
++  if (!validateBusiness3('result_project.read', source))
++    return unavailable('尚未取得可核对的项目事实来源；请读取当前项目。')
++  const read = source as MainlineProjectReadDTO
++  if (
++    read.projectId !== descriptor.identity.projectId ||
++    read.workspace.projectId !== descriptor.identity.projectId ||
++    read.inputSnapshotId !== descriptor.identity.inputSnapshotId ||
++    read.workspace.inputSnapshotId !== descriptor.identity.inputSnapshotId ||
++    read.domain.projectRevision !== descriptor.identity.inputProjectRevision ||
++    read.workspace.domainRevision !== descriptor.identity.inputProjectRevision ||
++    read.workspace.draft.editor !== 'query-workspace-v1' ||
++    Object.entries(descriptor.metadata.dependencyVector).some(
++      ([key, version]) => read.domain.dependencyVector[key] !== version,
++    )
++  )
++    return unavailable('项目事实来源与此结果的项目、快照或版本不一致，未绘制关系。')
++  let rows: DisplayRowsPage
++  try {
++    rows = displayRows(page, descriptor, requested)
++  } catch {
++    return unavailable('结果页尚未通过身份与分页核对，未绘制关系。')
++  }
++  const row = rows.rows.find((value) => value.rowKey === rowKey)
++  if (!row) return unavailable('所选行不在已核对的当前结果页中，未绘制关系。')
++  const candidates = [
++    ...new Set(
++      row.cells.flatMap((cell) =>
++        cell?.kind === 'iri' && cell.n3 === `<${cell.iri}>` && iriSchema.safeParse(cell.iri).success
++          ? [cell.iri]
++          : [],
++      ),
++    ),
++  ]
++  const anchors = candidates.slice(0, graphLimits.anchors)
++  const anchorSet = new Set(anchors)
++  const facts = read.domain.state.facts
++  if (new Set(facts.map((fact) => fact.id)).size !== facts.length)
++    return unavailable('事实来源含重复记录身份，未绘制关系。')
++  const edges = new Map<string, GraphEdge>()
++  let omittedRecords = 0
++  for (const fact of facts) {
++    if (fact.object === null) continue // Tombstones are provenance, never assertions.
++    const object = iriObject(fact.object)
++    if (
++      !object ||
++      !iriSchema.safeParse(fact.subject).success ||
++      !iriSchema.safeParse(fact.predicate).success
++    ) {
++      omittedRecords++
++      continue
++    }
++    if (!anchorSet.has(fact.subject) && !anchorSet.has(object)) continue
++    const manual = fact.owner === null && fact.source_row === null && fact.managed_value === null
++    const mapped =
++      typeof fact.owner === 'string' &&
++      fact.owner.length > 0 &&
++      typeof fact.source_row === 'string' &&
++      fact.source_row.length > 0 &&
++      typeof fact.managed_value === 'string' &&
++      fact.managed_value.length > 0
++    if (!manual && !mapped) {
++      omittedRecords++
++      continue
++    }
++    const key = JSON.stringify([fact.subject, fact.predicate, object])
++    let edge = edges.get(key)
++    if (!edge) {
++      edge = { subject: fact.subject, predicate: fact.predicate, object, supports: [] }
++      edges.set(key, edge)
++    }
++    edge.supports.push({
++      ...fact,
++      mappingState:
++        fact.owner === null ? null : (read.domain.state.mappingState[fact.owner] ?? null),
++    })
++  }
++  return {
++    state: 'ready',
++    snapshotId: read.inputSnapshotId,
++    revision: read.domain.projectRevision,
++    rowIndex: row.index,
++    anchors,
++    omittedAnchors: candidates.length - anchors.length,
++    edges: [...edges.values()].slice(0, graphLimits.edges),
++    totalEdges: edges.size,
++    omittedRecords,
++  }
++}
+diff --git a/apps/desktop/src/renderer/src/query/typed-result-panel-props.ts b/apps/desktop/src/renderer/src/query/typed-result-panel-props.ts
+index 72aa6f41..c9bb8c43 100644
+--- a/apps/desktop/src/renderer/src/query/typed-result-panel-props.ts
++++ b/apps/desktop/src/renderer/src/query/typed-result-panel-props.ts
+@@ -3,6 +3,8 @@ export interface QueryResultPanelProps {
+   projectId: string
+   resultId: string
+   descriptor: unknown
++  /** Existing project.read only; the graph must recheck the result input binding. */
++  graphSource?: unknown
+   rows?: {
+     value: unknown
+     requested: {
+diff --git a/apps/desktop/src/renderer/src/query/typed-results.css b/apps/desktop/src/renderer/src/query/typed-results.css
+index 1f1e5de2..443860c3 100644
+--- a/apps/desktop/src/renderer/src/query/typed-results.css
++++ b/apps/desktop/src/renderer/src/query/typed-results.css
+@@ -56,3 +56,28 @@
+ .typed-query-results button {
+   margin: 0.25rem;
+ }
++.typed-query-actual-graph {
++  border-top: 1px solid currentColor;
++  padding-top: 1rem;
++}
++.typed-query-relation-canvas {
++  overflow: auto;
++  max-height: 30rem;
++}
++.typed-query-relation-canvas svg {
++  width: 100%;
++  min-width: 42rem;
++  display: block;
++}
++.typed-query-relation-canvas circle,
++.typed-query-relation-canvas line {
++  stroke: currentColor;
++  fill: none;
++}
++.typed-query-relation-canvas path,
++.typed-query-relation-canvas text {
++  fill: currentColor;
++}
++.typed-query-relation-evidence > li {
++  padding-block: 0.5rem;
++}
+diff --git a/apps/desktop/src/renderer/src/query/typed-results.ts b/apps/desktop/src/renderer/src/query/typed-results.ts
+index d195e2dd..eb1eff99 100644
+--- a/apps/desktop/src/renderer/src/query/typed-results.ts
++++ b/apps/desktop/src/renderer/src/query/typed-results.ts
+@@ -39,6 +39,7 @@ type DisplayMetadata = {
+   inputProjectRevision: number
+   scope: string
+   parametersHash: string
++  dependencyVector: Record<string, number>
+   implementation: z.infer<typeof implementation>
+   state: 'current' | 'stale' | 'historical'
+   staleReason: { code: string; dependency: string; before: number; after: number }[]
+diff --git a/tests/e2e/t04-query-variants.spec.ts b/tests/e2e/t04-query-variants.spec.ts
+index c1114b2b..9f2c0bf2 100644
+--- a/tests/e2e/t04-query-variants.spec.ts
++++ b/tests/e2e/t04-query-variants.spec.ts
+@@ -1343,3 +1343,116 @@ test('T04 Q-02 closes A01 through T02 UI, preserves stale history and reopens a
+     }
+   }
+ })
++
++test('T04 same-input local graph uses actual directed assertions and withholds stale-source edges', async () => {
++  await withDesktop(async (page, evidence) => {
++    const { workspace, initial } = await setup(page, 'T04 同输入局部关系图')
++    const id = 'e2e-authoritative-local-graph'
++    const alarm = 'urn:ontolearn:learning:alarm/A01'
++    const alarmType = 'urn:ontolearn:learning:Alarm'
++    const alarmPredicate = 'urn:ontolearn:learning:alarm'
++    const text =
++      'PREFIX l: <urn:ontolearn:learning:>\n' +
++      'SELECT ?alarm WHERE { ?equipment a l:Equipment ; l:alarm ?alarm . ' +
++      '?alarm l:level "High" ; l:status "Open" . } ORDER BY ?alarm'
++    const draft = draftFor('真实实例断言关系', text)
++    const saved = await saveDefinition(page, workspace, id, draft)
++    const job = await execute(page, workspace, saved.job.jobId)
++    const lane = resultLane(workspace),
++      panel = resultPanel(lane)
++    await button(lane, '读取 SELECT 结果第一页').click()
++    const graph = panel.getByRole('region', { name: '结果输入的局部关系图', exact: true })
++    await expect(graph).toBeVisible()
++    await expect(graph.locator('code').first()).toHaveText(saved.after.inputSnapshotId)
++    await expect(graph).toContainText('项目版本 2，断言事实')
++    const expected = [
++      [alarm, typePredicate, alarmType],
++      [equipment[0], alarmPredicate, alarm],
++    ].sort((a, b) => canonical(a).localeCompare(canonical(b)))
++    const actual = await graph
++      .locator('svg g[data-predicate]')
++      .evaluateAll((nodes) =>
++        nodes.map((node) =>
++          ['data-subject', 'data-predicate', 'data-object'].map((key) => node.getAttribute(key)),
++        ),
++      )
++    expect(actual.sort((a, b) => canonical(a).localeCompare(canonical(b)))).toEqual(expected)
++    const facts = saved.after.domain.state.facts.filter((fact) =>
++      expected.some(
++        ([subject, predicate, object]) =>
++          fact.subject === subject && fact.predicate === predicate && fact.object === `<${object}>`,
++      ),
++    )
++    expect(facts).toHaveLength(2)
++    expect(
++      facts
++        .map((fact) => [fact.subject, fact.predicate, fact.object])
++        .sort((a, b) => canonical(a).localeCompare(canonical(b))),
++    ).toEqual(expected.map(([subject, predicate, object]) => [subject, predicate, `<${object}>`]))
++    expect(
++      facts.every(
++        (fact) => fact.owner === null && fact.source_row === null && fact.managed_value === null,
++      ),
++    ).toBe(true)
++    expect(
++      await graph
++        .locator('li[data-fact-id]')
++        .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-fact-id')).sort()),
++    ).toEqual(facts.map((fact) => fact.id).sort())
++    await expect(graph).toContainText('人工来源')
++    await expect(
++      graph.getByRole('img', { name: '来自同快照事实记录的有向关系', exact: true }),
++    ).toBeVisible()
++    await expect(panel.getByRole('region', { name: '当前页 IRI 关联', exact: true })).toContainText(
++      '不推断本体关系',
++    )
++    const binding = await readBinding(page, job)
++    assertBinding(binding, job, draft, id, 2)
++    await assertUiRows(
++      panel,
++      ['alarm'],
++      [[alarm]],
++      0,
++      job.resultRef!.resultId,
++      binding.descriptor.identity.payloadSha256,
++    )
++    await downloadCsv(page, panel, '导出当前页 CSV', csv(['alarm'], [[alarm]]))
++
++    // A query-definition edit changes the input namespace. The old result remains
++    // readable, but the current read must never supply edges to its stale graph.
++    const changed = { ...draft, description: '只改说明，旧结果保留原输入；不能借当前库补旧图。' }
++    const edited = await saveDefinition(page, workspace, id, changed, {
++      draft,
++      previousJobId: job.jobId,
++    })
++    const historyLane = await restore(page, workspace, job)
++    const historyPanel = resultPanel(historyLane)
++    await button(historyLane, '读取 SELECT 结果第一页').click()
++    const heldGraph = historyPanel.getByRole('region', {
++      name: '结果输入的局部关系图',
++      exact: true,
++    })
++    await expect(historyPanel).toContainText(`QUERY_CHANGED · query:${id} · 1 → 2`)
++    await expect(heldGraph).toContainText('历史或过期结果尚无对应快照的关系事实来源')
++    await expect(
++      heldGraph.getByRole('img', { name: '来自同快照事实记录的有向关系', exact: true }),
++    ).toHaveCount(0)
++    await assertUiRows(
++      historyPanel,
++      ['alarm'],
++      [[alarm]],
++      0,
++      job.resultRef!.resultId,
++      binding.descriptor.identity.payloadSha256,
++    )
++    evidence.initial = initial
++    evidence.saved = saved
++    evidence.originalJob = job
++    evidence.sameInputBinding = binding
++    evidence.expectedDirectedTriples = expected
++    evidence.sourceFactRecords = facts
++    evidence.edited = edited
++    evidence.boundary =
++      'Actual same-input manual asserted graph and stale hold via real UI; mapped behavior is consumer-unit evidence only. No inferred edge, extra write API, historical graph source or model proof.'
++  })
++})
+diff --git a/tests/unit/t04-result-graph.test.ts b/tests/unit/t04-result-graph.test.ts
+new file mode 100644
+index 00000000..ff6994aa
+--- /dev/null
++++ b/tests/unit/t04-result-graph.test.ts
+@@ -0,0 +1,349 @@
++import { createHash } from 'node:crypto'
++import { createElement, type ComponentType } from 'react'
++import { renderToStaticMarkup } from 'react-dom/server'
++import { describe, expect, it } from 'vitest'
++import fixtures from '../../packages/contracts/v2/fixtures.json'
++import { validateBusiness3 } from '../../packages/contracts/src/v2'
++import type { MainlineProjectReadDTO } from '../../apps/desktop/src/renderer/src/query/api002-source-types'
++import {
++  buildResultGraph,
++  graphLimits,
++} from '../../apps/desktop/src/renderer/src/query/result-graph'
++import {
++  displayDescriptor,
++  type DisplayDescriptor,
++  type DisplayRowsPage,
++} from '../../apps/desktop/src/renderer/src/query/typed-results'
++import type { QueryResultPanelProps } from '../../apps/desktop/src/renderer/src/query/typed-result-panel-props'
++
++// Consumer fixtures + real TSX SSR only; mapped cases are not physical mapping runs.
++const panelModule = '../../apps/desktop/src/renderer/src/query/QueryResultPanel'
++const { QueryResultPanel }: { QueryResultPanel: ComponentType<QueryResultPanelProps> } =
++  await import(panelModule)
++const hash = (s: string) => createHash('sha256').update(s).digest('hex')
++const A = 'urn:test:A',
++  B = 'urn:test:B',
++  C = 'urn:test:C',
++  D = 'urn:test:D',
++  E = 'urn:test:E'
++const P = 'urn:test:links',
++  Q = 'urn:test:other'
++type Fact = MainlineProjectReadDTO['domain']['state']['facts'][number]
++const fact = (id: number, subject: string, predicate: string, object: string | null): Fact => ({
++  id: hash('stable-record-' + id),
++  subject,
++  predicate,
++  object,
++  owner: null,
++  source_row: null,
++  managed_value: null,
++})
++function setup() {
++  const metadata = structuredClone(
++    (
++      fixtures.cases.find((x) => x.name === 'response result.get')!.value as unknown as {
++        result: DisplayDescriptor['metadata']
++      }
++    ).result,
++  )
++  const descriptor: DisplayDescriptor = {
++    identity: {
++      projectId: metadata.projectId,
++      resultId: metadata.resultId,
++      jobId: metadata.jobId,
++      inputSnapshotId: metadata.inputSnapshotId,
++      inputProjectRevision: 1,
++      scope: 'asserted',
++      definitionId: metadata.definitionId,
++      parametersHash: metadata.parametersHash,
++      implementation: metadata.implementation,
++      payloadSha256: hash('payload'),
++      definitionSha256: hash('definition'),
++      inputSelection: 'current',
++      projectionVersion: 1,
++      lengthPolicyId: 'query-presentation-scalars-v1',
++    },
++    descriptorRef: '40000000-0000-4000-8000-000000000001',
++    metadata,
++    executedText: { sha256: hash('text'), utf8Bytes: 4, unicodeScalars: 4, utf16Units: 4 },
++    query: {
++      kind: 'SELECT',
++      rowCount: 1,
++      columns: [
++        { index: 0, name: 's' },
++        { index: 1, name: 'p' },
++      ],
++    },
++  }
++  const source: MainlineProjectReadDTO = {
++    readVersion: 1,
++    projectId: metadata.projectId,
++    inputSnapshotId: metadata.inputSnapshotId,
++    workspace: {
++      workspaceVersion: 1,
++      projectId: metadata.projectId,
++      inputSnapshotId: metadata.inputSnapshotId,
++      domainRevision: 1,
++      metadataVersion: 1,
++      metadata: {
++        name: 'fixture',
++        templateRef: null,
++        archived: false,
++        mode: 'guided',
++        origin: 'created',
++      },
++      operationSequence: 1,
++      checkpointRef: hash('checkpoint'),
++      draft: { editor: 'query-workspace-v1', state: 'missing' },
++    },
++    domain: {
++      projectRevision: 1,
++      dependencyVector: { 'facts:asserted': 1 },
++      state: {
++        definitions: [],
++        facts: [fact(1, A, P, `<${B}>`), fact(2, B, Q, `<${C}>`), fact(3, C, P, `<${E}>`)],
++        mappingState: {},
++      },
++    },
++  }
++  const rowKey = hash('original-row')
++  const page: DisplayRowsPage = {
++    identity: structuredClone(descriptor.identity),
++    kind: 'rows',
++    order: 'query-index:asc',
++    rows: [
++      {
++        index: 0,
++        rowKey,
++        cells: [
++          { kind: 'iri', iri: B, n3: `<${B}>` },
++          { kind: 'iri', iri: D, n3: `<${D}>` },
++        ],
++      },
++    ],
++    nextCursor: null,
++  }
++  const requested = {
++    descriptorRef: descriptor.descriptorRef,
++    cursor: null as string | null,
++    startIndex: 0,
++    pageSize: 20,
++  }
++  expect(validateBusiness3('result_project.read', source)).toBe(true)
++  expect(
++    displayDescriptor(descriptor, { projectId: metadata.projectId, resultId: metadata.resultId }),
++  ).toEqual(descriptor)
++  const graph = () => buildResultGraph(source, descriptor, page, requested, rowKey)
++  const markup = (patch: Partial<QueryResultPanelProps> = {}) =>
++    renderToStaticMarkup(
++      createElement(QueryResultPanel, {
++        projectId: metadata.projectId,
++        resultId: metadata.resultId,
++        descriptor,
++        graphSource: source,
++        rows: { value: page, requested },
++        ...patch,
++      }),
++    )
++  return { source, descriptor, page, requested, rowKey, graph, markup }
++}
++const ready = (value: ReturnType<typeof buildResultGraph>) => {
++  expect(value.state).toBe('ready')
++  if (value.state !== 'ready') throw new Error(value.reason)
++  return value
++}
++
++describe('same-input authoritative one-hop relationship graph', () => {
++  it('keeps actual incoming/outgoing direction and predicate, never cooccurrence or transitive guesses', () => {
++    const x = setup(),
++      g = ready(x.graph())
++    expect(g.edges.map(({ subject, predicate, object }) => [subject, predicate, object])).toEqual([
++      [A, P, B],
++      [B, Q, C],
++    ])
++    expect(g.edges.map((edge) => edge.supports.map((s) => s.id))).toEqual([
++      [hash('stable-record-1')],
++      [hash('stable-record-2')],
++    ])
++    expect(g.anchors).toEqual([B, D])
++    expect(g.snapshotId).toBe(x.source.inputSnapshotId)
++    expect(g.revision).toBe(1)
++    const markup = x.markup()
++    expect(markup).toContain('aria-label="当前页 IRI 关联"')
++    expect(markup).toContain('aria-label="来自同快照事实记录的有向关系"')
++    expect(markup).toContain(`data-subject="${A}" data-predicate="${P}" data-object="${B}"`)
++    expect(markup).toContain(hash('stable-record-1'))
++    expect(markup).not.toContain(`data-subject="${B}" data-predicate="${D}"`)
++  })
++
++  it('shows legitimate mapped actual SPO with original identity and drift provenance, not the managed target', () => {
++    const x = setup()
++    x.page.rows[0].cells[0] = { kind: 'iri', iri: A, n3: `<${A}>` }
++    x.source.domain.state.facts = [
++      {
++        ...fact(1, A, P, `<${C}>`),
++        owner: 'mapping-M',
++        source_row: 'row-7',
++        managed_value: `<${B}>`,
++      },
++    ]
++    x.source.domain.state.mappingState['mapping-M'] = {
++      generatedVersion: 1,
++      stale: [
++        { code: 'MAPPING_INPUT_CHANGED', dependency: 'mapping:mapping-M', before: 1, after: 2 },
++      ],
++    }
++    const g = ready(x.graph())
++    expect(g.edges.map(({ subject, predicate, object }) => [subject, predicate, object])).toEqual([
++      [A, P, C],
++    ])
++    expect(g.edges[0].supports[0]).toMatchObject({
++      id: hash('stable-record-1'),
++      owner: 'mapping-M',
++      source_row: 'row-7',
++      managed_value: `<${B}>`,
++    })
++    expect(x.markup()).toContain('当前值与映射生成值不同')
++    expect(x.markup()).toContain('MAPPING_INPUT_CHANGED')
++    delete x.source.domain.state.mappingState['mapping-M']
++    expect(ready(x.graph()).edges).toHaveLength(1)
++    expect(x.markup()).toContain('映射来源状态未提供')
++  })
++
++  it('merges identical SPO without erasing multiple actual provenance records', () => {
++    const x = setup()
++    x.source.domain.state.facts.push({
++      ...fact(8, A, P, `<${B}>`),
++      owner: 'M',
++      source_row: 'r',
++      managed_value: `<${B}>`,
++    })
++    expect(ready(x.graph()).edges[0].supports.map((s) => s.id)).toEqual([
++      hash('stable-record-1'),
++      hash('stable-record-8'),
++    ])
++    expect(ready(x.graph()).totalEdges).toBe(2)
++  })
++
++  it('never turns tombstones, typed literals, metadata, or incomplete mapped provenance into edges', () => {
++    const x = setup()
++    x.source.domain.state.facts = [
++      { ...fact(1, B, P, null), owner: 'M', source_row: 'r', managed_value: `<${C}>` },
++      fact(2, B, P, `"${C}"^^<urn:test:Datatype>`),
++      { ...fact(3, B, P, `<${C}>`), owner: 'M', source_row: null, managed_value: `<${C}>` },
++      fact(4, B, P, `<${C}> <${D}>`),
++    ]
++    expect(ready(x.graph()).edges).toEqual([])
++    expect(x.markup()).toContain('不表示该快照不存在关系')
++    expect(x.markup()).not.toContain('aria-label="来自同快照事实记录的有向关系"')
++  })
++
++  it('requires coherent source project, snapshot, revision, editor and dependency vector bindings', () => {
++    for (const field of [
++      'project',
++      'workspaceProject',
++      'snapshot',
++      'workspaceSnapshot',
++      'revision',
++      'workspaceRevision',
++      'editor',
++      'vector',
++    ]) {
++      const x = setup()
++      if (field === 'project') x.source.projectId = '50000000-0000-4000-8000-000000000001'
++      if (field === 'workspaceProject')
++        x.source.workspace.projectId = '50000000-0000-4000-8000-000000000001'
++      if (field === 'snapshot') x.source.inputSnapshotId = hash('wrong')
++      if (field === 'workspaceSnapshot') x.source.workspace.inputSnapshotId = hash('wrong')
++      if (field === 'revision') x.source.domain.projectRevision = 2
++      if (field === 'workspaceRevision') x.source.workspace.domainRevision = 2
++      if (field === 'editor') x.source.workspace.draft.editor = 'another-editor'
++      if (field === 'vector') x.source.domain.dependencyVector['facts:asserted'] = 2
++      expect(x.graph().state).toBe('unavailable')
++      expect(x.markup()).not.toContain('aria-label="来自同快照事实记录的有向关系"')
++    }
++  })
++
++  it('withholds historical/stale/evicted results even if an offered current source happens to match', () => {
++    for (const field of [
++      'historical-input',
++      'stale',
++      'historical',
++      'evicted',
++      'reason',
++      'selection-required',
++    ]) {
++      const x = setup()
++      if (field === 'historical-input') x.descriptor.identity.inputSelection = 'historical'
++      if (field === 'stale' || field === 'historical') x.descriptor.metadata.state = field
++      if (field === 'evicted') x.descriptor.metadata.payloadStatus = 'evicted'
++      if (field === 'reason')
++        x.descriptor.metadata.staleReason = [
++          { code: 'FACTS_CHANGED', dependency: 'facts:asserted', before: 1, after: 2 },
++        ]
++      if (field === 'selection-required') x.descriptor.metadata.historicalSelectionRequired = true
++      expect(x.graph().state).toBe('unavailable')
++    }
++  })
++
++  it('requires the selected row in the verified page and exact typed IRI/N3 agreement', () => {
++    const x = setup()
++    expect(
++      buildResultGraph(x.source, x.descriptor, x.page, x.requested, hash('foreign-row')).state,
++    ).toBe('unavailable')
++    x.page.identity.inputSnapshotId = hash('wrong')
++    expect(x.graph().state).toBe('unavailable')
++    x.page.identity = structuredClone(x.descriptor.identity)
++    x.page.rows[0].cells[0] = {
++      kind: 'literal',
++      lexical: B,
++      n3: `"${B}"`,
++      literalType: { kind: 'plain' },
++    }
++    expect(ready(x.graph()).edges).toEqual([])
++    x.page.rows[0].cells[0] = { kind: 'iri', iri: B, n3: `<${C}>` }
++    expect(ready(x.graph()).edges).toEqual([])
++  })
++
++  it('rejects malformed source and duplicate record identities instead of authenticating ids by SPO hashes', () => {
++    const x = setup()
++    for (const source of [undefined, null, { ...x.source, extra: true }])
++      expect(buildResultGraph(source, x.descriptor, x.page, x.requested, x.rowKey).state).toBe(
++        'unavailable',
++      )
++    x.source.domain.state.facts.push({ ...x.source.domain.state.facts[0], object: `<${C}>` })
++    expect(x.graph().state).toBe('unavailable')
++  })
++
++  it('bounds anchors and edges with explicit partial counts', () => {
++    const x = setup()
++    if (x.descriptor.query.kind !== 'SELECT') throw new Error('expected SELECT')
++    x.descriptor.query.columns = Array.from({ length: 18 }, (_, index) => ({
++      index,
++      name: 'column' + index,
++    }))
++    x.page.rows[0].cells = Array.from({ length: 18 }, (_, index) => ({
++      kind: 'iri' as const,
++      iri: 'urn:anchor:' + index,
++      n3: `<urn:anchor:${index}>`,
++    }))
++    x.source.domain.state.facts = Array.from({ length: 30 }, (_, index) =>
++      fact(index, 'urn:anchor:0', P, `<urn:neighbor:${index}>`),
++    )
++    const g = ready(x.graph())
++    expect(g.anchors).toHaveLength(graphLimits.anchors)
++    expect(g.omittedAnchors).toBe(2)
++    expect(g.edges).toHaveLength(graphLimits.edges)
++    expect(g.totalEdges).toBe(30)
++    expect(x.markup()).toContain('24 / 30 条')
++    expect(x.markup()).toContain('另有 2 个行内起点未显示')
++  })
++
++  it('withholds diagram during loading or a mismatched read failure while keeping the ordinary table', () => {
++    const x = setup()
++    for (const patch of [{ rowsLoading: true }, { readFailure: { invalid: true } }]) {
++      expect(x.markup(patch)).toContain('当前结果页')
++      expect(x.markup(patch)).not.toContain('aria-label="来自同快照事实记录的有向关系"')
++    }
++  })
++})
