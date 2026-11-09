@@ -40,8 +40,8 @@ ROOT 已于 2026-11-09T01:26:25Z 独立实采 `root-preformal-source-seal.json`�
 
 ## 修复内容（3 文件，+112/−5）
 
-- `apps/desktop/src/renderer/src/query/QueryResultPanel.tsx`（±4 行）：F-01 title 单表达式。
-- `apps/desktop/src/renderer/src/query/result-graph.ts`（+7/−1…共 8 行变动）：F-02 `Object.hasOwn` 自有属性查找；F-06 来源检查前移。
+- `apps/desktop/src/renderer/src/query/QueryResultPanel.tsx`（+1/−3）：F-01 title 单表达式。
+- `apps/desktop/src/renderer/src/query/result-graph.ts`（+6/−2，共 8 行变动）：F-02 `Object.hasOwn` 自有属性查找；F-06 来源检查前移。
 - `tests/unit/t04-result-graph.test.ts`（+105）：新增 4 例（14 例总数；原 10 例零删改）。首败说明：例 14 初版夹具误把锚 D 当非锚对象，首败日志 `graph-unit-silent-false.log` 如实保全，夹具修正（D→C）随候选一并提交。
 
 既有 E2E 零改动（票授权了增量但本批无需）；未改共享供给、依赖、锁、配置、timeout/retry/skip、控制门禁。
@@ -58,11 +58,11 @@ ROOT 已于 2026-11-09T01:26:25Z 独立实采 `root-preformal-source-seal.json`�
 | 同上（夹具修正后）                                                                          | 0，14/14，React title 错误 0 条 | `graph-unit-silent-false-run2.log`          |
 | `npx vitest run --silent=false tests/unit/t04-empty-results.test.ts`                        | 0，8/8                          | `empty-unit.log`                            |
 | `npm run verify:sources`                                                                    | 0                               | `verify-sources.log`                        |
-| `PATH=Node24:.venv npm run check`                                                           | 0（2022/2022 + engine 3798）    | `check-full.log`                            |
+| `PATH=Node24:.venv npm run check`                                                           | 0（2026/2026 + engine 3798）    | `check-full.log`                            |
 
 ### 第二段：正式同版验证（冻结候选 `cd470d39` 上运行）
 
-每命令独立日志 + 退出码文件 + 运行前后全 tracked 源字节 SHA256 与 index-mode 清单逐一比对候选基准（32/32 份签名文件全部相同，0 不匹配；lstat 实际磁盘 mode 复采与候选逐一相同，1443 文件全部 `-rw-r--r--`）。Node24 显式 PATH（`/Users/kyle/.nvm/versions/node/v24.15.0/bin`）+ 本树 `.venv`。
+签名绑定口径：**8 条命令 × 运行前/后各一份 × SHA256 字节与 index-mode 两类清单 = 32 份签名文件**，逐一比对候选基准全部相同、0 不匹配。时间序如实分列：图单测 / 空结果 / verify:sources 于 01:26:17Z 起运行（**早于** ROOT seal 01:26:25Z；其对候选的绑定由各自运行前后清单与候选基准逐一比对自证）；正式 full check（01:26:56Z 起）与 E2E（01:34:xxZ 起）在 ROOT seal 之后；lstat 实际磁盘 mode 为**后采**（正式 check 后、E2E 前），与候选逐一相同（1443 文件全部 `-rw-r--r--`）。Node24 显式 PATH（`/Users/kyle/.nvm/versions/node/v24.15.0/bin`）+ 本树 `.venv`。
 
 | 命令                                                                                                  | 退出码 | 结果                                                                                                                                        | 日志 / 退出码文件                                       |
 | ----------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
@@ -75,14 +75,14 @@ ROOT 已于 2026-11-09T01:26:25Z 独立实采 `root-preformal-source-seal.json`�
 | `npx playwright test …variants… --reporter=json`（补充 JSON 报告）                                    | 0      | stats `expected:6, unexpected:0, flaky:0`                                                                                                   | `e2e-variants-report.json` / `e2e-variants-json.exit`   |
 | `npx playwright test …workspace… --reporter=json`（补充 JSON 报告）                                   | 0      | stats `expected:1, unexpected:0, flaky:0`                                                                                                   | `e2e-workspace-report.json` / `e2e-workspace-json.exit` |
 
-附件保全：E2E 外部输出目录 `repair01/e2e-artifacts/{variants,workspace}{,-json}/`（全过无失败 → 按 `trace: retain-on-failure` 无 trace；workspace 保留 2 张业务截图 + `.last-run.json`×4；variants 保留 `.last-run.json`×2——实际产物照实盘点，不虚构）。构建产物 pin：`build-out-pin.txt`（`apps/desktop/out` 5 文件 SHA256，清单哈希 `192a08e1…`）。环境指纹：`environment.txt`（Darwin 27.0.0 arm64 / Apple M5 Pro / Node v24.15.0 / npm 11.12.1 / Python 3.12.12 / candidate `cd470d39` / tree `346fab4e` / porcelain 0）。
+附件保全（console 运行与 JSON 运行分列）：console（npm script）4 次运行的外部输出目录 `repair01/e2e-artifacts/{variants,workspace}{,-json}/` 共 4 个 `.last-run.json`，workspace 两次运行各保留 2 张业务截图（共 4 文件，两对字节相同）；JSON 报告两次运行（`--reporter=json`）内嵌业务附件共 **31 个**（variants 28 + workspace 3，全部带内嵌 body）。全过无失败 → 按 `trace: retain-on-failure` 无 trace。实际产物照实盘点，不虚构。构建产物 pin：`build-out-pin.txt`（`apps/desktop/out` 5 文件 SHA256，清单哈希 `192a08e1…`）。环境指纹：`environment.txt`（Darwin 27.0.0 arm64 / Apple M5 Pro / Node v24.15.0 / npm 11.12.1 / Python 3.12.12 / candidate `cd470d39` / tree `346fab4e` / porcelain 0）。
 
 ## 边界（继续有效，不得升级表述）
 
 1. 本批只覆盖 Q3 修复；不构成 FR-403 整体结算、发布通过、Windows/Linux 通过、打包态通过。
 2. 真实映射链证据层级不变（单测 / SSR 级）。
 3. 全部运行证据 darwin arm64 单机。
-4. Mimosa 本轮提交仍 `scanner_enobufs` 放行——不据此宣称安全；独立安全复核由 ROOT 安排的 MiniMax 复核承担（对新候选 `cd470d39`）。
+4. Mimosa：截至 bd05 已观察到 **cd470 与 bd05 两次**修复相关提交均 `scanner_enobufs` 兼容放行；后续提交的实际回执以当时 hook 输出为准——不据此宣称安全；独立安全复核由 ROOT 安排的 MiniMax 复核承担（对新候选 `cd470d39`）。
 5. 推送 / draft PR / 完整 CI / merge 仍待 ROOT 另票；本地分支未 push。
 
 ## 待 ROOT
