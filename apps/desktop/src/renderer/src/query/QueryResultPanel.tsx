@@ -103,9 +103,7 @@ function ActualRelations({
                       data-predicate={edge.predicate}
                       data-object={edge.object}
                     >
-                      <title>
-                        {edge.subject} → {edge.predicate} → {edge.object}
-                      </title>
+                      <title>{`${edge.subject} → ${edge.predicate} → ${edge.object}`}</title>
                       <circle cx="56" cy={index * 100 + 55} r="12" />
                       <line
                         x1="68"

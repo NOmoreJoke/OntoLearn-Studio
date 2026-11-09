@@ -346,4 +346,109 @@ describe('same-input authoritative one-hop relationship graph', () => {
       expect(x.markup(patch)).not.toContain('aria-label="来自同快照事实记录的有向关系"')
     }
   })
+
+  it('renders complete edge titles as single-expression SSR text with zero React title errors', () => {
+    const x = setup()
+    const errors: unknown[][] = []
+    const originalError = console.error
+    console.error = (...args: unknown[]) => {
+      errors.push(args)
+    }
+    let markup: string
+    try {
+      markup = x.markup()
+    } finally {
+      console.error = originalError
+    }
+    expect(markup).toContain(`<title>${A} → ${P} → ${B}</title>`)
+    expect(markup).toContain(`<title>${B} → ${Q} → ${C}</title>`)
+    expect(markup).not.toContain('<title></title>')
+    expect(errors).toEqual([])
+  })
+
+  it('takes mapping state from own properties only so inherited keys never reach the panel', () => {
+    const x = setup()
+    x.page.rows[0].cells[0] = { kind: 'iri', iri: A, n3: `<${A}>` }
+    x.source.domain.state.facts = [
+      {
+        ...fact(1, A, P, `<${C}>`),
+        owner: 'constructor',
+        source_row: 'row-1',
+        managed_value: `<${B}>`,
+      },
+      {
+        ...fact(2, A, Q, `<${D}>`),
+        owner: '__proto__',
+        source_row: 'row-2',
+        managed_value: `<${E}>`,
+      },
+    ]
+    expect(x.source.domain.state.mappingState).toEqual({})
+    expect(validateBusiness3('result_project.read', x.source)).toBe(true)
+    const g = ready(x.graph())
+    expect(g.edges.map(({ subject, predicate, object }) => [subject, predicate, object])).toEqual([
+      [A, P, C],
+      [A, Q, D],
+    ])
+    expect(g.edges.map((edge) => edge.supports.map((s) => s.mappingState))).toEqual([
+      [null],
+      [null],
+    ])
+    const markup = x.markup()
+    expect(markup).toContain('映射来源状态未提供')
+    expect(markup).toContain('当前结果页')
+  })
+
+  it('preserves contract-valid own mapping state for reserved names instead of blanket rejection', () => {
+    const x = setup()
+    x.page.rows[0].cells[0] = { kind: 'iri', iri: A, n3: `<${A}>` }
+    x.source.domain.state.facts = [
+      {
+        ...fact(1, A, P, `<${C}>`),
+        owner: 'constructor',
+        source_row: 'row-1',
+        managed_value: `<${B}>`,
+      },
+      {
+        ...fact(2, A, Q, `<${D}>`),
+        owner: '__proto__',
+        source_row: 'row-2',
+        managed_value: `<${E}>`,
+      },
+    ]
+    // JSON.parse creates own data properties even for '__proto__'; an object literal
+    // would set the prototype instead and fake the coverage.
+    x.source.domain.state.mappingState = JSON.parse(
+      '{"constructor":{"generatedVersion":3,"stale":[]},"__proto__":{"generatedVersion":4,"stale":[]}}',
+    )
+    expect(validateBusiness3('result_project.read', x.source)).toBe(true)
+    const g = ready(x.graph())
+    expect(g.edges.map((edge) => edge.supports.map((s) => s.mappingState))).toEqual([
+      [{ generatedVersion: 3, stale: [] }],
+      [{ generatedVersion: 4, stale: [] }],
+    ])
+    const markup = x.markup()
+    expect(markup).toContain('映射生成版本 3')
+    expect(markup).toContain('映射生成版本 4')
+    expect(markup).toContain('未标记过期')
+  })
+
+  it('counts omitted records uniformly over the whole input regardless of anchors', () => {
+    const x = setup()
+    x.source.domain.state.facts = [
+      fact(1, B, P, `<${C}>`),
+      { ...fact(2, B, Q, `<${D}>`), owner: 'M', source_row: null, managed_value: `<${D}>` },
+      { ...fact(3, E, P, `<${C}>`), owner: 'M', source_row: null, managed_value: `<${C}>` },
+      fact(4, E, Q, `<${C}>`),
+      fact(5, E, P, `"plain"^^<urn:test:Datatype>`),
+      fact(6, B, P, null),
+    ]
+    const g = ready(x.graph())
+    expect(g.edges.map(({ subject, predicate, object }) => [subject, predicate, object])).toEqual([
+      [B, P, C],
+    ])
+    expect(g.omittedRecords).toBe(3)
+    expect(x.markup()).toContain('输入中 3 条')
+    expect(x.markup()).not.toContain(`data-subject="${E}"`)
+  })
 })

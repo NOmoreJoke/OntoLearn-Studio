@@ -106,7 +106,6 @@ export function buildResultGraph(
       omittedRecords++
       continue
     }
-    if (!anchorSet.has(fact.subject) && !anchorSet.has(object)) continue
     const manual = fact.owner === null && fact.source_row === null && fact.managed_value === null
     const mapped =
       typeof fact.owner === 'string' &&
@@ -119,6 +118,7 @@ export function buildResultGraph(
       omittedRecords++
       continue
     }
+    if (!anchorSet.has(fact.subject) && !anchorSet.has(object)) continue
     const key = JSON.stringify([fact.subject, fact.predicate, object])
     let edge = edges.get(key)
     if (!edge) {
@@ -127,8 +127,12 @@ export function buildResultGraph(
     }
     edge.supports.push({
       ...fact,
+      // Own properties only: inherited Object.prototype keys (constructor, __proto__,
+      // toString, …) are never mapping state and must not reach the panel.
       mappingState:
-        fact.owner === null ? null : (read.domain.state.mappingState[fact.owner] ?? null),
+        fact.owner === null || !Object.hasOwn(read.domain.state.mappingState, fact.owner)
+          ? null
+          : (read.domain.state.mappingState[fact.owner] ?? null),
     })
   }
   return {
