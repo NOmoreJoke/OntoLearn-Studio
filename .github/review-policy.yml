@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "status": "adopted_report_only",
+  "adoption": {
+    "user_instruction": "确认以上三点，正式采用分级规则，从 T04 起执行，T02 保留原门禁。按分步方案推进政策修订、候选检查脚本和 CI 接线，完成验证后再启用。",
+    "recorded_at_utc": "2026-10-29T09:24:59.170806+00:00",
+    "authority": "iteration-control/2026-10-21-weekly-release/review-policy-20261029/adoption.json"
+  },
+  "activation": {
+    "starts_with": "T04",
+    "legacy_gate": ["T02"],
+    "retain_existing_merge_holds": true,
+    "enforced": false,
+    "report_only_until": {
+      "required_before_enforce": [
+        "meaningful_counterexample_tests_passing",
+        "local_full_npm_run_check_passing",
+        "local_npm_run_verify_sources_passing",
+        "full_remote_ci_green_on_fixed_candidate",
+        "designated_review_findings_closed",
+        "trusted_policy_and_script_version_recorded",
+        "target_branch_protection_verified"
+      ],
+      "note": "No engineering task may set enforced=true by itself; activation is a controller decision recorded against these objective conditions."
+    }
+  },
+  "same_logical_change": {
+    "maximum_rounds": 2,
+    "rounds_count_across_candidate_renames": true,
+    "failed_r2_handling": "user_or_controller_adjudication_no_automatic_r3"
+  },
+  "classification": {
+    "combine": "highest_of_final_change_classifications",
+    "path_hints_are_level_votes": false,
+    "unknown": "needs_triage",
+    "include_deleted_and_renamed_paths": true,
+    "inspect_semantics_and_dependency_versions": true,
+    "per_change_algorithm": [
+      "collect_path_hints_without_assigning_final_level",
+      "if_actual_L2_semantic_risk_assign_L2",
+      "else_if_governance_change_assign_minimum_L1",
+      "else_if_proven_nonfunctional_exception_assign_L0",
+      "else_if_proven_tests_only_exception_assign_L1",
+      "else_if_proven_non_core_engine_single_module_change_assign_L1",
+      "else_apply_semantic_rule_or_highest_path_hint",
+      "if_unclassified_or_evidence_insufficient_return_needs_triage"
+    ],
+    "pr_algorithm": "highest_final_change_level_then_force_L2_for_cross_module_behavior_fr_settlement_or_release"
+  },
+  "levels": {
+    "L0": {
+      "model_reviews": 0,
+      "merge_requires": ["local_check", "full_ci", "candidate_evidence"]
+    },
+    "L1": {
+      "model_reviews": 1,
+      "merge_requires": [
+        "local_check",
+        "full_ci",
+        "candidate_evidence",
+        "designated_pass",
+        "findings_closed"
+      ],
+      "selection": "recorded_alternation_keep_reviewer_for_r2"
+    },
+    "L2": {
+      "model_reviews": 2,
+      "merge_requires": [
+        "local_check",
+        "full_ci",
+        "candidate_evidence",
+        "both_designated_pass",
+        "findings_closed"
+      ],
+      "assignments": {
+        "A": ["correctness", "security", "data"],
+        "B": ["acceptance_coverage", "tests", "actual_runtime_evidence"]
+      }
+    }
+  },
+  "reviewers": {
+    "zcode": { "model": "GLM-5.3", "effort": "highest" },
+    "minimax": { "model": "M3.1-Flash", "effort": "xhigh" },
+    "unavailable": "blocked_no_substitution"
+  },
+  "semantic_rules": {
+    "L2": [
+      "high_risk_or_hard_to_reverse_or_cross_module_behavior",
+      "ipc_csp_window_lifecycle",
+      "storage_schema_migrations_transactions_snapshots_undo",
+      "public_contracts",
+      "reasoning_shacl_query_execution",
+      "agent_gateway_credentials_secure_storage_external_network_boundary",
+      "packaging_or_signing_behavior",
+      "electron_typescript_or_core_dependency_major_change_in_any_dependency_section",
+      "fr_completion_or_release_candidate_claim",
+      "weakening_required_ci_or_security_gate"
+    ],
+    "L1": [
+      "renderer_without_contract_or_ipc_change",
+      "tests_only_without_production_behavior_change",
+      "single_module_behavior_preserving_refactor_with_tests",
+      "small_single_module_bug_without_L2_risk",
+      "actions_version_upgrade_only",
+      "dev_dependency_minor_without_L2_risk",
+      "adr_architecture_or_review_policy_change"
+    ],
+    "L0": [
+      "proven_nonfunctional_format_line_ending_spelling_comment",
+      "ordinary_status_receipt_evidence_manifest_generated_document",
+      "plan_handoff_source_window_note",
+      "dev_dependency_patch_without_L2_risk"
+    ]
+  },
+  "path_hints": {
+    "L2": [
+      "apps/desktop/src/main/**",
+      "apps/desktop/src/preload/**",
+      "apps/desktop/src/csp.ts",
+      "packages/contracts/**",
+      "packages/engine/src/ontolearn_engine/**",
+      "build/**",
+      "**/electron-builder.*"
+    ],
+    "L1": [
+      "apps/desktop/src/renderer/**",
+      "tests/**",
+      "packages/engine/tests/**",
+      ".github/workflows/**",
+      "docs/architecture/**",
+      "AGENTS.md",
+      ".github/review-policy.yml",
+      "scripts/verify-candidate.*",
+      "docs/checklists/**"
+    ],
+    "L0": ["iteration-control/**", "docs/reviews/**", "docs/verification/**", "**/*.md"]
+  },
+  "path_notes": {
+    "engine": "Source hint is conservative; non-core source may be L1 with documented semantics. Tests-only exemption takes precedence absent L2 risk.",
+    "packaging": "Inspect workspace package.json scripts/config, pyproject.toml, locks and scripts as well as path hints.",
+    "generated": "Runtime-executed or authority-bearing generated content is classified by actual behavior, not its generated label. docs/source-manifest.json is authority-bearing and never auto-L0; it additionally requires verify:sources to pass.",
+    "governance": "Policy changes use trusted base policy plus minimum L1; candidate cannot self-authorize downgrade. Weakening required CI or security gates escalates to L2.",
+    "status_documents": "docs/m0-checklist.md and docs/reviews/**/status.md completion-claim changes are FR settlement and force L2; ordinary note edits in docs/reviews/** stay L0."
+  },
+  "validation": {
+    "local": "npm run check",
+    "full_ci": [
+      "Quality",
+      "Desktop (macos-latest)",
+      "Desktop (windows-latest)",
+      "verify-candidate"
+    ],
+    "non_success_blocks": ["failure", "cancelled", "skipped", "unknown", "missing"],
+    "inherited_extra_checks": "AGENTS_section_4",
+    "package_validation_on_electron_builder_minor": true,
+    "identities": [
+      "target_base_sha",
+      "pr_head_sha",
+      "pr_head_tree",
+      "ci_checkout_sha",
+      "ci_checkout_tree"
+    ],
+    "pr_ci_trigger": "draft_pull_request"
+  },
+  "review_flow": {
+    "order": [
+      "freeze",
+      "local_checks",
+      "feature_push_draft_pr",
+      "full_ci",
+      "model_review",
+      "reception",
+      "merge_remote_verification"
+    ],
+    "maximum_rounds": 2,
+    "later_round_scope": "changed_diff_and_linked_findings",
+    "failed_r2": "user_or_controller_adjudication_no_automatic_r3",
+    "unchanged_conflict_free_rebase": "full_ci_only_no_fresh_model_review",
+    "conflict_resolution": "review_only_resolution_escalate_L2_if_applicable",
+    "comparison": "git range-diff old_base..old_head new_base..new_head",
+    "acceptance": "checklist_only_no_third_substantive_review"
+  },
+  "size_targets": {
+    "effective_changed_lines": 400,
+    "changed_files": 30,
+    "small_bug_lines": 200,
+    "exceed": "record_split_or_exception_reason"
+  },
+  "checklists": {
+    "core": "docs/checklists/core-20.md",
+    "domain_modules": "docs/checklists/domain-modules.md",
+    "usage": "docs/checklists/README.md",
+    "source_index": "docs/checklists/source-checklist-index.json",
+    "source_original": "docs/checklists/user-review-checklist-20261024.txt",
+    "modules": ["security", "storage", "contracts", "engine", "agent", "packaging"],
+    "applicability_required": true
+  },
+  "worktrees": {
+    "review": "fixed_sha_temporary_detached_or_pr_diff",
+    "cleanup": "after_evidence_saved_owner_process_and_dirty_state_checked",
+    "historical": "preserve_archive_restore_and_owner_release_requirements",
+    "target_total_below": 30
+  },
+  "metrics": {
+    "start": "T04",
+    "retrospective": "B1_completion",
+    "fields": [
+      "fr",
+      "pr",
+      "level",
+      "ci_wait_seconds",
+      "review_seconds",
+      "fix_seconds",
+      "wall_seconds",
+      "rounds",
+      "blocker"
+    ]
+  }
+}

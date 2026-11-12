@@ -139,3 +139,133 @@ jobs:
             build/engine-tests/
             test-results/
           retention-days: 7
+  verify-candidate:
+    # 分级审查候选机械核验（报告模式，adopted_report_only）。信任链（W03）：校验器
+    # 脚本从目标基线 base 树按固定清单提取到工作区外目录运行，候选树内脚本仅是
+    # 待审对象；base 无脚本时进入 untrusted bootstrap（终态接收将拒绝该报告）。
+    # 不使用 pull_request_target/workflow_run，不写标签，token 只读；终态由本地可信
+    # CLI scripts/receive-ci-final-state.mjs 以官方 run/attempt 数据补齐。
+    name: verify-candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    env:
+      VERIFIER_FILES: >-
+        scripts/verify-candidate.mjs scripts/lib/candidate-git.mjs
+        scripts/lib/review-policy.mjs scripts/lib/classify.mjs
+        scripts/lib/range-diff.mjs scripts/lib/checklist.mjs
+        scripts/lib/ci-reception.mjs
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+      - name: Run base-tree trusted verifier (report mode)
+        env:
+          EVENT_FILE: ${{ github.event_path }}
+        run: |
+          set -euo pipefail
+          emit_no_trusted_baseline() {
+            reason="$1"
+            event="$2"
+            mkdir -p build/verify-candidate
+            node -e '
+              const fs = require("fs")
+              const report = {
+                schemaVersion: 1,
+                status: "unknown",
+                mode: "report_only",
+                event: process.argv[1],
+                reason: process.argv[2],
+                note: "未建立已核目标基线绑定：不执行可信 base 校验、不运行可信校验器；本报告不可作为放行依据（终态接收将拒绝 unknown）",
+              }
+              fs.writeFileSync(
+                "build/verify-candidate/report.json",
+                JSON.stringify(report, null, 2) + "\n",
+              )
+            ' "$event" "$reason"
+            echo "::error::verify-candidate fail-closed：${reason}（事件 ${event}），仅生成 unknown 报告，未运行可信校验器"
+            exit 1
+          }
+          event="${GITHUB_EVENT_NAME:-local}"
+          checkout_sha="${GITHUB_SHA}"
+          expect_args=()
+          if [ "$event" = "pull_request" ]; then
+            base="$(git rev-parse "${checkout_sha}^1")"
+            head="$(git rev-parse "${checkout_sha}^2")"
+            expect_head="$(node -e "const e=JSON.parse(require('fs').readFileSync(process.env.EVENT_FILE,'utf8'));process.stdout.write(e.pull_request?.head?.sha ?? '')")"
+            expect_base="$(node -e "const e=JSON.parse(require('fs').readFileSync(process.env.EVENT_FILE,'utf8'));process.stdout.write(e.pull_request?.base?.sha ?? '')")"
+            if [ -n "$expect_head" ]; then expect_args+=(--expect-pr-head "$expect_head"); fi
+            if [ -n "$expect_base" ]; then expect_args+=(--expect-base "$expect_base"); fi
+          elif [ "$event" = "push" ]; then
+            base="$(node -e "const e=JSON.parse(require('fs').readFileSync(process.env.EVENT_FILE,'utf8'));process.stdout.write(e.before ?? '')")"
+            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$base" 2>/dev/null; then
+              # before 缺失/不可达（force-push 等）时无法建立可信基线绑定；
+              # 父提交不被自动升级为可信 base，fail-closed。
+              emit_no_trusted_baseline "no-trusted-push-baseline" "$event"
+            fi
+            head="$checkout_sha"
+          else
+            # workflow_dispatch：无法建立目标分支/审批基线的真实绑定（任意输入
+            # SHA 或 feature 父提交都不构成已核可信 base）。fail-closed：不运行
+            # 可信校验器，仅产出 unknown 报告并以失败退出，防止被当作可信 Pass。
+            emit_no_trusted_baseline "no-trusted-dispatch-baseline" "$event"
+          fi
+          echo "verify-candidate identities: event=$event base=$base head=$head checkout=$checkout_sha"
+          mkdir -p build/verify-candidate build/trusted-verifier/scripts/lib
+          ok=1
+          for f in $VERIFIER_FILES; do
+            if git cat-file -e "${base}:${f}" 2>/dev/null; then
+              mkdir -p "build/trusted-verifier/$(dirname "$f")"
+              git cat-file blob "${base}:${f}" > "build/trusted-verifier/${f}"
+            else
+              ok=0
+            fi
+          done
+          if [ "$ok" = "1" ]; then
+            node -e '
+              const { execFileSync } = require("child_process")
+              const fs = require("fs")
+              const base = process.argv[1]
+              const files = process.env.VERIFIER_FILES.split(/\s+/)
+              const provenance = { source: "base-tree", base, files: files.map((p) => ({
+                path: p,
+                blobSha: execFileSync("git", ["rev-parse", `${base}:${p}`], { encoding: "utf8" }).trim(),
+              })) }
+              fs.writeFileSync("build/verify-candidate/verifier-provenance.json", JSON.stringify(provenance, null, 2) + "\n")
+            ' "$base"
+            node build/trusted-verifier/scripts/verify-candidate.mjs \
+              --repo-dir "$PWD" \
+              --base "$base" \
+              --head "$head" \
+              --checkout "$checkout_sha" \
+              --event "$event" \
+              --verifier-provenance build/verify-candidate/verifier-provenance.json \
+              --artifact-dir build/verify-candidate \
+              --output build/verify-candidate/report.json \
+              --summary-file "$GITHUB_STEP_SUMMARY" \
+              "${expect_args[@]}"
+          else
+            echo '::warning::base 树无可信校验器（首次部署）：本报告为 untrusted bootstrap，终态接收将拒绝；须按旧门禁建立可信基线'
+            printf '%s\n' '{"source":"candidate-tree-bootstrap","files":[]}' > build/verify-candidate/verifier-provenance.json
+            node scripts/verify-candidate.mjs \
+              --repo-dir "$PWD" \
+              --base "$base" \
+              --head "$head" \
+              --checkout "$checkout_sha" \
+              --event "$event" \
+              --verifier-provenance build/verify-candidate/verifier-provenance.json \
+              --artifact-dir build/verify-candidate \
+              --output build/verify-candidate/report.json \
+              --summary-file "$GITHUB_STEP_SUMMARY" \
+              "${expect_args[@]}"
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: verify-candidate-evidence
+          path: build/verify-candidate/
+          retention-days: 7
