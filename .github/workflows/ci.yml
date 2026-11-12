@@ -27,6 +27,20 @@ jobs:
         with:
           version: '0.11.12'
           enable-cache: true
+      # Electron / electron-builder binary downloads (CI70 attempt1 macOS failed
+      # with HTTP 504 inside package:dir). Default per-OS cache locations;
+      # paths absent on a given OS are ignored.
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: |
+            ~/.cache/electron
+            ~/.cache/electron-builder
+            ~/Library/Caches/electron
+            ~/Library/Caches/electron-builder
+            ~/AppData/Local/electron/Cache
+            ~/AppData/Local/electron-builder/Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: electron-${{ runner.os }}-
       - run: npm ci
       - run: uv sync --frozen
       # O098: one orchestrator runs the original Quality stages with
@@ -74,6 +88,20 @@ jobs:
         with:
           version: '0.11.12'
           enable-cache: true
+      # Electron / electron-builder binary downloads (CI70 attempt1 macOS failed
+      # with HTTP 504 inside package:dir). Default per-OS cache locations;
+      # paths absent on a given OS are ignored.
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: |
+            ~/.cache/electron
+            ~/.cache/electron-builder
+            ~/Library/Caches/electron
+            ~/Library/Caches/electron-builder
+            ~/AppData/Local/electron/Cache
+            ~/AppData/Local/electron-builder/Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: electron-${{ runner.os }}-
       - run: npm ci
       - run: uv sync --frozen
       - run: npm run engine:check
@@ -101,6 +129,7 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/main/report.json
       - run: npm run package:dir
       - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
+      - run: uv run --frozen python scripts/run-q3-packaged-graph.py release test-results/q3-packaged-graph
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:

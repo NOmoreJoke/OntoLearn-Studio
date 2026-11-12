@@ -76,6 +76,7 @@ def test_plan_covers_every_original_quality_stage_exactly_once():
         "sudo apt-get install -y openbox xdotool": 1,
         "npm run test:e2e": 1,
         "verify-i04-package.py release build/i04-package-ci": 1,
+        "run-q3-packaged-graph.py release test-results/q3-packaged-graph": 1,
         "npm run package:dir": 1,
         "find release -type f -name chrome-sandbox": 1,
         "ONTOLEARN_PACKAGED_EXECUTABLE": 1,
@@ -533,7 +534,14 @@ HOLDER_TERM_IGNORER = (
 def test_supervise_cancellation_kills_the_owned_direct_child(tmp_path, monkeypatch):
     sentinel = Sentinel()
     pidfile = tmp_path.joinpath("direct.pid")
-    sleeper = "import os,sys,time\nopen(sys.argv[1], 'w').write(str(os.getpid()))\ntime.sleep(30)\n"
+    # Atomic pidfile publish (temp + os.replace): exists() implies complete content.
+    sleeper = (
+        "import os,sys,time\n"
+        "t = sys.argv[1] + '.tmp'\n"
+        "with open(t, 'w') as f: f.write(str(os.getpid()))\n"
+        "os.replace(t, sys.argv[1])\n"
+        "time.sleep(30)\n"
+    )
     # Capture the REAL Popen object spawn_lane creates (a pass-through wrapper
     # around the genuine constructor — not a mock), so death evidence uses the
     # supervisor's own handle: alive BEFORE cancel and exited AFTER cancel are
@@ -761,7 +769,11 @@ def test_production_entry_cancellation_closes_the_owned_children(
     leader_pidfile = tmp_path.joinpath("leader.pid")
     leader = (  # noqa: UP031 — embedded child sources are test fixtures, not %-formatted user data
         "import os,subprocess,sys,time\n"
-        "open(sys.argv[1], 'w').write(str(os.getpid()))\n"
+        # Atomic pidfile publish: the poll below can never observe an empty
+        # file (CI70 attempt2 failed on int('') from a non-atomic write).
+        "t = sys.argv[1] + '.tmp'\n"
+        "with open(t, 'w') as f: f.write(str(os.getpid()))\n"
+        "os.replace(t, sys.argv[1])\n"
         "subprocess.Popen([sys.executable, '-c', %r])\n"
         "time.sleep(60)\n" % HOLDER_TERM_IGNORER
     )

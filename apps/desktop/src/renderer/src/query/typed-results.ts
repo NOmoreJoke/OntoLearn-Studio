@@ -39,6 +39,7 @@ type DisplayMetadata = {
   inputProjectRevision: number
   scope: string
   parametersHash: string
+  dependencyVector: Record<string, number>
   implementation: z.infer<typeof implementation>
   state: 'current' | 'stale' | 'historical'
   staleReason: { code: string; dependency: string; before: number; after: number }[]

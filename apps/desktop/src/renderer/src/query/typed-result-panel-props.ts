@@ -3,6 +3,8 @@ export interface QueryResultPanelProps {
   projectId: string
   resultId: string
   descriptor: unknown
+  /** Existing project.read only; the graph must recheck the result input binding. */
+  graphSource?: unknown
   rows?: {
     value: unknown
     requested: {

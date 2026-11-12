@@ -1,4 +1,5 @@
 import { launchIsolatedDesktop } from './isolated-desktop'
+import { installI04NativeHook, type I04BootstrapDiagnostics } from './i04-native-bootstrap'
 import { test, expect } from '@playwright/test'
 import { spawn, execFile } from 'node:child_process'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
@@ -334,13 +335,18 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
   let stdout = ''
   const nativeDialogs: { phase: string; windowId: string; title: string; visible: boolean }[] = []
   let socket: WebSocket | undefined
+  const bootstrapAbort = new AbortController()
+  const bootstrap: I04BootstrapDiagnostics = { attempts: 0, pending: [], installed: false }
   const finished = new Promise<void>((done, reject) => {
     child.on('error', reject)
     child.on('close', (code) =>
       code === 0 ? done() : reject(new Error(`native exit ${code}: ${stderr}\n${stdout}`)),
     )
   })
-  void finished.catch(() => {})
+  void finished.then(
+    () => bootstrapAbort.abort(new Error('native exited before driver finished')),
+    (error: unknown) => bootstrapAbort.abort(error),
+  )
   const endpoint = new Promise<string>((done) =>
     child.stderr.on('data', (chunk) => {
       stderr = (stderr + String(chunk)).slice(-65536)
@@ -353,7 +359,11 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
   })
   let timer: ReturnType<typeof setTimeout>
   const deadline = new Promise<never>((_done, reject) => {
-    timer = setTimeout(() => reject(new Error(`native timeout: ${stderr}`)), 75000)
+    timer = setTimeout(() => {
+      const error = new Error(`native timeout: ${stderr}; bootstrap: ${JSON.stringify(bootstrap)}`)
+      bootstrapAbort.abort(error)
+      reject(error)
+    }, 75000)
   })
   const bounded = <T>(value: Promise<T>) =>
     Promise.race([
@@ -374,26 +384,7 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
         })
       }),
     )
-    await bounded(
-      new Promise<void>((done, reject) => {
-        connected.addEventListener('message', (event) => {
-          const message = JSON.parse(String(event.data))
-          if (message.id !== 1) return
-          if (message.error || message.result?.exceptionDetails)
-            reject(new Error(JSON.stringify(message)))
-          else done()
-        })
-        connected.send(
-          JSON.stringify({
-            id: 1,
-            method: 'Runtime.evaluate',
-            params: {
-              expression: `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(hook)})`,
-            },
-          }),
-        )
-      }),
-    )
+    await bounded(installI04NativeHook(connected, hook, bootstrapAbort.signal, bootstrap))
     connected.close()
     for (const phase of ['crash', 'hang']) {
       const end = Date.now() + 30000
@@ -495,9 +486,10 @@ test('I04 native renderer crash and real unresponsive dialog retain durable jobs
       /* A bootstrap failure may precede the first evidence write. */
     }
     await test.info().attach('i04-native-driver-log', {
-      body: JSON.stringify({ stderr, stdout }),
+      body: JSON.stringify({ stderr, stdout, bootstrap }),
       contentType: 'application/json',
     })
+    bootstrapAbort.abort(new Error('native driver cleanup'))
     clearTimeout(timer!)
     socket?.close()
     if (child.exitCode === null) child.kill('SIGKILL')
