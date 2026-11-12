@@ -177,7 +177,10 @@ def build_plan() -> list[Lane]:
             "I04_NATIVE_ISOLATED=1 "
             "xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-native-openbox.log 2>&1 & "
             'npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" '
-            "--output=test-results/i04-packaged-native --reporter=list,github,json'",
+            "--output=test-results/i04-packaged-native --reporter=list,github,json'\n"
+            "xvfb-run -a sh -c 'openbox > /tmp/q3-packaged-graph-openbox.log 2>&1 & "
+            "uv run --frozen python scripts/run-q3-packaged-graph.py "
+            "release test-results/q3-packaged-graph'",
             # The unpackaged and packaged native renderer tests are the only
             # e2e launches without their own user-data-dir: both derive the
             # default Electron profile from the same app package identity, so

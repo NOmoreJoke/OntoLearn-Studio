@@ -76,6 +76,7 @@ def test_plan_covers_every_original_quality_stage_exactly_once():
         "sudo apt-get install -y openbox xdotool": 1,
         "npm run test:e2e": 1,
         "verify-i04-package.py release build/i04-package-ci": 1,
+        "run-q3-packaged-graph.py release test-results/q3-packaged-graph": 1,
         "npm run package:dir": 1,
         "find release -type f -name chrome-sandbox": 1,
         "ONTOLEARN_PACKAGED_EXECUTABLE": 1,
