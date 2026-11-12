@@ -75,6 +75,16 @@ class QueryRead:
             or self.book.authority is not self.authority
         ):
             fault("PERMISSION_DENIED")
+        mainline = getattr(self.actor, "mainline", None)
+        if mainline is not None and self.book is mainline:
+            from ontolearn_engine.project.mainline import _Budget
+
+            # A revoked callback must not perform current permission SQL or
+            # charge a successor's ledger through actor._authorize. Validate
+            # the exact original producer budget before that external check.
+            if type(self.budget) is not _Budget or self.budget.owner is not mainline:
+                fault("PERMISSION_DENIED")
+            mainline.check_reply(self.budget.reply)
 
     def check(self, store):
         self._originals(store)

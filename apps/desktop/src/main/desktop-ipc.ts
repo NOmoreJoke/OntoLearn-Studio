@@ -11,6 +11,7 @@ import {
 } from '@ontolearn/contracts'
 import type { EngineSupervisor, MainlineReplyReceiver, MainlineReplyReceipt } from './engine'
 import type { TaskService } from './task-service'
+import type { LibraryLocationService } from './library-location-service'
 
 export type DesktopIpcDependencies = {
   ipcMain: Pick<IpcMain, 'handle'>
@@ -29,8 +30,12 @@ export type DesktopIpcDependencies = {
     | 'getOperation'
   >
   supervisor: Pick<EngineSupervisor, 'health' | 'projectFailure' | 'engineSessionId'>
-  projects?: MainlineProjectBridge & { readonly queries: QueryConsumerBridge }
+  projects?: MainlineProjectBridge & {
+    readonly queries: QueryConsumerBridge
+    readonly managementBlocked?: boolean
+  }
   replies?: MainlineReplyReceiver
+  library?: LibraryLocationService
 }
 
 /** Register the production named routes. Trust is checked before any downstream call. */
@@ -41,6 +46,7 @@ export function registerDesktopIpc({
   supervisor,
   projects,
   replies,
+  library,
 }: DesktopIpcDependencies): void {
   const permission = () => ({
     ok: false as const,
@@ -52,6 +58,25 @@ export function registerDesktopIpc({
     }),
   })
   const handlers: DesktopIpcHandlers = {
+    'project:management-pending': () =>
+      projects?.getPendingProjectManagementOperations() ?? Promise.resolve(permission()),
+    'project:management-catalog': (args) =>
+      projects?.getProjectManagementCatalog(args) ?? Promise.resolve(permission()),
+    'project:management-state': () =>
+      projects?.getProjectManagementState() ?? Promise.resolve(permission()),
+    'project:management-preview': (args) =>
+      projects?.previewProjectManagement(args) ?? Promise.resolve(permission()),
+    'project:management-confirm': (args) =>
+      projects?.confirmProjectManagement(args) ?? Promise.resolve(permission()),
+    'project:management-apply': (args) =>
+      projects?.applyProjectManagement(args) ?? Promise.resolve(permission()),
+    'project:management-operation': (args) =>
+      projects?.getProjectManagementOperation(args) ?? Promise.resolve(permission()),
+    'library:location': async () => library?.getLocation() ?? permission(),
+    'library:choose': (args) => library?.choose(args) ?? Promise.resolve(permission()),
+    // These two routes are bound to the real frame/document by register below.
+    'library:workspace': async () => permission(),
+    'library:switch': async () => permission(),
     'project:catalog': (args) => projects?.getProjectCatalog(args) ?? Promise.resolve(permission()),
     'project:create-blank': (args) =>
       projects?.createBlankProject(args) ?? Promise.resolve(permission()),
@@ -101,6 +126,33 @@ export function registerDesktopIpc({
     'result:get': (id) => tasks.getResult(id),
     'result:page': (options) => tasks.getResultPage(options),
     'operation:get': (id) => tasks.getOperation(id),
+  }
+  const documents = new WeakMap<
+    IpcMainInvokeEvent['sender'],
+    { frame: IpcMainInvokeEvent['senderFrame']; token: object }
+  >()
+  const observed = new WeakSet<IpcMainInvokeEvent['sender']>()
+  const documentFor = (event: IpcMainInvokeEvent): object => {
+    const sender = event.sender
+    if (!observed.has(sender)) {
+      observed.add(sender)
+      const invalidate = () => {
+        const document = documents.get(sender)
+        if (document) library?.invalidateDocument(document.token)
+        documents.delete(sender)
+      }
+      sender.on('did-start-navigation', (_event, _url, isInPlace, isMainFrame) => {
+        if (isMainFrame && !isInPlace) invalidate()
+      })
+      sender.once('destroyed', invalidate)
+    }
+    let document = documents.get(sender)
+    if (!document || document.frame !== event.senderFrame) {
+      if (document) library?.invalidateDocument(document.token)
+      document = { frame: event.senderFrame, token: Object.freeze({}) }
+      documents.set(sender, document)
+    }
+    return document.token
   }
   // A delivery stays owned until this exact preload/frame acknowledges it.
   // No timeout, navigation or new session deletes an unacknowledged receipt.
@@ -158,6 +210,36 @@ export function registerDesktopIpc({
   ): void => {
     ipcMain.handle(channel, async (event, ...args: DesktopIpcMap[Channel]['args']) => {
       if (!trusted(event)) return permission()
+      if (channel === 'library:workspace')
+        return (
+          library?.reportWorkspace(
+            args[0] as DesktopIpcMap['library:workspace']['args'][0],
+            documentFor(event),
+          ) ?? permission()
+        )
+      if (channel === 'library:switch')
+        return (
+          library?.switchLocation(
+            args[0] as DesktopIpcMap['library:switch']['args'][0],
+            documentFor(event),
+          ) ?? permission()
+        )
+      if (library?.switching && channel !== 'library:location') return permission()
+      if (
+        projects?.managementBlocked &&
+        [
+          'project:create-blank',
+          'project:create-example',
+          'project:open',
+          'project:draft-save',
+          'project:changeset-preview',
+          'project:changeset-confirm',
+          'project:changeset-commit',
+          'query:execute-saved',
+          'job:cancel',
+        ].includes(channel)
+      )
+        return permission()
       const mainline =
         (channel.startsWith('project:') && channel !== 'project:active') ||
         channel.startsWith('query:')
@@ -185,6 +267,17 @@ export function registerDesktopIpc({
     })
   }
   register('engine:health', handlers['engine:health'])
+  register('project:management-pending', handlers['project:management-pending'])
+  register('project:management-catalog', handlers['project:management-catalog'])
+  register('project:management-state', handlers['project:management-state'])
+  register('project:management-preview', handlers['project:management-preview'])
+  register('project:management-confirm', handlers['project:management-confirm'])
+  register('project:management-apply', handlers['project:management-apply'])
+  register('project:management-operation', handlers['project:management-operation'])
+  register('library:location', handlers['library:location'])
+  register('library:choose', handlers['library:choose'])
+  register('library:workspace', handlers['library:workspace'])
+  register('library:switch', handlers['library:switch'])
   register('project:catalog', handlers['project:catalog'])
   register('project:create-blank', handlers['project:create-blank'])
   register('project:create-example', handlers['project:create-example'])

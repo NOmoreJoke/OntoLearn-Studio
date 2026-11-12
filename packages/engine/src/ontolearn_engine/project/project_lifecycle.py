@@ -228,6 +228,10 @@ def creation_context(store, project, operation):
     if row is None or row["kind"] != "application":
         return None
     context = format3._json(row["context"])
+    if isinstance(context, dict) and "copyCreateContextVersion" in context:
+        from ontolearn_engine.project.management import copy_context
+
+        return copy_context(store, project, operation)
     if isinstance(context, dict) and "exampleCreateContextVersion" in context:
         return example_context(store, project, operation)
     if not isinstance(context, dict) or "projectCreateContextVersion" not in context:
@@ -275,7 +279,10 @@ def creation_context(store, project, operation):
 def validate_transition(store, project, op, origin, before, after):
     expected = creation_context(store, project, op["operation"])
     require(expected is not None)
-    if "exampleCreateContextVersion" in expected["context"]:
+    if (
+        "exampleCreateContextVersion" in expected["context"]
+        or "copyCreateContextVersion" in expected["context"]
+    ):
         require(op["kind"] == "combined" and op["sequence"] == 1 and op["domain_revision"] == 1)
         require(op["plan_hash"] == expected["receipt"]["planHash"])
         require(tuple(origin) == (project, digest(expected["before"]), 0, 0, "created"))
@@ -328,7 +335,9 @@ def preflight(store, candidate, limits):
         sum(counts.values()) <= limits.validation_rows and total <= limits.validation_bytes, "limit"
     )
     require(
-        total * (1 + counts.get("app_operations", 0) + counts.get("snapshots", 0))
+        total
+        * (1 + counts.get("app_operations", 0) + counts.get("snapshots", 0))
+        * (1 + counts.get("management_receipts", 0))
         <= limits.validation_work,
         "limit",
     )

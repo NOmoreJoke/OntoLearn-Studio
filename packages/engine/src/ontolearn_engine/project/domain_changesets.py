@@ -36,6 +36,32 @@ CURSOR_KIND = "changeset-document-v1"
 FAMILIES = LAYERS
 
 
+def _lifecycle_version(store, project):
+    from ontolearn_engine.project.management import lifecycle
+
+    return lifecycle(store, store._project(project))["version"]
+
+
+def _current_lifecycle(store, project, envelope):
+    # Version 1 predates lifecycle transitions. It remains valid historical
+    # evidence, but cannot authorize work after a trash/restore cycle.
+    version = envelope.get(PLAN_VERSION, envelope.get(IMPACT_VERSION))
+    if (
+        type(version) is not int
+        or version not in (1, 2)
+        or (version == 1 and "lifecycleVersion" in envelope)
+        or (
+            version == 2
+            and (
+                type(envelope.get("lifecycleVersion")) is not int
+                or envelope["lifecycleVersion"] < 0
+            )
+        )
+    ):
+        fail("INVALID_STATE")
+    return envelope.get("lifecycleVersion", 0) == _lifecycle_version(store, project)
+
+
 def fail(code, **params):
     # Import late: JobStore's thin methods import this module in turn.
     from ontolearn_engine.job_store import fault
@@ -283,7 +309,10 @@ def impact(store, internal, target, base):
         if row is None:
             return [_unsupported_item(target, "unsupported-state")], False
         context = json.loads(row[0])
-        if context["capability"] != "changeset.commit" or context["plan"].get(PLAN_VERSION) != 1:
+        if context["capability"] != "changeset.commit" or context["plan"].get(PLAN_VERSION) not in (
+            1,
+            2,
+        ):
             return [_unsupported_item(target, "unsupported-state")], False
         accepted = store._db.execute(
             "SELECT * FROM operation_claims WHERE operation=?", (target,)
@@ -490,7 +519,8 @@ def preview_changeset(
             entries, complete = conflict
             manifest, segments = _document(entries, "undo-impact")
             envelope = {
-                IMPACT_VERSION: 1,
+                IMPACT_VERSION: 2,
+                "lifecycleVersion": _lifecycle_version(store, project),
                 "projectId": project,
                 "hostClientId": host_client_id,
                 "engineSessionId": engine_session_id,
@@ -536,7 +566,8 @@ def preview_changeset(
             "targetOperationId": preview.target,
         }
         envelope = {
-            PLAN_VERSION: 1,
+            PLAN_VERSION: 2,
+            "lifecycleVersion": _lifecycle_version(store, project),
             "projectId": project,
             "hostClientId": host_client_id,
             "engineSessionId": engine_session_id,
@@ -579,20 +610,24 @@ def _envelope(store, project, preview_hash, host, session, kind):
     _host(host, session)
     for row in store._db.execute("SELECT * FROM job_plans WHERE project=?", (project,)):
         value = json.loads(row["payload"])
-        if value.get(PLAN_VERSION) == 1 and unpack(value["preview"]).identity == preview_hash:
+        if value.get(PLAN_VERSION) in (1, 2) and unpack(value["preview"]).identity == preview_hash:
             if (value["hostClientId"], value["engineSessionId"]) != (host, session):
                 continue
             _verify_plan(store, project, row, value)
+            if not _current_lifecycle(store, project, value):
+                continue
             if kind != "diff":
                 fail("CURSOR_MISMATCH")
             return row["ref"], value
     for row in store._db.execute("SELECT * FROM job_details WHERE project=?", (project,)):
         value = json.loads(row["payload"])
-        if value.get(IMPACT_VERSION) == 1 and digest(value) == preview_hash:
+        if value.get(IMPACT_VERSION) in (1, 2) and digest(value) == preview_hash:
             if (value["hostClientId"], value["engineSessionId"]) != (host, session):
                 continue
             if row["id"] != preview_hash or kind != "undo-impact":
                 fail("INVALID_STATE")
+            if not _current_lifecycle(store, project, value):
+                continue
             _verify_document(store, project, value, value["items"])
             return None, value
     fail("IDENTITY_CONFLICT")
@@ -622,6 +657,13 @@ def _verify_plan(store, project, row, envelope):
         "manifest",
         "segmentBlobRefs",
     }
+    version = envelope.get(PLAN_VERSION)
+    if type(version) is not int or version not in (1, 2):
+        fail("INVALID_STATE")
+    if version == 2:
+        fields.add("lifecycleVersion")
+        if type(envelope.get("lifecycleVersion")) is not int or envelope["lifecycleVersion"] < 0:
+            fail("INVALID_STATE")
     if (
         set(envelope) != fields
         or digest(envelope) != row["ref"]
@@ -923,7 +965,7 @@ def accepted_plan(store, project, input_, confirmation, snapshot, *, host=None):
     if row is None:
         fail("IDENTITY_CONFLICT")
     envelope = json.loads(row["payload"])
-    if envelope.get(PLAN_VERSION) != 1:
+    if envelope.get(PLAN_VERSION) not in (1, 2):
         fail("IDENTITY_CONFLICT")
     preview = _verify_plan(store, project, row, envelope)
     if (
@@ -937,6 +979,8 @@ def accepted_plan(store, project, input_, confirmation, snapshot, *, host=None):
         fail("IDENTITY_CONFLICT")
     _receipt(store, project, row["ref"], envelope, confirmation)
     if host is not None:
+        if not _current_lifecycle(store, project, envelope):
+            fail("IDENTITY_CONFLICT")
         if host != (envelope["hostClientId"], envelope["engineSessionId"]):
             fail("IDENTITY_CONFLICT")
         if store.revision(preview.project) != preview.base:

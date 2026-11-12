@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   classTree,
   identity,
@@ -39,6 +39,7 @@ export type OntologyPageProps = {
   transactionBusy?: boolean
   factsManagedExternally?: boolean
   onDraftChange?: () => void
+  onDirtyChange?: (dirty: boolean) => void
 }
 const blank = (): ObjectRow => ({
   iri: '',
@@ -80,6 +81,7 @@ function Editor({
   transactionBusy = false,
   factsManagedExternally = false,
   onDraftChange,
+  onDirtyChange,
 }: OntologyPageProps) {
   const canPreview = !!previewEdit || !!previewManagedEdit
   const [tab, setTab] = useState<'table' | 'tree' | 'graph'>('table')
@@ -112,6 +114,11 @@ function Editor({
       ),
     )
     .sort((a, b) => (a.iri < b.iri ? -1 : a.iri > b.iri ? 1 : 0))
+  const savedDraft = view.objects.find((row) => row.iri === draft.iri)
+  const dirty = JSON.stringify(draft) !== JSON.stringify(savedDraft ?? blank())
+  useLayoutEffect(() => {
+    onDirtyChange?.(dirty)
+  }, [onDirtyChange, dirty])
   const currentPage = Math.min(page, Math.max(0, Math.ceil(rows.length / 20) - 1))
   const tree = useMemo(() => (tab === 'tree' ? classTree(view.objects) : []), [tab, view.objects])
   const graph = useMemo(

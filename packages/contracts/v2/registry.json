@@ -573,7 +573,14 @@
         "project.read",
         "project.example.create",
         "project.draft.save",
-        "project.ownership.detail"
+        "project.ownership.detail",
+        "project.management.catalog",
+        "project.management.read",
+        "project.management.preview",
+        "project.management.confirm",
+        "project.management.apply",
+        "project.management.operation.get",
+        "project.library.status"
       ],
       "newSourceOrLearningMethods": [],
       "capabilityImplementations": {
@@ -586,7 +593,14 @@
         "project.read",
         "project.example.create",
         "project.draft.save",
-        "project.ownership.detail"
+        "project.ownership.detail",
+        "project.management.catalog",
+        "project.management.read",
+        "project.management.preview",
+        "project.management.confirm",
+        "project.management.apply",
+        "project.management.operation.get",
+        "project.library.status"
       ]
     }
   },
@@ -621,5 +635,24 @@
     "privateCombinedRecords": 16,
     "readIssuer": "required-before-access; not supplied",
     "saveCommit": "NOT_START"
+  },
+  "projectManagement": {
+    "profile": "business3",
+    "methods": [
+      "project.management.catalog",
+      "project.management.read",
+      "project.management.preview",
+      "project.management.confirm",
+      "project.management.apply",
+      "project.management.operation.get",
+      "project.library.status"
+    ],
+    "actions": ["rename", "archive", "set-mode", "copy-current", "trash", "restore-trash"],
+    "authority": "selected-project; explicit library trash restoration and original-operation reconciliation",
+    "agentEligible": false,
+    "databaseCatalogSchemaVersion": 2,
+    "checkpointApplicationSchemaVersion": 1,
+    "copyScope": "current-state-v1; immutable imported seed, no source execution or authority",
+    "deletion": "recoverable-trash; current access control, excluded from business restore"
   }
 }

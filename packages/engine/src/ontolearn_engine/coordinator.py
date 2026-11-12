@@ -444,7 +444,9 @@ class Coordinator:
             self.mainline.finish_reply(request_id, emitted=emitted, failure=failure)
 
     def dispatch(self, method: str, p: dict):
-        if method in {
+        from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
+
+        if method in MANAGEMENT_METHODS or method in {
             "project.catalog",
             "project.create",
             "project.example.create",
@@ -1094,6 +1096,8 @@ async def serve(
     *,
     profile="legacy2",
     backup_path=None,
+    library_file_identity=None,
+    library_require_existing=False,
     ordinary_authority=None,
     query_dispatch=None,
     example_provider=None,
@@ -1103,6 +1107,12 @@ async def serve(
         raise ValueError("INVALID_PROFILE")
     if example_provider is not None and profile != "business3":
         raise ValueError("INVALID_PROFILE")
+    if type(library_require_existing) is not bool or (
+        library_require_existing and library_file_identity is None
+    ):
+        raise ValueError("INVALID_LIBRARY_IDENTITY")
+    if library_file_identity is not None and profile != "business3":
+        raise ValueError("INVALID_LIBRARY_IDENTITY")
     if backup_path is not None and (profile != "business3" or not Path(backup_path).is_absolute()):
         raise ValueError("INVALID_BACKUP")
     if _test_schedule is not None and os.environ.get("ONTOLEARN_TEST_MODE") != "1":
@@ -1186,6 +1196,14 @@ async def serve(
             contract=CONTRACT,
             target_format=3 if profile == "business3" else 2,
             backup_path=backup_path,
+            **(
+                {
+                    "file_identity": library_file_identity,
+                    "require_existing_format": library_require_existing,
+                }
+                if library_file_identity is not None
+                else {}
+            ),
         )
         if (
             profile == "business3"

@@ -349,6 +349,13 @@ export type MainlineMethod =
   | 'project.read'
   | 'project.ownership.detail'
   | 'project.draft.save'
+  | 'project.management.catalog'
+  | 'project.management.read'
+  | 'project.management.preview'
+  | 'project.management.confirm'
+  | 'project.management.apply'
+  | 'project.management.operation.get'
+  | 'project.library.status'
 export abstract class MainlineProjectTransport {
   #mainlineTransport = true
   static owns(value: unknown): value is MainlineProjectTransport {
@@ -381,6 +388,8 @@ interface Hello {
 }
 interface Session {
   child: ChildProcessWithoutNullStreams
+  closed: Promise<void>
+  resolveClosed(): void
   generation: number
   reader: JsonlReader
   pending: Map<string, Pending>
@@ -556,6 +565,10 @@ export interface SupervisorOptions {
    * supervisor independently refuses it for packaged locations. */
   transportLedger?: { path: string; launchId: string | null }
   dataPath?: string
+  /** Main-owned file identity, checked by the engine before and after acquiring its writer lease. */
+  libraryFileIdentity?: { dev: string; ino: string }
+  /** Explicitly reserved new files alone may initialize; existing files must be recognized databases. */
+  libraryRequireExisting?: boolean
   allowedProjects?: string[]
   testMode?: boolean
   registryPath?: string
@@ -678,6 +691,9 @@ export class EngineSupervisor {
   #location: EngineLocation
   #options: SupervisorOptions
   #session?: Session
+  // A terminal transport can still own a live process. Retain it until real close.
+  #liveChildren = new Set<Session>()
+  #admissionFrozen = false
   #starting?: Promise<Session>
   #generation = 0
   #stopped = false
@@ -701,6 +717,9 @@ export class EngineSupervisor {
     this.#options = {
       ...options,
       exampleRoot,
+      libraryFileIdentity: options.libraryFileIdentity
+        ? { ...options.libraryFileIdentity }
+        : undefined,
       ordinaryLibrary: options.ordinaryLibrary ? { ...options.ordinaryLibrary } : undefined,
       allowedProjects: options.allowedProjects ? [...options.allowedProjects] : undefined,
       command: options.command
@@ -1246,6 +1265,13 @@ export class EngineSupervisor {
               'project.open',
               'project.read',
               'project.ownership.detail',
+              'project.management.catalog',
+              'project.management.read',
+              'project.management.preview',
+              'project.management.confirm',
+              'project.management.apply',
+              'project.management.operation.get',
+              'project.library.status',
             ].includes(method)
           )
             throw invalid()
@@ -1258,7 +1284,8 @@ export class EngineSupervisor {
             if (
               (method === 'project.read' ||
                 method === 'project.draft.save' ||
-                method === 'project.ownership.detail') &&
+                method === 'project.ownership.detail' ||
+                method === 'project.management.read') &&
               params.projectId !== record.selected?.projectId
             )
               throw deniedOrdinary()
@@ -2126,13 +2153,26 @@ export class EngineSupervisor {
       this.#failures++
       this.#retryAt = Date.now() + Math.min(2000, 100 * 2 ** Math.min(this.#failures - 1, 5))
     }
-    session.child.kill()
-    const killTimer = setTimeout(() => {
-      if (session.child.exitCode === null && session.child.signalCode === null)
-        session.child.kill('SIGKILL')
-    }, 1000)
-    killTimer.unref()
-    session.child.once('close', () => clearTimeout(killTimer))
+    if (this.#liveChildren.has(session)) {
+      const killTimer = setTimeout(() => {
+        if (session.child.exitCode === null && session.child.signalCode === null) {
+          try {
+            session.child.kill('SIGKILL')
+          } catch {
+            /* Close remains unproven. */
+          }
+        }
+      }, 1000)
+      killTimer.unref()
+      session.child.once('close', () => clearTimeout(killTimer))
+      // Install the close listener before kill: tests and already-exiting children
+      // can close synchronously; an exit code alone never proves stdio closure.
+      try {
+        session.child.kill()
+      } catch {
+        /* Close remains unproven. */
+      }
+    }
     if (!this.#stopped && session.hello) {
       this.#connectionState(session, {
         state: 'disconnected',
@@ -2148,12 +2188,68 @@ export class EngineSupervisor {
   stop(): void {
     this.#stopped = true
     this.#generation++
-    if (this.#session) this.#finish(this.#session, exited())
+    for (const child of this.#liveChildren) this.#finish(child, exited())
     this.#listeners.clear()
     this.#connectionListeners.clear()
     // Requests sealing; a complete footer still needs all children closed and
     // all queued writes to succeed. No waiting is performed here.
     this.#ledger?.requestStop()
+  }
+  /** Main-process switch fence. Existing replies may settle; new business writes cannot enter. */
+  freezeAdmission(): void {
+    if (this.#stopped) throw exited()
+    this.#admissionFrozen = true
+  }
+  unfreezeAdmission(): void {
+    if (!this.#stopped) this.#admissionFrozen = false
+  }
+  get hasUnresolvedResponsibility(): boolean {
+    return this.#hasUnresolvedResponsibility()
+  }
+  /** The management apply computation is not its own prior unacknowledged reply. */
+  get hasOtherMainlineResponsibility(): boolean {
+    return this.#hasUnresolvedResponsibility(this.#mainlineAsync.getStore())
+  }
+  #hasUnresolvedResponsibility(excludeDelivery?: MainlineDelivery): boolean {
+    if (this.#starting) return true
+    for (const session of this.#liveChildren)
+      for (const pending of session.pending.values())
+        if (!['session.ping', 'project.library.status'].includes(String(pending.request.method)))
+          return true
+    for (const record of this.#mainlineRecords.values())
+      if (record.uncertain || [...record.tickets].some((ticket) => !ticket.terminal)) return true
+    for (const delivery of this.#mainlineDeliveries) if (delivery !== excludeDelivery) return true
+    for (const record of this.#ordinaryRecords.values())
+      if (record.starting || record.actions.size > 0) return true
+    return false
+  }
+  /** Independent all-library evidence; never uses selected-project TaskService cache. */
+  async libraryStatus(): Promise<{ libraryEvidenceRef: string; activeJobs: number }> {
+    if (this.profile !== 'business3') throw deniedOrdinary()
+    const value = await this.request('project.library.status', {})
+    if (!validateBusiness3('result_project.library.status', value)) throw invalid()
+    return value as { libraryEvidenceRef: string; activeJobs: number }
+  }
+  /** A resolved barrier proves every spawned child closed, including retired/startup generations. */
+  async stopAndWait(timeoutMs = 5000): Promise<void> {
+    const duration = bounded(timeoutMs, 5000, 60000)
+    this.stop()
+    let timer: ReturnType<typeof setTimeout> | undefined
+    try {
+      await Promise.race([
+        (async () => {
+          // A start delayed by retry backoff sees #stopped before it can spawn.
+          await this.#starting?.catch(() => {})
+          await Promise.all([...this.#liveChildren].map((session) => session.closed))
+          if (this.#liveChildren.size !== 0) throw invalidStateOrdinary()
+        })(),
+        new Promise<never>((_resolve, reject) => {
+          timer = setTimeout(() => reject(timeout('shutdown')), duration)
+        }),
+      ])
+    } finally {
+      clearTimeout(timer)
+    }
   }
   async #ensure(ordinary?: OrdinaryClientRecord): Promise<Session> {
     if (this.#stopped) throw exited()
@@ -2204,6 +2300,15 @@ export class EngineSupervisor {
       args.push('--t01-internal-profile=business3')
       if (this.#options.exampleRoot !== undefined)
         args.push(`--t11-internal-example-root=${this.#options.exampleRoot}`)
+      if (this.#options.libraryFileIdentity) {
+        const { dev, ino } = this.#options.libraryFileIdentity
+        if (!/^\d+$/.test(dev) || !/^\d+$/.test(ino) || !database) throw invalid()
+        args.push(`--b1-library-file-identity=${dev}:${ino}`)
+      }
+      if (this.#options.libraryRequireExisting) {
+        if (!this.#options.libraryFileIdentity) throw invalid()
+        args.push('--b1-library-require-existing=1')
+      }
       if (database)
         args.push(
           `--t01-internal-backup=${join(dirname(database), `.t01-backup-${randomUUID()}.sqlite`)}`,
@@ -2221,6 +2326,10 @@ export class EngineSupervisor {
     } catch {
       throw exited()
     }
+    let resolveClosed!: () => void
+    const closed = new Promise<void>((resolve) => {
+      resolveClosed = resolve
+    })
     let resolveStart!: (session: Session) => void
     let rejectStart!: (error: EngineError) => void
     const startupPromise = new Promise<Session>((resolve, reject) => {
@@ -2229,6 +2338,8 @@ export class EngineSupervisor {
     })
     const session: Session = {
       child,
+      closed,
+      resolveClosed,
       profile: this.profile,
       startupPromise,
       resolveStart,
@@ -2257,6 +2368,7 @@ export class EngineSupervisor {
         },
       ),
     }
+    this.#liveChildren.add(session)
     this.#session = session
     this.#ledger?.recordSessionStart(session.generation, child.pid ?? null)
     for (const record of this.#ordinaryStartingRecords) {
@@ -2279,9 +2391,11 @@ export class EngineSupervisor {
     const fail = (error: EngineError): void => this.#finish(session, error)
     session.startupTimer = setTimeout(() => fail(timeout('startup')), this.#startupMs)
     child.once('error', () => fail(exited()))
-    // Extended in place: original fail first, then record the real close with
-    // this session's generation. No second close/exit listener is added.
+    // The actual close releases process ownership; settlement and ledger still
+    // execute in the same event turn before the awaiting barrier can continue.
     child.once('close', (code, signal) => {
+      this.#liveChildren.delete(session)
+      session.resolveClosed()
       fail(exited())
       this.#ledger?.recordChildClosed(session.generation, code, signal)
     })
@@ -2487,6 +2601,11 @@ export class EngineSupervisor {
     mainlineOwner?: MainlineOwnerRecord,
     recoveryCurrent?: () => void,
   ): Promise<unknown> {
+    if (
+      this.#admissionFrozen &&
+      !['hello', 'session.ping', 'project.library.status'].includes(method)
+    )
+      return Promise.reject(invalidStateOrdinary())
     if (!this.#current(session)) {
       this.#ledger?.recordRequestRejected('notCurrent', method)
       return Promise.reject(exited())

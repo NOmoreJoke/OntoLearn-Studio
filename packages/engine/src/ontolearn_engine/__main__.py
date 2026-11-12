@@ -6,9 +6,11 @@ import sys
 from pathlib import Path
 
 
-def startup_arguments(arguments):
+def startup_arguments(arguments, *, include_identity=False):
     profile = "legacy2"
     backup = None
+    identity = None
+    require_existing = False
     seen = set()
     for argument in arguments:
         if argument == "--t01-internal-profile=business3" and "profile" not in seen:
@@ -19,11 +21,24 @@ def startup_arguments(arguments):
             backup = argument.split("=", 1)[1]
             if not backup or not Path(backup).is_absolute():
                 raise ValueError("INVALID_BACKUP")
+        elif argument == "--b1-library-require-existing=1" and "require-existing" not in seen:
+            seen.add("require-existing")
+            require_existing = True
+        elif argument.startswith("--b1-library-file-identity=") and "identity" not in seen:
+            from ontolearn_engine.project.file_identity import identity_value
+
+            seen.add("identity")
+            identity = argument.split("=", 1)[1]
+            identity_value(identity)
         else:
             raise ValueError("INVALID_STARTUP_ARGUMENT")
     if backup is not None and profile != "business3":
         raise ValueError("INVALID_BACKUP")
-    return profile, backup
+    if identity is not None and profile != "business3":
+        raise ValueError("INVALID_LIBRARY_IDENTITY")
+    if require_existing and identity is None:
+        raise ValueError("INVALID_LIBRARY_IDENTITY")
+    return (profile, backup, identity, require_existing) if include_identity else (profile, backup)
 
 
 def emit_startup_failure(contract, registry_hash, code):
@@ -59,13 +74,28 @@ def main() -> None:
     startup_failure = None
     code_for = None
     try:
-        profile, backup = startup_arguments(sys.argv[1:])
+        profile, backup, identity, require_existing = startup_arguments(
+            sys.argv[1:], include_identity=True
+        )
         from ontolearn_engine import resources
         from ontolearn_engine.coordinator import StartupInitializationFailure, serve, startup_code
 
         startup_failure, code_for = StartupInitializationFailure, startup_code
         entered_serve = True
-        asyncio.run(serve(profile=profile, backup_path=backup))
+        asyncio.run(
+            serve(
+                profile=profile,
+                backup_path=backup,
+                **(
+                    {
+                        "library_file_identity": identity,
+                        "library_require_existing": require_existing,
+                    }
+                    if identity is not None
+                    else {}
+                ),
+            )
+        )
     except BaseException as error:
         wrote = False
         if profile == "business3" and resources is not None and isinstance(error, Exception):

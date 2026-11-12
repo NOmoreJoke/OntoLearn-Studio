@@ -180,7 +180,11 @@ def build_plan() -> list[Lane]:
             "--output=test-results/i04-packaged-native --reporter=list,github,json'\n"
             "xvfb-run -a sh -c 'openbox > /tmp/q3-packaged-graph-openbox.log 2>&1 & "
             "uv run --frozen python scripts/run-q3-packaged-graph.py "
-            "release test-results/q3-packaged-graph'",
+            "release test-results/q3-packaged-graph'\n"
+            "B1A_NATIVE_ISOLATED=1 "
+            "xvfb-run -a sh -c 'openbox > /tmp/b1a-packaged-openbox.log 2>&1 & "
+            "uv run --frozen python scripts/run-b1a-packaged-lifecycle.py "
+            "release test-results/b1a-packaged-lifecycle'",
             # The unpackaged and packaged native renderer tests are the only
             # e2e launches without their own user-data-dir: both derive the
             # default Electron profile from the same app package identity, so
