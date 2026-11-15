@@ -122,6 +122,8 @@ function realm() {
   const state = {
     mapped: true,
     wrongMapping: false,
+    resolverMissing: false,
+    resolverError: undefined as Error | undefined,
     missingAPI: false,
     windows: [{}] as unknown[],
     platform: 'darwin' as string,
@@ -163,7 +165,14 @@ function realm() {
   const load = vi.fn(() => buildApi())
   const fromHelper = Object.assign(load, {
     cache: {} as Record<string, unknown>,
-    resolve: vi.fn(() => (state.wrongMapping ? '/npm/electron/index.js' : 'electron')),
+    resolve: vi.fn(() => {
+      if (state.resolverError) throw state.resolverError
+      if (state.resolverMissing)
+        throw Object.assign(new Error("Cannot find module 'electron'"), {
+          code: 'MODULE_NOT_FOUND',
+        })
+      return state.wrongMapping ? '/npm/electron/index.js' : 'electron'
+    }),
   })
   // One persistent VM context per realm() so repeated readiness polls share
   // globalThis.__i02FirstWindowReadyAt while Date tracks Vitest fake timers.
@@ -326,22 +335,67 @@ it('waits for mapping without loading a shim, then checks real readiness and loa
   h.expectClean()
 })
 
-it('fails immediately on a wrong module mapping with no helper or retry', async () => {
+it('bounds a permanently wrong module mapping inside the original bounds with no helper', async () => {
   const h = setup(),
     r = realm()
   r.state.wrongMapping = true
   connect(h, r)
   const result = h.start()
-  await vi.advanceTimersByTimeAsync(0)
-  expect(await result).toMatchObject({
-    error: expect.objectContaining({
-      message: expect.stringContaining('unexpected Electron module mapping'),
-    }),
-  })
-  await vi.advanceTimersByTimeAsync(1000)
-  expect(h.requests).toHaveLength(1)
-  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(45000)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  const message = String((settled as { error: Error }).error.message)
+  expect(message).toContain('unexpected Electron module mapping')
+  expect(message).toContain('"resolverPending":true')
   expect(r.load).toHaveBeenCalledTimes(0)
+  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(1000)
+  h.expectClean()
+})
+
+it('polls the resolver across the makeElectronModule startup window without loading a shim', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  r.state.wrongMapping = true
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([{ state: 'resolver-pending' }])
+  expect(r.load).toHaveBeenCalledTimes(0)
+  r.state.wrongMapping = false
+  r.state.resolverMissing = true
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([{ state: 'resolver-pending' }, { state: 'resolver-pending' }])
+  expect(r.load).toHaveBeenCalledTimes(0)
+  r.state.resolverMissing = false
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([
+    { state: 'resolver-pending' },
+    { state: 'resolver-pending' },
+    { state: 'ready' },
+  ])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
+it('fails on the first evaluation when the resolver throws a non-module error', async () => {
+  const h = setup(),
+    r = realm()
+  r.state.resolverError = new Error('resolver corruption')
+  connect(h, r)
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  expect(String((settled as { error: Error }).error.message)).toContain('resolver corruption')
+  expect(h.requests).toHaveLength(1)
+  expect(r.load).toHaveBeenCalledTimes(0)
+  expect(helperRequests(h)).toHaveLength(0)
   h.expectClean()
 })
 
@@ -495,6 +549,7 @@ it.each([
   'unknown-state',
   'api-pending-type',
   'api-pending-extra',
+  'resolver-pending-extra',
   'helper-error',
 ] as const)('fails on %s and clears the outstanding request without retrying', async (kind) => {
   const h = setup()
@@ -513,6 +568,11 @@ it.each([
       h.socket.reply(request, {
         type: 'object',
         value: { state: 'api-pending', pending: 'app', extra: 1 },
+      })
+    } else if (kind === 'resolver-pending-extra') {
+      h.socket.reply(request, {
+        type: 'object',
+        value: { state: 'resolver-pending', extra: 1 },
       })
     } else if (request.params.returnByValue) {
       h.socket.reply(request, { type: 'object', value: { state: 'ready' } })

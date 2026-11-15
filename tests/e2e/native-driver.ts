@@ -24,6 +24,7 @@ export async function runNativeRecovery(
   // Bounded diagnostics for pending API members: at most the guarded member
   // count, each a short literal name; nothing else about the API is dumped.
   const pendingMembers: string[] = []
+  let resolverPending = false
   let sequence = 0
   const cancellations = new Set<(reason: Error) => void>()
   const diagnostics = () =>
@@ -34,6 +35,7 @@ export async function runNativeRecovery(
       signalCode: child.signalCode,
       readinessAttempts,
       pendingMembers,
+      resolverPending,
       bootstrapComplete,
       stderr,
       stdout,
@@ -220,6 +222,14 @@ export async function runNativeRecovery(
     const helper = JSON.stringify(resolvePath('tests/e2e/native-recovery.cjs'))
     // Electron44.9 common/init installs this cache key and canonical resolver.
     // Never require an unmapped npm shim, clear cache, or replace the resolver.
+    // In Electron 44.9's browser_init, makeElectronModule('electron') writes
+    // Module._cache['electron'] several statements before Module._resolveFilename
+    // is replaced with the canonical one, so an evaluate landing in that window
+    // sees fromHelper.resolve('electron') throw MODULE_NOT_FOUND or resolve the
+    // on-disk npm shim even though the cache key exists. Both shapes are
+    // re-polled as resolver-pending inside the original 45s/450-attempt bounds,
+    // and fromHelper('electron') is never called before resolve returns the
+    // canonical 'electron' specifier, so no unmapped npm shim is ever loaded.
     // CI46 (Windows) proved only that the combined main-API guard failed on
     // the first reply (missing member UNKNOWN; its stack overlapped
     // browser_init/Object.app). That members may merely be late to install is
@@ -235,8 +245,16 @@ export async function runNativeRecovery(
       const fromHelper = process.getBuiltinModule('module').createRequire(${helper});
       if (!Object.prototype.hasOwnProperty.call(fromHelper.cache, 'electron'))
         return { state: 'mapping-pending' };
-      if (fromHelper.resolve('electron') !== 'electron')
-        throw new Error('unexpected Electron module mapping');
+      let resolved;
+      try {
+        resolved = fromHelper.resolve('electron');
+      } catch (error) {
+        if (error && typeof error === 'object' && error.code === 'MODULE_NOT_FOUND')
+          return { state: 'resolver-pending' };
+        throw error;
+      }
+      if (resolved !== 'electron')
+        return { state: 'resolver-pending' };
       if (process.type !== 'browser' || !process.versions.electron)
         throw new Error('bootstrap is not an Electron main process');
       const api = fromHelper('electron');
@@ -306,11 +324,15 @@ export async function runNativeRecovery(
         throw new Error('invalid native readiness state')
       if (value.state === 'ready') {
         if (Object.keys(value).length !== 1) throw new Error('invalid native readiness state')
+        resolverPending = false
         ready = true
         break
       }
       if (value.state === 'mapping-pending') {
         if (Object.keys(value).length !== 1) throw new Error('invalid native readiness state')
+      } else if (value.state === 'resolver-pending') {
+        if (Object.keys(value).length !== 1) throw new Error('invalid native readiness state')
+        resolverPending = true
       } else if (value.state === 'api-pending') {
         if (
           Object.keys(value).length !== 2 ||
@@ -321,6 +343,7 @@ export async function runNativeRecovery(
           throw new Error('invalid native readiness state')
         if (pendingMembers.length < 32 && !pendingMembers.includes(value.pending))
           pendingMembers.push(value.pending)
+        resolverPending = false
       } else throw new Error('unknown native readiness state')
       if (readinessAttempts === 450) break
       assertActive(connected)
@@ -335,7 +358,9 @@ export async function runNativeRecovery(
       throw new Error(
         pendingMembers.length
           ? `Electron main API readiness bounds exceeded; unsatisfied members (first-seen order): ${pendingMembers.join(', ')}; ${diagnostics()}`
-          : 'Electron mapping readiness attempt limit exceeded',
+          : resolverPending
+            ? `unexpected Electron module mapping: ${diagnostics()}`
+            : 'Electron mapping readiness attempt limit exceeded',
       )
     // Original target/expression, sent once; failures never retry the helper.
     await evaluate(`process.getBuiltinModule('module').createRequire(process.execPath)(${helper})`)
