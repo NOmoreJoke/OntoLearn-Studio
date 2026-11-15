@@ -238,9 +238,10 @@ export async function runNativeRecovery(
     // original 45s/450-attempt bounds instead of failing immediately.
     // Permanent absence still fails at those bounds with the member named.
     // Wait for the first usable BrowserWindow (visible, main frame finished
-    // loading) and a 400ms win32 settle window; with native-recovery.cjs's own
-    // 150ms timer that is 550ms total, matching the original develop cold-start
-    // timing without modifying native-recovery.cjs.
+    // loading, and where getOSProcessId is a function an OS PID above zero, so
+    // the Windows ChildProcessLauncher has finished PostLaunchOnClientThread
+    // and renderer termination will not be silently dropped while IsStarting()
+    // is still true) plus a 400ms win32 settle window.
     const readiness = `(() => {
       const fromHelper = process.getBuiltinModule('module').createRequire(${helper});
       if (!Object.prototype.hasOwnProperty.call(fromHelper.cache, 'electron'))
@@ -292,7 +293,9 @@ export async function runNativeRecovery(
             ((typeof primary.webContents.isDestroyed !== 'function' ||
               !primary.webContents.isDestroyed()) &&
               (typeof primary.webContents.isLoadingMainFrame !== 'function' ||
-                primary.webContents.isLoadingMainFrame() === false)));
+                primary.webContents.isLoadingMainFrame() === false) &&
+              (typeof primary.webContents.getOSProcessId !== 'function' ||
+                primary.webContents.getOSProcessId() > 0)));
         if (!windowReady) {
           delete globalThis.__i02FirstWindowReadyAt;
           return { state: 'api-pending', pending: 'BrowserWindow.firstWindow' };

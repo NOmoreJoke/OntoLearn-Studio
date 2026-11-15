@@ -626,6 +626,52 @@ it('polls BrowserWindow.firstWindow until the primary window is visible and main
   h.expectClean()
 })
 
+it('holds firstWindow pending without win32 settle while the primary OS PID is 0, then loads the helper once', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  r.state.platform = 'win32'
+  let osPid = 0
+  r.state.windows = [
+    {
+      isVisible: () => true,
+      webContents: { isLoadingMainFrame: () => false, getOSProcessId: () => osPid },
+    },
+  ]
+  const firstWindow = { state: 'api-pending', pending: 'BrowserWindow.firstWindow' }
+  const settle = { state: 'api-pending', pending: 'BrowserWindow.firstWindowSettle' }
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(200)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  osPid = 4321
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow, settle])
+  await vi.advanceTimersByTimeAsync(300)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow, settle, settle, settle, settle])
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([
+    firstWindow,
+    firstWindow,
+    firstWindow,
+    settle,
+    settle,
+    settle,
+    settle,
+    { state: 'ready' },
+  ])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
 it('waits for the 400ms win32 settle window before loading the native helper once', async () => {
   const h = setup(),
     r = realm()

@@ -12,6 +12,11 @@ function setup(
     observerOverCap?: boolean
     recordThrows?: boolean
     writeError?: Error
+    platform?: string
+    osPid?: number
+    crashed?: boolean
+    crashBehavior?: 'emit' | 'noop'
+    kill?: (pid: number, contents: EventEmitter) => void
   } = {},
 ) {
   const timers: { work: () => void; delay: number }[] = []
@@ -35,6 +40,7 @@ function setup(
   let scriptError: Error | undefined
   let inputError: Error | undefined
   let windowSequence = 0
+  let crashTargetContents: EventEmitter | undefined
   class Window extends EventEmitter {
     id = ++windowSequence
     destroyed = false
@@ -43,9 +49,17 @@ function setup(
       id: this.id + 100,
       isDestroyed: () => this.destroyed,
       isLoadingMainFrame: () => false,
-      forcefullyCrashRenderer: vi.fn(() =>
-        this.contents.emit('render-process-gone', {}, { reason: 'killed' }),
-      ),
+      ...(options.osPid !== undefined ? { getOSProcessId: () => options.osPid } : {}),
+      ...(options.crashed !== undefined ? { isCrashed: () => options.crashed } : {}),
+      forcefullyCrashRenderer: vi.fn(() => {
+        crashTargetContents = this.contents
+        if (options.crashBehavior === 'noop') return
+        this.contents.emit(
+          'render-process-gone',
+          {},
+          { reason: options.crashBehavior === 'emit' ? 'crashed' : 'killed' },
+        )
+      }),
       executeJavaScript: vi.fn((script: string) => {
         scripts.push(script)
         if (script === fault)
@@ -98,7 +112,18 @@ function setup(
         }
       throw new Error(`Unexpected module ${name}`)
     },
-    process: { versions: { electron: 'synthetic' }, env: { I02_NATIVE_EVIDENCE: '/synthetic' } },
+    process: {
+      versions: { electron: 'synthetic' },
+      env: { I02_NATIVE_EVIDENCE: '/synthetic' },
+      ...(options.platform !== undefined ? { platform: options.platform } : {}),
+      ...(options.kill
+        ? {
+            kill(pid: number) {
+              options.kill!(pid, crashTargetContents!)
+            },
+          }
+        : {}),
+    },
     Number: options.recordThrows
       ? {
           isInteger() {
@@ -323,4 +348,76 @@ it('retains original drive failure formatting and save/exit', async () => {
   expect(h.saved().error).toBe(String(failure))
   expect(h.app.exit.mock.calls).toEqual([[1]])
   expect(h.saved().failureObservation.counts[14]).toBe(1)
+})
+
+it('records no win32 retry when the first crash lands after stepping out of the reply microtask', async () => {
+  const h = setup({ platform: 'win32', crashBehavior: 'emit' })
+  const first = h.window()
+  await settle()
+  h.timer(0)()
+  await settle()
+  expect(first.contents.forcefullyCrashRenderer).toHaveBeenCalledTimes(1)
+  const second = h.window()
+  await settle()
+  await h.dialog.showMessageBox(first, {})
+  h.timer(250)()
+  second.emit('unresponsive')
+  await h.dialog.showMessageBox(second, {})
+  h.window()
+  await settle()
+  const data = h.saved()
+  expect(data.result).toBe('PASS')
+  expect(data.windows).toBe(3)
+  expect(data.events).toEqual(['crashed', 'unresponsive'])
+  expect(data.prompts).toHaveLength(2)
+  expect(data.health).toHaveLength(3)
+  expect(data).not.toHaveProperty('win32CrashRetry')
+  expect(data).not.toHaveProperty('win32CrashKillFallback')
+  expect(data).not.toHaveProperty('win32CrashRetryError')
+  expect(data).not.toHaveProperty('win32CrashKillError')
+  expect(h.app.exit.mock.calls).toEqual([[0]])
+})
+
+it('falls back to process.kill after two silent win32 crashes and still completes recovery', async () => {
+  const killed: number[] = []
+  const h = setup({
+    platform: 'win32',
+    crashBehavior: 'noop',
+    osPid: 4321,
+    crashed: false,
+    kill: (pid, contents) => {
+      killed.push(pid)
+      contents.emit('render-process-gone', {}, { reason: 'killed' })
+    },
+  })
+  const first = h.window()
+  await settle()
+  h.timer(0)()
+  await settle()
+  expect(h.timers.filter((item) => item.delay === 1500)).toHaveLength(1)
+  h.timers.filter((item) => item.delay === 1500)[0]!.work()
+  const fallbackTimers = h.timers.filter((item) => item.delay === 1500)
+  expect(fallbackTimers).toHaveLength(2)
+  fallbackTimers[1]!.work()
+  await settle()
+  expect(first.contents.forcefullyCrashRenderer).toHaveBeenCalledTimes(2)
+  const second = h.window()
+  await settle()
+  await h.dialog.showMessageBox(first, {})
+  h.timer(250)()
+  second.emit('unresponsive')
+  await h.dialog.showMessageBox(second, {})
+  h.window()
+  await settle()
+  const data = h.saved()
+  expect(data.result).toBe('PASS')
+  expect(data.windows).toBe(3)
+  expect(data.events).toEqual(['killed', 'unresponsive'])
+  expect(data.prompts).toHaveLength(2)
+  expect(data.win32CrashRetry).toEqual({ osPid: 4321, crashed: false })
+  expect(data.win32CrashKillFallback).toEqual({ pid: 4321 })
+  expect(killed).toEqual([4321])
+  expect(data).not.toHaveProperty('win32CrashRetryError')
+  expect(data).not.toHaveProperty('win32CrashKillError')
+  expect(h.app.exit.mock.calls).toEqual([[0]])
 })

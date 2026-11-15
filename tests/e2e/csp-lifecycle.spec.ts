@@ -37,6 +37,21 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     env,
   })
   stage('launched')
+  let applicationClosed = false
+  const closeApplication = async () => {
+    if (applicationClosed) return
+    applicationClosed = true
+    await Promise.race([
+      application.close().catch(() => undefined),
+      new Promise<void>((done) => setTimeout(done, 3000).unref()),
+    ])
+    try {
+      application.process().kill('SIGKILL')
+    } catch {
+      // Process may already have exited cleanly during application.close().
+    }
+    await application.close().catch(() => undefined)
+  }
   const normal = async (page: Page) => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('转化为可验证的知识')
     expect(
@@ -274,6 +289,8 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     const args = [`--user-data-dir=${nativeDir}`]
     if (!env.ONTOLEARN_PACKAGED_EXECUTABLE) args.push(resolve('apps/desktop'))
     evidence.nativeLaunch = { executable, args }
+    stage('close-playwright-desktop-before-native')
+    await closeApplication()
     stage('native-recovery')
     try {
       await runNativeRecovery(executable, args, { ...env, I02_NATIVE_EVIDENCE: nativeOutput })
@@ -365,8 +382,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       await mkdir(resolve(env.I02_EVIDENCE, '..'), { recursive: true })
       await writeFile(env.I02_EVIDENCE, JSON.stringify(evidence, null, 2) + '\n')
     }
-    application.process().kill('SIGKILL')
-    await application.close().catch(() => undefined)
+    await closeApplication()
     server.close()
     if (env.I02_EVIDENCE) {
       await mkdir(resolve(env.I02_EVIDENCE, '..'), { recursive: true })

@@ -153,8 +153,10 @@ dialog.showMessageBox = async (_window, options) => {
 }
 function observeWindow(window, freshlyCreated = false) {
   const index = ++evidence.windows
+  let renderGone = false
   passiveFailure.record(0, window)
   window.webContents.on('render-process-gone', (_e, details) => {
+    renderGone = true
     passiveFailure.record(3, window)
     return evidence.events.push(details.reason)
   })
@@ -175,8 +177,48 @@ function observeWindow(window, freshlyCreated = false) {
         await window.webContents.executeJavaScript('window.ontolearn.getEngineHealth()'),
       )
       if (!evidence.health.at(-1).ok) throw new Error('health unavailable')
-      if (index === 1) window.webContents.forcefullyCrashRenderer()
-      else if (index === 2) {
+      if (index === 1) {
+        if (process.platform === 'win32') {
+          // Step out of the executeJavaScript Mojo IPC reply microtask before crashing.
+          await new Promise((resolve) => setTimeout(resolve, 0))
+          if (!renderGone && !window.isDestroyed() && !window.webContents.isDestroyed())
+            window.webContents.forcefullyCrashRenderer()
+          if (!renderGone) {
+            setTimeout(() => {
+              try {
+                if (renderGone || window.isDestroyed() || window.webContents.isDestroyed()) return
+                evidence.win32CrashRetry = {
+                  osPid:
+                    typeof window.webContents.getOSProcessId === 'function'
+                      ? window.webContents.getOSProcessId()
+                      : null,
+                  crashed:
+                    typeof window.webContents.isCrashed === 'function'
+                      ? window.webContents.isCrashed()
+                      : null,
+                }
+                window.webContents.forcefullyCrashRenderer()
+                setTimeout(() => {
+                  try {
+                    if (renderGone || window.isDestroyed() || window.webContents.isDestroyed())
+                      return
+                    const pid =
+                      typeof window.webContents.getOSProcessId === 'function'
+                        ? window.webContents.getOSProcessId()
+                        : 0
+                    evidence.win32CrashKillFallback = { pid }
+                    if (pid > 0 && typeof process.kill === 'function') process.kill(pid)
+                  } catch (killError) {
+                    evidence.win32CrashKillError = String(killError)
+                  }
+                }, 1500).unref()
+              } catch (retryError) {
+                evidence.win32CrashRetryError = String(retryError)
+              }
+            }, 1500).unref()
+          }
+        } else window.webContents.forcefullyCrashRenderer()
+      } else if (index === 2) {
         window.show()
         app.focus({ steal: true })
         window.focus()
