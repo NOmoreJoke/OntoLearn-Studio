@@ -1,7 +1,10 @@
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import policyJson from '../../.github/review-policy.json'
 import {
   IMMUTABLE_L2_PATTERNS,
@@ -510,12 +513,24 @@ describe('source manifest evidence schema validation', () => {
 
 describe('review level CLI', () => {
   const ROOT = fileURLToPath(new URL('../..', import.meta.url))
+  // 隔离环境：剔除全部 GIT_* 变量，防止宿主 worktree/hook 的 GIT_DIR/GIT_WORK_TREE/
+  // GIT_INDEX_FILE 泄漏进临时仓库，保证 CLI 与其内部 git 调用只作用于 tempRepo。
+  const cleanEnv = Object.fromEntries(
+    Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')),
+  )
+  let tempRepo = ''
+  let baseSha = ''
+  let l1Sha = ''
+
+  const git = (...args: string[]) =>
+    execFileSync('git', args, { cwd: tempRepo, env: cleanEnv, encoding: 'utf8' })
   const run = (...cliArgs: string[]) => {
     try {
-      const stdout = execFileSync(process.execPath, ['scripts/review-level.mjs', ...cliArgs], {
-        cwd: ROOT,
-        encoding: 'utf8',
-      })
+      const stdout = execFileSync(
+        process.execPath,
+        [resolve(ROOT, 'scripts/review-level.mjs'), ...cliArgs],
+        { cwd: tempRepo, env: cleanEnv, encoding: 'utf8' },
+      )
       return { status: 0, stdout, stderr: '' }
     } catch (e) {
       const err = e as { status?: number; stdout?: string; stderr?: string }
@@ -527,8 +542,91 @@ describe('review level CLI', () => {
     }
   }
 
-  it('emits binding and mechanical evidence in --json mode', () => {
-    const { status, stdout } = run('origin/develop', 'HEAD', '--json')
+  beforeAll(() => {
+    tempRepo = mkdtempSync(join(tmpdir(), 'review-level-cli-'))
+    git('init')
+    git('config', 'user.name', 'test')
+    git('config', 'user.email', 'test@example.com')
+    git('config', 'commit.gpgsign', 'false')
+    const write = (relPath: string, content: string) => {
+      const target = join(tempRepo, relPath)
+      mkdirSync(join(target, '..'), { recursive: true })
+      writeFileSync(target, content)
+    }
+
+    // base：真实策略文件 + manifest 覆盖的 README + 待删除文件 + 与内容一致的 source-manifest
+    write(
+      '.github/review-policy.json',
+      readFileSync(resolve(ROOT, '.github/review-policy.json'), 'utf8'),
+    )
+    write('README.md', 'hello\n')
+    write('obsolete.txt', 'remove-me\n')
+    write(
+      'docs/source-manifest.json',
+      `${JSON.stringify(
+        {
+          version: 1,
+          files: [
+            { path: 'README.md', sha256: createHash('sha256').update('hello\n').digest('hex') },
+          ],
+        },
+        null,
+        2,
+      )}\n`,
+    )
+    git('add', '.')
+    git('commit', '-m', 'base')
+    baseSha = git('rev-parse', 'HEAD').trim()
+    // 即使 CI 浅克隆（fetch-depth: 1）也能解析默认 origin/develop 基线
+    git('update-ref', 'refs/remotes/origin/develop', baseSha)
+
+    // L1：非策略的渲染层前端变更
+    write('apps/desktop/src/renderer/src/App.tsx', 'export const App = () => null\n')
+    git('add', '.')
+    git('commit', '-m', 'l1 frontend')
+    l1Sha = git('rev-parse', 'HEAD').trim()
+
+    // L2（HEAD）：覆盖删除分支（status === 'D'）与策略文档路径（POLICY_OR_CLASSIFIER_PATHS 与 L2 硬底线）
+    git('rm', 'obsolete.txt')
+    write('docs/process/review-policy.md', '# Review Policy\n')
+    git('add', '.')
+    git('commit', '-m', 'l2 policy')
+  })
+
+  afterAll(() => {
+    rmSync(tempRepo, { recursive: true, force: true })
+  })
+
+  it('emits L0 with empty mechanical evidence for identical refs', () => {
+    const { status, stdout } = run(baseSha, baseSha, '--json')
+    expect(status).toBe(0)
+    const out = JSON.parse(stdout)
+    expect(out.level).toBe('L0')
+    expect(out.mechanical.ok).toBe(true)
+    expect(out.mechanical.changedFileDigests).toEqual([])
+    expect(out.selfCheck.policyOrClassifierTouched).toBe(false)
+  })
+
+  it('emits L1 with per-file digests for non-policy frontend change', () => {
+    const { status, stdout } = run(baseSha, l1Sha, '--json')
+    expect(status).toBe(0)
+    const out = JSON.parse(stdout)
+    expect(out.level).toBe('L1')
+    expect(out.mechanical.ok).toBe(true)
+    expect(out.selfCheck.policyOrClassifierTouched).toBe(false)
+    let sawAppTsx = false
+    for (const digest of out.mechanical.changedFileDigests) {
+      expect(digest.status).toMatch(/^[ADMT]$/)
+      if (digest.path !== 'apps/desktop/src/renderer/src/App.tsx') continue
+      sawAppTsx = true
+      expect(digest.status).toBe('A')
+      expect(digest.sha256).toMatch(/^[0-9a-f]{64}$/)
+    }
+    expect(sawAppTsx).toBe(true)
+  })
+
+  it('defaults to origin/develop..HEAD and emits binding and mechanical evidence in --json mode', () => {
+    const { status, stdout } = run('--json')
     expect(status).toBe(0)
     const out = JSON.parse(stdout)
     expect(out.base).toBe('origin/develop')
@@ -540,20 +638,25 @@ describe('review level CLI', () => {
     expect(out.headTree).toMatch(/^[0-9a-f]{40}$/)
     expect(out.level).toBe('L2')
     expect(out.mechanical.ok).toBe(true)
-    expect(out.mechanical.changedFileDigests.length).toBeGreaterThan(0)
+    expect(out.mechanical.sourceManifest.ok).toBe(true)
+    expect(out.mechanical.sourceManifest.checkedCount).toBe(1)
+    expect(out.mechanical.sourceManifest.mismatches).toEqual([])
+    let sawDelete = false
+    let sawNonDelete = false
     for (const digest of out.mechanical.changedFileDigests) {
       expect(digest.status).toMatch(/^[ADMT]$/)
       if (digest.status === 'D') {
+        sawDelete = true
         expect(digest.bytes).toBeNull()
         expect(digest.sha256).toBeNull()
       } else {
+        sawNonDelete = true
         expect(digest.sha256).toMatch(/^[0-9a-f]{64}$/)
       }
     }
-    expect(out.mechanical.sourceManifest.ok).toBe(true)
-    expect(out.mechanical.sourceManifest.checkedCount).toBeGreaterThan(0)
-    expect(out.mechanical.sourceManifest.mismatches).toEqual([])
-    // 自检元信息：本 PR 触及策略/分级器路径 → G0 后必须以可信基线脚本执行分级
+    expect(sawDelete).toBe(true)
+    expect(sawNonDelete).toBe(true)
+    // 自检元信息：本候选触及策略/分级器路径 → G0 后必须以可信基线脚本执行分级
     expect(out.selfCheck.policyOrClassifierTouched).toBe(true)
     expect(out.selfCheck.trustedBaselineRule).toBe('run_from_trusted_base_after_g0')
   })
