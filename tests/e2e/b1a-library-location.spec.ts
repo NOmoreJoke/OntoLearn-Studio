@@ -54,10 +54,15 @@ async function chooseNativeDirectory(path: string, observations: unknown[]): Pro
   })
   // Real GTK picker input. No replacement of dialog.showOpenDialog or its result.
   await execute('xdotool', ['key', '--clearmodifiers', 'ctrl+l'])
-  await execute('xdotool', ['type', '--clearmodifiers', '--', path])
-  await execute('xdotool', ['key', '--clearmodifiers', 'Return'])
-  // GTK's default Open/Select action accepts the directory now shown in the picker.
-  await execute('xdotool', ['key', '--clearmodifiers', 'Return'])
+  await new Promise((resolve) => setTimeout(resolve, 150))
+  // The trailing slash completes the location bar entry in one step. A plain
+  // Return after typing does not confirm: GTK3 keeps the focused/active button
+  // on _Cancel, so the second Return cancels the dialog instead.
+  const dirInput = path.endsWith('/') ? path : `${path}/`
+  await execute('xdotool', ['type', '--delay', '10', '--clearmodifiers', '--', dirInput])
+  await new Promise((resolve) => setTimeout(resolve, 150))
+  // GTK3's _Open mnemonic actually confirms the directory shown in the picker.
+  await execute('xdotool', ['key', '--clearmodifiers', 'alt+o'])
 }
 async function logicalHash(database: string): Promise<string> {
   const python = resolve('.venv/bin/python')
@@ -102,6 +107,11 @@ test('B1a real native picker, actual relaunch and a second restart preserve sepa
   )
   delete env.ELECTRON_RUN_AS_NODE
   delete env.I04_TEST_FIXTURE
+  // Pin GTK3's button mnemonics to the stable _Cancel/_Open set regardless of
+  // the host locale. LC_ALL would override LC_MESSAGES in the child process,
+  // so it is removed to guarantee LC_MESSAGES actually takes effect.
+  delete env.LC_ALL
+  env.LC_MESSAGES = 'C.UTF-8'
   const options = {
     ...(env.ONTOLEARN_PACKAGED_EXECUTABLE
       ? { executablePath: env.ONTOLEARN_PACKAGED_EXECUTABLE, args: [] }

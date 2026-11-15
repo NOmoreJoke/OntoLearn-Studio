@@ -21,6 +21,7 @@ import { hardenWebContents, securePreferences } from './window-security'
 import { installWindowRecovery } from './window-recovery'
 import { installViewNavigation } from './view-navigation'
 import { registerDesktopIpc } from './desktop-ipc'
+import { convergeStartupLibraryFailure } from './startup-library-failure'
 import { validateV2 } from '../../../../packages/contracts/src/v2'
 
 declare const __DEV_CSP_NONCE__: string
@@ -357,37 +358,45 @@ void app.whenReady().then(async () => {
         throw new Error('LIBRARY_IDENTITY_CHANGED')
       locationConfig.completeStartup(status.libraryEvidenceRef)
     } catch {
-      try {
-        await supervisor.stopAndWait()
-      } catch {
-        dialog.showErrorBox('项目库启动未完成', '引擎退出尚未得到确认。不会打开其它项目库。')
-        return
-      }
-      if (locationConfig.pending) {
-        const answer = await dialog.showMessageBox({
-          type: 'error',
-          title: '目标项目库无法打开',
-          message: '目标库格式、身份或写入锁校验失败，未覆盖目标文件。',
-          detail: '可以明确恢复原库选择后重启，或退出并检查目标文件。',
-          buttons: ['退出', '恢复原库并重启'],
-          defaultId: 0,
-          cancelId: 0,
-        })
-        if (answer.response === 1) {
-          try {
-            locationConfig.restoreOriginal()
-            app.relaunch()
-          } catch {
-            dialog.showErrorBox('原库恢复失败', '原库文件身份已变化。位置记录保持待恢复状态。')
-          }
-        }
-      } else
-        dialog.showErrorBox(
-          '项目库无法打开',
-          '项目库格式、身份或写入锁校验失败。未创建替代库，请检查原文件后重试。',
-        )
-      quitBarrier = true
-      app.quit()
+      // A before-quit that fires while whenReady() still awaits this startup
+      // verification makes libraryStatus() fail spuriously. The convergence
+      // helper returns without any blocking dialog in that case, so the
+      // before-quit stopAndWait() → app.quit() sequence completes instead of
+      // deadlocking the main thread on a synchronous error box.
+      const config = locationConfig
+      await convergeStartupLibraryFailure({
+        quitConverging: () => quitting || quitBarrier,
+        stopAndWait: () => supervisor.stopAndWait(),
+        engineExitUnconfirmed: () =>
+          dialog.showErrorBox('项目库启动未完成', '引擎退出尚未得到确认。不会打开其它项目库。'),
+        reportFailure: async () => {
+          if (config.pending) {
+            const answer = await dialog.showMessageBox({
+              type: 'error',
+              title: '目标项目库无法打开',
+              message: '目标库格式、身份或写入锁校验失败，未覆盖目标文件。',
+              detail: '可以明确恢复原库选择后重启，或退出并检查目标文件。',
+              buttons: ['退出', '恢复原库并重启'],
+              defaultId: 0,
+              cancelId: 0,
+            })
+            if (answer.response === 1) {
+              try {
+                config.restoreOriginal()
+                app.relaunch()
+              } catch {
+                dialog.showErrorBox('原库恢复失败', '原库文件身份已变化。位置记录保持待恢复状态。')
+              }
+            }
+          } else
+            dialog.showErrorBox(
+              '项目库无法打开',
+              '项目库格式、身份或写入锁校验失败。未创建替代库，请检查原文件后重试。',
+            )
+          quitBarrier = true
+          app.quit()
+        },
+      })
       return
     }
   }
@@ -493,6 +502,9 @@ void app.whenReady().then(async () => {
       isTrustedDocument(event.senderFrame.url, trustedURL)
     )
   }
+  // A quit that began during the startup awaits above must not build a late
+  // first window while the before-quit shutdown is already converging.
+  if (quitting || quitBarrier) return
   registerDesktopIpc({
     ipcMain,
     trusted,

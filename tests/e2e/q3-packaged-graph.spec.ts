@@ -98,6 +98,13 @@ test('Q3 packaged actual graph, enforced CSP and raw row-selection timings', asy
       env,
       chromiumSandbox: true,
     })
+    // B1a validates the library before createWindow(), so the first window can
+    // appear only after the startup awaits settle. Wait for it before reading
+    // BrowserWindow state; reading it earlier throws on macOS and Linux.
+    const page = await application.firstWindow()
+    const pageerrors: string[] = []
+    page.on('pageerror', (error) => pageerrors.push(error.message))
+    evidence.pageerrors = pageerrors
     const runtime = await application.evaluate(({ app, BrowserWindow }) => ({
       packaged: app.isPackaged,
       appPath: app.getAppPath(),
@@ -123,10 +130,6 @@ test('Q3 packaged actual graph, enforced CSP and raw row-selection timings', asy
       contextIsolation: true,
       nodeIntegration: false,
     })
-    const page = await application.firstWindow()
-    const pageerrors: string[] = []
-    page.on('pageerror', (error) => pageerrors.push(error.message))
-    evidence.pageerrors = pageerrors
     const csp = await page
       .locator('meta[http-equiv="Content-Security-Policy"]')
       .getAttribute('content')
