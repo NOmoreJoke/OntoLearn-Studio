@@ -22,6 +22,7 @@ import type { OntologyMainlineBridge } from './ontology/mainline-api'
 import { ProjectManagementController } from './project/management-controller'
 import { ProjectManagementPanel } from './project/ProjectManagementPanel'
 import { LibraryLocationPanel } from './project/LibraryLocationPanel'
+import { libraryAdmissionBlocked, settleManagementTail } from './project/lifecycle-admission'
 
 type WorkspaceModule = 'query' | 'ontology'
 type OntologyContext = {
@@ -79,6 +80,8 @@ export function App() {
   const [ontologyContext, setOntologyContext] = useState<OntologyContext>()
   const readyWorkspace = useRef<TaskView | undefined>(undefined)
   const libraryBusy = useRef(false)
+  // open/create 正在进行的 management 准入尾段；期间的恢复视图必须等它完成。
+  const admissionTail = useRef<Promise<void> | undefined>(undefined)
   const selectionTarget = useRef<{ projectId?: string } | undefined>(undefined)
   const createIntent = useRef<
     MainlineCreateRequestDTO | MainlineExampleCreateRequestDTO | undefined
@@ -188,18 +191,16 @@ export function App() {
     setOntologyContext(next)
   }, [management, retireOntology, selectQueryWorkspace, setOntologyContext])
   function selectWorkspace(module: WorkspaceModule) {
-    if (frozen.current || management?.unresolved) return
-    if (ontologyDirty.current && selectedModule.current !== module) {
-      setProjectNotice('本体表单有未保存编辑，请先提交或清空表单再切换模块。')
-      return
-    }
     if (
-      documentLeaving.current ||
-      libraryBusy.current ||
-      uncertain.current ||
-      !readyWorkspace.current?.project
+      libraryAdmissionBlocked({
+        documentLeaving: documentLeaving.current,
+        libraryBusy: libraryBusy.current,
+        frozen: frozen.current,
+        managementUnresolved: !!management?.unresolved,
+      })
     )
       return
+    if (uncertain.current || !readyWorkspace.current?.project) return
     if (selectedModule.current === module) return
     retireOntology()
     disconnectQuery()
@@ -215,7 +216,7 @@ export function App() {
     return true
   }, [])
   const applyRestored = useCallback(
-    (value: TaskView) => {
+    async (value: TaskView) => {
       if (documentLeaving.current || value.generation < latestGeneration.current) return
       const target = selectionTarget.current
       if (target && (!target.projectId || value.project?.projectId !== target.projectId)) return
@@ -228,6 +229,14 @@ export function App() {
         retireOntology()
         disconnectQuery()
       }
+      // 本次恢复由 open/create 持有时等待其完整 management 尾段；自主恢复则
+      // 在渲染前自行串行完成同等读取。selected-project-version 渲染之后不允许
+      // 仍有 management 调用在飞行（单并发锁会拒绝随后的项目读取）。
+      const owned = admissionTail.current
+      if (owned) await owned
+      else if (management && value.project)
+        await settleManagementTail(management, value.project.projectId)
+      if (documentLeaving.current || value.generation < latestGeneration.current) return
       if (!updateTasks(value)) return
       readyWorkspace.current = value
       management?.select(value.project?.projectId)
@@ -237,10 +246,7 @@ export function App() {
       setTaskError(undefined)
       setProgress(pendingProgress.current.restore(value))
       setSummaries({})
-      // open/create own the complete admission tail and read management state
-      // after their ACK. Autonomous restore waits for that state before mounting.
-      if (!libraryBusy.current && management) void management.readSelected().then(activateWorkspace)
-      else activateWorkspace()
+      activateWorkspace()
     },
     [
       updateTasks,
@@ -261,7 +267,7 @@ export function App() {
     const response = await window.ontolearn?.restoreTasks()
     if (documentLeaving.current || serial !== contextSerial.current) return
     if (response?.ok) {
-      applyRestored(response.data)
+      await applyRestored(response.data)
     } else if (response) setTaskError(response.error)
   }
   async function listProjects(cursor: string | null = null) {
@@ -291,17 +297,15 @@ export function App() {
   async function openProject(projectId: string) {
     const bridge = window.ontolearn
     if (
-      documentLeaving.current ||
       !bridge ||
-      libraryBusy.current ||
-      frozen.current ||
-      management?.unresolved
+      libraryAdmissionBlocked({
+        documentLeaving: documentLeaving.current,
+        libraryBusy: libraryBusy.current,
+        frozen: frozen.current,
+        managementUnresolved: !!management?.unresolved,
+      })
     )
       return
-    if (ontologyDirty.current) {
-      setProjectNotice('请先提交或清空本体编辑表单，再打开其他项目。')
-      return
-    }
     setProjectBusy(true)
     setProjectError(undefined)
     libraryBusy.current = true
@@ -311,14 +315,21 @@ export function App() {
       retireOntology()
       disconnectQuery()
       const response = await bridge.openProject({ projectId })
-      if (response.ok) {
-        setProjectNotice(`项目已打开 · 版本 ${response.data.projectRevision}`)
-        await restore()
-      } else setProjectError(response.error)
+      if (!response.ok) {
+        setProjectError(response.error)
+        return
+      }
+      // 版本渲染（restore → selected-project-version）与交还操作之前，先串行
+      // 完成全部 management 读取；单并发模型下不允许留下在飞行的调用。
+      const tail = settleManagementTail(management, projectId, { refresh: true })
+      admissionTail.current = tail
+      await tail
+      setProjectNotice(`项目已打开 · 版本 ${response.data.projectRevision}`)
+      await restore()
     } catch {
       setProjectError(safeError(undefined))
     } finally {
-      await management?.readSelected()
+      admissionTail.current = undefined
       libraryBusy.current = false
       selectionTarget.current = undefined
       setProjectBusy(false)
@@ -330,18 +341,16 @@ export function App() {
     const bridge = window.ontolearn
     const name = projectName.trim() ? projectName : example ? '设备运维示例' : ''
     if (
-      documentLeaving.current ||
       !bridge ||
-      libraryBusy.current ||
       !name.trim() ||
-      frozen.current ||
-      management?.unresolved
+      libraryAdmissionBlocked({
+        documentLeaving: documentLeaving.current,
+        libraryBusy: libraryBusy.current,
+        frozen: frozen.current,
+        managementUnresolved: !!management?.unresolved,
+      })
     )
       return
-    if (ontologyDirty.current) {
-      setProjectNotice('请先提交或清空本体编辑表单，再新建项目。')
-      return
-    }
     if (
       !createIntent.current &&
       (new TextEncoder().encode(name).length > 4096 || /[\uD800-\uDFFF]/u.test(name))
@@ -390,16 +399,22 @@ export function App() {
       setProjectName('')
       selectionTarget.current = { projectId: created.data.projectId }
       const opened = await bridge.openProject({ projectId: created.data.projectId })
-      if (opened.ok) {
-        setProjectNotice('项目已创建并打开。已提交的更改将保存在本机。')
-        await restore()
-      } else {
+      if (opened.ok) setProjectNotice('项目已创建并打开。已提交的更改将保存在本机。')
+      else {
         setProjectNotice('项目已创建，但打开失败。可刷新项目列表后重新打开。')
         setProjectError(opened.error)
       }
       const listed = await bridge.getProjectCatalog({ pageSize: 64, cursor: null })
       if (listed.ok) setCatalog(listed.data)
-      void management?.refresh()
+      // 与 openProject 相同的准入尾段：全部 management 读取串行完成后，才允许
+      // restore() 渲染新项目版本并把工作台交还出去。
+      await management?.refresh()
+      if (opened.ok) {
+        const tail = settleManagementTail(management, created.data.projectId)
+        admissionTail.current = tail
+        await tail
+        await restore()
+      }
     } catch {
       setProjectError(safeError(undefined))
       setProjectNotice(
@@ -408,7 +423,7 @@ export function App() {
           : '创建结果尚未确认，请核对原请求或项目列表。',
       )
     } finally {
-      await management?.readSelected()
+      admissionTail.current = undefined
       libraryBusy.current = false
       selectionTarget.current = undefined
       setProjectBusy(false)
@@ -532,7 +547,7 @@ export function App() {
         return
       }
       if (update.kind === 'restored') {
-        applyRestored(update.view)
+        void applyRestored(update.view)
         return
       }
       if (update.progress) progressBuffer.remember(update)
@@ -562,11 +577,16 @@ export function App() {
       })
     })
     const initialSerial = contextSerial.current
-    void window.ontolearn?.restoreTasks().then((response) => {
-      if (documentLeaving.current || !live || initialSerial !== contextSerial.current) return
-      if (response.ok) applyRestored(response.data)
-      else if (!current.current) setTaskError(response.error)
-    })
+    void window.ontolearn
+      ?.restoreTasks()
+      .then((response) => {
+        if (documentLeaving.current || !live || initialSerial !== contextSerial.current) return
+        if (response.ok) void applyRestored(response.data)
+        else if (!current.current) setTaskError(response.error)
+      })
+      .catch(() => {
+        /* 初始恢复失败时保持无项目状态；显式操作会给出可见错误。 */
+      })
     return () => {
       live = false
       stop?.()
@@ -720,6 +740,31 @@ export function App() {
             转化为可验证的知识。
           </h1>
           <p className="lead">从本体建模到情景推演，在一个本地项目中逐步学习与验证。</p>
+        </section>
+        <section className="health-panel" aria-labelledby="health-title">
+          <div>
+            <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
+            <h2 id="health-title">检查本地引擎连接</h2>
+            <p>验证桌面应用与 Python 引擎的真实通信。</p>
+          </div>
+          <button
+            onClick={() => void checkEngine()}
+            disabled={checking || workspaceFrozen || managementBlocked}
+          >
+            {checking ? '正在检查…' : '检查本地引擎'}
+            <span aria-hidden="true"> ↗</span>
+          </button>
+          <div className="health-result" role="status" aria-live="polite">
+            {result ? (
+              result.ok ? (
+                `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
+              ) : (
+                <ErrorDetails error={result.error} context="health" />
+              )
+            ) : (
+              '尚未检查。'
+            )}
+          </div>
         </section>
         <section
           className="project-library"
@@ -884,28 +929,6 @@ export function App() {
                 />
               </section>
             )}
-          <section className="health-panel" aria-labelledby="health-title">
-            <div>
-              <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
-              <h2 id="health-title">检查本地引擎连接</h2>
-              <p>验证桌面应用与 Python 引擎的真实通信。</p>
-            </div>
-            <button onClick={() => void checkEngine()} disabled={checking}>
-              {checking ? '正在检查…' : '检查本地引擎'}
-              <span aria-hidden="true"> ↗</span>
-            </button>
-            <div className="health-result" role="status" aria-live="polite">
-              {result ? (
-                result.ok ? (
-                  `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
-                ) : (
-                  <ErrorDetails error={result.error} context="health" />
-                )
-              ) : (
-                '尚未检查。'
-              )}
-            </div>
-          </section>
           {connection && (
             <section role="status" aria-label="引擎连接状态">
               <h2>
