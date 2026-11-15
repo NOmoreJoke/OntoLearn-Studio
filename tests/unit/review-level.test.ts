@@ -30,6 +30,7 @@ describe('review level path rules', () => {
     ['packages/engine/src/ontolearn_engine/storage.py', 'L2'],
     ['scripts/verify-sources.mjs', 'L2'],
     ['.github/review-policy.json', 'L2'],
+    ['docs/process/review-checklist.md', 'L2'],
     ['scripts/review-level-core.mjs', 'L2'],
     ['docs/prd/PRD.md', 'L2'],
     ['apps/desktop/src/renderer/App.tsx', 'L1'],
