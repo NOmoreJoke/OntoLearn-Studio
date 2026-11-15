@@ -29,6 +29,7 @@
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
     "ci:quality": "uv run --frozen python scripts/ci-quality-schedule.py",
     "verify:sources": "node scripts/verify-sources.mjs",
+    "review:level": "node scripts/review-level.mjs",
     "typecheck:contracts": "npm run typecheck --workspace @ontolearn/contracts",
     "typecheck:unit": "tsc --noEmit -p tsconfig.unit.json",
     "preengine:check": "node scripts/verify-frozen-review-sources.mjs"

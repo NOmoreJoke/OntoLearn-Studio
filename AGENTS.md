@@ -8,3 +8,4 @@
 - 不提交凭据、业务数据和运行数据库；归档 PRD、审查、.pen 不批量格式化。
 - 使用 npm workspace 和 uv workspace，提交两种锁文件。运行 `npm run check` 与 `npm run verify:sources`；桌面或桥接改动运行 `npm run test:e2e`。
 - 复杂或高风险交付使用独立 agent 审查，避免共享文件争写。验收结果明确区分静态、运行、打包和生产证据。
+- 审查按 [审查分级政策](docs/process/review-policy.md) 执行：L0 自动 / L1 单审 / L2 双审，用 `npm run review:level` 计算等级；先 CI 后审查，补丁未变的 rebase 不复审，复审最多 2 轮。
