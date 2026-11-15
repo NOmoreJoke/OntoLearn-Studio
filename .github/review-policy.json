@@ -1,5 +1,5 @@
 {
-  "$comment": "审查分级规则，说明见 docs/process/review-policy.md。按顺序首个匹配生效；未匹配文件默认 L1；PR 等级取所有文件最高值。本文件与 scripts/review-level*.mjs 自身为 L2，防止自我降级。",
+  "$comment": "审查分级规则，说明见 docs/process/review-policy.md。按顺序首个匹配生效；未匹配文件默认 L1；PR 等级取所有文件最高值。分级规则（本文件）、策略文档（docs/process/review-policy.md、docs/process/review-checklist.md）、规则脚本（scripts/review-level*）与规则测试（tests/unit/review-level*.test.ts）同受 L2，且脚本内置不可降级 L2 硬底线并以 max(基线策略, head 策略) 计算，防止自我降级。",
   "version": 1,
   "defaultLevel": "L1",
   "rules": [
@@ -8,10 +8,10 @@
       "reason": "审查策略自身",
       "paths": [
         ".github/review-policy.json",
-        "scripts/review-level.mjs",
-        "scripts/review-level-core.mjs",
-        "scripts/review-level-core.d.mts",
-        "docs/process/review-checklist.md"
+        "docs/process/review-policy.md",
+        "docs/process/review-checklist.md",
+        "scripts/review-level*",
+        "tests/unit/review-level*.test.ts"
       ]
     },
     {
@@ -31,11 +31,7 @@
     {
       "level": "L2",
       "reason": "公共契约",
-      "paths": [
-        "packages/contracts/src/**",
-        "packages/contracts/v2/**",
-        "packages/contracts/python/**"
-      ]
+      "paths": ["packages/contracts/**"]
     },
     {
       "level": "L2",
@@ -45,7 +41,14 @@
     {
       "level": "L2",
       "reason": "门禁与证据校验脚本（改动可能削弱门禁）",
-      "paths": ["scripts/verify-*", "scripts/i04_matrix_evidence.py", "docs/source-manifest.json"]
+      "paths": [
+        ".github/workflows/**",
+        "scripts/verify-*",
+        "scripts/ci-quality-schedule.py",
+        "scripts/run-engine-tests.py",
+        "scripts/i04_matrix_evidence.py",
+        "docs/source-manifest.json"
+      ]
     },
     {
       "level": "L2",
@@ -69,12 +72,11 @@
     },
     {
       "level": "L1",
-      "reason": "渲染层、测试、CI、设计文档、示例资源、工具配置",
+      "reason": "渲染层、测试、设计文档、示例资源、工具配置",
       "paths": [
         "apps/desktop/src/**",
         "tests/**",
         "packages/engine/tests/**",
-        ".github/workflows/**",
         "docs/architecture/**",
         "docs/iterations/**",
         "docs/process/**",
@@ -87,7 +89,7 @@
     }
   ],
   "dependencies": {
-    "$comment": "package.json 依赖变化单独判定；锁文件随其 manifest 结果，单独变动按 L1。",
+    "$comment": "package.json 依赖变化单独判定；Python 清单（pyproject.toml）保守按 L2；锁文件随其 manifest 结果，单独变动按 L1。",
     "manifests": [
       "package.json",
       "apps/desktop/package.json",

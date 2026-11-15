@@ -303,7 +303,7 @@
 
 ### M6 打包、CI 与发布验收（18 条）
 
-- 触发路径：`apps/desktop/electron-builder.yml`、`electron.vite.config.ts`、`scripts/build*`、`scripts/run-*`、`.github/workflows/**`、`tests/e2e/**`；部署管线、一键回滚、零停机、feature flags、环境一致、IaC、压测、预发测试数据、老旧硬件（五年前的笔记本）、on-call/SLA、弱网（酒店 Wi-Fi）、README 一小时本地跑通、支持与后台面板。
+- 触发路径：`apps/desktop/electron-builder.yml`、`electron.vite.config.ts`、`scripts/build*`、`scripts/run-*`、`.github/workflows/**`、`tests/e2e/**`、`scripts/verify-*`、`docs/source-manifest.json`、`scripts/ci-quality-schedule.py`、`scripts/run-engine-tests.py`、`scripts/review-level*`、`.github/review-policy.json`、`docs/process/review-policy.md`、`docs/process/review-checklist.md`、`tests/unit/review-level*.test.ts`；部署管线、一键回滚、零停机、feature flags、环境一致、IaC、压测、预发测试数据、老旧硬件（五年前的笔记本）、on-call/SLA、弱网（酒店 Wi-Fi）、README 一小时本地跑通、支持与后台面板。
 - 不适用时如何跳过：变更不触及打包配置、构建脚本、CI workflow 或 E2E，且不声称发布/验收，整模块跳过并注明"未触发 M6"。
 
 #### 构建与环境（3 条）
@@ -448,3 +448,4 @@
 - 第 2 组（计费与税务）：引入订阅、付费授权、发票开具或计费计量时重激活。当前无任何计费逻辑，默认整组不适用。
 - 第 3 组（公网云基础设施与邮件）：部署任何公网服务端组件（自更新分发、遥测接收端、云后端）或开始发送事务性邮件时重激活。当前无公网部署面，默认整组不适用。
 - 第 4 组（受监管与合同合规）：处理受监管个人数据（患者记录等）、签署含 SOC 2/HIPAA/BAA/GDPR 数据驻留条款的合同、或企业客户合同明确要求无障碍合规认证时重激活。当前均不成立，默认整组不适用。
+- 以实际 diff 为准：只要变更实际触发第 1–4 组任一重激活条件，审查员应直接重激活对应组并整组审查，不因任务书未标注而跳过。

@@ -13,6 +13,9 @@ export interface FileResult {
   reason: string
 }
 
+/** 不可通过策略 JSON 覆盖的 L2 硬底线路径 glob。 */
+export const IMMUTABLE_L2_PATTERNS: string[]
+
 export function maxLevel(...levels: ReviewLevel[]): ReviewLevel
 export function globToRegExp(glob: string): RegExp
 export function classifyPath(
@@ -27,5 +30,6 @@ export function classifyPackageJson(
 ): { level: ReviewLevel; reasons: string[] }
 export function classifyChange(
   files: { path: string; base?: string | null; head?: string | null }[],
-  policy: ReviewPolicy,
+  headPolicy: ReviewPolicy,
+  basePolicy?: ReviewPolicy | null,
 ): { level: ReviewLevel; files: FileResult[] }
