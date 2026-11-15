@@ -1,5 +1,5 @@
 {
-  "$comment": "审查分级规则，说明见 docs/process/review-policy.md。按顺序首个匹配生效；未匹配文件默认 L1；PR 等级取所有文件最高值。分级规则（本文件）、策略文档（docs/process/review-policy.md、docs/process/review-checklist.md）、规则脚本（scripts/review-level*）与规则测试（tests/unit/review-level*.test.ts）同受 L2，且脚本内置不可降级 L2 硬底线并以 max(基线策略, head 策略) 计算，防止自我降级。",
+  "$comment": "审查分级规则，说明见 docs/process/review-policy.md。按顺序首个匹配生效；未匹配文件默认 L1；PR 等级取所有文件最高值。分级规则（本文件）、策略文档（docs/process/review-policy.md、docs/process/review-checklist.md）、规则脚本（scripts/review-level*）与规则测试及清单 fixture（tests/unit/review-level*，含 review-level-checklist-fixture.txt）同受 L2，且脚本内置不可降级 L2 硬底线并以 max(基线策略, head 策略) 计算，防止自我降级。",
   "version": 1,
   "defaultLevel": "L1",
   "rules": [
@@ -11,7 +11,7 @@
         "docs/process/review-policy.md",
         "docs/process/review-checklist.md",
         "scripts/review-level*",
-        "tests/unit/review-level*.test.ts"
+        "tests/unit/review-level*"
       ]
     },
     {
@@ -89,7 +89,7 @@
     }
   ],
   "dependencies": {
-    "$comment": "package.json 依赖变化单独判定；Python 清单（pyproject.toml）保守按 L2；锁文件随其 manifest 结果，单独变动按 L1。",
+    "$comment": "package.json 依赖变化单独判定；Python 清单（pyproject.toml）保守按 L2；锁文件仅随所属生态清单（lockfileGroups 显式分组；未分组时按生态文件名兜底：npm 系锁文件只随 package.json 系 manifest，uv/poetry 锁文件只随 pyproject.toml 系 manifest），单独变动按 L1。",
     "manifests": [
       "package.json",
       "apps/desktop/package.json",
@@ -98,6 +98,20 @@
       "pyproject.toml"
     ],
     "lockfiles": ["package-lock.json", "uv.lock"],
+    "lockfileGroups": [
+      {
+        "lockfiles": ["package-lock.json"],
+        "manifests": [
+          "package.json",
+          "apps/desktop/package.json",
+          "packages/contracts/package.json"
+        ]
+      },
+      {
+        "lockfiles": ["uv.lock"],
+        "manifests": ["pyproject.toml", "packages/engine/pyproject.toml"]
+      }
+    ],
     "critical": [
       "electron",
       "electron-builder",

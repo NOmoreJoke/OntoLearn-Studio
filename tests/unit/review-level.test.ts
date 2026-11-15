@@ -10,6 +10,7 @@ import {
   classifyPackageJson,
   classifyPath,
   globToRegExp,
+  validateSourceManifest,
   type ReviewPolicy,
 } from '../../scripts/review-level-core.mjs'
 
@@ -30,6 +31,33 @@ describe('review level glob', () => {
   })
 })
 
+describe('canonical repo path guard', () => {
+  it.each([
+    ['./.github/review-policy.json', '前导 ./'],
+    ['/etc/passwd', '前导 /'],
+    ['scripts\\review-level.mjs', '反斜杠'],
+    ['', '空路径'],
+    ['a/../b', '.. 段'],
+    ['a/./b', '. 段'],
+    ['a//b', '空段'],
+    ['a/', '尾部斜杠'],
+  ])('rejects non-canonical path %s（%s）', (path) => {
+    expect(() => classifyPath(path, policy)).toThrow(/Fail-Closed/)
+  })
+
+  it('fails closed inside classifyChange as well', () => {
+    expect(() => classifyChange([{ path: '../evil.ts' }], policy)).toThrow(/Fail-Closed/)
+    expect(() =>
+      classifyChange(
+        [{ path: 'package.json', base: '{}', head: '{}' }, { path: './uv.lock' }],
+        policy,
+      ),
+    ).toThrow(/Fail-Closed/)
+    // 合法相对路径不受影响
+    expect(classifyChange([{ path: 'a/b.ts' }], policy).level).toBe('L1')
+  })
+})
+
 describe('review level path rules', () => {
   it.each([
     ['apps/desktop/src/main/window-security.ts', 'L2'],
@@ -46,6 +74,7 @@ describe('review level path rules', () => {
     ['scripts/review-level-core.mjs', 'L2'],
     ['scripts/review-level-utils.mjs', 'L2'],
     ['tests/unit/review-level.test.ts', 'L2'],
+    ['tests/unit/review-level-checklist-fixture.txt', 'L2'],
     ['.github/workflows/ci.yml', 'L2'],
     ['.github/workflows/release.yml', 'L2'],
     ['docs/prd/PRD.md', 'L2'],
@@ -90,6 +119,70 @@ describe('review level dependency rules', () => {
     // 区间前缀改变不得判 none
     expect(bumpKind('1.0.0', '^1.0.0')).toBe('unknown')
     expect(bumpKind('^1.0.0', '~1.0.0')).toBe('unknown')
+  })
+
+  it('refuses to stringify non-string specs (nested objects, null, undefined)', () => {
+    // 嵌套 overrides 对象：禁止 String() 后把两侧都变 "[object Object]" 误判为无变化
+    expect(
+      bumpKind({ bar: '1.0.0' } as unknown as string, { bar: '2.0.0' } as unknown as string),
+    ).toBe('unknown')
+    expect(bumpKind(null as unknown as string, '1.0.0')).toBe('unknown')
+    expect(bumpKind('1.0.0', undefined as unknown as string)).toBe('unknown')
+    expect(bumpKind(['1.0.0'] as unknown as string, ['2.0.0'] as unknown as string)).toBe('unknown')
+  })
+
+  it('classifies nested overrides/resolutions object specs recursively and conservatively', () => {
+    const nested = (v: string) => JSON.stringify({ overrides: { foo: { bar: v } } })
+    // 子条目主版本变化 → L2（Codex R2 反例：原实现误判 L0）
+    expect(classifyPackageJson(nested('1.0.0'), nested('2.0.0'), policy).level).toBe('L2')
+    // 子条目 0.x 次版本 → L2
+    expect(classifyPackageJson(nested('0.3.0'), nested('0.4.0'), policy).level).toBe('L2')
+    // 子条目不可解析 spec → L2
+    expect(classifyPackageJson(nested('latest'), nested('2.0.0'), policy).level).toBe('L2')
+    // 子条目次/补丁版本 → L1（runtime 语义）
+    expect(classifyPackageJson(nested('1.0.0'), nested('1.0.1'), policy).level).toBe('L1')
+    expect(classifyPackageJson(nested('1.0.0'), nested('1.1.0'), policy).level).toBe('L1')
+    // 嵌套键新增/删除（结构变化）→ L2
+    expect(
+      classifyPackageJson(
+        JSON.stringify({ overrides: { foo: { bar: '1.0.0' } } }),
+        JSON.stringify({ overrides: { foo: { bar: '1.0.0', baz: '2.0.0' } } }),
+        policy,
+      ).level,
+    ).toBe('L2')
+    expect(
+      classifyPackageJson(
+        JSON.stringify({ overrides: { foo: { bar: '1.0.0', baz: '2.0.0' } } }),
+        JSON.stringify({ overrides: { foo: { bar: '1.0.0' } } }),
+        policy,
+      ).level,
+    ).toBe('L2')
+    // 对象 → 标量类型切换 → L2
+    expect(
+      classifyPackageJson(
+        JSON.stringify({ overrides: { foo: { bar: '1.0.0' } } }),
+        JSON.stringify({ overrides: { foo: '2.0.0' } }),
+        policy,
+      ).level,
+    ).toBe('L2')
+    // 嵌套对象纯 key 重排 → 无变化 L0
+    expect(
+      classifyPackageJson(
+        JSON.stringify({ overrides: { foo: { bar: '1.0.0', baz: '2.0.0' } } }),
+        JSON.stringify({ overrides: { foo: { baz: '2.0.0', bar: '1.0.0' } } }),
+        policy,
+      ).level,
+    ).toBe('L0')
+    // resolutions 同样处理
+    const res = (v: string) => JSON.stringify({ resolutions: { foo: { bar: v } } })
+    expect(classifyPackageJson(res('1.0.0'), res('2.0.0'), policy).level).toBe('L2')
+    expect(
+      classifyPackageJson(
+        JSON.stringify({ resolutions: { foo: { bar: '1.0.0', baz: '2.0.0' } } }),
+        JSON.stringify({ resolutions: { foo: { baz: '2.0.0', bar: '1.0.0' } } }),
+        policy,
+      ).level,
+    ).toBe('L0')
   })
 
   it.each([
@@ -214,6 +307,89 @@ describe('review level change summary', () => {
     expect(withManifest.level).toBe('L2')
     expect(withManifest.files.find((f) => f.path === 'uv.lock')?.level).toBe('L0')
   })
+
+  it('never lets a foreign-ecosystem manifest downgrade an unrelated lockfile', () => {
+    // Codex R2 反例：package.json 开发依赖 patch 曾把独立改动的 uv.lock 降为 L0
+    const npmPatchPlusUv = classifyChange(
+      [
+        {
+          path: 'package.json',
+          base: pkg({ foo: '1.0.0' }),
+          head: pkg({ foo: '1.0.1' }),
+        },
+        { path: 'uv.lock' },
+      ],
+      policy,
+    )
+    expect(npmPatchPlusUv.files.find((f) => f.path === 'uv.lock')?.level).toBe('L1')
+    expect(npmPatchPlusUv.level).toBe('L1')
+    // 反向：Python 清单变化不降级 npm 锁文件
+    const pyPlusNpmLock = classifyChange(
+      [{ path: 'pyproject.toml' }, { path: 'package-lock.json' }],
+      policy,
+    )
+    expect(pyPlusNpmLock.files.find((f) => f.path === 'package-lock.json')?.level).toBe('L1')
+    // uv.lock 只有随 pyproject.toml 系清单时才判 L0
+    const pyPlusUv = classifyChange([{ path: 'pyproject.toml' }, { path: 'uv.lock' }], policy)
+    expect(pyPlusUv.files.find((f) => f.path === 'uv.lock')?.level).toBe('L0')
+    expect(pyPlusUv.level).toBe('L2')
+    // npm 锁文件仍随 npm 清单
+    const npmFollows = classifyChange(
+      [
+        {
+          path: 'package.json',
+          base: pkg({ 'typescript-eslint': '8.71.2' }),
+          head: pkg({ 'typescript-eslint': '8.71.3' }),
+        },
+        { path: 'package-lock.json' },
+      ],
+      policy,
+    )
+    expect(npmFollows.files.find((f) => f.path === 'package-lock.json')?.level).toBe('L0')
+  })
+
+  it('falls back to ecosystem suffix grouping for lockfiles without explicit groups', () => {
+    // 未声明 lockfileGroups 时按生态文件名兜底：npm 系只随 package.json 系清单
+    const pnpmPolicy: ReviewPolicy = {
+      ...policy,
+      dependencies: { manifests: ['package.json'], lockfiles: ['pnpm-lock.yaml'], critical: [] },
+    }
+    const follows = classifyChange(
+      [
+        {
+          path: 'package.json',
+          base: pkg({ foo: '1.0.0' }),
+          head: pkg({ foo: '1.0.1' }),
+        },
+        { path: 'pnpm-lock.yaml' },
+      ],
+      pnpmPolicy,
+    )
+    expect(follows.files.find((f) => f.path === 'pnpm-lock.yaml')?.level).toBe('L0')
+    // uv 生态兜底：uv.lock 只随 pyproject.toml，npm 清单无法降级它
+    const uvPolicy: ReviewPolicy = {
+      ...policy,
+      dependencies: {
+        manifests: ['package.json', 'pyproject.toml'],
+        lockfiles: ['uv.lock'],
+        critical: [],
+      },
+    }
+    const npmOnly = classifyChange(
+      [
+        {
+          path: 'package.json',
+          base: pkg({ foo: '1.0.0' }),
+          head: pkg({ foo: '1.0.1' }),
+        },
+        { path: 'uv.lock' },
+      ],
+      uvPolicy,
+    )
+    expect(npmOnly.files.find((f) => f.path === 'uv.lock')?.level).toBe('L1')
+    const pyOnly = classifyChange([{ path: 'pyproject.toml' }, { path: 'uv.lock' }], uvPolicy)
+    expect(pyOnly.files.find((f) => f.path === 'uv.lock')?.level).toBe('L0')
+  })
 })
 
 describe('immutable L2 floor and trusted base policy', () => {
@@ -225,6 +401,7 @@ describe('immutable L2 floor and trusted base policy', () => {
     'scripts/review-level-core.mjs',
     'scripts/review-level-utils.mjs',
     'tests/unit/review-level.test.ts',
+    'tests/unit/review-level-checklist-fixture.txt',
     '.github/workflows/ci.yml',
     'scripts/ci-quality-schedule.py',
     'scripts/run-engine-tests.py',
@@ -270,13 +447,64 @@ describe('immutable L2 floor and trusted base policy', () => {
     expect(classifyChange([{ path: '.github/review-policy.json' }], hostile, null).level).toBe('L2')
   })
 
+  it('keeps the checklist fixture at L2 even when a hostile policy targets it for downgrade', () => {
+    const fixtureHostile: ReviewPolicy = {
+      version: 1,
+      defaultLevel: 'L0',
+      rules: [
+        {
+          level: 'L0',
+          reason: '敌意策略试图将清单 fixture 降为 L0',
+          paths: ['tests/unit/review-level-checklist-fixture.txt'],
+        },
+      ],
+    }
+    expect(
+      classifyChange([{ path: 'tests/unit/review-level-checklist-fixture.txt' }], fixtureHostile)
+        .level,
+    ).toBe('L2')
+  })
+
   it('exposes the immutable floor patterns', () => {
     expect(IMMUTABLE_L2_PATTERNS).toContain('.github/review-policy.json')
     expect(IMMUTABLE_L2_PATTERNS).toContain('scripts/review-level*')
-    expect(IMMUTABLE_L2_PATTERNS).toContain('tests/unit/review-level*.test.ts')
+    expect(IMMUTABLE_L2_PATTERNS).toContain('tests/unit/review-level*')
     expect(IMMUTABLE_L2_PATTERNS).toContain('.github/workflows/**')
     expect(IMMUTABLE_L2_PATTERNS).toContain('packages/contracts/**')
     expect(IMMUTABLE_L2_PATTERNS).toContain('docs/prd/**')
+  })
+})
+
+describe('source manifest evidence schema validation', () => {
+  const sha = 'a'.repeat(64)
+
+  it('accepts a well-formed manifest with hex digests', () => {
+    const valid = {
+      files: [
+        { path: 'scripts/a.py', sha256: sha },
+        { path: 'b.ts', sha256: 'B'.repeat(64) },
+      ],
+    }
+    expect(validateSourceManifest(valid).files).toHaveLength(2)
+  })
+
+  it.each([
+    ['空对象 {}', {}],
+    ['files 缺失', { entries: [] }],
+    ['files 空数组', { files: [] }],
+    ['null', null],
+    ['数组', []],
+    ['字符串', 'x'],
+    ['entry 非对象', { files: ['a'] }],
+    ['entry null', { files: [null] }],
+    ['path 为空', { files: [{ path: '', sha256: sha }] }],
+    ['path 非法（../）', { files: [{ path: '../a', sha256: sha }] }],
+    ['path 非法（前导 /）', { files: [{ path: '/a', sha256: sha }] }],
+    ['sha 长度不足', { files: [{ path: 'a', sha256: 'abc123' }] }],
+    ['sha 非十六进制', { files: [{ path: 'a', sha256: 'z'.repeat(64) }] }],
+    ['sha 缺失', { files: [{ path: 'a' }] }],
+  ])('fails closed on %s', (_label, manifest) => {
+    expect(() => validateSourceManifest(manifest)).toThrow(/Fail-Closed/)
   })
 })
 
@@ -325,6 +553,9 @@ describe('review level CLI', () => {
     expect(out.mechanical.sourceManifest.ok).toBe(true)
     expect(out.mechanical.sourceManifest.checkedCount).toBeGreaterThan(0)
     expect(out.mechanical.sourceManifest.mismatches).toEqual([])
+    // 自检元信息：本 PR 触及策略/分级器路径 → G0 后必须以可信基线脚本执行分级
+    expect(out.selfCheck.policyOrClassifierTouched).toBe(true)
+    expect(out.selfCheck.trustedBaselineRule).toBe('run_from_trusted_base_after_g0')
   })
 
   it('rejects unknown options and more than two positional args with exit code 2', () => {

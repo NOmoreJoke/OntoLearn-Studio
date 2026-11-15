@@ -1,10 +1,20 @@
 export type ReviewLevel = 'L0' | 'L1' | 'L2'
 
+export interface LockfileGroup {
+  lockfiles?: string[]
+  manifests?: string[]
+}
+
 export interface ReviewPolicy {
   version: number
   defaultLevel: ReviewLevel
   rules: { level: ReviewLevel; reason: string; paths: string[] }[]
-  dependencies?: { manifests?: string[]; lockfiles?: string[]; critical?: string[] }
+  dependencies?: {
+    manifests?: string[]
+    lockfiles?: string[]
+    lockfileGroups?: LockfileGroup[]
+    critical?: string[]
+  }
 }
 
 export interface FileResult {
@@ -17,6 +27,8 @@ export interface FileResult {
 export const IMMUTABLE_L2_PATTERNS: string[]
 
 export function maxLevel(...levels: ReviewLevel[]): ReviewLevel
+/** 规范仓库路径防线：空路径、反斜杠、前导 / 或 ./、.. 段等非法输入直接抛错（Fail-Closed）。 */
+export function assertCanonicalRepoPath(path: string): string
 export function globToRegExp(glob: string): RegExp
 export function classifyPath(
   path: string,
@@ -33,3 +45,13 @@ export function classifyChange(
   headPolicy: ReviewPolicy,
   basePolicy?: ReviewPolicy | null,
 ): { level: ReviewLevel; files: FileResult[] }
+
+export interface SourceManifestEntry {
+  path: string
+  sha256: string
+}
+export interface SourceManifest {
+  files: SourceManifestEntry[]
+}
+/** 严格校验 source-manifest 证据架构：非对象、空/缺失 files、非法条目一律抛错（Fail-Closed）。 */
+export function validateSourceManifest(manifest: unknown, label?: string): SourceManifest

@@ -5,7 +5,7 @@
 // 取最高等级）而非工作树，并叠加不可降级 L2 硬底线；--json 附带 §4.6 机械核对结论。
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { classifyChange } from './review-level-core.mjs'
+import { classifyChange, validateSourceManifest } from './review-level-core.mjs'
 
 const USAGE = '用法：node scripts/review-level.mjs [base=origin/develop] [head=HEAD] [--json]'
 
@@ -75,6 +75,30 @@ function validatePolicy(p, label) {
     if (!['L0', 'L1', 'L2'].includes(rule.level)) throw new Error(`${label} rules[${i}].level 非法`)
     if (!Array.isArray(rule.paths)) throw new Error(`${label} rules[${i}].paths 不是数组`)
   }
+  if (p.dependencies !== undefined) {
+    if (
+      typeof p.dependencies !== 'object' ||
+      p.dependencies === null ||
+      Array.isArray(p.dependencies)
+    )
+      throw new Error(`${label} dependencies 不是对象`)
+    for (const key of ['manifests', 'lockfiles', 'critical']) {
+      if (key in p.dependencies && !Array.isArray(p.dependencies[key]))
+        throw new Error(`${label} dependencies.${key} 不是数组`)
+    }
+    if ('lockfileGroups' in p.dependencies) {
+      if (!Array.isArray(p.dependencies.lockfileGroups))
+        throw new Error(`${label} dependencies.lockfileGroups 不是数组`)
+      for (const [i, g] of p.dependencies.lockfileGroups.entries()) {
+        if (typeof g !== 'object' || g === null || Array.isArray(g))
+          throw new Error(`${label} dependencies.lockfileGroups[${i}] 不是对象`)
+        for (const key of ['lockfiles', 'manifests']) {
+          if (key in g && !Array.isArray(g[key]))
+            throw new Error(`${label} dependencies.lockfileGroups[${i}].${key} 不是数组`)
+        }
+      }
+    }
+  }
   return p
 }
 
@@ -114,7 +138,20 @@ try {
     entries.push({ status: tokens[i], path: tokens[i + 1] })
   }
 
-  const manifests = new Set((headPolicy.dependencies ?? {}).manifests ?? [])
+  // manifest 集合取 head 与基线策略双方 dependencies.manifests 的并集（Fail-Closed 读取）：
+  // 任一侧新增声明的清单都必须读取前后文本，绝不因单侧缺失而漏判清单变化；
+  // 双方声明存在分歧时明确提示基线分歧，避免误导性的静默行为。
+  const headManifests = (headPolicy.dependencies ?? {}).manifests ?? []
+  const baseManifests = (basePolicy?.dependencies ?? {}).manifests ?? []
+  const manifests = new Set([...headManifests, ...baseManifests])
+  const manifestDivergence = [
+    ...headManifests.filter((m) => !baseManifests.includes(m)),
+    ...baseManifests.filter((m) => !headManifests.includes(m)),
+  ]
+  if (basePolicy && manifestDivergence.length > 0)
+    process.stderr.write(
+      `注意：基线与 head 策略的 dependencies.manifests 存在分歧（${manifestDivergence.join('、')}），已按并集读取（Fail-Closed）。\n`,
+    )
   // 只有 status 为 A 允许 base 为 null，只有 D 允许 head 为 null；其余读取失败一律抛错
   const manifestText = (rev, path, status, side) => {
     if ((side === 'base' && status === 'A') || (side === 'head' && status === 'D')) return null
@@ -162,9 +199,11 @@ try {
     } catch (e) {
       throw new Error(`head 的 docs/source-manifest.json 不是合法 JSON：${e.message}`, { cause: e })
     }
+    // 严格证据架构校验（Fail-Closed）：{}、空/缺失 files、非法条目一律失败，杜绝 0 条假成功
+    validateSourceManifest(manifest)
     const mismatches = []
     let checkedCount = 0
-    for (const entry of manifest.files ?? []) {
+    for (const entry of manifest.files) {
       checkedCount++
       const blob = readBlobAt(headSha, entry.path)
       const actual = blob === null ? null : createHash('sha256').update(blob).digest('hex')
@@ -175,10 +214,39 @@ try {
   })()
   const mechanical = { ok: sourceManifest.ok, changedFileDigests, sourceManifest }
 
+  // 只读自检元信息：候选是否触及策略/分级器自身路径；G0 合入后此类候选必须以
+  // 可信基线（origin/develop）脚本副本执行分级并比对输出（见 docs/process/review-policy.md §5）。
+  const POLICY_OR_CLASSIFIER_PATHS = new Set([
+    '.github/review-policy.json',
+    'docs/process/review-policy.md',
+    'docs/process/review-checklist.md',
+  ])
+  const policyOrClassifierTouched = entries.some(
+    (e) =>
+      POLICY_OR_CLASSIFIER_PATHS.has(e.path) ||
+      e.path.startsWith('scripts/review-level') ||
+      e.path.startsWith('tests/unit/review-level'),
+  )
+  const selfCheck = {
+    policyOrClassifierTouched,
+    trustedBaselineRule: 'run_from_trusted_base_after_g0',
+  }
+
   if (json) {
     console.log(
       JSON.stringify(
-        { base, head, baseSha, headSha, mergeBase, baseTree, headTree, ...result, mechanical },
+        {
+          base,
+          head,
+          baseSha,
+          headSha,
+          mergeBase,
+          baseTree,
+          headTree,
+          ...result,
+          mechanical,
+          selfCheck,
+        },
         null,
         2,
       ),
@@ -200,6 +268,10 @@ try {
         ? 'head 策略缺失，回退基线策略'
         : '基线与 head 策略取最高等级'
     console.log(`\n策略基线：${baseNote}`)
+    if (policyOrClassifierTouched)
+      console.log(
+        '自检：本候选触及策略/分级器自身路径，强制 L2；G0 合入后总控与自动门禁必须以可信基线（origin/develop）脚本副本执行分级并比对输出（见 docs/process/review-policy.md §5）。',
+      )
     console.log(
       `机械核对：${mechanical.ok ? '通过' : '未通过'}（${changedFileDigests.length} 个变更文件摘要、${sourceManifest.checkedCount} 个清单条目）`,
     )

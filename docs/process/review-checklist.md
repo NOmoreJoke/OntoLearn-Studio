@@ -303,8 +303,8 @@
 
 ### M6 打包、CI 与发布验收（18 条）
 
-- 触发路径：`apps/desktop/electron-builder.yml`、`electron.vite.config.ts`、`scripts/build*`、`scripts/run-*`、`.github/workflows/**`、`tests/e2e/**`、`scripts/verify-*`、`docs/source-manifest.json`、`scripts/ci-quality-schedule.py`、`scripts/run-engine-tests.py`、`scripts/review-level*`、`.github/review-policy.json`、`docs/process/review-policy.md`、`docs/process/review-checklist.md`、`tests/unit/review-level*.test.ts`；部署管线、一键回滚、零停机、feature flags、环境一致、IaC、压测、预发测试数据、老旧硬件（五年前的笔记本）、on-call/SLA、弱网（酒店 Wi-Fi）、README 一小时本地跑通、支持与后台面板。
-- 不适用时如何跳过：变更不触及打包配置、构建脚本、CI workflow 或 E2E，且不声称发布/验收，整模块跳过并注明"未触发 M6"。
+- 触发路径：`apps/desktop/electron-builder.yml`、`electron.vite.config.ts`、`scripts/build*`、`scripts/run-*`、`.github/workflows/**`、`tests/e2e/**`、`scripts/verify-*`、`docs/source-manifest.json`、`scripts/ci-quality-schedule.py`、`scripts/run-engine-tests.py`、`scripts/review-level*`、`.github/review-policy.json`、`docs/process/review-policy.md`、`docs/process/review-checklist.md`、`tests/unit/review-level*`；部署管线、一键回滚、零停机、feature flags、环境一致、IaC、压测、预发测试数据、老旧硬件（五年前的笔记本）、on-call/SLA、弱网（酒店 Wi-Fi）、README 一小时本地跑通、支持与后台面板。
+- 不适用时如何跳过：变更不触及打包配置、构建脚本、CI workflow 或 E2E，不触及门禁与证据路径（`docs/source-manifest.json`、`.github/review-policy.json`、`docs/process/review-policy.md`、`docs/process/review-checklist.md`、`scripts/review-level*`、`tests/unit/review-level*` 任一改动均不得跳过 M6），且不声称发布/验收，整模块跳过并注明"未触发 M6"。
 
 #### 构建与环境（3 条）
 

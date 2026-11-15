@@ -25,14 +25,14 @@ PR 等级取所有变更文件的最高等级。L0 内容应拆成独立 PR，�
 - 需求原文 `docs/prd/**`（同时需要用户授权）
 - 关键依赖（electron、electron-builder、typescript、vite、react 等）**大版本**变化；运行时依赖新增、移除或大版本变化；运行时依赖 spec 无法可靠解析（区间、浮动 tag、URL 等）时保守按 L2
 - Python 依赖与包配置清单（`pyproject.toml`、`packages/engine/pyproject.toml`）任何变化，保守按 L2
-- 本政策自身（`.github/review-policy.json`、`docs/process/review-policy.md`、`docs/process/review-checklist.md`、`scripts/review-level*`、`tests/unit/review-level*.test.ts`）
+- 本政策自身（`.github/review-policy.json`、`docs/process/review-policy.md`、`docs/process/review-checklist.md`、`scripts/review-level*`、`tests/unit/review-level*`，含 160 条清单 fixture `review-level-checklist-fixture.txt`）
 - **FR 结算 PR**（声称某 FR 完成）与发布候选：无论路径一律 L2，在 PR 标题或描述中标明 `FR结算`
 
 ## 3. 单审（L1）与免审（L0）
 
-**L1**：渲染层 `apps/desktop/src/renderer/**`（不改 IPC/契约）；测试 `tests/**`、`packages/engine/tests/**`；`docs/architecture/**`、`docs/iterations/**`；示例资源 `resources/**`；其余 `scripts/**`；AGENTS.md、SECURITY.md、licenses；关键依赖次/补丁版本；开发依赖大/次版本；`package.json` 非依赖字段（scripts 等）；锁文件单独变化；未匹配任何规则的文件。
+**L1**：渲染层 `apps/desktop/src/renderer/**`（不改 IPC/契约）；测试 `tests/**`、`packages/engine/tests/**`；`docs/architecture/**`、`docs/iterations/**`、`docs/process/**`（未落入 L2 自保护清单的流程文档）；示例资源 `resources/**`；其余 `scripts/**`；AGENTS.md、SECURITY.md、licenses；关键依赖次/补丁版本；非关键运行时依赖次版本/补丁版本变化；开发依赖大/次版本；`package.json` 非依赖字段（scripts 等）；锁文件单独变化；未匹配任何规则的文件。
 
-**L0**：`docs/reviews/**`、`docs/verification*`、`docs/README.md`、`docs/m0-checklist.md`、`docs/development.md`、`README.md`、`CONTRIBUTING.md`、`design/**`；非关键开发依赖补丁版本；随清单一起变化的锁文件；仓库外 `iteration-control/**` 的计划、交接、状态、回执（由总控确认，不再外部预审）；纯格式化/换行/拼写修复（工具仍按路径计算，必要时由总控在 PR 中注明后按 L0 处理）。
+**L0**：`docs/reviews/**`（仓库内审查记录，由总控在接收检查清单核对时确认，不降级原有人工确认要求）、`docs/verification*`、`docs/README.md`、`docs/m0-checklist.md`、`docs/development.md`、`README.md`、`CONTRIBUTING.md`、`design/**`；非关键开发依赖补丁版本；随**所属生态**清单一起变化的锁文件（npm 锁文件只随 package.json 系清单、`uv.lock` 只随 pyproject.toml 系清单；跨生态清单变化不降级锁文件）；仓库外 `iteration-control/**` 的计划、交接、状态、回执（由总控确认，不再外部预审）；纯格式化/换行/拼写修复（工具仍按路径计算，必要时由总控在 PR 中注明后按 L0 处理）。
 
 > 改动 AGENTS.md 或本政策以**降低**门禁时，除审查外还需要用户明确授权。
 
@@ -67,3 +67,9 @@ npm run review:level -- origin/develop HEAD --json
 工具只计算建议等级。FR 结算、发布候选等**语义升级**判定由 owner/总控在 PR 中标注，以更高者为准；**纯格式化/换行/拼写**按 §3 的 L0 口径处理（须由总控核实并在 PR 说明），不适用"以更高者为准"。
 
 策略合入 `develop` 后，CI 与总控脚本以**可信基线**为下限：工具从 git 对象同时读取 merge-base 与 head 的 `.github/review-policy.json`，按 `max(basePolicy, headPolicy)` 计算等级（基线为 `origin/develop`）；策略文件被删除、改写或降级均无法降低等级，且 `scripts/review-level-core.mjs` 内置不可通过 JSON 覆盖的 L2 硬底线（策略与清单文档、分级脚本及其测试、CI workflow、门禁与证据校验脚本、`packages/contracts/**`、`docs/prd/**` 等）。
+
+### 可信执行来源（G0 引导与后续门禁）
+
+1. **G0 引导阶段**：本工具链为首次引入（G0 / PR #25），不存在更早的可信基线脚本。初始信任依据为：双审冻结的候选提交（R2 定向修复后的 HEAD）+ 两名独立模型对脚本源码与单元测试的全量审计 + 合入后立即在 `origin/develop` 重算并记录输出，以建立初始基线。
+2. **G0 合入后，分级与机械核对的执行代码必须来自可信基线**：总控与后续自动门禁执行分类与机械核对时，必须运行可信基线版本的脚本副本——在 `origin/develop` 干净工作树中执行，或只读检出 `git archive <trusted-base> scripts/review-level.mjs scripts/review-level-core.mjs` 后运行其副本；**严禁仅信任待审 PR 工作树内可能被一同篡改的脚本副本**（待审候选可以同时修改执行器与硬底线，工作树内的"自证"不构成证据）。`--json` 输出的 `selfCheck.policyOrClassifierTouched` 为 `true` 时，还必须附上可信基线脚本与候选脚本对同一范围的输出比对。
+3. **强制 L2 人工/双审比对**：凡触及 `.github/review-policy.json`、`scripts/review-level*`、`docs/process/review-policy.md`、`docs/process/review-checklist.md`、`tests/unit/review-level*` 的候选一律强制 L2，审查时须比对可信基线脚本与候选脚本对同一范围的输出差异。
