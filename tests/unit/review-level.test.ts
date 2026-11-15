@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -513,23 +513,42 @@ describe('source manifest evidence schema validation', () => {
 
 describe('review level CLI', () => {
   const ROOT = fileURLToPath(new URL('../..', import.meta.url))
-  // 隔离环境：剔除全部 GIT_* 变量，防止宿主 worktree/hook 的 GIT_DIR/GIT_WORK_TREE/
-  // GIT_INDEX_FILE 泄漏进临时仓库，保证 CLI 与其内部 git 调用只作用于 tempRepo。
-  const cleanEnv = Object.fromEntries(
-    Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')),
-  )
+  // 共享隔离环境构建器：先按大小写无关剔除全部 GIT_* 变量（拦截 Windows/大小写混合的
+  // Git_Dir、git_work_tree、Git_Index_File 等），再显式注入测试隔离 Git 配置（空的
+  // global/system 配置 + 禁用系统配置 + 禁用终端提示），防止宿主 worktree/hook/全局配置
+  // 泄漏进临时仓库，保证 CLI 与其内部 git 调用只作用于 tempRepo。
+  const buildIsolatedGitEnv = (
+    sourceEnv: NodeJS.ProcessEnv,
+    emptyGitConfigPath: string,
+  ): NodeJS.ProcessEnv => ({
+    ...Object.fromEntries(
+      Object.entries(sourceEnv).filter(([key]) => !key.toUpperCase().startsWith('GIT_')),
+    ),
+    GIT_CONFIG_GLOBAL: emptyGitConfigPath,
+    GIT_CONFIG_SYSTEM: emptyGitConfigPath,
+    GIT_CONFIG_NOSYSTEM: '1',
+    GIT_TERMINAL_PROMPT: '0',
+  })
+  let fixtureRoot = ''
   let tempRepo = ''
+  let emptyGitConfig = ''
+  let emptyHooksDir = ''
+  let isolatedEnv: NodeJS.ProcessEnv = {}
   let baseSha = ''
+  let baseTree = ''
   let l1Sha = ''
+  let l1Tree = ''
+  let l2PolicySha = ''
+  let l2PolicyTree = ''
 
   const git = (...args: string[]) =>
-    execFileSync('git', args, { cwd: tempRepo, env: cleanEnv, encoding: 'utf8' })
+    execFileSync('git', args, { cwd: tempRepo, env: isolatedEnv, encoding: 'utf8' })
   const run = (...cliArgs: string[]) => {
     try {
       const stdout = execFileSync(
         process.execPath,
         [resolve(ROOT, 'scripts/review-level.mjs'), ...cliArgs],
-        { cwd: tempRepo, env: cleanEnv, encoding: 'utf8' },
+        { cwd: tempRepo, env: isolatedEnv, encoding: 'utf8' },
       )
       return { status: 0, stdout, stderr: '' }
     } catch (e) {
@@ -541,25 +560,40 @@ describe('review level CLI', () => {
       }
     }
   }
-
-  beforeAll(() => {
-    tempRepo = mkdtempSync(join(tmpdir(), 'review-level-cli-'))
-    git('init')
-    git('config', 'user.name', 'test')
-    git('config', 'user.email', 'test@example.com')
-    git('config', 'commit.gpgsign', 'false')
-    const write = (relPath: string, content: string) => {
-      const target = join(tempRepo, relPath)
+  const writeUnder =
+    (repoRoot: string) =>
+    (relPath: string, content: string): void => {
+      const target = join(repoRoot, relPath)
       mkdirSync(join(target, '..'), { recursive: true })
       writeFileSync(target, content)
     }
 
-    // base：真实策略文件 + manifest 覆盖的 README + 待删除文件 + 与内容一致的 source-manifest
+  beforeAll(() => {
+    // 夹具根目录统一收纳临时仓库/空配置/空 hooks，afterAll 一次性清理
+    fixtureRoot = mkdtempSync(join(tmpdir(), 'review-level-cli-'))
+    tempRepo = join(fixtureRoot, 'repo')
+    mkdirSync(tempRepo, { recursive: true })
+    emptyGitConfig = join(fixtureRoot, 'empty.gitconfig')
+    writeFileSync(emptyGitConfig, '')
+    emptyHooksDir = join(fixtureRoot, 'empty-hooks')
+    mkdirSync(emptyHooksDir, { recursive: true })
+    isolatedEnv = buildIsolatedGitEnv(process.env, emptyGitConfig)
+    // --template= 禁用宿主 init.templateDir，避免宿主模板（含 hooks 样例）复制进临时仓库
+    git('init', '--template=')
+    git('config', 'user.name', 'test')
+    git('config', 'user.email', 'test@example.com')
+    git('config', 'commit.gpgsign', 'false')
+    git('config', 'core.hooksPath', emptyHooksDir)
+    git('config', 'core.autocrlf', 'false')
+    const write = writeUnder(tempRepo)
+
+    // base：真实策略文件 + manifest 覆盖的 README/docs/guide.md + 待删除文件 + 与内容一致的 source-manifest
     write(
       '.github/review-policy.json',
       readFileSync(resolve(ROOT, '.github/review-policy.json'), 'utf8'),
     )
     write('README.md', 'hello\n')
+    write('docs/guide.md', 'guide\n')
     write('obsolete.txt', 'remove-me\n')
     write(
       'docs/source-manifest.json',
@@ -568,6 +602,7 @@ describe('review level CLI', () => {
           version: 1,
           files: [
             { path: 'README.md', sha256: createHash('sha256').update('hello\n').digest('hex') },
+            { path: 'docs/guide.md', sha256: createHash('sha256').update('guide\n').digest('hex') },
           ],
         },
         null,
@@ -577,6 +612,7 @@ describe('review level CLI', () => {
     git('add', '.')
     git('commit', '-m', 'base')
     baseSha = git('rev-parse', 'HEAD').trim()
+    baseTree = git('rev-parse', 'HEAD^{tree}').trim()
     // 即使 CI 浅克隆（fetch-depth: 1）也能解析默认 origin/develop 基线
     git('update-ref', 'refs/remotes/origin/develop', baseSha)
 
@@ -585,16 +621,20 @@ describe('review level CLI', () => {
     git('add', '.')
     git('commit', '-m', 'l1 frontend')
     l1Sha = git('rev-parse', 'HEAD').trim()
+    l1Tree = git('rev-parse', 'HEAD^{tree}').trim()
 
     // L2（HEAD）：覆盖删除分支（status === 'D'）与策略文档路径（POLICY_OR_CLASSIFIER_PATHS 与 L2 硬底线）
     git('rm', 'obsolete.txt')
     write('docs/process/review-policy.md', '# Review Policy\n')
     git('add', '.')
     git('commit', '-m', 'l2 policy')
+    l2PolicySha = git('rev-parse', 'HEAD').trim()
+    l2PolicyTree = git('rev-parse', 'HEAD^{tree}').trim()
   })
 
   afterAll(() => {
-    rmSync(tempRepo, { recursive: true, force: true })
+    // maxRetries/retryDelay 兼顾 Windows 上文件句柄延迟释放导致的清理失败
+    rmSync(fixtureRoot, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
   })
 
   it('emits L0 with empty mechanical evidence for identical refs', () => {
@@ -605,6 +645,12 @@ describe('review level CLI', () => {
     expect(out.mechanical.ok).toBe(true)
     expect(out.mechanical.changedFileDigests).toEqual([])
     expect(out.selfCheck.policyOrClassifierTouched).toBe(false)
+    // 精确 SHA/tree 断言：同一 ref 两侧的 SHA 与 tree 必须逐位等于夹具提交
+    expect(out.baseSha).toBe(baseSha)
+    expect(out.headSha).toBe(baseSha)
+    expect(out.mergeBase).toBe(baseSha)
+    expect(out.baseTree).toBe(baseTree)
+    expect(out.headTree).toBe(baseTree)
   })
 
   it('emits L1 with per-file digests for non-policy frontend change', () => {
@@ -614,6 +660,12 @@ describe('review level CLI', () => {
     expect(out.level).toBe('L1')
     expect(out.mechanical.ok).toBe(true)
     expect(out.selfCheck.policyOrClassifierTouched).toBe(false)
+    // 精确 SHA/tree 断言：基线即 base 提交，head 即 l1 提交
+    expect(out.baseSha).toBe(baseSha)
+    expect(out.headSha).toBe(l1Sha)
+    expect(out.mergeBase).toBe(baseSha)
+    expect(out.baseTree).toBe(baseTree)
+    expect(out.headTree).toBe(l1Tree)
     let sawAppTsx = false
     for (const digest of out.mechanical.changedFileDigests) {
       expect(digest.status).toMatch(/^[ADMT]$/)
@@ -636,10 +688,17 @@ describe('review level CLI', () => {
     expect(out.mergeBase).toMatch(/^[0-9a-f]{40}$/)
     expect(out.baseTree).toMatch(/^[0-9a-f]{40}$/)
     expect(out.headTree).toMatch(/^[0-9a-f]{40}$/)
+    // 精确 SHA/tree 断言：origin/develop 即 base 提交，HEAD 即 l2 提交
+    expect(out.baseSha).toBe(baseSha)
+    expect(out.headSha).toBe(l2PolicySha)
+    expect(out.mergeBase).toBe(baseSha)
+    expect(out.baseTree).toBe(baseTree)
+    expect(out.headTree).toBe(l2PolicyTree)
     expect(out.level).toBe('L2')
     expect(out.mechanical.ok).toBe(true)
     expect(out.mechanical.sourceManifest.ok).toBe(true)
-    expect(out.mechanical.sourceManifest.checkedCount).toBe(1)
+    // manifest 覆盖 README.md 与 docs/guide.md 两条受控文件，覆盖多条目循环
+    expect(out.mechanical.sourceManifest.checkedCount).toBe(2)
     expect(out.mechanical.sourceManifest.mismatches).toEqual([])
     let sawDelete = false
     let sawNonDelete = false
@@ -672,6 +731,96 @@ describe('review level CLI', () => {
     expect(r.status).not.toBe(0)
     expect(r.stderr).toContain('no-such-ref')
     expect(r.stderr).not.toContain('at ')
+  })
+
+  it('stays hermetic against hostile mixed-case GIT_* vars and a rejecting global hooks config', () => {
+    // 动态隔离回归：宿主环境携带大小写混合 GIT_* 变量（Git_Dir/git_work_tree/Git_Index_File）
+    // 与恶意 GIT_CONFIG_GLOBAL（拒绝型 pre-commit hook + 敌意 user 配置）时，隔离器必须
+    // 剥离全部污染项，夹具提交（敌意 hook 未执行）与 CLI L0 输出均成功且 SHA 精确等于子仓库提交。
+    const hostileRoot = mkdtempSync(join(tmpdir(), 'review-level-cli-hostile-'))
+    try {
+      const hostileRepo = join(hostileRoot, 'repo')
+      mkdirSync(hostileRepo, { recursive: true })
+      const rejectHooksDir = join(hostileRoot, 'reject-hooks')
+      mkdirSync(rejectHooksDir, { recursive: true })
+      // 拒绝型 pre-commit hook：一旦敌意全局配置泄漏，任何提交都会被其以非零码拒绝
+      const preCommit = join(rejectHooksDir, 'pre-commit')
+      writeFileSync(preCommit, '#!/bin/sh\nexit 1\n')
+      if (process.platform !== 'win32') chmodSync(preCommit, 0o755)
+      const hostileGitConfig = join(hostileRoot, 'hostile.gitconfig')
+      writeFileSync(
+        hostileGitConfig,
+        `[user]\n\tname = hostile-ignored\n[core]\n\thooksPath = ${rejectHooksDir}\n`,
+      )
+      const hostileHostEnv: NodeJS.ProcessEnv = {
+        ...process.env,
+        Git_Dir: '/nonexistent/hostile-git-dir',
+        git_work_tree: '/nonexistent/hostile-work-tree',
+        Git_Index_File: '/nonexistent/hostile-index',
+        GIT_CONFIG_GLOBAL: hostileGitConfig,
+      }
+      const hostileEnv = buildIsolatedGitEnv(hostileHostEnv, emptyGitConfig)
+      // 构建器必须剥离大小写混合变量并覆盖恶意全局配置
+      expect(hostileEnv.Git_Dir).toBeUndefined()
+      expect(hostileEnv.git_work_tree).toBeUndefined()
+      expect(hostileEnv.Git_Index_File).toBeUndefined()
+      expect(hostileEnv.GIT_CONFIG_GLOBAL).toBe(emptyGitConfig)
+      const hostileGit = (...args: string[]) =>
+        execFileSync('git', args, { cwd: hostileRepo, env: hostileEnv, encoding: 'utf8' })
+      const hostileRun = (...cliArgs: string[]) => {
+        try {
+          const stdout = execFileSync(
+            process.execPath,
+            [resolve(ROOT, 'scripts/review-level.mjs'), ...cliArgs],
+            { cwd: hostileRepo, env: hostileEnv, encoding: 'utf8' },
+          )
+          return { status: 0, stdout, stderr: '' }
+        } catch (e) {
+          const err = e as { status?: number; stdout?: string; stderr?: string }
+          return {
+            status: err.status ?? 1,
+            stdout: err.stdout ?? '',
+            stderr: err.stderr ?? '',
+          }
+        }
+      }
+      hostileGit('init', '--template=')
+      hostileGit('config', 'user.name', 'test')
+      hostileGit('config', 'user.email', 'test@example.com')
+      hostileGit('config', 'commit.gpgsign', 'false')
+      // 故意不设置本地 core.hooksPath：若敌意 GIT_CONFIG_GLOBAL 泄漏，上面的 pre-commit
+      // 将接管提交并退出非零，hostileGit('commit') 会直接抛错使本用例失败
+      const write = writeUnder(hostileRepo)
+      write(
+        '.github/review-policy.json',
+        readFileSync(resolve(ROOT, '.github/review-policy.json'), 'utf8'),
+      )
+      write('README.md', 'hello\n')
+      write(
+        'docs/source-manifest.json',
+        `${JSON.stringify(
+          {
+            version: 1,
+            files: [
+              { path: 'README.md', sha256: createHash('sha256').update('hello\n').digest('hex') },
+            ],
+          },
+          null,
+          2,
+        )}\n`,
+      )
+      hostileGit('add', '.')
+      hostileGit('commit', '-m', 'hostile base')
+      const hostileSha = hostileGit('rev-parse', 'HEAD').trim()
+      const { status, stdout } = hostileRun(hostileSha, hostileSha, '--json')
+      expect(status).toBe(0)
+      const out = JSON.parse(stdout)
+      expect(out.level).toBe('L0')
+      expect(out.baseSha).toBe(hostileSha)
+      expect(out.headSha).toBe(hostileSha)
+    } finally {
+      rmSync(hostileRoot, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
+    }
   })
 })
 
