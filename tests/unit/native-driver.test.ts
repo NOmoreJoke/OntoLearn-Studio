@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events'
 import { resolve } from 'node:path'
-import { runInNewContext } from 'node:vm'
+import { createContext, runInContext } from 'node:vm'
 import { afterEach, expect, it, vi } from 'vitest'
 const { spawn } = vi.hoisted(() => ({ spawn: vi.fn() }))
 vi.mock('node:child_process', () => ({ spawn }))
@@ -123,6 +123,8 @@ function realm() {
     mapped: true,
     wrongMapping: false,
     missingAPI: false,
+    windows: [{}] as unknown[],
+    platform: 'darwin' as string,
     // Member paths hidden to stage partial main-API initialization; the
     // readiness expression must see them appear in the guarded order.
     hideMembers: [] as string[],
@@ -152,7 +154,7 @@ function realm() {
     const api: Record<string, unknown> = {
       app: exposedApp,
       dialog: { showMessageBox: vi.fn() },
-      BrowserWindow: { getAllWindows: vi.fn() },
+      BrowserWindow: { getAllWindows: vi.fn(() => state.windows) },
     }
     if (hide.has('dialog')) delete api.dialog
     if (hide.has('BrowserWindow')) delete api.BrowserWindow
@@ -163,19 +165,24 @@ function realm() {
     cache: {} as Record<string, unknown>,
     resolve: vi.fn(() => (state.wrongMapping ? '/npm/electron/index.js' : 'electron')),
   })
+  // One persistent VM context per realm() so repeated readiness polls share
+  // globalThis.__i02FirstWindowReadyAt while Date tracks Vitest fake timers.
+  const proc = {
+    getBuiltinModule: () => ({ createRequire: () => fromHelper }),
+    type: 'browser',
+    versions: { electron: '44.9.0' },
+    get platform() {
+      return state.platform
+    },
+  }
+  const context = createContext({ Date, process: proc })
   return {
     state,
     app,
     load,
     async evaluate(expression: string) {
       fromHelper.cache = state.mapped ? { electron: {} } : {}
-      return await runInNewContext(expression, {
-        process: {
-          getBuiltinModule: () => ({ createRequire: () => fromHelper }),
-          type: 'browser',
-          versions: { electron: '44.9.0' },
-        },
-      })
+      return await runInContext(expression, context)
     },
   }
 }
@@ -201,6 +208,33 @@ function connect(h: ReturnType<typeof setup>, r: ReturnType<typeof realm>) {
 }
 const helperRequests = (h: ReturnType<typeof setup>) =>
   h.requests.filter((r) => !r.params.returnByValue)
+function connectRecording(
+  h: ReturnType<typeof setup>,
+  r: ReturnType<typeof realm>,
+  values: unknown[],
+) {
+  h.respond((request) => {
+    if (!request.params.returnByValue) {
+      h.socket.reply(request, { type: 'object', objectId: 'original-helper' })
+      return
+    }
+    void r.evaluate(request.params.expression).then(
+      (value) => {
+        values.push(value)
+        h.socket.reply(request, { type: 'object', value })
+      },
+      (error: unknown) =>
+        h.socket.dispatchEvent(
+          new MessageEvent('message', {
+            data: JSON.stringify({
+              id: request.id,
+              result: { exceptionDetails: { text: String(error) } },
+            }),
+          }),
+        ),
+    )
+  })
+}
 
 it('rejects and cleans up a bootstrap whose socket never replies, ignoring a late ready', async () => {
   const h = setup()
@@ -500,4 +534,84 @@ it.each([
   expect(helperRequests(h)).toHaveLength(kind === 'helper-error' ? 1 : 0)
   expect(h.requests).toHaveLength(kind === 'helper-error' ? 2 : 1)
   h.expectClean()
+})
+
+it('polls BrowserWindow.firstWindow until the primary window is visible and main frame finished loading', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  const firstWindow = { state: 'api-pending', pending: 'BrowserWindow.firstWindow' }
+  r.state.windows = []
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  r.state.windows = [{ isVisible: () => false }]
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  r.state.windows = [{ isVisible: () => true, webContents: { isLoadingMainFrame: () => true } }]
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  r.state.windows = [{ isVisible: () => true, webContents: { isLoadingMainFrame: () => false } }]
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow, { state: 'ready' }])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
+it('waits for the 400ms win32 settle window before loading the native helper once', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  r.state.platform = 'win32'
+  const settle = { state: 'api-pending', pending: 'BrowserWindow.firstWindowSettle' }
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  await vi.advanceTimersByTimeAsync(100)
+  await vi.advanceTimersByTimeAsync(100)
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([settle, settle, settle, settle])
+  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([settle, settle, settle, settle, { state: 'ready' }])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+  // Emptying windows mid-settle and recovering resets the settle timer.
+  const h2 = setup(),
+    r2 = realm()
+  const values2: unknown[] = []
+  connectRecording(h2, r2, values2)
+  r2.state.platform = 'win32'
+  const result2 = h2.start()
+  await vi.advanceTimersByTimeAsync(0)
+  await vi.advanceTimersByTimeAsync(200)
+  r2.state.windows = []
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values2).toEqual([
+    settle,
+    settle,
+    settle,
+    { state: 'api-pending', pending: 'BrowserWindow.firstWindow' },
+  ])
+  r2.state.windows = [{}]
+  await vi.advanceTimersByTimeAsync(100)
+  await vi.advanceTimersByTimeAsync(300)
+  expect(helperRequests(h2)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(100)
+  expect(helperRequests(h2)).toHaveLength(1)
+  h2.finish()
+  expect(await result2).toEqual({ ok: true })
+  h2.expectClean()
 })

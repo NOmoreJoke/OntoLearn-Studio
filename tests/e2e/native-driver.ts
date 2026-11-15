@@ -227,6 +227,10 @@ export async function runNativeRecovery(
     // an unsatisfied member is reported by name and re-polled inside the
     // original 45s/450-attempt bounds instead of failing immediately.
     // Permanent absence still fails at those bounds with the member named.
+    // Wait for the first usable BrowserWindow (visible, main frame finished
+    // loading) and a 400ms win32 settle window; with native-recovery.cjs's own
+    // 150ms timer that is 550ms total, matching the original develop cold-start
+    // timing without modifying native-recovery.cjs.
     const readiness = `(() => {
       const fromHelper = process.getBuiltinModule('module').createRequire(${helper});
       if (!Object.prototype.hasOwnProperty.call(fromHelper.cache, 'electron'))
@@ -257,6 +261,34 @@ export async function runNativeRecovery(
         if (!installed()) return { state: 'api-pending', pending: member };
       return app.whenReady().then(() => {
         if (app.isReady() !== true) throw new Error('inconsistent Electron readiness');
+        const windows = BrowserWindow.getAllWindows();
+        const primary =
+          windows && typeof windows.length === 'number' && windows.length > 0
+            ? windows[0]
+            : undefined;
+        const windowReady =
+          !!primary &&
+          (typeof primary.isDestroyed !== 'function' || !primary.isDestroyed()) &&
+          (typeof primary.isVisible !== 'function' || primary.isVisible() === true) &&
+          (!primary.webContents ||
+            ((typeof primary.webContents.isDestroyed !== 'function' ||
+              !primary.webContents.isDestroyed()) &&
+              (typeof primary.webContents.isLoadingMainFrame !== 'function' ||
+                primary.webContents.isLoadingMainFrame() === false)));
+        if (!windowReady) {
+          delete globalThis.__i02FirstWindowReadyAt;
+          return { state: 'api-pending', pending: 'BrowserWindow.firstWindow' };
+        }
+        if (process.platform === 'win32') {
+          const now = Date.now();
+          if (typeof globalThis.__i02FirstWindowReadyAt !== 'number') {
+            globalThis.__i02FirstWindowReadyAt = now;
+          }
+          if (now - globalThis.__i02FirstWindowReadyAt < 400) {
+            return { state: 'api-pending', pending: 'BrowserWindow.firstWindowSettle' };
+          }
+        }
+        delete globalThis.__i02FirstWindowReadyAt;
         return { state: 'ready' };
       });
     })()`

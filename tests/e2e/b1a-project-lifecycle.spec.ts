@@ -36,11 +36,12 @@ async function confirm(page: Page) {
   ).toBeDisabled()
   await dialog.getByRole('checkbox').check()
   await dialog.getByRole('button', { name: '确认并提交项目更改', exact: true }).click()
-  await expect(dialog).not.toBeVisible()
-  await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
+  await expect(dialog).not.toBeVisible({ timeout: 15000 })
+  await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 15000 })
 }
 
 test('B1a first launch, metadata modes and archive retain the live query draft', async () => {
+  test.setTimeout(90000)
   const application = await launch()
   try {
     const page = await application.firstWindow()
@@ -58,10 +59,13 @@ test('B1a first launch, metadata modes and archive retain the live query draft',
     await page.getByTestId('project-create').click()
     await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
       '项目已创建并打开',
+      { timeout: 15000 },
     )
     const workspace = page.getByRole('region', { name: '本体查询工作台', exact: true })
     await workspace.getByRole('button', { name: '读取项目与持久工作草稿', exact: true }).click()
-    await expect(workspace.getByRole('button', { name: '新建查询草稿', exact: true })).toBeEnabled()
+    await expect(workspace.getByRole('button', { name: '新建查询草稿', exact: true })).toBeEnabled({
+      timeout: 15000,
+    })
     await workspace.getByRole('button', { name: '新建查询草稿', exact: true }).click()
     const input = workspace.getByLabel('名称', { exact: true })
     await input.fill('还没有保存的查询')
@@ -109,6 +113,7 @@ test('B1a first launch, metadata modes and archive retain the live query draft',
 })
 
 test('B1a explicit current-state copy, trash default archive, and restore use actual management receipts', async () => {
+  test.setTimeout(90000)
   const application = await launch()
   try {
     const page = await application.firstWindow()
@@ -116,8 +121,9 @@ test('B1a explicit current-state copy, trash default archive, and restore use ac
     await page.getByTestId('project-create-example').click()
     await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
       '项目已创建并打开',
+      { timeout: 15000 },
     )
-    await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
+    await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 15000 })
     const source = data(
       await page.evaluate(() => window.ontolearn!.readProject({ editor: 'query-workspace-v1' })),
     )
@@ -132,6 +138,7 @@ test('B1a explicit current-state copy, trash default archive, and restore use ac
     await page.getByTestId('project-open-copy').click()
     await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
       '项目已打开',
+      { timeout: 15000 },
     )
     const copied = data(
       await page.evaluate(() => window.ontolearn!.readProject({ editor: 'query-workspace-v1' })),
@@ -168,8 +175,9 @@ test('B1a explicit current-state copy, trash default archive, and restore use ac
       .click()
     await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
       '项目已打开',
+      { timeout: 15000 },
     )
-    await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
+    await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 15000 })
     const restored = data(
       await page.evaluate(() => window.ontolearn!.readProject({ editor: 'query-workspace-v1' })),
     )
