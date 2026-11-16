@@ -257,7 +257,11 @@ export function ProjectCheckpointRestorePanel({
         </div>
       )}
       {state.notice && (
-        <p role="status" data-testid="checkpoint-notice">
+        // No role="status" here: this panel lives inside the project-library
+        // section, whose own single live region must stay the only status role
+        // for that scope. aria-live keeps the announcement without breaking
+        // the enclosing role="status" structure.
+        <p data-testid="checkpoint-notice" aria-live="polite">
           {state.notice}
         </p>
       )}
