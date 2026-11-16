@@ -512,6 +512,14 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
       '整项目恢复已完成',
       { timeout: 60000 },
     )
+    await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
+      '项目已打开 · 版本 0',
+      { timeout: 60000 },
+    )
+    await expect(page.getByTestId('selected-project-version')).toContainText('当前项目版本 0', {
+      timeout: 60000,
+    })
+    await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 30000 })
 
     stage = 'verify the restored project state'
     const restored = data(
@@ -568,6 +576,10 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     const open = restarted.locator(`[data-testid="project-open"][data-project-id="${projectId}"]`)
     await expect(open).toBeVisible({ timeout: 30000 })
     await open.click()
+    await expect(restarted.getByTestId('project-library').getByRole('status')).toContainText(
+      '项目已打开',
+      { timeout: 30000 },
+    )
     await expect(restarted.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 30000 })
     const afterRestart = data(
       await restarted.evaluate(() =>
@@ -673,16 +685,43 @@ test('B1b FR-804 single-step undo pauses on conflict and cleanly undoes the late
       if (!target) throw new Error('Actual project exposes no b1b-undo-first definition')
       const value = JSON.parse(target.payload) as {
         triples?: Array<{ subject: string; predicate: string; object: string }>
+        entityMetadata?: {
+          entityMetadataVersion: 1
+          entities: Record<
+            string,
+            {
+              identifier: string
+              labels: Array<[string, string]>
+              definitions: Array<[string, string]>
+              synonyms: string[]
+              examples: string[]
+            }
+          >
+        }
       }
       const triples = (value.triples ?? []).map((triple) =>
         triple.predicate.endsWith('#label') ? { ...triple, object: '"冲突后的定义"@zh' } : triple,
       )
       if (!triples.length) throw new Error('Actual definition exposes no triples')
+      const entityMetadata = value.entityMetadata
+        ? {
+            ...value.entityMetadata,
+            entities: Object.fromEntries(
+              Object.entries(value.entityMetadata.entities).map(([iri, meta]) => [
+                iri,
+                { ...meta, labels: [['冲突后的定义', 'zh']] as Array<[string, string]> },
+              ]),
+            ),
+          }
+        : undefined
+      const nextValue = entityMetadata
+        ? { ...value, triples, entityMetadata }
+        : { ...value, triples }
       const preview = await bridge.previewProjectChangeset({
         baseRevision,
         intent: 'change',
         plan: {
-          definitions: [{ layer: 'ontology', id: target.id, value: { ...value, triples } }],
+          definitions: [{ layer: 'ontology', id: target.id, value: nextValue }],
         },
       })
       if (!preview.ok) throw new Error(`Actual preview refused: ${preview.error.code}`)
