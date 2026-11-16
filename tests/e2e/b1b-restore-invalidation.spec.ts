@@ -513,10 +513,10 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
       { timeout: 60000 },
     )
     await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-      '项目已打开 · 版本 0',
+      '项目已打开 · 版本 4',
       { timeout: 60000 },
     )
-    await expect(page.getByTestId('selected-project-version')).toContainText('当前项目版本 0', {
+    await expect(page.getByTestId('selected-project-version')).toContainText('当前项目版本 4', {
       timeout: 60000,
     })
     await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 30000 })
@@ -532,6 +532,9 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     }
     expect(restored.workspace.metadata.name).toBe('B1b 整项目恢复')
     expect(restored.workspace.metadata.mode).toBe('guided')
+    expect(restored.domain.projectRevision).toBe(4)
+    expect(restored.domain.state.definitions).toHaveLength(0)
+    expect(restored.domain.state.facts).toHaveLength(0)
     await expect(page.getByTestId('selected-project-version')).toContainText(
       `当前项目版本 ${restored.domain.projectRevision}`,
     )
@@ -577,7 +580,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     await expect(open).toBeVisible({ timeout: 30000 })
     await open.click()
     await expect(restarted.getByTestId('project-library').getByRole('status')).toContainText(
-      '项目已打开',
+      '项目已打开 · 版本 4',
       { timeout: 30000 },
     )
     await expect(restarted.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 30000 })
