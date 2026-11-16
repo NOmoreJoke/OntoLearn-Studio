@@ -421,3 +421,164 @@ it('falls back to process.kill after two silent win32 crashes and still complete
   expect(data).not.toHaveProperty('win32CrashKillError')
   expect(h.app.exit.mock.calls).toEqual([[0]])
 })
+
+it('preloads before whenReady without touching dialog/BrowserWindow, then completes win32 recovery', async () => {
+  const timers: { work: () => void; delay: number }[] = []
+  const writes: string[] = []
+  const inputs: unknown[] = []
+  const electronAccesses: string[] = []
+  let appReady = false
+  let releaseReady!: () => void
+  const ready = new Promise<void>((resolve) => {
+    releaseReady = resolve
+  })
+  const app = Object.assign(new EventEmitter(), {
+    isPackaged: false,
+    isReady: () => appReady,
+    whenReady: () => ready,
+    commandLine: { hasSwitch: () => false },
+    focus: vi.fn(),
+    exit: vi.fn(),
+  })
+  const dialog = {
+    showMessageBox: async (...args: unknown[]) => {
+      void args
+      return { response: 1 }
+    },
+  }
+  const originalMessageBox = dialog.showMessageBox
+  let osPid = 0
+  let windowSequence = 0
+  class Window extends EventEmitter {
+    id = ++windowSequence
+    destroyed = false
+    contents = Object.assign(new EventEmitter(), {
+      id: this.id + 100,
+      isDestroyed: () => this.destroyed,
+      isLoadingMainFrame: () => false,
+      getOSProcessId: () => osPid,
+      forcefullyCrashRenderer: vi.fn(() => {
+        this.contents.emit('render-process-gone', {}, { reason: 'killed' })
+      }),
+      executeJavaScript: vi.fn((script: string) => {
+        if (script === fault) return new Promise(() => undefined)
+        return Promise.resolve(
+          script === 'window.ontolearn.getEngineHealth()'
+            ? { ok: true }
+            : { status: '尚未检查', bridge: 'function' },
+        )
+      }),
+      sendInputEvent: vi.fn((input: unknown) => {
+        inputs.push(input)
+      }),
+    })
+    get webContents() {
+      return this.contents
+    }
+    isDestroyed() {
+      return this.destroyed
+    }
+    isVisible() {
+      return true
+    }
+    isFocused() {
+      return true
+    }
+    show = vi.fn()
+    focus = vi.fn()
+  }
+  const windows: Window[] = []
+  const electronModule = {
+    app,
+    get dialog() {
+      electronAccesses.push('dialog')
+      return dialog
+    },
+    get BrowserWindow() {
+      electronAccesses.push('BrowserWindow')
+      return { getAllWindows: () => windows }
+    },
+  }
+  const inspector = { close: vi.fn(), url: () => undefined }
+  runInNewContext(source, {
+    require(name: string) {
+      if (name === 'electron') return electronModule
+      if (name === 'node:inspector') return inspector
+      if (name === 'node:fs')
+        return {
+          writeFileSync(_path: string, data: string) {
+            writes.push(data)
+          },
+        }
+      throw new Error(`Unexpected module ${name}`)
+    },
+    process: {
+      versions: { electron: 'synthetic' },
+      env: { I02_NATIVE_EVIDENCE: '/synthetic' },
+      platform: 'win32',
+    },
+    Number,
+    Buffer: {
+      byteLength(value: string, encoding: BufferEncoding) {
+        return Buffer.byteLength(value, encoding)
+      },
+    },
+    setTimeout(work: () => void, delay: number) {
+      timers.push({ work, delay })
+      return { unref() {} }
+    },
+  })
+  // Preloaded before readiness: only the watchdog timer is armed and neither
+  // dialog nor BrowserWindow has been touched.
+  expect(timers.map((item) => item.delay)).toEqual([40000])
+  expect(electronAccesses).toEqual([])
+  expect(dialog.showMessageBox).toBe(originalMessageBox)
+  appReady = true
+  releaseReady()
+  await settle()
+  expect(electronAccesses).toContain('dialog')
+  expect(electronAccesses).toContain('BrowserWindow')
+  expect(inspector.close).toHaveBeenCalledOnce()
+  expect(dialog.showMessageBox).not.toBe(originalMessageBox)
+  const first = new Window()
+  windows.push(first)
+  app.emit('browser-window-created', {}, first)
+  first.contents.emit('did-finish-load')
+  await settle()
+  // The win32 crash waits for a live renderer OS PID, then a 400ms settle.
+  expect(first.contents.forcefullyCrashRenderer).not.toHaveBeenCalled()
+  osPid = 4321
+  for (const item of timers.filter((item) => item.delay === 50)) item.work()
+  await settle()
+  expect(first.contents.forcefullyCrashRenderer).not.toHaveBeenCalled()
+  for (const item of timers.filter((item) => item.delay === 400)) item.work()
+  await settle()
+  expect(first.contents.forcefullyCrashRenderer).toHaveBeenCalledTimes(1)
+  const second = new Window()
+  windows.push(second)
+  app.emit('browser-window-created', {}, second)
+  second.contents.emit('did-finish-load')
+  await settle()
+  const hang = timers.filter((item) => item.delay === 250)
+  expect(hang).toHaveLength(1)
+  hang[0]!.work()
+  second.emit('unresponsive')
+  await dialog.showMessageBox(first, {})
+  await dialog.showMessageBox(second, {})
+  const third = new Window()
+  windows.push(third)
+  app.emit('browser-window-created', {}, third)
+  third.contents.emit('did-finish-load')
+  await settle()
+  const data = JSON.parse(writes.at(-1)!)
+  expect(data.result).toBe('PASS')
+  expect(data.inspectorClosedBeforeFaults).toBe(true)
+  expect(data.hangMonitorEnabled).toBe(true)
+  expect(data.windows).toBe(3)
+  expect(data.events).toEqual(['killed', 'unresponsive'])
+  expect(data.prompts).toHaveLength(2)
+  expect(inputs).toHaveLength(2)
+  expect(app.exit.mock.calls).toEqual([[0]])
+  expect(timers.some((item) => item.delay === 50)).toBe(true)
+  expect(timers.some((item) => item.delay === 400)).toBe(true)
+})

@@ -33,7 +33,13 @@ let quitBarrier = false
 const singleInstance = app.requestSingleInstanceLock()
 if (!singleInstance) app.quit()
 app.on('before-quit', (event) => {
-  if (quitBarrier || !supervisor) return
+  if (quitBarrier) return
+  if (!supervisor) {
+    // A quit signal before the supervisor exists must still fence the async
+    // whenReady continuation away from creating a supervisor or a window.
+    quitting = true
+    return
+  }
   event.preventDefault()
   if (quitting) return
   quitting = true
@@ -237,6 +243,10 @@ void app.whenReady().then(async () => {
       })
     })
   }
+  // Yield one macrotask turn so PreMainMessageLoopRun returns and Chromium's main
+  // message loop is pumping before any library config or engine process spawn.
+  await new Promise<void>((resolve) => setTimeout(resolve, 0))
+  if (quitting || quitBarrier) return
   // Test fixtures are accepted only through a main-process launch argument. They are
   // never supplied by renderer IPC, and do not enable task creation in the product.
   const fixtureArg = process.argv.find((arg) => arg.startsWith('--i04-test-fixture='))
@@ -319,6 +329,11 @@ void app.whenReady().then(async () => {
   supervisor = new EngineSupervisor(
     { packaged: app.isPackaged, appPath: app.getAppPath(), resourcesPath: process.resourcesPath },
     {
+      // Desktop cold start (Windows Defender scanning .venv imports of rdflib/
+      // pyshacl) needs a far larger budget than the supervisor class defaults.
+      startupMs: 30000,
+      handshakeMs: 30000,
+      requestMs: 15000,
       profile,
       exampleRoot,
       dataPath:

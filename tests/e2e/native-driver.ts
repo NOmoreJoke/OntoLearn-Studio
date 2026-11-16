@@ -1,15 +1,30 @@
 import { spawn } from 'node:child_process'
 import { resolve as resolvePath } from 'node:path'
 
+export type NativeRecoveryOptions = {
+  bootstrap?: 'inspector' | 'preload'
+  cwd?: string
+}
+
 // Synchronize the bootstrap precondition; CI41's specific timing cause is unproven.
 // The original helper still closes MAIN inspector before faults, with no renderer CDP.
 export async function runNativeRecovery(
   executable: string,
   args: string[],
   env: NodeJS.ProcessEnv,
+  options?: NativeRecoveryOptions,
 ): Promise<void> {
   const expiresAt = performance.now() + 45000
-  const child = spawn(executable, ['--inspect=0', ...args], {
+  // Unpackaged win32 preloads the recovery helper via -r before whenReady():
+  // no --inspect=0 handshake or inspector.close() race, same zero-renderer-CDP
+  // sandboxed recovery path. Every other platform keeps the inspector bootstrap.
+  // The child is always spawned from a literal argument list, never a shell.
+  const preloadBootstrap = options?.bootstrap === 'preload'
+  const spawnArgs = preloadBootstrap
+    ? ['-r', resolvePath('tests/e2e/native-recovery.cjs'), ...args]
+    : ['--inspect=0', ...args]
+  const child = spawn(executable, spawnArgs, {
+    ...(options?.cwd ? { cwd: options.cwd } : {}),
     env,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
@@ -133,6 +148,14 @@ export async function runNativeRecovery(
   void exitedDuringBootstrap.catch(() => undefined)
   const bounded = <T>(work: Promise<T>) => Promise.race([work, exitedDuringBootstrap, deadline])
   try {
+    if (preloadBootstrap) {
+      // The -r preloaded helper self-drives the whole recovery to its own
+      // process exit; the deadline, bounded stdio capture, non-zero-exit drain
+      // and full finally cleanup below stay exactly the original ones.
+      bootstrapComplete = true
+      await Promise.race([finished, deadline])
+      return
+    }
     const endpoint = await bounded(
       waitFor<string>((resolve, _reject, cleanup) => {
         const onData = () => {

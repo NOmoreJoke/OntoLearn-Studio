@@ -4,7 +4,7 @@ import { createContext, runInContext } from 'node:vm'
 import { afterEach, expect, it, vi } from 'vitest'
 const { spawn } = vi.hoisted(() => ({ spawn: vi.fn() }))
 vi.mock('node:child_process', () => ({ spawn }))
-import { runNativeRecovery } from '../e2e/native-driver'
+import { runNativeRecovery, type NativeRecoveryOptions } from '../e2e/native-driver'
 
 afterEach(() => {
   vi.useRealTimers()
@@ -93,11 +93,12 @@ function setup() {
     respond(work: (request: Request) => void) {
       respond = work
     },
-    start() {
+    start(options?: NativeRecoveryOptions) {
       const result = runNativeRecovery(
         '/real/electron',
         ['--user-data-dir=/test-profile'],
         {},
+        options,
       ).then(
         () => ({ ok: true as const }),
         (error: unknown) => ({ error }),
@@ -791,4 +792,52 @@ it('defers the first readiness probe inside the electron/js2c/browser_init frame
   h.finish()
   expect(await result).toEqual({ ok: true })
   h.expectClean()
+})
+
+it('preloads the win32 recovery helper with -r and no inspector socket, resolving on clean exit', async () => {
+  const h = setup()
+  const result = h.start({ bootstrap: 'preload', cwd: '/app/desktop' })
+  await vi.advanceTimersByTimeAsync(0)
+  expect(spawn).toHaveBeenCalledTimes(1)
+  expect(spawn).toHaveBeenCalledWith(
+    '/real/electron',
+    ['-r', resolve('tests/e2e/native-recovery.cjs'), '--user-data-dir=/test-profile'],
+    { cwd: '/app/desktop', env: {}, stdio: ['ignore', 'pipe', 'pipe'] },
+  )
+  expect(spawn.mock.calls[0]![1]).not.toContain('--inspect=0')
+  expect(h.socket).toBeUndefined()
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  expect(vi.getTimerCount()).toBe(0)
+  expect(h.child.stderr.listenerCount('data')).toBe(0)
+  expect(h.child.stdout.listenerCount('data')).toBe(0)
+})
+
+it('drains bounded stdio and reports diagnostics when a preloaded recovery exits non-zero', async () => {
+  const h = setup()
+  const result = h.start({ bootstrap: 'preload', cwd: '/app/desktop' })
+  h.child.stdout.emit('data', 'preload diagnostic')
+  h.child.stderr.emit('data', 'x'.repeat(70000) + 'tail marker')
+  h.finish(3)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  const message = String((settled as { error: Error }).error.message)
+  expect(message).toContain('native exit 3')
+  expect(message).toContain('preload diagnostic')
+  expect(message).toContain('tail marker')
+  expect(message).not.toContain('x'.repeat(65537))
+  expect(vi.getTimerCount()).toBe(0)
+  expect(h.child.kill).not.toHaveBeenCalled()
+})
+
+it('SIGKILLs a hung preloaded recovery at the original deadline and cleans up', async () => {
+  const h = setup()
+  const result = h.start({ bootstrap: 'preload', cwd: '/app/desktop' })
+  await vi.advanceTimersByTimeAsync(45000)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  expect(String((settled as { error: Error }).error.message)).toContain('deadline exceeded')
+  expect(h.child.kill).toHaveBeenCalledWith('SIGKILL')
+  expect(vi.getTimerCount()).toBe(0)
+  expect(h.child.stderr.listenerCount('data')).toBe(0)
 })
