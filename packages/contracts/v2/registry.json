@@ -580,7 +580,14 @@
         "project.management.confirm",
         "project.management.apply",
         "project.management.operation.get",
-        "project.library.status"
+        "project.library.status",
+        "project.checkpoint.list",
+        "project.checkpoint.create",
+        "project.restore.preview",
+        "project.restore.page",
+        "project.restore.confirm",
+        "project.restore.apply",
+        "project.restore.operation.get"
       ],
       "newSourceOrLearningMethods": [],
       "capabilityImplementations": {
@@ -600,7 +607,14 @@
         "project.management.confirm",
         "project.management.apply",
         "project.management.operation.get",
-        "project.library.status"
+        "project.library.status",
+        "project.checkpoint.list",
+        "project.checkpoint.create",
+        "project.restore.preview",
+        "project.restore.page",
+        "project.restore.confirm",
+        "project.restore.apply",
+        "project.restore.operation.get"
       ]
     }
   },
@@ -654,5 +668,49 @@
     "checkpointApplicationSchemaVersion": 1,
     "copyScope": "current-state-v1; immutable imported seed, no source execution or authority",
     "deletion": "recoverable-trash; current access control, excluded from business restore"
+  },
+  "projectCheckpoints": {
+    "profile": "business3",
+    "methods": [
+      "project.checkpoint.list",
+      "project.checkpoint.create",
+      "project.restore.preview",
+      "project.restore.page",
+      "project.restore.confirm",
+      "project.restore.apply",
+      "project.restore.operation.get"
+    ],
+    "agentEligible": false,
+    "authority": "selected-project; whole-project restore binds a complete Store3 checkpoint and requires fully read segmented impact confirmation",
+    "checkpointApplicationSchemaVersion": 1,
+    "reasons": [
+      "genesis",
+      "manual",
+      "before-run",
+      "guided-stage",
+      "before-agent",
+      "restore",
+      "operation"
+    ],
+    "wireCreationReasons": ["manual"],
+    "deferredTriggers": {
+      "before-agent": "T08/I06 agent provider",
+      "before-run": "T06 mutating run domains",
+      "guided-stage": "T07 guided learning completion"
+    },
+    "restoreScope": [
+      "metadata",
+      "drafts",
+      "learningCurrent",
+      "assistanceAudit-immutable",
+      "domain-snapshot-compensation"
+    ],
+    "preserved": [
+      "historical-runs",
+      "jobs-and-results",
+      "assistance-audit",
+      "operation-evidence",
+      "checkpoints"
+    ]
   }
 }
