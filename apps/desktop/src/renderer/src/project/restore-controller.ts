@@ -124,14 +124,25 @@ export class ProjectRestoreController {
     const request = ++this.#request
     this.#set({ busy: true, error: undefined })
     try {
+      await this.#refreshList(cursor, request)
+    } finally {
+      if (request === this.#request) this.#set({ busy: false })
+    }
+  }
+  /**
+   * The checkpoint list read itself. It never re-checks the public `busy` guard,
+   * so an operation that already owns the busy flag (for example a manual
+   * checkpoint creation) can refresh the list without being silently skipped.
+   */
+  async #refreshList(cursor: string | null = null, requestOverride?: number): Promise<void> {
+    const request = requestOverride ?? ++this.#request
+    try {
       const result = await this.bridge.listProjectCheckpoints({ pageSize: 20, cursor })
       if (request !== this.#request || this.#closed) return
       if (result.ok) this.#set({ list: result.data })
       else this.#set({ error: result.error })
     } catch {
       if (request === this.#request) this.#set({ error: safeError(undefined) })
-    } finally {
-      if (request === this.#request) this.#set({ busy: false })
     }
   }
   /** 等待进行中的操作结束后再刷新一次；供选中项目变化的自动同步使用。 */
@@ -162,7 +173,9 @@ export class ProjectRestoreController {
       if (!result.ok) this.#set({ error: result.error })
       else {
         this.#set({ notice: '已创建手动检查点。' })
-        await this.refresh()
+        // The public refresh() is short-circuited by the busy flag this very
+        // operation owns, so the list is refreshed through the private read.
+        await this.#refreshList(null, request)
       }
     } catch {
       if (request === this.#request) this.#set({ error: safeError(undefined) })

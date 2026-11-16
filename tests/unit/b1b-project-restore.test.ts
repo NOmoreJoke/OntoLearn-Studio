@@ -24,6 +24,7 @@ import type {
   MainlineManagementItemDTO,
   PendingProjectRestoreOperationDTO,
   ProjectCheckpointBridge,
+  ProjectCheckpointItemDTO,
   ProjectManagementBridge,
   ProjectRestoreConfirmationDTO,
   ProjectRestoreOperationDTO,
@@ -554,6 +555,9 @@ function controllerBridge(options: {
   managementError?: BridgeResult<MainlineManagementItemDTO>
 }) {
   const calls: Array<{ method: string; args: unknown }> = []
+  // The scripted checkpoint store: created checkpoints really join the list,
+  // so a refresh can be observed by its effect and not only by its call count.
+  const created: Array<{ checkpointRef: string; label: string | null }> = []
   const impact = impactDocument(id(1), 'a'.repeat(64))
   const documentHash = sha256(impact)
   const cut = Math.floor(impact.length / 2)
@@ -604,35 +608,57 @@ function controllerBridge(options: {
     },
     listProjectCheckpoints: async (args) => {
       calls.push({ method: 'list', args })
+      const items: ProjectCheckpointItemDTO[] = [
+        {
+          checkpointRef: 'a'.repeat(64),
+          operationSequence: 1,
+          domainRevision: 1,
+          domainSnapshotRef: 'b'.repeat(64),
+          metadataVersion: 1,
+          reason: 'manual',
+          label: '导入映射之前',
+          operationId: null,
+          operationKind: null,
+          counts: { definitions: 1, facts: 0, drafts: 0, learning: 0 },
+          coverage: ['metadata', 'drafts', 'learningCurrent', 'assistanceAudit'],
+          preserved: [
+            'historical-runs',
+            'jobs-and-results',
+            'assistance-audit',
+            'operation-evidence',
+            'checkpoints',
+          ],
+          isCurrent: false,
+        },
+        ...created.map((item, index): ProjectCheckpointItemDTO => ({
+          checkpointRef: item.checkpointRef,
+          operationSequence: 4 + index,
+          domainRevision: 1,
+          domainSnapshotRef: 'b'.repeat(64),
+          metadataVersion: 2,
+          reason: 'manual',
+          label: item.label,
+          operationId: null,
+          operationKind: null,
+          counts: { definitions: 1, facts: 0, drafts: 0, learning: 0 },
+          coverage: ['metadata', 'drafts', 'learningCurrent', 'assistanceAudit'],
+          preserved: [
+            'historical-runs',
+            'jobs-and-results',
+            'assistance-audit',
+            'operation-evidence',
+            'checkpoints',
+          ],
+          isCurrent: false,
+        })),
+      ]
       return {
         ok: true,
         data: {
           checkpointListVersion: 1,
           projectId: id(1),
-          items: [
-            {
-              checkpointRef: 'a'.repeat(64),
-              operationSequence: 1,
-              domainRevision: 1,
-              domainSnapshotRef: 'b'.repeat(64),
-              metadataVersion: 1,
-              reason: 'manual',
-              label: '导入映射之前',
-              operationId: null,
-              operationKind: null,
-              counts: { definitions: 1, facts: 0, drafts: 0, learning: 0 },
-              coverage: ['metadata', 'drafts', 'learningCurrent', 'assistanceAudit'],
-              preserved: [
-                'historical-runs',
-                'jobs-and-results',
-                'assistance-audit',
-                'operation-evidence',
-                'checkpoints',
-              ],
-              isCurrent: false,
-            },
-          ],
-          total: 1,
+          items,
+          total: items.length,
           offset: 0,
           nextCursor: null,
         },
@@ -640,6 +666,8 @@ function controllerBridge(options: {
     },
     createProjectCheckpoint: async (args) => {
       calls.push({ method: 'create', args })
+      const checkpointRef = sha256(`created-checkpoint-${created.length}`)
+      created.push({ checkpointRef, label: args.label })
       return {
         ok: true,
         data: {
@@ -647,7 +675,7 @@ function controllerBridge(options: {
           projectId: id(1),
           operationId: args.operationId,
           operationSequence: 4,
-          checkpointRef: 'c'.repeat(64),
+          checkpointRef,
           reason: 'manual',
           label: args.label,
           domainRevision: 1,
@@ -776,6 +804,33 @@ describe('restore controller state machine', () => {
       await controller.refresh()
       expect(calls.filter((call) => call.method === 'list')).toHaveLength(1)
       expect(controller.getSnapshot().list).toBeUndefined()
+    } finally {
+      controller.close()
+    }
+  })
+
+  it('refreshes the checkpoint list by itself after a manual checkpoint is created', async () => {
+    const { bridge, calls } = controllerBridge({})
+    const controller = new ProjectRestoreController(bridge)
+    try {
+      await controller.initialize()
+      controller.select(id(1))
+      await controller.refresh()
+      expect(calls.filter((call) => call.method === 'list')).toHaveLength(1)
+      expect(controller.getSnapshot().list?.items.map((item) => item.label)).toEqual([
+        '导入映射之前',
+      ])
+      // Creating a checkpoint owns the busy flag, so the public refresh() would
+      // be skipped. The list must still be refreshed without any manual call.
+      await controller.createCheckpoint('CP1')
+      expect(calls.filter((call) => call.method === 'create')).toHaveLength(1)
+      expect(calls.filter((call) => call.method === 'list')).toHaveLength(2)
+      expect(controller.getSnapshot().list?.items.map((item) => item.label)).toEqual([
+        '导入映射之前',
+        'CP1',
+      ])
+      expect(controller.getSnapshot().notice).toContain('已创建手动检查点')
+      expect(controller.getSnapshot().busy).toBe(false)
     } finally {
       controller.close()
     }
