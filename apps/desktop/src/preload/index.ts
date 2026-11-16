@@ -47,6 +47,14 @@ async function receiveMainline<Channel extends DesktopIpcChannel>(
 }
 
 const bridge: DesktopBridge = {
+  listProjectCheckpoints: (args) => receiveMainline('project:checkpoint-list', args),
+  createProjectCheckpoint: (args) => receiveMainline('project:checkpoint-create', args),
+  getPendingProjectRestoreOperations: () => receiveMainline('project:restore-pending'),
+  previewProjectRestore: (args) => receiveMainline('project:restore-preview', args),
+  getProjectRestorePage: (args) => receiveMainline('project:restore-page', args),
+  confirmProjectRestore: (args) => receiveMainline('project:restore-confirm', args),
+  restoreProject: (args) => receiveMainline('project:restore-apply', args),
+  getProjectRestoreOperation: (args) => receiveMainline('project:restore-operation', args),
   getPendingProjectManagementOperations: () => receiveMainline('project:management-pending'),
   getProjectManagementCatalog: (args) => receiveMainline('project:management-catalog', args),
   getProjectManagementState: () => receiveMainline('project:management-state'),

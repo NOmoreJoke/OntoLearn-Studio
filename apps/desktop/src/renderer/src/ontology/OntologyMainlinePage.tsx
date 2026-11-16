@@ -380,6 +380,11 @@ function SessionEditor({
               ? '撤销冲突影响'
               : '完整事务差异 · 尚未提交'}
           </h2>
+          {state.prepared.preview.status === 'conflict' && (
+            <p role="status" data-testid="undo-conflict-paused">
+              撤销已暂停：提交基线已包含影响同一资源的后续修改，本次撤销不会执行；请核对影响列表后另行处理。
+            </p>
+          )}
           <p>{state.prepared.preview.summary}</p>
           <p>全部 {state.prepared.rows.length} 项；分段顺序、长度、SHA 与完整文档已核对。</p>
           <pre>{JSON.stringify(state.prepared.rows, null, 2)}</pre>

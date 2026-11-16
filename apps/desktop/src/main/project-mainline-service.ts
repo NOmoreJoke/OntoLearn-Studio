@@ -21,6 +21,7 @@ import {
   type MainlineDraftSaveResultDTO,
   type OwnershipDetailArgs,
   type OwnershipDetailPage,
+  type ProjectCheckpointBridge,
   type ProjectManagementBridge,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '../../../../packages/contracts/src/v2'
@@ -34,6 +35,7 @@ import {
 import { OrdinaryProjectSource, type OrdinaryCurrent } from './ordinary-project-source'
 import { QueryDefinitionService } from './query-definition-service'
 import { ProjectManagementSession } from './project-management-session'
+import { ProjectRestoreSession } from './project-restore-session'
 import type { TaskService, TaskRecoveryContext, TaskRecoveryRequest } from './task-service'
 
 type RecordValue = Record<string, unknown>
@@ -288,11 +290,12 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   #intents = new Map<string, MainlineIntent>()
   #fullIntents = new Set<MainlineIntent>()
   #management: ProjectManagementSession
+  #restore: ProjectRestoreSession
   constructor(
     readonly supervisor: EngineSupervisor,
     readonly tasks: TaskService,
     private readonly reattachView: () => void,
-    options: { managementJournalPath?: string } = {},
+    options: { managementJournalPath?: string; restoreJournalPath?: string } = {},
   ) {
     if (supervisor.profile !== 'business3') throw denied()
     this.queries = new QueryDefinitionService(this.source, tasks)
@@ -321,6 +324,27 @@ export class ProjectMainlineService implements MainlineProjectBridge {
       hasOtherUnresolvedResponsibility: () =>
         this.#otherResponsibilities() || this.supervisor.hasOtherMainlineResponsibility,
       journalPath: options.managementJournalPath,
+    })
+    this.#restore = new ProjectRestoreSession({
+      client: () => this.#client(),
+      selection: () => {
+        const current = this.source.current()
+        return current
+          ? {
+              projectId: current.project.projectId,
+              owner: current.owner,
+              session: current.engineSessionId,
+              epoch: this.#selectionEpoch,
+            }
+          : null
+      },
+      epoch: () => this.#selectionEpoch,
+      call: (client, method, params) => this.#call(client, method, params),
+      hasOtherUnresolvedResponsibility: () =>
+        this.#otherResponsibilities() ||
+        this.#management.hasUnresolvedResponsibility ||
+        this.supervisor.hasOtherMainlineResponsibility,
+      journalPath: options.restoreJournalPath,
     })
     // Installed before any connection event or recovery microtask can occur.
     this.#recoveryRelease = tasks.installMainlineRecovery(supervisor, {
@@ -361,10 +385,17 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     )
   }
   get hasUnresolvedResponsibility(): boolean {
-    return this.#otherResponsibilities() || this.#management.hasUnresolvedResponsibility
+    return (
+      this.#otherResponsibilities() ||
+      this.#management.hasUnresolvedResponsibility ||
+      this.#restore.hasUnresolvedResponsibility
+    )
   }
   get managementBlocked(): boolean {
     return this.#management.hasUnresolvedResponsibility
+  }
+  get restoreBlocked(): boolean {
+    return this.#restore.hasUnresolvedResponsibility
   }
   getPendingProjectManagementOperations() {
     return this.#run(() => this.#management.pending())
@@ -394,6 +425,32 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     args: Parameters<ProjectManagementBridge['getProjectManagementOperation']>[0],
   ) {
     return this.#run(() => this.#management.operation(args))
+  }
+  listProjectCheckpoints(args: Parameters<ProjectCheckpointBridge['listProjectCheckpoints']>[0]) {
+    return this.#run(() => this.#restore.list(args))
+  }
+  createProjectCheckpoint(args: Parameters<ProjectCheckpointBridge['createProjectCheckpoint']>[0]) {
+    return this.#run(() => this.#restore.create(args))
+  }
+  getPendingProjectRestoreOperations() {
+    return this.#run(() => this.#restore.pending())
+  }
+  previewProjectRestore(args: Parameters<ProjectCheckpointBridge['previewProjectRestore']>[0]) {
+    return this.#run(() => this.#restore.preview(args))
+  }
+  getProjectRestorePage(args: Parameters<ProjectCheckpointBridge['getProjectRestorePage']>[0]) {
+    return this.#run(() => this.#restore.page(args))
+  }
+  confirmProjectRestore(args: Parameters<ProjectCheckpointBridge['confirmProjectRestore']>[0]) {
+    return this.#run(() => this.#restore.confirm(args))
+  }
+  restoreProject(args: Parameters<ProjectCheckpointBridge['restoreProject']>[0]) {
+    return this.#run(() => this.#restore.apply(args))
+  }
+  getProjectRestoreOperation(
+    args: Parameters<ProjectCheckpointBridge['getProjectRestoreOperation']>[0],
+  ) {
+    return this.#run(() => this.#restore.operation(args))
   }
   #retireRecoveryPending(): unknown {
     let firstFailure: unknown
@@ -482,6 +539,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
       !current ||
       this.#closed ||
       this.#management.hasUnresolvedResponsibility ||
+      this.#restore.hasUnresolvedResponsibility ||
       current.engineSessionId !== this.supervisor.engineSessionId
     )
       throw denied()
@@ -512,8 +570,13 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   ): Promise<T> {
     const operation = client.request(method, params)
     try {
-      return (await operation) as T
+      const value = (await operation) as T
+      if (String(method) === 'project.restore.confirm')
+        console.log('confirm-transport-ok', JSON.stringify(value).slice(0, 120))
+      return value
     } catch (cause) {
+      if (String(method).startsWith('project.restore.'))
+        console.log('restore-transport-threw', method, String(cause).slice(0, 240))
       throw this.#operationError(cause, operation)
     }
   }
@@ -526,7 +589,13 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   async #selection<T>(
     work: (client: MainlineProjectTransport, current: () => boolean) => Promise<T>,
   ): Promise<T> {
-    if (this.#busy || this.#closed || this.#management.hasUnresolvedResponsibility) throw invalid()
+    if (
+      this.#busy ||
+      this.#closed ||
+      this.#management.hasUnresolvedResponsibility ||
+      this.#restore.hasUnresolvedResponsibility
+    )
+      throw invalid()
     this.#busy = true
     try {
       this.#invalidateRecovery()
@@ -914,6 +983,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     this.#projectRelease()
     this.queries.dispose()
     this.#management.dispose()
+    this.#restore.dispose()
     void this.source.dispose().catch(() => {
       // The original handles remain in #retiredRecovery. A failed cleanup does
       // not make disposal proof of release or erase a preceding operation error.

@@ -423,6 +423,11 @@ void app.whenReady().then(async () => {
         'project-intents',
         createHash('sha256').update(startupLocation!.path).digest('hex') + '.json',
       ),
+      restoreJournalPath: join(
+        app.getPath('userData'),
+        'project-restore-intents',
+        createHash('sha256').update(startupLocation!.path).digest('hex') + '.json',
+      ),
     })
   if (locationConfig) {
     library = new LibraryLocationService(locationConfig, {

@@ -33,6 +33,7 @@ export type DesktopIpcDependencies = {
   projects?: MainlineProjectBridge & {
     readonly queries: QueryConsumerBridge
     readonly managementBlocked?: boolean
+    readonly restoreBlocked?: boolean
   }
   replies?: MainlineReplyReceiver
   library?: LibraryLocationService
@@ -58,6 +59,22 @@ export function registerDesktopIpc({
     }),
   })
   const handlers: DesktopIpcHandlers = {
+    'project:checkpoint-list': (args) =>
+      projects?.listProjectCheckpoints(args) ?? Promise.resolve(permission()),
+    'project:checkpoint-create': (args) =>
+      projects?.createProjectCheckpoint(args) ?? Promise.resolve(permission()),
+    'project:restore-pending': () =>
+      projects?.getPendingProjectRestoreOperations() ?? Promise.resolve(permission()),
+    'project:restore-preview': (args) =>
+      projects?.previewProjectRestore(args) ?? Promise.resolve(permission()),
+    'project:restore-page': (args) =>
+      projects?.getProjectRestorePage(args) ?? Promise.resolve(permission()),
+    'project:restore-confirm': (args) =>
+      projects?.confirmProjectRestore(args) ?? Promise.resolve(permission()),
+    'project:restore-apply': (args) =>
+      projects?.restoreProject(args) ?? Promise.resolve(permission()),
+    'project:restore-operation': (args) =>
+      projects?.getProjectRestoreOperation(args) ?? Promise.resolve(permission()),
     'project:management-pending': () =>
       projects?.getPendingProjectManagementOperations() ?? Promise.resolve(permission()),
     'project:management-catalog': (args) =>
@@ -226,7 +243,7 @@ export function registerDesktopIpc({
         )
       if (library?.switching && channel !== 'library:location') return permission()
       if (
-        projects?.managementBlocked &&
+        (projects?.managementBlocked || projects?.restoreBlocked) &&
         [
           'project:create-blank',
           'project:create-example',
@@ -235,6 +252,10 @@ export function registerDesktopIpc({
           'project:changeset-preview',
           'project:changeset-confirm',
           'project:changeset-commit',
+          'project:checkpoint-create',
+          'project:restore-preview',
+          'project:restore-confirm',
+          'project:restore-apply',
           'query:execute-saved',
           'job:cancel',
         ].includes(channel)
@@ -267,6 +288,14 @@ export function registerDesktopIpc({
     })
   }
   register('engine:health', handlers['engine:health'])
+  register('project:checkpoint-list', handlers['project:checkpoint-list'])
+  register('project:checkpoint-create', handlers['project:checkpoint-create'])
+  register('project:restore-pending', handlers['project:restore-pending'])
+  register('project:restore-preview', handlers['project:restore-preview'])
+  register('project:restore-page', handlers['project:restore-page'])
+  register('project:restore-confirm', handlers['project:restore-confirm'])
+  register('project:restore-apply', handlers['project:restore-apply'])
+  register('project:restore-operation', handlers['project:restore-operation'])
   register('project:management-pending', handlers['project:management-pending'])
   register('project:management-catalog', handlers['project:management-catalog'])
   register('project:management-state', handlers['project:management-state'])

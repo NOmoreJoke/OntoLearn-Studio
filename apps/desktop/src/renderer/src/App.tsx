@@ -21,6 +21,8 @@ import { ontologyOperations } from './ontology/mainline-operations'
 import type { OntologyMainlineBridge } from './ontology/mainline-api'
 import { ProjectManagementController } from './project/management-controller'
 import { ProjectManagementPanel } from './project/ProjectManagementPanel'
+import { ProjectCheckpointRestorePanel } from './project/ProjectCheckpointRestorePanel'
+import { ProjectRestoreController } from './project/restore-controller'
 import { LibraryLocationPanel } from './project/LibraryLocationPanel'
 import { libraryAdmissionBlocked, settleManagementTail } from './project/lifecycle-admission'
 
@@ -61,6 +63,16 @@ export function App() {
       !!managementState.pending ||
       managementState.recovery.length > 0 ||
       !managementState.recoveryLoaded)
+  const [checkpointCtl] = useState(() =>
+    window.ontolearn?.listProjectCheckpoints
+      ? new ProjectRestoreController(window.ontolearn)
+      : undefined,
+  )
+  const [checkpointState, setCheckpointState] = useState(() => checkpointCtl?.getSnapshot())
+  const checkpointBlocked =
+    !!checkpointState &&
+    (checkpointState.busy || checkpointState.recovery.length > 0 || !checkpointState.recoveryLoaded)
+  const [checkpointApplied, setCheckpointApplied] = useState<{ projectId: string; nonce: number }>()
   const [catalog, setCatalog] = useState<MainlineCatalogDTO>()
   const [projectName, setProjectName] = useState('')
   const [projectBusy, setProjectBusy] = useState(false)
@@ -441,13 +453,14 @@ export function App() {
         libraryBusy.current ||
         uncertain.current ||
         !!management?.unresolved ||
+        !!checkpointCtl?.unresolved ||
         queries.some(
           (controller) => controller.hasUnresolvedWrite || controller.getSnapshot().busy,
         ) ||
         ontologyOperations.hasUnresolved ||
         (!!ontology && ['reading', 'preparing', 'submitting', 'unknown'].includes(ontology.phase)),
     }
-  }, [management])
+  }, [management, checkpointCtl])
   const reportWorkspace = useCallback((): LibraryWorkspaceReport => {
     documentNonce.current ??= crypto.randomUUID()
     return {
@@ -513,6 +526,44 @@ export function App() {
       workspaceNotify.current()
     })
   }, [management, retireOntology, disconnectQuery])
+  useEffect(() => {
+    if (!checkpointCtl) return
+    const stop = checkpointCtl.subscribe(() => {
+      setCheckpointState(checkpointCtl.getSnapshot())
+      workspaceNotify.current()
+    })
+    void checkpointCtl.initialize()
+    checkpointCtl.setAppliedHandler((result) => {
+      // The restored workspace projection is reloaded through the real open
+      // path; the old editor/draft instances are retired, never mutated.
+      workspaceNotify.current()
+      // Monotonic nonce: applying twice to the same project must retrigger
+      // the open/refresh effect even though the projectId string is equal.
+      setCheckpointApplied((previous) => ({
+        projectId: result.projectId,
+        nonce: (previous?.nonce ?? 0) + 1,
+      }))
+    })
+    return stop
+  }, [checkpointCtl])
+  useEffect(() => {
+    checkpointCtl?.select(tasks?.project?.projectId)
+    // 打开/创建/恢复后的新选中项目：management 尾段已在 applyRestored 内串行
+    // 完成，此处同步刷新一次检查点列表；无选中项目时不发起列表请求。
+    if (tasks?.project?.projectId) void checkpointCtl?.refreshWhenIdle()
+  }, [checkpointCtl, tasks?.project?.projectId])
+  useEffect(() => {
+    if (!checkpointApplied) return
+    // Reload the restored workspace through the real open path after the
+    // applying event settles; a microtask keeps setState out of the effect body.
+    const pending = checkpointApplied
+    queueMicrotask(() => {
+      void openProject(pending.projectId).finally(() => {
+        void management?.refresh()
+        void checkpointCtl?.refresh()
+      })
+    })
+  }, [checkpointApplied]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     let live = true
     const progressBuffer = pendingProgress.current
@@ -599,6 +650,7 @@ export function App() {
     const pageLeaving = () => {
       documentLeaving.current = true
       management?.close()
+      checkpointCtl?.close()
       retireOntology()
       disconnectQuery()
       readyWorkspace.current = undefined
@@ -609,7 +661,7 @@ export function App() {
       // Reversible cleanup supports StrictMode. Selection/document events use retire.
       ontologyOwner.current?.session.dispose()
     }
-  }, [management, retireOntology, disconnectQuery])
+  }, [management, checkpointCtl, retireOntology, disconnectQuery])
   async function loadSummary(job: import('@ontolearn/contracts').JobView) {
     const bridge = window.ontolearn
     if (!bridge || !job.resultRef) return
@@ -889,6 +941,19 @@ export function App() {
               disabled={projectBusy || workspaceFrozen || Boolean(connection)}
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
               openProject={(id) => void openProject(id)}
+            />
+          )}
+          {checkpointCtl && (
+            <ProjectCheckpointRestorePanel
+              controller={checkpointCtl}
+              disabled={
+                projectBusy ||
+                workspaceFrozen ||
+                Boolean(connection) ||
+                managementBlocked ||
+                checkpointBlocked
+              }
+              destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
             />
           )}
           {window.ontolearn?.getLibraryLocation && (
