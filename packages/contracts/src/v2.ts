@@ -754,6 +754,20 @@ export function matchesBusiness3Response(
     const result = value.result as Record<string, unknown>
     return result.operationId === p.operationId && result.requestHash === p.requestHash
   }
+  if (/^project\.learning\./.test(String(q.method))) {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>
+    const value = r.result as Record<string, unknown>
+    if (value.projectId !== p.projectId) return false
+    const method = String(q.method)
+    if (method === 'project.learning.read') return true
+    if (value.operationId !== p.operationId || value.taskId !== p.taskId) return false
+    if (method === 'project.learning.hint.record') return value.level === p.level
+    if (method === 'project.learning.observation.record')
+      return JSON.stringify(value.observation) === JSON.stringify(p.observation)
+    return method === 'project.learning.attempt.start' || method === 'project.learning.task.check'
+  }
   if (q.method === 'project.ownership.detail')
     return (
       q.engineSessionId === r.engineSessionId &&

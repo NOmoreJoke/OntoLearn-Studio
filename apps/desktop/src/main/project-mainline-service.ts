@@ -23,6 +23,12 @@ import {
   type OwnershipDetailPage,
   type ProjectCheckpointBridge,
   type ProjectManagementBridge,
+  type LearningLedgerBridge,
+  type ProjectLearningReadDTO,
+  type ProjectLearningAttemptStartDTO,
+  type ProjectLearningHintRecordDTO,
+  type ProjectLearningObservationRecordDTO,
+  type ProjectLearningTaskCheckDTO,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '../../../../packages/contracts/src/v2'
 import {
@@ -451,6 +457,51 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     args: Parameters<ProjectCheckpointBridge['getProjectRestoreOperation']>[0],
   ) {
     return this.#run(() => this.#restore.operation(args))
+  }
+  getProjectLearningState(args: Parameters<LearningLedgerBridge['getProjectLearningState']>[0]) {
+    return this.#run(() => this.#learning<ProjectLearningReadDTO>('project.learning.read', args))
+  }
+  startLearningAttempt(args: Parameters<LearningLedgerBridge['startLearningAttempt']>[0]) {
+    return this.#run(() =>
+      this.#learning<ProjectLearningAttemptStartDTO>('project.learning.attempt.start', args),
+    )
+  }
+  recordLearningHint(args: Parameters<LearningLedgerBridge['recordLearningHint']>[0]) {
+    return this.#run(() =>
+      this.#learning<ProjectLearningHintRecordDTO>('project.learning.hint.record', args),
+    )
+  }
+  recordLearningObservation(
+    args: Parameters<LearningLedgerBridge['recordLearningObservation']>[0],
+  ) {
+    return this.#run(() =>
+      this.#learning<ProjectLearningObservationRecordDTO>(
+        'project.learning.observation.record',
+        args,
+      ),
+    )
+  }
+  checkLearningTask(args: Parameters<LearningLedgerBridge['checkLearningTask']>[0]) {
+    return this.#run(() =>
+      this.#learning<ProjectLearningTaskCheckDTO>('project.learning.task.check', args),
+    )
+  }
+  /** Learning ledger calls stay behind the selected-project/session guards;
+   *  params and results are validated against the pinned business3 schemas. */
+  async #learning<T>(method: MainlineMethod, args: RecordValue): Promise<T> {
+    const current = this.#current()
+    const client = this.#client()
+    const params: RecordValue = { ...args, projectId: current.project.projectId }
+    if (!validateBusiness3('params_' + method, params)) throw invalid()
+    const value = (await this.#call<RecordValue>(client, method, params)) as RecordValue
+    if (!validateBusiness3('result_' + method, value)) throw invalid()
+    if (value.projectId !== params.projectId) throw invalid()
+    if (
+      method !== 'project.learning.read' &&
+      (value.operationId !== params.operationId || value.taskId !== params.taskId)
+    )
+      throw invalid()
+    return value as T
   }
   #retireRecoveryPending(): unknown {
     let firstFailure: unknown

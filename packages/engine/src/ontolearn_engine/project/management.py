@@ -100,7 +100,9 @@ def metadata_after(metadata, action):
 
 
 def _drafts(application, revision):
-    require(not application["learningCurrent"] and not application["assistanceAudit"])
+    # Learning attempts and the immutable assistance audit stay behind by the
+    # documented copy exclusions; they are not draft material and never block
+    # copying the current checkpoint's editable state.
     rows = deepcopy(application["drafts"])
     for row in rows:
         require(row["editor"] == "query-workspace-v1")

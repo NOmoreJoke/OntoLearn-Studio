@@ -69,6 +69,14 @@ const result = spawnSync(
     `${resolve(root, 'packages/contracts/v2')}:contracts/v2`,
     '--add-data',
     `${resolve(root, 'uv.lock')}:provenance`,
+    // Frozen learning runtime: baselines.verify() cross-checks these three
+    // roots, so the T01 ledger works from sys._MEIPASS exactly like checkout.
+    '--add-data',
+    `${resolve(root, 'content/learning')}:content/learning`,
+    '--add-data',
+    `${resolve(root, 'tests/fixtures/product-baselines')}:tests/fixtures/product-baselines`,
+    '--add-data',
+    `${resolve(root, 'docs/prd/PRD-本体学习与落地Agent工作台.md')}:docs/prd`,
     '--name',
     'ontolearn-engine',
     '--distpath',

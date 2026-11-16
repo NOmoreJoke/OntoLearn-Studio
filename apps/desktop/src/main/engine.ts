@@ -363,6 +363,11 @@ export type MainlineMethod =
   | 'project.restore.confirm'
   | 'project.restore.apply'
   | 'project.restore.operation.get'
+  | 'project.learning.read'
+  | 'project.learning.attempt.start'
+  | 'project.learning.hint.record'
+  | 'project.learning.observation.record'
+  | 'project.learning.task.check'
 export abstract class MainlineProjectTransport {
   #mainlineTransport = true
   static owns(value: unknown): value is MainlineProjectTransport {
@@ -1286,6 +1291,11 @@ export class EngineSupervisor {
               'project.restore.confirm',
               'project.restore.apply',
               'project.restore.operation.get',
+              'project.learning.read',
+              'project.learning.attempt.start',
+              'project.learning.hint.record',
+              'project.learning.observation.record',
+              'project.learning.task.check',
             ].includes(method)
           )
             throw invalid()
