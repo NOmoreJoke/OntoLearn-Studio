@@ -1,6 +1,8 @@
 import type {
   Assistance,
   CheckFeedbackView,
+  CheckStatus,
+  GlossaryEntry,
   HintLevel,
   LearningRecordView,
   TaskContext,
@@ -18,6 +20,53 @@ export const hintLabels: Readonly<Record<HintLevel, string>> = {
   2: '操作提示',
   3: '部分示范',
   4: '完整示范',
+}
+
+/** S0 §6 status mapping; every state carries text, never colour alone. */
+export const checkStatusLabels: Readonly<Record<CheckStatus, string>> = {
+  'not-checked': '待检查',
+  passed: '已通过',
+  'needs-repair': '需要修复',
+  stale: '已过期',
+  failed: '检查失败 / 已取消',
+  'pending-dependency': '依赖未就绪',
+  'rerun-required': '已过期 / 需重跑',
+  'missing-evidence': '检查失败',
+  'tool-not-successful': '检查失败',
+}
+
+/** Local normalisation only: no network, no embedding service, no model. */
+export function normaliseTerm(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+export interface GlossaryMatch {
+  entry: GlossaryEntry
+  rank: number
+}
+
+/**
+ * Local term and alias matching. "主键", "Primary Key" and "PK" all reach the
+ * IRI / 稳定身份 card, together with its boundary text.
+ */
+export function searchGlossary(entries: readonly GlossaryEntry[], query: string): GlossaryMatch[] {
+  const text = normaliseTerm(query ?? '')
+  if (!text) return []
+  const matches: GlossaryMatch[] = []
+  for (const entry of entries) {
+    const names = [entry.term, ...(entry.aliases ?? [])].map(normaliseTerm)
+    let rank = -1
+    if (names.some((name) => name === text)) rank = 0
+    else if (names.some((name) => name.includes(text))) rank = 1
+    else if (
+      normaliseTerm(entry.plain ?? '').includes(text) ||
+      normaliseTerm(entry.boundary ?? '').includes(text)
+    )
+      rank = 2
+    if (rank >= 0) matches.push({ entry, rank })
+  }
+  matches.sort((a, b) => a.rank - b.rank || a.entry.term.localeCompare(b.entry.term))
+  return matches
 }
 
 export function sameContext(a: TaskContext, b: TaskContext): boolean {
@@ -89,6 +138,12 @@ export function recordLabel(record: LearningRecordView | undefined): string {
   if (record.checkStatus === 'pending-dependency') return '检查暂不可用'
   if (!record.operationComplete) return record.checkStatus === 'failed' ? '检查未完成' : '需要修复'
   return assistanceLabels[record.assistance]
+}
+
+/** Textual status of the last check; the UI never relies on colour alone. */
+export function statusLabel(record: LearningRecordView | undefined): string {
+  if (!record) return checkStatusLabels['not-checked']
+  return checkStatusLabels[record.checkStatus] ?? checkStatusLabels['not-checked']
 }
 
 /** Monotonic, disposable view floor. The owning store still decides durable provenance. */

@@ -1,5 +1,5 @@
 {
-  "version": "learning-checks-1",
+  "version": "learning-checks-2",
   "checks": {
     "A-01": {
       "toolOwner": "T01",
@@ -21503,6 +21503,74 @@
     },
     "ontology-model": {
       "toolOwner": "T02",
+      "comparisonPolicy": {
+        "mode": "closed-whitelist",
+        "note": "逐条比较三元组，不比较数量；白名单之外的新增一律需要修复。",
+        "requiredTriples": [
+          {
+            "subject": "urn:ontolearn:learning:Person",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<http://www.w3.org/2002/07/owl#Class>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:assignedTo",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:person/L01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Person>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:assignedTo",
+            "object": "<urn:ontolearn:learning:person/L01>"
+          }
+        ],
+        "classDeclarationAlternatives": {
+          "subject": "urn:ontolearn:learning:Person",
+          "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "exactlyOneOf": [
+            "<http://www.w3.org/2002/07/owl#Class>",
+            "<http://www.w3.org/2000/01/rdf-schema#Class>"
+          ]
+        },
+        "allowedExtraTriples": {
+          "subjects": [
+            "urn:ontolearn:learning:Person",
+            "urn:ontolearn:learning:assignedTo",
+            "urn:ontolearn:learning:person/L01"
+          ],
+          "predicates": [
+            "http://www.w3.org/2000/01/rdf-schema#label",
+            "http://www.w3.org/2000/01/rdf-schema#comment"
+          ]
+        },
+        "removedTriplesMustBeEmpty": true,
+        "anyOtherAddition": "needs-repair",
+        "deviationDiagnostics": [
+          {
+            "when": {
+              "subject": "urn:ontolearn:learning:person/L01",
+              "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "objects": [
+                "<http://www.w3.org/2002/07/owl#Class>",
+                "<http://www.w3.org/2000/01/rdf-schema#Class>"
+              ]
+            },
+            "message": "当前练习把具体人员建成了类：类回答‘是哪一类’，个体回答‘是哪一个’。"
+          },
+          {
+            "when": {
+              "subject": "urn:ontolearn:learning:assignedTo",
+              "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "objects": ["<http://www.w3.org/2002/07/owl#DatatypeProperty>"]
+            },
+            "message": "人员是另一个对象，应使用对象属性。"
+          }
+        ]
+      },
       "expected": {
         "addedTriples": [
           {
@@ -21526,6 +21594,7 @@
             "object": "<urn:ontolearn:learning:person/L01>"
           }
         ],
+        "removedTriples": [],
         "unsupportedConstructs": []
       }
     },

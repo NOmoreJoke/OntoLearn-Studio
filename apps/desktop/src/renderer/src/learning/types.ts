@@ -3,6 +3,17 @@ export type HintLevel = 1 | 2 | 3 | 4
 export type Assistance =
   'independent' | 'partial-hints' | 'full-demonstration' | 'agent-full-assistance'
 
+export type CheckStatus =
+  | 'not-checked'
+  | 'passed'
+  | 'needs-repair'
+  | 'stale'
+  | 'failed'
+  | 'pending-dependency'
+  | 'rerun-required'
+  | 'missing-evidence'
+  | 'tool-not-successful'
+
 export interface TaskContext {
   projectId: string
   taskId: string
@@ -17,7 +28,7 @@ export interface LearningRecordView {
   assistance: Assistance
   operationComplete: boolean
   independentTransferSuccess: boolean
-  checkStatus: 'not-checked' | 'passed' | 'needs-repair' | 'stale' | 'failed' | 'pending-dependency'
+  checkStatus: CheckStatus
   evidenceIds: readonly string[]
 }
 
@@ -45,6 +56,39 @@ export interface LearningActions {
   exportReport?(context: TaskContext): Promise<{ context: TaskContext; exported: boolean }>
 }
 
+export interface SelfAssessmentOption {
+  id: string
+  text: string
+}
+
+/** Offline self assessment; the answer key is local and never changes a score. */
+export interface SelfAssessmentItem {
+  question: string
+  options: readonly SelfAssessmentOption[]
+  answerKey: string
+  explanation: string
+}
+
+/** Read-only mounted material; it is never a learning task and never scores. */
+export interface CourseReading {
+  id: string
+  title: string
+  sourceRef: string
+  optional: boolean
+  summary: string
+  content: string
+  selfAssessment?: readonly SelfAssessmentItem[]
+}
+
+export interface CourseStep {
+  index: number
+  kind: string
+  scored: boolean
+  readingRef: string | null
+  title: string
+  text: string
+}
+
 export interface CourseTask {
   id: string
   module: string
@@ -57,6 +101,8 @@ export interface CourseTask {
   commonErrors: readonly string[]
   transfer: boolean
   knowledgePoints: readonly string[]
+  steps?: readonly CourseStep[]
+  readings?: readonly CourseReading[]
 }
 
 export interface Course {
@@ -72,6 +118,8 @@ export interface GlossaryEntry {
   plain: string
   example: string
   technical: string
+  boundary: string
+  aliases: readonly string[]
 }
 
 export interface LearningWorkspaceProps {

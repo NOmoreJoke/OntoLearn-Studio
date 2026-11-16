@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 from ontolearn_engine.job_store import JobStore
-from ontolearn_engine.learning.baselines import store_seed_plan
+from ontolearn_engine.learning.baselines import read_json, store_seed_plan
 from ontolearn_engine.resources import CONTRACT
 from ontolearn_engine.storage import canonical, digest
 from test_resident_runtime import Session, prepare
@@ -196,3 +196,28 @@ def test_fixture_plan_failure_has_no_partial_seed_or_false_product_success(tmp_p
 
     finally:
         reopened.close()
+
+
+def test_course_revision_binds_to_manifest_sha_without_changing_the_seeded_plan(tmp_path):
+    """The offline course revision must not alter Appendix G fixture identity.
+
+    Learning attempts bind manifest SHA + courseVersion + courseExtensionVersion,
+    so a course revision changes the bound SHA only, never the seeded store plan.
+    """
+    from ontolearn_engine.learning.baselines import file_digest, verify
+
+    result = verify(ROOT)
+    assert result["version"] == "prd-v0.6-learning-1"
+    assert result["courseVersion"] == "offline-course-2"
+    assert result["courseExtensionVersion"] is None
+    manifest_sha = file_digest(ROOT / "tests/fixtures/product-baselines/manifest.json")
+    assert result["manifestSha256"] == manifest_sha
+
+    plan = store_seed_plan(ROOT, "G-base")
+    baseline = read_json(ROOT / "tests/fixtures/product-baselines/G-base.json")
+    assert len(plan["manual"]) == len(baseline["facts"]) == 18
+    assert {fact["subject"] for fact in plan["manual"]} == {
+        fact["subject"] for fact in baseline["facts"]
+    }
+    assert any(definition["layer"] == "scenario" for definition in plan["definitions"])
+    assert all("expected" not in definition["value"] for definition in plan["definitions"])

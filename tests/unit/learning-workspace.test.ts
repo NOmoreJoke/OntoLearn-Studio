@@ -475,6 +475,45 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')(
         ).toBe(true)
         await capture('mobile-behavior')
       })
+
+      it('shows a mounted reading as read-only material that never scores', async () => {
+        await mount({ initialTaskId: 'business-ontology' })
+        const readings = page.getByRole('region', { name: '任务阅读' })
+        await readings.getByText('只读理解，不计为实作完成', { exact: true }).waitFor()
+        await readings.getByText('展开阅读正文', { exact: true }).click()
+        await readings.getByText(/能力问题则是可以被模型直接回答/).waitFor()
+        // The optional self assessment uses the local fixed answer key only.
+        await readings.getByRole('radio').first().check()
+        await readings.getByRole('button', { name: '查看解析', exact: true }).first().click()
+        await readings
+          .getByText(/回答不正确。/)
+          .first()
+          .waitFor()
+        expect(await page.getByLabel('当前输入学习进度').innerText()).toContain('0 / 9')
+        expect(await page.getByText('只读理解，不计为实作完成', { exact: true }).isVisible()).toBe(
+          true,
+        )
+      })
+
+      it('reaches the identity term through an alias search and shows its boundary', async () => {
+        await mount()
+        await page.getByLabel('搜索术语或别名').fill('主键')
+        await page.getByRole('heading', { name: 'IRI / 稳定身份', exact: true }).waitFor()
+        await page.getByText(/Palantir 主键 ≠ 本软件 IRI/).waitFor()
+        await page.getByLabel('搜索术语或别名').fill('PK')
+        await page.getByRole('heading', { name: 'IRI / 稳定身份', exact: true }).waitFor()
+      })
+
+      it('labels the check state with text and keeps the task card collapsible', async () => {
+        await mount({ initialTaskId: 'transfer-repair' })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        await page.getByText('已通过', { exact: true }).first().waitFor()
+        await page.getByRole('button', { name: '收起任务卡', exact: true }).click()
+        await page.getByRole('button', { name: /展开任务卡/ }).waitFor()
+        expect(await page.getByRole('heading', { name: '检查反馈', exact: true }).count()).toBe(0)
+        await page.getByRole('button', { name: /展开任务卡/ }).click()
+        await page.getByRole('heading', { name: '检查反馈', exact: true }).waitFor()
+      })
     })
   },
 )

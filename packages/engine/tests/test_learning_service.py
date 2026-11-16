@@ -5,10 +5,48 @@ from dataclasses import replace
 from pathlib import Path
 
 import pytest
-from ontolearn_engine.learning.baselines import read_json
-from ontolearn_engine.learning.service import Attempt, Context, LearningService, ToolEvidence
+from ontolearn_engine.learning.baselines import file_digest, read_json
+from ontolearn_engine.learning.service import (
+    DEVIATION_ASSIGNED_TO_DATATYPE,
+    DEVIATION_PERSON_AS_CLASS,
+    Attempt,
+    Context,
+    LearningService,
+    ToolEvidence,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
+RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+OWL_CLASS = "<http://www.w3.org/2002/07/owl#Class>"
+RDFS_CLASS = "<http://www.w3.org/2000/01/rdf-schema#Class>"
+OWL_OBJECT_PROPERTY = "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+OWL_DATATYPE_PROPERTY = "<http://www.w3.org/2002/07/owl#DatatypeProperty>"
+PERSON = "urn:ontolearn:learning:Person"
+ASSIGNED_TO = "urn:ontolearn:learning:assignedTo"
+PERSON_L01 = "urn:ontolearn:learning:person/L01"
+EQUIPMENT_001 = "urn:ontolearn:learning:equipment/001"
+LABEL = "http://www.w3.org/2000/01/rdf-schema#label"
+COMMENT = "http://www.w3.org/2000/01/rdf-schema#comment"
+
+
+def triple(subject, predicate, obj):
+    return {"subject": subject, "predicate": predicate, "object": obj}
+
+
+TARGET_TRIPLES = [
+    triple(PERSON, RDF_TYPE, OWL_CLASS),
+    triple(ASSIGNED_TO, RDF_TYPE, OWL_OBJECT_PROPERTY),
+    triple(PERSON_L01, RDF_TYPE, f"<{PERSON}>"),
+    triple(EQUIPMENT_001, ASSIGNED_TO, f"<{PERSON_L01}>"),
+]
+
+
+def ontology_payload(added, removed=()):
+    return {
+        "addedTriples": list(added),
+        "removedTriples": list(removed),
+        "unsupportedConstructs": [],
+    }
 
 
 class SyntheticTools:
@@ -139,6 +177,9 @@ def test_agent_full_assistance_invalidation_mode_switch_and_new_attempt_ledger()
         "independentTransferSuccess": False,
         "checkStatus": "passed",
         "evidenceIds": ["unit-only:attempt-2:transfer-repair"],
+        "courseVersion": "offline-course-2",
+        "courseExtensionVersion": None,
+        "manifestSha256": file_digest(ROOT / "tests/fixtures/product-baselines/manifest.json"),
     }
 
 
@@ -238,3 +279,146 @@ def test_invalid_input_and_unexpected_adapter_failure_do_not_modify_previous_att
     with pytest.raises(RuntimeError):
         failed.check(state)
     assert state == Attempt(context())
+
+
+def ontology_service(payload):
+    """Adapter that returns the caller supplied ontology-model evidence."""
+
+    def transform(evidence):
+        if evidence.check_id == "ontology-model":
+            return replace(evidence, payload=deepcopy(payload))
+        return evidence
+
+    return service(transform)
+
+
+def check_ontology(payload):
+    learning, _ = ontology_service(payload)
+    state, feedback = learning.check(learning.begin(context("business-ontology")))
+    return state, feedback
+
+
+def test_ontology_model_accepts_rdfs_class_and_whitelisted_label_comment():
+    added = [
+        triple(PERSON, RDF_TYPE, RDFS_CLASS),
+        triple(ASSIGNED_TO, RDF_TYPE, OWL_OBJECT_PROPERTY),
+        triple(PERSON_L01, RDF_TYPE, f"<{PERSON}>"),
+        triple(EQUIPMENT_001, ASSIGNED_TO, f"<{PERSON_L01}>"),
+        triple(PERSON, LABEL, '"人员"'),
+        triple(PERSON_L01, COMMENT, '"示例人员"'),
+    ]
+    state, feedback = check_ontology(ontology_payload(added))
+    assert state.operation_complete
+    assert feedback.status == "passed"
+    assert feedback.completed == ("ontology-model",)
+    assert not feedback.repairs
+
+
+def test_ontology_model_rejects_both_class_declarations_at_once():
+    added = TARGET_TRIPLES + [triple(PERSON, RDF_TYPE, RDFS_CLASS)]
+    state, feedback = check_ontology(ontology_payload(added))
+    assert not state.operation_complete
+    assert state.check_status == "needs-repair"
+    assert any("恰好出现其一" in repair for repair in feedback.repairs)
+
+
+def test_ontology_model_rejects_missing_removed_triples_field():
+    payload = ontology_payload(TARGET_TRIPLES)
+    del payload["removedTriples"]
+    state, feedback = check_ontology(payload)
+    assert not state.operation_complete
+    assert any("removedTriples" in repair for repair in feedback.repairs)
+
+
+def test_ontology_model_rejects_any_removed_triple():
+    state, feedback = check_ontology(
+        ontology_payload(TARGET_TRIPLES, removed=[triple(PERSON, LABEL, '"人员"')])
+    )
+    assert not state.operation_complete
+    assert any("不能删除既有三元组" in repair for repair in feedback.repairs)
+
+
+@pytest.mark.parametrize(
+    "added",
+    [
+        TARGET_TRIPLES + [triple(PERSON_L01, RDF_TYPE, "<urn:ontolearn:learning:Equipment>")],
+        TARGET_TRIPLES
+        + [
+            triple(
+                "urn:ontolearn:learning:equipment/002",
+                ASSIGNED_TO,
+                f"<{PERSON_L01}>",
+            )
+        ],
+        TARGET_TRIPLES + [triple("urn:ontolearn:learning:equipment/003", RDF_TYPE, OWL_CLASS)],
+        TARGET_TRIPLES + [triple(PERSON, RDF_TYPE, OWL_DATATYPE_PROPERTY)],
+        TARGET_TRIPLES + [triple(EQUIPMENT_001, LABEL, '"泵站A"')],
+    ],
+)
+def test_ontology_model_rejects_everything_outside_the_closed_whitelist(added):
+    state, feedback = check_ontology(ontology_payload(added))
+    assert not state.operation_complete
+    assert state.check_status == "needs-repair"
+    assert feedback.repairs
+
+
+def test_ontology_model_reports_person_built_as_class_and_datatype_property():
+    state, feedback = check_ontology(
+        ontology_payload(
+            TARGET_TRIPLES
+            + [
+                triple(PERSON_L01, RDF_TYPE, OWL_CLASS),
+                triple(ASSIGNED_TO, RDF_TYPE, OWL_DATATYPE_PROPERTY),
+            ]
+        )
+    )
+    assert not state.operation_complete
+    repairs = " ".join(feedback.repairs)
+    assert DEVIATION_PERSON_AS_CLASS in repairs
+    assert DEVIATION_ASSIGNED_TO_DATATYPE in repairs
+    assert "新建修复 ChangeSet" in repairs
+
+
+def test_ontology_model_missing_target_triple_is_reported():
+    state, feedback = check_ontology(ontology_payload(TARGET_TRIPLES[:3]))
+    assert not state.operation_complete
+    assert any("缺少目标三元组" in repair for repair in feedback.repairs)
+
+
+def test_mounted_readings_are_read_only_and_never_score():
+    learning, _ = service()
+    assert learning.course_version == "offline-course-2"
+    assert learning.glossary_version == "glossary-2"
+    assert learning.checks_version == "learning-checks-2"
+    assert learning.course_extension_version is None
+    assert learning.manifest_sha256 == file_digest(
+        ROOT / "tests/fixtures/product-baselines/manifest.json"
+    )
+    readings = learning.readings_for("business-ontology")
+    assert [reading["id"] for reading in readings] == ["business-question"]
+    assert readings[0]["optional"] is False
+    assert learning.readings_for("scenario")[0]["optional"] is True
+    assert learning.readings_for("mapping")[0]["id"] == "mapping-diff-read"
+    assert learning.readings_for("query")[0]["id"] == "query-scope-read"
+    assert learning.readings_for("behavior")[0]["id"] == "behavior-conflict-read"
+    # Reading and self assessment never touch a score or the assistance record.
+    state = learning.begin(context("business-ontology"))
+    assert state == Attempt(context("business-ontology"))
+    for reading in learning.readings_for("business-ontology"):
+        for item in reading.get("selfAssessment", []):
+            assert item["answerKey"] in [option["id"] for option in item["options"]]
+    assert learning.readings_for("business-ontology")[0]["content"]
+    with pytest.raises(ValueError, match="Unknown task"):
+        learning.readings_for("unknown")
+
+
+@pytest.mark.parametrize("query", ["主键", "Primary Key", "PK", " primary  key ", "主键 "])
+def test_glossary_alias_search_reaches_identity_boundary(query):
+    learning = LearningService(ROOT)
+    matches = learning.search_glossary(query)
+    assert matches
+    assert matches[0]["term"] == "IRI / 稳定身份"
+    assert "Palantir 主键 ≠ 本软件 IRI" in matches[0]["boundary"]
+    assert "主键" in matches[0]["aliases"]
+    assert learning.search_glossary("") == ()
+    assert learning.search_glossary("这个词不存在于术语表") == ()

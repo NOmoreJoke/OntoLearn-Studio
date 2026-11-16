@@ -22,7 +22,8 @@
   box-sizing: border-box;
 }
 .learning-workspace button,
-.learning-workspace select {
+.learning-workspace select,
+.learning-workspace input {
   font: inherit;
   min-width: 0;
   cursor: pointer;
@@ -44,6 +45,7 @@
 }
 .learning-workspace button:focus-visible,
 .learning-workspace select:focus-visible,
+.learning-workspace input:focus-visible,
 .learning-workspace summary:focus-visible {
   outline: 3px solid #0369a1;
   outline-offset: 3px;
@@ -222,6 +224,119 @@
   color: #0d625c;
   padding: 2px 8px;
   border-radius: 4px;
+}
+.learning-state-text {
+  font-weight: 600;
+}
+.learning-state-assist {
+  font-weight: 400;
+}
+.learning-task-collapse {
+  width: 100%;
+  text-align: left;
+  font-size: 11px;
+  color: var(--learn-muted);
+  background: var(--learn-soft);
+  border-color: transparent;
+  margin-bottom: 12px;
+}
+.learning-task-body.is-collapsed {
+  display: none;
+}
+.learning-steps {
+  margin: 16px 0 0 !important;
+  padding-left: 20px;
+  font-size: 12px;
+  color: var(--learn-muted);
+}
+.learning-steps li + li {
+  margin-top: 8px;
+}
+.learning-steps b {
+  color: var(--learn-text);
+}
+.learning-step-flag {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  color: var(--learn-accent);
+  background: var(--learn-soft);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.learning-readings {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--learn-line);
+}
+.learning-reading {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--learn-line);
+  border-radius: 9px;
+  background: #f7faf9;
+}
+.learning-reading h4 {
+  color: var(--learn-text);
+}
+.learning-reading-flag {
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--learn-muted);
+  border: 1px solid var(--learn-line);
+  border-radius: 10px;
+  padding: 1px 7px;
+}
+.learning-reading-source,
+.learning-reading-summary {
+  margin-top: 6px !important;
+  font-size: 11px;
+  color: var(--learn-muted);
+}
+.learning-reading-content {
+  margin-top: 8px !important;
+  font-size: 12px;
+  color: var(--learn-muted);
+  overflow-wrap: anywhere;
+}
+.learning-self-assessment {
+  margin-top: 14px;
+  border: 1px dashed var(--learn-line);
+  border-radius: 8px;
+  padding: 12px;
+}
+.learning-self-assessment legend {
+  font-size: 11px;
+  color: var(--learn-muted);
+  padding: 0 4px;
+}
+.learning-self-assessment-question {
+  font-size: 12px;
+  color: var(--learn-text);
+  margin-bottom: 8px !important;
+}
+.learning-self-assessment-option {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--learn-muted);
+  margin-bottom: 6px;
+}
+.learning-self-assessment-option input {
+  min-height: 20px;
+  margin-top: 3px;
+}
+.learning-self-assessment button {
+  min-height: 34px;
+  font-size: 11px;
+  padding: 5px 12px;
+}
+.learning-self-assessment-result {
+  margin-top: 8px !important;
+  font-size: 11px;
+  color: var(--learn-muted);
 }
 .learning-task > h2 {
   font-size: 21px;
@@ -417,7 +532,8 @@
   color: var(--learn-muted);
   margin-bottom: 5px;
 }
-.learning-glossary select {
+.learning-glossary select,
+.learning-glossary input {
   width: 100%;
   min-height: 40px;
   padding: 7px 9px;
@@ -425,6 +541,43 @@
   border: 1px solid var(--learn-line);
   border-radius: 5px;
   background: white;
+}
+.learning-term-matches {
+  list-style: none;
+  padding: 0 !important;
+  margin: 8px 0 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.learning-term-matches button {
+  min-height: 30px;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 14px;
+}
+.learning-boundary-note,
+.learning-aliases {
+  margin-top: 12px !important;
+  padding: 9px 11px;
+  border-left: 2px solid var(--learn-accent);
+  background: var(--learn-soft);
+  border-radius: 0 6px 6px 0;
+  font-size: 11px;
+  color: var(--learn-text);
+}
+.learning-aliases {
+  border-left-color: #a3c8bd;
+  background: transparent;
+  color: var(--learn-muted);
+}
+.learning-boundary-note b,
+.learning-aliases b {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--learn-muted);
+  margin-bottom: 3px;
 }
 .learning-glossary h3 {
   margin: 18px 0 6px;
@@ -514,6 +667,11 @@
   }
   .learning-task {
     padding: 20px 16px;
+  }
+  .learning-task-collapse {
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
   .learning-task > h2 {
     font-size: 19px;

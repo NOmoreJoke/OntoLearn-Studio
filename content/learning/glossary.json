@@ -1,143 +1,221 @@
 {
-  "version": "glossary-1",
+  "version": "glossary-2",
   "entries": [
     {
       "term": "本体",
       "plain": "业务对象与关系的说明书。",
       "example": "设备、告警及设备关联告警。",
-      "technical": "用RDF/OWL表达受支持的类与属性。"
+      "technical": "用RDF/OWL表达受支持的类与属性。",
+      "boundary": "本体描述业务对象与关系；本软件只支持附录C列出的RDF/OWL子集，不等于完整本体语言。",
+      "aliases": ["Ontology", "语义模型"]
     },
     {
       "term": "类",
       "plain": "一类对象。",
       "example": "Equipment表示设备这一类。",
-      "technical": "可作为rdf:type的对象。"
+      "technical": "可作为rdf:type的对象。",
+      "boundary": "类回答“是哪一类”；类不是一台具体设备。",
+      "aliases": ["Class", "分类"]
     },
     {
       "term": "个体",
       "plain": "一个具体对象。",
       "example": "equipment/001是泵站A。",
-      "technical": "具有稳定IRI的实例资源。"
+      "technical": "具有稳定IRI的实例资源。",
+      "boundary": "个体回答“是哪一个”；显示名相同不代表身份相同。",
+      "aliases": ["Individual", "实例"]
     },
     {
       "term": "属性",
       "plain": "对象的特征或联系。",
       "example": "设备名称或设备关联告警。",
-      "technical": "数据属性连接字面量，对象属性连接资源。"
+      "technical": "数据属性连接字面量，对象属性连接资源。",
+      "boundary": "本条目是总述：连接另一个对象的是对象属性，连接字面量的是数据属性。",
+      "aliases": ["Property", "属性总述"]
     },
     {
       "term": "关系",
       "plain": "两个对象之间的联系。",
       "example": "001关联A01。",
-      "technical": "RDF谓语连接主语和资源对象。"
+      "technical": "RDF谓词连接主语和资源对象。",
+      "boundary": "RDF属性有方向；反向查询不等于自动产生反向断言。",
+      "aliases": ["Relation", "关联"]
     },
     {
       "term": "RDF",
       "plain": "用三部分说清一件事。",
       "example": "001—名称—泵站A。",
-      "technical": "主语、谓语、对象组成三元组。"
+      "technical": "主语、谓语、对象组成三元组。",
+      "boundary": "三元组是单向陈述；缺少陈述不能推出它的否定。",
+      "aliases": ["Resource Description Framework", "三元组"]
     },
     {
       "term": "OWL",
       "plain": "表达本体语义的语言。",
       "example": "定义Equipment类。",
-      "technical": "本产品仅支持附录C中的子集。"
+      "technical": "本产品仅支持附录C中的子集。",
+      "boundary": "本软件只承诺附录C列出的构造子集合，不承诺完整OWL语义。",
+      "aliases": ["Web Ontology Language"]
     },
     {
       "term": "SPARQL",
       "plain": "查询RDF数据的语言。",
       "example": "查High且Open的告警。",
-      "technical": "P0仅项目内只读SELECT/ASK。"
+      "technical": "P0仅项目内只读SELECT/ASK。",
+      "boundary": "只支持项目内只读查询；跨项目全文检索不在本课程范围。",
+      "aliases": ["SPARQL Query"]
     },
     {
       "term": "SHACL",
       "plain": "检查记录是否符合明确要求。",
       "example": "设备名称必须填写。",
-      "technical": "targetClass/path/minCount等受支持模板，必须说明数据范围。"
+      "technical": "targetClass/path/minCount等受支持模板，必须说明数据范围。",
+      "boundary": "只检查明确选定的数据范围与受支持模板；不会推断你没有声明的约束。",
+      "aliases": ["Shapes Constraint Language", "约束校验"]
     },
     {
       "term": "数据映射",
       "plain": "把表格行变成有稳定身份的事实。",
       "example": "CSV的001转为equipment/001。",
-      "technical": "保留源行、所有权、转换与身份规则。"
+      "technical": "保留源行、所有权、转换与身份规则。",
+      "boundary": "身份字段必须稳定：源文件重排不应该改变同一个实体的身份。",
+      "aliases": ["Mapping", "映射"]
     },
     {
       "term": "推理",
       "plain": "依事实和规则计算新的结论。",
       "example": "A01让001成为高风险设备。",
-      "technical": "先RDFS闭包，再一阶段规则，输出不继续触发。"
+      "technical": "先RDFS闭包，再一阶段规则，输出不继续触发。",
+      "boundary": "输入一变，旧推导就会过期；删除推导不等于删除源事实。",
+      "aliases": ["Reasoning", "规则推演"]
     },
     {
       "term": "能力问题",
       "plain": "用来检验模型能回答什么的业务问题。",
       "example": "有哪些未闭环高危告警？",
-      "technical": "将业务目标落实为可执行查询与验收。"
+      "technical": "将业务目标落实为可执行查询与验收。",
+      "boundary": "能力问题不是泛泛的领域介绍，它必须可以被结果核对。",
+      "aliases": ["Competency Question", "能力问句"]
     },
     {
       "term": "断言事实",
       "plain": "直接录入或映射提交的信息。",
       "example": "001名称为泵站A。",
-      "technical": "存于当前断言层，不由推理产生。"
+      "technical": "存于当前断言层，不由推理产生。",
+      "boundary": "断言不等于推导结果；两者在报告里要分开列。",
+      "aliases": ["Asserted Fact", "断言"]
     },
     {
       "term": "当前推导结果",
       "plain": "基于当前输入计算出的结论。",
       "example": "001属于HighRiskEquipment。",
-      "technical": "输入改变会过期，重算可撤回，不能误删断言。"
+      "technical": "输入改变会过期，重算可撤回，不能误删断言。",
+      "boundary": "推导结果必须显示来源、版本与过期状态，不能当作源事实来删改。",
+      "aliases": ["Derived Fact", "推导"]
     },
     {
       "term": "行为",
       "plain": "遇到事件且满足条件时执行动作。",
       "example": "高危告警创建巡检单。",
-      "technical": "条件使用冻结快照，写入意图先做竞争检查。"
+      "technical": "条件使用冻结快照，写入意图先做竞争检查。",
+      "boundary": "行为只做受控内部动作；不会向外部系统写回，也不跨出快照范围。",
+      "aliases": ["Behavior", "行为定义"]
     },
     {
       "term": "沙盘",
       "plain": "在副本里比较条件变化的结果。",
       "example": "产能3与4的积压对比。",
-      "technical": "固定轮次、隔离状态、已提交轮次不可改写。"
+      "technical": "固定轮次、隔离状态、已提交轮次不可改写。",
+      "boundary": "沙盘遵守固定轮次语义，不继承参考产品的场景寿命或自动同步规则。",
+      "aliases": ["Sandbox", "沙盘推演"]
     },
     {
       "term": "快照",
       "plain": "某个时刻完整可恢复的状态。",
       "example": "行为运行前的状态。",
-      "technical": "绑定版本；恢复会覆盖后续操作，应与撤销一次修改区分。"
+      "technical": "绑定版本；恢复会覆盖后续操作，应与撤销一次修改区分。",
+      "boundary": "恢复整份快照与撤销单次修改是两种动作，不能混用。",
+      "aliases": ["Snapshot", "检查点"]
     },
     {
       "term": "ChangeSet",
       "plain": "一批可预览、确认与撤销的修改。",
       "example": "Agent建议改两台设备。",
-      "technical": "绑定基准版本并原子提交，旧基准拒绝覆盖。"
+      "technical": "绑定基准版本并原子提交，旧基准拒绝覆盖。",
+      "boundary": "写入必须先预览再确认；旧基准上的提交会被拒绝而不是覆盖。",
+      "aliases": ["变更集", "变更集合"]
     },
     {
       "term": "已过期",
       "plain": "结果所用输入已有变化。",
       "example": "改A01后旧风险结论。",
-      "technical": "可查看但不能无标识作为当前结论。"
+      "technical": "可查看但不能无标识作为当前结论。",
+      "boundary": "过期结果只能作为历史回看，重新检查之后才有当前结论。",
+      "aliases": ["Stale", "过期"]
     },
     {
       "term": "Diff",
       "plain": "修改前后的差异。",
       "example": "新增、变更、删除哪些事实。",
-      "technical": "确认前展示ChangeSet的完整差异。"
+      "technical": "确认前展示ChangeSet的完整差异。",
+      "boundary": "差异是预览，不是已提交结果；确认之前没有任何写入发生。",
+      "aliases": ["差异", "变更对比"]
     },
     {
       "term": "开放世界假设",
       "plain": "没记录不等于证明不存在。",
       "example": "删除A03后003显示未记录告警。",
-      "technical": "RDF缺少陈述不能推出其否定；SHACL只检查选定数据范围。"
+      "technical": "RDF缺少陈述不能推出其否定；SHACL只检查选定数据范围。",
+      "boundary": "数据缺失与业务否定要分开；不会扩展出引擎不支持的否定规则。",
+      "aliases": ["Open World", "开放世界"]
     },
     {
       "term": "定义域",
       "plain": "某关系的主语可推导成什么类型。",
       "example": "若assignedTo的domain为Equipment，关联的主语可推为设备。",
-      "technical": "rdfs:domain是类型推理，不是填写校验或禁止其他主语。"
+      "technical": "rdfs:domain是类型推理，不是填写校验或禁止其他主语。",
+      "boundary": "多项定义域声明不能随意解释成“任选其一”；必填校验请用SHACL。",
+      "aliases": ["Domain", "rdfs:domain"]
     },
     {
       "term": "值域",
       "plain": "某关系的对象可推导成什么类型。",
       "example": "若assignedTo的range为Person，关联对象可推为人员。",
-      "technical": "rdfs:range是类型推理；必填、数据类型和允许值校验应使用SHACL。"
+      "technical": "rdfs:range是类型推理；必填、数据类型和允许值校验应使用SHACL。",
+      "boundary": "值域声明只用于类型推导；把它当必填会得到错误结论。",
+      "aliases": ["Range", "rdfs:range"]
+    },
+    {
+      "term": "IRI / 稳定身份",
+      "plain": "对象可持续引用的标识。",
+      "example": "equipment/001、alarm/A01、person/L01 都是课程里使用的稳定身份。",
+      "technical": "IRI是资源的全局标识；本软件用 urn:ontolearn:learning: 承载课程命名空间。",
+      "boundary": "Palantir 主键 ≠ 本软件 IRI；改身份不能悄悄当作修改显示名称。",
+      "aliases": ["主键", "Primary Key", "PK"]
+    },
+    {
+      "term": "对象属性",
+      "plain": "两个对象之间的关系。",
+      "example": "equipment/001 assignedTo person/L01。",
+      "technical": "对象属性连接资源；RDF属性有方向，反向查询不等于自动产生反向断言。",
+      "boundary": "对象属性连接的是另一个对象；把对象关系建成数据属性或声明成字面量属性会被课程检查判为需要修复。",
+      "aliases": ["Object Property", "对象关系"]
+    },
+    {
+      "term": "数据属性",
+      "plain": "对象自身的值。",
+      "example": "equipment/001 name \"泵站A\"。",
+      "technical": "数据属性连接字面量，不参与个体之间的类型推理。",
+      "boundary": "值不是另一个对象的关系；人员是另一个对象，应使用对象属性而不是数据属性。",
+      "aliases": ["Datatype Property", "字面量属性"]
+    },
+    {
+      "term": "场景",
+      "plain": "从明确基线出发比较方案的隔离运行。",
+      "example": "E.5 场景比较直接产能3与4的固定轮次结果。",
+      "technical": "沙盘遵守固定轮次语义，隔离状态，已提交轮次不可改写。",
+      "boundary": "本软件遵守固定轮次语义，不继承 Foundry 场景寿命或自动同步规则。",
+      "aliases": ["Scenario", "沙盘场景"]
     }
   ]
 }

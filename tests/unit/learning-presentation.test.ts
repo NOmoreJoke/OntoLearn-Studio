@@ -4,16 +4,20 @@ import {
   offlineGlossary,
 } from '../../apps/desktop/src/renderer/src/learning/content'
 import {
+  checkStatusLabels,
   recordLabel,
   observeRecord,
   observeRecords,
   contextKey,
   projectionRecord,
   sameContext,
+  searchGlossary,
+  statusLabel,
   validFeedback,
   validRecord,
 } from '../../apps/desktop/src/renderer/src/learning/presentation'
 import type {
+  CheckStatus,
   LearningRecordView,
   TaskContext,
 } from '../../apps/desktop/src/renderer/src/learning/types'
@@ -196,5 +200,103 @@ describe('learning UI trusted projections', () => {
       }),
     )
     expect(projectionRecord(projected, context)?.maxHintLevel).toBe(4)
+  })
+
+  it('ships the offline-course-2 content with five mounted readings', () => {
+    expect(offlineCourse.version).toBe('offline-course-2')
+    expect(offlineCourse.firstTask).toBe('business-ontology')
+    expect(offlineCourse.tasks).toHaveLength(9)
+    const mounted = offlineCourse.tasks.flatMap((task) =>
+      (task.readings ?? []).map((reading) => ({
+        task: task.id,
+        id: reading.id,
+        optional: reading.optional,
+      })),
+    )
+    expect(mounted).toEqual([
+      { task: 'business-ontology', id: 'business-question', optional: false },
+      { task: 'mapping', id: 'mapping-diff-read', optional: false },
+      { task: 'query', id: 'query-scope-read', optional: false },
+      { task: 'behavior', id: 'behavior-conflict-read', optional: false },
+      { task: 'scenario', id: 'scenario-read', optional: true },
+    ])
+    const ids = mounted.map((item) => item.id)
+    expect(new Set(ids).size).toBe(ids.length)
+    for (const task of offlineCourse.tasks) {
+      // Reading material is mounted, never inlined into the task itself.
+      expect(task.readings?.length ?? 0).toBeGreaterThanOrEqual(0)
+      for (const reading of task.readings ?? []) {
+        expect(reading.content.length).toBeGreaterThan(0)
+        expect(reading.sourceRef.length).toBeGreaterThan(0)
+        for (const item of reading.selfAssessment ?? []) {
+          expect(item.options.map((option) => option.id)).toContain(item.answerKey)
+        }
+      }
+    }
+    const business = offlineCourse.tasks.find((task) => task.id === 'business-ontology')!
+    expect(business.steps?.[0]).toMatchObject({
+      index: 0,
+      scored: false,
+      readingRef: 'business-question',
+    })
+    expect(business.hints[0].text).toContain('类回答是哪一类，个体回答是哪一个')
+    expect(business.commonErrors.join('\n')).toContain('把具体人员建成类')
+  })
+
+  it('keeps the glossary at glossary-2 with boundary and alias on every entry', () => {
+    expect(offlineGlossary).toHaveLength(27)
+    for (const entry of offlineGlossary) {
+      expect(entry.boundary.trim().length).toBeGreaterThan(0)
+      expect(entry.aliases.length).toBeGreaterThan(0)
+      expect(entry.example).not.toContain('equipmentA')
+    }
+    const identity = offlineGlossary.find((entry) => entry.term === 'IRI / 稳定身份')!
+    expect(identity.aliases).toEqual(['主键', 'Primary Key', 'PK'])
+    expect(identity.boundary).toContain('Palantir 主键 ≠ 本软件 IRI')
+  })
+
+  it.each(['主键', 'Primary Key', 'PK', ' primary   key '])(
+    'reaches the identity term through the local alias search: %s',
+    (query) => {
+      const matches = searchGlossary(offlineGlossary, query)
+      expect(matches[0].entry.term).toBe('IRI / 稳定身份')
+      expect(matches[0].entry.boundary).toContain('Palantir 主键 ≠ 本软件 IRI')
+      expect(searchGlossary(offlineGlossary, '')).toEqual([])
+      expect(searchGlossary(offlineGlossary, '这个词不存在于术语表')).toEqual([])
+    },
+  )
+
+  it('maps every check status to a text label instead of colour alone', () => {
+    const expected: Record<CheckStatus, string> = {
+      'not-checked': '待检查',
+      passed: '已通过',
+      'needs-repair': '需要修复',
+      stale: '已过期',
+      failed: '检查失败 / 已取消',
+      'pending-dependency': '依赖未就绪',
+      'rerun-required': '已过期 / 需重跑',
+      'missing-evidence': '检查失败',
+      'tool-not-successful': '检查失败',
+    }
+    expect(checkStatusLabels).toEqual(expected)
+    expect(statusLabel(undefined)).toBe('待检查')
+    expect(
+      statusLabel(
+        record({
+          operationComplete: false,
+          independentTransferSuccess: false,
+          checkStatus: 'failed',
+        }),
+      ),
+    ).toBe('检查失败 / 已取消')
+    expect(
+      statusLabel(
+        record({
+          operationComplete: false,
+          independentTransferSuccess: false,
+          checkStatus: 'rerun-required',
+        }),
+      ),
+    ).toBe('已过期 / 需重跑')
   })
 })
