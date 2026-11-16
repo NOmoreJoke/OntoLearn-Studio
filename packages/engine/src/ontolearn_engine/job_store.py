@@ -532,6 +532,10 @@ class JobStore(Store):
                 "preparedPlanRef": ref,
                 "confirmationRef": confirmation,
                 "planHash": digest(plan),
+                # The authoritative change, including any derived restore domain
+                # attachment; apply must replay exactly this object, never a
+                # caller-rebuilt approximation.
+                "change": plan["change"],
                 "beforeCAS": plan["beforeCAS"],
                 "afterCAS": plan["afterCAS"],
                 "applicationBefore": plan["before"],

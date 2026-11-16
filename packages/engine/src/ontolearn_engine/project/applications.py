@@ -82,6 +82,10 @@ def cas(scope, identity, version):
     return {"scope": scope, "identity": identity, "version": version}
 
 
+CHECKPOINT_REASONS = ("manual", "before-run", "guided-stage", "before-agent")
+RESTORE_WITHDRAWN = "withdrawn-by-project-restore"
+
+
 def check_change(change):
     require(isinstance(change, dict) and isinstance(change.get("type"), str))
     base = {"type", "domain"} if "domain" in change else {"type"}
@@ -91,8 +95,32 @@ def check_change(change):
         "draft.save": {"editor", "expectedGeneration", "boundDomainRevision", "content"},
         "draft.delete": {"editor", "expectedGeneration"},
         "draft.restore": {"editor", "expectedGeneration", "checkpointRef"},
+        "checkpoint.create": {"reason", "label"},
+        "project.restore": {
+            "checkpointRef",
+            "expectedCheckpointRef",
+            "expectedMetadataVersion",
+            "expectedOperationSequence",
+        },
     }
     require(kind in fields and set(change) == base | fields[kind])
+    if kind == "checkpoint.create":
+        # A checkpoint only freezes evidence; it can never carry a domain plan.
+        require("domain" not in change)
+        require(change["reason"] in CHECKPOINT_REASONS)
+        label = change["label"]
+        require(
+            label is None
+            or (isinstance(label, str) and bool(label) and len(label.encode("utf-8")) <= 256)
+        )
+        stable(change)
+        return
+    if kind == "project.restore":
+        require(hash_ref(change["checkpointRef"]) and hash_ref(change["expectedCheckpointRef"]))
+        require(
+            integer(change["expectedMetadataVersion"])
+            and integer(change["expectedOperationSequence"])
+        )
     if kind == "metadata":
         patch = change["patch"]
         require(integer(change["expectedVersion"]) and isinstance(patch, dict) and bool(patch))
@@ -103,7 +131,7 @@ def check_change(change):
             require(type(patch["archived"]) is bool)
         if "mode" in patch:
             require(isinstance(patch["mode"], str) and patch["mode"] in {"guided", "assisted"})
-    else:
+    elif kind != "project.restore":
         require(isinstance(change["editor"], str) and bool(change["editor"]))
         require(integer(change["expectedGeneration"]))
         if kind == "draft.save":
@@ -144,6 +172,72 @@ def _draft_row(head):
     }
 
 
+def _restore_effects(project, change, before, target, domain_after_revision):
+    """Whole-project restore of mutable current state; immutable audit stays put."""
+    require(target is not None and target["project"] == project)
+    require(change["checkpointRef"] == digest(target))
+    require(change["expectedMetadataVersion"] == before["metadataVersion"])
+    before_meta, target_meta = before["metadata"], target["application"]["metadata"]
+    require(
+        before_meta["templateRef"] == target_meta["templateRef"]
+        and before_meta["origin"] == target_meta["origin"]
+    )
+    after = deepcopy(before)
+    after["metadataVersion"] = next_version(before["metadataVersion"])
+    after["metadata"] = {**deepcopy(target_meta)}
+    old_cas = [cas("metadata", project, before["metadataVersion"])]
+    new_cas = [cas("metadata", project, after["metadataVersion"])]
+    before_rows = {row["editor"]: row for row in before["drafts"]}
+    target_rows = {row["editor"]: row for row in target["application"]["drafts"]}
+    drafts = []
+    for editor in sorted(before_rows.keys() | target_rows.keys()):
+        head = _head(project, before_rows.get(editor))
+        generation = head.generation if head else 0
+        next_version(generation)
+        target_row = target_rows.get(editor)
+        restored = (
+            _head(project, target_row)
+            if target_row
+            else DraftHead(project, editor, 0, False, target["domainRevision"], None)
+        )
+        plan = restore_draft(
+            project,
+            editor,
+            head,
+            restored,
+            expected_generation=generation,
+            domain_revision=domain_after_revision,
+        )
+        drafts.append(_draft_row(plan.after))
+        old_cas.append(cas("draft", editor, generation))
+        new_cas.append(cas("draft", editor, plan.after.generation))
+    after["drafts"] = drafts
+    before_learning = {row["attempt"]: row for row in before["learningCurrent"]}
+    target_learning = {row["attempt"]: row for row in target["application"]["learningCurrent"]}
+    # Rows are append-only: a target-only attempt would mean forged future history.
+    require(set(target_learning) <= set(before_learning))
+    learning = []
+    for attempt in sorted(before_learning.keys() | target_learning.keys()):
+        row = dict(before_learning[attempt])
+        version = row["record_version"]
+        row["record_version"] = next_version(version)
+        if attempt in target_learning:
+            row.update(
+                course=target_learning[attempt]["course"],
+                task=target_learning[attempt]["task"],
+                payload=target_learning[attempt]["payload"],
+            )
+        else:
+            row["payload"] = canonical(
+                {"status": RESTORE_WITHDRAWN, "restoredToCheckpointRef": change["checkpointRef"]}
+            )
+        learning.append(row)
+        old_cas.append(cas("learning", attempt, version))
+        new_cas.append(cas("learning", attempt, row["record_version"]))
+    after["learningCurrent"] = learning
+    return after, old_cas, new_cas
+
+
 def effects(project, change, before, domain_before_revision, domain_after_revision, target=None):
     """Recompute permitted changes; never accept a supplied whole-state replacement."""
     from ontolearn_engine.project.format3 import _application
@@ -151,7 +245,13 @@ def effects(project, change, before, domain_before_revision, domain_after_revisi
     check_change(change)
     _application(before, project, domain_before_revision)
     after = deepcopy(before)
-    if change["type"] == "metadata":
+    if change["type"] == "checkpoint.create":
+        old_cas, new_cas = [], []
+    elif change["type"] == "project.restore":
+        after, old_cas, new_cas = _restore_effects(
+            project, change, before, target, domain_after_revision
+        )
+    elif change["type"] == "metadata":
         version = before["metadataVersion"]
         if change["expectedVersion"] != version:
             raise Conflict("Metadata version changed", category="state")
@@ -226,11 +326,45 @@ def construct_plan(store, project, change):
             "beforeControl": json.loads(preview.control_before_json),
             "afterControl": json.loads(preview.control_after_json),
         }
-    target = (
-        store.project_checkpoint(project, change["checkpointRef"])
-        if (change["type"] == "draft.restore")
-        else None
-    )
+    target = None
+    if change["type"] in {"draft.restore", "project.restore"}:
+        target = store.project_checkpoint(project, change["checkpointRef"])
+    if change["type"] == "project.restore":
+        # The wire change must never smuggle a domain plan: attachment is derived
+        # here from the two authoritative checkpoints, nothing else.
+        require("domain" not in change)
+        current = store.project_checkpoint(project)
+        require(change["checkpointRef"] != digest(current))
+        require(digest(current) == change["expectedCheckpointRef"])
+        require(current["operationSequence"] == change["expectedOperationSequence"])
+        require(current["application"]["metadataVersion"] == change["expectedMetadataVersion"])
+        if target["domainSnapshotRef"] != current["domainSnapshotRef"]:
+            preview = ProjectTransactions(store).preview(
+                project,
+                current["domainRevision"],
+                {"compensate": {"kind": "restore", "snapshotRef": target["domainSnapshotRef"]}},
+            )
+            kwargs = json.loads(preview.plan_json)
+            kwargs.update(
+                preview_identity=preview.identity,
+                preview_control={
+                    "before": json.loads(preview.control_before_json),
+                    "after": json.loads(preview.control_after_json),
+                },
+            )
+            domain = {
+                "base": preview.base,
+                "kwargs": kwargs,
+                "fingerprint": ProjectTransactions._fingerprint(preview),
+                "beforeState": json.loads(preview.before_json),
+                "afterState": json.loads(preview.after_json),
+                "beforeControl": json.loads(preview.control_before_json),
+                "afterControl": json.loads(preview.control_after_json),
+            }
+            change = stable(
+                {**change, "domain": {"base": preview.base, "plan": json.loads(preview.plan_json)}}
+            )
+            check_change(change)
     after, old_cas, new_cas = effects(
         project, change, before, revision, revision + int(domain is not None), target
     )
@@ -315,7 +449,10 @@ def check_confirmation(store, context):
     request = context["request"]
     auth = request["authorization"]
     plan = context["plan"]
-    required = plan["domain"] is not None or plan["change"]["type"] == "draft.restore"
+    required = plan["domain"] is not None or plan["change"]["type"] in {
+        "draft.restore",
+        "project.restore",
+    }
     plan_ref, confirmation_ref = auth["preparedPlanRef"], auth["confirmationRef"]
     require((plan_ref is None) == (confirmation_ref is None))
     if plan_ref is None:
@@ -442,12 +579,26 @@ def commit(store, project, base, operation, job, supplied, hook):
             )
         target = (
             store.project_checkpoint(project, plan["change"]["checkpointRef"])
-            if (plan["change"]["type"] == "draft.restore")
+            if (plan["change"]["type"] in {"draft.restore", "project.restore"})
             else None
         )
         validate_plan(store, project, plan, current["domainRevision"], target)
         if canonical(application_state(store, project)) != canonical(plan["before"]):
             raise Conflict("Application preview changed", category="state")
+        if plan["change"]["type"] == "project.restore":
+            change = plan["change"]
+            if (
+                digest(current) != change["expectedCheckpointRef"]
+                or current["operationSequence"] != change["expectedOperationSequence"]
+            ):
+                raise Conflict(
+                    "Restore head changed; re-preview required",
+                    category="revision",
+                    params={
+                        "expected": change["expectedOperationSequence"],
+                        "actual": current["operationSequence"],
+                    },
+                )
         if current["operationSequence"] >= MAX_VERSION:
             raise Conflict("Application sequence limit", category="state")
         before_ref = digest(current)
@@ -467,11 +618,60 @@ def commit(store, project, base, operation, job, supplied, hook):
             )
             domain_ref = marker["after_snapshot"]
             hook("application_domain")
-        if plan["change"]["type"] == "metadata":
+        kind = plan["change"]["type"]
+        if kind == "metadata":
             store._db.execute(
                 "UPDATE app_projects SET metadata_version=?,metadata=? WHERE project=?",
                 (plan["after"]["metadataVersion"], canonical(plan["after"]["metadata"]), project),
             )
+        elif kind == "checkpoint.create":
+            pass  # Evidence-only operation: the whole application state is frozen as-is.
+        elif kind == "project.restore":
+            store._db.execute(
+                "UPDATE app_projects SET metadata_version=?,metadata=? WHERE project=?",
+                (plan["after"]["metadataVersion"], canonical(plan["after"]["metadata"]), project),
+            )
+            upsert_draft = (
+                "INSERT INTO app_drafts VALUES(?,?,?,?,?,?,?) "
+                "ON CONFLICT(project,editor) DO UPDATE SET "
+                "generation=excluded.generation,present=excluded.present,"
+                "bound_revision=excluded.bound_revision,payload=excluded.payload,"
+                "content_hash=excluded.content_hash"
+            )
+            for row in plan["after"]["drafts"]:
+                store._db.execute(
+                    upsert_draft,
+                    (
+                        project,
+                        row["editor"],
+                        row["generation"],
+                        row["present"],
+                        row["bound_revision"],
+                        row["payload"],
+                        row["content_hash"],
+                    ),
+                )
+            hook("application_restore_drafts")
+            upsert_learning = (
+                "INSERT INTO app_learning VALUES(?,?,?,?,?,?) "
+                "ON CONFLICT(project,attempt) DO UPDATE SET "
+                "record_version=excluded.record_version,course=excluded.course,"
+                "task=excluded.task,payload=excluded.payload"
+            )
+            for row in plan["after"]["learningCurrent"]:
+                store._db.execute(
+                    upsert_learning,
+                    (
+                        project,
+                        row["attempt"],
+                        row["record_version"],
+                        row["course"],
+                        row["task"],
+                        row["payload"],
+                    ),
+                )
+            hook("application_restore_learning")
+            # assistanceAudit stays byte-identical: app_assistance is immutable.
         else:
             row = next(
                 r for r in plan["after"]["drafts"] if r["editor"] == plan["change"]["editor"]
