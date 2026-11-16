@@ -30,7 +30,7 @@ jobs:
       # Electron / electron-builder binary downloads (CI70 attempt1 macOS failed
       # with HTTP 504 inside package:dir). Default per-OS cache locations;
       # paths absent on a given OS are ignored.
-      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.cache/electron
@@ -91,7 +91,7 @@ jobs:
       # Electron / electron-builder binary downloads (CI70 attempt1 macOS failed
       # with HTTP 504 inside package:dir). Default per-OS cache locations;
       # paths absent on a given OS are ignored.
-      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.cache/electron
