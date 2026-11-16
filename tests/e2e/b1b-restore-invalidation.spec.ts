@@ -84,12 +84,70 @@ async function confirmManagement(page: Page): Promise<void> {
   await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 15000 })
 }
 
+/**
+ * Confirms the real ontology diff and settles the receipt / original-operation
+ * pair until the receipt reports the exact committed revision.
+ */
+async function confirmOntologyDiffAndSettle(
+  panel: Locator,
+  expectedRevision: number,
+): Promise<void> {
+  await panel
+    .getByRole('region', { name: '完整事务差异', exact: true })
+    .getByRole('button', { name: '我已核对完整差异，确认提交', exact: true })
+    .click()
+  const receipt = panel.getByRole('region', { name: '已提交回执', exact: true })
+  const pending = panel.getByRole('region', { name: '原操作状态', exact: true })
+  let needsReconciliation = false
+  await expect
+    .poll(
+      async () => {
+        const snapshot = await receipt.or(pending).evaluateAll((regions) => {
+          const receipts = regions.filter(
+            (node) => node.getAttribute('aria-label') === '已提交回执',
+          )
+          const operations = regions.filter(
+            (node) => node.getAttribute('aria-label') === '原操作状态',
+          )
+          if (receipts.length > 1 || operations.length > 1)
+            throw new Error('Duplicate original commit status regions')
+          return { receipt: receipts[0]?.textContent, pending: operations[0]?.textContent }
+        })
+        if (snapshot.receipt?.includes(`提交版本 ${expectedRevision}。`)) return 'receipt'
+        if (
+          snapshot.pending?.includes('状态：failed') ||
+          snapshot.pending?.includes('状态：cancelled')
+        ) {
+          throw new Error(`Ontology operation failed: ${snapshot.pending}`)
+        }
+        if (snapshot.pending?.includes('succeeded')) {
+          needsReconciliation = true
+          return 'terminal-needs-reconciliation'
+        }
+        return 'waiting'
+      },
+      { timeout: 30000 },
+    )
+    .not.toBe('waiting')
+  if (needsReconciliation) {
+    const reconcile = pending.getByRole('button', { name: '核对原操作与提交回执', exact: true })
+    await expect(reconcile).toBeEnabled({ timeout: 15000 })
+    await reconcile.click()
+  }
+  await expect(receipt).toContainText(`提交版本 ${expectedRevision}。`, { timeout: 30000 })
+  await expect(receipt).toContainText(`当前已读版本 ${expectedRevision}。`, { timeout: 30000 })
+  await expect(panel.getByRole('button', { name: '读取当前项目', exact: true })).toBeEnabled({
+    timeout: 15000,
+  })
+  await expect(pending).toHaveCount(0)
+}
+
 /** Submits one ontology definition through the real preview → confirm path. */
 async function commitDefinition(
-  page: Page,
   panel: Locator,
   identifier: string,
   label: string,
+  expectedRevision: number,
   iri: string = `urn:ontolearn:learning:${identifier}`,
 ): Promise<void> {
   await panel.getByRole('button', { name: '新建概念', exact: true }).click()
@@ -103,10 +161,34 @@ async function commitDefinition(
   await group.getByLabel('语言标签 1', { exact: true }).fill('zh')
   await form.getByRole('button', { name: '预览定义修改', exact: true }).click()
   const diff = panel.getByRole('region', { name: '完整事务差异', exact: true })
-  await expect(diff).toBeVisible()
-  await diff.getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }).click()
-  const receipt = panel.getByRole('region', { name: '已提交回执', exact: true })
-  await expect(receipt).toBeVisible({ timeout: 30000 })
+  await expect(diff).toBeVisible({ timeout: 30000 })
+  await confirmOntologyDiffAndSettle(panel, expectedRevision)
+}
+
+/** Submits one asserted manual fact through the real preview → confirm path. */
+async function commitManualFact(
+  panel: Locator,
+  subject: string,
+  predicate: string,
+  object: string,
+  expectedRevision: number,
+): Promise<void> {
+  const facts = panel.getByRole('region', { name: '实例事实', exact: true })
+  const resetFacts = facts.getByRole('button', { name: '新建事实并读取当前基准', exact: true })
+  await expect(resetFacts).toBeEnabled({ timeout: 15000 })
+  await resetFacts.click()
+  await facts.getByLabel('主体个体 IRI', { exact: true }).fill(subject)
+  await facts.getByLabel('属性 IRI', { exact: true }).fill(predicate)
+  await facts.getByLabel('规范 RDF 对象', { exact: true }).fill(object)
+  const previewFact = facts.getByRole('button', { name: '预览新增事实', exact: true })
+  await expect(previewFact).toBeEnabled({ timeout: 15000 })
+  await previewFact.click()
+  await expect(panel.getByRole('region', { name: '完整事务差异', exact: true })).toBeVisible({
+    timeout: 30000,
+  })
+  await confirmOntologyDiffAndSettle(panel, expectedRevision)
+  await expect(resetFacts).toBeEnabled({ timeout: 15000 })
+  await resetFacts.click()
 }
 
 /** The original Job identity rendered by the real task region. */
@@ -167,18 +249,6 @@ async function receiptOperation(receipt: Locator): Promise<string> {
   return match[1]!
 }
 
-/** Polls the real project until its domain revision advances past the given one. */
-async function waitForRevisionAbove(page: Page, editor: string, revision: number): Promise<number> {
-  for (let attempt = 0; attempt < 120; attempt++) {
-    const read = data(
-      await page.evaluate((value) => window.ontolearn!.readProject({ editor: value }), editor),
-    )
-    if (read.domain.projectRevision > revision) return read.domain.projectRevision
-    await page.waitForTimeout(500)
-  }
-  throw new Error(`Actual project revision never advanced past ${revision}`)
-}
-
 test('B1b whole-project restore rolls back mixed impacts and survives a real restart', async () => {
   test.setTimeout(240000)
   const evidence: Record<string, unknown> = {}
@@ -227,7 +297,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
 
     stage = 'commit one domain change so the checkpoint predates a real domain write'
     let panel = await ontologyPanel(page)
-    await commitDefinition(page, panel, 'b1b-equipment', '设备', 'urn:ontolearn:learning:Equipment')
+    await commitDefinition(panel, 'b1b-equipment', '设备', 1, 'urn:ontolearn:learning:Equipment')
 
     stage = 'run one query so a current result exists'
     panel = await queryPanel(page)
@@ -363,7 +433,13 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
 
     stage = 'commit a second domain change so the executed result becomes stale'
     const ontology = await ontologyPanel(page)
-    await commitDefinition(page, ontology, 'b1b-pump', '水泵')
+    await commitManualFact(
+      ontology,
+      'urn:ontolearn:learning:eq-1',
+      'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+      '<urn:ontolearn:learning:Equipment>',
+      3,
+    )
 
     stage = 'the fixed result is now stale while the history keeps its original input'
     panel = await queryPanel(page)
@@ -383,6 +459,9 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     const staleDescriptor = await queryDescriptor(page, resultId)
     expect(staleDescriptor.metadata.state).toBe('stale')
     expect(staleDescriptor.metadata.staleReason.length).toBeGreaterThan(0)
+    expect(
+      staleDescriptor.metadata.staleReason.some((reason) => reason.code === 'FACTS_CHANGED'),
+    ).toBe(true)
     expect(staleDescriptor.identity.inputSnapshotId).toBe(originalInputSnapshotId)
     evidence.staleReason = staleDescriptor.metadata.staleReason
 
@@ -548,29 +627,22 @@ test('B1b FR-804 single-step undo pauses on conflict and cleanly undoes the late
 
     stage = 'commit one definition and undo it cleanly'
     const panel = await ontologyPanel(page)
-    await commitDefinition(page, panel, 'b1b-undo-clean', '干净撤销定义')
+    await commitDefinition(panel, 'b1b-undo-clean', '干净撤销定义', 1)
     const cleanReceipt = panel.getByRole('region', { name: '已提交回执', exact: true })
     await expect(cleanReceipt).toBeVisible({ timeout: 30000 })
     const cleanOperation = await receiptOperation(cleanReceipt)
     evidence.cleanOperation = cleanOperation
-    const beforeCleanUndo = data(
-      await page.evaluate(() => window.ontolearn!.readProject({ editor: 'ontology-transaction' })),
-    )
-    const beforeCleanUndoRevision = beforeCleanUndo.domain.projectRevision
 
     await cleanReceipt.getByRole('button', { name: '预览撤销本次修改', exact: true }).click()
     const cleanDiff = panel.getByRole('region', { name: '完整事务差异', exact: true })
     await expect(cleanDiff).toBeVisible({ timeout: 30000 })
     await expect(cleanDiff).toContainText('完整事务差异 · 尚未提交')
     await expect(cleanDiff).not.toContainText('撤销冲突影响')
-    await cleanDiff.getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }).click()
-    await expect(panel.getByRole('region', { name: '已提交回执', exact: true })).toBeVisible({
-      timeout: 30000,
-    })
-    await waitForRevisionAbove(page, 'ontology-transaction', beforeCleanUndoRevision)
+    await confirmOntologyDiffAndSettle(panel, 2)
     const afterCleanUndo = data(
       await page.evaluate(() => window.ontolearn!.readProject({ editor: 'ontology-transaction' })),
     )
+    expect(afterCleanUndo.domain.projectRevision).toBe(2)
     expect(
       afterCleanUndo.domain.state.definitions.some((item) =>
         item.payload.includes('b1b-undo-clean'),
@@ -582,7 +654,7 @@ test('B1b FR-804 single-step undo pauses on conflict and cleanly undoes the late
     await expect(panel.getByRole('button', { name: '读取当前项目', exact: true })).toBeEnabled({
       timeout: 15000,
     })
-    await commitDefinition(page, panel, 'b1b-undo-first', '首个定义')
+    await commitDefinition(panel, 'b1b-undo-first', '首个定义', 3)
     const firstReceipt = panel.getByRole('region', { name: '已提交回执', exact: true })
     await expect(firstReceipt).toBeVisible({ timeout: 30000 })
     const firstOperation = await receiptOperation(firstReceipt)
@@ -645,7 +717,22 @@ test('B1b FR-804 single-step undo pauses on conflict and cleanly undoes the late
       return { definitionId: target.id, jobId: job.data.jobId, baseRevision }
     })
     evidence.op2 = op2
-    const op2Revision = await waitForRevisionAbove(page, 'ontology-transaction', op2.baseRevision)
+    await expect
+      .poll(
+        async () => {
+          const op2Job = data(await page.evaluate((id) => window.ontolearn!.getJob(id), op2.jobId))
+          if (op2Job.state === 'failed' || op2Job.state === 'cancelled')
+            throw new Error(`Actual op2 job settled to ${op2Job.state}`)
+          return op2Job.state
+        },
+        { timeout: 30000 },
+      )
+      .toBe('succeeded')
+    const op2Settled = data(
+      await page.evaluate(() => window.ontolearn!.readProject({ editor: 'ontology-transaction' })),
+    )
+    const op2Revision = op2Settled.domain.projectRevision
+    expect(op2Revision).toBe(op2.baseRevision + 1)
     evidence.op2Revision = op2Revision
 
     stage = 'the earlier commit now conflicts and the undo is paused without a partial write'
