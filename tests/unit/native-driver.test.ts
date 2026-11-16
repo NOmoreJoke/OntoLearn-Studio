@@ -193,6 +193,18 @@ function realm() {
       fromHelper.cache = state.mapped ? { electron: {} } : {}
       return await runInContext(expression, context)
     },
+    async evaluateInBrowserInit(expression: string) {
+      fromHelper.cache = state.mapped ? { electron: {} } : {}
+      // A real V8 stack frame named like Electron's browser_init wrapper:
+      // the readiness probe runs through a host callback while that frame is
+      // on the stack, exactly like an inspector evaluate landing inside the
+      // synchronous browser_init module.
+      return await runInContext(
+        'probe()',
+        createContext({ probe: () => runInContext(expression, context) }),
+        { filename: 'node:electron/js2c/browser_init' },
+      )
+    },
   }
 }
 function connect(h: ReturnType<typeof setup>, r: ReturnType<typeof realm>) {
@@ -720,4 +732,63 @@ it('waits for the 400ms win32 settle window before loading the native helper onc
   h2.finish()
   expect(await result2).toEqual({ ok: true })
   h2.expectClean()
+})
+
+it('defers the first readiness probe inside the electron/js2c/browser_init frame, then completes', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  let insideBrowserInit = true
+  const originalLoad = r.load.getMockImplementation()
+  // If the readiness body ever ran inside browser_init, loading the API
+  // would re-enter the half-initialized module and the BrowserWindow getter
+  // would throw the CI TypeError; the guard must defer before createRequire.
+  r.load.mockImplementation(() => {
+    const api = originalLoad!()
+    if (!insideBrowserInit) return api
+    Object.defineProperty(api, 'BrowserWindow', {
+      configurable: true,
+      get() {
+        throw new TypeError('Object prototype may only be an Object or null: undefined')
+      },
+    })
+    return api
+  })
+  h.respond((request) => {
+    if (!request.params.returnByValue) {
+      h.socket.reply(request, { type: 'object', objectId: 'original-helper' })
+      return
+    }
+    const evaluated = insideBrowserInit
+      ? r.evaluateInBrowserInit(request.params.expression)
+      : r.evaluate(request.params.expression)
+    void evaluated.then(
+      (value) => {
+        values.push(value)
+        h.socket.reply(request, { type: 'object', value })
+      },
+      (error: unknown) =>
+        h.socket.dispatchEvent(
+          new MessageEvent('message', {
+            data: JSON.stringify({
+              id: request.id,
+              result: { exceptionDetails: { text: String(error) } },
+            }),
+          }),
+        ),
+    )
+  })
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([{ state: 'api-pending', pending: 'browser_init' }])
+  expect(r.load).toHaveBeenCalledTimes(0)
+  insideBrowserInit = false
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([{ state: 'api-pending', pending: 'browser_init' }, { state: 'ready' }])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
 })

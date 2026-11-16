@@ -243,6 +243,19 @@ export async function runNativeRecovery(
     // and renderer termination will not be silently dropped while IsStarting()
     // is still true) plus a 400ms win32 settle window.
     const readiness = `(() => {
+      const previousStackLimit = Error.stackTraceLimit;
+      let stack = '';
+      try {
+        Error.stackTraceLimit = Math.max(
+          typeof previousStackLimit === 'number' ? previousStackLimit : 10,
+          64,
+        );
+        stack = String(new Error().stack ?? '');
+      } finally {
+        Error.stackTraceLimit = previousStackLimit;
+      }
+      if (stack.includes('electron/js2c/'))
+        return { state: 'api-pending', pending: 'browser_init' };
       const fromHelper = process.getBuiltinModule('module').createRequire(${helper});
       if (!Object.prototype.hasOwnProperty.call(fromHelper.cache, 'electron'))
         return { state: 'mapping-pending' };

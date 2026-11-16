@@ -696,6 +696,23 @@ async def _supervise(popen, name: str, stdout=None, stderr=None) -> int:
         done: set = set()
         if ready_tasks:
             done, _pending = await asyncio.wait(ready_tasks, timeout=_DRAIN_BOUND_S)
+        reader_threads = [e["handle"] for e in readers if e["kind"] == "thread"]
+        if exited and drain_failure is None and reader_threads:
+            stop_join = threading.Event()
+
+            def wait_threads() -> None:
+                deadline = time.monotonic() + _DRAIN_BOUND_S
+                for thread in reader_threads:
+                    while thread.is_alive() and not stop_join.is_set() and not failures:
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            return
+                        thread.join(min(0.05, remaining))
+
+            try:
+                await asyncio.get_running_loop().run_in_executor(None, wait_threads)
+            finally:
+                stop_join.set()
         if drain_failure is None and failures:
             drain_failure = failures[0][1]
         short = any(e["kind"] == "task" and e["handle"] not in done for e in readers)
