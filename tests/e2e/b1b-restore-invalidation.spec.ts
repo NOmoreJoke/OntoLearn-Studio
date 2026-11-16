@@ -74,6 +74,30 @@ async function queryPanel(page: Page): Promise<Locator> {
   return panel
 }
 
+/**
+ * Clicks the fixed-result refresh and waits until the whole refresh round-trip
+ * settles, so a later descriptor read can never race the in-flight refresh.
+ */
+async function refreshQueryResultAndSettle(
+  panel: Locator,
+  expectedResultText: string,
+): Promise<void> {
+  const refresh = panel.getByRole('button', {
+    name: '刷新任务、原操作与固定结果',
+    exact: true,
+  })
+  await expect(refresh).toBeEnabled({ timeout: 30000 })
+  await refresh.click()
+  await expect(panel.locator('p[role="status"][aria-live="polite"]')).toHaveText(
+    '已取得真实结果描述；按固定引用分别读取文本与结果页。',
+    { timeout: 30000 },
+  )
+  await expect(refresh).toBeEnabled({ timeout: 30000 })
+  const resultPanel = panel.getByRole('region', { name: '查询结果', exact: true })
+  await expect(resultPanel).toBeVisible({ timeout: 30000 })
+  await expect(resultPanel).toContainText(expectedResultText, { timeout: 30000 })
+}
+
 /** Confirms the real project management dialog (rename / mode switch). */
 async function confirmManagement(page: Page): Promise<void> {
   const dialog = page.getByRole('dialog', { name: '项目管理确认', exact: true })
@@ -266,6 +290,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
       { timeout: 15000 },
     )
     await expect(page.getByTestId('selected-project-version')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 15000 })
     const projectId = await page.evaluate(async () => {
       const catalog = await window.ontolearn!.getProjectManagementCatalog({
         state: 'active',
@@ -361,10 +386,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     expect(executeJobId).not.toBe(commitJobId)
     evidence.commitJobId = commitJobId
     evidence.executeJobId = executeJobId
-    await refreshTask.click()
-    const resultPanel = panel.getByRole('region', { name: '查询结果', exact: true })
-    await expect(resultPanel).toBeVisible({ timeout: 30000 })
-    await expect(resultPanel).toContainText('当前结果')
+    await refreshQueryResultAndSettle(panel, '当前结果')
 
     stage = 'read the real result identity of the executed query'
     const resultId = await latestQueryResultId(page)
@@ -419,13 +441,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     stage = 'the metadata and draft changes did not invalidate the executed result'
     // Re-read the fixed result instead of trusting a previous render, so the
     // panel text and the descriptor always describe the same real read.
-    const refreshStill = panel.getByRole('button', {
-      name: '刷新任务、原操作与固定结果',
-      exact: true,
-    })
-    await expect(refreshStill).toBeEnabled({ timeout: 30000 })
-    await refreshStill.click()
-    await expect(resultPanel).toContainText('当前结果', { timeout: 30000 })
+    await refreshQueryResultAndSettle(panel, '当前结果')
     const afterMetadataDescriptor = await queryDescriptor(page, resultId)
     expect(afterMetadataDescriptor.metadata.state).toBe('current')
     expect(afterMetadataDescriptor.identity.inputSnapshotId).toBe(originalInputSnapshotId)
@@ -447,15 +463,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     // the fixed result can be refreshed and read as the very same execution.
     const staleTask = panel.getByRole('region', { name: '真实查询或提交任务', exact: true })
     await expect(staleTask.locator('code').first()).toHaveText(executeJobId, { timeout: 30000 })
-    const refreshAgain = panel.getByRole('button', {
-      name: '刷新任务、原操作与固定结果',
-      exact: true,
-    })
-    await expect(refreshAgain).toBeEnabled({ timeout: 30000 })
-    await refreshAgain.click()
-    const stalePanel = panel.getByRole('region', { name: '查询结果', exact: true })
-    await expect(stalePanel).toBeVisible({ timeout: 30000 })
-    await expect(stalePanel).toContainText('已过期，请明确选择输入后重新执行', { timeout: 30000 })
+    await refreshQueryResultAndSettle(panel, '已过期，请明确选择输入后重新执行')
     const staleDescriptor = await queryDescriptor(page, resultId)
     expect(staleDescriptor.metadata.state).toBe('stale')
     expect(staleDescriptor.metadata.staleReason.length).toBeGreaterThan(0)
