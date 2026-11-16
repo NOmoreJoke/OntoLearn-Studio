@@ -90,9 +90,12 @@ async function commitDefinition(
   panel: Locator,
   identifier: string,
   label: string,
+  iri: string = `urn:ontolearn:learning:${identifier}`,
 ): Promise<void> {
   await panel.getByRole('button', { name: '新建概念', exact: true }).click()
   const form = panel.getByRole('region', { name: '本体编辑表单', exact: true })
+  // 稳定 IRI 是必填项；缺失时浏览器会拒绝提交，预览定义修改不会产生完整事务差异。
+  await form.getByLabel('稳定 IRI', { exact: true }).fill(iri)
   await form.getByLabel('英文标识', { exact: true }).fill(identifier)
   const group = form.getByRole('group', { name: '名称（保留所有语言）', exact: true })
   await group.getByRole('button', { name: '添加名称', exact: true }).click()
@@ -104,6 +107,18 @@ async function commitDefinition(
   await diff.getByRole('button', { name: '我已核对完整差异，确认提交', exact: true }).click()
   const receipt = panel.getByRole('region', { name: '已提交回执', exact: true })
   await expect(receipt).toBeVisible({ timeout: 30000 })
+}
+
+/** The original Job identity rendered by the real task region. */
+const jobIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+
+async function originalJobId(task: Locator): Promise<string> {
+  const identity = task.locator('code').first()
+  await expect(identity).toHaveText(jobIdPattern)
+  const value = await identity.textContent()
+  if (!value || !jobIdPattern.test(value))
+    throw new Error('Actual task region exposes no original Job')
+  return value
 }
 
 /**
@@ -212,7 +227,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
 
     stage = 'commit one domain change so the checkpoint predates a real domain write'
     let panel = await ontologyPanel(page)
-    await commitDefinition(page, panel, 'b1b-equipment', '设备')
+    await commitDefinition(page, panel, 'b1b-equipment', '设备', 'urn:ontolearn:learning:Equipment')
 
     stage = 'run one query so a current result exists'
     panel = await queryPanel(page)
@@ -223,6 +238,12 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     await panel.getByRole('button', { name: '新建查询草稿', exact: true }).click()
     await panel.getByLabel('项目内查询标识', { exact: true }).fill('b1b-query')
     await panel.getByLabel('名称', { exact: true }).fill('B1b 恢复核对查询')
+    await panel
+      .getByRole('textbox', { name: '说明', exact: true })
+      .fill('B1b 检查点恢复与失效验证查询')
+    await panel
+      .getByRole('textbox', { name: '关联能力问题', exact: true })
+      .fill('哪些设备已被录入？')
     await panel
       .getByRole('textbox', { name: '可见 SPARQL', exact: true })
       .fill(
@@ -242,24 +263,35 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
       .getByRole('checkbox', { name: '我已核对完整差异，确认提交此版本', exact: true })
       .check()
     await diff.getByRole('button', { name: '明确确认并提交真实任务', exact: true }).click()
-    await expect(
-      panel.getByRole('region', { name: '真实查询或提交任务', exact: true }),
-    ).toContainText('：succeeded；', { timeout: 60000 })
+    const task = panel.getByRole('region', { name: '真实查询或提交任务', exact: true })
+    await expect(task).toContainText('：succeeded；', { timeout: 60000 })
+    // The committed definition only becomes executable after the original task
+    // and its operation have been reconciled by one explicit refresh.
+    const refreshTask = task.getByRole('button', {
+      name: '刷新任务、原操作与固定结果',
+      exact: true,
+    })
+    await expect(refreshTask).toBeEnabled({ timeout: 30000 })
+    await refreshTask.click()
+    await expect(panel.locator('p[role="status"][aria-live="polite"]')).toHaveText(
+      '真实提交终态、原operation、历史与当前定义均已核对；可执行受管查询。',
+      { timeout: 30000 },
+    )
     const execute = panel.getByRole('button', {
       name: '执行已载入且未改变的受管定义',
       exact: true,
     })
     await expect(execute).toBeEnabled({ timeout: 30000 })
+    const commitJobId = await originalJobId(task)
     await execute.click()
-    await expect(
-      panel.getByRole('region', { name: '真实查询或提交任务', exact: true }),
-    ).toContainText('：succeeded；', { timeout: 60000 })
-    const refresh = panel.getByRole('button', {
-      name: '刷新任务、原操作与固定结果',
-      exact: true,
-    })
-    await expect(refresh).toBeEnabled()
-    await refresh.click()
+    // The query execution replaces the commit Job inside the very same region.
+    await expect(task.locator('code').first()).not.toHaveText(commitJobId, { timeout: 60000 })
+    await expect(task).toContainText('：succeeded；', { timeout: 60000 })
+    const executeJobId = await originalJobId(task)
+    expect(executeJobId).not.toBe(commitJobId)
+    evidence.commitJobId = commitJobId
+    evidence.executeJobId = executeJobId
+    await refreshTask.click()
     const resultPanel = panel.getByRole('region', { name: '查询结果', exact: true })
     await expect(resultPanel).toBeVisible({ timeout: 30000 })
     await expect(resultPanel).toContainText('当前结果')
@@ -335,6 +367,10 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
 
     stage = 'the fixed result is now stale while the history keeps its original input'
     panel = await queryPanel(page)
+    // Switching back to the query workbench keeps the original execute Job, so
+    // the fixed result can be refreshed and read as the very same execution.
+    const staleTask = panel.getByRole('region', { name: '真实查询或提交任务', exact: true })
+    await expect(staleTask.locator('code').first()).toHaveText(executeJobId, { timeout: 30000 })
     const refreshAgain = panel.getByRole('button', {
       name: '刷新任务、原操作与固定结果',
       exact: true,
@@ -379,6 +415,11 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     await expect(operations).toContainText('checkpoint.create')
     await expect(preview).toContainText('覆盖范围')
     await expect(preview).toContainText('保留不变')
+
+    stage = 'no unsaved draft or dirty form blocks the destructive restore'
+    // The destructive path is only reachable when no workspace edit is pending.
+    await expect(preview.getByTestId('restore-destructive-blocked')).toHaveCount(0)
+    await expect(preview.getByTestId('restore-confirm')).toBeEnabled()
 
     stage = 'confirm the restore and type the explicit consent'
     await preview.getByTestId('restore-confirm').click()
