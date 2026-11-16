@@ -1,10 +1,10 @@
 import { EventEmitter } from 'node:events'
 import { resolve } from 'node:path'
-import { runInNewContext } from 'node:vm'
+import { createContext, runInContext } from 'node:vm'
 import { afterEach, expect, it, vi } from 'vitest'
 const { spawn } = vi.hoisted(() => ({ spawn: vi.fn() }))
 vi.mock('node:child_process', () => ({ spawn }))
-import { runNativeRecovery } from '../e2e/native-driver'
+import { runNativeRecovery, type NativeRecoveryOptions } from '../e2e/native-driver'
 
 afterEach(() => {
   vi.useRealTimers()
@@ -93,11 +93,12 @@ function setup() {
     respond(work: (request: Request) => void) {
       respond = work
     },
-    start() {
+    start(options?: NativeRecoveryOptions) {
       const result = runNativeRecovery(
         '/real/electron',
         ['--user-data-dir=/test-profile'],
         {},
+        options,
       ).then(
         () => ({ ok: true as const }),
         (error: unknown) => ({ error }),
@@ -122,7 +123,11 @@ function realm() {
   const state = {
     mapped: true,
     wrongMapping: false,
+    resolverMissing: false,
+    resolverError: undefined as Error | undefined,
     missingAPI: false,
+    windows: [{}] as unknown[],
+    platform: 'darwin' as string,
     // Member paths hidden to stage partial main-API initialization; the
     // readiness expression must see them appear in the guarded order.
     hideMembers: [] as string[],
@@ -152,7 +157,7 @@ function realm() {
     const api: Record<string, unknown> = {
       app: exposedApp,
       dialog: { showMessageBox: vi.fn() },
-      BrowserWindow: { getAllWindows: vi.fn() },
+      BrowserWindow: { getAllWindows: vi.fn(() => state.windows) },
     }
     if (hide.has('dialog')) delete api.dialog
     if (hide.has('BrowserWindow')) delete api.BrowserWindow
@@ -161,21 +166,45 @@ function realm() {
   const load = vi.fn(() => buildApi())
   const fromHelper = Object.assign(load, {
     cache: {} as Record<string, unknown>,
-    resolve: vi.fn(() => (state.wrongMapping ? '/npm/electron/index.js' : 'electron')),
+    resolve: vi.fn(() => {
+      if (state.resolverError) throw state.resolverError
+      if (state.resolverMissing)
+        throw Object.assign(new Error("Cannot find module 'electron'"), {
+          code: 'MODULE_NOT_FOUND',
+        })
+      return state.wrongMapping ? '/npm/electron/index.js' : 'electron'
+    }),
   })
+  // One persistent VM context per realm() so repeated readiness polls share
+  // globalThis.__i02FirstWindowReadyAt while Date tracks Vitest fake timers.
+  const proc = {
+    getBuiltinModule: () => ({ createRequire: () => fromHelper }),
+    type: 'browser',
+    versions: { electron: '44.9.0' },
+    get platform() {
+      return state.platform
+    },
+  }
+  const context = createContext({ Date, process: proc })
   return {
     state,
     app,
     load,
     async evaluate(expression: string) {
       fromHelper.cache = state.mapped ? { electron: {} } : {}
-      return await runInNewContext(expression, {
-        process: {
-          getBuiltinModule: () => ({ createRequire: () => fromHelper }),
-          type: 'browser',
-          versions: { electron: '44.9.0' },
-        },
-      })
+      return await runInContext(expression, context)
+    },
+    async evaluateInBrowserInit(expression: string) {
+      fromHelper.cache = state.mapped ? { electron: {} } : {}
+      // A real V8 stack frame named like Electron's browser_init wrapper:
+      // the readiness probe runs through a host callback while that frame is
+      // on the stack, exactly like an inspector evaluate landing inside the
+      // synchronous browser_init module.
+      return await runInContext(
+        'probe()',
+        createContext({ probe: () => runInContext(expression, context) }),
+        { filename: 'node:electron/js2c/browser_init' },
+      )
     },
   }
 }
@@ -201,6 +230,33 @@ function connect(h: ReturnType<typeof setup>, r: ReturnType<typeof realm>) {
 }
 const helperRequests = (h: ReturnType<typeof setup>) =>
   h.requests.filter((r) => !r.params.returnByValue)
+function connectRecording(
+  h: ReturnType<typeof setup>,
+  r: ReturnType<typeof realm>,
+  values: unknown[],
+) {
+  h.respond((request) => {
+    if (!request.params.returnByValue) {
+      h.socket.reply(request, { type: 'object', objectId: 'original-helper' })
+      return
+    }
+    void r.evaluate(request.params.expression).then(
+      (value) => {
+        values.push(value)
+        h.socket.reply(request, { type: 'object', value })
+      },
+      (error: unknown) =>
+        h.socket.dispatchEvent(
+          new MessageEvent('message', {
+            data: JSON.stringify({
+              id: request.id,
+              result: { exceptionDetails: { text: String(error) } },
+            }),
+          }),
+        ),
+    )
+  })
+}
 
 it('rejects and cleans up a bootstrap whose socket never replies, ignoring a late ready', async () => {
   const h = setup()
@@ -292,22 +348,67 @@ it('waits for mapping without loading a shim, then checks real readiness and loa
   h.expectClean()
 })
 
-it('fails immediately on a wrong module mapping with no helper or retry', async () => {
+it('bounds a permanently wrong module mapping inside the original bounds with no helper', async () => {
   const h = setup(),
     r = realm()
   r.state.wrongMapping = true
   connect(h, r)
   const result = h.start()
-  await vi.advanceTimersByTimeAsync(0)
-  expect(await result).toMatchObject({
-    error: expect.objectContaining({
-      message: expect.stringContaining('unexpected Electron module mapping'),
-    }),
-  })
-  await vi.advanceTimersByTimeAsync(1000)
-  expect(h.requests).toHaveLength(1)
-  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(45000)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  const message = String((settled as { error: Error }).error.message)
+  expect(message).toContain('unexpected Electron module mapping')
+  expect(message).toContain('"resolverPending":true')
   expect(r.load).toHaveBeenCalledTimes(0)
+  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(1000)
+  h.expectClean()
+})
+
+it('polls the resolver across the makeElectronModule startup window without loading a shim', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  r.state.wrongMapping = true
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([{ state: 'resolver-pending' }])
+  expect(r.load).toHaveBeenCalledTimes(0)
+  r.state.wrongMapping = false
+  r.state.resolverMissing = true
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([{ state: 'resolver-pending' }, { state: 'resolver-pending' }])
+  expect(r.load).toHaveBeenCalledTimes(0)
+  r.state.resolverMissing = false
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([
+    { state: 'resolver-pending' },
+    { state: 'resolver-pending' },
+    { state: 'ready' },
+  ])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
+it('fails on the first evaluation when the resolver throws a non-module error', async () => {
+  const h = setup(),
+    r = realm()
+  r.state.resolverError = new Error('resolver corruption')
+  connect(h, r)
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  expect(String((settled as { error: Error }).error.message)).toContain('resolver corruption')
+  expect(h.requests).toHaveLength(1)
+  expect(r.load).toHaveBeenCalledTimes(0)
+  expect(helperRequests(h)).toHaveLength(0)
   h.expectClean()
 })
 
@@ -461,6 +562,7 @@ it.each([
   'unknown-state',
   'api-pending-type',
   'api-pending-extra',
+  'resolver-pending-extra',
   'helper-error',
 ] as const)('fails on %s and clears the outstanding request without retrying', async (kind) => {
   const h = setup()
@@ -479,6 +581,11 @@ it.each([
       h.socket.reply(request, {
         type: 'object',
         value: { state: 'api-pending', pending: 'app', extra: 1 },
+      })
+    } else if (kind === 'resolver-pending-extra') {
+      h.socket.reply(request, {
+        type: 'object',
+        value: { state: 'resolver-pending', extra: 1 },
       })
     } else if (request.params.returnByValue) {
       h.socket.reply(request, { type: 'object', value: { state: 'ready' } })
@@ -500,4 +607,237 @@ it.each([
   expect(helperRequests(h)).toHaveLength(kind === 'helper-error' ? 1 : 0)
   expect(h.requests).toHaveLength(kind === 'helper-error' ? 2 : 1)
   h.expectClean()
+})
+
+it('polls BrowserWindow.firstWindow until the primary window is visible and main frame finished loading', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  const firstWindow = { state: 'api-pending', pending: 'BrowserWindow.firstWindow' }
+  r.state.windows = []
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  r.state.windows = [{ isVisible: () => false }]
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  r.state.windows = [{ isVisible: () => true, webContents: { isLoadingMainFrame: () => true } }]
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  r.state.windows = [{ isVisible: () => true, webContents: { isLoadingMainFrame: () => false } }]
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow, { state: 'ready' }])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
+it('holds firstWindow pending without win32 settle while the primary OS PID is 0, then loads the helper once', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  r.state.platform = 'win32'
+  let osPid = 0
+  r.state.windows = [
+    {
+      isVisible: () => true,
+      webContents: { isLoadingMainFrame: () => false, getOSProcessId: () => osPid },
+    },
+  ]
+  const firstWindow = { state: 'api-pending', pending: 'BrowserWindow.firstWindow' }
+  const settle = { state: 'api-pending', pending: 'BrowserWindow.firstWindowSettle' }
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(200)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow])
+  expect(helperRequests(h)).toHaveLength(0)
+  osPid = 4321
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow, settle])
+  await vi.advanceTimersByTimeAsync(300)
+  expect(values).toEqual([firstWindow, firstWindow, firstWindow, settle, settle, settle, settle])
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([
+    firstWindow,
+    firstWindow,
+    firstWindow,
+    settle,
+    settle,
+    settle,
+    settle,
+    { state: 'ready' },
+  ])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
+it('waits for the 400ms win32 settle window before loading the native helper once', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  connectRecording(h, r, values)
+  r.state.platform = 'win32'
+  const settle = { state: 'api-pending', pending: 'BrowserWindow.firstWindowSettle' }
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  await vi.advanceTimersByTimeAsync(100)
+  await vi.advanceTimersByTimeAsync(100)
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([settle, settle, settle, settle])
+  expect(helperRequests(h)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([settle, settle, settle, settle, { state: 'ready' }])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+  // Emptying windows mid-settle and recovering resets the settle timer.
+  const h2 = setup(),
+    r2 = realm()
+  const values2: unknown[] = []
+  connectRecording(h2, r2, values2)
+  r2.state.platform = 'win32'
+  const result2 = h2.start()
+  await vi.advanceTimersByTimeAsync(0)
+  await vi.advanceTimersByTimeAsync(200)
+  r2.state.windows = []
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values2).toEqual([
+    settle,
+    settle,
+    settle,
+    { state: 'api-pending', pending: 'BrowserWindow.firstWindow' },
+  ])
+  r2.state.windows = [{}]
+  await vi.advanceTimersByTimeAsync(100)
+  await vi.advanceTimersByTimeAsync(300)
+  expect(helperRequests(h2)).toHaveLength(0)
+  await vi.advanceTimersByTimeAsync(100)
+  expect(helperRequests(h2)).toHaveLength(1)
+  h2.finish()
+  expect(await result2).toEqual({ ok: true })
+  h2.expectClean()
+})
+
+it('defers the first readiness probe inside the electron/js2c/browser_init frame, then completes', async () => {
+  const h = setup(),
+    r = realm()
+  const values: unknown[] = []
+  let insideBrowserInit = true
+  const originalLoad = r.load.getMockImplementation()
+  // If the readiness body ever ran inside browser_init, loading the API
+  // would re-enter the half-initialized module and the BrowserWindow getter
+  // would throw the CI TypeError; the guard must defer before createRequire.
+  r.load.mockImplementation(() => {
+    const api = originalLoad!()
+    if (!insideBrowserInit) return api
+    Object.defineProperty(api, 'BrowserWindow', {
+      configurable: true,
+      get() {
+        throw new TypeError('Object prototype may only be an Object or null: undefined')
+      },
+    })
+    return api
+  })
+  h.respond((request) => {
+    if (!request.params.returnByValue) {
+      h.socket.reply(request, { type: 'object', objectId: 'original-helper' })
+      return
+    }
+    const evaluated = insideBrowserInit
+      ? r.evaluateInBrowserInit(request.params.expression)
+      : r.evaluate(request.params.expression)
+    void evaluated.then(
+      (value) => {
+        values.push(value)
+        h.socket.reply(request, { type: 'object', value })
+      },
+      (error: unknown) =>
+        h.socket.dispatchEvent(
+          new MessageEvent('message', {
+            data: JSON.stringify({
+              id: request.id,
+              result: { exceptionDetails: { text: String(error) } },
+            }),
+          }),
+        ),
+    )
+  })
+  const result = h.start()
+  await vi.advanceTimersByTimeAsync(0)
+  expect(values).toEqual([{ state: 'api-pending', pending: 'browser_init' }])
+  expect(r.load).toHaveBeenCalledTimes(0)
+  insideBrowserInit = false
+  await vi.advanceTimersByTimeAsync(100)
+  expect(values).toEqual([{ state: 'api-pending', pending: 'browser_init' }, { state: 'ready' }])
+  expect(helperRequests(h).map((request) => request.params.expression)).toEqual([
+    `process.getBuiltinModule('module').createRequire(process.execPath)(${JSON.stringify(resolve('tests/e2e/native-recovery.cjs'))})`,
+  ])
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  h.expectClean()
+})
+
+it('preloads the win32 recovery helper with -r and no inspector socket, resolving on clean exit', async () => {
+  const h = setup()
+  const result = h.start({ bootstrap: 'preload', cwd: '/app/desktop' })
+  await vi.advanceTimersByTimeAsync(0)
+  expect(spawn).toHaveBeenCalledTimes(1)
+  expect(spawn).toHaveBeenCalledWith(
+    '/real/electron',
+    ['-r', resolve('tests/e2e/native-recovery.cjs'), '--user-data-dir=/test-profile'],
+    { cwd: '/app/desktop', env: {}, stdio: ['ignore', 'pipe', 'pipe'] },
+  )
+  expect(spawn.mock.calls[0]![1]).not.toContain('--inspect=0')
+  expect(h.socket).toBeUndefined()
+  h.finish()
+  expect(await result).toEqual({ ok: true })
+  expect(vi.getTimerCount()).toBe(0)
+  expect(h.child.stderr.listenerCount('data')).toBe(0)
+  expect(h.child.stdout.listenerCount('data')).toBe(0)
+})
+
+it('drains bounded stdio and reports diagnostics when a preloaded recovery exits non-zero', async () => {
+  const h = setup()
+  const result = h.start({ bootstrap: 'preload', cwd: '/app/desktop' })
+  h.child.stdout.emit('data', 'preload diagnostic')
+  h.child.stderr.emit('data', 'x'.repeat(70000) + 'tail marker')
+  h.finish(3)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  const message = String((settled as { error: Error }).error.message)
+  expect(message).toContain('native exit 3')
+  expect(message).toContain('preload diagnostic')
+  expect(message).toContain('tail marker')
+  expect(message).not.toContain('x'.repeat(65537))
+  expect(vi.getTimerCount()).toBe(0)
+  expect(h.child.kill).not.toHaveBeenCalled()
+})
+
+it('SIGKILLs a hung preloaded recovery at the original deadline and cleans up', async () => {
+  const h = setup()
+  const result = h.start({ bootstrap: 'preload', cwd: '/app/desktop' })
+  await vi.advanceTimersByTimeAsync(45000)
+  const settled = await result
+  expect(settled).toHaveProperty('error')
+  expect(String((settled as { error: Error }).error.message)).toContain('deadline exceeded')
+  expect(h.child.kill).toHaveBeenCalledWith('SIGKILL')
+  expect(vi.getTimerCount()).toBe(0)
+  expect(h.child.stderr.listenerCount('data')).toBe(0)
 })

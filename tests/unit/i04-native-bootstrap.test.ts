@@ -105,6 +105,37 @@ it('rejects a broken whenReady contract and propagates getter failures', async (
   expect(r.evaluate).toThrow('getter failure')
 })
 
+it('defers evaluation while the caller frame sits inside electron/js2c/browser_init', async () => {
+  const r = runtime()
+  let getterCalls = 0
+  Object.defineProperty(r.api, 'BrowserWindow', {
+    configurable: true,
+    get() {
+      getterCalls++
+      throw new TypeError('Object prototype may only be an Object or null: undefined')
+    },
+  })
+  // A real V8 stack frame named like the interrupted browser_init module: the
+  // readiness probe runs through a host callback while that frame is on the
+  // stack, so the guard must defer BEFORE createRequire — neither
+  // req('electron') nor the half-installed BrowserWindow getter is touched.
+  const inside = runInNewContext(
+    'probe()',
+    { probe: r.evaluate },
+    { filename: 'node:electron/js2c/browser_init' },
+  )
+  expect(inside).toEqual({ state: 'pending', member: 'browser_init' })
+  expect(r.req).toHaveBeenCalledTimes(0)
+  expect(getterCalls).toBe(0)
+  Object.defineProperty(r.api, 'BrowserWindow', {
+    value: { getAllWindows: () => [] },
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  })
+  await expect(r.evaluate()).resolves.toEqual({ state: 'ready' })
+})
+
 type Request = { id: number; params: { expression: string; awaitPromise?: boolean } }
 function transport() {
   vi.useFakeTimers()

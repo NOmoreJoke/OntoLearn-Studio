@@ -1,11 +1,10 @@
 import { launchIsolatedDesktop } from './isolated-desktop'
 import { test, expect, type Page } from '@playwright/test'
 import { resolve } from 'node:path'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, realpath, writeFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { runNativeRecovery } from './native-driver'
 import { tmpdir } from 'node:os'
-import { mkdtemp } from 'node:fs/promises'
 
 test('C1 real CSP, normal functionality and renderer recovery', async () => {
   test.setTimeout(90000)
@@ -37,6 +36,21 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     env,
   })
   stage('launched')
+  let applicationClosed = false
+  const closeApplication = async () => {
+    if (applicationClosed) return
+    applicationClosed = true
+    await Promise.race([
+      application.close().catch(() => undefined),
+      new Promise<void>((done) => setTimeout(done, 3000).unref()),
+    ])
+    try {
+      application.process().kill('SIGKILL')
+    } catch {
+      // Process may already have exited cleanly during application.close().
+    }
+    await application.close().catch(() => undefined)
+  }
   const normal = async (page: Page) => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('转化为可验证的知识')
     expect(
@@ -265,7 +279,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     expect((evidence.recoveryPrompts as unknown[]).length).toBe(1)
     // Native executable: the test hook closes its main bootstrap inspector before faults.
     // Renderer never has CDP/Playwright's disable-hang-monitor loader.
-    const nativeDir = await mkdtemp(resolve(tmpdir(), 'ontolearn-i02-'))
+    const nativeDir = await realpath(await mkdtemp(resolve(tmpdir(), 'ontolearn-i02-')))
     const nativeOutput = resolve(nativeDir, 'native.json')
     // Playwright uses a shell launcher on Windows: process().spawnfile can be cmd.exe.
     // Read the real Electron executable from the running main process instead.
@@ -274,9 +288,18 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     const args = [`--user-data-dir=${nativeDir}`]
     if (!env.ONTOLEARN_PACKAGED_EXECUTABLE) args.push(resolve('apps/desktop'))
     evidence.nativeLaunch = { executable, args }
+    stage('close-playwright-desktop-before-native')
+    await closeApplication()
     stage('native-recovery')
     try {
-      await runNativeRecovery(executable, args, { ...env, I02_NATIVE_EVIDENCE: nativeOutput })
+      await runNativeRecovery(
+        executable,
+        args,
+        { ...env, I02_NATIVE_EVIDENCE: nativeOutput },
+        !env.ONTOLEARN_PACKAGED_EXECUTABLE && process.platform === 'win32'
+          ? { bootstrap: 'preload', cwd: resolve('apps/desktop') }
+          : undefined,
+      )
     } catch (error) {
       // Failure-only evidence: Windows does not set I02_EVIDENCE. Read once,
       // preserve the actual bytes, and distinguish read, parse and attachment failures.
@@ -365,8 +388,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       await mkdir(resolve(env.I02_EVIDENCE, '..'), { recursive: true })
       await writeFile(env.I02_EVIDENCE, JSON.stringify(evidence, null, 2) + '\n')
     }
-    application.process().kill('SIGKILL')
-    await application.close().catch(() => undefined)
+    await closeApplication()
     server.close()
     if (env.I02_EVIDENCE) {
       await mkdir(resolve(env.I02_EVIDENCE, '..'), { recursive: true })

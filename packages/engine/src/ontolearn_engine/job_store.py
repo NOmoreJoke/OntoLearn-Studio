@@ -53,9 +53,15 @@ class JobStore(Store):
         max_cursor_records: int = 256,
         target_format: int = FORMAT_VERSION,
         backup_path: str | Path | None = None,
+        file_identity: str | None = None,
+        require_existing_format: bool = False,
         migration_hook: Hook = lambda _: None,
         job_migration_hook: Hook = lambda _: None,
     ):
+        if type(require_existing_format) is not bool or (
+            require_existing_format and file_identity is None
+        ):
+            raise ValueError("Existing library requires trusted identity")
         if type(target_format) is not int or target_format not in {2, 3}:
             raise ValueError("Unsupported target project format")
         if not 1 <= cursor_ttl_ms <= 60000 or not 1 <= max_cursor_records <= 4096:
@@ -74,7 +80,18 @@ class JobStore(Store):
                 self._lease = open(str(path) + ".writer-lock", "a+b")
                 self._lock()
             super().__init__(
-                path, migration_hook, target_format=target_format, backup_path=backup_path
+                path,
+                migration_hook,
+                target_format=target_format,
+                backup_path=backup_path,
+                **(
+                    {
+                        "file_identity": file_identity,
+                        "require_existing_format": require_existing_format,
+                    }
+                    if file_identity is not None
+                    else {}
+                ),
             )
             parent_ready = True  # Store transfers its resources only after a successful return.
             if target_format == 3:
@@ -366,6 +383,14 @@ class JobStore(Store):
             hook("job3_validated")
 
     def _validate_job3(self):
+        previous = getattr(self, "_history_validation", False)
+        self._history_validation = True
+        try:
+            return self._validate_job3_core()
+        finally:
+            self._history_validation = previous
+
+    def _validate_job3_core(self):
         from ontolearn_engine.project.format3 import Format3Fault, _json, _schema
 
         try:
@@ -403,6 +428,20 @@ class JobStore(Store):
                     from ontolearn_engine.project.format3 import receipt_for
                     from ontolearn_engine.project.project_lifecycle import creation_context
 
+                    context = _json(claim["context"])
+                    if isinstance(context, dict) and "managementLifecycleContextVersion" in context:
+                        from ontolearn_engine.project.management import validate_ledger
+
+                        validate_ledger(self)
+                        if (
+                            self._db.execute(
+                                "SELECT 1 FROM management_receipts WHERE operation=?",
+                                (claim["operation"],),
+                            ).fetchone()
+                            is None
+                        ):
+                            raise Format3Fault("structure")
+                        continue
                     internal = self._project(claim["project"])
                     creation = creation_context(self, internal, claim["operation"])
                     if creation is None:
@@ -554,6 +593,9 @@ class JobStore(Store):
                 return receipt_for(self, internal, operation)
             if self._occupied_operation_evidence(operation):
                 fault("IDENTITY_CONFLICT")
+            from ontolearn_engine.project.management import check_confirmation_current
+
+            check_confirmation_current(self, project, confirmation_ref)
             require((prepared_plan_ref is None) == (confirmation_ref is None))
             if prepared_plan_ref is not None:
                 from ontolearn_engine.project.applications import hash_ref, uuid_ref
@@ -1058,6 +1100,11 @@ class JobStore(Store):
         ).fetchone()
         if row is None:
             fault("NOT_FOUND", resource="project")
+        if self._target_format == 3 and not getattr(self, "_history_validation", False):
+            from ontolearn_engine.project.management import lifecycle
+
+            if lifecycle(self, row[0])["state"] != "active":
+                fault("PERMISSION_DENIED")
         return row[0]
 
     def ordinary_project_choices(self, *, limit: int, _read_ticket=None) -> list[dict]:
@@ -1458,6 +1505,9 @@ class JobStore(Store):
                 )
             if self._target_format == 3 and self._occupied_operation_evidence(operation):
                 fault("IDENTITY_CONFLICT")
+            from ontolearn_engine.project.management import check_confirmation_current
+
+            check_confirmation_current(self, project, confirmation_ref)
             snap = self._materialize_snapshot(
                 input_["inputSnapshotId"], internal, _write_scope=snapshot_writer
             )
@@ -2335,9 +2385,17 @@ class JobStore(Store):
         recovered = []
         with self._transaction():
             for row in self._db.execute("SELECT id FROM jobs").fetchall():
-                job = self._job(row[0])
+                # Startup must inspect terminal evidence for trashed projects.
+                # This narrowly scoped read never authorizes a live transition.
+                previous = getattr(self, "_history_validation", False)
+                self._history_validation = True
+                try:
+                    job = self._job(row[0])
+                finally:
+                    self._history_validation = previous
                 if job["state"] in TERMINAL:
                     continue
+                job = self._job(row[0])
                 # Atomic completion is committed in the same transaction as its
                 # receipt and terminal; marker alone can never invent success.
                 state = "cancelled" if job["state"] == "cancelling" else "failed"

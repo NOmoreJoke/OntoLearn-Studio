@@ -344,6 +344,10 @@ def install(store, source_format: int, backup_hash: str | None, hook) -> None:
     for row in store._db.execute("SELECT id FROM projects ORDER BY id").fetchall():
         seed_project(store, row[0], origin="migration-default")
         hook("format3_project")
+    _validate(store, catalog_version=1)
+    from ontolearn_engine.project.management_schema import install_fresh
+
+    install_fresh(store, hook)
     validate(store)
     hook("format3_validated")
     store._db.execute("PRAGMA user_version=3")
@@ -480,17 +484,17 @@ def _application(value: dict, project: str, revision: int) -> None:
     _require(all(n == i for i, n in enumerate(sequences, 1)) and len(events) == len(set(events)))
 
 
-def validate(store) -> None:
+def validate(store, *, catalog_version=2) -> None:
     """Read only: reject incomplete/mutated Store3, never repair on open."""
     try:
-        _validate(store)
+        _validate(store, catalog_version=catalog_version)
     except Format3Fault:
         raise
     except (ValueError, KeyError, TypeError, OverflowError, sqlite3.DatabaseError):
         raise Format3Fault("structure") from None
 
 
-def _validate(store):
+def _validate(store, *, catalog_version=2):
     _domain_schema(store)
     _require(
         store._db.execute(
@@ -502,12 +506,21 @@ def _validate(store):
     )
     for snapshot in store._db.execute("SELECT id FROM snapshots"):
         store.load_snapshot(snapshot[0])
-    for name, expected in TABLES + TRIGGERS:
+    if catalog_version == 2:
+        from ontolearn_engine.project.management_schema import catalog, schema_hash
+
+        tables, triggers = catalog()
+        expected_hash = schema_hash()
+    else:
+        tables, triggers, expected_hash = TABLES, TRIGGERS, SCHEMA_HASH
+    for name, expected in tables + triggers:
         row = store._db.execute("SELECT sql FROM sqlite_master WHERE name=?", (name,)).fetchone()
         _require(row is not None and _schema(row[0]) == _schema(expected))
     rows = store._db.execute("SELECT * FROM app_format").fetchall()
     _require(
-        len(rows) == 1 and rows[0]["schema_version"] == 1 and rows[0]["schema_hash"] == SCHEMA_HASH
+        len(rows) == 1
+        and rows[0]["schema_version"] == catalog_version
+        and rows[0]["schema_hash"] == expected_hash
     )
     _require(rows[0]["source_format"] in (0, 1, 2) and _text(rows[0]["migration_id"]))
     backup = rows[0]["backup_hash"]
@@ -527,6 +540,10 @@ def _validate(store):
         )
     for project in projects:
         _history(store, project)
+    if catalog_version == 2:
+        from ontolearn_engine.project.management_schema import validate as validate_management
+
+        validate_management(store)
 
 
 def load_checkpoint(store, project: str, identity: str) -> dict:

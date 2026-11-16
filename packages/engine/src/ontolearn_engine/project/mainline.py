@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from uuid import uuid4
 
 from ontolearn_engine.job_store import JobFault, fault
+from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
 from ontolearn_engine.project.ordinary_library import OrdinaryReadAuthority
 from ontolearn_engine.project.project_host import HostReadFault, ProjectHostReader, ReadLimits
 from ontolearn_engine.project.query_definitions import (
@@ -39,6 +40,8 @@ METHODS = frozenset(
 # Admit the three persisted copies of a legal 420002-byte historical literal.
 # 1.5 MiB also fits both prepaid project.get Store reads inside the unchanged
 # 128 MiB retained book; 2 MiB would exceed that book. No other cap is raised.
+METHODS = METHODS | MANAGEMENT_METHODS
+
 READ_LIMITS = ReadLimits(validation_rows=4096, validation_bytes=1572864, validation_work=67108864)
 HELD_BYTES = 134217728
 HELD_OBJECTS = 1048576
@@ -136,6 +139,7 @@ class _WriteAdmission:
             and owner.reader._store is self.store
             and owner.reader._closed
             and not owner.reader._catalogs
+            and not owner.management.entries
             and owner.store is self.store
             and owner.actor.store is self.store
             and owner.actor.mainline is owner
@@ -225,9 +229,15 @@ class _WriteAdmission:
             others = (list(owner.replies.values()) if owner is not None else []) + self.holdings()
             if (
                 len(self.retained) >= MAX_REPLIES
-                or sum(item.scalar for item in others) + scalar + READ_LIMITS.retained_bytes
+                or sum(item.scalar for item in others)
+                + scalar
+                + READ_LIMITS.retained_bytes
+                + (owner.management.scalar if owner is not None else 0)
                 > HELD_BYTES
-                or sum(item.objects for item in others) + objects > HELD_OBJECTS
+                or sum(item.objects for item in others)
+                + objects
+                + (owner.management.objects if owner is not None else 0)
+                > HELD_OBJECTS
                 or work > READ_WORK
             ):
                 fault("RESOURCE_LIMIT", resource="memory")
@@ -421,6 +431,7 @@ class _Reply:
     values: list = field(default_factory=list)
     unknown: bool = False
     ticket: object = None
+    lifecycle_checked: tuple | None = None
 
 
 class _Budget(QueryReadBudget):
@@ -579,7 +590,9 @@ class _OwnershipProof:
             scan,
             decoded,
             plans,
-            counts.get("app_operations", 0) + counts.get("snapshots", 0),
+            (counts.get("app_operations", 0) + counts.get("snapshots", 0))
+            * (1 + counts.get("management_receipts", 0))
+            + counts.get("management_receipts", 0),
         )
 
     def project_admissions(self, before, profile, rows, scan_delta, decoded_delta):
@@ -613,6 +626,10 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.reader = _MainlineReader(self)
         self.authority = self  # Narrow book interface consumed by query_read.
         self.selected = None
+        self.selected_lifecycle = None
+        from ontolearn_engine.project.management_host import ManagementHost
+
+        self.management = ManagementHost(self)
         self.generation = 0
         self.host = self.session = None
         self.current = None
@@ -668,10 +685,38 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
     def authorize(self, params):
         self.require_owner(self.owner_id)
         project = params.get("projectId", params.get("binding", {}).get("projectId"))
-        if self.current is not None and self.current.method == "project.open":
-            return project  # Only named open may validate an unselected catalog ID.
-        if project is not None and project != self.selected:
-            fault("PERMISSION_DENIED")
+        method = self.current.method if self.current is not None else None
+        # These are library-management admission paths, not selected-project
+        # grants. Their own handlers bind exact refs/hash and current lifecycle.
+        if method in {"project.management.operation.get", "project.management.apply"}:
+            return project
+        if (
+            method == "project.management.preview"
+            and params.get("action", {}).get("kind") == "restore-trash"
+        ):
+            return project
+        if method == "project.management.confirm":
+            return project
+        if method == "project.open":
+            return project
+        if project is not None:
+            if project != self.selected:
+                fault("PERMISSION_DENIED")
+            from ontolearn_engine.project.management import lifecycle, public_internal
+
+            binding = (project, self.generation, canonical(self.selected_lifecycle))
+            if self.current.lifecycle_checked != binding:
+                # This synchronous frame cannot execute a second mutation or
+                # yield to another actor. Authenticate once per original reply;
+                # per-cell capability checks reuse that exact funded read. A new
+                # frame/generation always performs a fresh lifecycle lookup.
+                self._budget().reserve(
+                    "current lifecycle authorization", bytes_=8192, objects=128, work=16384
+                )
+                current = lifecycle(self.store, public_internal(self.store, project))
+                if current["state"] != "active" or current != self.selected_lifecycle:
+                    fault("PERMISSION_DENIED")
+                self.current.lifecycle_checked = binding
         return project
 
     def ownership_proof(self, params, *, method):
@@ -721,6 +766,17 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.reserve(reply, 4 * self.actor.limits["maxFrameBytes"], 128, 4096)
         self.replies[request_id] = reply
         self.current = reply
+        if self.store._file_identity is not None:
+            from ontolearn_engine.project.file_identity import verify_connection
+            from ontolearn_engine.project.format3 import Format3Fault
+
+            # The reply is prepaid before checking physical identity, and no
+            # business authorization or catalog read has happened yet. Liveness
+            # methods do not enter begin(), so a damaged library keeps pinging.
+            try:
+                verify_connection(self.store._db)
+            except Format3Fault:
+                fault("STORAGE_FAILURE")
 
     def check_reply(self, reply):
         self.require_owner(self.owner_id)
@@ -741,8 +797,10 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
             + reply.scalar
             + scalar
             + self.reader_limits.retained_bytes
+            + self.management.scalar
             > HELD_BYTES
-            or sum(r.objects for r in others) + reply.objects + objects > HELD_OBJECTS
+            or sum(r.objects for r in others) + reply.objects + objects + self.management.objects
+            > HELD_OBJECTS
             or reply.work + work > READ_WORK
         ):
             fault("RESOURCE_LIMIT", resource="memory")
@@ -828,6 +886,9 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         # No Job/worker/subscription is cancelled when the view changes.
         self.generation += 1
         self.selected = project
+        from ontolearn_engine.project.management import lifecycle, public_internal
+
+        self.selected_lifecycle = lifecycle(self.store, public_internal(self.store, project))
         self.current.generation = self.generation
 
     def dispatch(self, method, params):
@@ -838,7 +899,9 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
             fault("PERMISSION_DENIED")
         budget = self._budget()
         try:
-            if method == "project.catalog":
+            if method in MANAGEMENT_METHODS:
+                result = self.management.dispatch(method, params, budget)
+            elif method == "project.catalog":
                 budget.reserve_store("project catalog", params)
                 cursor = params["cursor"]
                 if cursor is not None:
@@ -1203,4 +1266,5 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self._clean_close = False
         self.closed = True
         self.reader.close()
+        self.management.close()
         self._clean_close = True

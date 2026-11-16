@@ -206,6 +206,39 @@ def dump(store):
     return list(store._db.iterdump())
 
 
+def test_legacy_v1_plan_receipt_and_job_remain_verifiable(store):
+    # Construct a pre-lifecycle envelope using the real immutable row format.
+    # Its distinct host keeps the new v2 preview out of legacy selection.
+    ready = preview(store, {"definitions": [definition("legacy")]})
+    row = store._db.execute(
+        "SELECT * FROM job_plans WHERE ref=?", (ready["preparedPlanRef"],)
+    ).fetchone()
+    value = json.loads(row["payload"])
+    value["preparedChangeSetVersion"] = 1
+    del value["lifecycleVersion"]
+    store.host = uid()
+    value["hostClientId"] = store.host
+    ref = digest(value)
+    store._db.execute(
+        "INSERT INTO job_plans VALUES(?,?,?,?,?,?)",
+        (ref, row["project"], row["base"], row["plan_hash"], row["diff_hash"], canonical(value)),
+    )
+    confirmed = confirmation(store, {**ready, "preparedPlanRef": ref})
+    assert confirmed["preparedPlanRef"] == ref
+    job = create(store, confirmed)
+    store.start_job(job["jobId"])
+    completed = store.commit_job(job["jobId"])
+    assert completed["state"] == "succeeded"
+    store._validate_job3()
+    store.close()
+    reopened = JobStore(store.path, contract=CONTRACT, target_format=3)
+    try:
+        assert reopened.get_job(store.project, job["jobId"]) == completed
+        assert reopened.reconcile_jobs() == []
+    finally:
+        reopened.close()
+
+
 def test_preview_zero_domain_writes_and_opaque_untouched(store):
     store.commit(
         "changeset-project",
@@ -944,7 +977,8 @@ def test_preview_rejects_preexisting_corrupt_intern_record_without_healing(store
         "targetOperationId": None,
     }
     envelope = {
-        PLAN_VERSION: 1,
+        PLAN_VERSION: 2,
+        "lifecycleVersion": 0,
         "projectId": store.project,
         "hostClientId": store.host,
         "engineSessionId": store.session,

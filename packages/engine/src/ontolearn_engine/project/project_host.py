@@ -131,7 +131,9 @@ def material_profile(db, limits, *, _mainline_core_material=True):
     count = counts.get("projects", 0)
     # Conservative repeated-decode work guard for immutable histories.
     # Not a timer or an assertion of exact CPU/RSS usage.
-    repeats = counts.get("app_operations", 0) + counts.get("snapshots", 0)
+    repeats = (counts.get("app_operations", 0) + counts.get("snapshots", 0)) * (
+        1 + counts.get("management_receipts", 0)
+    ) + counts.get("management_receipts", 0)
     work = scan_bytes * (1 + repeats)
     if _mainline_core_material:
         # Prepay scan/authorization aggregation and repeated decoded material.
@@ -320,13 +322,18 @@ class ProjectHostReader:
                 "SELECT u.public,p.revision,a.metadata_version,a.metadata,"
                 "a.operation_sequence,a.checkpoint FROM public_projects u "
                 "JOIN projects p ON p.id=u.internal JOIN app_projects a ON a.project=p.id "
+                "WHERE p.id NOT IN (SELECT project FROM project_lifecycle WHERE state='trashed') "
                 "ORDER BY u.public COLLATE BINARY"
             )
             items = tuple(
                 self._encoded(self._row(row), self._limits.catalog_row_bytes) for row in rows
             )
+            visible_count = self._store._db.execute(
+                "SELECT count(*) FROM projects WHERE id NOT IN "
+                "(SELECT project FROM project_lifecycle WHERE state='trashed')"
+            ).fetchone()[0]
             if (
-                len(items) != count
+                len(items) != visible_count
                 or sum(map(len, items)) + 2 + count > self._limits.snapshot_bytes
             ):
                 raise HostReadFault("limit")
@@ -423,6 +430,10 @@ class ProjectHostReader:
                 (project_id,),
             ).fetchone()
             if row is None:
+                raise HostReadFault("missing")
+            from ontolearn_engine.project.management import lifecycle
+
+            if lifecycle(self._store, row["internal"])["state"] != "active":
                 raise HostReadFault("missing")
             # Complete histories/current heads were validated in this same read
             # transaction. Read existing proof, never create a snapshot/checkpoint.

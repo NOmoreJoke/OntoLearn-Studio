@@ -21,6 +21,7 @@ import {
   type MainlineDraftSaveResultDTO,
   type OwnershipDetailArgs,
   type OwnershipDetailPage,
+  type ProjectManagementBridge,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '../../../../packages/contracts/src/v2'
 import {
@@ -32,6 +33,7 @@ import {
 } from './engine'
 import { OrdinaryProjectSource, type OrdinaryCurrent } from './ordinary-project-source'
 import { QueryDefinitionService } from './query-definition-service'
+import { ProjectManagementSession } from './project-management-session'
 import type { TaskService, TaskRecoveryContext, TaskRecoveryRequest } from './task-service'
 
 type RecordValue = Record<string, unknown>
@@ -285,13 +287,41 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   #retiredRecovery = new Set<MainlineRecoveryHandle>()
   #intents = new Map<string, MainlineIntent>()
   #fullIntents = new Set<MainlineIntent>()
+  #management: ProjectManagementSession
   constructor(
     readonly supervisor: EngineSupervisor,
     readonly tasks: TaskService,
     private readonly reattachView: () => void,
+    options: { managementJournalPath?: string } = {},
   ) {
     if (supervisor.profile !== 'business3') throw denied()
     this.queries = new QueryDefinitionService(this.source, tasks)
+    this.#management = new ProjectManagementSession({
+      client: () => this.#client(),
+      selection: () => {
+        const current = this.source.current()
+        return current
+          ? {
+              projectId: current.project.projectId,
+              owner: current.owner,
+              session: current.engineSessionId,
+              epoch: this.#selectionEpoch,
+            }
+          : null
+      },
+      epoch: () => this.#selectionEpoch,
+      call: (client, method, params) => this.#call(client, method, params),
+      retireSelection: (projectId, epoch) => {
+        if (
+          this.#selectionEpoch === epoch &&
+          this.source.current()?.project.projectId === projectId
+        )
+          void this.source.closeSelection().catch(() => {})
+      },
+      hasOtherUnresolvedResponsibility: () =>
+        this.#otherResponsibilities() || this.supervisor.hasOtherMainlineResponsibility,
+      journalPath: options.managementJournalPath,
+    })
     // Installed before any connection event or recovery microtask can occur.
     this.#recoveryRelease = tasks.installMainlineRecovery(supervisor, {
       run: (context, restore) => this.#recover(context, restore),
@@ -319,6 +349,51 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     if (principal) this.#retiredRecovery.add(principal)
     if (this.#selectionEpoch >= Number.MAX_SAFE_INTEGER) throw invalid()
     this.#selectionEpoch++
+  }
+  #otherResponsibilities(): boolean {
+    return (
+      this.#busy ||
+      this.#retiredRecovery.size > 0 ||
+      this.queries.hasOutstanding ||
+      [...this.#fullIntents].some(
+        (intent) => intent.active > 0 || intent.unknown || intent.pendingReplies.size > 0,
+      )
+    )
+  }
+  get hasUnresolvedResponsibility(): boolean {
+    return this.#otherResponsibilities() || this.#management.hasUnresolvedResponsibility
+  }
+  get managementBlocked(): boolean {
+    return this.#management.hasUnresolvedResponsibility
+  }
+  getPendingProjectManagementOperations() {
+    return this.#run(() => this.#management.pending())
+  }
+  getProjectManagementCatalog(
+    args: Parameters<ProjectManagementBridge['getProjectManagementCatalog']>[0],
+  ) {
+    return this.#run(() => this.#management.catalog(args))
+  }
+  getProjectManagementState() {
+    return this.#run(() => this.#management.state())
+  }
+  previewProjectManagement(
+    args: Parameters<ProjectManagementBridge['previewProjectManagement']>[0],
+  ) {
+    return this.#run(() => this.#management.preview(args))
+  }
+  confirmProjectManagement(
+    args: Parameters<ProjectManagementBridge['confirmProjectManagement']>[0],
+  ) {
+    return this.#run(() => this.#management.confirm(args))
+  }
+  applyProjectManagement(args: Parameters<ProjectManagementBridge['applyProjectManagement']>[0]) {
+    return this.#run(() => this.#management.apply(args))
+  }
+  getProjectManagementOperation(
+    args: Parameters<ProjectManagementBridge['getProjectManagementOperation']>[0],
+  ) {
+    return this.#run(() => this.#management.operation(args))
   }
   #retireRecoveryPending(): unknown {
     let firstFailure: unknown
@@ -403,7 +478,12 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   }
   #current(): NonNullable<OrdinaryCurrent> {
     const current = this.source.current()
-    if (!current || this.#closed || current.engineSessionId !== this.supervisor.engineSessionId)
+    if (
+      !current ||
+      this.#closed ||
+      this.#management.hasUnresolvedResponsibility ||
+      current.engineSessionId !== this.supervisor.engineSessionId
+    )
       throw denied()
     return current
   }
@@ -446,7 +526,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   async #selection<T>(
     work: (client: MainlineProjectTransport, current: () => boolean) => Promise<T>,
   ): Promise<T> {
-    if (this.#busy || this.#closed) throw invalid()
+    if (this.#busy || this.#closed || this.#management.hasUnresolvedResponsibility) throw invalid()
     this.#busy = true
     try {
       this.#invalidateRecovery()
@@ -833,6 +913,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     this.#connectionRelease()
     this.#projectRelease()
     this.queries.dispose()
+    this.#management.dispose()
     void this.source.dispose().catch(() => {
       // The original handles remain in #retiredRecovery. A failed cleanup does
       // not make disposal proof of release or erase a preceding operation error.

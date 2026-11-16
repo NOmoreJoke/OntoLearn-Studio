@@ -1,9 +1,13 @@
 // Test-only instrumentation bootstrapped into the unmodified app main process.
 // Main inspector is closed before faults; renderer never has inspector/CDP.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { app, dialog } = require('electron')
+const electron = require('electron')
+const { app } = electron
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { writeFileSync } = require('node:fs')
+// -r preload runs this file before app readiness; the inspector bootstrap runs
+// the same helper only after the Electron main API finished installing.
+const preloadedBeforeReady = typeof app.isReady === 'function' && app.isReady() === false
 const evidence = {
   windows: 0,
   prompts: [],
@@ -146,15 +150,19 @@ const save = (error) => {
   app.exit(error ? 1 : 0)
 }
 setTimeout(() => save('native recovery timeout'), 40000).unref()
-dialog.showMessageBox = async (_window, options) => {
-  passiveFailure.record(5, _window)
-  evidence.prompts.push(options)
-  return { response: 0, checkboxChecked: false }
+function installDialogStub() {
+  electron.dialog.showMessageBox = async (_window, options) => {
+    passiveFailure.record(5, _window)
+    evidence.prompts.push(options)
+    return { response: 0, checkboxChecked: false }
+  }
 }
 function observeWindow(window, freshlyCreated = false) {
   const index = ++evidence.windows
+  let renderGone = false
   passiveFailure.record(0, window)
   window.webContents.on('render-process-gone', (_e, details) => {
+    renderGone = true
     passiveFailure.record(3, window)
     return evidence.events.push(details.reason)
   })
@@ -175,8 +183,90 @@ function observeWindow(window, freshlyCreated = false) {
         await window.webContents.executeJavaScript('window.ontolearn.getEngineHealth()'),
       )
       if (!evidence.health.at(-1).ok) throw new Error('health unavailable')
-      if (index === 1) window.webContents.forcefullyCrashRenderer()
-      else if (index === 2) {
+      if (index === 1) {
+        if (process.platform === 'win32') {
+          if (preloadedBeforeReady) {
+            // Wait until the renderer OS process actually exists (visible window
+            // with a live OS PID), then let Win32 launch/watchers settle 400ms.
+            const crashTargetReady = () =>
+              !window.isDestroyed() &&
+              !window.webContents.isDestroyed() &&
+              (typeof window.isVisible !== 'function' || window.isVisible()) &&
+              (typeof window.webContents.getOSProcessId !== 'function' ||
+                window.webContents.getOSProcessId() > 0)
+            const pollDeadline = Date.now() + 5000
+            while (!crashTargetReady()) {
+              if (Date.now() >= pollDeadline)
+                throw new Error('win32 crash target never became ready')
+              await new Promise((resolve) => setTimeout(resolve, 50))
+            }
+            await new Promise((resolve) => setTimeout(resolve, 400))
+          } else {
+            // Step out of the executeJavaScript Mojo IPC reply microtask before crashing.
+            await new Promise((resolve) => setTimeout(resolve, 0))
+          }
+          if (!renderGone && !window.isDestroyed() && !window.webContents.isDestroyed())
+            window.webContents.forcefullyCrashRenderer()
+          if (!renderGone) {
+            setTimeout(() => {
+              try {
+                if (renderGone || window.isDestroyed() || window.webContents.isDestroyed()) return
+                evidence.win32CrashRetry = {
+                  osPid:
+                    typeof window.webContents.getOSProcessId === 'function'
+                      ? window.webContents.getOSProcessId()
+                      : null,
+                  crashed:
+                    typeof window.webContents.isCrashed === 'function'
+                      ? window.webContents.isCrashed()
+                      : null,
+                }
+                window.webContents.forcefullyCrashRenderer()
+                setTimeout(() => {
+                  try {
+                    if (renderGone || window.isDestroyed() || window.webContents.isDestroyed())
+                      return
+                    const pid =
+                      typeof window.webContents.getOSProcessId === 'function'
+                        ? window.webContents.getOSProcessId()
+                        : 0
+                    evidence.win32CrashKillFallback = { pid }
+                    if (pid > 0 && typeof process.kill === 'function') process.kill(pid)
+                  } catch (killError) {
+                    evidence.win32CrashKillError = String(killError)
+                    try {
+                      evidence.win32PostKillState = {
+                        osPid:
+                          typeof window.webContents.getOSProcessId === 'function'
+                            ? window.webContents.getOSProcessId()
+                            : null,
+                        processId:
+                          typeof window.webContents.getProcessId === 'function'
+                            ? window.webContents.getProcessId()
+                            : null,
+                        crashed:
+                          typeof window.webContents.isCrashed === 'function'
+                            ? window.webContents.isCrashed()
+                            : null,
+                        destroyed: window.isDestroyed(),
+                        webContentsDestroyed: window.webContents.isDestroyed(),
+                        windowCount:
+                          typeof electron.BrowserWindow?.getAllWindows === 'function'
+                            ? electron.BrowserWindow.getAllWindows().length
+                            : null,
+                      }
+                    } catch {
+                      // Bounded diagnostics must never mask the original kill error.
+                    }
+                  }
+                }, 1500).unref()
+              } catch (retryError) {
+                evidence.win32CrashRetryError = String(retryError)
+              }
+            }, 1500).unref()
+          }
+        } else window.webContents.forcefullyCrashRenderer()
+      } else if (index === 2) {
         window.show()
         app.focus({ steal: true })
         window.focus()
@@ -242,14 +332,32 @@ function observeWindow(window, freshlyCreated = false) {
     window.webContents.once('did-finish-load', drive)
   else void drive()
 }
-// Close the bootstrap MAIN inspector before fault injection. Renderer was never attached.
-setTimeout(() => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const inspector = require('node:inspector')
-  inspector.close()
-  evidence.inspectorClosedBeforeFaults = inspector.url() === undefined
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { BrowserWindow } = require('electron')
-  app.on('browser-window-created', (_event, window) => observeWindow(window, true))
-  for (const window of BrowserWindow.getAllWindows()) observeWindow(window)
-}, 150)
+if (!preloadedBeforeReady) {
+  installDialogStub()
+  // Close the bootstrap MAIN inspector before fault injection. Renderer was never attached.
+  setTimeout(() => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const inspector = require('node:inspector')
+    inspector.close()
+    evidence.inspectorClosedBeforeFaults = inspector.url() === undefined
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { BrowserWindow } = require('electron')
+    app.on('browser-window-created', (_event, window) => observeWindow(window, true))
+    for (const window of BrowserWindow.getAllWindows()) observeWindow(window)
+  }, 150)
+} else {
+  // Preloaded before readiness: defer every dialog/BrowserWindow touch to whenReady.
+  void app.whenReady().then(() => {
+    evidence.packaged = app.isPackaged
+    evidence.hangMonitorEnabled = !app.commandLine.hasSwitch('disable-hang-monitor')
+    evidence.noSandboxSwitch = app.commandLine.hasSwitch('no-sandbox')
+    installDialogStub()
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const inspector = require('node:inspector')
+    inspector.close()
+    evidence.inspectorClosedBeforeFaults = inspector.url() === undefined
+    const { BrowserWindow } = electron
+    app.on('browser-window-created', (_event, window) => observeWindow(window, true))
+    for (const window of BrowserWindow.getAllWindows()) observeWindow(window)
+  })
+}

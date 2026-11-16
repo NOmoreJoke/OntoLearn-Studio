@@ -47,6 +47,17 @@ async function receiveMainline<Channel extends DesktopIpcChannel>(
 }
 
 const bridge: DesktopBridge = {
+  getPendingProjectManagementOperations: () => receiveMainline('project:management-pending'),
+  getProjectManagementCatalog: (args) => receiveMainline('project:management-catalog', args),
+  getProjectManagementState: () => receiveMainline('project:management-state'),
+  previewProjectManagement: (args) => receiveMainline('project:management-preview', args),
+  confirmProjectManagement: (args) => receiveMainline('project:management-confirm', args),
+  applyProjectManagement: (args) => receiveMainline('project:management-apply', args),
+  getProjectManagementOperation: (args) => receiveMainline('project:management-operation', args),
+  getLibraryLocation: () => ipcRenderer.invoke('library:location'),
+  chooseLibraryLocation: (args) => ipcRenderer.invoke('library:choose', args),
+  reportLibraryWorkspace: (args) => ipcRenderer.invoke('library:workspace', args),
+  switchLibraryLocation: (args) => ipcRenderer.invoke('library:switch', args),
   getProjectCatalog: (args) => receiveMainline('project:catalog', args),
   createBlankProject: (args) => receiveMainline('project:create-blank', args),
   createExampleProject: (args) => receiveMainline('project:create-example', args),
