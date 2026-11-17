@@ -1,0 +1,347 @@
+/* Mentor rail and learning center: CSP-safe plain styles, no third sidebar.
+   The split stacks below 1180px so 1024x720 never overflows horizontally. */
+
+.workspace-split {
+  display: block;
+}
+.workspace-split-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+.workspace-split-bar button {
+  min-width: 0;
+  font-size: 12px;
+  padding: 9px 14px;
+}
+.workspace-split[data-mentor-open='true'] .workspace-split-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: start;
+}
+.workspace-split-columns {
+  display: block;
+}
+@media (max-width: 1180px) {
+  .workspace-split[data-mentor-open='true'] .workspace-split-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mentor-panel {
+    max-width: none;
+  }
+}
+
+.learning-center {
+  margin-block: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border, #dce5df);
+  border-radius: 1rem;
+  background: var(--surface, #fff);
+  scroll-margin-top: 24px;
+}
+.learning-center-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.learning-center-header h2 {
+  margin: 0;
+}
+.learning-center-meta {
+  font-size: 11px;
+  color: var(--muted, #6b7f75);
+  max-width: 46rem;
+  line-height: 1.8;
+}
+.learning-center-badge {
+  display: inline-block;
+  background: var(--soft, #eef6f2);
+  border: 1px solid var(--border, #dce5df);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--accent, #0f766e);
+}
+.learning-center-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block: 14px;
+}
+.learning-path {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+.learning-path li {
+  border-top: 1px solid var(--border, #dce5df);
+}
+.learning-path button {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  min-width: 0;
+  padding: 10px 8px;
+  background: transparent;
+  color: inherit;
+  border-radius: 6px;
+}
+.learning-path button:hover {
+  background: var(--soft, #eef6f2);
+}
+.learning-path .learning-step-number {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--muted, #6b7f75);
+}
+.learning-path .learning-step-goal {
+  font-size: 11px;
+  color: var(--muted, #6b7f75);
+  display: block;
+}
+.learning-path .learning-step-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+.learning-path .learning-step-assist {
+  font-size: 11px;
+  color: var(--muted, #6b7f75);
+}
+
+.mentor-panel {
+  border: 1px solid var(--border, #dce5df);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  padding: 16px;
+  display: grid;
+  gap: 16px;
+  max-width: 340px;
+  font-size: 12px;
+  scroll-margin-top: 24px;
+}
+.mentor-panel h2 {
+  margin: 4px 0 0;
+  font-size: 15px;
+}
+.mentor-panel h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+.mentor-panel h4 {
+  margin: 8px 0 4px;
+  font-size: 12px;
+}
+.mentor-panel h5 {
+  margin: 8px 0 2px;
+  font-size: 11px;
+  color: var(--muted, #6b7f75);
+}
+.mentor-heading .eyebrow {
+  margin: 0;
+}
+.mentor-task-goal {
+  color: var(--secondary, #33534a);
+  margin: 6px 0 0;
+}
+.mentor-check-state {
+  margin: 8px 0 0;
+  font-weight: 600;
+}
+.mentor-notice {
+  margin: 0;
+  color: var(--secondary, #33534a);
+}
+.mentor-error {
+  color: #9d174d;
+}
+.mentor-task-card,
+.mentor-readings,
+.mentor-glossary,
+.mentor-actions,
+.mentor-check-panel {
+  border-top: 1px solid var(--border, #dce5df);
+  padding-top: 12px;
+}
+.mentor-instructions {
+  margin: 0 0 8px;
+  line-height: 1.7;
+}
+.mentor-completion {
+  margin: 0 0 8px;
+  color: var(--secondary, #33534a);
+}
+.mentor-completion b,
+.mentor-boundary b,
+.mentor-aliases b {
+  margin-right: 6px;
+}
+.mentor-steps {
+  margin: 8px 0;
+  padding-left: 18px;
+}
+.mentor-steps li {
+  margin-bottom: 8px;
+}
+.mentor-step-flag {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  color: var(--muted, #6b7f75);
+}
+.mentor-version {
+  margin: 6px 0 10px;
+  font-size: 11px;
+  color: var(--muted, #6b7f75);
+  overflow-wrap: anywhere;
+}
+.mentor-muted {
+  color: var(--muted, #6b7f75);
+  font-size: 11px;
+}
+.mentor-readings .mentor-reading,
+.mentor-glossary .mentor-glossary-entry {
+  border: 1px solid var(--border, #dce5df);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.mentor-reading h4,
+.mentor-glossary-entry h4 {
+  margin: 0 0 6px;
+}
+.mentor-reading-flag {
+  margin-left: 8px;
+  font-size: 10px;
+  color: var(--muted, #6b7f75);
+}
+.mentor-reading button,
+.mentor-self-assessment button {
+  min-width: 0;
+  font-size: 11px;
+  padding: 8px 10px;
+}
+.mentor-reading-summary {
+  color: var(--secondary, #33534a);
+  margin: 0 0 8px;
+}
+.mentor-reading-source {
+  font-size: 10px;
+  color: var(--muted, #6b7f75);
+}
+.mentor-reading-body {
+  margin-top: 8px;
+}
+.mentor-self-assessment {
+  border: 1px dashed var(--border, #dce5df);
+  border-radius: 8px;
+  margin: 10px 0 0;
+  padding: 8px 10px 10px;
+}
+.mentor-self-assessment legend {
+  font-size: 10px;
+  color: var(--muted, #6b7f75);
+  padding: 0 4px;
+}
+.mentor-self-assessment button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 6px;
+  background: var(--soft, #eef6f2);
+  color: inherit;
+}
+.mentor-self-assessment button.is-selected {
+  background: var(--accent, #0f766e);
+  color: #fff;
+}
+.mentor-assessment-outcome {
+  margin: 8px 0 0;
+  font-weight: 600;
+}
+.mentor-glossary label {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+.mentor-glossary input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #b9c9c0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 12px;
+}
+.mentor-glossary-entry p {
+  margin: 4px 0;
+}
+.mentor-boundary {
+  color: #9d174d;
+}
+.mentor-aliases {
+  color: var(--muted, #6b7f75);
+  font-size: 11px;
+}
+.mentor-action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.mentor-action-buttons button {
+  min-width: 0;
+  font-size: 12px;
+  padding: 10px 8px;
+}
+.mentor-hints ul,
+.mentor-feedback-group ul,
+.mentor-explanation ul {
+  margin: 4px 0;
+  padding-left: 16px;
+}
+.mentor-hints li {
+  margin-bottom: 8px;
+}
+.mentor-hints b,
+.mentor-feedback-group li {
+  font-size: 11px;
+  line-height: 1.7;
+}
+.mentor-checkpoint-badge {
+  color: var(--accent, #0f766e);
+  font-weight: 600;
+}
+.mentor-evidence {
+  font-size: 10px;
+  color: var(--muted, #6b7f75);
+  overflow-wrap: anywhere;
+}
+.mentor-warning {
+  color: #9d174d;
+  font-weight: 600;
+}
+.mentor-secondary {
+  background: var(--soft, #eef6f2);
+  color: var(--accent, #0f766e);
+}
+.mentor-secondary:hover {
+  background: #dceee7;
+}
+.mentor-check-panel button {
+  min-width: 0;
+  font-size: 11px;
+  padding: 8px 10px;
+}
+.mentor-explanation {
+  border: 1px dashed var(--border, #dce5df);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 10px;
+}

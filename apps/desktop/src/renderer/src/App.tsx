@@ -25,6 +25,13 @@ import { ProjectCheckpointRestorePanel } from './project/ProjectCheckpointRestor
 import { ProjectRestoreController } from './project/restore-controller'
 import { LibraryLocationPanel } from './project/LibraryLocationPanel'
 import { libraryAdmissionBlocked, settleManagementTail } from './project/lifecycle-admission'
+import {
+  LearningController,
+  displayedCheckStatus,
+  mentorAssistanceText,
+} from './learning/learning-controller'
+import { MentorPanel } from './learning/MentorPanel'
+import { offlineCourse } from './learning/content'
 
 type WorkspaceModule = 'query' | 'ontology'
 type OntologyContext = {
@@ -69,6 +76,20 @@ export function App() {
       : undefined,
   )
   const [checkpointState, setCheckpointState] = useState(() => checkpointCtl?.getSnapshot())
+  const [learningCtl] = useState(() =>
+    window.ontolearn?.getProjectLearningState
+      ? new LearningController(window.ontolearn)
+      : undefined,
+  )
+  const [learningState, setLearningState] = useState(() => learningCtl?.getSnapshot())
+  // 导师面板默认收起；学习入口打开项目后自动展开（PRD 8.2）。
+  const [mentorOpen, setMentorOpen] = useState(false)
+  // 本体会话最近一次真实读取的域快照；ChangeSet 提交后的自动重读让它前进，
+  // 供学习面板在无后台 RPC 的前提下派生“已过期 / 需重跑”。
+  const [sessionDomainSnapshot, setSessionDomainSnapshot] = useState<{
+    projectId: string
+    snapshotId: string
+  }>()
   // 首启序列是否已结算。首启序列在飞、恢复读取进行中或仍有待核对恢复时，创建
   // 与打开入口保持禁用，防止在 checkpointCtl.initialize() 尚未结算前抢跑并发
   // 点击。序列结算即打开；一次读取失败不再把整个项目库永久锁死——检查点面板
@@ -207,7 +228,18 @@ export function App() {
       projectId: view.project.projectId,
       generation: view.generation,
     }
-    next.session.subscribe(() => workspaceNotify.current())
+    next.session.subscribe(() => {
+      // The post-commit auto re-read publishes the workspace's freshest domain
+      // snapshot; the mentor panel derives staleness from it without any RPC.
+      const source = next.session.getSnapshot().source
+      if (source)
+        setSessionDomainSnapshot((old) =>
+          old && old.projectId === source.projectId && old.snapshotId === source.inputSnapshotId
+            ? old
+            : { projectId: source.projectId, snapshotId: source.inputSnapshotId },
+        )
+      workspaceNotify.current()
+    })
     ontologyOwner.current = next
     setOntologyContext(next)
   }, [management, retireOntology, selectQueryWorkspace, setOntologyContext])
@@ -266,7 +298,12 @@ export function App() {
           checkpointCtl.select(value.project.projectId)
           await checkpointCtl.refreshWhenIdle()
         }
-      } else checkpointCtl?.select(undefined)
+        // 学习读取与检查点读取同样串行结算；此处绝不与 open/create 的尾段重叠。
+        await learningCtl?.selectAndRefresh(value.project.projectId)
+      } else {
+        checkpointCtl?.select(undefined)
+        learningCtl?.select(undefined)
+      }
       if (documentLeaving.current || value.generation < latestGeneration.current) return
       if (!updateTasks(value)) return
       readyWorkspace.current = value
@@ -283,6 +320,7 @@ export function App() {
       updateTasks,
       management,
       checkpointCtl,
+      learningCtl,
       retireOntology,
       disconnectQuery,
       activateWorkspace,
@@ -352,12 +390,13 @@ export function App() {
         return
       }
       // 版本渲染（restore → selected-project-version）与交还操作之前，先串行
-      // 完成全部 management 与检查点读取；单并发模型下不允许留下在飞行的
-      // 调用，管理通道与恢复通道也不得重叠。
+      // 完成全部 management、检查点与学习状态读取；单并发模型下不允许留下在
+      // 飞行的调用，管理通道与恢复通道也不得重叠。
       const tail = (async () => {
         await settleManagementTail(management, projectId, { refresh: true })
         checkpointCtl?.select(projectId)
         await checkpointCtl?.refreshWhenIdle()
+        await learningCtl?.selectAndRefresh(projectId)
       })()
       admissionTail.current = tail
       await tail
@@ -443,14 +482,15 @@ export function App() {
       }
       const listed = await bridge.getProjectCatalog({ pageSize: 64, cursor: null })
       if (listed.ok) setCatalog(listed.data)
-      // 与 openProject 相同的准入尾段：全部 management 读取与检查点读取串行
-      // 完成后，才允许 restore() 渲染新项目版本并把工作台交还出去。
+      // 与 openProject 相同的准入尾段：全部 management、检查点与学习状态读取
+      // 串行完成后，才允许 restore() 渲染新项目版本并把工作台交还出去。
       await management?.refresh()
       if (opened.ok) {
         const tail = (async () => {
           await settleManagementTail(management, created.data.projectId)
           checkpointCtl?.select(created.data.projectId)
           await checkpointCtl?.refreshWhenIdle()
+          await learningCtl?.selectAndRefresh(created.data.projectId)
         })()
         admissionTail.current = tail
         await tail
@@ -483,13 +523,14 @@ export function App() {
         uncertain.current ||
         !!management?.unresolved ||
         !!checkpointCtl?.unresolved ||
+        !!learningCtl?.unresolved ||
         queries.some(
           (controller) => controller.hasUnresolvedWrite || controller.getSnapshot().busy,
         ) ||
         ontologyOperations.hasUnresolved ||
         (!!ontology && ['reading', 'preparing', 'submitting', 'unknown'].includes(ontology.phase)),
     }
-  }, [management, checkpointCtl])
+  }, [management, checkpointCtl, learningCtl])
   const reportWorkspace = useCallback((): LibraryWorkspaceReport => {
     documentNonce.current ??= crypto.randomUUID()
     return {
@@ -549,6 +590,14 @@ export function App() {
       releases.push(
         checkpointCtl.subscribe(() => {
           setCheckpointState(checkpointCtl.getSnapshot())
+          workspaceNotify.current()
+        }),
+      )
+    }
+    if (learningCtl) {
+      releases.push(
+        learningCtl.subscribe(() => {
+          setLearningState(learningCtl.getSnapshot())
           workspaceNotify.current()
         }),
       )
@@ -614,13 +663,16 @@ export function App() {
       bootActive.current = false
       for (const release of releases) release()
     }
-  }, [management, checkpointCtl, retireOntology, disconnectQuery])
+  }, [management, checkpointCtl, learningCtl, retireOntology, disconnectQuery])
   useEffect(() => {
     // No selected project: clear the checkpoint selection synchronously. The
     // project-bound list refresh is serialized inside the open/create/restore
     // admission tail, so it never races the workspace auto-read.
-    if (!tasks?.project?.projectId) checkpointCtl?.select(undefined)
-  }, [checkpointCtl, tasks?.project?.projectId])
+    if (!tasks?.project?.projectId) {
+      checkpointCtl?.select(undefined)
+      learningCtl?.select(undefined)
+    }
+  }, [checkpointCtl, learningCtl, tasks?.project?.projectId])
   useEffect(() => {
     if (!checkpointApplied) return
     // Reload the restored workspace through the real open path after the
@@ -719,6 +771,7 @@ export function App() {
       documentLeaving.current = true
       management?.close()
       checkpointCtl?.close()
+      learningCtl?.close()
       retireOntology()
       disconnectQuery()
       readyWorkspace.current = undefined
@@ -729,7 +782,7 @@ export function App() {
       // Reversible cleanup supports StrictMode. Selection/document events use retire.
       ontologyOwner.current?.session.dispose()
     }
-  }, [management, checkpointCtl, retireOntology, disconnectQuery])
+  }, [management, checkpointCtl, learningCtl, retireOntology, disconnectQuery])
   async function loadSummary(job: import('@ontolearn/contracts').JobView) {
     const bridge = window.ontolearn
     if (!bridge || !job.resultRef) return
@@ -784,6 +837,37 @@ export function App() {
       setChecking(false)
     }
   }
+  const learningTasks = learningState?.learning?.tasks
+  const currentDomainSnapshotId =
+    sessionDomainSnapshot && sessionDomainSnapshot.projectId === tasks?.project?.projectId
+      ? sessionDomainSnapshot.snapshotId
+      : tasks?.project?.inputSnapshotId
+  const learningDisabled = projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked
+  function openMentorForTask(taskId?: string) {
+    if (taskId) learningCtl?.focusTask(taskId)
+    setMentorOpen(true)
+    requestAnimationFrame(() => {
+      document
+        .querySelector('[data-testid="mentor-panel"]')
+        ?.scrollIntoView({ block: 'start', behavior: 'auto' })
+    })
+  }
+  function continueLearningTask() {
+    const snapshot = learningCtl?.getSnapshot()
+    const states = snapshot?.learning?.tasks
+    const next =
+      states &&
+      offlineCourse.tasks.find(
+        (course) => !states.find((state) => state.taskId === course.id)?.operationComplete,
+      )
+    openMentorForTask(next?.id ?? snapshot?.learning?.courseMeta.firstTask)
+  }
+  function startLearningExample() {
+    // 打开后自动聚焦首任务并保持导师面板展开；项目创建仍走真实 createProject。
+    learningCtl?.focusTask('business-ontology')
+    setMentorOpen(true)
+    void createProject(true)
+  }
   return (
     <div
       className="app-shell"
@@ -802,6 +886,9 @@ export function App() {
         <nav aria-label="工作台导航">
           <a href="#overview" aria-current="page">
             项目工作台 <span>↗</span>
+          </a>
+          <a href="#learning-center" data-testid="nav-learning-center">
+            学习中心 <span>↗</span>
           </a>
           <a href="#modules">
             模块规划 <span>06</span>
@@ -860,6 +947,77 @@ export function App() {
             转化为可验证的知识。
           </h1>
           <p className="lead">从本体建模到情景推演，在一个本地项目中逐步学习与验证。</p>
+        </section>
+        <section
+          id="learning-center"
+          className="learning-center"
+          data-testid="learning-center"
+          aria-labelledby="learning-center-title"
+        >
+          <div className="learning-center-header">
+            <h2 id="learning-center-title">学习中心</h2>
+            <span className="learning-center-badge">离线课程 · 无需模型 API</span>
+          </div>
+          <p className="learning-center-meta">
+            课程案例：{learningState?.learning?.courseMeta.case ?? offlineCourse.case} ·{' '}
+            {learningState?.learning?.courseMeta.businessQuestion ?? offlineCourse.businessQuestion}
+            {learningState?.learning?.courseMeta.manifestSha256
+              ? ` · 课程 ${learningState.learning.courseMeta.courseVersion} · manifest ${learningState.learning.courseMeta.manifestSha256.slice(0, 12)}`
+              : ` · 课程 ${offlineCourse.version}`}
+          </p>
+          <div className="learning-center-actions">
+            <button
+              type="button"
+              data-testid="learning-start-example"
+              disabled={learningDisabled || hasCreateIntent}
+              onClick={startLearningExample}
+            >
+              从设备运维案例开始
+            </button>
+            <button
+              type="button"
+              data-testid="learning-continue-task"
+              disabled={learningDisabled || !tasks?.project}
+              onClick={continueLearningTask}
+            >
+              继续当前任务
+            </button>
+          </div>
+          <ol className="learning-path" aria-label="学习路径概览">
+            {offlineCourse.tasks.map((task, ordinal) => {
+              const state = learningTasks?.find((item) => item.taskId === task.id)
+              return (
+                <li key={task.id}>
+                  <button
+                    type="button"
+                    data-testid="learning-path-task"
+                    data-task-id={task.id}
+                    onClick={() => openMentorForTask(task.id)}
+                  >
+                    <span className="learning-step-number">
+                      {String(ordinal + 1).padStart(2, '0')}
+                    </span>
+                    <span>
+                      <b>{task.module}</b>
+                      <small className="learning-step-goal">{task.goal}</small>
+                    </span>
+                    <span className="learning-step-badges">
+                      <span data-testid="learning-path-status">
+                        {displayedCheckStatus(
+                          state,
+                          currentDomainSnapshotId,
+                          learningState?.learning?.domainSnapshotRef,
+                        )}
+                      </span>
+                    </span>
+                    <span className="learning-step-assist">
+                      {state?.operationComplete ? (mentorAssistanceText(state) ?? '') : ''}
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
         </section>
         <section className="health-panel" aria-labelledby="health-title">
           <div>
@@ -1052,122 +1210,156 @@ export function App() {
           </p>
         )}
         {workspaceFrozen && <p role="status">项目库切换确认期间，编辑与新操作已暂停。</p>}
-        <fieldset className="workspace-freeze" disabled={workspaceFrozen || managementBlocked}>
-          {workspaceModule === 'query' &&
-            queryController &&
-            tasks?.project?.projectId === queryController.projectId &&
-            !connection && (
-              <section id="query-workspace" aria-label="当前项目查询">
-                <QueryWorkspacePage controller={queryController} />
-              </section>
-            )}
-          {workspaceModule === 'ontology' &&
-            ontologyContext &&
-            tasks?.project?.projectId === ontologyContext.projectId &&
-            tasks.generation === ontologyContext.generation &&
-            !connection && (
-              <section id="ontology-workspace" aria-label="当前项目本体">
-                <OntologyMainlinePage
-                  session={ontologyContext.session}
-                  contextKey={ontologyContext.contextKey}
-                  onDirtyChange={onOntologyDirty}
-                />
-              </section>
-            )}
-          {connection && (
-            <section role="status" aria-label="引擎连接状态">
-              <h2>
-                {connection.state === 'offline'
-                  ? '引擎连接已离线；任务状态待对账'
-                  : '引擎连接中断；正在对账'}
-              </h2>
-              <p>任务卡片仅显示最后记录，当前状态尚未确认。不会重发写任务。</p>
-              <p>已尝试 {connection.attempt}/3 次只读恢复。</p>
-              <ErrorDetails error={connection.error} context="task" />
-              <button onClick={() => void restore()} disabled={connection.state === 'reconnecting'}>
-                重新连接并对账
-              </button>
-            </section>
-          )}
+        <div
+          className="workspace-split"
+          data-mentor-open={mentorOpen && !!tasks?.project ? 'true' : 'false'}
+        >
           {tasks?.project && (
-            <section className="health-panel" aria-label="后台任务状态">
-              <h2>后台任务</h2>
-              <p>窗口恢复后读取持久状态；不会重发写任务。</p>
-              <button onClick={() => void restore()} disabled={Boolean(connection)}>
-                刷新任务状态
+            <div className="workspace-split-bar">
+              <button
+                type="button"
+                data-testid="mentor-panel-toggle"
+                onClick={() => setMentorOpen((value) => !value)}
+              >
+                {mentorOpen ? '收起导师面板' : '展开导师面板'}
               </button>
-              {tasks.jobs.map((job) => (
-                <article key={job.jobId} data-testid="durable-job" data-job-id={job.jobId}>
-                  <p>
-                    {connection ? '最后记录：' : ''}
-                    {jobStatus(job)} · 状态版本 {job.stateVersion}
-                  </p>
-                  <p>
-                    输入快照 {job.inputSnapshotId.slice(0, 12)} ·
-                    {job.inputSnapshotId === tasks.project?.inputSnapshotId
-                      ? '当前输入'
-                      : '历史输入；此任务保留原执行依据'}
-                  </p>
-                  {progress[job.jobId] &&
-                    ['queued', 'running', 'cancelling'].includes(job.state) && (
-                      <p>
-                        阶段：
-                        {
-                          {
-                            queued: '排队',
-                            loading: '加载',
-                            computing: '计算',
-                            committing: '提交',
-                            reconciling: '对账',
-                          }[progress[job.jobId].stage]
-                        }
-                        {progress[job.jobId].total !== null
-                          ? ` · ${progress[job.jobId].completed}/${progress[job.jobId].total}`
-                          : ''}
-                      </p>
-                    )}
-                  {job.error && <ErrorDetails error={job.error} context="task" />}
-                  {['queued', 'running'].includes(job.state) && (
-                    <button
-                      disabled={Boolean(connection)}
-                      onClick={() => {
-                        void window.ontolearn?.cancelJob(job.jobId).then((response) => {
-                          if (!response.ok) setTaskError(response.error)
-                          else void restore()
-                        })
-                      }}
-                    >
-                      请求取消
-                    </button>
-                  )}
-                  <button
-                    disabled={Boolean(connection)}
-                    onClick={() => {
-                      void window.ontolearn?.getOperation(job.operationId).then((response) => {
-                        if (!response.ok) setTaskError(response.error)
-                        else
-                          setSummaries((old) => ({
-                            ...old,
-                            [job.jobId]: response.data
-                              ? `已提交 · 项目版本 ${Number(response.data.projectRevision)}`
-                              : '未查到完整操作提交点；已提交轮次以任务持久记录为准。',
-                          }))
-                      })
-                    }}
-                  >
-                    查看提交点
-                  </button>
-                  {job.resultRef && (
-                    <button onClick={() => void loadSummary(job)} disabled={Boolean(connection)}>
-                      查看运行摘要
-                    </button>
-                  )}
-                  {summaries[job.jobId] && <p>{summaries[job.jobId]}</p>}
-                </article>
-              ))}
-            </section>
+              <span className="mentor-muted">离线导师：任务卡、分级提示、检查与术语帮助。</span>
+            </div>
           )}
-        </fieldset>
+          <div className="workspace-split-columns">
+            <fieldset className="workspace-freeze" disabled={workspaceFrozen || managementBlocked}>
+              {workspaceModule === 'query' &&
+                queryController &&
+                tasks?.project?.projectId === queryController.projectId &&
+                !connection && (
+                  <section id="query-workspace" aria-label="当前项目查询">
+                    <QueryWorkspacePage controller={queryController} />
+                  </section>
+                )}
+              {workspaceModule === 'ontology' &&
+                ontologyContext &&
+                tasks?.project?.projectId === ontologyContext.projectId &&
+                tasks.generation === ontologyContext.generation &&
+                !connection && (
+                  <section id="ontology-workspace" aria-label="当前项目本体">
+                    <OntologyMainlinePage
+                      session={ontologyContext.session}
+                      contextKey={ontologyContext.contextKey}
+                      onDirtyChange={onOntologyDirty}
+                    />
+                  </section>
+                )}
+              {connection && (
+                <section role="status" aria-label="引擎连接状态">
+                  <h2>
+                    {connection.state === 'offline'
+                      ? '引擎连接已离线；任务状态待对账'
+                      : '引擎连接中断；正在对账'}
+                  </h2>
+                  <p>任务卡片仅显示最后记录，当前状态尚未确认。不会重发写任务。</p>
+                  <p>已尝试 {connection.attempt}/3 次只读恢复。</p>
+                  <ErrorDetails error={connection.error} context="task" />
+                  <button
+                    onClick={() => void restore()}
+                    disabled={connection.state === 'reconnecting'}
+                  >
+                    重新连接并对账
+                  </button>
+                </section>
+              )}
+              {tasks?.project && (
+                <section className="health-panel" aria-label="后台任务状态">
+                  <h2>后台任务</h2>
+                  <p>窗口恢复后读取持久状态；不会重发写任务。</p>
+                  <button onClick={() => void restore()} disabled={Boolean(connection)}>
+                    刷新任务状态
+                  </button>
+                  {tasks.jobs.map((job) => (
+                    <article key={job.jobId} data-testid="durable-job" data-job-id={job.jobId}>
+                      <p>
+                        {connection ? '最后记录：' : ''}
+                        {jobStatus(job)} · 状态版本 {job.stateVersion}
+                      </p>
+                      <p>
+                        输入快照 {job.inputSnapshotId.slice(0, 12)} ·
+                        {job.inputSnapshotId === tasks.project?.inputSnapshotId
+                          ? '当前输入'
+                          : '历史输入；此任务保留原执行依据'}
+                      </p>
+                      {progress[job.jobId] &&
+                        ['queued', 'running', 'cancelling'].includes(job.state) && (
+                          <p>
+                            阶段：
+                            {
+                              {
+                                queued: '排队',
+                                loading: '加载',
+                                computing: '计算',
+                                committing: '提交',
+                                reconciling: '对账',
+                              }[progress[job.jobId].stage]
+                            }
+                            {progress[job.jobId].total !== null
+                              ? ` · ${progress[job.jobId].completed}/${progress[job.jobId].total}`
+                              : ''}
+                          </p>
+                        )}
+                      {job.error && <ErrorDetails error={job.error} context="task" />}
+                      {['queued', 'running'].includes(job.state) && (
+                        <button
+                          disabled={Boolean(connection)}
+                          onClick={() => {
+                            void window.ontolearn?.cancelJob(job.jobId).then((response) => {
+                              if (!response.ok) setTaskError(response.error)
+                              else void restore()
+                            })
+                          }}
+                        >
+                          请求取消
+                        </button>
+                      )}
+                      <button
+                        disabled={Boolean(connection)}
+                        onClick={() => {
+                          void window.ontolearn?.getOperation(job.operationId).then((response) => {
+                            if (!response.ok) setTaskError(response.error)
+                            else
+                              setSummaries((old) => ({
+                                ...old,
+                                [job.jobId]: response.data
+                                  ? `已提交 · 项目版本 ${Number(response.data.projectRevision)}`
+                                  : '未查到完整操作提交点；已提交轮次以任务持久记录为准。',
+                              }))
+                          })
+                        }}
+                      >
+                        查看提交点
+                      </button>
+                      {job.resultRef && (
+                        <button
+                          onClick={() => void loadSummary(job)}
+                          disabled={Boolean(connection)}
+                        >
+                          查看运行摘要
+                        </button>
+                      )}
+                      {summaries[job.jobId] && <p>{summaries[job.jobId]}</p>}
+                    </article>
+                  ))}
+                </section>
+              )}
+            </fieldset>
+            {tasks?.project && mentorOpen && learningCtl && (
+              <MentorPanel
+                controller={learningCtl}
+                disabled={learningDisabled}
+                currentDomainSnapshotId={currentDomainSnapshotId}
+                onOpenOntologyRepair={() => selectWorkspace('ontology')}
+                refreshCheckpoints={() => checkpointCtl?.refreshWhenIdle() ?? Promise.resolve()}
+              />
+            )}
+          </div>
+        </div>
         {taskError && !connection && <ErrorDetails error={taskError} context="task" />}
         <section id="modules" className="modules-section">
           <div className="section-title">
