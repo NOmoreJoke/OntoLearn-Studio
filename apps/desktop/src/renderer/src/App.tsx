@@ -30,6 +30,7 @@ import {
   displayedCheckStatus,
   mentorAssistanceText,
 } from './learning/learning-controller'
+import { pickLatestDomainSnapshotId } from './learning/domain-snapshot'
 import { MentorPanel } from './learning/MentorPanel'
 import { offlineCourse } from './learning/content'
 
@@ -40,6 +41,11 @@ type OntologyContext = {
   projectId: string
   generation: number
 }
+// Pure cross-workspace snapshot selection, re-exported for direct unit tests.
+export {
+  pickLatestDomainSnapshotId,
+  type DomainSnapshotCandidate,
+} from './learning/domain-snapshot'
 
 const modules = [
   ['01', '定义业务概念', '本体构建'],
@@ -85,10 +91,18 @@ export function App() {
   // 导师面板默认收起；学习入口打开项目后自动展开（PRD 8.2）。
   const [mentorOpen, setMentorOpen] = useState(false)
   // 本体会话最近一次真实读取的域快照；ChangeSet 提交后的自动重读让它前进，
-  // 供学习面板在无后台 RPC 的前提下派生“已过期 / 需重跑”。
+  // 供学习面板在无后台 RPC 的前提下派生“已过期 / 需重跑”。revision 取自真实
+  // 读取的 projectRevision，使跨工作区比较按提交先后而不是缓存先后。
   const [sessionDomainSnapshot, setSessionDomainSnapshot] = useState<{
     projectId: string
     snapshotId: string
+    revision: number
+  }>()
+  // 查询工作台最近一次真实读取的域快照（读取项目与持久工作草稿 / 提交结算后）。
+  const [queryDomainSnapshot, setQueryDomainSnapshot] = useState<{
+    projectId: string
+    snapshotId: string
+    revision: number
   }>()
   // 首启序列是否已结算。首启序列在飞、恢复读取进行中或仍有待核对恢复时，创建
   // 与打开入口保持禁用，防止在 checkpointCtl.initialize() 尚未结算前抢跑并发
@@ -234,9 +248,16 @@ export function App() {
       const source = next.session.getSnapshot().source
       if (source)
         setSessionDomainSnapshot((old) =>
-          old && old.projectId === source.projectId && old.snapshotId === source.inputSnapshotId
+          old &&
+          old.projectId === source.projectId &&
+          old.snapshotId === source.inputSnapshotId &&
+          old.revision === source.domain.projectRevision
             ? old
-            : { projectId: source.projectId, snapshotId: source.inputSnapshotId },
+            : {
+                projectId: source.projectId,
+                snapshotId: source.inputSnapshotId,
+                revision: source.domain.projectRevision,
+              },
         )
       workspaceNotify.current()
     })
@@ -413,7 +434,10 @@ export function App() {
       activateWorkspace()
     }
   }
-  async function createProject(example = false) {
+  async function createProject(
+    example = false,
+    options?: { initialWorkspace?: WorkspaceModule; startAttemptTaskId?: string },
+  ) {
     const bridge = window.ontolearn
     const name = projectName.trim() ? projectName : example ? '设备运维示例' : ''
     if (
@@ -491,9 +515,21 @@ export function App() {
           checkpointCtl?.select(created.data.projectId)
           await checkpointCtl?.refreshWhenIdle()
           await learningCtl?.selectAndRefresh(created.data.projectId)
+          if (options?.startAttemptTaskId) {
+            // The practice attempt starts at the new project's own creation
+            // claim: prior projects' queries can never satisfy its checks.
+            learningCtl?.focusTask(options.startAttemptTaskId)
+            await learningCtl?.restartAttempt()
+          }
         })()
         admissionTail.current = tail
         await tail
+        // Open the requested workspace only after the serial tail settled, so
+        // the workspace auto-read never races the admission reads above.
+        if (options?.initialWorkspace && selectedModule.current !== options.initialWorkspace) {
+          selectedModule.current = options.initialWorkspace
+          setWorkspaceModule(options.initialWorkspace)
+        }
         await restore()
       }
     } catch {
@@ -674,6 +710,29 @@ export function App() {
     }
   }, [checkpointCtl, learningCtl, tasks?.project?.projectId])
   useEffect(() => {
+    // The active project's query workspace publishes its own last real read
+    // (读取项目与持久工作草稿 or a settled commit/execute receipt re-read).
+    // Recording the real projectRevision keeps cross-workspace freshness
+    // comparisons monotonic; no background RPC starts here.
+    if (!queryController) return
+    return queryController.subscribe(() => {
+      const read = queryController.getSnapshot().read
+      if (!read) return
+      setQueryDomainSnapshot((old) =>
+        old &&
+        old.projectId === read.projectId &&
+        old.snapshotId === read.inputSnapshotId &&
+        old.revision === read.domain.projectRevision
+          ? old
+          : {
+              projectId: read.projectId,
+              snapshotId: read.inputSnapshotId,
+              revision: read.domain.projectRevision,
+            },
+      )
+    })
+  }, [queryController])
+  useEffect(() => {
     if (!checkpointApplied) return
     // Reload the restored workspace through the real open path after the
     // applying event settles; a microtask keeps setState out of the effect body.
@@ -838,10 +897,27 @@ export function App() {
     }
   }
   const learningTasks = learningState?.learning?.tasks
-  const currentDomainSnapshotId =
-    sessionDomainSnapshot && sessionDomainSnapshot.projectId === tasks?.project?.projectId
-      ? sessionDomainSnapshot.snapshotId
-      : tasks?.project?.inputSnapshotId
+  // 跨工作区一致性：同一打开项目的全部快照候选（项目读取、本体会话、查询
+  // 工作台、学习读取）中取 projectRevision 最大者，避免旧缓存把新提交误标过期。
+  const activeProjectId = tasks?.project?.projectId
+  const currentDomainSnapshotId = pickLatestDomainSnapshotId(activeProjectId, [
+    tasks?.project
+      ? {
+          projectId: tasks.project.projectId,
+          snapshotId: tasks.project.inputSnapshotId,
+          revision: tasks.project.projectRevision,
+        }
+      : undefined,
+    sessionDomainSnapshot,
+    queryDomainSnapshot,
+    learningState?.learning
+      ? {
+          projectId: learningState.learning.projectId,
+          snapshotId: learningState.learning.domainSnapshotRef,
+          revision: learningState.learning.domainRevision,
+        }
+      : undefined,
+  ])
   const learningDisabled = projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked
   function openMentorForTask(taskId?: string) {
     if (taskId) learningCtl?.focusTask(taskId)
@@ -867,6 +943,22 @@ export function App() {
     learningCtl?.focusTask('business-ontology')
     setMentorOpen(true)
     void createProject(true)
+  }
+  function resetLearningGBase(taskId: string) {
+    // 独立还原 G-base：新建独立练习项目并立刻开始该任务的新 attempt。
+    // 未保存/未结算的编辑按既有破坏性操作规则拦截；创建锁与准入保护全部
+    // 由 createProject 自身执行，不修改任何已有项目。
+    if (learningDisabled) return
+    if (workspaceStatus.dirty || workspaceStatus.unresolved) {
+      setProjectNotice('当前工作区仍有未保存或未结算的编辑；请先保存或放弃后再独立还原 G-base。')
+      return
+    }
+    learningCtl?.focusTask(taskId)
+    setMentorOpen(true)
+    void createProject(true, {
+      initialWorkspace: taskId === 'query' ? 'query' : 'ontology',
+      startAttemptTaskId: taskId,
+    })
   }
   return (
     <div
@@ -1355,6 +1447,8 @@ export function App() {
                 disabled={learningDisabled}
                 currentDomainSnapshotId={currentDomainSnapshotId}
                 onOpenOntologyRepair={() => selectWorkspace('ontology')}
+                onOpenQueryWorkspace={() => selectWorkspace('query')}
+                onResetToGBase={resetLearningGBase}
                 refreshCheckpoints={() => checkpointCtl?.refreshWhenIdle() ?? Promise.resolve()}
               />
             )}

@@ -25,9 +25,16 @@ export type MentorPanelProps = {
   currentDomainSnapshotId?: string
   /** Switch the workspace to the ontology editor for a repair ChangeSet. */
   onOpenOntologyRepair(): void
+  /** Switch the workspace to the query workbench (optional for older hosts). */
+  onOpenQueryWorkspace?: () => void
+  /** Independent G-base practice reset: create a fresh practice project. */
+  onResetToGBase?: (taskId: string) => void
   /** Serialized checkpoint refresh after a check that created a checkpoint. */
   refreshCheckpoints(): Promise<void>
 }
+
+/** Tasks whose G-base practice domain is a fresh example project. */
+const GBASE_RESET_TASKS: ReadonlySet<string> = new Set(['business-ontology', 'query', 'quality'])
 
 /** PRD 8.2/8.9 mentor rail inside the workspace split; never a third sidebar.
  *  All persistence flows through the Step 1 named bridge, never storage. */
@@ -36,6 +43,8 @@ export function MentorPanel({
   disabled,
   currentDomainSnapshotId,
   onOpenOntologyRepair,
+  onOpenQueryWorkspace,
+  onResetToGBase,
   refreshCheckpoints,
 }: MentorPanelProps) {
   const state = useSyncExternalStore(
@@ -119,6 +128,29 @@ export function MentorPanel({
               onClick={() => void controller.restartAttempt()}
             >
               重新开始本任务尝试
+            </button>
+            {onResetToGBase && GBASE_RESET_TASKS.has(task.taskId) && (
+              <button
+                type="button"
+                className="mentor-secondary"
+                data-testid="learning-reset-gbase"
+                disabled={blocked}
+                onClick={() => onResetToGBase(task.taskId)}
+              >
+                独立还原 G-base（新建练习项目）
+              </button>
+            )}
+            <button
+              type="button"
+              className="mentor-secondary"
+              data-testid="learning-scroll-checkpoints"
+              onClick={() =>
+                document
+                  .getElementById('project-checkpoints')
+                  ?.scrollIntoView({ block: 'start', behavior: 'auto' })
+              }
+            >
+              查看检查点恢复（当前项目内还原）
             </button>
           </section>
           {task.readings.length > 0 && (
@@ -364,6 +396,16 @@ export function MentorPanel({
             >
               打开本体构建修复
             </button>
+            {onOpenQueryWorkspace && (
+              <button
+                type="button"
+                data-testid="learning-open-query-workspace"
+                disabled={blocked}
+                onClick={() => onOpenQueryWorkspace?.()}
+              >
+                打开本体查询
+              </button>
+            )}
             <p className="mentor-muted">
               修复需新建 ChangeSet；检查只报告偏差，不会自动回滚已提交的更改。
             </p>

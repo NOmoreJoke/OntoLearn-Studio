@@ -59,6 +59,9 @@ PAYLOAD_KEYS = {
     "lastOperationId",
 }
 GUIDED_STAGE_TASK = "business-ontology"
+QUERY_TASK = "query"
+# Tasks whose checks run against real persisted tool evidence in this build.
+WIRED_TASKS = frozenset({GUIDED_STAGE_TASK, QUERY_TASK})
 GUIDED_STAGE_LABEL = "完成引导阶段：业务本体建模"
 HINT_EVENT_KIND = "hint.revealed"
 
@@ -687,6 +690,36 @@ def baseline_triples(root):
     return triples
 
 
+def _attempt_min_claim_rowid(store, project, internal, attempt_id, is_virgin_first_attempt):
+    """The operation-claim rowid where this attempt's window opens.
+
+    A virgin first attempt (auto-created by ``check`` itself) opens at 0: the
+    learner may already have run the real queries before the first explicit
+    check. Otherwise the attempt's creation claim (expectedRecordVersion is
+    None) marks the boundary; earlier jobs belong to earlier attempts.
+    """
+    if is_virgin_first_attempt:
+        return 0
+    for row in store._db.execute(
+        "SELECT rowid,context FROM operation_claims WHERE kind=? AND project=? ORDER BY rowid",
+        ("application", project),
+    ).fetchall():
+        if row["context"] is None:
+            continue
+        request = json.loads(row["context"]).get("request")
+        change = request.get("change") if isinstance(request, dict) else None
+        if not isinstance(change, dict):
+            continue
+        if (
+            change.get("type") == "learning.record"
+            and change.get("attempt") == attempt_id
+            and change.get("expectedRecordVersion") is None
+        ):
+            return row["rowid"]
+    # The creation claim always precedes this point; 0 is the conservative floor.
+    return 0
+
+
 def check_task(store, project, params, host, origin):
     service = host.bare_service()
     task_id = params["taskId"]
@@ -719,6 +752,15 @@ def check_task(store, project, params, host, origin):
             )
         records = _records(format3.application_state(store, internal))
         current = _current(records, task_id)
+        had_any_task_attempt = any(
+            (
+                record["payload"]["taskId"] == task_id
+                if not record["withdrawn"]
+                else record["task"] == task_id
+            )
+            for record in records
+        )
+        was_auto_init = current is None
         if current is None:
             current = _auto_init(store, project, service, task_id, origin)
         checkpoint = store.project_checkpoint(internal)
@@ -727,24 +769,40 @@ def check_task(store, project, params, host, origin):
         input_version = _input_version(revision, snapshot_ref)
         context = Context(project, task_id, current["attempt"], input_version)
         attempt = _reducer_attempt(current, context)
-        wired = task_id == GUIDED_STAGE_TASK
+        wired = task_id in WIRED_TASKS
         if wired:
-            present = _state_triples(store.state(internal))
-            host.tools.evidence = host.ontology_evidence(
-                context,
-                snapshot_ref,
-                present,
-                host.baseline_triples(),
-                current["payload"]["assistance"],
-            )
+            if task_id == GUIDED_STAGE_TASK:
+                host.tools.evidence = host.ontology_evidence(
+                    context,
+                    snapshot_ref,
+                    _state_triples(store.state(internal)),
+                    host.baseline_triples(),
+                    current["payload"]["assistance"],
+                )
+            else:
+                host.tools.evidence_by_check = host.query_evidences(
+                    store,
+                    project,
+                    internal,
+                    context,
+                    snapshot_ref,
+                    _attempt_min_claim_rowid(
+                        store,
+                        project,
+                        internal,
+                        current["attempt"],
+                        was_auto_init and not had_any_task_attempt,
+                    ),
+                    current["payload"]["assistance"],
+                )
             check_service = host.wired_service()
         else:
-            # Real pending dependency: downstream tools are not wired in L1.
+            # Real pending dependency: downstream tools are not wired yet.
             check_service = service
         try:
             updated, feedback = check_service.check(attempt)
         finally:
-            host.tools.evidence = None
+            host.tools.clear()
         payload = deepcopy(current["payload"])
         payload.update(
             assistance=updated.assistance,
@@ -766,8 +824,11 @@ def check_task(store, project, params, host, origin):
         )
         receipt = _write_record(store, project, operation, current, payload, None, origin)
         guided_ref = payload["guidedStageCheckpointRef"]
+        # FR-004 anti-regression: only the guided-stage task itself mints the
+        # checkpoint; passing the query task (or any later wired task) never
+        # creates a "guided stage complete" checkpoint.
         if (
-            wired
+            task_id == GUIDED_STAGE_TASK
             and updated.check_status == "passed"
             and GUIDED_STAGE_TASK not in payload["completedGuidedStages"]
         ):
