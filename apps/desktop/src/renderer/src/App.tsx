@@ -1085,16 +1085,26 @@ export function App() {
       workspaceNotify.current()
     }
   }
-  function requireFixtureContext(projectId: string, generation: number) {
+  function requireFixtureContext(
+    projectId: string,
+    generation: number,
+    allowSuccessorGeneration = false,
+    expectedEpoch = connectionEpoch.current,
+  ) {
     const view = readyWorkspace.current
+    const generationMatches = allowSuccessorGeneration
+      ? view?.generation !== undefined && view.generation >= generation
+      : view?.generation === generation
     if (
       documentLeaving.current ||
       uncertain.current ||
       frozen.current ||
       management?.unresolved ||
       checkpointCtl?.unresolved ||
-      view?.generation !== generation ||
-      view.project?.projectId !== projectId
+      !generationMatches ||
+      connectionEpoch.current !== expectedEpoch ||
+      view?.project?.projectId !== projectId ||
+      current.current?.project?.projectId !== projectId
     )
       throw new Error('PERMISSION_DENIED')
   }
@@ -1133,22 +1143,26 @@ export function App() {
     })
   }
   function commitTaskFixture(proposal: FixtureProposal) {
+    const epoch = connectionEpoch.current
     const bridge = window.ontolearn
     if (!bridge) return
     void runFixtureAction(proposal.taskId, async () => {
       const projectId = proposal.diff.preview.projectId
-      const requireCurrent = () => requireFixtureContext(projectId, proposal.generation)
+      const requireCurrent = () =>
+        requireFixtureContext(projectId, proposal.generation, false, epoch)
+      const requirePostCommitCurrent = () =>
+        requireFixtureContext(projectId, proposal.generation, true, epoch)
       const job = await commitLearningTaskFixture(
         bridge,
         proposal.diff,
         proposal.operationId,
         requireCurrent,
       )
-      requireCurrent()
+      requirePostCommitCurrent()
       setFixtureProposal(undefined)
       if (job.state !== 'succeeded') throw new Error(job.error?.code ?? job.state)
       const read = await bridge.readProject({ editor: 'quality' })
-      requireCurrent()
+      requirePostCommitCurrent()
       if (!read.ok) throw new Error(read.error.code)
       if (read.data.projectId !== projectId) throw new Error('PERMISSION_DENIED')
       setQualityDomainSnapshot({
@@ -1157,7 +1171,7 @@ export function App() {
         revision: read.data.domain.projectRevision,
       })
       await learningCtl?.selectAndRefresh(projectId)
-      requireCurrent()
+      requirePostCommitCurrent()
       reportFixtureStatus(proposal.taskId, '本关初始数据已载入。')
     })
   }

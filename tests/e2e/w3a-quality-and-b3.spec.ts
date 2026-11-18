@@ -43,6 +43,16 @@ async function projectId(page: Page) {
   return active.projectId
 }
 
+async function selectedVersionNumber(page: Page) {
+  const version = page.getByTestId('selected-project-version')
+  await expect(version).toHaveText(/当前项目版本 (\d+)/)
+  return Number((await version.textContent())!.match(/当前项目版本 (\d+)/)![1])
+}
+
+async function awaitProjectVersion(page: Page, expected: number) {
+  await expect(page.getByTestId('selected-project-version')).toHaveText('当前项目版本 ' + expected)
+}
+
 async function startExample(page: Page) {
   await page.getByTestId('learning-start-example').click()
   await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
@@ -108,10 +118,12 @@ async function saveQualityDefinition(panel: Locator, id: string) {
   const confirm = button(panel, '确认并提交')
   await expect(confirm).toBeEnabled()
   await expect(panel.locator('pre').filter({ hasText: id })).toBeVisible()
+  const nextVersion = (await selectedVersionNumber(panel.page())) + 1
   await confirm.click()
   await expect(panel.getByText('定义已提交。', { exact: true })).toBeVisible()
   await expect(confirm).toHaveCount(0)
   await expect(panel.getByTestId('quality-btn-run-check')).toBeEnabled()
+  await awaitProjectVersion(panel.page(), nextVersion)
 }
 
 async function addRequiredConstraint(panel: Locator, id: string, path: string) {
@@ -232,6 +244,7 @@ async function commitOntology(panel: Locator, expectedRevision: number) {
   }
   await expect(accepted).toContainText('当前已读版本 ' + expectedRevision + '。')
   await expect(pending).toHaveCount(0)
+  await awaitProjectVersion(panel.page(), expectedRevision)
 }
 
 async function addFact(panel: Locator, subject: string, predicate: string, object: string) {
@@ -330,16 +343,25 @@ async function saveDerivedQuery(panel: Locator) {
   await expect(diff.locator('pre')).toContainText(derivedQueryId)
   await expect(diff.locator('pre')).toContainText('asserted+derived')
   await diff.getByLabel('我已核对完整差异，确认提交此版本').check()
+  const nextVersion = (await selectedVersionNumber(panel.page())) + 1
   await button(diff, '明确确认并提交真实任务').click()
   await expect(queryTask(panel)).toContainText('：succeeded；')
   await refreshQuery(panel).click()
   await expect(queryStatus(panel)).toHaveText(
     '真实提交终态、原operation、历史与当前定义均已核对；可执行受管查询。',
   )
+  await awaitProjectVersion(panel.page(), nextVersion)
 }
 
 async function loadQuery(panel: Locator, id: string) {
-  await panel.getByRole('combobox', { name: '已提交查询', exact: true }).selectOption(id)
+  const select = panel.getByRole('combobox', { name: '已提交查询', exact: true })
+  if ((await select.locator(`option[value="${id}"]`).count()) === 0) {
+    await button(panel, '读取项目与持久工作草稿').click()
+    await expect(queryStatus(panel)).toHaveText(
+      '项目与持久工作草稿已读回；工作草稿不代表正式查询定义。',
+    )
+  }
+  await select.selectOption(id)
   const consent = panel.getByRole('checkbox', {
     name: '我已保留当前编辑，允许重新载入或新建替换它',
     exact: true,
@@ -408,9 +430,11 @@ async function loadTaskFixture(page: Page) {
   const mentor = wizard(page)
   await mentor.getByTestId('learning-load-task-fixture').click()
   await expect(page.getByTestId('learning-task-fixture-preview')).toBeVisible()
+  const nextVersion = (await selectedVersionNumber(page)) + 1
   await page.getByTestId('learning-confirm-task-fixture').click()
   await expect(page.getByTestId('learning-task-fixture-status')).toHaveText('本关初始数据已载入。')
   await expect(page.getByTestId('learning-task-fixture-preview')).toHaveCount(0)
+  await awaitProjectVersion(page, nextVersion)
   return projectId(page)
 }
 

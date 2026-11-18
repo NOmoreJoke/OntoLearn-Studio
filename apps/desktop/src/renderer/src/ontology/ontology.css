@@ -31,12 +31,19 @@
   grid-template-columns: minmax(0, 1.2fr) minmax(300px, 1fr);
   gap: 32px;
 }
+.ontology-workbench > * {
+  min-width: 0;
+}
+.workspace-split[data-mentor-open='true'] .ontology-workbench {
+  grid-template-columns: minmax(0, 1fr);
+}
 .ontology-page nav {
   display: flex;
   gap: 8px;
   margin: 20px 0;
 }
 .ontology-page button {
+  min-width: 0;
   font: inherit;
   color: inherit;
   padding: 9px 12px;

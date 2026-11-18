@@ -625,7 +625,6 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     }
     const accepted = await request('job.create', params)
     if (!matches(accepted)) throw invalid()
-    void this.tasks.subscribeJob(accepted.jobId).catch(() => {})
     const deadline = performance.now() + totalMs
     let interval = 100
     let latest = accepted
