@@ -18,6 +18,8 @@ GLOSSARY_VERSION = "glossary-2"
 CHECKS_VERSION = "learning-checks-2"
 
 ONTOLOGY_MODEL_CHECK = "ontology-model"
+LX01_CHECK = "LX-01"
+LX01_EXTRA_ASSERTED_FEEDBACK = "这样步骤 4 就没有可区分的推导了"
 RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 OWL_CLASS = "<http://www.w3.org/2002/07/owl#Class>"
 RDFS_CLASS = "<http://www.w3.org/2000/01/rdf-schema#Class>"
@@ -236,6 +238,40 @@ def compare_ontology_model(payload: object, policy: dict) -> list[str]:
     return reasons
 
 
+def compare_lx01(payload: object, expected: dict) -> list[str]:
+    """Compare the LX-01 course-extension answer against the frozen expectation.
+
+    The owner evidence carries the learner's selectedOrigins together with the
+    origins actually derivable from the current persisted project state and any
+    person-type assertion that destroys the distinguishable derivation. The
+    answer never travels through learningObservation.
+    """
+    reasons: list[str] = []
+    if not isinstance(payload, dict) or set(payload) != {
+        "selectedOrigins",
+        "actualOrigins",
+        "extraAssertedPersons",
+    }:
+        return [
+            "LX-01 实际结果结构不合法：需要 selectedOrigins、actualOrigins 与 extraAssertedPersons"
+        ]
+    wanted = expected.get("selectedOrigins")
+    if not isinstance(wanted, dict):
+        return ["LX-01 固定预期缺少 selectedOrigins"]
+    if payload["extraAssertedPersons"]:
+        reasons.append(
+            LX01_EXTRA_ASSERTED_FEEDBACK + "；请撤销该 ChangeSet 或新建 attempt 后重做步骤 3–4"
+        )
+    if payload["actualOrigins"] != wanted:
+        reasons.append(
+            "当前项目推导/断言来源与 LX-01 完成状态不一致："
+            "请确认步骤 3 的修复断言恰好为两条固定三元组后重跑推理"
+        )
+    if payload["selectedOrigins"] != wanted:
+        reasons.append("selectedOrigins 与固定预期不同，且必须与真实工具给出的依据一致")
+    return reasons
+
+
 class LearningService:
     def __init__(self, root: Path, tools: ApprovedTools | None = None):
         verify(root)
@@ -287,12 +323,22 @@ class LearningService:
             raise ValueError("Checks version must be " + CHECKS_VERSION)
         extensions_path = root / "content/learning/extensions.json"
         self.course_extension_version = None
+        self.extensions: dict[str, dict] = {}
         if extensions_path.exists():
             extensions = read_json(extensions_path)
             version = extensions.get("courseExtensionVersion")
             if not isinstance(version, str) or not version.strip():
                 raise ValueError("Course extensions need a non-empty courseExtensionVersion")
             self.course_extension_version = version
+            cases = extensions.get("extensions", [])
+            if not isinstance(cases, list):
+                raise ValueError("Course extensions must be a list of extension cases")
+            for case in cases:
+                if not isinstance(case, dict) or not isinstance(case.get("id"), str):
+                    raise ValueError("Course extension case needs an id")
+                if "learningObservation" in case:
+                    raise ValueError("Course extension case must not carry learningObservation")
+                self.extensions[case["id"]] = case
         self.tools = tools
 
     def explain_term(self, term: str) -> dict:
@@ -414,6 +460,16 @@ class LearningService:
                 if not isinstance(policy, dict):
                     raise ValueError("ontology-model requires a frozen comparison policy")
                 reasons = compare_ontology_model(evidence.payload, policy)
+                if reasons:
+                    repairs.append(check_id + ": " + "；".join(reasons))
+                    status = "needs-repair"
+                    continue
+                completed.append(check_id)
+                continue
+            if check_id == LX01_CHECK:
+                if check_id not in self.extensions:
+                    raise ValueError("LX-01 requires the registered course extension case")
+                reasons = compare_lx01(evidence.payload, expected)
                 if reasons:
                     repairs.append(check_id + ": " + "；".join(reasons))
                     status = "needs-repair"

@@ -21501,6 +21501,17 @@
         "includeInferred": false
       }
     },
+    "LX-01": {
+      "toolOwner": "T05",
+      "extensionRef": "LX-01",
+      "expected": {
+        "selectedOrigins": {
+          "urn:ontolearn:learning:person/L01": "asserted",
+          "urn:ontolearn:learning:person/L02": "derived"
+        }
+      },
+      "note": "课程扩展用例：作答以 selectedOrigins 输入，结构与 transfer-classify 相同，不走 learningObservation；完整预期与失败路径见 content/learning/extensions.json。"
+    },
     "ontology-model": {
       "toolOwner": "T02",
       "comparisonPolicy": {

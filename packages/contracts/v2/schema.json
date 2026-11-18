@@ -5336,7 +5336,7 @@
             "$ref": "#/$defs/name"
           },
           "minItems": 0,
-          "maxItems": 50
+          "maxItems": 64
         },
         "limits": {
           "$ref": "#/$defs/limits"
@@ -7376,6 +7376,56 @@
             },
             "params": {
               "$ref": "#/$defs/params_project.learning.task.check"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.quality.read"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.quality.read"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.quality.prepare"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.quality.prepare"
             }
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
@@ -10456,6 +10506,134 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.quality.read"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.quality.read"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.quality.read"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.quality.prepare"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.quality.prepare"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.quality.prepare"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
         }
       ]
     },
@@ -10900,6 +11078,12 @@
         },
         {
           "$ref": "#/$defs/changeSetQueryDefinition"
+        },
+        {
+          "$ref": "#/$defs/changeSetRuleDefinition"
+        },
+        {
+          "$ref": "#/$defs/changeSetConstraintDefinition"
         }
       ]
     },
@@ -10907,7 +11091,7 @@
       "type": "object",
       "properties": {
         "layer": {
-          "enum": ["ontology", "query"]
+          "enum": ["ontology", "query", "rule", "constraint"]
         },
         "id": {
           "$ref": "#/$defs/name"
@@ -12930,6 +13114,513 @@
         },
         "value": {
           "$ref": "#/$defs/changeSetQueryValue"
+        }
+      },
+      "required": ["layer", "id", "value"],
+      "additionalProperties": false
+    },
+    "quality.fr505Pattern": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "type"
+            },
+            "subject": {
+              "$ref": "#/$defs/quality.term"
+            },
+            "class": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "required": ["kind", "subject", "class"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "property"
+            },
+            "subject": {
+              "$ref": "#/$defs/quality.term"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "object": {
+              "$ref": "#/$defs/quality.term"
+            }
+          },
+          "required": ["kind", "subject", "path", "object"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "compare"
+            },
+            "left": {
+              "$ref": "#/$defs/quality.term"
+            },
+            "operator": {
+              "enum": ["eq", "ne", "lt", "le", "gt", "ge"]
+            },
+            "right": {
+              "$ref": "#/$defs/quality.term"
+            }
+          },
+          "required": ["kind", "left", "operator", "right"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "quality.fr505Triple": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 65536
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "quality.term": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    },
+    "changeSetRuleValue": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "kind": {
+          "const": "rule"
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Pattern"
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "conclusions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Pattern"
+          },
+          "minItems": 1,
+          "maxItems": 32
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "id",
+        "revision",
+        "label",
+        "enabled",
+        "conditions",
+        "conclusions"
+      ],
+      "additionalProperties": false
+    },
+    "changeSetRuleDefinition": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "const": "rule"
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        },
+        "value": {
+          "$ref": "#/$defs/changeSetRuleValue"
+        }
+      },
+      "required": ["layer", "id", "value"],
+      "additionalProperties": false
+    },
+    "changeSetConstraintValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "kind": {
+              "const": "constraint"
+            },
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "targetClass": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "template": {
+              "const": "required"
+            },
+            "parameters": {
+              "const": {}
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "kind",
+            "id",
+            "revision",
+            "label",
+            "enabled",
+            "targetClass",
+            "path",
+            "template",
+            "parameters"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "kind": {
+              "const": "constraint"
+            },
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "targetClass": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "template": {
+              "const": "datatype"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "datatype": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              },
+              "required": ["datatype"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "kind",
+            "id",
+            "revision",
+            "label",
+            "enabled",
+            "targetClass",
+            "path",
+            "template",
+            "parameters"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "kind": {
+              "const": "constraint"
+            },
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "targetClass": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "template": {
+              "const": "maxCount"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "maxCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["maxCount"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "kind",
+            "id",
+            "revision",
+            "label",
+            "enabled",
+            "targetClass",
+            "path",
+            "template",
+            "parameters"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "kind": {
+              "const": "constraint"
+            },
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "targetClass": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "template": {
+              "const": "allowedValues"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 65536
+                  },
+                  "minItems": 1,
+                  "maxItems": 128
+                }
+              },
+              "required": ["values"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "kind",
+            "id",
+            "revision",
+            "label",
+            "enabled",
+            "targetClass",
+            "path",
+            "template",
+            "parameters"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "kind": {
+              "const": "constraint"
+            },
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "targetClass": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "template": {
+              "const": "numericRange"
+            },
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "minInclusive": {
+                  "oneOf": [
+                    {
+                      "const": null
+                    },
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  ]
+                },
+                "maxInclusive": {
+                  "oneOf": [
+                    {
+                      "const": null
+                    },
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  ]
+                }
+              },
+              "required": ["minInclusive", "maxInclusive"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "kind",
+            "id",
+            "revision",
+            "label",
+            "enabled",
+            "targetClass",
+            "path",
+            "template",
+            "parameters"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "changeSetConstraintDefinition": {
+      "type": "object",
+      "properties": {
+        "layer": {
+          "const": "constraint"
+        },
+        "id": {
+          "$ref": "#/$defs/name"
+        },
+        "value": {
+          "$ref": "#/$defs/changeSetConstraintValue"
         }
       },
       "required": ["layer", "id", "value"],
@@ -16036,6 +16727,714 @@
       ],
       "additionalProperties": false
     },
+    "quality.staleReason": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "dependency": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "before": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "after": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["code", "dependency", "before", "after"],
+      "additionalProperties": false
+    },
+    "quality.ruleView": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "format": {
+              "const": "fr505"
+            },
+            "label": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 4096
+                }
+              ]
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/quality.fr505Pattern"
+              },
+              "minItems": 0,
+              "maxItems": 32
+            },
+            "conclusions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/quality.fr505Pattern"
+              },
+              "minItems": 0,
+              "maxItems": 32
+            }
+          },
+          "required": ["id", "format", "label", "enabled", "conditions", "conclusions"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "format": {
+              "const": "legacy"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "when": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/quality.fr505Triple"
+              },
+              "minItems": 0,
+              "maxItems": 16
+            },
+            "then": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "$ref": "#/$defs/quality.fr505Triple"
+                }
+              ]
+            }
+          },
+          "required": ["id", "format", "enabled", "when", "then"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "quality.constraintView": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "format": {
+              "const": "fr504"
+            },
+            "label": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 4096
+                }
+              ]
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "targetClass": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 4096
+                }
+              ]
+            },
+            "path": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 4096
+                }
+              ]
+            },
+            "template": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 4096
+                }
+              ]
+            },
+            "parameters": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "id",
+            "format",
+            "label",
+            "enabled",
+            "targetClass",
+            "path",
+            "template",
+            "parameters"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/name"
+            },
+            "format": {
+              "const": "turtle"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "turtle": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 65536
+                }
+              ]
+            }
+          },
+          "required": ["id", "format", "enabled", "turtle"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "quality.finding": {
+      "type": "object",
+      "properties": {
+        "tier": {
+          "enum": ["violation", "warning", "info"]
+        },
+        "focusNode": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "string",
+              "maxLength": 65536
+            }
+          ]
+        },
+        "path": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "string",
+              "maxLength": 65536
+            }
+          ]
+        },
+        "constraint": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "string",
+              "maxLength": 65536
+            }
+          ]
+        },
+        "sourceShape": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "string",
+              "maxLength": 65536
+            }
+          ]
+        },
+        "value": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "string",
+              "maxLength": 65536
+            }
+          ]
+        },
+        "targets": {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 65536
+                }
+              ]
+            },
+            "predicate": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 65536
+                }
+              ]
+            },
+            "object": {
+              "oneOf": [
+                {
+                  "const": null
+                },
+                {
+                  "type": "string",
+                  "maxLength": 65536
+                }
+              ]
+            }
+          },
+          "required": ["subject", "predicate", "object"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["tier", "focusNode", "path", "constraint", "sourceShape", "value", "targets"],
+      "additionalProperties": false
+    },
+    "quality.derivation": {
+      "type": "object",
+      "properties": {
+        "executionSemanticsVersion": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "string",
+              "maxLength": 128
+            }
+          ]
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "rdfs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "ruleTraces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rule": {
+                "oneOf": [
+                  {
+                    "const": null
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 128
+                  }
+                ]
+              },
+              "output": {
+                "oneOf": [
+                  {
+                    "const": null
+                  },
+                  {
+                    "$ref": "#/$defs/quality.fr505Triple"
+                  }
+                ]
+              },
+              "inputs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/quality.fr505Triple"
+                },
+                "minItems": 0,
+                "maxItems": 128
+              }
+            },
+            "required": ["rule", "output", "inputs"],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "rdfsTraces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "output": {
+                "$ref": "#/$defs/quality.fr505Triple"
+              },
+              "basis": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/quality.fr505Triple"
+                },
+                "minItems": 0,
+                "maxItems": 128
+              }
+            },
+            "required": ["output", "basis"],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "executionSemanticsVersion",
+        "rules",
+        "rdfs",
+        "ruleTraces",
+        "rdfsTraces",
+        "warnings"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.quality.read": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["projectId"],
+      "additionalProperties": false
+    },
+    "result_project.quality.read": {
+      "type": "object",
+      "properties": {
+        "qualityReadVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.ruleView"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.constraintView"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "reasoning": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "object",
+              "properties": {
+                "resultId": {
+                  "$ref": "#/$defs/id"
+                },
+                "jobId": {
+                  "$ref": "#/$defs/id"
+                },
+                "state": {
+                  "enum": ["current", "stale", "historical"]
+                },
+                "staleReasons": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/quality.staleReason"
+                  },
+                  "minItems": 0,
+                  "maxItems": 128
+                },
+                "inputSnapshotId": {
+                  "$ref": "#/$defs/hash"
+                },
+                "scope": {
+                  "$ref": "#/$defs/scope"
+                },
+                "definitionId": {
+                  "$ref": "#/$defs/name"
+                },
+                "derivation": {
+                  "$ref": "#/$defs/quality.derivation"
+                }
+              },
+              "required": [
+                "resultId",
+                "jobId",
+                "state",
+                "staleReasons",
+                "inputSnapshotId",
+                "scope",
+                "definitionId"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "validation": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "object",
+              "properties": {
+                "resultId": {
+                  "$ref": "#/$defs/id"
+                },
+                "jobId": {
+                  "$ref": "#/$defs/id"
+                },
+                "state": {
+                  "enum": ["current", "stale", "historical"]
+                },
+                "staleReasons": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/quality.staleReason"
+                  },
+                  "minItems": 0,
+                  "maxItems": 128
+                },
+                "inputSnapshotId": {
+                  "$ref": "#/$defs/hash"
+                },
+                "scope": {
+                  "$ref": "#/$defs/scope"
+                },
+                "definitionId": {
+                  "$ref": "#/$defs/name"
+                },
+                "conforms": {
+                  "oneOf": [
+                    {
+                      "const": null
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                },
+                "findings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/quality.finding"
+                  },
+                  "minItems": 0,
+                  "maxItems": 10000
+                }
+              },
+              "required": [
+                "resultId",
+                "jobId",
+                "state",
+                "staleReasons",
+                "inputSnapshotId",
+                "scope",
+                "definitionId",
+                "conforms",
+                "findings"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": [
+        "qualityReadVersion",
+        "projectId",
+        "rules",
+        "constraints",
+        "reasoning",
+        "validation"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.quality.prepare": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "selection": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "current"
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "historical"
+                },
+                "snapshotId": {
+                  "$ref": "#/$defs/hash"
+                }
+              },
+              "required": ["kind", "snapshotId"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "validationScope": {
+          "enum": ["asserted", "asserted+derived"]
+        },
+        "constraintId": {
+          "$ref": "#/$defs/name"
+        }
+      },
+      "required": ["projectId", "operationId", "selection"],
+      "additionalProperties": false
+    },
+    "result_project.quality.prepare": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "chain": {
+          "type": "array",
+          "items": {
+            "enum": ["reasoning.execute", "validation.execute"]
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "reasoningInput": {
+          "$ref": "#/$defs/jobInput"
+        },
+        "validationInput": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/jobInput"
+            }
+          ]
+        },
+        "validationInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jobInput"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "executionIdentity": {
+          "type": "object",
+          "properties": {
+            "implementation": {
+              "$ref": "#/$defs/implementation"
+            },
+            "limits": {
+              "$ref": "#/$defs/limits"
+            },
+            "registryHash": {
+              "$ref": "#/$defs/hash"
+            }
+          },
+          "required": ["implementation", "limits", "registryHash"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "projectId",
+        "operationId",
+        "chain",
+        "reasoningInput",
+        "validationInput",
+        "validationInputs",
+        "executionIdentity"
+      ],
+      "additionalProperties": false
+    },
     "params_project.learning.task.check": {
       "type": "object",
       "properties": {
@@ -16049,6 +17448,29 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "selectedOrigins": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "maxProperties": 8,
+              "additionalProperties": {
+                "enum": ["asserted", "derived"]
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "enum": ["asserted", "derived"]
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
         }
       },
       "required": ["projectId", "operationId", "taskId"],

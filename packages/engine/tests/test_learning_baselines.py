@@ -300,7 +300,7 @@ def test_learning_content_versions_are_frozen_without_touching_appendix_g():
     assert result["courseVersion"] == "offline-course-2"
     assert result["glossaryVersion"] == "glossary-2"
     assert result["checksVersion"] == "learning-checks-2"
-    assert result["courseExtensionVersion"] is None
+    assert result["courseExtensionVersion"] == "ext-1"
     assert len(result["casesPrepared"]) == 50
 
 
@@ -427,7 +427,15 @@ def test_checks_version_and_closed_whitelist_policy_are_enforced(tmp_path):
         "urn:ontolearn:learning:assignedTo",
         "urn:ontolearn:learning:person/L01",
     ]
-    assert "LX-01" not in checks["checks"]
+    assert "LX-01" in checks["checks"]
+    assert checks["checks"]["LX-01"]["expected"]["selectedOrigins"] == {
+        "urn:ontolearn:learning:person/L01": "asserted",
+        "urn:ontolearn:learning:person/L02": "derived",
+    }
+    # The quality task carries the extension check on the live course content.
+    course = json.loads((tmp_path / "content/learning/course.json").read_text(encoding="utf-8"))
+    quality = next(task for task in course["tasks"] if task["id"] == "quality")
+    assert quality["checks"] == ["V-01", "R-01", "R-05", "LX-01"]
 
     checks["checks"]["ontology-model"]["expected"]["removedTriples"] = [
         {
@@ -444,6 +452,26 @@ def test_checks_version_and_closed_whitelist_policy_are_enforced(tmp_path):
 
 def test_course_extensions_are_optional_but_must_carry_a_version(tmp_path):
     _copy_tree(tmp_path)
+    # The shipped course carries the LX-01 extension; strip it from this
+    # projected copy so the absent-extensions fallback stays tested cleanly
+    # in tmp_path (course checks, checks.json and the manifest file set).
+    (tmp_path / "content/learning/extensions.json").unlink()
+    course_path = tmp_path / "content/learning/course.json"
+    course = json.loads(course_path.read_text(encoding="utf-8"))
+    for task in course["tasks"]:
+        if task["id"] == "quality":
+            task["checks"] = [check for check in task["checks"] if check != "LX-01"]
+    _write_json(course_path, course)
+    _refresh_digest(tmp_path, "content/learning/course.json")
+    checks_path = tmp_path / "content/learning/checks.json"
+    checks = json.loads(checks_path.read_text(encoding="utf-8"))
+    checks["checks"].pop("LX-01", None)
+    _write_json(checks_path, checks)
+    _refresh_digest(tmp_path, "content/learning/checks.json")
+    manifest_path = tmp_path / "tests/fixtures/product-baselines/manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"].pop("content/learning/extensions.json", None)
+    _write_json(manifest_path, manifest)
     assert not (tmp_path / "content/learning/extensions.json").exists()
     assert verify(tmp_path)["courseExtensionVersion"] is None
     extensions_path = tmp_path / "content/learning/extensions.json"
@@ -468,4 +496,4 @@ def test_appendix_g_fixtures_and_csv_are_not_modified_by_the_course_revision():
     assert len(coverage["entries"]) == 50
     cases = read_json(ROOT / "tests/fixtures/product-baselines/cases.json")["cases"]
     assert len(cases) == 50
-    assert not (ROOT / "content/learning/extensions.json").exists()
+    assert (ROOT / "content/learning/extensions.json").is_file()

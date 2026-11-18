@@ -21,6 +21,10 @@ SEMANTIC_CAPABILITIES = frozenset({"query.execute", "reasoning.execute", "valida
 MAX_OUTPUT_BYTES = 8_388_608
 MAX_ROWS = 10_000
 MAX_CELL = 8192
+# Profile-result fields that hold audited typed records instead of plain JSON.
+_PROFILE_TYPED_FIELDS = frozenset(
+    {"catalog", "definitions", "firingGroups", "mechanismBatches", "termSources"}
+)
 
 
 class SemanticRequestFault(ValueError):
@@ -193,14 +197,20 @@ def _request(snapshot, capability, input_, parameters, selected):
                 if any(type(term) is not str for term in triple.values()):
                     _fail()
         if layer == "rule" and (capability == "reasoning.execute" or scope == "asserted+derived"):
-            _shape(value, {"enabled", "when", "then"}, {"references"})
-            if type(value["enabled"]) is not bool or type(value["when"]) is not list:
-                _fail()
-            for triple in [*value["when"], value["then"]]:
-                if type(triple) is not list or len(triple) != 3:
+            if _is_formal_rule(value):
+                # FR-505 controlled editor rules: strict complete schema, no
+                # extra optional fields beyond the frozen extension language.
+                _shape(value, _FORMAL_RULE_KEYS, ())
+                _validate_formal_rule(value)
+            else:
+                _shape(value, {"enabled", "when", "then"}, {"references"})
+                if type(value["enabled"]) is not bool or type(value["when"]) is not list:
                     _fail()
-                if any(type(term) is not str for term in triple):
-                    _fail()
+                for triple in [*value["when"], value["then"]]:
+                    if type(triple) is not list or len(triple) != 3:
+                        _fail()
+                    if any(type(term) is not str for term in triple):
+                        _fail()
     layer = {"query.execute": "query", "validation.execute": "constraint"}.get(capability)
     if layer:
         definition = definitions.get((layer, input_.get("definitionId")))
@@ -210,6 +220,15 @@ def _request(snapshot, capability, input_, parameters, selected):
                 _fail()
             if "descriptor" in definition:
                 _query_descriptor(definition)
+        elif isinstance(definition, dict) and definition.get("kind") == "constraint":
+            # Formal FR-504 editor constraints use the complete controlled
+            # schema; a rejection here stays a request fault, never a leak.
+            from ontolearn_engine.quality.definitions import DefinitionError, validate_definition
+
+            try:
+                validate_definition(definition)
+            except DefinitionError:
+                _fail()
         else:
             _shape(definition, {"turtle", "enabled"}, {"references"})
             if type(definition["turtle"]) is not str or type(definition["enabled"]) is not bool:
@@ -333,7 +352,7 @@ def _rules(definitions):
     def pattern(values):
         return tuple(
             Variable(value[1:])
-            if re.fullmatch(r"\?[A-Za-z_][A-Za-z_0-9]*", value)
+            if re.fullmatch(r"\?[A-Za-z_][A-Za-z0-9_]*", value)
             else _term(value)
             for value in values
         )
@@ -341,11 +360,163 @@ def _rules(definitions):
     output = tuple(
         semantic.Rule(identity, tuple(pattern(p) for p in value["when"]), pattern(value["then"]))
         for (layer, identity), value in sorted(definitions.items())
-        if layer == "rule" and value["enabled"]
+        if layer == "rule" and value["enabled"] and not _is_formal_rule(value)
     )
     for rule in output:
         semantic._rule(rule)
     return output
+
+
+# FR-505 controlled rule language (quality.definitions). A formal rule is a
+# complete-schema editor definition; legacy saved rules keep {"enabled","when",
+# "then"} and keep producing exact i05-finite-6 results.
+_FORMAL_RULE_KEYS = {
+    "schemaVersion",
+    "kind",
+    "id",
+    "revision",
+    "label",
+    "enabled",
+    "conditions",
+    "conclusions",
+}
+_FORMAL_VARIABLE = re.compile(r"\?[A-Za-z][A-Za-z0-9_]{0,63}\Z")
+
+
+def _is_formal_rule(value):
+    return isinstance(value, dict) and value.get("kind") == "rule"
+
+
+def _validate_formal_rule(value):
+    if (
+        type(value["schemaVersion"]) is not int
+        or value["schemaVersion"] != 1
+        or type(value["enabled"]) is not bool
+        or type(value["id"]) is not str
+        or not value["id"]
+        or type(value["conditions"]) is not list
+        or type(value["conclusions"]) is not list
+        or not value["conditions"]
+        or not value["conclusions"]
+    ):
+        _fail()
+    for group in (value["conditions"], value["conclusions"]):
+        for pattern in group:
+            if type(pattern) is not dict:
+                _fail()
+            if pattern.get("kind") == "compare":
+                if set(pattern) != {"kind", "left", "operator", "right"}:
+                    _fail()
+                if pattern["operator"] not in {"eq", "ne", "lt", "le", "gt", "ge"}:
+                    _fail()
+                for key in ("left", "right"):
+                    if type(pattern[key]) is not str or not pattern[key]:
+                        _fail()
+            else:
+                if pattern.get("kind") == "type":
+                    if set(pattern) != {"kind", "subject", "class"}:
+                        _fail()
+                    if type(pattern["subject"]) is not str or not pattern["subject"]:
+                        _fail()
+                    if type(pattern["class"]) is not str or not pattern["class"]:
+                        _fail()
+                elif pattern.get("kind") == "property":
+                    if set(pattern) != {"kind", "subject", "path", "object"}:
+                        _fail()
+                    for key in ("subject", "path", "object"):
+                        if type(pattern[key]) is not str or not pattern[key]:
+                            _fail()
+                else:
+                    _fail()
+
+
+def _spec_term(value):
+    """One FR-505 term: a bounded variable, an absolute IRI or one N3 value."""
+    from ontolearn_engine.quality.rule_firing import Variable
+    from ontolearn_engine.rdf_snapshot import TermInputError, iri
+    from ontolearn_engine.rdf_snapshot import term as store_term
+    from ontolearn_engine.semantic_turtle import _term_input
+
+    if _FORMAL_VARIABLE.fullmatch(value):
+        return Variable(value)
+    try:
+        if value.startswith("<") or value.startswith('"'):
+            # N3 spelling: accept only the exact canonical Store term form.
+            parsed = store_term(value)
+            if parsed.n3() != value:
+                raise ValueError
+        else:
+            parsed = iri(value)
+        return _term_input(parsed)
+    except (ValueError, TypeError, TermInputError):
+        _fail()
+
+
+def _formal_pattern(pattern):
+    from ontolearn_engine.quality.rule_firing import Triple
+
+    if pattern["kind"] == "type":
+        return Triple(
+            _spec_term(pattern["subject"]),
+            _spec_term("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            _spec_term(pattern["class"]),
+        )
+    return Triple(
+        _spec_term(pattern["subject"]),
+        _spec_term(pattern["path"]),
+        _spec_term(pattern["object"]),
+    )
+
+
+def _formal_specs(definitions):
+    """Compile every enabled rule definition into audited profile RuleSpecs."""
+    from ontolearn_engine.quality.rule_firing import Comparison, RuleSpec
+
+    specs = []
+    has_formal = False
+    for (layer, identity), value in sorted(definitions.items()):
+        if layer != "rule" or not value["enabled"]:
+            continue
+        if _is_formal_rule(value):
+            has_formal = True
+            if value["id"] != identity:
+                # The saved definition id and the FR-505 language id must agree;
+                # two identities for one rule would blur provenance.
+                _fail()
+            when = []
+            comparisons = []
+            for item in value["conditions"]:
+                if item["kind"] == "compare":
+                    comparisons.append(
+                        Comparison(
+                            _spec_term(item["left"]), item["operator"], _spec_term(item["right"])
+                        )
+                    )
+                else:
+                    when.append(_formal_pattern(item))
+            heads = [_formal_pattern(item) for item in value["conclusions"]]
+            specs.append(RuleSpec(value["id"], tuple(when), tuple(comparisons), tuple(heads)))
+        else:
+            specs.append(_legacy_spec(identity, value))
+    return tuple(specs), has_formal
+
+
+def _legacy_spec(identity, value):
+    """One legacy saved rule, expressed in the audited profile language."""
+    from ontolearn_engine.quality.rule_firing import RuleSpec, Triple
+
+    def term(value):
+        return _spec_term(value)
+
+    def triple(values):
+        return Triple(term(values[0]), term(values[1]), term(values[2]))
+
+    return RuleSpec(
+        identity,
+        tuple(triple(p) for p in value["when"]),
+        (),
+        (triple(value["then"]),),
+    )
 
 
 def _rows(payload):
@@ -422,9 +593,25 @@ def execute_request(request, *, error_catalog, error_schema):
             if capability == "reasoning.execute" or input_["scope"] == "asserted+derived":
                 for (layer, _), definition in definitions.items():
                     if layer == "rule" and definition["enabled"]:
-                        for triple in [*definition["when"], definition["then"]]:
-                            for value in triple:
-                                semantic._text(value)
+                        if _is_formal_rule(definition):
+                            for group in (definition["conditions"], definition["conclusions"]):
+                                for pattern in group:
+                                    for value in (
+                                        [pattern["subject"], pattern["class"]]
+                                        if pattern["kind"] == "type"
+                                        else [
+                                            pattern["subject"],
+                                            pattern["path"],
+                                            pattern["object"],
+                                        ]
+                                        if pattern["kind"] == "property"
+                                        else [pattern["left"], pattern["right"]]
+                                    ):
+                                        semantic._text(value)
+                        else:
+                            for triple in [*definition["when"], definition["then"]]:
+                                for value in triple:
+                                    semantic._text(value)
             facts = _graph(snapshot["state"]["facts"])
             ontology = _graph(
                 [
@@ -458,12 +645,33 @@ def execute_request(request, *, error_catalog, error_schema):
                 "selectedResultIds": list(input_["derivedResultIds"]),
             }
             if capability == "reasoning.execute":
-                result = semantic.reason(facts + ontology, rules)
+                specs, has_formal = _formal_specs(definitions)
+                if has_formal:
+                    # FR-505 comparison/multi-conclusion rules (plus any legacy
+                    # rules in the same project) evaluate through the audited
+                    # rule-profile engine; save order cannot change the result.
+                    from ontolearn_engine.quality.rule_profile import PROFILE
+                    from ontolearn_engine.semantic_formal import formal_source
+
+                    result = semantic.reason(facts + ontology, specs, profile=PROFILE)
+                    # The raw profile result carries audited typed records in
+                    # five fields; project exactly those into safe JSON. Derived
+                    # triples, evidence, RDFS and warnings are already plain.
+                    projection = _ProfileProjection()
+                    result = {
+                        key: projection.value(value) if key in _PROFILE_TYPED_FIELDS else value
+                        for key, value in result.items()
+                    }
+                    source_view = formal_source(facts, ontology, specs)
+                else:
+                    # Plain legacy rules keep the exact i05-finite-6 behavior.
+                    result = semantic.reason(facts + ontology, rules)
+                    source_view = _source(facts, ontology, rules)
                 payload = {
                     **common,
                     "kind": "reasoning",
                     "reasoning": result,
-                    "source": _source(facts, ontology, rules),
+                    "source": source_view,
                     "assertedFacts": sorted(semantic._key(t) for t in facts),
                     "ontology": sorted(semantic._key(t) for t in ontology),
                 }
@@ -474,14 +682,26 @@ def execute_request(request, *, error_catalog, error_schema):
                     Origin.TRUSTED_INTERNAL,
                 )
                 selected = request["selected"]
-                view = project_validation_scope(
-                    facts,
-                    ontology,
-                    include_derived=input_["scope"] == "asserted+derived",
-                    reasoning_result=selected["payload"]["reasoning"] if selected else None,
-                    reasoning_source=selected["payload"]["source"] if selected else None,
-                    rules=rules,
-                )
+                include_derived = input_["scope"] == "asserted+derived"
+                specs, has_formal = _formal_specs(definitions) if include_derived else ((), False)
+                if has_formal:
+                    # Formal FR-505 selections project through the audited
+                    # profile shape; the legacy scope verifier stays untouched
+                    # for every legacy-rule project and test.
+                    from ontolearn_engine.semantic_formal import project_formal_validation_scope
+
+                    view = project_formal_validation_scope(
+                        facts, ontology, specs=specs, selected=selected
+                    )
+                else:
+                    view = project_validation_scope(
+                        facts,
+                        ontology,
+                        include_derived=include_derived,
+                        reasoning_result=selected["payload"]["reasoning"] if selected else None,
+                        reasoning_source=selected["payload"]["source"] if selected else None,
+                        rules=rules,
+                    )
                 if capability == "query.execute":
                     producer, stage, origin = (
                         Producer.QUERY,
@@ -505,8 +725,22 @@ def execute_request(request, *, error_catalog, error_schema):
                     )
                     if not definition["enabled"]:
                         raise SemanticError("INVALID_SHAPE")
+                    if definition.get("kind") == "constraint":
+                        # Formal FR-504 template constraints compile here; the
+                        # compiled document still passes the real shape gates.
+                        from ontolearn_engine.quality.definitions import (
+                            DefinitionError,
+                            compile_constraint_turtle,
+                        )
+
+                        try:
+                            turtle_text = compile_constraint_turtle(definition)
+                        except DefinitionError:
+                            raise SemanticError("INVALID_SHAPE") from None
+                    else:
+                        turtle_text = definition["turtle"]
                     producer = Producer.TURTLE
-                    shapes = semantic.parse_turtle(definition["turtle"], shapes=True)
+                    shapes = semantic.parse_turtle(turtle_text, shapes=True)
                     producer = Producer.SHACL
                     payload = {
                         **common,

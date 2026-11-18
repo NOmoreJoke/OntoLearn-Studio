@@ -213,7 +213,7 @@ def run() -> None:
 def _execute() -> None:
     request = decode_frame(sys.stdin.buffer.readline(MAX_REQUEST_BYTES + 1).rstrip(b"\n"))
     guard = install_memory_guard(request["memoryBytes"])
-    if request["capability"] == "query.execute":
+    if request["capability"] in ("query.execute", "reasoning.execute", "validation.execute"):
         try:
             _query(request)
         finally:
@@ -426,9 +426,21 @@ def _query(header):
     if hashlib.sha256(raw).hexdigest() != header["sha256"]:
         raise ProtocolFault()
     bundle = query_decode(raw, maximum)
-    if type(bundle) is not dict or bundle.get("capability") != "query.execute":
+    if (
+        type(bundle) is not dict
+        or bundle.get("capability") != header["capability"]
+        or bundle.get("capability")
+        not in ("query.execute", "reasoning.execute", "validation.execute")
+    ):
         raise ProtocolFault()
-    if bundle.get("input", {}).get("scope") != "asserted" or bundle.get("selected") is not None:
+    scope = bundle.get("input", {}).get("scope")
+    if scope not in ("asserted", "asserted+derived"):
+        raise ProtocolFault()
+    # Only validation (and derived-scope query) may carry a selected reasoning
+    # result; plain asserted query/reasoning bundles never select one.
+    if bundle.get("selected") is not None and scope != "asserted+derived":
+        raise ProtocolFault()
+    if scope == "asserted+derived" and bundle.get("selected") is None:
         raise ProtocolFault()
     try:
         output = execute_request(

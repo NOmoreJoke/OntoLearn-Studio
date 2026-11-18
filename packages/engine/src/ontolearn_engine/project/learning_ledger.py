@@ -61,7 +61,15 @@ PAYLOAD_KEYS = {
 GUIDED_STAGE_TASK = "business-ontology"
 QUERY_TASK = "query"
 # Tasks whose checks run against real persisted tool evidence in this build.
-WIRED_TASKS = frozenset({GUIDED_STAGE_TASK, QUERY_TASK})
+WIRED_TASKS = frozenset(
+    {
+        GUIDED_STAGE_TASK,
+        QUERY_TASK,
+        "quality",
+        "transfer-repair",
+        "transfer-classify",
+    }
+)
 GUIDED_STAGE_LABEL = "完成引导阶段：业务本体建模"
 HINT_EVENT_KIND = "hint.revealed"
 
@@ -720,11 +728,36 @@ def _attempt_min_claim_rowid(store, project, internal, attempt_id, is_virgin_fir
     return 0
 
 
+def _validated_selected_origins(task_id, selected):
+    """Transient task answers ride on task.check params, never on observations.
+
+    A missing answer (None) is a legitimate "not selected yet" state for the
+    two origin tasks: it records needs-repair instead of faulting the RPC. A
+    wrong non-null type, or any answer on a non-origin task, still faults.
+    """
+    if task_id == "quality":
+        if selected is None:
+            return {}
+        if not isinstance(selected, dict) or not selected:
+            fault("INVALID_REQUEST", field="params")
+        return selected
+    if task_id == "transfer-classify":
+        if selected is None:
+            return []
+        if not isinstance(selected, list) or len(selected) != 2:
+            fault("INVALID_REQUEST", field="params")
+        return selected
+    if selected is not None:
+        fault("INVALID_REQUEST", field="params")
+    return None
+
+
 def check_task(store, project, params, host, origin):
     service = host.bare_service()
     task_id = params["taskId"]
     _require_task(service, task_id)
     operation = params["operationId"]
+    selected_origins = _validated_selected_origins(task_id, params.get("selectedOrigins"))
     with store._transaction():
         internal = store._project(project)
         if store.has_operation_claim(operation):
@@ -779,7 +812,7 @@ def check_task(store, project, params, host, origin):
                     host.baseline_triples(),
                     current["payload"]["assistance"],
                 )
-            else:
+            elif task_id == QUERY_TASK:
                 host.tools.evidence_by_check = host.query_evidences(
                     store,
                     project,
@@ -794,6 +827,23 @@ def check_task(store, project, params, host, origin):
                         was_auto_init and not had_any_task_attempt,
                     ),
                     current["payload"]["assistance"],
+                )
+            else:
+                host.tools.evidence_by_check = host.b3_evidences(
+                    store,
+                    project,
+                    internal,
+                    context,
+                    snapshot_ref,
+                    _attempt_min_claim_rowid(
+                        store,
+                        project,
+                        internal,
+                        current["attempt"],
+                        was_auto_init and not had_any_task_attempt,
+                    ),
+                    current["payload"]["assistance"],
+                    selected_origins,
                 )
             check_service = host.wired_service()
         else:

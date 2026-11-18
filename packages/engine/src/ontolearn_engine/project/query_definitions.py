@@ -22,6 +22,14 @@ METHODS = frozenset(
         "query.result.rowsPage",
     }
 )
+# Fixed statement text (compile-time folded literals) with one bound `?`
+# parameter; no caller text is ever interpolated into the query.
+_REASONING_RESULTS_SQL = (
+    "SELECT jr.id, r.kind, jr.created FROM job_results jr"
+    " JOIN results r ON r.id=jr.id"
+    " WHERE r.project=? ORDER BY jr.created DESC, jr.id"
+)
+
 EDGE_SPACE = (
     "\t\n\x0b\x0c\r\x1c\x1d\x1e\x1f \x85\xa0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006"
     "\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff"
@@ -111,8 +119,8 @@ class QueryRead:
 
 
 @contextmanager
-def query_read(actor, method, params):
-    if method not in METHODS:
+def query_read(actor, method, params, *, methods=METHODS):
+    if method not in methods:
         fault("PERMISSION_DENIED")
     project = params.get("projectId", params.get("binding", {}).get("projectId"))
     # Fix every original before any external authority/authorization callback.
@@ -336,7 +344,7 @@ def prepare(store, params, implementation, limits, registry_hash, ticket):
             fault("IDENTITY_CONFLICT")
         if record["kind"] != "managed" or record["draft"] != visible:
             fault("INVALID_STATE")
-        if visible["scope"] != "asserted":
+        if visible["scope"] not in ("asserted", "asserted+derived"):
             fault("INVALID_REQUEST", field="identity")
         if original:
             input_ = original["input"]
@@ -346,11 +354,37 @@ def prepare(store, params, implementation, limits, registry_hash, ticket):
         else:
             ticket.pay("parameters blob", bytes_=4096, objects=128, work=1024)
             parameters = {"inputSelection": params["selection"]["kind"]}
+            derived_result_ids = []
+            if visible["scope"] == "asserted+derived":
+                # Derived-scope drafts reuse the newest persisted reasoning
+                # result bound to this exact snapshot; nothing is re-executed.
+                # Bound parameter only; no caller text enters the statement.
+                rows = store._db.execute(_REASONING_RESULTS_SQL, (project,)).fetchall()
+                selected_result = None
+                for row in rows:
+                    if row["kind"] != "reasoning":
+                        continue
+                    metadata = store.result_get(project, row["id"])
+                    if (
+                        metadata["inputSnapshotId"] != record["inputSnapshotId"]
+                        or metadata["payloadStatus"] != "available"
+                    ):
+                        continue
+                    selected_result = metadata
+                    break
+                if selected_result is None:
+                    fault("INVALID_REQUEST", field="dependency")
+                if (
+                    params["selection"]["kind"] == "current"
+                    and selected_result["state"] != "current"
+                ):
+                    fault("INVALID_REQUEST", field="dependency")
+                derived_result_ids = [selected_result["resultId"]]
             input_ = {
                 "inputSnapshotId": record["inputSnapshotId"],
-                "scope": "asserted",
+                "scope": visible["scope"],
                 "definitionId": binding["definitionId"],
-                "derivedResultIds": [],
+                "derivedResultIds": derived_result_ids,
                 "parametersHash": store.put_blob(project, parameters),
                 "preparedPlanRef": None,
             }

@@ -592,7 +592,9 @@
         "project.learning.attempt.start",
         "project.learning.hint.record",
         "project.learning.observation.record",
-        "project.learning.task.check"
+        "project.learning.task.check",
+        "project.quality.read",
+        "project.quality.prepare"
       ],
       "newSourceOrLearningMethods": [
         "project.learning.read",
@@ -630,7 +632,9 @@
         "project.learning.attempt.start",
         "project.learning.hint.record",
         "project.learning.observation.record",
-        "project.learning.task.check"
+        "project.learning.task.check",
+        "project.quality.read",
+        "project.quality.prepare"
       ]
     }
   },
@@ -763,5 +767,19 @@
     "revealedHintsPolicy": "level<=persisted maxHintLevel only; never pre-unlocked",
     "downstreamTasks": "pending-dependency until each real domain tool is wired; never a fabricated pass",
     "guidedStage": "first business-ontology pass mints exactly one reason=guided-stage checkpoint"
+  },
+  "projectQuality": {
+    "profile": "business3",
+    "methods": ["project.quality.read", "project.quality.prepare"],
+    "agentEligible": false,
+    "authority": "selected-project; reads project immutable results only, prepare interns frozen job-input parameters without creating jobs",
+    "exposure": "business-named-bridge-only",
+    "chainCapabilities": ["reasoning.execute", "validation.execute"],
+    "findingTiers": ["violation", "warning", "info"],
+    "definitionFormats": {
+      "constraint": ["fr504-template", "turtle"],
+      "rule": ["fr505-controlled", "legacy-triple"]
+    },
+    "invalidation": "invalidation-v2.json families; VALIDATION_DEFINITION_CHANGED / RULE_CHANGED / ONTOLOGY_CHANGED / FACTS_CHANGED"
   }
 }

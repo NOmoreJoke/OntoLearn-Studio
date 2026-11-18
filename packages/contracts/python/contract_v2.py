@@ -708,6 +708,17 @@ def matches_business3_response(request, response, expected_registry_hash):
         if method == "project.learning.observation.record":
             return value["observation"] == p["observation"]
         return method in {"project.learning.attempt.start", "project.learning.task.check"}
+    if request["method"].startswith("project.quality."):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        p, value = request["params"], response["result"]
+        if value["projectId"] != p["projectId"]:
+            return False
+        if request["method"] == "project.quality.read":
+            return True
+        return value["operationId"] == p["operationId"]
     if request["method"].startswith("changeset."):
         if request["engineSessionId"] != response["engineSessionId"]:
             return False

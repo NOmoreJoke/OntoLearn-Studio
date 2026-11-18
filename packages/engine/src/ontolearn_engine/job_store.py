@@ -42,6 +42,83 @@ def fault(code, **params):
     raise JobFault(code, params)
 
 
+def payload_from_rows(rows):
+    """Lossless inverse of semantic_execution._rows' JSON-pointer projection.
+
+    The walk in _rows emits every leaf exactly once (empty containers collapse
+    to their JSON encoding at the parent path), so this pure reconstruction
+    needs no policy of its own: it only replays the recorded pointers.
+    """
+    if type(rows) is not list or not rows:
+        raise ValueError("PAYLOAD_ROWS_INVALID")
+    cells = rows[0].get("cells") if isinstance(rows[0], dict) else None
+    if cells != ["columns", "path", "value", "part", "parts"]:
+        raise ValueError("PAYLOAD_ROWS_INVALID")
+    pieces: dict[str, list[str]] = {}
+    for row in rows[1:]:
+        cells = row["cells"]
+        if len(cells) != 4:
+            raise ValueError("PAYLOAD_ROWS_INVALID")
+        path, piece, part, parts = cells
+        if not isinstance(path, str) or not isinstance(piece, str):
+            raise ValueError("PAYLOAD_ROWS_INVALID")
+        if type(part) is not int or type(parts) is not int or not 1 <= part <= parts:
+            raise ValueError("PAYLOAD_ROWS_INVALID")
+        slot = pieces.setdefault(path, [None] * parts)
+        if slot[part - 1] is not None:
+            raise ValueError("PAYLOAD_ROWS_INVALID")
+        slot[part - 1] = piece
+    values = {}
+    for path, slot in pieces.items():
+        if any(piece is None for piece in slot):
+            raise ValueError("PAYLOAD_ROWS_INVALID")
+        values[path] = json.loads("".join(slot))
+
+    def decode(token: str) -> str:
+        return token.replace("~1", "/").replace("~0", "~")
+
+    def assign(container, tokens, value):
+        token = tokens[0]
+        if len(tokens) == 1:
+            if isinstance(container, dict):
+                if token in container:
+                    raise ValueError("PAYLOAD_ROWS_INVALID")
+                container[token] = value
+            else:
+                index = int(token)
+                while len(container) < index:
+                    container.append(None)
+                if index < len(container) and container[index] is not None:
+                    raise ValueError("PAYLOAD_ROWS_INVALID")
+                if index == len(container):
+                    container.append(value)
+                else:
+                    container[index] = value
+            return
+        if isinstance(container, dict):
+            child = container.get(token)
+            if child is None:
+                child = [] if tokens[1].isdigit() else {}
+                container[token] = child
+        else:
+            index = int(token)
+            while len(container) <= index:
+                container.append(None)
+            child = container[index]
+            if child is None:
+                child = [] if tokens[1].isdigit() else {}
+                container[index] = child
+        assign(child, tokens[1:], value)
+
+    root: dict = {}
+    for path in sorted(values):
+        if not path.startswith("/"):
+            raise ValueError("PAYLOAD_ROWS_INVALID")
+        tokens = [decode(token) for token in path[1:].split("/")]
+        assign(root, tokens, values[path])
+    return root
+
+
 class JobStore(Store):
     def __init__(
         self,
@@ -1517,9 +1594,17 @@ class JobStore(Store):
             )
             parameters = self.blob(project, input_["parametersHash"])
             query_request = None
+            semantic_request = None
             if capability == "query.execute":
                 query_request = self.prepare_query_request(
                     project, input_, parameters, snap, implementation, confirmation_ref
+                )
+            elif self._capability_semantic_managed(capability, implementation):
+                # Only live semantic-identity reasoning/validation jobs get a
+                # prepared worker request; IMPL unit fixtures keep the generic
+                # read-job shape (see _semantic_worker_managed).
+                semantic_request = self.prepare_semantic_request(
+                    project, capability, input_, parameters, snap, implementation, confirmation_ref
                 )
             if capability.startswith("test."):
                 self._test_parameters(parameters)
@@ -1559,6 +1644,8 @@ class JobStore(Store):
             }
             if query_request is not None:
                 context["queryRequest"] = query_request
+            if semantic_request is not None:
+                context["semanticRequest"] = semantic_request
             if capability == "test.rounds":
                 events = parameters.get("events", [])
                 context["runConfig"] = {
@@ -1924,10 +2011,31 @@ class JobStore(Store):
                 fault("INVALID_STATE")
             if job["capability"] == "query.execute":
                 fault("INVALID_STATE")  # New query success requires the complete private bundle.
+            if self._semantic_worker_managed(job):
+                # A live semantic reasoning/validation job may only finish with
+                # the complete private worker bundle; unit fixtures using the
+                # infrastructure IMPL identity keep finish_read_job available.
+                fault("INVALID_STATE")
             result = self._publish_job(job, rows, kind)
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)
+
+    def _semantic_worker_managed(self, job):
+        """query.execute is always semantic-managed; reasoning/validation only
+        under the live semantic identity, so IMPL unit fixtures stay readable."""
+
+        return self._capability_semantic_managed(job["capability"], job["implementation"])
+
+    @staticmethod
+    def _capability_semantic_managed(capability, implementation):
+        from ontolearn_engine.resources import semantic_identity
+
+        if capability == "query.execute":
+            return True
+        return capability in ("reasoning.execute", "validation.execute") and (
+            implementation == semantic_identity()
+        )
 
     def query_project_get(self, project, *, actor, ticket):
         from ontolearn_engine.project.query_definitions import ProjectGetReadTicket
@@ -1978,12 +2086,16 @@ class JobStore(Store):
             fault("INVALID_REQUEST", field="params")
         if parameters["inputSelection"] not in ("current", "historical"):
             fault("INVALID_REQUEST", field="params")
-        if (
-            input_["scope"] != "asserted"
-            or input_["derivedResultIds"]
-            or input_["preparedPlanRef"] is not None
-            or confirmation_ref is not None
-        ):
+        if input_["scope"] not in ("asserted", "asserted+derived"):
+            fault("INVALID_REQUEST", field="identity")
+        if input_["preparedPlanRef"] is not None or confirmation_ref is not None:
+            fault("INVALID_REQUEST", field="identity")
+        selected = None
+        if input_["scope"] == "asserted+derived":
+            # Derived-scope queries reuse one stored current reasoning result
+            # bound to this exact snapshot; stale material is rejected here.
+            selected = self._semantic_selection(project, input_, snap)
+        elif input_["derivedResultIds"]:
             fault("INVALID_REQUEST", field="identity")
         if live and implementation != semantic_identity():
             fault("IDENTITY_CONFLICT")
@@ -2006,11 +2118,113 @@ class JobStore(Store):
                 "query.execute",
                 input_,
                 parameters,
+                selected=selected,
                 error_catalog=self.contract.ERROR_CATALOG,
                 error_schema=self.contract.DOCUMENT,
             )
             from ontolearn_engine.resources import LIMITS
 
+            _, maximum = query_transport_limits(LIMITS)
+            query_encode(request, maximum)
+            return request
+        except SemanticExecutionFault as error:
+            raise JobFault(error.error["code"], error.error["params"]) from None
+
+    def _semantic_selection(self, project, input_, snap):
+        """Load and validate the one selected reasoning result for a derived scope.
+
+        The result must be a real persisted reasoning payload bound to this exact
+        immutable snapshot; stale or evicted material cannot serve a new input.
+        """
+        result_id = input_["derivedResultIds"]
+        if type(result_id) is not list or len(result_id) != 1 or not isinstance(result_id[0], str):
+            fault("INVALID_REQUEST", field="identity")
+        identity = result_id[0]
+        try:
+            metadata = self.result_get(project, identity)
+        except JobFault:
+            fault("INVALID_REQUEST", field="identity")
+        self._project(project)
+        if (
+            metadata["kind"] != "reasoning"
+            or metadata["payloadStatus"] != "available"
+            or metadata["inputSnapshotId"] != input_["inputSnapshotId"]
+            or metadata["state"] != "current"
+        ):
+            fault("INVALID_REQUEST", field="identity")
+        rows = self.result(identity)["payload"]
+        payload = payload_from_rows(rows)
+        if (
+            payload.get("kind") != "reasoning"
+            or payload.get("inputSnapshotId") != input_["inputSnapshotId"]
+        ):
+            fault("INVALID_REQUEST", field="identity")
+        return {"metadata": metadata, "payload": payload}
+
+    def prepare_semantic_request(
+        self,
+        project,
+        capability,
+        input_,
+        parameters,
+        snap,
+        implementation,
+        confirmation_ref,
+        *,
+        live=True,
+    ):
+        """Build the private reasoning/validation worker request from one snapshot.
+
+        Mirrors prepare_query_request: no execution happens here, only strict
+        shape/identity validation and a bounded transport encoding.
+        """
+        from ontolearn_engine.resources import LIMITS, semantic_identity
+        from ontolearn_engine.semantic_execution import SemanticExecutionFault, build_request
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        if capability not in ("reasoning.execute", "validation.execute"):
+            fault("INVALID_REQUEST", field="params")
+        if type(parameters) is not dict or set(parameters) != {"inputSelection"}:
+            fault("INVALID_REQUEST", field="params")
+        if parameters["inputSelection"] not in ("current", "historical"):
+            fault("INVALID_REQUEST", field="params")
+        if input_["preparedPlanRef"] is not None or confirmation_ref is not None:
+            fault("INVALID_REQUEST", field="identity")
+        if live and implementation != semantic_identity():
+            fault("IDENTITY_CONFLICT")
+        if implementation["executionSemanticsVersion"] != "i05-finite-6":
+            fault("IDENTITY_CONFLICT")
+        scope = input_["scope"]
+        if scope not in ("asserted", "asserted+derived"):
+            fault("INVALID_REQUEST", field="identity")
+        if capability == "reasoning.execute" and scope != "asserted":
+            fault("INVALID_REQUEST", field="identity")
+        selected = None
+        if scope == "asserted+derived":
+            selected = self._semantic_selection(project, input_, snap)
+        elif input_["derivedResultIds"]:
+            fault("INVALID_REQUEST", field="identity")
+        if capability == "validation.execute" and not any(
+            d["layer"] == "constraint" and d["id"] == input_["definitionId"]
+            for d in snap["state"]["definitions"]
+        ):
+            fault("INVALID_REQUEST", field="dependency")
+        if (
+            live
+            and parameters["inputSelection"] == "current"
+            and input_["inputSnapshotId"] != self.snapshot(self._project(project))
+        ):
+            fault("IDENTITY_CONFLICT")
+        try:
+            request = build_request(
+                snap,
+                capability,
+                input_,
+                parameters,
+                selected=selected,
+                error_catalog=self.contract.ERROR_CATALOG,
+                error_schema=self.contract.DOCUMENT,
+            )
             _, maximum = query_transport_limits(LIMITS)
             query_encode(request, maximum)
             return request
@@ -2060,10 +2274,10 @@ class JobStore(Store):
             "inputSnapshotId": job["inputSnapshotId"],
             "inputProjectRevision": context["snapshot"]["projectRevision"],
             "executionSemanticsVersion": job["implementation"]["executionSemanticsVersion"],
-            "scope": "asserted",
+            "scope": job["input"]["scope"],
             "definitionId": job["input"]["definitionId"],
             "inputSelection": context["parameters"]["inputSelection"],
-            "selectedResultIds": [],
+            "selectedResultIds": list(job["input"]["derivedResultIds"]),
             "queryText": query_text,
         }
         if type(payload) is not dict or set(payload) != set(common) | {"query", "provenance"}:
@@ -2114,21 +2328,64 @@ class JobStore(Store):
             }
         )
         facts, ontology = [list(t) for t in facts], [list(t) for t in ontology]
-        expected_provenance = {
-            "scope": "asserted",
-            "executionSemanticsVersion": common["executionSemanticsVersion"],
-            "assertedInputSha256": digest(facts),
-            "ontologyInputSha256": digest(ontology),
-            "selectedRulesSha256": digest([]),
-            "reasoningSource": None,
-            "selectedRuleIds": [],
-            "warnings": [],
-            "selectedFacts": [{"triple": t, "sources": [{"kind": "asserted"}]} for t in facts],
-            "derivedAxioms": [],
-            "ontologyView": ontology,
-            "factViewSha256": digest(facts),
-            "ontologyViewSha256": digest(ontology),
-        }
+        if job["input"]["scope"] == "asserted+derived":
+            # Identical pure structural binding against the stored selection:
+            # the same trusted projection the worker ran, with no second
+            # SPARQL/SHACL execution or reason() invocation inside the Store.
+            from ontolearn_engine.semantic_execution import (
+                _definitions,
+                _formal_specs,
+                _graph,
+                _rules,
+            )
+            from ontolearn_engine.semantic_formal import project_formal_validation_scope
+
+            definitions = _definitions(context["snapshot"])
+            selected_payload = expected["selected"]["payload"]
+            specs, has_formal = _formal_specs(definitions)
+            graph_facts = _graph(context["snapshot"]["state"]["facts"])
+            graph_ontology = _graph(
+                [
+                    t
+                    for (layer, _), value in sorted(definitions.items())
+                    if layer == "ontology"
+                    for t in value["triples"]
+                ]
+            )
+            if has_formal:
+                expected_provenance = project_formal_validation_scope(
+                    graph_facts,
+                    graph_ontology,
+                    specs=specs,
+                    selected=expected["selected"],
+                ).provenance
+            else:
+                from ontolearn_engine.semantic_scopes import project_validation_scope
+
+                expected_provenance = project_validation_scope(
+                    graph_facts,
+                    graph_ontology,
+                    include_derived=True,
+                    reasoning_result=selected_payload.get("reasoning"),
+                    reasoning_source=selected_payload.get("source"),
+                    rules=_rules(definitions),
+                ).provenance
+        else:
+            expected_provenance = {
+                "scope": "asserted",
+                "executionSemanticsVersion": common["executionSemanticsVersion"],
+                "assertedInputSha256": digest(facts),
+                "ontologyInputSha256": digest(ontology),
+                "selectedRulesSha256": digest([]),
+                "reasoningSource": None,
+                "selectedRuleIds": [],
+                "warnings": [],
+                "selectedFacts": [{"triple": t, "sources": [{"kind": "asserted"}]} for t in facts],
+                "derivedAxioms": [],
+                "ontologyView": ontology,
+                "factViewSha256": digest(facts),
+                "ontologyViewSha256": digest(ontology),
+            }
         if payload["provenance"] != expected_provenance:
             fault("INVALID_STATE")
         # Fixed supplier projection is pure JSON walking, not graph/query execution.
@@ -2171,6 +2428,67 @@ class JobStore(Store):
                 ),
             )
             hook("query_payload_published")
+            self._transition(job, "succeeded", result=result)
+            hook("mid_job_terminal")
+        return self._job(identity)
+
+    def finish_semantic_job(self, identity, output, hook: Hook = lambda _: None):
+        """Complete a live reasoning/validation job from the worker bundle.
+
+        The stored immutable request is rebuilt and compared byte-for-byte, and
+        the supplied rows must be the exact lossless projection of the payload
+        before either is published. No second execution happens here.
+        """
+        from ontolearn_engine.semantic_execution import _rows
+        from ontolearn_engine.semantic_offline import SemanticError
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        with self._transaction(hook):
+            job = self._job(identity)
+            if job["state"] in TERMINAL:
+                return job
+            if (
+                job["state"] != "running"
+                or job["capability"] not in ("reasoning.execute", "validation.execute")
+                or not self._semantic_worker_managed(job)
+            ):
+                fault("INVALID_STATE")
+            if type(output) is not dict or set(output) != {"payload", "rows"}:
+                fault("INVALID_STATE")
+            _, maximum = query_transport_limits(job["limits"])
+            query_encode(output, maximum)
+            context = self.job_context(job["jobId"])
+            expected = self.prepare_semantic_request(
+                job["projectId"],
+                job["capability"],
+                job["input"],
+                context["parameters"],
+                context["snapshot"],
+                job["implementation"],
+                job["confirmationRef"],
+                live=False,
+            )
+            if context.get("semanticRequest") != expected:
+                fault("INVALID_STATE")
+            payload = output["payload"]
+            kind = "reasoning" if job["capability"] == "reasoning.execute" else "validation"
+            if (
+                type(payload) is not dict
+                or payload.get("kind") != kind
+                or payload.get("inputSnapshotId") != job["inputSnapshotId"]
+            ):
+                fault("INVALID_STATE")
+            try:
+                projected = _rows(payload)
+            except SemanticError:
+                fault("RESOURCE_LIMIT", resource="memory")
+            if len(projected) != len(output["rows"]) or any(
+                row["ordinal"] != expected_row["ordinal"] or row["cells"] != expected_row["cells"]
+                for row, expected_row in zip(output["rows"], projected, strict=True)
+            ):
+                fault("INVALID_STATE")
+            result = self._publish_job(job, output["rows"], kind)
+            hook("semantic_rows_published")
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)

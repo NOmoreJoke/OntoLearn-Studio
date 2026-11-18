@@ -119,7 +119,36 @@ def unpack(value):
     )
 
 
+def _formal_quality_definition(record):
+    """FR-504/505: touched rule/constraint ChangeSets must be formal definitions.
+
+    The strict complete-schema editor language from quality.definitions is the
+    only accepted payload shape; ``{"layer": "rule", "id": "x", "value": {}}``
+    and any other partial/opaque value stay rejected here. Untouched stored
+    opaque definitions are never rewritten (see test_preview_zero_domain_writes).
+    """
+    from ontolearn_engine.quality.definitions import (
+        DefinitionError,
+        validate_definition,
+    )
+
+    value = json.loads(record["payload"])
+    try:
+        validated = validate_definition(value)
+    except (DefinitionError, ValueError, TypeError, KeyError):
+        raise ValueError("Unsupported quality definition payload") from None
+    if (
+        validated.payload() != value
+        or value.get("kind") != record["layer"]
+        or value.get("id") != record["id"]
+    ):
+        raise ValueError("Non-canonical quality definition")
+
+
 def _definition(store, record):
+    if record["layer"] in {"rule", "constraint"}:
+        _formal_quality_definition(record)
+        return
     if record["layer"] not in {"ontology", "query"}:
         raise ValueError("Unsupported touched definition")
     value = json.loads(record["payload"])

@@ -1,0 +1,537 @@
+{
+  "fixtureVersion": "T05-G/1",
+  "scope": "private acceptance inputs and domain expectations; no execution evidence",
+  "identityAlignment": "T09/T01 namespace alignment pending; IDs 001/002/003 preserved as strings",
+  "catalog": {
+    "classes": [
+      "urn:ontolearn:quality:fixture:Equipment",
+      "urn:ontolearn:quality:fixture:Alarm",
+      "urn:ontolearn:quality:fixture:WorkOrder",
+      "urn:ontolearn:quality:fixture:HighRiskEquipment"
+    ],
+    "properties": [
+      "urn:ontolearn:quality:fixture:name",
+      "urn:ontolearn:quality:fixture:level",
+      "urn:ontolearn:quality:fixture:status",
+      "urn:ontolearn:quality:fixture:hasAlarm",
+      "urn:ontolearn:quality:fixture:workOrderStatus",
+      "urn:ontolearn:quality:fixture:eventWorkOrder"
+    ]
+  },
+  "definitions": [
+    {
+      "schemaVersion": 1,
+      "kind": "constraint",
+      "id": "C-name",
+      "revision": 1,
+      "label": "设备名称必填",
+      "enabled": true,
+      "targetClass": "urn:ontolearn:quality:fixture:Equipment",
+      "path": "urn:ontolearn:quality:fixture:name",
+      "template": "required",
+      "parameters": {}
+    },
+    {
+      "schemaVersion": 1,
+      "kind": "rule",
+      "id": "R-risk",
+      "revision": 1,
+      "label": "高危未闭环告警设备",
+      "enabled": true,
+      "conditions": [
+        {
+          "kind": "type",
+          "subject": "?e",
+          "class": "urn:ontolearn:quality:fixture:Equipment"
+        },
+        {
+          "kind": "property",
+          "subject": "?e",
+          "path": "urn:ontolearn:quality:fixture:hasAlarm",
+          "object": "?a"
+        },
+        {
+          "kind": "type",
+          "subject": "?a",
+          "class": "urn:ontolearn:quality:fixture:Alarm"
+        },
+        {
+          "kind": "property",
+          "subject": "?a",
+          "path": "urn:ontolearn:quality:fixture:level",
+          "object": "?level"
+        },
+        {
+          "kind": "property",
+          "subject": "?a",
+          "path": "urn:ontolearn:quality:fixture:status",
+          "object": "?status"
+        },
+        {
+          "kind": "compare",
+          "left": "?level",
+          "operator": "eq",
+          "right": "\"High\""
+        },
+        {
+          "kind": "compare",
+          "left": "?status",
+          "operator": "eq",
+          "right": "\"Open\""
+        }
+      ],
+      "conclusions": [
+        {
+          "kind": "type",
+          "subject": "?e",
+          "class": "urn:ontolearn:quality:fixture:HighRiskEquipment"
+        }
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "667ad0fd90287e0e164ba9e4c4319dfa735727a6832206548c0621553a6cbaea",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/001",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "<urn:ontolearn:quality:fixture:Equipment>"
+      ]
+    },
+    {
+      "id": "b6f71489a8f216860f71551c186fcd74ff265e870f3e6100e45e94398160f34d",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/001",
+        "urn:ontolearn:quality:fixture:name",
+        "\"泵站A\""
+      ]
+    },
+    {
+      "id": "24c66d5d91f93370c879a5459aa5b9883ed0407cdbe3e2ead3ef98a80df08a77",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/002",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "<urn:ontolearn:quality:fixture:Equipment>"
+      ]
+    },
+    {
+      "id": "b6454743d58b3a6fbf0696fb51f9cc5844d83d918fd2a4b209482a23777d0f2d",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/002",
+        "urn:ontolearn:quality:fixture:name",
+        "\"泵站B\""
+      ]
+    },
+    {
+      "id": "8ce78fc646a9169285759de4ab781a826e729000e99e2178b4c1ce578ca62f52",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/003",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "<urn:ontolearn:quality:fixture:Equipment>"
+      ]
+    },
+    {
+      "id": "ba3db0a874e59bb2d0351995c9fcadbd2618967e28fe9bd6ea08a6d8cd11483d",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/003",
+        "urn:ontolearn:quality:fixture:name",
+        "\"备用泵C\""
+      ]
+    },
+    {
+      "id": "c8b8bd7cbaafaa70ed6275a7498c3f404a0eeb0e6fb4d4678689ce5430b7f6c9",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A01",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "<urn:ontolearn:quality:fixture:Alarm>"
+      ]
+    },
+    {
+      "id": "d5cfc2f008e87c7ab255a2bac04e9ffeca5cf69c07a74b4ec2f9e3a852a2e0e2",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/001",
+        "urn:ontolearn:quality:fixture:hasAlarm",
+        "<urn:ontolearn:quality:fixture:alarm/A01>"
+      ]
+    },
+    {
+      "id": "63ceb929b2a75322e902bafb235c9b4e451d84a70f8ce2b957ba97c483de0a88",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A01",
+        "urn:ontolearn:quality:fixture:level",
+        "\"High\""
+      ]
+    },
+    {
+      "id": "0806eaad3eb3359b73e58beafd74399fd42e737d9b12837fe93382f81ce8defb",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A01",
+        "urn:ontolearn:quality:fixture:status",
+        "\"Open\""
+      ]
+    },
+    {
+      "id": "89725796dfa0ff2a5bbb18251c05d73a92142ca4b30c94bb9feb46d3e3b49ffb",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A02",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "<urn:ontolearn:quality:fixture:Alarm>"
+      ]
+    },
+    {
+      "id": "844e07ce912efa0154a23ea8afaca32e211ccf4ee663ee852b3380c77f8833f7",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/002",
+        "urn:ontolearn:quality:fixture:hasAlarm",
+        "<urn:ontolearn:quality:fixture:alarm/A02>"
+      ]
+    },
+    {
+      "id": "3c6520bf445debaf72da29409eeac30c097f5939fe1b0a50a64fffa9659cf768",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A02",
+        "urn:ontolearn:quality:fixture:level",
+        "\"High\""
+      ]
+    },
+    {
+      "id": "643a8c6c82d7d8f965558dab14c3cbe30797deee27acb62a3fcbefaf77954b06",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A02",
+        "urn:ontolearn:quality:fixture:status",
+        "\"Closed\""
+      ]
+    },
+    {
+      "id": "dd981092c1cf391c99b9d31f1ebf6026cb1e040857ce9fdbe1f120350c2e015e",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A03",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "<urn:ontolearn:quality:fixture:Alarm>"
+      ]
+    },
+    {
+      "id": "7e6460f077b563ebe7e6a005b5e2f2a0282ec04c11b345077f211d1cb9ccba18",
+      "statement": [
+        "urn:ontolearn:quality:fixture:equipment/003",
+        "urn:ontolearn:quality:fixture:hasAlarm",
+        "<urn:ontolearn:quality:fixture:alarm/A03>"
+      ]
+    },
+    {
+      "id": "9ca7021e55763888a0f3f6d8d079de2b785897f1935c105e02363422a61c55ca",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A03",
+        "urn:ontolearn:quality:fixture:level",
+        "\"Low\""
+      ]
+    },
+    {
+      "id": "a1dcf6316c580a6618d85a606b0bcb995265d167f2be7df5efe2edc0e45536de",
+      "statement": [
+        "urn:ontolearn:quality:fixture:alarm/A03",
+        "urn:ontolearn:quality:fixture:status",
+        "\"Open\""
+      ]
+    }
+  ],
+  "initialWorkOrders": [],
+  "initialUnprocessedEvents": [],
+  "cases": [
+    {
+      "id": "V-01",
+      "reset": "G-base",
+      "steps": [
+        {
+          "removeStatement": [
+            "urn:ontolearn:quality:fixture:equipment/003",
+            "urn:ontolearn:quality:fixture:name",
+            "\"备用泵C\""
+          ]
+        },
+        {
+          "validateScope": "asserted"
+        }
+      ],
+      "expectedViolations": [
+        {
+          "focusNode": "urn:ontolearn:quality:fixture:equipment/003",
+          "constraintId": "C-name",
+          "path": "urn:ontolearn:quality:fixture:name",
+          "component": "minCount"
+        }
+      ],
+      "repair": {
+        "restoreStatement": [
+          "urn:ontolearn:quality:fixture:equipment/003",
+          "urn:ontolearn:quality:fixture:name",
+          "\"备用泵C\""
+        ],
+        "expectedViolations": []
+      }
+    },
+    {
+      "id": "R-01",
+      "reset": "G-base",
+      "steps": [
+        {
+          "reason": true
+        }
+      ],
+      "expectedDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ]
+      ],
+      "requiredSupport": ["R-risk", "alarm/A01"],
+      "forbiddenDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/002",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ],
+        [
+          "urn:ontolearn:quality:fixture:equipment/003",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ]
+      ]
+    },
+    {
+      "id": "R-02",
+      "reset": "G-base",
+      "steps": [
+        {
+          "reason": true
+        },
+        {
+          "removeEntityAndIncomingLinks": "urn:ontolearn:quality:fixture:alarm/A01"
+        },
+        {
+          "expectPreviousResult": "stale"
+        },
+        {
+          "reason": true
+        }
+      ],
+      "expectedDomainConclusions": [],
+      "expectedWithdrawn": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ]
+      ],
+      "preserveUnrelatedAssertions": true
+    },
+    {
+      "id": "R-03",
+      "reset": "G-base",
+      "steps": [
+        {
+          "addAlarm": {
+            "id": "urn:ontolearn:quality:fixture:alarm/A04",
+            "equipment": "urn:ontolearn:quality:fixture:equipment/001",
+            "level": "High",
+            "status": "Open"
+          }
+        },
+        {
+          "reason": true
+        },
+        {
+          "removeEntityAndIncomingLinks": "urn:ontolearn:quality:fixture:alarm/A01"
+        },
+        {
+          "reason": true
+        }
+      ],
+      "expectedDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ]
+      ],
+      "requiredSupport": ["R-risk", "alarm/A04"],
+      "forbiddenSupport": ["alarm/A01"]
+    },
+    {
+      "id": "R-04",
+      "reset": "G-base",
+      "steps": [
+        {
+          "addTriples": [
+            [
+              "urn:ontolearn:quality:fixture:CriticalPump",
+              "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+              "<urn:ontolearn:quality:fixture:Equipment>"
+            ],
+            [
+              "urn:ontolearn:quality:fixture:equipment/P001",
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "<urn:ontolearn:quality:fixture:CriticalPump>"
+            ]
+          ]
+        },
+        {
+          "addAlarm": {
+            "id": "urn:ontolearn:quality:fixture:alarm/A-P001",
+            "equipment": "urn:ontolearn:quality:fixture:equipment/P001",
+            "level": "High",
+            "status": "Open"
+          }
+        },
+        {
+          "reason": true
+        }
+      ],
+      "expectedDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ],
+        [
+          "urn:ontolearn:quality:fixture:equipment/P001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:Equipment>"
+        ],
+        [
+          "urn:ontolearn:quality:fixture:equipment/P001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ]
+      ],
+      "requiredRdfsBeforeRules": true
+    },
+    {
+      "id": "R-05",
+      "reset": "G-base",
+      "steps": [
+        {
+          "addClass": "urn:ontolearn:quality:fixture:NeedsInspection"
+        },
+        {
+          "saveEnabledRule": {
+            "schemaVersion": 1,
+            "kind": "rule",
+            "id": "R-next",
+            "revision": 1,
+            "label": "二阶巡检分类",
+            "enabled": true,
+            "conditions": [
+              {
+                "kind": "type",
+                "subject": "?e",
+                "class": "urn:ontolearn:quality:fixture:HighRiskEquipment"
+              }
+            ],
+            "conclusions": [
+              {
+                "kind": "type",
+                "subject": "?e",
+                "class": "urn:ontolearn:quality:fixture:NeedsInspection"
+              }
+            ]
+          }
+        },
+        {
+          "saveOrder": ["R-risk", "R-next"]
+        },
+        {
+          "reason": true
+        }
+      ],
+      "expectedDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ]
+      ],
+      "forbiddenDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:NeedsInspection>"
+        ]
+      ],
+      "requiredWarning": "当前版本不支持规则链"
+    },
+    {
+      "id": "R-06",
+      "reset": "G-base",
+      "steps": [
+        {
+          "addClass": "urn:ontolearn:quality:fixture:NeedsInspection"
+        },
+        {
+          "saveEnabledRule": {
+            "schemaVersion": 1,
+            "kind": "rule",
+            "id": "R-next",
+            "revision": 1,
+            "label": "二阶巡检分类",
+            "enabled": true,
+            "conditions": [
+              {
+                "kind": "type",
+                "subject": "?e",
+                "class": "urn:ontolearn:quality:fixture:HighRiskEquipment"
+              }
+            ],
+            "conclusions": [
+              {
+                "kind": "type",
+                "subject": "?e",
+                "class": "urn:ontolearn:quality:fixture:NeedsInspection"
+              }
+            ]
+          }
+        },
+        {
+          "saveOrder": ["R-next", "R-risk"]
+        },
+        {
+          "reason": true
+        }
+      ],
+      "expectedDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:HighRiskEquipment>"
+        ]
+      ],
+      "forbiddenDomainConclusions": [
+        [
+          "urn:ontolearn:quality:fixture:equipment/001",
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "<urn:ontolearn:quality:fixture:NeedsInspection>"
+        ]
+      ],
+      "requiredWarning": "当前版本不支持规则链"
+    },
+    {
+      "id": "O-01",
+      "reset": "G-base",
+      "steps": [
+        {
+          "removeEntityAndIncomingLinks": "urn:ontolearn:quality:fixture:alarm/A03"
+        },
+        {
+          "inspectProperty": [
+            "urn:ontolearn:quality:fixture:equipment/003",
+            "urn:ontolearn:quality:fixture:hasAlarm"
+          ]
+        }
+      ],
+      "expectedText": "未记录",
+      "forbiddenText": "已证明不存在告警"
+    }
+  ],
+  "fullExecutorOutputBaseline": "pending approved I05 exact semantic result/trace inventory; domain expectations are not a full RDFS closure oracle"
+}

@@ -768,6 +768,15 @@ export function matchesBusiness3Response(
       return JSON.stringify(value.observation) === JSON.stringify(p.observation)
     return method === 'project.learning.attempt.start' || method === 'project.learning.task.check'
   }
+  if (/^project\.quality\./.test(String(q.method))) {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>
+    const value = r.result as Record<string, unknown>
+    if (value.projectId !== p.projectId) return false
+    if (String(q.method) === 'project.quality.read') return true
+    return value.operationId === p.operationId
+  }
   if (q.method === 'project.ownership.detail')
     return (
       q.engineSessionId === r.engineSessionId &&

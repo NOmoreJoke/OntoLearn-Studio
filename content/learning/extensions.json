@@ -1,0 +1,159 @@
+{
+  "courseExtensionVersion": "ext-1",
+  "extensions": [
+    {
+      "id": "LX-01",
+      "task": "quality",
+      "kind": "course-extension-case",
+      "baseline": "G-base",
+      "baselineVersion": "prd-v0.6-learning-1",
+      "ruleVersion": "rules-1",
+      "checksVersion": "learning-checks-2",
+      "prerequisites": {
+        "task": "business-ontology",
+        "assertedTriples": [
+          {
+            "subject": "urn:ontolearn:learning:Person",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<http://www.w3.org/2000/01/rdf-schema#Class>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:assignedTo",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<http://www.w3.org/2002/07/owl#ObjectProperty>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:person/L01",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Person>"
+          },
+          {
+            "subject": "urn:ontolearn:learning:equipment/001",
+            "predicate": "urn:ontolearn:learning:assignedTo",
+            "object": "<urn:ontolearn:learning:person/L01>"
+          }
+        ],
+        "classDeclarationAlternatives": [
+          "<http://www.w3.org/2002/07/owl#Class>",
+          "<http://www.w3.org/2000/01/rdf-schema#Class>"
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "先预测，再运行推理",
+          "action": [
+            "添加 assignedTo rdfs:domain Equipment",
+            "添加 assignedTo rdfs:range Person",
+            "运行推理（P0 组合：RDFS 闭包 → 一阶段规则）"
+          ],
+          "expectedDerivedSet": [
+            {
+              "subject": "urn:ontolearn:learning:equipment/001",
+              "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "object": "<urn:ontolearn:learning:HighRiskEquipment>",
+              "rule": "R-risk"
+            }
+          ],
+          "expectedViolations": [],
+          "note": "domain/range 只推出已断言的类型，不计入 inferred；不产生任何校验违规。"
+        },
+        {
+          "step": 2,
+          "title": "独立约束",
+          "action": [
+            "使用 SHACL 必填模板 targetClass Equipment / path assignedTo / minCount 1",
+            "验证范围固定为当前断言事实中的全部 Equipment（includeInferred=false）"
+          ],
+          "expectedViolations": [
+            {
+              "focusNode": "urn:ontolearn:learning:equipment/002",
+              "path": "urn:ontolearn:learning:assignedTo",
+              "component": "minCount",
+              "value": null
+            },
+            {
+              "focusNode": "urn:ontolearn:learning:equipment/003",
+              "path": "urn:ontolearn:learning:assignedTo",
+              "component": "minCount",
+              "value": null
+            }
+          ],
+          "note": "G-base 原有的名称必填约束不产生违规。"
+        },
+        {
+          "step": 3,
+          "title": "修复",
+          "action": ["通过预览→确认提交修复断言", "重新验证"],
+          "repairAssertions": [
+            {
+              "subject": "urn:ontolearn:learning:equipment/002",
+              "predicate": "urn:ontolearn:learning:assignedTo",
+              "object": "<urn:ontolearn:learning:person/L02>"
+            },
+            {
+              "subject": "urn:ontolearn:learning:equipment/003",
+              "predicate": "urn:ontolearn:learning:assignedTo",
+              "object": "<urn:ontolearn:learning:person/L01>"
+            }
+          ],
+          "expectedViolations": []
+        },
+        {
+          "step": 4,
+          "title": "区分来源",
+          "action": ["再次运行推理", "以 selectedOrigins 指出两条人员类型的来源"],
+          "expectedDerivedSet": [
+            {
+              "subject": "urn:ontolearn:learning:equipment/001",
+              "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "object": "<urn:ontolearn:learning:HighRiskEquipment>",
+              "rule": "R-risk",
+              "basis": "alarm/A01"
+            },
+            {
+              "subject": "urn:ontolearn:learning:person/L02",
+              "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              "object": "<urn:ontolearn:learning:Person>",
+              "axiom": "rdfs:range",
+              "basis": "equipment/002 assignedTo person/L02"
+            }
+          ],
+          "questionFact": {
+            "subject": "urn:ontolearn:learning:person/L02",
+            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "object": "<urn:ontolearn:learning:Person>"
+          },
+          "note": "person/L01 a Person 是断言；person/L02 a Person 是推导。"
+        }
+      ],
+      "selectedOrigins": {
+        "urn:ontolearn:learning:person/L01": "asserted",
+        "urn:ontolearn:learning:person/L02": "derived"
+      },
+      "answerShape": "selectedOrigins 与 transfer-classify 相同，不走 learningObservation",
+      "failurePaths": [
+        {
+          "path": "a",
+          "condition": "步骤 3 额外断言 person/L02 a Person",
+          "feedback": "这样步骤 4 就没有可区分的推导了",
+          "remedy": "撤销该 ChangeSet 或新建 attempt"
+        },
+        {
+          "path": "b",
+          "condition": "修复时用其他人员，或修复集合不等于两条固定断言",
+          "feedback": "需要修复：修复集合必须恰好是 002 assignedTo person/L02 与 003 assignedTo person/L01",
+          "remedy": "重新提交修复 ChangeSet"
+        },
+        {
+          "path": "c",
+          "condition": "推理或 SHACL 工具失败、过期或缺依赖",
+          "feedback": "不通过，也不显示成功",
+          "remedy": "重跑真实工具后再检查"
+        }
+      ],
+      "stalePolicy": "数据变更后，步骤 2 的旧报告按附录 D.1 标为已过期，不得冒充新版本通过；只有绑定不可变快照的运行才称为历史。",
+      "completion": "步骤 1–4 的推导集合、违规集合和修复集合全部完整匹配；步骤 4 的 selectedOrigins 为 {L02 → derived, L01 → asserted}，并且与真实工具给出的依据一致。"
+    }
+  ]
+}

@@ -38,6 +38,9 @@ from ontolearn_engine.worker import (
 )
 
 TERMINAL = {"succeeded", "failed", "cancelled"}
+# The frame-transport semantic worker path serves all three read capabilities;
+# worker and Store enforce the same set independently.
+_SEMANTIC_CAPABILITIES = frozenset({"query.execute", "reasoning.execute", "validation.execute"})
 _JOB_READY = object()
 _BOOTSTRAP_JOB_STORE = JobStore
 
@@ -447,11 +450,13 @@ class Coordinator:
         from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
         from ontolearn_engine.project.learning_ledger import METHODS as LEARNING_METHODS
         from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
+        from ontolearn_engine.project.quality_definitions import METHODS as QUALITY_METHODS
 
         if (
             method in MANAGEMENT_METHODS
             or method in CHECKPOINT_METHODS
             or method in LEARNING_METHODS
+            or method in QUALITY_METHODS
             or method
             in {
                 "project.catalog",
@@ -525,10 +530,10 @@ class Coordinator:
             return self.store.get_job(p["projectId"], p["jobId"])
         if method == "job.create":
             formal = self.version == 3 and p["capability"] == "changeset.commit"
-            query = p["capability"] == "query.execute"
+            semantic = p["capability"] in _SEMANTIC_CAPABILITIES
             if (
                 not formal
-                and not query
+                and not semantic
                 and (
                     not self.test_mode
                     or p["capability"]
@@ -562,7 +567,7 @@ class Coordinator:
                     p["capability"],
                     p["input"],
                     p["confirmationRef"],
-                    semantic_identity() if query else IMPLEMENTATION,
+                    semantic_identity() if semantic else IMPLEMENTATION,
                     self.limits,
                 )
             if (
@@ -737,7 +742,7 @@ class Coordinator:
                 if time.monotonic() >= deadline:
                     raise ServiceFault("TIMEOUT", {"phase": "total"})
                 if (
-                    job["capability"] == "query.execute"
+                    job["capability"] in _SEMANTIC_CAPABILITIES
                     and self.store.get_job(active["project"], identity)["state"] == "cancelling"
                 ):
                     raise asyncio.CancelledError()
@@ -769,7 +774,7 @@ class Coordinator:
                             raise ServiceFault("TIMEOUT", {"phase": phase})
                         child = active.get("process")
                         if (
-                            job["capability"] == "query.execute"
+                            job["capability"] in _SEMANTIC_CAPABILITIES
                             and sys.platform == "darwin"
                             and child is not None
                             and child.returncode is None
@@ -818,12 +823,17 @@ class Coordinator:
                 lambda child: active.update(process=child),
             )
             active["process"] = process
-            if job["capability"] == "query.execute":
+            if job["capability"] in _SEMANTIC_CAPABILITIES:
                 frame, maximum = query_transport_limits(job["limits"])
-                encoded = query_encode(context["queryRequest"], maximum)
+                request = (
+                    context["queryRequest"]
+                    if job["capability"] == "query.execute"
+                    else context["semanticRequest"]
+                )
+                encoded = query_encode(request, maximum)
                 pieces = query_parts(encoded, frame)
                 header = {
-                    "capability": "query.execute",
+                    "capability": job["capability"],
                     "memoryBytes": job["limits"]["maxWorkerMemoryBytes"],
                     "frameBytes": frame,
                     "byteLimit": maximum,
@@ -852,7 +862,14 @@ class Coordinator:
                     raise ServiceFault(output["error"]["code"], output["error"]["params"])
                 commit_boundary("before")
                 self._stage(identity, "committing")
-                self._notify(self.store.finish_query_job(identity, output, hook=commit_boundary))
+                if job["capability"] == "query.execute":
+                    self._notify(
+                        self.store.finish_query_job(identity, output, hook=commit_boundary)
+                    )
+                else:
+                    self._notify(
+                        self.store.finish_semantic_job(identity, output, hook=commit_boundary)
+                    )
                 return
             raw = json.dumps(
                 {

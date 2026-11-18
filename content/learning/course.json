@@ -239,8 +239,8 @@
       "id": "quality",
       "module": "质量与推理",
       "goal": "修复真实约束错误，并追溯推导依据。",
-      "instructions": "重置G-base。建立设备名称必填约束；删除003名称验证，再补回。建立并运行R-risk，检查001的依据；尝试规则链并观察不支持提示。",
-      "checks": ["V-01", "R-01", "R-05"],
+      "instructions": "重置G-base。建立设备名称必填约束；删除003名称验证，再补回。建立并运行R-risk，检查001的依据；尝试规则链并观察不支持提示。完成课程扩展用例 LX-01：缺少负责人为什么不是 domain/range 错误（见扩展用例，作答用 selectedOrigins）。",
+      "checks": ["V-01", "R-01", "R-05", "LX-01"],
       "completionCondition": "实际批准工具的当前版本完整结果与固定预期一致；失败、缺失或过期不通过。",
       "next": "behavior",
       "hints": [
