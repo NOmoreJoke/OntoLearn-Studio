@@ -6,6 +6,10 @@ import type {
   ProjectQualityReadDTO,
   QualityFindingDTO,
   QualityFr505PatternDTO,
+  QualityFr505TripleDTO,
+  QualityRuleTestRequestDTO,
+  QualityRuleTestResultDTO,
+  QualityRuleTestSampleRuleDTO,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '../../../../../../packages/contracts/src/v2'
 import {
@@ -15,7 +19,13 @@ import {
   type WorkspaceChangePreview,
 } from '../ontology/workspace-change'
 import { compareStatements, type Statement } from './presentation'
-import { prepareEditorDraft, type Pattern, type Template } from './draft'
+import {
+  detectRuleChainDependencies,
+  patternValue,
+  prepareEditorDraft,
+  type Pattern,
+  type Template,
+} from './draft'
 import './quality.css'
 
 const templateNames: Record<Template, string> = {
@@ -27,6 +37,222 @@ const templateNames: Record<Template, string> = {
 }
 const blank = (): Pattern => ({ kind: 'type', subject: '?entity', path: '', value: '' })
 const operators = { eq: '==', ne: '!=', lt: '<', le: '<=', gt: '>', ge: '>=' }
+
+type SamplePreset =
+  'rdfs-trigger' | 'rule-chain-unsupported' | 'order-independent' | 'current-draft'
+type SampleDraft = {
+  preset: SamplePreset
+  ontology: string
+  inputs: string
+  expected: string
+  rules: string
+}
+const sampleNamespace = 'urn:ontolearn:learning:'
+const sampleRdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+const sampleIri = (path: string) => `<${sampleNamespace}${path}>`
+const sampleTriple = (
+  subject: string,
+  predicate: string,
+  object: string,
+): QualityFr505TripleDTO => [subject, predicate, object]
+const sampleType = (subject: string, iri: string) => ({
+  kind: 'type' as const,
+  subject,
+  class: sampleNamespace + iri,
+})
+const sampleProperty = (subject: string, path: string, object: string) => ({
+  kind: 'property' as const,
+  subject,
+  path: sampleNamespace + path,
+  object,
+})
+const triplesToText = (triples: QualityFr505TripleDTO[]) =>
+  triples.map((triple) => JSON.stringify(triple)).join('\n')
+const sampleOwl = 'http://www.w3.org/2002/07/owl#'
+/** Catalog declaration rows; the engine compiles rules against the declared classes/properties. */
+const sampleDeclaration = (name: string, kind: 'Class' | 'ObjectProperty' | 'DatatypeProperty') =>
+  sampleTriple(sampleNamespace + name, sampleRdfType, `<${sampleOwl}${kind}>`)
+
+/** FR-505 sample presets; each drives the real engine without touching project facts. */
+const samplePresets: Record<Exclude<SamplePreset, 'current-draft'>, Omit<SampleDraft, 'preset'>> = {
+  'rdfs-trigger': {
+    ontology: triplesToText([
+      sampleTriple(
+        sampleNamespace + 'assignedTo',
+        'http://www.w3.org/2000/01/rdf-schema#range',
+        sampleIri('Person'),
+      ),
+      sampleDeclaration('Person', 'Class'),
+      sampleDeclaration('Flagged', 'Class'),
+      sampleDeclaration('assignedTo', 'ObjectProperty'),
+    ]),
+    inputs: triplesToText([
+      sampleTriple(
+        sampleNamespace + 'equipment/002',
+        sampleNamespace + 'assignedTo',
+        sampleIri('person/L02'),
+      ),
+    ]),
+    expected: triplesToText([
+      sampleTriple(sampleNamespace + 'person/L02', sampleRdfType, sampleIri('Flagged')),
+    ]),
+    rules: JSON.stringify(
+      [
+        {
+          id: 'rdfs-trigger',
+          label: '读取 Person 推导 Flagged',
+          enabled: true,
+          conditions: [sampleType('?person', 'Person')],
+          conclusions: [sampleType('?person', 'Flagged')],
+        },
+      ],
+      null,
+      2,
+    ),
+  },
+  'rule-chain-unsupported': {
+    ontology: triplesToText([
+      sampleDeclaration('Equipment', 'Class'),
+      sampleDeclaration('HighRiskEquipment', 'Class'),
+      sampleDeclaration('NeedsInspection', 'Class'),
+      sampleDeclaration('risk', 'DatatypeProperty'),
+    ]),
+    inputs: triplesToText([
+      sampleTriple(sampleNamespace + 'equipment/201', sampleRdfType, sampleIri('Equipment')),
+      sampleTriple(sampleNamespace + 'equipment/201', sampleNamespace + 'risk', '"High"'),
+    ]),
+    expected: triplesToText([
+      sampleTriple(
+        sampleNamespace + 'equipment/201',
+        sampleRdfType,
+        sampleIri('HighRiskEquipment'),
+      ),
+    ]),
+    rules: JSON.stringify(
+      [
+        {
+          id: 'R-risk',
+          label: '高风险分类',
+          enabled: true,
+          conditions: [
+            sampleType('?equipment', 'Equipment'),
+            sampleProperty('?equipment', 'risk', '"High"'),
+          ],
+          conclusions: [sampleType('?equipment', 'HighRiskEquipment')],
+        },
+        {
+          id: 'R-next',
+          label: '链式巡检（不支持）',
+          enabled: true,
+          conditions: [sampleType('?equipment', 'HighRiskEquipment')],
+          conclusions: [sampleType('?equipment', 'NeedsInspection')],
+        },
+      ],
+      null,
+      2,
+    ),
+  },
+  'order-independent': {
+    ontology: triplesToText([
+      sampleDeclaration('risk', 'DatatypeProperty'),
+      sampleDeclaration('status', 'DatatypeProperty'),
+      sampleDeclaration('tag', 'DatatypeProperty'),
+      sampleDeclaration('flag', 'DatatypeProperty'),
+    ]),
+    inputs: triplesToText([
+      sampleTriple(sampleNamespace + 'equipment/201', sampleNamespace + 'risk', '"High"'),
+      sampleTriple(sampleNamespace + 'equipment/201', sampleNamespace + 'status', '"Open"'),
+    ]),
+    expected: triplesToText([
+      sampleTriple(sampleNamespace + 'equipment/201', sampleNamespace + 'tag', '"yes"'),
+      sampleTriple(sampleNamespace + 'equipment/201', sampleNamespace + 'flag', '"true"'),
+    ]),
+    rules: JSON.stringify(
+      [
+        {
+          id: 'R-tag',
+          label: '打标',
+          enabled: true,
+          conditions: [sampleProperty('?equipment', 'risk', '"High"')],
+          conclusions: [sampleProperty('?equipment', 'tag', '"yes"')],
+        },
+        {
+          id: 'R-flag',
+          label: '标记风险',
+          enabled: true,
+          conditions: [sampleProperty('?equipment', 'status', '"Open"')],
+          conclusions: [sampleProperty('?equipment', 'flag', '"true"')],
+        },
+      ],
+      null,
+      2,
+    ),
+  },
+}
+
+/**
+ * Each line is one triple: a JSON array [subject, predicate, object] or three
+ * space-separated columns. Rows with three raw fields pass straight to the
+ * engine so invalid RDF terms come back as structured diagnostics; only rows
+ * that are not three items at all are reported as a front-end line error.
+ */
+function parseSampleTriples(text: string, label: string): QualityFr505TripleDTO[] | string {
+  const trimmed = text.trim()
+  if (!trimmed) return []
+  if (trimmed.startsWith('[')) {
+    try {
+      const whole = JSON.parse(trimmed) as unknown
+      if (Array.isArray(whole) && whole.every((row) => Array.isArray(row))) {
+        const rows: QualityFr505TripleDTO[] = []
+        for (const [index, row] of whole.entries()) {
+          if (row.length !== 3 || row.some((cell) => typeof cell !== 'string'))
+            return `${label}第 ${index + 1} 行不是 [主体, 属性, 客体] 三条字符串项。`
+          rows.push(row as QualityFr505TripleDTO)
+        }
+        return rows
+      }
+    } catch {
+      // A single-line JSON triple or hand-edited content falls through below.
+    }
+  }
+  const rows: QualityFr505TripleDTO[] = []
+  const lines = trimmed
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+  for (const [index, line] of lines.entries()) {
+    if (line.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(line) as unknown
+        if (!Array.isArray(parsed)) return `${label}第 ${index + 1} 行不是 JSON 数组。`
+        if (parsed.length !== 3 || parsed.some((cell) => typeof cell !== 'string'))
+          return `${label}第 ${index + 1} 行不是 [主体, 属性, 客体] 三条字符串项。`
+        rows.push(parsed as QualityFr505TripleDTO)
+        continue
+      } catch {
+        return `${label}第 ${index + 1} 行 JSON 解析失败。`
+      }
+    }
+    const columns = line.split(/\s+/)
+    if (columns.length !== 3)
+      return `${label}第 ${index + 1} 行不是 3 列（主体 属性 客体）或 [主体, 属性, 客体]。`
+    rows.push(columns as QualityFr505TripleDTO)
+  }
+  return rows
+}
+
+function parseSampleRules(text: string): QualityRuleTestSampleRuleDTO[] | string {
+  const trimmed = text.trim()
+  if (!trimmed) return []
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(trimmed)
+  } catch {
+    return '测试规则须为 JSON 数组，且解析失败。'
+  }
+  if (!Array.isArray(parsed)) return '测试规则须为 JSON 数组。'
+  return parsed as QualityRuleTestSampleRuleDTO[]
+}
 
 function StatementTable({ title, rows }: { title: string; rows: readonly Statement[] }) {
   return (
@@ -213,8 +439,14 @@ function fromPattern(pattern: QualityFr505PatternDTO): Pattern {
 function editorRevision(source: MainlineProjectReadDTO, kind: EditorInput['kind'], id: string) {
   const current = source.domain.state.definitions.find((row) => row.layer === kind && row.id === id)
   if (!current) return '1'
-  const { revision } = JSON.parse(current.payload)
-  return String(Number.isSafeInteger(revision) ? revision + 1 : 1)
+  let parsed: { revision?: unknown }
+  try {
+    parsed = JSON.parse(current.payload) as { revision?: unknown }
+  } catch {
+    return '1'
+  }
+  const revision = parsed.revision
+  return String(typeof revision === 'number' && Number.isSafeInteger(revision) ? revision + 1 : 1)
 }
 
 function loadForm(quality: ProjectQuality, kind: EditorInput['kind'], id: string): EditorInput {
@@ -299,7 +531,30 @@ function QualityResults({
         {validation?.conforms === true && ' · 符合约束'}
         {validation?.conforms === false && ' · 存在不符合项'}
         {validation && <> · 快照 {validation.inputSnapshotId.slice(0, 12)}</>}
+        {validation?.scope && <> · 范围 {validation.scope}</>}
+        {validation?.inputProjectRevision !== undefined && (
+          <> · rev {validation.inputProjectRevision}</>
+        )}
       </p>
+      {validation?.conforms === null && (
+        <p role="status" data-testid="quality-validation-coverage">
+          覆盖不完整或存在失败约束，未判定为符合约束（
+          {[
+            ...(validation.unverifiedConstraintIds?.length
+              ? [`未检：${validation.unverifiedConstraintIds.join('、')}`]
+              : []),
+            ...(validation.failedConstraintIds?.length
+              ? [`失败：${validation.failedConstraintIds.join('、')}`]
+              : []),
+          ].join('；')}
+          ）。
+        </p>
+      )}
+      {state.snapshotsAligned === false && (
+        <p role="status" data-testid="quality-snapshot-mismatch">
+          注意：当前推导与验证结果来自不同快照。
+        </p>
+      )}
       {stale.length > 0 && (
         <aside data-testid="quality-stale-reasons" role="status">
           <strong>上游数据或定义已变化，检查结果已过期。</strong>
@@ -328,6 +583,7 @@ function QualityResults({
                   {findings.map((finding, index) => (
                     <li key={index}>
                       {[
+                        finding.definitionId ?? null,
                         finding.focusNode,
                         finding.path,
                         finding.constraint,
@@ -417,6 +673,14 @@ export function QualityWorkspace({
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState('')
   const [error, setError] = useState('')
+  const [sample, setSample] = useState<SampleDraft>(() => ({
+    preset: 'rdfs-trigger',
+    ...samplePresets['rdfs-trigger'],
+  }))
+  const [sampleOutput, setSampleOutput] = useState<{
+    result: QualityRuleTestResultDTO | null
+    orderMatch: boolean | null
+  }>()
   const lifetime = useRef<ViewLifetime>({ active: false })
   const busyRef = useRef(false)
 
@@ -581,10 +845,96 @@ export function QualityWorkspace({
     })
   }
 
+  function applySamplePreset(preset: SamplePreset) {
+    setSampleOutput(undefined)
+    if (preset === 'current-draft') {
+      const rules: QualityRuleTestSampleRuleDTO[] =
+        form.kind === 'rule'
+          ? [
+              {
+                id: form.identity || 'draft-rule',
+                label: form.label || '草稿规则',
+                enabled: form.enabled,
+                conditions: form.conditions.map(patternValue) as QualityFr505PatternDTO[],
+                conclusions: form.conclusions.map(patternValue) as QualityFr505PatternDTO[],
+              },
+            ]
+          : []
+      setSample((value) => ({ ...value, preset, rules: JSON.stringify(rules, null, 2) }))
+      return
+    }
+    setSample((value) => ({ ...value, preset, ...samplePresets[preset] }))
+  }
+
+  function runSampleTest() {
+    void perform(async (captured) => {
+      const ontology = parseSampleTriples(sample.ontology, '本体三元组：')
+      if (typeof ontology === 'string') throw new Error(ontology)
+      const inputs = parseSampleTriples(sample.inputs, '输入样本三元组：')
+      if (typeof inputs === 'string') throw new Error(inputs)
+      const expected = parseSampleTriples(sample.expected, '预期输出三元组：')
+      if (typeof expected === 'string') throw new Error(expected)
+      const rules = parseSampleRules(sample.rules)
+      if (typeof rules === 'string') throw new Error(rules)
+      if (inputs.length === 0) throw new Error('输入样本三元组至少需要 1 条。')
+      const ruleTest: QualityRuleTestRequestDTO = {
+        ...(ontology.length ? { ontologyTriples: ontology } : {}),
+        inputTriples: inputs,
+        rules,
+        expectedOutputs: expected,
+      }
+      const first = requireWorkspaceReply(
+        await bridge.getProjectQualityState({ projectId, ruleTest }),
+      )
+      requireCurrent(captured)
+      if (first.projectId !== projectId) throw new Error('PERMISSION_DENIED')
+      let orderMatch: boolean | null = null
+      if (sample.preset === 'order-independent') {
+        const second = requireWorkspaceReply(
+          await bridge.getProjectQualityState({
+            projectId,
+            ruleTest: { ...ruleTest, rules: [...rules].reverse() },
+          }),
+        )
+        requireCurrent(captured)
+        const read = (state: ProjectQualityReadDTO) => state.ruleTestResult ?? null
+        orderMatch =
+          Boolean(read(first)) &&
+          Boolean(read(second)) &&
+          JSON.stringify([read(first)!.actualOutputs, read(first)!.warnings]) ===
+            JSON.stringify([read(second)!.actualOutputs, read(second)!.warnings])
+      }
+      setSampleOutput({ result: first.ruleTestResult ?? null, orderMatch })
+    })
+  }
+
   const definitions = form.kind === 'rule' ? quality?.state.rules : quality?.state.constraints
   const original = definitions?.find((item) => item.id === selected)
   const readOnly = original?.format === 'legacy' || original?.format === 'turtle'
   const blocked = disabled || busy || Boolean(proposal) || !quality
+  const chainDependencies =
+    form.kind === 'rule' && quality
+      ? detectRuleChainDependencies(
+          {
+            id: form.identity,
+            enabled: form.enabled,
+            conditions: form.conditions,
+            conclusions: form.conclusions,
+          },
+          quality.state.rules.flatMap((rule) =>
+            rule.format === 'fr505'
+              ? [
+                  {
+                    id: rule.id,
+                    enabled: rule.enabled,
+                    conditions: rule.conditions.map(fromPattern),
+                    conclusions: rule.conclusions.map(fromPattern),
+                  },
+                ]
+              : [],
+          ),
+        )
+      : []
   return (
     <div className="quality-workspace">
       <h2>质量与推导</h2>
@@ -658,6 +1008,9 @@ export function QualityWorkspace({
               {definitions?.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.id} · {item.enabled ? '已启用' : '已停用'}
+                  {item.revision !== undefined && ` · rev ${item.revision}`}
+                  {(item.format === 'legacy' || item.format === 'turtle') &&
+                    ' · 仅查看（不支持编辑）'}
                 </option>
               ))}
             </select>
@@ -773,6 +1126,17 @@ export function QualityWorkspace({
                       conclusions
                     />
                     <p>规则读取同一份断言与 RDFS 快照。P0 不支持规则链。</p>
+                    {chainDependencies.length > 0 && (
+                      <p role="status" data-testid="quality-editor-chain-warning">
+                        当前版本不支持规则链：
+                        {chainDependencies
+                          .map(
+                            (dependency) =>
+                              `${dependency.producerRuleId} → ${dependency.consumerRuleId}`,
+                          )
+                          .join('、')}
+                      </p>
+                    )}
                   </>
                 )}
                 <button type="submit">读取完整差异</button>
@@ -811,6 +1175,130 @@ export function QualityWorkspace({
             )}
           </fieldset>
         </form>
+      </details>
+      <details data-testid="quality-rule-sample-tester">
+        <summary>规则样本测试（FR-505）</summary>
+        <p>用临时样本驱动真实引擎评估规则：不修改、不提交正式项目定义，也不写入项目事实。</p>
+        <fieldset disabled={blocked}>
+          <legend>样本定义</legend>
+          <label htmlFor={field('sample-preset')}>预设样例</label>
+          <select
+            id={field('sample-preset')}
+            data-testid="quality-sample-preset"
+            value={sample.preset}
+            onChange={(event) => applySamplePreset(event.target.value as SamplePreset)}
+          >
+            <option value="rdfs-trigger">RDFS range 推导触发规则</option>
+            <option value="rule-chain-unsupported">规则链不支持（R-risk → R-next）</option>
+            <option value="order-independent">规则顺序无关双序比对</option>
+            <option value="current-draft">载入当前编辑器草稿规则</option>
+          </select>
+          <label htmlFor={field('sample-ontology')}>
+            本体三元组（每行 [主体, 属性, 客体] 或空格 3 列）
+          </label>
+          <textarea
+            id={field('sample-ontology')}
+            data-testid="quality-sample-ontology"
+            rows={3}
+            value={sample.ontology}
+            onChange={(event) => setSample((value) => ({ ...value, ontology: event.target.value }))}
+          />
+          <label htmlFor={field('sample-inputs')}>
+            输入样本三元组（每行一条；非法 RDF 项由引擎返回精确定位）
+          </label>
+          <textarea
+            id={field('sample-inputs')}
+            data-testid="quality-sample-inputs"
+            rows={3}
+            value={sample.inputs}
+            onChange={(event) => setSample((value) => ({ ...value, inputs: event.target.value }))}
+          />
+          <label htmlFor={field('sample-expected')}>预期输出三元组</label>
+          <textarea
+            id={field('sample-expected')}
+            data-testid="quality-sample-expected"
+            rows={3}
+            value={sample.expected}
+            onChange={(event) => setSample((value) => ({ ...value, expected: event.target.value }))}
+          />
+          <label htmlFor={field('sample-rules')}>测试规则（FR-505 条件/结论的 JSON 数组）</label>
+          <textarea
+            id={field('sample-rules')}
+            data-testid="quality-sample-rules"
+            rows={8}
+            value={sample.rules}
+            onChange={(event) => setSample((value) => ({ ...value, rules: event.target.value }))}
+          />
+          <button
+            type="button"
+            data-testid="quality-btn-run-sample"
+            disabled={blocked}
+            onClick={runSampleTest}
+          >
+            运行样本测试
+          </button>
+        </fieldset>
+        <section data-testid="quality-sample-result" aria-label="样本测试结果">
+          {!sampleOutput && <p>尚未运行样本评估；运行后在此对比实际与预期输出。</p>}
+          {sampleOutput && (
+            <>
+              <p data-testid="quality-sample-verdict">
+                样本评估:{sampleOutput.result ? '' : '（引擎未返回样本结果）'}
+                {sampleOutput.result &&
+                  ` ${sampleOutput.result.valid ? '结构有效' : '存在校验错误'} · 预期${
+                    sampleOutput.result.matchesExpected ? '一致' : '不一致'
+                  }`}
+                {sampleOutput.orderMatch !== null &&
+                  ` · 正反保存顺序对比一致：${sampleOutput.orderMatch ? '是' : '否'}`}
+              </p>
+              {sampleOutput.result && sampleOutput.result.diagnostics.length > 0 && (
+                <ul data-testid="quality-sample-diagnostics" aria-label="校验错误定位">
+                  {sampleOutput.result.diagnostics.map((diagnostic, index) => (
+                    <li key={index}>
+                      {diagnostic.stage}[{diagnostic.index}]
+                      {diagnostic.ruleId ? ` · ${diagnostic.ruleId}` : ''} ·{' '}
+                      {diagnostic.field || '-'} · {diagnostic.code} · {diagnostic.message}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {sampleOutput.result && sampleOutput.result.warnings.length > 0 && (
+                <ul aria-label="样本测试提示">
+                  {sampleOutput.result.warnings.map((warning, index) => (
+                    <li key={index}>
+                      {warning.includes('RULE_CHAIN_UNSUPPORTED')
+                        ? `不支持规则链。规则输出不会进入后续规则或 RDFS 的输入。 ${warning}`
+                        : warning}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {sampleOutput.result && (
+                <>
+                  <StatementTable title="实际输出" rows={sampleOutput.result.actualOutputs} />
+                  <StatementTable title="RDFS 推导输出" rows={sampleOutput.result.rdfsOutputs} />
+                  <StatementTable title="预期输出" rows={sampleOutput.result.expectedOutputs} />
+                  <StatementTable title="缺失预期" rows={sampleOutput.result.missingOutputs} />
+                  <StatementTable title="多余输出" rows={sampleOutput.result.unexpectedOutputs} />
+                  {sampleOutput.result.ruleTraces.length > 0 && (
+                    <details>
+                      <summary>样本规则推导依据（{sampleOutput.result.ruleTraces.length}）</summary>
+                      {sampleOutput.result.ruleTraces.map((trace, index) => (
+                        <article key={index}>
+                          <h4>{trace.rule ?? '规则'}</h4>
+                          <StatementTable title="输入事实" rows={trace.inputs} />
+                          {trace.output && (
+                            <StatementTable title="推导结论" rows={[trace.output]} />
+                          )}
+                        </article>
+                      ))}
+                    </details>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </section>
       </details>
       {proposal && (
         <section aria-label="完整差异">

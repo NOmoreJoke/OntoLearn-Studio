@@ -277,6 +277,7 @@ export function registerDesktopIpc({
           'project:learning-observation-record',
           'project:learning-task-check',
           'project:quality-check',
+          'project:quality-prepare',
           'query:execute-saved',
           'job:cancel',
         ].includes(channel)

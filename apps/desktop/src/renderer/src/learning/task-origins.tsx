@@ -14,7 +14,7 @@ const questions = {
     { id: 'learning-lx01-origin-l02', label: 'person/L02 a Person' },
   ],
   'transfer-classify': [
-    { id: 'learning-transfer-origin-0', label: 'equipment/201 a Equipment' },
+    { id: 'learning-transfer-origin-0', label: 'equipment/201 name "检测泵"' },
     { id: 'learning-transfer-origin-1', label: 'equipment/201 a HighRiskEquipment' },
   ],
 } as const

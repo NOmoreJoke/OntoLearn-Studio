@@ -213,7 +213,8 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
             window.calls = []
             window.mountSource = value => render(TruncatedSourceText, { value })
             window.clickSourceToggle = button => flushSync(() => button.click())
-            window.mountQuality = () => {
+            window.mountQuality = (mode) => {
+              mode = mode || 'plain'
               const metadata = { state: 'stale', inputSnapshotId: snapshot, staleReasons: [
                 { code: 'FACTS_CHANGED', dependency: 'facts', before: 1, after: 2 }
               ]}
@@ -221,19 +222,47 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
               const finding = {
                 tier: 'violation', focusNode: 'urn:test:pump', path: 'urn:test:name',
                 constraint: 'required', sourceShape: 'urn:test:shape', value: null,
+                ...(mode === 'coverage' ? { definitionId: 'name-required' } : {}),
                 targets: { subject: 'urn:test:pump', predicate: 'urn:test:name', object: null },
               }
-              const state = {
+              const base = {
                 qualityReadVersion: 1, projectId, rules: [], constraints: [],
                 reasoning: { ...metadata, derivation: { rules: [triple], rdfs: [], ruleTraces: [
                   { rule: 'R-risk', output: triple, inputs: [triple] }
                 ], rdfsTraces: [], warnings: ['RULE_CHAIN_UNSUPPORTED'] }},
                 validation: { ...metadata, conforms: false, findings: [finding] },
               }
+              let state = base
+              if (mode === 'coverage') {
+                state = { ...base,
+                  validation: { ...metadata, state: 'current', staleReasons: [], conforms: null,
+                    scope: 'asserted', inputProjectRevision: 7,
+                    checkedConstraintIds: ['name-required'],
+                    unverifiedConstraintIds: ['unverified-shape'], failedConstraintIds: ['failed-shape'],
+                    findings: [] },
+                  snapshotsAligned: false }
+              }
+              if (mode === 'chain') {
+                state = { ...base, rules: [{ id: 'R-risk', enabled: true, revision: 3, format: 'fr505',
+                  label: 'R-risk 分类',
+                  conditions: [{ kind: 'type', subject: '?equipment', class: 'urn:test:Equipment' }],
+                  conclusions: [{ kind: 'type', subject: '?equipment', class: 'urn:test:HighRisk' }] }] }
+              }
               const current = {
                 ...state,
                 reasoning: { ...state.reasoning, state: 'current', staleReasons: [] },
                 validation: { ...state.validation, state: 'current', staleReasons: [], conforms: true, findings: [] },
+              }
+              const sampleResult = {
+                valid: true, matchesExpected: false,
+                actualOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:object>']],
+                rdfsOutputs: [['urn:test:person/L02', 'urn:test:type', '<urn:test:Person>']],
+                expectedOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:missing>']],
+                missingOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:missing>']],
+                unexpectedOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:object>']],
+                ruleTraces: [], warnings: ['RULE_CHAIN_UNSUPPORTED:R-next'],
+                diagnostics: [{ stage: 'input', index: 0, ruleId: null, field: '2', code: 'INVALID_TERM',
+                  message: 'INVALID_TERM：input[0] 2 校验失败' }],
               }
               render(QualityWorkspace, {
                 projectId,
@@ -244,7 +273,14 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
                     calls.push(['read', args])
                     return ok({ projectId, inputSnapshotId: snapshot, domain: { projectRevision: 2, state: { definitions: [], facts: [] } } })
                   },
-                  async getProjectQualityState(args) { calls.push(['quality', args]); return ok(state) },
+                  async getProjectQualityState(args) {
+                    calls.push(['quality', args])
+                    if (args.ruleTest) {
+                      calls.push(['sample', args.ruleTest.rules.map((rule) => rule.id), args.ruleTest.inputTriples.length])
+                      return ok({ ...state, ruleTestResult: sampleResult })
+                    }
+                    return ok(state)
+                  },
                   async runProjectQualityCheck(args) {
                     calls.push(['check', args.validationScope])
                     return ok({ projectId, qualityState: current,
@@ -390,6 +426,59 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
     expect(calls.filter((call) => Array.isArray(call) && call[0] === 'snapshot')).toHaveLength(2)
   })
 
+  it('surfaces incomplete coverage, snapshot mismatch and revision without claiming conformance', async () => {
+    await page.evaluate(() =>
+      (window as unknown as { mountQuality(mode?: string): void }).mountQuality('coverage'),
+    )
+    const coverage = page.getByTestId('quality-validation-coverage')
+    await coverage.waitFor()
+    const coverageText = await coverage.textContent()
+    expect(coverageText).toContain('未判定为符合约束')
+    expect(coverageText).toContain('未检：unverified-shape')
+    expect(coverageText).toContain('失败：failed-shape')
+    const mismatch = page.getByTestId('quality-snapshot-mismatch')
+    await mismatch.waitFor()
+    expect(await mismatch.textContent()).toContain('不同快照')
+    const state = page.getByTestId('quality-validation-state')
+    const stateText = await state.textContent()
+    expect(stateText).toContain('范围 asserted')
+    expect(stateText).toContain('rev 7')
+    expect(await state.getAttribute('data-conforms')).toBe(null)
+    expect(stateText).not.toContain('· 符合约束')
+  })
+
+  it('warns live while composing a chained rule and runs FR-505 samples through the bridge', async () => {
+    await page.evaluate(() =>
+      (window as unknown as { mountQuality(mode?: string): void }).mountQuality('chain'),
+    )
+    await page.getByLabel('定义类型', { exact: true }).selectOption('rule')
+    await page.getByLabel('稳定标识', { exact: true }).fill('R-next')
+    const row = page
+      .getByRole('group', { name: '全部满足以下条件（合取）' })
+      .locator('.quality-pattern')
+      .first()
+    await row.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await row.getByLabel('类 IRI', { exact: true }).fill('urn:test:HighRisk')
+    const warning = page.getByTestId('quality-editor-chain-warning')
+    await warning.waitFor()
+    const warningText = await warning.textContent()
+    expect(warningText).toContain('R-risk → R-next')
+    expect(warningText).toContain('R-next → R-next')
+
+    await page.getByTestId('quality-rule-sample-tester').locator('summary').click()
+    await page.getByTestId('quality-sample-preset').selectOption('rule-chain-unsupported')
+    await page.getByTestId('quality-btn-run-sample').click()
+    const result = page.getByTestId('quality-sample-result')
+    await result.getByText('预期不一致').waitFor()
+    const resultText = await result.textContent()
+    expect(resultText).toContain('urn:test:object')
+    expect(resultText).toContain('urn:test:missing')
+    expect(resultText).toContain('INVALID_TERM')
+    expect(resultText).toContain('input[0]')
+    const calls = await page.evaluate(() => (window as unknown as { calls: unknown[] }).calls)
+    expect(calls).toContainEqual(['sample', ['R-risk', 'R-next'], 2])
+  })
+
   it('forwards temporary LX-01 and transfer selections through the Mentor controller', async () => {
     await page.evaluate(() => (window as unknown as { mountMentor(): Promise<void> }).mountMentor())
     const check = page.getByTestId('mentor-btn-check')
@@ -402,6 +491,7 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
         id,
       )
     await focus('transfer-classify')
+    await page.getByText('equipment/201 name "检测泵"').waitFor()
     const first = page.getByTestId('learning-transfer-origin-0')
     expect(await first.inputValue()).toBe('')
     await first.selectOption('asserted')

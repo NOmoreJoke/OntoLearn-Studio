@@ -3,13 +3,18 @@ import type {
   ProjectQualityCheckArgs,
   ProjectQualityPrepareDTO,
   ProjectQualityReadDTO,
+  QualityRuleTestRequestDTO,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '@ontolearn/contracts/v2'
 import {
   compareStatements,
   type Statement,
 } from '../../apps/desktop/src/renderer/src/quality/presentation'
-import { prepareEditorDraft } from '../../apps/desktop/src/renderer/src/quality/draft'
+import {
+  detectRuleChainDependencies,
+  prepareEditorDraft,
+  type Pattern,
+} from '../../apps/desktop/src/renderer/src/quality/draft'
 import fixtures from '../../packages/contracts/v2/fixtures.json'
 
 const projectId = 'c0000000-0000-4000-8000-000000000001'
@@ -149,6 +154,160 @@ describe('formal quality workspace contracts', () => {
       }),
     ).toBe(false)
   })
+
+  it('accepts optional ruleTest reads and full coverage fields on both quality wire schemas', () => {
+    const ruleTest: QualityRuleTestRequestDTO = {
+      ontologyTriples: [
+        [
+          'urn:ontolearn:learning:assignedTo',
+          'http://www.w3.org/2000/01/rdf-schema#range',
+          '<urn:ontolearn:learning:Person>',
+        ],
+      ],
+      inputTriples: [
+        [
+          'urn:ontolearn:learning:equipment/002',
+          'urn:ontolearn:learning:assignedTo',
+          '<urn:ontolearn:learning:person/L02>',
+        ],
+      ],
+      rules: [
+        {
+          id: 'rdfs-trigger',
+          label: '读取 Person 推导 Flagged',
+          enabled: true,
+          conditions: [
+            { kind: 'type', subject: '?person', class: 'urn:ontolearn:learning:Person' },
+          ],
+          conclusions: [
+            { kind: 'type', subject: '?person', class: 'urn:ontolearn:learning:Flagged' },
+          ],
+        },
+      ],
+      expectedOutputs: [
+        [
+          'urn:ontolearn:learning:person/L02',
+          'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+          '<urn:ontolearn:learning:Flagged>',
+        ],
+      ],
+    }
+    expect(validateBusiness3('params_project.quality.read', { projectId })).toBe(true)
+    expect(validateBusiness3('params_project.quality.read', { projectId, ruleTest })).toBe(true)
+    expect(
+      validateBusiness3('params_project.quality.read', {
+        projectId,
+        ruleTest: { ...ruleTest, inputTriples: [] },
+      }),
+    ).toBe(false)
+    expect(
+      validateBusiness3('params_project.quality.read', {
+        projectId,
+        ruleTest: { ...ruleTest, unknown: true },
+      }),
+    ).toBe(false)
+
+    const resultId = 'c0000000-0000-4000-8000-000000000003'
+    const jobId = 'c0000000-0000-4000-8000-000000000004'
+    const hash = 'a'.repeat(64)
+    const covered: ProjectQualityReadDTO = {
+      qualityReadVersion: 1,
+      projectId,
+      rules: [],
+      constraints: [],
+      reasoning: {
+        resultId,
+        jobId,
+        state: 'current',
+        staleReasons: [],
+        inputSnapshotId: hash,
+        scope: 'asserted',
+        definitionId: 'all-rules',
+      },
+      validation: {
+        resultId,
+        jobId,
+        state: 'current',
+        staleReasons: [],
+        inputSnapshotId: hash,
+        scope: 'asserted',
+        definitionId: 'name-required',
+        conforms: null,
+        inputProjectRevision: 7,
+        checkedConstraintIds: ['name-required'],
+        unverifiedConstraintIds: ['disabled-shape'],
+        failedConstraintIds: ['broken-shape'],
+        findings: [
+          {
+            tier: 'warning',
+            focusNode: 'urn:test:pump',
+            path: 'urn:test:name',
+            constraint: 'required',
+            sourceShape: null,
+            value: null,
+            definitionId: 'name-required',
+            targets: { subject: 'urn:test:pump', predicate: 'urn:test:name', object: null },
+          },
+        ],
+      },
+      snapshotsAligned: false,
+      ruleTestResult: {
+        valid: true,
+        matchesExpected: true,
+        actualOutputs: [
+          [
+            'urn:ontolearn:learning:person/L02',
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+            '<urn:ontolearn:learning:Flagged>',
+          ],
+        ],
+        rdfsOutputs: [
+          [
+            'urn:ontolearn:learning:person/L02',
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+            '<urn:ontolearn:learning:Person>',
+          ],
+        ],
+        expectedOutputs: [],
+        missingOutputs: [],
+        unexpectedOutputs: [],
+        ruleTraces: [{ rule: 'rdfs-trigger', output: null, inputs: [] }],
+        warnings: ['RULE_CHAIN_UNSUPPORTED:rdfs-trigger'],
+        diagnostics: [
+          {
+            stage: 'input',
+            index: 0,
+            ruleId: null,
+            field: '2',
+            code: 'INVALID_TERM',
+            message: 'INVALID_TERM：input[0] 2 校验失败',
+          },
+        ],
+      },
+    }
+    expect(validateBusiness3('result_project.quality.read', covered)).toBe(true)
+    expect(
+      validateBusiness3('result_project.quality.read', {
+        ...covered,
+        ruleTestResult: { valid: true },
+      }),
+    ).toBe(false)
+    expect(
+      validateBusiness3('result_project.quality.read', {
+        ...covered,
+        validation: { ...covered.validation!, conforms: 'unknown' },
+      }),
+    ).toBe(false)
+    expect(
+      validateBusiness3('result_project.quality.read', {
+        ...covered,
+        validation: {
+          ...covered.validation!,
+          findings: [{ ...covered.validation!.findings[0]!, definitionId: '不合法 标识' }],
+        },
+      }),
+    ).toBe(false)
+  })
 })
 
 describe('seeded quality properties', () => {
@@ -194,6 +353,83 @@ describe('seeded quality properties', () => {
     expect(
       prepareEditorDraft({ ...form, parameter: String(Number.MAX_SAFE_INTEGER + 1) }).error,
     ).toBeTruthy()
+  })
+
+  it('predicts engine rule-chain pairs for draft rules including self chains', () => {
+    const type = (value: string): Pattern => ({ kind: 'type', subject: '?x', path: '', value })
+    const property = (path: string, value: string): Pattern => ({
+      kind: 'property',
+      subject: '?x',
+      path,
+      value,
+    })
+    const rule = (id: string, conditions: Pattern[], conclusions: Pattern[], enabled = true) => ({
+      id,
+      enabled,
+      conditions,
+      conclusions,
+    })
+    const existing = [
+      rule('R-risk', [type('urn:test:Equipment')], [type('urn:test:HighRisk')]),
+      rule('R-off', [type('urn:test:Off')], [type('urn:test:OffOut')], false),
+    ]
+    // Exact (kind, target) overlap: R-risk writes what R-next reads; the type
+    // read additionally matches R-next's own conclusions (enabled self chain).
+    expect(
+      detectRuleChainDependencies(
+        rule('R-next', [type('urn:test:HighRisk')], [type('urn:test:Inspect')]),
+        existing,
+      ),
+    ).toEqual([
+      { producerRuleId: 'R-risk', consumerRuleId: 'R-next' },
+      { producerRuleId: 'R-next', consumerRuleId: 'R-next' },
+    ])
+    // A type read matches any producer conclusion (and the enabled draft itself).
+    expect(
+      detectRuleChainDependencies(
+        rule('R-any', [type('urn:test:Unrelated')], [type('urn:test:Out')]),
+        existing,
+      ),
+    ).toEqual([
+      { producerRuleId: 'R-risk', consumerRuleId: 'R-any' },
+      { producerRuleId: 'R-any', consumerRuleId: 'R-any' },
+    ])
+    // rdf:type property rows are type signatures; compare rows never read.
+    const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+    expect(
+      detectRuleChainDependencies(
+        rule(
+          'R-via-path',
+          [property(rdfType, '<urn:test:HighRisk>')],
+          [property('urn:test:tag', '"yes"')],
+        ),
+        existing,
+      ),
+    ).toEqual([
+      { producerRuleId: 'R-risk', consumerRuleId: 'R-via-path' },
+      { producerRuleId: 'R-via-path', consumerRuleId: 'R-via-path' },
+    ])
+    // Disjoint property signatures without a type read stay silent, including self.
+    expect(
+      detectRuleChainDependencies(
+        rule('R-quiet', [property('urn:test:risk', '"High"')], [property('urn:test:tag', '"yes"')]),
+        [rule('R-risk', [type('urn:test:Equipment')], [type('urn:test:HighRisk')])],
+      ),
+    ).toEqual([])
+    // Disabled drafts lose the self chain; editing a rule replaces its saved copy.
+    expect(
+      detectRuleChainDependencies(
+        rule('R-risk', [type('urn:test:Equipment')], [type('urn:test:HighRisk')], false),
+        [rule('R-risk', [type('urn:test:Equipment')], [type('urn:test:HighRisk')])],
+      ),
+    ).toEqual([])
+    // Disabled existing rules are never producers; only the enabled self remains.
+    expect(
+      detectRuleChainDependencies(
+        rule('R-next', [type('urn:test:OffOut')], [type('urn:test:Inspect')]),
+        [rule('R-off', [type('urn:test:Off')], [type('urn:test:OffOut')], false)],
+      ),
+    ).toEqual([{ producerRuleId: 'R-next', consumerRuleId: 'R-next' }])
   })
 
   it('compares statement sets symmetrically and ignores duplicates and order', () => {

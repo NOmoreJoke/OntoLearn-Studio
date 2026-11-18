@@ -4,6 +4,11 @@ import { execFileSync } from 'node:child_process'
 import { join, resolve } from 'node:path'
 import { launchIsolatedDesktop } from './isolated-desktop'
 
+/**
+ * 每个 Playwright `test(...)` 启动独立隔离应用库，`transfer-repair` 与
+ * `transfer-classify` 共用同一隔离库内三个互不重叠的 `projectId`。
+ */
+
 const learning = 'urn:ontolearn:learning:'
 const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 const equipment = (number: string) => learning + 'equipment/' + number
@@ -512,6 +517,40 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
     )
     await expect(quality.getByTestId('quality-findings').getByText(equipment('003'))).toHaveCount(0)
 
+    stage = 'FR-505 sample tester: RDFS trigger, unsupported chain, order independence, diagnostics'
+    await quality.getByTestId('quality-rule-sample-tester').locator('summary').click()
+    const sampleResult = quality.getByTestId('quality-sample-result')
+    await quality.getByTestId('quality-sample-preset').selectOption('rdfs-trigger')
+    await quality.getByTestId('quality-btn-run-sample').click()
+    await expect(sampleResult).toContainText('预期一致')
+    await expect(sampleResult).toContainText(learning + 'Flagged')
+    await expect(sampleResult).toContainText(person('L02'))
+    await quality.getByTestId('quality-sample-preset').selectOption('rule-chain-unsupported')
+    await quality.getByTestId('quality-btn-run-sample').click()
+    await expect(sampleResult).toContainText('RULE_CHAIN_UNSUPPORTED:R-next')
+    await expect(sampleResult).not.toContainText('NeedsInspection')
+    await quality.getByTestId('quality-sample-preset').selectOption('order-independent')
+    await quality.getByTestId('quality-btn-run-sample').click()
+    await expect(sampleResult).toContainText('正反保存顺序对比一致：是')
+    await quality
+      .getByTestId('quality-sample-inputs')
+      .fill([equipment('201'), learning + 'risk', 'BareToken'].join(' '))
+    await quality.getByTestId('quality-btn-run-sample').click()
+    await expect(sampleResult).toContainText('INVALID_TERM')
+    await expect(sampleResult).toContainText('input[0]')
+
+    stage = 'live rule-chain warning while composing R-next against the saved R-risk'
+    await quality.getByLabel('定义类型', { exact: true }).selectOption('rule')
+    await quality.getByLabel('现有定义', { exact: true }).selectOption('')
+    await quality.getByLabel('稳定标识', { exact: true }).fill('R-next')
+    const chainCondition = quality
+      .getByRole('group', { name: '全部满足以下条件（合取）' })
+      .locator('.quality-pattern')
+      .first()
+    await chainCondition.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await chainCondition.getByLabel('类 IRI', { exact: true }).fill(learning + 'HighRiskEquipment')
+    await expect(quality.getByTestId('quality-editor-chain-warning')).toContainText('R-risk')
+
     stage = 'run derived query through its loaded definition and read fixed rows and executed text'
     const query = await openQuery(page)
     await loadQuery(query, derivedQueryId)
@@ -714,6 +753,7 @@ test('W3a B3 independent transfer-repair and transfer-classify cases', async () 
     stage =
       'transfer-classify reasons with no enabled validation constraints and passes using origins'
     await focusTask(page, 'transfer-classify')
+    await expect(mentor).toContainText('equipment/201 name "检测泵"')
     const classification = await loadTaskFixture(page)
     expect(new Set([project, repair, classification]).size).toBe(3)
     evidence.classificationProject = classification

@@ -33,6 +33,7 @@ import {
   type ProjectLearningTaskCheckDTO,
   type ProjectQualityCheckArgs,
   type ProjectQualityPrepareDTO,
+  type ProjectQualityReadArgs,
   type ProjectQualityReadDTO,
   type QualityJobInputDTO,
   type QualityRunReceiptDTO,
@@ -570,9 +571,9 @@ export class ProjectMainlineService implements MainlineProjectBridge {
       throw invalid()
     return value
   }
-  getProjectQualityState(args: {
-    projectId: string
-  }): Promise<BridgeResult<ProjectQualityReadDTO>> {
+  getProjectQualityState(
+    args: ProjectQualityReadArgs,
+  ): Promise<BridgeResult<ProjectQualityReadDTO>> {
     return this.#run(() => {
       const current = this.#current()
       const client = this.#client()
