@@ -11,6 +11,7 @@ the FR-004 guard: passing these tasks never mints a guided-stage checkpoint.
 
 import asyncio
 import base64
+import hashlib
 import json
 import random
 from pathlib import Path
@@ -177,8 +178,55 @@ def request_input(snapshot_id, definition="quality-reasoning", scope="asserted")
     }
 
 
-def run_semantic(store, project, capability, definition="quality-reasoning", scope="asserted"):
+def run_semantic(
+    store, project, capability, definition="quality-reasoning", scope="asserted", derived=None
+):
     """Real JobStore + worker execution of one semantic job."""
+    snapshot_id = store.project_get(project)["inputSnapshotId"]
+    input_ = {
+        "inputSnapshotId": snapshot_id,
+        "scope": scope,
+        "definitionId": definition,
+        "parametersHash": store.put_blob(project, {"inputSelection": "current"}),
+        "derivedResultIds": list(derived or []),
+        "preparedPlanRef": None,
+    }
+    job = store.create_job(project, uid(), capability, input_, None, semantic_identity(), LIMITS)
+
+    async def drive():
+        actor = Coordinator(
+            store,
+            profile="business3",
+            _ready=_JOB_READY,
+            test_mode=True,
+            allowed_projects={project},
+            emit=lambda _message: None,
+        )
+        actor.version = 3
+        actor.session = uid()
+        actor.subscriptions[uid()] = {
+            "projectId": project,
+            "jobId": job["jobId"],
+            "stateVersion": job["stateVersion"],
+            "seq": 0,
+        }
+        try:
+            actor.queued.append(job["jobId"])
+            await actor.tick()
+            await asyncio.wait_for(asyncio.gather(*tuple(actor.tasks)), timeout=WORKER_TIMEOUT)
+            return store.get_job(project, job["jobId"])
+        finally:
+            await actor.stop()
+
+    terminal = asyncio.run(drive())
+    assert terminal["state"] == "succeeded", terminal.get("error") or terminal
+    return terminal
+
+
+def run_semantic_expect_failure(
+    store, project, capability, definition="quality-reasoning", scope="asserted"
+):
+    """Real execution expected to end in the failed state (broken shapes)."""
     snapshot_id = store.project_get(project)["inputSnapshotId"]
     input_ = {
         "inputSnapshotId": snapshot_id,
@@ -215,9 +263,7 @@ def run_semantic(store, project, capability, definition="quality-reasoning", sco
         finally:
             await actor.stop()
 
-    terminal = asyncio.run(drive())
-    assert terminal["state"] == "succeeded", terminal.get("error") or terminal
-    return terminal
+    return asyncio.run(drive())
 
 
 def result_payload(store, job):
@@ -276,6 +322,11 @@ PERMUTATION_ONTOLOGY = [
         "object": "<http://www.w3.org/2002/07/owl#Class>",
     },
     {
+        "subject": L + "NeedsInspection",
+        "predicate": RDF_TYPE,
+        "object": "<http://www.w3.org/2002/07/owl#Class>",
+    },
+    {
         "subject": L + "score",
         "predicate": RDF_TYPE,
         "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>",
@@ -297,6 +348,37 @@ PERMUTATION_FACTS = [
         },
     )
 ]
+
+# A chained formal rule consuming the comparison rules' Flagged outputs: the
+# planner flags the chain and the one-stage engine never re-feeds rule rows,
+# so NeedsInspection must never appear in any closure or validation.
+FORMAL_R_FLAG_NEXT = {
+    "layer": "rule",
+    "id": "R-flag-next",
+    "value": {
+        "schemaVersion": 1,
+        "kind": "rule",
+        "id": "R-flag-next",
+        "revision": 1,
+        "label": "链式巡检",
+        "enabled": True,
+        "conditions": [{"kind": "type", "subject": "?e", "class": L + "Flagged"}],
+        "conclusions": [{"kind": "type", "subject": "?e", "class": L + "NeedsInspection"}],
+    },
+}
+
+PERMUTATION_SCORE_RANGE = {
+    "schemaVersion": 1,
+    "kind": "constraint",
+    "id": "score-range",
+    "revision": 1,
+    "label": "分数范围",
+    "enabled": True,
+    "targetClass": L + "Equipment",
+    "path": L + "score",
+    "template": "numericRange",
+    "parameters": {"minInclusive": "2", "maxInclusive": "3"},
+}
 
 
 def _permuted_project(store, actor, rng, items, facts):
@@ -337,6 +419,8 @@ def test_save_order_permutation_produces_identical_derived_and_findings(owned, s
     # and facts, only in independently permuted orders/chunks. Four controlled
     # rules fit the audited per-rule input budget; the operator subset rotates
     # by seed so all six operators get exercised across the property cases.
+    # The chained R-flag-next rule and the score-range constraint extend the
+    # same invariance to the rule-chain warning and the real SHACL projection.
     operators = [["eq", "ne", "lt", "le"], ["gt", "ge", "eq", "ne"], ["le", "gt", "lt", "ge"]][
         seed % 3
     ]
@@ -346,7 +430,9 @@ def test_save_order_permutation_produces_identical_derived_and_findings(owned, s
             "layer": "ontology",
             "id": "perm.ontology",
             "value": {"triples": list(PERMUTATION_ONTOLOGY), "singleValuedPredicates": []},
-        }
+        },
+        FORMAL_R_FLAG_NEXT,
+        {"layer": "constraint", "id": "score-range", "value": dict(PERMUTATION_SCORE_RANGE)},
     ] + [
         _operator_rule(index, operator, thresholds[index])
         for index, operator in enumerate(operators)
@@ -369,16 +455,54 @@ def test_save_order_permutation_produces_identical_derived_and_findings(owned, s
             error_schema=CONTRACT.DOCUMENT,
         )
         payload = out["payload"]
-        return payload["reasoning"]["rules"], payload["reasoning"]["warnings"]
+        return payload["reasoning"], payload["reasoning"]["warnings"]
 
-    rules_a, warnings_a = outcome(first)
-    rules_b, warnings_b = outcome(second)
-    assert rules_a == rules_b
+    body_a, warnings_a = outcome(first)
+    body_b, warnings_b = outcome(second)
+    assert body_a["rules"] == body_b["rules"]
     assert warnings_a == warnings_b
+    # The static rule chain is flagged identically on both sides and the
+    # blocked NeedsInspection derivations never enter the one-stage closure.
+    assert any(text.startswith("RULE_CHAIN_UNSUPPORTED:R-flag-next") for text in warnings_a)
+    assert all(t[2] != f"<{L}NeedsInspection>" for t in body_a["rules"])
     # The controlled comparison rules actually fired on the score facts.
-    assert rules_a, "controlled comparison rules must derive at least one triple"
-    flagged = {tuple(t) for t in rules_a}
+    assert body_a["rules"], "controlled comparison rules must derive at least one triple"
+    flagged = {tuple(t) for t in body_a["rules"]}
     assert all(t[2] == "<urn:ontolearn:learning:Flagged>" for t in flagged)
+
+    # Real end-to-end chain on a deterministic seed sample (5 of 50): the
+    # persisted reasoning result plus a real asserted+derived validation
+    # execute must stay byte-identical across independently permuted saves.
+    if seed % 10 == 0:
+
+        def real_chain(project):
+            reasoning = run_semantic(store, project, "reasoning.execute")
+            body = result_payload(store, reasoning)["reasoning"]
+            validation = run_semantic(
+                store,
+                project,
+                "validation.execute",
+                definition="score-range",
+                scope="asserted+derived",
+                derived=[reasoning["resultRef"]["resultId"]],
+            )
+            report = result_payload(store, validation)["report"]
+            traces = [
+                (entry["rule"], entry["result"], entry["inputs"]) for entry in body["evidence"]
+            ]
+            return traces, list(body["warnings"]), report
+
+        traces_a, runtime_warnings_a, report_a = real_chain(first)
+        traces_b, runtime_warnings_b, report_b = real_chain(second)
+        assert traces_a == traces_b
+        assert runtime_warnings_a == runtime_warnings_b
+        assert report_a["conforms"] == report_b["conforms"]
+        assert report_a["violations"] == report_b["violations"]
+        assert not report_a["conforms"], "score 1 is outside [2, 3] in every permutation"
+        assert any(
+            text.startswith("RULE_CHAIN_UNSUPPORTED:R-flag-next") for text in runtime_warnings_a
+        )
+        assert all(t[2] != f"<{L}NeedsInspection>" for t in traces_a)
 
 
 # --------------------------------------------------------------------------
@@ -783,7 +907,9 @@ def test_quality_task_checks_pass_and_isolate_guided_stage(owned):
     )
     run_semantic(store, project, "reasoning.execute")
 
-    # LX-01: domain/range axioms, business-ontology prerequisites, repair, re-run.
+    # LX-01 steps 1-2: domain/range axioms plus the assignedTo prerequisite
+    # state (person/L01, equipment/001) WITHOUT the repair facts, the second
+    # constraint, then the pre-repair reasoning and its asserted SHACL check.
     commit_state(
         store,
         project,
@@ -796,10 +922,34 @@ def test_quality_task_checks_pass_and_isolate_guided_stage(owned):
                     "singleValuedPredicates": G_BASE["singleValuedPredicates"],
                 },
             },
+            {
+                "layer": "constraint",
+                "id": "assigned-to-required",
+                "value": dict(ASSIGNED_TO_REQUIRED),
+            },
         ],
-        manual=[*LX_PREREQ_FACTS, *LX_REPAIR_FACTS],
+        manual=list(LX_PREREQ_FACTS),
     )
-    run_semantic(store, project, "reasoning.execute")
+    run_semantic(store, project, "reasoning.execute")  # Step 1: pre-repair reasoning.
+    before = result_payload(
+        store,
+        run_semantic(store, project, "validation.execute", definition="assigned-to-required"),
+    )["report"]  # Step 2: pre-repair SHACL measures exactly two violations.
+    assert not before["conforms"]
+    assert {row["focus"] for row in before["violations"]} == {
+        f"<{L}equipment/002>",
+        f"<{L}equipment/003>",
+    }
+
+    # LX-01 steps 3-4: commit the repair facts, re-run reasoning and the same
+    # asserted-scope validation on the repaired snapshot.
+    commit_state(store, project, manual=list(LX_REPAIR_FACTS))
+    run_semantic(store, project, "reasoning.execute")  # Step 3: repaired reasoning.
+    after = result_payload(
+        store,
+        run_semantic(store, project, "validation.execute", definition="assigned-to-required"),
+    )["report"]  # Step 4: repaired SHACL conforms with zero violations.
+    assert after["conforms"] is True and after["violations"] == []
 
     result = check_task(
         actor,
@@ -1373,6 +1523,16 @@ def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
 
     final_reasoning, final_validations = quality_run()
     assert all(report_of(job)["conforms"] for job in final_validations)
+    # Full-coverage cohort read: every enabled constraint has an available
+    # succeeded asserted result, so the aggregate conforms and hides nothing.
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["reasoning"] is not None and state["validation"] is not None
+    assert state["validation"]["conforms"] is True
+    assert state["validation"]["unverifiedConstraintIds"] == []
+    assert state["validation"]["checkedConstraintIds"] == ["assigned-to-required", "name-required"]
+    assert state["validation"]["failedConstraintIds"] == []
+    assert state["snapshotsAligned"] is True
+
     # At least one asserted+derived validation.execute on the second constraint
     # (name-required stays asserted-scope so V-01's frozen expectation holds).
     derived_reasoning, derived_validations = quality_run(
@@ -1381,10 +1541,13 @@ def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
     assert [job["input"]["definitionId"] for job in derived_validations] == ["assigned-to-required"]
     assert all(report_of(job)["conforms"] for job in derived_validations)
     assert all(job["input"]["scope"] == "asserted+derived" for job in derived_validations)
-
+    # Single-constraint derived cohort read: name-required is uncovered by the
+    # newest terminal cohort, so the read must refuse a "符合约束" verdict.
     state = learning(actor, "project.quality.read", {"projectId": project})
-    assert state["reasoning"] is not None and state["validation"] is not None
-    assert state["validation"]["conforms"] is True
+    assert state["validation"]["conforms"] is None
+    assert state["validation"]["unverifiedConstraintIds"] == ["name-required"]
+    assert state["validation"]["checkedConstraintIds"] == ["assigned-to-required"]
+    assert state["snapshotsAligned"] is True
 
     second = check_task(actor, "quality", selected_origins=origins)
     assert second["checkStatus"] == "passed", second.get("feedback")
@@ -1502,7 +1665,8 @@ def test_auto_initialized_quality_attempt_retains_prior_runs_across_recheck(owne
     )
     run_semantic(store, project, "reasoning.execute")
 
-    # LX-01 failure state: domain/range plus the extra asserted person/L02.
+    # LX-01 steps 1-2: domain/range axioms, the second constraint and the
+    # pre-repair assignedTo state, then pre-repair reasoning + SHACL.
     commit_state(
         store,
         project,
@@ -1515,8 +1679,22 @@ def test_auto_initialized_quality_attempt_retains_prior_runs_across_recheck(owne
                     "singleValuedPredicates": G_BASE["singleValuedPredicates"],
                 },
             },
+            {
+                "layer": "constraint",
+                "id": "assigned-to-required",
+                "value": dict(ASSIGNED_TO_REQUIRED),
+            },
         ],
-        manual=[*LX_PREREQ_FACTS, *LX_REPAIR_FACTS],
+        manual=list(LX_PREREQ_FACTS),
+    )
+    run_semantic(store, project, "reasoning.execute")
+    run_semantic(store, project, "validation.execute", definition="assigned-to-required")
+
+    # LX-01 failure state: repair facts plus the extra asserted person/L02.
+    commit_state(
+        store,
+        project,
+        manual=[*LX_REPAIR_FACTS],
     )
     commit_state(
         store,
@@ -1539,8 +1717,9 @@ def test_auto_initialized_quality_attempt_retains_prior_runs_across_recheck(owne
     assert first["checkStatus"] == "needs-repair"
     attempt = first["attemptId"]
 
-    # Repair LX-01 and re-run reasoning; the second check stays on the same
-    # auto-initialized attempt and must still see the earlier real runs.
+    # Repair LX-01 and re-run reasoning plus the repaired SHACL check; the
+    # second check stays on the same auto-initialized attempt and must still
+    # see the earlier real runs (steps 1-2) inside its open window.
     l02_type = _fact_id(store, project, L + "person/L02", RDF_TYPE)
     internal = store._project(project)
     store.commit(
@@ -1550,7 +1729,12 @@ def test_auto_initialized_quality_attempt_retains_prior_runs_across_recheck(owne
         uid(),
         remove=[l02_type],
     )
-    run_semantic(store, project, "reasoning.execute")
+    run_semantic(store, project, "reasoning.execute")  # Step 3: repaired reasoning.
+    repaired = result_payload(
+        store,
+        run_semantic(store, project, "validation.execute", definition="assigned-to-required"),
+    )["report"]  # Step 4: repaired SHACL conforms.
+    assert repaired["conforms"] is True and repaired["violations"] == []
     second = check_task(actor, "quality", selected_origins=origins)
     assert second["attemptId"] == attempt
     assert second["checkStatus"] == "passed", second.get("feedback")
@@ -1565,3 +1749,949 @@ def test_auto_initialized_quality_attempt_retains_prior_runs_across_recheck(owne
     assert started["attemptId"] != attempt
     third = check_task(actor, "quality", selected_origins=origins)
     assert third["checkStatus"] == "tool-not-successful"
+
+
+# --------------------------------------------------------------------------
+# 7. R8a regressions: B2-01 derived replay matrix, B2-02/F1/F6 strict quality
+#    aggregation, B2-03/04 negative learning paths, B2-05 in-memory rule
+#    sample evaluation, B2-06/N1 template, operator and proof-leaf checks.
+# --------------------------------------------------------------------------
+
+
+def test_b2_01_derived_replay_matrix(owned):
+    """Five-path matrix: accepted derived jobs survive pointer replacement,
+    staleness, cache eviction and pre-R7 contexts without losing authority."""
+    from ontolearn_engine.job_store import JobFault
+
+    actor, store = owned
+    project = open_blank(actor, "B2-01 矩阵")
+    seed_quality(store, project)
+    reasoning1 = run_semantic(store, project, "reasoning.execute")
+    source_id = reasoning1["resultRef"]["resultId"]
+    derived_input = {
+        "inputSnapshotId": reasoning1["inputSnapshotId"],
+        "scope": "asserted+derived",
+        "definitionId": "name-required",
+        "parametersHash": store.put_blob(project, {"inputSelection": "current"}),
+        "derivedResultIds": [source_id],
+        "preparedPlanRef": None,
+    }
+    operation = uid()
+    validation1 = store.create_job(
+        project, operation, "validation.execute", derived_input, None, semantic_identity(), LIMITS
+    )
+    context = store.job_context(validation1["jobId"])
+    assert context["semanticRequestSha256"] == digest(
+        store.worker_semantic_request(validation1, context)
+    )
+
+    # (1) A newer same-snapshot reasoning replaces the job_current pointer: the
+    # source turns historical yet the accepted request still rebuilds byte
+    # for byte (only immutable provenance is bound into the request).
+    run_semantic(store, project, "reasoning.execute")
+    assert store.result_get(project, source_id)["state"] == "historical"
+    rebuilt = store.worker_semantic_request(validation1, context)
+    assert digest(rebuilt) == context["semanticRequestSha256"]
+
+    # (2) A domain commit marks the source reasoning stale; the deterministic
+    # rebuild stays identical, so worker dispatch and finish keep working.
+    commit_state(
+        store,
+        project,
+        manual=[
+            {
+                "subject": L + "equipment/001",
+                "predicate": L + "name",
+                "object": '"泵站A改"',
+            }
+        ],
+    )
+    assert store.result_get(project, source_id)["state"] == "stale"
+    assert (
+        digest(store.worker_semantic_request(validation1, context))
+        == context["semanticRequestSha256"]
+    )
+
+    # (3) Terminal operationId idempotent replay after replacement + expiry.
+    replayed = store.create_job(
+        project,
+        operation,
+        "validation.execute",
+        derived_input,
+        None,
+        semantic_identity(),
+        LIMITS,
+    )
+    assert replayed["jobId"] == validation1["jobId"]
+    assert replayed["state"] == "queued"
+
+    # (4) collect_cache() evicts the unpinned stale source; the replay stays
+    # authoritative with no digest re-verification fault.
+    assert source_id in store.collect_cache()
+    assert store.result_get(project, source_id)["payloadStatus"] == "evicted"
+    replayed_again = store.create_job(
+        project,
+        operation,
+        "validation.execute",
+        derived_input,
+        None,
+        semantic_identity(),
+        LIMITS,
+    )
+    assert replayed_again["jobId"] == validation1["jobId"]
+
+    # (5) Worker dispatch after eviction fails fast with PAYLOAD_EVICTED.
+    with pytest.raises(JobFault) as caught:
+        store.worker_semantic_request(validation1, context)
+    assert caught.value.code == "PAYLOAD_EVICTED"
+    assert caught.value.params == {"resultId": source_id}
+
+    # (6) Pre-R7 contexts stored the full semanticRequest document instead of
+    # its digest; their replay re-verifies the request itself while the
+    # derived source payload lasts and stays authoritative once it is evicted.
+    reasoning3 = run_semantic(store, project, "reasoning.execute")
+    legacy_source = reasoning3["resultRef"]["resultId"]
+    legacy_input = {
+        "inputSnapshotId": reasoning3["inputSnapshotId"],
+        "scope": "asserted+derived",
+        "definitionId": "name-required",
+        "parametersHash": store.put_blob(project, {"inputSelection": "current"}),
+        "derivedResultIds": [legacy_source],
+        "preparedPlanRef": None,
+    }
+    legacy_operation = uid()
+    legacy = store.create_job(
+        project,
+        legacy_operation,
+        "validation.execute",
+        legacy_input,
+        None,
+        semantic_identity(),
+        LIMITS,
+    )
+    legacy_context = store.job_context(legacy["jobId"])
+    legacy_request = store.worker_semantic_request(legacy, legacy_context)
+    legacy_job_id, legacy_row_operation = uid(), uid()
+    legacy_dto = json.loads(json.dumps(legacy))
+    legacy_dto["jobId"] = legacy_job_id
+    legacy_dto["operationId"] = legacy_row_operation
+    stored_context = {key: value for key, value in legacy_context.items() if key != "job"}
+    del stored_context["semanticRequestSha256"]
+    stored_context["semanticRequest"] = legacy_request
+    fingerprint = digest(stored_context)
+    store._db.execute(
+        "INSERT INTO jobs VALUES(?,?,?,?,?,?,NULL)",
+        (
+            legacy_job_id,
+            project,
+            legacy_row_operation,
+            json.dumps(legacy_dto),
+            json.dumps(stored_context),
+            fingerprint,
+        ),
+    )
+    store._db.execute(
+        "INSERT INTO operation_claims VALUES(?,?,?,?,?,NULL)",
+        (legacy_row_operation, project, legacy_job_id, fingerprint, "job"),
+    )
+    legacy_replay = store.create_job(
+        project,
+        legacy_row_operation,
+        "validation.execute",
+        legacy_input,
+        None,
+        semantic_identity(),
+        LIMITS,
+    )
+    assert legacy_replay["jobId"] == legacy_job_id
+    # Replace the current pointer so the legacy source becomes evictable.
+    run_semantic(store, project, "reasoning.execute")
+    store.collect_cache()
+    assert store.result_get(project, legacy_source)["payloadStatus"] == "evicted"
+    legacy_replay_evicted = store.create_job(
+        project,
+        legacy_row_operation,
+        "validation.execute",
+        legacy_input,
+        None,
+        semantic_identity(),
+        LIMITS,
+    )
+    assert legacy_replay_evicted["jobId"] == legacy_job_id
+
+
+def test_quality_read_aggregation_strictness_matrix(owned):
+    """B2-02/F1/F6: anchored cohorts, strict conforms, snapshotsAligned, and
+    definition revision projection in project.quality.read."""
+    actor, store = owned
+    project = open_blank(actor, "聚合矩阵")
+    seed_quality(store, project)
+    internal = store._project(project)
+
+    # Empty project: no validation evidence at all.
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["validation"] is None and state["reasoning"] is None
+    assert state["snapshotsAligned"] is None
+    # F1: revision projection uses the stored formal revision when present.
+    assert state["constraints"][0]["revision"] == 1
+    legacy_revision = store.vector(internal).get("rule:R-risk", 0)
+    assert state["rules"][0]["revision"] == legacy_revision
+
+    # Single-constraint full coverage projects the single definitionId.
+    run_semantic(store, project, "reasoning.execute")
+    run_semantic(store, project, "validation.execute", definition="name-required")
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["validation"]["conforms"] is True
+    assert state["validation"]["checkedConstraintIds"] == ["name-required"]
+    assert state["validation"]["unverifiedConstraintIds"] == []
+    assert state["validation"]["failedConstraintIds"] == []
+    assert state["validation"]["definitionId"] == "name-required"
+    assert state["validation"]["inputProjectRevision"] == store.revision(internal)
+    assert state["snapshotsAligned"] is True
+
+    # Enable a second constraint on a new snapshot, then run only one
+    # derived-scope check: the anchored cohort never mixes with the earlier
+    # asserted run on the older snapshot and name-required stays unverified.
+    commit_state(
+        store,
+        project,
+        definitions=[
+            {
+                "layer": "constraint",
+                "id": "assigned-to-required",
+                "value": dict(ASSIGNED_TO_REQUIRED),
+            }
+        ],
+        manual=list(LX_PREREQ_FACTS),
+    )
+    reasoning = run_semantic(store, project, "reasoning.execute")
+    run_semantic(
+        store,
+        project,
+        "validation.execute",
+        definition="assigned-to-required",
+        scope="asserted+derived",
+        derived=[reasoning["resultRef"]["resultId"]],
+    )
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["validation"]["conforms"] is None
+    assert state["validation"]["scope"] == "asserted+derived"
+    assert state["validation"]["checkedConstraintIds"] == ["assigned-to-required"]
+    assert state["validation"]["unverifiedConstraintIds"] == ["name-required"]
+    assert state["validation"]["definitionId"] == "partial-constraints"
+
+    # Complete the assignedTo repair so both enabled constraints conform, then
+    # run the full asserted cohort over both constraints on the newest
+    # snapshot: the aggregate restores with the all-enabled projection.
+    commit_state(store, project, manual=list(LX_REPAIR_FACTS))
+    run_semantic(store, project, "validation.execute", definition="name-required")
+    run_semantic(store, project, "validation.execute", definition="assigned-to-required")
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["validation"]["conforms"] is True
+    assert state["validation"]["definitionId"] == "all-enabled-constraints"
+    assert state["validation"]["checkedConstraintIds"] == [
+        "assigned-to-required",
+        "name-required",
+    ]
+    # The reasoning result lags one commit behind: alignment flips to False.
+    assert state["snapshotsAligned"] is False
+
+    # A commit that only reruns validation leaves the reasoning result one
+    # snapshot behind: snapshotsAligned flips to False, reasoning goes stale.
+    commit_state(
+        store,
+        project,
+        manual=[{"subject": L + "equipment/001", "predicate": L + "name", "object": '"泵站甲"'}],
+    )
+    run_semantic(store, project, "validation.execute", definition="name-required")
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["snapshotsAligned"] is False
+    assert state["reasoning"]["state"] == "stale"
+
+
+def test_quality_read_failed_cohorts_and_finding_definition_ids(owned):
+    """Failed validation jobs surface failedConstraintIds with conforms None,
+    and every finding carries the constraint identity that produced it."""
+    actor, store = owned
+
+    # A broken Turtle constraint fails its real validation job.
+    project = open_blank(actor, "失败约束")
+    commit_state(
+        store,
+        project,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "G-base.ontology",
+                "value": {
+                    "triples": list(G_BASE["ontology"]),
+                    "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                },
+            },
+            {
+                "layer": "rule",
+                "id": "R-risk",
+                "value": {"enabled": True, "when": R_RISK_WHEN, "then": R_RISK_THEN},
+            },
+            {"layer": "constraint", "id": "name-required", "value": dict(NAME_REQUIRED)},
+            {
+                "layer": "constraint",
+                "id": "broken-shape",
+                "value": {"enabled": True, "turtle": "@prefix sh: <<<< not turtle"},
+            },
+        ],
+        manual=list(G_BASE["facts"]),
+    )
+    run_semantic(store, project, "validation.execute", definition="name-required")
+    broken = run_semantic_expect_failure(
+        store, project, "validation.execute", definition="broken-shape"
+    )
+    assert broken["state"] == "failed"
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["validation"]["conforms"] is None
+    assert state["validation"]["failedConstraintIds"] == ["broken-shape"]
+    assert state["validation"]["unverifiedConstraintIds"] == ["broken-shape"]
+    assert state["validation"]["checkedConstraintIds"] == ["name-required"]
+    assert state["validation"]["findings"] == []
+
+    # Violations carry their producing constraint id with click-to-locate targets.
+    report_project = open_blank(actor, "违规定位")
+    seed_quality(store, report_project)
+    name_003 = _fact_id(store, report_project, L + "equipment/003", L + "name")
+    internal = store._project(report_project)
+    store.commit(internal, store.revision(internal), uid(), uid(), remove=[name_003])
+    run_semantic(store, report_project, "validation.execute", definition="name-required")
+    state = learning(actor, "project.quality.read", {"projectId": report_project})
+    assert state["validation"]["conforms"] is False
+    finding = state["validation"]["findings"][0]
+    assert finding["definitionId"] == "name-required"
+    assert finding["targets"] == {
+        "subject": f"<{L}equipment/003>",
+        "predicate": f"<{L}name>",
+        "object": None,
+    }
+
+
+def _lx_prereq_commit(store, project):
+    commit_state(
+        store,
+        project,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "G-base.ontology",
+                "value": {
+                    "triples": [*G_BASE["ontology"], *LX_PREREQ_ONTOLOGY],
+                    "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                },
+            },
+            {
+                "layer": "constraint",
+                "id": "assigned-to-required",
+                "value": dict(ASSIGNED_TO_REQUIRED),
+            },
+        ],
+        manual=list(LX_PREREQ_FACTS),
+    )
+
+
+def _run_v01_steps(store, project):
+    """The V-01 prerequisite: name removed, validated, restored, validated."""
+    name_003 = _fact_id(store, project, L + "equipment/003", L + "name")
+    internal = store._project(project)
+    store.commit(internal, store.revision(internal), uid(), uid(), remove=[name_003])
+    run_semantic(store, project, "validation.execute", definition="name-required")
+    commit_state(
+        store,
+        project,
+        manual=[{"subject": L + "equipment/003", "predicate": L + "name", "object": '"备用泵C"'}],
+    )
+    run_semantic(store, project, "validation.execute", definition="name-required")
+
+
+def test_lx01_negative_paths_require_real_step_runs(owned):
+    actor, store = owned
+    origins = {
+        "urn:ontolearn:learning:person/L01": "asserted",
+        "urn:ontolearn:learning:person/L02": "derived",
+    }
+
+    # (a) Skipping both SHACL steps (pre-repair validation and the repaired
+    # re-validation) fails LX-01 even though both reasonings really ran.
+    skipped = open_blank(actor, "跳过 SHACL")
+    seed_quality(store, skipped)
+    _run_v01_steps(store, skipped)
+    _lx_prereq_commit(store, skipped)
+    run_semantic(store, skipped, "reasoning.execute")  # Step 1 only.
+    commit_state(store, skipped, manual=list(LX_REPAIR_FACTS))
+    run_semantic(store, skipped, "reasoning.execute")  # Step 3 only, no steps 2/4.
+    result = check_task(actor, "quality", selected_origins=origins)
+    assert result["checkStatus"] == "needs-repair"
+    assert "请完整完成 LX-01 步骤 1–4" in ";".join(result["feedback"]["repairs"])
+
+    # (b) Missing the 003 repair (only 002 assignedTo person/L02 committed)
+    # fails the exact repair-set check before the step checks matter.
+    partial = open_blank(actor, "漏修 003")
+    seed_quality(store, partial)
+    _run_v01_steps(store, partial)
+    _lx_prereq_commit(store, partial)
+    run_semantic(store, partial, "reasoning.execute")  # Step 1.
+    run_semantic(store, partial, "validation.execute", definition="assigned-to-required")  # Step 2.
+    commit_state(
+        store,
+        partial,
+        manual=[
+            {
+                "subject": L + "equipment/002",
+                "predicate": L + "assignedTo",
+                "object": "<urn:ontolearn:learning:person/L02>",
+            }
+        ],
+    )
+    run_semantic(store, partial, "reasoning.execute")  # Step 3.
+    run_semantic(store, partial, "validation.execute", definition="assigned-to-required")  # Step 4.
+    result = check_task(actor, "quality", selected_origins=origins)
+    assert result["checkStatus"] == "needs-repair"
+    assert "需要修复：修复集合必须恰好是" in ";".join(result["feedback"]["repairs"])
+
+
+def test_transfer_checks_reject_wrong_constraint_and_derived_scope(owned):
+    actor, store = owned
+    repair_data = TRANSFER["repair"]
+
+    # (a) A differently named (otherwise identical) required constraint never
+    # matches the frozen transfer-repair evidence: the tool stays unavailable.
+    renamed = open_blank(actor, "错约束")
+    commit_state(
+        store,
+        renamed,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "transfer.ontology",
+                "value": {"triples": repair_data["ontology"], "singleValuedPredicates": []},
+            },
+            {
+                "layer": "constraint",
+                "id": "equipment-name",
+                "value": {**NAME_REQUIRED, "id": "equipment-name"},
+            },
+        ],
+        manual=repair_data["facts"],
+    )
+    run_semantic(store, renamed, "validation.execute", definition="equipment-name")
+    commit_state(
+        store,
+        renamed,
+        manual=[{"subject": L + "equipment/102", "predicate": L + "name", "object": '"供水泵"'}],
+    )
+    run_semantic(store, renamed, "validation.execute", definition="equipment-name")
+    result = check_task(actor, "transfer-repair")
+    assert result["checkStatus"] == "tool-not-successful"
+    assert result["operationComplete"] is False
+
+    # (b) asserted+derived scoped runs cannot pose as the frozen
+    # current-asserted expectation even with the right constraint.
+    derived_scope = open_blank(actor, "派生范围")
+    commit_state(
+        store,
+        derived_scope,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "transfer.ontology",
+                "value": {"triples": repair_data["ontology"], "singleValuedPredicates": []},
+            },
+            {"layer": "constraint", "id": "name-required", "value": dict(NAME_REQUIRED)},
+        ],
+        manual=repair_data["facts"],
+    )
+    reasoning = run_semantic(store, derived_scope, "reasoning.execute")
+    run_semantic(
+        store,
+        derived_scope,
+        "validation.execute",
+        definition="name-required",
+        scope="asserted+derived",
+        derived=[reasoning["resultRef"]["resultId"]],
+    )
+    commit_state(
+        store,
+        derived_scope,
+        manual=[{"subject": L + "equipment/102", "predicate": L + "name", "object": '"供水泵"'}],
+    )
+    reasoning2 = run_semantic(store, derived_scope, "reasoning.execute")
+    run_semantic(
+        store,
+        derived_scope,
+        "validation.execute",
+        definition="name-required",
+        scope="asserted+derived",
+        derived=[reasoning2["resultRef"]["resultId"]],
+    )
+    result = check_task(actor, "transfer-repair")
+    assert result["checkStatus"] == "needs-repair"
+    assert result["operationComplete"] is False
+
+
+def test_transfer_classify_rejects_manual_derived_assertion(owned):
+    actor, store = owned
+    classify = TRANSFER["classification"]
+    project = open_blank(actor, "手工断言")
+    commit_state(
+        store,
+        project,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "classify.ontology",
+                "value": {"triples": classify["ontology"], "singleValuedPredicates": []},
+            },
+            {
+                "layer": "rule",
+                "id": "R-risk",
+                "value": {"enabled": True, "when": R_RISK_WHEN, "then": R_RISK_THEN},
+            },
+        ],
+        manual=[
+            *classify["facts"],
+            {
+                "subject": L + "equipment/201",
+                "predicate": RDF_TYPE,
+                "object": f"<{L}HighRiskEquipment>",
+            },
+        ],
+    )
+    run_semantic(store, project, "reasoning.execute")
+    result = check_task(actor, "transfer-classify", selected_origins=["asserted", "derived"])
+    assert result["checkStatus"] == "needs-repair"
+    assert result["operationComplete"] is False
+
+
+SAMPLE_ONTOLOGY = [
+    [item["subject"], item["predicate"], item["object"]] for item in G_BASE["ontology"]
+] + [
+    [L + "Person", RDF_TYPE, "<http://www.w3.org/2000/01/rdf-schema#Class>"],
+    [L + "NeedsInspection", RDF_TYPE, "<http://www.w3.org/2002/07/owl#Class>"],
+    [L + "assignedTo", "http://www.w3.org/2000/01/rdf-schema#domain", f"<{L}Equipment>"],
+    [L + "assignedTo", "http://www.w3.org/2000/01/rdf-schema#range", f"<{L}Person>"],
+]
+SAMPLE_INPUT = [
+    [L + "equipment/001", RDF_TYPE, f"<{L}Equipment>"],
+    [L + "equipment/001", L + "alarm", f"<{L}alarm/X1>"],
+    [L + "alarm/X1", L + "level", '"High"'],
+    [L + "alarm/X1", L + "status", '"Open"'],
+    [L + "equipment/002", RDF_TYPE, f"<{L}Equipment>"],
+    [L + "equipment/002", L + "alarm", f"<{L}alarm/X2>"],
+    [L + "alarm/X2", L + "level", '"High"'],
+    [L + "alarm/X2", L + "status", '"Open"'],
+    [L + "equipment/002", L + "assignedTo", f"<{L}person/L02>"],
+]
+SAMPLE_R_RISK = {
+    "id": "R-risk",
+    "label": "高风险设备",
+    "enabled": True,
+    "conditions": [
+        {"kind": "type", "subject": "?e", "class": L + "Equipment"},
+        {"kind": "property", "subject": "?e", "path": L + "alarm", "object": "?a"},
+        {"kind": "property", "subject": "?a", "path": L + "level", "object": '"High"'},
+        {"kind": "property", "subject": "?a", "path": L + "status", "object": '"Open"'},
+    ],
+    "conclusions": [{"kind": "type", "subject": "?e", "class": L + "HighRiskEquipment"}],
+}
+SAMPLE_R_NEXT = {
+    "id": "R-next",
+    "label": "需要巡检",
+    "enabled": True,
+    "conditions": [{"kind": "type", "subject": "?e", "class": L + "HighRiskEquipment"}],
+    "conclusions": [{"kind": "type", "subject": "?e", "class": L + "NeedsInspection"}],
+}
+SAMPLE_DERIVED_1 = [L + "equipment/001", RDF_TYPE, f"<{L}HighRiskEquipment>"]
+SAMPLE_DERIVED_2 = [L + "equipment/002", RDF_TYPE, f"<{L}HighRiskEquipment>"]
+SAMPLE_EXPECTED = [SAMPLE_DERIVED_1, SAMPLE_DERIVED_2]
+
+
+def _rule_test(actor, project, **overrides):
+    request = {
+        "ontologyTriples": list(SAMPLE_ONTOLOGY),
+        "inputTriples": list(SAMPLE_INPUT),
+        "rules": [dict(SAMPLE_R_RISK)],
+        "expectedOutputs": [list(triple) for triple in SAMPLE_EXPECTED],
+    }
+    request.update(overrides)
+    state = learning(actor, "project.quality.read", {"projectId": project, "ruleTest": request})
+    return state["ruleTestResult"]
+
+
+def test_project_quality_read_rule_test_matrix(owned):
+    actor, store = owned
+    project = open_blank(actor, "样本测试")
+    seed_quality(store, project)
+    revision_before = store.project_get(project)["projectRevision"]
+    jobs_before = store._db.execute("SELECT count(*) FROM jobs").fetchone()[0]
+
+    # RDFS-triggering rule sample: rule outputs and RDFS outputs are reported
+    # separately, and the sample matches the expected closure exactly.
+    sample = _rule_test(actor, project)
+    assert sample["valid"] is True
+    assert sample["matchesExpected"] is True
+    assert sample["actualOutputs"] == SAMPLE_EXPECTED
+    assert sample["missingOutputs"] == [] and sample["unexpectedOutputs"] == []
+    assert sample["diagnostics"] == []
+    assert [L + "person/L02", RDF_TYPE, f"<{L}Person>"] in sample["rdfsOutputs"]
+    assert sample["ruleTraces"] and sample["ruleTraces"][0]["rule"] == "R-risk"
+
+    # Static rule chain detection warns RULE_CHAIN_UNSUPPORTED for the consumer.
+    chained = _rule_test(actor, project, rules=[dict(SAMPLE_R_RISK), dict(SAMPLE_R_NEXT)])
+    assert chained["valid"] is True
+    assert any(text.startswith("RULE_CHAIN_UNSUPPORTED:R-next") for text in chained["warnings"])
+    assert all(t[2] != f"<{L}NeedsInspection>" for t in chained["actualOutputs"])
+
+    # Order- and duplicate-independent expected comparison.
+    reordered = _rule_test(
+        actor,
+        project,
+        expectedOutputs=[
+            list(SAMPLE_DERIVED_2),
+            list(SAMPLE_DERIVED_1),
+            list(SAMPLE_DERIVED_1),
+        ],
+    )
+    assert reordered["matchesExpected"] is True
+    assert reordered["expectedOutputs"] == SAMPLE_EXPECTED
+
+    # A wrong expectation reports precise missing/unexpected deltas.
+    mismatched = _rule_test(
+        actor,
+        project,
+        expectedOutputs=[[L + "equipment/001", RDF_TYPE, f"<{L}Flagged>"]],
+    )
+    assert mismatched["valid"] is True and mismatched["matchesExpected"] is False
+    assert mismatched["missingOutputs"] == [[L + "equipment/001", RDF_TYPE, f"<{L}Flagged>"]]
+    assert mismatched["unexpectedOutputs"] == SAMPLE_EXPECTED
+
+    # Structurally invalid statements converge into precise diagnostics.
+    invalid = _rule_test(
+        actor,
+        project,
+        inputTriples=[*SAMPLE_INPUT, [L + "equipment/009", L + "name", "裸字符串"]],
+    )
+    assert invalid["valid"] is False and invalid["matchesExpected"] is False
+    assert len(invalid["diagnostics"]) == 1
+    diagnostic = invalid["diagnostics"][0]
+    assert diagnostic["stage"] == "input"
+    assert diagnostic["index"] == 9
+    assert diagnostic["ruleId"] is None
+    assert diagnostic["field"] == "2"
+    assert diagnostic["code"] in {"INVALID_TERM", "NON_CANONICAL_TERM", "INVALID_TEXT"}
+
+    # An unbound conclusion variable pinpoints the offending rule slot.
+    unbound = _rule_test(
+        actor,
+        project,
+        rules=[
+            {
+                **SAMPLE_R_RISK,
+                "conclusions": [
+                    {"kind": "type", "subject": "?never_bound", "class": L + "HighRiskEquipment"}
+                ],
+            }
+        ],
+    )
+    assert unbound["valid"] is False
+    assert [(d["stage"], d["index"], d["ruleId"], d["code"]) for d in unbound["diagnostics"]] == [
+        ("rule", 0, "R-risk", "UNBOUND_VARIABLE")
+    ]
+
+    # The sample stays pure memory work: no revision bump, no persisted rows.
+    assert store.project_get(project)["projectRevision"] == revision_before
+    assert store._db.execute("SELECT count(*) FROM jobs").fetchone()[0] == jobs_before
+
+
+def test_each_fr504_template_executes_real_shacl_pass_and_fail_cases(owned):
+    """B2-06: all five templates compile to parseable SHACL and really pass /
+    fail through validation.execute; all six comparison operators separate
+    the (1,2),(2,2),(3,2) score facts through real reasoning.execute."""
+    from rdflib import Graph
+
+    actor, store = owned
+
+    def equipment_type(index):
+        return {
+            "subject": L + f"e/{index}",
+            "predicate": RDF_TYPE,
+            "object": f"<{L}Equipment>",
+        }
+
+    def name_fact(index, value):
+        return {"subject": L + f"e/{index}", "predicate": L + "name", "object": value}
+
+    def score_fact(index, value):
+        return {
+            "subject": L + f"e/{index}",
+            "predicate": L + "score",
+            "object": f'"{value}"^^<http://www.w3.org/2001/XMLSchema#integer>',
+        }
+
+    tpl_ontology = [
+        PERMUTATION_ONTOLOGY[0],  # Equipment owl:Class
+        PERMUTATION_ONTOLOGY[3],  # score owl:DatatypeProperty
+        {
+            "subject": L + "name",
+            "predicate": RDF_TYPE,
+            "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>",
+        },
+    ]
+    template_cases = [
+        # (template, parameters, path, passing facts, failing facts)
+        ("required", {}, L + "name", [name_fact(1, '"泵A"')], []),
+        (
+            "datatype",
+            {"datatype": "http://www.w3.org/2001/XMLSchema#integer"},
+            L + "score",
+            [score_fact(1, 5)],
+            [{"subject": L + "e/1", "predicate": L + "score", "object": '"五"'}],
+        ),
+        (
+            "maxCount",
+            {"maxCount": 2},
+            L + "name",
+            [name_fact(1, '"泵A"')],
+            [name_fact(1, '"泵A"'), name_fact(1, '"泵B"'), name_fact(1, '"泵C"')],
+        ),
+        (
+            "allowedValues",
+            {"values": ['"a"', '"b"', '"c"']},
+            L + "name",
+            [name_fact(1, '"a"')],
+            [name_fact(1, '"z"')],
+        ),
+        (
+            "numericRange",
+            {"minInclusive": "2", "maxInclusive": "9"},
+            L + "score",
+            [score_fact(1, 5)],
+            [score_fact(1, 10)],
+        ),
+    ]
+    for template, parameters, path, passing, failing in template_cases:
+        constraint = {
+            "schemaVersion": 1,
+            "kind": "constraint",
+            "id": "tpl",
+            "revision": 1,
+            "label": template,
+            "enabled": True,
+            "targetClass": L + "Equipment",
+            "path": path,
+            "template": template,
+            "parameters": parameters,
+        }
+        turtle_text = compile_constraint_turtle(constraint)
+        shapes = Graph()
+        shapes.parse(data=turtle_text, format="turtle")
+        assert len(shapes) >= 2, template
+        outcomes = []
+        for index, facts in enumerate((passing, failing)):
+            project = open_blank(actor, f"{template}-{index}")
+            commit_state(
+                store,
+                project,
+                definitions=[
+                    {
+                        "layer": "ontology",
+                        "id": "tpl.ontology",
+                        "value": {"triples": list(tpl_ontology), "singleValuedPredicates": []},
+                    },
+                    {"layer": "constraint", "id": "tpl", "value": constraint},
+                ],
+                manual=[equipment_type(1), *facts]
+                + ([equipment_type(2), equipment_type(3)] if len(facts) > 2 else []),
+            )
+            report = result_payload(
+                store,
+                run_semantic(store, project, "validation.execute", definition="tpl"),
+            )["report"]
+            outcomes.append(report["conforms"])
+        assert outcomes == [True, False], (template, outcomes)
+
+    # numericRange lower bound: score 1 below minInclusive 2 must fail too.
+    lower = open_blank(actor, "下界")
+    constraint = {
+        "schemaVersion": 1,
+        "kind": "constraint",
+        "id": "tpl",
+        "revision": 1,
+        "label": "lower",
+        "enabled": True,
+        "targetClass": L + "Equipment",
+        "path": L + "score",
+        "template": "numericRange",
+        "parameters": {"minInclusive": "2", "maxInclusive": "9"},
+    }
+    commit_state(
+        store,
+        lower,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "tpl.ontology",
+                "value": {"triples": list(tpl_ontology), "singleValuedPredicates": []},
+            },
+            {"layer": "constraint", "id": "tpl", "value": constraint},
+        ],
+        manual=[equipment_type(1), score_fact(1, 1)],
+    )
+    report = result_payload(
+        store, run_semantic(store, lower, "validation.execute", definition="tpl")
+    )["report"]
+    assert report["conforms"] is False
+
+    expected_flagged = {
+        "eq": ["e/2"],
+        "ne": ["e/1", "e/3"],
+        "lt": ["e/1"],
+        "le": ["e/1", "e/2"],
+        "gt": ["e/3"],
+        "ge": ["e/2", "e/3"],
+    }
+    for operator, flagged in expected_flagged.items():
+        project = open_blank(actor, f"运算符 {operator}")
+        commit_state(
+            store,
+            project,
+            definitions=[
+                {
+                    "layer": "ontology",
+                    "id": "cmp.ontology",
+                    "value": {"triples": list(PERMUTATION_ONTOLOGY), "singleValuedPredicates": []},
+                },
+                _operator_rule(0, operator, 2),
+            ],
+            manual=list(PERMUTATION_FACTS),
+        )
+        body = result_payload(store, run_semantic(store, project, "reasoning.execute"))["reasoning"]
+        assert sorted(t[0] for t in body["rules"]) == sorted(f"<{L}{item}>" for item in flagged), (
+            operator
+        )
+        assert all(t[2] == f"<{L}Flagged>" for t in body["rules"])
+
+
+def test_formal_proof_leaves_omitted_matches_explicit_oracle_and_rejects_bad_leaf(owned):
+    """B2-N1: omitting proofLeaves re-derives the same audited projection as
+    explicit leaves, and a tampered explicit leaf reference is still rejected."""
+    from ontolearn_engine import semantic
+    from ontolearn_engine.semantic_execution import (
+        _definitions,
+        _formal_specs,
+        _graph,
+        execute_request,
+    )
+    from ontolearn_engine.semantic_formal import project_formal_validation_scope
+    from ontolearn_engine.semantic_offline import SemanticError
+    from rdflib import Graph
+
+    actor, store = owned
+    project = open_blank(actor, "证明叶子")
+    commit_state(
+        store,
+        project,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "G-base.ontology",
+                "value": {
+                    "triples": list(G_BASE["ontology"]),
+                    "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                },
+            },
+            FORMAL_R_RISK,
+            {"layer": "constraint", "id": "name-required", "value": dict(NAME_REQUIRED)},
+        ],
+        manual=list(G_BASE["facts"]),
+    )
+    snapshot, snapshot_id = snapshot_of(store, project)
+    out = execute_request(
+        {
+            "snapshot": snapshot,
+            "capability": "reasoning.execute",
+            "input": request_input(snapshot_id),
+            "parameters": {"inputSelection": "current"},
+            "selected": None,
+        },
+        error_catalog=CONTRACT.ERROR_CATALOG,
+        error_schema=CONTRACT.DOCUMENT,
+    )
+    payload = out["payload"]
+    assert "proofLeaves" not in payload["reasoning"]
+
+    definitions = _definitions(snapshot)
+    facts = _graph(snapshot["state"]["facts"])
+    ontology = _graph(
+        [
+            triple
+            for (layer, _identity), value in sorted(definitions.items())
+            if layer == "ontology"
+            for triple in value["triples"]
+        ]
+    )
+    specs, has_formal = _formal_specs(definitions)
+    assert has_formal and specs
+    selected = {
+        "metadata": {
+            "resultId": "0" * 32,
+            "kind": "reasoning",
+            "inputSnapshotId": snapshot_id,
+        },
+        "payload": {
+            "kind": "reasoning",
+            "source": payload["source"],
+            "inputSnapshotId": snapshot_id,
+            "reasoning": payload["reasoning"],
+        },
+    }
+    omitted = project_formal_validation_scope(facts, ontology, specs=specs, selected=selected)
+
+    original_keys = sorted({semantic._key(triple) for triple in (*facts, *ontology)})
+    leaves = [
+        {
+            "reference": "i05-proof:"
+            + hashlib.sha256(
+                ("i05-profile-proof-leaf/1\0" + "\0".join(key)).encode("utf-8")
+            ).hexdigest(),
+            "triple": list(key),
+        }
+        for key in original_keys
+    ]
+    explicit = {
+        "metadata": selected["metadata"],
+        "payload": {
+            **selected["payload"],
+            "reasoning": {**payload["reasoning"], "proofLeaves": leaves},
+        },
+    }
+    explicit_view = project_formal_validation_scope(facts, ontology, specs=specs, selected=explicit)
+    assert sorted(semantic._key(t) for t in omitted.facts) == sorted(
+        semantic._key(t) for t in explicit_view.facts
+    )
+    assert sorted(semantic._key(t) for t in omitted.ontology) == sorted(
+        semantic._key(t) for t in explicit_view.ontology
+    )
+    assert omitted.provenance == explicit_view.provenance
+
+    tampered = [dict(leaf) for leaf in leaves]
+    tampered[0] = {**tampered[0], "reference": "i05-proof:" + "0" * 64}
+    with pytest.raises(SemanticError):
+        project_formal_validation_scope(
+            facts,
+            ontology,
+            specs=specs,
+            selected={
+                "metadata": selected["metadata"],
+                "payload": {
+                    **selected["payload"],
+                    "reasoning": {**payload["reasoning"], "proofLeaves": tampered},
+                },
+            },
+        )
+    assert len(Graph().parse(data=compile_constraint_turtle(NAME_REQUIRED), format="turtle")) >= 2

@@ -47,6 +47,7 @@ class LearningHost:
         self._bare = None
         self._wired = None
         self._baseline = None
+        self._transfer_inputs = None
         self.tools = _PersistedOntologyTools()
 
     def root(self):
@@ -289,6 +290,7 @@ class LearningHost:
                 "claim_rowid": claim["rowid"],
                 "jobId": claim["job"],
                 "dto": dto,
+                "snap": snap,
                 "snap_triples": learning_ledger._state_triples(snap["state"]),
             }
             if dto["state"] == "succeeded" and dto.get("resultRef"):
@@ -296,6 +298,50 @@ class LearningHost:
                 item["payload"] = payload_from_rows(rows)
             candidates.append(item)
         return candidates
+
+    def _transfer_fixture_facts(self):
+        """Exact repair/classification fact sets from transfer-inputs.json."""
+        if self._transfer_inputs is None:
+            from ontolearn_engine.learning.baselines import read_json
+
+            data = read_json(self.root() / "content/learning/transfer-inputs.json")
+            self._transfer_inputs = {
+                kind: {
+                    (item["subject"], item["predicate"], item["object"])
+                    for item in data[kind]["facts"]
+                }
+                for kind in ("repair", "classification")
+            }
+        return self._transfer_inputs
+
+    @staticmethod
+    def _is_constraint_target(snap, def_id, predicate_iri):
+        """The definition is an enabled required shape on Equipment/predicate."""
+        for record in snap["state"]["definitions"]:
+            if record["layer"] != "constraint" or record["id"] != def_id:
+                continue
+            try:
+                payload = json.loads(record["payload"])
+            except ValueError:
+                return False
+            if not isinstance(payload, dict) or payload.get("enabled") is not True:
+                return False
+            if payload.get("kind") == "constraint":
+                return (
+                    payload.get("targetClass") == "urn:ontolearn:learning:Equipment"
+                    and payload.get("path") == predicate_iri
+                    and payload.get("template") == "required"
+                )
+            turtle = payload.get("turtle")
+            return isinstance(turtle, str) and all(
+                marker in turtle
+                for marker in (
+                    "<urn:ontolearn:learning:Equipment>",
+                    f"<{predicate_iri}>",
+                    "minCount 1",
+                )
+            )
+        return False
 
     def _b3_payload_evidence(self, evidences, check_id, item, payload, assistance):
         from ontolearn_engine.learning.service import ToolEvidence
@@ -482,11 +528,21 @@ class LearningHost:
             )
 
         # V-01: name-required validation before and after the 003-name repair.
-        def name_required(item):
-            return item["dto"]["input"].get("definitionId") == "name-required"
-
-        v01_jobs = [c for c in validation if name_required(c) and "payload" in c]
-        if not v01_jobs:
+        # Both runs must be real name-required shapes on the Equipment name
+        # path (not merely jobs labelled that id) and must come from two
+        # different snapshots: one before the repair, one after it.
+        v01_jobs = [
+            c
+            for c in validation
+            if c["dto"]["input"].get("definitionId") == "name-required"
+            and self._is_constraint_target(
+                c["snap"], "name-required", "urn:ontolearn:learning:name"
+            )
+            and "payload" in c
+        ]
+        if len(v01_jobs) < 2 or (
+            v01_jobs[0]["dto"]["inputSnapshotId"] == v01_jobs[-1]["dto"]["inputSnapshotId"]
+        ):
             evidences["V-01"] = unavailable("V-01")
         else:
 
@@ -498,7 +554,7 @@ class LearningHost:
                         {
                             "focusNode": self._plain(row["focus"]),
                             "path": self._plain(row["path"]),
-                            "constraint": "name-required",
+                            "constraint": item["dto"]["input"]["definitionId"],
                             "component": self._component(row["constraint"]),
                             "value": row["value"],
                         }
@@ -517,7 +573,10 @@ class LearningHost:
                 {
                     "beforeRepair": violations(v01_jobs[0]),
                     "afterRepair": violations(v01_jobs[-1]),
-                    "includeInferred": last["dto"]["input"].get("scope") == "asserted+derived",
+                    "includeInferred": (
+                        v01_jobs[0]["dto"]["input"].get("scope") != "asserted"
+                        or v01_jobs[-1]["dto"]["input"].get("scope") != "asserted"
+                    ),
                 },
                 assistance,
             )
@@ -568,6 +627,7 @@ class LearningHost:
                 for person in persons
                 if person.endswith("/L02") and person_type[person] in asserted
             )
+            lx_checks = self._lx01_step_checks(store, project, reasoning, validation, lx, plain_key)
             persisted_or_stale(
                 "LX-01",
                 lx,
@@ -575,6 +635,7 @@ class LearningHost:
                     "selectedOrigins": dict(selected_origins or {}),
                     "actualOrigins": actual,
                     "extraAssertedPersons": extra,
+                    **lx_checks,
                 },
             )
 
@@ -585,9 +646,17 @@ class LearningHost:
             '"循环泵"',
         )
         transfer_jobs = [
-            c for c in validation if repair_fact in c["snap_triples"] and "payload" in c
+            c
+            for c in validation
+            if repair_fact in c["snap_triples"]
+            and c["dto"]["input"].get("definitionId") == "name-required"
+            and self._is_constraint_target(
+                c["snap"], "name-required", "urn:ontolearn:learning:name"
+            )
+            and "payload" in c
         ]
-        if not transfer_jobs:
+        if len(transfer_jobs) < 2:
+            # The fixed expectation needs a pre-repair and a post-repair run.
             evidences["transfer-repair"] = unavailable("transfer-repair")
         else:
 
@@ -597,7 +666,7 @@ class LearningHost:
                     {
                         "focusNode": self._plain(row["focus"]),
                         "path": self._plain(row["path"]),
-                        "constraint": "name-required",
+                        "constraint": item["dto"]["input"]["definitionId"],
                         "component": self._component(row["constraint"]),
                         "value": row["value"],
                     }
@@ -637,7 +706,12 @@ class LearningHost:
                         "beforeRepair": transfer_violations(transfer_jobs[0]),
                         "afterRepair": transfer_violations(transfer_jobs[-1]),
                         "facts": [dict3(t) for t in sorted(current)],
-                        "scope": "current-asserted",
+                        "scope": (
+                            "current-asserted"
+                            if transfer_jobs[0]["dto"]["input"].get("scope") == "asserted"
+                            and transfer_jobs[-1]["dto"]["input"].get("scope") == "asserted"
+                            else "asserted+derived"
+                        ),
                     },
                     assistance,
                     "persisted-domain-tool",
@@ -653,7 +727,9 @@ class LearningHost:
             (
                 c
                 for c in reversed(reasoning)
-                if c["dto"]["state"] == "succeeded" and classify_fact in c["snap_triples"]
+                if c["dto"]["state"] == "succeeded"
+                and c["dto"]["input"].get("scope") == "asserted"
+                and classify_fact in c["snap_triples"]
             ),
             None,
         )
@@ -674,17 +750,196 @@ class LearningHost:
                         "inputs": [dict3(t) for t in entry["inputs"]],
                     }
                     break
+            # The asserted set must be exactly the six fixture facts: a
+            # hand-asserted derived triple (or any extra assertion) voids the
+            # derived answer so LearningService.check must reject the pass.
+            classification_facts = self._transfer_fixture_facts()["classification"]
+            asserted_set = {plain_key(t) for t in cls["payload"]["assertedFacts"]}
+            derived_preserved = (
+                asserted_set == classification_facts and derived_triple not in asserted_set
+            )
             persisted_or_stale(
                 "transfer-classify",
                 cls,
                 {
                     "assertedFact": asserted_fact,
-                    "derivedFact": dict3(derived_triple),
+                    "derivedFact": dict3(derived_triple) if derived_preserved else None,
                     "selectedOrigins": list(selected_origins or []),
                     "derivation": derivation,
                 },
             )
         return evidences
+
+    def _lx01_step_checks(self, store, project, reasoning, validation, lx, plain_key):
+        """The four real-run verifications behind LX-01 steps 1-4.
+
+        1. repairAssertionsMatch: the repaired snapshot carries exactly the
+           three expected assignedTo assertions.
+        2. step1DerivedMatch: an earlier pre-repair reasoning run (no 002/003
+           assignedTo, domain/range axioms present) derived equipment/001's
+           HighRiskEquipment via R-risk and never person/L02's Person type.
+        3. shaclStepsVerified: one enabled assignedTo required constraint
+           measured exactly the two pre-repair violations and, on the repaired
+           snapshot, conforms with zero violations.
+        4. step4DerivedMatch: the repaired run's evidence derives 001 via
+           R-risk and rdfsEvidence derives person/L02's Person type from
+           equipment/002's repaired assertion.
+        """
+        equipment_prefix = "urn:ontolearn:learning:equipment/"
+        assigned_to = "urn:ontolearn:learning:assignedTo"
+        rdf_type = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+        repair_assertions_match = {
+            (equipment_prefix + "001", assigned_to, "<urn:ontolearn:learning:person/L01>"),
+            (equipment_prefix + "002", assigned_to, "<urn:ontolearn:learning:person/L02>"),
+            (equipment_prefix + "003", assigned_to, "<urn:ontolearn:learning:person/L01>"),
+        } == {
+            (subject, predicate, object_)
+            for subject, predicate, object_ in lx["snap_triples"]
+            if subject.startswith(equipment_prefix) and predicate == assigned_to
+        }
+
+        def ontology_records(item):
+            records = []
+            for record in item["snap"]["state"]["definitions"]:
+                if record["layer"] != "ontology":
+                    continue
+                try:
+                    payload = json.loads(record["payload"])
+                except ValueError:
+                    continue
+                if isinstance(payload, dict):
+                    records.extend(payload.get("triples") or [])
+            return records
+
+        high_risk = (
+            f"<{equipment_prefix}001>",
+            rdf_type,
+            "<urn:ontolearn:learning:HighRiskEquipment>",
+        )
+        person_l02 = (
+            "<urn:ontolearn:learning:person/L02>",
+            rdf_type,
+            "<urn:ontolearn:learning:Person>",
+        )
+        domain_axiom = {
+            "subject": assigned_to,
+            "predicate": "http://www.w3.org/2000/01/rdf-schema#domain",
+            "object": "<urn:ontolearn:learning:Equipment>",
+        }
+        range_axiom = {
+            "subject": assigned_to,
+            "predicate": "http://www.w3.org/2000/01/rdf-schema#range",
+            "object": "<urn:ontolearn:learning:Person>",
+        }
+        step1_derived_match = (
+            next(
+                (
+                    item
+                    for item in reasoning
+                    if item["claim_rowid"] < lx["claim_rowid"]
+                    and item["dto"]["state"] == "succeeded"
+                    and "payload" in item
+                    and not any(
+                        triple[0] in (equipment_prefix + "002", equipment_prefix + "003")
+                        and triple[1] == assigned_to
+                        for triple in item["snap_triples"]
+                    )
+                    and domain_axiom in ontology_records(item)
+                    and range_axiom in ontology_records(item)
+                    and any(
+                        entry.get("rule") == "R-risk"
+                        and tuple(entry.get("result") or ()) == high_risk
+                        for entry in item["payload"]["reasoning"].get("evidence", [])
+                    )
+                    and person_l02
+                    not in {
+                        *{tuple(t) for t in item["payload"]["reasoning"].get("rules", [])},
+                        *{tuple(t) for t in item["payload"]["reasoning"].get("rdfs", [])},
+                    }
+                ),
+                None,
+            )
+            is not None
+        )
+
+        def violation_signature(item):
+            report = item["payload"].get("report", {})
+            return sorted(
+                (
+                    row["focus"],
+                    row["path"],
+                    self._component(row["constraint"]),
+                    row["value"],
+                )
+                for row in report.get("violations", [])
+            )
+
+        expected_violations = sorted(
+            (
+                (f"<{equipment_prefix}002>", f"<{assigned_to}>", "minCount", None),
+                (f"<{equipment_prefix}003>", f"<{assigned_to}>", "minCount", None),
+            )
+        )
+        shacl_steps_verified = False
+        for cid in sorted(
+            {
+                record["id"]
+                for record in lx["snap"]["state"]["definitions"]
+                if record["layer"] == "constraint"
+            }
+        ):
+            if not self._is_constraint_target(lx["snap"], cid, assigned_to):
+                continue
+            before = next(
+                (
+                    item
+                    for item in validation
+                    if item["claim_rowid"] < lx["claim_rowid"]
+                    and item["dto"]["state"] == "succeeded"
+                    and "payload" in item
+                    and item["dto"]["input"].get("definitionId") == cid
+                    and item["dto"]["input"].get("scope") == "asserted"
+                    and violation_signature(item) == expected_violations
+                ),
+                None,
+            )
+            after = next(
+                (
+                    item
+                    for item in validation
+                    if item["dto"]["state"] == "succeeded"
+                    and "payload" in item
+                    and item["dto"]["input"].get("definitionId") == cid
+                    and item["dto"]["input"].get("scope") == "asserted"
+                    and item["dto"]["inputSnapshotId"] == lx["dto"]["inputSnapshotId"]
+                    and item["payload"].get("report", {}).get("violations") == []
+                    and item["payload"].get("report", {}).get("conforms") is True
+                ),
+                None,
+            )
+            if before is not None and after is not None:
+                shacl_steps_verified = True
+                break
+        body = lx["payload"]["reasoning"]
+        step4_derived_match = any(
+            entry.get("rule") == "R-risk" and tuple(entry.get("result") or ()) == high_risk
+            for entry in body.get("evidence", [])
+        ) and any(
+            tuple(entry.get("result") or ()) == person_l02
+            and (
+                f"<{equipment_prefix}002>",
+                f"<{assigned_to}>",
+                "<urn:ontolearn:learning:person/L02>",
+            )
+            in {tuple(triple) for triple in entry.get("basis", [])}
+            for entry in body.get("rdfsEvidence", [])
+        )
+        return {
+            "repairAssertionsMatch": repair_assertions_match,
+            "step1DerivedMatch": step1_derived_match,
+            "shaclStepsVerified": shacl_steps_verified,
+            "step4DerivedMatch": step4_derived_match,
+        }
 
     @staticmethod
     def _blocked_chain_outputs(store, internal, snapshot_id, inferred):

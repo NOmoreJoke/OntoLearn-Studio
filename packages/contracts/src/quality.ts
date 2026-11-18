@@ -18,7 +18,7 @@ export type QualityFr505PatternDTO =
 
 export type QualityFr505TripleDTO = [string, string, string]
 
-export type QualityRuleViewDTO = { id: string; enabled: boolean } & (
+export type QualityRuleViewDTO = { id: string; enabled: boolean; revision?: number } & (
   | {
       format: 'fr505'
       label: string | null
@@ -28,7 +28,7 @@ export type QualityRuleViewDTO = { id: string; enabled: boolean } & (
   | { format: 'legacy'; when: QualityFr505TripleDTO[]; then: QualityFr505TripleDTO | null }
 )
 
-export type QualityConstraintViewDTO = { id: string; enabled: boolean } & (
+export type QualityConstraintViewDTO = { id: string; enabled: boolean; revision?: number } & (
   | {
       format: 'fr504'
       label: string | null
@@ -85,6 +85,7 @@ export type QualityFindingDTO = {
   constraint: string | null
   sourceShape: string | null
   value: string | null
+  definitionId?: string
   targets: { subject: string | null; predicate: string | null; object: string | null }
 }
 
@@ -118,6 +119,47 @@ type QualityResultDTO = {
   definitionId: string
 }
 
+export type QualityRuleTestSampleRuleDTO = {
+  id: string
+  label: string
+  enabled: boolean
+  conditions: QualityFr505PatternDTO[]
+  conclusions: QualityFr505PatternDTO[]
+}
+
+export type QualityRuleTestRequestDTO = {
+  ontologyTriples?: QualityFr505TripleDTO[]
+  inputTriples: QualityFr505TripleDTO[]
+  rules: QualityRuleTestSampleRuleDTO[]
+  expectedOutputs: QualityFr505TripleDTO[]
+}
+
+export type QualityRuleTestDiagnosticDTO = {
+  stage: 'rule' | 'ontology' | 'input' | 'expected'
+  index: number
+  ruleId: string | null
+  field: string
+  code: string
+  message: string
+}
+
+export type QualityRuleTestResultDTO = {
+  valid: boolean
+  matchesExpected: boolean
+  actualOutputs: QualityFr505TripleDTO[]
+  rdfsOutputs: QualityFr505TripleDTO[]
+  expectedOutputs: QualityFr505TripleDTO[]
+  missingOutputs: QualityFr505TripleDTO[]
+  unexpectedOutputs: QualityFr505TripleDTO[]
+  ruleTraces: Array<{
+    rule: string | null
+    output: QualityFr505TripleDTO | null
+    inputs: QualityFr505TripleDTO[]
+  }>
+  warnings: string[]
+  diagnostics: QualityRuleTestDiagnosticDTO[]
+}
+
 export type ProjectQualityReadDTO = {
   qualityReadVersion: 1
   projectId: string
@@ -125,7 +167,22 @@ export type ProjectQualityReadDTO = {
   constraints: QualityConstraintViewDTO[]
   reasoning: (QualityResultDTO & { derivation?: QualityDerivationDTO }) | null
   validation:
-    (QualityResultDTO & { conforms: boolean | null; findings: QualityFindingDTO[] }) | null
+    | (QualityResultDTO & {
+        conforms: boolean | null
+        findings: QualityFindingDTO[]
+        inputProjectRevision?: number
+        checkedConstraintIds?: string[]
+        unverifiedConstraintIds?: string[]
+        failedConstraintIds?: string[]
+      })
+    | null
+  snapshotsAligned?: boolean | null
+  ruleTestResult?: QualityRuleTestResultDTO | null
+}
+
+export type ProjectQualityReadArgs = {
+  projectId: string
+  ruleTest?: QualityRuleTestRequestDTO
 }
 
 export type QualityJobInputDTO = {
@@ -165,7 +222,7 @@ export type ProjectQualityCheckArgs = {
 }
 
 export interface QualityWorkspaceBridge {
-  getProjectQualityState(args: { projectId: string }): Promise<BridgeResult<ProjectQualityReadDTO>>
+  getProjectQualityState(args: ProjectQualityReadArgs): Promise<BridgeResult<ProjectQualityReadDTO>>
   prepareProjectQualityCheck(
     args: ProjectQualityCheckArgs,
   ): Promise<BridgeResult<ProjectQualityPrepareDTO>>

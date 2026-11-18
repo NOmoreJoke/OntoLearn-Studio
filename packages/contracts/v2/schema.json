@@ -16780,6 +16780,11 @@
             "enabled": {
               "type": "boolean"
             },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
             "conditions": {
               "type": "array",
               "items": {
@@ -16811,6 +16816,11 @@
             },
             "enabled": {
               "type": "boolean"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
             },
             "when": {
               "type": "array",
@@ -16860,6 +16870,11 @@
             },
             "enabled": {
               "type": "boolean"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
             },
             "targetClass": {
               "oneOf": [
@@ -16922,6 +16937,11 @@
             },
             "enabled": {
               "type": "boolean"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
             },
             "turtle": {
               "oneOf": [
@@ -17000,6 +17020,9 @@
               "maxLength": 65536
             }
           ]
+        },
+        "definitionId": {
+          "$ref": "#/$defs/name"
         },
         "targets": {
           "type": "object",
@@ -17159,11 +17182,249 @@
       ],
       "additionalProperties": false
     },
+    "quality.ruleTestSampleRule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/name"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Pattern"
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "conclusions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Pattern"
+          },
+          "minItems": 1,
+          "maxItems": 32
+        }
+      },
+      "required": ["id", "label", "enabled", "conditions", "conclusions"],
+      "additionalProperties": false
+    },
+    "quality.ruleTestRequest": {
+      "type": "object",
+      "properties": {
+        "ontologyTriples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "inputTriples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.ruleTestSampleRule"
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "expectedOutputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": ["inputTriples", "rules", "expectedOutputs"],
+      "additionalProperties": false
+    },
+    "quality.ruleTestDiagnostic": {
+      "type": "object",
+      "properties": {
+        "stage": {
+          "enum": ["rule", "ontology", "input", "expected"]
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "ruleId": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/name"
+            }
+          ]
+        },
+        "field": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": ["stage", "index", "ruleId", "field", "code", "message"],
+      "additionalProperties": false
+    },
+    "quality.ruleTestResult": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "matchesExpected": {
+          "type": "boolean"
+        },
+        "actualOutputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "rdfsOutputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "expectedOutputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "missingOutputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "unexpectedOutputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.fr505Triple"
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "ruleTraces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rule": {
+                "oneOf": [
+                  {
+                    "const": null
+                  },
+                  {
+                    "type": "string",
+                    "maxLength": 128
+                  }
+                ]
+              },
+              "output": {
+                "oneOf": [
+                  {
+                    "const": null
+                  },
+                  {
+                    "$ref": "#/$defs/quality.fr505Triple"
+                  }
+                ]
+              },
+              "inputs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/quality.fr505Triple"
+                },
+                "minItems": 0,
+                "maxItems": 128
+              }
+            },
+            "required": ["rule", "output", "inputs"],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/quality.ruleTestDiagnostic"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "valid",
+        "matchesExpected",
+        "actualOutputs",
+        "rdfsOutputs",
+        "expectedOutputs",
+        "missingOutputs",
+        "unexpectedOutputs",
+        "ruleTraces",
+        "warnings",
+        "diagnostics"
+      ],
+      "additionalProperties": false
+    },
     "params_project.quality.read": {
       "type": "object",
       "properties": {
         "projectId": {
           "$ref": "#/$defs/id"
+        },
+        "ruleTest": {
+          "$ref": "#/$defs/quality.ruleTestRequest"
         }
       },
       "required": ["projectId"],
@@ -17296,6 +17557,35 @@
                   },
                   "minItems": 0,
                   "maxItems": 10000
+                },
+                "inputProjectRevision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000
+                },
+                "checkedConstraintIds": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/name"
+                  },
+                  "minItems": 0,
+                  "maxItems": 128
+                },
+                "unverifiedConstraintIds": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/name"
+                  },
+                  "minItems": 0,
+                  "maxItems": 128
+                },
+                "failedConstraintIds": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/name"
+                  },
+                  "minItems": 0,
+                  "maxItems": 128
                 }
               },
               "required": [
@@ -17310,6 +17600,26 @@
                 "findings"
               ],
               "additionalProperties": false
+            }
+          ]
+        },
+        "snapshotsAligned": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "ruleTestResult": {
+          "oneOf": [
+            {
+              "const": null
+            },
+            {
+              "$ref": "#/$defs/quality.ruleTestResult"
             }
           ]
         }

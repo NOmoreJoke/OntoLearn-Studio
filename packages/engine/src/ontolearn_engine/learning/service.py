@@ -244,24 +244,52 @@ def compare_lx01(payload: object, expected: dict) -> list[str]:
     The owner evidence carries the learner's selectedOrigins together with the
     origins actually derivable from the current persisted project state and any
     person-type assertion that destroys the distinguishable derivation. The
-    answer never travels through learningObservation.
+    four real-run step flags (pre-repair reasoning, SHACL before/after, the
+    repaired run) come from the persisted learning host only; a payload
+    missing any of them is structurally invalid rather than silently passing.
+    The answer never travels through learningObservation.
     """
-    reasons: list[str] = []
-    if not isinstance(payload, dict) or set(payload) != {
+    if not isinstance(payload, dict) or not {
         "selectedOrigins",
         "actualOrigins",
         "extraAssertedPersons",
-    }:
+    } <= set(payload):
         return [
             "LX-01 实际结果结构不合法：需要 selectedOrigins、actualOrigins 与 extraAssertedPersons"
         ]
+    if payload["extraAssertedPersons"]:
+        return [LX01_EXTRA_ASSERTED_FEEDBACK + "；请撤销该 ChangeSet 或新建 attempt 后重做步骤 3–4"]
     wanted = expected.get("selectedOrigins")
     if not isinstance(wanted, dict):
         return ["LX-01 固定预期缺少 selectedOrigins"]
-    if payload["extraAssertedPersons"]:
-        reasons.append(
-            LX01_EXTRA_ASSERTED_FEEDBACK + "；请撤销该 ChangeSet 或新建 attempt 后重做步骤 3–4"
-        )
+    if set(payload) != {
+        "selectedOrigins",
+        "actualOrigins",
+        "extraAssertedPersons",
+        "repairAssertionsMatch",
+        "step1DerivedMatch",
+        "shaclStepsVerified",
+        "step4DerivedMatch",
+    }:
+        return [
+            "LX-01 实际结果结构不合法：需要 selectedOrigins、actualOrigins、"
+            "extraAssertedPersons、repairAssertionsMatch、step1DerivedMatch、"
+            "shaclStepsVerified 与 step4DerivedMatch"
+        ]
+    if not payload["repairAssertionsMatch"]:
+        return [
+            "需要修复：修复集合必须恰好是 002 assignedTo person/L02 与 003 assignedTo person/L01"
+        ]
+    if not (
+        payload["step1DerivedMatch"]
+        and payload["shaclStepsVerified"]
+        and payload["step4DerivedMatch"]
+    ):
+        return [
+            "请完整完成 LX-01 步骤 1–4：前置推理、assignedTo 独立必填"
+            " SHACL 修复前后校验及修复后推理"
+        ]
+    reasons: list[str] = []
     if payload["actualOrigins"] != wanted:
         reasons.append(
             "当前项目推导/断言来源与 LX-01 完成状态不一致："

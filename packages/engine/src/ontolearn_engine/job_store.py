@@ -47,31 +47,37 @@ def payload_from_rows(rows):
 
     The walk in _rows emits every leaf exactly once (empty containers collapse
     to their JSON encoding at the parent path), so this pure reconstruction
-    needs no policy of its own: it only replays the recorded pointers.
+    needs no policy of its own: it only replays the recorded pointers. The
+    projection only serves controlled payloads whose object keys are never
+    plain digit strings; arbitrary numeric-key JSON objects are not a
+    round-trip contract here. Structural corruption stays a structured
+    internal fault, never a bare ValueError/IndexError.
     """
     if type(rows) is not list or not rows:
-        raise ValueError("PAYLOAD_ROWS_INVALID")
+        fault("INVALID_STATE")
     cells = rows[0].get("cells") if isinstance(rows[0], dict) else None
     if cells != ["columns", "path", "value", "part", "parts"]:
-        raise ValueError("PAYLOAD_ROWS_INVALID")
+        fault("INVALID_STATE")
     pieces: dict[str, list[str]] = {}
     for row in rows[1:]:
         cells = row["cells"]
         if len(cells) != 4:
-            raise ValueError("PAYLOAD_ROWS_INVALID")
+            fault("INVALID_STATE")
         path, piece, part, parts = cells
         if not isinstance(path, str) or not isinstance(piece, str):
-            raise ValueError("PAYLOAD_ROWS_INVALID")
+            fault("INVALID_STATE")
         if type(part) is not int or type(parts) is not int or not 1 <= part <= parts:
-            raise ValueError("PAYLOAD_ROWS_INVALID")
+            fault("INVALID_STATE")
         slot = pieces.setdefault(path, [None] * parts)
+        if len(slot) != parts:
+            fault("INVALID_STATE")
         if slot[part - 1] is not None:
-            raise ValueError("PAYLOAD_ROWS_INVALID")
+            fault("INVALID_STATE")
         slot[part - 1] = piece
     values = {}
     for path, slot in pieces.items():
         if any(piece is None for piece in slot):
-            raise ValueError("PAYLOAD_ROWS_INVALID")
+            fault("INVALID_STATE")
         values[path] = json.loads("".join(slot))
 
     def decode(token: str) -> str:
@@ -82,14 +88,14 @@ def payload_from_rows(rows):
         if len(tokens) == 1:
             if isinstance(container, dict):
                 if token in container:
-                    raise ValueError("PAYLOAD_ROWS_INVALID")
+                    fault("INVALID_STATE")
                 container[token] = value
             else:
                 index = int(token)
                 while len(container) < index:
                     container.append(None)
                 if index < len(container) and container[index] is not None:
-                    raise ValueError("PAYLOAD_ROWS_INVALID")
+                    fault("INVALID_STATE")
                 if index == len(container):
                     container.append(value)
                 else:
@@ -113,7 +119,7 @@ def payload_from_rows(rows):
     root: dict = {}
     for path in sorted(values):
         if not path.startswith("/"):
-            raise ValueError("PAYLOAD_ROWS_INVALID")
+            fault("INVALID_STATE")
         tokens = [decode(token) for token in path[1:].split("/")]
         assign(root, tokens, values[path])
     return root
@@ -1775,11 +1781,35 @@ class JobStore(Store):
         parameters = self.blob(project, input_["parametersHash"])
         if parameters != context["parameters"] or digest(parameters) != input_["parametersHash"]:
             fault("INVALID_STATE")
-        if "queryRequest" in context:
+        if "queryRequest" in context and all(
+            self.result_get(project, rid)["payloadStatus"] == "available"
+            for rid in input_["derivedResultIds"]
+        ):
+            # Derived query replays re-verify the frozen request only while the
+            # derived source payloads are retained; after collect_cache() has
+            # evicted them the accepted job stays authoritative as-is.
             expected = self.prepare_query_request(
                 project, input_, parameters, snapshot, implementation, confirmation_ref, live=False
             )
             if context["queryRequest"] != expected:
+                fault("INVALID_STATE")
+        elif "semanticRequest" in context and all(
+            self.result_get(project, rid)["payloadStatus"] == "available"
+            for rid in input_["derivedResultIds"]
+        ):
+            # Pre-R7 contexts stored the full semantic request instead of its
+            # digest; re-verify it the same retained-payload way.
+            expected = self.prepare_semantic_request(
+                project,
+                capability,
+                input_,
+                parameters,
+                snapshot,
+                implementation,
+                confirmation_ref,
+                live=False,
+            )
+            if context["semanticRequest"] != expected:
                 fault("INVALID_STATE")
         if "semanticRequestSha256" in context and all(
             self.result_get(project, rid)["payloadStatus"] == "available"
@@ -2189,7 +2219,30 @@ class JobStore(Store):
             or payload.get("inputSnapshotId") != input_["inputSnapshotId"]
         ):
             fault("INVALID_REQUEST", field="identity")
-        return {"metadata": metadata, "payload": payload}
+        # Only immutable provenance travels onward in the request. Later reruns
+        # replacing the job_current pointer, or domain commits marking this
+        # result stale, must never invalidate the deterministic rebuild of an
+        # already-accepted validation.execute/query.execute request; the
+        # consumer only checks resultId/kind/inputSnapshotId anyway.
+        immutable_metadata = {
+            key: metadata[key]
+            for key in (
+                "resultId",
+                "projectId",
+                "jobId",
+                "kind",
+                "definitionId",
+                "scope",
+                "parametersHash",
+                "inputSnapshotId",
+                "inputProjectRevision",
+                "dependencyVector",
+                "definitionSetDigests",
+                "implementation",
+                "createdAtMs",
+            )
+        }
+        return {"metadata": immutable_metadata, "payload": payload}
 
     def prepare_semantic_request(
         self,
@@ -2271,9 +2324,14 @@ class JobStore(Store):
 
         The stored context keeps only the request digest; this deterministic
         rebuild from the immutable snapshot must reproduce it before the
-        request is handed to the worker transport.
+        request is handed to the worker transport. A derived source whose
+        payload has been evicted can no longer be re-read by the worker, so it
+        fails fast here instead of mid-execution.
         """
         with self._read():
+            for rid in job["input"]["derivedResultIds"]:
+                if self.result_get(job["projectId"], rid)["payloadStatus"] != "available":
+                    fault("PAYLOAD_EVICTED", resultId=rid)
             expected = self.prepare_semantic_request(
                 job["projectId"],
                 job["capability"],
