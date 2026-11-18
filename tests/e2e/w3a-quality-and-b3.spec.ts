@@ -565,7 +565,7 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
   }
 })
 
-test('W3a B3 quality and LX-01 plus both independent transfer cases', async () => {
+test('W3a B3 quality V-01, R-01, R-05 and LX-01 failure-and-repair', async () => {
   test.setTimeout(240000)
   const evidence: Record<string, unknown> = {}
   let stage = 'launch'
@@ -660,18 +660,46 @@ test('W3a B3 quality and LX-01 plus both independent transfer cases', async () =
     await expect(mentor.getByTestId('learning-operation-state')).toContainText('操作完成：是')
     await expect(mentor.getByTestId('learning-guided-stage-badge')).toHaveCount(0)
     evidence.lx01Passed = true
+    stage = 'completed'
+  } finally {
+    try {
+      await test.info().attach('w3a-b3-quality-evidence', {
+        body: JSON.stringify({ stage, ...evidence }, null, 2),
+        contentType: 'application/json',
+      })
+    } finally {
+      await application.close()
+    }
+  }
+})
+
+test('W3a B3 independent transfer-repair and transfer-classify cases', async () => {
+  test.setTimeout(240000)
+  const evidence: Record<string, unknown> = {}
+  let stage = 'launch'
+  const application = await launchIsolatedDesktop(desktopOptions())
+  try {
+    const page = await application.firstWindow()
+    expect(
+      await application.evaluate(({ BrowserWindow }) =>
+        BrowserWindow.getAllWindows().some((window) => window.isVisible()),
+      ),
+    ).toBe(true)
+    const project = await startExample(page)
+    evidence.qualityProject = project
+    const mentor = wizard(page)
 
     stage = 'transfer-repair reports only equipment 102, then passes after catalogue-based repair'
     await focusTask(page, 'transfer-repair')
     const repair = await loadTaskFixture(page)
     expect(repair).not.toBe(project)
     evidence.repairProject = repair
-    quality = await openQuality(page, true)
+    let quality = await openQuality(page, true)
     await runQuality(quality, 'asserted')
     await expect(quality.getByTestId('quality-findings')).toContainText(equipment('102'))
     await expect(quality.getByTestId('quality-findings')).not.toContainText(equipment('101'))
     await expect(quality.getByTestId('quality-findings')).not.toContainText(equipment('103'))
-    ontology = await openOntology(page)
+    const ontology = await openOntology(page)
     await addFact(ontology, equipment('102'), learning + 'name', jsonText('供水泵'))
     quality = await openQuality(page, true)
     await runQuality(quality, 'asserted')
@@ -706,7 +734,7 @@ test('W3a B3 quality and LX-01 plus both independent transfer cases', async () =
     stage = 'completed'
   } finally {
     try {
-      await test.info().attach('w3a-b3-evidence', {
+      await test.info().attach('w3a-b3-transfer-evidence', {
         body: JSON.stringify({ stage, ...evidence }, null, 2),
         contentType: 'application/json',
       })

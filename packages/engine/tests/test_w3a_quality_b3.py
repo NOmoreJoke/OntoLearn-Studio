@@ -10,6 +10,7 @@ the FR-004 guard: passing these tasks never mints a guided-stage checkpoint.
 """
 
 import asyncio
+import base64
 import json
 import random
 from pathlib import Path
@@ -19,6 +20,7 @@ import pytest
 from ontolearn_engine.coordinator import _JOB_READY, Coordinator
 from ontolearn_engine.job_store import JobStore, payload_from_rows
 from ontolearn_engine.learning.baselines import read_json
+from ontolearn_engine.project.mainline import READ_LIMITS
 from ontolearn_engine.quality.definitions import (
     DefinitionError,
     compile_constraint_turtle,
@@ -991,3 +993,334 @@ def test_quality_read_and_prepare_over_named_bridge(owned):
     assert prepared["chain"] == ["reasoning.execute", "validation.execute"]
     assert prepared["reasoningInput"]["scope"] == "asserted"
     assert prepared["validationInput"]["definitionId"] == "name-required"
+
+
+# --------------------------------------------------------------------------
+# 6. Regressions: formal reasoning payloads stay inside mainline read limits,
+#    and the auto-initialized quality attempt keeps prior runs on rechecks.
+# --------------------------------------------------------------------------
+
+
+def _drain_jobs(actor):
+    """Drive the real Coordinator worker loop until queued jobs finish."""
+
+    async def drain():
+        await actor.tick()
+        await asyncio.wait_for(asyncio.gather(*tuple(actor.tasks)), WORKER_TIMEOUT)
+
+    asyncio.run(drain())
+
+
+def _committed_changeset(actor, store, project, plan):
+    """One real preview → full diff pages → confirm → worker changeset.commit."""
+    ready = ok(
+        exchange(
+            actor,
+            "changeset.preview",
+            {
+                "projectId": project,
+                "baseRevision": store.revision(store._project(project)),
+                "intent": "change",
+                "plan": plan,
+            },
+        )
+    )
+    assert ready["status"] == "ready", ready
+    cursor, segments = None, []
+    while True:
+        material = ok(
+            exchange(
+                actor,
+                "changeset.diff.page",
+                {
+                    "projectId": project,
+                    "previewHash": ready["previewHash"],
+                    "documentKind": "diff",
+                    "pageSize": 1,
+                    "cursor": cursor,
+                },
+            )
+        )
+        segments.extend(material["segments"])
+        cursor = material["nextCursor"]
+        if material["complete"]:
+            break
+    document = b"".join(base64.b64decode(s["dataBase64"]) for s in segments)
+    assert digest(json.loads(document)) == ready["manifest"]["documentHash"]
+    confirmation = ok(
+        exchange(
+            actor,
+            "changeset.confirm",
+            {
+                "projectId": project,
+                "previewHash": ready["previewHash"],
+                "completionCursor": cursor,
+            },
+        )
+    )
+    job = ok(
+        exchange(
+            actor,
+            "job.create",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "capability": "changeset.commit",
+                "confirmationRef": confirmation["confirmationRef"],
+                "input": {
+                    "inputSnapshotId": confirmation["inputSnapshotId"],
+                    "scope": "asserted",
+                    "definitionId": "changeset",
+                    "parametersHash": confirmation["parametersHash"],
+                    "derivedResultIds": [],
+                    "preparedPlanRef": confirmation["preparedPlanRef"],
+                },
+            },
+        )
+    )
+    assert job["state"] == "queued", job
+    _drain_jobs(actor)
+    return store.get_job(project, job["jobId"])
+
+
+def _run_semantic_job(actor, store, project, capability, input_):
+    """Create one semantic job over the real RPC and drain its worker."""
+    job = ok(
+        exchange(
+            actor,
+            "job.create",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "capability": capability,
+                "input": input_,
+                "confirmationRef": None,
+            },
+        )
+    )
+    assert job["state"] == "queued", job
+    _drain_jobs(actor)
+    return store.get_job(project, job["jobId"])
+
+
+def _formal_rule(rule_id, label, conditions, conclusions):
+    return {
+        "layer": "rule",
+        "id": rule_id,
+        "value": {
+            "schemaVersion": 1,
+            "kind": "rule",
+            "id": rule_id,
+            "revision": 1,
+            "label": label,
+            "enabled": True,
+            "conditions": conditions,
+            "conclusions": conclusions,
+        },
+    }
+
+
+FORMAL_R_RISK = _formal_rule(
+    "R-risk",
+    "高风险设备",
+    [
+        {"kind": "type", "subject": "?equipment", "class": L + "Equipment"},
+        {"kind": "property", "subject": "?equipment", "path": L + "alarm", "object": "?alarm"},
+        {"kind": "property", "subject": "?alarm", "path": L + "level", "object": '"High"'},
+        {"kind": "property", "subject": "?alarm", "path": L + "status", "object": '"Open"'},
+    ],
+    [{"kind": "type", "subject": "?equipment", "class": L + "HighRiskEquipment"}],
+)
+FORMAL_R_NEXT = _formal_rule(
+    "R-next",
+    "需要巡检",
+    [{"kind": "type", "subject": "?equipment", "class": L + "HighRiskEquipment"}],
+    [{"kind": "type", "subject": "?equipment", "class": L + "NeedsInspection"}],
+)
+
+
+def test_formal_rule_repeated_quality_runs_stay_within_mainline_read_limits(owned):
+    actor, store = owned
+    project = open_blank(actor, "读限回归")
+    committed = _committed_changeset(
+        actor,
+        store,
+        project,
+        {
+            "definitions": [
+                {
+                    "layer": "ontology",
+                    "id": "G-base.ontology",
+                    "value": {
+                        "triples": [*G_BASE["ontology"], *LX_PREREQ_ONTOLOGY],
+                        "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                    },
+                },
+                FORMAL_R_RISK,
+                FORMAL_R_NEXT,
+                {"layer": "constraint", "id": "name-required", "value": dict(NAME_REQUIRED)},
+            ],
+            "manual": fact_rows([*G_BASE["facts"], *LX_PREREQ_FACTS]),
+        },
+    )
+    assert committed["state"] == "succeeded", committed.get("error") or committed
+
+    for _ in range(10):
+        prepared = learning(
+            actor,
+            "project.quality.prepare",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "selection": {"kind": "current"},
+            },
+        )
+        reasoning = _run_semantic_job(
+            actor, store, project, "reasoning.execute", prepared["reasoningInput"]
+        )
+        assert reasoning["state"] == "succeeded", reasoning.get("error") or reasoning
+        validation_input = dict(prepared["validationInput"])
+        validation_input["derivedResultIds"] = [reasoning["resultRef"]["resultId"]]
+        validation = _run_semantic_job(
+            actor, store, project, "validation.execute", validation_input
+        )
+        assert validation["state"] == "succeeded", validation.get("error") or validation
+        state = learning(actor, "project.quality.read", {"projectId": project})
+        assert state["reasoning"] is not None and state["validation"] is not None
+        assert state["validation"]["conforms"] is True
+
+    # The real issuer-side measurement of prospective material, paid through
+    # the same ownership admission the product preview path uses.
+    preview_params = {
+        "projectId": project,
+        "baseRevision": store.revision(store._project(project)),
+        "intent": "change",
+        "plan": {},
+    }
+    request = frame(actor, "changeset.preview", preview_params)
+    actor.mainline.begin(request)
+    proof = actor.mainline.ownership_proof(preview_params, method="changeset.preview")
+    total_rows, scan_bytes, decoded_bytes, plan_bytes, repeats = proof.material_profile()
+    actor.finish_query_reply(request["id"], emitted=True)
+    assert decoded_bytes + plan_bytes < READ_LIMITS.validation_bytes
+    assert total_rows < READ_LIMITS.validation_rows
+    assert 2 * scan_bytes + (decoded_bytes + plan_bytes) * repeats < READ_LIMITS.validation_work
+
+
+def test_auto_initialized_quality_attempt_retains_prior_runs_across_recheck(owned):
+    actor, store = owned
+    project = open_blank(actor, "重查保留")
+    seed_quality(store, project)
+
+    # R-01: pure G-base reasoning.
+    run_semantic(store, project, "reasoning.execute")
+
+    # V-01: remove 003's name, validate, restore, validate again.
+    name_003 = _fact_id(store, project, L + "equipment/003", L + "name")
+    internal = store._project(project)
+    store.commit(
+        internal,
+        store.revision(internal),
+        uid(),
+        uid(),
+        remove=[name_003],
+    )
+    run_semantic(store, project, "validation.execute", definition="name-required")
+    commit_state(
+        store,
+        project,
+        manual=[
+            {
+                "subject": L + "equipment/003",
+                "predicate": L + "name",
+                "object": '"备用泵C"',
+            }
+        ],
+    )
+    run_semantic(store, project, "validation.execute", definition="name-required")
+
+    # R-05: the NeedsInspection class plus the chained R-next rule.
+    commit_state(
+        store,
+        project,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "G-base.ontology",
+                "value": {
+                    "triples": [
+                        *G_BASE["ontology"],
+                        *LX_PREREQ_ONTOLOGY[:1],
+                        LX_PREREQ_ONTOLOGY[4],
+                    ],
+                    "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                },
+            },
+            R_NEXT,
+        ],
+    )
+    run_semantic(store, project, "reasoning.execute")
+
+    # LX-01 failure state: domain/range plus the extra asserted person/L02.
+    commit_state(
+        store,
+        project,
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "G-base.ontology",
+                "value": {
+                    "triples": [*G_BASE["ontology"], *LX_PREREQ_ONTOLOGY],
+                    "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                },
+            },
+        ],
+        manual=[*LX_PREREQ_FACTS, *LX_REPAIR_FACTS],
+    )
+    commit_state(
+        store,
+        project,
+        manual=[
+            {
+                "subject": L + "person/L02",
+                "predicate": RDF_TYPE,
+                "object": "<urn:ontolearn:learning:Person>",
+            },
+        ],
+    )
+    run_semantic(store, project, "reasoning.execute")
+
+    origins = {
+        "urn:ontolearn:learning:person/L01": "asserted",
+        "urn:ontolearn:learning:person/L02": "derived",
+    }
+    first = check_task(actor, "quality", selected_origins=origins)
+    assert first["checkStatus"] == "needs-repair"
+    attempt = first["attemptId"]
+
+    # Repair LX-01 and re-run reasoning; the second check stays on the same
+    # auto-initialized attempt and must still see the earlier real runs.
+    l02_type = _fact_id(store, project, L + "person/L02", RDF_TYPE)
+    internal = store._project(project)
+    store.commit(
+        internal,
+        store.revision(internal),
+        uid(),
+        uid(),
+        remove=[l02_type],
+    )
+    run_semantic(store, project, "reasoning.execute")
+    second = check_task(actor, "quality", selected_origins=origins)
+    assert second["attemptId"] == attempt
+    assert second["checkStatus"] == "passed", second.get("feedback")
+    assert second["operationComplete"] is True
+
+    # An explicitly started second attempt still opens an isolated window.
+    started = learning(
+        actor,
+        "project.learning.attempt.start",
+        {"projectId": project, "operationId": uid(), "taskId": "quality"},
+    )
+    assert started["attemptId"] != attempt
+    third = check_task(actor, "quality", selected_origins=origins)
+    assert third["checkStatus"] == "tool-not-successful"

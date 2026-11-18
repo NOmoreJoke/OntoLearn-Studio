@@ -25,6 +25,11 @@ MAX_CELL = 8192
 _PROFILE_TYPED_FIELDS = frozenset(
     {"catalog", "definitions", "firingGroups", "mechanismBatches", "termSources"}
 )
+# Plain semantic outputs of a formal reasoning result that the downstream
+# formal projection, derivation provenance and learning checks consume.
+_FORMAL_REASONING_KEYS = frozenset(
+    {"semanticsVersion", "rdfs", "rules", "warnings", "evidence", "rdfsEvidence", "proofLeaves"}
+)
 
 
 class SemanticRequestFault(ValueError):
@@ -654,13 +659,11 @@ def execute_request(request, *, error_catalog, error_schema):
                     from ontolearn_engine.semantic_formal import formal_source
 
                     result = semantic.reason(facts + ontology, specs, profile=PROFILE)
-                    # The raw profile result carries audited typed records in
-                    # five fields; project exactly those into safe JSON. Derived
-                    # triples, evidence, RDFS and warnings are already plain.
-                    projection = _ProfileProjection()
+                    # Store only the plain semantic outputs consumed by formal projection,
+                    # derivation provenance and learning checks; _execute_profile retains the
+                    # full typed profile payload on its private path.
                     result = {
-                        key: projection.value(value) if key in _PROFILE_TYPED_FIELDS else value
-                        for key, value in result.items()
+                        key: value for key, value in result.items() if key in _FORMAL_REASONING_KEYS
                     }
                     source_view = formal_source(facts, ontology, specs)
                 else:

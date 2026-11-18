@@ -1,4 +1,4 @@
-"""Run two W3a Quality/B3 tests against one packaged, visible Electron app
+"""Run three W3a Quality/B3 tests against one packaged, visible Electron app
 per case with the B1a runner's owned process checks and cleanup evidence.
 """
 
@@ -15,7 +15,7 @@ from pathlib import Path
 
 B1A_RUNNER = Path(__file__).resolve().parent / "run-b1a-packaged-lifecycle.py"
 
-EXPECTED_W3A_TESTS = 2
+EXPECTED_W3A_TESTS = 3
 
 
 def load_b1a_module():

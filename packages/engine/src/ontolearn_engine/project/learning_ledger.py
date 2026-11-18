@@ -363,7 +363,11 @@ def _auto_init(store, project, service, task_id, origin):
         checkpoint["domainSnapshotRef"],
         checkpoint["domainRevision"],
     )
-    payload["lastOperationId"] = operation
+    # Keep the creation claim's lastOperationId at None: the record hint /
+    # observation / check that follows in the same outer transaction writes the
+    # concrete operation at recordVersion 2. A None here lets the sole auto
+    # initialized attempt keep its window open at rowid 0 on later rechecks,
+    # while explicit attempt.start claims still stamp their operation id.
     change = {
         "type": "learning.record",
         "attempt": attempt_id,
@@ -703,11 +707,23 @@ def _attempt_min_claim_rowid(store, project, internal, attempt_id, is_virgin_fir
 
     A virgin first attempt (auto-created by ``check`` itself) opens at 0: the
     learner may already have run the real queries before the first explicit
-    check. Otherwise the attempt's creation claim (expectedRecordVersion is
-    None) marks the boundary; earlier jobs belong to earlier attempts.
+    check. The same holds for the sole auto-initialized attempt of a task on
+    later rechecks: its creation claim keeps ``lastOperationId`` None, so
+    prior legitimate tool runs stay inside the window. Otherwise the attempt's
+    creation claim (expectedRecordVersion is None) marks the boundary; earlier
+    jobs belong to earlier attempts.
     """
-    if is_virgin_first_attempt:
-        return 0
+    records = _records(format3.application_state(store, internal))
+    cur = next((r for r in records if r["attempt"] == attempt_id and not r["withdrawn"]), None)
+    is_sole_task_attempt = False
+    if cur is not None:
+        task_id = cur["payload"]["taskId"]
+        same_task = [
+            r
+            for r in records
+            if (r["payload"]["taskId"] == task_id if not r["withdrawn"] else r["task"] == task_id)
+        ]
+        is_sole_task_attempt = len(same_task) == 1
     for row in store._db.execute(
         "SELECT rowid,context FROM operation_claims WHERE kind=? AND project=? ORDER BY rowid",
         ("application", project),
@@ -723,6 +739,12 @@ def _attempt_min_claim_rowid(store, project, internal, attempt_id, is_virgin_fir
             and change.get("attempt") == attempt_id
             and change.get("expectedRecordVersion") is None
         ):
+            if (
+                (is_virgin_first_attempt or is_sole_task_attempt)
+                and isinstance(change.get("payload"), dict)
+                and (change["payload"].get("lastOperationId") is None)
+            ):
+                return 0
             return row["rowid"]
     # The creation claim always precedes this point; 0 is the conservative floor.
     return 0
