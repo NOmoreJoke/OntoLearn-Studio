@@ -237,12 +237,15 @@ async function commitOntology(panel: Locator, expectedRevision: number) {
 async function addFact(panel: Locator, subject: string, predicate: string, object: string) {
   const next = (await revision(panel)) + 1
   const facts = panel.getByRole('region', { name: '实例事实', exact: true })
-  await button(facts, '新建事实并读取当前基准').click()
+  const resetFacts = button(facts, '新建事实并读取当前基准')
+  await resetFacts.click()
   await facts.getByLabel('主体个体 IRI', { exact: true }).fill(subject)
   await facts.getByLabel('属性 IRI', { exact: true }).fill(predicate)
   await facts.getByLabel('规范 RDF 对象', { exact: true }).fill(object)
   await button(facts, '预览新增事实').click()
   await commitOntology(panel, next)
+  await expect(resetFacts).toBeEnabled()
+  await resetFacts.click()
 }
 
 async function removeFact(panel: Locator, subject: string, predicate: string, object: string) {
@@ -250,12 +253,16 @@ async function removeFact(panel: Locator, subject: string, predicate: string, ob
   const facts = panel.getByRole('region', { name: '实例事实', exact: true })
   await facts.getByLabel('查找事实', { exact: true }).fill(subject)
   const row = facts
-    .getByRole('row')
-    .filter({ has: panel.getByRole('cell', { name: predicate, exact: true }) })
-    .filter({ has: panel.getByRole('cell', { name: object, exact: true }) })
+    .locator('tbody tr')
+    .filter({ has: panel.page().getByRole('cell', { name: predicate, exact: true }) })
+    .filter({ has: panel.page().getByRole('cell', { name: object, exact: true }) })
+  await expect(row).toHaveCount(1)
   await button(row, '载入事实').click()
   await button(facts, '预览移除原事实').click()
   await commitOntology(panel, next)
+  const resetFacts = button(facts, '新建事实并读取当前基准')
+  await expect(resetFacts).toBeEnabled()
+  await resetFacts.click()
 }
 
 async function addNeedsInspection(panel: Locator) {
@@ -349,7 +356,7 @@ async function executeQuery(page: Page, panel: Locator) {
   await expect(code).toHaveText(/^[0-9a-f-]{36}$/)
   const jobId = await code.textContent()
   if (!jobId) throw new Error('No original query job identity')
-  await expect(task).toContainText('：succeeded；')
+  await expect(task).toContainText(jobId + '：succeeded；')
   await refreshQuery(panel).click()
   await expect(queryStatus(panel)).toHaveText(
     '已取得真实结果描述；按固定引用分别读取文本与结果页。',
