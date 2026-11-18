@@ -19,6 +19,12 @@ const RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 const LEARNING = 'urn:ontolearn:learning:'
 const OWL_CLASS = '<http://www.w3.org/2002/07/owl#Class>'
 const RDFS_CLASS = '<http://www.w3.org/2000/01/rdf-schema#Class>'
+const ENTITY_DECLARATIONS = new Set([
+  OWL_CLASS,
+  RDFS_CLASS,
+  '<http://www.w3.org/2002/07/owl#ObjectProperty>',
+  '<http://www.w3.org/2002/07/owl#DatatypeProperty>',
+])
 
 type Statement = { subject: string; predicate: string; object: string }
 type FixtureBridge = Pick<
@@ -122,10 +128,26 @@ export async function buildLearningFixturePlan(
     }
   }
   if (ontology.length) {
+    const entities = Object.fromEntries(
+      ontology
+        .filter(
+          ({ predicate, object }) => predicate === RDF_TYPE && ENTITY_DECLARATIONS.has(object),
+        )
+        .map(({ subject }) => [
+          subject,
+          {
+            identifier: subject.split(/[:/#]/).pop()!,
+            labels: [],
+            definitions: [],
+            synonyms: [],
+            examples: [],
+          },
+        ]),
+    )
     definitions.unshift({
       layer: 'ontology',
       id: taskId === 'quality' ? `learning-lx01.${crypto.randomUUID()}` : `${taskId}.ontology`,
-      value: { triples: ontology },
+      value: { triples: ontology, entityMetadata: { entityMetadataVersion: 1, entities } },
     })
   }
   if (!definitions.length && !facts.length) return undefined

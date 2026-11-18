@@ -269,8 +269,8 @@ async function addNeedsInspection(panel: Locator) {
   const next = (await revision(panel)) + 1
   await button(panel, '新建概念').click()
   const form = panel.getByRole('region', { name: '本体编辑表单', exact: true })
-  await form.getByLabel('类型').selectOption('class')
-  await form.getByLabel('类声明').selectOption('owl')
+  await form.getByRole('combobox', { name: '类型', exact: true }).selectOption('class')
+  await form.getByRole('combobox', { name: '类声明', exact: true }).selectOption('owl')
   await form.getByLabel('稳定 IRI', { exact: true }).fill(learning + 'NeedsInspection')
   await form.getByLabel('英文标识', { exact: true }).fill('NeedsInspection')
   await button(form, '预览定义修改').click()
@@ -319,7 +319,9 @@ async function saveDerivedQuery(panel: Locator) {
   await panel.getByLabel('说明', { exact: true }).fill('返回基于当前快照实际推导的风险分类。')
   await panel.getByLabel('关联能力问题', { exact: true }).fill('哪些设备属于高风险设备？')
   await panel.getByLabel('可见 SPARQL', { exact: true }).fill(derivedQueryText)
-  await panel.getByLabel('数据范围', { exact: true }).selectOption('asserted+derived')
+  await panel
+    .getByRole('combobox', { name: '数据范围', exact: true })
+    .selectOption('asserted+derived')
   await button(panel, '保存工作草稿（不提交正式定义）').click()
   await expect(queryStatus(panel)).toHaveText('工作草稿已持久化；正式定义尚未提交。')
 
@@ -505,7 +507,9 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
     stage = 'run derived query through its loaded definition and read fixed rows and executed text'
     const query = await openQuery(page)
     await loadQuery(query, derivedQueryId)
-    await expect(query.getByLabel('数据范围', { exact: true })).toHaveValue('asserted+derived')
+    await expect(query.getByRole('combobox', { name: '数据范围', exact: true })).toHaveValue(
+      'asserted+derived',
+    )
     const derived = await executeQuery(page, query)
     expect(derived.descriptor.identity.scope).toBe('asserted+derived')
     expect(derived.job.input).toMatchObject({ derivedResultIds: [expect.any(String)] })

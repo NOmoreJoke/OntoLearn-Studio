@@ -1,7 +1,27 @@
-import { resolve } from 'node:path'
+import { randomUUID } from 'node:crypto'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+import type { BridgeResult } from '@ontolearn/contracts'
 import { chromium, type Browser, type Page } from '@playwright/test'
 import { build } from 'vite'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { EngineSupervisor } from '../../apps/desktop/src/main/engine'
+import { ProjectMainlineService } from '../../apps/desktop/src/main/project-mainline-service'
+import { TaskService } from '../../apps/desktop/src/main/task-service'
+import {
+  buildLearningFixturePlan,
+  commitLearningTaskFixture,
+  prepareLearningTaskFixture,
+} from '../../apps/desktop/src/renderer/src/learning/task-fixture'
+import {
+  entityEditPlan,
+  projectOntology,
+} from '../../apps/desktop/src/renderer/src/ontology/mainline-ontology'
+import {
+  prepareWorkspaceChange,
+  requireWorkspaceReply,
+} from '../../apps/desktop/src/renderer/src/ontology/workspace-change'
 import { sourceText } from '../../apps/desktop/src/renderer/src/query/QueryResultPanel'
 
 function samples() {
@@ -31,6 +51,131 @@ it('F08 truncates mixed Unicode text at the codepoint boundary', () => {
     expect(actual).not.toMatch(/[\uD800-\uDFFF]/u)
   }
 })
+
+it('commits editable declarations for LX-01 and both transfer fixtures through the real engine', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'w3a-learning-fixtures-'))
+  const supervisor = new EngineSupervisor(
+    { packaged: false, appPath: resolve('apps/desktop'), resourcesPath: resolve('.') },
+    {
+      profile: 'business3',
+      dataPath: join(directory, 'owned.sqlite'),
+      exampleRoot: resolve(
+        'build/release-resources/fr003-bundle-v2/examples/equipment-maintenance/loader',
+      ),
+    },
+  )
+  const tasks = new TaskService(supervisor)
+  const projects = new ProjectMainlineService(supervisor, tasks, () => tasks.attachView(() => {}))
+  const replies = supervisor.mainlineReplyReceiver()
+  const receive = async <T>(work: () => Promise<BridgeResult<T>>): Promise<BridgeResult<T>> => {
+    const { value, receipt } = await replies.receive(work)
+    replies.consume(receipt)
+    return value
+  }
+  const bridge = {
+    readProject: (args: { editor: string }) => receive(() => projects.readProject(args)),
+    previewProjectChangeset: (args: Parameters<typeof projects.previewProjectChangeset>[0]) =>
+      receive(() => projects.previewProjectChangeset(args)),
+    getProjectDiffPage: (args: Parameters<typeof projects.getProjectDiffPage>[0]) =>
+      receive(() => projects.getProjectDiffPage(args)),
+    confirmProjectChangeset: (args: Parameters<typeof projects.confirmProjectChangeset>[0]) =>
+      receive(() => projects.confirmProjectChangeset(args)),
+    commitProjectChangeSet: (args: Parameters<typeof projects.commitProjectChangeSet>[0]) =>
+      receive(() => projects.commitProjectChangeSet(args)),
+    getJob: (id: string) => tasks.getJob(id),
+  }
+  const requireCurrent = () => {}
+  const read = async () => requireWorkspaceReply(await bridge.readProject({ editor: 'quality' }))
+  const commit = async (proposal: Awaited<ReturnType<typeof prepareWorkspaceChange>>) => {
+    const job = await commitLearningTaskFixture(bridge, proposal, randomUUID(), requireCurrent)
+    expect(job.state, JSON.stringify(job.error)).toBe('succeeded')
+  }
+  const iri = 'urn:ontolearn:learning:'
+  const transferEntities = [
+    'Alarm',
+    'Equipment',
+    'HighRiskEquipment',
+    'WorkOrder',
+    'alarm',
+    'eventOrder',
+    'level',
+    'name',
+    'status',
+    'workOrderStatus',
+  ]
+
+  try {
+    for (const [task, identifiers] of [
+      ['quality', ['Person', 'assignedTo']],
+      ['transfer-repair', transferEntities],
+      ['transfer-classify', transferEntities],
+    ] as const) {
+      const operationId = randomUUID()
+      const result =
+        task === 'quality'
+          ? await receive(() =>
+              projects.createExampleProject({
+                exampleCreateRequestVersion: 1,
+                operationId,
+                name: 'LX-01 fixture test',
+                exampleId: 'equipment-maintenance',
+                inputDigest: '52952b637b02ba283d47a9e0c34a1691c1d850b94bb9b366a9863a55507c435e',
+              }),
+            )
+          : await receive(() =>
+              projects.createBlankProject({
+                requestVersion: 1,
+                operationId,
+                name: task,
+                initialization: { kind: 'blank' },
+              }),
+            )
+      const { projectId } = requireWorkspaceReply<{ projectId: string }>(result)
+      requireWorkspaceReply(await receive(() => projects.openProject({ projectId })))
+      const proposal = await prepareLearningTaskFixture(bridge, projectId, task, requireCurrent)
+      expect(proposal, task).toBeDefined()
+      await commit(proposal!)
+
+      const source = await read()
+      const projection = projectOntology(source)
+      const fixture = projection.homes.find(({ id }) =>
+        task === 'quality' ? id.startsWith('learning-lx01.') : id === `${task}.ontology`,
+      )
+      expect(fixture?.value.entityMetadata).toEqual({
+        entityMetadataVersion: 1,
+        entities: Object.fromEntries(
+          identifiers.map((identifier) => [
+            iri + identifier,
+            { identifier, labels: [], definitions: [], synonyms: [], examples: [] },
+          ]),
+        ),
+      })
+      if (task !== 'quality') continue
+
+      await expect(buildLearningFixturePlan(source, task)).resolves.toBeUndefined()
+      const assignedTo = projection.view.objects.find((entity) => entity.iri === iri + 'assignedTo')
+      expect(assignedTo).toMatchObject({ kind: 'objectProperty', identifier: 'assignedTo' })
+      const axioms = { domain: [iri + 'Equipment'], range: [iri + 'Person'] }
+      const edit = entityEditPlan(projection, {
+        action: 'edit',
+        object: { ...assignedTo!, ...axioms },
+      })
+      await commit(await prepareWorkspaceChange(bridge, source, edit, requireCurrent))
+      const readback = projectOntology(await read())
+      expect(
+        readback.view.objects.find((entity) => entity.iri === iri + 'assignedTo'),
+      ).toMatchObject({ identifier: 'assignedTo', ...axioms })
+      expect(readback.metadataHomes.get(iri + 'Person')).toEqual(
+        readback.metadataHomes.get(iri + 'assignedTo'),
+      )
+    }
+  } finally {
+    projects.dispose()
+    tasks.dispose()
+    await supervisor.stopAndWait()
+    await rm(directory, { recursive: true, force: true })
+  }
+}, 30_000)
 
 describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component interactions', () => {
   let browser: Browser
