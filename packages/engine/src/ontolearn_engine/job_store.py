@@ -1789,7 +1789,14 @@ class JobStore(Store):
             # source payloads are still retained; once collect_cache() has
             # evicted them the accepted job stays authoritative as-is.
             expected = self.prepare_semantic_request(
-                project, capability, input_, parameters, snapshot, implementation, confirmation_ref, live=False
+                project,
+                capability,
+                input_,
+                parameters,
+                snapshot,
+                implementation,
+                confirmation_ref,
+                live=False,
             )
             if digest(expected) != context["semanticRequestSha256"]:
                 fault("INVALID_STATE")

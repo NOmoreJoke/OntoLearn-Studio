@@ -1262,9 +1262,7 @@ def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
             filled = dict(validation_input)
             if scope == "asserted+derived":
                 filled["derivedResultIds"] = [reasoning["resultRef"]["resultId"]]
-            validation = _run_semantic_job(
-                actor, store, project, "validation.execute", filled
-            )
+            validation = _run_semantic_job(actor, store, project, "validation.execute", filled)
             semantic_jobs.append(validation)
             validations.append(validation)
         return reasoning, validations
@@ -1290,9 +1288,7 @@ def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
     store.commit(internal, store.revision(internal), uid(), uid(), remove=[name_003])
     _, broken = quality_run()
     assert not report_of(broken[0])["conforms"]
-    assert {row["focus"] for row in report_of(broken[0])["violations"]} == {
-        f"<{L}equipment/003>"
-    }
+    assert {row["focus"] for row in report_of(broken[0])["violations"]} == {f"<{L}equipment/003>"}
     commit_state(
         store,
         project,
@@ -1312,17 +1308,13 @@ def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
         store,
         project,
         definitions=[
-            ontology_layer(
-                [*G_BASE["ontology"], LX_PREREQ_ONTOLOGY[0], LX_PREREQ_ONTOLOGY[4]]
-            ),
+            ontology_layer([*G_BASE["ontology"], LX_PREREQ_ONTOLOGY[0], LX_PREREQ_ONTOLOGY[4]]),
             FORMAL_R_NEXT,
         ],
     )
     chained, _ = quality_run()
     body = result_payload(store, chained)["reasoning"]
-    assert any(
-        text.startswith("RULE_CHAIN_UNSUPPORTED:R-next") for text in body["warnings"]
-    )
+    assert any(text.startswith("RULE_CHAIN_UNSUPPORTED:R-next") for text in body["warnings"])
     assert all(t[2] != f"<{L}NeedsInspection>" for t in body["rules"])
 
     # LX-01 prerequisites: domain/range axioms, the second constraint and the
@@ -1341,9 +1333,7 @@ def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
         manual=list(LX_PREREQ_FACTS),
     )
     _, prereq = quality_run()
-    by_definition = {
-        job["input"]["definitionId"]: report_of(job) for job in prereq
-    }
+    by_definition = {job["input"]["definitionId"]: report_of(job) for job in prereq}
     assert by_definition["name-required"]["conforms"] is True
     assert not by_definition["assigned-to-required"]["conforms"]
     assert {row["focus"] for row in by_definition["assigned-to-required"]["violations"]} == {
@@ -1388,13 +1378,9 @@ def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
     derived_reasoning, derived_validations = quality_run(
         scope="asserted+derived", constraint_id="assigned-to-required"
     )
-    assert [job["input"]["definitionId"] for job in derived_validations] == [
-        "assigned-to-required"
-    ]
+    assert [job["input"]["definitionId"] for job in derived_validations] == ["assigned-to-required"]
     assert all(report_of(job)["conforms"] for job in derived_validations)
-    assert all(
-        job["input"]["scope"] == "asserted+derived" for job in derived_validations
-    )
+    assert all(job["input"]["scope"] == "asserted+derived" for job in derived_validations)
 
     state = learning(actor, "project.quality.read", {"projectId": project})
     assert state["reasoning"] is not None and state["validation"] is not None
