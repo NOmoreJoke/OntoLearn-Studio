@@ -1307,6 +1307,31 @@ export function App() {
           </h1>
           <p className="lead">从本体建模到情景推演，在一个本地项目中逐步学习与验证。</p>
         </section>
+        <section className="health-panel" aria-labelledby="health-title">
+          <div>
+            <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
+            <h2 id="health-title">检查本地引擎连接</h2>
+            <p>验证桌面应用与 Python 引擎的真实通信。</p>
+          </div>
+          <button
+            onClick={() => void checkEngine()}
+            disabled={checking || workspaceFrozen || managementBlocked}
+          >
+            {checking ? '正在检查…' : '检查本地引擎'}
+            <span aria-hidden="true"> ↗</span>
+          </button>
+          <div className="health-result" role="status" aria-live="polite">
+            {result ? (
+              result.ok ? (
+                `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
+              ) : (
+                <ErrorDetails error={result.error} context="health" />
+              )
+            ) : (
+              '尚未检查。'
+            )}
+          </div>
+        </section>
         <section
           id="learning-center"
           className="learning-center"
@@ -1377,31 +1402,6 @@ export function App() {
               )
             })}
           </ol>
-        </section>
-        <section className="health-panel" aria-labelledby="health-title">
-          <div>
-            <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
-            <h2 id="health-title">检查本地引擎连接</h2>
-            <p>验证桌面应用与 Python 引擎的真实通信。</p>
-          </div>
-          <button
-            onClick={() => void checkEngine()}
-            disabled={checking || workspaceFrozen || managementBlocked}
-          >
-            {checking ? '正在检查…' : '检查本地引擎'}
-            <span aria-hidden="true"> ↗</span>
-          </button>
-          <div className="health-result" role="status" aria-live="polite">
-            {result ? (
-              result.ok ? (
-                `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
-              ) : (
-                <ErrorDetails error={result.error} context="health" />
-              )
-            ) : (
-              '尚未检查。'
-            )}
-          </div>
         </section>
         <section
           className="project-library"
