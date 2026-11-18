@@ -1645,7 +1645,11 @@ class JobStore(Store):
             if query_request is not None:
                 context["queryRequest"] = query_request
             if semantic_request is not None:
-                context["semanticRequest"] = semantic_request
+                # The request is deterministically rebuildable from the
+                # immutable snapshot (worker_semantic_request / finish path);
+                # persist only its digest so the page budget keeps paying for
+                # facts once, not for a duplicated request document.
+                context["semanticRequestSha256"] = digest(semantic_request)
             if capability == "test.rounds":
                 events = parameters.get("events", [])
                 context["runConfig"] = {
@@ -1776,6 +1780,18 @@ class JobStore(Store):
                 project, input_, parameters, snapshot, implementation, confirmation_ref, live=False
             )
             if context["queryRequest"] != expected:
+                fault("INVALID_STATE")
+        if "semanticRequestSha256" in context and all(
+            self.result_get(project, rid)["payloadStatus"] == "available"
+            for rid in input_["derivedResultIds"]
+        ):
+            # Idempotent replay re-verifies the digest whenever the derived
+            # source payloads are still retained; once collect_cache() has
+            # evicted them the accepted job stays authoritative as-is.
+            expected = self.prepare_semantic_request(
+                project, capability, input_, parameters, snapshot, implementation, confirmation_ref, live=False
+            )
+            if digest(expected) != context["semanticRequestSha256"]:
                 fault("INVALID_STATE")
         if "runConfig" in context:
             config = context["runConfig"]
@@ -2243,6 +2259,28 @@ class JobStore(Store):
         except SemanticExecutionFault as error:
             raise JobFault(error.error["code"], error.error["params"]) from None
 
+    def worker_semantic_request(self, job, context):
+        """Rebuild the private reasoning/validation worker request on demand.
+
+        The stored context keeps only the request digest; this deterministic
+        rebuild from the immutable snapshot must reproduce it before the
+        request is handed to the worker transport.
+        """
+        with self._read():
+            expected = self.prepare_semantic_request(
+                job["projectId"],
+                job["capability"],
+                job["input"],
+                context["parameters"],
+                context["snapshot"],
+                job["implementation"],
+                job["confirmationRef"],
+                live=False,
+            )
+        if context.get("semanticRequestSha256") != digest(expected):
+            fault("INVALID_STATE")
+        return expected
+
     def _query_payload_binding(self, job, payload, rows):
         """Authenticate accepted source and complete output, without re-running SPARQL."""
         from ontolearn_engine.semantic_execution import _rows, _term
@@ -2480,7 +2518,7 @@ class JobStore(Store):
                 job["confirmationRef"],
                 live=False,
             )
-            if context.get("semanticRequest") != expected:
+            if context.get("semanticRequestSha256") != digest(expected):
                 fault("INVALID_STATE")
             payload = output["payload"]
             kind = "reasoning" if job["capability"] == "reasoning.execute" else "validation"

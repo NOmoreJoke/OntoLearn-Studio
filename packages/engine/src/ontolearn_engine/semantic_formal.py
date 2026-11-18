@@ -109,12 +109,11 @@ def _selected_formal_output(result, original, specs):
         "warnings",
         "evidence",
         "rdfsEvidence",
-        "proofLeaves",
     } <= set(result):
         raise SemanticError(invalid)
     if any(
         type(result[key]) is not list
-        for key in ("rdfs", "rules", "warnings", "evidence", "rdfsEvidence", "proofLeaves")
+        for key in ("rdfs", "rules", "warnings", "evidence", "rdfsEvidence")
     ):
         raise SemanticError(invalid)
     remaining = MAX_PROJECTION_ITEMS
@@ -176,20 +175,32 @@ def _selected_formal_output(result, original, specs):
     if rdfs_set & original_rows:
         raise SemanticError(invalid)
     proof_leaves = {}
-    for leaf in result["proofLeaves"]:
-        charge()
-        if type(leaf) is not dict or set(leaf) != {"reference", "triple"}:
+    if "proofLeaves" in result:
+        # Backwards-compatible explicit leaves keep the full audited checks,
+        # including every tamper case, byte for byte.
+        if type(result["proofLeaves"]) is not list:
             raise SemanticError(invalid)
-        key = row(leaf["triple"])
-        if key not in original_rows:
+        for leaf in result["proofLeaves"]:
+            charge()
+            if type(leaf) is not dict or set(leaf) != {"reference", "triple"}:
+                raise SemanticError(invalid)
+            key = row(leaf["triple"])
+            if key not in original_rows:
+                raise SemanticError(invalid)
+            raw = ("i05-profile-proof-leaf/1\0" + "\0".join(key)).encode("utf-8")
+            reference = "i05-proof:" + hashlib.sha256(raw).hexdigest()
+            if leaf["reference"] != reference or reference in proof_leaves:
+                raise SemanticError(invalid)
+            proof_leaves[reference] = key
+        if len(proof_leaves) != len(original_rows):
             raise SemanticError(invalid)
-        raw = ("i05-profile-proof-leaf/1\0" + "\0".join(key)).encode("utf-8")
-        reference = "i05-proof:" + hashlib.sha256(raw).hexdigest()
-        if leaf["reference"] != reference or reference in proof_leaves:
-            raise SemanticError(invalid)
-        proof_leaves[reference] = key
-    if len(proof_leaves) != len(original_rows):
-        raise SemanticError(invalid)
+    else:
+        # proofLeaves are a pure function of the asserted+ontology rows; the
+        # reference map is re-derived deterministically instead of persisted.
+        for key in original_rows:
+            charge()
+            raw = ("i05-profile-proof-leaf/1\0" + "\0".join(key)).encode("utf-8")
+            proof_leaves["i05-proof:" + hashlib.sha256(raw).hexdigest()] = key
     for warning in result["warnings"]:
         charge()
         if type(warning) is not str:

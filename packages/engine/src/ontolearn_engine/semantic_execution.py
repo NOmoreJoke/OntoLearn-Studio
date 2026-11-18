@@ -27,8 +27,10 @@ _PROFILE_TYPED_FIELDS = frozenset(
 )
 # Plain semantic outputs of a formal reasoning result that the downstream
 # formal projection, derivation provenance and learning checks consume.
+# proofLeaves are deliberately excluded: they are a pure function of the
+# asserted+ontology rows and are re-derived by the formal projection.
 _FORMAL_REASONING_KEYS = frozenset(
-    {"semanticsVersion", "rdfs", "rules", "warnings", "evidence", "rdfsEvidence", "proofLeaves"}
+    {"semanticsVersion", "rdfs", "rules", "warnings", "evidence", "rdfsEvidence"}
 )
 
 

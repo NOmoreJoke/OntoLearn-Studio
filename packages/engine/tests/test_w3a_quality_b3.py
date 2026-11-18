@@ -1207,6 +1207,261 @@ def test_formal_rule_repeated_quality_runs_stay_within_mainline_read_limits(owne
     assert 2 * scan_bytes + (decoded_bytes + plan_bytes) * repeats < READ_LIMITS.validation_work
 
 
+ASSIGNED_TO_REQUIRED = {
+    "schemaVersion": 1,
+    "kind": "constraint",
+    "id": "assigned-to-required",
+    "revision": 1,
+    "label": "设备负责人必填",
+    "enabled": True,
+    "targetClass": L + "Equipment",
+    "path": L + "assignedTo",
+    "template": "required",
+    "parameters": {},
+}
+
+
+def test_full_lx01_lesson_flow_fits_page_budget_after_request_dedup(owned):
+    """End-to-end R7 regression: the whole Lesson 04 single-project flow
+    (V-01 -> R-01 -> R-05 -> LX-01 with both constraints, needs-repair,
+    remove person/L02 rdf:type, re-run incl. asserted+derived, passed) stays
+    inside the mainline page/work budgets once semantic job contexts stop
+    duplicating the full semanticRequest and formal reasoning payloads stop
+    persisting proofLeaves."""
+    actor, store = owned
+    project = open_blank(actor, "LX 全流程瘦身")
+    semantic_jobs = []
+
+    def ontology_layer(triples):
+        return {
+            "layer": "ontology",
+            "id": "G-base.ontology",
+            "value": {
+                "triples": triples,
+                "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+            },
+        }
+
+    def quality_run(*, scope="asserted", constraint_id=None):
+        """One real prepare -> reasoning -> per-enabled-constraint validation chain."""
+        params = {
+            "projectId": project,
+            "operationId": uid(),
+            "selection": {"kind": "current"},
+            "validationScope": scope,
+        }
+        if constraint_id is not None:
+            params["constraintId"] = constraint_id
+        prepared = learning(actor, "project.quality.prepare", params)
+        reasoning = _run_semantic_job(
+            actor, store, project, "reasoning.execute", prepared["reasoningInput"]
+        )
+        semantic_jobs.append(reasoning)
+        validations = []
+        for validation_input in prepared["validationInputs"]:
+            filled = dict(validation_input)
+            if scope == "asserted+derived":
+                filled["derivedResultIds"] = [reasoning["resultRef"]["resultId"]]
+            validation = _run_semantic_job(
+                actor, store, project, "validation.execute", filled
+            )
+            semantic_jobs.append(validation)
+            validations.append(validation)
+        return reasoning, validations
+
+    def report_of(job):
+        return result_payload(store, job)["report"]
+
+    # Step 1: G-base plus the name-required constraint and the formal R-risk.
+    commit_state(
+        store,
+        project,
+        definitions=[
+            ontology_layer(list(G_BASE["ontology"])),
+            FORMAL_R_RISK,
+            {"layer": "constraint", "id": "name-required", "value": dict(NAME_REQUIRED)},
+        ],
+        manual=list(G_BASE["facts"]),
+    )
+
+    # V-01: remove 003's name, validate, restore, validate again.
+    name_003 = _fact_id(store, project, L + "equipment/003", L + "name")
+    internal = store._project(project)
+    store.commit(internal, store.revision(internal), uid(), uid(), remove=[name_003])
+    _, broken = quality_run()
+    assert not report_of(broken[0])["conforms"]
+    assert {row["focus"] for row in report_of(broken[0])["violations"]} == {
+        f"<{L}equipment/003>"
+    }
+    commit_state(
+        store,
+        project,
+        manual=[
+            {
+                "subject": L + "equipment/003",
+                "predicate": L + "name",
+                "object": '"备用泵C"',
+            }
+        ],
+    )
+    _, repaired = quality_run()
+    assert report_of(repaired[0])["conforms"]
+
+    # R-05: NeedsInspection class plus the chained formal R-next rule.
+    commit_state(
+        store,
+        project,
+        definitions=[
+            ontology_layer(
+                [*G_BASE["ontology"], LX_PREREQ_ONTOLOGY[0], LX_PREREQ_ONTOLOGY[4]]
+            ),
+            FORMAL_R_NEXT,
+        ],
+    )
+    chained, _ = quality_run()
+    body = result_payload(store, chained)["reasoning"]
+    assert any(
+        text.startswith("RULE_CHAIN_UNSUPPORTED:R-next") for text in body["warnings"]
+    )
+    assert all(t[2] != f"<{L}NeedsInspection>" for t in body["rules"])
+
+    # LX-01 prerequisites: domain/range axioms, the second constraint and the
+    # person/L01 fixture leave equipment/002 and /003 without an assigned owner.
+    commit_state(
+        store,
+        project,
+        definitions=[
+            ontology_layer([*G_BASE["ontology"], *LX_PREREQ_ONTOLOGY]),
+            {
+                "layer": "constraint",
+                "id": "assigned-to-required",
+                "value": dict(ASSIGNED_TO_REQUIRED),
+            },
+        ],
+        manual=list(LX_PREREQ_FACTS),
+    )
+    _, prereq = quality_run()
+    by_definition = {
+        job["input"]["definitionId"]: report_of(job) for job in prereq
+    }
+    assert by_definition["name-required"]["conforms"] is True
+    assert not by_definition["assigned-to-required"]["conforms"]
+    assert {row["focus"] for row in by_definition["assigned-to-required"]["violations"]} == {
+        f"<{L}equipment/002>",
+        f"<{L}equipment/003>",
+    }
+
+    # LX-01 failure state: repair facts plus the extra asserted person/L02.
+    commit_state(
+        store,
+        project,
+        manual=[
+            *LX_REPAIR_FACTS,
+            {
+                "subject": L + "person/L02",
+                "predicate": RDF_TYPE,
+                "object": f"<{L}Person>",
+            },
+        ],
+    )
+    failure_reasoning, failure_validations = quality_run()
+    assert all(report_of(job)["conforms"] for job in failure_validations)
+    origins = {
+        f"{L}person/L01": "asserted",
+        f"{L}person/L02": "derived",
+    }
+    first = check_task(actor, "quality", selected_origins=origins)
+    assert first["checkStatus"] == "needs-repair"
+    assert "这样步骤 4 就没有可区分的推导了" in ";".join(first["feedback"]["repairs"])
+
+    # LX-01 repair: remove person/L02 rdf:type (the E2E revision-13->14 edit).
+    l02_type = _fact_id(store, project, L + "person/L02", RDF_TYPE)
+    revision_before = store.project_get(project)["projectRevision"]
+    internal = store._project(project)
+    store.commit(internal, store.revision(internal), uid(), uid(), remove=[l02_type])
+    assert store.project_get(project)["projectRevision"] == revision_before + 1
+
+    final_reasoning, final_validations = quality_run()
+    assert all(report_of(job)["conforms"] for job in final_validations)
+    # At least one asserted+derived validation.execute on the second constraint
+    # (name-required stays asserted-scope so V-01's frozen expectation holds).
+    derived_reasoning, derived_validations = quality_run(
+        scope="asserted+derived", constraint_id="assigned-to-required"
+    )
+    assert [job["input"]["definitionId"] for job in derived_validations] == [
+        "assigned-to-required"
+    ]
+    assert all(report_of(job)["conforms"] for job in derived_validations)
+    assert all(
+        job["input"]["scope"] == "asserted+derived" for job in derived_validations
+    )
+
+    state = learning(actor, "project.quality.read", {"projectId": project})
+    assert state["reasoning"] is not None and state["validation"] is not None
+    assert state["validation"]["conforms"] is True
+
+    second = check_task(actor, "quality", selected_origins=origins)
+    assert second["checkStatus"] == "passed", second.get("feedback")
+    assert second["operationComplete"] is True
+
+    # Every semantic job context stores the request digest, never the request.
+    for job in semantic_jobs:
+        context = store.job_context(job["jobId"])
+        assert "semanticRequest" not in context, job["jobId"]
+        sha = context["semanticRequestSha256"]
+        assert isinstance(sha, str) and len(sha) == 64, job["jobId"]
+
+    # Formal reasoning payloads carry the five plain keys, never proofLeaves;
+    # the final rdfs closure still derives person/L02's Person type.
+    for job in semantic_jobs:
+        if job["capability"] != "reasoning.execute":
+            continue
+        body = result_payload(store, job)["reasoning"]
+        assert "proofLeaves" not in body, job["jobId"]
+        assert {
+            "semanticsVersion",
+            "rdfs",
+            "rules",
+            "warnings",
+            "evidence",
+            "rdfsEvidence",
+        } <= set(body)
+    final_body = result_payload(store, derived_reasoning)["reasoning"]
+    assert (f"<{L}person/L02>", f"<{RDF_TYPE}>", f"<{L}Person>") in {
+        tuple(triple) for triple in final_body["rdfs"]
+    }
+
+    # The real issuer-side page/work measurement over the same admission the
+    # product preview path uses: the deduplicated contexts must fit 85% of the
+    # validation page budget that R6's Test 9 overflowed at revision 14.
+    preview_params = {
+        "projectId": project,
+        "baseRevision": store.revision(store._project(project)),
+        "intent": "change",
+        "plan": {},
+    }
+    request = frame(actor, "changeset.preview", preview_params)
+    actor.mainline.begin(request)
+    proof = actor.mainline.ownership_proof(preview_params, method="changeset.preview")
+    total_rows, scan_bytes, decoded_bytes, plan_bytes, repeats = proof.material_profile()
+    actor.finish_query_reply(request["id"], emitted=True)
+    assert decoded_bytes + plan_bytes < int(0.85 * READ_LIMITS.validation_bytes)
+    assert 2 * scan_bytes + (decoded_bytes + plan_bytes) * repeats < READ_LIMITS.validation_work
+
+    # Anti-gaming falsification: the persisted digest is the digest of the
+    # genuinely rebuilt worker request, and tampering with it is rejected —
+    # the assertions above cannot pass against a trivially keyed placeholder.
+    from ontolearn_engine.job_store import JobFault
+
+    validation = derived_validations[0]
+    context = store.job_context(validation["jobId"])
+    rebuilt = store.worker_semantic_request(validation, context)
+    assert context["semanticRequestSha256"] == digest(rebuilt)
+    tampered = dict(context, semanticRequestSha256="0" * 64)
+    with pytest.raises(JobFault, match="INVALID_STATE"):
+        store.worker_semantic_request(validation, tampered)
+
+
 def test_auto_initialized_quality_attempt_retains_prior_runs_across_recheck(owned):
     actor, store = owned
     project = open_blank(actor, "重查保留")

@@ -828,7 +828,7 @@ class Coordinator:
                 request = (
                     context["queryRequest"]
                     if job["capability"] == "query.execute"
-                    else context["semanticRequest"]
+                    else self.store.worker_semantic_request(job, context)
                 )
                 encoded = query_encode(request, maximum)
                 pieces = query_parts(encoded, frame)
