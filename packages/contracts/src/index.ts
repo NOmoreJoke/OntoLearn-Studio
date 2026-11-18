@@ -6,6 +6,12 @@ import type { ProjectCheckpointBridge } from './project-checkpoints'
 export type * from './project-checkpoints'
 import type { LearningLedgerBridge } from './learning-ledger'
 export type * from './learning-ledger'
+import type {
+  QualityConstraintDefinitionDTO,
+  QualityRuleDefinitionDTO,
+  QualityWorkspaceBridge,
+} from './quality'
+export type * from './quality'
 
 export const PROTOCOL_VERSION = 2 as const
 // Private preload delivery protocol. These are never exposed on DesktopBridge
@@ -278,6 +284,18 @@ export type DesktopIpcMap = {
   'project:checkpoint-create': {
     args: [args: Parameters<ProjectCheckpointBridge['createProjectCheckpoint']>[0]]
     result: Awaited<ReturnType<ProjectCheckpointBridge['createProjectCheckpoint']>>
+  }
+  'project:quality-read': {
+    args: [args: Parameters<QualityWorkspaceBridge['getProjectQualityState']>[0]]
+    result: Awaited<ReturnType<QualityWorkspaceBridge['getProjectQualityState']>>
+  }
+  'project:quality-prepare': {
+    args: [args: Parameters<QualityWorkspaceBridge['prepareProjectQualityCheck']>[0]]
+    result: Awaited<ReturnType<QualityWorkspaceBridge['prepareProjectQualityCheck']>>
+  }
+  'project:quality-check': {
+    args: [args: Parameters<QualityWorkspaceBridge['runProjectQualityCheck']>[0]]
+    result: Awaited<ReturnType<QualityWorkspaceBridge['runProjectQualityCheck']>>
   }
   'project:learning-read': {
     args: [args: Parameters<LearningLedgerBridge['getProjectLearningState']>[0]]
@@ -752,7 +770,7 @@ export type QueryIdentityDTO = {
   jobId: string
   inputSnapshotId: string
   inputProjectRevision: number
-  scope: 'asserted'
+  scope: 'asserted' | 'asserted+derived'
   definitionId: string
   parametersHash: string
   implementation: ResultMetadataDTO['implementation']
@@ -958,8 +976,10 @@ export type MainlineChangePlanDTO = {
           descriptor: Omit<QueryDraftDTO, 'sparql'> & { version: 1 }
         }
       }
+    | QualityRuleDefinitionDTO
+    | QualityConstraintDefinitionDTO
   >
-  remove_definitions?: Array<{ layer: 'ontology' | 'query'; id: string }>
+  remove_definitions?: Array<{ layer: 'ontology' | 'query' | 'rule' | 'constraint'; id: string }>
   manual?: Array<{ id: string; subject: string; predicate: string; object: string }>
   edits?: Record<string, string>
   remove?: string[]
@@ -968,7 +988,11 @@ export type MainlinePreviewArgs =
   | { baseRevision: number; intent: 'change'; plan: MainlineChangePlanDTO }
   | { baseRevision: number; intent: 'undo'; targetOperationId: string }
 export interface MainlineProjectBridge
-  extends ProjectManagementBridge, ProjectCheckpointBridge, LearningLedgerBridge {
+  extends
+    ProjectManagementBridge,
+    ProjectCheckpointBridge,
+    LearningLedgerBridge,
+    QualityWorkspaceBridge {
   getOwnershipConflictDetailPage(
     args: OwnershipDetailArgs,
   ): Promise<BridgeResult<OwnershipDetailPage>>

@@ -359,7 +359,8 @@ def prepare(store, params, implementation, limits, registry_hash, ticket):
                 # Derived-scope drafts reuse the newest persisted reasoning
                 # result bound to this exact snapshot; nothing is re-executed.
                 # Bound parameter only; no caller text enters the statement.
-                rows = store._db.execute(_REASONING_RESULTS_SQL, (project,)).fetchall()
+                internal = store._project(project)
+                rows = store._db.execute(_REASONING_RESULTS_SQL, (internal,)).fetchall()
                 selected_result = None
                 for row in rows:
                     if row["kind"] != "reasoning":
@@ -368,16 +369,15 @@ def prepare(store, params, implementation, limits, registry_hash, ticket):
                     if (
                         metadata["inputSnapshotId"] != record["inputSnapshotId"]
                         or metadata["payloadStatus"] != "available"
+                        or (
+                            params["selection"]["kind"] == "current"
+                            and metadata["state"] != "current"
+                        )
                     ):
                         continue
                     selected_result = metadata
                     break
                 if selected_result is None:
-                    fault("INVALID_REQUEST", field="dependency")
-                if (
-                    params["selection"]["kind"] == "current"
-                    and selected_result["state"] != "current"
-                ):
                     fault("INVALID_REQUEST", field="dependency")
                 derived_result_ids = [selected_result["resultId"]]
             input_ = {

@@ -11971,7 +11971,7 @@
           "maximum": 9007199254740991
         },
         "scope": {
-          "const": "asserted"
+          "enum": ["asserted", "asserted+derived"]
         },
         "definitionId": {
           "$ref": "#/$defs/name"
@@ -13307,7 +13307,8 @@
               "const": "required"
             },
             "parameters": {
-              "const": {}
+              "type": "object",
+              "additionalProperties": false
             }
           },
           "required": [

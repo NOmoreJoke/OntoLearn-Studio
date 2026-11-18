@@ -1781,15 +1781,15 @@ describe('API002 query workspace private consumer', () => {
     expect(x.controller.getSnapshot().loaded).toBeUndefined()
     expect(x.controller.getSnapshot().jobReconciled).toBe(true)
   })
-  it('keeps real accepted query identity when watch subscription is pending and rejects unsupported derived scope', async () => {
+  it('executes a loaded derived query and retains the accepted identity while its watch is pending', async () => {
     const x = setup()
     await x.controller.open()
     x.controller.setDefinitionId('q01')
+    const managed = x.loaded()
+    const derivedDraft = { ...managed.draft, scope: 'asserted+derived' as const }
+    x.bridge.loadQueryDefinition.mockResolvedValueOnce(ok({ ...managed, draft: derivedDraft }))
     await x.controller.load()
-    x.controller.editDraft({ scope: 'asserted+derived' })
-    await x.controller.execute()
-    expect(x.bridge.executeSavedQuery).not.toHaveBeenCalled()
-    x.controller.editDraft({ scope: 'asserted' })
+    expect(x.controller.getSnapshot().draft.scope).toBe('asserted+derived')
     const execute = x.bridge.executeSavedQuery.getMockImplementation()!
     x.bridge.executeSavedQuery.mockImplementation(
       async (args) =>
@@ -1797,7 +1797,15 @@ describe('API002 query workspace private consumer', () => {
           ...(await execute(args)),
           data: {
             operationId: args.operationId,
-            acceptedJob: x.job(args.operationId, 'query.execute'),
+            acceptedJob: {
+              ...x.job(args.operationId, 'query.execute'),
+              scope: 'asserted+derived',
+              input: {
+                ...(x.job(args.operationId, 'query.execute').input as Record<string, unknown>),
+                scope: 'asserted+derived',
+                derivedResultIds: [ref],
+              },
+            },
             watch: { state: 'pending', error: failed.error },
           },
         }) as never,

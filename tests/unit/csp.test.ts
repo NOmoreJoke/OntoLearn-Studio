@@ -11,7 +11,9 @@ describe('CSP delivery variants', () => {
   })
   it('allows only the fixed loopback development origin with a valid nonce', () => {
     const policy = contentSecurityPolicy({ nonce: 'Abc123+/=', origin: 'http://127.0.0.1:5173' })
-    expect(policy).toContain("'nonce-Abc123+/='")
+    expect(policy).toContain("script-src 'self' 'nonce-Abc123+/='")
+    expect(policy).toContain("style-src 'self' 'nonce-Abc123+/='")
+    expect(policy).not.toMatch(/unsafe-inline|unsafe-eval/)
     expect(policy).toContain('ws://127.0.0.1:5173')
     expect(() =>
       contentSecurityPolicy({ nonce: "a'; unsafe", origin: 'http://127.0.0.1:5173' }),

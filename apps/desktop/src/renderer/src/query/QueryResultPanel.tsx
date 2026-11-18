@@ -24,14 +24,37 @@ function downloadCsv(csv: string, filename: string) {
   URL.revokeObjectURL(url)
 }
 
-const sourceText = (text: string) => {
-  let output = '',
-    count = 0
-  for (const character of text) {
-    if (count++ === 256) return output + '…（来源文本已截短）'
-    output += character
-  }
-  return output
+const sourceTextLimit = 256
+
+export function sourceText(value: string): string {
+  const points = Array.from(value)
+  return points.length <= sourceTextLimit ? value : points.slice(0, sourceTextLimit).join('') + '…'
+}
+
+export function TruncatedSourceText({ value }: { value: string }) {
+  return <SourceText key={value} value={value} />
+}
+
+function SourceText({ value }: { value: string }) {
+  const [expanded, setExpanded] = useState(false)
+  const id = useId()
+  const excerpt = sourceText(value)
+  return (
+    <>
+      <code id={id}>{expanded ? value : excerpt}</code>
+      {excerpt !== value && (
+        <button
+          type="button"
+          className="query-source-toggle"
+          aria-controls={id}
+          aria-expanded={expanded}
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? '收起全文' : '展开全文'}
+        </button>
+      )}
+    </>
+  )
 }
 
 function ActualRelations({
@@ -147,12 +170,12 @@ function ActualRelations({
                             '人工来源'
                           ) : (
                             <>
-                              映射 <code>{sourceText(support.owner)}</code>，源行{' '}
-                              <code>{sourceText(support.source_row!)}</code>。
+                              映射 <TruncatedSourceText value={support.owner} />
+                              ，源行 <TruncatedSourceText value={support.source_row!} />。
                               {support.object !== support.managed_value && (
                                 <p>
                                   当前值与映射生成值不同；边使用当前实际对象，生成值仅供溯源：
-                                  <code>{sourceText(support.managed_value!)}</code>。
+                                  <TruncatedSourceText value={support.managed_value!} />。
                                 </p>
                               )}
                               {support.mappingState === null ? (
@@ -168,7 +191,8 @@ function ActualRelations({
                                   </p>
                                   {support.mappingState.stale.slice(0, 8).map((reason, index) => (
                                     <p key={index}>
-                                      {reason.code} · {sourceText(reason.dependency)} ·{' '}
+                                      {reason.code} ·{' '}
+                                      <TruncatedSourceText value={reason.dependency} /> ·{' '}
                                       {reason.before} → {reason.after}
                                     </p>
                                   ))}

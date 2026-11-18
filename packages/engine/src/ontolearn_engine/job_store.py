@@ -2094,7 +2094,12 @@ class JobStore(Store):
         if input_["scope"] == "asserted+derived":
             # Derived-scope queries reuse one stored current reasoning result
             # bound to this exact snapshot; stale material is rejected here.
-            selected = self._semantic_selection(project, input_, snap)
+            selected = self._semantic_selection(
+                project,
+                input_,
+                snap,
+                require_current=live and parameters["inputSelection"] == "current",
+            )
         elif input_["derivedResultIds"]:
             fault("INVALID_REQUEST", field="identity")
         if live and implementation != semantic_identity():
@@ -2130,11 +2135,13 @@ class JobStore(Store):
         except SemanticExecutionFault as error:
             raise JobFault(error.error["code"], error.error["params"]) from None
 
-    def _semantic_selection(self, project, input_, snap):
+    def _semantic_selection(self, project, input_, snap, *, require_current):
         """Load and validate the one selected reasoning result for a derived scope.
 
         The result must be a real persisted reasoning payload bound to this exact
-        immutable snapshot; stale or evicted material cannot serve a new input.
+        immutable snapshot. A fresh current request must select a current result.
+        Explicit historical selections and independently verified accepted intents
+        can use supported immutable material as long as its payload is retained.
         """
         result_id = input_["derivedResultIds"]
         if type(result_id) is not list or len(result_id) != 1 or not isinstance(result_id[0], str):
@@ -2149,7 +2156,7 @@ class JobStore(Store):
             metadata["kind"] != "reasoning"
             or metadata["payloadStatus"] != "available"
             or metadata["inputSnapshotId"] != input_["inputSnapshotId"]
-            or metadata["state"] != "current"
+            or (require_current and metadata["state"] != "current")
         ):
             fault("INVALID_REQUEST", field="identity")
         rows = self.result(identity)["payload"]
@@ -2201,7 +2208,12 @@ class JobStore(Store):
             fault("INVALID_REQUEST", field="identity")
         selected = None
         if scope == "asserted+derived":
-            selected = self._semantic_selection(project, input_, snap)
+            selected = self._semantic_selection(
+                project,
+                input_,
+                snap,
+                require_current=live and parameters["inputSelection"] == "current",
+            )
         elif input_["derivedResultIds"]:
             fault("INVALID_REQUEST", field="identity")
         if capability == "validation.execute" and not any(
@@ -2386,7 +2398,7 @@ class JobStore(Store):
                 "factViewSha256": digest(facts),
                 "ontologyViewSha256": digest(ontology),
             }
-        if payload["provenance"] != expected_provenance:
+        if canonical(payload["provenance"]) != canonical(expected_provenance):
             fault("INVALID_STATE")
         # Fixed supplier projection is pure JSON walking, not graph/query execution.
         projected = _rows(payload)

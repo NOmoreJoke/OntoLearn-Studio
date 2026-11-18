@@ -355,8 +355,12 @@ type Runtime = {
   events: TaskUpdate[]
 }
 
-function runtime(database: string): Runtime {
-  const supervisor = new EngineSupervisor(location, { profile: 'business3', dataPath: database })
+function runtime(database: string, exampleRoot?: string): Runtime {
+  const supervisor = new EngineSupervisor(location, {
+    profile: 'business3',
+    dataPath: database,
+    ...(exampleRoot ? { exampleRoot } : {}),
+  })
   const tasks = new TaskService(supervisor)
   const events: TaskUpdate[] = []
   const projects = new ProjectMainlineService(supervisor, tasks, () => {
@@ -771,6 +775,233 @@ it('real business3 creates, saves, commits, queries and reopens its own persiste
     await rm(directory, { recursive: true, force: true })
   }
 }, 30000)
+
+it('quality run chains real reasoning and validation Jobs and retains zero-constraint runs', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'w3a-quality-real-'))
+  const value = runtime(
+    join(directory, 'owned.sqlite'),
+    join(repoRoot, 'build/release-resources/fr003-bundle-v2/examples/equipment-maintenance/loader'),
+  )
+  const issued = vi.spyOn(value.supervisor, 'requestPinned')
+  const receive = async <T>(work: () => Promise<BridgeResult<T>>): Promise<T> => {
+    const offered = await value.replies.receive(work)
+    const result = data(offered.value)
+    value.replies.consume(offered.receipt)
+    return result
+  }
+  try {
+    const blank = await receive(() =>
+      value.projects.createBlankProject({
+        requestVersion: 1,
+        operationId: randomUUID(),
+        name: '质量检查空白项目',
+        initialization: { kind: 'blank' },
+      }),
+    )
+    await receive(() => value.projects.openProject({ projectId: blank.projectId }))
+    const blankArgs = {
+      projectId: blank.projectId,
+      operationId: randomUUID(),
+      selection: { kind: 'current' } as const,
+    }
+    const prepared = await receive(() => value.projects.prepareProjectQualityCheck(blankArgs))
+    expect(prepared.validationInput).toBeNull()
+    expect(prepared.validationInputs).toEqual([])
+    const empty = await receive(() => value.projects.runProjectQualityCheck(blankArgs))
+    expect(empty.reasoningJob.state).toBe('succeeded')
+    expect(empty.validationJobs).toEqual([])
+    expect(empty.qualityState.validation).toBeNull()
+
+    const example = await receive(() =>
+      value.projects.createExampleProject({
+        exampleCreateRequestVersion: 1,
+        operationId: randomUUID(),
+        name: '质量检查案例',
+        exampleId: 'equipment-maintenance',
+        inputDigest: '52952b637b02ba283d47a9e0c34a1691c1d850b94bb9b366a9863a55507c435e',
+      }),
+    )
+    await receive(() => value.projects.openProject({ projectId: example.projectId }))
+
+    const denied = await value.replies.receive(() =>
+      value.projects.runProjectQualityCheck(blankArgs),
+    )
+    expect(denied.value).toMatchObject({ ok: false, error: { code: 'PERMISSION_DENIED' } })
+    value.replies.consume(denied.receipt)
+
+    const iri = 'urn:ontolearn:learning:'
+    const derivedQuery = `SELECT ?equipment WHERE { ?equipment a <${iri}HighRiskEquipment> }`
+    const project = await receive(() => value.projects.readProject({ editor: 'quality' }))
+    const preview = await receive(() =>
+      value.projects.previewProjectChangeset({
+        baseRevision: project.domain.projectRevision,
+        intent: 'change',
+        plan: {
+          definitions: [
+            {
+              layer: 'constraint',
+              id: 'name-required',
+              value: {
+                schemaVersion: 1,
+                kind: 'constraint',
+                id: 'name-required',
+                revision: 1,
+                label: '设备名称必填',
+                enabled: true,
+                targetClass: iri + 'Equipment',
+                path: iri + 'name',
+                template: 'required',
+                parameters: {},
+              },
+            },
+            {
+              layer: 'rule',
+              id: 'R-risk',
+              value: {
+                schemaVersion: 1,
+                kind: 'rule',
+                id: 'R-risk',
+                revision: 1,
+                label: '高风险设备',
+                enabled: true,
+                conditions: [
+                  { kind: 'type', subject: '?equipment', class: iri + 'Equipment' },
+                  {
+                    kind: 'property',
+                    subject: '?equipment',
+                    path: iri + 'alarm',
+                    object: '?alarm',
+                  },
+                  { kind: 'property', subject: '?alarm', path: iri + 'level', object: '"High"' },
+                  { kind: 'property', subject: '?alarm', path: iri + 'status', object: '"Open"' },
+                ],
+                conclusions: [
+                  { kind: 'type', subject: '?equipment', class: iri + 'HighRiskEquipment' },
+                ],
+              },
+            },
+            {
+              layer: 'query',
+              id: 'derived-equipment',
+              value: {
+                text: derivedQuery,
+                references: [],
+                descriptor: {
+                  version: 1,
+                  name: '高风险设备查询',
+                  description: '当前推导中的高风险设备',
+                  scope: 'asserted+derived',
+                  capabilityQuestion: '哪些设备属于高风险设备？',
+                  source: 'editor',
+                },
+              },
+            },
+          ],
+        },
+      }),
+    )
+    if (preview.status !== 'ready') throw new Error('Quality definitions ChangeSet conflicts')
+    const page = await receive(() =>
+      value.projects.getProjectDiffPage({
+        previewHash: preview.previewHash,
+        documentKind: 'diff',
+        pageSize: 64,
+        cursor: null,
+      }),
+    )
+    await reassembleChangeSetDocument(preview, [page])
+    const confirmation = await receive(() =>
+      value.projects.confirmProjectChangeset({
+        previewHash: preview.previewHash,
+        completionCursor: page.nextCursor!,
+      }),
+    )
+    const committed = await receive(() =>
+      value.projects.commitProjectChangeSet({ operationId: randomUUID(), confirmation }),
+    )
+    await vi.waitFor(async () => {
+      const commit = data(await value.tasks.getJob(committed.jobId))
+      expect(commit.state, JSON.stringify(commit.error)).toBe('succeeded')
+    })
+    await receive(() => value.projects.readProject({ editor: 'quality' }))
+
+    const args = { ...blankArgs, projectId: example.projectId, operationId: randomUUID() }
+    const result = await receive(() => value.projects.runProjectQualityCheck(args))
+    expect(result.reasoningJob.state).toBe('succeeded')
+    expect(result.validationJobs).toHaveLength(1)
+    expect(result.validationJobs[0], JSON.stringify(result.validationJobs[0]?.error)).toMatchObject(
+      {
+        state: 'succeeded',
+        input: {
+          scope: 'asserted+derived',
+          derivedResultIds: [result.reasoningJob.resultRef?.resultId],
+        },
+      },
+    )
+    expect(result.qualityState.validation).toMatchObject({ conforms: true, state: 'current' })
+    expect(result.qualityState.reasoning?.derivation?.ruleTraces).toEqual(
+      expect.arrayContaining([expect.objectContaining({ rule: 'R-risk' })]),
+    )
+    const retry = await receive(() => value.projects.runProjectQualityCheck(args))
+    expect(retry.reasoningJob.jobId).toBe(result.reasoningJob.jobId)
+    expect(retry.validationJobs.map((job) => job.jobId)).toEqual(
+      result.validationJobs.map((job) => job.jobId),
+    )
+    const creates = issued.mock.calls.filter(
+      ([method, params]) => method === 'job.create' && params.capability !== 'changeset.commit',
+    )
+    expect(creates.map(([, params]) => params.capability)).toEqual([
+      'reasoning.execute',
+      'reasoning.execute',
+      'validation.execute',
+      'reasoning.execute',
+      'validation.execute',
+    ])
+    const load = await receive(() =>
+      value.projects.queries.loadQueryDefinition({
+        definitionId: 'derived-equipment',
+        selection: { kind: 'current' },
+      }),
+    )
+    if (load.kind !== 'managed') throw new Error('Expected managed derived query')
+    const execution = await receive(() =>
+      value.projects.queries.executeSavedQuery({
+        operationId: randomUUID(),
+        loadRef: load.loadRef,
+        visibleDraft: load.draft,
+        selection: { kind: 'current' },
+      }),
+    )
+    const queryJob = await vi.waitFor(async () => {
+      const job = data(await value.tasks.getJob(execution.acceptedJob.jobId))
+      expect(['succeeded', 'failed', 'cancelled']).toContain(job.state)
+      return job
+    })
+    expect(queryJob.state, JSON.stringify(queryJob.error)).toBe('succeeded')
+    const descriptor = await receive(() =>
+      value.projects.queries.getQueryResultDescriptor({ resultId: queryJob.resultRef!.resultId }),
+    )
+    expect(descriptor.identity.scope).toBe('asserted+derived')
+    expect(descriptor.executedText.sha256).toBe(
+      createHash('sha256').update(derivedQuery).digest('hex'),
+    )
+    const rows = await receive(() =>
+      value.projects.queries.getQueryRowsPage({
+        descriptorRef: descriptor.descriptorRef,
+        pageSize: 8,
+        cursor: null,
+      }),
+    )
+    expect(rows.identity).toEqual(descriptor.identity)
+    expect(rows.rows.map((row) => row.cells)).toEqual([
+      [{ kind: 'iri', iri: iri + 'equipment/001', n3: `<${iri}equipment/001>` }],
+    ])
+    expect(value.replies.diagnostic()).toMatchObject({ slots: 0, offered: 0, unknown: 0 })
+  } finally {
+    await closeRuntime(value, directory)
+    await rm(directory, { recursive: true, force: true })
+  }
+}, 25000)
 
 it('seventeen acknowledged real commits preserve old operation identity without replay', async () => {
   const directory = await mkdtemp(join(tmpdir(), 't01-intent-lifetime-real-'))

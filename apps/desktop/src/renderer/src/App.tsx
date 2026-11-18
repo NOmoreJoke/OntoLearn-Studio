@@ -11,6 +11,7 @@ import {
   type MainlineCreateRequestDTO,
   type MainlineExampleCreateRequestDTO,
   type LibraryWorkspaceReport,
+  type QualityFindingDTO,
 } from '@ontolearn/contracts'
 import { explainError, jobStatus, resultSummary } from './task-presentation'
 import { TaskProgressBuffer } from './task-progress'
@@ -33,8 +34,27 @@ import {
 import { pickLatestDomainSnapshotId } from './learning/domain-snapshot'
 import { MentorPanel } from './learning/MentorPanel'
 import { offlineCourse } from './learning/content'
+import {
+  commitLearningTaskFixture,
+  prepareLearningTaskFixture,
+  type LearningFixtureTaskId,
+} from './learning/task-fixture'
+import { QualityWorkspace } from './quality/QualityWorkspace'
 
-type WorkspaceModule = 'query' | 'ontology'
+type FixtureProposal = {
+  taskId: LearningFixtureTaskId
+  generation: number
+  operationId: string
+  diff: NonNullable<Awaited<ReturnType<typeof prepareLearningTaskFixture>>>
+}
+type QualityLocation = {
+  projectId: string
+  generation: number
+  module: WorkspaceModule
+  finding: QualityFindingDTO
+}
+
+type WorkspaceModule = 'query' | 'ontology' | 'quality'
 type OntologyContext = {
   session: OntologySession
   contextKey: string
@@ -103,6 +123,22 @@ export function App() {
     projectId: string
     snapshotId: string
     revision: number
+  }>()
+  const [qualityDomainSnapshot, setQualityDomainSnapshot] = useState<{
+    projectId: string
+    snapshotId: string
+    revision: number
+  }>()
+  const [qualityLocation, setQualityLocation] = useState<QualityLocation>()
+  const [qualityPending, setQualityPending] = useState(false)
+  const qualityPendingRef = useRef(false)
+  const fixtureBusyRef = useRef(false)
+  const [fixtureBusy, setFixtureBusy] = useState(false)
+  const [fixtureProposal, setFixtureProposal] = useState<FixtureProposal>()
+  const [fixtureStatus, setFixtureStatus] = useState<{
+    projectId?: string
+    taskId: LearningFixtureTaskId
+    text: string
   }>()
   // 首启序列是否已结算。首启序列在飞、恢复读取进行中或仍有待核对恢复时，创建
   // 与打开入口保持禁用，防止在 checkpointCtl.initialize() 尚未结算前抢跑并发
@@ -214,6 +250,7 @@ export function App() {
       selectQueryWorkspace(latest)
       return
     }
+    if (selectedModule.current !== 'ontology') return
     const actualBridge = window.ontolearn
     if (!actualBridge) return
     // One actual canonical object; this assignment is intentionally checked by T01.
@@ -264,7 +301,16 @@ export function App() {
     ontologyOwner.current = next
     setOntologyContext(next)
   }, [management, retireOntology, selectQueryWorkspace, setOntologyContext])
+  function hasCurrentFixtureProposal() {
+    const view = readyWorkspace.current
+    return (
+      fixtureProposal &&
+      fixtureProposal.diff.preview.projectId === view?.project?.projectId &&
+      fixtureProposal.generation === view?.generation
+    )
+  }
   function selectWorkspace(module: WorkspaceModule) {
+    if (qualityPendingRef.current || fixtureBusyRef.current || hasCurrentFixtureProposal()) return
     if (
       libraryAdmissionBlocked({
         documentLeaving: documentLeaving.current,
@@ -362,6 +408,7 @@ export function App() {
     } else if (response) setTaskError(response.error)
   }
   async function listProjects(cursor: string | null = null) {
+    if (qualityPendingRef.current || fixtureBusyRef.current || hasCurrentFixtureProposal()) return
     const bridge = window.ontolearn
     if (documentLeaving.current || !bridge || libraryBusy.current || frozen.current) return
     if (management) {
@@ -386,6 +433,7 @@ export function App() {
     }
   }
   async function openProject(projectId: string) {
+    if (qualityPendingRef.current || fixtureBusyRef.current || hasCurrentFixtureProposal()) return
     const bridge = window.ontolearn
     if (
       !bridge ||
@@ -436,10 +484,16 @@ export function App() {
   }
   async function createProject(
     example = false,
-    options?: { initialWorkspace?: WorkspaceModule; startAttemptTaskId?: string },
+    options?: { name?: string; initialWorkspace?: WorkspaceModule; startAttemptTaskId?: string },
   ) {
+    if (
+      qualityPendingRef.current ||
+      (fixtureBusyRef.current && !options?.name) ||
+      hasCurrentFixtureProposal()
+    )
+      return
     const bridge = window.ontolearn
-    const name = projectName.trim() ? projectName : example ? '设备运维示例' : ''
+    const name = options?.name ?? (projectName.trim() ? projectName : example ? '设备运维示例' : '')
     if (
       !bridge ||
       !name.trim() ||
@@ -461,6 +515,7 @@ export function App() {
     setProjectBusy(true)
     setProjectError(undefined)
     let createdProjectId: string | undefined
+    let openedProjectId: string | undefined
     libraryBusy.current = true
     selectionTarget.current = {}
     readyWorkspace.current = undefined
@@ -531,6 +586,7 @@ export function App() {
           setWorkspaceModule(options.initialWorkspace)
         }
         await restore()
+        openedProjectId = created.data.projectId
       }
     } catch {
       setProjectError(safeError(undefined))
@@ -547,6 +603,7 @@ export function App() {
       // No ontology auto-read can race this call's catalog/restore tail.
       activateWorkspace()
     }
+    return openedProjectId
   }
   const aggregateWorkspace = useCallback(() => {
     const queries = [...queryControllers.current.values()]
@@ -554,6 +611,8 @@ export function App() {
     return {
       dirty: ontologyDirty.current || queries.some((controller) => controller.getSnapshot().dirty),
       unresolved:
+        qualityPendingRef.current ||
+        fixtureBusyRef.current ||
         !!createIntent.current ||
         libraryBusy.current ||
         uncertain.current ||
@@ -599,6 +658,11 @@ export function App() {
     connection,
     ontologyContext,
   ])
+  const onQualityPending = useCallback((pending: boolean) => {
+    qualityPendingRef.current = pending
+    setQualityPending(pending)
+    workspaceNotify.current()
+  }, [])
   const onOntologyDirty = useCallback((dirty: boolean) => {
     ontologyDirty.current = dirty
     workspaceNotify.current()
@@ -910,6 +974,7 @@ export function App() {
       : undefined,
     sessionDomainSnapshot,
     queryDomainSnapshot,
+    qualityDomainSnapshot,
     learningState?.learning
       ? {
           projectId: learningState.learning.projectId,
@@ -918,7 +983,184 @@ export function App() {
         }
       : undefined,
   ])
-  const learningDisabled = projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked
+  const activeFixture =
+    fixtureProposal?.diff.preview.projectId === activeProjectId &&
+    fixtureProposal?.generation === tasks?.generation
+      ? fixtureProposal
+      : undefined
+  const activeLocation =
+    qualityLocation?.projectId === activeProjectId &&
+    qualityLocation?.generation === tasks?.generation
+      ? qualityLocation
+      : undefined
+  const operationBusy = projectBusy || qualityPending || fixtureBusy
+  const projectControlsBusy = operationBusy || Boolean(activeFixture)
+  const learningDisabled =
+    operationBusy ||
+    workspaceFrozen ||
+    managementBlocked ||
+    checkpointBlocked ||
+    Boolean(connection)
+
+  function locateQualityFinding(targets: QualityFindingDTO['targets'], finding: QualityFindingDTO) {
+    if (!activeProjectId || !tasks || learningDisabled || activeFixture) return
+    const module = targets.subject ? 'ontology' : 'quality'
+    setQualityLocation({
+      projectId: activeProjectId,
+      generation: tasks.generation,
+      module,
+      finding,
+    })
+    selectWorkspace(module)
+    requestAnimationFrame(() => {
+      document
+        .querySelector('[data-testid="quality-locate-target"]')
+        ?.scrollIntoView({ block: 'nearest' })
+    })
+  }
+  function locationBanner(module: WorkspaceModule) {
+    if (activeLocation?.module !== module) return null
+    const { targets, sourceShape } = activeLocation.finding
+    return (
+      <aside className="quality-location" data-testid="quality-locate-target" role="status">
+        <strong>验证问题定位</strong>
+        <dl>
+          {targets.subject && (
+            <>
+              <dt>主体</dt>
+              <dd>{targets.subject}</dd>
+            </>
+          )}
+          {targets.predicate && (
+            <>
+              <dt>属性</dt>
+              <dd>{targets.predicate}</dd>
+            </>
+          )}
+          {targets.object && (
+            <>
+              <dt>对象</dt>
+              <dd>{targets.object}</dd>
+            </>
+          )}
+          {sourceShape && (
+            <>
+              <dt>约束形状</dt>
+              <dd>{sourceShape}</dd>
+            </>
+          )}
+        </dl>
+        <button type="button" onClick={() => setQualityLocation(undefined)}>
+          关闭定位
+        </button>
+      </aside>
+    )
+  }
+  function reportFixtureStatus(taskId: LearningFixtureTaskId, text: string) {
+    setFixtureStatus({
+      projectId: readyWorkspace.current?.project?.projectId ?? activeProjectId,
+      taskId,
+      text,
+    })
+  }
+  async function runFixtureAction(taskId: LearningFixtureTaskId, work: () => Promise<void>) {
+    if (fixtureBusyRef.current || learningDisabled) return
+    fixtureBusyRef.current = true
+    setFixtureBusy(true)
+    setFixtureStatus(undefined)
+    workspaceNotify.current()
+    try {
+      await work()
+    } catch (cause) {
+      const message = cause instanceof Error ? cause.message : 'UNKNOWN'
+      reportFixtureStatus(
+        taskId,
+        message === 'LEARNING_FIXTURE_REQUIRES_G_BASE'
+          ? '请从设备运维示例打开 G-base，再载入本关初始数据。'
+          : `本关初始数据操作未完成（${message}）。`,
+      )
+    } finally {
+      fixtureBusyRef.current = false
+      setFixtureBusy(false)
+      workspaceNotify.current()
+    }
+  }
+  function requireFixtureContext(projectId: string, generation: number) {
+    const view = readyWorkspace.current
+    if (
+      documentLeaving.current ||
+      uncertain.current ||
+      frozen.current ||
+      management?.unresolved ||
+      checkpointCtl?.unresolved ||
+      view?.generation !== generation ||
+      view.project?.projectId !== projectId
+    )
+      throw new Error('PERMISSION_DENIED')
+  }
+  function loadTaskFixture(taskId: LearningFixtureTaskId) {
+    const bridge = window.ontolearn
+    if (!bridge || !activeProjectId || activeFixture) return
+    if (workspaceStatus.dirty || workspaceStatus.unresolved) {
+      reportFixtureStatus(taskId, '请先处理当前工作区未保存或未结算的编辑。')
+      return
+    }
+    void runFixtureAction(taskId, async () => {
+      // Reuse the existing project admission tail for transfer attempts.
+      let projectId = activeProjectId
+      if (taskId !== 'quality') {
+        const opened = await createProject(false, {
+          name: taskId === 'transfer-repair' ? '迁移练习 · 设备质量修复' : '迁移练习 · 设备分类',
+          initialWorkspace: 'quality',
+          startAttemptTaskId: taskId,
+        })
+        if (!opened) throw new Error('PROJECT_NOT_OPEN')
+        projectId = opened
+      } else {
+        retireOntology()
+        disconnectQuery()
+        selectedModule.current = 'quality'
+        setWorkspaceModule('quality')
+      }
+      const view = readyWorkspace.current
+      if (!view || view.project?.projectId !== projectId) throw new Error('PROJECT_NOT_OPEN')
+      const generation = view.generation
+      const diff = await prepareLearningTaskFixture(bridge, projectId, taskId, () =>
+        requireFixtureContext(projectId, generation),
+      )
+      if (diff) setFixtureProposal({ taskId, generation, diff, operationId: crypto.randomUUID() })
+      else reportFixtureStatus(taskId, '本关初始数据已载入。')
+    })
+  }
+  function commitTaskFixture(proposal: FixtureProposal) {
+    const bridge = window.ontolearn
+    if (!bridge) return
+    void runFixtureAction(proposal.taskId, async () => {
+      const projectId = proposal.diff.preview.projectId
+      const requireCurrent = () => requireFixtureContext(projectId, proposal.generation)
+      const job = await commitLearningTaskFixture(
+        bridge,
+        proposal.diff,
+        proposal.operationId,
+        requireCurrent,
+      )
+      requireCurrent()
+      setFixtureProposal(undefined)
+      if (job.state !== 'succeeded') throw new Error(job.error?.code ?? job.state)
+      const read = await bridge.readProject({ editor: 'quality' })
+      requireCurrent()
+      if (!read.ok) throw new Error(read.error.code)
+      if (read.data.projectId !== projectId) throw new Error('PERMISSION_DENIED')
+      setQualityDomainSnapshot({
+        projectId,
+        snapshotId: read.data.inputSnapshotId,
+        revision: read.data.domain.projectRevision,
+      })
+      await learningCtl?.selectAndRefresh(projectId)
+      requireCurrent()
+      reportFixtureStatus(proposal.taskId, '本关初始数据已载入。')
+    })
+  }
   function openMentorForTask(taskId?: string) {
     if (taskId) learningCtl?.focusTask(taskId)
     setMentorOpen(true)
@@ -991,7 +1233,7 @@ export function App() {
                 href="#query-workspace"
                 aria-current={workspaceModule === 'query' ? 'page' : undefined}
                 aria-disabled={
-                  projectBusy || Boolean(connection) || workspaceFrozen || managementBlocked
+                  projectControlsBusy || Boolean(connection) || workspaceFrozen || managementBlocked
                 }
                 onClick={(event) => {
                   event.preventDefault()
@@ -1004,7 +1246,7 @@ export function App() {
                 href="#ontology-workspace"
                 aria-current={workspaceModule === 'ontology' ? 'page' : undefined}
                 aria-disabled={
-                  projectBusy || Boolean(connection) || workspaceFrozen || managementBlocked
+                  projectControlsBusy || Boolean(connection) || workspaceFrozen || managementBlocked
                 }
                 onClick={(event) => {
                   event.preventDefault()
@@ -1012,6 +1254,17 @@ export function App() {
                 }}
               >
                 本体构建
+              </a>
+              <a
+                href="#quality-workspace"
+                aria-current={workspaceModule === 'quality' ? 'page' : undefined}
+                aria-disabled={learningDisabled || Boolean(activeFixture)}
+                onClick={(event) => {
+                  event.preventDefault()
+                  selectWorkspace('quality')
+                }}
+              >
+                质量与推导
               </a>
             </>
           )}
@@ -1146,7 +1399,9 @@ export function App() {
           <div className="project-quickstart" aria-label="首次启动入口">
             <button
               type="button"
-              disabled={projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked}
+              disabled={
+                projectControlsBusy || workspaceFrozen || managementBlocked || checkpointBlocked
+              }
               onClick={() => void listProjects()}
             >
               打开已有项目
@@ -1183,14 +1438,16 @@ export function App() {
               value={projectName}
               onChange={(event) => setProjectName(event.target.value)}
               maxLength={4096}
-              disabled={projectBusy || hasCreateIntent || workspaceFrozen || managementBlocked}
+              disabled={
+                projectControlsBusy || hasCreateIntent || workspaceFrozen || managementBlocked
+              }
               required
             />
             <button
               type="submit"
               data-testid="project-create"
               disabled={
-                projectBusy ||
+                projectControlsBusy ||
                 !projectName.trim() ||
                 workspaceFrozen ||
                 managementBlocked ||
@@ -1203,7 +1460,7 @@ export function App() {
               type="button"
               data-testid="project-create-example"
               disabled={
-                projectBusy ||
+                projectControlsBusy ||
                 hasCreateIntent ||
                 workspaceFrozen ||
                 managementBlocked ||
@@ -1218,7 +1475,7 @@ export function App() {
                 type="button"
                 data-testid="project-list-refresh"
                 onClick={() => void listProjects()}
-                disabled={projectBusy || checkpointBlocked}
+                disabled={projectControlsBusy || checkpointBlocked}
               >
                 刷新项目列表
               </button>
@@ -1245,7 +1502,7 @@ export function App() {
                       type="button"
                       data-testid="project-open"
                       data-project-id={item.projectId}
-                      disabled={projectBusy}
+                      disabled={projectControlsBusy}
                       onClick={() => void openProject(item.projectId)}
                     >
                       打开
@@ -1257,7 +1514,7 @@ export function App() {
               {catalog.nextCursor && (
                 <button
                   type="button"
-                  disabled={projectBusy}
+                  disabled={projectControlsBusy}
                   onClick={() => void listProjects(catalog.nextCursor)}
                 >
                   下一页
@@ -1268,7 +1525,9 @@ export function App() {
           {management && (
             <ProjectManagementPanel
               controller={management}
-              disabled={projectBusy || workspaceFrozen || Boolean(connection) || checkpointBlocked}
+              disabled={
+                projectControlsBusy || workspaceFrozen || Boolean(connection) || checkpointBlocked
+              }
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
               openProject={(id) => void openProject(id)}
             />
@@ -1277,7 +1536,7 @@ export function App() {
             <ProjectCheckpointRestorePanel
               controller={checkpointCtl}
               disabled={
-                projectBusy ||
+                projectControlsBusy ||
                 workspaceFrozen ||
                 Boolean(connection) ||
                 managementBlocked ||
@@ -1289,7 +1548,7 @@ export function App() {
           {window.ontolearn?.getLibraryLocation && (
             <LibraryLocationPanel
               bridge={window.ontolearn}
-              disabled={projectBusy || managementBlocked}
+              disabled={projectControlsBusy || managementBlocked}
               report={reportWorkspace}
               freeze={freezeWorkspace}
             />
@@ -1334,10 +1593,39 @@ export function App() {
                 tasks.generation === ontologyContext.generation &&
                 !connection && (
                   <section id="ontology-workspace" aria-label="当前项目本体">
+                    {locationBanner('ontology')}
                     <OntologyMainlinePage
                       session={ontologyContext.session}
                       contextKey={ontologyContext.contextKey}
                       onDirtyChange={onOntologyDirty}
+                    />
+                  </section>
+                )}
+              {workspaceModule === 'quality' &&
+                tasks?.project &&
+                window.ontolearn?.getProjectQualityState &&
+                !connection &&
+                !projectBusy && (
+                  <section id="quality-workspace" aria-label="当前项目质量与推导">
+                    {locationBanner('quality')}
+                    <QualityWorkspace
+                      key={JSON.stringify([
+                        tasks.project.projectId,
+                        tasks.generation,
+                        tasks.project.projectRevision,
+                      ])}
+                      projectId={tasks.project.projectId}
+                      bridge={window.ontolearn}
+                      disabled={
+                        workspaceFrozen ||
+                        managementBlocked ||
+                        checkpointBlocked ||
+                        fixtureBusy ||
+                        Boolean(activeFixture)
+                      }
+                      onDomainSnapshotUpdated={setQualityDomainSnapshot}
+                      onLocateTarget={locateQualityFinding}
+                      onPendingChange={onQualityPending}
                     />
                   </section>
                 )}
@@ -1363,7 +1651,10 @@ export function App() {
                 <section className="health-panel" aria-label="后台任务状态">
                   <h2>后台任务</h2>
                   <p>窗口恢复后读取持久状态；不会重发写任务。</p>
-                  <button onClick={() => void restore()} disabled={Boolean(connection)}>
+                  <button
+                    onClick={() => void restore()}
+                    disabled={projectControlsBusy || Boolean(connection)}
+                  >
                     刷新任务状态
                   </button>
                   {tasks.jobs.map((job) => (
@@ -1448,6 +1739,24 @@ export function App() {
                 currentDomainSnapshotId={currentDomainSnapshotId}
                 onOpenOntologyRepair={() => selectWorkspace('ontology')}
                 onOpenQueryWorkspace={() => selectWorkspace('query')}
+                onOpenQualityWorkspace={() => selectWorkspace('quality')}
+                onLoadTaskFixture={loadTaskFixture}
+                taskFixture={
+                  activeFixture
+                    ? {
+                        taskId: activeFixture.taskId,
+                        rows: activeFixture.diff.rows,
+                        approve: () => commitTaskFixture(activeFixture),
+                        discard: () => setFixtureProposal(undefined),
+                      }
+                    : undefined
+                }
+                taskFixtureStatus={
+                  fixtureStatus?.projectId === activeProjectId &&
+                  fixtureStatus?.taskId === learningState?.focusedTaskId
+                    ? fixtureStatus?.text
+                    : undefined
+                }
                 onResetToGBase={resetLearningGBase}
                 refreshCheckpoints={() => checkpointCtl?.refreshWhenIdle() ?? Promise.resolve()}
               />

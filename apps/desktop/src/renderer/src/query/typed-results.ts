@@ -16,7 +16,7 @@ const identitySchema = z
     jobId: z.string().uuid(),
     inputSnapshotId: hash,
     inputProjectRevision: integer,
-    scope: z.literal('asserted'),
+    scope: z.enum(['asserted', 'asserted+derived']),
     definitionId: scalar,
     parametersHash: hash,
     implementation,

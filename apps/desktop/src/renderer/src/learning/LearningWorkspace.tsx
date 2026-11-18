@@ -25,6 +25,7 @@ import type {
   LearningWorkspaceProps,
   TaskContext,
 } from './types'
+import { selectedTaskOrigins, TaskOriginSelectors, type TaskOriginChoices } from './task-origins'
 import './learning.css'
 
 const EMPTY_RECORDS: readonly LearningRecordView[] = []
@@ -40,6 +41,7 @@ function WorkspaceSession({
   records = EMPTY_RECORDS,
   actions,
   initialTaskId,
+  onOpenQualityWorkspace,
 }: LearningWorkspaceProps) {
   const [selectedId, setSelectedId] = useState(
     offlineCourse.tasks.some((task) => task.id === initialTaskId)
@@ -166,6 +168,7 @@ function WorkspaceSession({
           floor={floor}
           recordConflict={Boolean(projection && !record)}
           actions={actions}
+          onOpenQualityWorkspace={onOpenQualityWorkspace}
           priorInput={priorInput}
           onRecord={(value) => setAcknowledged((old) => observeRecords(old, [value]))}
           onNext={() => selected.next && setSelectedId(selected.next)}
@@ -262,6 +265,7 @@ interface PanelProps {
   floor: RecordFloor | undefined
   recordConflict: boolean
   actions: LearningActions | undefined
+  onOpenQualityWorkspace?: () => void
   priorInput: boolean
   onRecord(record: LearningRecordView): void
   onNext(): void
@@ -276,6 +280,7 @@ function TaskPanel({
   floor,
   recordConflict,
   actions,
+  onOpenQualityWorkspace,
   priorInput,
   onRecord,
   onNext,
@@ -285,6 +290,7 @@ function TaskPanel({
   const [feedback, setFeedback] = useState<CheckFeedbackView>()
   const [busy, setBusy] = useState<'hint' | 'check' | 'report'>()
   const [notice, setNotice] = useState('')
+  const [originChoices, setOriginChoices] = useState<TaskOriginChoices>(['', ''])
   const [collapsed, setCollapsed] = useState(false)
   const live = useRef(true)
   useEffect(() => {
@@ -342,7 +348,11 @@ function TaskPanel({
     setBusy('check')
     setNotice('')
     try {
-      const value = await actions.checkTask(context)
+      const origins = selectedTaskOrigins(task.id, originChoices)
+      const value =
+        origins === undefined
+          ? await actions.checkTask(context)
+          : await actions.checkTask(context, origins)
       if (!live.current) return
       if (
         !validFeedback(value, context, highestHint, floor) ||
@@ -433,6 +443,12 @@ function TaskPanel({
         {priorInput && (
           <p className="learning-warning">之前的检查使用另一输入或尝试，本次需要重新检查。</p>
         )}
+        <TaskOriginSelectors
+          taskId={task.id}
+          values={originChoices}
+          disabled={Boolean(busy)}
+          onChange={setOriginChoices}
+        />
         <div className="learning-actions">
           <button
             type="button"
@@ -442,6 +458,11 @@ function TaskPanel({
           >
             {busy === 'check' ? '正在检查…' : '检查我的操作'}
           </button>
+          {onOpenQualityWorkspace && (
+            <button type="button" className="learning-secondary" onClick={onOpenQualityWorkspace}>
+              打开质量与推导工作台
+            </button>
+          )}
           {actions?.openWorkspace && (
             <button
               type="button"

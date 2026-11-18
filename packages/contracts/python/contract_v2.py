@@ -1302,8 +1302,9 @@ def matches_query_consumer_response(request, response, expected=None):
             and v["operationId"] == p["operationId"]
             and v["definitionBinding"] == p["definitionBinding"]
             and input_["definitionId"] == p["definitionBinding"]["definitionId"]
-            and input_["scope"] == "asserted"
-            and input_["derivedResultIds"] == []
+            and input_["scope"] == p["visibleDraft"]["scope"]
+            and len(input_["derivedResultIds"])
+            == (1 if input_["scope"] == "asserted+derived" else 0)
             and input_["preparedPlanRef"] is None
             and (
                 p["selection"]["kind"] != "historical"

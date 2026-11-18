@@ -109,11 +109,12 @@ def _selected_formal_output(result, original, specs):
         "warnings",
         "evidence",
         "rdfsEvidence",
+        "proofLeaves",
     } <= set(result):
         raise SemanticError(invalid)
     if any(
         type(result[key]) is not list
-        for key in ("rdfs", "rules", "warnings", "evidence", "rdfsEvidence")
+        for key in ("rdfs", "rules", "warnings", "evidence", "rdfsEvidence", "proofLeaves")
     ):
         raise SemanticError(invalid)
     remaining = MAX_PROJECTION_ITEMS
@@ -170,7 +171,24 @@ def _selected_formal_output(result, original, specs):
         raise SemanticError(invalid)
     rdfs_set, derived_set = set(rdfs), set(derived)
     original_rows = set(original)
-    if rdfs_set & original_rows or derived_set & original_rows or rdfs_set & derived_set:
+    # A rule can supply a second justification for a statement already present
+    # in the asserted or RDFS view. The merged graph still has only one triple.
+    if rdfs_set & original_rows:
+        raise SemanticError(invalid)
+    proof_leaves = {}
+    for leaf in result["proofLeaves"]:
+        charge()
+        if type(leaf) is not dict or set(leaf) != {"reference", "triple"}:
+            raise SemanticError(invalid)
+        key = row(leaf["triple"])
+        if key not in original_rows:
+            raise SemanticError(invalid)
+        raw = ("i05-profile-proof-leaf/1\0" + "\0".join(key)).encode("utf-8")
+        reference = "i05-proof:" + hashlib.sha256(raw).hexdigest()
+        if leaf["reference"] != reference or reference in proof_leaves:
+            raise SemanticError(invalid)
+        proof_leaves[reference] = key
+    if len(proof_leaves) != len(original_rows):
         raise SemanticError(invalid)
     for warning in result["warnings"]:
         charge()
@@ -211,7 +229,15 @@ def _selected_formal_output(result, original, specs):
         spec = selected[rule_id]
         key = row(evidence["result"])
         inputs = rows(evidence["inputs"], nonempty=True)
-        basis = rows(evidence["basis"], nonempty=True)
+        references = evidence["basis"]
+        if type(references) is not list or not references:
+            raise SemanticError(invalid)
+        charge(len(references))
+        if any(
+            type(reference) is not str or reference not in proof_leaves for reference in references
+        ):
+            raise SemanticError(invalid)
+        basis = [proof_leaves[reference] for reference in references]
         if key not in derived_set or len(inputs) != len(spec.when):
             raise SemanticError(invalid)
         if any(

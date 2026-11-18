@@ -302,8 +302,9 @@ def prepare(store, params, ticket):
         snapshot_id = store.snapshot(internal)
         if selection["kind"] == "historical":
             snapshot_id = selection["snapshotId"]
-            store._project_snapshot(snapshot_id, internal)
-        state = store.state(internal)
+            state = store._project_snapshot(snapshot_id, internal)["state"]
+        else:
+            state = store.state(internal)
         enabled = [
             identity
             for identity, payload in _formal_definitions(state, "constraint")
