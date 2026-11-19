@@ -508,6 +508,51 @@ void app.whenReady().then(async () => {
   })
   if (!fixture && supervisor.profile === 'business3')
     projects = new ProjectMainlineService(supervisor, tasks, attachCurrentTaskView, {
+      pickMappingSource: async () => {
+        const options: Electron.OpenDialogOptions = {
+          title: '选择映射数据源',
+          properties: ['openFile'],
+          filters: [{ name: '表格数据', extensions: ['csv', 'xlsx'] }],
+        }
+        const result = window
+          ? await dialog.showOpenDialog(window, options)
+          : await dialog.showOpenDialog(options)
+        return result.canceled || result.filePaths.length !== 1
+          ? { canceled: true }
+          : { filePath: result.filePaths[0]! }
+      },
+      pickTransferFile: async (purpose) => {
+        const options = {
+          filters:
+            purpose === 'report-html'
+              ? [{ name: 'HTML 报告', extensions: ['html'] }]
+              : [{ name: 'OntoLearn 项目包 (.ontolearn.zip)', extensions: ['zip'] }],
+        }
+        if (purpose === 'package-import') {
+          const open: Electron.OpenDialogOptions = {
+            ...options,
+            title: '选择要导入的项目包',
+            properties: ['openFile'],
+          }
+          const result = window
+            ? await dialog.showOpenDialog(window, open)
+            : await dialog.showOpenDialog(open)
+          return result.canceled || result.filePaths.length !== 1
+            ? { canceled: true }
+            : { filePath: result.filePaths[0]! }
+        }
+        const save: Electron.SaveDialogOptions = {
+          ...options,
+          title: purpose === 'report-html' ? '保存 HTML 报告' : '导出项目包',
+          defaultPath: purpose === 'report-html' ? '报告.html' : '项目.ontolearn.zip',
+        }
+        const result = window
+          ? await dialog.showSaveDialog(window, save)
+          : await dialog.showSaveDialog(save)
+        return result.canceled || !result.filePath
+          ? { canceled: true }
+          : { filePath: result.filePath }
+      },
       managementJournalPath: join(
         app.getPath('userData'),
         'project-intents',
@@ -629,6 +674,7 @@ void app.whenReady().then(async () => {
     const host = new AgentHostComposition({
       modes,
       projects: selectedProjects,
+      waveFourEnabled: true,
       tasks,
       replies,
       selection: () => selectedProjects.source.current(),
