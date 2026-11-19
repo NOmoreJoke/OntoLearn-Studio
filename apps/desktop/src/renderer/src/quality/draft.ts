@@ -110,12 +110,22 @@ export type RuleChainRuleInput = {
   conclusions: Pattern[]
 }
 
-/** Mirrors quality/planning.py:_signature for the private editor pattern rows. */
+/** Mirrors quality/planning.py:_signature for the private editor pattern rows.
+ *  Blank rows (no class on a type row, no path on a property row) carry no
+ *  signature: an untouched editor row must never read or write anything. */
 function signatureOf(row: Pattern): RuleChainSignature | null {
   if (row.kind === 'compare') return null
-  if (row.kind === 'type') return ['type', row.value]
-  if (row.path === rdfTypePath) return ['type', row.value.replace(/^</, '').replace(/>$/, '')]
-  return ['property', row.path]
+  if (row.kind === 'type') {
+    const target = row.value.trim()
+    return target ? ['type', target] : null
+  }
+  const path = row.path.trim()
+  if (!path) return null
+  if (path === rdfTypePath) {
+    const target = row.value.replace(/^</, '').replace(/>$/, '').trim()
+    return target ? ['type', target] : null
+  }
+  return ['property', path]
 }
 
 /**
