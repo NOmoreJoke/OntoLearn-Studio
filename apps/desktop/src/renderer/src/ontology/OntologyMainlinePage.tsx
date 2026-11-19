@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import type { ReactNode } from 'react'
 import { manualFactPlan, newManualFactPlan } from './mainline-facts'
 import { type OntologySession, sourceIdentity } from './mainline-session'
 import { OntologyPage } from './OntologyPage'
@@ -15,6 +16,14 @@ export type OntologyMainlinePageProps = {
   /** Shell's actual document/session/selection generation; presentation fence only. */
   contextKey: string
   onDirtyChange?: (dirty: boolean) => void
+  /** Reports the current object selection (in selection order) to the host. */
+  onSelectedObjectChange?: (ids: string[]) => void
+  /**
+   * Host-provided panels rendered inside this page (import/export and the
+   * Agent draft diff). They are injected instead of imported so this module
+   * keeps its existing dependency surface.
+   */
+  extras?: ReactNode
 }
 
 export function OntologyMainlinePage(props: OntologyMainlinePageProps) {
@@ -23,6 +32,8 @@ export function OntologyMainlinePage(props: OntologyMainlinePageProps) {
       key={props.contextKey}
       session={props.session}
       onDirtyChange={props.onDirtyChange}
+      onSelectedObjectChange={props.onSelectedObjectChange}
+      extras={props.extras}
     />
   )
 }
@@ -30,15 +41,32 @@ export function OntologyMainlinePage(props: OntologyMainlinePageProps) {
 function MainlineEditor({
   session,
   onDirtyChange,
-}: Pick<OntologyMainlinePageProps, 'session' | 'onDirtyChange'>) {
+  onSelectedObjectChange,
+  extras,
+}: Pick<
+  OntologyMainlinePageProps,
+  'session' | 'onDirtyChange' | 'onSelectedObjectChange' | 'extras'
+>) {
   useEffect(() => session.connectForPage(), [session])
-  return <SessionEditor session={session} onDirtyChange={onDirtyChange} />
+  return (
+    <SessionEditor
+      session={session}
+      onDirtyChange={onDirtyChange}
+      onSelectedObjectChange={onSelectedObjectChange}
+      extras={extras}
+    />
+  )
 }
 
 function SessionEditor({
   session,
   onDirtyChange,
-}: Pick<OntologyMainlinePageProps, 'session' | 'onDirtyChange'>) {
+  onSelectedObjectChange,
+  extras,
+}: Pick<
+  OntologyMainlinePageProps,
+  'session' | 'onDirtyChange' | 'onSelectedObjectChange' | 'extras'
+>) {
   const state = useSyncExternalStore(session.subscribe, session.getSnapshot)
   const factLifetime = useRef<
     { session: OntologySession; sequence: number; active: boolean } | undefined
@@ -205,6 +233,7 @@ function SessionEditor({
                 factsManagedExternally
                 onDraftChange={invalidateFactPreview}
                 onDirtyChange={setDefinitionDirty}
+                onSelectedObjectChange={onSelectedObjectChange}
                 previewManagedEdit={async (intent, base) => {
                   if (
                     base.project !== source.projectId ||
@@ -353,6 +382,7 @@ function SessionEditor({
           </section>
         </>
       )}
+      {extras && <div data-testid="ontology-mainline-extras">{extras}</div>}
       {formError && <p role="alert">{formError}</p>}
       {state.error && (
         <p role="alert">

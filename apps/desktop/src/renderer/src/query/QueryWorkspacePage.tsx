@@ -1,6 +1,13 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { QueryResultPanel } from './QueryResultPanel'
-import { compileVisual, draftSchema, visualSchema, type VisualQuery } from './draft'
+import {
+  alarmTemplate,
+  alarmVocabulary,
+  compileVisual,
+  draftSchema,
+  visualSchema,
+  type VisualQuery,
+} from './draft'
 import { QueryWorkspaceController } from './workspace-controller'
 import type { QueryDraftDTO } from './api002-source-types'
 import './workspace.css'
@@ -78,6 +85,23 @@ function WorkspaceDocument({
       setBuilderError('')
     } catch {
       setBuilderError('请核对对象、返回属性和 RDF 条件。未生成或执行查询。')
+    }
+  }
+  // The template is only derived from the ontology that was really read.
+  const templateVocabulary = alarmVocabulary(classes, predicates)
+  const loadAlarmTemplate = () => {
+    if (!templateVocabulary) return
+    try {
+      const template = alarmTemplate(templateVocabulary)
+      setVisual(template)
+      change({
+        sparql: compileVisual(template),
+        source: 'template',
+        name: '高危未闭环告警',
+      })
+      setBuilderError('')
+    } catch {
+      setBuilderError('无法生成告警模板；请核对当前本体中的类与属性。未生成或执行查询。')
     }
   }
   return (
@@ -192,6 +216,30 @@ function WorkspaceDocument({
       <div className="query-workspace-columns">
         <section aria-label="离线查询构建">
           <h2>模板与条件构建</h2>
+          <section data-testid="query-template-list" aria-label="常用问题模板">
+            <h3>常用问题模板</h3>
+            <ul>
+              <li>
+                <button
+                  type="button"
+                  data-testid="query-template-alarm"
+                  disabled={!templateVocabulary || replaceBlocked}
+                  onClick={loadAlarmTemplate}
+                >
+                  高危未闭环告警
+                </button>
+              </li>
+            </ul>
+            {templateVocabulary ? (
+              <p>
+                模板依据当前已读取的本体推导：类 <code>{templateVocabulary.alarmClass}</code>
+                ，等级属性 <code>{templateVocabulary.severity}</code>，状态属性{' '}
+                <code>{templateVocabulary.status}</code>。载入只写入工作草稿，不会自动执行。
+              </p>
+            ) : (
+              <p>当前已读取的本体尚未提供可识别的告警类与等级／状态属性；不会填入示例词表。</p>
+            )}
+          </section>
           <label>
             选择对象
             <select
@@ -532,15 +580,23 @@ function WorkspaceDocument({
           </button>
           <h3>自然语言草稿</h3>
           <p>仅消费上游真实草稿；当前页面不调用模型，不把手写 SPARQL 计作模型验证。</p>
-          <button
-            disabled={!modelDraft || (state.dirty && !discardConfirmed)}
-            onClick={() => {
-              const parsed = draftSchema.safeParse(modelDraft)
-              if (parsed.success) controller.replaceDraft({ ...parsed.data, source: 'model' })
-            }}
-          >
-            将上游模型草稿放入编辑器（替换当前内容）
-          </button>
+          <div data-testid="query-model-draft">
+            <button
+              disabled={!modelDraft || (state.dirty && !discardConfirmed)}
+              onClick={() => {
+                const parsed = draftSchema.safeParse(modelDraft)
+                if (parsed.success) controller.replaceDraft({ ...parsed.data, source: 'model' })
+              }}
+            >
+              将上游模型草稿放入编辑器（替换当前内容）
+            </button>
+            {modelDraft && (
+              <p data-testid="query-model-draft-summary">
+                上游草稿：{modelDraft.name} · 来源 {modelDraft.source}
+                ；载入后仍需人工核对，未自动提交。
+              </p>
+            )}
+          </div>
         </section>
       </div>
       <p role="status" aria-live="polite">

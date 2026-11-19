@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import {
   safeError,
   reassembleChangeSetDocument,
@@ -12,14 +12,26 @@ import {
   type MainlineExampleCreateRequestDTO,
   type LibraryWorkspaceReport,
   type QualityFindingDTO,
+  type AgentDraftPlanDTO,
+  type AgentMode,
+  type QueryDraftDTO,
 } from '@ontolearn/contracts'
 import { explainError, jobStatus, resultSummary } from './task-presentation'
 import { TaskProgressBuffer } from './task-progress'
 import { QueryWorkspaceController, QueryWorkspacePage } from './query'
 import { OntologyMainlinePage } from './ontology/OntologyMainlinePage'
+import { ImportExportPanel } from './ontology/import-export-panel'
+import { DraftDiffPreview } from './ontology/draft-diff-preview'
 import { OntologySession } from './ontology/mainline-session'
 import { ontologyOperations } from './ontology/mainline-operations'
 import type { OntologyMainlineBridge } from './ontology/mainline-api'
+import { AgentPanel } from './agent/agent-panel'
+import {
+  agentContextStore,
+  readAgentModeMirror,
+  writeAgentModeMirror,
+} from './agent/agent-context-store'
+import { toAgentModule, type AgentAction } from './agent/context-actions'
 import { ProjectManagementController } from './project/management-controller'
 import { ProjectManagementPanel } from './project/ProjectManagementPanel'
 import { ProjectCheckpointRestorePanel } from './project/ProjectCheckpointRestorePanel'
@@ -162,6 +174,16 @@ export function App() {
   const selectedQueryLease = useRef<(() => void) | undefined>(undefined)
   const [workspaceModule, setWorkspaceModule] = useState<WorkspaceModule>('query')
   const selectedModule = useRef<WorkspaceModule>('query')
+  // 跨页共享的 Agent 上下文真值源：仅 UI 状态，不写入项目数据，也不发起 ChangeSet。
+  const agentContext = useSyncExternalStore(
+    agentContextStore.subscribe,
+    agentContextStore.getSnapshot,
+    agentContextStore.getSnapshot,
+  )
+  // 上游 Agent 产出的查询草稿与本体草稿计划；都需人工核对后才进入工作台。
+  const [agentQueryDraft, setAgentQueryDraft] = useState<QueryDraftDTO>()
+  const [agentDraftPlan, setAgentDraftPlan] = useState<AgentDraftPlanDTO>()
+  const agentModeMirror = useRef('')
   const documentNonce = useRef<string | undefined>(undefined)
   const contextSerial = useRef(0)
   const documentLeaving = useRef(false)
@@ -327,6 +349,8 @@ export function App() {
     disconnectQuery()
     selectedModule.current = module
     setWorkspaceModule(module)
+    // The Agent context follows the active workspace (UI state only).
+    agentContextStore.setModule(toAgentModule(module))
     activateWorkspace()
   }
   const updateTasks = useCallback((value: TaskView) => {
@@ -664,6 +688,34 @@ export function App() {
     setQualityPending(pending)
     workspaceNotify.current()
   }, [])
+  // 按 projectId 读取 localStorage 中的“仅 UI 披露偏好”镜像（FR-005）。
+  // 这里不写项目数据、不发起 ChangeSet；真实模式由宿主 setAgentMode 持久化。
+  useEffect(() => {
+    const projectId = tasks?.project?.projectId
+    if (!projectId) {
+      agentModeMirror.current = ''
+      return
+    }
+    const key = `ontolearn.agent.mode.${projectId}`
+    if (agentModeMirror.current === key) return
+    agentModeMirror.current = key
+    const mode = readAgentModeMirror(projectId)
+    agentContextStore.setMode(mode)
+  }, [tasks?.project?.projectId])
+  const onAgentModeChange = useCallback(
+    async (mode: AgentMode) => {
+      const projectId = tasks?.project?.projectId
+      agentContextStore.setMode(mode)
+      if (!projectId) return
+      writeAgentModeMirror(projectId, mode)
+      try {
+        await window.ontolearn?.setAgentMode({ projectId, mode })
+      } catch {
+        /* 宿主负责真实持久化；此处不重试也不改写项目数据。 */
+      }
+    },
+    [tasks?.project?.projectId],
+  )
   const onOntologyDirty = useCallback((dirty: boolean) => {
     ontologyDirty.current = dirty
     workspaceNotify.current()
@@ -1185,6 +1237,20 @@ export function App() {
         ?.scrollIntoView({ block: 'start', behavior: 'auto' })
     })
   }
+  /** Offline Agent actions really run through the learning controller. */
+  async function runAgentLocalAction(action: AgentAction) {
+    setMentorOpen(true)
+    if (!learningCtl) return
+    if (action === 'hint') await learningCtl.requestHint()
+    else if (action === 'demonstrate') await learningCtl.requestDemonstration()
+    else if (action === 'check') await learningCtl.checkTask()
+  }
+  /** After a real Agent draft commit the project must be re-read. */
+  async function refreshAfterAgentCommit() {
+    await restore()
+    const projectId = tasks?.project?.projectId
+    if (projectId) await learningCtl?.selectAndRefresh(projectId)
+  }
   function continueLearningTask() {
     const snapshot = learningCtl?.getSnapshot()
     const states = snapshot?.learning?.tasks
@@ -1600,7 +1666,7 @@ export function App() {
                 tasks?.project?.projectId === queryController.projectId &&
                 !connection && (
                   <section id="query-workspace" aria-label="当前项目查询">
-                    <QueryWorkspacePage controller={queryController} />
+                    <QueryWorkspacePage controller={queryController} modelDraft={agentQueryDraft} />
                   </section>
                 )}
               {workspaceModule === 'ontology' &&
@@ -1614,6 +1680,24 @@ export function App() {
                       session={ontologyContext.session}
                       contextKey={ontologyContext.contextKey}
                       onDirtyChange={onOntologyDirty}
+                      onSelectedObjectChange={(ids) => agentContextStore.setSelectedObjectIds(ids)}
+                      extras={
+                        <>
+                          <ImportExportPanel
+                            projectId={tasks.project?.projectId ?? null}
+                            projectRevision={tasks.project?.projectRevision ?? null}
+                            onImported={() => void refreshAfterAgentCommit()}
+                            onError={(message) => setProjectNotice(message)}
+                          />
+                          <DraftDiffPreview
+                            plan={agentDraftPlan}
+                            projectId={tasks.project?.projectId ?? null}
+                            label="Agent 本体草稿"
+                            onCommitted={() => void refreshAfterAgentCommit()}
+                            onError={(message) => setProjectNotice(message)}
+                          />
+                        </>
+                      }
                     />
                   </section>
                 )}
@@ -1777,6 +1861,21 @@ export function App() {
                 refreshCheckpoints={() => checkpointCtl?.refreshWhenIdle() ?? Promise.resolve()}
               />
             )}
+            {tasks?.project && (
+              <AgentPanel
+                projectId={tasks.project.projectId}
+                projectRevision={tasks.project.projectRevision}
+                inputSnapshotId={tasks.project.inputSnapshotId}
+                module={agentContext.module}
+                mode={agentContext.mode}
+                selectedObjectIds={agentContext.selectedObjectIds}
+                localActions={learningCtl ? ['hint', 'check', 'demonstrate'] : []}
+                onModeChange={(mode) => void onAgentModeChange(mode)}
+                onQueryDraft={(draft) => setAgentQueryDraft(draft)}
+                onDraftPlan={(plan) => setAgentDraftPlan(plan)}
+                onLocalAction={(action) => void runAgentLocalAction(action)}
+              />
+            )}
           </div>
         </div>
         {taskError && !connection && <ErrorDetails error={taskError} context="task" />}
@@ -1798,7 +1897,11 @@ export function App() {
             ))}
           </div>
         </section>
-        <ModelPanel key={activeProjectId ?? 'no-project'} jobs={tasks?.jobs ?? []} />
+        <ModelPanel
+          key={activeProjectId ?? 'no-project'}
+          jobs={tasks?.jobs ?? []}
+          projectId={activeProjectId ?? null}
+        />
         <footer>
           需求基准 PRD V0.6
           <span>本地项目管理、本体编辑与查询逐项接入；完整项目导出及其余模块以验收范围为准。</span>
