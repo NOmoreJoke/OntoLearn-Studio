@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   safeError,
+  type AgentAuditRecordDTO,
+  type AgentCapabilitiesDTO,
+  type AgentContextDTO,
   type BridgeResult,
   type JobView,
   type ModelAccessStatus,
@@ -23,11 +26,36 @@ const auditEvents: Record<ModelAuditEntry['event'], string> = {
   blocked: '已拒绝',
   'attempt-failed': '已授权，尝试失败',
 }
+/**
+ * The verification source is reported verbatim. A synthetic probe is never
+ * presented as a provider-verified capability.
+ */
+const capabilityModeLabels: Record<AgentCapabilitiesDTO['mode'], string> = {
+  unverified: '未验证（尚未进行任何验证）',
+  synthetic: '合成探测（仅本地自测，不代表厂商已验证）',
+  'provider-verified': '厂商接口已验证',
+}
+const capabilityStatusLabels: Record<AgentCapabilitiesDTO['connection'], string> = {
+  passed: '通过',
+  failed: '未通过',
+  'not-run': '未运行',
+}
 
-export function ModelPanel({ jobs }: { jobs: JobView[] }) {
+export function ModelPanel({
+  jobs,
+  projectId = null,
+}: {
+  jobs: JobView[]
+  projectId?: string | null
+}) {
   const [status, setStatus] = useState<ModelAccessStatus>()
   const [copyFrom, setCopyFrom] = useState<ModelConfiguration>()
   const [audit, setAudit] = useState<{ contextId: string; entries: ModelAuditEntry[] }>()
+  // Agent-side model configuration and capability state (frozen contract DTOs).
+  const [agentContext, setAgentContext] = useState<AgentContextDTO | null>(null)
+  const [agentAudit, setAgentAudit] = useState<AgentAuditRecordDTO[]>([])
+  const [agentBusy, setAgentBusy] = useState(false)
+  const [agentError, setAgentError] = useState<string>()
   // null is initial auto-selection; '' is the user's explicit new-configuration choice.
   const [configurationId, setConfigurationId] = useState<string | null>(null)
   const [preview, setPreview] = useState<ModelExplanationPreview>()
@@ -149,6 +177,55 @@ export function ModelPanel({ jobs }: { jobs: JobView[] }) {
   function invalidatePreview() {
     setPreview(undefined)
     setGrantId(undefined)
+  }
+  const refreshAgentContext = useCallback(async () => {
+    const bridge = window.ontolearn
+    if (!bridge || !projectId) return
+    setAgentBusy(true)
+    setAgentError(undefined)
+    try {
+      const reply = await bridge.getAgentContext({ projectId })
+      if (!live.current) return
+      if (reply.ok) setAgentContext(reply.data)
+      else setAgentError(reply.error.code)
+    } catch {
+      if (live.current) setAgentError('AGENT_CONTEXT_UNAVAILABLE')
+    } finally {
+      if (live.current) setAgentBusy(false)
+    }
+  }, [projectId])
+  const refreshAgentAudit = useCallback(async () => {
+    const bridge = window.ontolearn
+    if (!bridge || !projectId) return
+    try {
+      const reply = await bridge.listAgentAudit({ projectId, limit: 20 })
+      if (live.current && reply.ok) setAgentAudit(reply.data.items)
+    } catch {
+      /* An unavailable audit channel simply shows no records. */
+    }
+  }, [projectId])
+  useEffect(() => {
+    // Deferred like the existing model poll: the effect body itself never
+    // triggers a state update.
+    const initial = setTimeout(() => void refreshAgentContext(), 0)
+    return () => clearTimeout(initial)
+  }, [refreshAgentContext])
+  async function agentAction<T>(work: () => Promise<BridgeResult<T>>, accept?: (value: T) => void) {
+    if (agentBusy) return
+    setAgentBusy(true)
+    setAgentError(undefined)
+    try {
+      const reply = await work()
+      if (!live.current) return
+      if (reply.ok) {
+        accept?.(reply.data)
+        await refreshAgentContext()
+      } else setAgentError(reply.error.code)
+    } catch {
+      if (live.current) setAgentError('AGENT_MODEL_ACTION_FAILED')
+    } finally {
+      if (live.current) setAgentBusy(false)
+    }
   }
   async function selectResult(
     resultId: string,
@@ -375,9 +452,128 @@ export function ModelPanel({ jobs }: { jobs: JobView[] }) {
             <dd>未验证</dd>
             <dt>受控工具调用</dt>
             <dd>未验证</dd>
+            {agentContext && (
+              <>
+                <dt>Agent 能力验证来源</dt>
+                <dd data-testid="agent-capability-mode">
+                  {capabilityModeLabels[agentContext.capabilities.mode]}
+                </dd>
+              </>
+            )}
           </dl>
         )}
       </details>
+      <section
+        className="model-settings"
+        data-testid="agent-model-panel"
+        aria-label="Agent 模型配置与审计"
+      >
+        <h3>Agent 模型配置与能力</h3>
+        <p>
+          此处只展示冻结契约中的公开摘要。合成探测不代表厂商接口已验证；未验证项不会被当作通过。
+        </p>
+        <button
+          type="button"
+          disabled={agentBusy || !projectId}
+          onClick={() => void refreshAgentContext()}
+        >
+          读取 Agent 模型配置与能力
+        </button>
+        <button
+          type="button"
+          disabled={agentBusy || !projectId}
+          onClick={() => void refreshAgentAudit()}
+        >
+          读取最近 20 条 Agent 审计记录
+        </button>
+        {agentError && (
+          <p role="alert" data-testid="agent-model-error">
+            Agent 模型操作未完成（{agentError}）；既有配置未被本次操作修改。
+          </p>
+        )}
+        {agentContext && (
+          <>
+            <dl aria-label="Agent 能力状态">
+              <dt>连接</dt>
+              <dd>{capabilityStatusLabels[agentContext.capabilities.connection]}</dd>
+              <dt>结构化输出</dt>
+              <dd>{capabilityStatusLabels[agentContext.capabilities.structuredOutput]}</dd>
+              <dt>工具往返</dt>
+              <dd>{capabilityStatusLabels[agentContext.capabilities.toolRoundTrip]}</dd>
+              <dt>验证来源</dt>
+              <dd data-testid="agent-capability-source">
+                {capabilityModeLabels[agentContext.capabilities.mode]}
+              </dd>
+              <dt>模型就绪</dt>
+              <dd>{agentContext.modelReady ? '是' : '否'}</dd>
+              <dt>隐私范围</dt>
+              <dd>{agentContext.privacy}</dd>
+            </dl>
+            <ul>
+              {agentContext.configurations.map((configuration) => (
+                <li key={configuration.configurationId}>
+                  <code>{configuration.configurationId}</code> · {configuration.displayName} ·{' '}
+                  {configuration.model} · 凭据{' '}
+                  {configuration.credentialState === 'configured' ? '已配置' : '未配置'} ·{' '}
+                  {configuration.enabled ? '已启用' : '未启用'}
+                  <button
+                    type="button"
+                    disabled={agentBusy}
+                    onClick={() =>
+                      void agentAction(() =>
+                        window.ontolearn!.setModelConfigurationEnabled({
+                          configurationId: configuration.configurationId,
+                          enabled: !configuration.enabled,
+                        }),
+                      )
+                    }
+                  >
+                    {configuration.enabled ? '停用此配置' : '启用此配置'}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={agentBusy}
+                    onClick={() =>
+                      void agentAction(() =>
+                        window.ontolearn!.removeModelConfiguration({
+                          configurationId: configuration.configurationId,
+                        }),
+                      )
+                    }
+                  >
+                    移除此配置
+                  </button>
+                  <button
+                    type="button"
+                    disabled={agentBusy}
+                    onClick={() =>
+                      void agentAction(() =>
+                        window.ontolearn!.probeModelCapabilities({
+                          configurationId: configuration.configurationId,
+                          scope: 'synthetic',
+                        }),
+                      )
+                    }
+                  >
+                    运行合成探测（不代表厂商已验证）
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {agentContext.configurations.length === 0 && <p>当前项目尚无 Agent 模型配置。</p>}
+          </>
+        )}
+        <ul data-testid="agent-audit-list">
+          {agentAudit.map((record) => (
+            <li key={record.eventId}>
+              <time dateTime={record.time}>{record.time}</time> · {record.endpointOrigin} ·{' '}
+              {record.purpose} · {record.decision === 'authorized' ? '已授权' : '已拒绝'} ·{' '}
+              {record.event}
+            </li>
+          ))}
+        </ul>
+        {agentAudit.length === 0 && <p>当前项目暂无 Agent 审计记录。</p>}
+      </section>
       <details className="model-settings">
         <summary>当前项目外发记录</summary>
         <button

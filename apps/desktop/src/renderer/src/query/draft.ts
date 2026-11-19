@@ -145,6 +145,24 @@ export function alarmTemplate(vocabulary: {
   })
 }
 
+/**
+ * Resolve the alarm vocabulary from the *actually read* ontology classes and
+ * predicates. Nothing is invented: when the current project does not expose a
+ * recognisable alarm class together with a severity and a status attribute,
+ * no template is offered at all.
+ */
+export function alarmVocabulary(
+  classes: readonly string[],
+  predicates: readonly string[],
+): { alarmClass: string; severity: string; status: string } | undefined {
+  const alarmClass = classes.find((iri) => /alarm|alert|告警/i.test(iri))
+  if (!alarmClass) return undefined
+  const severity = predicates.find((iri) => /severity|level|grade|等级|严重/i.test(iri))
+  const status = predicates.find((iri) => /status|state|状态/i.test(iri))
+  if (!severity || !status || severity === status) return undefined
+  return { alarmClass, severity, status }
+}
+
 export const emptyDirections = [
   '检查所选数据范围；断言事实不包含尚未推导的事实。',
   '检查过期标识；明确选择当前输入或历史快照后重新执行。',

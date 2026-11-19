@@ -1,7 +1,11 @@
 /** UI policy only. Actual handlers are provided by approved local pages/T09 or T08 wiring. */
-export type AgentPage =
-  'learn' | 'ontology' | 'mapping' | 'query' | 'quality' | 'behavior' | 'scenario'
+import type { AgentMode, AgentModule } from '@ontolearn/contracts'
+
+/** The frozen module vocabulary (see `agentModuleSchema`). */
+export type AgentPage = AgentModule
 export type AgentAction = 'hint' | 'check' | 'demonstrate' | 'explain'
+/** Every workspace renders at most this many quick actions. */
+export const AGENT_MAX_QUICK_ACTIONS = 4
 const labels: Record<AgentAction, string> = {
   hint: '给我一点提示',
   check: '检查我的操作',
@@ -17,12 +21,22 @@ const pageActions: Record<AgentPage, readonly AgentAction[]> = {
   behavior: ['hint', 'check', 'explain'],
   scenario: ['hint', 'check', 'explain'],
 }
+/**
+ * Map a shell workspace to the frozen Agent module vocabulary.
+ * The shell and the contract already agree; the explicit mapping keeps the
+ * seam visible instead of relying on a structural coincidence.
+ */
+export function toAgentModule(
+  workspace: 'query' | 'ontology' | 'quality' | 'learn' | 'mapping' | 'behavior' | 'scenario',
+): AgentModule {
+  return workspace
+}
 export function contextActions(
   page: AgentPage,
   modelAvailable: boolean,
   localHandlers: readonly AgentAction[],
 ) {
-  return pageActions[page].map((action) => ({
+  return pageActions[page].slice(0, AGENT_MAX_QUICK_ACTIONS).map((action) => ({
     action,
     label: labels[action],
     target: modelAvailable
@@ -37,6 +51,6 @@ export function contextActions(
         : '本地服务尚未接线',
   }))
 }
-export function assistanceLevel(mode: 'tutor' | 'project', action: AgentAction) {
+export function assistanceLevel(mode: AgentMode, action: AgentAction) {
   return action === 'demonstrate' || mode === 'project' ? 'full-assistance' : 'hint'
 }

@@ -166,3 +166,50 @@
 .ontology-heading > button {
   white-space: nowrap;
 }
+
+/* W3b S2-4: import / export and Agent draft diff review. */
+.ontology-import-export,
+.ontology-draft-diff {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-block: 1.25rem;
+  min-width: 0;
+}
+.ontology-import-export h2,
+.ontology-draft-diff h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.ontology-import-export ul,
+.ontology-draft-diff ul {
+  margin: 0.5rem 0;
+  padding-inline-start: 1.25rem;
+}
+.ontology-import-export pre,
+.ontology-draft-diff pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 0.75rem;
+  background: var(--soft);
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  max-height: 22rem;
+  overflow: auto;
+}
+.ontology-import-export button,
+.ontology-draft-diff button {
+  border: 1px solid var(--border);
+  background: var(--soft);
+  color: var(--accent);
+  border-radius: 7px;
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+.ontology-import-export button:disabled,
+.ontology-draft-diff button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
