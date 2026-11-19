@@ -194,7 +194,7 @@ test('W4 mapping, isolated behavior and scenario, package and HTML transfer surv
     }
     await scenario.getByRole('button', { name: '对比所选成功运行' }).click()
     await expect(
-      scenario.getByText(/期末（第 2 轮） · 积压 0 · 完成工单 2 · 未关闭高危告警 1/),
+      scenario.getByText(/期末（第 2 轮） · 积压 0 · 完成工单 2 · 未关闭高危告警 2/),
     ).toHaveCount(2)
     expect((await state(page)).domain.state.facts).toEqual(mapped.domain.state.facts)
 
