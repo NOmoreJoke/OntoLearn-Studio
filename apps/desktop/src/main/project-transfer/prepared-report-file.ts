@@ -43,10 +43,15 @@ export type PreparedReportFileReceipt =
   | { state: 'failed'; code: FailureCode; cleanup: Cleanup }
   | { state: 'publication-unconfirmed'; sha256: string; byteLength: number; cleanup: Cleanup }
 
-type Identity = { dev: number; ino: number }
-type Staging = { root: string; file: string; rootIdentity?: Identity; fileIdentity?: Identity }
-const sameFile = (a: Identity, b: Identity) => a.dev === b.dev && a.ino === b.ino
-function errno(error: unknown): unknown {
+export type FileIdentity = { dev: number; ino: number }
+type Staging = {
+  root: string
+  file: string
+  rootIdentity?: FileIdentity
+  fileIdentity?: FileIdentity
+}
+export const sameFile = (a: FileIdentity, b: FileIdentity) => a.dev === b.dev && a.ino === b.ino
+export function errno(error: unknown): unknown {
   try {
     if (error === null || typeof error !== 'object') return undefined
     const descriptor = Object.getOwnPropertyDescriptor(error, 'code')
@@ -56,15 +61,17 @@ function errno(error: unknown): unknown {
   }
 }
 
-function safeSelection(value: unknown): Selection | null {
+export type TransferExtension = '.html' | '.ontolearn.zip'
+
+function safeSelection(value: unknown, extension: TransferExtension): Selection | null {
   const parsed = selectionSchema.safeParse(value)
   if (!parsed.success) return null
   const { directory, filename } = parsed.data
-  const stem = filename.slice(0, -5)
+  const stem = filename.slice(0, -extension.length)
   if (
     !isAbsolute(directory) ||
     directory.includes('\0') ||
-    !/\.html$/i.test(filename) ||
+    !filename.toLowerCase().endsWith(extension) ||
     /[<>:"/\\|?*]/.test(filename) ||
     [...filename].some(
       (character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127,
@@ -77,19 +84,22 @@ function safeSelection(value: unknown): Selection | null {
   return parsed.data
 }
 
-/** Owns one immutable rendered artifact, not a second project truth or writer. */
-export class PreparedHtmlReportFile {
+/** Publishes one immutable artifact in the destination directory using a no-replace link. */
+export class PreparedTransferFile {
   #metadata: Readonly<{ sha256: string; byteLength: number }>
   #payload: Buffer
   #phase: 'prepared' | 'busy' | 'published' | 'unconfirmed' = 'prepared'
   #staging?: Staging
   #handle?: fs.FileHandle
-  #unconfirmed?: { destination: string; identity: Identity }
+  #unconfirmed?: { destination: string; identity: FileIdentity }
   #cleanupFlight?: Promise<Cleanup>
 
-  constructor(projection: unknown) {
-    // Render once before any dialog/IO. Subsequent source-object mutation cannot change bytes.
-    this.#payload = Buffer.from(renderPreparedReport(projection), 'utf8')
+  constructor(
+    payload: Buffer,
+    private readonly extension: TransferExtension,
+    private readonly destinationDirectory?: FileIdentity,
+  ) {
+    this.#payload = Buffer.from(payload)
     this.#metadata = Object.freeze({
       sha256: createHash('sha256').update(this.#payload).digest('hex'),
       byteLength: this.#payload.byteLength,
@@ -179,6 +189,10 @@ export class PreparedHtmlReportFile {
     return this.#staging || this.#handle ? 'pending' : 'complete'
   }
 
+  get pendingPublication(): FileIdentity | undefined {
+    return this.#unconfirmed?.identity
+  }
+
   async reconcilePublication(): Promise<'published' | 'not-present' | 'unconfirmed'> {
     if (this.#phase === 'published') return 'published'
     if (this.#phase !== 'unconfirmed' || !this.#unconfirmed) return 'unconfirmed'
@@ -210,6 +224,7 @@ export class PreparedHtmlReportFile {
     pickDestination: MainReportDestinationPicker,
     options: {
       signal?: AbortSignal
+      canPublish?: () => boolean
       // In-process fault injection only; never expose this hook through the bridge.
       checkpoint?: (phase: ReportFileCheckpoint) => void | Promise<void>
     } = {},
@@ -236,6 +251,7 @@ export class PreparedHtmlReportFile {
     let destination: string | undefined
     let parent: string | undefined
     let published = false
+    let linkReturned = false
     let linkAttempted = false
     let unconfirmed = false
     let postPublicationError = false
@@ -245,37 +261,80 @@ export class PreparedHtmlReportFile {
       if (!options.signal?.aborted) {
         const selected = await pickDestination()
         if (selected !== null && !options.signal?.aborted) {
-          const selection = safeSelection(selected)
+          const selection = safeSelection(selected, this.extension)
           if (!selection) {
             code = 'REPORT_DESTINATION_INVALID'
             outcome = 'failed'
           } else {
             parent = await fs.realpath(selection.directory)
             const directory = await fs.lstat(parent)
-            if (!directory.isDirectory()) throw new Error('INVALID_DIRECTORY')
-            destination = join(parent, selection.filename)
-            const root = await fs.mkdtemp(join(parent, '.ontolearn-report-'))
-            this.#staging = { root, file: join(root, 'report.html') }
-            this.#staging.rootIdentity = await fs.lstat(root)
-            this.#handle = await fs.open(this.#staging.file, 'wx+', 0o600)
-            this.#staging.fileIdentity = await this.#handle.stat()
-            await checkpoint('temporary-created')
-            await this.#handle.writeFile(this.#payload, { signal: options.signal })
-            await checkpoint('written')
-            await this.#handle.sync()
-            await checkpoint('file-synced')
-            await checkpoint('before-publication')
-            if (!options.signal?.aborted) {
-              await this.#verifyStagedBytes()
-            }
-            if (!options.signal?.aborted) {
-              // Same-filesystem hard link is an atomic no-replace publication. Never rename
-              // over an existing target or follow a final symlink, even after a chooser race.
-              linkAttempted = true
-              await fs.link(this.#staging.file, destination)
-              published = true
-              await checkpoint('link-completed')
-              await checkpoint('published')
+            if (
+              !directory.isDirectory() ||
+              (this.destinationDirectory &&
+                (parent !== selection.directory || !sameFile(directory, this.destinationDirectory)))
+            ) {
+              code = 'REPORT_DESTINATION_INVALID'
+              outcome = 'failed'
+            } else {
+              destination = join(parent, selection.filename)
+              const prefix =
+                this.extension === '.html' ? '.ontolearn-report-' : '.ontolearn-package-'
+              const root = await fs.mkdtemp(join(parent, prefix))
+              this.#staging = {
+                root,
+                file: join(
+                  root,
+                  this.extension === '.html' ? 'report.html' : 'package.ontolearn.zip',
+                ),
+              }
+              this.#staging.rootIdentity = await fs.lstat(root)
+              this.#handle = await fs.open(this.#staging.file, 'wx+', 0o600)
+              this.#staging.fileIdentity = await this.#handle.stat()
+              await checkpoint('temporary-created')
+              await this.#handle.writeFile(this.#payload, { signal: options.signal })
+              await checkpoint('written')
+              await this.#handle.sync()
+              await checkpoint('file-synced')
+              await checkpoint('before-publication')
+              if (!options.signal?.aborted) {
+                await this.#verifyStagedBytes()
+                if (this.destinationDirectory) {
+                  const latest = await fs.lstat(parent)
+                  if (!latest.isDirectory() || !sameFile(latest, this.destinationDirectory)) {
+                    code = 'REPORT_DESTINATION_INVALID'
+                    outcome = 'failed'
+                  } else {
+                    try {
+                      const target = await fs.lstat(destination)
+                      code = target.isSymbolicLink()
+                        ? 'REPORT_DESTINATION_INVALID'
+                        : 'REPORT_TARGET_EXISTS'
+                      outcome = 'failed'
+                    } catch (error) {
+                      if (errno(error) !== 'ENOENT') throw error
+                    }
+                  }
+                }
+              }
+              if (
+                outcome !== 'failed' &&
+                !options.signal?.aborted &&
+                (options.canPublish?.() ?? true)
+              ) {
+                // Same-filesystem hard link is an atomic no-replace publication. Never rename
+                // over an existing target or follow a final symlink, even after a chooser race.
+                linkAttempted = true
+                await fs.link(this.#staging.file, destination)
+                linkReturned = true
+                if (this.destinationDirectory) {
+                  const target = await fs.lstat(destination)
+                  if (!target.isFile() || !sameFile(target, this.#staging.fileIdentity))
+                    throw new Error('PUBLICATION_CHANGED')
+                }
+                published = true
+                await checkpoint('link-completed')
+                await checkpoint('published')
+              }
             }
           }
         }
@@ -294,10 +353,11 @@ export class PreparedHtmlReportFile {
           const target = await fs.lstat(destination)
           published = target.isFile() && sameFile(target, this.#staging.fileIdentity)
         } catch (readError) {
-          if (errno(readError) !== 'ENOENT') {
-            unconfirmed = true
-            this.#unconfirmed = { destination, identity: this.#staging.fileIdentity }
-          }
+          unconfirmed = errno(readError) !== 'ENOENT'
+        }
+        if (!published && (linkReturned || unconfirmed)) {
+          unconfirmed = true
+          this.#unconfirmed = { destination, identity: this.#staging.fileIdentity }
         }
       }
       if (published) postPublicationError = true
@@ -334,5 +394,12 @@ export class PreparedHtmlReportFile {
     }
     if (outcome === 'failed') return { state: outcome, code, cleanup }
     return { state: 'cancelled', cleanup }
+  }
+}
+
+/** Render exactly once before opening the native chooser. */
+export class PreparedHtmlReportFile extends PreparedTransferFile {
+  constructor(projection: unknown) {
+    super(Buffer.from(renderPreparedReport(projection), 'utf8'), '.html')
   }
 }

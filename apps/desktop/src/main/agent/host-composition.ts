@@ -32,7 +32,7 @@ import type { TaskService } from '../task-service'
 import { AgentModeStore } from './agent-mode-store'
 import { assertDraftBase, contextSchema, type TrustedContext } from './agent-service'
 import { AgentConversation } from './conversation'
-import { AgentToolRegistry, draftDetailToPlan } from './domain-ports'
+import { AgentToolRegistry, draftDetailToPlan, type WaveFourProjects } from './domain-ports'
 import { AgentError, normalizeAgentError } from './errors'
 
 type Selection = {
@@ -48,12 +48,13 @@ type Projects = Pick<
   | 'runProjectQualityCheck'
   | 'recordAgentBeforeCommit'
   | 'commitProjectChangeSet'
-> & {
-  queries: Pick<
-    ProjectMainlineService['queries'],
-    'loadQueryDefinition' | 'executeSavedQuery' | 'getQueryResultDescriptor'
-  >
-}
+> &
+  Partial<WaveFourProjects> & {
+    queries: Pick<
+      ProjectMainlineService['queries'],
+      'loadQueryDefinition' | 'executeSavedQuery' | 'getQueryResultDescriptor'
+    >
+  }
 type Models = Pick<
   ModelGatewayService,
   | 'status'
@@ -74,6 +75,7 @@ type Dependencies = {
   replies: Pick<MainlineReplyReceiver, 'receive' | 'consume'>
   models(): Models | undefined
   providerApproval?: AgentProviderApproval
+  waveFourEnabled?: boolean
   onStateChange?: (state: AgentStateDTO) => void
 }
 type Turn = {
@@ -371,6 +373,7 @@ export class AgentHostComposition implements AgentBridge {
           scope: args.scope,
           current: () => this.current(turn),
           objectRefs,
+          waveFourEnabled: this.dependencies.waveFourEnabled,
         })
         const question = JSON.stringify({
           question: args.question,
