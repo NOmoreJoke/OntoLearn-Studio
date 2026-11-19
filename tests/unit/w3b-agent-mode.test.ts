@@ -169,6 +169,50 @@ describe('W3b B09: the host is the only authority for the assistant mode', () =>
     expect(result).toEqual({ ok: false, code: 'STALE_CONTEXT' })
     expect(applied).toEqual([])
   })
+
+  it('never lets a retired project resolution overwrite the active project store', async () => {
+    const backing = new Map<string, string>()
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => backing.get(key) ?? null,
+      setItem: (key: string, value: string) => backing.set(key, value),
+    })
+    try {
+      const store = createAgentContextStore({ projectId: 'project-a', mode: 'tutor' })
+      let activeOwner = { projectId: 'project-a', generation: 1 }
+      let resolveHost!: (value: { ok: true }) => void
+      const capturedOwner = { ...activeOwner }
+      const pending = persistAgentMode({
+        host: () =>
+          new Promise<{ ok: true }>((resolve) => {
+            resolveHost = resolve
+          }),
+        projectId: capturedOwner.projectId,
+        mode: 'project',
+        apply: (next) => {
+          writeAgentModeMirror(capturedOwner.projectId, next)
+          if (
+            activeOwner.projectId === capturedOwner.projectId &&
+            activeOwner.generation === capturedOwner.generation
+          )
+            store.setMode(next)
+        },
+      })
+      // User switches to project B whose own persisted mirror is tutor.
+      activeOwner = { projectId: 'project-b', generation: 2 }
+      store.setProjectId('project-b')
+      store.setMode(readAgentModeMirror('project-b'))
+      expect(store.getSnapshot().mode).toBe('tutor')
+
+      // Project A's setAgentMode settles afterwards: A's mirror updates, B's store stays tutor.
+      resolveHost({ ok: true })
+      const outcome = await pending
+      expect(outcome).toEqual({ ok: true })
+      expect(store.getSnapshot().mode).toBe('tutor')
+      expect(readAgentModeMirror('project-a')).toBe('project')
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
 })
 
 describe('W3b S2-4: frozen module and quick-action policy', () => {

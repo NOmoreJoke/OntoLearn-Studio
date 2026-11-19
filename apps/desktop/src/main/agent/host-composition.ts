@@ -74,6 +74,7 @@ type Dependencies = {
   replies: Pick<MainlineReplyReceiver, 'receive' | 'consume'>
   models(): Models | undefined
   providerApproval?: AgentProviderApproval
+  onStateChange?: (state: AgentStateDTO) => void
 }
 type Turn = {
   state: AgentStateDTO
@@ -459,6 +460,7 @@ export class AgentHostComposition implements AgentBridge {
     turn.state.failureCode = code
     turn.state.answerText = null
     turn.state.receipts = code === 'STALE_CONTEXT' ? [] : this.receipts(turn)
+    this.dependencies.onStateChange?.(structuredClone(turn.state))
   }
 
   private async run(turn: Turn, models: Models, approval: AgentProviderApproval): Promise<void> {
@@ -498,6 +500,7 @@ export class AgentHostComposition implements AgentBridge {
             : answer.kind === 'suggestion'
               ? answer.label + '\n' + answer.text
               : answer.text
+        this.dependencies.onStateChange?.(structuredClone(turn.state))
         return
       }
     } catch (error) {

@@ -180,10 +180,12 @@ export function downloadTurtle(text: string, filename: string): boolean {
 export async function readFullDiffPages(
   bridge: Pick<ImportBridge, 'getProjectDiffPage'>,
   previewHash: string,
-): Promise<{ pages: ChangeSetPage[]; completionCursor: string }> {
+  isCurrent?: () => boolean,
+): Promise<{ pages: ChangeSetPage[]; completionCursor: string; stale?: boolean }> {
   const pages: ChangeSetPage[] = []
   let cursor: string | null = null
   for (let count = 0; count < 512; count++) {
+    if (isCurrent && !isCurrent()) return { pages, completionCursor: '', stale: true }
     const page: ChangeSetPage = take(
       await bridge.getProjectDiffPage({
         previewHash,
@@ -192,6 +194,7 @@ export async function readFullDiffPages(
         cursor,
       }),
     )
+    if (isCurrent && !isCurrent()) return { pages, completionCursor: '', stale: true }
     if (!page.complete && pages.some((old) => old.nextCursor === page.nextCursor))
       throw new Error('CURSOR_REPEATED')
     pages.push(page)
@@ -249,8 +252,8 @@ export async function prepareVerifiedImport(args: {
   if (!isCurrent()) return { status: 'stale' }
   if (preview.status === 'conflict') return { status: 'conflict' }
   if (preview.projectId !== projectId) throw new Error('PROJECT_MISMATCH')
-  const full = await readFullDiffPages(bridge, preview.previewHash)
-  if (!isCurrent()) return { status: 'stale' }
+  const full = await readFullDiffPages(bridge, preview.previewHash, isCurrent)
+  if (full.stale || !isCurrent()) return { status: 'stale' }
   const document = await reassembleChangeSetDocument(
     {
       projectId: preview.projectId,
@@ -304,6 +307,7 @@ export async function commitVerifiedImport(args: {
   if (!isCurrent()) return { status: 'stale' }
   if (!confirmationMatchesPreview(confirmation, verified)) throw new Error('INVALID_CONFIRMATION')
   take(await bridge.commitProjectChangeSet({ operationId: verified.operationId, confirmation }))
+  if (!isCurrent()) return { status: 'stale' }
   return { status: 'committed', operationId: verified.operationId }
 }
 
@@ -316,13 +320,20 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
   const [importing, setImporting] = useState(false)
   const [message, setMessage] = useState('')
   const live = useRef(true)
-  const reqSeq = useRef(0)
+  const exportSeq = useRef(0)
+  const importSeq = useRef(0)
   // The verified preview, its summary and the human consent always belong to
   // one project generation; a change of identity retires all three at once.
   const identity = `${projectId ?? ''}:${projectRevision ?? ''}`
   const identityRef = useRef(identity)
   useEffect(() => {
-    identityRef.current = identity
+    if (identityRef.current !== identity) {
+      identityRef.current = identity
+      exportSeq.current += 1
+      importSeq.current += 1
+      setExporting(false)
+      setImporting(false)
+    }
   }, [identity])
   const [verifiedState, setVerifiedState] = useState<VerifiedState>(() => emptyVerified(identity))
   const verified = verifiedState.identity === identity ? verifiedState : emptyVerified(identity)
@@ -333,20 +344,24 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
     }
   }, [])
 
-  const isCurrent = useCallback((mySeq: number, myIdentity: string) => {
-    return live.current && reqSeq.current === mySeq && identityRef.current === myIdentity
+  const isExportCurrent = useCallback((mySeq: number, myIdentity: string) => {
+    return live.current && exportSeq.current === mySeq && identityRef.current === myIdentity
+  }, [])
+
+  const isImportCurrent = useCallback((mySeq: number, myIdentity: string) => {
+    return live.current && importSeq.current === mySeq && identityRef.current === myIdentity
   }, [])
 
   const runExport = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge) return
-    const mySeq = ++reqSeq.current
+    const mySeq = ++exportSeq.current
     const myIdentity = identity
     setExporting(true)
     setMessage('')
     try {
       const result = take(await bridge.exportProjectOntology({}))
-      if (!isCurrent(mySeq, myIdentity)) return
+      if (!isExportCurrent(mySeq, myIdentity)) return
       setExported(result)
       if (result.status === 'ok') {
         const downloaded = downloadTurtle(
@@ -362,21 +377,21 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
         setMessage(`导出被拒绝；未生成任何文件，项目未被修改。`)
       }
     } catch (cause) {
-      if (!isCurrent(mySeq, myIdentity)) return
+      if (!isExportCurrent(mySeq, myIdentity)) return
       setMessage(
         `导出未完成（${cause instanceof Error ? cause.message : 'UNKNOWN'}）；项目未被修改。`,
       )
       props.onError?.(cause instanceof Error ? cause.message : 'UNKNOWN')
     } finally {
-      if (isCurrent(mySeq, myIdentity)) setExporting(false)
+      if (isExportCurrent(mySeq, myIdentity)) setExporting(false)
     }
-  }, [projectId, identity, isCurrent, props])
+  }, [projectId, identity, isExportCurrent, props])
 
   const runImportCheck = useCallback(
     async (file: File) => {
       const bridge = window.ontolearn
       if (!bridge) return
-      const mySeq = ++reqSeq.current
+      const mySeq = ++importSeq.current
       const myIdentity = identity
       setImporting(true)
       setImportStatus('checking')
@@ -388,7 +403,7 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
         if (projectRevision === null) throw new Error('PROJECT_VERSION_UNAVAILABLE')
         if (file.size > MAX_IMPORT_FILE_BYTES) throw new Error('FILE_TOO_LARGE')
         const turtleText = await file.text()
-        if (!isCurrent(mySeq, myIdentity)) return
+        if (!isImportCurrent(mySeq, myIdentity)) return
         if (turtleText.length > MAX_IMPORT_TEXT_LENGTH) throw new Error('FILE_TOO_LARGE')
         const result = take(
           await bridge.checkProjectOntologyImport({
@@ -397,7 +412,7 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
             format: 'turtle',
           }),
         )
-        if (!isCurrent(mySeq, myIdentity)) return
+        if (!isImportCurrent(mySeq, myIdentity)) return
         setImportResult(result)
         setImportStatus(
           result.status === 'ok' ? 'ok' : result.status === 'rejected' ? 'rejected' : 'error',
@@ -410,7 +425,7 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
           setMessage('超出本能力边界，原文件与当前项目保持不变。')
         else setMessage('文件语法或格式错误，原文件与当前项目保持不变。')
       } catch (cause) {
-        if (!isCurrent(mySeq, myIdentity)) return
+        if (!isImportCurrent(mySeq, myIdentity)) return
         setImportStatus('error')
         const code = cause instanceof Error ? cause.message : 'UNKNOWN'
         setMessage(
@@ -421,16 +436,16 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
               : `导入检查未完成（${code}）；原文件与当前项目保持不变。`,
         )
       } finally {
-        if (isCurrent(mySeq, myIdentity)) setImporting(false)
+        if (isImportCurrent(mySeq, myIdentity)) setImporting(false)
       }
     },
-    [projectId, projectRevision, identity, isCurrent],
+    [projectId, projectRevision, identity, isImportCurrent],
   )
 
   const previewImport = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge || !importResult || importResult.status !== 'ok') return
-    const mySeq = ++reqSeq.current
+    const mySeq = ++importSeq.current
     const myIdentity = identity
     setImporting(true)
     setMessage('')
@@ -443,9 +458,9 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
         baseRevision: importResult.summary.baseRevision,
         plan: importPlanToChangePlan(importResult.plan),
         reqSeq: mySeq,
-        isCurrent: () => isCurrent(mySeq, myIdentity),
+        isCurrent: () => isImportCurrent(mySeq, myIdentity),
       })
-      if (outcome.status === 'stale') return
+      if (outcome.status === 'stale' || !isImportCurrent(mySeq, myIdentity)) return
       if (outcome.status === 'conflict') {
         setMessage('基准版本冲突：本次导入不能提交，请重新读取项目后再试。')
         return
@@ -461,29 +476,29 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
         summary: `完整差异已核验：${outcome.preview.rows.length} 项；摘要 ${outcome.preview.summary}。确认前不会写入任何数据。`,
       })
     } catch (cause) {
-      if (!isCurrent(mySeq, myIdentity)) return
+      if (!isImportCurrent(mySeq, myIdentity)) return
       const code = cause instanceof Error ? cause.message : 'UNKNOWN'
       setMessage(`无法生成完整差异（${code}）；项目未被修改。`)
       props.onError?.(code)
     } finally {
-      if (isCurrent(mySeq, myIdentity)) setImporting(false)
+      if (isImportCurrent(mySeq, myIdentity)) setImporting(false)
     }
-  }, [importResult, projectId, identity, isCurrent, props])
+  }, [importResult, projectId, identity, isImportCurrent, props])
 
   const commitImport = useCallback(async () => {
     const bridge = window.ontolearn
     const verifiedPreview = verified.preview
     if (!bridge || !verifiedPreview || !verified.consent) return
-    const mySeq = ++reqSeq.current
+    const mySeq = ++importSeq.current
     const myIdentity = identity
     setImporting(true)
     try {
       const outcome = await commitVerifiedImport({
         bridge,
         verified: verifiedPreview,
-        isCurrent: () => isCurrent(mySeq, myIdentity),
+        isCurrent: () => isImportCurrent(mySeq, myIdentity),
       })
-      if (outcome.status === 'stale') return
+      if (outcome.status === 'stale' || !isImportCurrent(mySeq, myIdentity)) return
       if (outcome.status === 'failed') {
         setMessage(`导入未完成（${outcome.code}）；项目未被本次操作修改。`)
         props.onError?.(outcome.code)
@@ -492,14 +507,14 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
       setMessage('导入已提交；正式保存结果以任务终态为准。')
       props.onImported?.(outcome.operationId)
     } catch (cause) {
-      if (!isCurrent(mySeq, myIdentity)) return
+      if (!isImportCurrent(mySeq, myIdentity)) return
       const code = cause instanceof Error ? cause.message : 'UNKNOWN'
       setMessage(`导入未完成（${code}）；项目未被本次操作修改。`)
       props.onError?.(code)
     } finally {
-      if (isCurrent(mySeq, myIdentity)) setImporting(false)
+      if (isImportCurrent(mySeq, myIdentity)) setImporting(false)
     }
-  }, [verified, identity, isCurrent, props])
+  }, [verified, identity, isImportCurrent, props])
 
   const exportRejections = exported ? exportOutcome(exported) : undefined
   const importView = importResult ? importOutcome(importResult) : undefined

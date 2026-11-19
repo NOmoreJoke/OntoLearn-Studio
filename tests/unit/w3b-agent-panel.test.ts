@@ -22,10 +22,9 @@ import {
   queryDraftFromDetail,
   queryDraftFromPlan,
 } from '../../apps/desktop/src/renderer/src/agent/agent-panel'
-import {
-  AgentSidebar,
-  agentDraftIsCurrent,
-} from '../../apps/desktop/src/renderer/src/agent/AgentSidebar'
+import * as agentSidebarModule from '../../apps/desktop/src/renderer/src/agent/AgentSidebar'
+import * as contextActionsModule from '../../apps/desktop/src/renderer/src/agent/context-actions'
+import * as queryDraftModule from '../../apps/desktop/src/renderer/src/query/draft'
 import {
   DraftDiffPreview,
   commitDraftDiff,
@@ -33,6 +32,8 @@ import {
   prepareDraftDiff,
 } from '../../apps/desktop/src/renderer/src/ontology/draft-diff-preview'
 import type { TrustedContext } from '../../apps/desktop/src/main/agent/agent-service'
+
+const { AgentSidebar, agentDraftIsCurrent } = agentSidebarModule
 
 // The unit program does not include the renderer's `env.d.ts`; the same
 // optional bridge declaration is repeated here so the real renderer modules
@@ -434,7 +435,12 @@ function confirmationFixture() {
 
 type Node = { type: unknown; props: Record<string, unknown> }
 
-function diffHarness(bridge: Record<string, unknown>) {
+function createTsxHarness(
+  sourceFile: string,
+  exportName: string,
+  initialProps: Record<string, unknown>,
+  extraRequires: Record<string, unknown> = {},
+) {
   const slots: unknown[] = []
   const effects: Array<{ deps: unknown[]; cleanup?: () => void }> = []
   const pending: Array<() => void> = []
@@ -483,29 +489,23 @@ function diffHarness(bridge: Record<string, unknown>) {
     },
   }
   const jsx = (type: unknown, props: Record<string, unknown>) => ({ type, props })
-  const code = ts.transpileModule(
-    readFileSync('apps/desktop/src/renderer/src/ontology/draft-diff-preview.tsx', 'utf8'),
-    {
-      compilerOptions: {
-        target: ts.ScriptTarget.ES2022,
-        module: ts.ModuleKind.CommonJS,
-        jsx: ts.JsxEmit.ReactJSX,
-      },
+  const code = ts.transpileModule(readFileSync(sourceFile, 'utf8'), {
+    compilerOptions: {
+      target: ts.ScriptTarget.ES2022,
+      module: ts.ModuleKind.CommonJS,
+      jsx: ts.JsxEmit.ReactJSX,
     },
-  ).outputText
+  }).outputText
   const exported: Record<string, unknown> = {}
   new Function('require', 'exports', code)((name: string) => {
     if (name === 'react') return hooks
     if (name === 'react/jsx-runtime') return { jsx, jsxs: jsx }
     if (name === '@ontolearn/contracts') return contracts
+    if (name in extraRequires) return extraRequires[name]
     throw Error(`Unexpected renderer dependency ${name}`)
   }, exported)
-  const Component = exported.DraftDiffPreview as unknown as (props: Record<string, unknown>) => Node
-  let props: Record<string, unknown> = {
-    projectId: diffProjectId,
-    plan: draftPlan('op-1'),
-    ...(bridge ? {} : {}),
-  }
+  const Component = exported[exportName] as unknown as (props: Record<string, unknown>) => Node
+  let props: Record<string, unknown> = { ...initialProps }
   let tree: Node
   function render() {
     cursor = 0
@@ -543,6 +543,31 @@ function diffHarness(bridge: Record<string, unknown>) {
         (node) => node.type === 'button' && textOf(node.props.children).includes(label),
       ),
   }
+}
+
+function diffHarness(bridge: Record<string, unknown>) {
+  void bridge
+  return createTsxHarness(
+    'apps/desktop/src/renderer/src/ontology/draft-diff-preview.tsx',
+    'DraftDiffPreview',
+    {
+      projectId: diffProjectId,
+      plan: draftPlan('op-1'),
+    },
+  )
+}
+
+function agentPanelHarness(initialProps: Record<string, unknown>) {
+  return createTsxHarness(
+    'apps/desktop/src/renderer/src/agent/agent-panel.tsx',
+    'AgentPanel',
+    initialProps,
+    {
+      './AgentSidebar': agentSidebarModule,
+      './context-actions': contextActionsModule,
+      '../query/draft': queryDraftModule,
+    },
+  )
 }
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -625,6 +650,31 @@ describe('W3b B06: the draft diff view follows exactly one draft', () => {
     expect(button.props.disabled).toBe(true)
     panel.unmount()
     vi.unstubAllGlobals()
+  })
+
+  it('stops requesting further diff pages when draft ownership lapses mid-pagination', async () => {
+    let active = true
+    let pageCalls = 0
+    const outcome = await prepareDraftDiff({
+      bridge: {
+        previewProjectChangeset: async () => ({ ok: true as const, data: previewReady }),
+        getProjectDiffPage: async () => {
+          pageCalls += 1
+          active = false
+          return {
+            ok: true as const,
+            data: { ...page, complete: false, nextCursor: 'cursor-page-2' },
+          }
+        },
+        confirmProjectChangeset: async () => ({ ok: true as const, data: confirmationFixture() }),
+        commitAgentDraft: async () => ({ ok: true as const, data: {} as never }),
+      },
+      plan: draftPlan('op-1'),
+      projectId: diffProjectId,
+      isCurrent: () => active,
+    })
+    expect(outcome.status).toBe('stale')
+    expect(pageCalls).toBe(1)
   })
 })
 
@@ -759,5 +809,130 @@ describe('W3b B07/B09: the real host run state is mapped onto the sidebar', () =
       }),
     )
     expect(html).toContain('这是回答')
+  })
+
+  it('validates revision, snapshot and selected objects in agentContextMatches', () => {
+    const base = agentState().context!
+    expect(
+      agentContextMatches(base, 'p1', 'ontology', {
+        projectRevision: 3,
+        inputSnapshotId: 's1',
+        selectedObjectIds: [],
+      }),
+    ).toBe(true)
+    expect(agentContextMatches(base, 'p1', 'ontology', { projectRevision: 4 })).toBe(false)
+    expect(agentContextMatches(base, 'p1', 'ontology', { inputSnapshotId: 's2' })).toBe(false)
+    expect(agentContextMatches(base, 'p1', 'ontology', { selectedObjectIds: ['urn:Pump'] })).toBe(
+      false,
+    )
+  })
+
+  it('refreshes the panel mode without switching modules and delivers delayed query drafts on terminal poll', async () => {
+    vi.useFakeTimers()
+    let currentMode: 'tutor' | 'project' = 'tutor'
+    let pollPhase: 'dispatching' | 'answered' = 'dispatching'
+    let contextCalls = 0
+    const deliveredDrafts: unknown[] = []
+    const validQueryJson = JSON.stringify({
+      name: '列出设备',
+      description: '终端轮询送达',
+      sparql: 'SELECT * WHERE { ?s ?p ?o }',
+      scope: 'asserted',
+      capabilityQuestion: '有哪些设备？',
+      source: 'model',
+    })
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async () => {
+          contextCalls += 1
+          return {
+            ok: true as const,
+            data: {
+              ...agentState().context!,
+              mode: currentMode,
+            },
+          }
+        },
+        getAgentState: async () => ({
+          ok: true as const,
+          data:
+            pollPhase === 'dispatching'
+              ? agentState({ status: 'dispatching', exchangeId: 7, operationId: 'op-q1' })
+              : agentState({
+                  status: 'answered',
+                  exchangeId: 7,
+                  operationId: 'op-q1',
+                  answerText: '已生成查询草稿',
+                  receipts: [
+                    {
+                      callId: 'call-q1',
+                      tool: 'query_draft',
+                      purpose: 'suggest',
+                      outcome: {
+                        kind: 'draft',
+                        draftType: 'query',
+                        summary: '列出设备',
+                        detail: validQueryJson,
+                        projectId: 'p1',
+                        baseRevision: 3,
+                        inputSnapshotId: 's1',
+                        requiresHumanDiffConfirmation: true,
+                      },
+                    },
+                  ],
+                }),
+        }),
+        dispatchAgentQuestion: async () => ({
+          ok: true as const,
+          data: { operationId: 'op-q1', exchangeId: 7 },
+        }),
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: [],
+      localActions: ['hint'],
+      onQueryDraft: (draft: unknown) => deliveredDrafts.push(draft),
+      onModeChange: async (next: 'tutor' | 'project') => {
+        currentMode = next
+      },
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(panel.text()).toContain('模式 tutor')
+      expect(contextCalls).toBe(1)
+
+      const sidebarNode = panel.nodes().find((node) => node.type === AgentSidebar)!
+      await (sidebarNode.props.onModeChange as (m: 'tutor' | 'project') => Promise<void>)('project')
+      panel.render()
+      expect(panel.text()).toContain('模式 project')
+      expect(contextCalls).toBeGreaterThanOrEqual(2)
+
+      // Delayed query draft: dispatch finishes while host is still dispatching; poll advances to answered.
+      await (sidebarNode.props.onSubmit as (q: string) => Promise<void>)('列出设备')
+      expect(deliveredDrafts).toHaveLength(0)
+
+      pollPhase = 'answered'
+      await vi.advanceTimersByTimeAsync(160)
+      panel.render()
+      expect(deliveredDrafts).toHaveLength(1)
+      expect(deliveredDrafts[0]).toMatchObject({ name: '列出设备', source: 'model' })
+      expect(panel.text()).toContain('已收到上游查询草稿')
+
+      // Reset to verifying that a mismatched baseRevision draft receipt is ignored.
+      panel.setProps({ projectRevision: 4 })
+      await vi.advanceTimersByTimeAsync(160)
+      panel.render()
+      expect(deliveredDrafts).toHaveLength(1)
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
   })
 })

@@ -687,6 +687,161 @@ describe('W3b B01: the panel shows the verified difference before it asks for co
   })
 })
 
+describe('W3b R2c B01: concurrent export/import isolation and per-await ownership', () => {
+  it('keeps export and import lifecycles independent when triggered concurrently', async () => {
+    let resolveExport!: (value: unknown) => void
+    let resolveImportCheck!: (value: unknown) => void
+    const { bridge } = bridgeFixture()
+    vi.stubGlobal('window', {
+      ontolearn: {
+        ...bridge,
+        exportProjectOntology: () =>
+          new Promise((resolve) => {
+            resolveExport = resolve
+          }),
+        checkProjectOntologyImport: () =>
+          new Promise((resolve) => {
+            resolveImportCheck = resolve
+          }),
+      },
+    })
+    const panel = panelHarness()
+    ;(panel.find('ontology-export-button')!.props.onClick as () => void)()
+    panel.render()
+    expect(panel.find('ontology-export-button')!.props.disabled).toBe(true)
+    expect(panel.find('ontology-import-file')!.props.disabled).toBe(false)
+
+    const file = { size: 32, text: async () => '@prefix ex: <urn:example#> .' } as unknown as File
+    ;(panel.find('ontology-import-file')!.props.onChange as (event: unknown) => void)({
+      target: { files: [file] },
+    })
+    await flush()
+    panel.render()
+    expect(panel.find('ontology-export-button')!.props.disabled).toBe(true)
+    expect(panel.find('ontology-import-file')!.props.disabled).toBe(true)
+
+    resolveImportCheck({ ok: true as const, data: importOk })
+    await flushAll()
+    panel.render()
+    expect(panel.find('ontology-import-file')!.props.disabled).toBe(false)
+    expect(panel.find('ontology-export-button')!.props.disabled).toBe(true)
+    expect(panel.find('ontology-import-summary')).toBeTruthy()
+
+    resolveExport({
+      ok: true as const,
+      data: {
+        status: 'ok' as const,
+        turtle: '@prefix ex: <urn:example#> .',
+        tripleCount: 1,
+        inputSnapshotId: 'snapshot-1',
+        projectRevision: 7,
+      },
+    })
+    await flushAll()
+    panel.render()
+    expect(panel.find('ontology-export-button')!.props.disabled).toBe(false)
+    expect(panel.find('ontology-import-file')!.props.disabled).toBe(false)
+    expect(panel.find('ontology-export-summary')).toBeTruthy()
+    expect(panel.find('ontology-import-summary')).toBeTruthy()
+    vi.unstubAllGlobals()
+  })
+
+  it('stops paging diff pages as soon as ownership lapses after page 1', async () => {
+    let active = true
+    let pageCalls = 0
+    const { bridge } = bridgeFixture({
+      getProjectDiffPage: async () => {
+        pageCalls += 1
+        active = false
+        return {
+          ok: true as const,
+          data: {
+            ...page,
+            complete: false,
+            nextCursor: 'cursor-page-2',
+          },
+        }
+      },
+    })
+    const outcome = await prepareVerifiedImport({
+      bridge,
+      projectId,
+      baseRevision: 7,
+      plan: importPlanToChangePlan(importOk.plan),
+      reqSeq: 1,
+      isCurrent: () => active,
+    })
+    expect(outcome.status).toBe('stale')
+    expect(pageCalls).toBe(1)
+  })
+
+  it('ignores a late commit receipt and skips onImported when ownership drops mid-commit', async () => {
+    let stillCurrent = true
+    const { bridge } = bridgeFixture({
+      commitProjectChangeSet: async () => {
+        stillCurrent = false
+        return { ok: true as const, data: {} }
+      },
+    })
+    const prepared = await prepareVerifiedImport({
+      bridge,
+      projectId,
+      baseRevision: 7,
+      plan: importPlanToChangePlan(importOk.plan),
+      reqSeq: 1,
+      isCurrent: () => true,
+    })
+    if (prepared.status !== 'ready') throw new Error('expected ready preview')
+    const directOutcome = await commitVerifiedImport({
+      bridge,
+      verified: prepared.preview,
+      isCurrent: () => stillCurrent,
+    })
+    expect(directOutcome.status).toBe('stale')
+
+    let resolveCommit!: (value: unknown) => void
+    const onImported = vi.fn()
+    const { bridge: panelBridge } = bridgeFixture({
+      commitProjectChangeSet: () =>
+        new Promise((resolve) => {
+          resolveCommit = resolve
+        }),
+    })
+    vi.stubGlobal('window', {
+      ontolearn: {
+        ...panelBridge,
+        checkProjectOntologyImport: async () => ({ ok: true as const, data: importOk }),
+      },
+    })
+    try {
+      const panel = panelHarness()
+      panel.setProps({ projectId, projectRevision: 7, onImported })
+      const file = { size: 32, text: async () => '@prefix ex: <urn:example#> .' } as unknown as File
+      ;(panel.find('ontology-import-file')!.props.onChange as (event: unknown) => void)({
+        target: { files: [file] },
+      })
+      await flushAll()
+      panel.render()
+      ;(panel.find('ontology-import-preview')!.props.onClick as () => void)()
+      await flushAll()
+      panel.render()
+      ;(panel.find('ontology-import-consent')!.props.onChange as (event: unknown) => void)({
+        target: { checked: true },
+      })
+      panel.render()
+      ;(panel.find('ontology-import-commit')!.props.onClick as () => void)()
+      await flush()
+      panel.setProps({ projectId, projectRevision: 8, onImported })
+      resolveCommit({ ok: true as const, data: {} })
+      await flushAll()
+      panel.render()
+      expect(onImported).not.toHaveBeenCalled()
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+})
+
 // Keep the immutable snapshot type honest: it is the committed contract.
 const _snapshotShape: VerifiedImportPreview['token'] = 'token'
 void _snapshotShape

@@ -713,6 +713,19 @@ export function App() {
     setQualityPending(pending)
     workspaceNotify.current()
   }, [])
+  const activeAgentOwner = useRef<{
+    projectId: string | undefined
+    generation: number | undefined
+  }>({
+    projectId: tasks?.project?.projectId,
+    generation: tasks?.generation,
+  })
+  useEffect(() => {
+    activeAgentOwner.current = {
+      projectId: tasks?.project?.projectId,
+      generation: tasks?.generation,
+    }
+  }, [tasks?.project?.projectId, tasks?.generation])
   // 按 projectId 读取 localStorage 中的“仅 UI 披露偏好”镜像（FR-005）。
   // 这里不写项目数据、不发起 ChangeSet；真实模式由宿主 setAgentMode 持久化。
   useEffect(() => {
@@ -721,19 +734,23 @@ export function App() {
       agentModeMirror.current = ''
       return
     }
-    const key = `ontolearn.agent.mode.${projectId}`
+    const key = `ontolearn.agent.mode.${projectId}:${tasks?.generation ?? ''}`
     if (agentModeMirror.current === key) return
     agentModeMirror.current = key
     const mode = readAgentModeMirror(projectId)
     agentContextStore.setMode(mode)
-  }, [tasks?.project?.projectId])
+  }, [tasks?.project?.projectId, tasks?.generation])
   const onAgentModeChange = useCallback(
     async (mode: AgentMode) => {
       const projectId = tasks?.project?.projectId
+      const generation = tasks?.generation
       if (!projectId) {
         setProjectNotice('尚未打开项目；助手模式未改变。')
         throw new Error('NO_PROJECT')
       }
+      const ownsCurrentProject = () =>
+        activeAgentOwner.current.projectId === projectId &&
+        activeAgentOwner.current.generation === generation
       // The host is the only authority: the local mirror is only updated
       // after the host really persisted the new mode.
       const result = await persistAgentMode({
@@ -745,16 +762,16 @@ export function App() {
         projectId,
         mode,
         apply: (next) => {
-          agentContextStore.setMode(next)
           writeAgentModeMirror(projectId, next)
+          if (ownsCurrentProject()) agentContextStore.setMode(next)
         },
       })
       if (!result.ok) {
-        setProjectNotice(`助手模式未改变（${result.code}）。`)
+        if (ownsCurrentProject()) setProjectNotice(`助手模式未改变（${result.code}）。`)
         throw new Error(result.code)
       }
     },
-    [tasks?.project?.projectId],
+    [tasks?.project?.projectId, tasks?.generation],
   )
   const onOntologyDirty = useCallback((dirty: boolean) => {
     ontologyDirty.current = dirty

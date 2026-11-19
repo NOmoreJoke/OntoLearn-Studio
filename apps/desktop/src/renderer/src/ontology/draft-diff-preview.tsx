@@ -101,10 +101,12 @@ export async function readFullDiff(
     }): Promise<{ ok: true; data: ChangeSetPage } | { ok: false; error: { code: string } }>
   },
   preview: { projectId: string; previewHash: string; manifest: { segmentCount: number } },
-): Promise<{ pages: ChangeSetPage[]; completionCursor: string }> {
+  isCurrent?: () => boolean,
+): Promise<{ pages: ChangeSetPage[]; completionCursor: string; stale?: boolean }> {
   const pages: ChangeSetPage[] = []
   let cursor: string | null = null
   for (let count = 0; count < 512; count++) {
+    if (isCurrent && !isCurrent()) return { pages, completionCursor: '', stale: true }
     const page: ChangeSetPage = take(
       await bridge.getProjectDiffPage({
         previewHash: preview.previewHash,
@@ -113,6 +115,7 @@ export async function readFullDiff(
         cursor,
       }),
     )
+    if (isCurrent && !isCurrent()) return { pages, completionCursor: '', stale: true }
     if (!page.complete && pages.some((old) => old.nextCursor === page.nextCursor))
       throw new Error('CURSOR_REPEATED')
     pages.push(page)
@@ -155,8 +158,8 @@ export async function prepareDraftDiff(args: {
   if (answer.projectId !== projectId) throw new Error('PROJECT_MISMATCH')
   if (answer.status === 'conflict') return { status: 'conflict' }
   if (answer.baseRevision !== plan.baseRevision) throw new Error('BASE_REVISION_MISMATCH')
-  const full = await readFullDiff(bridge, answer)
-  if (!isCurrent()) return { status: 'stale' }
+  const full = await readFullDiff(bridge, answer, isCurrent)
+  if (full.stale || !isCurrent()) return { status: 'stale' }
   const document = await reassembleChangeSetDocument(
     {
       projectId: answer.projectId,
@@ -298,7 +301,7 @@ export function DraftDiffPreview(props: DraftDiffPreviewProps) {
         projectId,
         isCurrent,
       })
-      if (outcome.status === 'stale') return
+      if (outcome.status === 'stale' || !isCurrent()) return
       if (outcome.status === 'conflict') {
         setView((previous) =>
           previous.identity === myIdentity
@@ -383,7 +386,7 @@ export function DraftDiffPreview(props: DraftDiffPreviewProps) {
         label,
         isCurrent,
       })
-      if (outcome.status === 'stale') return
+      if (outcome.status === 'stale' || !isCurrent()) return
       if (outcome.status === 'failed') {
         setView((previous) =>
           previous.identity === myIdentity

@@ -5,9 +5,12 @@ import { join, resolve } from 'node:path'
 import { afterEach, expect, it } from 'vitest'
 import type {
   AgentDispatchArgs,
+  AgentStateDTO,
   BridgeResult,
+  JobView,
   MainlineChangePlanDTO,
   QualityConstraintDefinitionDTO,
+  TaskUpdate,
 } from '@ontolearn/contracts'
 import { AgentModeStore } from '../../apps/desktop/src/main/agent/agent-mode-store'
 import {
@@ -110,12 +113,28 @@ async function fixture() {
   )
   cleanup.push(() => engine.stopAndWait())
   const owners: { host?: AgentHostComposition; models?: ModelGatewayService } = {}
+  const terminalJobs = new Map<string, JobView>()
+  const jobWaiters = new Map<string, Array<(job: JobView) => void>>()
+  const recordJob = (job: JobView) => {
+    if (!['succeeded', 'failed', 'cancelled'].includes(job.state)) return
+    terminalJobs.set(job.jobId, job)
+    const waiters = jobWaiters.get(job.jobId)
+    if (!waiters?.length) return
+    jobWaiters.delete(job.jobId)
+    for (const resolve of waiters) resolve(job)
+  }
+  const onTaskUpdate = (update: TaskUpdate) => {
+    if (update.kind === 'job') recordJob(update.job)
+    else if (update.kind === 'restored') {
+      for (const job of update.view.jobs) recordJob(job)
+    }
+  }
   const tasks = new TaskService(engine, (projectId) => {
     owners.host?.refresh(true)
     owners.models?.selectProject(projectId)
   })
   cleanup.push(() => tasks.dispose())
-  const projects = new ProjectMainlineService(engine, tasks, () => tasks.attachView(() => {}), {
+  const projects = new ProjectMainlineService(engine, tasks, () => tasks.attachView(onTaskUpdate), {
     managementJournalPath: join(userDataPath, 'management.json'),
     restoreJournalPath: join(userDataPath, 'restore.json'),
   })
@@ -153,6 +172,7 @@ async function fixture() {
 
   const requests: { body: Buffer; method?: string; authorization?: string; url?: string }[] = []
   const responders: ((response: ServerResponse) => void)[] = []
+  const requestWaiters: Array<() => void> = []
   const server = createServer(async (request, response) => {
     const chunks: Buffer[] = []
     for await (const chunk of request) chunks.push(Buffer.from(chunk))
@@ -162,6 +182,7 @@ async function fixture() {
       authorization: request.headers.authorization,
       url: request.url,
     })
+    for (const notify of requestWaiters.splice(0)) notify()
     const respond = responders.shift()
     if (respond) respond(response)
     else response.writeHead(500).end()
@@ -259,6 +280,7 @@ async function fixture() {
       return true
     },
   }
+  const stateWaiters: Array<(state: AgentStateDTO) => void> = []
   const agent = new AgentHostComposition({
     selection: () => projects.source.current(),
     blocked: () => projects.managementBlocked || projects.restoreBlocked,
@@ -268,6 +290,9 @@ async function fixture() {
     replies,
     models: () => service,
     providerApproval: approval,
+    onStateChange: (state) => {
+      for (const notify of [...stateWaiters]) notify(state)
+    },
   })
   owners.host = agent
   projects.source.observe(() => agent.refresh())
@@ -296,17 +321,55 @@ async function fixture() {
       })
       .then(unwrap)
   }
+  async function waitForRequests(count: number) {
+    while (requests.length < count) {
+      await new Promise<void>((resolve) => {
+        requestWaiters.push(resolve)
+      })
+    }
+  }
+  async function waitForJob(jobId: string): Promise<JobView> {
+    const cached = terminalJobs.get(jobId)
+    if (cached) return cached
+    let settle!: (job: JobView) => void
+    const waited = new Promise<JobView>((resolve) => {
+      settle = resolve
+    })
+    const list = jobWaiters.get(jobId) ?? []
+    list.push(settle)
+    jobWaiters.set(jobId, list)
+    try {
+      const current = unwrap(await tasks.getJob(jobId))
+      if (['succeeded', 'failed', 'cancelled'].includes(current.state)) return current
+      return await waited
+    } finally {
+      const remaining = jobWaiters.get(jobId)?.filter((fn) => fn !== settle)
+      if (remaining && remaining.length > 0) jobWaiters.set(jobId, remaining)
+      else jobWaiters.delete(jobId)
+    }
+  }
   async function status(expected: 'answered' | 'failed') {
-    await expect
-      .poll(
-        async () => {
-          const { status, failureCode } = unwrap(await agent.getAgentState())
-          return status === 'failed' && expected === 'answered' ? failureCode : status
-        },
-        { timeout: 10_000, interval: 25 },
-      )
-      .toBe(expected)
-    return unwrap(await agent.getAgentState())
+    let waiter: ((state: AgentStateDTO) => void) | undefined
+    const nextTerminal = new Promise<AgentStateDTO>((resolve) => {
+      waiter = (state) => {
+        if (state.status !== 'dispatching' && state.status !== 'idle') resolve(state)
+      }
+      stateWaiters.push(waiter)
+    })
+    try {
+      const current = unwrap(await agent.getAgentState())
+      const terminal =
+        current.status !== 'dispatching' && current.status !== 'idle' ? current : await nextTerminal
+      const actual =
+        terminal.status === 'failed' && expected === 'answered'
+          ? terminal.failureCode
+          : terminal.status
+      expect(actual).toBe(expected)
+      return terminal
+    } finally {
+      const idx = waiter ? stateWaiters.indexOf(waiter) : -1
+      if (idx >= 0) stateWaiters.splice(idx, 1)
+    }
   }
   const unguarded = () => {}
   async function change(plan: MainlineChangePlanDTO) {
@@ -347,6 +410,8 @@ async function fixture() {
     responders,
     respond,
     dispatch,
+    waitForRequests,
+    waitForJob,
     status,
     change,
     quality,
@@ -573,14 +638,18 @@ it(
       { content: null, tool_calls: [toolCall('ontology_read', { objectIds: [id] })] },
       'tool_calls',
     )
-    let responseClosed = false
-    f.responders.push((response) =>
-      response.once('close', () => {
-        responseClosed = true
-      }),
-    )
+    let closed = false
+    let markClosed!: () => void
+    const responseClosed = new Promise<void>((resolve) => {
+      markClosed = () => {
+        closed = true
+        resolve()
+      }
+    })
+    f.responders.push((response) => response.once('close', markClosed))
     const stale = await f.dispatch({ selectedObjectIds: [id] })
-    await expect.poll(() => f.requests.length, { timeout: 10_000, interval: 25 }).toBe(5)
+    await f.waitForRequests(5)
+    expect(f.requests).toHaveLength(5)
     await f.change({
       definitions: [
         {
@@ -598,7 +667,8 @@ it(
       operationId: stale.operationId,
       receipts: [],
     })
-    await expect.poll(() => responseClosed, { timeout: 10_000, interval: 25 }).toBe(true)
+    await responseClosed
+    expect(closed).toBe(true)
     await expect(
       f.agent.buildAgentDraftPlan({ operationId: stale.operationId }),
     ).resolves.toMatchObject({ error: { code: 'STALE_CONTEXT' } })
@@ -699,15 +769,8 @@ it(
       // reports no updated tasks yet.
       assistanceUpdatedTaskIds: [],
     })
-    await expect
-      .poll(
-        async () => {
-          const job = unwrap(await f.tasks.getJob(committed.job.jobId))
-          return job.state === 'failed' ? job.error?.code : job.state
-        },
-        { timeout: 10_000, interval: 25 },
-      )
-      .toBe('succeeded')
+    const finalJob = await f.waitForJob(committed.job.jobId)
+    expect(finalJob.state === 'failed' ? finalJob.error?.code : finalJob.state).toBe('succeeded')
     // The default full-assistance task list marks exactly the ontology-draft
     // targets; the unrelated transfer-classify attempt stays independent.
     const learningState = await f.call(() => projects.getProjectLearningState({ projectId }))
