@@ -455,12 +455,22 @@ export class AgentHostComposition implements AgentBridge {
     })
   }
 
+  private notifyStateChange(state: AgentStateDTO): void {
+    const listener = this.dependencies.onStateChange
+    if (!listener) return
+    try {
+      listener(structuredClone(state))
+    } catch {
+      /* Observer errors are isolated so host turn state and IPC replies remain intact. */
+    }
+  }
+
   private failTurn(turn: Turn, code: string): void {
     turn.state.status = code === 'CANCELLED' ? 'cancelled' : 'failed'
     turn.state.failureCode = code
     turn.state.answerText = null
     turn.state.receipts = code === 'STALE_CONTEXT' ? [] : this.receipts(turn)
-    this.dependencies.onStateChange?.(structuredClone(turn.state))
+    this.notifyStateChange(turn.state)
   }
 
   private async run(turn: Turn, models: Models, approval: AgentProviderApproval): Promise<void> {
@@ -500,7 +510,7 @@ export class AgentHostComposition implements AgentBridge {
             : answer.kind === 'suggestion'
               ? answer.label + '\n' + answer.text
               : answer.text
-        this.dependencies.onStateChange?.(structuredClone(turn.state))
+        this.notifyStateChange(turn.state)
         return
       }
     } catch (error) {

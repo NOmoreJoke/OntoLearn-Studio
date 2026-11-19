@@ -203,6 +203,60 @@ export function agentContextMatches(
   return true
 }
 
+type SemanticOwner = {
+  projectId: string | null
+  projectRevision: number | null
+  inputSnapshotId: string | null
+  module: AgentContextDTO['module']
+  selectedObjectIds: readonly string[]
+  selectedKey: string
+}
+
+function sameViewOwner(left: SemanticOwner, right: SemanticOwner): boolean {
+  return (
+    left.projectId === right.projectId &&
+    left.projectRevision === right.projectRevision &&
+    left.inputSnapshotId === right.inputSnapshotId &&
+    left.module === right.module &&
+    left.selectedKey === right.selectedKey
+  )
+}
+
+function viewKeyOf(owner: SemanticOwner, mode: AgentMode): string {
+  return `${owner.projectId ?? ''}|${owner.projectRevision ?? ''}|${owner.inputSnapshotId ?? ''}|${owner.module}|${mode}|${owner.selectedKey}`
+}
+
+function stateMatchesView(
+  stateData: AgentStateDTO,
+  owner: SemanticOwner,
+  expectedMode: AgentMode,
+  expectedExchangeId?: number,
+  expectedOperationId?: string,
+): boolean {
+  if (!owner.projectId) return false
+  if (!stateData.context) {
+    return (
+      stateData.status === 'idle' &&
+      expectedExchangeId === undefined &&
+      expectedOperationId === undefined
+    )
+  }
+  const ctx = stateData.context
+  if (
+    ctx.projectId !== owner.projectId ||
+    ctx.module !== owner.module ||
+    ctx.mode !== expectedMode ||
+    !sameSelectedIds(ctx.selectedObjectIds, owner.selectedObjectIds)
+  )
+    return false
+  if (owner.projectRevision != null && ctx.projectRevision !== owner.projectRevision) return false
+  if (owner.inputSnapshotId && ctx.inputSnapshotId !== owner.inputSnapshotId) return false
+  if (expectedExchangeId !== undefined && stateData.exchangeId !== expectedExchangeId) return false
+  if (expectedOperationId !== undefined && stateData.operationId !== expectedOperationId)
+    return false
+  return true
+}
+
 export function AgentPanel(props: AgentPanelProps) {
   const {
     projectId,
@@ -215,35 +269,38 @@ export function AgentPanel(props: AgentPanelProps) {
   } = props
   const [context, setContext] = useState<AgentContextDTO | null>(null)
   const [state, setState] = useState<AgentStateDTO | null>(null)
-  const [busy, setBusy] = useState(false)
+  const [dispatchBusyKey, setDispatchBusyKey] = useState<string | null>(null)
+  const [planBusyKey, setPlanBusyKey] = useState<string | null>(null)
+  const [syncedHostMode, setSyncedHostMode] = useState<{
+    projectId: string | null
+    forPropMode: AgentMode
+    mode: AgentMode
+  } | null>(null)
   const [notice, setNotice] = useState('')
   const [failure, setFailure] = useState('')
   const live = useRef(true)
   const refreshSeq = useRef(0)
   const dispatchSeq = useRef(0)
   const planSeq = useRef(0)
-  // The last upstream query receipt that was already delivered.
-  const lastQueryReceipt = useRef('')
+  const modeSwitchSeq = useRef(0)
+  // Delivered and in-flight upstream query receipts keyed by `projectId:operationId`.
+  const deliveredQueryReceipts = useRef(new Set<string>())
+  const inFlightQueryReceipts = useRef(new Set<string>())
   const pollTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const selectedKey = JSON.stringify(selectedObjectIds)
-  const ownerRef = useRef({
+  const renderViewOwner: SemanticOwner = {
     projectId,
     projectRevision,
     inputSnapshotId,
     module,
-    mode,
+    selectedObjectIds: JSON.parse(selectedKey) as string[],
     selectedKey,
-  })
-  useEffect(() => {
-    ownerRef.current = {
-      projectId,
-      projectRevision,
-      inputSnapshotId,
-      module,
-      mode,
-      selectedKey,
-    }
-  }, [projectId, projectRevision, inputSnapshotId, module, mode, selectedKey])
+  }
+  const ownerRef = useRef<SemanticOwner>(renderViewOwner)
+  const propModeRef = useRef<AgentMode>(mode)
+  const effectiveModeRef = useRef<AgentMode>(mode)
+  const stateRef = useRef<AgentStateDTO | null>(null)
+  const refreshRef = useRef<() => Promise<void>>(async () => {})
   const onQueryDraft = useRef(props.onQueryDraft)
   const onDraftPlan = useRef(props.onDraftPlan)
   const onLocalAction = useRef(props.onLocalAction)
@@ -252,6 +309,42 @@ export function AgentPanel(props: AgentPanelProps) {
     onDraftPlan.current = props.onDraftPlan
     onLocalAction.current = props.onLocalAction
   })
+
+  const stopPolling = useCallback(() => {
+    if (pollTimer.current !== undefined) clearTimeout(pollTimer.current)
+    pollTimer.current = undefined
+  }, [])
+
+  const commitState = useCallback((next: AgentStateDTO | null) => {
+    const prev = stateRef.current
+    if (prev?.operationId !== next?.operationId || prev?.exchangeId !== next?.exchangeId)
+      planSeq.current += 1
+    stateRef.current = next
+    setState(next)
+  }, [])
+
+  useEffect(() => {
+    ownerRef.current = {
+      projectId,
+      projectRevision,
+      inputSnapshotId,
+      module,
+      selectedObjectIds: JSON.parse(selectedKey) as string[],
+      selectedKey,
+    }
+    stopPolling()
+    dispatchSeq.current += 1
+    planSeq.current += 1
+    modeSwitchSeq.current += 1
+  }, [projectId, projectRevision, inputSnapshotId, module, selectedKey, stopPolling])
+
+  useEffect(() => {
+    propModeRef.current = mode
+    effectiveModeRef.current = mode
+    stopPolling()
+    dispatchSeq.current += 1
+    planSeq.current += 1
+  }, [mode, stopPolling])
 
   useEffect(() => {
     live.current = true
@@ -262,38 +355,19 @@ export function AgentPanel(props: AgentPanelProps) {
     }
   }, [])
 
-  const stopPolling = useCallback(() => {
-    if (pollTimer.current !== undefined) clearTimeout(pollTimer.current)
-    pollTimer.current = undefined
-  }, [])
-
   const stateMatchesCurrent = useCallback(
-    (stateData: AgentStateDTO, expectedExchangeId?: number): boolean => {
-      const cur = ownerRef.current
-      if (!cur.projectId) return false
-      if (stateData.context) {
-        if (stateData.context.projectId !== cur.projectId) return false
-        if (
-          cur.projectRevision != null &&
-          stateData.context.projectRevision != null &&
-          stateData.context.projectRevision !== cur.projectRevision
-        )
-          return false
-        if (
-          cur.inputSnapshotId &&
-          stateData.context.inputSnapshotId &&
-          stateData.context.inputSnapshotId !== cur.inputSnapshotId
-        )
-          return false
-      }
-      if (
-        expectedExchangeId !== undefined &&
-        stateData.exchangeId !== null &&
-        stateData.exchangeId !== expectedExchangeId
-      )
-        return false
-      return true
-    },
+    (
+      stateData: AgentStateDTO,
+      expectedExchangeId?: number,
+      expectedOperationId?: string,
+    ): boolean =>
+      stateMatchesView(
+        stateData,
+        ownerRef.current,
+        effectiveModeRef.current,
+        expectedExchangeId,
+        expectedOperationId,
+      ),
     [],
   )
 
@@ -303,8 +377,21 @@ export function AgentPanel(props: AgentPanelProps) {
       stateData: AgentStateDTO,
       isStillCurrent: () => boolean,
       expectedExchangeId?: number,
+      expectedOperationId?: string,
     ) => {
-      if (!isStillCurrent() || !stateMatchesCurrent(stateData, expectedExchangeId)) return
+      const turnStillCurrent = (): boolean => {
+        if (!isStillCurrent()) return false
+        if (!stateMatchesCurrent(stateData, expectedExchangeId, expectedOperationId)) return false
+        const latest = stateRef.current
+        if (
+          !latest ||
+          latest.operationId !== stateData.operationId ||
+          latest.exchangeId !== stateData.exchangeId
+        )
+          return false
+        return stateMatchesCurrent(latest, expectedExchangeId, expectedOperationId)
+      }
+      if (!turnStillCurrent()) return
       const cur = ownerRef.current
       if (!cur.projectId) return
       const receipts = stateData.receipts ?? []
@@ -320,23 +407,28 @@ export function AgentPanel(props: AgentPanelProps) {
             (!cur.inputSnapshotId || receipt.outcome.inputSnapshotId === cur.inputSnapshotId),
         )
       if (!draft || !operationId) return
-      if (lastQueryReceipt.current === operationId) return
+      const receiptKey = `${cur.projectId}:${operationId}`
+      if (deliveredQueryReceipts.current.has(receiptKey)) return
       const fromDetail = queryDraftFromDetail(draft.outcome.detail)
       if (fromDetail) {
-        if (!isStillCurrent() || !stateMatchesCurrent(stateData, expectedExchangeId)) return
-        lastQueryReceipt.current = operationId
+        if (!turnStillCurrent() || deliveredQueryReceipts.current.has(receiptKey)) return
+        deliveredQueryReceipts.current.add(receiptKey)
         onQueryDraft.current?.(fromDetail)
         setNotice('已收到上游查询草稿，请在查询工作台核对后手动载入。')
         return
       }
+      if (inFlightQueryReceipts.current.has(receiptKey)) return
+      inFlightQueryReceipts.current.add(receiptKey)
       let plan: AgentDraftPlanDTO
       try {
         plan = take(await bridge.buildAgentDraftPlan({ operationId }))
       } catch {
-        if (isStillCurrent()) setNotice('上游查询草稿不可用；编辑器内容未被修改。')
+        if (turnStillCurrent()) setNotice('上游查询草稿不可用；编辑器内容未被修改。')
         return
+      } finally {
+        inFlightQueryReceipts.current.delete(receiptKey)
       }
-      if (!isStillCurrent() || !stateMatchesCurrent(stateData, expectedExchangeId)) return
+      if (!turnStillCurrent() || deliveredQueryReceipts.current.has(receiptKey)) return
       const latestOwner = ownerRef.current
       if (
         plan.operationId !== operationId ||
@@ -347,7 +439,7 @@ export function AgentPanel(props: AgentPanelProps) {
         return
       const query = queryDraftFromPlan(plan)
       if (query) {
-        lastQueryReceipt.current = operationId
+        deliveredQueryReceipts.current.add(receiptKey)
         onQueryDraft.current?.(query)
         setNotice('已收到上游查询草稿，请在查询工作台核对后手动载入。')
       } else {
@@ -360,67 +452,76 @@ export function AgentPanel(props: AgentPanelProps) {
   const refresh = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge) return
-    const mySeq = ++refreshSeq.current
-    const myOwner = {
+    const selectedIds = JSON.parse(selectedKey) as string[]
+    const myOwner: SemanticOwner = {
       projectId,
       projectRevision,
       inputSnapshotId,
       module,
+      selectedObjectIds: selectedIds,
       selectedKey,
     }
-    const stillOwnsRefresh = () =>
-      live.current &&
-      refreshSeq.current === mySeq &&
-      ownerRef.current.projectId === myOwner.projectId &&
-      ownerRef.current.projectRevision === myOwner.projectRevision &&
-      ownerRef.current.inputSnapshotId === myOwner.inputSnapshotId &&
-      ownerRef.current.module === myOwner.module &&
-      ownerRef.current.selectedKey === myOwner.selectedKey
+    const ownsView = () => live.current && sameViewOwner(ownerRef.current, myOwner)
+    if (!ownsView()) return
+    const mySeq = ++refreshSeq.current
+    const stillOwnsRefresh = () => ownsView() && refreshSeq.current === mySeq
     try {
       const reply = await bridge.getAgentContext({
-        projectId,
-        module,
-        selectedObjectIds,
+        projectId: myOwner.projectId,
+        module: myOwner.module,
+        selectedObjectIds: selectedIds,
       })
       if (!stillOwnsRefresh()) return
       if (!reply.ok) {
         setContext(null)
-        setState(null)
+        commitState(null)
         setFailure(reply.error.code)
         return
       }
       if (
-        !agentContextMatches(reply.data, projectId, module, {
-          projectRevision,
-          inputSnapshotId,
-          selectedObjectIds,
+        !agentContextMatches(reply.data, myOwner.projectId, myOwner.module, {
+          projectRevision: myOwner.projectRevision,
+          inputSnapshotId: myOwner.inputSnapshotId,
+          selectedObjectIds: selectedIds,
         })
       ) {
         // A foreign context is never kept: the old context is dropped instead
         // of being shown as if it belonged to the selected project.
         setContext(null)
-        setState(null)
+        commitState(null)
         setFailure('AGENT_CONTEXT_MISMATCH')
         return
       }
+      effectiveModeRef.current = reply.data.mode
+      setSyncedHostMode({
+        projectId: myOwner.projectId,
+        forPropMode: propModeRef.current,
+        mode: reply.data.mode,
+      })
       setFailure('')
       setContext(reply.data)
     } catch {
       if (!stillOwnsRefresh()) return
       setContext(null)
-      setState(null)
+      commitState(null)
       setFailure('AGENT_CONTEXT_UNAVAILABLE')
     }
     try {
-      const reply = await bridge.getAgentState({ projectId })
+      const reply = await bridge.getAgentState({ projectId: myOwner.projectId })
       if (!stillOwnsRefresh()) return
       if (!reply.ok) return
       if (!stateMatchesCurrent(reply.data)) {
-        setState(null)
+        commitState(null)
         return
       }
-      setState(reply.data)
-      await deliverQueryDraft(bridge, reply.data, stillOwnsRefresh)
+      commitState(reply.data)
+      await deliverQueryDraft(
+        bridge,
+        reply.data,
+        stillOwnsRefresh,
+        reply.data.exchangeId ?? undefined,
+        reply.data.operationId ?? undefined,
+      )
     } catch {
       /* An unavailable state channel simply means no receipts are shown. */
     }
@@ -429,11 +530,15 @@ export function AgentPanel(props: AgentPanelProps) {
     projectRevision,
     inputSnapshotId,
     module,
-    selectedObjectIds,
     selectedKey,
+    commitState,
     stateMatchesCurrent,
     deliverQueryDraft,
   ])
+
+  useEffect(() => {
+    refreshRef.current = refresh
+  }, [refresh])
 
   useEffect(() => {
     // Deferred: the effect body itself never triggers a state update.
@@ -441,56 +546,76 @@ export function AgentPanel(props: AgentPanelProps) {
     return () => clearTimeout(timer)
   }, [refresh, mode, modelSyncVersion])
 
-  // A project or module change retires the pending run watch.
-  useEffect(() => {
-    stopPolling()
-  }, [projectId, module, stopPolling])
-
   /**
    * Follow one exchange until the host leaves the `dispatching` status. The
    * timer is always owned: an outdated dispatch never writes the state.
    */
   const pollExchange = useCallback(
-    (exchangeId: number, myDispatch: number) => {
+    (
+      exchangeId: number,
+      expectedOperationId: string,
+      myDispatch: number,
+      myOwner: SemanticOwner,
+      myMode: AgentMode,
+    ) => {
       stopPolling()
+      const isStillCurrent = () =>
+        live.current &&
+        dispatchSeq.current === myDispatch &&
+        sameViewOwner(ownerRef.current, myOwner) &&
+        effectiveModeRef.current === myMode
       const tick = async () => {
         const bridge = window.ontolearn
-        const isStillCurrent = () =>
-          live.current &&
-          dispatchSeq.current === myDispatch &&
-          ownerRef.current.projectId === projectId
-        if (!bridge || !isStillCurrent()) return
+        if (!bridge || !myOwner.projectId || !isStillCurrent()) {
+          stopPolling()
+          return
+        }
         try {
-          const reply = await bridge.getAgentState({ projectId })
+          const reply = await bridge.getAgentState({ projectId: myOwner.projectId })
           if (!isStillCurrent()) return
           if (!reply.ok) return
-          if (!stateMatchesCurrent(reply.data, exchangeId)) {
+          if (!stateMatchesCurrent(reply.data, exchangeId, expectedOperationId)) {
             stopPolling()
             return
           }
-          setState(reply.data)
+          commitState(reply.data)
           if (reply.data.status === 'dispatching' && reply.data.exchangeId === exchangeId) {
             pollTimer.current = setTimeout(() => void tick(), 150)
             return
           }
           stopPolling()
-          await deliverQueryDraft(bridge, reply.data, isStillCurrent, exchangeId)
+          await deliverQueryDraft(
+            bridge,
+            reply.data,
+            isStillCurrent,
+            exchangeId,
+            expectedOperationId,
+          )
         } catch {
           /* The channel may be unavailable; the next refresh reports the truth. */
         }
       }
       pollTimer.current = setTimeout(() => void tick(), 150)
     },
-    [projectId, stopPolling, stateMatchesCurrent, deliverQueryDraft],
+    [stopPolling, stateMatchesCurrent, commitState, deliverQueryDraft],
   )
 
   const dispatch = useCallback(
     async (question: string) => {
       const bridge = window.ontolearn
-      if (!bridge || !projectId) return
+      const myOwner = { ...ownerRef.current }
+      const myMode = effectiveModeRef.current
+      if (!bridge || !myOwner.projectId) return
       const myDispatch = ++dispatchSeq.current
+      planSeq.current += 1
       stopPolling()
-      setBusy(true)
+      const myViewKey = viewKeyOf(myOwner, myMode)
+      const isDispatchCurrent = () =>
+        live.current &&
+        dispatchSeq.current === myDispatch &&
+        sameViewOwner(ownerRef.current, myOwner) &&
+        effectiveModeRef.current === myMode
+      setDispatchBusyKey(myViewKey)
       setFailure('')
       setNotice('')
       let failureCode: string | null = null
@@ -498,12 +623,12 @@ export function AgentPanel(props: AgentPanelProps) {
         const reply = await bridge.dispatchAgentQuestion({
           operationId: crypto.randomUUID(),
           question,
-          module,
-          mode,
-          selectedObjectIds,
+          module: myOwner.module,
+          mode: myMode,
+          selectedObjectIds: [...myOwner.selectedObjectIds],
           scope: 'asserted',
         })
-        if (!live.current || dispatchSeq.current !== myDispatch) return
+        if (!isDispatchCurrent()) return
         if (!reply.ok) {
           // The structured failure is reported immediately and re-thrown, so
           // the sidebar keeps the question and shows the failure.
@@ -511,84 +636,127 @@ export function AgentPanel(props: AgentPanelProps) {
           setFailure(reply.error.code)
           throw new Error(reply.error.code)
         }
-        await refresh()
-        if (!live.current || dispatchSeq.current !== myDispatch) return
-        pollExchange(reply.data.exchangeId, myDispatch)
+        await refreshRef.current()
+        if (!isDispatchCurrent()) return
+        const latest = stateRef.current
+        if (
+          !latest ||
+          latest.exchangeId !== reply.data.exchangeId ||
+          latest.operationId !== reply.data.operationId ||
+          latest.status === 'dispatching'
+        )
+          pollExchange(reply.data.exchangeId, reply.data.operationId, myDispatch, myOwner, myMode)
       } catch (cause) {
-        if (failureCode === null && live.current && dispatchSeq.current === myDispatch)
+        if (failureCode === null && isDispatchCurrent())
           setFailure(cause instanceof Error ? cause.message : 'AGENT_DISPATCH_FAILED')
         throw cause
       } finally {
-        if (live.current && dispatchSeq.current === myDispatch) setBusy(false)
+        if (live.current && dispatchSeq.current === myDispatch)
+          setDispatchBusyKey((current) => (current === myViewKey ? null : current))
       }
     },
-    [projectId, module, mode, selectedObjectIds, refresh, pollExchange, stopPolling],
+    [pollExchange, stopPolling],
   )
 
   const cancel = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge) return
+    const myOwner = { ...ownerRef.current }
+    const myMode = effectiveModeRef.current
     const myDispatch = dispatchSeq.current
+    const targetExchangeId = stateRef.current?.exchangeId ?? null
+    const ownsCancel = () =>
+      live.current &&
+      dispatchSeq.current === myDispatch &&
+      sameViewOwner(ownerRef.current, myOwner) &&
+      effectiveModeRef.current === myMode
     try {
-      const reply = await bridge.cancelAgentExchange({ exchangeId: state?.exchangeId ?? null })
-      if (live.current && dispatchSeq.current === myDispatch && reply.ok) setState(reply.data)
-    } catch {
-      if (live.current) setFailure('AGENT_CANCEL_FAILED')
-    }
-  }, [state])
-
-  const buildPlan = useCallback(
-    async (receipt: AgentReceiptDTO) => {
-      const bridge = window.ontolearn
-      const capturedState = state
-      const expectedOperationId = capturedState?.operationId
-      const expectedExchangeId = capturedState?.exchangeId
-      if (!bridge || !capturedState || !expectedOperationId || receipt.outcome.kind !== 'draft')
-        return
-      const myOwner = { ...ownerRef.current }
-      if (
-        !myOwner.projectId ||
-        !stateMatchesCurrent(capturedState, expectedExchangeId ?? undefined)
-      )
-        return
-      if (
-        receipt.outcome.projectId !== myOwner.projectId ||
-        (myOwner.projectRevision != null &&
-          receipt.outcome.baseRevision !== myOwner.projectRevision) ||
-        (myOwner.inputSnapshotId && receipt.outcome.inputSnapshotId !== myOwner.inputSnapshotId)
-      )
-        return
-      const mySeq = ++planSeq.current
-      setBusy(true)
-      setFailure('')
-      try {
-        const plan = take(await bridge.buildAgentDraftPlan({ operationId: expectedOperationId }))
-        if (!live.current || planSeq.current !== mySeq) return
-        if (
-          ownerRef.current.projectId !== myOwner.projectId ||
-          ownerRef.current.projectRevision !== myOwner.projectRevision ||
-          ownerRef.current.inputSnapshotId !== myOwner.inputSnapshotId ||
-          ownerRef.current.module !== myOwner.module ||
-          ownerRef.current.selectedKey !== myOwner.selectedKey
-        )
-          return
-        if (!stateMatchesCurrent(capturedState, expectedExchangeId ?? undefined)) return
-        if (
-          plan.operationId !== expectedOperationId ||
-          (myOwner.projectRevision != null && plan.baseRevision !== myOwner.projectRevision) ||
-          (myOwner.inputSnapshotId && plan.inputSnapshotId !== myOwner.inputSnapshotId)
-        )
-          return
-        onDraftPlan.current?.(plan)
-      } catch (cause) {
-        if (live.current && planSeq.current === mySeq)
-          setFailure(cause instanceof Error ? cause.message : 'AGENT_DRAFT_PLAN_FAILED')
-      } finally {
-        if (live.current && planSeq.current === mySeq) setBusy(false)
+      const reply = await bridge.cancelAgentExchange({ exchangeId: targetExchangeId })
+      if (!ownsCancel()) return
+      if (reply.ok) {
+        stopPolling()
+        if (stateMatchesCurrent(reply.data)) commitState(reply.data)
+        else commitState(null)
       }
-    },
-    [state, stateMatchesCurrent],
-  )
+    } catch {
+      if (ownsCancel()) setFailure('AGENT_CANCEL_FAILED')
+    }
+  }, [stopPolling, stateMatchesCurrent, commitState])
+
+  const buildPlan = useCallback(async (receipt: AgentReceiptDTO) => {
+    const bridge = window.ontolearn
+    const capturedState = stateRef.current
+    const expectedOperationId = capturedState?.operationId
+    const expectedExchangeId = capturedState?.exchangeId
+    const myOwner = { ...ownerRef.current }
+    const myMode = effectiveModeRef.current
+    const myDispatch = dispatchSeq.current
+    if (!bridge || !capturedState || !expectedOperationId || receipt.outcome.kind !== 'draft')
+      return
+    if (
+      !myOwner.projectId ||
+      !stateMatchesView(
+        capturedState,
+        myOwner,
+        myMode,
+        expectedExchangeId ?? undefined,
+        expectedOperationId,
+      )
+    )
+      return
+    if (
+      receipt.outcome.projectId !== myOwner.projectId ||
+      (myOwner.projectRevision != null &&
+        receipt.outcome.baseRevision !== myOwner.projectRevision) ||
+      (myOwner.inputSnapshotId && receipt.outcome.inputSnapshotId !== myOwner.inputSnapshotId)
+    )
+      return
+    const mySeq = ++planSeq.current
+    const myTurnKey = `${viewKeyOf(myOwner, myMode)}|${expectedOperationId}|${expectedExchangeId ?? ''}`
+    setPlanBusyKey(myTurnKey)
+    setFailure('')
+    const stillActiveTurn = () => {
+      if (
+        !live.current ||
+        planSeq.current !== mySeq ||
+        dispatchSeq.current !== myDispatch ||
+        !sameViewOwner(ownerRef.current, myOwner) ||
+        effectiveModeRef.current !== myMode
+      )
+        return false
+      const latest = stateRef.current
+      if (
+        !latest ||
+        latest.operationId !== expectedOperationId ||
+        latest.exchangeId !== expectedExchangeId
+      )
+        return false
+      return stateMatchesView(
+        latest,
+        ownerRef.current,
+        effectiveModeRef.current,
+        expectedExchangeId ?? undefined,
+        expectedOperationId,
+      )
+    }
+    try {
+      const plan = take(await bridge.buildAgentDraftPlan({ operationId: expectedOperationId }))
+      if (!stillActiveTurn()) return
+      if (
+        plan.operationId !== expectedOperationId ||
+        (myOwner.projectRevision != null && plan.baseRevision !== myOwner.projectRevision) ||
+        (myOwner.inputSnapshotId && plan.inputSnapshotId !== myOwner.inputSnapshotId)
+      )
+        return
+      onDraftPlan.current?.(plan)
+    } catch (cause) {
+      if (stillActiveTurn())
+        setFailure(cause instanceof Error ? cause.message : 'AGENT_DRAFT_PLAN_FAILED')
+    } finally {
+      if (live.current && planSeq.current === mySeq)
+        setPlanBusyKey((current) => (current === myTurnKey ? null : current))
+    }
+  }, [])
 
   const actions = useMemo(
     () => contextActions(module, !!context?.modelReady, props.localActions),
@@ -597,10 +765,28 @@ export function AgentPanel(props: AgentPanelProps) {
   // Every page offers at most four quick actions, and an action whose target
   // is unavailable stays disabled — there is never a silent no-op button.
   const unavailable = actions.filter((action) => action.target === 'unavailable')
+  const activeMode =
+    syncedHostMode && syncedHostMode.projectId === projectId && syncedHostMode.forPropMode === mode
+      ? syncedHostMode.mode
+      : mode
+  const displayedContext =
+    context &&
+    agentContextMatches(context, projectId, module, {
+      projectRevision,
+      inputSnapshotId,
+      selectedObjectIds: renderViewOwner.selectedObjectIds,
+    })
+      ? context
+      : null
+  const displayedState =
+    state && stateMatchesView(state, renderViewOwner, activeMode) ? state : null
+  const currentViewKey = viewKeyOf(renderViewOwner, activeMode)
+  const currentTurnKey = `${currentViewKey}|${displayedState?.operationId ?? ''}|${displayedState?.exchangeId ?? ''}`
+  const busy = dispatchBusyKey === currentViewKey || planBusyKey === currentTurnKey
   // The real host run state, mapped onto the sidebar vocabulary.
   const sidebarState = useMemo(
-    () => (state ? agentDtoToSidebarState(state, projectId ?? '') : null),
-    [state, projectId],
+    () => (displayedState ? agentDtoToSidebarState(displayedState, projectId ?? '') : null),
+    [displayedState, projectId],
   )
 
   if (!projectId) {
@@ -615,15 +801,15 @@ export function AgentPanel(props: AgentPanelProps) {
       </section>
     )
   }
-  const sidebarContext = context
+  const sidebarContext = displayedContext
     ? {
-        projectId: context.projectId ?? projectId,
-        projectRevision: context.projectRevision ?? projectRevision ?? 0,
-        inputSnapshotId: context.inputSnapshotId ?? inputSnapshotId ?? 'unavailable',
-        scopeRef: context.scopeRef ?? sidebarState?.inputContext.scopeRef ?? 'unavailable',
-        module: context.module,
-        mode: context.mode,
-        selectedObjectIds: context.selectedObjectIds,
+        projectId: displayedContext.projectId ?? projectId,
+        projectRevision: displayedContext.projectRevision ?? projectRevision ?? 0,
+        inputSnapshotId: displayedContext.inputSnapshotId ?? inputSnapshotId ?? 'unavailable',
+        scopeRef: displayedContext.scopeRef ?? sidebarState?.inputContext.scopeRef ?? 'unavailable',
+        module: displayedContext.module,
+        mode: displayedContext.mode,
+        selectedObjectIds: displayedContext.selectedObjectIds,
       }
     : null
   return (
@@ -636,7 +822,9 @@ export function AgentPanel(props: AgentPanelProps) {
       <header className="agent-panel-heading">
         <h2>工作台助手</h2>
         <span>
-          {context ? `模块 ${context.module} · 模式 ${context.mode}` : '正在读取助手上下文…'}
+          {displayedContext
+            ? `模块 ${displayedContext.module} · 模式 ${displayedContext.mode}`
+            : '正在读取助手上下文…'}
         </span>
       </header>
       <p data-testid="agent-panel-quick-actions-summary">
@@ -657,15 +845,22 @@ export function AgentPanel(props: AgentPanelProps) {
         <AgentSidebar
           context={sidebarContext}
           state={sidebarState}
-          receipts={state?.receipts}
-          privacy={context?.privacy ?? 'local'}
-          modelReady={!!context?.modelReady}
+          receipts={displayedState?.receipts}
+          privacy={displayedContext?.privacy ?? 'local'}
+          modelReady={!!displayedContext?.modelReady}
           localActions={props.localActions}
           onModeChange={
             props.onModeChange
               ? async (nextMode) => {
+                  const clickOwner = { ...ownerRef.current }
+                  const myModeSeq = ++modeSwitchSeq.current
                   await props.onModeChange?.(nextMode)
-                  if (live.current) await refresh()
+                  if (
+                    live.current &&
+                    modeSwitchSeq.current === myModeSeq &&
+                    sameViewOwner(ownerRef.current, clickOwner)
+                  )
+                    await refreshRef.current()
                 }
               : undefined
           }

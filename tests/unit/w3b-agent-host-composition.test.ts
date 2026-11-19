@@ -273,4 +273,54 @@ describe('Agent host composition', () => {
       await rm(directory, { recursive: true, force: true })
     }
   })
+
+  it('isolates synchronous onStateChange observer errors across failTurn and answered turns (W3B-R2C-N01)', async () => {
+    const { dependencies, args, projectId } = fixture('local', false)
+    let observerCalls = 0
+    const guardedHost = new AgentHostComposition({
+      ...dependencies,
+      onStateChange: () => {
+        observerCalls += 1
+        throw new Error('observer boom')
+      },
+    })
+    const localReply = await guardedHost.dispatchAgentQuestion(args)
+    expect(localReply).toMatchObject({ ok: true })
+    expect(observerCalls).toBe(1)
+    expect(await guardedHost.getAgentState({ projectId })).toMatchObject({
+      ok: true,
+      data: {
+        status: 'failed',
+        failureCode: 'LOCAL_ONLY',
+      },
+    })
+
+    const f2 = fixture('minimal', true)
+    let answeredCalls = 0
+    let resolveAnswer!: () => void
+    const answeredDone = new Promise<void>((resolve) => {
+      resolveAnswer = resolve
+    })
+    f2.invokeAgentBody.mockResolvedValueOnce(reply({ content: '{"kind":"uncertain"}' }, 'ok-n01'))
+    const answeredHost = new AgentHostComposition({
+      ...f2.dependencies,
+      onStateChange: (state) => {
+        answeredCalls += 1
+        if (state.status === 'answered') resolveAnswer()
+        throw new Error('answered observer boom')
+      },
+    })
+    const ansReply = await answeredHost.dispatchAgentQuestion(f2.args)
+    expect(ansReply).toMatchObject({ ok: true })
+    await answeredDone
+    await Promise.resolve()
+    expect(answeredCalls).toBe(1)
+    expect(await answeredHost.getAgentState({ projectId: f2.projectId })).toMatchObject({
+      ok: true,
+      data: {
+        status: 'answered',
+        answerText: '依据不足，无法确认；请运行本地工具或补充授权范围。',
+      },
+    })
+  })
 })

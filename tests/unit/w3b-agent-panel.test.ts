@@ -857,11 +857,23 @@ describe('W3b B07/B09: the real host run state is mapped onto the sidebar', () =
           ok: true as const,
           data:
             pollPhase === 'dispatching'
-              ? agentState({ status: 'dispatching', exchangeId: 7, operationId: 'op-q1' })
+              ? agentState({
+                  status: 'dispatching',
+                  exchangeId: 7,
+                  operationId: 'op-q1',
+                  context: {
+                    ...agentState().context!,
+                    mode: currentMode,
+                  },
+                })
               : agentState({
                   status: 'answered',
                   exchangeId: 7,
                   operationId: 'op-q1',
+                  context: {
+                    ...agentState().context!,
+                    mode: currentMode,
+                  },
                   answerText: '已生成查询草稿',
                   receipts: [
                     {
@@ -928,6 +940,464 @@ describe('W3b B07/B09: the real host run state is mapped onto the sidebar', () =
       panel.setProps({ projectRevision: 4 })
       await vi.advanceTimersByTimeAsync(160)
       panel.render()
+      expect(deliveredDrafts).toHaveLength(1)
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('drops late poll state, receipts and query drafts after switching selected objects in the same project (B07)', async () => {
+    vi.useFakeTimers()
+    let releasePumpPoll: ((reply: unknown) => void) | undefined
+    let pumpPolls = 0
+    let pumpPhase: 'dispatching' | 'answered' = 'dispatching'
+    const deliveredDrafts: unknown[] = []
+    const validQueryJson = JSON.stringify({
+      name: '泵查询',
+      description: '旧选区草稿',
+      sparql: 'SELECT * WHERE { ?s ?p ?o }',
+      scope: 'asserted',
+      capabilityQuestion: '泵属性？',
+      source: 'model',
+    })
+    const stateForSelection = (
+      selected: string[],
+      status: 'dispatching' | 'answered',
+      answerText: string | null,
+    ) => ({
+      ...agentState({
+        status,
+        exchangeId: 11,
+        operationId: 'op-pump',
+        answerText,
+        receipts:
+          status === 'answered'
+            ? [
+                {
+                  callId: 'call-pump',
+                  tool: 'query_draft' as const,
+                  purpose: 'suggest' as const,
+                  outcome: {
+                    kind: 'draft' as const,
+                    draftType: 'query' as const,
+                    summary: '泵查询',
+                    detail: validQueryJson,
+                    projectId: 'p1',
+                    baseRevision: 3,
+                    inputSnapshotId: 's1',
+                    requiresHumanDiffConfirmation: true,
+                  },
+                },
+              ]
+            : [],
+      }),
+      context: {
+        ...agentState().context!,
+        selectedObjectIds: selected,
+      },
+    })
+    let hostSelection = ['urn:Pump']
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async (args: { selectedObjectIds: string[] }) => ({
+          ok: true as const,
+          data: {
+            ...agentState().context!,
+            selectedObjectIds: [...args.selectedObjectIds],
+          },
+        }),
+        getAgentState: async () => {
+          if (hostSelection[0] === 'urn:Pump' && pumpPhase === 'answered') {
+            pumpPolls += 1
+            return new Promise((resolve) => {
+              releasePumpPoll = resolve
+            })
+          }
+          if (hostSelection[0] === 'urn:Pump') {
+            return { ok: true as const, data: stateForSelection(['urn:Pump'], 'dispatching', null) }
+          }
+          return {
+            ok: true as const,
+            data: agentState({
+              status: 'idle',
+              exchangeId: null,
+              operationId: null,
+              context: null,
+            }),
+          }
+        },
+        dispatchAgentQuestion: async () => ({
+          ok: true as const,
+          data: { operationId: 'op-pump', exchangeId: 11 },
+        }),
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: ['urn:Pump'],
+      localActions: ['hint'],
+      onQueryDraft: (draft: unknown) => deliveredDrafts.push(draft),
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      const sidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      await (sidebar.props.onSubmit as (q: string) => Promise<void>)('查泵')
+
+      // Hang the poll getAgentState for Pump before switching selection to Valve.
+      pumpPhase = 'answered'
+      await vi.advanceTimersByTimeAsync(160)
+      expect(pumpPolls).toBe(1)
+      expect(releasePumpPoll).toBeDefined()
+
+      hostSelection = ['urn:Valve']
+      panel.setProps({ selectedObjectIds: ['urn:Valve'] })
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+
+      // Late Pump terminal state arrives after Valve refresh has become current.
+      releasePumpPoll!({
+        ok: true,
+        data: stateForSelection(['urn:Pump'], 'answered', '旧选区回答'),
+      })
+      await Promise.resolve()
+      await vi.advanceTimersByTimeAsync(200)
+      panel.render()
+
+      const valveSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      expect(valveSidebar.props.state).toBeNull()
+      expect(valveSidebar.props.receipts).toEqual([])
+      expect(panel.text()).not.toContain('旧选区回答')
+      expect(deliveredDrafts).toHaveLength(0)
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('prevents a retired turn-1 draft plan callback from delivering after turn-2 is shown (B07)', async () => {
+    vi.useFakeTimers()
+    let releaseTurn1Plan: ((reply: unknown) => void) | undefined
+    const deliveredPlans: AgentDraftPlanDTO[] = []
+    const turn1OntologyDraft: AgentReceiptDTO = {
+      callId: 'call-t1',
+      tool: 'ontology_propose',
+      purpose: 'suggest',
+      outcome: {
+        kind: 'draft',
+        draftType: 'ontology',
+        summary: '回合一方案',
+        detail: '{"classIri":"urn:OldPump"}',
+        projectId: 'p1',
+        baseRevision: 3,
+        inputSnapshotId: 's1',
+        requiresHumanDiffConfirmation: true,
+      },
+    }
+    let currentTurn: AgentStateDTO = agentState({
+      status: 'answered',
+      exchangeId: 1,
+      operationId: 'op-1',
+      answerText: '回合一回答',
+      receipts: [turn1OntologyDraft],
+    })
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async () => ({
+          ok: true as const,
+          data: agentState().context!,
+        }),
+        getAgentState: async () => ({
+          ok: true as const,
+          data: currentTurn,
+        }),
+        dispatchAgentQuestion: async () => {
+          currentTurn = agentState({
+            status: 'answered',
+            exchangeId: 2,
+            operationId: 'op-2',
+            answerText: '回合二回答',
+            receipts: [],
+          })
+          return { ok: true as const, data: { operationId: 'op-2', exchangeId: 2 } }
+        },
+        buildAgentDraftPlan: async () =>
+          new Promise((resolve) => {
+            releaseTurn1Plan = resolve
+          }),
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: [],
+      localActions: ['hint'],
+      onDraftPlan: (plan: AgentDraftPlanDTO) => deliveredPlans.push(plan),
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      const sidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      expect(sidebar.props.receipts).toHaveLength(1)
+
+      // Start buildPlan for Turn 1 while buildAgentDraftPlan hangs.
+      void (sidebar.props.onPreviewAgentDraft as (r: AgentReceiptDTO) => void)(turn1OntologyDraft)
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(true)
+      expect(releaseTurn1Plan).toBeDefined()
+
+      // Advance to Turn 2 in the exact same semantic context.
+      await (sidebar.props.onSubmit as (q: string) => Promise<void>)('继续提问')
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(false)
+      const turn2Sidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      expect(turn2Sidebar.props.state).toMatchObject({ exchanges: 2 })
+
+      // Turn 1's plan resolves after Turn 2 is displayed and must be dropped.
+      releaseTurn1Plan!({
+        ok: true,
+        data: {
+          operationId: 'op-1',
+          draftType: 'ontology',
+          baseRevision: 3,
+          inputSnapshotId: 's1',
+          summary: '回合一方案',
+          plan: { manual: [] },
+        },
+      })
+      await Promise.resolve()
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(deliveredPlans).toHaveLength(0)
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('drops a late onModeChange refresh after switching modules so active module refresh stays valid (B09)', async () => {
+    vi.useFakeTimers()
+    let hostMode: 'tutor' | 'project' = 'tutor'
+    let contextCalls = 0
+    let releaseModeSwitch: (() => void) | undefined
+    let releaseQueryContext: ((reply: unknown) => void) | undefined
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async (args: { module: 'ontology' | 'query' }) => {
+          contextCalls += 1
+          if (args.module === 'query') {
+            return new Promise((resolve) => {
+              releaseQueryContext = resolve
+            })
+          }
+          return {
+            ok: true as const,
+            data: {
+              ...agentState().context!,
+              module: 'ontology' as const,
+              mode: hostMode,
+            },
+          }
+        },
+        getAgentState: async () => ({
+          ok: true as const,
+          data: agentState({
+            status: 'idle',
+            exchangeId: null,
+            operationId: null,
+            context: null,
+          }),
+        }),
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: [],
+      localActions: ['hint'],
+      onModeChange: async (next: 'tutor' | 'project') => {
+        await new Promise<void>((resolve) => {
+          releaseModeSwitch = () => {
+            hostMode = next
+            resolve()
+          }
+        })
+      },
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(contextCalls).toBe(1)
+      expect(panel.text()).toContain('模块 ontology · 模式 tutor')
+
+      const sidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      const pendingToggle = (
+        sidebar.props.onModeChange as (m: 'tutor' | 'project') => Promise<void>
+      )('project')
+      expect(releaseModeSwitch).toBeDefined()
+
+      // Switch to query module while ontology mode switch is still in flight.
+      panel.setProps({ module: 'query' })
+      await vi.advanceTimersByTimeAsync(0)
+      expect(contextCalls).toBe(2)
+      expect(releaseQueryContext).toBeDefined()
+
+      // Resolve late mode switch from ontology; must not issue a 3rd context read or bump refreshSeq.
+      releaseModeSwitch!()
+      await pendingToggle
+      expect(contextCalls).toBe(2)
+
+      // Active query module context response must still be honored.
+      releaseQueryContext!({
+        ok: true,
+        data: {
+          ...agentState().context!,
+          module: 'query',
+          mode: hostMode,
+        },
+      })
+      await Promise.resolve()
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(contextCalls).toBe(2)
+      expect(panel.text()).toContain('模块 query · 模式 project')
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('retires fallback buildAgentDraftPlan query drafts across selection change and deduplicates repeated deliveries (B09)', async () => {
+    vi.useFakeTimers()
+    const deliveredDrafts: unknown[] = []
+    let releaseFallbackPlan: ((reply: unknown) => void) | undefined
+    const queryDraftFallbackReceipt = (opId: string): AgentReceiptDTO => ({
+      callId: `call-${opId}`,
+      tool: 'query_draft',
+      purpose: 'suggest',
+      outcome: {
+        kind: 'draft',
+        draftType: 'query',
+        summary: '后备查询草稿',
+        detail: 'non-json fallback detail',
+        projectId: 'p1',
+        baseRevision: 3,
+        inputSnapshotId: 's1',
+        requiresHumanDiffConfirmation: true,
+      },
+    })
+    const validPlanReply = (opId: string) => ({
+      ok: true as const,
+      data: {
+        operationId: opId,
+        draftType: 'query' as const,
+        baseRevision: 3,
+        inputSnapshotId: 's1',
+        summary: '后备查询草稿',
+        plan: {
+          definitions: [
+            {
+              layer: 'query' as const,
+              id: 'q-fb',
+              value: {
+                text: 'SELECT * WHERE { ?s ?p ?o }',
+                references: [],
+                descriptor: {
+                  name: '后备查询',
+                  description: '',
+                  scope: 'asserted' as const,
+                  capabilityQuestion: '有哪些实例？',
+                  source: 'model' as const,
+                  version: 1,
+                },
+              },
+            },
+          ],
+        },
+      },
+    })
+    let hostSelection = ['urn:A']
+    let activeOp = 'op-fb-1'
+    let planCalls = 0
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async () => ({
+          ok: true as const,
+          data: {
+            ...agentState().context!,
+            selectedObjectIds: [...hostSelection],
+          },
+        }),
+        getAgentState: async () => ({
+          ok: true as const,
+          data: agentState({
+            status: 'answered',
+            exchangeId: activeOp === 'op-fb-1' ? 21 : 22,
+            operationId: activeOp,
+            context: {
+              ...agentState().context!,
+              selectedObjectIds: [...hostSelection],
+            },
+            receipts: [queryDraftFallbackReceipt(activeOp)],
+          }),
+        }),
+        buildAgentDraftPlan: async ({ operationId }: { operationId: string }) => {
+          planCalls += 1
+          if (operationId === 'op-fb-1') {
+            return new Promise((resolve) => {
+              releaseFallbackPlan = resolve
+            })
+          }
+          return validPlanReply(operationId)
+        },
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: ['urn:A'],
+      localActions: ['hint'],
+      onQueryDraft: (draft: unknown) => deliveredDrafts.push(draft),
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      expect(planCalls).toBe(1)
+      expect(releaseFallbackPlan).toBeDefined()
+
+      // Switch selection while op-fb-1 fallback buildAgentDraftPlan is still pending.
+      hostSelection = ['urn:B']
+      activeOp = 'op-fb-2'
+      panel.setProps({ selectedObjectIds: ['urn:B'] })
+      await vi.advanceTimersByTimeAsync(0)
+
+      // Settling retired op-fb-1 must NOT deliver.
+      releaseFallbackPlan!(validPlanReply('op-fb-1'))
+      await Promise.resolve()
+      await vi.advanceTimersByTimeAsync(0)
+
+      // Active op-fb-2 delivers strictly once even if refresh runs again.
+      expect(deliveredDrafts).toHaveLength(1)
+      expect(deliveredDrafts[0]).toMatchObject({ name: '后备查询', source: 'model' })
+      panel.setProps({ modelSyncVersion: 1 })
+      await vi.advanceTimersByTimeAsync(0)
       expect(deliveredDrafts).toHaveLength(1)
     } finally {
       panel.unmount()
