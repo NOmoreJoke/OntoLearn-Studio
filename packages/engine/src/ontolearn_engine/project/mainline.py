@@ -12,9 +12,14 @@ from uuid import uuid4
 from ontolearn_engine.job_store import JobFault, fault
 from ontolearn_engine.project.checkpoint_host import CheckpointHost
 from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
+from ontolearn_engine.project.learning_agent import METHODS as AGENT_METHODS
 from ontolearn_engine.project.learning_host import LearningHost
 from ontolearn_engine.project.learning_ledger import METHODS as LEARNING_METHODS
 from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
+from ontolearn_engine.project.ontology_import import METHODS as IMPORT_METHODS
+from ontolearn_engine.project.ontology_import import dispatch as import_dispatch
+from ontolearn_engine.project.ontology_turtle import METHODS as EXPORT_METHODS
+from ontolearn_engine.project.ontology_turtle import dispatch as export_dispatch
 from ontolearn_engine.project.ordinary_library import OrdinaryReadAuthority
 from ontolearn_engine.project.project_host import HostReadFault, ProjectHostReader, ReadLimits
 from ontolearn_engine.project.quality_definitions import METHODS as QUALITY_METHODS
@@ -45,7 +50,16 @@ METHODS = frozenset(
 # Admit the three persisted copies of a legal 420002-byte historical literal.
 # 1.5 MiB also fits both prepaid project.get Store reads inside the unchanged
 # 128 MiB retained book; 2 MiB would exceed that book. No other cap is raised.
-METHODS = METHODS | MANAGEMENT_METHODS | CHECKPOINT_METHODS | LEARNING_METHODS | QUALITY_METHODS
+METHODS = (
+    METHODS
+    | MANAGEMENT_METHODS
+    | CHECKPOINT_METHODS
+    | LEARNING_METHODS
+    | QUALITY_METHODS
+    | EXPORT_METHODS
+    | IMPORT_METHODS
+    | AGENT_METHODS
+)
 
 READ_LIMITS = ReadLimits(validation_rows=4096, validation_bytes=1572864, validation_work=67108864)
 HELD_BYTES = 134217728
@@ -931,6 +945,33 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
                 result = self.learning.dispatch(method, params, budget)
             elif method in QUALITY_METHODS:
                 result = self.quality.dispatch(method, params, budget)
+            elif method in EXPORT_METHODS | IMPORT_METHODS | AGENT_METHODS:
+                # FR-203 Turtle exchange and the main-process-only Agent
+                # snapshot share the selected-project fencing and Store budget
+                # book; all three stay whole-batch with explicit rejections.
+                self.authorize(params)
+                budget.reserve_store("ontology turtle and agent material", params)
+                origin = {"hostClientId": self.host, "engineSessionId": self.session}
+                try:
+                    if method in EXPORT_METHODS:
+                        result = export_dispatch(self.store, method, params)
+                    elif method in IMPORT_METHODS:
+                        result = import_dispatch(self.store, method, params)
+                    else:
+                        from ontolearn_engine.project import learning_agent
+
+                        result = learning_agent.dispatch(
+                            self.store, method, params, self.learning, origin
+                        )
+                except Conflict as error:
+                    code = {
+                        "identity": "IDENTITY_CONFLICT",
+                        "input": "INVALID_REQUEST",
+                        "revision": "REVISION_CONFLICT",
+                    }.get(error.category, "INVALID_STATE")
+                    if code == "INVALID_REQUEST":
+                        fault(code, field="params")
+                    fault(code)
             elif method == "project.catalog":
                 budget.reserve_store("project catalog", params)
                 cursor = params["cursor"]
