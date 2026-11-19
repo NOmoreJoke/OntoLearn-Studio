@@ -387,17 +387,69 @@ describe('W3b B07: an earlier visit of the same context never writes the current
     const pendingMode = new Promise<void>((_, reject) => {
       rejectMode = reject
     })
-    sidebar.setProps({ onModeChange: () => pendingMode })
+    let calls = 0
+    sidebar.setProps({
+      onModeChange: () => {
+        calls += 1
+        return calls === 1 ? pendingMode : Promise.resolve()
+      },
+    })
     ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
     // A -> B -> A: the same semantic key is entered a second time.
     sidebar.setProps({ context: { ...context, projectId: 'p2' } })
     sidebar.setProps({ context })
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
     rejectMode!(new Error('STALE_CONTEXT'))
     await flush()
     sidebar.render()
     expect(sidebar.text()).not.toContain('操作未完成，输入已保留')
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
+    ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
+    await flush()
+    expect(calls).toBe(2)
     // The editable question of the same key is never thrown away.
     expect(sidebar.textarea()!.props.value).toBe('我的问题')
+    sidebar.unmount()
+  })
+
+  it('keeps a newer A run busy when a stale earlier A -> B -> A run settles mid-flight', async () => {
+    const sidebar = sidebarHarness()
+    let rejectOp1: ((reason: Error) => void) | undefined
+    let resolveOp2: (() => void) | undefined
+    const op1 = new Promise<void>((_, reject) => {
+      rejectOp1 = reject
+    })
+    const op2 = new Promise<void>((resolve) => {
+      resolveOp2 = resolve
+    })
+    let calls = 0
+    sidebar.setProps({
+      onModeChange: () => {
+        calls += 1
+        return calls === 1 ? op1 : op2
+      },
+    })
+    ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
+    // A -> B -> A leaves A unlocked so the user can start a fresh run on A.
+    sidebar.setProps({ context: { ...context, projectId: 'p2' } })
+    sidebar.setProps({ context })
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
+    ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
+    sidebar.render()
+    expect(calls).toBe(2)
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(true)
+
+    // Stale op1 settling must neither leak an error nor prematurely clear op2's busy state.
+    rejectOp1!(new Error('STALE_CONTEXT'))
+    await flush()
+    sidebar.render()
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(true)
+    expect(sidebar.text()).not.toContain('操作未完成，输入已保留')
+
+    resolveOp2!()
+    await flush()
+    sidebar.render()
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
     sidebar.unmount()
   })
 })

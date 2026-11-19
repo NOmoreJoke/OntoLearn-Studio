@@ -263,9 +263,16 @@ export function AgentSidebar(props: AgentSidebarProps) {
   const visitedKey = useRef(key)
   const mounted = useRef(true)
   useEffect(() => {
-    if (visitedKey.current !== key) {
+    const previousKey = visitedKey.current
+    if (previousKey !== key) {
       visitedKey.current = key
       visit.current += 1
+      inFlight.current.delete(previousKey)
+      setInteractions((previous) =>
+        previous[previousKey]?.dispatching
+          ? updateSidebarInteraction(previous, previousKey, { dispatching: false })
+          : previous,
+      )
     }
   }, [key])
   useEffect(() => {
@@ -301,9 +308,13 @@ export function AgentSidebar(props: AgentSidebarProps) {
     } catch {
       if (owns()) updateInteraction({ localError: true })
     } finally {
-      if (owns()) {
+      if (runTokens.current.get(myKey) === token) {
         inFlight.current.delete(myKey)
-        updateInteraction({ dispatching: false })
+        if (mounted.current) {
+          setInteractions((previous) =>
+            updateSidebarInteraction(previous, myKey, { dispatching: false }),
+          )
+        }
       }
     }
   }
