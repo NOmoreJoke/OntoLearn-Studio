@@ -16755,6 +16755,21 @@
       "required": ["code", "dependency", "before", "after"],
       "additionalProperties": false
     },
+    "quality.constraintVersion": {
+      "type": "object",
+      "properties": {
+        "definitionId": {
+          "$ref": "#/$defs/name"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        }
+      },
+      "required": ["definitionId", "version"],
+      "additionalProperties": false
+    },
     "quality.ruleView": {
       "oneOf": [
         {
@@ -17401,6 +17416,11 @@
           },
           "minItems": 0,
           "maxItems": 256
+        },
+        "omittedDiagnosticCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
         }
       },
       "required": [
@@ -17583,6 +17603,14 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/$defs/name"
+                  },
+                  "minItems": 0,
+                  "maxItems": 128
+                },
+                "constraintVersions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/quality.constraintVersion"
                   },
                   "minItems": 0,
                   "maxItems": 128

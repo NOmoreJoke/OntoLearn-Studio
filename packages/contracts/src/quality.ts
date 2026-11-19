@@ -143,6 +143,8 @@ export type QualityRuleTestDiagnosticDTO = {
   message: string
 }
 
+export type QualityConstraintVersionDTO = { definitionId: string; version: number }
+
 export type QualityRuleTestResultDTO = {
   valid: boolean
   matchesExpected: boolean
@@ -158,6 +160,7 @@ export type QualityRuleTestResultDTO = {
   }>
   warnings: string[]
   diagnostics: QualityRuleTestDiagnosticDTO[]
+  omittedDiagnosticCount?: number
 }
 
 export type ProjectQualityReadDTO = {
@@ -174,6 +177,7 @@ export type ProjectQualityReadDTO = {
         checkedConstraintIds?: string[]
         unverifiedConstraintIds?: string[]
         failedConstraintIds?: string[]
+        constraintVersions?: QualityConstraintVersionDTO[]
       })
     | null
   snapshotsAligned?: boolean | null

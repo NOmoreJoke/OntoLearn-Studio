@@ -11,14 +11,16 @@ in-memory evaluation is the FR-505 ``ruleTest`` sample, which runs the real
 semantic executor on a synthetic snapshot without any write or persistence.
 """
 
+import hashlib
 import json
 
-from ontolearn_engine.job_store import fault, payload_from_rows
+from ontolearn_engine.job_store import JobFault, fault, payload_from_rows
 from ontolearn_engine.storage import digest
 
 METHODS = frozenset({"project.quality.read", "project.quality.prepare"})
 
 TERMINAL_JOB_STATES = ("succeeded", "failed", "cancelled")
+NONTERMINAL_JOB_STATES = ("queued", "running")
 
 # Fixed statement text (compile-time folded literals) with one bound `?`
 # parameter; no caller text is ever interpolated into the query.
@@ -193,55 +195,169 @@ def _derivation(payload):
     }
 
 
-def _terminal_validation_cohort(store, project):
-    """Newest-terminal validation.execute cohort keyed by one frozen queue key.
+def _quality_operation_id(operation_id, suffix):
+    """The deterministic per-chain operation id (mirrors the TS mainline host).
 
-    jobs.project stores the public project UUID (unlike results.project which
-    stores the internal id). The newest terminal validation job anchors the
-    cohort: only jobs sharing its exact (snapshot, scope, derived ids) belong
-    to it, so asserted and asserted+derived runs — or runs against different
-    snapshots / reasoning batches — never mix into one aggregated view.
+    Same algorithm as project-mainline-service.ts qualityOperationId: sha256
+    over "<operationId>:<suffix>", folded into a UUIDv4-shaped string with the
+    version nibble forced to 4 and the variant nibble to 8..b.
     """
-    cohort = []
-    anchor = None
-    anchor_key = None
+    hex_ = hashlib.sha256(f"{operation_id}:{suffix}".encode()).hexdigest()
+    variant = format((int(hex_[16], 16) & 0x3) | 0x8, "x")
+    return f"{hex_[:8]}-{hex_[8:12]}-4{hex_[13:16]}-{variant}{hex_[17:20]}-{hex_[20:32]}"
+
+
+def _prepare_batches(store, project):
+    """Index every persisted quality.prepare.batch.v1 manifest by operation id."""
+    batches = {}
     for row in store._db.execute(
-        "SELECT dto FROM jobs WHERE project=? ORDER BY rowid DESC", (project,)
+        "SELECT payload FROM job_blobs WHERE project=? ORDER BY rowid DESC", (project,)
     ).fetchall():
-        dto = json.loads(row["dto"])
-        if (
-            dto.get("capability") != "validation.execute"
-            or dto.get("projectId") != project
-            or dto.get("state") not in TERMINAL_JOB_STATES
-        ):
+        payload = row["payload"]
+        if not isinstance(payload, str) or "quality.prepare.batch.v1" not in payload:
             continue
+        try:
+            batch = json.loads(payload)
+        except ValueError:
+            continue
+        if not isinstance(batch, dict) or batch.get("kind") != "quality.prepare.batch.v1":
+            continue
+        operations = batch.get("validationOperations")
+        if not isinstance(operations, list):
+            continue
+        reasoning_operation = batch.get("reasoningOperationId")
+        if isinstance(reasoning_operation, str):
+            batches.setdefault(reasoning_operation, batch)
+        for item in operations:
+            if isinstance(item, dict) and isinstance(item.get("operationId"), str):
+                batches.setdefault(item["operationId"], batch)
+    return batches
+
+
+def _batch_planned_ids(batch):
+    """Constraint identities planned by one prepare batch manifest."""
+    return {
+        item["definitionId"]
+        for item in batch.get("validationOperations") or []
+        if isinstance(item, dict) and isinstance(item.get("definitionId"), str)
+    }
+
+
+def _latest_validation_cohort(store, project):
+    """Newest quality cohort with strict batch/key identity isolation.
+
+    The persisted quality.prepare.batch.v1 manifests index every planned chain
+    operation; the newest-first jobs scan then locks one round: the first
+    quality job encountered anchors it — a batch-planned validation.execute
+    (case A), the batch's reasoning phase while validations are still missing
+    (case B: nothing has been checked yet, so the cohort stays empty and every
+    planned constraint reads unverified), or a legacy direct validation without
+    any manifest, keyed by its frozen (snapshot, scope, derived ids) triple
+    (case C). Only jobs of that exact batch/key — queued, running or terminal —
+    join the cohort, so earlier rounds never bleed into the aggregate view.
+    """
+    batches = _prepare_batches(store, project)
+    anchor = None
+    anchor_snapshot = None
+    anchor_scope = None
+    planned_ids = set()
+    cohort = []
+    anchor_key = None
+    anchor_batch = None
+    for row in store._db.execute(
+        "SELECT operation, dto FROM jobs WHERE project=? ORDER BY rowid DESC", (project,)
+    ).fetchall():
+        try:
+            dto = json.loads(row["dto"])
+        except ValueError:
+            continue
+        if not isinstance(dto, dict) or dto.get("projectId") != project:
+            continue
+        capability = dto.get("capability")
+        # Only quality chain jobs matter here; query/changeset/mapping and
+        # test.* jobs interleave in the same table but never anchor a cohort.
+        if capability not in ("reasoning.execute", "validation.execute"):
+            continue
+        batch = batches.get(row["operation"])
         input_ = dto.get("input") if isinstance(dto.get("input"), dict) else {}
-        key = (
-            input_.get("inputSnapshotId"),
-            input_.get("scope"),
-            tuple(input_.get("derivedResultIds") or ()),
-        )
         if anchor is None:
-            anchor, anchor_key = dto, key
-        if key == anchor_key and input_.get("definitionId") not in {
-            item["definitionId"] for item in cohort
-        }:
+            if capability == "validation.execute" and batch is not None:
+                # Case A: a batch-planned validation anchors the cohort; only
+                # this batch's validation operations may join, at any state.
+                anchor = dto
+                anchor_batch = batch
+                anchor_snapshot = batch.get("inputSnapshotId")
+                anchor_scope = batch.get("validationScope")
+                planned_ids = _batch_planned_ids(batch)
+            elif (
+                capability == "reasoning.execute"
+                and batch is not None
+                and batch.get("validationOperations")
+            ):
+                # Case B: the chain stands at its reasoning phase; no validation
+                # of this batch exists yet (any would be newer and anchor case
+                # A), so the whole plan reads unverified and nothing from an
+                # earlier same-snapshot round may stand in for it.
+                anchor = dto
+                anchor_snapshot = batch.get("inputSnapshotId")
+                anchor_scope = batch.get("validationScope")
+                planned_ids = _batch_planned_ids(batch)
+                break
+            elif capability == "validation.execute":
+                # Case C: a direct validation without any batch manifest (legacy
+                # history or tests driving run_semantic directly).
+                anchor = dto
+                anchor_snapshot = input_.get("inputSnapshotId")
+                anchor_scope = input_.get("scope")
+                anchor_key = (
+                    input_.get("inputSnapshotId"),
+                    input_.get("scope"),
+                    tuple(input_.get("derivedResultIds") or ()),
+                )
+            else:
+                continue
+        if anchor_batch is not None:
+            if capability != "validation.execute" or batch is not anchor_batch:
+                continue
+            if input_.get("definitionId") in {item["definitionId"] for item in cohort}:
+                break
             cohort.append({"definitionId": input_.get("definitionId"), "job": dto})
-    return anchor, cohort
+        elif (
+            anchor_key is not None
+            and capability == "validation.execute"
+            and batch is None
+            and (
+                input_.get("inputSnapshotId"),
+                input_.get("scope"),
+                tuple(input_.get("derivedResultIds") or ()),
+            )
+            == anchor_key
+        ):
+            if input_.get("definitionId") in {item["definitionId"] for item in cohort}:
+                break
+            cohort.append({"definitionId": input_.get("definitionId"), "job": dto})
+        elif anchor_key is not None and (batch is not None or capability == "reasoning.execute"):
+            # A different prepare-driven round (or its reasoning boundary) ends
+            # the legacy cohort scan before same-snapshot rounds can mix.
+            break
+    return anchor, anchor_snapshot, anchor_scope, planned_ids, cohort
 
 
 def _validation_view(store, project, internal, state):
     """Aggregate the anchored validation cohort with strict coverage semantics.
 
-    conforms is True only when every enabled constraint (both now and at the
-    anchor snapshot) has an available succeeded result in the cohort; any
-    missing, failed or evicted constraint forces None — the read projection
-    must never display "符合约束" over a partial check.
+    conforms is True only when every enabled constraint (now, at the anchor
+    snapshot, and planned by the anchor's prepare batch) has an available
+    succeeded result in the cohort; any missing, still-running, failed or
+    evicted constraint forces None — the read projection must never display
+    "符合约束" over a partial check. Evicted/unreadable result payloads degrade
+    to failed coverage instead of faulting the whole read (N2).
     """
-    anchor, cohort = _terminal_validation_cohort(store, project)
+    anchor, anchor_snapshot, anchor_scope, planned_ids, cohort = _latest_validation_cohort(
+        store, project
+    )
     if anchor is None:
         return None
-    anchor_snapshot = anchor["input"]["inputSnapshotId"]
     enabled_now = {
         identity
         for identity, payload in _formal_definitions(state, "constraint")
@@ -253,34 +369,52 @@ def _validation_view(store, project, internal, state):
         for identity, payload in _formal_definitions(anchor_state, "constraint")
         if payload.get("enabled")
     }
-    required_ids = enabled_now | enabled_at_anchor
+    required_ids = enabled_now | enabled_at_anchor | planned_ids
     latest_jobs = {item["definitionId"]: item["job"] for item in cohort}
     checked_views = {}
+    constraint_versions = []
     newest_checked = None
     unverified_ids = set()
     failed_ids = set()
     for cid in sorted(set(required_ids) | set(latest_jobs)):
         job = latest_jobs.get(cid)
+        if job is not None and job["state"] in NONTERMINAL_JOB_STATES:
+            # This round is not finished for the constraint: neither a finding
+            # nor a failure — the read simply refuses a verdict until terminal.
+            unverified_ids.add(cid)
+            continue
         if (
             job is not None
             and job["state"] == "succeeded"
             and isinstance(job.get("resultRef"), dict)
         ):
-            dto = store.result_get(project, job["resultRef"]["resultId"])
-            if dto["payloadStatus"] == "available":
-                payload = payload_from_rows(store.result(job["resultRef"]["resultId"])["payload"])
-                report = payload.get("report") if isinstance(payload, dict) else None
-                violations = report.get("violations", []) if isinstance(report, dict) else []
-                conforms = report.get("conforms") if isinstance(report, dict) else None
-                checked_views[cid] = {
-                    "state": dto["state"],
-                    "staleReasons": dto["staleReason"],
-                    "conforms": conforms if isinstance(conforms, bool) else None,
-                    "findings": [{**_finding(item), "definitionId": cid} for item in violations],
-                }
-                if newest_checked is None:
-                    newest_checked = cid
-                continue
+            try:
+                dto = store.result_get(project, job["resultRef"]["resultId"])
+                if dto["payloadStatus"] == "available":
+                    payload = payload_from_rows(
+                        store.result(job["resultRef"]["resultId"])["payload"]
+                    )
+                    report = payload.get("report") if isinstance(payload, dict) else None
+                    violations = report.get("violations", []) if isinstance(report, dict) else []
+                    conforms = report.get("conforms") if isinstance(report, dict) else None
+                    version = (
+                        payload.get("constraintsVersion") if isinstance(payload, dict) else None
+                    )
+                    if type(version) is int and version >= 0:
+                        constraint_versions.append({"definitionId": cid, "version": version})
+                    checked_views[cid] = {
+                        "state": dto["state"],
+                        "staleReasons": dto["staleReason"],
+                        "conforms": conforms if isinstance(conforms, bool) else None,
+                        "findings": [
+                            {**_finding(item), "definitionId": cid} for item in violations
+                        ],
+                    }
+                    if newest_checked is None:
+                        newest_checked = cid
+                    continue
+            except JobFault:
+                pass
             failed_ids.add(cid)
             if cid in required_ids:
                 unverified_ids.add(cid)
@@ -333,8 +467,10 @@ def _validation_view(store, project, internal, state):
             newest_job["jobId"],
         )
     else:
-        # Every cohort job failed or was evicted: surface the failure itself
-        # (anchor job identity) so failed constraints become visible at once.
+        # Every cohort job failed, was evicted or has not been enqueued yet
+        # (case B reasoning-phase anchor): surface the anchor job identity so
+        # the unfinished/failed round stays visible instead of a stale older
+        # round masquerading as a completed check.
         result_id, job_id = anchor["jobId"], anchor["jobId"]
     return {
         "resultId": result_id,
@@ -344,7 +480,7 @@ def _validation_view(store, project, internal, state):
         # shared contract semantic walker for full result DTOs.
         "staleReasons": stale_reasons,
         "inputSnapshotId": anchor_snapshot,
-        "scope": anchor["input"]["scope"],
+        "scope": anchor_scope,
         "definitionId": definition_projection,
         "conforms": conforms,
         "findings": [
@@ -356,6 +492,7 @@ def _validation_view(store, project, internal, state):
         "checkedConstraintIds": sorted(checked_views),
         "unverifiedConstraintIds": sorted(unverified_ids),
         "failedConstraintIds": sorted(failed_ids),
+        "constraintVersions": sorted(constraint_versions, key=lambda item: item["definitionId"]),
     }
 
 
@@ -486,7 +623,7 @@ def _evaluate_rule_sample(store, rule_test):
         "diagnostics": diagnostics,
     }
     if diagnostics:
-        return result
+        return _truncate_rule_test_view(result)
     snapshot = {
         "projectRevision": 0,
         "state": {
@@ -542,7 +679,7 @@ def _evaluate_rule_sample(store, rule_test):
         diagnostics.append(_rule_test_diagnostic("input", 0, None, (), "SEMANTIC_EXECUTION_FAILED"))
         result["diagnostics"] = diagnostics
         result["valid"] = False
-        return result
+        return _truncate_rule_test_view(result)
     derivation = _derivation(out["payload"]) or {}
     actual = sorted({tuple(triple) for triple in derivation.get("rules", [])})
     rdfs_outputs = sorted({tuple(triple) for triple in derivation.get("rdfs", [])})
@@ -559,6 +696,27 @@ def _evaluate_rule_sample(store, rule_test):
             "warnings": _merged_warnings(static_warnings, derivation.get("warnings", [])),
         }
     )
+    return _truncate_rule_test_view(result)
+
+
+def _truncate_rule_test_view(result):
+    """Cap the ruleTest diagnostics at 256 with an explicit omission marker.
+
+    Even a fully invalid 256+256+256+32 sample must return the structured
+    first 256 diagnostics plus an exact omitted count, never INVALID_STATE.
+    """
+    diagnostics = result.get("diagnostics") or []
+    omitted = max(0, len(diagnostics) - 256)
+    if omitted:
+        result["diagnostics"] = diagnostics[:256]
+        result["omittedDiagnosticCount"] = omitted
+        warnings = list(result.get("warnings") or [])
+        marker = f"DIAGNOSTICS_TRUNCATED:另有 {omitted} 条校验诊断因超出 256 条上限已省略"
+        if marker not in warnings:
+            warnings.append(marker)
+        result["warnings"] = warnings[:256]
+    else:
+        result["warnings"] = list(result.get("warnings") or [])[:256]
     return result
 
 
@@ -656,6 +814,31 @@ def prepare(store, params, ticket):
             )
             for identity in enabled
         ]
+        # The batch manifest binds this round's whole chain identity: the root
+        # operation, its deterministic reasoning/validation child operations
+        # (the same ids the mainline host derives), the frozen snapshot, scope
+        # and constraint filter. quality.read uses it to keep one round's
+        # partial evidence from ever reading as a completed check.
+        store.put_blob(
+            project,
+            {
+                "kind": "quality.prepare.batch.v1",
+                "operationId": params["operationId"],
+                "reasoningOperationId": _quality_operation_id(params["operationId"], "reasoning"),
+                "validationOperations": [
+                    {
+                        "operationId": _quality_operation_id(
+                            params["operationId"], f"validation:{index}"
+                        ),
+                        "definitionId": identity,
+                    }
+                    for index, identity in enumerate(enabled)
+                ],
+                "inputSnapshotId": snapshot_id,
+                "validationScope": validation_scope,
+                "constraintId": constraint_filter,
+            },
+        )
         result = {
             "projectId": project,
             "operationId": params["operationId"],

@@ -316,7 +316,15 @@ class LearningHost:
 
     @staticmethod
     def _is_constraint_target(snap, def_id, predicate_iri):
-        """The definition is an enabled required shape on Equipment/predicate."""
+        """The definition is an enabled required shape on Equipment/predicate.
+
+        FR-504 templates check the structured fields directly; legacy Turtle
+        payloads are parsed into the real SHACL graph — no text-substring
+        shortcuts. A comment mentioning the Equipment IRI, a different
+        targetClass, an extra targetNode/targetSubjectsOf/targetObjectsOf, a
+        deactivated shape, a blank-node path or a conflicting minCount all
+        reject the definition outright.
+        """
         for record in snap["state"]["definitions"]:
             if record["layer"] != "constraint" or record["id"] != def_id:
                 continue
@@ -333,13 +341,48 @@ class LearningHost:
                     and payload.get("template") == "required"
                 )
             turtle = payload.get("turtle")
-            return isinstance(turtle, str) and all(
-                marker in turtle
-                for marker in (
-                    "<urn:ontolearn:learning:Equipment>",
-                    f"<{predicate_iri}>",
-                    "minCount 1",
-                )
+            if not isinstance(turtle, str):
+                return False
+            from rdflib import Literal, URIRef
+            from rdflib.namespace import SH
+
+            from ontolearn_engine import semantic
+            from ontolearn_engine.semantic_offline import SemanticError
+
+            try:
+                graph = semantic.parse_turtle(turtle, shapes=True)
+            except SemanticError:
+                return False
+            equipment = URIRef("urn:ontolearn:learning:Equipment")
+            if (
+                any(graph.objects(None, SH.targetNode))
+                or any(graph.objects(None, SH.targetSubjectsOf))
+                or any(graph.objects(None, SH.targetObjectsOf))
+                or any(True for _ in graph.triples((None, SH.deactivated, Literal(True))))
+            ):
+                return False
+            if set(graph.objects(None, SH.targetClass)) != {equipment}:
+                return False
+            shapes = list(graph.subjects(SH.targetClass, equipment))
+            if not shapes:
+                return False
+            min_counts = []
+            for shape in shapes:
+                props = list(graph.objects(shape, SH.property))
+                if not props:
+                    return False
+                for prop in props:
+                    if set(graph.objects(prop, SH.path)) != {URIRef(predicate_iri)}:
+                        return False
+                    min_counts.extend(literal for literal in graph.objects(prop, SH.minCount))
+            if not any(
+                isinstance(literal, Literal) and type(literal.value) is int and literal.value == 1
+                for literal in min_counts
+            ):
+                return False
+            return not any(
+                isinstance(literal, Literal) and type(literal.value) is int and literal.value != 1
+                for literal in min_counts
             )
         return False
 
@@ -529,8 +572,9 @@ class LearningHost:
 
         # V-01: name-required validation before and after the 003-name repair.
         # Both runs must be real name-required shapes on the Equipment name
-        # path (not merely jobs labelled that id) and must come from two
-        # different snapshots: one before the repair, one after it.
+        # path (not merely jobs labelled that id), must be current-selection
+        # runs (never historical replays) and must come from two different
+        # snapshots: one before the repair, one after it.
         v01_jobs = [
             c
             for c in validation
@@ -539,6 +583,7 @@ class LearningHost:
                 c["snap"], "name-required", "urn:ontolearn:learning:name"
             )
             and "payload" in c
+            and c["payload"].get("inputSelection", "current") == "current"
         ]
         if len(v01_jobs) < 2 or (
             v01_jobs[0]["dto"]["inputSnapshotId"] == v01_jobs[-1]["dto"]["inputSnapshotId"]
@@ -655,8 +700,12 @@ class LearningHost:
             )
             and "payload" in c
         ]
-        if len(transfer_jobs) < 2:
-            # The fixed expectation needs a pre-repair and a post-repair run.
+        if len(transfer_jobs) < 2 or (
+            transfer_jobs[0]["dto"]["inputSnapshotId"]
+            == transfer_jobs[-1]["dto"]["inputSnapshotId"]
+        ):
+            # The fixed expectation needs a pre-repair and a post-repair run
+            # across a real snapshot change.
             evidences["transfer-repair"] = unavailable("transfer-repair")
         else:
 
@@ -697,6 +746,23 @@ class LearningHost:
                     "persisted-domain-tool",
                 )
             else:
+                both_current = all(
+                    item["payload"].get("inputSelection", "current") == "current"
+                    for item in (transfer_jobs[0], transfer_jobs[-1])
+                )
+                if (
+                    transfer_jobs[0]["dto"]["input"].get("scope") == "asserted"
+                    and transfer_jobs[-1]["dto"]["input"].get("scope") == "asserted"
+                    and both_current
+                ):
+                    transfer_scope = "current-asserted"
+                elif any(
+                    item["dto"]["input"].get("scope") != "asserted"
+                    for item in (transfer_jobs[0], transfer_jobs[-1])
+                ):
+                    transfer_scope = "asserted+derived"
+                else:
+                    transfer_scope = "historical-asserted"
                 evidences["transfer-repair"] = ToolEvidence(
                     transfer_result_id,
                     context,
@@ -706,12 +772,7 @@ class LearningHost:
                         "beforeRepair": transfer_violations(transfer_jobs[0]),
                         "afterRepair": transfer_violations(transfer_jobs[-1]),
                         "facts": [dict3(t) for t in sorted(current)],
-                        "scope": (
-                            "current-asserted"
-                            if transfer_jobs[0]["dto"]["input"].get("scope") == "asserted"
-                            and transfer_jobs[-1]["dto"]["input"].get("scope") == "asserted"
-                            else "asserted+derived"
-                        ),
+                        "scope": transfer_scope,
                     },
                     assistance,
                     "persisted-domain-tool",
@@ -729,6 +790,7 @@ class LearningHost:
                 for c in reversed(reasoning)
                 if c["dto"]["state"] == "succeeded"
                 and c["dto"]["input"].get("scope") == "asserted"
+                and c["payload"].get("inputSelection", "current") == "current"
                 and classify_fact in c["snap_triples"]
             ),
             None,
@@ -774,24 +836,49 @@ class LearningHost:
         """The four real-run verifications behind LX-01 steps 1-4.
 
         1. repairAssertionsMatch: the repaired snapshot carries exactly the
-           three expected assignedTo assertions.
-        2. step1DerivedMatch: an earlier pre-repair reasoning run (no 002/003
-           assignedTo, domain/range axioms present) derived equipment/001's
-           HighRiskEquipment via R-risk and never person/L02's Person type.
-        3. shaclStepsVerified: one enabled assignedTo required constraint
-           measured exactly the two pre-repair violations and, on the repaired
-           snapshot, conforms with zero violations.
-        4. step4DerivedMatch: the repaired run's evidence derives 001 via
-           R-risk and rdfsEvidence derives person/L02's Person type from
-           equipment/002's repaired assertion.
+           three expected assignedTo assertions — and, against the verified
+           pre-repair baseline (step 1's run or the matched Step-2 SHACL
+           before-run), exactly the two repair facts and nothing else.
+        2. step1DerivedMatch: an earlier pre-repair current reasoning run (the
+           L01 assignment present, no 002/003 assignment, domain/range axioms
+           present) derived exactly equipment/001's HighRiskEquipment via
+           R-risk with the alarm/A01 input and nothing else on the RDFS side.
+        3. shaclStepsVerified: one enabled assignedTo required constraint on
+           Equipment (verified against each run's own snapshot, so an
+           OtherEquipment look-alike never stands in) measured exactly the two
+           pre-repair violations and, on the repaired snapshot, conforms with
+           zero violations.
+        4. step4DerivedMatch: the repaired run's closure is exactly the R-risk
+           conclusion plus person/L02's Person type, with the alarm/A01 input
+           evidence and the range-axiom + repaired-assertion basis.
         """
         equipment_prefix = "urn:ontolearn:learning:equipment/"
         assigned_to = "urn:ontolearn:learning:assignedTo"
         rdf_type = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+        repair_002 = (
+            equipment_prefix + "002",
+            assigned_to,
+            "<urn:ontolearn:learning:person/L02>",
+        )
+        repair_003 = (
+            equipment_prefix + "003",
+            assigned_to,
+            "<urn:ontolearn:learning:person/L01>",
+        )
+        assigned_to_001 = (
+            equipment_prefix + "001",
+            assigned_to,
+            "<urn:ontolearn:learning:person/L01>",
+        )
+        person_l01_type = (
+            "urn:ontolearn:learning:person/L01",
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+            "<urn:ontolearn:learning:Person>",
+        )
         repair_assertions_match = {
             (equipment_prefix + "001", assigned_to, "<urn:ontolearn:learning:person/L01>"),
-            (equipment_prefix + "002", assigned_to, "<urn:ontolearn:learning:person/L02>"),
-            (equipment_prefix + "003", assigned_to, "<urn:ontolearn:learning:person/L01>"),
+            repair_002,
+            repair_003,
         } == {
             (subject, predicate, object_)
             for subject, predicate, object_ in lx["snap_triples"]
@@ -816,9 +903,25 @@ class LearningHost:
             rdf_type,
             "<urn:ontolearn:learning:HighRiskEquipment>",
         )
+        high_risk_plain = plain_key(high_risk)
+        alarm_input = [
+            f"<{equipment_prefix}001>",
+            "<urn:ontolearn:learning:alarm>",
+            "<urn:ontolearn:learning:alarm/A01>",
+        ]
         person_l02 = (
             "<urn:ontolearn:learning:person/L02>",
             rdf_type,
+            "<urn:ontolearn:learning:Person>",
+        )
+        repair_002_n3 = (
+            f"<{equipment_prefix}002>",
+            f"<{assigned_to}>",
+            "<urn:ontolearn:learning:person/L02>",
+        )
+        range_basis = (
+            f"<{assigned_to}>",
+            "<http://www.w3.org/2000/01/rdf-schema#range>",
             "<urn:ontolearn:learning:Person>",
         )
         domain_axiom = {
@@ -831,36 +934,36 @@ class LearningHost:
             "predicate": "http://www.w3.org/2000/01/rdf-schema#range",
             "object": "<urn:ontolearn:learning:Person>",
         }
-        step1_derived_match = (
-            next(
-                (
-                    item
-                    for item in reasoning
-                    if item["claim_rowid"] < lx["claim_rowid"]
-                    and item["dto"]["state"] == "succeeded"
-                    and "payload" in item
-                    and not any(
-                        triple[0] in (equipment_prefix + "002", equipment_prefix + "003")
-                        and triple[1] == assigned_to
-                        for triple in item["snap_triples"]
-                    )
-                    and domain_axiom in ontology_records(item)
-                    and range_axiom in ontology_records(item)
-                    and any(
-                        entry.get("rule") == "R-risk"
-                        and tuple(entry.get("result") or ()) == high_risk
-                        for entry in item["payload"]["reasoning"].get("evidence", [])
-                    )
-                    and person_l02
-                    not in {
-                        *{tuple(t) for t in item["payload"]["reasoning"].get("rules", [])},
-                        *{tuple(t) for t in item["payload"]["reasoning"].get("rdfs", [])},
-                    }
-                ),
-                None,
-            )
-            is not None
+        step1_item = next(
+            (
+                item
+                for item in reasoning
+                if item["claim_rowid"] < lx["claim_rowid"]
+                and item["dto"]["state"] == "succeeded"
+                and "payload" in item
+                and item["payload"].get("inputSelection", "current") == "current"
+                and assigned_to_001 in item["snap_triples"]
+                and person_l01_type in item["snap_triples"]
+                and not any(
+                    triple[0] in (equipment_prefix + "002", equipment_prefix + "003")
+                    and triple[1] == assigned_to
+                    for triple in item["snap_triples"]
+                )
+                and domain_axiom in ontology_records(item)
+                and range_axiom in ontology_records(item)
+                and {plain_key(t) for t in item["payload"]["reasoning"].get("rules", [])}
+                == {high_risk_plain}
+                and {tuple(t) for t in item["payload"]["reasoning"].get("rdfs", [])} == set()
+                and any(
+                    entry.get("rule") == "R-risk"
+                    and tuple(entry.get("result") or ()) == high_risk
+                    and alarm_input in entry.get("inputs", [])
+                    for entry in item["payload"]["reasoning"].get("evidence", [])
+                )
+            ),
+            None,
         )
+        step1_derived_match = step1_item is not None
 
         def violation_signature(item):
             report = item["payload"].get("report", {})
@@ -881,6 +984,7 @@ class LearningHost:
             )
         )
         shacl_steps_verified = False
+        matched_before = None
         for cid in sorted(
             {
                 record["id"]
@@ -899,10 +1003,17 @@ class LearningHost:
                     and "payload" in item
                     and item["dto"]["input"].get("definitionId") == cid
                     and item["dto"]["input"].get("scope") == "asserted"
+                    and item["payload"].get("inputSelection", "current") == "current"
+                    and self._is_constraint_target(item["snap"], cid, assigned_to)
                     and violation_signature(item) == expected_violations
                 ),
                 None,
             )
+            if before is not None and step1_item is not None:
+                # The pre-repair SHACL run must measure the very same snapshot
+                # the Step-1 reasoning ran on — no older stand-in state.
+                if before["snap_triples"] != step1_item["snap_triples"]:
+                    before = None
             after = next(
                 (
                     item
@@ -911,7 +1022,9 @@ class LearningHost:
                     and "payload" in item
                     and item["dto"]["input"].get("definitionId") == cid
                     and item["dto"]["input"].get("scope") == "asserted"
+                    and item["payload"].get("inputSelection", "current") == "current"
                     and item["dto"]["inputSnapshotId"] == lx["dto"]["inputSnapshotId"]
+                    and self._is_constraint_target(item["snap"], cid, assigned_to)
                     and item["payload"].get("report", {}).get("violations") == []
                     and item["payload"].get("report", {}).get("conforms") is True
                 ),
@@ -919,20 +1032,33 @@ class LearningHost:
             )
             if before is not None and after is not None:
                 shacl_steps_verified = True
+                matched_before = before
                 break
-        body = lx["payload"]["reasoning"]
-        step4_derived_match = any(
-            entry.get("rule") == "R-risk" and tuple(entry.get("result") or ()) == high_risk
-            for entry in body.get("evidence", [])
-        ) and any(
-            tuple(entry.get("result") or ()) == person_l02
-            and (
-                f"<{equipment_prefix}002>",
-                f"<{assigned_to}>",
-                "<urn:ontolearn:learning:person/L02>",
+        reference_pre = step1_item if step1_item is not None else matched_before
+        if reference_pre is not None:
+            # Zero extra facts / deletions tolerated beyond the two repairs.
+            repair_assertions_match = repair_assertions_match and (
+                lx["snap_triples"] == (reference_pre["snap_triples"] | {repair_002, repair_003})
             )
-            in {tuple(triple) for triple in entry.get("basis", [])}
-            for entry in body.get("rdfsEvidence", [])
+        body = lx["payload"]["reasoning"]
+        step4_derived_match = (
+            lx["payload"].get("inputSelection", "current") == "current"
+            and domain_axiom in ontology_records(lx)
+            and range_axiom in ontology_records(lx)
+            and {tuple(t) for t in body.get("rules", [])} == {high_risk}
+            and {tuple(t) for t in body.get("rdfs", [])} == {person_l02}
+            and any(
+                entry.get("rule") == "R-risk"
+                and tuple(entry.get("result") or ()) == high_risk
+                and alarm_input in entry.get("inputs", [])
+                for entry in body.get("evidence", [])
+            )
+            and any(
+                tuple(entry.get("result") or ()) == person_l02
+                and {range_basis, tuple(repair_002_n3)}
+                <= {tuple(triple) for triple in entry.get("basis", [])}
+                for entry in body.get("rdfsEvidence", [])
+            )
         )
         return {
             "repairAssertionsMatch": repair_assertions_match,

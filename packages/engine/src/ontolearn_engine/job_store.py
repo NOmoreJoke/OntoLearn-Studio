@@ -28,6 +28,64 @@ PUBLIC_KINDS = {"query", "reasoning", "validation", "behavior", "scenario", "tes
 SET_FAMILIES = {"ontology", "rule", "constraint", "behavior", "scenario", "mapping", "query"}
 UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z")
 
+# The R8a selected-request projection carries exactly these immutable result
+# metadata keys; pre-R8a persisted contexts froze the full 17-key result_get
+# DTO instead (the same 13 plus the then-live mutable quartet below).
+_IMMUTABLE_RESULT_METADATA_KEYS = (
+    "resultId",
+    "projectId",
+    "jobId",
+    "kind",
+    "definitionId",
+    "scope",
+    "parametersHash",
+    "inputSnapshotId",
+    "inputProjectRevision",
+    "dependencyVector",
+    "definitionSetDigests",
+    "implementation",
+    "createdAtMs",
+)
+_LEGACY_MUTABLE_RESULT_METADATA_KEYS = frozenset(
+    {"state", "staleReason", "payloadStatus", "historicalSelectionRequired"}
+)
+
+
+def _normalize_legacy_selected_request(request_obj):
+    """Project one pre-R8a selected request down to its immutable 13-key form.
+
+    Historical contexts stored the full 17-key result metadata inside the
+    frozen queryRequest/semanticRequest document. When the frozen extras are
+    exactly the known mutable quartet in mutually consistent shapes, only the
+    immutable provenance is kept so the deterministic 13-key rebuild compares
+    equal on idempotent replay. Any unknown or tampered extra key survives the
+    projection untouched, so the comparison itself fails with INVALID_STATE.
+    """
+    if not isinstance(request_obj, dict):
+        return request_obj
+    selected = request_obj.get("selected")
+    if not isinstance(selected, dict) or not isinstance(selected.get("metadata"), dict):
+        return request_obj
+    meta = selected["metadata"]
+    extra = set(meta) - set(_IMMUTABLE_RESULT_METADATA_KEYS)
+    if not extra:
+        return request_obj
+    if (
+        not extra <= _LEGACY_MUTABLE_RESULT_METADATA_KEYS
+        or meta.get("payloadStatus", "available") != "available"
+        or meta.get("state") not in (None, "current", "historical", "stale")
+        or not isinstance(meta.get("staleReason", []), list)
+        or not isinstance(meta.get("historicalSelectionRequired", False), bool)
+    ):
+        return request_obj
+    return {
+        **request_obj,
+        "selected": {
+            **selected,
+            "metadata": {key: meta[key] for key in _IMMUTABLE_RESULT_METADATA_KEYS if key in meta},
+        },
+    }
+
 
 class JobFault(ValueError):
     """Structured internal failure; callers map only these fixed fields."""
@@ -1654,8 +1712,10 @@ class JobStore(Store):
                 # The request is deterministically rebuildable from the
                 # immutable snapshot (worker_semantic_request / finish path);
                 # persist only its digest so the page budget keeps paying for
-                # facts once, not for a duplicated request document.
+                # facts once, not for a duplicated request document. The
+                # version stamp separates R8+ 13-key digests from pre-R8 ones.
                 context["semanticRequestSha256"] = digest(semantic_request)
+                context["semanticRequestVersion"] = 2
             if capability == "test.rounds":
                 events = parameters.get("events", [])
                 context["runConfig"] = {
@@ -1787,18 +1847,20 @@ class JobStore(Store):
         ):
             # Derived query replays re-verify the frozen request only while the
             # derived source payloads are retained; after collect_cache() has
-            # evicted them the accepted job stays authoritative as-is.
+            # evicted them the accepted job stays authoritative as-is. Pre-R8a
+            # documents froze the 17-key metadata form, normalized here.
             expected = self.prepare_query_request(
                 project, input_, parameters, snapshot, implementation, confirmation_ref, live=False
             )
-            if context["queryRequest"] != expected:
+            if _normalize_legacy_selected_request(context["queryRequest"]) != expected:
                 fault("INVALID_STATE")
         elif "semanticRequest" in context and all(
             self.result_get(project, rid)["payloadStatus"] == "available"
             for rid in input_["derivedResultIds"]
         ):
             # Pre-R7 contexts stored the full semantic request instead of its
-            # digest; re-verify it the same retained-payload way.
+            # digest; re-verify it the same retained-payload way, again with
+            # the legacy 17-key metadata normalized down to the projection.
             expected = self.prepare_semantic_request(
                 project,
                 capability,
@@ -1809,7 +1871,7 @@ class JobStore(Store):
                 confirmation_ref,
                 live=False,
             )
-            if context["semanticRequest"] != expected:
+            if _normalize_legacy_selected_request(context["semanticRequest"]) != expected:
                 fault("INVALID_STATE")
         if "semanticRequestSha256" in context and all(
             self.result_get(project, rid)["payloadStatus"] == "available"
@@ -1817,7 +1879,9 @@ class JobStore(Store):
         ):
             # Idempotent replay re-verifies the digest whenever the derived
             # source payloads are still retained; once collect_cache() has
-            # evicted them the accepted job stays authoritative as-is.
+            # evicted them the accepted job stays authoritative as-is. The
+            # matcher also covers unstamped pre-R8 digests frozen over the
+            # then-live 17-key metadata (see _matches_semantic_request_digest).
             expected = self.prepare_semantic_request(
                 project,
                 capability,
@@ -1828,7 +1892,7 @@ class JobStore(Store):
                 confirmation_ref,
                 live=False,
             )
-            if digest(expected) != context["semanticRequestSha256"]:
+            if not self._matches_semantic_request_digest(project, input_, expected, context):
                 fault("INVALID_STATE")
         if "runConfig" in context:
             config = context["runConfig"]
@@ -2224,24 +2288,7 @@ class JobStore(Store):
         # result stale, must never invalidate the deterministic rebuild of an
         # already-accepted validation.execute/query.execute request; the
         # consumer only checks resultId/kind/inputSnapshotId anyway.
-        immutable_metadata = {
-            key: metadata[key]
-            for key in (
-                "resultId",
-                "projectId",
-                "jobId",
-                "kind",
-                "definitionId",
-                "scope",
-                "parametersHash",
-                "inputSnapshotId",
-                "inputProjectRevision",
-                "dependencyVector",
-                "definitionSetDigests",
-                "implementation",
-                "createdAtMs",
-            )
-        }
+        immutable_metadata = {key: metadata[key] for key in _IMMUTABLE_RESULT_METADATA_KEYS}
         return {"metadata": immutable_metadata, "payload": payload}
 
     def prepare_semantic_request(
@@ -2319,6 +2366,86 @@ class JobStore(Store):
         except SemanticExecutionFault as error:
             raise JobFault(error.error["code"], error.error["params"]) from None
 
+    def _matches_semantic_request_digest(self, project, input_, expected, context):
+        """Match the frozen semantic request digest across the R7/R8 divide.
+
+        R8+ job contexts stamp ``semanticRequestVersion`` and always store the
+        digest of the 13-key immutable projection: a mismatch there is a real
+        tamper and is rejected outright. Unstamped pre-R8 rows froze the digest
+        of the then-live 17-key metadata instead, so the match also tries the
+        historically possible freeze shapes reconstructed from the live result
+        (current at freeze time, later historical, later stale with the live
+        reasons or their prefixes). Anything else — snapshot, facts, parameters,
+        definitions, the derived payload or any other request field — still has
+        to digest exactly or the replay fails INVALID_STATE.
+        """
+        recorded = context.get("semanticRequestSha256")
+        if digest(expected) == recorded:
+            return True
+        if context.get("semanticRequestVersion") is not None or not (
+            isinstance(expected.get("selected"), dict)
+            and isinstance(expected["selected"].get("metadata"), dict)
+        ):
+            return False
+        derived = input_.get("derivedResultIds") if isinstance(input_, dict) else None
+        if not isinstance(derived, list) or not derived:
+            return False
+        try:
+            live_dto = self.result_get(project, derived[0])
+        except JobFault:
+            return False
+        live_reasons = live_dto.get("staleReason")
+        live_reasons = live_reasons if isinstance(live_reasons, list) else []
+        live_state = live_dto.get("state")
+        live_required = live_dto.get("historicalSelectionRequired")
+        candidates = [
+            {
+                "state": "current",
+                "staleReason": [],
+                "payloadStatus": "available",
+                "historicalSelectionRequired": False,
+            },
+            {
+                "state": "historical",
+                "staleReason": [],
+                "payloadStatus": "available",
+                "historicalSelectionRequired": True,
+            },
+            {
+                "state": "stale",
+                "staleReason": live_reasons,
+                "payloadStatus": "available",
+                "historicalSelectionRequired": True,
+            },
+            {
+                "state": live_state,
+                "staleReason": live_reasons,
+                "payloadStatus": "available",
+                "historicalSelectionRequired": live_required,
+            },
+        ]
+        for cut in range(1, len(live_reasons)):
+            candidates.append(
+                {
+                    "state": live_state,
+                    "staleReason": live_reasons[:cut],
+                    "payloadStatus": "available",
+                    "historicalSelectionRequired": live_required,
+                }
+            )
+        base_meta = dict(expected["selected"]["metadata"])
+        for candidate in candidates:
+            projected = {
+                **expected,
+                "selected": {
+                    "metadata": {**base_meta, **candidate},
+                    "payload": expected["selected"].get("payload"),
+                },
+            }
+            if digest(projected) == recorded:
+                return True
+        return False
+
     def worker_semantic_request(self, job, context):
         """Rebuild the private reasoning/validation worker request on demand.
 
@@ -2342,7 +2469,9 @@ class JobStore(Store):
                 job["confirmationRef"],
                 live=False,
             )
-        if context.get("semanticRequestSha256") != digest(expected):
+        if not self._matches_semantic_request_digest(
+            job["projectId"], job["input"], expected, context
+        ):
             fault("INVALID_STATE")
         return expected
 
@@ -2583,7 +2712,9 @@ class JobStore(Store):
                 job["confirmationRef"],
                 live=False,
             )
-            if context.get("semanticRequestSha256") != digest(expected):
+            if not self._matches_semantic_request_digest(
+                job["projectId"], job["input"], expected, context
+            ):
                 fault("INVALID_STATE")
             payload = output["payload"]
             kind = "reasoning" if job["capability"] == "reasoning.execute" else "validation"
