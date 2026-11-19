@@ -616,7 +616,7 @@ it(
     const seeded = await commitWorkspaceChange(f.bridge, lesson!, randomUUID(), unguarded)
     expect(seeded.state, seeded.error?.code).toBe('succeeded')
     await f.change({ definitions: [equipmentConstraint()] })
-    for (const target of ['business-ontology', taskId] as const) {
+    for (const target of ['business-ontology', taskId, 'transfer-classify'] as const) {
       const task = await f.call(() =>
         projects.startLearningAttempt({ projectId, taskId: target, operationId: randomUUID() }),
       )
@@ -691,7 +691,10 @@ it(
     expect(committed).toMatchObject({
       operationId,
       reason: 'before-agent',
-      assistanceUpdatedTaskIds: expect.arrayContaining(['business-ontology', taskId]),
+      // The before-agent call only stages the marking; the assistance rows
+      // land inside this ChangeSet commit, so the checkpoint receipt itself
+      // reports no updated tasks yet.
+      assistanceUpdatedTaskIds: [],
     })
     await expect
       .poll(async () => {
@@ -699,6 +702,15 @@ it(
         return job.state === 'failed' ? job.error?.code : job.state
       })
       .toBe('succeeded')
+    // The default full-assistance task list marks exactly the ontology-draft
+    // targets; the unrelated transfer-classify attempt stays independent.
+    const learningState = await f.call(() => projects.getProjectLearningState({ projectId }))
+    const assistanceByTask = new Map(
+      learningState.tasks.map((task) => [task.taskId, task.assistance]),
+    )
+    expect(assistanceByTask.get('business-ontology')).toBe('agent-full-assistance')
+    expect(assistanceByTask.get(taskId)).toBe('agent-full-assistance')
+    expect(assistanceByTask.get('transfer-classify')).toBe('independent')
     const after = await f.read()
     expect(after.domain.projectRevision).toBe(before.domain.projectRevision + 1)
     expect(JSON.stringify(before.domain.state.definitions)).not.toContain(proposedClass)

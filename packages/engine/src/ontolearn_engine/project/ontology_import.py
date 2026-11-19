@@ -7,21 +7,26 @@ manual facts) and never writes the Store; any unsupported construct rejects the
 entire document with explicit reasons - partial imports cannot happen.
 """
 
-from rdflib import RDF, SH, BNode, Literal, URIRef
+from rdflib import RDF, SH, XSD, BNode, Literal, URIRef
 
 from ontolearn_engine.project.ontology_turtle import (
     MAX_PLAN_ITEMS,
     MAX_REASONS,
     NAME_PATTERN,
+    NODE_SHAPE_PREDICATES,
+    PROPERTY_SHAPE_PREDICATES,
     PROPERTY_SHAPE_SUFFIX,
+    SH_DEACTIVATED,
     SH_IN,
-    SHAPE_PREDICATES,
     SHAPE_PREFIX,
+    SUPPORTED_DATATYPES,
     TEMPLATE_PATH_PREDICATES,
     build_plan,
     canonical_object,
     check_content_triples,
     fault,
+    literal_collision_reasons,
+    literal_datatype,
     reason,
     resolve_active,
 )
@@ -30,9 +35,18 @@ from ontolearn_engine.storage import digest
 METHODS = frozenset({"project.ontology.import.check"})
 TURTLE_FORMAT = "turtle"
 MAX_LITERAL_CHARS = 16384
-NODE_SHAPE_PREDICATES = frozenset({str(RDF.type), str(SH.targetClass), str(SH.property)})
 LIST_PREDICATES = frozenset({str(RDF.first), str(RDF.rest)})
 XSD_INTEGER = "http://www.w3.org/2001/XMLSchema#integer"
+NUMERIC_BOUND_DATATYPES = frozenset(
+    {
+        str(XSD.integer),
+        str(XSD.decimal),
+        str(XSD.int),
+        str(XSD.nonNegativeInteger),
+        str(XSD.double),
+        str(XSD.float),
+    }
+)
 
 
 def _invalid(code, field, detail):
@@ -112,12 +126,98 @@ def _integer_literal(value):
     return None
 
 
-def _decimal_literal(value):
-    if isinstance(value, Literal) and value.datatype is not None:
-        text = str(value)
-        if text and len(text) <= 128:
-            return text
-    return None
+def _allowed_value_n3(link, values):
+    """Validate one sh:in list element; never raises, never calls the
+    normalizing term gate on an unsupported element (B03).
+
+    Returns (n3_texts, reason) - a reason means the whole document is
+    rejected and nothing may be written.
+    """
+    n3_texts = []
+    for value in values:
+        if isinstance(value, BNode):
+            return None, reason(
+                "UNSUPPORTED_BLANK_NODE",
+                "rdfBlankNode",
+                f"sh:in list on <{link}> contains a blank node element; only "
+                "IRI and supported literal values are exchangeable",
+            )
+        if not isinstance(value, URIRef | Literal):
+            return None, reason(
+                "UNSUPPORTED_SHACL",
+                "shaclAdvanced",
+                f"sh:in list on <{link}> contains an unsupported RDF term",
+            )
+        if isinstance(value, Literal):
+            if value.ill_typed or literal_datatype(value) not in SUPPORTED_DATATYPES:
+                return None, reason(
+                    "UNSUPPORTED_LITERAL_DATATYPE",
+                    "datatype",
+                    f"sh:in list on <{link}> contains a literal outside the P0 "
+                    "datatype set (string/langString/boolean/integer/decimal/"
+                    "double/date/dateTime)",
+                )
+            try:
+                n3_texts.append(canonical_object(value))
+            except (ValueError, TypeError):
+                return None, reason(
+                    "UNSUPPORTED_SHACL",
+                    "shaclAdvanced",
+                    f"sh:in list on <{link}> contains a literal that cannot be "
+                    "canonicalized into a stored RDF term",
+                )
+        else:
+            n3_texts.append(canonical_object(value))
+    return n3_texts, None
+
+
+def _numeric_bound(link, predicate, values):
+    """Validate one numericRange bound: exactly one well-typed finite decimal.
+
+    Returns (lexical_or_None, reason) - a reason rejects the whole document;
+    None without a reason means the predicate is absent with cardinality zero.
+    """
+    if not values:
+        return None, None
+    if len(values) > 1:
+        return None, reason(
+            "UNSUPPORTED_SHACL",
+            "shaclAdvanced",
+            f"<{predicate}> on <{link}> must appear exactly once, not {len(values)} times",
+        )
+    value = values[0]
+    if not isinstance(value, Literal) or value.language is not None:
+        return None, reason(
+            "UNSUPPORTED_SHACL",
+            "shaclAdvanced",
+            f"<{predicate}> on <{link}> must be a numeric typed literal",
+        )
+    if literal_datatype(value) not in NUMERIC_BOUND_DATATYPES or value.ill_typed:
+        return None, reason(
+            "UNSUPPORTED_SHACL",
+            "shaclAdvanced",
+            f"<{predicate}> on <{link}> must use one of the numeric datatypes "
+            "(xsd:integer/xsd:int/xsd:nonNegativeInteger/xsd:decimal/xsd:double/"
+            "xsd:float) with a well-typed value",
+        )
+    text = str(value)
+    if not text or len(text) > 128:
+        return None, reason(
+            "UNSUPPORTED_SHACL",
+            "shaclAdvanced",
+            f"<{predicate}> on <{link}> carries an unusable numeric lexical form",
+        )
+    from ontolearn_engine.quality.definitions import numeric as quality_numeric
+
+    try:
+        quality_numeric(text, ())
+    except ValueError:
+        return None, reason(
+            "UNSUPPORTED_SHACL",
+            "shaclAdvanced",
+            f"<{predicate}> on <{link}> must be a finite decimal number text (got {text!r})",
+        )
+    return text, None
 
 
 def _template_constraints(graph):
@@ -143,13 +243,43 @@ def _template_constraints(graph):
                     "UNSUPPORTED_SHACL",
                     "shaclAdvanced",
                     f"Node shape <{shape}> carries predicates outside the P0 template "
-                    "(sh:targetClass/sh:property)",
+                    "(sh:targetClass/sh:property/sh:deactivated)",
                 )
             )
             continue
         types = {o for o in graph.objects(shape, RDF.type)}
         target = _single_object(graph, shape, SH.targetClass)
         link = _single_object(graph, shape, SH.property)
+        deactivated = list(graph.objects(shape, URIRef(SH_DEACTIVATED)))
+        enabled = True
+        if len(deactivated) > 1:
+            reasons.append(
+                reason(
+                    "UNSUPPORTED_SHACL",
+                    "shaclAdvanced",
+                    f"sh:deactivated on <{shape}> must appear at most once",
+                )
+            )
+            continue
+        if deactivated:
+            flag = deactivated[0]
+            if (
+                not isinstance(flag, Literal)
+                or flag.language is not None
+                or flag.datatype is None
+                or str(flag.datatype) != str(XSD.boolean)
+                or str(flag) not in ("true", "false")
+            ):
+                reasons.append(
+                    reason(
+                        "UNSUPPORTED_SHACL",
+                        "shaclAdvanced",
+                        f"sh:deactivated on <{shape}> must be a strict xsd:boolean "
+                        "literal 'true' or 'false'",
+                    )
+                )
+                continue
+            enabled = str(flag) != "true"
         if (
             types != {SH.NodeShape}
             or not isinstance(target, URIRef)
@@ -189,12 +319,13 @@ def _template_constraints(graph):
             SH.PropertyShape
         }
         present = {str(p) for p in graph.predicates(link, None)}
-        if not path_ok or present - SHAPE_PREDICATES or str(SH.path) not in present:
+        if not path_ok or present - PROPERTY_SHAPE_PREDICATES or str(SH.path) not in present:
             reasons.append(
                 reason(
                     "UNSUPPORTED_SHACL",
                     "shaclAdvanced",
-                    f"Property shape <{link}> is not the direct-path P0 property template",
+                    f"Property shape <{link}> is not the direct-path P0 property template "
+                    "(sh:targetClass/sh:property/sh:deactivated belong to the node shape)",
                 )
             )
             continue
@@ -223,11 +354,16 @@ def _template_constraints(graph):
                 walked = _read_list(graph, head) if head is not None else None
                 if walked is not None:
                     values, nodes = walked
-                    parameters = {"values": [canonical_object(value) for value in values]}
-                    list_nodes |= nodes
-                    shape_triples |= {
-                        triple for node in nodes for triple in graph.triples((node, None, None))
-                    } | {(link, URIRef(SH_IN), head)}
+                    n3_texts, value_reason = _allowed_value_n3(link, values)
+                    if value_reason is not None:
+                        reasons.append(value_reason)
+                        parameters = None
+                    else:
+                        parameters = {"values": n3_texts}
+                        list_nodes |= nodes
+                        shape_triples |= {
+                            triple for node in nodes for triple in graph.triples((node, None, None))
+                        } | {(link, URIRef(SH_IN), head)}
                 else:
                     reasons.append(
                         reason(
@@ -237,11 +373,19 @@ def _template_constraints(graph):
                         )
                     )
             else:
-                low = _single_object(graph, link, SH.minInclusive)
-                high = _single_object(graph, link, SH.maxInclusive)
-                low = _decimal_literal(low) if low is not None else None
-                high = _decimal_literal(high) if high is not None else None
-                if low is not None or high is not None:
+                low, low_reason = _numeric_bound(
+                    link, SH.minInclusive, list(graph.objects(link, SH.minInclusive))
+                )
+                high, high_reason = None, None
+                if low_reason is None:
+                    high, high_reason = _numeric_bound(
+                        link, SH.maxInclusive, list(graph.objects(link, SH.maxInclusive))
+                    )
+                if low_reason is not None:
+                    reasons.append(low_reason)
+                elif high_reason is not None:
+                    reasons.append(high_reason)
+                elif low is not None or high is not None:
                     parameters = {"minInclusive": low, "maxInclusive": high}
         if template is None or parameters is None:
             reasons.append(
@@ -259,7 +403,7 @@ def _template_constraints(graph):
             "id": identity,
             "revision": 1,
             "label": identity,
-            "enabled": True,
+            "enabled": enabled,
             "targetClass": str(target),
             "path": str(path),
             "template": template,
@@ -350,6 +494,9 @@ def check_import(store, public, params):
             continue
         content.append(triple)
     reasons += check_content_triples(iter(content))
+    # B08: reject lexically distinct literals that would fold onto one stored
+    # value (for example 1 and +01), and ill-typed literals, before any plan.
+    reasons += literal_collision_reasons(iter(content))
     if reasons:
         return _reject(reasons)
     definitions, manual = build_plan(iter(content))

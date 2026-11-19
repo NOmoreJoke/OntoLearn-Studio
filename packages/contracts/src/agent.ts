@@ -159,6 +159,7 @@ export const agentCommitDraftArgsSchema = z.strictObject({
     validateBusiness3('result_changeset.confirm', value),
   ),
   label: z.string().min(1).max(256).nullable().optional(),
+  taskIds: z.array(z.string().min(1).max(128)).max(32).optional(),
 })
 export type AgentCommitDraftArgs = z.infer<typeof agentCommitDraftArgsSchema>
 export type AgentCommitDraftResultDTO = {

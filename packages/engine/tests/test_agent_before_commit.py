@@ -5,8 +5,11 @@ a full project.restore rollback, the domainRevision CAS guard, idempotent
 same-operationId replay without duplicate snapshots, identity conflicts, and
 the PRD §11.2 rule that agent-completed learning work never counts as an
 independent transfer success even after a genuinely passing task check. The
-public manual-only ``project.checkpoint.create`` contract stays untouched
-(guarded by test_b1b_project_restore.py in the same required run).
+full-assistance marking itself is only *staged* by before_commit and lands
+inside the linked ChangeSet's commit transaction: an unsubmitted, failed or
+superseded ChangeSet leaves every attempt independent (B05). The public
+manual-only ``project.checkpoint.create`` contract stays untouched (guarded
+by test_b1b_project_restore.py in the same required run).
 """
 
 import json
@@ -16,6 +19,7 @@ from uuid import uuid4
 import pytest
 from ontolearn_engine.coordinator import _JOB_READY, Coordinator
 from ontolearn_engine.job_store import JobStore
+from ontolearn_engine.project import learning_agent
 from ontolearn_engine.resources import CONTRACT
 from ontolearn_engine.storage import digest
 
@@ -160,7 +164,7 @@ def g_base_and_lesson_plan():
     }
 
 
-def commit_plan(actor, store, project, plan):
+def commit_plan(actor, store, project, plan, operation=None):
     host = {"host_client_id": actor.host_client_id, "engine_session_id": actor.session}
     base = store.project_get(project)["projectRevision"]
     ready = store.preview_changeset(
@@ -188,7 +192,7 @@ def commit_plan(actor, store, project, plan):
     confirmed = store.confirm_changeset(project, ready["previewHash"], token, **host)
     job = store.create_changeset_job(
         project,
-        uid(),
+        operation or uid(),
         {
             "inputSnapshotId": confirmed["inputSnapshotId"],
             "scope": "asserted",
@@ -385,38 +389,74 @@ def test_operation_id_belongs_to_its_project(owned):
     )
 
 
-def test_full_assistance_never_counts_as_independent_transfer(owned):
-    actor, store = owned
-    project = open_blank(actor)
-    commit_plan(actor, store, project, g_base_and_lesson_plan())
+def task_view(actor, project, task_id):
+    reading = ok(exchange(actor, "project.learning.read", {"projectId": project}))
+    return next(item for item in reading["tasks"] if item["taskId"] == task_id)
+
+
+def start_attempt(actor, project, task_id):
     started = ok(
         exchange(
             actor,
             "project.learning.attempt.start",
-            {"projectId": project, "taskId": "business-ontology", "operationId": uid()},
+            {"projectId": project, "taskId": task_id, "operationId": uid()},
         )
     )
     assert started["learningState"]["assistance"] == "independent"
 
+
+def test_full_assistance_never_counts_as_independent_transfer(owned):
+    actor, store = owned
+    project = open_blank(actor)
+    commit_plan(actor, store, project, g_base_and_lesson_plan())
+    start_attempt(actor, project, "business-ontology")
+
+    # The before-agent call only stages the marking: no attempt is touched
+    # until the linked ChangeSet actually commits (B05).
     revision = store.revision(store._project(project))
+    changeset_op = uid()
     marked = ok(
         before_commit(
             actor,
             project,
-            uid(),
+            learning_agent.derive_before_commit_op(changeset_op),
             revision,
             full=True,
             task_ids=["business-ontology"],
             label="Agent 完整代做",
         )
     )
-    assert marked["assistanceUpdatedTaskIds"] == ["business-ontology"]
-    reading = ok(exchange(actor, "project.learning.read", {"projectId": project}))
-    task = next(item for item in reading["tasks"] if item["taskId"] == "business-ontology")
-    assert task["assistance"] == "agent-full-assistance"
-    assert task["checkStatus"] == "rerun-required"
-    assert task["independentTransferSuccess"] is False
-    assert task["operationComplete"] is False
+    assert marked["assistanceUpdatedTaskIds"] == []
+    staged = task_view(actor, project, "business-ontology")
+    assert staged["assistance"] == "independent"
+
+    commit_plan(
+        actor,
+        store,
+        project,
+        {
+            "manual": [
+                {
+                    "id": digest(
+                        [
+                            "urn:ontolearn:learning:Person",
+                            "http://www.w3.org/2000/01/rdf-schema#comment",
+                            '"Agent 完整代做"',
+                        ]
+                    ),
+                    "subject": "urn:ontolearn:learning:Person",
+                    "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+                    "object": '"Agent 完整代做"',
+                }
+            ]
+        },
+        operation=changeset_op,
+    )
+    marked_task = task_view(actor, project, "business-ontology")
+    assert marked_task["assistance"] == "agent-full-assistance"
+    assert marked_task["checkStatus"] == "rerun-required"
+    assert marked_task["independentTransferSuccess"] is False
+    assert marked_task["operationComplete"] is False
 
     # A genuinely passing check afterwards still never mints an independent
     # transfer success (PRD §11.2: Agent 完整代做不计入独立迁移成功).
@@ -431,6 +471,137 @@ def test_full_assistance_never_counts_as_independent_transfer(owned):
     assert checked["operationComplete"] is True
     assert checked["independentTransferSuccess"] is False
     assert checked["assistance"] == "agent-full-assistance"
+
+
+def test_pending_assistance_never_lands_without_the_linked_changeset(owned):
+    actor, store = owned
+    project = open_blank(actor)
+    commit_plan(actor, store, project, g_base_and_lesson_plan())
+    for task_id in ("business-ontology", "transfer-repair", "transfer-classify"):
+        start_attempt(actor, project, task_id)
+
+    revision = store.revision(store._project(project))
+    changeset_op = uid()
+    marked = ok(
+        before_commit(
+            actor,
+            project,
+            learning_agent.derive_before_commit_op(changeset_op),
+            revision,
+            full=True,
+            task_ids=["business-ontology", "transfer-repair"],
+        )
+    )
+    assert marked["assistanceUpdatedTaskIds"] == []
+    # No ChangeSet was submitted at all: every attempt stays independent.
+    for task_id in ("business-ontology", "transfer-repair", "transfer-classify"):
+        assert task_view(actor, project, task_id)["assistance"] == "independent"
+
+    # A different (user) ChangeSet commits first and moves the domain head:
+    # the staged marking is bound to the original baseRevision and never lands.
+    commit_plan(
+        actor,
+        store,
+        project,
+        {
+            "manual": [
+                {
+                    "id": digest(["urn:x:user", "urn:x:p", '"manual"']),
+                    "subject": "urn:x:user",
+                    "predicate": "urn:x:p",
+                    "object": '"manual"',
+                }
+            ]
+        },
+    )
+    for task_id in ("business-ontology", "transfer-repair", "transfer-classify"):
+        assert task_view(actor, project, task_id)["assistance"] == "independent"
+
+
+def test_targeted_assistance_marks_only_named_attempts_and_persists(owned, tmp_path):
+    actor, store = owned
+    project = open_blank(actor)
+    commit_plan(actor, store, project, g_base_and_lesson_plan())
+    for task_id in ("business-ontology", "transfer-repair", "transfer-classify"):
+        start_attempt(actor, project, task_id)
+
+    revision = store.revision(store._project(project))
+    changeset_op = uid()
+    marked = ok(
+        before_commit(
+            actor,
+            project,
+            learning_agent.derive_before_commit_op(changeset_op),
+            revision,
+            full=True,
+            task_ids=["business-ontology", "transfer-repair"],
+            label="Agent 完整代做",
+        )
+    )
+    assert marked["assistanceUpdatedTaskIds"] == []
+
+    commit_plan(
+        actor,
+        store,
+        project,
+        {
+            "manual": [
+                {
+                    "id": digest(
+                        [
+                            "urn:ontolearn:learning:Person",
+                            "http://www.w3.org/2000/01/rdf-schema#comment",
+                            '"Agent 完整代做"',
+                        ]
+                    ),
+                    "subject": "urn:ontolearn:learning:Person",
+                    "predicate": "http://www.w3.org/2000/01/rdf-schema#comment",
+                    "object": '"Agent 完整代做"',
+                }
+            ]
+        },
+        operation=changeset_op,
+    )
+    for task_id in ("business-ontology", "transfer-repair"):
+        task = task_view(actor, project, task_id)
+        assert task["assistance"] == "agent-full-assistance", task_id
+        assert task["independentTransferSuccess"] is False
+        assert task["operationComplete"] is False
+        assert task["checkStatus"] == "rerun-required"
+    # The untargeted transfer-classify attempt is strictly untouched.
+    untouched = task_view(actor, project, "transfer-classify")
+    assert untouched["assistance"] == "independent"
+    assert untouched["operationComplete"] is False
+
+    # Close the SQLite file and reopen: the marking is fully persisted.
+    actor.mainline.close()
+    store.close()
+    reopened_store = JobStore(tmp_path / "agent.sqlite", contract=CONTRACT, target_format=3)
+    reopened = Coordinator(reopened_store, profile="business3", _ready=_JOB_READY)
+    try:
+        assert exchange(reopened, "hello", {"supportedVersions": [3], "clientId": uid()})["ok"]
+        ok(exchange(reopened, "project.open", {"projectId": project}))
+        for task_id in ("business-ontology", "transfer-repair"):
+            task = next(
+                item
+                for item in ok(exchange(reopened, "project.learning.read", {"projectId": project}))[
+                    "tasks"
+                ]
+                if item["taskId"] == task_id
+            )
+            assert task["assistance"] == "agent-full-assistance", task_id
+            assert task["independentTransferSuccess"] is False
+        classify = next(
+            item
+            for item in ok(exchange(reopened, "project.learning.read", {"projectId": project}))[
+                "tasks"
+            ]
+            if item["taskId"] == "transfer-classify"
+        )
+        assert classify["assistance"] == "independent"
+    finally:
+        reopened.mainline.close()
+        reopened_store.close()
 
 
 def test_full_assistance_without_live_attempts_still_snapshots(owned):

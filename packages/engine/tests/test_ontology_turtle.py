@@ -410,3 +410,186 @@ def test_golden_document_parses_with_plain_rdflib():
     again = Graph().parse(data=GOLDEN, format="turtle")
     assert {str(t) for t in graph} == {str(t) for t in again}
     assert canonical([str(term) for term in sorted(map(str, graph))])
+
+
+def allowed_values_plan():
+    """Two coexisting allowedValues templates (multi- and single-value lists)."""
+    constraint = {
+        "schemaVersion": 1,
+        "kind": "constraint",
+        "id": "level-allowed",
+        "revision": 1,
+        "label": "等级允许值",
+        "enabled": True,
+        "targetClass": "urn:x:Equipment",
+        "path": "urn:x:level",
+        "template": "allowedValues",
+        "parameters": {"values": ['"High"', '"Low"']},
+    }
+    single = {
+        "schemaVersion": 1,
+        "kind": "constraint",
+        "id": "state-allowed",
+        "revision": 1,
+        "label": "状态允许值",
+        "enabled": True,
+        "targetClass": "urn:x:Equipment",
+        "path": "urn:x:state",
+        "template": "allowedValues",
+        "parameters": {"values": ['"Medium"']},
+    }
+    return {
+        "definitions": [
+            {
+                "layer": "ontology",
+                "id": "E",
+                "value": {
+                    "triples": [
+                        {
+                            "subject": "urn:x:Equipment",
+                            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                            "object": "<http://www.w3.org/2002/07/owl#Class>",
+                        }
+                    ],
+                    "singleValuedPredicates": [],
+                    "references": [],
+                },
+            },
+            {"layer": "constraint", "id": "level-allowed", "value": constraint},
+            {"layer": "constraint", "id": "state-allowed", "value": single},
+        ],
+        "manual": [
+            {
+                "id": digest(["urn:x:e1", "urn:x:level", '"High"']),
+                "subject": "urn:x:e1",
+                "predicate": "urn:x:level",
+                "object": '"High"',
+            }
+        ],
+    }
+
+
+def test_allowed_values_constraints_export_and_round_trip(owned):
+    # B02: sh:in value lists serialize as blank-node rdf lists; the export
+    # self-check must accept them (graph isomorphism, not BNode string ids)
+    # and the whole document must survive export -> check -> commit -> export.
+    actor, store = owned
+    source = open_blank(actor)
+    commit_plan(actor, store, source, allowed_values_plan())
+    exported = ok(exchange(actor, "project.ontology.export", {"projectId": source}))
+    assert exported["status"] == "ok", exported
+    assert "sh:in" in exported["turtle"]
+    assert exported["tripleCount"] == 20
+
+    checked = import_check(actor, source, exported["turtle"])
+    assert checked["status"] == "ok", checked
+    assert checked["summary"]["tripleCount"] == exported["tripleCount"]
+    constraints = [d for d in checked["plan"]["definitions"] if d["layer"] == "constraint"]
+    assert {d["id"] for d in constraints} == {"level-allowed", "state-allowed"}
+    values = {d["id"]: d["value"]["parameters"]["values"] for d in constraints}
+    assert values["level-allowed"] == ['"High"', '"Low"']
+    assert values["state-allowed"] == ['"Medium"']
+
+    target = open_blank(actor)
+    commit_plan(actor, store, target, checked["plan"])
+    reexported = ok(exchange(actor, "project.ontology.export", {"projectId": target}))
+    assert reexported["status"] == "ok", reexported
+    assert reexported["turtle"] == exported["turtle"]
+    assert reexported["tripleCount"] == exported["tripleCount"] == 20
+
+
+def test_disabled_constraint_round_trip_stays_deactivated(owned):
+    # B04: enabled=False must survive the Turtle round-trip through the
+    # standard SHACL 1.0 sh:deactivated construct instead of being re-enabled.
+    actor, store = owned
+    source = open_blank(actor)
+    constraint = {
+        "schemaVersion": 1,
+        "kind": "constraint",
+        "id": "name-required",
+        "revision": 1,
+        "label": "设备名称必填",
+        "enabled": False,
+        "targetClass": "urn:x:Equipment",
+        "path": "urn:x:name",
+        "template": "required",
+        "parameters": {},
+    }
+    plan = {
+        "definitions": [
+            {
+                "layer": "ontology",
+                "id": "E",
+                "value": {
+                    "triples": [
+                        {
+                            "subject": "urn:x:Equipment",
+                            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                            "object": "<http://www.w3.org/2002/07/owl#Class>",
+                        }
+                    ],
+                    "singleValuedPredicates": [],
+                    "references": [],
+                },
+            },
+            {"layer": "constraint", "id": "name-required", "value": constraint},
+        ],
+        "manual": [],
+    }
+    commit_plan(actor, store, source, plan)
+    exported = ok(exchange(actor, "project.ontology.export", {"projectId": source}))
+    assert exported["status"] == "ok", exported
+    assert "sh:deactivated true" in exported["turtle"]
+
+    checked = import_check(actor, source, exported["turtle"])
+    assert checked["status"] == "ok", checked
+    imported_constraint = next(
+        d for d in checked["plan"]["definitions"] if d["layer"] == "constraint"
+    )
+    assert imported_constraint["value"]["enabled"] is False
+
+    target = open_blank(actor)
+    commit_plan(actor, store, target, checked["plan"])
+    # The re-imported constraint stays disabled: quality.prepare prepares zero
+    # validation inputs for it and never re-enables the constraint.
+    prepared = ok(
+        exchange(
+            actor,
+            "project.quality.prepare",
+            {
+                "projectId": target,
+                "operationId": uid(),
+                "selection": {"kind": "current"},
+            },
+        )
+    )
+    assert prepared["validationInputs"] == []
+    assert prepared["validationInput"] is None
+    reexported = ok(exchange(actor, "project.ontology.export", {"projectId": target}))
+    assert reexported["status"] == "ok", reexported
+    assert reexported["turtle"] == exported["turtle"]
+    assert "sh:deactivated true" in reexported["turtle"]
+
+
+def test_standalone_structural_axiom_lands_in_definition_layer(owned):
+    # B11: an rdfs:subClassOf axiom is a schema statement on its own; without
+    # any same-batch rdf:type declaration it must still join the definition
+    # layer (with its annotations), never the manual fact layer.
+    actor, store = owned
+    project = open_blank(actor)
+    turtle = (
+        "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n"
+        "<urn:x:Pump> rdfs:subClassOf <urn:x:Equipment> ;\n"
+        '    rdfs:label "泵" .\n'
+    )
+    checked = import_check(actor, project, turtle)
+    assert checked["status"] == "ok", checked
+    assert checked["summary"]["definitionCount"] == 1
+    assert checked["summary"]["manualFactCount"] == 0
+    assert checked["summary"]["tripleCount"] == 2
+    commit_plan(actor, store, project, checked["plan"])
+    exported = ok(exchange(actor, "project.ontology.export", {"projectId": project}))
+    assert exported["status"] == "ok", exported
+    assert exported["tripleCount"] == 2
+    assert "subClassOf" in exported["turtle"]
+    assert '"泵"' in exported["turtle"]

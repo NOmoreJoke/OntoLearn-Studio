@@ -112,6 +112,10 @@ const idle = (): AgentStateDTO => ({
 const safeId = /^[A-Za-z0-9:_-]{1,128}$/
 const scopeToken = (value: string) =>
   safeId.test(value) ? value : 'selected-' + createHash('sha256').update(value).digest('hex')
+// Full assistance is always attributed to an explicit task list: the ontology
+// draft targets and nothing else, so unrelated transfer attempts are never
+// swept in when the caller omits taskIds (B05).
+const defaultFullAssistanceTaskIds = ['business-ontology', 'transfer-repair'] as const
 
 export function deriveBeforeCommitOp(operationId: string): string {
   const hash = createHash('sha256')
@@ -618,6 +622,7 @@ export class AgentHostComposition implements AgentBridge {
         operationId,
         baseRevision,
         recordFullAssistance: mode === 'project' && draftType === 'ontology',
+        taskIds: args.taskIds ?? [...defaultFullAssistanceTaskIds],
         label: args.label ?? null,
       }),
     )
