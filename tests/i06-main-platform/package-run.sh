@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+unset ELECTRON_RUN_AS_NODE
+export DISPLAY=:110
+export XDG_CURRENT_DESKTOP=GNOME XDG_RUNTIME_DIR=/tmp/i06-package-runtime
+mkdir -m 700 "$XDG_RUNTIME_DIR"
+node tests/i06-main-platform/sandbox-preflight.mjs > /probe-data/main-platform/sandbox-preflight.json 2> /probe-data/main-platform/sandbox-preflight.stderr.log
+Xvfb :110 -screen 0 1440x1000x24 > /probe-data/main-platform/xvfb.log 2>&1 &
+xvfb_pid=$!
+trap 'kill "$xvfb_pid" 2>/dev/null || true' EXIT
+for attempt in $(seq 1 100); do
+  test -S /tmp/.X11-unix/X110 && break
+  sleep 0.05
+done
+node tests/i06-main-platform/runtime-manifest.mjs /probe-data/main-platform/runtime-before.json
+node tests/i06-main-platform/package-manifest.mjs /probe-data/main-platform/package-before.json
+cp /workspace/.i06-package-build-manifest.json /probe-data/main-platform/package-build-manifest.json
+cp /workspace/.i06-main-build-manifest.json /probe-data/main-platform/build-manifest.json
+cp /opt/i06-main-identity.json /probe-data/main-platform/identity.json
+dbus-run-session -- bash -euo pipefail -c '
+  openbox > /probe-data/main-platform/openbox.log 2>&1 &
+  printf "%s" "I06_NATIVE_SYNTHETIC_KEYRING_PASSWORD" | gnome-keyring-daemon --unlock --components=secrets > /probe-data/main-platform/keyring.log 2>&1
+  timeout 160s node tests/i06-main-platform/package-probe.mjs > /probe-data/main-platform/probe.stdout.log 2> /probe-data/main-platform/probe.stderr.log
+'
+node tests/i06-main-platform/runtime-manifest.mjs /probe-data/main-platform/runtime-after.json
+node tests/i06-main-platform/package-manifest.mjs /probe-data/main-platform/package-after.json
+node tests/i06-main-platform/scan.mjs
+echo 'I06 actual packaged bridge whole-result HTTPS and native recovery probe passed'

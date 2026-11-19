@@ -15,6 +15,7 @@ import {
 } from '@ontolearn/contracts'
 import {
   matchesResponse,
+  isModelMethod,
   matchesOrdinaryResponse,
   type OrdinaryResponseBinding,
   matchesBusiness3Response,
@@ -2794,7 +2795,7 @@ export class EngineSupervisor {
   request(method: string, params: Record<string, unknown>): Promise<unknown> {
     return this.#operation(async () => {
       if (method === 'ordinary.library') throw deniedOrdinary()
-      if (method === 'hello')
+      if (method === 'hello' || isModelMethod(method))
         throw new EngineError({
           code: 'INVALID_STATE',
           messageKey: 'protocol.invalidState',

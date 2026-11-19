@@ -2,6 +2,9 @@ import type { IpcMain, IpcMainInvokeEvent } from 'electron'
 import { randomUUID } from 'node:crypto'
 import {
   mainlineDeliveryAckSchema,
+  modelGatewayError,
+  modelInvalidRequestError,
+  type ModelMethod,
   safeError,
   type DesktopIpcChannel,
   type DesktopIpcHandlers,
@@ -12,6 +15,8 @@ import {
 import type { EngineSupervisor, MainlineReplyReceiver, MainlineReplyReceipt } from './engine'
 import type { TaskService } from './task-service'
 import type { LibraryLocationService } from './library-location-service'
+import { validateModelParams } from '@ontolearn/contracts/v2'
+import { unavailableModelStatus, type ModelGatewayService } from './model-gateway/model-service'
 
 export type DesktopIpcDependencies = {
   ipcMain: Pick<IpcMain, 'handle'>
@@ -37,6 +42,7 @@ export type DesktopIpcDependencies = {
   }
   replies?: MainlineReplyReceiver
   library?: LibraryLocationService
+  getModels?: () => Pick<ModelGatewayService, 'handle'> | undefined
 }
 
 /** Register the production named routes. Trust is checked before any downstream call. */
@@ -48,6 +54,7 @@ export function registerDesktopIpc({
   projects,
   replies,
   library,
+  getModels,
 }: DesktopIpcDependencies): void {
   const permission = () => ({
     ok: false as const,
@@ -58,6 +65,31 @@ export function registerDesktopIpc({
       retryable: false,
     }),
   })
+  const modelRoutes: Record<string, ModelMethod> = {
+    'model:status': 'getModelAccessStatus',
+    'model:configure': 'configureModel',
+    'model:credential': 'storeModelCredential',
+    'model:privacy': 'setModelPrivacy',
+    'model:select-results': 'selectModelResults',
+    'model:field-catalog': 'getModelFieldCatalog',
+    'model:select-fields': 'selectModelFields',
+    'model:preview': 'previewModelExplanation',
+    'model:confirm': 'confirmModelAuthorization',
+    'model:start': 'startModelExplanation',
+    'model:outcome': 'getModelExplanationOutcome',
+    'model:cancel': 'cancelModelExplanation',
+  }
+  for (const [channel, method] of Object.entries(modelRoutes))
+    ipcMain.handle(channel, (event, argument) => {
+      if (!trusted(event) || library?.switching) return permission()
+      if (!validateModelParams(method, argument))
+        return { ok: false, error: modelInvalidRequestError() }
+      const models = getModels?.()
+      if (models) return models.handle(method, argument)
+      return method === 'getModelAccessStatus' && !('auditContextId' in argument)
+        ? { ok: true, data: unavailableModelStatus() }
+        : { ok: false, error: modelGatewayError('MODEL_UNAVAILABLE') }
+    })
   const handlers: DesktopIpcHandlers = {
     'project:checkpoint-list': (args) =>
       projects?.listProjectCheckpoints(args) ?? Promise.resolve(permission()),

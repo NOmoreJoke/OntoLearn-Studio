@@ -40,6 +40,7 @@ import {
   type LearningFixtureTaskId,
 } from './learning/task-fixture'
 import { QualityWorkspace } from './quality/QualityWorkspace'
+import { ModelPanel } from './ModelPanel'
 
 type FixtureProposal = {
   taskId: LearningFixtureTaskId
@@ -1238,6 +1239,7 @@ export function App() {
           <a href="#learning-center" data-testid="nav-learning-center">
             学习中心 <span>↗</span>
           </a>
+          <a href="#model-settings">模型设置</a>
           <a href="#modules">
             模块规划 <span>06</span>
           </a>
@@ -1796,6 +1798,7 @@ export function App() {
             ))}
           </div>
         </section>
+        <ModelPanel key={activeProjectId ?? 'no-project'} jobs={tasks?.jobs ?? []} />
         <footer>
           需求基准 PRD V0.6
           <span>本地项目管理、本体编辑与查询逐项接入；完整项目导出及其余模块以验收范围为准。</span>
