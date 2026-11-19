@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type { ScenarioDraft, ScenarioView, RunView } from './presentation'
 import {
   compareRuns,
@@ -8,6 +8,7 @@ import {
   validDraft,
   type ScenarioInputDraft,
 } from './presentation'
+import { scenarioConfiguration } from './bridge'
 import './scenario.css'
 
 /** Callbacks are supplied only by approved business adapters; never a generic invoke channel. */
@@ -21,23 +22,48 @@ export interface ScenarioActions {
   deleteRun?: (runId: string) => Promise<void>
 }
 
+const connectedInputs: ScenarioInputDraft = {
+  initialState: '[]',
+  events: '[]',
+  rules: '',
+  behaviors: '',
+  parameters: '{}',
+  assumptions: '',
+  source: '',
+}
+const initialDraft: ScenarioDraft = { name: '', maxRounds: 4, capacity: 3 }
+
 export function ScenarioPage({
   scenarios,
   actions,
   unavailableReason,
+  connected,
 }: {
   scenarios: readonly ScenarioView[]
   actions: ScenarioActions
   unavailableReason?: string
+  connected?: {
+    selectedScenarioId?: string
+    onSelect: (id: string) => void
+    onDirty: (dirty: boolean) => void
+    listControls: ReactNode
+    runContent: ReactNode
+  }
 }) {
   const [selected, setSelected] = useState('')
-  const [sourceMode, setSourceMode] = useState<'project' | 'scenario'>('scenario')
+  const [sourceMode, setSourceMode] = useState<'project' | 'scenario'>(
+    connected ? 'project' : 'scenario',
+  )
   const [compared, setCompared] = useState<readonly string[]>([])
-  const [draft, setDraft] = useState<ScenarioDraft>({ name: '', maxRounds: 4, capacity: 3 })
-  const [inputs, setInputs] = useState<ScenarioInputDraft | null>(null)
+  const [draft, setDraft] = useState<ScenarioDraft>(initialDraft)
+  const [inputs, setInputs] = useState<ScenarioInputDraft | null>(
+    connected ? connectedInputs : null,
+  )
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
-  const current = scenarios.find((item) => item.identity.scenarioId === selected) ?? scenarios[0]
+  const current = connected
+    ? scenarios.find((item) => item.identity.scenarioId === connected.selectedScenarioId)
+    : (scenarios.find((item) => item.identity.scenarioId === selected) ?? scenarios[0])
   const copySource = sourceMode === 'scenario' ? current?.identity.scenarioId : undefined
   const configuredDraft: ScenarioDraft = {
     ...draft,
@@ -46,6 +72,20 @@ export function ScenarioPage({
         ? (draft.people ?? NaN) * (draft.perPerson ?? NaN)
         : draft.capacity,
     ...(inputs ? { inputs } : {}),
+  }
+  const onDirty = connected?.onDirty
+  const dirty = draft !== initialDraft || (connected && inputs !== connectedInputs)
+  useEffect(() => onDirty?.(Boolean(dirty)), [dirty, onDirty])
+  let canCreate = validDraft(configuredDraft)
+  if (connected) {
+    canCreate = Boolean(draft.name.trim() && draft.name.trim().length <= 256)
+    if (canCreate && !copySource) {
+      try {
+        scenarioConfiguration(configuredDraft)
+      } catch {
+        canCreate = false
+      }
+    }
   }
   const run = current?.runs.at(-1)
   const active = run && ['queued', 'running', 'cancelling'].includes(run.status)
@@ -93,8 +133,14 @@ export function ScenarioPage({
         <form
           onSubmit={(event) => {
             event.preventDefault()
-            if (validDraft(configuredDraft) && actions.create)
-              void perform(() => actions.create!(configuredDraft, copySource))
+            if (canCreate && actions.create)
+              void perform(async () => {
+                await actions.create!(configuredDraft, copySource)
+                if (connected) {
+                  setDraft(initialDraft)
+                  setInputs(connectedInputs)
+                }
+              })
           }}
         >
           <label>
@@ -118,317 +164,350 @@ export function ScenarioPage({
               onChange={(event) => setDraft({ ...draft, name: event.target.value })}
             />
           </label>
-          <label>
-            最大轮数（1–1000）
-            <input
-              type="number"
-              min="1"
-              max="1000"
-              step="1"
-              required
-              value={draft.maxRounds}
-              onChange={(event) => setDraft({ ...draft, maxRounds: event.target.valueAsNumber })}
-            />
-          </label>
-          <label>
-            每轮处理产能（单）
-            <input
-              type="number"
-              min="0"
-              step="1"
-              required
-              value={draft.capacity}
-              disabled={draft.capacityMode === 'people'}
-              onChange={(event) => setDraft({ ...draft, capacity: event.target.valueAsNumber })}
-            />
-          </label>
-          <label>
-            产能输入方式
-            <select
-              aria-label="产能输入方式"
-              value={draft.capacityMode ?? 'direct'}
-              onChange={(event) =>
-                setDraft({
-                  ...draft,
-                  capacityMode: event.target.value as 'direct' | 'people',
-                  people: 1,
-                  perPerson: 3,
-                })
-              }
-            >
-              <option value="direct">直接设置每轮产能</option>
-              <option value="people">人数 × 每人每轮处理数</option>
-            </select>
-          </label>
-          {draft.capacityMode === 'people' && (
+          {(!connected || !copySource) && (
             <>
               <label>
-                人员数
+                最大轮数（1–1000）
                 <input
                   type="number"
-                  min="0"
+                  min="1"
+                  max="1000"
                   step="1"
-                  value={draft.people}
-                  onChange={(event) => setDraft({ ...draft, people: event.target.valueAsNumber })}
-                />
-              </label>
-              <label>
-                每人每轮处理数
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={draft.perPerson}
+                  required
+                  value={draft.maxRounds}
                   onChange={(event) =>
-                    setDraft({ ...draft, perPerson: event.target.valueAsNumber })
+                    setDraft({ ...draft, maxRounds: event.target.valueAsNumber })
                   }
                 />
               </label>
+              <label>
+                每轮处理产能（单）
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  required
+                  value={draft.capacity}
+                  disabled={draft.capacityMode === 'people'}
+                  onChange={(event) => setDraft({ ...draft, capacity: event.target.valueAsNumber })}
+                />
+              </label>
+              <label>
+                产能输入方式
+                <select
+                  aria-label="产能输入方式"
+                  value={draft.capacityMode ?? 'direct'}
+                  onChange={(event) =>
+                    setDraft({
+                      ...draft,
+                      capacityMode: event.target.value as 'direct' | 'people',
+                      people: 1,
+                      perPerson: 3,
+                    })
+                  }
+                >
+                  <option value="direct">直接设置每轮产能</option>
+                  <option value="people">人数 × 每人每轮处理数</option>
+                </select>
+              </label>
+              {draft.capacityMode === 'people' && (
+                <>
+                  <label>
+                    人员数
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={draft.people}
+                      onChange={(event) =>
+                        setDraft({ ...draft, people: event.target.valueAsNumber })
+                      }
+                    />
+                  </label>
+                  <label>
+                    每人每轮处理数
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={draft.perPerson}
+                      onChange={(event) =>
+                        setDraft({ ...draft, perPerson: event.target.valueAsNumber })
+                      }
+                    />
+                  </label>
+                </>
+              )}
             </>
           )}
-          <button type="submit" disabled={busy || !actions.create || !validDraft(configuredDraft)}>
+          {connected && copySource && <p>复制所选场景的配置与输入，并使用新的场景名称。</p>}
+          <button type="submit" disabled={busy || !actions.create || !canCreate}>
             {copySource ? '复制选中场景' : '从项目创建场景'}
           </button>
         </form>
-        <p>初始状态、事件、行为和规则从所选来源复制；运行记录不会被复制为新场景结果。</p>
-        <details>
-          <summary>配置场景输入、规则、事件与业务参数</summary>
-          <p>
-            默认沿用来源场景。需要自定义时，编辑结构化内容；行为条件和规则内容仍按相应模块的支持范围校验。
-          </p>
-          <label>
-            <input
-              type="checkbox"
-              checked={inputs !== null}
-              onChange={(event) =>
-                setInputs(
-                  event.target.checked
-                    ? {
-                        initialState: '{}',
-                        events: '[]',
-                        rules: '{}',
-                        behaviors: '{}',
-                        parameters: '{}',
-                        assumptions: '',
-                        source: '',
-                      }
-                    : null,
-                )
-              }
-            />
-            自定义输入（替换复制的输入）
-          </label>
-          {inputs && (
-            <div className="scenario-inputs">
-              {(
-                [
-                  ['initialState', '初始状态（对象）'],
-                  ['events', '逐轮事件（列表，含 id、round、sequence、payload）'],
-                  ['rules', '启用规则与版本（对象）'],
-                  ['behaviors', '启用行为与版本（对象）'],
-                  ['parameters', '业务参数（对象）'],
-                  ['assumptions', '主要假设'],
-                  ['source', '数据来源'],
-                ] as const
-              ).map(([key, label]) => (
-                <label key={key}>
-                  {label}
-                  <textarea
-                    aria-label={label}
-                    rows={3}
-                    value={inputs[key]}
-                    onChange={(event) => setInputs({ ...inputs, [key]: event.target.value })}
+        {!connected && (
+          <p>初始状态、事件、行为和规则从所选来源复制；运行记录不会被复制为新场景结果。</p>
+        )}
+        {(!connected || !copySource) && (
+          <details open={connected ? true : undefined}>
+            <summary>配置场景输入、规则、事件与业务参数</summary>
+            {!connected && (
+              <>
+                <p>
+                  默认沿用来源场景。需要自定义时，编辑结构化内容；行为条件和规则内容仍按相应模块的支持范围校验。
+                </p>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={inputs !== null}
+                    onChange={(event) =>
+                      setInputs(
+                        event.target.checked
+                          ? {
+                              initialState: '{}',
+                              events: '[]',
+                              rules: '{}',
+                              behaviors: '{}',
+                              parameters: '{}',
+                              assumptions: '',
+                              source: '',
+                            }
+                          : null,
+                      )
+                    }
                   />
+                  自定义输入（替换复制的输入）
                 </label>
-              ))}
-            </div>
-          )}
-          {inputs && !validDraft(configuredDraft) && (
-            <p role="status">请检查结构化输入格式、事件身份、轮次与产能；当前配置尚不能提交。</p>
-          )}
-          <p>观察指标：工单积压、累计完成、未闭环高危告警。每轮与期末均保留，定义见下方。</p>
-        </details>
+              </>
+            )}
+            {inputs && (
+              <div className="scenario-inputs">
+                {(
+                  [
+                    ['initialState', connected ? '初始隔离编辑（列表）' : '初始状态（对象）'],
+                    ['events', '逐轮事件（列表，含 id、round、sequence、payload）'],
+                    ['rules', connected ? '规则版本' : '启用规则与版本（对象）'],
+                    ['behaviors', connected ? '行为版本' : '启用行为与版本（对象）'],
+                    ['parameters', '业务参数（对象）'],
+                    ['assumptions', '主要假设'],
+                    ['source', '数据来源'],
+                  ] as const
+                ).map(([key, label]) => (
+                  <label key={key}>
+                    {label}
+                    <textarea
+                      aria-label={label}
+                      rows={3}
+                      value={inputs[key]}
+                      onChange={(event) => setInputs({ ...inputs, [key]: event.target.value })}
+                    />
+                  </label>
+                ))}
+              </div>
+            )}
+            {inputs && !canCreate && (
+              <p role="status">请检查结构化输入格式、事件身份、轮次与产能；当前配置尚不能提交。</p>
+            )}
+            <p>观察指标：工单积压、累计完成、未闭环高危告警。每轮与期末均保留，定义见下方。</p>
+          </details>
+        )}
       </section>
       <div className="scenario-layout">
         <section className="scenario-panel" aria-labelledby="scenario-list">
           <h2 id="scenario-list">场景与对比</h2>
-          {scenarios.length === 0 && <p>尚无场景。接通项目服务后，可从当前已提交项目创建。</p>}
+          {scenarios.length === 0 && (
+            <p>{connected ? '尚无场景。' : '尚无场景。接通项目服务后，可从当前已提交项目创建。'}</p>
+          )}
           {scenarios.map((scenario) => (
             <div className="scenario-choice" key={scenario.identity.scenarioId}>
               <button
                 type="button"
                 aria-pressed={current?.identity.scenarioId === scenario.identity.scenarioId}
-                onClick={() => setSelected(scenario.identity.scenarioId)}
+                onClick={() => {
+                  setSelected(scenario.identity.scenarioId)
+                  connected?.onSelect(scenario.identity.scenarioId)
+                }}
               >
                 {scenario.name}
                 <small>
                   {scenario.maxRounds} 轮 · 产能 {scenario.capacity} 单/轮
                 </small>
               </button>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={compared.includes(scenario.identity.scenarioId)}
-                  onChange={(event) =>
-                    setCompared(
-                      event.target.checked
-                        ? [...compared, scenario.identity.scenarioId]
-                        : compared.filter((id) => id !== scenario.identity.scenarioId),
-                    )
-                  }
-                />
-                加入对比：{scenario.name}
-              </label>
+              {!connected && (
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={compared.includes(scenario.identity.scenarioId)}
+                    onChange={(event) =>
+                      setCompared(
+                        event.target.checked
+                          ? [...compared, scenario.identity.scenarioId]
+                          : compared.filter((id) => id !== scenario.identity.scenarioId),
+                      )
+                    }
+                  />
+                  加入对比：{scenario.name}
+                </label>
+              )}
             </div>
           ))}
+          {connected?.listControls}
         </section>
-        <section className="scenario-panel" aria-labelledby="scenario-details">
-          <h2 id="scenario-details">{current?.name ?? '运行详情'}</h2>
-          {current && (
-            <>
-              <p>
-                项目 {current.identity.projectId} / {current.identity.projectVersion} · 输入{' '}
-                {current.identity.inputVersion}
-              </p>
-              <p>
-                规则 {current.identity.ruleVersion} · 行为 {current.identity.behaviorVersion} · 语义{' '}
-                {current.identity.semantics}
-              </p>
-              <p>数据来源：{current.source || '未记录'}</p>
-              <ul>
-                {current.assumptions.map((text, index) => (
-                  <li key={index}>{text}</li>
-                ))}
-              </ul>
-              <div className="scenario-actions">
-                {runButton('运行场景', !!actions.run && !active, () =>
-                  actions.run!(current.identity.scenarioId, current.identity.inputVersion),
-                )}
-                {runButton('恢复基准场景', !!actions.restore && !active, () =>
-                  actions.restore!(current.identity.scenarioId),
-                )}
-                {run &&
-                  runButton(
-                    '取消运行',
-                    !!actions.cancel && !!active && run.status !== 'cancelling',
-                    () => actions.cancel!(run.id),
-                  )}
-              </div>
-              {run ? (
-                <RunDetails
-                  run={run}
-                  scenario={current}
-                  actions={actions}
-                  busy={busy}
-                  perform={perform}
-                />
-              ) : (
-                <p>还没有运行记录。运行后显示逐轮状态、指标和依据。</p>
-              )}
-              {current.runs.length > 1 && (
-                <details>
-                  <summary>历史运行（{current.runs.length - 1}）</summary>
-                  {current.runs.slice(0, -1).map((history) => (
-                    <RunDetails
-                      key={history.id}
-                      run={history}
-                      scenario={current}
-                      actions={actions}
-                      busy={busy}
-                      perform={perform}
-                    />
-                  ))}
-                </details>
-              )}
-            </>
-          )}
-        </section>
-      </div>
-      <section className="scenario-panel" aria-labelledby="scenario-compare">
-        <h2 id="scenario-compare">逐轮与最终指标对比</h2>
-        {rows.length === 0 ? (
-          <p>选择至少两个已有成功运行的场景。失败或尚未完成的运行不能作为成功结果对比。</p>
+        {connected ? (
+          connected.runContent
         ) : (
-          <>
-            <div className="scenario-table-scroll">
-              <table>
-                <caption>
-                  每格依次为积压 / 累计完成 / 未闭环高危告警；最后一行为各场景该轮指标。
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">轮次</th>
-                    {comparison.map(({ scenario, run: item }) => (
-                      <th scope="col" key={scenario.identity.scenarioId}>
-                        {scenario.name}
-                        <small>
-                          {item && resultLabel(item, scenario.identity)} ·{' '}
-                          {item?.identity.inputVersion}
-                        </small>
-                      </th>
+          <section className="scenario-panel" aria-labelledby="scenario-details">
+            <h2 id="scenario-details">{current?.name ?? '运行详情'}</h2>
+            {current && (
+              <>
+                <p>
+                  项目 {current.identity.projectId} / {current.identity.projectVersion} · 输入{' '}
+                  {current.identity.inputVersion}
+                </p>
+                <p>
+                  规则 {current.identity.ruleVersion} · 行为 {current.identity.behaviorVersion} ·
+                  语义 {current.identity.semantics}
+                </p>
+                <p>数据来源：{current.source || '未记录'}</p>
+                <ul>
+                  {current.assumptions.map((text, index) => (
+                    <li key={index}>{text}</li>
+                  ))}
+                </ul>
+                <div className="scenario-actions">
+                  {runButton('运行场景', !!actions.run && !active, () =>
+                    actions.run!(current.identity.scenarioId, current.identity.inputVersion),
+                  )}
+                  {runButton('恢复基准场景', !!actions.restore && !active, () =>
+                    actions.restore!(current.identity.scenarioId),
+                  )}
+                  {run &&
+                    runButton(
+                      '取消运行',
+                      !!actions.cancel && !!active && run.status !== 'cancelling',
+                      () => actions.cancel!(run.id),
+                    )}
+                </div>
+                {run ? (
+                  <RunDetails
+                    run={run}
+                    scenario={current}
+                    actions={actions}
+                    busy={busy}
+                    perform={perform}
+                  />
+                ) : (
+                  <p>还没有运行记录。运行后显示逐轮状态、指标和依据。</p>
+                )}
+                {current.runs.length > 1 && (
+                  <details>
+                    <summary>历史运行（{current.runs.length - 1}）</summary>
+                    {current.runs.slice(0, -1).map((history) => (
+                      <RunDetails
+                        key={history.id}
+                        run={history}
+                        scenario={current}
+                        actions={actions}
+                        busy={busy}
+                        perform={perform}
+                      />
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.round}>
-                      <th scope="row">{row.round}</th>
-                      {row.values.map((value, index) => (
-                        <td key={comparison[index].scenario.identity.scenarioId}>
-                          {value
-                            ? `${value.backlog} / ${value.completed} / ${value.openHighAlerts}`
-                            : '无该轮记录'}
-                        </td>
+                  </details>
+                )}
+              </>
+            )}
+          </section>
+        )}
+      </div>
+      {!connected && (
+        <section className="scenario-panel" aria-labelledby="scenario-compare">
+          <h2 id="scenario-compare">逐轮与最终指标对比</h2>
+          {rows.length === 0 ? (
+            <p>选择至少两个已有成功运行的场景。失败或尚未完成的运行不能作为成功结果对比。</p>
+          ) : (
+            <>
+              <div className="scenario-table-scroll">
+                <table>
+                  <caption>
+                    每格依次为积压 / 累计完成 / 未闭环高危告警；最后一行为各场景该轮指标。
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">轮次</th>
+                      {comparison.map(({ scenario, run: item }) => (
+                        <th scope="col" key={scenario.identity.scenarioId}>
+                          {scenario.name}
+                          <small>
+                            {item && resultLabel(item, scenario.identity)} ·{' '}
+                            {item?.identity.inputVersion}
+                          </small>
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <h3>各场景最终已提交指标</h3>
-            <ul>
-              {comparison.map(({ scenario, run: item }) => {
-                const final = item?.rounds.at(-1)
-                return (
+                  </thead>
+                  <tbody>
+                    {rows.map((row) => (
+                      <tr key={row.round}>
+                        <th scope="row">{row.round}</th>
+                        {row.values.map((value, index) => (
+                          <td key={comparison[index].scenario.identity.scenarioId}>
+                            {value
+                              ? `${value.backlog} / ${value.completed} / ${value.openHighAlerts}`
+                              : '无该轮记录'}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <h3>各场景最终已提交指标</h3>
+              <ul>
+                {comparison.map(({ scenario, run: item }) => {
+                  const final = item?.rounds.at(-1)
+                  return (
+                    <li key={scenario.identity.scenarioId}>
+                      {scenario.name}：
+                      {final
+                        ? `第 ${final.number} 轮 · 积压 ${final.metrics.backlog} 单 · 累计完成 ${final.metrics.completed} 单 · 未闭环高危 ${final.metrics.openHighAlerts} 条`
+                        : '没有已提交轮次'}
+                    </li>
+                  )
+                })}
+              </ul>
+              <ul>
+                {comparison.map(({ scenario, run: item }) => (
                   <li key={scenario.identity.scenarioId}>
-                    {scenario.name}：
-                    {final
-                      ? `第 ${final.number} 轮 · 积压 ${final.metrics.backlog} 单 · 累计完成 ${final.metrics.completed} 单 · 未闭环高危 ${final.metrics.openHighAlerts} 条`
-                      : '没有已提交轮次'}
+                    {scenario.name}：{item && completionLabel(item)}
                   </li>
-                )
-              })}
-            </ul>
-            <ul>
-              {comparison.map(({ scenario, run: item }) => (
-                <li key={scenario.identity.scenarioId}>
-                  {scenario.name}：{item && completionLabel(item)}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-        <dl>
-          {metricDefinitions.map(([name, formula]) => (
-            <div key={name}>
-              <dt>{name}</dt>
-              <dd>{formula}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+                ))}
+              </ul>
+            </>
+          )}
+          <dl>
+            {metricDefinitions.map(([name, formula]) => (
+              <div key={name}>
+                <dt>{name}</dt>
+                <dd>{formula}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
     </main>
   )
 }
 
-function RunDetails({
+export function RunDetails({
   run,
   scenario,
   actions,
   busy,
   perform,
+  connected,
 }: {
   run: RunView
+  connected?: boolean
   scenario: ScenarioView
   actions: ScenarioActions
   busy: boolean
@@ -440,7 +519,8 @@ function RunDetails({
     <article className="scenario-run">
       <h3>{resultLabel(run, scenario.identity)}</h3>
       <p>
-        运行 {run.id} · 输入 {run.identity.inputVersion} · 最后已提交轮次 {last?.number ?? 0}
+        运行 {run.id} · 输入 {run.identity.inputVersion} · 最后已提交轮次{' '}
+        {run.lastCommittedRound ?? last?.number ?? 0}
       </p>
       <p>
         项目 {run.identity.projectId} / {run.identity.projectVersion} · 规则{' '}
@@ -473,29 +553,31 @@ function RunDetails({
           ? '重放所需记录已齐全'
           : `不可重放：${run.replayUnavailableReason || '输入或执行版本记录尚未齐全'}`}
       </p>
-      <div className="scenario-actions">
-        <button
-          type="button"
-          disabled={busy || !terminal || !run.replayAvailable || !actions.replay}
-          onClick={() => void perform(() => actions.replay!(run.id))}
-        >
-          独立重放（从初始消费状态）
-        </button>
-        <button
-          type="button"
-          disabled={busy || !terminal || !last || !actions.resume}
-          onClick={() => void perform(() => actions.resume!(run.id, last!.number))}
-        >
-          显式从最后快照续跑
-        </button>
-        <button
-          type="button"
-          disabled={busy || !terminal || !actions.deleteRun}
-          onClick={() => void perform(() => actions.deleteRun!(run.id))}
-        >
-          删除此运行记录
-        </button>
-      </div>
+      {!connected && (
+        <div className="scenario-actions">
+          <button
+            type="button"
+            disabled={busy || !terminal || !run.replayAvailable || !actions.replay}
+            onClick={() => void perform(() => actions.replay!(run.id))}
+          >
+            独立重放（从初始消费状态）
+          </button>
+          <button
+            type="button"
+            disabled={busy || !terminal || !last || !actions.resume}
+            onClick={() => void perform(() => actions.resume!(run.id, last!.number))}
+          >
+            显式从最后快照续跑
+          </button>
+          <button
+            type="button"
+            disabled={busy || !terminal || !actions.deleteRun}
+            onClick={() => void perform(() => actions.deleteRun!(run.id))}
+          >
+            删除此运行记录
+          </button>
+        </div>
+      )}
       {run.rounds.map((round) => (
         <details key={round.number}>
           <summary>
@@ -518,13 +600,15 @@ function RunDetails({
             <dt>轮末推理</dt>
             <dd>{round.endInference}</dd>
           </dl>
-          <button
-            type="button"
-            disabled={busy || !terminal || !actions.resume}
-            onClick={() => void perform(() => actions.resume!(run.id, round.number))}
-          >
-            显式从第 {round.number} 轮快照创建续跑
-          </button>
+          {!connected && (
+            <button
+              type="button"
+              disabled={busy || !terminal || !actions.resume}
+              onClick={() => void perform(() => actions.resume!(run.id, round.number))}
+            >
+              显式从第 {round.number} 轮快照创建续跑
+            </button>
+          )}
         </details>
       ))}
     </article>

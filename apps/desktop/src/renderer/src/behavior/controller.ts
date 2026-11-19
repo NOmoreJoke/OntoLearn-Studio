@@ -1,3 +1,4 @@
+import { errorText } from './presentation'
 import {
   bindingSchema,
   draftSchema,
@@ -196,7 +197,7 @@ export class BehaviorController {
     let request: SampleRequest
     try {
       request = {
-        binding: { ...this.state.context, requestId: `behavior-ui-${crypto.randomUUID()}` },
+        binding: { ...this.state.context, requestId: crypto.randomUUID() },
         draft: draftSchema.parse(this.state.draft),
         events: parseEvents(this.state.events).events,
       }
@@ -212,9 +213,19 @@ export class BehaviorController {
     })
     try {
       this.receive(await service(structuredClone(request)), operation)
-    } catch {
-      if (this.accepts(operation))
-        this.publish({ notice: '隔离测试调用失败，未取得成功证据。请对账后重试。' })
+    } catch (error) {
+      if (this.accepts(operation)) {
+        const known =
+          error instanceof Error && 'code' in error && typeof error.code === 'string'
+            ? (error.code as keyof typeof errorText)
+            : undefined
+        this.publish({
+          notice:
+            known && Object.hasOwn(errorText, known)
+              ? errorText[known]
+              : '隔离测试调用失败，未取得成功证据。请对账后重试。',
+        })
+      }
     } finally {
       this.finish(operation)
     }
@@ -258,12 +269,23 @@ export class BehaviorController {
     }
   }
   async cancel() {
-    const operation = this.currentOperation()
     const service = this.services.cancelSample
-    if (!operation || operation.view.kind !== 'run' || operation.cancelAttempt || !service) return
+    if (!service) return
+    let operation = this.currentOperation()
+    const result = this.state.result
+    const reconcileCandidate =
+      !operation && result?.state === 'candidate' && result.freshness === 'current'
+    if (reconcileCandidate && result)
+      operation = this.begin(
+        'run',
+        result.binding,
+        this.state.resultRevision ?? this.state.revision,
+      )
+    if (!operation || operation.view.kind !== 'run' || operation.cancelAttempt) return
+    const ownedOperation = operation
     const attempt = {}
     operation.cancelAttempt = attempt
-    const ownsAttempt = () => this.owns(operation) && operation.cancelAttempt === attempt
+    const ownsAttempt = () => this.owns(ownedOperation) && ownedOperation.cancelAttempt === attempt
     this.publish({ cancelling: true, notice: '已请求取消，等待服务确认收尾；尚未视为已取消。' })
     try {
       const value = await service(structuredClone(operation.view.binding))
@@ -288,7 +310,8 @@ export class BehaviorController {
     } finally {
       if (ownsAttempt()) {
         operation.cancelAttempt = undefined
-        if (this.visible(operation)) this.publish({ cancelling: false })
+        if (reconcileCandidate) this.finish(operation)
+        else if (this.visible(operation)) this.publish({ cancelling: false })
       }
     }
   }

@@ -21,15 +21,9 @@ const pageActions: Record<AgentPage, readonly AgentAction[]> = {
   behavior: ['hint', 'check', 'explain'],
   scenario: ['hint', 'check', 'explain'],
 }
-/**
- * Map a shell workspace to the frozen Agent module vocabulary.
- * The shell and the contract already agree; the explicit mapping keeps the
- * seam visible instead of relying on a structural coincidence.
- */
-export function toAgentModule(
-  workspace: 'query' | 'ontology' | 'quality' | 'learn' | 'mapping' | 'behavior' | 'scenario',
-): AgentModule {
-  return workspace
+/** Transfer uses the learning context because the frozen Agent contract has no transfer module. */
+export function toAgentModule(workspace: AgentModule | 'transfer'): AgentModule {
+  return workspace === 'transfer' ? 'learn' : workspace
 }
 export function contextActions(
   page: AgentPage,
