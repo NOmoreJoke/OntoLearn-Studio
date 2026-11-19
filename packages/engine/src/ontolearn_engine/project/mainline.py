@@ -9,7 +9,9 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from uuid import uuid4
 
+from ontolearn_engine.behavior.service import METHODS as BEHAVIOR_METHODS
 from ontolearn_engine.job_store import JobFault, fault
+from ontolearn_engine.mapping.service import METHODS as MAPPING_METHODS
 from ontolearn_engine.project.checkpoint_host import CheckpointHost
 from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
 from ontolearn_engine.project.learning_agent import METHODS as AGENT_METHODS
@@ -32,7 +34,10 @@ from ontolearn_engine.project.query_definitions import (
     QueryRead,
     QueryReadBudget,
 )
+from ontolearn_engine.project.run_before_commit import METHODS as RUN_METHODS
+from ontolearn_engine.scenario.service import METHODS as SCENARIO_METHODS
 from ontolearn_engine.storage import Conflict, canonical
+from ontolearn_engine.transfer.service import METHODS as TRANSFER_METHODS
 
 METHODS = frozenset(
     {
@@ -59,6 +64,11 @@ METHODS = (
     | EXPORT_METHODS
     | IMPORT_METHODS
     | AGENT_METHODS
+    | MAPPING_METHODS
+    | TRANSFER_METHODS
+    | RUN_METHODS
+    | BEHAVIOR_METHODS
+    | SCENARIO_METHODS
 )
 
 READ_LIMITS = ReadLimits(validation_rows=4096, validation_bytes=1572864, validation_work=67108864)
@@ -963,6 +973,81 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
                         result = learning_agent.dispatch(
                             self.store, method, params, self.learning, origin
                         )
+                except Conflict as error:
+                    code = {
+                        "identity": "IDENTITY_CONFLICT",
+                        "input": "INVALID_REQUEST",
+                        "revision": "REVISION_CONFLICT",
+                    }.get(error.category, "INVALID_STATE")
+                    if code == "INVALID_REQUEST":
+                        fault(code, field="params")
+                    fault(code)
+            elif method in (
+                MAPPING_METHODS
+                | TRANSFER_METHODS
+                | RUN_METHODS
+                | BEHAVIOR_METHODS
+                | SCENARIO_METHODS
+            ):
+                # W4-A1: mapping/transfer named bridges and the main-process-
+                # only before-run checkpoint share the same selected-project
+                # fencing and Store budget book. Staged file bytes are
+                # pre-reserved per purpose: mapping sources stay within the
+                # parser bound; packages within the archive bound.
+                # W4-A2: the behavior/scenario named bridges ride the same
+                # fencing with no staged file bytes (frame-bounded DTOs only).
+                from ontolearn_engine.mapping.source import MAX_BYTES as MAPPING_MAX_BYTES
+                from ontolearn_engine.transfer.package import MAX_ARCHIVE
+
+                self.authorize(params)
+                # The W4 services traverse bounded Store state (no semantic
+                # query materialization); their admission prepay mirrors
+                # reserve_store's reader validation at a fitting scale, with
+                # staged file bytes charged on top at their true bound.
+                budget.reserve(
+                    "w4 store admission",
+                    bytes_=8 * self.reader_limits.validation_bytes,
+                    objects=8192,
+                    work=self.reader_limits.validation_work,
+                )
+                self.preflight()
+                staged = 0
+                if method in MAPPING_METHODS and method not in {
+                    "project.mapping.draft.read",
+                    "project.mapping.draft.save",
+                }:
+                    staged = MAPPING_MAX_BYTES
+                elif method in TRANSFER_METHODS:
+                    staged = MAX_ARCHIVE
+                if staged:
+                    budget.reserve(
+                        "staged file bytes",
+                        bytes_=staged,
+                        objects=4096,
+                        work=staged,
+                    )
+                origin = {"hostClientId": self.host, "engineSessionId": self.session}
+                try:
+                    if method in MAPPING_METHODS:
+                        from ontolearn_engine.mapping import service as mapping_service
+
+                        result = mapping_service.dispatch(self.store, method, params, origin)
+                    elif method in TRANSFER_METHODS:
+                        from ontolearn_engine.transfer import service as transfer_service
+
+                        result = transfer_service.dispatch(self.store, method, params, self, origin)
+                    elif method in BEHAVIOR_METHODS:
+                        from ontolearn_engine.behavior import service as behavior_service
+
+                        result = behavior_service.dispatch(self.store, method, params, origin)
+                    elif method in SCENARIO_METHODS:
+                        from ontolearn_engine.scenario import service as scenario_service
+
+                        result = scenario_service.dispatch(self.store, method, params, origin)
+                    else:
+                        from ontolearn_engine.project import run_before_commit
+
+                        result = run_before_commit.dispatch(self.store, method, params, origin)
                 except Conflict as error:
                     code = {
                         "identity": "IDENTITY_CONFLICT",
