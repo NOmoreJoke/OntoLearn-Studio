@@ -4,10 +4,8 @@ Eleven ``business3`` methods (selected-project authority, named-bridge exposure)
 backed by :mod:`ontolearn_engine.scenario.model` / :mod:`ontolearn_engine.scenario.runner`
 and durable namespaced SQLite storage. ``job_details`` is append-only evidence
 (immutable by SQL trigger): every write mints a new row - a definition, an
-operation claim, a run claim, one terminal checkpoint row carrying the whole
-committed-round history (atomic run checkpointing: every round boundary is
-all-or-nothing, and a crash leaves the durable running claim for cancel/resume
-reconciliation), and tombstone markers for restricted deletion/isolated
+operation claim, a run claim, committed round rows, a terminal checkpoint,
+and tombstone markers for restricted deletion/isolated
 restore. Readers fold the rows; no key ever collides with ``run_before_commit``'s
 own primary keys, and formal asserted project facts and project checkpoints
 are NEVER modified by any scenario operation.
@@ -30,9 +28,9 @@ from ontolearn_engine.scenario.model import (
     Event,
     State,
     WorkOrder,
-    create_order,
 )
-from ontolearn_engine.scenario.runner import Checkpoint, Inference
+from ontolearn_engine.scenario.runner import Checkpoint
+from ontolearn_engine.scenario.working_copy import ScenarioCopy, configured_items
 from ontolearn_engine.storage import canonical, digest
 
 METHODS = frozenset(
@@ -79,6 +77,14 @@ def _read_detail(store, project, identity):
         fault("INVALID_STATE")
     if not isinstance(record, dict) or record.get("projectId") != project:
         fault("INVALID_STATE")
+    if identity.startswith(TERMINAL_PREFIX) and record.get("roundLedger") is True:
+        claim = _read_detail(store, project, RUN_PREFIX + record["runId"])
+        rounds = _round_entries(store, project, claim)
+        return {
+            **record,
+            "rounds": rounds,
+            "checkpoint": rounds[-1]["checkpoint"] if rounds else claim["checkpoint"],
+        }
     return record
 
 
@@ -107,8 +113,9 @@ def indexed_scenarios(store, project):
 def indexed_run_ids(store, project):
     """All run ids of the project (bounded constant-prefix scan, rowid order)."""
     rows = store._db.execute(
-        "SELECT id FROM job_details WHERE project=? AND id>=? AND id<? ORDER BY rowid LIMIT ?",
-        (project, "w4:scenario:run:", "w4:scenario:run:\uffff", RESULT_SCAN_CAP),
+        "SELECT id FROM job_details WHERE project=? AND id>=? AND id<? "
+        "AND instr(substr(id, ?), ':')=0 ORDER BY rowid LIMIT ?",
+        (project, RUN_PREFIX, RUN_PREFIX + "\uffff", len(RUN_PREFIX) + 1, RESULT_SCAN_CAP),
     ).fetchall()
     return [row["id"][len(RUN_PREFIX) :] for row in rows]
 
@@ -231,6 +238,7 @@ def _capacity(configuration):
 
 def _build_definition(store, internal, project, scenario_id, configuration, params):
     snapshot = store._snapshot_projection(internal)
+    state = store.state(internal)
     input_version = digest(snapshot["state"])
     try:
         definition = Definition(
@@ -253,11 +261,17 @@ def _build_definition(store, internal, project, scenario_id, configuration, para
                 )
                 for event in configuration["events"]
             ),
+            rules=canonical(configured_items(configuration["parameters"], "rules")),
+            behaviors=canonical(configured_items(configuration["parameters"], "behaviors")),
             parameters=canonical(configuration["parameters"]),
             source=configuration["source"],
             assumptions=tuple(configuration["assumptions"]),
         )
-    except ValueError:
+        initial = ScenarioCopy(state, definition, configuration).initial(
+            configuration["initialEdits"]
+        )
+        definition = replace(definition, initial=initial)
+    except (ValueError, TypeError, KeyError):
         fault("INVALID_REQUEST", field="params")
     return definition, input_version
 
@@ -291,91 +305,92 @@ def _evidence(configuration):
 # --- wire ports -----------------------------------------------------------------------
 
 
-class _WirePorts:
-    """Fixed Stage 1 scenario stages over the isolated copy and Store rounds.
+def _round_prefix(run_id):
+    return f"{RUN_PREFIX}{run_id}:round:"
 
-    ``apply_events`` projects alerts from real event payloads; ``execute`` mints
-    E.3 stable work orders; ``plan`` is the frozen zero-action behavior stage
-    (the configuration records behavior identity by version only). ``commit``
-    freezes each finished round into the run's checkpoint collection, which the
-    owner persists through one atomic Store transaction (atomic run
-    checkpointing: every round boundary is all-or-nothing and a crash leaves
-    the durable running claim for cancel/resume reconciliation).
-    """
 
-    def __init__(self, store, project, run_id):
+def _round_entries(store, project, claim):
+    prefix = _round_prefix(claim["runId"])
+    rows = store._db.execute(
+        "SELECT payload FROM job_details WHERE project=? AND id>=? AND id<? ORDER BY id",
+        (project, prefix, prefix + "\uffff"),
+    )
+    definition = _definition_row(store, project, claim["scenarioId"])["definition"]
+    events = scenario_runner.event_catalog(tuple(Event(**item) for item in definition["events"]))
+    events = [asdict(event) for event in events.values()]
+    rounds = []
+    for row in rows:
+        entry = json.loads(row["payload"])["entry"]
+        checkpoint = entry["checkpoint"]
+        checkpoint["events"] = [*events, *checkpoint.pop("generatedEvents")]
+        state = checkpoint["state"]
+        data = json.loads(state["assertions"])
+        state["assertions"] = canonical({**data, "facts": entry["evidence"]["facts"]})
+        if digest(checkpoint) != entry["round"]["checkpointRef"]:
+            fault("INVALID_STATE")
+        rounds.append(entry)
+    return rounds
+
+
+class _WirePorts(ScenarioCopy):
+    """Append each successful round through the execution transaction."""
+
+    def __init__(self, store, project, run_id, state, definition, configuration):
+        super().__init__(state, definition, configuration)
         self.store, self.project, self.run_id = store, project, run_id
-        self.current_events = ()
         self.rounds = []
-
-    def apply_events(self, state, events, context, check):
-        check()
-        self.current_events = events
-        alerts = []
-        for event in events:
-            try:
-                payload = json.loads(event.payload)
-            except ValueError:
-                fault("INVALID_STATE")
-            if isinstance(payload, dict) and all(
-                key in payload for key in ("alarmId", "level", "status")
-            ):
-                alerts.append(
-                    Alert(
-                        str(payload["alarmId"]),
-                        str(payload["level"]),
-                        str(payload["status"]),
-                    )
-                )
-        if alerts:
-            return replace(state, alerts=(*state.alerts, *alerts))
-        return state
-
-    def infer(self, state, definition, context, check):
-        check()
-        return Inference(state, definition.rule_version, digest(asdict(state)), context)
-
-    def plan(self, state, inference, events, context, check):
-        check()
-        return scenario_runner.Plan(0, "{}", ())
-
-    def execute(self, state, plan, context, check):
-        check()
-        for event in self.current_events:
-            state = create_order(state, event.id, context.round)
-        return scenario_runner.Execution(state, plan.action_count)
+        self.original_events = {event.id for event in definition.events}
 
     def commit(self, record, check):
         check()
-        checkpoint_ref = digest(asdict(record.checkpoint))
-        self.rounds.append(
-            {
-                "round": {
-                    "number": record.checkpoint.round,
-                    "created": list(record.created),
-                    "resourceCompleted": list(record.resource_completed),
-                    "backlog": list(record.backlog),
-                    "metrics": {
-                        "backlog": record.metrics.backlog,
-                        "completed": record.metrics.completed,
-                        "openHighAlerts": record.metrics.open_high_alerts,
-                    },
-                    "inputEvents": list(record.input_events),
-                    "behaviorTrace": [
-                        {
-                            "eventId": event_id,
-                            "behaviorId": behavior_id,
-                            "actionIndex": action_index,
-                        }
-                        for event_id, behavior_id, action_index in record.trace
-                    ],
-                    "beforeInference": record.before_inference.snapshot,
-                    "endInference": record.end_inference.snapshot,
-                    "checkpointRef": checkpoint_ref,
+        checkpoint = asdict(record.checkpoint)
+        checkpoint_ref = digest(checkpoint)
+        evidence = self.round_evidence(record)
+        entry = {
+            "round": {
+                "number": record.checkpoint.round,
+                "created": list(record.created),
+                "resourceCompleted": list(record.resource_completed),
+                "backlog": list(record.backlog),
+                "metrics": {
+                    "backlog": record.metrics.backlog,
+                    "completed": record.metrics.completed,
+                    "openHighAlerts": record.metrics.open_high_alerts,
                 },
-                "checkpoint": asdict(record.checkpoint),
-            }
-        )
+                "inputEvents": list(record.input_events),
+                "behaviorTrace": evidence["actionTrace"],
+                "beforeInference": record.before_inference.snapshot,
+                "endInference": record.end_inference.snapshot,
+                "checkpointRef": checkpoint_ref,
+            },
+            "checkpoint": checkpoint,
+            "evidence": evidence,
+            "planDigest": self.plan_digest(record.frozen_plan),
+        }
+        stored_state = dict(checkpoint["state"])
+        data = json.loads(stored_state["assertions"])
+        del data["facts"]
+        stored_state["assertions"] = canonical(data)
+        stored_checkpoint = {
+            **{key: value for key, value in checkpoint.items() if key != "events"},
+            "state": stored_state,
+            "generatedEvents": [
+                event for event in checkpoint["events"] if event["id"] not in self.original_events
+            ],
+        }
+        with self.store._transaction():
+            check()
+            _insert_detail(
+                self.store,
+                self.project,
+                f"{_round_prefix(self.run_id)}{record.checkpoint.round:04}",
+                {
+                    "projectId": self.project,
+                    "runId": self.run_id,
+                    "entry": {**entry, "checkpoint": stored_checkpoint},
+                },
+            )
+        self.rounds.append(entry)
 
 
 def _pending_ids(checkpoint_data):
@@ -385,13 +400,13 @@ def _pending_ids(checkpoint_data):
 
 def _run_dto(record, *, round_offset=None, limit=MAX_RUNS_PER_SCENARIO):
     rounds = [entry["round"] for entry in record["rounds"]]
+    last = record["lastCommittedRound"]
     if round_offset is None:
         # Contract semantics: rounds[i].number == roundOffset + i + 1, so a
         # resumed run's page naturally starts at its first committed round.
-        round_offset = rounds[0]["number"] - 1 if rounds else 0
+        round_offset = rounds[0]["number"] - 1 if rounds else last
     # Paging is by round number (this run may start at a resumed round).
     rounds = [entry for entry in rounds if entry["number"] > round_offset][:limit]
-    last = record["lastCommittedRound"]
     return {
         "runId": record["runId"],
         "identity": record["identity"],
@@ -401,8 +416,8 @@ def _run_dto(record, *, round_offset=None, limit=MAX_RUNS_PER_SCENARIO):
         "rounds": rounds,
         "roundOffset": round_offset,
         "pendingEvents": record.get("pendingEvents", []),
-        "checkpointRef": record["rounds"][-1]["round"]["checkpointRef"] if last else None,
-        "resumeAvailable": record["status"] in ("cancelled", "failed") and last > 0,
+        "checkpointRef": digest(record["checkpoint"]) if record["checkpoint"] is not None else None,
+        "resumeAvailable": (record["status"] in ("cancelled", "failed") and bool(record["rounds"])),
         "replayAvailable": True,
         "replayUnavailableReason": None,
         "evidence": record["evidence"],
@@ -626,21 +641,34 @@ def _read_scenario(store, params, origin):
         }
 
 
-def _execute_run(store, project, record, definition, resume):
-    """Claimed run execution; the finished rounds persist through one atomic
-    run checkpoint transaction (every round boundary all-or-nothing)."""
-    ports = _WirePorts(store, project, record["runId"])
-    result = scenario_runner.run(
-        definition,
-        ports,
-        cancelled=lambda: False,
-        resume=resume,
-    )
+def _execute_run(store, project, record, definition, resume, ports):
+    """Finalize a run from its committed round ledger."""
+    run_id = record["runId"]
+
+    def cancelled():
+        with store._read():
+            return (
+                _tombstoned(store, project, run_id)
+                or _read_detail(store, project, TERMINAL_PREFIX + run_id) is not None
+            )
+
+    # The named request pre-pays one final material admission for execution.
+    # Round savepoints are appended in that transaction and are published with
+    # the terminal result, including the successful prefix of a failed run.
     with store._transaction():
+        result = scenario_runner.run(
+            definition,
+            ports,
+            cancelled=cancelled,
+            resume=resume,
+            finalize_resources=ports.finalize_resources,
+        )
         claim = _read_detail(store, project, RUN_PREFIX + record["runId"])
         if claim is None or claim.get("status") not in ("running", "queued"):
             fault("INVALID_STATE")
-        if _read_detail(store, project, TERMINAL_PREFIX + record["runId"]) is not None:
+        if _read_detail(store, project, TERMINAL_PREFIX + run_id) is not None:
+            return _run_row(store, project, run_id)
+        if _tombstoned(store, project, run_id):
             fault("INVALID_STATE")
         row = {
             **claim,
@@ -660,9 +688,8 @@ def _execute_run(store, project, record, definition, resume):
                 "projectId": project,
                 "runId": record["runId"],
                 "status": row["status"],
-                "rounds": row["rounds"],
+                "roundLedger": True,
                 "lastCommittedRound": row["lastCommittedRound"],
-                "checkpoint": row["checkpoint"],
                 "pendingEvents": row["pendingEvents"],
                 "error": row["error"],
             },
@@ -696,6 +723,23 @@ def _start_run(store, params, origin, *, source_run=None):
         definition = _definition_from_dict(definition_row["definition"])
         if definition.digest != definition_row["definitionDigest"]:
             fault("INVALID_STATE")
+        identity = definition_row["identity"]
+        if (
+            identity["projectVersion"] != params["projectVersion"]
+            or identity["inputSnapshotId"] != params["inputSnapshotId"]
+        ):
+            fault("IDENTITY_CONFLICT")
+        try:
+            ports = _WirePorts(
+                store,
+                project,
+                run_id,
+                store.state(internal),
+                definition,
+                definition_row["configuration"],
+            )
+        except (ValueError, TypeError, KeyError):
+            fault("INVALID_STATE")
         resume_checkpoint = None
         if source_run is not None:
             source = _run_row(store, project, source_run)
@@ -718,7 +762,20 @@ def _start_run(store, params, origin, *, source_run=None):
             if not matches:
                 # Unknown checkpoint: no implicit resume, no blind replay.
                 fault("IDENTITY_CONFLICT")
-            resume_checkpoint = _checkpoint_from_dict(matches[0]["checkpoint"])
+            checkpoint = matches[0]["checkpoint"]
+            if digest(checkpoint) != params["checkpointRef"]:
+                fault("IDENTITY_CONFLICT")
+            resume_checkpoint = _checkpoint_from_dict(checkpoint)
+            try:
+                scenario_runner._validate_resume(definition, resume_checkpoint)
+                saved_inference = matches[0].get("evidence", {}).get("inferred")
+                if saved_inference is not None and (
+                    ports.reasoner.infer(ports.read(resume_checkpoint.state)["facts"])
+                    != (saved_inference, matches[0]["round"]["endInference"])
+                ):
+                    fault("IDENTITY_CONFLICT")
+            except ValueError:
+                fault("IDENTITY_CONFLICT")
         if _read_detail(store, project, RUN_PREFIX + run_id) is not None:
             fault("IDENTITY_CONFLICT")
         record = {
@@ -734,9 +791,13 @@ def _start_run(store, params, origin, *, source_run=None):
             "sourceRunId": source_run,
             "resumedFrom": params.get("checkpointRef"),
             "rounds": [],
-            "lastCommittedRound": 0,
-            "checkpoint": None,
-            "pendingEvents": [event["id"] for event in definition_row["definition"]["events"]],
+            "lastCommittedRound": resume_checkpoint.round if resume_checkpoint else 0,
+            "checkpoint": asdict(resume_checkpoint) if resume_checkpoint else None,
+            "pendingEvents": (
+                _pending_ids(asdict(resume_checkpoint))
+                if resume_checkpoint
+                else [event["id"] for event in definition_row["definition"]["events"]]
+            ),
             "error": None,
         }
         _insert_detail(store, project, RUN_PREFIX + run_id, record)
@@ -753,7 +814,7 @@ def _start_run(store, params, origin, *, source_run=None):
                 "resumedFrom": params.get("checkpointRef"),
             },
         )
-    row = _execute_run(store, project, record, definition, resume_checkpoint)
+    row = _execute_run(store, project, record, definition, resume_checkpoint, ports)
     return _run_result(
         project, operation, row, source_run=source_run, resumed_from=params.get("checkpointRef")
     )

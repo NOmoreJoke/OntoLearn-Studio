@@ -5,7 +5,7 @@ backed by :mod:`ontolearn_engine.behavior.planner` over an isolated working
 copy. Formal asserted project facts are NEVER mutated: every durable record is
 appended under ``w4:behavior:*`` namespaced ``job_details`` keys inside
 ordinary Store transactions. ``job_details`` is append-only evidence (immutable
-by SQL trigger), so state transitions mint new rows - a run record, a separate
+by SQL trigger), so state transitions mint new rows - a scope commit, a run record, a separate
 cancelled marker, an operation claim and a run-index row - and readers fold
 them. No key ever collides with ``run_before_commit``'s own primary keys.
 
@@ -13,7 +13,7 @@ All eleven frozen interface rules (interface-freeze.md §T06) are enforced here:
 trigger binding, condition lowering against the real frozen snapshot catalog,
 catalog-checked action cardinality, reserved event payload key rejection,
 host-supplied real input versions, tagged-union diff projection, the
-candidate/failed/cancelled lifecycle, dynamic freshness, cancel terminal
+completed/candidate/failed/cancelled lifecycle, dynamic freshness, cancel terminal
 persistence and the strict public error projection. Private planner evidence,
 raw exceptions, OS paths and stack traces never cross the wire.
 """
@@ -22,12 +22,10 @@ import json
 import re
 import sqlite3
 
-from rdflib import URIRef
-
+from ontolearn_engine.behavior import working_copy as copy
 from ontolearn_engine.behavior.planner import BehaviorError, plan_behaviors, prepare_events
 from ontolearn_engine.project.ontology_turtle import resolve_active
 from ontolearn_engine.project.run_before_commit import lookup_receipt
-from ontolearn_engine.rdf_snapshot import TermInputError, term
 from ontolearn_engine.storage import canonical, digest
 
 METHODS = frozenset(
@@ -38,7 +36,7 @@ METHODS = frozenset(
     }
 )
 
-RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+RDF_TYPE = copy.RDF_TYPE
 OWL = "http://www.w3.org/2002/07/owl#"
 OWL_CLASS = OWL + "Class"
 OWL_DATATYPE_PROPERTY = OWL + "DatatypeProperty"
@@ -46,6 +44,7 @@ OWL_OBJECT_PROPERTY = OWL + "ObjectProperty"
 OWL_FUNCTIONAL_PROPERTY = OWL + "FunctionalProperty"
 # Mirror of the frozen TS BehaviorAdapterContract.event.reservedPayloadKeys.
 RESERVED_PAYLOAD_KEYS = ("__proto__", "constructor", "prototype")
+SCOPE_PREFIX = "w4:behavior:scope:"
 RUN_PREFIX = "w4:behavior:run:"
 OP_PREFIX = "w4:behavior:op:"
 RUNIDX_PREFIX = "w4:behavior:runidx:"
@@ -205,6 +204,13 @@ def _ontology_material(state):
         try:
             payload = json.loads(record["payload"])
             triples = payload["triples"] if isinstance(payload, dict) else None
+            if isinstance(payload, dict):
+                cardinality = payload.get("singleValuedPredicates", [])
+                if not isinstance(cardinality, list) or any(
+                    not isinstance(prop, str) for prop in cardinality
+                ):
+                    fault("INVALID_STATE")
+                functional.update(cardinality)
         except (ValueError, TypeError):
             fault("INVALID_STATE")
         if not isinstance(triples, list):
@@ -215,7 +221,7 @@ def _ontology_material(state):
             subject, obj = triple.get("subject"), triple.get("object")
             if not isinstance(subject, str) or not isinstance(obj, str):
                 continue
-            if obj == "<" + OWL_CLASS + ">":
+            if obj in ("<" + OWL_CLASS + ">", "<http://www.w3.org/2000/01/rdf-schema#Class>"):
                 classes.add(subject)
             elif obj == "<" + OWL_DATATYPE_PROPERTY + ">":
                 schema.setdefault(subject, {"kind": "literal", "cardinality": "many"})
@@ -227,64 +233,6 @@ def _ontology_material(state):
         if prop in schema:
             schema[prop]["cardinality"] = "one"
     return sorted(classes), schema
-
-
-def _decode_fact_value(text, kind):
-    """Lossless RDF object decoding into the planner scalar subset, or None."""
-    try:
-        parsed = term(text)
-    except (TermInputError, ValueError):
-        return None
-    if kind in ("relation", "class"):
-        return str(parsed) if isinstance(parsed, URIRef) else None
-    if isinstance(parsed, URIRef):
-        return None  # An IRI object under a literal property is not lossless.
-    try:
-        value = parsed.value
-    except Exception:
-        return None
-    return value if isinstance(value, (bool, int, float, str)) else None
-
-
-def _frozen_state(state, schema):
-    """Isolated working-copy state from the real asserted facts of the snapshot."""
-    objects, facts = set(), []
-    for fact in state["facts"]:
-        spec = schema.get(fact["predicate"])
-        if spec is None:
-            continue  # Facts of undeclared properties are outside the catalog.
-        value = _decode_fact_value(fact["object"], spec["kind"])
-        if value is None:
-            # The asserted fact cannot be represented losslessly; fail closed.
-            _public_fail("unavailable")
-        objects.add(fact["subject"])
-        if spec["kind"] in ("relation", "class") and isinstance(value, str):
-            objects.add(value)
-        facts.append({"subject": fact["subject"], "property": fact["predicate"], "value": value})
-    return {"objects": sorted(objects), "facts": facts, "notifications": []}
-
-
-def _input_versions(store, internal, state, binding):
-    """Real host-derived input versions; nothing is fabricated or trusted from wire."""
-    ontology_version = digest(
-        [record for record in state["definitions"] if record["layer"] == "ontology"]
-    )
-    rules_version = digest({"definitionsVector": store.vector(internal)})
-    inference_version = digest(
-        {
-            "inferenceSemantics": "frozen-snapshot-v1",
-            "ontologyVersion": ontology_version,
-            "rulesVersion": rules_version,
-        }
-    )
-    return {
-        "assertionVersion": binding["inputSnapshotId"],
-        "ontologyVersion": ontology_version,
-        "rulesVersion": rules_version,
-        "inferenceVersion": inference_version,
-        # The frozen E.1 semantics identity; a successful plan confirms it.
-        "semanticsVersion": "E.1-private-v2",
-    }
 
 
 # --- wire -> planner lowering ---------------------------------------------------------
@@ -517,8 +465,8 @@ def _wire_conditions(decisions):
     ]
 
 
-def _store_traces(plan):
-    actions = [
+def _store_actions(plan):
+    return [
         {
             "eventId": trace["event_id"],
             "behaviorId": trace["behavior_id"],
@@ -528,18 +476,21 @@ def _store_traces(plan):
         }
         for trace in plan["action_trace"]
     ]
-    notifications = [
+
+
+def _store_notifications(records):
+    return [
         {
             "id": record["id"],
             "eventId": record["event_id"],
             "behaviorId": record["behavior_id"],
             "message": record["message"],
         }
-        for record in plan["candidate"]["notifications"]
+        for record in records
     ]
-    return actions, notifications
 
 
+_ACTION_STATE_COMPLETED = {"changed": "applied", "unchanged": "deduplicated"}
 _ACTION_STATE_CANDIDATE = {"changed": "planned", "unchanged": "deduplicated"}
 _ACTION_STATE_TERMINAL = {"changed": "rolled_back", "unchanged": "skipped"}
 
@@ -593,6 +544,16 @@ def _reply_dto(store, internal, record, passed_binding):
         "conditions": record["conditions"],
     }
     state = record["state"]
+    if state == "completed":
+        return {
+            **base,
+            "state": "completed",
+            "committed": True,
+            "error": None,
+            "actions": _wire_actions(record["actions"], _ACTION_STATE_COMPLETED),
+            "diff": record["diff"],
+            "notifications": _wire_notifications(record["notifications"], "recorded"),
+        }
     if state == "candidate":
         return {
             **base,
@@ -641,41 +602,129 @@ def _failed_record(project, operation, run_id, binding, versions, public_error):
     }
 
 
-def _plan_record(store, internal, params, versions, material):
-    """Pure planner execution over the isolated copy; never touches formal facts."""
+def _scope_prefix(binding):
+    identity = digest([binding["projectId"], binding["baseRevision"], binding["inputSnapshotId"]])
+    return f"{SCOPE_PREFIX}{binding['scopeId']}:{identity}:"
+
+
+def _latest_scope(store, project, prefix):
+    row = store._db.execute(
+        "SELECT id FROM job_details WHERE project=? AND id>=? AND id<? ORDER BY rowid DESC LIMIT 1",
+        (project, prefix, prefix + "\uffff"),
+    ).fetchone()
+    return _read_detail(store, project, row["id"]) if row else None
+
+
+def scope_commit(store, project, run):
+    return _read_detail(store, project, _scope_prefix(run["binding"]) + run["runId"])
+
+
+def _plan_record(state, params, versions, prior):
     project, binding = params["projectId"], params["binding"]
-    classes, schema, frozen_state = material
+    classes, schema = _ontology_material(state)
+    reasoner = copy.Reasoner(state)
+    versions.update(ontologyVersion=reasoner.ontology_version, rulesVersion=reasoner.rules_version)
+    isolated = prior["isolated"] if prior else {}
+    assertions = isolated.get("assertedFacts", copy.asserted_facts(state))
+    frozen_state, _ = copy.planner_state(
+        assertions,
+        schema,
+        classes,
+        objects=isolated.get("objects", ()),
+        notifications=isolated.get("plannerNotifications", ()),
+    )
     events = [_lower_event(event) for event in params["events"]]
     behavior = _lower_draft(params["draft"], schema, classes, {event["id"] for event in events})
     scope = {"project_id": project, "scenario_id": binding["scopeId"], "mode": "sample"}
     prepared = prepare_events(
-        {
-            "scope": scope,
-            "run_id": params["runId"],
-            "round": 1,
-            "base_revision": str(binding["baseRevision"]),
-            "assertion_version": versions["assertionVersion"],
-            "ontology_version": versions["ontologyVersion"],
-            "rules_version": versions["rulesVersion"],
-            "behavior_version": binding["behaviorVersion"],
-            "classes": classes,
-            "schema": schema,
-            "state": frozen_state,
-            "behaviors": [behavior],
-            "events": events,
-            "consumption": {"scope": scope, "events": [], "instances": []},
-        }
+        copy.plan_request(
+            scope,
+            params["runId"],
+            1,
+            binding["baseRevision"],
+            versions,
+            classes,
+            schema,
+            frozen_state,
+            [behavior],
+            events,
+            isolated.get("consumption", {"events": [], "instances": []}),
+        )
     )
-    reasoning = {
-        "binding": prepared.binding,
-        "assertion_digest": prepared.reasoning_input["assertion_digest"],
-        "ontology_version": versions["ontologyVersion"],
-        "rules_version": versions["rulesVersion"],
-        "version": versions["inferenceVersion"],
-        "status": "current",
-        "facts": [],
+    after_events = prepared.reasoning_input["state"]
+    event_facts = copy.apply_planner_delta(assertions, frozen_state, after_events, schema, classes)
+    inferred, version = reasoner.infer(event_facts)
+    versions["inferenceVersion"] = version
+    projection, proofs = copy.planner_state([], schema, classes, inferred=inferred)
+    # The planner's conditions use the frozen reasoning input, never action output.
+    plan = plan_behaviors(
+        prepared,
+        copy.reasoning_input(prepared, version, proofs),
+        inferred_objects=projection["objects"],
+    )
+    candidate = plan["candidate"]
+    asserted = copy.apply_planner_delta(event_facts, after_events, candidate, schema, classes)
+    end_inferred = inferred if asserted == event_facts else reasoner.infer(asserted)[0]
+    actions = _store_actions(plan)
+    notifications = _store_notifications(
+        record for kind, record in plan["diff"]["added"] if kind == "notification"
+    )
+    duplicate_ids = [
+        item["event_id"] for item in plan["event_trace"] if item["reason"] == "duplicate_event"
+    ]
+    prior_actions = isolated.get("executedActions", [])
+    wire_actions = actions + [
+        {**entry, "effect": "unchanged"}
+        for entry in prior_actions
+        if entry["eventId"] in duplicate_ids
+    ]
+    consumption = plan["consumption"]
+    namespaces = sorted(
+        {name.removesuffix("WorkOrder") for name in classes if name.endswith("WorkOrder")}
+    )
+    orders = [
+        {key: value for key, value in item.items() if key != "iri"}
+        for namespace in namespaces
+        for item in copy.work_orders(asserted, namespace)
+    ]
+    return {
+        "state": "completed",
+        "committed": True,
+        "eventIds": [event["id"] for event in params["events"]],
+        "eventTrace": plan["event_trace"],
+        "draft": params["draft"],
+        "events": events,
+        "versions": {**versions, "semanticsVersion": plan["semantics_version"]},
+        "conditions": _wire_conditions(plan["decisions"]),
+        "actions": wire_actions,
+        "notifications": notifications,
+        "diff": _wire_diff(plan["diff"], schema),
+        "isolated": {
+            "assertedFacts": asserted,
+            "facts": copy.sorted_facts([*asserted, *end_inferred]),
+            "behaviorBeforeInference": inferred,
+            "objects": candidate["objects"],
+            "notifications": _store_notifications(candidate["notifications"]),
+            "plannerNotifications": candidate["notifications"],
+            "actionTrace": copy.action_trace(plan),
+            "executedActions": prior_actions + actions,
+            "orders": orders,
+            "consumption": consumption,
+            "eventOrigins": {
+                **isolated.get("eventOrigins", {}),
+                **{
+                    item["event_id"]: params["runId"]
+                    for item in plan["event_trace"]
+                    if item["reason"] == "event_applied"
+                },
+            },
+            "consumedEvents": [entry["event_id"] for entry in consumption["events"]],
+            "triggeredInstances": [
+                [entry["event_id"], entry["behavior_id"]] for entry in consumption["instances"]
+            ],
+        },
+        "error": None,
     }
-    return plan_behaviors(prepared, reasoning), schema
 
 
 def _run(store, params, origin):
@@ -707,50 +756,49 @@ def _run(store, params, origin):
         state = store.state(internal)
         if digest(store._snapshot_projection(internal)) != binding["inputSnapshotId"]:
             fault("IDENTITY_CONFLICT")
-        classes, schema = _ontology_material(state)
-        frozen_state = _frozen_state(state, schema)
-        versions = _input_versions(store, internal, state, binding)
+        versions = {
+            "assertionVersion": binding["inputSnapshotId"],
+            "behaviorVersion": binding["behaviorVersion"],
+            "inferenceVersion": None,
+            "semanticsVersion": "E.1-private-v2",
+        }
+        prefix = _scope_prefix(binding)
+        prior = _latest_scope(store, project, prefix)
         try:
-            plan, plan_schema = _plan_record(
-                store, internal, params, versions, (classes, schema, frozen_state)
-            )
+            result = _plan_record(state, params, versions, prior)
         except _PublicBehaviorError as error:
-            record = _failed_record(
+            result = _failed_record(
                 project, operation, run_id, binding, versions, _public_error(error.code)
             )
         except BehaviorError as error:
-            record = _failed_record(
+            result = _failed_record(
                 project, operation, run_id, binding, versions, _project_reason(error.reason)
             )
         except Exception:
-            record = _failed_record(
-                project,
-                operation,
-                run_id,
-                binding,
-                versions,
-                _project_reason(None),
+            result = _failed_record(
+                project, operation, run_id, binding, versions, _project_reason(None)
             )
-        else:
-            actions, notifications = _store_traces(plan)
-            record = {
-                "recordVersion": 1,
-                "projectId": project,
-                "operationId": operation,
-                "runId": run_id,
-                "binding": binding,
-                "state": "candidate",
-                "eventIds": [event["id"] for event in params["events"]],
-                "versions": {
-                    **versions,
-                    "semanticsVersion": plan["semantics_version"],
+        record = {
+            **result,
+            "recordVersion": 1,
+            "projectId": project,
+            "operationId": operation,
+            "runId": run_id,
+            "binding": binding,
+            "eventIds": [event["id"] for event in params["events"]],
+        }
+        if record["state"] == "completed":
+            _insert_detail(
+                store,
+                project,
+                prefix + run_id,
+                {
+                    "projectId": project,
+                    "runId": run_id,
+                    "binding": binding,
+                    "isolated": record["isolated"],
                 },
-                "conditions": _wire_conditions(plan["decisions"]),
-                "actions": actions,
-                "notifications": notifications,
-                "diff": _wire_diff(plan["diff"], plan_schema),
-                "error": None,
-            }
+            )
         _insert_detail(store, project, RUN_PREFIX + run_id, record)
         _index_run(store, project, run_id)
         _insert_detail(
@@ -765,7 +813,9 @@ def _run(store, params, origin):
                 "requestHash": fingerprint,
             },
         )
-        return _reply_dto(store, internal, record, binding)
+        reply = _reply_dto(store, internal, record, binding)
+        store._valid("result_project.behavior.run", reply)
+        return reply
 
 
 def _reconcile_read(store, params):
@@ -804,7 +854,7 @@ def _cancel(store, params, origin):
             # Durable terminal state already persisted; idempotent replay.
             return _reply_dto(store, internal, record, binding)
         if record["state"] != "candidate":
-            # Impossible cancel of a terminal failed run maps to the fixed
+            # Cancelling a completed or failed run maps to the fixed
             # cancel_failed public projection.
             fault("INVALID_STATE")
         # The terminal cancelled marker is appended (immutable evidence) and is

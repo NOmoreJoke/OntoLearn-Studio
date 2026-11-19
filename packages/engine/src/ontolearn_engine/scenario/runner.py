@@ -195,6 +195,7 @@ def run(
     *,
     cancelled: Callable[[], bool] = lambda: False,
     resume: Checkpoint | None = None,
+    finalize_resources: Callable[[State], State] = lambda state: state,
 ) -> Result:
     """Independent replay starts at original consumption; resume is always explicit.
 
@@ -274,6 +275,7 @@ def run(
             # Keep the complete catalog, including consumed payloads, to detect ID reuse.
             combined = event_catalog((*checkpoint.events, *executed.generated))
             state, completed_now = resource_stage(executed.state, definition.capacity)
+            state = finalize_resources(state)
             check()
             end_context = Context(number, "end")
             end = _inference(

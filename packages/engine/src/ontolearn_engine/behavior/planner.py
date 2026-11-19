@@ -741,7 +741,7 @@ def _difference(before, after):
     }
 
 
-def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
+def plan_behaviors(prepared: PreparedRound, reasoning: dict, *, inferred_objects=()) -> dict:
     """Freeze conditions, collect all intents, reject conflicts, return a detached plan.
 
     Errors never return partial candidates. The caller retains the original Store
@@ -779,7 +779,10 @@ def plan_behaviors(prepared: PreparedRound, reasoning: dict) -> dict:
         _fail("stale_reasoning", "reasoning")
     _text(reasoning["version"], "reasoning.version")
     frozen = json.loads(_json(doc["after_events"]))
-    frozen_objects = set(frozen["objects"])
+    # Reasoning can establish RDF resources absent from the asserted object set.
+    # The trusted adapter supplies them only for the frozen condition view.
+    frozen_objects = set(frozen["objects"]).union(inferred_objects)
+    frozen["objects"] = sorted(frozen_objects)
     facts = {_json(fact) for fact in frozen["facts"]}
     for fact in _list(reasoning["facts"], "reasoning.facts"):
         _fact(fact, frozen_objects, schema, classes)

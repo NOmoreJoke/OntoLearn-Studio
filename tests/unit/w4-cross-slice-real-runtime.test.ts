@@ -360,14 +360,17 @@ it('crosses the real business3 process for mapping, isolated runs, transfer and 
       binding: sample.binding,
       scope: sample.scope,
     }
-    const candidate = await call(() => projects.runBehaviorSample(sample))
-    expect(candidate, JSON.stringify(candidate.error)).toMatchObject({
-      state: 'candidate',
-      committed: false,
+    const completed = await call(() => projects.runBehaviorSample(sample))
+    expect(completed, JSON.stringify(completed.error)).toMatchObject({
+      state: 'completed',
+      committed: true,
       freshness: 'current',
+      actions: [{ kind: 'notify', state: 'applied' }],
+      notifications: [{ state: 'recorded', message: 'Isolated notification' }],
     })
     expect(await call(() => projects.readBehaviorRun(identity))).toMatchObject({
-      state: 'candidate',
+      state: 'completed',
+      committed: true,
       freshness: 'current',
     })
     const beforeBehavior = await call(() =>
@@ -727,12 +730,14 @@ it('crosses the real business3 process for mapping, isolated runs, transfer and 
     expect(undoJob.state).toBe('succeeded')
     expect((await read()).domain.state.facts).toEqual(before.domain.state.facts)
     expect(await call(() => projects.readBehaviorRun(identity))).toMatchObject({
-      state: 'candidate',
+      state: 'completed',
+      committed: true,
       freshness: 'stale',
       staleReason: 'project-revision-changed',
     })
-    expect(await call(() => projects.cancelBehaviorRun(identity))).toMatchObject({
-      state: 'cancelled',
+    expect(await receive(() => projects.cancelBehaviorRun(identity))).toMatchObject({
+      ok: false,
+      error: { code: 'INVALID_STATE' },
     })
     await call(() => projects.openProject({ projectId: imported.importedProjectId }))
     expect((await read()).domain.state.facts).toEqual(mapped.domain.state.facts)
@@ -748,7 +753,7 @@ it('crosses the real business3 process for mapping, isolated runs, transfer and 
   }
 }, 30000)
 
-it('cancels a durable scenario claim and resumes the exact committed checkpoint through Main', async () => {
+it('cancels an interrupted E.5 run and resumes its exact checkpoint through Main', async () => {
   await mkdir(resolve('build'), { recursive: true })
   const root = await realpath(await mkdtemp(resolve('build/w4-resume-')))
   const engine = new EngineSupervisor(
@@ -774,15 +779,16 @@ it('cancels a durable scenario claim and resumes the exact committed checkpoint 
         [
           'import json, sys',
           'from pathlib import Path',
-          'from test_w4_a2_harness import runtime, prepared_project, create_scenario, ok',
+          'from test_w4_a2_harness import runtime, create_scenario, ok',
           'from test_w4_a2_scenario import run_scenario, _make_interrupted_run',
+          'from test_w4_learning_checks import e5_project',
           'with runtime(Path(sys.argv[1])) as (actor, store):',
-          '    project, revision, snapshot = prepared_project(actor, store)',
-          '    created = ok(create_scenario(actor, project, revision, snapshot))',
+          '    project, revision, snapshot, config = e5_project(actor, store)',
+          '    created = ok(create_scenario(actor, project, revision, snapshot, configuration=config))',
           '    scenario = created["scenario"]["identity"]["scenarioId"]',
           '    _, response = run_scenario(actor, project, revision, snapshot, scenario)',
           '    whole = ok(response)["run"]',
-          '    saved, _ = _make_interrupted_run(store, project, whole["runId"], keep_rounds=1)',
+          '    saved, _ = _make_interrupted_run(store, project, whole["runId"], keep_rounds=2)',
           '    print(json.dumps({"id": saved, "run": whole}))',
         ].join('\n'),
         root,
@@ -801,11 +807,17 @@ it('cancels a durable scenario claim and resumes the exact committed checkpoint 
     )
     expect(cancelled.run).toMatchObject({
       status: 'cancelled',
-      lastCommittedRound: 1,
+      lastCommittedRound: 2,
       resumeAvailable: true,
     })
-    const checkpointRef = cancelled.run.rounds[0]!.checkpointRef
-    expect(checkpointRef).toBe(whole.rounds[0]!.checkpointRef)
+    expect(whole.rounds.map((round) => round.behaviorTrace.length)).toEqual([8, 8, 8, 8])
+    expect(whole.rounds.map((round) => round.metrics.backlog)).toEqual([1, 2, 3, 4])
+    expect(whole.rounds[0]?.behaviorTrace.slice(0, 2)).toEqual([
+      { eventId: 'E001', behaviorId: 'B-risk', actionIndex: 1 },
+      { eventId: 'E001', behaviorId: 'B-risk', actionIndex: 2 },
+    ])
+    const checkpointRef = cancelled.run.rounds[1]!.checkpointRef
+    expect(checkpointRef).toBe(whole.rounds[1]!.checkpointRef)
     expect(
       await receive(() =>
         projects.resumeScenarioRun({
@@ -834,7 +846,7 @@ it('cancels a durable scenario claim and resumes the exact committed checkpoint 
     expect(resumed).toMatchObject({
       sourceRunId: runId,
       resumedFrom: checkpointRef,
-      run: { status: 'succeeded', rounds: whole.rounds.slice(1), pendingEvents: [] },
+      run: { status: 'succeeded', rounds: whole.rounds.slice(2), pendingEvents: [] },
     })
     const checkpoints = await call(() =>
       projects.listProjectCheckpoints({ cursor: null, pageSize: 30 }),

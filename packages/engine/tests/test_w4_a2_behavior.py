@@ -89,7 +89,7 @@ def run_sample(w4a2_runtime, *, draft=None, events=None, scope_id=None, behavior
     return actor, store, project, (revision, snapshot_id), operation, bind, response
 
 
-def test_candidate_run_projects_diff_actions_and_conditions(w4a2_runtime):
+def test_completed_run_projects_diff_actions_and_conditions(w4a2_runtime):
     actor, store = w4a2_runtime
     draft = sample_draft(
         actions=[
@@ -127,10 +127,10 @@ def test_candidate_run_projects_diff_actions_and_conditions(w4a2_runtime):
     )
     _, store, project, _, operation, bind, response = run_sample(w4a2_runtime, draft=draft)
     result = ok(response)
-    assert result["state"] == "candidate" and result["committed"] is False
+    assert result["state"] == "completed" and result["committed"] is True
     assert result["scope"] == "sample" and result["error"] is None
     assert result["freshness"] == "current" and result["staleReason"] is None
-    assert [action["state"] for action in result["actions"]] == ["planned"] * 4
+    assert [action["state"] for action in result["actions"]] == ["applied"] * 4
     assert [action["kind"] for action in result["actions"]] == [
         "create",
         "set",
@@ -165,7 +165,7 @@ def test_candidate_run_projects_diff_actions_and_conditions(w4a2_runtime):
         "value": "urn:test:WorkOrder",
     }
     notifications = result["notifications"]
-    assert notifications and notifications[0]["state"] == "candidate"
+    assert notifications and notifications[0]["state"] == "recorded"
     assert notifications[0]["message"] == "事件 urn:test:event:1 触发升级"
     decision = result["conditions"][0]
     assert decision["triggered"] is True and decision["reason"] == "triggered"
@@ -353,6 +353,56 @@ def test_rdf_type_condition_triggers_only_on_real_assertion(w4a2_runtime):
     }
 
 
+def test_inferred_relation_to_new_rdf_resource_is_available_to_conditions(w4a2_runtime):
+    actor, store = w4a2_runtime
+    project, revision, _ = prepared_project(actor, store)
+    internal = store._project(project)
+    target = "urn:test:inferred-target"
+    store.commit(
+        internal,
+        revision,
+        uid(),
+        uid(),
+        definitions=[
+            {
+                "layer": "rule",
+                "id": "inferred-resource",
+                "value": {
+                    "enabled": True,
+                    "when": [["?subject", f"<{RDF_TYPE}>", "<urn:test:Equipment>"]],
+                    "then": ["?subject", "<urn:test:equipment>", f"<{target}>"],
+                },
+            }
+        ],
+    )
+    revision = store.revision(internal)
+    snapshot = digest(store._snapshot_projection(internal))
+    formal = store.state(internal)
+    operation = uid()
+    ok(before_run(actor, project, operation, revision, domain="behavior"))
+    draft = sample_draft(
+        conditions=[
+            {
+                "op": "has",
+                "subject": {"kind": "eventField", "field": "equipmentId"},
+                "property": "urn:test:equipment",
+                "value": expression_value("iri", target),
+            }
+        ],
+    )
+    result = ok(run_behavior(actor, project, revision, snapshot, operation=operation, draft=draft))
+    assert result["state"] == "completed" and result["conditions"][0]["triggered"] is True
+    recorded = behavior_service.load_run(store, project, result["runId"])["isolated"]
+    relation = {
+        "subject": "urn:test:eq1",
+        "predicate": "urn:test:equipment",
+        "object": f"<{target}>",
+    }
+    assert relation in recorded["facts"] and relation in recorded["behaviorBeforeInference"]
+    assert relation not in recorded["assertedFacts"]
+    assert store.state(internal) == formal and store.revision(internal) == revision
+
+
 def test_unbound_trigger_event_id_rejects(w4a2_runtime):
     draft = sample_draft(trigger={"eventType": "alarm.raised", "eventId": "urn:test:event:99"})
     *_, response = run_sample(w4a2_runtime, draft=draft)
@@ -409,7 +459,7 @@ def test_event_replay_fingerprint_idempotent_and_conflicting(w4a2_runtime):
     same = [sample_event(), sample_event()]
     *_, response = run_sample(w4a2_runtime, events=same)
     result = ok(response)
-    assert result["state"] == "candidate"
+    assert result["state"] == "completed"
     conflicting = [sample_event(), sample_event(payload={"equipmentId": "urn:test:wo1"})]
     *_, response = run_sample(w4a2_runtime, events=conflicting)
     result = ok(response)
@@ -461,6 +511,25 @@ def test_freshness_stale_reasons(w4a2_runtime):
     assert read["freshness"] == "stale"
     assert read["staleReason"] == "project-revision-changed"
 
+    internal = store._project(project)
+    updated_revision = store.revision(internal)
+    new_snapshot = digest(store._snapshot_projection(internal))
+    rerun = uid()
+    ok(before_run(actor, project, rerun, updated_revision, domain="behavior"))
+    fresh = ok(
+        run_behavior(
+            actor,
+            project,
+            updated_revision,
+            new_snapshot,
+            operation=rerun,
+            scope_id=bind["scopeId"],
+        )
+    )
+    assert fresh["state"] == "completed" and fresh["committed"] is True
+    assert [action["state"] for action in fresh["actions"]] == ["applied"]
+    assert fresh["diff"]["added"]
+
 
 def test_scope_replacement_marks_older_run_stale(w4a2_runtime):
     actor, store = w4a2_runtime
@@ -482,7 +551,7 @@ def test_scope_replacement_marks_older_run_stale(w4a2_runtime):
     second_operation = uid()
     ok(before_run(actor, project, second_operation, revision, domain="behavior"))
     second_bind = binding(project, revision, snapshot_id, scope_id=scope)
-    ok(
+    repeated = ok(
         run_behavior(
             actor,
             project,
@@ -492,8 +561,41 @@ def test_scope_replacement_marks_older_run_stale(w4a2_runtime):
             bind=second_bind,
         )
     )
+    assert repeated["state"] == "completed" and repeated["committed"] is True
+    assert [action["state"] for action in repeated["actions"]] == ["deduplicated"]
+    assert repeated["diff"] == {"added": [], "removed": []}
     read = ok(read_behavior(actor, project, first_operation, first["runId"], first_bind))
     assert read["freshness"] == "stale" and read["staleReason"] == "scope-replaced"
+
+
+def persist_uncommitted_candidate(store, project, args):
+    """Recreate a durable Stage 1 candidate without a scope commit."""
+    bind = args["binding"]
+    plan_record = behavior_service._plan_record(
+        store.state(store._project(project)),
+        args,
+        {
+            "assertionVersion": bind["inputSnapshotId"],
+            "behaviorVersion": bind["behaviorVersion"],
+        },
+        None,
+    )
+    record = {
+        **{
+            key: plan_record[key]
+            for key in ("versions", "conditions", "actions", "diff", "notifications")
+        },
+        **{key: args[key] for key in ("projectId", "runId", "operationId", "binding")},
+        "recordVersion": 1,
+        "state": "candidate",
+        "error": None,
+    }
+    with store._transaction():
+        behavior_service._insert_detail(
+            store, project, behavior_service.RUN_PREFIX + args["runId"], record
+        )
+        behavior_service._index_run(store, project, args["runId"])
+    assert behavior_service.scope_commit(store, project, record) is None
 
 
 def test_cancel_persists_terminal_state_before_reply(w4a2_runtime):
@@ -522,7 +624,8 @@ def test_cancel_persists_terminal_state_before_reply(w4a2_runtime):
         ),
         "events": [sample_event()],
     }
-    ok(exchange(actor, "project.behavior.run", args))
+    persist_uncommitted_candidate(store, project, args)
+    assert ok(read_behavior(actor, project, operation, run_id, bind))["state"] == "candidate"
     cancelled = ok(cancel_behavior(actor, project, operation, run_id, bind))
     assert cancelled["state"] == "cancelled" and cancelled["committed"] is False
     assert cancelled["error"] is None
@@ -550,6 +653,18 @@ def test_cancel_rejections(w4a2_runtime):
         cancel_behavior(actor, project, uid(), uid(), bind),
         "NOT_FOUND",
     )
+    completed_operation = uid()
+    ok(before_run(actor, project, completed_operation, revision, domain="behavior"))
+    completed = ok(
+        run_behavior(actor, project, revision, snapshot_id, operation=completed_operation)
+    )
+    denied(
+        cancel_behavior(
+            actor, project, completed_operation, completed["runId"], completed["binding"]
+        ),
+        "INVALID_STATE",
+    )
+    assert behavior_service.load_run(store, project, completed["runId"])["state"] == "completed"
     failed_operation = uid()
     ok(before_run(actor, project, failed_operation, revision, domain="behavior"))
     failed_bind = binding(project, revision, snapshot_id)
@@ -693,4 +808,4 @@ def test_seeded_property_planning_is_deterministic_and_order_stable(w4a2_runtime
         )
         assert second["diff"] == first["diff"]
         assert second["conditions"] == first["conditions"]
-        assert first["state"] == "candidate"
+        assert first["state"] == "completed"

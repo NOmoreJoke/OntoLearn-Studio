@@ -6,7 +6,7 @@ from urllib.parse import unquote
 
 from ontolearn_engine.behavior import service as behavior
 from ontolearn_engine.learning.baselines import read_json
-from ontolearn_engine.learning.service import ToolEvidence
+from ontolearn_engine.learning.service import ToolEvidence, _normalise
 from ontolearn_engine.scenario import service as scenario
 from ontolearn_engine.storage import digest
 from ontolearn_engine.transfer import report as transfer_report
@@ -107,6 +107,118 @@ def _mapping(store, project, internal, root, snapshot_ref):
     return evidence
 
 
+def _behavior_evidence(store, project, replay, event_id):
+    prior_id = replay["isolated"].get("eventOrigins", {}).get(event_id)
+    if not prior_id or replay["eventTrace"] != [
+        {"event_id": event_id, "reason": "duplicate_event"}
+    ]:
+        return None
+    first = behavior.load_run(store, project, prior_id)
+    if (
+        first is None
+        or first.get("committed") is not True
+        or first["state"] != "completed"
+        or first["eventTrace"] != [{"event_id": event_id, "reason": "event_applied"}]
+        or behavior._scope_prefix(first["binding"]) != behavior._scope_prefix(replay["binding"])
+        or first["draft"] != replay["draft"]
+    ):
+        return None
+    for run in (first, replay):
+        saved = behavior.scope_commit(store, project, run)
+        if (
+            saved is None
+            or saved["isolated"] != run["isolated"]
+            or saved["binding"] != run["binding"]
+        ):
+            return None
+    original, repeated = first["isolated"], replay["isolated"]
+    if (
+        replay["diff"] != {"added": [], "removed": []}
+        or repeated["actionTrace"]
+        or any(action["effect"] != "unchanged" for action in replay["actions"])
+        or any(
+            original[key] != repeated[key]
+            for key in (
+                "assertedFacts",
+                "facts",
+                "objects",
+                "orders",
+                "notifications",
+                "consumption",
+                "eventOrigins",
+                "consumedEvents",
+                "triggeredInstances",
+                "executedActions",
+            )
+        )
+    ):
+        return None
+    if set(map(digest, original["assertedFacts"] + original["behaviorBeforeInference"])) != set(
+        map(digest, original["facts"])
+    ):
+        return None
+    return first
+
+
+def _risk_condition_used(first):
+    if len(first["conditions"]) != 1:
+        return False
+    decision = first["conditions"][0]
+    if decision["triggered"] is not True:
+        return False
+    class_id = "urn:ontolearn:learning:HighRiskEquipment"
+    for entry in decision["conditions"]:
+        condition = first["draft"]["conditions"][entry["index"]]
+        if (
+            entry["satisfied"] is True
+            and condition.get("subject") == {"kind": "eventField", "field": "equipmentId"}
+            and (
+                (condition["op"] == "type" and condition["classId"] == class_id)
+                or (
+                    condition.get("property") == behavior.RDF_TYPE
+                    and condition["value"]
+                    == {"kind": "value", "value": {"kind": "iri", "value": class_id}}
+                )
+            )
+        ):
+            return True
+    return False
+
+
+def _alarm_not_high(first):
+    """Derive the course reason from the actual failed condition and event facts."""
+    if len(first["conditions"]) != 1:
+        return []
+    decision = first["conditions"][0]
+    if decision["reason"] != "condition_not_satisfied":
+        return []
+    level = "urn:ontolearn:learning:level"
+    event = first["events"][0]
+    for entry in decision["conditions"]:
+        condition = first["draft"]["conditions"][entry["index"]]
+        if (
+            entry["satisfied"] is False
+            and condition.get("property") == level
+            and condition.get("subject") == {"kind": "eventField", "field": "alarmId"}
+            and condition["value"]
+            == {"kind": "value", "value": {"kind": "string", "value": "High"}}
+            and {
+                "subject": event["payload"].get("alarmId"),
+                "predicate": level,
+                "object": '"Low"',
+            }
+            in first["isolated"]["assertedFacts"]
+        ):
+            return [
+                {
+                    "eventId": decision["eventId"],
+                    "behaviorId": decision["behaviorId"],
+                    "reason": "alarm-not-high",
+                },
+            ]
+    return []
+
+
 def _behavior(store, project, internal, snapshot_ref):
     evidence = {}
     revision = store.revision(internal)
@@ -118,23 +230,54 @@ def _behavior(store, project, internal, snapshot_ref):
             event_id = "E-" + check_id.replace("-", "")
             if check_id in evidence or event_id not in run.get("eventIds", ()):
                 continue
-            current = run["binding"]["inputSnapshotId"] == snapshot_ref and (
-                run["binding"]["baseRevision"] == revision
-            )
-            # Stage 1 persists the planned Diff. Its candidate has no isolated
-            # commit, committed facts, replay consumption or reasoning evidence.
-            state = run["state"]
-            status = "stale" if not current else state
-            evidence[check_id] = (run_id, status, None)
+            binding = run["binding"]
+            if binding["inputSnapshotId"] != snapshot_ref or binding["baseRevision"] != revision:
+                continue
+            if run["state"] != "completed" or run.get("committed") is not True:
+                evidence[check_id] = (run_id, run["state"], None)
+                continue
+            first = _behavior_evidence(store, project, run, event_id)
+            if first is None or (check_id == "B-01" and not _risk_condition_used(first)):
+                evidence[check_id] = (run_id, "succeeded", None)
+                continue
+            actual = first["isolated"]
+            payload = {
+                "committed": first["committed"],
+                "facts": actual["assertedFacts"],
+                **{
+                    key: actual[key]
+                    for key in (
+                        "orders",
+                        "notifications",
+                        "actionTrace",
+                        "consumedEvents",
+                        "triggeredInstances",
+                    )
+                },
+            }
+            if check_id == "B-01":
+                payload["behaviorBeforeInference"] = actual["behaviorBeforeInference"]
+                payload["repeatChanges"] = run["diff"]["added"] + run["diff"]["removed"]
+            else:
+                payload["notTriggered"] = _alarm_not_high(first)
+            evidence[check_id] = (run_id, "succeeded", payload)
     return evidence
 
 
 def _scenario_rounds(run):
     rounds = []
     for entry in run["rounds"]:
+        actual = entry.get("evidence", {})
         view, checkpoint = entry["round"], entry["checkpoint"]
+        if (
+            "duplicateOrders" not in actual
+            or actual["duplicateOrders"] != []
+            or actual.get("actionTrace") != view["behaviorTrace"]
+        ):
+            return []
         rounds.append(
             {
+                **{key: value for key, value in actual.items() if key != "duplicateOrders"},
                 "round": view["number"],
                 "created": view["created"],
                 "completed": view["resourceCompleted"],
@@ -148,17 +291,16 @@ def _scenario_rounds(run):
     return rounds
 
 
-def _same_round_projection(actual, expected):
-    return len(actual) == len(expected) and all(
-        all(wanted.get(field) == value for field, value in round_.items())
-        for round_, wanted in zip(actual, expected, strict=True)
-    )
+def _same_rounds(actual, expected):
+    return _normalise(actual) == _normalise(expected)
 
 
 def _scenario(store, project, internal, snapshot_ref, checks):
     by_capacity = {"3": [], "4": []}
+    first_seen = {}
     resumed = []
     revision = store.revision(internal)
+    cases = checks["G-list-01"]["expected"]
     for run_id in scenario.indexed_run_ids(store, project):
         run = scenario.load_run(store, project, run_id)
         if not run or run["status"] != "succeeded":
@@ -166,54 +308,71 @@ def _scenario(store, project, internal, snapshot_ref, checks):
         identity = run["identity"]
         if identity["projectVersion"] != revision or identity["inputSnapshotId"] != snapshot_ref:
             continue
-        direct = str(run["evidence"]["capacity"].get("direct"))
-        if direct not in by_capacity:
+        capacity = str(run["evidence"]["capacity"].get("direct"))
+        if capacity not in by_capacity:
             continue
         if run.get("sourceRunId") is not None:
-            if direct == "3":
+            if capacity == "3":
                 resumed.append(run)
         elif run["lastCommittedRound"] == 4:
-            by_capacity[direct].append(run)
+            first_seen.setdefault(capacity, run_id)
+            rounds = _scenario_rounds(run)
+            if len(by_capacity[capacity]) < 2 and _same_rounds(
+                rounds, cases["capacities"][capacity]
+            ):
+                by_capacity[capacity].append((run_id, rounds))
     evidence = {}
-    cases = checks["G-list-01"]["expected"]
-    if all(len(runs) >= 2 for runs in by_capacity.values()):
-        actual = {
-            key: [_scenario_rounds(run) for run in runs[:2]] for key, runs in by_capacity.items()
-        }
-        parity = all(
-            _same_round_projection(rounds, cases["capacities"][key])
-            for key, replays in actual.items()
-            for rounds in replays
-        )
-        # Stage 1's zero-action behavior stage lacks the lesson's complete
-        # facts, reasoning and trigger traces even when its queue matches.
+    capacity_3 = [rounds for _, rounds in by_capacity["3"]]
+    if all(len(runs) == 2 for runs in by_capacity.values()):
         evidence["G-list-01"] = (
-            by_capacity["3"][0]["runId"],
-            "unavailable" if parity else "succeeded",
-            None if parity else {"independentReplays": actual},
+            by_capacity["3"][0][0],
+            "succeeded",
+            {
+                "capacities": {key: runs[0][1] for key, runs in by_capacity.items()},
+                "independentReplays": {
+                    key: [rounds for _, rounds in runs] for key, runs in by_capacity.items()
+                },
+            },
         )
+    elif "3" in first_seen and "4" in first_seen:
+        evidence["G-list-01"] = (first_seen["3"], "succeeded", None)
+    wanted = checks["G-list-06"]["expected"]["resumeFromRound2"]
     for run in resumed:
+        evidence["G-list-06"] = (run["runId"], "succeeded", None)
         source = scenario.load_run(store, project, run["sourceRunId"])
         if source is None or source["status"] not in ("cancelled", "failed"):
             continue
-        checkpoints = [
-            entry["checkpoint"]
-            for entry in source["rounds"]
-            if entry["round"]["checkpointRef"] == run["resumedFrom"]
-        ]
-        if len(checkpoints) != 1 or checkpoints[0]["round"] != 2:
+        source_prefix = [entry for entry in source["rounds"] if entry["round"]["number"] <= 2]
+        if (
+            len(source_prefix) != 2
+            or source_prefix[-1]["round"]["checkpointRef"] != run["resumedFrom"]
+            or not _same_rounds(
+                _scenario_rounds({"rounds": source_prefix}), cases["capacities"]["3"][:2]
+            )
+        ):
             continue
-        wanted = checks["G-list-06"]["expected"]["resumeFromRound2"]
+        consumed = source_prefix[-1]["checkpoint"]["consumed"]
         actual = _scenario_rounds(run)
-        parity = checkpoints[0]["consumed"] == wanted["consumedBefore"] and (
-            _same_round_projection(actual, wanted["newCommittedRounds"])
-        )
-        evidence["G-list-06"] = (
-            run["runId"],
-            "unavailable" if parity else "succeeded",
-            None if parity else {"newCommittedRounds": actual},
-        )
-        break
+        if consumed == wanted["consumedBefore"] and _same_rounds(
+            actual, wanted["newCommittedRounds"]
+        ):
+            evidence["G-list-06"] = (
+                run["runId"],
+                "succeeded",
+                {
+                    "independentReplays": capacity_3,
+                    "resumeFromRound2": {
+                        "consumedBefore": consumed,
+                        "newCommittedRounds": actual,
+                        "duplicateOrders": [
+                            order
+                            for entry in run["rounds"]
+                            for order in entry["evidence"]["duplicateOrders"]
+                        ],
+                    },
+                },
+            )
+            break
     return evidence
 
 

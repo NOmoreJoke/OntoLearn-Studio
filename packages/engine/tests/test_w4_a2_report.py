@@ -14,6 +14,7 @@ import test_w4_a2_scenario as scenario_tests
 from ontolearn_engine.behavior import service as behavior_service
 from ontolearn_engine.scenario import service as scenario_service
 from ontolearn_engine.storage import digest
+from test_w4_a2_behavior import persist_uncommitted_candidate
 from test_w4_a2_harness import (
     before_run,
     binding,
@@ -120,7 +121,7 @@ def test_report_marks_cancelled_behavior_run(w4a2_runtime):
         "draft": sample_draft(),
         "events": [sample_event()],
     }
-    ok(exchange(actor, "project.behavior.run", args))
+    persist_uncommitted_candidate(store, project, args)
     ok(
         exchange(
             actor,
@@ -187,7 +188,7 @@ def test_projection_accessors_are_bounded_and_folded(w4a2_runtime):
     run = ok(run_behavior(actor, project, revision, snapshot_id, operation=operation))
     assert behavior_service.indexed_runs(store, project) == [run["runId"]]
     folded = behavior_service.load_run(store, project, run["runId"])
-    assert folded["state"] == "candidate"
+    assert folded["state"] == "completed" and folded["committed"] is True
     assert behavior_service.load_run(store, project, uid()) is None
     created = ok(create_scenario(actor, project, revision, snapshot_id))
     _, response = scenario_tests.run_scenario(

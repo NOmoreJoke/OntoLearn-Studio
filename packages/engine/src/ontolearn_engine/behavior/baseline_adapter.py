@@ -136,8 +136,8 @@ def encode_value(value, kind):
 
 def _entity(value, namespace):
     _text(value, "fixture.identity")
-    if value == "{payload.target}":
-        return {"event_field": "target"}
+    if value in ("{payload.target}", "{payload.orderId}"):
+        return {"event_field": value[9:-1]}
     # W:E-B01 is an explicitly local identifier in T09 conventions, even though
     # a generic URL parser would consider W a URI scheme.
     full = (
