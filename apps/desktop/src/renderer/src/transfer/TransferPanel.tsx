@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { parsePreparedReport, type PreparedReport } from './report'
 
-// Deliberately standalone until the shared App/bridge owner accepts formal integration.
-// No Node, disk paths, network, iframe, innerHTML or generic IPC.
-export function TransferPanel({ projection }: { projection?: unknown }) {
+export function TransferPanel({
+  projection,
+  connected,
+}: {
+  projection?: unknown
+  connected?: ReactNode
+}) {
   const [include, setInclude] = useState({
     rawSources: false,
     derived: false,
@@ -18,6 +22,14 @@ export function TransferPanel({ projection }: { projection?: unknown }) {
     } catch {
       invalid = true
     }
+  }
+  if (connected) {
+    return (
+      <section aria-labelledby="transfer-title">
+        <h1 id="transfer-title">导出与迁移</h1>
+        {connected}
+      </section>
+    )
   }
   return (
     <section aria-labelledby="transfer-title">

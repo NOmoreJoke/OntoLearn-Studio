@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { MappingSuggestionDTO } from '@ontolearn/contracts'
 import { canConfirm, currentPreview, mappingDraftValid } from './model'
 import type { FieldDraft, MappingDraft, ValueKind, Wizard } from './model'
 import './mapping.css'
@@ -7,6 +8,14 @@ type Props = {
   state: Wizard
   busy: boolean
   error?: { summary: string; remedy: string }
+  chooser?: {
+    format: 'csv' | 'xlsx'
+    sheets: string[]
+    onReparse: (sheet?: string, encoding?: string) => void
+    suggestions?: MappingSuggestionDTO[]
+  }
+  samplePage?: { offset: number; total: number; limit: number; onPage: (offset: number) => void }
+  onPrepareCommit?: (resultId: string) => void
   onDraft: (draft: MappingDraft) => void
   onChooseSource?: (encoding: string) => void
   onPreview?: () => void
@@ -60,14 +69,35 @@ export function MappingPage(props: Props) {
       )}
       <fieldset disabled={busy}>
         <legend>1 选择数据</legend>
-        <label>
-          CSV 编码
-          <select value={encoding} onChange={(e) => setEncoding(e.target.value)}>
-            {['utf-8-sig', 'utf-8', 'gb18030', 'big5', 'utf-16'].map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </label>
+        {(!props.chooser || props.chooser.format === 'csv') && (
+          <label>
+            CSV 编码
+            <select
+              value={props.chooser ? (source?.encoding ?? encoding) : encoding}
+              onChange={(e) => {
+                setEncoding(e.target.value)
+                props.chooser?.onReparse(undefined, e.target.value)
+              }}
+            >
+              {['utf-8-sig', 'utf-8', 'gb18030', 'big5', 'utf-16'].map((value) => (
+                <option key={value}>{value}</option>
+              ))}
+            </select>
+          </label>
+        )}
+        {props.chooser?.format === 'xlsx' && (
+          <label>
+            工作表{' '}
+            <select
+              value={source?.sheet}
+              onChange={(e) => props.chooser?.onReparse(e.target.value)}
+            >
+              {props.chooser.sheets.map((sheet) => (
+                <option key={sheet}>{sheet}</option>
+              ))}
+            </select>
+          </label>
+        )}
         <button disabled={!props.onChooseSource} onClick={() => props.onChooseSource?.(encoding)}>
           选择 CSV / XLSX 与工作表
         </button>
@@ -99,6 +129,18 @@ export function MappingPage(props: Props) {
               </tbody>
             </table>
           </>
+        )}
+        {!!props.chooser?.suggestions?.length && (
+          <details>
+            <summary>离线映射建议</summary>
+            <ul>
+              {props.chooser.suggestions.map((item) => (
+                <li key={JSON.stringify([item.column, item.predicate])}>
+                  {item.column} → {item.predicate} · 精确字段名匹配 · 样本 {item.samples.join('；')}
+                </li>
+              ))}
+            </ul>
+          </details>
         )}
       </fieldset>
       <fieldset disabled={busy || !source}>
@@ -282,6 +324,7 @@ export function MappingPage(props: Props) {
                 <table>
                   <thead>
                     <tr>
+                      <th>冲突类型</th>
                       <th>对象 / 属性</th>
                       <th>当前值</th>
                       <th>源值</th>
@@ -292,6 +335,9 @@ export function MappingPage(props: Props) {
                   <tbody>
                     {preview.conflicts.map((c, i) => (
                       <tr key={i}>
+                        <td>
+                          {c.code === 'MANUAL_DRIFT' ? '人工值变化' : '所有权冲突'} ({c.code})
+                        </td>
                         <td>
                           {c.subject}
                           <br />
@@ -309,10 +355,7 @@ export function MappingPage(props: Props) {
                     ))}
                   </tbody>
                 </table>
-                <p>
-                  可取消本次重跑，或修正源文件 /
-                  人工值后重新检查。放弃人工修改必须另行预览并确认；此页面不会静默覆盖。
-                </p>
+                <p>冲突处理留待后续版本。请取消本次重跑，或修正源数据或人工值后重新预览。</p>
               </aside>
             )}
             <table>
@@ -337,39 +380,80 @@ export function MappingPage(props: Props) {
                 ))}
               </tbody>
             </table>
-            <nav aria-label="预览分页">
-              <button disabled={shownPage === 0} onClick={() => setPage(shownPage - 1)}>
-                上一页
+            {props.samplePage ? (
+              <nav aria-label="预览分页">
+                <button
+                  disabled={props.samplePage.offset === 0}
+                  onClick={() =>
+                    props.samplePage?.onPage(
+                      Math.max(0, props.samplePage.offset - props.samplePage.limit),
+                    )
+                  }
+                >
+                  上一页
+                </button>
+                <span>
+                  样本偏移 {props.samplePage.offset} · 共 {props.samplePage.total} 行
+                </span>
+                <button
+                  disabled={
+                    props.samplePage.offset + props.samplePage.limit >= props.samplePage.total
+                  }
+                  onClick={() =>
+                    props.samplePage?.onPage(props.samplePage.offset + props.samplePage.limit)
+                  }
+                >
+                  下一页
+                </button>
+              </nav>
+            ) : (
+              <nav aria-label="预览分页">
+                <button disabled={shownPage === 0} onClick={() => setPage(shownPage - 1)}>
+                  上一页
+                </button>
+                <span>
+                  {shownPage + 1} / {pages}
+                </span>
+                <button disabled={shownPage + 1 >= pages} onClick={() => setPage(shownPage + 1)}>
+                  下一页
+                </button>
+              </nav>
+            )}
+            {props.onPrepareCommit ? (
+              <button
+                disabled={!ready || !!preview.issues.length || !!preview.conflicts.length}
+                onClick={() => props.onPrepareCommit?.(preview.resultId)}
+              >
+                检查正式变更
               </button>
-              <span>
-                {shownPage + 1} / {pages}
-              </span>
-              <button disabled={shownPage + 1 >= pages} onClick={() => setPage(shownPage + 1)}>
-                下一页
-              </button>
-            </nav>
-            <label>
-              <input
-                type="checkbox"
-                checked={state.confirmed}
-                disabled={!ready || preview.issues.length > 0 || preview.conflicts.length > 0}
-                onChange={(e) => props.onConfirmation(e.target.checked)}
-              />
-              我已检查整批新增、修改、删除和身份变化
-            </label>
-            <button
-              disabled={!props.onConfirm || !canConfirm(state)}
-              onClick={() => props.onConfirm?.(preview.resultId)}
-            >
-              确认原子提交
-            </button>
+            ) : (
+              <>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={state.confirmed}
+                    disabled={!ready || preview.issues.length > 0 || preview.conflicts.length > 0}
+                    onChange={(e) => props.onConfirmation(e.target.checked)}
+                  />
+                  我已检查整批新增、修改、删除和身份变化
+                </label>
+                <button
+                  disabled={!props.onConfirm || !canConfirm(state)}
+                  onClick={() => props.onConfirm?.(preview.resultId)}
+                >
+                  确认原子提交
+                </button>
+              </>
+            )}
           </>
         ) : (
           <p>执行前必须生成完整预览。任何阻断错误都会停止整批提交。</p>
         )}
-        {!props.onConfirm && <p>正式项目事务尚未接入，不能执行提交。</p>}
+        {!props.onConfirm && !props.onPrepareCommit && <p>正式项目事务尚未接入，不能执行提交。</p>}
       </fieldset>
-      <button onClick={props.onCancel}>{busy ? '请求取消本次重跑' : '取消本次重跑'}</button>
+      <button disabled={Boolean(props.onPrepareCommit) && busy} onClick={props.onCancel}>
+        {busy ? '请求取消本次重跑' : '取消本次重跑'}
+      </button>
     </section>
   )
 }

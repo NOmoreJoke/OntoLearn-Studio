@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import type { BehaviorEventEdit } from '@ontolearn/contracts'
+import { validateBusiness3 } from '@ontolearn/contracts/v2'
 
 const text = z.string().trim().min(1).max(500)
 const identifier = z.string().trim().min(1).max(200)
@@ -19,12 +21,27 @@ const conditionSchema = z.discriminatedUnion('kind', [
       value: valueSchema,
     })
     .strict(),
+  z
+    .object({
+      kind: z.literal('has'),
+      object: identifier,
+      property: identifier,
+      value: valueSchema,
+    })
+    .strict(),
   z.object({ kind: z.literal('exists'), object: identifier, property: identifier }).strict(),
   z.object({ kind: z.literal('type'), object: identifier, classId: identifier }).strict(),
 ])
 export type Condition = z.infer<typeof conditionSchema>
 export const actionSchema = z.discriminatedUnion('kind', [
-  z.object({ kind: z.literal('create'), object: identifier, classId: identifier }).strict(),
+  z
+    .object({
+      kind: z.literal('create'),
+      object: identifier,
+      classId: identifier,
+      initial: z.array(z.object({ property: identifier, value: valueSchema }).strict()).optional(),
+    })
+    .strict(),
   z
     .object({
       kind: z.literal('update'),
@@ -50,6 +67,7 @@ export const draftSchema = z
     name: text,
     description: text,
     trigger: identifier,
+    triggerEventId: identifier.optional(),
     conditions: z.array(conditionSchema).min(1).max(50),
     actions: z.array(actionSchema).min(1).max(100),
     effect: text,
@@ -82,6 +100,8 @@ export interface SampleEvent {
   id: string
   type: string
   payload: string
+  version?: number
+  objectEditText?: string
   changes: EventChange[]
 }
 const contextSchema = z
@@ -103,8 +123,8 @@ export const resultSchema = z
     committed: z.boolean(),
     freshness: z.enum(['current', 'stale', 'historical']),
     freshnessDetail: z.string().max(500),
-    assertionVersion: identifier,
-    inferenceVersion: identifier,
+    assertionVersion: identifier.nullable(),
+    inferenceVersion: identifier.nullable(),
     semanticsVersion: identifier,
     conditions: z
       .array(
@@ -113,7 +133,7 @@ export const resultSchema = z
             eventId: identifier,
             behaviorId: identifier,
             triggered: z.boolean(),
-            reason: text,
+            reason: z.string().min(1).max(16000),
           })
           .strict(),
       )
@@ -133,6 +153,10 @@ export const resultSchema = z
       )
       .max(10000),
     diff: z.object({ added: z.array(fact).max(10000), removed: z.array(fact).max(10000) }).strict(),
+    extraDiff: z
+      .object({ added: z.array(z.string()), removed: z.array(z.string()) })
+      .strict()
+      .optional(),
     notifications: z
       .array(
         z
@@ -155,6 +179,11 @@ export const resultSchema = z
       ctx.addIssue({ code: 'custom', message: '结果提交状态不一致' })
     if ((result.state === 'failed') !== (result.error !== null))
       ctx.addIssue({ code: 'custom', message: '结果错误状态不一致' })
+    if (
+      (result.state === 'completed' || result.state === 'candidate') &&
+      (!result.assertionVersion || !result.inferenceVersion)
+    )
+      ctx.addIssue({ code: 'custom', message: '成功结果缺少断言或推导版本' })
     // A sample is one isolated round. No earlier committed-round evidence is mixed in.
     const allowedActions = {
       candidate: ['planned', 'deduplicated', 'skipped'],
@@ -195,6 +224,8 @@ export interface SampleRequest {
     id: string
     type: string
     payload: Record<string, string | number | boolean | null>
+    version?: number
+    objectEdits?: ObjectEdit[]
     changes: EventChange[]
   }[]
 }
@@ -250,7 +281,7 @@ export function validateDraft(draft: BehaviorDraft, catalog: Catalog): Issue[] {
     if (condition.kind !== 'type' && !properties.has(condition.property))
       issues.push({ path: `conditions.${index}`, message: '条件引用了未知属性' })
     if (
-      condition.kind === 'equals' &&
+      (condition.kind === 'equals' || condition.kind === 'has') &&
       condition.value.kind === 'iri' &&
       !known.has(condition.value.value)
     )
@@ -280,6 +311,21 @@ export function validateDraft(draft: BehaviorDraft, catalog: Catalog): Issue[] {
     }
   }
   return issues
+}
+type ObjectEdit = Extract<BehaviorEventEdit, { object: string }>
+function parseObjectEdits(text: string): ObjectEdit[] {
+  const values: unknown = JSON.parse(text)
+  if (
+    !Array.isArray(values) ||
+    values.length > 100 ||
+    !values.every(
+      (value) =>
+        validateBusiness3('w4.behavior.edit', value) &&
+        (value.kind === 'create' || value.kind === 'declare' || value.kind === 'delete_object'),
+    )
+  )
+    throw new Error('INVALID_OBJECT_EDITS')
+  return values
 }
 const reservedPayloadKeys = new Set(['__proto__', 'constructor', 'prototype'])
 const payloadSchema = z.record(
@@ -333,7 +379,16 @@ export function parseEvents(events: SampleEvent[]): {
         )
         .max(100)
         .parse(event.changes)
-      parsed.push({ id: event.id.trim(), type: event.type.trim(), payload, changes })
+      const objectEdits =
+        event.objectEditText === undefined ? undefined : parseObjectEdits(event.objectEditText)
+      parsed.push({
+        id: event.id.trim(),
+        type: event.type.trim(),
+        payload,
+        changes,
+        ...(event.version === undefined ? {} : { version: event.version }),
+        ...(objectEdits === undefined ? {} : { objectEdits }),
+      })
     } catch {
       issues.push({
         path,

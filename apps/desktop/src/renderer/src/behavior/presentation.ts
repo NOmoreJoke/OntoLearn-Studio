@@ -28,12 +28,18 @@ export function resultSections(result: BehaviorResult) {
       (item) =>
         `${item.eventId} / ${item.behaviorId} · 动作 ${item.index + 1} · ${{ create: '创建个体', update: '更新属性', relate: '添加关系', notify: '通知记录' }[item.kind]} · ${{ planned: '计划', applied: '已执行', deduplicated: '同值去重', rolled_back: '已回滚', skipped: '未执行' }[item.state]} · ${item.detail}`,
     ),
-    added: result.diff.added.map(
-      (item) => `${item.object} · ${item.property} · ${formatValue(item.value)}`,
-    ),
-    removed: result.diff.removed.map(
-      (item) => `${item.object} · ${item.property} · ${formatValue(item.value)}`,
-    ),
+    added: [
+      ...result.diff.added.map(
+        (item) => `${item.object} · ${item.property} · ${formatValue(item.value)}`,
+      ),
+      ...(result.extraDiff?.added ?? []),
+    ],
+    removed: [
+      ...result.diff.removed.map(
+        (item) => `${item.object} · ${item.property} · ${formatValue(item.value)}`,
+      ),
+      ...(result.extraDiff?.removed ?? []),
+    ],
     notifications: result.notifications.map(
       (item) =>
         `${item.eventId} / ${item.behaviorId} · ${{ candidate: '候选', recorded: '隔离记录', discarded: '已丢弃' }[item.state]} · ${item.message}`,

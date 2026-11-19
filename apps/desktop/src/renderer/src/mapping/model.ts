@@ -34,6 +34,8 @@ export type PreviewView = {
   sheet: string
   encoding: string | null
   generation: number
+  offset?: number
+  totalRows?: number
   draftKey: string
   rows: { sourceRow: string; input: string[]; rdf: string[] }[]
   added: string[]
@@ -64,7 +66,22 @@ export type Wizard = {
 }
 export function draftKey(draft: MappingDraft): string {
   // Local draft equality only; never an authorization token or engine hash.
-  return JSON.stringify(draft)
+  return JSON.stringify([
+    draft.identity,
+    draft.version,
+    draft.namespace,
+    draft.classIri,
+    draft.keys,
+    draft.fields.map((field) => [
+      field.column,
+      field.predicate,
+      field.kind,
+      field.trim,
+      field.empty,
+      field.referenceNamespace,
+      field.referenceColumns,
+    ]),
+  ])
 }
 export function currentPreview(state: Wizard): boolean {
   const p = state.preview

@@ -34,6 +34,7 @@ export interface RunView {
   id: string
   identity: ScenarioIdentity
   status: 'queued' | 'running' | 'cancelling' | 'cancelled' | 'succeeded' | 'failed'
+  lastCommittedRound?: number
   rounds: readonly RoundView[]
   pendingEvents: readonly string[]
   evidence: {

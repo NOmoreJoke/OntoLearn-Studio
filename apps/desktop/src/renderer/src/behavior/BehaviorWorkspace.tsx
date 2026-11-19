@@ -1,4 +1,5 @@
 import { useEffect, useId, useState, useSyncExternalStore } from 'react'
+import type { ReportWorkspaceStatus } from '../mapping/workspace-operation'
 import { BehaviorController } from './controller'
 import {
   emptyDraft,
@@ -21,6 +22,8 @@ export interface BehaviorWorkspaceProps {
   catalog: Catalog
   initialDraft?: BehaviorDraft
   services?: BehaviorServices
+  connected?: boolean
+  onStatus?: ReportWorkspaceStatus
   onDraftChange?: (draft: BehaviorDraft) => void
 }
 const unavailableServices: BehaviorServices = {}
@@ -30,6 +33,8 @@ export function BehaviorWorkspace({
   initialDraft,
   services = unavailableServices,
   onDraftChange,
+  connected,
+  onStatus,
 }: BehaviorWorkspaceProps) {
   const [controller] = useState(
     () => new BehaviorController(context, catalog, initialDraft, services),
@@ -40,6 +45,14 @@ export function BehaviorWorkspace({
     controller.getSnapshot,
   )
   const id = useId()
+  const dirty = state.revision > 0
+  const candidate =
+    connected && state.result?.state === 'candidate' && state.result.freshness === 'current'
+  const pending = Boolean(state.pending) || state.cancelling || Boolean(candidate)
+  useEffect(() => () => onStatus?.({ dirty: false, unresolved: false }), [onStatus])
+  useEffect(() => {
+    onStatus?.({ dirty, unresolved: pending })
+  }, [dirty, onStatus, pending])
   useEffect(() => {
     controller.configure(context, catalog, services, initialDraft)
   }, [controller, context, catalog, services, initialDraft])
@@ -85,7 +98,7 @@ export function BehaviorWorkspace({
           </div>
           <div>
             <dt>行为版本</dt>
-            <dd>{context.behaviorVersion || '未提供'}</dd>
+            <dd>{(connected ? draft.version : context.behaviorVersion) || '未提供'}</dd>
           </div>
           <div>
             <dt>隔离副本</dt>
@@ -158,6 +171,14 @@ export function BehaviorWorkspace({
                 maxLength={200}
               />
             </Field>
+            {connected && (
+              <Field label="触发事件 ID（可选）">
+                <input
+                  value={draft.triggerEventId ?? ''}
+                  onChange={(e) => patch({ triggerEventId: e.target.value || undefined })}
+                />
+              </Field>
+            )}
           </section>
           <section className="behavior-card">
             <p className="behavior-step">如果</p>
@@ -349,6 +370,21 @@ export function BehaviorWorkspace({
                     onChange={(e) => updateEvent(index, { type: e.target.value })}
                   />
                 </Field>
+                {connected && (
+                  <Field label="事件版本">
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={event.version ?? ''}
+                      onChange={(e) =>
+                        updateEvent(index, {
+                          version: e.target.value ? e.target.valueAsNumber : undefined,
+                        })
+                      }
+                    />
+                  </Field>
+                )}
                 <Field label="事件内容（JSON 对象）">
                   <textarea
                     className="behavior-code"
@@ -358,6 +394,18 @@ export function BehaviorWorkspace({
                     spellCheck={false}
                   />
                 </Field>
+                {connected && (
+                  <Field label="事件对象编辑（JSON 列表，先于事实变更）">
+                    <textarea
+                      className="behavior-code"
+                      value={event.objectEditText ?? '[]'}
+                      onChange={(e) => updateEvent(index, { objectEditText: e.target.value })}
+                      maxLength={20000}
+                      spellCheck={false}
+                    />
+                    <small>可用种类 create、declare、delete_object，均使用 object 标识对象。</small>
+                  </Field>
+                )}
                 <div className="behavior-event-changes">
                   <p className="behavior-help">场景断言变更（按顺序应用）</p>
                   {event.changes.map((change, changeIndex) => (
@@ -500,12 +548,14 @@ export function BehaviorWorkspace({
                 检查本地结构
               </button>
               <button
-                disabled={!matches || !services.runSample || Boolean(state.pending)}
+                disabled={
+                  !matches || !services.runSample || Boolean(state.pending) || Boolean(candidate)
+                }
                 onClick={() => void controller.run()}
               >
                 {state.pending?.kind === 'run' ? '测试请求进行中…' : '在隔离副本中测试'}
               </button>
-              {state.pending?.kind === 'run' && (
+              {(state.pending?.kind === 'run' || candidate) && (
                 <button
                   className="behavior-secondary"
                   disabled={!services.cancelSample || state.cancelling}
@@ -621,6 +671,7 @@ function ConditionEditor({
         >
           <option value="always">无额外条件（恒真）</option>
           <option value="equals">属性值等于</option>
+          <option value="has">具有指定属性值</option>
           <option value="exists">已记录属性</option>
           <option value="type">属于类型（含行为前推导）</option>
         </select>
@@ -652,7 +703,7 @@ function ConditionEditor({
           )}
         </>
       )}
-      {condition.kind === 'equals' && (
+      {(condition.kind === 'equals' || condition.kind === 'has') && (
         <ValueEditor
           value={condition.value}
           onChange={(value) => onChange({ ...condition, value })}
@@ -748,11 +799,11 @@ function ResultDetails({ result }: { result: BehaviorResult }) {
         </div>
         <div>
           <dt>断言快照版本</dt>
-          <dd>{result.assertionVersion}</dd>
+          <dd>{result.assertionVersion ?? '未取得'}</dd>
         </div>
         <div>
           <dt>推导快照版本</dt>
-          <dd>{result.inferenceVersion}</dd>
+          <dd>{result.inferenceVersion ?? '未取得'}</dd>
         </div>
         <div>
           <dt>执行语义版本</dt>
