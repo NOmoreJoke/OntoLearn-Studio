@@ -78,10 +78,10 @@ def test_common_examples_use_utf8_when_default_file_encoding_is_cp1252(
     contract_probe.main()
     captured = capsys.readouterr()
     assert captured.err == ""
-    # The adopted ordinary/Query R3 composite has 372 shape cases and 34 common
+    # The adopted ordinary/Query/Wave 4 composite has 508 shape cases and 34 common
     # response bindings. Retain full-set counts and the encoding/probe assertion.
     expected_counts = {
-        "cases": 372,
+        "cases": 508,
         "routing": 11,
         "responses": 34,
         "cursors": 9,

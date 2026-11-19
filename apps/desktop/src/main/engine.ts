@@ -709,6 +709,9 @@ export class EngineSupervisor {
   get profile(): EngineProfile {
     return this.#profile
   }
+  get dataPath(): string | undefined {
+    return this.#options.dataPath
+  }
   #location: EngineLocation
   #options: SupervisorOptions
   #session?: Session
