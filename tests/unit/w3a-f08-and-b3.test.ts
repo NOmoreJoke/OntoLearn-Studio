@@ -239,6 +239,7 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
                     scope: 'asserted', inputProjectRevision: 7,
                     checkedConstraintIds: ['name-required'],
                     unverifiedConstraintIds: ['unverified-shape'], failedConstraintIds: ['failed-shape'],
+                    constraintVersions: [{ definitionId: 'name-required', version: 1 }],
                     findings: [] },
                   snapshotsAligned: false }
               }
@@ -248,22 +249,38 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
                   conditions: [{ kind: 'type', subject: '?equipment', class: 'urn:test:Equipment' }],
                   conclusions: [{ kind: 'type', subject: '?equipment', class: 'urn:test:HighRisk' }] }] }
               }
+              if (mode === 'legacy-chain') {
+                state = { ...base, rules: [{ id: 'R-risk', enabled: true, revision: 1, format: 'legacy',
+                  when: [
+                    ['?equipment', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '<urn:ontolearn:learning:Equipment>'],
+                    ['?equipment', 'urn:ontolearn:learning:alarm', '?alarm'],
+                    ['?alarm', 'urn:ontolearn:learning:level', '"High"'],
+                    ['?alarm', 'urn:ontolearn:learning:status', '"Open"'],
+                  ],
+                  then: ['?equipment', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '<urn:ontolearn:learning:HighRiskEquipment>'] }] }
+              }
               const current = {
                 ...state,
                 reasoning: { ...state.reasoning, state: 'current', staleReasons: [] },
                 validation: { ...state.validation, state: 'current', staleReasons: [], conforms: true, findings: [] },
               }
-              const sampleResult = {
-                valid: true, matchesExpected: false,
-                actualOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:object>']],
-                rdfsOutputs: [['urn:test:person/L02', 'urn:test:type', '<urn:test:Person>']],
-                expectedOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:missing>']],
-                missingOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:missing>']],
-                unexpectedOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:object>']],
-                ruleTraces: [], warnings: ['RULE_CHAIN_UNSUPPORTED:R-next'],
-                diagnostics: [{ stage: 'input', index: 0, ruleId: null, field: '2', code: 'INVALID_TERM',
-                  message: 'INVALID_TERM：input[0] 2 校验失败' }],
-              }
+              const sampleResult = mode === 'sample-invalid'
+                ? { valid: false, matchesExpected: false,
+                    actualOutputs: [], rdfsOutputs: [], expectedOutputs: [],
+                    missingOutputs: [], unexpectedOutputs: [],
+                    ruleTraces: [], warnings: [],
+                    diagnostics: [{ stage: 'rule', index: 0, ruleId: 'R-tag', field: 'conditions',
+                      code: 'MIN_ITEMS', message: 'MIN_ITEMS：rule[0] conditions 至少 1 项' }],
+                    omittedDiagnosticCount: 3 }
+                : { valid: true, matchesExpected: false,
+                    actualOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:object>']],
+                    rdfsOutputs: [['urn:test:person/L02', 'urn:test:type', '<urn:test:Person>']],
+                    expectedOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:missing>']],
+                    missingOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:missing>']],
+                    unexpectedOutputs: [['urn:test:subject', 'urn:test:predicate', '<urn:test:object>']],
+                    ruleTraces: [], warnings: ['RULE_CHAIN_UNSUPPORTED:R-next'],
+                    diagnostics: [{ stage: 'input', index: 0, ruleId: null, field: '2', code: 'INVALID_TERM',
+                      message: 'INVALID_TERM：input[0] 2 校验失败' }] }
               render(QualityWorkspace, {
                 projectId,
                 onDomainSnapshotUpdated: (source) => calls.push(['snapshot', source]),
@@ -443,6 +460,7 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
     const stateText = await state.textContent()
     expect(stateText).toContain('范围 asserted')
     expect(stateText).toContain('rev 7')
+    expect(stateText).toContain('约束版本 name-required@v1')
     expect(await state.getAttribute('data-conforms')).toBe(null)
     expect(stateText).not.toContain('· 符合约束')
   })
@@ -477,6 +495,58 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
     expect(resultText).toContain('input[0]')
     const calls = await page.evaluate(() => (window as unknown as { calls: unknown[] }).calls)
     expect(calls).toContainEqual(['sample', ['R-risk', 'R-next'], 2])
+  })
+
+  it('warns live against an imported legacy rule while composing a chained rule', async () => {
+    await page.evaluate(() =>
+      (window as unknown as { mountQuality(mode?: string): void }).mountQuality('legacy-chain'),
+    )
+    await page.getByLabel('定义类型', { exact: true }).selectOption('rule')
+    await page.getByLabel('稳定标识', { exact: true }).fill('R-next')
+    const row = page
+      .getByRole('group', { name: '全部满足以下条件（合取）' })
+      .locator('.quality-pattern')
+      .first()
+    await row.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await row.getByLabel('类 IRI', { exact: true }).fill('urn:ontolearn:learning:HighRiskEquipment')
+    const warning = page.getByTestId('quality-editor-chain-warning')
+    await warning.waitFor()
+    const warningText = await warning.textContent()
+    expect(warningText).toContain('R-risk → R-next')
+    expect(warningText).toContain('R-next → R-next')
+  })
+
+  it('keeps an invalid sample verdict without a fake order match and reports omitted diagnostics', async () => {
+    await page.evaluate(() =>
+      (window as unknown as { mountQuality(mode?: string): void }).mountQuality('sample-invalid'),
+    )
+    await page.getByTestId('quality-rule-sample-tester').locator('summary').click()
+    await page.getByTestId('quality-sample-preset').selectOption('order-independent')
+    await page.getByTestId('quality-btn-run-sample').click()
+    const result = page.getByTestId('quality-sample-result')
+    await result.getByText('存在校验错误').waitFor()
+    const omitted = page.getByTestId('quality-sample-diagnostics-omitted')
+    await omitted.waitFor()
+    expect(await omitted.textContent()).toContain('另有 3 条')
+    expect(await result.textContent()).not.toContain('正反保存顺序对比一致')
+  })
+
+  it('rejects hollow sample rules with a front-end message before any bridge dispatch', async () => {
+    await page.evaluate(() => (window as unknown as { mountQuality(): void }).mountQuality())
+    await page.getByTestId('quality-rule-sample-tester').locator('summary').click()
+    await page
+      .getByTestId('quality-sample-rules')
+      .fill(
+        JSON.stringify([
+          { id: 'R-empty', label: '空规则', enabled: true, conditions: [], conclusions: [] },
+        ]),
+      )
+    await page.getByTestId('quality-btn-run-sample').click()
+    const alert = page.getByRole('alert')
+    await alert.waitFor()
+    expect(await alert.textContent()).toBe('样本规则至少需要 1 条条件与 1 条结论。')
+    const calls = await page.evaluate(() => (window as unknown as { calls: unknown[] }).calls)
+    expect(calls.filter((call) => Array.isArray(call) && call[0] === 'sample')).toHaveLength(0)
   })
 
   it('forwards temporary LX-01 and transfer selections through the Mentor controller', async () => {

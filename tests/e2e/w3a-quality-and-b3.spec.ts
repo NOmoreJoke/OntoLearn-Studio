@@ -470,6 +470,23 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
 
     stage = 'commit formal FR-504/505 definitions and produce one violation'
     let quality = await openQuality(page)
+    stage = 'live rule-chain warning while G-base still ships its imported legacy R-risk'
+    await quality.getByLabel('定义类型', { exact: true }).selectOption('rule')
+    await quality.getByLabel('现有定义', { exact: true }).selectOption('')
+    await quality.getByLabel('稳定标识', { exact: true }).fill('R-next')
+    const legacyCondition = quality
+      .getByRole('group', { name: '全部满足以下条件（合取）' })
+      .locator('.quality-pattern')
+      .first()
+    await legacyCondition.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await legacyCondition.getByLabel('类 IRI', { exact: true }).fill(learning + 'HighRiskEquipment')
+    await expect(quality.getByTestId('quality-editor-chain-warning')).toContainText(
+      'R-risk → R-next',
+    )
+    // No save here; back to a clean constraint editor so the formal commits below
+    // start from an untouched form.
+    await quality.getByLabel('定义类型', { exact: true }).selectOption('constraint')
+    stage = 'commit formal FR-504/505 definitions and produce one violation'
     await addRequiredConstraint(quality, 'name-required', 'name')
     await addRiskRule(quality, true)
     let ontology = await openOntology(page)
@@ -477,6 +494,7 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
     quality = await openQuality(page)
     await expect(quality.getByLabel('验证范围', { exact: true })).toHaveValue('asserted+derived')
     await runQuality(quality, 'asserted+derived')
+    await expect(quality.getByTestId('quality-validation-state')).toContainText('name-required@v')
     const finding = quality
       .getByTestId('quality-findings')
       .getByRole('region', { name: '违规', exact: true })
