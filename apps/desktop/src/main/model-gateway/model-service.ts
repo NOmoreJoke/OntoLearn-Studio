@@ -403,7 +403,9 @@ export class ModelGatewayService {
       configuration.enabled !== false &&
       !this.changing.has(approval.configurationId) &&
       configuration.configurationVersion === approval.configurationVersion &&
-      configuration.endpoint === DEEPSEEK_ENDPOINT &&
+      // The explicit test policy already validates every endpoint at load and save.
+      // Production still requires the exact endpoint pinned by the provider signature.
+      (this.policy === 'loopback-probe-only' || configuration.endpoint === DEEPSEEK_ENDPOINT) &&
       configuration.model === REQUEST_MODEL &&
       approval.signature.codecVersion === CODEC_VERSION &&
       providerSignatureSchema.safeParse(approval.signature).success,

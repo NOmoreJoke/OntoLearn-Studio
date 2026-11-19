@@ -538,13 +538,14 @@ export class AgentHostComposition implements AgentBridge {
   /** Bind the actual named ChangeSet preview to this operation before accepting any confirmation. */
   observeDraftPreview(args: MainlinePreviewArgs, preview: ChangeSetPreview): void {
     const binding = this.draft
+    // Compare structured DTO data across the host, reply receiver and IPC realms.
     if (
       !binding ||
       binding.confirmation ||
       !this.current(binding.turn) ||
       args.intent !== 'change' ||
       args.baseRevision !== binding.draft.baseRevision ||
-      !isDeepStrictEqual(args.plan, binding.draft.plan) ||
+      !isDeepStrictEqual(structuredClone(args.plan), structuredClone(binding.draft.plan)) ||
       preview.status !== 'ready' ||
       preview.intent !== 'change' ||
       preview.projectId !== binding.turn.context.projectId ||
@@ -582,7 +583,7 @@ export class AgentHostComposition implements AgentBridge {
         !binding ||
         binding.draft.operationId !== args.operationId ||
         binding.draft.draftType !== args.draftType ||
-        !isDeepStrictEqual(binding.confirmation, args.confirmation)
+        !isDeepStrictEqual(binding.confirmation, structuredClone(args.confirmation))
       )
         throw new AgentError('STALE_CONTEXT')
       const label = args.label ?? null
