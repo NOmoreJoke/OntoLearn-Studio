@@ -1,0 +1,70 @@
+.mapping-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px;
+  color: inherit;
+}
+.mapping-page fieldset {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+}
+.mapping-page legend {
+  padding: 0 8px;
+  font-weight: 600;
+}
+.mapping-page label {
+  display: block;
+  margin: 8px 0;
+}
+.mapping-page input:not([type='checkbox']),
+.mapping-page select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+}
+.mapping-page input[type='checkbox'] {
+  margin-right: 8px;
+}
+.mapping-config {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.mapping-field {
+  border-top: 1px solid currentColor;
+  padding: 12px 0;
+}
+.mapping-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  table-layout: fixed;
+}
+.mapping-page th,
+.mapping-page td {
+  padding: 10px;
+  border-bottom: 1px solid currentColor;
+  text-align: left;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.mapping-page pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+}
+.mapping-page button {
+  margin: 8px;
+  padding: 8px 12px;
+}
+.mapping-page aside {
+  border-left: 4px solid currentColor;
+  padding-left: 16px;
+}
+.mapping-page nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

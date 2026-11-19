@@ -1,0 +1,73 @@
+{
+  "projectionVersion": "t10-report-draft-1",
+  "projectId": "synthetic-project",
+  "title": "设备运维学习成果",
+  "generatedAt": "2026-10-21T01:00:00Z",
+  "projectRevision": 7,
+  "goals": ["理解开放世界与质量检查"],
+  "competencyQuestions": ["哪些设备存在未闭环高危告警？"],
+  "learning": [
+    {
+      "taskId": "transfer-repair",
+      "attemptId": "attempt-1",
+      "transferTask": true,
+      "operationCompleted": true,
+      "hint": "none",
+      "agentAssistance": "none",
+      "check": {
+        "status": "passed",
+        "evidenceRef": "synthetic-check-1",
+        "summary": "合成检查：修复设备名称必填"
+      },
+      "stageOutcomes": ["修复前：003 缺少名称", "修复后：003 名称为“设备C”"]
+    }
+  ],
+  "ontologySummary": ["类：Equipment、Alarm"],
+  "dataSummary": ["设备 001、002、003；合成数据"],
+  "queryResults": [
+    {
+      "resultId": "query-1",
+      "inputRevision": 7,
+      "semanticsVersion": "synthetic-semantics-1",
+      "scope": "当前断言与推导",
+      "status": "current",
+      "statusNote": "合成版本一致",
+      "summary": "A01"
+    }
+  ],
+  "validationResults": [
+    {
+      "resultId": "validation-1",
+      "inputRevision": 6,
+      "semanticsVersion": "synthetic-semantics-1",
+      "scope": "当前断言与推导",
+      "status": "stale",
+      "statusNote": "名称已修改，须重跑",
+      "summary": "003 缺少名称"
+    }
+  ],
+  "behaviorResults": [
+    {
+      "resultId": "behavior-1",
+      "inputRevision": 7,
+      "semanticsVersion": "synthetic-semantics-1",
+      "scope": "固定历史断言",
+      "status": "historical",
+      "statusNote": "固定历史快照，仅供参考",
+      "summary": "历史测试创建 W1"
+    }
+  ],
+  "scenarioComparisons": [
+    {
+      "resultId": "scenario-1",
+      "inputRevision": 7,
+      "semanticsVersion": "synthetic-semantics-1",
+      "scope": "合成失败路径",
+      "status": "failed",
+      "statusNote": "未取得有效比较",
+      "summary": "不可声称产能改善"
+    }
+  ],
+  "assumptions": ["固定轮次；内部记录不发送外部通知"],
+  "unresolved": ["真实跨设备与逐 attempt 辅助投影待联验"]
+}
