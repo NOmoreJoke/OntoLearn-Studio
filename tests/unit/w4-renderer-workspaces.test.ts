@@ -272,21 +272,124 @@ const read: MainlineProjectReadDTO = {
 }
 
 describe('W4 connected mapping workspace', () => {
+  const csv: MappingSourceSelectResultDTO = {
+    projectId,
+    selectionId,
+    fingerprint: inputSnapshotId,
+    format: 'csv',
+    sheets: ['CSV'],
+    sheet: 'CSV',
+    encoding: 'utf-8',
+    totalRows: 20,
+    fields: [{ name: 'id', observedTypes: ['string'], samples: ['001', path] }],
+    suggestions: [
+      { column: 'id', predicate: 'urn:id', basis: 'exact-field-name', samples: ['001'] },
+    ],
+  }
+  const summary = {
+    totalIdentitiesAdded: 5500,
+    totalIdentitiesRemoved: 8050,
+    totalIssues: 0,
+    totalConflicts: 0,
+    totalAdded: 11000,
+    totalRemoved: 16100,
+    totalModified: 6300,
+    truncated: true,
+  } satisfies NonNullable<MappingPreviewResultDTO['summary']>
+
+  function setupMapping(overrides: Partial<Parameters<typeof MappingWorkspace>[0]['bridge']> = {}) {
+    const { preview, page } = mappingDiff()
+    const previewFixture = fixture<MappingPreviewResultDTO>('project.mapping.preview')
+    const commitProjectChangeSet = vi.fn<DesktopBridge['commitProjectChangeSet']>(
+      async ({ operationId }) => {
+        const job = structuredClone(
+          fixtures.cases.find(({ name }) => name === 'atomic succeeded committed')!.value,
+        ) as JobView
+        return ok({
+          ...job,
+          capability: 'changeset.commit',
+          operationId,
+          commitProgress: { ...(job.commitProgress as object), operationId },
+        } as JobView)
+      },
+    )
+    const bridge = {
+      selectMappingSource: vi.fn(async () => ok(csv)),
+      readMappingDraft: vi.fn<MappingBridge['readMappingDraft']>(async ({ mappingId }) =>
+        ok({ projectId, mappingId, generation: 3, baseRevision: 0, draft }),
+      ),
+      saveMappingDraft: vi.fn<MappingBridge['saveMappingDraft']>(async (args) =>
+        ok({
+          projectId,
+          operationId: args.operationId,
+          generation: 4,
+          baseRevision: 0,
+          draft: args.draft,
+        }),
+      ),
+      previewMapping: vi.fn(async () => ok(previewFixture)),
+      prepareMappingCommit: vi.fn<MappingBridge['prepareMappingCommit']>(async (args) =>
+        ok({
+          ...args,
+          projectId,
+          plan: {
+            mappingPreparation: { resultId: args.resultId, preparationRef: inputSnapshotId },
+          },
+        }),
+      ),
+      readProject: vi.fn(async () => ok(read)),
+      previewProjectChangeset: vi.fn(async () => ok(preview)),
+      getProjectDiffPage: vi.fn(async () => ok(page)),
+      confirmProjectChangeset: vi.fn(async () =>
+        ok({
+          projectId,
+          previewHash: preview.previewHash,
+          preparedPlanRef: preview.preparedPlanRef,
+          inputSnapshotId,
+          parametersHash: preview.parametersHash,
+          confirmationRef: otherId,
+        }),
+      ),
+      commitProjectChangeSet,
+      getJob: vi.fn(),
+      restoreTasks: vi.fn(async () => ok({ generation: 2, project: null, jobs: [] })),
+      ...overrides,
+    } satisfies Parameters<typeof MappingWorkspace>[0]['bridge']
+    const onCommitted = vi.fn(async () => {})
+    const onStatus = vi.fn<Parameters<typeof MappingWorkspace>[0]['onStatus']>()
+    const h = harness(MappingWorkspace, { ...props, bridge, onCommitted, onStatus })
+    const mapping = () =>
+      propsOf<Parameters<typeof MappingPage>[0]>(h.find((node) => node.type === MappingPage))
+    return { h, bridge, mapping, onCommitted, onStatus, preview, previewFixture }
+  }
+
+  async function enterMappingPreview(ui: ReturnType<typeof setupMapping>) {
+    const { h, mapping, onStatus } = ui
+    mapping().onChooseSource!('utf-8')
+    await vi.waitFor(() => expect(mapping().state.source?.sheet).toBe('CSV'))
+    mapping().onDraft(draft)
+    mapping().onPreview!()
+    await vi.waitFor(() =>
+      expect(mapping().state.preview?.resultId).toBe(ui.previewFixture.resultId),
+    )
+    expect(onStatus).toHaveBeenLastCalledWith({ dirty: true, unresolved: false })
+    const page = harness(MappingPage, mapping())
+    return { h, mapping, page }
+  }
+
+  async function submitMapping(ui: ReturnType<typeof setupMapping>) {
+    const { h, mapping, page } = await enterMappingPreview(ui)
+    page.click('检查正式变更')
+    await vi.waitFor(() => expect(h.button('提交映射 ChangeSet').props.disabled).toBe(true))
+    fieldChange(
+      h.find((node) => node.type === 'input' && node.props.type === 'checkbox'),
+      true,
+    )
+    h.click('提交映射 ChangeSet')
+    return mapping
+  }
+
   it('reparses the opaque selection, saves optimistically, renders conflict and issue evidence and submits the verified ChangeSet', async () => {
-    const csv: MappingSourceSelectResultDTO = {
-      projectId,
-      selectionId,
-      fingerprint: inputSnapshotId,
-      format: 'csv',
-      sheets: ['CSV'],
-      sheet: 'CSV',
-      encoding: 'utf-8',
-      totalRows: 20,
-      fields: [{ name: 'id', observedTypes: ['string'], samples: ['001', path] }],
-      suggestions: [
-        { column: 'id', predicate: 'urn:id', basis: 'exact-field-name', samples: ['001'] },
-      ],
-    }
     const xlsx: MappingSourceSelectResultDTO = {
       ...csv,
       format: 'xlsx',
@@ -294,7 +397,6 @@ describe('W4 connected mapping workspace', () => {
       sheet: '设备',
       encoding: null,
     }
-    const { preview, page } = mappingDiff()
     const previewFixture = fixture<MappingPreviewResultDTO>('project.mapping.preview')
     const selectMappingSource = vi
       .fn<MappingBridge['selectMappingSource']>()
@@ -306,7 +408,14 @@ describe('W4 connected mapping workspace', () => {
     const previewMapping = vi
       .fn<MappingBridge['previewMapping']>()
       .mockImplementation(async ({ sheet, encoding }) =>
-        ok({ ...previewFixture, sheet, encoding, totalRows: 20, identitiesAdded: ['urn:Pump'] }),
+        ok({
+          ...previewFixture,
+          sheet,
+          encoding,
+          totalRows: 20,
+          identitiesAdded: ['urn:Pump'],
+          summary,
+        }),
       )
     previewMapping.mockImplementationOnce(async ({ sheet, encoding }) =>
       ok({
@@ -338,64 +447,10 @@ describe('W4 connected mapping workspace', () => {
         ],
       }),
     )
-    const commitProjectChangeSet = vi.fn<DesktopBridge['commitProjectChangeSet']>(
-      async ({ operationId }) => {
-        const job = structuredClone(
-          fixtures.cases.find(({ name }) => name === 'atomic succeeded committed')!.value,
-        ) as JobView
-        return ok({
-          ...job,
-          capability: 'changeset.commit',
-          operationId,
-          commitProgress: { ...(job.commitProgress as object), operationId },
-        } as JobView)
-      },
-    )
-    const bridge: Parameters<typeof MappingWorkspace>[0]['bridge'] = {
+    const { h, bridge, mapping, onCommitted, preview } = setupMapping({
       selectMappingSource,
-      readMappingDraft: vi.fn(async ({ mappingId }) =>
-        ok({ projectId, mappingId, generation: 3, baseRevision: 0, draft }),
-      ),
-      saveMappingDraft: vi.fn(async (args) =>
-        ok({
-          projectId,
-          operationId: args.operationId,
-          generation: 4,
-          baseRevision: 0,
-          draft: args.draft,
-        }),
-      ),
       previewMapping,
-      prepareMappingCommit: vi.fn(async (args) =>
-        ok({
-          ...args,
-          projectId,
-          plan: {
-            mappingPreparation: { resultId: args.resultId, preparationRef: inputSnapshotId },
-          },
-        }),
-      ),
-      readProject: vi.fn(async () => ok(read)),
-      previewProjectChangeset: vi.fn(async () => ok(preview)),
-      getProjectDiffPage: vi.fn(async () => ok(page)),
-      confirmProjectChangeset: vi.fn(async () =>
-        ok({
-          projectId,
-          previewHash: preview.previewHash,
-          preparedPlanRef: preview.preparedPlanRef,
-          inputSnapshotId,
-          parametersHash: preview.parametersHash,
-          confirmationRef: otherId,
-        }),
-      ),
-      commitProjectChangeSet,
-      getJob: vi.fn(),
-      restoreTasks: vi.fn(),
-    }
-    const onCommitted = vi.fn(async () => {})
-    const h = harness(MappingWorkspace, { ...props, bridge, onCommitted })
-    const mapping = () =>
-      propsOf<Parameters<typeof MappingPage>[0]>(h.find((node) => node.type === MappingPage))
+    })
     mapping().onChooseSource!('utf-8-sig')
     await vi.waitFor(() => expect(mapping().state.source?.encoding).toBe('utf-8'))
     expect(selectMappingSource).toHaveBeenNthCalledWith(1, {})
@@ -436,13 +491,22 @@ describe('W4 connected mapping workspace', () => {
     await vi.waitFor(() => expect(mapping().state.preview?.issues[0]?.code).toBe('业务主键为空'))
     const pageUi = harness(MappingPage, mapping())
     const text = plain(pageUi.render())
+    expect(text).toContain('新增 0 · 删除 0 · 修改 0 · 问题 1 · 冲突 1')
+    expect(text).toContain('新增身份 0 · 撤回身份 0')
+    expect(text).not.toContain('已按传输预算截断')
     expect(text).toContain('手工值')
     expect(text).toContain('row-3')
     expect(text).toContain('备件 第 3 行、第 2 列（id')
     expect(pageUi.button('检查正式变更').props.disabled).toBe(true)
     mapping().onPreview!()
     await vi.waitFor(() => expect(mapping().state.preview?.conflicts).toEqual([]))
-    mapping().onPrepareCommit!(previewFixture.resultId)
+    const truncatedPage = harness(MappingPage, mapping())
+    const truncatedText = plain(truncatedPage.render())
+    expect(truncatedText).toContain('新增 11000 · 删除 16100 · 修改 6300 · 问题 0 · 冲突 0')
+    expect(truncatedText).toContain('新增身份 5500 · 撤回身份 8050')
+    expect(truncatedText).toContain('已按传输预算截断展示')
+    expect(truncatedText).toContain('加载并核验完整分页差异')
+    truncatedPage.click('检查正式变更')
     await vi.waitFor(() => expect(h.button('提交映射 ChangeSet').props.disabled).toBe(true))
     expect(bridge.confirmProjectChangeset).not.toHaveBeenCalled()
     expect(bridge.commitProjectChangeSet).not.toHaveBeenCalled()
@@ -465,6 +529,99 @@ describe('W4 connected mapping workspace', () => {
       expect.objectContaining({ previewHash: preview.previewHash, cursor: null }),
     )
   })
+
+  it.each(['totalIssues', 'totalConflicts'] as const)(
+    'blocks formal changes when only the truncated summary reports %s',
+    async (count) => {
+      const previewMapping = vi.fn<MappingBridge['previewMapping']>().mockResolvedValue(
+        ok({
+          ...fixture<MappingPreviewResultDTO>('project.mapping.preview'),
+          summary: { ...summary, [count]: 12 },
+        }),
+      )
+      const ui = setupMapping({ previewMapping })
+      const { h, mapping, page } = await enterMappingPreview(ui)
+      expect(plain(page.render())).toContain(count === 'totalIssues' ? '问题 12' : '冲突 12')
+      expect(page.button('检查正式变更').props.disabled).toBe(true)
+      mapping().onPrepareCommit!(ui.previewFixture.resultId)
+      await vi.waitFor(() => expect(mapping().error).toBeDefined())
+      expect(ui.bridge.prepareMappingCommit).not.toHaveBeenCalled()
+      h.unmount()
+    },
+  )
+
+  it('unlocks navigation after REVISION_CONFLICT while keeping the proposal and editable draft', async () => {
+    const commitProjectChangeSet = vi
+      .fn<DesktopBridge['commitProjectChangeSet']>()
+      .mockResolvedValue({
+        ok: false,
+        error: {
+          code: 'REVISION_CONFLICT',
+          messageKey: 'project.revisionConflict',
+          params: { expected: 0, actual: 1 },
+          retryable: false,
+        },
+      })
+    const ui = setupMapping({ commitProjectChangeSet })
+    const { h, onCommitted, onStatus } = ui
+    const mapping = await submitMapping(ui)
+    await vi.waitFor(() => {
+      expect(mapping().error?.summary).toContain('REVISION_CONFLICT')
+      expect(onStatus).toHaveBeenLastCalledWith({ dirty: true, unresolved: false })
+    })
+    expect(mapping().state.draft).toEqual(draft)
+    expect(mapping().busy).toBe(false)
+    expect(plain(h.render())).not.toContain('核对提交状态')
+    expect(h.button('提交映射 ChangeSet').props.disabled).toBe(false)
+    expect(onCommitted).not.toHaveBeenCalled()
+
+    const revised = { ...draft, version: 2 }
+    mapping().onDraft(revised)
+    expect(plain(h.render())).not.toContain('提交映射 ChangeSet')
+    mapping().onPreview!()
+    await vi.waitFor(() =>
+      expect(mapping().state.preview?.resultId).toBe(ui.previewFixture.resultId),
+    )
+    expect(ui.bridge.previewMapping).toHaveBeenLastCalledWith(
+      expect.objectContaining({ draft: revised }),
+    )
+    h.unmount()
+  })
+
+  it.each(['ENGINE_UNAVAILABLE', 'rejected Promise'])(
+    'keeps %s locked until the user checks or manually unlocks the original submission',
+    async (failure) => {
+      const commitProjectChangeSet = vi.fn<DesktopBridge['commitProjectChangeSet']>()
+      if (failure === 'rejected Promise') {
+        commitProjectChangeSet.mockRejectedValue(new Error('IPC interrupted'))
+      } else {
+        commitProjectChangeSet.mockResolvedValue({
+          ...err,
+          error: { ...err.error, code: failure, messageKey: 'engine.unavailable' },
+        })
+      }
+      const ui = setupMapping({ commitProjectChangeSet })
+      const { h, bridge, onCommitted, onStatus } = ui
+      const mapping = await submitMapping(ui)
+      await vi.waitFor(() => expect(h.button('核对提交状态')).toBeDefined())
+      expect(onStatus).toHaveBeenLastCalledWith({ dirty: true, unresolved: true })
+      expect(mapping().busy).toBe(true)
+      h.click('核对提交状态')
+      await vi.waitFor(() => expect(h.button('已人工核对，解除提交锁定')).toBeDefined())
+      expect(bridge.restoreTasks).toHaveBeenCalledOnce()
+      expect(onStatus).toHaveBeenLastCalledWith({ dirty: true, unresolved: true })
+
+      h.click('已人工核对，解除提交锁定')
+      expect(mapping().busy).toBe(false)
+      expect(mapping().state.draft).toEqual(draft)
+      expect(mapping().state.preview).toBeNull()
+      expect(onStatus).toHaveBeenLastCalledWith({ dirty: true, unresolved: false })
+      expect(plain(h.render())).not.toContain('提交映射 ChangeSet')
+      expect(onCommitted).not.toHaveBeenCalled()
+      expect(commitProjectChangeSet).toHaveBeenCalledOnce()
+      h.unmount()
+    },
+  )
 })
 
 describe('W4 connected transfer workspace', () => {

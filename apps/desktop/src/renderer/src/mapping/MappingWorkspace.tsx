@@ -18,6 +18,7 @@ import {
   acceptPreview,
   cancelPreview,
   draftKey,
+  previewHasBlockers,
   selectSource,
   updateDraft,
   type Wizard,
@@ -50,6 +51,24 @@ const EMPTY_DRAFT: MappingDraft = {
   fields: [],
 }
 const PAGE_SIZE = 20
+const deterministicCommitRejections = new Set([
+  'INVALID_REQUEST',
+  'INVALID_STATE',
+  'METHOD_NOT_ALLOWED',
+  'VERSION_INCOMPATIBLE',
+  'HANDSHAKE_REQUIRED',
+  'SESSION_MISMATCH',
+  'PERMISSION_DENIED',
+  'NOT_FOUND',
+  'UNSUPPORTED_CAPABILITY',
+  'QUEUE_FULL',
+  'REVISION_CONFLICT',
+  'OWNERSHIP_CONFLICT',
+  'IDENTITY_CONFLICT',
+  'STORAGE_BUSY',
+  'SEMANTIC_INPUT_INVALID',
+  'RESOURCE_LIMIT',
+])
 const issueLabels: Record<
   (typeof mappingPublicIssueKeys)[keyof typeof mappingPublicIssueKeys],
   string
@@ -119,17 +138,20 @@ export function MappingWorkspace({
   const [proposal, setProposal] = useState<{ diff: WorkspaceChangePreview; operationId: string }>()
   const [consent, setConsent] = useState(false)
   const [unknown, setUnknown] = useState(false)
+  const [commitRejection, setCommitRejection] = useState<string>()
   const [draftNotice, setDraftNotice] = useState('')
   const dirty = state.draft !== EMPTY_DRAFT && draftKey(state.draft) !== draftVersion?.key
+  const pendingProposal = Boolean(proposal && !commitRejection)
   const { busy, error, perform } = useWorkspaceOperation(
     onStatus,
     dirty,
-    Boolean(proposal) || unknown,
+    pendingProposal || unknown,
   )
 
   function clearProposal() {
     setProposal(undefined)
     setConsent(false)
+    setCommitRejection(undefined)
   }
   function chooseSource(sheet?: string, encoding?: string) {
     void perform(async (current) => {
@@ -266,8 +288,7 @@ export function MappingWorkspace({
       if (
         !preview ||
         preview.resultId !== resultId ||
-        preview.issues.length ||
-        preview.conflicts.length ||
+        previewHasBlockers(preview) ||
         !source ||
         !safeDraft(state.draft)
       )
@@ -312,9 +333,15 @@ export function MappingWorkspace({
       const job = await commitWorkspaceChange(
         {
           confirmProjectChangeset: (args) => bridge.confirmProjectChangeset(args),
-          commitProjectChangeSet: (args) => {
+          commitProjectChangeSet: async (args) => {
             setUnknown(true)
-            return bridge.commitProjectChangeSet(args)
+            const reply = await bridge.commitProjectChangeSet(args)
+            current()
+            if (!reply.ok && deterministicCommitRejections.has(reply.error.code)) {
+              setCommitRejection(reply.error.code)
+              setUnknown(false)
+            }
+            return reply
           },
           getJob: (jobId) => bridge.getJob(jobId),
         },
@@ -351,7 +378,7 @@ export function MappingWorkspace({
       await settleCommit(job.state)
     })
   }
-  const locked = busy || unknown || Boolean(proposal)
+  const locked = busy || unknown || pendingProposal
 
   return (
     <>
@@ -388,15 +415,23 @@ export function MappingWorkspace({
             : undefined
         }
         error={
-          error
+          commitRejection && !unknown
             ? {
-                summary: '映射操作未完成',
-                remedy: '请核对数据源、草稿版本或已提交状态。已有草稿请先读取再编辑。',
+                summary: `映射提交被拒绝（${commitRejection}）`,
+                remedy: '草稿已保留。请核对项目版本和权限，必要时修改草稿并重新预览。',
               }
-            : undefined
+            : error
+              ? {
+                  summary: '映射操作未完成',
+                  remedy: '请核对数据源、草稿版本或已提交状态。已有草稿请先读取再编辑。',
+                }
+              : undefined
         }
         onDraft={(draft) => {
-          if (!containsLocalPath(JSON.stringify(draft))) setState((old) => updateDraft(old, draft))
+          if (!containsLocalPath(JSON.stringify(draft))) {
+            clearProposal()
+            setState((old) => updateDraft(old, draft))
+          }
         }}
         onChooseSource={() => chooseSource()}
         onPreview={() => preview(0)}
@@ -447,9 +482,19 @@ export function MappingWorkspace({
       )}
       {unknown && !busy && (
         <div role="alert">
-          <p>提交结果尚待核对。请读取原操作的持久任务状态。</p>
+          <p>提交结果尚待核对。请读取原操作的持久任务状态，或在人工确认项目状态后解除锁定。</p>
           <button type="button" onClick={reconcileCommit}>
-            核对原提交
+            核对提交状态
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setUnknown(false)
+              clearProposal()
+              setState(cancelPreview)
+            }}
+          >
+            已人工核对，解除提交锁定
           </button>
         </div>
       )}

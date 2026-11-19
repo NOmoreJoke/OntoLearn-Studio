@@ -22985,6 +22985,60 @@
           },
           "minItems": 0,
           "maxItems": 5000
+        },
+        "summary": {
+          "type": "object",
+          "properties": {
+            "totalIdentitiesAdded": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalIdentitiesRemoved": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalIssues": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalConflicts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalAdded": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalRemoved": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalModified": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "truncated": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "totalIdentitiesAdded",
+            "totalIdentitiesRemoved",
+            "totalIssues",
+            "totalConflicts",
+            "totalAdded",
+            "totalRemoved",
+            "totalModified",
+            "truncated"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

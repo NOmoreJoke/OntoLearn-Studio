@@ -151,6 +151,16 @@ export type MappingPreviewResultDTO = {
     before: Array<string>
     after: Array<string>
   }>
+  summary?: {
+    totalIdentitiesAdded: number
+    totalIdentitiesRemoved: number
+    totalIssues: number
+    totalConflicts: number
+    totalAdded: number
+    totalRemoved: number
+    totalModified: number
+    truncated: boolean
+  }
 }
 
 export type MappingPreparedChangePlan = {

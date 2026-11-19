@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { MappingSuggestionDTO } from '@ontolearn/contracts'
-import { canConfirm, currentPreview, mappingDraftValid } from './model'
+import { canConfirm, currentPreview, mappingDraftValid, previewHasBlockers } from './model'
 import type { FieldDraft, MappingDraft, ValueKind, Wizard } from './model'
 import './mapping.css'
 
@@ -42,6 +42,7 @@ export function MappingPage(props: Props) {
   const source = state.source
   const draft = state.draft
   const preview = state.preview
+  const summary = preview?.summary
   const ready = currentPreview(state)
   const pages = Math.max(1, Math.ceil((preview?.rows.length ?? 0) / 50))
   const shownPage = Math.min(page, pages - 1)
@@ -294,16 +295,32 @@ export function MappingPage(props: Props) {
           <>
             <p role="status">{ready ? '预览对应当前输入' : '预览已失效，请重新检查版本和冲突'}</p>
             <p>
-              新增 {preview.added.length} · 删除 {preview.removed.length} · 修改{' '}
-              {preview.modified.length} · 冲突 {preview.conflicts.length}
+              新增 {summary?.totalAdded ?? preview.added.length} · 删除{' '}
+              {summary?.totalRemoved ?? preview.removed.length} · 修改{' '}
+              {summary?.totalModified ?? preview.modified.length} · 问题{' '}
+              {summary?.totalIssues ?? preview.issues.length} · 冲突{' '}
+              {summary?.totalConflicts ?? preview.conflicts.length}
             </p>
+            {summary?.truncated && (
+              <p role="status">
+                当前预览明细已按传输预算截断展示。预览通过检查后，点击「检查正式变更」仍会加载并核验完整分页差异。
+              </p>
+            )}
             <details>
               <summary>身份变化</summary>
-              <p>新增：{preview.identitiesAdded.join('；') || '无'}</p>
-              <p>撤回：{preview.identitiesRemoved.join('；') || '无'}</p>
+              <p>
+                新增身份 {summary?.totalIdentitiesAdded ?? preview.identitiesAdded.length} ·
+                撤回身份 {summary?.totalIdentitiesRemoved ?? preview.identitiesRemoved.length}
+              </p>
+              {preview.identitiesAdded.length > 0 && (
+                <p>新增：{preview.identitiesAdded.join('；')}</p>
+              )}
+              {preview.identitiesRemoved.length > 0 && (
+                <p>撤回：{preview.identitiesRemoved.join('；')}</p>
+              )}
             </details>
             <details>
-              <summary>全部事实变化</summary>
+              <summary>{summary?.truncated ? '事实变化摘要' : '全部事实变化'}</summary>
               <pre>
                 {JSON.stringify(
                   { added: preview.added, removed: preview.removed, modified: preview.modified },
@@ -318,7 +335,7 @@ export function MappingPage(props: Props) {
                 ）
               </p>
             ))}
-            {preview.conflicts.length > 0 && (
+            {(summary?.totalConflicts || preview.conflicts.length) > 0 && (
               <aside role="alert">
                 <h2>人工值或所有权冲突，整批暂停提交</h2>
                 <table>
@@ -421,7 +438,7 @@ export function MappingPage(props: Props) {
             )}
             {props.onPrepareCommit ? (
               <button
-                disabled={!ready || !!preview.issues.length || !!preview.conflicts.length}
+                disabled={!ready || previewHasBlockers(preview)}
                 onClick={() => props.onPrepareCommit?.(preview.resultId)}
               >
                 检查正式变更
@@ -432,7 +449,7 @@ export function MappingPage(props: Props) {
                   <input
                     type="checkbox"
                     checked={state.confirmed}
-                    disabled={!ready || preview.issues.length > 0 || preview.conflicts.length > 0}
+                    disabled={!ready || previewHasBlockers(preview)}
                     onChange={(e) => props.onConfirmation(e.target.checked)}
                   />
                   我已检查整批新增、修改、删除和身份变化

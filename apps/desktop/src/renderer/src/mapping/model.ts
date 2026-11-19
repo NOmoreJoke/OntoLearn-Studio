@@ -1,3 +1,5 @@
+import type { MappingPreviewResultDTO } from '@ontolearn/contracts'
+
 /** Private presentation state only. T00 owns all wire schemas and bridge methods. */
 export type ValueKind = 'string' | 'integer' | 'decimal' | 'boolean' | 'date' | 'datetime'
 export type FieldDraft = {
@@ -54,6 +56,7 @@ export type PreviewView = {
     subject: string
     predicate: string
   }[]
+  summary?: MappingPreviewResultDTO['summary']
 }
 export type Wizard = {
   projectId: string
@@ -98,12 +101,17 @@ export function currentPreview(state: Wizard): boolean {
     p.draftKey === draftKey(state.draft),
   )
 }
+export function previewHasBlockers(preview: PreviewView): boolean {
+  return Boolean(
+    preview.issues.length ||
+    preview.conflicts.length ||
+    preview.summary?.totalIssues ||
+    preview.summary?.totalConflicts,
+  )
+}
 export function canConfirm(state: Wizard): boolean {
   return Boolean(
-    state.confirmed &&
-    currentPreview(state) &&
-    state.preview?.issues.length === 0 &&
-    state.preview.conflicts.length === 0,
+    state.confirmed && currentPreview(state) && state.preview && !previewHasBlockers(state.preview),
   )
 }
 export function updateDraft(state: Wizard, draft: MappingDraft): Wizard {

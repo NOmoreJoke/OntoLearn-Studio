@@ -7,6 +7,7 @@ import {
   type DesktopBridge,
   type DesktopIpcMap,
   type MappingBridge,
+  type MappingPreviewResultDTO,
   type ScenarioBridge,
   type TransferBridge,
   BehaviorAdapterContract,
@@ -79,6 +80,37 @@ describe('Wave 4 business3 freeze', () => {
   const bindings = fixtures.business3.responses.filter((c) => c.name.startsWith('W4 '))
   it.each(cases)('$name', ({ schema, value, valid }) => {
     expect(validateBusiness3(schema, value)).toBe(valid)
+  })
+  it('accepts legacy mapping previews and validates an optional strict full-count summary', () => {
+    const schema = 'result_project.mapping.preview'
+    const preview = fixtures.cases.find(
+      (fixture) => fixture.schema === schema && fixture.valid,
+    )?.value
+    if (!preview || typeof preview !== 'object') throw new Error('Mapping preview fixture missing')
+    const summary = {
+      totalIdentitiesAdded: 5500,
+      totalIdentitiesRemoved: 0,
+      totalIssues: 0,
+      totalConflicts: 0,
+      totalAdded: 11000,
+      totalRemoved: 0,
+      totalModified: 0,
+      truncated: true,
+    } satisfies NonNullable<MappingPreviewResultDTO['summary']>
+
+    expect(validateBusiness3(schema, preview)).toBe(true)
+    expect(validateBusiness3(schema, { ...preview, summary })).toBe(true)
+    expect(validateBusiness3(schema, { ...preview, summary, unexpected: true })).toBe(false)
+    for (const invalid of [
+      { ...summary, totalAdded: -1 },
+      { ...summary, totalAdded: 1.5 },
+      { ...summary, totalAdded: Number.MAX_SAFE_INTEGER + 1 },
+      { ...summary, truncated: 'true' },
+      { ...summary, truncated: undefined },
+      { ...summary, unexpected: true },
+    ]) {
+      expect(validateBusiness3(schema, { ...preview, summary: invalid })).toBe(false)
+    }
   })
   it.each(fixtures.wave4Raw)('$name', ({ schema, wireUtf8, valid }) => {
     // Preserve own keys that may carry special meaning in JS object literals.
