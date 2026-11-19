@@ -366,11 +366,29 @@ describe('Agent routes in production desktop registration', () => {
       operationId: deriveBeforeCommitOp(f.commitArgs.operationId),
       baseRevision: 5,
       recordFullAssistance: true,
+      taskIds: ['business-ontology', 'transfer-repair'],
       label: null,
     })
     expect(f.commitProjectChangeSet).toHaveBeenCalledExactlyOnceWith({
       operationId: f.commitArgs.operationId,
       confirmation: f.commitArgs.confirmation,
+    })
+  })
+  it('forwards an explicit taskIds selection instead of the default full-assistance list', async () => {
+    const f = setup()
+    await f.prepare()
+    const result = await f.invoke('agent:commit-draft', {
+      ...f.commitArgs,
+      taskIds: ['quality'],
+    })
+    expect(result).toMatchObject({ ok: true })
+    expect(f.recordAgentBeforeCommit).toHaveBeenCalledExactlyOnceWith({
+      projectId: f.selection.project.projectId,
+      operationId: deriveBeforeCommitOp(f.commitArgs.operationId),
+      baseRevision: 5,
+      recordFullAssistance: true,
+      taskIds: ['quality'],
+      label: null,
     })
   })
   it('stops a stale commit after the checkpoint await without entering ChangeSet commit', async () => {

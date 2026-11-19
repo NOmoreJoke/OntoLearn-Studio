@@ -1,12 +1,19 @@
 /** W3b S2-4: frozen Agent mode / privacy vocabulary and the shared context store. */
+import { readFileSync } from 'node:fs'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import ts from 'typescript'
 import { describe, expect, it, vi } from 'vitest'
+import * as actions from '../../apps/desktop/src/renderer/src/agent/context-actions'
+import * as presentation from '../../apps/desktop/src/renderer/src/agent/sidebar-presentation'
 import {
   AGENT_SELECTED_OBJECT_LIMIT,
   agentModeMirrorKey,
+  bindAgentArtifact,
   createAgentContextStore,
+  isAgentArtifactCurrent,
   normalizeSelectedObjectIds,
+  persistAgentMode,
   readAgentModeMirror,
   writeAgentModeMirror,
 } from '../../apps/desktop/src/renderer/src/agent/agent-context-store'
@@ -119,6 +126,95 @@ describe('W3b S2-4: shared Agent context store', () => {
   })
 })
 
+describe('W3b B07: an upstream artefact only reaches the work bench of its own generation', () => {
+  const artifact = { projectId: 'p1', generation: 4, value: { name: '查询草稿' } }
+
+  it('delivers the artefact while the project and the generation still match', () => {
+    expect(isAgentArtifactCurrent(artifact, 'p1', 4)).toBe(true)
+    expect(bindAgentArtifact(artifact, 'p1', 4)).toEqual({ name: '查询草稿' })
+  })
+
+  it('never delivers the artefact of a retired project or generation', () => {
+    expect(isAgentArtifactCurrent(artifact, 'p2', 4)).toBe(false)
+    expect(isAgentArtifactCurrent(artifact, 'p1', 5)).toBe(false)
+    expect(bindAgentArtifact(artifact, 'p2', 4)).toBeUndefined()
+    expect(bindAgentArtifact(artifact, 'p1', 5)).toBeUndefined()
+    expect(bindAgentArtifact(undefined, 'p1', 4)).toBeUndefined()
+    expect(bindAgentArtifact(artifact, null, 4)).toBeUndefined()
+    expect(bindAgentArtifact(artifact, 'p1', undefined)).toBeUndefined()
+  })
+})
+
+describe('W3b B09: the host is the only authority for the assistant mode', () => {
+  it('mirrors the mode only after the host really persisted it', async () => {
+    const applied: string[] = []
+    const result = await persistAgentMode({
+      host: async () => ({ ok: true as const }),
+      projectId: 'p1',
+      mode: 'project',
+      apply: (mode) => applied.push(mode),
+    })
+    expect(result.ok).toBe(true)
+    expect(applied).toEqual(['project'])
+  })
+
+  it('never changes the local disclosure when the host refuses', async () => {
+    const applied: string[] = []
+    const result = await persistAgentMode({
+      host: async () => ({ ok: false as const, code: 'STALE_CONTEXT' }),
+      projectId: 'p1',
+      mode: 'project',
+      apply: (mode) => applied.push(mode),
+    })
+    expect(result).toEqual({ ok: false, code: 'STALE_CONTEXT' })
+    expect(applied).toEqual([])
+  })
+
+  it('never lets a retired project resolution overwrite the active project store', async () => {
+    const backing = new Map<string, string>()
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => backing.get(key) ?? null,
+      setItem: (key: string, value: string) => backing.set(key, value),
+    })
+    try {
+      const store = createAgentContextStore({ projectId: 'project-a', mode: 'tutor' })
+      let activeOwner = { projectId: 'project-a', generation: 1 }
+      let resolveHost!: (value: { ok: true }) => void
+      const capturedOwner = { ...activeOwner }
+      const pending = persistAgentMode({
+        host: () =>
+          new Promise<{ ok: true }>((resolve) => {
+            resolveHost = resolve
+          }),
+        projectId: capturedOwner.projectId,
+        mode: 'project',
+        apply: (next) => {
+          writeAgentModeMirror(capturedOwner.projectId, next)
+          if (
+            activeOwner.projectId === capturedOwner.projectId &&
+            activeOwner.generation === capturedOwner.generation
+          )
+            store.setMode(next)
+        },
+      })
+      // User switches to project B whose own persisted mirror is tutor.
+      activeOwner = { projectId: 'project-b', generation: 2 }
+      store.setProjectId('project-b')
+      store.setMode(readAgentModeMirror('project-b'))
+      expect(store.getSnapshot().mode).toBe('tutor')
+
+      // Project A's setAgentMode settles afterwards: A's mirror updates, B's store stays tutor.
+      resolveHost({ ok: true })
+      const outcome = await pending
+      expect(outcome).toEqual({ ok: true })
+      expect(store.getSnapshot().mode).toBe('tutor')
+      expect(readAgentModeMirror('project-a')).toBe('project')
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+})
+
 describe('W3b S2-4: frozen module and quick-action policy', () => {
   it('maps every shell workspace onto the frozen module vocabulary', () => {
     expect(toAgentModule('query')).toBe('query')
@@ -199,5 +295,205 @@ describe('W3b S2-4: AgentSidebar privacy vocabulary and mode switch', () => {
       expect(html).toContain(`data-testid="agent-action-${action}"`)
     }
     expect(html).toContain('aria-label="页面快捷动作"')
+  })
+})
+
+/* --------------------------------------------------------------------------
+ * B07: a stale callback of an earlier visit of the same semantic key may
+ * never write the current busy or error state.
+ * ----------------------------------------------------------------------- */
+
+type Node = { type: unknown; props: Record<string, unknown> }
+
+function sidebarHarness() {
+  const slots: unknown[] = []
+  const effects: Array<{ deps: unknown[]; cleanup?: () => void }> = []
+  const pending: Array<() => void> = []
+  let cursor = 0
+  let ids = 0
+  const sameDeps = (left: unknown[], right: unknown[]) =>
+    left.length === right.length && left.every((value, index) => Object.is(value, right[index]))
+  const hooks = {
+    useState: (initial: unknown) => {
+      const index = cursor++
+      if (!(index in slots))
+        slots[index] = typeof initial === 'function' ? (initial as () => unknown)() : initial
+      return [
+        slots[index],
+        (value: unknown) => {
+          slots[index] =
+            typeof value === 'function' ? (value as (old: unknown) => unknown)(slots[index]) : value
+        },
+      ]
+    },
+    useRef: (value: unknown) => {
+      const index = cursor++
+      if (!(index in slots)) slots[index] = { current: value }
+      return slots[index]
+    },
+    useMemo: (callback: () => unknown) => callback(),
+    useCallback: (callback: unknown, deps: unknown[] = []) => {
+      const index = cursor++
+      const slot = slots[index] as { deps: unknown[]; value: unknown } | undefined
+      if (!slot || !sameDeps(slot.deps, deps)) slots[index] = { deps, value: callback }
+      return (slots[index] as { value: unknown }).value
+    },
+    useEffect: (callback: () => void | (() => void), deps: unknown[] = []) => {
+      const index = cursor++
+      const previous = effects[index]
+      if (previous && sameDeps(previous.deps, deps)) return
+      previous?.cleanup?.()
+      effects[index] = { deps, cleanup: undefined }
+      pending.push(() => {
+        const result = callback()
+        effects[index].cleanup = typeof result === 'function' ? result : undefined
+      })
+    },
+    useLayoutEffect: (callback: () => void | (() => void)) => {
+      callback()
+    },
+    useId: () => `id-${++ids}`,
+  }
+  const jsx = (type: unknown, props: Record<string, unknown>) => ({ type, props })
+  const code = ts.transpileModule(
+    readFileSync('apps/desktop/src/renderer/src/agent/AgentSidebar.tsx', 'utf8'),
+    {
+      compilerOptions: {
+        target: ts.ScriptTarget.ES2022,
+        module: ts.ModuleKind.CommonJS,
+        jsx: ts.JsxEmit.ReactJSX,
+      },
+    },
+  ).outputText
+  const exported: Record<string, unknown> = {}
+  new Function('require', 'exports', code)((name: string) => {
+    if (name === 'react') return hooks
+    if (name === 'react/jsx-runtime') return { jsx, jsxs: jsx }
+    if (name === './context-actions') return actions
+    if (name === './sidebar-presentation') return presentation
+    if (name === './agent-sidebar.css') return {}
+    throw Error(`Unexpected renderer dependency ${name}`)
+  }, exported)
+  const Component = exported.AgentSidebar as unknown as (props: Record<string, unknown>) => Node
+  let props: Record<string, unknown> = {
+    context,
+    state: null,
+    privacy: 'minimal',
+    modelReady: true,
+    localActions: ['hint'],
+  }
+  let tree: Node
+  function render() {
+    cursor = 0
+    tree = Component(props)
+    for (const callback of pending.splice(0)) callback()
+  }
+  function nodes(value: unknown): Node[] {
+    if (Array.isArray(value)) return value.flatMap((item) => nodes(item))
+    if (!value || typeof value !== 'object' || !('type' in value)) return []
+    const node = value as Node
+    return [node, ...nodes(node.props.children)]
+  }
+  function textOf(value: unknown): string {
+    if (Array.isArray(value)) return value.map(textOf).join('')
+    if (value && typeof value === 'object' && 'props' in value)
+      return textOf((value as Node).props.children)
+    return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
+  }
+  render()
+  return {
+    render,
+    unmount() {
+      for (const effect of effects) effect?.cleanup?.()
+      effects.length = 0
+    },
+    setProps(next: Record<string, unknown>) {
+      props = { ...props, ...next }
+      render()
+    },
+    nodes: () => nodes(tree),
+    text: () => textOf(tree),
+    find: (testId: string) => nodes(tree).find((node) => node.props['data-testid'] === testId),
+    textarea: () => nodes(tree).find((node) => node.type === 'textarea'),
+  }
+}
+
+const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
+
+describe('W3b B07: an earlier visit of the same context never writes the current state', () => {
+  it('drops the stale failure of A -> B -> A and keeps the editable question', async () => {
+    const sidebar = sidebarHarness()
+    const question = sidebar.textarea()!
+    ;(question.props.onChange as (event: unknown) => void)({ target: { value: '我的问题' } })
+    sidebar.render()
+    expect(sidebar.textarea()!.props.value).toBe('我的问题')
+    let rejectMode: ((reason: Error) => void) | undefined
+    const pendingMode = new Promise<void>((_, reject) => {
+      rejectMode = reject
+    })
+    let calls = 0
+    sidebar.setProps({
+      onModeChange: () => {
+        calls += 1
+        return calls === 1 ? pendingMode : Promise.resolve()
+      },
+    })
+    ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
+    // A -> B -> A: the same semantic key is entered a second time.
+    sidebar.setProps({ context: { ...context, projectId: 'p2' } })
+    sidebar.setProps({ context })
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
+    rejectMode!(new Error('STALE_CONTEXT'))
+    await flush()
+    sidebar.render()
+    expect(sidebar.text()).not.toContain('操作未完成，输入已保留')
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
+    ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
+    await flush()
+    expect(calls).toBe(2)
+    // The editable question of the same key is never thrown away.
+    expect(sidebar.textarea()!.props.value).toBe('我的问题')
+    sidebar.unmount()
+  })
+
+  it('keeps a newer A run busy when a stale earlier A -> B -> A run settles mid-flight', async () => {
+    const sidebar = sidebarHarness()
+    let rejectOp1: ((reason: Error) => void) | undefined
+    let resolveOp2: (() => void) | undefined
+    const op1 = new Promise<void>((_, reject) => {
+      rejectOp1 = reject
+    })
+    const op2 = new Promise<void>((resolve) => {
+      resolveOp2 = resolve
+    })
+    let calls = 0
+    sidebar.setProps({
+      onModeChange: () => {
+        calls += 1
+        return calls === 1 ? op1 : op2
+      },
+    })
+    ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
+    // A -> B -> A leaves A unlocked so the user can start a fresh run on A.
+    sidebar.setProps({ context: { ...context, projectId: 'p2' } })
+    sidebar.setProps({ context })
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
+    ;(sidebar.find('agent-mode-toggle')!.props.onClick as () => void)()
+    sidebar.render()
+    expect(calls).toBe(2)
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(true)
+
+    // Stale op1 settling must neither leak an error nor prematurely clear op2's busy state.
+    rejectOp1!(new Error('STALE_CONTEXT'))
+    await flush()
+    sidebar.render()
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(true)
+    expect(sidebar.text()).not.toContain('操作未完成，输入已保留')
+
+    resolveOp2!()
+    await flush()
+    sidebar.render()
+    expect(sidebar.find('agent-mode-toggle')!.props.disabled).toBe(false)
+    sidebar.unmount()
   })
 })

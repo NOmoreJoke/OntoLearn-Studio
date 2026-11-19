@@ -74,6 +74,7 @@ type Dependencies = {
   replies: Pick<MainlineReplyReceiver, 'receive' | 'consume'>
   models(): Models | undefined
   providerApproval?: AgentProviderApproval
+  onStateChange?: (state: AgentStateDTO) => void
 }
 type Turn = {
   state: AgentStateDTO
@@ -112,6 +113,10 @@ const idle = (): AgentStateDTO => ({
 const safeId = /^[A-Za-z0-9:_-]{1,128}$/
 const scopeToken = (value: string) =>
   safeId.test(value) ? value : 'selected-' + createHash('sha256').update(value).digest('hex')
+// Full assistance is always attributed to an explicit task list: the ontology
+// draft targets and nothing else, so unrelated transfer attempts are never
+// swept in when the caller omits taskIds (B05).
+const defaultFullAssistanceTaskIds = ['business-ontology', 'transfer-repair'] as const
 
 export function deriveBeforeCommitOp(operationId: string): string {
   const hash = createHash('sha256')
@@ -450,11 +455,22 @@ export class AgentHostComposition implements AgentBridge {
     })
   }
 
+  private notifyStateChange(state: AgentStateDTO): void {
+    const listener = this.dependencies.onStateChange
+    if (!listener) return
+    try {
+      listener(structuredClone(state))
+    } catch {
+      /* Observer errors are isolated so host turn state and IPC replies remain intact. */
+    }
+  }
+
   private failTurn(turn: Turn, code: string): void {
     turn.state.status = code === 'CANCELLED' ? 'cancelled' : 'failed'
     turn.state.failureCode = code
     turn.state.answerText = null
     turn.state.receipts = code === 'STALE_CONTEXT' ? [] : this.receipts(turn)
+    this.notifyStateChange(turn.state)
   }
 
   private async run(turn: Turn, models: Models, approval: AgentProviderApproval): Promise<void> {
@@ -494,6 +510,7 @@ export class AgentHostComposition implements AgentBridge {
             : answer.kind === 'suggestion'
               ? answer.label + '\n' + answer.text
               : answer.text
+        this.notifyStateChange(turn.state)
         return
       }
     } catch (error) {
@@ -538,13 +555,14 @@ export class AgentHostComposition implements AgentBridge {
   /** Bind the actual named ChangeSet preview to this operation before accepting any confirmation. */
   observeDraftPreview(args: MainlinePreviewArgs, preview: ChangeSetPreview): void {
     const binding = this.draft
+    // Compare structured DTO data across the host, reply receiver and IPC realms.
     if (
       !binding ||
       binding.confirmation ||
       !this.current(binding.turn) ||
       args.intent !== 'change' ||
       args.baseRevision !== binding.draft.baseRevision ||
-      !isDeepStrictEqual(args.plan, binding.draft.plan) ||
+      !isDeepStrictEqual(structuredClone(args.plan), structuredClone(binding.draft.plan)) ||
       preview.status !== 'ready' ||
       preview.intent !== 'change' ||
       preview.projectId !== binding.turn.context.projectId ||
@@ -582,7 +600,7 @@ export class AgentHostComposition implements AgentBridge {
         !binding ||
         binding.draft.operationId !== args.operationId ||
         binding.draft.draftType !== args.draftType ||
-        !isDeepStrictEqual(binding.confirmation, args.confirmation)
+        !isDeepStrictEqual(binding.confirmation, structuredClone(args.confirmation))
       )
         throw new AgentError('STALE_CONTEXT')
       const label = args.label ?? null
@@ -617,6 +635,7 @@ export class AgentHostComposition implements AgentBridge {
         operationId,
         baseRevision,
         recordFullAssistance: mode === 'project' && draftType === 'ontology',
+        taskIds: args.taskIds ?? [...defaultFullAssistanceTaskIds],
         label: args.label ?? null,
       }),
     )

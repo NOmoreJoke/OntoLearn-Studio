@@ -115,6 +115,9 @@ function Editor({
   useEffect(
     () => () => {
       request.current++
+      // A retired ontology context must not keep an object selection alive in
+      // the shared Agent context of the next project or generation.
+      selectionNotify.current?.([])
     },
     [],
   )

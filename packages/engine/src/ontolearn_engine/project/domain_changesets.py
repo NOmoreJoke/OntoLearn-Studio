@@ -1029,10 +1029,19 @@ def commit(store, job, context, hook):
     if envelope != context["plan"]:
         fail("INVALID_STATE")
     preview = unpack(envelope["preview"])
-    return ProjectTransactions(store).commit(
+    marker = ProjectTransactions(store).commit(
         preview,
         job["operationId"],
         job["jobId"],
         confirmed_preview=preview.identity,
         hook=hook,
     )
+    # Same outer _application transaction as the marker above: the staged
+    # agent full-assistance marking for this exact ChangeSet either lands
+    # with the committed domain state or rolls back with it (B05).
+    from ontolearn_engine.project import learning_agent
+
+    learning_agent.apply_pending_assistance(
+        store, job["projectId"], job["operationId"], preview.base
+    )
+    return marker

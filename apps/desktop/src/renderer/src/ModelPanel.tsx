@@ -44,9 +44,12 @@ const capabilityStatusLabels: Record<AgentCapabilitiesDTO['connection'], string>
 export function ModelPanel({
   jobs,
   projectId = null,
+  onAgentModelChanged,
 }: {
   jobs: JobView[]
   projectId?: string | null
+  /** Called after the model configuration, privacy or capability state changed. */
+  onAgentModelChanged?: () => void
 }) {
   const [status, setStatus] = useState<ModelAccessStatus>()
   const [copyFrom, setCopyFrom] = useState<ModelConfiguration>()
@@ -54,6 +57,10 @@ export function ModelPanel({
   // Agent-side model configuration and capability state (frozen contract DTOs).
   const [agentContext, setAgentContext] = useState<AgentContextDTO | null>(null)
   const [agentAudit, setAgentAudit] = useState<AgentAuditRecordDTO[]>([])
+  // "unread" / "empty" / "loaded" / "failed" are four different facts.
+  const [agentAuditState, setAgentAuditState] = useState<'unread' | 'empty' | 'loaded' | 'failed'>(
+    'unread',
+  )
   const [agentBusy, setAgentBusy] = useState(false)
   const [agentError, setAgentError] = useState<string>()
   // null is initial auto-selection; '' is the user's explicit new-configuration choice.
@@ -68,6 +75,8 @@ export function ModelPanel({
   const live = useRef(true)
   const binding = useRef('')
   const polling = useRef(false)
+  // Every audit read owns a request sequence; an outdated answer is dropped.
+  const auditSeq = useRef(0)
   const outcomeCache = useRef(new Map<string, ModelExplanationOutcome>())
   const secretInput = useRef<HTMLInputElement>(null)
   const configuration = status?.configurations.find(
@@ -167,6 +176,7 @@ export function ModelPanel({
       if (reply.ok) {
         accept?.(reply.data)
         if (update) await refresh()
+        onAgentModelChanged?.()
       } else setError(reply.error)
     } catch {
       if (live.current) setError(safeError(undefined))
@@ -197,11 +207,21 @@ export function ModelPanel({
   const refreshAgentAudit = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge || !projectId) return
+    const mySeq = ++auditSeq.current
     try {
       const reply = await bridge.listAgentAudit({ projectId, limit: 20 })
-      if (live.current && reply.ok) setAgentAudit(reply.data.items)
+      if (!live.current || auditSeq.current !== mySeq) return
+      if (!reply.ok) {
+        setAgentAuditState('failed')
+        setAgentError(reply.error.code)
+        return
+      }
+      setAgentAudit(reply.data.items)
+      setAgentAuditState(reply.data.items.length ? 'loaded' : 'empty')
     } catch {
-      /* An unavailable audit channel simply shows no records. */
+      if (!live.current || auditSeq.current !== mySeq) return
+      setAgentAuditState('failed')
+      setAgentError('AGENT_AUDIT_UNAVAILABLE')
     }
   }, [projectId])
   useEffect(() => {
@@ -220,6 +240,7 @@ export function ModelPanel({
       if (reply.ok) {
         accept?.(reply.data)
         await refreshAgentContext()
+        onAgentModelChanged?.()
       } else setAgentError(reply.error.code)
     } catch {
       if (live.current) setAgentError('AGENT_MODEL_ACTION_FAILED')
@@ -572,7 +593,17 @@ export function ModelPanel({
             </li>
           ))}
         </ul>
-        {agentAudit.length === 0 && <p>当前项目暂无 Agent 审计记录。</p>}
+        {agentAudit.length === 0 && agentAuditState === 'unread' && (
+          <p>尚未读取 Agent 审计记录；没有记录不等于没有发生外发。</p>
+        )}
+        {agentAudit.length === 0 && agentAuditState === 'empty' && (
+          <p>当前项目暂无 Agent 审计记录。</p>
+        )}
+        {agentAuditState === 'failed' && (
+          <p role="alert" data-testid="agent-audit-error">
+            Agent 审计记录读取失败；不能据此判断本项目没有记录。
+          </p>
+        )}
       </section>
       <details className="model-settings">
         <summary>当前项目外发记录</summary>

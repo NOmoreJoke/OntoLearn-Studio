@@ -121,3 +121,59 @@ export function writeAgentModeMirror(projectId: string, mode: AgentMode): boolea
     return false
   }
 }
+
+/**
+ * An upstream Agent artefact (a query draft or a draft plan) always carries
+ * the project and the workspace generation it was produced for. Without this
+ * binding an artefact of a retired project could be delivered into the work
+ * bench of another project.
+ */
+export type SourcedAgentArtifact<T> = {
+  projectId: string
+  generation: number
+  value: T
+}
+
+/** True when the artefact still belongs to the selected project generation. */
+export function isAgentArtifactCurrent<T>(
+  artifact: SourcedAgentArtifact<T> | undefined,
+  projectId: string | null | undefined,
+  generation: number | null | undefined,
+): boolean {
+  if (!artifact) return false
+  if (!projectId || generation === null || generation === undefined) return false
+  return artifact.projectId === projectId && artifact.generation === generation
+}
+
+/**
+ * The artefact that may be handed to the work bench right now. Anything that
+ * belongs to a retired project or a retired generation is simply not
+ * delivered.
+ */
+export function bindAgentArtifact<T>(
+  artifact: SourcedAgentArtifact<T> | undefined,
+  projectId: string | null | undefined,
+  generation: number | null | undefined,
+): T | undefined {
+  return isAgentArtifactCurrent(artifact, projectId, generation) ? artifact!.value : undefined
+}
+
+export type AgentModePersistResult = { ok: true } | { ok: false; code: string }
+
+/**
+ * Persist a mode change through the host and only then mirror it locally.
+ *
+ * The host is the only authority for the real mode: a failed host call must
+ * never change the local disclosure preference, and the caller is told why.
+ */
+export async function persistAgentMode(args: {
+  host: (projectId: string, mode: AgentMode) => Promise<{ ok: true } | { ok: false; code: string }>
+  projectId: string
+  mode: AgentMode
+  apply: (mode: AgentMode) => void
+}): Promise<AgentModePersistResult> {
+  const reply = await args.host(args.projectId, args.mode)
+  if (!reply.ok) return { ok: false, code: reply.code }
+  args.apply(args.mode)
+  return { ok: true }
+}

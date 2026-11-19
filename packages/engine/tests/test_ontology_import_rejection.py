@@ -350,3 +350,231 @@ def test_rejection_is_repeatable_and_stateless(owned):
         assert result["status"] == "rejected", result
         assert {item["code"] for item in result["reasons"]} == {"UNSUPPORTED_OWL"}
     assert store.revision(store._project(project)) == 0
+
+
+def shape_turtle(constraint_text, shape_id="c1"):
+    """One well-formed template node/property shape with a custom constraint."""
+    return (
+        PREFIXES
+        + f"<urn:ontolearn:shape:{shape_id}> a sh:NodeShape ;\n"
+        + "    sh:targetClass <urn:x:c> ;\n"
+        + f"    sh:property <urn:ontolearn:shape:{shape_id}:property> .\n"
+        + f"<urn:ontolearn:shape:{shape_id}:property> a sh:PropertyShape ;\n"
+        + "    sh:path <urn:x:p> ;\n"
+        + f"    {constraint_text} .\n"
+    )
+
+
+def assert_session_stays_readable(actor, project):
+    """A structured rejection must never freeze the business session (B03)."""
+    state = ok(exchange(actor, "project.get", {"projectId": project}))
+    assert state["projectId"] == project
+    exported = ok(exchange(actor, "project.ontology.export", {"projectId": project}))
+    assert exported["status"] == "ok", exported
+
+
+def test_shacl_list_blank_node_element_rejects_and_keeps_session_readable(owned):
+    actor, store, project = owned
+    internal = store._project(project)
+    before = store.state(internal)
+    result = check(actor, project, shape_turtle("sh:in ( [ <urn:x:q> <urn:x:r> ] )"))
+    assert result["status"] == "rejected", result
+    codes = {item["code"] for item in result["reasons"]}
+    assert "UNSUPPORTED_BLANK_NODE" in codes, result["reasons"]
+    assert store.state(internal) == before
+    assert_session_stays_readable(actor, project)
+
+
+def test_shacl_list_unsupported_datatype_rejects_and_keeps_session_readable(owned):
+    actor, _, project = owned
+    result = check(actor, project, shape_turtle('sh:in ( "2024"^^xsd:gYear )'))
+    assert result["status"] == "rejected", result
+    codes = {item["code"] for item in result["reasons"]}
+    assert "UNSUPPORTED_LITERAL_DATATYPE" in codes, result["reasons"]
+    assert_session_stays_readable(actor, project)
+
+
+def test_shacl_list_ill_typed_literal_rejects_and_keeps_session_readable(owned):
+    actor, _, project = owned
+    result = check(actor, project, shape_turtle('sh:in ( "abc"^^xsd:integer )'))
+    assert result["status"] == "rejected", result
+    codes = {item["code"] for item in result["reasons"]}
+    assert "UNSUPPORTED_LITERAL_DATATYPE" in codes, result["reasons"]
+    assert_session_stays_readable(actor, project)
+
+
+def test_property_shape_rejects_node_shape_predicates(owned):
+    actor, _, project = owned
+    for predicate in ("sh:targetClass <urn:x:c>", "sh:property <urn:x:other>"):
+        turtle = (
+            PREFIXES
+            + "<urn:ontolearn:shape:c1> a sh:NodeShape ;\n"
+            + "    sh:targetClass <urn:x:c> ;\n"
+            + "    sh:property <urn:ontolearn:shape:c1:property> .\n"
+            + "<urn:ontolearn:shape:c1:property> a sh:PropertyShape ;\n"
+            + "    sh:path <urn:x:p> ;\n"
+            + f"    {predicate} .\n"
+        )
+        result = check(actor, project, turtle)
+        assert result["status"] == "rejected", result
+        assert {item["code"] for item in result["reasons"]} == {"UNSUPPORTED_SHACL"}
+
+
+def test_deactivated_must_be_strict_single_boolean(owned):
+    actor, _, project = owned
+    cases = [
+        # typed-as-string "true" is not a boolean literal
+        'sh:deactivated "true"^^xsd:string',
+        # integer is not a boolean literal
+        "sh:deactivated 1",
+    ]
+    for extra in cases:
+        turtle = (
+            PREFIXES
+            + "<urn:ontolearn:shape:c1> a sh:NodeShape ;\n"
+            + "    sh:targetClass <urn:x:c> ;\n"
+            + f"    {extra} ;\n"
+            + "    sh:property <urn:ontolearn:shape:c1:property> .\n"
+            + "<urn:ontolearn:shape:c1:property> a sh:PropertyShape ;\n"
+            + "    sh:path <urn:x:p> ;\n"
+            + "    sh:minCount 1 .\n"
+        )
+        result = check(actor, project, turtle)
+        assert result["status"] == "rejected", result
+        assert {item["code"] for item in result["reasons"]} == {"UNSUPPORTED_SHACL"}
+    # two values on the same node shape are ambiguous and rejected
+    turtle = (
+        PREFIXES
+        + "<urn:ontolearn:shape:c1> a sh:NodeShape ;\n"
+        + "    sh:targetClass <urn:x:c> ;\n"
+        + "    sh:deactivated true, false ;\n"
+        + "    sh:property <urn:ontolearn:shape:c1:property> .\n"
+        + "<urn:ontolearn:shape:c1:property> a sh:PropertyShape ;\n"
+        + "    sh:path <urn:x:p> ;\n"
+        + "    sh:minCount 1 .\n"
+    )
+    result = check(actor, project, turtle)
+    assert result["status"] == "rejected", result
+    assert {item["code"] for item in result["reasons"]} == {"UNSUPPORTED_SHACL"}
+
+
+def test_numeric_range_bounds_are_strictly_validated(owned):
+    actor, _, project = owned
+    bad_bounds = [
+        # multi-value bound must not be silently collapsed
+        "sh:minInclusive 1, 2",
+        # boolean is not a numeric bound
+        "sh:minInclusive true",
+        # non-numeric text with a datatype outside the numeric set
+        'sh:minInclusive "abc"^^xsd:string',
+        # well-typed numeric datatype but non-numeric lexical
+        'sh:maxInclusive "abc"^^xsd:integer',
+        # one good bound cannot hide a broken second bound
+        'sh:minInclusive 0 ;\n    sh:maxInclusive "abc"^^xsd:integer',
+    ]
+    for constraint in bad_bounds:
+        result = check(actor, project, shape_turtle(constraint))
+        assert result["status"] == "rejected", (constraint, result)
+        assert {item["code"] for item in result["reasons"]} == {"UNSUPPORTED_SHACL"}, constraint
+    # Legal integer bounds stay exchangeable.
+    result = check(actor, project, shape_turtle("sh:minInclusive 0 ;\n    sh:maxInclusive 10"))
+    assert result["status"] == "ok", result
+    definition = result["plan"]["definitions"][0]["value"]
+    assert definition["template"] == "numericRange"
+    assert definition["parameters"] == {"minInclusive": "0", "maxInclusive": "10"}
+
+
+@pytest.mark.parametrize(
+    "turtle, codes",
+    [
+        # B08: lexically distinct integers that fold onto "1"^^xsd:integer
+        (
+            PREFIXES + "<urn:x:a> <urn:x:p> 1, +01 .\n",
+            {"UNSUPPORTED_LITERAL_DATATYPE"},
+        ),
+        # boolean lexical fold: "0"^^xsd:boolean and false both store "false"
+        (
+            PREFIXES + '<urn:x:a> <urn:x:p> "0"^^xsd:boolean, false .\n',
+            {"UNSUPPORTED_LITERAL_DATATYPE"},
+        ),
+        # ill-typed literal content
+        (
+            PREFIXES + '<urn:x:a> <urn:x:p> "abc"^^xsd:integer .\n',
+            {"UNSUPPORTED_LITERAL_DATATYPE"},
+        ),
+    ],
+    ids=["integer-lexical-fold", "boolean-lexical-fold", "ill-typed"],
+)
+def test_normalizing_literal_collisions_reject_whole_batch(owned, turtle, codes):
+    actor, store, project = owned
+    internal = store._project(project)
+    before = store.state(internal)
+    result = check(actor, project, turtle)
+    assert result["status"] == "rejected", result
+    assert {item["code"] for item in result["reasons"]} == codes
+    assert "plan" not in result
+    assert store.state(internal) == before
+    assert_session_stays_readable(actor, project)
+
+
+def test_distinct_lexical_forms_that_stay_distinct_are_kept(owned):
+    # 1.0/1.00 decimals and boolean-vs-integer pairs do not fold onto one
+    # stored value: both literals survive as distinct facts (no silent merge,
+    # hence no rejection). Exact duplicate triples - and case-insensitive
+    # language tags, one literal under RDF 1.1 - count exactly once.
+    actor, _, project = owned
+    turtle = (
+        PREFIXES
+        + '<urn:x:a> <urn:x:p1> "1.0"^^xsd:decimal, "1.00"^^xsd:decimal .\n'
+        + "<urn:x:a> <urn:x:p2> true, 1 .\n"
+        + "<urn:x:a> <urn:x:p3> 1 .\n"
+        + "<urn:x:a> <urn:x:p3> 1 .\n"
+        + '<urn:x:a> <urn:x:p4> "foo"@en, "foo"@EN .\n'
+    )
+    result = check(actor, project, turtle)
+    assert result["status"] == "ok", result
+    assert result["summary"]["tripleCount"] == 6
+    assert result["summary"]["manualFactCount"] == 6
+    objects = {fact["predicate"]: fact["object"] for fact in result["plan"]["manual"]}
+    assert objects["urn:x:p3"] == '"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
+    assert objects["urn:x:p4"] == '"foo"@en'
+    assert len({fact["id"] for fact in result["plan"]["manual"]}) == 6
+
+
+def test_long_and_escaped_literals_round_trip_through_the_plan(owned):
+    actor, _, project = owned
+    long_text = "长" * 4096
+    turtle = (
+        PREFIXES
+        + f'<urn:x:a> <urn:x:p1> "{long_text}" .\n'
+        + '<urn:x:a> <urn:x:p2> "quote \\" backslash \\\\ newline \\n tab \\t" .\n'
+    )
+    result = check(actor, project, turtle)
+    assert result["status"] == "ok", result
+    from ontolearn_engine.rdf_snapshot import term
+
+    objects = {fact["predicate"]: fact["object"] for fact in result["plan"]["manual"]}
+    assert str(term(objects["urn:x:p1"])) == long_text
+    assert str(term(objects["urn:x:p2"])) == 'quote " backslash \\ newline \n tab \t'
+
+
+def test_deactivated_true_round_trips_enabled_false(owned):
+    actor, _, project = owned
+    turtle = (
+        PREFIXES
+        + "<urn:ontolearn:shape:c1> a sh:NodeShape ;\n"
+        + "    sh:targetClass <urn:x:c> ;\n"
+        + "    sh:deactivated true ;\n"
+        + "    sh:property <urn:ontolearn:shape:c1:property> .\n"
+        + "<urn:ontolearn:shape:c1:property> a sh:PropertyShape ;\n"
+        + "    sh:path <urn:x:p> ;\n"
+        + "    sh:minCount 1 .\n"
+    )
+    result = check(actor, project, turtle)
+    assert result["status"] == "ok", result
+    definition = result["plan"]["definitions"][0]["value"]
+    assert definition["enabled"] is False
+    # sh:deactivated false keeps the constraint enabled.
+    result = check(actor, project, turtle.replace("sh:deactivated true", "sh:deactivated false"))
+    assert result["status"] == "ok", result
+    assert result["plan"]["definitions"][0]["value"]["enabled"] is True

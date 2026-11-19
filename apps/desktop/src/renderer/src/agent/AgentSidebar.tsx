@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { AgentMode, AgentPrivacy, AgentReceiptDTO } from '@ontolearn/contracts'
 import type { ToolReceipt, TrustedContext } from '../../../main/agent/agent-service'
 import { contextActions, assistanceLevel, type AgentAction } from './context-actions'
@@ -27,7 +27,7 @@ export interface AgentSidebarProps {
   modelReady: boolean
   localActions: readonly AgentAction[]
   /** Optional mode switch; without a handler the control stays disabled. */
-  onModeChange?: (mode: AgentMode) => void
+  onModeChange?: (mode: AgentMode) => void | Promise<void>
   onAction?: (
     action: AgentAction,
     target: 'local' | 'agent',
@@ -253,6 +253,34 @@ export function AgentSidebar(props: AgentSidebarProps) {
   const key = sidebarContextKey(context)
   const { question, dispatching, localError } = sidebarInteraction(interactions, key)
   const inFlight = useRef(new Set<string>())
+  // Every run gets a monotonically increasing token. A run that was started
+  // under an earlier mount of the same semantic key may never write the
+  // current busy or error state (A -> B -> A).
+  const runTokens = useRef(new Map<string, number>())
+  // Every visit of a semantic key is counted. A callback of an earlier visit
+  // of the same key is stale even when the key itself did not change.
+  const visit = useRef(0)
+  const visitedKey = useRef(key)
+  const mounted = useRef(true)
+  useEffect(() => {
+    const previousKey = visitedKey.current
+    if (previousKey !== key) {
+      visitedKey.current = key
+      visit.current += 1
+      inFlight.current.delete(previousKey)
+      setInteractions((previous) =>
+        previous[previousKey]?.dispatching
+          ? updateSidebarInteraction(previous, previousKey, { dispatching: false })
+          : previous,
+      )
+    }
+  }, [key])
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
   function updateInteraction(patch: Partial<SidebarInteraction>) {
     // Async callbacks retain their starting key and merge into its latest UI state.
     setInteractions((previous) => updateSidebarInteraction(previous, key, patch))
@@ -266,16 +294,28 @@ export function AgentSidebar(props: AgentSidebarProps) {
   const actions = contextActions(context.module, modelAvailable, props.localActions)
   const nextMode: AgentMode = context.mode === 'tutor' ? 'project' : 'tutor'
   async function invoke(operation: () => void | Promise<void>) {
-    if (inFlight.current.has(key)) return
-    inFlight.current.add(key)
+    const myKey = key
+    if (inFlight.current.has(myKey)) return
+    inFlight.current.add(myKey)
+    const token = (runTokens.current.get(myKey) ?? 0) + 1
+    runTokens.current.set(myKey, token)
+    const myVisit = visit.current
+    const owns = () =>
+      mounted.current && runTokens.current.get(myKey) === token && visit.current === myVisit
     updateInteraction({ dispatching: true, localError: false })
     try {
       await operation()
     } catch {
-      updateInteraction({ localError: true })
+      if (owns()) updateInteraction({ localError: true })
     } finally {
-      inFlight.current.delete(key)
-      updateInteraction({ dispatching: false })
+      if (runTokens.current.get(myKey) === token) {
+        inFlight.current.delete(myKey)
+        if (mounted.current) {
+          setInteractions((previous) =>
+            updateSidebarInteraction(previous, myKey, { dispatching: false }),
+          )
+        }
+      }
     }
   }
   return (

@@ -12,7 +12,7 @@ never a silent drop of stored structure.
 import json
 import re
 
-from rdflib import OWL, RDF, RDFS, SH, XSD, Literal, URIRef
+from rdflib import OWL, RDF, RDFS, SH, XSD, BNode, Graph, Literal, URIRef
 
 from ontolearn_engine.rdf_snapshot import graph_from_snapshot
 from ontolearn_engine.storage import Conflict, digest
@@ -66,13 +66,19 @@ TEMPLATE_PATH_PREDICATES = frozenset(
     )
 )
 SH_IN = "http://www.w3.org/ns/shacl#in"
-SHAPE_PREDICATES = frozenset(
+SH_DEACTIVATED = str(SH.deactivated)
+# Template shape vocabulary is validated per node kind: node shapes never carry
+# property-shape constraints and property shapes never carry sh:targetClass,
+# sh:property or sh:deactivated (B03). SHAPE_PREDICATES keeps the union for
+# callers that only need "some P0 template predicate" membership.
+NODE_SHAPE_PREDICATES = frozenset(
+    [str(term) for term in (RDF.type, SH.targetClass, SH.property)] + [SH_DEACTIVATED]
+)
+PROPERTY_SHAPE_PREDICATES = frozenset(
     [
         str(term)
         for term in (
             RDF.type,
-            SH.targetClass,
-            SH.property,
             SH.path,
             SH.minCount,
             SH.maxCount,
@@ -83,6 +89,7 @@ SHAPE_PREDICATES = frozenset(
     ]
     + [SH_IN]
 )
+SHAPE_PREDICATES = NODE_SHAPE_PREDICATES | PROPERTY_SHAPE_PREDICATES
 STRUCTURAL_TYPES = OWL_P0_TERMS | {str(RDFS.Class)}
 STRUCTURAL_N3_TYPES = frozenset(f"<{term}>" for term in STRUCTURAL_TYPES)
 STRUCTURAL_PREDICATES = frozenset({str(RDFS.subClassOf), str(RDFS.domain), str(RDFS.range)})
@@ -296,6 +303,36 @@ def resolve_active(store, public):
     return internal
 
 
+def _grounded_triple_set(graph):
+    """Canonical set of the blank-node-free triples for strict comparison."""
+    return {
+        (str(s), str(p), _canonical_literal(o).n3())
+        for s, p, o in graph
+        if not isinstance(s, BNode) and not isinstance(o, BNode)
+    }
+
+
+def _merged_export_graph(graph, sections):
+    """Content graph plus every compiled section, blank nodes de-conflicted.
+
+    Each section's blank nodes are renamed into a per-section namespace before
+    merging, so two sections can never collide on a generated node label.
+    """
+    merged = Graph()
+    for triple in graph:
+        merged.add(triple)
+    for index, (_, text) in enumerate(sections):
+        section = parse_export_turtle(text, "urn:ontolearn:export:")
+        renaming = {}
+        for subject, predicate, obj in section:
+            if isinstance(subject, BNode):
+                subject = renaming.setdefault(subject, BNode(f"section{index}-{subject}"))
+            if isinstance(obj, BNode):
+                obj = renaming.setdefault(obj, BNode(f"section{index}-{obj}"))
+            merged.add((subject, predicate, obj))
+    return merged
+
+
 def export_ontology(store, public):
     """Serialize the committed P0 scope; never touches drafts and never writes."""
     internal = resolve_active(store, public)
@@ -329,13 +366,24 @@ def export_ontology(store, public):
     if len(turtle.encode("utf-8")) > MAX_TURTLE_BYTES:
         fault("RESOURCE_LIMIT", resource="frame")
     triple_count = len(graph) + sum(counts)
-    # Byte-level self-check: the emitted document must re-parse into exactly
-    # the same triple set (zero surplus, zero loss) before it is returned.
+    # Self-check before returning: the emitted document must re-parse into
+    # exactly the same triples (zero surplus, zero loss). Grounded triples
+    # (no blank nodes) keep the strict canonical set comparison; the whole
+    # document is additionally checked for graph isomorphism against the
+    # merged content-plus-sections graph, because sh:in value lists serialize
+    # as fresh blank nodes on every independent parse and their identities can
+    # never be compared as bare strings across two parses (B02).
     verification = parse_export_turtle(turtle, "urn:ontolearn:export:")
-    expected = n3_triple_set(graph)
-    for _, text in sections:
-        expected |= n3_triple_set(parse_export_turtle(text, "urn:ontolearn:export:"))
-    if len(verification) != triple_count or n3_triple_set(verification) != expected:
+    merged = _merged_export_graph(graph, sections)
+    if (
+        len(verification) != triple_count
+        or len(merged) != triple_count
+        or _grounded_triple_set(verification) != _grounded_triple_set(merged)
+    ):
+        fault("INVALID_STATE")
+    from rdflib.compare import isomorphic
+
+    if not isomorphic(verification, merged):
         fault("INVALID_STATE")
     result = {
         "status": "ok",
@@ -353,6 +401,62 @@ def canonical_object(obj):
     from ontolearn_engine.rdf_snapshot import term
 
     return term(_canonical_literal(obj).n3()).n3()
+
+
+def literal_collision_reasons(content):
+    """B08: reject lexically distinct literals the Store would silently fold.
+
+    The exchange parser preserves exact lexical forms (``+01`` vs ``1``), but
+    ``canonical_object`` re-parses through the normalizing Store term gate and
+    can collapse several distinct RDF literals onto one stored N3 value - which
+    would merge two input triples into one fact with a shared id. Ill-typed
+    literals (``"abc"^^xsd:integer``) are rejected the same way. Exact RDF
+    triple duplicates stay legal set semantics and never reach this collision
+    path as two distinct terms.
+    """
+    reasons = []
+    seen = {}
+    for subject, predicate, obj in content:
+        if not isinstance(obj, Literal):
+            continue
+        if obj.ill_typed:
+            reasons.append(
+                reason(
+                    "UNSUPPORTED_LITERAL_DATATYPE",
+                    "datatype",
+                    f"Literal {obj.n3()} is ill-typed for its datatype and cannot "
+                    "be stored losslessly in the P0 exchange",
+                )
+            )
+            continue
+        try:
+            key = (str(subject), str(predicate), canonical_object(obj))
+        except (ValueError, TypeError):
+            reasons.append(
+                reason(
+                    "UNSUPPORTED_LITERAL_DATATYPE",
+                    "datatype",
+                    f"Literal {obj.n3()} cannot be represented as a canonical "
+                    "stored RDF term in the P0 exchange",
+                )
+            )
+            continue
+        # Pre-normalization identity: raw lexical form plus datatype and
+        # language as parsed (language tags keep their original case here).
+        identity = (str(obj), literal_datatype(obj), obj.language)
+        first = seen.setdefault(key, identity)
+        if first != identity:
+            reasons.append(
+                reason(
+                    "UNSUPPORTED_LITERAL_DATATYPE",
+                    "datatype",
+                    f"Triples of <{subject}> <{predicate}> carry lexically different "
+                    "literals (for example differing numeric spellings or language "
+                    "tag case) that normalize to one identical stored value; the "
+                    "Store cannot keep both without silent loss",
+                )
+            )
+    return reasons
 
 
 def manual_fact(subject, predicate, obj):
@@ -374,10 +478,16 @@ def build_plan(content):
     n3_triples = sorted(
         (str(subject), str(predicate), canonical_object(obj)) for subject, predicate, obj in content
     )
+    # A structural axiom (rdfs:subClassOf / rdfs:domain / rdfs:range) is a
+    # schema statement on its own: it joins the definition layer even without
+    # a same-batch rdf:type declaration, and its subject (like every typed
+    # structural subject) drags its rdfs:label / rdfs:comment annotations into
+    # the definition layer too (B11).
     structural_subjects = {
         subject
         for subject, predicate, obj in n3_triples
-        if predicate == str(RDF.type) and obj in STRUCTURAL_N3_TYPES
+        if (predicate == str(RDF.type) and obj in STRUCTURAL_N3_TYPES)
+        or predicate in STRUCTURAL_PREDICATES
     }
     definition_triples, manual = [], []
     for subject, predicate, obj in n3_triples:

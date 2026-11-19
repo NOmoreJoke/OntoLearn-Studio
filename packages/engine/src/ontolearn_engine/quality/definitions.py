@@ -238,11 +238,15 @@ def compile_constraint_turtle(defn: dict) -> str:
         constraint = " ;\n    ".join(bounds)
     shape = f"<urn:ontolearn:shape:{payload['id']}>"
     property_shape = f"<urn:ontolearn:shape:{payload['id']}:property>"
+    # SHACL 1.0 sh:deactivated preserves the enabled=False state through a
+    # Turtle round-trip; enabled=True output stays byte-identical (B04).
+    deactivated = "" if payload["enabled"] else "    sh:deactivated true ;\n"
     return (
         "@prefix sh: <http://www.w3.org/ns/shacl#> .\n"
         "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n"
         f"{shape} a sh:NodeShape ;\n"
         f"    sh:targetClass <{payload['targetClass']}> ;\n"
+        f"{deactivated}"
         f"    sh:property {property_shape} .\n\n"
         f"{property_shape} a sh:PropertyShape ;\n"
         f"    sh:path <{payload['path']}> ;\n"
