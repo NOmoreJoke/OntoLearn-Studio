@@ -12,7 +12,7 @@ import html
 import json
 from datetime import UTC, datetime
 
-from ontolearn_engine.storage import canonical
+from ontolearn_engine.storage import canonical, digest
 
 PROJECTION_VERSION = "ontolearn-report-v1"
 MAX_LIST = 200
@@ -137,6 +137,7 @@ def collect(store, project, internal, host):
         f"映射规格: {len(state['mappingState'])} 个",
     ]
     query_results, validation_results = _semantic_results(store, internal)
+    behavior_results, scenario_comparisons = _w4_results(store, project, internal)
     return {
         "projectionVersion": PROJECTION_VERSION,
         "projectId": project,
@@ -150,11 +151,88 @@ def collect(store, project, internal, host):
         "dataSummary": data_summary[:MAX_LIST],
         "queryResults": query_results[:MAX_LIST],
         "validationResults": validation_results[:MAX_LIST],
-        "behaviorResults": [],
-        "scenarioComparisons": [],
+        "behaviorResults": behavior_results[:MAX_LIST],
+        "scenarioComparisons": scenario_comparisons[:MAX_LIST],
         "assumptions": [],
         "unresolved": [],
     }
+
+
+def _w4_results(store, project, internal):
+    """Bounded real projection of persisted ``w4:behavior:*`` / ``w4:scenario:*`` runs.
+
+    All reads go through the wire services' own public accessors over their
+    append-only evidence rows; no second write path and no ad-hoc SQL here.
+    Entries keep their true staleness against the live project revision and
+    current input snapshot.
+    """
+    revision = store.revision(internal)
+    snapshot_id = digest(store._snapshot_projection(internal))
+    behavior_rows, scenario_rows = [], []
+    from ontolearn_engine.behavior import service as behavior_service
+
+    for run_id in behavior_service.indexed_runs(store, project)[:RESULT_SCAN_CAP]:
+        record = behavior_service.load_run(store, project, run_id)
+        if record is None or "binding" not in record:
+            continue
+        state = record.get("state")
+        if state == "failed":
+            status, note = "failed", "行为执行失败"
+        elif state == "cancelled":
+            status, note = "cancelled", "行为运行已取消"
+        elif (
+            record["binding"]["baseRevision"] == revision
+            and record["binding"]["inputSnapshotId"] == snapshot_id
+        ):
+            status, note = "current", "当前结果"
+        else:
+            status, note = "stale", "输入已更新，结果过期"
+        behavior_rows.append(
+            {
+                "resultId": record["runId"],
+                "inputRevision": record["binding"]["baseRevision"],
+                "semanticsVersion": record.get("versions", {}).get(
+                    "semanticsVersion", "E.1-private-v2"
+                ),
+                "scope": "sample",
+                "status": status,
+                "statusNote": note,
+                "summary": (
+                    f"行为样本运行 {state}：{len(record.get('actions', []))} 个动作，"
+                    f"{len(record.get('diff', {}).get('added', []))} 条新增差异"
+                ),
+            }
+        )
+    from ontolearn_engine.scenario import service as scenario_service
+
+    for run_id in scenario_service.indexed_run_ids(store, project)[:RESULT_SCAN_CAP]:
+        record = scenario_service.load_run(store, project, run_id)
+        if record is None or record.get("status") != "succeeded":
+            continue
+        identity = record.get("identity", {})
+        current = (
+            identity.get("projectVersion") == revision
+            and identity.get("inputSnapshotId") == snapshot_id
+        )
+        metrics = record["rounds"][-1]["round"]["metrics"] if record.get("rounds") else {}
+        scenario_rows.append(
+            {
+                "resultId": record["runId"],
+                "inputRevision": identity.get("projectVersion", 0),
+                "semanticsVersion": identity.get("semantics", "scenario-e2-v1"),
+                "scope": record.get("scenarioId", ""),
+                "status": "current" if current else "stale",
+                "statusNote": "当前结果" if current else "输入已更新，结果过期",
+                "summary": (
+                    f"场景运行完成 {record.get('lastCommittedRound', 0)}/"
+                    f"{record.get('evidence', {}).get('maxRounds', 0)} 轮："
+                    f"积压 {metrics.get('backlog', 0)}，"
+                    f"已完成工单 {metrics.get('completed', 0)}，"
+                    f"未关闭高危告警 {metrics.get('openHighAlerts', 0)}"
+                ),
+            }
+        )
+    return behavior_rows, scenario_rows
 
 
 def _competency_questions(state):

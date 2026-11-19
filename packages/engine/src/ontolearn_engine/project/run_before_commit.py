@@ -129,6 +129,57 @@ def before_commit(store, project, params, origin):
         return result
 
 
+def lookup_receipt(store, project, operation, domain, base_revision):
+    """W4-A2 read-only lookup: verify a persisted ``before-run`` receipt.
+
+    ``project.behavior.run`` / ``project.scenario.run`` / ``project.scenario.resume``
+    call this inside their own Store transaction before execution. The persisted
+    ``requestHash`` pins ``{runBeforeCommitVersion, projectId, operationId, domain,
+    baseRevision, label}``; the engine reconciles the host binding ``label: null``
+    exactly. A missing receipt, a drifted tuple, a wrong isolated-run domain or a
+    ``domainRevision`` that no longer equals the supplied base revision all fail
+    closed deterministically. The persisted ``checkpointRef`` is returned verbatim;
+    it is never minted or repaired here.
+    """
+    if domain not in DOMAINS:
+        fault("IDENTITY_CONFLICT")
+    expected = digest(
+        {
+            "runBeforeCommitVersion": 1,
+            "projectId": project,
+            "operationId": operation,
+            "domain": domain,
+            "baseRevision": base_revision,
+            "label": None,
+        }
+    )
+    row = store._db.execute(
+        "SELECT payload FROM job_details WHERE id=? AND project=?", (operation, project)
+    ).fetchone()
+    if row is None:
+        fault("IDENTITY_CONFLICT")
+    try:
+        envelope = json.loads(row[0])
+        result = envelope["result"]
+    except (ValueError, TypeError, KeyError, IndexError):
+        fault("IDENTITY_CONFLICT")
+    if (
+        not isinstance(envelope, dict)
+        or envelope.get(RECEIPT_VERSION) != 1
+        or envelope.get("requestHash") != expected
+        or not isinstance(result, dict)
+        or result.get("runBeforeCommitVersion") != 1
+        or result.get("projectId") != project
+        or result.get("operationId") != operation
+        or result.get("reason") != "before-run"
+        or result.get("domainRevision") != base_revision
+        or not isinstance(result.get("checkpointRef"), str)
+        or not result["checkpointRef"]
+    ):
+        fault("IDENTITY_CONFLICT")
+    return result["checkpointRef"]
+
+
 def dispatch(store, method, params, origin):
     store._valid("params_project.run.before_commit", params)
     return before_commit(store, params["projectId"], params, origin)
