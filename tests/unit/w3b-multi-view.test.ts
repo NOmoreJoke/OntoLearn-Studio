@@ -64,6 +64,8 @@ function harness() {
       const index = cursor++
       const previous = effects[index]
       if (previous && sameDeps(previous.deps, deps)) return
+      // React runs the previous cleanup before the next effect of the same hook.
+      previous?.cleanup?.()
       effects[index] = { deps }
       pending.push(() => {
         const result = callback()
@@ -155,6 +157,10 @@ function harness() {
     selected,
     render,
     click,
+    unmount() {
+      for (const effect of effects) effect?.cleanup?.()
+      effects.length = 0
+    },
     nodes: () => nodes(tree),
     text: () => text(tree),
     find: (testId: string) => nodes(tree).find((node) => node.props['data-testid'] === testId),
@@ -209,6 +215,16 @@ describe('W3b S2-4: ontology multi-view and selection reporting', () => {
     const page = harness()
     page.click('查看 Equipment')
     expect(page.selected.filter((ids) => ids.length === 0)).toHaveLength(1)
+  })
+
+  it('retires the object selection when the ontology context is left', () => {
+    const page = harness()
+    page.click('查看 Equipment')
+    expect(page.selected.at(-1)).toEqual(['urn:Equipment'])
+    page.unmount()
+    // A retired context must not keep its object selection alive in the shared
+    // Agent context of the next project or generation.
+    expect(page.selected.at(-1)).toEqual([])
   })
 })
 

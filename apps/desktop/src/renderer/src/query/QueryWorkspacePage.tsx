@@ -1,11 +1,12 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { QueryResultPanel } from './QueryResultPanel'
 import {
   alarmTemplate,
-  alarmVocabulary,
   compileVisual,
   draftSchema,
+  resolveAlarmVocabulary,
   visualSchema,
+  type OntologyTripleLike,
   type VisualQuery,
 } from './draft'
 import { QueryWorkspaceController } from './workspace-controller'
@@ -20,6 +21,43 @@ export interface QueryWorkspacePageProps {
 }
 const emptyVisual = (): VisualQuery => ({ classIri: '', fields: [], conditions: [] })
 const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+
+/**
+ * Read the structural triples of the loaded ontology definitions.
+ * An opaque payload is never guessed at; it simply contributes nothing.
+ */
+export function readOntologyTriples(
+  definitions: ReadonlyArray<{ layer: string; id: string; payload: string }>,
+): OntologyTripleLike[] {
+  const triples: OntologyTripleLike[] = []
+  for (const definition of definitions) {
+    if (definition.layer !== 'ontology') continue
+    let value: unknown
+    try {
+      value = JSON.parse(definition.payload)
+    } catch {
+      continue
+    }
+    if (!value || typeof value !== 'object' || !('triples' in value)) continue
+    const rows = (value as { triples?: unknown }).triples
+    if (!Array.isArray(rows)) continue
+    for (const row of rows) {
+      if (!row || typeof row !== 'object') continue
+      const triple = row as Record<string, unknown>
+      if (
+        typeof triple.subject === 'string' &&
+        typeof triple.predicate === 'string' &&
+        typeof triple.object === 'string'
+      )
+        triples.push({
+          subject: triple.subject,
+          predicate: triple.predicate,
+          object: triple.object,
+        })
+    }
+  }
+  return triples
+}
 
 export function QueryWorkspacePage({ controller, modelDraft }: QueryWorkspacePageProps) {
   const state = useSyncExternalStore(
@@ -48,9 +86,11 @@ function WorkspaceDocument({
   const [builderError, setBuilderError] = useState('')
   const [historicalId, setHistoricalId] = useState('')
   const facts = state.read?.domain.state.facts ?? []
+  // Tombstoned facts (`object === null`) never contribute a class or a predicate.
+  const liveFacts = facts.filter((fact) => fact.object !== null && fact.object !== undefined)
   const classes = [
     ...new Set(
-      facts
+      liveFacts
         .filter(
           (fact) =>
             fact.predicate === rdfType && fact.object?.startsWith('<') && fact.object.endsWith('>'),
@@ -58,7 +98,11 @@ function WorkspaceDocument({
         .map((fact) => fact.object!.slice(1, -1)),
     ),
   ].sort()
-  const predicates = [...new Set(facts.map((fact) => fact.predicate))].sort()
+  const predicates = [...new Set(liveFacts.map((fact) => fact.predicate))].sort()
+  const ontologyTriples = useMemo(
+    () => readOntologyTriples(state.read?.domain.state.definitions ?? []),
+    [state.read],
+  )
   const definitions =
     state.read?.domain.state.definitions.filter((value) => value.layer === 'query') ?? []
   const change = (patch: Partial<QueryDraftDTO>) => {
@@ -87,8 +131,11 @@ function WorkspaceDocument({
       setBuilderError('请核对对象、返回属性和 RDF 条件。未生成或执行查询。')
     }
   }
-  // The template is only derived from the ontology that was really read.
-  const templateVocabulary = alarmVocabulary(classes, predicates)
+  // The template is only derived from the ontology that was really read, and
+  // only from attributes that really belong to the alarm class.
+  const templateResolution = resolveAlarmVocabulary({ liveFacts, ontologyTriples })
+  const templateVocabulary =
+    templateResolution.status === 'resolved' ? templateResolution.vocabulary : undefined
   const loadAlarmTemplate = () => {
     if (!templateVocabulary) return
     try {
@@ -237,7 +284,14 @@ function WorkspaceDocument({
                 <code>{templateVocabulary.status}</code>。载入只写入工作草稿，不会自动执行。
               </p>
             ) : (
-              <p>当前已读取的本体尚未提供可识别的告警类与等级／状态属性；不会填入示例词表。</p>
+              <>
+                <p>当前已读取的本体尚未提供可识别的告警类与等级／状态属性；不会填入示例词表。</p>
+                {templateResolution.status !== 'resolved' && (
+                  <p role="status" data-testid="query-template-alarm-reason">
+                    {templateResolution.reason}
+                  </p>
+                )}
+              </>
             )}
           </section>
           <label>

@@ -10,14 +10,23 @@
  *
  * Nothing here is a second writer: no direct ontology write, no partial
  * import, and no commit while the base revision conflicts.
+ *
+ * Every piece of UI state belongs to one exact draft identity (project,
+ * operation, draft type, base revision and input snapshot). A different draft
+ * retires the previous rows, the previous consent and the previous result
+ * immediately, and every asynchronous answer of an outdated request is
+ * discarded instead of overwriting the current view.
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   reassembleChangeSetDocument,
   type AgentCommitDraftResultDTO,
   type AgentDraftPlanDTO,
+  type BridgeResult,
+  type ChangeSetConfirmation,
   type ChangeSetPage,
   type ChangeSetPreview,
+  type MainlineChangePlanDTO,
 } from '@ontolearn/contracts'
 
 export type DraftDiffPhase =
@@ -37,6 +46,49 @@ export type DraftDiffPreviewProps = {
 const take = <T,>(reply: { ok: true; data: T } | { ok: false; error: { code: string } }): T => {
   if (!reply.ok) throw new Error(reply.error.code)
   return reply.data
+}
+
+/** The bridge surface the draft flow really uses. */
+export type DraftDiffBridge = {
+  previewProjectChangeset(args: {
+    baseRevision: number
+    intent: 'change'
+    plan: MainlineChangePlanDTO
+  }): Promise<BridgeResult<ChangeSetPreview>>
+  getProjectDiffPage(args: {
+    previewHash: string
+    documentKind: 'diff' | 'undo-impact'
+    pageSize: number
+    cursor: string | null
+  }): Promise<BridgeResult<ChangeSetPage>>
+  confirmProjectChangeset(args: {
+    previewHash: string
+    completionCursor: string
+  }): Promise<BridgeResult<ChangeSetConfirmation>>
+  commitAgentDraft(args: {
+    operationId: string
+    draftType: AgentDraftPlanDTO['draftType']
+    confirmation: ChangeSetConfirmation
+    label?: string | null
+  }): Promise<BridgeResult<AgentCommitDraftResultDTO>>
+}
+
+/**
+ * The exact identity of one draft. Two drafts that differ in any of these
+ * fields are never allowed to share UI state, consent or a commit.
+ */
+export function draftIdentityOf(
+  plan: AgentDraftPlanDTO | undefined,
+  projectId: string | null,
+): string {
+  if (!plan || !projectId) return ''
+  return JSON.stringify([
+    projectId,
+    plan.operationId,
+    plan.draftType,
+    plan.baseRevision,
+    plan.inputSnapshotId,
+  ])
 }
 
 export async function readFullDiff(
@@ -70,17 +122,141 @@ export async function readFullDiff(
   throw new Error('DIFF_INCOMPLETE')
 }
 
+export type DraftPrepareResult =
+  | {
+      status: 'ready'
+      preview: Extract<ChangeSetPreview, { status: 'ready' }>
+      rows: unknown[]
+      completionCursor: string
+    }
+  | { status: 'conflict' }
+  | { status: 'stale' }
+  | { status: 'failed'; code: string }
+
+/**
+ * Read the complete, verified difference of one draft. Every await is followed
+ * by an ownership check: an answer of an outdated request is dropped.
+ */
+export async function prepareDraftDiff(args: {
+  bridge: DraftDiffBridge
+  plan: AgentDraftPlanDTO
+  projectId: string
+  isCurrent: () => boolean
+}): Promise<DraftPrepareResult> {
+  const { bridge, plan, projectId, isCurrent } = args
+  const answer: ChangeSetPreview = take(
+    await bridge.previewProjectChangeset({
+      baseRevision: plan.baseRevision,
+      intent: 'change',
+      plan: plan.plan,
+    }),
+  )
+  if (!isCurrent()) return { status: 'stale' }
+  if (answer.projectId !== projectId) throw new Error('PROJECT_MISMATCH')
+  if (answer.status === 'conflict') return { status: 'conflict' }
+  if (answer.baseRevision !== plan.baseRevision) throw new Error('BASE_REVISION_MISMATCH')
+  const full = await readFullDiff(bridge, answer)
+  if (!isCurrent()) return { status: 'stale' }
+  const document = await reassembleChangeSetDocument(
+    {
+      projectId: answer.projectId,
+      previewHash: answer.previewHash,
+      manifest: answer.manifest,
+    },
+    full.pages,
+  )
+  if (!isCurrent()) return { status: 'stale' }
+  return {
+    status: 'ready',
+    preview: answer,
+    rows: document,
+    completionCursor: full.completionCursor,
+  }
+}
+
+export type DraftCommitResult =
+  | { status: 'committed'; result: AgentCommitDraftResultDTO }
+  | { status: 'stale' }
+  | { status: 'failed'; code: string }
+
+/**
+ * Commit exactly the preview that was checked. The confirmation must still
+ * describe the very same identity, and the write is only sent while the
+ * request is still the current one.
+ */
+export async function commitDraftDiff(args: {
+  bridge: DraftDiffBridge
+  plan: AgentDraftPlanDTO
+  preview: Extract<ChangeSetPreview, { status: 'ready' }>
+  completionCursor: string
+  label?: string
+  isCurrent: () => boolean
+}): Promise<DraftCommitResult> {
+  const { bridge, plan, preview, completionCursor, label, isCurrent } = args
+  const confirmation: ChangeSetConfirmation = take(
+    await bridge.confirmProjectChangeset({
+      previewHash: preview.previewHash,
+      completionCursor,
+    }),
+  )
+  if (!isCurrent()) return { status: 'stale' }
+  if (
+    confirmation.projectId !== preview.projectId ||
+    confirmation.previewHash !== preview.previewHash ||
+    confirmation.preparedPlanRef !== preview.preparedPlanRef ||
+    confirmation.inputSnapshotId !== preview.inputSnapshotId ||
+    confirmation.parametersHash !== preview.parametersHash
+  )
+    throw new Error('INVALID_CONFIRMATION')
+  const committed: AgentCommitDraftResultDTO = take(
+    await bridge.commitAgentDraft({
+      operationId: plan.operationId,
+      draftType: plan.draftType,
+      confirmation,
+      label: label ?? null,
+    }),
+  )
+  if (!isCurrent()) return { status: 'stale' }
+  return { status: 'committed', result: committed }
+}
+
+/** Every piece of UI state, bound to the draft identity that produced it. */
+type DiffView = {
+  identity: string
+  boundIdentity: string
+  phase: DraftDiffPhase
+  preview?: Extract<ChangeSetPreview, { status: 'ready' }>
+  rows: unknown[]
+  completionCursor: string
+  consent: boolean
+  message: string
+  result?: AgentCommitDraftResultDTO
+}
+
+const emptyView = (identity: string): DiffView => ({
+  identity,
+  boundIdentity: '',
+  phase: 'idle',
+  preview: undefined,
+  rows: [],
+  completionCursor: '',
+  consent: false,
+  message: '',
+  result: undefined,
+})
+
 export function DraftDiffPreview(props: DraftDiffPreviewProps) {
   const { plan, projectId, label } = props
-  const [phase, setPhase] = useState<DraftDiffPhase>('idle')
-  const [preview, setPreview] = useState<ChangeSetPreview>()
-  const [rows, setRows] = useState<unknown[]>([])
-  const [completionCursor, setCompletionCursor] = useState('')
-  const [consent, setConsent] = useState(false)
-  const [message, setMessage] = useState('')
-  const [result, setResult] = useState<AgentCommitDraftResultDTO>()
+  const draftIdentity = draftIdentityOf(plan, projectId)
+  const [view, setView] = useState<DiffView>(() => emptyView(draftIdentity))
+  // A different draft retires the previous rows, consent and result at once.
+  const current = view.identity === draftIdentity ? view : emptyView(draftIdentity)
   const live = useRef(true)
-  const operationId = plan?.operationId
+  const reqSeq = useRef(0)
+  const identityRef = useRef(draftIdentity)
+  useEffect(() => {
+    identityRef.current = draftIdentity
+  }, [draftIdentity])
   // Callbacks are read through a ref so a new parent render never restarts
   // the preview/diff read.
   const onError = useRef(props.onError)
@@ -100,109 +276,153 @@ export function DraftDiffPreview(props: DraftDiffPreviewProps) {
   const prepare = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge || !plan || !projectId) return
-    setPhase('previewing')
-    setMessage('')
-    setConsent(false)
-    setRows([])
-    setResult(undefined)
+    const mySeq = ++reqSeq.current
+    const myIdentity = draftIdentity
+    const isCurrent = () =>
+      live.current && reqSeq.current === mySeq && identityRef.current === myIdentity
+    setView({
+      identity: myIdentity,
+      boundIdentity: '',
+      phase: 'previewing',
+      preview: undefined,
+      rows: [],
+      completionCursor: '',
+      consent: false,
+      message: '',
+      result: undefined,
+    })
     try {
-      const answer = take(
-        await bridge.previewProjectChangeset({
-          baseRevision: plan.baseRevision,
-          intent: 'change',
-          plan: plan.plan,
-        }),
+      const outcome = await prepareDraftDiff({
+        bridge,
+        plan,
+        projectId,
+        isCurrent,
+      })
+      if (outcome.status === 'stale') return
+      if (outcome.status === 'conflict') {
+        setView((previous) =>
+          previous.identity === myIdentity
+            ? {
+                ...previous,
+                phase: 'conflict',
+                message: '基准版本冲突：本次草稿不能提交，请重新生成草稿。',
+              }
+            : previous,
+        )
+        return
+      }
+      if (outcome.status === 'failed') {
+        setView((previous) =>
+          previous.identity === myIdentity
+            ? {
+                ...previous,
+                phase: 'failed',
+                message: `未能生成可核对的完整差异（${outcome.code}）；项目未被修改。`,
+              }
+            : previous,
+        )
+        onError.current?.(outcome.code)
+        return
+      }
+      setView((previous) =>
+        previous.identity === myIdentity
+          ? {
+              ...previous,
+              boundIdentity: myIdentity,
+              phase: 'ready',
+              preview: outcome.preview,
+              rows: outcome.rows,
+              completionCursor: outcome.completionCursor,
+              consent: false,
+              message: '',
+            }
+          : previous,
       )
-      if (!live.current) return
-      if (answer.projectId !== projectId) {
-        setPhase('failed')
-        setMessage('预览所属项目与当前项目不一致；不能据此提交。')
-        return
-      }
-      if (answer.status === 'conflict') {
-        setPreview(answer)
-        setPhase('conflict')
-        setMessage('基准版本冲突：本次草稿不能提交，请重新生成草稿。')
-        return
-      }
-      if (answer.baseRevision !== plan.baseRevision) {
-        setPhase('failed')
-        setMessage('预览基准与草稿基准不一致；不能据此提交。')
-        return
-      }
-      const full = await readFullDiff(bridge, answer)
-      if (!live.current) return
-      const document = await reassembleChangeSetDocument(
-        {
-          projectId: answer.projectId,
-          previewHash: answer.previewHash,
-          manifest: answer.manifest,
-        },
-        full.pages,
-      )
-      if (!live.current) return
-      setPreview(answer)
-      setRows(document)
-      setCompletionCursor(full.completionCursor)
-      setPhase('ready')
     } catch (cause) {
-      if (!live.current) return
-      setPhase('failed')
+      if (!isCurrent()) return
       const code = cause instanceof Error ? cause.message : 'UNKNOWN'
-      setMessage(`未能生成可核对的完整差异（${code}）；项目未被修改。`)
+      setView((previous) =>
+        previous.identity === myIdentity
+          ? {
+              ...previous,
+              phase: 'failed',
+              message: `未能生成可核对的完整差异（${code}）；项目未被修改。`,
+            }
+          : previous,
+      )
       onError.current?.(code)
     }
-  }, [plan, projectId])
+  }, [plan, projectId, draftIdentity])
 
   useEffect(() => {
-    if (!operationId) return
+    if (!plan) return
     // Deferred: the effect body itself never triggers a state update.
     const timer = setTimeout(() => void prepare(), 0)
     return () => clearTimeout(timer)
-  }, [operationId, prepare])
+  }, [plan, prepare])
 
   const commit = useCallback(async () => {
     const bridge = window.ontolearn
-    if (!bridge || !plan || !preview || preview.status !== 'ready') return
-    if (!consent || !completionCursor) return
-    setPhase('committing')
-    setMessage('')
+    if (!bridge || !plan || !current.preview) return
+    if (!current.consent || !current.completionCursor) return
+    const mySeq = ++reqSeq.current
+    const myIdentity = draftIdentity
+    const isCurrent = () =>
+      live.current && reqSeq.current === mySeq && identityRef.current === myIdentity
+    setView((previous) =>
+      previous.identity === myIdentity
+        ? { ...previous, phase: 'committing', message: '' }
+        : previous,
+    )
     try {
-      const confirmation = take(
-        await bridge.confirmProjectChangeset({
-          previewHash: preview.previewHash,
-          completionCursor,
-        }),
+      const outcome = await commitDraftDiff({
+        bridge,
+        plan,
+        preview: current.preview,
+        completionCursor: current.completionCursor,
+        label,
+        isCurrent,
+      })
+      if (outcome.status === 'stale') return
+      if (outcome.status === 'failed') {
+        setView((previous) =>
+          previous.identity === myIdentity
+            ? {
+                ...previous,
+                phase: 'failed',
+                message: `提交未完成（${outcome.code}）；项目未被本次操作修改，请核对实际状态。`,
+              }
+            : previous,
+        )
+        onError.current?.(outcome.code)
+        return
+      }
+      setView((previous) =>
+        previous.identity === myIdentity
+          ? {
+              ...previous,
+              phase: 'committed',
+              result: outcome.result,
+              message: '草稿已提交；正式保存结果以任务终态为准。',
+            }
+          : previous,
       )
-      if (
-        confirmation.projectId !== preview.projectId ||
-        confirmation.previewHash !== preview.previewHash ||
-        confirmation.preparedPlanRef !== preview.preparedPlanRef ||
-        confirmation.inputSnapshotId !== preview.inputSnapshotId ||
-        confirmation.parametersHash !== preview.parametersHash
-      )
-        throw new Error('INVALID_CONFIRMATION')
-      const committed = take(
-        await bridge.commitAgentDraft({
-          operationId: plan.operationId,
-          draftType: plan.draftType,
-          confirmation,
-          label: label ?? null,
-        }),
-      )
-      if (!live.current) return
-      setResult(committed)
-      setPhase('committed')
-      setMessage('草稿已提交；正式保存结果以任务终态为准。')
-      onCommitted.current?.(committed)
+      onCommitted.current?.(outcome.result)
     } catch (cause) {
-      if (!live.current) return
-      setPhase('failed')
+      if (!isCurrent()) return
       const code = cause instanceof Error ? cause.message : 'UNKNOWN'
-      setMessage(`提交未完成（${code}）；项目未被本次操作修改，请核对实际状态。`)
+      setView((previous) =>
+        previous.identity === myIdentity
+          ? {
+              ...previous,
+              phase: 'failed',
+              message: `提交未完成（${code}）；项目未被本次操作修改，请核对实际状态。`,
+            }
+          : previous,
+      )
       onError.current?.(code)
     }
-  }, [plan, preview, consent, completionCursor, label])
+  }, [plan, current, label, draftIdentity])
 
   if (!plan) {
     return (
@@ -215,7 +435,10 @@ export function DraftDiffPreview(props: DraftDiffPreviewProps) {
       </section>
     )
   }
-  const blocked = phase === 'conflict' || phase === 'failed'
+  // Only a view that is bound to the current draft identity may be rendered.
+  const bound = current.boundIdentity === draftIdentity && draftIdentity !== ''
+  const blocked = current.phase === 'conflict' || current.phase === 'failed'
+  const busy = current.phase === 'previewing' || current.phase === 'committing'
   return (
     <section
       className="ontology-draft-diff"
@@ -229,44 +452,50 @@ export function DraftDiffPreview(props: DraftDiffPreviewProps) {
       </p>
       {blocked && (
         <p role="alert" data-testid="ontology-draft-blocked">
-          {message}
+          {current.message}
         </p>
       )}
-      {phase === 'idle' && <p role="status">正在准备完整差异…</p>}
-      {phase === 'previewing' && <p role="status">正在读取完整差异…</p>}
-      {phase === 'committing' && <p role="status">正在提交草稿…</p>}
-      {phase === 'committed' && (
+      {current.phase === 'idle' && <p role="status">正在准备完整差异…</p>}
+      {current.phase === 'previewing' && <p role="status">正在读取完整差异…</p>}
+      {current.phase === 'committing' && <p role="status">正在提交草稿…</p>}
+      {current.phase === 'committed' && bound && (
         <p role="status" data-testid="ontology-draft-committed">
-          {message}
-          {result
-            ? ` 操作 ${result.operationId} · 提交前快照 ${result.beforeAgentCheckpointRef}`
+          {current.message}
+          {current.result
+            ? ` 操作 ${current.result.operationId} · 提交前快照 ${current.result.beforeAgentCheckpointRef}`
             : ''}
         </p>
       )}
-      {phase === 'ready' && (
+      {current.phase === 'ready' && bound && (
         <>
-          <p>全部 {rows.length} 项；分段顺序、长度、SHA 与完整文档已由契约校验器核验。</p>
-          <pre>{JSON.stringify(rows, null, 2)}</pre>
+          <p>全部 {current.rows.length} 项；分段顺序、长度、SHA 与完整文档已由契约校验器核验。</p>
+          <pre>{JSON.stringify(current.rows, null, 2)}</pre>
           <label>
             <input
               type="checkbox"
               data-testid="ontology-draft-consent"
-              checked={consent}
-              onChange={(event) => setConsent(event.target.checked)}
+              checked={current.consent}
+              onChange={(event) =>
+                setView((previous) =>
+                  previous.identity === draftIdentity
+                    ? { ...previous, consent: event.target.checked }
+                    : previous,
+                )
+              }
             />
             我已核对完整差异，确认提交此草稿
           </label>
           <button
             type="button"
             data-testid="ontology-draft-commit"
-            disabled={!consent || !completionCursor}
+            disabled={!current.consent || !current.completionCursor}
             onClick={() => void commit()}
           >
             确认并提交 Agent 草稿
           </button>
         </>
       )}
-      <button type="button" disabled={phase === 'committing'} onClick={() => void prepare()}>
+      <button type="button" disabled={busy} onClick={() => void prepare()}>
         重新生成并核对差异
       </button>
     </section>

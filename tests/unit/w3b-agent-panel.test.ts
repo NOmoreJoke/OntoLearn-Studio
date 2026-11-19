@@ -1,10 +1,24 @@
 /** W3b S2-4: the workspace Agent panel consumes the named bridge, never project data. */
+import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
-import type { AgentDraftPlanDTO, AgentReceiptDTO, DesktopBridge } from '@ontolearn/contracts'
+import ts from 'typescript'
+import { describe, expect, it, vi } from 'vitest'
+import * as contracts from '@ontolearn/contracts'
+import type {
+  AgentDraftPlanDTO,
+  AgentReceiptDTO,
+  AgentStateDTO,
+  ChangeSetManifest,
+  ChangeSetPage,
+  ChangeSetPreview,
+  DesktopBridge,
+} from '@ontolearn/contracts'
 import {
   AgentPanel,
+  agentContextMatches,
+  agentDtoToSidebarState,
   queryDraftFromDetail,
   queryDraftFromPlan,
 } from '../../apps/desktop/src/renderer/src/agent/agent-panel'
@@ -12,7 +26,12 @@ import {
   AgentSidebar,
   agentDraftIsCurrent,
 } from '../../apps/desktop/src/renderer/src/agent/AgentSidebar'
-import { DraftDiffPreview } from '../../apps/desktop/src/renderer/src/ontology/draft-diff-preview'
+import {
+  DraftDiffPreview,
+  commitDraftDiff,
+  draftIdentityOf,
+  prepareDraftDiff,
+} from '../../apps/desktop/src/renderer/src/ontology/draft-diff-preview'
 import type { TrustedContext } from '../../apps/desktop/src/main/agent/agent-service'
 
 // The unit program does not include the renderer's `env.d.ts`; the same
@@ -262,5 +281,483 @@ describe('W3b S2-4: the Agent draft diff never commits before the full document 
     expect(html).toContain('基准版本 3')
     expect(html).not.toContain('data-testid="ontology-draft-commit"')
     expect(html).not.toContain('data-testid="ontology-draft-consent"')
+  })
+})
+
+/* --------------------------------------------------------------------------
+ * B06: one mount, many drafts. The view, the consent and the commit must
+ * always belong to the draft the user is actually looking at.
+ * ----------------------------------------------------------------------- */
+
+const hash = (value: Uint8Array) => createHash('sha256').update(value).digest('hex')
+const diffProjectId = '00000000-0000-4000-8000-000000000001'
+const diffPreviewHash = 'b'.repeat(64)
+const diffRows = [{ resource: ['fact', 'f1'], before: null, after: { subject: 'urn:Pump' } }]
+
+function diffFixture(): { manifest: ChangeSetManifest; page: ChangeSetPage } {
+  const raw = Buffer.from(JSON.stringify(diffRows), 'utf8')
+  const segment = {
+    ordinal: 0,
+    byteOffset: 0,
+    rawByteLength: raw.length,
+    sha256: hash(raw),
+    dataBase64: raw.toString('base64'),
+  }
+  const manifest: ChangeSetManifest = {
+    documentKind: 'diff',
+    documentHash: hash(raw),
+    totalBytes: raw.length,
+    segmentCount: 1,
+    segments: [
+      {
+        ordinal: segment.ordinal,
+        byteOffset: segment.byteOffset,
+        rawByteLength: segment.rawByteLength,
+        sha256: segment.sha256,
+      },
+    ],
+  }
+  return {
+    manifest,
+    page: {
+      projectId: diffProjectId,
+      previewHash: diffPreviewHash,
+      documentKind: 'diff',
+      documentHash: manifest.documentHash,
+      segments: [segment],
+      nextCursor: '00000000-0000-4000-8000-000000000004',
+      complete: true,
+    },
+  }
+}
+
+const { manifest, page } = diffFixture()
+const previewReady: ChangeSetPreview = {
+  status: 'ready',
+  projectId: diffProjectId,
+  baseRevision: 3,
+  previewHash: diffPreviewHash,
+  preparedPlanRef: 'prepared-plan-1',
+  inputSnapshotId: 's1',
+  parametersHash: 'c'.repeat(64),
+  intent: 'change',
+  targetOperationId: null,
+  summary: '建立设备类',
+  manifest,
+}
+const draftPlan = (operationId: string): AgentDraftPlanDTO => ({
+  operationId,
+  draftType: 'ontology',
+  baseRevision: 3,
+  inputSnapshotId: 's1',
+  summary: '建立设备类',
+  plan: { manual: [] },
+})
+
+describe('W3b B06: a new draft retires the previous difference and the previous consent', () => {
+  it('gives every draft its own identity', () => {
+    const first = draftIdentityOf(draftPlan('op-1'), 'p1')
+    const second = draftIdentityOf(draftPlan('op-2'), 'p1')
+    expect(first).not.toBe(second)
+    expect(first).toContain('op-1')
+    expect(draftIdentityOf(undefined, 'p1')).toBe('')
+    expect(draftIdentityOf(draftPlan('op-1'), null)).toBe('')
+  })
+
+  it('drops an outdated prepare answer instead of overwriting the current one', async () => {
+    const bridge = {
+      previewProjectChangeset: async () => ({ ok: true as const, data: previewReady }),
+      getProjectDiffPage: async () => ({ ok: true as const, data: page }),
+      confirmProjectChangeset: async () => ({ ok: true as const, data: confirmationFixture() }),
+      commitAgentDraft: async () => ({ ok: true as const, data: {} as never }),
+    }
+    const outcome = await prepareDraftDiff({
+      bridge,
+      plan: draftPlan('op-1'),
+      projectId: diffProjectId,
+      isCurrent: () => false,
+    })
+    expect(outcome.status).toBe('stale')
+  })
+
+  it('refuses a confirmation that describes another preview', async () => {
+    const bridge = {
+      previewProjectChangeset: async () => ({ ok: true as const, data: previewReady }),
+      getProjectDiffPage: async () => ({ ok: true as const, data: page }),
+      confirmProjectChangeset: async () => ({
+        ok: true as const,
+        data: { ...confirmationFixture(), inputSnapshotId: 'other' },
+      }),
+      commitAgentDraft: async () => ({ ok: true as const, data: {} as never }),
+    }
+    await expect(
+      commitDraftDiff({
+        bridge,
+        plan: draftPlan('op-1'),
+        preview: previewReady,
+        completionCursor: page.nextCursor,
+        isCurrent: () => true,
+      }),
+    ).rejects.toThrow('INVALID_CONFIRMATION')
+  })
+
+  it('never commits an outdated draft', async () => {
+    const commit = vi.fn(async () => ({ ok: true as const, data: {} as never }))
+    const bridge = {
+      previewProjectChangeset: async () => ({ ok: true as const, data: previewReady }),
+      getProjectDiffPage: async () => ({ ok: true as const, data: page }),
+      confirmProjectChangeset: async () => ({ ok: true as const, data: confirmationFixture() }),
+      commitAgentDraft: commit,
+    }
+    const outcome = await commitDraftDiff({
+      bridge,
+      plan: draftPlan('op-1'),
+      preview: previewReady,
+      completionCursor: page.nextCursor,
+      isCurrent: () => false,
+    })
+    expect(outcome.status).toBe('stale')
+    expect(commit).not.toHaveBeenCalled()
+  })
+})
+
+function confirmationFixture() {
+  return {
+    projectId: diffProjectId,
+    previewHash: diffPreviewHash,
+    preparedPlanRef: 'prepared-plan-1',
+    confirmationRef: '00000000-0000-4000-8000-000000000006',
+    inputSnapshotId: 's1',
+    parametersHash: 'c'.repeat(64),
+  }
+}
+
+type Node = { type: unknown; props: Record<string, unknown> }
+
+function diffHarness(bridge: Record<string, unknown>) {
+  const slots: unknown[] = []
+  const effects: Array<{ deps: unknown[]; cleanup?: () => void }> = []
+  const pending: Array<() => void> = []
+  let cursor = 0
+  const sameDeps = (left: unknown[], right: unknown[]) =>
+    left.length === right.length && left.every((value, index) => Object.is(value, right[index]))
+  const hooks = {
+    useState: (initial: unknown) => {
+      const index = cursor++
+      if (!(index in slots))
+        slots[index] = typeof initial === 'function' ? (initial as () => unknown)() : initial
+      return [
+        slots[index],
+        (value: unknown) => {
+          slots[index] =
+            typeof value === 'function' ? (value as (old: unknown) => unknown)(slots[index]) : value
+        },
+      ]
+    },
+    useRef: (value: unknown) => {
+      const index = cursor++
+      if (!(index in slots)) slots[index] = { current: value }
+      return slots[index]
+    },
+    useMemo: (callback: () => unknown) => callback(),
+    useCallback: (callback: unknown, deps: unknown[] = []) => {
+      const index = cursor++
+      const slot = slots[index] as { deps: unknown[]; value: unknown } | undefined
+      if (!slot || !sameDeps(slot.deps, deps)) slots[index] = { deps, value: callback }
+      return (slots[index] as { value: unknown }).value
+    },
+    useEffect: (callback: () => void | (() => void), deps: unknown[] = []) => {
+      const index = cursor++
+      const previous = effects[index]
+      if (previous && sameDeps(previous.deps, deps)) return
+      // React runs the previous cleanup before the next effect of the same hook.
+      previous?.cleanup?.()
+      effects[index] = { deps, cleanup: undefined }
+      pending.push(() => {
+        const result = callback()
+        effects[index].cleanup = typeof result === 'function' ? result : undefined
+      })
+    },
+    useLayoutEffect: (callback: () => void | (() => void)) => {
+      callback()
+    },
+  }
+  const jsx = (type: unknown, props: Record<string, unknown>) => ({ type, props })
+  const code = ts.transpileModule(
+    readFileSync('apps/desktop/src/renderer/src/ontology/draft-diff-preview.tsx', 'utf8'),
+    {
+      compilerOptions: {
+        target: ts.ScriptTarget.ES2022,
+        module: ts.ModuleKind.CommonJS,
+        jsx: ts.JsxEmit.ReactJSX,
+      },
+    },
+  ).outputText
+  const exported: Record<string, unknown> = {}
+  new Function('require', 'exports', code)((name: string) => {
+    if (name === 'react') return hooks
+    if (name === 'react/jsx-runtime') return { jsx, jsxs: jsx }
+    if (name === '@ontolearn/contracts') return contracts
+    throw Error(`Unexpected renderer dependency ${name}`)
+  }, exported)
+  const Component = exported.DraftDiffPreview as unknown as (props: Record<string, unknown>) => Node
+  let props: Record<string, unknown> = {
+    projectId: diffProjectId,
+    plan: draftPlan('op-1'),
+    ...(bridge ? {} : {}),
+  }
+  let tree: Node
+  function render() {
+    cursor = 0
+    tree = Component(props)
+    for (const callback of pending.splice(0)) callback()
+  }
+  render()
+  function nodes(value: unknown): Node[] {
+    if (Array.isArray(value)) return value.flatMap((item) => nodes(item))
+    if (!value || typeof value !== 'object' || !('type' in value)) return []
+    const node = value as Node
+    return [node, ...nodes(node.props.children)]
+  }
+  function textOf(value: unknown): string {
+    if (Array.isArray(value)) return value.map(textOf).join('')
+    if (value && typeof value === 'object' && 'props' in value)
+      return textOf((value as Node).props.children)
+    return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
+  }
+  return {
+    render,
+    unmount() {
+      for (const effect of effects) effect?.cleanup?.()
+      effects.length = 0
+    },
+    setProps(next: Record<string, unknown>) {
+      props = { ...props, ...next }
+      render()
+    },
+    nodes: () => nodes(tree),
+    text: () => textOf(tree),
+    find: (testId: string) => nodes(tree).find((node) => node.props['data-testid'] === testId),
+    findButton: (label: string) =>
+      nodes(tree).find(
+        (node) => node.type === 'button' && textOf(node.props.children).includes(label),
+      ),
+  }
+}
+
+const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
+const flushAll = async () => {
+  for (let turn = 0; turn < 12; turn++) await flush()
+}
+
+describe('W3b B06: the draft diff view follows exactly one draft', () => {
+  it('clears the rows, the consent and the commit control when the plan changes', async () => {
+    vi.stubGlobal('window', {
+      ontolearn: {
+        previewProjectChangeset: async () => ({ ok: true, data: previewReady }),
+        getProjectDiffPage: async () => ({ ok: true, data: page }),
+        confirmProjectChangeset: async () => ({ ok: true, data: confirmationFixture() }),
+        commitAgentDraft: async () => ({ ok: true, data: {} }),
+      },
+    })
+    const panel = diffHarness({})
+    await flushAll()
+    panel.render()
+    expect(panel.find('ontology-draft-commit')).toBeTruthy()
+    panel.setProps({ plan: draftPlan('op-2') })
+    expect(panel.find('ontology-draft-commit')).toBeUndefined()
+    expect(panel.find('ontology-draft-consent')).toBeUndefined()
+    expect(panel.text()).not.toContain('urn:Pump')
+    panel.unmount()
+    vi.unstubAllGlobals()
+  })
+
+  it('never lets an outdated prepare answer overwrite the current difference', async () => {
+    const gates: Array<() => void> = []
+    vi.stubGlobal('window', {
+      ontolearn: {
+        previewProjectChangeset: async () => {
+          await new Promise<void>((resolve) => gates.push(resolve))
+          return { ok: true, data: previewReady }
+        },
+        getProjectDiffPage: async () => ({ ok: true, data: page }),
+        confirmProjectChangeset: async () => ({ ok: true, data: confirmationFixture() }),
+        commitAgentDraft: async () => ({ ok: true, data: {} }),
+      },
+    })
+    const panel = diffHarness({})
+    await flushAll()
+    // The first draft is still waiting for its answer.
+    expect(gates.length).toBe(1)
+    panel.setProps({ plan: draftPlan('op-2') })
+    await flushAll()
+    expect(gates.length).toBe(2)
+    // The second draft answers first, the first one only afterwards.
+    gates[1]!()
+    await flushAll()
+    panel.render()
+    expect(panel.find('ontology-draft-commit')).toBeTruthy()
+    gates[0]!()
+    await flushAll()
+    panel.render()
+    expect(panel.find('ontology-draft-commit')).toBeTruthy()
+    expect(panel.text()).toContain('建立设备类')
+    panel.unmount()
+    vi.unstubAllGlobals()
+  })
+
+  it('disables the re-prepare control while a preparation is running', async () => {
+    vi.stubGlobal('window', {
+      ontolearn: {
+        previewProjectChangeset: async () => {
+          await new Promise<void>(() => {})
+          return { ok: true, data: previewReady }
+        },
+        getProjectDiffPage: async () => ({ ok: true, data: page }),
+        confirmProjectChangeset: async () => ({ ok: true, data: confirmationFixture() }),
+        commitAgentDraft: async () => ({ ok: true, data: {} }),
+      },
+    })
+    const panel = diffHarness({})
+    await flushAll()
+    panel.render()
+    const button = panel.findButton('重新生成并核对差异')!
+    expect(button.props.disabled).toBe(true)
+    panel.unmount()
+    vi.unstubAllGlobals()
+  })
+})
+
+/* --------------------------------------------------------------------------
+ * B07 / B09: the real host run state reaches the sidebar.
+ * ----------------------------------------------------------------------- */
+
+function agentState(overrides: Partial<AgentStateDTO> = {}): AgentStateDTO {
+  return {
+    operationId: 'op-1',
+    exchangeId: 7,
+    status: 'dispatching',
+    context: {
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      scopeRef: 'scope1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: [],
+      privacy: 'minimal',
+      modelReady: true,
+      capabilities: {
+        mode: 'synthetic',
+        connection: 'not-run',
+        structuredOutput: 'passed',
+        toolRoundTrip: 'passed',
+      },
+      configurations: [],
+    },
+    receipts: [],
+    retainedQuestion: '合成问题',
+    answerText: null,
+    failureCode: null,
+    ...overrides,
+  }
+}
+
+describe('W3b B07/B09: the real host run state is mapped onto the sidebar', () => {
+  it('never maps a run of another project', () => {
+    expect(agentDtoToSidebarState(agentState(), 'p2')).toBeNull()
+    expect(agentDtoToSidebarState(agentState({ context: null }), 'p1')).toBeNull()
+  })
+
+  it('maps a dispatching run to the waiting state and keeps the exchange identity', () => {
+    const state = agentDtoToSidebarState(agentState(), 'p1')
+    expect(state?.phase).toBe('awaiting-provider')
+    expect(state?.exchanges).toBe(7)
+    expect(state?.inputContext.projectId).toBe('p1')
+    expect(state?.inputContext.selectedObjectIds).toEqual([])
+    expect(state?.error).toBeNull()
+  })
+
+  it('maps a terminal failure to the real failure code', () => {
+    const failed = agentDtoToSidebarState(
+      agentState({ status: 'failed', failureCode: 'TIMED_OUT' }),
+      'p1',
+    )
+    expect(failed?.phase).toBe('failed')
+    expect(failed?.error).toBe('TIMED_OUT')
+    const cancelled = agentDtoToSidebarState(
+      agentState({ status: 'cancelled', failureCode: null }),
+      'p1',
+    )
+    expect(cancelled?.phase).toBe('cancelled')
+    expect(cancelled?.error).toBe('TOOL_FAILED')
+  })
+
+  it('maps an answered run to the real answer text', () => {
+    const answered = agentDtoToSidebarState(
+      agentState({ status: 'answered', answerText: '这是回答' }),
+      'p1',
+    )
+    expect(answered?.phase).toBe('answered')
+    expect(answered?.answer?.text).toBe('这是回答')
+  })
+
+  it('rejects a context of another project or module', () => {
+    const other = agentState()
+    expect(agentContextMatches(other.context, 'p1', 'ontology')).toBe(true)
+    expect(agentContextMatches(other.context, 'p2', 'ontology')).toBe(false)
+    expect(agentContextMatches(other.context, 'p1', 'query')).toBe(false)
+    expect(agentContextMatches(null, 'p1', 'ontology')).toBe(false)
+  })
+
+  it('offers the real cancel control while the host is still waiting', () => {
+    const state = agentDtoToSidebarState(agentState(), 'p1')
+    const html = renderToStaticMarkup(
+      createElement(AgentSidebar, {
+        context,
+        state,
+        privacy: 'minimal',
+        modelReady: true,
+        localActions: ['hint'],
+        onCancel: () => undefined,
+      }),
+    )
+    expect(html).toContain('取消本地等待')
+    expect(html).toContain('正在等待响应')
+  })
+
+  it('shows the terminal failure of a real run', () => {
+    const state = agentDtoToSidebarState(
+      agentState({ status: 'failed', failureCode: 'TIMED_OUT' }),
+      'p1',
+    )
+    const html = renderToStaticMarkup(
+      createElement(AgentSidebar, {
+        context,
+        state,
+        privacy: 'minimal',
+        modelReady: true,
+        localActions: ['hint'],
+      }),
+    )
+    expect(html).toContain('data-testid="agent-state-failure"')
+    expect(html).toContain('等待超时')
+  })
+
+  it('shows the answer of a real run', () => {
+    const state = agentDtoToSidebarState(
+      agentState({ status: 'answered', answerText: '这是回答' }),
+      'p1',
+    )
+    const html = renderToStaticMarkup(
+      createElement(AgentSidebar, {
+        context,
+        state,
+        privacy: 'minimal',
+        modelReady: true,
+        localActions: ['hint'],
+      }),
+    )
+    expect(html).toContain('这是回答')
   })
 })

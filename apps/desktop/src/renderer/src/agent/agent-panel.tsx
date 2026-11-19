@@ -9,6 +9,11 @@
  *
  * It never writes project data by itself: an ontology draft only becomes a
  * reviewable diff through `buildAgentDraftPlan` and the change-set chain.
+ *
+ * Every answer of the host is bound to the project and the workspace
+ * generation that asked for it: an outdated answer is dropped instead of
+ * overwriting the current context, the current run state or the current
+ * selection.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
@@ -22,6 +27,7 @@ import { AgentSidebar } from './AgentSidebar'
 import { contextActions, type AgentAction } from './context-actions'
 import { draftSchema } from '../query/draft'
 import type { QueryDraftDTO } from '../query/api002-source-types'
+import type { SidebarState } from './sidebar-presentation'
 
 export type AgentPanelProps = {
   /** Selected project; `null` keeps every project bound action disabled. */
@@ -39,13 +45,15 @@ export type AgentPanelProps = {
   /** Offline actions this workspace can really serve. */
   localActions: readonly AgentAction[]
   /** Mode switch; the host persists it and mirrors it in local storage. */
-  onModeChange?: (mode: AgentMode) => void
+  onModeChange?: (mode: AgentMode) => void | Promise<void>
   /** Receives a validated upstream query draft. */
   onQueryDraft?: (draft: QueryDraftDTO) => void
   /** Receives the host-built ontology draft plan for diff review. */
   onDraftPlan?: (plan: AgentDraftPlanDTO) => void
   /** Offline action handler (hint / check / demonstrate / explain). */
   onLocalAction?: (action: AgentAction) => void | Promise<void>
+  /** Incremented whenever the model configuration changed upstream. */
+  modelSyncVersion?: number
 }
 
 /**
@@ -89,14 +97,107 @@ const take = <T,>(reply: { ok: true; data: T } | { ok: false; error: { code: str
   return reply.data
 }
 
+/** The error codes the sidebar can explain. Anything else is a tool failure. */
+const knownErrorCodes = new Set([
+  'INVALID_PROTOCOL',
+  'INVALID_JSON',
+  'INCOMPLETE_RESPONSE',
+  'TOOL_NOT_ALLOWED',
+  'TOOL_UNAVAILABLE',
+  'INVALID_TOOL_ARGUMENTS',
+  'INVALID_EVIDENCE',
+  'STALE_CONTEXT',
+  'BUDGET_EXCEEDED',
+  'BUSY',
+  'PROVIDER_DRIFT',
+  'CANCELLED',
+  'TIMED_OUT',
+  'TOOL_FAILED',
+])
+
+/**
+ * Map the real host run state onto the sidebar state.
+ *
+ * Only a run that really belongs to `expectedProjectId` is mapped; a foreign
+ * run is never presented as the current result.
+ */
+export function agentDtoToSidebarState(
+  dto: AgentStateDTO,
+  expectedProjectId: string,
+): SidebarState | null {
+  const context = dto.context
+  if (!context || context.projectId !== expectedProjectId) return null
+  const phase =
+    dto.status === 'idle'
+      ? 'ready'
+      : dto.status === 'dispatching'
+        ? 'awaiting-provider'
+        : dto.status
+  const failure =
+    dto.status === 'failed' || dto.status === 'cancelled'
+      ? knownErrorCodes.has(dto.failureCode ?? '')
+        ? (dto.failureCode as SidebarState['error'])
+        : 'TOOL_FAILED'
+      : null
+  const answer =
+    dto.status === 'answered' && dto.answerText
+      ? ({
+          kind: 'suggestion',
+          label: '模型建议，未经确定性工具验证',
+          text: dto.answerText,
+        } as SidebarState['answer'])
+      : null
+  return {
+    phase,
+    exchanges: dto.exchangeId ?? 0,
+    requestedTokenCeiling: 0,
+    error: failure,
+    inputContext: {
+      projectId: context.projectId,
+      projectRevision: context.projectRevision ?? 0,
+      inputSnapshotId: context.inputSnapshotId ?? 'unavailable',
+      scopeRef: context.scopeRef ?? 'unavailable',
+      module: context.module,
+      mode: context.mode,
+      selectedObjectIds: [...context.selectedObjectIds],
+    },
+    localReceipts: [],
+    answer,
+  }
+}
+
+/** True when the host context really belongs to the selected project and module. */
+export function agentContextMatches(
+  context: AgentContextDTO | null,
+  projectId: string | null,
+  module: AgentContextDTO['module'],
+): boolean {
+  if (!context || !projectId) return false
+  return context.projectId === projectId && context.module === module
+}
+
 export function AgentPanel(props: AgentPanelProps) {
-  const { projectId, projectRevision, inputSnapshotId, module, mode, selectedObjectIds } = props
+  const {
+    projectId,
+    projectRevision,
+    inputSnapshotId,
+    module,
+    mode,
+    selectedObjectIds,
+    modelSyncVersion,
+  } = props
   const [context, setContext] = useState<AgentContextDTO | null>(null)
   const [state, setState] = useState<AgentStateDTO | null>(null)
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState('')
   const [failure, setFailure] = useState('')
   const live = useRef(true)
+  const refreshSeq = useRef(0)
+  const dispatchSeq = useRef(0)
+  const planSeq = useRef(0)
+  // The last upstream query receipt that was already delivered.
+  const lastQueryReceipt = useRef('')
+  const pollTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const onQueryDraft = useRef(props.onQueryDraft)
   const onDraftPlan = useRef(props.onDraftPlan)
   const onLocalAction = useRef(props.onLocalAction)
@@ -110,46 +211,62 @@ export function AgentPanel(props: AgentPanelProps) {
     live.current = true
     return () => {
       live.current = false
+      if (pollTimer.current !== undefined) clearTimeout(pollTimer.current)
+      pollTimer.current = undefined
     }
+  }, [])
+
+  const stopPolling = useCallback(() => {
+    if (pollTimer.current !== undefined) clearTimeout(pollTimer.current)
+    pollTimer.current = undefined
   }, [])
 
   const refresh = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge) return
+    const mySeq = ++refreshSeq.current
     try {
       const reply = await bridge.getAgentContext({
         projectId,
         module,
         selectedObjectIds,
       })
-      if (!live.current) return
-      if (reply.ok) setContext(reply.data)
-      else setFailure(reply.error.code)
+      if (!live.current || refreshSeq.current !== mySeq) return
+      if (!reply.ok) {
+        setContext(null)
+        setState(null)
+        setFailure(reply.error.code)
+        return
+      }
+      if (!agentContextMatches(reply.data, projectId, module)) {
+        // A foreign context is never kept: the old context is dropped instead
+        // of being shown as if it belonged to the selected project.
+        setContext(null)
+        setState(null)
+        setFailure('AGENT_CONTEXT_MISMATCH')
+        return
+      }
+      setContext(reply.data)
     } catch {
-      if (live.current) setFailure('AGENT_CONTEXT_UNAVAILABLE')
+      if (!live.current || refreshSeq.current !== mySeq) return
+      setContext(null)
+      setState(null)
+      setFailure('AGENT_CONTEXT_UNAVAILABLE')
     }
     try {
       const reply = await bridge.getAgentState({ projectId })
-      if (live.current && reply.ok) setState(reply.data)
-    } catch {
-      /* An unavailable state channel simply means no receipts are shown. */
-    }
-  }, [projectId, module, selectedObjectIds])
-
-  useEffect(() => {
-    // Deferred: the effect body itself never triggers a state update.
-    const timer = setTimeout(() => void refresh(), 0)
-    return () => clearTimeout(timer)
-  }, [refresh])
-
-  // A new upstream `query` draft is handed to the query workspace as soon as
-  // it validates. An invalid draft is never silently applied.
-  const lastQueryReceipt = useRef('')
-  useEffect(() => {
-    // Deferred: the effect body itself never triggers a state update.
-    const timer = setTimeout(() => {
-      const receipts = state?.receipts ?? []
-      const operationId = state?.operationId
+      if (!live.current || refreshSeq.current !== mySeq) return
+      if (!reply.ok) return
+      if (reply.data.context && reply.data.context.projectId !== projectId) {
+        setState(null)
+        return
+      }
+      setState(reply.data)
+      // An upstream `query` draft is handed to the query workspace as soon as
+      // it validates — but only while this request still owns the view and
+      // the run really belongs to the selected project.
+      const receipts = reply.data.receipts ?? []
+      const operationId = reply.data.operationId
       const draft = [...receipts]
         .reverse()
         .find(
@@ -161,38 +278,82 @@ export function AgentPanel(props: AgentPanelProps) {
       lastQueryReceipt.current = operationId
       const fromDetail = queryDraftFromDetail(draft.outcome.detail)
       if (fromDetail) {
+        if (!live.current || refreshSeq.current !== mySeq) return
+        if (reply.data.context?.projectId !== projectId) return
         onQueryDraft.current?.(fromDetail)
         setNotice('已收到上游查询草稿，请在查询工作台核对后手动载入。')
         return
       }
-      const bridge = window.ontolearn
-      if (!bridge) return
-      void (async () => {
-        try {
-          const plan = take(await bridge.buildAgentDraftPlan({ operationId }))
-          if (!live.current) return
-          const query = queryDraftFromPlan(plan)
-          if (query) {
-            onQueryDraft.current?.(query)
-            setNotice('已收到上游查询草稿，请在查询工作台核对后手动载入。')
-          } else setNotice('上游查询草稿未通过校验，未载入编辑器。')
-        } catch {
-          if (live.current) setNotice('上游查询草稿不可用；编辑器内容未被修改。')
-        }
-      })()
-    }, 0)
+      let plan: AgentDraftPlanDTO
+      try {
+        plan = take(await bridge.buildAgentDraftPlan({ operationId }))
+      } catch {
+        if (live.current && refreshSeq.current === mySeq)
+          setNotice('上游查询草稿不可用；编辑器内容未被修改。')
+        return
+      }
+      if (!live.current || refreshSeq.current !== mySeq) return
+      if (reply.data.context?.projectId !== projectId) return
+      const query = queryDraftFromPlan(plan)
+      if (query) {
+        onQueryDraft.current?.(query)
+        setNotice('已收到上游查询草稿，请在查询工作台核对后手动载入。')
+      } else setNotice('上游查询草稿未通过校验，未载入编辑器。')
+    } catch {
+      /* An unavailable state channel simply means no receipts are shown. */
+    }
+  }, [projectId, module, selectedObjectIds])
+
+  useEffect(() => {
+    // Deferred: the effect body itself never triggers a state update.
+    const timer = setTimeout(() => void refresh(), 0)
     return () => clearTimeout(timer)
-  }, [state])
+  }, [refresh, modelSyncVersion])
+
+  // A project or module change retires the pending run watch.
+  useEffect(() => {
+    stopPolling()
+  }, [projectId, module, stopPolling])
+
+  /**
+   * Follow one exchange until the host leaves the `dispatching` status. The
+   * timer is always owned: an outdated dispatch never writes the state.
+   */
+  const pollExchange = useCallback(
+    (exchangeId: number, myDispatch: number) => {
+      stopPolling()
+      const tick = async () => {
+        const bridge = window.ontolearn
+        if (!bridge || !live.current || dispatchSeq.current !== myDispatch) return
+        try {
+          const reply = await bridge.getAgentState({ projectId })
+          if (!live.current || dispatchSeq.current !== myDispatch) return
+          if (!reply.ok) return
+          setState(reply.data)
+          if (reply.data.status === 'dispatching' && reply.data.exchangeId === exchangeId) {
+            pollTimer.current = setTimeout(() => void tick(), 150)
+          }
+        } catch {
+          /* The channel may be unavailable; the next refresh reports the truth. */
+        }
+      }
+      pollTimer.current = setTimeout(() => void tick(), 150)
+    },
+    [projectId, stopPolling],
+  )
 
   const dispatch = useCallback(
     async (question: string) => {
       const bridge = window.ontolearn
       if (!bridge || !projectId) return
+      const myDispatch = ++dispatchSeq.current
+      stopPolling()
       setBusy(true)
       setFailure('')
       setNotice('')
+      let failureCode: string | null = null
       try {
-        await bridge.dispatchAgentQuestion({
+        const reply = await bridge.dispatchAgentQuestion({
           operationId: crypto.randomUUID(),
           question,
           module,
@@ -200,24 +361,35 @@ export function AgentPanel(props: AgentPanelProps) {
           selectedObjectIds,
           scope: 'asserted',
         })
-        if (!live.current) return
+        if (!live.current || dispatchSeq.current !== myDispatch) return
+        if (!reply.ok) {
+          // The structured failure is reported immediately and re-thrown, so
+          // the sidebar keeps the question and shows the failure.
+          failureCode = reply.error.code
+          setFailure(reply.error.code)
+          throw new Error(reply.error.code)
+        }
         await refresh()
+        if (!live.current || dispatchSeq.current !== myDispatch) return
+        pollExchange(reply.data.exchangeId, myDispatch)
       } catch (cause) {
-        if (live.current)
+        if (failureCode === null && live.current && dispatchSeq.current === myDispatch)
           setFailure(cause instanceof Error ? cause.message : 'AGENT_DISPATCH_FAILED')
+        throw cause
       } finally {
-        if (live.current) setBusy(false)
+        if (live.current && dispatchSeq.current === myDispatch) setBusy(false)
       }
     },
-    [projectId, module, mode, selectedObjectIds, refresh],
+    [projectId, module, mode, selectedObjectIds, refresh, pollExchange, stopPolling],
   )
 
   const cancel = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge) return
+    const myDispatch = dispatchSeq.current
     try {
       const reply = await bridge.cancelAgentExchange({ exchangeId: state?.exchangeId ?? null })
-      if (live.current && reply.ok) setState(reply.data)
+      if (live.current && dispatchSeq.current === myDispatch && reply.ok) setState(reply.data)
     } catch {
       if (live.current) setFailure('AGENT_CANCEL_FAILED')
     }
@@ -228,19 +400,22 @@ export function AgentPanel(props: AgentPanelProps) {
       const bridge = window.ontolearn
       const operationId = state?.operationId
       if (!bridge || !operationId || receipt.outcome.kind !== 'draft') return
+      const mySeq = ++planSeq.current
       setBusy(true)
       setFailure('')
       try {
         const plan = take(await bridge.buildAgentDraftPlan({ operationId }))
-        if (live.current) onDraftPlan.current?.(plan)
+        if (!live.current || planSeq.current !== mySeq) return
+        if (state?.context?.projectId !== projectId) return
+        onDraftPlan.current?.(plan)
       } catch (cause) {
-        if (live.current)
+        if (live.current && planSeq.current === mySeq)
           setFailure(cause instanceof Error ? cause.message : 'AGENT_DRAFT_PLAN_FAILED')
       } finally {
-        if (live.current) setBusy(false)
+        if (live.current && planSeq.current === mySeq) setBusy(false)
       }
     },
-    [state],
+    [state, projectId],
   )
 
   const actions = useMemo(
@@ -250,6 +425,11 @@ export function AgentPanel(props: AgentPanelProps) {
   // Every page offers at most four quick actions, and an action whose target
   // is unavailable stays disabled — there is never a silent no-op button.
   const unavailable = actions.filter((action) => action.target === 'unavailable')
+  // The real host run state, mapped onto the sidebar vocabulary.
+  const sidebarState = useMemo(
+    () => (state ? agentDtoToSidebarState(state, projectId ?? '') : null),
+    [state, projectId],
+  )
 
   if (!projectId) {
     return (
@@ -268,7 +448,7 @@ export function AgentPanel(props: AgentPanelProps) {
         projectId: context.projectId ?? projectId,
         projectRevision: context.projectRevision ?? projectRevision ?? 0,
         inputSnapshotId: context.inputSnapshotId ?? inputSnapshotId ?? 'unavailable',
-        scopeRef: context.scopeRef ?? 'unavailable',
+        scopeRef: context.scopeRef ?? sidebarState?.inputContext.scopeRef ?? 'unavailable',
         module: context.module,
         mode: context.mode,
         selectedObjectIds: context.selectedObjectIds,
@@ -304,7 +484,7 @@ export function AgentPanel(props: AgentPanelProps) {
       {sidebarContext ? (
         <AgentSidebar
           context={sidebarContext}
-          state={null}
+          state={sidebarState}
           receipts={state?.receipts}
           privacy={context?.privacy ?? 'local'}
           modelReady={!!context?.modelReady}

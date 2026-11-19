@@ -9,6 +9,8 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type {
+  BridgeResult,
+  ChangeSetConfirmation,
   ChangeSetPage,
   ChangeSetPreview,
   MainlineChangePlanDTO,
@@ -32,10 +34,77 @@ export type ImportExportPanelProps = {
 
 type ImportStatus = 'idle' | 'checking' | 'ok' | 'rejected' | 'error'
 
+/** The host contract limits the checked Turtle text to 262144 characters. */
+export const MAX_IMPORT_TEXT_LENGTH = 262144
+/** Upper bound checked *before* the file is read into memory. */
+export const MAX_IMPORT_FILE_BYTES = 1024 * 1024
+
 const take = <T,>(reply: { ok: true; data: T } | { ok: false; error: { code: string } }): T => {
   if (!reply.ok) throw new Error(reply.error.code)
   return reply.data
 }
+
+/**
+ * The immutable, already verified import snapshot.
+ *
+ * It is produced exactly once, is rendered row by row to the user, and is the
+ * only object the commit path is allowed to act on. The commit never rebuilds
+ * a preview and never pages the diff again.
+ */
+export type VerifiedImportPreview = {
+  /** Unique identity of this verified snapshot. */
+  token: string
+  /** The monotonic request sequence that produced it. */
+  reqSeq: number
+  projectId: string
+  baseRevision: number
+  previewHash: string
+  inputSnapshotId: string
+  preparedPlanRef: string
+  parametersHash: string
+  completionCursor: string
+  summary: string
+  rows: unknown[]
+  operationId: string
+}
+
+/** The bridge surface the import flow really uses. */
+export type ImportBridge = {
+  previewProjectChangeset(args: {
+    baseRevision: number
+    intent: 'change'
+    plan: MainlineChangePlanDTO
+  }): Promise<BridgeResult<ChangeSetPreview>>
+  getProjectDiffPage(args: {
+    previewHash: string
+    documentKind: 'diff' | 'undo-impact'
+    pageSize: number
+    cursor: string | null
+  }): Promise<BridgeResult<ChangeSetPage>>
+  confirmProjectChangeset(args: {
+    previewHash: string
+    completionCursor: string
+  }): Promise<BridgeResult<ChangeSetConfirmation>>
+  commitProjectChangeSet(args: {
+    operationId: string
+    confirmation: ChangeSetConfirmation
+  }): Promise<BridgeResult<unknown>>
+}
+
+/** The verified preview, its summary and the human consent, bound to one identity. */
+type VerifiedState = {
+  identity: string
+  preview?: VerifiedImportPreview
+  consent: boolean
+  summary: string
+}
+
+const emptyVerified = (identity: string): VerifiedState => ({
+  identity,
+  preview: undefined,
+  consent: false,
+  summary: '',
+})
 
 /** Base IRI used when checking an imported Turtle document. */
 export function importBaseUri(projectId: string | null): string {
@@ -104,6 +173,140 @@ export function downloadTurtle(text: string, filename: string): boolean {
   return true
 }
 
+/**
+ * Read the complete diff document exactly once.
+ * A repeated cursor is a hard failure: the pagination must never loop.
+ */
+export async function readFullDiffPages(
+  bridge: Pick<ImportBridge, 'getProjectDiffPage'>,
+  previewHash: string,
+): Promise<{ pages: ChangeSetPage[]; completionCursor: string }> {
+  const pages: ChangeSetPage[] = []
+  let cursor: string | null = null
+  for (let count = 0; count < 512; count++) {
+    const page: ChangeSetPage = take(
+      await bridge.getProjectDiffPage({
+        previewHash,
+        documentKind: 'diff',
+        pageSize: 16,
+        cursor,
+      }),
+    )
+    if (!page.complete && pages.some((old) => old.nextCursor === page.nextCursor))
+      throw new Error('CURSOR_REPEATED')
+    pages.push(page)
+    if (page.complete) return { pages, completionCursor: page.nextCursor }
+    cursor = page.nextCursor
+  }
+  throw new Error('DIFF_INCOMPLETE')
+}
+
+/**
+ * The confirmation must still describe the very preview the user checked:
+ * project, preview hash, prepared plan, input snapshot and parameter hash.
+ */
+export function confirmationMatchesPreview(
+  confirmation: ChangeSetConfirmation,
+  preview: {
+    projectId: string
+    previewHash: string
+    preparedPlanRef: string
+    inputSnapshotId: string
+    parametersHash: string
+  },
+): boolean {
+  return (
+    confirmation.projectId === preview.projectId &&
+    confirmation.previewHash === preview.previewHash &&
+    confirmation.preparedPlanRef === preview.preparedPlanRef &&
+    confirmation.inputSnapshotId === preview.inputSnapshotId &&
+    confirmation.parametersHash === preview.parametersHash
+  )
+}
+
+export type ImportPrepareResult =
+  | { status: 'ready'; preview: VerifiedImportPreview }
+  | { status: 'conflict' }
+  | { status: 'stale' }
+  | { status: 'failed'; code: string }
+
+/**
+ * Build the verified snapshot: preview once, read the whole diff once, and
+ * re-verify the document with the canonical contract verifier.
+ */
+export async function prepareVerifiedImport(args: {
+  bridge: ImportBridge
+  projectId: string
+  baseRevision: number
+  plan: MainlineChangePlanDTO
+  reqSeq: number
+  isCurrent: () => boolean
+}): Promise<ImportPrepareResult> {
+  const { bridge, projectId, baseRevision, plan, reqSeq, isCurrent } = args
+  const preview: ChangeSetPreview = take(
+    await bridge.previewProjectChangeset({ baseRevision, intent: 'change', plan }),
+  )
+  if (!isCurrent()) return { status: 'stale' }
+  if (preview.status === 'conflict') return { status: 'conflict' }
+  if (preview.projectId !== projectId) throw new Error('PROJECT_MISMATCH')
+  const full = await readFullDiffPages(bridge, preview.previewHash)
+  if (!isCurrent()) return { status: 'stale' }
+  const document = await reassembleChangeSetDocument(
+    {
+      projectId: preview.projectId,
+      previewHash: preview.previewHash,
+      manifest: preview.manifest,
+    },
+    full.pages,
+  )
+  if (!isCurrent()) return { status: 'stale' }
+  return {
+    status: 'ready',
+    preview: {
+      token: crypto.randomUUID(),
+      reqSeq,
+      projectId: preview.projectId,
+      baseRevision: preview.baseRevision,
+      previewHash: preview.previewHash,
+      inputSnapshotId: preview.inputSnapshotId,
+      preparedPlanRef: preview.preparedPlanRef,
+      parametersHash: preview.parametersHash,
+      completionCursor: full.completionCursor,
+      summary: preview.summary,
+      rows: document,
+      operationId: crypto.randomUUID(),
+    },
+  }
+}
+
+export type ImportCommitResult =
+  | { status: 'committed'; operationId: string }
+  | { status: 'stale' }
+  | { status: 'failed'; code: string }
+
+/**
+ * Commit exactly the snapshot the user checked. The preview is never rebuilt
+ * and the diff is never paged again; a confirmation that describes another
+ * identity is refused.
+ */
+export async function commitVerifiedImport(args: {
+  bridge: ImportBridge
+  verified: VerifiedImportPreview
+  isCurrent: () => boolean
+}): Promise<ImportCommitResult> {
+  const { bridge, verified, isCurrent } = args
+  const confirmation: ChangeSetConfirmation = take(
+    await bridge.confirmProjectChangeset({
+      previewHash: verified.previewHash,
+      completionCursor: verified.completionCursor,
+    }),
+  )
+  if (!isCurrent()) return { status: 'stale' }
+  if (!confirmationMatchesPreview(confirmation, verified)) throw new Error('INVALID_CONFIRMATION')
+  take(await bridge.commitProjectChangeSet({ operationId: verified.operationId, confirmation }))
+  return { status: 'committed', operationId: verified.operationId }
+}
+
 export function ImportExportPanel(props: ImportExportPanelProps) {
   const { projectId, projectRevision } = props
   const [exported, setExported] = useState<OntologyTurtleExportResultDTO>()
@@ -111,11 +314,18 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
   const [importStatus, setImportStatus] = useState<ImportStatus>('idle')
   const [importResult, setImportResult] = useState<OntologyTurtleImportCheckResultDTO>()
   const [importing, setImporting] = useState(false)
-  const [diffSummary, setDiffSummary] = useState('')
   const [message, setMessage] = useState('')
-  const [plan, setPlan] = useState<MainlineChangePlanDTO>()
-  const [consent, setConsent] = useState(false)
   const live = useRef(true)
+  const reqSeq = useRef(0)
+  // The verified preview, its summary and the human consent always belong to
+  // one project generation; a change of identity retires all three at once.
+  const identity = `${projectId ?? ''}:${projectRevision ?? ''}`
+  const identityRef = useRef(identity)
+  useEffect(() => {
+    identityRef.current = identity
+  }, [identity])
+  const [verifiedState, setVerifiedState] = useState<VerifiedState>(() => emptyVerified(identity))
+  const verified = verifiedState.identity === identity ? verifiedState : emptyVerified(identity)
   useEffect(() => {
     live.current = true
     return () => {
@@ -123,14 +333,20 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
     }
   }, [])
 
+  const isCurrent = useCallback((mySeq: number, myIdentity: string) => {
+    return live.current && reqSeq.current === mySeq && identityRef.current === myIdentity
+  }, [])
+
   const runExport = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge) return
+    const mySeq = ++reqSeq.current
+    const myIdentity = identity
     setExporting(true)
     setMessage('')
     try {
       const result = take(await bridge.exportProjectOntology({}))
-      if (!live.current) return
+      if (!isCurrent(mySeq, myIdentity)) return
       setExported(result)
       if (result.status === 'ok') {
         const downloaded = downloadTurtle(
@@ -146,29 +362,34 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
         setMessage(`导出被拒绝；未生成任何文件，项目未被修改。`)
       }
     } catch (cause) {
-      if (!live.current) return
+      if (!isCurrent(mySeq, myIdentity)) return
       setMessage(
         `导出未完成（${cause instanceof Error ? cause.message : 'UNKNOWN'}）；项目未被修改。`,
       )
       props.onError?.(cause instanceof Error ? cause.message : 'UNKNOWN')
     } finally {
-      if (live.current) setExporting(false)
+      if (isCurrent(mySeq, myIdentity)) setExporting(false)
     }
-  }, [projectId, props])
+  }, [projectId, identity, isCurrent, props])
 
   const runImportCheck = useCallback(
     async (file: File) => {
       const bridge = window.ontolearn
       if (!bridge) return
+      const mySeq = ++reqSeq.current
+      const myIdentity = identity
       setImporting(true)
       setImportStatus('checking')
       setImportResult(undefined)
-      setPlan(undefined)
-      setConsent(false)
-      setDiffSummary('')
+      // A new file retires the previous verified preview, summary and consent.
+      setVerifiedState(emptyVerified(myIdentity))
       setMessage('')
       try {
+        if (projectRevision === null) throw new Error('PROJECT_VERSION_UNAVAILABLE')
+        if (file.size > MAX_IMPORT_FILE_BYTES) throw new Error('FILE_TOO_LARGE')
         const turtleText = await file.text()
+        if (!isCurrent(mySeq, myIdentity)) return
+        if (turtleText.length > MAX_IMPORT_TEXT_LENGTH) throw new Error('FILE_TOO_LARGE')
         const result = take(
           await bridge.checkProjectOntologyImport({
             baseUri: importBaseUri(projectId),
@@ -176,7 +397,7 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
             format: 'turtle',
           }),
         )
-        if (!live.current) return
+        if (!isCurrent(mySeq, myIdentity)) return
         setImportResult(result)
         setImportStatus(
           result.status === 'ok' ? 'ok' : result.status === 'rejected' ? 'rejected' : 'error',
@@ -189,132 +410,96 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
           setMessage('超出本能力边界，原文件与当前项目保持不变。')
         else setMessage('文件语法或格式错误，原文件与当前项目保持不变。')
       } catch (cause) {
-        if (!live.current) return
+        if (!isCurrent(mySeq, myIdentity)) return
         setImportStatus('error')
+        const code = cause instanceof Error ? cause.message : 'UNKNOWN'
         setMessage(
-          `导入检查未完成（${cause instanceof Error ? cause.message : 'UNKNOWN'}）；原文件与当前项目保持不变。`,
+          code === 'FILE_TOO_LARGE'
+            ? '文件超过可接受的大小上限；原文件与当前项目保持不变。'
+            : code === 'PROJECT_VERSION_UNAVAILABLE'
+              ? '尚未读取当前项目版本；请先读取项目再导入。'
+              : `导入检查未完成（${code}）；原文件与当前项目保持不变。`,
         )
       } finally {
-        if (live.current) setImporting(false)
+        if (isCurrent(mySeq, myIdentity)) setImporting(false)
       }
     },
-    [projectId],
+    [projectId, projectRevision, identity, isCurrent],
   )
 
   const previewImport = useCallback(async () => {
     const bridge = window.ontolearn
     if (!bridge || !importResult || importResult.status !== 'ok') return
+    const mySeq = ++reqSeq.current
+    const myIdentity = identity
     setImporting(true)
     setMessage('')
+    // A new preview invalidates the previous snapshot and the previous consent.
+    setVerifiedState(emptyVerified(myIdentity))
     try {
-      const changePlan: MainlineChangePlanDTO = {}
-      if (importResult.plan.definitions) changePlan.definitions = importResult.plan.definitions
-      if (importResult.plan.manual) changePlan.manual = importResult.plan.manual
-      setPlan(changePlan)
-      const preview: ChangeSetPreview = take(
-        await bridge.previewProjectChangeset({
-          baseRevision: importResult.summary.baseRevision,
-          intent: 'change',
-          plan: changePlan,
-        }),
-      )
-      if (preview.status === 'conflict') {
+      const outcome = await prepareVerifiedImport({
+        bridge,
+        projectId: projectId ?? '',
+        baseRevision: importResult.summary.baseRevision,
+        plan: importPlanToChangePlan(importResult.plan),
+        reqSeq: mySeq,
+        isCurrent: () => isCurrent(mySeq, myIdentity),
+      })
+      if (outcome.status === 'stale') return
+      if (outcome.status === 'conflict') {
         setMessage('基准版本冲突：本次导入不能提交，请重新读取项目后再试。')
         return
       }
-      const pages: ChangeSetPage[] = []
-      let cursor: string | null = null
-      for (let count = 0; count < 512; count++) {
-        const page: ChangeSetPage = take(
-          await bridge.getProjectDiffPage({
-            previewHash: preview.previewHash,
-            documentKind: 'diff',
-            pageSize: 16,
-            cursor,
-          }),
-        )
-        if (!page.complete && pages.some((old) => old.nextCursor === page.nextCursor))
-          throw new Error('CURSOR_REPEATED')
-        pages.push(page)
-        if (page.complete) break
-        cursor = page.nextCursor
+      if (outcome.status === 'failed') {
+        setMessage(`无法生成完整差异（${outcome.code}）；项目未被修改。`)
+        return
       }
-      const last = pages.at(-1)
-      if (!last?.complete) throw new Error('DIFF_INCOMPLETE')
-      const document = await reassembleChangeSetDocument(
-        {
-          projectId: preview.projectId,
-          previewHash: preview.previewHash,
-          manifest: preview.manifest,
-        },
-        pages,
-      )
-      setDiffSummary(
-        `完整差异已核验：${document.length} 项；摘要 ${preview.summary}。确认前不会写入任何数据。`,
-      )
-      setMessage('')
+      setVerifiedState({
+        identity: myIdentity,
+        preview: outcome.preview,
+        consent: false,
+        summary: `完整差异已核验：${outcome.preview.rows.length} 项；摘要 ${outcome.preview.summary}。确认前不会写入任何数据。`,
+      })
     } catch (cause) {
-      setMessage(
-        `无法生成完整差异（${cause instanceof Error ? cause.message : 'UNKNOWN'}）；项目未被修改。`,
-      )
-      props.onError?.(cause instanceof Error ? cause.message : 'UNKNOWN')
+      if (!isCurrent(mySeq, myIdentity)) return
+      const code = cause instanceof Error ? cause.message : 'UNKNOWN'
+      setMessage(`无法生成完整差异（${code}）；项目未被修改。`)
+      props.onError?.(code)
     } finally {
-      if (live.current) setImporting(false)
+      if (isCurrent(mySeq, myIdentity)) setImporting(false)
     }
-  }, [importResult, props])
+  }, [importResult, projectId, identity, isCurrent, props])
 
   const commitImport = useCallback(async () => {
     const bridge = window.ontolearn
-    if (!bridge || !importResult || importResult.status !== 'ok' || !plan || !consent) return
+    const verifiedPreview = verified.preview
+    if (!bridge || !verifiedPreview || !verified.consent) return
+    const mySeq = ++reqSeq.current
+    const myIdentity = identity
     setImporting(true)
     try {
-      const preview: ChangeSetPreview = take(
-        await bridge.previewProjectChangeset({
-          baseRevision: importResult.summary.baseRevision,
-          intent: 'change',
-          plan,
-        }),
-      )
-      if (preview.status === 'conflict') {
-        setMessage('基准版本冲突：本次导入不能提交，请重新读取项目后再试。')
+      const outcome = await commitVerifiedImport({
+        bridge,
+        verified: verifiedPreview,
+        isCurrent: () => isCurrent(mySeq, myIdentity),
+      })
+      if (outcome.status === 'stale') return
+      if (outcome.status === 'failed') {
+        setMessage(`导入未完成（${outcome.code}）；项目未被本次操作修改。`)
+        props.onError?.(outcome.code)
         return
       }
-      const pages: ChangeSetPage[] = []
-      let cursor: string | null = null
-      for (let count = 0; count < 512; count++) {
-        const page: ChangeSetPage = take(
-          await bridge.getProjectDiffPage({
-            previewHash: preview.previewHash,
-            documentKind: 'diff',
-            pageSize: 16,
-            cursor,
-          }),
-        )
-        pages.push(page)
-        if (page.complete) break
-        cursor = page.nextCursor
-      }
-      const last = pages.at(-1)
-      if (!last?.complete) throw new Error('DIFF_INCOMPLETE')
-      const confirmation = take(
-        await bridge.confirmProjectChangeset({
-          previewHash: preview.previewHash,
-          completionCursor: last.nextCursor,
-        }),
-      )
-      const operationId = crypto.randomUUID()
-      take(await bridge.commitProjectChangeSet({ operationId, confirmation }))
       setMessage('导入已提交；正式保存结果以任务终态为准。')
-      props.onImported?.(operationId)
+      props.onImported?.(outcome.operationId)
     } catch (cause) {
-      setMessage(
-        `导入未完成（${cause instanceof Error ? cause.message : 'UNKNOWN'}）；项目未被本次操作修改。`,
-      )
-      props.onError?.(cause instanceof Error ? cause.message : 'UNKNOWN')
+      if (!isCurrent(mySeq, myIdentity)) return
+      const code = cause instanceof Error ? cause.message : 'UNKNOWN'
+      setMessage(`导入未完成（${code}）；项目未被本次操作修改。`)
+      props.onError?.(code)
     } finally {
-      if (live.current) setImporting(false)
+      if (isCurrent(mySeq, myIdentity)) setImporting(false)
     }
-  }, [importResult, plan, consent, props])
+  }, [verified, identity, isCurrent, props])
 
   const exportRejections = exported ? exportOutcome(exported) : undefined
   const importView = importResult ? importOutcome(importResult) : undefined
@@ -332,7 +517,7 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
       <button
         type="button"
         data-testid="ontology-export-button"
-        disabled={exporting || !projectId}
+        disabled={exporting || !projectId || projectRevision === null}
         onClick={() => void runExport()}
       >
         导出已提交态本体（Turtle）
@@ -364,7 +549,7 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
           type="file"
           accept=".ttl,text/turtle"
           data-testid="ontology-import-file"
-          disabled={importing || !projectId}
+          disabled={importing || !projectId || projectRevision === null}
           onChange={(event) => {
             const file = event.target.files?.[0]
             if (file) void runImportCheck(file)
@@ -419,22 +604,36 @@ export function ImportExportPanel(props: ImportExportPanelProps) {
           >
             预览变更并确认提交
           </button>
-          {diffSummary && <p data-testid="ontology-import-diff-summary">{diffSummary}</p>}
-          {diffSummary && (
+          {verified.summary && <p data-testid="ontology-import-diff-summary">{verified.summary}</p>}
+          {verified.preview && (
+            <>
+              <p>以下为本次已核验的完整差异明细（逐行）：</p>
+              <pre data-testid="ontology-import-diff-rows">
+                {JSON.stringify(verified.preview.rows, null, 2)}
+              </pre>
+            </>
+          )}
+          {verified.preview && (
             <>
               <label>
                 <input
                   type="checkbox"
                   data-testid="ontology-import-consent"
-                  checked={consent}
-                  onChange={(event) => setConsent(event.target.checked)}
+                  checked={verified.consent}
+                  onChange={(event) =>
+                    setVerifiedState((previous) =>
+                      previous.identity === identity
+                        ? { ...previous, consent: event.target.checked }
+                        : previous,
+                    )
+                  }
                 />
                 我已核对完整差异，确认导入本次变更
               </label>
               <button
                 type="button"
                 data-testid="ontology-import-commit"
-                disabled={importing || !consent}
+                disabled={importing || !verified.consent}
                 onClick={() => void commitImport()}
               >
                 确认并提交导入
