@@ -448,8 +448,11 @@ class Coordinator:
 
     def dispatch(self, method: str, p: dict):
         from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
+        from ontolearn_engine.project.learning_agent import METHODS as AGENT_METHODS
         from ontolearn_engine.project.learning_ledger import METHODS as LEARNING_METHODS
         from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
+        from ontolearn_engine.project.ontology_import import METHODS as IMPORT_METHODS
+        from ontolearn_engine.project.ontology_turtle import METHODS as EXPORT_METHODS
         from ontolearn_engine.project.quality_definitions import METHODS as QUALITY_METHODS
 
         if (
@@ -457,6 +460,9 @@ class Coordinator:
             or method in CHECKPOINT_METHODS
             or method in LEARNING_METHODS
             or method in QUALITY_METHODS
+            or method in EXPORT_METHODS
+            or method in IMPORT_METHODS
+            or method in AGENT_METHODS
             or method
             in {
                 "project.catalog",
