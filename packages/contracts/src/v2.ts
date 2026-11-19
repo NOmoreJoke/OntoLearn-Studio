@@ -1022,6 +1022,15 @@ export function matchesBusiness3Response(
     if (String(q.method) === 'project.quality.read') return true
     return value.operationId === p.operationId
   }
+  if (q.method === 'project.ontology.export' || q.method === 'project.ontology.import.check')
+    return q.engineSessionId === r.engineSessionId
+  if (q.method === 'project.agent.before_commit') {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const params = q.params as Record<string, unknown>
+    const result = r.result as Record<string, unknown>
+    return result.projectId === params.projectId && result.operationId === params.operationId
+  }
   if (q.method === 'project.ownership.detail')
     return (
       q.engineSessionId === r.engineSessionId &&

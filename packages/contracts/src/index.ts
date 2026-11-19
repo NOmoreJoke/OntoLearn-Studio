@@ -13,6 +13,14 @@ import type {
   QualityWorkspaceBridge,
 } from './quality'
 export type * from './quality'
+import type { AgentBridge, AgentIpcMap } from './agent'
+export * from './agent'
+import type {
+  OntologyTurtleExportResultDTO,
+  OntologyTurtleImportCheckArgs,
+  OntologyTurtleImportCheckResultDTO,
+} from './ontology-turtle'
+export * from './ontology-turtle'
 
 export const PROTOCOL_VERSION = 2 as const
 // Private preload delivery protocol. These are never exposed on DesktopBridge
@@ -460,7 +468,8 @@ export interface DesktopBridge
     LibraryLocationBridge,
     ProjectCheckpointBridge,
     LearningLedgerBridge,
-    ModelBridge {
+    ModelBridge,
+    AgentBridge {
   getEngineHealth(): Promise<HealthResult>
   restoreTasks(): Promise<BridgeResult<TaskView>>
   getActiveProject(): Promise<BridgeResult<ProjectView | null>>
@@ -476,7 +485,15 @@ export interface DesktopBridge
 }
 
 /** Main/preload-only finite channel association; no generic invoke is exposed to renderer. */
-export type DesktopIpcMap = {
+export type DesktopIpcMap = AgentIpcMap & {
+  'project:ontology-export': {
+    args: []
+    result: Awaited<ReturnType<MainlineProjectBridge['exportProjectOntology']>>
+  }
+  'project:ontology-import-check': {
+    args: Parameters<MainlineProjectBridge['checkProjectOntologyImport']>
+    result: Awaited<ReturnType<MainlineProjectBridge['checkProjectOntologyImport']>>
+  }
   'project:checkpoint-list': {
     args: [args: Parameters<ProjectCheckpointBridge['listProjectCheckpoints']>[0]]
     result: Awaited<ReturnType<ProjectCheckpointBridge['listProjectCheckpoints']>>
@@ -1193,6 +1210,12 @@ export interface MainlineProjectBridge
     ProjectCheckpointBridge,
     LearningLedgerBridge,
     QualityWorkspaceBridge {
+  exportProjectOntology(
+    args: Record<string, never>,
+  ): Promise<BridgeResult<OntologyTurtleExportResultDTO>>
+  checkProjectOntologyImport(
+    args: OntologyTurtleImportCheckArgs,
+  ): Promise<BridgeResult<OntologyTurtleImportCheckResultDTO>>
   getOwnershipConflictDetailPage(
     args: OwnershipDetailArgs,
   ): Promise<BridgeResult<OwnershipDetailPage>>

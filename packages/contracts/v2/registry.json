@@ -594,7 +594,10 @@
         "project.learning.observation.record",
         "project.learning.task.check",
         "project.quality.read",
-        "project.quality.prepare"
+        "project.quality.prepare",
+        "project.ontology.export",
+        "project.ontology.import.check",
+        "project.agent.before_commit"
       ],
       "newSourceOrLearningMethods": [
         "project.learning.read",
@@ -634,7 +637,9 @@
         "project.learning.observation.record",
         "project.learning.task.check",
         "project.quality.read",
-        "project.quality.prepare"
+        "project.quality.prepare",
+        "project.ontology.export",
+        "project.ontology.import.check"
       ]
     }
   },
@@ -953,5 +958,12 @@
       "sensitiveInput": false,
       "pythonEligible": false
     }
+  },
+  "projectAgentBeforeCommit": {
+    "profile": "business3",
+    "method": "project.agent.before_commit",
+    "agentEligible": false,
+    "authority": "selected project; privileged host checkpoint before a confirmed Agent ChangeSet",
+    "exposure": "main-process-only"
   }
 }

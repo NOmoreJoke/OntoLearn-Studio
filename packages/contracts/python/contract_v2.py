@@ -563,6 +563,18 @@ def matches_business3_response(request, response, expected_registry_hash):
         return False
     if any(request[k] != response[k] for k in ("id", "method")):
         return False
+    if request["method"] in {"project.ontology.export", "project.ontology.import.check"}:
+        return request["engineSessionId"] == response["engineSessionId"]
+    if request["method"] == "project.agent.before_commit":
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        params, result = request["params"], response["result"]
+        return (
+            result["projectId"] == params["projectId"]
+            and result["operationId"] == params["operationId"]
+        )
     if request["method"] == "project.ownership.detail":
         return request["engineSessionId"] == response["engineSessionId"] and (
             not response["ok"] or ownership_detail_matches(request["params"], response["result"])

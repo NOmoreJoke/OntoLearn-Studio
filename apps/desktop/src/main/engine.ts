@@ -364,6 +364,9 @@ export type MainlineMethod =
   | 'project.restore.confirm'
   | 'project.restore.apply'
   | 'project.restore.operation.get'
+  | 'project.ontology.export'
+  | 'project.ontology.import.check'
+  | 'project.agent.before_commit'
   | 'project.quality.read'
   | 'project.quality.prepare'
   | 'project.learning.read'
@@ -1294,6 +1297,9 @@ export class EngineSupervisor {
               'project.restore.confirm',
               'project.restore.apply',
               'project.restore.operation.get',
+              'project.ontology.export',
+              'project.ontology.import.check',
+              'project.agent.before_commit',
               'project.quality.read',
               'project.quality.prepare',
               'project.learning.read',
@@ -1315,6 +1321,9 @@ export class EngineSupervisor {
                 method === 'project.draft.save' ||
                 method === 'project.ownership.detail' ||
                 method === 'project.management.read' ||
+                method === 'project.ontology.export' ||
+                method === 'project.ontology.import.check' ||
+                method === 'project.agent.before_commit' ||
                 method === 'project.quality.read' ||
                 method === 'project.quality.prepare') &&
               params.projectId !== record.selected?.projectId
