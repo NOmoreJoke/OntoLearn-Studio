@@ -134,7 +134,7 @@ def semantic(v):
     if isinstance(v.get("completed"), (int, float)) and isinstance(v.get("total"), (int, float)):
         if v["completed"] > v["total"]:
             return False
-    if "staleReason" in v:
+    if isinstance(v.get("staleReason"), list):
         reasons = v["staleReason"]
         vector, sets = v["dependencyVector"], v["definitionSetDigests"]
         if "facts:asserted" not in vector or len({r["dependency"] for r in reasons}) != len(
@@ -258,6 +258,7 @@ def validate(name, value):
             not _changeset_semantics(name, value)
             or not _query_consumer_semantics(name, value)
             or not _checkpoint_semantics(name, value)
+            or not _wave4_semantics(name, value)
         ):
             return False
         if valid and name in {"params_job.create", "params_job.list"}:
@@ -490,6 +491,237 @@ def business3_error(code, params=None):
     return business3_error("INTERNAL_ERROR", {})
 
 
+def _wave4_value_at(value, path):
+    for key in path.split("."):
+        value = value.get(key) if isinstance(value, dict) else None
+    return value
+
+
+def _wave4_payload_keys_safe(payload):
+    return not {"__proto__", "constructor", "prototype"}.intersection(payload)
+
+
+def _wave4_package_manifest(value):
+    files, options = value["files"], value["options"]
+    roles = {entry["role"] for entry in files}
+    transfer = REGISTRY["projectTransfer"]
+    return (
+        len(roles) == len(files)
+        and len({entry["path"] for entry in files}) == len(files)
+        and "definitions" in roles
+        and (value["kind"] != "full" or set(transfer["packageCoreRoles"]) <= roles)
+        and all(
+            role not in roles or options[option] is True
+            for option, role in transfer["packageRoleOptions"].items()
+        )
+    )
+
+
+def _wave4_report(value):
+    attempts = value["learning"]
+    if len({(item["taskId"], item["attemptId"]) for item in attempts}) != len(attempts):
+        return False
+    for attempt in attempts:
+        check = attempt["check"]
+        passed = check["status"] == "passed"
+        independent = (
+            passed
+            and attempt["transferTask"]
+            and attempt["operationCompleted"]
+            and attempt["hint"] == "none"
+            and attempt["agentAssistance"] == "none"
+        )
+        if (passed and not check["evidenceRef"]) or independent != attempt[
+            "independentTransferSuccess"
+        ]:
+            return False
+    revision = value["projectRevision"]
+    return all(
+        result["inputRevision"] <= revision
+        and (result["status"] != "current" or result["inputRevision"] == revision)
+        for field in ("queryResults", "validationResults", "behaviorResults", "scenarioComparisons")
+        for result in value[field]
+    )
+
+
+def _wave4_scenario_config(config):
+    return _wave4_payload_keys_safe(config["parameters"]) and all(
+        _wave4_payload_keys_safe(event["payload"]) for event in config["events"]
+    )
+
+
+def _wave4_scenario_run(run):
+    scope, rounds = run["scope"], run["rounds"]
+    last, offset = run["lastCommittedRound"], run["roundOffset"]
+    evidence = run["evidence"]
+    return (
+        scope["mode"] == "scenario"
+        and scope["scopeId"] == run["identity"]["scenarioId"]
+        and last <= evidence["maxRounds"]
+        and _wave4_payload_keys_safe(evidence["parameters"])
+        and (run["replayAvailable"] == (run["replayUnavailableReason"] is None))
+        and offset + len(rounds) <= last
+        and all(entry["number"] == offset + index for index, entry in enumerate(rounds, 1))
+        and ((run["status"] == "failed") == (run["error"] is not None))
+        and (last == 0 or run["checkpointRef"] is not None)
+        and (
+            not run["resumeAvailable"]
+            or (run["checkpointRef"] is not None and run["status"] in {"cancelled", "failed"})
+        )
+    )
+
+
+def _wave4_semantics(name, value):
+    if name in {"request3", "response3", "envelope3"}:
+        method = value.get("method")
+        if method in REGISTRY["wave4ResponseBindings"]:
+            if value["kind"] == "request":
+                return _wave4_semantics("params_" + method, value["params"])
+            if value["kind"] == "response" and value["ok"]:
+                return _wave4_semantics("result_" + method, value["result"])
+        return True
+
+    if name == "w4.mapping.issue":
+        return (
+            ERROR_CATALOG["wave4"]["mappingIssueMessageKeys"].get(value["code"])
+            == value["messageKey"]
+        )
+    if name == "result_project.mapping.source.select":
+        return (
+            value["sheet"] in value["sheets"]
+            and len(set(value["sheets"])) == len(value["sheets"])
+            and (
+                value["encoding"] is not None and value["sheet"] == "CSV"
+                if value["format"] == "csv"
+                else value["encoding"] is None
+            )
+        )
+    if name == "result_project.mapping.preview":
+        return value["offset"] + len(value["rows"]) <= value["totalRows"] and all(
+            _wave4_semantics("w4.mapping.issue", issue) for issue in value["issues"]
+        )
+
+    if name == "w4.behavior.event":
+        return _wave4_payload_keys_safe(value["payload"])
+    if name.startswith("params_project.behavior."):
+        return value["projectId"] == value["binding"]["projectId"] and all(
+            _wave4_semantics("w4.behavior.event", event) for event in value.get("events", ())
+        )
+    if name == "w4.behavior.result" or name.startswith("result_project.behavior."):
+        freshness, reason = value["freshness"], value["staleReason"]
+        return (
+            value["projectId"] == value["binding"]["projectId"]
+            and (
+                reason is not None
+                if freshness == "stale"
+                else freshness != "current" or reason is None
+            )
+            and all(
+                decision["triggered"] == (decision["reason"] == "triggered")
+                for decision in value["conditions"]
+            )
+        )
+
+    if name == "w4.scenario.event":
+        return _wave4_payload_keys_safe(value["payload"])
+    if name == "w4.scenario.config":
+        return _wave4_scenario_config(value)
+    if name == "params_project.scenario.create":
+        return _wave4_scenario_config(value["configuration"])
+    if name == "params_project.scenario.resume":
+        return value["sourceRunId"] != value["runId"]
+    if name == "params_project.scenario.compare":
+        return len({run["runId"] for run in value["runs"]}) == len(value["runs"])
+    if name == "w4.scenario.run":
+        return _wave4_scenario_run(value)
+    if name.startswith("result_project.scenario."):
+        if "run" in value and not _wave4_scenario_run(value["run"]):
+            return False
+        scenarios = [value["scenario"]] if "scenario" in value else value.get("items", ())
+        return all(
+            scenario["identity"]["projectId"] == value["projectId"]
+            and _wave4_scenario_config(scenario["configuration"])
+            for scenario in scenarios
+        )
+
+    if name == "w4.transfer.manifest":
+        return _wave4_package_manifest(value)
+    if name == "result_project.transfer.package.export.check" or (
+        name == "result_project.transfer.package.import.check" and value["status"] == "compatible"
+    ):
+        manifest, portability = value["manifest"], value["portability"]
+        roles = {entry["role"] for entry in manifest["files"]}
+        return (
+            manifest["kind"] == value.get("kind", value.get("expectedKind"))
+            and ("options" not in value or value["options"] == manifest["options"])
+            and _wave4_package_manifest(manifest)
+            and (not portability["restoreCurrent"] or manifest["kind"] == "full")
+            and (not portability["rerunMapping"] or "raw-source" in roles)
+            and (not portability["replayScenario"] or "history" in roles)
+        )
+    if name == "result_project.transfer.package.import":
+        return value["importedProjectId"] != value["projectId"]
+    if name == "w4.transfer.report":
+        return _wave4_report(value)
+    if name == "result_project.transfer.report.prepare":
+        report = value["report"]
+        return (
+            report["projectId"] == value["projectId"]
+            and report["projectRevision"] == value["baseRevision"]
+            and _wave4_report(report)
+        )
+    return True
+
+
+def _wave4_response_matches(method, params, result):
+    if any(
+        _wave4_value_at(params, source) != _wave4_value_at(result, target)
+        for source, target in REGISTRY["wave4ResponseBindings"][method]
+    ):
+        return False
+    if method == "project.mapping.source.select":
+        return all(
+            key not in params or result[key] == params[key]
+            for key in ("selectionId", "sheet", "encoding")
+        )
+    if method == "project.mapping.preview":
+        page = params.get("page", {"offset": 0, "limit": 100})
+        return result["offset"] == page["offset"] and len(result["rows"]) <= page["limit"]
+    if method == "project.mapping.draft.save":
+        return (
+            result["generation"] == params["expectedGeneration"] + 1
+            and result["draft"] == params["draft"]
+        )
+    if method == "project.scenario.create":
+        return params["configuration"] == result["scenario"]["configuration"]
+    if method == "project.scenario.copy":
+        scenario = result["scenario"]
+        return (
+            scenario["identity"]["scenarioId"] != params["scenarioId"]
+            and scenario["configuration"]["name"] == params["name"]
+        )
+    if method == "project.scenario.list":
+        return len(result["items"]) <= params["limit"]
+    if method == "project.scenario.run.read":
+        return len(result["run"]["rounds"]) <= params["limit"]
+    if method == "project.scenario.compare":
+        picks, runs = params["runs"], result["runs"]
+        return len(runs) == len(picks) and all(
+            run["runId"] == pick["runId"]
+            and run["identity"]["scenarioId"] == pick["scenarioId"]
+            and run["identity"]["projectId"] == params["projectId"]
+            and ((run["lastCommittedRound"] == 0) == (run["finalMetrics"] is None))
+            and len(run["metrics"]) <= params["limit"]
+            and all(
+                metric["round"] == params["roundOffset"] + index
+                and metric["round"] <= run["lastCommittedRound"]
+                for index, metric in enumerate(run["metrics"], 1)
+            )
+            for run, pick in zip(runs, picks, strict=True)
+        )
+    return True
+
+
 def validate_business3(name, value):
     """Strict explicit profile validation, not runtime/session or Store readiness."""
     profiles = {
@@ -563,6 +795,12 @@ def matches_business3_response(request, response, expected_registry_hash):
         return False
     if any(request[k] != response[k] for k in ("id", "method")):
         return False
+    method = request["method"]
+    if method in REGISTRY["wave4ResponseBindings"]:
+        return request["engineSessionId"] == response["engineSessionId"] and (
+            not response["ok"]
+            or _wave4_response_matches(method, request["params"], response["result"])
+        )
     if request["method"] in {"project.ontology.export", "project.ontology.import.check"}:
         return request["engineSessionId"] == response["engineSessionId"]
     if request["method"] == "project.agent.before_commit":

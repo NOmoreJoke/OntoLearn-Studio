@@ -19,6 +19,8 @@ import {
   matchesOrdinaryResponse,
   type OrdinaryResponseBinding,
   matchesBusiness3Response,
+  isWave4ProjectMethod,
+  type Wave4ProjectMethod,
   validateBusiness3,
   validateStartupFailure,
   validateV2,
@@ -343,6 +345,7 @@ export abstract class MainlineReplyReceiver {
   abstract diagnostic(): Readonly<MainlineReplyDiagnostic>
 }
 export type MainlineMethod =
+  | Wave4ProjectMethod
   | 'project.catalog'
   | 'project.create'
   | 'project.example.create'
@@ -1275,6 +1278,7 @@ export class EngineSupervisor {
           recoveryCurrent?.()
           const session = this.supervisor.#mainlineReady(record)
           if (
+            !isWave4ProjectMethod(method) &&
             ![
               'project.catalog',
               'project.create',
@@ -1317,7 +1321,8 @@ export class EngineSupervisor {
             budget.beforeArguments(params)
             if (!validateBusiness3('params_' + method, params)) throw invalid()
             if (
-              (method === 'project.read' ||
+              (isWave4ProjectMethod(method) ||
+                method === 'project.read' ||
                 method === 'project.draft.save' ||
                 method === 'project.ownership.detail' ||
                 method === 'project.management.read' ||

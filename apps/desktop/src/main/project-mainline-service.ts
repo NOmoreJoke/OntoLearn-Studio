@@ -3,6 +3,8 @@ import { performance } from 'node:perf_hooks'
 import { setTimeout as delay } from 'node:timers/promises'
 import {
   ontologyTurtleImportCheckArgsSchema,
+  type RunBeforeCommitArgs,
+  type RunBeforeCommitResultDTO,
   safeError,
   type AgentBeforeCommitArgs,
   type AgentBeforeCommitResultDTO,
@@ -44,7 +46,11 @@ import {
   type QualityJobInputDTO,
   type QualityRunReceiptDTO,
 } from '@ontolearn/contracts'
-import { validateBusiness3 } from '../../../../packages/contracts/src/v2'
+import {
+  isWave4ProjectMethod,
+  validateBusiness3,
+  type Wave4ProjectMethod,
+} from '../../../../packages/contracts/src/v2'
 import {
   EngineError,
   MainlineProjectTransport,
@@ -95,6 +101,13 @@ const invalid = () =>
   new EngineError({
     code: 'INVALID_STATE',
     messageKey: 'protocol.invalidState',
+    params: {},
+    retryable: false,
+  })
+const unsupportedWave4 = () =>
+  new EngineError({
+    code: 'UNSUPPORTED_CAPABILITY',
+    messageKey: 'capability.unsupported',
     params: {},
     retryable: false,
   })
@@ -544,7 +557,10 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   }
   async #selectedProjectRequest<T>(
     method:
-      'project.ontology.export' | 'project.ontology.import.check' | 'project.agent.before_commit',
+      | 'project.ontology.export'
+      | 'project.ontology.import.check'
+      | 'project.agent.before_commit'
+      | Wave4ProjectMethod,
     args: RecordValue,
   ): Promise<T> {
     const current = this.#current()
@@ -553,7 +569,16 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     const guard = this.#selectedProjectGuard(current, client)
     if (!guard() || ('projectId' in args && args.projectId !== projectId)) throw denied()
     const params = { ...args, projectId }
-    if (!validateBusiness3('params_' + method, params)) throw invalid()
+    if (isWave4ProjectMethod(method)) {
+      const budget = this.supervisor.queryReadBudget(current.owner)
+      const finish = budget.beginConsumerRequest()
+      try {
+        budget.beforeArguments(params)
+        if (!validateBusiness3('params_' + method, params)) throw invalid()
+      } finally {
+        finish()
+      }
+    } else if (!validateBusiness3('params_' + method, params)) throw invalid()
     const value = await this.#call<T>(client, method, params)
     if (!guard()) throw denied()
     if (!validateBusiness3('result_' + method, value)) throw invalid()
@@ -580,6 +605,169 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     args: AgentBeforeCommitArgs,
   ): Promise<BridgeResult<AgentBeforeCommitResultDTO>> {
     return this.#run(() => this.#selectedProjectRequest('project.agent.before_commit', args))
+  }
+  recordRunBeforeCommit(
+    args: RunBeforeCommitArgs,
+  ): Promise<BridgeResult<RunBeforeCommitResultDTO>> {
+    return this.#run(() => this.#selectedProjectRequest('project.run.before_commit', args))
+  }
+  #wave4Request<Output>(
+    method: Exclude<Wave4ProjectMethod, 'project.run.before_commit'>,
+    args: RecordValue,
+  ): Promise<BridgeResult<Output>> {
+    return this.#run(async () => {
+      if (
+        !args ||
+        typeof args !== 'object' ||
+        Array.isArray(args) ||
+        Object.hasOwn(args, 'projectId')
+      )
+        throw invalid()
+      if (method === 'project.mapping.source.select' && !Object.hasOwn(args, 'selectionId')) {
+        this.#checkWave4Picker('params_project.mapping.source.select', args)
+      }
+      return this.#selectedProjectRequest(method, args)
+    })
+  }
+  #checkWave4Picker(schema: string, args: RecordValue): never {
+    const current = this.#current()
+    if (!this.#selectedProjectGuard(current, this.#client())()) throw denied()
+    const params =
+      schema === 'params_project.mapping.source.select'
+        ? { ...args, projectId: current.project.projectId }
+        : args
+    if (!validateBusiness3(schema, params)) throw invalid()
+    throw unsupportedWave4()
+  }
+  selectMappingSource(
+    args: Parameters<MainlineProjectBridge['selectMappingSource']>[0],
+  ): ReturnType<MainlineProjectBridge['selectMappingSource']> {
+    return this.#wave4Request('project.mapping.source.select', args)
+  }
+  previewMapping(
+    args: Parameters<MainlineProjectBridge['previewMapping']>[0],
+  ): ReturnType<MainlineProjectBridge['previewMapping']> {
+    return this.#wave4Request('project.mapping.preview', args)
+  }
+  prepareMappingCommit(
+    args: Parameters<MainlineProjectBridge['prepareMappingCommit']>[0],
+  ): ReturnType<MainlineProjectBridge['prepareMappingCommit']> {
+    return this.#wave4Request('project.mapping.prepare', args)
+  }
+  readMappingDraft(
+    args: Parameters<MainlineProjectBridge['readMappingDraft']>[0],
+  ): ReturnType<MainlineProjectBridge['readMappingDraft']> {
+    return this.#wave4Request('project.mapping.draft.read', args)
+  }
+  saveMappingDraft(
+    args: Parameters<MainlineProjectBridge['saveMappingDraft']>[0],
+  ): ReturnType<MainlineProjectBridge['saveMappingDraft']> {
+    return this.#wave4Request('project.mapping.draft.save', args)
+  }
+  runBehaviorSample(
+    args: Parameters<MainlineProjectBridge['runBehaviorSample']>[0],
+  ): ReturnType<MainlineProjectBridge['runBehaviorSample']> {
+    return this.#wave4Request('project.behavior.run', args)
+  }
+  readBehaviorRun(
+    args: Parameters<MainlineProjectBridge['readBehaviorRun']>[0],
+  ): ReturnType<MainlineProjectBridge['readBehaviorRun']> {
+    return this.#wave4Request('project.behavior.read', args)
+  }
+  cancelBehaviorRun(
+    args: Parameters<MainlineProjectBridge['cancelBehaviorRun']>[0],
+  ): ReturnType<MainlineProjectBridge['cancelBehaviorRun']> {
+    return this.#wave4Request('project.behavior.cancel', args)
+  }
+  createScenario(
+    args: Parameters<MainlineProjectBridge['createScenario']>[0],
+  ): ReturnType<MainlineProjectBridge['createScenario']> {
+    return this.#wave4Request('project.scenario.create', args)
+  }
+  copyScenario(
+    args: Parameters<MainlineProjectBridge['copyScenario']>[0],
+  ): ReturnType<MainlineProjectBridge['copyScenario']> {
+    return this.#wave4Request('project.scenario.copy', args)
+  }
+  listScenarios(
+    args: Parameters<MainlineProjectBridge['listScenarios']>[0],
+  ): ReturnType<MainlineProjectBridge['listScenarios']> {
+    return this.#wave4Request('project.scenario.list', args)
+  }
+  readScenario(
+    args: Parameters<MainlineProjectBridge['readScenario']>[0],
+  ): ReturnType<MainlineProjectBridge['readScenario']> {
+    return this.#wave4Request('project.scenario.read', args)
+  }
+  readScenarioRun(
+    args: Parameters<MainlineProjectBridge['readScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['readScenarioRun']> {
+    return this.#wave4Request('project.scenario.run.read', args)
+  }
+  startScenarioRun(
+    args: Parameters<MainlineProjectBridge['startScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['startScenarioRun']> {
+    return this.#wave4Request('project.scenario.run', args)
+  }
+  cancelScenarioRun(
+    args: Parameters<MainlineProjectBridge['cancelScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['cancelScenarioRun']> {
+    return this.#wave4Request('project.scenario.cancel', args)
+  }
+  resumeScenarioRun(
+    args: Parameters<MainlineProjectBridge['resumeScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['resumeScenarioRun']> {
+    return this.#wave4Request('project.scenario.resume', args)
+  }
+  compareScenarioRuns(
+    args: Parameters<MainlineProjectBridge['compareScenarioRuns']>[0],
+  ): ReturnType<MainlineProjectBridge['compareScenarioRuns']> {
+    return this.#wave4Request('project.scenario.compare', args)
+  }
+  deleteScenarioRun(
+    args: Parameters<MainlineProjectBridge['deleteScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['deleteScenarioRun']> {
+    return this.#wave4Request('project.scenario.run.delete', args)
+  }
+  restoreScenarioBaseline(
+    args: Parameters<MainlineProjectBridge['restoreScenarioBaseline']>[0],
+  ): ReturnType<MainlineProjectBridge['restoreScenarioBaseline']> {
+    return this.#wave4Request('project.scenario.restore', args)
+  }
+  checkProjectPackageExport(
+    args: Parameters<MainlineProjectBridge['checkProjectPackageExport']>[0],
+  ): ReturnType<MainlineProjectBridge['checkProjectPackageExport']> {
+    return this.#wave4Request('project.transfer.package.export.check', args)
+  }
+  exportProjectPackage(
+    args: Parameters<MainlineProjectBridge['exportProjectPackage']>[0],
+  ): ReturnType<MainlineProjectBridge['exportProjectPackage']> {
+    return this.#wave4Request('project.transfer.package.export', args)
+  }
+  checkProjectPackageImport(
+    args: Parameters<MainlineProjectBridge['checkProjectPackageImport']>[0],
+  ): ReturnType<MainlineProjectBridge['checkProjectPackageImport']> {
+    return this.#wave4Request('project.transfer.package.import.check', args)
+  }
+  importProjectPackage(
+    args: Parameters<MainlineProjectBridge['importProjectPackage']>[0],
+  ): ReturnType<MainlineProjectBridge['importProjectPackage']> {
+    return this.#wave4Request('project.transfer.package.import', args)
+  }
+  prepareProjectHtmlReport(
+    args: Parameters<MainlineProjectBridge['prepareProjectHtmlReport']>[0],
+  ): ReturnType<MainlineProjectBridge['prepareProjectHtmlReport']> {
+    return this.#wave4Request('project.transfer.report.prepare', args)
+  }
+  exportProjectHtmlReport(
+    args: Parameters<MainlineProjectBridge['exportProjectHtmlReport']>[0],
+  ): ReturnType<MainlineProjectBridge['exportProjectHtmlReport']> {
+    return this.#wave4Request('project.transfer.report.export', args)
+  }
+  selectTransferFile(
+    args: Parameters<MainlineProjectBridge['selectTransferFile']>[0],
+  ): ReturnType<MainlineProjectBridge['selectTransferFile']> {
+    return this.#run(() => this.#checkWave4Picker('w4.transfer.pickerArgs', args))
   }
   #selectedProjectGuard(
     current: NonNullable<OrdinaryCurrent>,
@@ -1110,7 +1298,18 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     }
   }
   previewProjectChangeset(args: MainlinePreviewArgs): Promise<BridgeResult<ChangeSetPreview>> {
-    return this.#run(() => this.#selectedCall('changeset.preview', args))
+    return this.#run(() => {
+      if (
+        args?.intent === 'change' &&
+        args.plan &&
+        Object.hasOwn(args.plan, 'mappingPreparation')
+      ) {
+        // Stage 1 resolves the preparation inside the ordinary ChangeSet transaction.
+        this.#current()
+        throw unsupportedWave4()
+      }
+      return this.#selectedCall('changeset.preview', args)
+    })
   }
   getProjectDiffPage(args: {
     previewHash: string
