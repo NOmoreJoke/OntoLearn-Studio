@@ -224,6 +224,27 @@ def verify_outbound(store, project, engine_session_id, selection_id, purpose):
         os.close(sel_fd)
 
 
+def read_report_publication(store, project, engine_session_id, selection_id):
+    """Optional receipt from the trusted Main publisher, within the same selection."""
+    try:
+        sel_fd = _open_selection(store, selection_id)
+    except StagingFault as error:
+        if error.code in ("SELECTION_NOT_FOUND", "STAGING_UNAVAILABLE"):
+            return None  # Normal exact replay after Main cleaned the selection.
+        raise
+    try:
+        name = "report-published.json"
+        try:
+            os.stat(name, dir_fd=sel_fd, follow_symlinks=False)
+        except FileNotFoundError:
+            return None
+        receipt = _strict_meta(_read_regular(sel_fd, name, 4096))
+    finally:
+        os.close(sel_fd)
+    verify_outbound(store, project, engine_session_id, selection_id, "report-html")
+    return receipt
+
+
 def write_outbound(store, selection_id, output_file, data):
     """Atomically publish staged bytes: 0o600 temp + fsync + verify + replace."""
     sel_fd = _open_selection(store, selection_id)

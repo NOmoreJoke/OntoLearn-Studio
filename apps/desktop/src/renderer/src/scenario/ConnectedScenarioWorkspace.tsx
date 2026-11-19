@@ -215,8 +215,15 @@ export function ConnectedScenarioWorkspace({
                       const scenario = await services.restore(chosen.identity)
                       current()
                       setRestoreApproved(false)
-                      setDetail({ ...detail, scenario })
+                      setDetail({ ...detail, scenario, runs: [] })
                       setRun(undefined)
+                      setDeleteApproved(false)
+                      setPicks((old) =>
+                        old.filter(
+                          (item) => item.identity.scenarioId !== scenario.identity.scenarioId,
+                        ),
+                      )
+                      setComparison(undefined)
                     })
                   }
                 >

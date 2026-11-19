@@ -379,11 +379,6 @@ def test_xlsx_sheet_detection_reparse_and_suggestions(owned):
                             "predicate": RDF_TYPE,
                             "object": "<http://www.w3.org/2002/07/owl#DatatypeProperty>",
                         },
-                        {
-                            "subject": "urn:x:equipment_name",
-                            "predicate": "urn:x:equipment_name",
-                            "object": "<urn:x:equipment_name>",
-                        },
                     ],
                     "singleValuedPredicates": [],
                     "references": [],

@@ -251,7 +251,7 @@ export function TransferWorkspace({
     setCancelled(false)
     const reply = await bridge.selectTransferFile({ purpose })
     current()
-    if (!reply.ok && reply.error.code === 'CANCELLED') {
+    if (!reply.ok && ['CANCELLED', 'PERMISSION_DENIED'].includes(reply.error.code)) {
       setCancelled(true)
       return
     }
@@ -521,7 +521,7 @@ export function TransferWorkspace({
               </>
             )}
           </fieldset>
-          {cancelled && <p role="status">已取消选择文件。</p>}
+          {cancelled && <p role="status">未完成文件选择。</p>}
           {publication && <PublicationReceipt value={publication} />}
           {error && <p role="alert">迁移操作未完成，请查看检查结果与文件回执。</p>}
           {mustReconcile && !reconciled && !busy && (

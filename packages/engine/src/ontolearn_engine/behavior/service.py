@@ -740,6 +740,7 @@ def _run(store, params, origin):
                 "runId": run_id,
                 "binding": binding,
                 "state": "candidate",
+                "eventIds": [event["id"] for event in params["events"]],
                 "versions": {
                     **versions,
                     "semanticsVersion": plan["semantics_version"],

@@ -680,6 +680,31 @@ def _report_prepare(store, params, origin, host):
     return result
 
 
+def _confirm_report_publication(store, project, origin, result):
+    try:
+        receipt = staging.read_report_publication(
+            store, project, origin["engineSessionId"], result["selectionId"]
+        )
+    except staging.StagingFault as error:
+        _staging_fault(error)
+    if receipt is None:
+        return
+    expected = {
+        "version": 1,
+        "operationId": result["operationId"],
+        "reportRef": result["reportRef"],
+        "sha256": result["publication"]["sha256"],
+        "byteLength": result["publication"]["byteLength"],
+    }
+    if receipt != expected:
+        fault("IDENTITY_CONFLICT")
+    with store._transaction():
+        store._db.execute(
+            "INSERT OR IGNORE INTO job_details VALUES(?,?,?)",
+            ("transfer-report-published:" + result["operationId"], project, canonical(expected)),
+        )
+
+
 def _report_export(store, params, origin, host):
     project = params["projectId"]
     internal = resolve_active(store, project)
@@ -704,6 +729,11 @@ def _report_export(store, params, origin, host):
             fault("IDENTITY_CONFLICT")
         result = existing["result"]
         store._valid("result_project.transfer.report.export", result)
+        if existing.get("publicationOrigin") == [
+            origin["engineSessionId"],
+            origin["hostClientId"],
+        ]:
+            _confirm_report_publication(store, project, origin, result)
         return result
     row = store._db.execute(
         "SELECT payload FROM job_details WHERE id=? AND project=?", (report_ref, project)
@@ -768,6 +798,7 @@ def _report_export(store, params, origin, host):
                 canonical(
                     {
                         "transferReportReceiptVersion": 1,
+                        "publicationOrigin": [origin["engineSessionId"], origin["hostClientId"]],
                         "requestHash": request_hash,
                         "result": result,
                     }

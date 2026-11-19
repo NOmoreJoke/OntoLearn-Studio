@@ -8,6 +8,8 @@ true staleness. The HTML renderer escapes every dynamic string as plain text
 CSP - no external resources, no inline script.
 """
 
+import base64
+import hashlib
 import html
 import json
 from datetime import UTC, datetime
@@ -395,16 +397,24 @@ def render_html(report):
     unresolved = (
         f"<ul>{lines(report['unresolved'])}</ul>" if report["unresolved"] else "<p>暂无。</p>"
     )
-    return (
-        '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        f"<title>{esc(report['title'])}</title>"
-        "<style>body{font-family:system-ui,sans-serif;max-width:60em;margin:2em auto;"
+    style = (
+        "body{font-family:system-ui,sans-serif;max-width:60em;margin:2em auto;"
         "padding:0 1em;color:#1a1a1a}h1{font-size:1.5em}h2{border-bottom:1px solid #ddd;"
         "padding-bottom:.2em;margin-top:1.6em}table{border-collapse:collapse;width:100%;"
         "margin:.6em 0;font-size:.9em}th,td{border:1px solid #ddd;padding:.35em .5em;"
         "text-align:left;word-break:break-all}th{background:#f6f6f6}code{font-size:.9em}"
-        ".meta{color:#666;font-size:.9em}</style></head><body>"
+        ".meta{color:#666;font-size:.9em}"
+    )
+    style_digest = base64.b64encode(hashlib.sha256(style.encode("ascii")).digest()).decode("ascii")
+    return (
+        '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        f"<title>{esc(report['title'])}</title>"
+        '<meta http-equiv="Content-Security-Policy" content="'
+        f"default-src 'none'; style-src 'sha256-{style_digest}'; "
+        "base-uri 'none'; form-action 'none'"
+        '">'
+        f"<style>{style}</style></head><body>"
         f"<h1>{esc(report['title'])}</h1>"
         f'<p class="meta">项目 {esc(report["projectId"])} · 版本 {report["projectRevision"]} · '
         f"生成于 {esc(report['generatedAt'])} · 独立迁移成功 {independent} 项</p>"

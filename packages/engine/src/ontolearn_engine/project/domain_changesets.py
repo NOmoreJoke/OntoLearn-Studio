@@ -581,7 +581,12 @@ def preview_changeset(
             fail("REVISION_CONFLICT", expected=base, actual=store.revision(internal))
         transactions = ProjectTransactions(store)
         conflict = None
-        if request["intent"] == "change" and set(request["plan"]) == {"mappingPreparation"}:
+        mapping_preparation = (
+            request["plan"]["mappingPreparation"]
+            if request["intent"] == "change" and set(request["plan"]) == {"mappingPreparation"}
+            else None
+        )
+        if mapping_preparation is not None:
             # W4-A1: the mutually exclusive mapping branch. Resolve the trusted
             # preparation evidence into the ordinary T01 storage plan, then run
             # the exact same preview/verification machinery as manual plans -
@@ -725,6 +730,8 @@ def preview_changeset(
         if saved is None or saved["project"] != project or saved["payload"] != canonical(envelope):
             fail("INVALID_STATE")
         _verify_plan(store, project, saved, json.loads(saved["payload"]))
+        if mapping_preparation is not None:
+            mapping_service.bind_changeset_plan(store, project, ref, mapping_preparation)
         hook("changeset_plan")
         store._valid("result_changeset.preview", result)
         return result
@@ -1134,8 +1141,10 @@ def commit(store, job, context, hook):
     # Same outer _application transaction as the marker above: the staged
     # agent full-assistance marking for this exact ChangeSet either lands
     # with the committed domain state or rolls back with it (B05).
+    from ontolearn_engine.mapping import service as mapping_service
     from ontolearn_engine.project import learning_agent
 
+    mapping_service.record_changeset_execution(store, job, preview, marker)
     learning_agent.apply_pending_assistance(
         store, job["projectId"], job["operationId"], preview.base
     )

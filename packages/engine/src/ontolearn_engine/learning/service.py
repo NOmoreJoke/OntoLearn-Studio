@@ -117,7 +117,15 @@ def _normalise(value: object, field: str = "") -> object:
         return {key: _normalise(item, key) for key, item in value.items()}
     if isinstance(value, list):
         items = [_normalise(item) for item in value]
-        if field in {"facts", "assertedFacts", "inferred", "addedTriples", "inputs"}:
+        if field in {
+            "facts",
+            "assertedFacts",
+            "inferred",
+            "addedTriples",
+            "inputs",
+            "ownership",
+            "identities",
+        }:
             return sorted(items, key=_canonical)
         return items
     return value

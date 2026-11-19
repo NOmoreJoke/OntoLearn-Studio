@@ -787,11 +787,39 @@ export class ProjectMainlineService implements MainlineProjectBridge {
         if (!outbound) return value
         const result = value as PackageExportResultDTO | HtmlReportExportResultDTO
         if (result.publication.state !== 'published') return value
-        const publication = await this.#hostSelections.publish(
+        let publication = await this.#hostSelections.publish(
           selection,
           result.publication,
           selectedGuard,
         )
+        if (
+          method === 'project.transfer.report.export' &&
+          publication.state === 'published' &&
+          publication.durability === 'confirmed' &&
+          !publication.postPublicationError &&
+          selectedGuard()
+        ) {
+          const { reportRef, operationId } = result as HtmlReportExportResultDTO
+          try {
+            await this.#hostSelections.acknowledgeReportPublication(
+              selection,
+              reportRef,
+              operationId,
+              publication,
+            )
+            // Exact replay lets the Engine record native publication alongside
+            // its staged-byte receipt before Main retires the selection.
+            const acknowledged = await this.#checkedSelectedCall<HtmlReportExportResultDTO>(
+              client,
+              method,
+              captured,
+              selectedGuard,
+            )
+            if (stable(acknowledged) !== stable(result)) throw invalid()
+          } catch {
+            publication = { ...publication, postPublicationError: true }
+          }
+        }
         void this.#hostSelections.retire(selection)
         released = true
         const cleanup = await this.#hostSelections.release(selection)
@@ -876,23 +904,21 @@ export class ProjectMainlineService implements MainlineProjectBridge {
       label: null,
     }
     this.#validateSelectedParams('project.run.before_commit', before, current)
-    const checkpoint = await this.#checkedSelectedCall<RunBeforeCommitResultDTO>(
-      client,
-      'project.run.before_commit',
-      before,
-      guard,
-    )
+    if (!guard()) throw denied()
+    const checkpoint = await client.requestRunCheckpoint(before)
+    if (!guard()) throw denied()
+    if (!validateBusiness3('result_project.run.before_commit', checkpoint)) throw invalid()
+    const receipt = checkpoint as RunBeforeCommitResultDTO
     if (
-      checkpoint.projectId !== before.projectId ||
-      checkpoint.operationId !== before.operationId ||
-      checkpoint.domainRevision !== baseRevision
+      receipt.projectId !== before.projectId ||
+      receipt.operationId !== before.operationId ||
+      receipt.domainRevision !== baseRevision
     )
       throw invalid()
     const value = await this.#checkedSelectedCall<Output>(client, method, params, guard)
     if (
       domain === 'scenario' &&
-      (value as { beforeRunCheckpointRef: string }).beforeRunCheckpointRef !==
-        checkpoint.checkpointRef
+      (value as { beforeRunCheckpointRef: string }).beforeRunCheckpointRef !== receipt.checkpointRef
     )
       throw invalid()
     return value

@@ -267,9 +267,16 @@ def _ontology_candidates(state):
         if not isinstance(value, dict):
             continue
         for triple in value.get("triples", []):
-            predicate = triple["predicate"]
-            if triple["subject"] != predicate:
+            if triple["predicate"] != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" or (
+                triple["object"]
+                not in (
+                    "<http://www.w3.org/2002/07/owl#DatatypeProperty>",
+                    "<http://www.w3.org/2002/07/owl#ObjectProperty>",
+                    "<http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>",
+                )
+            ):
                 continue
+            predicate = triple["subject"]
             # The property's own local name (after the last #, / or urn ':'),
             # the only basis the frozen exact-field-name suggestion allows.
             local = re.split(r"[#/:]", predicate)[-1]
@@ -763,6 +770,57 @@ def resolve_preparation(store, project, host_client_id, engine_session_id, plan)
     if fresh.issues:
         _value_invalid(record["selectionId"], fresh.issues)
     return effective
+
+
+def bind_changeset_plan(store, project, plan_ref, preparation):
+    """Keep the verified mapping preparation beside its immutable formal plan."""
+    store._db.execute(
+        "INSERT OR IGNORE INTO job_details VALUES(?,?,?)",
+        ("mapping-plan:" + plan_ref, project, canonical(preparation)),
+    )
+
+
+def record_changeset_execution(store, job, preview, marker):
+    """Store evidence atomically with the successful formal ChangeSet Job."""
+    project = job["projectId"]
+    binding = store._db.execute(
+        "SELECT payload FROM job_details WHERE id=? AND project=?",
+        ("mapping-plan:" + job["input"]["preparedPlanRef"], project),
+    ).fetchone()
+    if binding is None:
+        return
+    preparation = json.loads(binding[0])
+    record = store._db.execute(
+        "SELECT payload FROM job_details WHERE id=? AND project=?",
+        (preparation["preparationRef"], project),
+    ).fetchone()
+    if record is None:
+        fault("INVALID_STATE")
+    prepared = json.loads(record[0])
+    if prepared["resultId"] != preparation["resultId"] or prepared["baseRevision"] != preview.base:
+        fault("INVALID_STATE")
+    operation_id = job["operationId"]
+    definition = prepared["plan"]["definitions"][0]
+    store._db.execute(
+        "INSERT INTO job_details VALUES(?,?,?)",
+        (
+            "mapping-run:" + operation_id,
+            project,
+            canonical(
+                {
+                    "mappingRunVersion": 1,
+                    "operationId": operation_id,
+                    "resultId": preparation["resultId"],
+                    "mappingId": definition["id"],
+                    "definitionHash": digest(definition["value"]),
+                    "beforeSnapshotId": marker["before_snapshot"],
+                    "afterSnapshotId": marker["after_snapshot"],
+                    "revision": marker["revision"],
+                    "noChanges": not preview.diff,
+                }
+            ),
+        ),
+    )
 
 
 def dispatch(store, method, params, origin):

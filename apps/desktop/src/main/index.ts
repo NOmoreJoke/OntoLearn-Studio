@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, session, Menu, dialog } from 'electron'
 import { createHash } from 'node:crypto'
-import { isAbsolute, join, resolve } from 'node:path'
+import { basename, isAbsolute, join, resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { z } from 'zod'
 import { pathToFileURL } from 'node:url'
@@ -506,9 +506,47 @@ void app.whenReady().then(async () => {
     agents?.refresh(true)
     models?.selectProject(projectId)
   })
+  // Playwright supplies this finite queue only on an explicitly isolated profile.
+  // The entries replace dialog results; all selection validation and IO stay in Main.
+  const pickerSchema = z
+    .array(
+      z
+        .object({
+          purpose: z.enum(['mapping-source', 'package-export', 'package-import', 'report-html']),
+          filePath: z.string().max(4096).refine(isAbsolute).nullable(),
+        })
+        .strict(),
+    )
+    .max(16)
+  type PickerEntry = z.infer<typeof pickerSchema>[number]
+  let pickerQueue: PickerEntry[] | undefined
+  const pickerInput = process.env.ONTOLEARN_E2E_W4_PICKERS
+  const profilePath = app.getPath('userData')
+  if (
+    !fixture &&
+    pickerInput !== undefined &&
+    /^ontolearn-e2e-profile-[A-Za-z0-9]{6}$/.test(basename(profilePath)) &&
+    process.argv.filter((arg) => /^--user-data-dir(?:=|$)/.test(arg)).length === 1 &&
+    process.argv.includes('--user-data-dir=' + profilePath)
+  ) {
+    // Malformed, exhausted or out-of-order queues fail closed without opening a dialog.
+    pickerQueue = []
+    try {
+      if (pickerInput.length <= 65536) pickerQueue = pickerSchema.parse(JSON.parse(pickerInput))
+    } catch {
+      // Treat an invalid queue as a cancelled selection.
+    }
+  }
+  const pickForE2e = (purpose: PickerEntry['purpose']) => {
+    const entry = pickerQueue?.shift()
+    return entry?.purpose === purpose && entry.filePath
+      ? { filePath: entry.filePath }
+      : { canceled: true as const }
+  }
   if (!fixture && supervisor.profile === 'business3')
     projects = new ProjectMainlineService(supervisor, tasks, attachCurrentTaskView, {
       pickMappingSource: async () => {
+        if (pickerQueue) return pickForE2e('mapping-source')
         const options: Electron.OpenDialogOptions = {
           title: '选择映射数据源',
           properties: ['openFile'],
@@ -522,6 +560,7 @@ void app.whenReady().then(async () => {
           : { filePath: result.filePaths[0]! }
       },
       pickTransferFile: async (purpose) => {
+        if (pickerQueue) return pickForE2e(purpose)
         const options = {
           filters:
             purpose === 'report-html'

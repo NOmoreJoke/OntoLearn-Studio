@@ -325,6 +325,21 @@ export class HostSelections {
     }
   }
 
+  async acknowledgeReportPublication(
+    record: SelectionRecord,
+    reportRef: string,
+    operationId: string,
+    { sha256, byteLength }: FileDigest,
+  ) {
+    if (record.purpose !== 'report-html') rejectSelection()
+    await this.#checkDirectory(record.directory)
+    await atomicPrivateWrite(
+      record.directory.path,
+      'report-published.json',
+      JSON.stringify({ version: 1, reportRef, operationId, sha256, byteLength }),
+    )
+  }
+
   retire(record: SelectionRecord): Promise<Cleanup> {
     this.#records.delete(record.selectionId)
     record.controller.abort()
