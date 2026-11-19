@@ -134,7 +134,11 @@ test('W3b FR-202/203/400 · G-base 视图、已提交 Turtle 往返、模板草�
 
     await browse.getByTestId('ontology-view-table').click()
     await browse.getByLabel('查找概念').fill('Alarm')
-    await browse.getByRole('button', { name: '查看 Alarm', exact: true }).click()
+    await browse
+      .locator('tbody tr', { has: page.locator('td', { hasText: /^类$/ }) })
+      .first()
+      .getByRole('button', { name: /^查看/ })
+      .click()
     const selection = browse.getByRole('article', { name: '选中对象详情' })
     await expect(selection.locator('code')).toHaveText(learning + 'Alarm')
     const sidebar = page.getByTestId('agent-panel').getByTestId('agent-sidebar')
