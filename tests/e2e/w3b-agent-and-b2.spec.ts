@@ -191,7 +191,15 @@ test('W3b FR-202/203/400 · G-base 视图、已提交 Turtle 往返、模板草�
     await ontology.getByRole('button', { name: '新建概念', exact: true }).click()
     await page.getByTestId('project-name').fill('W3b Turtle 往返目标')
     await page.getByTestId('project-create').click()
-    await expect.poll(async () => (await activeProject(page)).projectId).not.toBe(example.projectId)
+    await expect
+      .poll(async () => {
+        const active = take(await page.evaluate(() => window.ontolearn!.getActiveProject()))
+        return active && active.projectId !== example.projectId ? active.projectId : null
+      })
+      .not.toBeNull()
+    await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
+      '项目已创建并打开',
+    )
     const blank = await activeProject(page)
     expect(blank.projectRevision).toBe(0)
     await openWorkspace(page, '本体构建')
@@ -223,6 +231,10 @@ test('W3b FR-202/203/400 · G-base 视图、已提交 Turtle 往返、模板草�
     ).toBe(true)
 
     await openWorkspace(page, '本体查询')
+    const queryWorkspace = page.getByRole('region', { name: '本体查询工作台', exact: true })
+    await queryWorkspace
+      .getByRole('button', { name: '读取项目与持久工作草稿', exact: true })
+      .click()
     const templates = page.getByTestId('query-template-list')
     await expect(templates).toContainText('模板依据当前已读取的本体推导')
     await expect(templates).toContainText(learning + 'Alarm')
