@@ -1,3 +1,4 @@
+import { type ApprovedBodyRequest } from './pre-encoded-body'
 import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import { safeError, type SafeError } from '@ontolearn/contracts'
@@ -370,6 +371,12 @@ export class GatewayApplication {
     const entry = this.selected.get(selectionId)
     if (entry) this.core.releaseMaterial(entry.materialId)
     this.selected.delete(selectionId)
+  }
+  /** Main-owned Agent egress; project ownership and the source lifetime stay scoped here. */
+  invokeApprovedBody(input: ApprovedBodyRequest, signal: AbortSignal, finalContext: () => boolean) {
+    this.open()
+    if (input.projectId !== this.source.projectId) throw new GatewayFailure('SCOPE_EXCEEDED')
+    return this.core.invokeApprovedBody(input, signal, () => !this.closed && finalContext())
   }
   close(): void {
     if (this.closed) return

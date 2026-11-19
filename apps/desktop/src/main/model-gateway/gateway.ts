@@ -15,6 +15,7 @@ import {
   type EndpointPolicy,
   type FailureCode,
 } from './policy'
+import { approvedBodySchema, MAX_BODY_BYTES, readBodyFields } from './pre-encoded-body'
 import { sendOnce } from './transport'
 import { boundedWait } from './await-boundary'
 
@@ -255,9 +256,19 @@ export class ModelGatewayCore {
     }
   }
 
-  async invoke(
+  invokeApprovedBody(input: unknown, signal?: AbortSignal, finalContext?: () => boolean) {
+    return this.send(input, signal, true, finalContext)
+  }
+
+  invoke(input: unknown, cancellation?: AbortSignal) {
+    return this.send(input, cancellation)
+  }
+
+  private async send(
     input: unknown,
     cancellation?: AbortSignal,
+    preEncoded = false,
+    finalContext?: () => boolean,
   ): Promise<{ ok: true; text: string } | { ok: false; code: FailureCode }> {
     let metadata: Omit<AuditRecord, 'decision' | 'event' | 'reason' | 'time'> | undefined
     let dispatched = false
@@ -266,11 +277,25 @@ export class ModelGatewayCore {
     cancellation?.addEventListener('abort', cancel, { once: true })
     if (cancellation?.aborted) cancel()
     try {
-      const value = parse(invocationSchema, input)
+      const approved = preEncoded ? parse(approvedBodySchema, input) : undefined
+      const value = approved ?? parse(invocationSchema, input)
+      if (approved && this.mode(value.projectId) === 'local') throw new GatewayFailure('LOCAL_ONLY')
+      const ids = 'parts' in value ? value.parts.map((part) => part.materialId) : value.materials
       const config = this.configs.get(value.configId)
       if (!config) throw new GatewayFailure('CONFIGURATION_CHANGED')
-      const parts = this.resolveMaterials(value.projectId, value.materials)
+      if (approved && new Set(ids).size !== ids.length) throw new GatewayFailure('SCOPE_EXCEEDED')
+      if (approved && Buffer.byteLength(approved.body, 'utf8') > MAX_BODY_BYTES)
+        throw new GatewayFailure('INVALID_INPUT')
+      const parts = this.resolveMaterials(value.projectId, ids)
       const scopes = [...new Set(parts.flatMap((part) => part.scopes))].sort()
+      if (approved && approved.configVersion !== config.version)
+        throw new GatewayFailure('CONFIGURATION_CHANGED')
+      if (
+        approved &&
+        (scopes.length !== approved.scopes.length ||
+          scopes.some((scope) => !approved.scopes.includes(scope)))
+      )
+        throw new GatewayFailure('SCOPE_EXCEEDED')
       // Authorization and durable audit share the same bounded scope vocabulary.
       // An oversized request has no valid audit metadata; never truncate its provenance.
       parse(scopesSchema, scopes)
@@ -288,6 +313,9 @@ export class ModelGatewayCore {
       const guard = () => {
         if (cancellation?.aborted) throw new GatewayFailure('CANCELLED')
         if (this.mode(value.projectId) === 'local') throw new GatewayFailure('LOCAL_ONLY')
+        if (finalContext && !finalContext()) throw new GatewayFailure('CANCELLED')
+        if (approved && this.configs.get(config.id) !== config)
+          throw new GatewayFailure('CONFIGURATION_CHANGED')
         if (!grant || this.grants.get(value.grantId) !== grant)
           throw new GatewayFailure('AUTHORIZATION_REQUIRED')
         this.checkPreview(grant)
@@ -297,7 +325,7 @@ export class ModelGatewayCore {
           grant.purpose !== value.purpose
         )
           throw new GatewayFailure('AUTHORIZATION_REQUIRED')
-        const currentParts = this.resolveMaterials(value.projectId, value.materials)
+        const currentParts = this.resolveMaterials(value.projectId, ids)
         if (
           currentParts.some((part, i) => part !== parts[i]) ||
           parts.some((part) => part.scopes.some((scope) => !grant.scopes.includes(scope)))
@@ -305,13 +333,33 @@ export class ModelGatewayCore {
           throw new GatewayFailure('SCOPE_EXCEEDED')
       }
       guard()
-      // The entire body is assembled from copied immutable main-owned text. No raw
-      // caller headers/messages, lazy getters, toJSON or provider callback can add bytes.
-      const body = JSON.stringify({
-        model: config.model,
-        parts: parts.map(({ kind, text }) => ({ kind, text })),
-      })
-      if (Buffer.byteLength(body) > 256 * 1024) throw new GatewayFailure('INVALID_INPUT')
+      if (approved) {
+        const fields = readBodyFields(approved.body, config.model)
+        for (const [index, { path, kind }] of approved.parts.entries()) {
+          const field = fields.get(path)
+          const derivedKind =
+            field &&
+            path.endsWith('.content') &&
+            ((field.kind === 'tool' && kind === 'error') ||
+              (field.kind === 'history' && path !== 'messages.0.content' && kind === 'summary'))
+          if (
+            !field ||
+            (field.kind !== kind && !derivedKind) ||
+            parts[index].kind !== kind ||
+            parts[index].text !== field.text
+          )
+            throw new GatewayFailure('SCOPE_EXCEEDED')
+          fields.delete(path)
+        }
+        if (fields.size) throw new GatewayFailure('SCOPE_EXCEEDED')
+      }
+      const body =
+        approved?.body ??
+        JSON.stringify({
+          model: config.model,
+          parts: parts.map(({ kind, text }) => ({ kind, text })),
+        })
+      if (Buffer.byteLength(body) > MAX_BODY_BYTES) throw new GatewayFailure('INVALID_INPUT')
       if (this.pending.size >= 4) throw new GatewayFailure('MODEL_UNAVAILABLE')
       this.pending.set(controller, {
         projectId: value.projectId,
@@ -362,7 +410,7 @@ export class ModelGatewayCore {
         if (response.status >= 200 && response.status < 300)
           return { ok: true, text: response.body }
         // Never include upstream error bodies in returned errors, logs, or retries.
-        if (attempt === 0 && [429, 503].includes(response.status)) continue
+        if (!approved && attempt === 0 && [429, 503].includes(response.status)) continue
         throw new GatewayFailure('MODEL_UNAVAILABLE')
       }
       throw new GatewayFailure('MODEL_UNAVAILABLE')

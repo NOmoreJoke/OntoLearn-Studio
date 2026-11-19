@@ -91,7 +91,7 @@ export function encodeChatRequest(input: unknown) {
     response_format: { type: 'json_object' as const },
     ...(availableTools.length ? { tools: toolDefinitions(availableTools) } : {}),
   }
-  if (Buffer.byteLength(JSON.stringify(body), 'utf8') > 524288) {
+  if (Buffer.byteLength(JSON.stringify(body), 'utf8') > 256 * 1024) {
     throw new AgentError('BUDGET_EXCEEDED')
   }
   return body

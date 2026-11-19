@@ -26,6 +26,8 @@ import { contentSecurityPolicy } from '../csp'
 import { hardenWebContents, securePreferences } from './window-security'
 import { installWindowRecovery } from './window-recovery'
 import { installViewNavigation } from './view-navigation'
+import { AgentHostComposition } from './agent/host-composition'
+import { AgentModeStore } from './agent/agent-mode-store'
 import { registerDesktopIpc } from './desktop-ipc'
 import { convergeStartupLibraryFailure } from './startup-library-failure'
 import { validateV2 } from '../../../../packages/contracts/src/v2'
@@ -49,6 +51,7 @@ app.on('before-quit', (event) => {
   event.preventDefault()
   if (quitting) return
   quitting = true
+  agents?.refresh(true)
   void (async () => {
     const modelShutdown = finishModelShutdown().catch(() => {})
     await ordinary?.dispose().catch(() => {})
@@ -62,6 +65,7 @@ app.on('before-quit', (event) => {
     }
     try {
       await Promise.all([supervisor.stopAndWait(), modelShutdown])
+      agents?.close()
       quitBarrier = true
       app.quit()
     } catch {
@@ -81,6 +85,7 @@ let ordinary: OrdinaryProjectSource | undefined
 let queries: QueryDefinitionService | undefined
 let projects: ProjectMainlineService | undefined
 let library: LibraryLocationService | undefined
+let agents: AgentHostComposition | undefined
 let models: ModelGatewayService | undefined
 let modelInitialization: Promise<void> | undefined
 let modelCiphertexts: PrivateCiphertextRepository | undefined
@@ -497,7 +502,10 @@ void app.whenReady().then(async () => {
       return
     }
   }
-  tasks = new TaskService(supervisor, (projectId) => models?.selectProject(projectId))
+  tasks = new TaskService(supervisor, (projectId) => {
+    agents?.refresh(true)
+    models?.selectProject(projectId)
+  })
   if (!fixture && supervisor.profile === 'business3')
     projects = new ProjectMainlineService(supervisor, tasks, attachCurrentTaskView, {
       managementJournalPath: join(
@@ -535,6 +543,7 @@ void app.whenReady().then(async () => {
       status: () => supervisor.libraryStatus(),
       freezeAdmission: () => {
         supervisor.freezeAdmission()
+        agents?.refresh(true)
         models?.selectProject(null)
       },
       unfreezeAdmission: () => {
@@ -613,15 +622,38 @@ void app.whenReady().then(async () => {
   // A quit that began during the startup awaits above must not build a late
   // first window while the before-quit shutdown is already converging.
   if (quitting || quitBarrier) return
+  const replies = projects ? supervisor.mainlineReplyReceiver() : undefined
+  if (projects && replies) {
+    const selectedProjects = projects
+    const modes = new AgentModeStore(join(app.getPath('userData'), 'agent', 'modes.json'))
+    const host = new AgentHostComposition({
+      modes,
+      projects: selectedProjects,
+      tasks,
+      replies,
+      selection: () => selectedProjects.source.current(),
+      blocked: () =>
+        quitting ||
+        !!(
+          library?.switching ||
+          selectedProjects.managementBlocked ||
+          selectedProjects.restoreBlocked
+        ),
+      models: () => models,
+    })
+    agents = host
+    selectedProjects.source.observe(() => host.refresh())
+  }
   registerDesktopIpc({
     ipcMain,
     trusted,
     tasks,
     supervisor,
     projects,
-    replies: projects ? supervisor.mainlineReplyReceiver() : undefined,
+    replies,
     library,
     getModels: () => (quitting || quitBarrier ? undefined : models),
+    getAgent: () => (quitting || quitBarrier ? undefined : agents),
   })
   createWindow()
   // Local startup and recovery do not wait for platform secure storage.

@@ -1,17 +1,13 @@
 import type { IpcMain, IpcMainInvokeEvent } from 'electron'
 import { randomUUID } from 'node:crypto'
 import {
-  agentIpcArgumentSchemas,
-  internalError,
   mainlineDeliveryAckSchema,
   modelGatewayError,
   modelInvalidRequestError,
   type ModelMethod,
   safeError,
   type AgentBridge,
-  type AgentContextDTO,
   type AgentIpcMap,
-  type AgentStateDTO,
   type DesktopIpcChannel,
   type DesktopIpcHandlers,
   type DesktopIpcMap,
@@ -22,7 +18,8 @@ import type { EngineSupervisor, MainlineReplyReceiver, MainlineReplyReceipt } fr
 import type { TaskService } from './task-service'
 import type { LibraryLocationService } from './library-location-service'
 import { validateModelParams } from '@ontolearn/contracts/v2'
-import type { ZodType } from 'zod'
+import { registerAgentIpc } from './agent/agent-ipc'
+import type { AgentHostComposition } from './agent/host-composition'
 import { unavailableModelStatus, type ModelGatewayService } from './model-gateway/model-service'
 
 export type DesktopIpcDependencies = {
@@ -49,7 +46,10 @@ export type DesktopIpcDependencies = {
   }
   replies?: MainlineReplyReceiver
   library?: LibraryLocationService
-  getAgent?: () => AgentBridge | undefined
+  getAgent?: () =>
+    | (AgentBridge &
+        Partial<Pick<AgentHostComposition, 'observeDraftPreview' | 'observeDraftConfirmation'>>)
+    | undefined
   getModels?: () => Pick<ModelGatewayService, 'handle'> | undefined
 }
 
@@ -99,127 +99,14 @@ export function registerDesktopIpc({
         ? { ok: true, data: unavailableModelStatus() }
         : { ok: false, error: modelGatewayError('MODEL_UNAVAILABLE') }
     })
-  const unavailable = (code: 'MODEL_UNAVAILABLE' | 'TOOL_UNAVAILABLE') => ({
-    ok: false as const,
-    error: {
-      code,
-      messageKey: code === 'MODEL_UNAVAILABLE' ? 'agent.modelUnavailable' : 'agent.toolUnavailable',
-      params: {},
-      retryable: false,
-    },
+  registerAgentIpc({
+    ipcMain,
+    trusted,
+    getAgent,
+    switching: () => !!library?.switching,
+    blocked: () => !!(projects?.managementBlocked || projects?.restoreBlocked),
   })
-  const registerAgent = <Channel extends keyof AgentIpcMap>(
-    channel: Channel,
-    schema: ZodType<AgentIpcMap[Channel]['args'][0]>,
-    handle: (
-      service: AgentBridge | undefined,
-      args: AgentIpcMap[Channel]['args'][0],
-    ) => AgentIpcMap[Channel]['result'] | Promise<AgentIpcMap[Channel]['result']>,
-    blockedDuringRecovery = false,
-  ): void => {
-    ipcMain.handle(channel, async (event, ...raw: unknown[]) => {
-      if (
-        !trusted(event) ||
-        library?.switching ||
-        (blockedDuringRecovery && (projects?.managementBlocked || projects?.restoreBlocked))
-      )
-        return permission()
-      const parsed = schema.safeParse(raw[0])
-      if (raw.length > 1 || !parsed.success) return { ok: false, error: modelInvalidRequestError() }
-      try {
-        return await handle(getAgent?.(), parsed.data)
-      } catch {
-        return { ok: false, error: internalError }
-      }
-    })
-  }
-  registerAgent('agent:context', agentIpcArgumentSchemas['agent:context'], (agent, args) => {
-    if (agent) return agent.getAgentContext(args)
-    const data: AgentContextDTO = {
-      projectId: null,
-      projectRevision: null,
-      inputSnapshotId: null,
-      scopeRef: null,
-      module: args?.module ?? 'learn',
-      mode: 'tutor',
-      selectedObjectIds: [],
-      privacy: 'local',
-      modelReady: false,
-      capabilities: {
-        connection: 'not-run',
-        structuredOutput: 'not-run',
-        toolRoundTrip: 'not-run',
-        mode: 'unverified',
-      },
-      configurations: [],
-    }
-    return { ok: true, data }
-  })
-  registerAgent(
-    'agent:set-mode',
-    agentIpcArgumentSchemas['agent:set-mode'],
-    (agent, args) => agent?.setAgentMode(args) ?? unavailable('TOOL_UNAVAILABLE'),
-    true,
-  )
-  registerAgent(
-    'agent:dispatch',
-    agentIpcArgumentSchemas['agent:dispatch'],
-    (agent, args) => agent?.dispatchAgentQuestion(args) ?? unavailable('MODEL_UNAVAILABLE'),
-    true,
-  )
-  registerAgent('agent:state', agentIpcArgumentSchemas['agent:state'], (agent, args) => {
-    if (agent) return agent.getAgentState(args)
-    const data: AgentStateDTO = {
-      operationId: null,
-      exchangeId: null,
-      status: 'idle',
-      context: null,
-      receipts: [],
-      retainedQuestion: null,
-      answerText: null,
-      failureCode: null,
-    }
-    return { ok: true, data }
-  })
-  registerAgent(
-    'agent:cancel',
-    agentIpcArgumentSchemas['agent:cancel'],
-    (agent, args) => agent?.cancelAgentExchange(args) ?? unavailable('TOOL_UNAVAILABLE'),
-  )
-  registerAgent(
-    'agent:draft-plan',
-    agentIpcArgumentSchemas['agent:draft-plan'],
-    (agent, args) => agent?.buildAgentDraftPlan(args) ?? unavailable('TOOL_UNAVAILABLE'),
-  )
-  registerAgent(
-    'agent:commit-draft',
-    agentIpcArgumentSchemas['agent:commit-draft'],
-    (agent, args) => agent?.commitAgentDraft(args) ?? unavailable('TOOL_UNAVAILABLE'),
-    true,
-  )
-  registerAgent(
-    'agent:audit',
-    agentIpcArgumentSchemas['agent:audit'],
-    (agent, args) => agent?.listAgentAudit(args) ?? { ok: true, data: { items: [] } },
-  )
-  registerAgent(
-    'agent-model:set-enabled',
-    agentIpcArgumentSchemas['agent-model:set-enabled'],
-    (agent, args) => agent?.setModelConfigurationEnabled(args) ?? unavailable('MODEL_UNAVAILABLE'),
-    true,
-  )
-  registerAgent(
-    'agent-model:remove',
-    agentIpcArgumentSchemas['agent-model:remove'],
-    (agent, args) => agent?.removeModelConfiguration(args) ?? unavailable('MODEL_UNAVAILABLE'),
-    true,
-  )
-  registerAgent(
-    'agent-model:probe',
-    agentIpcArgumentSchemas['agent-model:probe'],
-    (agent, args) => agent?.probeModelCapabilities(args) ?? unavailable('MODEL_UNAVAILABLE'),
-    true,
-  )
+
   const handlers: Omit<DesktopIpcHandlers, keyof AgentIpcMap> = {
     'project:ontology-export': () =>
       projects?.exportProjectOntology({}) ?? Promise.resolve(permission()),
@@ -287,12 +174,20 @@ export function registerDesktopIpc({
     'project:read': (args) => projects?.readProject(args) ?? Promise.resolve(permission()),
     'project:ownership-detail': (args) =>
       projects?.getOwnershipConflictDetailPage(args) ?? Promise.resolve(permission()),
-    'project:changeset-preview': (args) =>
-      projects?.previewProjectChangeset(args) ?? Promise.resolve(permission()),
+    'project:changeset-preview': async (args) => {
+      const agent = getAgent?.()
+      const result = await (projects?.previewProjectChangeset(args) ?? permission())
+      if (result.ok && getAgent?.() === agent) agent?.observeDraftPreview?.(args, result.data)
+      return result
+    },
     'project:changeset-diff-page': (args) =>
       projects?.getProjectDiffPage(args) ?? Promise.resolve(permission()),
-    'project:changeset-confirm': (args) =>
-      projects?.confirmProjectChangeset(args) ?? Promise.resolve(permission()),
+    'project:changeset-confirm': async (args) => {
+      const agent = getAgent?.()
+      const result = await (projects?.confirmProjectChangeset(args) ?? permission())
+      if (result.ok && getAgent?.() === agent) agent?.observeDraftConfirmation?.(result.data)
+      return result
+    },
     'project:changeset-commit': (args) =>
       projects?.commitProjectChangeSet(args) ?? Promise.resolve(permission()),
     'query:definition-base': () =>

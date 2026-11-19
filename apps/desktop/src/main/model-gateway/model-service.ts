@@ -3,6 +3,10 @@ import {
   safeError,
   modelGatewayError,
   modelInvalidRequestError,
+  type AgentAuditRecordDTO,
+  type AgentCapabilitiesDTO,
+  type AgentModelConfigurationSummaryDTO,
+  type AgentPurpose,
   type BridgeResult,
   type ModelAccessStatus,
   type ModelConfiguration,
@@ -20,6 +24,18 @@ import {
   validateModelResult,
   matchesModelResult,
 } from '@ontolearn/contracts/v2'
+import {
+  CODEC_VERSION,
+  DEEPSEEK_ENDPOINT,
+  REQUEST_MODEL,
+  decodeChatResponse,
+  decodeStructuredContent,
+  encodeChatRequest,
+} from '../agent/deepseek-codec'
+import { providerSignatureSchema, type ProviderSignature } from '../agent/capabilities'
+import { parseToolArguments } from '../agent/tools'
+import { z } from 'zod'
+import { readBodyFields, type ApprovedBodyRequest } from './pre-encoded-body'
 import type { EngineSupervisor } from '../engine'
 import { EngineError } from '../engine'
 import { ConfigurationRepository, type StoredConfiguration } from './configuration-repository'
@@ -30,6 +46,34 @@ import { GatewayFailure, normalizeEndpoint, type EndpointPolicy } from './policy
 import { StoredResultSource, materialCanonical } from './stored-result-source'
 import type { StoredFieldModel } from './stored-field-projector'
 import type { PersistentGatewayAudit } from './persistent-audit'
+
+export const unverifiedCapabilities: Readonly<AgentCapabilitiesDTO> = Object.freeze({
+  connection: 'not-run',
+  structuredOutput: 'not-run',
+  toolRoundTrip: 'not-run',
+  mode: 'unverified',
+})
+
+/** Installed by main only after an approved real-provider evaluation. */
+export type AgentProviderApproval = {
+  configurationId: string
+  configurationVersion: string
+  signature: ProviderSignature
+  confirmBody(
+    input: Readonly<{
+      projectId: string
+      endpoint: string
+      principal: string
+      purpose: AgentPurpose
+      body: string
+      scopes: readonly string[]
+      privacy: 'minimal' | 'project'
+      configurationId: string
+      configVersion: string
+    }>,
+    signal: AbortSignal,
+  ): Promise<boolean>
+}
 
 type Context = {
   id: string
@@ -70,6 +114,7 @@ export class ModelGatewayService {
   private queued = 0
   private readonly core: ModelGatewayCore
   private auditReading = false
+  private readonly changing = new Set<string>()
   private constructor(
     private readonly engine: EngineSupervisor,
     private readonly repository: ConfigurationRepository,
@@ -126,6 +171,7 @@ export class ModelGatewayService {
   }
   private configured(id: string): StoredConfiguration {
     const configuration = this.configuration(id)
+    if (configuration.enabled === false) throw new GatewayFailure('CONFIGURATION_CHANGED')
     if (!configuration.binding) throw new GatewayFailure('CREDENTIAL_UNAVAILABLE')
     return configuration
   }
@@ -140,7 +186,7 @@ export class ModelGatewayService {
     }
   }
   private install(configuration: StoredConfiguration): void {
-    if (configuration.binding)
+    if (configuration.binding && configuration.enabled !== false)
       this.core.configure({
         id: configuration.configurationId,
         endpoint: configuration.endpoint,
@@ -191,30 +237,267 @@ export class ModelGatewayService {
   }
   private async readAudit(contextId: string): Promise<ModelAccessStatus> {
     const context = this.current(contextId)
+    const audit = await this.listAuditEntries(context.projectId, 20)
+    this.same(context)
+    return { ...this.status(), audit }
+  }
+  async listAuditEntries(projectId: string, limit: number): Promise<AgentAuditRecordDTO[]> {
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100)
+      throw new GatewayFailure('INVALID_INPUT')
+    const context = this.context
+    if (!context || context.projectId !== projectId)
+      throw new GatewayFailure('AUTHORIZATION_REQUIRED')
+    this.same(context)
     if (!this.audit.readEntries || this.auditReading) throw new GatewayFailure('AUDIT_UNAVAILABLE')
     this.auditReading = true
     try {
       const entries = await this.audit.readEntries()
       this.same(context)
-      return {
-        ...this.status(),
-        audit: entries
-          .filter(({ record }) => record.projectId === context.projectId)
-          .slice(-20)
-          .reverse()
-          .map(({ eventId, record }) => ({
-            eventId,
-            targetId: record.targetId,
-            endpointOrigin: record.endpointOrigin,
-            purpose: record.purpose,
-            scopes: record.scopes,
-            decision: record.decision,
-            event: record.event,
-            time: record.time,
-          })),
-      }
+      return entries
+        .filter(({ record }) => record.projectId === projectId)
+        .slice(-limit)
+        .reverse()
+        .map(({ eventId, record }) => ({
+          eventId,
+          targetId: record.targetId,
+          endpointOrigin: record.endpointOrigin,
+          purpose: record.purpose,
+          scopes: record.scopes,
+          decision: record.decision,
+          event: record.event,
+          time: record.time,
+        }))
     } finally {
       this.auditReading = false
+    }
+  }
+  listConfigurationSummaries(): AgentModelConfigurationSummaryDTO[] {
+    if (this.closed || this.failed) return []
+    return this.configurations.map((configuration) => ({
+      ...this.visible(configuration),
+      enabled: configuration.enabled ?? true,
+    }))
+  }
+  private invalidateApprovals(): void {
+    if (!this.context) return
+    this.clearPreviews(this.context)
+    this.context.grants.clear()
+  }
+  async setConfigurationEnabled(
+    id: string,
+    enabled: boolean,
+  ): Promise<AgentModelConfigurationSummaryDTO> {
+    return this.serial(async () => {
+      const before = this.configuration(id)
+      if ((before.enabled ?? true) !== enabled) {
+        await this.updateConfiguration(id, () =>
+          this.repository.setEnabled(id, enabled, this.configurations),
+        )
+      }
+      const configuration = this.configuration(id)
+      return { ...this.visible(configuration), enabled }
+    })
+  }
+  async removeConfiguration(id: string): Promise<{ configurationId: string; removed: true }> {
+    return this.serial(async () => {
+      this.configuration(id)
+      await this.updateConfiguration(id, () =>
+        this.repository.removeConfiguration(id, this.configurations),
+      )
+      return { configurationId: id, removed: true }
+    })
+  }
+  private async updateConfiguration(
+    id: string,
+    persist: () => Promise<StoredConfiguration[]>,
+  ): Promise<void> {
+    this.core.removeConfiguration(id)
+    this.invalidateApprovals()
+    await this.persist(persist)
+    const configuration = this.configurations.find((value) => value.configurationId === id)
+    if (configuration) this.install(configuration)
+  }
+  probeCapabilities(id: string, scope: 'synthetic' = 'synthetic'): AgentCapabilitiesDTO {
+    this.open()
+    this.configuration(id)
+    if (scope !== 'synthetic') throw new GatewayFailure('INVALID_INPUT')
+    const result: AgentCapabilitiesDTO = { ...unverifiedCapabilities, mode: scope }
+    const response = (message: unknown, finish_reason: string) =>
+      JSON.stringify({
+        id: 'offline-probe',
+        object: 'chat.completion',
+        created: 0,
+        model: REQUEST_MODEL,
+        choices: [{ index: 0, message, finish_reason }],
+      })
+    const messages = [
+      { role: 'system', content: 'Return JSON.' },
+      { role: 'user', content: 'Synthetic fixture.' },
+    ]
+    const options = { mode: 'disabled', effort: 'low', maxTokens: 64 }
+    try {
+      const decoded = decodeChatResponse(
+        response({ role: 'assistant', content: '{"kind":"uncertain"}' }, 'stop'),
+      )
+      decodeStructuredContent(
+        decoded.choices[0].message,
+        z.strictObject({ kind: z.literal('uncertain') }),
+      )
+      result.structuredOutput = 'passed'
+    } catch {
+      result.structuredOutput = 'failed'
+    }
+    try {
+      const decoded = decodeChatResponse(
+        response(
+          {
+            role: 'assistant',
+            content: null,
+            tool_calls: [
+              {
+                id: 'offline-call',
+                type: 'function',
+                function: {
+                  name: 'ontology_read',
+                  arguments: '{"objectIds":["synthetic-object"]}',
+                },
+              },
+            ],
+          },
+          'tool_calls',
+        ),
+      )
+      const message = decoded.choices[0].message
+      const call = message.tool_calls![0]
+      parseToolArguments(call.function.name, call.function.arguments)
+      encodeChatRequest({
+        ...options,
+        availableTools: ['ontology_read'],
+        messages: [
+          ...messages,
+          message,
+          { role: 'tool', tool_call_id: call.id, content: '{"fields":[]}' },
+        ],
+      })
+      result.toolRoundTrip = 'passed'
+    } catch {
+      result.toolRoundTrip = 'failed'
+    }
+    return result
+  }
+
+  agentReady(projectId: string, approval?: AgentProviderApproval): boolean {
+    if (
+      this.closed ||
+      this.failed ||
+      this.context?.projectId !== projectId ||
+      this.context.privacy === 'local' ||
+      !approval
+    )
+      return false
+    const configuration = this.configurations.find(
+      (value) => value.configurationId === approval.configurationId,
+    )
+    return Boolean(
+      configuration?.binding &&
+      configuration.enabled !== false &&
+      !this.changing.has(approval.configurationId) &&
+      configuration.configurationVersion === approval.configurationVersion &&
+      configuration.endpoint === DEEPSEEK_ENDPOINT &&
+      configuration.model === REQUEST_MODEL &&
+      approval.signature.codecVersion === CODEC_VERSION &&
+      providerSignatureSchema.safeParse(approval.signature).success,
+    )
+  }
+
+  async invokeAgentBody(
+    input: { projectId: string; purpose: AgentPurpose; body: string },
+    approval: AgentProviderApproval,
+    signal: AbortSignal,
+    finalContext: () => boolean,
+  ): Promise<string> {
+    input = { ...input }
+    const context = this.context
+    if (!context || context.projectId !== input.projectId)
+      throw new GatewayFailure('AUTHORIZATION_REQUIRED')
+    if (context.privacy === 'local') throw new GatewayFailure('LOCAL_ONLY')
+    const configuration = this.configured(approval.configurationId)
+    const privacy = context.privacy
+    const fields = readBodyFields(input.body, configuration.model)
+    const scopes = [randomUUID()]
+    const live = () =>
+      !signal.aborted &&
+      finalContext() &&
+      this.context === context &&
+      context.privacy === privacy &&
+      this.agentReady(input.projectId, approval)
+    if (!live()) throw new GatewayFailure('AUTHORIZATION_REQUIRED')
+    // Create the core preview before the user decision so a privacy/configuration ABA
+    // invalidates it, even if the same visible values return before confirmation.
+    const preview = this.core.previewAuthorization({
+      projectId: input.projectId,
+      configId: configuration.configurationId,
+      purpose: input.purpose,
+      scopes,
+    })
+    const parts: ApprovedBodyRequest['parts'] = []
+    let grantId: string | undefined
+    let abort = () => {}
+    const cancelled = new Promise<never>((_, reject) => {
+      abort = () => reject(new GatewayFailure('CANCELLED'))
+      signal.addEventListener('abort', abort, { once: true })
+    })
+    try {
+      const approved = await Promise.race([
+        cancelled,
+        Promise.resolve().then(() => {
+          if (signal.aborted) throw new GatewayFailure('CANCELLED')
+          return approval.confirmBody(
+            Object.freeze({
+              ...input,
+              endpoint: preview.endpoint,
+              principal: preview.principal,
+              scopes: Object.freeze([...scopes]),
+              privacy,
+              configurationId: configuration.configurationId,
+              configVersion: preview.configVersion,
+            }),
+            signal,
+          )
+        }),
+      ])
+      if (!approved || !live()) throw new GatewayFailure('AUTHORIZATION_REQUIRED')
+      grantId = this.core.confirmAuthorization(preview.previewId)
+      for (const [path, field] of fields) {
+        parts.push({
+          path,
+          kind: field.kind,
+          materialId: this.core.registerMaterial({
+            projectId: input.projectId,
+            scopes,
+            ...field,
+          }),
+        })
+      }
+      const result = await context.application.invokeApprovedBody(
+        {
+          ...input,
+          configId: configuration.configurationId,
+          configVersion: preview.configVersion,
+          grantId,
+          parts,
+          scopes,
+        },
+        signal,
+        live,
+      )
+      if (!result.ok) throw new GatewayFailure(result.code)
+      return result.text
+    } finally {
+      signal.removeEventListener('abort', abort)
+      this.core.discardAuthorizationPreview(preview.previewId)
+      if (grantId) this.core.revokeAuthorization(grantId)
+      for (const { materialId } of parts) this.core.releaseMaterial(materialId)
     }
   }
 
@@ -238,9 +521,16 @@ export class ModelGatewayService {
     for (const id of context.previews.keys()) context.application.discardPreview(id)
     context.previews.clear()
   }
-  private async save(next: StoredConfiguration[]): Promise<void> {
-    try {
+  private save(next: StoredConfiguration[]): Promise<void> {
+    return this.persist(async () => {
       await this.repository.replace(this.configurations, next)
+      return next
+    })
+  }
+  private async persist(write: () => Promise<StoredConfiguration[]>): Promise<void> {
+    let next: StoredConfiguration[]
+    try {
+      next = await write()
     } catch (error) {
       // A final record may exist despite a fsync/reconciliation failure. Continuing
       // with old memory, endpoints or grants would hide an uncertain durable update.
@@ -271,15 +561,18 @@ export class ModelGatewayService {
         endpoint,
         model: input.model,
         binding: old && endpoint === old.endpoint ? old.binding : null,
+        ...(old?.enabled === undefined ? {} : { enabled: old.enabled }),
       }
-      await this.save([
-        ...this.configurations.filter((value) => value.configurationId !== next.configurationId),
-        next,
-      ])
-      this.install(next)
-      if (identityChanged && this.context) {
-        this.clearPreviews(this.context)
-        this.context.grants.clear()
+      if (identityChanged) this.changing.add(next.configurationId)
+      try {
+        await this.save([
+          ...this.configurations.filter((value) => value.configurationId !== next.configurationId),
+          next,
+        ])
+        this.install(next)
+        if (identityChanged) this.invalidateApprovals()
+      } finally {
+        this.changing.delete(next.configurationId)
       }
       // Saving global settings can finish after project changes, but no old project response is exposed.
       this.same(context)
@@ -295,22 +588,27 @@ export class ModelGatewayService {
       const before = this.configuration(input.configurationId)
       if (before.configurationVersion !== input.configurationVersion)
         throw new GatewayFailure('CONFIGURATION_CHANGED')
-      const binding = await this.credentials.store(randomUUID(), input.secret)
-      this.same(context)
-      if (this.configuration(input.configurationId) !== before)
-        throw new GatewayFailure('CONFIGURATION_CHANGED')
-      const next = { ...before, configurationVersion: randomUUID(), binding }
-      await this.save(this.configurations.map((value) => (value === before ? next : value)))
-      this.install(next)
-      if (this.context) {
-        this.clearPreviews(this.context)
-        this.context.grants.clear()
-      }
-      this.same(context)
-      return {
-        configurationId: next.configurationId,
-        configurationVersion: next.configurationVersion,
-        credentialState: 'configured',
+      this.changing.add(input.configurationId)
+      try {
+        const binding = await this.credentials.store(randomUUID(), input.secret)
+        this.same(context)
+        if (this.configuration(input.configurationId) !== before)
+          throw new GatewayFailure('CONFIGURATION_CHANGED')
+        const next = { ...before, configurationVersion: randomUUID(), binding }
+        await this.save(this.configurations.map((value) => (value === before ? next : value)))
+        this.install(next)
+        if (this.context) {
+          this.clearPreviews(this.context)
+          this.context.grants.clear()
+        }
+        this.same(context)
+        return {
+          configurationId: next.configurationId,
+          configurationVersion: next.configurationVersion,
+          credentialState: 'configured',
+        }
+      } finally {
+        this.changing.delete(input.configurationId)
       }
     })
   }

@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import { credentialBindingSchema } from './credentials'
 import { GatewayFailure, opaqueId } from './policy'
@@ -18,6 +18,7 @@ export const storedConfigurationSchema = z
     endpoint: z.string().min(1).max(2048),
     model: z.string().regex(/^[A-Za-z0-9._:/-]{1,128}$/),
     binding: credentialBindingSchema.nullable(),
+    enabled: z.boolean().optional(),
   })
   .strict()
 export type StoredConfiguration = z.infer<typeof storedConfigurationSchema>
@@ -135,6 +136,31 @@ export class ConfigurationRepository {
     } catch {
       throw new GatewayFailure('CREDENTIAL_UNAVAILABLE')
     }
+  }
+  async setEnabled(
+    configurationId: string,
+    enabled: boolean,
+    expected?: StoredConfiguration[],
+  ): Promise<StoredConfiguration[]> {
+    const before = expected ?? (await this.load())
+    const configuration = before.find((value) => value.configurationId === configurationId)
+    if (!configuration) throw new GatewayFailure('CONFIGURATION_CHANGED')
+    if ((configuration.enabled ?? true) === enabled) return before
+    const next = before.map((value) =>
+      value === configuration ? { ...value, enabled, configurationVersion: randomUUID() } : value,
+    )
+    await this.replace(before, next)
+    return next
+  }
+  async removeConfiguration(
+    configurationId: string,
+    expected?: StoredConfiguration[],
+  ): Promise<StoredConfiguration[]> {
+    const before = expected ?? (await this.load())
+    const next = before.filter((value) => value.configurationId !== configurationId)
+    if (next.length === before.length) throw new GatewayFailure('CONFIGURATION_CHANGED')
+    await this.replace(before, next)
+    return next
   }
   async close(): Promise<void> {
     try {
