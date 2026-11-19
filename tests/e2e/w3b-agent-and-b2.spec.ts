@@ -218,10 +218,11 @@ test('W3b FR-202/203/400 · G-base 视图、已提交 Turtle 往返、模板草�
     await expect(commit).toBeDisabled()
     await io.getByTestId('ontology-import-consent').check()
     await commit.click()
-    await expect
-      .poll(async () => (await activeProject(page)).projectRevision)
-      .toBe(blank.projectRevision + 1)
+    await expect(page.getByTestId('selected-project-version')).toHaveText(
+      '当前项目版本 ' + (blank.projectRevision + 1),
+    )
     const imported = await activeProject(page)
+    expect(imported.projectRevision).toBe(blank.projectRevision + 1)
     expect(imported.inputSnapshotId).not.toBe(blank.inputSnapshotId)
     const second = await downloadOntology(page, 'g-base-round-trip')
     expect(second.tripleCount).toBe(first.tripleCount)
