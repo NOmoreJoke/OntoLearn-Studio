@@ -269,8 +269,8 @@ export function AgentPanel(props: AgentPanelProps) {
   } = props
   const [context, setContext] = useState<AgentContextDTO | null>(null)
   const [state, setState] = useState<AgentStateDTO | null>(null)
-  const [dispatchBusyKey, setDispatchBusyKey] = useState<string | null>(null)
-  const [planBusyKey, setPlanBusyKey] = useState<string | null>(null)
+  const [dispatchBusy, setDispatchBusy] = useState<{ viewKey: string; token: number } | null>(null)
+  const [planBusy, setPlanBusy] = useState<{ turnKey: string; token: number } | null>(null)
   const [syncedHostMode, setSyncedHostMode] = useState<{
     projectId: string | null
     forPropMode: AgentMode
@@ -285,7 +285,7 @@ export function AgentPanel(props: AgentPanelProps) {
   const modeSwitchSeq = useRef(0)
   // Delivered and in-flight upstream query receipts keyed by `projectId:operationId`.
   const deliveredQueryReceipts = useRef(new Set<string>())
-  const inFlightQueryReceipts = useRef(new Set<string>())
+  const inFlightQueryReceipts = useRef(new Map<string, Promise<AgentDraftPlanDTO>>())
   const pollTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const selectedKey = JSON.stringify(selectedObjectIds)
   const renderViewOwner: SemanticOwner = {
@@ -317,8 +317,11 @@ export function AgentPanel(props: AgentPanelProps) {
 
   const commitState = useCallback((next: AgentStateDTO | null) => {
     const prev = stateRef.current
-    if (prev?.operationId !== next?.operationId || prev?.exchangeId !== next?.exchangeId)
+    if (prev?.operationId !== next?.operationId || prev?.exchangeId !== next?.exchangeId) {
       planSeq.current += 1
+      const activeSeq = planSeq.current
+      setPlanBusy((current) => (current && current.token < activeSeq ? null : current))
+    }
     stateRef.current = next
     setState(next)
   }, [])
@@ -336,6 +339,10 @@ export function AgentPanel(props: AgentPanelProps) {
     dispatchSeq.current += 1
     planSeq.current += 1
     modeSwitchSeq.current += 1
+    return () => {
+      setDispatchBusy(null)
+      setPlanBusy(null)
+    }
   }, [projectId, projectRevision, inputSnapshotId, module, selectedKey, stopPolling])
 
   useEffect(() => {
@@ -344,6 +351,10 @@ export function AgentPanel(props: AgentPanelProps) {
     stopPolling()
     dispatchSeq.current += 1
     planSeq.current += 1
+    return () => {
+      setDispatchBusy(null)
+      setPlanBusy(null)
+    }
   }, [mode, stopPolling])
 
   useEffect(() => {
@@ -417,16 +428,23 @@ export function AgentPanel(props: AgentPanelProps) {
         setNotice('已收到上游查询草稿，请在查询工作台核对后手动载入。')
         return
       }
-      if (inFlightQueryReceipts.current.has(receiptKey)) return
-      inFlightQueryReceipts.current.add(receiptKey)
+      let pendingPlan = inFlightQueryReceipts.current.get(receiptKey)
+      if (!pendingPlan) {
+        pendingPlan = (async () => {
+          try {
+            return take(await bridge.buildAgentDraftPlan({ operationId }))
+          } finally {
+            inFlightQueryReceipts.current.delete(receiptKey)
+          }
+        })()
+        inFlightQueryReceipts.current.set(receiptKey, pendingPlan)
+      }
       let plan: AgentDraftPlanDTO
       try {
-        plan = take(await bridge.buildAgentDraftPlan({ operationId }))
+        plan = await pendingPlan
       } catch {
         if (turnStillCurrent()) setNotice('上游查询草稿不可用；编辑器内容未被修改。')
         return
-      } finally {
-        inFlightQueryReceipts.current.delete(receiptKey)
       }
       if (!turnStillCurrent() || deliveredQueryReceipts.current.has(receiptKey)) return
       const latestOwner = ownerRef.current
@@ -447,6 +465,60 @@ export function AgentPanel(props: AgentPanelProps) {
       }
     },
     [stateMatchesCurrent],
+  )
+
+  /**
+   * Follow one exchange until the host leaves the `dispatching` status. The
+   * timer is always owned: an outdated dispatch never writes the state.
+   */
+  const pollExchange = useCallback(
+    (
+      exchangeId: number,
+      expectedOperationId: string,
+      myDispatch: number,
+      myOwner: SemanticOwner,
+      myMode: AgentMode,
+    ) => {
+      stopPolling()
+      const isStillCurrent = () =>
+        live.current &&
+        dispatchSeq.current === myDispatch &&
+        sameViewOwner(ownerRef.current, myOwner) &&
+        effectiveModeRef.current === myMode
+      const tick = async () => {
+        const bridge = window.ontolearn
+        if (!bridge || !myOwner.projectId || !isStillCurrent()) {
+          stopPolling()
+          return
+        }
+        try {
+          const reply = await bridge.getAgentState({ projectId: myOwner.projectId })
+          if (!isStillCurrent()) return
+          if (!reply.ok) return
+          if (!stateMatchesCurrent(reply.data, exchangeId, expectedOperationId)) {
+            stopPolling()
+            return
+          }
+          commitState(reply.data)
+          if (reply.data.status === 'dispatching' && reply.data.exchangeId === exchangeId) {
+            pollTimer.current = setTimeout(() => void tick(), 150)
+            return
+          }
+          stopPolling()
+          await deliverQueryDraft(
+            bridge,
+            reply.data,
+            isStillCurrent,
+            exchangeId,
+            expectedOperationId,
+          )
+        } catch {
+          /* The channel may be unavailable; the next refresh reports the truth. */
+        }
+      }
+      pollTimer.current = setTimeout(() => void tick(), 150)
+    },
+    [stopPolling, stateMatchesCurrent, commitState, deliverQueryDraft],
   )
 
   const refresh = useCallback(async () => {
@@ -515,6 +587,21 @@ export function AgentPanel(props: AgentPanelProps) {
         return
       }
       commitState(reply.data)
+      if (
+        reply.data.status === 'dispatching' &&
+        reply.data.exchangeId != null &&
+        reply.data.operationId
+      ) {
+        pollExchange(
+          reply.data.exchangeId,
+          reply.data.operationId,
+          dispatchSeq.current,
+          myOwner,
+          effectiveModeRef.current,
+        )
+        return
+      }
+      stopPolling()
       await deliverQueryDraft(
         bridge,
         reply.data,
@@ -534,6 +621,8 @@ export function AgentPanel(props: AgentPanelProps) {
     commitState,
     stateMatchesCurrent,
     deliverQueryDraft,
+    pollExchange,
+    stopPolling,
   ])
 
   useEffect(() => {
@@ -545,60 +634,6 @@ export function AgentPanel(props: AgentPanelProps) {
     const timer = setTimeout(() => void refresh(), 0)
     return () => clearTimeout(timer)
   }, [refresh, mode, modelSyncVersion])
-
-  /**
-   * Follow one exchange until the host leaves the `dispatching` status. The
-   * timer is always owned: an outdated dispatch never writes the state.
-   */
-  const pollExchange = useCallback(
-    (
-      exchangeId: number,
-      expectedOperationId: string,
-      myDispatch: number,
-      myOwner: SemanticOwner,
-      myMode: AgentMode,
-    ) => {
-      stopPolling()
-      const isStillCurrent = () =>
-        live.current &&
-        dispatchSeq.current === myDispatch &&
-        sameViewOwner(ownerRef.current, myOwner) &&
-        effectiveModeRef.current === myMode
-      const tick = async () => {
-        const bridge = window.ontolearn
-        if (!bridge || !myOwner.projectId || !isStillCurrent()) {
-          stopPolling()
-          return
-        }
-        try {
-          const reply = await bridge.getAgentState({ projectId: myOwner.projectId })
-          if (!isStillCurrent()) return
-          if (!reply.ok) return
-          if (!stateMatchesCurrent(reply.data, exchangeId, expectedOperationId)) {
-            stopPolling()
-            return
-          }
-          commitState(reply.data)
-          if (reply.data.status === 'dispatching' && reply.data.exchangeId === exchangeId) {
-            pollTimer.current = setTimeout(() => void tick(), 150)
-            return
-          }
-          stopPolling()
-          await deliverQueryDraft(
-            bridge,
-            reply.data,
-            isStillCurrent,
-            exchangeId,
-            expectedOperationId,
-          )
-        } catch {
-          /* The channel may be unavailable; the next refresh reports the truth. */
-        }
-      }
-      pollTimer.current = setTimeout(() => void tick(), 150)
-    },
-    [stopPolling, stateMatchesCurrent, commitState, deliverQueryDraft],
-  )
 
   const dispatch = useCallback(
     async (question: string) => {
@@ -615,7 +650,7 @@ export function AgentPanel(props: AgentPanelProps) {
         dispatchSeq.current === myDispatch &&
         sameViewOwner(ownerRef.current, myOwner) &&
         effectiveModeRef.current === myMode
-      setDispatchBusyKey(myViewKey)
+      setDispatchBusy({ viewKey: myViewKey, token: myDispatch })
       setFailure('')
       setNotice('')
       let failureCode: string | null = null
@@ -643,7 +678,7 @@ export function AgentPanel(props: AgentPanelProps) {
           !latest ||
           latest.exchangeId !== reply.data.exchangeId ||
           latest.operationId !== reply.data.operationId ||
-          latest.status === 'dispatching'
+          (latest.status === 'dispatching' && pollTimer.current === undefined)
         )
           pollExchange(reply.data.exchangeId, reply.data.operationId, myDispatch, myOwner, myMode)
       } catch (cause) {
@@ -651,8 +686,8 @@ export function AgentPanel(props: AgentPanelProps) {
           setFailure(cause instanceof Error ? cause.message : 'AGENT_DISPATCH_FAILED')
         throw cause
       } finally {
-        if (live.current && dispatchSeq.current === myDispatch)
-          setDispatchBusyKey((current) => (current === myViewKey ? null : current))
+        if (live.current)
+          setDispatchBusy((current) => (current?.token === myDispatch ? null : current))
       }
     },
     [pollExchange, stopPolling],
@@ -713,7 +748,7 @@ export function AgentPanel(props: AgentPanelProps) {
       return
     const mySeq = ++planSeq.current
     const myTurnKey = `${viewKeyOf(myOwner, myMode)}|${expectedOperationId}|${expectedExchangeId ?? ''}`
-    setPlanBusyKey(myTurnKey)
+    setPlanBusy({ turnKey: myTurnKey, token: mySeq })
     setFailure('')
     const stillActiveTurn = () => {
       if (
@@ -753,8 +788,7 @@ export function AgentPanel(props: AgentPanelProps) {
       if (stillActiveTurn())
         setFailure(cause instanceof Error ? cause.message : 'AGENT_DRAFT_PLAN_FAILED')
     } finally {
-      if (live.current && planSeq.current === mySeq)
-        setPlanBusyKey((current) => (current === myTurnKey ? null : current))
+      if (live.current) setPlanBusy((current) => (current?.token === mySeq ? null : current))
     }
   }, [])
 
@@ -782,7 +816,7 @@ export function AgentPanel(props: AgentPanelProps) {
     state && stateMatchesView(state, renderViewOwner, activeMode) ? state : null
   const currentViewKey = viewKeyOf(renderViewOwner, activeMode)
   const currentTurnKey = `${currentViewKey}|${displayedState?.operationId ?? ''}|${displayedState?.exchangeId ?? ''}`
-  const busy = dispatchBusyKey === currentViewKey || planBusyKey === currentTurnKey
+  const busy = dispatchBusy?.viewKey === currentViewKey || planBusy?.turnKey === currentTurnKey
   // The real host run state, mapped onto the sidebar vocabulary.
   const sidebarState = useMemo(
     () => (displayedState ? agentDtoToSidebarState(displayedState, projectId ?? '') : null),

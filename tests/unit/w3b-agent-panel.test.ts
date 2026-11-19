@@ -1405,4 +1405,364 @@ describe('W3b B07/B09: the real host run state is mapped onto the sidebar', () =
       vi.unstubAllGlobals()
     }
   })
+
+  it('resumes polling and delivers terminal state and query draft after A -> B -> A while dispatching (B09)', async () => {
+    vi.useFakeTimers()
+    let pumpPhase: 'dispatching' | 'answered' = 'dispatching'
+    const deliveredDrafts: unknown[] = []
+    const validQueryJson = JSON.stringify({
+      name: '泵终态查询',
+      description: '重返后恢复轮询',
+      sparql: 'SELECT * WHERE { ?s ?p ?o }',
+      scope: 'asserted',
+      capabilityQuestion: '泵运行参数？',
+      source: 'model',
+    })
+    const stateForPump = (phase: 'dispatching' | 'answered') => ({
+      ...agentState({
+        status: phase,
+        exchangeId: 31,
+        operationId: 'op-revisit',
+        answerText: phase === 'answered' ? '泵分析完成' : null,
+        receipts:
+          phase === 'answered'
+            ? [
+                {
+                  callId: 'call-revisit',
+                  tool: 'query_draft' as const,
+                  purpose: 'suggest' as const,
+                  outcome: {
+                    kind: 'draft' as const,
+                    draftType: 'query' as const,
+                    summary: '泵终态查询',
+                    detail: validQueryJson,
+                    projectId: 'p1',
+                    baseRevision: 3,
+                    inputSnapshotId: 's1',
+                    requiresHumanDiffConfirmation: true,
+                  },
+                },
+              ]
+            : [],
+      }),
+      context: {
+        ...agentState().context!,
+        selectedObjectIds: ['urn:Pump'],
+      },
+    })
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async (args: { selectedObjectIds: string[] }) => ({
+          ok: true as const,
+          data: {
+            ...agentState().context!,
+            selectedObjectIds: [...args.selectedObjectIds],
+          },
+        }),
+        getAgentState: async () => ({
+          ok: true as const,
+          data: stateForPump(pumpPhase),
+        }),
+        dispatchAgentQuestion: async () => ({
+          ok: true as const,
+          data: { operationId: 'op-revisit', exchangeId: 31 },
+        }),
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: ['urn:Pump'],
+      localActions: ['hint'],
+      onQueryDraft: (draft: unknown) => deliveredDrafts.push(draft),
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      const pumpSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      await (pumpSidebar.props.onSubmit as (q: string) => Promise<void>)('查泵参数')
+      panel.render()
+      expect(panel.nodes().find((node) => node.type === AgentSidebar)!.props.state).toMatchObject({
+        phase: 'awaiting-provider',
+      })
+
+      // Switch A -> B: Valve does not show Pump's dispatching state or receipts.
+      panel.setProps({ selectedObjectIds: ['urn:Valve'] })
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      const valveSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      expect(valveSidebar.props.state).toBeNull()
+      expect(valveSidebar.props.receipts).toBeUndefined()
+
+      // Switch B -> A while host is STILL dispatching: Panel resumes polling cleanly.
+      panel.setProps({ selectedObjectIds: ['urn:Pump'] })
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(panel.nodes().find((node) => node.type === AgentSidebar)!.props.state).toMatchObject({
+        phase: 'awaiting-provider',
+      })
+
+      // Host finishes while back on A; next poll tick delivers terminal answer and query draft.
+      pumpPhase = 'answered'
+      await vi.advanceTimersByTimeAsync(160)
+      panel.render()
+      const resumedSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      expect(resumedSidebar.props.state).toMatchObject({
+        phase: 'answered',
+        answer: { text: '泵分析完成' },
+      })
+      expect(deliveredDrafts).toHaveLength(1)
+      expect(deliveredDrafts[0]).toMatchObject({ name: '泵终态查询', source: 'model' })
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('never resurrects retired dispatch or buildPlan data-busy after A -> B -> A (W3B-R2D-N01)', async () => {
+    vi.useFakeTimers()
+    let releaseDispatch: ((reply: unknown) => void) | undefined
+    let releasePlan: ((reply: unknown) => void) | undefined
+    const pumpDraftReceipt: AgentReceiptDTO = {
+      callId: 'call-busy-pump',
+      tool: 'ontology_propose',
+      purpose: 'suggest',
+      outcome: {
+        kind: 'draft',
+        draftType: 'ontology',
+        summary: '泵草稿',
+        detail: '{"classIri":"urn:Pump"}',
+        projectId: 'p1',
+        baseRevision: 3,
+        inputSnapshotId: 's1',
+        requiresHumanDiffConfirmation: true,
+      },
+    }
+    let hostSelection = ['urn:Pump']
+    let pumpHasAnswer = false
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async (args: { selectedObjectIds: string[] }) => ({
+          ok: true as const,
+          data: {
+            ...agentState().context!,
+            selectedObjectIds: [...args.selectedObjectIds],
+          },
+        }),
+        getAgentState: async () => ({
+          ok: true as const,
+          data:
+            hostSelection[0] === 'urn:Pump' && pumpHasAnswer
+              ? {
+                  ...agentState({
+                    status: 'answered',
+                    exchangeId: 41,
+                    operationId: 'op-busy',
+                    answerText: '泵结果',
+                    receipts: [pumpDraftReceipt],
+                  }),
+                  context: { ...agentState().context!, selectedObjectIds: ['urn:Pump'] },
+                }
+              : agentState({
+                  status: 'idle',
+                  exchangeId: null,
+                  operationId: null,
+                  context: null,
+                }),
+        }),
+        dispatchAgentQuestion: async () =>
+          new Promise((resolve) => {
+            releaseDispatch = resolve
+          }),
+        buildAgentDraftPlan: async () =>
+          new Promise((resolve) => {
+            releasePlan = resolve
+          }),
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: ['urn:Pump'],
+      localActions: ['hint'],
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      const pumpSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+
+      // 1) Retired dispatch: leave A -> settle on B -> revisit A => busy stays false.
+      const pendingDispatch = (pumpSidebar.props.onSubmit as (q: string) => Promise<void>)(
+        '等待派发',
+      )
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(true)
+
+      hostSelection = ['urn:Valve']
+      panel.setProps({ selectedObjectIds: ['urn:Valve'] })
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(false)
+
+      // Even returning to A while the retired dispatch is still in flight must NOT resurrect data-busy.
+      hostSelection = ['urn:Pump']
+      panel.setProps({ selectedObjectIds: ['urn:Pump'] })
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(false)
+
+      releaseDispatch!({ ok: true, data: { operationId: 'op-busy', exchangeId: 41 } })
+      await pendingDispatch
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(false)
+
+      // 2) Retired buildPlan: start buildPlan on A -> leave to B -> return to A while pending => busy stays false.
+      pumpHasAnswer = true
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      const pumpAnsweredSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      void (pumpAnsweredSidebar.props.onPreviewAgentDraft as (r: AgentReceiptDTO) => void)(
+        pumpDraftReceipt,
+      )
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(true)
+
+      hostSelection = ['urn:Valve']
+      panel.setProps({ selectedObjectIds: ['urn:Valve'] })
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(false)
+
+      hostSelection = ['urn:Pump']
+      panel.setProps({ selectedObjectIds: ['urn:Pump'] })
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(panel.find('agent-panel')?.props['data-busy']).toBe(false)
+
+      releasePlan!({
+        ok: true,
+        data: {
+          operationId: 'op-busy',
+          draftType: 'ontology',
+          baseRevision: 3,
+          inputSnapshotId: 's1',
+          summary: '泵草稿',
+          plan: { manual: [] },
+        },
+      })
+      await Promise.resolve()
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('delivers fallback buildAgentDraftPlan query draft across overlapping refresh without duplicate IPC (W3B-R2D-N02)', async () => {
+    vi.useFakeTimers()
+    const deliveredDrafts: unknown[] = []
+    let releaseFallbackPlan: ((reply: unknown) => void) | undefined
+    let planCalls = 0
+    const fallbackReceipt: AgentReceiptDTO = {
+      callId: 'call-overlap',
+      tool: 'query_draft',
+      purpose: 'suggest',
+      outcome: {
+        kind: 'draft',
+        draftType: 'query',
+        summary: '重叠刷新草稿',
+        detail: 'non-json fallback detail',
+        projectId: 'p1',
+        baseRevision: 3,
+        inputSnapshotId: 's1',
+        requiresHumanDiffConfirmation: true,
+      },
+    }
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async () => ({
+          ok: true as const,
+          data: agentState().context!,
+        }),
+        getAgentState: async () => ({
+          ok: true as const,
+          data: agentState({
+            status: 'answered',
+            exchangeId: 51,
+            operationId: 'op-overlap',
+            receipts: [fallbackReceipt],
+          }),
+        }),
+        buildAgentDraftPlan: async () => {
+          planCalls += 1
+          return new Promise((resolve) => {
+            releaseFallbackPlan = resolve
+          })
+        },
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: [],
+      localActions: ['hint'],
+      onQueryDraft: (draft: unknown) => deliveredDrafts.push(draft),
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      expect(planCalls).toBe(1)
+      expect(releaseFallbackPlan).toBeDefined()
+
+      // Overlapping refresh while buildAgentDraftPlan is still pending must share the in-flight promise.
+      panel.setProps({ modelSyncVersion: 1 })
+      await vi.advanceTimersByTimeAsync(0)
+      expect(planCalls).toBe(1)
+
+      releaseFallbackPlan!({
+        ok: true,
+        data: {
+          operationId: 'op-overlap',
+          draftType: 'query',
+          baseRevision: 3,
+          inputSnapshotId: 's1',
+          summary: '重叠刷新草稿',
+          plan: {
+            definitions: [
+              {
+                layer: 'query',
+                id: 'q-overlap',
+                value: {
+                  text: 'SELECT * WHERE { ?s ?p ?o }',
+                  references: [],
+                  descriptor: {
+                    name: '重叠草稿查询',
+                    description: '',
+                    scope: 'asserted',
+                    capabilityQuestion: '有哪些实例？',
+                    source: 'model',
+                    version: 1,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      })
+      await Promise.resolve()
+      await vi.advanceTimersByTimeAsync(0)
+      expect(deliveredDrafts).toHaveLength(1)
+      expect(deliveredDrafts[0]).toMatchObject({ name: '重叠草稿查询', source: 'model' })
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
 })
