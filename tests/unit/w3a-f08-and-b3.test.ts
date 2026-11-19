@@ -481,7 +481,17 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
     await warning.waitFor()
     const warningText = await warning.textContent()
     expect(warningText).toContain('R-risk → R-next')
-    expect(warningText).toContain('R-next → R-next')
+    expect(warningText).not.toContain('R-next → R-next')
+    // Filling a real conclusion restores the enabled draft's self chain.
+    const conclusion = page
+      .getByRole('group', { name: '推导一个或多个新事实' })
+      .locator('.quality-pattern')
+      .first()
+    await conclusion.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await conclusion
+      .getByLabel('类 IRI', { exact: true })
+      .fill('urn:ontolearn:learning:NeedsInspection')
+    expect(await warning.textContent()).toContain('R-next → R-next')
 
     await page.getByTestId('quality-rule-sample-tester').locator('summary').click()
     await page.getByTestId('quality-sample-preset').selectOption('rule-chain-unsupported')
@@ -513,7 +523,17 @@ describe.skipIf(process.env.T09_HEADLESS_UI !== '1')('W3a headless component int
     await warning.waitFor()
     const warningText = await warning.textContent()
     expect(warningText).toContain('R-risk → R-next')
-    expect(warningText).toContain('R-next → R-next')
+    expect(warningText).not.toContain('R-next → R-next')
+    // Filling a real conclusion restores the enabled draft's self chain.
+    const conclusion = page
+      .getByRole('group', { name: '推导一个或多个新事实' })
+      .locator('.quality-pattern')
+      .first()
+    await conclusion.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await conclusion
+      .getByLabel('类 IRI', { exact: true })
+      .fill('urn:ontolearn:learning:NeedsInspection')
+    expect(await warning.textContent()).toContain('R-next → R-next')
   })
 
   it('keeps an invalid sample verdict without a fake order match and reports omitted diagnostics', async () => {

@@ -566,6 +566,43 @@ describe('seeded quality properties', () => {
     ])
   })
 
+  it('never emits a ghost self chain while the draft conclusion row is still blank', () => {
+    const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+    const legacyRisk = (): QualityRuleViewDTO => ({
+      id: 'R-risk',
+      enabled: true,
+      revision: 1,
+      format: 'legacy',
+      when: [
+        ['?equipment', rdfType, '<urn:ontolearn:learning:Equipment>'],
+        ['?equipment', '<urn:ontolearn:learning:alarm>', '?alarm'],
+        ['?alarm', 'urn:ontolearn:learning:level', '"High"'],
+      ],
+      then: ['?equipment', rdfType, '<urn:ontolearn:learning:HighRiskEquipment>'],
+    })
+    const conditions: Pattern[] = [
+      {
+        kind: 'type',
+        subject: '?equipment',
+        path: '',
+        value: 'urn:ontolearn:learning:HighRiskEquipment',
+      },
+    ]
+    // A blank conclusion row (type row without a class, property row without a
+    // path) carries no signature: the draft writes nothing, so a condition-only
+    // draft can never chain onto itself while the editor row is still blank.
+    for (const conclusions of [
+      [{ kind: 'type', subject: '', path: '', value: '' }],
+      [{ kind: 'property', subject: '?x', path: '', value: '' }],
+    ] as Pattern[][]) {
+      const draft = { id: 'R-next', enabled: true, conditions, conclusions }
+      expect(detectRuleChainDependencies(draft, [])).toEqual([])
+      expect(detectRuleChainDependencies(draft, [ruleViewToChainInput(legacyRisk())])).toEqual([
+        { producerRuleId: 'R-risk', consumerRuleId: 'R-next' },
+      ])
+    }
+  })
+
   it('compares statement sets symmetrically and ignores duplicates and order', () => {
     const next = prng(0x502)
     const statements = (): Statement[] =>

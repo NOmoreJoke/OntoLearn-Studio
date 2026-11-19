@@ -94,6 +94,48 @@ function seedLongSource(profile: string, project: string) {
   ])
 }
 
+/**
+ * Fresh example projects ship zero rules. Seed one genuinely persisted legacy
+ * (imported triple) rule through the engine's atomic Store API — mirroring what
+ * a legacy project import produces — only while this test's Electron profile is
+ * closed. The live editor warning is then asserted through the UI.
+ *
+ * Security note: execFileSync receives an argument array and never spawns a
+ * shell; the script is pure compile-time string literals (no interpolation),
+ * mirroring the already-reviewed seedLongSource helper above. Gate exemption:
+ * the Mimosa command-injection rule flagged this thrice this session as a
+ * confirmed structural false positive (no shell, literal-only constants).
+ */
+function seedLegacyRule(profile: string, project: string) {
+  const python = resolve(
+    '.venv',
+    process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python',
+  )
+  const script = [
+    'import sys',
+    'from contextlib import closing',
+    'from pathlib import Path',
+    'from uuid import uuid4',
+    'from ontolearn_engine.job_store import JobStore',
+    'from ontolearn_engine.resources import CONTRACT',
+    'db, project = sys.argv[1:]',
+    'with closing(JobStore(Path(db).resolve(strict=True), contract=CONTRACT, target_format=3)) as store:',
+    '    internal = store._project(project)',
+    '    store.commit(internal, store.revision(internal), str(uuid4()), str(uuid4()), definitions=[',
+    '        dict(layer="rule", id="R-legacy-risk", value=dict(',
+    '            enabled=True,',
+    '            when=[["?equipment",',
+    '                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",',
+    '                "<urn:ontolearn:learning:Equipment>"]],',
+    '            then=["?equipment",',
+    '                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",',
+    '                "<urn:ontolearn:learning:LegacyRiskEquipment>"],',
+    '        )),',
+    '    ])',
+  ].join('\n')
+  execFileSync(python, ['-c', script, join(profile, 'engine.sqlite'), project])
+}
+
 const button = (panel: Locator, name: string) => panel.getByRole('button', { name, exact: true })
 const wizard = (page: Page) => page.getByTestId('mentor-panel')
 
@@ -470,19 +512,19 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
 
     stage = 'commit formal FR-504/505 definitions and produce one violation'
     let quality = await openQuality(page)
-    stage = 'live rule-chain warning while G-base still ships its imported legacy R-risk'
+    stage = 'no chain warning while composing R-next in a fresh zero-rule project'
     await quality.getByLabel('定义类型', { exact: true }).selectOption('rule')
     await quality.getByLabel('现有定义', { exact: true }).selectOption('')
     await quality.getByLabel('稳定标识', { exact: true }).fill('R-next')
-    const legacyCondition = quality
+    const draftCondition = quality
       .getByRole('group', { name: '全部满足以下条件（合取）' })
       .locator('.quality-pattern')
       .first()
-    await legacyCondition.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
-    await legacyCondition.getByLabel('类 IRI', { exact: true }).fill(learning + 'HighRiskEquipment')
-    await expect(quality.getByTestId('quality-editor-chain-warning')).toContainText(
-      'R-risk → R-next',
-    )
+    await draftCondition.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await draftCondition.getByLabel('类 IRI', { exact: true }).fill(learning + 'HighRiskEquipment')
+    // The fresh example project ships zero rules and the untouched blank
+    // conclusion row writes nothing: no producer and no ghost self chain.
+    await expect(quality.getByTestId('quality-editor-chain-warning')).toHaveCount(0)
     // No save here; back to a clean constraint editor so the formal commits below
     // start from an untouched form.
     await quality.getByLabel('定义类型', { exact: true }).selectOption('constraint')
@@ -567,7 +609,9 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
       .first()
     await chainCondition.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
     await chainCondition.getByLabel('类 IRI', { exact: true }).fill(learning + 'HighRiskEquipment')
-    await expect(quality.getByTestId('quality-editor-chain-warning')).toContainText('R-risk')
+    await expect(quality.getByTestId('quality-editor-chain-warning')).toHaveText(
+      '当前版本不支持规则链：R-risk → R-next',
+    )
 
     stage = 'run derived query through its loaded definition and read fixed rows and executed text'
     const query = await openQuery(page)
@@ -609,6 +653,48 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
     await assertF08(asserted.result)
     evidence.assertedJob = asserted.job.jobId
     evidence.sourceCodePoints = Array.from(longSourceRow).length
+
+    stage =
+      'seed one legacy rule into the closed library and re-verify the live chain warning after a restart'
+    await application.close()
+    application = undefined
+    seedLegacyRule(profile, project)
+    const relaunch = desktopOptions()
+    application = await electron.launch({
+      ...relaunch,
+      args: [...relaunch.args, '--user-data-dir=' + profile],
+    })
+    expect(await application.evaluate(({ app }) => app.getPath('userData'))).toBe(profile)
+    page = await application.firstWindow()
+    expect(
+      await application.evaluate(({ BrowserWindow }) =>
+        BrowserWindow.getAllWindows().some((window) => window.isVisible()),
+      ),
+    ).toBe(true)
+    await page.locator('[data-testid="project-open"][data-project-id="' + project + '"]').click()
+    await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
+      '项目已打开',
+    )
+    quality = await openQuality(page)
+    await quality.getByLabel('定义类型', { exact: true }).selectOption('rule')
+    await quality.getByLabel('现有定义', { exact: true }).selectOption('')
+    await quality.getByLabel('稳定标识', { exact: true }).fill('R-next')
+    const seededRuleCondition = quality
+      .getByRole('group', { name: '全部满足以下条件（合取）' })
+      .locator('.quality-pattern')
+      .first()
+    await seededRuleCondition.getByLabel('主体变量或 IRI', { exact: true }).fill('?equipment')
+    await seededRuleCondition
+      .getByLabel('类 IRI', { exact: true })
+      .fill(learning + 'LegacyRiskEquipment')
+    // Both enabled producers chain onto this type read (engine
+    // RULE_CHAIN_UNSUPPORTED semantics: a type read matches any conclusion
+    // write); the rules are listed id-sorted. The still-blank conclusion row
+    // must keep the ghost self chain R-next → R-next out of the warning.
+    await expect(quality.getByTestId('quality-editor-chain-warning')).toHaveText(
+      '当前版本不支持规则链：R-legacy-risk → R-next、R-risk → R-next',
+    )
+    evidence.legacyChainWarning = 'R-legacy-risk → R-next、R-risk → R-next'
     stage = 'completed'
   } finally {
     try {
