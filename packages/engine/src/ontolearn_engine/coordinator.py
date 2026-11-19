@@ -447,6 +447,7 @@ class Coordinator:
             self.mainline.finish_reply(request_id, emitted=emitted, failure=failure)
 
     def dispatch(self, method: str, p: dict):
+        from ontolearn_engine.mapping.service import METHODS as MAPPING_METHODS
         from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
         from ontolearn_engine.project.learning_agent import METHODS as AGENT_METHODS
         from ontolearn_engine.project.learning_ledger import METHODS as LEARNING_METHODS
@@ -454,6 +455,8 @@ class Coordinator:
         from ontolearn_engine.project.ontology_import import METHODS as IMPORT_METHODS
         from ontolearn_engine.project.ontology_turtle import METHODS as EXPORT_METHODS
         from ontolearn_engine.project.quality_definitions import METHODS as QUALITY_METHODS
+        from ontolearn_engine.project.run_before_commit import METHODS as RUN_METHODS
+        from ontolearn_engine.transfer.service import METHODS as TRANSFER_METHODS
 
         if (
             method in MANAGEMENT_METHODS
@@ -463,6 +466,9 @@ class Coordinator:
             or method in EXPORT_METHODS
             or method in IMPORT_METHODS
             or method in AGENT_METHODS
+            or method in MAPPING_METHODS
+            or method in TRANSFER_METHODS
+            or method in RUN_METHODS
             or method
             in {
                 "project.catalog",
