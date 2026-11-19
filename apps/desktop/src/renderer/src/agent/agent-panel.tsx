@@ -287,6 +287,7 @@ export function AgentPanel(props: AgentPanelProps) {
   const deliveredQueryReceipts = useRef(new Set<string>())
   const inFlightQueryReceipts = useRef(new Map<string, Promise<AgentDraftPlanDTO>>())
   const pollTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const pollSeq = useRef(0)
   const selectedKey = JSON.stringify(selectedObjectIds)
   const renderViewOwner: SemanticOwner = {
     projectId,
@@ -311,6 +312,7 @@ export function AgentPanel(props: AgentPanelProps) {
   })
 
   const stopPolling = useCallback(() => {
+    pollSeq.current += 1
     if (pollTimer.current !== undefined) clearTimeout(pollTimer.current)
     pollTimer.current = undefined
   }, [])
@@ -361,6 +363,7 @@ export function AgentPanel(props: AgentPanelProps) {
     live.current = true
     return () => {
       live.current = false
+      pollSeq.current += 1
       if (pollTimer.current !== undefined) clearTimeout(pollTimer.current)
       pollTimer.current = undefined
     }
@@ -480,43 +483,46 @@ export function AgentPanel(props: AgentPanelProps) {
       myMode: AgentMode,
     ) => {
       stopPolling()
-      const isStillCurrent = () =>
+      const myPoll = ++pollSeq.current
+      const ownsViewTurn = () =>
         live.current &&
         dispatchSeq.current === myDispatch &&
         sameViewOwner(ownerRef.current, myOwner) &&
         effectiveModeRef.current === myMode
+      const ownsPoll = () => pollSeq.current === myPoll && ownsViewTurn()
+      const stopOwnPolling = () => {
+        if (pollSeq.current === myPoll) stopPolling()
+      }
       const tick = async () => {
+        if (pollSeq.current === myPoll) pollTimer.current = undefined
         const bridge = window.ontolearn
-        if (!bridge || !myOwner.projectId || !isStillCurrent()) {
-          stopPolling()
+        if (!bridge || !myOwner.projectId || !ownsPoll()) {
+          stopOwnPolling()
           return
         }
         try {
           const reply = await bridge.getAgentState({ projectId: myOwner.projectId })
-          if (!isStillCurrent()) return
-          if (!reply.ok) return
+          if (!ownsPoll()) return
+          if (!reply.ok) {
+            stopOwnPolling()
+            return
+          }
           if (!stateMatchesCurrent(reply.data, exchangeId, expectedOperationId)) {
-            stopPolling()
+            stopOwnPolling()
             return
           }
           commitState(reply.data)
           if (reply.data.status === 'dispatching' && reply.data.exchangeId === exchangeId) {
-            pollTimer.current = setTimeout(() => void tick(), 150)
+            if (ownsPoll()) pollTimer.current = setTimeout(() => void tick(), 150)
             return
           }
-          stopPolling()
-          await deliverQueryDraft(
-            bridge,
-            reply.data,
-            isStillCurrent,
-            exchangeId,
-            expectedOperationId,
-          )
+          stopOwnPolling()
+          await deliverQueryDraft(bridge, reply.data, ownsViewTurn, exchangeId, expectedOperationId)
         } catch {
           /* The channel may be unavailable; the next refresh reports the truth. */
         }
       }
-      pollTimer.current = setTimeout(() => void tick(), 150)
+      if (ownsPoll()) pollTimer.current = setTimeout(() => void tick(), 150)
     },
     [stopPolling, stateMatchesCurrent, commitState, deliverQueryDraft],
   )
@@ -545,6 +551,7 @@ export function AgentPanel(props: AgentPanelProps) {
       })
       if (!stillOwnsRefresh()) return
       if (!reply.ok) {
+        stopPolling()
         setContext(null)
         commitState(null)
         setFailure(reply.error.code)
@@ -559,6 +566,7 @@ export function AgentPanel(props: AgentPanelProps) {
       ) {
         // A foreign context is never kept: the old context is dropped instead
         // of being shown as if it belonged to the selected project.
+        stopPolling()
         setContext(null)
         commitState(null)
         setFailure('AGENT_CONTEXT_MISMATCH')
@@ -574,6 +582,7 @@ export function AgentPanel(props: AgentPanelProps) {
       setContext(reply.data)
     } catch {
       if (!stillOwnsRefresh()) return
+      stopPolling()
       setContext(null)
       commitState(null)
       setFailure('AGENT_CONTEXT_UNAVAILABLE')
@@ -583,6 +592,7 @@ export function AgentPanel(props: AgentPanelProps) {
       if (!stillOwnsRefresh()) return
       if (!reply.ok) return
       if (!stateMatchesCurrent(reply.data)) {
+        stopPolling()
         commitState(null)
         return
       }

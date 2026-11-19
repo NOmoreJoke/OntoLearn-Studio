@@ -1765,4 +1765,145 @@ describe('W3b B07/B09: the real host run state is mapped onto the sidebar', () =
       vi.unstubAllGlobals()
     }
   })
+
+  it('isolates superseded poll instances across same-view refresh and A -> B -> A revisit (B09)', async () => {
+    vi.useFakeTimers()
+    let pumpPhase: 'dispatching' | 'answered' = 'dispatching'
+    let hangFirstTick = false
+    let releaseFirstTick: ((reply: unknown) => void) | undefined
+    const deliveredDrafts: unknown[] = []
+    const validQueryJson = JSON.stringify({
+      name: '竞争终态查询',
+      description: '竞争后应送达',
+      sparql: 'SELECT * WHERE { ?s ?p ?o }',
+      scope: 'asserted',
+      capabilityQuestion: '状态是否闭合？',
+      source: 'model',
+    })
+    const stateForPump = (phase: 'dispatching' | 'answered') => ({
+      ...agentState({
+        status: phase,
+        exchangeId: 61,
+        operationId: 'op-poll-race',
+        answerText: phase === 'answered' ? '竞争后终态成功' : null,
+        receipts:
+          phase === 'answered'
+            ? [
+                {
+                  callId: 'call-race',
+                  tool: 'query_draft' as const,
+                  purpose: 'suggest' as const,
+                  outcome: {
+                    kind: 'draft' as const,
+                    draftType: 'query' as const,
+                    summary: '竞争终态查询',
+                    detail: validQueryJson,
+                    projectId: 'p1',
+                    baseRevision: 3,
+                    inputSnapshotId: 's1',
+                    requiresHumanDiffConfirmation: true,
+                  },
+                },
+              ]
+            : [],
+      }),
+      context: {
+        ...agentState().context!,
+        selectedObjectIds: ['urn:Pump'],
+      },
+    })
+    vi.stubGlobal('window', {
+      ontolearn: {
+        getAgentContext: async (args: { selectedObjectIds: string[] }) => ({
+          ok: true as const,
+          data: {
+            ...agentState().context!,
+            selectedObjectIds: [...args.selectedObjectIds],
+          },
+        }),
+        getAgentState: async () => {
+          if (hangFirstTick) {
+            hangFirstTick = false
+            return new Promise((resolve) => {
+              releaseFirstTick = resolve
+            })
+          }
+          return {
+            ok: true as const,
+            data: stateForPump(pumpPhase),
+          }
+        },
+        dispatchAgentQuestion: async () => ({
+          ok: true as const,
+          data: { operationId: 'op-poll-race', exchangeId: 61 },
+        }),
+      },
+    })
+    const panel = agentPanelHarness({
+      projectId: 'p1',
+      projectRevision: 3,
+      inputSnapshotId: 's1',
+      module: 'ontology',
+      mode: 'tutor',
+      selectedObjectIds: ['urn:Pump'],
+      localActions: ['hint'],
+      onQueryDraft: (draft: unknown) => deliveredDrafts.push(draft),
+    })
+    try {
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      const pumpSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      await (pumpSidebar.props.onSubmit as (q: string) => Promise<void>)('竞争测例')
+      panel.render()
+      expect(panel.nodes().find((node) => node.type === AgentSidebar)!.props.state).toMatchObject({
+        phase: 'awaiting-provider',
+      })
+
+      // At t=150ms, hang the first poll tick's in-flight getAgentState IPC.
+      hangFirstTick = true
+      await vi.advanceTimersByTimeAsync(150)
+      expect(releaseFirstTick).toBeDefined()
+
+      // At t=160ms, trigger same-view refresh (modelSyncVersion bump) starting poll instance #2.
+      await vi.advanceTimersByTimeAsync(10)
+      panel.setProps({ modelSyncVersion: 1 })
+      await vi.advanceTimersByTimeAsync(0)
+
+      // At t=170ms, settle the stale tick #1 IPC: it must exit without spawning an orphan timer.
+      await vi.advanceTimersByTimeAsync(10)
+      releaseFirstTick!({ ok: true, data: stateForPump('dispatching') })
+      await Promise.resolve()
+
+      // At t=190ms, switch A -> B -> A while dispatching.
+      await vi.advanceTimersByTimeAsync(20)
+      panel.setProps({ selectedObjectIds: ['urn:Valve'] })
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(panel.nodes().find((node) => node.type === AgentSidebar)!.props.state).toBeNull()
+
+      panel.setProps({ selectedObjectIds: ['urn:Pump'] })
+      await vi.advanceTimersByTimeAsync(0)
+      panel.render()
+      expect(panel.nodes().find((node) => node.type === AgentSidebar)!.props.state).toMatchObject({
+        phase: 'awaiting-provider',
+      })
+
+      // Host flips to answered; advancing 600ms must finish polling cleanly, deliver answer + draft once, and leave 0 timers.
+      pumpPhase = 'answered'
+      await vi.advanceTimersByTimeAsync(600)
+      panel.render()
+      const finalSidebar = panel.nodes().find((node) => node.type === AgentSidebar)!
+      expect(finalSidebar.props.state).toMatchObject({
+        phase: 'answered',
+        answer: { text: '竞争后终态成功' },
+      })
+      expect(deliveredDrafts).toHaveLength(1)
+      expect(deliveredDrafts[0]).toMatchObject({ name: '竞争终态查询', source: 'model' })
+      expect(vi.getTimerCount()).toBe(0)
+    } finally {
+      panel.unmount()
+      vi.useRealTimers()
+      vi.unstubAllGlobals()
+    }
+  })
 })
