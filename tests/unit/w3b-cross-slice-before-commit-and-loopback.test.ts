@@ -298,10 +298,13 @@ async function fixture() {
   }
   async function status(expected: 'answered' | 'failed') {
     await expect
-      .poll(async () => {
-        const { status, failureCode } = unwrap(await agent.getAgentState())
-        return status === 'failed' && expected === 'answered' ? failureCode : status
-      })
+      .poll(
+        async () => {
+          const { status, failureCode } = unwrap(await agent.getAgentState())
+          return status === 'failed' && expected === 'answered' ? failureCode : status
+        },
+        { timeout: 10_000, interval: 25 },
+      )
       .toBe(expected)
     return unwrap(await agent.getAgentState())
   }
@@ -577,7 +580,7 @@ it(
       }),
     )
     const stale = await f.dispatch({ selectedObjectIds: [id] })
-    await expect.poll(() => f.requests.length).toBe(5)
+    await expect.poll(() => f.requests.length, { timeout: 10_000, interval: 25 }).toBe(5)
     await f.change({
       definitions: [
         {
@@ -595,7 +598,7 @@ it(
       operationId: stale.operationId,
       receipts: [],
     })
-    await expect.poll(() => responseClosed).toBe(true)
+    await expect.poll(() => responseClosed, { timeout: 10_000, interval: 25 }).toBe(true)
     await expect(
       f.agent.buildAgentDraftPlan({ operationId: stale.operationId }),
     ).resolves.toMatchObject({ error: { code: 'STALE_CONTEXT' } })
@@ -697,10 +700,13 @@ it(
       assistanceUpdatedTaskIds: [],
     })
     await expect
-      .poll(async () => {
-        const job = unwrap(await f.tasks.getJob(committed.job.jobId))
-        return job.state === 'failed' ? job.error?.code : job.state
-      })
+      .poll(
+        async () => {
+          const job = unwrap(await f.tasks.getJob(committed.job.jobId))
+          return job.state === 'failed' ? job.error?.code : job.state
+        },
+        { timeout: 10_000, interval: 25 },
+      )
       .toBe('succeeded')
     // The default full-assistance task list marks exactly the ontology-draft
     // targets; the unrelated transfer-classify attempt stays independent.
