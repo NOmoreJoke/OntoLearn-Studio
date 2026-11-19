@@ -1,3 +1,9 @@
+import type {
+  QualityFr505PatternDTO,
+  QualityFr505TripleDTO,
+  QualityRuleViewDTO,
+} from '@ontolearn/contracts'
+
 /** Form serialization only; authoritative definition validation stays in the engine. */
 export type Pattern = {
   kind: 'type' | 'property' | 'compare'
@@ -17,6 +23,27 @@ export function patternValue(row: Pattern) {
       object: row.value,
     }
   return { kind: 'compare' as const, left: row.subject, operator: row.path, right: row.value }
+}
+
+export function fromPattern(pattern: QualityFr505PatternDTO): Pattern {
+  switch (pattern.kind) {
+    case 'type':
+      return { kind: 'type', subject: pattern.subject, path: '', value: pattern.class }
+    case 'property':
+      return {
+        kind: 'property',
+        subject: pattern.subject,
+        path: pattern.path,
+        value: pattern.object,
+      }
+    case 'compare':
+      return {
+        kind: 'compare',
+        subject: pattern.left,
+        path: pattern.operator,
+        value: pattern.right,
+      }
+  }
 }
 
 export function prepareEditorDraft(input: {
@@ -121,4 +148,33 @@ export function detectRuleChainDependencies(
       dependencies.push({ producerRuleId: producer.id, consumerRuleId: draft.id })
   }
   return dependencies
+}
+
+const stripAngleBrackets = (term: string) => term.replace(/^</, '').replace(/>$/, '')
+
+function legacyTripleToPattern([subject, predicate, object]: QualityFr505TripleDTO): Pattern {
+  if (stripAngleBrackets(predicate) === rdfTypePath)
+    return { kind: 'type', subject, path: '', value: stripAngleBrackets(object) }
+  return { kind: 'property', subject, path: stripAngleBrackets(predicate), value: object }
+}
+
+/**
+ * Project a saved rule view into chain-detection input so legacy (imported
+ * triple) rules join the live editor warning exactly like FR-505 ones; term
+ * normalization stays aligned with quality/planning.py:_signature.
+ */
+export function ruleViewToChainInput(rule: QualityRuleViewDTO): RuleChainRuleInput {
+  if (rule.format === 'fr505')
+    return {
+      id: rule.id,
+      enabled: rule.enabled,
+      conditions: rule.conditions.map(fromPattern),
+      conclusions: rule.conclusions.map(fromPattern),
+    }
+  return {
+    id: rule.id,
+    enabled: rule.enabled,
+    conditions: rule.when.map(legacyTripleToPattern),
+    conclusions: rule.then ? [legacyTripleToPattern(rule.then)] : [],
+  }
 }

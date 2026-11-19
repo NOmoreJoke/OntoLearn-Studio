@@ -4,6 +4,8 @@ import type {
   ProjectQualityPrepareDTO,
   ProjectQualityReadDTO,
   QualityRuleTestRequestDTO,
+  QualityRuleTestResultDTO,
+  QualityRuleViewDTO,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '@ontolearn/contracts/v2'
 import {
@@ -13,6 +15,7 @@ import {
 import {
   detectRuleChainDependencies,
   prepareEditorDraft,
+  ruleViewToChainInput,
   type Pattern,
 } from '../../apps/desktop/src/renderer/src/quality/draft'
 import fixtures from '../../packages/contracts/v2/fixtures.json'
@@ -308,6 +311,89 @@ describe('formal quality workspace contracts', () => {
       }),
     ).toBe(false)
   })
+
+  it('accepts constraint version lists and omitted diagnostic counts at their schema boundaries', () => {
+    const resultId = 'c0000000-0000-4000-8000-000000000003'
+    const jobId = 'c0000000-0000-4000-8000-000000000004'
+    const hash = 'a'.repeat(64)
+    const base: ProjectQualityReadDTO = {
+      qualityReadVersion: 1,
+      projectId,
+      rules: [],
+      constraints: [],
+      reasoning: null,
+      validation: {
+        resultId,
+        jobId,
+        state: 'current',
+        staleReasons: [],
+        inputSnapshotId: hash,
+        scope: 'asserted',
+        definitionId: 'name-required',
+        conforms: true,
+        findings: [],
+      },
+    }
+    expect(validateBusiness3('result_project.quality.read', base)).toBe(true)
+    const versioned: ProjectQualityReadDTO = {
+      ...base,
+      validation: {
+        ...base.validation!,
+        constraintVersions: [
+          { definitionId: 'name-required', version: 0 },
+          { definitionId: 'range-checked', version: 1000000 },
+        ],
+      },
+    }
+    expect(validateBusiness3('result_project.quality.read', versioned)).toBe(true)
+    expect(
+      validateBusiness3('result_project.quality.read', {
+        ...base,
+        validation: { ...base.validation!, constraintVersions: [] },
+      }),
+    ).toBe(true)
+    for (const constraintVersions of [
+      [{ definitionId: 'name-required' }],
+      [{ definitionId: 'name-required', version: -1 }],
+      [{ definitionId: 'name-required', version: 1000001 }],
+      [{ definitionId: 'name-required', version: '1' }],
+      [{ definitionId: 'name-required', version: 1, revision: 2 }],
+    ])
+      expect(
+        validateBusiness3('result_project.quality.read', {
+          ...base,
+          validation: { ...base.validation!, constraintVersions },
+        }),
+      ).toBe(false)
+
+    const sample: QualityRuleTestResultDTO = {
+      valid: false,
+      matchesExpected: false,
+      actualOutputs: [],
+      rdfsOutputs: [],
+      expectedOutputs: [],
+      missingOutputs: [],
+      unexpectedOutputs: [],
+      ruleTraces: [],
+      warnings: [],
+      diagnostics: [],
+    }
+    for (const omittedDiagnosticCount of [0, 1, 1000000]) {
+      expect(
+        validateBusiness3('result_project.quality.read', {
+          ...versioned,
+          ruleTestResult: { ...sample, omittedDiagnosticCount },
+        }),
+      ).toBe(true)
+    }
+    for (const omittedDiagnosticCount of [-1, 1000001, '3'])
+      expect(
+        validateBusiness3('result_project.quality.read', {
+          ...versioned,
+          ruleTestResult: { ...sample, omittedDiagnosticCount },
+        }),
+      ).toBe(false)
+  })
 })
 
 describe('seeded quality properties', () => {
@@ -430,6 +516,54 @@ describe('seeded quality properties', () => {
         [rule('R-off', [type('urn:test:Off')], [type('urn:test:OffOut')], false)],
       ),
     ).toEqual([{ producerRuleId: 'R-next', consumerRuleId: 'R-next' }])
+  })
+
+  it('feeds legacy triple rules into live chain detection exactly like FR-505 views', () => {
+    const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+    const legacyRisk = (predicate: string): QualityRuleViewDTO => ({
+      id: 'R-risk',
+      enabled: true,
+      revision: 1,
+      format: 'legacy',
+      when: [
+        ['?equipment', predicate, '<urn:ontolearn:learning:Equipment>'],
+        ['?equipment', '<urn:ontolearn:learning:alarm>', '?alarm'],
+        ['?alarm', 'urn:ontolearn:learning:level', '"High"'],
+      ],
+      then: ['?equipment', rdfType, '<urn:ontolearn:learning:HighRiskEquipment>'],
+    })
+    const conditions: Pattern[] = [
+      {
+        kind: 'type',
+        subject: '?equipment',
+        path: '',
+        value: 'urn:ontolearn:learning:HighRiskEquipment',
+      },
+    ]
+    const conclusions: Pattern[] = [
+      {
+        kind: 'type',
+        subject: '?equipment',
+        path: '',
+        value: 'urn:ontolearn:learning:NeedsInspection',
+      },
+    ]
+    const draft = { id: 'R-next', enabled: true, conditions, conclusions }
+    // G-base ships R-risk with the bare rdf:type predicate; its angle-bracketed
+    // class object normalizes onto the same type write the draft R-next reads.
+    expect(detectRuleChainDependencies(draft, [ruleViewToChainInput(legacyRisk(rdfType))])).toEqual(
+      [
+        { producerRuleId: 'R-risk', consumerRuleId: 'R-next' },
+        { producerRuleId: 'R-next', consumerRuleId: 'R-next' },
+      ],
+    )
+    // An angle-bracketed predicate still resolves to the same type signature.
+    expect(
+      detectRuleChainDependencies(draft, [ruleViewToChainInput(legacyRisk(`<${rdfType}>`))]),
+    ).toEqual([
+      { producerRuleId: 'R-risk', consumerRuleId: 'R-next' },
+      { producerRuleId: 'R-next', consumerRuleId: 'R-next' },
+    ])
   })
 
   it('compares statement sets symmetrically and ignores duplicates and order', () => {

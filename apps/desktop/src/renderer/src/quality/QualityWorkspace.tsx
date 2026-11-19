@@ -21,8 +21,10 @@ import {
 import { compareStatements, type Statement } from './presentation'
 import {
   detectRuleChainDependencies,
+  fromPattern,
   patternValue,
   prepareEditorDraft,
+  ruleViewToChainInput,
   type Pattern,
   type Template,
 } from './draft'
@@ -415,26 +417,6 @@ const emptyForm = (kind: EditorInput['kind']): EditorInput => ({
   conditions: [blank()],
   conclusions: [blank()],
 })
-function fromPattern(pattern: QualityFr505PatternDTO): Pattern {
-  switch (pattern.kind) {
-    case 'type':
-      return { kind: 'type', subject: pattern.subject, path: '', value: pattern.class }
-    case 'property':
-      return {
-        kind: 'property',
-        subject: pattern.subject,
-        path: pattern.path,
-        value: pattern.object,
-      }
-    case 'compare':
-      return {
-        kind: 'compare',
-        subject: pattern.left,
-        path: pattern.operator,
-        value: pattern.right,
-      }
-  }
-}
 
 function editorRevision(source: MainlineProjectReadDTO, kind: EditorInput['kind'], id: string) {
   const current = source.domain.state.definitions.find((row) => row.layer === kind && row.id === id)
@@ -535,6 +517,12 @@ function QualityResults({
         {validation?.inputProjectRevision !== undefined && (
           <> · rev {validation.inputProjectRevision}</>
         )}
+        {validation?.constraintVersions?.length ? (
+          <>
+            {' · 约束版本 '}
+            {validation.constraintVersions.map((v) => `${v.definitionId}@v${v.version}`).join('、')}
+          </>
+        ) : null}
       </p>
       {validation?.conforms === null && (
         <p role="status" data-testid="quality-validation-coverage">
@@ -877,6 +865,14 @@ export function QualityWorkspace({
       const rules = parseSampleRules(sample.rules)
       if (typeof rules === 'string') throw new Error(rules)
       if (inputs.length === 0) throw new Error('输入样本三元组至少需要 1 条。')
+      // Hand-edited JSON may hollow out a rule; stop before the engine's schema
+      // rejection so the author gets an actionable front-end message instead.
+      if (
+        rules.some(
+          (rule) => (rule.conditions?.length ?? 0) === 0 || (rule.conclusions?.length ?? 0) === 0,
+        )
+      )
+        throw new Error('样本规则至少需要 1 条条件与 1 条结论。')
       const ruleTest: QualityRuleTestRequestDTO = {
         ...(ontology.length ? { ontologyTriples: ontology } : {}),
         inputTriples: inputs,
@@ -898,11 +894,15 @@ export function QualityWorkspace({
         )
         requireCurrent(captured)
         const read = (state: ProjectQualityReadDTO) => state.ruleTestResult ?? null
+        const firstResult = read(first)
+        const secondResult = read(second)
+        // An invalid sample has no trustworthy outputs to compare; never report
+        // a fake "both orders agree" verdict for a structurally rejected test.
         orderMatch =
-          Boolean(read(first)) &&
-          Boolean(read(second)) &&
-          JSON.stringify([read(first)!.actualOutputs, read(first)!.warnings]) ===
-            JSON.stringify([read(second)!.actualOutputs, read(second)!.warnings])
+          firstResult?.valid === true && secondResult?.valid === true
+            ? JSON.stringify([firstResult.actualOutputs, firstResult.warnings]) ===
+              JSON.stringify([secondResult.actualOutputs, secondResult.warnings])
+            : null
       }
       setSampleOutput({ result: first.ruleTestResult ?? null, orderMatch })
     })
@@ -921,18 +921,7 @@ export function QualityWorkspace({
             conditions: form.conditions,
             conclusions: form.conclusions,
           },
-          quality.state.rules.flatMap((rule) =>
-            rule.format === 'fr505'
-              ? [
-                  {
-                    id: rule.id,
-                    enabled: rule.enabled,
-                    conditions: rule.conditions.map(fromPattern),
-                    conclusions: rule.conclusions.map(fromPattern),
-                  },
-                ]
-              : [],
-          ),
+          quality.state.rules.map(ruleViewToChainInput),
         )
       : []
   return (
@@ -1261,6 +1250,12 @@ export function QualityWorkspace({
                     </li>
                   ))}
                 </ul>
+              )}
+              {sampleOutput.result && (sampleOutput.result.omittedDiagnosticCount ?? 0) > 0 && (
+                <p role="status" data-testid="quality-sample-diagnostics-omitted">
+                  另有 {sampleOutput.result.omittedDiagnosticCount} 条校验错误未显示（最多显示 256
+                  条）。
+                </p>
               )}
               {sampleOutput.result && sampleOutput.result.warnings.length > 0 && (
                 <ul aria-label="样本测试提示">
