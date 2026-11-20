@@ -29,24 +29,32 @@ SECRET_PATTERNS = (
 )
 REDACTION_MARKERS = ("[REDACTED]", "\u2588\u2588\u2588", "\ufffd\ufffd\ufffd")
 
-# W4-02: deterministic host-absolute-path hygiene for every outbound surface.
-# A path token is hostile only when it starts like a real host path: one of the
-# frozen private roots at a token boundary (start of text or after whitespace),
-# a Windows drive root, a file:// scheme, or the frozen staging directory name.
-# Legitimate RDF IRIs are never touched: ``urn:x:home`` has no slash-rooted
-# prefix, and ``http://example.com/Users/x`` keeps an alphanumeric character
-# before ``/Users`` so the boundary check cannot fire.
+# W4-02 / W4R2-01: deterministic host-absolute-path hygiene for every outbound
+# surface. A path token is hostile when it carries a POSIX private root (even
+# when glued to CJK characters or JSON/HTML punctuation such as
+# ``备份/Users/kyle/桌面`` or ``"name":"/Users/kyle"``), a Windows drive root, a
+# file:// scheme, or the frozen staging directory name. Non-file hierarchical
+# ASCII URIs (such as ``http://example.com/Users/x`` or ``https://.../home/v1``)
+# and relative slash paths (such as ``docs/home/index.md``) are masked/skipped so
+# legitimate RDF IRIs and ordinary project prose stay byte-for-byte intact.
 HOST_PATH_PLACEHOLDER = "<local-path>"
 STAGING_DIRECTORY_NAME = ".ontolearn-host-selections"
+_NON_FILE_URI_RE = re.compile(
+    r"(?i)(?<![A-Za-z0-9+.-])(?!file://)[a-z][a-z0-9+.-]*://[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=%-]+"
+)
 _HOST_PATH_MARKERS = (
     re.compile(
-        r"(?:(?<=\A)|(?<=\s))/(?:Users|home|private|var|tmp|etc|Volumes|root)"
-        r"(?=/|\Z)"
+        r"(?<![A-Za-z0-9._/\\-])/(?:Users|home|private|var|tmp|etc|Volumes|root)"
+        r"(?=/|\Z|[\s\"'])"
     ),
-    re.compile(r"(?:(?<=\A)|(?<=\s))[A-Za-z]:(?=\\)"),
+    re.compile(r"(?<![A-Za-z0-9._/\\-])[A-Za-z]:(?=\\)"),
     re.compile(r"(?i)file://"),
-    re.compile(r"(?<![\w.-])\.ontolearn-host-selections(?![\w.-])"),
+    re.compile(r"(?<![A-Za-z0-9._-])\.ontolearn-host-selections(?![A-Za-z0-9._-])"),
 )
+
+
+def _strip_non_file_uris(value):
+    return _NON_FILE_URI_RE.sub("", value)
 
 
 def host_path_marker(value):
@@ -55,7 +63,8 @@ def host_path_marker(value):
     ordinary Chinese/ASCII project names."""
     if not isinstance(value, str) or not value:
         return False
-    return any(pattern.search(value) is not None for pattern in _HOST_PATH_MARKERS)
+    scrubbed = _strip_non_file_uris(value)
+    return any(pattern.search(scrubbed) is not None for pattern in _HOST_PATH_MARKERS)
 
 
 def sanitize_text(value):

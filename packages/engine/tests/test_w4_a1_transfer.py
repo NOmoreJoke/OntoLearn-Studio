@@ -29,6 +29,7 @@ from ontolearn_engine.transfer import package as transfer_package
 from ontolearn_engine.transfer.credential_scan import (
     CredentialLeak,
     host_path_marker,
+    sanitize_text,
     scan_projection,
 )
 from ontolearn_engine.transfer.report import learning_attempts
@@ -1700,3 +1701,137 @@ def test_history_and_result_scan_caps_live_in_ordered_sql(owned):
         ]
         == 0
     )
+
+
+def test_w4r2_01_embedded_cjk_and_punctuated_host_paths_are_scrubbed_preserving_iris(owned):
+    # W4R2-01: CJK-glued and punctuation-delimited host paths must be scrubbed
+    # and blocked identically to space-separated paths, while legitimate IRIs
+    # and relative documentation paths stay byte-for-byte untouched.
+    hostile_cases = [
+        "备份/Users/kyle/桌面",
+        "name:备份/var/log/x",
+        "路径为/Users/kyle",
+        "路径:/Users/kyle",
+        "备份C:\\Users\\kyle\\secret",
+        "备份.ontolearn-host-selections/sel",
+        "备份file:///Users/kyle/a.txt",
+        '"name":"备份/Users/kyle/桌面"',
+        '"name":"/Users/kyle/a"',
+        '"name":"路径为/Users"',
+        "<title>备份/Users/kyle/桌面</title>",
+    ]
+    for sample in hostile_cases:
+        assert host_path_marker(sample) is True, sample
+        cleaned = sanitize_text(sample)
+        assert cleaned == "<local-path>", (sample, cleaned)
+        assert host_path_marker(cleaned) is False
+
+    mixed = "见 http://example.com/Users/x 与 备份/Users/kyle/桌面"
+    assert sanitize_text(mixed) == "见 http://example.com/Users/x 与 <local-path>"
+    assert host_path_marker(sanitize_text(mixed)) is False
+
+    safe_iris = [
+        "http://example.com/Users/x",
+        "https://example.org/home/v1",
+        "urn:x:home",
+        "urn:x:equipment/001",
+        "</root>",
+        "docs/home/index.md",
+        "http://example.org/本体/设备",
+    ]
+    for iri in safe_iris:
+        assert host_path_marker(iri) is False, iri
+        assert sanitize_text(iri) == iri, iri
+
+    # Real Coordinator ZIP + HTML export round-trip with CJK-prefixed host path.
+    actor, store = owned
+    project = open_blank(actor, "备份/Users/kyle/桌面")
+    archive = build_exported_package(actor, project, "full")
+    texts = all_member_text(archive)
+    assert all("/Users/kyle" not in text for text in texts)
+    assert not any(host_path_marker(text) for text in texts)
+    checkpoint_text = member_bytes(archive, "data/checkpoint.json").decode("utf-8")
+    assert "<local-path>" in checkpoint_text
+
+    revision = store.revision(store._project(project))
+    prepared = ok(
+        exchange(
+            actor,
+            "project.transfer.report.prepare",
+            {"projectId": project, "baseRevision": revision},
+        )
+    )
+    assert prepared["report"]["title"] == "<local-path>"
+    selection = stage_outbound(actor, project, "report-html", ".html", "output.html")
+    ok(
+        exchange(
+            actor,
+            "project.transfer.report.export",
+            {
+                "projectId": project,
+                "baseRevision": revision,
+                "selectionId": selection,
+                "reportRef": prepared["reportRef"],
+                "operationId": uid(),
+            },
+        )
+    )
+    html_text = (
+        actor.store.path.parent / ".ontolearn-host-selections" / selection / "output.html"
+    ).read_text(encoding="utf-8")
+    assert "/Users/kyle" not in html_text
+    assert "&lt;local-path&gt;" in html_text
+    assert host_path_marker(html_text) is False
+
+
+def test_w4r2_01_sanitize_text_seeded_property_invariants():
+    # Fixed-seed property checks across 200 generated strings combining CJK,
+    # punctuation, POSIX/Windows/staging paths, and valid hierarchical IRIs.
+    rng = random.Random(20261120)
+    prefixes = ["", "备份", "项目:", '"name":"', "路径为", "<title>"]
+    host_roots = [
+        "/Users/kyle/桌面",
+        "/home/alice/work",
+        "/private/var/tmp",
+        "/var/log/x",
+        "/tmp/out",
+        "/etc/hosts",
+        "/Volumes/disk",
+        "/root",
+        "C:\\Users\\kyle\\doc",
+        "file:///Users/kyle/a.txt",
+        ".ontolearn-host-selections/sel-1",
+    ]
+    clean_tokens = [
+        "中文项目",
+        "本体图谱",
+        "http://example.com/Users/x",
+        "https://example.org/home/v1",
+        "urn:x:home",
+        "urn:x:equipment/001",
+        "docs/home/index.md",
+        "</root>",
+        "http://example.org/本体/设备",
+    ]
+
+    for _ in range(200):
+        count = rng.randint(1, 5)
+        tokens = []
+        has_hostile = rng.random() < 0.65
+        for _idx in range(count):
+            if has_hostile and rng.random() < 0.5:
+                pref = rng.choice(prefixes)
+                suffix = '"' if pref.endswith('"') else ("</title>" if pref == "<title>" else "")
+                tokens.append(f"{pref}{rng.choice(host_roots)}{suffix}")
+            else:
+                tokens.append(rng.choice(clean_tokens))
+        text = " ".join(tokens)
+        scrubbed = sanitize_text(text)
+        assert sanitize_text(scrubbed) == scrubbed
+        assert host_path_marker(scrubbed) is False
+
+    # Pure clean IRIs and CJK prose stay byte-for-byte identical.
+    for _ in range(100):
+        clean_text = " ".join(rng.choices(clean_tokens, k=rng.randint(1, 5)))
+        assert host_path_marker(clean_text) is False
+        assert sanitize_text(clean_text) == clean_text
