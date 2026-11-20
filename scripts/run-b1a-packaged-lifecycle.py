@@ -66,7 +66,7 @@ def process_info(pid: int) -> Process | None:
     if sys.platform == "linux":
         try:
             raw = Path(f"/proc/{pid}/stat").read_text()
-        except FileNotFoundError:
+        except (FileNotFoundError, ProcessLookupError):
             return None
         values = raw.rpartition(")")[2].split()
         if len(values) < 20:
@@ -125,7 +125,7 @@ def process_command(pid: int) -> str | None:
                 .replace(b"\0", b" ")
                 .decode("utf-8", "replace")
             )
-        except FileNotFoundError:
+        except (FileNotFoundError, ProcessLookupError):
             return None
     if sys.platform == "darwin":
         result = subprocess.run(
