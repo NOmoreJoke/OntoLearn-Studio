@@ -263,8 +263,14 @@ def write_outbound(store, selection_id, output_file, data):
                 os.fsync(fd)
         finally:
             os.close(fd)
-        if not stat.S_ISREG(os.fstat(os.open(temp_name, os.O_RDONLY, dir_fd=sel_fd)).st_mode):
-            _fault("WRITE_FAILED")
+        # Verify the staged temp with an explicitly owned, always-closed FD;
+        # both the regular-check and every fault path below release it.
+        verify_fd = os.open(temp_name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=sel_fd)
+        try:
+            if not stat.S_ISREG(os.fstat(verify_fd).st_mode):
+                _fault("WRITE_FAILED")
+        finally:
+            os.close(verify_fd)
         try:
             existing = os.open(output_file, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=sel_fd)
         except FileNotFoundError:

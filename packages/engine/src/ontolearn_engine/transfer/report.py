@@ -15,6 +15,7 @@ import json
 from datetime import UTC, datetime
 
 from ontolearn_engine.storage import canonical, digest
+from ontolearn_engine.transfer.credential_scan import sanitize_text
 
 PROJECTION_VERSION = "ontolearn-report-v1"
 MAX_LIST = 200
@@ -56,9 +57,9 @@ def _feedback_text(payload):
     if feedback is None:
         return ""
     if isinstance(feedback, str):
-        return feedback[:16384]
+        return sanitize_text(feedback[:16384])
     try:
-        return canonical(feedback)[:16384]
+        return sanitize_text(canonical(feedback)[:16384])
     except (TypeError, ValueError):
         return ""
 
@@ -143,7 +144,8 @@ def collect(store, project, internal, host):
     return {
         "projectionVersion": PROJECTION_VERSION,
         "projectId": project,
-        "title": (metadata.get("name") or "项目报告")[:16384],
+        # W4-02: host absolute paths in free-text titles never leave the engine.
+        "title": sanitize_text((metadata.get("name") or "项目报告")[:16384]),
         "generatedAt": _now_iso(),
         "projectRevision": store.revision(internal),
         "goals": [],
@@ -186,7 +188,15 @@ def _w4_results(store, project, internal):
             record["binding"]["baseRevision"] == revision
             and record["binding"]["inputSnapshotId"] == snapshot_id
         ):
-            status, note = "current", "当前结果"
+            # W4-12: reuse behavior.read's exact scope freshness so a run whose
+            # isolated scope was taken over by a newer run is never presented
+            # as current here; the frozen stale reason stays identical.
+            if behavior_service._scope_replaced(
+                store, record["projectId"], record["runId"], record["binding"]["scopeId"]
+            ):
+                status, note = "stale", "scope-replaced"
+            else:
+                status, note = "current", "当前结果"
         else:
             status, note = "stale", "输入已更新，结果过期"
         behavior_rows.append(
@@ -282,12 +292,15 @@ def _semantic_results(store, internal):
     a statement; identifiers always bind through parameters.
     """
     query_rows, validation_rows = [], []
+    # W4-13: the scan cap lives in the SQL itself with a deterministic order,
+    # never in a post-fetchall Python slice.
     ids = [
         row[0]
         for row in store._db.execute(
-            "SELECT id FROM results WHERE project=?", (internal,)
+            "SELECT id FROM results WHERE project=? ORDER BY rowid LIMIT ?",
+            (internal, RESULT_SCAN_CAP),
         ).fetchall()
-    ][:RESULT_SCAN_CAP]
+    ]
     for result_id in ids:
         meta = store._db.execute(
             "SELECT job, projection FROM job_results WHERE id=?", (result_id,)

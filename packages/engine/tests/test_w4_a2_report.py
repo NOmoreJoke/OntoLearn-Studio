@@ -199,3 +199,48 @@ def test_projection_accessors_are_bounded_and_folded(w4a2_runtime):
     loaded = scenario_service.load_run(store, project, scenario_run["runId"])
     assert loaded["status"] == "succeeded"
     assert json.dumps(loaded["rounds"], sort_keys=True)
+
+
+def test_report_marks_scope_replaced_runs_exactly_like_behavior_read(w4a2_runtime):
+    # W4-12: two runs of one isolated scope at the same revision/snapshot must
+    # show the older one as stale/scope-replaced in the report, matching
+    # behavior.read's freshness instead of mislabeling it current.
+    actor, store = w4a2_runtime
+    project, revision, snapshot_id = prepared_project(actor, store)
+    scope = uid()
+    first_operation = uid()
+    ok(before_run(actor, project, first_operation, revision, domain="behavior"))
+    first_bind = binding(project, revision, snapshot_id, scope_id=scope)
+    first = ok(
+        run_behavior(
+            actor, project, revision, snapshot_id, operation=first_operation, bind=first_bind
+        )
+    )
+    second_operation = uid()
+    ok(before_run(actor, project, second_operation, revision, domain="behavior"))
+    second_bind = binding(project, revision, snapshot_id, scope_id=scope)
+    second = ok(
+        run_behavior(
+            actor, project, revision, snapshot_id, operation=second_operation, bind=second_bind
+        )
+    )
+    report = ok(prepare_report(actor, project, revision))["report"]
+    rows = {entry["resultId"]: entry for entry in report["behaviorResults"]}
+    assert rows[first["runId"]]["status"] == "stale"
+    assert rows[first["runId"]]["statusNote"] == "scope-replaced"
+    assert rows[second["runId"]]["status"] == "current"
+    # Identical verdict to the behavior.read wire service for the same run.
+    read = exchange(
+        actor,
+        "project.behavior.read",
+        {
+            "projectId": project,
+            "operationId": first_operation,
+            "runId": first["runId"],
+            "scope": "sample",
+            "binding": first_bind,
+        },
+    )
+    read_result = ok(read)
+    assert read_result["freshness"] == "stale"
+    assert read_result["staleReason"] == "scope-replaced"

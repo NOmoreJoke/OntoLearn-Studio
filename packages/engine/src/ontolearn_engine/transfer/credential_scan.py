@@ -29,6 +29,47 @@ SECRET_PATTERNS = (
 )
 REDACTION_MARKERS = ("[REDACTED]", "\u2588\u2588\u2588", "\ufffd\ufffd\ufffd")
 
+# W4-02: deterministic host-absolute-path hygiene for every outbound surface.
+# A path token is hostile only when it starts like a real host path: one of the
+# frozen private roots at a token boundary (start of text or after whitespace),
+# a Windows drive root, a file:// scheme, or the frozen staging directory name.
+# Legitimate RDF IRIs are never touched: ``urn:x:home`` has no slash-rooted
+# prefix, and ``http://example.com/Users/x`` keeps an alphanumeric character
+# before ``/Users`` so the boundary check cannot fire.
+HOST_PATH_PLACEHOLDER = "<local-path>"
+STAGING_DIRECTORY_NAME = ".ontolearn-host-selections"
+_HOST_PATH_MARKERS = (
+    re.compile(
+        r"(?:(?<=\A)|(?<=\s))/(?:Users|home|private|var|tmp|etc|Volumes|root)"
+        r"(?=/|\Z)"
+    ),
+    re.compile(r"(?:(?<=\A)|(?<=\s))[A-Za-z]:(?=\\)"),
+    re.compile(r"(?i)file://"),
+    re.compile(r"(?<![\w.-])\.ontolearn-host-selections(?![\w.-])"),
+)
+
+
+def host_path_marker(value):
+    """True when free text carries a host absolute path or private directory
+    identifier token. Never matches legitimate ``urn:``/``http(s)://`` IRIs or
+    ordinary Chinese/ASCII project names."""
+    if not isinstance(value, str) or not value:
+        return False
+    return any(pattern.search(value) is not None for pattern in _HOST_PATH_MARKERS)
+
+
+def sanitize_text(value):
+    """Replace every whitespace-delimited token carrying a host path marker
+    with the fixed ``<local-path>`` placeholder; separators and every other
+    byte are untouched."""
+
+    def scrub(token):
+        return HOST_PATH_PLACEHOLDER if host_path_marker(token.group()) else token.group()
+
+    if not host_path_marker(value):
+        return value
+    return re.sub(r"\S+", scrub, value)
+
 
 class CredentialLeak(Exception):
     """Raised before any output byte exists; never carries the secret."""

@@ -16,6 +16,7 @@ import io
 import json
 import os
 import random
+import struct
 import zipfile
 from uuid import uuid4
 
@@ -25,7 +26,11 @@ from ontolearn_engine.job_store import JobStore
 from ontolearn_engine.resources import CONTRACT
 from ontolearn_engine.storage import digest
 from ontolearn_engine.transfer import package as transfer_package
-from ontolearn_engine.transfer.credential_scan import CredentialLeak, scan_projection
+from ontolearn_engine.transfer.credential_scan import (
+    CredentialLeak,
+    host_path_marker,
+    scan_projection,
+)
 from ontolearn_engine.transfer.report import learning_attempts
 
 OPTIONS_OFF = {"agentSessions": False, "rawSources": False, "derived": False, "history": False}
@@ -1051,15 +1056,40 @@ def test_report_export_rejects_moved_revision(owned):
 # ---------------------------------------------------------------------------
 
 
+def _synthetic_member(role, seed):
+    """Structurally valid v1 member payloads for the seeded generator."""
+    if role == "definitions":
+        return json.dumps(
+            {
+                "definitions": [
+                    {"layer": "ontology", "id": f"G{seed}", "payload": json.dumps({"seed": seed})}
+                ]
+            }
+        ).encode()
+    shapes = {
+        "assertions": {"facts": []},
+        "ownership": {"mappingState": {}},
+        "checkpoint": {
+            "domainRevision": seed,
+            "operationSequence": seed,
+            "metadata": {},
+            "metadataVersion": seed,
+        },
+        "agent-session": {"learning": []},
+        "history": {"operations": []},
+    }
+    return json.dumps(shapes[role]).encode()
+
+
 def test_property_manifest_zip_round_trip_invariants():
     rng = random.Random(1120)
-    for _ in range(10):
+    for seed in range(10):
         roles = ["definitions"]
         if rng.random() < 0.7:
             roles += ["assertions", "ownership", "checkpoint"]
         kind = "full" if len(roles) == 4 else "template"
         options = {key: rng.random() < 0.3 for key in OPTIONS_OFF}
-        entries = {role: json.dumps({role: rng.randint(0, 100)}).encode() for role in roles}
+        entries = {role: _synthetic_member(role, seed) for role in roles}
         manifest = transfer_package.build_manifest(kind, options, entries)
         raw = transfer_package.build_archive(manifest, entries)
         inspected = transfer_package.inspect_v1(raw, kind)
@@ -1082,9 +1112,9 @@ def test_property_builder_rejects_role_option_violations():
     for _ in range(10):
         include_optional = rng.random() < 0.5
         options = {**OPTIONS_OFF, "history": include_optional}
-        entries = {"definitions": b"{}"}
+        entries = {"definitions": _synthetic_member("definitions", 0)}
         if include_optional and rng.random() < 0.8:
-            entries["history"] = b"[]"
+            entries["history"] = _synthetic_member("history", 0)
         manifest = transfer_package.build_manifest("template", options, entries)
         roles = {file["role"] for file in manifest["files"]}
         assert ("history" in roles) <= options["history"]
@@ -1092,7 +1122,581 @@ def test_property_builder_rejects_role_option_violations():
         if not include_optional:
             with pytest.raises(transfer_package.PackageError):
                 transfer_package.build_manifest(
-                    "template", options, {"definitions": b"{}", "history": b"[]"}
+                    "template", options, {**entries, "history": _synthetic_member("history", 0)}
                 )
         with pytest.raises(transfer_package.PackageError):
             transfer_package.build_manifest("template", OPTIONS_OFF, {"vault": b"{}"})
+
+
+# ---------------------------------------------------------------------------
+# W4 R2 regression: FD hygiene, atomic import, path hygiene, full fidelity,
+# strict version/member inspection, ZIP envelope consistency, SQL caps
+# ---------------------------------------------------------------------------
+
+
+def member_bytes(archive, name):
+    with zipfile.ZipFile(io.BytesIO(archive)) as source:
+        return source.read(name)
+
+
+def all_member_text(archive):
+    with zipfile.ZipFile(io.BytesIO(archive)) as source:
+        return [source.read(name).decode("utf-8", errors="replace") for name in source.namelist()]
+
+
+def repack_member(archive, path, payload):
+    """Repack with one member's bytes replaced and its manifest entry fixed."""
+    from ontolearn_engine.storage import canonical as canonical_json
+
+    entries = {}
+    with zipfile.ZipFile(io.BytesIO(archive)) as source:
+        manifest = json.loads(source.read("manifest.json"))
+        for name in source.namelist():
+            if name != "manifest.json":
+                entries[name] = source.read(name)
+    entries[path] = payload
+    for record in manifest["files"]:
+        if record["path"] == path:
+            record["size"] = len(payload)
+            record["sha256"] = hashlib.sha256(payload).hexdigest()
+    stream = io.BytesIO()
+    with zipfile.ZipFile(stream, "w", zipfile.ZIP_DEFLATED) as out:
+        out.writestr("manifest.json", canonical_json(manifest).encode("utf-8"))
+        for name, data in entries.items():
+            out.writestr(name, data)
+    return stream.getvalue()
+
+
+def public_project_count(store):
+    return store._db.execute("SELECT count(*) FROM public_projects").fetchone()[0]
+
+
+def import_receipt_count(store):
+    return store._db.execute(
+        "SELECT count(*) FROM job_details WHERE id LIKE 'transfer-import:%'"
+    ).fetchone()[0]
+
+
+def job_details_count(store):
+    return store._db.execute("SELECT count(*) FROM job_details").fetchone()[0]
+
+
+def import_full(actor, store, project, archive, operation=None):
+    selection = stage_inbound(
+        actor, project, archive, "payload.ontolearn.zip", "zip", ".ontolearn.zip"
+    )
+    check = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import.check",
+            {"projectId": project, "selectionId": selection, "expectedKind": "full"},
+        )
+    )
+    assert check["status"] == "compatible"
+    imported = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import",
+            {
+                "projectId": project,
+                "selectionId": selection,
+                "checkRef": check["checkRef"],
+                "operationId": operation or uid(),
+                "expectedKind": "full",
+                "packageSha256": check["packageSha256"],
+            },
+        )
+    )
+    return imported
+
+
+def test_write_outbound_never_leaks_file_descriptors(owned):
+    # W4-05: every publish (and every faulting publish) closes its verify FD.
+    actor, store = owned
+    project = open_blank(actor, "描述符项目")
+    revision = store.revision(store._project(project))
+    prepared = ok(
+        exchange(
+            actor,
+            "project.transfer.report.prepare",
+            {"projectId": project, "baseRevision": revision},
+        )
+    )
+    selection = stage_outbound(actor, project, "report-html", ".html", "output.html")
+    export_args = {
+        "projectId": project,
+        "baseRevision": revision,
+        "selectionId": selection,
+        "reportRef": prepared["reportRef"],
+        "operationId": uid(),
+    }
+    before = len(os.listdir("/dev/fd"))
+    for _ in range(5):
+        ok(
+            exchange(
+                actor,
+                "project.transfer.report.export",
+                {**export_args, "operationId": uid()},
+            )
+        )
+    # Fault path: an existing non-regular target must fault after the temp
+    # verification open, with the verify FD still released every time.
+    folder = actor.store.path.parent / ".ontolearn-host-selections" / selection
+    (folder / "output.html").unlink()
+    (folder / "output.html").mkdir()
+    for _ in range(3):
+        denied(
+            exchange(
+                actor,
+                "project.transfer.report.export",
+                {**export_args, "operationId": uid()},
+            ),
+            "INVALID_STATE",
+        )
+    after = len(os.listdir("/dev/fd"))
+    assert before == after, (before, after)
+
+
+def test_import_operation_conflict_and_mid_failure_leave_zero_residue(owned):
+    # W4-01: reused operationId conflicts and mid-transaction failures both
+    # leave public_projects and the import receipts with a zero-row increment.
+    actor, store = owned
+    project = populated_project(actor, store)
+    archive = build_exported_package(actor, project, "full")
+    operation = uid()
+    first = import_full(actor, store, project, archive, operation=operation)
+    projects_before = public_project_count(store)
+    receipts_before = import_receipt_count(store)
+    # Same operationId with a different request hash is a pure conflict.
+    denied(
+        exchange(
+            actor,
+            "project.transfer.package.import",
+            {
+                "projectId": project,
+                "selectionId": first["selectionId"],
+                "checkRef": first["checkRef"],
+                "operationId": operation,
+                "expectedKind": "full",
+                "packageSha256": "0" * 64,
+            },
+        ),
+        "IDENTITY_CONFLICT",
+    )
+    assert public_project_count(store) == projects_before
+    assert import_receipt_count(store) == receipts_before
+    # A package whose managed rows collide on one fact id fails mid-import
+    # (inside the outer transaction, after the project was created).
+    facts = json.loads(member_bytes(archive, "data/assertions.json"))["facts"]
+    managed = next(fact for fact in facts if fact["owner"] is not None)
+    duplicate = {**managed, "sourceRow": "row-collides"}
+    facts.append(duplicate)
+    broken = repack_member(
+        archive, "data/assertions.json", json.dumps({"facts": facts}, ensure_ascii=False).encode()
+    )
+    selection = stage_inbound(
+        actor, project, broken, "payload.ontolearn.zip", "zip", ".ontolearn.zip"
+    )
+    check = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import.check",
+            {"projectId": project, "selectionId": selection, "expectedKind": "full"},
+        )
+    )
+    response = exchange(
+        actor,
+        "project.transfer.package.import",
+        {
+            "projectId": project,
+            "selectionId": selection,
+            "checkRef": check["checkRef"],
+            "operationId": uid(),
+            "expectedKind": "full",
+            "packageSha256": check["packageSha256"],
+        },
+    )
+    assert not response["ok"] and response["error"]["code"] == "INVALID_REQUEST", response
+    assert public_project_count(store) == projects_before
+    assert import_receipt_count(store) == receipts_before
+    # A fresh operationId imports the good package successfully afterwards.
+    retry = import_full(actor, store, project, archive)
+    assert retry["importedProjectId"] != project
+    assert public_project_count(store) == projects_before + 1
+
+
+def test_export_rejects_raw_sources_and_derived_options(owned):
+    # W4-03: the format cannot carry raw sources or derived copies, so the
+    # check refuses those options instead of silently omitting their members.
+    actor, store = owned
+    project = open_blank(actor, "选项项目")
+    selection = stage_outbound(
+        actor, project, "package-export", ".ontolearn.zip", "output.ontolearn.zip"
+    )
+    revision = store.revision(store._project(project))
+    for key in ("rawSources", "derived"):
+        denied(
+            exchange(
+                actor,
+                "project.transfer.package.export.check",
+                {
+                    "projectId": project,
+                    "selectionId": selection,
+                    "kind": "full",
+                    "baseRevision": revision,
+                    "options": {**OPTIONS_OFF, key: True},
+                },
+            ),
+            "INVALID_REQUEST",
+        )
+
+
+def test_export_scrubs_host_absolute_paths_from_package_bytes(owned):
+    # W4-02: host absolute paths in free text never reach any archive byte;
+    # ordinary Chinese names and urn: IRIs stay byte-identical.
+    actor, store = owned
+    hostile_names = [
+        "/Users/kyle/lib/secret 项目",
+        "C:\\Users\\kyle\\secret 项目",
+        "共享 .ontolearn-host-selections/sel 拼接",
+        "file:///Users/kyle/secret 项目",
+    ]
+    for name in hostile_names:
+        project = open_blank(actor, name)
+        archive = build_exported_package(actor, project, "full")
+        texts = all_member_text(archive)
+        assert not any(host_path_marker(text) for text in texts), name
+        checkpoint_text = member_bytes(archive, "data/checkpoint.json").decode("utf-8")
+        assert "<local-path>" in checkpoint_text
+    # Clean business text survives byte-for-byte.
+    clean = populated_project(actor, store)
+    archive = build_exported_package(actor, clean, "full")
+    texts = all_member_text(archive)
+    assert any("完整项目" in text for text in texts)
+    assert any("urn:x:equipment/001" in text for text in texts)
+
+
+def test_report_html_scrubs_host_absolute_paths(owned):
+    # W4-02: the report title is sanitized before any HTML byte is staged.
+    actor, store = owned
+    project = open_blank(actor, "/private/var/db/机密 项目")
+    revision = store.revision(store._project(project))
+    prepared = ok(
+        exchange(
+            actor,
+            "project.transfer.report.prepare",
+            {"projectId": project, "baseRevision": revision},
+        )
+    )
+    assert "<local-path>" in prepared["report"]["title"]
+    selection = stage_outbound(actor, project, "report-html", ".html", "output.html")
+    ok(
+        exchange(
+            actor,
+            "project.transfer.report.export",
+            {
+                "projectId": project,
+                "baseRevision": revision,
+                "selectionId": selection,
+                "reportRef": prepared["reportRef"],
+                "operationId": uid(),
+            },
+        )
+    )
+    html_text = (
+        actor.store.path.parent / ".ontolearn-host-selections" / selection / "output.html"
+    ).read_text()
+    assert "/private/var" not in html_text
+    # The placeholder is escaped like every dynamic string in the CSP-safe HTML.
+    assert "&lt;local-path&gt;" in html_text
+
+
+def test_full_round_trip_restores_edited_managed_fact_exactly(owned):
+    # W4-03: a managed fact edited in the Store round-trips with its exact
+    # owner/source_row/managed_value/object quartet and identical ownership.
+    actor, store = owned
+    project = populated_project(actor, store)
+    internal = store._project(project)
+    drift_id = digest(["urn:x:equipment/003", "urn:x:name", '"C"'])
+    store.commit(
+        internal,
+        store.revision(internal),
+        uid(),
+        uid(),
+        edits={drift_id: '"泵站C-手改"'},
+    )
+    source_state = store.state(internal)
+    source_fact = next(fact for fact in source_state["facts"] if fact["id"] == drift_id)
+    assert source_fact["owner"] == "equip-map"
+    assert source_fact["managed_value"] == '"C"'
+    assert source_fact["object"] == '"泵站C-手改"'
+    archive = build_exported_package(actor, project, "full")
+    imported = import_full(actor, store, project, archive)
+    imported_state = store.state(store._project(imported["importedProjectId"]))
+    assert imported_state["facts"] == source_state["facts"]
+    assert imported_state["mappingState"] == source_state["mappingState"]
+    # Re-exporting the imported project reproduces the ownership member bytes.
+    ok(exchange(actor, "project.open", {"projectId": imported["importedProjectId"]}))
+    archive2 = build_exported_package(actor, imported["importedProjectId"], "full")
+    assert member_bytes(archive2, "data/ownership.json") == member_bytes(
+        archive, "data/ownership.json"
+    )
+
+
+def test_full_round_trip_restores_managed_tombstone_exactly(owned):
+    # W4-03: a removed managed fact (tombstone) round-trips as a tombstone.
+    actor, store = owned
+    project = populated_project(actor, store)
+    internal = store._project(project)
+    tombstone_id = digest(["urn:x:equipment/003", "urn:x:name", '"C"'])
+    store.commit(
+        internal,
+        store.revision(internal),
+        uid(),
+        uid(),
+        remove=[tombstone_id],
+    )
+    source_state = store.state(internal)
+    source_fact = next(fact for fact in source_state["facts"] if fact["id"] == tombstone_id)
+    assert source_fact["owner"] == "equip-map" and source_fact["object"] is None
+    archive = build_exported_package(actor, project, "full")
+    imported = import_full(actor, store, project, archive)
+    imported_state = store.state(store._project(imported["importedProjectId"]))
+    assert imported_state["facts"] == source_state["facts"]
+    assert imported_state["mappingState"] == source_state["mappingState"]
+
+
+def test_full_package_restores_agent_sessions_and_preserves_history(owned):
+    # W4-03: agentSessions genuinely restores the learning ledger; history is
+    # preserved verbatim in the durable import receipt and portability no
+    # longer claims it is missing.
+    actor, store = owned
+    project = populated_project(actor, store)
+    attempt = uid()
+    payload = {
+        "taskId": "transfer-repair",
+        "operationComplete": True,
+        "maxHintLevel": 0,
+        "assistance": "independent",
+        "checkStatus": "passed",
+        "evidenceIds": ["ev-1"],
+        "lastFeedback": None,
+        "completedGuidedStages": [],
+    }
+    change = {
+        "type": "learning.record",
+        "attempt": attempt,
+        "course": "检修",
+        "task": "transfer-repair",
+        "expectedRecordVersion": None,
+        "payload": payload,
+        "assistanceEvent": None,
+    }
+    writer = uid()
+    prepared = store.prepare_application(project, change, actor=writer, permission="write")
+    store.apply_application(
+        project,
+        uid(),
+        change,
+        actor=writer,
+        permission="write",
+        prepared_plan_ref=prepared["preparedPlanRef"],
+        confirmation_ref=prepared["confirmationRef"],
+    )
+    options = {**OPTIONS_OFF, "agentSessions": True, "history": True}
+    archive = build_exported_package(actor, project, "full", options)
+    learning_member = json.loads(member_bytes(archive, "data/agent-session.json"))
+    assert [row["attempt"] for row in learning_member["learning"]] == [attempt]
+    history_member = json.loads(member_bytes(archive, "data/history.json"))
+    assert history_member["operations"]
+    selection = stage_inbound(
+        actor, project, archive, "payload.ontolearn.zip", "zip", ".ontolearn.zip"
+    )
+    check = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import.check",
+            {"projectId": project, "selectionId": selection, "expectedKind": "full"},
+        )
+    )
+    assert check["status"] == "compatible"
+    assert "history" not in check["portability"]["missing"]
+    imported = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import",
+            {
+                "projectId": project,
+                "selectionId": selection,
+                "checkRef": check["checkRef"],
+                "operationId": uid(),
+                "expectedKind": "full",
+                "packageSha256": check["packageSha256"],
+            },
+        )
+    )
+    checkpoint = store.project_checkpoint(store._project(imported["importedProjectId"]))
+    rows = {row["attempt"]: row for row in checkpoint["application"]["learningCurrent"]}
+    assert attempt in rows
+    assert json.loads(rows[attempt]["payload"]) == payload
+    receipt = json.loads(
+        store._db.execute(
+            "SELECT payload FROM job_details WHERE id=?",
+            ("transfer-import:" + imported["operationId"],),
+        ).fetchone()[0]
+    )
+    assert receipt["history"] == history_member["operations"]
+
+
+@pytest.mark.parametrize(
+    "mutation,reason",
+    [
+        (lambda m: m.update(checkpointSchemaVersion=0), "checkpoint-unsupported"),
+        (lambda m: m.update(checkpointSchemaVersion=True), "checkpoint-unsupported"),
+        (lambda m: m.update(applicationStateVersion="bad"), "application-unsupported"),
+        (lambda m: m.update(checkpointSchemaVersion=-1), "checkpoint-unsupported"),
+    ],
+)
+def test_import_check_rejects_mistyped_versions_without_writing(owned, mutation, reason):
+    # W4-07: 0/True/negative/string version fields are rejected structurally
+    # (never INTERNAL_ERROR) and never write a check receipt.
+    actor, store = owned
+    project = populated_project(actor, store)
+    archive = mutate_manifest(build_exported_package(actor, project, "full"), mutation)
+    selection = stage_inbound(
+        actor, project, archive, "payload.ontolearn.zip", "zip", ".ontolearn.zip"
+    )
+    before = job_details_count(store)
+    result = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import.check",
+            {"projectId": project, "selectionId": selection, "expectedKind": "full"},
+        )
+    )
+    assert result["status"] == "rejected" and result["reason"] == reason
+    assert job_details_count(store) == before
+
+
+def test_import_check_rejects_malformed_member_payload_without_writing(owned):
+    # W4-07: a structurally invalid member payload is rejected up front and
+    # leaves job_details untouched.
+    actor, store = owned
+    project = populated_project(actor, store)
+    archive = build_exported_package(actor, project, "full")
+    broken = repack_member(archive, "data/definitions.json", b'{"definitions": 42}')
+    selection = stage_inbound(
+        actor, project, broken, "payload.ontolearn.zip", "zip", ".ontolearn.zip"
+    )
+    before = job_details_count(store)
+    result = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import.check",
+            {"projectId": project, "selectionId": selection, "expectedKind": "full"},
+        )
+    )
+    assert result == {
+        "projectId": project,
+        "selectionId": selection,
+        "expectedKind": "full",
+        "status": "rejected",
+        "reason": "unsafe-package",
+    }
+    assert job_details_count(store) == before
+
+
+def prepend_unindexed(raw, prefix):
+    # Make an otherwise valid central directory point past arbitrary bytes.
+    changed = bytearray(prefix + raw)
+    central = struct.unpack_from("<I", raw, len(raw) - 6)[0]
+    position = len(prefix) + central
+    while changed[position : position + 4] == b"PK\x01\x02":
+        old = struct.unpack_from("<I", changed, position + 42)[0]
+        struct.pack_into("<I", changed, position + 42, old + len(prefix))
+        name, extra, comment = struct.unpack_from("<3H", changed, position + 28)
+        position += 46 + name + extra + comment
+    struct.pack_into("<I", changed, len(changed) - 6, central + len(prefix))
+    return bytes(changed)
+
+
+def test_inspect_rejects_local_header_tampering_and_unindexed_bytes(owned):
+    # W4-11: local headers must agree with the central directory, and members
+    # must cover the archive contiguously from offset 0 to the central start.
+    actor, store = owned
+    project = populated_project(actor, store)
+    archive = build_exported_package(actor, project, "full")
+    # Tamper only the first local header's general-purpose flags.
+    tampered = bytearray(archive)
+    local = tampered.find(b"PK\x03\x04")
+    struct.pack_into("<H", tampered, local + 6, 1)
+    with pytest.raises(transfer_package.PackageError):
+        transfer_package.inspect_v1(bytes(tampered), "full")
+    # Unindexed padding bytes before the first member break the layout.
+    with pytest.raises(transfer_package.PackageError):
+        transfer_package.inspect_v1(prepend_unindexed(archive, b"unindexed-private-bytes"), "full")
+
+
+def test_history_and_result_scan_caps_live_in_ordered_sql(owned):
+    # W4-13: caps and ordering are enforced inside the SQL statement, never by
+    # a Python slice after fetchall.
+    actor, store = owned
+    from ontolearn_engine.transfer import report as transfer_report
+    from ontolearn_engine.transfer import service as transfer_service
+
+    project = open_blank(actor, "上限项目")
+    internal = store._project(project)
+
+    class _Rollback(Exception):
+        pass
+
+    try:
+        with store._transaction():
+            # Seed a plain ledger slice larger than the cap; the pure SQL
+            # accessor must return exactly the cap, in ascending sequence order.
+            for sequence in range(2, 252):
+                store._db.execute(
+                    "INSERT INTO app_operations VALUES(?,?,?,?,?,?)",
+                    (internal, sequence, f"seed-{sequence}", "application", "0" * 64, 0),
+                )
+            rows = transfer_service._history_operations(store, internal)
+            assert len(rows) == transfer_service.HISTORY_LIMIT
+            sequences = [row[0] for row in rows]
+            assert sequences == sorted(sequences)
+            # The result scan keeps the same discipline over the results join.
+            snapshot = store.snapshot(internal)
+            dto = json.dumps(
+                {
+                    "capability": "query.execute",
+                    "state": "succeeded",
+                    "input": {"scope": "asserted"},
+                    "implementation": {"executionSemanticsVersion": "changeset-v1"},
+                }
+            )
+            projection = json.dumps({"inputProjectRevision": 1, "summary": "s"})
+            for index in range(transfer_report.RESULT_SCAN_CAP + 50):
+                store._db.execute(
+                    "INSERT INTO results VALUES(?,?,?,?,?,?,?,?)",
+                    (f"seed-result-{index}", internal, snapshot, "query", "[]", "{}", "k", "{}"),
+                )
+                store._db.execute(
+                    "INSERT INTO jobs VALUES(?,?,?,?,?,?,?)",
+                    (f"seed-job-{index}", project, f"seed-op-{index}", dto, "{}", "f", None),
+                )
+                store._db.execute(
+                    "INSERT INTO job_results VALUES(?,?,?,?,?)",
+                    (f"seed-result-{index}", f"seed-job-{index}", None, projection, 0),
+                )
+            query_rows, validation_rows = transfer_report._semantic_results(store, internal)
+            assert len(query_rows) == transfer_report.RESULT_SCAN_CAP
+            assert validation_rows == []
+            raise _Rollback
+    except _Rollback:
+        pass
+    # The seeding transaction rolled back; nothing persisted.
+    assert (
+        store._db.execute("SELECT count(*) FROM results WHERE id LIKE 'seed-result-%'").fetchone()[
+            0
+        ]
+        == 0
+    )

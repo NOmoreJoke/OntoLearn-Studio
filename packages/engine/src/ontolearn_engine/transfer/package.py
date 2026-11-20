@@ -161,6 +161,129 @@ def _read_member(raw, item, limit):
     return payload
 
 
+def _local_layout(raw, entries, central_offset):
+    """Reject unindexed local bytes and local headers conflicting with the
+    central directory (W4-11).
+
+    Members must start at offset 0 and stay contiguous - no prefix padding, no
+    holes, no overlaps - through to the central directory start, and every
+    fixed-length local header must agree with its central record on magic,
+    general-purpose flags, compression method, CRC and both lengths. The same
+    defense is already proven on the frozen draft envelope inspector.
+    """
+    position = 0
+    for item in sorted(entries, key=lambda entry: entry.header_offset):
+        _require(item.header_offset == position, "ARCHIVE_LAYOUT")
+        _require(position + 30 <= central_offset, "ARCHIVE_LAYOUT")
+        header = struct.unpack("<4s5H3I2H", raw[position : position + 30])
+        signature, _, flags, compression, _, _, crc, packed, unpacked, name_len, extra_len = header
+        _require(signature == b"PK\x03\x04", "ARCHIVE_INVALID")
+        _require(flags == item.flag_bits and flags & ~0x800 == 0, "UNSAFE_ENTRY")
+        _require(
+            (compression, crc, packed, unpacked)
+            == (item.compress_type, item.CRC, item.compress_size, item.file_size),
+            "ARCHIVE_INVALID",
+        )
+        _require(extra_len == 0, "UNSAFE_ENTRY")
+        start = position + 30
+        _require(raw[start : start + name_len] == item.filename.encode("ascii"), "ARCHIVE_INVALID")
+        position = start + name_len + packed
+        _require(position <= central_offset, "ARCHIVE_LAYOUT")
+    _require(position == central_offset, "ARCHIVE_LAYOUT")
+
+
+# Per-role member payload shapes validated during inspection (W4-07): every
+# member's internal JSON structure is checked up front so a malformed package
+# is rejected structurally instead of surfacing later as an internal error.
+_MEMBER_LIST_SHAPES = {
+    "definitions": ("definitions", frozenset({"layer", "id", "payload"})),
+    "assertions": (
+        "facts",
+        frozenset({"id", "subject", "predicate", "object", "owner", "sourceRow", "managedValue"}),
+    ),
+    "agent-session": (
+        "learning",
+        frozenset({"attempt", "recordVersion", "course", "task", "payload"}),
+    ),
+    "history": ("operations", frozenset({"sequence", "operationId", "operationKind"})),
+}
+
+
+def _validate_member_payload(role, payload):
+    import json as _json
+
+    try:
+        value = _json.loads(payload.decode("utf-8"))
+    except (UnicodeError, ValueError, RecursionError):
+        raise PackageError("MEMBER_SHAPE") from None
+    _require(isinstance(value, dict), "MEMBER_SHAPE")
+    if role == "checkpoint":
+        _require(
+            set(value) == {"domainRevision", "operationSequence", "metadata", "metadataVersion"},
+            "MEMBER_SHAPE",
+        )
+        _require(
+            type(value["domainRevision"]) is int and value["domainRevision"] >= 0,
+            "MEMBER_SHAPE",
+        )
+        _require(
+            type(value["operationSequence"]) is int and value["operationSequence"] >= 0,
+            "MEMBER_SHAPE",
+        )
+        _require(
+            type(value["metadataVersion"]) is int and value["metadataVersion"] >= 0,
+            "MEMBER_SHAPE",
+        )
+        _require(isinstance(value["metadata"], dict), "MEMBER_SHAPE")
+        return
+    if role == "ownership":
+        _require(set(value) == {"mappingState"}, "MEMBER_SHAPE")
+        state = value["mappingState"]
+        _require(isinstance(state, dict), "MEMBER_SHAPE")
+        for owner, status in state.items():
+            _require(isinstance(owner, str) and bool(owner), "MEMBER_SHAPE")
+            _require(
+                isinstance(status, dict) and set(status) == {"generatedVersion", "stale"},
+                "MEMBER_SHAPE",
+            )
+            _require(type(status["generatedVersion"]) is int, "MEMBER_SHAPE")
+            _require(isinstance(status["stale"], list), "MEMBER_SHAPE")
+        return
+    key, fields = _MEMBER_LIST_SHAPES[role]
+    _require(set(value) == {key}, "MEMBER_SHAPE")
+    records = value[key]
+    _require(type(records) is list, "MEMBER_SHAPE")
+    for record in records:
+        _require(isinstance(record, dict) and set(record) == fields, "MEMBER_SHAPE")
+        if role == "definitions":
+            _require(
+                isinstance(record["layer"], str)
+                and isinstance(record["id"], str)
+                and isinstance(record["payload"], str),
+                "MEMBER_SHAPE",
+            )
+            try:
+                _json.loads(record["payload"])
+            except (UnicodeError, ValueError, RecursionError):
+                raise PackageError("MEMBER_SHAPE") from None
+        elif role == "agent-session":
+            _require(
+                isinstance(record["attempt"], str)
+                and type(record["recordVersion"]) is int
+                and isinstance(record["course"], str)
+                and isinstance(record["task"], str)
+                and isinstance(record["payload"], str),
+                "MEMBER_SHAPE",
+            )
+        elif role == "history":
+            _require(
+                type(record["sequence"]) is int
+                and isinstance(record["operationId"], str)
+                and isinstance(record["operationKind"], str),
+                "MEMBER_SHAPE",
+            )
+
+
 @dataclass(frozen=True)
 class InspectedPackage:
     manifest: dict
@@ -192,12 +315,21 @@ def _version_reasons(manifest, expected_kind):
         value = manifest.get(key)
         if type(value) is not int or not 1 <= value <= 65535 or value > bound:
             return reason
-    if manifest.get("dbFormatVersion") != DB_FORMAT_VERSION:
+    if (
+        manifest.get("dbFormatVersion") != DB_FORMAT_VERSION
+        or type(manifest.get("dbFormatVersion")) is not int
+    ):
         return "database-unsupported"
-    if manifest.get("checkpointSchemaVersion", 0) > CHECKPOINT_SCHEMA_VERSION:
-        return "checkpoint-unsupported"
-    if manifest.get("applicationStateVersion", 0) > APPLICATION_STATE_VERSION:
-        return "application-unsupported"
+    # Strict integer bounds (bool is an int subclass and must be excluded by
+    # the exact-type test); 0/True/"bad" all carry the same frozen reason and
+    # never reach a wire handler as INTERNAL_ERROR.
+    for key, bound, reason in (
+        ("checkpointSchemaVersion", CHECKPOINT_SCHEMA_VERSION, "checkpoint-unsupported"),
+        ("applicationStateVersion", APPLICATION_STATE_VERSION, "application-unsupported"),
+    ):
+        value = manifest.get(key)
+        if type(value) is not int or not 1 <= value <= 65535 or value > bound:
+            return reason
     if manifest.get("kind") != expected_kind:
         return "kind-mismatch"
     return None
@@ -233,6 +365,7 @@ def inspect_v1(raw, expected_kind):
                 _require(item.file_size <= MAX_MEMBER, "ARCHIVE_LIMIT")
                 total += item.file_size
             _require(total <= MAX_TOTAL, "ARCHIVE_LIMIT")
+            _local_layout(raw, entries_info, central_offset)
             _require("manifest.json" in seen, "MANIFEST_MISSING")
             manifest_raw = _read(raw, archive.getinfo("manifest.json"), MAX_MANIFEST)
             try:
@@ -278,6 +411,8 @@ def inspect_v1(raw, expected_kind):
                 )
                 _require(type(path) is str and PATH.fullmatch(path) is not None, "UNSAFE_PATH")
                 _require(type(role) is str and role in ROLES, "ROLE_INVALID")
+                # Every role maps onto exactly one frozen member path.
+                _require(ROLE_PATHS.get(role) == path, "MANIFEST_SHAPE")
                 _require(role not in roles, "DUPLICATE_ROLE")
                 _require(path not in listed, "DUPLICATE_PATH")
                 _require(type(size) is int and 0 <= size <= MAX_MEMBER, "MANIFEST_SHAPE")
@@ -300,6 +435,7 @@ def inspect_v1(raw, expected_kind):
                 payload = _read(raw, archive.getinfo(record["path"]), MAX_MEMBER)
                 _require(len(payload) == record["size"], "SIZE_MISMATCH")
                 _require(hashlib.sha256(payload).hexdigest() == record["sha256"], "HASH_MISMATCH")
+                _validate_member_payload(record["role"], payload)
                 payload_entries[record["path"]] = payload
             return InspectedPackage(manifest, payload_entries)
     except PackageError:
