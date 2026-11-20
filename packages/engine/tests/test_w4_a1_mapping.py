@@ -817,3 +817,138 @@ def test_property_preview_rows_paginate_within_bounds(owned):
         if offset >= page["totalRows"] or not page["rows"]:
             break
     assert seen == rows
+
+
+# ---------------------------------------------------------------------------
+# W4-09: bounded preview response with exact summary and zero orphan evidence
+# ---------------------------------------------------------------------------
+
+
+def preview_evidence_count(store):
+    return store._db.execute(
+        "SELECT count(*) FROM job_details WHERE id LIKE 'mapping-preview:%'"
+    ).fetchone()[0]
+
+
+def test_legal_5500_row_csv_previews_within_budget_and_prepares(owned):
+    from ontolearn_engine.storage import canonical as storage_canonical
+
+    actor, store = owned
+    project = open_blank(actor)
+    rows = 5500
+    payload = (
+        "equipment_id,equipment_name\n"
+        + "".join(f"{index:04d},设备{index}\n" for index in range(1, rows + 1))
+    ).encode()
+    selection = stage_mapping_source(actor, project, payload)
+    ok(select_source(actor, project, selection))
+    result = ok(preview(actor, project, selection, DRAFT, page={"offset": 0, "limit": 1}))
+    assert len(storage_canonical(result).encode("utf-8")) <= 220_000
+    # The requested page window always survives.
+    assert len(result["rows"]) == 1 and result["offset"] == 0
+    assert result["rows"][0]["input"] == ["0001", "设备1"]
+    assert result["totalRows"] == rows
+    # Exact full totals; the large diff arrays were deterministically reduced.
+    assert result["summary"] == {
+        "totalIdentitiesAdded": rows,
+        "totalIdentitiesRemoved": 0,
+        "totalIssues": 0,
+        "totalConflicts": 0,
+        "totalAdded": rows * 2,
+        "totalRemoved": 0,
+        "totalModified": 0,
+        "truncated": True,
+    }
+    assert 0 < len(result["identitiesAdded"]) < rows
+    assert result["identitiesAdded"][0] == "urn:x:equipment/0001"
+    assert 0 < len(result["added"]) < rows * 2
+    assert preview_evidence_count(store) == 1
+    # previewHash still covers the FULL computation: the preparation replays
+    # the whole 5,500-row source and lands its digest-bound evidence inside
+    # the locked MainlineHost write admission (the per-row bulk is stored as
+    # a rowCount reference, not duplicated material).
+    prepared = ok(prepare(actor, project, result))
+    reference = prepared["plan"]["mappingPreparation"]
+    record = store._db.execute(
+        "SELECT payload FROM job_details WHERE id=? AND project=?",
+        (reference["preparationRef"], project),
+    ).fetchone()
+    assert record is not None
+    evidence = json.loads(record[0])
+    assert evidence["plan"]["mapping"]["rowCount"] == rows
+    assert evidence["plan"]["mapping"]["rows"] is None
+    assert preview_evidence_count(store) == 1
+
+
+def test_truncated_preview_within_admission_commits_full_changeset(owned):
+    actor, store = owned
+    project = open_blank(actor)
+    rows, name_length = 240, 450
+    # 240 two-column rows of 450-char ASCII names (~105 KB source) stay fully
+    # inside the locked 4,096-row / 1.5 MiB MainlineHost database admission
+    # (measured: the two admitted plan copies -- jobs context plus the
+    # authorized job_plans payload -- total ~1.11 MiB), yet their untruncated
+    # preview JSON exceeds the 220,000-byte response budget: the arrays are
+    # truly reduced while the committed changeset still lands every fact.
+    payload = (
+        "equipment_id,equipment_name\n"
+        + "".join(
+            f"{index:04d},{chr(97 + index % 26) * name_length}\n" for index in range(1, rows + 1)
+        )
+    ).encode()
+    assert len(payload) < 400_000
+    selection = stage_mapping_source(actor, project, payload)
+    ok(select_source(actor, project, selection))
+    result = ok(preview(actor, project, selection, DRAFT))
+    assert result["totalRows"] == rows
+    assert result["summary"]["totalIdentitiesAdded"] == rows
+    assert result["summary"]["totalAdded"] == rows * 2
+    assert result["summary"]["truncated"] is True
+    assert 0 < len(result["identitiesAdded"]) < rows
+    assert 0 < len(result["added"]) < rows * 2
+    prepared = ok(prepare(actor, project, result))
+    run_changeset(actor, store, project, prepared["plan"], result["baseRevision"])
+    facts = store.state(store._project(project))["facts"]
+    assert len(facts) == rows * 2
+    assert all(fact["owner"] == "equip-map" for fact in facts)
+
+
+def test_preview_rejection_writes_no_evidence_row(owned):
+    actor, store = owned
+    project = open_blank(actor)
+    payload = b"equipment_id,equipment_name\n001,A\n"
+    selection = stage_mapping_source(actor, project, payload)
+    ok(select_source(actor, project, selection))
+    before = preview_evidence_count(store)
+    # Wrong sheet for a CSV source: rejected before any evidence write.
+    denied(preview(actor, project, selection, DRAFT, sheet="其他"), "INVALID_REQUEST")
+    assert preview_evidence_count(store) == before
+    # A malformed draft (unknown key column) rejects without evidence too.
+    broken = {
+        **DRAFT,
+        "keys": ["missing_column"],
+        "fields": [
+            {**DRAFT["fields"][0], "column": "also_missing"},
+        ],
+    }
+    denied(preview(actor, project, selection, broken), "INVALID_REQUEST")
+    assert preview_evidence_count(store) == before
+
+
+def test_preview_caps_issue_lists_at_contract_maximum_without_orphan_evidence(owned):
+    actor, store = owned
+    project = open_blank(actor)
+    # 5001 duplicate-key rows: more issues than the frozen contract's 5000
+    # maxItems. The response keeps a deterministic prefix plus the exact
+    # summary total instead of failing validation after writing evidence.
+    payload = ("equipment_id,equipment_name\n" + "001,A\n" * 5001).encode()
+    selection = stage_mapping_source(actor, project, payload)
+    ok(select_source(actor, project, selection))
+    result = ok(preview(actor, project, selection, DRAFT))
+    # The contract cap (5000) and then the byte budget reduce the carried
+    # list; the exact full total stays in summary and no orphan row remains.
+    assert 0 < len(result["issues"]) < 5001
+    assert all(issue["code"] == "DUPLICATE_KEY" for issue in result["issues"])
+    assert result["summary"]["totalIssues"] == 5001
+    assert result["summary"]["truncated"] is True
+    assert preview_evidence_count(store) == 1

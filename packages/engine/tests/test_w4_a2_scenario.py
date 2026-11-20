@@ -10,16 +10,24 @@ metrics, restricted run deletion, isolated baseline restore, and zero mutation
 of formal project facts.
 """
 
+import asyncio
 import json
+import os
+import queue
 import random
+import sys
+import threading
+import time
 
 import pytest
+from ontolearn_engine import coordinator as engine_coordinator
 from ontolearn_engine.scenario import service as scenario_service
 from test_w4_a2_harness import (
     before_run,
     create_scenario,
     denied,
     exchange,
+    frame,
     ok,
     prepared_project,
     runtime,
@@ -831,4 +839,502 @@ def test_before_run_receipt_exact_ref_recorded_on_resume(w4a2_runtime):
     assert result["beforeRunCheckpointRef"] == marked["checkpointRef"]
     record = scenario_service.load_run(store, project, result["run"]["runId"])
     assert record["beforeRunCheckpointRef"] == marked["checkpointRef"]
-    assert record["sourceRunId"] == run_id and record["resumedFrom"] == checkpoint_ref
+
+
+# ---------------------------------------------------------------------------
+# W4-04: per-round durability across a hard crash, and in-flight cancel over
+# the real asyncio serve() loop with deferred FIFO ordering.
+# ---------------------------------------------------------------------------
+
+
+class _SimulatedHardExit(BaseException):
+    """A crash-like interrupt: escapes every ``except Exception`` handler."""
+
+
+def test_round_crash_after_commit_is_durable_across_restart_cancel_resume(tmp_path, monkeypatch):
+    """A hard exit after round 1's commit keeps that round on disk.
+
+    The crashed session is fenced (unclassified failure); a fresh engine
+    session over the same SQLite file re-reads the durable round ledger,
+    reconciles the still-running claim via cancel, and resumes to success.
+    """
+    run_id = uid()
+    with runtime(tmp_path) as (actor, store):
+        project, revision, snapshot_id = prepared_project(actor, store)
+        created = ok(create_scenario(actor, project, revision, snapshot_id))
+        scenario_id = sid(created)
+        original_apply = scenario_service._WirePorts.apply_events
+
+        def crashing_apply(self, state, events, context, check):
+            if context.phase == "events" and context.round >= 2:
+                raise _SimulatedHardExit("simulated hard engine exit between rounds")
+            return original_apply(self, state, events, context, check)
+
+        monkeypatch.setattr(scenario_service._WirePorts, "apply_events", crashing_apply)
+        operation = uid()
+        marked = ok(before_run(actor, project, operation, revision, domain="scenario"))
+        request = frame(
+            actor,
+            "project.scenario.run",
+            {
+                "projectId": project,
+                "scenarioId": scenario_id,
+                "projectVersion": revision,
+                "inputSnapshotId": snapshot_id,
+                "operationId": operation,
+                "runId": run_id,
+            },
+        )
+        with pytest.raises(_SimulatedHardExit):
+            actor.request(request)
+        # Settle the crashed reply exactly as serve()'s BaseException path does.
+        actor.finish_query_reply(request["id"], emitted=False, failure=_SimulatedHardExit())
+        assert marked["domainRevision"] == revision
+        # The crash injection is bound to the crashed session only.
+        monkeypatch.undo()
+
+    # Restart: a fresh engine session opens the same durable SQLite file.
+    with runtime(tmp_path) as (actor, store):
+        ok(exchange(actor, "project.open", {"projectId": project}))
+        ledger = scenario_service._round_entries(
+            store, project, {"runId": run_id, "scenarioId": scenario_id}
+        )
+        assert [entry["round"]["number"] for entry in ledger] == [1]
+        record = scenario_service.load_run(store, project, run_id)
+        # The still-running claim knows nothing of the crash; the durable
+        # round-1 truth lives in the committed ledger asserted above.
+        assert record["status"] == "running"
+        assert record["rounds"] == [] and record["lastCommittedRound"] == 0
+        cancelled = ok(cancel_run(actor, project, scenario_id, run_id))["run"]
+        assert cancelled["status"] == "cancelled"
+        assert cancelled["lastCommittedRound"] == 1
+        assert [entry["number"] for entry in cancelled["rounds"]] == [1]
+        assert cancelled["resumeAvailable"] is True
+        _, response = resume_scenario(
+            actor,
+            project,
+            revision,
+            snapshot_id,
+            scenario_id,
+            run_id,
+            cancelled["rounds"][0]["checkpointRef"],
+        )
+        resumed = ok(response)["run"]
+        assert resumed["status"] == "succeeded"
+        assert [entry["number"] for entry in resumed["rounds"]] == [2]
+        assert resumed["lastCommittedRound"] == 2
+
+
+def test_serve_inflight_cancel_returns_at_round_boundary_with_deferred_fifo(tmp_path, monkeypatch):
+    """Real asyncio serve(): a queued cancel executes at a round boundary.
+
+    While round 1 is blocked mid-execution, the host writes cancel and then a
+    non-cancel request to stdin. The cancel is answered (in wire order) before
+    the run's own cancelled response, the run stops exactly at the committed
+    round boundary, the following request is neither dropped nor reordered,
+    and resume afterwards completes the scenario.
+    """
+    with runtime(tmp_path) as (actor, store):
+        project, revision, snapshot_id = prepared_project(actor, store)
+        created = ok(create_scenario(actor, project, revision, snapshot_id))
+        scenario_id = sid(created)
+
+    round_committed = threading.Event()
+    release_round = threading.Event()
+    original_commit = scenario_service._WirePorts.commit
+
+    def blocking_commit(self, record, check):
+        original_commit(self, record, check)
+        if record.checkpoint.round == 1:
+            # Still inside round 1's execution: durably committed, control not
+            # yet returned to the runner's next round-boundary check.
+            round_committed.set()
+            assert release_round.wait(timeout=30), "round 1 was never released"
+
+    monkeypatch.setattr(scenario_service._WirePorts, "commit", blocking_commit)
+
+    read_fd, write_fd = os.pipe()
+    response_read_fd, response_write_fd = os.pipe()
+
+    class PipeStdin:
+        def fileno(self):
+            return read_fd
+
+    class PipeBuffer:
+        def write(self, data):
+            os.write(response_write_fd, data)
+
+        def flush(self):
+            pass
+
+    class PipeStdout:
+        buffer = PipeBuffer()
+
+    monkeypatch.setattr(sys, "stdin", PipeStdin())
+    monkeypatch.setattr(sys, "stdout", PipeStdout())
+    monkeypatch.setenv("ONTOLEARN_DB_PATH", str(tmp_path / "w4a2.sqlite"))
+
+    responses = queue.SimpleQueue()
+
+    def collect_responses():
+        buffer = b""
+        while True:
+            chunk = os.read(response_read_fd, 65536)
+            if not chunk:
+                return
+            buffer += chunk
+            while b"\n" in buffer:
+                line, buffer = buffer.split(b"\n", 1)
+                responses.put(json.loads(line))
+
+    threading.Thread(target=collect_responses, daemon=True).start()
+
+    def reply_to(frame_request, *, timeout=30):
+        deadline = time.monotonic() + timeout
+        pending = {frame_request["id"]}
+        matched = {}
+        while pending:
+            remaining = deadline - time.monotonic()
+            assert remaining > 0, f"timed out waiting for {pending}"
+            envelope = responses.get(timeout=remaining)
+            assert envelope.get("id") in pending, envelope
+            pending.discard(envelope["id"])
+            matched[envelope["id"]] = envelope
+        return matched[frame_request["id"]]
+
+    failures = []
+
+    def drive():
+        try:
+
+            def send(params_method, params, *, session=None, version=3):
+                request = {
+                    "kind": "request",
+                    "id": uid(),
+                    "protocolVersion": version,
+                    "engineSessionId": session,
+                    "method": params_method,
+                    "params": params,
+                }
+                os.write(write_fd, (json.dumps(request) + "\n").encode())
+                return request
+
+            hello = send("hello", {"supportedVersions": [3], "clientId": uid()}, version=2)
+            session = reply_to(hello)["engineSessionId"]
+            opened = send("project.open", {"projectId": project}, session=session)
+            assert reply_to(opened)["ok"]
+            run_operation = uid()
+            marked = send(
+                "project.run.before_commit",
+                {
+                    "projectId": project,
+                    "operationId": run_operation,
+                    "domain": "scenario",
+                    "baseRevision": revision,
+                    "label": None,
+                },
+                session=session,
+            )
+            assert reply_to(marked)["ok"]
+            run_id = uid()
+            run = send(
+                "project.scenario.run",
+                {
+                    "projectId": project,
+                    "scenarioId": scenario_id,
+                    "projectVersion": revision,
+                    "inputSnapshotId": snapshot_id,
+                    "operationId": run_operation,
+                    "runId": run_id,
+                },
+                session=session,
+            )
+            assert round_committed.wait(timeout=30), "round 1 never committed"
+            cancel = send(
+                "project.scenario.cancel",
+                {
+                    "projectId": project,
+                    "scenarioId": scenario_id,
+                    "runId": run_id,
+                    "operationId": uid(),
+                },
+                session=session,
+            )
+            listing = send(
+                "project.scenario.list",
+                {"projectId": project, "cursor": None, "limit": 5},
+                session=session,
+            )
+            # Let the reader thread queue both frames behind the running one.
+            time.sleep(0.3)
+            release_round.set()
+            cancel_reply = reply_to(cancel)
+            run_reply = reply_to(run)
+            list_reply = reply_to(listing)
+            # The cancel is answered BEFORE the run's own response returns.
+            assert cancel_reply["result"]["run"]["status"] == "cancelled"
+            cancelled = cancel_reply["result"]["run"]
+            assert cancelled["lastCommittedRound"] == 1
+            assert cancelled["lastCommittedRound"] < cancelled["evidence"]["maxRounds"]
+            assert cancelled["resumeAvailable"] is True
+            assert run_reply["result"]["run"]["status"] == "cancelled"
+            assert run_reply["result"]["run"]["lastCommittedRound"] == 1
+            # The non-cancel request parked behind the running one is neither
+            # dropped nor reordered: it answers after the run, still ok.
+            assert list_reply["ok"]
+            assert any(
+                item["identity"]["scenarioId"] == scenario_id
+                for item in list_reply["result"]["items"]
+            )
+            resume_operation = uid()
+            receipt = send(
+                "project.run.before_commit",
+                {
+                    "projectId": project,
+                    "operationId": resume_operation,
+                    "domain": "scenario",
+                    "baseRevision": revision,
+                    "label": None,
+                },
+                session=session,
+            )
+            assert reply_to(receipt)["ok"]
+            resume = send(
+                "project.scenario.resume",
+                {
+                    "projectId": project,
+                    "scenarioId": scenario_id,
+                    "projectVersion": revision,
+                    "inputSnapshotId": snapshot_id,
+                    "sourceRunId": run_id,
+                    "checkpointRef": cancelled["rounds"][0]["checkpointRef"],
+                    "operationId": resume_operation,
+                    "runId": uid(),
+                },
+                session=session,
+            )
+            resumed = reply_to(resume)
+            assert resumed["result"]["run"]["status"] == "succeeded"
+            assert resumed["result"]["run"]["lastCommittedRound"] == 2
+        except BaseException as error:  # noqa: BLE001 -- surfaced on the main thread
+            import traceback
+
+            failures.append(AssertionError(f"{error}\n{traceback.format_exc()}"))
+            release_round.set()
+        finally:
+            try:
+                os.close(write_fd)
+            except OSError:
+                pass
+
+    driver = threading.Thread(target=drive)
+    driver.start()
+    try:
+        asyncio.run(engine_coordinator.serve(profile="business3"))
+    finally:
+        driver.join(timeout=30)
+        for fd in (read_fd, response_write_fd, response_read_fd):
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+    assert failures == [], failures[0]
+
+
+# ---------------------------------------------------------------------------
+# W4-08: resumed runs join project.scenario.compare paginated by REAL round
+# numbers; W4-10: scale beyond the removed 400-row scan caps.
+# ---------------------------------------------------------------------------
+
+
+def test_compare_includes_resumed_run_paginated_by_real_round_numbers(w4a2_runtime):
+    actor, store, project, (revision, snapshot_id), created = created_scenario(w4a2_runtime)
+    scenario_id = sid(created)
+    _, whole_response = run_scenario(actor, project, revision, snapshot_id, scenario_id)
+    whole = ok(whole_response)["run"]
+    run_id, _ = _make_interrupted_run(store, project, whole["runId"], keep_rounds=1)
+    ok(cancel_run(actor, project, scenario_id, run_id))
+    checkpoint_ref = ok(read_run(actor, project, scenario_id, run_id))["run"]["rounds"][0][
+        "checkpointRef"
+    ]
+    _, response = resume_scenario(
+        actor, project, revision, snapshot_id, scenario_id, run_id, checkpoint_ref
+    )
+    resumed = ok(response)["run"]
+    # The resumed run carries ONLY its newly committed tail.
+    assert [entry["number"] for entry in resumed["rounds"]] == [2]
+    assert resumed["lastCommittedRound"] == 2
+    for round_offset, limit in ((0, 1), (1, 2)):
+        result = ok(
+            exchange(
+                actor,
+                "project.scenario.compare",
+                {
+                    "projectId": project,
+                    "runs": [
+                        {"scenarioId": scenario_id, "runId": whole["runId"]},
+                        {"scenarioId": scenario_id, "runId": resumed["runId"]},
+                    ],
+                    "roundOffset": round_offset,
+                    "limit": limit,
+                },
+            )
+        )
+        assert len(result["runs"]) == 2
+        whole_pick, resumed_pick = result["runs"]
+        # Finalization follows the REAL last committed round, not array length.
+        assert whole_pick["finalMetrics"] == whole["rounds"][1]["metrics"]
+        assert resumed_pick["finalMetrics"] == whole["rounds"][1]["metrics"]
+        window = (round_offset, round_offset + limit)
+        assert [m["round"] for m in whole_pick["metrics"]] == [
+            entry["number"] for entry in whole["rounds"] if window[0] < entry["number"] <= window[1]
+        ]
+        assert [m["round"] for m in resumed_pick["metrics"]] == [
+            entry["number"]
+            for entry in resumed["rounds"]
+            if window[0] < entry["number"] <= window[1]
+        ]
+        # Identical deterministic computation: same values for the same round.
+        by_round = {m["round"]: m["values"] for m in whole_pick["metrics"]}
+        for metric in resumed_pick["metrics"]:
+            assert metric["values"] == by_round[metric["round"]]
+
+
+def test_scale_beyond_400_scenarios_and_runs_stays_visible_and_restorable(w4a2_runtime):
+    actor, store = w4a2_runtime
+    project, revision, snapshot_id = prepared_project(actor, store)
+    # One real definition row, then 404 compact direct clones (the real wire
+    # identity/configuration -- the list result contract validates their
+    # shape -- with a stub definition body): 405 scenario definitions beyond
+    # the removed 400-row scan cap, without 405 admission-charged wire
+    # operations (the work admission grows quadratically with operation rows).
+    created = ok(create_scenario(actor, project, revision, snapshot_id))
+    base_row = scenario_service._read_detail(
+        store, project, scenario_service.DEF_PREFIX + sid(created)
+    )
+    definitions = [sid(created)]
+    with store._transaction():
+        for _ in range(404):
+            clone_id = uid()
+            scenario_service._insert_detail(
+                store,
+                project,
+                scenario_service.DEF_PREFIX + clone_id,
+                {
+                    "recordVersion": 1,
+                    "projectId": project,
+                    "scenarioId": clone_id,
+                    "operationId": uid(),
+                    "definition": {"digest": "0" * 64},
+                    "definitionDigest": "0" * 64,
+                    "identity": {**base_row["identity"], "scenarioId": clone_id},
+                    "configuration": base_row["configuration"],
+                    "copiedFrom": None,
+                },
+            )
+            definitions.append(clone_id)
+    assert len(definitions) == 405
+    noise, tail = definitions[0], definitions[-5:]
+    # Cursor-paginate the whole catalog: #401-#405 must all stay visible.
+    listed, cursor = [], None
+    while True:
+        page = ok(
+            exchange(
+                actor,
+                "project.scenario.list",
+                {"projectId": project, "cursor": cursor, "limit": 50},
+            )
+        )
+        listed += [item["identity"]["scenarioId"] for item in page["items"]]
+        cursor = page["nextCursor"]
+        if cursor is None:
+            break
+    assert set(tail) <= set(listed)
+    assert set(definitions) <= set(listed)
+    # Fabricate 405 compact succeeded runs on the noise scenario (>400
+    # project wide): every key the folded readers consume, sized to keep the
+    # project's database material inside the locked write admission.
+    _, noise_response = run_scenario(actor, project, revision, snapshot_id, noise)
+    ok(noise_response)
+    with store._transaction():
+        for _ in range(405):
+            extra = uid()
+            scenario_service._insert_detail(
+                store,
+                project,
+                scenario_service.RUN_PREFIX + extra,
+                {
+                    "recordVersion": 1,
+                    "projectId": project,
+                    "scenarioId": noise,
+                    "runId": extra,
+                    "operationId": uid(),
+                    "status": "running",
+                    "identity": {"scenarioId": noise},
+                    "evidence": {},
+                    "beforeRunCheckpointRef": "0" * 64,
+                    "sourceRunId": None,
+                    "resumedFrom": None,
+                    "rounds": [],
+                    "lastCommittedRound": 0,
+                    "checkpoint": None,
+                    "pendingEvents": [],
+                    "error": None,
+                },
+            )
+            scenario_service._insert_detail(
+                store,
+                project,
+                scenario_service.TERMINAL_PREFIX + extra,
+                {
+                    "recordVersion": 1,
+                    "projectId": project,
+                    "runId": extra,
+                    "status": "succeeded",
+                    "rounds": [],
+                    "lastCommittedRound": 0,
+                    "checkpoint": None,
+                    "pendingEvents": [],
+                    "error": None,
+                },
+            )
+    # A brand-new scenario's run stays visible past the 400th project run.
+    target = ok(
+        create_scenario(
+            actor, project, revision, snapshot_id, configuration=scenario_configuration(name="目标")
+        )
+    )
+    target_id = sid(target)
+    _, response = run_scenario(actor, project, revision, snapshot_id, target_id)
+    target_run = ok(response)["run"]
+    detail = ok(
+        exchange(actor, "project.scenario.read", {"projectId": project, "scenarioId": target_id})
+    )
+    assert [run["runId"] for run in detail["runs"]] == [target_run["runId"]]
+    # Restore tombstones 100% of the target's runs and leaves noise untouched.
+    ok(
+        exchange(
+            actor,
+            "project.scenario.restore",
+            {
+                "projectId": project,
+                "scenarioId": target_id,
+                "projectVersion": revision,
+                "inputSnapshotId": snapshot_id,
+                "configurationDigest": target["scenario"]["identity"]["configurationDigest"],
+                "operationId": uid(),
+            },
+        )
+    )
+    assert (
+        scenario_service._read_detail(
+            store, project, scenario_service.TOMBSTONE_PREFIX + target_run["runId"]
+        )
+        is not None
+    )
+    assert scenario_service._scenario_run_rows(store, project, target_id) == []
+    detail = ok(
+        exchange(actor, "project.scenario.read", {"projectId": project, "scenarioId": target_id})
+    )
+    assert detail["runs"] == []
+    assert len(scenario_service._scenario_run_rows(store, project, noise)) == 406

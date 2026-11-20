@@ -44,6 +44,8 @@ SELECT_FAULTS = {
     "XLSX_PARSER_UNAVAILABLE": ("UNSUPPORTED_CAPABILITY", {}),
 }
 PAGE_LIMIT = 100
+# Deterministic response budget, comfortably below the 262,144-byte frame cap.
+PREVIEW_BUDGET = 220_000
 PREPARATION_KEYS = (
     "mappingPreparationVersion",
     "projectId",
@@ -354,6 +356,54 @@ def _select(store, params, origin):
     return result
 
 
+def _conflict_dto(conflict):
+    return {
+        "code": conflict.code,
+        "current": conflict.current,
+        "source": conflict.source,
+        "managed": conflict.managed,
+        "owner": conflict.owner,
+        "sourceRow": conflict.source_row,
+        "subject": conflict.subject,
+        "predicate": conflict.predicate,
+    }
+
+
+def _budget_preview(result, fulls):
+    """Deterministically keep the whole preview response within budget.
+
+    The requested page window and the summary (exact full totals) always
+    stay. The five diff arrays shrink by deterministic prefixes first; then,
+    only if still necessary, non-empty issues/conflicts halve towards their
+    first entries (never to an empty array) and an over-wide page window
+    shrinks last. ``summary.truncated`` reports any actual reduction,
+    including a list already capped at its contract maximum.
+    """
+
+    def encoded():
+        return len(canonical(result).encode("utf-8"))
+
+    result["summary"]["truncated"] = any(len(result[key]) != fulls[key] for key in fulls)
+    if encoded() <= PREVIEW_BUDGET:
+        return
+    large = ("identitiesAdded", "identitiesRemoved", "added", "removed", "modified")
+    while encoded() > PREVIEW_BUDGET and any(result[key] for key in large):
+        for key in large:
+            if result[key]:
+                result[key] = result[key][: len(result[key]) // 2]
+    for key in ("issues", "conflicts"):
+        while encoded() > PREVIEW_BUDGET and len(result[key]) > 1:
+            result[key] = result[key][: max(len(result[key]) // 2, 1)]
+    while encoded() > PREVIEW_BUDGET and len(result["rows"]) > 1:
+        result["rows"] = result["rows"][: max(len(result["rows"]) // 2, 1)]
+    if encoded() > PREVIEW_BUDGET and result["rows"]:
+        result["rows"] = []
+    if encoded() > PREVIEW_BUDGET:
+        # No legal response can carry this page: reject without evidence.
+        fault("RESOURCE_LIMIT", resource="frame")
+    result["summary"]["truncated"] = True
+
+
 def _preview(store, params, origin):
     project = params["projectId"]
     internal = resolve_active(store, project)
@@ -387,11 +437,6 @@ def _preview(store, params, origin):
         "previewHash": core,
         "blocked": not fresh.ready,
     }
-    with store._transaction():
-        store._db.execute(
-            "INSERT INTO job_details VALUES(?,?,?)",
-            ("mapping-preview:" + result_id, project, canonical(envelope)),
-        )
     table_by_number = {row.number: row for row in table.rows}
     window = []
     for row in rows_json[offset : offset + limit]:
@@ -420,25 +465,42 @@ def _preview(store, params, origin):
         "totalRows": len(table.rows),
         "identitiesAdded": list(fresh.identities_added)[:50000],
         "identitiesRemoved": list(fresh.identities_removed)[:50000],
-        "issues": [_issue_dto(issue) for issue in fresh.issues],
-        "conflicts": [
-            {
-                "code": conflict.code,
-                "current": conflict.current,
-                "source": conflict.source,
-                "managed": conflict.managed,
-                "owner": conflict.owner,
-                "sourceRow": conflict.source_row,
-                "subject": conflict.subject,
-                "predicate": conflict.predicate,
-            }
-            for conflict in fresh.conflicts
-        ],
+        "issues": [_issue_dto(issue) for issue in fresh.issues][:5000],
+        "conflicts": [_conflict_dto(conflict) for conflict in fresh.conflicts][:5000],
         "added": [_triple_text(*t) for t in list(fresh.added)[:5000]],
         "removed": [_triple_text(*t) for t in list(fresh.removed)[:5000]],
         "modified": list(fresh.modified)[:5000],
+        "summary": {
+            "totalIdentitiesAdded": len(fresh.identities_added),
+            "totalIdentitiesRemoved": len(fresh.identities_removed),
+            "totalIssues": len(fresh.issues),
+            "totalConflicts": len(fresh.conflicts),
+            "totalAdded": len(fresh.added),
+            "totalRemoved": len(fresh.removed),
+            "totalModified": len(fresh.modified),
+            "truncated": False,
+        },
     }
+    _budget_preview(
+        result,
+        {
+            "identitiesAdded": len(fresh.identities_added),
+            "identitiesRemoved": len(fresh.identities_removed),
+            "issues": len(fresh.issues),
+            "conflicts": len(fresh.conflicts),
+            "added": len(fresh.added),
+            "removed": len(fresh.removed),
+            "modified": len(fresh.modified),
+        },
+    )
+    # Validate the complete response shape FIRST: only a contract-valid
+    # preview mints its job_details evidence row (never an orphan preview).
     store._valid("result_project.mapping.preview", result)
+    with store._transaction():
+        store._db.execute(
+            "INSERT INTO job_details VALUES(?,?,?)",
+            ("mapping-preview:" + result_id, project, canonical(envelope)),
+        )
     return result
 
 
@@ -499,7 +561,7 @@ def _prepare(store, params, origin):
         existing = json.loads(existing_row[0])
         if (
             not isinstance(existing, dict)
-            or existing.get("mappingPreparationVersion") != 1
+            or existing.get("mappingPrepareReceiptVersion") != 1
             or existing.get("requestHash") != request_hash
         ):
             fault("IDENTITY_CONFLICT")
@@ -542,6 +604,16 @@ def _prepare(store, params, origin):
         _value_invalid(params["selectionId"], fresh.issues)
     if True:
         plan = _effective_plan(mapping, fresh, envelope["sheet"])
+        # The bulky per-row material is NOT duplicated into job_details: it is
+        # deterministically rebuilt by resolve_preparation from the immutable
+        # staged source + draft + snapshot, and the FULL effective plan stays
+        # digest-bound via payloadHash (and the preparationRef over this
+        # record). This keeps a large legal source inside the write admission
+        # budget without weakening any recomputation check.
+        stored_plan = {
+            **plan,
+            "mapping": {**plan["mapping"], "rows": None, "rowCount": len(plan["mapping"]["rows"])},
+        }
         preparation = {
             "mappingPreparationVersion": 1,
             "projectId": project,
@@ -557,14 +629,27 @@ def _prepare(store, params, origin):
             "encoding": envelope["encoding"],
             "previewHash": envelope["previewHash"],
             "payloadHash": digest(plan),
-            "plan": plan,
+            "plan": stored_plan,
         }
         preparation_ref = digest(preparation)
         record = {**preparation, "preparationRef": preparation_ref, "requestHash": request_hash}
         with store._transaction():
+            # The operation row is a slim idempotent receipt: the full plan
+            # evidence lives once, under its digest-bound preparationRef, so a
+            # large legal source cannot double the decoded-material budget.
             store._db.execute(
                 "INSERT INTO job_details VALUES(?,?,?)",
-                ("mapping-prepare:" + operation, project, canonical(record)),
+                (
+                    "mapping-prepare:" + operation,
+                    project,
+                    canonical(
+                        {
+                            "mappingPrepareReceiptVersion": 1,
+                            "requestHash": request_hash,
+                            "preparationRef": preparation_ref,
+                        }
+                    ),
+                ),
             )
             store._db.execute(
                 "INSERT INTO job_details VALUES(?,?,?)",

@@ -164,6 +164,11 @@ class Coordinator:
         # when existing real work runs and never create or mutate state,
         # rounds, snapshots or notifications.
         self._test_schedule = _test_schedule
+        # W4-04 optional runtime callback, bound only by serve() below: drains
+        # queued inbox frames at scenario round boundaries so an in-flight
+        # project.scenario.cancel is answered while the run still executes.
+        # It runs solely on the single serve-loop thread; never a wire input.
+        self._poll_cancel = None
         self.allowed_projects = frozenset(allowed_projects or set())
         self.limits = LIMITS | (limits or {})
         if not CONTRACT.validate("limits", self.limits):
@@ -1285,16 +1290,64 @@ async def serve(
         thread.start()
         reader_state["threadStarted"] = True
         initialization = False
+        # W4-04 same-thread reentrant cancellation: while a synchronous
+        # project.scenario.run occupies the loop, its round-boundary checks
+        # drain the inbox here. Non-cancel frames (and the EOF sentinel) are
+        # parked FIFO in ``deferred`` and consumed first by the loop below,
+        # so no request is ever dropped or reordered; one cancel executes
+        # inline at a boundary with no pending write transaction.
+        deferred = deque()
+
+        def poll_cancel() -> None:
+            while True:
+                try:
+                    message = inbox.get_nowait()
+                except queue.Empty:
+                    return
+                if message is None:
+                    deferred.append(message)
+                    return
+                if not (
+                    isinstance(message, dict) and message.get("method") == "project.scenario.cancel"
+                ):
+                    deferred.append(message)
+                    continue
+                response = None
+                try:
+                    response = coordinator.request(message)
+                    coordinator.emit(response)
+                    request_id = message.get("id")
+                    response = None  # Drop this owner alias before successful finish.
+                    coordinator.finish_query_reply(request_id, emitted=True)
+                except BaseException as err:
+                    # Same ownership cleanup as the serve loop: release the
+                    # reply holding on failure BEFORE sealing the loop closed,
+                    # and never let the cleanup fault mask the original error.
+                    try:
+                        coordinator.finish_query_reply(
+                            message.get("id"), emitted=False, failure=err
+                        )
+                    except BaseException as cleanup:
+                        cleanup_failures.append(("queryReadHolding", cleanup))
+                    coordinator.closed = True
+                    return
+                return
+
+        coordinator._poll_cancel = poll_cancel
+        store._scenario_cancel_poll = poll_cancel
         handshake_deadline = time.monotonic() + LIMITS["handshakeMs"] / 1000
         while not coordinator.closed:
             if coordinator.session is None and time.monotonic() >= handshake_deadline:
                 break
-            try:
-                value = inbox.get_nowait()
-            except queue.Empty:
-                await coordinator.tick()
-                await asyncio.sleep(0.005)
-                continue
+            if deferred:
+                value = deferred.popleft()
+            else:
+                try:
+                    value = inbox.get_nowait()
+                except queue.Empty:
+                    await coordinator.tick()
+                    await asyncio.sleep(0.005)
+                    continue
             if value is None:
                 break
             response = None
@@ -1321,6 +1374,11 @@ async def serve(
     finally:
         stopped.set()
         reader_state["stopRequested"] = stopped.is_set()
+        if coordinator is not None:
+            # Unbind the round-boundary cancel drain before any teardown.
+            coordinator._poll_cancel = None
+        if store is not None:
+            store._scenario_cancel_poll = None
         if thread is not None:
             # is_alive is a bounded observation, not a join or permission to
             # close user stdin. An OS read may remain blocked until process exit.

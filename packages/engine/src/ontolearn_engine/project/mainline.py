@@ -71,6 +71,11 @@ METHODS = (
     | SCENARIO_METHODS
 )
 
+# First-chain rejection bounds, within the original reader's limits. These are
+# not Q5 capacity, RSS, SQLite I/O, or whole-H acceptance claims.
+# Admit the three persisted copies of a legal 420002-byte historical literal.
+# 1.5 MiB also fits both prepaid project.get Store reads inside the unchanged
+# 128 MiB retained book; 2 MiB would exceed that book. No other cap is raised.
 READ_LIMITS = ReadLimits(validation_rows=4096, validation_bytes=1572864, validation_work=67108864)
 HELD_BYTES = 134217728
 HELD_OBJECTS = 1048576
@@ -180,6 +185,7 @@ class _WriteAdmission:
             and owner.actor.session == owner.session
             and owner.actor.host_client_id == owner.host
             and owner.current is None
+            and owner._suspended is None
             and not owner.replies
             and not owner.actor._query_replies
             and owner.actor._query_project_get is None
@@ -675,6 +681,10 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.host = self.session = None
         self.current = None
         self.replies = {}
+        # W4-04: while a synchronous scenario run executes, an in-flight
+        # project.scenario.cancel may interleave at a committed-round boundary;
+        # the suspended run reply is restored right after the cancel finishes.
+        self._suspended = None
         self.closed = False
         self._clean_close = False
         self.hold = False
@@ -794,7 +804,14 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
 
     def begin(self, request):
         self.require_owner(self.owner_id)
-        if self.current is not None or len(self.replies) >= MAX_REPLIES:
+        current = self.current
+        if current is not None and (
+            request["method"] != "project.scenario.cancel"
+            or current.method not in {"project.scenario.run", "project.scenario.resume"}
+            or self._suspended is not None
+        ):
+            fault("INVALID_STATE")
+        if len(self.replies) >= MAX_REPLIES:
             fault("INVALID_STATE")
         request_id, method = request["id"], request["method"]
         if (
@@ -808,6 +825,10 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         reply = _Reply(request_id, method, project, self.generation, 4096)
         self.reserve(reply, 4 * self.actor.limits["maxFrameBytes"], 128, 4096)
         self.replies[request_id] = reply
+        if current is not None:
+            # W4-04: the interleaved cancel gets its own prepaid reply while
+            # the still-running scenario request keeps every reservation.
+            self._suspended = current
         self.current = reply
         if self.store._file_identity is not None:
             from ontolearn_engine.project.file_identity import verify_connection
@@ -1401,6 +1422,14 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         if not reply.unknown:
             reply.values.clear()
             del self.replies[request_id]
+            if self._suspended is not None and reply is not self._suspended:
+                # W4-04: the interleaved cancel settled cleanly; the suspended
+                # scenario run request resumes as the single current reply.
+                # An unknown-outcome cancel (unclassified failure) keeps the
+                # host hold/unknown isolation fence instead of silently
+                # resuming over a possibly-damaged host.
+                self.current = self._suspended
+                self._suspended = None
         # UNKNOWN records never evict/refill when a new selection/session arrives.
 
     def observe_error(self, request_id, error):

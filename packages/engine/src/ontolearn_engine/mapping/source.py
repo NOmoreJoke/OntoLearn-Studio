@@ -13,6 +13,18 @@ MAX_EXPANDED = 64 * 1024 * 1024
 MAX_ROWS = 50_000
 MAX_COLUMNS = 256
 MAX_CELL = 32_768
+# Real streaming budgets: ZIP size headers are attacker-controlled and never
+# trusted. Each category gets an explicit decompressed-byte and node budget
+# (a node needs at least three bytes, so byte budget // 3 can never reject a
+# legal bounded member), all inside the MAX_EXPANDED whole-archive total.
+MAX_ENTRIES = 2048
+SHARED_STRINGS_BUDGET = 16 * 1024 * 1024
+STYLES_BUDGET = 8 * 1024 * 1024
+WORKSHEET_BUDGET = 32 * 1024 * 1024
+MAX_CELL_BUDGET = (MAX_ROWS + 1) * MAX_COLUMNS
+# No trailing ">": a real declaration is `<!ENTITY name "val">`, so a token
+# with ">" would only match the (never-legal) literal `<!ENTITY>`.
+FORBIDDEN_MARKUP = (b"<!DOCTYPE", b"<!ENTITY")
 ENCODINGS = {"utf-8", "utf-8-sig", "gb18030", "big5", "utf-16"}
 
 
@@ -161,31 +173,79 @@ def parse_csv(data: bytes, *, encoding: str = "utf-8-sig") -> Table:
     return _table(data, "CSV", records())
 
 
+def _drain_member(stream, budget: int, detect: bool, macro: bool) -> int:
+    """Real streaming decompression: enforce actual byte/node budgets.
+
+    The ZIP header sizes are never consulted; a member only passes by really
+    inflating within its budget. A 64-byte carry keeps even UTF-32-width
+    forbidden tokens detectable across chunk boundaries with NULs inserted,
+    while node counting stays per-chunk so carry bytes are never re-counted.
+    """
+    consumed = nodes = 0
+    carry = b""
+    while True:
+        chunk = stream.read(65536)
+        if not chunk:
+            return consumed
+        consumed += len(chunk)
+        if consumed > budget:
+            fail("SOURCE_LIMIT")
+        # Every element node costs at least "<x>", so this conservative count
+        # can only over-count (CDATA text), never under-count, a real node.
+        # Count the chunk only: the carry is a prefix of this same stream and
+        # its "<" were already counted by their original chunk.
+        nodes += chunk.count(b"<")
+        if nodes > budget // 3:
+            fail("SOURCE_LIMIT")
+        if detect:
+            # Also reject UTF-16/32 DTD syntax. defusedxml is mandatory below.
+            text = (carry + chunk).replace(b"\x00", b"").upper()
+            if macro and b"MACROENABLED" in text:
+                fail("MACRO_UNSUPPORTED")
+            if any(token in text for token in FORBIDDEN_MARKUP):
+                fail("UNSAFE_XML")
+        # 64 bytes covers a full UTF-32 (4 bytes/char) token half straddling
+        # the boundary, with inserted NULs, for every forbidden token above.
+        carry = chunk[-64:]
+
+
 def _xlsx_container(data: bytes) -> None:
     _bytes(data)
     try:
         with zipfile.ZipFile(io.BytesIO(data)) as archive:
             entries = archive.infolist()
-            if len(entries) > 2048 or sum(item.file_size for item in entries) > MAX_EXPANDED:
+            if len(entries) > MAX_ENTRIES:
                 fail("SOURCE_LIMIT")
             names = [item.filename for item in entries]
             if len(names) != len(set(names)):
                 fail("INVALID_XLSX")
             if "[Content_Types].xml" not in names:
                 fail("INVALID_XLSX")
+            total = 0
             for item in entries:
                 if item.flag_bits & 1:
                     fail("ENCRYPTED_UNSUPPORTED")
                 if "vbaproject" in item.filename.lower():
                     fail("MACRO_UNSUPPORTED")
-                if item.filename.endswith((".xml", ".rels")):
-                    value = archive.read(item)
-                    # Also reject UTF-16/32 DTD syntax. defusedxml is mandatory below.
-                    text = value.replace(b"\x00", b"").upper()
-                    if b"<!DOCTYPE" in text or b"<!ENTITY" in text:
-                        fail("UNSAFE_XML")
-                    if item.filename == "[Content_Types].xml" and b"MACROENABLED" in text:
-                        fail("MACRO_UNSUPPORTED")
+                lower = item.filename.lower()
+                xml_member = item.filename.endswith((".xml", ".rels"))
+                if lower == "xl/sharedstrings.xml":
+                    budget = SHARED_STRINGS_BUDGET
+                elif lower == "xl/styles.xml":
+                    budget = STYLES_BUDGET
+                elif lower.startswith("xl/worksheets/") and lower.endswith(".xml"):
+                    budget = WORKSHEET_BUDGET
+                else:
+                    budget = MAX_EXPANDED
+                with archive.open(item) as stream:
+                    total += _drain_member(
+                        stream,
+                        budget,
+                        detect=xml_member,
+                        macro=item.filename == "[Content_Types].xml",
+                    )
+                if total > MAX_EXPANDED:
+                    fail("SOURCE_LIMIT")
     except (zipfile.BadZipFile, RuntimeError, OSError):
         fail("INVALID_XLSX")
 
@@ -229,17 +289,51 @@ def _cell(value, kind: str, sheet: str, row: int, column: int) -> Cell:
     return Cell(str(value))
 
 
-def _empty_formula_caches(data: bytes, path: str) -> set[str]:
-    # openpyxl returns None for a cached empty string and for an absent cache.
-    # Inspect only the selected worksheet; never evaluate a formula. This uses
-    # the pinned candidate's worksheet path, with no URL/file dereferencing.
+class _CountingReader:
+    """File wrapper enforcing the worksheet's real decompressed budget."""
+
+    def __init__(self, stream):
+        self.stream, self.consumed = stream, 0
+
+    def read(self, size=-1):
+        chunk = self.stream.read(size)
+        self.consumed += len(chunk)
+        if self.consumed > WORKSHEET_BUDGET:
+            fail("SOURCE_LIMIT")
+        return chunk
+
+
+def _scan_worksheet(data: bytes, path: str, sheet: str) -> set[str]:
+    """Bounded streaming precheck of the selected worksheet XML.
+
+    Rejects over-wide rows, over-long sheets and over-budget cell totals
+    BEFORE openpyxl materializes a single row, and collects the exact
+    empty-formula-cache census in the same single pass. openpyxl returns
+    None for a cached empty string and for an absent cache; formulas are
+    never evaluated and no URL/file is ever dereferenced.
+    """
     from defusedxml.ElementTree import iterparse
 
     ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
     result = set()
-    with zipfile.ZipFile(io.BytesIO(data)) as archive, archive.open(path.lstrip("/")) as xml:
-        for _, element in iterparse(xml, events=("end",)):
-            if element.tag == ns + "c":
+    rows = width = cells = 0
+    with zipfile.ZipFile(io.BytesIO(data)) as archive, archive.open(path.lstrip("/")) as raw:
+        stream = _CountingReader(raw)
+        for _, element in iterparse(stream, events=("end",)):
+            if element.tag == ns + "row":
+                rows += 1
+                if rows > MAX_ROWS + 1:
+                    fail("SOURCE_LIMIT", sheet, rows)
+                width = 0
+                element.clear()
+            elif element.tag == ns + "c":
+                width += 1
+                cells += 1
+                number = rows if rows else 1
+                if width > MAX_COLUMNS:
+                    fail("SOURCE_LIMIT", sheet, number)
+                if cells > MAX_CELL_BUDGET:
+                    fail("SOURCE_LIMIT", sheet, number)
                 value = element.find(ns + "v")
                 if (
                     element.get("t") == "str"
@@ -265,7 +359,7 @@ def parse_xlsx(data: bytes, *, sheet: str) -> Table:
         # Do not trust worksheet dimensions (often stale or malicious).
         ws.reset_dimensions()
         fs.reset_dimensions()
-        empty_caches = _empty_formula_caches(data, fs._worksheet_path)
+        empty_caches = _scan_worksheet(data, fs._worksheet_path, sheet)
 
         def records():
             width = None

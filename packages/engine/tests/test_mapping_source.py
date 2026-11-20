@@ -260,3 +260,113 @@ def test_csv_file_column_cell_and_row_limits_are_enforced_with_locations():
             row,
             column,
         )
+
+
+# ---------------------------------------------------------------------------
+# W4-06: real streaming decompression budgets (never trusting ZIP size headers)
+# ---------------------------------------------------------------------------
+
+
+def test_xlsx_over_wide_row_is_rejected_before_row_materialization():
+    pytest.importorskip("openpyxl", reason="isolated candidate probe; dependency not approved")
+    from ontolearn_engine.mapping.source import MAX_COLUMNS
+
+    wide = (
+        '<row r="1">'
+        + "".join(string_cell(f"a{i}1", f"c{i}") for i in range(MAX_COLUMNS + 1))
+        + "</row>"
+    )
+    with pytest.raises(SourceError, match="SOURCE_LIMIT"):
+        parse_xlsx(workbook(wide), sheet="设备")
+
+
+def test_xlsx_over_long_sheet_is_rejected_by_the_streaming_precheck():
+    pytest.importorskip("openpyxl", reason="isolated candidate probe; dependency not approved")
+    from ontolearn_engine.mapping.source import MAX_ROWS
+
+    body = "".join(f'<row r="{number}"/>' for number in range(1, MAX_ROWS + 3))
+    with pytest.raises(SourceError, match="SOURCE_LIMIT"):
+        parse_xlsx(workbook(body), sheet="设备")
+
+
+def test_xlsx_worksheet_decompressed_byte_budget_is_enforced():
+    pytest.importorskip("openpyxl", reason="isolated candidate probe; dependency not approved")
+    from ontolearn_engine.mapping.source import MAX_COLUMNS, WORKSHEET_BUDGET
+
+    # Legal width (<=256 cells per row) but the real decompressed worksheet
+    # stream exceeds its explicit budget long before the row cap is reached.
+    row = '<row r="1">' + "<c/>" * MAX_COLUMNS + "</row>"
+    body = row * (WORKSHEET_BUDGET // len(row) + 2)
+    with pytest.raises(SourceError, match="SOURCE_LIMIT"):
+        parse_xlsx(workbook(body), sheet="设备")
+
+
+def test_xlsx_oversized_shared_strings_is_rejected_by_its_explicit_budget():
+    pytest.importorskip("openpyxl", reason="isolated candidate probe; dependency not approved")
+    from ontolearn_engine.mapping.source import SHARED_STRINGS_BUDGET
+
+    item = "<si><t>x</t></si>"
+    huge = "<sst>" + item * (SHARED_STRINGS_BUDGET // len(item) + 2) + "</sst>"
+    data = workbook(header(), extra={"xl/sharedStrings.xml": huge})
+    with pytest.raises(SourceError, match="SOURCE_LIMIT"):
+        parse_xlsx(data, sheet="设备")
+
+
+def test_xlsx_forged_zip_size_headers_cannot_smuggle_inflation():
+    import struct
+
+    # A real ~70 MB member whose local and central uncompressed-size fields
+    # are forged down to 1: the header sum looks tiny, but neither CPython's
+    # CRC reconciliation nor the real streaming budget lets it through.
+    out = io.BytesIO()
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("[Content_Types].xml", "<Types/>")
+        archive.writestr("xl/evil.xml", b"0" * (70 * 1024 * 1024))
+    raw = bytearray(out.getvalue())
+
+    def forge(raw, signature, member, size_at, namelen_at, name_at):
+        position = 0
+        while True:
+            position = raw.find(signature, position)
+            if position < 0:
+                return
+            name_length = struct.unpack_from("<H", raw, position + namelen_at)[0]
+            if bytes(raw[position + name_at : position + name_at + name_length]) == member:
+                struct.pack_into("<I", raw, position + size_at, 1)
+            position += 4
+
+    forge(raw, b"PK\x03\x04", b"xl/evil.xml", 22, 26, 30)
+    forge(raw, b"PK\x01\x02", b"xl/evil.xml", 24, 28, 46)
+    with pytest.raises(SourceError) as error:
+        parse_xlsx(bytes(raw), sheet="设备")
+    assert error.value.issue.code in {"SOURCE_LIMIT", "INVALID_XLSX"}
+
+
+def test_xlsx_bare_internal_entity_declaration_is_unsafe_xml():
+    # `<!ENTITY xxe "boom">` with no DOCTYPE wrapper and no trailing ">" right
+    # after the keyword: the exact real declaration form must still match the
+    # forbidden-markup scan (a token with a trailing ">" would miss it).
+    with pytest.raises(SourceError) as error:
+        parse_xlsx(
+            workbook(header(), extra={"xl/evil.xml": '<x><!ENTITY xxe "boom">&xxe;</x>'}),
+            sheet="设备",
+        )
+    assert error.value.issue.code == "UNSAFE_XML"
+
+
+def test_xlsx_entity_declaration_split_across_drain_chunks_is_unsafe_xml():
+    # The UTF-32LE "<!ENTITY" keyword itself straddles the 64 KiB drain
+    # boundary (7 of its 8 chars = 28 raw bytes close chunk one), so neither
+    # chunk matches alone and only the widened 64-byte carry -- which still
+    # holds the leading "<!" -- reassembles it. The old 16-byte carry kept
+    # only the trailing 4 chars and would let the declaration through.
+    from ontolearn_engine.mapping.source import FORBIDDEN_MARKUP
+
+    token = '<!ENTITY xxe "boom">'.encode("utf-32-le")
+    padding = 65536 - 28  # one STORED chunk ends inside the keyword
+    member = b"\x00" * padding + token
+    assert member.find(FORBIDDEN_MARKUP[1]) < 0  # raw bytes alone never match
+    data = workbook(header(), extra={"xl/evil2.xml": member})
+    with pytest.raises(SourceError) as error:
+        parse_xlsx(data, sheet="设备")
+    assert error.value.issue.code == "UNSAFE_XML"

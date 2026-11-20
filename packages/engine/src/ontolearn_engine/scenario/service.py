@@ -31,7 +31,7 @@ from ontolearn_engine.scenario.model import (
 )
 from ontolearn_engine.scenario.runner import Checkpoint
 from ontolearn_engine.scenario.working_copy import ScenarioCopy, configured_items
-from ontolearn_engine.storage import canonical, digest
+from ontolearn_engine.storage import Store, canonical, digest
 
 METHODS = frozenset(
     {
@@ -56,7 +56,6 @@ TOMBSTONE_PREFIX = "w4:scenario:tombstone:"
 OP_PREFIX = "w4:scenario:op:"
 MAX_RUNS_PER_SCENARIO = 50
 ACTIVE_STATES = ("queued", "running", "cancelling")
-RESULT_SCAN_CAP = 400
 
 
 def fault(code, **params):
@@ -102,20 +101,20 @@ def _insert_detail(store, project, identity, record):
 
 
 def indexed_scenarios(store, project):
-    """Scenario ids of the project (bounded constant-prefix scan, key order)."""
+    """All scenario ids of the project (constant-prefix scan, key order)."""
     rows = store._db.execute(
-        "SELECT id FROM job_details WHERE project=? AND id>=? AND id<? ORDER BY id LIMIT ?",
-        (project, "w4:scenario:def:", "w4:scenario:def:\uffff", RESULT_SCAN_CAP),
+        "SELECT id FROM job_details WHERE project=? AND id>=? AND id<? ORDER BY id",
+        (project, DEF_PREFIX, DEF_PREFIX + "\uffff"),
     ).fetchall()
     return [row["id"][len(DEF_PREFIX) :] for row in rows]
 
 
 def indexed_run_ids(store, project):
-    """All run ids of the project (bounded constant-prefix scan, rowid order)."""
+    """All run ids of the project (constant-prefix scan, rowid order)."""
     rows = store._db.execute(
         "SELECT id FROM job_details WHERE project=? AND id>=? AND id<? "
-        "AND instr(substr(id, ?), ':')=0 ORDER BY rowid LIMIT ?",
-        (project, RUN_PREFIX, RUN_PREFIX + "\uffff", len(RUN_PREFIX) + 1, RESULT_SCAN_CAP),
+        "AND instr(substr(id, ?), ':')=0 ORDER BY rowid",
+        (project, RUN_PREFIX, RUN_PREFIX + "\uffff", len(RUN_PREFIX) + 1),
     ).fetchall()
     return [row["id"][len(RUN_PREFIX) :] for row in rows]
 
@@ -378,7 +377,12 @@ class _WirePorts(ScenarioCopy):
                 event for event in checkpoint["events"] if event["id"] not in self.original_events
             ],
         }
-        with self.store._transaction():
+        # W4-04: each round is its OWN durable SQLite commit. The plain
+        # Store transaction is used deliberately: the named request pays its
+        # single final material admission with the terminal write below, so
+        # per-round commits must not re-charge that request-scoped budget
+        # once per round. A hard exit after round N keeps rounds 1..N on disk.
+        with Store._transaction(self.store):
             check()
             _insert_detail(
                 self.store,
@@ -471,13 +475,40 @@ def _run_row(store, project, run_id):
     return row
 
 
-def _scenario_run_rows(store, project, scenario_id):
-    rows = []
-    for run_id in indexed_run_ids(store, project):
-        record = load_run(store, project, run_id)
-        if record is not None and record["scenarioId"] == scenario_id:
-            rows.append(record)
-    return rows
+def _scenario_run_rows(store, project, scenario_id, *, limit=None):
+    """Runs of one scenario, filtered straight inside SQLite.
+
+    The scenarioId and tombstone predicates are pushed down so no project-wide
+    scan cap can silently drop the 401st+ run of a busy project; the rowid
+    order preserves the original insertion sequence.
+    """
+    sql = (
+        "SELECT r.id FROM job_details r WHERE r.project=? AND r.id>=? AND r.id<? "
+        "AND instr(substr(r.id, ?), ':')=0 "
+        "AND CASE WHEN json_valid(r.payload) "
+        "THEN json_extract(r.payload, '$.scenarioId') END=? "
+        "AND NOT EXISTS (SELECT 1 FROM job_details t WHERE t.project=r.project "
+        "AND t.id=? || substr(r.id, ?)) ORDER BY r.rowid"
+    )
+    args = (
+        project,
+        RUN_PREFIX,
+        RUN_PREFIX + "\uffff",
+        len(RUN_PREFIX) + 1,
+        scenario_id,
+        TOMBSTONE_PREFIX,
+        len(RUN_PREFIX) + 1,
+    )
+    if limit is not None:
+        sql += " LIMIT ?"
+        args += (limit,)
+    rows = store._db.execute(sql, args).fetchall()
+    records = []
+    for row in rows:
+        record = load_run(store, project, row["id"][len(RUN_PREFIX) :])
+        if record is not None:
+            records.append(record)
+    return records
 
 
 # --- method handlers ------------------------------------------------------------------
@@ -600,17 +631,24 @@ def _copy(store, params, origin):
 def _list(store, params, origin):
     project = params["projectId"]
     resolve_active(store, project)
-    identifiers = [
-        value
-        for value in indexed_scenarios(store, project)
-        if params["cursor"] is None or value > params["cursor"]
-    ]
-    page = identifiers[: params["limit"]]
+    # Cursor pagination pushed into SQLite: exact pages with no global cap.
+    cursor = params["cursor"]
+    if cursor is None:
+        rows = store._db.execute(
+            "SELECT id FROM job_details WHERE project=? AND id>=? AND id<? ORDER BY id LIMIT ?",
+            (project, DEF_PREFIX, DEF_PREFIX + "\uffff", params["limit"] + 1),
+        ).fetchall()
+    else:
+        rows = store._db.execute(
+            "SELECT id FROM job_details WHERE project=? AND id>? AND id<? ORDER BY id LIMIT ?",
+            (project, DEF_PREFIX + cursor, DEF_PREFIX + "\uffff", params["limit"] + 1),
+        ).fetchall()
+    page = [row["id"][len(DEF_PREFIX) :] for row in rows[: params["limit"]]]
     items = []
     for scenario_id in page:
         record = _definition_row(store, project, scenario_id)
         items.append({"identity": record["identity"], "configuration": record["configuration"]})
-    more = len(identifiers) > len(page)
+    more = len(rows) > len(page)
     return {
         "projectId": project,
         "items": items,
@@ -623,7 +661,7 @@ def _read_scenario(store, params, origin):
     resolve_active(store, project)
     with store._read():
         definition = _definition_row(store, project, params["scenarioId"])
-        runs = _scenario_run_rows(store, project, params["scenarioId"])[:MAX_RUNS_PER_SCENARIO]
+        runs = _scenario_run_rows(store, project, params["scenarioId"], limit=MAX_RUNS_PER_SCENARIO)
         return {
             "projectId": project,
             "scenario": {
@@ -646,27 +684,36 @@ def _execute_run(store, project, record, definition, resume, ports):
     run_id = record["runId"]
 
     def cancelled():
+        # W4-04 in-flight cancellation: between rounds, with no write
+        # transaction pending, drain the serve loop's inbox so a queued
+        # project.scenario.cancel executes at this exact round boundary.
+        poll = getattr(store, "_scenario_cancel_poll", None)
+        if poll is not None and not store._db.in_transaction:
+            poll()
         with store._read():
             return (
                 _tombstoned(store, project, run_id)
                 or _read_detail(store, project, TERMINAL_PREFIX + run_id) is not None
             )
 
-    # The named request pre-pays one final material admission for execution.
-    # Round savepoints are appended in that transaction and are published with
-    # the terminal result, including the successful prefix of a failed run.
+    # Every round is independently durable (see _WirePorts.commit); a hard
+    # exit mid-run keeps the successful prefix committed for cancel/resume.
+    result = scenario_runner.run(
+        definition,
+        ports,
+        cancelled=cancelled,
+        resume=resume,
+        finalize_resources=ports.finalize_resources,
+    )
+    # The named request pays exactly one final material admission: the
+    # terminal write that publishes the run outcome over its round ledger.
     with store._transaction():
-        result = scenario_runner.run(
-            definition,
-            ports,
-            cancelled=cancelled,
-            resume=resume,
-            finalize_resources=ports.finalize_resources,
-        )
         claim = _read_detail(store, project, RUN_PREFIX + record["runId"])
         if claim is None or claim.get("status") not in ("running", "queued"):
             fault("INVALID_STATE")
         if _read_detail(store, project, TERMINAL_PREFIX + run_id) is not None:
+            # An in-flight cancel already wrote the terminal marker: publish
+            # its ledger-folded row unchanged, with every committed round.
             return _run_row(store, project, run_id)
         if _tombstoned(store, project, run_id):
             fault("INVALID_STATE")
@@ -852,6 +899,20 @@ def _cancel(store, params, origin):
             # A terminal outcome can never become cancelled.
             fault("INVALID_STATE")
         if row["status"] != "cancelled":
+            if row["status"] in ACTIVE_STATES:
+                # W4-04: an in-flight run's claim carries no rounds; fold the
+                # durable round ledger so the cancel terminal preserves every
+                # already-committed round, and the executing runner observes
+                # the terminal marker at its next round boundary.
+                ledger = _round_entries(store, project, row)
+                row = {
+                    **row,
+                    "rounds": ledger,
+                    "lastCommittedRound": (
+                        ledger[-1]["round"]["number"] if ledger else row["lastCommittedRound"]
+                    ),
+                    "checkpoint": ledger[-1]["checkpoint"] if ledger else row["checkpoint"],
+                }
             # Preserve every already-committed round; only the open tail ends.
             _insert_detail(
                 store,
@@ -897,11 +958,17 @@ def _compare(store, params, origin):
         for row in picks:
             rounds = [entry["round"] for entry in row["rounds"]]
             last = row["lastCommittedRound"]
+            # Page and finalize by REAL round numbers: a resumed run's rounds
+            # only carry its newly committed tail (e.g. [{"number": 2, ...}]).
+            if rounds and rounds[-1]["number"] != last:
+                fault("INVALID_STATE")
+            window = (params["roundOffset"], params["roundOffset"] + params["limit"])
             metrics = [
                 {"round": entry["number"], "values": entry["metrics"]}
-                for entry in rounds[params["roundOffset"] : params["roundOffset"] + params["limit"]]
+                for entry in rounds
+                if window[0] < entry["number"] <= window[1]
             ]
-            final = rounds[last - 1]["metrics"] if last else None
+            final = rounds[-1]["metrics"] if rounds else None
             runs.append(
                 {
                     "runId": row["runId"],
