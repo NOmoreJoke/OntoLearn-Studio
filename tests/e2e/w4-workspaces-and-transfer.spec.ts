@@ -121,7 +121,7 @@ test('W4 mapping, isolated behavior and scenario, package and HTML transfer surv
     await nameField.getByLabel('映射此字段').check()
     await nameField.getByLabel('属性 / 关系 IRI').fill('urn:ontolearn:learning:name')
     await mapping.getByRole('button', { name: '生成完整预览' }).click()
-    await expect(mapping.getByText('新增 4 · 删除 0 · 修改 0 · 冲突 0')).toBeVisible()
+    await expect(mapping.getByText('新增 4 · 删除 0 · 修改 0 · 问题 0 · 冲突 0')).toBeVisible()
     await mapping.getByRole('button', { name: '检查正式变更' }).click()
     await expect(mapping.getByRole('list', { name: '已核验变更明细' })).toContainText(
       'urn:ontolearn:w4:equipment/001',
