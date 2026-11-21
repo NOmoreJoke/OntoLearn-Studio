@@ -29,27 +29,31 @@ SECRET_PATTERNS = (
 )
 REDACTION_MARKERS = ("[REDACTED]", "\u2588\u2588\u2588", "\ufffd\ufffd\ufffd")
 
-# W4-02 / W4R2-01: deterministic host-absolute-path hygiene for every outbound
-# surface. A path token is hostile when it carries a POSIX private root (even
-# when glued to CJK characters or JSON/HTML punctuation such as
-# ``备份/Users/kyle/桌面`` or ``"name":"/Users/kyle"``), a Windows drive root, a
-# file:// scheme, or the frozen staging directory name. Non-file hierarchical
-# ASCII URIs (such as ``http://example.com/Users/x`` or ``https://.../home/v1``)
-# and relative slash paths (such as ``docs/home/index.md``) are masked/skipped so
-# legitimate RDF IRIs and ordinary project prose stay byte-for-byte intact.
+# W4-02 / W4R2-01 / W4R2B-01 / W4R2B-02: deterministic host-absolute-path
+# hygiene for every outbound surface. Non-file hierarchical IRIs (including
+# non-ASCII CJK segments such as ``http://example.org/本体/home/v1``) are masked
+# as full tokens so legitimate RDF IRIs stay byte-for-byte intact while host
+# paths glued to CJK/punctuation, case variants (e.g. ``/users`` on APFS),
+# double-slash POSIX prefixes (``//Users``), Windows drive/root-relative/UNC
+# backslash forms, ``file://``, and ``.ontolearn-host-selections`` are always
+# caught. Known boundary: whitespace tokenization scrubs the root-carrying
+# token; trailing segments separated by spaces are outside token scope.
 HOST_PATH_PLACEHOLDER = "<local-path>"
 STAGING_DIRECTORY_NAME = ".ontolearn-host-selections"
 _NON_FILE_URI_RE = re.compile(
-    r"(?i)(?<![A-Za-z0-9+.-])(?!file://)[a-z][a-z0-9+.-]*://[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=%-]+"
+    r"(?i)(?<![A-Za-z0-9+.-])(?!file://)[a-z][a-z0-9+.-]*://[^\s\"'<>\\，；。！？（）【】\[\]{}|]+"
 )
 _HOST_PATH_MARKERS = (
     re.compile(
-        r"(?<![A-Za-z0-9._/\\-])/(?:Users|home|private|var|tmp|etc|Volumes|root)"
-        r"(?=/|\Z|[\s\"'])"
+        r"(?i)(?<![A-Za-z0-9._/\\-])/+((?:Users|home|private|var|tmp|etc|Volumes|root))"
+        r"(?=(?:/(?!>)|\\|\Z|[\s\"'，；。！？（）【】\[\]{}|]))"
     ),
-    re.compile(r"(?<![A-Za-z0-9._/\\-])[A-Za-z]:(?=\\)"),
+    re.compile(
+        r"(?i)(?<![A-Za-z0-9._/\\-])\\+(?:Users|home|private|var|tmp|etc|Volumes|root|Windows|ProgramData)(?=\\)"
+    ),
+    re.compile(r"(?<![A-Za-z0-9._/-])[A-Za-z]:(?=\\)"),
     re.compile(r"(?i)file://"),
-    re.compile(r"(?<![A-Za-z0-9._-])\.ontolearn-host-selections(?![A-Za-z0-9._-])"),
+    re.compile(r"(?i)(?<![A-Za-z0-9._-])\.ontolearn-host-selections(?![A-Za-z0-9._-])"),
 )
 
 

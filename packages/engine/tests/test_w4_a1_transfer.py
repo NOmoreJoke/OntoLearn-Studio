@@ -1786,11 +1786,13 @@ def test_w4r2_01_embedded_cjk_and_punctuated_host_paths_are_scrubbed_preserving_
 
 def test_w4r2_01_sanitize_text_seeded_property_invariants():
     # Fixed-seed property checks across 200 generated strings combining CJK,
-    # punctuation, POSIX/Windows/staging paths, and valid hierarchical IRIs.
+    # punctuation, POSIX/Windows/UNC/case/double-slash/staging paths, and valid IRIs.
     rng = random.Random(20261120)
     prefixes = ["", "备份", "项目:", '"name":"', "路径为", "<title>"]
     host_roots = [
         "/Users/kyle/桌面",
+        "/users/kyle/桌面",
+        "//Users/kyle/桌面",
         "/home/alice/work",
         "/private/var/tmp",
         "/var/log/x",
@@ -1799,18 +1801,28 @@ def test_w4r2_01_sanitize_text_seeded_property_invariants():
         "/Volumes/disk",
         "/root",
         "C:\\Users\\kyle\\doc",
+        "\\Users\\kyle\\secret",
+        "\\\\?\\C:\\Users\\kyle\\secret",
         "file:///Users/kyle/a.txt",
+        "FILE:///Users/kyle/a.txt",
         ".ontolearn-host-selections/sel-1",
+        ".OntoLearn-Host-Selections/sel-1",
     ]
     clean_tokens = [
         "中文项目",
         "本体图谱",
         "http://example.com/Users/x",
         "https://example.org/home/v1",
+        "http://example.org/本体/home/v1",
+        "http://example.org/本体/Users/kyle",
+        "HTTP://EXAMPLE.ORG/本体/USERS/KYLE",
         "urn:x:home",
         "urn:x:equipment/001",
         "docs/home/index.md",
+        "docs//home/index.md",
         "</root>",
+        "</root/>",
+        "</Users/>",
         "http://example.org/本体/设备",
     ]
 
@@ -1835,3 +1847,121 @@ def test_w4r2_01_sanitize_text_seeded_property_invariants():
         clean_text = " ".join(rng.choices(clean_tokens, k=rng.randint(1, 5)))
         assert host_path_marker(clean_text) is False
         assert sanitize_text(clean_text) == clean_text
+
+
+def test_w4r2b_01_and_02_non_ascii_iris_export_and_case_double_slash_unc_scrubbed(owned):
+    # W4R2B-01: valid non-ASCII ontology IRIs and self-closing XML tags must
+    # stay byte-for-byte intact without triggering PERMISSION_DENIED on export.
+    safe_samples = [
+        "</root/>",
+        "</Users/>",
+        "http://example.org/本体/home/v1",
+        "http://example.org/本体/Users/kyle",
+        "HTTP://EXAMPLE.ORG/本体/USERS/KYLE",
+        json.dumps({"iri": "http://example.org/本体/home/v1"}, ensure_ascii=False),
+        json.dumps({"text": "中文\tmp"}, ensure_ascii=False),
+        json.dumps({"text": "中文\root"}, ensure_ascii=False),
+    ]
+    for sample in safe_samples:
+        assert host_path_marker(sample) is False, sample
+        assert sanitize_text(sample) == sample, sample
+
+    # W4R2B-02: case-insensitive POSIX roots (/users), double slashes (//Users),
+    # Windows backslash root-relative/UNC forms, and case-insensitive staging dir.
+    hostile_samples = [
+        "备份/users/kyle/桌面",
+        "备份//Users/kyle/桌面",
+        "//Users/kyle/桌面",
+        "备份\\Users\\kyle\\secret",
+        "备份\\\\?\\C:\\Users\\kyle\\secret",
+        "备份.OntoLearn-Host-Selections/sel",
+        "备份/users，项目",
+        "备份\\Windows\\System32\\cfg",
+        "FILE:///Users/kyle/a",
+        "c:\\users\\kyle\\doc",
+    ]
+    for sample in hostile_samples:
+        assert host_path_marker(sample) is True, sample
+        assert sanitize_text(sample) == "<local-path>", sample
+        assert host_path_marker(sanitize_text(sample)) is False
+
+    mixed = "见http://example.com/Users/x，备份/users/kyle/桌面"
+    assert host_path_marker(mixed) is True
+    assert host_path_marker(sanitize_text(mixed)) is False
+
+    # Real Coordinator ZIP + HTML export with non-ASCII IRIs containing /home and /Users.
+    actor, store = owned
+    iri_home = "http://example.org/本体/home/v1"
+    iri_users = "http://example.org/本体/Users/kyle"
+    iri_project = open_blank(actor, "中文IRI导出项目")
+    commit_manual(
+        actor,
+        store,
+        iri_project,
+        [
+            {
+                "id": digest(["http://example.org/本体/home/实操", "urn:x:name", '"示例"']),
+                "subject": "http://example.org/本体/home/实操",
+                "predicate": "urn:x:name",
+                "object": '"示例"',
+            }
+        ],
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "G",
+                "value": {
+                    "triples": [
+                        {
+                            "subject": iri_home,
+                            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                            "object": "<http://www.w3.org/2002/07/owl#Class>",
+                        },
+                        {
+                            "subject": iri_users,
+                            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                            "object": "<http://www.w3.org/2002/07/owl#Class>",
+                        },
+                    ],
+                    "singleValuedPredicates": [],
+                    "references": [],
+                },
+            }
+        ],
+        base=0,
+    )
+    iri_archive = build_exported_package(actor, iri_project, "full")
+    iri_texts = all_member_text(iri_archive)
+    assert any(iri_home in text for text in iri_texts)
+    assert any(iri_users in text for text in iri_texts)
+
+    iri_rev = store.revision(store._project(iri_project))
+    iri_prepared = ok(
+        exchange(
+            actor,
+            "project.transfer.report.prepare",
+            {"projectId": iri_project, "baseRevision": iri_rev},
+        )
+    )
+    iri_sel = stage_outbound(actor, iri_project, "report-html", ".html", "output.html")
+    ok(
+        exchange(
+            actor,
+            "project.transfer.report.export",
+            {
+                "projectId": iri_project,
+                "baseRevision": iri_rev,
+                "selectionId": iri_sel,
+                "reportRef": iri_prepared["reportRef"],
+                "operationId": uid(),
+            },
+        )
+    )
+
+    # Real Coordinator full ZIP export for lowercase APFS host path `备份/users/kyle/桌面`.
+    lower_project = open_blank(actor, "备份/users/kyle/桌面")
+    lower_archive = build_exported_package(actor, lower_project, "full")
+    lower_texts = all_member_text(lower_archive)
+    assert all("/users/kyle" not in text for text in lower_texts)
+    assert not any(host_path_marker(text) for text in lower_texts)
+    assert "<local-path>" in member_bytes(lower_archive, "data/checkpoint.json").decode("utf-8")
