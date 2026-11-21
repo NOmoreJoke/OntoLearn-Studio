@@ -10,7 +10,11 @@
     "build": "electron-vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "prepackage:dir": "npm --prefix ../.. run prepare:examples",
-    "package:dir": "electron-builder --dir --publish never"
+    "package:dir": "electron-builder --dir --publish never -c.forceCodeSigning=false -c.mac.identity=null -c.mac.hardenedRuntime=false -c.mac.notarize=false -c.win.signExecutable=false",
+    "prepackage:release:mac": "npm --prefix ../.. run prepare:examples",
+    "package:release:mac": "electron-builder --mac dmg --arm64 --publish never",
+    "prepackage:release:win": "npm --prefix ../.. run prepare:examples",
+    "package:release:win": "electron-builder --win nsis --x64 --publish never"
   },
   "dependencies": {
     "@ontolearn/contracts": "*",
