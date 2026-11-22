@@ -40,3 +40,34 @@ export async function convergeStartupLibraryFailure(
   if (deps.quitConverging()) return
   await deps.reportFailure()
 }
+
+export interface PreSupervisorRecoveryDeps {
+  /** True while a `before-quit` handler or an armed quit barrier already owns shutdown. */
+  readonly quitConverging: () => boolean
+  /** Blocking recovery question; resolves the chosen dialog button index. */
+  readonly promptNeedsRecovery: () => Promise<number>
+  /** Point the startup back at the original library after the user confirms. */
+  readonly restoreOriginal: () => void
+  /** Quit the app when the user declines to continue with the original library. */
+  readonly quitApp: () => void
+}
+
+/**
+ * Complete the pre-supervisor library-recovery choice with quit convergence
+ * checkpoints. A quit that fires before the dialog opens, while it is still
+ * waiting, or right after the restore wins immediately: the caller must not
+ * build an `EngineSupervisor` or spawn any child process after `false`.
+ */
+export async function completePreSupervisorRecoveryChoice(
+  deps: PreSupervisorRecoveryDeps,
+): Promise<boolean> {
+  if (deps.quitConverging()) return false
+  const response = await deps.promptNeedsRecovery()
+  if (deps.quitConverging()) return false
+  if (response !== 1) {
+    deps.quitApp()
+    return false
+  }
+  deps.restoreOriginal()
+  return !deps.quitConverging()
+}

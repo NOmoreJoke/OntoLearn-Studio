@@ -21,7 +21,10 @@ import { hardenWebContents, securePreferences } from './window-security'
 import { installWindowRecovery } from './window-recovery'
 import { installViewNavigation } from './view-navigation'
 import { registerDesktopIpc } from './desktop-ipc'
-import { convergeStartupLibraryFailure } from './startup-library-failure'
+import {
+  completePreSupervisorRecoveryChoice,
+  convergeStartupLibraryFailure,
+} from './startup-library-failure'
 import { validateV2 } from '../../../../packages/contracts/src/v2'
 
 declare const __DEV_CSP_NONCE__: string
@@ -38,6 +41,7 @@ app.on('before-quit', (event) => {
     // A quit signal before the supervisor exists must still fence the async
     // whenReady continuation away from creating a supervisor or a window.
     quitting = true
+    quitBarrier = true
     return
   }
   event.preventDefault()
@@ -299,22 +303,28 @@ void app.whenReady().then(async () => {
         join(app.getPath('userData'), 'engine.sqlite'),
       )
       if (locationConfig.needsRecovery) {
-        const answer = await dialog.showMessageBox({
-          type: 'warning',
-          title: '项目库切换尚未完成',
-          message: '上次未能确认旧引擎已经关闭。',
-          detail:
-            '选择继续使用原项目库会重新核验原库及写入锁；不会打开目标库，也不会丢弃或重放原操作。',
-          buttons: ['退出', '继续使用原项目库'],
-          defaultId: 0,
-          cancelId: 0,
+        const recoveryLocation = locationConfig
+        const proceed = await completePreSupervisorRecoveryChoice({
+          quitConverging: () => quitting || quitBarrier,
+          promptNeedsRecovery: async () => {
+            const answer = await dialog.showMessageBox({
+              type: 'warning',
+              title: '项目库切换尚未完成',
+              message: '上次未能确认旧引擎已经关闭。',
+              detail:
+                '选择继续使用原项目库会重新核验原库及写入锁；不会打开目标库，也不会丢弃或重放原操作。',
+              buttons: ['退出', '继续使用原项目库'],
+              defaultId: 0,
+              cancelId: 0,
+            })
+            return answer.response
+          },
+          restoreOriginal: () => recoveryLocation.restoreOriginal(),
+          quitApp: () => app.quit(),
         })
-        if (answer.response !== 1) {
-          app.quit()
-          return
-        }
-        locationConfig.restoreOriginal()
+        if (!proceed) return
       }
+      if (quitting || quitBarrier) return
       startupLocation = locationConfig.prepareStartupFile()
       verifyLibraryLocator(startupLocation)
     } catch {

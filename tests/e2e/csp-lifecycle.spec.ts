@@ -277,6 +277,12 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       () => (globalThis as unknown as { recoveryPrompts: unknown[] }).recoveryPrompts,
     )
     expect((evidence.recoveryPrompts as unknown[]).length).toBe(1)
+    // The captured dialog options must mirror window-recovery.ts exactly.
+    const recoveryPrompt = (evidence.recoveryPrompts as Array<Record<string, unknown>>)[0]
+    expect(recoveryPrompt.type).toBe('warning')
+    expect(recoveryPrompt.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(recoveryPrompt.message).toBe('显示窗口已停止运行。')
+    expect(String(recoveryPrompt.detail)).toContain('不会重新执行写任务')
     // Native executable: the test hook closes its main bootstrap inspector before faults.
     // Renderer never has CDP/Playwright's disable-hang-monitor loader.
     const nativeDir = await realpath(await mkdtemp(resolve(tmpdir(), 'ontolearn-i02-')))
@@ -370,6 +376,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       hangMonitorEnabled: boolean
       noSandboxSwitch: boolean
       events: string[]
+      prompts?: Array<Record<string, unknown>>
     }
     expect(native.result).toBe('PASS')
     expect(native.inspectorClosedBeforeFaults).toBe(true)
@@ -379,6 +386,16 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     // Electron documents forcefullyCrashRenderer as killed or crashed across platforms.
     expect(native.events.some((reason) => reason === 'killed' || reason === 'crashed')).toBe(true)
     expect(native.events).toContain('unresponsive')
+    // Both native recovery dialogs must mirror window-recovery.ts exactly.
+    expect(native.prompts?.length).toBe(2)
+    expect(native.prompts?.[0]?.type).toBe('warning')
+    expect(native.prompts?.[0]?.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(native.prompts?.[0]?.message).toBe('显示窗口已停止运行。')
+    expect(String(native.prompts?.[0]?.detail)).toContain('不会重新执行写任务')
+    expect(native.prompts?.[1]?.type).toBe('warning')
+    expect(native.prompts?.[1]?.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(native.prompts?.[1]?.message).toBe('显示窗口暂时没有响应。')
+    expect(String(native.prompts?.[1]?.detail)).toContain('不会重新执行写任务')
     evidence.result = 'PASS'
   } finally {
     evidence.lastStageBeforeCleanup = evidence.stage
