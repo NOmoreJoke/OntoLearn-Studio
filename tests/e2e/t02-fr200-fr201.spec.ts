@@ -24,9 +24,9 @@ const OWL = 'http://www.w3.org/2002/07/owl#'
 const XSD = 'http://www.w3.org/2001/XMLSchema#'
 const UUID = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 const hash = /^[0-9a-f]{64}$/
-// Match EngineSupervisor's 15s Win32 request budget (apps/desktop/src/main/index.ts)
-// against Windows Defender / NTFS PRAGMA synchronous=FULL stalls observed in Run 45066815613.
-const T02_POLL_TIMEOUT_MS = process.platform === 'win32' ? 15000 : 5000
+// EngineSupervisor configures requestMs = 15000 across all three platforms (apps/desktop/src/main/index.ts).
+// Windows Defender / NTFS PRAGMA synchronous=FULL fsync spikes observed in Run 45066815613 need >15s headroom.
+const T02_POLL_TIMEOUT_MS = process.platform === 'win32' ? 20000 : 5000
 type Read = MainlineProjectReadDTO
 type Definition = Read['domain']['state']['definitions'][number]
 type Fact = Read['domain']['state']['facts'][number]

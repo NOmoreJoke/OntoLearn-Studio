@@ -648,7 +648,12 @@ def matches_business3_response(request, response, expected_registry_hash):
         if not response["ok"]:
             return True
         method, p, value = request["method"], request["params"], response["result"]
-        if value["projectId"] != p["projectId"]:
+        if (
+            value["state"] != "not-found"
+            and (value["result"] is None or value["result"]["projectId"] != p["projectId"])
+            if method == "project.restore.operation.get"
+            else value["projectId"] != p["projectId"]
+        ):
             return False
         if method == "project.checkpoint.list":
             items = value["items"]

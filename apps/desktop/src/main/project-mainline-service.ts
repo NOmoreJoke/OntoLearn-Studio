@@ -571,12 +571,8 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     const operation = client.request(method, params)
     try {
       const value = (await operation) as T
-      if (String(method) === 'project.restore.confirm')
-        console.log('confirm-transport-ok', JSON.stringify(value).slice(0, 120))
       return value
     } catch (cause) {
-      if (String(method).startsWith('project.restore.'))
-        console.log('restore-transport-threw', method, String(cause).slice(0, 240))
       throw this.#operationError(cause, operation)
     }
   }

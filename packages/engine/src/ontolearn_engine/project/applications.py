@@ -294,7 +294,9 @@ def effects(project, change, before, domain_before_revision, domain_after_revisi
         after["drafts"] = [rows[key] for key in sorted(rows)]
         old_cas, new_cas = cas("draft", editor, generation), cas("draft", editor, generation + 1)
     _application(after, project, domain_after_revision)
-    return after, [old_cas], [new_cas]
+    before_cas = old_cas if isinstance(old_cas, list) else [old_cas]
+    after_cas = new_cas if isinstance(new_cas, list) else [new_cas]
+    return after, before_cas, after_cas
 
 
 def construct_plan(store, project, change):

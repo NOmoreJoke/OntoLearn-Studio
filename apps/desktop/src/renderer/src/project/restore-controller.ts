@@ -7,6 +7,7 @@ import {
   type ProjectRestorePageDTO,
   type ProjectRestorePreviewDTO,
   type ProjectRestoreResultDTO,
+  type PendingProjectRestoreOperationDTO,
   type ProjectCheckpointBridge,
   type ProjectManagementBridge,
   type RestoreImpactDocument,
@@ -112,6 +113,12 @@ export class ProjectRestoreController {
       readSegmentHashes: [],
       document: undefined,
       confirmation: undefined,
+      error: undefined,
+      // 只有从已打开项目切换走且无未完成恢复操作时才清空提示，
+      // 避免启动时从 undefined 首次打开或自动打开时误清恢复结果提示。
+      ...(this.#state.selectedProjectId !== undefined && this.#state.recovery.length === 0
+        ? { notice: '' }
+        : {}),
     })
   }
   async refresh(cursor: string | null = null): Promise<void> {
@@ -309,27 +316,82 @@ export class ProjectRestoreController {
         confirmationRef: state.confirmation.confirmationRef,
         documentHash: state.preview.documentHash,
       })
-      if (request !== this.#request || this.#closed) return
+      if (this.#closed) return
       if (!result.ok) {
-        this.#set({
-          error: result.error,
-          notice:
-            result.error.code === 'REVISION_CONFLICT'
-              ? '项目状态已变化，恢复未执行。请重新预览后再试。'
-              : '操作结果尚未确认；保留原操作，请勿重复提交，可核对原操作。',
-        })
+        await this.#syncPendingAfterFailure(
+          request,
+          result.error,
+          result.error.code === 'REVISION_CONFLICT'
+            ? '项目状态已变化，恢复未执行。请重新预览后再试。'
+            : '操作结果尚未确认；保留原操作，请勿重复提交，可核对原操作。',
+        )
         return
       }
+      if (request !== this.#request) return
       this.#accept(result.data)
     } catch {
-      this.#set({ error: safeError(undefined), notice: '结果未知；请核对原操作，勿重复提交。' })
+      await this.#syncPendingAfterFailure(
+        request,
+        safeError(undefined),
+        '结果未知；请核对原操作，勿重复提交。',
+      )
     } finally {
       if (request === this.#request) this.#set({ busy: false })
     }
   }
+  /**
+   * After a failed or unknown-outcome apply, the main process may have already
+   * durably persisted a pending intent (and set restoreBlocked). Re-sync the
+   * pending intents from the journal before deciding which notice to show, so
+   * the UI keeps the original operation for reconciliation instead of letting
+   * the user re-submit blindly. `request` guards stale replies after a project
+   * switch (F-05).
+   */
+  async #syncPendingAfterFailure(
+    request: number,
+    error: SafeError,
+    fallbackNotice: string,
+  ): Promise<void> {
+    if (this.#closed) return
+    let pending: BridgeResult<PendingProjectRestoreOperationDTO[]> | undefined
+    try {
+      pending = await this.bridge.getPendingProjectRestoreOperations()
+    } catch {
+      pending = undefined
+    }
+    if (this.#closed) return
+    if (pending?.ok && pending.data.length > 0) {
+      this.#set({
+        recovery: pending.data.map((item) => ({
+          operationId: item.operationId,
+          projectId: item.projectId,
+        })),
+        recoveryLoaded: true,
+      })
+      if (request === this.#request)
+        this.#set({
+          preview: undefined,
+          pages: [],
+          readSegmentHashes: [],
+          document: undefined,
+          confirmation: undefined,
+          error,
+          notice:
+            error.code === 'REVISION_CONFLICT'
+              ? '项目状态已变化，恢复未执行。请先核对原恢复操作，再重新预览。'
+              : fallbackNotice,
+        })
+      return
+    }
+    if (request !== this.#request) return
+    this.#set({ error, notice: fallbackNotice })
+  }
   #accept(result: ProjectRestoreResultDTO): void {
     if (this.#closed) return
     this.#set({
+      busy: false,
+      error: undefined,
+      recovery: this.#state.recovery.filter((item) => item.operationId !== result.operationId),
       preview: undefined,
       pages: [],
       readSegmentHashes: [],
