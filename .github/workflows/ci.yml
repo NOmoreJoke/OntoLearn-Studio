@@ -130,6 +130,7 @@ jobs:
       - run: npm run package:dir
       - run: uv run --frozen python scripts/verify-i04-package.py release build/i04-package-ci
       - run: uv run --frozen python scripts/run-q3-packaged-graph.py release test-results/q3-packaged-graph
+      - run: uv run --frozen python scripts/run-b1a-packaged-lifecycle.py release test-results/b1a-packaged-lifecycle
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:

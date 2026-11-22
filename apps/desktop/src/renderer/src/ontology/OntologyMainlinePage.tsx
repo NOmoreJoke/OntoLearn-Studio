@@ -14,18 +14,31 @@ export type OntologyMainlinePageProps = {
   session: OntologySession
   /** Shell's actual document/session/selection generation; presentation fence only. */
   contextKey: string
+  onDirtyChange?: (dirty: boolean) => void
 }
 
 export function OntologyMainlinePage(props: OntologyMainlinePageProps) {
-  return <MainlineEditor key={props.contextKey} session={props.session} />
+  return (
+    <MainlineEditor
+      key={props.contextKey}
+      session={props.session}
+      onDirtyChange={props.onDirtyChange}
+    />
+  )
 }
 
-function MainlineEditor({ session }: { session: OntologySession }) {
+function MainlineEditor({
+  session,
+  onDirtyChange,
+}: Pick<OntologyMainlinePageProps, 'session' | 'onDirtyChange'>) {
   useEffect(() => session.connectForPage(), [session])
-  return <SessionEditor session={session} />
+  return <SessionEditor session={session} onDirtyChange={onDirtyChange} />
 }
 
-function SessionEditor({ session }: { session: OntologySession }) {
+function SessionEditor({
+  session,
+  onDirtyChange,
+}: Pick<OntologyMainlinePageProps, 'session' | 'onDirtyChange'>) {
   const state = useSyncExternalStore(session.subscribe, session.getSnapshot)
   const factLifetime = useRef<
     { session: OntologySession; sequence: number; active: boolean } | undefined
@@ -42,6 +55,7 @@ function SessionEditor({ session }: { session: OntologySession }) {
       if (factLifetime.current === lifetime) factLifetime.current = undefined
     }
   }, [session])
+  const [definitionDirty, setDefinitionDirty] = useState(false)
   const [recordId, setRecordId] = useState('')
   const [fact, setFact] = useState<RdfRow>({ subject: '', predicate: '', object: '' })
   const [draftBase, setDraftBase] = useState('')
@@ -57,6 +71,23 @@ function SessionEditor({ session }: { session: OntologySession }) {
       return undefined
     }
   }, [source])
+  const savedFact = recordId
+    ? source?.domain.state.facts.find((row) => row.id === recordId)
+    : source?.domain.state.facts.find(
+        (row) =>
+          row.owner === null &&
+          row.subject === fact.subject &&
+          row.predicate === fact.predicate &&
+          row.object === fact.object,
+      )
+  const factDirty = savedFact
+    ? fact.subject !== savedFact.subject ||
+      fact.predicate !== savedFact.predicate ||
+      fact.object !== savedFact.object
+    : !!(fact.subject || fact.predicate || fact.object)
+  useLayoutEffect(() => {
+    onDirtyChange?.(definitionDirty || factDirty)
+  }, [onDirtyChange, definitionDirty, factDirty])
   const identity = source ? sourceIdentity(source) : ''
   const staleDraft = !!draftBase && identity !== draftBase
   const busy = ['reading', 'preparing', 'submitting'].includes(state.phase)
@@ -173,6 +204,7 @@ function SessionEditor({ session }: { session: OntologySession }) {
                 transactionBusy={busy || !!state.pending || state.stale}
                 factsManagedExternally
                 onDraftChange={invalidateFactPreview}
+                onDirtyChange={setDefinitionDirty}
                 previewManagedEdit={async (intent, base) => {
                   if (
                     base.project !== source.projectId ||

@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { matchesOwnershipDetail, validateBusiness3, validateStartupError, validateV2 } from './v2'
+import type { LibraryLocationBridge, ProjectManagementBridge } from './project-management'
+export type * from './project-management'
 
 export const PROTOCOL_VERSION = 2 as const
 // Private preload delivery protocol. These are never exposed on DesktopBridge
@@ -242,7 +244,8 @@ export type ResultPageDTO = {
   nextCursor: string | null
 }
 // Renderer receives named operations only; project authority comes from main, never a supplied UUID.
-export interface DesktopBridge extends QueryConsumerBridge, MainlineProjectBridge {
+export interface DesktopBridge
+  extends QueryConsumerBridge, MainlineProjectBridge, LibraryLocationBridge {
   getEngineHealth(): Promise<HealthResult>
   restoreTasks(): Promise<BridgeResult<TaskView>>
   getActiveProject(): Promise<BridgeResult<ProjectView | null>>
@@ -259,6 +262,50 @@ export interface DesktopBridge extends QueryConsumerBridge, MainlineProjectBridg
 
 /** Main/preload-only finite channel association; no generic invoke is exposed to renderer. */
 export type DesktopIpcMap = {
+  'project:management-pending': {
+    args: []
+    result: Awaited<ReturnType<ProjectManagementBridge['getPendingProjectManagementOperations']>>
+  }
+  'project:management-catalog': {
+    args: [args: Parameters<ProjectManagementBridge['getProjectManagementCatalog']>[0]]
+    result: Awaited<ReturnType<ProjectManagementBridge['getProjectManagementCatalog']>>
+  }
+  'project:management-state': {
+    args: []
+    result: Awaited<ReturnType<ProjectManagementBridge['getProjectManagementState']>>
+  }
+  'project:management-preview': {
+    args: [args: Parameters<ProjectManagementBridge['previewProjectManagement']>[0]]
+    result: Awaited<ReturnType<ProjectManagementBridge['previewProjectManagement']>>
+  }
+  'project:management-confirm': {
+    args: [args: Parameters<ProjectManagementBridge['confirmProjectManagement']>[0]]
+    result: Awaited<ReturnType<ProjectManagementBridge['confirmProjectManagement']>>
+  }
+  'project:management-apply': {
+    args: [args: Parameters<ProjectManagementBridge['applyProjectManagement']>[0]]
+    result: Awaited<ReturnType<ProjectManagementBridge['applyProjectManagement']>>
+  }
+  'project:management-operation': {
+    args: [args: Parameters<ProjectManagementBridge['getProjectManagementOperation']>[0]]
+    result: Awaited<ReturnType<ProjectManagementBridge['getProjectManagementOperation']>>
+  }
+  'library:location': {
+    args: []
+    result: Awaited<ReturnType<LibraryLocationBridge['getLibraryLocation']>>
+  }
+  'library:choose': {
+    args: [args: Parameters<LibraryLocationBridge['chooseLibraryLocation']>[0]]
+    result: Awaited<ReturnType<LibraryLocationBridge['chooseLibraryLocation']>>
+  }
+  'library:workspace': {
+    args: [args: Parameters<LibraryLocationBridge['reportLibraryWorkspace']>[0]]
+    result: Awaited<ReturnType<LibraryLocationBridge['reportLibraryWorkspace']>>
+  }
+  'library:switch': {
+    args: [args: Parameters<LibraryLocationBridge['switchLibraryLocation']>[0]]
+    result: Awaited<ReturnType<LibraryLocationBridge['switchLibraryLocation']>>
+  }
   'project:draft-save': {
     args: [args: Parameters<MainlineProjectBridge['saveProjectDraft']>[0]]
     result: Awaited<ReturnType<MainlineProjectBridge['saveProjectDraft']>>
@@ -859,7 +906,7 @@ export type MainlineChangePlanDTO = {
 export type MainlinePreviewArgs =
   | { baseRevision: number; intent: 'change'; plan: MainlineChangePlanDTO }
   | { baseRevision: number; intent: 'undo'; targetOperationId: string }
-export interface MainlineProjectBridge {
+export interface MainlineProjectBridge extends ProjectManagementBridge {
   getOwnershipConflictDetailPage(
     args: OwnershipDetailArgs,
   ): Promise<BridgeResult<OwnershipDetailPage>>

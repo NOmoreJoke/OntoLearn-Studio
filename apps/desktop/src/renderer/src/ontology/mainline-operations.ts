@@ -7,6 +7,9 @@ type Entry = { pending?: PendingEdit; receipt?: CommitMarker; closedOperationId?
 export class OntologyOperationBook {
   #entries = new Map<string, Entry>()
   #listeners = new Set<() => void>()
+  get hasUnresolved(): boolean {
+    return [...this.#entries.values()].some((entry) => !!entry.pending)
+  }
   get(projectId: string): Entry | undefined {
     const entry = this.#entries.get(projectId)
     return entry && structuredClone(entry)

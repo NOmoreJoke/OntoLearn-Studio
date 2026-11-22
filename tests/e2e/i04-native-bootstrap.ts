@@ -8,6 +8,19 @@ export interface I04BootstrapDiagnostics {
 
 export function i04ReadinessExpression(hook: string): string {
   return `(() => {
+    const previousStackLimit = Error.stackTraceLimit;
+    let stack = '';
+    try {
+      Error.stackTraceLimit = Math.max(
+        typeof previousStackLimit === 'number' ? previousStackLimit : 10,
+        64,
+      );
+      stack = String(new Error().stack ?? '');
+    } finally {
+      Error.stackTraceLimit = previousStackLimit;
+    }
+    if (stack.includes('electron/js2c/'))
+      return { state: 'pending', member: 'browser_init' };
     const req = process.getBuiltinModule('module').createRequire(${JSON.stringify(hook)});
     if (!Object.prototype.hasOwnProperty.call(req.cache, 'electron'))
       return { state: 'pending', member: 'module mapping' };

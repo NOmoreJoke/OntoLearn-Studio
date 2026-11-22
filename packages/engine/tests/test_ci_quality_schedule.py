@@ -77,6 +77,7 @@ def test_plan_covers_every_original_quality_stage_exactly_once():
         "npm run test:e2e": 1,
         "verify-i04-package.py release build/i04-package-ci": 1,
         "run-q3-packaged-graph.py release test-results/q3-packaged-graph": 1,
+        "run-b1a-packaged-lifecycle.py release test-results/b1a-packaged-lifecycle": 1,
         "npm run package:dir": 1,
         "find release -type f -name chrome-sandbox": 1,
         "ONTOLEARN_PACKAGED_EXECUTABLE": 1,
@@ -461,6 +462,33 @@ def test_supervise_settles_after_an_early_stdout_eof_while_the_child_keeps_runni
     code = asyncio.run(asyncio.wait_for(_supervise_child(early, "t-eof", stdout=sink), 20.0))
     assert code == 0
     assert "early line" in sink.getvalue()
+
+
+def test_supervise_thread_readers_settle_post_exit_eof_lag(monkeypatch, python_lane_shell):
+    # Windows-fallback reader threads (PR #27 run 43720296670, "Windows
+    # engine full acceptance"): after the child exits, a reader thread can
+    # still be unwinding past EOF for a short window; the supervisor must
+    # WAIT for it inside the shared drain bound instead of misjudging the
+    # lane "short" and flattening exit 0 to 1. The post-EOF unwind lag is
+    # made deterministic by wrapping the real reader with a trailing sleep.
+    monkeypatch.setattr(
+        scheduler,
+        "os",
+        type("NtOS", (), {"name": "nt", "environ": os.environ, "kill": staticmethod(os.kill)}),
+    )
+    real_reader = scheduler._pipe_reader_thread
+
+    def lagging_reader(pipe, target, name, failures):
+        real_reader(pipe, target, name, failures)
+        time.sleep(0.08)
+
+    monkeypatch.setattr(scheduler, "_pipe_reader_thread", lagging_reader)
+    sink = io.StringIO()
+    writer = "sys.stdout.write('thread-ok\\n')\nraise SystemExit(0)"
+    ok = asyncio.run(asyncio.wait_for(_supervise_child(writer, "t-nt-ok", stdout=sink), 20.0))
+    bad = asyncio.run(asyncio.wait_for(_supervise_child("raise SystemExit(3)", "t-nt-bad"), 20.0))
+    assert (ok, bad) == (0, 3)
+    assert "thread-ok" in sink.getvalue()
 
 
 def test_supervise_observes_a_stdout_drain_failure_and_reaps_the_lane():

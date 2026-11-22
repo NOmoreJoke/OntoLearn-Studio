@@ -1,11 +1,10 @@
 import { launchIsolatedDesktop } from './isolated-desktop'
 import { test, expect, type Page } from '@playwright/test'
 import { resolve } from 'node:path'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, realpath, writeFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { runNativeRecovery } from './native-driver'
 import { tmpdir } from 'node:os'
-import { mkdtemp } from 'node:fs/promises'
 
 test('C1 real CSP, normal functionality and renderer recovery', async () => {
   test.setTimeout(90000)
@@ -37,6 +36,21 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     env,
   })
   stage('launched')
+  let applicationClosed = false
+  const closeApplication = async () => {
+    if (applicationClosed) return
+    applicationClosed = true
+    await Promise.race([
+      application.close().catch(() => undefined),
+      new Promise<void>((done) => setTimeout(done, 3000).unref()),
+    ])
+    try {
+      application.process().kill('SIGKILL')
+    } catch {
+      // Process may already have exited cleanly during application.close().
+    }
+    await application.close().catch(() => undefined)
+  }
   const normal = async (page: Page) => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('转化为可验证的知识')
     expect(
@@ -263,9 +277,15 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       () => (globalThis as unknown as { recoveryPrompts: unknown[] }).recoveryPrompts,
     )
     expect((evidence.recoveryPrompts as unknown[]).length).toBe(1)
+    // The captured dialog options must mirror window-recovery.ts exactly.
+    const recoveryPrompt = (evidence.recoveryPrompts as Array<Record<string, unknown>>)[0]
+    expect(recoveryPrompt.type).toBe('warning')
+    expect(recoveryPrompt.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(recoveryPrompt.message).toBe('显示窗口已停止运行。')
+    expect(String(recoveryPrompt.detail)).toContain('不会重新执行写任务')
     // Native executable: the test hook closes its main bootstrap inspector before faults.
     // Renderer never has CDP/Playwright's disable-hang-monitor loader.
-    const nativeDir = await mkdtemp(resolve(tmpdir(), 'ontolearn-i02-'))
+    const nativeDir = await realpath(await mkdtemp(resolve(tmpdir(), 'ontolearn-i02-')))
     const nativeOutput = resolve(nativeDir, 'native.json')
     // Playwright uses a shell launcher on Windows: process().spawnfile can be cmd.exe.
     // Read the real Electron executable from the running main process instead.
@@ -274,9 +294,18 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     const args = [`--user-data-dir=${nativeDir}`]
     if (!env.ONTOLEARN_PACKAGED_EXECUTABLE) args.push(resolve('apps/desktop'))
     evidence.nativeLaunch = { executable, args }
+    stage('close-playwright-desktop-before-native')
+    await closeApplication()
     stage('native-recovery')
     try {
-      await runNativeRecovery(executable, args, { ...env, I02_NATIVE_EVIDENCE: nativeOutput })
+      await runNativeRecovery(
+        executable,
+        args,
+        { ...env, I02_NATIVE_EVIDENCE: nativeOutput },
+        !env.ONTOLEARN_PACKAGED_EXECUTABLE && process.platform === 'win32'
+          ? { bootstrap: 'preload', cwd: resolve('apps/desktop') }
+          : undefined,
+      )
     } catch (error) {
       // Failure-only evidence: Windows does not set I02_EVIDENCE. Read once,
       // preserve the actual bytes, and distinguish read, parse and attachment failures.
@@ -347,6 +376,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       hangMonitorEnabled: boolean
       noSandboxSwitch: boolean
       events: string[]
+      prompts?: Array<Record<string, unknown>>
     }
     expect(native.result).toBe('PASS')
     expect(native.inspectorClosedBeforeFaults).toBe(true)
@@ -356,6 +386,16 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     // Electron documents forcefullyCrashRenderer as killed or crashed across platforms.
     expect(native.events.some((reason) => reason === 'killed' || reason === 'crashed')).toBe(true)
     expect(native.events).toContain('unresponsive')
+    // Both native recovery dialogs must mirror window-recovery.ts exactly.
+    expect(native.prompts?.length).toBe(2)
+    expect(native.prompts?.[0]?.type).toBe('warning')
+    expect(native.prompts?.[0]?.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(native.prompts?.[0]?.message).toBe('显示窗口已停止运行。')
+    expect(String(native.prompts?.[0]?.detail)).toContain('不会重新执行写任务')
+    expect(native.prompts?.[1]?.type).toBe('warning')
+    expect(native.prompts?.[1]?.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(native.prompts?.[1]?.message).toBe('显示窗口暂时没有响应。')
+    expect(String(native.prompts?.[1]?.detail)).toContain('不会重新执行写任务')
     evidence.result = 'PASS'
   } finally {
     evidence.lastStageBeforeCleanup = evidence.stage
@@ -365,8 +405,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       await mkdir(resolve(env.I02_EVIDENCE, '..'), { recursive: true })
       await writeFile(env.I02_EVIDENCE, JSON.stringify(evidence, null, 2) + '\n')
     }
-    application.process().kill('SIGKILL')
-    await application.close().catch(() => undefined)
+    await closeApplication()
     server.close()
     if (env.I02_EVIDENCE) {
       await mkdir(resolve(env.I02_EVIDENCE, '..'), { recursive: true })

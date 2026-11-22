@@ -235,12 +235,26 @@ class Store:
         *,
         target_format: int = FORMAT_VERSION,
         backup_path: str | Path | None = None,
+        file_identity: str | None = None,
+        require_existing_format: bool = False,
     ):
         # Format3 is a private, explicit entry until Job/canonical integration is ready.
         # The old constant/default remain 2; default readers reject actual format3.
         if type(target_format) is not int or target_format not in {2, 3}:
             raise ValueError("Unsupported target project format")
         self.path = Path(path)
+        self._file_identity = file_identity
+        self._require_existing_format = require_existing_format
+        if type(require_existing_format) is not bool or (
+            require_existing_format and file_identity is None
+        ):
+            raise ValueError("Existing library requires trusted identity")
+        if file_identity is not None:
+            if target_format != 3:
+                raise ValueError("Library identity requires Store3")
+            from ontolearn_engine.project.file_identity import verify
+
+            verify(self.path, file_identity, require_existing=require_existing_format)
         self._target_format = target_format
         self._format3_lease = None
         existed = self.path.exists() and self.path.stat().st_size > 0
@@ -250,10 +264,21 @@ class Store:
 
                 self._format3_lease = acquire_lease(self.path)
                 existed = self.path.exists() and self.path.stat().st_size > 0
-            self._db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
+            if file_identity is not None:
+                from ontolearn_engine.project.file_identity import connect_verified
+
+                self._db = connect_verified(
+                    self.path, file_identity, require_existing=require_existing_format
+                )
+            else:
+                self._db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
             self._db.row_factory = sqlite3.Row
             self._db.execute("PRAGMA foreign_keys=ON")
             self._db.execute("PRAGMA synchronous=FULL")
+            if require_existing_format and self.actual_format == 0:
+                from ontolearn_engine.project.format3 import Format3Fault
+
+                raise Format3Fault("structure")
             self._migrate(migration_hook, backup_path=backup_path, existed=existed)
             invalid_kind = self._db.execute(
                 "SELECT 1 FROM results WHERE typeof(kind) != 'text' OR trim(kind) = '' "
@@ -295,6 +320,10 @@ class Store:
                 self._db.execute(f"RELEASE {savepoint}")
                 raise
             return
+        if self._file_identity is not None:
+            from ontolearn_engine.project.file_identity import verify_connection
+
+            verify_connection(self._db)
         hook("before")
         self._db.execute("BEGIN IMMEDIATE")
         try:
@@ -316,7 +345,9 @@ class Store:
         if version == target:
             if target == 3:
                 from ontolearn_engine.project.format3 import validate
+                from ontolearn_engine.project.management_schema import migrate
 
+                migrate(self, backup_path, hook)
                 with self._read():
                     validate(self)
             return  # Reopen is read-only; explicit3 still owns the OS writer lease.
@@ -566,6 +597,10 @@ class Store:
         if self._db.in_transaction:
             yield
         else:
+            if self._file_identity is not None:
+                from ontolearn_engine.project.file_identity import verify_connection
+
+                verify_connection(self._db)
             self._db.execute("BEGIN")
             try:
                 yield
@@ -635,6 +670,7 @@ class Store:
         application: dict | None = None,
         creation: dict | None = None,
         example_creation: dict | None = None,
+        management: dict | None = None,
         hook: Hook = lambda _: None,
     ) -> dict:
         """Atomic ChangeSet or whole managed-range replacement.
@@ -642,6 +678,32 @@ class Store:
         mapping = {id, rows:[{row, facts:[...]}]}; a prepared storage plan,
         NOT a CSV parser or complete mapping executor. No silent takeover exists.
         """
+        if management is not None:
+            from ontolearn_engine.project.management import commit as commit_management
+
+            if any(
+                value is not None
+                for value in (
+                    definitions,
+                    remove_definitions,
+                    manual,
+                    edits,
+                    remove,
+                    mapping,
+                    preview_identity,
+                    preview_control,
+                    compensate,
+                    application,
+                    creation,
+                    example_creation,
+                )
+            ):
+                raise ValueError("Management cannot mix mutation branches")
+            return commit_management(self, project, base, operation, job, management, hook)
+        if self._target_format == 3 and project is not None:
+            from ontolearn_engine.project.management import active
+
+            active(self, project)
         if example_creation is not None:
             from ontolearn_engine.project.project_lifecycle import commit_example
 

@@ -602,6 +602,67 @@ export function matchesBusiness3Response(
   const q = request as Record<string, unknown>
   const r = response as Record<string, unknown>
   if (q.id !== r.id || q.method !== r.method) return false
+  if (String(q.method).startsWith('project.management.') || q.method === 'project.library.status') {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>
+    const value = r.result as Record<string, unknown>
+    if (q.method === 'project.library.status') return true
+    if (q.method === 'project.management.catalog') {
+      const items = value.items as Array<Record<string, unknown>>
+      const end = Number(value.offset) + items.length
+      return (
+        items.length <= Number(p.pageSize) &&
+        new Set(items.map((item) => item.projectId)).size === items.length &&
+        end <= Number(value.total) &&
+        (value.nextCursor === null
+          ? end === value.total
+          : items.length > 0 && end < Number(value.total)) &&
+        items.every((item) => {
+          const lifecycle = item.lifecycle as Record<string, unknown>
+          const metadata = item.metadata as Record<string, unknown>
+          return p.state === 'trashed'
+            ? lifecycle.state === 'trashed'
+            : lifecycle.state === 'active' && metadata.archived === (p.state === 'archived')
+        })
+      )
+    }
+    if (q.method === 'project.management.operation.get') {
+      if (value.state === 'not-found') return value.result === null
+      const result = value.result as Record<string, unknown>
+      return (
+        result.projectId === p.projectId &&
+        result.operationId === p.operationId &&
+        result.requestHash === p.requestHash &&
+        (result.kind === 'copy-current'
+          ? result.targetProjectId !== result.projectId
+          : result.targetProjectId === result.projectId)
+      )
+    }
+    if (value.projectId !== p.projectId) return false
+    if (q.method === 'project.management.read') return true
+    if (q.method === 'project.management.preview') {
+      const action = value.action as Record<string, unknown>
+      const requested = p.action as Record<string, unknown>
+      const document = value.document as Record<string, unknown>
+      return (
+        Object.keys(action).length === Object.keys(requested).length &&
+        Object.keys(action).every((key) => action[key] === requested[key]) &&
+        document.checkpointRef === p.expectedCheckpointRef &&
+        document.lifecycleVersion === p.expectedLifecycleVersion
+      )
+    }
+    if (q.method === 'project.management.confirm')
+      return value.previewRef === p.previewRef && value.documentHash === p.documentHash
+    // Main additionally verifies the original canonical request's SHA-256.
+    return (
+      q.method === 'project.management.apply' &&
+      value.operationId === p.operationId &&
+      (value.kind === 'copy-current'
+        ? value.targetProjectId !== value.projectId
+        : value.targetProjectId === value.projectId)
+    )
+  }
   if (q.method === 'project.ownership.detail')
     return (
       q.engineSessionId === r.engineSessionId &&

@@ -180,7 +180,11 @@ def build_plan() -> list[Lane]:
             "--output=test-results/i04-packaged-native --reporter=list,github,json'\n"
             "xvfb-run -a sh -c 'openbox > /tmp/q3-packaged-graph-openbox.log 2>&1 & "
             "uv run --frozen python scripts/run-q3-packaged-graph.py "
-            "release test-results/q3-packaged-graph'",
+            "release test-results/q3-packaged-graph'\n"
+            "B1A_NATIVE_ISOLATED=1 "
+            "xvfb-run -a sh -c 'openbox > /tmp/b1a-packaged-openbox.log 2>&1 & "
+            "uv run --frozen python scripts/run-b1a-packaged-lifecycle.py "
+            "release test-results/b1a-packaged-lifecycle'",
             # The unpackaged and packaged native renderer tests are the only
             # e2e launches without their own user-data-dir: both derive the
             # default Electron profile from the same app package identity, so
@@ -692,6 +696,23 @@ async def _supervise(popen, name: str, stdout=None, stderr=None) -> int:
         done: set = set()
         if ready_tasks:
             done, _pending = await asyncio.wait(ready_tasks, timeout=_DRAIN_BOUND_S)
+        reader_threads = [e["handle"] for e in readers if e["kind"] == "thread"]
+        if exited and drain_failure is None and reader_threads:
+            stop_join = threading.Event()
+
+            def wait_threads() -> None:
+                deadline = time.monotonic() + _DRAIN_BOUND_S
+                for thread in reader_threads:
+                    while thread.is_alive() and not stop_join.is_set() and not failures:
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            return
+                        thread.join(min(0.05, remaining))
+
+            try:
+                await asyncio.get_running_loop().run_in_executor(None, wait_threads)
+            finally:
+                stop_join.set()
         if drain_failure is None and failures:
             drain_failure = failures[0][1]
         short = any(e["kind"] == "task" and e["handle"] not in done for e in readers)
