@@ -24,6 +24,9 @@ const OWL = 'http://www.w3.org/2002/07/owl#'
 const XSD = 'http://www.w3.org/2001/XMLSchema#'
 const UUID = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 const hash = /^[0-9a-f]{64}$/
+// Match EngineSupervisor's 15s Win32 request budget (apps/desktop/src/main/index.ts)
+// against Windows Defender / NTFS PRAGMA synchronous=FULL stalls observed in Run 45066815613.
+const T02_POLL_TIMEOUT_MS = process.platform === 'win32' ? 15000 : 5000
 type Read = MainlineProjectReadDTO
 type Definition = Read['domain']['state']['definitions'][number]
 type Fact = Read['domain']['state']['facts'][number]
@@ -417,7 +420,7 @@ async function diff(page: Page, expectedCount?: number): Promise<Diff[]> {
           ).length === 1)
       )
     },
-    { intervals: [100], timeout: 5000 },
+    { intervals: [100], timeout: T02_POLL_TIMEOUT_MS },
   )
   const parsed: unknown = JSON.parse(exactlyOne(completed, 'diff')!.pre[0]!)
   if (!Array.isArray(parsed)) throw new Error('Actual complete Diff is not an array')
@@ -483,7 +486,7 @@ async function commit(
       }
       return false
     },
-    { intervals: [100], timeout: 5000 },
+    { intervals: [100], timeout: T02_POLL_TIMEOUT_MS },
   )
   if (reconcile) {
     const button = pending.getByRole('button', { name: '核对原操作与提交回执', exact: true })
@@ -511,7 +514,7 @@ async function commit(
       completed = observed
       return committedReceiptOperation(completed, revision, UUID) !== undefined
     },
-    { intervals: [100], timeout: 5000 },
+    { intervals: [100], timeout: T02_POLL_TIMEOUT_MS },
   )
   const operationId = committedReceiptOperation(completed, revision, UUID)
   if (!operationId) throw new Error('Visible receipt lacks its original operation ID')
@@ -896,11 +899,16 @@ async function start(page: Page, name: string): Promise<Read> {
   await page.getByTestId('project-create').click()
   await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
     '项目已创建并打开',
+    { timeout: T02_POLL_TIMEOUT_MS },
   )
-  await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
+  await expect(page.getByTestId('project-list-refresh')).toBeEnabled({
+    timeout: T02_POLL_TIMEOUT_MS,
+  })
   await page.getByRole('link', { name: '本体构建', exact: true }).click()
-  await expect(form(page)).toBeVisible()
-  await expect(panel(page).getByRole('button', { name: '读取当前项目', exact: true })).toBeEnabled()
+  await expect(form(page)).toBeVisible({ timeout: T02_POLL_TIMEOUT_MS })
+  await expect(panel(page).getByRole('button', { name: '读取当前项目', exact: true })).toBeEnabled({
+    timeout: T02_POLL_TIMEOUT_MS,
+  })
   const initial = await read(page)
   expect(initial.domain.projectRevision).toBe(0)
   expect(initial.domain.state).toEqual({ definitions: [], facts: [], mappingState: {} })
@@ -1141,7 +1149,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
               exactlyOne(snapshot, 'button')?.enabled === true && snapshot.rejection?.length === 0
             )
           },
-          { intervals: [100], timeout: 5000 },
+          { intervals: [100], timeout: T02_POLL_TIMEOUT_MS },
         )
         const before = await read(page)
         expect(before.domain).toEqual(expected.domain)
@@ -1198,7 +1206,7 @@ test.describe('FR200/FR201 real form matrix; definitions only until actually exe
               rejectedUI.confirmation?.length === 0
             )
           },
-          { intervals: [100], timeout: 5000 },
+          { intervals: [100], timeout: T02_POLL_TIMEOUT_MS },
         )
         const after = await read(page)
         expect(after).toEqual(before)
