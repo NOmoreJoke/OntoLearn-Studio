@@ -36,6 +36,16 @@ export type MentorPanelProps = {
 /** Tasks whose G-base practice domain is a fresh example project. */
 const GBASE_RESET_TASKS: ReadonlySet<string> = new Set(['business-ontology', 'query', 'quality'])
 
+/** Scroll the checkpoints panel into view without inventing extra navigation state. */
+export function scrollToProjectCheckpoints(
+  root: Pick<Document, 'getElementById'> = document,
+): boolean {
+  const target = root.getElementById('project-checkpoints')
+  if (!target) return false
+  target.scrollIntoView({ block: 'start', behavior: 'auto' })
+  return true
+}
+
 /** PRD 8.2/8.9 mentor rail inside the workspace split; never a third sidebar.
  *  All persistence flows through the Step 1 named bridge, never storage. */
 export function MentorPanel({
@@ -144,11 +154,9 @@ export function MentorPanel({
               type="button"
               className="mentor-secondary"
               data-testid="learning-scroll-checkpoints"
-              onClick={() =>
-                document
-                  .getElementById('project-checkpoints')
-                  ?.scrollIntoView({ block: 'start', behavior: 'auto' })
-              }
+              onClick={() => {
+                scrollToProjectCheckpoints()
+              }}
             >
               查看检查点恢复（当前项目内还原）
             </button>
@@ -391,7 +399,7 @@ export function MentorPanel({
               type="button"
               data-testid="learning-open-ontology-repair"
               className="mentor-secondary"
-              disabled={disabled}
+              disabled={blocked}
               onClick={onOpenOntologyRepair}
             >
               打开本体构建修复

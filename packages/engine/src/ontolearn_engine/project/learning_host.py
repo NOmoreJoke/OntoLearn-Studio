@@ -189,10 +189,14 @@ class LearningHost:
         elif j1["input_selection"] != "current" or j1["dto"]["input"].get("scope") != "asserted":
             evidences["Q-01"] = persisted("Q-01", j1["jobId"], "historical", None)
         else:
-            meta1, pay1 = store.semantic_result(project, j1["dto"]["resultRef"]["resultId"])
-            evidences["Q-01"] = persisted(
-                "Q-01", meta1["resultId"], "succeeded", self._query_check_payload(pay1)
-            )
+            result1 = (j1["dto"].get("resultRef") or {}).get("resultId")
+            if not result1:
+                evidences["Q-01"] = unavailable("Q-01")
+            else:
+                meta1, pay1 = store.semantic_result(project, result1)
+                evidences["Q-01"] = persisted(
+                    "Q-01", meta1["resultId"], "succeeded", self._query_check_payload(pay1)
+                )
 
         # Q-02 must run after the Q-01 baseline, against the A01=Closed state.
         min_q2_rowid = j1["claim_rowid"] if j1 is not None else min_claim_rowid
@@ -208,6 +212,7 @@ class LearningHost:
             if item["claim_rowid"] >= min_q2_rowid
             and item["dto"]["inputSnapshotId"] == snapshot_ref
             and item["dto"]["state"] == "succeeded"
+            and bool((item["dto"].get("resultRef") or {}).get("resultId"))
             and item["input_selection"] == "current"
             and item["dto"]["input"].get("scope") == "asserted"
         ]
@@ -238,22 +243,25 @@ class LearningHost:
             evidences["Q-02"] = unavailable("Q-02")
         else:
             j2 = q02_jobs[-1]
-            result2 = j2["dto"]["resultRef"]["resultId"]
             if j2["dto"]["state"] != "succeeded":
                 evidences["Q-02"] = persisted("Q-02", j2["jobId"], j2["dto"]["state"], None)
             elif (
                 j2["input_selection"] != "current" or j2["dto"]["input"].get("scope") != "asserted"
             ):
                 evidences["Q-02"] = persisted("Q-02", j2["jobId"], "historical", None)
-            elif j2["dto"]["inputSnapshotId"] != snapshot_ref or (
-                store.result_get(project, result2).get("state") != "current"
-            ):
-                evidences["Q-02"] = persisted("Q-02", result2, "stale", None)
             else:
-                meta2, pay2 = store.semantic_result(project, result2)
-                evidences["Q-02"] = persisted(
-                    "Q-02", meta2["resultId"], "succeeded", self._query_check_payload(pay2)
-                )
+                result2 = (j2["dto"].get("resultRef") or {}).get("resultId")
+                if not result2:
+                    evidences["Q-02"] = unavailable("Q-02")
+                elif j2["dto"]["inputSnapshotId"] != snapshot_ref or (
+                    store.result_get(project, result2).get("state") != "current"
+                ):
+                    evidences["Q-02"] = persisted("Q-02", result2, "stale", None)
+                else:
+                    meta2, pay2 = store.semantic_result(project, result2)
+                    evidences["Q-02"] = persisted(
+                        "Q-02", meta2["resultId"], "succeeded", self._query_check_payload(pay2)
+                    )
         return evidences
 
     def close(self):

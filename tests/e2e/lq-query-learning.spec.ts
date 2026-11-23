@@ -1,5 +1,5 @@
 import { test, expect, _electron as electron, type Locator, type Page } from '@playwright/test'
-import { mkdtemp, realpath } from 'node:fs/promises'
+import { mkdtemp, realpath, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -351,6 +351,11 @@ test('Lq query course: G-base practice reset, persisted Q-01/Q-02, derived stale
     // Project 1 stays in the library, untouched by the practice reset.
     expect(await catalogRevision(page, projectOne)).toBe(projectOneRevision)
     evidence.projectOneRevisionAfterReset = await catalogRevision(page, projectOne)
+    // Clicking the checkpoint scroll entry brings the checkpoints panel into the viewport.
+    await mentor.getByTestId('learning-scroll-checkpoints').click()
+    await expect(page.locator('#project-checkpoints')).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('#project-checkpoints')).toBeInViewport({ timeout: 10000 })
+    evidence.scrolledToCheckpoints = true
 
     stage = 'practice project: mounted reading and self assessments never change the verdict'
     await mentor.getByTestId('learning-reading-open').click()
@@ -480,6 +485,7 @@ test('Lq query course: G-base practice reset, persisted Q-01/Q-02, derived stale
       })
     } finally {
       await application?.close()
+      await rm(userData, { recursive: true, force: true })
     }
   }
 })
