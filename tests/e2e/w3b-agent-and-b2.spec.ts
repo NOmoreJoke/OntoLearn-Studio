@@ -61,11 +61,17 @@ async function openExample(page: Page) {
   await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
     '项目已创建并打开',
   )
+  await expect(page.getByTestId('mentor-panel').getByTestId('learning-check-status')).toHaveText(
+    '待检查',
+  )
   return activeProject(page)
 }
 
-function openWorkspace(page: Page, name: '本体构建' | '本体查询') {
-  return page.getByRole('link', { name, exact: true }).click()
+async function openWorkspace(page: Page, name: '本体构建' | '本体查询') {
+  await page.getByRole('link', { name, exact: true }).click()
+  if (name === '本体构建') {
+    await expect(page.getByRole('region', { name: '本体编辑表单', exact: true })).toBeVisible()
+  }
 }
 
 async function downloadOntology(page: Page, name: string) {
