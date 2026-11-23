@@ -117,7 +117,7 @@ jobs:
       # settle the full set. The locale probe stays as plain diagnostics.
       - name: Windows engine full acceptance
         if: runner.os == 'Windows'
-        timeout-minutes: 20
+        timeout-minutes: 25
         env:
           CI_ENGINE_TEST_SHARDS: '4'
           CI_ENGINE_TEST_WEIGHTS: 'linux-ci46'

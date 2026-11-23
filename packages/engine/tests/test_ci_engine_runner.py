@@ -10,7 +10,9 @@ plus failure propagation on synthesized worker folders.
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
+import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -281,3 +283,42 @@ def test_reporting_plugin_survives_stdlib_json_monkeypatch(tmp_path, monkeypatch
     ]
     assert events[-1] == {"event": "session_finish", "exitstatus": 0, "testsfailed": 0}
     assert json.loads((worker_dir / "collection.json").read_text(encoding="utf-8")) == manifest
+
+
+def test_copy_stream_chunks_oversized_console_lines_without_altering_raw_log(tmp_path):
+    payload = b"A" * 1_050_000 + b"\nshort\n"
+    pipe = io.BytesIO(payload)
+    log_path = tmp_path / "stdout.log"
+    target = SimpleNamespace(buffer=io.BytesIO())
+    errors = []
+
+    runner.copy_stream(pipe, log_path, target, errors)
+
+    assert errors == []
+    assert pipe.closed
+    assert log_path.read_bytes() == payload
+    console_lines = target.buffer.getvalue().splitlines(keepends=True)
+    assert len(console_lines) > 2
+    assert b"".join(console_lines).replace(b"\n", b"") == payload.replace(b"\n", b"")
+    assert max(len(line) for line in console_lines) <= runner._MAX_CONSOLE_LINE_BYTES + 1
+
+
+def test_oversized_input_tests_keep_bounded_collected_nodeids():
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "--collect-only",
+            "-q",
+            "packages/engine/tests/test_semantic_profile_input.py",
+            "packages/engine/tests/test_semantic_profile_restore_limits.py",
+        ],
+        cwd=REPOSITORY,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    non_empty = [line for line in proc.stdout.splitlines() if line]
+    assert non_empty
+    assert max(len(line) for line in non_empty) <= 4096

@@ -439,7 +439,11 @@ def test_reader_rejects_invalid_tokens_before_building_native_records(raw):
     assert not any(value for _, value in ledger.live)
 
 
-@pytest.mark.parametrize("text", ["0x00", "-0x0", "+0x1", "0X1", "0xA", "0x", "0x1" + "0" * 8192])
+@pytest.mark.parametrize(
+    "text",
+    ["0x00", "-0x0", "+0x1", "0X1", "0xA", "0x", "0x1" + "0" * 8192],
+    ids=["0x00", "-0x0", "+0x1", "0X1", "0xA", "0x", "0x1-plus-8192-zeros"],
+)
 def test_integer_hex_shape_and_bit_gate_reject_before_unbounded_conversion(text):
     ledger = RestoreLedger()
     ledger.begin(max(100, len(text)), 0, 1)

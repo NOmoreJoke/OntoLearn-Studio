@@ -151,6 +151,20 @@ MEASURED_LINUX_SPANS = {
 }
 _signal = 0
 _console = threading.Lock()
+_MAX_CONSOLE_LINE_BYTES = 16384
+
+
+def _console_chunks(line: bytes, limit: int = _MAX_CONSOLE_LINE_BYTES) -> tuple[bytes, ...]:
+    if len(line) <= limit:
+        return (line,)
+    ending = b"\r\n" if line.endswith(b"\r\n") else (b"\n" if line.endswith(b"\n") else b"")
+    body = line[: len(line) - len(ending)] if ending else line
+    chunks = []
+    for offset in range(0, len(body), limit):
+        part = body[offset : offset + limit]
+        is_last = offset + limit >= len(body)
+        chunks.append(part + (ending if is_last else b"\n"))
+    return tuple(chunks)
 
 
 def write(path, value):
@@ -180,7 +194,8 @@ def copy_stream(pipe, path, target, errors):
                 raw.flush()
                 with _console:
                     try:
-                        target.buffer.write(line)
+                        for chunk in _console_chunks(line):
+                            target.buffer.write(chunk)
                         target.buffer.flush()
                     except (BrokenPipeError, OSError):
                         pass  # Raw evidence still survives a closed CI console.
