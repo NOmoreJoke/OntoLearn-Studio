@@ -557,7 +557,17 @@ def load_checkpoint(store, project: str, identity: str) -> dict:
         raise Format3Fault("structure") from None
 
 
-def _raw_checkpoint(store, project, identity):
+def _cached_snapshot(store, project, snap_ref, cache):
+    """Per-call snapshot reuse; never persists across ledger validations."""
+    if cache is not None and snap_ref in cache:
+        return cache[snap_ref]
+    domain = store._project_snapshot(snap_ref, project)
+    if cache is not None:
+        cache[snap_ref] = domain
+    return domain
+
+
+def _raw_checkpoint(store, project, identity, *, _snapshots=None):
     """Structural read only. Authority is established by _history, never by this alone."""
     row = store._db.execute(
         "SELECT * FROM app_checkpoints WHERE id=? AND project=?", (identity, project)
@@ -595,7 +605,7 @@ def _raw_checkpoint(store, project, identity):
         raise Format3Fault("format")
     _require(_integer(value["domainRevision"]) and _integer(value["operationSequence"]))
     _require(row["domain_snapshot"] == value["domainSnapshotRef"])
-    domain = store._project_snapshot(value["domainSnapshotRef"], project)
+    domain = _cached_snapshot(store, project, value["domainSnapshotRef"], _snapshots)
     _require(domain["projectRevision"] == value["domainRevision"])
     _application(value["application"], project, value["domainRevision"])
     return value
@@ -603,6 +613,7 @@ def _raw_checkpoint(store, project, identity):
 
 def _history(store, project):
     """Verify one immutable mixed ledger from genesis through the actual current head."""
+    snapshots: dict[str, dict] = {}
     revision = store.revision(project)
     _require(_text(project) and _integer(revision))
     store._snapshot_state(store.state(project))
@@ -645,7 +656,7 @@ def _history(store, project):
         old_revisions == sorted(set(old_revisions))
         and all(r <= origin["domain_revision"] for r in old_revisions)
     )
-    genesis = _raw_checkpoint(store, project, origin["checkpoint"])
+    genesis = _raw_checkpoint(store, project, origin["checkpoint"], _snapshots=snapshots)
     _require(
         genesis["operationSequence"] == legacy
         and genesis["domainRevision"] == origin["domain_revision"]
@@ -674,7 +685,7 @@ def _history(store, project):
         _require(isinstance(proof, dict) and proof.get("beforeCheckpointRef") == current_ref)
         after_ref = proof.get("afterCheckpointRef")
         _require(_text(after_ref))
-        after = _raw_checkpoint(store, project, after_ref)
+        after = _raw_checkpoint(store, project, after_ref, _snapshots=snapshots)
         _require(
             after["operationSequence"] == op["sequence"]
             and current["operationSequence"] == op["sequence"] - 1
@@ -747,11 +758,11 @@ def _history(store, project):
                 _require(
                     marker["fingerprint"] == domain["fingerprint"] == digest(_json(marker["plan"]))
                 )
+                before_snap = _cached_snapshot(store, project, marker["before_snapshot"], snapshots)
+                after_snap = _cached_snapshot(store, project, marker["after_snapshot"], snapshots)
                 _require(
-                    store._project_snapshot(marker["before_snapshot"], project)["state"]
-                    == domain["beforeState"]
-                    and store._project_snapshot(marker["after_snapshot"], project)["state"]
-                    == domain["afterState"]
+                    before_snap["state"] == domain["beforeState"]
+                    and after_snap["state"] == domain["afterState"]
                 )
         if op["kind"] in {"domain", "combined"}:
             _require(marker["revision"] == after["domainRevision"] == current["domainRevision"] + 1)
@@ -800,15 +811,21 @@ def _history(store, project):
     return receipts, checkpoints, current
 
 
-def receipt_for(store, project: str, operation: str) -> dict:
+def receipts_for_project(store, project: str) -> dict:
+    """Validate project history once and return its operation receipts map."""
     try:
         receipts, _, _ = _history(store, project)
-        _require(operation in receipts)
-        return receipts[operation]
+        return receipts
     except Format3Fault:
         raise
     except (ValueError, KeyError, TypeError, OverflowError, sqlite3.DatabaseError):
         raise Format3Fault("structure") from None
+
+
+def receipt_for(store, project: str, operation: str) -> dict:
+    receipts = receipts_for_project(store, project)
+    _require(operation in receipts)
+    return receipts[operation]
 
 
 def _domain_receipt(project, marker, sequence, before, after):

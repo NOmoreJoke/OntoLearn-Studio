@@ -559,6 +559,8 @@ class JobStore(Store):
                 raise Format3Fault("structure")
             jobs = {r[0] for r in self._db.execute("SELECT id FROM jobs")}
             claimed = set()
+            project_receipts = {}
+            management_validated = False
             for claim in self._db.execute("SELECT * FROM operation_claims"):
                 if not isinstance(claim["operation"], str) or not UUID.fullmatch(
                     claim["operation"]
@@ -566,14 +568,16 @@ class JobStore(Store):
                     raise Format3Fault("structure")
                 if claim["kind"] == "application":
                     from ontolearn_engine.project.applications import claim_context
-                    from ontolearn_engine.project.format3 import receipt_for
+                    from ontolearn_engine.project.format3 import receipts_for_project
                     from ontolearn_engine.project.project_lifecycle import creation_context
 
                     context = _json(claim["context"])
                     if isinstance(context, dict) and "managementLifecycleContextVersion" in context:
                         from ontolearn_engine.project.management import validate_ledger
 
-                        validate_ledger(self)
+                        if not management_validated:
+                            validate_ledger(self)
+                            management_validated = True
                         if (
                             self._db.execute(
                                 "SELECT 1 FROM management_receipts WHERE operation=?",
@@ -587,7 +591,13 @@ class JobStore(Store):
                     creation = creation_context(self, internal, claim["operation"])
                     if creation is None:
                         claim_context(self, internal, claim["operation"])
-                    receipt = receipt_for(self, internal, claim["operation"])
+                    receipts = project_receipts.get(internal)
+                    if receipts is None:
+                        receipts = receipts_for_project(self, internal)
+                        project_receipts[internal] = receipts
+                    if claim["operation"] not in receipts:
+                        raise Format3Fault("structure")
+                    receipt = receipts[claim["operation"]]
                     if creation is not None and receipt != creation["receipt"]:
                         raise Format3Fault("structure")
                     continue
