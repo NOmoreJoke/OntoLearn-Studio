@@ -99,13 +99,14 @@ def test_source_term_digit_boundaries_and_no_global_lift():
 def test_streaming_serialization_does_not_build_then_measure(monkeypatch):
     import json
 
-    monkeypatch.setattr(json, "dumps", lambda *a, **k: pytest.fail("whole json allocation"))
-    with pytest.raises(ProfileFailure, match="RULE_EVIDENCE_RESULT_LIMIT"):
-        encode_output(("a" * 10000,), Budget(ProfileLimits(output_bytes=10)))
-    payload = encode_output(("abc",), Budget())
-    assert encode_output(("abc",), Budget(ProfileLimits(output_bytes=len(payload)))) == payload
-    with pytest.raises(ProfileFailure):
-        encode_output(("abc",), Budget(ProfileLimits(output_bytes=len(payload) - 1)))
+    with monkeypatch.context() as mp:
+        mp.setattr(json, "dumps", lambda *a, **k: pytest.fail("whole json allocation"))
+        with pytest.raises(ProfileFailure, match="RULE_EVIDENCE_RESULT_LIMIT"):
+            encode_output(("a" * 10000,), Budget(ProfileLimits(output_bytes=10)))
+        payload = encode_output(("abc",), Budget())
+        assert encode_output(("abc",), Budget(ProfileLimits(output_bytes=len(payload)))) == payload
+        with pytest.raises(ProfileFailure):
+            encode_output(("abc",), Budget(ProfileLimits(output_bytes=len(payload) - 1)))
 
 
 def test_trace_units_include_all_occurrences_and_references():

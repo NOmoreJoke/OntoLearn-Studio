@@ -274,7 +274,25 @@ describe('restore intent journal durability', () => {
 
   it('recovers a pending original intent and refuses a corrupted journal', async () => {
     const journal = join(directory.value, 'restore-intents.json')
-    const projectId = randomUUID()
+    // The durable intent must reference a project the engine actually knows:
+    // a first runtime session creates the project and exits, then the journal
+    // is written so the restart below loads it with no project ever opened or
+    // selected in the desktop session under test.
+    const seed = runtime(directory.value)
+    let projectId!: string
+    try {
+      const created = await seed.call(() =>
+        seed.projects.createBlankProject({
+          requestVersion: 1,
+          operationId: randomUUID(),
+          name: 'B1b 挂起恢复',
+          initialization: { kind: 'blank' },
+        }),
+      )
+      projectId = created.projectId
+    } finally {
+      await seed.close()
+    }
     const target = 'a'.repeat(64)
     const documentHash = 'b'.repeat(64)
     const requestHash = createHash('sha256')
@@ -327,6 +345,17 @@ describe('restore intent journal durability', () => {
       expect(blocked.ok).toBe(false)
       const unselected = await r.projects.listProjectCheckpoints({ pageSize: 10, cursor: null })
       expect(unselected.ok).toBe(false)
+      // Still without any selected project, the unselected reconcile path must
+      // be able to close the durable intent through the real runtime: the
+      // engine never saw the original apply, so the operation is not-found.
+      const reconciled = await r.call(() =>
+        r.projects.getProjectRestoreOperation({
+          operationId: '00000000-0000-4000-8000-000000000002',
+        }),
+      )
+      expect(reconciled).toEqual({ state: 'not-found', result: null })
+      // r.call consumed the reply ACK, which releases the restore block.
+      expect(r.projects.restoreBlocked).toBe(false)
     } finally {
       await r.close()
     }

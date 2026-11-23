@@ -75,7 +75,7 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: ${{ matrix.os == 'windows-latest' && 25 || 20 }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -107,8 +107,7 @@ jobs:
       - run: npm run engine:check
         if: runner.os != 'Windows'
         env:
-          CI_ENGINE_TEST_SHARDS: '1'
-          CI_ENGINE_TEST_REPORT_SINGLE: '1'
+          CI_ENGINE_TEST_SHARDS: '2'
       # Full formal Windows engine acceptance: two shards with the complete
       # parallel() accounting (full collection, per-node phases, session
       # identity, coverage), replacing the temporary first-failure diagnostic

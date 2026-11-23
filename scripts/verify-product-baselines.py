@@ -12,7 +12,16 @@ sys.path.insert(0, str(ROOT / "packages/engine/src"))
 from ontolearn_engine.learning.baselines import BASELINES, reset_input, verify  # noqa: E402
 
 
+def _force_utf8_stdio() -> None:
+    """Keep non-ASCII output safe on Windows consoles defaulting to cp1252."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            reconfigure(encoding="utf-8")
+
+
 def main() -> int:
+    _force_utf8_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reset", choices=BASELINES)
     args = parser.parse_args()

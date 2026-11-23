@@ -483,6 +483,100 @@ describe('LearningController', () => {
     expect(controller.getSnapshot().learning).toBeUndefined()
     expect(controller.getSnapshot().error).toBeDefined()
   })
+  it('rejects mutation responses naming another project or task without merging state', async () => {
+    const bridge = scriptedBridge(learningRead([taskState()]))
+    bridge.recordLearningHint = async () => ({
+      ok: true,
+      data: {
+        ...hintReceipt(1, taskState({ maxHintLevel: 1, assistance: 'partial-hints' })),
+        projectId: otherProjectId,
+      },
+    })
+    bridge.checkLearningTask = async () => ({
+      ok: true,
+      data: checkReceipt(taskState({ checkStatus: 'passed', operationComplete: true }), {
+        taskId: 'mapping',
+      }),
+    })
+    bridge.startLearningAttempt = async () => ({
+      ok: true,
+      data: {
+        learningAttemptStartVersion: 1,
+        projectId: otherProjectId,
+        operationId: 'op-attempt',
+        taskId: 'business-ontology',
+        attemptId: 'attempt-2',
+        activationEpoch: 2,
+        recordVersion: 2,
+        inputVersion: 'rev-0:' + 'a'.repeat(64),
+        rootSnapshotRef: 'a'.repeat(64),
+        operationSequence: null,
+        afterCheckpointRef: null,
+        replayed: false,
+        learningState: taskState(),
+      },
+    })
+    bridge.recordLearningObservation = async (args) => ({
+      ok: true,
+      data: {
+        learningObservationRecordVersion: 1,
+        projectId: otherProjectId,
+        operationId: 'op-observation',
+        taskId: args.taskId,
+        attemptId: 'attempt-1',
+        recordVersion: 2,
+        observation: args.observation,
+        assessmentOutcome: null,
+        learningState: taskState(),
+      },
+    })
+    const controller = new LearningController(bridge, () => 'op-z')
+    await controller.selectAndRefresh(projectId)
+    await controller.requestHint()
+    expect(controller.getSnapshot().error).toBeDefined()
+    expect(controller.getSnapshot().learning?.tasks[0]?.maxHintLevel).toBe(0)
+    await controller.checkTask()
+    expect(controller.getSnapshot().error).toBeDefined()
+    expect(controller.getSnapshot().lastCheck).toBeUndefined()
+    await controller.restartAttempt()
+    expect(controller.getSnapshot().error).toBeDefined()
+    await controller.recordObservation({ kind: 'reading-opened', readingId: 'business-question' })
+    expect(controller.getSnapshot().error).toBeDefined()
+  })
+  it('queues and drains selectAndRefresh when called while another learning RPC is busy', async () => {
+    const bridge = scriptedBridge(learningRead([taskState()]))
+    let releaseHint!: (value: BridgeResult<ProjectLearningHintRecordDTO>) => void
+    bridge.recordLearningHint = () =>
+      new Promise((done) => {
+        releaseHint = done
+      })
+    bridge.getProjectLearningState = async (args) => {
+      bridge.reads++
+      return {
+        ok: true,
+        data: learningRead([taskState({ taskId: 'business-ontology' })], {
+          projectId: args.projectId,
+        }),
+      }
+    }
+    const controller = new LearningController(bridge, () => 'op-queue')
+    await controller.selectAndRefresh(projectId)
+    const inFlightHint = controller.requestHint()
+    const queuedRefresh = controller.selectAndRefresh(otherProjectId)
+    expect(controller.getSnapshot().selectedProjectId).toBe(otherProjectId)
+    expect(controller.getSnapshot().busy).toBe(true)
+    expect(bridge.reads).toBe(1)
+
+    releaseHint({
+      ok: true,
+      data: hintReceipt(1, taskState({ maxHintLevel: 1, assistance: 'partial-hints' })),
+    })
+    await Promise.all([inFlightHint, queuedRefresh])
+    expect(bridge.reads).toBe(2)
+    expect(controller.getSnapshot().busy).toBe(false)
+    expect(controller.getSnapshot().learning?.projectId).toBe(otherProjectId)
+    expect(controller.getSnapshot().error).toBeUndefined()
+  })
   it('notifies subscribers and stops after close', async () => {
     const bridge = scriptedBridge(learningRead([taskState()]))
     const controller = new LearningController(bridge, () => 'op-y')

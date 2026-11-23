@@ -3,6 +3,7 @@
  * restore controller/panel state machine. No OS engine process is spawned. */
 import { describe, expect, it, beforeEach, afterEach } from 'vitest'
 import { createHash, randomUUID } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 import { lstat, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -32,6 +33,7 @@ import type {
   ProjectRestorePreviewDTO,
   ProjectRestoreResultDTO,
 } from '@ontolearn/contracts'
+import { matchesBusiness3Response } from '../../packages/contracts/src/v2'
 
 const sha256 = (value: string | Buffer) => createHash('sha256').update(value).digest('hex')
 const hashOf = (value: unknown) => sha256(managementCanonical(value))
@@ -364,6 +366,95 @@ describe('restore journal durability and reconciliation (session unit)', () => {
     settled.session.dispose()
     restart.session.dispose()
     h.session.dispose()
+  })
+
+  it('reconciles an unselected restart in both applied and not-found paths, while fencing cross-project probes', async () => {
+    // Applied path: the engine committed the restore, the reply ACK was lost,
+    // and the crash restart lands with no project selected at all.
+    const appliedJournal = join(directory.value, 'unselected-applied.json')
+    const first = sessionFixture({ journalPath: appliedJournal })
+    const appliedOperation = uuid()
+    await first.session.preview({
+      targetCheckpointRef: first.fixture.preview.targetCheckpointRef,
+      expectedCheckpointRef: first.fixture.preview.currentCheckpointRef,
+      expectedLifecycleVersion: 3,
+    })
+    await first.readBothPages()
+    await first.session.confirm({
+      previewRef: first.fixture.preview.previewRef,
+      documentHash: first.fixture.preview.documentHash,
+      readSegmentHashes: first.fixture.manifestSegments.map((segment) => segment.sha256),
+    })
+    await first.session.apply({
+      operationId: appliedOperation,
+      confirmationRef: first.fixture.confirmation.confirmationRef,
+      documentHash: first.fixture.preview.documentHash,
+    })
+    first.session.dispose()
+    const appliedRestart = sessionFixture({ journalPath: appliedJournal })
+    appliedRestart.selectionRef.current = null
+    appliedRestart.router.handlers['project.restore.operation.get'] = () => ({
+      state: 'applied',
+      // The result must match the original fixture's confirmation identity that
+      // is durably baked into the journal intent.
+      result: first.fixture.applyResultFor(appliedOperation),
+    })
+    const appliedRecord = (await appliedRestart.session.operation({
+      operationId: appliedOperation,
+    })) as ProjectRestoreOperationDTO
+    expect(appliedRecord.state).toBe('applied')
+    appliedRestart.budget.retireClaims.at(-1)!()
+    expect(appliedRestart.session.hasUnresolvedResponsibility).toBe(false)
+    appliedRestart.session.dispose()
+
+    // Not-found path: the crash lost the delivery before the engine committed;
+    // with no selection the reconciliation must still close the pending intent.
+    const lostJournal = join(directory.value, 'unselected-lost.json')
+    const second = sessionFixture({ journalPath: lostJournal })
+    await second.session.preview({
+      targetCheckpointRef: second.fixture.preview.targetCheckpointRef,
+      expectedCheckpointRef: second.fixture.preview.currentCheckpointRef,
+      expectedLifecycleVersion: 3,
+    })
+    await second.readBothPages()
+    await second.session.confirm({
+      previewRef: second.fixture.preview.previewRef,
+      documentHash: second.fixture.preview.documentHash,
+      readSegmentHashes: second.fixture.manifestSegments.map((segment) => segment.sha256),
+    })
+    second.router.handlers['project.restore.apply'] = () => {
+      throw new Error('delivery lost')
+    }
+    const lostOperation = uuid()
+    await expect(
+      second.session.apply({
+        operationId: lostOperation,
+        confirmationRef: second.fixture.confirmation.confirmationRef,
+        documentHash: second.fixture.preview.documentHash,
+      }),
+    ).rejects.toThrow()
+    second.session.dispose()
+    const lostRestart = sessionFixture({ journalPath: lostJournal })
+    lostRestart.selectionRef.current = null
+    lostRestart.router.handlers['project.restore.operation.get'] = () => ({
+      state: 'not-found',
+      result: null,
+    })
+    const lostRecord = (await lostRestart.session.operation({
+      operationId: lostOperation,
+    })) as ProjectRestoreOperationDTO
+    expect(lostRecord.state).toBe('not-found')
+    lostRestart.budget.retireClaims.at(-1)!()
+    expect(lostRestart.session.hasUnresolvedResponsibility).toBe(false)
+    lostRestart.session.dispose()
+
+    // A selection pointing at another project may not reconcile this intent.
+    const fenced = sessionFixture({ journalPath: lostJournal })
+    const owner = fenced.selectionRef.current!.owner
+    fenced.selectionRef.current = { projectId: id(99), owner, session: id(2), epoch: 7 }
+    const denied = fenced.session.operation({ operationId: lostOperation })
+    expect(await code(denied)).toBe('PERMISSION_DENIED')
+    fenced.session.dispose()
   })
 
   it('keeps a crashed pending intent fenced from new writes until reconciled not-found', async () => {
@@ -920,6 +1011,232 @@ describe('restore controller state machine', () => {
       recover.close()
     }
   })
+
+  it('reconcile clears the recovery entry before the applied callback when the original operation was applied', async () => {
+    const pendingOperation: PendingProjectRestoreOperationDTO = {
+      operationId: uuid(),
+      projectId: id(1),
+      targetCheckpointRef: 'a'.repeat(64),
+      documentHash: 'f'.repeat(64),
+    }
+    const { bridge, calls } = controllerBridge({ pending: [pendingOperation] })
+    const appliedResults: string[] = []
+    let unresolvedInApplied: boolean | undefined
+    const controller = new ProjectRestoreController(bridge, (result) => {
+      unresolvedInApplied = controller.unresolved
+      appliedResults.push(result.operationId)
+    })
+    try {
+      await controller.initialize()
+      expect(controller.getSnapshot().recovery).toHaveLength(1)
+      bridge.getProjectRestoreOperation = async (args) => {
+        calls.push({ method: 'operation', args })
+        return {
+          ok: true,
+          data: {
+            state: 'applied',
+            result: {
+              restoreResultVersion: 1,
+              projectId: id(1),
+              operationId: args.operationId,
+              requestHash: '4'.repeat(64),
+              receiptHash: '5'.repeat(64),
+              checkpointRef: '6'.repeat(64),
+              operationSequence: 4,
+              domainRevision: 1,
+              metadataVersion: 2,
+              restoredFromCheckpointRef: 'a'.repeat(64),
+              coverage: ['metadata', 'drafts', 'learningCurrent', 'assistanceAudit'],
+              preserved: [
+                'historical-runs',
+                'jobs-and-results',
+                'assistance-audit',
+                'operation-evidence',
+                'checkpoints',
+              ],
+            },
+          },
+        }
+      }
+      await controller.reconcile()
+      // The recovery entry is removed in the same state write that accepts the
+      // result, so the applied callback already observes a settled controller.
+      expect(unresolvedInApplied).toBe(false)
+      expect(appliedResults).toEqual([pendingOperation.operationId])
+      expect(controller.getSnapshot().recovery).toHaveLength(0)
+      expect(controller.getSnapshot().notice).toContain('整项目恢复已完成')
+      expect(controller.unresolved).toBe(false)
+    } finally {
+      controller.close()
+    }
+  })
+
+  it('re-syncs pending intents after a failed apply and never re-submits on reconcile', async () => {
+    // !result.ok variant: the main process durably persisted the intent and
+    // set restoreBlocked even though the bridge reply was an error.
+    const { bridge, calls, preview } = controllerBridge({})
+    const journalled: PendingProjectRestoreOperationDTO[] = []
+    bridge.getPendingProjectRestoreOperations = async () => {
+      calls.push({ method: 'pending', args: null })
+      return { ok: true as const, data: [...journalled] }
+    }
+    const conflict = {
+      ok: false as const,
+      error: {
+        code: 'REVISION_CONFLICT',
+        messageKey: 'project.revisionConflict',
+        params: {},
+        retryable: false,
+      },
+    }
+    bridge.restoreProject = async (args) => {
+      calls.push({ method: 'apply', args })
+      journalled.push({
+        operationId: args.operationId,
+        projectId: id(1),
+        targetCheckpointRef: preview.targetCheckpointRef,
+        documentHash: preview.documentHash,
+      })
+      return conflict
+    }
+    const controller = new ProjectRestoreController(bridge)
+    try {
+      await controller.initialize()
+      controller.select(id(1))
+      await controller.previewRestore(preview.targetCheckpointRef)
+      await controller.confirmRestore()
+      expect(controller.getSnapshot().confirmation).toBeDefined()
+      await controller.applyRestore()
+      const snapshot = controller.getSnapshot()
+      expect(snapshot.recovery).toHaveLength(1)
+      expect(snapshot.recovery[0]).toMatchObject({ projectId: id(1) })
+      expect(snapshot.preview).toBeUndefined()
+      expect(snapshot.confirmation).toBeUndefined()
+      expect(snapshot.error?.code).toBe('REVISION_CONFLICT')
+      expect(snapshot.notice).toContain('请先核对原恢复操作，再重新预览')
+      // The panel surfaces the reconcile control for the synced pending intent.
+      const markup = renderToStaticMarkup(
+        createElement(ProjectCheckpointRestorePanel, {
+          controller,
+          disabled: false,
+          destructiveBlocked: false,
+        }),
+      )
+      expect(markup).toContain('data-testid="restore-reconcile"')
+      // Reconciling the unresolved original never re-submits the apply.
+      await controller.reconcile()
+      expect(calls.filter((call) => call.method === 'apply')).toHaveLength(1)
+      expect(calls.filter((call) => call.method === 'operation')).toHaveLength(1)
+      expect(controller.getSnapshot().recovery).toHaveLength(0)
+      expect(controller.unresolved).toBe(false)
+    } finally {
+      controller.close()
+    }
+
+    // Reject variant: the transport itself threw after the write was issued.
+    const { bridge: lostBridge, calls: lostCalls, preview: lostPreview } = controllerBridge({})
+    const lostJournal: PendingProjectRestoreOperationDTO[] = []
+    lostBridge.getPendingProjectRestoreOperations = async () => {
+      lostCalls.push({ method: 'pending', args: null })
+      return { ok: true as const, data: [...lostJournal] }
+    }
+    lostBridge.restoreProject = async (args) => {
+      lostCalls.push({ method: 'apply', args })
+      lostJournal.push({
+        operationId: args.operationId,
+        projectId: id(1),
+        targetCheckpointRef: lostPreview.targetCheckpointRef,
+        documentHash: lostPreview.documentHash,
+      })
+      throw new Error('transport lost')
+    }
+    const lost = new ProjectRestoreController(lostBridge)
+    try {
+      await lost.initialize()
+      lost.select(id(1))
+      await lost.previewRestore(lostPreview.targetCheckpointRef)
+      await lost.confirmRestore()
+      await lost.applyRestore()
+      const snapshot = lost.getSnapshot()
+      expect(snapshot.recovery).toHaveLength(1)
+      expect(snapshot.preview).toBeUndefined()
+      expect(snapshot.confirmation).toBeUndefined()
+      expect(snapshot.notice).toContain('结果未知；请核对原操作，勿重复提交')
+      await lost.reconcile()
+      expect(lostCalls.filter((call) => call.method === 'apply')).toHaveLength(1)
+      expect(lost.getSnapshot().recovery).toHaveLength(0)
+    } finally {
+      lost.close()
+    }
+  })
+
+  it('clears the previous project error and notice on switch while keeping recovery notices', async () => {
+    const conflict: BridgeResult<MainlineManagementItemDTO> = {
+      ok: false,
+      error: {
+        code: 'REVISION_CONFLICT',
+        messageKey: 'project.revisionConflict',
+        params: {},
+        retryable: false,
+      },
+    }
+    const { bridge } = controllerBridge({ managementError: conflict })
+    const controller = new ProjectRestoreController(bridge)
+    try {
+      await controller.initialize()
+      controller.select(id(1))
+      await controller.previewRestore('a'.repeat(64))
+      expect(controller.getSnapshot().error?.code).toBe('REVISION_CONFLICT')
+      expect(controller.getSnapshot().notice).toContain('重新预览')
+      // Switching to another project with no unresolved recovery clears both.
+      controller.select(id(2))
+      expect(controller.getSnapshot().error).toBeUndefined()
+      expect(controller.getSnapshot().notice).toBe('')
+    } finally {
+      controller.close()
+    }
+    // While a recovery is unresolved, its notice survives a project switch
+    // (only the error is always cleared).
+    const pendingOperation: PendingProjectRestoreOperationDTO = {
+      operationId: uuid(),
+      projectId: id(1),
+      targetCheckpointRef: 'a'.repeat(64),
+      documentHash: 'f'.repeat(64),
+    }
+    const { bridge: blockedBridge, calls: blockedCalls } = controllerBridge({
+      pending: [pendingOperation],
+    })
+    blockedBridge.getProjectRestoreOperation = async (args) => {
+      blockedCalls.push({ method: 'operation', args })
+      return conflict
+    }
+    const blocked = new ProjectRestoreController(blockedBridge)
+    try {
+      await blocked.initialize()
+      blocked.select(id(1))
+      await blocked.reconcile()
+      expect(blocked.getSnapshot().recovery).toHaveLength(1)
+      expect(blocked.getSnapshot().notice).toContain('操作结果尚未确认')
+      blocked.select(id(2))
+      expect(blocked.getSnapshot().error).toBeUndefined()
+      expect(blocked.getSnapshot().notice).toContain('操作结果尚未确认')
+    } finally {
+      blocked.close()
+    }
+    // The very first open from an unselected startup must not clear a recovery
+    // result notice either.
+    const { bridge: settledBridge } = controllerBridge({ pending: [pendingOperation] })
+    const settled = new ProjectRestoreController(settledBridge)
+    try {
+      await settled.initialize()
+      await settled.reconcile()
+      expect(settled.getSnapshot().notice).toContain('已核实原恢复操作未提交')
+      settled.select(id(1))
+      expect(settled.getSnapshot().notice).toContain('已核实原恢复操作未提交')
+    } finally {
+      settled.close()
+    }
+  })
 })
 
 describe('checkpoint restore panel presentation gates', () => {
@@ -1000,5 +1317,96 @@ describe('checkpoint restore panel presentation gates', () => {
     } finally {
       controller.close()
     }
+  })
+})
+
+/* ------------------------------------------------------------------ */
+/* Part D: business3 envelope matcher parity for project.restore.operation.get */
+/* ------------------------------------------------------------------ */
+
+describe('business3 envelope matcher binds project.restore.operation.get (B1B-007)', () => {
+  const registryHash = createHash('sha256')
+    .update(readFileSync(new URL('../../packages/contracts/v2/registry.json', import.meta.url)))
+    .digest('hex')
+  const projectId = id(3)
+  const otherProjectId = id(4)
+  const operationId = uuid()
+  const requestHash = 'c'.repeat(64)
+  /** A schema-valid project.restore.apply receipt; the operation.get envelope
+   * carries it under `result` with no top-level projectId of its own. */
+  const appliedResult = {
+    restoreResultVersion: 1,
+    projectId,
+    operationId,
+    requestHash,
+    receiptHash: 'd'.repeat(64),
+    checkpointRef: 'e'.repeat(64),
+    operationSequence: 2,
+    domainRevision: 7,
+    metadataVersion: 4,
+    restoredFromCheckpointRef: 'f'.repeat(64),
+    coverage: ['metadata', 'drafts', 'learningCurrent', 'assistanceAudit'],
+    preserved: [
+      'historical-runs',
+      'jobs-and-results',
+      'assistance-audit',
+      'operation-evidence',
+      'checkpoints',
+    ],
+  }
+  const request = {
+    kind: 'request',
+    protocolVersion: 3,
+    id: id(5),
+    engineSessionId: id(6),
+    method: 'project.restore.operation.get',
+    params: { projectId, operationId, requestHash },
+  }
+  const response = (result: unknown) => ({
+    kind: 'response',
+    protocolVersion: 3,
+    id: request.id,
+    engineSessionId: request.engineSessionId,
+    method: 'project.restore.operation.get',
+    ok: true,
+    result,
+  })
+
+  it('binds a not-found reply with a null result', () => {
+    expect(
+      matchesBusiness3Response(
+        request,
+        response({ state: 'not-found', result: null }),
+        registryHash,
+      ),
+    ).toBe(true)
+  })
+  it('rejects a not-found reply that still carries an applied receipt', () => {
+    expect(
+      matchesBusiness3Response(
+        request,
+        response({ state: 'not-found', result: appliedResult }),
+        registryHash,
+      ),
+    ).toBe(false)
+  })
+  it('binds an applied receipt whose projectId and request evidence match', () => {
+    expect(
+      matchesBusiness3Response(
+        request,
+        response({ state: 'applied', result: appliedResult }),
+        registryHash,
+      ),
+    ).toBe(true)
+  })
+  it('rejects an applied receipt answered for a different project', () => {
+    const foreign = { ...appliedResult, projectId: otherProjectId }
+    expect(
+      matchesBusiness3Response(
+        request,
+        response({ state: 'applied', result: foreign }),
+        registryHash,
+      ),
+    ).toBe(false)
   })
 })

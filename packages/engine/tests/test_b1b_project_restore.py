@@ -15,7 +15,7 @@ from ontolearn_engine.coordinator import _JOB_READY, Coordinator
 from ontolearn_engine.job_store import JobStore
 from ontolearn_engine.project import applications, format3
 from ontolearn_engine.project.transactions import ProjectFault, ProjectTransactions
-from ontolearn_engine.resources import CONTRACT
+from ontolearn_engine.resources import CONTRACT, REGISTRY_HASH
 from ontolearn_engine.storage import Conflict, canonical, digest
 
 IMPL = {
@@ -174,14 +174,19 @@ def test_checkpoint_list_reasons_and_manual_creation(owned):
     genesis = listing["items"][-1]
     assert genesis["reason"] == "genesis" and genesis["isCurrent"] is False
 
+    checkpoint_operation = uid()
     created = ok(
         exchange(
             actor,
             "project.checkpoint.create",
-            {"projectId": project, "operationId": uid(), "label": "导入映射之前"},
+            {"projectId": project, "operationId": checkpoint_operation, "label": "导入映射之前"},
         )
     )
     assert created["reason"] == "manual" and created["label"] == "导入映射之前"
+    # The persisted receipt carries flat CAS evidence lists, never a nested [[]].
+    persisted = store.project_receipt(store._project(project), checkpoint_operation)
+    assert persisted["applicationBeforeCAS"] == []
+    assert persisted["applicationAfterCAS"] == []
     listing = ok(
         exchange(
             actor,
@@ -356,6 +361,12 @@ def test_restore_full_flow_with_mixed_intervening_operations(owned):
     assert result["restoredFromCheckpointRef"] == target
     assert result["checkpointRef"] != target
     assert result["operationSequence"] > preview["currentOperationSequence"]
+    # The persisted receipt's CAS evidence is a flat list of dicts, never a
+    # nested [[{...}]] wrapper, for both sides of the restore transition.
+    restore_receipt = store.project_receipt(store._project(project), operation)
+    for cas in (restore_receipt["applicationBeforeCAS"], restore_receipt["applicationAfterCAS"]):
+        assert isinstance(cas, list) and cas, cas
+        assert all(isinstance(item, dict) for item in cas)
 
     head = store.project_checkpoint(store._project(project))
     assert head["application"]["metadata"]["name"] == "B1b 项目"
@@ -763,3 +774,82 @@ def test_undo_conflict_detection_survives_restore(owned):
     # reports UNDO_CONFLICT instead of silently replaying.
     with pytest.raises(ProjectFault):
         ProjectTransactions(store).preview_undo(store._project(project), marker["operation"])
+
+
+def _operation_get_envelopes(project_id, result_project_id):
+    """A schema-valid project.restore.operation.get request plus an applied
+    project.restore.apply receipt; the envelope keeps projectId nested inside
+    `result` and carries no top-level projectId of its own (B1B-007)."""
+    operation = uid()
+    request_hash = "c" * 64
+    request = {
+        "kind": "request",
+        "protocolVersion": 3,
+        "id": uid(),
+        "engineSessionId": uid(),
+        "method": "project.restore.operation.get",
+        "params": {
+            "projectId": project_id,
+            "operationId": operation,
+            "requestHash": request_hash,
+        },
+    }
+    applied = {
+        "restoreResultVersion": 1,
+        "projectId": result_project_id,
+        "operationId": operation,
+        "requestHash": request_hash,
+        "receiptHash": "d" * 64,
+        "checkpointRef": "e" * 64,
+        "operationSequence": 2,
+        "domainRevision": 7,
+        "metadataVersion": 4,
+        "restoredFromCheckpointRef": "f" * 64,
+        "coverage": ["metadata", "drafts", "learningCurrent", "assistanceAudit"],
+        "preserved": [
+            "historical-runs",
+            "jobs-and-results",
+            "assistance-audit",
+            "operation-evidence",
+            "checkpoints",
+        ],
+    }
+
+    def response(state, result):
+        return {
+            "kind": "response",
+            "protocolVersion": 3,
+            "id": request["id"],
+            "engineSessionId": request["engineSessionId"],
+            "method": "project.restore.operation.get",
+            "ok": True,
+            "result": {"state": state, "result": result},
+        }
+
+    return request, applied, response
+
+
+def test_operation_get_envelope_not_found_matches_without_keyerror():
+    request, _, response = _operation_get_envelopes(uid(), uid())
+    # Before the B1B-007 fix the shared projectId guard raised KeyError here.
+    assert (
+        CONTRACT.matches_business3_response(request, response("not-found", None), REGISTRY_HASH)
+        is True
+    )
+
+
+def test_operation_get_envelope_applied_matches_same_project():
+    project = uid()
+    request, applied, response = _operation_get_envelopes(project, project)
+    assert (
+        CONTRACT.matches_business3_response(request, response("applied", applied), REGISTRY_HASH)
+        is True
+    )
+
+
+def test_operation_get_envelope_applied_rejects_foreign_project():
+    request, applied, response = _operation_get_envelopes(uid(), uid())
+    assert (
+        CONTRACT.matches_business3_response(request, response("applied", applied), REGISTRY_HASH)
+        is False
+    )

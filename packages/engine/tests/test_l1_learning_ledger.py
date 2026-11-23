@@ -804,3 +804,236 @@ def test_project_restore_withdraws_attempts_and_epoch_increases(owned):
     restarted = start_attempt(actor, project, "business-ontology")
     assert restarted["activationEpoch"] > attempt["activationEpoch"]
     assert restarted["activationEpoch"] == 2
+
+
+def test_learning_record_rejects_domain_plan(store):
+    from ontolearn_engine.project import applications
+
+    forged = {
+        **record_change(uid(), {"v": 1}),
+        "domain": {"base": 0, "plan": {}},
+    }
+    with pytest.raises(Conflict):
+        applications.check_change(forged)
+    with pytest.raises(Conflict):
+        apply(store, forged)
+
+
+def test_start_attempt_preserves_assistance_floor_and_guided_stage_checkpoint(owned):
+    actor, store = owned
+    project = seeded(actor, store)
+    record_hint(actor, project, "business-ontology", 4)
+    commit_domain(store, project, PASSING_ONTOLOGY, PASSING_FACTS)
+    first_pass = check_task(actor, project, "business-ontology")
+    assert first_pass["checkStatus"] == "passed"
+    assert first_pass["assistance"] == "full-demonstration"
+    assert first_pass["guidedStageCheckpointRef"] is not None
+
+    restarted = start_attempt(actor, project, "business-ontology")
+    assert restarted["activationEpoch"] == 2
+    state = restarted["learningState"]
+    assert state["assistance"] == "full-demonstration"
+    assert state["maxHintLevel"] == 4
+    assert state["independentTransferSuccess"] is False
+    assert state["completedGuidedStages"] == ["business-ontology"]
+    assert state["guidedStageCheckpointRef"] == first_pass["guidedStageCheckpointRef"]
+    assert [hint["level"] for hint in state["revealedHints"]] == [1, 2, 3, 4]
+
+    second_pass = check_task(actor, project, "business-ontology")
+    assert second_pass["checkStatus"] == "passed"
+    assert second_pass["assistance"] == "full-demonstration"
+    assert second_pass["independentTransferSuccess"] is False
+    assert second_pass["guidedStageCheckpointRef"] == first_pass["guidedStageCheckpointRef"]
+    checkpoints = ok(
+        exchange(
+            actor,
+            "project.checkpoint.list",
+            {"projectId": project, "pageSize": 20, "cursor": None},
+        )
+    )
+    guided = [item for item in checkpoints["items"] if item["reason"] == "guided-stage"]
+    assert len(guided) == 1
+
+
+def test_project_restore_to_pre_hint_checkpoint_preserves_attempt_assistance_floor(owned):
+    actor, store = owned
+    project = seeded(actor, store)
+    attempt = start_attempt(actor, project, "business-ontology")
+    checkpoint = ok(
+        exchange(
+            actor,
+            "project.checkpoint.create",
+            {"projectId": project, "operationId": uid(), "label": "已开局未看提示"},
+        )
+    )
+    target = checkpoint["checkpointRef"]
+    record_hint(actor, project, "business-ontology", 4)
+    state = ok(exchange(actor, "project.management.read", {"projectId": project}))
+    preview = ok(
+        exchange(
+            actor,
+            "project.restore.preview",
+            {
+                "projectId": project,
+                "targetCheckpointRef": target,
+                "expectedCheckpointRef": state["checkpointRef"],
+                "expectedLifecycleVersion": state["lifecycle"]["version"],
+            },
+        )
+    )
+    hashes = read_restore_document(actor, project, preview)
+    confirmation = ok(
+        exchange(
+            actor,
+            "project.restore.confirm",
+            {
+                "projectId": project,
+                "previewRef": preview["previewRef"],
+                "documentHash": preview["documentHash"],
+                "readSegmentHashes": hashes,
+            },
+        )
+    )
+    ok(
+        exchange(
+            actor,
+            "project.restore.apply",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "confirmationRef": confirmation["confirmationRef"],
+                "documentHash": preview["documentHash"],
+            },
+        )
+    )
+    payload, _row = attempt_payload(store, project, attempt["attemptId"])
+    assert payload["assistance"] == "full-demonstration"
+    assert payload["maxHintLevel"] == 4
+    assert payload["independentTransferSuccess"] is False
+    view = task_view(read_state(actor, project), "business-ontology")
+    assert view["assistance"] == "full-demonstration"
+    assert view["maxHintLevel"] == 4
+    assert view["independentTransferSuccess"] is False
+
+
+def test_observation_replay_rejects_different_payload_and_returns_persisted_outcome(owned):
+    actor, store = owned
+    project = seeded(actor, store)
+    course = read_json(ROOT / "content/learning/course.json")
+    reading = next(
+        r
+        for t in course["tasks"]
+        if t["id"] == "business-ontology"
+        for r in t["readings"]
+        if r.get("selfAssessment")
+    )
+    question = reading["selfAssessment"][0]
+    wrong_option = next(o["id"] for o in question["options"] if o["id"] != question["answerKey"])
+    op = uid()
+    first = record_observation(
+        actor,
+        project,
+        "business-ontology",
+        {
+            "kind": "self-assessment-answered",
+            "readingId": reading["id"],
+            "questionIndex": 0,
+            "selectedOptionId": question["answerKey"],
+        },
+        operation=op,
+    )
+    replay = record_observation(
+        actor,
+        project,
+        "business-ontology",
+        {
+            "kind": "self-assessment-answered",
+            "readingId": reading["id"],
+            "questionIndex": 0,
+            "selectedOptionId": question["answerKey"],
+        },
+        operation=op,
+    )
+    assert replay == first
+    denied(
+        exchange(
+            actor,
+            "project.learning.observation.record",
+            {
+                "projectId": project,
+                "operationId": op,
+                "taskId": "business-ontology",
+                "observation": {
+                    "kind": "self-assessment-answered",
+                    "readingId": reading["id"],
+                    "questionIndex": 0,
+                    "selectedOptionId": wrong_option,
+                },
+            },
+        ),
+        "IDENTITY_CONFLICT",
+    )
+
+
+def test_learning_operation_id_conflict_and_check_replay_receipt(owned):
+    actor, store = owned
+    project = seeded(actor, store, "项目甲")
+    op_start = uid()
+    start_attempt(actor, project, "business-ontology", op_start)
+    op_hint = uid()
+    record_hint(actor, project, "business-ontology", 4, op_hint)
+
+    denied(
+        exchange(
+            actor,
+            "project.learning.hint.record",
+            {
+                "projectId": project,
+                "operationId": op_hint,
+                "taskId": "business-ontology",
+                "level": 1,
+            },
+        ),
+        "IDENTITY_CONFLICT",
+    )
+    denied(
+        exchange(
+            actor,
+            "project.learning.hint.record",
+            {
+                "projectId": project,
+                "operationId": op_start,
+                "taskId": "business-ontology",
+                "level": 1,
+            },
+        ),
+        "IDENTITY_CONFLICT",
+    )
+    denied(
+        exchange(
+            actor,
+            "project.learning.task.check",
+            {"projectId": project, "operationId": op_start, "taskId": "business-ontology"},
+        ),
+        "IDENTITY_CONFLICT",
+    )
+
+    other = seeded(actor, store, "项目乙")
+    denied(
+        exchange(
+            actor,
+            "project.learning.hint.record",
+            {"projectId": other, "operationId": op_hint, "taskId": "business-ontology", "level": 4},
+        ),
+        "IDENTITY_CONFLICT",
+    )
+
+    ok(exchange(actor, "project.open", {"projectId": project}))
+    commit_domain(store, project, PASSING_ONTOLOGY, PASSING_FACTS)
+    op_check = uid()
+    checked = check_task(actor, project, "business-ontology", op_check)
+    assert checked["guidedStageCheckpointRef"] is not None
+    replayed = check_task(actor, project, "business-ontology", op_check)
+    assert replayed["operationSequence"] == checked["operationSequence"]
+    assert replayed["afterCheckpointRef"] == checked["afterCheckpointRef"]
+    assert replayed["guidedStageCheckpointRef"] == checked["guidedStageCheckpointRef"]

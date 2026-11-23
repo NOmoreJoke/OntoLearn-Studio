@@ -1,5 +1,6 @@
 import { test, expect, _electron as electron, type Locator, type Page } from '@playwright/test'
-import { resolve } from 'node:path'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 import type { BridgeResult } from '@ontolearn/contracts'
 import { launchIsolatedDesktop } from './isolated-desktop'
 
@@ -581,12 +582,49 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     await application.close()
     application = undefined
 
+    stage = 'inject a crashed pending restore intent before the restart'
+    // Simulate the crash window after ProjectRestoreSession.apply durably wrote
+    // the pending intent but before the engine reply arrived: rewrite the last
+    // journal record back to pending/undelivered directly on disk.
+    const intentsDir = join(launch.userData, 'project-restore-intents')
+    const journalFile = readdirSync(intentsDir)
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => join(intentsDir, name))
+      .find(
+        (path) =>
+          (JSON.parse(readFileSync(path, 'utf8')) as { records?: unknown[] }).records!.length > 0,
+      )
+    if (!journalFile) throw new Error('restore journal with records not found')
+    const journal = JSON.parse(readFileSync(journalFile, 'utf8')) as {
+      records: Array<Record<string, unknown>>
+    }
+    const lastIndex = journal.records.length - 1
+    journal.records[lastIndex] = {
+      ...journal.records[lastIndex]!,
+      outcome: 'pending',
+      delivered: false,
+      result: null,
+    }
+    writeFileSync(journalFile, JSON.stringify(journal), 'utf8')
+    evidence.injectedIntent = journal.records[lastIndex]
+
     application = await launchWithProfile(launch.userData)
     const restarted = await application.firstWindow()
+    // No project is open after the crash restart, yet the recovery panel must
+    // still be reachable and the pending intent keeps the library fenced.
+    await expect(restarted.getByTestId('checkpoint-no-project')).toBeVisible({ timeout: 30000 })
+    await expect(checkpoints(restarted).getByTestId('restore-recovery')).toBeVisible({
+      timeout: 30000,
+    })
+    await expect(restarted.getByTestId('project-list-refresh')).toBeDisabled({ timeout: 30000 })
+    // Unselected crash reconciliation runs through the reconcile control.
+    stage = 'reconcile the unselected crashed restore intent'
+    await checkpoints(restarted).getByTestId('restore-reconcile').click()
+    await expect(checkpoints(restarted).getByTestId('restore-recovery')).toHaveCount(0, {
+      timeout: 30000,
+    })
     await expect(restarted.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 30000 })
-    const open = restarted.locator(`[data-testid="project-open"][data-project-id="${projectId}"]`)
-    await expect(open).toBeVisible({ timeout: 30000 })
-    await open.click()
+    // The applied handler reopens the restored project through the real open path.
     await expect(restarted.getByTestId('project-library').getByRole('status')).toContainText(
       '项目已打开 · 版本 4',
       { timeout: 30000 },
