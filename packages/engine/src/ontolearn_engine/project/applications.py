@@ -84,6 +84,12 @@ def cas(scope, identity, version):
 
 CHECKPOINT_REASONS = ("manual", "before-run", "guided-stage", "before-agent")
 RESTORE_WITHDRAWN = "withdrawn-by-project-restore"
+_ASSISTANCE_RANK = {
+    "independent": 0,
+    "partial-hints": 1,
+    "full-demonstration": 2,
+    "agent-full-assistance": 3,
+}
 
 
 def check_change(change):
@@ -141,7 +147,8 @@ def check_change(change):
             require(isinstance(patch["mode"], str) and patch["mode"] in {"guided", "assisted"})
     elif kind == "learning.record":
         # The learning ledger is application-only state: a domain plan can never
-        # ride along (the exact key set above already rejects "domain").
+        # ride along alongside a learning record write.
+        require("domain" not in change)
         require(uuid_ref(change["attempt"]))
         for key in ("course", "task"):
             text = change[key]
@@ -206,6 +213,86 @@ def _draft_row(head):
     }
 
 
+def _merge_restored_learning_payload(attempt, target_json, before_learning, assistance_audit):
+    """Preserve durable assistance provenance across whole-project restore."""
+    target_payload = json.loads(target_json)
+    if (
+        not isinstance(target_payload, dict)
+        or target_payload.get("status") == RESTORE_WITHDRAWN
+        or "assistance" not in target_payload
+        or "maxHintLevel" not in target_payload
+        or target_payload["assistance"] not in _ASSISTANCE_RANK
+        or type(target_payload["maxHintLevel"]) is not int
+    ):
+        return target_json
+
+    floor_hint = target_payload["maxHintLevel"]
+    floor_assist = target_payload["assistance"]
+    task_id = target_payload.get("taskId")
+    task_attempts = {attempt}
+    for row_attempt, before_row in before_learning.items():
+        if row_attempt != attempt and before_row.get("task") != task_id:
+            continue
+        task_attempts.add(row_attempt)
+        try:
+            before_payload = json.loads(before_row["payload"])
+        except (TypeError, ValueError):
+            continue
+        if isinstance(before_payload, dict) and before_payload.get("status") != RESTORE_WITHDRAWN:
+            lvl = before_payload.get("maxHintLevel")
+            if type(lvl) is int and 0 <= lvl <= 4:
+                floor_hint = max(floor_hint, lvl)
+            assist = before_payload.get("assistance")
+            if (
+                assist in _ASSISTANCE_RANK
+                and _ASSISTANCE_RANK[assist] > _ASSISTANCE_RANK[floor_assist]
+            ):
+                floor_assist = assist
+
+    for audit_row in assistance_audit:
+        try:
+            audit_payload = json.loads(audit_row["payload"])
+        except (TypeError, ValueError):
+            continue
+        same_task = (
+            isinstance(task_id, str)
+            and isinstance(audit_payload, dict)
+            and audit_payload.get("taskId") == task_id
+        )
+        if audit_row["attempt"] not in task_attempts and not same_task:
+            continue
+        if isinstance(audit_payload, dict):
+            lvl = audit_payload.get("level")
+            if type(lvl) is int and 1 <= lvl <= 4:
+                floor_hint = max(floor_hint, lvl)
+            assist = audit_payload.get("assistance")
+            if (
+                assist in _ASSISTANCE_RANK
+                and _ASSISTANCE_RANK[assist] > _ASSISTANCE_RANK[floor_assist]
+            ):
+                floor_assist = assist
+
+    if floor_hint >= 4 and _ASSISTANCE_RANK[floor_assist] < _ASSISTANCE_RANK["full-demonstration"]:
+        floor_assist = "full-demonstration"
+    elif floor_hint >= 1 and _ASSISTANCE_RANK[floor_assist] < _ASSISTANCE_RANK["partial-hints"]:
+        floor_assist = "partial-hints"
+
+    assisted = floor_hint > 0 or floor_assist != "independent"
+    if (
+        floor_hint == target_payload["maxHintLevel"]
+        and floor_assist == target_payload["assistance"]
+        and not (target_payload.get("independentTransferSuccess") and assisted)
+    ):
+        return target_json
+
+    merged = deepcopy(target_payload)
+    merged["maxHintLevel"] = floor_hint
+    merged["assistance"] = floor_assist
+    if "independentTransferSuccess" in merged and assisted:
+        merged["independentTransferSuccess"] = False
+    return canonical(merged)
+
+
 def _restore_effects(project, change, before, target, domain_after_revision):
     """Whole-project restore of mutable current state; immutable audit stays put."""
     require(target is not None and target["project"] == project)
@@ -259,7 +346,12 @@ def _restore_effects(project, change, before, target, domain_after_revision):
             row.update(
                 course=target_learning[attempt]["course"],
                 task=target_learning[attempt]["task"],
-                payload=target_learning[attempt]["payload"],
+                payload=_merge_restored_learning_payload(
+                    attempt,
+                    target_learning[attempt]["payload"],
+                    before_learning,
+                    before["assistanceAudit"],
+                ),
             )
         else:
             row["payload"] = canonical(

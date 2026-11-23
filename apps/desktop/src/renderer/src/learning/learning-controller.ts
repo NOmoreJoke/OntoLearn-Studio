@@ -107,6 +107,7 @@ export class LearningController {
   #state: LearningControllerState = { focusedTaskId: 'business-ontology', busy: false, notice: '' }
   #listeners = new Set<() => void>()
   #closed = false
+  #pendingRefresh?: { projectId: string; promise: Promise<void>; resolve: () => void }
   constructor(
     private readonly bridge: LearningLedgerBridge,
     private readonly makeId: () => string = () => crypto.randomUUID(),
@@ -129,6 +130,10 @@ export class LearningController {
   /** Synchronous selection change only; never starts a background RPC. */
   select(projectId: string | undefined): void {
     if (this.#state.selectedProjectId === projectId) return
+    if (this.#pendingRefresh && this.#pendingRefresh.projectId !== projectId) {
+      this.#pendingRefresh.resolve()
+      this.#pendingRefresh = undefined
+    }
     this.#set({
       selectedProjectId: projectId,
       learning: undefined,
@@ -142,39 +147,60 @@ export class LearningController {
     if (this.#state.focusedTaskId === taskId) return
     this.#set({ focusedTaskId: taskId })
   }
+  #finishBusy(): void {
+    if (!this.#closed && this.#pendingRefresh) {
+      const next = this.#pendingRefresh
+      this.#pendingRefresh = undefined
+      if (this.#state.selectedProjectId === next.projectId) {
+        void this.#runRefresh(next.projectId).finally(next.resolve)
+        return
+      }
+      next.resolve()
+    }
+    this.#set({ busy: false })
+  }
+  async #runRefresh(projectId: string): Promise<void> {
+    this.#set({ busy: true, error: undefined })
+    try {
+      const response = await this.bridge.getProjectLearningState({ projectId })
+      if (this.#closed || this.#state.selectedProjectId !== projectId) return
+      if (!response.ok || response.data.projectId !== projectId) {
+        // A reply naming another project is never a learning state for this one.
+        this.#set({ error: response.ok ? safeError(undefined) : response.error })
+      } else {
+        this.#set({
+          learning: response.data,
+          // Keep the focused task stable across re-reads of the same project.
+          focusedTaskId: response.data.tasks.some(
+            (task) => task.taskId === this.#state.focusedTaskId,
+          )
+            ? this.#state.focusedTaskId
+            : response.data.courseMeta.firstTask,
+        })
+      }
+    } catch {
+      if (this.#accepting(projectId)) this.#set({ error: safeError(undefined) })
+    } finally {
+      // Exactly one operation can be in flight; drain queued refresh or clear busy.
+      this.#finishBusy()
+    }
+  }
   /** The single learning read, called only from the serial open/create/restore
    *  admission tail after the checkpoint read has settled. Never throws so an
    *  old test's open flow can not be blocked by a learning failure. */
   async selectAndRefresh(projectId: string): Promise<void> {
     if (this.#closed) return
     this.select(projectId)
-    if (!this.#state.busy) {
-      this.#set({ busy: true, error: undefined })
-      try {
-        const response = await this.bridge.getProjectLearningState({ projectId })
-        if (this.#closed || this.#state.selectedProjectId !== projectId) return
-        if (!response.ok || response.data.projectId !== projectId) {
-          // A reply naming another project is never a learning state for this one.
-          this.#set({ error: response.ok ? safeError(undefined) : response.error })
-        } else {
-          this.#set({
-            learning: response.data,
-            // Keep the focused task stable across re-reads of the same project.
-            focusedTaskId: response.data.tasks.some(
-              (task) => task.taskId === this.#state.focusedTaskId,
-            )
-              ? this.#state.focusedTaskId
-              : response.data.courseMeta.firstTask,
-          })
-        }
-      } catch {
-        if (this.#state.selectedProjectId === projectId) this.#set({ error: safeError(undefined) })
-      } finally {
-        // Exactly one operation can be in flight; always release its busy flag,
-        // even when the selection moved on while the reply was in flight.
-        this.#set({ busy: false })
-      }
+    if (this.#state.busy) {
+      this.#pendingRefresh?.resolve()
+      let resolve!: () => void
+      const promise = new Promise<void>((done) => {
+        resolve = done
+      })
+      this.#pendingRefresh = { projectId, promise, resolve }
+      return promise
     }
+    await this.#runRefresh(projectId)
   }
   #currentTask(): LearningTaskStateDTO | undefined {
     return this.#state.learning?.tasks.find((task) => task.taskId === this.#state.focusedTaskId)
@@ -223,6 +249,17 @@ export class LearningController {
         this.#set({ error: response.error, notice: '提示记录未保存；提示内容不会展示，请重试。' })
         return
       }
+      if (
+        response.data.projectId !== projectId ||
+        response.data.taskId !== task.taskId ||
+        response.data.learningState.taskId !== task.taskId
+      ) {
+        this.#set({
+          error: safeError(undefined),
+          notice: '提示记录与当前项目或任务不一致，请重试。',
+        })
+        return
+      }
       if (response.data.level !== level) {
         this.#set({ notice: '提示记录与请求层级不一致，请重试。' })
         return
@@ -233,9 +270,8 @@ export class LearningController {
       if (this.#accepting(projectId))
         this.#set({ error: safeError(undefined), notice: '提示记录未保存，请重试。' })
     } finally {
-      // Exactly one operation can be in flight; always release its busy flag,
-      // even when the selection moved on while the reply was in flight.
-      this.#set({ busy: false })
+      // Exactly one operation can be in flight; drain queued refresh or clear busy.
+      this.#finishBusy()
     }
   }
   /** FR-801 level-4 full demonstration: the complete answer stays locked until
@@ -257,6 +293,17 @@ export class LearningController {
         this.#set({ error: response.error, notice: '完整示范未记录；示范内容保持锁定，请重试。' })
         return
       }
+      if (
+        response.data.projectId !== projectId ||
+        response.data.taskId !== task.taskId ||
+        response.data.learningState.taskId !== task.taskId
+      ) {
+        this.#set({
+          error: safeError(undefined),
+          notice: '示范记录与当前项目或任务不一致，请重试。',
+        })
+        return
+      }
       if (response.data.level !== 4) {
         this.#set({ notice: '示范记录与请求不一致，请重试。' })
         return
@@ -267,9 +314,8 @@ export class LearningController {
       if (this.#accepting(projectId))
         this.#set({ error: safeError(undefined), notice: '完整示范未记录，请重试。' })
     } finally {
-      // Exactly one operation can be in flight; always release its busy flag,
-      // even when the selection moved on while the reply was in flight.
-      this.#set({ busy: false })
+      // Exactly one operation can be in flight; drain queued refresh or clear busy.
+      this.#finishBusy()
     }
   }
   async recordObservation(observation: LearningObservationDTO): Promise<void> {
@@ -287,6 +333,14 @@ export class LearningController {
       if (!this.#accepting(projectId)) return
       if (!response.ok) {
         this.#set({ error: response.error })
+        return
+      }
+      if (
+        response.data.projectId !== projectId ||
+        response.data.taskId !== task.taskId ||
+        response.data.learningState.taskId !== task.taskId
+      ) {
+        this.#set({ error: safeError(undefined) })
         return
       }
       if (response.data.observation.kind === 'self-assessment-answered') {
@@ -307,9 +361,8 @@ export class LearningController {
     } catch {
       if (this.#accepting(projectId)) this.#set({ error: safeError(undefined) })
     } finally {
-      // Exactly one operation can be in flight; always release its busy flag,
-      // even when the selection moved on while the reply was in flight.
-      this.#set({ busy: false })
+      // Exactly one operation can be in flight; drain queued refresh or clear busy.
+      this.#finishBusy()
     }
   }
   /** The real persisted-evidence check. Returns the engine receipt so the host
@@ -330,6 +383,17 @@ export class LearningController {
         this.#set({ error: response.error, notice: '检查未完成，请重试；当前不会标记为通过。' })
         return undefined
       }
+      if (
+        response.data.projectId !== projectId ||
+        response.data.taskId !== task.taskId ||
+        response.data.learningState.taskId !== task.taskId
+      ) {
+        this.#set({
+          error: safeError(undefined),
+          notice: '检查结果与当前项目或任务不一致，请重试。',
+        })
+        return undefined
+      }
       this.#set({ lastCheck: response.data })
       this.#mergeTaskState(response.data.learningState, projectId)
       return response.data
@@ -338,9 +402,8 @@ export class LearningController {
         this.#set({ error: safeError(undefined), notice: '检查未完成，请重试。' })
       return undefined
     } finally {
-      // Exactly one operation can be in flight; always release its busy flag,
-      // even when the selection moved on while the reply was in flight.
-      this.#set({ busy: false })
+      // Exactly one operation can be in flight; drain queued refresh or clear busy.
+      this.#finishBusy()
     }
   }
   /** Optional redo exercise: a fresh attempt keeps the durable assistance floor. */
@@ -360,18 +423,29 @@ export class LearningController {
         this.#set({ error: response.error })
         return
       }
+      if (
+        response.data.projectId !== projectId ||
+        response.data.taskId !== task.taskId ||
+        response.data.learningState.taskId !== task.taskId
+      ) {
+        this.#set({ error: safeError(undefined) })
+        return
+      }
       this.#mergeTaskState(response.data.learningState, projectId)
       this.#set({ notice: '已开始新的任务尝试；此前的辅助记录仍保留。' })
     } catch {
       if (this.#accepting(projectId)) this.#set({ error: safeError(undefined) })
     } finally {
-      // Exactly one operation can be in flight; always release its busy flag,
-      // even when the selection moved on while the reply was in flight.
-      this.#set({ busy: false })
+      // Exactly one operation can be in flight; drain queued refresh or clear busy.
+      this.#finishBusy()
     }
   }
   close(): void {
     this.#closed = true
+    if (this.#pendingRefresh) {
+      this.#pendingRefresh.resolve()
+      this.#pendingRefresh = undefined
+    }
     for (const listener of this.#listeners) listener()
     this.#listeners.clear()
   }

@@ -491,6 +491,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   async #learning<T>(method: MainlineMethod, args: RecordValue): Promise<T> {
     const current = this.#current()
     const client = this.#client()
+    if (args.projectId !== current.project.projectId) throw invalid()
     const params: RecordValue = { ...args, projectId: current.project.projectId }
     if (!validateBusiness3('params_' + method, params)) throw invalid()
     const value = (await this.#call<RecordValue>(client, method, params)) as RecordValue
