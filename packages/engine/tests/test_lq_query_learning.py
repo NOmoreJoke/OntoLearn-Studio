@@ -512,3 +512,92 @@ def test_hint_levels_progress_from_partial_to_full_demonstration(owned):
     view = task_view(read_state(actor, project), "query")
     assert [hint["level"] for hint in view["revealedHints"]] == [1, 2, 3, 4]
     assert view["operationComplete"] is False
+
+
+def test_non_succeeded_q02_job_is_tool_not_successful_without_fencing_host(owned):
+    actor, store = owned
+    project = seeded(actor, store)
+    start_attempt(actor, project)
+    run_query(store, project)
+    set_a01_status(store, project, '"Closed"')
+
+    # Queued Q-02 job has resultRef=None; checking must never raise or hold MainlineHost.
+    queued = accept_query(store, project)
+    assert queued["state"] == "queued" and queued["resultRef"] is None
+    r_queued = check(actor, project)
+    assert r_queued["checkStatus"] == "tool-not-successful"
+    assert r_queued["operationComplete"] is False
+    assert "Q-02" not in r_queued["feedback"]["completed"]
+    assert actor.mainline.hold is False
+
+    # Cancelled Q-02 job preserves resultRef=None and fails closed cleanly.
+    store.cancel_job(project, queued["jobId"])
+    assert store.get_job(project, queued["jobId"])["state"] == "cancelled"
+    assert store.get_job(project, queued["jobId"])["resultRef"] is None
+    r_cancelled = check(actor, project)
+    assert r_cancelled["checkStatus"] == "tool-not-successful"
+    assert r_cancelled["operationComplete"] is False
+    assert "Q-02" not in r_cancelled["feedback"]["completed"]
+    assert actor.mainline.hold is False
+
+    # Failed Q-02 job through the real Coordinator worker also leaves resultRef=None.
+    commit_query_definition(store, project, "SELECT WHERE { BROKEN")
+    failed_job = asyncio.run(run_job(store, project, accept_query(store, project)))
+    assert failed_job["state"] == "failed" and failed_job["resultRef"] is None
+    r_failed = check(actor, project)
+    assert r_failed["checkStatus"] == "tool-not-successful"
+    assert r_failed["operationComplete"] is False
+    assert "Q-02" not in r_failed["feedback"]["completed"]
+    assert actor.mainline.hold is False
+
+    # The same unfenced session can still repair the query and pass.
+    commit_query_definition(store, project, UNCLOSED_HIGH)
+    run_query(store, project)
+    passed = check(actor, project)
+    assert passed["checkStatus"] == "passed"
+    assert passed["operationComplete"] is True
+    assert actor.mainline.hold is False
+
+
+def test_cross_project_query_evidence_isolation(owned):
+    actor, store = owned
+    project_a = seeded(actor, store, name="项目 A")
+    project_b = seeded(actor, store, name="项目 B")
+
+    ok(exchange(actor, "project.open", {"projectId": project_a}))
+    start_attempt(actor, project_a)
+    run_query(store, project_a)
+    set_a01_status(store, project_a, '"Closed"')
+    run_query(store, project_a)
+    assert check(actor, project_a)["checkStatus"] == "passed"
+
+    ok(exchange(actor, "project.open", {"projectId": project_b}))
+    start_attempt(actor, project_b)
+    c0 = check(actor, project_b)
+    assert c0["checkStatus"] == "tool-not-successful"
+    assert c0["feedback"]["completed"] == []
+
+    # Execute fresh Q-01/Q-02 jobs in Project A after Project B's attempt started
+    # (claim.rowid > project_b's min_claim_rowid) while Project B enters A01=Closed
+    # without running its own queries. Project A evidence must never leak to B.
+    ok(exchange(actor, "project.open", {"projectId": project_a}))
+    set_a01_status(store, project_a, '"Open"')
+    run_query(store, project_a)
+    set_a01_status(store, project_a, '"Closed"')
+    run_query(store, project_a)
+    set_a01_status(store, project_b, '"Closed"')
+
+    ok(exchange(actor, "project.open", {"projectId": project_b}))
+    c1 = check(actor, project_b)
+    assert c1["checkStatus"] == "tool-not-successful"
+    assert c1["operationComplete"] is False
+    assert c1["feedback"]["completed"] == []
+
+    # Project B passes only when it runs its own Q-01 -> Q-02 sequence.
+    set_a01_status(store, project_b, '"Open"')
+    run_query(store, project_b)
+    set_a01_status(store, project_b, '"Closed"')
+    run_query(store, project_b)
+    c2 = check(actor, project_b)
+    assert c2["checkStatus"] == "passed"
+    assert c2["operationComplete"] is True

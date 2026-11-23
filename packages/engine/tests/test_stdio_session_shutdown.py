@@ -11,8 +11,12 @@ from uuid import uuid4
 import pytest
 from ontolearn_engine.job_store import JobStore
 from ontolearn_engine.process_environment import worker_environment
-from ontolearn_engine.resources import CONTRACT
+from ontolearn_engine.resources import CONTRACT, LIMITS
 from test_resident_runtime import prepare
+
+# coordinator.stop() allows up to LIMITS["cancelGraceMs"] (5s) before killing an active
+# worker, plus SQLite fail_job/close, temp-dir cleanup, and interpreter exit under load.
+SHUTDOWN_TIMEOUT = LIMITS["cancelGraceMs"] / 1000 + 10
 
 
 class Wire:
@@ -105,7 +109,7 @@ class Wire:
     def assert_closed_safely(self):
         # Closing stdin first would conceal the daemon BufferedReader deadlock.
         assert not self.process.stdin.closed
-        self.process.wait(timeout=5)
+        self.process.wait(timeout=SHUTDOWN_TIMEOUT)
         assert not self.process.stdin.closed
         self.reader.join(timeout=2)
         assert not self.reader.is_alive()
@@ -116,7 +120,7 @@ class Wire:
     def close(self):
         if self.process.poll() is None:
             self.process.kill()
-            self.process.wait(timeout=5)
+            self.process.wait(timeout=SHUTDOWN_TIMEOUT)
         if self.writer:
             self.writer.join(timeout=2)
         self.reader.join(timeout=2)

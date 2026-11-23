@@ -11,6 +11,8 @@ from pathlib import Path
 
 import pytest
 
+_json_dumps = json.dumps
+_json_loads = json.loads
 _stream = None
 _directory = None
 
@@ -23,7 +25,7 @@ def pytest_addoption(parser):
 
 
 def _event(event, **fields):
-    _stream.write(json.dumps({"event": event, **fields}, ensure_ascii=False) + "\n")
+    _stream.write(_json_dumps({"event": event, **fields}, ensure_ascii=False) + "\n")
     _stream.flush()
 
 
@@ -49,7 +51,7 @@ def pytest_collection_modifyitems(config, items):
     assignment = config.getoption("--engine-ci-files")
     if assignment is None:
         return
-    files = set(json.loads(Path(assignment).read_text(encoding="utf-8"))["files"])
+    files = set(_json_loads(Path(assignment).read_text(encoding="utf-8"))["files"])
     selected = [item for item in items if _file(item) in files]
     rejected = [item for item in items if _file(item) not in files]
     items[:] = selected  # Whole files only; native collection order is retained.
@@ -85,12 +87,12 @@ def pytest_collection_finish(session):
     }
     temporary = _directory / "collection.json.tmp"
     temporary.write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        _json_dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     temporary.replace(_directory / "collection.json")
     assignment = session.config.getoption("--engine-ci-files")
     if assignment is not None:
-        expected = json.loads(Path(assignment).read_text(encoding="utf-8"))
+        expected = _json_loads(Path(assignment).read_text(encoding="utf-8"))
         if manifest["items"] != expected["items"] or identity != expected["identity"]:
             raise pytest.UsageError("shard collection differs from the full native manifest")
 

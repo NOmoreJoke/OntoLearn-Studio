@@ -144,7 +144,11 @@ def test_nested_foreign_rejected_before_foreign_hooks(position):
     assert error.value.__context__ is None
 
 
-@pytest.mark.parametrize("value", ["\ud800", "x" * 1048577])
+@pytest.mark.parametrize(
+    "value",
+    ["\ud800", "x" * 1048577],
+    ids=["lone-surrogate", "oversized-1MiB+1"],
+)
 def test_unicode_and_input_bound_are_finite(value):
     with pytest.raises(MaterialFailure):
         prepare_profile_material(value)

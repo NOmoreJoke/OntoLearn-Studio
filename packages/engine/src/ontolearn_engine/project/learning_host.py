@@ -190,10 +190,14 @@ class LearningHost:
         elif j1["input_selection"] != "current" or j1["dto"]["input"].get("scope") != "asserted":
             evidences["Q-01"] = persisted("Q-01", j1["jobId"], "historical", None)
         else:
-            meta1, pay1 = store.semantic_result(project, j1["dto"]["resultRef"]["resultId"])
-            evidences["Q-01"] = persisted(
-                "Q-01", meta1["resultId"], "succeeded", self._query_check_payload(pay1)
-            )
+            result1 = (j1["dto"].get("resultRef") or {}).get("resultId")
+            if not result1:
+                evidences["Q-01"] = unavailable("Q-01")
+            else:
+                meta1, pay1 = store.semantic_result(project, result1)
+                evidences["Q-01"] = persisted(
+                    "Q-01", meta1["resultId"], "succeeded", self._query_check_payload(pay1)
+                )
 
         # Q-02 must run after the Q-01 baseline, against the A01=Closed state.
         min_q2_rowid = j1["claim_rowid"] if j1 is not None else min_claim_rowid
@@ -209,6 +213,7 @@ class LearningHost:
             if item["claim_rowid"] >= min_q2_rowid
             and item["dto"]["inputSnapshotId"] == snapshot_ref
             and item["dto"]["state"] == "succeeded"
+            and bool((item["dto"].get("resultRef") or {}).get("resultId"))
             and item["input_selection"] == "current"
             and item["dto"]["input"].get("scope") == "asserted"
         ]
@@ -239,22 +244,25 @@ class LearningHost:
             evidences["Q-02"] = unavailable("Q-02")
         else:
             j2 = q02_jobs[-1]
-            result2 = j2["dto"]["resultRef"]["resultId"]
             if j2["dto"]["state"] != "succeeded":
                 evidences["Q-02"] = persisted("Q-02", j2["jobId"], j2["dto"]["state"], None)
             elif (
                 j2["input_selection"] != "current" or j2["dto"]["input"].get("scope") != "asserted"
             ):
                 evidences["Q-02"] = persisted("Q-02", j2["jobId"], "historical", None)
-            elif j2["dto"]["inputSnapshotId"] != snapshot_ref or (
-                store.result_get(project, result2).get("state") != "current"
-            ):
-                evidences["Q-02"] = persisted("Q-02", result2, "stale", None)
             else:
-                meta2, pay2 = store.semantic_result(project, result2)
-                evidences["Q-02"] = persisted(
-                    "Q-02", meta2["resultId"], "succeeded", self._query_check_payload(pay2)
-                )
+                result2 = (j2["dto"].get("resultRef") or {}).get("resultId")
+                if not result2:
+                    evidences["Q-02"] = unavailable("Q-02")
+                elif j2["dto"]["inputSnapshotId"] != snapshot_ref or (
+                    store.result_get(project, result2).get("state") != "current"
+                ):
+                    evidences["Q-02"] = persisted("Q-02", result2, "stale", None)
+                else:
+                    meta2, pay2 = store.semantic_result(project, result2)
+                    evidences["Q-02"] = persisted(
+                        "Q-02", meta2["resultId"], "succeeded", self._query_check_payload(pay2)
+                    )
         return evidences
 
     # ---- B3 quality / transfer evidences (V-01, R-01, R-05, LX-01, transfers) ----
@@ -570,11 +578,29 @@ class LearningHost:
                 assistance,
             )
 
+        def violations(item):
+            report = item["payload"].get("report", {})
+            out = []
+            for row in report.get("violations", []):
+                out.append(
+                    {
+                        "focusNode": self._plain(row["focus"]),
+                        "path": self._plain(row["path"]),
+                        "constraint": item["dto"]["input"]["definitionId"],
+                        "component": self._component(row["constraint"]),
+                        "value": row["value"],
+                    }
+                )
+            return out
+
         # V-01: name-required validation before and after the 003-name repair.
         # Both runs must be real name-required shapes on the Equipment name
         # path (not merely jobs labelled that id), must be current-selection
         # runs (never historical replays) and must come from two different
-        # snapshots: one before the repair, one after it.
+        # snapshots: one before the repair, one after it. When an asserted
+        # before/after repair pair is established and later runs on the project
+        # still keep 003 valid, subsequent asserted+derived checks (for R-05 /
+        # LX-01) do not retroactively fail V-01.
         v01_jobs = [
             c
             for c in validation
@@ -585,46 +611,49 @@ class LearningHost:
             and "payload" in c
             and c["payload"].get("inputSelection", "current") == "current"
         ]
-        if len(v01_jobs) < 2 or (
-            v01_jobs[0]["dto"]["inputSnapshotId"] == v01_jobs[-1]["dto"]["inputSnapshotId"]
-        ):
+        v01_asserted = [c for c in v01_jobs if c["dto"]["input"].get("scope") == "asserted"]
+        if len(v01_jobs) < 2:
             evidences["V-01"] = unavailable("V-01")
         else:
-
-            def violations(item):
-                report = item["payload"].get("report", {})
-                out = []
-                for row in report.get("violations", []):
-                    out.append(
-                        {
-                            "focusNode": self._plain(row["focus"]),
-                            "path": self._plain(row["path"]),
-                            "constraint": item["dto"]["input"]["definitionId"],
-                            "component": self._component(row["constraint"]),
-                            "value": row["value"],
-                        }
+            chosen_before = None
+            chosen_after = None
+            if len(v01_asserted) >= 2:
+                cand_after = v01_asserted[-1]
+                earlier_diff = [
+                    c
+                    for c in v01_asserted[:-1]
+                    if c["dto"]["inputSnapshotId"] != cand_after["dto"]["inputSnapshotId"]
+                ]
+                if earlier_diff and (v01_jobs[-1] is cand_after or not violations(v01_jobs[-1])):
+                    chosen_before = next(
+                        (c for c in reversed(earlier_diff) if violations(c)),
+                        earlier_diff[0],
                     )
-                return out
-
-            last = v01_jobs[-1]
-            # Like Q-01, the evidence binds to the actual persisted runs and
-            # their own immutable snapshots; later domain edits mark those
-            # results stale and the ledger's attempt staleness already projects
-            # that, so the payload itself never claims a fresh current re-run.
-            self._b3_payload_evidence(
-                evidences,
-                "V-01",
-                last,
-                {
-                    "beforeRepair": violations(v01_jobs[0]),
-                    "afterRepair": violations(v01_jobs[-1]),
-                    "includeInferred": (
-                        v01_jobs[0]["dto"]["input"].get("scope") != "asserted"
-                        or v01_jobs[-1]["dto"]["input"].get("scope") != "asserted"
-                    ),
-                },
-                assistance,
-            )
+                    chosen_after = cand_after
+            if chosen_before is None or chosen_after is None:
+                if v01_jobs[0]["dto"]["inputSnapshotId"] == v01_jobs[-1]["dto"]["inputSnapshotId"]:
+                    evidences["V-01"] = unavailable("V-01")
+                else:
+                    chosen_before, chosen_after = v01_jobs[0], v01_jobs[-1]
+            if chosen_before is not None and chosen_after is not None:
+                # Like Q-01, the evidence binds to the actual persisted runs and
+                # their own immutable snapshots; later domain edits mark those
+                # results stale and the ledger's attempt staleness already projects
+                # that, so the payload itself never claims a fresh current re-run.
+                self._b3_payload_evidence(
+                    evidences,
+                    "V-01",
+                    chosen_after,
+                    {
+                        "beforeRepair": violations(chosen_before),
+                        "afterRepair": violations(chosen_after),
+                        "includeInferred": (
+                            chosen_before["dto"]["input"].get("scope") != "asserted"
+                            or chosen_after["dto"]["input"].get("scope") != "asserted"
+                        ),
+                    },
+                    assistance,
+                )
 
         # LX-01: origins over the repaired assignedTo state (extension case).
         repair = (

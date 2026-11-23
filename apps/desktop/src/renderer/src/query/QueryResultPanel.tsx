@@ -406,7 +406,9 @@ export function QueryResultPanel(props: QueryResultPanelProps) {
         {descriptor.identity.inputProjectRevision}
       </p>
       <p>
-        执行范围：断言事实；执行输入：
+        执行范围：
+        {descriptor.identity.scope === 'asserted+derived' ? '断言事实＋当前推导结果' : '断言事实'}
+        ；执行输入：
         {descriptor.identity.inputSelection === 'historical'
           ? '显式选择的历史快照'
           : '执行时的当前已提交输入'}

@@ -16,7 +16,10 @@ import {
   type DomainSnapshotCandidate,
 } from '../../apps/desktop/src/renderer/src/learning/domain-snapshot'
 import { LearningController } from '../../apps/desktop/src/renderer/src/learning/learning-controller'
-import { MentorPanel } from '../../apps/desktop/src/renderer/src/learning/MentorPanel'
+import {
+  MentorPanel,
+  scrollToProjectCheckpoints,
+} from '../../apps/desktop/src/renderer/src/learning/MentorPanel'
 
 const projectId = '00000000-0000-4000-8000-0000000000aa'
 const otherProjectId = '00000000-0000-4000-8000-0000000000bb'
@@ -72,6 +75,21 @@ describe('pickLatestDomainSnapshotId', () => {
         candidate(projectId, 3, snap('b')),
       ]),
     ).toBe(snap('a'))
+  })
+  it('ignores non-finite numeric revisions such as NaN and Infinity', () => {
+    expect(
+      pickLatestDomainSnapshotId(projectId, [
+        candidate(projectId, Number.NaN, snap('a')),
+        candidate(projectId, Number.POSITIVE_INFINITY, snap('b')),
+        candidate(projectId, 1, snap('c')),
+      ]),
+    ).toBe(snap('c'))
+    expect(
+      pickLatestDomainSnapshotId(projectId, [
+        candidate(projectId, Number.NaN, snap('a')),
+        candidate(projectId, Number.NEGATIVE_INFINITY, snap('b')),
+      ]),
+    ).toBeUndefined()
   })
 })
 
@@ -221,36 +239,24 @@ describe('MentorPanel Lq entries', () => {
     expect(resetMatch).toContain('disabled')
     expect(openMatch).toContain('disabled')
   })
-  it('scrolls to the checkpoints panel through the real DOM callback', async () => {
+  it('exposes the checkpoint scroll helper backed by #project-checkpoints', async () => {
+    const markup = await renderPanel()
+    expect(scrollButton(markup)).toBe(true)
+
     const calls: string[] = []
-    const previousDocument = globalThis.document
-    Object.defineProperty(globalThis, 'document', {
-      configurable: true,
-      value: {
-        getElementById: (id: string) => {
-          calls.push(id)
-          return { scrollIntoView: (options: unknown) => calls.push(JSON.stringify(options)) }
-        },
+    const scrolled = scrollToProjectCheckpoints({
+      getElementById: (id: string) => {
+        calls.push(id)
+        return {
+          scrollIntoView: (options?: ScrollIntoViewOptions) => {
+            calls.push(JSON.stringify(options))
+          },
+        } as unknown as HTMLElement
       },
     })
-    try {
-      // The scroll handler is the panel's own onClick closure over document.
-      const markup = await renderPanel()
-      expect(scrollButton(markup)).toBe(true)
-      // The static markup proves the entry; executing the closure requires the
-      // interactive renderer, which the real Electron E2E exercises. Here the
-      // document stub is exercised through the same API surface directly.
-      const target = (globalThis.document as unknown as Document).getElementById(
-        'project-checkpoints',
-      )
-      target?.scrollIntoView({ block: 'start', behavior: 'auto' })
-      expect(calls).toEqual(['project-checkpoints', '{"block":"start","behavior":"auto"}'])
-    } finally {
-      Object.defineProperty(globalThis, 'document', {
-        configurable: true,
-        value: previousDocument,
-      })
-    }
+    expect(scrolled).toBe(true)
+    expect(calls).toEqual(['project-checkpoints', '{"block":"start","behavior":"auto"}'])
+    expect(scrollToProjectCheckpoints({ getElementById: () => null })).toBe(false)
   })
 })
 

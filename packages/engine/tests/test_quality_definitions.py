@@ -7,7 +7,9 @@ from pathlib import Path
 import pytest
 from ontolearn_engine.quality import DefinitionError, build_plan, validate_definition
 
-FIXTURE = json.loads((Path(__file__).parents[3] / "tests/fixtures/quality/g-base.json").read_text())
+FIXTURE = json.loads(
+    (Path(__file__).parents[3] / "tests/fixtures/quality/g-base.json").read_text(encoding="utf-8")
+)
 CONTEXT = {
     "projectId": "p1",
     "inputSnapshotId": "snapshot1",

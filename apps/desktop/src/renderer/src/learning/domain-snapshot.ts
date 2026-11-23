@@ -24,6 +24,7 @@ export function pickLatestDomainSnapshotId(
       !candidate ||
       candidate.projectId !== activeProjectId ||
       typeof candidate.revision !== 'number' ||
+      !Number.isFinite(candidate.revision) ||
       !candidate.snapshotId
     )
       continue
