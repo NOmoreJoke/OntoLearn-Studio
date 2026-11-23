@@ -55,7 +55,12 @@ def pack(m=None, data=None, raw_manifest=None, entries=(), compression=zipfile.Z
         for path, value in (data or {}).items():
             z.writestr(path, value)
         for path, value in entries:
-            z.writestr(path, value)
+            if isinstance(path, str) and "\\" in path:
+                info = zipfile.ZipInfo(path)
+                info.filename = path
+                z.writestr(info, value)
+            else:
+                z.writestr(path, value)
     return stream.getvalue()
 
 

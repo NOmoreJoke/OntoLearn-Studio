@@ -1406,11 +1406,9 @@ export function App() {
     else if (action === 'demonstrate') await learningCtl.requestDemonstration()
     else if (action === 'check') await learningCtl.checkTask()
   }
-  /** After a real Agent draft commit the project must be re-read. */
+  /** After a real Agent or workspace commit, restore() refreshes project, checkpoints, and learning before updating UI state. */
   async function refreshAfterAgentCommit() {
     await restore()
-    const projectId = tasks?.project?.projectId
-    if (projectId) await learningCtl?.selectAndRefresh(projectId)
   }
   function continueLearningTask() {
     const snapshot = learningCtl?.getSnapshot()

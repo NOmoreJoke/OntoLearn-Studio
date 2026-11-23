@@ -23,6 +23,7 @@ from uuid import uuid4
 import pytest
 from ontolearn_engine.coordinator import _JOB_READY, Coordinator
 from ontolearn_engine.job_store import JobStore
+from ontolearn_engine.project import staging
 from ontolearn_engine.resources import CONTRACT
 from ontolearn_engine.storage import digest
 from ontolearn_engine.transfer import package as transfer_package
@@ -1213,7 +1214,7 @@ def import_full(actor, store, project, archive, operation=None):
     return imported
 
 
-def test_write_outbound_never_leaks_file_descriptors(owned):
+def test_write_outbound_never_leaks_file_descriptors(owned, monkeypatch):
     # W4-05: every publish (and every faulting publish) closes its verify FD.
     actor, store = owned
     project = open_blank(actor, "描述符项目")
@@ -1233,7 +1234,28 @@ def test_write_outbound_never_leaks_file_descriptors(owned):
         "reportRef": prepared["reportRef"],
         "operationId": uid(),
     }
-    before = len(os.listdir("/dev/fd"))
+    use_dev_fd = os.path.isdir("/dev/fd")
+    open_fds: set[int] = set()
+    total_opens = 0
+    if use_dev_fd:
+        before = len(os.listdir("/dev/fd"))
+    else:
+        orig_open = staging.os.open
+        orig_close = staging.os.close
+
+        def tracked_open(*args, **kwargs):
+            nonlocal total_opens
+            fd = orig_open(*args, **kwargs)
+            open_fds.add(fd)
+            total_opens += 1
+            return fd
+
+        def tracked_close(fd):
+            open_fds.discard(fd)
+            return orig_close(fd)
+
+        monkeypatch.setattr(staging.os, "open", tracked_open)
+        monkeypatch.setattr(staging.os, "close", tracked_close)
     for _ in range(5):
         ok(
             exchange(
@@ -1256,8 +1278,12 @@ def test_write_outbound_never_leaks_file_descriptors(owned):
             ),
             "INVALID_STATE",
         )
-    after = len(os.listdir("/dev/fd"))
-    assert before == after, (before, after)
+    if use_dev_fd:
+        after = len(os.listdir("/dev/fd"))
+        assert before == after, (before, after)
+    else:
+        assert total_opens >= 5
+        assert open_fds == set()
 
 
 def test_import_operation_conflict_and_mid_failure_leave_zero_residue(owned):
