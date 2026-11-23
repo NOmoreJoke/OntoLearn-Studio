@@ -250,7 +250,7 @@ def verify(root: Path) -> dict:
         raise ValueError("Unsupported fixture manifest")
     files = manifest["files"]
     actual = {
-        str(p.relative_to(root))
+        p.relative_to(root).as_posix()
         for folder in (directory, root / "content/learning")
         for p in folder.rglob("*")
         if p.is_file() and p != directory / "manifest.json"
@@ -285,7 +285,9 @@ def verify(root: Path) -> dict:
         for field in ("baselineVersion", "inputVersion", "ruleVersion", "behaviorVersion"):
             if not isinstance(case.get(field), str) or not case[field]:
                 raise ValueError("Versioned case input required")
-    rows = list(csv.DictReader(io.StringIO((directory / "equipment.csv").read_text())))
+    rows = list(
+        csv.DictReader(io.StringIO((directory / "equipment.csv").read_text(encoding="utf-8")))
+    )
     if rows != [
         {"equipment_id": "001", "equipment_name": "泵站A"},
         {"equipment_id": "002", "equipment_name": "泵站B"},
