@@ -367,7 +367,7 @@ test('W3b FR-900/800..806/005 and IPC isolation · 本地配置、离线助手�
           }),
         randomUUID(),
       )
-      expect(configured).toMatchObject({ ok: false, error: { code: 'MODEL_UNAVAILABLE' } })
+      expect(configured).toMatchObject({ ok: false, error: { code: 'GATEWAY_MODEL_UNAVAILABLE' } })
       expect(await context()).toMatchObject({
         privacy: 'local',
         modelReady: false,
