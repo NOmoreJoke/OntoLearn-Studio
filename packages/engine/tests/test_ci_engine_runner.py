@@ -12,6 +12,7 @@ from __future__ import annotations
 import importlib.util
 import io
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -229,7 +230,7 @@ def test_reporting_plugin_survives_stdlib_json_monkeypatch(tmp_path, monkeypatch
     files_json.write_text(
         json.dumps(
             {
-                "files": [str(resolved_file)],
+                "files": [os.path.normcase(str(resolved_file))],
                 "items": manifest["items"],
                 "identity": manifest["identity"],
             }
@@ -313,6 +314,7 @@ def test_oversized_input_tests_keep_bounded_collected_nodeids():
             "-q",
             "packages/engine/tests/test_semantic_profile_input.py",
             "packages/engine/tests/test_semantic_profile_restore_limits.py",
+            "packages/engine/tests/test_semantic_error_adapter.py",
         ],
         cwd=REPOSITORY,
         capture_output=True,

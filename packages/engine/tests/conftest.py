@@ -1,12 +1,27 @@
-"""Worktree-local pytest helpers for Windows cp1252 compatibility on pinned legacy tests."""
+"""Worktree-local pytest helpers for Windows cp1252 and env-var limit compatibility."""
 
+import hashlib
 from pathlib import Path
 
 import pytest
 
+_MAX_INLINE_PARAM_ID_CHARS = 16384
 _IMMUTABLE_BOUNDARIES_DOC = (
     Path(__file__).resolve().parents[3] / "docs/iterations/I03/I05-semantic-boundaries.md"
 ).resolve()
+
+
+def pytest_make_parametrize_id(
+    config: pytest.Config,
+    val: object,
+    argname: str,
+) -> str | None:
+    """Bound huge parametrize string IDs so PYTEST_CURRENT_TEST fits Windows's 32767-char limit."""
+    del config
+    if isinstance(val, str) and len(val) > _MAX_INLINE_PARAM_ID_CHARS:
+        digest = hashlib.sha256(val.encode("utf-8", errors="surrogateescape")).hexdigest()[:12]
+        return f"{argname}-len{len(val)}-{digest}"
+    return None
 
 
 @pytest.fixture(autouse=True)
