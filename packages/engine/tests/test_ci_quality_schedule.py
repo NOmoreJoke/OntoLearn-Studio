@@ -89,6 +89,7 @@ def test_plan_covers_every_original_quality_stage_exactly_once():
         "prepare-i04-fixture.py build/i04-packaged-native-ci": 1,
         "test-results/main/report.json": 1,
         "test-results/i02-linux-evidence.json": 1,
+        "test-results/i02-linux-packaged-evidence.json": 1,
     }
     minimum_counts = {
         '--grep "native renderer"': 2,

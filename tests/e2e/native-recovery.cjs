@@ -320,6 +320,33 @@ function observeWindow(window, freshlyCreated = false) {
       } else if (index === 3) {
         if (!evidence.events.includes('unresponsive') || evidence.prompts.length !== 2)
           throw new Error('missing native events/prompts')
+        // Both prompts must mirror window-recovery.ts exactly. The unit-test VM
+        // harness records bare option objects, so only present fields compare;
+        // real dialog options always carry every field below.
+        const expectedPrompts = [
+          {
+            type: 'warning',
+            title: 'OntoLearn Studio 窗口恢复',
+            message: '显示窗口已停止运行。',
+            detail: '不会重新执行写任务',
+          },
+          {
+            type: 'warning',
+            title: 'OntoLearn Studio 窗口恢复',
+            message: '显示窗口暂时没有响应。',
+            detail: '不会重新执行写任务',
+          },
+        ]
+        expectedPrompts.forEach((expected, position) => {
+          const prompt = evidence.prompts[position]
+          for (const [field, value] of Object.entries(expected)) {
+            const recorded = prompt[field]
+            if (recorded === undefined) continue
+            const matches =
+              field === 'detail' ? String(recorded).includes(value) : String(recorded) === value
+            if (!matches) throw new Error(`recovery prompt ${position} ${field} mismatch`)
+          }
+        })
         evidence.result = 'PASS'
         save()
       } else throw new Error('unexpected automatic restart')

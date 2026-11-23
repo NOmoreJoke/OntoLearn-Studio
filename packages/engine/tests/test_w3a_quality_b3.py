@@ -3535,3 +3535,215 @@ def test_b2_05_over_limit_diagnostics_truncate_with_exact_count(owned):
     assert sample["omittedDiagnosticCount"] == 1
     assert any(text.startswith("DIAGNOSTICS_TRUNCATED:") for text in sample["warnings"])
     assert len(sample["warnings"]) <= 256
+
+
+def test_v01_survives_subsequent_derived_runs_and_initial_default_scope_mistake(tmp_path):
+    """W3A-R1-IMP-2: asserted V-01 repair pair survives accidental initial
+    asserted+derived run and later full-project asserted+derived checks, while
+    pure derived, mixed-scope, or re-broken V-01 runs still fail strictly."""
+    from contextlib import contextmanager
+    from types import SimpleNamespace
+
+    from ontolearn_engine.project.learning_host import LearningHost
+
+    origins = {
+        "urn:ontolearn:learning:person/L01": "asserted",
+        "urn:ontolearn:learning:person/L02": "derived",
+    }
+
+    @contextmanager
+    def isolated_case(slug):
+        store = JobStore(tmp_path / f"{slug}.sqlite", contract=CONTRACT, target_format=3)
+        actor = Coordinator(store, profile="business3", _ready=_JOB_READY)
+        assert exchange(actor, "hello", {"supportedVersions": [3], "clientId": uid()})["ok"]
+        host = LearningHost(actor.mainline)
+        try:
+            yield actor, store, host
+        finally:
+            actor.mainline.close()
+            store.close()
+
+    def complete_r05_and_lx01(store, project):
+        commit_state(
+            store,
+            project,
+            definitions=[
+                {
+                    "layer": "ontology",
+                    "id": "G-base.ontology",
+                    "value": {
+                        "triples": [
+                            *G_BASE["ontology"],
+                            *LX_PREREQ_ONTOLOGY[:1],
+                            LX_PREREQ_ONTOLOGY[4],
+                        ],
+                        "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                    },
+                },
+                R_NEXT,
+            ],
+        )
+        run_semantic(store, project, "reasoning.execute")
+        commit_state(
+            store,
+            project,
+            definitions=[
+                {
+                    "layer": "ontology",
+                    "id": "G-base.ontology",
+                    "value": {
+                        "triples": [*G_BASE["ontology"], *LX_PREREQ_ONTOLOGY],
+                        "singleValuedPredicates": G_BASE["singleValuedPredicates"],
+                    },
+                },
+                {
+                    "layer": "constraint",
+                    "id": "assigned-to-required",
+                    "value": dict(ASSIGNED_TO_REQUIRED),
+                },
+            ],
+            manual=list(LX_PREREQ_FACTS),
+        )
+        run_semantic(store, project, "reasoning.execute")
+        run_semantic(store, project, "validation.execute", definition="assigned-to-required")
+        commit_state(store, project, manual=list(LX_REPAIR_FACTS))
+        run_semantic(store, project, "reasoning.execute")
+        run_semantic(store, project, "validation.execute", definition="assigned-to-required")
+
+    def run_all_constraints_derived(store, project):
+        r_job = run_semantic(store, project, "reasoning.execute")
+        rid = r_job["resultRef"]["resultId"]
+        run_semantic(
+            store,
+            project,
+            "validation.execute",
+            definition="name-required",
+            scope="asserted+derived",
+            derived=[rid],
+        )
+        if any(
+            d["id"] == "assigned-to-required"
+            for d in store.state(store._project(project))["definitions"]
+        ):
+            run_semantic(
+                store,
+                project,
+                "validation.execute",
+                definition="assigned-to-required",
+                scope="asserted+derived",
+                derived=[rid],
+            )
+        return r_job
+
+    def v01_evidence(store, host, project):
+        internal = store._project(project)
+        snap = store.project_get(project)["inputSnapshotId"]
+        ctx = SimpleNamespace(attempt_id="probe", project_id=project, task_id="quality")
+        return host.b3_evidences(store, project, internal, ctx, snap, 0, None, origins)["V-01"]
+
+    # Scenarios 1 & 2: accidental initial asserted+derived run before asserted
+    # broken/repaired pair, followed by full-project asserted+derived checks.
+    with isolated_case("p1") as (actor, store, host):
+        p1 = open_blank(actor, "V01 首误及后续派生")
+        seed_quality(store, p1)
+        run_all_constraints_derived(store, p1)
+        name_003 = _fact_id(store, p1, L + "equipment/003", L + "name")
+        internal1 = store._project(p1)
+        store.commit(internal1, store.revision(internal1), uid(), uid(), remove=[name_003])
+        run_semantic(store, p1, "validation.execute", definition="name-required", scope="asserted")
+        commit_state(
+            store,
+            p1,
+            manual=[
+                {"subject": L + "equipment/003", "predicate": L + "name", "object": '"备用泵C"'}
+            ],
+        )
+        run_semantic(store, p1, "validation.execute", definition="name-required", scope="asserted")
+        complete_r05_and_lx01(store, p1)
+        assert check_task(actor, "quality", selected_origins=origins)["checkStatus"] == "passed"
+        run_all_constraints_derived(store, p1)
+        assert check_task(actor, "quality", selected_origins=origins)["checkStatus"] == "passed"
+        ev1 = v01_evidence(store, host, p1)
+        assert ev1.status == "succeeded" and ev1.payload["includeInferred"] is False
+
+    # Scenario 3: pure asserted+derived before/after pair still fails (includeInferred=True).
+    with isolated_case("p3") as (actor, store, host):
+        p3 = open_blank(actor, "V01 纯派生")
+        seed_quality(store, p3)
+        name_003_3 = _fact_id(store, p3, L + "equipment/003", L + "name")
+        internal3 = store._project(p3)
+        store.commit(internal3, store.revision(internal3), uid(), uid(), remove=[name_003_3])
+        run_all_constraints_derived(store, p3)
+        commit_state(
+            store,
+            p3,
+            manual=[
+                {"subject": L + "equipment/003", "predicate": L + "name", "object": '"备用泵C"'}
+            ],
+        )
+        run_all_constraints_derived(store, p3)
+        complete_r05_and_lx01(store, p3)
+        r3 = check_task(actor, "quality", selected_origins=origins)
+        assert r3["checkStatus"] == "needs-repair" and r3["operationComplete"] is False
+        assert v01_evidence(store, host, p3).payload["includeInferred"] is True
+
+    # Scenario 4: asserted broken run + only asserted+derived repaired run still fails.
+    with isolated_case("p4") as (actor, store, host):
+        p4 = open_blank(actor, "V01 混合范围")
+        seed_quality(store, p4)
+        name_003_4 = _fact_id(store, p4, L + "equipment/003", L + "name")
+        internal4 = store._project(p4)
+        store.commit(internal4, store.revision(internal4), uid(), uid(), remove=[name_003_4])
+        run_semantic(store, p4, "validation.execute", definition="name-required", scope="asserted")
+        commit_state(
+            store,
+            p4,
+            manual=[
+                {"subject": L + "equipment/003", "predicate": L + "name", "object": '"备用泵C"'}
+            ],
+        )
+        run_all_constraints_derived(store, p4)
+        complete_r05_and_lx01(store, p4)
+        r4 = check_task(actor, "quality", selected_origins=origins)
+        assert r4["checkStatus"] == "needs-repair" and r4["operationComplete"] is False
+        assert v01_evidence(store, host, p4).payload["includeInferred"] is True
+
+    # Scenario 5: re-breaking 003 name after passing and running either
+    # asserted+derived or asserted fails V-01.
+    for idx, scope in enumerate(("asserted+derived", "asserted")):
+        with isolated_case(f"p5_{idx}") as (actor, store, _host):
+            p5 = open_blank(actor, f"V01 重破坏 {scope}")
+            seed_quality(store, p5)
+            run_semantic(store, p5, "reasoning.execute")
+            name_003_5 = _fact_id(store, p5, L + "equipment/003", L + "name")
+            internal5 = store._project(p5)
+            store.commit(internal5, store.revision(internal5), uid(), uid(), remove=[name_003_5])
+            run_semantic(
+                store, p5, "validation.execute", definition="name-required", scope="asserted"
+            )
+            commit_state(
+                store,
+                p5,
+                manual=[
+                    {
+                        "subject": L + "equipment/003",
+                        "predicate": L + "name",
+                        "object": '"备用泵C"',
+                    }
+                ],
+            )
+            run_semantic(
+                store, p5, "validation.execute", definition="name-required", scope="asserted"
+            )
+            complete_r05_and_lx01(store, p5)
+            assert check_task(actor, "quality", selected_origins=origins)["checkStatus"] == "passed"
+            name_rebreak = _fact_id(store, p5, L + "equipment/003", L + "name")
+            store.commit(internal5, store.revision(internal5), uid(), uid(), remove=[name_rebreak])
+            if scope == "asserted+derived":
+                run_all_constraints_derived(store, p5)
+            else:
+                run_semantic(
+                    store, p5, "validation.execute", definition="name-required", scope="asserted"
+                )
+            r5 = check_task(actor, "quality", selected_origins=origins)
+            assert r5["checkStatus"] != "passed" and r5["operationComplete"] is False

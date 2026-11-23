@@ -10,7 +10,9 @@ from ontolearn_engine.quality import build_plan, validate_definition
 from ontolearn_engine.quality.planning import validate_statement
 
 FIXTURE = json.loads(
-    (Path(__file__).parents[3] / "tests/fixtures/quality/fr505-extension-cases.json").read_text()
+    (Path(__file__).parents[3] / "tests/fixtures/quality/fr505-extension-cases.json").read_text(
+        encoding="utf-8"
+    )
 )
 
 

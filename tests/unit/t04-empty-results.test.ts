@@ -218,4 +218,17 @@ describe('verified SELECT empty results', () => {
     expect(x.render()).toContain('本页没有记录；完整结果不为空')
     expect(x.render()).not.toContain(emptyHeading)
   })
+
+  it('renders the executed scope label accurately for asserted and asserted+derived results', () => {
+    const assertedMarkup = setup().render()
+    expect(assertedMarkup).toContain('执行范围：断言事实；')
+
+    const derived = setup()
+    derived.descriptor.identity.scope = 'asserted+derived'
+    derived.descriptor.metadata.scope = 'asserted+derived'
+    derived.rows.value.identity.scope = 'asserted+derived'
+    const derivedMarkup = derived.render()
+    expect(derivedMarkup).toContain('执行范围：断言事实＋当前推导结果；')
+    expect(derivedMarkup).not.toContain('执行范围：断言事实；')
+  })
 })
