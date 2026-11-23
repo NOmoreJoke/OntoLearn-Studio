@@ -317,6 +317,7 @@ def test_oversized_input_tests_keep_bounded_collected_nodeids():
         cwd=REPOSITORY,
         capture_output=True,
         text=True,
+        encoding="utf-8",
         check=True,
     )
     non_empty = [line for line in proc.stdout.splitlines() if line]

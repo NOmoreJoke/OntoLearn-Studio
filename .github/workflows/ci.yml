@@ -108,7 +108,7 @@ jobs:
         if: runner.os != 'Windows'
         timeout-minutes: 20
         env:
-          CI_ENGINE_TEST_SHARDS: '4'
+          CI_ENGINE_TEST_SHARDS: '3'
           CI_ENGINE_TEST_WEIGHTS: 'linux-ci46'
       # Full formal Windows engine acceptance: four weighted shards with the
       # complete parallel() accounting (full collection, per-node phases, session

@@ -13,7 +13,9 @@ from ontolearn_engine.quality import validate_definition
 from ontolearn_engine.storage import FORMAT_VERSION, Conflict, Store
 
 FIXTURE = json.loads(
-    (Path(__file__).parents[3] / "tests/fixtures/quality/store-parameters.json").read_text()
+    (Path(__file__).parents[3] / "tests/fixtures/quality/store-parameters.json").read_text(
+        encoding="utf-8"
+    )
 )
 PROJECT = FIXTURE["projectId"]
 

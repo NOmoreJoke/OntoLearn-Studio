@@ -37,7 +37,7 @@ FIXTURE = (
     Path(__file__).resolve().parents[3]
     / "tests/fixtures/quality/profile-revalidation-v1/cases.json"
 )
-CASES = json.loads(FIXTURE.read_text())
+CASES = json.loads(FIXTURE.read_text(encoding="utf-8"))
 
 
 def iri(text):
