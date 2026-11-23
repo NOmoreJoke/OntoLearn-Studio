@@ -161,6 +161,7 @@ export function App() {
     ontologyDirty.current = false
     workspaceNotify.current()
     setOntologyContext(undefined)
+    setSessionDomainSnapshot(undefined)
   }, [setOntologyContext])
   const disconnectQuery = useCallback(() => {
     selectedQuery.current?.disconnect()
@@ -271,7 +272,8 @@ export function App() {
         libraryBusy: libraryBusy.current,
         frozen: frozen.current,
         managementUnresolved: !!management?.unresolved,
-      })
+      }) ||
+      Boolean(learningCtl?.unresolved)
     )
       return
     if (uncertain.current || !readyWorkspace.current?.project) return
@@ -298,13 +300,16 @@ export function App() {
       if (
         previous &&
         (previous.generation !== value.generation ||
-          previous.project?.projectId !== value.project?.projectId)
+          previous.project?.projectId !== value.project?.projectId ||
+          previous.project?.inputSnapshotId !== value.project?.inputSnapshotId)
       ) {
         retireOntology()
         disconnectQuery()
+        setSessionDomainSnapshot(undefined)
+        setQueryDomainSnapshot(undefined)
       }
       // 本次恢复由 open/create 持有时等待其完整 management 尾段；自主恢复则
-      // 在渲染前自行串行完成同等读取。selected-project-version 渲染之后不允许
+      // 在渲染前自行串行完成同等读取；selected-project-version 渲染之后不允许
       // 仍有 management 调用在飞行（单并发锁会拒绝随后的项目读取）。
       const owned = admissionTail.current
       if (owned) await owned
@@ -324,6 +329,7 @@ export function App() {
       } else {
         checkpointCtl?.select(undefined)
         learningCtl?.select(undefined)
+        setSessionDomainSnapshot(undefined)
       }
       if (documentLeaving.current || value.generation < latestGeneration.current) return
       if (!updateTasks(value)) return
@@ -363,7 +369,14 @@ export function App() {
   }
   async function listProjects(cursor: string | null = null) {
     const bridge = window.ontolearn
-    if (documentLeaving.current || !bridge || libraryBusy.current || frozen.current) return
+    if (
+      documentLeaving.current ||
+      !bridge ||
+      libraryBusy.current ||
+      frozen.current ||
+      Boolean(learningCtl?.unresolved)
+    )
+      return
     if (management) {
       await management.refresh()
       return
@@ -394,7 +407,8 @@ export function App() {
         libraryBusy: libraryBusy.current,
         frozen: frozen.current,
         managementUnresolved: !!management?.unresolved,
-      })
+      }) ||
+      Boolean(learningCtl?.unresolved)
     )
       return
     setProjectBusy(true)
@@ -448,7 +462,8 @@ export function App() {
         libraryBusy: libraryBusy.current,
         frozen: frozen.current,
         managementUnresolved: !!management?.unresolved,
-      })
+      }) ||
+      Boolean(learningCtl?.unresolved)
     )
       return
     if (
@@ -707,6 +722,11 @@ export function App() {
     if (!tasks?.project?.projectId) {
       checkpointCtl?.select(undefined)
       learningCtl?.select(undefined)
+      // Microtask avoids synchronous setState in effect body (react-hooks/set-state-in-effect);
+      // re-check current ref so a rapid project switch never clears the new project's snapshot.
+      queueMicrotask(() => {
+        if (!current.current?.project?.projectId) setQueryDomainSnapshot(undefined)
+      })
     }
   }, [checkpointCtl, learningCtl, tasks?.project?.projectId])
   useEffect(() => {
@@ -897,6 +917,7 @@ export function App() {
     }
   }
   const learningTasks = learningState?.learning?.tasks
+  const learningBlocked = Boolean(learningState?.busy)
   // 跨工作区一致性：同一打开项目的全部快照候选（项目读取、本体会话、查询
   // 工作台、学习读取）中取 projectRevision 最大者，避免旧缓存把新提交误标过期。
   const activeProjectId = tasks?.project?.projectId
@@ -918,7 +939,8 @@ export function App() {
         }
       : undefined,
   ])
-  const learningDisabled = projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked
+  const learningDisabled =
+    projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked || learningBlocked
   function openMentorForTask(taskId?: string) {
     if (taskId) learningCtl?.focusTask(taskId)
     setMentorOpen(true)
@@ -948,7 +970,7 @@ export function App() {
     // 独立还原 G-base：新建独立练习项目并立刻开始该任务的新 attempt。
     // 未保存/未结算的编辑按既有破坏性操作规则拦截；创建锁与准入保护全部
     // 由 createProject 自身执行，不修改任何已有项目。
-    if (learningDisabled) return
+    if (learningDisabled || learningCtl?.unresolved) return
     if (workspaceStatus.dirty || workspaceStatus.unresolved) {
       setProjectNotice('当前工作区仍有未保存或未结算的编辑；请先保存或放弃后再独立还原 G-base。')
       return
@@ -1040,6 +1062,31 @@ export function App() {
           </h1>
           <p className="lead">从本体建模到情景推演，在一个本地项目中逐步学习与验证。</p>
         </section>
+        <section className="health-panel" aria-labelledby="health-title">
+          <div>
+            <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
+            <h2 id="health-title">检查本地引擎连接</h2>
+            <p>验证桌面应用与 Python 引擎的真实通信。</p>
+          </div>
+          <button
+            onClick={() => void checkEngine()}
+            disabled={checking || workspaceFrozen || managementBlocked}
+          >
+            {checking ? '正在检查…' : '检查本地引擎'}
+            <span aria-hidden="true"> ↗</span>
+          </button>
+          <div className="health-result" role="status" aria-live="polite">
+            {result ? (
+              result.ok ? (
+                `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
+              ) : (
+                <ErrorDetails error={result.error} context="health" />
+              )
+            ) : (
+              '尚未检查。'
+            )}
+          </div>
+        </section>
         <section
           id="learning-center"
           className="learning-center"
@@ -1111,31 +1158,6 @@ export function App() {
             })}
           </ol>
         </section>
-        <section className="health-panel" aria-labelledby="health-title">
-          <div>
-            <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
-            <h2 id="health-title">检查本地引擎连接</h2>
-            <p>验证桌面应用与 Python 引擎的真实通信。</p>
-          </div>
-          <button
-            onClick={() => void checkEngine()}
-            disabled={checking || workspaceFrozen || managementBlocked}
-          >
-            {checking ? '正在检查…' : '检查本地引擎'}
-            <span aria-hidden="true"> ↗</span>
-          </button>
-          <div className="health-result" role="status" aria-live="polite">
-            {result ? (
-              result.ok ? (
-                `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
-              ) : (
-                <ErrorDetails error={result.error} context="health" />
-              )
-            ) : (
-              '尚未检查。'
-            )}
-          </div>
-        </section>
         <section
           className="project-library"
           aria-labelledby="project-library-title"
@@ -1146,7 +1168,13 @@ export function App() {
           <div className="project-quickstart" aria-label="首次启动入口">
             <button
               type="button"
-              disabled={projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked}
+              disabled={
+                projectBusy ||
+                workspaceFrozen ||
+                managementBlocked ||
+                checkpointBlocked ||
+                learningBlocked
+              }
               onClick={() => void listProjects()}
             >
               打开已有项目
@@ -1183,7 +1211,13 @@ export function App() {
               value={projectName}
               onChange={(event) => setProjectName(event.target.value)}
               maxLength={4096}
-              disabled={projectBusy || hasCreateIntent || workspaceFrozen || managementBlocked}
+              disabled={
+                projectBusy ||
+                hasCreateIntent ||
+                workspaceFrozen ||
+                managementBlocked ||
+                learningBlocked
+              }
               required
             />
             <button
@@ -1194,7 +1228,8 @@ export function App() {
                 !projectName.trim() ||
                 workspaceFrozen ||
                 managementBlocked ||
-                checkpointBlocked
+                checkpointBlocked ||
+                learningBlocked
               }
             >
               {hasCreateIntent ? '核对创建结果' : '新建空白项目'}
@@ -1207,7 +1242,8 @@ export function App() {
                 hasCreateIntent ||
                 workspaceFrozen ||
                 managementBlocked ||
-                checkpointBlocked
+                checkpointBlocked ||
+                learningBlocked
               }
               onClick={() => void createProject(true)}
             >
@@ -1218,7 +1254,7 @@ export function App() {
                 type="button"
                 data-testid="project-list-refresh"
                 onClick={() => void listProjects()}
-                disabled={projectBusy || checkpointBlocked}
+                disabled={projectBusy || checkpointBlocked || learningBlocked}
               >
                 刷新项目列表
               </button>
@@ -1245,7 +1281,7 @@ export function App() {
                       type="button"
                       data-testid="project-open"
                       data-project-id={item.projectId}
-                      disabled={projectBusy}
+                      disabled={projectBusy || learningBlocked}
                       onClick={() => void openProject(item.projectId)}
                     >
                       打开
@@ -1257,7 +1293,7 @@ export function App() {
               {catalog.nextCursor && (
                 <button
                   type="button"
-                  disabled={projectBusy}
+                  disabled={projectBusy || learningBlocked}
                   onClick={() => void listProjects(catalog.nextCursor)}
                 >
                   下一页
@@ -1268,7 +1304,13 @@ export function App() {
           {management && (
             <ProjectManagementPanel
               controller={management}
-              disabled={projectBusy || workspaceFrozen || Boolean(connection) || checkpointBlocked}
+              disabled={
+                projectBusy ||
+                workspaceFrozen ||
+                Boolean(connection) ||
+                checkpointBlocked ||
+                learningBlocked
+              }
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
               openProject={(id) => void openProject(id)}
             />
@@ -1281,7 +1323,8 @@ export function App() {
                 workspaceFrozen ||
                 Boolean(connection) ||
                 managementBlocked ||
-                checkpointBlocked
+                checkpointBlocked ||
+                learningBlocked
               }
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
             />
@@ -1289,7 +1332,7 @@ export function App() {
           {window.ontolearn?.getLibraryLocation && (
             <LibraryLocationPanel
               bridge={window.ontolearn}
-              disabled={projectBusy || managementBlocked}
+              disabled={projectBusy || managementBlocked || learningBlocked}
               report={reportWorkspace}
               freeze={freezeWorkspace}
             />

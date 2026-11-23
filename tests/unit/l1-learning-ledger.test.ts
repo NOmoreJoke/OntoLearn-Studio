@@ -563,6 +563,26 @@ describe('L1 MainlineProjectService learning bridge', () => {
       h.close()
     }
   })
+
+  it('rejects learning calls whose projectId disagrees with the selected project', async () => {
+    const h = await setupService()
+    try {
+      expect((await h.receive(() => h.service.openProject({ projectId }))).ok).toBe(true)
+      const callsBefore = h.child.calls.length
+      const mismatch = await h.receive(() =>
+        h.service.checkLearningTask({
+          projectId: id(99),
+          operationId,
+          taskId: 'business-ontology',
+        }),
+      )
+      expect(mismatch.ok).toBe(false)
+      if (!mismatch.ok) expect(mismatch.error.code).toBe('INVALID_STATE')
+      expect(h.child.calls.length).toBe(callsBefore)
+    } finally {
+      h.close()
+    }
+  })
 })
 
 const electron = vi.hoisted(() => ({ bridge: undefined as unknown, invoke: vi.fn() }))

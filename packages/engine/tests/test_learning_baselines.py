@@ -1,10 +1,13 @@
 """Fixture integrity and reset probes, not product-domain acceptance."""
 
+import csv
+import io
 import json
+import os
 import shutil
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import pytest
 from ontolearn_engine.learning.baselines import file_digest, read_json, reset_input, verify
@@ -72,7 +75,7 @@ def test_complete_literal_gbase_and_query_file_on_real_rdf_parser():
         (str(s).removeprefix(NS), str(o)) for s, o in graph.subject_objects(URIRef(NS + "status"))
     } == {("alarm/A01", "Open"), ("alarm/A02", "Closed"), ("alarm/A03", "Open")}
     assert len(base["facts"]) == 18  # Above assertions cover all concrete content, not only size.
-    assert list(graph.query((DIRECTORY / "unclosed-high.rq").read_text())) == [
+    assert list(graph.query((DIRECTORY / "unclosed-high.rq").read_text(encoding="utf-8"))) == [
         (URIRef(NS + "alarm/A01"),)
     ]
     assert not list(graph.triples((None, URIRef(RDF_TYPE), URIRef(NS + "HighRiskEquipment"))))
@@ -192,12 +195,12 @@ def test_manifest_rejects_tampering_untracked_missing_and_duplicate_json(tmp_pat
     assert verify(tmp_path)["productRuntime"] == "not-executed"
     csv_path = tmp_path / "tests/fixtures/product-baselines/equipment.csv"
     saved = csv_path.read_bytes()
-    csv_path.write_text("equipment_id,equipment_name\n1,泵站A\n")
+    csv_path.write_text("equipment_id,equipment_name\n1,泵站A\n", encoding="utf-8")
     with pytest.raises(ValueError, match="digest mismatch"):
         verify(tmp_path)
     csv_path.write_bytes(saved)
     unknown = csv_path.with_name("unknown.json")
-    unknown.write_text("{}")
+    unknown.write_text("{}", encoding="utf-8")
     with pytest.raises(ValueError, match="complete content"):
         verify(tmp_path)
     unknown.unlink()
@@ -205,7 +208,7 @@ def test_manifest_rejects_tampering_untracked_missing_and_duplicate_json(tmp_pat
     with pytest.raises(ValueError, match="complete content"):
         verify(tmp_path)
     duplicate = tmp_path / "duplicate.json"
-    duplicate.write_text('{"x": 1, "x": 2}')
+    duplicate.write_text('{"x": 1, "x": 2}', encoding="utf-8")
     with pytest.raises(ValueError, match="Duplicate JSON key"):
         read_json(duplicate)
 
@@ -213,12 +216,91 @@ def test_manifest_rejects_tampering_untracked_missing_and_duplicate_json(tmp_pat
 def test_cli_reset_exports_exact_baseline_and_failure_exits_nonzero():
     command = [sys.executable, str(ROOT / "scripts/verify-product-baselines.py")]
     output = subprocess.run(
-        command + ["--reset", "G-map-empty"], capture_output=True, text=True, check=True
+        command + ["--reset", "G-map-empty"],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     assert json.loads(output.stdout) == load("G-map-empty")
-    wrong = subprocess.run(command + ["--reset", "unknown"], capture_output=True, text=True)
+    wrong = subprocess.run(
+        command + ["--reset", "unknown"], capture_output=True, text=True, encoding="utf-8"
+    )
     assert wrong.returncode != 0
     assert not wrong.stdout
+
+
+def _copy_baseline_tree(tmp_path):
+    for relative in ["content/learning", "tests/fixtures/product-baselines", "docs/prd"]:
+        shutil.copytree(ROOT / relative, tmp_path / relative)
+    return tmp_path
+
+
+def test_manifest_paths_stay_posix_when_relative_to_returns_windows_path(tmp_path, monkeypatch):
+    """Windows regression: str(PureWindowsPath) uses backslashes, as_posix() keeps '/'."""
+    _copy_baseline_tree(tmp_path)
+    original = Path.relative_to
+
+    def windows_relative_to(self, other, *args, **kwargs):
+        relative = original(self, other, *args, **kwargs)
+        return PureWindowsPath(*relative.parts)
+
+    monkeypatch.setattr(Path, "relative_to", windows_relative_to)
+    result = verify(tmp_path)
+    assert result["productRuntime"] == "not-executed"
+    assert result["filesVerified"] > 0
+
+
+def test_equipment_csv_reads_as_utf8_when_default_encoding_is_cp1252(tmp_path, monkeypatch):
+    """Windows regression: implicit read_text() would decode UTF-8 bytes as cp1252."""
+    _copy_baseline_tree(tmp_path)
+    original = Path.read_text
+    seen = {}
+
+    def cp1252_read_text(self, encoding=None, errors=None, *args, **kwargs):
+        if encoding is None:
+            seen.setdefault("implicit", []).append(str(self))
+            return original(self, encoding="cp1252", errors=errors)
+        return original(self, *args, encoding=encoding, errors=errors, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", cp1252_read_text)
+    result = verify(tmp_path)
+    assert result["productRuntime"] == "not-executed"
+    assert not any(path.endswith("equipment.csv") for path in seen.get("implicit", []))
+    rows = list(
+        csv.DictReader(
+            io.StringIO(
+                (tmp_path / "tests/fixtures/product-baselines/equipment.csv").read_text(
+                    encoding="utf-8"
+                )
+            )
+        )
+    )
+    assert [row["equipment_name"] for row in rows] == ["泵站A", "泵站B"]
+
+
+def test_cli_reset_keeps_chinese_output_under_non_utf8_environment():
+    """Windows regression: PYTHONUTF8=0 with a cp1252 stdout must not corrupt Chinese."""
+    command = [sys.executable, str(ROOT / "scripts/verify-product-baselines.py")]
+    environment = dict(os.environ)
+    environment["PYTHONUTF8"] = "0"
+    environment["PYTHONIOENCODING"] = "cp1252"
+    output = subprocess.run(
+        command + ["--reset", "G-base"],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env=environment,
+        check=True,
+    )
+    payload = json.loads(output.stdout)
+    expected = load("G-base")
+    assert payload == expected
+    assert any(
+        isinstance(value, str) and "泵站A" in value
+        for fact in payload["facts"]
+        for value in fact.values()
+    )
 
 
 @pytest.mark.parametrize("baseline", ["G-base", "G-map-empty", "G-behavior", "E.5"])

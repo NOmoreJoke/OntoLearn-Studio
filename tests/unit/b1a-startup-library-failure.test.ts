@@ -1,6 +1,8 @@
 import { describe, expect, it, vi, type Mock } from 'vitest'
 import {
+  completePreSupervisorRecoveryChoice,
   convergeStartupLibraryFailure,
+  type PreSupervisorRecoveryDeps,
   type StartupLibraryFailureDeps,
 } from '../../apps/desktop/src/main/startup-library-failure'
 
@@ -73,5 +75,66 @@ describe('B1a startup libraryStatus failure quit convergence', () => {
     await convergeStartupLibraryFailure(recording.deps())
     expect(recording.engineExitUnconfirmed).toHaveBeenCalledOnce()
     expect(recording.reportFailure).not.toHaveBeenCalled()
+  })
+})
+
+interface RecoveryRecording {
+  quitting: boolean
+  quitBarrier: boolean
+  promptNeedsRecovery: Mock<() => Promise<number>>
+  restoreOriginal: Mock<() => void>
+  quitApp: Mock<() => void>
+  deps(): PreSupervisorRecoveryDeps
+}
+
+function recoveryRecorder(response = 1): RecoveryRecording {
+  const recording: RecoveryRecording = {
+    quitting: false,
+    quitBarrier: false,
+    promptNeedsRecovery: vi.fn(async () => response),
+    restoreOriginal: vi.fn(),
+    quitApp: vi.fn(),
+    deps: () => ({
+      quitConverging: () => recording.quitting || recording.quitBarrier,
+      promptNeedsRecovery: () => recording.promptNeedsRecovery(),
+      restoreOriginal: () => recording.restoreOriginal(),
+      quitApp: () => recording.quitApp(),
+    }),
+  }
+  return recording
+}
+
+describe('B1a pre-supervisor recovery choice quit convergence', () => {
+  it('skips the prompt, the restore and the quit when a quit already runs', async () => {
+    const recording = recoveryRecorder()
+    recording.quitting = true
+    await expect(completePreSupervisorRecoveryChoice(recording.deps())).resolves.toBe(false)
+    expect(recording.promptNeedsRecovery).not.toHaveBeenCalled()
+    expect(recording.restoreOriginal).not.toHaveBeenCalled()
+    expect(recording.quitApp).not.toHaveBeenCalled()
+  })
+  it('does not restore or continue startup when a quit fires while the prompt waits', async () => {
+    const recording = recoveryRecorder(1)
+    recording.promptNeedsRecovery.mockImplementation(async () => {
+      // The user starts quitting while the recovery dialog is still open.
+      recording.quitting = true
+      return 1
+    })
+    await expect(completePreSupervisorRecoveryChoice(recording.deps())).resolves.toBe(false)
+    expect(recording.promptNeedsRecovery).toHaveBeenCalledOnce()
+    expect(recording.restoreOriginal).not.toHaveBeenCalled()
+    expect(recording.quitApp).not.toHaveBeenCalled()
+  })
+  it('restores the original library once when the user confirms without any quit', async () => {
+    const recording = recoveryRecorder(1)
+    await expect(completePreSupervisorRecoveryChoice(recording.deps())).resolves.toBe(true)
+    expect(recording.restoreOriginal).toHaveBeenCalledOnce()
+    expect(recording.quitApp).not.toHaveBeenCalled()
+  })
+  it('quits without restoring when the user declines the original library', async () => {
+    const recording = recoveryRecorder(0)
+    await expect(completePreSupervisorRecoveryChoice(recording.deps())).resolves.toBe(false)
+    expect(recording.restoreOriginal).not.toHaveBeenCalled()
+    expect(recording.quitApp).toHaveBeenCalledOnce()
   })
 })

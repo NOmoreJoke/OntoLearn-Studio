@@ -569,11 +569,15 @@ export class ProjectRestoreSession {
   }
   operation(args: { operationId: string }) {
     return this.#work(async () => {
-      if (!keys(args, ['operationId'])) throw failure()
+      if (!keys(args, ['operationId']) || !validateBusiness3('id', args.operationId))
+        throw failure()
       const intent = this.#journal.records.get(args.operationId)
       if (!intent) throw failure('PERMISSION_DENIED')
-      const { client, projectId } = this.#selected()
-      if (projectId !== intent.projectId) throw failure('PERMISSION_DENIED')
+      const client = this.deps.client()
+      if (!client.supervisor.ownsMainlineClient(client)) throw failure('PERMISSION_DENIED')
+      const current = this.deps.selection()
+      if (current && (current.owner !== client.owner || current.projectId !== intent.projectId))
+        throw failure('PERMISSION_DENIED')
       const value = await this.deps.call<ProjectRestoreOperationDTO>(
         client,
         'project.restore.operation.get',

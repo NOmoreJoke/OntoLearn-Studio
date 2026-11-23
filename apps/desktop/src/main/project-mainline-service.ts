@@ -491,6 +491,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   async #learning<T>(method: MainlineMethod, args: RecordValue): Promise<T> {
     const current = this.#current()
     const client = this.#client()
+    if (args.projectId !== current.project.projectId) throw invalid()
     const params: RecordValue = { ...args, projectId: current.project.projectId }
     if (!validateBusiness3('params_' + method, params)) throw invalid()
     const value = (await this.#call<RecordValue>(client, method, params)) as RecordValue
@@ -622,12 +623,8 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     const operation = client.request(method, params)
     try {
       const value = (await operation) as T
-      if (String(method) === 'project.restore.confirm')
-        console.log('confirm-transport-ok', JSON.stringify(value).slice(0, 120))
       return value
     } catch (cause) {
-      if (String(method).startsWith('project.restore.'))
-        console.log('restore-transport-threw', method, String(cause).slice(0, 240))
       throw this.#operationError(cause, operation)
     }
   }

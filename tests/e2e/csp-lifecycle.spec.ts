@@ -265,11 +265,145 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     })
     stage('crash-reopen')
     const reopened = application.waitForEvent('window')
-    await application.evaluate(({ BrowserWindow }) =>
-      BrowserWindow.getAllWindows()[0].webContents.forcefullyCrashRenderer(),
-    )
+    await application.evaluate(({ BrowserWindow }) => {
+      const target = BrowserWindow.getAllWindows().find(
+        (candidate) => !candidate.isDestroyed() && !candidate.webContents.isDestroyed(),
+      )
+      if (!target) throw new Error('no live BrowserWindow to crash')
+      const state = globalThis as unknown as {
+        crashDiagnostics?: {
+          platform: string
+          initialOsPid: number | null
+          renderGone: boolean
+          reason: string | null
+          retried: boolean
+          retryOsPid: number | null
+          retryCrashed: boolean | null
+          killFallbackPid: number | null
+          killError: string | null
+        }
+      }
+      const diag = {
+        platform: process.platform,
+        initialOsPid:
+          typeof target.webContents.getOSProcessId === 'function'
+            ? target.webContents.getOSProcessId()
+            : null,
+        renderGone: false,
+        reason: null as string | null,
+        retried: false,
+        retryOsPid: null as number | null,
+        retryCrashed: null as boolean | null,
+        killFallbackPid: null as number | null,
+        killError: null as string | null,
+      }
+      state.crashDiagnostics = diag
+      const timers: ReturnType<typeof setTimeout>[] = []
+      const clearTimers = () => {
+        for (const timer of timers) clearTimeout(timer)
+        timers.length = 0
+      }
+      target.webContents.once('render-process-gone', (_event, details) => {
+        diag.renderGone = true
+        diag.reason = details.reason
+        clearTimers()
+      })
+      target.webContents.once('destroyed', clearTimers)
+      target.once('closed', clearTimers)
+      // Step out of the evaluate IPC reply tick before crashing, matching native-recovery.cjs.
+      const kick = setTimeout(() => {
+        try {
+          if (diag.renderGone || target.isDestroyed() || target.webContents.isDestroyed()) {
+            clearTimers()
+            return
+          }
+          target.webContents.forcefullyCrashRenderer()
+          if (process.platform === 'win32') {
+            const retryTimer = setTimeout(() => {
+              try {
+                if (diag.renderGone || target.isDestroyed() || target.webContents.isDestroyed()) {
+                  clearTimers()
+                  return
+                }
+                diag.retried = true
+                diag.retryOsPid =
+                  typeof target.webContents.getOSProcessId === 'function'
+                    ? target.webContents.getOSProcessId()
+                    : null
+                diag.retryCrashed =
+                  typeof target.webContents.isCrashed === 'function'
+                    ? target.webContents.isCrashed()
+                    : null
+                target.webContents.forcefullyCrashRenderer()
+                const fallbackTimer = setTimeout(() => {
+                  try {
+                    if (
+                      diag.renderGone ||
+                      target.isDestroyed() ||
+                      target.webContents.isDestroyed()
+                    ) {
+                      clearTimers()
+                      return
+                    }
+                    const pid =
+                      typeof target.webContents.getOSProcessId === 'function'
+                        ? target.webContents.getOSProcessId()
+                        : 0
+                    diag.killFallbackPid = pid
+                    if (pid > 0 && typeof process.kill === 'function') process.kill(pid)
+                  } catch (killError) {
+                    diag.killError = String(killError)
+                  }
+                }, 1500)
+                fallbackTimer.unref()
+                timers.push(fallbackTimer)
+              } catch (retryError) {
+                diag.killError = String(retryError)
+              }
+            }, 1500)
+            retryTimer.unref()
+            timers.push(retryTimer)
+          }
+        } catch (kickError) {
+          diag.killError = String(kickError)
+        }
+      }, 0)
+      kick.unref()
+      timers.push(kick)
+    })
     stage('reopened-window-event')
-    page = await reopened
+    try {
+      page = await reopened
+    } catch (error) {
+      let crashDiagnostics: unknown = null
+      let recoveryPrompts: unknown = null
+      try {
+        const snapshot = await application.evaluate(() => {
+          const state = globalThis as unknown as {
+            crashDiagnostics?: unknown
+            recoveryPrompts?: unknown
+          }
+          return {
+            crashDiagnostics: state.crashDiagnostics ?? null,
+            recoveryPrompts: state.recoveryPrompts ?? null,
+          }
+        })
+        crashDiagnostics = snapshot.crashDiagnostics
+        recoveryPrompts = snapshot.recoveryPrompts
+      } catch (diagError) {
+        crashDiagnostics = { evaluateError: String(diagError) }
+      }
+      evidence.crashDiagnostics = crashDiagnostics
+      evidence.recoveryPrompts = recoveryPrompts
+      console.error(
+        '[I02] crash-reopen-failed',
+        JSON.stringify({ crashDiagnostics, recoveryPrompts }),
+      )
+      throw error
+    }
+    evidence.crashDiagnostics = await application.evaluate(
+      () => (globalThis as unknown as { crashDiagnostics?: unknown }).crashDiagnostics ?? null,
+    )
     stage('reopened-window-ui')
     await expect(page.locator('.health-result')).toContainText('尚未检查')
     await normal(page)
@@ -277,6 +411,12 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       () => (globalThis as unknown as { recoveryPrompts: unknown[] }).recoveryPrompts,
     )
     expect((evidence.recoveryPrompts as unknown[]).length).toBe(1)
+    // The captured dialog options must mirror window-recovery.ts exactly.
+    const recoveryPrompt = (evidence.recoveryPrompts as Array<Record<string, unknown>>)[0]
+    expect(recoveryPrompt.type).toBe('warning')
+    expect(recoveryPrompt.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(recoveryPrompt.message).toBe('显示窗口已停止运行。')
+    expect(String(recoveryPrompt.detail)).toContain('不会重新执行写任务')
     // Native executable: the test hook closes its main bootstrap inspector before faults.
     // Renderer never has CDP/Playwright's disable-hang-monitor loader.
     const nativeDir = await realpath(await mkdtemp(resolve(tmpdir(), 'ontolearn-i02-')))
@@ -370,6 +510,7 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
       hangMonitorEnabled: boolean
       noSandboxSwitch: boolean
       events: string[]
+      prompts?: Array<Record<string, unknown>>
     }
     expect(native.result).toBe('PASS')
     expect(native.inspectorClosedBeforeFaults).toBe(true)
@@ -379,6 +520,16 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     // Electron documents forcefullyCrashRenderer as killed or crashed across platforms.
     expect(native.events.some((reason) => reason === 'killed' || reason === 'crashed')).toBe(true)
     expect(native.events).toContain('unresponsive')
+    // Both native recovery dialogs must mirror window-recovery.ts exactly.
+    expect(native.prompts?.length).toBe(2)
+    expect(native.prompts?.[0]?.type).toBe('warning')
+    expect(native.prompts?.[0]?.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(native.prompts?.[0]?.message).toBe('显示窗口已停止运行。')
+    expect(String(native.prompts?.[0]?.detail)).toContain('不会重新执行写任务')
+    expect(native.prompts?.[1]?.type).toBe('warning')
+    expect(native.prompts?.[1]?.title).toBe('OntoLearn Studio 窗口恢复')
+    expect(native.prompts?.[1]?.message).toBe('显示窗口暂时没有响应。')
+    expect(String(native.prompts?.[1]?.detail)).toContain('不会重新执行写任务')
     evidence.result = 'PASS'
   } finally {
     evidence.lastStageBeforeCleanup = evidence.stage

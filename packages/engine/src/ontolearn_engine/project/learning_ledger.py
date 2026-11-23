@@ -8,12 +8,13 @@ tasks without an approved tool stay "pending-dependency"; nothing fabricates a
 pass.
 """
 
+import hashlib
 import json
 from copy import deepcopy
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from ontolearn_engine.learning.baselines import read_json
-from ontolearn_engine.learning.service import Attempt, Context
+from ontolearn_engine.learning.service import ASSISTANCE, Attempt, Context
 from ontolearn_engine.project import applications, format3
 from ontolearn_engine.project.applications import RESTORE_WITHDRAWN
 from ontolearn_engine.storage import Conflict
@@ -57,6 +58,7 @@ PAYLOAD_KEYS = {
     "completedGuidedStages",
     "guidedStageCheckpointRef",
     "lastOperationId",
+    "lastOperation",
 }
 GUIDED_STAGE_TASK = "business-ontology"
 QUERY_TASK = "query"
@@ -64,6 +66,7 @@ QUERY_TASK = "query"
 WIRED_TASKS = frozenset({GUIDED_STAGE_TASK, QUERY_TASK})
 GUIDED_STAGE_LABEL = "完成引导阶段：业务本体建模"
 HINT_EVENT_KIND = "hint.revealed"
+_ASSISTANCE_RANK = {name: rank for rank, name in enumerate(ASSISTANCE)}
 
 
 def fault(code, **params):
@@ -74,6 +77,12 @@ def fault(code, **params):
 
 def _input_version(revision, snapshot_ref):
     return f"rev-{revision}:{snapshot_ref}"
+
+
+def _derived_uuid4(operation, suffix):
+    """Derive a deterministic RFC 4122 UUIDv4 acceptable to applications.uuid_ref."""
+    digest_bytes = hashlib.sha256(f"{operation}:{suffix}".encode()).digest()[:16]
+    return str(UUID(bytes=digest_bytes, version=4))
 
 
 def initial_payload(service, task_id, epoch, root_snapshot_ref, domain_revision):
@@ -100,6 +109,7 @@ def initial_payload(service, task_id, epoch, root_snapshot_ref, domain_revision)
         "completedGuidedStages": [],
         "guidedStageCheckpointRef": None,
         "lastOperationId": None,
+        "lastOperation": None,
     }
 
 
@@ -342,11 +352,71 @@ def _write_record(store, project, operation, record, payload, assistance_event, 
     )
 
 
+def _task_floor(state, records, task_id):
+    """Durable task-level assistance floor and live guided-stage state across attempts."""
+    task_records = [
+        record
+        for record in records
+        if (
+            record["task"] == task_id
+            if record["withdrawn"]
+            else record["payload"]["taskId"] == task_id
+        )
+    ]
+    task_attempts = {record["attempt"] for record in task_records}
+    floor_hint = 0
+    floor_assist = "independent"
+    completed_stages = []
+    guided_ref = None
+    live_records = sorted(
+        (record for record in task_records if not record["withdrawn"]),
+        key=lambda record: record["payload"]["activationEpoch"],
+    )
+    for record in live_records:
+        payload = record["payload"]
+        lvl = payload["maxHintLevel"]
+        if type(lvl) is int and 0 <= lvl <= 4:
+            floor_hint = max(floor_hint, lvl)
+        assist = payload["assistance"]
+        if assist in _ASSISTANCE_RANK and _ASSISTANCE_RANK[assist] > _ASSISTANCE_RANK[floor_assist]:
+            floor_assist = assist
+        for stage in payload["completedGuidedStages"]:
+            if stage not in completed_stages:
+                completed_stages.append(stage)
+        if payload["guidedStageCheckpointRef"] is not None:
+            guided_ref = payload["guidedStageCheckpointRef"]
+    for row in state["assistanceAudit"]:
+        try:
+            audit = json.loads(row["payload"])
+        except (TypeError, ValueError):
+            continue
+        same_task = isinstance(audit, dict) and audit.get("taskId") == task_id
+        if row["attempt"] not in task_attempts and not same_task:
+            continue
+        if isinstance(audit, dict):
+            lvl = audit.get("level")
+            if type(lvl) is int and 1 <= lvl <= 4:
+                floor_hint = max(floor_hint, lvl)
+            assist = audit.get("assistance")
+            if (
+                assist in _ASSISTANCE_RANK
+                and _ASSISTANCE_RANK[assist] > _ASSISTANCE_RANK[floor_assist]
+            ):
+                floor_assist = assist
+    if floor_hint >= 4 and _ASSISTANCE_RANK[floor_assist] < _ASSISTANCE_RANK["full-demonstration"]:
+        floor_assist = "full-demonstration"
+    elif floor_hint >= 1 and _ASSISTANCE_RANK[floor_assist] < _ASSISTANCE_RANK["partial-hints"]:
+        floor_assist = "partial-hints"
+    return floor_assist, floor_hint, completed_stages, guided_ref
+
+
 def _auto_init(store, project, service, task_id, origin):
     """First write inside the caller's transaction when no attempt exists yet."""
     internal = store._project(project)
     checkpoint = store.project_checkpoint(internal)
-    records = _records(format3.application_state(store, internal))
+    state = format3.application_state(store, internal)
+    records = _records(state)
+    floor_assist, floor_hint, completed_stages, guided_ref = _task_floor(state, records, task_id)
     attempt_id, operation = str(uuid4()), str(uuid4())
     payload = initial_payload(
         service,
@@ -355,7 +425,12 @@ def _auto_init(store, project, service, task_id, origin):
         checkpoint["domainSnapshotRef"],
         checkpoint["domainRevision"],
     )
+    payload["assistance"] = floor_assist
+    payload["maxHintLevel"] = floor_hint
+    payload["completedGuidedStages"] = list(completed_stages)
+    payload["guidedStageCheckpointRef"] = guided_ref
     payload["lastOperationId"] = operation
+    payload["lastOperation"] = {"method": "auto-init", "taskId": task_id}
     change = {
         "type": "learning.record",
         "attempt": attempt_id,
@@ -379,7 +454,10 @@ def _auto_init(store, project, service, task_id, origin):
 
 
 def _claimed_change(store, internal, operation):
-    context = applications.claim_context(store, internal, operation)
+    try:
+        context = applications.claim_context(store, internal, operation)
+    except Conflict:
+        fault("IDENTITY_CONFLICT")
     change = context["request"]["change"]
     if not isinstance(change, dict) or change.get("type") != "learning.record":
         fault("IDENTITY_CONFLICT")
@@ -409,7 +487,8 @@ def start_attempt(store, project, params, service, origin):
         internal = store._project(project)
         if store.has_operation_claim(operation):
             change = _claimed_change(store, internal, operation)
-            if change["task"] != task_id:
+            expected_op = {"method": "project.learning.attempt.start", "taskId": task_id}
+            if change["task"] != task_id or change["payload"].get("lastOperation") != expected_op:
                 fault("IDENTITY_CONFLICT")
             task_view, _ = _task_state(store, project, service, task_id)
             return {
@@ -428,7 +507,11 @@ def start_attempt(store, project, params, service, origin):
                 "learningState": task_view,
             }
         checkpoint = store.project_checkpoint(internal)
-        records = _records(format3.application_state(store, internal))
+        state = format3.application_state(store, internal)
+        records = _records(state)
+        floor_assist, floor_hint, completed_stages, guided_ref = _task_floor(
+            state, records, task_id
+        )
         attempt_id = str(uuid4())
         payload = initial_payload(
             service,
@@ -437,7 +520,12 @@ def start_attempt(store, project, params, service, origin):
             checkpoint["domainSnapshotRef"],
             checkpoint["domainRevision"],
         )
+        payload["assistance"] = floor_assist
+        payload["maxHintLevel"] = floor_hint
+        payload["completedGuidedStages"] = list(completed_stages)
+        payload["guidedStageCheckpointRef"] = guided_ref
         payload["lastOperationId"] = operation
+        payload["lastOperation"] = {"method": "project.learning.attempt.start", "taskId": task_id}
         change = {
             "type": "learning.record",
             "attempt": attempt_id,
@@ -480,7 +568,17 @@ def record_hint(store, project, params, service, origin):
         if store.has_operation_claim(operation):
             change = _claimed_change(store, internal, operation)
             event = change["assistanceEvent"]
-            if change["task"] != task_id or event is None:
+            expected_op = {
+                "method": "project.learning.hint.record",
+                "taskId": task_id,
+                "level": level,
+            }
+            if (
+                change["task"] != task_id
+                or event is None
+                or event["payload"].get("level") != level
+                or change["payload"].get("lastOperation") != expected_op
+            ):
                 fault("IDENTITY_CONFLICT")
             task_view, _ = _task_state(store, project, service, task_id)
             hint = service.tasks[task_id]["hints"][event["payload"]["level"] - 1]
@@ -522,6 +620,11 @@ def record_hint(store, project, params, service, origin):
             assistance=updated.assistance,
             independentTransferSuccess=False,
             lastOperationId=operation,
+            lastOperation={
+                "method": "project.learning.hint.record",
+                "taskId": task_id,
+                "level": level,
+            },
         )
         event_id = str(uuid4())
         _write_record(
@@ -606,7 +709,14 @@ def record_observation(store, project, params, service, origin):
         internal = store._project(project)
         if store.has_operation_claim(operation):
             change = _claimed_change(store, internal, operation)
-            if change["task"] != task_id:
+            last_op = change["payload"].get("lastOperation")
+            if (
+                change["task"] != task_id
+                or not isinstance(last_op, dict)
+                or last_op.get("method") != "project.learning.observation.record"
+                or last_op.get("taskId") != task_id
+                or last_op.get("observation") != observation
+            ):
                 fault("IDENTITY_CONFLICT")
             task_view, _ = _task_state(store, project, service, task_id)
             return {
@@ -616,8 +726,8 @@ def record_observation(store, project, params, service, origin):
                 "taskId": task_id,
                 "attemptId": change["attempt"],
                 "recordVersion": _row_version(store, internal, change["attempt"]),
-                "observation": observation,
-                "assessmentOutcome": outcome,
+                "observation": deepcopy(last_op["observation"]),
+                "assessmentOutcome": deepcopy(last_op["assessmentOutcome"]),
                 "learningState": task_view,
             }
         records = _records(format3.application_state(store, internal))
@@ -640,6 +750,12 @@ def record_observation(store, project, params, service, origin):
                 }
             )
         payload["lastOperationId"] = operation
+        payload["lastOperation"] = {
+            "method": "project.learning.observation.record",
+            "taskId": task_id,
+            "observation": deepcopy(observation),
+            "assessmentOutcome": deepcopy(outcome),
+        }
         _write_record(store, project, operation, current, payload, None, origin)
         current = {
             **current,
@@ -729,9 +845,16 @@ def check_task(store, project, params, host, origin):
         internal = store._project(project)
         if store.has_operation_claim(operation):
             change = _claimed_change(store, internal, operation)
-            if change["task"] != task_id:
+            expected_op = {"method": "project.learning.task.check", "taskId": task_id}
+            if change["task"] != task_id or change["payload"].get("lastOperation") != expected_op:
                 fault("IDENTITY_CONFLICT")
-            receipt = format3.receipt_for(store, internal, operation)
+            guided_checkpoint_op = _derived_uuid4(operation, "guided-checkpoint-create")
+            receipt_op = (
+                guided_checkpoint_op
+                if store.has_operation_claim(guided_checkpoint_op)
+                else operation
+            )
+            receipt = format3.receipt_for(store, internal, receipt_op)
             task_view, _ = _task_state(store, project, service, task_id)
             # The persisted attempt row, not the claim snapshot, carries the
             # final payload: later guided-stage bookkeeping bumped it.
@@ -821,6 +944,7 @@ def check_task(store, project, params, host, origin):
             boundSnapshotRef=snapshot_ref,
             boundDomainRevision=revision,
             lastOperationId=operation,
+            lastOperation={"method": "project.learning.task.check", "taskId": task_id},
         )
         receipt = _write_record(store, project, operation, current, payload, None, origin)
         guided_ref = payload["guidedStageCheckpointRef"]
@@ -845,10 +969,22 @@ def check_task(store, project, params, host, origin):
                 GUIDED_STAGE_TASK,
             ]
             stage_payload["lastOperationId"] = operation + ":guided-stage"
-            _write_record(store, project, str(uuid4()), current, stage_payload, None, origin)
+            stage_payload["lastOperation"] = {
+                "method": "project.learning.task.check:guided-stage",
+                "taskId": task_id,
+            }
+            _write_record(
+                store,
+                project,
+                _derived_uuid4(operation, "guided-stage-record"),
+                current,
+                stage_payload,
+                None,
+                origin,
+            )
             checkpoint_receipt = store.apply_application(
                 project,
-                str(uuid4()),
+                _derived_uuid4(operation, "guided-checkpoint-create"),
                 {
                     "type": "checkpoint.create",
                     "reason": "guided-stage",
@@ -866,7 +1002,19 @@ def check_task(store, project, params, host, origin):
             payload = deepcopy(stage_payload)
             payload["guidedStageCheckpointRef"] = guided_ref
             payload["lastOperationId"] = operation + ":guided-checkpoint"
-            _write_record(store, project, str(uuid4()), current, payload, None, origin)
+            payload["lastOperation"] = {
+                "method": "project.learning.task.check:guided-checkpoint",
+                "taskId": task_id,
+            }
+            _write_record(
+                store,
+                project,
+                _derived_uuid4(operation, "guided-checkpoint-ref"),
+                current,
+                payload,
+                None,
+                origin,
+            )
             receipt = checkpoint_receipt
         task_view, _ = _task_state(store, project, service, task_id)
         return _check_result(

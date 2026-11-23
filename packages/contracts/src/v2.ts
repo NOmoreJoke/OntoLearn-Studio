@@ -719,8 +719,14 @@ export function matchesBusiness3Response(
     if (!r.ok) return true
     const p = q.params as Record<string, unknown>
     const value = r.result as Record<string, unknown>
-    if (value.projectId !== p.projectId) return false
     const method = String(q.method)
+    if (
+      method === 'project.restore.operation.get'
+        ? value.state !== 'not-found' &&
+          (value.result as Record<string, unknown> | null)?.projectId !== p.projectId
+        : value.projectId !== p.projectId
+    )
+      return false
     if (method === 'project.checkpoint.list') {
       const items = value.items as Array<Record<string, unknown>>
       const end = Number(value.offset) + items.length
