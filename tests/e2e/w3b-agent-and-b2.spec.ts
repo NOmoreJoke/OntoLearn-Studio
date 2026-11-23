@@ -346,46 +346,80 @@ test('W3b FR-900/800..806/005 and IPC isolation · 本地配置、离线助手�
     const model = page.locator('#model-settings')
     const modelPanel = model.getByTestId('agent-model-panel')
     const privacy = model.getByLabel('项目模型隐私模式')
-    await expect(privacy).toBeEnabled()
-    await expect(privacy).toHaveValue('local')
-    await model.getByText('模型接收配置与凭据', { exact: true }).click()
-    await model.locator('input[name="displayName"]').fill('W3b local model')
-    await model.getByLabel('HTTPS 接收地址').fill('https://w3b-fixture.invalid/v1/chat/completions')
-    await model.getByLabel('模型名称', { exact: true }).fill('deepseek-v4-pro')
-    await model.getByRole('button', { name: '保存配置', exact: true }).click()
-    await expect
-      .poll(async () => (await context()).configurations.map(({ displayName }) => displayName))
-      .toEqual(['W3b local model'])
-    const refreshModel = modelPanel.getByRole('button', {
-      name: '读取 Agent 模型配置与能力',
-      exact: true,
-    })
-    await refreshModel.click()
-    const row = modelPanel.getByRole('listitem').filter({ hasText: 'W3b local model' })
-    await expect(row).toContainText('已启用')
-    await row.getByRole('button', { name: '停用此配置', exact: true }).click()
-    await expect(row).toContainText('未启用')
-    await row.getByRole('button', { name: '启用此配置', exact: true }).click()
-    await expect(row).toContainText('已启用')
-    await row.getByRole('button', { name: '运行合成探测（不代表厂商已验证）', exact: true }).click()
-    await expect(modelPanel.getByTestId('agent-capability-source')).toHaveText(
-      '合成探测（仅本地自测，不代表厂商已验证）',
-    )
-    expect(await context()).toMatchObject({
-      privacy: 'local',
-      modelReady: false,
-      capabilities: {
-        mode: 'synthetic',
-        connection: 'not-run',
-        structuredOutput: 'passed',
-        toolRoundTrip: 'passed',
-      },
-    })
-    expect((await audit()).items).toEqual([])
-    await modelPanel
-      .getByRole('button', { name: '读取最近 20 条 Agent 审计记录', exact: true })
-      .click()
-    await expect(modelPanel.getByTestId('agent-audit-list').locator('li')).toHaveCount(0)
+    if (process.platform === 'win32') {
+      // Documented I06 boundary (docs/iterations/I06/main-integration-handoff.md): PrivateDirectory fails closed on win32.
+      await expect(privacy).toBeDisabled()
+      await expect(privacy).toHaveValue('local')
+      const status = await page.evaluate(() => window.ontolearn!.getModelAccessStatus({}))
+      expect(status).toMatchObject({
+        ok: true,
+        data: { availability: 'unavailable', privacy: 'local', configurations: [] },
+      })
+      const configured = await page.evaluate(
+        (id) =>
+          window.ontolearn!.configureModel({
+            contextId: id,
+            configurationId: null,
+            configurationVersion: null,
+            displayName: 'W3b local model',
+            endpoint: 'https://w3b-fixture.invalid/v1/chat/completions',
+            model: 'deepseek-v4-pro',
+          }),
+        randomUUID(),
+      )
+      expect(configured).toMatchObject({ ok: false, error: { code: 'MODEL_UNAVAILABLE' } })
+      expect(await context()).toMatchObject({
+        privacy: 'local',
+        modelReady: false,
+        configurations: [],
+      })
+      expect((await audit()).items).toEqual([])
+    } else {
+      await expect(privacy).toBeEnabled()
+      await expect(privacy).toHaveValue('local')
+      await model.getByText('模型接收配置与凭据', { exact: true }).click()
+      await model.locator('input[name="displayName"]').fill('W3b local model')
+      await model
+        .getByLabel('HTTPS 接收地址')
+        .fill('https://w3b-fixture.invalid/v1/chat/completions')
+      await model.getByLabel('模型名称', { exact: true }).fill('deepseek-v4-pro')
+      await model.getByRole('button', { name: '保存配置', exact: true }).click()
+      await expect
+        .poll(async () => (await context()).configurations.map(({ displayName }) => displayName))
+        .toEqual(['W3b local model'])
+      const refreshModel = modelPanel.getByRole('button', {
+        name: '读取 Agent 模型配置与能力',
+        exact: true,
+      })
+      await refreshModel.click()
+      const row = modelPanel.getByRole('listitem').filter({ hasText: 'W3b local model' })
+      await expect(row).toContainText('已启用')
+      await row.getByRole('button', { name: '停用此配置', exact: true }).click()
+      await expect(row).toContainText('未启用')
+      await row.getByRole('button', { name: '启用此配置', exact: true }).click()
+      await expect(row).toContainText('已启用')
+      await row
+        .getByRole('button', { name: '运行合成探测（不代表厂商已验证）', exact: true })
+        .click()
+      await expect(modelPanel.getByTestId('agent-capability-source')).toHaveText(
+        '合成探测（仅本地自测，不代表厂商已验证）',
+      )
+      expect(await context()).toMatchObject({
+        privacy: 'local',
+        modelReady: false,
+        capabilities: {
+          mode: 'synthetic',
+          connection: 'not-run',
+          structuredOutput: 'passed',
+          toolRoundTrip: 'passed',
+        },
+      })
+      expect((await audit()).items).toEqual([])
+      await modelPanel
+        .getByRole('button', { name: '读取最近 20 条 Agent 审计记录', exact: true })
+        .click()
+      await expect(modelPanel.getByTestId('agent-audit-list').locator('li')).toHaveCount(0)
+    }
 
     const sidebar = page.getByTestId('agent-sidebar')
     await expect(sidebar.getByRole('heading', { name: '导师模式', exact: true })).toBeVisible()
@@ -467,10 +501,16 @@ test('W3b FR-900/800..806/005 and IPC isolation · 本地配置、离线助手�
     expect((await audit()).items).toEqual([])
     await expect(questionBox).toHaveValue(question)
 
-    await page.getByRole('link', { name: '模型设置', exact: true }).click()
-    await row.getByRole('button', { name: '移除此配置', exact: true }).click()
-    await expect(modelPanel.getByText('当前项目尚无 Agent 模型配置。')).toBeVisible()
-    expect((await context()).configurations).toEqual([])
+    if (process.platform !== 'win32') {
+      await page.getByRole('link', { name: '模型设置', exact: true }).click()
+      await modelPanel
+        .getByRole('listitem')
+        .filter({ hasText: 'W3b local model' })
+        .getByRole('button', { name: '移除此配置', exact: true })
+        .click()
+      await expect(modelPanel.getByText('当前项目尚无 Agent 模型配置。')).toBeVisible()
+      expect((await context()).configurations).toEqual([])
+    }
 
     const beforeMode = await activeProject(page)
     const toggle = sidebar.getByTestId('agent-mode-toggle')
