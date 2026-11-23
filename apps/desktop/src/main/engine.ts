@@ -15,6 +15,7 @@ import {
 } from '@ontolearn/contracts'
 import {
   matchesResponse,
+  isModelMethod,
   matchesOrdinaryResponse,
   type OrdinaryResponseBinding,
   matchesBusiness3Response,
@@ -363,6 +364,9 @@ export type MainlineMethod =
   | 'project.restore.confirm'
   | 'project.restore.apply'
   | 'project.restore.operation.get'
+  | 'project.ontology.export'
+  | 'project.ontology.import.check'
+  | 'project.agent.before_commit'
   | 'project.quality.read'
   | 'project.quality.prepare'
   | 'project.learning.read'
@@ -1293,6 +1297,9 @@ export class EngineSupervisor {
               'project.restore.confirm',
               'project.restore.apply',
               'project.restore.operation.get',
+              'project.ontology.export',
+              'project.ontology.import.check',
+              'project.agent.before_commit',
               'project.quality.read',
               'project.quality.prepare',
               'project.learning.read',
@@ -1314,6 +1321,9 @@ export class EngineSupervisor {
                 method === 'project.draft.save' ||
                 method === 'project.ownership.detail' ||
                 method === 'project.management.read' ||
+                method === 'project.ontology.export' ||
+                method === 'project.ontology.import.check' ||
+                method === 'project.agent.before_commit' ||
                 method === 'project.quality.read' ||
                 method === 'project.quality.prepare') &&
               params.projectId !== record.selected?.projectId
@@ -2794,7 +2804,7 @@ export class EngineSupervisor {
   request(method: string, params: Record<string, unknown>): Promise<unknown> {
     return this.#operation(async () => {
       if (method === 'ordinary.library') throw deniedOrdinary()
-      if (method === 'hello')
+      if (method === 'hello' || isModelMethod(method))
         throw new EngineError({
           code: 'INVALID_STATE',
           messageKey: 'protocol.invalidState',

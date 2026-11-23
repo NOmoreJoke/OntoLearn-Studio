@@ -1,0 +1,60 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+<urn:ontolearn:learning:Alarm> rdf:type owl:Class .
+
+<urn:ontolearn:learning:Equipment> rdf:type owl:Class .
+
+<urn:ontolearn:learning:HighRiskEquipment> rdf:type owl:Class .
+
+<urn:ontolearn:learning:WorkOrder> rdf:type owl:Class .
+
+<urn:ontolearn:learning:alarm/A01> <urn:ontolearn:learning:level> "High" ;
+    <urn:ontolearn:learning:status> "Open" ;
+    rdf:type <urn:ontolearn:learning:Alarm> .
+
+<urn:ontolearn:learning:alarm/A02> <urn:ontolearn:learning:level> "High" ;
+    <urn:ontolearn:learning:status> "Closed" ;
+    rdf:type <urn:ontolearn:learning:Alarm> .
+
+<urn:ontolearn:learning:alarm/A03> <urn:ontolearn:learning:level> "Low" ;
+    <urn:ontolearn:learning:status> "Open" ;
+    rdf:type <urn:ontolearn:learning:Alarm> .
+
+<urn:ontolearn:learning:alarm> rdf:type owl:ObjectProperty .
+
+<urn:ontolearn:learning:equipment/001> <urn:ontolearn:learning:alarm> <urn:ontolearn:learning:alarm/A01> ;
+    <urn:ontolearn:learning:name> "泵站A" ;
+    rdf:type <urn:ontolearn:learning:Equipment> .
+
+<urn:ontolearn:learning:equipment/002> <urn:ontolearn:learning:alarm> <urn:ontolearn:learning:alarm/A02> ;
+    <urn:ontolearn:learning:name> "泵站B" ;
+    rdf:type <urn:ontolearn:learning:Equipment> .
+
+<urn:ontolearn:learning:equipment/003> <urn:ontolearn:learning:alarm> <urn:ontolearn:learning:alarm/A03> ;
+    <urn:ontolearn:learning:name> "备用泵C" ;
+    rdf:type <urn:ontolearn:learning:Equipment> .
+
+<urn:ontolearn:learning:eventOrder> rdf:type owl:ObjectProperty .
+
+<urn:ontolearn:learning:level> rdf:type owl:DatatypeProperty .
+
+<urn:ontolearn:learning:name> rdf:type owl:DatatypeProperty .
+
+<urn:ontolearn:learning:status> rdf:type owl:DatatypeProperty .
+
+<urn:ontolearn:learning:workOrderStatus> rdf:type owl:DatatypeProperty .
+
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:ontolearn:shape:name-required> a sh:NodeShape ;
+    sh:targetClass <urn:ontolearn:learning:Equipment> ;
+    sh:property <urn:ontolearn:shape:name-required:property> .
+
+<urn:ontolearn:shape:name-required:property> a sh:PropertyShape ;
+    sh:path <urn:ontolearn:learning:name> ;
+    sh:minCount 1 .

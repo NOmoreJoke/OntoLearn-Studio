@@ -4,6 +4,7 @@ import document from '../v2/schema.json'
 import registry from '../v2/registry.json'
 import errorCatalog from '../v2/errors.json'
 import { permitsTransition } from './states-v2'
+import type { BridgeResult, ModelMethod, ModelParamsMap, ModelResultMap } from './index'
 
 interface Schema {
   $ref?: string
@@ -309,6 +310,8 @@ function semantic(value: unknown): boolean {
   return Object.values(v).every(semantic)
 }
 export function validateV2(name: string, value: unknown): boolean {
+  // Main-only values use their own size/semantic gate, never the Python frame path.
+  if (name.startsWith('model')) return false
   if (!Object.hasOwn(definitions, name)) return false
   if (!compiled.has(name)) compiled.set(name, compile(definitions[name]))
   if (!compiled.get(name)!.safeParse(value).success || !semantic(value) || utf8(value) > 262144)
@@ -321,6 +324,248 @@ export function validateV2(name: string, value: unknown): boolean {
     return false
   if (name === 'params_job.create' || name === 'params_job.list')
     return semantic({ kind: 'request', method: name.slice(7), params: value })
+  return true
+}
+
+export function isModelMethod(value: unknown): value is ModelMethod {
+  return (
+    typeof value === 'string' &&
+    (registry.mainRuntime as string[]).includes(value) &&
+    Object.hasOwn(registry.mainCapabilities, value)
+  )
+}
+
+// The main IPC result can hold 1MiB of plain UTF-8 text. This does not enlarge
+// the 256KiB engine frame budget, and bounds non-text DTOs as well.
+const MODEL_VALUE_BUDGET = 2 * 1024 * 1024
+function boundedModelValue(value: unknown): boolean {
+  let remaining = MODEL_VALUE_BUDGET
+  const active = new Set<object>()
+  const visit = (entry: unknown, depth: number): boolean => {
+    if (depth > 32 || remaining < 0) return false
+    if (typeof entry === 'string') {
+      if (entry.length > remaining) return false
+      remaining -= new TextEncoder().encode(entry).byteLength + 2
+    } else if (typeof entry === 'number') remaining -= 32
+    else if (entry === null || typeof entry === 'boolean') remaining -= 5
+    else if (typeof entry === 'object' && entry) {
+      if (active.has(entry)) return false
+      active.add(entry)
+      remaining -= 2
+      for (const [key, item] of Object.entries(entry)) {
+        if (key.length > remaining) return false
+        remaining -= new TextEncoder().encode(key).byteLength + 4
+        if (!visit(item, depth + 1)) return false
+      }
+      active.delete(entry)
+    } else return false
+    return remaining >= 0
+  }
+  return visit(value, 0)
+}
+
+function modelEndpoint(value: unknown): string | undefined {
+  if (typeof value !== 'string' || value.length < 1 || value.length > 2048) return undefined
+  try {
+    const url = new URL(value)
+    if (
+      url.protocol !== 'https:' ||
+      url.username ||
+      url.password ||
+      value.includes('?') ||
+      value.includes('#') ||
+      /[\\\s]/u.test(value) ||
+      [...value].some(
+        (character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127,
+      ) ||
+      url.href.length > 2048
+    )
+      return undefined
+    return url.href
+  } catch {
+    return undefined
+  }
+}
+const uniqueModelIds = (ids: unknown[]) => new Set(ids).size === ids.length
+function modelSemantic(value: unknown): boolean {
+  if (Array.isArray(value)) return value.every(modelSemantic)
+  if (!value || typeof value !== 'object') return true
+  const v = value as Record<string, unknown>
+  for (const key of ['selectionIds', 'fieldIds', 'requires'])
+    if (Array.isArray(v[key]) && !uniqueModelIds(v[key])) return false
+  if (typeof v.endpointOrigin === 'string') {
+    const url = new URL(v.endpointOrigin)
+    if (
+      url.origin !== v.endpointOrigin ||
+      (url.protocol !== 'https:' &&
+        !(url.protocol === 'http:' && url.hostname === '127.0.0.1' && url.port)) ||
+      !uniqueModelIds(v.scopes as unknown[])
+    )
+      return false
+  }
+  if (typeof v.endpoint === 'string') {
+    const normalized = modelEndpoint(v.endpoint)
+    if (!normalized) return false
+    if (('credentialState' in v || 'principal' in v) && v.endpoint !== normalized) return false
+  }
+  if ('configurationId' in v && 'configurationVersion' in v)
+    if ((v.configurationId === null) !== (v.configurationVersion === null)) return false
+  if (v.metadata && 'selection' in v) {
+    const metadata = v.metadata as Record<string, unknown>
+    if (metadata.payloadStatus !== 'available') return false
+    if (v.selection === 'current' && metadata.state !== 'current') return false
+  }
+  if (Array.isArray(v.results))
+    if (!uniqueModelIds(v.results.map((item) => (item as Record<string, unknown>).resultId)))
+      return false
+  if (Array.isArray(v.fields)) {
+    const fields = v.fields as Array<{ fieldId: string; requires: string[] }>
+    const ids = fields.map((field) => field.fieldId)
+    if (!uniqueModelIds(ids)) return false
+    const dependencies = new Map(fields.map((field) => [field.fieldId, field.requires]))
+    const visiting = new Set<string>(),
+      done = new Set<string>()
+    const check = (id: string): boolean => {
+      if (visiting.has(id) || !dependencies.has(id)) return false
+      if (done.has(id)) return true
+      visiting.add(id)
+      if (!dependencies.get(id)!.every(check)) return false
+      visiting.delete(id)
+      done.add(id)
+      return true
+    }
+    if (!ids.every(check)) return false
+    if (v.kind === 'fields') {
+      const chosen = v.fieldIds as string[]
+      if (chosen.length !== ids.length || chosen.some((id) => !dependencies.has(id))) return false
+    }
+  }
+  if (Array.isArray(v.configurations))
+    if (
+      !uniqueModelIds(v.configurations.map((c) => (c as Record<string, unknown>).configurationId))
+    )
+      return false
+  if (Array.isArray(v.selections)) {
+    const selections = v.selections as Array<{
+      selectionId: string
+      metadata: { projectId: string }
+    }>
+    if (!uniqueModelIds(selections.map((s) => s.selectionId))) return false
+    const project = 'projectId' in v ? v.projectId : selections[0]?.metadata.projectId
+    if (selections.some((selection) => selection.metadata.projectId !== project)) return false
+  }
+  if (Array.isArray(v.invocations)) {
+    const calls = v.invocations as Array<{ invocationId: string; state: string }>
+    if (!uniqueModelIds(calls.map((call) => call.invocationId))) return false
+    const active = calls.filter((call) => ['running', 'cancelling'].includes(call.state)).length
+    if (active > 4 || calls.length - active > 64) return false
+  }
+  if ('availability' in v) {
+    if ((v.contextId === null) !== (v.projectId === null)) return false
+    if (v.contextId === null) {
+      if (
+        v.availability !== 'unavailable' ||
+        v.privacy !== 'local' ||
+        (v.selections as unknown[]).length ||
+        (v.invocations as unknown[]).length
+      )
+        return false
+    }
+  }
+  if (v.state === 'completed' && typeof v.text === 'string')
+    if (new TextEncoder().encode(v.text).byteLength > 1024 * 1024) return false
+  return Object.values(v).every(modelSemantic)
+}
+
+/** Only known main schemas; never an alternate generic engine dispatcher. */
+export function validateModelValue(name: string, value: unknown): boolean {
+  try {
+    if (!name.startsWith('model') || !Object.hasOwn(definitions, name) || !boundedModelValue(value))
+      return false
+    if (!compiled.has(name)) compiled.set(name, compile(definitions[name]))
+    if (!compiled.get(name)!.safeParse(value).success) return false
+    if (name === 'modelEndpoint' && !modelEndpoint(value)) return false
+    return semantic(value) && modelSemantic(value)
+  } catch {
+    return false
+  }
+}
+export function validateModelParams<M extends ModelMethod>(
+  method: M,
+  value: unknown,
+): value is ModelParamsMap[M] {
+  return isModelMethod(method) && validateModelValue('modelParams_' + method, value)
+}
+export function validateModelResult<M extends ModelMethod>(
+  method: M,
+  value: unknown,
+): value is ModelResultMap[M] {
+  return isModelMethod(method) && validateModelValue('modelResult_' + method, value)
+}
+export function validateModelReply<M extends ModelMethod>(
+  method: M,
+  value: unknown,
+): value is BridgeResult<ModelResultMap[M]> {
+  return isModelMethod(method) && validateModelValue('modelReply_' + method, value)
+}
+
+/** Binds response identities to this exact named call; main must still check actual authority. */
+export function matchesModelResult<M extends ModelMethod>(
+  method: M,
+  params: unknown,
+  result: unknown,
+): boolean {
+  if (!validateModelParams(method, params) || !validateModelResult(method, result)) return false
+  const q = params as Record<string, unknown>,
+    r = result as unknown as Record<string, unknown>
+  if (method === 'getModelAccessStatus')
+    return q.auditContextId === undefined
+      ? r.audit === undefined
+      : q.auditContextId === r.contextId && Array.isArray(r.audit)
+  if (method === 'configureModel')
+    return (
+      (q.configurationId === null || q.configurationId === r.configurationId) &&
+      r.endpoint === modelEndpoint(q.endpoint) &&
+      r.model === q.model &&
+      r.displayName === q.displayName
+    )
+  if (method === 'storeModelCredential')
+    return (
+      q.configurationId === r.configurationId && q.configurationVersion !== r.configurationVersion
+    )
+  if (method === 'setModelPrivacy') return q.privacy === r.privacy
+  if (method === 'selectModelResults') {
+    const choices = q.results as Array<{ resultId: string; selection: string }>
+    const selected = r.selections as Array<{ metadata: { resultId: string }; selection: string }>
+    return (
+      choices.length === selected.length &&
+      choices.every(
+        (choice, i) =>
+          choice.resultId === selected[i].metadata.resultId &&
+          choice.selection === selected[i].selection,
+      )
+    )
+  }
+  if (method === 'getModelFieldCatalog')
+    return (
+      q.resultId === (r.metadata as Record<string, unknown>).resultId && q.selection === r.selection
+    )
+  if (method === 'selectModelFields')
+    return (
+      q.catalogId === r.catalogId &&
+      (q.fieldIds as string[]).length === (r.fieldIds as string[]).length &&
+      (q.fieldIds as string[]).every((id) => (r.fieldIds as string[]).includes(id))
+    )
+  if (method === 'previewModelExplanation')
+    return (
+      q.configurationId === r.configurationId &&
+      (q.selectionIds as string[]).length === (r.selections as unknown[]).length &&
+      (r.selections as Array<{ selectionId: string }>).every((s) =>
+        (q.selectionIds as string[]).includes(s.selectionId),
+      )
+    )
+  if (method === 'getModelExplanationOutcome' || method === 'cancelModelExplanation')
+    return q.invocationId === r.invocationId
   return true
 }
 
@@ -782,6 +1027,15 @@ export function matchesBusiness3Response(
     if (value.projectId !== p.projectId) return false
     if (String(q.method) === 'project.quality.read') return true
     return value.operationId === p.operationId
+  }
+  if (q.method === 'project.ontology.export' || q.method === 'project.ontology.import.check')
+    return q.engineSessionId === r.engineSessionId
+  if (q.method === 'project.agent.before_commit') {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const params = q.params as Record<string, unknown>
+    const result = r.result as Record<string, unknown>
+    return result.projectId === params.projectId && result.operationId === params.operationId
   }
   if (q.method === 'project.ownership.detail')
     return (

@@ -1,6 +1,14 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { QueryResultPanel } from './QueryResultPanel'
-import { compileVisual, draftSchema, visualSchema, type VisualQuery } from './draft'
+import {
+  alarmTemplate,
+  compileVisual,
+  draftSchema,
+  resolveAlarmVocabulary,
+  visualSchema,
+  type OntologyTripleLike,
+  type VisualQuery,
+} from './draft'
 import { QueryWorkspaceController } from './workspace-controller'
 import type { QueryDraftDTO } from './api002-source-types'
 import './workspace.css'
@@ -13,6 +21,43 @@ export interface QueryWorkspacePageProps {
 }
 const emptyVisual = (): VisualQuery => ({ classIri: '', fields: [], conditions: [] })
 const rdfType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+
+/**
+ * Read the structural triples of the loaded ontology definitions.
+ * An opaque payload is never guessed at; it simply contributes nothing.
+ */
+export function readOntologyTriples(
+  definitions: ReadonlyArray<{ layer: string; id: string; payload: string }>,
+): OntologyTripleLike[] {
+  const triples: OntologyTripleLike[] = []
+  for (const definition of definitions) {
+    if (definition.layer !== 'ontology') continue
+    let value: unknown
+    try {
+      value = JSON.parse(definition.payload)
+    } catch {
+      continue
+    }
+    if (!value || typeof value !== 'object' || !('triples' in value)) continue
+    const rows = (value as { triples?: unknown }).triples
+    if (!Array.isArray(rows)) continue
+    for (const row of rows) {
+      if (!row || typeof row !== 'object') continue
+      const triple = row as Record<string, unknown>
+      if (
+        typeof triple.subject === 'string' &&
+        typeof triple.predicate === 'string' &&
+        typeof triple.object === 'string'
+      )
+        triples.push({
+          subject: triple.subject,
+          predicate: triple.predicate,
+          object: triple.object,
+        })
+    }
+  }
+  return triples
+}
 
 export function QueryWorkspacePage({ controller, modelDraft }: QueryWorkspacePageProps) {
   const state = useSyncExternalStore(
@@ -41,9 +86,11 @@ function WorkspaceDocument({
   const [builderError, setBuilderError] = useState('')
   const [historicalId, setHistoricalId] = useState('')
   const facts = state.read?.domain.state.facts ?? []
+  // Tombstoned facts (`object === null`) never contribute a class or a predicate.
+  const liveFacts = facts.filter((fact) => fact.object !== null && fact.object !== undefined)
   const classes = [
     ...new Set(
-      facts
+      liveFacts
         .filter(
           (fact) =>
             fact.predicate === rdfType && fact.object?.startsWith('<') && fact.object.endsWith('>'),
@@ -51,7 +98,11 @@ function WorkspaceDocument({
         .map((fact) => fact.object!.slice(1, -1)),
     ),
   ].sort()
-  const predicates = [...new Set(facts.map((fact) => fact.predicate))].sort()
+  const predicates = [...new Set(liveFacts.map((fact) => fact.predicate))].sort()
+  const ontologyTriples = useMemo(
+    () => readOntologyTriples(state.read?.domain.state.definitions ?? []),
+    [state.read],
+  )
   const definitions =
     state.read?.domain.state.definitions.filter((value) => value.layer === 'query') ?? []
   const change = (patch: Partial<QueryDraftDTO>) => {
@@ -78,6 +129,26 @@ function WorkspaceDocument({
       setBuilderError('')
     } catch {
       setBuilderError('请核对对象、返回属性和 RDF 条件。未生成或执行查询。')
+    }
+  }
+  // The template is only derived from the ontology that was really read, and
+  // only from attributes that really belong to the alarm class.
+  const templateResolution = resolveAlarmVocabulary({ liveFacts, ontologyTriples })
+  const templateVocabulary =
+    templateResolution.status === 'resolved' ? templateResolution.vocabulary : undefined
+  const loadAlarmTemplate = () => {
+    if (!templateVocabulary) return
+    try {
+      const template = alarmTemplate(templateVocabulary)
+      setVisual(template)
+      change({
+        sparql: compileVisual(template),
+        source: 'template',
+        name: '高危未闭环告警',
+      })
+      setBuilderError('')
+    } catch {
+      setBuilderError('无法生成告警模板；请核对当前本体中的类与属性。未生成或执行查询。')
     }
   }
   return (
@@ -192,6 +263,37 @@ function WorkspaceDocument({
       <div className="query-workspace-columns">
         <section aria-label="离线查询构建">
           <h2>模板与条件构建</h2>
+          <section data-testid="query-template-list" aria-label="常用问题模板">
+            <h3>常用问题模板</h3>
+            <ul>
+              <li>
+                <button
+                  type="button"
+                  data-testid="query-template-alarm"
+                  disabled={!templateVocabulary || replaceBlocked}
+                  onClick={loadAlarmTemplate}
+                >
+                  高危未闭环告警
+                </button>
+              </li>
+            </ul>
+            {templateVocabulary ? (
+              <p>
+                模板依据当前已读取的本体推导：类 <code>{templateVocabulary.alarmClass}</code>
+                ，等级属性 <code>{templateVocabulary.severity}</code>，状态属性{' '}
+                <code>{templateVocabulary.status}</code>。载入只写入工作草稿，不会自动执行。
+              </p>
+            ) : (
+              <>
+                <p>当前已读取的本体尚未提供可识别的告警类与等级／状态属性；不会填入示例词表。</p>
+                {templateResolution.status !== 'resolved' && (
+                  <p role="status" data-testid="query-template-alarm-reason">
+                    {templateResolution.reason}
+                  </p>
+                )}
+              </>
+            )}
+          </section>
           <label>
             选择对象
             <select
@@ -532,15 +634,23 @@ function WorkspaceDocument({
           </button>
           <h3>自然语言草稿</h3>
           <p>仅消费上游真实草稿；当前页面不调用模型，不把手写 SPARQL 计作模型验证。</p>
-          <button
-            disabled={!modelDraft || (state.dirty && !discardConfirmed)}
-            onClick={() => {
-              const parsed = draftSchema.safeParse(modelDraft)
-              if (parsed.success) controller.replaceDraft({ ...parsed.data, source: 'model' })
-            }}
-          >
-            将上游模型草稿放入编辑器（替换当前内容）
-          </button>
+          <div data-testid="query-model-draft">
+            <button
+              disabled={!modelDraft || (state.dirty && !discardConfirmed)}
+              onClick={() => {
+                const parsed = draftSchema.safeParse(modelDraft)
+                if (parsed.success) controller.replaceDraft({ ...parsed.data, source: 'model' })
+              }}
+            >
+              将上游模型草稿放入编辑器（替换当前内容）
+            </button>
+            {modelDraft && (
+              <p data-testid="query-model-draft-summary">
+                上游草稿：{modelDraft.name} · 来源 {modelDraft.source}
+                ；载入后仍需人工核对，未自动提交。
+              </p>
+            )}
+          </div>
         </section>
       </div>
       <p role="status" aria-live="polite">

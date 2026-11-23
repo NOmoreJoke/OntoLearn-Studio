@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import {
   safeError,
   reassembleChangeSetDocument,
@@ -12,14 +12,29 @@ import {
   type MainlineExampleCreateRequestDTO,
   type LibraryWorkspaceReport,
   type QualityFindingDTO,
+  type AgentDraftPlanDTO,
+  type AgentMode,
+  type QueryDraftDTO,
 } from '@ontolearn/contracts'
 import { explainError, jobStatus, resultSummary } from './task-presentation'
 import { TaskProgressBuffer } from './task-progress'
 import { QueryWorkspaceController, QueryWorkspacePage } from './query'
 import { OntologyMainlinePage } from './ontology/OntologyMainlinePage'
+import { ImportExportPanel } from './ontology/import-export-panel'
+import { DraftDiffPreview } from './ontology/draft-diff-preview'
 import { OntologySession } from './ontology/mainline-session'
 import { ontologyOperations } from './ontology/mainline-operations'
 import type { OntologyMainlineBridge } from './ontology/mainline-api'
+import { AgentPanel } from './agent/agent-panel'
+import {
+  agentContextStore,
+  bindAgentArtifact,
+  persistAgentMode,
+  readAgentModeMirror,
+  writeAgentModeMirror,
+  type SourcedAgentArtifact,
+} from './agent/agent-context-store'
+import { toAgentModule, type AgentAction } from './agent/context-actions'
 import { ProjectManagementController } from './project/management-controller'
 import { ProjectManagementPanel } from './project/ProjectManagementPanel'
 import { ProjectCheckpointRestorePanel } from './project/ProjectCheckpointRestorePanel'
@@ -40,6 +55,7 @@ import {
   type LearningFixtureTaskId,
 } from './learning/task-fixture'
 import { QualityWorkspace } from './quality/QualityWorkspace'
+import { ModelPanel } from './ModelPanel'
 
 type FixtureProposal = {
   taskId: LearningFixtureTaskId
@@ -164,6 +180,21 @@ export function App() {
   const selectedQueryLease = useRef<(() => void) | undefined>(undefined)
   const [workspaceModule, setWorkspaceModule] = useState<WorkspaceModule>('query')
   const selectedModule = useRef<WorkspaceModule>('query')
+  // 跨页共享的 Agent 上下文真值源：仅 UI 状态，不写入项目数据，也不发起 ChangeSet。
+  const agentContext = useSyncExternalStore(
+    agentContextStore.subscribe,
+    agentContextStore.getSnapshot,
+    agentContextStore.getSnapshot,
+  )
+  // 上游 Agent 产出的查询草稿与本体草稿计划；都需人工核对后才进入工作台。
+  // 两份产物都绑定产生它们的项目与世代：退役项目的产物不会进入新工作台。
+  const [agentQueryArtifact, setAgentQueryArtifact] =
+    useState<SourcedAgentArtifact<QueryDraftDTO>>()
+  const [agentDraftArtifact, setAgentDraftArtifact] =
+    useState<SourcedAgentArtifact<AgentDraftPlanDTO>>()
+  // 递增即要求助手面板重新读取模型就绪与隐私状态。
+  const [modelSyncVersion, setModelSyncVersion] = useState(0)
+  const agentModeMirror = useRef('')
   const documentNonce = useRef<string | undefined>(undefined)
   const contextSerial = useRef(0)
   const documentLeaving = useRef(false)
@@ -183,6 +214,18 @@ export function App() {
   >(undefined)
   const [result, setResult] = useState<HealthResult>()
   const [tasks, setTasks] = useState<TaskView>()
+  // The upstream artefacts are only delivered while they still belong to the
+  // selected project and the selected workspace generation.
+  const agentQueryDraft = bindAgentArtifact(
+    agentQueryArtifact,
+    tasks?.project?.projectId,
+    tasks?.generation,
+  )
+  const agentDraftPlan = bindAgentArtifact(
+    agentDraftArtifact,
+    tasks?.project?.projectId,
+    tasks?.generation,
+  )
   const [progress, setProgress] = useState<Record<string, ProgressView>>({})
   const [taskError, setTaskError] = useState<SafeError>()
   const [summaries, setSummaries] = useState<Record<string, string>>({})
@@ -198,6 +241,11 @@ export function App() {
     ontologyOwner.current = undefined
     previous?.session.retire()
     ontologyDirty.current = false
+    // A retired context keeps neither an object selection nor an upstream
+    // artefact: both belong to the project generation that just went away.
+    agentContextStore.setSelectedObjectIds([])
+    setAgentQueryArtifact(undefined)
+    setAgentDraftArtifact(undefined)
     workspaceNotify.current()
     setOntologyContext(undefined)
     setSessionDomainSnapshot(undefined)
@@ -331,6 +379,8 @@ export function App() {
     disconnectQuery()
     selectedModule.current = module
     setWorkspaceModule(module)
+    // The Agent context follows the active workspace (UI state only).
+    agentContextStore.setModule(toAgentModule(module))
     activateWorkspace()
   }
   const updateTasks = useCallback((value: TaskView) => {
@@ -681,6 +731,66 @@ export function App() {
     setQualityPending(pending)
     workspaceNotify.current()
   }, [])
+  const activeAgentOwner = useRef<{
+    projectId: string | undefined
+    generation: number | undefined
+  }>({
+    projectId: tasks?.project?.projectId,
+    generation: tasks?.generation,
+  })
+  useEffect(() => {
+    activeAgentOwner.current = {
+      projectId: tasks?.project?.projectId,
+      generation: tasks?.generation,
+    }
+  }, [tasks?.project?.projectId, tasks?.generation])
+  // 按 projectId 读取 localStorage 中的“仅 UI 披露偏好”镜像（FR-005）。
+  // 这里不写项目数据、不发起 ChangeSet；真实模式由宿主 setAgentMode 持久化。
+  useEffect(() => {
+    const projectId = tasks?.project?.projectId
+    if (!projectId) {
+      agentModeMirror.current = ''
+      return
+    }
+    const key = `ontolearn.agent.mode.${projectId}:${tasks?.generation ?? ''}`
+    if (agentModeMirror.current === key) return
+    agentModeMirror.current = key
+    const mode = readAgentModeMirror(projectId)
+    agentContextStore.setMode(mode)
+  }, [tasks?.project?.projectId, tasks?.generation])
+  const onAgentModeChange = useCallback(
+    async (mode: AgentMode) => {
+      const projectId = tasks?.project?.projectId
+      const generation = tasks?.generation
+      if (!projectId) {
+        setProjectNotice('尚未打开项目；助手模式未改变。')
+        throw new Error('NO_PROJECT')
+      }
+      const ownsCurrentProject = () =>
+        activeAgentOwner.current.projectId === projectId &&
+        activeAgentOwner.current.generation === generation
+      // The host is the only authority: the local mirror is only updated
+      // after the host really persisted the new mode.
+      const result = await persistAgentMode({
+        host: async (target, next) => {
+          const reply = await window.ontolearn?.setAgentMode({ projectId: target, mode: next })
+          if (!reply) return { ok: false as const, code: 'AGENT_MODE_UNAVAILABLE' }
+          return reply.ok ? { ok: true as const } : { ok: false as const, code: reply.error.code }
+        },
+        projectId,
+        mode,
+        apply: (next) => {
+          writeAgentModeMirror(projectId, next)
+          if (ownsCurrentProject()) agentContextStore.setMode(next)
+        },
+      })
+      if (!result.ok) {
+        if (ownsCurrentProject()) setProjectNotice(`助手模式未改变（${result.code}）。`)
+        throw new Error(result.code)
+      }
+    },
+    [tasks?.project?.projectId, tasks?.generation],
+  )
   const onOntologyDirty = useCallback((dirty: boolean) => {
     ontologyDirty.current = dirty
     workspaceNotify.current()
@@ -1209,6 +1319,20 @@ export function App() {
         ?.scrollIntoView({ block: 'start', behavior: 'auto' })
     })
   }
+  /** Offline Agent actions really run through the learning controller. */
+  async function runAgentLocalAction(action: AgentAction) {
+    setMentorOpen(true)
+    if (!learningCtl) return
+    if (action === 'hint') await learningCtl.requestHint()
+    else if (action === 'demonstrate') await learningCtl.requestDemonstration()
+    else if (action === 'check') await learningCtl.checkTask()
+  }
+  /** After a real Agent draft commit the project must be re-read. */
+  async function refreshAfterAgentCommit() {
+    await restore()
+    const projectId = tasks?.project?.projectId
+    if (projectId) await learningCtl?.selectAndRefresh(projectId)
+  }
   function continueLearningTask() {
     const snapshot = learningCtl?.getSnapshot()
     const states = snapshot?.learning?.tasks
@@ -1263,6 +1387,7 @@ export function App() {
           <a href="#learning-center" data-testid="nav-learning-center">
             学习中心 <span>↗</span>
           </a>
+          <a href="#model-settings">模型设置</a>
           <a href="#modules">
             模块规划 <span>06</span>
           </a>
@@ -1638,7 +1763,7 @@ export function App() {
                 tasks?.project?.projectId === queryController.projectId &&
                 !connection && (
                   <section id="query-workspace" aria-label="当前项目查询">
-                    <QueryWorkspacePage controller={queryController} />
+                    <QueryWorkspacePage controller={queryController} modelDraft={agentQueryDraft} />
                   </section>
                 )}
               {workspaceModule === 'ontology' &&
@@ -1652,6 +1777,26 @@ export function App() {
                       session={ontologyContext.session}
                       contextKey={ontologyContext.contextKey}
                       onDirtyChange={onOntologyDirty}
+                      onSelectedObjectChange={(ids) => agentContextStore.setSelectedObjectIds(ids)}
+                      extras={
+                        <>
+                          <ImportExportPanel
+                            key={`${tasks.project?.projectId ?? ''}:${tasks.project?.projectRevision ?? ''}`}
+                            projectId={tasks.project?.projectId ?? null}
+                            projectRevision={tasks.project?.projectRevision ?? null}
+                            onImported={() => void refreshAfterAgentCommit()}
+                            onError={(message) => setProjectNotice(message)}
+                          />
+                          <DraftDiffPreview
+                            key={`${tasks.project?.projectId ?? ''}:${tasks.generation}:${agentDraftPlan?.operationId ?? ''}`}
+                            plan={agentDraftPlan}
+                            projectId={tasks.project?.projectId ?? null}
+                            label="Agent 本体草稿"
+                            onCommitted={() => void refreshAfterAgentCommit()}
+                            onError={(message) => setProjectNotice(message)}
+                          />
+                        </>
+                      }
                     />
                   </section>
                 )}
@@ -1823,6 +1968,35 @@ export function App() {
                 refreshCheckpoints={() => checkpointCtl?.refreshWhenIdle() ?? Promise.resolve()}
               />
             )}
+            {tasks?.project && (
+              <AgentPanel
+                key={`${tasks.project.projectId}:${tasks.generation}`}
+                projectId={tasks.project.projectId}
+                projectRevision={tasks.project.projectRevision}
+                inputSnapshotId={tasks.project.inputSnapshotId}
+                module={agentContext.module}
+                mode={agentContext.mode}
+                selectedObjectIds={agentContext.selectedObjectIds}
+                localActions={learningCtl ? ['hint', 'check', 'demonstrate'] : []}
+                modelSyncVersion={modelSyncVersion}
+                onModeChange={(mode) => onAgentModeChange(mode)}
+                onQueryDraft={(draft) =>
+                  setAgentQueryArtifact({
+                    projectId: tasks.project?.projectId ?? '',
+                    generation: tasks.generation,
+                    value: draft,
+                  })
+                }
+                onDraftPlan={(plan) =>
+                  setAgentDraftArtifact({
+                    projectId: tasks.project?.projectId ?? '',
+                    generation: tasks.generation,
+                    value: plan,
+                  })
+                }
+                onLocalAction={(action) => runAgentLocalAction(action)}
+              />
+            )}
           </div>
         </div>
         {taskError && !connection && <ErrorDetails error={taskError} context="task" />}
@@ -1844,6 +2018,12 @@ export function App() {
             ))}
           </div>
         </section>
+        <ModelPanel
+          key={activeProjectId ?? 'no-project'}
+          jobs={tasks?.jobs ?? []}
+          projectId={activeProjectId ?? null}
+          onAgentModelChanged={() => setModelSyncVersion((value) => value + 1)}
+        />
         <footer>
           需求基准 PRD V0.6
           <span>本地项目管理、本体编辑与查询逐项接入；完整项目导出及其余模块以验收范围为准。</span>

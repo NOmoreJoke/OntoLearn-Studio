@@ -40,6 +40,8 @@ export type OntologyPageProps = {
   factsManagedExternally?: boolean
   onDraftChange?: () => void
   onDirtyChange?: (dirty: boolean) => void
+  /** Reports the current object selection (in selection order) to the host. */
+  onSelectedObjectChange?: (ids: string[]) => void
 }
 const blank = (): ObjectRow => ({
   iri: '',
@@ -82,6 +84,7 @@ function Editor({
   factsManagedExternally = false,
   onDraftChange,
   onDirtyChange,
+  onSelectedObjectChange,
 }: OntologyPageProps) {
   const canPreview = !!previewEdit || !!previewManagedEdit
   const [tab, setTab] = useState<'table' | 'tree' | 'graph'>('table')
@@ -99,9 +102,22 @@ function Editor({
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(0)
   const request = useRef(0)
+  // The host callback identity may change on every render; the ref keeps the
+  // selection notification effect stable.
+  const selectionNotify = useRef(onSelectedObjectChange)
+  useEffect(() => {
+    selectionNotify.current = onSelectedObjectChange
+  })
+  useEffect(() => {
+    // A new project starts without a selected object.
+    selectionNotify.current?.([])
+  }, [view.project])
   useEffect(
     () => () => {
       request.current++
+      // A retired ontology context must not keep an object selection alive in
+      // the shared Agent context of the next project or generation.
+      selectionNotify.current?.([])
     },
     [],
   )
@@ -139,6 +155,7 @@ function Editor({
     invalidateDraft()
     setPending(false)
     setSelected(row.iri)
+    selectionNotify.current?.([row.iri])
     // Selection deliberately does not replace an unsaved form draft.
     setImpact(undefined)
     setPreview(undefined)
@@ -209,6 +226,10 @@ function Editor({
             setEditing(false)
             setPreview(undefined)
             setError('')
+            // Resetting the editor clears the object selection as well, so the
+            // host never keeps a stale selection for the Agent context.
+            setSelected('')
+            selectionNotify.current?.([])
           }}
         >
           新建概念
@@ -224,7 +245,12 @@ function Editor({
         <section aria-label="对象浏览">
           <nav aria-label="本体视图">
             {(['table', 'tree', 'graph'] as const).map((value) => (
-              <button key={value} aria-pressed={tab === value} onClick={() => setTab(value)}>
+              <button
+                key={value}
+                data-testid={`ontology-view-${value}`}
+                aria-pressed={tab === value}
+                onClick={() => setTab(value)}
+              >
                 {{ table: '表格', tree: '类树', graph: '局部关系图' }[value]}
               </button>
             ))}
@@ -294,7 +320,7 @@ function Editor({
             </ul>
           )}
           {tab === 'graph' && graph && (
-            <div className="ontology-local-graph">
+            <div className="ontology-local-graph" data-testid="ontology-local-graph">
               <p>
                 仅展示当前对象的一跳关系。
                 {graph.truncated ? `显示前 12 条，共 ${graph.total} 条。` : ''}

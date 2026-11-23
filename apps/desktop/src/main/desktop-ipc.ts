@@ -2,7 +2,12 @@ import type { IpcMain, IpcMainInvokeEvent } from 'electron'
 import { randomUUID } from 'node:crypto'
 import {
   mainlineDeliveryAckSchema,
+  modelGatewayError,
+  modelInvalidRequestError,
+  type ModelMethod,
   safeError,
+  type AgentBridge,
+  type AgentIpcMap,
   type DesktopIpcChannel,
   type DesktopIpcHandlers,
   type DesktopIpcMap,
@@ -12,6 +17,10 @@ import {
 import type { EngineSupervisor, MainlineReplyReceiver, MainlineReplyReceipt } from './engine'
 import type { TaskService } from './task-service'
 import type { LibraryLocationService } from './library-location-service'
+import { validateModelParams } from '@ontolearn/contracts/v2'
+import { registerAgentIpc } from './agent/agent-ipc'
+import type { AgentHostComposition } from './agent/host-composition'
+import { unavailableModelStatus, type ModelGatewayService } from './model-gateway/model-service'
 
 export type DesktopIpcDependencies = {
   ipcMain: Pick<IpcMain, 'handle'>
@@ -37,6 +46,11 @@ export type DesktopIpcDependencies = {
   }
   replies?: MainlineReplyReceiver
   library?: LibraryLocationService
+  getAgent?: () =>
+    | (AgentBridge &
+        Partial<Pick<AgentHostComposition, 'observeDraftPreview' | 'observeDraftConfirmation'>>)
+    | undefined
+  getModels?: () => Pick<ModelGatewayService, 'handle'> | undefined
 }
 
 /** Register the production named routes. Trust is checked before any downstream call. */
@@ -48,6 +62,8 @@ export function registerDesktopIpc({
   projects,
   replies,
   library,
+  getModels,
+  getAgent,
 }: DesktopIpcDependencies): void {
   const permission = () => ({
     ok: false as const,
@@ -58,7 +74,44 @@ export function registerDesktopIpc({
       retryable: false,
     }),
   })
-  const handlers: DesktopIpcHandlers = {
+  const modelRoutes: Record<string, ModelMethod> = {
+    'model:status': 'getModelAccessStatus',
+    'model:configure': 'configureModel',
+    'model:credential': 'storeModelCredential',
+    'model:privacy': 'setModelPrivacy',
+    'model:select-results': 'selectModelResults',
+    'model:field-catalog': 'getModelFieldCatalog',
+    'model:select-fields': 'selectModelFields',
+    'model:preview': 'previewModelExplanation',
+    'model:confirm': 'confirmModelAuthorization',
+    'model:start': 'startModelExplanation',
+    'model:outcome': 'getModelExplanationOutcome',
+    'model:cancel': 'cancelModelExplanation',
+  }
+  for (const [channel, method] of Object.entries(modelRoutes))
+    ipcMain.handle(channel, (event, argument) => {
+      if (!trusted(event) || library?.switching) return permission()
+      if (!validateModelParams(method, argument))
+        return { ok: false, error: modelInvalidRequestError() }
+      const models = getModels?.()
+      if (models) return models.handle(method, argument)
+      return method === 'getModelAccessStatus' && !('auditContextId' in argument)
+        ? { ok: true, data: unavailableModelStatus() }
+        : { ok: false, error: modelGatewayError('MODEL_UNAVAILABLE') }
+    })
+  registerAgentIpc({
+    ipcMain,
+    trusted,
+    getAgent,
+    switching: () => !!library?.switching,
+    blocked: () => !!(projects?.managementBlocked || projects?.restoreBlocked),
+  })
+
+  const handlers: Omit<DesktopIpcHandlers, keyof AgentIpcMap> = {
+    'project:ontology-export': () =>
+      projects?.exportProjectOntology({}) ?? Promise.resolve(permission()),
+    'project:ontology-import-check': (args) =>
+      projects?.checkProjectOntologyImport(args) ?? Promise.resolve(permission()),
     'project:checkpoint-list': (args) =>
       projects?.listProjectCheckpoints(args) ?? Promise.resolve(permission()),
     'project:checkpoint-create': (args) =>
@@ -121,12 +174,20 @@ export function registerDesktopIpc({
     'project:read': (args) => projects?.readProject(args) ?? Promise.resolve(permission()),
     'project:ownership-detail': (args) =>
       projects?.getOwnershipConflictDetailPage(args) ?? Promise.resolve(permission()),
-    'project:changeset-preview': (args) =>
-      projects?.previewProjectChangeset(args) ?? Promise.resolve(permission()),
+    'project:changeset-preview': async (args) => {
+      const agent = getAgent?.()
+      const result = await (projects?.previewProjectChangeset(args) ?? permission())
+      if (result.ok && getAgent?.() === agent) agent?.observeDraftPreview?.(args, result.data)
+      return result
+    },
     'project:changeset-diff-page': (args) =>
       projects?.getProjectDiffPage(args) ?? Promise.resolve(permission()),
-    'project:changeset-confirm': (args) =>
-      projects?.confirmProjectChangeset(args) ?? Promise.resolve(permission()),
+    'project:changeset-confirm': async (args) => {
+      const agent = getAgent?.()
+      const result = await (projects?.confirmProjectChangeset(args) ?? permission())
+      if (result.ok && getAgent?.() === agent) agent?.observeDraftConfirmation?.(result.data)
+      return result
+    },
     'project:changeset-commit': (args) =>
       projects?.commitProjectChangeSet(args) ?? Promise.resolve(permission()),
     'query:definition-base': () =>
@@ -295,7 +356,14 @@ export function registerDesktopIpc({
       // its same limit includes concurrent calls and UNKNOWN receipts.
       let delivery: Awaited<ReturnType<MainlineReplyReceiver['receive']>>
       try {
-        delivery = await replies.receive(() => handler(...args))
+        delivery = await replies.receive(async () => {
+          if (
+            (channel === 'project:ontology-export' && args.length !== 0) ||
+            (channel === 'project:ontology-import-check' && args.length !== 1)
+          )
+            return { ok: false as const, error: modelInvalidRequestError() }
+          return handler(...args)
+        })
       } catch {
         return permission()
       } // Issuer retains unknown; no raw exception crosses IPC.
@@ -310,6 +378,8 @@ export function registerDesktopIpc({
     })
   }
   register('engine:health', handlers['engine:health'])
+  register('project:ontology-export', handlers['project:ontology-export'])
+  register('project:ontology-import-check', handlers['project:ontology-import-check'])
   register('project:checkpoint-list', handlers['project:checkpoint-list'])
   register('project:checkpoint-create', handlers['project:checkpoint-create'])
   register('project:restore-pending', handlers['project:restore-pending'])

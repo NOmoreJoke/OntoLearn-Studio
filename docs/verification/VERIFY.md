@@ -37,12 +37,18 @@ npm run package:dir
 
 自检与送审前，依据 `git diff --name-only <base>...HEAD` 命中以下路径时必须跑通对应检查：
 
-| Diff 触碰路径 / 特征                                                              | 必触发专项检查                                                                                     | 关联历史事故 / PR                              |
-| :-------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :--------------------------------------------- |
-| `apps/desktop/src/main/**`、原生崩溃恢复、`electron-builder.yml`                  | 核对包内 `require('electron')` 主进程就绪时序，跑 Linux/macOS 包内原生恢复探针                     | Q3 / CI70 / CI71 原生恢复时序故障              |
-| `scripts/review-level*`、`tests/unit/review-level*`、`.github/review-policy.json` | 在**空 diff、分离 HEAD 与隔离 `GIT_*` 环境变量**下跑单测，并比对 `origin/develop` 可信基线脚本输出 | Wave 0 (`G0`) PR #25 → PR #26 空 diff 测试失败 |
-| `packages/engine/src/ontolearn_engine/storage.py`、项目开库/切换生命周期          | 检查旧预览异步回调复活（stale preview resurrection）、开库 ABA 竞态与退出屏障                      | Wave 1a (`B1a`) 内部独审 ABA / 旧预览复活      |
-| `apps/desktop/src/preload/**`、`apps/desktop/src/csp.ts`                          | 核对命名桥 `PERMISSION_DENIED` 拒绝边界与生产 meta / 开发 header 零 `unsafe-inline`/`unsafe-eval`  | I02 / B1a E2E 桥接与 CSP 门禁                  |
+| Diff 触碰路径 / 特征                                                              | 必触发专项检查                                                                                                                                                                                                                | 关联历史事故 / PR                              |
+| :-------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------- |
+| `apps/desktop/src/main/**`、原生崩溃恢复、`electron-builder.yml`                  | 核对包内 `require('electron')` 主进程就绪时序，跑 Linux/macOS 包内原生恢复探针                                                                                                                                                | Q3 / CI70 / CI71 原生恢复时序故障              |
+| `scripts/review-level*`、`tests/unit/review-level*`、`.github/review-policy.json` | 在**空 diff、分离 HEAD 与隔离 `GIT_*` 环境变量**下跑单测，并比对 `origin/develop` 可信基线脚本输出                                                                                                                            | Wave 0 (`G0`) PR #25 → PR #26 空 diff 测试失败 |
+| `packages/engine/src/ontolearn_engine/storage.py`、项目开库/切换生命周期          | 检查旧预览异步回调复活（stale preview resurrection）、开库 ABA 竞态与退出屏障                                                                                                                                                 | Wave 1a (`B1a`) 内部独审 ABA / 旧预览复活      |
+| `apps/desktop/src/preload/**`、`apps/desktop/src/csp.ts`                          | 核对命名桥 `PERMISSION_DENIED` 拒绝边界与生产 meta / 开发 header 零 `unsafe-inline`/`unsafe-eval`                                                                                                                             | I02 / B1a E2E 桥接与 CSP 门禁                  |
+| `apps/desktop/src/main/model-gateway/**`                                          | `npx vitest run tests/unit/w3b-pre-encoded-body.test.ts tests/unit/w3b-cross-slice-before-commit-and-loopback.test.ts`；核对核准字节、越界及 local 零外发、审计和凭据隔离；总控运行 W3b 包内第二例                            | W3b S2-2 网关与授权接线                        |
+| `apps/desktop/src/main/agent/**`                                                  | `npx vitest run tests/unit/w3b-agent-host-composition.test.ts tests/unit/w3b-agent-ipc.test.ts tests/unit/w3b-cross-slice-before-commit-and-loopback.test.ts`；核对旧回合撤销与正式提交前检查点；总控运行 W3b 可见 E2E 两例   | W3b S2-2/3 会话、工具端口及检查点              |
+| `packages/engine/src/ontolearn_engine/project/ontology_{turtle,import}.py`        | `uv run --frozen python -m pytest packages/engine/tests/test_ontology_turtle.py packages/engine/tests/test_ontology_import_rejection.py`；总控运行 W3b 可见 E2E 第一例，核对拒绝零写入、完整 Diff 与导出往返                  | W3b S2-3 Turtle 能力边界与往返                 |
+| `packages/engine/src/ontolearn_engine/project/learning_agent.py`                  | `uv run --frozen python -m pytest packages/engine/tests/test_agent_before_commit.py packages/engine/tests/test_w3a_quality_b3.py`；核对完整代做仅随关联 ChangeSet 提交落账、未指定尝试保持 independent 及 SQLite 重开持久一致 | W3b R2 B05 完整代做提前落账与波及无关尝试      |
+
+W3b 可见桌面验证由总控在已获 Desktop Focus Mutex 的桌面运行 `npm run test:e2e -- tests/e2e/w3b-agent-and-b2.spec.ts`。打包后运行 `python3 scripts/run-w3b-packaged-agent.py <release> <output>`；Linux 在专用显示环境设置 `B1A_NATIVE_ISOLATED=1`。核对 `launch.json`、`summary.json` 中恰好两项通过与归属进程清理结果。
 
 ## 4. 运行与提交铁律
 

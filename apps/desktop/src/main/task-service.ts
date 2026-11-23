@@ -194,7 +194,10 @@ export class TaskService {
   private disconnectedSession: string | undefined
   private disposed = false
   private sink: ((value: TaskUpdate) => void) | undefined
-  constructor(private engine: TaskEngine) {
+  constructor(
+    private engine: TaskEngine,
+    private readonly onProjectChanged?: (projectId: string | null) => void,
+  ) {
     this.#supervisor = EngineSupervisor.owns(engine) ? engine : undefined
     this.lastReadySession = engine.engineSessionId
     this.release = engine.onNotification((value) => this.receive(value))
@@ -229,6 +232,11 @@ export class TaskService {
     this.lastProject = null
     this.remembered = new Set(jobs)
     this.connection = 'ready'
+    this.onProjectChanged?.(projectId)
+  }
+  // Main owns project identity independently of renderer and task view generation.
+  projectContext(): string | null {
+    return this.disposed ? null : this.projectId
   }
   /** Main-only selection fence; never cancels a durable accepted Job. */
   clearProject(): void {
@@ -239,6 +247,7 @@ export class TaskService {
     this.lastProject = null
     this.remembered.clear()
     this.connection = 'ready'
+    this.onProjectChanged?.(null)
     this.notifyProject()
     try {
       previousSink?.({
@@ -321,6 +330,7 @@ export class TaskService {
     this.release()
     this.releaseConnection()
     this.projectObservers.clear()
+    this.onProjectChanged?.(null)
   }
   private connectionChanged(event: EngineConnectionState): void {
     if (this.#supervisor && event.state === 'disconnected') {

@@ -2,7 +2,13 @@ import { createHash } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
 import { setTimeout as delay } from 'node:timers/promises'
 import {
+  ontologyTurtleImportCheckArgsSchema,
   safeError,
+  type AgentBeforeCommitArgs,
+  type AgentBeforeCommitResultDTO,
+  type OntologyTurtleExportResultDTO,
+  type OntologyTurtleImportCheckArgs,
+  type OntologyTurtleImportCheckResultDTO,
   safeDisplayError,
   type BridgeResult,
   type ProjectView,
@@ -537,7 +543,46 @@ export class ProjectMainlineService implements MainlineProjectBridge {
       throw invalid()
     return value as T
   }
-  #qualitySelection(
+  async #selectedProjectRequest<T>(
+    method:
+      'project.ontology.export' | 'project.ontology.import.check' | 'project.agent.before_commit',
+    args: RecordValue,
+  ): Promise<T> {
+    const current = this.#current()
+    const client = this.#client()
+    const projectId = current.project.projectId
+    const guard = this.#selectedProjectGuard(current, client)
+    if (!guard() || ('projectId' in args && args.projectId !== projectId)) throw denied()
+    const params = { ...args, projectId }
+    if (!validateBusiness3('params_' + method, params)) throw invalid()
+    const value = await this.#call<T>(client, method, params)
+    if (!guard()) throw denied()
+    if (!validateBusiness3('result_' + method, value)) throw invalid()
+    return value
+  }
+  exportProjectOntology(): Promise<BridgeResult<OntologyTurtleExportResultDTO>> {
+    return this.#run(() => this.#selectedProjectRequest('project.ontology.export', {}))
+  }
+  checkProjectOntologyImport(
+    args: OntologyTurtleImportCheckArgs,
+  ): Promise<BridgeResult<OntologyTurtleImportCheckResultDTO>> {
+    return this.#run(() => {
+      const parsed = ontologyTurtleImportCheckArgsSchema.safeParse(args)
+      if (!parsed.success) throw invalid()
+      const { baseUri, turtleText, format = 'turtle' } = parsed.data
+      return this.#selectedProjectRequest('project.ontology.import.check', {
+        baseUri,
+        turtleText,
+        format,
+      })
+    })
+  }
+  recordAgentBeforeCommit(
+    args: AgentBeforeCommitArgs,
+  ): Promise<BridgeResult<AgentBeforeCommitResultDTO>> {
+    return this.#run(() => this.#selectedProjectRequest('project.agent.before_commit', args))
+  }
+  #selectedProjectGuard(
     current: NonNullable<OrdinaryCurrent>,
     client: MainlineProjectTransport,
   ): () => boolean {
@@ -582,7 +627,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
         'project.quality.read',
         args,
         current,
-        this.#qualitySelection(current, client),
+        this.#selectedProjectGuard(current, client),
         (method, params) => this.#call(client, method as QualityMethod, params),
       )
     })
@@ -597,7 +642,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
         'project.quality.prepare',
         qualityParams(args),
         current,
-        this.#qualitySelection(current, client),
+        this.#selectedProjectGuard(current, client),
         (method, params) => this.#call(client, method as QualityMethod, params),
       )
     })
@@ -660,7 +705,7 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     return this.#run(async () => {
       const current = this.#current()
       const client = this.#client()
-      const guard = this.#qualitySelection(current, client)
+      const guard = this.#selectedProjectGuard(current, client)
       if (!guard() || args.projectId !== current.project.projectId) throw denied()
       const budget = this.supervisor.queryReadBudget(current.owner)
       const finish = budget.beginConsumerRequest()

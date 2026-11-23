@@ -145,6 +145,215 @@ export function alarmTemplate(vocabulary: {
   })
 }
 
+/**
+ * Resolve the alarm vocabulary from the *actually read* ontology classes and
+ * predicates. Nothing is invented: when the current project does not expose a
+ * recognisable alarm class together with a severity and a status attribute,
+ * no template is offered at all.
+ *
+ * A slot is only accepted when exactly one candidate matches; an ambiguous
+ * slot never falls back to "the first regular expression hit".
+ */
+export function alarmVocabulary(
+  classes: readonly string[],
+  predicates: readonly string[],
+): { alarmClass: string; severity: string; status: string } | undefined {
+  const alarmClasses = classes.filter((iri) => /alarm|alert|告警/i.test(iri))
+  if (alarmClasses.length !== 1) return undefined
+  const severity = predicates.filter((iri) => /severity|level|grade|等级|严重/i.test(iri))
+  const status = predicates.filter((iri) => /status|state|状态/i.test(iri))
+  if (severity.length !== 1 || status.length !== 1) return undefined
+  if (severity[0] === status[0]) return undefined
+  return { alarmClass: alarmClasses[0]!, severity: severity[0]!, status: status[0]! }
+}
+
+/* --------------------------------------------------------------------------
+ * Strict alarm vocabulary resolution (B10).
+ *
+ * The template must only ever bind attributes that really belong to the alarm
+ * class. A predicate that only occurs on an unrelated entity, or that only
+ * survives as a tombstone, must never be attached to the alarm template.
+ * ----------------------------------------------------------------------- */
+
+export type LiveFactLike = { subject: string; predicate: string; object: string | null }
+export type OntologyTripleLike = { subject: string; predicate: string; object: string }
+
+export type AlarmVocabulary = { alarmClass: string; severity: string; status: string }
+
+export type AlarmVocabularyResolution =
+  | { status: 'resolved'; vocabulary: AlarmVocabulary }
+  | { status: 'missing'; reason: string }
+  | { status: 'ambiguous'; reason: string; candidates: string[] }
+
+export const RDF_TYPE_IRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+export const RDFS_DOMAIN_IRI = 'http://www.w3.org/2000/01/rdf-schema#domain'
+export const RDFS_SUBCLASS_OF_IRI = 'http://www.w3.org/2000/01/rdf-schema#subClassOf'
+export const OWL_CLASS_IRI = 'http://www.w3.org/2002/07/owl#Class'
+export const RDFS_CLASS_IRI = 'http://www.w3.org/2000/01/rdf-schema#Class'
+
+const ALARM_CLASS_PATTERN = /alarm|alert|告警/i
+const SEVERITY_PATTERN = /severity|level|grade|等级|严重/i
+const STATUS_PATTERN = /status|state|状态/i
+
+/** Read an IRI out of an N3-ish term (`<iri>`); literals and blanks are not IRIs. */
+export function iriTerm(object: string | null | undefined): string | undefined {
+  if (typeof object !== 'string') return undefined
+  const trimmed = object.trim()
+  if (!trimmed.startsWith('<') || !trimmed.endsWith('>') || trimmed.length < 3) return undefined
+  return trimmed.slice(1, -1)
+}
+
+/** Every ancestor class of `iri` through `rdfs:subClassOf` (the class itself excluded). */
+export function ontologyAncestors(
+  iri: string,
+  parents: ReadonlyMap<string, ReadonlySet<string>>,
+): Set<string> {
+  const seen = new Set<string>()
+  const queue = [...(parents.get(iri) ?? [])]
+  while (queue.length) {
+    const next = queue.shift()!
+    if (seen.has(next) || next === iri) continue
+    seen.add(next)
+    for (const parent of parents.get(next) ?? []) queue.push(parent)
+  }
+  return seen
+}
+
+/** Every descendant class of `iri` through `rdfs:subClassOf` (the class itself excluded). */
+export function ontologyDescendants(
+  iri: string,
+  children: ReadonlyMap<string, ReadonlySet<string>>,
+): Set<string> {
+  const seen = new Set<string>()
+  const queue = [...(children.get(iri) ?? [])]
+  while (queue.length) {
+    const next = queue.shift()!
+    if (seen.has(next) || next === iri) continue
+    seen.add(next)
+    for (const child of children.get(next) ?? []) queue.push(child)
+  }
+  return seen
+}
+
+/**
+ * Resolve the alarm vocabulary from the really read project state.
+ *
+ * - Tombstoned facts (`object === null`) never contribute a class or a predicate.
+ * - Only predicates that are *really* associated with the alarm class count:
+ *   either declared through `rdfs:domain`, or observed on a live instance of
+ *   the alarm class (or of one of its subclasses).
+ * - A missing or ambiguous slot refuses the template and explains why.
+ */
+export function resolveAlarmVocabulary(input: {
+  liveFacts: readonly LiveFactLike[]
+  ontologyTriples: readonly OntologyTripleLike[]
+}): AlarmVocabularyResolution {
+  const live = input.liveFacts.filter((fact) => fact.object !== null && fact.object !== undefined)
+  const instanceTypes = new Map<string, Set<string>>()
+  for (const fact of live) {
+    if (fact.predicate !== RDF_TYPE_IRI) continue
+    const type = iriTerm(fact.object)
+    if (!type) continue
+    const types = instanceTypes.get(fact.subject) ?? new Set<string>()
+    types.add(type)
+    instanceTypes.set(fact.subject, types)
+  }
+  const declaredClasses = new Set<string>()
+  const parents = new Map<string, Set<string>>()
+  const children = new Map<string, Set<string>>()
+  const domainPredicates = new Map<string, Set<string>>()
+  for (const triple of input.ontologyTriples) {
+    if (triple.predicate === RDF_TYPE_IRI) {
+      const type = iriTerm(triple.object)
+      if (type === OWL_CLASS_IRI || type === RDFS_CLASS_IRI) declaredClasses.add(triple.subject)
+      continue
+    }
+    const object = iriTerm(triple.object)
+    if (!object) continue
+    if (triple.predicate === RDFS_SUBCLASS_OF_IRI) {
+      const set = parents.get(triple.subject) ?? new Set<string>()
+      set.add(object)
+      parents.set(triple.subject, set)
+      const kids = children.get(object) ?? new Set<string>()
+      kids.add(triple.subject)
+      children.set(object, kids)
+    }
+  }
+  // `rdfs:domain` points at the *class*; the attribute is the subject.
+  for (const triple of input.ontologyTriples) {
+    if (triple.predicate !== RDFS_DOMAIN_IRI) continue
+    const object = iriTerm(triple.object)
+    if (!object) continue
+    const set = domainPredicates.get(object) ?? new Set<string>()
+    set.add(triple.subject)
+    domainPredicates.set(object, set)
+  }
+  const alarmCandidates = [
+    ...new Set([...[...instanceTypes.values()].flatMap((types) => [...types]), ...declaredClasses]),
+  ]
+    .filter((iri) => ALARM_CLASS_PATTERN.test(iri))
+    .sort()
+  if (alarmCandidates.length === 0)
+    return {
+      status: 'missing',
+      reason: '当前已读取的本体没有可识别的告警类；不会填入示例词表。',
+    }
+  if (alarmCandidates.length > 1)
+    return {
+      status: 'ambiguous',
+      reason: `当前已读取的本体存在多个告警类候选（${alarmCandidates.join('、')}）；请先明确唯一告警类。`,
+      candidates: alarmCandidates,
+    }
+  const alarmClass = alarmCandidates[0]!
+  const ancestors = ontologyAncestors(alarmClass, parents)
+  const descendants = ontologyDescendants(alarmClass, children)
+  const associated = new Set<string>()
+  for (const iri of [alarmClass, ...ancestors])
+    for (const predicate of domainPredicates.get(iri) ?? []) associated.add(predicate)
+  for (const [subject, types] of instanceTypes) {
+    const isAlarm = types.has(alarmClass) || [...types].some((type) => descendants.has(type))
+    if (!isAlarm) continue
+    for (const fact of live)
+      if (fact.subject === subject && fact.predicate !== RDF_TYPE_IRI)
+        associated.add(fact.predicate)
+  }
+  associated.delete(RDF_TYPE_IRI)
+  const severity = [...associated].filter((iri) => SEVERITY_PATTERN.test(iri)).sort()
+  const status = [...associated].filter((iri) => STATUS_PATTERN.test(iri)).sort()
+  if (severity.length === 0)
+    return {
+      status: 'missing',
+      reason: '当前已读取的本体没有与告警类真实关联的等级属性；不会填入示例词表。',
+    }
+  if (severity.length > 1)
+    return {
+      status: 'ambiguous',
+      reason: `告警类关联了多个等级属性（${severity.join('、')}）；请先明确唯一等级属性。`,
+      candidates: severity,
+    }
+  if (status.length === 0)
+    return {
+      status: 'missing',
+      reason: '当前已读取的本体没有与告警类真实关联的状态属性；不会填入示例词表。',
+    }
+  if (status.length > 1)
+    return {
+      status: 'ambiguous',
+      reason: `告警类关联了多个状态属性（${status.join('、')}）；请先明确唯一状态属性。`,
+      candidates: status,
+    }
+  if (severity[0] === status[0])
+    return {
+      status: 'ambiguous',
+      reason: '告警类的等级属性与状态属性解析到同一项；请先明确区分两者。',
+      candidates: severity,
+    }
+  return {
+    status: 'resolved',
+    vocabulary: { alarmClass, severity: severity[0]!, status: status[0]! },
+  }
+}
+
 export const emptyDirections = [
   '检查所选数据范围；断言事实不包含尚未推导的事实。',
   '检查过期标识；明确选择当前输入或历史快照后重新执行。',

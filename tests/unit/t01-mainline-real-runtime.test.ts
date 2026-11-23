@@ -29,6 +29,8 @@ import {
   getEngineEnvironment,
 } from '../../apps/desktop/src/main/engine'
 import { TaskService } from '../../apps/desktop/src/main/task-service'
+import { StoredResultSource } from '../../apps/desktop/src/main/model-gateway/stored-result-source'
+import { v2Registry } from '@ontolearn/contracts/v2'
 import { ProjectMainlineService } from '../../apps/desktop/src/main/project-mainline-service'
 import {
   registerDesktopIpc,
@@ -99,6 +101,26 @@ it('actual preload/named IPC/service/stdio exposes four complete ownership famil
   try {
     await import('../../apps/desktop/src/preload/index')
     const api = bridge!
+    const modelChannels = [...handlers].filter(([name]) => name.startsWith('model:'))
+    expect(modelChannels).toHaveLength(v2Registry.mainRuntime.length)
+    const modelMethods = v2Registry.mainRuntime
+    for (const method of modelMethods) {
+      expect(typeof api[method as keyof DesktopBridge]).toBe('function')
+      await expect(value.supervisor.request(method, {})).rejects.toMatchObject({
+        error: { code: 'INVALID_STATE' },
+      })
+    }
+    const outside = { sender: event.sender, senderFrame: {} } as IpcMainInvokeEvent
+    for (const [, invoke] of modelChannels) {
+      expect(await invoke(outside, { arbitrary: 'untrusted' })).toMatchObject({
+        ok: false,
+        error: { code: 'PERMISSION_DENIED' },
+      })
+    }
+    expect(await api.getModelAccessStatus({})).toMatchObject({
+      ok: true,
+      data: { availability: 'unavailable', privacy: 'local' },
+    })
     const firstCreate = api.createBlankProject({
       requestVersion: 1,
       operationId: randomUUID(),
@@ -978,6 +1000,20 @@ it('quality run chains real reasoning and validation Jobs and retains zero-const
       return job
     })
     expect(queryJob.state, JSON.stringify(queryJob.error)).toBe('succeeded')
+    const resultId = queryJob.resultRef!.resultId
+    const modelSource = new StoredResultSource(value.supervisor, queryJob.projectId)
+    try {
+      const material = await modelSource.load({ resultId, selection: 'current' })
+      expect(material.metadata).toMatchObject({
+        resultId,
+        projectId: queryJob.projectId,
+        inputSnapshotId: queryJob.inputSnapshotId,
+        kind: 'query',
+      })
+      expect(JSON.parse(material.bodyText).rows).toEqual(expect.any(Array))
+    } finally {
+      modelSource.close()
+    }
     const descriptor = await receive(() =>
       value.projects.queries.getQueryResultDescriptor({ resultId: queryJob.resultRef!.resultId }),
     )

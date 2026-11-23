@@ -12,6 +12,12 @@ import {
 } from './library-location-service'
 import { resolveTransportLedger } from './engine-ledger'
 import { TaskService } from './task-service'
+import { PrivateCiphertextRepository } from './model-gateway/ciphertext-repository'
+import { ConfigurationRepository } from './model-gateway/configuration-repository'
+import { PersistentGatewayAudit } from './model-gateway/persistent-audit'
+import { createElectronCredentialBoundary } from './model-gateway/electron-safe-storage'
+import { ModelGatewayService } from './model-gateway/model-service'
+import { finiteFixturePolicy } from './model-gateway/finite-fixture-policy'
 import { OrdinaryProjectSource, type OrdinaryCurrent } from './ordinary-project-source'
 import { QueryDefinitionService } from './query-definition-service'
 import { ProjectMainlineService } from './project-mainline-service'
@@ -20,6 +26,8 @@ import { contentSecurityPolicy } from '../csp'
 import { hardenWebContents, securePreferences } from './window-security'
 import { installWindowRecovery } from './window-recovery'
 import { installViewNavigation } from './view-navigation'
+import { AgentHostComposition } from './agent/host-composition'
+import { AgentModeStore } from './agent/agent-mode-store'
 import { registerDesktopIpc } from './desktop-ipc'
 import {
   completePreSupervisorRecoveryChoice,
@@ -47,7 +55,9 @@ app.on('before-quit', (event) => {
   event.preventDefault()
   if (quitting) return
   quitting = true
+  agents?.refresh(true)
   void (async () => {
+    const modelShutdown = finishModelShutdown().catch(() => {})
     await ordinary?.dispose().catch(() => {})
     // A service cleanup failure cannot skip the actual process-close barrier.
     for (const service of [queries, projects, tasks]) {
@@ -58,7 +68,8 @@ app.on('before-quit', (event) => {
       }
     }
     try {
-      await supervisor.stopAndWait()
+      await Promise.all([supervisor.stopAndWait(), modelShutdown])
+      agents?.close()
       quitBarrier = true
       app.quit()
     } catch {
@@ -78,6 +89,82 @@ let ordinary: OrdinaryProjectSource | undefined
 let queries: QueryDefinitionService | undefined
 let projects: ProjectMainlineService | undefined
 let library: LibraryLocationService | undefined
+let agents: AgentHostComposition | undefined
+let models: ModelGatewayService | undefined
+let modelInitialization: Promise<void> | undefined
+let modelCiphertexts: PrivateCiphertextRepository | undefined
+let modelConfigurations: ConfigurationRepository | undefined
+let modelAudit: PersistentGatewayAudit | undefined
+async function closeModels(): Promise<void> {
+  const owner = models
+  models = undefined
+  await owner?.close().catch(() => {})
+  await Promise.allSettled([
+    modelConfigurations?.close(),
+    modelAudit?.close(),
+    modelCiphertexts?.close(),
+  ])
+  modelConfigurations = undefined
+  modelAudit = undefined
+  modelCiphertexts = undefined
+}
+async function initializeModels(
+  databasePath: string,
+  testRuntime: boolean,
+  finiteFields: boolean,
+): Promise<void> {
+  try {
+    const location = {
+      userDataPath: app.getPath('userData'),
+      // These are the actual current Store files; no exporter/project-folder capability
+      // exists in this approved baseline. Do not invent an export exclusion proof.
+      excludedRoots: [databasePath, databasePath + '-wal', databasePath + '-shm'],
+    }
+    modelCiphertexts = await PrivateCiphertextRepository.open(location)
+    modelConfigurations = await ConfigurationRepository.open(location)
+    modelAudit = await PersistentGatewayAudit.open(location)
+    if (finiteFields && (!testRuntime || app.isPackaged)) throw new Error('INVALID_TEST_FIXTURE')
+    const fieldModels = finiteFields
+      ? [
+          finiteFixturePolicy(
+            createHash('sha256')
+              .update(readFileSync(join(app.getAppPath(), '../../uv.lock')))
+              .digest('hex'),
+          ),
+        ]
+      : []
+    const owner = await ModelGatewayService.open({
+      engine: supervisor,
+      repository: modelConfigurations,
+      credentials: createElectronCredentialBoundary(modelCiphertexts),
+      audit: modelAudit,
+      producerPolicy: testRuntime ? 'synthetic-test-runtime' : 'runtime-only',
+      fieldModels,
+    })
+    models = owner
+    if (quitting) await closeModels()
+    else if (!library?.switching) owner.selectProject(tasks.projectContext())
+  } catch {
+    // Model/storage/backend failure is isolated from deterministic local tasks and windows.
+    await closeModels()
+  }
+}
+async function finishModelShutdown(): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    await Promise.race([
+      (async () => {
+        await modelInitialization
+        await closeModels()
+      })(),
+      new Promise<void>((resolve) => {
+        timer = setTimeout(resolve, 5000)
+      }),
+    ])
+  } finally {
+    clearTimeout(timer)
+  }
+}
 const retiredQueries = new Set<QueryDefinitionService>()
 function retireQueries(): void {
   if (!queries) return
@@ -262,6 +349,7 @@ void app.whenReady().then(async () => {
             projectId: z.string().uuid(),
             jobIds: z.array(z.string().uuid()).max(16),
             databasePath: z.string().refine(isAbsolute),
+            modelFieldPolicy: z.literal('i06-finite-probe-v1').optional(),
             startRequests: z
               .array(
                 z
@@ -336,6 +424,8 @@ void app.whenReady().then(async () => {
       return
     }
   }
+  const databasePath =
+    fixture?.databasePath ?? startupLocation?.path ?? join(app.getPath('userData'), 'engine.sqlite')
   supervisor = new EngineSupervisor(
     { packaged: app.isPackaged, appPath: app.getAppPath(), resourcesPath: process.resourcesPath },
     {
@@ -346,10 +436,7 @@ void app.whenReady().then(async () => {
       requestMs: 15000,
       profile,
       exampleRoot,
-      dataPath:
-        fixture?.databasePath ??
-        startupLocation?.path ??
-        join(app.getPath('userData'), 'engine.sqlite'),
+      dataPath: databasePath,
       ...(startupLocation?.file
         ? {
             libraryFileIdentity: startupLocation.file,
@@ -425,7 +512,10 @@ void app.whenReady().then(async () => {
       return
     }
   }
-  tasks = new TaskService(supervisor)
+  tasks = new TaskService(supervisor, (projectId) => {
+    agents?.refresh(true)
+    models?.selectProject(projectId)
+  })
   if (!fixture && supervisor.profile === 'business3')
     projects = new ProjectMainlineService(supervisor, tasks, attachCurrentTaskView, {
       managementJournalPath: join(
@@ -461,8 +551,15 @@ void app.whenReady().then(async () => {
         [...retiredQueries].some((query) => query.hasOutstanding) ||
         retiredOrdinary.size > 0,
       status: () => supervisor.libraryStatus(),
-      freezeAdmission: () => supervisor.freezeAdmission(),
-      unfreezeAdmission: () => supervisor.unfreezeAdmission(),
+      freezeAdmission: () => {
+        supervisor.freezeAdmission()
+        agents?.refresh(true)
+        models?.selectProject(null)
+      },
+      unfreezeAdmission: () => {
+        supervisor.unfreezeAdmission()
+        models?.selectProject(tasks.projectContext())
+      },
       stopAndWait: () => supervisor.stopAndWait(),
       relaunch: () => {
         app.relaunch()
@@ -535,16 +632,46 @@ void app.whenReady().then(async () => {
   // A quit that began during the startup awaits above must not build a late
   // first window while the before-quit shutdown is already converging.
   if (quitting || quitBarrier) return
+  const replies = projects ? supervisor.mainlineReplyReceiver() : undefined
+  if (projects && replies) {
+    const selectedProjects = projects
+    const modes = new AgentModeStore(join(app.getPath('userData'), 'agent', 'modes.json'))
+    const host = new AgentHostComposition({
+      modes,
+      projects: selectedProjects,
+      tasks,
+      replies,
+      selection: () => selectedProjects.source.current(),
+      blocked: () =>
+        quitting ||
+        !!(
+          library?.switching ||
+          selectedProjects.managementBlocked ||
+          selectedProjects.restoreBlocked
+        ),
+      models: () => models,
+    })
+    agents = host
+    selectedProjects.source.observe(() => host.refresh())
+  }
   registerDesktopIpc({
     ipcMain,
     trusted,
     tasks,
     supervisor,
     projects,
-    replies: projects ? supervisor.mainlineReplyReceiver() : undefined,
+    replies,
     library,
+    getModels: () => (quitting || quitBarrier ? undefined : models),
+    getAgent: () => (quitting || quitBarrier ? undefined : agents),
   })
   createWindow()
+  // Local startup and recovery do not wait for platform secure storage.
+  modelInitialization = initializeModels(
+    databasePath,
+    !!fixture,
+    fixture?.modelFieldPolicy === 'i06-finite-probe-v1',
+  )
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

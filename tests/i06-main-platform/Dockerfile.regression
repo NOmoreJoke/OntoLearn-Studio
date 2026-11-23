@@ -1,0 +1,8 @@
+# Own official packaged image and locked dependencies; no product or old e2e edits.
+FROM i06-main-packaged:9fcba663-base2
+COPY --chown=i06:i06 harness/ /workspace/tests/i06-main-platform/
+COPY --chown=i06:i06 identity.json /opt/i06-main-identity.json
+USER i06
+RUN npm exec -- eslint tests/i06-main-platform --max-warnings 0 \
+    && node tests/i06-main-platform/runtime-manifest.mjs /workspace/.i06-main-build-manifest.json
+ENTRYPOINT ["bash", "/workspace/tests/i06-main-platform/e2e-regression-run.sh"]
