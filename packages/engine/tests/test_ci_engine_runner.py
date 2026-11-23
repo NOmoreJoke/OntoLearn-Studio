@@ -183,3 +183,101 @@ def test_account_rejects_a_session_owned_by_another_launcher(tmp_path):
     write_worker_folder(folder, expected, exitstatus=0, owner="someone-else")
     _outcomes, errors = runner.account(fake_child(folder, "owner-1", 0), expected, IDENTITY)
     assert any("session boundary" in error for error in errors)
+
+
+def test_reporting_plugin_survives_stdlib_json_monkeypatch(tmp_path, monkeypatch):
+    spec = importlib.util.spec_from_file_location(
+        "engine_test_reporting_isolated", REPOSITORY / "scripts" / "engine-test-reporting.py"
+    )
+    assert spec is not None and spec.loader is not None
+    plugin = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(plugin)
+
+    test_file = tmp_path / "sample_test.py"
+    test_file.write_text("def test_ok(): pass\n", encoding="utf-8")
+    resolved_file = test_file.resolve()
+    nodeid = f"{resolved_file}::test_ok"
+
+    class FakeConfig:
+        def __init__(self, report_dir, files_path=None):
+            self.rootpath = tmp_path
+            self.inipath = None
+            self._opts = {
+                "--engine-ci-report": str(report_dir),
+                "--engine-ci-owner": "owner-json-guard",
+                "--engine-ci-files": str(files_path) if files_path else None,
+            }
+            self.hook = SimpleNamespace(pytest_deselected=lambda items: None)
+
+        def getoption(self, name):
+            return self._opts[name]
+
+        def getini(self, name):
+            return []
+
+    first_dir = tmp_path / "collect-only"
+    cfg_collect = FakeConfig(first_dir)
+    item = SimpleNamespace(path=test_file, nodeid=nodeid)
+    plugin.pytest_configure(cfg_collect)
+    plugin.pytest_collection_finish(SimpleNamespace(config=cfg_collect, items=[item]))
+    plugin.pytest_unconfigure(cfg_collect)
+    manifest = json.loads((first_dir / "collection.json").read_text(encoding="utf-8"))
+
+    files_json = tmp_path / "files.json"
+    files_json.write_text(
+        json.dumps(
+            {
+                "files": [str(resolved_file)],
+                "items": manifest["items"],
+                "identity": manifest["identity"],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    worker_dir = tmp_path / "worker"
+    cfg_worker = FakeConfig(worker_dir, files_json)
+    other_file = tmp_path / "other_test.py"
+    other_file.write_text("def test_skip(): pass\n", encoding="utf-8")
+    items = [item, SimpleNamespace(path=other_file, nodeid=f"{other_file}::test_skip")]
+
+    def poisoned(*_args, **_kwargs):
+        raise AssertionError("whole json allocation")
+
+    with monkeypatch.context() as mp:
+        mp.setattr(json, "dumps", poisoned)
+        mp.setattr(json, "loads", poisoned)
+        plugin.pytest_configure(cfg_worker)
+        plugin.pytest_collection_modifyitems(cfg_worker, items)
+        assert [entry.nodeid for entry in items] == [nodeid]
+        session = SimpleNamespace(config=cfg_worker, items=items, testsfailed=0)
+        plugin.pytest_collection_finish(session)
+        plugin.pytest_runtest_logstart(nodeid, (str(test_file), 1, "test_ok"))
+        for phase in ("setup", "call", "teardown"):
+            plugin.pytest_runtest_logreport(
+                SimpleNamespace(
+                    nodeid=nodeid,
+                    when=phase,
+                    outcome="passed",
+                    duration=0.01,
+                    failed=False,
+                    skipped=False,
+                    longreprtext="",
+                )
+            )
+        plugin.pytest_runtest_logfinish(nodeid, (str(test_file), 1, "test_ok"))
+        plugin.pytest_sessionfinish(session, 0)
+        plugin.pytest_unconfigure(cfg_worker)
+
+    events = [
+        json.loads(line)
+        for line in (worker_dir / "events.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert events[0]["event"] == "session_start"
+    assert [e.get("phase") for e in events if e["event"] == "report"] == [
+        "setup",
+        "call",
+        "teardown",
+    ]
+    assert events[-1] == {"event": "session_finish", "exitstatus": 0, "testsfailed": 0}
+    assert json.loads((worker_dir / "collection.json").read_text(encoding="utf-8")) == manifest

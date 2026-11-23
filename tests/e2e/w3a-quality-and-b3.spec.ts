@@ -622,6 +622,7 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
     const derived = await executeQuery(page, query)
     expect(derived.descriptor.identity.scope).toBe('asserted+derived')
     expect(derived.job.input).toMatchObject({ derivedResultIds: [expect.any(String)] })
+    await expect(derived.result).toContainText('执行范围：断言事实＋当前推导结果；')
     await expect(derived.result.getByRole('columnheader')).toHaveText(['equipment', 'class'])
     await expect(derived.result.locator('tbody tr')).toHaveCount(1)
     await expect(derived.result.locator('tbody td > span')).toHaveText([
@@ -649,6 +650,7 @@ test('W3a quality edits, explanation, snapshot invalidation, derived query and F
     const asserted = await executeQuery(page, query)
     expect(asserted.descriptor.identity.scope).toBe('asserted')
     expect(asserted.job.inputSnapshotId).toBe(derived.job.inputSnapshotId)
+    await expect(asserted.result).toContainText('执行范围：断言事实；')
     await expect(asserted.result.locator('tbody td > span')).toHaveText([learning + 'alarm/A01'])
     await assertF08(asserted.result)
     evidence.assertedJob = asserted.job.jobId
@@ -736,6 +738,7 @@ test('W3a B3 quality V-01, R-01, R-05 and LX-01 failure-and-repair', async () =>
     ontology = await openOntology(page)
     await addFact(ontology, equipment('003'), learning + 'name', '"备用泵C"')
     quality = await openQuality(page, true)
+    await expect(quality.getByLabel('验证范围', { exact: true })).toHaveValue('asserted')
     await runQuality(quality, 'asserted')
     await expect(quality.getByTestId('quality-validation-state')).toHaveAttribute(
       'data-conforms',
@@ -754,7 +757,7 @@ test('W3a B3 quality V-01, R-01, R-05 and LX-01 failure-and-repair', async () =>
       [{ kind: 'type', subject: '?equipment', class: learning + 'HighRiskEquipment' }],
       learning + 'NeedsInspection',
     )
-    await runQuality(quality, 'asserted')
+    await runQuality(quality, 'asserted+derived')
     await expect(quality.getByText(/RULE_CHAIN_UNSUPPORTED.*R-next/)).toBeVisible()
     await expect(quality.getByTestId('quality-rule-traces')).not.toContainText('NeedsInspection')
 

@@ -129,6 +129,9 @@ export function App() {
     snapshotId: string
     revision: number
   }>()
+  const [qualityScopes, setQualityScopes] = useState<
+    Record<string, 'asserted' | 'asserted+derived'>
+  >({})
   const [qualityLocation, setQualityLocation] = useState<QualityLocation>()
   const [qualityPending, setQualityPending] = useState(false)
   const qualityPendingRef = useRef(false)
@@ -1667,6 +1670,14 @@ export function App() {
                       ])}
                       projectId={tasks.project.projectId}
                       bridge={window.ontolearn}
+                      validationScope={qualityScopes[tasks.project.projectId] ?? 'asserted+derived'}
+                      onValidationScopeChange={(next) => {
+                        const projectId = tasks.project?.projectId
+                        if (!projectId) return
+                        setQualityScopes((prev) =>
+                          prev[projectId] === next ? prev : { ...prev, [projectId]: next },
+                        )
+                      }}
                       disabled={
                         workspaceFrozen ||
                         managementBlocked ||

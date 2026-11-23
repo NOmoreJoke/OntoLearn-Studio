@@ -395,6 +395,8 @@ type WorkspaceProps = {
   projectId: string
   bridge: DesktopBridge
   disabled?: boolean
+  validationScope?: Scope
+  onValidationScopeChange?: (scope: Scope) => void
   onDomainSnapshotUpdated: (snapshot: Snapshot) => void
   onLocateTarget: (targets: QualityFindingDTO['targets'], finding: QualityFindingDTO) => void
   onPendingChange?: (pending: boolean) => void
@@ -646,6 +648,8 @@ export function QualityWorkspace({
   projectId,
   bridge,
   disabled,
+  validationScope,
+  onValidationScopeChange,
   onDomainSnapshotUpdated,
   onLocateTarget,
   onPendingChange,
@@ -655,7 +659,12 @@ export function QualityWorkspace({
   const [quality, setQuality] = useState<ProjectQuality>()
   const [form, setForm] = useState(() => emptyForm('constraint'))
   const [selected, setSelected] = useState('')
-  const [scope, setScope] = useState<Scope>('asserted+derived')
+  const [localScope, setLocalScope] = useState<Scope>('asserted+derived')
+  const scope = validationScope ?? localScope
+  const updateScope = (next: Scope) => {
+    if (onValidationScopeChange) onValidationScopeChange(next)
+    else setLocalScope(next)
+  }
   const [proposal, setProposal] = useState<{ diff: WorkspaceChangePreview; operationId: string }>()
   const [previous, setPrevious] = useState<ProjectQualityReadDTO['reasoning']>(null)
   const [busy, setBusy] = useState(false)
@@ -936,7 +945,7 @@ export function QualityWorkspace({
           id={field('scope')}
           value={scope}
           disabled={blocked}
-          onChange={(event) => setScope(event.target.value as Scope)}
+          onChange={(event) => updateScope(event.target.value as Scope)}
         >
           <option value="asserted+derived">断言事实＋推导结论</option>
           <option value="asserted">仅当前断言事实</option>
