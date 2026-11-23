@@ -44,7 +44,7 @@ export function ProjectCheckpointRestorePanel({
   const consentKey = preview ? `${preview.previewRef}:${preview.documentHash}` : ''
   const consentText = consent.key === consentKey ? consent.text : ''
   return (
-    <div className="project-checkpoints" data-testid="project-checkpoints">
+    <div className="project-checkpoints" id="project-checkpoints" data-testid="project-checkpoints">
       <h3>检查点与整项目恢复</h3>
       <p>
         检查点覆盖元数据、草稿与学习当前状态；历史运行、审计与操作证物始终保留。
