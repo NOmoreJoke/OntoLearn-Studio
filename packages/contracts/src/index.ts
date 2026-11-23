@@ -4,6 +4,8 @@ import type { LibraryLocationBridge, ProjectManagementBridge } from './project-m
 export type * from './project-management'
 import type { ProjectCheckpointBridge } from './project-checkpoints'
 export type * from './project-checkpoints'
+import type { LearningLedgerBridge } from './learning-ledger'
+export type * from './learning-ledger'
 
 export const PROTOCOL_VERSION = 2 as const
 // Private preload delivery protocol. These are never exposed on DesktopBridge
@@ -251,7 +253,8 @@ export interface DesktopBridge
     QueryConsumerBridge,
     MainlineProjectBridge,
     LibraryLocationBridge,
-    ProjectCheckpointBridge {
+    ProjectCheckpointBridge,
+    LearningLedgerBridge {
   getEngineHealth(): Promise<HealthResult>
   restoreTasks(): Promise<BridgeResult<TaskView>>
   getActiveProject(): Promise<BridgeResult<ProjectView | null>>
@@ -275,6 +278,26 @@ export type DesktopIpcMap = {
   'project:checkpoint-create': {
     args: [args: Parameters<ProjectCheckpointBridge['createProjectCheckpoint']>[0]]
     result: Awaited<ReturnType<ProjectCheckpointBridge['createProjectCheckpoint']>>
+  }
+  'project:learning-read': {
+    args: [args: Parameters<LearningLedgerBridge['getProjectLearningState']>[0]]
+    result: Awaited<ReturnType<LearningLedgerBridge['getProjectLearningState']>>
+  }
+  'project:learning-attempt-start': {
+    args: [args: Parameters<LearningLedgerBridge['startLearningAttempt']>[0]]
+    result: Awaited<ReturnType<LearningLedgerBridge['startLearningAttempt']>>
+  }
+  'project:learning-hint-record': {
+    args: [args: Parameters<LearningLedgerBridge['recordLearningHint']>[0]]
+    result: Awaited<ReturnType<LearningLedgerBridge['recordLearningHint']>>
+  }
+  'project:learning-observation-record': {
+    args: [args: Parameters<LearningLedgerBridge['recordLearningObservation']>[0]]
+    result: Awaited<ReturnType<LearningLedgerBridge['recordLearningObservation']>>
+  }
+  'project:learning-task-check': {
+    args: [args: Parameters<LearningLedgerBridge['checkLearningTask']>[0]]
+    result: Awaited<ReturnType<LearningLedgerBridge['checkLearningTask']>>
   }
   'project:restore-pending': {
     args: []
@@ -944,7 +967,8 @@ export type MainlineChangePlanDTO = {
 export type MainlinePreviewArgs =
   | { baseRevision: number; intent: 'change'; plan: MainlineChangePlanDTO }
   | { baseRevision: number; intent: 'undo'; targetOperationId: string }
-export interface MainlineProjectBridge extends ProjectManagementBridge, ProjectCheckpointBridge {
+export interface MainlineProjectBridge
+  extends ProjectManagementBridge, ProjectCheckpointBridge, LearningLedgerBridge {
   getOwnershipConflictDetailPage(
     args: OwnershipDetailArgs,
   ): Promise<BridgeResult<OwnershipDetailPage>>

@@ -445,11 +445,13 @@ class Coordinator:
 
     def dispatch(self, method: str, p: dict):
         from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
+        from ontolearn_engine.project.learning_ledger import METHODS as LEARNING_METHODS
         from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
 
         if (
             method in MANAGEMENT_METHODS
             or method in CHECKPOINT_METHODS
+            or method in LEARNING_METHODS
             or method
             in {
                 "project.catalog",

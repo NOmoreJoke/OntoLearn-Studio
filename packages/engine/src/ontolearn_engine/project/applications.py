@@ -84,6 +84,12 @@ def cas(scope, identity, version):
 
 CHECKPOINT_REASONS = ("manual", "before-run", "guided-stage", "before-agent")
 RESTORE_WITHDRAWN = "withdrawn-by-project-restore"
+_ASSISTANCE_RANK = {
+    "independent": 0,
+    "partial-hints": 1,
+    "full-demonstration": 2,
+    "agent-full-assistance": 3,
+}
 
 
 def check_change(change):
@@ -101,6 +107,14 @@ def check_change(change):
             "expectedCheckpointRef",
             "expectedMetadataVersion",
             "expectedOperationSequence",
+        },
+        "learning.record": {
+            "attempt",
+            "course",
+            "task",
+            "expectedRecordVersion",
+            "payload",
+            "assistanceEvent",
         },
     }
     require(kind in fields and set(change) == base | fields[kind])
@@ -131,6 +145,33 @@ def check_change(change):
             require(type(patch["archived"]) is bool)
         if "mode" in patch:
             require(isinstance(patch["mode"], str) and patch["mode"] in {"guided", "assisted"})
+    elif kind == "learning.record":
+        # The learning ledger is application-only state: a domain plan can never
+        # ride along alongside a learning record write.
+        require("domain" not in change)
+        require(uuid_ref(change["attempt"]))
+        for key in ("course", "task"):
+            text = change[key]
+            require(
+                isinstance(text, str) and bool(text) and len(text.encode("utf-8")) <= 128,
+            )
+        version = change["expectedRecordVersion"]
+        require(version is None or integer(version))
+        payload = change["payload"]
+        require(
+            isinstance(payload, dict) and len(canonical(payload).encode("utf-8")) <= 65536,
+        )
+        event = change["assistanceEvent"]
+        require(
+            event is None
+            or (
+                isinstance(event, dict)
+                and set(event) == {"eventId", "payload"}
+                and uuid_ref(event["eventId"])
+                and isinstance(event["payload"], dict)
+                and len(canonical(event["payload"]).encode("utf-8")) <= 16384
+            )
+        )
     elif kind != "project.restore":
         require(isinstance(change["editor"], str) and bool(change["editor"]))
         require(integer(change["expectedGeneration"]))
@@ -170,6 +211,86 @@ def _draft_row(head):
         "payload": head.content_json,
         "content_hash": head.content_hash,
     }
+
+
+def _merge_restored_learning_payload(attempt, target_json, before_learning, assistance_audit):
+    """Preserve durable assistance provenance across whole-project restore."""
+    target_payload = json.loads(target_json)
+    if (
+        not isinstance(target_payload, dict)
+        or target_payload.get("status") == RESTORE_WITHDRAWN
+        or "assistance" not in target_payload
+        or "maxHintLevel" not in target_payload
+        or target_payload["assistance"] not in _ASSISTANCE_RANK
+        or type(target_payload["maxHintLevel"]) is not int
+    ):
+        return target_json
+
+    floor_hint = target_payload["maxHintLevel"]
+    floor_assist = target_payload["assistance"]
+    task_id = target_payload.get("taskId")
+    task_attempts = {attempt}
+    for row_attempt, before_row in before_learning.items():
+        if row_attempt != attempt and before_row.get("task") != task_id:
+            continue
+        task_attempts.add(row_attempt)
+        try:
+            before_payload = json.loads(before_row["payload"])
+        except (TypeError, ValueError):
+            continue
+        if isinstance(before_payload, dict) and before_payload.get("status") != RESTORE_WITHDRAWN:
+            lvl = before_payload.get("maxHintLevel")
+            if type(lvl) is int and 0 <= lvl <= 4:
+                floor_hint = max(floor_hint, lvl)
+            assist = before_payload.get("assistance")
+            if (
+                assist in _ASSISTANCE_RANK
+                and _ASSISTANCE_RANK[assist] > _ASSISTANCE_RANK[floor_assist]
+            ):
+                floor_assist = assist
+
+    for audit_row in assistance_audit:
+        try:
+            audit_payload = json.loads(audit_row["payload"])
+        except (TypeError, ValueError):
+            continue
+        same_task = (
+            isinstance(task_id, str)
+            and isinstance(audit_payload, dict)
+            and audit_payload.get("taskId") == task_id
+        )
+        if audit_row["attempt"] not in task_attempts and not same_task:
+            continue
+        if isinstance(audit_payload, dict):
+            lvl = audit_payload.get("level")
+            if type(lvl) is int and 1 <= lvl <= 4:
+                floor_hint = max(floor_hint, lvl)
+            assist = audit_payload.get("assistance")
+            if (
+                assist in _ASSISTANCE_RANK
+                and _ASSISTANCE_RANK[assist] > _ASSISTANCE_RANK[floor_assist]
+            ):
+                floor_assist = assist
+
+    if floor_hint >= 4 and _ASSISTANCE_RANK[floor_assist] < _ASSISTANCE_RANK["full-demonstration"]:
+        floor_assist = "full-demonstration"
+    elif floor_hint >= 1 and _ASSISTANCE_RANK[floor_assist] < _ASSISTANCE_RANK["partial-hints"]:
+        floor_assist = "partial-hints"
+
+    assisted = floor_hint > 0 or floor_assist != "independent"
+    if (
+        floor_hint == target_payload["maxHintLevel"]
+        and floor_assist == target_payload["assistance"]
+        and not (target_payload.get("independentTransferSuccess") and assisted)
+    ):
+        return target_json
+
+    merged = deepcopy(target_payload)
+    merged["maxHintLevel"] = floor_hint
+    merged["assistance"] = floor_assist
+    if "independentTransferSuccess" in merged and assisted:
+        merged["independentTransferSuccess"] = False
+    return canonical(merged)
 
 
 def _restore_effects(project, change, before, target, domain_after_revision):
@@ -225,7 +346,12 @@ def _restore_effects(project, change, before, target, domain_after_revision):
             row.update(
                 course=target_learning[attempt]["course"],
                 task=target_learning[attempt]["task"],
-                payload=target_learning[attempt]["payload"],
+                payload=_merge_restored_learning_payload(
+                    attempt,
+                    target_learning[attempt]["payload"],
+                    before_learning,
+                    before["assistanceAudit"],
+                ),
             )
         else:
             row["payload"] = canonical(
@@ -247,6 +373,46 @@ def effects(project, change, before, domain_before_revision, domain_after_revisi
     after = deepcopy(before)
     if change["type"] == "checkpoint.create":
         old_cas, new_cas = [], []
+    elif change["type"] == "learning.record":
+        attempt = change["attempt"]
+        rows = {row["attempt"]: row for row in before["learningCurrent"]}
+        expected = change["expectedRecordVersion"]
+        if expected is None:
+            require(attempt not in rows)
+            version = 1
+        else:
+            current = rows.get(attempt)
+            if current is None or current["record_version"] != expected:
+                raise Conflict("Learning record version changed", category="state")
+            version = next_version(expected)
+        rows[attempt] = {
+            "attempt": attempt,
+            "record_version": version,
+            "course": change["course"],
+            "task": change["task"],
+            "payload": canonical(change["payload"]),
+        }
+        after["learningCurrent"] = [rows[key] for key in sorted(rows)]
+        old_cas = (
+            cas("learning:init", attempt, 0)
+            if expected is None
+            else cas("learning", attempt, expected)
+        )
+        new_cas = cas("learning", attempt, version)
+        event = change["assistanceEvent"]
+        if event is not None:
+            # app_assistance is append-only and immutable; a replayed eventId is
+            # rejected instead of silently deduplicated.
+            require(event["eventId"] not in {row["event_id"] for row in before["assistanceAudit"]})
+            after["assistanceAudit"] = [
+                *before["assistanceAudit"],
+                {
+                    "sequence": next_version(len(before["assistanceAudit"])),
+                    "attempt": attempt,
+                    "event_id": event["eventId"],
+                    "payload": canonical(event["payload"]),
+                },
+            ]
     elif change["type"] == "project.restore":
         after, old_cas, new_cas = _restore_effects(
             project, change, before, target, domain_after_revision
@@ -628,6 +794,45 @@ def commit(store, project, base, operation, job, supplied, hook):
             )
         elif kind == "checkpoint.create":
             pass  # Evidence-only operation: the whole application state is frozen as-is.
+        elif kind == "learning.record":
+            row = next(
+                r
+                for r in plan["after"]["learningCurrent"]
+                if r["attempt"] == plan["change"]["attempt"]
+            )
+            store._db.execute(
+                "INSERT INTO app_learning VALUES(?,?,?,?,?,?) ON CONFLICT(project,attempt) "
+                "DO UPDATE SET record_version=excluded.record_version,course=excluded.course,"
+                "task=excluded.task,payload=excluded.payload",
+                (
+                    project,
+                    row["attempt"],
+                    row["record_version"],
+                    row["course"],
+                    row["task"],
+                    row["payload"],
+                ),
+            )
+            hook("application_learning_record")
+            if plan["change"]["assistanceEvent"] is not None:
+                event = next(
+                    r
+                    for r in plan["after"]["assistanceAudit"]
+                    if r["event_id"] == plan["change"]["assistanceEvent"]["eventId"]
+                )
+                # The FK needs its app_learning row first; app_assistance itself
+                # is immutable, so the insert is the one and only appearance.
+                store._db.execute(
+                    "INSERT INTO app_assistance VALUES(?,?,?,?,?)",
+                    (
+                        project,
+                        event["sequence"],
+                        event["attempt"],
+                        event["event_id"],
+                        event["payload"],
+                    ),
+                )
+                hook("application_learning_assistance")
         elif kind == "project.restore":
             store._db.execute(
                 "UPDATE app_projects SET metadata_version=?,metadata=? WHERE project=?",

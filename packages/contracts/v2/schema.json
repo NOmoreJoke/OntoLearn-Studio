@@ -7255,6 +7255,131 @@
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.read"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.learning.read"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.attempt.start"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.learning.attempt.start"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.hint.record"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.learning.hint.record"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.observation.record"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.learning.observation.record"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.task.check"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.learning.task.check"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
         }
       ]
     },
@@ -10001,6 +10126,326 @@
             },
             "method": {
               "const": "project.restore.operation.get"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.read"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.learning.read"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.read"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.attempt.start"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.learning.attempt.start"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.attempt.start"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.hint.record"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.learning.hint.record"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.hint.record"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.observation.record"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.learning.observation.record"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.observation.record"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.task.check"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.learning.task.check"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.learning.task.check"
             },
             "ok": {
               "const": false
@@ -14482,6 +14927,1249 @@
         }
       },
       "required": ["state", "result"],
+      "additionalProperties": false
+    },
+    "learning.taskStatus": {
+      "enum": [
+        "not-checked",
+        "passed",
+        "needs-repair",
+        "failed",
+        "tool-not-successful",
+        "missing-evidence",
+        "pending-dependency",
+        "rerun-required",
+        "stale"
+      ]
+    },
+    "learning.persistedStatus": {
+      "enum": [
+        "not-checked",
+        "passed",
+        "needs-repair",
+        "failed",
+        "tool-not-successful",
+        "missing-evidence",
+        "pending-dependency",
+        "rerun-required"
+      ]
+    },
+    "learning.assistance": {
+      "enum": ["independent", "partial-hints", "full-demonstration", "agent-full-assistance"]
+    },
+    "learning.feedback": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/learning.persistedStatus"
+        },
+        "completed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "maxItems": 64
+        },
+        "repairs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "maxItems": 64
+        },
+        "suggestions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "maxItems": 16
+        },
+        "knowledgePoints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "maxItems": 64
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "maxItems": 64
+        }
+      },
+      "required": [
+        "status",
+        "completed",
+        "repairs",
+        "suggestions",
+        "knowledgePoints",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "learning.hint": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        }
+      },
+      "required": ["level", "kind", "text"],
+      "additionalProperties": false
+    },
+    "learning.observations": {
+      "type": "object",
+      "properties": {
+        "openedReadingIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 256
+        },
+        "answeredAssessments": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "type": "object",
+            "properties": {
+              "readingId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "questionIndex": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1023
+              },
+              "selectedOptionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "correct": {
+                "type": "boolean"
+              }
+            },
+            "required": ["readingId", "questionIndex", "selectedOptionId", "correct"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["openedReadingIds", "answeredAssessments"],
+      "additionalProperties": false
+    },
+    "learning.reading": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "sourceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "optional": {
+          "type": "boolean"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "selfAssessment": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "options": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 8,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  },
+                  "required": ["id", "text"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["question", "options"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["id", "title", "sourceRef", "optional", "summary", "content"],
+      "additionalProperties": false
+    },
+    "learning.step": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1023
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "scored": {
+          "type": "boolean"
+        },
+        "readingRef": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        }
+      },
+      "required": ["index", "kind", "scored", "readingRef", "title", "text"],
+      "additionalProperties": false
+    },
+    "learning.taskView": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "module": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/learning.step"
+          },
+          "maxItems": 64
+        },
+        "completionCondition": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "commonErrors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "maxItems": 32
+        },
+        "knowledgePoints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "maxItems": 64
+        },
+        "transfer": {
+          "type": "boolean"
+        },
+        "next": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 16
+        },
+        "readings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/learning.reading"
+          },
+          "maxItems": 16
+        },
+        "attemptCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "withdrawnAttemptCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "attemptId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "attemptActivationEpoch": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "recordVersion": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "assistance": {
+          "$ref": "#/$defs/learning.assistance"
+        },
+        "maxHintLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "revealedHints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/learning.hint"
+          },
+          "maxItems": 4
+        },
+        "operationComplete": {
+          "type": "boolean"
+        },
+        "independentTransferSuccess": {
+          "type": "boolean"
+        },
+        "checkStatus": {
+          "$ref": "#/$defs/learning.taskStatus"
+        },
+        "staleInput": {
+          "type": "boolean"
+        },
+        "lastFeedback": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/learning.feedback"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "observations": {
+          "$ref": "#/$defs/learning.observations"
+        },
+        "completedGuidedStages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 16
+        },
+        "guidedStageCheckpointRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "rootSnapshotRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "boundSnapshotRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "boundDomainRevision": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "inputVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "taskId",
+        "module",
+        "goal",
+        "instructions",
+        "steps",
+        "completionCondition",
+        "commonErrors",
+        "knowledgePoints",
+        "transfer",
+        "next",
+        "checks",
+        "readings",
+        "attemptCount",
+        "withdrawnAttemptCount",
+        "attemptId",
+        "attemptActivationEpoch",
+        "recordVersion",
+        "assistance",
+        "maxHintLevel",
+        "revealedHints",
+        "operationComplete",
+        "independentTransferSuccess",
+        "checkStatus",
+        "staleInput",
+        "lastFeedback",
+        "observations",
+        "completedGuidedStages",
+        "guidedStageCheckpointRef",
+        "rootSnapshotRef",
+        "boundSnapshotRef",
+        "boundDomainRevision",
+        "inputVersion"
+      ],
+      "additionalProperties": false
+    },
+    "learning.courseMeta": {
+      "type": "object",
+      "properties": {
+        "courseVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "glossaryVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "checksVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "courseExtensionVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "manifestSha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "case": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "businessQuestion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "firstTask": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "courseVersion",
+        "glossaryVersion",
+        "checksVersion",
+        "courseExtensionVersion",
+        "manifestSha256",
+        "case",
+        "businessQuestion",
+        "firstTask"
+      ],
+      "additionalProperties": false
+    },
+    "learning.glossaryEntry": {
+      "type": "object",
+      "properties": {
+        "term": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "plain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "example": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "technical": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "boundary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": ["term", "aliases", "plain", "example", "technical", "boundary"],
+      "additionalProperties": false
+    },
+    "learning.recordView": {
+      "type": "object",
+      "properties": {
+        "attemptId": {
+          "$ref": "#/$defs/id"
+        },
+        "recordVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "course": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "task": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "activationEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "assistance": {
+          "$ref": "#/$defs/learning.assistance"
+        },
+        "maxHintLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "operationComplete": {
+          "type": "boolean"
+        },
+        "independentTransferSuccess": {
+          "type": "boolean"
+        },
+        "checkStatus": {
+          "$ref": "#/$defs/learning.taskStatus"
+        },
+        "guidedStageCheckpointRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "const": null
+            }
+          ]
+        }
+      },
+      "required": [
+        "attemptId",
+        "recordVersion",
+        "course",
+        "task",
+        "activationEpoch",
+        "assistance",
+        "maxHintLevel",
+        "operationComplete",
+        "independentTransferSuccess",
+        "checkStatus",
+        "guidedStageCheckpointRef"
+      ],
+      "additionalProperties": false
+    },
+    "learning.observation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "reading-opened"
+            },
+            "readingId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": ["kind", "readingId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "self-assessment-answered"
+            },
+            "readingId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "questionIndex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1023
+            },
+            "selectedOptionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": ["kind", "readingId", "questionIndex", "selectedOptionId"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "learning.assessmentOutcome": {
+      "type": "object",
+      "properties": {
+        "correct": {
+          "type": "boolean"
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        }
+      },
+      "required": ["correct", "explanation"],
+      "additionalProperties": false
+    },
+    "params_project.learning.read": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["projectId"],
+      "additionalProperties": false
+    },
+    "result_project.learning.read": {
+      "type": "object",
+      "properties": {
+        "learningReadVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "domainRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "domainSnapshotRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "inputVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "templateRef": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "withdrawnAttemptCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/learning.taskView"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "courseMeta": {
+          "$ref": "#/$defs/learning.courseMeta"
+        },
+        "glossary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/learning.glossaryEntry"
+          },
+          "minItems": 1,
+          "maxItems": 128
+        }
+      },
+      "required": [
+        "learningReadVersion",
+        "projectId",
+        "domainRevision",
+        "domainSnapshotRef",
+        "inputVersion",
+        "templateRef",
+        "withdrawnAttemptCount",
+        "tasks",
+        "courseMeta",
+        "glossary"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.learning.attempt.start": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": ["projectId", "operationId", "taskId"],
+      "additionalProperties": false
+    },
+    "result_project.learning.attempt.start": {
+      "type": "object",
+      "properties": {
+        "learningAttemptStartVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "attemptId": {
+          "$ref": "#/$defs/id"
+        },
+        "activationEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "recordVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "inputVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "rootSnapshotRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "operationSequence": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "afterCheckpointRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "replayed": {
+          "type": "boolean"
+        },
+        "learningState": {
+          "$ref": "#/$defs/learning.taskView"
+        }
+      },
+      "required": [
+        "learningAttemptStartVersion",
+        "projectId",
+        "operationId",
+        "taskId",
+        "attemptId",
+        "activationEpoch",
+        "recordVersion",
+        "inputVersion",
+        "rootSnapshotRef",
+        "operationSequence",
+        "afterCheckpointRef",
+        "replayed",
+        "learningState"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.learning.hint.record": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        }
+      },
+      "required": ["projectId", "operationId", "taskId", "level"],
+      "additionalProperties": false
+    },
+    "result_project.learning.hint.record": {
+      "type": "object",
+      "properties": {
+        "learningHintRecordVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "attemptId": {
+          "$ref": "#/$defs/id"
+        },
+        "recordVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "assistanceEventId": {
+          "$ref": "#/$defs/id"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "revealedHint": {
+          "$ref": "#/$defs/learning.hint"
+        },
+        "record": {
+          "$ref": "#/$defs/learning.recordView"
+        },
+        "learningState": {
+          "$ref": "#/$defs/learning.taskView"
+        }
+      },
+      "required": [
+        "learningHintRecordVersion",
+        "projectId",
+        "operationId",
+        "taskId",
+        "attemptId",
+        "recordVersion",
+        "assistanceEventId",
+        "level",
+        "revealedHint",
+        "record",
+        "learningState"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.learning.observation.record": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "observation": {
+          "$ref": "#/$defs/learning.observation"
+        }
+      },
+      "required": ["projectId", "operationId", "taskId", "observation"],
+      "additionalProperties": false
+    },
+    "result_project.learning.observation.record": {
+      "type": "object",
+      "properties": {
+        "learningObservationRecordVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "attemptId": {
+          "$ref": "#/$defs/id"
+        },
+        "recordVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "observation": {
+          "$ref": "#/$defs/learning.observation"
+        },
+        "assessmentOutcome": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/learning.assessmentOutcome"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "learningState": {
+          "$ref": "#/$defs/learning.taskView"
+        }
+      },
+      "required": [
+        "learningObservationRecordVersion",
+        "projectId",
+        "operationId",
+        "taskId",
+        "attemptId",
+        "recordVersion",
+        "observation",
+        "assessmentOutcome",
+        "learningState"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.learning.task.check": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": ["projectId", "operationId", "taskId"],
+      "additionalProperties": false
+    },
+    "result_project.learning.task.check": {
+      "type": "object",
+      "properties": {
+        "learningTaskCheckVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "attemptId": {
+          "$ref": "#/$defs/id"
+        },
+        "recordVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "inputVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "checkStatus": {
+          "$ref": "#/$defs/learning.taskStatus"
+        },
+        "operationComplete": {
+          "type": "boolean"
+        },
+        "independentTransferSuccess": {
+          "type": "boolean"
+        },
+        "assistance": {
+          "$ref": "#/$defs/learning.assistance"
+        },
+        "feedback": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/learning.feedback"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "maxItems": 64
+        },
+        "guidedStageCheckpointRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "operationSequence": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "afterCheckpointRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "learningState": {
+          "$ref": "#/$defs/learning.taskView"
+        }
+      },
+      "required": [
+        "learningTaskCheckVersion",
+        "projectId",
+        "operationId",
+        "taskId",
+        "attemptId",
+        "recordVersion",
+        "inputVersion",
+        "checkStatus",
+        "operationComplete",
+        "independentTransferSuccess",
+        "assistance",
+        "feedback",
+        "evidenceIds",
+        "guidedStageCheckpointRef",
+        "operationSequence",
+        "afterCheckpointRef",
+        "learningState"
+      ],
       "additionalProperties": false
     }
   },

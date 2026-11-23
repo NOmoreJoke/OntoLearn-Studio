@@ -75,6 +75,16 @@ export function registerDesktopIpc({
       projects?.restoreProject(args) ?? Promise.resolve(permission()),
     'project:restore-operation': (args) =>
       projects?.getProjectRestoreOperation(args) ?? Promise.resolve(permission()),
+    'project:learning-read': (args) =>
+      projects?.getProjectLearningState(args) ?? Promise.resolve(permission()),
+    'project:learning-attempt-start': (args) =>
+      projects?.startLearningAttempt(args) ?? Promise.resolve(permission()),
+    'project:learning-hint-record': (args) =>
+      projects?.recordLearningHint(args) ?? Promise.resolve(permission()),
+    'project:learning-observation-record': (args) =>
+      projects?.recordLearningObservation(args) ?? Promise.resolve(permission()),
+    'project:learning-task-check': (args) =>
+      projects?.checkLearningTask(args) ?? Promise.resolve(permission()),
     'project:management-pending': () =>
       projects?.getPendingProjectManagementOperations() ?? Promise.resolve(permission()),
     'project:management-catalog': (args) =>
@@ -256,6 +266,10 @@ export function registerDesktopIpc({
           'project:restore-preview',
           'project:restore-confirm',
           'project:restore-apply',
+          'project:learning-attempt-start',
+          'project:learning-hint-record',
+          'project:learning-observation-record',
+          'project:learning-task-check',
           'query:execute-saved',
           'job:cancel',
         ].includes(channel)
@@ -296,6 +310,11 @@ export function registerDesktopIpc({
   register('project:restore-confirm', handlers['project:restore-confirm'])
   register('project:restore-apply', handlers['project:restore-apply'])
   register('project:restore-operation', handlers['project:restore-operation'])
+  register('project:learning-read', handlers['project:learning-read'])
+  register('project:learning-attempt-start', handlers['project:learning-attempt-start'])
+  register('project:learning-hint-record', handlers['project:learning-hint-record'])
+  register('project:learning-observation-record', handlers['project:learning-observation-record'])
+  register('project:learning-task-check', handlers['project:learning-task-check'])
   register('project:management-pending', handlers['project:management-pending'])
   register('project:management-catalog', handlers['project:management-catalog'])
   register('project:management-state', handlers['project:management-state'])

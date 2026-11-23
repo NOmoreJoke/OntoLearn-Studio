@@ -1,0 +1,525 @@
+{
+  "version": "offline-course-2",
+  "language": "zh-CN",
+  "modelRequired": false,
+  "case": "设备运维",
+  "businessQuestion": "哪些设备存在未闭环高危告警，怎样安排巡检并比较处理能力？",
+  "firstTask": "business-ontology",
+  "tasks": [
+    {
+      "id": "business-ontology",
+      "module": "本体构建",
+      "goal": "把业务问题变成概念、属性、个体与关系。",
+      "instructions": "独立还原 G-base。第 0 步先读 business-question，再在本体构建页分别观察 G-base 中已存在的 Equipment 类与 equipment/001 rdf:type Equipment 实例，就近打开术语卡“类”“个体”。实作时新增 Person 类与 assignedTo 对象属性，建立 person/L01 及其类型，并让 equipment/001 关联 person/L01；预览 RDF 后确认。",
+      "checks": ["ontology-model"],
+      "completionCondition": "实际批准工具的当前版本完整结果与固定预期一致；失败、缺失或过期不通过。",
+      "next": "mapping",
+      "steps": [
+        {
+          "index": 0,
+          "kind": "observation",
+          "scored": false,
+          "readingRef": "business-question",
+          "title": "先观察，不计分",
+          "text": "先读 business-question，然后在本体构建页分别找到结构定义中的 Equipment 与实例事实中的 equipment/001 rdf:type Equipment，就近打开术语卡“类”“个体”。本步骤只观察，不计分，也不参与操作完成与独立性判断。"
+        },
+        {
+          "index": 1,
+          "kind": "practice",
+          "scored": true,
+          "readingRef": null,
+          "title": "动手建模",
+          "text": "按目标新增 Person 类、assignedTo 对象属性、个体 person/L01 及其类型，并建立 equipment/001 与 person/L01 的关系。"
+        }
+      ],
+      "readings": [
+        {
+          "id": "business-question",
+          "title": "业务问题与能力问题",
+          "sourceRef": "学习体验优化建议 §3、§4 L01；S0 提案 §2 C01",
+          "optional": false,
+          "summary": "业务问题说明为什么要建模；能力问题说明模型要能被回答什么。",
+          "content": "业务问题来自真实工作，例如“设备坏了谁去修、巡检怎么排”。能力问题则是可以被模型直接回答、并且能用结果核对的问句，例如“哪些设备存在未闭环高危告警”。只有把业务问题收敛成能力问题，才谈得上用本体与查询来回答它。一个好的能力问题有明确范围、明确条件和可核对的结果；它不是泛泛介绍领域，也不要求先写完整个模型。本课程的第一条能力问题就是上面这句未闭环高危告警，后续的建模、映射、查询、质量检查、行为与沙盘练习，都是为了让这一句能被稳定回答。",
+          "selfAssessment": [
+            {
+              "question": "下面哪一句是可以被模型直接回答、并且能核对结果的能力问题？",
+              "options": [
+                { "id": "a", "text": "设备运维这门业务重要吗？" },
+                { "id": "b", "text": "哪些设备存在未闭环高危告警？" },
+                { "id": "c", "text": "我们以后要不要换一套建模方法？" }
+              ],
+              "answerKey": "b",
+              "explanation": "能力问题必须有明确范围、明确条件和可核对的结果。“哪些设备存在未闭环高危告警”可以直接落到查询与验收；另两句是背景讨论或方法论选择，不能被结果核对。"
+            },
+            {
+              "question": "能力问题和业务问题的关系是？",
+              "options": [
+                { "id": "a", "text": "业务问题必须先完全答对，才会变成能力问题" },
+                { "id": "b", "text": "两者互相独立，各自建模" },
+                { "id": "c", "text": "业务问题被收敛成可核对的能力问题，再由模型回答" }
+              ],
+              "answerKey": "c",
+              "explanation": "能力问题来自业务问题，是业务问题中可以被模型回答并核对结果的那一部分；先有可核对的问题，才谈得上验证模型是否有用。"
+            }
+          ]
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "先问：哪台设备有未闭环高危告警？类回答是哪一类，个体回答是哪一个：设备是类，001 是个体，设备名称是数据属性，关联人员是对象关系。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "打开本体构建，新增人员类、负责人员关系和人员L01；从设备001选择该人员。检查Diff，再确认。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范新增 Person 类；剩下由你定义 assignedTo 并连接001到L01。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：Person a owl:Class；assignedTo a owl:ObjectProperty；person/L01 a Person；equipment/001 assignedTo person/L01。预览四条新增三元组，确认后用解析工具核对。"
+        }
+      ],
+      "commonErrors": [
+        "把类当个体：检查rdf:type两端。",
+        "domain/range能推导类型，不会替你验证必填。",
+        "把具体人员建成类：对照“结构定义”与“实例事实”，说明类回答是哪一类、个体回答是哪一个；保留用户草稿，并提供新建修复 ChangeSet 的入口，不自动回滚。"
+      ],
+      "transfer": false,
+      "knowledgePoints": ["本体构建", "断言与推导", "当前版本"]
+    },
+    {
+      "id": "mapping",
+      "module": "数据映射",
+      "goal": "从两行CSV形成稳定的设备身份和可追溯事实。",
+      "instructions": "独立重置G-map-empty。选择equipment.csv，以equipment_id字符串构造IRI，映射设备名称；先预览，再提交，再运行一次。",
+      "checks": ["M-01", "M-02"],
+      "completionCondition": "实际批准工具的当前版本完整结果与固定预期一致；失败、缺失或过期不通过。",
+      "next": "query",
+      "readings": [
+        {
+          "id": "mapping-diff-read",
+          "title": "看懂映射差异与冲突",
+          "sourceRef": "学习体验优化建议 §4 L04、§7；S0 提案 §2 C04",
+          "optional": false,
+          "summary": "差异分新增、修改、删除与人工冲突四类；冲突必须人工处理，不能半途写入。",
+          "content": "一次映射提交前，系统会把“这次会带来什么变化”完整列出来给你看，这就是差异：哪些事实是新增的，哪些是修改的，哪些是删除的，还有哪些是被人工改动过、因而可能冲突的来源。差异只是预览，确认之前没有任何数据被写入。冲突是另一回事：当同一事实既来自受管来源又被人工作过，工具不会替你选边，而是把它标成冲突交给你判断；拒绝提交不会留下半截数据。学习者要养成的习惯是先读差异，再确认提交，这样身份、来源和所有权才不会在重跑之后悄悄漂移。",
+          "selfAssessment": [
+            {
+              "question": "映射预览里出现“人工冲突”时，正确做法是？",
+              "options": [
+                { "id": "a", "text": "先提交一半，另一半稍后再说" },
+                { "id": "b", "text": "重新核对身份与来源策略，由人决定如何处理" },
+                { "id": "c", "text": "忽略提示，直接确认写入" }
+              ],
+              "answerKey": "b",
+              "explanation": "冲突表示受管来源与人工改动同时指向同一事实，工具不会自动选边；正确做法是先核对身份与来源策略再由人决定，提交不会产生部分写入。"
+            },
+            {
+              "question": "关于差异预览，正确的理解是？",
+              "options": [
+                { "id": "a", "text": "差异只是提示，确认之前数据已经写入" },
+                { "id": "b", "text": "差异是提交前的完整变更清单，确认后才真正写入" },
+                { "id": "c", "text": "差异只能看到数量，看不到具体事实" }
+              ],
+              "answerKey": "b",
+              "explanation": "差异展示的是这次提交将带来的完整变更，确认之前不写入任何数据；这也是为什么差异必须逐条读，而不能只看一个数量。"
+            }
+          ]
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "001是字符串身份；不能转换为数字1。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "选择CSV → 类Equipment和主键equipment_id → 名称列equipment_name。预览后确认。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范001映射为equipment/001和名称泵站A；自行核对002。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：导入固定两行CSV，以字符串原值拼接IRI。预期恰好001/002的类型和名称四条事实；来源分别为CSV物理行2、3；重复执行不得新增事实。"
+        }
+      ],
+      "commonErrors": [
+        "空键或重复键：看具体源行，修复后整批重试。",
+        "人工改过受管名称：停止提交，重新预览冲突，不覆盖。",
+        "用行号生成身份：源文件重排后身份会变，应选择稳定字段作为身份来源。",
+        "同一实体按来源复制多份：先核对身份与来源策略，再决定合并或分开；工具不自动合并。"
+      ],
+      "transfer": false,
+      "knowledgePoints": ["数据映射", "断言与推导", "当前版本"]
+    },
+    {
+      "id": "query",
+      "module": "本体查询",
+      "goal": "查询完整结果并理解空结果。",
+      "instructions": "重置G-base，运行未闭环高危告警模板；再将A01改为Closed后重跑，核对空结果。",
+      "checks": ["Q-01", "Q-02"],
+      "completionCondition": "实际批准工具的当前版本完整结果与固定预期一致；失败、缺失或过期不通过。",
+      "next": "quality",
+      "readings": [
+        {
+          "id": "query-scope-read",
+          "title": "区分查询范围与历史结果",
+          "sourceRef": "学习体验优化建议 §4 L06、§7；S0 提案 §2 C06",
+          "optional": false,
+          "summary": "结果边界由查询范围决定；历史结果不等于当前结论，过期必须重跑。",
+          "content": "同一个问题，在不同范围下会得到不同的答案集合：只看断言事实时，看到的是人写下来或映射提交过的东西；把推导结果也算进来时，规则算出来的分类也会出现。范围是结果的一部分，必须在读结果之前先确认。历史结果同样不是当前结论：输入数据或规则一变，之前的运行结果就被标记为过期，只能用来回顾当时看到了什么，不能当成现在的答案继续引用。空结果尤其要小心——它可能只是范围内确实没有，也可能只是范围没选对或者结果已经过期，工具成功返回空集合并不等于业务上“没有”。",
+          "selfAssessment": [
+            {
+              "question": "上一次查询结果显示为空，最合理的解读是？",
+              "options": [
+                { "id": "a", "text": "业务上一定不存在这类数据" },
+                { "id": "b", "text": "先核对范围、版本与结果是否过期，再下结论" },
+                { "id": "c", "text": "查询一定失败了" }
+              ],
+              "answerKey": "b",
+              "explanation": "空结果只说明在当前范围与当前输入下没有匹配项；范围没选对、结果已过期都会造成空结果，不能单凭它断言业务世界没有。"
+            },
+            {
+              "question": "结果被标记为“已过期”时，正确做法是？",
+              "options": [
+                { "id": "a", "text": "继续沿用，它曾经是对的" },
+                { "id": "b", "text": "查看过期原因并重跑，得到当前结论" },
+                { "id": "c", "text": "删除这条历史记录" }
+              ],
+              "answerKey": "b",
+              "explanation": "过期结果只反映当时的输入版本，可以回顾但不能无标识地当作当前结论；应当查看过期原因并重跑。"
+            }
+          ]
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "High与Open必须同时满足，A02已闭环，A03等级低。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "查询页选择当前断言事实，使用模板或条件构建器；展开实际SPARQL。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范过滤level=High；自行补充status=Open。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：执行内置unclosed-high.rq，第一轮只有A01。修改A01状态为Closed并确认后重跑，结果必须为空；空结果不能单独证明业务世界没有告警。"
+        }
+      ],
+      "commonErrors": [
+        "包含A02：缺少状态过滤。",
+        "空结果：先核对范围、版本和条件，不猜测工具成功。",
+        "把过期结果当作当前结论：显示 staleReason，并提供重跑入口，不另建失效规则。"
+      ],
+      "transfer": false,
+      "knowledgePoints": ["本体查询", "断言与推导", "当前版本"]
+    },
+    {
+      "id": "quality",
+      "module": "质量与推理",
+      "goal": "修复真实约束错误，并追溯推导依据。",
+      "instructions": "重置G-base。建立设备名称必填约束；删除003名称验证，再补回。建立并运行R-risk，检查001的依据；尝试规则链并观察不支持提示。",
+      "checks": ["V-01", "R-01", "R-05"],
+      "completionCondition": "实际批准工具的当前版本完整结果与固定预期一致；失败、缺失或过期不通过。",
+      "next": "behavior",
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "SHACL检查记录是否符合要求；推理从事实和规则产生新分类。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "质量页选择当前断言全部Equipment；用必填模板保存约束。规则页用High/Open条件与风险类型结论。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范目标类Equipment、路径name、minCount=1；自行删除003名称后检查报告。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：删除003名称后只出现003名称必填违规，补回后消失。R-risk只为001推导HighRiskEquipment，依据为A01和规则。R-next保存启用时提示不支持规则链，不产生NeedsInspection。"
+        }
+      ],
+      "commonErrors": [
+        "把domain当必填：改用SHACL。",
+        "规则顺序影响结果：P0应先RDFS再一阶段规则，输出不继续触发。",
+        "以为删除推导就删除了源事实：请指向源事实、规则与重算，删除推导不改变断言。",
+        "把定义域/值域当必填约束：引导到 SHACL 必填模板，并说明 domain/range 只用于类型推导。"
+      ],
+      "transfer": false,
+      "knowledgePoints": ["质量与推理", "断言与推导", "当前版本"]
+    },
+    {
+      "id": "behavior",
+      "module": "行为定义",
+      "goal": "在隔离场景检验触发、不触发与重复事件。",
+      "instructions": "重置G-base。创建B-risk；事件E-B01新增001的High/Open告警，重提同一事件。另重置提交低危E-B02。",
+      "checks": ["B-01", "B-02"],
+      "completionCondition": "实际批准工具的当前版本完整结果与固定预期一致；失败、缺失或过期不通过。",
+      "next": "scenario",
+      "readings": [
+        {
+          "id": "behavior-conflict-read",
+          "title": "重复事件与写冲突",
+          "sourceRef": "学习体验优化建议 §4 L10、§7；S0 提案 §2 C10",
+          "optional": false,
+          "summary": "同一事件重复到达不会重复建单；并发写入冲突要整体回滚，不能只跳过一条。",
+          "content": "行为系统的两条纪律值得先记住。第一是幂等：同一个事件标识重复到达时，条件快照决定它只被消费一次，不应该出现第二张工单。第二是并发：两个写操作同时改到同一个对象时，比较与写入必须作为一个整体裁决——要么整条成功，要么整条回滚，不能只跳过其中一条然后继续写剩下的，否则剩下的那条会建立在没人预期到的状态上。这两条纪律的存在理由一样：重复与冲突都会破坏“谁在什么时候写了什么”的可追溯性，而追溯性正是学习记录和运维复盘依赖的东西。",
+          "selfAssessment": [
+            {
+              "question": "同一事件被重复提交时，期望的结果是？",
+              "options": [
+                { "id": "a", "text": "再创建一张同样内容的工单" },
+                { "id": "b", "text": "只被消费一次，不重复建单" },
+                { "id": "c", "text": "随机保留其中一张" }
+              ],
+              "answerKey": "b",
+              "explanation": "行为运行按事件标识做幂等处理：同一事件重复到达不会重复建单，否则写操作就会随重试次数膨胀。"
+            },
+            {
+              "question": "出现写冲突时，正确的处置是？",
+              "options": [
+                { "id": "a", "text": "跳过冲突的那条，其余继续提交" },
+                { "id": "b", "text": "本轮整体回滚，由人重新发起" },
+                { "id": "c", "text": "强行覆盖冲突对象" }
+              ],
+              "answerKey": "b",
+              "explanation": "冲突意味着并发写需要整体裁决；只跳过一条会让其余写入建立在未被预期的状态上，破坏可追溯性。"
+            }
+          ]
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "行为需要事件、冻结条件和内部安全动作；测试不会改正式数据。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "行为页选择新增告警事件、High/Open和设备高风险条件，动作创建关联巡检工单。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范创建待处理工单；自行补上事件关联并核对重复提交。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：E-B01新增A04后先推理，再冻结条件并创建一张W:E-B01；重复ID不再建单。独立还原后E-B02低危不建单，并显示未触发原因。"
+        }
+      ],
+      "commonErrors": [
+        "旧推导误触发：先重新形成行为前快照。",
+        "跨实例同属性不同值：本轮回滚，不能只跳过冲突动作。"
+      ],
+      "transfer": false,
+      "knowledgePoints": ["行为定义", "断言与推导", "当前版本"]
+    },
+    {
+      "id": "scenario",
+      "module": "沙盘预测",
+      "goal": "比较产能3与4的固定轮次状态，理解假设边界。",
+      "instructions": "加载E.5，运行4轮、初始积压0、每轮4个事件；分别设置直接产能3和4。核对完整工单集合，分别独立重放两次。",
+      "checks": ["G-list-01", "G-list-06"],
+      "completionCondition": "实际批准工具的当前版本完整结果与固定预期一致；失败、缺失或过期不通过。",
+      "next": "transfer-repair",
+      "readings": [
+        {
+          "id": "scenario-read",
+          "title": "沙盘的边界：不照搬参考站的语义",
+          "sourceRef": "学习体验优化建议 §4 L11、§6；S0 提案 §2 C11",
+          "optional": true,
+          "summary": "沙盘是固定轮次的隔离推演；结果图不是因果证据，历史副本不是当前事实。",
+          "content": "沙盘回答的是一个被刻意收窄的问题：在给定基线、给定轮次、给定容量下，状态会怎么走。它不是对真实未来的预测，也不继承参考产品里场景的寿命、自动同步或写回规则——那些语义本软件不承诺，因此不照搬。由此产生两条阅读纪律。第一，看结果图时不要把它当成因果证据：它展示的是关系与规则推演的结果，不是对“为什么发生”的证明。第二，看历史副本时不要把它当成当前事实：每次运行都绑定自己的版本与观察窗口，历史副本只在它自己的版本语境里成立。还要记住沙盘结果是隔离的：它不会顺手改掉你当前项目里的数据。",
+          "selfAssessment": [
+            {
+              "question": "关于沙盘结果，正确的理解是？",
+              "options": [
+                { "id": "a", "text": "沙盘结果证明了事件与结果之间的因果关系" },
+                { "id": "b", "text": "沙盘展示的是给定假设下的推演，不是因果证据" },
+                { "id": "c", "text": "沙盘结果可以直接写回当前项目" }
+              ],
+              "answerKey": "b",
+              "explanation": "沙盘是固定轮次、隔离状态的推演，展示关系与规则结果，不构成因果证明，也不会写回当前项目。"
+            },
+            {
+              "question": "看到一份历史运行记录时，应当？",
+              "options": [
+                { "id": "a", "text": "当作当前事实继续引用" },
+                { "id": "b", "text": "按它绑定的版本与观察窗口理解，不冒充当前事实" },
+                { "id": "c", "text": "忽略版本差异" }
+              ],
+              "answerKey": "b",
+              "explanation": "历史副本只在它自己的版本与观察窗口里成立；把它当当前事实会掩盖输入已经变化这一事实。"
+            }
+          ]
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "沙盘是隔离的条件推演；不代表真实未来或真实运维产能。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "场景页设置直接产能与最大轮数4；用同一事件输入，只改变产能。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范产能3第1轮创建W001..004、完成W001..003、积压W004。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：产能3各轮积压为W004；W007..008；W010..012；W013..016，累计完成3/6/9/12。产能4每轮清空、累计4/8/12/16；对照完整逐轮状态而非只看数字。"
+        }
+      ],
+      "commonErrors": [
+        "把工单完成等同告警Closed：两项状态不同。",
+        "重放重复建单：独立重放应重置消费，显式快照续跑才保留消费。",
+        "把结果图当作因果证据，或把历史副本当作当前事实：教学提醒，需指明版本、快照与观察窗口。"
+      ],
+      "transfer": false,
+      "knowledgePoints": ["沙盘预测", "断言与推导", "当前版本"]
+    },
+    {
+      "id": "transfer-repair",
+      "module": "迁移任务",
+      "goal": "换一组设备数据后独立定位并修复名称必填错误。",
+      "instructions": "打开独立迁移数据与参考设备清单。使用实际检查定位问题，依据参考清单修复，使名称必填约束通过；不要直接复刻演示对象。",
+      "checks": ["transfer-repair"],
+      "completionCondition": "操作结果通过与独立迁移成功分别记录；任何提示/演示/Agent辅助均计入该次尝试。",
+      "next": "transfer-classify",
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "先判断要校验已有记录还是计算新分类。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "使用检查报告定位对象；查看事实来源而非只看显示名称。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范查看一个已有名称的断言来源；其余独立完成。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：检查报告定位equipment/102缺少name；参考清单中名称为供水泵。新增该名称断言并确认，再运行实际SHACL检查，预期违规消失。使用此示范后不计本题独立迁移成功。"
+        }
+      ],
+      "commonErrors": [
+        "直接点击完成或复述答案不能替代真实工具检查。",
+        "接受Agent完整修改后切回导师模式，不会变成独立成功。"
+      ],
+      "transfer": true,
+      "knowledgePoints": ["SHACL", "断言事实", "当前推导结果"]
+    },
+    {
+      "id": "transfer-classify",
+      "module": "迁移任务",
+      "goal": "区分断言事实与推导结果，并说明依据。",
+      "instructions": "打开另一组设备与告警数据，真实运行所选推理。根据实际来源记录，为题目指定的两条事实分别选择来源类别并说明依据。",
+      "checks": ["transfer-classify"],
+      "completionCondition": "操作结果通过与独立迁移成功分别记录；任何提示/演示/Agent辅助均计入该次尝试。",
+      "next": "report",
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "先判断要校验已有记录还是计算新分类。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "使用检查报告定位对象；查看事实来源而非只看显示名称。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范查看一个已有名称的断言来源；其余独立完成。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：equipment/201的名称检测泵来自输入断言；HighRiskEquipment类型来自真实R-risk推理，依据为设备与High/Open告警T-A1。核对实际工具依据后选择两个来源。使用此示范后不计本题独立迁移成功。"
+        }
+      ],
+      "commonErrors": [
+        "直接点击完成或复述答案不能替代真实工具检查。",
+        "接受Agent完整修改后切回导师模式，不会变成独立成功。"
+      ],
+      "transfer": true,
+      "knowledgePoints": ["SHACL", "断言事实", "当前推导结果"]
+    },
+    {
+      "id": "report",
+      "module": "学习成果",
+      "goal": "导出包含数据版本、辅助记录和过期状态的HTML报告与项目。",
+      "instructions": "选择学习报告与完整业务项目数据，核对版本、任务检查和辅助归因；通过T10批准服务导出并核对安全显示。",
+      "checks": ["learning-report"],
+      "completionCondition": "实际T10导出结果通过检查，不能以报告模板存在替代。",
+      "next": null,
+      "hints": [
+        {
+          "level": 1,
+          "kind": "concept",
+          "text": "报告记录过程与依据，不把最终成功等同掌握。"
+        },
+        {
+          "level": 2,
+          "kind": "operation",
+          "text": "导出页选择学习记录和所需业务数据，检查不含凭据。"
+        },
+        {
+          "level": 3,
+          "kind": "partial-demonstration",
+          "text": "示范查看部分提示标记，自行核对完整示范与Agent辅助。"
+        },
+        {
+          "level": 4,
+          "kind": "full-demonstration",
+          "text": "完整示范：按数据版本分组列出任务完成、提示层级、Agent辅助、检查依据和过期状态，再导出HTML；检查安全文本呈现与项目包范围。"
+        }
+      ],
+      "commonErrors": ["报告混用版本却无标识。", "凭据不得进入报告。"],
+      "transfer": false,
+      "knowledgePoints": ["学习成果", "版本", "隐私"]
+    }
+  ]
+}

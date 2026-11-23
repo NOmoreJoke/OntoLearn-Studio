@@ -696,6 +696,23 @@ def matches_business3_response(request, response, expected_registry_hash):
             and value["result"]["operationId"] == p["operationId"]
             and value["result"]["requestHash"] == p["requestHash"]
         )
+    if request["method"].startswith("project.learning."):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        method, p, value = request["method"], request["params"], response["result"]
+        if value["projectId"] != p["projectId"]:
+            return False
+        if method == "project.learning.read":
+            return True
+        if value["operationId"] != p["operationId"] or value["taskId"] != p["taskId"]:
+            return False
+        if method == "project.learning.hint.record":
+            return value["level"] == p["level"]
+        if method == "project.learning.observation.record":
+            return value["observation"] == p["observation"]
+        return method in {"project.learning.attempt.start", "project.learning.task.check"}
     if request["method"].startswith("changeset."):
         if request["engineSessionId"] != response["engineSessionId"]:
             return False

@@ -587,9 +587,20 @@
         "project.restore.page",
         "project.restore.confirm",
         "project.restore.apply",
-        "project.restore.operation.get"
+        "project.restore.operation.get",
+        "project.learning.read",
+        "project.learning.attempt.start",
+        "project.learning.hint.record",
+        "project.learning.observation.record",
+        "project.learning.task.check"
       ],
-      "newSourceOrLearningMethods": [],
+      "newSourceOrLearningMethods": [
+        "project.learning.read",
+        "project.learning.attempt.start",
+        "project.learning.hint.record",
+        "project.learning.observation.record",
+        "project.learning.task.check"
+      ],
       "capabilityImplementations": {
         "changeset.commit": "explicit-internal-business3-runtime"
       },
@@ -614,7 +625,12 @@
         "project.restore.page",
         "project.restore.confirm",
         "project.restore.apply",
-        "project.restore.operation.get"
+        "project.restore.operation.get",
+        "project.learning.read",
+        "project.learning.attempt.start",
+        "project.learning.hint.record",
+        "project.learning.observation.record",
+        "project.learning.task.check"
       ]
     }
   },
@@ -712,5 +728,40 @@
       "operation-evidence",
       "checkpoints"
     ]
+  },
+  "projectLearning": {
+    "profile": "business3",
+    "methods": [
+      "project.learning.read",
+      "project.learning.attempt.start",
+      "project.learning.hint.record",
+      "project.learning.observation.record",
+      "project.learning.task.check"
+    ],
+    "agentEligible": false,
+    "authority": "selected-project; learning attempts persist through application learning.record rows in the single Store3 transaction",
+    "exposure": "business-named-bridge-only",
+    "attemptPayloadSchemaVersion": 1,
+    "taskStatusValues": [
+      "not-checked",
+      "passed",
+      "needs-repair",
+      "failed",
+      "tool-not-successful",
+      "missing-evidence",
+      "pending-dependency",
+      "rerun-required",
+      "stale"
+    ],
+    "assistanceValues": [
+      "independent",
+      "partial-hints",
+      "full-demonstration",
+      "agent-full-assistance"
+    ],
+    "hintLevels": [1, 2, 3, 4],
+    "revealedHintsPolicy": "level<=persisted maxHintLevel only; never pre-unlocked",
+    "downstreamTasks": "pending-dependency until each real domain tool is wired; never a fabricated pass",
+    "guidedStage": "first business-ontology pass mints exactly one reason=guided-stage checkpoint"
   }
 }
