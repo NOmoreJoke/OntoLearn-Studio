@@ -21,6 +21,8 @@ import { ontologyOperations } from './ontology/mainline-operations'
 import type { OntologyMainlineBridge } from './ontology/mainline-api'
 import { ProjectManagementController } from './project/management-controller'
 import { ProjectManagementPanel } from './project/ProjectManagementPanel'
+import { ProjectCheckpointRestorePanel } from './project/ProjectCheckpointRestorePanel'
+import { ProjectRestoreController } from './project/restore-controller'
 import { LibraryLocationPanel } from './project/LibraryLocationPanel'
 import { libraryAdmissionBlocked, settleManagementTail } from './project/lifecycle-admission'
 
@@ -61,6 +63,21 @@ export function App() {
       !!managementState.pending ||
       managementState.recovery.length > 0 ||
       !managementState.recoveryLoaded)
+  const [checkpointCtl] = useState(() =>
+    window.ontolearn?.listProjectCheckpoints
+      ? new ProjectRestoreController(window.ontolearn)
+      : undefined,
+  )
+  const [checkpointState, setCheckpointState] = useState(() => checkpointCtl?.getSnapshot())
+  // 首启序列是否已结算。首启序列在飞、恢复读取进行中或仍有待核对恢复时，创建
+  // 与打开入口保持禁用，防止在 checkpointCtl.initialize() 尚未结算前抢跑并发
+  // 点击。序列结算即打开；一次读取失败不再把整个项目库永久锁死——检查点面板
+  // 自身仍按自己的 recoveryLoaded 独立收口。
+  const [checkpointBooted, setCheckpointBooted] = useState(false)
+  const checkpointBlocked =
+    !!checkpointState &&
+    (!checkpointBooted || checkpointState.busy || checkpointState.recovery.length > 0)
+  const [checkpointApplied, setCheckpointApplied] = useState<{ projectId: string; nonce: number }>()
   const [catalog, setCatalog] = useState<MainlineCatalogDTO>()
   const [projectName, setProjectName] = useState('')
   const [projectBusy, setProjectBusy] = useState(false)
@@ -82,6 +99,10 @@ export function App() {
   const libraryBusy = useRef(false)
   // open/create 正在进行的 management 准入尾段；期间的恢复视图必须等它完成。
   const admissionTail = useRef<Promise<void> | undefined>(undefined)
+  // 首启串行序列（management 完全结算后再启动 restore 通道），全局共享一份。
+  const boot = useRef<Promise<void> | undefined>(undefined)
+  // 首启序列的共享存活标记：真正的卸载会关闭它，StrictMode 重挂载会重新武装。
+  const bootActive = useRef(true)
   const selectionTarget = useRef<{ projectId?: string } | undefined>(undefined)
   const createIntent = useRef<
     MainlineCreateRequestDTO | MainlineExampleCreateRequestDTO | undefined
@@ -234,8 +255,18 @@ export function App() {
       // 仍有 management 调用在飞行（单并发锁会拒绝随后的项目读取）。
       const owned = admissionTail.current
       if (owned) await owned
-      else if (management && value.project)
-        await settleManagementTail(management, value.project.projectId)
+      else if (value.project) {
+        // 自主恢复：与 open/create 相同的尾段顺序，先结算 management 读取，
+        // 再结算检查点读取；单并发模型下两段不得重叠。首启序列尚未结算时
+        // 必须先等它完成，否则恢复读取会与 project:management-pending /
+        // project:restore-pending 抢同一个 mainline 单并发槽位。
+        if (boot.current) await boot.current
+        if (management) await settleManagementTail(management, value.project.projectId)
+        if (checkpointCtl) {
+          checkpointCtl.select(value.project.projectId)
+          await checkpointCtl.refreshWhenIdle()
+        }
+      } else checkpointCtl?.select(undefined)
       if (documentLeaving.current || value.generation < latestGeneration.current) return
       if (!updateTasks(value)) return
       readyWorkspace.current = value
@@ -251,6 +282,7 @@ export function App() {
     [
       updateTasks,
       management,
+      checkpointCtl,
       retireOntology,
       disconnectQuery,
       activateWorkspace,
@@ -320,8 +352,13 @@ export function App() {
         return
       }
       // 版本渲染（restore → selected-project-version）与交还操作之前，先串行
-      // 完成全部 management 读取；单并发模型下不允许留下在飞行的调用。
-      const tail = settleManagementTail(management, projectId, { refresh: true })
+      // 完成全部 management 与检查点读取；单并发模型下不允许留下在飞行的
+      // 调用，管理通道与恢复通道也不得重叠。
+      const tail = (async () => {
+        await settleManagementTail(management, projectId, { refresh: true })
+        checkpointCtl?.select(projectId)
+        await checkpointCtl?.refreshWhenIdle()
+      })()
       admissionTail.current = tail
       await tail
       setProjectNotice(`项目已打开 · 版本 ${response.data.projectRevision}`)
@@ -406,11 +443,15 @@ export function App() {
       }
       const listed = await bridge.getProjectCatalog({ pageSize: 64, cursor: null })
       if (listed.ok) setCatalog(listed.data)
-      // 与 openProject 相同的准入尾段：全部 management 读取串行完成后，才允许
-      // restore() 渲染新项目版本并把工作台交还出去。
+      // 与 openProject 相同的准入尾段：全部 management 读取与检查点读取串行
+      // 完成后，才允许 restore() 渲染新项目版本并把工作台交还出去。
       await management?.refresh()
       if (opened.ok) {
-        const tail = settleManagementTail(management, created.data.projectId)
+        const tail = (async () => {
+          await settleManagementTail(management, created.data.projectId)
+          checkpointCtl?.select(created.data.projectId)
+          await checkpointCtl?.refreshWhenIdle()
+        })()
         admissionTail.current = tail
         await tail
         await restore()
@@ -441,13 +482,14 @@ export function App() {
         libraryBusy.current ||
         uncertain.current ||
         !!management?.unresolved ||
+        !!checkpointCtl?.unresolved ||
         queries.some(
           (controller) => controller.hasUnresolvedWrite || controller.getSnapshot().busy,
         ) ||
         ontologyOperations.hasUnresolved ||
         (!!ontology && ['reading', 'preparing', 'submitting', 'unknown'].includes(ontology.phase)),
     }
-  }, [management])
+  }, [management, checkpointCtl])
   const reportWorkspace = useCallback((): LibraryWorkspaceReport => {
     documentNonce.current ??= crypto.randomUUID()
     return {
@@ -489,15 +531,30 @@ export function App() {
     setWorkspaceFrozen(value)
   }, [])
   useEffect(() => {
-    if (!management) return
-    const stop = management.subscribe(() => {
-      setManagementState(management.getSnapshot())
-      workspaceNotify.current()
-    })
-    void management.initialize()
-    return stop
-  }, [management])
-  useEffect(() => {
+    // One strictly serial first-boot sequence. The engine's mainline reply
+    // receiver settles exactly one mainline call at a time, so the management
+    // channel (project:management-pending / catalog / state) and the restore
+    // channel (project:restore-pending) must never overlap.
+    let active = true
+    const releases: Array<() => void> = []
+    if (management) {
+      releases.push(
+        management.subscribe(() => {
+          setManagementState(management.getSnapshot())
+          workspaceNotify.current()
+        }),
+      )
+    }
+    if (checkpointCtl) {
+      releases.push(
+        checkpointCtl.subscribe(() => {
+          setCheckpointState(checkpointCtl.getSnapshot())
+          workspaceNotify.current()
+        }),
+      )
+    }
+    // Both handlers are registered synchronously, so no apply event can be
+    // missed while the serial initialization below is still running.
     management?.setAppliedHandler((receipt) => {
       // The old operation owns its receipt, never a newer selected workspace.
       if (receipt.kind === 'trash' && current.current?.project?.projectId === receipt.projectId) {
@@ -507,12 +564,74 @@ export function App() {
         current.current = undefined
         setTasks(undefined)
         management?.select(undefined)
+        // The checkpoint list belongs to the trashed project: clear the
+        // selection only. The management controller refreshes its own catalog
+        // and selected state after this callback returns, so no checkpoint
+        // request may be started from here.
+        checkpointCtl?.select(undefined)
       }
       // Metadata-only edits preserve the editor instance and its draft. The
       // controller reads current metadata; no domain restore or remount occurs.
       workspaceNotify.current()
     })
-  }, [management, retireOntology, disconnectQuery])
+    checkpointCtl?.setAppliedHandler((result) => {
+      // The restored workspace projection is reloaded through the real open
+      // path; the old editor/draft instances are retired, never mutated.
+      workspaceNotify.current()
+      // Monotonic nonce: applying twice to the same project must retrigger
+      // the open/refresh effect even though the projectId string is equal.
+      setCheckpointApplied((previous) => ({
+        projectId: result.projectId,
+        nonce: (previous?.nonce ?? 0) + 1,
+      }))
+    })
+    // The boot sequence is shared across mounts: a second concurrent run must
+    // never restart the restore channel while the management channel is still
+    // settling, which is exactly the collision the single-concurrency model
+    // rejects with PERMISSION_DENIED.
+    bootActive.current = true
+    boot.current ??= (async () => {
+      // The management channel settles completely before the restore channel
+      // starts, so project:restore-pending can never collide with
+      // project:management-pending or the management catalog read.
+      await management?.initialize()
+      // A torn-down view must not start the restore channel. The flag is shared
+      // on purpose: a StrictMode remount re-arms it before this continuation
+      // runs, so the restore channel is never left uninitialized.
+      if (!bootActive.current) return
+      await checkpointCtl?.initialize()
+    })().catch(() => {})
+    void boot.current.then(() => {
+      // Publish the settled state even when no listener notification arrived.
+      if (!active) return
+      if (management) setManagementState(management.getSnapshot())
+      if (checkpointCtl) setCheckpointState(checkpointCtl.getSnapshot())
+      // The first-boot readiness gate opens once the whole sequence settled.
+      setCheckpointBooted(true)
+    })
+    return () => {
+      active = false
+      bootActive.current = false
+      for (const release of releases) release()
+    }
+  }, [management, checkpointCtl, retireOntology, disconnectQuery])
+  useEffect(() => {
+    // No selected project: clear the checkpoint selection synchronously. The
+    // project-bound list refresh is serialized inside the open/create/restore
+    // admission tail, so it never races the workspace auto-read.
+    if (!tasks?.project?.projectId) checkpointCtl?.select(undefined)
+  }, [checkpointCtl, tasks?.project?.projectId])
+  useEffect(() => {
+    if (!checkpointApplied) return
+    // Reload the restored workspace through the real open path after the
+    // applying event settles; a microtask keeps setState out of the effect body.
+    // openProject already settles the management and checkpoint tail in one
+    // strict order, so no extra concurrent refresh belongs here.
+    const pending = checkpointApplied
+    queueMicrotask(() => {
+      void openProject(pending.projectId)
+    })
+  }, [checkpointApplied]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     let live = true
     const progressBuffer = pendingProgress.current
@@ -599,6 +718,7 @@ export function App() {
     const pageLeaving = () => {
       documentLeaving.current = true
       management?.close()
+      checkpointCtl?.close()
       retireOntology()
       disconnectQuery()
       readyWorkspace.current = undefined
@@ -609,7 +729,7 @@ export function App() {
       // Reversible cleanup supports StrictMode. Selection/document events use retire.
       ontologyOwner.current?.session.dispose()
     }
-  }, [management, retireOntology, disconnectQuery])
+  }, [management, checkpointCtl, retireOntology, disconnectQuery])
   async function loadSummary(job: import('@ontolearn/contracts').JobView) {
     const bridge = window.ontolearn
     if (!bridge || !job.resultRef) return
@@ -776,7 +896,7 @@ export function App() {
           <div className="project-quickstart" aria-label="首次启动入口">
             <button
               type="button"
-              disabled={projectBusy || workspaceFrozen || managementBlocked}
+              disabled={projectBusy || workspaceFrozen || managementBlocked || checkpointBlocked}
               onClick={() => void listProjects()}
             >
               打开已有项目
@@ -819,14 +939,26 @@ export function App() {
             <button
               type="submit"
               data-testid="project-create"
-              disabled={projectBusy || !projectName.trim() || workspaceFrozen || managementBlocked}
+              disabled={
+                projectBusy ||
+                !projectName.trim() ||
+                workspaceFrozen ||
+                managementBlocked ||
+                checkpointBlocked
+              }
             >
               {hasCreateIntent ? '核对创建结果' : '新建空白项目'}
             </button>
             <button
               type="button"
               data-testid="project-create-example"
-              disabled={projectBusy || hasCreateIntent || workspaceFrozen || managementBlocked}
+              disabled={
+                projectBusy ||
+                hasCreateIntent ||
+                workspaceFrozen ||
+                managementBlocked ||
+                checkpointBlocked
+              }
               onClick={() => void createProject(true)}
             >
               从设备运维示例开始
@@ -836,7 +968,7 @@ export function App() {
                 type="button"
                 data-testid="project-list-refresh"
                 onClick={() => void listProjects()}
-                disabled={projectBusy}
+                disabled={projectBusy || checkpointBlocked}
               >
                 刷新项目列表
               </button>
@@ -886,9 +1018,22 @@ export function App() {
           {management && (
             <ProjectManagementPanel
               controller={management}
-              disabled={projectBusy || workspaceFrozen || Boolean(connection)}
+              disabled={projectBusy || workspaceFrozen || Boolean(connection) || checkpointBlocked}
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
               openProject={(id) => void openProject(id)}
+            />
+          )}
+          {checkpointCtl && (
+            <ProjectCheckpointRestorePanel
+              controller={checkpointCtl}
+              disabled={
+                projectBusy ||
+                workspaceFrozen ||
+                Boolean(connection) ||
+                managementBlocked ||
+                checkpointBlocked
+              }
+              destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
             />
           )}
           {window.ontolearn?.getLibraryLocation && (

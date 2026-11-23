@@ -290,7 +290,10 @@
                     "snapshot",
                     "operation",
                     "subscription",
-                    "cursor"
+                    "cursor",
+                    "checkpoint",
+                    "preview",
+                    "confirmation"
                   ]
                 }
               },
@@ -5333,7 +5336,7 @@
             "$ref": "#/$defs/name"
           },
           "minItems": 0,
-          "maxItems": 36
+          "maxItems": 50
         },
         "limits": {
           "$ref": "#/$defs/limits"
@@ -5508,7 +5511,10 @@
                     "snapshot",
                     "operation",
                     "subscription",
-                    "cursor"
+                    "cursor",
+                    "checkpoint",
+                    "preview",
+                    "confirmation"
                   ]
                 }
               },
@@ -7070,6 +7076,181 @@
             },
             "params": {
               "$ref": "#/$defs/params_project.library.status"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.checkpoint.list"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.checkpoint.list"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.checkpoint.create"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.checkpoint.create"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.preview"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.restore.preview"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.page"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.restore.page"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.confirm"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.restore.confirm"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.apply"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.restore.apply"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "request"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.operation.get"
+            },
+            "params": {
+              "$ref": "#/$defs/params_project.restore.operation.get"
             }
           },
           "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "params"],
@@ -9372,6 +9553,454 @@
             },
             "method": {
               "const": "project.library.status"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.checkpoint.list"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.checkpoint.list"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.checkpoint.list"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.checkpoint.create"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.checkpoint.create"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.checkpoint.create"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.preview"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.restore.preview"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.preview"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.page"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.restore.page"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.page"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.confirm"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.restore.confirm"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.confirm"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.apply"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.restore.apply"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.apply"
+            },
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "$ref": "#/$defs/error3"
+            }
+          },
+          "required": ["kind", "protocolVersion", "id", "engineSessionId", "method", "ok", "error"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.operation.get"
+            },
+            "ok": {
+              "const": true
+            },
+            "result": {
+              "$ref": "#/$defs/result_project.restore.operation.get"
+            }
+          },
+          "required": [
+            "kind",
+            "protocolVersion",
+            "id",
+            "engineSessionId",
+            "method",
+            "ok",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "response"
+            },
+            "protocolVersion": {
+              "const": 3
+            },
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "engineSessionId": {
+              "$ref": "#/$defs/id"
+            },
+            "method": {
+              "const": "project.restore.operation.get"
             },
             "ok": {
               "const": false
@@ -13116,6 +13745,743 @@
         }
       },
       "required": ["libraryEvidenceRef", "activeJobs"],
+      "additionalProperties": false
+    },
+    "checkpoint.reason": {
+      "enum": [
+        "genesis",
+        "manual",
+        "before-run",
+        "guided-stage",
+        "before-agent",
+        "restore",
+        "operation"
+      ]
+    },
+    "checkpoint.coverage": {
+      "type": "array",
+      "items": {
+        "enum": ["metadata", "drafts", "learningCurrent", "assistanceAudit"]
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "checkpoint.preserved": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "historical-runs",
+          "jobs-and-results",
+          "assistance-audit",
+          "operation-evidence",
+          "checkpoints"
+        ]
+      },
+      "minItems": 5,
+      "maxItems": 5
+    },
+    "checkpoint.item": {
+      "type": "object",
+      "properties": {
+        "checkpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "operationSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "domainRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "domainSnapshotRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "metadataVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "reason": {
+          "$ref": "#/$defs/checkpoint.reason"
+        },
+        "label": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "operationId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "operationKind": {
+          "oneOf": [
+            {
+              "enum": ["legacy-domain", "domain", "application", "combined"]
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "definitions": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "facts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "drafts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "learning": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["definitions", "facts", "drafts", "learning"],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "$ref": "#/$defs/checkpoint.coverage"
+        },
+        "preserved": {
+          "$ref": "#/$defs/checkpoint.preserved"
+        },
+        "isCurrent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "checkpointRef",
+        "operationSequence",
+        "domainRevision",
+        "domainSnapshotRef",
+        "metadataVersion",
+        "reason",
+        "label",
+        "operationId",
+        "operationKind",
+        "counts",
+        "coverage",
+        "preserved",
+        "isCurrent"
+      ],
+      "additionalProperties": false
+    },
+    "restore.segmentDescriptor": {
+      "type": "object",
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "byteOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "rawByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32768
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": ["ordinal", "byteOffset", "rawByteLength", "sha256"],
+      "additionalProperties": false
+    },
+    "restore.segment": {
+      "type": "object",
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "byteOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "rawByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32768
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "dataBase64": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 43700
+        }
+      },
+      "required": ["ordinal", "byteOffset", "rawByteLength", "sha256", "dataBase64"],
+      "additionalProperties": false
+    },
+    "restore.manifest": {
+      "type": "object",
+      "properties": {
+        "documentKind": {
+          "const": "restore-impact"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "totalBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16777216
+        },
+        "segmentCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/restore.segmentDescriptor"
+          },
+          "minItems": 1,
+          "maxItems": 512
+        }
+      },
+      "required": ["documentKind", "documentHash", "totalBytes", "segmentCount", "segments"],
+      "additionalProperties": false
+    },
+    "restore.readSegmentHashes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hash"
+      },
+      "minItems": 1,
+      "maxItems": 512
+    },
+    "params_project.checkpoint.list": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "cursor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "const": null
+            }
+          ]
+        }
+      },
+      "required": ["projectId", "pageSize", "cursor"],
+      "additionalProperties": false
+    },
+    "result_project.checkpoint.list": {
+      "type": "object",
+      "properties": {
+        "checkpointListVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.item"
+          },
+          "maxItems": 50
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "nextCursor": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "const": null
+            }
+          ]
+        }
+      },
+      "required": ["checkpointListVersion", "projectId", "items", "total", "offset", "nextCursor"],
+      "additionalProperties": false
+    },
+    "params_project.checkpoint.create": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "const": null
+            }
+          ]
+        }
+      },
+      "required": ["projectId", "operationId", "label"],
+      "additionalProperties": false
+    },
+    "result_project.checkpoint.create": {
+      "type": "object",
+      "properties": {
+        "checkpointCreateVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "checkpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "reason": {
+          "const": "manual"
+        },
+        "label": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "domainRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "metadataVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "checkpointCreateVersion",
+        "projectId",
+        "operationId",
+        "operationSequence",
+        "checkpointRef",
+        "reason",
+        "label",
+        "domainRevision",
+        "metadataVersion"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.restore.preview": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "targetCheckpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "expectedCheckpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "expectedLifecycleVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "projectId",
+        "targetCheckpointRef",
+        "expectedCheckpointRef",
+        "expectedLifecycleVersion"
+      ],
+      "additionalProperties": false
+    },
+    "result_project.restore.preview": {
+      "type": "object",
+      "properties": {
+        "restorePreviewVersion": {
+          "const": 1
+        },
+        "previewRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "manifest": {
+          "$ref": "#/$defs/restore.manifest"
+        },
+        "targetCheckpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "targetOperationSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "targetDomainRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "currentCheckpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "currentOperationSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "interveningOperationCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "domainWillRestore": {
+          "type": "boolean"
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "restorePreviewVersion",
+        "previewRef",
+        "projectId",
+        "documentHash",
+        "manifest",
+        "targetCheckpointRef",
+        "targetOperationSequence",
+        "targetDomainRevision",
+        "currentCheckpointRef",
+        "currentOperationSequence",
+        "interveningOperationCount",
+        "domainWillRestore",
+        "expiresAtMs"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.restore.page": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "cursor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10,
+              "pattern": "^[0-9]{1,10}$"
+            },
+            {
+              "const": null
+            }
+          ]
+        }
+      },
+      "required": ["projectId", "previewRef", "cursor"],
+      "additionalProperties": false
+    },
+    "result_project.restore.page": {
+      "type": "object",
+      "properties": {
+        "restorePageVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/restore.segment"
+          },
+          "maxItems": 50
+        },
+        "nextCursor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10,
+              "pattern": "^[0-9]{1,10}$"
+            },
+            {
+              "const": null
+            }
+          ]
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "restorePageVersion",
+        "projectId",
+        "previewRef",
+        "documentHash",
+        "segments",
+        "nextCursor",
+        "complete"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.restore.confirm": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "readSegmentHashes": {
+          "$ref": "#/$defs/restore.readSegmentHashes"
+        }
+      },
+      "required": ["projectId", "previewRef", "documentHash", "readSegmentHashes"],
+      "additionalProperties": false
+    },
+    "result_project.restore.confirm": {
+      "type": "object",
+      "properties": {
+        "restoreConfirmationVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "previewRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "preparedPlanRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "confirmationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "restoreConfirmationVersion",
+        "projectId",
+        "previewRef",
+        "documentHash",
+        "preparedPlanRef",
+        "confirmationRef",
+        "expiresAtMs"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.restore.apply": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "confirmationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": ["projectId", "operationId", "confirmationRef", "documentHash"],
+      "additionalProperties": false
+    },
+    "result_project.restore.apply": {
+      "type": "object",
+      "properties": {
+        "restoreResultVersion": {
+          "const": 1
+        },
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "requestHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "receiptHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "checkpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "operationSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "domainRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "metadataVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "restoredFromCheckpointRef": {
+          "$ref": "#/$defs/hash"
+        },
+        "coverage": {
+          "$ref": "#/$defs/checkpoint.coverage"
+        },
+        "preserved": {
+          "$ref": "#/$defs/checkpoint.preserved"
+        }
+      },
+      "required": [
+        "restoreResultVersion",
+        "projectId",
+        "operationId",
+        "requestHash",
+        "receiptHash",
+        "checkpointRef",
+        "operationSequence",
+        "domainRevision",
+        "metadataVersion",
+        "restoredFromCheckpointRef",
+        "coverage",
+        "preserved"
+      ],
+      "additionalProperties": false
+    },
+    "params_project.restore.operation.get": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "$ref": "#/$defs/id"
+        },
+        "operationId": {
+          "$ref": "#/$defs/id"
+        },
+        "requestHash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": ["projectId", "operationId", "requestHash"],
+      "additionalProperties": false
+    },
+    "result_project.restore.operation.get": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": ["not-found", "applied"]
+        },
+        "result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/result_project.restore.apply"
+            },
+            {
+              "const": null
+            }
+          ]
+        }
+      },
+      "required": ["state", "result"],
       "additionalProperties": false
     }
   },

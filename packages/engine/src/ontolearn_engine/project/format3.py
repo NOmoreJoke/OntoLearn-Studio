@@ -711,9 +711,17 @@ def _history(store, project):
             _require(canonical(plan["after"]) == canonical(after["application"]))
             change = plan["change"]
             target = None
-            if change["type"] == "draft.restore":
+            if change["type"] in {"draft.restore", "project.restore"}:
+                # Authority comes from the verified ledger itself: cross-project,
+                # future or forged checkpoint refs never enter this map.
                 _require(change["checkpointRef"] in checkpoints)
                 target = checkpoints[change["checkpointRef"]]
+                if change["type"] == "project.restore":
+                    _require(change["checkpointRef"] != current_ref)
+                    _require(
+                        (plan["domain"] is not None)
+                        == (target["domainSnapshotRef"] != current["domainSnapshotRef"])
+                    )
             validate_plan(store, project, plan, current["domainRevision"], target)
             _require((plan["domain"] is not None) == (op["kind"] == "combined"))
             expected = app_receipt(

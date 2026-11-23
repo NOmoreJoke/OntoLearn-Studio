@@ -255,7 +255,9 @@ def validate(name, value):
             and encoded_size(value) <= 262144
         )
         if valid and (
-            not _changeset_semantics(name, value) or not _query_consumer_semantics(name, value)
+            not _changeset_semantics(name, value)
+            or not _query_consumer_semantics(name, value)
+            or not _checkpoint_semantics(name, value)
         ):
             return False
         if valid and name in {"params_job.create", "params_job.list"}:
@@ -370,6 +372,50 @@ def _changeset_semantics(name, value):
             )
             for index, part in enumerate(parts)
         )
+    return True
+
+
+def _checkpoint_semantics(name, value):
+    if name in {"request3", "response3", "envelope3"}:
+        if value["kind"] == "request" and value["method"].startswith(
+            ("project.checkpoint.", "project.restore.")
+        ):
+            return _checkpoint_semantics("params_" + value["method"], value["params"])
+        if (
+            value["kind"] == "response"
+            and value["ok"]
+            and value["method"].startswith(("project.checkpoint.", "project.restore."))
+        ):
+            return _checkpoint_semantics("result_" + value["method"], value["result"])
+        return True
+    if name in {"restore.manifest", "checkpoint.coverage", "checkpoint.preserved"}:
+        parts = value["segments"] if name == "restore.manifest" else value
+        offset = 0
+        for ordinal, part in enumerate(parts):
+            if part["ordinal"] != ordinal or part["byteOffset"] != offset:
+                return False
+            offset += part["rawByteLength"]
+        return offset == value["totalBytes"] if name == "restore.manifest" else True
+    if name == "restore.segment":
+        encoded = value["dataBase64"]
+        padding = 2 if encoded.endswith("==") else 1 if encoded.endswith("=") else 0
+        return len(encoded) // 4 * 3 - padding == value["rawByteLength"]
+    if name in {"result_project.restore.page", "params_project.restore.page"}:
+        if name.startswith("params_"):
+            return True
+        parts = value["segments"]
+        return all(
+            _checkpoint_semantics("restore.segment", part)
+            and (
+                index == 0
+                or part["ordinal"] == parts[index - 1]["ordinal"] + 1
+                and part["byteOffset"]
+                == parts[index - 1]["byteOffset"] + parts[index - 1]["rawByteLength"]
+            )
+            for index, part in enumerate(parts)
+        )
+    if name == "params_project.restore.confirm":
+        return len(value["readSegmentHashes"]) == len(set(value["readSegmentHashes"]))
     return True
 
 
@@ -595,6 +641,60 @@ def matches_business3_response(request, response, expected_registry_hash):
                     and draft["contentHash"] is None
                 )
             )
+        )
+    if request["method"].startswith(("project.checkpoint.", "project.restore.")):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        method, p, value = request["method"], request["params"], response["result"]
+        if (
+            value["state"] != "not-found"
+            and (value["result"] is None or value["result"]["projectId"] != p["projectId"])
+            if method == "project.restore.operation.get"
+            else value["projectId"] != p["projectId"]
+        ):
+            return False
+        if method == "project.checkpoint.list":
+            items = value["items"]
+            end = value["offset"] + len(items)
+            current = [item for item in items if item["isCurrent"]]
+            return (
+                len(items) <= p["pageSize"]
+                and end <= value["total"]
+                and (
+                    end == value["total"]
+                    if value["nextCursor"] is None
+                    else bool(items) and end < value["total"]
+                )
+                and len({item["checkpointRef"] for item in items}) == len(items)
+                and len(current) <= 1
+            )
+        if method == "project.checkpoint.create":
+            return value["operationId"] == p["operationId"] and value["reason"] == "manual"
+        if method == "project.restore.preview":
+            return (
+                value["targetCheckpointRef"] == p["targetCheckpointRef"]
+                and value["currentCheckpointRef"] == p["expectedCheckpointRef"]
+                and value["documentHash"] == value["manifest"]["documentHash"]
+            )
+        if method == "project.restore.page":
+            return value["previewRef"] == p["previewRef"]
+        if method == "project.restore.confirm":
+            return (
+                value["previewRef"] == p["previewRef"]
+                and value["documentHash"] == p["documentHash"]
+            )
+        if method == "project.restore.apply":
+            return value["operationId"] == p["operationId"]
+        if method != "project.restore.operation.get":
+            return False
+        if value["state"] == "not-found":
+            return value["result"] is None
+        return (
+            value["result"] is not None
+            and value["result"]["operationId"] == p["operationId"]
+            and value["result"]["requestHash"] == p["requestHash"]
         )
     if request["method"].startswith("changeset."):
         if request["engineSessionId"] != response["engineSessionId"]:

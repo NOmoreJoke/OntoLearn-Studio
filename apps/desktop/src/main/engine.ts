@@ -356,6 +356,13 @@ export type MainlineMethod =
   | 'project.management.apply'
   | 'project.management.operation.get'
   | 'project.library.status'
+  | 'project.checkpoint.list'
+  | 'project.checkpoint.create'
+  | 'project.restore.preview'
+  | 'project.restore.page'
+  | 'project.restore.confirm'
+  | 'project.restore.apply'
+  | 'project.restore.operation.get'
 export abstract class MainlineProjectTransport {
   #mainlineTransport = true
   static owns(value: unknown): value is MainlineProjectTransport {
@@ -1272,6 +1279,13 @@ export class EngineSupervisor {
               'project.management.apply',
               'project.management.operation.get',
               'project.library.status',
+              'project.checkpoint.list',
+              'project.checkpoint.create',
+              'project.restore.preview',
+              'project.restore.page',
+              'project.restore.confirm',
+              'project.restore.apply',
+              'project.restore.operation.get',
             ].includes(method)
           )
             throw invalid()

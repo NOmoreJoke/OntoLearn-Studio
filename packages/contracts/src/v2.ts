@@ -313,9 +313,60 @@ export function validateV2(name: string, value: unknown): boolean {
   if (!compiled.has(name)) compiled.set(name, compile(definitions[name]))
   if (!compiled.get(name)!.safeParse(value).success || !semantic(value) || utf8(value) > 262144)
     return false
-  if (!changeSetSemantics(name, value) || !queryConsumerSemantics(name, value)) return false
+  if (
+    !changeSetSemantics(name, value) ||
+    !queryConsumerSemantics(name, value) ||
+    !checkpointSemantics(name, value)
+  )
+    return false
   if (name === 'params_job.create' || name === 'params_job.list')
     return semantic({ kind: 'request', method: name.slice(7), params: value })
+  return true
+}
+
+// B1b checkpoint/restore invariants: contiguous segmented documents and a
+// complete, duplicate-free read proof before any restore authority is signed.
+function checkpointSemantics(name: string, value: unknown): boolean {
+  const v = value as Record<string, unknown>
+  if (['request3', 'response3', 'envelope3'].includes(name)) {
+    const target = /^project\.(checkpoint|restore)\./
+    if (v.kind === 'request' && target.test(String(v.method)))
+      return checkpointSemantics(`params_${v.method}`, v.params)
+    if (v.kind === 'response' && v.ok && target.test(String(v.method)))
+      return checkpointSemantics(`result_${v.method}`, v.result)
+    return true
+  }
+  if (name === 'restore.manifest') {
+    const parts = v.segments as Array<Record<string, unknown>>
+    let offset = 0
+    if (parts.length !== v.segmentCount) return false
+    for (const [ordinal, part] of parts.entries()) {
+      if (part.ordinal !== ordinal || part.byteOffset !== offset) return false
+      offset += part.rawByteLength as number
+    }
+    return offset === v.totalBytes
+  }
+  if (name === 'restore.segment') {
+    const encoded = v.dataBase64 as string
+    const padding = encoded.endsWith('==') ? 2 : encoded.endsWith('=') ? 1 : 0
+    return Math.floor(encoded.length / 4) * 3 - padding === v.rawByteLength
+  }
+  if (name === 'result_project.restore.page') {
+    const parts = v.segments as Array<Record<string, unknown>>
+    return parts.every((part, index) => {
+      if (!checkpointSemantics('restore.segment', part)) return false
+      if (index === 0) return true
+      const previous = parts[index - 1]
+      return (
+        part.ordinal === (previous.ordinal as number) + 1 &&
+        part.byteOffset === (previous.byteOffset as number) + (previous.rawByteLength as number)
+      )
+    })
+  }
+  if (name === 'params_project.restore.confirm') {
+    const read = v.readSegmentHashes as string[]
+    return new Set(read).size === read.length
+  }
   return true
 }
 
@@ -662,6 +713,52 @@ export function matchesBusiness3Response(
         ? value.targetProjectId !== value.projectId
         : value.targetProjectId === value.projectId)
     )
+  }
+  if (/^project\.(checkpoint|restore)\./.test(String(q.method))) {
+    if (q.engineSessionId !== r.engineSessionId) return false
+    if (!r.ok) return true
+    const p = q.params as Record<string, unknown>
+    const value = r.result as Record<string, unknown>
+    const method = String(q.method)
+    if (
+      method === 'project.restore.operation.get'
+        ? value.state !== 'not-found' &&
+          (value.result as Record<string, unknown> | null)?.projectId !== p.projectId
+        : value.projectId !== p.projectId
+    )
+      return false
+    if (method === 'project.checkpoint.list') {
+      const items = value.items as Array<Record<string, unknown>>
+      const end = Number(value.offset) + items.length
+      const current = items.filter((item) => item.isCurrent === true)
+      return (
+        items.length <= Number(p.pageSize) &&
+        end <= Number(value.total) &&
+        (value.nextCursor === null
+          ? end === Number(value.total)
+          : items.length > 0 && end < Number(value.total)) &&
+        new Set(items.map((item) => item.checkpointRef)).size === items.length &&
+        current.length <= 1
+      )
+    }
+    if (method === 'project.checkpoint.create')
+      return value.operationId === p.operationId && value.reason === 'manual'
+    if (method === 'project.restore.preview') {
+      const manifest = value.manifest as Record<string, unknown>
+      return (
+        value.targetCheckpointRef === p.targetCheckpointRef &&
+        value.currentCheckpointRef === p.expectedCheckpointRef &&
+        value.documentHash === manifest.documentHash
+      )
+    }
+    if (method === 'project.restore.page') return value.previewRef === p.previewRef
+    if (method === 'project.restore.confirm')
+      return value.previewRef === p.previewRef && value.documentHash === p.documentHash
+    if (method === 'project.restore.apply') return value.operationId === p.operationId
+    if (method !== 'project.restore.operation.get') return false
+    if (value.state === 'not-found') return value.result === null
+    const result = value.result as Record<string, unknown>
+    return result.operationId === p.operationId && result.requestHash === p.requestHash
   }
   if (q.method === 'project.ownership.detail')
     return (

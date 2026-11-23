@@ -72,7 +72,18 @@
         "type": "object",
         "properties": {
           "resource": {
-            "enum": ["project", "job", "result", "snapshot", "operation", "subscription", "cursor"]
+            "enum": [
+              "project",
+              "job",
+              "result",
+              "snapshot",
+              "operation",
+              "subscription",
+              "cursor",
+              "checkpoint",
+              "preview",
+              "confirmation"
+            ]
           }
         },
         "required": ["resource"],
@@ -395,7 +406,10 @@
       "snapshot": "Authorized immutable snapshot does not exist.",
       "operation": "Authorized operation identity does not exist; a missing marker may instead be a successful null read.",
       "subscription": "Authorized notification subscription does not exist.",
-      "cursor": "Authorized cursor identity does not exist; expired or mismatched cursors have separate codes."
+      "cursor": "Authorized cursor identity does not exist; expired or mismatched cursors have separate codes.",
+      "checkpoint": "Authorized whole-project checkpoint does not exist in the verified ledger.",
+      "preview": "Authorized restore impact preview document does not exist or has expired.",
+      "confirmation": "Authorized restore confirmation identity does not exist."
     },
     "TIMEOUT": {
       "startup": "Coordinator process startup deadline.",

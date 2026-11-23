@@ -10,6 +10,8 @@ from dataclasses import dataclass, field
 from uuid import uuid4
 
 from ontolearn_engine.job_store import JobFault, fault
+from ontolearn_engine.project.checkpoint_host import CheckpointHost
+from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
 from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
 from ontolearn_engine.project.ordinary_library import OrdinaryReadAuthority
 from ontolearn_engine.project.project_host import HostReadFault, ProjectHostReader, ReadLimits
@@ -40,7 +42,7 @@ METHODS = frozenset(
 # Admit the three persisted copies of a legal 420002-byte historical literal.
 # 1.5 MiB also fits both prepaid project.get Store reads inside the unchanged
 # 128 MiB retained book; 2 MiB would exceed that book. No other cap is raised.
-METHODS = METHODS | MANAGEMENT_METHODS
+METHODS = METHODS | MANAGEMENT_METHODS | CHECKPOINT_METHODS
 
 READ_LIMITS = ReadLimits(validation_rows=4096, validation_bytes=1572864, validation_work=67108864)
 HELD_BYTES = 134217728
@@ -140,6 +142,7 @@ class _WriteAdmission:
             and owner.reader._closed
             and not owner.reader._catalogs
             and not owner.management.entries
+            and not owner.checkpoints.entries
             and owner.store is self.store
             and owner.actor.store is self.store
             and owner.actor.mainline is owner
@@ -233,10 +236,12 @@ class _WriteAdmission:
                 + scalar
                 + READ_LIMITS.retained_bytes
                 + (owner.management.scalar if owner is not None else 0)
+                + (owner.checkpoints.scalar if owner is not None else 0)
                 > HELD_BYTES
                 or sum(item.objects for item in others)
                 + objects
                 + (owner.management.objects if owner is not None else 0)
+                + (owner.checkpoints.objects if owner is not None else 0)
                 > HELD_OBJECTS
                 or work > READ_WORK
             ):
@@ -282,11 +287,15 @@ class _WriteAdmission:
         import asyncio
 
         from ontolearn_engine.coordinator import ServiceFault
+        from ontolearn_engine.project.transactions import _PreviewRollback
 
         if self.transaction is not token:
             fault("PERMISSION_DENIED")
         known = error is None or isinstance(
-            error, (JobFault, Conflict, ServiceFault, asyncio.CancelledError)
+            # _PreviewRollback is a deliberate, fully rolled-back preview exit:
+            # it settles cleanly and must not fence the host like unknown work.
+            error,
+            (JobFault, Conflict, ServiceFault, asyncio.CancelledError, _PreviewRollback),
         )
         if not known:
             self.retain_unknown(token)
@@ -630,6 +639,7 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         from ontolearn_engine.project.management_host import ManagementHost
 
         self.management = ManagementHost(self)
+        self.checkpoints = CheckpointHost(self)
         self.generation = 0
         self.host = self.session = None
         self.current = None
@@ -689,6 +699,8 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         # These are library-management admission paths, not selected-project
         # grants. Their own handlers bind exact refs/hash and current lifecycle.
         if method in {"project.management.operation.get", "project.management.apply"}:
+            return project
+        if method in {"project.restore.operation.get", "project.restore.apply"}:
             return project
         if (
             method == "project.management.preview"
@@ -798,8 +810,13 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
             + scalar
             + self.reader_limits.retained_bytes
             + self.management.scalar
+            + self.checkpoints.scalar
             > HELD_BYTES
-            or sum(r.objects for r in others) + reply.objects + objects + self.management.objects
+            or sum(r.objects for r in others)
+            + reply.objects
+            + objects
+            + self.management.objects
+            + self.checkpoints.objects
             > HELD_OBJECTS
             or reply.work + work > READ_WORK
         ):
@@ -901,6 +918,8 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         try:
             if method in MANAGEMENT_METHODS:
                 result = self.management.dispatch(method, params, budget)
+            elif method in CHECKPOINT_METHODS:
+                result = self.checkpoints.dispatch(method, params, budget)
             elif method == "project.catalog":
                 budget.reserve_store("project catalog", params)
                 cursor = params["cursor"]
@@ -1267,4 +1286,5 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.closed = True
         self.reader.close()
         self.management.close()
+        self.checkpoints.close()
         self._clean_close = True

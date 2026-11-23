@@ -444,17 +444,23 @@ class Coordinator:
             self.mainline.finish_reply(request_id, emitted=emitted, failure=failure)
 
     def dispatch(self, method: str, p: dict):
+        from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
         from ontolearn_engine.project.management import METHODS as MANAGEMENT_METHODS
 
-        if method in MANAGEMENT_METHODS or method in {
-            "project.catalog",
-            "project.create",
-            "project.example.create",
-            "project.draft.save",
-            "project.open",
-            "project.read",
-            "project.ownership.detail",
-        }:
+        if (
+            method in MANAGEMENT_METHODS
+            or method in CHECKPOINT_METHODS
+            or method
+            in {
+                "project.catalog",
+                "project.create",
+                "project.example.create",
+                "project.draft.save",
+                "project.open",
+                "project.read",
+                "project.ownership.detail",
+            }
+        ):
             if self.mainline is None:
                 raise ServiceFault("PERMISSION_DENIED")
             return self.mainline.dispatch(method, p)

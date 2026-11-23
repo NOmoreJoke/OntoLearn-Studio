@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { matchesOwnershipDetail, validateBusiness3, validateStartupError, validateV2 } from './v2'
 import type { LibraryLocationBridge, ProjectManagementBridge } from './project-management'
 export type * from './project-management'
+import type { ProjectCheckpointBridge } from './project-checkpoints'
+export type * from './project-checkpoints'
 
 export const PROTOCOL_VERSION = 2 as const
 // Private preload delivery protocol. These are never exposed on DesktopBridge
@@ -245,7 +247,11 @@ export type ResultPageDTO = {
 }
 // Renderer receives named operations only; project authority comes from main, never a supplied UUID.
 export interface DesktopBridge
-  extends QueryConsumerBridge, MainlineProjectBridge, LibraryLocationBridge {
+  extends
+    QueryConsumerBridge,
+    MainlineProjectBridge,
+    LibraryLocationBridge,
+    ProjectCheckpointBridge {
   getEngineHealth(): Promise<HealthResult>
   restoreTasks(): Promise<BridgeResult<TaskView>>
   getActiveProject(): Promise<BridgeResult<ProjectView | null>>
@@ -262,6 +268,38 @@ export interface DesktopBridge
 
 /** Main/preload-only finite channel association; no generic invoke is exposed to renderer. */
 export type DesktopIpcMap = {
+  'project:checkpoint-list': {
+    args: [args: Parameters<ProjectCheckpointBridge['listProjectCheckpoints']>[0]]
+    result: Awaited<ReturnType<ProjectCheckpointBridge['listProjectCheckpoints']>>
+  }
+  'project:checkpoint-create': {
+    args: [args: Parameters<ProjectCheckpointBridge['createProjectCheckpoint']>[0]]
+    result: Awaited<ReturnType<ProjectCheckpointBridge['createProjectCheckpoint']>>
+  }
+  'project:restore-pending': {
+    args: []
+    result: Awaited<ReturnType<ProjectCheckpointBridge['getPendingProjectRestoreOperations']>>
+  }
+  'project:restore-preview': {
+    args: [args: Parameters<ProjectCheckpointBridge['previewProjectRestore']>[0]]
+    result: Awaited<ReturnType<ProjectCheckpointBridge['previewProjectRestore']>>
+  }
+  'project:restore-page': {
+    args: [args: Parameters<ProjectCheckpointBridge['getProjectRestorePage']>[0]]
+    result: Awaited<ReturnType<ProjectCheckpointBridge['getProjectRestorePage']>>
+  }
+  'project:restore-confirm': {
+    args: [args: Parameters<ProjectCheckpointBridge['confirmProjectRestore']>[0]]
+    result: Awaited<ReturnType<ProjectCheckpointBridge['confirmProjectRestore']>>
+  }
+  'project:restore-apply': {
+    args: [args: Parameters<ProjectCheckpointBridge['restoreProject']>[0]]
+    result: Awaited<ReturnType<ProjectCheckpointBridge['restoreProject']>>
+  }
+  'project:restore-operation': {
+    args: [args: Parameters<ProjectCheckpointBridge['getProjectRestoreOperation']>[0]]
+    result: Awaited<ReturnType<ProjectCheckpointBridge['getProjectRestoreOperation']>>
+  }
   'project:management-pending': {
     args: []
     result: Awaited<ReturnType<ProjectManagementBridge['getPendingProjectManagementOperations']>>
@@ -906,7 +944,7 @@ export type MainlineChangePlanDTO = {
 export type MainlinePreviewArgs =
   | { baseRevision: number; intent: 'change'; plan: MainlineChangePlanDTO }
   | { baseRevision: number; intent: 'undo'; targetOperationId: string }
-export interface MainlineProjectBridge extends ProjectManagementBridge {
+export interface MainlineProjectBridge extends ProjectManagementBridge, ProjectCheckpointBridge {
   getOwnershipConflictDetailPage(
     args: OwnershipDetailArgs,
   ): Promise<BridgeResult<OwnershipDetailPage>>
