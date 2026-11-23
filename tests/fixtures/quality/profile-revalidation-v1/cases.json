@@ -1,0 +1,30 @@
+{
+  "schema": "T05-independent-revalidation-cases/1",
+  "profile": "OntoLearn-rule-comparison-profile/1",
+  "revalidationBudget": "mechanism-revalidation-budget/2",
+  "origin": "Hand-selected inputs and expected RDF terms, never generated from actual results",
+  "longSource": {
+    "ruleId": "r",
+    "sourceText": { "repeat": "a", "count": 40000 },
+    "whenPredicate": "urn:p",
+    "whenObject": "v",
+    "headPredicate": "urn:q",
+    "headObject": "ok",
+    "subjects": ["urn:s1", "urn:s2"],
+    "proofs": ["f1", "f2"],
+    "expectedFacts": [
+      ["urn:s1", "urn:q", "ok"],
+      ["urn:s2", "urn:q", "ok"]
+    ]
+  },
+  "orderedMatches": {
+    "values": ["1", "2", "3"],
+    "comparison": { "operator": "eq", "rightInteger": "2" },
+    "expectedFiringSubjects": ["urn:s2"],
+    "expectedFacts": [["urn:s2", "urn:q", "ok"]],
+    "originalBindingOrder": ["?x", "?v"],
+    "savedBindingOrder": ["?v", "?x"]
+  },
+  "unicodeIris": ["urn:iri:a\u00a0b#part", "urn:iri:a\u2028b#part", "urn:iri:中文#片段"],
+  "finiteReturns": ["batch-consistent", "definition-only"]
+}

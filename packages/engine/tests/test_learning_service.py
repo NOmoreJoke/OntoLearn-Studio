@@ -178,7 +178,7 @@ def test_agent_full_assistance_invalidation_mode_switch_and_new_attempt_ledger()
         "checkStatus": "passed",
         "evidenceIds": ["unit-only:attempt-2:transfer-repair"],
         "courseVersion": "offline-course-2",
-        "courseExtensionVersion": None,
+        "courseExtensionVersion": "ext-1",
         "manifestSha256": file_digest(ROOT / "tests/fixtures/product-baselines/manifest.json"),
     }
 
@@ -390,7 +390,7 @@ def test_mounted_readings_are_read_only_and_never_score():
     assert learning.course_version == "offline-course-2"
     assert learning.glossary_version == "glossary-2"
     assert learning.checks_version == "learning-checks-2"
-    assert learning.course_extension_version is None
+    assert learning.course_extension_version == "ext-1"
     assert learning.manifest_sha256 == file_digest(
         ROOT / "tests/fixtures/product-baselines/manifest.json"
     )

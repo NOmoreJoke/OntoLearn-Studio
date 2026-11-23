@@ -363,6 +363,8 @@ export type MainlineMethod =
   | 'project.restore.confirm'
   | 'project.restore.apply'
   | 'project.restore.operation.get'
+  | 'project.quality.read'
+  | 'project.quality.prepare'
   | 'project.learning.read'
   | 'project.learning.attempt.start'
   | 'project.learning.hint.record'
@@ -1291,6 +1293,8 @@ export class EngineSupervisor {
               'project.restore.confirm',
               'project.restore.apply',
               'project.restore.operation.get',
+              'project.quality.read',
+              'project.quality.prepare',
               'project.learning.read',
               'project.learning.attempt.start',
               'project.learning.hint.record',
@@ -1309,7 +1313,9 @@ export class EngineSupervisor {
               (method === 'project.read' ||
                 method === 'project.draft.save' ||
                 method === 'project.ownership.detail' ||
-                method === 'project.management.read') &&
+                method === 'project.management.read' ||
+                method === 'project.quality.read' ||
+                method === 'project.quality.prepare') &&
               params.projectId !== record.selected?.projectId
             )
               throw deniedOrdinary()
@@ -1774,9 +1780,14 @@ export class EngineSupervisor {
         ].includes(method) &&
         !(
           mainline &&
-          ['changeset.preview', 'changeset.diff.page', 'changeset.confirm', 'job.get'].includes(
-            method,
-          )
+          [
+            'changeset.preview',
+            'changeset.diff.page',
+            'changeset.confirm',
+            'job.get',
+            'project.quality.read',
+            'project.quality.prepare',
+          ].includes(method)
         )
       )
         throw deniedOrdinary()

@@ -75,6 +75,12 @@ export function registerDesktopIpc({
       projects?.restoreProject(args) ?? Promise.resolve(permission()),
     'project:restore-operation': (args) =>
       projects?.getProjectRestoreOperation(args) ?? Promise.resolve(permission()),
+    'project:quality-read': (args) =>
+      projects?.getProjectQualityState(args) ?? Promise.resolve(permission()),
+    'project:quality-prepare': (args) =>
+      projects?.prepareProjectQualityCheck(args) ?? Promise.resolve(permission()),
+    'project:quality-check': (args) =>
+      projects?.runProjectQualityCheck(args) ?? Promise.resolve(permission()),
     'project:learning-read': (args) =>
       projects?.getProjectLearningState(args) ?? Promise.resolve(permission()),
     'project:learning-attempt-start': (args) =>
@@ -270,6 +276,8 @@ export function registerDesktopIpc({
           'project:learning-hint-record',
           'project:learning-observation-record',
           'project:learning-task-check',
+          'project:quality-check',
+          'project:quality-prepare',
           'query:execute-saved',
           'job:cancel',
         ].includes(channel)
@@ -310,6 +318,9 @@ export function registerDesktopIpc({
   register('project:restore-confirm', handlers['project:restore-confirm'])
   register('project:restore-apply', handlers['project:restore-apply'])
   register('project:restore-operation', handlers['project:restore-operation'])
+  register('project:quality-read', handlers['project:quality-read'])
+  register('project:quality-prepare', handlers['project:quality-prepare'])
+  register('project:quality-check', handlers['project:quality-check'])
   register('project:learning-read', handlers['project:learning-read'])
   register('project:learning-attempt-start', handlers['project:learning-attempt-start'])
   register('project:learning-hint-record', handlers['project:learning-hint-record'])

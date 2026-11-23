@@ -159,8 +159,8 @@ _PREPARED_PAIRS = {
 }
 _PREPARED_SEMANTIC_PINS = {
     "semantic_execution.py": (
-        37294,
-        "1354a3c24b8d323e1645f7b5485fc835bb03de662bf1ebf57a43efcfac6b2aad",
+        47822,
+        "fa15507f8d84165f3b983e919786723bb842e63d9da5c41f7465c3589d8fa363",
     ),
     "semantic.py": (66258, "d6c5f5c38aec310de726f73568e1086bf4de95117cbdf664ae1384fcd6808392"),
     "semantic_scopes.py": (

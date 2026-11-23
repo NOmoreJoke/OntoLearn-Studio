@@ -5,14 +5,21 @@ import type {
   ProjectLearningReadDTO,
 } from '@ontolearn/contracts'
 import { explainError } from '../task-presentation'
-import { offlineCourse, offlineGlossary } from './content'
+import {
+  offlineCourse,
+  offlineGlossary,
+  supportsLearningFixture,
+  type LearningFixtureTaskId,
+} from './content'
 import { hintLabels, searchGlossary } from './presentation'
 import {
   LearningController,
+  type LearningControllerState,
   deriveTaskStale,
   displayedCheckStatus,
   mentorAssistanceText,
 } from './learning-controller'
+import { selectedTaskOrigins, TaskOriginSelectors, type TaskOriginChoices } from './task-origins'
 import './mentor.css'
 
 export type MentorPanelProps = {
@@ -27,6 +34,15 @@ export type MentorPanelProps = {
   onOpenOntologyRepair(): void
   /** Switch the workspace to the query workbench (optional for older hosts). */
   onOpenQueryWorkspace?: () => void
+  onOpenQualityWorkspace?: () => void
+  onLoadTaskFixture?: (taskId: LearningFixtureTaskId) => void
+  taskFixtureStatus?: string
+  taskFixture?: {
+    taskId: LearningFixtureTaskId
+    rows: readonly unknown[]
+    approve(): void
+    discard(): void
+  }
   /** Independent G-base practice reset: create a fresh practice project. */
   onResetToGBase?: (taskId: string) => void
   /** Serialized checkpoint refresh after a check that created a checkpoint. */
@@ -48,20 +64,36 @@ export function scrollToProjectCheckpoints(
 
 /** PRD 8.2/8.9 mentor rail inside the workspace split; never a third sidebar.
  *  All persistence flows through the Step 1 named bridge, never storage. */
-export function MentorPanel({
-  controller,
-  disabled,
-  currentDomainSnapshotId,
-  onOpenOntologyRepair,
-  onOpenQueryWorkspace,
-  onResetToGBase,
-  refreshCheckpoints,
-}: MentorPanelProps) {
+export function MentorPanel(props: MentorPanelProps) {
+  const { controller } = props
   const state = useSyncExternalStore(
     controller.subscribe,
     controller.getSnapshot,
     controller.getSnapshot,
   )
+  return (
+    <MentorSession
+      key={JSON.stringify([state.selectedProjectId, state.focusedTaskId])}
+      {...props}
+      state={state}
+    />
+  )
+}
+
+function MentorSession({
+  controller,
+  disabled,
+  currentDomainSnapshotId,
+  onOpenOntologyRepair,
+  onOpenQueryWorkspace,
+  onOpenQualityWorkspace,
+  onLoadTaskFixture,
+  taskFixture,
+  taskFixtureStatus,
+  onResetToGBase,
+  refreshCheckpoints,
+  state,
+}: MentorPanelProps & { state: LearningControllerState }) {
   const learning: ProjectLearningReadDTO | undefined = state.learning
   const task = learning?.tasks.find((item) => item.taskId === state.focusedTaskId)
   const courseTask = offlineCourse.tasks.find((item) => item.id === state.focusedTaskId)
@@ -69,9 +101,12 @@ export function MentorPanel({
   const [glossaryQuery, setGlossaryQuery] = useState('')
   const [explanationOpen, setExplanationOpen] = useState(false)
   const [checking, setChecking] = useState(false)
+  const [originChoices, setOriginChoices] = useState<TaskOriginChoices>(['', ''])
   const [openingReading, setOpeningReading] = useState<string>()
   const ordinal = courseTask ? offlineCourse.tasks.indexOf(courseTask) + 1 : undefined
-  const blocked = disabled || state.busy
+  const fixture = taskFixture?.taskId === task?.taskId ? taskFixture : undefined
+  const setupTask = task && supportsLearningFixture(task.taskId) ? task.taskId : undefined
+  const blocked = disabled || state.busy || !!fixture
   const feedback = state.lastCheck?.feedback ?? task?.lastFeedback ?? undefined
   const assistance = mentorAssistanceText(task)
   return (
@@ -131,6 +166,54 @@ export function MentorPanel({
               </ol>
             )}
             <p className="mentor-version">当前绑定输入：{task.inputVersion}</p>
+            {setupTask && onOpenQualityWorkspace && (
+              <button
+                type="button"
+                data-testid="learning-open-quality-workspace"
+                disabled={blocked}
+                onClick={onOpenQualityWorkspace}
+              >
+                打开质量与推导工作台
+              </button>
+            )}
+            {setupTask && onLoadTaskFixture && (
+              <button
+                type="button"
+                className="mentor-secondary"
+                data-testid="learning-load-task-fixture"
+                disabled={blocked}
+                onClick={() => onLoadTaskFixture(setupTask)}
+              >
+                载入本关初始数据
+              </button>
+            )}
+            {setupTask && taskFixtureStatus && (
+              <p className="mentor-notice" role="status" data-testid="learning-task-fixture-status">
+                {taskFixtureStatus}
+              </p>
+            )}
+            {fixture && (
+              <section data-testid="learning-task-fixture-preview" aria-label="本关初始数据差异">
+                <h3>本关初始数据差异</h3>
+                <pre className="mentor-fixture-diff">{JSON.stringify(fixture.rows, null, 2)}</pre>
+                <button
+                  type="button"
+                  data-testid="learning-confirm-task-fixture"
+                  disabled={disabled || state.busy}
+                  onClick={fixture.approve}
+                >
+                  确认载入初始数据
+                </button>
+                <button
+                  type="button"
+                  className="mentor-secondary"
+                  disabled={disabled || state.busy}
+                  onClick={fixture.discard}
+                >
+                  放弃载入
+                </button>
+              </section>
+            )}
             <button
               type="button"
               className="mentor-secondary"
@@ -229,6 +312,12 @@ export function MentorPanel({
               ))}
           </section>
           <section className="mentor-actions" aria-label="离线学习辅助">
+            <TaskOriginSelectors
+              taskId={task.taskId}
+              values={originChoices}
+              disabled={blocked}
+              onChange={setOriginChoices}
+            />
             <div className="mentor-action-buttons">
               <button
                 type="button"
@@ -245,7 +334,7 @@ export function MentorPanel({
                 onClick={() => {
                   setChecking(true)
                   void controller
-                    .checkTask()
+                    .checkTask(selectedTaskOrigins(task.taskId, originChoices))
                     .then(async (receipt) => {
                       // FR-004: surface a newly created guided-stage checkpoint
                       // immediately, strictly after the check reply settled.
@@ -404,6 +493,17 @@ export function MentorPanel({
             >
               打开本体构建修复
             </button>
+            {onOpenQualityWorkspace && !setupTask && (
+              <button
+                type="button"
+                data-testid="learning-open-quality-workspace"
+                className="mentor-secondary"
+                disabled={blocked}
+                onClick={onOpenQualityWorkspace}
+              >
+                打开质量与推导工作台
+              </button>
+            )}
             {onOpenQueryWorkspace && (
               <button
                 type="button"

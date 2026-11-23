@@ -3,6 +3,7 @@ import {
   type LearningAssistance,
   type LearningLedgerBridge,
   type LearningObservationDTO,
+  type LearningSelectedOriginsDTO,
   type LearningTaskStateDTO,
   type ProjectLearningReadDTO,
   type ProjectLearningTaskCheckDTO,
@@ -145,7 +146,7 @@ export class LearningController {
   }
   focusTask(taskId: string): void {
     if (this.#state.focusedTaskId === taskId) return
-    this.#set({ focusedTaskId: taskId })
+    this.#set({ focusedTaskId: taskId, lastCheck: undefined, lastAssessment: undefined })
   }
   #finishBusy(): void {
     if (!this.#closed && this.#pendingRefresh) {
@@ -367,7 +368,9 @@ export class LearningController {
   }
   /** The real persisted-evidence check. Returns the engine receipt so the host
    *  can refresh the checkpoint panel when a guided-stage checkpoint appeared. */
-  async checkTask(): Promise<ProjectLearningTaskCheckDTO | undefined> {
+  async checkTask(
+    selectedOrigins?: LearningSelectedOriginsDTO,
+  ): Promise<ProjectLearningTaskCheckDTO | undefined> {
     const task = this.#currentTask()
     const projectId = this.#state.selectedProjectId
     if (!task || !projectId || !this.#guard(projectId)) return undefined
@@ -377,6 +380,7 @@ export class LearningController {
         projectId,
         operationId: this.makeId(),
         taskId: task.taskId,
+        ...(selectedOrigins === undefined ? {} : { selectedOrigins }),
       })
       if (!this.#accepting(projectId)) return undefined
       if (!response.ok) {
@@ -394,7 +398,7 @@ export class LearningController {
         })
         return undefined
       }
-      this.#set({ lastCheck: response.data })
+      if (this.#state.focusedTaskId === task.taskId) this.#set({ lastCheck: response.data })
       this.#mergeTaskState(response.data.learningState, projectId)
       return response.data
     } catch {

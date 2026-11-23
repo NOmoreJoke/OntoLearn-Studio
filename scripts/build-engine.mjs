@@ -41,6 +41,11 @@ const result = spawnSync(
     'rdflib',
     '--collect-data',
     'ontolearn_engine',
+    // semantic.py / semantic_execution.py lazy-import the quality/ and
+    // semantic_profile_* submodules inside execution branches; PyInstaller's
+    // static analysis misses them unless they are collected explicitly.
+    '--collect-submodules',
+    'ontolearn_engine',
     '--additional-hooks-dir',
     hooksDir,
     '--hidden-import',

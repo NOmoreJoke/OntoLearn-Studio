@@ -1,9 +1,9 @@
 import { z } from 'zod'
+import type { QueryConsumerBridge } from '@ontolearn/contracts'
 import { validateV2 } from '../../../../../../packages/contracts/src/v2'
 import type {
   BridgeResult,
   SafeError,
-  QueryConsumerBridge,
   MainlineProjectBridge,
   MainlineProjectReadDTO,
   QueryDraftDTO,
@@ -357,9 +357,10 @@ export class QueryWorkspaceController {
       job.capability !== (commit ? 'changeset.commit' : 'query.execute') ||
       job.inputSnapshotId !== snapshotId ||
       input.inputSnapshotId !== snapshotId ||
-      input.scope !== 'asserted' ||
+      input.scope !== (commit ? 'asserted' : pending.args.visibleDraft.scope) ||
       input.parametersHash !== job.parametersHash ||
-      !equal(input.derivedResultIds, [])
+      !Array.isArray(input.derivedResultIds) ||
+      input.derivedResultIds.length !== (input.scope === 'asserted+derived' ? 1 : 0)
     )
       return false
     return commit
@@ -764,7 +765,6 @@ export class QueryWorkspaceController {
       const draft = draftSchema.parse(this.state.draft),
         id = definitionIdSchema.parse(this.state.definitionId),
         edit = this.state.edit
-      if (draft.scope !== 'asserted') throw new Error('ASSERTED_DERIVED_UNAVAILABLE')
       const previous = read.domain.state.definitions.find(
         (value) => value.layer === 'query' && value.id === id,
       )
@@ -881,41 +881,8 @@ export class QueryWorkspaceController {
     )
       throw new Error('INVALID_JOB')
     const pending = this.state.pending
-    const expectedSnapshot =
-      pending?.kind === 'commit'
-        ? pending.confirmation.inputSnapshotId
-        : pending?.kind === 'execute'
-          ? pending.expectedSnapshotId
-          : undefined
-    if (!expectedSnapshot || job.inputSnapshotId !== expectedSnapshot)
-      throw new Error('INVALID_JOB_INPUT')
-    const input = job.input as Record<string, unknown> | undefined
-    if (
-      !input ||
-      input.inputSnapshotId !== job.inputSnapshotId ||
-      input.scope !== 'asserted' ||
-      input.parametersHash !== job.parametersHash ||
-      !equal(input.derivedResultIds, [])
-    )
-      throw new Error('INVALID_JOB_INPUT')
-    if (pending?.kind === 'commit') {
-      const expected = {
-        inputSnapshotId: pending.confirmation.inputSnapshotId,
-        scope: 'asserted',
-        definitionId: 'changeset',
-        parametersHash: pending.confirmation.parametersHash,
-        derivedResultIds: [],
-        preparedPlanRef: pending.confirmation.preparedPlanRef,
-      }
-      if (!equal(input, expected) || job.confirmationRef !== pending.confirmation.confirmationRef)
-        throw new Error('INVALID_JOB_INPUT')
-    } else if (
-      pending?.kind === 'execute' &&
-      (input.definitionId !== pending.definitionId ||
-        input.preparedPlanRef !== null ||
-        job.confirmationRef !== null)
-    )
-      throw new Error('INVALID_JOB_INPUT')
+    if (!pending || !this.matchesIntent(job, pending)) throw new Error('INVALID_JOB_INPUT')
+    const input = job.input as Record<string, unknown>
     const candidate = this.pendingJob
     const bound =
       candidate && candidate.intent === pending && this.sameJob(candidate.job, job)
@@ -957,12 +924,7 @@ export class QueryWorkspaceController {
       if (!pending) {
         const loaded = this.state.loaded,
           draft = draftSchema.parse(this.state.draft)
-        if (
-          !loaded ||
-          loaded.kind !== 'managed' ||
-          !equal(draft, loaded.draft) ||
-          draft.scope !== 'asserted'
-        )
+        if (!loaded || loaded.kind !== 'managed' || !equal(draft, loaded.draft))
           throw new Error('SAVE_OR_LOAD_REQUIRED')
         pending = {
           kind: 'execute',

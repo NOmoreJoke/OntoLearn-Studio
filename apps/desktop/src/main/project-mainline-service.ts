@@ -1,4 +1,6 @@
 import { createHash } from 'node:crypto'
+import { performance } from 'node:perf_hooks'
+import { setTimeout as delay } from 'node:timers/promises'
 import {
   safeError,
   safeDisplayError,
@@ -29,6 +31,12 @@ import {
   type ProjectLearningHintRecordDTO,
   type ProjectLearningObservationRecordDTO,
   type ProjectLearningTaskCheckDTO,
+  type ProjectQualityCheckArgs,
+  type ProjectQualityPrepareDTO,
+  type ProjectQualityReadArgs,
+  type ProjectQualityReadDTO,
+  type QualityJobInputDTO,
+  type QualityRunReceiptDTO,
 } from '@ontolearn/contracts'
 import { validateBusiness3 } from '../../../../packages/contracts/src/v2'
 import {
@@ -45,6 +53,27 @@ import { ProjectRestoreSession } from './project-restore-session'
 import type { TaskService, TaskRecoveryContext, TaskRecoveryRequest } from './task-service'
 
 type RecordValue = Record<string, unknown>
+type QualityMethod = 'project.quality.read' | 'project.quality.prepare'
+type QualityCapability = ProjectQualityPrepareDTO['chain'][number]
+type QualityRequest = (method: string, params: RecordValue) => Promise<unknown>
+
+function qualityOperationId(operationId: string, suffix: string): string {
+  const hex = createHash('sha256').update(`${operationId}:${suffix}`).digest('hex')
+  const variant = ((Number.parseInt(hex[16]!, 16) & 0x3) | 0x8).toString(16)
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-${variant}${hex.slice(17, 20)}-${hex.slice(20, 32)}`
+}
+
+function qualityParams(
+  args: ProjectQualityCheckArgs,
+  defaultScope?: 'asserted+derived',
+): RecordValue {
+  const { constraintId, validationScope = defaultScope, ...params } = args
+  return {
+    ...params,
+    ...(constraintId === undefined ? {} : { constraintId }),
+    ...(validationScope === undefined ? {} : { validationScope }),
+  }
+}
 export type MainlineCatalog = MainlineCatalogDTO
 export type MainlineCreate = MainlineCreateResultDTO
 export type MainlineRead = MainlineProjectReadDTO
@@ -482,9 +511,13 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     )
   }
   checkLearningTask(args: Parameters<LearningLedgerBridge['checkLearningTask']>[0]) {
-    return this.#run(() =>
-      this.#learning<ProjectLearningTaskCheckDTO>('project.learning.task.check', args),
-    )
+    return this.#run(() => {
+      const { selectedOrigins, ...params } = args
+      return this.#learning<ProjectLearningTaskCheckDTO>('project.learning.task.check', {
+        ...params,
+        ...(selectedOrigins === undefined ? {} : { selectedOrigins }),
+      })
+    })
   }
   /** Learning ledger calls stay behind the selected-project/session guards;
    *  params and results are validated against the pinned business3 schemas. */
@@ -503,6 +536,212 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     )
       throw invalid()
     return value as T
+  }
+  #qualitySelection(
+    current: NonNullable<OrdinaryCurrent>,
+    client: MainlineProjectTransport,
+  ): () => boolean {
+    const epoch = this.#selectionEpoch
+    return () =>
+      this.#selectionEpoch === epoch &&
+      this.source.current() === current &&
+      this.#current() === current &&
+      client.owner === current.owner &&
+      client.engineSessionId === current.engineSessionId
+  }
+  async #qualityRequest<T extends ProjectQualityReadDTO | ProjectQualityPrepareDTO>(
+    method: QualityMethod,
+    params: RecordValue,
+    current: NonNullable<OrdinaryCurrent>,
+    guard: () => boolean,
+    request: QualityRequest,
+  ): Promise<T> {
+    if (!guard() || params.projectId !== current.project.projectId) throw denied()
+    if (!validateBusiness3('params_' + method, params)) throw invalid()
+    const value = (await request(method, params)) as T
+    if (!guard()) throw denied()
+    if (
+      !validateBusiness3('result_' + method, value) ||
+      value.projectId !== params.projectId ||
+      (method === 'project.quality.prepare' &&
+        (!('operationId' in value) ||
+          value.operationId !== params.operationId ||
+          value.chain[0] !== 'reasoning.execute' ||
+          value.chain[1] !== 'validation.execute'))
+    )
+      throw invalid()
+    return value
+  }
+  getProjectQualityState(
+    args: ProjectQualityReadArgs,
+  ): Promise<BridgeResult<ProjectQualityReadDTO>> {
+    return this.#run(() => {
+      const current = this.#current()
+      const client = this.#client()
+      return this.#qualityRequest<ProjectQualityReadDTO>(
+        'project.quality.read',
+        args,
+        current,
+        this.#qualitySelection(current, client),
+        (method, params) => this.#call(client, method as QualityMethod, params),
+      )
+    })
+  }
+  prepareProjectQualityCheck(
+    args: ProjectQualityCheckArgs,
+  ): Promise<BridgeResult<ProjectQualityPrepareDTO>> {
+    return this.#run(() => {
+      const current = this.#current()
+      const client = this.#client()
+      return this.#qualityRequest<ProjectQualityPrepareDTO>(
+        'project.quality.prepare',
+        qualityParams(args),
+        current,
+        this.#qualitySelection(current, client),
+        (method, params) => this.#call(client, method as QualityMethod, params),
+      )
+    })
+  }
+  async #qualityJob(
+    request: QualityRequest,
+    args: {
+      projectId: string
+      operationId: string
+      capability: QualityCapability
+      input: QualityJobInputDTO
+    },
+    totalMs: number,
+  ): Promise<JobView> {
+    const params = { ...args, confirmationRef: null }
+    if (!validateBusiness3('params_job.create', params)) throw invalid()
+    const matches = (value: unknown): value is JobView => {
+      if (!validateBusiness3('job', value)) return false
+      const job = value as JobView
+      return (
+        job.projectId === args.projectId &&
+        job.operationId === args.operationId &&
+        job.capability === args.capability &&
+        job.confirmationRef === null &&
+        stable(job.input) === stable(args.input)
+      )
+    }
+    const accepted = await request('job.create', params)
+    if (!matches(accepted)) throw invalid()
+    const deadline = performance.now() + totalMs
+    let interval = 100
+    let latest = accepted
+    while (true) {
+      const job = await request('job.get', { projectId: args.projectId, jobId: accepted.jobId })
+      if (
+        !matches(job) ||
+        job.jobId !== accepted.jobId ||
+        job.stateVersion < latest.stateVersion ||
+        (job.stateVersion === latest.stateVersion && job.state !== latest.state)
+      )
+        throw invalid()
+      if (job.state === 'succeeded' || job.state === 'failed' || job.state === 'cancelled')
+        return job
+      latest = job
+      const remaining = deadline - performance.now()
+      if (remaining <= 0)
+        throw new EngineError({
+          code: 'TIMEOUT',
+          messageKey: 'job.timeout',
+          params: { phase: 'total' },
+          retryable: true,
+        })
+      await delay(Math.min(interval, remaining))
+      interval = Math.min(interval * 2, 1000)
+    }
+  }
+  runProjectQualityCheck(
+    args: ProjectQualityCheckArgs,
+  ): Promise<BridgeResult<QualityRunReceiptDTO>> {
+    return this.#run(async () => {
+      const current = this.#current()
+      const client = this.#client()
+      const guard = this.#qualitySelection(current, client)
+      if (!guard() || args.projectId !== current.project.projectId) throw denied()
+      const budget = this.supervisor.queryReadBudget(current.owner)
+      const finish = budget.beginConsumerRequest()
+      try {
+        const params = qualityParams(args, 'asserted+derived')
+        budget.beforeArguments(params)
+        const request: QualityRequest = async (method, input) => {
+          if (!guard()) throw denied()
+          const pin = this.supervisor.issueQueryPin(current.owner, current.engineSessionId, guard)
+          const operation = this.supervisor.requestPinned(method, input, pin)
+          try {
+            const value = await operation
+            if (!guard()) throw denied()
+            return value
+          } catch (cause) {
+            if (!guard()) throw denied()
+            throw this.#operationError(cause, operation)
+          }
+        }
+        const prepared = await this.#qualityRequest<ProjectQualityPrepareDTO>(
+          'project.quality.prepare',
+          params,
+          current,
+          guard,
+          request,
+        )
+        const { projectId, operationId } = prepared
+        const totalMs = prepared.executionIdentity.limits.totalMs!
+        const reasoningJob = await this.#qualityJob(
+          request,
+          {
+            projectId,
+            operationId: qualityOperationId(operationId, 'reasoning'),
+            capability: 'reasoning.execute',
+            input: prepared.reasoningInput,
+          },
+          totalMs,
+        )
+        const validationJobs: JobView[] = []
+        if (reasoningJob.state === 'succeeded') {
+          const resultId = reasoningJob.resultRef?.resultId
+          for (const [index, input] of prepared.validationInputs.entries()) {
+            validationJobs.push(
+              await this.#qualityJob(
+                request,
+                {
+                  projectId,
+                  operationId: qualityOperationId(operationId, `validation:${index}`),
+                  capability: 'validation.execute',
+                  input: {
+                    ...input,
+                    derivedResultIds:
+                      input.scope === 'asserted+derived' && resultId ? [resultId] : [],
+                  },
+                },
+                totalMs,
+              ),
+            )
+          }
+        }
+        const qualityState = await this.#qualityRequest<ProjectQualityReadDTO>(
+          'project.quality.read',
+          { projectId },
+          current,
+          guard,
+          request,
+        )
+        const receipt: QualityRunReceiptDTO = {
+          qualityRunVersion: 1,
+          projectId,
+          operationId,
+          reasoningJob,
+          validationJobs,
+          qualityState,
+        }
+        budget.handoff(receipt)
+        return receipt
+      } finally {
+        finish()
+      }
+    })
   }
   #retireRecoveryPending(): unknown {
     let firstFailure: unknown

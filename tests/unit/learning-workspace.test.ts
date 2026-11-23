@@ -1,17 +1,155 @@
-/** Headless component harness only; synthetic callbacks are never product adapters. */
+/** Learning fixture boundaries and the standalone headless component harness. */
+import { randomUUID } from 'node:crypto'
 import { mkdir } from 'node:fs/promises'
+import type { MainlineProjectReadDTO } from '@ontolearn/contracts'
+import { validateBusiness3 } from '@ontolearn/contracts/v2'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium, type Browser, type Page } from '@playwright/test'
 import { build } from 'vite'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { offlineCourse } from '../../apps/desktop/src/renderer/src/learning/content'
+import {
+  learningFixtureData,
+  offlineCourse,
+} from '../../apps/desktop/src/renderer/src/learning/content'
+import { buildLearningFixturePlan } from '../../apps/desktop/src/renderer/src/learning/task-fixture'
+import publishedCourse from '../../content/learning/course.json'
+import extensions from '../../content/learning/extensions.json'
+import transferInputs from '../../content/learning/transfer-inputs.json'
+import baseline from '../fixtures/product-baselines/G-base.json'
 import type {
   CheckFeedbackView,
   LearningRecordView,
   LearningWorkspaceProps,
   TaskContext,
 } from '../../apps/desktop/src/renderer/src/learning/types'
+
+function fixtureSource(
+  statements: Array<{ subject: string; predicate: string; object: string }> = [],
+): MainlineProjectReadDTO {
+  const projectId = randomUUID()
+  const inputSnapshotId = '0'.repeat(64)
+  return {
+    readVersion: 1,
+    projectId,
+    inputSnapshotId,
+    workspace: {
+      workspaceVersion: 1,
+      projectId,
+      domainRevision: 0,
+      metadataVersion: 1,
+      operationSequence: 1,
+      checkpointRef: inputSnapshotId,
+      inputSnapshotId,
+      metadata: {
+        name: 'Fixture test',
+        templateRef: null,
+        archived: false,
+        mode: 'guided',
+        origin: 'created',
+      },
+      draft: { editor: 'quality', state: 'missing' },
+    },
+    domain: {
+      projectRevision: 0,
+      dependencyVector: {},
+      state: {
+        definitions: [],
+        facts: statements.map((statement) => ({
+          ...statement,
+          id: randomUUID(),
+          owner: null,
+          source_row: null,
+          managed_value: null,
+        })),
+        mappingState: {},
+      },
+    },
+  }
+}
+
+describe('learning task fixture inputs', () => {
+  it('keeps offline course content current while redacting the transfer demonstration answer', () => {
+    const expected = structuredClone(publishedCourse)
+    const publishedHint = expected.tasks
+      .find((task) => task.id === 'transfer-repair')!
+      .hints.find(({ level }) => level === 4)!
+    const rendererHint = offlineCourse.tasks
+      .find((task) => task.id === 'transfer-repair')!
+      .hints.find(({ level }) => level === 4)!
+    expect(rendererHint.text).not.toContain('供水泵')
+    expect(rendererHint.text).toContain('参考清单')
+    publishedHint.text = rendererHint.text
+    expect(offlineCourse).toStrictEqual(expected)
+  })
+
+  it('projects only initial data from the published datasets', () => {
+    expect(learningFixtureData('transfer-repair')).toStrictEqual({
+      ontology: transferInputs.repair.ontology,
+      constraints: transferInputs.repair.constraints,
+      facts: transferInputs.repair.facts,
+      inputScope: 'current-asserted',
+    })
+    expect(learningFixtureData('transfer-classify')).toStrictEqual({
+      ontology: transferInputs.classification.ontology,
+      rules: transferInputs.classification.rules,
+      facts: transferInputs.classification.facts,
+      inputScope: transferInputs.classification.inputScope,
+    })
+    const prerequisites = learningFixtureData('quality')
+    expect([...prerequisites.ontology, ...prerequisites.facts]).toStrictEqual(
+      extensions.extensions.find(({ id }) => id === 'LX-01')!.prerequisites.assertedTriples,
+    )
+  })
+
+  it.each(['transfer-repair', 'transfer-classify'] as const)(
+    'builds a formal, schema-valid ChangeSet for %s only on a blank project',
+    async (taskId) => {
+      const source = fixtureSource()
+      const plan = (await buildLearningFixturePlan(source, taskId))!
+      expect(plan.definitions?.map(({ layer }) => layer)).toEqual([
+        'ontology',
+        taskId === 'transfer-repair' ? 'constraint' : 'rule',
+      ])
+      expect(
+        validateBusiness3('params_changeset.preview', {
+          projectId: source.projectId,
+          baseRevision: source.domain.projectRevision,
+          intent: 'change',
+          plan,
+        }),
+      ).toBe(true)
+      await expect(buildLearningFixturePlan(fixtureSource(baseline.facts), taskId)).rejects.toThrow(
+        'LEARNING_FIXTURE_REQUIRES_BLANK_PROJECT',
+      )
+    },
+  )
+
+  it('adds only missing LX-01 prerequisites on the G-base project', async () => {
+    const source = fixtureSource(baseline.facts)
+    const plan = (await buildLearningFixturePlan(source, 'quality'))!
+    expect(plan.manual).toHaveLength(2)
+    expect(plan.definitions).toHaveLength(1)
+    const ontology = plan.definitions![0]!
+    source.domain.state.definitions.push({
+      id: ontology.id,
+      layer: ontology.layer,
+      payload: JSON.stringify(ontology.value),
+    })
+    source.domain.state.facts.push(
+      ...plan.manual!.map((fact) => ({
+        ...fact,
+        owner: null,
+        source_row: null,
+        managed_value: null,
+      })),
+    )
+    await expect(buildLearningFixturePlan(source, 'quality')).resolves.toBeUndefined()
+    await expect(buildLearningFixturePlan(fixtureSource(), 'quality')).rejects.toThrow(
+      'LEARNING_FIXTURE_REQUIRES_G_BASE',
+    )
+  })
+})
 
 type Harness = {
   props: LearningWorkspaceProps

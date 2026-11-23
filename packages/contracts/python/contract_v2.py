@@ -713,6 +713,17 @@ def matches_business3_response(request, response, expected_registry_hash):
         if method == "project.learning.observation.record":
             return value["observation"] == p["observation"]
         return method in {"project.learning.attempt.start", "project.learning.task.check"}
+    if request["method"].startswith("project.quality."):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        p, value = request["params"], response["result"]
+        if value["projectId"] != p["projectId"]:
+            return False
+        if request["method"] == "project.quality.read":
+            return True
+        return value["operationId"] == p["operationId"]
     if request["method"].startswith("changeset."):
         if request["engineSessionId"] != response["engineSessionId"]:
             return False
@@ -1296,8 +1307,9 @@ def matches_query_consumer_response(request, response, expected=None):
             and v["operationId"] == p["operationId"]
             and v["definitionBinding"] == p["definitionBinding"]
             and input_["definitionId"] == p["definitionBinding"]["definitionId"]
-            and input_["scope"] == "asserted"
-            and input_["derivedResultIds"] == []
+            and input_["scope"] == p["visibleDraft"]["scope"]
+            and len(input_["derivedResultIds"])
+            == (1 if input_["scope"] == "asserted+derived" else 0)
             and input_["preparedPlanRef"] is None
             and (
                 p["selection"]["kind"] != "historical"

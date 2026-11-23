@@ -28,6 +28,64 @@ PUBLIC_KINDS = {"query", "reasoning", "validation", "behavior", "scenario", "tes
 SET_FAMILIES = {"ontology", "rule", "constraint", "behavior", "scenario", "mapping", "query"}
 UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z")
 
+# The R8a selected-request projection carries exactly these immutable result
+# metadata keys; pre-R8a persisted contexts froze the full 17-key result_get
+# DTO instead (the same 13 plus the then-live mutable quartet below).
+_IMMUTABLE_RESULT_METADATA_KEYS = (
+    "resultId",
+    "projectId",
+    "jobId",
+    "kind",
+    "definitionId",
+    "scope",
+    "parametersHash",
+    "inputSnapshotId",
+    "inputProjectRevision",
+    "dependencyVector",
+    "definitionSetDigests",
+    "implementation",
+    "createdAtMs",
+)
+_LEGACY_MUTABLE_RESULT_METADATA_KEYS = frozenset(
+    {"state", "staleReason", "payloadStatus", "historicalSelectionRequired"}
+)
+
+
+def _normalize_legacy_selected_request(request_obj):
+    """Project one pre-R8a selected request down to its immutable 13-key form.
+
+    Historical contexts stored the full 17-key result metadata inside the
+    frozen queryRequest/semanticRequest document. When the frozen extras are
+    exactly the known mutable quartet in mutually consistent shapes, only the
+    immutable provenance is kept so the deterministic 13-key rebuild compares
+    equal on idempotent replay. Any unknown or tampered extra key survives the
+    projection untouched, so the comparison itself fails with INVALID_STATE.
+    """
+    if not isinstance(request_obj, dict):
+        return request_obj
+    selected = request_obj.get("selected")
+    if not isinstance(selected, dict) or not isinstance(selected.get("metadata"), dict):
+        return request_obj
+    meta = selected["metadata"]
+    extra = set(meta) - set(_IMMUTABLE_RESULT_METADATA_KEYS)
+    if not extra:
+        return request_obj
+    if (
+        not extra <= _LEGACY_MUTABLE_RESULT_METADATA_KEYS
+        or meta.get("payloadStatus", "available") != "available"
+        or meta.get("state") not in (None, "current", "historical", "stale")
+        or not isinstance(meta.get("staleReason", []), list)
+        or not isinstance(meta.get("historicalSelectionRequired", False), bool)
+    ):
+        return request_obj
+    return {
+        **request_obj,
+        "selected": {
+            **selected,
+            "metadata": {key: meta[key] for key in _IMMUTABLE_RESULT_METADATA_KEYS if key in meta},
+        },
+    }
+
 
 class JobFault(ValueError):
     """Structured internal failure; callers map only these fixed fields."""
@@ -40,6 +98,89 @@ class JobFault(ValueError):
 
 def fault(code, **params):
     raise JobFault(code, params)
+
+
+def payload_from_rows(rows):
+    """Lossless inverse of semantic_execution._rows' JSON-pointer projection.
+
+    The walk in _rows emits every leaf exactly once (empty containers collapse
+    to their JSON encoding at the parent path), so this pure reconstruction
+    needs no policy of its own: it only replays the recorded pointers. The
+    projection only serves controlled payloads whose object keys are never
+    plain digit strings; arbitrary numeric-key JSON objects are not a
+    round-trip contract here. Structural corruption stays a structured
+    internal fault, never a bare ValueError/IndexError.
+    """
+    if type(rows) is not list or not rows:
+        fault("INVALID_STATE")
+    cells = rows[0].get("cells") if isinstance(rows[0], dict) else None
+    if cells != ["columns", "path", "value", "part", "parts"]:
+        fault("INVALID_STATE")
+    pieces: dict[str, list[str]] = {}
+    for row in rows[1:]:
+        cells = row["cells"]
+        if len(cells) != 4:
+            fault("INVALID_STATE")
+        path, piece, part, parts = cells
+        if not isinstance(path, str) or not isinstance(piece, str):
+            fault("INVALID_STATE")
+        if type(part) is not int or type(parts) is not int or not 1 <= part <= parts:
+            fault("INVALID_STATE")
+        slot = pieces.setdefault(path, [None] * parts)
+        if len(slot) != parts:
+            fault("INVALID_STATE")
+        if slot[part - 1] is not None:
+            fault("INVALID_STATE")
+        slot[part - 1] = piece
+    values = {}
+    for path, slot in pieces.items():
+        if any(piece is None for piece in slot):
+            fault("INVALID_STATE")
+        values[path] = json.loads("".join(slot))
+
+    def decode(token: str) -> str:
+        return token.replace("~1", "/").replace("~0", "~")
+
+    def assign(container, tokens, value):
+        token = tokens[0]
+        if len(tokens) == 1:
+            if isinstance(container, dict):
+                if token in container:
+                    fault("INVALID_STATE")
+                container[token] = value
+            else:
+                index = int(token)
+                while len(container) < index:
+                    container.append(None)
+                if index < len(container) and container[index] is not None:
+                    fault("INVALID_STATE")
+                if index == len(container):
+                    container.append(value)
+                else:
+                    container[index] = value
+            return
+        if isinstance(container, dict):
+            child = container.get(token)
+            if child is None:
+                child = [] if tokens[1].isdigit() else {}
+                container[token] = child
+        else:
+            index = int(token)
+            while len(container) <= index:
+                container.append(None)
+            child = container[index]
+            if child is None:
+                child = [] if tokens[1].isdigit() else {}
+                container[index] = child
+        assign(child, tokens[1:], value)
+
+    root: dict = {}
+    for path in sorted(values):
+        if not path.startswith("/"):
+            fault("INVALID_STATE")
+        tokens = [decode(token) for token in path[1:].split("/")]
+        assign(root, tokens, values[path])
+    return root
 
 
 class JobStore(Store):
@@ -1517,9 +1658,17 @@ class JobStore(Store):
             )
             parameters = self.blob(project, input_["parametersHash"])
             query_request = None
+            semantic_request = None
             if capability == "query.execute":
                 query_request = self.prepare_query_request(
                     project, input_, parameters, snap, implementation, confirmation_ref
+                )
+            elif self._capability_semantic_managed(capability, implementation):
+                # Only live semantic-identity reasoning/validation jobs get a
+                # prepared worker request; IMPL unit fixtures keep the generic
+                # read-job shape (see _semantic_worker_managed).
+                semantic_request = self.prepare_semantic_request(
+                    project, capability, input_, parameters, snap, implementation, confirmation_ref
                 )
             if capability.startswith("test."):
                 self._test_parameters(parameters)
@@ -1559,6 +1708,14 @@ class JobStore(Store):
             }
             if query_request is not None:
                 context["queryRequest"] = query_request
+            if semantic_request is not None:
+                # The request is deterministically rebuildable from the
+                # immutable snapshot (worker_semantic_request / finish path);
+                # persist only its digest so the page budget keeps paying for
+                # facts once, not for a duplicated request document. The
+                # version stamp separates R8+ 13-key digests from pre-R8 ones.
+                context["semanticRequestSha256"] = digest(semantic_request)
+                context["semanticRequestVersion"] = 2
             if capability == "test.rounds":
                 events = parameters.get("events", [])
                 context["runConfig"] = {
@@ -1684,11 +1841,58 @@ class JobStore(Store):
         parameters = self.blob(project, input_["parametersHash"])
         if parameters != context["parameters"] or digest(parameters) != input_["parametersHash"]:
             fault("INVALID_STATE")
-        if "queryRequest" in context:
+        if "queryRequest" in context and all(
+            self.result_get(project, rid)["payloadStatus"] == "available"
+            for rid in input_["derivedResultIds"]
+        ):
+            # Derived query replays re-verify the frozen request only while the
+            # derived source payloads are retained; after collect_cache() has
+            # evicted them the accepted job stays authoritative as-is. Pre-R8a
+            # documents froze the 17-key metadata form, normalized here.
             expected = self.prepare_query_request(
                 project, input_, parameters, snapshot, implementation, confirmation_ref, live=False
             )
-            if context["queryRequest"] != expected:
+            if _normalize_legacy_selected_request(context["queryRequest"]) != expected:
+                fault("INVALID_STATE")
+        elif "semanticRequest" in context and all(
+            self.result_get(project, rid)["payloadStatus"] == "available"
+            for rid in input_["derivedResultIds"]
+        ):
+            # Pre-R7 contexts stored the full semantic request instead of its
+            # digest; re-verify it the same retained-payload way, again with
+            # the legacy 17-key metadata normalized down to the projection.
+            expected = self.prepare_semantic_request(
+                project,
+                capability,
+                input_,
+                parameters,
+                snapshot,
+                implementation,
+                confirmation_ref,
+                live=False,
+            )
+            if _normalize_legacy_selected_request(context["semanticRequest"]) != expected:
+                fault("INVALID_STATE")
+        if "semanticRequestSha256" in context and all(
+            self.result_get(project, rid)["payloadStatus"] == "available"
+            for rid in input_["derivedResultIds"]
+        ):
+            # Idempotent replay re-verifies the digest whenever the derived
+            # source payloads are still retained; once collect_cache() has
+            # evicted them the accepted job stays authoritative as-is. The
+            # matcher also covers unstamped pre-R8 digests frozen over the
+            # then-live 17-key metadata (see _matches_semantic_request_digest).
+            expected = self.prepare_semantic_request(
+                project,
+                capability,
+                input_,
+                parameters,
+                snapshot,
+                implementation,
+                confirmation_ref,
+                live=False,
+            )
+            if not self._matches_semantic_request_digest(project, input_, expected, context):
                 fault("INVALID_STATE")
         if "runConfig" in context:
             config = context["runConfig"]
@@ -1924,10 +2128,31 @@ class JobStore(Store):
                 fault("INVALID_STATE")
             if job["capability"] == "query.execute":
                 fault("INVALID_STATE")  # New query success requires the complete private bundle.
+            if self._semantic_worker_managed(job):
+                # A live semantic reasoning/validation job may only finish with
+                # the complete private worker bundle; unit fixtures using the
+                # infrastructure IMPL identity keep finish_read_job available.
+                fault("INVALID_STATE")
             result = self._publish_job(job, rows, kind)
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)
+
+    def _semantic_worker_managed(self, job):
+        """query.execute is always semantic-managed; reasoning/validation only
+        under the live semantic identity, so IMPL unit fixtures stay readable."""
+
+        return self._capability_semantic_managed(job["capability"], job["implementation"])
+
+    @staticmethod
+    def _capability_semantic_managed(capability, implementation):
+        from ontolearn_engine.resources import semantic_identity
+
+        if capability == "query.execute":
+            return True
+        return capability in ("reasoning.execute", "validation.execute") and (
+            implementation == semantic_identity()
+        )
 
     def query_project_get(self, project, *, actor, ticket):
         from ontolearn_engine.project.query_definitions import ProjectGetReadTicket
@@ -1978,12 +2203,21 @@ class JobStore(Store):
             fault("INVALID_REQUEST", field="params")
         if parameters["inputSelection"] not in ("current", "historical"):
             fault("INVALID_REQUEST", field="params")
-        if (
-            input_["scope"] != "asserted"
-            or input_["derivedResultIds"]
-            or input_["preparedPlanRef"] is not None
-            or confirmation_ref is not None
-        ):
+        if input_["scope"] not in ("asserted", "asserted+derived"):
+            fault("INVALID_REQUEST", field="identity")
+        if input_["preparedPlanRef"] is not None or confirmation_ref is not None:
+            fault("INVALID_REQUEST", field="identity")
+        selected = None
+        if input_["scope"] == "asserted+derived":
+            # Derived-scope queries reuse one stored current reasoning result
+            # bound to this exact snapshot; stale material is rejected here.
+            selected = self._semantic_selection(
+                project,
+                input_,
+                snap,
+                require_current=live and parameters["inputSelection"] == "current",
+            )
+        elif input_["derivedResultIds"]:
             fault("INVALID_REQUEST", field="identity")
         if live and implementation != semantic_identity():
             fault("IDENTITY_CONFLICT")
@@ -2006,6 +2240,7 @@ class JobStore(Store):
                 "query.execute",
                 input_,
                 parameters,
+                selected=selected,
                 error_catalog=self.contract.ERROR_CATALOG,
                 error_schema=self.contract.DOCUMENT,
             )
@@ -2016,6 +2251,229 @@ class JobStore(Store):
             return request
         except SemanticExecutionFault as error:
             raise JobFault(error.error["code"], error.error["params"]) from None
+
+    def _semantic_selection(self, project, input_, snap, *, require_current):
+        """Load and validate the one selected reasoning result for a derived scope.
+
+        The result must be a real persisted reasoning payload bound to this exact
+        immutable snapshot. A fresh current request must select a current result.
+        Explicit historical selections and independently verified accepted intents
+        can use supported immutable material as long as its payload is retained.
+        """
+        result_id = input_["derivedResultIds"]
+        if type(result_id) is not list or len(result_id) != 1 or not isinstance(result_id[0], str):
+            fault("INVALID_REQUEST", field="identity")
+        identity = result_id[0]
+        try:
+            metadata = self.result_get(project, identity)
+        except JobFault:
+            fault("INVALID_REQUEST", field="identity")
+        self._project(project)
+        if (
+            metadata["kind"] != "reasoning"
+            or metadata["payloadStatus"] != "available"
+            or metadata["inputSnapshotId"] != input_["inputSnapshotId"]
+            or (require_current and metadata["state"] != "current")
+        ):
+            fault("INVALID_REQUEST", field="identity")
+        rows = self.result(identity)["payload"]
+        payload = payload_from_rows(rows)
+        if (
+            payload.get("kind") != "reasoning"
+            or payload.get("inputSnapshotId") != input_["inputSnapshotId"]
+        ):
+            fault("INVALID_REQUEST", field="identity")
+        # Only immutable provenance travels onward in the request. Later reruns
+        # replacing the job_current pointer, or domain commits marking this
+        # result stale, must never invalidate the deterministic rebuild of an
+        # already-accepted validation.execute/query.execute request; the
+        # consumer only checks resultId/kind/inputSnapshotId anyway.
+        immutable_metadata = {key: metadata[key] for key in _IMMUTABLE_RESULT_METADATA_KEYS}
+        return {"metadata": immutable_metadata, "payload": payload}
+
+    def prepare_semantic_request(
+        self,
+        project,
+        capability,
+        input_,
+        parameters,
+        snap,
+        implementation,
+        confirmation_ref,
+        *,
+        live=True,
+    ):
+        """Build the private reasoning/validation worker request from one snapshot.
+
+        Mirrors prepare_query_request: no execution happens here, only strict
+        shape/identity validation and a bounded transport encoding.
+        """
+        from ontolearn_engine.resources import LIMITS, semantic_identity
+        from ontolearn_engine.semantic_execution import SemanticExecutionFault, build_request
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        if capability not in ("reasoning.execute", "validation.execute"):
+            fault("INVALID_REQUEST", field="params")
+        if type(parameters) is not dict or set(parameters) != {"inputSelection"}:
+            fault("INVALID_REQUEST", field="params")
+        if parameters["inputSelection"] not in ("current", "historical"):
+            fault("INVALID_REQUEST", field="params")
+        if input_["preparedPlanRef"] is not None or confirmation_ref is not None:
+            fault("INVALID_REQUEST", field="identity")
+        if live and implementation != semantic_identity():
+            fault("IDENTITY_CONFLICT")
+        if implementation["executionSemanticsVersion"] != "i05-finite-6":
+            fault("IDENTITY_CONFLICT")
+        scope = input_["scope"]
+        if scope not in ("asserted", "asserted+derived"):
+            fault("INVALID_REQUEST", field="identity")
+        if capability == "reasoning.execute" and scope != "asserted":
+            fault("INVALID_REQUEST", field="identity")
+        selected = None
+        if scope == "asserted+derived":
+            selected = self._semantic_selection(
+                project,
+                input_,
+                snap,
+                require_current=live and parameters["inputSelection"] == "current",
+            )
+        elif input_["derivedResultIds"]:
+            fault("INVALID_REQUEST", field="identity")
+        if capability == "validation.execute" and not any(
+            d["layer"] == "constraint" and d["id"] == input_["definitionId"]
+            for d in snap["state"]["definitions"]
+        ):
+            fault("INVALID_REQUEST", field="dependency")
+        if (
+            live
+            and parameters["inputSelection"] == "current"
+            and input_["inputSnapshotId"] != self.snapshot(self._project(project))
+        ):
+            fault("IDENTITY_CONFLICT")
+        try:
+            request = build_request(
+                snap,
+                capability,
+                input_,
+                parameters,
+                selected=selected,
+                error_catalog=self.contract.ERROR_CATALOG,
+                error_schema=self.contract.DOCUMENT,
+            )
+            _, maximum = query_transport_limits(LIMITS)
+            query_encode(request, maximum)
+            return request
+        except SemanticExecutionFault as error:
+            raise JobFault(error.error["code"], error.error["params"]) from None
+
+    def _matches_semantic_request_digest(self, project, input_, expected, context):
+        """Match the frozen semantic request digest across the R7/R8 divide.
+
+        R8+ job contexts stamp ``semanticRequestVersion`` and always store the
+        digest of the 13-key immutable projection: a mismatch there is a real
+        tamper and is rejected outright. Unstamped pre-R8 rows froze the digest
+        of the then-live 17-key metadata instead, so the match also tries the
+        historically possible freeze shapes reconstructed from the live result
+        (current at freeze time, later historical, later stale with the live
+        reasons or their prefixes). Anything else — snapshot, facts, parameters,
+        definitions, the derived payload or any other request field — still has
+        to digest exactly or the replay fails INVALID_STATE.
+        """
+        recorded = context.get("semanticRequestSha256")
+        if digest(expected) == recorded:
+            return True
+        if context.get("semanticRequestVersion") is not None or not (
+            isinstance(expected.get("selected"), dict)
+            and isinstance(expected["selected"].get("metadata"), dict)
+        ):
+            return False
+        derived = input_.get("derivedResultIds") if isinstance(input_, dict) else None
+        if not isinstance(derived, list) or not derived:
+            return False
+        try:
+            live_dto = self.result_get(project, derived[0])
+        except JobFault:
+            return False
+        live_reasons = live_dto.get("staleReason")
+        live_reasons = live_reasons if isinstance(live_reasons, list) else []
+        live_state = live_dto.get("state")
+        live_required = live_dto.get("historicalSelectionRequired")
+        candidates = [
+            {
+                "state": "current",
+                "staleReason": [],
+                "payloadStatus": "available",
+                "historicalSelectionRequired": False,
+            },
+            {
+                "state": "historical",
+                "staleReason": [],
+                "payloadStatus": "available",
+                "historicalSelectionRequired": True,
+            },
+            {
+                "state": "stale",
+                "staleReason": live_reasons,
+                "payloadStatus": "available",
+                "historicalSelectionRequired": True,
+            },
+            {
+                "state": live_state,
+                "staleReason": live_reasons,
+                "payloadStatus": "available",
+                "historicalSelectionRequired": live_required,
+            },
+        ]
+        for cut in range(1, len(live_reasons)):
+            candidates.append(
+                {
+                    "state": live_state,
+                    "staleReason": live_reasons[:cut],
+                    "payloadStatus": "available",
+                    "historicalSelectionRequired": live_required,
+                }
+            )
+        base_meta = dict(expected["selected"]["metadata"])
+        for candidate in candidates:
+            projected = {
+                **expected,
+                "selected": {
+                    "metadata": {**base_meta, **candidate},
+                    "payload": expected["selected"].get("payload"),
+                },
+            }
+            if digest(projected) == recorded:
+                return True
+        return False
+
+    def worker_semantic_request(self, job, context):
+        """Rebuild the private reasoning/validation worker request on demand.
+
+        The stored context keeps only the request digest; this deterministic
+        rebuild from the immutable snapshot must reproduce it before the
+        request is handed to the worker transport. A derived source whose
+        payload has been evicted can no longer be re-read by the worker, so it
+        fails fast here instead of mid-execution.
+        """
+        with self._read():
+            for rid in job["input"]["derivedResultIds"]:
+                if self.result_get(job["projectId"], rid)["payloadStatus"] != "available":
+                    fault("PAYLOAD_EVICTED", resultId=rid)
+            expected = self.prepare_semantic_request(
+                job["projectId"],
+                job["capability"],
+                job["input"],
+                context["parameters"],
+                context["snapshot"],
+                job["implementation"],
+                job["confirmationRef"],
+                live=False,
+            )
+        if not self._matches_semantic_request_digest(
+            job["projectId"], job["input"], expected, context
+        ):
+            fault("INVALID_STATE")
+        return expected
 
     def _query_payload_binding(self, job, payload, rows):
         """Authenticate accepted source and complete output, without re-running SPARQL."""
@@ -2060,10 +2518,10 @@ class JobStore(Store):
             "inputSnapshotId": job["inputSnapshotId"],
             "inputProjectRevision": context["snapshot"]["projectRevision"],
             "executionSemanticsVersion": job["implementation"]["executionSemanticsVersion"],
-            "scope": "asserted",
+            "scope": job["input"]["scope"],
             "definitionId": job["input"]["definitionId"],
             "inputSelection": context["parameters"]["inputSelection"],
-            "selectedResultIds": [],
+            "selectedResultIds": list(job["input"]["derivedResultIds"]),
             "queryText": query_text,
         }
         if type(payload) is not dict or set(payload) != set(common) | {"query", "provenance"}:
@@ -2114,22 +2572,65 @@ class JobStore(Store):
             }
         )
         facts, ontology = [list(t) for t in facts], [list(t) for t in ontology]
-        expected_provenance = {
-            "scope": "asserted",
-            "executionSemanticsVersion": common["executionSemanticsVersion"],
-            "assertedInputSha256": digest(facts),
-            "ontologyInputSha256": digest(ontology),
-            "selectedRulesSha256": digest([]),
-            "reasoningSource": None,
-            "selectedRuleIds": [],
-            "warnings": [],
-            "selectedFacts": [{"triple": t, "sources": [{"kind": "asserted"}]} for t in facts],
-            "derivedAxioms": [],
-            "ontologyView": ontology,
-            "factViewSha256": digest(facts),
-            "ontologyViewSha256": digest(ontology),
-        }
-        if payload["provenance"] != expected_provenance:
+        if job["input"]["scope"] == "asserted+derived":
+            # Identical pure structural binding against the stored selection:
+            # the same trusted projection the worker ran, with no second
+            # SPARQL/SHACL execution or reason() invocation inside the Store.
+            from ontolearn_engine.semantic_execution import (
+                _definitions,
+                _formal_specs,
+                _graph,
+                _rules,
+            )
+            from ontolearn_engine.semantic_formal import project_formal_validation_scope
+
+            definitions = _definitions(context["snapshot"])
+            selected_payload = expected["selected"]["payload"]
+            specs, has_formal = _formal_specs(definitions)
+            graph_facts = _graph(context["snapshot"]["state"]["facts"])
+            graph_ontology = _graph(
+                [
+                    t
+                    for (layer, _), value in sorted(definitions.items())
+                    if layer == "ontology"
+                    for t in value["triples"]
+                ]
+            )
+            if has_formal:
+                expected_provenance = project_formal_validation_scope(
+                    graph_facts,
+                    graph_ontology,
+                    specs=specs,
+                    selected=expected["selected"],
+                ).provenance
+            else:
+                from ontolearn_engine.semantic_scopes import project_validation_scope
+
+                expected_provenance = project_validation_scope(
+                    graph_facts,
+                    graph_ontology,
+                    include_derived=True,
+                    reasoning_result=selected_payload.get("reasoning"),
+                    reasoning_source=selected_payload.get("source"),
+                    rules=_rules(definitions),
+                ).provenance
+        else:
+            expected_provenance = {
+                "scope": "asserted",
+                "executionSemanticsVersion": common["executionSemanticsVersion"],
+                "assertedInputSha256": digest(facts),
+                "ontologyInputSha256": digest(ontology),
+                "selectedRulesSha256": digest([]),
+                "reasoningSource": None,
+                "selectedRuleIds": [],
+                "warnings": [],
+                "selectedFacts": [{"triple": t, "sources": [{"kind": "asserted"}]} for t in facts],
+                "derivedAxioms": [],
+                "ontologyView": ontology,
+                "factViewSha256": digest(facts),
+                "ontologyViewSha256": digest(ontology),
+            }
+        if canonical(payload["provenance"]) != canonical(expected_provenance):
             fault("INVALID_STATE")
         # Fixed supplier projection is pure JSON walking, not graph/query execution.
         projected = _rows(payload)
@@ -2171,6 +2672,69 @@ class JobStore(Store):
                 ),
             )
             hook("query_payload_published")
+            self._transition(job, "succeeded", result=result)
+            hook("mid_job_terminal")
+        return self._job(identity)
+
+    def finish_semantic_job(self, identity, output, hook: Hook = lambda _: None):
+        """Complete a live reasoning/validation job from the worker bundle.
+
+        The stored immutable request is rebuilt and compared byte-for-byte, and
+        the supplied rows must be the exact lossless projection of the payload
+        before either is published. No second execution happens here.
+        """
+        from ontolearn_engine.semantic_execution import _rows
+        from ontolearn_engine.semantic_offline import SemanticError
+        from ontolearn_engine.worker import query_encode, query_transport_limits
+
+        with self._transaction(hook):
+            job = self._job(identity)
+            if job["state"] in TERMINAL:
+                return job
+            if (
+                job["state"] != "running"
+                or job["capability"] not in ("reasoning.execute", "validation.execute")
+                or not self._semantic_worker_managed(job)
+            ):
+                fault("INVALID_STATE")
+            if type(output) is not dict or set(output) != {"payload", "rows"}:
+                fault("INVALID_STATE")
+            _, maximum = query_transport_limits(job["limits"])
+            query_encode(output, maximum)
+            context = self.job_context(job["jobId"])
+            expected = self.prepare_semantic_request(
+                job["projectId"],
+                job["capability"],
+                job["input"],
+                context["parameters"],
+                context["snapshot"],
+                job["implementation"],
+                job["confirmationRef"],
+                live=False,
+            )
+            if not self._matches_semantic_request_digest(
+                job["projectId"], job["input"], expected, context
+            ):
+                fault("INVALID_STATE")
+            payload = output["payload"]
+            kind = "reasoning" if job["capability"] == "reasoning.execute" else "validation"
+            if (
+                type(payload) is not dict
+                or payload.get("kind") != kind
+                or payload.get("inputSnapshotId") != job["inputSnapshotId"]
+            ):
+                fault("INVALID_STATE")
+            try:
+                projected = _rows(payload)
+            except SemanticError:
+                fault("RESOURCE_LIMIT", resource="memory")
+            if len(projected) != len(output["rows"]) or any(
+                row["ordinal"] != expected_row["ordinal"] or row["cells"] != expected_row["cells"]
+                for row, expected_row in zip(output["rows"], projected, strict=True)
+            ):
+                fault("INVALID_STATE")
+            result = self._publish_job(job, output["rows"], kind)
+            hook("semantic_rows_published")
             self._transition(job, "succeeded", result=result)
             hook("mid_job_terminal")
         return self._job(identity)

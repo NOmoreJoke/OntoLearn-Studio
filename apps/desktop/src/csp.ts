@@ -17,7 +17,7 @@ export function contentSecurityPolicy(development?: { nonce: string; origin: str
       throw new Error('INVALID_DEVELOPMENT_CSP')
     }
     directives['script-src'].push(`'nonce-${development.nonce}'`)
-    directives['style-src'].push("'unsafe-inline'") // Vite CSS HMR; production uses local CSS.
+    directives['style-src'].push(`'nonce-${development.nonce}'`) // Vite CSS HMR uses html.cspNonce.
     directives['connect-src'] = [origin.origin, 'ws://127.0.0.1:5173']
   }
   return Object.entries(directives)

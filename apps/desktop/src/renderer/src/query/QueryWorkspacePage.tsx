@@ -149,11 +149,11 @@ function WorkspaceDocument({
             onChange={(event) => change({ scope: event.target.value as QueryDraftDTO['scope'] })}
           >
             <option value="asserted">断言事实</option>
-            <option value="asserted+derived">断言事实＋当前推导结果（当前执行器不支持）</option>
+            <option value="asserted+derived">断言事实＋当前推导结果</option>
           </select>
         </label>
         {state.draft.scope === 'asserted+derived' && (
-          <p role="alert">当前 finite6 供给不支持此范围；不能降为断言事实后悄悄执行。</p>
+          <p>查询读取所选快照的断言事实及该快照可用的推导结论。请先在质量与推导工作台运行检查。</p>
         )}
         <label>
           执行输入
@@ -515,22 +515,14 @@ function WorkspaceDocument({
               : '保存工作草稿（不提交正式定义）'}
           </button>
           <button
-            disabled={
-              blocked ||
-              !state.read ||
-              state.selection.kind !== 'current' ||
-              state.draft.scope !== 'asserted'
-            }
+            disabled={blocked || !state.read || state.selection.kind !== 'current'}
             onClick={() => void controller.prepare()}
           >
             读取正式保存的完整差异
           </button>
           <button
             disabled={
-              state.busy ||
-              !!active ||
-              (!!state.pending && state.pending.kind !== 'execute') ||
-              state.draft.scope !== 'asserted'
+              state.busy || !!active || (!!state.pending && state.pending.kind !== 'execute')
             }
             onClick={() => void controller.execute()}
           >

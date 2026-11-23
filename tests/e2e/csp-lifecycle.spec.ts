@@ -84,8 +84,11 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
           .catch(() => null)
     const response = await page.reload()
     evidence.responseCSP = response?.headers()['content-security-policy'] ?? null
-    if (development) expect(evidence.responseCSP).toContain("'nonce-")
-    else expect(evidence.responseCSP).toBe(null)
+    if (development) {
+      expect(evidence.responseCSP).toContain("'nonce-")
+      expect(evidence.responseCSP).not.toContain("'unsafe-inline'")
+      expect(evidence.responseCSP).not.toContain("'unsafe-eval'")
+    } else expect(evidence.responseCSP).toBe(null)
     await normal(page)
     if (development && env.I02_HMR === '1') {
       // Explicit developer-only HMR probe, always restores the exact source bytes.
@@ -186,11 +189,22 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     expect(probe.inlineExecuted).toBe(false)
     expect(probe.remoteExecuted).toBe(false)
     expect(probe.fetchBlocked).toBe(true)
-    expect(probe.styleElement).toBe(development)
-    expect(probe.styleAttribute).toBe(development)
+    // Development style-src is nonce-gated too, so nonce-less inline <style> and
+    // style="" attributes are blocked in both modes: no computed style leaks through.
+    expect(probe.styleElement).toBe(false)
+    expect(probe.styleAttribute).toBe(false)
     expect(probe.cssom).toBe(true)
     expect(probe.require).toBe('undefined')
-    for (const directive of ['script-src-elem', 'img-src', 'connect-src', 'frame-src']) {
+    // Chromium reports <style> elements as style-src-elem and style="" attributes
+    // as style-src-attr; both fall back to the (nonce-less) style-src policy here.
+    for (const directive of [
+      'script-src-elem',
+      'style-src-elem',
+      'style-src-attr',
+      'img-src',
+      'connect-src',
+      'frame-src',
+    ]) {
       expect(
         probe.violations.some((v) => v.directive === directive && v.disposition === 'enforce'),
       ).toBe(true)

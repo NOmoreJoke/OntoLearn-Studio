@@ -71,6 +71,13 @@ def launch(coordinator, job):
     return task, active
 
 
+async def wait_until(predicate, timeout=4.0, label="condition"):
+    deadline = time.monotonic() + timeout
+    while not predicate():
+        assert time.monotonic() < deadline, f"timed out waiting for {label}"
+        await asyncio.sleep(0.01)
+
+
 def assert_no_success(store, job):
     actual = store.get_job(job["projectId"], job["jobId"])
     assert actual["state"] in {"failed", "cancelled"}
@@ -127,13 +134,23 @@ def test_complete_waiting_for_worker_exit_cannot_extend_total(store, monkeypatch
         'print(\'{"type":"ready","rows":[]}\');'
         'print(\'{"type":"complete"}\',flush=True);time.sleep(5)',
     )
-    job = create(store, total_ms=200)
+    job = create(store, total_ms=1500)
     coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
+    stages = []
+    real_stage = coordinator._stage
+
+    def record_stage(identity, stage):
+        stages.append(stage)
+        return real_stage(identity, stage)
+
+    coordinator._stage = record_stage
 
     async def run():
         task, active = launch(coordinator, job)
-        await asyncio.wait_for(task, 3)
+        await asyncio.wait_for(task, 5)
+        assert active["process"] is not None
         assert active["process"].returncode is not None
+        assert "reconciling" in stages
 
     asyncio.run(run())
     result = assert_no_success(store, job)
@@ -153,10 +170,14 @@ def test_cancel_while_worker_exit_waits_remains_cancelled(store, monkeypatch):
 
     async def run():
         task, active = launch(coordinator, job)
-        await asyncio.sleep(0.1)
+        await wait_until(
+            lambda: active["process"] is not None and active.get("stage") == "reconciling",
+            timeout=4.0,
+            label="worker exit wait",
+        )
         decision = store.cancel_job(job["projectId"], job["jobId"])
         assert decision["disposition"] == "accepted"
-        await asyncio.wait_for(task, 2)
+        await asyncio.wait_for(task, 4)
         assert active["process"].returncode is not None
         assert decision["state"] == "cancelling"
 
@@ -708,15 +729,21 @@ def test_round_after_complete_in_same_chunk_never_commits(store, monkeypatch):
 def test_unread_worker_stdin_is_bounded_and_cancellable(store, monkeypatch, cancel):
     command(monkeypatch, "import time;time.sleep(5)")
     rows = [{"rowId": uid(), "ordinal": i, "cells": ["a" * 7000]} for i in range(30)]
-    job = create(store, parameters={"rows": rows}, total_ms=5000 if cancel else 200)
+    job = create(store, parameters={"rows": rows}, total_ms=5000 if cancel else 1500)
     coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
 
     async def run():
         task, active = launch(coordinator, job)
         if cancel:
-            await asyncio.sleep(0.1)
+            await wait_until(
+                lambda: active["process"] is not None,
+                timeout=4.0,
+                label="unread-stdin worker launch",
+            )
+            await asyncio.sleep(0)
             store.cancel_job(job["projectId"], job["jobId"])
-        await asyncio.wait_for(task, 3)
+        await asyncio.wait_for(task, 5)
+        assert active["process"] is not None
         assert active["process"].returncode is not None
 
     asyncio.run(run())
@@ -909,7 +936,7 @@ def test_actual_memory_worker_exit_precedes_asyncio_returncode_delivery(store, m
 
 def test_busy_worker_still_allows_heartbeat_and_cancel(store, monkeypatch):
     actual_worker(monkeypatch)
-    job = create(store, parameters={"workMs": 1000}, total_ms=5000)
+    job = create(store, parameters={"workMs": 2000}, total_ms=5000)
     coordinator = runtime.Coordinator(
         store, test_mode=True, allowed_projects={job["projectId"]}, emit=lambda _: None
     )
@@ -941,13 +968,17 @@ def test_busy_worker_still_allows_heartbeat_and_cancel(store, monkeypatch):
 
     async def run():
         task, active = launch(coordinator, job)
-        await asyncio.sleep(0.1)
+        await wait_until(
+            lambda: active["process"] is not None and active.get("stage") == "computing",
+            timeout=4.0,
+            label="busy worker computing",
+        )
         nonce = uid()
         assert request("session.ping", {"nonce": nonce})["result"] == {"nonce": nonce}
         decision = request("job.cancel", {"projectId": job["projectId"], "jobId": job["jobId"]})
         assert decision["result"]["disposition"] == "accepted"
         assert decision["result"]["state"] == "cancelling"
-        await asyncio.wait_for(task, 2)
+        await asyncio.wait_for(task, 4)
         assert active["process"].returncode is not None
         assert decision["result"]["state"] == "cancelling"
 

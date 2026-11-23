@@ -63,7 +63,15 @@ PAYLOAD_KEYS = {
 GUIDED_STAGE_TASK = "business-ontology"
 QUERY_TASK = "query"
 # Tasks whose checks run against real persisted tool evidence in this build.
-WIRED_TASKS = frozenset({GUIDED_STAGE_TASK, QUERY_TASK})
+WIRED_TASKS = frozenset(
+    {
+        GUIDED_STAGE_TASK,
+        QUERY_TASK,
+        "quality",
+        "transfer-repair",
+        "transfer-classify",
+    }
+)
 GUIDED_STAGE_LABEL = "完成引导阶段：业务本体建模"
 HINT_EVENT_KIND = "hint.revealed"
 _ASSISTANCE_RANK = {name: rank for rank, name in enumerate(ASSISTANCE)}
@@ -429,8 +437,12 @@ def _auto_init(store, project, service, task_id, origin):
     payload["maxHintLevel"] = floor_hint
     payload["completedGuidedStages"] = list(completed_stages)
     payload["guidedStageCheckpointRef"] = guided_ref
-    payload["lastOperationId"] = operation
     payload["lastOperation"] = {"method": "auto-init", "taskId": task_id}
+    # Keep the creation claim's lastOperationId at None: the record hint /
+    # observation / check that follows in the same outer transaction writes the
+    # concrete operation at recordVersion 2. A None here lets the sole auto
+    # initialized attempt keep its window open at rowid 0 on later rechecks,
+    # while explicit attempt.start claims still stamp their operation id.
     change = {
         "type": "learning.record",
         "attempt": attempt_id,
@@ -811,11 +823,23 @@ def _attempt_min_claim_rowid(store, project, internal, attempt_id, is_virgin_fir
 
     A virgin first attempt (auto-created by ``check`` itself) opens at 0: the
     learner may already have run the real queries before the first explicit
-    check. Otherwise the attempt's creation claim (expectedRecordVersion is
-    None) marks the boundary; earlier jobs belong to earlier attempts.
+    check. The same holds for the sole auto-initialized attempt of a task on
+    later rechecks: its creation claim keeps ``lastOperationId`` None, so
+    prior legitimate tool runs stay inside the window. Otherwise the attempt's
+    creation claim (expectedRecordVersion is None) marks the boundary; earlier
+    jobs belong to earlier attempts.
     """
-    if is_virgin_first_attempt:
-        return 0
+    records = _records(format3.application_state(store, internal))
+    cur = next((r for r in records if r["attempt"] == attempt_id and not r["withdrawn"]), None)
+    is_sole_task_attempt = False
+    if cur is not None:
+        task_id = cur["payload"]["taskId"]
+        same_task = [
+            r
+            for r in records
+            if (r["payload"]["taskId"] == task_id if not r["withdrawn"] else r["task"] == task_id)
+        ]
+        is_sole_task_attempt = len(same_task) == 1
     for row in store._db.execute(
         "SELECT rowid,context FROM operation_claims WHERE kind=? AND project=? ORDER BY rowid",
         ("application", project),
@@ -831,9 +855,39 @@ def _attempt_min_claim_rowid(store, project, internal, attempt_id, is_virgin_fir
             and change.get("attempt") == attempt_id
             and change.get("expectedRecordVersion") is None
         ):
+            if (
+                (is_virgin_first_attempt or is_sole_task_attempt)
+                and isinstance(change.get("payload"), dict)
+                and (change["payload"].get("lastOperationId") is None)
+            ):
+                return 0
             return row["rowid"]
     # The creation claim always precedes this point; 0 is the conservative floor.
     return 0
+
+
+def _validated_selected_origins(task_id, selected):
+    """Transient task answers ride on task.check params, never on observations.
+
+    A missing answer (None) is a legitimate "not selected yet" state for the
+    two origin tasks: it records needs-repair instead of faulting the RPC. A
+    wrong non-null type, or any answer on a non-origin task, still faults.
+    """
+    if task_id == "quality":
+        if selected is None:
+            return {}
+        if not isinstance(selected, dict) or not selected:
+            fault("INVALID_REQUEST", field="params")
+        return selected
+    if task_id == "transfer-classify":
+        if selected is None:
+            return []
+        if not isinstance(selected, list) or len(selected) != 2:
+            fault("INVALID_REQUEST", field="params")
+        return selected
+    if selected is not None:
+        fault("INVALID_REQUEST", field="params")
+    return None
 
 
 def check_task(store, project, params, host, origin):
@@ -841,6 +895,7 @@ def check_task(store, project, params, host, origin):
     task_id = params["taskId"]
     _require_task(service, task_id)
     operation = params["operationId"]
+    selected_origins = _validated_selected_origins(task_id, params.get("selectedOrigins"))
     with store._transaction():
         internal = store._project(project)
         if store.has_operation_claim(operation):
@@ -902,7 +957,7 @@ def check_task(store, project, params, host, origin):
                     host.baseline_triples(),
                     current["payload"]["assistance"],
                 )
-            else:
+            elif task_id == QUERY_TASK:
                 host.tools.evidence_by_check = host.query_evidences(
                     store,
                     project,
@@ -917,6 +972,23 @@ def check_task(store, project, params, host, origin):
                         was_auto_init and not had_any_task_attempt,
                     ),
                     current["payload"]["assistance"],
+                )
+            else:
+                host.tools.evidence_by_check = host.b3_evidences(
+                    store,
+                    project,
+                    internal,
+                    context,
+                    snapshot_ref,
+                    _attempt_min_claim_rowid(
+                        store,
+                        project,
+                        internal,
+                        current["attempt"],
+                        was_auto_init and not had_any_task_attempt,
+                    ),
+                    current["payload"]["assistance"],
+                    selected_origins,
                 )
             check_service = host.wired_service()
         else:

@@ -214,6 +214,12 @@ export type ProjectLearningTaskCheckDTO = {
   learningState: LearningTaskStateDTO
 }
 
+export type LearningOriginChoiceDTO = 'asserted' | 'derived'
+export type LearningSelectedOriginsDTO =
+  | Record<string, LearningOriginChoiceDTO>
+  | [LearningOriginChoiceDTO, LearningOriginChoiceDTO]
+  | null
+
 export interface LearningLedgerBridge {
   getProjectLearningState(args: {
     projectId: string
@@ -239,5 +245,6 @@ export interface LearningLedgerBridge {
     projectId: string
     operationId: string
     taskId: string
+    selectedOrigins?: LearningSelectedOriginsDTO
   }): Promise<BridgeResult<ProjectLearningTaskCheckDTO>>
 }

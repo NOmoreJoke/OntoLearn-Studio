@@ -209,7 +209,7 @@ def test_course_revision_binds_to_manifest_sha_without_changing_the_seeded_plan(
     result = verify(ROOT)
     assert result["version"] == "prd-v0.6-learning-1"
     assert result["courseVersion"] == "offline-course-2"
-    assert result["courseExtensionVersion"] is None
+    assert result["courseExtensionVersion"] == "ext-1"
     manifest_sha = file_digest(ROOT / "tests/fixtures/product-baselines/manifest.json")
     assert result["manifestSha256"] == manifest_sha
 

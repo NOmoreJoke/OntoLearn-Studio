@@ -1,3 +1,5 @@
+import type { LearningSelectedOriginsDTO } from '@ontolearn/contracts'
+
 /** Private renderer view models; no IPC/Store authority is granted by these values. */
 export type HintLevel = 1 | 2 | 3 | 4
 export type Assistance =
@@ -51,7 +53,10 @@ export interface LearningActions {
   /** Persist actual hint provenance via T01 before revealing the requested answer. */
   recordHint?(context: TaskContext, level: HintLevel): Promise<HintReceipt>
   /** Return actual approved tool evidence, never the fixture expected payload. */
-  checkTask?(context: TaskContext): Promise<CheckFeedbackView>
+  checkTask?(
+    context: TaskContext,
+    selectedOrigins?: LearningSelectedOriginsDTO,
+  ): Promise<CheckFeedbackView>
   openWorkspace?(taskId: string): void
   exportReport?(context: TaskContext): Promise<{ context: TaskContext; exported: boolean }>
 }
@@ -130,4 +135,5 @@ export interface LearningWorkspaceProps {
   records?: readonly LearningRecordView[]
   actions?: LearningActions
   initialTaskId?: string
+  onOpenQualityWorkspace?: () => void
 }
