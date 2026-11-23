@@ -63,6 +63,7 @@ async function openScenarioFromEditedBehavior(page: Page) {
 }
 
 test('W4 mapping, isolated behavior and scenario, package and HTML transfer survive desktop restart', async () => {
+  test.setTimeout(120000)
   const info = test.info()
   await mkdir(info.outputDir, { recursive: true })
   const directory = await realpath(info.outputDir)

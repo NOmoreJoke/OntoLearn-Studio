@@ -132,7 +132,8 @@ def stage_outbound(actor, project, purpose, extension, output_file):
                 "outputFile": output_file,
                 "createdAt": "2026-11-20T00:00:00Z",
             }
-        )
+        ),
+        encoding="utf-8",
     )
     return selection
 
@@ -159,7 +160,8 @@ def stage_inbound(actor, project, payload, payload_file, fmt, extension):
                 "byteLength": len(payload),
                 "createdAt": "2026-11-20T00:00:00Z",
             }
-        )
+        ),
+        encoding="utf-8",
     )
     return selection
 
@@ -990,7 +992,7 @@ def test_report_prepare_export_and_csp_safe_escaping(owned):
     assert exported["publication"]["state"] == "published"
     html_text = (
         actor.store.path.parent / ".ontolearn-host-selections" / selection / "output.html"
-    ).read_text()
+    ).read_text(encoding="utf-8")
     assert "<script>alert" not in html_text
     assert "&lt;script&gt;" in html_text
     assert "<script" not in html_text.replace("<style>", "").replace("</style>", "")
@@ -1406,7 +1408,7 @@ def test_report_html_scrubs_host_absolute_paths(owned):
     )
     html_text = (
         actor.store.path.parent / ".ontolearn-host-selections" / selection / "output.html"
-    ).read_text()
+    ).read_text(encoding="utf-8")
     assert "/private/var" not in html_text
     # The placeholder is escaped like every dynamic string in the CSP-safe HTML.
     assert "&lt;local-path&gt;" in html_text

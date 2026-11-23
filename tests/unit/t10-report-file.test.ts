@@ -298,30 +298,33 @@ describe('T10 real filesystem publication of one immutable prepared report', () 
     expect(await fs.readdir(directory)).toEqual(['学习报告.html'])
   })
 
-  it('preserves a published result when directory durability cannot be confirmed', async () => {
-    const parent = await fs.realpath(directory)
-    let injected = 0
-    vi.mocked(fs.open).mockImplementation(async (path, flags, mode) => {
-      const handle = await actualFs.open(path, flags, mode)
-      if (path === parent) {
-        injected++
-        vi.spyOn(handle, 'sync').mockRejectedValueOnce(
-          Object.assign(new Error('synthetic unsupported directory sync'), { code: 'ENOTSUP' }),
-        )
-      }
-      return handle
-    })
-    const result = await new PreparedHtmlReportFile(input()).save(selection())
-    expect(injected).toBe(1)
-    expect(result).toMatchObject({
-      state: 'published',
-      durability: 'unconfirmed',
-      postPublicationError: true,
-      cleanup: 'complete',
-    })
-    expect(await fs.readFile(target(), 'utf8')).toBe(renderPreparedReport(input()))
-    expect(await fs.readdir(directory)).toEqual(['学习报告.html'])
-  })
+  it.skipIf(process.platform === 'win32')(
+    'preserves a published result when directory durability cannot be confirmed',
+    async () => {
+      const parent = await fs.realpath(directory)
+      let injected = 0
+      vi.mocked(fs.open).mockImplementation(async (path, flags, mode) => {
+        const handle = await actualFs.open(path, flags, mode)
+        if (path === parent) {
+          injected++
+          vi.spyOn(handle, 'sync').mockRejectedValueOnce(
+            Object.assign(new Error('synthetic unsupported directory sync'), { code: 'ENOTSUP' }),
+          )
+        }
+        return handle
+      })
+      const result = await new PreparedHtmlReportFile(input()).save(selection())
+      expect(injected).toBe(1)
+      expect(result).toMatchObject({
+        state: 'published',
+        durability: 'unconfirmed',
+        postPublicationError: true,
+        cleanup: 'complete',
+      })
+      expect(await fs.readFile(target(), 'utf8')).toBe(renderPreparedReport(input()))
+      expect(await fs.readdir(directory)).toEqual(['学习报告.html'])
+    },
+  )
 
   it('bounds concurrent saves to one picker and one artifact', async () => {
     let finish!: (value: null) => void

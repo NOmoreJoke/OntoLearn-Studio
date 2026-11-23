@@ -68,7 +68,7 @@ def test_complete_expected_read_only_template(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     before = set(tmp_path.iterdir())
     result = inspect_candidate(pack())
-    expected = json.loads((FIXTURES / "inspection-expected.json").read_text())
+    expected = json.loads((FIXTURES / "inspection-expected.json").read_text(encoding="utf-8"))
     assert dataclasses.asdict(result) == {
         **expected,
         "roles": tuple(expected["roles"]),

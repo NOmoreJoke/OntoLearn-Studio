@@ -51,6 +51,8 @@ type Staging = {
   fileIdentity?: FileIdentity
 }
 export const sameFile = (a: FileIdentity, b: FileIdentity) => a.dev === b.dev && a.ino === b.ino
+export const sameRealPath = (real: string, candidate: string): boolean =>
+  process.platform === 'win32' ? real.toLowerCase() === candidate.toLowerCase() : real === candidate
 export function errno(error: unknown): unknown {
   try {
     if (error === null || typeof error !== 'object') return undefined
@@ -271,7 +273,8 @@ export class PreparedTransferFile {
             if (
               !directory.isDirectory() ||
               (this.destinationDirectory &&
-                (parent !== selection.directory || !sameFile(directory, this.destinationDirectory)))
+                (!sameRealPath(parent, selection.directory) ||
+                  !sameFile(directory, this.destinationDirectory)))
             ) {
               code = 'REPORT_DESTINATION_INVALID'
               outcome = 'failed'
@@ -369,20 +372,25 @@ export class PreparedTransferFile {
     }
     if (published && parent) {
       outcome = 'published'
-      let directoryHandle: fs.FileHandle | undefined
-      try {
-        directoryHandle = await fs.open(parent, 'r')
-        await directoryHandle.sync()
+      if (process.platform === 'win32') {
+        // Directory fsync is supported on POSIX; Windows file flush completed prior to link.
         durability = 'confirmed'
-      } catch {
-        // File already exists in full. Unsupported/failed directory fsync must not turn it
-        // into an ordinary failure or cancellation that invites a duplicate write.
-        postPublicationError = true
-      } finally {
+      } else {
+        let directoryHandle: fs.FileHandle | undefined
         try {
-          await directoryHandle?.close()
+          directoryHandle = await fs.open(parent, 'r')
+          await directoryHandle.sync()
+          durability = 'confirmed'
         } catch {
+          // File already exists in full. Unsupported/failed directory fsync must not turn it
+          // into an ordinary failure or cancellation that invites a duplicate write.
           postPublicationError = true
+        } finally {
+          try {
+            await directoryHandle?.close()
+          } catch {
+            postPublicationError = true
+          }
         }
       }
     }

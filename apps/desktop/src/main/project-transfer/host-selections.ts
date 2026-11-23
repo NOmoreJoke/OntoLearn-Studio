@@ -11,6 +11,7 @@ import {
   errno,
   PreparedTransferFile,
   sameFile,
+  sameRealPath,
   type FileIdentity,
   type TransferExtension,
 } from './prepared-report-file'
@@ -76,7 +77,10 @@ async function directoryAt(path: string): Promise<FileIdentity> {
 async function regularBytes(path: string, maxBytes: number): Promise<Buffer> {
   const entry = await fs.lstat(path)
   if (!entry.isFile() || entry.size > maxBytes) rejectSelection()
-  const file = await fs.open(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK)
+  const file = await fs.open(
+    path,
+    constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0) | (constants.O_NONBLOCK ?? 0),
+  )
   try {
     const opened = await file.stat()
     if (!opened.isFile() || !sameFile(entry, opened) || opened.size > maxBytes) rejectSelection()
@@ -225,7 +229,7 @@ export class HostSelections {
     if (name.length <= extension.length || !lower.endsWith(extension)) rejectSelection()
     if (purpose === 'package-import') return { purpose, extension: '.ontolearn.zip', format: 'zip' }
     const parent = dirname(path)
-    if ((await fs.realpath(parent)) !== parent) rejectSelection()
+    if (!sameRealPath(await fs.realpath(parent), parent)) rejectSelection()
     const destinationDirectory = await directoryAt(parent)
     const uncertain = this.#uncertain.get(path)
     try {
