@@ -2258,3 +2258,117 @@ def test_w4r2_03_and_w4r2_05_import_scans_learning_rows_and_rejects_bad_payload_
         ).fetchone()[0]
         == before_imports
     )
+
+
+def test_w4r3_01_structural_ids_uuids_and_placeholders_allowed_while_live_secrets_rejected(owned):
+    structural_or_non_secret_samples = [
+        '{"credential_id":"550e8400-e29b-41d4-a716-446655440000"}',
+        '{"token_id":"550e8400-e29b-41d4-a716-446655440000"}',
+        '{"refreshTokenId":"abc12345def"}',
+        f'{{"secret_id":"{"a" * 64}"}}',
+        '{"credential_id":"abc12345def"}',
+        '{"sessionToken":"YOUR_TOKEN_HERE"}',
+        '{"accessToken":"YOUR_API_KEY"}',
+        '{"secret_key":"REPLACE_ME"}',
+        '{"token_value":"PLACEHOLDER_TOKEN"}',
+        '{"userPassword":"EXAMPLE_SECRET"}',
+        '{"password":"DUMMY_PASSWORD"}',
+        '{"password":"CHANGEME"}',
+        '{"sessionToken":"550e8400-e29b-41d4-a716-446655440000"}',
+        '{"accessToken":"018f0000-0000-7000-8000-000000000000"}',
+        '{"token_value":"2026-11-24T12:00:00Z"}',
+    ]
+    for sample in structural_or_non_secret_samples:
+        assert scan_text(sample) == "clear", sample
+        assert scan_projection(json.loads(sample)) == "clear", sample
+
+    live_secret_samples = [
+        '{"sessionToken":"eyJhbGciOiJIUzI1NiJ9.realpayload"}',
+        '{"accessToken":"ghp_realSecretToken12345"}',
+        '{"userPassword":"hunter22"}',
+        '{"secret_key":"mysecretvalue123"}',
+        '{"token_value":"abcdefgh12345"}',
+        f'{{"secret_access_key":"{"a" * 64}"}}',
+        '{"sessionToken":"YOUR_TOKEN_HERE","password":"hunter22"}',
+        '{"credential_id":"AKIAIOSFODNN7EXAMPLE"}',
+        "aws_access_key_id: AKIAIOSFODNN7EXAMPLE",
+        '{"password":"550e8400-e29b-41d4-a716-446655440000-extra"}',
+    ]
+    for sample in live_secret_samples:
+        with pytest.raises(CredentialLeak):
+            scan_text(sample)
+        if sample.startswith("{"):
+            with pytest.raises(CredentialLeak):
+                scan_projection(json.loads(sample))
+
+    actor, store = owned
+    project = populated_project(actor, store)
+    internal = store._project(project)
+    revision = store.revision(internal)
+    benign_objs = [
+        json.dumps('{"apiVersion":"v1","sessionToken":"YOUR_TOKEN_HERE"}'),
+        json.dumps('{"credential_id":"550e8400-e29b-41d4-a716-446655440000"}'),
+    ]
+    store.commit(
+        internal,
+        revision,
+        uid(),
+        uid(),
+        manual=[
+            {
+                "id": digest(["urn:x:benign", f"urn:x:meta:{idx}", obj]),
+                "subject": "urn:x:benign",
+                "predicate": f"urn:x:meta:{idx}",
+                "object": obj,
+            }
+            for idx, obj in enumerate(benign_objs)
+        ],
+    )
+    export_sel = stage_outbound(
+        actor, project, "package-export", ".ontolearn.zip", "output.ontolearn.zip"
+    )
+    ok_res = ok(
+        exchange(
+            actor,
+            "project.transfer.package.export.check",
+            {
+                "projectId": project,
+                "selectionId": export_sel,
+                "kind": "full",
+                "baseRevision": store.revision(internal),
+                "options": OPTIONS_OFF,
+            },
+        )
+    )
+    assert ok_res["kind"] == "full"
+
+    live_obj = json.dumps('{"sessionToken":"eyJhbGciOiJIUzI1NiJ9.realpayload"}')
+    store.commit(
+        internal,
+        store.revision(internal),
+        uid(),
+        uid(),
+        manual=[
+            {
+                "id": digest(["urn:x:leak", "urn:x:sessionToken", live_obj]),
+                "subject": "urn:x:leak",
+                "predicate": "urn:x:sessionToken",
+                "object": live_obj,
+            }
+        ],
+    )
+    denied_res = denied(
+        exchange(
+            actor,
+            "project.transfer.package.export.check",
+            {
+                "projectId": project,
+                "selectionId": export_sel,
+                "kind": "full",
+                "baseRevision": store.revision(internal),
+                "options": OPTIONS_OFF,
+            },
+        ),
+        "PERMISSION_DENIED",
+    )
+    assert "realpayload" not in json.dumps(denied_res)

@@ -7,6 +7,19 @@ outcomes are accepted: ``clear`` (no secret pattern matched) or ``redacted``
 secret matched). Anything else rejects the whole export with the frozen
 ``PERMISSION_DENIED`` credentialRejection code - the secret itself is never
 echoed, logged or included in the fault.
+
+Known FR-901 boundaries:
+- Unconditional high-confidence signatures (``AKIA...``, ``aws_access_key_id:...``,
+  ``Bearer ...``, PEM private-key blocks, ``xox...``, ``AIza...``) always reject.
+- Generic key/value assignments cover sensitive credential key names (compound
+  snake_case/camelCase, JSON and escaped-quote forms, excluding structural
+  ``*_id``/``*Id`` identifier names) with >=8-char contiguous
+  ``[A-Za-z0-9_./+=-]`` material, while skipping RFC-4122 UUIDs, ISO-8601
+  timestamps, and explicit documentation placeholders (``YOUR_TOKEN_HERE``,
+  ``REPLACE_ME``, ``PLACEHOLDER``, etc.).
+- Whitespace-containing passphrases, non-alphanumeric-leading values, values
+  shorter than 8 characters, and nested non-string containers under secret keys
+  are outside the heuristic key/value assignment scope.
 """
 
 import re
@@ -15,21 +28,43 @@ _SECRET_KEY_BODY = (
     r"(?:(?i:(?<![A-Za-z0-9_.-])(?:[A-Za-z0-9]+[_.-])*"
     r"(?:api[_.-]?key|access[_.-]?key|secret[_.-]?(?:access[_.-]?)?key|"
     r"private[_.-]?key|secret|token|password|passwd|credential)s?"
-    r"(?:[_.-](?:value|key|secret|token|id))?)|"
+    r"(?:[_.-](?:value|key|secret|token))?)|"
     r"(?<![A-Za-z0-9_.-])[a-z][a-z0-9]*"
     r"(?:ApiKey|AccessKey|SecretKey|SecretAccessKey|PrivateKey|"
     r"Secret|Token|Password|Passwd|Credential)s?"
-    r"(?:Value|Key|Secret|Token|Id)?)"
+    r"(?:Value|Key|Secret|Token)?)"
 )
 _SECRET_KEY_RE = re.compile(rf"^{_SECRET_KEY_BODY}\Z")
+
+_GENERIC_ASSIGNMENT_RE = re.compile(
+    _SECRET_KEY_BODY + r"(?:\\?[\"'])?\s*[:=]\s*(?:\\?[\"'])?(?P<value>[A-Za-z0-9_./+=-]{8,})"
+)
+
+_HEX_DIGEST_RE = re.compile(r"[0-9a-f]{64}\Z")
+_UUID_VALUE_RE = re.compile(
+    r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\Z"
+)
+_TIMESTAMP_VALUE_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z\Z")
+_TIMESTAMP_PREFIX_RE = re.compile(
+    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z(?=\Z|[\s\"'\\,}\]])"
+)
+_PLACEHOLDER_VALUE_RE = re.compile(
+    r"(?i)(?:your[_.-](?:api[_.-]?key|access[_.-]?key|secret(?:[_.-]?(?:access[_.-]?)?key)?|"
+    r"private[_.-]?key|token|password|passwd|credential|session[_.-]?token|"
+    r"refresh[_.-]?token|auth[_.-]?token)(?:[_.-]here)?|"
+    r"[a-z]+(?:[_.-][a-z]+){0,3}[_.-]here|"
+    r"placeholder(?:[_.-][a-z]+){0,3}|"
+    r"replace[_.-](?:me|this|with[_.-][a-z_.-]+)|"
+    r"changeme|change[_.-]me|"
+    r"(?:example|dummy|sample)[_.-](?:api[_.-]?key|access[_.-]?key|secret(?:[_.-]?key)?|"
+    r"token|password|passwd|credential|key|value)|"
+    r"todo[_.-](?:set|replace|fill)[_.-][a-z_.-]+)\Z"
+)
 
 SECRET_PATTERNS = (
     # AWS access key ids and symmetric secret material shapes.
     re.compile(r"AKIA[0-9A-Z]{16}"),
     re.compile(r"(?i)aws[_.-]?(?:access[_.-]?key|secret[_.-]?key)[_.-]?(?:id)?:\s*\S+"),
-    # Generic key/secret/token/password assignments (including JSON/escaped
-    # quotes) with nonempty material.
-    re.compile(_SECRET_KEY_BODY + r"(?:\\?[\"'])?\s*[:=]\s*(?:\\?[\"'])?[A-Za-z0-9_./+=-]{8,}"),
     # Bearer authorization headers and private key blocks.
     re.compile(r"(?i)bearer\s+[A-Za-z0-9_./=+-]{16,}"),
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
@@ -104,6 +139,14 @@ class CredentialLeak(Exception):
     """Raised before any output byte exists; never carries the secret."""
 
 
+def _is_non_secret_assignment_value(text, match):
+    """Return True when a matched assignment value is a UUID, timestamp, or placeholder."""
+    candidate = match.group("value")
+    if _UUID_VALUE_RE.fullmatch(candidate) or _PLACEHOLDER_VALUE_RE.fullmatch(candidate):
+        return True
+    return _TIMESTAMP_PREFIX_RE.match(text, match.start("value")) is not None
+
+
 def scan_text(value):
     """Scan one free-text string. Returns "clear" or "redacted".
 
@@ -114,6 +157,9 @@ def scan_text(value):
         return "clear"
     for pattern in SECRET_PATTERNS:
         if pattern.search(value) is not None:
+            raise CredentialLeak()
+    for match in _GENERIC_ASSIGNMENT_RE.finditer(value):
+        if not _is_non_secret_assignment_value(value, match):
             raise CredentialLeak()
     if any(marker in value for marker in REDACTION_MARKERS):
         return "redacted"
@@ -135,22 +181,22 @@ def _combine(outcomes):
 
 
 def scan_projection(value):
-    """Walk an arbitrary JSON projection and scan every free-text leaf.
+    """Walk an arbitrary JSON projection and scan every free-text leaf and key.
 
-    Numbers, booleans and structural keys are not business text; strings are.
-    Structural identifiers that never carry user prose (hash-like hex strings,
-    UUIDs, enum codes, ISO timestamps) are skipped as non-free-text.
+    Dict keys are checked via :func:`scan_text` for embedded secret tokens, and
+    keys matching ``_SECRET_KEY_RE`` paired with a non-empty string value are
+    checked via ``scan_text(f"{key}: {item}")`` (inheriting UUID, ISO-8601
+    timestamp, and placeholder exclusions). Standalone leaf identifiers (64-char
+    hex digests, RFC-4122 UUIDs, and ISO-8601 timestamps) are skipped as
+    non-free-text.
     """
-    hex_like = re.compile(r"[0-9a-f]{64}\Z")
-    uuid_like = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z")
-    timestamp_like = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z\Z")
 
     def walk(node):
         if isinstance(node, str):
             if (
-                hex_like.fullmatch(node)
-                or uuid_like.fullmatch(node)
-                or timestamp_like.fullmatch(node)
+                _HEX_DIGEST_RE.fullmatch(node)
+                or _UUID_VALUE_RE.fullmatch(node)
+                or _TIMESTAMP_VALUE_RE.fullmatch(node)
             ):
                 return "clear"
             return scan_text(node)
