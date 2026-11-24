@@ -179,7 +179,8 @@ def stage_outbound(actor, project, purpose, extension, output_file):
                 "outputFile": output_file,
                 "createdAt": "2026-11-21T00:00:00Z",
             }
-        )
+        ),
+        encoding="utf-8",
     )
     return selection
 

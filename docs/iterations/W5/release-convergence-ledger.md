@@ -2,28 +2,28 @@
 
 > **唯一状态账本。** 本文件取代 `docs/reviews/T11/status.md` 作为 Wave 5 发布收敛的**唯一**状态入口；`docs/reviews/T11/**` 是 T11 本地会话的私有归档，**未随本分支引入**（归档零新增），其中任何指针都不是现行状态源。
 >
-> 基线工作树：`.worktrees/W5-release`，分支 `feature/w5-release`，HEAD `37ac2174`（Stage 1-A）。
+> 基线工作树：`.worktrees/W5-release`，分支 `feature/w5-release`（已按 `origin/develop@a02cdac8` / `M_W4` 对齐，待提交 PR `#36`）。
 > 本总账只登记**已实测**的自动化结论与**明确未闭合**的外部 HOLD，不做发布放行判断。
 
 ---
 
 ## 0. 显著声明（先读这一节）
 
-| 声明项                           | 值                                                      | 依据                                                                                                                                                                                                                                                                                                                                             |
-| :------------------------------- | :------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`newFRPasses`**                | **`0`**                                                 | 上游 GitHub Actions 计费/支出限额仍阻塞 PR #27，`origin/develop` 仍停在 `cb5d9631`（G0 合并点）。**B1a（PR #27）→ B1b → L1 → Lq → W3a → W3b → W4 → W5 全部仍为本地候选**，无一条完成「远端 CI 绿灯 + 合入 `origin/develop` + 同 SHA 复核」（已合入的较早 Wave 见 §2.13，其计数属既往批次）。因此本轮**没有新增任何可计入正式发布的 P0 通过数**。 |
-| **`releaseAuthorized`**          | **`false`**                                             | `scripts/release/verify.mts` 在所有返回路径上硬编码 `releaseAuthorized: false`（`:217`/`:602`/`:610`/`:1078`）。工具是**必要的一致性检查**，不是独立上线放行器。                                                                                                                                                                                 |
-| **`installerAcceptanceClaimed`** | **`false`**                                             | `scripts/run-w5-packaged-release-hygiene.py` 的 `summary.json` 恒定写入该字段（`:228`/`:229`）。无签名目录预验包（`package:dir`）**绝不冒充**已签名安装器，也**绝不冒充**真机验收证据。                                                                                                                                                          |
-| 外部人类发布 HOLD                | **`H1..H10` 全部 `PENDING_EXTERNAL_HOLD — NOT CLOSED`** | 见 §4。                                                                                                                                                                                                                                                                                                                                          |
-| 正式发布放行                     | **未发生**                                              | `verify.mts` 恒锁死 `releaseAuthorized: false`；放行属总控 `H10` 决策。                                                                                                                                                                                                                                                                          |
+| 声明项                           | 值                                                      | 依据                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| :------------------------------- | :------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`newFRPasses`**                | **`0`**                                                 | 仓库转为 public 后，`B1a`（PR `#27`）→ `B1b`（PR `#29`）→ `L1`（PR `#30`）→ `CI Hardening`（PR `#31`）→ `Lq`（PR `#32`）→ `W3a`（PR `#33`）→ `W3b`（PR `#34`）→ `W4`（PR `#35`, `M_W4 = a02cdac8`）已全部通过三平台 PR CI + 合入后 `develop` CI + 0% 自审 L2 复核并合入 `origin/develop`（上游代码队列仅余本分支 Wave 5 / PR `#36`）。**但正式发布可放行的 P0 新增通过数仍恒为 `0`**：外部非代码人类/真机/凭据 HOLD `H1..H10` 全部未闭合，`FR-803` 正式写工具仍为空，`FR-806`/`FR-900`/`FR-902`/`A-10`/`§11.3` 依赖 `H6`，`FR-901`/`FR-1000` 真机边界依赖 `H2`/`H3`。 |
+| **`releaseAuthorized`**          | **`false`**                                             | `scripts/release/verify.mts` 在所有返回路径上硬编码 `releaseAuthorized: false`（`:217`/`:602`/`:610`/`:1078`）。工具是**必要的一致性检查**，不是独立上线放行器。                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **`installerAcceptanceClaimed`** | **`false`**                                             | `scripts/run-w5-packaged-release-hygiene.py` 的 `summary.json` 恒定写入该字段（`:228`/`:229`）。无签名目录预验包（`package:dir`）**绝不冒充**已签名安装器，也**绝不冒充**真机验收证据。                                                                                                                                                                                                                                                                                                                                                                               |
+| 外部人类发布 HOLD                | **`H1..H10` 全部 `PENDING_EXTERNAL_HOLD — NOT CLOSED`** | 见 §4。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 正式发布放行                     | **未发生**                                              | `verify.mts` 恒锁死 `releaseAuthorized: false`；放行属总控 `H10` 决策。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
-**一句话结论**：Wave 5 已把「发布所需的**工具与门禁**」建好并本地验证通过；**没有任何一项外部人类/真机/凭据类发布条件被闭合**。本总账**不构成**任何形式的发布许可。
+**一句话结论**：Wave 5 已把「发布所需的**工具与门禁**」建好并随上游合入队列（`#27..#35` 已合入 `origin/develop@a02cdac8`，W5 准备 PR `#36`）完成自动化验证；**没有任何一项外部人类/真机/凭据类发布条件被闭合**。本总账**不构成**任何形式的发布许可。
 
 ---
 
 ## 1. 自动化可执行项 `A1..A8` 逐条结算
 
-判定口径：**绿 = 真实命令 exit 0 且制品绑定精确 `base/head/tree`**，不是「看起来过了」。凡标 ✅ 者均在本工作树 `37ac2174` 上**本轮实测**；凡标 ⛔ 者如实说明为何不能在本机闭合。
+判定口径：**绿 = 真实命令 exit 0 且制品绑定精确 `base/head/tree`**，不是「看起来过了」。凡标 ✅ 者均在 `.worktrees/W5-release`（历史基准含 `37ac2174`/`9030957a`，及与 `origin/develop@a02cdac8` 对齐后的候选提交）上**实测**；凡标 ⛔ 者如实说明为何不能在本机闭合。
 
 ### A1 安装包正式目标与无签名目录预验**分离**
 
@@ -39,11 +39,11 @@
 
 | 项      | 内容                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 状态    | ✅ 门禁已实现并接入 CI；本轮**未产出正式包制品**                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 状态    | ✅ 门禁已实现并接入 `desktop` CI 打包腿；⛔ **未产出已签名正式安装包**                                                                                                                                                                                                                                                                                                                                                                                                     |
 | 实现    | `scripts/run-w5-packaged-release-hygiene.py` 对已打包产品树做 fail-closed 检查：① 恰好一个产品（`*.app/Contents/Resources` / `*unpacked/resources` / `@ontolearndesktop/resources`）；② 6 项 `extraResources` 存在且**字节非空**（引擎可执行文件、contracts v2 registry/schema、FR003 设备运维示例、`licenses/` 目录、Electron `LICENSE`、Electron `LICENSES.chromium.html`）；③ 文件名级敏感残留扫描（`.pem`/`.key`/`.p12`/`.pfx`/`.sqlite`/`.sqlite3`/`.db` 及 `password | secret | certificate | api[-_]?key | identity | csc` 键名），普通运行时库（`.dat`/`.pak`/`.so`/`.dylib`）不误伤；④ 复检 Stage 0 打包不变量。 |
 | 命令    | `npm run release:hygiene` → `uv run --frozen python scripts/run-w5-packaged-release-hygiene.py release build/w5-release-hygiene`                                                                                                                                                                                                                                                                                                                                           |
-| CI 接线 | Stage 0 已把该脚本加入 `.github/workflows/ci.yml` 打包腿，并上传 `build/w5-release-hygiene-ci/` 制品。                                                                                                                                                                                                                                                                                                                                                                     |
-| 未闭合  | **未**在本地或 CI 产出正式签名包（受 `H4`/`H5` 与计费限额阻塞）；本项当前证明的是**门禁逻辑存在且可运行**，不是「某个真实包已通过卫生检查」。                                                                                                                                                                                                                                                                                                                              |
+| CI 接线 | Stage 0 已把该脚本加入 `.github/workflows/ci.yml` 的 `macos-latest` 与 `windows-latest` 打包腿，在无签名 `package:dir` 目录包上执行并上传 `build/w5-release-hygiene-ci/` 制品。                                                                                                                                                                                                                                                                                            |
+| 未闭合  | **未**在本地或 CI 产出正式签名包（受 `H4`/`H5` 外部证书与公证凭据阻塞，非 GitHub Actions 计费阻塞）；本项当前证明的是**门禁逻辑与无签名目录预验包的卫生不变量通过**，绝不冒充「已签名安装器验收通过」。                                                                                                                                                                                                                                                                    |
 
 ### A3 `verify.mts` + `verify-release.mjs` 版本化核验器
 
@@ -75,12 +75,12 @@
 
 ### A6 T10 → `t11-comparison-v3` **只读**投影
 
-| 项       | 内容                                                                                                                                                                                                                                                                                                                                                                                                   |
-| :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 状态     | ✅ 已落地，本轮 `packages/engine/tests/test_w5_release_projection.py` 实测 **6 passed**                                                                                                                                                                                                                                                                                                                |
-| 实现     | `scripts/release/project-t10-comparison.py`：读取真实 `ontolearn-project-package-v1` ZIP（`manifest.json` + `data/*.json`），校验成员路径/大小/SHA-256/选项隔离/核心角色完整性，输出对齐 `comparisonSchema` 的 `t11-comparison-v3` 文档。                                                                                                                                                              |
-| 诚实约束 | **不修改** `packages/engine/src/storage.py`，**不修改** `transfer/service.py`。v1 格式本就不携带的层（`queries`/`results`/`rounds`/`rawSources`/`undo`/`derivedResults`）投影为**严格空数组**，**绝不伪造**；`rerunOriginalMapping`/`replaySandbox` 恒 `false`（`mappingSources: missing` / `replaySemantics: missing`）。模板包或缺当前事实/所有权的包按 `restoreCurrent: false` 诚实拒绝并退出非零。 |
-| 退出码   | `0` 可恢复完整投影 / `1` 诚实拒绝（投影仍写出）/ `2` 用法或非法包失败（stderr 固定单行，**不回显包字节**）。                                                                                                                                                                                                                                                                                           |
+| 项       | 内容                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| :------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 状态     | ✅ 已落地，本轮 `packages/engine/tests/test_w5_release_projection.py` 实测 **6 passed**                                                                                                                                                                                                                                                                                                                                 |
+| 实现     | `scripts/release/project-t10-comparison.py`：读取真实 `ontolearn-project-package-v1` ZIP（`manifest.json` + `data/*.json`），校验成员路径/大小/SHA-256/选项隔离/核心角色完整性，输出对齐 `comparisonSchema` 的 `t11-comparison-v3` 文档。                                                                                                                                                                               |
+| 诚实约束 | **不修改** `packages/engine/src/ontolearn_engine/storage.py`，**不修改** `transfer/service.py`。v1 格式本就不携带的层（`queries`/`results`/`rounds`/`rawSources`/`undo`/`derivedResults`）投影为**严格空数组**，**绝不伪造**；`rerunOriginalMapping`/`replaySandbox` 恒 `false`（`mappingSources: missing` / `replaySemantics: missing`）。模板包或缺当前事实/所有权的包按 `restoreCurrent: false` 诚实拒绝并退出非零。 |
+| 退出码   | `0` 可恢复完整投影 / `1` 诚实拒绝（投影仍写出）/ `2` 用法或非法包失败（stderr 固定单行，**不回显包字节**）。                                                                                                                                                                                                                                                                                                            |
 
 ### A7 CLI **三态退出码**
 
@@ -106,150 +106,156 @@
 
 上游状态口径统一为：
 
-- **`MERGED-UPSTREAM`** = 该 FR 所属的 Wave **已合入** `origin/develop` 且远端 CI 绿（其计数早已在既往批次计入，**不构成本轮 `newFRPasses`**）。
-- **`L-VERIFIED-PENDING-UPSTREAM`** = 本地三层验证（机械 + Linux 容器 + macOS 真机）已绿，但**远端 CI 未绿且未合入 `origin/develop`**；因计费限额，`newFRPasses` 不增加。
+- **`MERGED-UPSTREAM（已合入 origin/develop@a02cdac8；正式发布验收仍待 H1..H10）`** = 该 FR 所属 Wave 的代码与自动化测试已通过三平台 PR CI + 合入后 `develop` CI + 0% 自审 L2 复核并合入 `origin/develop@a02cdac8`（`M_W4`）；**但不构成正式发布 `newFRPasses`**（正式发布仍受 `H1..H10` 与下列结构性/外部依赖约束）。
 - **`DEP-H6`** = 依赖真实 DeepSeek API 权限/余额（`H6`）。
 - **`UNVERIFIABLE-Hn`** = 在本机/本仓**不可能**闭合，必须由外部人类或真机闭合。
+- **`FR-803 正式写工具仍为空`** = 结构性缺口已在账本显式披露。
 
-> `origin/develop` 实测停在 `cb5d9631`（PR #26 / G0 hotfix）。已合入的上游 Wave 见 §2.13；**B1a（PR #27）及 B1b / L1 / Lq / W3a / W3b / W4 / W5 全部仍在本地**，未合入。
+> `origin/develop` 已从 `cb5d9631`（G0）串行推进并合入至 **`a02cdac8`（`M_W4`，PR `#27..#35`）**；上游代码收口队列仅余本分支 **Wave 5（`feature/w5-release`，PR `#36` 候选）**。但全部 10 项外部发布 HOLD（`H1..H10`）均未闭合，故 `newFRPasses` 仍恒为 **`0`**。
 
 ### 2.1 基础生命周期 / 快照（Q3 / G0 / B1a / B1b）
 
-| FR     | 名称                          | Wave           | 本地验证证明单元                                                                                                  | 上游状态                      |
-| :----- | :---------------------------- | :------------- | :---------------------------------------------------------------------------------------------------------------- | :---------------------------- |
-| FR-001 | 首次启动引导                  | B1a / L1       | `tests/e2e/b1a-project-lifecycle.spec.ts`、`tests/e2e/l1-learning-vertical.spec.ts`                               | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-002 | 项目创建与打开                | B1a            | `tests/unit/b1a-project-management-runtime.test.ts`、`b1a-library-ipc.test.ts`、`b1a-lifecycle-admission.test.ts` | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-003 | 内置示例项目                  | T03 / W4       | `tests/unit/t01-example-host-runtime.test.ts`、`scripts/run-w4-packaged-workspaces.py`（FR003 bundle）            | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-004 | 自动保存与快照                | B1b / W3b / W4 | `tests/unit/b1b-project-restore.test.ts`、`w3b-cross-slice-before-commit-and-loopback.test.ts`                    | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-005 | 模式切换（完整专业模式为 P1） | W3b            | `w3b-cross-slice-before-commit-and-loopback.test.ts`（`FR-802_FR-005`）                                           | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-006 | 数据层次与结果失效            | B1b / W4       | `tests/unit/b1b-project-restore-runtime.test.ts`、`packages/engine/tests/test_w4_learning_checks.py`              | `L-VERIFIED-PENDING-UPSTREAM` |
+| FR     | 名称                          | Wave           | 本地验证证明单元                                                                                                  | 上游状态                                                                             |
+| :----- | :---------------------------- | :------------- | :---------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- |
+| FR-001 | 首次启动引导                  | B1a / L1       | `tests/e2e/b1a-project-lifecycle.spec.ts`、`tests/e2e/l1-learning-vertical.spec.ts`                               | `MERGED-UPSTREAM`（PR #27 / #30 已入 `origin/develop@a02cdac8`，待 `H1..H10`）       |
+| FR-002 | 项目创建与打开                | B1a            | `tests/unit/b1a-project-management-runtime.test.ts`、`b1a-library-ipc.test.ts`、`b1a-lifecycle-admission.test.ts` | `MERGED-UPSTREAM`（PR #27 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
+| FR-003 | 内置示例项目                  | T03 / W4       | `tests/unit/t01-example-host-runtime.test.ts`、`scripts/run-w4-packaged-workspaces.py`（FR003 bundle）            | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
+| FR-004 | 自动保存与快照                | B1b / W3b / W4 | `tests/unit/b1b-project-restore.test.ts`、`w3b-cross-slice-before-commit-and-loopback.test.ts`                    | `MERGED-UPSTREAM`（PR #29 / #34 / #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-005 | 模式切换（完整专业模式为 P1） | W3b            | `w3b-cross-slice-before-commit-and-loopback.test.ts`（`FR-802_FR-005`）                                           | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
+| FR-006 | 数据层次与结果失效            | B1b / W4       | `tests/unit/b1b-project-restore-runtime.test.ts`、`packages/engine/tests/test_w4_learning_checks.py`              | `MERGED-UPSTREAM`（PR #29 / #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`）       |
 
 ### 2.2 学习与离线课程（L1 / Lq / W3a）
 
-| FR     | 名称                   | Wave          | 本地验证证明单元                                                                                                                     | 上游状态                      |
-| :----- | :--------------------- | :------------ | :----------------------------------------------------------------------------------------------------------------------------------- | :---------------------------- |
-| FR-100 | 学习路径               | L1            | `tests/unit/l1-learning-ledger.test.ts`、`scripts/run-l1-packaged-learning.py`                                                       | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-101 | 离线分级提示与模型增强 | L1 / W3b      | `tests/unit/l1-mentor-panel.test.ts`、`w3b-agent-and-b2.spec.ts`                                                                     | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-102 | 学习检查与反馈         | L1 / Lq / W3a | `packages/engine/tests/test_w4_learning_checks.py`、`test_w3a_quality_b3.py`                                                         | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-103 | 术语帮助               | L1            | `tests/unit/l1-mentor-panel.test.ts`（内嵌术语别名搜索）                                                                             | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-104 | 学习成果               | L1 / W3a      | `tests/unit/l1-learning-ledger.test.ts`                                                                                              | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-105 | 最小迁移学习验证       | W3a           | `packages/engine/tests/test_w3a_quality_b3.py`、`tests/e2e/w3a-quality-and-b3.spec.ts`（`transfer-repair`/`transfer-classify` 两关） | `L-VERIFIED-PENDING-UPSTREAM` |
+| FR     | 名称                   | Wave          | 本地验证证明单元                                                                                                                     | 上游状态                                                                             |
+| :----- | :--------------------- | :------------ | :----------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- |
+| FR-100 | 学习路径               | L1            | `tests/unit/l1-learning-ledger.test.ts`、`scripts/run-l1-packaged-learning.py`                                                       | `MERGED-UPSTREAM`（PR #30 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
+| FR-101 | 离线分级提示与模型增强 | L1 / W3b      | `tests/unit/l1-mentor-panel.test.ts`、`w3b-agent-and-b2.spec.ts`                                                                     | `MERGED-UPSTREAM`（PR #30 / #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）       |
+| FR-102 | 学习检查与反馈         | L1 / Lq / W3a | `packages/engine/tests/test_w4_learning_checks.py`、`test_w3a_quality_b3.py`                                                         | `MERGED-UPSTREAM`（PR #30 / #32 / #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-103 | 术语帮助               | L1            | `tests/unit/l1-mentor-panel.test.ts`（内嵌术语别名搜索）                                                                             | `MERGED-UPSTREAM`（PR #30 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
+| FR-104 | 学习成果               | L1 / W3a      | `tests/unit/l1-learning-ledger.test.ts`                                                                                              | `MERGED-UPSTREAM`（PR #30 / #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`）       |
+| FR-105 | 最小迁移学习验证       | W3a           | `packages/engine/tests/test_w3a_quality_b3.py`、`tests/e2e/w3a-quality-and-b3.spec.ts`（`transfer-repair`/`transfer-classify` 两关） | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
 
 ### 2.3 本体建模（T02 / W3b）
 
-| FR     | 名称                   | Wave | 本地验证证明单元                                                                                                        | 上游状态                          |
-| :----- | :--------------------- | :--- | :---------------------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| FR-200 | 业务概念管理           | T02  | `tests/unit/t02-mainline-metadata.test.ts`、`tests/e2e/t02-fr200-fr201.spec.ts`                                         | `MERGED-UPSTREAM`（PR #16 / #20） |
-| FR-201 | 结构关系与实例事实创建 | T02  | `tests/unit/t02-mainline-consumer.test.ts`、`t02-ownership-detail.test.ts`                                              | `MERGED-UPSTREAM`（PR #16 / #20） |
-| FR-202 | 多视图展示             | W3b  | `tests/e2e/w3b-agent-and-b2.spec.ts`（第一例）                                                                          | `L-VERIFIED-PENDING-UPSTREAM`     |
-| FR-203 | 本体导入导出           | W3b  | `w3b-cross-slice-before-commit-and-loopback.test.ts`（`FR-203-turtle-roundtrip` / `FR-203-import-full-diff-isolation`） | `L-VERIFIED-PENDING-UPSTREAM`     |
-| FR-204 | 建模草稿与修改预览     | W3b  | `tests/e2e/w3b-agent-and-b2.spec.ts`（整份 Diff 显式确认）                                                              | `L-VERIFIED-PENDING-UPSTREAM`     |
+| FR     | 名称                   | Wave | 本地验证证明单元                                                                                                        | 上游状态                                                                       |
+| :----- | :--------------------- | :--- | :---------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------- |
+| FR-200 | 业务概念管理           | T02  | `tests/unit/t02-mainline-metadata.test.ts`、`tests/e2e/t02-fr200-fr201.spec.ts`                                         | `MERGED-UPSTREAM`（PR #16 / #20 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-201 | 结构关系与实例事实创建 | T02  | `tests/unit/t02-mainline-consumer.test.ts`、`t02-ownership-detail.test.ts`                                              | `MERGED-UPSTREAM`（PR #16 / #20 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-202 | 多视图展示             | W3b  | `tests/e2e/w3b-agent-and-b2.spec.ts`（第一例）                                                                          | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）       |
+| FR-203 | 本体导入导出           | W3b  | `w3b-cross-slice-before-commit-and-loopback.test.ts`（`FR-203-turtle-roundtrip` / `FR-203-import-full-diff-isolation`） | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）       |
+| FR-204 | 建模草稿与修改预览     | W3b  | `tests/e2e/w3b-agent-and-b2.spec.ts`（整份 Diff 显式确认）                                                              | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）       |
 
 ### 2.4 数据源与映射（W4 / T03）
 
-| FR     | 名称                         | Wave | 本地验证证明单元                                                                          | 上游状态                      |
-| :----- | :--------------------------- | :--- | :---------------------------------------------------------------------------------------- | :---------------------------- |
-| FR-300 | 数据源接入                   | W4   | `tests/unit/w4-cross-slice-real-runtime.test.ts`、`tests/e2e/q3-mapping-physical.spec.ts` | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-301 | 三步映射向导与实体身份       | W4   | `tests/unit/w4-cross-slice-real-runtime.test.ts`（`M-01`/`M-02` 稳定身份）                | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-302 | 映射建议                     | W4   | 同上（无模型时手动全 P0 映射路径）                                                        | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-303 | 值转换、预览与错误定位       | W4   | 同上（`M-05` 行级错误定位 + 整批原子提交）                                                | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-304 | 来源追踪、固定重跑与人工冲突 | W4   | 同上（`M-03`/`M-04`/`M-06` 撤回、冲突、旧预览拒绝）                                       | `L-VERIFIED-PENDING-UPSTREAM` |
+| FR     | 名称                         | Wave | 本地验证证明单元                                                                          | 上游状态                                                                 |
+| :----- | :--------------------------- | :--- | :---------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| FR-300 | 数据源接入                   | W4   | `tests/unit/w4-cross-slice-real-runtime.test.ts`、`tests/e2e/q3-mapping-physical.spec.ts` | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-301 | 三步映射向导与实体身份       | W4   | `tests/unit/w4-cross-slice-real-runtime.test.ts`（`M-01`/`M-02` 稳定身份）                | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-302 | 映射建议                     | W4   | 同上（无模型时手动全 P0 映射路径）                                                        | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-303 | 值转换、预览与错误定位       | W4   | 同上（`M-05` 行级错误定位 + 整批原子提交）                                                | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-304 | 来源追踪、固定重跑与人工冲突 | W4   | 同上（`M-03`/`M-04`/`M-06` 撤回、冲突、旧预览拒绝）                                       | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
 
 ### 2.5 查询（Q3 / Lq / W3b）
 
-| FR     | 名称                 | Wave            | 本地验证证明单元                                                                                                     | 上游状态                                                                                   |
-| :----- | :------------------- | :-------------- | :------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------- |
-| FR-400 | 多种查询入口         | W3b             | `tests/e2e/w3b-agent-and-b2.spec.ts`（模板词表 + 模型草稿投影）                                                      | `L-VERIFIED-PENDING-UPSTREAM`                                                              |
-| FR-401 | 查询透明性与数据范围 | T04(Q3) / Lq    | `tests/unit/lq-query-learning.test.ts`、`tests/e2e/lq-query-learning.spec.ts`、`tests/e2e/q3-packaged-graph.spec.ts` | 同快照图部分 `MERGED-UPSTREAM`（PR #24）；学习课程部分 `L-VERIFIED-PENDING-UPSTREAM`（Lq） |
-| FR-402 | 本地只读与网络限制   | Q3 / W3b        | `tests/unit/w3b-pre-encoded-body.test.ts`（loopback 与本地零外发）                                                   | `L-VERIFIED-PENDING-UPSTREAM`                                                              |
-| FR-403 | 结果与空结果解释     | T04(Q1/Q2) / Lq | `tests/unit/t04-empty-results.test.ts`、`lq-query-learning.test.ts`                                                  | 空结果方向 `MERGED-UPSTREAM`（PR #22）；学习课程部分 `L-VERIFIED-PENDING-UPSTREAM`（Lq）   |
-| FR-404 | 查询保存与复用       | Lq              | `tests/unit/lq-query-learning.test.ts`                                                                               | `L-VERIFIED-PENDING-UPSTREAM`                                                              |
+| FR     | 名称                 | Wave            | 本地验证证明单元                                                                                                     | 上游状态                                                                             |
+| :----- | :------------------- | :-------------- | :------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- |
+| FR-400 | 多种查询入口         | W3b             | `tests/e2e/w3b-agent-and-b2.spec.ts`（模板词表 + 模型草稿投影）                                                      | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
+| FR-401 | 查询透明性与数据范围 | T04(Q3) / Lq    | `tests/unit/lq-query-learning.test.ts`、`tests/e2e/lq-query-learning.spec.ts`、`tests/e2e/q3-packaged-graph.spec.ts` | 同快照图（PR #24）与学习课程（PR #32）均 `MERGED-UPSTREAM`；正式发布仍待 `H1..H10`   |
+| FR-402 | 本地只读与网络限制   | Q3 / W3b        | `tests/unit/w3b-pre-encoded-body.test.ts`（loopback 与本地零外发）                                                   | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
+| FR-403 | 结果与空结果解释     | T04(Q1/Q2) / Lq | `tests/unit/t04-empty-results.test.ts`、`lq-query-learning.test.ts`                                                  | 空结果方向（PR #22）与学习课程（PR #32）均 `MERGED-UPSTREAM`；正式发布仍待 `H1..H10` |
+| FR-404 | 查询保存与复用       | Lq              | `tests/unit/lq-query-learning.test.ts`                                                                               | `MERGED-UPSTREAM`（PR #32 已入 `origin/develop@a02cdac8`，待 `H1..H10`）             |
 
 ### 2.6 质量检查与推理（W3a / T05）
 
-| FR     | 名称               | Wave | 本地验证证明单元                                                                 | 上游状态                      |
-| :----- | :----------------- | :--- | :------------------------------------------------------------------------------- | :---------------------------- |
-| FR-500 | 一键检查与验证范围 | W3a  | `tests/unit/t05-quality.test.ts`、`packages/engine/tests/test_w3a_quality_b3.py` | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-501 | 推理执行与组合语义 | W3a  | 同上（`reasoning.execute → validation.execute` 两阶段顺序）                      | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-502 | 推导依据与解释边界 | W3a  | 同上（`R-04` RDFS 依据链）                                                       | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-503 | 问题分级与定位     | W3a  | 同上（`V-01` 名称必填违规定位）                                                  | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-504 | 最小约束编辑与测试 | W3a  | 同上（5 类 SHACL 模板与受控合取规则）                                            | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-505 | 最小规则编辑与测试 | W3a  | 同上（`R-05` P0 不支持规则链提示）                                               | `L-VERIFIED-PENDING-UPSTREAM` |
+| FR     | 名称               | Wave | 本地验证证明单元                                                                 | 上游状态                                                                 |
+| :----- | :----------------- | :--- | :------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| FR-500 | 一键检查与验证范围 | W3a  | `tests/unit/t05-quality.test.ts`、`packages/engine/tests/test_w3a_quality_b3.py` | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-501 | 推理执行与组合语义 | W3a  | 同上（`reasoning.execute → validation.execute` 两阶段顺序）                      | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-502 | 推导依据与解释边界 | W3a  | 同上（`R-04` RDFS 依据链）                                                       | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-503 | 问题分级与定位     | W3a  | 同上（`V-01` 名称必填违规定位）                                                  | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-504 | 最小约束编辑与测试 | W3a  | 同上（5 类 SHACL 模板与受控合取规则）                                            | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-505 | 最小规则编辑与测试 | W3a  | 同上（`R-05` P0 不支持规则链提示）                                               | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
 
 ### 2.7 行为模型（W4 / T06）
 
-| FR     | 名称               | Wave | 本地验证证明单元                               | 上游状态                      |
-| :----- | :----------------- | :--- | :--------------------------------------------- | :---------------------------- |
-| FR-600 | 行为模型           | W4   | `packages/engine/tests/test_w4_a2_behavior.py` | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-601 | 内置安全动作       | W4   | 同上（`B-01`/`B-02`）                          | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-602 | 行为验证与冲突     | W4   | 同上（`B-04` 行为前快照、`B-05` 竞争写入）     | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-603 | 样本测试           | W4   | 同上（`B-08` 工具失败不得声称通过）            | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-604 | 行为与正式数据隔离 | W4   | 同上（沙盘/行为隔离边界）                      | `L-VERIFIED-PENDING-UPSTREAM` |
+| FR     | 名称               | Wave | 本地验证证明单元                               | 上游状态                                                                 |
+| :----- | :----------------- | :--- | :--------------------------------------------- | :----------------------------------------------------------------------- |
+| FR-600 | 行为模型           | W4   | `packages/engine/tests/test_w4_a2_behavior.py` | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-601 | 内置安全动作       | W4   | 同上（`B-01`/`B-02`）                          | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-602 | 行为验证与冲突     | W4   | 同上（`B-04` 行为前快照、`B-05` 竞争写入）     | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-603 | 样本测试           | W4   | 同上（`B-08` 工具失败不得声称通过）            | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-604 | 行为与正式数据隔离 | W4   | 同上（沙盘/行为隔离边界）                      | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
 
 ### 2.8 情景推演（W4 / T07）
 
-| FR     | 名称                 | Wave | 本地验证证明单元                               | 上游状态                      |
-| :----- | :------------------- | :--- | :--------------------------------------------- | :---------------------------- |
-| FR-700 | 场景创建             | W4   | `packages/engine/tests/test_w4_a2_scenario.py` | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-701 | 固定轮次执行语义     | W4   | 同上（`G-list-01` 逐轮状态）                   | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-702 | 场景对比与指标       | W4   | 同上（`G-list-02`/`G-list-05`）                | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-703 | 运行依据与重放       | W4   | 同上（`G-list-06` 显式续跑零重放）             | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-704 | 假设提示             | W4   | 同上（假设提示与实际运行绑定）                 | `L-VERIFIED-PENDING-UPSTREAM` |
-| FR-705 | 沙盘隔离、取消与恢复 | W4   | 同上（`G-list-07`/`G-list-08`）                | `L-VERIFIED-PENDING-UPSTREAM` |
+| FR     | 名称                 | Wave | 本地验证证明单元                               | 上游状态                                                                 |
+| :----- | :------------------- | :--- | :--------------------------------------------- | :----------------------------------------------------------------------- |
+| FR-700 | 场景创建             | W4   | `packages/engine/tests/test_w4_a2_scenario.py` | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-701 | 固定轮次执行语义     | W4   | 同上（`G-list-01` 逐轮状态）                   | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-702 | 场景对比与指标       | W4   | 同上（`G-list-02`/`G-list-05`）                | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-703 | 运行依据与重放       | W4   | 同上（`G-list-06` 显式续跑零重放）             | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-704 | 假设提示             | W4   | 同上（假设提示与实际运行绑定）                 | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
+| FR-705 | 沙盘隔离、取消与恢复 | W4   | 同上（`G-list-07`/`G-list-08`）                | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`） |
 
 ### 2.9 Agent 侧栏与模型边界（W3b / I06 / T08）
 
-| FR     | 名称                        | Wave      | 本地验证证明单元                                                                   | 上游状态                                                                                     |
-| :----- | :-------------------------- | :-------- | :--------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
-| FR-800 | 上下文感知                  | W3b       | `tests/e2e/w3b-agent-and-b2.spec.ts`（第二例）                                     | `L-VERIFIED-PENDING-UPSTREAM`                                                                |
-| FR-801 | 页面上下文动作              | W3b       | 同上（每页最多四个动作）                                                           | `L-VERIFIED-PENDING-UPSTREAM`                                                                |
-| FR-802 | 导师与项目模式              | W3b       | `w3b-cross-slice-before-commit-and-loopback.test.ts`                               | `L-VERIFIED-PENDING-UPSTREAM`                                                                |
-| FR-803 | 工具白名单                  | W3b       | 同上（Wave 4 禁用、**正式写工具仍为空**）                                          | `L-VERIFIED-PENDING-UPSTREAM`                                                                |
-| FR-804 | 版本化 Diff、原子提交与撤销 | W3b / B1b | `packages/engine/tests/test_agent_before_commit.py`、`b1b-project-restore.test.ts` | `L-VERIFIED-PENDING-UPSTREAM`                                                                |
-| FR-805 | 可信回答边界                | W3b       | `w3b-cross-slice-before-commit-and-loopback.test.ts`                               | `L-VERIFIED-PENDING-UPSTREAM`                                                                |
-| FR-806 | 模型失败降级                | W3b       | 同上（本地等待/取消/重试路径）                                                     | 本地等待/取消/重试：`L-VERIFIED-PENDING-UPSTREAM`；**真实在线延迟与真实 DeepSeek**：`DEP-H6` |
+| FR     | 名称                        | Wave      | 本地验证证明单元                                                                   | 上游状态                                                                                             |
+| :----- | :-------------------------- | :-------- | :--------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------- |
+| FR-800 | 上下文感知                  | W3b       | `tests/e2e/w3b-agent-and-b2.spec.ts`（第二例）                                     | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）                             |
+| FR-801 | 页面上下文动作              | W3b       | 同上（每页最多四个动作）                                                           | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）                             |
+| FR-802 | 导师与项目模式              | W3b       | `w3b-cross-slice-before-commit-and-loopback.test.ts`                               | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）                             |
+| FR-803 | 工具白名单                  | W3b       | 同上（Wave 4 禁用、**正式写工具仍为空**）                                          | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`）；**正式写工具仍为空（结构性缺口未闭环）** |
+| FR-804 | 版本化 Diff、原子提交与撤销 | W3b / B1b | `packages/engine/tests/test_agent_before_commit.py`、`b1b-project-restore.test.ts` | `MERGED-UPSTREAM`（PR #29 / #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）                       |
+| FR-805 | 可信回答边界                | W3b       | `w3b-cross-slice-before-commit-and-loopback.test.ts`                               | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）                             |
+| FR-806 | 模型失败降级                | W3b       | 同上（本地等待/取消/重试路径）                                                     | 本地等待/取消/重试：`MERGED-UPSTREAM`（PR #34）；**真实在线延迟与真实 DeepSeek**：`DEP-H6`           |
 
 ### 2.10 模型服务、外发与密钥（W3b）
 
-| FR     | 名称                       | Wave     | 本地验证证明单元                                                                               | 上游状态                                                                                                 |
-| :----- | :------------------------- | :------- | :--------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
-| FR-900 | 模型服务配置与能力验证     | W3b      | `tests/unit/w3b-pre-encoded-body.test.ts`（`synthetic` 探测、启停、移除、审计）                | 本地与 `synthetic`：`L-VERIFIED-PENDING-UPSTREAM`；**真实 DeepSeek**：`DEP-H6`                           |
-| FR-901 | 密钥保护                   | W3b / W4 | `w3b-cross-slice-before-commit-and-loopback.test.ts`（边界审计）、`test_w4_learning_checks.py` | 边界审计：`L-VERIFIED-PENDING-UPSTREAM`；**三 OS 真实 safeStorage/DPAPI/Keychain**：`UNVERIFIABLE-H2/H3` |
-| FR-902 | 最终外发内容检查与隐私级别 | W3b      | `tests/unit/w3b-pre-encoded-body.test.ts`（核准正文 == socket 实收字节；越界与完全本地零外发） | 本地与 loopback：`L-VERIFIED-PENDING-UPSTREAM`；**真实外发最小 vs 项目差异**：`DEP-H6`                   |
-| FR-904 | 最小外发调用记录           | W3b      | `w3b-cross-slice-before-commit-and-loopback.test.ts`（收据与审计无凭据）                       | `L-VERIFIED-PENDING-UPSTREAM`                                                                            |
+| FR     | 名称                       | Wave     | 本地验证证明单元                                                                               | 上游状态                                                                                                     |
+| :----- | :------------------------- | :------- | :--------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
+| FR-900 | 模型服务配置与能力验证     | W3b      | `tests/unit/w3b-pre-encoded-body.test.ts`（`synthetic` 探测、启停、移除、审计）                | 本地与 `synthetic`：`MERGED-UPSTREAM`（PR #34）；**真实 DeepSeek**：`DEP-H6`                                 |
+| FR-901 | 密钥保护                   | W3b / W4 | `w3b-cross-slice-before-commit-and-loopback.test.ts`（边界审计）、`test_w4_learning_checks.py` | 边界审计：`MERGED-UPSTREAM`（PR #34 / #35）；**三 OS 真实 safeStorage/DPAPI/Keychain**：`UNVERIFIABLE-H2/H3` |
+| FR-902 | 最终外发内容检查与隐私级别 | W3b      | `tests/unit/w3b-pre-encoded-body.test.ts`（核准正文 == socket 实收字节；越界与完全本地零外发） | 本地与 loopback：`MERGED-UPSTREAM`（PR #34）；**真实外发最小 vs 项目差异**：`DEP-H6`                         |
+| FR-904 | 最小外发调用记录           | W3b      | `w3b-cross-slice-before-commit-and-loopback.test.ts`（收据与审计无凭据）                       | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`，待 `H1..H10`）                                     |
 
 ### 2.11 迁移、报告与项目包（W4 / B4 / T10）
 
-| FR      | 名称                         | Wave | 本地验证证明单元                                                                                                                                                                                      | 上游状态                                                              |
-| :------ | :--------------------------- | :--- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------- |
-| FR-1000 | 项目包清单、版本、迁移与重放 | W4   | `tests/unit/w4-cross-slice-real-runtime.test.ts`、`tests/e2e/w4-workspaces-and-transfer.spec.ts`、`scripts/run-w4-packaged-workspaces.py`、`scripts/release/project-t10-comparison.py`（W5 只读投影） | `L-VERIFIED-PENDING-UPSTREAM`；**真机双向迁移**：`UNVERIFIABLE-H2/H3` |
-| FR-1001 | HTML 报告导出与安全显示      | W4   | `tests/e2e/w4-workspaces-and-transfer.spec.ts`（HTML CSP、三种隔离 Agent 工具的有界收据）                                                                                                             | `L-VERIFIED-PENDING-UPSTREAM`                                         |
+| FR      | 名称                         | Wave | 本地验证证明单元                                                                                                                                                                                      | 上游状态                                                                                                 |
+| :------ | :--------------------------- | :--- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| FR-1000 | 项目包清单、版本、迁移与重放 | W4   | `tests/unit/w4-cross-slice-real-runtime.test.ts`、`tests/e2e/w4-workspaces-and-transfer.spec.ts`、`scripts/run-w4-packaged-workspaces.py`、`scripts/release/project-t10-comparison.py`（W5 只读投影） | 包引擎/构建：`MERGED-UPSTREAM`（PR #35）；W5 只读投影待 PR `#36`；**真机双向迁移**：`UNVERIFIABLE-H2/H3` |
+| FR-1001 | HTML 报告导出与安全显示      | W4   | `tests/e2e/w4-workspaces-and-transfer.spec.ts`（HTML CSP、三种隔离 Agent 工具的有界收据）                                                                                                             | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`，待 `H1..H10`）                                 |
 
-### 2.13 已合入 `origin/develop` 的 Wave 基线（其计数**不在**本轮 `newFRPasses` 内）
+### 2.13 已合入 `origin/develop` 的 Wave 基线（代码已合入，正式发布仍恒守 `newFRPasses = 0`）
 
 `origin/develop` 实测合并历史（`git log --oneline --merges origin/develop`）：
 
-| 合并点                  | PR        | Wave / 切片 | 覆盖的 P0 能力                                                       |
-| :---------------------- | :-------- | :---------- | :------------------------------------------------------------------- |
-| `1b6df7a2`              | #2        | I01         | 存储 / 快照 / 结果失效基础（`FR-006`、`FR-804`、`FR-1000` 等基础层） |
-| `c2f9b038`              | #3        | I02         | CSP / 窗口生命周期（启动与原生恢复基线）                             |
-| `e45e6038`              | #4        | I03         | 协议 / 契约（公共格式与 registry）                                   |
-| `5f910b52`              | #5        | I04         | 常驻协调器 / ExecutionJob（`FR-800` 侧基础）                         |
-| `9235454a` / `fac1a2fb` | #16 / #20 | T02         | `FR-200`、`FR-201`                                                   |
-| `02888871`              | #22       | T04 Q1/Q2   | 空结果五个方向（`FR-403`）                                           |
-| `0e01b4d0`              | #24       | T04 Q3      | 同快照关系图（`FR-401`）                                             |
-| `d5695332` / `cb5d9631` | #25 / #26 | G0          | 审查分级策略（不新增产品 FR）                                        |
+| 合并点                  | PR        | Wave / 切片  | 覆盖的 P0 能力 / 收口说明                                                                                                           |
+| :---------------------- | :-------- | :----------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| `1b6df7a2`              | #2        | I01          | 存储 / 快照 / 结果失效基础（`FR-006`、`FR-804`、`FR-1000` 等基础层）                                                                |
+| `c2f9b038`              | #3        | I02          | CSP / 窗口生命周期（启动与原生恢复基线）                                                                                            |
+| `e45e6038`              | #4        | I03          | 协议 / 契约（公共格式与 registry）                                                                                                  |
+| `5f910b52`              | #5        | I04          | 常驻协调器 / ExecutionJob（`FR-800` 侧基础）                                                                                        |
+| `9235454a` / `fac1a2fb` | #16 / #20 | T02          | `FR-200`、`FR-201`                                                                                                                  |
+| `02888871`              | #22       | T04 Q1/Q2    | 空结果五个方向（`FR-403`）                                                                                                          |
+| `0e01b4d0`              | #24       | T04 Q3       | 同快照关系图（`FR-401`）                                                                                                            |
+| `d5695332` / `cb5d9631` | #25 / #26 | G0           | 审查分级策略（不新增产品 FR）                                                                                                       |
+| `73441130`              | #27       | B1a          | 项目生命周期 / 管理 / 首启与崩溃恢复（`FR-001`、`FR-002`）                                                                          |
+| `587a931f`              | #29       | B1b          | 快照恢复与结果失效（`FR-004`、`FR-006`、`FR-804` 底层）                                                                             |
+| `dd688719`              | #30       | L1           | 垂直学习底座与离线分级提示（`FR-001`、`FR-100`..`FR-104`）                                                                          |
+| `f6600d2c`              | #31       | CI Hardening | macOS CI 30m/分片与 Windows CSP 恢复韧性（不新增产品 FR）                                                                           |
+| `915979f2`              | #32       | Lq           | 查询学习课程与保存复用（`FR-401`、`FR-403`、`FR-404`）                                                                              |
+| `bfd9926c`              | #33       | W3a          | 质量检查 / 推理 / 最小迁移（`FR-102`、`FR-104`、`FR-105`、`FR-500`..`FR-505`）                                                      |
+| `aaabfc92`              | #34       | W3b          | 多视图 / Turtle / Agent 侧栏 / 模型网关与隐私（`FR-004`..`FR-904` 相关模块；`FR-803` 正式写工具仍为空）                             |
+| `a02cdac8`              | #35       | W4           | 数据源映射 / 行为 / 情景推演 / 项目包与 HTML 报告（`FR-003`..`FR-1001` 相关模块；合入后 `develop` CI Run `45337490364` 三平台全绿） |
 
-**这些 Wave 的远端 CI 曾经绿并已合入**，其计数在既往批次已计入；本轮**不重复计数**，也与本轮 `newFRPasses = 0` 不矛盾。
-
-**仍在本地、尚未合入的候选**（按上游合入顺序）：**B1a（PR #27，受 GitHub Actions 计费限额阻塞）→ B1b → L1 → Lq → W3a → W3b → W4 → W5**。
+**当前仅余待合入的上游发布分支**：**Wave 5（`feature/w5-release`，PR `#36` 候选）**，即本分支所承载的 T11 发布核验器、T10 v3 只读投影、包内发布卫生门禁与收敛总账。
 
 ### 2.14 计数闭合
 
 - P0 `FR` 总数：**57**（PRD `### FR-` 标题 59 条 − `FR-506` P1 − `FR-903` P1 = 57）。
 - 本矩阵登记：**57** 条（6 + 6 + 5 + 5 + 5 + 6 + 5 + 6 + 7 + 4 + 2 = 57）。✅ 闭合。
-- 上游状态分布：`MERGED-UPSTREAM`（全部或部分已合入）**4** 条（`FR-200`、`FR-201`、`FR-401` 的图部分、`FR-403` 的空结果部分）；纯 `L-VERIFIED-PENDING-UPSTREAM` **50** 条；其中 **3** 条额外依赖 `H6`（`FR-806` 真实在线、`FR-900` 真实 DeepSeek、`FR-902` 真实外发差异），**1** 条依赖 `H2`/`H3`（`FR-901` 三 OS safeStorage）；同一条 FR 可同时携带已合入部分与待合入部分。
-- **`newFRPasses = 0`**：本轮**没有**任何一条 P0 取得「远端 CI 绿灯 + 合入 `origin/develop` + 同 SHA 复核」的**新增**正式发布计数。
+- 代码与自动化上游状态分布：**57/57** 条 P0 `FR` 的核心产品代码与自动化测试均已跨 `#2..#35` 合入 `origin/develop@a02cdac8`（其中 W5 的 T10 v3 只读投影与发布核验收敛由 PR `#36` 补齐）；但按发布口径仍有：**3** 条额外依赖真实 DeepSeek `H6`（`FR-806`、`FR-900`、`FR-902`）、**2** 条依赖真机 OS 检查 `H2`/`H3`（`FR-901`、`FR-1000`），以及 **`FR-803` 正式写工具仍为空** 的已知结构性缺口。
+- **`newFRPasses = 0`**：尽管上游代码与三平台 CI 已推进至 `a02cdac8`，但在 `H1..H10` 全部外部人类/真机/凭据条件闭合之前，正式发布放行计数恒为 `0`。
 
 ---
 
@@ -257,16 +263,16 @@
 
 `tests/fixtures/product-baselines/coverage.json` 的 50 条 `entries`（ID 与 PRD 原文一并被 `verify.mts` 校验）与 PRD §12.1 八步链路逐条对应：
 
-| 用例组                                                | 条数 | Wave         | 关联 PRD §12.1 步骤              | 本地验证证明单元                                                                                                                                           | 上游状态                                                                                            |
-| :---------------------------------------------------- | :--- | :----------- | :------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- |
-| `M-01`..`M-06`（映射/身份/重跑/冲突）                 | 6    | W4 (T03)     | ③ CSV 映射                       | `tests/unit/w4-cross-slice-real-runtime.test.ts`、`packages/engine/tests/test_w4_learning_checks.py`                                                       | `L-VERIFIED-PENDING-UPSTREAM`                                                                       |
-| `Q-01`/`Q-02`（高危告警 / 空结果）                    | 2    | Lq           | ④ 查询完整/空结果                | `tests/unit/lq-query-learning.test.ts`、`tests/e2e/lq-query-learning.spec.ts`                                                                              | `L-VERIFIED-PENDING-UPSTREAM`                                                                       |
-| `V-01`（名称必填约束）                                | 1    | W3a (T05)    | ⑤ 约束失败/修复/依据             | `tests/unit/t05-quality.test.ts`、`packages/engine/tests/test_w3a_quality_b3.py`                                                                           | `L-VERIFIED-PENDING-UPSTREAM`                                                                       |
-| `R-01`..`R-06`（推理/依据/规则链不支持）              | 6    | W3a (T05)    | ⑤ 真实推导依据                   | 同上                                                                                                                                                       | `L-VERIFIED-PENDING-UPSTREAM`                                                                       |
-| `O-01`（未记录 ≠ 已证明不存在）                       | 1    | W4 (T03)     | ③ 来源追踪                       | `packages/engine/tests/test_w4_learning_checks.py`                                                                                                         | `L-VERIFIED-PENDING-UPSTREAM`                                                                       |
-| `B-01`..`B-11`（行为触发/竞争/顺序/幂等）             | 11   | W4 (T06)     | ⑥ 行为应触发/不触发/重复         | `packages/engine/tests/test_w4_a2_behavior.py`、`tests/e2e/w4-workspaces-and-transfer.spec.ts`                                                             | `L-VERIFIED-PENDING-UPSTREAM`                                                                       |
-| `A-01`..`A-10`（Diff/隐私/授权/报告安全）             | 10   | W3b          | ⑦⑧ 及 §12.5                      | `tests/e2e/w3b-agent-and-b2.spec.ts`、`tests/unit/w3b-cross-slice-before-commit-and-loopback.test.ts`、`packages/engine/tests/test_agent_before_commit.py` | `L-VERIFIED-PENDING-UPSTREAM`；其中 `A-10` 的**真实版本化评估集**执行 → `DEP-H6`                    |
-| `G-list-01`..`G-list-13`（沙盘逐轮/恢复/迁移/模板包） | 13   | W4 (T07/T10) | ⑦ 逐轮/指标/重放、⑧ 最小迁移任务 | `packages/engine/tests/test_w4_a2_scenario.py`、`test_w4_learning_checks.py`、`scripts/run-w4-packaged-workspaces.py`                                      | `L-VERIFIED-PENDING-UPSTREAM`；其中 `G-list-09`/`G-list-13` 的**真机跨设备** → `UNVERIFIABLE-H2/H3` |
+| 用例组                                                | 条数 | Wave         | 关联 PRD §12.1 步骤              | 本地验证证明单元                                                                                                                                           | 上游状态                                                                                                                         |
+| :---------------------------------------------------- | :--- | :----------- | :------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| `M-01`..`M-06`（映射/身份/重跑/冲突）                 | 6    | W4 (T03)     | ③ CSV 映射                       | `tests/unit/w4-cross-slice-real-runtime.test.ts`、`packages/engine/tests/test_w4_learning_checks.py`                                                       | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`；真机/真人/正式发布验收仍待 `H1..H10`）                                 |
+| `Q-01`/`Q-02`（高危告警 / 空结果）                    | 2    | Lq           | ④ 查询完整/空结果                | `tests/unit/lq-query-learning.test.ts`、`tests/e2e/lq-query-learning.spec.ts`                                                                              | `MERGED-UPSTREAM`（PR #32 已入 `origin/develop@a02cdac8`；真机/真人/正式发布验收仍待 `H1..H10`）                                 |
+| `V-01`（名称必填约束）                                | 1    | W3a (T05)    | ⑤ 约束失败/修复/依据             | `tests/unit/t05-quality.test.ts`、`packages/engine/tests/test_w3a_quality_b3.py`                                                                           | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`；真机/真人/正式发布验收仍待 `H1..H10`）                                 |
+| `R-01`..`R-06`（推理/依据/规则链不支持）              | 6    | W3a (T05)    | ⑤ 真实推导依据                   | 同上                                                                                                                                                       | `MERGED-UPSTREAM`（PR #33 已入 `origin/develop@a02cdac8`；真机/真人/正式发布验收仍待 `H1..H10`）                                 |
+| `O-01`（未记录 ≠ 已证明不存在）                       | 1    | W4 (T03)     | ③ 来源追踪                       | `packages/engine/tests/test_w4_learning_checks.py`                                                                                                         | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`；真机/真人/正式发布验收仍待 `H1..H10`）                                 |
+| `B-01`..`B-11`（行为触发/竞争/顺序/幂等）             | 11   | W4 (T06)     | ⑥ 行为应触发/不触发/重复         | `packages/engine/tests/test_w4_a2_behavior.py`、`tests/e2e/w4-workspaces-and-transfer.spec.ts`                                                             | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`；真机/真人/正式发布验收仍待 `H1..H10`）                                 |
+| `A-01`..`A-10`（Diff/隐私/授权/报告安全）             | 10   | W3b          | ⑦⑧ 及 §12.5                      | `tests/e2e/w3b-agent-and-b2.spec.ts`、`tests/unit/w3b-cross-slice-before-commit-and-loopback.test.ts`、`packages/engine/tests/test_agent_before_commit.py` | `MERGED-UPSTREAM`（PR #34 已入 `origin/develop@a02cdac8`）；其中 `A-10` 的**真实版本化评估集**执行 → `DEP-H6`                    |
+| `G-list-01`..`G-list-13`（沙盘逐轮/恢复/迁移/模板包） | 13   | W4 (T07/T10) | ⑦ 逐轮/指标/重放、⑧ 最小迁移任务 | `packages/engine/tests/test_w4_a2_scenario.py`、`test_w4_learning_checks.py`、`scripts/run-w4-packaged-workspaces.py`                                      | `MERGED-UPSTREAM`（PR #35 已入 `origin/develop@a02cdac8`）；其中 `G-list-09`/`G-list-13` 的**真机跨设备** → `UNVERIFIABLE-H2/H3` |
 
 **计数闭合**：6 + 2 + 1 + 6 + 1 + 11 + 10 + 13 = **50**。✅ 与 `coverage.json` 实测条数一致。
 
@@ -356,20 +362,20 @@
 
 ## 6. 证据索引
 
-| 类型          | 路径                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| :------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 本仓实现      | `scripts/release/verify.mts`、`scripts/release/verify-release.mjs`、`scripts/release/project-t10-comparison.py`、`scripts/release/collect-macos.sh`、`scripts/release/collect-windows.ps1`、`scripts/release/pe-machine.ps1`、`scripts/run-w5-packaged-release-hygiene.py`                                                                                                                                                  |
-| 本仓配置      | `apps/desktop/electron-builder.yml`、`apps/desktop/package.json`、根 `package.json`、`.gitignore`、`.prettierignore`、`eslint.config.mjs`、`.github/workflows/ci.yml`                                                                                                                                                                                                                                                       |
-| 本仓单测      | `tests/unit/t11-release.test.ts`、`tests/unit/t11-release-io.test.ts`、`packages/engine/tests/test_w5_release_projection.py`                                                                                                                                                                                                                                                                                                |
-| 本仓文档      | `docs/release/README.md`、`docs/release/migration-recovery.md`、`docs/release/q5-decision-proposal-20261022.md`、`docs/release/target-device-runbook.md`、`docs/release/user-study.md`、`docs/release/user-observation-template.csv`、`docs/iterations/T11/acceptance.md`、`docs/iterations/T11/shared-file-handoff.md`、`docs/iterations/T11/selection-comparison-v2.md`、`docs/iterations/T11/selection-comparison-v3.md` |
-| Wave 闭环记录 | `iteration-control/2026-10-21-weekly-release/execute-20261115/{g0-closure,w3a-closure,w3b-closure,w4-closure}.json`                                                                                                                                                                                                                                                                                                         |
-| 上游阻塞记录  | `iteration-control/2026-10-21-weekly-release/execute-20261115/PAUSED-GITHUB-BILLING-20261116.json`、`b1a-ci-failed-43808662149.json`                                                                                                                                                                                                                                                                                        |
-| 评审量表      | `docs/verification/FEATURE-MAP.md`（`W5: B5/T11 发布收敛与门禁` 行）、`docs/verification/VERIFY.md` §3（W5 触发行）                                                                                                                                                                                                                                                                                                         |
+| 类型           | 路径                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 本仓实现       | `scripts/release/verify.mts`、`scripts/release/verify-release.mjs`、`scripts/release/project-t10-comparison.py`、`scripts/release/collect-macos.sh`、`scripts/release/collect-windows.ps1`、`scripts/release/pe-machine.ps1`、`scripts/run-w5-packaged-release-hygiene.py`                                                                                                                                                  |
+| 本仓配置       | `apps/desktop/electron-builder.yml`、`apps/desktop/package.json`、根 `package.json`、`.gitignore`、`.prettierignore`、`eslint.config.mjs`、`.github/workflows/ci.yml`                                                                                                                                                                                                                                                       |
+| 本仓单测       | `tests/unit/t11-release.test.ts`、`tests/unit/t11-release-io.test.ts`、`packages/engine/tests/test_w5_release_projection.py`                                                                                                                                                                                                                                                                                                |
+| 本仓文档       | `docs/release/README.md`、`docs/release/migration-recovery.md`、`docs/release/q5-decision-proposal-20261022.md`、`docs/release/target-device-runbook.md`、`docs/release/user-study.md`、`docs/release/user-observation-template.csv`、`docs/iterations/T11/acceptance.md`、`docs/iterations/T11/shared-file-handoff.md`、`docs/iterations/T11/selection-comparison-v2.md`、`docs/iterations/T11/selection-comparison-v3.md` |
+| Wave 闭环记录  | `iteration-control/2026-10-21-weekly-release/execute-20261115/{g0-closure,w3a-closure,w3b-closure,w4-closure}.json`、`w4-upstream-r4-adjudication.json`、`w4-develop-ci-green.json`（Run `45337490364`）                                                                                                                                                                                                                    |
+| 历史阻塞与演进 | `iteration-control/2026-10-21-weekly-release/execute-20261115/PAUSED-GITHUB-BILLING-20261116.json`、`b1a-ci-failed-43808662149.json`（历史计费阻塞后已通过公开仓库解除并完成 `#27..#35` 合入）                                                                                                                                                                                                                              |
+| 评审量表       | `docs/verification/FEATURE-MAP.md`（`W5: B5/T11 发布收敛与门禁` 行）、`docs/verification/VERIFY.md` §3（W5 触发行）                                                                                                                                                                                                                                                                                                         |
 
 ---
 
 ## 7. 变更与提交纪律
 
-本文件与本 Wave 文档改动**未执行** `git commit` / `git push` / `git checkout`，未修改 `git config`。**本次 Stage 1-B 文档任务**未触碰 `docs/reviews/**`、`docs/source-manifest.json`、归档源文件、`apps/**`、`packages/**`、`scripts/**`、`tests/**`、`package.json`、`OntoLearn-Studio`（`e6ed8101`）及任何其他 worktree；Stage 0 / Stage 1-A 的代码与配置落地由**先前已提交**的 `b84c244a` 与 `37ac2174` 承载，本次只做文档移植与账本编写。工作树保持干净可检视（仅 13 个白名单文档路径为新增/修改），由总控核查并统一提交。
+本分支已按 `origin/develop@a02cdac8`（`M_W4`）完成合并对齐，仅额外校准 `packages/engine/tests/test_w5_release_projection.py`（显式 UTF-8 写入）与本文件（上游合并态与 W4 归档指针更新），未触碰 `docs/reviews/**`、`docs/source-manifest.json`、归档源文件、`apps/**`（除已有的 Stage 0 配置外）、`OntoLearn-Studio`（`e6ed8101`）及任何其他冻结 worktree，由总控提交为 PR `#36` 候选。
 
-**`Verified: check, verify:sources`**
+**`Verified: check, verify:sources, cp1252-sim, e2e, packaged`**
