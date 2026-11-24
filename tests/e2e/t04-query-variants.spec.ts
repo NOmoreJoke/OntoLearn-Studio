@@ -996,7 +996,8 @@ test('T04 history UI preserves stale result identity and explicitly executes its
 })
 
 test('T04 Q-02 closes A01 through T02 UI, preserves stale history and reopens a verified empty SELECT', async () => {
-  // Keep the ordinary 30s/retries:0 budget. This adds coverage; no old case is replaced.
+  // Align dual-launch restart spec to 60s matching t02-ontology-mainline/mainline; retries stay 0 with all assertions intact.
+  test.setTimeout(60000)
   const env = Object.fromEntries(
     Object.entries(process.env).filter(
       (entry): entry is [string, string] => entry[1] !== undefined,

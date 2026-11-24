@@ -117,6 +117,29 @@ def worker_command() -> list[str]:
     return [sys.executable, "-I", "-m", "ontolearn_engine.worker"]
 
 
+def _signal_worker(process, *, force: bool) -> None:
+    """Signal a worker process on POSIX without invoking Popen.poll() ahead of waitpid."""
+    if process.returncode is not None:
+        return
+    if os.name == "posix":
+        pid = process.pid
+        if pid is None or pid <= 0:
+            return
+        sig = signal.SIGKILL if force else signal.SIGTERM
+        try:
+            os.kill(pid, sig)
+        except ProcessLookupError:
+            pass
+        return
+    try:
+        if force:
+            process.kill()
+        else:
+            process.terminate()
+    except ProcessLookupError:
+        pass
+
+
 class Coordinator:
     def __init__(
         self,
@@ -1039,11 +1062,11 @@ class Coordinator:
         except asyncio.CancelledError:
             process = process or active["process"]
             if process and process.returncode is None:
-                process.terminate()
+                _signal_worker(process, force=False)
                 try:
                     await asyncio.wait_for(process.wait(), self.limits["cancelGraceMs"] / 1000)
                 except TimeoutError:
-                    process.kill()
+                    _signal_worker(process, force=True)
                     await process.wait()
             job = self.store.get_job(active["project"], identity)
             if job["state"] == "cancelling":
@@ -1053,7 +1076,7 @@ class Coordinator:
         except Exception as error:
             process = process or active["process"]
             if process and process.returncode is None:
-                process.kill()
+                _signal_worker(process, force=True)
                 await process.wait()
             self._notify(self.store.fail_job(identity, classify(error, profile=self.profile)))
         finally:
