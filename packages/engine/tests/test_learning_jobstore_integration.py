@@ -5,9 +5,16 @@ learning-tool adapters. test.atomic stays unavailable in product mode. All
 projects, processes and databases are local to this test; no GUI is started.
 """
 
+import asyncio
+import os
+import signal
+import subprocess
+import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+from ontolearn_engine import coordinator as coordinator_module
 from ontolearn_engine.job_store import JobStore
 from ontolearn_engine.learning.baselines import read_json, store_seed_plan
 from ontolearn_engine.resources import CONTRACT
@@ -221,3 +228,113 @@ def test_course_revision_binds_to_manifest_sha_without_changing_the_seeded_plan(
     }
     assert any(definition["layer"] == "scenario" for definition in plan["definitions"])
     assert all("expected" not in definition["value"] for definition in plan["definitions"])
+
+
+def test_signal_worker_avoids_popen_poll_race_on_posix(monkeypatch, caplog):
+    if os.name != "posix":
+        pytest.skip("POSIX asyncio child-watcher race only applies on POSIX")
+
+    def forbidden_poll(self):
+        raise AssertionError("Popen.poll must not run from _signal_worker on POSIX")
+
+    monkeypatch.setattr(subprocess.Popen, "poll", forbidden_poll)
+    kill_calls = []
+    real_kill = os.kill
+
+    def tracking_kill(pid, sig):
+        kill_calls.append((pid, sig))
+        return real_kill(pid, sig)
+
+    monkeypatch.setattr(coordinator_module, "os", SimpleNamespace(name="posix", kill=tracking_kill))
+
+    # Guard invalid pid <= 0 without touching the process table.
+    coordinator_module._signal_worker(SimpleNamespace(returncode=None, pid=0), force=True)
+    coordinator_module._signal_worker(SimpleNamespace(returncode=None, pid=None), force=False)
+    assert kill_calls == []
+
+    # PermissionError from os.kill must be swallowed rather than escaping cleanup.
+    def deny_kill(_pid, _sig):
+        raise PermissionError("EPERM")
+
+    monkeypatch.setattr(coordinator_module, "os", SimpleNamespace(name="posix", kill=deny_kill))
+    coordinator_module._signal_worker(SimpleNamespace(returncode=None, pid=12345), force=False)
+    coordinator_module._signal_worker(SimpleNamespace(returncode=None, pid=12345), force=True)
+    monkeypatch.setattr(coordinator_module, "os", SimpleNamespace(name="posix", kill=tracking_kill))
+
+    # 1) Exited unreaped child (EOF on closed stdout pipe guarantees exit before signalling):
+    # signalling via os.kill must not call Popen.poll or reap the child's real exit status 76.
+    zombie = subprocess.Popen(
+        [sys.executable, "-c", "import os; os._exit(76)"],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+    try:
+        assert zombie.stdout.read() == b""
+        coordinator_module._signal_worker(
+            SimpleNamespace(returncode=None, pid=zombie.pid), force=True
+        )
+        assert kill_calls[-1] == (zombie.pid, signal.SIGKILL)
+        assert zombie.wait() == 76
+    finally:
+        zombie.stdout.close()
+        if zombie.returncode is None:
+            try:
+                real_kill(zombie.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            zombie.wait()
+
+    # 2) Live asyncio worker: terminate via os.kill without asyncio child-watcher warnings.
+    async def exercise():
+        proc = await asyncio.create_subprocess_exec(
+            sys.executable,
+            "-c",
+            "import sys, time; sys.stdout.write('r\\n'); sys.stdout.flush(); time.sleep(30)",
+            stdin=asyncio.subprocess.DEVNULL,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.DEVNULL,
+        )
+        assert await proc.stdout.readline() == b"r\n"
+        coordinator_module._signal_worker(proc, force=False)
+        returncode = await proc.wait()
+        # Once returncode is known, _signal_worker becomes a strict no-op.
+        before_noop = len(kill_calls)
+        coordinator_module._signal_worker(proc, force=True)
+        assert len(kill_calls) == before_noop
+        return returncode
+
+    with caplog.at_level("WARNING", logger="asyncio"):
+        returncode = asyncio.run(exercise())
+    assert returncode == -signal.SIGTERM
+    assert len(kill_calls) == 2
+    assert "Unknown child process pid" not in caplog.text
+
+
+def test_signal_worker_non_posix_dispatches_terminate_and_kill(monkeypatch):
+    monkeypatch.setattr(coordinator_module, "os", SimpleNamespace(name="nt", kill=os.kill))
+    events = []
+
+    class DummyProcess:
+        def __init__(self, returncode=None, *, raise_exc=None):
+            self.returncode = returncode
+            self.raise_exc = raise_exc
+
+        def terminate(self):
+            events.append("terminate")
+            if self.raise_exc is not None:
+                raise self.raise_exc
+
+        def kill(self):
+            events.append("kill")
+            if self.raise_exc is not None:
+                raise self.raise_exc
+
+    coordinator_module._signal_worker(DummyProcess(returncode=0), force=True)
+    coordinator_module._signal_worker(DummyProcess(), force=False)
+    coordinator_module._signal_worker(DummyProcess(), force=True)
+    coordinator_module._signal_worker(DummyProcess(raise_exc=ProcessLookupError()), force=False)
+    coordinator_module._signal_worker(DummyProcess(raise_exc=ProcessLookupError()), force=True)
+    coordinator_module._signal_worker(DummyProcess(raise_exc=PermissionError("EPERM")), force=False)
+    coordinator_module._signal_worker(DummyProcess(raise_exc=PermissionError("EPERM")), force=True)
+    assert events == ["terminate", "kill", "terminate", "kill", "terminate", "kill"]

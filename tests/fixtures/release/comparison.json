@@ -1,0 +1,136 @@
+{
+  "format": "t11-comparison-v3",
+  "comparisonCase": "g6-conflict",
+  "projectRevision": 2,
+  "facts": [
+    {
+      "id": "facts-1",
+      "payload": {
+        "id": "001",
+        "name": "人工名称",
+        "owner": "mapping-1"
+      }
+    }
+  ],
+  "definitions": [
+    {
+      "id": "definitions-1",
+      "payload": {
+        "id": "equipment",
+        "kind": "ontology"
+      }
+    }
+  ],
+  "ownership": [
+    {
+      "id": "ownership-1",
+      "payload": {
+        "fact": "001",
+        "row": 1,
+        "managedValue": "泵站A"
+      }
+    }
+  ],
+  "mappingState": [
+    {
+      "id": "mappingState-1",
+      "payload": {
+        "id": "mapping-1",
+        "sourceHash": "synthetic"
+      }
+    }
+  ],
+  "queries": [
+    {
+      "id": "queries-1",
+      "payload": {
+        "id": "Q-01",
+        "scope": "asserted"
+      }
+    }
+  ],
+  "results": [
+    {
+      "id": "results-1",
+      "payload": {
+        "id": "Q-01",
+        "objects": ["A01"],
+        "state": "current"
+      }
+    }
+  ],
+  "history": [
+    {
+      "id": "history-1",
+      "payload": {
+        "run": "run-1",
+        "state": "cancelled"
+      }
+    }
+  ],
+  "rounds": [
+    {
+      "id": "rounds-1",
+      "payload": {
+        "run": "run-1",
+        "round": 1,
+        "orders": ["W001"]
+      }
+    }
+  ],
+  "undo": [
+    {
+      "id": "undo-1",
+      "payload": {
+        "operation": "op-2",
+        "before": "泵站A",
+        "after": "人工名称"
+      }
+    }
+  ],
+  "executionVersions": {
+    "semantics": "synthetic-1",
+    "engine": "synthetic-1",
+    "lock": "synthetic-1"
+  },
+  "projectId": "synthetic-project",
+  "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "selection": {
+    "currentDerived": true,
+    "historicalRuns": true,
+    "rawSources": true,
+    "agentSessions": false,
+    "priorUndo": true
+  },
+  "capabilities": {
+    "restoreCurrent": true,
+    "rerunOriginalMapping": true,
+    "replaySandbox": true
+  },
+  "dependencies": {
+    "mappingSources": "embedded",
+    "replayInputs": true,
+    "replayConfiguration": true,
+    "replaySemantics": "supported"
+  },
+  "derivedResults": [
+    {
+      "id": "derived-1",
+      "payload": {
+        "subject": "001",
+        "type": "SyntheticHighRiskEquipment",
+        "source": "synthetic-rule"
+      }
+    }
+  ],
+  "rawSources": [
+    {
+      "id": "source-1",
+      "payload": {
+        "relativePath": "synthetic-equipment.csv",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    }
+  ],
+  "agentSessions": []
+}

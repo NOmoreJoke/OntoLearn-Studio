@@ -26,6 +26,10 @@
     "engine:check": "uv run --frozen ruff check . && uv run --frozen ruff format --check . && uv run --frozen python scripts/run-engine-tests.py",
     "engine:build": "node scripts/build-engine.mjs",
     "package:dir": "npm run build && npm run engine:build && npm run package:dir --workspace @ontolearn/desktop",
+    "package:release:mac": "npm run build && npm run engine:build && npm run package:release:mac --workspace @ontolearn/desktop",
+    "package:release:win": "npm run build && npm run engine:build && npm run package:release:win --workspace @ontolearn/desktop",
+    "release:verify": "node scripts/release/verify-release.mjs",
+    "release:hygiene": "uv run --frozen python scripts/run-w5-packaged-release-hygiene.py release build/w5-release-hygiene",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run engine:check",
     "ci:quality": "uv run --frozen python scripts/ci-quality-schedule.py",
     "verify:sources": "node scripts/verify-sources.mjs",
@@ -51,7 +55,8 @@
     "typescript": "5.9.3",
     "typescript-eslint": "8.71.2",
     "vite": "8.3.4",
-    "vitest": "5.0.5"
+    "vitest": "5.0.5",
+    "zod": "4.6.7"
   },
   "packageManager": "npm@11.12.1",
   "overrides": {

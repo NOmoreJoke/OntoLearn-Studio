@@ -20,10 +20,20 @@ extraResources:
     to: licenses
 asar: true
 npmRebuild: false
+forceCodeSigning: true
 mac:
-  identity: null
-  target: dir
+  hardenedRuntime: true
+  notarize: true
+  target:
+    - target: dmg
+      arch:
+        - arm64
 win:
-  target: dir
+  signAndEditExecutable: true
+  signExecutable: true
+  target:
+    - target: nsis
+      arch:
+        - x64
 linux:
   target: dir
