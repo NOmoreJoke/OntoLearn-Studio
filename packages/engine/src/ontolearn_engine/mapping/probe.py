@@ -6,6 +6,7 @@ A successful probe is not a registered mapping capability or platform acceptance
 
 import io
 import json
+import sys
 import zipfile
 from importlib.metadata import version
 from xml.etree.ElementTree import SubElement, tostring
@@ -182,7 +183,13 @@ def run() -> dict:
 
 
 def main() -> None:
-    print(json.dumps(run(), ensure_ascii=False, sort_keys=True))
+    payload = json.dumps(run(), ensure_ascii=False, sort_keys=True) + "\n"
+    if hasattr(sys.stdout, "buffer"):
+        sys.stdout.buffer.write(payload.encode("utf-8"))
+        sys.stdout.buffer.flush()
+    else:
+        sys.stdout.write(payload)
+        sys.stdout.flush()
 
 
 if __name__ == "__main__":

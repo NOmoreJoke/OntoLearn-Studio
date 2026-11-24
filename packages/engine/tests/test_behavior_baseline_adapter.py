@@ -267,17 +267,17 @@ def write_bundle(root: Path):
     for name, value in files.items():
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(json.dumps(value, ensure_ascii=False))
+        target.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
         digests[name] = hashlib.sha256(target.read_bytes()).hexdigest()
     source = root / "source.md"
-    source.write_text("synthetic test source")
+    source.write_text("synthetic test source", encoding="utf-8")
     manifest = {
         "version": "unit-1",
         "source": {"path": "source.md", "sha256": hashlib.sha256(source.read_bytes()).hexdigest()},
         "files": digests,
     }
     target = root / DATA / "manifest.json"
-    target.write_text(json.dumps(manifest))
+    target.write_text(json.dumps(manifest), encoding="utf-8")
     return target, manifest
 
 
@@ -288,7 +288,7 @@ def test_manifest_hash_and_every_file_are_verified(tmp_path):
     assert load_bundle(root, pin).document["cases.json"] == {"cases": [case()]}
     with pytest.raises(BehaviorError, match="fixture_manifest_mismatch"):
         load_bundle(root, "0" * 64)
-    (root / DATA / "cases.json").write_text("tampered")
+    (root / DATA / "cases.json").write_text("tampered", encoding="utf-8")
     with pytest.raises(BehaviorError, match="fixture_file_mismatch"):
         load_bundle(root, pin)
 
@@ -297,7 +297,7 @@ def test_manifest_cannot_escape_its_readonly_root(tmp_path):
     root = tmp_path / "root"
     path, manifest = write_bundle(root)
     manifest["source"]["path"] = "../outside.md"
-    path.write_text(json.dumps(manifest))
+    path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(BehaviorError, match="invalid_fixture_path"):
         load_bundle(root, hashlib.sha256(path.read_bytes()).hexdigest())
 

@@ -271,7 +271,7 @@ def test_owner_handoff_sample_matches_generated_full_round_and_pending_ranges():
     sample = json.loads(
         (
             Path(__file__).parents[3] / "tests/fixtures/scenario/round-projection-handoff.json"
-        ).read_text()
+        ).read_text(encoding="utf-8")
     )
     d = definition()
     record = run(d, ProbePorts()).rounds[0]

@@ -374,6 +374,7 @@ def _child_main():
                     rule_terms.check_value(comparison.right, Budget())
     response = {
         "pid": os.getpid(),
+        "ppid": os.getppid(),
         "argv": sys.argv,
         "initial_issued": initial_issued,
         "children": [restored_child_signature(child) for child in restored.children],
@@ -440,7 +441,11 @@ def exec_restore(capture, label, *, fullview=False):
     assert process.returncode == 0, stderr.decode("utf-8", errors="replace")
     assert not stderr
     response = json.loads(stdout)
-    assert response["pid"] == process.pid != os.getpid()
+    assert response["pid"] != os.getpid()
+    if sys.platform == "win32":
+        assert process.pid in (response["pid"], response["ppid"])
+    else:
+        assert response["pid"] == process.pid
     assert response["initial_issued"] == 0
     assert response["children"] == [
         original_child_signature(child) for child in capture.native["mechanismBatches"]

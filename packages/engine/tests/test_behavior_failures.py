@@ -8,7 +8,9 @@ import pytest
 from ontolearn_engine.behavior import BehaviorError, plan_behaviors, prepare_events
 
 CORPUS = json.loads(
-    (Path(__file__).parents[3] / "tests/fixtures/behavior/counterexamples.json").read_text()
+    (Path(__file__).parents[3] / "tests/fixtures/behavior/counterexamples.json").read_text(
+        encoding="utf-8"
+    )
 )
 
 

@@ -41,14 +41,18 @@ else: raise AssertionError("unknown export")
 print("pure import and lazy identities passed")
 """
     result = subprocess.run(
-        [sys.executable, "-c", script], capture_output=True, text=True, timeout=15
+        [sys.executable, "-c", script],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=15,
     )
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "pure import and lazy identities passed"
 
 
 def test_independent_fixture_manifest():
-    manifest = json.loads((FIXTURES / "manifest.json").read_text())
+    manifest = json.loads((FIXTURES / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["profile"] == "OntoLearn-rule-comparison-profile/1"
     assert len(manifest["files"]) == 5
     for entry in manifest["files"]:

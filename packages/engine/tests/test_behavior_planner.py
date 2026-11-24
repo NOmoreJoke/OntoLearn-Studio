@@ -8,7 +8,7 @@ import pytest
 from ontolearn_engine.behavior import BehaviorError, plan_behaviors, prepare_events
 
 CORPUS_PATH = Path(__file__).parents[3] / "tests/fixtures/behavior/counterexamples.json"
-CORPUS = json.loads(CORPUS_PATH.read_text())
+CORPUS = json.loads(CORPUS_PATH.read_text(encoding="utf-8"))
 CASES = {case["id"]: case for case in CORPUS["cases"]}
 
 

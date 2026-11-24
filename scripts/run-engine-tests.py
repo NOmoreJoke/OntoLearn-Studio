@@ -21,81 +21,150 @@ PLUGIN = "scripts.engine-test-reporting"
 # their collected case count (at least one), including resident/storage tests.
 HISTORICAL_SCORES = {
     "test_project_format3.py": 215.559,
+    "test_w3a_quality_b3.py": 188.076,
     "test_mainline_dispatch.py": 126.630,
     "test_mainline_manual_input_rejection.py": 104.328,
     "test_mainline_postwrite_admission.py": 100.866,
+    "test_storage_probe_prepared.py": 100.466,
     "test_project_job_format3.py": 86.041,
     "test_job_store.py": 83.311,
+    "test_ci_quality_schedule.py": 56.358,
     "test_project_changeset_service.py": 45.996,
+    "test_stdio_session_shutdown.py": 44.907,
     "test_project_applications.py": 37.862,
+    "test_semantic_profile_restore.py": 33.129,
+    "test_semantic_profile_integration.py": 32.445,
+    "test_semantic_profile_restore_limits.py": 26.411,
 }
-# Per-file summed pytest report durations from CI46 Quality run
-# run-e1ba55297a6b4ba2a6ec301d2e2afec4 worker events (58 files, 589.101s
-# total). Selected only via CI_ENGINE_TEST_WEIGHTS=linux-ci46 on the Linux
-# Quality job; still scheduling input only, not a duration promise or budget
-# proof. Files added after CI46 fall back to their collected case count.
+# Per-file summed pytest report durations updated from W3a Linux Quality CI run
+# 45150560184 (106 files, 904.144s total). Selected via
+# CI_ENGINE_TEST_WEIGHTS=linux-ci46 on Quality and Desktop jobs; scheduling
+# input only, not a duration promise or budget proof. Any future files fall back
+# to their collected case count.
 MEASURED_LINUX_SPANS = {
-    "test_mainline_postwrite_admission.py": 70.294,
-    "test_stdio_session_shutdown.py": 53.675,
-    "test_storage_probe_prepared.py": 49.976,
-    "test_mainline_manual_input_rejection.py": 47.870,
-    "test_project_format3.py": 42.310,
-    "test_project_job_format3.py": 33.402,
-    "test_mainline_postwrite_rows_budget.py": 25.475,
-    "test_mainline_read_work_budget.py": 21.094,
-    "test_job_store.py": 20.334,
-    "test_project_changeset_service.py": 19.702,
-    "test_session_page_limits.py": 16.539,
-    "test_resident_runtime.py": 14.627,
-    "test_mainline_dispatch.py": 14.528,
-    "test_i04_round_faults.py": 13.792,
-    "test_project_applications.py": 12.477,
-    "test_project_query_worker.py": 12.268,
-    "test_mainline_postwrite_text_budget.py": 12.261,
-    "test_mainline_language_input_rejection.py": 12.254,
-    "test_ontology_metadata_query.py": 11.527,
-    "test_storage.py": 11.111,
-    "test_project_source_transport.py": 10.640,
-    "test_project_startup_stdio.py": 10.101,
-    "test_ontology_metadata_changeset.py": 9.913,
-    "test_mainline_example_create.py": 7.788,
-    "test_mainline_named_example_dispatch.py": 7.058,
-    "test_project_compensation.py": 4.713,
-    "test_project_changeset_stdio.py": 4.185,
-    "test_mainline_query_changeset.py": 3.266,
-    "test_mainline_draft_dispatch.py": 2.263,
-    "test_i04_progress.py": 2.048,
-    "test_project_transactions.py": 2.008,
-    "test_query_presentation.py": 1.568,
-    "test_i04_lifecycle_boundaries.py": 1.374,
-    "test_contract_v2.py": 1.176,
-    "test_project_source_table_material.py": 1.147,
-    "test_frame_corpus.py": 0.834,
-    "test_mainline_example_provider.py": 0.507,
-    "test_project_business3_contract.py": 0.442,
-    "test_mainline_query_projection.py": 0.425,
-    "test_worker_parent.py": 0.324,
-    "test_prepare_fr003_bundle.py": 0.297,
-    "test_query_definition_service.py": 0.240,
-    "test_project_startup_contract.py": 0.239,
-    "test_ordinary_library.py": 0.225,
-    "test_ontology_presentation_literals.py": 0.156,
-    "test_coordinator_control.py": 0.148,
-    "test_worker_owner_bootstrap.py": 0.144,
-    "test_query_definition_descriptor.py": 0.095,
-    "test_handshake_deadline.py": 0.062,
-    "test_storage_snapshot_iri_memo.py": 0.042,
-    "test_protocol.py": 0.029,
-    "test_binding_regressions.py": 0.027,
-    "test_mainline_cleanup_regressions.py": 0.026,
-    "test_windows_example_resource.py": 0.023,
-    "test_runtime_bounds.py": 0.023,
-    "test_project_draft_plan.py": 0.014,
-    "test_project_workspace.py": 0.007,
-    "test_memory_guard_exit.py": 0.006,
+    "test_w3a_quality_b3.py": 188.076,
+    "test_storage_probe_prepared.py": 100.466,
+    "test_ci_quality_schedule.py": 56.358,
+    "test_stdio_session_shutdown.py": 44.907,
+    "test_semantic_profile_restore.py": 33.129,
+    "test_semantic_profile_integration.py": 32.445,
+    "test_mainline_manual_input_rejection.py": 31.840,
+    "test_mainline_postwrite_admission.py": 30.464,
+    "test_project_format3.py": 30.172,
+    "test_semantic_profile_restore_limits.py": 26.411,
+    "test_project_job_format3.py": 21.975,
+    "test_lq_query_learning.py": 19.087,
+    "test_session_page_limits.py": 17.301,
+    "test_l1_learning_ledger.py": 16.090,
+    "test_mainline_postwrite_rows_budget.py": 14.409,
+    "test_storage.py": 13.104,
+    "test_project_changeset_service.py": 12.229,
+    "test_resident_runtime.py": 12.089,
+    "test_job_store.py": 11.625,
+    "test_mainline_dispatch.py": 10.584,
+    "test_semantic.py": 10.451,
+    "test_mainline_read_work_budget.py": 10.396,
+    "test_b1a_packaged_runner.py": 9.455,
+    "test_i04_round_faults.py": 9.222,
+    "test_semantic_lexical.py": 8.719,
+    "test_semantic_query_tokens.py": 8.334,
+    "test_project_applications.py": 8.089,
+    "test_mainline_postwrite_text_budget.py": 7.920,
+    "test_semantic_string_identity.py": 7.605,
+    "test_mainline_language_input_rejection.py": 6.896,
+    "test_project_query_worker.py": 6.742,
+    "test_project_startup_stdio.py": 6.593,
+    "test_ontology_metadata_changeset.py": 6.484,
+    "test_ontology_metadata_query.py": 6.131,
+    "test_project_source_transport.py": 5.844,
+    "test_quality_profile_revalidation.py": 4.230,
+    "test_mainline_named_example_dispatch.py": 4.059,
+    "test_mainline_example_create.py": 3.366,
+    "test_project_compensation.py": 3.012,
+    "test_project_management_schema.py": 2.674,
+    "test_project_management.py": 2.612,
+    "test_project_changeset_stdio.py": 2.576,
+    "test_semantic_profile_production.py": 2.558,
+    "test_learning_jobstore_integration.py": 2.431,
+    "test_learning_service.py": 2.362,
+    "test_i04_lifecycle_boundaries.py": 2.169,
+    "test_quality_profile_comparator.py": 2.128,
+    "test_project_transactions.py": 1.888,
+    "test_project_management_atomic.py": 1.823,
+    "test_mainline_query_changeset.py": 1.794,
+    "test_semantic_rdfs_basis_determinism.py": 1.765,
+    "test_project_management_stdio.py": 1.722,
+    "test_query_presentation.py": 1.681,
+    "test_semantic_profile_source.py": 1.655,
+    "test_i04_progress.py": 1.601,
+    "test_semantic_execution.py": 1.476,
+    "test_project_source_table_material.py": 1.300,
+    "test_mainline_draft_dispatch.py": 1.297,
+    "test_b1b_project_restore.py": 1.059,
+    "test_learning_baselines.py": 1.037,
+    "test_semantic_error_adapter.py": 0.924,
+    "test_quality_profile_firing.py": 0.833,
+    "test_contract_v2.py": 0.598,
+    "test_b1b_invalidation.py": 0.516,
+    "test_frame_corpus.py": 0.499,
+    "test_semantic_selected_projection.py": 0.427,
+    "test_quality_profile_limits.py": 0.426,
+    "test_project_business3_contract.py": 0.299,
+    "test_semantic_profile_errors.py": 0.276,
+    "test_worker_parent.py": 0.275,
+    "test_mainline_query_projection.py": 0.249,
+    "test_mainline_example_provider.py": 0.243,
+    "test_semantic_profile_input.py": 0.241,
+    "test_semantic_profile_limits.py": 0.232,
+    "test_quality_fr505_inputs.py": 0.200,
+    "test_project_startup_contract.py": 0.153,
+    "test_worker_owner_bootstrap.py": 0.146,
+    "test_ontology_presentation_literals.py": 0.142,
+    "test_query_definition_service.py": 0.140,
+    "test_quality_profile_imports.py": 0.139,
+    "test_prepare_fr003_bundle.py": 0.136,
+    "test_ordinary_library.py": 0.111,
+    "test_semantic_error_reasons.py": 0.102,
+    "test_quality_store_probe.py": 0.094,
+    "test_query_definition_descriptor.py": 0.090,
+    "test_coordinator_control.py": 0.090,
+    "test_semantic_scopes.py": 0.088,
+    "test_quality_profile_terms.py": 0.064,
+    "test_quality_profile_numbers.py": 0.063,
+    "test_quality_profile_calendar.py": 0.057,
+    "test_library_file_identity.py": 0.045,
+    "test_handshake_deadline.py": 0.042,
+    "test_quality_definitions.py": 0.041,
+    "test_storage_snapshot_iri_memo.py": 0.035,
+    "test_protocol.py": 0.034,
+    "test_quality_approved_inputs.py": 0.033,
+    "test_runtime_bounds.py": 0.027,
+    "test_quality_comparison.py": 0.026,
+    "test_windows_example_resource.py": 0.024,
+    "test_binding_regressions.py": 0.019,
+    "test_mainline_cleanup_regressions.py": 0.014,
+    "test_semantic_profile_imports.py": 0.013,
+    "test_ci_engine_runner.py": 0.009,
+    "test_project_draft_plan.py": 0.008,
+    "test_project_workspace.py": 0.005,
+    "test_memory_guard_exit.py": 0.003,
 }
 _signal = 0
 _console = threading.Lock()
+_MAX_CONSOLE_LINE_BYTES = 16384
+
+
+def _console_chunks(line: bytes, limit: int = _MAX_CONSOLE_LINE_BYTES) -> tuple[bytes, ...]:
+    if len(line) <= limit:
+        return (line,)
+    ending = b"\r\n" if line.endswith(b"\r\n") else (b"\n" if line.endswith(b"\n") else b"")
+    body = line[: len(line) - len(ending)] if ending else line
+    chunks = []
+    for offset in range(0, len(body), limit):
+        part = body[offset : offset + limit]
+        is_last = offset + limit >= len(body)
+        chunks.append(part + (ending if is_last else b"\n"))
+    return tuple(chunks)
 
 
 def write(path, value):
@@ -125,7 +194,8 @@ def copy_stream(pipe, path, target, errors):
                 raw.flush()
                 with _console:
                     try:
-                        target.buffer.write(line)
+                        for chunk in _console_chunks(line):
+                            target.buffer.write(chunk)
                         target.buffer.flush()
                     except (BrokenPipeError, OSError):
                         pass  # Raw evidence still survives a closed CI console.

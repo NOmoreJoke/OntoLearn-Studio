@@ -164,6 +164,9 @@ export function App() {
     snapshotId: string
     revision: number
   }>()
+  const [qualityScopes, setQualityScopes] = useState<
+    Record<string, 'asserted' | 'asserted+derived'>
+  >({})
   const [qualityLocation, setQualityLocation] = useState<QualityLocation>()
   const [qualityPending, setQualityPending] = useState(false)
   const qualityPendingRef = useRef(false)
@@ -264,6 +267,7 @@ export function App() {
     setAgentDraftArtifact(undefined)
     workspaceNotify.current()
     setOntologyContext(undefined)
+    setSessionDomainSnapshot(undefined)
   }, [setOntologyContext])
   const disconnectQuery = useCallback(() => {
     selectedQuery.current?.disconnect()
@@ -390,7 +394,8 @@ export function App() {
         libraryBusy: libraryBusy.current,
         frozen: frozen.current,
         managementUnresolved: !!management?.unresolved,
-      })
+      }) ||
+      Boolean(learningCtl?.unresolved)
     )
       return
     if (uncertain.current || !readyWorkspace.current?.project) return
@@ -424,13 +429,16 @@ export function App() {
       if (
         previous &&
         (previous.generation !== value.generation ||
-          previous.project?.projectId !== value.project?.projectId)
+          previous.project?.projectId !== value.project?.projectId ||
+          previous.project?.inputSnapshotId !== value.project?.inputSnapshotId)
       ) {
         retireOntology()
         disconnectQuery()
+        setSessionDomainSnapshot(undefined)
+        setQueryDomainSnapshot(undefined)
       }
       // 本次恢复由 open/create 持有时等待其完整 management 尾段；自主恢复则
-      // 在渲染前自行串行完成同等读取。selected-project-version 渲染之后不允许
+      // 在渲染前自行串行完成同等读取；selected-project-version 渲染之后不允许
       // 仍有 management 调用在飞行（单并发锁会拒绝随后的项目读取）。
       const owned = admissionTail.current
       if (owned) await owned
@@ -450,6 +458,7 @@ export function App() {
       } else {
         checkpointCtl?.select(undefined)
         learningCtl?.select(undefined)
+        setSessionDomainSnapshot(undefined)
       }
       if (documentLeaving.current || value.generation < latestGeneration.current) return
       if (!updateTasks(value)) return
@@ -496,7 +505,14 @@ export function App() {
     )
       return
     const bridge = window.ontolearn
-    if (documentLeaving.current || !bridge || libraryBusy.current || frozen.current) return
+    if (
+      documentLeaving.current ||
+      !bridge ||
+      libraryBusy.current ||
+      frozen.current ||
+      Boolean(learningCtl?.unresolved)
+    )
+      return
     if (management) {
       await management.refresh()
       return
@@ -534,7 +550,8 @@ export function App() {
         libraryBusy: libraryBusy.current,
         frozen: frozen.current,
         managementUnresolved: !!management?.unresolved,
-      })
+      }) ||
+      Boolean(learningCtl?.unresolved)
     )
       return
     if (
@@ -600,7 +617,8 @@ export function App() {
         libraryBusy: libraryBusy.current,
         frozen: frozen.current,
         managementUnresolved: !!management?.unresolved,
-      })
+      }) ||
+      Boolean(learningCtl?.unresolved)
     )
       return
     if (
@@ -942,6 +960,11 @@ export function App() {
     if (!tasks?.project?.projectId) {
       checkpointCtl?.select(undefined)
       learningCtl?.select(undefined)
+      // Microtask avoids synchronous setState in effect body (react-hooks/set-state-in-effect);
+      // re-check current ref so a rapid project switch never clears the new project's snapshot.
+      queueMicrotask(() => {
+        if (!current.current?.project?.projectId) setQueryDomainSnapshot(undefined)
+      })
     }
   }, [checkpointCtl, learningCtl, tasks?.project?.projectId])
   useEffect(() => {
@@ -1132,6 +1155,7 @@ export function App() {
     }
   }
   const learningTasks = learningState?.learning?.tasks
+  const learningBlocked = Boolean(learningState?.busy)
   // 跨工作区一致性：同一打开项目的全部快照候选（项目读取、本体会话、查询
   // 工作台、学习读取）中取 projectRevision 最大者，避免旧缓存把新提交误标过期。
   const activeProjectId = tasks?.project?.projectId
@@ -1172,6 +1196,7 @@ export function App() {
     workspaceFrozen ||
     managementBlocked ||
     checkpointBlocked ||
+    learningBlocked ||
     Boolean(connection)
 
   const activeProject = tasks?.project
@@ -1381,11 +1406,9 @@ export function App() {
     else if (action === 'demonstrate') await learningCtl.requestDemonstration()
     else if (action === 'check') await learningCtl.checkTask()
   }
-  /** After a real Agent draft commit the project must be re-read. */
+  /** After a real Agent or workspace commit, restore() refreshes project, checkpoints, and learning before updating UI state. */
   async function refreshAfterAgentCommit() {
     await restore()
-    const projectId = tasks?.project?.projectId
-    if (projectId) await learningCtl?.selectAndRefresh(projectId)
   }
   function continueLearningTask() {
     const snapshot = learningCtl?.getSnapshot()
@@ -1407,7 +1430,7 @@ export function App() {
     // 独立还原 G-base：新建独立练习项目并立刻开始该任务的新 attempt。
     // 未保存/未结算的编辑按既有破坏性操作规则拦截；创建锁与准入保护全部
     // 由 createProject 自身执行，不修改任何已有项目。
-    if (learningDisabled) return
+    if (learningDisabled || learningCtl?.unresolved) return
     if (workspaceStatus.dirty || workspaceStatus.unresolved) {
       setProjectNotice('当前工作区仍有未保存或未结算的编辑；请先保存或放弃后再独立还原 G-base。')
       return
@@ -1639,7 +1662,11 @@ export function App() {
             <button
               type="button"
               disabled={
-                projectControlsBusy || workspaceFrozen || managementBlocked || checkpointBlocked
+                projectControlsBusy ||
+                workspaceFrozen ||
+                managementBlocked ||
+                checkpointBlocked ||
+                learningBlocked
               }
               onClick={() => void listProjects()}
             >
@@ -1678,7 +1705,11 @@ export function App() {
               onChange={(event) => setProjectName(event.target.value)}
               maxLength={4096}
               disabled={
-                projectControlsBusy || hasCreateIntent || workspaceFrozen || managementBlocked
+                projectControlsBusy ||
+                hasCreateIntent ||
+                workspaceFrozen ||
+                managementBlocked ||
+                learningBlocked
               }
               required
             />
@@ -1690,7 +1721,8 @@ export function App() {
                 !projectName.trim() ||
                 workspaceFrozen ||
                 managementBlocked ||
-                checkpointBlocked
+                checkpointBlocked ||
+                learningBlocked
               }
             >
               {hasCreateIntent ? '核对创建结果' : '新建空白项目'}
@@ -1703,7 +1735,8 @@ export function App() {
                 hasCreateIntent ||
                 workspaceFrozen ||
                 managementBlocked ||
-                checkpointBlocked
+                checkpointBlocked ||
+                learningBlocked
               }
               onClick={() => void createProject(true)}
             >
@@ -1714,7 +1747,7 @@ export function App() {
                 type="button"
                 data-testid="project-list-refresh"
                 onClick={() => void listProjects()}
-                disabled={projectControlsBusy || checkpointBlocked}
+                disabled={projectControlsBusy || checkpointBlocked || learningBlocked}
               >
                 刷新项目列表
               </button>
@@ -1741,7 +1774,7 @@ export function App() {
                       type="button"
                       data-testid="project-open"
                       data-project-id={item.projectId}
-                      disabled={projectControlsBusy}
+                      disabled={projectControlsBusy || learningBlocked}
                       onClick={() => void openProject(item.projectId)}
                     >
                       打开
@@ -1753,7 +1786,7 @@ export function App() {
               {catalog.nextCursor && (
                 <button
                   type="button"
-                  disabled={projectControlsBusy}
+                  disabled={projectControlsBusy || learningBlocked}
                   onClick={() => void listProjects(catalog.nextCursor)}
                 >
                   下一页
@@ -1765,7 +1798,11 @@ export function App() {
             <ProjectManagementPanel
               controller={management}
               disabled={
-                projectControlsBusy || workspaceFrozen || Boolean(connection) || checkpointBlocked
+                projectControlsBusy ||
+                workspaceFrozen ||
+                Boolean(connection) ||
+                checkpointBlocked ||
+                learningBlocked
               }
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
               openProject={(id) => void openProject(id)}
@@ -1779,7 +1816,8 @@ export function App() {
                 workspaceFrozen ||
                 Boolean(connection) ||
                 managementBlocked ||
-                checkpointBlocked
+                checkpointBlocked ||
+                learningBlocked
               }
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
             />
@@ -1787,7 +1825,7 @@ export function App() {
           {window.ontolearn?.getLibraryLocation && (
             <LibraryLocationPanel
               bridge={window.ontolearn}
-              disabled={projectControlsBusy || managementBlocked}
+              disabled={projectControlsBusy || managementBlocked || learningBlocked}
               report={reportWorkspace}
               freeze={freezeWorkspace}
             />
@@ -1875,6 +1913,14 @@ export function App() {
                       ])}
                       projectId={tasks.project.projectId}
                       bridge={window.ontolearn}
+                      validationScope={qualityScopes[tasks.project.projectId] ?? 'asserted+derived'}
+                      onValidationScopeChange={(next) => {
+                        const projectId = tasks.project?.projectId
+                        if (!projectId) return
+                        setQualityScopes((prev) =>
+                          prev[projectId] === next ? prev : { ...prev, [projectId]: next },
+                        )
+                      }}
                       disabled={
                         workspaceFrozen ||
                         managementBlocked ||

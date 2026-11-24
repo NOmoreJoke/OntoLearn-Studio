@@ -622,6 +622,85 @@ describe('W4 connected mapping workspace', () => {
       h.unmount()
     },
   )
+
+  it('loads stale-revision mapping draft with explicit notice and rebases on save after remount (W4-IMP-02)', async () => {
+    const readMappingDraft = vi.fn<MappingBridge['readMappingDraft']>(async ({ mappingId }) =>
+      ok({ projectId, mappingId, generation: 1, baseRevision: 1, draft }),
+    )
+    const saveMappingDraft = vi.fn<MappingBridge['saveMappingDraft']>(async (args) =>
+      ok({
+        projectId,
+        operationId: args.operationId,
+        generation: 2,
+        baseRevision: args.baseRevision,
+        draft: args.draft,
+      }),
+    )
+    const h = harness(MappingWorkspace, {
+      ...props,
+      revision: 2,
+      bridge: {
+        selectMappingSource: vi.fn(),
+        readMappingDraft,
+        saveMappingDraft,
+        previewMapping: vi.fn(),
+        prepareMappingCommit: vi.fn(),
+        readProject: vi.fn(),
+        previewProjectChangeset: vi.fn(),
+        getProjectDiffPage: vi.fn(),
+        confirmProjectChangeset: vi.fn(),
+        commitProjectChangeSet: vi.fn(),
+        getJob: vi.fn(),
+        restoreTasks: vi.fn(),
+      },
+      onCommitted: vi.fn(async () => {}),
+      onStatus: vi.fn(),
+    })
+    const mapping = () =>
+      propsOf<Parameters<typeof MappingPage>[0]>(h.find((node) => node.type === MappingPage))
+
+    // Guard: fail closed without blind overwrite when saving before loading an existing stale draft.
+    mapping().onDraft(draft)
+    h.click('保存草稿')
+    await vi.waitFor(() => expect(mapping().error?.summary).toBe('映射操作未完成'))
+    await vi.waitFor(() => expect(mapping().busy).toBe(false))
+    expect(saveMappingDraft).not.toHaveBeenCalled()
+
+    fieldChange(
+      h.find((node) => node.type === 'input' && node.props.value === ''),
+      'equipment',
+    )
+    h.click('读取草稿')
+    await vi.waitFor(() =>
+      expect(plain(h.render())).toContain('已读取保存于版本 1 的映射草稿（当前版本 2）'),
+    )
+    await vi.waitFor(() => expect(mapping().busy).toBe(false))
+    expect(mapping().state.draft).toEqual(draft)
+    expect(mapping().error).toBeUndefined()
+
+    h.click('保存草稿')
+    await vi.waitFor(() =>
+      expect(saveMappingDraft).toHaveBeenCalledWith(
+        expect.objectContaining({
+          baseRevision: 2,
+          expectedGeneration: 1,
+          draft,
+        }),
+      ),
+    )
+    await vi.waitFor(() => expect(mapping().busy).toBe(false))
+    expect(plain(h.render())).toContain('映射草稿已保存。')
+    expect(mapping().error).toBeUndefined()
+
+    // Negative: fail closed if a draft receipt claims a future revision > current revision
+    readMappingDraft.mockResolvedValueOnce(
+      ok({ projectId, mappingId: 'equipment', generation: 3, baseRevision: 3, draft }),
+    )
+    h.click('读取草稿')
+    await vi.waitFor(() => expect(mapping().error?.summary).toBe('映射操作未完成'))
+    await vi.waitFor(() => expect(mapping().busy).toBe(false))
+    h.unmount()
+  })
 })
 
 describe('W4 connected transfer workspace', () => {

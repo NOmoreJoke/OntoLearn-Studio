@@ -195,7 +195,10 @@ export function MappingWorkspace({
       if (
         receipt.projectId !== projectId ||
         receipt.mappingId !== id ||
-        receipt.baseRevision !== revision ||
+        !Number.isSafeInteger(receipt.baseRevision) ||
+        receipt.baseRevision < 0 ||
+        receipt.baseRevision > revision ||
+        (!receipt.draft && receipt.baseRevision !== revision) ||
         (receipt.draft && (receipt.draft.identity !== id || !safeDraft(receipt.draft)))
       )
         throw new Error('INVALID_DRAFT')
@@ -203,7 +206,13 @@ export function MappingWorkspace({
       setDraftVersion({ id, generation: receipt.generation, key: draftKey(draft) })
       setState((old) => updateDraft(old, draft))
       clearProposal()
-      setDraftNotice(receipt.draft ? '已读取保存的映射草稿。' : '此标识尚无保存的草稿。')
+      setDraftNotice(
+        !receipt.draft
+          ? '此标识尚无保存的草稿。'
+          : receipt.baseRevision < revision
+            ? `已读取保存于版本 ${receipt.baseRevision} 的映射草稿（当前版本 ${revision}）；重新保存将绑定到当前版本。`
+            : '已读取保存的映射草稿。',
+      )
     })
   }
   function saveDraft() {
@@ -218,8 +227,11 @@ export function MappingWorkspace({
       if (
         'mappingId' in previous &&
         (previous.projectId !== projectId ||
-          previous.baseRevision !== revision ||
           previous.mappingId !== draft.identity ||
+          !Number.isSafeInteger(previous.baseRevision) ||
+          previous.baseRevision < 0 ||
+          previous.baseRevision > revision ||
+          (!previous.draft && previous.baseRevision !== revision) ||
           previous.draft)
       )
         throw new Error('LOAD_EXISTING_DRAFT')

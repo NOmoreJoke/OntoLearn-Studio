@@ -147,7 +147,7 @@ def stage_mapping_source(actor, project, payload, *, session=None, project_id=No
         "byteLength": len(payload),
         "createdAt": "2026-11-20T00:00:00Z",
     }
-    (target / "meta.json").write_text(json.dumps(meta))
+    (target / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
     os.chmod(target / "meta.json", 0o600)
     return selection
 
@@ -282,14 +282,20 @@ def test_staging_rejects_symlinked_payload_and_meta(owned, tmp_path):
     target = root / selection
     (target / "payload.csv").unlink()
     (target / "real.csv").write_bytes(payload)
-    os.symlink("real.csv", target / "payload.csv")
+    try:
+        os.symlink("real.csv", target / "payload.csv")
+    except (NotImplementedError, PermissionError) as error:
+        pytest.skip(f"symlink unavailable on host: {error}")
     denied(select_source(actor, project, selection), "PERMISSION_DENIED")
     # meta.json as a symlink is equally rejected.
     (target / "payload.csv").unlink()
     (target / "payload.csv").write_bytes(payload)
     (target / "meta.json").unlink()
-    os.symlink("other.json", target / "meta.json")
-    (target / "other.json").write_text("{}")
+    try:
+        os.symlink("other.json", target / "meta.json")
+    except (NotImplementedError, PermissionError) as error:
+        pytest.skip(f"symlink unavailable on host: {error}")
+    (target / "other.json").write_text("{}", encoding="utf-8")
     denied(select_source(actor, project, selection), "PERMISSION_DENIED")
 
 
@@ -324,10 +330,10 @@ def test_payload_drift_after_select_is_rejected(owned):
     root = store.path.parent / ".ontolearn-host-selections"
     changed = b"id,name\n1,b\n"
     (root / selection / "payload.csv").write_bytes(changed)
-    meta = json.loads((root / selection / "meta.json").read_text())
+    meta = json.loads((root / selection / "meta.json").read_text(encoding="utf-8"))
     meta["sha256"] = hashlib.sha256(changed).hexdigest()
     meta["byteLength"] = len(changed)
-    (root / selection / "meta.json").write_text(json.dumps(meta))
+    (root / selection / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
     # The persisted select() binding binds the original bytes: drift rejects.
     denied(preview(actor, project, selection, DRAFT), "IDENTITY_CONFLICT")
 
@@ -418,7 +424,8 @@ def test_xlsx_sheet_detection_reparse_and_suggestions(owned):
                 "byteLength": len(payload),
                 "createdAt": "2026-11-20T00:00:00Z",
             }
-        )
+        ),
+        encoding="utf-8",
     )
     selected = ok(select_source(actor, project, selection))
     assert selected["format"] == "xlsx" and selected["encoding"] is None
@@ -509,6 +516,162 @@ def test_draft_generation_cas_and_idempotent_save(owned):
         )
     )
     assert reading["generation"] == 1 and reading["draft"] == DRAFT
+
+
+def test_mapping_draft_compatible_with_management_copy_current_and_stale_revision(owned):
+    """W4-IMP-01/02 regression: mapping/* drafts work with copy-current and rebase across revs."""
+    actor, store = owned
+    project = open_blank(actor)
+    rev0 = store.revision(store._project(project))
+    assert rev0 == 0
+    ok(
+        exchange(
+            actor,
+            "project.mapping.draft.save",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "expectedGeneration": 0,
+                "baseRevision": 0,
+                "draft": DRAFT,
+            },
+        )
+    )
+
+    def copy_current(source_project, name):
+        cp = store.project_checkpoint(store._project(source_project))
+        mgmt = ok(exchange(actor, "project.management.read", {"projectId": source_project}))
+        action = {"kind": "copy-current", "name": name}
+        viewed = ok(
+            exchange(
+                actor,
+                "project.management.preview",
+                {
+                    "projectId": source_project,
+                    "action": action,
+                    "expectedCheckpointRef": digest(cp),
+                    "expectedLifecycleVersion": mgmt["lifecycle"]["version"],
+                },
+            )
+        )
+        confirmed = ok(
+            exchange(
+                actor,
+                "project.management.confirm",
+                {
+                    "projectId": source_project,
+                    "previewRef": viewed["previewRef"],
+                    "documentHash": viewed["documentHash"],
+                },
+            )
+        )
+        return ok(
+            exchange(
+                actor,
+                "project.management.apply",
+                {
+                    "projectId": source_project,
+                    "operationId": uid(),
+                    "confirmationRef": confirmed["confirmationRef"],
+                    "documentHash": viewed["documentHash"],
+                },
+            )
+        )
+
+    applied = copy_current(project, "Copied With Mapping Draft")
+    copied_id = applied["targetProjectId"]
+    ok(exchange(actor, "project.open", {"projectId": copied_id}))
+    copied_read = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.read",
+            {"projectId": copied_id, "mappingId": "equip-map"},
+        )
+    )
+    assert copied_read["generation"] == 1
+    assert copied_read["baseRevision"] == 1
+    assert copied_read["draft"] == DRAFT
+    ok(exchange(actor, "project.open", {"projectId": project}))
+
+    # Advance source project revision (0 -> 1) so the saved mapping draft stays bound to rev 0.
+    mapping_roundtrip(actor, store, project, b"equipment_id,equipment_name\n001,Pump\n", DRAFT)
+
+    stale_read = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.read",
+            {"projectId": project, "mappingId": "equip-map"},
+        )
+    )
+    assert stale_read["generation"] == 1
+    assert stale_read["baseRevision"] == 0
+    assert stale_read["draft"] == DRAFT
+
+    # copy-current succeeds with a stale mapping/* draft and rebinds the copy to rev 1.
+    applied2 = copy_current(project, "Copied With Stale Mapping Draft")
+    ok(exchange(actor, "project.open", {"projectId": applied2["targetProjectId"]}))
+    copied2_read = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.read",
+            {"projectId": applied2["targetProjectId"], "mappingId": "equip-map"},
+        )
+    )
+    assert copied2_read["generation"] == 1
+    assert copied2_read["baseRevision"] == 1
+    assert copied2_read["draft"] == DRAFT
+    ok(exchange(actor, "project.open", {"projectId": project}))
+
+    # Re-saving stale draft at current rev=1 advances generation=2 and rebinds baseRevision=1.
+    resaved = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.save",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "expectedGeneration": 1,
+                "baseRevision": 1,
+                "draft": DRAFT,
+            },
+        )
+    )
+    assert resaved["generation"] == 2 and resaved["baseRevision"] == 1
+
+    # Negative: malformed mapping/* draft editor or invalid payload still fails management preview.
+    for bad_editor, bad_content in (
+        ("mapping/bad/id", DRAFT),
+        ("mapping/equip-map", {"identity": "other"}),
+    ):
+        bad_store_project = open_blank(actor, "坏草稿项目")
+        store.apply_application(
+            bad_store_project,
+            uid(),
+            {
+                "type": "draft.save",
+                "editor": bad_editor,
+                "expectedGeneration": 0,
+                "boundDomainRevision": 0,
+                "content": bad_content,
+            },
+            actor=uid(),
+            permission="write",
+        )
+        bad_cp = store.project_checkpoint(store._project(bad_store_project))
+        bad_mgmt = ok(exchange(actor, "project.management.read", {"projectId": bad_store_project}))
+        denied(
+            exchange(
+                actor,
+                "project.management.preview",
+                {
+                    "projectId": bad_store_project,
+                    "action": {"kind": "copy-current", "name": "should-fail"},
+                    "expectedCheckpointRef": digest(bad_cp),
+                    "expectedLifecycleVersion": bad_mgmt["lifecycle"]["version"],
+                },
+            ),
+            "INVALID_STATE",
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -952,3 +1115,131 @@ def test_preview_caps_issue_lists_at_contract_maximum_without_orphan_evidence(ow
     assert result["summary"]["totalIssues"] == 5001
     assert result["summary"]["truncated"] is True
     assert preview_evidence_count(store) == 1
+
+
+def test_staging_path_fallback_matches_security_invariants(owned, monkeypatch):
+    monkeypatch.setattr(staging, "_USE_DIR_FD", False)
+    actor, store = owned
+    project = open_blank(actor)
+    payload = b"id,name\n1,\r\n2,\n"
+    selection = stage_mapping_source(actor, project, payload)
+
+    meta, read_bytes = staging.read_inbound(
+        store, project, actor.session, selection, "mapping-source", 8 * 1024 * 1024
+    )
+    assert meta["selectionId"] == selection
+    assert read_bytes == payload
+
+    for bad in ("../escape", "a/b", "a\\b", "..", "", "x" * 200, "-leading", ".dot"):
+        with pytest.raises(staging.StagingFault) as err:
+            staging.read_inbound(
+                store, project, actor.session, bad, "mapping-source", 8 * 1024 * 1024
+            )
+        assert err.value.code == "SELECTION_INVALID"
+
+    root = store.path.parent / ".ontolearn-host-selections"
+    (root / selection / "payload.csv").write_bytes(b"tampered")
+    with pytest.raises(staging.StagingFault) as err:
+        staging.read_inbound(
+            store, project, actor.session, selection, "mapping-source", 8 * 1024 * 1024
+        )
+    assert err.value.code == "PAYLOAD_MISMATCH"
+
+    out_selection = uid()
+    out_dir = root / out_selection
+    out_dir.mkdir(parents=True)
+    (out_dir / "meta.json").write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "selectionId": out_selection,
+                "projectId": project,
+                "engineSessionId": actor.session,
+                "purpose": "report-html",
+                "extension": ".html",
+                "outputFile": "output.html",
+                "createdAt": "2026-11-20T00:00:00Z",
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert (
+        staging.verify_outbound(store, project, actor.session, out_selection, "report-html")[
+            "outputFile"
+        ]
+        == "output.html"
+    )
+    assert staging.read_report_publication(store, project, actor.session, out_selection) is None
+
+    html_bytes = b"<html>\r\n<body>ok</body></html>"
+    published = staging.write_outbound(store, out_selection, "output.html", html_bytes)
+    assert published == {
+        "sha256": hashlib.sha256(html_bytes).hexdigest(),
+        "byteLength": len(html_bytes),
+    }
+    assert (out_dir / "output.html").read_bytes() == html_bytes
+
+    receipt = {"version": 1, "reportRef": "r1"}
+    (out_dir / "report-published.json").write_text(json.dumps(receipt), encoding="utf-8")
+    assert staging.read_report_publication(store, project, actor.session, out_selection) == receipt
+
+    for bad_target in ("../escape.html", "sub/out.html", "sub\\out.html", "..", ""):
+        with pytest.raises(staging.StagingFault) as err:
+            staging.write_outbound(store, out_selection, bad_target, html_bytes)
+        assert err.value.code == "TARGET_INVALID"
+
+    # Windows reparse-point flag detection must fail closed even on POSIX test hosts.
+    class FakeStat:
+        st_mode = 0o040700
+        st_file_attributes = staging._REPARSE_FLAG
+
+    assert staging._is_link_or_reparse(FakeStat()) is True
+
+    # Verify symlink rejection on inbound payload, outbound target, and selection dir.
+    try:
+        (root / selection / "real.csv").write_bytes(payload)
+        (root / selection / "payload.csv").unlink()
+        os.symlink("real.csv", root / selection / "payload.csv")
+        with pytest.raises(staging.StagingFault) as err:
+            staging.read_inbound(
+                store, project, actor.session, selection, "mapping-source", 8 * 1024 * 1024
+            )
+        assert err.value.code == "FILE_UNAVAILABLE"
+
+        (out_dir / "other.html").write_bytes(html_bytes)
+        (out_dir / "output.html").unlink()
+        os.symlink("other.html", out_dir / "output.html")
+        with pytest.raises(staging.StagingFault) as err:
+            staging.write_outbound(store, out_selection, "output.html", html_bytes)
+        assert err.value.code == "TARGET_INVALID"
+
+        link_sel = uid()
+        os.symlink(out_dir, root / link_sel)
+        with pytest.raises(staging.StagingFault) as err:
+            staging.verify_outbound(store, project, actor.session, link_sel, "report-html")
+        assert err.value.code == "SELECTION_NOT_FOUND"
+
+        meta_link_sel = stage_mapping_source(actor, project, payload)
+        meta_dir = root / meta_link_sel
+        (meta_dir / "other.json").write_text("{}", encoding="utf-8")
+        (meta_dir / "meta.json").unlink()
+        os.symlink("other.json", meta_dir / "meta.json")
+        with pytest.raises(staging.StagingFault) as err:
+            staging.read_inbound(
+                store, project, actor.session, meta_link_sel, "mapping-source", 8 * 1024 * 1024
+            )
+        assert err.value.code == "FILE_UNAVAILABLE"
+
+        real_root = store.path.parent / ".ontolearn-host-selections-real"
+        root.rename(real_root)
+        try:
+            os.symlink(real_root, root)
+            with pytest.raises(staging.StagingFault) as err:
+                staging.verify_outbound(store, project, actor.session, out_selection, "report-html")
+            assert err.value.code == "STAGING_UNAVAILABLE"
+        finally:
+            if os.path.islink(root):
+                root.unlink()
+            real_root.rename(root)
+    except (NotImplementedError, PermissionError):
+        pass

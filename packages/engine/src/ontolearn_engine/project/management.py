@@ -5,6 +5,7 @@ made at admission; receipts remain readable through the narrow management path.
 """
 
 import json
+import re
 from copy import deepcopy
 from uuid import uuid4
 
@@ -13,6 +14,8 @@ from ontolearn_engine.project.applications import hash_ref, uuid_ref
 from ontolearn_engine.storage import LAYERS, Conflict, canonical, digest
 
 KINDS = {"rename", "archive", "set-mode", "copy-current", "trash", "restore-trash"}
+_MAPPING_DRAFT_PREFIX = "mapping/"
+_MAPPING_DRAFT_ID_RE = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
 METHODS = frozenset(
     "project.management." + name
     for name in ("catalog", "read", "preview", "confirm", "apply", "operation.get")
@@ -105,35 +108,55 @@ def _drafts(application, revision):
     # copying the current checkpoint's editable state.
     rows = deepcopy(application["drafts"])
     for row in rows:
-        require(row["editor"] == "query-workspace-v1")
-        if row["present"]:
-            require(row["bound_revision"] == revision)  # stale drafts need explicit rebasing
-            content = json.loads(row["payload"])
-            require(
-                type(content) is dict
-                and set(content) == {"version", "definitionId", "draft"}
-                and type(content["version"]) is int
-                and content["version"] == 1
-            )
-            require(type(content["definitionId"]) is str and len(content["definitionId"]) <= 128)
-            draft = content["draft"]
-            require(
-                type(draft) is dict
-                and set(draft)
-                == {"name", "description", "sparql", "scope", "capabilityQuestion", "source"}
-            )
-            for key, bound in (
-                ("name", 128),
-                ("description", 4096),
-                ("sparql", 65536),
-                ("capabilityQuestion", 4096),
-            ):
-                require(type(draft[key]) is str and len(draft[key]) <= bound)
-                draft[key].encode("utf-8")
-            require(
-                draft["scope"] in {"asserted", "asserted+derived"}
-                and draft["source"] in {"template", "visual", "editor", "model"}
-            )
+        if row["editor"] == "query-workspace-v1":
+            if row["present"]:
+                require(row["bound_revision"] == revision)  # stale drafts need explicit rebasing
+                content = json.loads(row["payload"])
+                require(
+                    type(content) is dict
+                    and set(content) == {"version", "definitionId", "draft"}
+                    and type(content["version"]) is int
+                    and content["version"] == 1
+                )
+                require(
+                    type(content["definitionId"]) is str and len(content["definitionId"]) <= 128
+                )
+                draft = content["draft"]
+                require(
+                    type(draft) is dict
+                    and set(draft)
+                    == {"name", "description", "sparql", "scope", "capabilityQuestion", "source"}
+                )
+                for key, bound in (
+                    ("name", 128),
+                    ("description", 4096),
+                    ("sparql", 65536),
+                    ("capabilityQuestion", 4096),
+                ):
+                    require(type(draft[key]) is str and len(draft[key]) <= bound)
+                    draft[key].encode("utf-8")
+                require(
+                    draft["scope"] in {"asserted", "asserted+derived"}
+                    and draft["source"] in {"template", "visual", "editor", "model"}
+                )
+        elif row["editor"].startswith(_MAPPING_DRAFT_PREFIX):
+            mapping_id = row["editor"][len(_MAPPING_DRAFT_PREFIX) :]
+            require(_MAPPING_DRAFT_ID_RE.fullmatch(mapping_id) is not None)
+            if row["present"]:
+                require(
+                    format3._integer(row["bound_revision"])
+                    and 0 <= row["bound_revision"] <= revision
+                )
+                from ontolearn_engine.resources import CONTRACT
+
+                content = json.loads(row["payload"])
+                require(
+                    type(content) is dict
+                    and CONTRACT.validate("w4.mapping.draft", content)
+                    and content["identity"] == mapping_id
+                )
+        else:
+            require(False)
         row.update(generation=1, bound_revision=1)
     return rows
 

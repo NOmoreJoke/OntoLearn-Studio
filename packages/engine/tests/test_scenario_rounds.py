@@ -26,7 +26,9 @@ from ontolearn_engine.scenario.runner import (
     run,
 )
 
-FIXTURE = json.loads((Path(__file__).parents[3] / "tests/fixtures/scenario/e5.json").read_text())
+FIXTURE = json.loads(
+    (Path(__file__).parents[3] / "tests/fixtures/scenario/e5.json").read_text(encoding="utf-8")
+)
 
 
 def definition(capacity=3, **kwargs):

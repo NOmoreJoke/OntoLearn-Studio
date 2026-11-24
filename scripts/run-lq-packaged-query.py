@@ -36,6 +36,22 @@ def load_b1a_module():
     return module
 
 
+def _collect_tests(suites: list[dict[str, object]]) -> list[tuple[str, str]]:
+    found: list[tuple[str, str]] = []
+    for suite in suites:
+        for spec in suite.get("specs", []):
+            if not isinstance(spec, dict):
+                continue
+            title = str(spec.get("title", ""))
+            for test_item in spec.get("tests", []):
+                if isinstance(test_item, dict):
+                    found.append((title, str(test_item.get("status", "unknown"))))
+        nested = suite.get("suites", [])
+        if isinstance(nested, list) and nested:
+            found.extend(_collect_tests(nested))
+    return found
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("release", type=Path)
@@ -116,7 +132,8 @@ def main() -> None:
     stats = report["stats"]
     summary["stats"] = stats
     summary["tests"] = sorted(
-        (result["title"], result["status"]) for result in report.get("tests", [])
+        _collect_tests(report.get("suites", []))
+        or ((result["title"], result["status"]) for result in report.get("tests", []))
     )
     if (
         stats["expected"] != EXPECTED_LQ_TESTS

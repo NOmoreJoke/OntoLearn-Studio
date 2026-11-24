@@ -178,6 +178,22 @@ def build_plan() -> list[Lane]:
             "xvfb-run -a sh -c 'openbox > /tmp/i04-packaged-native-openbox.log 2>&1 & "
             'npx playwright test tests/e2e/i04-jobs.spec.ts --grep "native renderer" '
             "--output=test-results/i04-packaged-native --reporter=list,github,json'\n"
+            'LINUX_C1_EVIDENCE="$GITHUB_WORKSPACE/test-results/'
+            'i02-linux-packaged-evidence.json"\n'
+            'PLAYWRIGHT_JSON_OUTPUT_FILE="$GITHUB_WORKSPACE/test-results/'
+            'i02-packaged-c1/report.json" '
+            'I02_EVIDENCE="$LINUX_C1_EVIDENCE" '
+            "xvfb-run -a sh -c 'openbox > /tmp/i02-packaged-c1-openbox.log 2>&1 & "
+            "npx playwright test tests/e2e/csp-lifecycle.spec.ts --workers=1 "
+            "--output=test-results/i02-packaged-c1 --reporter=list,github,json'\n"
+            'LINUX_C1_EVIDENCE="$LINUX_C1_EVIDENCE" node -e "'
+            "const fs=require('node:fs');"
+            "const d=JSON.parse(fs.readFileSync(process.env.LINUX_C1_EVIDENCE,'utf8'));"
+            "const ev=d.nativeRecovery?.events||[];"
+            "if(!d.nativeRecovery?.packaged||d.result!=='PASS'||!d.foreignSenderRejected"
+            "||!ev.includes('crashed')||!ev.includes('unresponsive')){"
+            "console.error('LINUX_PACKAGED_C1_FAILED',d);process.exit(1);}"
+            "console.log('LINUX_PACKAGED_C1_OK',JSON.stringify(ev));\"\n"
             "xvfb-run -a sh -c 'openbox > /tmp/q3-packaged-graph-openbox.log 2>&1 & "
             "uv run --frozen python scripts/run-q3-packaged-graph.py "
             "release test-results/q3-packaged-graph'\n"

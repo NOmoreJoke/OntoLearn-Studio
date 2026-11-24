@@ -461,6 +461,36 @@ test('L1 level-4 full demonstration persists across a real restart without brows
     await expect(reopenedMentor.getByTestId('learning-assistance-label')).toHaveText(
       '使用完整示范完成',
     )
+
+    stage = 'restarting the task keeps the full-demonstration floor and single guided checkpoint'
+    await reopenedMentor.getByRole('button', { name: '重新开始本任务尝试', exact: true }).click()
+    await expect(reopenedMentor.getByTestId('learning-check-status')).toHaveText('待检查', {
+      timeout: 30000,
+    })
+    await expect(reopenedMentor.getByTestId('learning-assistance-label')).toHaveText(
+      '使用完整示范完成',
+    )
+    await expect(reopenedMentor.getByTestId('mentor-revealed-hint')).toHaveCount(4)
+    await expect(reopenedMentor.getByTestId('mentor-btn-check')).toBeEnabled({ timeout: 30000 })
+    await reopenedMentor.getByTestId('mentor-btn-check').click()
+    await expect(reopenedMentor.getByTestId('learning-check-status')).toHaveText('已通过', {
+      timeout: 30000,
+    })
+    await expect(reopenedMentor.getByTestId('learning-assistance-label')).toHaveText(
+      '使用完整示范完成',
+    )
+    await expect(reopenedMentor.getByTestId('mentor-btn-check')).toBeEnabled({ timeout: 30000 })
+    await expect(guidedStageCheckpoints(restarted)).toHaveCount(1, { timeout: 30000 })
+    const checkpointList = await restarted.evaluate(async () =>
+      window.ontolearn!.listProjectCheckpoints({ pageSize: 20, cursor: null }),
+    )
+    expect(checkpointList.ok).toBe(true)
+    if (checkpointList.ok) {
+      expect(
+        checkpointList.data.items.filter((item) => item.reason === 'guided-stage'),
+      ).toHaveLength(1)
+    }
+
     evidence.afterRestartStorage = await restarted.evaluate(() => ({
       localStorage: window.localStorage.length,
       sessionStorage: window.sessionStorage.length,

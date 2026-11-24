@@ -66,7 +66,7 @@ def test_probe_rejects_any_extra_argument_without_echoing_or_running_it(extra):
     )
     assert result.returncode == 2
     assert result.stdout == b""
-    assert result.stderr == b"MAPPING_PROBE_INVALID_ARGUMENTS\n"
+    assert result.stderr.replace(b"\r\n", b"\n") == b"MAPPING_PROBE_INVALID_ARGUMENTS\n"
 
 
 def test_probe_runtime_error_is_fixed_and_does_not_leak_raw_exception(monkeypatch, capsys):

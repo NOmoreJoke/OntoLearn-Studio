@@ -20,7 +20,7 @@ FIXTURES = Path(__file__).resolve().parents[3] / "tests/fixtures/quality/profile
 
 
 def fixture(name):
-    return json.loads((FIXTURES / name).read_text())
+    return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
 
 
 def term(kind, text, language=None):

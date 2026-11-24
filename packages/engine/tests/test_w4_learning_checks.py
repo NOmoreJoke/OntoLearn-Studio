@@ -147,7 +147,7 @@ def seed_case(actor, store, model, facts, *, project_rules=()):
 
 
 def _behavior_case(model, case_id):
-    cases = json.loads((BASELINES / "cases.json").read_text())["cases"]
+    cases = json.loads((BASELINES / "cases.json").read_text(encoding="utf-8"))["cases"]
     case = next(item for item in cases if item["id"] == case_id)
     event = case["steps"][0]["events"][0]
     order = NS + "W:{eventId}"
@@ -220,7 +220,7 @@ def _run_sample(actor, project, revision, snapshot, draft, event, scope):
 
 def test_behavior_checks_real_isolated_commit_and_replay(owned):
     actor, store = owned
-    model = json.loads((BASELINES / "G-base.json").read_text())
+    model = json.loads((BASELINES / "G-base.json").read_text(encoding="utf-8"))
     project, revision, snapshot = seed_case(
         actor, store, model, model["facts"], project_rules=model["rules"]
     )
@@ -293,7 +293,7 @@ def test_behavior_checks_real_isolated_commit_and_replay(owned):
 
 def test_behavior_rule_uses_rdfs_closure_after_event_edits(owned):
     actor, store = owned
-    model = json.loads((BASELINES / "G-base.json").read_text())
+    model = json.loads((BASELINES / "G-base.json").read_text(encoding="utf-8"))
     subject = NS + "equipment/001"
     model["ontology"].extend(
         [
@@ -331,7 +331,7 @@ def test_behavior_rule_uses_rdfs_closure_after_event_edits(owned):
 
 
 def e5_project(actor, store, capacity=3):
-    model = json.loads(E5_PATH.read_text())
+    model = json.loads(E5_PATH.read_text(encoding="utf-8"))
     # Apply an actual initial edit via the public config, leaving the formal
     # project's name assertion empty for this fixture.
     initial_facts = [item for item in model["initialFacts"] if item["predicate"] != NS + "name"]
@@ -615,10 +615,10 @@ def test_report_demands_real_export_and_full_package_round_trip(owned):
         "byteLength": publication["byteLength"],
     }
     ack = folder / "report-published.json"
-    ack.write_text(json.dumps({**receipt, "sha256": "0" * 64}))
+    ack.write_text(json.dumps({**receipt, "sha256": "0" * 64}), encoding="utf-8")
     denied(exchange(actor, "project.transfer.report.export", export_args), "IDENTITY_CONFLICT")
     assert not check_task(actor, project, "report")["operationComplete"]
-    ack.write_text(json.dumps(receipt))
+    ack.write_text(json.dumps(receipt), encoding="utf-8")
     assert ok(exchange(actor, "project.transfer.report.export", export_args)) == exported
     ack.unlink()
     result = check_task(actor, project, "report")

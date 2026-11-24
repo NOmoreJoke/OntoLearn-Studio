@@ -153,7 +153,7 @@ type Picks = NonNullable<ConstructorParameters<typeof ProjectMainlineService>[3]
 let directory: string
 let release: (() => void) | undefined
 beforeEach(async () => {
-  directory = await fs.mkdtemp(join(process.cwd(), 'node_modules/.w4-main-'))
+  directory = await fs.realpath(await fs.mkdtemp(join(process.cwd(), 'node_modules/.w4-main-')))
 })
 afterEach(async () => {
   release?.()
@@ -219,8 +219,10 @@ const selectedMeta = async (root: string, selectionId: string) => {
   const folder = join(root, selectionId)
   const metaPath = join(folder, 'meta.json')
   const meta: Params = JSON.parse(await fs.readFile(metaPath, 'utf8'))
-  expect((await fs.stat(folder)).mode & 0o777).toBe(0o700)
-  expect((await fs.stat(metaPath)).mode & 0o777).toBe(0o600)
+  if (process.platform !== 'win32') {
+    expect((await fs.stat(folder)).mode & 0o777).toBe(0o700)
+    expect((await fs.stat(metaPath)).mode & 0o777).toBe(0o600)
+  }
   expect(JSON.stringify(meta)).not.toContain(directory)
   return { folder, meta }
 }
@@ -280,7 +282,9 @@ describe('selected files at the main process boundary', () => {
         createdAt: expect.stringMatching(/^\d{4}-\d\d-\d\dT.*Z$/),
       })
       const payload = join(folder, String(meta.payloadFile))
-      expect((await fs.stat(payload)).mode & 0o777).toBe(0o600)
+      if (process.platform !== 'win32') {
+        expect((await fs.stat(payload)).mode & 0o777).toBe(0o600)
+      }
       expect(await fs.readFile(payload)).toEqual(bytes)
       expect(await fs.readdir(folder)).toEqual(['meta.json', 'payload' + extension])
     }
@@ -405,17 +409,20 @@ describe('selected files at the main process boundary', () => {
 
   it('rejects dialog cancellation, traversal, unknown tokens, suffix mismatch, symlinks and oversized input', async () => {
     const source = join(directory, 'source.csv')
-    const alias = join(directory, 'alias.csv')
     const large = join(directory, 'large.csv')
     await fs.writeFile(source, 't\n001\n')
-    await fs.symlink(source, alias)
     const handle = await fs.open(large, 'wx')
     await handle.truncate(8 * 1024 * 1024 + 1)
     await handle.close()
     const pick = vi
       .fn<Picks['pickMappingSource'] & (() => Promise<{ canceled: true } | { filePath: string }>)>()
       .mockResolvedValueOnce({ canceled: true })
-      .mockResolvedValueOnce({ filePath: alias })
+    if (process.platform !== 'win32') {
+      const alias = join(directory, 'alias.csv')
+      await fs.symlink(source, alias)
+      pick.mockResolvedValueOnce({ filePath: alias })
+    }
+    pick
       .mockResolvedValueOnce({ filePath: join(directory, 'source.csv.exe') })
       .mockResolvedValueOnce({ filePath: large })
       .mockResolvedValue({ filePath: source })
@@ -423,7 +430,8 @@ describe('selected files at the main process boundary', () => {
       pickMappingSource: pick,
       pickTransferFile: async () => ({ filePath: join(directory, 'report.html.txt') }),
     })
-    for (let i = 0; i < 4; i++)
+    const rejectionCalls = process.platform === 'win32' ? 3 : 4
+    for (let i = 0; i < rejectionCalls; i++)
       expect(await h.receive(() => h.service.selectMappingSource({}))).toEqual(permission)
     for (const selectionId of ['..', 'a..b', '../x', id(74)]) {
       const reply = await h.receive(() => h.service.selectMappingSource({ selectionId }))
@@ -436,7 +444,7 @@ describe('selected files at the main process boundary', () => {
     expect(await fs.readdir(h.root)).toEqual([])
   })
 
-  it.each(['root', 'directory', 'meta.json', 'payload.csv'])(
+  it.skipIf(process.platform === 'win32').each(['root', 'directory', 'meta.json', 'payload.csv'])(
     'rejects a replaced %s on an already selected source',
     async (entry) => {
       const source = join(directory, 'source.csv')
@@ -510,6 +518,29 @@ describe('selected files at the main process boundary', () => {
   })
 })
 
+const publicationOutcomes =
+  process.platform === 'win32'
+    ? [
+        'published',
+        'target-exists',
+        'publication-unconfirmed',
+        'hash',
+        'size',
+        'missing',
+        'engine-cancelled',
+      ]
+    : [
+        'published',
+        'target-exists',
+        'destination-symlink',
+        'publication-unconfirmed',
+        'hash',
+        'size',
+        'symlink',
+        'missing',
+        'engine-cancelled',
+      ]
+
 describe.each([
   { purpose: 'report-html' as const, extension: '.html', method: 'project.transfer.report.export' },
   {
@@ -518,17 +549,7 @@ describe.each([
     method: 'project.transfer.package.export',
   },
 ])('main publication of $extension', ({ purpose, extension, method }) => {
-  it.each([
-    'published',
-    'target-exists',
-    'destination-symlink',
-    'publication-unconfirmed',
-    'hash',
-    'size',
-    'symlink',
-    'missing',
-    'engine-cancelled',
-  ])('projects %s from private staged bytes', async (outcome) => {
+  it.each(publicationOutcomes)('projects %s from private staged bytes', async (outcome) => {
     const destination = join(directory, 'target' + extension)
     const bytes = Buffer.from('exact staged output\n')
     const h = await setup({ pickTransferFile: async () => ({ filePath: destination }) })
@@ -609,7 +630,9 @@ describe.each([
         cleanup: 'complete',
       })
       expect(await fs.readFile(destination)).toEqual(bytes)
-      expect((await fs.stat(destination)).mode & 0o777).toBe(0o600)
+      if (process.platform !== 'win32') {
+        expect((await fs.stat(destination)).mode & 0o777).toBe(0o600)
+      }
     } else if (outcome === 'target-exists') {
       expect(reply.publication).toEqual({ state: 'failed', code: outcome, cleanup: 'complete' })
       expect(await fs.readFile(destination, 'utf8')).toBe('unrelated')
