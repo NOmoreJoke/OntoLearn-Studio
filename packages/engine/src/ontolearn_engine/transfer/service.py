@@ -258,7 +258,15 @@ def _export_check(store, params, origin, host):
         store, project, internal, kind, options
     )
     try:
-        scan_projection(_business_projection(definitions, facts, checkpoint))
+        scan_projection(
+            {
+                "members": {
+                    role: payload.decode("utf-8", errors="replace")
+                    for role, payload in entries.items()
+                },
+                "projection": _business_projection(definitions, facts, checkpoint),
+            }
+        )
     except CredentialLeak:
         _credential_fault()
     manifest = transfer_package.build_manifest(kind, options, entries)
@@ -649,15 +657,49 @@ def _import(store, params, origin, host):
     if inspected.manifest != check["manifest"]:
         fault("IDENTITY_CONFLICT")
     definitions, manual, mapping_rows, drift_edits, removals = _import_plan(inspected.entries)
-    # FR-901: scan the imported business text before any project is created.
+    checkpoint_meta = json.loads(inspected.entries.get("data/checkpoint.json", b"{}"))
+    metadata = (checkpoint_meta.get("metadata") or {}) if expected_kind == "full" else {}
+    learning_rows = []
+    if expected_kind == "full" and "data/agent-session.json" in inspected.entries:
+        learning_rows = json.loads(inspected.entries["data/agent-session.json"])["learning"]
+    parsed_learning_rows = []
+    for record in learning_rows:
+        try:
+            parsed_payload = json.loads(record["payload"])
+        except (ValueError, TypeError):
+            fault("INVALID_STATE")
+        parsed_learning_rows.append((record, parsed_payload))
+    history_rows = []
+    if "data/history.json" in inspected.entries:
+        history_rows = json.loads(inspected.entries["data/history.json"])["operations"]
+    # FR-901: scan the full imported business text (including agent-session
+    # learning rows and raw package members) before any project is created.
     try:
         credential_scan = scan_projection(
-            {"definitions": definitions, "manual": manual, "mappingRows": mapping_rows}
+            {
+                "members": {
+                    name: payload.decode("utf-8", errors="replace")
+                    for name, payload in inspected.entries.items()
+                },
+                "definitions": definitions,
+                "manual": manual,
+                "mappingRows": mapping_rows,
+                "driftEdits": drift_edits,
+                "metadata": metadata,
+                "learningRows": [
+                    {
+                        "attempt": record["attempt"],
+                        "course": record["course"],
+                        "task": record["task"],
+                        "payload": parsed_payload,
+                    }
+                    for record, parsed_payload in parsed_learning_rows
+                ],
+                "historyRows": history_rows,
+            }
         )
     except CredentialLeak:
         _credential_fault()
-    checkpoint_meta = json.loads(inspected.entries.get("data/checkpoint.json", b"{}"))
-    metadata = (checkpoint_meta.get("metadata") or {}) if expected_kind == "full" else {}
     # W4-02: an imported name is engine free text from now on; sanitize the
     # same host absolute path markers the exporter scrubbed on the way out.
     raw_name = metadata.get("name") if isinstance(metadata.get("name"), str) else None
@@ -669,12 +711,6 @@ def _import(store, params, origin, host):
         patch["archived"] = metadata["archived"]
     if metadata.get("mode") in ("guided", "assisted"):
         patch["mode"] = metadata["mode"]
-    learning_rows = []
-    if expected_kind == "full" and "data/agent-session.json" in inspected.entries:
-        learning_rows = json.loads(inspected.entries["data/agent-session.json"])["learning"]
-    history_rows = []
-    if "data/history.json" in inspected.entries:
-        history_rows = json.loads(inspected.entries["data/history.json"])["operations"]
     from ontolearn_engine.project.mainline import READ_LIMITS
 
     plans = []
@@ -778,7 +814,7 @@ def _import(store, params, origin, host):
                     confirmation_ref=prepared["confirmationRef"],
                 )
                 base += 1
-            for record in learning_rows:
+            for record, parsed_payload in parsed_learning_rows:
                 # W4-03: agent-session members restore the real learning
                 # ledger rows through the ordinary application change.
                 learning_change = {
@@ -787,7 +823,7 @@ def _import(store, params, origin, host):
                     "course": record["course"],
                     "task": record["task"],
                     "expectedRecordVersion": None,
-                    "payload": json.loads(record["payload"]),
+                    "payload": parsed_payload,
                     "assistanceEvent": None,
                 }
                 prepared = store.prepare_application(

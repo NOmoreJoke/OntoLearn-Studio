@@ -11,15 +11,25 @@ echoed, logged or included in the fault.
 
 import re
 
+_SECRET_KEY_BODY = (
+    r"(?:(?i:(?<![A-Za-z0-9_.-])(?:[A-Za-z0-9]+[_.-])*"
+    r"(?:api[_.-]?key|access[_.-]?key|secret[_.-]?(?:access[_.-]?)?key|"
+    r"private[_.-]?key|secret|token|password|passwd|credential)s?"
+    r"(?:[_.-](?:value|key|secret|token|id))?)|"
+    r"(?<![A-Za-z0-9_.-])[a-z][a-z0-9]*"
+    r"(?:ApiKey|AccessKey|SecretKey|SecretAccessKey|PrivateKey|"
+    r"Secret|Token|Password|Passwd|Credential)s?"
+    r"(?:Value|Key|Secret|Token|Id)?)"
+)
+_SECRET_KEY_RE = re.compile(rf"^{_SECRET_KEY_BODY}\Z")
+
 SECRET_PATTERNS = (
     # AWS access key ids and symmetric secret material shapes.
     re.compile(r"AKIA[0-9A-Z]{16}"),
     re.compile(r"(?i)aws[_.-]?(?:access[_.-]?key|secret[_.-]?key)[_.-]?(?:id)?:\s*\S+"),
-    # Generic key/secret/token/password assignments with nonempty material.
-    re.compile(
-        r"(?i)\b(?:api[_.-]?key|secret|token|password|passwd|credential)s?\b"
-        r"\s*[:=]\s*[\"']?[A-Za-z0-9_./+-]{8,}"
-    ),
+    # Generic key/secret/token/password assignments (including JSON/escaped
+    # quotes) with nonempty material.
+    re.compile(_SECRET_KEY_BODY + r"(?:\\?[\"'])?\s*[:=]\s*(?:\\?[\"'])?[A-Za-z0-9_./+=-]{8,}"),
     # Bearer authorization headers and private key blocks.
     re.compile(r"(?i)bearer\s+[A-Za-z0-9_./=+-]{16,}"),
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
@@ -50,6 +60,12 @@ _HOST_PATH_MARKERS = (
     ),
     re.compile(
         r"(?i)(?<![A-Za-z0-9._/\\-])\\+(?:Users|home|private|var|tmp|etc|Volumes|root|Windows|ProgramData)(?=\\)"
+    ),
+    re.compile(
+        r"(?<![A-Za-z0-9._/\\-])\\{2,}[A-Za-z0-9][A-Za-z0-9._-]{1,62}\\+[A-Za-z0-9._$-]{2,}"
+    ),
+    re.compile(
+        r"(?i)(?<![A-Za-z0-9._/\\-])\\{2,}\?\\+UNC\\+[A-Za-z0-9][A-Za-z0-9._-]{1,62}\\+[A-Za-z0-9._$-]{2,}"
     ),
     re.compile(r"(?<![A-Za-z0-9._/-])[A-Za-z]:(?=\\)"),
     re.compile(r"(?i)file://"),
@@ -139,7 +155,14 @@ def scan_projection(value):
                 return "clear"
             return scan_text(node)
         if isinstance(node, dict):
-            return _combine(walk(item) for item in node.values())
+            outcomes = []
+            for key, item in node.items():
+                if isinstance(key, str):
+                    outcomes.append(scan_text(key))
+                    if _SECRET_KEY_RE.fullmatch(key) and isinstance(item, str) and item:
+                        outcomes.append(scan_text(f"{key}: {item}"))
+                outcomes.append(walk(item))
+            return _combine(outcomes)
         if isinstance(node, (list, tuple)):
             return _combine(walk(item) for item in node)
         return "clear"

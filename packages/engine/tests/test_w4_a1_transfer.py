@@ -1831,6 +1831,9 @@ def test_w4r2_01_sanitize_text_seeded_property_invariants():
         "C:\\Users\\kyle\\doc",
         "\\Users\\kyle\\secret",
         "\\\\?\\C:\\Users\\kyle\\secret",
+        r"\\corp-server\share\finance.xlsx",
+        r"\\10.0.0.5\share\doc.csv",
+        r"\\?\UNC\corp-server\share\doc.csv",
         "file:///Users/kyle/a.txt",
         "FILE:///Users/kyle/a.txt",
         ".ontolearn-host-selections/sel-1",
@@ -1993,3 +1996,265 @@ def test_w4r2b_01_and_02_non_ascii_iris_export_and_case_double_slash_unc_scrubbe
     assert all("/users/kyle" not in text for text in lower_texts)
     assert not any(host_path_marker(text) for text in lower_texts)
     assert "<local-path>" in member_bytes(lower_archive, "data/checkpoint.json").decode("utf-8")
+
+
+def test_w4r2_01_credential_scan_json_quoted_compound_keys_and_exports(owned):
+    secret_samples = [
+        '{"password":"hunter22"}',
+        '{"password": "hunter22"}',
+        '{"token":"abcdefgh12345"}',
+        '{"credential":"abcdefgh123456"}',
+        '{"api_key":"mysecretvalue123"}',
+        '{"secret_access_key":"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"}',
+        "secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        '{"clientSecret":"s3cr3tvalue123"}',
+        r"{\"password\":\"hunter22\"}",
+    ]
+    for sample in secret_samples:
+        with pytest.raises(CredentialLeak):
+            scan_text(sample)
+
+    for proj in (
+        {"password": "hunter22"},
+        {"secret_access_key": "a" * 64},
+        {"AKIAIOSFODNN7EXAMPLE": "x"},
+    ):
+        with pytest.raises(CredentialLeak):
+            scan_projection(proj)
+
+    assert scan_projection({"password": "[REDACTED]"}) == "redacted"
+    assert scan_projection({"credentialScan": {"version": 1, "status": "clear"}}) == "clear"
+    assert scan_projection({"credentialState": "configured"}) == "clear"
+    assert scan_projection({"token": "short"}) == "clear"
+    assert scan_projection({"secret": ""}) == "clear"
+    assert scan_text('{"credentialScan":{"version":1,"status":"clear"}}') == "clear"
+
+    actor, store = owned
+    project = populated_project(actor, store)
+    internal = store._project(project)
+    revision = store.revision(internal)
+    leak_obj = '"{\\"password\\":\\"hunter22\\"}"'
+    store.commit(
+        internal,
+        revision,
+        uid(),
+        uid(),
+        manual=[
+            {
+                "id": digest(["urn:x:leak", "urn:x:jsonSecret", leak_obj]),
+                "subject": "urn:x:leak",
+                "predicate": "urn:x:jsonSecret",
+                "object": leak_obj,
+            }
+        ],
+    )
+    export_sel = stage_outbound(
+        actor, project, "package-export", ".ontolearn.zip", "output.ontolearn.zip"
+    )
+    exp_err = denied(
+        exchange(
+            actor,
+            "project.transfer.package.export.check",
+            {
+                "projectId": project,
+                "selectionId": export_sel,
+                "kind": "full",
+                "baseRevision": store.revision(internal),
+                "options": OPTIONS_OFF,
+            },
+        ),
+        "PERMISSION_DENIED",
+    )
+    assert "hunter22" not in json.dumps(exp_err)
+
+    leak_named_project = open_blank(actor, name='项目 {"password":"hunter22"}')
+    rep_err = denied(
+        exchange(
+            actor,
+            "project.transfer.report.prepare",
+            {
+                "projectId": leak_named_project,
+                "baseRevision": store.revision(store._project(leak_named_project)),
+            },
+        ),
+        "PERMISSION_DENIED",
+    )
+    assert "hunter22" not in json.dumps(rep_err)
+
+
+def test_w4r2_02_unc_host_paths_detected_and_scrubbed(owned):
+    hostile_unc = [
+        r"\\corp-server\share\finance.xlsx",
+        r"\\10.0.0.5\share\doc.csv",
+        r"\\fileserver.corp.local\dept\report.xlsx",
+        r"\\?\UNC\corp-server\share\doc.csv",
+        json.dumps({"p": r"\\corp-server\share\finance.xlsx"}, separators=(",", ":")),
+        r"备份\\corp-server\share\finance.xlsx",
+    ]
+    for sample in hostile_unc:
+        assert host_path_marker(sample) is True, sample
+        assert sanitize_text(sample) == "<local-path>", sample
+        assert host_path_marker(sanitize_text(sample)) is False
+
+    spaced_json_unc = json.dumps({"p": r"\\corp-server\share\finance.xlsx"})
+    assert host_path_marker(spaced_json_unc) is True
+    scrubbed_spaced = sanitize_text(spaced_json_unc)
+    assert "corp-server" not in scrubbed_spaced
+    assert host_path_marker(scrubbed_spaced) is False
+
+    safe_samples = [
+        json.dumps({"regex": r"\d+\w+"}),
+        json.dumps({"text": r"\n\t"}),
+        r"\\.\pipe\local",
+        "http://corp-server/share/doc",
+    ]
+    for sample in safe_samples:
+        assert host_path_marker(sample) is False, sample
+        assert sanitize_text(sample) == sample, sample
+
+    actor, store = owned
+    unc_project = open_blank(actor, r"\\corp-server\share\项目")
+    archive = build_exported_package(actor, unc_project, "full")
+    texts = all_member_text(archive)
+    assert all("corp-server" not in text for text in texts)
+    assert not any(host_path_marker(text) for text in texts)
+    assert "<local-path>" in member_bytes(archive, "data/checkpoint.json").decode("utf-8")
+
+    rev = store.revision(store._project(unc_project))
+    prepared = ok(
+        exchange(
+            actor,
+            "project.transfer.report.prepare",
+            {"projectId": unc_project, "baseRevision": rev},
+        )
+    )
+    assert prepared["report"]["title"] == "<local-path>"
+    sel = stage_outbound(actor, unc_project, "report-html", ".html", "output.html")
+    ok(
+        exchange(
+            actor,
+            "project.transfer.report.export",
+            {
+                "projectId": unc_project,
+                "baseRevision": rev,
+                "selectionId": sel,
+                "reportRef": prepared["reportRef"],
+                "operationId": uid(),
+            },
+        )
+    )
+    html_text = (
+        actor.store.path.parent / ".ontolearn-host-selections" / sel / "output.html"
+    ).read_text(encoding="utf-8")
+    assert "corp-server" not in html_text
+    assert "&lt;local-path&gt;" in html_text
+    assert host_path_marker(html_text) is False
+
+
+def test_w4r2_03_and_w4r2_05_import_scans_learning_rows_and_rejects_bad_payload_json(owned):
+    from ontolearn_engine.storage import canonical as canonical_json
+
+    actor, store = owned
+    project = populated_project(actor, store)
+    opts = {**OPTIONS_OFF, "agentSessions": True}
+    base_archive = build_exported_package(actor, project, "full", options=opts)
+
+    path_to_role = {v: k for k, v in transfer_package.ROLE_PATHS.items()}
+    base_entries = {}
+    with zipfile.ZipFile(io.BytesIO(base_archive)) as zf:
+        for name in zf.namelist():
+            if name != "manifest.json":
+                base_entries[path_to_role[name]] = zf.read(name)
+
+    def repack(agent_payload_str):
+        entries = dict(base_entries)
+        entries["agent-session"] = canonical_json(
+            {
+                "learning": [
+                    {
+                        "attempt": uid(),
+                        "recordVersion": 1,
+                        "course": "c1",
+                        "task": "t1",
+                        "payload": agent_payload_str,
+                    }
+                ]
+            }
+        ).encode("utf-8")
+        manifest = transfer_package.build_manifest("full", opts, entries)
+        return transfer_package.build_archive(manifest, entries)
+
+    before_projects = store._db.execute("SELECT COUNT(*) FROM public_projects").fetchone()[0]
+    before_imports = store._db.execute(
+        "SELECT COUNT(*) FROM job_details WHERE id LIKE 'transfer-import:%'"
+    ).fetchone()[0]
+
+    # W4R2-03: crafted package carrying credential JSON in learning_rows
+    # fails deterministically with PERMISSION_DENIED.
+    secret_zip = repack('{"password":"hunter22"}')
+    sel1 = stage_inbound(
+        actor, project, secret_zip, "payload.ontolearn.zip", "zip", ".ontolearn.zip"
+    )
+    chk1 = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import.check",
+            {"projectId": project, "selectionId": sel1, "expectedKind": "full"},
+        )
+    )
+    assert chk1["status"] == "compatible"
+    imp_err1 = denied(
+        exchange(
+            actor,
+            "project.transfer.package.import",
+            {
+                "projectId": project,
+                "selectionId": sel1,
+                "checkRef": chk1["checkRef"],
+                "operationId": uid(),
+                "expectedKind": "full",
+                "packageSha256": chk1["packageSha256"],
+            },
+        ),
+        "PERMISSION_DENIED",
+    )
+    assert "hunter22" not in json.dumps(imp_err1)
+
+    # W4R2-05: non-JSON agent-session learning payload fails deterministically with INVALID_STATE.
+    bad_json_zip = repack("not-valid-json")
+    sel2 = stage_inbound(
+        actor, project, bad_json_zip, "payload.ontolearn.zip", "zip", ".ontolearn.zip"
+    )
+    chk2 = ok(
+        exchange(
+            actor,
+            "project.transfer.package.import.check",
+            {"projectId": project, "selectionId": sel2, "expectedKind": "full"},
+        )
+    )
+    assert chk2["status"] == "compatible"
+    denied(
+        exchange(
+            actor,
+            "project.transfer.package.import",
+            {
+                "projectId": project,
+                "selectionId": sel2,
+                "checkRef": chk2["checkRef"],
+                "operationId": uid(),
+                "expectedKind": "full",
+                "packageSha256": chk2["packageSha256"],
+            },
+        ),
+        "INVALID_STATE",
+    )
+
+    assert (
+        store._db.execute("SELECT COUNT(*) FROM public_projects").fetchone()[0] == before_projects
+    )
+    assert (
+        store._db.execute(
+            "SELECT COUNT(*) FROM job_details WHERE id LIKE 'transfer-import:%'"
+        ).fetchone()[0]
+        == before_imports
+    )
