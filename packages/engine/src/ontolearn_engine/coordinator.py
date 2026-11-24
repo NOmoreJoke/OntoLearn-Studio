@@ -118,7 +118,13 @@ def worker_command() -> list[str]:
 
 
 def _signal_worker(process, *, force: bool) -> None:
-    """Signal a worker process on POSIX without invoking Popen.poll() ahead of waitpid."""
+    """Signal a worker process on POSIX without invoking Popen.poll() ahead of waitpid.
+
+    Deliberately trades the tiny pre-returncode PID-reuse window (bpo-38630)
+    to avoid stealing child exit status from asyncio's child watcher, and
+    swallows all OSError subclasses so cleanup inside CancelledError cannot abort
+    job failure state transitions.
+    """
     if process.returncode is not None:
         return
     if os.name == "posix":
@@ -128,7 +134,7 @@ def _signal_worker(process, *, force: bool) -> None:
         sig = signal.SIGKILL if force else signal.SIGTERM
         try:
             os.kill(pid, sig)
-        except ProcessLookupError:
+        except OSError:
             pass
         return
     try:
@@ -136,7 +142,7 @@ def _signal_worker(process, *, force: bool) -> None:
             process.kill()
         else:
             process.terminate()
-    except ProcessLookupError:
+    except OSError:
         pass
 
 

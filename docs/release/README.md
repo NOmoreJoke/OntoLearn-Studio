@@ -16,7 +16,7 @@ T11 的版本化证据工具入口是 `scripts/release/verify-release.mjs`；它
 node scripts/release/verify-release.mjs MANIFEST.json EVIDENCE_ROOT TRUSTED_FREEZE.json
 ```
 
-TRUSTED_FREEZE.json 必须从总控冻结候选独立取得，不能从待检清单复制作为信任依据。字段为 candidateSha、prdSha256、baselineSha256、candidateFrozenAt、modelEndpoint、requestedModel、modelDecisionSha256、modelMode、evaluationSha256、returnedModel、serviceVersion、recoverySnapshotSha256、recoveryComparisonCase、migrationSnapshotSha256、migrationComparisonCases、previousAssets、expectedResults；不填 now，CLI使用当前时间。冻结时刻、模型/评估版本、恢复/双向迁移源快照、上一版双平台版本/源码/资产哈希和每项预期结果哈希都由外部pin约束，不能自填两边相同假数据绕过重验。所有 source/candidate/reviewed/build/report SHA 必须与该候选一致，报告时间在冻结之后且不在未来；任何实现、配置、依赖、验收、基线或模型变化都按原规则重验。测试模式 `synthetic` 的 CLI 总是退出 1；`evidence` 一致时退出 0，也不授予发布权限；不一致退出 1，无法读取或格式错退出 2。工具不调用网络、不启动产品、不签名或触碰凭据。
+TRUSTED_FREEZE.json 必须从总控冻结候选独立取得，不能从待检清单复制作为信任依据；其本身作为**程序性信任边界**由总控带外保管并在运行 CLI 前由操作者独立核对文件 SHA-256（`verify.mts` 编译期常量仅强制锁定 `APPROVED_BASELINE` 与 `APPROVED_MODEL` 不可被覆盖，其余内容类 pin 信任取决于经独立核验的 freeze 原件）。字段为 candidateSha、prdSha256、baselineSha256、candidateFrozenAt、modelEndpoint、requestedModel、modelDecisionSha256、modelMode、evaluationSha256、returnedModel、serviceVersion、recoverySnapshotSha256、recoveryComparisonCase、migrationSnapshotSha256、migrationComparisonCases、previousAssets、expectedResults；不填 now，CLI使用当前时间。冻结时刻、模型/评估版本、恢复/双向迁移源快照、上一版双平台版本/源码/资产哈希和每项预期结果哈希都由外部pin约束，不能自填两边相同假数据绕过重验。所有 source/candidate/reviewed/build/report SHA 必须与该候选一致，报告时间在冻结之后且不在未来；任何实现、配置、依赖、验收、基线或模型变化都按原规则重验。测试模式 `synthetic` 的 CLI 总是退出 1；`evidence` 一致时退出 0，也不授予发布权限；不一致退出 1，无法读取或格式错退出 2。工具不调用网络、不启动产品、不签名或触碰凭据。
 
 CLI要求Node 24.3及以上的24.x；实际验证版本随候选记录。入口先用纯JavaScript核参数和运行时，再在错误边界内加载唯一 `verify.mts`，不依赖根package的模块类型探测。参数数量错误只输出固定usage并退出2；不支持的运行时只输出 `UNSUPPORTED_NODE_RUNTIME` 并退出2；模块加载、清单/freeze无法读取、JSON解析/freeze schema错误或超限只输出 `MANIFEST_OR_FREEZE_UNREADABLE_OR_INVALID` 并退出2，stdout为空。无注入的正常CLI调用对以上错误严格核对整段stderr（固定一行及LF），正常synthetic或一致性结果的stderr为空。可解析JSON但manifest schema不合法仍按原合同输出 `MANIFEST_SCHEMA` 的一致性结果并退出1，不改成exit2。这里不屏蔽Node诊断：操作者额外注入的preload/运行时警告仍可见，不把全局关闭warning当错误面修复。
 
@@ -38,7 +38,7 @@ Q9批准元组来自2026-10-21总控决定，原件SHA与采用段落见 [来源
 
 ## 核验的实际边界
 
-哈希能证明提交给工具的字节一致，不能证明报告签发者、真人资格、真实操作或签名链可信。清单中的 valid/human 等声明必须由指定负责人对照原生命令原件、预约/观察证据独立核验。组件 inventory 应来自实际包和固定依赖图，不能由同一遗漏清单自证完整。工程 check 的 expected 文件应由原验收负责人冻结，actual 来自真实驱动；把两者都写成相同虚构值无法变成产品通过。此工具是必要的一致性检查，不能作为独立上线放行器。
+哈希能证明提交给工具的字节一致，不能证明报告签发者、真人资格、真实操作或签名链可信。`TRUSTED_FREEZE.json` 的来源与完整性属**程序性信任边界**，须由总控带外保管并在执行核验前独立核对其摘要（`verify.mts` 内部仅以常量硬锁 `APPROVED_BASELINE` 与 `APPROVED_MODEL`，其余内容 pin 以独立 freeze 为唯一输入）。清单中的 valid/human 等声明必须由指定负责人对照原生命令原件、预约/观察证据独立核验。组件 inventory 应来自实际包和固定依赖图，不能由同一遗漏清单自证完整。工程 check 的 expected 文件应由原验收负责人冻结，actual 来自真实驱动；把两者都写成相同虚构值无法变成产品通过。此工具是必要的一致性检查，不能作为独立上线放行器。
 
 ## 官方协议依据与唯一配置交接
 
@@ -46,7 +46,7 @@ Q9批准元组来自2026-10-21总控决定，原件SHA与采用段落见 [来源
 
 ## Wave 5 Stage 0 / Stage 1-A 已落地的发布面事实
 
-以下均为 Wave 5 在 `feature/w5-release` 上**已提交**的实现事实，不是计划。Stage 1-A 两个提交：`b84c244a`（Stage 0 发布面与忽略规则）与 `37ac2174`（Stage 1-A T11 核验器 / T10 投影 / 包内卫生门禁）。
+以下均为 Wave 5 在 `feature/w5-release` 上**已提交**的实现事实，不是计划。Stage 0 / Stage 1-A 基础提交为 `b84c244a`（Stage 0 发布面与忽略规则）与 `37ac2174`（Stage 1-A T11 核验器 / T10 投影 / 包内卫生门禁），随后在 PR `#36` 上游收敛中完成与 `origin/develop` 对齐及投影/IO/文档加固。
 
 ### `release/` 三重忽略盲区已修复并内建于标准门禁
 
@@ -78,10 +78,9 @@ Q9批准元组来自2026-10-21总控决定，原件SHA与采用段落见 [来源
 
 ### 只读投影脚本与包内卫生门禁
 
-- `scripts/release/project-t10-comparison.py`：把真实 `ontolearn-project-package-v1` ZIP **只读**投影为 `t11-comparison-v3`；不修改 `storage.py` 或 `transfer/service.py`。v1 格式本就不携带的层（`queries`/`results`/`rounds`/`rawSources`/`undo`/`derivedResults`）投影为**严格空数组**，绝不伪造；`rerunOriginalMapping`/`replaySandbox` 保持 `false`。
-- `scripts/run-w5-packaged-release-hygiene.py`：对**已打包**产品树做 fail-closed 卫生检查——恰好一个产品、6 项 `extraResources` 均**非空**、文件名级零密钥/SQLite 残留、复检 Stage 0 打包不变量（强制签名/公证、零硬编码身份、`package:dir` 与正式签名构建隔离）。**从不签名、启动、安装或公证任何东西**，只读字节并写出两份 JSON 制品。
-
-两者输出**恒定声明** `releaseAuthorized: false` 与 `installerAcceptanceClaimed: false`：目录预验包永远不能替代已签名安装器的验收证据。
+- `scripts/release/verify-release.mjs` / `scripts/release/verify.mts`：离线一致性核验器，输出**恒定声明** `releaseAuthorized: false`。
+- `scripts/run-w5-packaged-release-hygiene.py`：对**已打包**产品树做 fail-closed 卫生检查——恰好一个产品、6 项 `extraResources` 均**非空**、文件名级零密钥/SQLite 残留、复检 Stage 0 打包不变量（强制签名/公证、零硬编码身份、`package:dir` 与正式签名构建隔离）。**从不签名、启动、安装或公证任何东西**，只读字节并写出两份 JSON 制品，输出**恒定声明** `releaseAuthorized: false` 与 `installerAcceptanceClaimed: false`：目录预验包永远不能替代已签名安装器的验收证据。
+- `scripts/release/project-t10-comparison.py`：把真实 `ontolearn-project-package-v1` ZIP **只读**投影为 `t11-comparison-v3`（仅输出对齐 `comparisonSchema` 的 `t11-comparison-v3` 投影，不修改 `storage.py` 或 `transfer/service.py`）。v1 格式本就不携带的层（`queries`/`results`/`rounds`/`rawSources`/`undo`/`derivedResults`）投影为**严格空数组**，绝不伪造；`rerunOriginalMapping`/`replaySandbox` 保持 `false`。
 
 ## 取证目录与时钟
 

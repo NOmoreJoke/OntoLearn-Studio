@@ -30,8 +30,11 @@ import argparse
 import hashlib
 import io
 import json
+import os
+import stat
 import sys
 import zipfile
+import zlib
 from pathlib import Path
 
 FORMAT_VERSION = "ontolearn-project-package-v1"
@@ -51,6 +54,9 @@ ROLE_PATHS = {
     "history": "data/history.json",
 }
 CORE_ROLES = frozenset({"definitions", "assertions", "ownership", "checkpoint"})
+DEFINITION_LAYERS = frozenset(
+    {"ontology", "mapping", "constraint", "rule", "behavior", "scenario", "query", "model"}
+)
 OPTION_ROLES = {
     "agentSessions": "agent-session",
     "rawSources": "raw-source",
@@ -110,16 +116,65 @@ def _json_value(payload, code):
         raise ProjectionError(code, 2) from None
 
 
-def _read_member(archive, name, code):
+def _json_object(payload, code):
+    value = _json_value(payload, code)
+    _require(isinstance(value, dict), code)
+    return value
+
+
+def _read_package_bytes(package_path):
     try:
-        return archive.read(name)
-    except (zipfile.BadZipFile, OSError, ValueError, RuntimeError, EOFError):
+        resolved = Path(package_path).resolve(strict=True)
+        flags = os.O_RDONLY | getattr(os, "O_BINARY", 0)
+        fd = os.open(resolved, flags)
+    except OSError:
+        raise ProjectionError("PACKAGE_UNREADABLE", 2) from None
+    try:
+        st = os.fstat(fd)
+        _require(stat.S_ISREG(st.st_mode), "PACKAGE_SHAPE")
+        _require(st.st_size <= MAX_ARCHIVE, "ARCHIVE_LIMIT")
+        _require(st.st_size >= 22, "PACKAGE_SHAPE")
+        chunks = []
+        total = 0
+        while True:
+            chunk = os.read(fd, 65536)
+            if not chunk:
+                break
+            total += len(chunk)
+            _require(total <= MAX_ARCHIVE, "ARCHIVE_LIMIT")
+            chunks.append(chunk)
+        _require(total == st.st_size, "PACKAGE_UNREADABLE")
+        return b"".join(chunks)
+    except OSError:
+        raise ProjectionError("PACKAGE_UNREADABLE", 2) from None
+    finally:
+        os.close(fd)
+
+
+def _read_member(archive, name, limit, code):
+    try:
+        with archive.open(name, "r") as stream:
+            chunks = []
+            total = 0
+            while True:
+                chunk = stream.read(65536)
+                if not chunk:
+                    break
+                total += len(chunk)
+                _require(total <= limit, "ARCHIVE_LIMIT")
+                chunks.append(chunk)
+            return b"".join(chunks)
+    except KeyError:
+        raise ProjectionError("UNLISTED_OR_MISSING_FILE", 2) from None
+    except (zipfile.BadZipFile, zlib.error, OSError, ValueError, RuntimeError, EOFError):
         raise ProjectionError(code, 2) from None
 
 
 def inspect_package(raw):
     """Bounded read-only structural inspection mirroring transfer/package.py."""
-    _require(isinstance(raw, (bytes, bytearray)) and 22 <= len(raw) <= MAX_ARCHIVE, "PACKAGE_SHAPE")
+    _require(isinstance(raw, (bytes, bytearray)), "PACKAGE_SHAPE")
+    _require(len(raw) <= MAX_ARCHIVE, "ARCHIVE_LIMIT")
+    _require(len(raw) >= 22, "PACKAGE_SHAPE")
     try:
         archive = zipfile.ZipFile(io.BytesIO(bytes(raw)))
     except zipfile.BadZipFile:
@@ -127,8 +182,9 @@ def inspect_package(raw):
     with archive:
         infos = archive.infolist()
         names = [item.filename for item in infos]
-        _require(len(names) == len(set(names)), "DUPLICATE_PATH")
-        _require("manifest.json" in names, "MANIFEST_MISSING")
+        names_set = set(names)
+        _require(len(names) == len(names_set), "DUPLICATE_PATH")
+        _require("manifest.json" in names_set, "MANIFEST_MISSING")
         for item in infos:
             _require(
                 item.filename == "manifest.json" or item.filename in ROLE_PATHS.values(),
@@ -136,12 +192,25 @@ def inspect_package(raw):
             )
             _require(not item.flag_bits & 1, "UNSAFE_ENTRY")
             _require(item.file_size <= MAX_MEMBER, "ARCHIVE_LIMIT")
-        manifest_raw = _read_member(archive, "manifest.json", "MANIFEST_SHAPE")
+        manifest_raw = _read_member(archive, "manifest.json", MAX_MANIFEST, "MANIFEST_SHAPE")
         _require(len(manifest_raw) <= MAX_MANIFEST, "ARCHIVE_LIMIT")
-        manifest = _json_value(manifest_raw, "MANIFEST_SHAPE")
-        _require(isinstance(manifest, dict) and set(manifest) == MANIFEST_KEYS, "MANIFEST_SHAPE")
+        manifest = _json_object(manifest_raw, "MANIFEST_SHAPE")
+        _require(set(manifest) == MANIFEST_KEYS, "MANIFEST_SHAPE")
         _require(manifest["formatVersion"] == FORMAT_VERSION, "FORMAT_UNSUPPORTED")
         _require(manifest["kind"] in ("full", "template"), "KIND_INVALID")
+        _require(
+            all(
+                type(manifest[key]) is int and manifest[key] >= 0
+                for key in (
+                    "dbFormatVersion",
+                    "checkpointSchemaVersion",
+                    "applicationStateVersion",
+                    "minReaderVersion",
+                    "minWriterVersion",
+                )
+            ),
+            "MANIFEST_SHAPE",
+        )
         options = manifest["options"]
         _require(
             isinstance(options, dict)
@@ -159,15 +228,22 @@ def inspect_package(raw):
             )
             path, role = record["path"], record["role"]
             _require(isinstance(path, str) and ROLE_PATHS.get(role) == path, "ROLE_INVALID")
+            _require(
+                type(record["size"]) is int and record["size"] >= 0,
+                "MANIFEST_SHAPE",
+            )
+            _require(record["size"] <= MAX_MEMBER, "ARCHIVE_LIMIT")
+            _require(isinstance(record["sha256"], str), "MANIFEST_SHAPE")
             _require(role not in roles, "DUPLICATE_ROLE")
             for option, optional_role in OPTION_ROLES.items():
                 _require(role != optional_role or options[option], "UNSELECTED_CONTENT")
-            payload = _read_member(archive, path, "ARCHIVE_INVALID")
+            _require(path in names_set, "UNLISTED_OR_MISSING_FILE")
+            payload = _read_member(archive, path, MAX_MEMBER, "ARCHIVE_INVALID")
             _require(len(payload) == record["size"], "SIZE_MISMATCH")
             _require(hashlib.sha256(payload).hexdigest() == record["sha256"], "HASH_MISMATCH")
             roles.add(role)
             members[path] = payload
-        _require(set(names) == {"manifest.json"} | set(members), "UNLISTED_OR_MISSING_FILE")
+        _require(names_set == {"manifest.json"} | set(members), "UNLISTED_OR_MISSING_FILE")
         _require(manifest["kind"] != "full" or CORE_ROLES <= roles, "FULL_CORE_MISSING")
         _require(manifest["kind"] != "template" or "definitions" in roles, "TEMPLATE_DEFINITIONS")
         # The projector only handles roles the v1 exporter actually produces.
@@ -179,11 +255,9 @@ def inspect_package(raw):
 def _checkpoint(members):
     if "data/checkpoint.json" not in members:
         return {}
-    checkpoint = _json_value(members["data/checkpoint.json"], "MEMBER_SHAPE")
+    checkpoint = _json_object(members["data/checkpoint.json"], "MEMBER_SHAPE")
     _require(
-        isinstance(checkpoint, dict)
-        and set(checkpoint)
-        == {"domainRevision", "operationSequence", "metadata", "metadataVersion"}
+        set(checkpoint) == {"domainRevision", "operationSequence", "metadata", "metadataVersion"}
         and type(checkpoint["domainRevision"]) is int
         and checkpoint["domainRevision"] >= 0,
         "MEMBER_SHAPE",
@@ -193,7 +267,7 @@ def _checkpoint(members):
 
 def _facts_rows(members):
     facts = (
-        _json_value(members["data/assertions.json"], "MEMBER_SHAPE").get("facts")
+        _json_object(members["data/assertions.json"], "MEMBER_SHAPE").get("facts")
         if "data/assertions.json" in members
         else []
     )
@@ -221,7 +295,8 @@ def _ownership_rows(fact_rows, members):
     """Per-fact ownership projection; only full packages carry assertions."""
     if "data/assertions.json" not in members:
         return []
-    facts = _json_value(members["data/assertions.json"], "MEMBER_SHAPE")["facts"]
+    facts = _json_object(members["data/assertions.json"], "MEMBER_SHAPE").get("facts")
+    _require(isinstance(facts, list), "MEMBER_SHAPE")
     return [
         {
             "id": fact["id"],
@@ -238,7 +313,7 @@ def _ownership_rows(fact_rows, members):
 
 def _definitions_rows(members):
     definitions = (
-        _json_value(members["data/definitions.json"], "MEMBER_SHAPE").get("definitions")
+        _json_object(members["data/definitions.json"], "MEMBER_SHAPE").get("definitions")
         if "data/definitions.json" in members
         else []
     )
@@ -249,13 +324,15 @@ def _definitions_rows(members):
             isinstance(record, dict)
             and set(record) == {"layer", "id", "payload"}
             and isinstance(record["layer"], str)
+            and record["layer"] in DEFINITION_LAYERS
             and isinstance(record["id"], str)
+            and bool(record["id"])
             and isinstance(record["payload"], str),
             "MEMBER_SHAPE",
         )
         rows.append(
             {
-                "id": record["id"],
+                "id": f"{record['layer']}:{record['id']}",
                 "payload": {
                     "layer": record["layer"],
                     "definition": _json_value(record["payload"].encode("utf-8"), "MEMBER_SHAPE"),
@@ -267,7 +344,7 @@ def _definitions_rows(members):
 
 def _mapping_state_rows(members):
     mapping_state = (
-        _json_value(members["data/ownership.json"], "MEMBER_SHAPE").get("mappingState")
+        _json_object(members["data/ownership.json"], "MEMBER_SHAPE").get("mappingState")
         if "data/ownership.json" in members
         else {}
     )
@@ -297,7 +374,7 @@ def _mapping_state_rows(members):
 
 def _history_rows(members):
     operations = (
-        _json_value(members["data/history.json"], "MEMBER_SHAPE").get("operations")
+        _json_object(members["data/history.json"], "MEMBER_SHAPE").get("operations")
         if "data/history.json" in members
         else []
     )
@@ -306,7 +383,11 @@ def _history_rows(members):
     for record in operations:
         _require(
             isinstance(record, dict)
-            and set(record) == {"sequence", "operationId", "operationKind"},
+            and set(record) == {"sequence", "operationId", "operationKind"}
+            and type(record["sequence"]) is int
+            and record["sequence"] >= 0
+            and isinstance(record["operationId"], str)
+            and isinstance(record["operationKind"], str),
             "MEMBER_SHAPE",
         )
         rows.append(
@@ -324,7 +405,7 @@ def _history_rows(members):
 
 def _agent_session_rows(members):
     learning = (
-        _json_value(members["data/agent-session.json"], "MEMBER_SHAPE").get("learning")
+        _json_object(members["data/agent-session.json"], "MEMBER_SHAPE").get("learning")
         if "data/agent-session.json" in members
         else []
     )
@@ -333,7 +414,12 @@ def _agent_session_rows(members):
     for record in learning:
         _require(
             isinstance(record, dict)
-            and set(record) == {"attempt", "recordVersion", "course", "task", "payload"},
+            and set(record) == {"attempt", "recordVersion", "course", "task", "payload"}
+            and isinstance(record["attempt"], str)
+            and type(record["recordVersion"]) is int
+            and isinstance(record["course"], str)
+            and isinstance(record["task"], str)
+            and isinstance(record["payload"], str),
             "MEMBER_SHAPE",
         )
         rows.append(
@@ -446,7 +532,7 @@ def main(argv=None):
     try:
         project_id = args.project_id.strip()
         _require(1 <= len(project_id) <= 512, "USAGE_PROJECT_ID")
-        raw = Path(args.package).resolve(strict=True).read_bytes()
+        raw = _read_package_bytes(args.package)
         manifest, members = inspect_package(raw)
         projection = build_projection(
             manifest, members, hashlib.sha256(raw).hexdigest(), args.case, project_id

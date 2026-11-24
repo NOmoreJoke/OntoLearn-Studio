@@ -27,6 +27,7 @@ import json
 import os
 import shutil
 import subprocess
+import zipfile
 from pathlib import Path
 from uuid import uuid4
 
@@ -531,6 +532,25 @@ def test_g6_conflict_case_is_refused_for_v1_packages(owned, tmp_path):
     assert projection["queries"] == [] and projection["results"] == []
 
 
+def _rewrite_zip(source_bytes, *, overrides=None, drop=(), mutate_manifest=None):
+    overrides = dict(overrides or {})
+    drop_set = set(drop)
+    buf = io.BytesIO()
+    with zipfile.ZipFile(io.BytesIO(source_bytes), "r") as src:
+        entries = {info.filename: src.read(info.filename) for info in src.infolist()}
+    for name in drop_set:
+        entries.pop(name, None)
+    entries.update(overrides)
+    if mutate_manifest is not None:
+        manifest = json.loads(entries["manifest.json"].decode("utf-8"))
+        mutate_manifest(manifest, entries)
+        entries["manifest.json"] = json.dumps(manifest, separators=(",", ":")).encode("utf-8")
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as dst:
+        for name, data in entries.items():
+            dst.writestr(name, data)
+    return buf.getvalue()
+
+
 def test_tampered_package_is_rejected_without_output(owned, tmp_path):
     actor, store = owned
     project, _attempt = populated_project(actor, store)
@@ -543,14 +563,198 @@ def test_tampered_package_is_rejected_without_output(owned, tmp_path):
     output = tmp_path / "broken.json"
     code, stderr = run_projector(package, output)
     assert code == 2
-    assert stderr.strip() in {
-        "HASH_MISMATCH",
-        "SIZE_MISMATCH",
-        "MANIFEST_SHAPE",
-        "PACKAGE_SHAPE",
-        "ARCHIVE_INVALID",
-    }
+    assert stderr.strip() in {"HASH_MISMATCH", "ARCHIVE_INVALID"}
     assert not output.exists()
+
+    # Valid ZIP CRC32 + matching size, wrong SHA-256 against manifest -> exact HASH_MISMATCH.
+    clean_bytes = build_exported_package(actor, project, "full")
+    with zipfile.ZipFile(io.BytesIO(clean_bytes), "r") as src:
+        orig_assertions = src.read("data/assertions.json")
+    tampered_assertions = orig_assertions.replace(b"urn:x:equipment/001", b"urn:x:equipment/999")
+    assert tampered_assertions != orig_assertions
+    assert len(tampered_assertions) == len(orig_assertions)
+    hash_mismatch_pkg = tmp_path / "hash-mismatch.ontolearn.zip"
+    hash_mismatch_pkg.write_bytes(
+        _rewrite_zip(clean_bytes, overrides={"data/assertions.json": tampered_assertions})
+    )
+    hash_out = tmp_path / "hash-out.json"
+    code_hm, stderr_hm = run_projector(hash_mismatch_pkg, hash_out)
+    assert code_hm == 2
+    assert stderr_hm == "HASH_MISMATCH\n"
+    assert not hash_out.exists()
+
+
+def test_cross_layer_same_id_definitions_project_cleanly(owned, tmp_path):
+    actor, store = owned
+    project = open_blank(actor, name="跨层同名定义项目")
+    commit_manual(
+        actor,
+        store,
+        project,
+        [
+            {
+                "id": digest(["urn:x:equipment/001", "urn:x:name", '"泵站A"']),
+                "subject": "urn:x:equipment/001",
+                "predicate": "urn:x:name",
+                "object": '"泵站A"',
+            }
+        ],
+        definitions=[
+            {
+                "layer": "ontology",
+                "id": "shared-def",
+                "value": {
+                    "triples": [
+                        {
+                            "subject": "urn:x:Equipment",
+                            "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                            "object": "<http://www.w3.org/2002/07/owl#Class>",
+                        }
+                    ],
+                    "singleValuedPredicates": [],
+                    "references": [],
+                },
+            },
+            {
+                "layer": "constraint",
+                "id": "shared-def",
+                "value": {
+                    "schemaVersion": 1,
+                    "kind": "constraint",
+                    "id": "shared-def",
+                    "revision": 1,
+                    "label": "设备名称必填",
+                    "enabled": True,
+                    "targetClass": "urn:x:Equipment",
+                    "path": "urn:x:name",
+                    "template": "required",
+                    "parameters": {},
+                },
+            },
+        ],
+        base=0,
+    )
+    package = tmp_path / "cross-layer.ontolearn.zip"
+    package.write_bytes(build_exported_package(actor, project, "full", OPTIONS_OFF))
+    output = tmp_path / "cross-layer.json"
+    code, stderr = run_projector(package, output)
+    assert code == 0, stderr
+    assert stderr == ""
+    projection = json.loads(output.read_text(encoding="utf-8"))
+    def_ids = {row["id"]: row["payload"]["layer"] for row in projection["definitions"]}
+    assert def_ids == {"ontology:shared-def": "ontology", "constraint:shared-def": "constraint"}
+    assert_node_schema_accepts(output)
+
+
+def test_missing_zip_member_exits_2_with_fixed_code(owned, tmp_path):
+    actor, store = owned
+    project, _attempt = populated_project(actor, store)
+    archive_bytes = build_exported_package(actor, project, "full")
+    package = tmp_path / "missing-member.ontolearn.zip"
+    package.write_bytes(_rewrite_zip(archive_bytes, drop=("data/definitions.json",)))
+    output = tmp_path / "missing-member.json"
+    code, stderr = run_projector(package, output)
+    assert code == 2
+    assert stderr == "UNLISTED_OR_MISSING_FILE\n"
+    assert not output.exists()
+
+
+def test_non_object_json_member_bool_size_and_non_str_agent_payload_exit_2(owned, tmp_path):
+    actor, store = owned
+    project, _attempt = populated_project(actor, store)
+    base_pkg = build_exported_package(
+        actor, project, "full", {**OPTIONS_OFF, "agentSessions": True}
+    )
+
+    def set_member(member_path, raw_bytes):
+        def _mutate(manifest, entries):
+            entries[member_path] = raw_bytes
+            for item in manifest["files"]:
+                if item["path"] == member_path:
+                    item["size"] = len(raw_bytes)
+                    item["sha256"] = hashlib.sha256(raw_bytes).hexdigest()
+
+        return _mutate
+
+    # 1) Member JSON is a list instead of a dict -> MEMBER_SHAPE (not AttributeError)
+    list_pkg = tmp_path / "list-member.ontolearn.zip"
+    list_pkg.write_bytes(
+        _rewrite_zip(base_pkg, mutate_manifest=set_member("data/assertions.json", b"[]"))
+    )
+    list_out = tmp_path / "list.json"
+    code_l, stderr_l = run_projector(list_pkg, list_out)
+    assert code_l == 2
+    assert stderr_l == "MEMBER_SHAPE\n"
+    assert not list_out.exists()
+
+    # 2) agent-session record.payload is int instead of str -> MEMBER_SHAPE
+    with zipfile.ZipFile(io.BytesIO(base_pkg), "r") as src:
+        session_doc = json.loads(src.read("data/agent-session.json").decode("utf-8"))
+    session_doc["learning"][0]["payload"] = 123
+    bad_agent_bytes = json.dumps(session_doc, separators=(",", ":")).encode("utf-8")
+    agent_pkg = tmp_path / "bad-agent.ontolearn.zip"
+    agent_pkg.write_bytes(
+        _rewrite_zip(
+            base_pkg, mutate_manifest=set_member("data/agent-session.json", bad_agent_bytes)
+        )
+    )
+    agent_out = tmp_path / "agent.json"
+    code_a, stderr_a = run_projector(agent_pkg, agent_out)
+    assert code_a == 2
+    assert stderr_a == "MEMBER_SHAPE\n"
+    assert not agent_out.exists()
+
+    # 3) manifest record.size is False (bool) -> MANIFEST_SHAPE (not False == 0)
+    def set_bool_size(manifest, _entries):
+        manifest["files"][0]["size"] = False
+
+    bool_pkg = tmp_path / "bool-size.ontolearn.zip"
+    bool_pkg.write_bytes(_rewrite_zip(base_pkg, mutate_manifest=set_bool_size))
+    bool_out = tmp_path / "bool.json"
+    code_b, stderr_b = run_projector(bool_pkg, bool_out)
+    assert code_b == 2
+    assert stderr_b == "MANIFEST_SHAPE\n"
+    assert not bool_out.exists()
+
+
+def test_oversized_archive_and_decompression_bomb_rejected_with_archive_limit(owned, tmp_path):
+    actor, store = owned
+    project, _attempt = populated_project(actor, store)
+    base_pkg = build_exported_package(actor, project, "full")
+
+    # 1) Archive > 40 MiB rejected at fstat preflight before full read_bytes allocation
+    huge_file = tmp_path / "huge.ontolearn.zip"
+    with huge_file.open("wb") as fh:
+        fh.truncate(40 * 1024 * 1024 + 1)
+    huge_out = tmp_path / "huge.json"
+    code_h, stderr_h = run_projector(huge_file, huge_out)
+    assert code_h == 2
+    assert stderr_h == "ARCHIVE_LIMIT\n"
+    assert not huge_out.exists()
+
+    # 2) Deflated member > 8 MiB rejected with ARCHIVE_LIMIT
+    bomb_bytes = b"\x00" * (8 * 1024 * 1024 + 1)
+    bomb_pkg = tmp_path / "bomb.ontolearn.zip"
+    bomb_pkg.write_bytes(_rewrite_zip(base_pkg, overrides={"data/assertions.json": bomb_bytes}))
+    bomb_out = tmp_path / "bomb.json"
+    code_m, stderr_m = run_projector(bomb_pkg, bomb_out)
+    assert code_m == 2
+    assert stderr_m == "ARCHIVE_LIMIT\n"
+    assert not bomb_out.exists()
+
+    # 3) Oversized manifest > 64 KiB caught by streaming _read_member limit
+    huge_manifest = tmp_path / "huge-manifest.ontolearn.zip"
+    pad = b" " * (64 * 1024 + 32)
+    with zipfile.ZipFile(io.BytesIO(base_pkg), "r") as src:
+        orig_manifest = src.read("manifest.json")
+    huge_manifest.write_bytes(
+        _rewrite_zip(base_pkg, overrides={"manifest.json": orig_manifest + pad})
+    )
+    manifest_out = tmp_path / "manifest.json"
+    code_mf, stderr_mf = run_projector(huge_manifest, manifest_out)
+    assert code_mf == 2
+    assert stderr_mf == "ARCHIVE_LIMIT\n"
+    assert not manifest_out.exists()
 
 
 def test_projector_requires_arguments():

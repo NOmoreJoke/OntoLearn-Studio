@@ -252,6 +252,15 @@ def test_signal_worker_avoids_popen_poll_race_on_posix(monkeypatch, caplog):
     coordinator_module._signal_worker(SimpleNamespace(returncode=None, pid=None), force=False)
     assert kill_calls == []
 
+    # PermissionError from os.kill must be swallowed rather than escaping cleanup.
+    def deny_kill(_pid, _sig):
+        raise PermissionError("EPERM")
+
+    monkeypatch.setattr(coordinator_module, "os", SimpleNamespace(name="posix", kill=deny_kill))
+    coordinator_module._signal_worker(SimpleNamespace(returncode=None, pid=12345), force=False)
+    coordinator_module._signal_worker(SimpleNamespace(returncode=None, pid=12345), force=True)
+    monkeypatch.setattr(coordinator_module, "os", SimpleNamespace(name="posix", kill=tracking_kill))
+
     # 1) Exited unreaped child (EOF on closed stdout pipe guarantees exit before signalling):
     # signalling via os.kill must not call Popen.poll or reap the child's real exit status 76.
     zombie = subprocess.Popen(
@@ -307,23 +316,25 @@ def test_signal_worker_non_posix_dispatches_terminate_and_kill(monkeypatch):
     events = []
 
     class DummyProcess:
-        def __init__(self, returncode=None, *, raise_lookup=False):
+        def __init__(self, returncode=None, *, raise_exc=None):
             self.returncode = returncode
-            self.raise_lookup = raise_lookup
+            self.raise_exc = raise_exc
 
         def terminate(self):
             events.append("terminate")
-            if self.raise_lookup:
-                raise ProcessLookupError
+            if self.raise_exc is not None:
+                raise self.raise_exc
 
         def kill(self):
             events.append("kill")
-            if self.raise_lookup:
-                raise ProcessLookupError
+            if self.raise_exc is not None:
+                raise self.raise_exc
 
     coordinator_module._signal_worker(DummyProcess(returncode=0), force=True)
     coordinator_module._signal_worker(DummyProcess(), force=False)
     coordinator_module._signal_worker(DummyProcess(), force=True)
-    coordinator_module._signal_worker(DummyProcess(raise_lookup=True), force=False)
-    coordinator_module._signal_worker(DummyProcess(raise_lookup=True), force=True)
-    assert events == ["terminate", "kill", "terminate", "kill"]
+    coordinator_module._signal_worker(DummyProcess(raise_exc=ProcessLookupError()), force=False)
+    coordinator_module._signal_worker(DummyProcess(raise_exc=ProcessLookupError()), force=True)
+    coordinator_module._signal_worker(DummyProcess(raise_exc=PermissionError("EPERM")), force=False)
+    coordinator_module._signal_worker(DummyProcess(raise_exc=PermissionError("EPERM")), force=True)
+    assert events == ["terminate", "kill", "terminate", "kill", "terminate", "kill"]

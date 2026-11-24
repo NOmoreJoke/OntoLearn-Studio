@@ -32,8 +32,15 @@ function fixture(bytes: Buffer | string = '{"ok":true}') {
   return { root, path, file: { path: 'data', sha256: digest(bytes) } }
 }
 function closed() {
-  const fd = vi.mocked(fs.openSync).mock.results.find((r) => r.type === 'return')?.value as number
-  expect(() => fs.fstatSync(fd)).toThrow()
+  const fds = vi
+    .mocked(fs.openSync)
+    .mock.results.flatMap((r) => (r.type === 'return' ? [r.value as number] : []))
+  expect(fds.length).toBeGreaterThan(0)
+  expect(fs.closeSync).toHaveBeenCalledTimes(fds.length)
+  for (const fd of fds) {
+    expect(typeof fd).toBe('number')
+    expect(() => fs.fstatSync(fd)).toThrow()
+  }
 }
 describe('bounded release IO with small deterministic files', () => {
   it('reads and hashes complete bytes and closes its fd', () => {
@@ -92,12 +99,26 @@ describe('bounded release IO with small deterministic files', () => {
     expect(() => readBound(inside.root, { path: 'link', sha256: outside.file.sha256 })).toThrow(
       'UNSAFE_PATH',
     )
+    if (process.platform === 'win32') {
+      // Windows lacks POSIX O_NOFOLLOW; depth defense relies on hash + realpath verification.
+      vi.mocked(fs.openSync).mockImplementationOnce((...args: Parameters<typeof fs.openSync>) => {
+        fs.unlinkSync(inside.path)
+        fs.symlinkSync(outside.path, inside.path)
+        return realOpen(...args)
+      })
+      expect(() => readBound(inside.root, inside.file)).toThrow('FILE_HASH')
+      closed()
+      return
+    }
+    const sameHashOutside = fixture('inside')
     vi.mocked(fs.openSync).mockImplementationOnce((...args: Parameters<typeof fs.openSync>) => {
       fs.unlinkSync(inside.path)
-      fs.symlinkSync(outside.path, inside.path)
+      fs.symlinkSync(sameHashOutside.path, inside.path)
       return realOpen(...args)
     })
-    expect(() => readBound(inside.root, inside.file)).toThrow()
+    expect(() => readBound(inside.root, inside.file)).toThrow(/ELOOP/)
+    expect(fs.openSync).toHaveBeenCalledTimes(1)
+    expect(vi.mocked(fs.openSync).mock.results[0].type).toBe('throw')
   })
   it('checks large-file hash and PE/DMG structures using the opened fd', () => {
     const pe = Buffer.alloc(70)

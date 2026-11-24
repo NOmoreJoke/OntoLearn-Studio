@@ -14,7 +14,7 @@ A/B 只决定样本取得和标定顺序。两者都保留原 57 项 P0、CSV/XL
 ## 已知依据及边界
 
 - PRD 10.2/Q5 明确要求补充数据源类型、文件规模、记录数、三元组规模、参考设备及可测试的响应时间、内存和磁盘指标；当前没有已采用数值。
-- 已批准的 T09 固定输入为提交 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380`，manifest `prd-v0.6-learning-1` / SHA-256 `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`。G-base 为 3 台设备、3 条告警；G-map-empty 的 CSV 为 2 条数据；E.5 为 4 轮、每轮 4 事件，固定两种产能及完整工单集合；迁移学习输入包含另组设备的约束修复、断言/推导辨别和 Agent 完整代做反例。它们提供正确性 oracle，不提供企业容量结论。
+- 已批准的 T09 固定输入为提交 `873c8c051b9870aa12fc7e1dbbd3e0c358e7c380`（2026-10-22 历史快照，Wave 5 已统一采用仓内 18 文件固定基线 `0588f5804f0b13c55ccece009b444cfd3efcc572e53067703ca8d9224f4cf8ad`），manifest `prd-v0.6-learning-1` / SHA-256 `aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e`。G-base 为 3 台设备、3 条告警；G-map-empty 的 CSV 为 2 条数据；E.5 为 4 轮、每轮 4 事件，固定两种产能及完整工单集合；迁移学习输入包含另组设备的约束修复、断言/推导辨别和 Agent 完整代做反例。它们提供正确性 oracle，不提供企业容量结论。
 - G.6 还要求手工事实、映射事实、人工冲突及来源/所有权完整迁移，并实际继续编辑、查询、重关联重跑和撤销。T11 的比较 fixture 是合成核验器输入，不能当真实产品迁移、性能样本或企业数据包。
 - 现有 T11 记录为核验器 65 项、全量 TS 695 项/Python 1052 项等检查结果；未取得产品在目标机上的响应时间、峰值内存或磁盘测量。测试数量与测试日志耗时不能转成产品性能。
 - 首发已定 Windows 11 x64 和 macOS 15 Apple Silicon arm64；尚无经确认可用于 Q5 的具体 CPU、RAM、磁盘及设备实测。开发机/CI 不能替代这两类目标参考设备。
@@ -43,4 +43,4 @@ A/B 只决定样本取得和标定顺序。两者都保留原 57 项 P0、CSV/XL
 
 将实测结果、异常和未覆盖范围交用户审定具体容量及各操作等待/RAM/磁盘通过线；结果超预算时由 owner 优化后复测或提交明确需求变更，不能把失败测值自动定为通过线。审定后仍须用冻结门槛做正式验收并保留原 P0/边界/恢复要求。首发支持声明只覆盖真正验过的样本条件与设备；超出已验证范围时明确提示未验证并引导提供脱敏样本再评估。若新增硬限制会改变原需求，另行采用，不能借工程保护值静默拒绝原 P0 必需用例。
 
-依据：[PRD 10.2、Q5、附录 E/G](../prd/PRD-本体学习与落地Agent工作台.md)、[固定输入核验记录](../reviews/T11/approved-fixed-baseline-probe.json)、[已有检查记录](../reviews/T11/verification.json)、[迁移比较规范](migration-recovery.md)、[总控决定](/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/decisions.md)。本次只核对本地原文及已批准固定输入，未执行性能测量、桌面操作或模型审查恢复。
+依据：[PRD 10.2、Q5、附录 E/G](../prd/PRD-本体学习与落地Agent工作台.md)、[固定输入核验记录](../reviews/T11/approved-fixed-baseline-probe.json)、[已有检查记录](../reviews/T11/verification.json)、[迁移比较规范](migration-recovery.md)、总控决定记录（仓外 `iteration-control`）。本次只核对本地原文及已批准固定输入，未执行性能测量、桌面操作或模型审查恢复。
