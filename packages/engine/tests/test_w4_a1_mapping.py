@@ -518,6 +518,162 @@ def test_draft_generation_cas_and_idempotent_save(owned):
     assert reading["generation"] == 1 and reading["draft"] == DRAFT
 
 
+def test_mapping_draft_compatible_with_management_copy_current_and_stale_revision(owned):
+    """W4-IMP-01/02 regression: mapping/* drafts work with copy-current and rebase across revs."""
+    actor, store = owned
+    project = open_blank(actor)
+    rev0 = store.revision(store._project(project))
+    assert rev0 == 0
+    ok(
+        exchange(
+            actor,
+            "project.mapping.draft.save",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "expectedGeneration": 0,
+                "baseRevision": 0,
+                "draft": DRAFT,
+            },
+        )
+    )
+
+    def copy_current(source_project, name):
+        cp = store.project_checkpoint(store._project(source_project))
+        mgmt = ok(exchange(actor, "project.management.read", {"projectId": source_project}))
+        action = {"kind": "copy-current", "name": name}
+        viewed = ok(
+            exchange(
+                actor,
+                "project.management.preview",
+                {
+                    "projectId": source_project,
+                    "action": action,
+                    "expectedCheckpointRef": digest(cp),
+                    "expectedLifecycleVersion": mgmt["lifecycle"]["version"],
+                },
+            )
+        )
+        confirmed = ok(
+            exchange(
+                actor,
+                "project.management.confirm",
+                {
+                    "projectId": source_project,
+                    "previewRef": viewed["previewRef"],
+                    "documentHash": viewed["documentHash"],
+                },
+            )
+        )
+        return ok(
+            exchange(
+                actor,
+                "project.management.apply",
+                {
+                    "projectId": source_project,
+                    "operationId": uid(),
+                    "confirmationRef": confirmed["confirmationRef"],
+                    "documentHash": viewed["documentHash"],
+                },
+            )
+        )
+
+    applied = copy_current(project, "Copied With Mapping Draft")
+    copied_id = applied["targetProjectId"]
+    ok(exchange(actor, "project.open", {"projectId": copied_id}))
+    copied_read = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.read",
+            {"projectId": copied_id, "mappingId": "equip-map"},
+        )
+    )
+    assert copied_read["generation"] == 1
+    assert copied_read["baseRevision"] == 1
+    assert copied_read["draft"] == DRAFT
+    ok(exchange(actor, "project.open", {"projectId": project}))
+
+    # Advance source project revision (0 -> 1) so the saved mapping draft stays bound to rev 0.
+    mapping_roundtrip(actor, store, project, b"equipment_id,equipment_name\n001,Pump\n", DRAFT)
+
+    stale_read = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.read",
+            {"projectId": project, "mappingId": "equip-map"},
+        )
+    )
+    assert stale_read["generation"] == 1
+    assert stale_read["baseRevision"] == 0
+    assert stale_read["draft"] == DRAFT
+
+    # copy-current succeeds with a stale mapping/* draft and rebinds the copy to rev 1.
+    applied2 = copy_current(project, "Copied With Stale Mapping Draft")
+    ok(exchange(actor, "project.open", {"projectId": applied2["targetProjectId"]}))
+    copied2_read = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.read",
+            {"projectId": applied2["targetProjectId"], "mappingId": "equip-map"},
+        )
+    )
+    assert copied2_read["generation"] == 1
+    assert copied2_read["baseRevision"] == 1
+    assert copied2_read["draft"] == DRAFT
+    ok(exchange(actor, "project.open", {"projectId": project}))
+
+    # Re-saving stale draft at current rev=1 advances generation=2 and rebinds baseRevision=1.
+    resaved = ok(
+        exchange(
+            actor,
+            "project.mapping.draft.save",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "expectedGeneration": 1,
+                "baseRevision": 1,
+                "draft": DRAFT,
+            },
+        )
+    )
+    assert resaved["generation"] == 2 and resaved["baseRevision"] == 1
+
+    # Negative: malformed mapping/* draft editor or invalid payload still fails management preview.
+    for bad_editor, bad_content in (
+        ("mapping/bad/id", DRAFT),
+        ("mapping/equip-map", {"identity": "other"}),
+    ):
+        bad_store_project = open_blank(actor, "坏草稿项目")
+        store.apply_application(
+            bad_store_project,
+            uid(),
+            {
+                "type": "draft.save",
+                "editor": bad_editor,
+                "expectedGeneration": 0,
+                "boundDomainRevision": 0,
+                "content": bad_content,
+            },
+            actor=uid(),
+            permission="write",
+        )
+        bad_cp = store.project_checkpoint(store._project(bad_store_project))
+        bad_mgmt = ok(exchange(actor, "project.management.read", {"projectId": bad_store_project}))
+        denied(
+            exchange(
+                actor,
+                "project.management.preview",
+                {
+                    "projectId": bad_store_project,
+                    "action": {"kind": "copy-current", "name": "should-fail"},
+                    "expectedCheckpointRef": digest(bad_cp),
+                    "expectedLifecycleVersion": bad_mgmt["lifecycle"]["version"],
+                },
+            ),
+            "INVALID_STATE",
+        )
+
+
 # ---------------------------------------------------------------------------
 # Preview issues/conflicts, prepare rejections
 # ---------------------------------------------------------------------------
