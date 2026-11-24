@@ -19,6 +19,8 @@ import {
   matchesOrdinaryResponse,
   type OrdinaryResponseBinding,
   matchesBusiness3Response,
+  isWave4ProjectMethod,
+  type Wave4ProjectMethod,
   validateBusiness3,
   validateStartupFailure,
   validateV2,
@@ -343,6 +345,7 @@ export abstract class MainlineReplyReceiver {
   abstract diagnostic(): Readonly<MainlineReplyDiagnostic>
 }
 export type MainlineMethod =
+  | Wave4ProjectMethod
   | 'project.catalog'
   | 'project.create'
   | 'project.example.create'
@@ -384,6 +387,9 @@ export abstract class MainlineProjectTransport {
   abstract get engineSessionId(): string | undefined
   abstract get selected(): ProjectView | undefined
   abstract request(method: MainlineMethod, params: Record<string, unknown>): Promise<unknown>
+  requestRunCheckpoint(params: Record<string, unknown>): Promise<unknown> {
+    return this.request('project.run.before_commit', params)
+  }
   abstract acceptProject(project: ProjectView): void
 }
 interface Pending {
@@ -705,6 +711,9 @@ export class EngineSupervisor {
   #profile: EngineProfile
   get profile(): EngineProfile {
     return this.#profile
+  }
+  get dataPath(): string | undefined {
+    return this.#options.dataPath
   }
   #location: EngineLocation
   #options: SupervisorOptions
@@ -1264,10 +1273,14 @@ export class EngineSupervisor {
       request(method: MainlineMethod, params: Record<string, unknown>): Promise<unknown> {
         return this.#request(method, params)
       }
+      override requestRunCheckpoint(params: Record<string, unknown>): Promise<unknown> {
+        return this.#request('project.run.before_commit', params, undefined, true)
+      }
       #request(
         method: MainlineMethod,
         params: Record<string, unknown>,
         recoveryCurrent?: () => void,
+        intermediateCheckpoint = false,
       ): Promise<unknown> {
         return this.supervisor.#operation(async () => {
           recoveryCurrent?.()
@@ -1275,6 +1288,7 @@ export class EngineSupervisor {
           recoveryCurrent?.()
           const session = this.supervisor.#mainlineReady(record)
           if (
+            !isWave4ProjectMethod(method) &&
             ![
               'project.catalog',
               'project.create',
@@ -1317,7 +1331,8 @@ export class EngineSupervisor {
             budget.beforeArguments(params)
             if (!validateBusiness3('params_' + method, params)) throw invalid()
             if (
-              (method === 'project.read' ||
+              (isWave4ProjectMethod(method) ||
+                method === 'project.read' ||
                 method === 'project.draft.save' ||
                 method === 'project.ownership.detail' ||
                 method === 'project.management.read' ||
@@ -1384,7 +1399,10 @@ export class EngineSupervisor {
               this.supervisor.#selectMainlineProject(record, selected)
               this.supervisor.#mainlineProjects.set(selected, { record, session })
             }
-            budget.handoff(value)
+            // Only the final run reply is offered to the renderer. The already
+            // reconciled checkpoint stays local; a definitive rejection of
+            // the run cannot strand a renderer receipt for this private DTO.
+            if (!intermediateCheckpoint) budget.handoff(value)
             return value
           } finally {
             finish()

@@ -461,15 +461,23 @@ def test_observations_never_touch_completion_or_assistance(owned):
 # --- real ontology-model checks ---------------------------------------------
 
 
-def test_unwired_tasks_stay_pending_dependency(owned):
+def test_unknown_task_check_is_rejected_without_new_attempt(owned):
     actor, store = owned
     project = seeded(actor, store)
-    result = check_task(actor, project, "mapping")
-    assert result["checkStatus"] == "pending-dependency"
-    assert result["operationComplete"] is False
-    assert any("等待批准的实际工具接入" in repair for repair in result["feedback"]["repairs"])
-    payload, _row = attempt_payload(store, project, result["attemptId"])
-    assert payload["checkStatus"] == "pending-dependency"
+    before = read_state(actor, project)
+    denied(
+        exchange(
+            actor,
+            "project.learning.task.check",
+            {
+                "projectId": project,
+                "operationId": uid(),
+                "taskId": "unknown-task",
+            },
+        ),
+        "INVALID_REQUEST",
+    )
+    assert read_state(actor, project) == before
 
 
 @pytest.mark.parametrize("person_class", [OWL_CLASS, RDFS_CLASS])

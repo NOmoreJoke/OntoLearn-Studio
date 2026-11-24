@@ -1,0 +1,530 @@
+{
+  "scope": "T07 private internal Round and proposed coordinator projection. Synthetic domain ports; not approved public schema or formal scenario execution.",
+  "sourceImplementation": "791a7b2b9ea831105e3aa7ef2e95f80001942ba5",
+  "definitionDigest": "11503fb2dc1da2d0a23b791bf70daa3fb7b418c108622a5c00c444d28b35e6e6",
+  "internalRound": {
+    "checkpoint": {
+      "definition_digest": "11503fb2dc1da2d0a23b791bf70daa3fb7b418c108622a5c00c444d28b35e6e6",
+      "round": 1,
+      "state": {
+        "orders": [
+          {
+            "id": "W001",
+            "event_id": "E001",
+            "created_round": 1,
+            "sequence": 1,
+            "status": "completed"
+          },
+          {
+            "id": "W002",
+            "event_id": "E002",
+            "created_round": 1,
+            "sequence": 2,
+            "status": "completed"
+          },
+          {
+            "id": "W003",
+            "event_id": "E003",
+            "created_round": 1,
+            "sequence": 3,
+            "status": "completed"
+          },
+          {
+            "id": "W004",
+            "event_id": "E004",
+            "created_round": 1,
+            "sequence": 4,
+            "status": "pending"
+          }
+        ],
+        "alerts": [],
+        "assertions": "{}",
+        "order_sequence": 4,
+        "created_orders": [
+          ["E001", "W001", 1],
+          ["E002", "W002", 2],
+          ["E003", "W003", 3],
+          ["E004", "W004", 4]
+        ]
+      },
+      "events": [
+        {
+          "id": "E001",
+          "round": 1,
+          "sequence": 0,
+          "payload": "{}"
+        },
+        {
+          "id": "E002",
+          "round": 1,
+          "sequence": 1,
+          "payload": "{}"
+        },
+        {
+          "id": "E003",
+          "round": 1,
+          "sequence": 2,
+          "payload": "{}"
+        },
+        {
+          "id": "E004",
+          "round": 1,
+          "sequence": 3,
+          "payload": "{}"
+        },
+        {
+          "id": "E005",
+          "round": 2,
+          "sequence": 4,
+          "payload": "{}"
+        },
+        {
+          "id": "E006",
+          "round": 2,
+          "sequence": 5,
+          "payload": "{}"
+        },
+        {
+          "id": "E007",
+          "round": 2,
+          "sequence": 6,
+          "payload": "{}"
+        },
+        {
+          "id": "E008",
+          "round": 2,
+          "sequence": 7,
+          "payload": "{}"
+        },
+        {
+          "id": "E009",
+          "round": 3,
+          "sequence": 8,
+          "payload": "{}"
+        },
+        {
+          "id": "E010",
+          "round": 3,
+          "sequence": 9,
+          "payload": "{}"
+        },
+        {
+          "id": "E011",
+          "round": 3,
+          "sequence": 10,
+          "payload": "{}"
+        },
+        {
+          "id": "E012",
+          "round": 3,
+          "sequence": 11,
+          "payload": "{}"
+        },
+        {
+          "id": "E013",
+          "round": 4,
+          "sequence": 12,
+          "payload": "{}"
+        },
+        {
+          "id": "E014",
+          "round": 4,
+          "sequence": 13,
+          "payload": "{}"
+        },
+        {
+          "id": "E015",
+          "round": 4,
+          "sequence": 14,
+          "payload": "{}"
+        },
+        {
+          "id": "E016",
+          "round": 4,
+          "sequence": 15,
+          "payload": "{}"
+        }
+      ],
+      "consumed": ["E001", "E002", "E003", "E004"],
+      "completed": ["W001", "W002", "W003"]
+    },
+    "input_events": ["E001", "E002", "E003", "E004"],
+    "created": ["W001", "W002", "W003", "W004"],
+    "resource_completed": ["W001", "W002", "W003"],
+    "backlog": ["W004"],
+    "metrics": {
+      "backlog": 1,
+      "completed": 3,
+      "open_high_alerts": 0
+    },
+    "before_inference": {
+      "input_state": {
+        "orders": [],
+        "alerts": [],
+        "assertions": "{}",
+        "order_sequence": 0,
+        "created_orders": []
+      },
+      "rule_version": "R1",
+      "snapshot": "synthetic-inference-probe",
+      "context": {
+        "round": 1,
+        "phase": "before"
+      }
+    },
+    "end_inference": {
+      "input_state": {
+        "orders": [
+          {
+            "id": "W001",
+            "event_id": "E001",
+            "created_round": 1,
+            "sequence": 1,
+            "status": "completed"
+          },
+          {
+            "id": "W002",
+            "event_id": "E002",
+            "created_round": 1,
+            "sequence": 2,
+            "status": "completed"
+          },
+          {
+            "id": "W003",
+            "event_id": "E003",
+            "created_round": 1,
+            "sequence": 3,
+            "status": "completed"
+          },
+          {
+            "id": "W004",
+            "event_id": "E004",
+            "created_round": 1,
+            "sequence": 4,
+            "status": "pending"
+          }
+        ],
+        "alerts": [],
+        "assertions": "{}",
+        "order_sequence": 4,
+        "created_orders": [
+          ["E001", "W001", 1],
+          ["E002", "W002", 2],
+          ["E003", "W003", 3],
+          ["E004", "W004", 4]
+        ]
+      },
+      "rule_version": "R1",
+      "snapshot": "synthetic-inference-probe",
+      "context": {
+        "round": 1,
+        "phase": "end"
+      }
+    },
+    "trace": [
+      ["E001", "synthetic-B", 1],
+      ["E002", "synthetic-B", 1],
+      ["E003", "synthetic-B", 1],
+      ["E004", "synthetic-B", 1]
+    ],
+    "frozen_plan": "{}"
+  },
+  "proposedCoordinatorState": {
+    "inputEvents": [
+      "E001",
+      "E002",
+      "E003",
+      "E004",
+      "E005",
+      "E006",
+      "E007",
+      "E008",
+      "E009",
+      "E010",
+      "E011",
+      "E012",
+      "E013",
+      "E014",
+      "E015",
+      "E016"
+    ],
+    "consumedEvents": ["E001", "E002", "E003", "E004"],
+    "pendingEvents": [
+      "E005",
+      "E006",
+      "E007",
+      "E008",
+      "E009",
+      "E010",
+      "E011",
+      "E012",
+      "E013",
+      "E014",
+      "E015",
+      "E016"
+    ],
+    "scenarioRound": {
+      "checkpoint": {
+        "definition_digest": "11503fb2dc1da2d0a23b791bf70daa3fb7b418c108622a5c00c444d28b35e6e6",
+        "round": 1,
+        "state": {
+          "orders": [
+            {
+              "id": "W001",
+              "event_id": "E001",
+              "created_round": 1,
+              "sequence": 1,
+              "status": "completed"
+            },
+            {
+              "id": "W002",
+              "event_id": "E002",
+              "created_round": 1,
+              "sequence": 2,
+              "status": "completed"
+            },
+            {
+              "id": "W003",
+              "event_id": "E003",
+              "created_round": 1,
+              "sequence": 3,
+              "status": "completed"
+            },
+            {
+              "id": "W004",
+              "event_id": "E004",
+              "created_round": 1,
+              "sequence": 4,
+              "status": "pending"
+            }
+          ],
+          "alerts": [],
+          "assertions": "{}",
+          "order_sequence": 4,
+          "created_orders": [
+            ["E001", "W001", 1],
+            ["E002", "W002", 2],
+            ["E003", "W003", 3],
+            ["E004", "W004", 4]
+          ]
+        },
+        "events": [
+          {
+            "id": "E001",
+            "round": 1,
+            "sequence": 0,
+            "payload": "{}"
+          },
+          {
+            "id": "E002",
+            "round": 1,
+            "sequence": 1,
+            "payload": "{}"
+          },
+          {
+            "id": "E003",
+            "round": 1,
+            "sequence": 2,
+            "payload": "{}"
+          },
+          {
+            "id": "E004",
+            "round": 1,
+            "sequence": 3,
+            "payload": "{}"
+          },
+          {
+            "id": "E005",
+            "round": 2,
+            "sequence": 4,
+            "payload": "{}"
+          },
+          {
+            "id": "E006",
+            "round": 2,
+            "sequence": 5,
+            "payload": "{}"
+          },
+          {
+            "id": "E007",
+            "round": 2,
+            "sequence": 6,
+            "payload": "{}"
+          },
+          {
+            "id": "E008",
+            "round": 2,
+            "sequence": 7,
+            "payload": "{}"
+          },
+          {
+            "id": "E009",
+            "round": 3,
+            "sequence": 8,
+            "payload": "{}"
+          },
+          {
+            "id": "E010",
+            "round": 3,
+            "sequence": 9,
+            "payload": "{}"
+          },
+          {
+            "id": "E011",
+            "round": 3,
+            "sequence": 10,
+            "payload": "{}"
+          },
+          {
+            "id": "E012",
+            "round": 3,
+            "sequence": 11,
+            "payload": "{}"
+          },
+          {
+            "id": "E013",
+            "round": 4,
+            "sequence": 12,
+            "payload": "{}"
+          },
+          {
+            "id": "E014",
+            "round": 4,
+            "sequence": 13,
+            "payload": "{}"
+          },
+          {
+            "id": "E015",
+            "round": 4,
+            "sequence": 14,
+            "payload": "{}"
+          },
+          {
+            "id": "E016",
+            "round": 4,
+            "sequence": 15,
+            "payload": "{}"
+          }
+        ],
+        "consumed": ["E001", "E002", "E003", "E004"],
+        "completed": ["W001", "W002", "W003"]
+      },
+      "input_events": ["E001", "E002", "E003", "E004"],
+      "created": ["W001", "W002", "W003", "W004"],
+      "resource_completed": ["W001", "W002", "W003"],
+      "backlog": ["W004"],
+      "metrics": {
+        "backlog": 1,
+        "completed": 3,
+        "open_high_alerts": 0
+      },
+      "before_inference": {
+        "input_state": {
+          "orders": [],
+          "alerts": [],
+          "assertions": "{}",
+          "order_sequence": 0,
+          "created_orders": []
+        },
+        "rule_version": "R1",
+        "snapshot": "synthetic-inference-probe",
+        "context": {
+          "round": 1,
+          "phase": "before"
+        }
+      },
+      "end_inference": {
+        "input_state": {
+          "orders": [
+            {
+              "id": "W001",
+              "event_id": "E001",
+              "created_round": 1,
+              "sequence": 1,
+              "status": "completed"
+            },
+            {
+              "id": "W002",
+              "event_id": "E002",
+              "created_round": 1,
+              "sequence": 2,
+              "status": "completed"
+            },
+            {
+              "id": "W003",
+              "event_id": "E003",
+              "created_round": 1,
+              "sequence": 3,
+              "status": "completed"
+            },
+            {
+              "id": "W004",
+              "event_id": "E004",
+              "created_round": 1,
+              "sequence": 4,
+              "status": "pending"
+            }
+          ],
+          "alerts": [],
+          "assertions": "{}",
+          "order_sequence": 4,
+          "created_orders": [
+            ["E001", "W001", 1],
+            ["E002", "W002", 2],
+            ["E003", "W003", 3],
+            ["E004", "W004", 4]
+          ]
+        },
+        "rule_version": "R1",
+        "snapshot": "synthetic-inference-probe",
+        "context": {
+          "round": 1,
+          "phase": "end"
+        }
+      },
+      "trace": [
+        ["E001", "synthetic-B", 1],
+        ["E002", "synthetic-B", 1],
+        ["E003", "synthetic-B", 1],
+        ["E004", "synthetic-B", 1]
+      ],
+      "frozen_plan": "{}"
+    }
+  },
+  "eventScopeExplanation": {
+    "pendingEvents": "all known unconsumed event IDs, including configured future rounds; final run summary must not hide these",
+    "scheduledFutureEvents": [
+      "E005",
+      "E006",
+      "E007",
+      "E008",
+      "E009",
+      "E010",
+      "E011",
+      "E012",
+      "E013",
+      "E014",
+      "E015",
+      "E016"
+    ],
+    "generatedPendingEvents": [],
+    "t09Comparison": "T09 expected.pendingEvents is the injected queue and excludes scheduledFutureEvents; compare corresponding ranges explicitly, never compare this run-level union to that subset."
+  },
+  "acknowledgmentIdentityProposal": {
+    "projectId": "project-1",
+    "inputDigest": "11503fb2dc1da2d0a23b791bf70daa3fb7b418c108622a5c00c444d28b35e6e6",
+    "jobId": "00000000-0000-4000-8000-000000000071",
+    "runId": "00000000-0000-4000-8000-000000000072",
+    "expectedRound": 1,
+    "operationId": "00000000-0000-4000-8000-000000000073",
+    "stateDigest": "b36731e6e46aa1451b218850d27fb894ff834debd2702704cadc31992c29a5f7"
+  },
+  "unverified": [
+    "T05 real inference",
+    "T06 real frozen behavior execution",
+    "formal I04 registration/atomic job progress/terminal",
+    "public schema approval",
+    "complete E5 domain state"
+  ],
+  "exampleIdentityWarning": "UUIDs above are illustrative allocation examples, not an actual persisted Job/Run/operation."
+}

@@ -38,7 +38,7 @@ const adoptedRoot = join(
 )
 const manifestHash = 'a2200250856474ebbae669151891d5495e7fcd042e8f8f0a77ccbb0553b521ee'
 const inputDigest = '52952b637b02ba283d47a9e0c34a1691c1d850b94bb9b366a9863a55507c435e'
-const entrypointHash = 'cf1e2152d0583c9677f3916593d9da19ca5271a4e94737b476f1e08c44470005'
+const entrypointHash = 'fa06c28ee67f919767e03fdf7e230d7a90703a1db73670208991915647ca7f32'
 const unavailable = {
   ok: false,
   error: {

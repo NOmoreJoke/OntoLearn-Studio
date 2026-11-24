@@ -597,7 +597,33 @@
         "project.quality.prepare",
         "project.ontology.export",
         "project.ontology.import.check",
-        "project.agent.before_commit"
+        "project.agent.before_commit",
+        "project.mapping.source.select",
+        "project.mapping.preview",
+        "project.mapping.prepare",
+        "project.mapping.draft.read",
+        "project.mapping.draft.save",
+        "project.behavior.run",
+        "project.behavior.read",
+        "project.behavior.cancel",
+        "project.scenario.create",
+        "project.scenario.copy",
+        "project.scenario.list",
+        "project.scenario.read",
+        "project.scenario.run.read",
+        "project.scenario.run",
+        "project.scenario.cancel",
+        "project.scenario.resume",
+        "project.scenario.compare",
+        "project.scenario.run.delete",
+        "project.scenario.restore",
+        "project.transfer.package.export.check",
+        "project.transfer.package.export",
+        "project.transfer.package.import.check",
+        "project.transfer.package.import",
+        "project.transfer.report.prepare",
+        "project.transfer.report.export",
+        "project.run.before_commit"
       ],
       "newSourceOrLearningMethods": [
         "project.learning.read",
@@ -639,7 +665,32 @@
         "project.quality.read",
         "project.quality.prepare",
         "project.ontology.export",
-        "project.ontology.import.check"
+        "project.ontology.import.check",
+        "project.mapping.source.select",
+        "project.mapping.preview",
+        "project.mapping.prepare",
+        "project.mapping.draft.read",
+        "project.mapping.draft.save",
+        "project.behavior.run",
+        "project.behavior.read",
+        "project.behavior.cancel",
+        "project.scenario.create",
+        "project.scenario.copy",
+        "project.scenario.list",
+        "project.scenario.read",
+        "project.scenario.run.read",
+        "project.scenario.run",
+        "project.scenario.cancel",
+        "project.scenario.resume",
+        "project.scenario.compare",
+        "project.scenario.run.delete",
+        "project.scenario.restore",
+        "project.transfer.package.export.check",
+        "project.transfer.package.export",
+        "project.transfer.package.import.check",
+        "project.transfer.package.import",
+        "project.transfer.report.prepare",
+        "project.transfer.report.export"
       ]
     }
   },
@@ -965,5 +1016,256 @@
     "agentEligible": false,
     "authority": "selected project; privileged host checkpoint before a confirmed Agent ChangeSet",
     "exposure": "main-process-only"
+  },
+  "projectMapping": {
+    "profile": "business3",
+    "methods": [
+      "project.mapping.source.select",
+      "project.mapping.preview",
+      "project.mapping.prepare",
+      "project.mapping.draft.read",
+      "project.mapping.draft.save"
+    ],
+    "agentEligible": false,
+    "authority": "selected-project",
+    "exposure": "business-named-bridge-only"
+  },
+  "projectBehavior": {
+    "profile": "business3",
+    "methods": ["project.behavior.run", "project.behavior.read", "project.behavior.cancel"],
+    "agentEligible": false,
+    "authority": "selected-project",
+    "exposure": "business-named-bridge-only"
+  },
+  "projectScenario": {
+    "profile": "business3",
+    "methods": [
+      "project.scenario.create",
+      "project.scenario.copy",
+      "project.scenario.list",
+      "project.scenario.read",
+      "project.scenario.run.read",
+      "project.scenario.run",
+      "project.scenario.cancel",
+      "project.scenario.resume",
+      "project.scenario.compare",
+      "project.scenario.run.delete",
+      "project.scenario.restore"
+    ],
+    "agentEligible": false,
+    "authority": "selected-project",
+    "exposure": "business-named-bridge-only"
+  },
+  "projectTransfer": {
+    "profile": "business3",
+    "methods": [
+      "project.transfer.package.export.check",
+      "project.transfer.package.export",
+      "project.transfer.package.import.check",
+      "project.transfer.package.import",
+      "project.transfer.report.prepare",
+      "project.transfer.report.export"
+    ],
+    "agentEligible": false,
+    "authority": "selected-project",
+    "exposure": "business-named-bridge-only",
+    "hostOnlyChannels": ["project:transfer-select"],
+    "packageRoleOptions": {
+      "agentSessions": "agent-session",
+      "rawSources": "raw-source",
+      "derived": "derived",
+      "history": "history"
+    },
+    "packageCoreRoles": ["definitions", "assertions", "ownership", "checkpoint"]
+  },
+  "projectRunBeforeCommit": {
+    "profile": "business3",
+    "method": "project.run.before_commit",
+    "agentEligible": false,
+    "exposure": "main-process-only"
+  },
+  "wave4ResponseBindings": {
+    "project.mapping.source.select": [["projectId", "projectId"]],
+    "project.mapping.preview": [
+      ["projectId", "projectId"],
+      ["selectionId", "selectionId"],
+      ["sheet", "sheet"],
+      ["encoding", "encoding"]
+    ],
+    "project.mapping.prepare": [
+      ["projectId", "projectId"],
+      ["resultId", "resultId"],
+      ["selectionId", "selectionId"],
+      ["sourceFingerprint", "sourceFingerprint"],
+      ["baseRevision", "baseRevision"],
+      ["operationId", "operationId"],
+      ["resultId", "plan.mappingPreparation.resultId"]
+    ],
+    "project.mapping.draft.read": [
+      ["projectId", "projectId"],
+      ["mappingId", "mappingId"]
+    ],
+    "project.mapping.draft.save": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["baseRevision", "baseRevision"],
+      ["draft.identity", "draft.identity"],
+      ["draft.version", "draft.version"]
+    ],
+    "project.behavior.run": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["runId", "runId"],
+      ["binding.projectId", "binding.projectId"],
+      ["binding.baseRevision", "binding.baseRevision"],
+      ["binding.inputSnapshotId", "binding.inputSnapshotId"],
+      ["binding.behaviorVersion", "binding.behaviorVersion"],
+      ["binding.scopeId", "binding.scopeId"],
+      ["binding.requestId", "binding.requestId"]
+    ],
+    "project.behavior.read": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["runId", "runId"],
+      ["binding.projectId", "binding.projectId"],
+      ["binding.baseRevision", "binding.baseRevision"],
+      ["binding.inputSnapshotId", "binding.inputSnapshotId"],
+      ["binding.behaviorVersion", "binding.behaviorVersion"],
+      ["binding.scopeId", "binding.scopeId"],
+      ["binding.requestId", "binding.requestId"]
+    ],
+    "project.behavior.cancel": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["runId", "runId"],
+      ["binding.projectId", "binding.projectId"],
+      ["binding.baseRevision", "binding.baseRevision"],
+      ["binding.inputSnapshotId", "binding.inputSnapshotId"],
+      ["binding.behaviorVersion", "binding.behaviorVersion"],
+      ["binding.scopeId", "binding.scopeId"],
+      ["binding.requestId", "binding.requestId"]
+    ],
+    "project.scenario.create": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["projectVersion", "scenario.identity.projectVersion"],
+      ["inputSnapshotId", "scenario.identity.inputSnapshotId"],
+      ["projectId", "scenario.identity.projectId"]
+    ],
+    "project.scenario.copy": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["scenarioId", "sourceScenarioId"],
+      ["projectVersion", "scenario.identity.projectVersion"],
+      ["inputSnapshotId", "scenario.identity.inputSnapshotId"],
+      ["projectId", "scenario.identity.projectId"]
+    ],
+    "project.scenario.list": [["projectId", "projectId"]],
+    "project.scenario.read": [
+      ["projectId", "projectId"],
+      ["scenarioId", "scenario.identity.scenarioId"],
+      ["projectId", "scenario.identity.projectId"]
+    ],
+    "project.scenario.run.read": [
+      ["projectId", "projectId"],
+      ["scenarioId", "run.identity.scenarioId"],
+      ["projectId", "run.identity.projectId"],
+      ["runId", "run.runId"],
+      ["roundOffset", "run.roundOffset"]
+    ],
+    "project.scenario.run": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["scenarioId", "run.identity.scenarioId"],
+      ["projectId", "run.identity.projectId"],
+      ["runId", "run.runId"],
+      ["projectVersion", "run.identity.projectVersion"],
+      ["inputSnapshotId", "run.identity.inputSnapshotId"]
+    ],
+    "project.scenario.cancel": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["scenarioId", "run.identity.scenarioId"],
+      ["projectId", "run.identity.projectId"],
+      ["runId", "run.runId"]
+    ],
+    "project.scenario.resume": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["sourceRunId", "sourceRunId"],
+      ["checkpointRef", "resumedFrom"],
+      ["scenarioId", "run.identity.scenarioId"],
+      ["projectId", "run.identity.projectId"],
+      ["runId", "run.runId"],
+      ["projectVersion", "run.identity.projectVersion"],
+      ["inputSnapshotId", "run.identity.inputSnapshotId"]
+    ],
+    "project.scenario.compare": [
+      ["projectId", "projectId"],
+      ["roundOffset", "roundOffset"]
+    ],
+    "project.scenario.run.delete": [
+      ["projectId", "projectId"],
+      ["scenarioId", "scenarioId"],
+      ["runId", "runId"],
+      ["operationId", "operationId"]
+    ],
+    "project.scenario.restore": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["configurationDigest", "configurationDigest"],
+      ["scenarioId", "scenario.identity.scenarioId"],
+      ["projectVersion", "scenario.identity.projectVersion"],
+      ["inputSnapshotId", "scenario.identity.inputSnapshotId"],
+      ["projectId", "scenario.identity.projectId"],
+      ["configurationDigest", "scenario.identity.configurationDigest"]
+    ],
+    "project.transfer.package.export.check": [
+      ["projectId", "projectId"],
+      ["selectionId", "selectionId"],
+      ["kind", "kind"],
+      ["baseRevision", "baseRevision"],
+      ["options.agentSessions", "options.agentSessions"],
+      ["options.rawSources", "options.rawSources"],
+      ["options.derived", "options.derived"],
+      ["options.history", "options.history"]
+    ],
+    "project.transfer.package.export": [
+      ["projectId", "projectId"],
+      ["selectionId", "selectionId"],
+      ["checkRef", "checkRef"],
+      ["operationId", "operationId"]
+    ],
+    "project.transfer.package.import.check": [
+      ["projectId", "projectId"],
+      ["selectionId", "selectionId"],
+      ["expectedKind", "expectedKind"]
+    ],
+    "project.transfer.package.import": [
+      ["projectId", "projectId"],
+      ["selectionId", "selectionId"],
+      ["checkRef", "checkRef"],
+      ["operationId", "operationId"],
+      ["packageSha256", "packageSha256"],
+      ["expectedKind", "kind"]
+    ],
+    "project.transfer.report.prepare": [
+      ["projectId", "projectId"],
+      ["baseRevision", "baseRevision"],
+      ["baseRevision", "report.projectRevision"],
+      ["projectId", "report.projectId"]
+    ],
+    "project.transfer.report.export": [
+      ["projectId", "projectId"],
+      ["selectionId", "selectionId"],
+      ["reportRef", "reportRef"],
+      ["baseRevision", "baseRevision"],
+      ["operationId", "operationId"]
+    ],
+    "project.run.before_commit": [
+      ["projectId", "projectId"],
+      ["operationId", "operationId"],
+      ["baseRevision", "domainRevision"]
+    ]
   }
 }

@@ -161,7 +161,7 @@ function semantic(value: unknown): boolean {
   if ('code' in v && 'messageKey' in v && utf8(v) > errorCatalog.maxEncodedBytes) return false
   if (typeof v.completed === 'number' && typeof v.total === 'number' && v.completed > v.total)
     return false
-  if ('staleReason' in v) {
+  if (Array.isArray(v.staleReason)) {
     const reasons = v.staleReason as Array<{ dependency: string; before: number; after: number }>
     const vector = v.dependencyVector as Record<string, number>
     const sets = v.definitionSetDigests as Record<string, unknown>
@@ -319,7 +319,8 @@ export function validateV2(name: string, value: unknown): boolean {
   if (
     !changeSetSemantics(name, value) ||
     !queryConsumerSemantics(name, value) ||
-    !checkpointSemantics(name, value)
+    !checkpointSemantics(name, value) ||
+    !wave4Semantics(name, value)
   )
     return false
   if (name === 'params_job.create' || name === 'params_job.list')
@@ -736,6 +737,266 @@ export function validateStartupFailure(
   )
 }
 
+type Wave4Record = Record<string, unknown>
+export type Wave4ProjectMethod = keyof typeof registry.wave4ResponseBindings
+
+export function isWave4ProjectMethod(method: unknown): method is Wave4ProjectMethod {
+  return typeof method === 'string' && Object.hasOwn(registry.wave4ResponseBindings, method)
+}
+
+function wave4ValueAt(value: unknown, path: string): unknown {
+  return path
+    .split('.')
+    .reduce<unknown>((record, key) => (record as Wave4Record | undefined)?.[key], value)
+}
+
+function wave4PayloadKeysSafe(payload: object): boolean {
+  // Check the original object. An object parser may strip a reserved key.
+  return !Object.keys(payload).some((key) =>
+    ['__proto__', 'constructor', 'prototype'].includes(key),
+  )
+}
+
+function wave4PackageManifest(value: Wave4Record): boolean {
+  const files = value.files as Array<{ path: string; role: string }>
+  const roles = new Set(files.map((file) => file.role))
+  const options = value.options as Wave4Record
+  return (
+    roles.size === files.length &&
+    new Set(files.map((file) => file.path)).size === files.length &&
+    roles.has('definitions') &&
+    (value.kind !== 'full' ||
+      registry.projectTransfer.packageCoreRoles.every((role) => roles.has(role))) &&
+    Object.entries(registry.projectTransfer.packageRoleOptions).every(
+      ([option, role]) => !roles.has(role) || options[option] === true,
+    )
+  )
+}
+
+function wave4Report(value: Wave4Record): boolean {
+  const attempts = value.learning as Array<
+    Wave4Record & { check: { status: string; evidenceRef: string | null } }
+  >
+  const ids = new Set(attempts.map(({ taskId, attemptId }) => JSON.stringify([taskId, attemptId])))
+  if (
+    ids.size !== attempts.length ||
+    attempts.some(
+      ({
+        check,
+        transferTask,
+        operationCompleted,
+        hint,
+        agentAssistance,
+        independentTransferSuccess,
+      }) => {
+        const passed = check.status === 'passed'
+        return (
+          (passed && !check.evidenceRef) ||
+          independentTransferSuccess !==
+            (passed &&
+              transferTask === true &&
+              operationCompleted === true &&
+              hint === 'none' &&
+              agentAssistance === 'none')
+        )
+      },
+    )
+  )
+    return false
+  const revision = value.projectRevision as number
+  return ['queryResults', 'validationResults', 'behaviorResults', 'scenarioComparisons'].every(
+    (field) =>
+      (value[field] as Array<{ inputRevision: number; status: string }>).every(
+        (result) =>
+          result.inputRevision <= revision &&
+          (result.status !== 'current' || result.inputRevision === revision),
+      ),
+  )
+}
+
+function wave4ScenarioConfig(config: Wave4Record): boolean {
+  const events = config.events as Array<{ payload: object }>
+  return (
+    wave4PayloadKeysSafe(config.parameters as object) &&
+    events.every((event) => wave4PayloadKeysSafe(event.payload))
+  )
+}
+
+function wave4ScenarioRun(run: Wave4Record): boolean {
+  const scope = run.scope as Wave4Record
+  const rounds = run.rounds as Array<{ number: number }>
+  const last = run.lastCommittedRound as number
+  const offset = run.roundOffset as number
+  const evidence = run.evidence as { maxRounds: number; parameters: object }
+  return (
+    scope.mode === 'scenario' &&
+    scope.scopeId === wave4ValueAt(run, 'identity.scenarioId') &&
+    last <= evidence.maxRounds &&
+    wave4PayloadKeysSafe(evidence.parameters) &&
+    (run.replayAvailable === true) === (run.replayUnavailableReason === null) &&
+    offset + rounds.length <= last &&
+    rounds.every((entry, index) => entry.number === offset + index + 1) &&
+    (run.status === 'failed') === (run.error !== null) &&
+    (last === 0 || run.checkpointRef !== null) &&
+    (run.resumeAvailable === false ||
+      (run.checkpointRef !== null && ['cancelled', 'failed'].includes(String(run.status))))
+  )
+}
+
+function wave4Semantics(name: string, value: unknown): boolean {
+  const v = value as Wave4Record
+  if (['request3', 'response3', 'envelope3'].includes(name) && isWave4ProjectMethod(v.method)) {
+    if (v.kind === 'request') return wave4Semantics('params_' + v.method, v.params)
+    if (v.kind === 'response' && v.ok) return wave4Semantics('result_' + v.method, v.result)
+    return true
+  }
+
+  if (name === 'w4.mapping.issue')
+    return (
+      Object.hasOwn(errorCatalog.wave4.mappingIssueMessageKeys, String(v.code)) &&
+      errorCatalog.wave4.mappingIssueMessageKeys[
+        v.code as keyof typeof errorCatalog.wave4.mappingIssueMessageKeys
+      ] === v.messageKey
+    )
+  if (name === 'result_project.mapping.source.select')
+    return (
+      (v.sheets as string[]).includes(v.sheet as string) &&
+      new Set(v.sheets as string[]).size === (v.sheets as string[]).length &&
+      (v.format === 'csv' ? v.encoding !== null && v.sheet === 'CSV' : v.encoding === null)
+    )
+  if (name === 'result_project.mapping.preview')
+    return (
+      (v.offset as number) + (v.rows as unknown[]).length <= (v.totalRows as number) &&
+      (v.issues as unknown[]).every((issue) => wave4Semantics('w4.mapping.issue', issue))
+    )
+
+  if (name === 'w4.behavior.event') return wave4PayloadKeysSafe(v.payload as object)
+  if (name.startsWith('params_project.behavior.'))
+    return (
+      v.projectId === wave4ValueAt(v, 'binding.projectId') &&
+      (name !== 'params_project.behavior.run' ||
+        (v.events as unknown[]).every((event) => wave4Semantics('w4.behavior.event', event)))
+    )
+  if (name === 'w4.behavior.result' || name.startsWith('result_project.behavior.'))
+    return (
+      v.projectId === wave4ValueAt(v, 'binding.projectId') &&
+      (v.freshness === 'stale'
+        ? v.staleReason !== null
+        : v.freshness !== 'current' || v.staleReason === null) &&
+      (v.conditions as Array<{ reason: string; triggered: boolean }>).every(
+        (decision) => decision.triggered === (decision.reason === 'triggered'),
+      )
+    )
+
+  if (name === 'w4.scenario.event') return wave4PayloadKeysSafe(v.payload as object)
+  if (name === 'w4.scenario.config') return wave4ScenarioConfig(v)
+  if (name === 'params_project.scenario.create')
+    return wave4ScenarioConfig(v.configuration as Wave4Record)
+  if (name === 'params_project.scenario.resume') return v.sourceRunId !== v.runId
+  if (name === 'params_project.scenario.compare') {
+    const runs = v.runs as Array<{ runId: string }>
+    return new Set(runs.map((run) => run.runId)).size === runs.length
+  }
+  if (name === 'w4.scenario.run') return wave4ScenarioRun(v)
+  if (name.startsWith('result_project.scenario.')) {
+    if (v.run && !wave4ScenarioRun(v.run as Wave4Record)) return false
+    const scenarios = (v.scenario ? [v.scenario] : (v.items ?? [])) as Array<{
+      identity: { projectId: string }
+      configuration: Wave4Record
+    }>
+    return scenarios.every(
+      (scenario) =>
+        scenario.identity.projectId === v.projectId && wave4ScenarioConfig(scenario.configuration),
+    )
+  }
+
+  if (name === 'w4.transfer.manifest') return wave4PackageManifest(v)
+  if (
+    name === 'result_project.transfer.package.export.check' ||
+    (name === 'result_project.transfer.package.import.check' && v.status === 'compatible')
+  ) {
+    const manifest = v.manifest as Wave4Record
+    const portability = v.portability as Wave4Record
+    const roles = new Set((manifest.files as Array<{ role: string }>).map((file) => file.role))
+    return (
+      manifest.kind === (v.kind ?? v.expectedKind) &&
+      (name !== 'result_project.transfer.package.export.check' ||
+        queryEqual(v.options, manifest.options)) &&
+      wave4PackageManifest(manifest) &&
+      (portability.restoreCurrent === false || manifest.kind === 'full') &&
+      (portability.rerunMapping === false || roles.has('raw-source')) &&
+      (portability.replayScenario === false || roles.has('history'))
+    )
+  }
+  if (name === 'result_project.transfer.package.import') return v.importedProjectId !== v.projectId
+  if (name === 'w4.transfer.report') return wave4Report(v)
+  if (name === 'result_project.transfer.report.prepare') {
+    const report = v.report as Wave4Record
+    return (
+      report.projectId === v.projectId &&
+      report.projectRevision === v.baseRevision &&
+      wave4Report(report)
+    )
+  }
+  return true
+}
+
+/** Request/result values have passed their schemas. Engine authority is checked by the transport. */
+function wave4ResponseMatches(method: Wave4ProjectMethod, p: Wave4Record, r: Wave4Record): boolean {
+  if (
+    !registry.wave4ResponseBindings[method].every(
+      ([input, output]) => wave4ValueAt(p, input) === wave4ValueAt(r, output),
+    )
+  )
+    return false
+  if (method === 'project.mapping.source.select')
+    return ['selectionId', 'sheet', 'encoding'].every(
+      (key) => !Object.hasOwn(p, key) || r[key] === p[key],
+    )
+  if (method === 'project.mapping.preview') {
+    const page = p.page as { offset: number; limit: number } | undefined
+    return r.offset === (page?.offset ?? 0) && (r.rows as unknown[]).length <= (page?.limit ?? 100)
+  }
+  if (method === 'project.mapping.draft.save')
+    return r.generation === Number(p.expectedGeneration) + 1 && queryEqual(r.draft, p.draft)
+  if (method === 'project.scenario.create')
+    return queryEqual(p.configuration, wave4ValueAt(r, 'scenario.configuration'))
+  if (method === 'project.scenario.copy')
+    return (
+      wave4ValueAt(r, 'scenario.identity.scenarioId') !== p.scenarioId &&
+      wave4ValueAt(r, 'scenario.configuration.name') === p.name
+    )
+  if (method === 'project.scenario.list') return (r.items as unknown[]).length <= Number(p.limit)
+  if (method === 'project.scenario.run.read')
+    return (wave4ValueAt(r, 'run.rounds') as unknown[]).length <= Number(p.limit)
+  if (method === 'project.scenario.compare') {
+    const picks = p.runs as Array<{ scenarioId: string; runId: string }>
+    const runs = r.runs as Array<{
+      runId: string
+      identity: { projectId: string; scenarioId: string }
+      metrics: Array<{ round: number }>
+      lastCommittedRound: number
+      finalMetrics: unknown
+    }>
+    return (
+      runs.length === picks.length &&
+      runs.every(
+        (run, index) =>
+          run.runId === picks[index].runId &&
+          run.identity.scenarioId === picks[index].scenarioId &&
+          run.identity.projectId === p.projectId &&
+          (run.lastCommittedRound === 0) === (run.finalMetrics === null) &&
+          run.metrics.length <= Number(p.limit) &&
+          run.metrics.every(
+            ({ round }, i) =>
+              round === Number(p.roundOffset) + i + 1 && round <= run.lastCommittedRound,
+          ),
+      )
+    )
+  }
+  return true
+}
+
 /** Strict explicit profile validation. It never selects runtime or attests readiness. */
 
 export function validateBusiness3(name: string, value: unknown): boolean {
@@ -898,6 +1159,11 @@ export function matchesBusiness3Response(
   const q = request as Record<string, unknown>
   const r = response as Record<string, unknown>
   if (q.id !== r.id || q.method !== r.method) return false
+  if (isWave4ProjectMethod(q.method))
+    return (
+      q.engineSessionId === r.engineSessionId &&
+      (!r.ok || wave4ResponseMatches(q.method, q.params as Wave4Record, r.result as Wave4Record))
+    )
   if (String(q.method).startsWith('project.management.') || q.method === 'project.library.status') {
     if (q.engineSessionId !== r.engineSessionId) return false
     if (!r.ok) return true

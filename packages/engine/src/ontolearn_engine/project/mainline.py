@@ -9,7 +9,9 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from uuid import uuid4
 
+from ontolearn_engine.behavior.service import METHODS as BEHAVIOR_METHODS
 from ontolearn_engine.job_store import JobFault, fault
+from ontolearn_engine.mapping.service import METHODS as MAPPING_METHODS
 from ontolearn_engine.project.checkpoint_host import CheckpointHost
 from ontolearn_engine.project.checkpoints import METHODS as CHECKPOINT_METHODS
 from ontolearn_engine.project.learning_agent import METHODS as AGENT_METHODS
@@ -32,7 +34,10 @@ from ontolearn_engine.project.query_definitions import (
     QueryRead,
     QueryReadBudget,
 )
+from ontolearn_engine.project.run_before_commit import METHODS as RUN_METHODS
+from ontolearn_engine.scenario.service import METHODS as SCENARIO_METHODS
 from ontolearn_engine.storage import Conflict, canonical
+from ontolearn_engine.transfer.service import METHODS as TRANSFER_METHODS
 
 METHODS = frozenset(
     {
@@ -59,8 +64,18 @@ METHODS = (
     | EXPORT_METHODS
     | IMPORT_METHODS
     | AGENT_METHODS
+    | MAPPING_METHODS
+    | TRANSFER_METHODS
+    | RUN_METHODS
+    | BEHAVIOR_METHODS
+    | SCENARIO_METHODS
 )
 
+# First-chain rejection bounds, within the original reader's limits. These are
+# not Q5 capacity, RSS, SQLite I/O, or whole-H acceptance claims.
+# Admit the three persisted copies of a legal 420002-byte historical literal.
+# 1.5 MiB also fits both prepaid project.get Store reads inside the unchanged
+# 128 MiB retained book; 2 MiB would exceed that book. No other cap is raised.
 READ_LIMITS = ReadLimits(validation_rows=4096, validation_bytes=1572864, validation_work=67108864)
 HELD_BYTES = 134217728
 HELD_OBJECTS = 1048576
@@ -170,6 +185,7 @@ class _WriteAdmission:
             and owner.actor.session == owner.session
             and owner.actor.host_client_id == owner.host
             and owner.current is None
+            and owner._suspended is None
             and not owner.replies
             and not owner.actor._query_replies
             and owner.actor._query_project_get is None
@@ -665,6 +681,10 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         self.host = self.session = None
         self.current = None
         self.replies = {}
+        # W4-04: while a synchronous scenario run executes, an in-flight
+        # project.scenario.cancel may interleave at a committed-round boundary;
+        # the suspended run reply is restored right after the cancel finishes.
+        self._suspended = None
         self.closed = False
         self._clean_close = False
         self.hold = False
@@ -784,7 +804,14 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
 
     def begin(self, request):
         self.require_owner(self.owner_id)
-        if self.current is not None or len(self.replies) >= MAX_REPLIES:
+        current = self.current
+        if current is not None and (
+            request["method"] != "project.scenario.cancel"
+            or current.method not in {"project.scenario.run", "project.scenario.resume"}
+            or self._suspended is not None
+        ):
+            fault("INVALID_STATE")
+        if len(self.replies) >= MAX_REPLIES:
             fault("INVALID_STATE")
         request_id, method = request["id"], request["method"]
         if (
@@ -798,6 +825,10 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         reply = _Reply(request_id, method, project, self.generation, 4096)
         self.reserve(reply, 4 * self.actor.limits["maxFrameBytes"], 128, 4096)
         self.replies[request_id] = reply
+        if current is not None:
+            # W4-04: the interleaved cancel gets its own prepaid reply while
+            # the still-running scenario request keeps every reservation.
+            self._suspended = current
         self.current = reply
         if self.store._file_identity is not None:
             from ontolearn_engine.project.file_identity import verify_connection
@@ -963,6 +994,81 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
                         result = learning_agent.dispatch(
                             self.store, method, params, self.learning, origin
                         )
+                except Conflict as error:
+                    code = {
+                        "identity": "IDENTITY_CONFLICT",
+                        "input": "INVALID_REQUEST",
+                        "revision": "REVISION_CONFLICT",
+                    }.get(error.category, "INVALID_STATE")
+                    if code == "INVALID_REQUEST":
+                        fault(code, field="params")
+                    fault(code)
+            elif method in (
+                MAPPING_METHODS
+                | TRANSFER_METHODS
+                | RUN_METHODS
+                | BEHAVIOR_METHODS
+                | SCENARIO_METHODS
+            ):
+                # W4-A1: mapping/transfer named bridges and the main-process-
+                # only before-run checkpoint share the same selected-project
+                # fencing and Store budget book. Staged file bytes are
+                # pre-reserved per purpose: mapping sources stay within the
+                # parser bound; packages within the archive bound.
+                # W4-A2: the behavior/scenario named bridges ride the same
+                # fencing with no staged file bytes (frame-bounded DTOs only).
+                from ontolearn_engine.mapping.source import MAX_BYTES as MAPPING_MAX_BYTES
+                from ontolearn_engine.transfer.package import MAX_ARCHIVE
+
+                self.authorize(params)
+                # The W4 services traverse bounded Store state (no semantic
+                # query materialization); their admission prepay mirrors
+                # reserve_store's reader validation at a fitting scale, with
+                # staged file bytes charged on top at their true bound.
+                budget.reserve(
+                    "w4 store admission",
+                    bytes_=8 * self.reader_limits.validation_bytes,
+                    objects=8192,
+                    work=self.reader_limits.validation_work,
+                )
+                self.preflight()
+                staged = 0
+                if method in MAPPING_METHODS and method not in {
+                    "project.mapping.draft.read",
+                    "project.mapping.draft.save",
+                }:
+                    staged = MAPPING_MAX_BYTES
+                elif method in TRANSFER_METHODS:
+                    staged = MAX_ARCHIVE
+                if staged:
+                    budget.reserve(
+                        "staged file bytes",
+                        bytes_=staged,
+                        objects=4096,
+                        work=staged,
+                    )
+                origin = {"hostClientId": self.host, "engineSessionId": self.session}
+                try:
+                    if method in MAPPING_METHODS:
+                        from ontolearn_engine.mapping import service as mapping_service
+
+                        result = mapping_service.dispatch(self.store, method, params, origin)
+                    elif method in TRANSFER_METHODS:
+                        from ontolearn_engine.transfer import service as transfer_service
+
+                        result = transfer_service.dispatch(self.store, method, params, self, origin)
+                    elif method in BEHAVIOR_METHODS:
+                        from ontolearn_engine.behavior import service as behavior_service
+
+                        result = behavior_service.dispatch(self.store, method, params, origin)
+                    elif method in SCENARIO_METHODS:
+                        from ontolearn_engine.scenario import service as scenario_service
+
+                        result = scenario_service.dispatch(self.store, method, params, origin)
+                    else:
+                        from ontolearn_engine.project import run_before_commit
+
+                        result = run_before_commit.dispatch(self.store, method, params, origin)
                 except Conflict as error:
                     code = {
                         "identity": "IDENTITY_CONFLICT",
@@ -1316,6 +1422,14 @@ class MainlineHost(OrdinaryReadAuthority, QueryDispatchAuthority):
         if not reply.unknown:
             reply.values.clear()
             del self.replies[request_id]
+            if self._suspended is not None and reply is not self._suspended:
+                # W4-04: the interleaved cancel settled cleanly; the suspended
+                # scenario run request resumes as the single current reply.
+                # An unknown-outcome cancel (unclassified failure) keeps the
+                # host hold/unknown isolation fence instead of silently
+                # resuming over a possibly-damaged host.
+                self.current = self._suspended
+                self._suspended = None
         # UNKNOWN records never evict/refill when a new selection/session arrives.
 
     def observe_error(self, request_id, error):

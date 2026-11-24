@@ -56,6 +56,11 @@ import {
 } from './learning/task-fixture'
 import { QualityWorkspace } from './quality/QualityWorkspace'
 import { ModelPanel } from './ModelPanel'
+import { MappingWorkspace } from './mapping/MappingWorkspace'
+import type { WorkspaceStatus } from './mapping/workspace-operation'
+import { ConnectedBehaviorWorkspace } from './behavior/ConnectedBehaviorWorkspace'
+import { ConnectedScenarioWorkspace } from './scenario/ConnectedScenarioWorkspace'
+import { TransferWorkspace } from './transfer/TransferWorkspace'
 
 type FixtureProposal = {
   taskId: LearningFixtureTaskId
@@ -70,7 +75,19 @@ type QualityLocation = {
   finding: QualityFindingDTO
 }
 
-type WorkspaceModule = 'query' | 'ontology' | 'quality'
+const connectedModules = {
+  mapping: { label: '数据映射', title: '当前项目数据映射' },
+  behavior: { label: '行为定义', title: '当前项目行为定义' },
+  scenario: { label: '情景推演', title: '当前项目情景推演' },
+  transfer: { label: '导出与迁移', title: '当前项目导出与迁移' },
+} as const
+type ConnectedModule = keyof typeof connectedModules
+type WorkspaceModule = 'query' | 'ontology' | 'quality' | ConnectedModule
+const cleanConnectedStatus: WorkspaceStatus = { dirty: false, unresolved: false }
+
+function isConnectedModule(module: WorkspaceModule): module is ConnectedModule {
+  return Object.hasOwn(connectedModules, module)
+}
 type OntologyContext = {
   session: OntologySession
   contextKey: string
@@ -99,6 +116,8 @@ export function App() {
   const [workspaceStatus, setWorkspaceStatus] = useState({ dirty: false, unresolved: false })
   const workspaceNotify = useRef<() => void>(() => {})
   const ontologyDirty = useRef(false)
+  const connectedStatus = useRef(cleanConnectedStatus)
+  const [connectedUnresolved, setConnectedUnresolved] = useState(false)
   const workspaceGeneration = useRef(0)
   const [management] = useState(() =>
     window.ontolearn?.getProjectManagementState
@@ -362,7 +381,13 @@ export function App() {
     )
   }
   function selectWorkspace(module: WorkspaceModule) {
-    if (qualityPendingRef.current || fixtureBusyRef.current || hasCurrentFixtureProposal()) return
+    if (
+      qualityPendingRef.current ||
+      fixtureBusyRef.current ||
+      connectedStatus.current.unresolved ||
+      hasCurrentFixtureProposal()
+    )
+      return
     if (
       libraryAdmissionBlocked({
         documentLeaving: documentLeaving.current,
@@ -375,6 +400,11 @@ export function App() {
       return
     if (uncertain.current || !readyWorkspace.current?.project) return
     if (selectedModule.current === module) return
+    if (
+      connectedStatus.current.dirty &&
+      !window.confirm('切换工作台将放弃此处未保存的编辑。继续切换？')
+    )
+      return
     retireOntology()
     disconnectQuery()
     selectedModule.current = module
@@ -467,7 +497,13 @@ export function App() {
     } else if (response) setTaskError(response.error)
   }
   async function listProjects(cursor: string | null = null) {
-    if (qualityPendingRef.current || fixtureBusyRef.current || hasCurrentFixtureProposal()) return
+    if (
+      qualityPendingRef.current ||
+      fixtureBusyRef.current ||
+      connectedStatus.current.unresolved ||
+      hasCurrentFixtureProposal()
+    )
+      return
     const bridge = window.ontolearn
     if (
       documentLeaving.current ||
@@ -499,7 +535,13 @@ export function App() {
     }
   }
   async function openProject(projectId: string) {
-    if (qualityPendingRef.current || fixtureBusyRef.current || hasCurrentFixtureProposal()) return
+    if (
+      qualityPendingRef.current ||
+      fixtureBusyRef.current ||
+      connectedStatus.current.unresolved ||
+      hasCurrentFixtureProposal()
+    )
+      return
     const bridge = window.ontolearn
     if (
       !bridge ||
@@ -510,6 +552,11 @@ export function App() {
         managementUnresolved: !!management?.unresolved,
       }) ||
       Boolean(learningCtl?.unresolved)
+    )
+      return
+    if (
+      connectedStatus.current.dirty &&
+      !window.confirm('打开项目将放弃当前工作台未保存的编辑。继续打开？')
     )
       return
     setProjectBusy(true)
@@ -555,6 +602,7 @@ export function App() {
   ) {
     if (
       qualityPendingRef.current ||
+      connectedStatus.current.unresolved ||
       (fixtureBusyRef.current && !options?.name) ||
       hasCurrentFixtureProposal()
     )
@@ -580,6 +628,11 @@ export function App() {
       setProjectNotice('项目名称过长或包含无效字符，请修改后重试。')
       return
     }
+    if (
+      connectedStatus.current.dirty &&
+      !window.confirm('新建项目将放弃当前工作台未保存的编辑。继续创建？')
+    )
+      return
     setProjectBusy(true)
     setProjectError(undefined)
     let createdProjectId: string | undefined
@@ -676,9 +729,12 @@ export function App() {
   const aggregateWorkspace = useCallback(() => {
     const queries = [...queryControllers.current.values()]
     const ontology = ontologyOwner.current?.session.getSnapshot()
+    const dirtyEditor =
+      connectedStatus.current.dirty || queries.some((controller) => controller.getSnapshot().dirty)
     return {
-      dirty: ontologyDirty.current || queries.some((controller) => controller.getSnapshot().dirty),
+      dirty: ontologyDirty.current || dirtyEditor,
       unresolved:
+        connectedStatus.current.unresolved ||
         qualityPendingRef.current ||
         fixtureBusyRef.current ||
         !!createIntent.current ||
@@ -726,6 +782,11 @@ export function App() {
     connection,
     ontologyContext,
   ])
+  const onConnectedStatus = useCallback((status: WorkspaceStatus) => {
+    connectedStatus.current = status
+    setConnectedUnresolved(status.unresolved)
+    workspaceNotify.current()
+  }, [])
   const onQualityPending = useCallback((pending: boolean) => {
     qualityPendingRef.current = pending
     setQualityPending(pending)
@@ -1128,14 +1189,32 @@ export function App() {
       ? qualityLocation
       : undefined
   const operationBusy = projectBusy || qualityPending || fixtureBusy
-  const projectControlsBusy = operationBusy || Boolean(activeFixture)
+  const projectControlsBusy = operationBusy || connectedUnresolved || Boolean(activeFixture)
   const learningDisabled =
     operationBusy ||
+    connectedUnresolved ||
     workspaceFrozen ||
     managementBlocked ||
     checkpointBlocked ||
     learningBlocked ||
     Boolean(connection)
+
+  const activeProject = tasks?.project
+  const connectedBridge = window.ontolearn
+  const connectedContext =
+    activeProject && tasks
+      ? {
+          projectId: activeProject.projectId,
+          revision: activeProject.projectRevision,
+          inputSnapshotId: activeProject.inputSnapshotId,
+          disabled:
+            workspaceFrozen ||
+            managementBlocked ||
+            checkpointBlocked ||
+            fixtureBusy ||
+            Boolean(activeFixture),
+        }
+      : undefined
 
   function locateQualityFinding(targets: QualityFindingDTO['targets'], finding: QualityFindingDTO) {
     if (!activeProjectId || !tasks || learningDisabled || activeFixture) return
@@ -1327,11 +1406,9 @@ export function App() {
     else if (action === 'demonstrate') await learningCtl.requestDemonstration()
     else if (action === 'check') await learningCtl.checkTask()
   }
-  /** After a real Agent draft commit the project must be re-read. */
+  /** After a real Agent or workspace commit, restore() refreshes project, checkpoints, and learning before updating UI state. */
   async function refreshAfterAgentCommit() {
     await restore()
-    const projectId = tasks?.project?.projectId
-    if (projectId) await learningCtl?.selectAndRefresh(projectId)
   }
   function continueLearningTask() {
     const snapshot = learningCtl?.getSnapshot()
@@ -1430,6 +1507,27 @@ export function App() {
               >
                 质量与推导
               </a>
+              {(Object.keys(connectedModules) as ConnectedModule[]).map((module) => (
+                <a
+                  key={module}
+                  href={`#${module}-workspace`}
+                  aria-current={workspaceModule === module ? 'page' : undefined}
+                  aria-disabled={
+                    projectControlsBusy ||
+                    Boolean(connection) ||
+                    workspaceFrozen ||
+                    managementBlocked
+                  }
+                  onClick={(event) => {
+                    event.preventDefault()
+                    if (projectControlsBusy || connection || workspaceFrozen || managementBlocked)
+                      return
+                    selectWorkspace(module)
+                  }}
+                >
+                  {connectedModules[module].label}
+                </a>
+              ))}
             </>
           )}
         </nav>
@@ -1834,6 +1932,65 @@ export function App() {
                       onLocateTarget={locateQualityFinding}
                       onPendingChange={onQualityPending}
                     />
+                  </section>
+                )}
+              {isConnectedModule(workspaceModule) &&
+                connectedContext &&
+                connectedBridge &&
+                !connection &&
+                !projectBusy && (
+                  <section
+                    key={JSON.stringify([
+                      workspaceModule,
+                      connectedContext.projectId,
+                      tasks?.generation,
+                      connectedContext.revision,
+                      connectedContext.inputSnapshotId,
+                    ])}
+                    id={`${workspaceModule}-workspace`}
+                    aria-label={connectedModules[workspaceModule].title}
+                  >
+                    {workspaceModule === 'mapping' && (
+                      <fieldset disabled={connectedContext.disabled}>
+                        <MappingWorkspace
+                          onStatus={onConnectedStatus}
+                          {...connectedContext}
+                          bridge={connectedBridge}
+                          onCommitted={refreshAfterAgentCommit}
+                        />
+                      </fieldset>
+                    )}
+                    {workspaceModule === 'behavior' && (
+                      <ConnectedBehaviorWorkspace
+                        onStatus={onConnectedStatus}
+                        {...connectedContext}
+                        bridge={connectedBridge}
+                      />
+                    )}
+                    {workspaceModule === 'scenario' && (
+                      <ConnectedScenarioWorkspace
+                        onStatus={onConnectedStatus}
+                        {...connectedContext}
+                        bridge={connectedBridge}
+                      />
+                    )}
+                    {workspaceModule === 'transfer' && (
+                      <TransferWorkspace
+                        onStatus={onConnectedStatus}
+                        {...connectedContext}
+                        bridge={connectedBridge}
+                        onImported={async () => {
+                          if (management) await management.refresh()
+                          else {
+                            const reply = await connectedBridge.getProjectCatalog({
+                              pageSize: 64,
+                              cursor: null,
+                            })
+                            if (reply.ok) setCatalog(reply.data)
+                          }
+                        }}
+                      />
+                    )}
                   </section>
                 )}
               {connection && (

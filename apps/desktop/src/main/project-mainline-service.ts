@@ -1,8 +1,18 @@
-import { createHash } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
+import { dirname, join } from 'node:path'
 import { performance } from 'node:perf_hooks'
 import { setTimeout as delay } from 'node:timers/promises'
 import {
   ontologyTurtleImportCheckArgsSchema,
+  type BehaviorRunArgs,
+  type BehaviorRunReplyDTO,
+  type MappingSourceSelectResultDTO,
+  type PackageExportResultDTO,
+  type HtmlReportExportResultDTO,
+  type TransferPickerPurpose,
+  type TransferPickerResultDTO,
+  type RunBeforeCommitArgs,
+  type RunBeforeCommitResultDTO,
   safeError,
   type AgentBeforeCommitArgs,
   type AgentBeforeCommitResultDTO,
@@ -44,7 +54,11 @@ import {
   type QualityJobInputDTO,
   type QualityRunReceiptDTO,
 } from '@ontolearn/contracts'
-import { validateBusiness3 } from '../../../../packages/contracts/src/v2'
+import {
+  isWave4ProjectMethod,
+  validateBusiness3,
+  type Wave4ProjectMethod,
+} from '../../../../packages/contracts/src/v2'
 import {
   EngineError,
   MainlineProjectTransport,
@@ -56,6 +70,11 @@ import { OrdinaryProjectSource, type OrdinaryCurrent } from './ordinary-project-
 import { QueryDefinitionService } from './query-definition-service'
 import { ProjectManagementSession } from './project-management-session'
 import { ProjectRestoreSession } from './project-restore-session'
+import {
+  HostSelections,
+  type PickerResult,
+  type SelectionBinding,
+} from './project-transfer/host-selections'
 import type { TaskService, TaskRecoveryContext, TaskRecoveryRequest } from './task-service'
 
 type RecordValue = Record<string, unknown>
@@ -98,6 +117,13 @@ const invalid = () =>
     params: {},
     retryable: false,
   })
+const unsupportedWave4 = () =>
+  new EngineError({
+    code: 'UNSUPPORTED_CAPABILITY',
+    messageKey: 'capability.unsupported',
+    params: {},
+    retryable: false,
+  })
 function stable(value: unknown): string {
   if (value === null || typeof value !== 'object') {
     const encoded = JSON.stringify(value)
@@ -126,7 +152,10 @@ export class MainlineProjectSource extends OrdinaryProjectSource {
   #disposedMainline = false
   #selectionHolding?: { entry: object; budget: QueryMainReadBudget }
   #selectionHoldingUnknown = false
-  constructor(private readonly closeOwner?: (fence: () => void) => void) {
+  constructor(
+    private readonly closeOwner?: (fence: () => void) => void,
+    private readonly onFence?: () => void,
+  ) {
     super(null)
   }
   override get available(): boolean {
@@ -164,6 +193,7 @@ export class MainlineProjectSource extends OrdinaryProjectSource {
     this.#sequence++
     this.#value = null
     this.#client = undefined
+    this.onFence?.()
     const holding = this.#selectionHolding
     if (holding && !this.#selectionHoldingUnknown) {
       try {
@@ -304,20 +334,47 @@ type MainlineRecoveryHandle = {
   epoch: number
 }
 
+type MainlineOptions = {
+  managementJournalPath?: string
+  restoreJournalPath?: string
+  stagingRoot?: string
+  pickMappingSource?: () => Promise<PickerResult>
+  pickTransferFile?: (purpose: TransferPickerPurpose) => Promise<PickerResult>
+}
+type Wave4RequestOptions = {
+  signal?: AbortSignal
+  reuseMappingOptions?: boolean
+  recordSample?: boolean
+}
+
+const selectionPurposes = {
+  'project.mapping.source.select': 'mapping-source',
+  'project.mapping.preview': 'mapping-source',
+  'project.mapping.prepare': 'mapping-source',
+  'project.transfer.package.export.check': 'package-export',
+  'project.transfer.package.export': 'package-export',
+  'project.transfer.package.import.check': 'package-import',
+  'project.transfer.package.import': 'package-import',
+  'project.transfer.report.export': 'report-html',
+} as const
+
 /** Named main-only application service. No generic renderer invoke or issuer DTO. */
 export class ProjectMainlineService implements MainlineProjectBridge {
-  readonly source = new MainlineProjectSource((fence) => {
-    this.#invalidateRecovery()
-    try {
-      fence() // Revoke issuer before clearProject can notify any view/observer.
-      if (!this.#closed) this.tasks.clearProject()
-    } catch (cause) {
-      this.#retireRecoveryPending()
-      throw cause
-    }
-    const failure = this.#retireRecoveryPending()
-    if (failure) throw failure
-  })
+  readonly source = new MainlineProjectSource(
+    (fence) => {
+      this.#invalidateRecovery()
+      try {
+        fence() // Revoke issuer before clearProject can notify any view/observer.
+        if (!this.#closed) this.tasks.clearProject()
+      } catch (cause) {
+        this.#retireRecoveryPending()
+        throw cause
+      }
+      const failure = this.#retireRecoveryPending()
+      if (failure) throw failure
+    },
+    () => this.#invalidateWave4Selections(),
+  )
   readonly queries: QueryDefinitionService
   #projectedErrors = new WeakSet<EngineError>()
   #closed = false
@@ -332,13 +389,23 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   #fullIntents = new Set<MainlineIntent>()
   #management: ProjectManagementSession
   #restore: ProjectRestoreSession
+  #hostSelections: HostSelections
+  // The frozen Agent tool only carries IDs. Replay uses a sample validated by
+  // the named behavior-run route and the current project snapshot.
+  #behaviorSamples = new Map<string, BehaviorRunArgs>()
   constructor(
     readonly supervisor: EngineSupervisor,
     readonly tasks: TaskService,
     private readonly reattachView: () => void,
-    options: { managementJournalPath?: string; restoreJournalPath?: string } = {},
+    private readonly options: MainlineOptions = {},
   ) {
     if (supervisor.profile !== 'business3') throw denied()
+    this.#hostSelections = new HostSelections(
+      options.stagingRoot ??
+        (this.supervisor.dataPath
+          ? join(dirname(this.supervisor.dataPath), '.ontolearn-host-selections')
+          : undefined),
+    )
     this.queries = new QueryDefinitionService(this.source, tasks)
     this.#management = new ProjectManagementSession({
       client: () => this.#client(),
@@ -405,6 +472,10 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     this.#projectRelease = tasks.observeActiveProject((project, session) => {
       if (project && session) this.source.observeProject(project, supervisor, session)
     })
+  }
+  #invalidateWave4Selections(): void {
+    this.#hostSelections.invalidate()
+    this.#behaviorSamples.clear()
   }
   #invalidateRecovery(): void {
     const principal = this.#recoveryPrincipal
@@ -545,7 +616,10 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   }
   async #selectedProjectRequest<T>(
     method:
-      'project.ontology.export' | 'project.ontology.import.check' | 'project.agent.before_commit',
+      | 'project.ontology.export'
+      | 'project.ontology.import.check'
+      | 'project.agent.before_commit'
+      | Wave4ProjectMethod,
     args: RecordValue,
   ): Promise<T> {
     const current = this.#current()
@@ -554,7 +628,34 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     const guard = this.#selectedProjectGuard(current, client)
     if (!guard() || ('projectId' in args && args.projectId !== projectId)) throw denied()
     const params = { ...args, projectId }
-    if (!validateBusiness3('params_' + method, params)) throw invalid()
+    this.#validateSelectedParams(method, params, current)
+    return this.#checkedSelectedCall(client, method, params, guard)
+  }
+  #validateSelectedParams(
+    method: MainlineMethod,
+    params: RecordValue,
+    current: NonNullable<OrdinaryCurrent>,
+  ): void {
+    if (!isWave4ProjectMethod(method)) {
+      if (!validateBusiness3('params_' + method, params)) throw invalid()
+      return
+    }
+    const budget = this.supervisor.queryReadBudget(current.owner)
+    const finish = budget.beginConsumerRequest()
+    try {
+      budget.beforeArguments(params)
+      if (!validateBusiness3('params_' + method, params)) throw invalid()
+    } finally {
+      finish()
+    }
+  }
+  async #checkedSelectedCall<T>(
+    client: MainlineProjectTransport,
+    method: MainlineMethod,
+    params: RecordValue,
+    guard: () => boolean,
+  ): Promise<T> {
+    if (!guard()) throw denied()
     const value = await this.#call<T>(client, method, params)
     if (!guard()) throw denied()
     if (!validateBusiness3('result_' + method, value)) throw invalid()
@@ -582,6 +683,443 @@ export class ProjectMainlineService implements MainlineProjectBridge {
   ): Promise<BridgeResult<AgentBeforeCommitResultDTO>> {
     return this.#run(() => this.#selectedProjectRequest('project.agent.before_commit', args))
   }
+  recordRunBeforeCommit(
+    args: RunBeforeCommitArgs,
+  ): Promise<BridgeResult<RunBeforeCommitResultDTO>> {
+    return this.#run(() => this.#selectedProjectRequest('project.run.before_commit', args))
+  }
+  #wave4Request<Output>(
+    method: Exclude<Wave4ProjectMethod, 'project.run.before_commit'>,
+    args: RecordValue,
+    options: Wave4RequestOptions = {},
+  ): Promise<BridgeResult<Output>> {
+    return this.#run(async () => {
+      if (
+        !args ||
+        typeof args !== 'object' ||
+        Array.isArray(args) ||
+        Object.hasOwn(args, 'projectId')
+      )
+        throw invalid()
+      const { current, client, guard, binding } = this.#wave4Context(options.signal)
+      const params = { ...args, projectId: binding.projectId }
+      this.#validateSelectedParams(method, params, current)
+      const captured = structuredClone(params) as RecordValue
+
+      if (method === 'project.behavior.run') {
+        const request = captured as BehaviorRunArgs
+        const result = await this.#runWithCheckpoint<BehaviorRunReplyDTO>(
+          client,
+          current,
+          guard,
+          method,
+          request,
+          'behavior',
+          request.binding.baseRevision,
+        )
+        if (
+          options.recordSample &&
+          result.freshness === 'current' &&
+          request.binding.inputSnapshotId === current.project.inputSnapshotId &&
+          request.binding.baseRevision === current.project.projectRevision
+        ) {
+          const key = request.binding.scopeId
+          if (!this.#behaviorSamples.has(key) && this.#behaviorSamples.size >= 16)
+            this.#behaviorSamples.delete(this.#behaviorSamples.keys().next().value!)
+          this.#behaviorSamples.set(key, request)
+        }
+        return result as Output
+      }
+      if (method === 'project.scenario.run' || method === 'project.scenario.resume')
+        return this.#runWithCheckpoint<Output>(
+          client,
+          current,
+          guard,
+          method,
+          captured,
+          'scenario',
+          captured.projectVersion as number,
+        )
+
+      const purpose = selectionPurposes[method as keyof typeof selectionPurposes]
+      if (!purpose) return this.#checkedSelectedCall(client, method, captured, guard)
+      const outbound =
+        method === 'project.transfer.package.export' || method === 'project.transfer.report.export'
+      const initialMapping =
+        method === 'project.mapping.source.select' && !Object.hasOwn(captured, 'selectionId')
+      const record = initialMapping ? await this.#pickWave4(purpose, binding, guard) : undefined
+      if (record) captured.selectionId = record.selectionId
+      const selection = this.#hostSelections.acquire(
+        captured.selectionId,
+        purpose,
+        binding,
+        outbound,
+      )
+      if (!selection) throw denied()
+      let released = false
+      try {
+        try {
+          await this.#hostSelections.validate(selection)
+        } catch {
+          throw denied()
+        }
+        if (options.reuseMappingOptions && selection.mappingOptions)
+          Object.assign(captured, selection.mappingOptions)
+        if (initialMapping || options.reuseMappingOptions)
+          this.#validateSelectedParams(method, captured, current)
+        const selectedGuard = () => guard() && !selection.controller.signal.aborted
+        const value = await this.#checkedSelectedCall<Output>(
+          client,
+          method,
+          captured,
+          selectedGuard,
+        )
+        if (method === 'project.mapping.source.select') {
+          const result = value as MappingSourceSelectResultDTO
+          if (
+            result.selectionId !== selection.selectionId ||
+            result.projectId !== binding.projectId ||
+            !('format' in selection) ||
+            result.format !== selection.format
+          )
+            throw invalid()
+          selection.mappingOptions = { sheet: result.sheet, encoding: result.encoding }
+        }
+        if (!outbound) return value
+        const result = value as PackageExportResultDTO | HtmlReportExportResultDTO
+        if (result.publication.state !== 'published') return value
+        let publication = await this.#hostSelections.publish(
+          selection,
+          result.publication,
+          selectedGuard,
+        )
+        if (
+          method === 'project.transfer.report.export' &&
+          publication.state === 'published' &&
+          publication.durability === 'confirmed' &&
+          !publication.postPublicationError &&
+          selectedGuard()
+        ) {
+          const { reportRef, operationId } = result as HtmlReportExportResultDTO
+          try {
+            await this.#hostSelections.acknowledgeReportPublication(
+              selection,
+              reportRef,
+              operationId,
+              publication,
+            )
+            // Exact replay lets the Engine record native publication alongside
+            // its staged-byte receipt before Main retires the selection.
+            const acknowledged = await this.#checkedSelectedCall<HtmlReportExportResultDTO>(
+              client,
+              method,
+              captured,
+              selectedGuard,
+            )
+            if (stable(acknowledged) !== stable(result)) throw invalid()
+          } catch {
+            publication = { ...publication, postPublicationError: true }
+          }
+        }
+        void this.#hostSelections.retire(selection)
+        released = true
+        const cleanup = await this.#hostSelections.release(selection)
+        const response = {
+          ...result,
+          publication: {
+            ...publication,
+            cleanup: cleanup === 'pending' ? cleanup : publication.cleanup,
+          },
+        }
+        if (!guard()) throw denied()
+        if (!validateBusiness3('result_' + method, response)) throw invalid()
+        const budget = this.supervisor.queryReadBudget(current.owner)
+        const finish = budget.beginConsumerRequest()
+        try {
+          // The renderer acknowledges the Main receipt, whose publication state
+          // reflects the native destination rather than the engine staging directory.
+          budget.handoff(response)
+          return response as Output
+        } finally {
+          finish()
+        }
+      } catch (error) {
+        if (initialMapping) void this.#hostSelections.retire(selection)
+        throw error
+      } finally {
+        if (!released) {
+          if (outbound) void this.#hostSelections.retire(selection)
+          await this.#hostSelections.release(selection)
+        }
+      }
+    })
+  }
+  #wave4Context(signal?: AbortSignal) {
+    const current = this.#current()
+    const client = this.#client()
+    const selected = this.#selectedProjectGuard(current, client)
+    const guard = () => !signal?.aborted && selected()
+    if (!guard()) throw denied()
+    const binding = {
+      projectId: current.project.projectId,
+      owner: current.owner,
+      engineSessionId: current.engineSessionId,
+      epoch: this.#selectionEpoch,
+    }
+    return { current, client, guard, binding }
+  }
+  async #pickWave4(
+    purpose: 'mapping-source' | TransferPickerPurpose,
+    binding: SelectionBinding,
+    guard: () => boolean,
+  ) {
+    const pick =
+      purpose === 'mapping-source'
+        ? this.options.pickMappingSource
+        : this.options.pickTransferFile && (() => this.options.pickTransferFile!(purpose))
+    if (!pick) throw unsupportedWave4()
+    if (!this.#hostSelections.available || !guard()) throw denied()
+    try {
+      const result = await pick()
+      // The frozen public error catalog has no cancellation code. No selection was granted.
+      if ('canceled' in result || !guard()) throw denied()
+      return await this.#hostSelections.stage(purpose, result.filePath, binding, guard)
+    } catch {
+      throw denied()
+    }
+  }
+  async #runWithCheckpoint<Output>(
+    client: MainlineProjectTransport,
+    current: NonNullable<OrdinaryCurrent>,
+    guard: () => boolean,
+    method: 'project.behavior.run' | 'project.scenario.run' | 'project.scenario.resume',
+    params: RecordValue,
+    domain: RunBeforeCommitArgs['domain'],
+    baseRevision: number,
+  ): Promise<Output> {
+    const before = {
+      projectId: current.project.projectId,
+      operationId: params.operationId,
+      domain,
+      baseRevision,
+      label: null,
+    }
+    this.#validateSelectedParams('project.run.before_commit', before, current)
+    if (!guard()) throw denied()
+    const checkpoint = await client.requestRunCheckpoint(before)
+    if (!guard()) throw denied()
+    if (!validateBusiness3('result_project.run.before_commit', checkpoint)) throw invalid()
+    const receipt = checkpoint as RunBeforeCommitResultDTO
+    if (
+      receipt.projectId !== before.projectId ||
+      receipt.operationId !== before.operationId ||
+      receipt.domainRevision !== baseRevision
+    )
+      throw invalid()
+    const value = await this.#checkedSelectedCall<Output>(client, method, params, guard)
+    if (
+      domain === 'scenario' &&
+      (value as { beforeRunCheckpointRef: string }).beforeRunCheckpointRef !== receipt.checkpointRef
+    )
+      throw invalid()
+    return value
+  }
+  readSelectedMappingSource(selectionId: string, signal: AbortSignal) {
+    return this.#wave4Request<MappingSourceSelectResultDTO>(
+      'project.mapping.source.select',
+      { selectionId },
+      { signal, reuseMappingOptions: true },
+    )
+  }
+  runSelectedBehaviorSample(
+    args: {
+      behaviorId: string
+      sampleId: string
+      projectId: string
+      projectRevision: number
+      inputSnapshotId: string
+    },
+    signal: AbortSignal,
+  ): ReturnType<MainlineProjectBridge['runBehaviorSample']> {
+    return this.#run(async () => {
+      const { current, client, guard } = this.#wave4Context(signal)
+      const sample = this.#behaviorSamples.get(args.sampleId)
+      if (
+        !sample ||
+        sample.draft.id !== args.behaviorId ||
+        sample.binding.projectId !== args.projectId ||
+        sample.binding.baseRevision !== args.projectRevision ||
+        sample.binding.inputSnapshotId !== args.inputSnapshotId ||
+        current.project.projectId !== args.projectId ||
+        current.project.projectRevision !== args.projectRevision ||
+        current.project.inputSnapshotId !== args.inputSnapshotId
+      )
+        throw denied()
+      const request = {
+        ...sample,
+        projectId: args.projectId,
+        operationId: randomUUID(),
+        runId: randomUUID(),
+        binding: { ...sample.binding, scopeId: randomUUID(), requestId: randomUUID() },
+      }
+      this.#validateSelectedParams('project.behavior.run', request, current)
+      return this.#runWithCheckpoint(
+        client,
+        current,
+        guard,
+        'project.behavior.run',
+        request,
+        'behavior',
+        request.binding.baseRevision,
+      )
+    })
+  }
+  selectMappingSource(
+    args: Parameters<MainlineProjectBridge['selectMappingSource']>[0],
+  ): ReturnType<MainlineProjectBridge['selectMappingSource']> {
+    return this.#wave4Request('project.mapping.source.select', args)
+  }
+  previewMapping(
+    args: Parameters<MainlineProjectBridge['previewMapping']>[0],
+  ): ReturnType<MainlineProjectBridge['previewMapping']> {
+    return this.#wave4Request('project.mapping.preview', args)
+  }
+  prepareMappingCommit(
+    args: Parameters<MainlineProjectBridge['prepareMappingCommit']>[0],
+  ): ReturnType<MainlineProjectBridge['prepareMappingCommit']> {
+    return this.#wave4Request('project.mapping.prepare', args)
+  }
+  readMappingDraft(
+    args: Parameters<MainlineProjectBridge['readMappingDraft']>[0],
+  ): ReturnType<MainlineProjectBridge['readMappingDraft']> {
+    return this.#wave4Request('project.mapping.draft.read', args)
+  }
+  saveMappingDraft(
+    args: Parameters<MainlineProjectBridge['saveMappingDraft']>[0],
+  ): ReturnType<MainlineProjectBridge['saveMappingDraft']> {
+    return this.#wave4Request('project.mapping.draft.save', args)
+  }
+  runBehaviorSample(
+    args: Parameters<MainlineProjectBridge['runBehaviorSample']>[0],
+  ): ReturnType<MainlineProjectBridge['runBehaviorSample']> {
+    return this.#wave4Request('project.behavior.run', args, { recordSample: true })
+  }
+  readBehaviorRun(
+    args: Parameters<MainlineProjectBridge['readBehaviorRun']>[0],
+  ): ReturnType<MainlineProjectBridge['readBehaviorRun']> {
+    return this.#wave4Request('project.behavior.read', args)
+  }
+  cancelBehaviorRun(
+    args: Parameters<MainlineProjectBridge['cancelBehaviorRun']>[0],
+  ): ReturnType<MainlineProjectBridge['cancelBehaviorRun']> {
+    return this.#wave4Request('project.behavior.cancel', args)
+  }
+  createScenario(
+    args: Parameters<MainlineProjectBridge['createScenario']>[0],
+  ): ReturnType<MainlineProjectBridge['createScenario']> {
+    return this.#wave4Request('project.scenario.create', args)
+  }
+  copyScenario(
+    args: Parameters<MainlineProjectBridge['copyScenario']>[0],
+  ): ReturnType<MainlineProjectBridge['copyScenario']> {
+    return this.#wave4Request('project.scenario.copy', args)
+  }
+  listScenarios(
+    args: Parameters<MainlineProjectBridge['listScenarios']>[0],
+  ): ReturnType<MainlineProjectBridge['listScenarios']> {
+    return this.#wave4Request('project.scenario.list', args)
+  }
+  readScenario(
+    args: Parameters<MainlineProjectBridge['readScenario']>[0],
+  ): ReturnType<MainlineProjectBridge['readScenario']> {
+    return this.#wave4Request('project.scenario.read', args)
+  }
+  readScenarioRun(
+    args: Parameters<MainlineProjectBridge['readScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['readScenarioRun']> {
+    return this.#wave4Request('project.scenario.run.read', args)
+  }
+  startScenarioRun(
+    args: Parameters<MainlineProjectBridge['startScenarioRun']>[0],
+    signal?: AbortSignal,
+  ): ReturnType<MainlineProjectBridge['startScenarioRun']> {
+    return this.#wave4Request('project.scenario.run', args, { signal })
+  }
+  cancelScenarioRun(
+    args: Parameters<MainlineProjectBridge['cancelScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['cancelScenarioRun']> {
+    return this.#wave4Request('project.scenario.cancel', args)
+  }
+  resumeScenarioRun(
+    args: Parameters<MainlineProjectBridge['resumeScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['resumeScenarioRun']> {
+    return this.#wave4Request('project.scenario.resume', args)
+  }
+  compareScenarioRuns(
+    args: Parameters<MainlineProjectBridge['compareScenarioRuns']>[0],
+  ): ReturnType<MainlineProjectBridge['compareScenarioRuns']> {
+    return this.#wave4Request('project.scenario.compare', args)
+  }
+  deleteScenarioRun(
+    args: Parameters<MainlineProjectBridge['deleteScenarioRun']>[0],
+  ): ReturnType<MainlineProjectBridge['deleteScenarioRun']> {
+    return this.#wave4Request('project.scenario.run.delete', args)
+  }
+  restoreScenarioBaseline(
+    args: Parameters<MainlineProjectBridge['restoreScenarioBaseline']>[0],
+  ): ReturnType<MainlineProjectBridge['restoreScenarioBaseline']> {
+    return this.#wave4Request('project.scenario.restore', args)
+  }
+  checkProjectPackageExport(
+    args: Parameters<MainlineProjectBridge['checkProjectPackageExport']>[0],
+  ): ReturnType<MainlineProjectBridge['checkProjectPackageExport']> {
+    return this.#wave4Request('project.transfer.package.export.check', args)
+  }
+  exportProjectPackage(
+    args: Parameters<MainlineProjectBridge['exportProjectPackage']>[0],
+  ): ReturnType<MainlineProjectBridge['exportProjectPackage']> {
+    return this.#wave4Request('project.transfer.package.export', args)
+  }
+  checkProjectPackageImport(
+    args: Parameters<MainlineProjectBridge['checkProjectPackageImport']>[0],
+  ): ReturnType<MainlineProjectBridge['checkProjectPackageImport']> {
+    return this.#wave4Request('project.transfer.package.import.check', args)
+  }
+  importProjectPackage(
+    args: Parameters<MainlineProjectBridge['importProjectPackage']>[0],
+  ): ReturnType<MainlineProjectBridge['importProjectPackage']> {
+    return this.#wave4Request('project.transfer.package.import', args)
+  }
+  prepareProjectHtmlReport(
+    args: Parameters<MainlineProjectBridge['prepareProjectHtmlReport']>[0],
+  ): ReturnType<MainlineProjectBridge['prepareProjectHtmlReport']> {
+    return this.#wave4Request('project.transfer.report.prepare', args)
+  }
+  exportProjectHtmlReport(
+    args: Parameters<MainlineProjectBridge['exportProjectHtmlReport']>[0],
+  ): ReturnType<MainlineProjectBridge['exportProjectHtmlReport']> {
+    return this.#wave4Request('project.transfer.report.export', args)
+  }
+  selectTransferFile(
+    args: Parameters<MainlineProjectBridge['selectTransferFile']>[0],
+  ): ReturnType<MainlineProjectBridge['selectTransferFile']> {
+    return this.#run(async () => {
+      const { guard, binding } = this.#wave4Context()
+      if (!validateBusiness3('w4.transfer.pickerArgs', args)) throw invalid()
+      const record = await this.#pickWave4(args.purpose, binding, guard)
+      const result = {
+        projectId: record.projectId,
+        selectionId: record.selectionId,
+        purpose: record.purpose,
+        extension: record.extension,
+      }
+      if (!guard() || !validateBusiness3('w4.transfer.pickerResult', result)) {
+        await this.#hostSelections.retire(record)
+        throw denied()
+      }
+      return result as TransferPickerResultDTO
+    })
+  }
   #selectedProjectGuard(
     current: NonNullable<OrdinaryCurrent>,
     client: MainlineProjectTransport,
@@ -590,7 +1128,10 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     return () =>
       this.#selectionEpoch === epoch &&
       this.source.current() === current &&
-      this.#current() === current &&
+      !this.#closed &&
+      !this.#management.hasUnresolvedResponsibility &&
+      !this.#restore.hasUnresolvedResponsibility &&
+      this.supervisor.engineSessionId === current.engineSessionId &&
       client.owner === current.owner &&
       client.engineSessionId === current.engineSessionId
   }
@@ -1083,16 +1624,15 @@ export class ProjectMainlineService implements MainlineProjectBridge {
     const finish = budget.beginConsumerRequest()
     try {
       budget.beforeArguments(params)
+      const request = { ...params, projectId: current.project.projectId }
+      if (method === 'changeset.preview' && !validateBusiness3('params_changeset.preview', request))
+        throw invalid()
       const pin = this.supervisor.issueQueryPin(
         current.owner,
         current.engineSessionId,
         () => this.source.current() === current,
       )
-      const operation = this.supervisor.requestPinned(
-        method,
-        { ...params, projectId: current.project.projectId },
-        pin,
-      )
+      const operation = this.supervisor.requestPinned(method, request, pin)
       let value: T
       try {
         value = (await operation) as T

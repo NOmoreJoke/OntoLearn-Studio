@@ -1,0 +1,14 @@
+[
+  "<b>设备A</b>",
+  "<script>globalThis.__t10xss = 1</script>",
+  "<img src=\"https://t10.invalid/pixel\" onerror=\"globalThis.__t10xss=2\">",
+  "<svg onload=\"globalThis.__t10xss=3\"><image href=\"https://t10.invalid/x\"/></svg>",
+  "</pre><iframe src=\"https://t10.invalid/frame\"></iframe><pre>",
+  "<link rel=\"stylesheet\" href=\"https://t10.invalid/a.css\"><style>@import \"https://t10.invalid/b.css\";</style>",
+  "<a href=\"javascript:globalThis.__t10xss=4\">点击</a>",
+  "<meta http-equiv=\"refresh\" content=\"0;url=https://t10.invalid/redirect\">",
+  "<object data=\"https://t10.invalid/object\"></object>",
+  "中文“引号” '单引号' \"双引号\" & 换行\n第二行\n</title><script>globalThis.__t10xss=5</script>",
+  "&lt;img src=x onerror=alert(1)&gt;",
+  "\n首行换行必须保留\n<script>globalThis.__t10xss=6</script>"
+]

@@ -46,6 +46,14 @@ const result = spawnSync(
     // static analysis misses them unless they are collected explicitly.
     '--collect-submodules',
     'ontolearn_engine',
+    // T03 mapping: xlsx/csv sources bundle their parser packages into the
+    // frozen engine so parse_xlsx works from sys._MEIPASS like checkout.
+    '--collect-all',
+    'openpyxl',
+    '--collect-all',
+    'et_xmlfile',
+    '--collect-all',
+    'defusedxml',
     '--additional-hooks-dir',
     hooksDir,
     '--hidden-import',

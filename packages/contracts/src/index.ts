@@ -21,6 +21,14 @@ import type {
   OntologyTurtleImportCheckResultDTO,
 } from './ontology-turtle'
 export * from './ontology-turtle'
+import type { MappingBridge, MappingPreparedChangePlan } from './mapping'
+export * from './mapping'
+import type { BehaviorBridge } from './behavior'
+export * from './behavior'
+import type { ScenarioBridge } from './scenario'
+export * from './scenario'
+import type { TransferBridge } from './transfer'
+export * from './transfer'
 
 export const PROTOCOL_VERSION = 2 as const
 // Private preload delivery protocol. These are never exposed on DesktopBridge
@@ -485,7 +493,38 @@ export interface DesktopBridge
 }
 
 /** Main/preload-only finite channel association; no generic invoke is exposed to renderer. */
+type ProjectBridgeIpc<Method extends keyof MainlineProjectBridge> = {
+  args: Parameters<MainlineProjectBridge[Method]>
+  result: Awaited<ReturnType<MainlineProjectBridge[Method]>>
+}
+
 export type DesktopIpcMap = AgentIpcMap & {
+  'project:mapping-source-select': ProjectBridgeIpc<'selectMappingSource'>
+  'project:mapping-preview': ProjectBridgeIpc<'previewMapping'>
+  'project:mapping-prepare-commit': ProjectBridgeIpc<'prepareMappingCommit'>
+  'project:mapping-draft-read': ProjectBridgeIpc<'readMappingDraft'>
+  'project:mapping-draft-save': ProjectBridgeIpc<'saveMappingDraft'>
+  'project:behavior-run': ProjectBridgeIpc<'runBehaviorSample'>
+  'project:behavior-read': ProjectBridgeIpc<'readBehaviorRun'>
+  'project:behavior-cancel': ProjectBridgeIpc<'cancelBehaviorRun'>
+  'project:scenario-create': ProjectBridgeIpc<'createScenario'>
+  'project:scenario-copy': ProjectBridgeIpc<'copyScenario'>
+  'project:scenario-list': ProjectBridgeIpc<'listScenarios'>
+  'project:scenario-read': ProjectBridgeIpc<'readScenario'>
+  'project:scenario-run-read': ProjectBridgeIpc<'readScenarioRun'>
+  'project:scenario-run': ProjectBridgeIpc<'startScenarioRun'>
+  'project:scenario-cancel': ProjectBridgeIpc<'cancelScenarioRun'>
+  'project:scenario-resume': ProjectBridgeIpc<'resumeScenarioRun'>
+  'project:scenario-compare': ProjectBridgeIpc<'compareScenarioRuns'>
+  'project:scenario-run-delete': ProjectBridgeIpc<'deleteScenarioRun'>
+  'project:scenario-restore': ProjectBridgeIpc<'restoreScenarioBaseline'>
+  'project:transfer-package-export-check': ProjectBridgeIpc<'checkProjectPackageExport'>
+  'project:transfer-package-export': ProjectBridgeIpc<'exportProjectPackage'>
+  'project:transfer-package-import-check': ProjectBridgeIpc<'checkProjectPackageImport'>
+  'project:transfer-package-import': ProjectBridgeIpc<'importProjectPackage'>
+  'project:transfer-report-prepare': ProjectBridgeIpc<'prepareProjectHtmlReport'>
+  'project:transfer-report-export': ProjectBridgeIpc<'exportProjectHtmlReport'>
+  'project:transfer-select': ProjectBridgeIpc<'selectTransferFile'>
   'project:ontology-export': {
     args: []
     result: Awaited<ReturnType<MainlineProjectBridge['exportProjectOntology']>>
@@ -1172,7 +1211,8 @@ export interface OntologyEntityMetadataDTO {
     }
   >
 }
-export type MainlineChangePlanDTO = {
+type MainlineOrdinaryChangePlan = {
+  mappingPreparation?: never
   definitions?: Array<
     | {
         layer: 'ontology'
@@ -1196,11 +1236,23 @@ export type MainlineChangePlanDTO = {
     | QualityRuleDefinitionDTO
     | QualityConstraintDefinitionDTO
   >
-  remove_definitions?: Array<{ layer: 'ontology' | 'query' | 'rule' | 'constraint'; id: string }>
+  remove_definitions?: Array<{
+    layer: 'ontology' | 'query' | 'rule' | 'constraint'
+    id: string
+  }>
   manual?: Array<{ id: string; subject: string; predicate: string; object: string }>
   edits?: Record<string, string>
   remove?: string[]
 }
+export type MainlineChangePlanDTO =
+  | MainlineOrdinaryChangePlan
+  | (MappingPreparedChangePlan & {
+      definitions?: never
+      remove_definitions?: never
+      manual?: never
+      edits?: never
+      remove?: never
+    })
 export type MainlinePreviewArgs =
   | { baseRevision: number; intent: 'change'; plan: MainlineChangePlanDTO }
   | { baseRevision: number; intent: 'undo'; targetOperationId: string }
@@ -1209,7 +1261,11 @@ export interface MainlineProjectBridge
     ProjectManagementBridge,
     ProjectCheckpointBridge,
     LearningLedgerBridge,
-    QualityWorkspaceBridge {
+    QualityWorkspaceBridge,
+    MappingBridge,
+    BehaviorBridge,
+    ScenarioBridge,
+    TransferBridge {
   exportProjectOntology(
     args: Record<string, never>,
   ): Promise<BridgeResult<OntologyTurtleExportResultDTO>>

@@ -104,6 +104,20 @@ class LearningHost:
             provenance="persisted-domain-tool",
         )
 
+    def wave4_evidences(self, store, project, internal, context, snapshot_ref, assistance):
+        from ontolearn_engine.project.learning_wave4 import persisted_evidences
+
+        return persisted_evidences(
+            store,
+            project,
+            internal,
+            self.root(),
+            self.bare_service(),
+            context,
+            snapshot_ref,
+            assistance,
+        )
+
     def _query_check_payload(self, pay):
         """Project one real query payload into the Q-01/Q-02 evidence shape."""
         if pay["query"].get("type") != "SELECT":

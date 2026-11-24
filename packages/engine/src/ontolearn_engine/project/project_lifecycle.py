@@ -436,7 +436,11 @@ def commit(store, project, base, operation, job, supplied, hook):
     from ontolearn_engine.job_store import JobStore
 
     require(isinstance(store, JobStore) and store._target_format == 3, "state")
-    require(not store._db.in_transaction, "state")
+    # Outside the entrusted atomic-import scope an open transaction stays a
+    # hard state fault; inside it (the trusted transfer importer sets the
+    # dynamic marker for exactly this), creation nests on a savepoint of the
+    # caller's single outer transaction instead of owning its own commit.
+    require(not store._db.in_transaction or getattr(store, "_in_creation_scope", False), "state")
     require(project is None and base is None and job is None, "input")
     require(
         type(supplied) is dict

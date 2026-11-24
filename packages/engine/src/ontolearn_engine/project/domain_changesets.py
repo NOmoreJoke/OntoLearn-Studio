@@ -145,7 +145,54 @@ def _formal_quality_definition(record):
         raise ValueError("Non-canonical quality definition")
 
 
+def _mapping_definition(record):
+    """The frozen mapping definition payload carried by confirmed ChangeSets."""
+    value = json.loads(record["payload"])
+    if (
+        not isinstance(value, dict)
+        or set(value) != {"version", "definition", "sourceHash", "sheet"}
+        or type(value["version"]) is not int
+        or value["version"] < 1
+        or not isinstance(value["sourceHash"], str)
+        or not isinstance(value["sheet"], str)
+    ):
+        raise ValueError("Unsupported mapping definition payload")
+    definition = value["definition"]
+    if (
+        not isinstance(definition, dict)
+        or set(definition) != {"identity", "version", "namespace", "class_iri", "keys", "bindings"}
+        or not isinstance(definition["identity"], str)
+        or not definition["identity"]
+        or not isinstance(definition["namespace"], str)
+        or not isinstance(definition["class_iri"], str)
+        or not isinstance(definition["keys"], list)
+        or not isinstance(definition["bindings"], list)
+    ):
+        raise ValueError("Unsupported mapping definition spec")
+    for binding in definition["bindings"]:
+        if not isinstance(binding, dict) or set(binding) != {
+            "column",
+            "predicate",
+            "conversion",
+            "reference_namespace",
+            "reference_columns",
+        }:
+            raise ValueError("Unsupported mapping binding")
+        conversion = binding["conversion"]
+        if not isinstance(conversion, dict) or set(conversion) != {
+            "kind",
+            "trim",
+            "empty",
+            "true_values",
+            "false_values",
+        }:
+            raise ValueError("Unsupported mapping conversion")
+
+
 def _definition(store, record):
+    if record["layer"] == "mapping":
+        _mapping_definition(record)
+        return
     if record["layer"] in {"rule", "constraint"}:
         _formal_quality_definition(record)
         return
@@ -197,6 +244,14 @@ def supported(store, preview):
     """Historical records have no incoming-frame size limit; only typed shape."""
     before, after = json.loads(preview.before_json), json.loads(preview.after_json)
     restoring = preview.intent == "undo"
+    plan = json.loads(preview.plan_json)
+    mapped = plan.get("mapping") if isinstance(plan, dict) else None
+    mapped_owner = (
+        mapped.get("id") if isinstance(mapped, dict) and isinstance(mapped.get("id"), str) else None
+    )
+    # Undo and restore compensations replay verified historical snapshots and
+    # may therefore touch any mapping owner's facts and status rows.
+    compensating = restoring or (isinstance(plan, dict) and "compensate" in plan)
     if restoring:
         validate_compensation(before, after)
     else:
@@ -209,14 +264,38 @@ def supported(store, preview):
             if record is None:
                 continue
             if key == "definition":
+                if item["resource"][1] == "mapping" and (
+                    not compensating
+                    and (mapped_owner is None or item["resource"][2] != mapped_owner)
+                ):
+                    raise ValueError("Mapped definition outside the mapping plan owner")
                 _definition(store, record)
             elif key == "fact":
-                if record["owner"] is not None or record["source_row"] is not None:
-                    raise ValueError("Mapped facts are outside formal manual ChangeSets")
-                # Edits preserve their original ID: validate RDF through the actual
-                # Store preview, not an invented new content-derived identity.
-                if record["managed_value"] is not None:
-                    raise ValueError("Managed facts are outside formal manual ChangeSets")
+                if record["owner"] is not None:
+                    # Mapped facts carry FR-304 provenance. Forward mapping
+                    # plans must own them exactly; compensations replay
+                    # verified historical snapshots and may touch any owner.
+                    if not compensating and record["owner"] != mapped_owner:
+                        raise ValueError("Mapped facts are outside formal manual ChangeSets")
+                    if not isinstance(record["source_row"], str) or not record["source_row"]:
+                        raise ValueError("Mapped facts require source-row provenance")
+                    if record["managed_value"] != record["object"]:
+                        raise ValueError("Mapped facts keep managed and current values aligned")
+                elif record["source_row"] is not None:
+                    raise ValueError("Manual facts carry no source-row provenance")
+                else:
+                    # Edits preserve their original ID: validate RDF through the
+                    # actual Store preview, not an invented new identity.
+                    if record["managed_value"] is not None:
+                        raise ValueError("Managed facts are outside formal manual ChangeSets")
+            elif key == "mappingState":
+                if not (compensating or mapped_owner is not None):
+                    raise ValueError("Unsupported touched state")
+                if not isinstance(record, dict) or set(record) != {
+                    "generatedVersion",
+                    "stale",
+                }:
+                    raise ValueError("Unsupported mapping status shape")
             else:
                 raise ValueError("Unsupported touched state")
 
@@ -502,7 +581,28 @@ def preview_changeset(
             fail("REVISION_CONFLICT", expected=base, actual=store.revision(internal))
         transactions = ProjectTransactions(store)
         conflict = None
-        if request["intent"] == "change":
+        mapping_preparation = (
+            request["plan"]["mappingPreparation"]
+            if request["intent"] == "change" and set(request["plan"]) == {"mappingPreparation"}
+            else None
+        )
+        if mapping_preparation is not None:
+            # W4-A1: the mutually exclusive mapping branch. Resolve the trusted
+            # preparation evidence into the ordinary T01 storage plan, then run
+            # the exact same preview/verification machinery as manual plans -
+            # there is no second write path. merge_plan is deliberately skipped:
+            # mapping definitions carry no public entity-metadata merge keys.
+            from ontolearn_engine.mapping import service as mapping_service
+
+            effective_plan = mapping_service.resolve_preparation(
+                store, project, host_client_id, engine_session_id, request["plan"]
+            )
+            preview = transactions.preview(internal, base, effective_plan)
+            try:
+                supported(store, preview)
+            except (ValueError, KeyError, TypeError):
+                fail("INVALID_REQUEST", field="params")
+        elif request["intent"] == "change":
             # Only direct caller terms get known syntax/policy rejection.
             # Unknown parser/N3/Store/preview failures retain UNKNOWN/HOLD;
             # edits validate values without deriving or replacing their IDs.
@@ -630,6 +730,8 @@ def preview_changeset(
         if saved is None or saved["project"] != project or saved["payload"] != canonical(envelope):
             fail("INVALID_STATE")
         _verify_plan(store, project, saved, json.loads(saved["payload"]))
+        if mapping_preparation is not None:
+            mapping_service.bind_changeset_plan(store, project, ref, mapping_preparation)
         hook("changeset_plan")
         store._valid("result_changeset.preview", result)
         return result
@@ -1039,8 +1141,10 @@ def commit(store, job, context, hook):
     # Same outer _application transaction as the marker above: the staged
     # agent full-assistance marking for this exact ChangeSet either lands
     # with the committed domain state or rolls back with it (B05).
+    from ontolearn_engine.mapping import service as mapping_service
     from ontolearn_engine.project import learning_agent
 
+    mapping_service.record_changeset_execution(store, job, preview, marker)
     learning_agent.apply_pending_assistance(
         store, job["projectId"], job["operationId"], preview.base
     )

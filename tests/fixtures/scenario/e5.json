@@ -1,0 +1,197 @@
+{
+  "id": "T07-private-E5-v1",
+  "source": "PRD V0.6 E.5",
+  "scope": "algorithm probes only; not approved T09 manifest or real T05/T06 integration",
+  "events": [
+    {
+      "id": "E001",
+      "round": 1,
+      "sequence": 0,
+      "payload": "{}"
+    },
+    {
+      "id": "E002",
+      "round": 1,
+      "sequence": 1,
+      "payload": "{}"
+    },
+    {
+      "id": "E003",
+      "round": 1,
+      "sequence": 2,
+      "payload": "{}"
+    },
+    {
+      "id": "E004",
+      "round": 1,
+      "sequence": 3,
+      "payload": "{}"
+    },
+    {
+      "id": "E005",
+      "round": 2,
+      "sequence": 4,
+      "payload": "{}"
+    },
+    {
+      "id": "E006",
+      "round": 2,
+      "sequence": 5,
+      "payload": "{}"
+    },
+    {
+      "id": "E007",
+      "round": 2,
+      "sequence": 6,
+      "payload": "{}"
+    },
+    {
+      "id": "E008",
+      "round": 2,
+      "sequence": 7,
+      "payload": "{}"
+    },
+    {
+      "id": "E009",
+      "round": 3,
+      "sequence": 8,
+      "payload": "{}"
+    },
+    {
+      "id": "E010",
+      "round": 3,
+      "sequence": 9,
+      "payload": "{}"
+    },
+    {
+      "id": "E011",
+      "round": 3,
+      "sequence": 10,
+      "payload": "{}"
+    },
+    {
+      "id": "E012",
+      "round": 3,
+      "sequence": 11,
+      "payload": "{}"
+    },
+    {
+      "id": "E013",
+      "round": 4,
+      "sequence": 12,
+      "payload": "{}"
+    },
+    {
+      "id": "E014",
+      "round": 4,
+      "sequence": 13,
+      "payload": "{}"
+    },
+    {
+      "id": "E015",
+      "round": 4,
+      "sequence": 14,
+      "payload": "{}"
+    },
+    {
+      "id": "E016",
+      "round": 4,
+      "sequence": 15,
+      "payload": "{}"
+    }
+  ],
+  "expected": {
+    "3": [
+      {
+        "round": 1,
+        "created": ["W001", "W002", "W003", "W004"],
+        "completed": ["W001", "W002", "W003"],
+        "backlog": ["W004"],
+        "metrics": {
+          "backlog": 1,
+          "completed": 3,
+          "open_high_alerts": 0
+        }
+      },
+      {
+        "round": 2,
+        "created": ["W005", "W006", "W007", "W008"],
+        "completed": ["W004", "W005", "W006"],
+        "backlog": ["W007", "W008"],
+        "metrics": {
+          "backlog": 2,
+          "completed": 6,
+          "open_high_alerts": 0
+        }
+      },
+      {
+        "round": 3,
+        "created": ["W009", "W010", "W011", "W012"],
+        "completed": ["W007", "W008", "W009"],
+        "backlog": ["W010", "W011", "W012"],
+        "metrics": {
+          "backlog": 3,
+          "completed": 9,
+          "open_high_alerts": 0
+        }
+      },
+      {
+        "round": 4,
+        "created": ["W013", "W014", "W015", "W016"],
+        "completed": ["W010", "W011", "W012"],
+        "backlog": ["W013", "W014", "W015", "W016"],
+        "metrics": {
+          "backlog": 4,
+          "completed": 12,
+          "open_high_alerts": 0
+        }
+      }
+    ],
+    "4": [
+      {
+        "round": 1,
+        "created": ["W001", "W002", "W003", "W004"],
+        "completed": ["W001", "W002", "W003", "W004"],
+        "backlog": [],
+        "metrics": {
+          "backlog": 0,
+          "completed": 4,
+          "open_high_alerts": 0
+        }
+      },
+      {
+        "round": 2,
+        "created": ["W005", "W006", "W007", "W008"],
+        "completed": ["W005", "W006", "W007", "W008"],
+        "backlog": [],
+        "metrics": {
+          "backlog": 0,
+          "completed": 8,
+          "open_high_alerts": 0
+        }
+      },
+      {
+        "round": 3,
+        "created": ["W009", "W010", "W011", "W012"],
+        "completed": ["W009", "W010", "W011", "W012"],
+        "backlog": [],
+        "metrics": {
+          "backlog": 0,
+          "completed": 12,
+          "open_high_alerts": 0
+        }
+      },
+      {
+        "round": 4,
+        "created": ["W013", "W014", "W015", "W016"],
+        "completed": ["W013", "W014", "W015", "W016"],
+        "backlog": [],
+        "metrics": {
+          "backlog": 0,
+          "completed": 16,
+          "open_high_alerts": 0
+        }
+      }
+    ]
+  }
+}

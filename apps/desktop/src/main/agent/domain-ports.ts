@@ -58,21 +58,33 @@ const owlClass = '<http://www.w3.org/2002/07/owl#Class>'
 const subClassOf = 'http://www.w3.org/2000/01/rdf-schema#subClassOf'
 const protocolId = z.string().regex(/^[A-Za-z0-9:_-]{1,128}$/)
 
+export type WaveFourProjects = Pick<
+  ProjectMainlineService,
+  | 'readSelectedMappingSource'
+  | 'runSelectedBehaviorSample'
+  | 'readScenario'
+  | 'copyScenario'
+  | 'startScenarioRun'
+  | 'readScenarioRun'
+>
+
 type PortsDependencies = {
   projects: Pick<
     ProjectMainlineService,
     'readProject' | 'getProjectQualityState' | 'runProjectQualityCheck'
-  > & {
-    queries: Pick<
-      ProjectMainlineService['queries'],
-      'loadQueryDefinition' | 'executeSavedQuery' | 'getQueryResultDescriptor'
-    >
-  }
+  > &
+    Partial<WaveFourProjects> & {
+      queries: Pick<
+        ProjectMainlineService['queries'],
+        'loadQueryDefinition' | 'executeSavedQuery' | 'getQueryResultDescriptor'
+      >
+    }
   tasks: Pick<TaskService, 'getJob' | 'getResult'>
   receive<T>(work: () => Promise<BridgeResult<T>>): Promise<BridgeResult<T>>
   current(context: TrustedContext): boolean
   scope: AgentScope
   objectRefs?: ReadonlyMap<string, string>
+  waveFourEnabled?: boolean
 }
 
 function take<T>(result: BridgeResult<T>): T {
@@ -143,12 +155,12 @@ export class AgentToolRegistry {
 
   entries() {
     return toolNames.map((name) => {
-      const enabled = !waveFour.includes(name)
+      const wave = waveFour.includes(name) ? (4 as const) : (3 as const)
       return {
         name,
         access: toolAccess[name],
-        wave: enabled ? (3 as const) : (4 as const),
-        enabled,
+        wave,
+        enabled: wave === 3 || this.dependencies.waveFourEnabled === true,
       }
     })
   }
@@ -172,11 +184,16 @@ export class AgentToolRegistry {
   }
 
   async execute(name: ToolName, context: TrustedContext, args: unknown, signal: AbortSignal) {
-    if (waveFour.includes(name)) throw new AgentError('TOOL_UNAVAILABLE')
+    if (waveFour.includes(name) && !this.dependencies.waveFourEnabled)
+      throw new AgentError('TOOL_UNAVAILABLE')
     const check = () => this.guard(context, signal)
     const run = async <T>(action: () => Promise<BridgeResult<T>>, mainline = true): Promise<T> => {
       check()
-      const result = await (mainline ? this.dependencies.receive(action) : action())
+      const start = () => {
+        check()
+        return action()
+      }
+      const result = await (mainline ? this.dependencies.receive(start) : start())
       check()
       return take(result)
     }
@@ -184,6 +201,10 @@ export class AgentToolRegistry {
       const result = argumentSchemas[tool].safeParse(args)
       if (!result.success) throw new AgentError('INVALID_TOOL_ARGUMENTS')
       return result.data as z.infer<(typeof argumentSchemas)[N]>
+    }
+    const selected = (ref: string) => {
+      if (!context.selectedObjectIds.includes(ref)) throw new AgentError('TOOL_NOT_ALLOWED')
+      return this.dependencies.objectRefs?.get(ref) ?? ref
     }
     const range = (scope: 'asserted' | 'asserted-and-derived' | 'selected-history') => {
       const value = agentScopeToQueryScope(scope, context.inputSnapshotId)
@@ -268,6 +289,178 @@ export class AgentToolRegistry {
           summary: proposal.parentIri ? '建议新增本体类及其父类关系' : '建议新增本体类',
           detail,
         }
+      }
+      case 'mapping_propose': {
+        const { sourceId: sourceRef } = parse(name)
+        const sourceId = selected(sourceRef)
+        const projects = this.dependencies.projects
+        if (!projects.readSelectedMappingSource) throw new AgentError('TOOL_UNAVAILABLE')
+        const source = await run(() => projects.readSelectedMappingSource!(sourceId, signal))
+        if (source.projectId !== context.projectId || source.selectionId !== sourceId)
+          throw new AgentError('INVALID_EVIDENCE')
+        // Evidence references the same columns and exact matches in the source view.
+        // Column names, IRIs, samples and model instruction are free text and stay local.
+        const matches = (source.suggestions ?? []).slice(0, 24).flatMap((item, index) => {
+          const column = source.fields.findIndex(({ name }) => name === item.column)
+          return column < 0
+            ? []
+            : [
+                {
+                  columnIndex: column,
+                  suggestionIndex: index,
+                  basis: item.basis,
+                  sampleCount: item.samples.length,
+                },
+              ]
+        })
+        return {
+          kind: 'draft' as const,
+          draftType: 'mapping' as const,
+          summary: matches.length
+            ? '请核对数据源中的字段名精确匹配建议'
+            : '当前数据源没有字段名精确匹配建议',
+          detail: JSON.stringify({
+            sourceId: sourceRef,
+            format: source.format,
+            totalRows: source.totalRows,
+            fieldCount: source.fields.length,
+            matches,
+          }),
+        }
+      }
+      case 'behavior_test': {
+        const args = parse(name)
+        const behaviorId = selected(args.behaviorId)
+        const sampleId = selected(args.sampleId)
+        const projects = this.dependencies.projects
+        if (!projects.runSelectedBehaviorSample) throw new AgentError('TOOL_UNAVAILABLE')
+        const { projectId, projectRevision, inputSnapshotId } = context
+        const result = await run(() =>
+          projects.runSelectedBehaviorSample!(
+            { behaviorId, sampleId, projectId, projectRevision, inputSnapshotId },
+            signal,
+          ),
+        )
+        if (
+          result.projectId !== projectId ||
+          result.scope !== 'sample' ||
+          result.binding.projectId !== projectId ||
+          result.binding.inputSnapshotId !== inputSnapshotId ||
+          result.binding.baseRevision !== projectRevision
+        )
+          throw new AgentError('INVALID_EVIDENCE')
+        const status =
+          result.state === 'failed' || result.state === 'cancelled'
+            ? result.state
+            : result.freshness
+        return evidence(context, result.runId, inputSnapshotId, status, [
+          { fieldId: 'freshness', value: result.freshness },
+          { fieldId: 'state', value: result.state },
+          { fieldId: 'error', value: result.error?.code ?? null },
+        ])
+      }
+      case 'scenario_run': {
+        const scenarioId = selected(parse(name).scenarioId)
+        const projects = this.dependencies.projects
+        if (
+          !projects.readScenario ||
+          !projects.copyScenario ||
+          !projects.startScenarioRun ||
+          !projects.readScenarioRun
+        )
+          throw new AgentError('TOOL_UNAVAILABLE')
+        const { projectId, projectRevision, inputSnapshotId } = context
+        const base = { projectVersion: projectRevision, inputSnapshotId }
+        const validIdentity = (identity: {
+          projectId: string
+          projectVersion: number
+          inputSnapshotId: string
+        }) =>
+          identity.projectId === projectId &&
+          identity.projectVersion === projectRevision &&
+          identity.inputSnapshotId === inputSnapshotId
+        const original = await run(() => projects.readScenario!({ scenarioId }))
+        if (
+          original.projectId !== projectId ||
+          original.scenario.identity.scenarioId !== scenarioId ||
+          !validIdentity(original.scenario.identity)
+        )
+          throw new AgentError('STALE_CONTEXT')
+        const copyOperation = randomUUID()
+        const copied = await run(() =>
+          projects.copyScenario!({
+            ...base,
+            scenarioId,
+            operationId: copyOperation,
+            name: 'Agent 场景副本',
+          }),
+        )
+        const copyId = copied.scenario.identity.scenarioId
+        if (
+          copied.projectId !== projectId ||
+          copied.sourceScenarioId !== scenarioId ||
+          copied.operationId !== copyOperation ||
+          copyId === scenarioId ||
+          !validIdentity(copied.scenario.identity)
+        )
+          throw new AgentError('INVALID_EVIDENCE')
+        const runId = randomUUID()
+        const operationId = randomUUID()
+        const result = await run(() =>
+          projects.startScenarioRun!(
+            {
+              ...base,
+              scenarioId: copyId,
+              runId,
+              operationId,
+            },
+            signal,
+          ),
+        )
+        const validRun = (item: typeof result.run) =>
+          item.runId === runId &&
+          item.identity.scenarioId === copyId &&
+          validIdentity(item.identity) &&
+          item.scope.mode === 'scenario' &&
+          item.scope.scopeId === copyId
+        if (
+          result.projectId !== projectId ||
+          result.operationId !== operationId ||
+          !validRun(result.run)
+        )
+          throw new AgentError('INVALID_EVIDENCE')
+        let scenarioRun = result.run
+        const metricsRound = scenarioRun.lastCommittedRound
+        let metrics = scenarioRun.rounds.find(({ number }) => number === metricsRound)?.metrics
+        if (!metrics && scenarioRun.lastCommittedRound > 0) {
+          const round = scenarioRun.lastCommittedRound
+          const page = await run(() =>
+            projects.readScenarioRun!({
+              scenarioId: copyId,
+              runId,
+              roundOffset: round - 1,
+              limit: 1,
+            }),
+          )
+          if (page.projectId !== projectId || !validRun(page.run))
+            throw new AgentError('INVALID_EVIDENCE')
+          scenarioRun = page.run
+          metrics = scenarioRun.rounds.find(({ number }) => number === round)?.metrics
+          if (!metrics) throw new AgentError('INVALID_EVIDENCE')
+        }
+        const status =
+          scenarioRun.status === 'failed' || scenarioRun.status === 'cancelled'
+            ? scenarioRun.status
+            : 'current'
+        return evidence(context, runId, inputSnapshotId, status, [
+          { fieldId: 'status', value: scenarioRun.status },
+          { fieldId: 'error', value: scenarioRun.error },
+          { fieldId: 'last-committed-round', value: scenarioRun.lastCommittedRound },
+          { fieldId: 'metrics-round', value: metrics ? metricsRound : null },
+          { fieldId: 'backlog', value: metrics?.backlog ?? null },
+          { fieldId: 'completed', value: metrics?.completed ?? null },
+          { fieldId: 'open-high-alerts', value: metrics?.openHighAlerts ?? null },
+        ])
       }
       case 'query_draft': {
         const { question, scope } = parse(name)

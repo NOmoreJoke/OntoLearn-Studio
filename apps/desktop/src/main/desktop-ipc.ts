@@ -107,7 +107,87 @@ export function registerDesktopIpc({
     blocked: () => !!(projects?.managementBlocked || projects?.restoreBlocked),
   })
 
+  const wave4Channels = {
+    'project:mapping-source-select': true,
+    'project:mapping-preview': true,
+    'project:mapping-prepare-commit': true,
+    'project:mapping-draft-read': false,
+    'project:mapping-draft-save': true,
+    'project:behavior-run': true,
+    'project:behavior-read': false,
+    'project:behavior-cancel': true,
+    'project:scenario-create': true,
+    'project:scenario-copy': true,
+    'project:scenario-list': false,
+    'project:scenario-read': false,
+    'project:scenario-run-read': false,
+    'project:scenario-run': true,
+    'project:scenario-cancel': true,
+    'project:scenario-resume': true,
+    'project:scenario-compare': false,
+    'project:scenario-run-delete': true,
+    'project:scenario-restore': true,
+    'project:transfer-package-export-check': true,
+    'project:transfer-package-export': true,
+    'project:transfer-package-import-check': true,
+    'project:transfer-package-import': true,
+    'project:transfer-report-prepare': true,
+    'project:transfer-report-export': true,
+    'project:transfer-select': true,
+  } as const satisfies Partial<Record<DesktopIpcChannel, boolean>>
   const handlers: Omit<DesktopIpcHandlers, keyof AgentIpcMap> = {
+    'project:mapping-source-select': (args) =>
+      projects?.selectMappingSource(args) ?? Promise.resolve(permission()),
+    'project:mapping-preview': (args) =>
+      projects?.previewMapping(args) ?? Promise.resolve(permission()),
+    'project:mapping-prepare-commit': (args) =>
+      projects?.prepareMappingCommit(args) ?? Promise.resolve(permission()),
+    'project:mapping-draft-read': (args) =>
+      projects?.readMappingDraft(args) ?? Promise.resolve(permission()),
+    'project:mapping-draft-save': (args) =>
+      projects?.saveMappingDraft(args) ?? Promise.resolve(permission()),
+    'project:behavior-run': (args) =>
+      projects?.runBehaviorSample(args) ?? Promise.resolve(permission()),
+    'project:behavior-read': (args) =>
+      projects?.readBehaviorRun(args) ?? Promise.resolve(permission()),
+    'project:behavior-cancel': (args) =>
+      projects?.cancelBehaviorRun(args) ?? Promise.resolve(permission()),
+    'project:scenario-create': (args) =>
+      projects?.createScenario(args) ?? Promise.resolve(permission()),
+    'project:scenario-copy': (args) =>
+      projects?.copyScenario(args) ?? Promise.resolve(permission()),
+    'project:scenario-list': (args) =>
+      projects?.listScenarios(args) ?? Promise.resolve(permission()),
+    'project:scenario-read': (args) =>
+      projects?.readScenario(args) ?? Promise.resolve(permission()),
+    'project:scenario-run-read': (args) =>
+      projects?.readScenarioRun(args) ?? Promise.resolve(permission()),
+    'project:scenario-run': (args) =>
+      projects?.startScenarioRun(args) ?? Promise.resolve(permission()),
+    'project:scenario-cancel': (args) =>
+      projects?.cancelScenarioRun(args) ?? Promise.resolve(permission()),
+    'project:scenario-resume': (args) =>
+      projects?.resumeScenarioRun(args) ?? Promise.resolve(permission()),
+    'project:scenario-compare': (args) =>
+      projects?.compareScenarioRuns(args) ?? Promise.resolve(permission()),
+    'project:scenario-run-delete': (args) =>
+      projects?.deleteScenarioRun(args) ?? Promise.resolve(permission()),
+    'project:scenario-restore': (args) =>
+      projects?.restoreScenarioBaseline(args) ?? Promise.resolve(permission()),
+    'project:transfer-package-export-check': (args) =>
+      projects?.checkProjectPackageExport(args) ?? Promise.resolve(permission()),
+    'project:transfer-package-export': (args) =>
+      projects?.exportProjectPackage(args) ?? Promise.resolve(permission()),
+    'project:transfer-package-import-check': (args) =>
+      projects?.checkProjectPackageImport(args) ?? Promise.resolve(permission()),
+    'project:transfer-package-import': (args) =>
+      projects?.importProjectPackage(args) ?? Promise.resolve(permission()),
+    'project:transfer-report-prepare': (args) =>
+      projects?.prepareProjectHtmlReport(args) ?? Promise.resolve(permission()),
+    'project:transfer-report-export': (args) =>
+      projects?.exportProjectHtmlReport(args) ?? Promise.resolve(permission()),
+    'project:transfer-select': (args) =>
+      projects?.selectTransferFile(args) ?? Promise.resolve(permission()),
     'project:ontology-export': () =>
       projects?.exportProjectOntology({}) ?? Promise.resolve(permission()),
     'project:ontology-import-check': (args) =>
@@ -321,27 +401,28 @@ export function registerDesktopIpc({
       if (library?.switching && channel !== 'library:location') return permission()
       if (
         (projects?.managementBlocked || projects?.restoreBlocked) &&
-        [
-          'project:create-blank',
-          'project:create-example',
-          'project:open',
-          'project:draft-save',
-          'project:changeset-preview',
-          'project:changeset-confirm',
-          'project:changeset-commit',
-          'project:checkpoint-create',
-          'project:restore-preview',
-          'project:restore-confirm',
-          'project:restore-apply',
-          'project:learning-attempt-start',
-          'project:learning-hint-record',
-          'project:learning-observation-record',
-          'project:learning-task-check',
-          'project:quality-check',
-          'project:quality-prepare',
-          'query:execute-saved',
-          'job:cancel',
-        ].includes(channel)
+        (wave4Channels[channel as keyof typeof wave4Channels] === true ||
+          [
+            'project:create-blank',
+            'project:create-example',
+            'project:open',
+            'project:draft-save',
+            'project:changeset-preview',
+            'project:changeset-confirm',
+            'project:changeset-commit',
+            'project:checkpoint-create',
+            'project:restore-preview',
+            'project:restore-confirm',
+            'project:restore-apply',
+            'project:learning-attempt-start',
+            'project:learning-hint-record',
+            'project:learning-observation-record',
+            'project:learning-task-check',
+            'project:quality-check',
+            'project:quality-prepare',
+            'query:execute-saved',
+            'job:cancel',
+          ].includes(channel))
       )
         return permission()
       const mainline =
@@ -359,7 +440,9 @@ export function registerDesktopIpc({
         delivery = await replies.receive(async () => {
           if (
             (channel === 'project:ontology-export' && args.length !== 0) ||
-            (channel === 'project:ontology-import-check' && args.length !== 1)
+            ((channel === 'project:ontology-import-check' ||
+              Object.hasOwn(wave4Channels, channel)) &&
+              args.length !== 1)
           )
             return { ok: false as const, error: modelInvalidRequestError() }
           return handler(...args)
@@ -378,6 +461,38 @@ export function registerDesktopIpc({
     })
   }
   register('engine:health', handlers['engine:health'])
+  register('project:mapping-source-select', handlers['project:mapping-source-select'])
+  register('project:mapping-preview', handlers['project:mapping-preview'])
+  register('project:mapping-prepare-commit', handlers['project:mapping-prepare-commit'])
+  register('project:mapping-draft-read', handlers['project:mapping-draft-read'])
+  register('project:mapping-draft-save', handlers['project:mapping-draft-save'])
+  register('project:behavior-run', handlers['project:behavior-run'])
+  register('project:behavior-read', handlers['project:behavior-read'])
+  register('project:behavior-cancel', handlers['project:behavior-cancel'])
+  register('project:scenario-create', handlers['project:scenario-create'])
+  register('project:scenario-copy', handlers['project:scenario-copy'])
+  register('project:scenario-list', handlers['project:scenario-list'])
+  register('project:scenario-read', handlers['project:scenario-read'])
+  register('project:scenario-run-read', handlers['project:scenario-run-read'])
+  register('project:scenario-run', handlers['project:scenario-run'])
+  register('project:scenario-cancel', handlers['project:scenario-cancel'])
+  register('project:scenario-resume', handlers['project:scenario-resume'])
+  register('project:scenario-compare', handlers['project:scenario-compare'])
+  register('project:scenario-run-delete', handlers['project:scenario-run-delete'])
+  register('project:scenario-restore', handlers['project:scenario-restore'])
+  register(
+    'project:transfer-package-export-check',
+    handlers['project:transfer-package-export-check'],
+  )
+  register('project:transfer-package-export', handlers['project:transfer-package-export'])
+  register(
+    'project:transfer-package-import-check',
+    handlers['project:transfer-package-import-check'],
+  )
+  register('project:transfer-package-import', handlers['project:transfer-package-import'])
+  register('project:transfer-report-prepare', handlers['project:transfer-report-prepare'])
+  register('project:transfer-report-export', handlers['project:transfer-report-export'])
+  register('project:transfer-select', handlers['project:transfer-select'])
   register('project:ontology-export', handlers['project:ontology-export'])
   register('project:ontology-import-check', handlers['project:ontology-import-check'])
   register('project:checkpoint-list', handlers['project:checkpoint-list'])

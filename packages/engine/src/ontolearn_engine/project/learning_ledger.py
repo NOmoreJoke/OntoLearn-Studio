@@ -62,6 +62,7 @@ PAYLOAD_KEYS = {
 }
 GUIDED_STAGE_TASK = "business-ontology"
 QUERY_TASK = "query"
+WAVE4_TASKS = frozenset({"mapping", "behavior", "scenario", "report"})
 # Tasks whose checks run against real persisted tool evidence in this build.
 WIRED_TASKS = frozenset(
     {
@@ -70,6 +71,7 @@ WIRED_TASKS = frozenset(
         "quality",
         "transfer-repair",
         "transfer-classify",
+        *WAVE4_TASKS,
     }
 )
 GUIDED_STAGE_LABEL = "完成引导阶段：业务本体建模"
@@ -971,6 +973,15 @@ def check_task(store, project, params, host, origin):
                         current["attempt"],
                         was_auto_init and not had_any_task_attempt,
                     ),
+                    current["payload"]["assistance"],
+                )
+            elif task_id in WAVE4_TASKS:
+                host.tools.evidence_by_check = host.wave4_evidences(
+                    store,
+                    project,
+                    internal,
+                    context,
+                    snapshot_ref,
                     current["payload"]["assistance"],
                 )
             else:
