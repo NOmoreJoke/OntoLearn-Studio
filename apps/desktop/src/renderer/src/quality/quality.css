@@ -6,17 +6,18 @@
   padding: 1.5rem;
 }
 .quality-workspace header p {
-  color: #557064;
+  color: var(--ink-secondary);
   margin-bottom: 0.25rem;
 }
 .quality-workspace h2 {
   margin-top: 0;
 }
 .quality-workspace aside {
-  border-left: 3px solid #b48737;
-  background: #fff7df;
-  color: #533e16;
+  border-left: 3px solid var(--signal-warning);
+  background: var(--signal-hint-bg);
+  color: var(--ink-primary);
   padding: 1rem;
+  border-radius: var(--radius-sm);
 }
 .quality-workspace form,
 .quality-workspace fieldset,
@@ -26,8 +27,9 @@
 }
 .quality-workspace fieldset,
 .quality-workspace details {
-  border: 1px solid #ccd4cc;
-  border-radius: 0.5rem;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+  background: var(--paper-surface);
   padding: 1rem;
 }
 .quality-workspace form {
@@ -46,10 +48,10 @@
 .quality-workspace textarea {
   width: 100%;
   box-sizing: border-box;
-  background: #fff;
-  color: #202c26;
-  border: 1px solid #8b9d90;
-  border-radius: 0.25rem;
+  background: var(--paper-surface);
+  color: var(--ink-primary);
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-sm);
 }
 .quality-workspace button {
   width: fit-content;
@@ -60,7 +62,7 @@
   cursor: default;
 }
 .quality-workspace :focus-visible {
-  outline: 3px solid #287658;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 .quality-workspace .quality-check {
@@ -73,15 +75,18 @@
 }
 .quality-pattern {
   padding: 1rem;
-  background: #f3f5ef;
-  border-bottom: 1px solid #ccd4cc;
+  background: var(--paper-subtle);
+  border-bottom: 1px solid var(--hair-border);
 }
 .quality-workspace pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  background: #f3f5ef;
+  background: var(--paper-subtle);
   padding: 1rem;
-  color: #202c26;
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hair-border);
 }
 .quality-statements {
   overflow-x: auto;
@@ -93,9 +98,12 @@
 .quality-statements th,
 .quality-statements td {
   padding: 0.65rem;
-  border: 1px solid #ccd4cc;
+  border: 1px solid var(--hair-border);
   text-align: left;
   overflow-wrap: anywhere;
+}
+.quality-statements th {
+  background: var(--paper-subtle);
 }
 .quality-workspace dd {
   margin-bottom: 0.75rem;
@@ -121,10 +129,11 @@
 }
 .quality-location {
   margin-block: 0.75rem;
-  border-inline-start: 3px solid #287658;
+  border-inline-start: 3px solid var(--accent-primary);
   padding: 1rem;
-  background: #eef5ed;
-  color: #202c26;
+  background: var(--accent-soft);
+  color: var(--ink-primary);
+  border-radius: var(--radius-sm);
   overflow-wrap: anywhere;
 }
 .quality-location dt {

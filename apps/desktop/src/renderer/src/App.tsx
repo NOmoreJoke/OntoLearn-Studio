@@ -16,7 +16,7 @@ import {
   type AgentMode,
   type QueryDraftDTO,
 } from '@ontolearn/contracts'
-import { explainError, jobStatus, resultSummary } from './task-presentation'
+import { explainError, resultSummary } from './task-presentation'
 import { TaskProgressBuffer } from './task-progress'
 import { QueryWorkspaceController, QueryWorkspacePage } from './query'
 import { OntologyMainlinePage } from './ontology/OntologyMainlinePage'
@@ -25,7 +25,6 @@ import { DraftDiffPreview } from './ontology/draft-diff-preview'
 import { OntologySession } from './ontology/mainline-session'
 import { ontologyOperations } from './ontology/mainline-operations'
 import type { OntologyMainlineBridge } from './ontology/mainline-api'
-import { AgentPanel } from './agent/agent-panel'
 import {
   agentContextStore,
   bindAgentArtifact,
@@ -47,8 +46,7 @@ import {
   mentorAssistanceText,
 } from './learning/learning-controller'
 import { pickLatestDomainSnapshotId } from './learning/domain-snapshot'
-import { MentorPanel } from './learning/MentorPanel'
-import { offlineCourse } from './learning/content'
+import { offlineCourse, offlineGlossary } from './learning/content'
 import {
   commitLearningTaskFixture,
   prepareLearningTaskFixture,
@@ -61,6 +59,18 @@ import type { WorkspaceStatus } from './mapping/workspace-operation'
 import { ConnectedBehaviorWorkspace } from './behavior/ConnectedBehaviorWorkspace'
 import { ConnectedScenarioWorkspace } from './scenario/ConnectedScenarioWorkspace'
 import { TransferWorkspace } from './transfer/TransferWorkspace'
+import { SidebarNav } from './shell/SidebarNav'
+import { TopContextBar } from './shell/TopContextBar'
+import { WorkspaceDrawers } from './shell/WorkspaceDrawers'
+import { UnifiedAssistantRail, type AssistantRailTab } from './shell/UnifiedAssistantRail'
+import {
+  workspaceForLearningTask,
+  type ConnectedModule,
+  type CourseNavStep,
+  type PrimaryView,
+  type WorkspaceModule,
+} from './shell/shell-routing'
+import './shell/shell.css'
 
 type FixtureProposal = {
   taskId: LearningFixtureTaskId
@@ -81,8 +91,6 @@ const connectedModules = {
   scenario: { label: '情景推演', title: '当前项目情景推演' },
   transfer: { label: '导出与迁移', title: '当前项目导出与迁移' },
 } as const
-type ConnectedModule = keyof typeof connectedModules
-type WorkspaceModule = 'query' | 'ontology' | 'quality' | ConnectedModule
 const cleanConnectedStatus: WorkspaceStatus = { dirty: false, unresolved: false }
 
 function isConnectedModule(module: WorkspaceModule): module is ConnectedModule {
@@ -99,15 +107,6 @@ export {
   pickLatestDomainSnapshotId,
   type DomainSnapshotCandidate,
 } from './learning/domain-snapshot'
-
-const modules = [
-  ['01', '定义业务概念', '本体构建'],
-  ['02', '连接业务数据', '数据映射'],
-  ['03', '向知识提问', '本体查询'],
-  ['04', '检查并发现新知识', '知识推理'],
-  ['05', '描述业务如何行动', '行为定义'],
-  ['06', '比较不同方案', '沙盘推演'],
-]
 
 export function App() {
   const [showIntroduction, setShowIntroduction] = useState(false)
@@ -143,8 +142,15 @@ export function App() {
       : undefined,
   )
   const [learningState, setLearningState] = useState(() => learningCtl?.getSnapshot())
-  // 导师面板默认收起；学习入口打开项目后自动展开（PRD 8.2）。
-  const [mentorOpen, setMentorOpen] = useState(false)
+  // 右侧统一辅助栏默认收起；从学习入口或路线图切入任务时自动展开（PRD 8.2）。
+  const [primaryView, setPrimaryView] = useState<PrimaryView>('projects')
+  const [railOpen, setRailOpen] = useState(false)
+  const [activeRailTab, setActiveRailTab] = useState<AssistantRailTab>('mentor')
+  const [checkpointsDrawerOpen, setCheckpointsDrawerOpen] = useState(false)
+  const [jobsDrawerOpen, setJobsDrawerOpen] = useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [portalTerm, setPortalTerm] = useState('本体')
+  const hasAutoEnteredWorkspace = useRef(false)
   // 本体会话最近一次真实读取的域快照；ChangeSet 提交后的自动重读让它前进，
   // 供学习面板在无后台 RPC 的前提下派生“已过期 / 需重跑”。revision 取自真实
   // 读取的 projectRevision，使跨工作区比较按提交先后而不是缓存先后。
@@ -399,6 +405,7 @@ export function App() {
     )
       return
     if (uncertain.current || !readyWorkspace.current?.project) return
+    setPrimaryView('workspace')
     if (selectedModule.current === module) return
     if (
       connectedStatus.current.dirty &&
@@ -412,6 +419,29 @@ export function App() {
     // The Agent context follows the active workspace (UI state only).
     agentContextStore.setModule(toAgentModule(module))
     activateWorkspace()
+  }
+  function selectCourseStep(step: CourseNavStep) {
+    if (step.id === 'step-07' && learningCtl) {
+      const currentFocused = learningCtl.getSnapshot().focusedTaskId
+      if (currentFocused !== 'transfer-repair' && currentFocused !== 'transfer-classify') {
+        const states = learningCtl.getSnapshot().learning?.tasks
+        const nextTransfer =
+          states?.find(
+            (item) =>
+              (item.taskId === 'transfer-repair' || item.taskId === 'transfer-classify') &&
+              !item.operationComplete,
+          )?.taskId ?? 'transfer-repair'
+        learningCtl.focusTask(nextTransfer)
+      }
+      setActiveRailTab('mentor')
+      setRailOpen(true)
+    } else if (step.id === 'step-04' && learningCtl) {
+      const currentFocused = learningCtl.getSnapshot().focusedTaskId
+      if (currentFocused === 'transfer-repair' || currentFocused === 'transfer-classify') {
+        learningCtl.focusTask('quality')
+      }
+    }
+    selectWorkspace(step.module)
   }
   const updateTasks = useCallback((value: TaskView) => {
     if (value.generation < latestGeneration.current) return false
@@ -471,6 +501,11 @@ export function App() {
       setProgress(pendingProgress.current.restore(value))
       setSummaries({})
       activateWorkspace()
+      if (value.project && !libraryBusy.current && !hasAutoEnteredWorkspace.current) {
+        hasAutoEnteredWorkspace.current = true
+        setPrimaryView('workspace')
+      }
+      if (value.jobs.length > 0) setJobsDrawerOpen(true)
     },
     [
       updateTasks,
@@ -598,7 +633,12 @@ export function App() {
   }
   async function createProject(
     example = false,
-    options?: { name?: string; initialWorkspace?: WorkspaceModule; startAttemptTaskId?: string },
+    options?: {
+      name?: string
+      initialWorkspace?: WorkspaceModule
+      startAttemptTaskId?: string
+      enterWorkspace?: boolean
+    },
   ) {
     if (
       qualityPendingRef.current ||
@@ -705,8 +745,13 @@ export function App() {
         if (options?.initialWorkspace && selectedModule.current !== options.initialWorkspace) {
           selectedModule.current = options.initialWorkspace
           setWorkspaceModule(options.initialWorkspace)
+          agentContextStore.setModule(toAgentModule(options.initialWorkspace))
         }
         await restore()
+        if (options?.enterWorkspace || options?.initialWorkspace) {
+          hasAutoEnteredWorkspace.current = true
+          setPrimaryView('workspace')
+        }
         openedProjectId = created.data.projectId
       }
     } catch {
@@ -907,6 +952,8 @@ export function App() {
         // and selected state after this callback returns, so no checkpoint
         // request may be started from here.
         checkpointCtl?.select(undefined)
+        setCheckpointsDrawerOpen(false)
+        setPrimaryView('projects')
       }
       // Metadata-only edits preserve the editor instance and its draft. The
       // controller reads current metadata; no domain restore or remount occurs.
@@ -1226,11 +1273,6 @@ export function App() {
       finding,
     })
     selectWorkspace(module)
-    requestAnimationFrame(() => {
-      document
-        .querySelector('[data-testid="quality-locate-target"]')
-        ?.scrollIntoView({ block: 'nearest' })
-    })
   }
   function locationBanner(module: WorkspaceModule) {
     if (activeLocation?.module !== module) return null
@@ -1345,6 +1387,8 @@ export function App() {
         disconnectQuery()
         selectedModule.current = 'quality'
         setWorkspaceModule('quality')
+        agentContextStore.setModule(toAgentModule('quality'))
+        setPrimaryView('workspace')
       }
       const view = readyWorkspace.current
       if (!view || view.project?.projectId !== projectId) throw new Error('PROJECT_NOT_OPEN')
@@ -1391,16 +1435,17 @@ export function App() {
   }
   function openMentorForTask(taskId?: string) {
     if (taskId) learningCtl?.focusTask(taskId)
-    setMentorOpen(true)
-    requestAnimationFrame(() => {
-      document
-        .querySelector('[data-testid="mentor-panel"]')
-        ?.scrollIntoView({ block: 'start', behavior: 'auto' })
-    })
+    setActiveRailTab('mentor')
+    setRailOpen(true)
+    if (readyWorkspace.current?.project) {
+      if (taskId) selectWorkspace(workspaceForLearningTask(taskId))
+      else setPrimaryView('workspace')
+    }
   }
   /** Offline Agent actions really run through the learning controller. */
   async function runAgentLocalAction(action: AgentAction) {
-    setMentorOpen(true)
+    setActiveRailTab('mentor')
+    setRailOpen(true)
     if (!learningCtl) return
     if (action === 'hint') await learningCtl.requestHint()
     else if (action === 'demonstrate') await learningCtl.requestDemonstration()
@@ -1423,8 +1468,9 @@ export function App() {
   function startLearningExample() {
     // 打开后自动聚焦首任务并保持导师面板展开；项目创建仍走真实 createProject。
     learningCtl?.focusTask('business-ontology')
-    setMentorOpen(true)
-    void createProject(true)
+    setActiveRailTab('mentor')
+    setRailOpen(true)
+    void createProject(true, { initialWorkspace: 'ontology', enterWorkspace: true })
   }
   function resetLearningGBase(taskId: string) {
     // 独立还原 G-base：新建独立练习项目并立刻开始该任务的新 attempt。
@@ -1436,382 +1482,524 @@ export function App() {
       return
     }
     learningCtl?.focusTask(taskId)
-    setMentorOpen(true)
+    setActiveRailTab('mentor')
+    setRailOpen(true)
     void createProject(true, {
-      initialWorkspace: taskId === 'query' ? 'query' : 'ontology',
+      initialWorkspace: workspaceForLearningTask(taskId),
       startAttemptTaskId: taskId,
+      enterWorkspace: true,
     })
   }
+  const completedTaskCount = offlineCourse.tasks.filter(
+    (task) => learningTasks?.find((item) => item.taskId === task.id)?.operationComplete,
+  ).length
+  const transferSuccessCount = offlineCourse.tasks.filter(
+    (task) =>
+      task.transfer &&
+      learningTasks?.find((item) => item.taskId === task.id)?.independentTransferSuccess,
+  ).length
+  const selectedPortalGlossary =
+    offlineGlossary.find((entry) => entry.term === portalTerm) ?? offlineGlossary[0]!
+  const workspaceControlsDisabled =
+    projectControlsBusy || Boolean(connection) || workspaceFrozen || managementBlocked
+
   return (
     <div
       className="app-shell"
       data-workspace-mode={managementState?.selected?.metadata.mode ?? 'guided'}
+      data-primary-view={primaryView}
     >
-      <aside className="sidebar">
-        <div className="wordmark">
-          <span className="brand-mark" aria-hidden="true">
-            O
-          </span>
-          <strong>
-            OntoLearn<span>STUDIO</span>
-          </strong>
-        </div>
-        <div className="side-label">本体学习与落地工作台</div>
-        <nav aria-label="工作台导航">
-          <a href="#overview" aria-current="page">
-            项目工作台 <span>↗</span>
-          </a>
-          <a href="#learning-center" data-testid="nav-learning-center">
-            学习中心 <span>↗</span>
-          </a>
-          <a href="#model-settings">模型设置</a>
-          <a href="#modules">
-            模块规划 <span>06</span>
-          </a>
-          {tasks?.project && (
-            <>
-              <a
-                href="#query-workspace"
-                aria-current={workspaceModule === 'query' ? 'page' : undefined}
-                aria-disabled={
-                  projectControlsBusy || Boolean(connection) || workspaceFrozen || managementBlocked
-                }
-                onClick={(event) => {
-                  event.preventDefault()
-                  selectWorkspace('query')
-                }}
-              >
-                本体查询
-              </a>
-              <a
-                href="#ontology-workspace"
-                aria-current={workspaceModule === 'ontology' ? 'page' : undefined}
-                aria-disabled={
-                  projectControlsBusy || Boolean(connection) || workspaceFrozen || managementBlocked
-                }
-                onClick={(event) => {
-                  event.preventDefault()
-                  selectWorkspace('ontology')
-                }}
-              >
-                本体构建
-              </a>
-              <a
-                href="#quality-workspace"
-                aria-current={workspaceModule === 'quality' ? 'page' : undefined}
-                aria-disabled={learningDisabled || Boolean(activeFixture)}
-                onClick={(event) => {
-                  event.preventDefault()
-                  selectWorkspace('quality')
-                }}
-              >
-                质量与推导
-              </a>
-              {(Object.keys(connectedModules) as ConnectedModule[]).map((module) => (
-                <a
-                  key={module}
-                  href={`#${module}-workspace`}
-                  aria-current={workspaceModule === module ? 'page' : undefined}
-                  aria-disabled={
-                    projectControlsBusy ||
-                    Boolean(connection) ||
-                    workspaceFrozen ||
-                    managementBlocked
-                  }
-                  onClick={(event) => {
-                    event.preventDefault()
-                    if (projectControlsBusy || connection || workspaceFrozen || managementBlocked)
-                      return
-                    selectWorkspace(module)
-                  }}
-                >
-                  {connectedModules[module].label}
-                </a>
-              ))}
-            </>
-          )}
-        </nav>
-        <div className="sidebar-note">
-          <span className="status-dot" />
-          本地优先
-          <p>
-            无需配置模型 API
-            <br />
-            即可启动开发环境
-          </p>
-        </div>
-      </aside>
+      <SidebarNav
+        primaryView={primaryView}
+        hasProject={Boolean(tasks?.project)}
+        workspaceModule={workspaceModule}
+        focusedTaskId={learningState?.focusedTaskId}
+        workspaceControlsDisabled={workspaceControlsDisabled}
+        qualityStepDisabled={learningDisabled || Boolean(activeFixture)}
+        learningTasks={learningTasks}
+        currentDomainSnapshotId={currentDomainSnapshotId}
+        learningSnapshotRef={learningState?.learning?.domainSnapshotRef}
+        engineHealth={result}
+        connectionOffline={Boolean(connection)}
+        mobileOpen={mobileNavOpen}
+        onCloseMobile={() => setMobileNavOpen(false)}
+        onSelectPrimaryView={(view) => setPrimaryView(view)}
+        onSelectStep={(step) => selectCourseStep(step)}
+      />
       <main id="overview">
-        <header>
-          <span>工作台 / 项目</span>
-          <span className="badge">内部演示候选</span>
-        </header>
-        <section className="intro">
-          <p className="eyebrow">LEARN. MODEL. UNDERSTAND.</p>
-          <h1>
-            把业务问题，
-            <br />
-            转化为可验证的知识。
-          </h1>
-          <p className="lead">从本体建模到情景推演，在一个本地项目中逐步学习与验证。</p>
-        </section>
-        <section className="health-panel" aria-labelledby="health-title">
-          <div>
-            <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
-            <h2 id="health-title">检查本地引擎连接</h2>
-            <p>验证桌面应用与 Python 引擎的真实通信。</p>
-          </div>
-          <button
-            onClick={() => void checkEngine()}
-            disabled={checking || workspaceFrozen || managementBlocked}
-          >
-            {checking ? '正在检查…' : '检查本地引擎'}
-            <span aria-hidden="true"> ↗</span>
-          </button>
-          <div className="health-result" role="status" aria-live="polite">
-            {result ? (
-              result.ok ? (
-                `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
-              ) : (
-                <ErrorDetails error={result.error} context="health" />
-              )
-            ) : (
-              '尚未检查。'
-            )}
-          </div>
-        </section>
-        <section
-          id="learning-center"
-          className="learning-center"
-          data-testid="learning-center"
-          aria-labelledby="learning-center-title"
-        >
-          <div className="learning-center-header">
-            <h2 id="learning-center-title">学习中心</h2>
-            <span className="learning-center-badge">离线课程 · 无需模型 API</span>
-          </div>
-          <p className="learning-center-meta">
-            课程案例：{learningState?.learning?.courseMeta.case ?? offlineCourse.case} ·{' '}
-            {learningState?.learning?.courseMeta.businessQuestion ?? offlineCourse.businessQuestion}
-            {learningState?.learning?.courseMeta.manifestSha256
-              ? ` · 课程 ${learningState.learning.courseMeta.courseVersion} · manifest ${learningState.learning.courseMeta.manifestSha256.slice(0, 12)}`
-              : ` · 课程 ${offlineCourse.version}`}
-          </p>
-          <div className="learning-center-actions">
-            <button
-              type="button"
-              data-testid="learning-start-example"
-              disabled={learningDisabled || hasCreateIntent}
-              onClick={startLearningExample}
-            >
-              从设备运维案例开始
-            </button>
-            <button
-              type="button"
-              data-testid="learning-continue-task"
-              disabled={learningDisabled || !tasks?.project}
-              onClick={continueLearningTask}
-            >
-              继续当前任务
-            </button>
-          </div>
-          <ol className="learning-path" aria-label="学习路径概览">
-            {offlineCourse.tasks.map((task, ordinal) => {
-              const state = learningTasks?.find((item) => item.taskId === task.id)
-              return (
-                <li key={task.id}>
-                  <button
-                    type="button"
-                    data-testid="learning-path-task"
-                    data-task-id={task.id}
-                    onClick={() => openMentorForTask(task.id)}
-                  >
-                    <span className="learning-step-number">
-                      {String(ordinal + 1).padStart(2, '0')}
-                    </span>
-                    <span>
-                      <b>{task.module}</b>
-                      <small className="learning-step-goal">{task.goal}</small>
-                    </span>
-                    <span className="learning-step-badges">
-                      <span data-testid="learning-path-status">
-                        {displayedCheckStatus(
-                          state,
-                          currentDomainSnapshotId,
-                          learningState?.learning?.domainSnapshotRef,
-                        )}
-                      </span>
-                    </span>
-                    <span className="learning-step-assist">
-                      {state?.operationComplete ? (mentorAssistanceText(state) ?? '') : ''}
-                    </span>
-                  </button>
-                </li>
-              )
-            })}
-          </ol>
-        </section>
-        <section
-          className="project-library"
-          aria-labelledby="project-library-title"
-          data-testid="project-library"
-        >
-          <h2 id="project-library-title">我的项目</h2>
-          <p>在本机创建项目，或打开已保存的项目继续编辑。无需配置模型 API。</p>
-          <div className="project-quickstart" aria-label="首次启动入口">
-            <button
-              type="button"
-              disabled={
-                projectControlsBusy ||
-                workspaceFrozen ||
-                managementBlocked ||
-                checkpointBlocked ||
-                learningBlocked
-              }
-              onClick={() => void listProjects()}
-            >
-              打开已有项目
-            </button>
-            <button type="button" onClick={() => setShowIntroduction(true)}>
-              查看快速介绍
-            </button>
-          </div>
-          {showIntroduction && (
-            <section role="dialog" aria-label="快速介绍" className="project-confirmation">
-              <h3>从本机项目开始</h3>
-              <p>
-                先选择空白项目或设备运维示例，再进入本体构建与查询。已提交修改保存在当前项目库；表单中的未提交编辑需先预览和确认。
-              </p>
-              <p>
-                项目可以重命名、归档，或复制当前已提交状态。删除会移至回收站，恢复不会续跑旧任务。完整项目导出仍待接入。
-              </p>
-              <p>引导模式显示逐步说明；辅助模式收起说明。两者使用相同编辑器与项目数据。</p>
-              <button type="button" onClick={() => setShowIntroduction(false)}>
-                关闭介绍
-              </button>
-            </section>
-          )}
-          <form
-            onSubmit={(event) => {
-              event.preventDefault()
-              void createProject()
-            }}
-          >
-            <label htmlFor="project-name">项目名称</label>
-            <input
-              id="project-name"
-              data-testid="project-name"
-              value={projectName}
-              onChange={(event) => setProjectName(event.target.value)}
-              maxLength={4096}
-              disabled={
-                projectControlsBusy ||
-                hasCreateIntent ||
-                workspaceFrozen ||
-                managementBlocked ||
-                learningBlocked
-              }
-              required
-            />
-            <button
-              type="submit"
-              data-testid="project-create"
-              disabled={
-                projectControlsBusy ||
-                !projectName.trim() ||
-                workspaceFrozen ||
-                managementBlocked ||
-                checkpointBlocked ||
-                learningBlocked
-              }
-            >
-              {hasCreateIntent ? '核对创建结果' : '新建空白项目'}
-            </button>
-            <button
-              type="button"
-              data-testid="project-create-example"
-              disabled={
-                projectControlsBusy ||
-                hasCreateIntent ||
-                workspaceFrozen ||
-                managementBlocked ||
-                checkpointBlocked ||
-                learningBlocked
-              }
-              onClick={() => void createProject(true)}
-            >
-              从设备运维示例开始
-            </button>
-            {!management && (
-              <button
-                type="button"
-                data-testid="project-list-refresh"
-                onClick={() => void listProjects()}
-                disabled={projectControlsBusy || checkpointBlocked || learningBlocked}
-              >
-                刷新项目列表
-              </button>
-            )}
-          </form>
-          <div role="status" aria-live="polite">
-            {projectBusy ? '正在处理…' : projectNotice}
-          </div>
-          {tasks?.project && (
-            <p data-testid="selected-project-version">
-              当前项目版本 {tasks.project.projectRevision}
-            </p>
-          )}
-          {!management && catalog && (
-            <>
-              <ul>
-                {catalog.items.map((item) => (
-                  <li key={item.projectId}>
-                    <span>
-                      {item.metadata.name ?? '未命名项目'} · 版本 {item.domainRevision}
-                      {item.metadata.archived ? ' · 已归档' : ''}
-                    </span>
-                    <button
-                      type="button"
-                      data-testid="project-open"
-                      data-project-id={item.projectId}
-                      disabled={projectControlsBusy || learningBlocked}
-                      onClick={() => void openProject(item.projectId)}
-                    >
-                      打开
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              {catalog.total === 0 && <p>暂无项目。可以先新建空白项目。</p>}
-              {catalog.nextCursor && (
+        {primaryView === 'projects' && (
+          <div className="portal-view" data-testid="portal-projects-view">
+            <header className="portal-topbar">
+              <div className="portal-topbar-left">
                 <button
                   type="button"
-                  disabled={projectControlsBusy || learningBlocked}
-                  onClick={() => void listProjects(catalog.nextCursor)}
+                  className="mobile-nav-trigger"
+                  data-testid="mobile-nav-toggle"
+                  aria-label="打开导航菜单"
+                  onClick={() => setMobileNavOpen(true)}
                 >
-                  下一页
+                  ☰
                 </button>
+                <span>工作台 / 我的项目</span>
+              </div>
+              <div className="portal-topbar-actions">
+                <button
+                  type="button"
+                  className="topbar-chip-btn"
+                  onClick={() => setPrimaryView('learning')}
+                >
+                  学习路线图
+                </button>
+                <span className="badge">本地工作台</span>
+              </div>
+            </header>
+            <section className="intro">
+              <p className="eyebrow">LEARN. MODEL. UNDERSTAND.</p>
+              <h1>
+                把业务问题，
+                <br />
+                转化为可验证的知识。
+              </h1>
+              <p className="lead">从本体建模到情景推演，在一个本地项目中逐步学习与验证。</p>
+            </section>
+            <section className="health-panel" aria-labelledby="health-title">
+              <div>
+                <p className="eyebrow">DEVELOPMENT ENVIRONMENT</p>
+                <h2 id="health-title">检查本地引擎连接</h2>
+                <p>验证桌面应用与 Python 引擎的真实通信。</p>
+              </div>
+              <button
+                onClick={() => void checkEngine()}
+                disabled={checking || workspaceFrozen || managementBlocked}
+              >
+                {checking ? '正在检查…' : '检查本地引擎'}
+                <span aria-hidden="true"> ↗</span>
+              </button>
+              <div className="health-result" role="status" aria-live="polite">
+                {result ? (
+                  result.ok ? (
+                    `本地引擎已连接 · v${result.data.engineVersion} · 协议 v${result.data.protocolVersion}`
+                  ) : (
+                    <ErrorDetails error={result.error} context="health" />
+                  )
+                ) : (
+                  '尚未检查。'
+                )}
+              </div>
+            </section>
+            {tasks?.project && (
+              <section className="active-project-banner" aria-label="当前已打开项目">
+                <div className="active-project-banner-meta">
+                  <strong>
+                    当前项目：{managementState?.selected?.metadata.name ?? '已打开项目'}
+                  </strong>
+                  <span>· 版本 {tasks.project.projectRevision}</span>
+                </div>
+                <button
+                  type="button"
+                  data-testid="enter-active-workspace"
+                  onClick={() => setPrimaryView('workspace')}
+                >
+                  进入当前工作台 →
+                </button>
+              </section>
+            )}
+            <section
+              className="project-library"
+              aria-labelledby="project-library-title"
+              data-testid="project-library"
+            >
+              <h2 id="project-library-title">我的项目</h2>
+              <p>在本机创建项目，或打开已保存的项目继续编辑。无需配置模型 API。</p>
+              <div className="project-quickstart" aria-label="首次启动入口">
+                <button
+                  type="button"
+                  data-testid="learning-start-example"
+                  disabled={learningDisabled || hasCreateIntent}
+                  onClick={startLearningExample}
+                >
+                  从设备运维案例开始
+                </button>
+                <button
+                  type="button"
+                  className="topbar-chip-btn"
+                  disabled={
+                    projectControlsBusy ||
+                    workspaceFrozen ||
+                    managementBlocked ||
+                    checkpointBlocked ||
+                    learningBlocked
+                  }
+                  onClick={() => void listProjects()}
+                >
+                  打开已有项目
+                </button>
+                <button
+                  type="button"
+                  className="topbar-chip-btn"
+                  onClick={() => setShowIntroduction(true)}
+                >
+                  查看快速介绍
+                </button>
+              </div>
+              {showIntroduction && (
+                <section role="dialog" aria-label="快速介绍" className="project-confirmation">
+                  <h3>从本机项目开始</h3>
+                  <p>
+                    先选择空白项目或设备运维示例，再进入本体构建与查询。已提交修改保存在当前项目库；表单中的未提交编辑需先预览和确认。
+                  </p>
+                  <p>
+                    项目可以重命名、归档，或复制当前已提交状态。删除会移至回收站，恢复不会续跑旧任务。完整项目包导出可在「导出与迁移」模块执行。
+                  </p>
+                  <p>引导模式显示逐步说明；辅助模式收起说明。两者使用相同编辑器与项目数据。</p>
+                  <button type="button" onClick={() => setShowIntroduction(false)}>
+                    关闭介绍
+                  </button>
+                </section>
               )}
-            </>
-          )}
-          {management && (
-            <ProjectManagementPanel
-              controller={management}
-              disabled={
-                projectControlsBusy ||
-                workspaceFrozen ||
-                Boolean(connection) ||
-                checkpointBlocked ||
-                learningBlocked
-              }
-              destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
-              openProject={(id) => void openProject(id)}
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void createProject()
+                }}
+              >
+                <label htmlFor="project-name">项目名称</label>
+                <input
+                  id="project-name"
+                  data-testid="project-name"
+                  value={projectName}
+                  onChange={(event) => setProjectName(event.target.value)}
+                  maxLength={4096}
+                  disabled={
+                    projectControlsBusy ||
+                    hasCreateIntent ||
+                    workspaceFrozen ||
+                    managementBlocked ||
+                    learningBlocked
+                  }
+                  required
+                />
+                <button
+                  type="submit"
+                  data-testid="project-create"
+                  disabled={
+                    projectControlsBusy ||
+                    !projectName.trim() ||
+                    workspaceFrozen ||
+                    managementBlocked ||
+                    checkpointBlocked ||
+                    learningBlocked
+                  }
+                >
+                  {hasCreateIntent ? '核对创建结果' : '新建空白项目'}
+                </button>
+                <button
+                  type="button"
+                  data-testid="project-create-example"
+                  disabled={
+                    projectControlsBusy ||
+                    hasCreateIntent ||
+                    workspaceFrozen ||
+                    managementBlocked ||
+                    checkpointBlocked ||
+                    learningBlocked
+                  }
+                  onClick={() => void createProject(true)}
+                >
+                  从设备运维示例开始
+                </button>
+                {!management && (
+                  <button
+                    type="button"
+                    data-testid="project-list-refresh"
+                    onClick={() => void listProjects()}
+                    disabled={projectControlsBusy || checkpointBlocked || learningBlocked}
+                  >
+                    刷新项目列表
+                  </button>
+                )}
+              </form>
+              <div data-testid="project-status-notice" role="status" aria-live="polite">
+                {projectBusy ? '正在处理…' : projectNotice}
+              </div>
+              {tasks?.project && (
+                <p data-testid="selected-project-version">
+                  当前项目版本 {tasks.project.projectRevision}
+                </p>
+              )}
+              {!management && catalog && (
+                <>
+                  <ul>
+                    {catalog.items.map((item) => (
+                      <li key={item.projectId}>
+                        <span>
+                          {item.metadata.name ?? '未命名项目'} · 版本 {item.domainRevision}
+                          {item.metadata.archived ? ' · 已归档' : ''}
+                        </span>
+                        <button
+                          type="button"
+                          data-testid="project-open"
+                          data-project-id={item.projectId}
+                          disabled={projectControlsBusy || learningBlocked}
+                          onClick={() => void openProject(item.projectId)}
+                        >
+                          打开
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  {catalog.total === 0 && <p>暂无项目。可以先新建空白项目。</p>}
+                  {catalog.nextCursor && (
+                    <button
+                      type="button"
+                      disabled={projectControlsBusy || learningBlocked}
+                      onClick={() => void listProjects(catalog.nextCursor)}
+                    >
+                      下一页
+                    </button>
+                  )}
+                </>
+              )}
+              {management && (
+                <ProjectManagementPanel
+                  controller={management}
+                  disabled={
+                    projectControlsBusy ||
+                    workspaceFrozen ||
+                    Boolean(connection) ||
+                    checkpointBlocked ||
+                    learningBlocked
+                  }
+                  destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
+                  openProject={(id) => void openProject(id)}
+                />
+              )}
+              {checkpointCtl && (
+                <ProjectCheckpointRestorePanel
+                  controller={checkpointCtl}
+                  disabled={
+                    projectControlsBusy ||
+                    workspaceFrozen ||
+                    Boolean(connection) ||
+                    managementBlocked ||
+                    checkpointBlocked ||
+                    learningBlocked
+                  }
+                  destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
+                />
+              )}
+              {window.ontolearn?.getLibraryLocation && (
+                <LibraryLocationPanel
+                  bridge={window.ontolearn}
+                  disabled={projectControlsBusy || managementBlocked || learningBlocked}
+                  report={reportWorkspace}
+                  freeze={freezeWorkspace}
+                />
+              )}
+              {projectError && <ErrorDetails error={projectError} context="task" />}
+            </section>
+          </div>
+        )}
+
+        {primaryView === 'learning' && (
+          <div className="portal-view" data-testid="portal-learning-view">
+            <header className="portal-topbar">
+              <div className="portal-topbar-left">
+                <button
+                  type="button"
+                  className="mobile-nav-trigger"
+                  data-testid="mobile-nav-toggle"
+                  aria-label="打开导航菜单"
+                  onClick={() => setMobileNavOpen(true)}
+                >
+                  ☰
+                </button>
+                <span>工作台 / 学习路线图</span>
+              </div>
+              <div className="portal-topbar-actions">
+                <span className="learning-center-progress-pill">
+                  已完成 {completedTaskCount} / {offlineCourse.tasks.length} · 独立迁移{' '}
+                  {transferSuccessCount} / 2
+                </span>
+                <span className="learning-center-badge">离线课程 · 无需模型 API</span>
+              </div>
+            </header>
+            <section
+              id="learning-center"
+              className="learning-center"
+              data-testid="learning-center"
+              aria-labelledby="learning-center-title"
+            >
+              <div className="learning-center-header">
+                <h2 id="learning-center-title">六个模块，一条学习路径</h2>
+                <span className="learning-center-badge">
+                  离线课程 · 无需模型 API · 实操检查为准
+                </span>
+              </div>
+              <p className="learning-center-meta">
+                课程案例：{learningState?.learning?.courseMeta.case ?? offlineCourse.case} ·{' '}
+                {learningState?.learning?.courseMeta.businessQuestion ??
+                  offlineCourse.businessQuestion}
+                {learningState?.learning?.courseMeta.manifestSha256
+                  ? ` · 课程 ${learningState.learning.courseMeta.courseVersion} · manifest ${learningState.learning.courseMeta.manifestSha256.slice(0, 12)}`
+                  : ` · 课程 ${offlineCourse.version}`}
+              </p>
+              <div className="learning-center-actions">
+                <button
+                  type="button"
+                  data-testid="learning-start-example"
+                  disabled={learningDisabled || hasCreateIntent}
+                  onClick={startLearningExample}
+                >
+                  从设备运维案例开始
+                </button>
+                <button
+                  type="button"
+                  className="topbar-chip-btn"
+                  data-testid="learning-continue-task"
+                  disabled={learningDisabled || !tasks?.project}
+                  onClick={continueLearningTask}
+                >
+                  继续当前任务
+                </button>
+              </div>
+              <ol className="learning-roadmap-grid" aria-label="学习路径概览">
+                {offlineCourse.tasks.map((task, ordinal) => {
+                  const state = learningTasks?.find((item) => item.taskId === task.id)
+                  const statusText = displayedCheckStatus(
+                    state,
+                    currentDomainSnapshotId,
+                    learningState?.learning?.domainSnapshotRef,
+                  )
+                  return (
+                    <li key={task.id}>
+                      <button
+                        type="button"
+                        data-testid="learning-path-task"
+                        data-task-id={task.id}
+                        onClick={() => openMentorForTask(task.id)}
+                      >
+                        <div className="learning-roadmap-top">
+                          <span className="learning-step-number">
+                            STAGE {String(ordinal + 1).padStart(2, '0')}
+                          </span>
+                          <span
+                            className="learning-step-status-pill"
+                            data-testid="learning-path-status"
+                            data-status={statusText}
+                          >
+                            {statusText}
+                          </span>
+                        </div>
+                        <b>{task.module}</b>
+                        <small className="learning-step-goal">{task.goal}</small>
+                        <span className="learning-step-assist">
+                          {state?.operationComplete
+                            ? (mentorAssistanceText(state) ?? '')
+                            : tasks?.project
+                              ? '点击进入对应工作台并打开导师 →'
+                              : '新建或打开案例后可联动实操'}
+                        </span>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ol>
+              <aside className="learning-portal-glossary" aria-label="随用随查术语速览">
+                <h3>随用随查 · 核心术语边界</h3>
+                <div className="learning-portal-glossary-chips">
+                  {offlineGlossary.slice(0, 8).map((entry) => (
+                    <button
+                      key={entry.term}
+                      type="button"
+                      aria-pressed={selectedPortalGlossary.term === entry.term}
+                      onClick={() => setPortalTerm(entry.term)}
+                    >
+                      {entry.term}
+                    </button>
+                  ))}
+                </div>
+                <div className="learning-portal-glossary-card">
+                  <strong>{selectedPortalGlossary.term}</strong>
+                  <p>{selectedPortalGlossary.plain}</p>
+                  <p>
+                    <b>本例：</b>
+                    {selectedPortalGlossary.example}
+                  </p>
+                  <p>
+                    <b>边界：</b>
+                    {selectedPortalGlossary.boundary}
+                  </p>
+                </div>
+              </aside>
+            </section>
+          </div>
+        )}
+
+        {primaryView === 'settings' && (
+          <div className="portal-view" data-testid="portal-settings-view">
+            <header className="portal-topbar">
+              <div className="portal-topbar-left">
+                <button
+                  type="button"
+                  className="mobile-nav-trigger"
+                  data-testid="mobile-nav-toggle"
+                  aria-label="打开导航菜单"
+                  onClick={() => setMobileNavOpen(true)}
+                >
+                  ☰
+                </button>
+                <span>工作台 / 模型与隐私设置</span>
+              </div>
+              <div className="portal-topbar-actions">
+                {tasks?.project && (
+                  <button
+                    type="button"
+                    className="topbar-chip-btn"
+                    onClick={() => setPrimaryView('workspace')}
+                  >
+                    返回当前工作台
+                  </button>
+                )}
+              </div>
+            </header>
+            <ModelPanel
+              key={activeProjectId ?? 'no-project'}
+              jobs={tasks?.jobs ?? []}
+              projectId={activeProjectId ?? null}
+              onAgentModelChanged={() => setModelSyncVersion((value) => value + 1)}
             />
-          )}
-          {checkpointCtl && (
-            <ProjectCheckpointRestorePanel
-              controller={checkpointCtl}
-              disabled={
+          </div>
+        )}
+
+        {tasks?.project && (
+          <div className="workspace-shell" hidden={primaryView !== 'workspace'}>
+            <TopContextBar
+              visible={primaryView === 'workspace'}
+              projectName={managementState?.selected?.metadata.name ?? undefined}
+              projectRevision={tasks.project.projectRevision}
+              projectBusy={projectBusy}
+              projectNotice={projectNotice}
+              workspaceModule={workspaceModule}
+              focusedTaskId={learningState?.focusedTaskId}
+              workspaceMode={managementState?.selected?.metadata.mode ?? 'guided'}
+              railOpen={railOpen}
+              checkpointsDrawerOpen={checkpointsDrawerOpen}
+              jobsDrawerOpen={jobsDrawerOpen}
+              jobCount={tasks.jobs.length}
+              onOpenMobileNav={() => setMobileNavOpen(true)}
+              onBackToProjects={() => setPrimaryView('projects')}
+              onToggleCheckpointsDrawer={() => setCheckpointsDrawerOpen((old) => !old)}
+              onToggleJobsDrawer={() => setJobsDrawerOpen((old) => !old)}
+              onToggleRail={() => setRailOpen((old) => !old)}
+            />
+            <WorkspaceDrawers
+              visible={primaryView === 'workspace'}
+              checkpointsOpen={checkpointsDrawerOpen}
+              jobsOpen={jobsDrawerOpen}
+              hasRecovery={Boolean(checkpointState && checkpointState.recovery.length > 0)}
+              checkpointCtl={checkpointCtl}
+              checkpointsDisabled={
                 projectControlsBusy ||
                 workspaceFrozen ||
                 Boolean(connection) ||
@@ -1820,370 +2008,274 @@ export function App() {
                 learningBlocked
               }
               destructiveBlocked={workspaceStatus.dirty || workspaceStatus.unresolved}
+              projectId={tasks.project.projectId}
+              inputSnapshotId={tasks.project.inputSnapshotId}
+              jobs={tasks.jobs}
+              progress={progress}
+              summaries={summaries}
+              connectionOffline={Boolean(connection)}
+              controlsBusy={projectControlsBusy}
+              onCloseCheckpoints={() => setCheckpointsDrawerOpen(false)}
+              onCloseJobs={() => setJobsDrawerOpen(false)}
+              onRestoreTasks={() => void restore()}
+              onCancelJob={(jobId) => {
+                void window.ontolearn?.cancelJob(jobId).then((response) => {
+                  if (!response.ok) setTaskError(response.error)
+                  else void restore()
+                })
+              }}
+              onInspectOperation={(job) => {
+                void window.ontolearn?.getOperation(job.operationId).then((response) => {
+                  if (!response.ok) setTaskError(response.error)
+                  else
+                    setSummaries((old) => ({
+                      ...old,
+                      [job.jobId]: response.data
+                        ? `已提交 · 项目版本 ${Number(response.data.projectRevision)}`
+                        : '未查到完整操作提交点；已提交轮次以任务持久记录为准。',
+                    }))
+                })
+              }}
+              onLoadSummary={(job) => void loadSummary(job)}
+              renderJobError={(job) =>
+                job.error ? <ErrorDetails error={job.error} context="task" /> : null
+              }
             />
-          )}
-          {window.ontolearn?.getLibraryLocation && (
-            <LibraryLocationPanel
-              bridge={window.ontolearn}
-              disabled={projectControlsBusy || managementBlocked || learningBlocked}
-              report={reportWorkspace}
-              freeze={freezeWorkspace}
-            />
-          )}
-          {projectError && <ErrorDetails error={projectError} context="task" />}
-        </section>
-        {tasks?.project && (
-          <p className="guided-help">
-            先编辑业务定义或查询，再查看完整差异并确认。项目设置不会改变领域结果；未提交表单需另外保存。
-          </p>
-        )}
-        {workspaceFrozen && <p role="status">项目库切换确认期间，编辑与新操作已暂停。</p>}
-        <div
-          className="workspace-split"
-          data-mentor-open={mentorOpen && !!tasks?.project ? 'true' : 'false'}
-        >
-          {tasks?.project && (
-            <div className="workspace-split-bar">
-              <button
-                type="button"
-                data-testid="mentor-panel-toggle"
-                onClick={() => setMentorOpen((value) => !value)}
-              >
-                {mentorOpen ? '收起导师面板' : '展开导师面板'}
-              </button>
-              <span className="mentor-muted">离线导师：任务卡、分级提示、检查与术语帮助。</span>
-            </div>
-          )}
-          <div className="workspace-split-columns">
-            <fieldset className="workspace-freeze" disabled={workspaceFrozen || managementBlocked}>
-              {workspaceModule === 'query' &&
-                queryController &&
-                tasks?.project?.projectId === queryController.projectId &&
-                !connection && (
-                  <section id="query-workspace" aria-label="当前项目查询">
-                    <QueryWorkspacePage controller={queryController} modelDraft={agentQueryDraft} />
-                  </section>
-                )}
-              {workspaceModule === 'ontology' &&
-                ontologyContext &&
-                tasks?.project?.projectId === ontologyContext.projectId &&
-                tasks.generation === ontologyContext.generation &&
-                !connection && (
-                  <section id="ontology-workspace" aria-label="当前项目本体">
-                    {locationBanner('ontology')}
-                    <OntologyMainlinePage
-                      session={ontologyContext.session}
-                      contextKey={ontologyContext.contextKey}
-                      onDirtyChange={onOntologyDirty}
-                      onSelectedObjectChange={(ids) => agentContextStore.setSelectedObjectIds(ids)}
-                      extras={
-                        <>
-                          <ImportExportPanel
-                            key={`${tasks.project?.projectId ?? ''}:${tasks.project?.projectRevision ?? ''}`}
-                            projectId={tasks.project?.projectId ?? null}
-                            projectRevision={tasks.project?.projectRevision ?? null}
-                            onImported={() => void refreshAfterAgentCommit()}
-                            onError={(message) => setProjectNotice(message)}
-                          />
-                          <DraftDiffPreview
-                            key={`${tasks.project?.projectId ?? ''}:${tasks.generation}:${agentDraftPlan?.operationId ?? ''}`}
-                            plan={agentDraftPlan}
-                            projectId={tasks.project?.projectId ?? null}
-                            label="Agent 本体草稿"
-                            onCommitted={() => void refreshAfterAgentCommit()}
-                            onError={(message) => setProjectNotice(message)}
-                          />
-                        </>
-                      }
-                    />
-                  </section>
-                )}
-              {workspaceModule === 'quality' &&
-                tasks?.project &&
-                window.ontolearn?.getProjectQualityState &&
-                !connection &&
-                !projectBusy && (
-                  <section id="quality-workspace" aria-label="当前项目质量与推导">
-                    {locationBanner('quality')}
-                    <QualityWorkspace
-                      key={JSON.stringify([
-                        tasks.project.projectId,
-                        tasks.generation,
-                        tasks.project.projectRevision,
-                      ])}
-                      projectId={tasks.project.projectId}
-                      bridge={window.ontolearn}
-                      validationScope={qualityScopes[tasks.project.projectId] ?? 'asserted+derived'}
-                      onValidationScopeChange={(next) => {
-                        const projectId = tasks.project?.projectId
-                        if (!projectId) return
-                        setQualityScopes((prev) =>
-                          prev[projectId] === next ? prev : { ...prev, [projectId]: next },
-                        )
-                      }}
-                      disabled={
-                        workspaceFrozen ||
-                        managementBlocked ||
-                        checkpointBlocked ||
-                        fixtureBusy ||
-                        Boolean(activeFixture)
-                      }
-                      onDomainSnapshotUpdated={setQualityDomainSnapshot}
-                      onLocateTarget={locateQualityFinding}
-                      onPendingChange={onQualityPending}
-                    />
-                  </section>
-                )}
-              {isConnectedModule(workspaceModule) &&
-                connectedContext &&
-                connectedBridge &&
-                !connection &&
-                !projectBusy && (
-                  <section
-                    key={JSON.stringify([
-                      workspaceModule,
-                      connectedContext.projectId,
-                      tasks?.generation,
-                      connectedContext.revision,
-                      connectedContext.inputSnapshotId,
-                    ])}
-                    id={`${workspaceModule}-workspace`}
-                    aria-label={connectedModules[workspaceModule].title}
-                  >
-                    {workspaceModule === 'mapping' && (
-                      <fieldset disabled={connectedContext.disabled}>
-                        <MappingWorkspace
-                          onStatus={onConnectedStatus}
-                          {...connectedContext}
-                          bridge={connectedBridge}
-                          onCommitted={refreshAfterAgentCommit}
+            <p className="guided-help">
+              先编辑业务定义或查询，再查看完整差异并确认。项目设置不会改变领域结果；未提交表单需另外保存。
+            </p>
+            {workspaceFrozen && <p role="status">项目库切换确认期间，编辑与新操作已暂停。</p>}
+            <div
+              className="workspace-split"
+              data-mentor-open={railOpen && !!tasks?.project ? 'true' : 'false'}
+            >
+              <div className="workspace-split-columns">
+                <fieldset
+                  className="workspace-freeze"
+                  disabled={workspaceFrozen || managementBlocked}
+                >
+                  {workspaceModule === 'query' &&
+                    queryController &&
+                    tasks?.project?.projectId === queryController.projectId &&
+                    !connection && (
+                      <section id="query-workspace" aria-label="当前项目查询">
+                        <QueryWorkspacePage
+                          controller={queryController}
+                          modelDraft={agentQueryDraft}
                         />
-                      </fieldset>
+                      </section>
                     )}
-                    {workspaceModule === 'behavior' && (
-                      <ConnectedBehaviorWorkspace
-                        onStatus={onConnectedStatus}
-                        {...connectedContext}
-                        bridge={connectedBridge}
-                      />
-                    )}
-                    {workspaceModule === 'scenario' && (
-                      <ConnectedScenarioWorkspace
-                        onStatus={onConnectedStatus}
-                        {...connectedContext}
-                        bridge={connectedBridge}
-                      />
-                    )}
-                    {workspaceModule === 'transfer' && (
-                      <TransferWorkspace
-                        onStatus={onConnectedStatus}
-                        {...connectedContext}
-                        bridge={connectedBridge}
-                        onImported={async () => {
-                          if (management) await management.refresh()
-                          else {
-                            const reply = await connectedBridge.getProjectCatalog({
-                              pageSize: 64,
-                              cursor: null,
-                            })
-                            if (reply.ok) setCatalog(reply.data)
+                  {workspaceModule === 'ontology' &&
+                    ontologyContext &&
+                    tasks?.project?.projectId === ontologyContext.projectId &&
+                    tasks.generation === ontologyContext.generation &&
+                    !connection && (
+                      <section id="ontology-workspace" aria-label="当前项目本体">
+                        {locationBanner('ontology')}
+                        <OntologyMainlinePage
+                          session={ontologyContext.session}
+                          contextKey={ontologyContext.contextKey}
+                          onDirtyChange={onOntologyDirty}
+                          onSelectedObjectChange={(ids) =>
+                            agentContextStore.setSelectedObjectIds(ids)
                           }
-                        }}
-                      />
+                          extras={
+                            <>
+                              <ImportExportPanel
+                                key={`${tasks.project?.projectId ?? ''}:${tasks.project?.projectRevision ?? ''}`}
+                                projectId={tasks.project?.projectId ?? null}
+                                projectRevision={tasks.project?.projectRevision ?? null}
+                                onImported={() => void refreshAfterAgentCommit()}
+                                onError={(message) => setProjectNotice(message)}
+                              />
+                              <DraftDiffPreview
+                                key={`${tasks.project?.projectId ?? ''}:${tasks.generation}:${agentDraftPlan?.operationId ?? ''}`}
+                                plan={agentDraftPlan}
+                                projectId={tasks.project?.projectId ?? null}
+                                label="Agent 本体草稿"
+                                onCommitted={() => void refreshAfterAgentCommit()}
+                                onError={(message) => setProjectNotice(message)}
+                              />
+                            </>
+                          }
+                        />
+                      </section>
                     )}
-                  </section>
-                )}
-              {connection && (
-                <section role="status" aria-label="引擎连接状态">
-                  <h2>
-                    {connection.state === 'offline'
-                      ? '引擎连接已离线；任务状态待对账'
-                      : '引擎连接中断；正在对账'}
-                  </h2>
-                  <p>任务卡片仅显示最后记录，当前状态尚未确认。不会重发写任务。</p>
-                  <p>已尝试 {connection.attempt}/3 次只读恢复。</p>
-                  <ErrorDetails error={connection.error} context="task" />
-                  <button
-                    onClick={() => void restore()}
-                    disabled={connection.state === 'reconnecting'}
-                  >
-                    重新连接并对账
-                  </button>
-                </section>
-              )}
-              {tasks?.project && (
-                <section className="health-panel" aria-label="后台任务状态">
-                  <h2>后台任务</h2>
-                  <p>窗口恢复后读取持久状态；不会重发写任务。</p>
-                  <button
-                    onClick={() => void restore()}
-                    disabled={projectControlsBusy || Boolean(connection)}
-                  >
-                    刷新任务状态
-                  </button>
-                  {tasks.jobs.map((job) => (
-                    <article key={job.jobId} data-testid="durable-job" data-job-id={job.jobId}>
-                      <p>
-                        {connection ? '最后记录：' : ''}
-                        {jobStatus(job)} · 状态版本 {job.stateVersion}
-                      </p>
-                      <p>
-                        输入快照 {job.inputSnapshotId.slice(0, 12)} ·
-                        {job.inputSnapshotId === tasks.project?.inputSnapshotId
-                          ? '当前输入'
-                          : '历史输入；此任务保留原执行依据'}
-                      </p>
-                      {progress[job.jobId] &&
-                        ['queued', 'running', 'cancelling'].includes(job.state) && (
-                          <p>
-                            阶段：
-                            {
-                              {
-                                queued: '排队',
-                                loading: '加载',
-                                computing: '计算',
-                                committing: '提交',
-                                reconciling: '对账',
-                              }[progress[job.jobId].stage]
-                            }
-                            {progress[job.jobId].total !== null
-                              ? ` · ${progress[job.jobId].completed}/${progress[job.jobId].total}`
-                              : ''}
-                          </p>
-                        )}
-                      {job.error && <ErrorDetails error={job.error} context="task" />}
-                      {['queued', 'running'].includes(job.state) && (
-                        <button
-                          disabled={Boolean(connection)}
-                          onClick={() => {
-                            void window.ontolearn?.cancelJob(job.jobId).then((response) => {
-                              if (!response.ok) setTaskError(response.error)
-                              else void restore()
-                            })
+                  {workspaceModule === 'quality' &&
+                    tasks?.project &&
+                    window.ontolearn?.getProjectQualityState &&
+                    !connection &&
+                    !projectBusy && (
+                      <section id="quality-workspace" aria-label="当前项目质量与推导">
+                        {locationBanner('quality')}
+                        <QualityWorkspace
+                          key={JSON.stringify([
+                            tasks.project.projectId,
+                            tasks.generation,
+                            tasks.project.projectRevision,
+                          ])}
+                          projectId={tasks.project.projectId}
+                          bridge={window.ontolearn}
+                          validationScope={
+                            qualityScopes[tasks.project.projectId] ?? 'asserted+derived'
+                          }
+                          onValidationScopeChange={(next) => {
+                            const projectId = tasks.project?.projectId
+                            if (!projectId) return
+                            setQualityScopes((prev) =>
+                              prev[projectId] === next ? prev : { ...prev, [projectId]: next },
+                            )
                           }}
-                        >
-                          请求取消
-                        </button>
-                      )}
-                      <button
-                        disabled={Boolean(connection)}
-                        onClick={() => {
-                          void window.ontolearn?.getOperation(job.operationId).then((response) => {
-                            if (!response.ok) setTaskError(response.error)
-                            else
-                              setSummaries((old) => ({
-                                ...old,
-                                [job.jobId]: response.data
-                                  ? `已提交 · 项目版本 ${Number(response.data.projectRevision)}`
-                                  : '未查到完整操作提交点；已提交轮次以任务持久记录为准。',
-                              }))
-                          })
-                        }}
+                          disabled={
+                            workspaceFrozen ||
+                            managementBlocked ||
+                            checkpointBlocked ||
+                            fixtureBusy ||
+                            Boolean(activeFixture)
+                          }
+                          onDomainSnapshotUpdated={setQualityDomainSnapshot}
+                          onLocateTarget={locateQualityFinding}
+                          onPendingChange={onQualityPending}
+                        />
+                      </section>
+                    )}
+                  {isConnectedModule(workspaceModule) &&
+                    connectedContext &&
+                    connectedBridge &&
+                    !connection &&
+                    !projectBusy && (
+                      <section
+                        key={JSON.stringify([
+                          workspaceModule,
+                          connectedContext.projectId,
+                          tasks?.generation,
+                          connectedContext.revision,
+                          connectedContext.inputSnapshotId,
+                        ])}
+                        id={`${workspaceModule}-workspace`}
+                        aria-label={connectedModules[workspaceModule].title}
                       >
-                        查看提交点
-                      </button>
-                      {job.resultRef && (
-                        <button
-                          onClick={() => void loadSummary(job)}
-                          disabled={Boolean(connection)}
-                        >
-                          查看运行摘要
-                        </button>
-                      )}
-                      {summaries[job.jobId] && <p>{summaries[job.jobId]}</p>}
-                    </article>
-                  ))}
-                </section>
-              )}
-            </fieldset>
-            {tasks?.project && mentorOpen && learningCtl && (
-              <MentorPanel
-                controller={learningCtl}
-                disabled={learningDisabled}
-                currentDomainSnapshotId={currentDomainSnapshotId}
-                onOpenOntologyRepair={() => selectWorkspace('ontology')}
-                onOpenQueryWorkspace={() => selectWorkspace('query')}
-                onOpenQualityWorkspace={() => selectWorkspace('quality')}
-                onLoadTaskFixture={loadTaskFixture}
-                taskFixture={
-                  activeFixture
-                    ? {
-                        taskId: activeFixture.taskId,
-                        rows: activeFixture.diff.rows,
-                        approve: () => commitTaskFixture(activeFixture),
-                        discard: () => setFixtureProposal(undefined),
-                      }
-                    : undefined
-                }
-                taskFixtureStatus={
-                  fixtureStatus?.projectId === activeProjectId &&
-                  fixtureStatus?.taskId === learningState?.focusedTaskId
-                    ? fixtureStatus?.text
-                    : undefined
-                }
-                onResetToGBase={resetLearningGBase}
-                refreshCheckpoints={() => checkpointCtl?.refreshWhenIdle() ?? Promise.resolve()}
-              />
-            )}
-            {tasks?.project && (
-              <AgentPanel
-                key={`${tasks.project.projectId}:${tasks.generation}`}
-                projectId={tasks.project.projectId}
-                projectRevision={tasks.project.projectRevision}
-                inputSnapshotId={tasks.project.inputSnapshotId}
-                module={agentContext.module}
-                mode={agentContext.mode}
-                selectedObjectIds={agentContext.selectedObjectIds}
-                localActions={learningCtl ? ['hint', 'check', 'demonstrate'] : []}
-                modelSyncVersion={modelSyncVersion}
-                onModeChange={(mode) => onAgentModeChange(mode)}
-                onQueryDraft={(draft) =>
-                  setAgentQueryArtifact({
-                    projectId: tasks.project?.projectId ?? '',
-                    generation: tasks.generation,
-                    value: draft,
-                  })
-                }
-                onDraftPlan={(plan) =>
-                  setAgentDraftArtifact({
-                    projectId: tasks.project?.projectId ?? '',
-                    generation: tasks.generation,
-                    value: plan,
-                  })
-                }
-                onLocalAction={(action) => runAgentLocalAction(action)}
-              />
-            )}
+                        {workspaceModule === 'mapping' && (
+                          <fieldset disabled={connectedContext.disabled}>
+                            <MappingWorkspace
+                              onStatus={onConnectedStatus}
+                              {...connectedContext}
+                              bridge={connectedBridge}
+                              onCommitted={refreshAfterAgentCommit}
+                            />
+                          </fieldset>
+                        )}
+                        {workspaceModule === 'behavior' && (
+                          <ConnectedBehaviorWorkspace
+                            onStatus={onConnectedStatus}
+                            {...connectedContext}
+                            bridge={connectedBridge}
+                          />
+                        )}
+                        {workspaceModule === 'scenario' && (
+                          <ConnectedScenarioWorkspace
+                            onStatus={onConnectedStatus}
+                            {...connectedContext}
+                            bridge={connectedBridge}
+                          />
+                        )}
+                        {workspaceModule === 'transfer' && (
+                          <TransferWorkspace
+                            onStatus={onConnectedStatus}
+                            {...connectedContext}
+                            bridge={connectedBridge}
+                            onImported={async () => {
+                              if (management) await management.refresh()
+                              else {
+                                const reply = await connectedBridge.getProjectCatalog({
+                                  pageSize: 64,
+                                  cursor: null,
+                                })
+                                if (reply.ok) setCatalog(reply.data)
+                              }
+                            }}
+                          />
+                        )}
+                      </section>
+                    )}
+                </fieldset>
+                <UnifiedAssistantRail
+                  open={railOpen}
+                  activeTab={activeRailTab}
+                  onSelectTab={(tab) => setActiveRailTab(tab)}
+                  onClose={() => setRailOpen(false)}
+                  projectId={tasks.project.projectId}
+                  generation={tasks.generation}
+                  projectRevision={tasks.project.projectRevision}
+                  inputSnapshotId={tasks.project.inputSnapshotId}
+                  learningCtl={learningCtl}
+                  learningDisabled={learningDisabled}
+                  currentDomainSnapshotId={currentDomainSnapshotId}
+                  onOpenOntologyRepair={() => selectWorkspace('ontology')}
+                  onOpenQueryWorkspace={() => selectWorkspace('query')}
+                  onOpenQualityWorkspace={() => selectWorkspace('quality')}
+                  onOpenCheckpoints={() => setCheckpointsDrawerOpen(true)}
+                  onLoadTaskFixture={loadTaskFixture}
+                  taskFixture={
+                    activeFixture
+                      ? {
+                          taskId: activeFixture.taskId,
+                          rows: activeFixture.diff.rows,
+                          approve: () => commitTaskFixture(activeFixture),
+                          discard: () => setFixtureProposal(undefined),
+                        }
+                      : undefined
+                  }
+                  taskFixtureStatus={
+                    fixtureStatus?.projectId === activeProjectId &&
+                    fixtureStatus?.taskId === learningState?.focusedTaskId
+                      ? fixtureStatus?.text
+                      : undefined
+                  }
+                  onResetToGBase={resetLearningGBase}
+                  refreshCheckpoints={() => checkpointCtl?.refreshWhenIdle() ?? Promise.resolve()}
+                  agentContext={agentContext}
+                  modelSyncVersion={modelSyncVersion}
+                  onModeChange={(mode) => onAgentModeChange(mode)}
+                  onQueryDraft={(draft) =>
+                    setAgentQueryArtifact({
+                      projectId: tasks.project?.projectId ?? '',
+                      generation: tasks.generation,
+                      value: draft,
+                    })
+                  }
+                  onDraftPlan={(plan) =>
+                    setAgentDraftArtifact({
+                      projectId: tasks.project?.projectId ?? '',
+                      generation: tasks.generation,
+                      value: plan,
+                    })
+                  }
+                  onLocalAction={(action) => runAgentLocalAction(action)}
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        )}
+        {connection && (
+          <section role="status" aria-label="引擎连接状态">
+            <h2>
+              {connection.state === 'offline'
+                ? '引擎连接已离线；任务状态待对账'
+                : '引擎连接中断；正在对账'}
+            </h2>
+            <p>任务卡片仅显示最后记录，当前状态尚未确认。不会重发写任务。</p>
+            <p>已尝试 {connection.attempt}/3 次只读恢复。</p>
+            <ErrorDetails error={connection.error} context="task" />
+            <button onClick={() => void restore()} disabled={connection.state === 'reconnecting'}>
+              重新连接并对账
+            </button>
+          </section>
+        )}
         {taskError && !connection && <ErrorDetails error={taskError} context="task" />}
-        <section id="modules" className="modules-section">
-          <div className="section-title">
-            <h2>六个模块，一条学习路径</h2>
-            <span>需求规划 · 待实现</span>
-          </div>
-          <div className="modules">
-            {modules.map(([number, title, detail]) => (
-              <article key={number}>
-                <span className="module-number">{number}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{detail}</p>
-                </div>
-                <span className="planned">待开发</span>
-              </article>
-            ))}
-          </div>
-        </section>
-        <ModelPanel
-          key={activeProjectId ?? 'no-project'}
-          jobs={tasks?.jobs ?? []}
-          projectId={activeProjectId ?? null}
-          onAgentModelChanged={() => setModelSyncVersion((value) => value + 1)}
-        />
         <footer>
           需求基准 PRD V0.6
-          <span>本地项目管理、本体编辑与查询逐项接入；完整项目导出及其余模块以验收范围为准。</span>
+          <span>本地工作台全模块已集成；实验与验收边界以当前项目版本与真实检查记录为准。</span>
         </footer>
       </main>
     </div>

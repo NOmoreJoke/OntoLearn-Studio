@@ -171,6 +171,7 @@ test('ontology real preflight reply cannot start A writes after the UI selects s
     expect(held.actual).toMatchObject({ ok: true, data: { projectId: a.projectId } })
     evidence.held = held
 
+    await page.getByTestId('nav-project-library').click()
     await page.locator(`[data-testid="project-open"][data-project-id="${b.projectId}"]`).click()
     await expect(library.getByRole('status')).toContainText('项目已打开')
     await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
@@ -206,6 +207,7 @@ test('ontology real preflight reply cannot start A writes after the UI selects s
     await removeDelay(application)
     instrumented = false
 
+    await page.getByTestId('nav-project-library').click()
     await page.locator(`[data-testid="project-open"][data-project-id="${a.projectId}"]`).click()
     await expect(library.getByRole('status')).toContainText('项目已打开')
     await expect(page.getByTestId('project-list-refresh')).toBeEnabled()

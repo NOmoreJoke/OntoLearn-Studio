@@ -41,13 +41,13 @@ test('desktop calls real engine, keeps isolation and fits minimum window', async
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true)
-    await page.getByRole('link', { name: '模块规划' }).click()
+    await page.getByTestId('nav-learning-center').click()
     await expect(page.getByRole('heading', { name: '六个模块，一条学习路径' })).toBeInViewport()
+    await page.getByRole('link', { name: '项目工作台' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
     await page.getByRole('button', { name: '检查本地引擎' }).click()
     await expect(page.getByRole('button', { name: '检查本地引擎' })).toBeEnabled()
     await expect(page.locator('.health-result')).toContainText('本地引擎已连接')
-    await page.getByRole('link', { name: '项目工作台' }).click()
-    await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
     await page.screenshot({ path: 'test-results/desktop-1024.png' })
   } finally {
     await application.close()

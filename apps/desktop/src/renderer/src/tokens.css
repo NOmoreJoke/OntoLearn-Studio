@@ -1,10 +1,72 @@
 :root {
-  /* 取自现有 .pen 原型；离线使用系统中文字体回退。 */
-  --bg: #f5f9f7;
-  --text: #172621;
-  --secondary: #52645e;
-  --muted: #52645e;
-  --border: #d8e3de;
-  --accent: #0f766e;
-  --soft: #e6f4f1;
+  /* W6 Design Harness: Deep Jade & Paper semantic tokens (single source of truth for palette) */
+  --paper-canvas: #f5f9f7;
+  --paper-surface: #ffffff;
+  --paper-subtle: #f0f6f4;
+  --paper-card: #f8fbfa;
+
+  --ink-primary: #172621;
+  --ink-secondary: #52645e;
+  --ink-muted: #5d706a;
+  --ink-inverse: #ffffff;
+
+  --hair-border: #d8e3de;
+  --hair-strong: #b8c9c1;
+
+  --accent-primary: #0f766e;
+  --accent-hover: #0d625c;
+  --accent-soft: #e6f4f1;
+  --accent-deep: #134e4a;
+
+  --signal-success: #047857;
+  --signal-success-bg: #ecfdf5;
+  --signal-warning: #b45309;
+  --signal-warning-bg: #fffbeb;
+  --signal-hint-bg: #fff8e8;
+  --signal-danger: #9c2f26;
+  --signal-danger-bg: #fff1ee;
+  --signal-info: #0369a1;
+  --signal-info-bg: #f0f9ff;
+
+  --focus-ring: #0369a1;
+  --overlay-scrim: rgba(23, 38, 33, 0.36);
+
+  /* Graph & Diagram Surfaces */
+  --graph-node-fill: #e6f4f1;
+  --graph-node-selected: #cce8e2;
+  --graph-node-stroke: #0f766e;
+
+  /* Elevation */
+  --shadow-subtle: 0 2px 5px rgba(23, 38, 33, 0.04);
+  --shadow-card: 0 4px 16px rgba(23, 38, 33, 0.07);
+
+  /* Typography */
+  --font-ui: 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+
+  /* Radii & Spacing */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  --gap-xs: 6px;
+  --gap-sm: 10px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+
+  /* Motion */
+  --motion-hover: 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-drawer: 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Legacy aliases mapped to semantic tokens */
+  --bg: var(--paper-canvas);
+  --surface: var(--paper-surface);
+  --text: var(--ink-primary);
+  --text-primary: var(--ink-primary);
+  --secondary: var(--ink-secondary);
+  --muted: var(--ink-muted);
+  --border: var(--hair-border);
+  --accent: var(--accent-primary);
+  --soft: var(--accent-soft);
 }

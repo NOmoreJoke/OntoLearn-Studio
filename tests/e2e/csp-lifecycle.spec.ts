@@ -56,8 +56,9 @@ test('C1 real CSP, normal functionality and renderer recovery', async () => {
     expect(
       await page.locator('.app-shell').evaluate((node) => getComputedStyle(node).display),
     ).toBe('grid')
-    await page.getByRole('link', { name: '模块规划' }).click()
+    await page.getByTestId('nav-learning-center').click()
     await expect(page.getByRole('heading', { name: '六个模块，一条学习路径' })).toBeInViewport()
+    await page.getByTestId('nav-project-library').click()
     await page.getByRole('button', { name: '检查本地引擎' }).click()
     await expect(page.locator('.health-result')).toContainText('本地引擎已连接')
   }

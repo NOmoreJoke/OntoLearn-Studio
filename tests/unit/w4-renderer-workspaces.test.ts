@@ -39,6 +39,7 @@ import {
   TransferWorkspace,
 } from '../../apps/desktop/src/renderer/src/transfer/TransferWorkspace'
 import { LibraryLocationPanel } from '../../apps/desktop/src/renderer/src/project/LibraryLocationPanel'
+import { SidebarNav } from '../../apps/desktop/src/renderer/src/shell/SidebarNav'
 import fixtures from '../../packages/contracts/v2/fixtures.json'
 
 // Run actual component bodies and event callbacks without a browser or desktop focus.
@@ -65,6 +66,9 @@ function tree(value: unknown): Element[] {
   if (!isValidElement<Record<string, unknown>>(value)) return []
   return [
     value,
+    ...(value.type === SidebarNav
+      ? tree(SidebarNav(value.props as Parameters<typeof SidebarNav>[0]))
+      : []),
     ...tree(value.props.children),
     ...tree(value.props.connected),
     ...(typeof value.props.connected === 'object' && value.props.connected !== null
@@ -1044,6 +1048,8 @@ describe('W4 App workspace navigation', () => {
       expect(agentContextStore.getSnapshot().module).toBe(toAgentModule(module))
     }
     expect(toAgentModule('transfer')).toBe('learn')
+    const projectsLink = h.find((node) => node.props['data-testid'] === 'nav-project-library')!
+    ;(projectsLink.props.onClick as () => void)()
     const library = propsOf<Parameters<typeof LibraryLocationPanel>[0]>(
       h.find((node) => node.type === LibraryLocationPanel),
     )
@@ -1051,6 +1057,8 @@ describe('W4 App workspace navigation', () => {
     expect(anchor('mapping')?.props['aria-disabled']).toBe(true)
     expect(h.find((node) => node.props.className === 'workspace-freeze')?.props.disabled).toBe(true)
     library.freeze(false)
+    ;(anchor('transfer')!.props.onClick as (event: unknown) => void)({ preventDefault() {} })
+    expect(h.find((node) => node.props.id === 'transfer-workspace')).toBeDefined()
     emit({
       kind: 'connection',
       generation: 3,

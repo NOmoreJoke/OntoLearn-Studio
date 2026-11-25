@@ -50,7 +50,7 @@ test('B1a first launch, metadata modes and archive retain the live query draft',
     await expect(page.getByRole('button', { name: '打开已有项目', exact: true })).toBeVisible()
     await page.getByRole('button', { name: '查看快速介绍', exact: true }).click()
     const intro = page.getByRole('dialog', { name: '快速介绍', exact: true })
-    await expect(intro).toContainText('完整项目导出仍待接入')
+    await expect(intro).toContainText('完整项目包导出可在「导出与迁移」模块执行')
     await intro.getByRole('button', { name: '关闭介绍' }).click()
     await page.getByRole('button', { name: '查看快速介绍', exact: true }).click()
     await expect(intro).toBeVisible()
@@ -61,6 +61,7 @@ test('B1a first launch, metadata modes and archive retain the live query draft',
       '项目已创建并打开',
       { timeout: 15000 },
     )
+    await page.getByRole('link', { name: '本体查询', exact: true }).click()
     const workspace = page.getByRole('region', { name: '本体查询工作台', exact: true })
     await workspace.getByRole('button', { name: '读取项目与持久工作草稿', exact: true }).click()
     await expect(workspace.getByRole('button', { name: '新建查询草稿', exact: true })).toBeEnabled({
@@ -73,9 +74,11 @@ test('B1a first launch, metadata modes and archive retain the live query draft',
     const before = data(
       await page.evaluate(() => window.ontolearn!.readProject({ editor: 'query-workspace-v1' })),
     )
+    await page.getByTestId('nav-project-library').click()
     await page.getByLabel('界面模式', { exact: true }).selectOption('assisted')
     await confirm(page)
     await expect(page.locator('.app-shell')).toHaveAttribute('data-workspace-mode', 'assisted')
+    await page.getByTestId('enter-active-workspace').click()
     await expect(input).toHaveValue('还没有保存的查询')
     await expect(input).toHaveAttribute('data-b1a-instance', 'same-live-editor')
     await expect(page.locator('.guided-help')).not.toBeVisible()
@@ -84,23 +87,29 @@ test('B1a first launch, metadata modes and archive retain the live query draft',
     )
     expect(after.domain).toEqual(before.domain)
     expect(after.workspace.metadata.mode).toBe('assisted')
+    await page.getByTestId('nav-project-library').click()
     await expect(page.getByRole('button', { name: '删除项目…', exact: true })).toBeDisabled()
     await page.getByRole('button', { name: '选择空目录建立项目库', exact: true }).click()
     await expect(page.getByTestId('library-location-notice')).toContainText(
       '请先保存或清空编辑表单',
     )
+    await page.getByTestId('enter-active-workspace').click()
     await expect(input).toBeEnabled()
     await expect(input).toHaveValue('还没有保存的查询')
+    await page.getByTestId('nav-project-library').click()
     await page.getByRole('button', { name: '预览归档', exact: true }).click()
     await confirm(page)
     await expect(page.getByRole('region', { name: '当前项目管理' })).toContainText(
       '仍可显式编辑和运行',
     )
+    await page.getByTestId('enter-active-workspace').click()
     await expect(input).toHaveValue('还没有保存的查询')
+    await page.getByTestId('nav-project-library').click()
     await page.getByRole('button', { name: '已归档', exact: true }).click()
     await expect(page.getByTestId('project-open')).toHaveCount(1)
     await page.getByLabel('界面模式', { exact: true }).selectOption('guided')
     await confirm(page)
+    await page.getByTestId('enter-active-workspace').click()
     await expect(page.locator('.guided-help')).toBeVisible()
     await expect(input).toHaveAttribute('data-b1a-instance', 'same-live-editor')
     await test.info().attach('b1a-mode-metadata-evidence', {

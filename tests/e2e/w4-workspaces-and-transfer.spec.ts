@@ -100,9 +100,7 @@ test('W4 mapping, isolated behavior and scenario, package and HTML transfer surv
     const page = await visible(app)
     userData = await app.evaluate(({ app }) => app.getPath('userData'))
     await page.getByTestId('learning-start-example').click()
-    await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-      '项目已创建并打开',
-    )
+    await expect(page.getByTestId('project-status-notice')).toContainText('项目已创建并打开')
     const baseline = await state(page)
 
     await page.locator('a[href="#mapping-workspace"]').click()

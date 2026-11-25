@@ -204,10 +204,9 @@ async function commitManualFact(
 
 async function startLearningExample(page: Page): Promise<void> {
   await page.getByTestId('learning-start-example').click()
-  await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-    '项目已创建并打开',
-    { timeout: 30000 },
-  )
+  await expect(page.getByTestId('project-status-notice')).toContainText('项目已创建并打开', {
+    timeout: 30000,
+  })
   const mentor = mentorPanel(page)
   await expect(mentor).toBeVisible({ timeout: 30000 })
   await expect(mentor.getByTestId('learning-check-status')).toHaveText('待检查', {
@@ -260,8 +259,8 @@ test('L1 offline first lesson: reading isolation, glossary, wrong class, closed-
     const page = await application.firstWindow()
 
     stage = 'open the learning center and start the equipment case'
-    await expect(page.getByTestId('learning-center')).toBeVisible()
     await page.getByTestId('nav-learning-center').click()
+    await expect(page.getByTestId('learning-center')).toBeVisible()
     await expect(page.getByTestId('learning-center')).toBeInViewport()
     await expect(page.getByTestId('learning-center')).toContainText('离线课程 · 无需模型 API')
     await expect(page.getByTestId('learning-center')).toContainText('设备运维')
@@ -351,6 +350,7 @@ test('L1 offline first lesson: reading isolation, glossary, wrong class, closed-
     await expect(mentor.getByTestId('learning-assistance-label')).toHaveText('独立完成')
     await expect(mentor.getByTestId('learning-operation-state')).toContainText('操作完成：是')
     await expect(mentor.getByTestId('learning-guided-stage-badge')).toBeVisible()
+    await page.getByTestId('topbar-checkpoints-toggle').click()
     const guided = guidedStageCheckpoints(page)
     await expect(guided).toHaveCount(1, { timeout: 30000 })
     await expect(guided.first()).toContainText('引导阶段完成「完成引导阶段：业务本体建模」')
@@ -447,6 +447,7 @@ test('L1 level-4 full demonstration persists across a real restart without brows
     )
 
     stage = 'the persisted level-4 demonstration and attribution survive the restart'
+    await restarted.getByTestId('enter-active-workspace').click()
     // The mentor rail starts collapsed on a fresh launch; expand it like a user.
     await restarted.getByTestId('mentor-panel-toggle').click()
     const reopenedMentor = restarted.getByTestId('mentor-panel')
@@ -480,6 +481,7 @@ test('L1 level-4 full demonstration persists across a real restart without brows
       '使用完整示范完成',
     )
     await expect(reopenedMentor.getByTestId('mentor-btn-check')).toBeEnabled({ timeout: 30000 })
+    await restarted.getByTestId('topbar-checkpoints-toggle').click()
     await expect(guidedStageCheckpoints(restarted)).toHaveCount(1, { timeout: 30000 })
     const checkpointList = await restarted.evaluate(async () =>
       window.ontolearn!.listProjectCheckpoints({ pageSize: 20, cursor: null }),

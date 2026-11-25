@@ -16,6 +16,7 @@ import { maskLocalPaths } from '../mapping/local-text'
 import { useWorkspaceOperation, type ReportWorkspaceStatus } from '../mapping/workspace-operation'
 import { requireWorkspaceReply } from '../ontology/workspace-change'
 import { TransferPanel } from './TransferPanel'
+import './transfer.css'
 
 const optionLabels: Record<keyof ProjectPackageOptions, string> = {
   agentSessions: 'Agent 会话',

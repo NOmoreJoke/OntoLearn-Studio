@@ -50,9 +50,7 @@ async function projectId(page: Page) {
 
 async function startExample(page: Page) {
   await page.getByTestId('learning-start-example').click()
-  await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-    '项目已创建并打开',
-  )
+  await expect(page.getByTestId('project-status-notice')).toContainText('项目已创建并打开')
   return projectId(page)
 }
 
@@ -455,6 +453,7 @@ async function assertF08(result: Locator) {
 }
 
 async function focusTask(page: Page, task: 'quality' | 'transfer-repair' | 'transfer-classify') {
+  await page.getByTestId('nav-learning-center').click()
   await page.locator('[data-testid="learning-path-task"][data-task-id="' + task + '"]').click()
   await expect(wizard(page).getByTestId('learning-open-quality-workspace')).toBeEnabled()
 }

@@ -1,7 +1,7 @@
 .t08-agent {
-  color: var(--text);
-  background: #fff;
-  border: 1px solid var(--border);
+  color: var(--ink-primary);
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-border);
   border-radius: 14px;
   padding: 1.25rem;
   max-width: 30rem;
@@ -42,10 +42,10 @@
   color: var(--secondary);
 }
 .t08-warning {
-  background: #fff6e9;
-  border-left: 3px solid #996215;
+  background: var(--signal-warning-bg);
+  border-left: 3px solid var(--signal-warning);
   padding: 0.75rem;
-  color: #6b4716;
+  color: var(--ink-primary);
 }
 .t08-warning p {
   margin: 0.25rem 0;
@@ -90,7 +90,7 @@
 .t08-agent button:focus-visible,
 .t08-agent textarea:focus-visible,
 .t08-agent summary:focus-visible {
-  outline: 3px solid #0369a1;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 .t08-records {
@@ -160,8 +160,8 @@
   padding: 0.75rem;
   border: 1px solid var(--border);
   border-radius: 7px;
-  color: var(--text);
-  background: #fff;
+  color: var(--ink-primary);
+  background: var(--paper-surface);
   font: inherit;
 }
 .t08-question .t08-meta {
@@ -182,9 +182,9 @@
 
 /* W3b S2-4: the workspace Agent panel and the frozen vocabulary controls. */
 .agent-panel {
-  color: var(--text);
-  background: #fff;
-  border: 1px solid var(--border);
+  color: var(--ink-primary);
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-border);
   border-radius: 14px;
   padding: 1.25rem;
   min-width: 0;
