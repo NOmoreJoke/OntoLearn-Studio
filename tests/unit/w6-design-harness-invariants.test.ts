@@ -61,4 +61,29 @@ describe('W6 design harness deterministic guardrails (positive + negative --stdi
     expect(res.stderr).toContain('shell-no-effect-or-timer')
     expect(res.stderr).toContain('shell-no-ts-suppress')
   })
+
+  it('rejects raw hex in foundation.css, timers/@ts-ignore in foundation/, and unwrapped raw diff <pre> via --stdin', () => {
+    const cssRes = runCheck(
+      ['--stdin', 'apps/desktop/src/renderer/src/foundation/foundation.css'],
+      '.bad-node { fill: #0f766e; }\n',
+    )
+    expect(cssRes.status).toBe(1)
+    expect(cssRes.stderr).toContain('no-raw-hex-css')
+
+    const foundationRes = runCheck(
+      ['--stdin', 'apps/desktop/src/renderer/src/foundation/BadFoundation.tsx'],
+      '// @ts-nocheck\nexport function BadFoundation() { setTimeout(() => {}, 5); return null }\n',
+    )
+    expect(foundationRes.status).toBe(1)
+    expect(foundationRes.stderr).toContain('foundation-no-timer')
+    expect(foundationRes.stderr).toContain('foundation-no-ts-suppress')
+
+    const ontologyRes = runCheck(
+      ['--stdin', 'apps/desktop/src/renderer/src/ontology/OntologyMainlinePage.tsx'],
+      'export function OntologyMainlinePage() { return <pre>{JSON.stringify(state.prepared.rows, null, 2)}</pre> }\n',
+    )
+    expect(ontologyRes.status).toBe(1)
+    expect(ontologyRes.stderr).toContain('ontology-readable-diff-required')
+    expect(ontologyRes.stderr).toContain('ontology-no-raw-diff-pre')
+  })
 })

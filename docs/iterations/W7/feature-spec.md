@@ -147,7 +147,7 @@ apps/desktop/src/renderer/src/
    - `OntologyMainlinePage.tsx` 中 `.ontology-diff` 区域不得退化回直接无包装展示裸 `<pre>`（要求必须存在 `<ReadableBusinessDiff` 调用且 `<pre>` 被 `<details>` 包裹）；
    - 必须通过正向全量扫描 + `--stdin` 负向违例拦截双重反证。
 2. **单位测试与属性测试（`tests/unit/w7-zero-code-foundation.test.ts`）**：
-   - 使用 `fast-check` 对 `rdf-display-adapter.ts` 执行 4 项性质验证：
+   - 使用仓内确定性收缩属性测试助手 `tests/unit/helpers/fast-check-lite.ts`（在严格保持 `L1` 不改动 `package.json`/`package-lock.json` 依赖清单的前提下提供 seeded `assert`/`property`/`unicodeText`/`integer`/`boolean`/`oneof` 320 次生成验证）对 `rdf-display-adapter.ts` 执行 4 项性质验证：
      - **Round-trip（往返守恒）**：`decodeRdfObjectToZeroCode(encodeZeroCodeObject(input))` 对合法 `entity`/`zhText`/`string`/`decimal`/`integer`/`boolean` 与原值等价；
      - **转义安全**：任意包含 `"`、`\`、`\n`、`\r`、`\t` 的随机中文/英文业务文本编码后不破坏引号边界且能无损解码还原；
      - **幂等性（Idempotency）**：`compactIri(compactIri(x)) === compactIri(x)`、`expandCompactIri(expandCompactIri(x)) === expandCompactIri(x)`；

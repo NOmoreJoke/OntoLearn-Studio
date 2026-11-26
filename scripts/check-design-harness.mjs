@@ -6,6 +6,9 @@ const REPO_ROOT = path.resolve(import.meta.dirname, '..')
 const RENDERER_SRC = 'apps/desktop/src/renderer/src'
 const TOKENS_FILE = `${RENDERER_SRC}/tokens.css`
 const SHELL_PREFIX = `${RENDERER_SRC}/shell/`
+const FOUNDATION_PREFIX = `${RENDERER_SRC}/foundation/`
+const ONTOLOGY_PAGE_FILE = `${RENDERER_SRC}/ontology/OntologyMainlinePage.tsx`
+const READABLE_DIFF_FILE = `${RENDERER_SRC}/ontology/ReadableBusinessDiff.tsx`
 
 const REQUIRED_TOKENS = [
   '--paper-canvas',
@@ -21,7 +24,10 @@ const HEX_COLOR_RE = /(?:[:\s,(])(#[0-9a-fA-F]{3,8})(?=[;\s,)}/]|$)/gm
 const STALE_PLACEHOLDER_RE = /需求规划\s*·\s*待实现|待开发|待实现/g
 const SHELL_EFFECT_OR_TIMER_RE =
   /\b(useEffect|setTimeout|setInterval|requestAnimationFrame|requestIdleCallback)\s*\(/g
+const FOUNDATION_TIMER_RE =
+  /\b(setTimeout|setInterval|requestAnimationFrame|requestIdleCallback)\s*\(/g
 const TS_SUPPRESS_RE = /@ts-(?:ignore|nocheck)\b/g
+const RAW_ONTOLOGY_DIFF_PRE_RE = /<pre>\s*\{JSON\.stringify\(state\.prepared\.rows/g
 
 function normalizeRepoPath(inputPath) {
   const abs = path.isAbsolute(inputPath) ? inputPath : path.resolve(REPO_ROOT, inputPath)
@@ -120,6 +126,60 @@ export function inspectFile(relPath, content) {
         (directive) => `TypeScript suppression "${directive}" is forbidden inside shell/`,
       ),
     )
+  }
+
+  if (
+    normalized.startsWith(FOUNDATION_PREFIX) &&
+    (normalized.endsWith('.ts') || normalized.endsWith('.tsx'))
+  ) {
+    violations.push(
+      ...collectLineMatches(
+        content,
+        FOUNDATION_TIMER_RE,
+        'foundation-no-timer',
+        (name) => `Imperative timer "${name}()" is forbidden inside foundation/`,
+      ),
+    )
+    violations.push(
+      ...collectLineMatches(
+        content,
+        TS_SUPPRESS_RE,
+        'foundation-no-ts-suppress',
+        (directive) => `TypeScript suppression "${directive}" is forbidden inside foundation/`,
+      ),
+    )
+  }
+
+  if (normalized === ONTOLOGY_PAGE_FILE) {
+    if (!content.includes('<ReadableBusinessDiff')) {
+      violations.push({
+        line: 1,
+        rule: 'ontology-readable-diff-required',
+        message: 'OntologyMainlinePage.tsx must render <ReadableBusinessDiff>',
+      })
+    }
+    violations.push(
+      ...collectLineMatches(
+        content,
+        RAW_ONTOLOGY_DIFF_PRE_RE,
+        'ontology-no-raw-diff-pre',
+        () =>
+          'Unwrapped raw JSON.stringify(state.prepared.rows) <pre> is forbidden in OntologyMainlinePage.tsx',
+      ),
+    )
+  }
+
+  if (normalized === READABLE_DIFF_FILE) {
+    const hasDetailsWrappedPre = /<details[\s\S]*?<pre>[\s\S]*?<\/pre>[\s\S]*?<\/details>/.test(
+      content,
+    )
+    if (!hasDetailsWrappedPre) {
+      violations.push({
+        line: 1,
+        rule: 'readable-diff-details-pre',
+        message: 'ReadableBusinessDiff.tsx must wrap its single <pre> inside <details>',
+      })
+    }
   }
 
   return violations.map((item) => ({ file: normalized, ...item }))

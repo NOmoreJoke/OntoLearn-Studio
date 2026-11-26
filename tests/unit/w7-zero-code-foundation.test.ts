@@ -40,6 +40,7 @@ import {
 import { ReadableBusinessDiff } from '../../apps/desktop/src/renderer/src/ontology/ReadableBusinessDiff'
 import { ZeroCodeTripleBuilder } from '../../apps/desktop/src/renderer/src/ontology/ZeroCodeTripleBuilder'
 import { RetailSimulationBanner } from '../../apps/desktop/src/renderer/src/quality/RetailSimulationBanner'
+import * as fc from './helpers/fast-check-lite'
 
 function flattenElements(node: unknown): ReactElement<Record<string, unknown>>[] {
   if (Array.isArray(node)) return node.flatMap(flattenElements)
@@ -99,6 +100,10 @@ describe('W7-1 retail membership & orders simulation datasets', () => {
 
     const stressSample = buildRetailQualitySample('stress80')
     expect(stressSample.request.expectedOutputs).toHaveLength(4)
+    expect(
+      (stressSample.request.ontologyTriples?.length ?? 0) +
+        stressSample.request.inputTriples.length,
+    ).toBeLessThanOrEqual(72)
     expect(stressSample.anomalySummary.missingStoreCount).toBe(3)
     expect(stressSample.anomalySummary.negativeAmountCount).toBe(2)
     expect(stressSample.anomalySummary.danglingManagerCount).toBe(2)
@@ -319,5 +324,143 @@ describe('W7-3 zero-code adapter, builder, ReadableBusinessDiff, and simulation 
     const runBtn = elements.find((el) => el.props['data-testid'] === 'retail-run-simulation')
     ;(runBtn!.props.onClick as () => void)()
     expect(onRunSimulation).toHaveBeenCalledWith('stress80')
+  })
+})
+
+describe('W7-4 property-based tests on rdf-display-adapter (300+ runs per property)', () => {
+  const iriSegmentArb = fc.unicodeText({
+    minLength: 1,
+    maxLength: 24,
+    pool: [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-/'],
+  })
+
+  const validEntityInputArb = fc.oneof(
+    fc.record({
+      mode: fc.constantFrom('entity' as const),
+      iri: iriSegmentArb,
+    }),
+  )
+
+  it('satisfies round-trip conservation across all 6 zero-code object modes', () => {
+    const anyInputArb = fc.oneof<Parameters<typeof encodeZeroCodeObject>[0]>(
+      fc.record({
+        mode: fc.constantFrom('entity' as const),
+        iri: fc.constantFrom('retail:member/M-018', 'learning:equipment/001', 'urn:test:item/A1'),
+      }),
+      fc.record({
+        mode: fc.constantFrom('zhText' as const),
+        text: fc.unicodeText(),
+      }),
+      fc.record({
+        mode: fc.constantFrom('string' as const),
+        text: fc.unicodeText(),
+      }),
+      fc.record({
+        mode: fc.constantFrom('decimal' as const),
+        text: fc.tuple(fc.integer({ min: -99999, max: 99999 }), fc.integer({ min: 0, max: 99 })),
+      }) as unknown as fc.Arbitrary<Parameters<typeof encodeZeroCodeObject>[0]>,
+    )
+    void validEntityInputArb
+    void anyInputArb
+
+    fc.assert(
+      fc.property(
+        fc.constantFrom('retail:', 'learning:', 'urn:custom:', 'http://example.org/'),
+        iriSegmentArb,
+        fc.unicodeText(),
+        fc.integer({ min: -999999, max: 999999 }),
+        fc.integer({ min: 0, max: 99 }),
+        fc.boolean(),
+        (prefix, seg, text, intPart, fracPart, boolVal) => {
+          const iriInput = { mode: 'entity' as const, iri: `${prefix}${seg}` }
+          const encodedEntity = encodeZeroCodeObject(iriInput)
+          const decodedEntity = decodeRdfObjectToZeroCode(encodedEntity)
+          expect(decodedEntity).toEqual({
+            mode: 'entity',
+            iri: expandCompactIri(`${prefix}${seg}`),
+          })
+
+          const zhEncoded = encodeZeroCodeObject({ mode: 'zhText', text })
+          expect(zhEncoded.startsWith('"')).toBe(true)
+          expect(zhEncoded.endsWith('"@zh')).toBe(true)
+          expect(decodeRdfObjectToZeroCode(zhEncoded)).toEqual({ mode: 'zhText', text })
+
+          const strEncoded = encodeZeroCodeObject({ mode: 'string', text })
+          expect(strEncoded.startsWith('"')).toBe(true)
+          expect(strEncoded.endsWith('"')).toBe(true)
+          expect(decodeRdfObjectToZeroCode(strEncoded)).toEqual({ mode: 'string', text })
+
+          const decText = `${intPart}.${String(fracPart).padStart(2, '0')}`
+          const decEncoded = encodeZeroCodeObject({ mode: 'decimal', text: decText })
+          expect(decodeRdfObjectToZeroCode(decEncoded)).toEqual({
+            mode: 'decimal',
+            text: decText,
+          })
+
+          const intText = String(intPart)
+          const intEncoded = encodeZeroCodeObject({ mode: 'integer', text: intText })
+          expect(decodeRdfObjectToZeroCode(intEncoded)).toEqual({
+            mode: 'integer',
+            text: intText,
+          })
+
+          const boolEncoded = encodeZeroCodeObject({ mode: 'boolean', booleanValue: boolVal })
+          expect(decodeRdfObjectToZeroCode(boolEncoded)).toEqual({
+            mode: 'boolean',
+            booleanValue: boolVal,
+          })
+        },
+      ),
+      { numRuns: 320 },
+    )
+  })
+
+  it('satisfies idempotency for compactIri and expandCompactIri', () => {
+    fc.assert(
+      fc.property(
+        fc.constantFrom(
+          RETAIL_NS,
+          'retail:',
+          'urn:ontolearn:learning:',
+          'learning:',
+          'http://www.w3.org/2001/XMLSchema#',
+          'urn:unmatched:',
+        ),
+        iriSegmentArb,
+        (ns, seg) => {
+          const raw = `${ns}${seg}`
+          const c1 = compactIri(raw)
+          const c2 = compactIri(c1)
+          expect(c2).toBe(c1)
+
+          const e1 = expandCompactIri(raw)
+          const e2 = expandCompactIri(e1)
+          expect(e2).toBe(e1)
+          expect(expandCompactIri(c1)).toBe(e1)
+        },
+      ),
+      { numRuns: 320 },
+    )
+  })
+
+  it('rejects malformed decimals, integers, IRIs, and lone surrogates fail-closed', () => {
+    for (const badDec of ['', 'abc', '12.34.56', '12元', 'NaN', 'Infinity']) {
+      expect(() => encodeZeroCodeObject({ mode: 'decimal', text: badDec })).toThrow(
+        'INVALID_ZERO_CODE_DECIMAL',
+      )
+    }
+    for (const badInt of ['', '12.5', 'abc', '1e3']) {
+      expect(() => encodeZeroCodeObject({ mode: 'integer', text: badInt })).toThrow(
+        'INVALID_ZERO_CODE_INTEGER',
+      )
+    }
+    for (const badIri of ['', 'no-scheme', 'urn:has space', 'urn:bad<angle>']) {
+      expect(() => encodeZeroCodeObject({ mode: 'entity', iri: badIri })).toThrow(
+        'INVALID_ZERO_CODE_IRI',
+      )
+    }
+    expect(() => encodeZeroCodeObject({ mode: 'zhText', text: 'bad\ud800' })).toThrow(
+      'UNREPRESENTABLE_ZERO_CODE_LITERAL',
+    )
   })
 })

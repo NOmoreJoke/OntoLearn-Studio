@@ -676,7 +676,7 @@ function buildStress80Rows(): readonly RetailTableRow[] {
       cells: {
         memberId: `#${id}`,
         displayName: name,
-        tier: i % 4 === 0 ? '黑金会员' : '普通会员',
+        tier: i === 7 ? '黑金会员' : '普通会员',
         channel: i % 2 === 0 ? '小程序点单' : '门店扫码',
         phoneSuffix: String(3100 + i * 17),
       },
@@ -850,34 +850,51 @@ export function buildRetailQualitySample(scale: RetailDatasetScale): RetailSimul
     [`${RETAIL_NS}Member`, RDF_TYPE, `<${OWL_CLASS}>`],
     [`${RETAIL_NS}BlackGoldMember`, RDF_TYPE, `<${OWL_CLASS}>`],
     [`${RETAIL_NS}BlackGoldMember`, RDFS_SUBCLASS, iriRef('Member')],
-    [`${RETAIL_NS}RegularMember`, RDF_TYPE, `<${OWL_CLASS}>`],
-    [`${RETAIL_NS}RegularMember`, RDFS_SUBCLASS, iriRef('Member')],
-    [`${RETAIL_NS}Store`, RDF_TYPE, `<${OWL_CLASS}>`],
-    [`${RETAIL_NS}StoreOrder`, RDF_TYPE, `<${OWL_CLASS}>`],
-    [`${RETAIL_NS}ComplaintTicket`, RDF_TYPE, `<${OWL_CLASS}>`],
     [`${RETAIL_NS}ChurnRiskMember`, RDF_TYPE, `<${OWL_CLASS}>`],
     [`${RETAIL_NS}orderedBy`, RDF_TYPE, `<${OWL_OBJECT_PROP}>`],
     [`${RETAIL_NS}orderAtStore`, RDF_TYPE, `<${OWL_OBJECT_PROP}>`],
     [`${RETAIL_NS}complaintForOrder`, RDF_TYPE, `<${OWL_OBJECT_PROP}>`],
     [`${RETAIL_NS}memberTier`, RDF_TYPE, `<${OWL_DATA_PROP}>`],
     [`${RETAIL_NS}regionCode`, RDF_TYPE, `<${OWL_DATA_PROP}>`],
-    [`${RETAIL_NS}paidAmount`, RDF_TYPE, `<${OWL_DATA_PROP}>`],
   ]
+
+  const complainedOrderIds = new Set(
+    rows
+      .filter((r) => r.table === 'complaints' && typeof r.cells.orderId === 'string')
+      .map((r) => String(r.cells.orderId).replace(/^#/, '')),
+  )
+  const referencedMemberIds = new Set(
+    rows
+      .filter(
+        (r) =>
+          r.table === 'orders' &&
+          complainedOrderIds.has(r.rowId) &&
+          typeof r.cells.memberId === 'string',
+      )
+      .map((r) => String(r.cells.memberId).replace(/^#/, '')),
+  )
+  const referencedStoreIds = new Set(
+    rows
+      .filter(
+        (r) =>
+          r.table === 'orders' &&
+          complainedOrderIds.has(r.rowId) &&
+          typeof r.cells.storeId === 'string',
+      )
+      .map((r) => String(r.cells.storeId).replace(/^#/, '')),
+  )
 
   const inputTriples: QualityFr505TripleDTO[] = []
   for (const row of rows) {
-    if (row.table === 'members') {
+    if (row.table === 'members' && referencedMemberIds.has(row.rowId)) {
       const subject = `${RETAIL_NS}member/${row.rowId}`
       const tier = String(row.cells.tier ?? '普通会员')
-      inputTriples.push([
-        subject,
-        RDF_TYPE,
-        iriRef(tier === '黑金会员' ? 'BlackGoldMember' : 'RegularMember'),
-      ])
       inputTriples.push([subject, `${RETAIL_NS}memberTier`, `"${escapeN3String(tier)}"`])
-    } else if (row.table === 'stores_staff') {
+      if (tier === '黑金会员') {
+        inputTriples.push([subject, RDF_TYPE, iriRef('BlackGoldMember')])
+      }
+    } else if (row.table === 'stores_staff' && referencedStoreIds.has(row.rowId)) {
       const subject = `${RETAIL_NS}store/${row.rowId}`
-      inputTriples.push([subject, RDF_TYPE, iriRef('Store')])
       if (typeof row.cells.regionCode === 'string') {
         inputTriples.push([
           subject,
@@ -885,9 +902,8 @@ export function buildRetailQualitySample(scale: RetailDatasetScale): RetailSimul
           `"${escapeN3String(row.cells.regionCode)}"`,
         ])
       }
-    } else if (row.table === 'orders') {
+    } else if (row.table === 'orders' && complainedOrderIds.has(row.rowId)) {
       const subject = `${RETAIL_NS}order/${row.rowId}`
-      inputTriples.push([subject, RDF_TYPE, iriRef('StoreOrder')])
       if (typeof row.cells.memberId === 'string') {
         const mId = row.cells.memberId.replace(/^#/, '')
         inputTriples.push([subject, `${RETAIL_NS}orderedBy`, iriRef(`member/${mId}`)])
@@ -896,16 +912,8 @@ export function buildRetailQualitySample(scale: RetailDatasetScale): RetailSimul
         const sId = row.cells.storeId.replace(/^#/, '')
         inputTriples.push([subject, `${RETAIL_NS}orderAtStore`, iriRef(`store/${sId}`)])
       }
-      if (typeof row.cells.paidAmount === 'number') {
-        inputTriples.push([
-          subject,
-          `${RETAIL_NS}paidAmount`,
-          `"${row.cells.paidAmount.toFixed(2)}"^^<http://www.w3.org/2001/XMLSchema#decimal>`,
-        ])
-      }
     } else if (row.table === 'complaints') {
       const subject = `${RETAIL_NS}complaint/${row.rowId}`
-      inputTriples.push([subject, RDF_TYPE, iriRef('ComplaintTicket')])
       if (typeof row.cells.orderId === 'string') {
         const oId = row.cells.orderId.replace(/^#/, '')
         inputTriples.push([subject, `${RETAIL_NS}complaintForOrder`, iriRef(`order/${oId}`)])
@@ -914,16 +922,16 @@ export function buildRetailQualitySample(scale: RetailDatasetScale): RetailSimul
   }
 
   const conditions: QualityFr505PatternDTO[] = [
-    { kind: 'property', subject: '?member', path: `${RETAIL_NS}memberTier`, object: '"黑金会员"' },
-    { kind: 'property', subject: '?order', path: `${RETAIL_NS}orderedBy`, object: '?member' },
-    { kind: 'property', subject: '?order', path: `${RETAIL_NS}orderAtStore`, object: '?store' },
-    { kind: 'property', subject: '?store', path: `${RETAIL_NS}regionCode`, object: '"华东区"' },
     {
       kind: 'property',
       subject: '?complaint',
       path: `${RETAIL_NS}complaintForOrder`,
       object: '?order',
     },
+    { kind: 'property', subject: '?order', path: `${RETAIL_NS}orderAtStore`, object: '?store' },
+    { kind: 'property', subject: '?store', path: `${RETAIL_NS}regionCode`, object: '"华东区"' },
+    { kind: 'property', subject: '?order', path: `${RETAIL_NS}orderedBy`, object: '?member' },
+    { kind: 'property', subject: '?member', path: `${RETAIL_NS}memberTier`, object: '"黑金会员"' },
   ]
   const rules: QualityRuleTestSampleRuleDTO[] = [
     {
