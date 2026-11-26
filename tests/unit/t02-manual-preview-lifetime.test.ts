@@ -333,6 +333,10 @@ function harness(initial = session()) {
       if (name === './mainline-ontology') return { projectOntology }
       if (name === './OntologyPage') return { OntologyPage: marker }
       if (name === './OwnershipConflictDetailView') return { OwnershipConflictDetailView }
+      if (name === './ZeroCodeTripleBuilder')
+        return { ZeroCodeTripleBuilder: () => jsx('zero-code-builder', {}) }
+      if (name === './ReadableBusinessDiff')
+        return { ReadableBusinessDiff: () => jsx('readable-diff', {}) }
       if (name.endsWith('.css')) return {}
       throw new Error(`Unexpected Page dependency: ${name}`)
     },
