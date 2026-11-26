@@ -11,6 +11,7 @@ chips:
 所有已经由用户拍板的界面品味、布局结构与范围边界决策，必须作为原子 Record 存放在 `design-harness/intelligence/memories/` 下并在开工前读取：
 
 - [2026-11-25 W6 核心壳层与菜单重构定舵](./memories/2026-11-25-w6-steer-decisions.md)：确定 Concept A+B 融合菜单、右侧双 Tab 合并以释放中间编辑器宽度、同步建立 Design Harness 与全模块视觉精修，以及“先更新 `.pen` 原型，再设迭代计划”的执行顺序。
+- [2026-11-26 W7 零代码底层概念沙盒与会员订单场景定舵](./memories/2026-11-26-w7-zero-code-steer.md)：确定完全零代码 BA/PM 受众定位、6 步底层三元组概念沙盒、Lv.1 茶饮会员与门店订单双规模仿真数据集、`Concept A+B + Concept C` 零代码辅助轮方案，以及先提交设计方案到 Git 的交付节奏。
 
 ## Why it holds
 
