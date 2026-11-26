@@ -51,6 +51,8 @@ export function SidebarNav({
         : 'error'
       : 'idle'
 
+  const foundationDisabled = connectionOffline || (hasProject && workspaceControlsDisabled)
+
   return (
     <>
       {mobileOpen && (
@@ -124,8 +126,27 @@ export function SidebarNav({
           {hasProject ? (
             <>
               <div className="nav-group-label" aria-hidden="true">
-                核心工作台 · 01–08
+                核心工作台 · 00–08
               </div>
+              <a
+                href="#foundation-sandbox"
+                data-testid="nav-step-00"
+                aria-current={primaryView === 'foundation' ? 'page' : undefined}
+                aria-disabled={foundationDisabled}
+                onClick={(event) => {
+                  event.preventDefault()
+                  if (foundationDisabled) return
+                  onSelectPrimaryView('foundation')
+                  onCloseMobile()
+                }}
+              >
+                <span className="nav-step-main">
+                  <span className="nav-step-num" aria-hidden="true">
+                    00
+                  </span>
+                  <span className="nav-item-label">三元组与概念沙盒</span>
+                </span>
+              </a>
               {COURSE_NAV_STEPS.map((step) => {
                 const disabled =
                   step.module === 'quality' ? qualityStepDisabled : workspaceControlsDisabled
@@ -174,7 +195,31 @@ export function SidebarNav({
               })}
             </>
           ) : (
-            <p className="nav-locked-hint">打开或创建项目后解锁 01–08 实操工作台。</p>
+            <>
+              <div className="nav-group-label" aria-hidden="true">
+                零代码概念预热 · 00
+              </div>
+              <a
+                href="#foundation-sandbox"
+                data-testid="nav-step-00"
+                aria-current={primaryView === 'foundation' ? 'page' : undefined}
+                aria-disabled={foundationDisabled}
+                onClick={(event) => {
+                  event.preventDefault()
+                  if (foundationDisabled) return
+                  onSelectPrimaryView('foundation')
+                  onCloseMobile()
+                }}
+              >
+                <span className="nav-step-main">
+                  <span className="nav-step-num" aria-hidden="true">
+                    00
+                  </span>
+                  <span className="nav-item-label">三元组与概念沙盒</span>
+                </span>
+              </a>
+              <p className="nav-locked-hint">打开或创建项目后解锁 01–08 实操工作台。</p>
+            </>
           )}
         </nav>
 

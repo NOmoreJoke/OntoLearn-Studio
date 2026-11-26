@@ -530,9 +530,17 @@
     width: 264px;
     max-width: 85vw;
     z-index: 50;
+    padding: 20px 18px;
     overflow-y: auto;
     transform: translateX(-105%);
     transition: transform var(--motion-drawer);
+  }
+  .sidebar nav {
+    margin-top: 16px;
+    gap: 4px;
+  }
+  .sidebar nav a {
+    padding: 9px 12px;
   }
   .sidebar[data-mobile-open='true'] {
     transform: translateX(0);

@@ -1,5 +1,16 @@
 import { isValidElement, type ReactElement } from 'react'
 import { describe, expect, it, vi } from 'vitest'
+
+vi.mock('react', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react')>()
+  return {
+    ...actual,
+    useState: <T>(initial: T | (() => T)) => [
+      typeof initial === 'function' ? (initial as () => T)() : initial,
+      vi.fn(),
+    ],
+  }
+})
 import {
   buildRetailQualitySample,
   FOUNDATION_MICRO_STEPS,
@@ -11,6 +22,13 @@ import {
   summarizeRetailDataset,
 } from '../../apps/desktop/src/renderer/src/learning/scenarios/retail-membership-orders'
 import { DualTrackRoadmapHeader } from '../../apps/desktop/src/renderer/src/learning/DualTrackRoadmapHeader'
+import {
+  DERIVED_CHURN_TRIPLE,
+  REIFIED_SO101_TRIPLES,
+} from '../../apps/desktop/src/renderer/src/foundation/foundation-types'
+import { LiveTripleMiniGraph } from '../../apps/desktop/src/renderer/src/foundation/LiveTripleMiniGraph'
+import { PrdConceptClinic } from '../../apps/desktop/src/renderer/src/foundation/PrdConceptClinic'
+import { SidebarNav } from '../../apps/desktop/src/renderer/src/shell/SidebarNav'
 
 function flattenElements(node: unknown): ReactElement<Record<string, unknown>>[] {
   if (Array.isArray(node)) return node.flatMap(flattenElements)
@@ -93,5 +111,103 @@ describe('W7-1 retail membership & orders simulation datasets', () => {
 
     ;(stepCards[4]!.props.onClick as () => void)()
     expect(onOpenFoundationStep).toHaveBeenCalledWith('step-05')
+  })
+})
+
+describe('W7-2 00 foundation triple sandbox, graph, clinic, and sidebar entry', () => {
+  it('renders empty state and dual-shape entity/literal/derived SVG graph nodes cleanly', () => {
+    const emptyTree = flattenElements(LiveTripleMiniGraph({ triples: [] }))
+    expect(emptyTree.some((el) => el.props['data-testid'] === 'foundation-graph-empty')).toBe(true)
+
+    const fullTree = flattenElements(
+      LiveTripleMiniGraph({
+        triples: [...REIFIED_SO101_TRIPLES, DERIVED_CHURN_TRIPLE],
+      }),
+    )
+    const entityNodes = fullTree.filter((el) => el.props['data-node-kind'] === 'entity')
+    const literalNodes = fullTree.filter((el) => el.props['data-node-kind'] === 'literal')
+    expect(entityNodes.length).toBeGreaterThanOrEqual(5)
+    expect(literalNodes).toHaveLength(1)
+    expect(fullTree.some((el) => el.type === 'line' && el.props.strokeDasharray === '6 4')).toBe(
+      true,
+    )
+  })
+
+  it('wires PRD concept clinic bad model vs #SO-101 reification and draft apply', () => {
+    const onReifyOrderModel = vi.fn()
+    const onApplyDraftToOntology = vi.fn()
+
+    const beforeReify = flattenElements(
+      PrdConceptClinic({
+        hasProject: true,
+        reified: false,
+        onReifyOrderModel,
+        onApplyDraftToOntology,
+      }),
+    )
+    const applyBefore = beforeReify.find(
+      (el) => el.props['data-testid'] === 'foundation-apply-to-ontology',
+    )
+    expect(applyBefore?.props.disabled).toBe(true)
+    const reifyBtn = beforeReify.find((el) => el.props['data-testid'] === 'clinic-reify-btn')
+    ;(reifyBtn!.props.onClick as () => void)()
+    expect(onReifyOrderModel).toHaveBeenCalledOnce()
+
+    const afterReify = flattenElements(
+      PrdConceptClinic({
+        hasProject: true,
+        reified: true,
+        onReifyOrderModel,
+        onApplyDraftToOntology,
+      }),
+    )
+    const applyAfter = afterReify.find(
+      (el) => el.props['data-testid'] === 'foundation-apply-to-ontology',
+    )
+    expect(applyAfter?.props.disabled).toBe(false)
+    ;(applyAfter!.props.onClick as () => void)()
+    expect(onApplyDraftToOntology).toHaveBeenCalledWith(REIFIED_SO101_TRIPLES)
+  })
+
+  it('exposes permanent nav-step-00 in SidebarNav both with and without an open project', () => {
+    const onSelectPrimaryView = vi.fn()
+    const noProjectNav = flattenElements(
+      SidebarNav({
+        primaryView: 'projects',
+        hasProject: false,
+        workspaceModule: 'query',
+        workspaceControlsDisabled: false,
+        qualityStepDisabled: false,
+        connectionOffline: false,
+        mobileOpen: false,
+        onCloseMobile: vi.fn(),
+        onSelectPrimaryView,
+        onSelectStep: vi.fn(),
+      }),
+    )
+    const step00NoProject = noProjectNav.find((el) => el.props['data-testid'] === 'nav-step-00')
+    expect(step00NoProject).toBeDefined()
+    expect(step00NoProject?.props['aria-disabled']).toBe(false)
+    ;(step00NoProject!.props.onClick as (e: { preventDefault(): void }) => void)({
+      preventDefault() {},
+    })
+    expect(onSelectPrimaryView).toHaveBeenCalledWith('foundation')
+
+    const withProjectNav = flattenElements(
+      SidebarNav({
+        primaryView: 'foundation',
+        hasProject: true,
+        workspaceModule: 'ontology',
+        workspaceControlsDisabled: false,
+        qualityStepDisabled: false,
+        connectionOffline: false,
+        mobileOpen: false,
+        onCloseMobile: vi.fn(),
+        onSelectPrimaryView,
+        onSelectStep: vi.fn(),
+      }),
+    )
+    const step00WithProject = withProjectNav.find((el) => el.props['data-testid'] === 'nav-step-00')
+    expect(step00WithProject?.props['aria-current']).toBe('page')
   })
 })

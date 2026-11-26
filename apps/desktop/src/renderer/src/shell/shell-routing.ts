@@ -1,7 +1,7 @@
 import type { LearningTaskStateDTO } from '@ontolearn/contracts'
 import { displayedCheckStatus } from '../learning/learning-controller'
 
-export type PrimaryView = 'projects' | 'learning' | 'workspace' | 'settings'
+export type PrimaryView = 'projects' | 'learning' | 'foundation' | 'workspace' | 'settings'
 
 export type ConnectedModule = 'mapping' | 'behavior' | 'scenario' | 'transfer'
 export type WorkspaceModule = 'query' | 'ontology' | 'quality' | ConnectedModule

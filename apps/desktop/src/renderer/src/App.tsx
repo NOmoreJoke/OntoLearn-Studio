@@ -49,6 +49,8 @@ import { pickLatestDomainSnapshotId } from './learning/domain-snapshot'
 import { offlineCourse, offlineGlossary } from './learning/content'
 import { DualTrackRoadmapHeader, type LearningTrackId } from './learning/DualTrackRoadmapHeader'
 import type { FoundationMicroStepId } from './learning/scenarios/retail-membership-orders'
+import { FoundationSandboxPage } from './foundation/FoundationSandboxPage'
+import type { SandboxTriple } from './foundation/foundation-types'
 import {
   commitLearningTaskFixture,
   prepareLearningTaskFixture,
@@ -154,6 +156,7 @@ export function App() {
   const [portalTerm, setPortalTerm] = useState('本体')
   const [learningTrack, setLearningTrack] = useState<LearningTrackId>('retail')
   const [activeFoundationStep, setActiveFoundationStep] = useState<FoundationMicroStepId>('step-01')
+  const [foundationDraftTriples, setFoundationDraftTriples] = useState<readonly SandboxTriple[]>([])
   const hasAutoEnteredWorkspace = useRef(false)
   // 本体会话最近一次真实读取的域快照；ChangeSet 提交后的自动重读让它前进，
   // 供学习面板在无后台 RPC 的前提下派生“已过期 / 需重跑”。revision 取自真实
@@ -1872,6 +1875,7 @@ export function App() {
                 onSelectTrack={setLearningTrack}
                 onOpenFoundationStep={(stepId) => {
                   setActiveFoundationStep(stepId)
+                  setPrimaryView('foundation')
                 }}
               />
               <ol
@@ -1948,6 +1952,60 @@ export function App() {
                 </div>
               </aside>
             </section>
+          </div>
+        )}
+
+        {primaryView === 'foundation' && (
+          <div className="portal-view" data-testid="portal-foundation-view">
+            <header className="portal-topbar">
+              <div className="portal-topbar-left">
+                <button
+                  type="button"
+                  className="mobile-nav-trigger"
+                  data-testid="mobile-nav-toggle"
+                  aria-label="打开导航菜单"
+                  onClick={() => setMobileNavOpen(true)}
+                >
+                  ☰
+                </button>
+                <span>工作台 / 00 三元组与概念沙盒</span>
+              </div>
+              <div className="portal-topbar-actions">
+                <button
+                  type="button"
+                  className="topbar-chip-btn"
+                  onClick={() => setPrimaryView('learning')}
+                >
+                  返回学习路线图
+                </button>
+                {tasks?.project && (
+                  <button
+                    type="button"
+                    className="topbar-chip-btn"
+                    onClick={() => selectWorkspace('ontology')}
+                  >
+                    进入 01 本体构建 →
+                  </button>
+                )}
+              </div>
+            </header>
+            <FoundationSandboxPage
+              activeStep={activeFoundationStep}
+              hasProject={Boolean(tasks?.project)}
+              onSelectStep={setActiveFoundationStep}
+              onApplyDraftToOntology={(triples) => {
+                setFoundationDraftTriples(triples)
+                if (readyWorkspace.current?.project) {
+                  selectWorkspace('ontology')
+                } else {
+                  void createProject(false, {
+                    name: '知味茶饮 · 零代码练习',
+                    initialWorkspace: 'ontology',
+                    enterWorkspace: true,
+                  })
+                }
+              }}
+            />
           </div>
         )}
 
@@ -2085,7 +2143,11 @@ export function App() {
                     tasks?.project?.projectId === ontologyContext.projectId &&
                     tasks.generation === ontologyContext.generation &&
                     !connection && (
-                      <section id="ontology-workspace" aria-label="当前项目本体">
+                      <section
+                        id="ontology-workspace"
+                        aria-label="当前项目本体"
+                        data-foundation-draft-count={foundationDraftTriples.length}
+                      >
                         {locationBanner('ontology')}
                         <OntologyMainlinePage
                           session={ontologyContext.session}
