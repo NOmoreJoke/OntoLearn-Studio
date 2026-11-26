@@ -2152,6 +2152,8 @@ export function App() {
                         <OntologyMainlinePage
                           session={ontologyContext.session}
                           contextKey={ontologyContext.contextKey}
+                          foundationDraftTriples={foundationDraftTriples}
+                          onConsumeFoundationDraft={() => setFoundationDraftTriples([])}
                           onDirtyChange={onOntologyDirty}
                           onSelectedObjectChange={(ids) =>
                             agentContextStore.setSelectedObjectIds(ids)

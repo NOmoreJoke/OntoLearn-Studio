@@ -142,3 +142,168 @@
 .quality-location dd {
   margin-inline-start: 0;
 }
+
+/* W7-3: Retail dual-scale simulation & plain evidence chain cards */
+.retail-simulation-banner {
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-lg);
+  background: var(--paper-surface);
+  padding: 16px 18px;
+  display: grid;
+  gap: 14px;
+}
+.retail-sim-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.retail-sim-head h3 {
+  margin: 6px 0 0;
+  font-size: 16px;
+}
+.retail-sim-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+}
+.retail-scale-toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+}
+.retail-scale-toggle button {
+  min-height: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-secondary);
+}
+.retail-scale-toggle button[aria-pressed='true'] {
+  background: var(--paper-surface);
+  color: var(--accent-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-subtle);
+}
+.retail-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+.retail-kpi-card {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hair-border);
+  background: var(--paper-card);
+  display: grid;
+  gap: 4px;
+}
+.retail-kpi-card.is-warn {
+  background: var(--signal-warning-bg);
+  border-color: var(--signal-warning);
+}
+.retail-kpi-card.is-danger {
+  background: var(--signal-danger-bg);
+  border-color: var(--signal-danger);
+}
+.retail-kpi-card.is-accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-primary);
+}
+.retail-kpi-card .kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+.retail-kpi-card strong {
+  font-size: 14px;
+  color: var(--ink-primary);
+}
+.retail-kpi-card small {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  line-height: 1.45;
+}
+.retail-sim-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.retail-run-btn {
+  background: var(--accent-primary);
+  color: var(--ink-inverse);
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+.retail-run-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.retail-sim-note {
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+.retail-evidence-panel {
+  border-top: 1px solid var(--hair-border);
+  padding-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+.retail-evidence-verdict {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+}
+.retail-trace-cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.retail-trace-card {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--paper-subtle);
+  border-left: 3px solid var(--accent-primary);
+  display: grid;
+  gap: 6px;
+}
+.trace-card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+}
+.trace-rule-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-surface);
+  color: var(--accent-primary);
+  border: 1px solid var(--hair-border);
+}
+.trace-premises {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-secondary);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}

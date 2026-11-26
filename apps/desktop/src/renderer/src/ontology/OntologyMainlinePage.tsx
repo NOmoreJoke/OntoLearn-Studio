@@ -7,6 +7,9 @@ import { entityDeletionImpact, entityEditPlan, projectOntology } from './mainlin
 import type { RdfRow } from './view-model'
 import './ontology.css'
 import { OwnershipConflictDetailView } from './OwnershipConflictDetailView'
+import { ZeroCodeTripleBuilder } from './ZeroCodeTripleBuilder'
+import { ReadableBusinessDiff } from './ReadableBusinessDiff'
+import type { SandboxTriple } from '../foundation/foundation-types'
 
 export type OntologyMainlinePageProps = {
   /** Host owns this instance and retires it synchronously before changing selection.
@@ -18,6 +21,8 @@ export type OntologyMainlinePageProps = {
   onDirtyChange?: (dirty: boolean) => void
   /** Reports the current object selection (in selection order) to the host. */
   onSelectedObjectChange?: (ids: string[]) => void
+  foundationDraftTriples?: readonly SandboxTriple[]
+  onConsumeFoundationDraft?: () => void
   /**
    * Host-provided panels rendered inside this page (import/export and the
    * Agent draft diff). They are injected instead of imported so this module
@@ -33,6 +38,8 @@ export function OntologyMainlinePage(props: OntologyMainlinePageProps) {
       session={props.session}
       onDirtyChange={props.onDirtyChange}
       onSelectedObjectChange={props.onSelectedObjectChange}
+      foundationDraftTriples={props.foundationDraftTriples}
+      onConsumeFoundationDraft={props.onConsumeFoundationDraft}
       extras={props.extras}
     />
   )
@@ -42,10 +49,17 @@ function MainlineEditor({
   session,
   onDirtyChange,
   onSelectedObjectChange,
+  foundationDraftTriples,
+  onConsumeFoundationDraft,
   extras,
 }: Pick<
   OntologyMainlinePageProps,
-  'session' | 'onDirtyChange' | 'onSelectedObjectChange' | 'extras'
+  | 'session'
+  | 'onDirtyChange'
+  | 'onSelectedObjectChange'
+  | 'foundationDraftTriples'
+  | 'onConsumeFoundationDraft'
+  | 'extras'
 >) {
   useEffect(() => session.connectForPage(), [session])
   return (
@@ -53,6 +67,8 @@ function MainlineEditor({
       session={session}
       onDirtyChange={onDirtyChange}
       onSelectedObjectChange={onSelectedObjectChange}
+      foundationDraftTriples={foundationDraftTriples}
+      onConsumeFoundationDraft={onConsumeFoundationDraft}
       extras={extras}
     />
   )
@@ -62,10 +78,17 @@ function SessionEditor({
   session,
   onDirtyChange,
   onSelectedObjectChange,
+  foundationDraftTriples,
+  onConsumeFoundationDraft,
   extras,
 }: Pick<
   OntologyMainlinePageProps,
-  'session' | 'onDirtyChange' | 'onSelectedObjectChange' | 'extras'
+  | 'session'
+  | 'onDirtyChange'
+  | 'onSelectedObjectChange'
+  | 'foundationDraftTriples'
+  | 'onConsumeFoundationDraft'
+  | 'extras'
 >) {
   const state = useSyncExternalStore(session.subscribe, session.getSnapshot)
   const factLifetime = useRef<
@@ -90,6 +113,7 @@ function SessionEditor({
   const [formError, setFormError] = useState('')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(0)
+  const [viewMode, setViewMode] = useState<'zero-code' | 'standard'>('zero-code')
   const source = state.source
   const projection = useMemo(() => {
     if (!source) return undefined
@@ -140,7 +164,7 @@ function SessionEditor({
     setDraftBase(identity)
     setFormError('')
   }
-  async function preview(action: 'edit' | 'remove' | 'add') {
+  async function preview(action: 'edit' | 'remove' | 'add', overrideTuple?: RdfRow) {
     if (!source || blocked) return
     const lifetime = factLifetime.current
     if (!lifetime?.active || lifetime.session !== session) return
@@ -167,7 +191,11 @@ function SessionEditor({
       )
     }
     if (!current()) return
-    const tuple = { subject: fact.subject, predicate: fact.predicate, object: fact.object }
+    const tuple = overrideTuple ?? {
+      subject: fact.subject,
+      predicate: fact.predicate,
+      object: fact.object,
+    }
     setFormError('')
     try {
       const plan =
@@ -214,11 +242,44 @@ function SessionEditor({
       <p className="ontology-note">
         结构定义描述类和属性的适用范围；实例事实记录具体个体的关系或值。定义域和值域不表示必填校验。
       </p>
+      <div className="ontology-mode-bar" data-testid="ontology-view-mode-toggle">
+        <button
+          type="button"
+          data-testid="ontology-mode-zero-code"
+          aria-pressed={viewMode === 'zero-code'}
+          onClick={() => setViewMode('zero-code')}
+        >
+          零代码业务导引 (推荐)
+        </button>
+        <button
+          type="button"
+          data-testid="ontology-mode-standard"
+          aria-pressed={viewMode === 'standard'}
+          onClick={() => setViewMode('standard')}
+        >
+          标准 RDF/IRI 视图
+        </button>
+      </div>
       {state.stale && (
         <p role="alert">当前上下文尚未确认。请重新读取项目；旧草稿仍保留，旧预览不能确认。</p>
       )}
       {source && (
         <>
+          {viewMode === 'zero-code' && (
+            <ZeroCodeTripleBuilder
+              ontologyView={projection?.view}
+              foundationDraftTriples={foundationDraftTriples}
+              disabled={blocked}
+              onConsumeFoundationDraft={onConsumeFoundationDraft}
+              onPreviewTriple={(tuple) => {
+                setRecordId('')
+                setDraftBase(identity)
+                setFact(tuple)
+                setFormError('')
+                void preview('add', tuple)
+              }}
+            />
+          )}
           <section aria-label="结构定义">
             <h2>结构定义与元数据</h2>
             {projection && (projection.readOnly.size > 0 || projection.readOnlyHomes.size > 0) && (
@@ -417,7 +478,11 @@ function SessionEditor({
           )}
           <p>{state.prepared.preview.summary}</p>
           <p>全部 {state.prepared.rows.length} 项；分段顺序、长度、SHA 与完整文档已核对。</p>
-          <pre>{JSON.stringify(state.prepared.rows, null, 2)}</pre>
+          <ReadableBusinessDiff
+            rows={state.prepared.rows}
+            ontologyView={projection?.view}
+            rawJson={JSON.stringify(state.prepared.rows, null, 2)}
+          />
           <button
             disabled={
               state.prepared.preview.status !== 'ready' || state.stale || busy || !!state.pending

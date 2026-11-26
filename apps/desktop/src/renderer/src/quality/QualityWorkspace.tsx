@@ -28,6 +28,11 @@ import {
   type Pattern,
   type Template,
 } from './draft'
+import { RetailSimulationBanner } from './RetailSimulationBanner'
+import {
+  buildRetailQualitySample,
+  type RetailDatasetScale,
+} from '../learning/scenarios/retail-membership-orders'
 import './quality.css'
 
 const templateNames: Record<Template, string> = {
@@ -41,7 +46,12 @@ const blank = (): Pattern => ({ kind: 'type', subject: '?entity', path: '', valu
 const operators = { eq: '==', ne: '!=', lt: '<', le: '<=', gt: '>', ge: '>=' }
 
 type SamplePreset =
-  'rdfs-trigger' | 'rule-chain-unsupported' | 'order-independent' | 'current-draft'
+  | 'rdfs-trigger'
+  | 'rule-chain-unsupported'
+  | 'order-independent'
+  | 'retail-micro-10'
+  | 'retail-stress-80'
+  | 'current-draft'
 type SampleDraft = {
   preset: SamplePreset
   ontology: string
@@ -76,7 +86,21 @@ const sampleDeclaration = (name: string, kind: 'Class' | 'ObjectProperty' | 'Dat
   sampleTriple(sampleNamespace + name, sampleRdfType, `<${sampleOwl}${kind}>`)
 
 /** FR-505 sample presets; each drives the real engine without touching project facts. */
+const retailMicroSample = buildRetailQualitySample('micro10').request
+const retailStressSample = buildRetailQualitySample('stress80').request
 const samplePresets: Record<Exclude<SamplePreset, 'current-draft'>, Omit<SampleDraft, 'preset'>> = {
+  'retail-micro-10': {
+    ontology: triplesToText(retailMicroSample.ontologyTriples ?? []),
+    inputs: triplesToText(retailMicroSample.inputTriples),
+    expected: triplesToText(retailMicroSample.expectedOutputs),
+    rules: JSON.stringify(retailMicroSample.rules, null, 2),
+  },
+  'retail-stress-80': {
+    ontology: triplesToText(retailStressSample.ontologyTriples ?? []),
+    inputs: triplesToText(retailStressSample.inputTriples),
+    expected: triplesToText(retailStressSample.expectedOutputs),
+    rules: JSON.stringify(retailStressSample.rules, null, 2),
+  },
   'rdfs-trigger': {
     ontology: triplesToText([
       sampleTriple(
@@ -678,6 +702,8 @@ export function QualityWorkspace({
     result: QualityRuleTestResultDTO | null
     orderMatch: boolean | null
   }>()
+  const [retailScale, setRetailScale] = useState<RetailDatasetScale>('stress80')
+  const [retailResult, setRetailResult] = useState<QualityRuleTestResultDTO | null>(null)
   const lifetime = useRef<ViewLifetime>({ active: false })
   const busyRef = useRef(false)
 
@@ -917,6 +943,24 @@ export function QualityWorkspace({
     })
   }
 
+  function runRetailSimulation(scale: RetailDatasetScale) {
+    setRetailScale(scale)
+    const presetKey: SamplePreset = scale === 'micro10' ? 'retail-micro-10' : 'retail-stress-80'
+    const sim = buildRetailQualitySample(scale)
+    setSample({ preset: presetKey, ...samplePresets[presetKey] })
+    setSampleOutput(undefined)
+    void perform(async (captured) => {
+      const reply = requireWorkspaceReply(
+        await bridge.getProjectQualityState({ projectId, ruleTest: sim.request }),
+      )
+      requireCurrent(captured)
+      if (reply.projectId !== projectId) throw new Error('PERMISSION_DENIED')
+      const nextResult = reply.ruleTestResult ?? null
+      setRetailResult(nextResult)
+      setSampleOutput({ result: nextResult, orderMatch: null })
+    })
+  }
+
   const definitions = form.kind === 'rule' ? quality?.state.rules : quality?.state.constraints
   const original = definitions?.find((item) => item.id === selected)
   const readOnly = original?.format === 'legacy' || original?.format === 'turtle'
@@ -939,6 +983,18 @@ export function QualityWorkspace({
       {error && <p role="alert">{error}</p>}
       {notice && <p role="status">{notice}</p>}
       {busy && <p role="status">正在读取或处理项目质量数据…</p>}
+      <RetailSimulationBanner
+        scale={retailScale}
+        disabled={blocked}
+        running={busy}
+        result={retailResult}
+        onSelectScale={(scale) => {
+          setRetailScale(scale)
+          setRetailResult(null)
+          applySamplePreset(scale === 'micro10' ? 'retail-micro-10' : 'retail-stress-80')
+        }}
+        onRunSimulation={runRetailSimulation}
+      />
       <div className="quality-run">
         <label htmlFor={field('scope')}>验证范围</label>
         <select
@@ -1189,6 +1245,8 @@ export function QualityWorkspace({
             <option value="rdfs-trigger">RDFS range 推导触发规则</option>
             <option value="rule-chain-unsupported">规则链不支持（R-risk → R-next）</option>
             <option value="order-independent">规则顺序无关双序比对</option>
+            <option value="retail-micro-10">知味茶饮 · 微缩沙盒 10行</option>
+            <option value="retail-stress-80">知味茶饮 · 压力仿真 80行含脏数据</option>
             <option value="current-draft">载入当前编辑器草稿规则</option>
           </select>
           <label htmlFor={field('sample-ontology')}>

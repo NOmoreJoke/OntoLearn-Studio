@@ -9,6 +9,7 @@ vi.mock('react', async (importOriginal) => {
       typeof initial === 'function' ? (initial as () => T)() : initial,
       vi.fn(),
     ],
+    useMemo: <T>(fn: () => T) => fn(),
   }
 })
 import {
@@ -29,6 +30,16 @@ import {
 import { LiveTripleMiniGraph } from '../../apps/desktop/src/renderer/src/foundation/LiveTripleMiniGraph'
 import { PrdConceptClinic } from '../../apps/desktop/src/renderer/src/foundation/PrdConceptClinic'
 import { SidebarNav } from '../../apps/desktop/src/renderer/src/shell/SidebarNav'
+import {
+  compactIri,
+  decodeRdfObjectToZeroCode,
+  encodeZeroCodeObject,
+  expandCompactIri,
+  summarizePreparedDiffRows,
+} from '../../apps/desktop/src/renderer/src/ontology/rdf-display-adapter'
+import { ReadableBusinessDiff } from '../../apps/desktop/src/renderer/src/ontology/ReadableBusinessDiff'
+import { ZeroCodeTripleBuilder } from '../../apps/desktop/src/renderer/src/ontology/ZeroCodeTripleBuilder'
+import { RetailSimulationBanner } from '../../apps/desktop/src/renderer/src/quality/RetailSimulationBanner'
 
 function flattenElements(node: unknown): ReactElement<Record<string, unknown>>[] {
   if (Array.isArray(node)) return node.flatMap(flattenElements)
@@ -209,5 +220,104 @@ describe('W7-2 00 foundation triple sandbox, graph, clinic, and sidebar entry', 
     )
     const step00WithProject = withProjectNav.find((el) => el.props['data-testid'] === 'nav-step-00')
     expect(step00WithProject?.props['aria-current']).toBe('page')
+  })
+})
+
+describe('W7-3 zero-code adapter, builder, ReadableBusinessDiff, and simulation banner', () => {
+  it('compacts and expands known retail/rdf prefixes idempotently', () => {
+    expect(compactIri(`${RETAIL_NS}StoreOrder`)).toBe('retail:StoreOrder')
+    expect(compactIri('retail:StoreOrder')).toBe('retail:StoreOrder')
+    expect(expandCompactIri('retail:StoreOrder')).toBe(`${RETAIL_NS}StoreOrder`)
+    expect(expandCompactIri(`${RETAIL_NS}StoreOrder`)).toBe(`${RETAIL_NS}StoreOrder`)
+    expect(compactIri('urn:custom:Foo')).toBe('urn:custom:Foo')
+  })
+
+  it('encodes and decodes all 6 zero-code object modes and raw passthrough', () => {
+    const entityN3 = encodeZeroCodeObject({ mode: 'entity', iri: 'retail:member/M-018' })
+    expect(entityN3).toBe(`<${RETAIL_NS}member/M-018>`)
+    expect(decodeRdfObjectToZeroCode(entityN3)).toEqual({
+      mode: 'entity',
+      iri: `${RETAIL_NS}member/M-018`,
+    })
+
+    const zhN3 = encodeZeroCodeObject({ mode: 'zhText', text: '王敏"黑金"\n二行' })
+    expect(zhN3).toBe('"王敏\\"黑金\\"\\n二行"@zh')
+    expect(decodeRdfObjectToZeroCode(zhN3)).toEqual({ mode: 'zhText', text: '王敏"黑金"\n二行' })
+
+    const decN3 = encodeZeroCodeObject({ mode: 'decimal', text: '36.00' })
+    expect(decodeRdfObjectToZeroCode(decN3)).toEqual({ mode: 'decimal', text: '36.00' })
+
+    const intN3 = encodeZeroCodeObject({ mode: 'integer', text: '25' })
+    expect(decodeRdfObjectToZeroCode(intN3)).toEqual({ mode: 'integer', text: '25' })
+
+    const boolN3 = encodeZeroCodeObject({ mode: 'boolean', booleanValue: false })
+    expect(decodeRdfObjectToZeroCode(boolN3)).toEqual({ mode: 'boolean', booleanValue: false })
+
+    expect(decodeRdfObjectToZeroCode('"""multiline"""@en')).toEqual({
+      mode: 'raw',
+      rawValue: '"""multiline"""@en',
+    })
+  })
+
+  it('renders ReadableBusinessDiff with 3-column table and single <pre> inside <details>', () => {
+    const rows = [
+      {
+        resource: ['fact', 'f1'],
+        before: null,
+        after: {
+          subject: `${RETAIL_NS}order/SO-101`,
+          predicate: `${RETAIL_NS}paidAmount`,
+          object: '"36.00"^^<http://www.w3.org/2001/XMLSchema#decimal>',
+        },
+      },
+    ]
+    const summaries = summarizePreparedDiffRows(rows)
+    expect(summaries).toHaveLength(1)
+    expect(summaries[0]!.action).toBe('新增')
+    expect(summaries[0]!.businessFactSummary).toContain('36.00')
+
+    const tree = ReadableBusinessDiff({ rows, rawJson: JSON.stringify(rows, null, 2) })
+    const elements = flattenElements(tree)
+    const pres = elements.filter((el) => el.type === 'pre')
+    const details = elements.filter((el) => el.type === 'details')
+    expect(pres).toHaveLength(1)
+    expect(details).toHaveLength(1)
+    const preInsideDetails = flattenElements(details[0]!).filter((el) => el.type === 'pre')
+    expect(preInsideDetails).toHaveLength(1)
+  })
+
+  it('emits compiled RDF tuple when clicking zc-preview-add-fact in ZeroCodeTripleBuilder', () => {
+    const onPreviewTriple = vi.fn()
+    const tree = ZeroCodeTripleBuilder({
+      foundationDraftTriples: REIFIED_SO101_TRIPLES,
+      disabled: false,
+      onPreviewTriple,
+    })
+    const elements = flattenElements(tree)
+    const previewBtn = elements.find((el) => el.props['data-testid'] === 'zc-preview-add-fact')
+    expect(previewBtn).toBeDefined()
+    ;(previewBtn!.props.onClick as () => void)()
+    expect(onPreviewTriple).toHaveBeenCalledWith({
+      subject: `${RETAIL_NS}order/SO-101`,
+      predicate: `${RETAIL_NS}orderedBy`,
+      object: `<${RETAIL_NS}member/M-018>`,
+    })
+  })
+
+  it('renders RetailSimulationBanner 4 anomaly cards and triggers onRunSimulation', () => {
+    const onRunSimulation = vi.fn()
+    const tree = RetailSimulationBanner({
+      scale: 'stress80',
+      disabled: false,
+      running: false,
+      result: null,
+      onSelectScale: vi.fn(),
+      onRunSimulation,
+    })
+    const elements = flattenElements(tree)
+    expect(elements.some((el) => el.props['data-testid'] === 'retail-anomaly-summary')).toBe(true)
+    const runBtn = elements.find((el) => el.props['data-testid'] === 'retail-run-simulation')
+    ;(runBtn!.props.onClick as () => void)()
+    expect(onRunSimulation).toHaveBeenCalledWith('stress80')
   })
 })
