@@ -47,6 +47,8 @@ import {
 } from './learning/learning-controller'
 import { pickLatestDomainSnapshotId } from './learning/domain-snapshot'
 import { offlineCourse, offlineGlossary } from './learning/content'
+import { DualTrackRoadmapHeader, type LearningTrackId } from './learning/DualTrackRoadmapHeader'
+import type { FoundationMicroStepId } from './learning/scenarios/retail-membership-orders'
 import {
   commitLearningTaskFixture,
   prepareLearningTaskFixture,
@@ -150,6 +152,8 @@ export function App() {
   const [jobsDrawerOpen, setJobsDrawerOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [portalTerm, setPortalTerm] = useState('本体')
+  const [learningTrack, setLearningTrack] = useState<LearningTrackId>('retail')
+  const [activeFoundationStep, setActiveFoundationStep] = useState<FoundationMicroStepId>('step-01')
   const hasAutoEnteredWorkspace = useRef(false)
   // 本体会话最近一次真实读取的域快照；ChangeSet 提交后的自动重读让它前进，
   // 供学习面板在无后台 RPC 的前提下派生“已过期 / 需重跑”。revision 取自真实
@@ -1863,7 +1867,18 @@ export function App() {
                   继续当前任务
                 </button>
               </div>
-              <ol className="learning-roadmap-grid" aria-label="学习路径概览">
+              <DualTrackRoadmapHeader
+                selectedTrack={learningTrack}
+                onSelectTrack={setLearningTrack}
+                onOpenFoundationStep={(stepId) => {
+                  setActiveFoundationStep(stepId)
+                }}
+              />
+              <ol
+                className="learning-roadmap-grid"
+                data-active-foundation-step={activeFoundationStep}
+                aria-label="学习路径概览"
+              >
                 {offlineCourse.tasks.map((task, ordinal) => {
                   const state = learningTasks?.find((item) => item.taskId === task.id)
                   const statusText = displayedCheckStatus(
