@@ -1357,6 +1357,7 @@ describe('Stage 0 packaging configuration invariants (apps/desktop)', () => {
   it('makes release signing mandatory and keeps the official mac identity enabled', () => {
     expect(builder).toContain('forceCodeSigning: true')
     const mac = section('mac')
+    expect(mac).toContain('icon: build/icon.icns')
     expect(mac).toContain('hardenedRuntime: true')
     expect(mac).toContain('notarize: true')
     expect(mac).toContain('- target: dmg')
@@ -1364,12 +1365,25 @@ describe('Stage 0 packaging configuration invariants (apps/desktop)', () => {
     // mac.identity must not be disabled (identity: null) in the official release config.
     expect(mac).not.toContain('identity')
   })
-  it('signs the Windows executable and builds nsis/x64', () => {
+  it('signs the Windows executable, builds nsis/x64, and allows custom install directories', () => {
     const win = section('win')
+    expect(win).toContain('icon: build/icon.ico')
     expect(win).toContain('signAndEditExecutable: true')
     expect(win).toContain('signExecutable: true')
     expect(win).toContain('- target: nsis')
     expect(win).toContain('- x64')
+    const nsis = section('nsis')
+    expect(nsis).toContain('oneClick: false')
+    expect(nsis).toContain('allowToChangeInstallationDirectory: true')
+  })
+  it('ships non-empty brand icon assets for macOS, Windows, and Linux', () => {
+    for (const rel of [
+      'apps/desktop/build/icon.png',
+      'apps/desktop/build/icon.icns',
+      'apps/desktop/build/icon.ico',
+    ]) {
+      expect(readFileSync(rel).byteLength).toBeGreaterThan(1024)
+    }
   })
   it('carries exactly six extraResources including the FR003 bundle and Electron licenses', () => {
     const extra = section('extraResources')
