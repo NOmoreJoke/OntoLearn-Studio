@@ -122,16 +122,33 @@ export class OntologySession {
   #bookWriting = false
   #readFlight?: Promise<void>
   #queuedRead?: Promise<void>
+  #initialReadDone = false
+  #initialWaiters = new Set<() => void>()
   constructor(
     readonly bridge: OntologyMainlineBridge,
     readonly operations: OntologyOperationBook = ontologyOperations,
   ) {}
+  #resolveInitialWaiters(): void {
+    this.#initialReadDone = true
+    for (const notify of this.#initialWaiters) notify()
+    this.#initialWaiters.clear()
+  }
+  /** Wait until the auto-triggered initial read settles or the session retires/disposes. */
+  whenInitialReadSettled(): Promise<void> {
+    if (this.#retired || this.#disposed || this.#initialReadDone) {
+      return this.#readFlight ?? Promise.resolve()
+    }
+    return new Promise<void>((resolve) => {
+      this.#initialWaiters.add(resolve)
+    })
+  }
   /** Page attachment: subscribe synchronously; cleanup cancels its queued auto-read. */
   connectForPage(): () => void {
     this.connect()
     let active = true
     queueMicrotask(() => {
       if (active && !this.#retired) void this.read()
+      else this.#resolveInitialWaiters()
     })
     return () => {
       if (!active) return
@@ -217,6 +234,7 @@ export class OntologySession {
     this.#release = undefined
     this.#releaseBook?.()
     this.#releaseBook = undefined
+    this.#resolveInitialWaiters()
   }
   /** Host calls synchronously BEFORE its first selection/session-changing call.
    * This context can never reconnect. A settled host selection needs a new instance.
@@ -345,6 +363,7 @@ export class OntologySession {
     this.#readFlight = flight
     const release = () => {
       if (this.#readFlight === flight) this.#readFlight = undefined
+      this.#resolveInitialWaiters()
     }
     void flight.then(release, release)
     if (this.#state.ownershipDetail) this.#set({ ownershipDetail: undefined })

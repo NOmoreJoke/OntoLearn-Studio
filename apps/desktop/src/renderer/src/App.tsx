@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { flushSync } from 'react-dom'
 import {
   safeError,
   reassembleChangeSetDocument,
@@ -45,6 +46,7 @@ import {
   displayedCheckStatus,
   mentorAssistanceText,
 } from './learning/learning-controller'
+import { scrollToProjectCheckpoints } from './learning/MentorPanel'
 import { pickLatestDomainSnapshotId } from './learning/domain-snapshot'
 import { offlineCourse, offlineGlossary } from './learning/content'
 import { DualTrackRoadmapHeader, type LearningTrackId } from './learning/DualTrackRoadmapHeader'
@@ -627,6 +629,15 @@ export function App() {
       await tail
       setProjectNotice(`项目已打开 · 版本 ${response.data.projectRevision}`)
       await restore()
+      admissionTail.current = undefined
+      libraryBusy.current = false
+      selectionTarget.current = undefined
+      if (selectedModule.current === 'ontology') {
+        flushSync(() => {
+          activateWorkspace()
+        })
+        await ontologyOwner.current?.session.whenInitialReadSettled()
+      }
     } catch {
       setProjectError(safeError(undefined))
     } finally {
@@ -758,6 +769,15 @@ export function App() {
         if (options?.enterWorkspace || options?.initialWorkspace) {
           hasAutoEnteredWorkspace.current = true
           setPrimaryView('workspace')
+        }
+        admissionTail.current = undefined
+        libraryBusy.current = false
+        selectionTarget.current = undefined
+        if (selectedModule.current === 'ontology') {
+          flushSync(() => {
+            activateWorkspace()
+          })
+          await ontologyOwner.current?.session.whenInitialReadSettled()
         }
         openedProjectId = created.data.projectId
       }
@@ -1244,9 +1264,16 @@ export function App() {
       : undefined
   const operationBusy = projectBusy || qualityPending || fixtureBusy
   const projectControlsBusy = operationBusy || connectedUnresolved || Boolean(activeFixture)
+  const ontologySessionBusy = Boolean(
+    ontologyContext &&
+    ['reading', 'preparing', 'submitting', 'unknown'].includes(
+      ontologyContext.session.getSnapshot().phase,
+    ),
+  )
   const learningDisabled =
     operationBusy ||
     connectedUnresolved ||
+    ontologySessionBusy ||
     workspaceFrozen ||
     managementBlocked ||
     checkpointBlocked ||
@@ -2293,7 +2320,10 @@ export function App() {
                   onOpenOntologyRepair={() => selectWorkspace('ontology')}
                   onOpenQueryWorkspace={() => selectWorkspace('query')}
                   onOpenQualityWorkspace={() => selectWorkspace('quality')}
-                  onOpenCheckpoints={() => setCheckpointsDrawerOpen(true)}
+                  onOpenCheckpoints={() => {
+                    flushSync(() => setCheckpointsDrawerOpen(true))
+                    scrollToProjectCheckpoints()
+                  }}
                   onLoadTaskFixture={loadTaskFixture}
                   taskFixture={
                     activeFixture
