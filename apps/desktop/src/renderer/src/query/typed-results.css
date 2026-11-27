@@ -1,40 +1,59 @@
 .typed-query-results {
   display: grid;
-  gap: 1rem;
-  padding: 1.5rem;
+  gap: var(--gap-md);
+  padding: var(--gap-lg);
   min-width: 0;
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-lg);
 }
 .typed-query-results p,
 .typed-query-results code,
 .typed-query-results li {
   overflow-wrap: anywhere;
 }
+.typed-query-results code {
+  font-family: var(--font-mono);
+}
 .typed-query-results pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   max-height: 24rem;
   overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 12px;
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
 }
 .typed-query-table {
   max-height: 32rem;
   overflow: auto;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
 }
 .typed-query-table table {
   border-collapse: collapse;
   width: 100%;
 }
-.typed-query-table th,
-.typed-query-table td {
+.typed-query-table th {
   padding: 0.75rem;
-  border: 1px solid currentColor;
+  background: var(--paper-subtle);
+  border-bottom: 1px solid var(--hair-strong);
+  border-right: 1px solid var(--hair-border);
   text-align: left;
-  vertical-align: top;
+  font-weight: 600;
 }
 .typed-query-table td {
+  padding: 0.75rem;
+  border: 1px solid var(--hair-border);
+  text-align: left;
+  vertical-align: top;
   min-width: 10rem;
 }
 .typed-query-graph {
-  border-top: 1px solid currentColor;
+  border-top: 1px solid var(--hair-border);
   padding-top: 1rem;
 }
 .typed-query-graph svg {
@@ -44,25 +63,29 @@
 }
 .typed-query-graph line,
 .typed-query-graph circle {
-  stroke: currentColor;
+  stroke: var(--graph-node-stroke);
 }
 .typed-query-graph circle {
-  fill: none;
+  fill: var(--graph-node-fill);
 }
 .typed-query-graph text {
-  fill: currentColor;
+  fill: var(--ink-primary);
   font-size: 14px;
 }
 .typed-query-results button {
   margin: 0.25rem;
 }
 .typed-query-actual-graph {
-  border-top: 1px solid currentColor;
+  border-top: 1px solid var(--hair-border);
   padding-top: 1rem;
 }
 .typed-query-relation-canvas {
   overflow: auto;
   max-height: 30rem;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+  background: var(--paper-card);
+  padding: 10px;
 }
 .typed-query-relation-canvas svg {
   width: 100%;
@@ -71,13 +94,14 @@
 }
 .typed-query-relation-canvas circle,
 .typed-query-relation-canvas line {
-  stroke: currentColor;
-  fill: none;
+  stroke: var(--graph-node-stroke);
+  fill: var(--graph-node-fill);
 }
 .typed-query-relation-canvas path,
 .typed-query-relation-canvas text {
-  fill: currentColor;
+  fill: var(--ink-primary);
 }
 .typed-query-relation-evidence > li {
   padding-block: 0.5rem;
+  border-bottom: 1px solid var(--hair-border);
 }

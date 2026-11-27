@@ -45,6 +45,8 @@ export type MentorPanelProps = {
   }
   /** Independent G-base practice reset: create a fresh practice project. */
   onResetToGBase?: (taskId: string) => void
+  /** Open the workspace checkpoints drawer instead of scrolling across waterfall sections. */
+  onOpenCheckpoints?: () => void
   /** Serialized checkpoint refresh after a check that created a checkpoint. */
   refreshCheckpoints(): Promise<void>
 }
@@ -91,6 +93,7 @@ function MentorSession({
   taskFixture,
   taskFixtureStatus,
   onResetToGBase,
+  onOpenCheckpoints,
   refreshCheckpoints,
   state,
 }: MentorPanelProps & { state: LearningControllerState }) {
@@ -238,7 +241,8 @@ function MentorSession({
               className="mentor-secondary"
               data-testid="learning-scroll-checkpoints"
               onClick={() => {
-                scrollToProjectCheckpoints()
+                if (onOpenCheckpoints) onOpenCheckpoints()
+                else scrollToProjectCheckpoints()
               }}
             >
               查看检查点恢复（当前项目内还原）

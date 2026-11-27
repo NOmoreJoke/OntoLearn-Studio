@@ -1,18 +1,20 @@
 .mapping-page {
-  max-width: 1180px;
+  max-width: 1220px;
   margin: 0 auto;
-  padding: 24px;
-  color: inherit;
+  padding: var(--gap-lg);
+  color: var(--ink-primary);
 }
 .mapping-page fieldset {
   margin: 20px 0;
   padding: 20px;
-  border: 1px solid currentColor;
-  border-radius: 8px;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-lg);
+  background: var(--paper-surface);
 }
 .mapping-page legend {
   padding: 0 8px;
   font-weight: 600;
+  color: var(--ink-primary);
 }
 .mapping-page label {
   display: block;
@@ -22,7 +24,11 @@
 .mapping-page select {
   display: block;
   width: 100%;
-  padding: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+  background: var(--paper-surface);
+  color: var(--ink-primary);
 }
 .mapping-page input[type='checkbox'] {
   margin-right: 8px;
@@ -30,10 +36,10 @@
 .mapping-config {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  gap: var(--gap-md);
 }
 .mapping-field {
-  border-top: 1px solid currentColor;
+  border-top: 1px solid var(--hair-border);
   padding: 12px 0;
 }
 .mapping-page table {
@@ -41,11 +47,21 @@
   border-collapse: collapse;
   margin: 12px 0;
   table-layout: fixed;
+  background: var(--paper-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
-.mapping-page th,
+.mapping-page th {
+  padding: 10px;
+  background: var(--paper-subtle);
+  border-bottom: 1px solid var(--hair-strong);
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
 .mapping-page td {
   padding: 10px;
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid var(--hair-border);
   text-align: left;
   overflow-wrap: anywhere;
   vertical-align: top;
@@ -53,18 +69,26 @@
 .mapping-page pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 10px;
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-sm);
 }
 .mapping-page button {
-  margin: 8px;
-  padding: 8px 12px;
+  margin: 8px 8px 8px 0;
+  padding: 8px 14px;
 }
 .mapping-page aside {
-  border-left: 4px solid currentColor;
-  padding-left: 16px;
+  border-left: 3px solid var(--accent-primary);
+  background: var(--accent-soft);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
 }
 .mapping-page nav {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: var(--gap-xs);
 }

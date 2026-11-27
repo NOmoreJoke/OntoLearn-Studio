@@ -1,0 +1,719 @@
+/* W7-2: 00 三元组与概念沙盒样式（严格只消费 tokens.css 语义变量，零裸 hex） */
+
+.foundation-sandbox-page {
+  display: grid;
+  gap: 18px;
+  padding: 20px 0 36px;
+  color: var(--ink-primary);
+  min-width: 0;
+}
+
+.foundation-hero {
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+}
+
+.foundation-eyebrow {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-primary);
+}
+
+.foundation-hero h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.foundation-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.6;
+}
+
+.foundation-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.foundation-scale-pill,
+.foundation-progress-pill {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+  border: 1px solid var(--hair-border);
+}
+
+.foundation-clear-btn,
+.foundation-sandbox-page .sandbox-secondary-btn,
+.foundation-sandbox-page .triple-remove-btn {
+  min-width: 0;
+  padding: 7px 12px;
+  font-size: 12px;
+  background: var(--paper-surface);
+  color: var(--ink-primary);
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-md);
+}
+
+.foundation-clear-btn:hover,
+.foundation-sandbox-page .sandbox-secondary-btn:hover,
+.foundation-sandbox-page .triple-remove-btn:hover {
+  background: var(--paper-subtle);
+}
+
+.foundation-stepper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.foundation-step-tab {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--paper-surface);
+  color: var(--ink-primary);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+}
+
+.foundation-step-tab:hover {
+  background: var(--paper-subtle);
+  border-color: var(--hair-strong);
+}
+
+.foundation-step-tab.is-current {
+  background: var(--accent-soft);
+  border: 2px solid var(--accent-primary);
+  color: var(--accent-deep);
+}
+
+.foundation-step-tab.is-done .step-tab-num {
+  color: var(--signal-success);
+}
+
+.step-tab-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.step-tab-title {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.foundation-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.foundation-mode-toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+}
+
+.foundation-mode-toggle button {
+  min-width: 0;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--ink-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.foundation-mode-toggle button[aria-pressed='true'] {
+  background: var(--paper-surface);
+  color: var(--accent-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-subtle);
+}
+
+.foundation-goal-chip {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  background: var(--paper-card);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+}
+
+.foundation-main-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.foundation-builder-column {
+  min-width: 0;
+}
+
+.excel-builder-grid,
+.clinic-grid {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.excel-source-panel,
+.excel-slots-panel,
+.clinic-prd-panel,
+.clinic-diagnosis-panel,
+.foundation-graph-panel {
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.excel-table-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.excel-table-tabs button {
+  min-width: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  background: var(--paper-subtle);
+  color: var(--ink-secondary);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-pill);
+}
+
+.excel-table-tabs button[aria-selected='true'] {
+  background: var(--accent-primary);
+  color: var(--ink-inverse);
+  border-color: var(--accent-primary);
+}
+
+.excel-table-caption {
+  display: grid;
+  gap: 2px;
+}
+
+.excel-table-caption small {
+  color: var(--ink-secondary);
+}
+
+.excel-table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.excel-source-panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.excel-source-panel th,
+.excel-source-panel td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--hair-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.excel-source-panel th {
+  background: var(--paper-subtle);
+  color: var(--ink-secondary);
+  font-weight: 600;
+}
+
+.excel-source-panel tbody tr {
+  cursor: pointer;
+}
+
+.excel-source-panel tbody tr.is-selected {
+  background: var(--accent-soft);
+}
+
+.excel-row-pick-btn {
+  min-width: 0;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  background: var(--paper-card);
+  color: var(--accent-primary);
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-sm);
+}
+
+.sandbox-callout {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--signal-warning);
+  background: var(--signal-hint-bg);
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.sandbox-callout p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--ink-primary);
+}
+
+.excel-slots-panel h3,
+.foundation-graph-head h3,
+.clinic-panel-head h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.slots-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+
+.sandbox-slot-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.sandbox-slot-stack label {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.sandbox-slot-stack select,
+.sandbox-slot-stack input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink-primary);
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-md);
+}
+
+.sandbox-preview-sentence {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sandbox-actions,
+.clinic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.foundation-sandbox-page .sandbox-primary-btn {
+  min-width: 0;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--accent-primary);
+  color: var(--ink-inverse);
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+}
+
+.foundation-sandbox-page .sandbox-primary-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.foundation-sandbox-page .sandbox-primary-btn:disabled,
+.foundation-sandbox-page .sandbox-secondary-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sandbox-feedback {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.sandbox-feedback.is-ok {
+  background: var(--signal-success-bg);
+  color: var(--signal-success);
+  border-left: 3px solid var(--signal-success);
+}
+
+.sandbox-feedback.is-error {
+  background: var(--signal-danger-bg);
+  color: var(--signal-danger);
+  border-left: 3px solid var(--signal-danger);
+}
+
+/* PRD Clinic */
+.clinic-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.clinic-panel-head span {
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+
+.clinic-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.prd-legend,
+.prd-token {
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border-bottom: 2px solid var(--hair-strong);
+}
+
+.prd-legend.is-class,
+.prd-token.is-class {
+  background: var(--signal-info-bg);
+  color: var(--signal-info);
+  border-bottom-color: var(--signal-info);
+}
+
+.prd-legend.is-object,
+.prd-token.is-object {
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+}
+
+.prd-legend.is-data,
+.prd-token.is-data {
+  background: var(--signal-success-bg);
+  color: var(--signal-success);
+  border-bottom-color: var(--signal-success);
+}
+
+.prd-legend.is-rule,
+.prd-token.is-rule {
+  background: var(--signal-warning-bg);
+  color: var(--signal-warning);
+  border-bottom-color: var(--signal-warning);
+}
+
+.clinic-story-box {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--paper-card);
+  border: 1px solid var(--hair-border);
+  line-height: 2;
+  font-size: 13px;
+}
+
+.clinic-story-box .prd-token {
+  min-width: 0;
+  display: inline;
+  padding: 3px 7px;
+  margin: 2px;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+}
+
+.clinic-story-box .prd-token.is-active {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.prd-role-tag {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.clinic-segment-detail {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+  display: grid;
+  gap: 6px;
+}
+
+.clinic-segment-detail p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.clinic-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.clinic-card {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hair-border);
+  display: grid;
+  gap: 8px;
+}
+
+.clinic-card.is-bad {
+  background: var(--signal-danger-bg);
+  border-color: var(--signal-danger);
+}
+
+.clinic-card.is-good {
+  background: var(--paper-card);
+  border-color: var(--accent-primary);
+}
+
+.clinic-card.is-reified {
+  background: var(--signal-success-bg);
+}
+
+.clinic-card-badge {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.clinic-card-badge.is-bad {
+  color: var(--signal-danger);
+}
+
+.clinic-card-badge.is-good {
+  color: var(--signal-success);
+}
+
+.clinic-formula {
+  margin: 0;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.clinic-card ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* SVG Mini Graph */
+.foundation-graph-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.foundation-count-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-subtle);
+  color: var(--ink-secondary);
+}
+
+.foundation-graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.legend-item {
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--paper-subtle);
+  color: var(--ink-secondary);
+}
+
+.legend-item.is-entity {
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+}
+
+.legend-item.is-derived {
+  background: var(--signal-warning-bg);
+  color: var(--signal-warning);
+}
+
+.foundation-graph-empty {
+  padding: 28px 16px;
+  text-align: center;
+  border: 1px dashed var(--hair-strong);
+  border-radius: var(--radius-md);
+  background: var(--paper-card);
+  color: var(--ink-secondary);
+  font-size: 13px;
+}
+
+.foundation-graph-svg {
+  width: 100%;
+  height: auto;
+  background: var(--paper-card);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+}
+
+.foundation-graph-svg .graph-edge {
+  stroke: var(--graph-node-stroke);
+  stroke-width: 1.6;
+}
+
+.foundation-graph-svg .graph-edge.is-derived {
+  stroke: var(--signal-warning);
+  stroke-width: 2;
+}
+
+.foundation-graph-svg .graph-arrow {
+  fill: none;
+  stroke: var(--graph-node-stroke);
+  stroke-width: 1.8;
+}
+
+.foundation-graph-svg .graph-arrow.is-derived {
+  stroke: var(--signal-warning);
+}
+
+.foundation-graph-svg .graph-edge-pill {
+  fill: var(--paper-surface);
+  stroke: var(--hair-border);
+  stroke-width: 1;
+}
+
+.foundation-graph-svg .graph-edge-label {
+  fill: var(--ink-secondary);
+  font-size: 10px;
+  font-family: var(--font-ui);
+}
+
+.foundation-graph-svg .graph-node-entity {
+  fill: var(--graph-node-fill);
+  stroke: var(--graph-node-stroke);
+  stroke-width: 1.6;
+}
+
+.foundation-graph-svg .graph-node-entity.is-derived {
+  fill: var(--signal-warning-bg);
+  stroke: var(--signal-warning);
+  stroke-dasharray: 4 3;
+}
+
+.foundation-graph-svg .graph-node-literal {
+  fill: var(--paper-surface);
+  stroke: var(--hair-strong);
+  stroke-width: 1.5;
+}
+
+.foundation-graph-svg .graph-node-text {
+  fill: var(--ink-primary);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+}
+
+.foundation-triple-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.foundation-triple-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--paper-card);
+  border: 1px solid var(--hair-border);
+  font-size: 12px;
+}
+
+.foundation-triple-list li.is-derived {
+  background: var(--signal-warning-bg);
+  border-color: var(--signal-warning);
+}
+
+.triple-sentence {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.triple-derived-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--paper-surface);
+  color: var(--signal-warning);
+}
+
+@media (max-width: 1100px) {
+  .foundation-main-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .foundation-hero {
+    padding: 14px;
+  }
+  .foundation-stepper {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -79,6 +79,9 @@ function expectMissingBlank(value: MainlineProjectReadDTO) {
 }
 
 async function createBlankThroughUi(page: Page, name: string) {
+  if (!(await page.getByTestId('project-name').isVisible())) {
+    await page.getByTestId('nav-project-library').click()
+  }
   const library = page.getByTestId('project-library')
   await page.getByTestId('project-name').fill(name)
   await page.getByTestId('project-create').click()
@@ -90,6 +93,7 @@ async function createBlankThroughUi(page: Page, name: string) {
 }
 
 async function readWorkspaceThroughUi(page: Page) {
+  await page.getByRole('link', { name: '本体查询', exact: true }).click()
   const pane = queryPane(page)
   await pane.getByRole('button', { name: '读取项目与持久工作草稿', exact: true }).click()
   await expect(
@@ -99,9 +103,13 @@ async function readWorkspaceThroughUi(page: Page) {
 }
 
 async function openThroughUi(page: Page, projectId: string) {
+  if (!(await page.getByTestId('project-name').isVisible())) {
+    await page.getByTestId('nav-project-library').click()
+  }
   await page.locator(`[data-testid="project-open"][data-project-id="${projectId}"]`).click()
   await expect(page.getByTestId('project-library').getByRole('status')).toContainText('项目已打开')
   await expect(page.getByTestId('project-list-refresh')).toBeEnabled()
+  await page.getByRole('link', { name: '本体查询', exact: true }).click()
   // The selected controller itself must have changed; a stale notice is insufficient.
   await expect(queryPane(page)).toContainText(projectId)
 }

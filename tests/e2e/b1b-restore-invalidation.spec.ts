@@ -399,6 +399,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     evidence.originalInputSnapshotId = originalInputSnapshotId
 
     stage = 'rename, switch mode and save a durable draft without invalidating the result'
+    await page.getByTestId('nav-project-library').click()
     await page.getByLabel('新名称或副本名称', { exact: true }).fill('B1b 恢复前改名')
     await page.getByRole('button', { name: '预览重命名', exact: true }).click()
     await confirmManagement(page)
@@ -415,6 +416,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     expect(afterManagement.workspace.metadata.name).toBe('B1b 恢复前改名')
 
     stage = 'modify and persist one query draft so no unsaved form remains'
+    await page.getByTestId('enter-active-workspace').click()
     const sparql = panel.getByRole('textbox', { name: '可见 SPARQL', exact: true })
     await expect(sparql).toBeVisible()
     await sparql.fill(`${await sparql.inputValue()}\n# B1b 恢复前草稿修改`)
@@ -424,6 +426,7 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     )
 
     stage = 'create a second checkpoint so both checkpoints remain in the history'
+    await page.getByTestId('topbar-checkpoints-toggle').click()
     await checkpoints(page).getByLabel('检查点备注').fill('改名之后')
     await checkpoints(page).getByTestId('checkpoint-create').click()
     await expect(checkpoints(page).getByTestId('checkpoint-notice')).toContainText(
@@ -475,6 +478,9 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
     evidence.staleReason = staleDescriptor.metadata.staleReason
 
     stage = 'preview the whole-project restore of the first checkpoint'
+    if (!(await checkpoints(page).isVisible())) {
+      await page.getByTestId('topbar-checkpoints-toggle').click()
+    }
     const cp1Preview = checkpoints(page)
       .getByTestId('checkpoint-list')
       .locator('li')
@@ -521,13 +527,13 @@ test('B1b whole-project restore rolls back mixed impacts and survives a real res
       '整项目恢复已完成',
       { timeout: 60000 },
     )
-    await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-      '项目已打开 · 版本 4',
-      { timeout: 60000 },
-    )
+    await expect(page.getByTestId('project-status-notice')).toContainText('项目已打开 · 版本 4', {
+      timeout: 60000,
+    })
     await expect(page.getByTestId('selected-project-version')).toContainText('当前项目版本 4', {
       timeout: 60000,
     })
+    await page.getByTestId('nav-project-library').click()
     await expect(page.getByTestId('project-list-refresh')).toBeEnabled({ timeout: 30000 })
 
     stage = 'verify the restored project state'

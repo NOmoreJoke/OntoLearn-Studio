@@ -58,9 +58,7 @@ async function activeProject(page: Page) {
 
 async function openExample(page: Page) {
   await page.getByTestId('learning-start-example').click()
-  await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-    '项目已创建并打开',
-  )
+  await expect(page.getByTestId('project-status-notice')).toContainText('项目已创建并打开')
   await expect(page.getByTestId('mentor-panel').getByTestId('learning-check-status')).toHaveText(
     '待检查',
   )
@@ -147,6 +145,7 @@ test('W3b FR-202/203/400 · G-base 视图、已提交 Turtle 往返、模板草�
       .click()
     const selection = browse.getByRole('article', { name: '选中对象详情' })
     await expect(selection.locator('code')).toHaveText(learning + 'Alarm')
+    await page.getByTestId('rail-tab-agent').click()
     const sidebar = page.getByTestId('agent-panel').getByTestId('agent-sidebar')
     // The sidebar reads its selection from the real getAgentContext reply.
     await expect(sidebar).toContainText('选中对象：' + learning + 'Alarm')
@@ -195,6 +194,7 @@ test('W3b FR-202/203/400 · G-base 视图、已提交 Turtle 往返、模板草�
     expect(await activeProject(page)).toEqual(example)
 
     await ontology.getByRole('button', { name: '新建概念', exact: true }).click()
+    await page.getByTestId('nav-project-library').click()
     await page.getByTestId('project-name').fill('W3b Turtle 往返目标')
     await page.getByTestId('project-create').click()
     await expect
@@ -427,6 +427,8 @@ test('W3b FR-900/800..806/005 and IPC isolation · 本地配置、离线助手�
       await expect(modelPanel.getByTestId('agent-audit-list').locator('li')).toHaveCount(0)
     }
 
+    await openWorkspace(page, '本体查询')
+    await page.getByTestId('rail-tab-agent').click()
     const sidebar = page.getByTestId('agent-sidebar')
     await expect(sidebar.getByRole('heading', { name: '导师模式', exact: true })).toBeVisible()
     const actionButtons = sidebar.getByTestId('agent-quick-actions').getByRole('button')
@@ -446,6 +448,7 @@ test('W3b FR-900/800..806/005 and IPC isolation · 本地配置、离线助手�
     await expect(
       page.getByTestId('mentor-panel').getByTestId('mentor-revealed-hint').first(),
     ).toBeVisible()
+    await page.getByTestId('rail-tab-agent').click()
     await expect(sidebar.getByTestId('agent-degraded')).toContainText('当前使用本地功能')
 
     // The renderer disables send in local mode. Exercise the real named bridge too,
@@ -518,6 +521,8 @@ test('W3b FR-900/800..806/005 and IPC isolation · 本地配置、离线助手�
       expect((await context()).configurations).toEqual([])
     }
 
+    await openWorkspace(page, '本体查询')
+    await page.getByTestId('rail-tab-agent').click()
     const beforeMode = await activeProject(page)
     const toggle = sidebar.getByTestId('agent-mode-toggle')
     await toggle.click()
@@ -545,6 +550,12 @@ test('W3b FR-900/800..806/005 and IPC isolation · 本地配置、离线助手�
     await restarted
       .locator('[data-testid="project-open"][data-project-id="' + projectId + '"]')
       .click()
+    await expect(restarted.getByTestId('project-library').getByRole('status')).toContainText(
+      '项目已打开',
+    )
+    await openWorkspace(restarted, '本体查询')
+    await restarted.getByTestId('mentor-panel-toggle').click()
+    await restarted.getByTestId('rail-tab-agent').click()
     await expect(
       restarted
         .getByTestId('agent-sidebar')

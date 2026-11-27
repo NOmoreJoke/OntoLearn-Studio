@@ -1,12 +1,13 @@
 .project-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 12px 0;
+  gap: var(--gap-xs);
+  margin: var(--gap-sm) 0;
 }
 .project-toolbar [aria-pressed='true'] {
-  background: #183d32;
-  color: #fff;
+  background: var(--accent-deep);
+  color: var(--ink-inverse);
+  border-color: var(--accent-deep);
 }
 .project-catalog {
   list-style: none;
@@ -16,21 +17,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--gap-md);
   padding: 12px 0;
-  border-bottom: 1px solid #dce6df;
+  border-bottom: 1px solid var(--hair-border);
 }
 .project-settings,
 .project-confirmation {
   margin-top: 20px;
   padding: 18px;
-  border: 1px solid #ccdcd2;
-  border-radius: 10px;
-  background: #f8fbf9;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-lg);
+  background: var(--paper-card);
 }
 .project-confirmation {
-  background: #fff;
-  border-color: #8da99b;
+  background: var(--paper-surface);
+  border-color: var(--hair-strong);
 }
 .project-confirmation dl {
   display: grid;
@@ -43,6 +44,7 @@
 }
 .project-confirmation code {
   overflow-wrap: anywhere;
+  font-family: var(--font-mono);
 }
 .project-confirmation button {
   margin: 8px 8px 0 0;
@@ -55,12 +57,12 @@
 }
 .project-quickstart {
   display: flex;
-  gap: 10px;
+  gap: var(--gap-sm);
   flex-wrap: wrap;
   padding: 14px 0;
 }
 .project-location {
-  border-top: 1px solid #dce6df;
+  border-top: 1px solid var(--hair-border);
   margin-top: 18px;
   padding-top: 12px;
 }
@@ -77,6 +79,7 @@
 }
 .guided-help {
   padding: 14px;
-  background: #eef5ef;
-  border-left: 3px solid #537a62;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
 }

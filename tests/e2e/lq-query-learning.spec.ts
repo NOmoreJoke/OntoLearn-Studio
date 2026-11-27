@@ -293,10 +293,9 @@ test('Lq query course: G-base practice reset, persisted Q-01/Q-02, derived stale
 
     stage = 'project 1: start the case, add one extra fact, focus the query task'
     await page.getByTestId('learning-start-example').click()
-    await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-      '项目已创建并打开',
-      { timeout: 30000 },
-    )
+    await expect(page.getByTestId('project-status-notice')).toContainText('项目已创建并打开', {
+      timeout: 30000,
+    })
     const projectOne = await activeProjectId(page)
     evidence.projectOne = projectOne
     const mentor = mentorPanel(page)
@@ -311,6 +310,7 @@ test('Lq query course: G-base practice reset, persisted Q-01/Q-02, derived stale
     const projectOneRevision = await catalogRevision(page, projectOne)
     expect(projectOneRevision).toBe(2)
     // The learning path focuses the query task without touching any project.
+    await page.getByTestId('nav-learning-center').click()
     await page.locator('[data-testid="learning-path-task"][data-task-id="query"]').click()
     await expect(mentor).toContainText('任务 03 · 本体查询')
     await mentor.getByTestId('learning-reading-open').click()
@@ -334,10 +334,9 @@ test('Lq query course: G-base practice reset, persisted Q-01/Q-02, derived stale
 
     stage = 'independent G-base reset opens a fresh practice project on the query workspace'
     await mentor.getByTestId('learning-reset-gbase').click()
-    await expect(page.getByTestId('project-library').getByRole('status')).toContainText(
-      '项目已创建并打开',
-      { timeout: 30000 },
-    )
+    await expect(page.getByTestId('project-status-notice')).toContainText('项目已创建并打开', {
+      timeout: 30000,
+    })
     const projectTwo = await activeProjectId(page)
     evidence.projectTwo = projectTwo
     expect(projectTwo).not.toBe(projectOne)
@@ -457,10 +456,10 @@ test('Lq query course: G-base practice reset, persisted Q-01/Q-02, derived stale
     )
 
     stage = 'the persisted stale verdict, assistance and observations survive the restart'
-    await restarted.getByTestId('mentor-panel-toggle').click()
+    await restarted.getByTestId('nav-learning-center').click()
+    await restarted.locator('[data-testid="learning-path-task"][data-task-id="query"]').click()
     const reopenedMentor = restarted.getByTestId('mentor-panel')
     await expect(reopenedMentor).toBeVisible({ timeout: 30000 })
-    await restarted.locator('[data-testid="learning-path-task"][data-task-id="query"]').click()
     await expect(reopenedMentor).toContainText('任务 03 · 本体查询')
     await expect(reopenedMentor.getByTestId('learning-check-status')).toHaveText(
       '已过期 / 需重跑',

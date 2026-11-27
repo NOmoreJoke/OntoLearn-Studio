@@ -56,8 +56,9 @@ test('I04 reload re-queries the same durable jobs without creating or cancelling
     await expect(
       page.locator(`[data-job-id="${active!.jobId}"] p`).filter({ hasText: '阶段：' }),
     ).toHaveText(/^阶段：\s*计算$/)
-    await page.getByRole('link', { name: '模块规划' }).click()
-    await page.getByRole('link', { name: '项目工作台' }).click()
+    await page.getByTestId('nav-learning-center').click()
+    await page.getByTestId('nav-project-library').click()
+    await page.getByTestId('enter-active-workspace').click()
     const afterAnchor = await page.evaluate(() => window.ontolearn!.restoreTasks())
     expect(afterAnchor.ok && afterAnchor.data.generation).toBe(first.data.generation)
     // No refresh or authority query while awaiting this actual worker terminal.

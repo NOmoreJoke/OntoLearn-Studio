@@ -18,7 +18,7 @@ a {
 }
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid #0369a1;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 4px;
 }
 .app-shell {
@@ -105,8 +105,8 @@ main {
   width: 100%;
   margin: 0 auto;
 }
-header {
-  height: 82px;
+.portal-topbar {
+  min-height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -179,7 +179,7 @@ button {
   min-width: 150px;
 }
 button:hover {
-  background: #115e59;
+  background: var(--accent-hover);
 }
 button:disabled {
   opacity: 0.65;
@@ -283,20 +283,11 @@ footer {
   .app-shell {
     grid-template-columns: 1fr;
   }
-  .sidebar {
-    display: none;
-  }
   main {
     padding: 0 20px;
   }
   .health-panel {
     grid-template-columns: 1fr;
-  }
-  .modules {
-    grid-template-columns: 1fr;
-  }
-  .modules article:nth-child(odd) {
-    margin-right: 0;
   }
   footer {
     flex-direction: column;
@@ -310,9 +301,9 @@ footer {
 .project-library {
   margin-block: 2rem;
   padding: 1.5rem;
-  border: 1px solid var(--border, #dce5df);
+  border: 1px solid var(--hair-border);
   border-radius: 1rem;
-  background: var(--surface, #fff);
+  background: var(--paper-surface);
 }
 .project-library form {
   display: flex;
@@ -324,7 +315,7 @@ footer {
 .project-library input {
   min-width: 12rem;
   padding: 0.75rem;
-  border: 1px solid #b9c9c0;
+  border: 1px solid var(--hair-strong);
   border-radius: 0.5rem;
   font: inherit;
 }
@@ -388,7 +379,7 @@ footer {
 .model-panel input:focus-visible,
 .model-panel select:focus-visible,
 .model-panel summary:focus-visible {
-  outline: 3px solid #0369a1;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 .model-panel button {
