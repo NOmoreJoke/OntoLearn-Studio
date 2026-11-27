@@ -1,6 +1,7 @@
 {
   "name": "@ontolearn/desktop",
   "version": "0.1.0",
+  "license": "Apache-2.0",
   "private": true,
   "description": "OntoLearn Studio desktop shell",
   "author": "NOmoreJoke",
@@ -9,11 +10,11 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "prepackage:dir": "npm --prefix ../.. run prepare:examples",
+    "prepackage:dir": "npx --no-install install-electron && npm --prefix ../.. run prepare:examples",
     "package:dir": "electron-builder --dir --publish never -c.forceCodeSigning=false -c.mac.identity=null -c.mac.hardenedRuntime=false -c.mac.notarize=false -c.win.signExecutable=false",
-    "prepackage:release:mac": "npm --prefix ../.. run prepare:examples",
+    "prepackage:release:mac": "npx --no-install install-electron && npm --prefix ../.. run prepare:examples",
     "package:release:mac": "electron-builder --mac dmg --arm64 --publish never",
-    "prepackage:release:win": "npm --prefix ../.. run prepare:examples",
+    "prepackage:release:win": "npx --no-install install-electron && npm --prefix ../.. run prepare:examples",
     "package:release:win": "electron-builder --win nsis --x64 --publish never"
   },
   "dependencies": {

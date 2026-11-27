@@ -22,6 +22,7 @@ asar: true
 npmRebuild: false
 forceCodeSigning: true
 mac:
+  icon: build/icon.icns
   hardenedRuntime: true
   notarize: true
   target:
@@ -29,11 +30,16 @@ mac:
       arch:
         - arm64
 win:
+  icon: build/icon.ico
   signAndEditExecutable: true
   signExecutable: true
   target:
     - target: nsis
       arch:
         - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
 linux:
+  icon: build/icon.png
   target: dir
