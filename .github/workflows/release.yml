@@ -91,18 +91,17 @@ jobs:
       - run: npm run verify:sources
       - run: npm run build && npm run engine:build
       - name: Build Windows NSIS installer (signed when WIN_CSC_LINK is configured, otherwise community build)
-        shell: pwsh
+        shell: bash
         env:
           WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
           WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
         run: |
-          if ($env:WIN_CSC_LINK) {
+          if [ -n "${WIN_CSC_LINK:-}" ]; then
             npm run package:release:win
-          } else {
-            npx --workspace @ontolearn/desktop electron-builder --win nsis --x64 --publish never `
+          else
+            npx --workspace @ontolearn/desktop electron-builder --win nsis --x64 --publish never \
               -c.forceCodeSigning=false -c.win.signExecutable=false
-          }
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          fi
       - run: npm run release:hygiene
       - name: Generate SHA-256 checksum
         shell: pwsh
